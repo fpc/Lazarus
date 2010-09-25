@@ -1296,6 +1296,12 @@ begin
   end;
 
 end;
+
+function BandInfo(Band: TfrBand): string;
+begin
+  result := format('"%s":%s typ=%s',[Band.Name, dbgsname(band), typ2str(Band.typ)]);
+end;
+
 {$ENDIF}
 
 procedure UpdateLibraryDescriptions;
@@ -1622,7 +1628,7 @@ begin
   wy1 := Round((FrameWidth * ScaleY - 1) / 2);
   wy2 := Round(FrameWidth * ScaleY / 2);
   {$IFDEF DebugLR}
-  DebugLn('CalcGaps: dx=',dbgs(dx),' ScaleX=',dbgs(ScaleX));
+  DebugLn('%sCalcGaps: dx=%d ScaleX=%f',[sspc,dx,ScaleX]);
   {$ENDIF}
   fFrameWidth := FrameWidth * ScaleX;
   gapx := wx2 + 2;
@@ -2502,7 +2508,9 @@ begin
     until i > Len - 2;
   end;
   {$IFDEF DebugLR}
-  debugLn('        breakword: s=',dbgstr(s),' result=',dbgstr(result));
+  IncSpc(1);
+  debugLn('%sbreakword: s=%s result=%s',[sspc,dbgstr(s),dbgstr(result)]);
+  IncSpc(-1);
   {$ENDIF}
 end;
 
@@ -2522,7 +2530,7 @@ var
       w := WCanvas.TextWidth(Copy(str, 1, n - 1)) else
       w := WCanvas.TextWidth(str);
     {$IFDEF DebugLR}
-    debugLn('        Outline: str="',dbgstr(str),'" w/=',dbgs(w div 256),' w%=',dbgs(w mod 256));
+    debugLn('%sOutline: str="%s" w/=%d w%%=%d',[sspc, str,w div 256, w mod 256]);
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
@@ -2656,8 +2664,7 @@ var
     size1 := -WCanvas.Font.Height + LineSpacing;
     maxWidth := dx - gapx - gapx;
     {$IFDEF DebugLR}
-    DebugLn('      OutMemo: Size=',dbgs(Size),' Size1=',dbgs(Size1),
-      ' MaxWidth=',dbgs(MaxWidth),' dx=',dbgs(dx),' gapx=',dbgs(gapx));
+    DebugLn('%sOutMemo: Size=%d Size1=%d MaxWidth=%d dx=%d gapx=%d',[sspc,Size,Size1,MaxWidth,dx,gapx]);
     {$ENDIF}
     for i := 0 to Memo1.Count - 1 do
     begin
@@ -2699,11 +2706,9 @@ begin
   WCanvas.Font.Assign(Font);
   WCanvas.Font.Height := -Round(Font.Size * 96 / 72);
   {$IFDEF DebugLR}
-  DebugLn('    TfrMemoView.WrapMemo:',
-  ' Font.PPI=', dbgs(Font.PixelsPerInch),
-  ' Font.Size=', dbgs(Font.Size),
-  ' Canvas.Font.PPI=',dbgs(Canvas.Font.PixelsPerInch),
-  ' WCanvas.Font.Size=',dbgs(WCanvas.Font.Size));
+  DebugLn('%sTfrMemoView.WrapMemo INI Font.PPI=%d Font.Size=%d Canvas.Font.PPI=%d WCanvas.Font.Size=%d',
+    [sspc, Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
+  IncSpc(1);
   {$ENDIF}
 
   SetTextCharacterExtra(WCanvas.Handle, CharacterSpacing);
@@ -2712,6 +2717,10 @@ begin
     OutMemo90
   else
     OutMemo;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrMemoView.WrapMemo DONE',[sspc]);
+  {$ENDIF}
 end;
 
 procedure TfrMemoView.ShowMemo;
@@ -4740,6 +4749,10 @@ var
   i: Integer;
   t: TfrView;
 begin
+  {$ifdef DebugLR}
+  DebugLn('%sDrawObjects INIT',[sspc]);
+  IncSpc(1);
+  {$endif}
   Result := False;
   for i := 0 to Objects.Count - 1 do
   begin
@@ -4760,6 +4773,10 @@ begin
     DrawObject(t);
     if MasterReport.Terminated then break;
   end;
+  {$ifdef DebugLR}
+  IncSpc(-1);
+  DebugLn('%sDrawObjects DONE result=%s',[sspc,BoolToStr(result,true)]);
+  {$endif}
 end;
 
 procedure TfrBand.DrawCrossCell(Parnt: TfrBand; CurX: Integer);
@@ -4982,7 +4999,7 @@ var
 
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sDrawPageBreak INI y=%d Maxdy',[sspc,y,maxdy]);
+  DebugLn('%sDrawPageBreak INI y=%d Maxdy=%d',[sspc,y,maxdy]);
   IncSpc(1);
   {$ENDIF}
   for i := 0 to Objects.Count - 1 do
@@ -5002,8 +5019,16 @@ begin
         TfrStretcheable(t).ActualHeight := 0;
       if t is TfrMemoView then
       begin
+        {$IFDEF DebugLR}
+        DebugLn('%sCalcHeight Memo INI',[sspc]);
+        IncSpc(1);
+        {$ENDIF}
         TfrMemoView(t).CalcHeight; // wraps a memo onto separate lines
         t.Memo1.Assign(SMemo);
+        {$IFDEF DebugLR}
+        IncSpc(-1);
+        DebugLn('%sCalcHeight Memo DONE',[sspc]);
+        {$ENDIF}
       end;
     end;
     repeat
@@ -5217,7 +5242,7 @@ var
   b: TfrBand;
 begin
   {$IFDEF debugLr}
-  DebugLn('%sTFrBand.Draw INI %s:%s y=%d vis=%s',[sspc, Name, ClassName,y,BoolToStr(Visible,true)]);
+  DebugLn('%sTFrBand.Draw INI Band=%s y=%d vis=%s',[sspc,BandInfo(self),y,BoolToStr(Visible,true)]);
   IncSpc(1);
   {$endif}
   Result := False;
@@ -5358,7 +5383,11 @@ var
   s: String;
   v: Boolean;
 begin
-  for i := 0 to Values.Count - 1 do
+  {$ifdef DebugLR}
+  DebugLn('%sTfrBand.DoAggregate INIT Band=%s',[sspc, BandInfo(self)]);
+  IncSpc(1);
+  {$endif}
+ for i := 0 to Values.Count - 1 do
   begin
     s := Values[i];
     Values[i] := Copy(s, 1, Pos('=', s) - 1) + '=0' + Copy(s, Pos('=', s) + 2, 255);
@@ -5376,6 +5405,10 @@ begin
   end;
   Visible := v;
   Inc(Count);
+  {$ifdef DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrBand.DoAggregate DONE Band=%s',[sspc, BandInfo(self)]);
+  {$endif}
 end;
 
 procedure TfrBand.ResetLastValues;
@@ -5911,7 +5944,7 @@ begin
   if b <> nil then
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sTfrPage.ShowBand INI b=%s:%s',[sspc,dbgsname(b),typ2str(b.typ)]);
+    DebugLn('%sTfrPage.ShowBand INI Band=%s',[sspc,BandInfo(b)]);
     IncSpc(1);
     {$ENDIF}
     if Mode = pmBuildList then
@@ -5919,7 +5952,7 @@ begin
       b.Draw;
     {$IFDEF DebugLR}
     IncSpc(-1);
-    DebugLn('%sTfrPage.ShowBand END b=%s:%s',[sspc,dbgsname(b),typ2str(b.typ)]);
+    DebugLn('%sTfrPage.ShowBand END Band=%s',[sspc,BandInfo(b)]);
     {$ENDIF}
   end;
 end;
@@ -6076,6 +6109,9 @@ begin
   CurBottomY := BottomMargin;
   MasterReport.EMFPages.Add(Self);
   Append := False;
+  {$IFDEF DebugLR}
+  DebugLn('%s---- Start of new page ----',[sspc]);
+  {$ENDIF}
   ShowBand(Bands[btOverlay]);
   CurY := TopMargin;
   ShowBand(Bands[btPageHeader]);
@@ -7841,6 +7877,9 @@ var
 begin
 //  val := '0';
   val := varempty;
+  {$ifdef DebugLR}
+  DebugLn('%sOnGetParsFunction aName=%s p1=%s p2=%s p3=%s ccc=%d',[sspc,aName,p1,p2,p3,ccc]);
+  {$endif}
   for i := 0 to frFunctionsCount - 1 do
     if frFunctions[i].FunctionLibrary.OnFunction(aName, p1, p2, p3, val) then
       exit;
@@ -9375,7 +9414,20 @@ var
   dk: (dkNone, dkSum, dkMin, dkMax, dkAvg, dkCount);
   vv, v2, v1: Variant;
   BM : Pointer;
+  {$IFDEF DebugLR}
+  function FNoStr: string;
+  begin
+    if FNo<=List.Count then
+      result := List[FNo]
+    else
+      result := '???';
+  end;
+  {$ENDIF}
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrStdFunctionLibrary.DoFunction FNo=%d (%s) p1=%s p2=%s p3=%s val=%s',[sspc,FNo,FNoStr,p1,p2,p3,val]);
+  IncSpc(1);
+  {$ENDIF}
   dk := dkNone;
   val := '0';
   case FNo of
@@ -9496,6 +9548,10 @@ begin
     end
     else if (DataSet = nil) or (Field = nil) then
     begin
+      {$IFDEF DebugLR}
+      DebugLn('%sCurBand=%s CurBand.View=%s AggrBand=%s',
+        [sspc,BandInfo(CurBand),dbgsName(CurBand.View),BandInfo(AggrBand)]);
+      {$ENDIF}
       s1 := Trim(string(p2));
       if s1 = '' then begin
         if (dk=dkCount) and (p1+''<>'') then
@@ -9518,41 +9574,43 @@ begin
         if not AggrBand.Visible and (AnsiCompareText(CurBand.View.Name, s1) = 0) then
         begin
           s1 := AggrBand.Values.Values[VarName];
-          if s1 <> '' then
-            if s1[1] = '1' then
-              Exit else
-              s1 := Copy(s1, 2, 255);
-          vv := 0;
-          if dk <> dkCount then
-            vv := frParser.Calc(p1);
-          if  VarIsNull(vv) or (TVarData(vv).VType=varEmpty)  then
+          if (s1='') or ((s1 <> '') and (s1[1] <> '1')) then
+          begin
+            s1 := Copy(s1, 2, 255);
             vv := 0;
-          d := vv;
-          if s1 = '' then
-            if dk = dkMin then s1 := '1e200'
-            else if dk = dkMax then s1 := '-1e200'
-            else s1 := '0';
-          v := StrToFloat(s1);
-          case dk of
-            dkAvg: v := v + d;
-            dkCount: v := v + 1;
-            dkMax: if v < d then v := d;
-            dkMin: if v > d then v := d;
-            dkSum: v := v + d;
+            if dk <> dkCount then
+              vv := frParser.Calc(p1);
+            if  VarIsNull(vv) or (TVarData(vv).VType=varEmpty)  then
+              vv := 0;
+            d := vv;
+            if s1 = '' then
+              if dk = dkMin then s1 := '1e200'
+              else if dk = dkMax then s1 := '-1e200'
+              else s1 := '0';
+            v := StrToFloat(s1);
+            case dk of
+              dkAvg: v := v + d;
+              dkCount: v := v + 1;
+              dkMax: if v < d then v := d;
+              dkMin: if v > d then v := d;
+              dkSum: v := v + d;
+            end;
+            AggrBand.Values.Values[VarName] := '1' + FloatToStr(v);
           end;
-          AggrBand.Values.Values[VarName] := '1' + FloatToStr(v);
-          Exit;
         end
         else if AggrBand.Visible then
         begin
           val := StrToFloat(Copy(AggrBand.Values.Values[VarName], 2, 255));
           if dk = dkAvg then
             val := val / AggrBand.Count;
-          Exit;
         end;
       end;
     end;
   end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrStdFunctionLibrary.DoFunction DONE val=%s',[sspc,val]);
+  {$ENDIF}
 end;
 
 {-----------------------------------------------------------------------------}
