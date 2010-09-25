@@ -31,9 +31,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids,
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
-  KeywordFuncLists, CodeToolsCfgScript,
-  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf,
-  LazarusIDEStrConsts, CompOptsModes, PackageDefs, SynEdit, SynHighlighterPas;
+  KeywordFuncLists, CodeToolsCfgScript, SynEdit, SynHighlighterPas, ProjectIntf,
+  PackageIntf, CompilerOptions, IDEOptionsIntf, EditorOptions,
+  LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
 
 type
   TCBMNodeType = (
@@ -57,7 +57,6 @@ type
     BuildMacroDefaultLabel: TLabel;
     BuildMacroDescriptionLabel: TLabel;
     ConditionalsGroupBox: TGroupBox;
-    ConditionalsSynPasSyn: TSynPasSyn;
     CondSynEdit: TSynEdit;
     MacrosGroupBox: TGroupBox;
     MacrosSplitter: TSplitter;
@@ -73,6 +72,7 @@ type
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
+    FHighlighter: TIDESynFreePasSyn;
     FBuildMacros: TIDEBuildMacros;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
@@ -555,6 +555,14 @@ procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
 begin
   BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
   CondSynEdit.Lines.Text:=Options.Conditionals;
+  EditorOpts.GetSynEditPreviewSettings(CondSynEdit);
+  CondSynEdit.ReadOnly:=false;
+  if FHighlighter=nil then
+  begin
+    FHighlighter := TPreviewPasSyn.Create(Self);
+    CondSynEdit.Highlighter:=FHighlighter;
+  end;
+  EditorOpts.ReadHighlighterSettings(FHighlighter, '');
 end;
 
 procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions

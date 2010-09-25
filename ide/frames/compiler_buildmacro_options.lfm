@@ -1,7 +1,5 @@
-object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
-  Left = 0
+inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
   Height = 430
-  Top = 0
   Width = 496
   ClientHeight = 430
   ClientWidth = 496
@@ -9,19 +7,19 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
   Visible = False
   DesignLeft = 308
   DesignTop = 268
-  object MacrosGroupBox: TGroupBox
+  object MacrosGroupBox: TGroupBox[0]
     Left = 0
     Height = 243
     Top = 0
     Width = 496
     Align = alTop
     Caption = 'MacrosGroupBox'
-    ClientHeight = 224
-    ClientWidth = 492
+    ClientHeight = 222
+    ClientWidth = 488
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
       Left = 0
-      Height = 224
+      Height = 222
       Top = 0
       Width = 227
       Align = alLeft
@@ -37,26 +35,26 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     end
     object Splitter1: TSplitter
       Left = 233
-      Height = 224
+      Height = 222
       Top = 0
       Width = 5
     end
     object BuildMacroSelectedGroupBox: TGroupBox
       Left = 244
-      Height = 224
+      Height = 222
       Top = 0
-      Width = 248
+      Width = 244
       Align = alClient
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
-      ClientHeight = 205
-      ClientWidth = 244
+      ClientHeight = 201
+      ClientWidth = 236
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
         Left = 6
         Height = 18
         Top = 72
-        Width = 232
+        Width = 224
         Align = alTop
         BorderSpacing.Top = 15
         BorderSpacing.Around = 6
@@ -67,7 +65,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         Left = 6
         Height = 18
         Top = 6
-        Width = 232
+        Width = 224
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -79,7 +77,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         Left = 6
         Height = 27
         Top = 24
-        Width = 232
+        Width = 224
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -88,7 +86,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
     end
   end
-  object MacrosSplitter: TSplitter
+  object MacrosSplitter: TSplitter[1]
     Cursor = crVSplit
     Left = 0
     Height = 5
@@ -97,21 +95,21 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Align = alTop
     ResizeAnchor = akTop
   end
-  object ConditionalsGroupBox: TGroupBox
+  object ConditionalsGroupBox: TGroupBox[2]
     Left = 0
     Height = 182
     Top = 248
     Width = 496
     Align = alClient
     Caption = 'ConditionalsGroupBox'
-    ClientHeight = 163
-    ClientWidth = 492
+    ClientHeight = 161
+    ClientWidth = 488
     TabOrder = 2
     inline CondSynEdit: TSynEdit
       Left = 0
-      Height = 163
+      Height = 161
       Top = 0
-      Width = 492
+      Width = 488
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -120,7 +118,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       ParentColor = False
       ParentFont = False
       TabOrder = 0
-      Gutter.Width = 55
+      Gutter.Width = 51
       Gutter.MouseActions = <      
         item
           Shift = []
@@ -168,7 +166,6 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
           Option = 0
           Priority = 0
         end>
-      Highlighter = ConditionalsSynPasSyn
       Keystrokes = <      
         item
           Command = ecUp
@@ -722,7 +719,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
           Width = 24
         end
         object SynGutterLineNumber1: TSynGutterLineNumber
-          Width = 15
+          Width = 11
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -828,16 +825,9 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
     end
   end
-  object BuildMacrosTVPopupMenu: TPopupMenu
+  object BuildMacrosTVPopupMenu: TPopupMenu[3]
     OnPopup = BuildMacrosTVPopupMenuPopup
     left = 99
     top = 77
-  end
-  object ConditionalsSynPasSyn: TSynPasSyn
-    Enabled = False
-    CompilerMode = pcmDelphi
-    NestedComments = False
-    left = 182
-    top = 313
   end
 end
