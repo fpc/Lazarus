@@ -352,7 +352,8 @@ begin
   
   // custom options -----------------------------------------------------------
   CustomOpts:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-    FPCCmdLineDefTemplName,CompOpts.GetCustomOptions,RecursiveDefines,nil);
+    FPCCmdLineDefTemplName,CompOpts.GetCustomOptions(coptParsed),
+    RecursiveDefines,nil);
   if CustomOpts<>nil then begin
     ParentTemplate.ReplaceChild(CustomOpts);
   end else begin

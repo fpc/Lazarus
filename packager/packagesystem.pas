@@ -58,7 +58,8 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
-  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
+  ComponentReg, ProjectIntf, RegisterFCL, RegisterLCL, RegisterSynEdit,
+  RegisterIDEIntf;
   
 type
   TFindPackageFlag = (
@@ -265,7 +266,7 @@ type
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
                               const NewName: string; NewVersion: TPkgVersion;
-                              RenameDependencies: boolean);
+                              RenameDependencies, RenameMacros: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string;
                   Complete, ShowAbort: boolean): TModalResult;
@@ -2652,25 +2653,45 @@ begin
 end;
 
 procedure TLazPackageGraph.ChangePackageID(APackage: TLazPackage;
-  const NewName: string; NewVersion: TPkgVersion; RenameDependencies: boolean);
+  const NewName: string; NewVersion: TPkgVersion; RenameDependencies,
+  RenameMacros: boolean);
 var
   Dependency: TPkgDependency;
   NextDependency: TPkgDependency;
   OldPkgName: String;
+  i: Integer;
+  Macro: TLazBuildMacro;
+  RenamedMacros: TStringList;
+  OldMacroName: String;
+  BaseCompOpts: TBaseCompilerOptions;
 begin
   OldPkgName:=APackage.Name;
-  if (SysUtils.CompareText(OldPkgName,NewName)=0)
-  and (APackage.Version.Compare(NewVersion)=0) then begin
-    // ID does not change
-    // -> just rename
-    APackage.Name:=NewName;
-    fChanged:=true;
-    exit;
-  end;
-
-  // ID changed
+  if (OldPkgName=NewName) and (APackage.Version.Compare(NewVersion)=0) then
+    exit; // fit exactly
 
   BeginUpdate(true);
+
+  if RenameMacros then
+  begin
+    // rename macros
+    RenamedMacros:=TStringList.Create;
+    try
+      for i:=0 to APackage.CompilerOptions.BuildMacros.Count-1 do
+      begin
+        Macro:=APackage.CompilerOptions.BuildMacros[i];
+        if SysUtils.CompareText(OldPkgName,copy(Macro.Identifier,1,length(OldPkgName)))=0
+        then begin
+          OldMacroName:=Macro.Identifier;
+          RenamedMacros.Add(OldMacroName);
+          Macro.Identifier:=NewName+copy(OldMacroName,length(OldPkgName)+1,256);
+          BaseCompOpts:=TBaseCompilerOptions(APackage.CompilerOptions);
+          BaseCompOpts.RenameMacro(OldMacroName,Macro.Identifier,true);
+        end;
+      end;
+    finally
+      RenamedMacros.Free;
+    end;
+  end;
 
   // cut or fix all dependencies, that became incompatible
   Dependency:=APackage.FirstUsedByDependency;
@@ -2687,7 +2708,7 @@ begin
     end;
     Dependency:=NextDependency;
   end;
-  
+
   // change ID
   FTree.Remove(APackage);
   APackage.ChangeID(NewName,NewVersion);
@@ -2698,6 +2719,8 @@ begin
 
   if Assigned(OnChangePackageName) then
     OnChangePackageName(APackage,OldPkgName);
+
+  // no try-finally needed, because above fails only for fatal reasons
   EndUpdate;
 end;
 

@@ -46,6 +46,7 @@ var
   // the global IDE values
   IDEMacros: TIDEMacros = nil; // set by the IDE
 
+procedure RenameIDEMacroInString(var s: string; const OldName, NewName: string);
 
 implementation
 
@@ -53,6 +54,40 @@ const
   MaxStamp = $7fffffff;
   MinStamp = -$7fffffff;
   InvalidStamp = MinStamp-1;
+
+procedure RenameIDEMacroInString(var s: string; const OldName, NewName: string);
+var
+  p: Integer;
+  Macro1: String;
+  Macro2: String;
+
+  procedure Replace(const OldValue, NewValue: string);
+  begin
+    s:=copy(s,1,p-1)+NewValue+copy(s,p+length(OldValue),length(s));
+    inc(p,length(NewValue));
+  end;
+
+begin
+  Macro1:='$('+OldName+')';
+  Macro2:='$'+OldName+'(';
+  p:=1;
+  while (p<length(s)) do
+  begin
+    if (s[p]<>'$') then
+      inc(p)  // skip normal character
+    else if (s[p+1]='$') then
+      inc(p,2) // skip $$
+    else begin
+      // macro at p found
+      if SysUtils.CompareText(Macro1,copy(s,p,length(Macro1)))=0 then
+        Replace(Macro1,'$('+NewName+')')
+      else if SysUtils.CompareText(Macro2,copy(s,p,length(Macro1)))=0 then
+        Replace(Macro2,'$'+NewName+'(')
+      else
+        inc(p);
+    end;
+  end;
+end;
 
 { TIDEMacros }
 

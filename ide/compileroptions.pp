@@ -77,13 +77,19 @@
   - show build macros in inherited compiler options
   - use syntax highlighter settings like the editor previews
   - show syntax errors of conditionals
+  - when package is renamed, rename macros too
 
   ToDo:
-  - code completion
-  - when package is renamed, rename macros too
+  - warn for macro name conflicts
+    - IDE macros like CompPath
   - move the project target file to compiler options
   - discuss captions
   - resourcestrings
+  - make synedit a package
+  - make IDEIntf a package
+  - make LCL a package
+  - make FCL a package
+  - code completion
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
     - refactor compiler options (default options, load, save to file)
@@ -349,6 +355,8 @@ type
     procedure Clear;
     procedure InvalidateAll;
     procedure InvalidateFiles;
+    procedure RenameMacro(const OldName, NewName: string;
+                out Changed: TParsedCompilerOptStrings); // rename macro in UnparsedValues
   public
     property Owner: TObject read FOwner;
     property OnLocalSubstitute: TLocalSubstitutionEvent read FOnLocalSubstitute
@@ -467,7 +475,6 @@ type
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
   private
-    FBaseDirectory: string;
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
@@ -480,7 +487,6 @@ type
     FXMLConfig: TXMLConfig;
 
     // Compilation
-    fCompilerPath: String;
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
@@ -489,10 +495,20 @@ type
     fUseCustomMessages: Boolean; // use messages customization 
     fUseMsgFile: Boolean;  // use specified file for messages 
     fMsgFileName: String;  // messages file name 
-    fCompilerMessages: TCompilerMessagesList; 
-    
+    fCompilerMessages: TCompilerMessagesList;
+
   protected
-    procedure SetBaseDirectory(const AValue: string); override;
+    function GetCompilerPath: String;
+    function GetBaseDirectory: string;
+    function GetCustomOptions: string; override;
+    function GetDebugPath: string; override;
+    function GetIncludePaths: String; override;
+    function GetLibraryPaths: String; override;
+    function GetObjectPath: string; override;
+    function GetSrcPath: string; override;
+    function GetUnitOutputDir: string; override;
+    function GetUnitPaths: String; override;
+    procedure SetBaseDirectory(const AValue: string);
     procedure SetCompilerPath(const AValue: String); override;
     procedure SetConditionals(const AValue: string); override;
     procedure SetCustomOptions(const AValue: string); override;
@@ -590,13 +606,16 @@ type
                              RelativeToBaseDir: boolean): string;
     function ShortenPath(const SearchPath: string;
                          MakeAlwaysRelative: boolean): string;
-    function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
+    function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
     function GetOptionsForCTDefines: string;
     function GetEffectiveLCLWidgetType: string; virtual;
+
+    procedure RenameMacro(const OldName, NewName: string;
+              ChangeConditionals: boolean); virtual; // rename macro in paths and options, not in BuildMacros, not in dependencies
   public
     // Properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
-    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
@@ -606,7 +625,7 @@ type
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
 
     // compilation
-    property CompilerPath: String read fCompilerPath write SetCompilerPath;
+    property CompilerPath: String read GetCompilerPath write SetCompilerPath;
     property ExecuteBefore: TCompilationToolOptions read fExecuteBefore;
     property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
@@ -1129,17 +1148,14 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if NewValue<>AValue then
-  if fIncludePaths=NewValue then exit;
-  fIncludePaths:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosIncludePath,fIncludePaths);
+  if IncludePath=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosIncludePath,NewValue);
 end;
 
 procedure TBaseCompilerOptions.SetCompilerPath(const AValue: String);
 begin
-  if fCompilerPath=AValue then exit;
-  fCompilerPath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosCompilerPath,fCompilerPath);
+  if CompilerPath=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosCompilerPath,AValue);
 end;
 
 procedure TBaseCompilerOptions.SetConditionals(const AValue: string);
@@ -1161,9 +1177,8 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if FSrcPath=NewValue then exit;
-  FSrcPath:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
+  if SrcPath=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosSrcPath,NewValue);
 end;
 
 procedure TBaseCompilerOptions.SetDebugPath(const AValue: string);
@@ -1171,9 +1186,8 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if fDebugPath=NewValue then exit;
-  fDebugPath:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosDebugPath,fDebugPath);
+  if DebugPath=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosDebugPath,NewValue);
 end;
 
 procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
@@ -1204,18 +1218,66 @@ begin
   Modified:=true;
 end;
 
+function TBaseCompilerOptions.GetCompilerPath: String;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosCompilerPath];
+end;
+
+function TBaseCompilerOptions.GetBaseDirectory: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosBaseDir];
+end;
+
+function TBaseCompilerOptions.GetCustomOptions: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosCustomOptions];
+end;
+
+function TBaseCompilerOptions.GetDebugPath: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosDebugPath];
+end;
+
+function TBaseCompilerOptions.GetIncludePaths: String;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosIncludePath];
+end;
+
+function TBaseCompilerOptions.GetLibraryPaths: String;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosLibraryPath];
+end;
+
+function TBaseCompilerOptions.GetObjectPath: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosObjectPath];
+end;
+
+function TBaseCompilerOptions.GetSrcPath: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosSrcPath];
+end;
+
+function TBaseCompilerOptions.GetUnitOutputDir: string;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
+end;
+
+function TBaseCompilerOptions.GetUnitPaths: String;
+begin
+  Result:=ParsedOpts.UnparsedValues[pcosUnitPath];
+end;
+
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
-  if FBaseDirectory=AValue then exit;
-  FBaseDirectory:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosBaseDir,FBaseDirectory);
+  if BaseDirectory=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosBaseDir,AValue);
 end;
 
 procedure TBaseCompilerOptions.SetCustomOptions(const AValue: string);
 begin
-  if fCustomOptions=AValue then exit;
-  fCustomOptions:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosCustomOptions,fCustomOptions);
+  if CustomOptions=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosCustomOptions,AValue);
 end;
 
 procedure TBaseCompilerOptions.SetLibraryPaths(const AValue: String);
@@ -1223,16 +1285,14 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if fLibraryPaths=NewValue then exit;
-  fLibraryPaths:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosLibraryPath,fLibraryPaths);
+  if Libraries=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosLibraryPath,NewValue);
 end;
 
 procedure TBaseCompilerOptions.SetLinkerOptions(const AValue: String);
 begin
-  if fLinkerOptions=AValue then exit;
-  fLinkerOptions:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosLinkerOptions,fLinkerOptions);
+  if LinkerOptions=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
 end;
 
 procedure TBaseCompilerOptions.SetUnitPaths(const AValue: String);
@@ -1240,16 +1300,14 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if fUnitPaths=NewValue then exit;
-  fUnitPaths:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosUnitPath,fUnitPaths);
+  if OtherUnitFiles=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosUnitPath,NewValue);
 end;
 
 procedure TBaseCompilerOptions.SetUnitOutputDir(const AValue: string);
 begin
-  if fUnitOutputDir=AValue then exit;
-  fUnitOutputDir:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosOutputDir,fUnitOutputDir);
+  if UnitOutputDirectory=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosOutputDir,AValue);
 end;
 
 procedure TBaseCompilerOptions.SetObjectPath(const AValue: string);
@@ -1257,9 +1315,8 @@ var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if FObjectPath=NewValue then exit;
-  FObjectPath:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosObjectPath,FObjectPath);
+  if ObjectPath=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosObjectPath,NewValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -2058,8 +2115,8 @@ begin
   {$ENDIF}
 end;
 
-function TBaseCompilerOptions.GetCustomOptions(Parsed: TCompilerOptionsParseType
-  ): string;
+function TBaseCompilerOptions.GetCustomOptions(
+  Parsed: TCompilerOptionsParseType): string;
 var
   CurCustomOptions: String;
   InhCustomOptions: String;
@@ -2105,6 +2162,24 @@ begin
   Result:=LCLWidgetType;
   if (Result='') or (Result='default') then
     Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
+end;
+
+procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
+  ChangeConditionals: boolean);
+var
+  Changed: TParsedCompilerOptStrings;
+  s: String;
+begin
+  ParsedOpts.RenameMacro(OldName,NewName,Changed);
+  if Changed<>[] then begin
+
+  end;
+  if ChangeConditionals then
+  begin
+    s:=Conditionals;
+    RenameCTCSVariable(s,OldName,NewName);
+    Conditionals:=s;
+  end;
 end;
 
 function TBaseCompilerOptions.ShortenPath(const SearchPath: string;
@@ -2749,7 +2824,7 @@ begin
   end;
 
   // custom options
-  CurCustomOptions:=GetCustomOptions;
+  CurCustomOptions:=GetCustomOptions(coptParsed);
   if CurCustomOptions<>'' then
     switches := switches+' '+CurCustomOptions;
 
@@ -2956,11 +3031,11 @@ begin
 
   // Search Paths
   StorePathDelim := CompOpts.StorePathDelim;
-  IncludePath := CompOpts.fIncludePaths;
-  Libraries := CompOpts.fLibraryPaths;
-  OtherUnitFiles := CompOpts.fUnitPaths;
-  UnitOutputDirectory := CompOpts.fUnitOutputDir;
-  ObjectPath := CompOpts.FObjectPath;
+  IncludePath := CompOpts.IncludePath;
+  Libraries := CompOpts.Libraries;
+  OtherUnitFiles := CompOpts.OtherUnitFiles;
+  UnitOutputDirectory := CompOpts.UnitOutputDirectory;
+  ObjectPath := CompOpts.ObjectPath;
   SrcPath := CompOpts.SrcPath;
   DebugPath := CompOpts.DebugPath;
 
@@ -3039,10 +3114,10 @@ begin
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
   fCustomConfigFile := CompOpts.fCustomConfigFile;
   fConfigFilePath := CompOpts.fConfigFilePath;
-  CustomOptions := CompOpts.fCustomOptions;
+  CustomOptions := CompOpts.CustomOptions;
 
   // compilation
-  CompilerPath := CompOpts.fCompilerPath;
+  CompilerPath := CompOpts.CompilerPath;
   ExecuteBefore.Assign(CompOpts.ExecuteBefore);
   ExecuteAfter.Assign(CompOpts.ExecuteAfter);
   CreateMakefileOnBuild:=CompOpts.CreateMakefileOnBuild;
@@ -3088,13 +3163,13 @@ begin
 
   // search paths
   Tool.Path:='Paths';
-  Tool.AddPathsDiff('IncludePaths',fIncludePaths,CompOpts.fIncludePaths);
-  Tool.AddPathsDiff('LibraryPaths',fLibraryPaths,CompOpts.fLibraryPaths);
-  Tool.AddPathsDiff('UnitPaths',fUnitPaths,CompOpts.fUnitPaths);
-  Tool.AddPathsDiff('UnitOutputDir',fUnitOutputDir,CompOpts.fUnitOutputDir);
-  Tool.AddPathsDiff('ObjectPath',FObjectPath,CompOpts.FObjectPath);
-  Tool.AddPathsDiff('SrcPath',FSrcPath,CompOpts.FSrcPath);
-  Tool.AddPathsDiff('DebugPath',fDebugPath,CompOpts.fDebugPath);
+  Tool.AddPathsDiff('IncludePaths',IncludePath,CompOpts.IncludePath);
+  Tool.AddPathsDiff('LibraryPaths',Libraries,CompOpts.Libraries);
+  Tool.AddPathsDiff('UnitPaths',OtherUnitFiles,CompOpts.OtherUnitFiles);
+  Tool.AddPathsDiff('UnitOutputDir',UnitOutputDirectory,CompOpts.UnitOutputDirectory);
+  Tool.AddPathsDiff('ObjectPath',ObjectPath,CompOpts.ObjectPath);
+  Tool.AddPathsDiff('SrcPath',SrcPath,CompOpts.SrcPath);
+  Tool.AddPathsDiff('DebugPath',DebugPath,CompOpts.DebugPath);
 
   // conditionals
   Tool.AddPathsDiff('Conditionals',FConditionals,CompOpts.FConditionals);
@@ -3186,11 +3261,11 @@ begin
   Tool.AddDiff('CustomConfigFile',fCustomConfigFile,CompOpts.fCustomConfigFile);
   Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath);
   Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount);
-  Tool.AddDiff('CustomOptions',fCustomOptions,CompOpts.fCustomOptions);
+  Tool.AddDiff('CustomOptions',CustomOptions,CompOpts.CustomOptions);
 
   // compilation
   Tool.Path:='Compilation';
-  Tool.AddDiff('CompilerPath',fCompilerPath,CompOpts.fCompilerPath);
+  Tool.AddDiff('CompilerPath',CompilerPath,CompOpts.CompilerPath);
   ExecuteBefore.CreateDiff(CompOpts.ExecuteBefore,Tool);
   ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool);
   Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild);
@@ -3618,6 +3693,24 @@ begin
       ParsedStamp[Option]:=InvalidParseStamp;
       ParsedPIStamp[Option]:=InvalidParseStamp;
     end;
+end;
+
+procedure TParsedCompilerOptions.RenameMacro(const OldName, NewName: string;
+  out Changed: TParsedCompilerOptStrings);
+var
+  o: TParsedCompilerOptString;
+  s: String;
+begin
+  Changed:=[];
+  for o:=Low(UnparsedValues) to High(UnparsedValues) do
+  begin
+    s:=UnparsedValues[o];
+    RenameIDEMacroInString(s,OldName,NewName);
+    if s<>UnparsedValues[o] then begin
+      SetUnparsedValue(o,s);
+      Include(Changed,o)
+    end;
+  end;
 end;
 
 { TCompilationToolOptions }

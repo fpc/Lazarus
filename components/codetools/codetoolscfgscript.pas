@@ -238,6 +238,8 @@ type
     procedure WriteDebugReportStack(Title: string);
   end;
 
+procedure RenameCTCSVariable(var Src: string; const OldName, NewName: string);
+
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
 function ComparePCharWithCTCSVariableName(Name, aVar: Pointer): integer;
 function AreCTCSVariablesEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
@@ -271,6 +273,30 @@ function dbgs(const V: PCTCfgScriptVariable): string; overload;
 
 
 implementation
+
+procedure RenameCTCSVariable(var Src: string; const OldName, NewName: string);
+var
+  p: PChar;
+  AtomStart: PChar;
+  SrcPos: PtrUInt;
+begin
+  if (Src='') or (OldName='') or (not IsValidIdent(OldName))
+  or (NewName='') then exit;
+  p:=PChar(Src);
+  //debugln(['RenameCTCSVariable START ',dbgstr(Src)]);
+  repeat
+    ReadRawNextPascalAtom(p,AtomStart);
+    if (p=AtomStart) then break;
+    if IsIdentStartChar[AtomStart^]
+    and (CompareIdentifierPtrs(PChar(OldName),AtomStart)=0)
+    then begin
+      SrcPos:=PtrUInt(AtomStart-PChar(Src))+1;
+      Src:=copy(Src,1,SrcPos-1)+NewName+copy(Src,SrcPos+length(OldName),length(Src));
+      p:=@Src[SrcPos]+length(NewName);
+    end;
+  until false;
+  //debugln(['RenameCTCSVariable END ',dbgstr(Src)]);
+end;
 
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
 var

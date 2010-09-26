@@ -1330,7 +1330,7 @@ begin
   
   // rename package
   PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
-                               RenameDependencies);
+                               RenameDependencies,true);
   SaveAutoInstallDependencies(false);
   RenamePackageInProject;
 

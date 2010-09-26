@@ -127,13 +127,6 @@ type
     FModified: boolean;
 
     // Paths:
-    fIncludePaths: String;
-    fLibraryPaths: String;
-    fUnitPaths: String;
-    FObjectPath: string;
-    FSrcPath: string;
-    fUnitOutputDir: string;
-    fDebugPath: string;
 
     // conditionals / build modes
     FConditionals: string;
@@ -215,25 +208,31 @@ type
     fDontUseConfigFile: Boolean;
     fCustomConfigFile: Boolean;
     fConfigFilePath: String;
-    fCustomOptions: string;
   protected
-    procedure SetBaseDirectory(const AValue: string); virtual; abstract;
+    function GetCustomOptions: string; virtual; abstract;
+    function GetDebugPath: string; virtual; abstract;
+    function GetIncludePaths: String; virtual; abstract;
+    function GetLibraryPaths: String; virtual; abstract;
+    function GetObjectPath: string; virtual; abstract;
+    function GetSrcPath: string; virtual; abstract;
+    function GetUnitOutputDir: string; virtual; abstract;
+    function GetUnitPaths: String; virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetConditionals(const AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
+    procedure SetDebugPath(const AValue: string); virtual; abstract;
     procedure SetIncludePaths(const AValue: String); virtual; abstract;
     procedure SetLibraryPaths(const AValue: String); virtual; abstract;
     procedure SetLinkerOptions(const AValue: String); virtual; abstract;
-    procedure SetUnitPaths(const AValue: String); virtual; abstract;
-    procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
+    procedure SetModified(const AValue: boolean); virtual; abstract;
     procedure SetObjectPath(const AValue: string); virtual; abstract;
     procedure SetSrcPath(const AValue: string); virtual; abstract;
-    procedure SetDebugPath(const AValue: string); virtual; abstract;
     procedure SetTargetCPU(const AValue: string); virtual; abstract;
-    procedure SetTargetProc(const AValue: string); virtual; abstract;
-    procedure SetTargetOS(const AValue: string); virtual; abstract;
     procedure SetTargetFilename(const AValue: String); virtual; abstract;
-    procedure SetModified(const AValue: boolean); virtual; abstract;
+    procedure SetTargetOS(const AValue: string); virtual; abstract;
+    procedure SetTargetProc(const AValue: string); virtual; abstract;
+    procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
+    procedure SetUnitPaths(const AValue: String); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
   public
@@ -242,13 +241,13 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
 
     // search paths:
-    property IncludePath: String read fIncludePaths write SetIncludePaths;
-    property Libraries: String read fLibraryPaths write SetLibraryPaths;
-    property OtherUnitFiles: String read fUnitPaths write SetUnitPaths;
-    property ObjectPath: string read FObjectPath write SetObjectPath;
-    property SrcPath: string read FSrcPath write SetSrcPath;
-    property DebugPath: string read FDebugPath write SetDebugPath;
-    property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
+    property IncludePath: String read GetIncludePaths write SetIncludePaths;
+    property Libraries: String read GetLibraryPaths write SetLibraryPaths;
+    property OtherUnitFiles: String read GetUnitPaths write SetUnitPaths;
+    property ObjectPath: string read GetObjectPath write SetObjectPath;
+    property SrcPath: string read GetSrcPath write SetSrcPath;
+    property DebugPath: string read GetDebugPath write SetDebugPath;
+    property UnitOutputDirectory: string read GetUnitOutputDir write SetUnitOutputDir;
 
     // conditional / build modes
     property Conditionals: string read FConditionals write SetConditionals;
@@ -340,7 +339,7 @@ type
     property CustomConfigFile: Boolean read fCustomConfigFile
                                        write fCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
-    property CustomOptions: string read fCustomOptions write SetCustomOptions;
+    property CustomOptions: string read GetCustomOptions write SetCustomOptions;
   end;
 
 

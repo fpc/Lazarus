@@ -329,7 +329,7 @@ begin
     end;
 
     PackageGraph.ChangePackageID(LazPackage,LazPackage.Name,NewVersion,
-                                  RenameDependencies);
+                                 RenameDependencies,true);
   finally
     NewVersion.Free;
   end;
