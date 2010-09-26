@@ -188,7 +188,8 @@ type
           out TreeOfCodeTreeNodeExtension: TAVLTree): boolean;
     function RetypeClassVariables(const AClassName: string;
           ListOfTypes: TStringToStringTree; ExceptionOnClassNotFound: boolean;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          SearchImplementationToo: boolean = false): boolean;
     function FindDanglingComponentEvents(const TheClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
           SearchInAncestors: boolean;
@@ -4518,7 +4519,7 @@ end;
 
 function TStandardCodeTool.RetypeClassVariables(const AClassName: string;
   ListOfTypes: TStringToStringTree; ExceptionOnClassNotFound: boolean;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache; SearchImplementationToo: boolean): boolean;
 var
   ClassNode: TCodeTreeNode;
   Node: TCodeTreeNode;
@@ -4527,16 +4528,13 @@ var
   NewType: string;
   HasChanged: Boolean;
 begin
-
   Result:=false;
-  BuildTree(true);
-  ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
-  if ClassNode=nil then begin
-    if ExceptionOnClassNotFound then
-      RaiseException(Format(ctsclassNotFound, ['"', AClassName, '"']))
-    else
-      exit;
-  end;
+  BuildTree(not SearchImplementationToo);
+  if SearchImplementationToo then
+    ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,true)
+  else
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+  if ClassNode=nil then exit;
   if (ListOfTypes=nil) or (ListOfTypes.Tree.Count=0) then exit(true);
 
   HasChanged:=false;

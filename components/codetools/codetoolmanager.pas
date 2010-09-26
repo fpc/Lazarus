@@ -678,7 +678,8 @@ type
           VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
     function RetypeClassVariables(Code: TCodeBuffer; const AClassName: string;
           ListOfReTypes: TStringToStringTree;
-          ErrorOnClassNotFound: boolean): boolean;
+          ErrorOnClassNotFound: boolean;
+          SearchImplementationToo: boolean = false): boolean;
     function FindDanglingComponentEvents(Code: TCodeBuffer;
           const AClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
@@ -4697,7 +4698,7 @@ end;
 
 function TCodeToolManager.RetypeClassVariables(Code: TCodeBuffer;
   const AClassName: string; ListOfReTypes: TStringToStringTree;
-  ErrorOnClassNotFound: boolean): boolean;
+  ErrorOnClassNotFound: boolean; SearchImplementationToo: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -4706,7 +4707,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RetypeClassVariables(AClassName,ListOfReTypes,
-                                        ErrorOnClassNotFound,SourceChangeCache);
+                ErrorOnClassNotFound,SourceChangeCache,SearchImplementationToo);
   except
     on e: Exception do Result:=HandleException(e);
   end;
