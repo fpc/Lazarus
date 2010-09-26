@@ -1475,6 +1475,7 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
   
   procedure Comment(StartPos, EndPos: integer);
   begin
+    //debugln(['Comment ',dbgstr(copy(Src,StartPos,EndPos-StartPos))]);
     CommentCode(StartPos,EndPos,SourceChangeCache,false);
   end;
 

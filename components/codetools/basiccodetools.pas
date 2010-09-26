@@ -1279,6 +1279,7 @@ end;
 
 function FindCommentEnd(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
+// returns position after the comment end, e.g. after {
 var
   MaxPos, CommentLvl: integer;
 begin

@@ -2467,6 +2467,7 @@ begin
   CurEndPos:=CurStartPos;
   CommentNeeded:=false;
   repeat
+    //debugln(['TPascalReaderTool.CommentCode ',dbgstr(Src[i]),' Needed=',CommentNeeded,' ',dbgstr(copy(Src,CurStartPos,CurEndPos-CurStartPos))]);
     if (Src[i]='{') or (i>=EndPos) then begin
       // the area contains a comment -> comment in front
       if CommentNeeded then begin
