@@ -498,8 +498,19 @@ begin
 end;
 
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
+var
+  lp: TPen;
+  p: TSeriesPointer;
 begin
-  AItems.Add(TLegendItemLine.Create(LinePen, Title));
+  if LineType = ltNone then
+    lp := nil
+  else
+    lp := LinePen;
+  if ShowPoints then
+    p := Pointer
+  else
+    p := nil;
+  AItems.Add(TLegendItemLinePointer.Create(lp, p, Title));
 end;
 
 function TLineSeries.GetSeriesColor: TColor;

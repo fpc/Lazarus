@@ -46,6 +46,18 @@ type
   public
     constructor Create(APen: TPen; const AText: String);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    property Pen: TPen read FPen;
+  end;
+
+  { TLegendItemLinePointer }
+
+  TLegendItemLinePointer = class(TLegendItemLine)
+  protected
+    FPointer: TSeriesPointer;
+  public
+    constructor Create(
+      APen: TPen; APointer: TSeriesPointer; const AText: String);
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
   end;
 
   { TLegendItemBrushRect }
@@ -165,9 +177,29 @@ var
   y: Integer;
 begin
   inherited Draw(ACanvas, ARect);
+  if FPen = nil then exit;
   ACanvas.Pen.Assign(FPen);
   y := (ARect.Top + ARect.Bottom) div 2;
   ACanvas.Line(ARect.Left, y, ARect.Right, y);
+end;
+
+{ TLegendItemLinePointer }
+
+constructor TLegendItemLinePointer.Create(
+  APen: TPen; APointer: TSeriesPointer; const AText: String);
+begin
+  inherited Create(APen, AText);
+  FPointer := APointer;
+end;
+
+procedure TLegendItemLinePointer.Draw(ACanvas: TCanvas; const ARect: TRect);
+var
+  c: TPoint;
+begin
+  inherited Draw(ACanvas, ARect);
+  if FPointer = nil then exit;
+  c := CenterPoint(ARect);
+  FPointer.Draw(ACanvas, c, clTAColor);
 end;
 
 { TLegendItemBrushRect }
