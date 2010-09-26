@@ -79,7 +79,8 @@ type
 
   TSeriesPointerStyle = (
     psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
+    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
+    psTriangle, psLeftTriangle, psRightTriangle);
 
   TDoubleInterval = record
     FStart, FEnd: Double;

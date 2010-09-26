@@ -715,10 +715,12 @@ procedure TSeriesPointer.DrawSize(
 
 const
   DRAW_STRINGS: array [TSeriesPointerStyle] of String = (
-    //psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
-    //psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
+    // psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
+    // psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
+    // psTriangle, psLeftTriangle, psRightTriangle
     '', '17931', '', '28 46', '19 73', '28 46 19 73',
-    '41236', '47896', '87412', '89632', '84268');
+    '41236', '47896', '87412', '89632', '84268',
+    '183', '842', '862');
 begin
   Unused(AColor); // TODO
   ACanvas.Brush.Assign(FBrush);
