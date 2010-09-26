@@ -110,7 +110,7 @@ begin
   with IncludeFilterCombobox.Items do begin
     BeginUpdate;
     Clear;
-    Add('*.pas;*.pp;*.p;*.inc;*.lfm;*.lrs;*.txt;*.xml');
+    Add('*.pas;*.pp;*.p;*.inc;*.lfm;*.dfm;*.lrs;*.txt;*.xml');
     Add('*.pas;*.pp;*.p;*.inc');
     EndUpdate;
   end;
