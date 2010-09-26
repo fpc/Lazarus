@@ -1,3 +1,4 @@
+#!/bin/sh
 cd ..
 cd parser
 DEFAULT_INI="default.ini"
