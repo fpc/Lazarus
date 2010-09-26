@@ -117,6 +117,7 @@ type
   public
     function StrHasMacros(const s: string): boolean; override;
     function SubstituteMacros(var s: string): boolean; override;
+    function IsMacro(const Name: string): boolean; override;
   end;
   
 var
@@ -571,6 +572,11 @@ end;
 function TLazIDEMacros.SubstituteMacros(var s: string): boolean;
 begin
   Result:=GlobalMacroList.SubstituteStr(s);
+end;
+
+function TLazIDEMacros.IsMacro(const Name: string): boolean;
+begin
+  Result:=GlobalMacroList.FindByName(Name)<>nil;
 end;
 
 procedure InternalInit;

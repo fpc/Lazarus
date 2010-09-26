@@ -37,6 +37,7 @@ type
     procedure IncreaseGraphStamp;
     function StrHasMacros(const s: string): boolean; virtual;
     function SubstituteMacros(var s: string): boolean; virtual;
+    function IsMacro(const Name: string): boolean; virtual;
     // file utility functions
     function CreateAbsoluteSearchPath(var SearchPath: string;
                                       const BaseDirectory: string): boolean;
@@ -114,6 +115,12 @@ end;
 
 function TIDEMacros.SubstituteMacros(var s: string): boolean;
 begin
+  Result:=true;
+end;
+
+function TIDEMacros.IsMacro(const Name: string): boolean;
+begin
+  if Name='' then ;
   Result:=true;
 end;
 

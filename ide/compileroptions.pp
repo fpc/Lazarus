@@ -70,6 +70,7 @@
   - conditionals editor for project
   - warn for macro name conflicts
     - on renaming
+      - IDE macros like CompPath
       - keywords
       - with standard macros
       - prefix with package name
@@ -80,8 +81,6 @@
   - when package is renamed, rename macros too
 
   ToDo:
-  - warn for macro name conflicts
-    - IDE macros like CompPath
   - move the project target file to compiler options
   - discuss captions
   - resourcestrings

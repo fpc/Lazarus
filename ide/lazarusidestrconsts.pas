@@ -1897,6 +1897,8 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisThereIsAlreadyAnIDEMacroWithTheName = 'There is already an IDE macro '
+    +'with the name "%s"';
   lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
   lisUnableToLoadFile = 'Unable to load file:%s%s';
   lisQuickFixRemoveUnit = 'Quick fix: Remove unit';

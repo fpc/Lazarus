@@ -33,8 +33,9 @@ uses
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
   KeywordFuncLists, CodeToolsCfgScript,
   SynEdit, SynHighlighterPas, SynEditKeyCmds,
-  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf, EditorOptions,
-  LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
+  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf, MacroIntf,
+  EditorOptions, LazarusIDEStrConsts, CompOptsModes, SourceSynEditor,
+  PackageDefs;
 
 type
   TCBMNodeType = (
@@ -291,6 +292,7 @@ var
   BetterName: String;
   DlgResult: TModalResult;
   Vars: TCTCfgScriptVariables;
+  ok: Boolean;
 begin
   NodeType:=GetNodeInfo(Node,BuildMacro);
   case NodeType of
@@ -298,73 +300,80 @@ begin
   cbmntBuildMacro:
     if S<>BuildMacro.Identifier then begin
       // rename build macro
-
-      // check syntax
-      if (S='') or (not IsValidIdent(S)) then begin
-        MessageDlg(lisCCOErrorCaption,
-          Format(lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie, ['"',
-            S, '"']),
-          mtError,[mbCancel],0);
-        S:=BuildMacro.Identifier;
-        exit;
-      end;
-
-      // check for prefix
-      Prefix:=GetMacroNamePrefix(cbmpShort);
-      if (Prefix<>'') and (SysUtils.CompareText(Prefix,copy(S,1,length(Prefix)))<>0)
-      then  begin
-        BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
-        DlgResult:=QuestionDlg('Warning',
-          'The build macro "'+S+'" does not begin with "'+Prefix+'".',
-          mtWarning,[mrCancel,mrYes,'Rename to '+BetterName,mrIgnore],0);
-        if DlgResult=mrIgnore then begin
-        end else if DlgResult=mrYes then
-          S:=BetterName
-        else begin
-          S:=BuildMacro.Identifier;
+      ok:=false;
+      try
+        // check syntax
+        if (S='') or (not IsValidIdent(S)) then begin
+          MessageDlg(lisCCOErrorCaption,
+            Format(lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie, ['"',
+              S, '"']),
+            mtError,[mbCancel],0);
           exit;
         end;
-      end;
 
-      // check for keyword
-      if WordIsKeyWord.DoItCaseInsensitive(S) then begin
-        MessageDlg(lisCCOErrorCaption,
-          Format(lisInvalidBuildMacroTheNameIsAKeyword, [S]),
-          mtError,[mbCancel],0);
-        S:=BuildMacro.Identifier;
-        exit;
-      end;
-
-      // check for duplicates
-      ConflictBuildProperty:=BuildMacros.VarWithIdentifier(S);
-      if ((ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildMacro))
-      or (SysUtils.CompareText('TargetOS',S)=0)
-      or (SysUtils.CompareText('TargetCPU',S)=0)
-      or (SysUtils.CompareText('LCLWidgetType',S)=0)
-      then begin
-        MessageDlg(lisCCOErrorCaption,
-          Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
-          mtError,[mbCancel],0);
-        S:=BuildMacro.Identifier;
-        exit;
-      end;
-
-      // check for duplicates with used packages
-      if (BuildMacros<>nil) and (BuildMacros.Owner is TBaseCompilerOptions) then
-      begin
-        Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
-        if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
-          DlgResult:=MessageDlg('Warning',
-            Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
-            mtWarning,[mbCancel,mbIgnore],0);
-          if DlgResult<>mrIgnore then
-          begin
-            S:=BuildMacro.Identifier;
+        // check for prefix
+        Prefix:=GetMacroNamePrefix(cbmpShort);
+        if (Prefix<>'') and (SysUtils.CompareText(Prefix,copy(S,1,length(Prefix)))<>0)
+        then  begin
+          BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
+          DlgResult:=QuestionDlg('Warning',
+            'The build macro "'+S+'" does not begin with "'+Prefix+'".',
+            mtWarning,[mrCancel,mrYes,'Rename to '+BetterName,mrIgnore],0);
+          if DlgResult=mrIgnore then begin
+          end else if DlgResult=mrYes then
+            S:=BetterName
+          else begin
             exit;
           end;
         end;
-      end;
 
+        // check for keyword
+        if WordIsKeyWord.DoItCaseInsensitive(S) then begin
+          MessageDlg(lisCCOErrorCaption,
+            Format(lisInvalidBuildMacroTheNameIsAKeyword, [S]),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+
+        // check for conflicts with built-in macros
+        if IDEMacros.IsMacro(s) then begin
+          MessageDlg(lisCCOErrorCaption,
+            Format(lisThereIsAlreadyAnIDEMacroWithTheName, [S]),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+
+        // check for duplicates
+        ConflictBuildProperty:=BuildMacros.VarWithIdentifier(S);
+        if ((ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildMacro))
+        or (SysUtils.CompareText('TargetOS',S)=0)
+        or (SysUtils.CompareText('TargetCPU',S)=0)
+        or (SysUtils.CompareText('LCLWidgetType',S)=0)
+        then begin
+          MessageDlg(lisCCOErrorCaption,
+            Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+
+        // check for duplicates with used packages
+        if (BuildMacros<>nil) and (BuildMacros.Owner is TBaseCompilerOptions) then
+        begin
+          Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
+          if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
+            DlgResult:=MessageDlg('Warning',
+              Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
+              mtWarning,[mbCancel,mbIgnore],0);
+            if DlgResult<>mrIgnore then
+              exit;
+          end;
+        end;
+
+        ok:=true;
+      finally
+        if not ok then
+          S:=BuildMacro.Identifier;
+      end;
 
       // rename build macro
       BuildMacro.Identifier:=S;
