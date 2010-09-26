@@ -2008,8 +2008,9 @@ resourcestring
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
   dlgPOTargetFileName = 'Target file name:';
-  lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (empty = '
+  lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
     +'use unit output directory)';
+  lisTargetFileNameO = 'Target file name (-o):';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';

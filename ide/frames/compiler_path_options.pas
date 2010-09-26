@@ -200,7 +200,7 @@ end;
 procedure TCompilerPathOptionsFrame.UpdateTargetFileLabel;
 begin
   if ProjTargetFileEdit.Text<>'' then
-    ProjTargetFileLabel.Caption:=dlgPOTargetFileName
+    ProjTargetFileLabel.Caption:=lisTargetFileNameO
   else
     ProjTargetFileLabel.Caption:=lisTargetFileNameEmptyUseUnitOutputDirectory;
 end;
