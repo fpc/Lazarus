@@ -194,12 +194,15 @@ end;
 
 procedure TLegendItemLinePointer.Draw(ACanvas: TCanvas; const ARect: TRect);
 var
-  c: TPoint;
+  c, sz: TPoint;
 begin
   inherited Draw(ACanvas, ARect);
   if FPointer = nil then exit;
   c := CenterPoint(ARect);
-  FPointer.Draw(ACanvas, c, clTAColor);
+  // Max width slightly narrower then ARect to leave place for the line.
+  sz.X := Min(FPointer.HorizSize, (ARect.Right - ARect.Left) div 3);
+  sz.Y := Min(FPointer.VertSize, (ARect.Bottom - ARect.Top) div 2);
+  FPointer.DrawSize(ACanvas, c, sz, clTAColor);
 end;
 
 { TLegendItemBrushRect }

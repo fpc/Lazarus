@@ -220,6 +220,8 @@ type
     procedure Assign(Source: TPersistent); override;
 
     procedure Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
+    procedure DrawSize(
+      ACanvas: TCanvas; ACenter, ASize: TPoint; AColor: TColor);
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
@@ -666,6 +668,12 @@ begin
 end;
 
 procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
+begin
+  DrawSize(ACanvas, ACenter, Point(HorizSize, VertSize), AColor);
+end;
+
+procedure TSeriesPointer.DrawSize(
+  ACanvas: TCanvas; ACenter, ASize: TPoint; AColor: TColor);
 
   function PointByIndex(AIndex: Char): TPoint;
   // 7--8--9
@@ -676,8 +684,8 @@ procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor)
     H: array ['1'..'9'] of -1..1 = (-1, 0, 1, -1, 0, 1, -1, 0, 1);
   begin
     Result := ACenter;
-    Result.X += H[AIndex] * HorizSize;
-    Result.Y += V[AIndex] * VertSize;
+    Result.X += H[AIndex] * ASize.X;
+    Result.Y += V[AIndex] * ASize.Y;
   end;
 
   procedure DrawByString(const AStr: String);
@@ -718,8 +726,8 @@ begin
 
   if FStyle = psCircle then
     ACanvas.Ellipse(
-      ACenter.X - HorizSize, ACenter.Y - VertSize,
-      ACenter.X + HorizSize, ACenter.Y + VertSize)
+      ACenter.X - ASize.X, ACenter.Y - ASize.Y,
+      ACenter.X + ASize.X, ACenter.Y + ASize.Y)
   else
     DrawByString(DRAW_STRINGS[FStyle] + ' ');
 end;
