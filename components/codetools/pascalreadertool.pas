@@ -2480,7 +2480,7 @@ begin
       end;
       if i>=EndPos then break;
       // skip comment
-      i:=FindCommentEnd(Src,i,Scanner.NestedComments);
+      i:=FindCommentEnd(Src,i,Scanner.NestedComments)-1;
     end else if not IsSpaceChar[Src[i]] then begin
       if not CommentNeeded then begin
         CurStartPos:=i;
