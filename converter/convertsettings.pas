@@ -409,10 +409,10 @@ begin
 
   // Coordinate offsets for some visual containers.
   with fCoordOffsets do begin
-    AddVisualOffset('TGroupBox' , 10,2);
+    AddVisualOffset('TGroupBox' , 14,2);
     AddVisualOffset('TPanel',      2,2);
-    AddVisualOffset('RadioGroup', 10,2);
-    AddVisualOffset('CheckGroup', 10,2);
+    AddVisualOffset('RadioGroup', 14,2);
+    AddVisualOffset('CheckGroup', 14,2);
   end;
 
   // Map Delphi function names to FCL/LCL functions.
