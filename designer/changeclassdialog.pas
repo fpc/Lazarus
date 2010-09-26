@@ -177,7 +177,7 @@ var
     //debugln('ChangePersistentClass-Before-Checking--------------------------------------------');
     //debugln(LFMBuffer.Source);
     //debugln('ChangePersistentClass-Before-Checking-------------------------------------------');
-    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false,false) then
+    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false,false,false) then
     begin
       debugln('ChangePersistentClass-Before--------------------------------------------');
       debugln(LFMBuffer.Source);
@@ -221,7 +221,7 @@ var
 
   function CheckProperties: boolean;
   begin
-    Result:=RepairLFMBuffer(UnitCode,LFMBuffer,nil,false,false)=mrOk;
+    Result:=RepairLFMBuffer(UnitCode,LFMBuffer,nil,false,false,false)=mrOk;
     if not Result and (CodeToolBoss.ErrorMessage<>'') then
       MainIDEInterface.DoJumpToCodeToolBossError;
   end;

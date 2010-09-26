@@ -11673,6 +11673,7 @@ begin
   // parse the LFM file and the pascal unit
   LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg);
   try
+    LFMChecker.RootMustBeClassInUnit:=true;
     LFMChecker.RootMustBeClassInIntf:=true;
     LFMChecker.ObjectsMustExists:=true;
     if LFMChecker.Repair=mrOk then begin

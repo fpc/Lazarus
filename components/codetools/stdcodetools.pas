@@ -133,8 +133,9 @@ type
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function CheckLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
-                  const OnFindDefineProperty: TOnFindDefinePropertyForContext;
-                  RootMustBeClassInIntf, ObjectsMustExist: boolean): boolean;
+          const OnFindDefineProperty: TOnFindDefinePropertyForContext;
+          RootMustBeClassInUnit: boolean; RootMustBeClassInIntf: boolean;
+          ObjectsMustExist: boolean): boolean;
 
     // Application.Createform statements
     function FindCreateFormStatement(StartPos: integer;
@@ -2046,7 +2047,8 @@ end;
 
 function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
   const OnFindDefineProperty: TOnFindDefinePropertyForContext;
-  RootMustBeClassInIntf, ObjectsMustExist: boolean): boolean;
+  RootMustBeClassInUnit: boolean; RootMustBeClassInIntf: boolean;
+  ObjectsMustExist: boolean): boolean;
 var
   RootContext: TFindContext;
   
@@ -2558,6 +2560,11 @@ var
     // find root type
     if RootMustBeClassInIntf then begin
       RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
+      RootContext:=CleanFindContext;
+      RootContext.Node:=RootClassNode;
+      RootContext.Tool:=Self;
+    end else if RootMustBeClassInUnit then begin
+      RootClassNode:=FindClassNodeInUnit(LookupRootTypeName,true,false,false,false);
       RootContext:=CleanFindContext;
       RootContext.Node:=RootClassNode;
       RootContext.Tool:=Self;

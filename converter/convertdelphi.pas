@@ -595,6 +595,7 @@ begin
     LfmFixer:=TLFMFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
     try
       LfmFixer.Settings:=fSettings;
+      LfmFixer.RootMustBeClassInUnit:=true;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExists:=true;
       if LfmFixer.Repair<>mrOk then begin

@@ -58,6 +58,7 @@ type
     fPascalBuffer: TCodeBuffer;
     fLFMBuffer: TCodeBuffer;
     fLFMTree: TLFMTree;
+    fRootMustBeClassInUnit: boolean;
     fRootMustBeClassInIntf: boolean;
     fObjectsMustExists: boolean;
     // References to controls in UI:
@@ -88,6 +89,8 @@ type
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
     property LFMBuffer: TCodeBuffer read fLFMBuffer;
     property OnOutput: TOnAddFilteredLine read fOnOutput;
+    property RootMustBeClassInUnit: boolean read fRootMustBeClassInUnit
+                                           write fRootMustBeClassInUnit;
     property RootMustBeClassInIntf: boolean read fRootMustBeClassInIntf
                                            write fRootMustBeClassInIntf;
     property ObjectsMustExists: boolean read fObjectsMustExists
@@ -128,7 +131,8 @@ function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
 // Now this is just a wrapper for designer/changeclassdialog. Could be moved there.
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
+  RootMustBeClassInUnit, RootMustBeClassInIntf,
+  ObjectsMustExists: boolean): TModalResult;
 // Not use anywhere.
 {function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnAddFilteredLine;
@@ -248,12 +252,14 @@ end;
 
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
+  RootMustBeClassInUnit, RootMustBeClassInIntf,
+  ObjectsMustExists: boolean): TModalResult;
 var
   LFMChecker: TLFMChecker;
 begin
   LFMChecker:=TLFMChecker.Create(PascalBuffer,LFMBuffer,OnOutput);
   try
+    LFMChecker.RootMustBeClassInUnit:=RootMustBeClassInUnit;
     LFMChecker.RootMustBeClassInIntf:=RootMustBeClassInIntf;
     LFMChecker.ObjectsMustExists:=ObjectsMustExists;
     Result:=LFMChecker.Repair;
@@ -413,7 +419,7 @@ begin
   Result:=mrCancel;
   if not CheckUnit then exit;
   if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                           fRootMustBeClassInIntf,fObjectsMustExists)
+               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists)
   then begin
     Result:=mrOk;
     exit;
@@ -512,7 +518,7 @@ begin
 
     // check LFM again
     if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                             fRootMustBeClassInIntf,fObjectsMustExists)
+               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists)
     then begin
       Result:=mrOk;
     end else begin
