@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
-  LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
+  LResources, LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
 
 type
   TMenu = class;

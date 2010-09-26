@@ -46,6 +46,7 @@ class procedure TMainMenu.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterMainMenu;
+  RegisterPropertyToSkip(TMainMenu, 'AutoMerge', 'VCL compatibility property', '');
 end;
 
 {------------------------------------------------------------------------------
