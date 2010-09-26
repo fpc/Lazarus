@@ -8,13 +8,12 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   DesignTop = 328
   object OtherUnitsLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ProjTargetFileEdit
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 51
+    Top = 0
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     Caption = 'OtherUnitsLabel'
@@ -28,7 +27,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 102
+    Top = 51
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -37,13 +36,13 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   end
   object OtherSourcesLabel: TLabel[2]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = IncludeFilesEdit
+    AnchorSideTop.Control = ProjTargetFileEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 153
+    Top = 255
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -52,13 +51,13 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   end
   object LibrariesLabel: TLabel[3]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = OtherSourcesEdit
+    AnchorSideTop.Control = IncludeFilesEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 204
+    Top = 102
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -73,7 +72,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 255
+    Top = 153
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -82,7 +81,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   end
   object DebugPathLabel: TLabel[5]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = UnitOutputDirEdit
+    AnchorSideTop.Control = OtherSourcesEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -114,7 +113,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 69
+    Top = 18
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -129,7 +128,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 120
+    Top = 69
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -144,7 +143,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 171
+    Top = 273
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -159,7 +158,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 222
+    Top = 120
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -174,7 +173,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 273
+    Top = 171
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -213,12 +212,13 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   end
   object ProjTargetFileLabel: TLabel[14]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
+    AnchorSideTop.Control = UnitOutputDirEdit
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 18
-    Top = 0
+    Top = 204
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     Caption = 'ProjTargetFileLabel'
@@ -232,7 +232,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 18
+    Top = 222
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
