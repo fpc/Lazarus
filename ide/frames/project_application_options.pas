@@ -25,11 +25,8 @@ type
     IconTrackLabel: TLabel;
     LoadIconButton: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
-    OutputSettingsGroupBox: TGroupBox;
     SaveIconButton: TBitBtn;
     SavePictureDialog1: TSavePictureDialog;
-    TargetFileEdit: TEdit;
-    TargetFileLabel: TLabel;
     TitleEdit: TEdit;
     TitleLabel: TLabel;
     UseAppBundleCheckBox: TCheckBox;
@@ -40,12 +37,10 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
-    procedure TargetFileEditChange(Sender: TObject);
   private
     FProject: TProject;
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
-    procedure UpdateTargetFileLabel;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -151,11 +146,6 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
-procedure TProjectApplicationOptionsFrame.TargetFileEditChange(Sender: TObject);
-begin
-  UpdateTargetFileLabel;
-end;
-
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
 begin
   IconImage.Picture.Clear;
@@ -179,14 +169,6 @@ begin
   end;
 end;
 
-procedure TProjectApplicationOptionsFrame.UpdateTargetFileLabel;
-begin
-  if TargetFileEdit.Text<>'' then
-    TargetFileLabel.Caption:=dlgPOTargetFileName
-  else
-    TargetFileLabel.Caption:=lisTargetFileNameEmptyUseUnitOutputDirectory;
-end;
-
 function TProjectApplicationOptionsFrame.GetTitle: string;
 begin
   Result := dlgPOApplication;
@@ -197,9 +179,6 @@ begin
   AppSettingsGroupBox.Caption := dlgApplicationSettings;
   TitleLabel.Caption := dlgPOTitle;
   TitleEdit.Text := '';
-  OutputSettingsGroupBox.Caption := dlgPOOutputSettings;
-  TargetFileEdit.Text := '';
-  UpdateTargetFileLabel;
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
@@ -230,7 +209,6 @@ begin
   with FProject do
   begin
     TitleEdit.Text := Title;
-    TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest;
     AStream := TProjectIcon(Resources[TProjectIcon]).GetStream;
@@ -255,7 +233,6 @@ begin
     finally
       AStream.Free;
     end;
-    TargetFilename := TargetFileEdit.Text;
     UseAppBundle := UseAppBundleCheckBox.Checked;
     TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
   end;

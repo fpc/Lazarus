@@ -56,7 +56,6 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       ParentColor = False
     end
     object TitleEdit: TEdit
-      AnchorSideLeft.Side = asrBottom
       Left = 106
       Height = 27
       Top = 6
@@ -182,66 +181,26 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       TabOrder = 7
     end
   end
-  object OutputSettingsGroupBox: TGroupBox[1]
-    Left = 0
-    Height = 84
-    Top = 296
-    Width = 522
-    Align = alTop
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'OutputSettingsGroupBox'
-    ClientHeight = 63
-    ClientWidth = 514
-    TabOrder = 1
-    object TargetFileLabel: TLabel
-      AnchorSideLeft.Control = OutputSettingsGroupBox
-      AnchorSideTop.Control = OutputSettingsGroupBox
-      Left = 6
-      Height = 18
-      Top = 6
-      Width = 99
-      BorderSpacing.Around = 6
-      Caption = 'TargetFileLabel'
-      ParentColor = False
-    end
-    object TargetFileEdit: TEdit
-      AnchorSideLeft.Control = OutputSettingsGroupBox
-      AnchorSideTop.Control = TargetFileLabel
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = OutputSettingsGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 27
-      Top = 30
-      Width = 502
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
-      OnChange = TargetFileEditChange
-      TabOrder = 0
-      Text = 'TargetFileEdit'
-    end
-  end
-  object CreateAppBundleButton: TBitBtn[2]
+  object CreateAppBundleButton: TBitBtn[1]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = OutputSettingsGroupBox
+    AnchorSideTop.Control = AppSettingsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 27
-    Top = 386
+    Top = 296
     Width = 174
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'CreateAppBundleButton'
     NumGlyphs = 0
     OnClick = CreateAppBundleButtonClick
-    TabOrder = 2
+    TabOrder = 1
   end
-  object OpenPictureDialog1: TOpenPictureDialog[3]
+  object OpenPictureDialog1: TOpenPictureDialog[2]
     left = 8
     top = 392
   end
-  object SavePictureDialog1: TSavePictureDialog[4]
+  object SavePictureDialog1: TSavePictureDialog[3]
     Title = 'Save file as'
     left = 37
     top = 392

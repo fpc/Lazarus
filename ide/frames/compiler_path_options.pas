@@ -16,20 +16,23 @@ type
   { TCompilerPathOptionsFrame }
 
   TCompilerPathOptionsFrame = class(TAbstractIDEOptionsEditor)
-    edtDebugPath: TEdit;
-    edtIncludeFiles: TEdit;
-    edtLibraries: TEdit;
-    edtOtherSources: TEdit;
-    edtOtherUnits: TEdit;
-    edtUnitOutputDir: TEdit;
-    lblDebugPath: TLabel;
-    lblIncludeFiles: TLabel;
-    lblLibraries: TLabel;
-    lblOtherSources: TLabel;
-    lblOtherUnits: TLabel;
-    lblUnitOutputDir: TLabel;
+    DebugPathEdit: TEdit;
+    DebugPathLabel: TLabel;
+    IncludeFilesEdit: TEdit;
+    IncludeFilesLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
     LCLWidgetTypeLabel: TLabel;
+    LibrariesEdit: TEdit;
+    LibrariesLabel: TLabel;
+    OtherSourcesEdit: TEdit;
+    OtherSourcesLabel: TLabel;
+    OtherUnitsEdit: TEdit;
+    OtherUnitsLabel: TLabel;
+    ProjTargetFileEdit: TEdit;
+    ProjTargetFileLabel: TLabel;
+    UnitOutputDirEdit: TEdit;
+    UnitOutputDirLabel: TLabel;
+    procedure ProjTargetFileEditChange(Sender: TObject);
   private
     FCompilerOpts: TBaseCompilerOptions;
     OtherUnitsPathEditBtn: TPathEditorButton;
@@ -53,6 +56,7 @@ type
   protected
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
     function GetTargetFilename: string;
+    procedure UpdateTargetFileLabel;
   public
     constructor Create(TheOwner: TComponent); override;
     function Check: boolean; override;
@@ -97,11 +101,11 @@ begin
   OldDebugPath := FCompilerOpts.GetDebugPath(False);
 
   try
-    FCompilerOpts.IncludePath := edtIncludeFiles.Text;
-    FCompilerOpts.Libraries := edtLibraries.Text;
-    FCompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
-    FCompilerOpts.SrcPath := edtOtherSources.Text;
-    FCompilerOpts.DebugPath := edtDebugPath.Text;
+    FCompilerOpts.IncludePath := IncludeFilesEdit.Text;
+    FCompilerOpts.Libraries := LibrariesEdit.Text;
+    FCompilerOpts.OtherUnitFiles := OtherUnitsEdit.Text;
+    FCompilerOpts.SrcPath := OtherSourcesEdit.Text;
+    FCompilerOpts.DebugPath := DebugPathEdit.Text;
     if not CheckPutSearchPath('include search path', OldIncludePath, FCompilerOpts.GetIncludePath(False)) then
       Exit(False);
     if not CheckPutSearchPath('library search path', OldLibraryPath, FCompilerOpts.GetLibraryPath(False)) then
@@ -188,37 +192,28 @@ begin
 end;
 
 function TCompilerPathOptionsFrame.GetTargetFilename: string;
-
-  function Search(Control: TWinControl): string;
-  var
-    i: Integer;
-  begin
-    if Control is TProjectApplicationOptionsFrame then begin
-      Result:=TProjectApplicationOptionsFrame(Control).TargetFileEdit.Text;
-      exit;
-    end;
-    for i:=0 to Control.ControlCount-1 do begin
-      if Control.Controls[i] is TWinControl then begin
-        Result:=Search(TWinControl(Control.Controls[i]));
-        if Result<>'' then exit;
-      end;
-    end;
-  end;
-
 begin
-  if FCompilerOpts is TProjectCompilerOptions then begin
-    // the target filename is on the project options page
-    Result:=Search(GetParentForm(Self));
-    if Result<>'' then exit;
-    // project options frame not shown, use default
-    Result:=FCompilerOpts.TargetFilename;
-  end;
+  if FCompilerOpts is TProjectCompilerOptions then
+    Result:=ProjTargetFileEdit.Text;
+end;
+
+procedure TCompilerPathOptionsFrame.UpdateTargetFileLabel;
+begin
+  if ProjTargetFileEdit.Text<>'' then
+    ProjTargetFileLabel.Caption:=dlgPOTargetFileName
+  else
+    ProjTargetFileLabel.Caption:=lisTargetFileNameEmptyUseUnitOutputDirectory;
 end;
 
 constructor TCompilerPathOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompilerOpts := nil;
+end;
+
+procedure TCompilerPathOptionsFrame.ProjTargetFileEditChange(Sender: TObject);
+begin
+  UpdateTargetFileLabel;
 end;
 
 function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
@@ -297,7 +292,7 @@ begin
     AButton := TPathEditorButton(Sender);
     if AButton = OtherUnitsPathEditBtn then
     begin
-      OldPath := edtOtherUnits.Text;
+      OldPath := OtherUnitsEdit.Text;
       Templates := SetDirSeparators(
         '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
         ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
@@ -308,13 +303,13 @@ begin
     else
     if AButton = IncludeFilesPathEditBtn then
     begin
-      OldPath := edtIncludeFiles.Text;
+      OldPath := IncludeFilesEdit.Text;
       Templates := 'include' + ';inc';
     end
     else
     if AButton = OtherSourcesPathEditBtn then
     begin
-      OldPath := edtOtherSources.Text;
+      OldPath := OtherSourcesEdit.Text;
       Templates := SetDirSeparators('$(LazarusDir)/lcl' +
         ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
         ';$(LazarusDir)/components/synedit' + ';$(LazarusDir)/components/codetools');
@@ -322,13 +317,13 @@ begin
     else
     if AButton = LibrariesPathEditBtn then
     begin
-      OldPath := edtLibraries.Text;
+      OldPath := LibrariesEdit.Text;
       Templates := SetDirSeparators('/usr/X11R6/lib;/sw/lib');
     end
     else
     if AButton = DebugPathEditBtn then
     begin
-      OldPath := edtDebugPath.Text;
+      OldPath := DebugPathEdit.Text;
       Templates := SetDirSeparators('$(LazarusDir)/lcl/include' +
         ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
         ';$(LazarusDir)/include');
@@ -366,32 +361,32 @@ begin
     NewPath := FCompilerOpts.ShortenPath(NewPath, False);
     if AButton = OtherUnitsPathEditBtn then
     begin
-      if CheckPath(lblOtherUnits.Caption, NewPath) then
-        edtOtherUnits.Text := NewPath;
+      if CheckPath(OtherUnitsLabel.Caption, NewPath) then
+        OtherUnitsEdit.Text := NewPath;
     end
     else
     if AButton = IncludeFilesPathEditBtn then
     begin
-      if CheckPath(lblIncludeFiles.Caption, NewPath) then
-        edtIncludeFiles.Text := NewPath;
+      if CheckPath(IncludeFilesLabel.Caption, NewPath) then
+        IncludeFilesEdit.Text := NewPath;
     end
     else
     if AButton = OtherSourcesPathEditBtn then
     begin
-      if CheckPath(lblOtherSources.Caption, NewPath) then
-        edtOtherSources.Text := NewPath;
+      if CheckPath(OtherSourcesLabel.Caption, NewPath) then
+        OtherSourcesEdit.Text := NewPath;
     end
     else
     if AButton = LibrariesPathEditBtn then
     begin
-      if CheckPath(lblLibraries.Caption, NewPath) then
-        edtLibraries.Text := NewPath;
+      if CheckPath(LibrariesLabel.Caption, NewPath) then
+        LibrariesEdit.Text := NewPath;
     end
     else
     if AButton = DebugPathEditBtn then
     begin
-      if CheckPath(lblDebugPath.Caption, NewPath) then
-        edtDebugPath.Text := NewPath;
+      if CheckPath(DebugPathLabel.Caption, NewPath) then
+        DebugPathEdit.Text := NewPath;
     end;
   end;
 end;
@@ -422,7 +417,7 @@ begin
       NewFilename := TrimFilename(OpenDialog.Filename);
       NewFilename := FCompilerOpts.ShortenPath(NewFilename, False);
       if Sender = btnUnitOutputDir then
-        edtUnitOutputDir.Text := OpenDialog.Filename;
+        UnitOutputDirEdit.Text := OpenDialog.Filename;
     end;
   finally
     OpenDialog.Free;
@@ -442,33 +437,35 @@ var
   LCLInterface: TLCLPlatform;
   s: string;
 begin
-  lblOtherUnits.Caption := dlgOtherUnitFiles;
+  ProjTargetFileEdit.Text:='';
+
+  OtherUnitsLabel.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn := TPathEditorButton.Create(Self);
   with OtherUnitsPathEditBtn do
   begin
     Name := 'OtherUnitsPathEditBtn';
     Caption := '...';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtOtherUnits);
-    AnchorParallel(akBottom, 0, edtOtherUnits);
+    AnchorParallel(akTop, 0, OtherUnitsEdit);
+    AnchorParallel(akBottom, 0, OtherUnitsEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
   end;
-  edtOtherUnits.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
+  OtherUnitsEdit.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblIncludeFiles.Caption := dlgCOIncFiles;
+  IncludeFilesLabel.Caption := dlgCOIncFiles;
   IncludeFilesPathEditBtn := TPathEditorButton.Create(Self);
   with IncludeFilesPathEditBtn do
   begin
     Name := 'IncludeFilesPathEditBtn';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtIncludeFiles);
-    AnchorParallel(akBottom, 0, edtIncludeFiles);
+    AnchorParallel(akTop, 0, IncludeFilesEdit);
+    AnchorParallel(akBottom, 0, IncludeFilesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
@@ -476,18 +473,18 @@ begin
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
   end;
-  edtIncludeFiles.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
+  IncludeFilesEdit.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblOtherSources.Caption := dlgCOSources;
+  OtherSourcesLabel.Caption := dlgCOSources;
   OtherSourcesPathEditBtn := TPathEditorButton.Create(Self);
   with OtherSourcesPathEditBtn do
   begin
     Name := 'OtherSourcesPathEditBtn';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtOtherSources);
-    AnchorParallel(akBottom, 0, edtOtherSources);
+    AnchorParallel(akTop, 0, OtherSourcesEdit);
+    AnchorParallel(akBottom, 0, OtherSourcesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
@@ -495,18 +492,18 @@ begin
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
   end;
-  edtOtherSources.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
+  OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblLibraries.Caption := dlgCOLibraries;
+  LibrariesLabel.Caption := dlgCOLibraries;
   LibrariesPathEditBtn := TPathEditorButton.Create(Self);
   with LibrariesPathEditBtn do
   begin
     Name := 'LibrariesPathEditBtn';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtLibraries);
-    AnchorParallel(akBottom, 0, edtLibraries);
+    AnchorParallel(akTop, 0, LibrariesEdit);
+    AnchorParallel(akBottom, 0, LibrariesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
@@ -514,36 +511,36 @@ begin
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
   end;
-  edtLibraries.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
+  LibrariesEdit.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
 
   {------------------------------------------------------------}
 
-  lblUnitOutputDir.Caption := dlgUnitOutp;
+  UnitOutputDirLabel.Caption := dlgUnitOutp;
   btnUnitOutputDir := TButton.Create(Self);
   with btnUnitOutputDir do
   begin
     Name := 'btnUnitOutputDir';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtUnitOutputDir);
-    AnchorParallel(akBottom, 0, edtUnitOutputDir);
+    AnchorParallel(akTop, 0, UnitOutputDirEdit);
+    AnchorParallel(akBottom, 0, UnitOutputDirEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @FileBrowseBtnClick;
     Parent := Self;
   end;
-  edtUnitOutputDir.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
+  UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
 
   {------------------------------------------------------------}
 
-  lblDebugPath.Caption := dlgCODebugPath;
+  DebugPathLabel.Caption := dlgCODebugPath;
   DebugPathEditBtn := TPathEditorButton.Create(Self);
   with DebugPathEditBtn do
   begin
     Name := 'DebugPathEditBtn';
     Anchors := [akRight, akTop, akBottom];
-    AnchorParallel(akTop, 0, edtDebugPath);
-    AnchorParallel(akBottom, 0, edtDebugPath);
+    AnchorParallel(akTop, 0, DebugPathEdit);
+    AnchorParallel(akBottom, 0, DebugPathEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
@@ -551,7 +548,7 @@ begin
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
   end;
-  edtDebugPath.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
+  DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
 
   {------------------------------------------------------------}
 
@@ -599,14 +596,26 @@ var
 begin
   if FCompilerOpts = nil then
     FCompilerOpts := AOptions as TBaseCompilerOptions;
+
+  if AOptions is TProjectCompilerOptions then
+  begin
+    ProjTargetFileEdit.Visible:=true;
+    ProjTargetFileLabel.Visible:=true;
+    ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
+    UpdateTargetFileLabel;
+  end else begin
+    ProjTargetFileEdit.Visible:=false;
+    ProjTargetFileLabel.Visible:=false;
+  end;
+
   with AOptions as TBaseCompilerOptions do
   begin
-    edtOtherUnits.Text := OtherUnitFiles;
-    edtIncludeFiles.Text := IncludePath;
-    edtLibraries.Text := Libraries;
-    edtOtherSources.Text := SrcPath;
-    edtUnitOutputDir.Text := UnitOutputDirectory;
-    edtDebugPath.Text := DebugPath;
+    OtherUnitsEdit.Text := OtherUnitFiles;
+    IncludeFilesEdit.Text := IncludePath;
+    LibrariesEdit.Text := Libraries;
+    OtherSourcesEdit.Text := SrcPath;
+    UnitOutputDirEdit.Text := UnitOutputDirectory;
+    DebugPathEdit.Text := DebugPath;
 
     LCLPlatform := DirNameToLCLPlatform(LCLWidgetType);
     if CompareText(LCLWidgetType, LCLPlatformDirNames[LCLPlatform]) = 0 then
@@ -621,14 +630,17 @@ procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 var
   i: integer;
 begin
+  if AOptions is TProjectCompilerOptions then
+    TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
+
   with AOptions as TBaseCompilerOptions do
   begin
-    OtherUnitFiles := edtOtherUnits.Text;
-    IncludePath := edtIncludeFiles.Text;
-    Libraries := edtLibraries.Text;
-    SrcPath := edtOtherSources.Text;
-    UnitOutputDirectory := edtUnitOutputDir.Text;
-    DebugPath := edtDebugPath.Text;
+    OtherUnitFiles := OtherUnitsEdit.Text;
+    IncludePath := IncludeFilesEdit.Text;
+    Libraries := LibrariesEdit.Text;
+    SrcPath := OtherSourcesEdit.Text;
+    UnitOutputDirectory := UnitOutputDirEdit.Text;
+    DebugPath := DebugPathEdit.Text;
     // ToDo: will be replaced by buildmodes
     i := LCLWidgetTypeComboBox.ItemIndex;
     if i <= 0 then

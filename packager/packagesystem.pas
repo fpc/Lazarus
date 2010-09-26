@@ -58,8 +58,8 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
-  ComponentReg, ProjectIntf, RegisterFCL, RegisterLCL, RegisterSynEdit,
-  RegisterIDEIntf;
+  ComponentReg, ProjectIntf,
+  RegisterFCL, RegisterLCL, RegisterIDEIntf, RegisterSynEdit;
   
 type
   TFindPackageFlag = (

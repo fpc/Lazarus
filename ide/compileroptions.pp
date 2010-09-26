@@ -79,15 +79,17 @@
   - use syntax highlighter settings like the editor previews
   - show syntax errors of conditionals
   - when package is renamed, rename macros too
+  - moved the project target file to compiler options
 
   ToDo:
-  - move the project target file to compiler options
   - discuss captions
   - resourcestrings
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package
   - make FCL a package
+  - create package lazbuildsystem
+    - move
   - code completion
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
