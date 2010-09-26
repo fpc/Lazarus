@@ -198,6 +198,11 @@ type
     property Style default smsNone;
   end;
 
+  TSeriesPointerStyle = (
+    psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
+    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
+    psTriangle, psLeftTriangle, psRightTriangle);
+
   { TSeriesPointer }
 
   TSeriesPointer = class(TChartElement)

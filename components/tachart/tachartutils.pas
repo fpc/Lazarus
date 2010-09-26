@@ -77,11 +77,6 @@ type
     smsLabelPercentTotal, { Cars 12 % of 1234 }
     smsXValue);        { 21/6/1996 }
 
-  TSeriesPointerStyle = (
-    psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
-    psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
-    psTriangle, psLeftTriangle, psRightTriangle);
-
   TDoubleInterval = record
     FStart, FEnd: Double;
   end;
