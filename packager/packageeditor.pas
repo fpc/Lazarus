@@ -1265,15 +1265,12 @@ end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
 var
-  i: Integer;
-  CurItem: TMenuItem;
   CurPFT: TPkgFileType;
   Removed: boolean;
   CurFile: TPkgFile;
+  CurItem: TIDEMenuCommand;
 begin
-  CurItem:=TMenuItem(Sender);
-  i:=CurItem.Parent.IndexOf(CurItem);
-  if i<0 then exit;
+  CurItem:=TIDEMenuCommand(Sender);
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then exit;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
