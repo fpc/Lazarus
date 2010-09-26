@@ -139,6 +139,11 @@ else
 endif
 
 
+# Build dir
+ifndef BUILDDIR
+BUILDDIR=$(BASEDIR)/build
+endif
+
 ##########################################################################
 # Debian
 ##########################################################################
@@ -147,11 +152,6 @@ ifeq ($(OS_TARGET),linux)
 
 ifndef DEBDIR
 DEBDIR=debian
-endif
-
-# Build dir
-ifndef BUILDDIR
-BUILDDIR=$(BASEDIR)/build
 endif
 
 # Link Tree
@@ -242,7 +242,7 @@ endif
 debsetup:
 	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
 ifdef SNAPSHOT
-	sed s+${DEBPACKAGEVERSION}+${DEBPACKAGEVERSION}-${BUILDDATE}+ $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
+	sed -e "s/${DEBPACKAGEVERSION}/${DEBPACKAGEVERSION}-${BUILDDATE}/" $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
 	${MOVE} $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
 endif
 	chmod 755 $(DEBSRCDIR)/debian/rules
@@ -258,7 +258,7 @@ endif
 
 debclean:
 ifndef DEBUSESVN
-	${DEL} ${BUILDDIR}/${DEBSRC_ORIG}
+	${DEL} ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz
 endif
 	mv -v -t . \
 	$(DEBSRCDIR)/../*.changes \
