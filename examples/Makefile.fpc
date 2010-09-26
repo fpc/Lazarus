@@ -40,6 +40,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
   $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
   $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
   $(wildcard trayicon/*$(OEXT)) $(wildcard trayicon/*$(PPUEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*.or) \
   hello \
   bitbutton \
   checkbox \

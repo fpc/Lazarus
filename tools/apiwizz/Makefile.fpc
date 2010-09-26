@@ -14,6 +14,7 @@ packages=rtl
 
 [clean]
 units=apiwizard
+files=*.or
 
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS)
