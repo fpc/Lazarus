@@ -1,51 +1,43 @@
-{  $Id$  }
-{
- /***************************************************************************
-                               allsyneditunits.pp
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
+ }
 
-                      dummy unit to compile all units 
-
- /***************************************************************************
-}
-unit AllSynEditUnits;
-
-{$mode objfpc}{$H+}
+unit allsyneditunits; 
 
 interface
 
 uses
-  SynTextDrawer, SynEditKeyCmds, SynEditTypes, SynEditStrConst,
-  SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
-  SynEdit, SynCompletion, SynEditAutoComplete,
-  SynEditLazDsgn, SynRegExpr, SynEditRegexSearch, SynEditExport, 
-  SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
-  SynPluginSyncronizedEditBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynEditHighlighterXMLBase,
-  SynHighlighterAny,
-  SynhighlighterCPP, 
-  SynHighlighterCss, 
-  SynHighlighterHashEntries, 
-  SynhighlighterHTML, 
-  SynHighlighterJava,
-  SynHighlighterJScript,
-  SynHighlighterLFM, 
-  SynHighlighterMulti,
-  SynHighlighterPas,
-  SynHighlighterPerl, 
-  SynHighlighterPHP,
-  SynHighlighterPosition, 
-  SynHighlighterPython, 
-  SynHighlighterSQL,
-  SynHighlighterTeX, 
-  SynHighlighterUNIXShellScript, 
-  SynHighlighterVB, 
-  SynHighlighterXML,
-  SynHighlighterDiff,
-  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber,
-  SynGutterMarks, SynGutterLineOverview,
-  SynPropertyEditObjectList, SynDesignStringConstants;
+    SynBeautifier, SynCompletion, SynDesignStringConstants, SynEdit, 
+  SynEditAutoComplete, SynEditExport, SynEditFoldedView, SynEditHighlighter, 
+  SynEditHighlighterFoldBase, SynEditHighlighterXMLBase, SynEditKeyCmds, 
+  SynEditLazDsgn, SynEditLines, SynEditMarks, SynEditMarkup, 
+  SynEditMarkupBracket, SynEditMarkupCtrlMouseLink, SynEditMarkupHighAll, 
+  SynEditMarkupSelection, SynEditMarkupSpecialLine, SynEditMarkupWordGroup, 
+  SynEditMiscClasses, SynEditMiscProcs, SynEditMouseCmds, SynEditPlugins, 
+  SynEditPointClasses, SynEditRegexSearch, SynEditSearch, SynEditStrConst, 
+  SynEditTextBase, SynEditTextBuffer, SynEditTextDoubleWidthChars, 
+  SynEditTextTabExpander, SynEditTextTrimmer, SynEditTypes, SynExportHTML, 
+  SynGutter, SynGutterBase, SynGutterChanges, SynGutterCodeFolding, 
+  SynGutterLineNumber, SynGutterLineOverview, SynGutterMarks, 
+  SynHighlighterAny, SynHighlighterCpp, SynHighlighterCss, SynHighlighterDiff, 
+  SynHighlighterHashEntries, SynHighlighterHTML, SynHighlighterJava, 
+  SynHighlighterJScript, SynHighlighterLFM, SynHighlighterMulti, 
+  SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, 
+  SynHighlighterPosition, SynHighlighterPython, SynHighlighterSQL, 
+  SynHighlighterTeX, synhighlighterunixshellscript, SynHighlighterVB, 
+  SynHighlighterXML, SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
+  SynPluginSyncronizedEditBase, SynPluginTemplateEdit, 
+  SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, LazarusPackageIntf;
 
 implementation
 
-end.
+procedure Register; 
+begin
+  RegisterUnit('SynEdit', @SynEdit.Register); 
+  RegisterUnit('synhighlighterunixshellscript', @synhighlighterunixshellscript.
+    Register); 
+end; 
 
+initialization
+  RegisterPackage('synedit1', @Register); 
+end.

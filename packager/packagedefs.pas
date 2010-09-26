@@ -702,6 +702,7 @@ type
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
     function FixFilesCaseSensitivity: boolean;
+    function MainUnitHasPkgName: boolean;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -3232,6 +3233,11 @@ begin
       SrcDirs.Free;
     end;
   end;
+end;
+
+function TLazPackage.MainUnitHasPkgName: boolean;
+begin
+  Result:=(MainUnit=nil) or (SysUtils.CompareText(MainUnit.Unit_Name,Name)=0);
 end;
 
 procedure TLazPackage.RemoveRemovedDependency(Dependency: TPkgDependency);

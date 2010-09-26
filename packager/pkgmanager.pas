@@ -1156,6 +1156,7 @@ var
   BrokenDependencies: TFPList;
   RenameDependencies: Boolean;
   OldPkgName: String;
+  NewMainUnitFileName: String;
   
   procedure RenamePackageInProject;
   var
@@ -1203,6 +1204,10 @@ begin
       end;
       NewFileName:=CleanAndExpandFilename(SaveDialog.Filename);
       NewPkgName:=ExtractFileNameOnly(NewFilename);
+      if APackage.MainUnitHasPkgName then
+        NewMainUnitFileName:=ChangeFileExt(NewFileName,'.pas')
+      else
+        NewMainUnitFileName:='';
       
       // check file extension
       if ExtractFileExt(NewFilename)='' then begin
@@ -1245,15 +1250,18 @@ begin
           if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then NewFileName:=LowerFilename;
         end;
       end;
-      
+
       // check unit name conflict
-      PkgFile:=APackage.FindUnit(NewPkgName);
-      if PkgFile<>nil then begin
-        Result:=IDEMessageDialog(lisNameConflict,
-          lisThePackageAlreadyContainsAUnitWithThisName,
-          mtWarning,[mbRetry,mbAbort]);
-        if Result=mrAbort then exit;
-        continue; // try again
+      if NewMainUnitFileName<>'' then
+      begin
+        PkgFile:=APackage.FindUnit(NewPkgName);
+        if PkgFile<>nil then begin
+          Result:=IDEMessageDialog(lisNameConflict,
+            lisThePackageAlreadyContainsAUnitWithThisName,
+            mtWarning,[mbRetry,mbAbort]);
+          if Result=mrAbort then exit;
+          continue; // try again
+        end;
       end;
 
       // check package name conflict
@@ -1269,7 +1277,8 @@ begin
       end;
       
       // check file name conflict with project
-      if Project1.ProjectUnitWithFilename(NewFilename)<>nil then begin
+      if (NewMainUnitFileName<>'')
+      and (Project1.ProjectUnitWithFilename(NewMainUnitFileName)<>nil) then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByProject,
           Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject, ['"',
             NewFilename, '"', #13]),
@@ -1279,17 +1288,20 @@ begin
       end;
       
       // check file name conflicts with files in other packages
-      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,false);
-      if PkgFile<>nil then begin
-        Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
-          Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
-            NewFilename, '"', #13, '"', PkgFile.LazPackage.IDAsString, '"',
-            #13, '"', PkgFile.LazPackage.Filename, '"']),
-          mtWarning,[mbRetry,mbAbort]);
-        if Result=mrAbort then exit;
-        continue; // try again
+      if (NewMainUnitFileName<>'') then
+      begin
+        PkgFile:=PackageGraph.FindFileInAllPackages(NewMainUnitFileName,true,false);
+        if PkgFile<>nil then begin
+          Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
+            Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
+              NewFilename, '"', #13, '"', PkgFile.LazPackage.IDAsString, '"',
+              #13, '"', PkgFile.LazPackage.Filename, '"']),
+            mtWarning,[mbRetry,mbAbort]);
+          if Result=mrAbort then exit;
+          continue; // try again
+        end;
       end;
-      
+
       // check for broken dependencies
       BrokenDependencies:=PackageGraph.GetBrokenDependenciesWhenChangingPkgID(
         APackage,NewPkgName,APackage.Version);
@@ -1307,14 +1319,23 @@ begin
       end;
       
       // check existing file
-      if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
-      and FileExistsUTF8(NewFileName) then begin
-        Result:=IDEMessageDialog(lisPkgMangReplaceFile,
-          Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
-          mtConfirmation,[mbOk,mbCancel]);
-        if Result<>mrOk then exit;
+      if (CompareFilenames(NewFileName,OldPkgFilename)<>0) then
+      begin
+        if FileExistsUTF8(NewFileName) then begin
+          Result:=IDEMessageDialog(lisPkgMangReplaceFile,
+            Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
+            mtConfirmation,[mbOk,mbCancel]);
+          if Result<>mrOk then exit;
+        end;
+        if FileExistsUTF8(NewMainUnitFileName) then
+        begin
+          Result:=IDEMessageDialog(lisPkgMangReplaceFile,
+            Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
+            mtConfirmation,[mbOk,mbCancel]);
+          if Result<>mrOk then exit;
+        end;
       end;
-      
+
       // check if new file is read/writable
       Result:=CheckCreatingFile(NewFileName,true);
       if Result=mrAbort then exit;
