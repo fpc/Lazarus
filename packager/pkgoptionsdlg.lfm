@@ -13,12 +13,12 @@ object PackageOptionsDialog: TPackageOptionsDialog
   LCLVersion = '0.9.29'
   object Notebook: TPageControl
     Left = 0
-    Height = 412
+    Height = 404
     Top = 0
     Width = 528
     ActivePage = DescriptionPage
     Align = alClient
-    TabIndex = 2
+    TabIndex = 1
     TabOrder = 0
     object UsagePage: TTabSheet
       Caption = 'Usage'
@@ -33,8 +33,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Add paths to dependent packages/projects'
-        ClientHeight = 115
-        ClientWidth = 508
+        ClientHeight = 133
+        ClientWidth = 512
         TabOrder = 0
         object UnitPathLabel: TLabel
           AnchorSideLeft.Control = AddPathsGroupBox
@@ -153,8 +153,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'Add options to dependent packages and projects'
-        ClientHeight = 161
-        ClientWidth = 508
+        ClientHeight = 179
+        ClientWidth = 512
         TabOrder = 1
         object LinkerOptionsLabel: TLabel
           AnchorSideLeft.Control = AddOptionsGroupBox
@@ -224,8 +224,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'ProjectGroupBox'
-        ClientHeight = 33
-        ClientWidth = 508
+        ClientHeight = 51
+        ClientWidth = 512
         TabOrder = 2
         object AddPackageUnitToProjectCheckBox: TCheckBox
           Left = 6
@@ -239,24 +239,10 @@ object PackageOptionsDialog: TPackageOptionsDialog
         end
       end
     end
-    object Usage2Page: TTabSheet
-      Caption = 'Usage2'
-      ClientHeight = 375
-      ClientWidth = 526
-      object ConditionalsGroupBox: TGroupBox
-        Left = 0
-        Height = 199
-        Top = 0
-        Width = 526
-        Align = alTop
-        Caption = 'ConditionalsGroupBox'
-        TabOrder = 0
-      end
-    end
     object DescriptionPage: TTabSheet
       Caption = 'Description'
-      ClientHeight = 386
-      ClientWidth = 520
+      ClientHeight = 371
+      ClientWidth = 524
       object DescriptionGroupBox: TGroupBox
         AnchorSideLeft.Control = DescriptionPage
         AnchorSideTop.Control = DescriptionPage
@@ -265,11 +251,11 @@ object PackageOptionsDialog: TPackageOptionsDialog
         Left = 6
         Height = 96
         Top = 6
-        Width = 508
+        Width = 512
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'Description/Abstract'
-        ClientHeight = 78
+        ClientHeight = 75
         ClientWidth = 504
         TabOrder = 0
         object DescriptionMemo: TMemo
@@ -278,7 +264,7 @@ object PackageOptionsDialog: TPackageOptionsDialog
           AnchorSideRight.Control = DescriptionGroupBox
           AnchorSideBottom.Control = DescriptionGroupBox
           Left = 6
-          Height = 66
+          Height = 63
           Top = 6
           Width = 492
           Align = alClient
@@ -295,21 +281,21 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 51
+        Height = 60
         Top = 108
-        Width = 508
+        Width = 512
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Author:'
-        ClientHeight = 33
+        ClientHeight = 39
         ClientWidth = 504
         TabOrder = 1
         object AuthorEdit: TEdit
           AnchorSideBottom.Control = AuthorGroupBox
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 21
+          Height = 27
           Top = 6
           Width = 492
           Align = alTop
@@ -325,13 +311,13 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = VersionGroupBox
         Left = 6
-        Height = 109
-        Top = 165
-        Width = 508
+        Height = 85
+        Top = 174
+        Width = 512
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'License:'
-        ClientHeight = 91
+        ClientHeight = 64
         ClientWidth = 504
         TabOrder = 2
         object LicenseMemo: TMemo
@@ -340,7 +326,7 @@ object PackageOptionsDialog: TPackageOptionsDialog
           AnchorSideRight.Control = LicenseGroupBox
           AnchorSideBottom.Control = LicenseGroupBox
           Left = 6
-          Height = 79
+          Height = 52
           Top = 6
           Width = 492
           Align = alClient
@@ -357,50 +343,50 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AnchorSideBottom.Control = DescriptionPage
         Left = 6
         Height = 100
-        Top = 280
-        Width = 508
+        Top = 265
+        Width = 512
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'Version'
-        ClientHeight = 82
+        ClientHeight = 79
         ClientWidth = 504
         TabOrder = 3
         object VersionMajorLabel: TLabel
           Left = 6
-          Height = 14
+          Height = 18
           Top = 3
-          Width = 28
+          Width = 39
           Caption = 'Major'
           ParentColor = False
         end
         object VersionMinorLabel: TLabel
           Left = 110
-          Height = 14
+          Height = 18
           Top = 3
-          Width = 27
+          Width = 39
           Caption = 'Minor'
           ParentColor = False
         end
         object VersionReleaseLabel: TLabel
           Left = 214
-          Height = 14
+          Height = 18
           Top = 3
-          Width = 39
+          Width = 52
           Caption = 'Release'
           ParentColor = False
         end
         object VersionBuildLabel: TLabel
           Left = 318
-          Height = 14
+          Height = 18
           Top = 3
-          Width = 63
+          Width = 91
           Caption = 'Build Number'
           ParentColor = False
         end
         object VersionMajorSpinEdit: TSpinEdit
           AnchorSideLeft.Control = VersionGroupBox
           Left = 6
-          Height = 21
+          Height = 27
           Top = 20
           Width = 68
           BorderSpacing.Left = 6
@@ -409,7 +395,7 @@ object PackageOptionsDialog: TPackageOptionsDialog
         end
         object VersionMinorSpinEdit: TSpinEdit
           Left = 110
-          Height = 21
+          Height = 27
           Top = 20
           Width = 68
           MaxValue = 9999
@@ -417,7 +403,7 @@ object PackageOptionsDialog: TPackageOptionsDialog
         end
         object VersionReleaseSpinEdit: TSpinEdit
           Left = 214
-          Height = 21
+          Height = 27
           Top = 20
           Width = 68
           MaxValue = 9999
@@ -425,7 +411,7 @@ object PackageOptionsDialog: TPackageOptionsDialog
         end
         object VersionBuildSpinEdit: TSpinEdit
           Left = 318
-          Height = 21
+          Height = 27
           Top = 20
           Width = 68
           MaxValue = 9999
@@ -435,8 +421,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
     end
     object IDEPage: TTabSheet
       Caption = 'IDE Integration'
-      ClientHeight = 375
-      ClientWidth = 526
+      ClientHeight = 371
+      ClientWidth = 524
       object PkgTypeRadioGroup: TRadioGroup
         AnchorSideLeft.Control = IDEPage
         AnchorSideTop.Control = IDEPage
@@ -458,8 +444,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 98
-        ClientWidth = 510
+        ClientHeight = 95
+        ClientWidth = 506
         ItemIndex = 2
         Items.Strings = (
           'Designtime only'
@@ -491,8 +477,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 98
-        ClientWidth = 510
+        ClientHeight = 95
+        ClientWidth = 506
         ItemIndex = 0
         Items.Strings = (
           'Automatically rebuild as needed'
@@ -515,8 +501,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDoc - Lazarus documentation'
-        ClientHeight = 40
-        ClientWidth = 510
+        ClientHeight = 37
+        ClientWidth = 506
         TabOrder = 2
         object LazDocPathEdit: TEdit
           AnchorSideLeft.Control = LazDocGroupBox
@@ -548,8 +534,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'This package provides the same as the following packages:'
-        ClientHeight = 345
-        ClientWidth = 510
+        ClientHeight = 363
+        ClientWidth = 514
         TabOrder = 0
         object ProvidesMemo: TMemo
           AnchorSideLeft.Control = ProvidesGroupBox
@@ -585,8 +571,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'i18n Options'
-        ClientHeight = 56
-        ClientWidth = 508
+        ClientHeight = 74
+        ClientWidth = 512
         TabOrder = 0
         object PoOutDirLabel: TLabel
           AnchorSideLeft.Control = I18NGroupBox
@@ -643,8 +629,8 @@ object PackageOptionsDialog: TPackageOptionsDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 418
+    Height = 34
+    Top = 410
     Width = 516
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'

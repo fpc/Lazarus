@@ -54,8 +54,6 @@ type
     AddPackageUnitToProjectCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
     EnableI18NCheckBox: TCheckBox;
-    ConditionalsGroupBox: TGroupBox;
-    Usage2Page: TTabSheet;
     ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
