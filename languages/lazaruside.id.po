@@ -13054,6 +13054,10 @@ msgstr ""
 msgid "There is already a form with the name %s%s%s"
 msgstr "Sudah ada form dengan nama %s%s%s"
 
+#: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
+msgid "There is already an IDE macro with the name \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Sudah ada unit dengan nama%s%s%s. Pengenal Pascal harus unik."

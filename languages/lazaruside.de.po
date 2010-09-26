@@ -13088,6 +13088,10 @@ msgstr "Es gibt bereits eine Komponente mit diesem Namen."
 msgid "There is already a form with the name %s%s%s"
 msgstr "Es gibt schon ein Formular mit dem Namen %s%s%s"
 
+#: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
+msgid "There is already an IDE macro with the name \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Es gibt bereits eine Unit mit dem Namen %s%s%s. Pascal-Bezeichner müssen einzigartig sein."

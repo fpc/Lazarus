@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-25 01:19+0300\n"
+"PO-Revision-Date: 2010-09-26 17:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11466,7 +11466,7 @@ msgstr "LCL - Библиотека компонентов Lazarus - содерж
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "Пакет %s%s%s установлен, но не найдено корректного файла пакета (.lpk).%sБыл создан неработающий пакет-пустышка."
+msgstr "Пакет %s%s%s установлен, но не был найден корректный файл пакета (.lpk).%sБыл создан неработающий пакет-пустышка."
 
 #: lazarusidestrconsts.lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
@@ -13049,6 +13049,10 @@ msgstr "Компонент с таким именем уже имеется"
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
 msgstr "Форма с именем %s%s%s уже имеется"
+
+#: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
+msgid "There is already an IDE macro with the name \"%s\""
+msgstr "Макрос IDE с именем \"%s\" уже имеется"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
