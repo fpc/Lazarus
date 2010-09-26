@@ -1012,6 +1012,9 @@ begin
   FPC_PPUs:=nil;
   Target_PPUs:=nil;
   try
+    // do not confuse the user with cached data
+    InvalidateFileStateCache();
+
     // check for special characters in search paths
     for cp:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
     begin
