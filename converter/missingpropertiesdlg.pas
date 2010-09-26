@@ -319,7 +319,7 @@ begin
     // Apply replacement types also to pascal source.
     if TypeReplacements.Tree.Count>0 then
       if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,
-            TLFMObjectNode(fLFMTree.Root).TypeName, TypeReplacements, false) then
+            TLFMObjectNode(fLFMTree.Root).TypeName, TypeReplacements, false, true) then
         Result:=mrCancel;
   finally
     TypeReplacements.Free;

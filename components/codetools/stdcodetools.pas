@@ -4531,9 +4531,11 @@ begin
   Result:=false;
   BuildTree(not SearchImplementationToo);
   if SearchImplementationToo then
-    ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,true)
+    ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,
+                                   ExceptionOnClassNotFound)
   else
-    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,
+                                        ExceptionOnClassNotFound);
   if ClassNode=nil then exit;
   if (ListOfTypes=nil) or (ListOfTypes.Tree.Count=0) then exit(true);
 
