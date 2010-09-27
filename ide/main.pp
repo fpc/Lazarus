@@ -7837,7 +7837,8 @@ begin
     Project1.AddFile(NewUnitInfo,
                      NewFileDescriptor.AddToProject
                      and NewFileDescriptor.IsPascalUnit
-                     and NewUnitInfo.IsPartOfProject);
+                     and NewUnitInfo.IsPartOfProject
+                     and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags));
   end;
 
   // syntax highlighter type
