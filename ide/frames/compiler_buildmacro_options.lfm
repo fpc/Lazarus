@@ -18,14 +18,19 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     ClientWidth = 506
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
+      AnchorSideLeft.Control = MacrosGroupBox
+      AnchorSideTop.Control = BMAddMacroSpeedButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Splitter1
+      AnchorSideBottom.Control = MacrosGroupBox
+      AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 222
-      Top = 0
+      Height = 200
+      Top = 22
       Width = 227
-      Align = alLeft
+      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Right = 6
       DefaultItemHeight = 19
-      PopupMenu = BuildMacrosTVPopupMenu
       RightClickSelect = True
       TabOrder = 0
       OnEdited = BuildMacrosTreeViewEdited
@@ -34,17 +39,25 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
     object Splitter1: TSplitter
+      AnchorSideTop.Control = MacrosGroupBox
+      AnchorSideBottom.Control = MacrosGroupBox
+      AnchorSideBottom.Side = asrBottom
       Left = 233
       Height = 222
       Top = 0
       Width = 5
+      Align = alNone
+      Anchors = [akTop, akLeft, akBottom]
     end
     object BuildMacroSelectedGroupBox: TGroupBox
+      AnchorSideLeft.Control = Splitter1
+      AnchorSideLeft.Side = asrBottom
       Left = 244
       Height = 222
       Top = 0
       Width = 262
-      Align = alClient
+      Align = alRight
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
       ClientHeight = 201
@@ -52,14 +65,16 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
         Left = 6
-        Height = 18
+        Height = 123
         Top = 72
         Width = 242
-        Align = alTop
+        Align = alClient
+        AutoSize = False
         BorderSpacing.Top = 15
         BorderSpacing.Around = 6
         Caption = 'BuildMacroDefaultLabel'
         ParentColor = False
+        WordWrap = True
       end
       object BuildMacroDescriptionLabel: TLabel
         Left = 6
@@ -84,6 +99,49 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         TabOrder = 0
         Text = 'BuildMacroDescriptionEdit'
       end
+    end
+    object BMAddMacroSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = MacrosGroupBox
+      AnchorSideTop.Control = MacrosGroupBox
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = BMAddMacroSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BMAddMacroValueSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BMAddMacroSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = MacrosGroupBox
+      Left = 29
+      Height = 22
+      Top = 0
+      Width = 23
+      BorderSpacing.Left = 6
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = BMAddMacroValueSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BMDeleteSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BMAddMacroValueSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = MacrosGroupBox
+      Left = 58
+      Height = 22
+      Top = 0
+      Width = 23
+      BorderSpacing.Left = 6
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = BMDeleteSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
     end
   end
   object MacrosSplitter: TSplitter[1]
@@ -842,10 +900,5 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         end>
       SimplePanel = False
     end
-  end
-  object BuildMacrosTVPopupMenu: TPopupMenu[3]
-    OnPopup = BuildMacrosTVPopupMenuPopup
-    left = 99
-    top = 77
   end
 end

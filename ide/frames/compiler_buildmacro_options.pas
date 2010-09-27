@@ -52,10 +52,12 @@ type
   { TCompOptBuildMacrosFrame }
 
   TCompOptBuildMacrosFrame = class(TAbstractIDEOptionsEditor)
+    BMAddMacroSpeedButton: TSpeedButton;
+    BMAddMacroValueSpeedButton: TSpeedButton;
+    BMDeleteSpeedButton: TSpeedButton;
     BuildMacroDescriptionEdit: TEdit;
     BuildMacroSelectedGroupBox: TGroupBox;
     BuildMacrosTreeView: TTreeView;
-    BuildMacrosTVPopupMenu: TPopupMenu;
     BuildMacroDefaultLabel: TLabel;
     BuildMacroDescriptionLabel: TLabel;
     ConditionalsGroupBox: TGroupBox;
@@ -64,19 +66,17 @@ type
     MacrosGroupBox: TGroupBox;
     MacrosSplitter: TSplitter;
     Splitter1: TSplitter;
+    procedure BMAddMacroSpeedButtonClick(Sender: TObject);
+    procedure BMAddMacroValueSpeedButtonClick(Sender: TObject);
+    procedure BMDeleteSpeedButtonClick(Sender: TObject);
     procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure BuildMacrosTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
-    procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditStatusChange(Sender: TObject;
       Changes: TSynStatusChanges);
-    procedure DeleteBuildMacroClick(Sender: TObject);
-    procedure NewBuildMacroClick(Sender: TObject);
-    procedure NewValueClick(Sender: TObject);
-    procedure DeleteValueClick(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     FHighlighter: TIDESynFreePasSyn;
@@ -123,134 +123,10 @@ implementation
 
 { TCompOptBuildMacrosFrame }
 
-procedure TCompOptBuildMacrosFrame.NewBuildMacroClick(Sender: TObject);
-var
-  NewIdentifier: String;
-  NewBuildMacro: TLazBuildMacro;
-  i: Integer;
-  TVNode: TTreeNode;
-begin
-  i:=1;
-  repeat
-    NewIdentifier:=GetMacroNamePrefix(cbmpLong)+IntToStr(BuildMacros.Count+1);
-    if BuildMacros.IndexOfIdentifier(NewIdentifier)<0 then break;
-    inc(i);
-  until false;
-  NewBuildMacro:=BuildMacros.Add(NewIdentifier);
-  // add to TreeView
-  BuildMacrosTreeView.BeginUpdate;
-  TVNode:=TreeViewAddBuildMacro(NewBuildMacro);
-  BuildMacrosTreeView.Selected:=TVNode;
-  BuildMacrosTreeView.EndUpdate;
-  UpdateItemPropertyControls;
-end;
-
-procedure TCompOptBuildMacrosFrame.NewValueClick(Sender: TObject);
-var
-  BuildMacro: TLazBuildMacro;
-  NodeType: TCBMNodeType;
-  i: Integer;
-  NewValueStr: String;
-  ValuesTVNode: TTreeNode;
-begin
-  GetSelectedNode(BuildMacro,NodeType);
-  if BuildMacro=nil then exit;
-  i:=1;
-  repeat
-    NewValueStr:=Format(lisValue2, [IntToStr(i)]);
-    if BuildMacro.Values.IndexOf(NewValueStr)<0 then break;
-    inc(i);
-  until false;
-  BuildMacro.Values.Add(NewValueStr);
-  BuildMacrosTreeView.BeginUpdate;
-  ValuesTVNode:=GetBuildMacroTVNode(BuildMacro);
-  TreeViewAddValue(ValuesTVNode,NewValueStr);
-  ValuesTVNode.Expand(true);
-  BuildMacrosTreeView.EndUpdate;
-end;
-
-procedure TCompOptBuildMacrosFrame.DeleteValueClick(Sender: TObject);
-var
-  BuildProperty: TLazBuildMacro;
-  NodeType: TCBMNodeType;
-  SelTVNode: TTreeNode;
-  aValue: String;
-  i: LongInt;
-begin
-  SelTVNode:=GetSelectedNode(BuildProperty,NodeType);
-  if NodeType<>cbmntValue then exit;
-  aValue:=SelTVNode.Text;
-  if MessageDlg(lisConfirmDelete,
-    Format(lisDeleteValue, ['"', aValue, '"']),
-    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-  then exit;
-  i:=BuildProperty.Values.IndexOf(aValue);
-  if i>=0 then BuildProperty.Values.Delete(i);
-  BuildMacrosTreeView.BeginUpdate;
-  SelTVNode.Delete;
-  BuildMacrosTreeView.EndUpdate;
-end;
-
 procedure TCompOptBuildMacrosFrame.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected:=false;
   UpdateMessages;
-end;
-
-procedure TCompOptBuildMacrosFrame.DeleteBuildMacroClick(Sender: TObject);
-var
-  aBuildMacro: TIDEBuildMacro;
-  SelTVNode: TTreeNode;
-  NodeType: TCBMNodeType;
-  i: LongInt;
-begin
-  SelTVNode:=GetSelectedNode(TLazBuildMacro(aBuildMacro),NodeType);
-  if aBuildMacro=nil then exit;
-  if MessageDlg(lisConfirmDelete,
-    Format(lisDeleteBuildMacro, ['"', aBuildMacro.Identifier, '"']),
-    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-  then exit;
-  i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
-  BuildMacros.Delete(i);
-  BuildMacrosTreeView.BeginUpdate;
-  SelTVNode.Delete;
-  BuildMacrosTreeView.EndUpdate;
-end;
-
-procedure TCompOptBuildMacrosFrame.BuildMacrosTVPopupMenuPopup(Sender: TObject);
-var
-  aBuildMacro: TLazBuildMacro;
-  NodeType: TCBMNodeType;
-
-  function Add(const aCaption: string; const OnClickEvent: TNotifyEvent): TMenuItem;
-  begin
-    Result:=TMenuItem.Create(Self);
-    Result.Caption:=aCaption;
-    Result.OnClick:=OnClickEvent;
-    BuildMacrosTVPopupMenu.Items.Add(Result);
-  end;
-
-  function AddSeparator: TMenuItem;
-  begin
-    Result:=nil;
-    if BuildMacrosTVPopupMenu.Items.Count=0 then exit;
-    Result:=TMenuItem.Create(Self);
-    Result.Caption:='-';
-    BuildMacrosTVPopupMenu.Items.Add(Result);
-  end;
-
-begin
-  BuildMacrosTVPopupMenu.Items.Clear;
-  GetSelectedNode(aBuildMacro,NodeType);
-
-  if NodeType in [cbmntBuildMacro,cbmntValue] then
-    Add('New value',@NewValueClick);
-  if NodeType in [cbmntValue] then
-    Add('Delete value ...',@DeleteValueClick);
-  AddSeparator;
-  Add('New build macro',@NewBuildMacroClick);
-  if NodeType in [cbmntBuildMacro] then
-    Add('Delete build macro ...',@DeleteBuildMacroClick);
 end;
 
 procedure TCompOptBuildMacrosFrame.CondSynEditChange(Sender: TObject);
@@ -396,6 +272,85 @@ begin
   end;
 end;
 
+procedure TCompOptBuildMacrosFrame.BMAddMacroSpeedButtonClick(Sender: TObject);
+var
+  NewIdentifier: String;
+  NewBuildMacro: TLazBuildMacro;
+  i: Integer;
+  TVNode: TTreeNode;
+begin
+  i:=1;
+  repeat
+    NewIdentifier:=GetMacroNamePrefix(cbmpLong)+IntToStr(BuildMacros.Count+1);
+    if BuildMacros.IndexOfIdentifier(NewIdentifier)<0 then break;
+    inc(i);
+  until false;
+  NewBuildMacro:=BuildMacros.Add(NewIdentifier);
+  // add to TreeView
+  BuildMacrosTreeView.BeginUpdate;
+  TVNode:=TreeViewAddBuildMacro(NewBuildMacro);
+  BuildMacrosTreeView.Selected:=TVNode;
+  BuildMacrosTreeView.EndUpdate;
+  UpdateItemPropertyControls;
+end;
+
+procedure TCompOptBuildMacrosFrame.BMAddMacroValueSpeedButtonClick(
+  Sender: TObject);
+var
+  BuildMacro: TLazBuildMacro;
+  NodeType: TCBMNodeType;
+  i: Integer;
+  NewValueStr: String;
+  ValuesTVNode: TTreeNode;
+begin
+  GetSelectedNode(BuildMacro,NodeType);
+  if BuildMacro=nil then exit;
+  i:=1;
+  repeat
+    NewValueStr:=Format(lisValue2, [IntToStr(i)]);
+    if BuildMacro.Values.IndexOf(NewValueStr)<0 then break;
+    inc(i);
+  until false;
+  BuildMacro.Values.Add(NewValueStr);
+  BuildMacrosTreeView.BeginUpdate;
+  ValuesTVNode:=GetBuildMacroTVNode(BuildMacro);
+  TreeViewAddValue(ValuesTVNode,NewValueStr);
+  ValuesTVNode.Expand(true);
+  BuildMacrosTreeView.EndUpdate;
+end;
+
+procedure TCompOptBuildMacrosFrame.BMDeleteSpeedButtonClick(Sender: TObject);
+var
+  aBuildMacro: TIDEBuildMacro;
+  SelTVNode: TTreeNode;
+  NodeType: TCBMNodeType;
+  i: LongInt;
+  aValue: String;
+begin
+  SelTVNode:=GetSelectedNode(TLazBuildMacro(aBuildMacro),NodeType);
+  if aBuildMacro=nil then exit;
+  if NodeType=cbmntValue then
+  begin
+    aValue:=SelTVNode.Text;
+    if MessageDlg(lisConfirmDelete,
+      Format(lisDeleteValue, ['"', aValue, '"']),
+      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+    then exit;
+    i:=aBuildMacro.Values.IndexOf(aValue);
+    if i>=0 then aBuildMacro.Values.Delete(i);
+  end else begin
+    if MessageDlg(lisConfirmDelete,
+      Format(lisDeleteBuildMacro, ['"', aBuildMacro.Identifier, '"']),
+      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+    then exit;
+    i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
+    BuildMacros.Delete(i);
+  end;
+  BuildMacrosTreeView.BeginUpdate;
+  SelTVNode.Delete;
+  BuildMacrosTreeView.EndUpdate;
+end;
+
 procedure TCompOptBuildMacrosFrame.SetBuildMacros(
   const AValue: TIDEBuildMacros);
 begin
@@ -539,12 +494,19 @@ begin
     BuildMacroSelectedGroupBox.Enabled:=true;
     BuildMacroDescriptionEdit.Enabled:=true;
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
+    BMAddMacroValueSpeedButton.Hint:='Add value to macro '+aBuildMacro.Identifier;
+    BMDeleteSpeedButton.Hint:='Delete macro '+aBuildMacro.Identifier;
   end else begin
     BuildMacroSelectedGroupBox.Caption:='No macro selected';
     BuildMacroSelectedGroupBox.Enabled:=false;
     BuildMacroDescriptionEdit.Enabled:=false;
     BuildMacroDescriptionEdit.Text:='';
+    BMAddMacroValueSpeedButton.Hint:='';
+    BMDeleteSpeedButton.Hint:='';
   end;
+  BMAddMacroSpeedButton.Hint:='Add new macro';
+  BMAddMacroValueSpeedButton.Enabled:=NodeType=cbmntBuildMacro;
+  BMDeleteSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateMessages;
@@ -624,7 +586,9 @@ end;
 procedure TCompOptBuildMacrosFrame.Setup(ADialog: TAbstractOptionsEditorDialog
   );
 begin
-
+  BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  BMDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
 end;
 
 class function TCompOptBuildMacrosFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
