@@ -17,7 +17,7 @@ exampledirs=examples
 [compiler]
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) $(wildcard *.lfm)
 
 [install]
 fpcpackage=n

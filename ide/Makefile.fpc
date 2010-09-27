@@ -188,6 +188,7 @@ cleanide:
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm)
         -$(DEL) $(wildcard ../*$(OEXT))
         -$(DEL) $(wildcard ../*$(PPUEXT))
         -$(DEL) $(wildcard ../designer/*$(OEXT))
