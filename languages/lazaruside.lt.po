@@ -12718,7 +12718,11 @@ msgid "Target CPU"
 msgstr "Skirtas procesoriui"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-msgid "Target file name: (empty = use unit output directory)"
+msgid "Target file name: (-o, empty = use unit output directory)"
+msgstr ""
+
+#: lazarusidestrconsts.listargetfilenameo
+msgid "Target file name (-o):"
 msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameofproject

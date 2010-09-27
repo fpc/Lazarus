@@ -12710,8 +12710,14 @@ msgid "Target CPU"
 msgstr "CPU Alvo"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-msgid "Target file name: (empty = use unit output directory)"
+#, fuzzy
+#| msgid "Target file name: (empty = use unit output directory)"
+msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Nome arquivo alvo: (vazio = usar diretório de saída de unidades)"
+
+#: lazarusidestrconsts.listargetfilenameo
+msgid "Target file name (-o):"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"

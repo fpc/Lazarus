@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-26 17:32+0300\n"
+"PO-Revision-Date: 2010-09-28 00:55+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -12720,8 +12720,13 @@ msgid "Target CPU"
 msgstr "Семейство процессоров:"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-msgid "Target file name: (empty = use unit output directory)"
-msgstr "Имя исполнимого файла: (пустое = использовать каталог вывода модулей)"
+#| msgid "Target file name: (empty = use unit output directory)"
+msgid "Target file name: (-o, empty = use unit output directory)"
+msgstr "Имя исполнимого файла: (-o, пустое = использовать каталог вывода модулей)"
+
+#: lazarusidestrconsts.listargetfilenameo
+msgid "Target file name (-o):"
+msgstr "Имя исполнимого файла (-o):"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"

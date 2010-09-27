@@ -12644,8 +12644,14 @@ msgid "Target CPU"
 msgstr "Cílový CPU"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-msgid "Target file name: (empty = use unit output directory)"
+#, fuzzy
+#| msgid "Target file name: (empty = use unit output directory)"
+msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Jméno cílového souboru (prázdné = použít výstupní adresář jednotek):"
+
+#: lazarusidestrconsts.listargetfilenameo
+msgid "Target file name (-o):"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
