@@ -269,9 +269,6 @@ end;
 procedure TPackageOptionsDialog.FormCreate(Sender: TObject);
 begin
   NoteBook.PageIndex := 0;
-  {$IFNDEF EnableBuildModes}
-  Usage2Page.TabVisible:=false;
-  {$ENDIF}
 end;
 
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
