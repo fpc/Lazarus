@@ -277,12 +277,10 @@ end;
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
 var
   w: Integer;
-  x: Integer;
 begin
-  x := 6;
-  w := (ClientWidth - 3 * x) div 2;
-  InstallPkgGroupBox.SetBounds(x, x, w, Height - 150);
-  AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 150);
+  w:=ClientWidth div 2-InstallPkgGroupBox.BorderSpacing.Left*3;
+  if w<1 then w:=1;
+  InstallPkgGroupBox.Width:=w;
 end;
 
 procedure TInstallPkgSetDialog.InstallTreeViewSelectionChanged(Sender: TObject);
