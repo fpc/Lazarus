@@ -39,10 +39,25 @@ end else if LCLWidgetType1='fpgui' then begin
     else
       fpGUIPlatform := 'x11';
   end;
+  CustomOptions := '-dfpgui'+fpGUIPlatform;
   UnitPath := base+'gui;'
              +base+'corelib;'
              +base+'corelib/'+fpGUIPlatform;
   IncPath := UnitPath;
+end;
+
+// linker options
+if TargetOS='darwin' then begin
+  if LCLWidgetType1='gtk' then
+    UsageLinkerOptions := '-Fl/usr/X11R6/lib -Fl/sw/lib'
+  else if LCLWidgetType1='gtk2' then
+    UsageLinkerOptions := '-Fl/usr/X11R6/lib -Fl/sw/lib -Fl/sw/lib/pango-ft219/lib'
+  else if LCLWidgetType1='carbon' then begin
+    UsageLinkerOptions := '-k-framework -kCarbon'
+      +' -k-framework -kOpenGL'
+      +' -k''-dylib_file'' -k''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''';
+  end else if LCLWidgetType1='cocoa' then
+    UsageLinkerOptions := '-k-framework -kCocoa';
 end;"/>
       <BuildMacros>
         <Count Value="2"/>
