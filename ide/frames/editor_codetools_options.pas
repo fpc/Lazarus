@@ -241,7 +241,7 @@ begin
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
-    CompletionLongLineHintType :=  TSynComletionLongHintType(CompletionDropDownHint.ItemIndex);
+    CompletionLongLineHintType :=  TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);
 
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;

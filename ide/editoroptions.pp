@@ -929,7 +929,7 @@ type
   TEditorOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FCompletionLongLineHintInMSec: Integer;
-    FCompletionLongLineHintType: TSynComletionLongHintType;
+    FCompletionLongLineHintType: TSynCompletionLongHintType;
     FHideSingleTabInWindow: Boolean;
     xmlconfig: TRttiXMLConfig;
 
@@ -1154,7 +1154,7 @@ type
       write FAutoRemoveEmptyMethods default False;
     property CompletionLongLineHintInMSec: Integer
              read FCompletionLongLineHintInMSec write FCompletionLongLineHintInMSec;
-    property CompletionLongLineHintType: TSynComletionLongHintType
+    property CompletionLongLineHintType: TSynCompletionLongHintType
              read FCompletionLongLineHintType write FCompletionLongLineHintType
              default sclpExtendRightOnly;
 

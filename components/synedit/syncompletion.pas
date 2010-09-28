@@ -82,11 +82,11 @@ type
   end;
 
 
-  TSynComletionLongHintType = (sclpNone,
-                               sclpExtendRightOnly,
-                               sclpExtendHalfLeft,
-                               sclpExtendUnlimitedLeft
-                              );
+  TSynCompletionLongHintType = (sclpNone,
+                                sclpExtendRightOnly,
+                                sclpExtendHalfLeft,
+                                sclpExtendUnlimitedLeft
+                               );
 
   { TSynBaseCompletionForm }
 
@@ -116,13 +116,13 @@ type
     FHint: TSynBaseCompletionHint;
     FHintTimer: TTimer;
     FLongLineHintTime: Integer;
-    FLongLineHintType: TSynComletionLongHintType;
+    FLongLineHintType: TSynCompletionLongHintType;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Paint; override;
-    procedure AppDeactivated(Sender: TObject); // Because Form.Deactrivate isn't called
+    procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
     procedure Deactivate; override;
     procedure SelectPrec;
     procedure SelectNext;
@@ -184,7 +184,7 @@ type
       read FTextSelectedColor write FTextSelectedColor;
     property LongLineHintTime: Integer read FLongLineHintTime
              write SetLongLineHintTime default 0;
-    property LongLineHintType: TSynComletionLongHintType read FLongLineHintType
+    property LongLineHintType: TSynCompletionLongHintType read FLongLineHintType
              write FLongLineHintType default sclpExtendRightOnly;
   end;
 
@@ -199,7 +199,7 @@ type
     function GetCaseSensitive: boolean;
     function GetClSelect: TColor;
     function GetLongLineHintTime: Integer;
-    function GetLongLineHintType: TSynComletionLongHintType;
+    function GetLongLineHintType: TSynCompletionLongHintType;
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
     function GetOnPositionChanged: TNotifyEvent;
     procedure SetCaseSensitive(const AValue: boolean);
@@ -215,7 +215,7 @@ type
     procedure SetCurrentString(const Value: string);
     procedure SetItemList(const Value: TStrings);
     procedure SetLongLineHintTime(const AValue: Integer);
-    procedure SetLongLineHintType(const AValue: TSynComletionLongHintType);
+    procedure SetLongLineHintType(const AValue: TSynCompletionLongHintType);
     procedure SetNbLinesInWindow(const Value: Integer);
     procedure SetOnCancel(const Value: TNotifyEvent);
     procedure SetOnKeyPress(const Value: TKeyPressEvent);
@@ -278,7 +278,7 @@ type
     property Width: Integer read FWidth write SetWidth;
     property LongLineHintTime: Integer read GetLongLineHintTime
              write SetLongLineHintTime default 0;
-    property LongLineHintType: TSynComletionLongHintType read GetLongLineHintType
+    property LongLineHintType: TSynCompletionLongHintType read GetLongLineHintType
              write SetLongLineHintType default sclpExtendRightOnly;
   end;
 
@@ -1061,7 +1061,7 @@ begin
   Form.LongLineHintTime := AValue;
 end;
 
-procedure TSynBaseCompletion.SetLongLineHintType(const AValue: TSynComletionLongHintType);
+procedure TSynBaseCompletion.SetLongLineHintType(const AValue: TSynCompletionLongHintType);
 begin
   Form.LongLineHintType := AValue;
 end;
@@ -1118,7 +1118,7 @@ begin
   Result := Form.LongLineHintTime;
 end;
 
-function TSynBaseCompletion.GetLongLineHintType: TSynComletionLongHintType;
+function TSynBaseCompletion.GetLongLineHintType: TSynCompletionLongHintType;
 begin
   Result := Form.LongLineHintType;
 end;
