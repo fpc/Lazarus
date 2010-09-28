@@ -1369,14 +1369,16 @@ begin
   FStack.Push(ctcssBegin,AtomStart);
   repeat
     ReadRawNextPascalAtom(Src,AtomStart);
-    if (AtomStart=#0) then begin
+    if (AtomStart^=#0) then begin
       ErrorMissingEnd;
       break;
     end else if CompareIdentifiers('END',AtomStart)=0 then begin
       FStack.Pop;
       break;
-    end;
-    RunStatement(Skip);
+    end else if AtomStart=';' then begin
+      // skip
+    end else
+      RunStatement(Skip);
   until false;
   // clean up stack
   while FStack.Top>StartTop do FStack.Pop;
