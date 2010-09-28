@@ -37,7 +37,7 @@ procedure frEnableControls(c: Array of TControl; e: Boolean);
 function frControlAtPos(Win: TWinControl; p: TPoint): TControl;
 function frGetDataSet(ComplexName: String): TfrTDataSet;
 procedure frGetDataSetAndField(ComplexName: String;
-  var DataSet: TfrTDataSet; var Field: TfrTField);
+  var DataSet: TfrTDataSet; out Field: TfrTField);
 function frGetFontStyle(Style: TFontStyles): Integer;
 function frSetFontStyle(Style: Integer): TFontStyles;
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
@@ -320,7 +320,7 @@ begin
 end;
 
 procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
-  var Field: TfrTField);
+  out Field: TfrTField);
 var
   n: Integer;
   f: TComponent;

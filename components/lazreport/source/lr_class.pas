@@ -7878,7 +7878,7 @@ begin
 //  val := '0';
   val := varempty;
   {$ifdef DebugLR}
-  DebugLn('%sOnGetParsFunction aName=%s p1=%s p2=%s p3=%s ccc=%d',[sspc,aName,p1,p2,p3,ccc]);
+  DebugLn('%sOnGetParsFunction aName=%s p1=%s p2=%s p3=%s',[sspc,aName,p1,p2,p3]);
   {$endif}
   for i := 0 to frFunctionsCount - 1 do
     if frFunctions[i].FunctionLibrary.OnFunction(aName, p1, p2, p3, val) then
@@ -9500,8 +9500,10 @@ begin
           btSubDetailData,btCrossData])
       then
         DataSet := nil
-      else
+      else begin
+        Dataset := nil;
         frGetDataSetAndField(lrGetUnBrackedStr(p1), DataSet, Field);
+      end;
     end;
       
     if (DataSet <> nil) and (Field <> nil) and AggrBand.Visible then
