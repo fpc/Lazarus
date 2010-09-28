@@ -86,6 +86,7 @@ type
       Shift: TShiftState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
+    FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
     FDefaultVariables: TCTCfgScriptVariables;
     FHighlighter: TIDESynFreePasSyn;
@@ -129,8 +130,9 @@ type
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     property StatusMessage: string read FStatusMessage write SetStatusMessage;
     property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
-    property CompletionValues: TStrings read FCompletionValues;
     property IsPackage: boolean read FIsPackage;
+    property CompletionValues: TStrings read FCompletionValues;
+    property CompletionHistory: TStrings read FCompletionHistory;
   end;
 
 implementation
@@ -207,6 +209,9 @@ begin
     CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
     CondSynEdit.SelText:=s;
     CondSynEdit.EndUndoBlock();
+    FCompletionHistory.Insert(0,s);
+    if FCompletionHistory.Count>100 then
+      FCompletionHistory.Delete(FCompletionHistory.Count-1);
   end;
 
   fSynCompletion.Deactivate;
@@ -769,6 +774,15 @@ begin
     until false;
   end;
 
+  TStringList(FCompletionValues).Sort;
+
+  // push history upwards
+  for i:=CompletionHistory.Count-1 downto 0 do begin
+    j:=CompletionValues.IndexOf(CompletionHistory[i]);
+    if j>0 then
+      CompletionValues.Move(j,0);
+  end;
+
   //debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
 end;
 
@@ -787,6 +801,7 @@ begin
   inherited Create(TheOwner);
 
   FCompletionValues:=TStringList.Create;
+  FCompletionHistory:=TStringList.Create;
   fDefaultVariables:=TCTCfgScriptVariables.Create;
   FBuildMacros:=TIDEBuildMacros.Create(nil);
   fEngine:=TCTConfigScriptEngine.Create;
@@ -817,6 +832,7 @@ end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;
 begin
+  FreeAndNil(FCompletionHistory);
   FreeAndNil(FCompletionValues);
   FreeAndNil(fDefaultVariables);
   FreeAndNil(fEngine);
