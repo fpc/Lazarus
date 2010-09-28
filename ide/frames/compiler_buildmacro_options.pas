@@ -507,7 +507,7 @@ begin
     BMDeleteSpeedButton.Hint:='';
   end;
   BMAddMacroSpeedButton.Hint:='Add new macro';
-  BMAddMacroValueSpeedButton.Enabled:=NodeType=cbmntBuildMacro;
+  BMAddMacroValueSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
   BMDeleteSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
 
