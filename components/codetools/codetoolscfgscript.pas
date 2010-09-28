@@ -1416,11 +1416,11 @@ begin
     AddError('then expected, but '+GetAtomOrNothing+' found');
   // then statement
   ReadRawNextPascalAtom(Src,AtomStart);
-  RunStatement(not ExprIsTrue);
+  RunStatement(Skip or not ExprIsTrue);
   if CompareIdentifiers(AtomStart,'else')=0 then begin
     // else statement
     ReadRawNextPascalAtom(Src,AtomStart);
-    RunStatement(ExprIsTrue);
+    RunStatement(Skip or ExprIsTrue);
   end;
   // clean up stack
   while FStack.Top>StartTop do FStack.Pop;

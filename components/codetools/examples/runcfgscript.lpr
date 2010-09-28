@@ -68,6 +68,7 @@ begin
     end else begin
       writeln('Result="',Engine.Variables['Result'],'"');
     end;
+    Engine.Variables.WriteDebugReport('Variables');
   except
     on E: Exception do begin
       writeln(E.Message);
