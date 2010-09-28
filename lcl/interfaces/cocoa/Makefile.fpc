@@ -14,7 +14,7 @@ units=interfaces
 implicitunits=cocoaint
 
 [compiler]
-options=-gl -dcocoa1
+options=-gl -dcocoa
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/cocoa
 
