@@ -488,7 +488,7 @@ resourcestring
   lisReplacements = 'Replacements';
   lisInteractive = 'Interactive';
   lisAutomatic = 'Automatic';
-  lisProperties = 'Properties (replace or delete)';
+  lisProperties = 'Properties (replace or remove)';
   lisTypes = 'Types (not removed if no replacement)';
   lisReplaceRemoveUnknown = 'Fix unknown properties and types';
   lisReplacementFuncs = 'Replacement functions';
