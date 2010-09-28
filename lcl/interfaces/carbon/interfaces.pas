@@ -25,7 +25,7 @@ unit Interfaces;
  
 {$mode objfpc}{$H+} 
 
-{$IFNDEF CARBON1}
+{$IFNDEF CARBON}
 {$ERROR wrong interfaces source}
 {$ENDIF}
 

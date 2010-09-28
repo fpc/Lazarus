@@ -14,7 +14,7 @@ units=interfaces
 implicitunits=carbonint
 
 [compiler]
-options=-gl -dcarbon1
+options=-gl -dcarbon
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . objc pascocoa/appkit pascocoa/foundation
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/carbon
 includedir=objc pascocoa/appkit pascocoa/foundation
