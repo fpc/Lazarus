@@ -1,0 +1,37 @@
+{ This unit was automatically created by update_allunits }
+unit AllLCLIntfUnits;
+interface
+uses
+  gtk2cellrenderer,
+  gtk2debug,
+  gtk2def,
+  gtk2extra,
+  gtk2fontcache,
+  gtk2globals,
+  gtk2int,
+  gtk2listviewtreemodel,
+  gtk2msgqueue,
+  gtk2proc,
+  gtk2themes,
+  gtk2winapiwindow,
+  gtk2wsarrow,
+  gtk2wsbuttons,
+  gtk2wscalendar,
+  gtk2wschecklst,
+  gtk2wscomctrls,
+  gtk2wscontrols,
+  gtk2wsdialogs,
+  gtk2wsextctrls,
+  gtk2wsextdlgs,
+  gtk2wsfactory,
+  gtk2wsforms,
+  gtk2wsgrids,
+  gtk2wsimglist,
+  gtk2wsmenus,
+  gtk2wspairsplitter,
+  gtk2wsprivate,
+  gtk2wsspin,
+  gtk2wsstdctrls,
+  interfaces;
+implementation
+end.
