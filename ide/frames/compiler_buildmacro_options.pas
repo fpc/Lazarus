@@ -29,13 +29,14 @@ unit Compiler_BuildMacro_Options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids, LCLType,
-  Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
-  KeywordFuncLists, CodeToolsCfgScript,
+  Classes, SysUtils, AVL_Tree, LCLProc, FileUtil, Controls, Forms, StdCtrls,
+  Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
   SynEdit, SynHighlighterPas, SynEditKeyCmds,
-  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf, MacroIntf,
-  EditorOptions, LazarusIDEStrConsts, CompOptsModes, SourceSynEditor,
-  PackageDefs;
+  KeywordFuncLists, CodeToolsCfgScript,
+  IDEImagesIntf,
+  IDECommands, ProjectIntf, PackageIntf, IDEOptionsIntf, MacroIntf,
+  CompilerOptions, EditorOptions,
+  LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
 
 type
   TCBMNodeType = (
@@ -75,13 +76,20 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
+    procedure CondSynEditProcessCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
+    procedure CondSynEditProcessUserCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditStatusChange(Sender: TObject;
       Changes: TSynStatusChanges);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
+    FCompletionValues: TStrings;
+    FDefaultVariables: TCTCfgScriptVariables;
     FHighlighter: TIDESynFreePasSyn;
     FBuildMacros: TIDEBuildMacros;
     FIdleConnected: Boolean;
+    FIsPackage: boolean;
     FStatusMessage: string;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
@@ -102,6 +110,8 @@ type
     procedure UpdateItemPropertyControls;
     procedure UpdateMessages;
     procedure UpdateStatusBar;
+    procedure StartCompletion;
+    procedure UpdateCompletionValues;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -115,6 +125,9 @@ type
     procedure SaveToOptions(Options: TBaseCompilerOptions);
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     property StatusMessage: string read FStatusMessage write SetStatusMessage;
+    property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
+    property CompletionValues: TStrings read FCompletionValues;
+    property IsPackage: boolean read FIsPackage;
   end;
 
 implementation
@@ -133,6 +146,20 @@ procedure TCompOptBuildMacrosFrame.CondSynEditChange(Sender: TObject);
 begin
   UpdateStatusBar;
   IdleConnected:=true;
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditProcessCommand(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
+begin
+
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditProcessUserCommand(
+  Sender: TObject; var Command: TSynEditorCommand; var AChar: TUTF8Char;
+  Data: pointer);
+begin
+  if (Command=ecWordCompletion) or (Command=ecIdentCompletion) then
+    StartCompletion;
 end;
 
 procedure TCompOptBuildMacrosFrame.CondSynEditStatusChange(Sender: TObject;
@@ -513,6 +540,7 @@ end;
 
 procedure TCompOptBuildMacrosFrame.UpdateMessages;
 begin
+  fEngine.Variables.Assign(DefaultVariables);
   fEngine.Execute(CondSynEdit.Lines.Text,1);
   if fEngine.ErrorCount>0 then begin
     StatusMessage:=fEngine.GetErrorStr(0);
@@ -536,6 +564,129 @@ begin
   CondStatusbar.Panels[1].Text := PanelCharMode;
 end;
 
+procedure TCompOptBuildMacrosFrame.StartCompletion;
+begin
+  UpdateCompletionValues;
+end;
+
+procedure TCompOptBuildMacrosFrame.UpdateCompletionValues;
+
+  function HasWord(const aName: string): Boolean;
+  var
+    i: Integer;
+    s: string;
+    p: LongInt;
+  begin
+    for i:=0 to CompletionValues.Count-1 do begin
+      s:=CompletionValues[i];
+      p:=System.Pos(#9,s);
+      if p>0 then
+        s:=copy(s,1,p-1);
+      if SysUtils.CompareText(s,aName)=0 then exit(true);
+    end;
+    Result:=false;
+  end;
+
+  procedure AddVar(aName, aValue: string);
+  var
+    s: String;
+  begin
+    s:=dbgstr(aValue);
+    if length(s)>50 then s:=copy(s,1,50)+'...';
+    s:=aName+#9+aValue;
+    CompletionValues.Add(s);
+  end;
+
+  procedure AddKeyword(aName: string);
+  begin
+    CompletionValues.Add(aName);
+  end;
+
+  procedure AddWord(aName: string);
+  begin
+    aName:=dbgstr(aName);
+    if aName='' then exit;
+    if HasWord(aName) then exit;
+    CompletionValues.Add(aName);
+  end;
+
+var
+  Node: TAVLTreeNode;
+  V: PCTCfgScriptVariable;
+  s: String;
+  p: PChar;
+  AtomStart: PChar;
+  Macro: TLazBuildMacro;
+  pcov: TParsedCompilerOptString;
+  pcouv: TParsedCompilerOptString;
+  i: Integer;
+  j: Integer;
+begin
+  CompletionValues.Clear;
+
+  // add default variables with values
+  Node:=DefaultVariables.Tree.FindLowest;
+  while Node<>nil do begin
+    V:=PCTCfgScriptVariable(Node.Data);
+    AddVar(V^.Name,GetCTCSVariableAsString(V));
+    Node:=DefaultVariables.Tree.FindSuccessor(Node);
+  end;
+
+  // add keywords and operands
+  AddKeyword('if');
+  AddKeyword('then');
+  AddKeyword('else');
+  AddKeyword('begin');
+  AddKeyword('end');
+  AddKeyword('not');
+  AddKeyword('and');
+  AddKeyword('or');
+  AddKeyword('xor');
+  AddKeyword('undefine');
+  AddKeyword('defined');
+  AddKeyword('undefined');
+  AddKeyword('integer');
+  AddKeyword('int64');
+  AddKeyword('string');
+  AddKeyword('true');
+  AddKeyword('false');
+
+  // add result variables
+  for pcov:=low(ParsedCompilerOptsVars) to high(ParsedCompilerOptsVars) do
+    AddWord(ParsedCompilerOptsVars[pcov]);
+  if FIsPackage then
+    for pcouv:=low(ParsedCompilerOptsUsageVars) to high(ParsedCompilerOptsUsageVars) do
+      AddWord(ParsedCompilerOptsUsageVars[pcouv]);
+
+  // add build macros and values
+  if BuildMacros<>nil then begin
+    for i:=0 to BuildMacros.Count-1 do
+    begin
+      Macro:=BuildMacros[i];
+      AddWord(Macro.Identifier);
+      for j:=0 to Macro.Values.Count-1 do
+        AddWord(Macro.Values[j]);
+    end;
+  end;
+
+  // add words in text
+  s:=CondSynEdit.Lines.Text;
+  if s<>'' then begin
+    p:=PChar(s);
+    repeat
+      AtomStart:=p;
+      while (AtomStart^<>#0) and not IsIdentStartChar[AtomStart^] do
+        inc(AtomStart);
+      if (AtomStart^=#0) then break;
+      p:=AtomStart;
+      while IsIdentChar[p^] do inc(p);
+      AddWord(copy(s,AtomStart-PChar(s)+1,p-AtomStart));
+    until false;
+  end;
+
+  debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
+end;
+
 procedure TCompOptBuildMacrosFrame.SaveItemProperties;
 var
   BuildMacro: TLazBuildMacro;
@@ -550,6 +701,8 @@ constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  FCompletionValues:=TStringList.Create;
+  fDefaultVariables:=TCTCfgScriptVariables.Create;
   FBuildMacros:=TIDEBuildMacros.Create(nil);
   fEngine:=TCTConfigScriptEngine.Create;
 
@@ -573,6 +726,8 @@ end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;
 begin
+  FreeAndNil(FCompletionValues);
+  FreeAndNil(fDefaultVariables);
   FreeAndNil(fEngine);
   FreeAndNil(FBuildMacros);
   inherited Destroy;
@@ -608,8 +763,16 @@ end;
 
 procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
   );
+var
+  Vars: TCTCfgScriptVariables;
 begin
+  FIsPackage:=Options is TPkgCompilerOptions;
+
   BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
+  Vars:=GetBuildMacroValues(Options,false);
+  if Vars<>nil then
+    DefaultVariables.Assign(Vars);
+
   CondSynEdit.Lines.Text:=Options.Conditionals;
   EditorOpts.GetSynEditSettings(CondSynEdit);
   if FHighlighter=nil then

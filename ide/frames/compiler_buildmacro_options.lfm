@@ -773,6 +773,8 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       )
       BracketHighlightStyle = sbhsBoth
       OnChange = CondSynEditChange
+      OnProcessCommand = CondSynEditProcessCommand
+      OnProcessUserCommand = CondSynEditProcessUserCommand
       inline SynLeftGutterPartList1: TSynGutterPartList
         object SynGutterMarks1: TSynGutterMarks
           Width = 24
