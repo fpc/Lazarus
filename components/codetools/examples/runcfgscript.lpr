@@ -41,7 +41,7 @@ var
 begin
   if Paramcount>0 then begin
     if Paramcount<>1 then begin
-      writeln('Usage: '+ParamStrUTF8(0)+' filename line column');
+      writeln('Usage: '+ParamStrUTF8(0)+' filename');
       exit;
     end;
     Filename:=ExpandFileNameUTF8(ParamStrUTF8(1));

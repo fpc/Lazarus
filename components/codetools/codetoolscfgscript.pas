@@ -1369,6 +1369,7 @@ begin
   FStack.Push(ctcssBegin,AtomStart);
   repeat
     ReadRawNextPascalAtom(Src,AtomStart);
+    //debugln(['TCTConfigScriptEngine.RunBegin ',GetAtom]);
     if (AtomStart^=#0) then begin
       ErrorMissingEnd;
       break;
@@ -1377,10 +1378,11 @@ begin
       break;
     end else if AtomStart=';' then begin
       // skip
-    end else
+    end else begin
       RunStatement(Skip);
+    end;
   until false;
-  // clean up stack
+  // clean up stack (recover from errors)
   while FStack.Top>StartTop do FStack.Pop;
 end;
 
@@ -1451,14 +1453,14 @@ procedure TCTConfigScriptEngine.RunAssignment(Skip: boolean);
 var
   VarStart: PChar;
   Variable: PCTCfgScriptVariable;
-  StartTop: TCTCfgScriptStackItemType;
   OperatorStart: PChar;
+  StartTop: LongInt;
 begin
   VarStart:=AtomStart;
   {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart)]);
   {$ENDIF}
-  StartTop:=FStack.TopTyp;
+  StartTop:=FStack.Top;
   FStack.Push(ctcssAssignment,VarStart);
   ReadRawNextPascalAtom(Src,AtomStart);
   {$IFDEF VerboseCTCfgScript}
@@ -1493,7 +1495,7 @@ begin
     {$ENDIF}
   end;
   // clean up stack
-  while FStack.TopTyp>StartTop do FStack.Pop;
+  while FStack.Top>StartTop do FStack.Pop;
 end;
 
 procedure TCTConfigScriptEngine.PushNumberValue(const Number: int64);
