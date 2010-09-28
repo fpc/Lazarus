@@ -80,6 +80,15 @@
   - show syntax errors of conditionals
   - when package is renamed, rename macros too
   - moved the project target file to compiler options
+  - code completion
+    - keywords
+    - operands
+    - inherited macros
+    - project macros
+    - own macros
+    - words in conditionals
+    - result identifiers
+    - history
 
   ToDo:
   - discuss captions
@@ -87,10 +96,13 @@
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package
+    - LCLWidgetLinkerAddition
   - make FCL a package
   - create package lazbuildsystem
     - move
   - code completion
+    - keypress event
+  - help for add/delete macro speedbuttons
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
     - refactor compiler options (default options, load, save to file)

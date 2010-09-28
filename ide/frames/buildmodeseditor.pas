@@ -34,7 +34,7 @@ uses
   Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   StdCtrls, GraphMath, ExtCtrls, Buttons,
   ProjectIntf, IDEImagesIntf, IDEOptionsIntf,
-  PackageDefs,
+  PackageDefs, compiler_inherited_options, TransferMacros,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
   IDEProcs;
 
@@ -48,8 +48,7 @@ type
     BuildModesGroupBox: TGroupBox;
     BuildModesPopupMenu: TPopupMenu;
     Splitter1: TSplitter;
-    procedure BuildMacroValuesStringGridSelectCell(Sender: TObject; aCol,
-      aRow: Integer; var CanSelect: Boolean);
+    procedure BuildMacroValuesStringGridEditingDone(Sender: TObject);
     procedure BuildMacroValuesStringGridSelectEditor(Sender: TObject; aCol,
       aRow: Integer; var Editor: TWinControl);
     procedure BuildMacroValuesStringGridSelection(Sender: TObject; aCol,
@@ -60,7 +59,9 @@ type
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
     procedure CleanMacrosGrid;
-    procedure Save;
+    procedure Save(UpdateControls: boolean);
+    procedure UpdateInheritedOptions;
+    function FindOptionFrame(AClass: TComponentClass): TComponent;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -139,16 +140,17 @@ begin
   end;
 end;
 
+procedure TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone(
+  Sender: TObject);
+begin
+  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone ']);
+  Save(true);
+end;
+
 procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelection(
   Sender: TObject; aCol, aRow: Integer);
 begin
   CleanMacrosGrid;
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelectCell(
-  Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
-begin
-
 end;
 
 procedure TBuildModesEditorFrame.UpdateMacrosControls;
@@ -239,19 +241,69 @@ begin
   end;
 end;
 
-procedure TBuildModesEditorFrame.Save;
+procedure TBuildModesEditorFrame.Save(UpdateControls: boolean);
 var
   Grid: TStringGrid;
   aRow: Integer;
   MacroName: string;
+  Values: TStringList;
+  Value: string;
 begin
   Grid:=BuildMacroValuesStringGrid;
-  MacroValues.Clear;
-  for aRow:=1 to Grid.RowCount-1 do begin
-    MacroName:=Grid.Cells[0,aRow];
-    if (MacroName='') or (not IsValidIdent(MacroName)) then continue;
-    MacroValues.Values[MacroName]:=Grid.Cells[1,aRow];
+  Values:=TStringList.Create;
+  try
+    for aRow:=1 to Grid.RowCount-1 do begin
+      MacroName:=Grid.Cells[0,aRow];
+      if (MacroName='') or (not IsValidIdent(MacroName)) then continue;
+      Value:=Grid.Cells[1,aRow];
+      Values.Values[MacroName]:=Value;
+    end;
+    //debugln(['TBuildModesEditorFrame.Save ',Values.Text,' changed=',not MacroValues.Equals(Values)]);
+    if not MacroValues.Equals(Values) then begin
+      // has changed
+      MacroValues.Assign(Values);
+      if UpdateControls then begin
+        UpdateInheritedOptions;
+      end;
+    end;
+  finally
+    Values.Free;
   end;
+end;
+
+procedure TBuildModesEditorFrame.UpdateInheritedOptions;
+var
+  InhOptionCtrl: TCompilerInheritedOptionsFrame;
+begin
+  InhOptionCtrl:=TCompilerInheritedOptionsFrame(
+                               FindOptionFrame(TCompilerInheritedOptionsFrame));
+  //debugln(['TBuildModesEditorFrame.UpdateInheritedOptions ',DbgSName(InhOptionCtrl)]);
+  if InhOptionCtrl=nil then exit;
+  InhOptionCtrl.UpdateInheritedTree(AProject.CompilerOptions);
+end;
+
+function TBuildModesEditorFrame.FindOptionFrame(AClass: TComponentClass
+  ): TComponent;
+
+  function Search(AControl: TControl): TComponent;
+  var
+    i: Integer;
+    AWinControl: TWinControl;
+  begin
+    if AControl is AClass then
+      exit(AControl);
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      for i:=0 to AWinControl.ControlCount-1 do begin
+        Result:=Search(AWinControl.Controls[i]);
+        if Result<>nil then exit;
+      end;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  Result:=Search(GetParentForm(Self));
 end;
 
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
@@ -306,8 +358,11 @@ var
 begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
-    Save;
-    PCOptions.Project.MacroValues.Assign(MacroValues);
+    Save(false);
+    if not PCOptions.Project.MacroValues.Equals(MacroValues) then begin
+      PCOptions.Project.MacroValues.Assign(MacroValues);
+      IncreaseBuildMacroChangeStamp;
+    end;
   end;
 end;
 

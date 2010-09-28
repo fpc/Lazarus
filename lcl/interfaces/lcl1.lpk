@@ -12,7 +12,7 @@
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType1)"/>
       </SearchPaths>
       <Conditionals Value="// LCLWidgetType1
-if undefined(LCLWidgetType) then begin
+if undefined(LCLWidgetType1) then begin
   if (TargetOS='win32') or (TargetOS='win64') then
     LCLWidgetType1 := 'win32'
   else if TargetOS='wince' then
@@ -100,7 +100,7 @@ end;"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <CustomOptions Value="-dLCL -d$(LCLWidgetType1)
+      <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType1)
 "/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>

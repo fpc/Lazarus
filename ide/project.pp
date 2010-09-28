@@ -611,11 +611,14 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Equals(Other: TProjectBuildMacros): boolean; reintroduce;
-    procedure Assign(Src: TProjectBuildMacros);
+    function Equals(aValues: TStringList): boolean; reintroduce;
+    procedure Assign(Src: TProjectBuildMacros); overload;
+    procedure Assign(aValues: TStringList); overload;
     function Count: integer;
     property Names[Index: integer]: string read GetNames;
     function ValueFromIndex(Index: integer): string;
     property Values[const Name: string]: string read GetValues write SetValues;
+    function IsDefined(const Name: string): boolean;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -6261,11 +6264,46 @@ begin
   Result:=FItems.Equals(Other.FItems);
 end;
 
+function TProjectBuildMacros.Equals(aValues: TStringList): boolean;
+var
+  i: Integer;
+  CurName: string;
+  CurValue: string;
+begin
+  Result:=false;
+  for i:=0 to aValues.Count-1 do begin
+    CurName:=aValues.Names[i];
+    CurValue:=aValues.ValueFromIndex[i];
+    //debugln(['TProjectBuildMacros.Equals ',CurName,' NewValue=',CurValue,' IsDefined=',IsDefined(CurName),' OldValue=',Values[CurName]]);
+    if not IsDefined(CurName) then exit;
+    if Values[CurName]<>CurValue then exit;
+  end;
+  //debugln(['TProjectBuildMacros.Equals END ',aValues.Count,' ',Count]);
+  Result:=aValues.Count=Count;
+end;
+
 procedure TProjectBuildMacros.Assign(Src: TProjectBuildMacros);
 begin
   if Equals(Src) then exit;
   FItems.Assign(Src.FItems);
   CfgVars.Assign(Src.CfgVars);
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectBuildMacros.Assign(aValues: TStringList);
+var
+  i: Integer;
+  CurName: string;
+  CurValue: string;
+begin
+  if Equals(aValues) then exit;
+  FItems.Clear;
+  for i:=0 to aValues.Count-1 do begin
+    CurName:=aValues.Names[i];
+    CurValue:=aValues.ValueFromIndex[i];
+    FItems.Values[CurName]:=CurValue;
+  end;
+  CfgVars.Assign(aValues);
   IncreaseChangeStamp;
 end;
 
@@ -6277,6 +6315,12 @@ end;
 function TProjectBuildMacros.ValueFromIndex(Index: integer): string;
 begin
   Result:=FItems.ValueFromIndex[Index];
+end;
+
+function TProjectBuildMacros.IsDefined(const Name: string): boolean;
+begin
+  if (Name='') or not IsValidIdent(Name) then exit(false);
+  Result:=FItems.IndexOfName(Name)>=0;
 end;
 
 procedure TProjectBuildMacros.IncreaseChangeStamp;

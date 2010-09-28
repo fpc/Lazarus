@@ -57,13 +57,13 @@ type
     ImageIndexPackage: Integer;
     InheritedChildDatas: TList; // list of PInheritedNodeData
     procedure ClearInheritedTree;
-    procedure UpdateInheritedTree(CompilerOpts: TBaseCompilerOptions);
   public
     destructor Destroy; override;
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure UpdateInheritedTree(CompilerOpts: TBaseCompilerOptions);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
