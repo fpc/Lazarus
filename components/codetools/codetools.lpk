@@ -276,7 +276,7 @@
       </Item61>
       <Item62>
         <Filename Value="codetoolscfgscript.pas"/>
-        <UnitName Value="codetoolscfgscript"/>
+        <UnitName Value="CodeToolsCfgScript"/>
       </Item62>
     </Files>
     <i18n>

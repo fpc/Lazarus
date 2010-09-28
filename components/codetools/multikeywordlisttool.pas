@@ -36,8 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeAtom, CustomCodeTool, KeywordFuncLists,
-  BasicCodeTools;
+  Classes, SysUtils, FileProcs, CustomCodeTool, KeywordFuncLists;
 
 type
 

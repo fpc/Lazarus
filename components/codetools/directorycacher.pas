@@ -84,9 +84,9 @@ const
 
 type
 
-  { TUnitNameLink }
+  { TUnitFileNameLink }
 
-  TUnitNameLink = class
+  TUnitFileNameLink = class
   public
     Unit_Name: string;
     Filename: string;
@@ -125,7 +125,7 @@ type
     FPool: TCTDirectoryCachePool;
     FRefCount: integer;
     FStrings: array[TCTDirCacheString] of TCTDirCacheStringRecord;
-    FUnitLinksTree: TAVLTree; // tree of TUnitNameLink
+    FUnitLinksTree: TAVLTree; // tree of TUnitFileNameLink
     FUnitLinksTreeTimeStamp: cardinal;
     FListing: TCTDirectoryListing;
     FUnitSources: array[TCTDirectoryUnitSources] of TCTDirCacheUnitSrcRecord;
@@ -233,7 +233,7 @@ function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
 // unit links
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; out Filename: string): boolean;
-function CreateUnitLinksTree(const UnitLinks: string): TAVLTree; // tree of TUnitNameLink
+function CreateUnitLinksTree(const UnitLinks: string): TAVLTree; // tree of TUnitFileNameLink
 function CompareUnitLinkNodes(NodeData1, NodeData2: Pointer): integer;
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
@@ -396,7 +396,7 @@ var
   UnitLinkEnd: Integer;
   TheUnitName: String;
   Filename: String;
-  NewNode: TUnitNameLink;
+  NewNode: TUnitFileNameLink;
 begin
   UnitLinksTree:=TAVLTree.Create(@CompareUnitLinkNodes);
   UnitLinkStart:=1;
@@ -419,7 +419,7 @@ begin
           inc(UnitLinkEnd);
         if UnitLinkEnd>UnitLinkStart then begin
           Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-          NewNode:=TUnitNameLink.Create;
+          NewNode:=TUnitFileNameLink.Create;
           NewNode.Unit_Name:=TheUnitName;
           NewNode.Filename:=Filename;
           UnitLinksTree.Add(NewNode);
@@ -438,17 +438,17 @@ begin
 end;
 
 function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
-var Link1, Link2: TUnitNameLink;
+var Link1, Link2: TUnitFileNameLink;
 begin
-  Link1:=TUnitNameLink(NodeData1);
-  Link2:=TUnitNameLink(NodeData2);
+  Link1:=TUnitFileNameLink(NodeData1);
+  Link2:=TUnitFileNameLink(NodeData2);
   Result:=CompareText(Link1.Unit_Name,Link2.Unit_Name);
 end;
 
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(AUnitName),TUnitNameLink(NodeData).Unit_Name);
+  Result:=CompareText(String(AUnitName),TUnitFileNameLink(NodeData).Unit_Name);
 end;
 
 { TCTDirectoryCache }
@@ -664,7 +664,7 @@ begin
       +SizeOf(TAVLTreeNode)*PtrUInt(FUnitLinksTree.Count);
     Node:=FUnitLinksTree.FindLowest;
     while Node<>nil do begin
-      inc(m,TUnitNameLink(Node.Data).CalcMemSize);
+      inc(m,TUnitFileNameLink(Node.Data).CalcMemSize);
       Node:=FUnitLinksTree.FindSuccessor(Node);
     end;
     Stats.Add('TCTDirectoryCache.FUnitLinksTree',m);
@@ -690,7 +690,7 @@ end;
 function TCTDirectoryCache.FindUnitLink(const AUnitName: string): string;
 var
   Node: TAVLTreeNode;
-  Link: TUnitNameLink;
+  Link: TUnitFileNameLink;
   AliasFilename: String;
   pe: TCTPascalExtType;
 begin
@@ -703,7 +703,7 @@ begin
   Node:=FUnitLinksTree.FindKey(Pointer(AUnitName),
                                @CompareUnitNameWithUnitLinkNode);
   if Node<>nil then begin
-    Link:=TUnitNameLink(Node.Data);
+    Link:=TUnitFileNameLink(Node.Data);
     Result:=Link.Filename;
     if FileExistsCached(Result) then begin
       exit;
@@ -1383,9 +1383,9 @@ begin
     +PtrUInt(NamesLength);
 end;
 
-{ TUnitNameLink }
+{ TUnitFileNameLink }
 
-function TUnitNameLink.CalcMemSize: PtrUInt;
+function TUnitFileNameLink.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(Unit_Name)

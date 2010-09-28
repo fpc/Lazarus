@@ -205,7 +205,7 @@ type
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockStart(const CursorPos: TCodeXYPosition;
-          out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
@@ -4868,7 +4868,7 @@ begin
 end;
 
 function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
-  out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
 var CleanCursorPos: integer;

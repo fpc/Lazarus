@@ -759,7 +759,7 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       SearchSmartFlags: TFindSmartFlags;
-      var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
+      out NewTool: TFindDeclarationTool; out NewNode: TCodeTreeNode;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationInInterface(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
@@ -1246,7 +1246,7 @@ end;
 
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags;
-  var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
+  out NewTool: TFindDeclarationTool; out NewNode: TCodeTreeNode;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;

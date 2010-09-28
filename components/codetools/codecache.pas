@@ -38,7 +38,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Math, Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
+  Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
   Avl_Tree, Laz_XMLCfg;
 
 const

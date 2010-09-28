@@ -46,7 +46,7 @@ uses
   FindDeclarationCache, DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CodeTemplatesTool, ExtractProcTool, PascalReaderTool;
+  CodeTemplatesTool, ExtractProcTool;
 
 type
   TCodeToolManager = class;

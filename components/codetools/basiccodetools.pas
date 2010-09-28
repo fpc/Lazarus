@@ -93,7 +93,7 @@ function IsValidIdentPair(const NamePair: string;
 
 // line/code ends
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
-    var LineStart,LineEnd:integer);
+    out LineStart,LineEnd:integer);
 function GetLineStartPosition(const Source:string; Position:integer): integer;
 function LineEndCount(const Txt: string): integer; inline;
 function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer; inline;
@@ -1337,7 +1337,7 @@ begin
 end;
 
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
-   var LineStart,LineEnd:integer);
+   out LineStart,LineEnd:integer);
 begin
   LineStart:=Position;
   while (LineStart>1) and (not (Source[LineStart-1] in [#10,#13])) do

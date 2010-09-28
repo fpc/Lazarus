@@ -55,7 +55,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStructs, AVL_Tree,
-  FileProcs, DirectivesTree, BasicCodeTools, CCodeParserTool,
+  FileProcs, BasicCodeTools, CCodeParserTool,
   NonPascalCodeTools, KeywordFuncLists, CodeCache,
   CodeTree, CodeAtom;
   
@@ -1840,6 +1840,7 @@ begin
     end;
     AVLNode:=Macros.FindSuccessor(AVLNode);
   end;
+  if Changed then ;
 end;
 
 procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode;

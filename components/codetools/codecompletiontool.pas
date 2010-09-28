@@ -200,7 +200,7 @@ type
                        SourceChangeCache: TSourceChangeCache): boolean;
     function CompleteEventAssignment(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
-                       var IsEventAssignment: boolean;
+                       out IsEventAssignment: boolean;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
                        SourceChangeCache: TSourceChangeCache): boolean;
     function CompleteLocalVariableForIn(CleanCursorPos,
@@ -1392,7 +1392,7 @@ end;
 
 function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
   OldTopLine: integer; CursorNode: TCodeTreeNode;
-  var IsEventAssignment: boolean;
+  out IsEventAssignment: boolean;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var

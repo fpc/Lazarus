@@ -30,8 +30,7 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileProcs, BasicCodeTools, CodeCache, CodeAtom,
-  TypInfo;
+  Classes, SysUtils, AVL_Tree, FileProcs, BasicCodeTools, CodeCache, TypInfo;
   
 type
   { TLFMTreeNode }

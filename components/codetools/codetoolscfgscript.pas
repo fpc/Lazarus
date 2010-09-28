@@ -41,6 +41,7 @@ unit CodeToolsCfgScript;
 {$inline on}
 
 {off $Define VerboseCTCfgScript}
+{off $DEFINE CheckCTCfgVars}
 
 interface
 
@@ -179,6 +180,9 @@ type
     procedure Delete(Index: integer);
     function TopItem: PCTCfgScriptStackItem;
     function TopItemOperand: PCTCfgScriptVariable;
+    {$IFDEF CheckCTCfgVars}
+    procedure CheckOperands;
+    {$ENDIF}
   end;
 
   { TCTCfgScriptError }
@@ -208,8 +212,8 @@ type
     procedure PushStringConstant;
     procedure RunStatement(Skip: boolean);
     procedure RunBegin(Skip: boolean);
-    procedure RunIf(Skip: boolean);
-    procedure RunUndefine(Skip: boolean);
+    procedure RunIf({%H-}Skip: boolean);
+    procedure RunUndefine({%H-}Skip: boolean);
     procedure RunAssignment(Skip: boolean);
     function RunExpression: boolean; // if true the stack top has an operand
     function ExecuteStack(MaxLevel: integer): boolean;
@@ -266,6 +270,7 @@ function CTCSVariableIsFalse(const V: PCTCfgScriptVariable): boolean;
 function CTCSStringToNumber(P: PChar; out Number: int64): boolean;
 function AtomToCTCfgOperator(p: PChar): TCTCfgScriptOperator;
 
+procedure CheckCTCSVariable(const V: PCTCfgScriptVariable);
 function dbgs(const t: TCTCfgScriptStackItemType): string; overload;
 function dbgs(const t: TCTCSValueType): string; overload;
 function dbgs(const t: TCTCfgScriptOperator): string; overload;
@@ -291,7 +296,7 @@ begin
     and (CompareIdentifierPtrs(PChar(OldName),AtomStart)=0)
     then begin
       SrcPos:=PtrUInt(AtomStart-PChar(Src))+1;
-      Src:=copy(Src,1,SrcPos-1)+NewName+copy(Src,SrcPos+length(OldName),length(Src));
+      Src:=copy(Src,1,SrcPos-1)+NewName+copy(Src,SrcPos+PtrUInt(length(OldName)),length(Src));
       p:=@Src[SrcPos]+length(NewName);
     end;
   until false;
@@ -303,6 +308,10 @@ var
   v1: PCTCfgScriptVariable absolute Var1;
   v2: PCTCfgScriptVariable absolute Var2;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v1);
+  CheckCTCSVariable(v2);
+  {$ENDIF}
   Result:=CompareIdentifiers(v1^.Name,v2^.Name);
 end;
 
@@ -311,11 +320,16 @@ var
   n: PChar absolute Name;
   v: PCTCfgScriptVariable absolute aVar;
 begin
+  {$IFDEF CheckCTCfgVars}CheckCTCSVariable(v);{$ENDIF}
   Result:=CompareIdentifiers(n,v^.Name);
 end;
 
 function AreCTCSVariablesEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v1);
+  CheckCTCSVariable(v2);
+  {$ENDIF}
   Result:=false;
   case V1^.ValueType of
   ctcsvNone:
@@ -325,9 +339,9 @@ begin
     ctcsvNone: exit;
     ctcsvString:
       if (V1^.StrLen<>V2^.StrLen)
-                 or ((V1^.StrStart<>nil)
-                     and (not CompareMem(V1^.StrStart,V2^.StrStart,V1^.StrLen)))
-               then exit;
+          or ((V1^.StrStart<>nil)
+              and (not CompareMem(V1^.StrStart,V2^.StrStart,V1^.StrLen)))
+      then exit;
     ctcsvNumber:
       if not CTCSNumberEqualsString(V2^.Number,V1^.StrStart) then exit;
     end;
@@ -346,6 +360,10 @@ end;
 function AreCTCSVariablesExactEqual(const V1, V2: PCTCfgScriptVariable
   ): Boolean;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v1);
+  CheckCTCSVariable(v2);
+  {$ENDIF}
   Result:=false;
   if V1^.ValueType<>V2^.ValueType then exit;
   case V1^.ValueType of
@@ -415,6 +433,10 @@ var
   V1: PChar;
   V2: PChar;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Left);
+  CheckCTCSVariable(Right);
+  {$ENDIF}
   Result:=false;
   Equal:=false;
   LeftIsLowerThanRight:=false;
@@ -485,7 +507,10 @@ end;
 function NewCTCSVariable: PCTCfgScriptVariable;
 begin
   New(Result);
-  FillByte(Result^,SizeOf(Result),0);
+  FillByte(Result^,SizeOf(TCTCfgScriptVariable),0);
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Result);
+  {$ENDIF}
 end;
 
 function NewCTCSVariable(CloneName: PChar): PCTCfgScriptVariable;
@@ -499,21 +524,33 @@ begin
     System.Move(CloneName^,Result^.Name^,l);
     Result^.Name[l]:=#0;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Result);
+  {$ENDIF}
 end;
 
 function CloneCTCSVariable(const V: PCTCfgScriptVariable): PCTCfgScriptVariable;
 var
   l: LongInt;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
   Result:=NewCTCSVariable(V^.Name);
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Result);
+  {$ENDIF}
   Result^.ValueType:=V^.ValueType;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Result);
+  {$ENDIF}
   case V^.ValueType of
   ctcsvNone: ;
   ctcsvString:
     begin
       l:=V^.StrLen;
-      Result^.StrLen:=l;
       if l>0 then begin
+        Result^.StrLen:=l;
         Result^.StrStart:=GetMem(l+1);
         System.Move(V^.StrStart^,Result^.StrStart^,l);
         Result^.StrStart[l]:=#0;
@@ -522,12 +559,19 @@ begin
   ctcsvNumber:
     Result^.Number:=V^.Number;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Result);
+  {$ENDIF}
 end;
 
 procedure SetCTCSVariableValue(const Src, Dest: PCTCfgScriptVariable);
 var
   l: LongInt;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Src);
+  CheckCTCSVariable(Dest);
+  {$ENDIF}
   if Src=Dest then exit;
   case Src^.ValueType of
   ctcsvNone:
@@ -563,10 +607,17 @@ begin
       Dest^.Number:=Src^.Number;
     end;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(Src);
+  CheckCTCSVariable(Dest);
+  {$ENDIF}
 end;
 
 procedure FreeCTCSVariable(var V: PCTCfgScriptVariable);
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
   ClearCTCSVariable(V);
   ReAllocMem(V^.Name,0);
   Dispose(V);
@@ -574,15 +625,24 @@ end;
 
 procedure ClearCTCSVariable(const V: PCTCfgScriptVariable);
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
   if V^.ValueType=ctcsvString then
     ReAllocMem(V^.StrStart,0);
   V^.ValueType:=ctcsvNone;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
 end;
 
 procedure MakeCTCSVariableString(const V: PCTCfgScriptVariable);
 var
   s: String;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
   case V^.ValueType of
   ctcsvNone:
     begin
@@ -600,12 +660,18 @@ begin
       V^.ValueType:=ctcsvString;
     end;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
 end;
 
 procedure MakeCTCSVariableInt64(const V: PCTCfgScriptVariable);
 var
   i: Int64;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
   case V^.ValueType of
   ctcsvNone:
     begin
@@ -614,18 +680,28 @@ begin
     end;
   ctcsvString:
     begin
-      i:=StrToInt64Def(V^.StrStart,0);
-      V^.Number:=i;
+      if V^.StrStart<>nil then begin
+        i:=StrToInt64Def(V^.StrStart,0);
+        FreeMem(V^.StrStart);
+        V^.Number:=i;
+      end else
+        V^.Number:=0;
       V^.ValueType:=ctcsvNumber;
     end;
   ctcsvNumber: ;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
 end;
 
 procedure MakeCTCSVariableInteger(const V: PCTCfgScriptVariable);
 var
   i: integer;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
   case V^.ValueType of
   ctcsvNone:
     begin
@@ -634,12 +710,19 @@ begin
     end;
   ctcsvString:
     begin
-      i:=StrToIntDef(V^.StrStart,0);
-      V^.Number:=i;
+      if V^.StrStart<>nil then begin
+        i:=StrToIntDef(V^.StrStart,0);
+        FreeMem(V^.StrStart);
+        V^.Number:=i;
+      end else
+        V^.Number:=0;
       V^.ValueType:=ctcsvNumber;
     end;
   ctcsvNumber: ;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
 end;
 
 procedure AddCTCSVariables(const AddVar, SumVar: PCTCfgScriptVariable);
@@ -651,6 +734,10 @@ var
   OldLen: LongInt;
   s: String;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(AddVar);
+  CheckCTCSVariable(SumVar);
+  {$ENDIF}
   case SumVar^.ValueType of
   ctcsvNone:
     SetCTCSVariableValue(AddVar,SumVar);
@@ -682,7 +769,7 @@ begin
       ;
     ctcsvString:
       begin
-        // convert to string and append
+        // convert SumVar from number to string and append
         s:=IntToStr(SumVar^.Number);
         SumVar^.ValueType:=ctcsvString;
         SumVar^.StrLen:=length(s)+AddVar^.StrLen;
@@ -700,6 +787,10 @@ begin
       end;
     end;
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(AddVar);
+  CheckCTCSVariable(SumVar);
+  {$ENDIF}
 end;
 
 function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean;
@@ -849,6 +940,30 @@ begin
   end;
 end;
 
+procedure CheckCTCSVariable(const V: PCTCfgScriptVariable);
+begin
+  if V=nil then
+    RaiseCatchableException('');
+  if (V^.Name<>nil) and (strlen(V^.Name)>255) then
+    RaiseCatchableException('');
+  case V^.ValueType of
+  ctcsvNone: ;
+  ctcsvString:
+    begin
+      if V^.StrLen=0 then begin
+        if V^.StrStart<>nil then
+          RaiseCatchableException('');
+      end else begin
+        if V^.StrStart=nil then
+          RaiseCatchableException('');
+        if strlen(V^.StrStart)<>V^.StrLen then
+          RaiseCatchableException('');
+      end;
+    end;
+  ctcsvNumber: ;
+  end;
+end;
+
 function dbgs(const t: TCTCfgScriptStackItemType): string;
 begin
   Result:=GetEnumName(typeinfo(t),ord(t));
@@ -876,9 +991,10 @@ begin
     begin
       Result:=Result+'string=';
       l:=length(Result);
-      SetLength(Result,l+V^.StrLen);
-      if V^.StrLen>0 then
+      if V^.StrLen>0 then begin
+        SetLength(Result,l+V^.StrLen);
         System.Move(V^.StrStart^,Result[l+1],V^.StrLen);
+      end;
     end;
   ctcsvNumber:
     Result:=Result+'int64='+IntToStr(V^.Number);
@@ -887,6 +1003,9 @@ end;
 
 function GetCTCSVariableAsString(const V: PCTCfgScriptVariable): string;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(V);
+  {$ENDIF}
   case V^.ValueType of
   ctcsvNone: Result:='';
   ctcsvString:
@@ -905,6 +1024,9 @@ procedure SetCTCSVariableAsString(const V: PCTCfgScriptVariable; const s: string
 var
   l: Integer;
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
   if V^.ValueType<>ctcsvString then begin
     V^.ValueType:=ctcsvString;
     V^.StrLen:=0;
@@ -917,15 +1039,24 @@ begin
     System.Move(s[1],V^.StrStart^,l+1); // +1 for the #0
   end else
     ReAllocMem(V^.StrStart,0);
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
 end;
 
 procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64
   );
 begin
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
   if (V^.ValueType=ctcsvString) and (V^.StrStart<>nil) then
     Freemem(V^.StrStart);
   V^.ValueType:=ctcsvNumber;
   V^.Number:=i;
+  {$IFDEF CheckCTCfgVars}
+  CheckCTCSVariable(v);
+  {$ENDIF}
 end;
 
 { TCTCfgScriptVariables }
@@ -1016,6 +1147,7 @@ var
   Item: PCTCfgScriptVariable;
   NewItem: PCTCfgScriptVariable;
 begin
+  if Self=Source then exit;
   Clear;
   Node:=Source.FItems.FindLowest;
   while Node<>nil do begin
@@ -1104,14 +1236,10 @@ begin
   V:=GetVariable(Name,true);
   if Value='' then
     ClearCTCSVariable(V)
-  else begin
-    try
-      i:=StrToInt64(Value);
-      SetCTCSVariableAsNumber(V,i);
-    except
-      SetCTCSVariableAsString(V,Value);
-    end;
-  end;
+  else if TryStrToInt64(Value,i) then
+    SetCTCSVariableAsNumber(V,i)
+  else
+    SetCTCSVariableAsString(V,Value);
 end;
 
 function TCTCfgScriptVariables.IsDefined(Name: PChar): boolean;
@@ -1422,7 +1550,7 @@ begin
   ReadRawNextPascalAtom(Src,AtomStart);
 
   FStack.Push(ctcssRoundBracketOpen,AtomStart);
-  FillByte(Value,SizeOf(Value),0);
+  FillByte(Value{%H-},SizeOf(Value),0);
   if RunExpression then
     SetCTCSVariableValue(FStack.TopItemOperand,@Value);
   if AtomStart^<>')' then begin
@@ -1582,8 +1710,9 @@ begin
     Item^.Operand.ValueType:=ctcsvString;
     l:=Src-AtomStart;
     Item^.Operand.StrLen:=l;
-    Item^.Operand.StrStart:=GetMem(l);
+    Item^.Operand.StrStart:=GetMem(l+1);
     System.Move(AtomStart^,Item^.Operand.StrStart^,l);
+    Item^.Operand.StrStart[l]:=#0;
   end;
   ExecuteStack(1);
 end;
@@ -2308,6 +2437,9 @@ begin
   Item^.Typ:=Typ;
   Item^.StartPos:=StartPos;
   TopTyp:=Typ;
+  {$IFDEF CheckCTCfgVars}
+  CheckOperands;
+  {$ENDIF}
 end;
 
 procedure TCTCfgScriptStack.Pop(Count: integer);
@@ -2334,6 +2466,9 @@ begin
       TopTyp:=ctcssNone;
     dec(Count);
   end;
+  {$IFDEF CheckCTCfgVars}
+  CheckOperands;
+  {$ENDIF}
 end;
 
 procedure TCTCfgScriptStack.Delete(Index: integer);
@@ -2352,6 +2487,9 @@ begin
     FillByte(Item^.Operand,SizeOf(Item^.Operand),0);
   end;
   dec(Top);
+  {$IFDEF CheckCTCfgVars}
+  CheckOperands;
+  {$ENDIF}
 end;
 
 function TCTCfgScriptStack.TopItem: PCTCfgScriptStackItem;
@@ -2369,6 +2507,16 @@ begin
   else
     Result:=@Items[Top].Operand;
 end;
+
+{$IFDEF CheckCTCfgVars}
+procedure TCTCfgScriptStack.CheckOperands;
+var
+  i: Integer;
+begin
+  for i:=0 to Top do
+    CheckCTCSVariable(@Items[Top].Operand);
+end;
+{$ENDIF}
 
 { TCTCfgScriptError }
 
