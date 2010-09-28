@@ -29,13 +29,11 @@ unit Compiler_BuildMacro_Options;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, LCLProc, FileUtil, Controls, Forms, StdCtrls,
-  Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
-  SynEdit, SynHighlighterPas, SynEditKeyCmds,
-  KeywordFuncLists, CodeToolsCfgScript,
-  IDEImagesIntf,
-  IDECommands, ProjectIntf, PackageIntf, IDEOptionsIntf, MacroIntf,
-  CompilerOptions, EditorOptions,
+  Classes, SysUtils, types, AVL_Tree, LCLProc, FileUtil, Controls, Forms,
+  StdCtrls, Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
+  AvgLvlTree, SynEdit, SynHighlighterPas, SynEditKeyCmds, SynCompletion,
+  KeywordFuncLists, CodeToolsCfgScript, IDEImagesIntf, IDECommands, ProjectIntf,
+  PackageIntf, IDEOptionsIntf, MacroIntf, CompilerOptions, EditorOptions,
   LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
 
 type
@@ -82,6 +80,10 @@ type
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditStatusChange(Sender: TObject;
       Changes: TSynStatusChanges);
+    procedure fSynCompletionCancel(Sender: TObject);
+    procedure fSynCompletionExecute(Sender: TObject);
+    procedure fSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
+      Shift: TShiftState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     FCompletionValues: TStrings;
@@ -95,6 +97,7 @@ type
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     fEngine: TCTConfigScriptEngine;
+    fSynCompletion: TSynCompletion;
     procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
@@ -166,6 +169,47 @@ procedure TCompOptBuildMacrosFrame.CondSynEditStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
   UpdateStatusBar;
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionCancel(Sender: TObject);
+begin
+  debugln(['TCompOptBuildMacrosFrame.fSynCompletionCancel ',fSynCompletion.TheForm.Visible]);
+  if fSynCompletion.TheForm.Visible then
+    fSynCompletion.Deactivate;
+  fSynCompletion.RemoveEditor(CondSynEdit);
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionExecute(Sender: TObject);
+begin
+  debugln(['TCompOptBuildMacrosFrame.fSynCompletionExecute ']);
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionValidate(Sender: TObject;
+  KeyChar: TUTF8Char; Shift: TShiftState);
+var
+  i: LongInt;
+  s: string;
+  p: LongInt;
+  TxtXY: TPoint;
+  TxtStartX: integer;
+  TxtEndX: integer;
+begin
+  debugln(['TCompOptBuildMacrosFrame.fSynCompletionValidate ']);
+  i:=fSynCompletion.Position;
+  if (i>=0) and (i<CompletionValues.Count) then begin
+    s:=CompletionValues[i];
+    p:=System.Pos(#9,s);
+    if p>0 then s:=copy(s,1,p-1);
+    TxtXY:=CondSynEdit.LogicalCaretXY;
+    CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
+    CondSynEdit.BeginUndoBlock();
+    CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
+    CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
+    CondSynEdit.SelText:=s;
+    CondSynEdit.EndUndoBlock();
+  end;
+
+  fSynCompletion.Deactivate;
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
@@ -565,8 +609,49 @@ begin
 end;
 
 procedure TCompOptBuildMacrosFrame.StartCompletion;
+
+  function EditorRowColumnToCompletionXY(ScreenRowCol: TPoint;
+    AboveRow: boolean): TPoint;
+  begin
+    if not AboveRow then
+      inc(ScreenRowCol.Y,1);
+    Result:=CondSynEdit.RowColumnToPixels(ScreenRowCol);
+    Result:=CondSynEdit.ClientToScreen(Result);
+    if fSynCompletion.TheForm.Parent<>nil then
+      Result:=fSynCompletion.TheForm.Parent.ScreenToClient(Result);
+  end;
+
+var
+  LogStartX: integer;
+  LogEndX: integer;
+  LogXY: TPoint;
+  ScreenXY: TPoint;
+  XY: TPoint;
+  Line: String;
 begin
+  debugln(['TCompOptBuildMacrosFrame.StartCompletion ']);
   UpdateCompletionValues;
+  fSynCompletion.ItemList.Assign(CompletionValues);
+
+  // get row and column of word start at cursor
+  LogXY:=CondSynEdit.LogicalCaretXY;
+  CondSynEdit.GetWordBoundsAtRowCol(LogXY,LogStartX,LogEndX);
+  // convert text row,column to screen row,column
+  ScreenXY:=CondSynEdit.PhysicalToLogicalPos(Point(LogStartX,LogXY.Y));
+  // convert screen row,column to coordinates for the completion form
+  XY:=EditorRowColumnToCompletionXY(ScreenXY,false);
+
+  if XY.Y+fSynCompletion.TheForm.Height>fSynCompletion.TheForm.Parent.ClientHeight
+  then begin
+    // place completion above text
+    XY:=EditorRowColumnToCompletionXY(ScreenXY,true);
+    dec(XY.Y,fSynCompletion.TheForm.Height);
+  end;
+
+  // show completion box
+  fSynCompletion.AddEditor(CondSynEdit);
+  Line:=CondSynEdit.LineText;
+  fSynCompletion.Execute(copy(Line,LogStartX,LogEndX-LogStartX),XY.X,XY.Y);
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateCompletionValues;
@@ -684,7 +769,7 @@ begin
     until false;
   end;
 
-  debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
+  //debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
 end;
 
 procedure TCompOptBuildMacrosFrame.SaveItemProperties;
@@ -722,6 +807,12 @@ begin
   BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
   BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
   BMDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+
+  fSynCompletion:=TSynCompletion.Create(Self);
+  fSynCompletion.TheForm.Parent:=Self;
+  fSynCompletion.OnExecute:=@fSynCompletionExecute;
+  fSynCompletion.OnCancel:=@fSynCompletionCancel;
+  fSynCompletion.OnValidate:=@fSynCompletionValidate;
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

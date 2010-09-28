@@ -838,7 +838,7 @@ type
     property CanUndo: boolean read GetCanUndo;
     property CaretX: Integer read GetCaretX write SetCaretX;
     property CaretY: Integer read GetCaretY write SetCaretY;
-    property CaretXY: TPoint read GetCaretXY write SetCaretXY;
+    property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
     property Color default clWhite;
