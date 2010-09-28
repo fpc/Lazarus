@@ -1648,11 +1648,20 @@ begin
     end;
 
     // add the defaults
+    // Note: see also ide/frames/compiler_buildmacro_options.pas procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited
     if not Result.IsDefined('TargetOS') then begin
       s:=Project1.CompilerOptions.TargetOS;
       if s='' then
         s:=GetDefaultTargetOS;
       Result.Values['TargetOS']:=s;
+    end;
+    if not Result.IsDefined('SrcOS') then begin
+      s:=GetDefaultSrcOSForTargetOS(Result.Values['TargetOS']);
+      Result.Values['SrcOS']:=s;
+    end;
+    if not Result.IsDefined('SrcOS2') then begin
+      s:=GetDefaultSrcOS2ForTargetOS(Result.Values['TargetOS']);
+      Result.Values['SrcOS2']:=s;
     end;
     if not Result.IsDefined('TargetCPU') then begin
       s:=Project1.CompilerOptions.TargetCPU;

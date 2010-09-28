@@ -223,6 +223,8 @@ begin
         ConflictBuildProperty:=BuildMacros.VarWithIdentifier(S);
         if ((ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildMacro))
         or (SysUtils.CompareText('TargetOS',S)=0)
+        or (SysUtils.CompareText('SrcOS',S)=0)
+        or (SysUtils.CompareText('SrcOS2',S)=0)
         or (SysUtils.CompareText('TargetCPU',S)=0)
         or (SysUtils.CompareText('LCLWidgetType',S)=0)
         then begin
