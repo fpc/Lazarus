@@ -1273,6 +1273,9 @@ procedure TCTConfigScriptEngine.AddError(const aMsg: string; ErrorPos: PChar);
 var
   Err: TCTCfgScriptError;
 begin
+  {$IFDEF VerboseCTCfgScript}
+  WriteDebugReportStack('ERROR: '+aMsg);
+  {$ENDIF}
   Err:=TCTCfgScriptError.Create(aMsg,ErrorPos);
   FErrors.Add(Err);
   if ErrorCount>=MaxErrorCount then
@@ -1369,12 +1372,12 @@ begin
   FStack.Push(ctcssBegin,AtomStart);
   repeat
     ReadRawNextPascalAtom(Src,AtomStart);
-    //debugln(['TCTConfigScriptEngine.RunBegin ',GetAtom]);
     if (AtomStart^=#0) then begin
       ErrorMissingEnd;
       break;
     end else if CompareIdentifiers('END',AtomStart)=0 then begin
       FStack.Pop;
+      ReadRawNextPascalAtom(Src,AtomStart);
       break;
     end else if AtomStart=';' then begin
       // skip
@@ -1444,6 +1447,7 @@ begin
     exit;
   end;
   Variables.Undefine(VarStart);
+  ReadRawNextPascalAtom(Src,AtomStart);
 end;
 
 procedure TCTConfigScriptEngine.RunAssignment(Skip: boolean);
@@ -1751,7 +1755,9 @@ function TCTConfigScriptEngine.RunExpression: boolean;
     ctcssExpression,ctcssOperator,ctcssRoundBracketOpen:
       Result:=true;
     else
+      {$IFDEF VerboseCTCfgScript}
       debugln(['TCTConfigScriptEngine.RunExpression.OperandAllowed no']);
+      {$ENDIF}
       AddError('operator expected but '+GetAtom+' found');
       Result:=false;
     end;
@@ -1763,7 +1769,9 @@ function TCTConfigScriptEngine.RunExpression: boolean;
     ctcssOperand:
       Result:=true;
     else
+      {$IFDEF VerboseCTCfgScript}
       debugln(['TCTConfigScriptEngine.RunExpression.BinaryOperatorAllowed no']);
+      {$ENDIF}
       AddError('operand expected but '+GetAtom+' found');
       Result:=false;
     end;
@@ -2188,7 +2196,7 @@ begin
       begin
         if (FStack.Top>=2) then begin
           LeftOperandItem:=@FStack.Items[FStack.Top-2];
-          // add right operand to left oprerand on stack
+          // add right operand to left operand on stack
           AddCTCSVariables(@OperandItem^.Operand,@LeftOperandItem^.Operand);
           // remove right operand and +
           FStack.Pop(2);
@@ -2465,7 +2473,7 @@ begin
       ReAllocMem(Item^.Operand.Name,0);
     dec(Top);
     if Top>=0 then
-      TopTyp:=Items[0].Typ
+      TopTyp:=Items[Top].Typ
     else
       TopTyp:=ctcssNone;
     dec(Count);

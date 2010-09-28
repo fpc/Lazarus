@@ -60,6 +60,7 @@ begin
 
   Engine:=TCTConfigScriptEngine.Create;
   try
+    //Engine.MaxErrorCount:=0;
     if not Engine.Execute(Src) then begin
       writeln('Script failed to run:');
       for i:=0 to Engine.ErrorCount-1 do
