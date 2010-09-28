@@ -39,7 +39,7 @@ end else if LCLWidgetType1='fpgui' then begin
     else
       fpGUIPlatform := 'x11';
   end;
-  CustomOptions := '-dfpgui'+fpGUIPlatform;
+  CustomOptions := ' -dfpgui'+fpGUIPlatform;
   UnitPath := base+'gui;'
              +base+'corelib;'
              +base+'corelib/'+fpGUIPlatform;
