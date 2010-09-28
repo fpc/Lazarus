@@ -611,8 +611,7 @@ procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
 begin
   BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
   CondSynEdit.Lines.Text:=Options.Conditionals;
-  EditorOpts.GetSynEditPreviewSettings(CondSynEdit);
-  CondSynEdit.ReadOnly:=false;
+  EditorOpts.GetSynEditSettings(CondSynEdit);
   if FHighlighter=nil then
   begin
     FHighlighter := TPreviewPasSyn.Create(Self);
