@@ -563,6 +563,10 @@ begin
   ConditionalsGroupBox.Caption:='Conditionals:';
 
   CondSynEdit.OnStatusChange:=@CondSynEditStatusChange;
+
+  BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  BMDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;
@@ -586,9 +590,6 @@ end;
 procedure TCompOptBuildMacrosFrame.Setup(ADialog: TAbstractOptionsEditorDialog
   );
 begin
-  BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BMDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
 end;
 
 class function TCompOptBuildMacrosFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
