@@ -892,7 +892,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Width = 506
       Panels = <      
         item
-          Width = 50
+          Width = 80
         end      
         item
           Width = 50

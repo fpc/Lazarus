@@ -175,7 +175,7 @@ end;
 
 procedure TCompOptBuildMacrosFrame.fSynCompletionCancel(Sender: TObject);
 begin
-  debugln(['TCompOptBuildMacrosFrame.fSynCompletionCancel ',fSynCompletion.TheForm.Visible]);
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionCancel ',fSynCompletion.TheForm.Visible]);
   if fSynCompletion.TheForm.Visible then
     fSynCompletion.Deactivate;
   fSynCompletion.RemoveEditor(CondSynEdit);
@@ -183,7 +183,7 @@ end;
 
 procedure TCompOptBuildMacrosFrame.fSynCompletionExecute(Sender: TObject);
 begin
-  debugln(['TCompOptBuildMacrosFrame.fSynCompletionExecute ']);
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionExecute ']);
 end;
 
 procedure TCompOptBuildMacrosFrame.fSynCompletionValidate(Sender: TObject;
@@ -196,7 +196,7 @@ var
   TxtStartX: integer;
   TxtEndX: integer;
 begin
-  debugln(['TCompOptBuildMacrosFrame.fSynCompletionValidate ']);
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionValidate ']);
   i:=fSynCompletion.Position;
   if (i>=0) and (i<CompletionValues.Count) then begin
     s:=CompletionValues[i];
@@ -634,7 +634,7 @@ var
   XY: TPoint;
   Line: String;
 begin
-  debugln(['TCompOptBuildMacrosFrame.StartCompletion ']);
+  //debugln(['TCompOptBuildMacrosFrame.StartCompletion ']);
   UpdateCompletionValues;
   fSynCompletion.ItemList.Assign(CompletionValues);
 
@@ -774,9 +774,10 @@ begin
     until false;
   end;
 
+  // sort alphabetically
   TStringList(FCompletionValues).Sort;
 
-  // push history upwards
+  // push recently used words upwards
   for i:=CompletionHistory.Count-1 downto 0 do begin
     j:=CompletionValues.IndexOf(CompletionHistory[i]);
     if j>0 then

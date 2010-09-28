@@ -1236,8 +1236,8 @@ end;
 
 type
   TRecordUsedToStoreEachEditorVars = record
-    kp: TKeyPressEvent;
-    kd: TKeyEvent;
+    KeyPress: TKeyPressEvent;
+    KeyDown: TKeyEvent;
     UTF8KeyPress: TUTF8KeyPressEvent;
     NoNextKey: boolean;
   end;
@@ -1381,7 +1381,7 @@ var
 begin
   if Key=VK_UNKNOWN then exit;
   //debugln('TSynCompletion.EditorKeyDown A ',dbgs(Key));
-  if (Form<>nil) and (Form.Visible) then begin
+  if (Form<>nil) and Form.Visible then begin
     // completion form is visible, but the synedit got a key
     // -> redirect to form
     Form.KeyDown(Key,Shift);
@@ -1403,8 +1403,8 @@ begin
         Key := VK_UNKNOWN;
       end;
     end;
-    if Assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, shift);
+    if Assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown(sender, key, shift);
   end;
 end;
 
@@ -1434,10 +1434,11 @@ procedure TSynCompletion.EditorKeyPress(Sender: TObject; var Key: char);
 var
   i: integer;
 begin
+  //debugln(['TSynCompletion.EditorKeyPress ']);
   i := fEditors.IndexOf(Sender);
   if i <> -1 then begin
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp(sender, key);
+    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress(sender, key);
   end;
 end;
 
@@ -1446,6 +1447,7 @@ procedure TSynCompletion.EditorUTF8KeyPress(Sender: TObject;
 var
   i: integer;
 begin
+  //debugln(['TSynCompletion.EditorUTF8KeyPress ']);
   i := fEditors.IndexOf(Sender);
   if i <> -1 then begin
     if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
@@ -1477,9 +1479,9 @@ begin
   if fEditors.IndexOf(aEditor) = -1 then begin
     fEditors.Add(aEditor);
     new(p);
-    p^.kp := aEditor.OnKeyPress;
+    p^.KeyPress := aEditor.OnKeyPress;
     p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
-    p^.kd := aEditor.OnKeyDown;
+    p^.KeyDown := aEditor.OnKeyDown;
     fEditstuffs.add(p);
     aEditor.FreeNotification(self);
     if not (csDesigning in ComponentState) then begin
@@ -1528,8 +1530,8 @@ begin
   if fEditors.IndexOf(aEditor) = -1 then begin
     fEditors.Add(aEditor);
     new(p);
-    p^.kp := aEditor.OnKeyPress;
-    p^.kd := aEditor.OnKeyDown;
+    p^.KeyPress := aEditor.OnKeyPress;
+    p^.KeyDown := aEditor.OnKeyDown;
     p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
     p^.NoNextKey := false;
     fEditstuffs.add(p);
@@ -1589,8 +1591,8 @@ begin
       Key := 0;
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
     end;
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, Shift);
+    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyDown(sender, key, Shift);
   end;
 end;
 
@@ -1604,8 +1606,8 @@ begin
       key := #0;
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
     end;
-    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp) then
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp(sender, key);
+    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).KeyPress(sender, key);
   end;
 end;
 
