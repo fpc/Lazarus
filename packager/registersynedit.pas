@@ -225,7 +225,7 @@ begin
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
 
-  RegisterPropertyEditor(ClassTypeInfo(TSynGutterPartList), nil,
+  RegisterPropertyEditor(ClassTypeInfo(TSynGutterPartListBase), nil,
     '', TSynPropertyEditGutterPartList);
 
   RegisterGutterPartClass(TSynGutterLineNumber, syndsLineNumbers);
