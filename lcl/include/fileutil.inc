@@ -558,9 +558,9 @@ function FileIsText(const AFilename: string; out FileReadable: boolean): boolean
 var
   fs: TFileStream;
   Buf: string;
-  Len, i: integer;
+  Len: integer;
   NewLine: boolean;
-  Size: Int64;
+  p: PChar;
 begin
   Result:=false;
   FileReadable:=true;
@@ -569,20 +569,32 @@ begin
     try
       // read the first 1024 bytes
       Len:=1024;
-      Size:=fs.Size;
-      if Len>Size then Len:=integer(Size);
+      SetLength(Buf,1024+1);
+      Len:=fs.Read(Buf[1],length(Buf));
       if Len>0 then begin
-        SetLength(Buf,Len);
-        fs.Read(Buf[1],length(Buf));
+        Buf[Len+1]:=#0;
+        p:=PChar(Buf);
+        if (p[0]=#$EF) and (p[1]=#$BB) and (p[2]=#$BF) then begin
+          // UTF-8 BOM (Byte Order Mark)
+          inc(p,3);
+        end else if (p[0]=#$FF) and (p[1]=#$FE) then begin
+          // ucs-2le BOM FF FE
+          inc(p,2);
+        end else if (p[0]=#$FE) and (p[1]=#$FF) then begin
+          // ucs-2be BOM FE FF
+          inc(p,2);
+        end;
         NewLine:=false;
-        for i:=1 to length(Buf) do begin
-          case Buf[i] of
+        while true do begin
+          case p^ of
+          #0: if p-PChar(Buf)>=Len then break;
           // #10,#13: new line
           // #12: form feed
           // #26: end of file
-          #0..#8,#11,#14..#25,#27..#31: exit;
+          #1..#8,#11,#14..#25,#27..#31: exit;
           #10,#13: NewLine:=true;
           end;
+          inc(p);
         end;
         if NewLine or (Len<1024) then
           Result:=true;

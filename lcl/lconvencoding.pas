@@ -5841,19 +5841,19 @@ begin
     exit;
   end;
   
-  // try BOM (Byte Order Mark)
+  // try UTF-8 BOM (Byte Order Mark)
   if CompareI(@s[1],#$EF#$BB#$BF,3) then begin
     Result:=EncodingUTF8BOM;
     exit;
   end;
 
-  // try BOM FF FE for ucs-2le
+  // try ucs-2le BOM FF FE
   if (length(s)>=2) and (s[1]=#$FF) and (s[2]=#$FE) then begin
     Result:=EncodingUCS2LE;
     exit;
   end;
 
-  // try BOM FE FF for ucs-2be
+  // try ucs-2be BOM FE FF
   if (length(s)>=2) and (s[1]=#$FE) and (s[2]=#$FF) then begin
     Result:=EncodingUCS2BE;
     exit;
