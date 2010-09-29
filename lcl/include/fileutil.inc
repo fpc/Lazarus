@@ -555,6 +555,8 @@ begin
 end;
 
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
+const
+  BufLen = 1024;
 var
   fs: TFileStream;
   Buf: string;
@@ -569,9 +571,9 @@ begin
     fs := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
     try
       // read the first 1024 bytes
-      Len:=1024;
-      SetLength(Buf,1024+1);
-      Len:=fs.Read(Buf[1],length(Buf));
+      Len:=BufLen;
+      SetLength(Buf,BufLen+1);
+      Len:=fs.Read(Buf[1],BufLen);
       if Len>0 then begin
         Buf[Len+1]:=#0;
         p:=PChar(Buf);
