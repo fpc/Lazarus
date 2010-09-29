@@ -13,7 +13,7 @@ uses
 {$R *.res}
 
 begin
-  Application.Title := 'Bubble series demo';
+  Application.Title := 'Multi-valued series demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
