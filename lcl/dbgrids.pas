@@ -2197,7 +2197,7 @@ begin
   {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   case Gz of
-    gzFixedCells, gzFixedRows, gzFixedCols:
+    gzFixedCells, gzFixedCols:
       doInherited;
     else
       begin
@@ -2206,14 +2206,22 @@ begin
         SetFocus;
 
         P:=MouseToCell(Point(X,Y));
+        if Gz=gzFixedRows then
+          P.X := Col;
+
         if P.Y=Row then begin
           //doAcceptValue;
 
-          if ssCtrl in Shift then
-            ToggleSelectedRow
+          if ssCtrl in Shift then begin
+            doMouseDown;
+            ToggleSelectedRow;
+          end
           else begin
             ClearSelection(true);
-            doInherited;
+            if gz=gzFixedRows then
+              doMouseDown
+            else
+              doInherited;
           end;
 
         end else begin
