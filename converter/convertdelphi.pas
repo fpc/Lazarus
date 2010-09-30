@@ -510,10 +510,9 @@ begin
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
   fUnitsToComment:=TStringList.Create;
-  IDEMessagesWindow.AddMsg('Converting unit file '+fOrigUnitFilename,'',-1);
-  Application.ProcessMessages;
-  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
   try
+    IDEMessagesWindow.AddMsg('Converting unit file '+fOrigUnitFilename,'',-1);
+    Application.ProcessMessages;
     fLFMBuffer:=nil;
     // Get DFM file name and close it in editor.
     DfmFilename:=GetDfmFileName;
@@ -568,16 +567,20 @@ begin
     // Check from the project if this is a console application.
     ConsApp:=Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp;
     // Do the actual code conversion.
-    ConvTool.Ask:=Assigned(fOwnerConverter);
-    ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
-    ConvTool.HasFormFile:=DfmFilename<>'';
-    ConvTool.Settings:=fSettings;
-    ConvTool.UnitsToRemove:=fUnitsToRemove;
-    ConvTool.UnitsToRename:=fUnitsToRename;
-    ConvTool.UnitsToComment:=fUnitsToComment;
-    Result:=ConvTool.Convert(ConsApp);
+    ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+    try
+      ConvTool.Ask:=Assigned(fOwnerConverter);
+      ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
+      ConvTool.HasFormFile:=DfmFilename<>'';
+      ConvTool.Settings:=fSettings;
+      ConvTool.UnitsToRemove:=fUnitsToRemove;
+      ConvTool.UnitsToRename:=fUnitsToRename;
+      ConvTool.UnitsToComment:=fUnitsToComment;
+      Result:=ConvTool.Convert(ConsApp);
+    finally
+      ConvTool.Free;
+    end;
   finally
-    ConvTool.Free;
     fUnitsToComment.Free;
     fUnitsToRename.Free;
     fUnitsToRemove.Free;
