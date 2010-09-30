@@ -11859,7 +11859,7 @@ msgid "Prompt for value"
 msgstr "Değer için sor"
 
 #: lazarusidestrconsts.lisproperties
-msgid "Properties (replace or delete)"
+msgid "Properties (replace or remove)"
 msgstr ""
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption

@@ -11896,7 +11896,9 @@ msgid "Prompt for value"
 msgstr "Perguntar por valor"
 
 #: lazarusidestrconsts.lisproperties
-msgid "Properties (replace or delete)"
+#, fuzzy
+#| msgid "Properties (replace or delete)"
+msgid "Properties (replace or remove)"
 msgstr "Propriedades (substituir ou excluir)"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption

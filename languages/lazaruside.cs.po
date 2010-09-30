@@ -11832,7 +11832,9 @@ msgid "Prompt for value"
 msgstr "Dotázat se na hodnotu"
 
 #: lazarusidestrconsts.lisproperties
-msgid "Properties (replace or delete)"
+#, fuzzy
+#| msgid "Properties (replace or delete)"
+msgid "Properties (replace or remove)"
 msgstr "Vlastnosti (nahradit nebo smazat)"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption

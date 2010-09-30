@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-28 00:55+0300\n"
+"PO-Revision-Date: 2010-10-01 03:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11906,7 +11906,8 @@ msgid "Prompt for value"
 msgstr "Подсказка по значению"
 
 #: lazarusidestrconsts.lisproperties
-msgid "Properties (replace or delete)"
+#| msgid "Properties (replace or delete)"
+msgid "Properties (replace or remove)"
 msgstr "Свойства (заменять или удалять)"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
