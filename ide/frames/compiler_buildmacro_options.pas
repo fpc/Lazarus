@@ -93,6 +93,7 @@ type
     FBuildMacros: TIDEBuildMacros;
     FIdleConnected: Boolean;
     FIsPackage: boolean;
+    FMacrosOwner: TObject;
     FStatusMessage: string;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
@@ -125,6 +126,7 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros; // local copy
+    property MacrosOwner: TObject read FMacrosOwner;
     procedure LoadFromOptions(Options: TBaseCompilerOptions);
     procedure SaveToOptions(Options: TBaseCompilerOptions);
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
@@ -357,6 +359,7 @@ var
   i: Integer;
   TVNode: TTreeNode;
 begin
+  debugln(['TCompOptBuildMacrosFrame.BMAddMacroSpeedButtonClick ',GetMacroNamePrefix(cbmpLong)]);
   i:=1;
   repeat
     NewIdentifier:=GetMacroNamePrefix(cbmpLong)+IntToStr(BuildMacros.Count+1);
@@ -433,7 +436,13 @@ procedure TCompOptBuildMacrosFrame.SetBuildMacros(
   const AValue: TIDEBuildMacros);
 begin
   if FBuildMacros=AValue then exit;
-  BuildMacros.Assign(AValue);
+  if AValue<>nil then
+  begin
+    BuildMacros.Assign(AValue);
+    FMacrosOwner:=AValue.Owner;
+  end else begin
+    FMacrosOwner:=nil;
+  end;
   RebuildTreeView;
   UpdateItemPropertyControls;
   IdleConnected:=true;
@@ -549,16 +558,16 @@ begin
     Result:=''
   else
     Result:='BuildMacro';
-  if (BuildMacros=nil) or (BuildMacros.Owner=nil) then exit;
-  if BuildMacros.Owner is TPkgCompilerOptions then
+  if (MacrosOwner=nil) then
+    exit;
+  if MacrosOwner is TPkgCompilerOptions then
   begin
-    Result:=TPkgCompilerOptions(BuildMacros.Owner).LazPackage.Name;
+    Result:=TPkgCompilerOptions(MacrosOwner).LazPackage.Name;
     if ord(PrefixType)>=ord(cbmpMedium) then
       Result:=Result+'_';
     if PrefixType=cbmpLong then
       Result:=Result+'macro';
   end;
-
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateItemPropertyControls;
