@@ -91,12 +91,10 @@
     - history
 
   ToDo:
-  - discuss captions
   - resourcestrings
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package
-    - LCLWidgetLinkerAddition
   - make FCL a package
   - create package lazbuildsystem
     - move
