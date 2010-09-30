@@ -9585,7 +9585,7 @@ begin
       end;
       val := d;
     end
-    else if (DataSet = nil) or (Field = nil) then
+    else if (CurBand.View<>nil) and ((DataSet = nil) or (Field = nil)) then
     begin
       {$IFDEF DebugLR}
       DebugLn('%sCurBand=%s CurBand.View=%s AggrBand=%s',
@@ -9654,7 +9654,7 @@ begin
         end
         else if AggrBand.Visible then
         begin
-          val := StrToFloat(Copy(AggrBand.Values.Values[VarName], 2, 255));
+          val := StrToFloatDef(Copy(AggrBand.Values.Values[VarName], 2, 255),0);
           if dk = dkAvg then
             val := val / AggrBand.Count;
           {$ifdef DebugLR}
