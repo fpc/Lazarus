@@ -1268,7 +1268,7 @@ begin
     fillchar(sspc[1], nspc*2, ' ');
 end;
 
-function typ2str(typ: TfrBandType): string;
+function Bandtyp2str(typ: TfrBandType): string;
 begin
   case typ of
     btReportTitle: result := 'btReportTitle';
@@ -1299,7 +1299,27 @@ end;
 
 function BandInfo(Band: TfrBand): string;
 begin
-  result := format('"%s":%s typ=%s',[Band.Name, dbgsname(band), typ2str(Band.typ)]);
+  result := format('"%s":%s typ=%s',[Band.Name, dbgsname(band), BandTyp2str(Band.typ)]);
+end;
+
+function ViewInfo(View: TfrView): string;
+begin
+  result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
+end;
+
+function VarStr(V:Variant): string;
+begin
+  if VarIsNull(v) then
+    result := '{null}'
+  else
+  if VarIsEmpty(v) then
+    result := '{empty}'
+  else begin
+    if VarIsStr(v) then
+      result := quotedstr(v)
+    else
+      result := v;
+  end;
 end;
 
 {$ENDIF}
@@ -5148,8 +5168,8 @@ begin
   if UseY then
     y := Parent.CurY;
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.DoDraw INI sfy=%d y=%d dy=%d XAdjust=%d CurY=%d Stretch=%d PageBreak=%d',
-    [sspc, sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
+  DebugLn('%sTfrBand.DoDraw INI Band=%s sfy=%d y=%d dy=%d XAdjust=%d CurY=%d Stretch=%d PageBreak=%d',
+    [sspc, bandInfo(self), sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
   IncSpc(1);
   {$ENDIF}
     
@@ -5376,6 +5396,17 @@ begin
   end
 end;
 
+{$ifdef DebugLR}
+function DecodeValue(s:string):string;
+var
+  p: Integer;
+begin
+  result := s;
+  p := pos('=',result) + 2;
+  if result<>'' then
+    insert('|',result,p);
+end;
+{$endif}
 procedure TfrBand.DoAggregate;
 var
   i: Integer;
@@ -5390,7 +5421,13 @@ begin
  for i := 0 to Values.Count - 1 do
   begin
     s := Values[i];
+    {$ifdef DebugLR}
+    DbgOut(sspc,'Mangling Values[',dbgs(i),']=',QuotedStr(DecodeValue(s)),' ==> ');
+    {$endif}
     Values[i] := Copy(s, 1, Pos('=', s) - 1) + '=0' + Copy(s, Pos('=', s) + 2, 255);
+    {$ifdef DebugLR}
+    DebugLn(QuotedStr(DecodeValue(Values[i])));
+    {$endif}
   end;
 
   v := Visible;
@@ -6314,11 +6351,11 @@ var
     end;
 
   begin
+    b := Bands[Bnds[Level, bpData]];
     {$IFDEF DebugLR}
-    DebugLn('%sDoop(Level=%d) INI',[sspc,Level]);
+    DebugLn('%sDoop(Level=%d) INI b=%s mode=',[sspc,Level,bandinfo(b)]);
     IncSpc(1);
     {$ENDIF}
-    b := Bands[Bnds[Level, bpData]];
     while (b <> nil) and (b.Dataset <> nil) do
     begin
       b.ResetLastValues;
@@ -6387,7 +6424,7 @@ var
                   curGroupValue := frParser.Calc(b1.GroupCondition);
                   {$IFDEF DebugLR}
                   DebugLn('%sGroupCondition=%s LastGroupValue=%s curGroupValue=%s',
-                    [sspc,b1.GroupCondition,string(b1.LastGroupValue),string(curGroupValue)]);
+                    [sspc,b1.GroupCondition,varstr(b1.LastGroupValue),varstr(curGroupValue)]);
                   {$ENDIF}
                   if (curGroupValue <> b1.LastGroupValue) or
                     b.Dataset.Eof then
@@ -9573,9 +9610,15 @@ begin
           if AggrBand.Typ = btCrossFooter then
             VarName := VarName + '00' else
             VarName := VarName + IntToStr(CurPage.ColPos);
+        {$ifdef DebugLR}
+        dbgOut(sspc, 'VarName=', QuotedStr(VarName));
+        {$endif}
         if not AggrBand.Visible and (AnsiCompareText(CurBand.View.Name, s1) = 0) then
         begin
           s1 := AggrBand.Values.Values[VarName];
+          {$IFDEF DebugLR}
+          dbgOut(' values[',QuotedStr(VarName),']=',QuotedStr(DecodeValue(s1)));
+          {$ENDIF}
           if (s1='') or ((s1 <> '') and (s1[1] <> '1')) then
           begin
             s1 := Copy(s1, 2, 255);
@@ -9584,6 +9627,9 @@ begin
               vv := frParser.Calc(p1);
             if  VarIsNull(vv) or (TVarData(vv).VType=varEmpty)  then
               vv := 0;
+            {$IFDEF DebugLR}
+            dbgOut(' Calc(',QuotedStr(p1),')=',varstr(vv));
+            {$ENDIF}
             d := vv;
             if s1 = '' then
               if dk = dkMin then s1 := '1e200'
@@ -9598,13 +9644,22 @@ begin
               dkSum: v := v + d;
             end;
             AggrBand.Values.Values[VarName] := '1' + FloatToStr(v);
+            {$IFDEF DebugLR}
+            dbgOut(' NewVal=',dbgs(v),' values[',Quotedstr(VarName),']=',DecodeValue(AggrBand.Values.Values[VarName]));
+            {$ENDIF}
           end;
+          {$ifdef DebugLR}
+          DebugLn('');
+          {$endif}
         end
         else if AggrBand.Visible then
         begin
           val := StrToFloat(Copy(AggrBand.Values.Values[VarName], 2, 255));
           if dk = dkAvg then
             val := val / AggrBand.Count;
+          {$ifdef DebugLR}
+          DebugLn('%s Value=%s',[sspc,Val]);
+          {$endif}
         end;
       end;
     end;
