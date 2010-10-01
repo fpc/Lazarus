@@ -4874,6 +4874,19 @@ resourcestring
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
   lisInvalidBuildMacroTheNameIsAKeyword = 'Invalid build macro "%s". The name '
     +'is a keyword.';
+  lisTheBuildMacroDoesNotBeginWith = 'The build macro "%s" does not begin '
+    +'with "%s".';
+  lisRenameTo = 'Rename to %s';
+  lisAddValueToMacro = 'Add value to macro %s';
+  lisDeleteMacro = 'Delete macro %s';
+  lisNoMacroSelected = 'No macro selected';
+  lisMacro = 'Macro %s';
+  lisAddNewMacro = 'Add new macro';
+  lisNoErrors = 'No errors';
+  lisBuildMacros2 = 'Build macros:';
+  lisHintADefaultValueCanBeDefinedInTheConditionals = 'Hint: A default value '
+    +'can be defined in the conditionals.';
+  lisConditionals = 'Conditionals:';
 
 implementation
 

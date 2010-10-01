@@ -270,9 +270,10 @@ begin
         if (Prefix<>'') and (SysUtils.CompareText(Prefix,copy(S,1,length(Prefix)))<>0)
         then  begin
           BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
-          DlgResult:=QuestionDlg('Warning',
-            'The build macro "'+S+'" does not begin with "'+Prefix+'".',
-            mtWarning,[mrCancel,mrYes,'Rename to '+BetterName,mrIgnore],0);
+          DlgResult:=QuestionDlg(lisCCOWarningCaption,
+            Format(lisTheBuildMacroDoesNotBeginWith, [S, Prefix]),
+            mtWarning, [mrCancel, mrYes, Format(lisRenameTo, [BetterName]),
+              mrIgnore], 0);
           if DlgResult=mrIgnore then begin
           end else if DlgResult=mrYes then
             S:=BetterName
@@ -317,7 +318,7 @@ begin
         begin
           Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
           if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
-            DlgResult:=MessageDlg('Warning',
+            DlgResult:=MessageDlg(lisCCOWarningCaption,
               Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
               mtWarning,[mbCancel,mbIgnore],0);
             if DlgResult<>mrIgnore then
@@ -359,7 +360,7 @@ var
   i: Integer;
   TVNode: TTreeNode;
 begin
-  debugln(['TCompOptBuildMacrosFrame.BMAddMacroSpeedButtonClick ',GetMacroNamePrefix(cbmpLong)]);
+  //debugln(['TCompOptBuildMacrosFrame.BMAddMacroSpeedButtonClick ',GetMacroNamePrefix(cbmpLong)]);
   i:=1;
   repeat
     NewIdentifier:=GetMacroNamePrefix(cbmpLong)+IntToStr(BuildMacros.Count+1);
@@ -577,21 +578,23 @@ var
 begin
   GetSelectedNode(aBuildMacro,NodeType);
   if aBuildMacro<>nil then begin
-    BuildMacroSelectedGroupBox.Caption:='Macro '+aBuildMacro.Identifier;
+    BuildMacroSelectedGroupBox.Caption:=Format(lisMacro, [aBuildMacro.Identifier
+      ]);
     BuildMacroSelectedGroupBox.Enabled:=true;
     BuildMacroDescriptionEdit.Enabled:=true;
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
-    BMAddMacroValueSpeedButton.Hint:='Add value to macro '+aBuildMacro.Identifier;
-    BMDeleteSpeedButton.Hint:='Delete macro '+aBuildMacro.Identifier;
+    BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [
+      aBuildMacro.Identifier]);
+    BMDeleteSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier]);
   end else begin
-    BuildMacroSelectedGroupBox.Caption:='No macro selected';
+    BuildMacroSelectedGroupBox.Caption:=lisNoMacroSelected;
     BuildMacroSelectedGroupBox.Enabled:=false;
     BuildMacroDescriptionEdit.Enabled:=false;
     BuildMacroDescriptionEdit.Text:='';
     BMAddMacroValueSpeedButton.Hint:='';
     BMDeleteSpeedButton.Hint:='';
   end;
-  BMAddMacroSpeedButton.Hint:='Add new macro';
+  BMAddMacroSpeedButton.Hint:=lisAddNewMacro;
   BMAddMacroValueSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
   BMDeleteSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
@@ -603,7 +606,7 @@ begin
   if fEngine.ErrorCount>0 then begin
     StatusMessage:=fEngine.GetErrorStr(0);
   end else begin
-    StatusMessage:='No errors';
+    StatusMessage:=lisNoErrors;
   end;
 end;
 
@@ -816,16 +819,17 @@ begin
   FBuildMacros:=TIDEBuildMacros.Create(nil);
   fEngine:=TCTConfigScriptEngine.Create;
 
-  MacrosGroupBox.Caption:='Build macros:';
+  MacrosGroupBox.Caption:=lisBuildMacros2;
   BuildMacrosTreeView.Images := IDEImages.Images_24;
   fVarImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildMacroDefaultLabel.Caption:='Hint: A default value can be defined in the conditionals.';
-  BuildMacroDescriptionLabel.Caption:='Description:';
+  BuildMacroDefaultLabel.Caption:=
+    lisHintADefaultValueCanBeDefinedInTheConditionals;
+  BuildMacroDescriptionLabel.Caption:=lisCodeToolsDefsDescription;
 
-  ConditionalsGroupBox.Caption:='Conditionals:';
+  ConditionalsGroupBox.Caption:=lisConditionals;
 
   CondSynEdit.OnStatusChange:=@CondSynEditStatusChange;
 
@@ -852,7 +856,7 @@ end;
 
 function TCompOptBuildMacrosFrame.GetTitle: String;
 begin
-  Result:='Build macros';
+  Result:=lisBuildMacros;
 end;
 
 procedure TCompOptBuildMacrosFrame.ReadSettings(AOptions: TAbstractIDEOptions);
