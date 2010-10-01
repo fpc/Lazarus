@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-01 03:13+0300\n"
+"PO-Revision-Date: 2010-10-02 02:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3461,6 +3461,10 @@ msgstr "Добавить файлы каталога"
 msgid "Additional compiler options inherited from packages"
 msgstr "Дополнительные параметры компилятора, унаследованные от пакетов"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr "Добавить новый макрос"
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Добавить новый набор"
@@ -3504,6 +3508,10 @@ msgstr "Добавить модуль (не рекомендуется)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Добавить значение:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr "Добавить значение в макрос %s"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3904,6 +3912,10 @@ msgstr "Сборка Lazarus не удалась"
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
 msgstr "Макросы сборки"
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
+msgstr "Макросы сборки:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -5360,6 +5372,10 @@ msgstr "&Тест"
 msgid "Condition"
 msgstr "Условие"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr "Условные определения"
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Каталог конфигурации Lazarus"
@@ -6012,6 +6028,10 @@ msgstr "Удалить режим сборки %s%s%s?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Удаление файла не удалось"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr "Удалить макрос %s"
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7200,6 +7220,10 @@ msgstr "Справка по сообщениям компилятора FreePasc
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
 msgstr "Скрыть сообщение с помощью директивы"
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
+msgstr "Подсказка: значение по умолчанию может быть задано условными определениями."
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -8670,6 +8694,10 @@ msgstr "Файлы LRS"
 msgid "Mac Pascal"
 msgstr "Mac Pascal"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr "Макрос %s"
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Введите данные"
@@ -9972,6 +10000,10 @@ msgstr "Не выбрано кода"
 msgid "No compiler options inherited."
 msgstr "Не унаследовано параметров компилятора."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr "Ошибок нет"
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "подсказок нет"
@@ -9983,6 +10015,10 @@ msgstr "Окно IDE не выбрано"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Файл LFM отсутствует"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr "Макрос не выбран"
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10360,6 +10396,10 @@ msgstr "Пакеты для установки в IDE"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "модуль пакета"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ", обработано "
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12096,6 +12136,10 @@ msgstr "Переименовать файл?"
 msgid "Rename file failed"
 msgstr "Не удалось переименовать файл"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr "Переименовать в %s"
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Преобразовать в нижний регистр"
@@ -12767,6 +12811,10 @@ msgstr "Каталог проб"
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
 msgstr "Application Bundle для \"%s\" успешно создан"
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
+msgstr "Макрос сборки \"%s\" не начинается с \"%s\"."
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13899,6 +13947,14 @@ msgstr "Если включено, текущие параметры сохра�
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "При перемещении курсора в редакторе исходного кода показывать текущий узел в обозревателе кода"
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr "%s, с включаемыми файлами %s"
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
+msgstr ", с включаемыми файлами "
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

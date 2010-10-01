@@ -3451,6 +3451,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Opsi kompilator tambahan diturunkan dari paket"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr ""
@@ -3493,6 +3497,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
@@ -3894,6 +3902,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5354,6 +5366,10 @@ msgstr "Uji"
 msgid "Condition"
 msgstr ""
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Direktori konfig Lazarus"
@@ -6004,6 +6020,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Penghapusan file gagal"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7193,6 +7213,10 @@ msgstr "Bantuan untuk pesan Kompilator FreePascal"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8663,6 +8687,10 @@ msgstr ""
 msgid "Mac Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Masukkan data"
@@ -9975,6 +10003,10 @@ msgstr "Tidak ada kode dipilih"
 msgid "No compiler options inherited."
 msgstr "Tidak ada opsi kompilator diturunkan."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -9985,6 +10017,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
+msgstr ""
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoname
@@ -10363,6 +10399,10 @@ msgstr "Paket yang diinstalasi dalam IDE"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
 msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
@@ -12103,6 +12143,10 @@ msgstr "Ganti nama file?"
 msgid "Rename file failed"
 msgstr "Penggantian nama file gagal"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Ganti nama ke huruf kecil"
@@ -12768,6 +12812,10 @@ msgstr "Direktori Tes"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13903,6 +13951,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages

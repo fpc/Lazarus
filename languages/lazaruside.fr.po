@@ -3467,6 +3467,10 @@ msgstr "Ajouter fichiers du répertoire"
 msgid "Additional compiler options inherited from packages"
 msgstr "Options de compilation additionnelles héritées des paquets"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Ajouter un nouveau jeux"
@@ -3510,6 +3514,10 @@ msgstr "Ajoutez une unité(non recommandé)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Ajoute une valeur"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3911,6 +3919,10 @@ msgstr "La construction de Lazarus a échoué"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5370,6 +5382,10 @@ msgstr "&Test"
 msgid "Condition"
 msgstr "Condition"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Répertoire de configuration de Lazarus"
@@ -6025,6 +6041,10 @@ msgstr "Supprimer le mode construction %s%s%s?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "La suppression du fichier a échoué"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7214,6 +7234,10 @@ msgstr "Aide pour les messages du compilateur FreePascal"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8685,6 +8709,10 @@ msgstr "montre le point d'exécution"
 msgid "Mac Pascal"
 msgstr "Mac Pascal"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Entrez les données"
@@ -9988,6 +10016,10 @@ msgstr "Aucun code sélectionné"
 msgid "No compiler options inherited."
 msgstr "Aucune option de compilateur héritée"
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "pas de conseil"
@@ -9999,6 +10031,10 @@ msgstr "Pas de fenêtre iDE sélectionné"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "pas de fichier LFM"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10377,6 +10413,10 @@ msgstr "Paquets à installer dans l'EDI"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "Unité du paquet"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12114,6 +12154,10 @@ msgstr "Renommer le fichier ?"
 msgid "Rename file failed"
 msgstr "Le changement du nom du fichier a échoué"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Renommer en minuscules"
@@ -12781,6 +12825,10 @@ msgstr "Répertoire de test"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13913,6 +13961,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-25 03:06+0300\n"
+"PO-Revision-Date: 2010-10-02 01:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -39,7 +39,7 @@ msgstr "основной тип \"%s\" не найден"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "begin на %s без end"
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
@@ -59,7 +59,7 @@ msgstr "ожидается открывающая скобка, но найде�
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "символьная константа вне диапазона"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -299,23 +299,23 @@ msgstr "нет доступа для выполнения %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "ожидается (, но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "ожидается ), но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "ожидается оператор :=, но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "ожидается идентификатор, но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedstatementbutfound
 msgid "expected statement, but found %s"
-msgstr ""
+msgstr "ожидается оператор, но найдено %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -529,7 +529,7 @@ msgstr "неверный переключатель режима \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "неверный оператор %s"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -581,7 +581,7 @@ msgstr "не найдено описание типа метода"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "отсутствует оператор :="
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -645,19 +645,19 @@ msgstr "не найден старый метод: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "ожидается операнд, но найдено %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "ожидается операнд, но найдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "ожидается оператор, но найдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "ожидается оператор, но найдено %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -789,7 +789,7 @@ msgstr "Определение не имеет простого типа"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "ожидается then, но найдено %s"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -833,7 +833,7 @@ msgstr "неожиданное ключевое слово \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "неожиданное ключевое слово \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

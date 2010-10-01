@@ -3418,6 +3418,10 @@ msgstr "Přidat soubory nebo z adresáře"
 msgid "Additional compiler options inherited from packages"
 msgstr "Přídavné volby překladače zděděné z balíčků."
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Přidat novou sadu"
@@ -3461,6 +3465,10 @@ msgstr "Přidat jednotku (nedoporučeno)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Přidat hodnotu:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3860,6 +3868,10 @@ msgstr "Sestavení Lazarusu selhalo"
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
 msgstr "Sestavovací makra"
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -5315,6 +5327,10 @@ msgstr "&Test"
 msgid "Condition"
 msgstr "Podmínka"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Konfigurační adresář Lazarusu"
@@ -5969,6 +5985,10 @@ msgstr "Odstranit režim sestavení %s%s%s?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Odstranění souboru selhalo"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7155,6 +7175,10 @@ msgstr "Nápověda pro zprávy překladače FreePascalu"
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
 msgstr "Skrýt zprávy pomocí direktivy"
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
+msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -8621,6 +8645,10 @@ msgstr "zahrnuté soubory lrs"
 msgid "Mac Pascal"
 msgstr "Mac Pascal"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Zadejte údaje"
@@ -9902,6 +9930,10 @@ msgstr "Nevybraný žádný kód"
 msgid "No compiler options inherited."
 msgstr "Nezděděny žádné volby překladače."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "žádný tip"
@@ -9913,6 +9945,10 @@ msgstr "Nevybráno žádné okno IDE"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Žádný soubor LFM"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10289,6 +10325,10 @@ msgstr "Balíčky k instalování do IDE"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "jednotka balíčku"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12022,6 +12062,10 @@ msgstr "Přejmenovat soubor?"
 msgid "Rename file failed"
 msgstr "Přejmenování souboru selhalo"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Přejmenovat na malá písmena"
@@ -12693,6 +12737,10 @@ msgstr "Testovací složka"
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
 msgstr "Aplikační balík byl vytvořen pro \"%s\""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13820,6 +13868,14 @@ msgstr "pokud je povoleno, aktuální nastavení jsou uloženy do šablony, kter
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Ukázat aktuální uzel v průzkumníku kódu při pohybu kurzoru v editoru zdrojového kódu"
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
+msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

@@ -3425,6 +3425,10 @@ msgstr "הוסף קבצים של ספרייה"
 msgid "Additional compiler options inherited from packages"
 msgstr "אפשרויות מהדר נוספות מורשות מחבילות"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "הוסף קבוצה חדשה"
@@ -3468,6 +3472,10 @@ msgstr "הוסף יחידה (לא מומלץ)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "הוסף ערך:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3868,6 +3876,10 @@ msgstr "בניית לזארוס נכשלה"
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
 msgstr "מאקרו לבניה"
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -5323,6 +5335,10 @@ msgstr "בדוק"
 msgid "Condition"
 msgstr "מצב"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "ספריית הגדרות לזרוס"
@@ -5979,6 +5995,10 @@ msgstr "מחק את מצב הבניה s%s%s%?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "מחיקת קובץ נכשלה"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7165,6 +7185,10 @@ msgstr "עזרה להודעות שגיאה של מהדר FPC"
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
 msgstr "הסתר הודעה דרך הוראת מהדר"
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
+msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -8634,6 +8658,10 @@ msgstr "קובץ \"כלול\" מסוג lrs"
 msgid "Mac Pascal"
 msgstr "פסקל של מאק"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "הזן מידע"
@@ -9932,6 +9960,10 @@ msgstr "לא נבחר קוד"
 msgid "No compiler options inherited."
 msgstr "לא נורשו אפשרויות המהדר."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "אין טיפים"
@@ -9943,6 +9975,10 @@ msgstr "לא נבחר חלון IDE"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "אין קובץ LFM"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10320,6 +10356,10 @@ msgstr "החבילות להתקנה בIDE"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "יחידה של החבילה"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12058,6 +12098,10 @@ msgstr "לשנות שם קובץ?"
 msgid "Rename file failed"
 msgstr "שינוי שם הקובץ נכשל"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "שנה שם לאותיות קטנות"
@@ -12729,6 +12773,10 @@ msgstr "תיקיית ביקורת"
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
 msgstr "חבילת היישומים נוצרה עבור \"%s\""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13856,6 +13904,14 @@ msgstr "כאשר מופעל - האפשרויות הנוכחיות נשמרות �
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "כאשר הסמן של עורך הקוד נע, הראה את הצומת הנוכחית בסייר הקוד"
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
+msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

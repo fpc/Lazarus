@@ -3458,6 +3458,10 @@ msgstr "\"添加目录的文件"
 msgid "Additional compiler options inherited from packages"
 msgstr "从包继承附加的编译选项"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "添加新的设置"
@@ -3501,6 +3505,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "添加值:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3901,6 +3909,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5361,6 +5373,10 @@ msgstr "测试"
 msgid "Condition"
 msgstr "状态"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Lazarus 配置文件目录"
@@ -6011,6 +6027,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "删除文件失败"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7198,6 +7218,10 @@ msgstr "关于 FreePascal 编译器消息的帮助"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8668,6 +8692,10 @@ msgstr ""
 msgid "Mac Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "输入数据"
@@ -9982,6 +10010,10 @@ msgstr "没有节点选择"
 msgid "No compiler options inherited."
 msgstr "没有任何编译选项继承"
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -9992,6 +10024,10 @@ msgstr "没有IDE窗口被选中"
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
+msgstr ""
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoname
@@ -10370,6 +10406,10 @@ msgstr "包将安装到 IDE 中"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
 msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
@@ -12110,6 +12150,10 @@ msgstr "重命名文件?"
 msgid "Rename file failed"
 msgstr "重命名文件失败"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "重命名为小写"
@@ -12775,6 +12819,10 @@ msgstr "测试目录"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13910,6 +13958,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages

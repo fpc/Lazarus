@@ -3454,6 +3454,10 @@ msgstr "Adicionar arquivos do diretório"
 msgid "Additional compiler options inherited from packages"
 msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Adicionar novo conjunto"
@@ -3497,6 +3501,10 @@ msgstr "Adicionar unidade (não recomendado)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Adicionar valor:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3897,6 +3905,10 @@ msgstr "Construção Lazarus falhou"
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
 msgstr "Construir macros"
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -5353,6 +5365,10 @@ msgstr "&Testar"
 msgid "Condition"
 msgstr "Condição"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Diretório de configuração do Lazarus"
@@ -6008,6 +6024,10 @@ msgstr "Excluir modo construção %s%s%s?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Falha na exclusão do arquivo"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7196,6 +7216,10 @@ msgstr "Ajuda para mensagem do Compilador Free Pascal"
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
 msgstr "Ocultar mensagem via diretiva"
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
+msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -8664,6 +8688,10 @@ msgstr "Arquivos inclusão lrs"
 msgid "Mac Pascal"
 msgstr "Mac Pascal"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Inserir Dados"
@@ -9962,6 +9990,10 @@ msgstr "Nenhum código selecionado"
 msgid "No compiler options inherited."
 msgstr "Nenhuma opção de compilador herdada."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "nenhuma dica"
@@ -9973,6 +10005,10 @@ msgstr "Nenhuma janela da IDE selecionada"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Nenhum arquivo LFM"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10350,6 +10386,10 @@ msgstr "Pacotes a instalar na IDE"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "unidade pacote"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12087,6 +12127,10 @@ msgstr "Renomear arquivo?"
 msgid "Rename file failed"
 msgstr "Falha ao renomear arquivo"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Renomear para minúsculas"
@@ -12759,6 +12803,10 @@ msgstr "Diretório de teste"
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
 msgstr "A Aplicação Encartada foi criada para \"%s\""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13890,6 +13938,14 @@ msgstr "Quando habilitado as opções atuais são salvas para um modelo, que é 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Ao mover o cursor do editor fonte, exibir o nó atual no explorador de código"
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
+msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

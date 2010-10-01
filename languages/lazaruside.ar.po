@@ -3411,6 +3411,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr ""
@@ -3453,6 +3457,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
@@ -3852,6 +3860,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5308,6 +5320,10 @@ msgstr ""
 msgid "Condition"
 msgstr ""
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr ""
@@ -5955,6 +5971,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -7141,6 +7161,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8607,6 +8631,10 @@ msgstr ""
 msgid "Mac Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr ""
@@ -9893,6 +9921,10 @@ msgstr ""
 msgid "No compiler options inherited."
 msgstr ""
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -9903,6 +9935,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
+msgstr ""
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoname
@@ -10279,6 +10315,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
 msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
@@ -12013,6 +12053,10 @@ msgstr ""
 msgid "Rename file failed"
 msgstr ""
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr ""
@@ -12678,6 +12722,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13805,6 +13853,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages

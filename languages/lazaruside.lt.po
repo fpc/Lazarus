@@ -3444,6 +3444,10 @@ msgstr "Pridėti aplanko failus"
 msgid "Additional compiler options inherited from packages"
 msgstr "Papildomi iš paketų paveldėtos kompiliatoriaus parinktys"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Įdėti naują aibę"
@@ -3487,6 +3491,10 @@ msgstr "Pridėti modulį (rekomenduojama)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Pridėti vertę:"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3892,6 +3900,10 @@ msgstr "Lazarus darymas nepavyko"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5350,6 +5362,10 @@ msgstr "&Testas"
 msgid "Condition"
 msgstr "Sąlyga"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Lazarus nustatymų aplankas"
@@ -6005,6 +6021,10 @@ msgstr "Ar pašalinti darymo veikseną %s%s%s?"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Nepavyko ištrinti failą"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7192,6 +7212,10 @@ msgstr "Informacija apie Free Pascal Compiler pranešimą"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8665,6 +8689,10 @@ msgstr "Įterpimo „lrs“ failai"
 msgid "Mac Pascal"
 msgstr "Mac Pascal"
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Įveskite duomenis"
@@ -9964,6 +9992,10 @@ msgstr "Kodas nepažymėtas"
 msgid "No compiler options inherited."
 msgstr "Nėra paveldėtų kompiliatoriaus parinkčių."
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -9975,6 +10007,10 @@ msgstr "IKA langas nepažymėtas"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "LFM failo nėra"
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10352,6 +10388,10 @@ msgstr "Į IKA diegtini paketai"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "paketo modulis"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12088,6 +12128,10 @@ msgstr "Pervadinti failą?"
 msgid "Rename file failed"
 msgstr "Nepavyko pervadinti failą"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Pervadinti mažosiomis"
@@ -12762,6 +12806,10 @@ msgstr "Testo aplankas"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13897,6 +13945,14 @@ msgstr "Jei įgalinta, tai dabartinės parinktys bus įrašytos į šabloną, na
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages

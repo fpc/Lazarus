@@ -3454,6 +3454,10 @@ msgstr "ディレクトリのファイルを追加"
 msgid "Additional compiler options inherited from packages"
 msgstr "パッケージから継承されたその他のコンパイラオプション"
 
+#: lazarusidestrconsts.lisaddnewmacro
+msgid "Add new macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "新しいセットを追加"
@@ -3497,6 +3501,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "値を追加"
+
+#: lazarusidestrconsts.lisaddvaluetomacro
+msgid "Add value to macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3897,6 +3905,10 @@ msgstr "Lazarusの構築の失敗"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmacros2
+msgid "Build macros:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -5357,6 +5369,10 @@ msgstr "テスト"
 msgid "Condition"
 msgstr "条件"
 
+#: lazarusidestrconsts.lisconditionals
+msgid "Conditionals:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "lazarus設定ディレクトリ"
@@ -6007,6 +6023,10 @@ msgstr "構築モード %s%s%s を削除しますか。"
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "ファイル削除に失敗"
+
+#: lazarusidestrconsts.lisdeletemacro
+msgid "Delete macro %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7196,6 +7216,10 @@ msgstr "FreePascalコンパイラメッセージのヘルプ"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
+msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -8666,6 +8690,10 @@ msgstr "lrs インクルードファイル"
 msgid "Mac Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lismacro
+msgid "Macro %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "データを入力してください"
@@ -9982,6 +10010,10 @@ msgstr "コードが選択されていません。"
 msgid "No compiler options inherited."
 msgstr "コンパイラオプションが継承されていません。"
 
+#: lazarusidestrconsts.lisnoerrors
+msgid "No errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -9992,6 +10024,10 @@ msgstr "IDEウィンドウが選択されていません"
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
+msgstr ""
+
+#: lazarusidestrconsts.lisnomacroselected
+msgid "No macro selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoname
@@ -10369,6 +10405,10 @@ msgstr "IDEにインストールするパッケージ"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "パッケージユニット"
+
+#: lazarusidestrconsts.lisparsed
+msgid ", parsed "
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12108,6 +12148,10 @@ msgstr "ファイル名を変更しますか?"
 msgid "Rename file failed"
 msgstr "ファイル名の変更に失敗"
 
+#: lazarusidestrconsts.lisrenameto
+msgid "Rename to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "小文字へ変更"
@@ -12773,6 +12817,10 @@ msgstr "テストディレクトリ"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
+msgid "The build macro \"%s\" does not begin with \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
@@ -13908,6 +13956,14 @@ msgstr "許可されるとき、現在のオプションはテンプレートに
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes
+msgid "%s, with includes %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswithincludes2
+msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
