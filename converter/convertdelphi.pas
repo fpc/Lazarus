@@ -507,6 +507,7 @@ var
   ConsApp: Boolean;
   ConvTool: TConvDelphiCodeTool;
 begin
+  Result:=mrOK;
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
   fUnitsToComment:=TStringList.Create;
@@ -707,9 +708,11 @@ var
   CodePos: PCodeXYPosition;
   Msg: string;
   i: Integer;
+  OldChange: Boolean;
 begin
   Result:=mrOk;
-  MissingIncludeFilesCodeXYPos:=nil;
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  LazarusIDE.OpenEditorsOnCodeToolChange:=False;
   try
     if not CodeToolBoss.FixIncludeFilenames(fPascalBuffer,true,MissingIncludeFilesCodeXYPos)
     then begin
@@ -728,6 +731,7 @@ begin
     end;
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
