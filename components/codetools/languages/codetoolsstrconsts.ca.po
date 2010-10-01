@@ -37,6 +37,10 @@ msgstr "%s sense %s"
 msgid "base type of \"%s\" not found"
 msgstr "no s'ha trobat tipus base de \"%s\""
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "operador binari"
@@ -52,6 +56,10 @@ msgstr "no s'ha trobat %s"
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "S'esperava claudàtor d'obrir, però s'ha trobat %s"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -289,6 +297,26 @@ msgstr "s'ha produït un error en llista dels paràmetres"
 msgid "execute access denied for %s"
 msgstr "s'ha denegat l'accés d'execució per: %s"
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "la clausula exportada només es permet en biblioteques"
@@ -499,6 +527,10 @@ msgstr "el mode \"%s\" no és vàlid"
 msgid "invalid mode switch \"%s\""
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "sotabast no és vàlid"
@@ -546,6 +578,10 @@ msgstr "nom del mètode"
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "no s'ha trobat la definició del tipus del mètode"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -606,6 +642,22 @@ msgstr "No s'ha trobat l'analitzador per \"%s\". Si aquest és un fitxer inclòs
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "no s'ha trobat el mètode antic: %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -735,6 +787,10 @@ msgstr "TCodeToolManager.ConsistencyCheck=%d"
 msgid "Term has no simple type"
 msgstr "Term no te un tipus simple"
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Directori de les eines"
@@ -774,6 +830,10 @@ msgstr "final de codi font inesperat"
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "no s'esperava la paraula clau \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

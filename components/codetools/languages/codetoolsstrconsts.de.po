@@ -40,6 +40,10 @@ msgstr "%s ohne %s"
 msgid "base type of \"%s\" not found"
 msgstr "Basistyp von \"%s\" nicht gefunden"
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "Binärer Operator"
@@ -55,6 +59,10 @@ msgstr "Klammer %s nicht gefunden"
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "öffnende Klammer erwartet aber %s gefunden"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -292,6 +300,26 @@ msgstr "Fehler in der Parameterliste"
 msgid "execute access denied for %s"
 msgstr "ausführbarer Zugriff auf %s abgelehnt"
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "Exports-Klausel nicht in Bibliotheken erlaubt"
@@ -502,6 +530,10 @@ msgstr "ungültiger Mode \"%s\""
 msgid "invalid mode switch \"%s\""
 msgstr "Ungültiger Modus-Schalter \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "ungültiger Teilbereich"
@@ -549,6 +581,10 @@ msgstr "Methodenname"
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "Methodentypdefinition nicht gefunden"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -609,6 +645,22 @@ msgstr "Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öff
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "alte Methode nicht gefunden: %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -738,6 +790,10 @@ msgstr "TCodeToolManager.ConsistencyCheck=%d"
 msgid "Term has no simple type"
 msgstr "Term besitzt keinen einfachen Typ"
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Tools-Verzeichnis"
@@ -777,6 +833,10 @@ msgstr "unerwartetes Ende des Quelltexts"
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "unerwartetes Schlüsselwort \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

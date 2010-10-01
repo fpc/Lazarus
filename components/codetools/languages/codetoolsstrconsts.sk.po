@@ -38,6 +38,10 @@ msgstr "%s bez %s"
 msgid "base type of \"%s\" not found"
 msgstr ""
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr ""
@@ -52,6 +56,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
 msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
@@ -290,6 +298,26 @@ msgstr ""
 msgid "execute access denied for %s"
 msgstr ""
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr ""
@@ -500,6 +528,10 @@ msgstr "neplatný mód \"%s\""
 msgid "invalid mode switch \"%s\""
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr ""
@@ -546,6 +578,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
 msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
@@ -606,6 +642,22 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
@@ -736,6 +788,10 @@ msgstr ""
 msgid "Term has no simple type"
 msgstr ""
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr ""
@@ -774,6 +830,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock

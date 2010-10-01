@@ -21,8 +21,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TCTConfigScriptEngine implements an interpreter for simple parscal like
-    programs.
+    TCTConfigScriptEngine implements an interpreter for a simple scripting
+    language, enough for configurations.
 
   Working:
     if, then, else, begin..end, ;
@@ -34,6 +34,13 @@
     functions: string(), integer(), int64(), defined(), undefined()
     procedures: undefine()
     assignments: :=, +=
+
+  Not supported:
+    - floats
+    - types
+    - objects
+    - loops
+    - functions
 }
 unit CodeToolsCfgScript;
 
@@ -47,7 +54,7 @@ interface
 
 uses
   Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs,
-  typinfo;
+  typinfo, CodeToolsStrConsts;
 
 type
   TCTCSValueType = (
@@ -212,8 +219,8 @@ type
     procedure PushStringConstant;
     procedure RunStatement(Skip: boolean);
     procedure RunBegin(Skip: boolean);
-    procedure RunIf({%H-}Skip: boolean);
-    procedure RunUndefine({%H-}Skip: boolean);
+    procedure RunIf(Skip: boolean);
+    procedure RunUndefine(Skip: boolean);
     procedure RunAssignment(Skip: boolean);
     function RunExpression: boolean; // if true the stack top has an operand
     function ExecuteStack(MaxLevel: integer): boolean;
@@ -1296,7 +1303,7 @@ procedure TCTConfigScriptEngine.RunStatement(Skip: boolean);
 
   procedure ErrorUnexpectedAtom;
   begin
-    AddError('expected statement, but found '+GetAtomOrNothing)
+    AddError(Format(ctsExpectedStatementButFound, [GetAtomOrNothing]))
   end;
 
 var
@@ -1333,7 +1340,7 @@ begin
       end;
       if (not Handled) then begin
         if IsKeyWord(AtomStart) then begin
-          AddError('unexpected keyword '+GetAtom);
+          AddError(Format(ctsUnexpectedKeyword2, [GetAtom]));
         end else if IsFunction(AtomStart) then begin
           if not RunFunction then exit;
         end else begin
@@ -1363,7 +1370,7 @@ var
 
   procedure ErrorMissingEnd;
   begin
-    AddError('begin at '+PosToStr(BeginStart)+' without end');
+    AddError(Format(ctsBeginAtWithoutEnd, [PosToStr(BeginStart)]));
   end;
 
 begin
@@ -1413,7 +1420,7 @@ begin
 
   // read then
   if CompareIdentifiers(AtomStart,'then')<>0 then
-    AddError('then expected, but '+GetAtomOrNothing+' found');
+    AddError(Format(ctsThenExpectedButFound, [GetAtomOrNothing]));
   // then statement
   ReadRawNextPascalAtom(Src,AtomStart);
   RunStatement(Skip or not ExprIsTrue);
@@ -1432,21 +1439,22 @@ var
 begin
   ReadRawNextPascalAtom(Src,AtomStart);
   if AtomStart^<>'(' then begin
-    AddError('expected (, but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
   ReadRawNextPascalAtom(Src,AtomStart);
   if (not IsIdentStartChar[AtomStart^]) or IsKeyWord(AtomStart) then begin
-    AddError('expected identifier, but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedIdentifierButFound, [GetAtomOrNothing]));
     exit;
   end;
   VarStart:=AtomStart;
   ReadRawNextPascalAtom(Src,AtomStart);
   if AtomStart^<>')' then begin
-    AddError('expected ), but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound2, [GetAtomOrNothing]));
     exit;
   end;
-  Variables.Undefine(VarStart);
+  if not Skip then
+    Variables.Undefine(VarStart);
   ReadRawNextPascalAtom(Src,AtomStart);
 end;
 
@@ -1472,12 +1480,12 @@ begin
   {$ENDIF}
   // read :=
   if AtomStart^=#0 then begin
-    AddError('missing :=');
+    AddError(ctsMissing);
     exit;
   end;
   OperatorStart:=AtomStart;
   if (not (AtomStart^ in [':','+'])) or (AtomStart[1]<>'=') then begin
-    AddError('expected :=, but '+GetAtom+' found');
+    AddError(Format(ctsExpectedButFound3, [GetAtom]));
     exit;
   end;
   // read expression
@@ -1521,18 +1529,18 @@ begin
   Result:=false;
   ReadRawNextPascalAtom(Src,AtomStart);
   if AtomStart^<>'(' then begin
-    AddError('expected (, but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
   ReadRawNextPascalAtom(Src,AtomStart);
   if (not IsIdentStartChar[AtomStart^]) or IsKeyWord(AtomStart) then begin
-    AddError('expected identifier, but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedIdentifierButFound, [GetAtomOrNothing]));
     exit;
   end;
   VarStart:=AtomStart;
   ReadRawNextPascalAtom(Src,AtomStart);
   if AtomStart^<>')' then begin
-    AddError('expected ), but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound2, [GetAtomOrNothing]));
     exit;
   end;
   b:=Variables.GetVariable(VarStart)<>nil;
@@ -1552,7 +1560,7 @@ begin
   StartTop:=FStack.Top;
   ReadRawNextPascalAtom(Src,AtomStart);
   if AtomStart^<>'(' then begin
-    AddError('expected (, but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
   ReadRawNextPascalAtom(Src,AtomStart);
@@ -1562,7 +1570,7 @@ begin
   if RunExpression then
     SetCTCSVariableValue(FStack.TopItemOperand,@Value);
   if AtomStart^<>')' then begin
-    AddError('expected ), but found '+GetAtomOrNothing);
+    AddError(Format(ctsExpectedButFound2, [GetAtomOrNothing]));
     exit;
   end;
 
@@ -1636,7 +1644,7 @@ begin
         while (p^ in ['0'..'9']) do begin
           i:=i*10+ord(p^)-ord('0');
           if (i>255) then begin
-            AddError('character constant out of range');
+            AddError(ctsCharacterConstantOutOfRange);
             while (p^ in ['0'..'9']) do inc(p);
             break;
           end;
@@ -1758,7 +1766,7 @@ function TCTConfigScriptEngine.RunExpression: boolean;
       {$IFDEF VerboseCTCfgScript}
       debugln(['TCTConfigScriptEngine.RunExpression.OperandAllowed no']);
       {$ENDIF}
-      AddError('operator expected but '+GetAtom+' found');
+      AddError(Format(ctsOperatorExpectedButFound, [GetAtom]));
       Result:=false;
     end;
   end;
@@ -1772,7 +1780,7 @@ function TCTConfigScriptEngine.RunExpression: boolean;
       {$IFDEF VerboseCTCfgScript}
       debugln(['TCTConfigScriptEngine.RunExpression.BinaryOperatorAllowed no']);
       {$ENDIF}
-      AddError('operand expected but '+GetAtom+' found');
+      AddError(Format(ctsOperandExpectedButFound, [GetAtom]));
       Result:=false;
     end;
   end;
@@ -1816,7 +1824,7 @@ begin
         ExecuteStack(5);
         if FStack.TopTyp=ctcssRoundBracketOpen then begin
           // empty ()
-          AddError('operand expected, but '+GetAtom+' found');
+          AddError(Format(ctsOperandExpectedButFound2, [GetAtom]));
           Result:=false;
           break;
         end else if (FStack.TopTyp=ctcssOperand)
@@ -1832,7 +1840,7 @@ begin
       if (Src-AtomStart=1) or (AtomStart[1] in ['=','>']) then begin
         if not PushBinaryOperator then break;
       end else begin
-        AddError('invalid operator '+GetAtom);
+        AddError(Format(ctsInvalidOperator, [GetAtom]));
         Result:=false;
         break;
       end;
@@ -1840,7 +1848,7 @@ begin
       if (Src-AtomStart=1) or (AtomStart[1] in ['=']) then begin
         if not PushBinaryOperator then break;
       end else begin
-        AddError('invalid operator '+GetAtom);
+        AddError(Format(ctsInvalidOperator, [GetAtom]));
         Result:=false;
         break;
       end;
@@ -1848,7 +1856,7 @@ begin
       if (Src-AtomStart=1) then begin
         if not PushBinaryOperator then break;
       end else begin
-        AddError('invalid operator '+GetAtom);
+        AddError(Format(ctsInvalidOperator, [GetAtom]));
         Result:=false;
         break;
       end;
@@ -1939,7 +1947,7 @@ begin
           end;
         end;
         if (not Handled) and IsKeyWord(AtomStart) then begin
-          AddError('unexpected keyword '+GetAtom);
+          AddError(Format(ctsUnexpectedKeyword2, [GetAtom]));
           Result:=false;
           break;
         end;
@@ -1980,7 +1988,7 @@ begin
     else
       if FStack.TopTyp in [ctcssOperator,ctcssRoundBracketOpen]
       then begin
-        AddError('operand expected, but '+GetAtom+' found');
+        AddError(Format(ctsOperandExpectedButFound2, [GetAtom]));
         Result:=false;
       end;
       break;
@@ -1993,14 +2001,14 @@ begin
       Result:=false;
     if FStack.Top=StartTop+1 then begin
       // empty expression
-      AddError('operand expected, but '+GetAtom+' found');
+      AddError(Format(ctsOperandExpectedButFound2, [GetAtom]));
     end else if (FStack.TopTyp<>ctcssOperand) or (FStack.Top<>StartTop+2) then begin
       // unfinished expression
       if FStack.TopTyp in [ctcssOperator,ctcssRoundBracketOpen]
       then
-        AddError('operand expected, but '+GetAtom+' found')
+        AddError(Format(ctsOperandExpectedButFound2, [GetAtom]))
       else
-        AddError('operator expected, but '+GetAtom+' found');
+        AddError(Format(ctsOperatorExpectedButFound2, [GetAtom]));
       Result:=false;
     end
     else if Result then begin

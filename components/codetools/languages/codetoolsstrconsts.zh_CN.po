@@ -40,6 +40,10 @@ msgstr "%s 没有 %s"
 msgid "base type of \"%s\" not found"
 msgstr "基本类型 \"%s\" 未找到"
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "二进制操作"
@@ -55,6 +59,10 @@ msgstr "括号 %s 未找到"
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "左括号应该出现, 但是找到 %s"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -292,6 +300,26 @@ msgstr "参数列表错误"
 msgid "execute access denied for %s"
 msgstr "访问 %s 遭到拒绝"
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "exports 语句只允许在 libraries 中使用"
@@ -502,6 +530,10 @@ msgstr "无效模式"
 msgid "invalid mode switch \"%s\""
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "无效子界"
@@ -549,6 +581,10 @@ msgstr "method 名称"
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "未找到 methond 类型定义"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -609,6 +645,22 @@ msgstr "No scanner found for \"%s\". If this is an include file, please open the
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "未找到先前的 method: %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -738,6 +790,10 @@ msgstr "TCodeToolManager.ConsistencyCheck=%d"
 msgid "Term has no simple type"
 msgstr "Term has no simple type"
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "工具目录"
@@ -777,6 +833,10 @@ msgstr "末尾 (代码的最后)"
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "标识符 \"%s\" 不应该出现"
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

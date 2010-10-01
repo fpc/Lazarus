@@ -36,6 +36,10 @@ msgstr "%s senza %s"
 msgid "base type of \"%s\" not found"
 msgstr "tipo base di \"%s\" non trovato"
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "operatore binario"
@@ -51,6 +55,10 @@ msgstr "parentesi %s non trovata"
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "era prevista una parentesi aperta invece è stato trovato %s"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -288,6 +296,26 @@ msgstr "errore nell'elenco dei parametri"
 msgid "execute access denied for %s"
 msgstr "accesso all'esecuzione negato per %s"
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "la clausola exports è permessa solo nelle librerie"
@@ -498,6 +526,10 @@ msgstr "modalità non valida \"%s\""
 msgid "invalid mode switch \"%s\""
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "subrange non valido"
@@ -545,6 +577,10 @@ msgstr "nome metodo"
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "definizione del tipo di metodo non trovata"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -605,6 +641,22 @@ msgstr "Non è stato trovato nessuno scanner per \"%s\". Se è un file include, 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "vecchio metodo non trovato: %s"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -734,6 +786,10 @@ msgstr "TCodeToolManager.ConsistencyCheck=%d"
 msgid "Term has no simple type"
 msgstr "Il termine non ha un tipo semplice"
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Directory strumenti"
@@ -773,6 +829,10 @@ msgstr "imprevista fine del sorgente"
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "parolachiave non prevista \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

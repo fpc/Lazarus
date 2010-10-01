@@ -37,6 +37,10 @@ msgstr "ללא"
 msgid "base type of \"%s\" not found"
 msgstr "הסוג הבסיסי של \"%s\" לא נמצא"
 
+#: codetoolsstrconsts.ctsbeginatwithoutend
+msgid "begin at %s without end"
+msgstr ""
+
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "אופרטור בינארי"
@@ -52,6 +56,10 @@ msgstr "סוגר s% לא נמצא"
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "צפויה פתיחת סוגריים, אבל s% נמצא"
+
+#: codetoolsstrconsts.ctscharacterconstantoutofrange
+msgid "character constant out of range"
+msgstr ""
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -289,6 +297,26 @@ msgstr "שגיאה ברשימת הפרמטרים"
 msgid "execute access denied for %s"
 msgstr "הרשאת ריצה הוגדרה עבור s%"
 
+#: codetoolsstrconsts.ctsexpectedbutfound
+msgid "expected (, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound2
+msgid "expected ), but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedbutfound3
+msgid "expected :=, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedidentifierbutfound
+msgid "expected identifier, but found %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctsexpectedstatementbutfound
+msgid "expected statement, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "סעיף ייצוא מותר רק בספריות"
@@ -499,6 +527,10 @@ msgstr "מצב לא חוקי  \"%s\""
 msgid "invalid mode switch \"%s\""
 msgstr "מתג מצב לא חוקי  \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidoperator
+msgid "invalid operator %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "תת תחום לא חוקי"
@@ -546,6 +578,10 @@ msgstr "שם מתודה"
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "ההגדרה של סוג המתודה לא נמצאה"
+
+#: codetoolsstrconsts.ctsmissing
+msgid "missing :="
+msgstr ""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -606,6 +642,22 @@ msgstr "לא נמצא סורק עבור \"%s\". אם זה קובץ \"כלול\",
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "מתודה ישנה לא נמצאה: s%"
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound
+msgid "operand expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperandexpectedbutfound2
+msgid "operand expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound
+msgid "operator expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgid "operator expected, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -735,6 +787,10 @@ msgstr "TCodeToolManager.ConsistencyCheck=%d"
 msgid "Term has no simple type"
 msgstr "לביטוי אין סוג פשוט"
 
+#: codetoolsstrconsts.ctsthenexpectedbutfound
+msgid "then expected, but %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "תיקיית הכלים"
@@ -774,6 +830,10 @@ msgstr "סוף לא צפוי של הקוד"
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "מלת מפתח לא צפויה \"%s\""
+
+#: codetoolsstrconsts.ctsunexpectedkeyword2
+msgid "unexpected keyword %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

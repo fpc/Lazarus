@@ -96,7 +96,9 @@
   - make IDEIntf a package
   - make LCL a package
   - make FCL a package
-  - create package lazbuildsystem
+  - make lazbuild lcl independent, independent of packages except one
+    - license gpl2
+    - create package lazbuildsystem with some units
     - move
   - code completion
     - keypress event

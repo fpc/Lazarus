@@ -273,6 +273,21 @@ ResourceString
   ctsPropertyCurrentNotFound = 'property Current not found';
   ctsEnumerationType = 'enumeration type';
   ctsType = 'type';
+  ctsExpectedStatementButFound = 'expected statement, but found %s';
+  ctsUnexpectedKeyword2 = 'unexpected keyword %s';
+  ctsBeginAtWithoutEnd = 'begin at %s without end';
+  ctsThenExpectedButFound = 'then expected, but %s found';
+  ctsExpectedButFound = 'expected (, but found %s';
+  ctsExpectedIdentifierButFound = 'expected identifier, but found %s';
+  ctsExpectedButFound2 = 'expected ), but found %s';
+  ctsMissing = 'missing :=';
+  ctsExpectedButFound3 = 'expected :=, but %s found';
+  ctsCharacterConstantOutOfRange = 'character constant out of range';
+  ctsOperatorExpectedButFound = 'operator expected but %s found';
+  ctsOperandExpectedButFound = 'operand expected but %s found';
+  ctsOperandExpectedButFound2 = 'operand expected, but %s found';
+  ctsInvalidOperator = 'invalid operator %s';
+  ctsOperatorExpectedButFound2 = 'operator expected, but %s found';
 
 implementation
 
