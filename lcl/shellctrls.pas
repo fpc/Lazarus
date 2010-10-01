@@ -694,7 +694,9 @@ begin
       // First column - Name
       NewItem.Caption := CurFileName;
       // Second column - Size
+      // The raw size in bytes is stored in the data part of the item
       CurFileSize := FileSize(CurFilePath); // in Bytes
+      NewItem.Data := Pointer(PtrInt(CurFileSize));
       if CurFileSize < 1024 then
         NewItem.SubItems.Add(IntToStr(CurFileSize) + ' bytes')
       else if CurFileSize < 1024 * 1024 then
@@ -721,9 +723,21 @@ begin
   // will raise an exception
   if Self.Columns.Count < 3 then Exit;
 
-  Column[0].Width := (70 * Width) div 100;
-  Column[1].Width := (15 * Width) div 100;
-  Column[2].Width := (15 * Width) div 100;
+  // If the space available is small,
+  // alloc a larger percentage to the secondary
+  // fields
+  if Width < 400 then
+  begin
+    Column[0].Width := (50 * Width) div 100;
+    Column[1].Width := (25 * Width) div 100;
+    Column[2].Width := (25 * Width) div 100;
+  end
+  else
+  begin
+    Column[0].Width := (70 * Width) div 100;
+    Column[1].Width := (15 * Width) div 100;
+    Column[2].Width := (15 * Width) div 100;
+  end;
 
   {$ifdef DEBUG_SHELLCTRLS}
     WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
