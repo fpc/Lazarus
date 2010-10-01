@@ -8934,16 +8934,65 @@ var ActiveSrcEdit:TSourceEditor;
   ShortUnitName, AFilename, FileDir: string;
   ClearIncludedByFile: boolean;
   DlgResult: TModalResult;
+  SizeInBytes: Integer;
+  UnitSizeWithIncludeFiles: integer;
+  UnitSizeParsed: integer;
+  LineCount: LongInt;
+  UnitLineCountWithIncludes: LongInt;
+  UnitLineCountParsed: LongInt;
+  Code: TCodeBuffer;
+  CTTool: TCodeTool;
+  TreeOfSourceCodes: TAVLTree;
+  Node: TAVLTreeNode;
+  SubCode: TCodeBuffer;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   ShortUnitName:=ActiveSrcEdit.PageName;
   AFilename:=ActiveUnitInfo.Filename;
   FileDir:=ExtractFilePath(AFilename);
+
+  SizeInBytes:=length(ActiveSrcEdit.Source.Text);
+  UnitSizeWithIncludeFiles:=SizeInBytes;
+  UnitSizeParsed:=SizeInBytes;
+  LineCount:=ActiveSrcEdit.Source.Count;
+  UnitLineCountWithIncludes:=LineCount;
+  UnitLineCountParsed:=LineCount;
+
+  // check size of parsed source (without skipped code due to $ELSE)
+  // and total size of all include files
+  Code:=ActiveSrcEdit.CodeBuffer;
+  if Code<>nil then
+  begin
+    CodeToolBoss.Explore(ActiveSrcEdit.CodeBuffer,CTTool,false,false);
+    if CTTool<>nil then
+    begin
+      UnitSizeParsed:=CTTool.SrcLen;
+      UnitLineCountParsed:=LineEndCount(CTTool.Src);
+      if CTTool.Scanner<>nil then
+      begin
+        TreeOfSourceCodes:=CTTool.Scanner.CreateTreeOfSourceCodes;
+        if TreeOfSourceCodes<>nil then
+        begin
+          UnitSizeWithIncludeFiles:=0;
+          UnitLineCountWithIncludes:=0;
+          Node:=TreeOfSourceCodes.FindLowest;
+          while Node<>nil do begin
+            SubCode:=TCodeBuffer(Node.Data);
+            inc(UnitSizeWithIncludeFiles,SubCode.SourceLength);
+            inc(UnitLineCountWithIncludes,SubCode.LineCount);
+            Node:=TreeOfSourceCodes.FindSuccessor(Node);
+          end;
+        end;
+      end;
+    end;
+  end;
+
   DlgResult:=ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.DefaultSyntaxHighlighter],
-    ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
-    ActiveSrcEdit.Source.Count,
+    ActiveUnitInfo.IsPartOfProject,
+    SizeInBytes,UnitSizeWithIncludeFiles,UnitSizeParsed,
+    LineCount,UnitLineCountWithIncludes,UnitLineCountParsed,
     AFilename,
     ActiveUnitInfo.Source.LastIncludedByFile,
     ClearIncludedByFile,

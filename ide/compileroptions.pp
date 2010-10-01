@@ -91,15 +91,14 @@
     - history
 
   ToDo:
-  - resourcestrings
-  - make synedit a package
-  - make IDEIntf a package
-  - make LCL a package
-  - make FCL a package
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units
     - move
+  - make synedit a package
+  - make IDEIntf a package
+  - make LCL a package
+  - make FCL a package
   - code completion
     - keypress event
   - help for add/delete macro speedbuttons

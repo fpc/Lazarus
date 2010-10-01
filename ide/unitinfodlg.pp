@@ -73,7 +73,8 @@ type
   end;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
-  IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
+  IsPartOfProject: boolean; SizeInBytes, UnitSizeWithIncludeFiles, UnitSizeParsed,
+  LineCount, UnitLineCountWithIncludes, UnitLineCountParsed: integer;
   const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 
@@ -82,10 +83,13 @@ implementation
 {$R *.lfm}
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
-  IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
+  IsPartOfProject: boolean;
+  SizeInBytes, UnitSizeWithIncludeFiles, UnitSizeParsed,
+  LineCount, UnitLineCountWithIncludes, UnitLineCountParsed: integer;
   const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 var Dlg: TUnitInfoDialog;
+  s: String;
 begin
   Dlg:=TUnitInfoDialog.Create(nil);
   with Dlg do begin
@@ -101,9 +105,20 @@ begin
     else
       OutInProject.Caption:=lisUIDno;
 
-    OutSize.Caption:=Format(lisUIDbytes, [IntToStr(SizeInBytes)]);
+    s:=Format(lisUIDbytes, [IntToStr(SizeInBytes)]);
+    if UnitSizeWithIncludeFiles<>SizeInBytes then
+      s:=s+lisWithIncludes2+IntToStr(UnitSizeWithIncludeFiles);
+    if UnitSizeParsed<>UnitSizeWithIncludeFiles then
+      s:=s+lisParsed+IntToStr(UnitSizeParsed);
+    OutSize.Caption:=s;
 
-    OutLines.Caption:=IntToStr(LineCount);
+    s:=IntToStr(LineCount);
+    if UnitLineCountWithIncludes<>LineCount then
+      s:=s+lisWithIncludes2+IntToStr(UnitLineCountWithIncludes);
+    if UnitLineCountParsed<>LineCount then
+      s:=s+lisParsed+IntToStr(UnitLineCountParsed);
+    OutLines.Caption:=s;
+
     OutPath.Caption:=FilePath;
     OutIncludedBy.Caption:=IncludedBy;
 

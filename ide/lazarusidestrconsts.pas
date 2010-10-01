@@ -4887,6 +4887,9 @@ resourcestring
   lisHintADefaultValueCanBeDefinedInTheConditionals = 'Hint: A default value '
     +'can be defined in the conditionals.';
   lisConditionals = 'Conditionals:';
+  lisWithIncludes = '%s, with includes %s';
+  lisWithIncludes2 = ', with includes ';
+  lisParsed = ', parsed ';
 
 implementation
 
