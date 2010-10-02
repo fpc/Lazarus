@@ -54,6 +54,7 @@ type
   TWSCustomGrid = class(TWSCustomControl)
   published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
+    class function InvalidateStartY(const FixedHeight, RowOffset: Integer): integer; virtual;
   end;
   TWSCustomGridClass = class of TWSCustomgrid;
 
@@ -78,6 +79,11 @@ begin
   else
     GMsg.Value:=Ch;
   AEditor.Dispatch(GMsg);
+end;
+
+class function TWSCustomGrid.InvalidateStartY(const FixedHeight, RowOffset: Integer): Integer;
+begin
+  result := FixedHeight;
 end;
 
 { WidgetSetRegistration }

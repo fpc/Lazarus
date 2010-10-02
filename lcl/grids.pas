@@ -4133,7 +4133,9 @@ begin
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
-    R.TopLeft:=Point(0, FGCache.FixedHeight);
+    with FGCache do
+      R.TopLeft := Point(0,
+        TWSCustomGridClass(WidgetSetClass).InvalidateStartY(FixedHeight, TLRowOff));
     R.BottomRight:=FGCache.MaxClientXY;
     if FGcache.MaxClientXY.Y<FGCache.ClientHeight then
       R.BottomRight.y := FGCache.ClientHeight;
