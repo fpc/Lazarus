@@ -299,10 +299,10 @@ begin
   begin
     LCLPath:=LCLPath+'$(TargetCPU)-$(TargetOS)';
     Result:=QuestionDlg(lisLCLUnitPathMissing,
-      Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits, [#13, '"',
-        Filename, '"', #13, '"', UnitPath, '"', #13, #13, '"', LCLPath, '"',
-        #13, #13, #13]),
-      mtError,[mrCancel,'Skip this step',mrAbort,'Abort'],0);
+      Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits,
+            [sLineBreak,'"',Filename,'"',sLineBreak,'"',UnitPath,'"',sLineBreak,
+             sLineBreak,'"',LCLPath,'"',sLineBreak,sLineBreak,sLineBreak]),
+      mtError,[mrOK,'Continue',mrAbort,'Abort'],0);
     exit;
   end;
   Result:=mrOk;
