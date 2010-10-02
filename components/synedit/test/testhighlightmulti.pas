@@ -20,6 +20,7 @@ type
     procedure DumpLines(ALines: TSynHLightMultiVirtualLines);
     procedure DumpSections(ASectList: TSynHLightMultiSectionList);
     procedure DumpRanges(ARangeList: TSynHighlighterRangeList);
+    procedure DumpAll(Hl: TSynMultiSyn);
   published
     procedure TestSectionList;
     procedure TestVirtualLines;
@@ -87,6 +88,22 @@ begin
   for i := 0 to ARangeList.Count - 1 do debugln([i,' Range=',ARangeList[i]]);
 end;
 
+procedure TTestHighlightMulti.DumpAll(Hl: TSynMultiSyn);
+var
+  i: Integer;
+begin  // ensure CurrentLines are set
+  debugln(['--- Default']);
+  DumpLines(hl.DefaultVirtualLines);
+  DumpSections(hl.DefaultVirtualLines.SectionList);
+  debugln(['-']);
+  DumpRanges(TSynHighlighterRangeList(hl.CurrentLines.Ranges[hl]));
+  for i := 0 to hl.Schemes.Count - 1 do begin
+    debugln(['-- ',i,' ', dbgs(hl.Schemes[i].Highlighter)]);
+    DumpLines(hl.Schemes[i].VirtualLines);
+    DumpSections(hl.Schemes[i].VirtualLines.SectionList);
+  end;
+end;
+
 procedure TTestHighlightMulti.TestSectionList;
 var
   sl: TSynHLightMultiSectionList;
@@ -141,6 +158,8 @@ begin
   TestIndex('',  0,  0, False,  -1);
   TestIndex('',  1,  0, False,  -1);
 
+  // Add one section, starts and ends are 0/0 (contains exactly the one char at 0/0)
+  // Expect to be inserted at list-pos=0
   AddSect(0,0, 0,0,  0);
   Name := 'List (0-0)';
   AssertEquals('Count = 1', sl.Count, 1);
@@ -157,6 +176,8 @@ begin
   TestIndex('After',   1,  0, False,  -1);
   TestIndex('After',   1,  0, True ,   1);
 
+  // Add 2nd section 1/1 to 3/0 (multi-line)
+  // Expect to be inserted at list-pos=1
   AddSect(1,1, 3,0,  1);
   Name := 'List (0-0), (1-3)';
   AssertEquals('Count = 2', sl.Count, 2);
@@ -569,65 +590,173 @@ var
     AssertTrue(Format('%s / %s line %d after run get eol', [Name, AName, ALine, i]), MultiHl.GetEol);
   end;
 
+  procedure CreateSetupXmlLfmPas(Order: String);
+    procedure CreateLfmScheme;
+    begin
+      LfmScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+      LfmScheme.CaseSensitive := False;
+      LfmScheme.StartExpr := '<lfm>';
+      LfmScheme.EndExpr := '</lfm>';
+    end;
+    procedure CreatePasScheme;
+    begin
+      PasScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+      PasScheme.CaseSensitive := False;
+      PasScheme.StartExpr := '<pas>';
+      PasScheme.EndExpr := '</pas>';
+    end;
+  var
+    i: Integer;
+  begin
+    MultiHl := TSynMultiSyn.Create(Form);
+    XmlHl := TSynXMLSyn.Create(Form);
+    LfmHl := TSynLFMSyn.Create(Form);
+    PasHl := TSynPasSyn.Create(Form);
+    MultiHl.Name := 'MULTIhl';
+    XmlHl.Name := 'XMLhl';
+    LfmHl.Name := 'LFMhl';
+    PasHl.Name := 'PAShl';
+
+    for i := 1 to length(Order) do begin
+      case Order[i] of
+        'l': CreateLfmScheme;
+        'p': CreatePasScheme;
+        'L': LfmScheme.Highlighter := LfmHl;
+        'P': PasScheme.Highlighter := PasHl;
+        'D': MultiHl.DefaultHighlighter := XmlHl;
+        'H': SynEdit.Highlighter := MultiHl;
+        't': SetRealLinesText2;
+        ' ': ;
+      end;
+      //if synedit.Highlighter <> nil then begin MultiHl.CurrentLines := SynEdit.TextBuffer; DumpAll(MultiHl); end;
+      SynEdit.SimulatePaintText;
+      //SynEdit.Invalidate;
+      //Application.ProcessMessages;
+    end;
+  end;
+
+  procedure TearDownXmlLfmPas(Order: String);
+  var
+    i: Integer;
+  begin
+    for i := 1 to length(Order) do begin
+      case Order[i] of
+        'L': LfmScheme.Highlighter := nil;
+        'P': PasScheme.Highlighter := nil;
+        'D': MultiHl.DefaultHighlighter := nil;
+        'H': SynEdit.Highlighter := nil;
+        'p': FreeAndNil(PasHl);
+        'l': FreeAndNil(LfmHl);
+        'x': FreeAndNil(XmlHl);
+        'm': FreeAndNil(MultiHl);
+        ' ': ;
+      end;
+      SynEdit.Invalidate;
+      Application.ProcessMessages;
+    end;
+    FreeAndNil(PasHl);
+    FreeAndNil(LfmHl);
+    FreeAndNil(XmlHl);
+    FreeAndNil(MultiHl);
+  end;
+
+  procedure TestXmlLfmPas;
+  begin
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    //debugln('DEFAULT:'); DumpSections(MultiHl.DefaultVirtualLines.SectionList);
+    //debugln('S0:'); DumpSections(MultiHl.Schemes[0].VirtualLines.SectionList);
+    //debugln('S1:'); DumpSections(MultiHl.Schemes[1].VirtualLines.SectionList);
+
+    TestHLTokens('', 0, ['<', 'mydoc', '>']);
+    TestHLTokens('', 1, ['<','t','>','foo','</','t','>',
+                         '<pas>','unit',' ','foo',';','</pas>',
+                         '<lfm>','object',' ','Bar',':',' ','TForm','</lfm>']);
+    TestHLTokens('', 2, ['<','t','>','123','</','t','>',
+                         '<pas>','uses',' ','</pas>','a','<pas>','OtherUnit',';','</pas>']);
+
+    //debugln('DEFAULT:'); DumpSections(MultiHl.DefaultVirtualLines.SectionList); DumpLines(MultiHl.DefaultVirtualLines);
+    //debugln('S0:'); DumpSections(MultiHl.Schemes[0].VirtualLines.SectionList);  DumpLines(MultiHl.Schemes[0].VirtualLines);
+    //debugln('S1:'); DumpSections(MultiHl.Schemes[1].VirtualLines.SectionList);  DumpLines(MultiHl.Schemes[1].VirtualLines);
+
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    SynEdit.SimulatePaintText;
+    //SynEdit.Invalidate;
+    //Application.ProcessMessages; // do the real paint, and see we do not crash
+  end;
+
+  procedure RunXmlLfmPas(InitText: String);
+  var
+    TearDownOrder: String;
+
+    procedure RunOrder(Order: String);
+    begin
+      PushBaseName('Order='+Order);
+      ReCreateEdit;
+      SynEdit.Text := InitText;
+      CreateSetupXmlLfmPas(Order);
+      TestXmlLfmPas;
+      TearDownXmlLfmPas(TearDownOrder);
+      PopBaseName;
+    end;
+  begin
+    // run the setup in different orders, to check none of them crashes
+    TearDownOrder := 'HDLP';
+    PushBaseName('TearDownOrder='+TearDownOrder);
+
+    RunOrder('D lL pP H t');
+    RunOrder('D lL pP t H');
+
+    RunOrder('H t D lL pP');
+    RunOrder('H D t lL pP');
+    RunOrder('H D lL t pP');
+    RunOrder('H D lL pP t');
+
+    RunOrder('H t lL pP D');
+    RunOrder('H lL pP t D');
+
+    RunOrder('D H t lL pP');
+    RunOrder('D H lL pP t');
+
+    RunOrder('H t lp D LP');
+    RunOrder('H lp t D LP');
+    RunOrder('H lp D t LP');
+    RunOrder('H lp D LP t');
+
+    RunOrder('t H D lL pP');
+    RunOrder('t H lp D LP');
+
+    TearDownOrder := 'mxlp';
+    PushBaseName('TearDownOrder='+TearDownOrder);
+    RunOrder('D lL pP t H');
+    RunOrder('H t D lL pP');
+
+    TearDownOrder := 'xlpm';
+    PushBaseName('TearDownOrder='+TearDownOrder);
+    RunOrder('D lL pP t H');
+    RunOrder('H t D lL pP');
+
+    TearDownOrder := 'DLPH';
+    PushBaseName('TearDownOrder='+TearDownOrder);
+    RunOrder('D lL pP t H');
+    RunOrder('H t D lL pP');
+
+    TearDownOrder := 'LPDH';
+    PushBaseName('TearDownOrder='+TearDownOrder);
+    RunOrder('D lL pP t H');
+    RunOrder('H t D lL pP');
+  end;
+
 begin
-  ReCreateEdit;
-form.Width := 700;
+  form.Width := 700;
 
-  MultiHl := TSynMultiSyn.Create(Form);
-  XmlHl := TSynXMLSyn.Create(Form);
-  LfmHl := TSynLFMSyn.Create(Form);
-  PasHl := TSynPasSyn.Create(Form);
+  PushBaseName('SetupXmlLfmPas start empty');
+  RunXmlLfmPas('');
 
-  MultiHl.Name := 'MULTIhl';
-  PasHl.Name := 'PAShl';
-  LfmHl.Name := 'LFMhl';
-  XmlHl.Name := 'XMLhl';
+  PopPushBaseName('SetupXmlLfmPas start empty with line');
+  RunXmlLfmPas('' + LineEnding);
 
-  MultiHl.DefaultHighlighter := XmlHl;
-  LfmScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
-  PasScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
-
-  LfmScheme.Highlighter := LfmHl;
-  LfmScheme.CaseSensitive := False;
-  LfmScheme.StartExpr := '<lfm>';
-  LfmScheme.EndExpr := '</lfm>';
-
-  PasScheme.Highlighter := PasHl;
-  PasScheme.CaseSensitive := False;
-  PasScheme.StartExpr := '<pas>';
-  PasScheme.EndExpr := '</pas>';
-
-  SynEdit.Highlighter := MultiHl;
-
-  MultiHl.CurrentLines := SynEdit.TextBuffer;
-  //debugln('DEFAULT:'); DumpSections(MultiHl.DefaultVirtualLines.SectionList);
-  //debugln('S0:'); DumpSections(MultiHl.Schemes[0].VirtualLines.SectionList);
-  //debugln('S1:'); DumpSections(MultiHl.Schemes[1].VirtualLines.SectionList);
-
-  SetRealLinesText2;
-
-  TestHLTokens('', 0, ['<', 'mydoc', '>']);
-  TestHLTokens('', 1, ['<','t','>','foo','</','t','>',
-                       '<pas>','unit',' ','foo',';','</pas>',
-                       '<lfm>','object',' ','Bar',':',' ','TForm','</lfm>']);
-  TestHLTokens('', 2, ['<','t','>','123','</','t','>',
-                       '<pas>','uses',' ','</pas>','a','<pas>','OtherUnit',';','</pas>']);
-
-
-  MultiHl.CurrentLines := SynEdit.TextBuffer;
-  //debugln('DEFAULT:'); DumpSections(MultiHl.DefaultVirtualLines.SectionList); DumpLines(MultiHl.DefaultVirtualLines);
-  //debugln('S0:'); DumpSections(MultiHl.Schemes[0].VirtualLines.SectionList);  DumpLines(MultiHl.Schemes[0].VirtualLines);
-  //debugln('S1:'); DumpSections(MultiHl.Schemes[1].VirtualLines.SectionList);  DumpLines(MultiHl.Schemes[1].VirtualLines);
-
-
-
-//while Form.Visible do begin
-//  Application.ProcessMessages;
-//  sleep(25);
-//end;
-
-  Application.ProcessMessages; // do the real paint, and see we do not crash
-
+  PopPushBaseName('SetupXmlLfmPas start 1 line');
+  RunXmlLfmPas('<dummy>foo<lfm>' + LineEnding);
 end;
 
 initialization

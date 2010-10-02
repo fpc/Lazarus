@@ -20,6 +20,7 @@ type
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
     function  TestFullText: String;
     procedure TestSetSelText(Value: String; PasteMode: TSynSelectionMode = smNormal);
+    procedure SimulatePaintText;
     property ViewedTextBuffer;
     property TextBuffer;
     property TextView; // foldedview
@@ -156,6 +157,11 @@ begin
   BeginUndoBlock;
   SetSelTextPrimitive(PasteMode, PChar(Value), True);
   EndUndoBlock;
+end;
+
+procedure TTestSynEdit.SimulatePaintText;
+begin
+  PaintTextLines(Rect(0,0,1000,1000), 0, Lines.Count - 1, 1, 100);
 end;
 
 { TTestBase }
