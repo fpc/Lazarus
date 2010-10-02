@@ -1350,9 +1350,12 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI EnableWindow] ');
   {$endif}
-
-  Result := TQtWidget(hwnd).getEnabled;
-  TQtWidget(hWnd).setEnabled(bEnable);
+  Result := False;
+  if HWND <> 0 then
+  begin
+    Result := not TQtWidget(hwnd).getEnabled;
+    TQtWidget(hWnd).setEnabled(bEnable);
+  end;
 end;
 
 {------------------------------------------------------------------------------
