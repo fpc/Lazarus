@@ -2666,15 +2666,18 @@ end;
   Params: hWnd:
           bEnable:
   Returns:
-
+  If the window was previously disabled, the return value is TRUE.
+  If the window was not previously disabled, the return value is FALSE.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Assert(False, Format('Trace:  [TGtk2WidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
-
+  Result := False;
   if hWnd <> 0 then
-    gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
-  Result:=true;
+  begin
+    Result := not GTK_WIDGET_SENSITIVE(PGtkWidget(HWND));
+    gtk_widget_set_sensitive(PGtkWidget(hWnd), bEnable);
+  end;
 end;
 
 {------------------------------------------------------------------------------
