@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-24 23:52+0100\n"
+"PO-Revision-Date: 2010-10-01 17:32+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3471,10 +3471,6 @@ msgstr "Dateien des Verzeichnisses zufügen"
 msgid "Additional compiler options inherited from packages"
 msgstr "Von anderen Packages übernommene zusätzliche Compilereinstellungen"
 
-#: lazarusidestrconsts.lisaddnewmacro
-msgid "Add new macro"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Neues Set hinzufügen"
@@ -3518,10 +3514,6 @@ msgstr "Unit hinzufügen (ist nicht angeraten)"
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Wert hinzufügen:s"
-
-#: lazarusidestrconsts.lisaddvaluetomacro
-msgid "Add value to macro %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3740,7 +3732,7 @@ msgstr "Automatisch fortsetzen nach:"
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
-msgstr ""
+msgstr "Automatisch"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -3788,7 +3780,7 @@ msgstr "Dateisicherung fehlgeschlagen"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
-msgstr ""
+msgstr "Erzeugt ein Backup-Verzeichnis unterhalb des Projektverzeichnisses"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
@@ -3924,10 +3916,6 @@ msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 msgid "Build macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildmacros2
-msgid "Build macros:"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Modus für Neukompilieren"
@@ -3963,7 +3951,7 @@ msgstr "Umbenennen abbrechen"
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr ""
+msgstr "Kann Projekt nicht kompilieren"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -5384,10 +5372,6 @@ msgstr "&Test"
 msgid "Condition"
 msgstr "Bedingung"
 
-#: lazarusidestrconsts.lisconditionals
-msgid "Conditionals:"
-msgstr ""
-
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr "Lazarus-Konfigurationsverzeichnis"
@@ -5472,11 +5456,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
-msgstr ""
+msgstr "Delphi Funktion"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
-msgstr ""
+msgstr "Delphi Name"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5519,7 +5503,7 @@ msgstr "Für Lazarus/LCL und Delphi"
 
 #: lazarusidestrconsts.lisconverttarget4
 msgid "Lazarus and Delphi with same DFM file"
-msgstr ""
+msgstr "Lazarus und Delphi mit derselben DFM-Datei"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5532,11 +5516,11 @@ msgstr ""
 #: lazarusidestrconsts.lisconvfuncreplhint
 msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
 msgid "Some Delphi functions can be replaced with LCL function"
-msgstr ""
+msgstr "Einige Delphi Funktionen können mit LCL Funktionen ersetzt werden"
 
 #: lazarusidestrconsts.lisconvfuncstoreplace
 msgid "Functions / procedures to replace"
-msgstr ""
+msgstr "Funktionen / Prozeduren zum Entfernen"
 
 #: lazarusidestrconsts.lisconvleftoff
 msgid "Left offset"
@@ -5544,7 +5528,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvnewname
 msgid "New Name"
-msgstr ""
+msgstr "Neuer Name"
 
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
@@ -5560,7 +5544,7 @@ msgstr "Ersatz-Datentypen"
 
 #: lazarusidestrconsts.lisconvtypereplhint
 msgid "Unknown types in form file (DFM/LFM)"
-msgstr ""
+msgstr "Unbekannte Typen in Formulardatei (DFM/LFM)"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5580,7 +5564,7 @@ msgstr "Zu ersetzende Units"
 
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
-msgstr ""
+msgstr "Unbekannte Eigenschaften"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -6045,10 +6029,6 @@ msgstr "Kompilierungsmodus %s%s%s löschen?"
 msgid "Delete file failed"
 msgstr "Löschen der Datei fehlgeschlagen"
 
-#: lazarusidestrconsts.lisdeletemacro
-msgid "Delete macro %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Alte Datei %s%s%s löschen?"
@@ -6199,7 +6179,7 @@ msgstr "Gruppe ausschalten"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr ""
+msgstr "i18n für LFM deaktivieren"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6508,7 +6488,7 @@ msgstr "Gruppe zulassen"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
-msgstr ""
+msgstr "Unterstützung für Internationalisierung und Übersetzung aktivieren"
 
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
@@ -6956,7 +6936,7 @@ msgstr "(Filter)"
 
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
-msgstr ""
+msgstr "Filter: %s"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
@@ -7237,10 +7217,6 @@ msgstr "Hilfe für FreePascal-Compilermeldungen"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
-msgstr ""
-
-#: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
-msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
@@ -7664,7 +7640,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
-msgstr ""
+msgstr "Interaktiv"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
@@ -7780,7 +7756,7 @@ msgstr "beibehalten"
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
-msgstr ""
+msgstr "Konvertierte Dateien im Editor geöffnet halten"
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
@@ -8713,10 +8689,6 @@ msgstr "lrs Include-Dateien"
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
 msgstr "Mac-Pascal"
-
-#: lazarusidestrconsts.lismacro
-msgid "Macro %s"
-msgstr ""
 
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
@@ -10031,10 +10003,6 @@ msgstr "Kein Code ausgewählt"
 msgid "No compiler options inherited."
 msgstr "Keine abgeleiteten Compilereinstellungen"
 
-#: lazarusidestrconsts.lisnoerrors
-msgid "No errors"
-msgstr ""
-
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "keine Hinweise"
@@ -10046,10 +10014,6 @@ msgstr "Kein IDE-Fenster ausgewählt"
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Keine LFM Datei"
-
-#: lazarusidestrconsts.lisnomacroselected
-msgid "No macro selected"
-msgstr ""
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10428,10 +10392,6 @@ msgstr "Packages für die Installation in der IDE"
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "Package-Unit"
-
-#: lazarusidestrconsts.lisparsed
-msgid ", parsed "
-msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -11981,7 +11941,7 @@ msgstr "Benutzer nach Daten fragen"
 
 #: lazarusidestrconsts.lisproperties
 msgid "Properties (replace or remove)"
-msgstr ""
+msgstr "Eigenschaften (ersetzen oder entfernen"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
@@ -12069,7 +12029,7 @@ msgstr "Wieder öffnen"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
-msgstr ""
+msgstr "Erzeuge lokale Variable"
 
 #: lazarusidestrconsts.lisquickfixes
 #, fuzzy
@@ -12082,7 +12042,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
-msgstr ""
+msgstr "Suche Bezeichner"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -12145,7 +12105,7 @@ msgstr "Lokale Variable %s entfernen"
 
 #: lazarusidestrconsts.lisremovelocalvariable2
 msgid "Remove local variable"
-msgstr ""
+msgstr "Lokale Variable entfernen"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove non existing files"
@@ -12170,10 +12130,6 @@ msgstr "Datei umbenennen?"
 #: lazarusidestrconsts.lisrenamefilefailed
 msgid "Rename file failed"
 msgstr "Umbenennen der Datei ist fehlgeschlagen"
-
-#: lazarusidestrconsts.lisrenameto
-msgid "Rename to %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
@@ -12803,11 +12759,11 @@ msgstr "Zielprozessor"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
-msgstr ""
+msgstr "Ziel-Dateiname: (-o, leer = verwende Unit-Ausgabeverzeichnis)"
 
 #: lazarusidestrconsts.listargetfilenameo
 msgid "Target file name (-o):"
-msgstr ""
+msgstr "Ziel-Dateiname (-o):"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
@@ -12846,11 +12802,7 @@ msgstr "Testverzeichnis"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
-msgstr ""
-
-#: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
-msgid "The build macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "Das Application-Bundle wurde erzeugt für \"%s\""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13613,7 +13565,7 @@ msgstr "Quelltexte des Designers können nicht geholt werden."
 
 #: lazarusidestrconsts.lisunabletoloadfile
 msgid "Unable to load file:%s%s"
-msgstr ""
+msgstr "Kann Datei:%s%s nicht laden"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
@@ -13983,14 +13935,6 @@ msgstr "Wenn eingeschaltet, werden die derzeit gewählten Optionen in ein Templa
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
-msgstr ""
-
-#: lazarusidestrconsts.liswithincludes
-msgid "%s, with includes %s"
-msgstr ""
-
-#: lazarusidestrconsts.liswithincludes2
-msgid ", with includes "
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
