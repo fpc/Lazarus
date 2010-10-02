@@ -141,6 +141,14 @@ begin
   end;
 end;
 
+function IsMissingType(LFMError: TLFMError): boolean;
+begin
+  with LFMError do
+    Result:=(ErrorType in [lfmeIdentifierNotFound,lfmeMissingRoot])
+        and (Node is TLFMObjectNode)
+        and (TLFMObjectNode(Node).TypeName<>'');
+end;
+
 { TDFMConverter }
 
 constructor TDFMConverter.Create;
@@ -276,7 +284,7 @@ begin
     while CurError<>nil do begin
       TheNode:=CurError.FindContextNode;
       if (TheNode<>nil) and (TheNode.Parent<>nil) then begin
-        if CurError.IsMissingObjectType then begin
+        if IsMissingType(CurError) then begin
           // Object type
           ObjNode:=CurError.Node as TLFMObjectNode;
           OldIdent:=ObjNode.TypeName;
@@ -377,7 +385,7 @@ begin
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
-        if CurError.IsMissingObjectType then begin
+        if IsMissingType(CurError) then begin
           OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
           NewIdent:=TypeUpdater.AddUnique(OldIdent); // Add each type only once.
           if NewIdent<>'' then
