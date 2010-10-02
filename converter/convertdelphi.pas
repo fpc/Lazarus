@@ -41,9 +41,8 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, Project, DialogProcs,
-  EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
-  PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  IDEProcs, Project, DialogProcs, EditorOptions, CompilerOptions,
+  PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg, ReplaceNamesUnit;
 
@@ -127,6 +126,8 @@ type
     fLazPSuffix: string;               // '.lpi' or '.lpk'
     fDelphiPSuffix: string;            // '.dpr' or '.dpk'
     fIsConsoleApp: Boolean;
+    // Unit search path for project settings.
+    fUnitSearchPaths: TStringList;
     // Units found in user defined paths.
     fCachedUnitNames: TStringToStringTree;
     // Map of case incorrect unit name -> real unit name.
@@ -882,6 +883,9 @@ constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
   fIsConsoleApp:=False;                      // Default = GUI app.
+  fUnitSearchPaths:=TStringList.Create;
+  fUnitSearchPaths.Delimiter:=';';
+  fUnitSearchPaths.StrictDelimiter:=True;
   fCachedUnitNames:=TStringToStringTree.Create(false);
   fCachedRealFileNames:=TStringToStringTree.Create(true);
   fSettings:=TConvertSettings.Create('Convert Delphi '+ADescription);
@@ -896,9 +900,10 @@ destructor TConvertDelphiPBase.Destroy;
 begin
   fUnitsToAddToProject.Free;
   fAllMissingUnits.Free;
+  fSettings.Free;
   fCachedRealFileNames.Free;
   fCachedUnitNames.Free;
-  FreeAndNil(fSettings);
+  fUnitSearchPaths.Free;
   inherited Destroy;
 end;
 
@@ -1387,6 +1392,7 @@ function TConvertDelphiProject.AddUnit(AUnitName: string;
 // add new unit to project
 var
   CurUnitInfo: TUnitInfo;
+  RP: String;
 begin
   Result:=mrOK;
   OutUnitInfo:=nil;
@@ -1395,10 +1401,14 @@ begin
   AUnitName:=TrimFilename(AUnitName);
   if not FileExistsUTF8(AUnitName) then
     exit(mrNo);
+  // Create relative search path for project settings.
+  RP:=ExtractFilePath(CreateRelativePath(AUnitName, LazProject.ProjectDirectory));
+  if (RP<>'') and (fUnitSearchPaths.IndexOf(RP)<0) then
+    fUnitSearchPaths.Add(RP);
+  // Check unitname and create UnitInfo.
   CurUnitInfo:=LazProject.UnitInfoWithFilename(AUnitName);
   if CurUnitInfo=nil then begin
     if FilenameIsPascalUnit(AUnitName) then begin
-      // check unitname
       CurUnitInfo:=LazProject.UnitWithUnitname(ExtractFileNameOnly(AUnitName));
       if CurUnitInfo<>nil then begin
         Result:=QuestionDlg('Unitname exists twice',
@@ -1428,7 +1438,7 @@ var
   FoundUnits, MisUnits, NormalUnits: TStrings;
   i: Integer;
   CurFilename: string;
-  NewSearchPath, AllPath, UselessPath: string;
+  AllPath: string;
   p: LongInt;
   ui: TUnitInfo;
 begin
@@ -1459,28 +1469,20 @@ begin
         Result:=AddUnit(CurFilename, ui);
         if Result=mrAbort then exit;
       end;
-
     finally
-      AllPath:=LazProject.SourceDirectories.CreateSearchPathFromAllFiles;
-      UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazProject.ProjectDirectory;
+      AllPath:=fUnitSearchPaths.DelimitedText;
       // set unit paths to find all project units
-      NewSearchPath:=MergeSearchPaths(LazProject.CompilerOptions.OtherUnitFiles,AllPath);
-      NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
-      LazProject.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
-               RemoveNonExistingPaths(NewSearchPath,LazProject.ProjectDirectory));
+      LazProject.CompilerOptions.OtherUnitFiles:=
+          MergeSearchPaths(LazProject.CompilerOptions.OtherUnitFiles,AllPath);
       // set include path
-      NewSearchPath:=MergeSearchPaths(LazProject.CompilerOptions.IncludePath,AllPath);
-      NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
-      LazProject.CompilerOptions.IncludePath:=MinimizeSearchPath(
-               RemoveNonExistingPaths(NewSearchPath,LazProject.ProjectDirectory));
+      LazProject.CompilerOptions.IncludePath:=
+          MergeSearchPaths(LazProject.CompilerOptions.IncludePath,AllPath);
       // clear caches
       LazProject.DefineTemplates.SourceDirectoriesChanged;
     end;
-
     // save project
     Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
     if Result<>mrOk then exit;
-
   finally
     FoundUnits.Free;
     MisUnits.Free;
