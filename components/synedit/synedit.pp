@@ -7361,6 +7361,7 @@ begin
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);                                                      //jr 2000-10-01
   Invalidate;
+  // TODO: obey paintlock
   if fHighlighter.AttributeChangeNeedScan then begin
     FHighlighter.CurrentLines := FTheLinesView;
     FHighlighter.ScanAllRanges;

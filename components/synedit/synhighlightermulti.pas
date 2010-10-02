@@ -151,6 +151,7 @@ type
 
   TSynHighlighterMultiScheme = class(TCollectionItem)
   private
+    FNeedHLScan: Boolean;
     FStartExpr, FEndExpr: string;
     FConvertedStartExpr, FConvertedEndExpr: String;
     FStartExprScanner, FEndExprScanner: TRegExpr;
@@ -186,6 +187,7 @@ type
     function  FindStartPosInLine(ASearchPos: Integer): Integer;
     function  FindEndPosInLine(ASearchPos: Integer): Integer;
     property  LastMatchLen: Integer read FLastMatchLen;
+    property  NeedHLScan: Boolean read FNeedHLScan;
   public
     property VirtualLines: TSynHLightMultiVirtualLines
              read FVirtualLines write SetVirtualLines;
@@ -1044,7 +1046,7 @@ begin
      or (Result = c);
 
   if Result = c then begin
-    i := length(CurrentLines[c-1]) +  1;
+    i := length(CurrentLines[c]) +  1;
     if FCurScheme = nil then
       StartScheme(nil, c, i, i)
     else
@@ -1074,19 +1076,43 @@ begin
 end;
 
 function TSynMultiSyn.GetAttribCount: integer;
+var
+  i: Integer;
 begin
   Result := Schemes.Count;
+  for i := 0 to Schemes.Count - 1 do
+    if Schemes[i].Highlighter <> nil then
+      inc(Result, Schemes[i].Highlighter.AttrCount);
   if DefaultHighlighter <> nil then
-    Inc( Result, inherited GetAttribCount );
+    Inc(Result, DefaultHighlighter.AttrCount);
 end;
 
 function TSynMultiSyn.GetAttribute(
   idx: integer): TSynHighlighterAttributes;
+var
+  i, j: Integer;
 begin
-  if idx < Schemes.Count then
-    Result := Schemes[ idx ].MarkerAttri
-  else
-    Result := inherited GetAttribute( idx + Schemes.Count );
+  if DefaultHighlighter <> nil then begin
+    j := DefaultHighlighter.AttrCount;
+    if idx < j then
+      exit(DefaultHighlighter.Attribute[idx]);
+    dec(idx, j);
+  end;
+
+  for i := 0 to Schemes.Count - 1 do begin
+    if idx = 0 then
+      exit(Schemes[i].MarkerAttri);
+    dec(idx);
+    if Schemes[i].Highlighter <> nil then begin
+      j := Schemes[i].Highlighter.AttrCount;
+      if idx < j then
+        exit(Schemes[i].Highlighter.Attribute[idx]);
+      dec(idx, j);
+    end;
+  end;
+
+  Result := nil;
+  raise Exception.Create('bad attr idx');
 end;
 
 function TSynMultiSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -1315,12 +1341,10 @@ begin
   inherited;
   if (aOp = opRemove) and (Schemes <> nil) then begin
     if (aComp = DefaultHighlighter) then
-      DefaultHighlighter := nil
-    else for i := 0 to Schemes.Count - 1 do
-      if aComp = Schemes[i].Highlighter then begin
+      DefaultHighlighter := nil;
+    for i := 0 to Schemes.Count - 1 do
+      if aComp = Schemes[i].Highlighter then
         Schemes[i].Highlighter := nil;
-        break;
-      end;
   end;
 end;
 
@@ -1511,6 +1535,7 @@ var
   i: Integer;
 begin
   if Schemes = nil then exit;
+  FAttributeChangeNeedScan := (Item <> nil) and (TSynHighlighterMultiScheme(Item).NeedHLScan);
   DefHighlightChange( Item );
   for i := 0 to KnownLines.Count - 1 do
     KnownRanges[i].InvalidateAll;
@@ -1649,13 +1674,13 @@ constructor TSynHighlighterMultiScheme.Create(TheCollection: TCollection);
 begin
   FStartExprScanner := TRegExpr.Create;
   FEndExprScanner := TRegExpr.Create;
-  inherited Create(TheCollection);
   fCaseSensitive := True;
   fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker, SYNS_XML_AttrMarker);
   fMarkerAttri.OnChange := {$IFDEF FPC}@{$ENDIF}MarkerAttriChanged;
   MarkerAttri.Background := clYellow;
   MarkerAttri.Style := [fsBold];
   MarkerAttri.InternalSaveDefaultValues;
+  inherited Create(TheCollection); // Calls notify, all setup must be done
 end;
 
 destructor TSynHighlighterMultiScheme.Destroy;
@@ -1678,6 +1703,9 @@ function TSynHighlighterMultiScheme.FindStartPosInLine(ASearchPos: Integer): Int
 var
   t: String;
 begin
+  if (FStartExprScanner.Expression = '') or (FEndExprScanner.Expression = '') then
+    exit(-1);
+
   if not FStartLineSet then begin
     FStartExprScanner.InputString := GetConvertedLine;
     FStartLineSet := True;
@@ -1760,7 +1788,9 @@ begin
     fCaseSensitive := Value;
     FStartExprScanner.Expression := GetConvertedStartExpr;
     FEndExprScanner.Expression := GetConvertedEndExpr;
+    FNeedHLScan := True;
     Changed( False );
+    FNeedHLScan := False;
   end;
 end;
 
@@ -1788,8 +1818,10 @@ begin
     FConvertedEndExpr := '';
     FEndExpr := Value;
     FEndExprScanner.Expression := GetConvertedEndExpr;
+    FNeedHLScan := True;
     if GetConvertedEndExpr <> OldValue then
       Changed( False );
+    FNeedHLScan := False;
   end;
 end;
 
@@ -1797,10 +1829,11 @@ procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TSynCustomHighL
 var
   ParentHLighter: TSynMultiSyn;
 begin
-  if (Highlighter = TSynHighlighterMultiSchemeList(Collection).Owner) then
-    raise Exception.Create('circular highlighter not allowed');
   if Highlighter <> Value then
   begin
+    if (Value = TSynHighlighterMultiSchemeList(Collection).Owner) then
+      raise Exception.Create('circular highlighter not allowed');
+
     ParentHLighter := TSynHighlighterMultiSchemeList(Collection).Owner;
     if Highlighter <> nil then begin
       Highlighter.RemoveFreeNotification(ParentHLighter);
@@ -1811,8 +1844,12 @@ begin
     if Highlighter <> nil then begin
       ParentHLighter.AttachHighlighter(Highlighter, Self);
       Highlighter.FreeNotification(ParentHLighter);
+      if FVirtualLines <> nil then
+        FHighlighter.CurrentLines := FVirtualLines;
     end;
+    FNeedHLScan := True;
     Changed(False);
+    FNeedHLScan := False;
   end;
 end;
 
@@ -1830,8 +1867,10 @@ begin
     FConvertedStartExpr := '';
     FStartExpr := Value;
     FStartExprScanner.Expression := GetConvertedStartExpr;
+    FNeedHLScan := True; // TODO: only if EndScanne.Expression <> '' ?
     if GetConvertedStartExpr <> OldValue then
       Changed( False );
+    FNeedHLScan := False;
   end;
 end;
 

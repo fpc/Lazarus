@@ -1292,7 +1292,7 @@ begin
   if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
     exit;
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
-//debugln(['=== scan ',StartIndex,' - ',EndIndex]);
+  //debugln(['=== scan ',StartIndex,' - ',EndIndex]);
   FIsScanning := True;
   try
     EndIndex :=  PerformScan(StartIndex, EndIndex);
