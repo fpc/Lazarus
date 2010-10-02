@@ -74,7 +74,7 @@ type
     function FixMissingComponentClasses: TModalResult;
     procedure FillErrorsListBox;
     procedure JumpToError(LFMError: TLFMError);
-    procedure AddReplacement(LFMChangeList: TList; StartPos, EndPos: integer;
+    procedure AddReplacement(LFMChangeList: TObjectList; StartPos, EndPos: integer;
                              const NewText: string);
     function ApplyReplacements(LFMChangeList: TList): boolean;
     // Show the interactive user interface.
@@ -646,7 +646,7 @@ begin
   fLFMSynEdit.CaretXY:=LFMError.Caret;
 end;
 
-procedure TLFMChecker.AddReplacement(LFMChangeList: TList;
+procedure TLFMChecker.AddReplacement(LFMChangeList: TObjectList;
   StartPos, EndPos: integer; const NewText: string);
 var
   Entry: TLFMChangeEntry;
@@ -655,7 +655,6 @@ var
 begin
   if StartPos>EndPos then
     RaiseException('TCheckLFMDialog.AddReplaceMent StartPos>EndPos');
-
   // check for intersection
   for i:=0 to LFMChangeList.Count-1 do begin
     Entry:=TLFMChangeEntry(LFMChangeList[i]);
@@ -671,20 +670,15 @@ begin
       end;
     end;
   end;
-
   // combine deletions
   if NewText='' then begin
     for i:=LFMChangeList.Count-1 downto 0 do begin
       Entry:=TLFMChangeEntry(LFMChangeList[i]);
-      if ((Entry.StartPos<EndPos) and (Entry.EndPos>StartPos)) then begin
-        // New and Entry intersects
-        // -> remove Entry
+      if ((Entry.StartPos<EndPos) and (Entry.EndPos>StartPos)) then
+        // New and Entry intersects -> remove Entry
         LFMChangeList.Delete(i);
-        Entry.Free;
-      end;
     end;
   end;
-
   // insert new entry
   NewEntry:=TLFMChangeEntry.Create;
   NewEntry.NewText:=NewText;
