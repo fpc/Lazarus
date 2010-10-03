@@ -853,9 +853,17 @@ begin
         OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
         ACanvas.ClipRect := FClipRect;
         ACanvas.Clipping := true;
-        Draw(ACanvas);
-        OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
-        ACanvas.Clipping := false;
+        try
+          try
+            Draw(ACanvas);
+          except
+            Active := false;
+            raise;
+          end;
+        finally
+          OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
+          ACanvas.Clipping := false;
+        end;
       end;
   finally
     seriesInZOrder.Free;
@@ -1049,7 +1057,12 @@ begin
     s := Series[i];
     if not s.Active then continue;
     seriesBounds := EmptyExtent;
-    s.GetGraphBounds(seriesBounds);
+    try
+      s.GetGraphBounds(seriesBounds);
+    except
+      s.Active := false;
+      raise;
+    end;
     with FLogicalExtent do begin
       a.X := Min(a.X, seriesBounds.a.X);
       b.X := Max(b.X, seriesBounds.b.X);
