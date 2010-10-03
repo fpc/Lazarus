@@ -192,7 +192,9 @@ begin
     ds.Next;
   if ds.RecNo <> AIndex then exit;
   if FieldX <> '' then
-    FCurItem.X := ds.FieldByName(FieldX).AsFloat;
+    FCurItem.X := ds.FieldByName(FieldX).AsFloat
+  else
+    FCurItem.X := ds.RecNo;
   if FYCount > 0 then begin
     FCurItem.Y := ds.FieldByName(FFieldYList[0]).AsFloat;
     for i := 0 to High(FCurItem.YList) do
