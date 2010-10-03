@@ -42,6 +42,8 @@ uses
 type
   // datatype pointing to data on the target
   TDBGPtr = type QWord;
+  // Signed datatype with size of TDBGPtr
+  TDBGPtrInt = type Int64;
 
   TDBGLocationRec = record
     Address: TDBGPtr;

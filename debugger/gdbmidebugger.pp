@@ -1538,7 +1538,7 @@ end;
 
 function DisasmSortCompare(AItem1, AItem2: Pointer): Integer;
 begin
-  Result := PGDBMIDisasm(AItem1)^.Address - PGDBMIDisasm(AItem2)^.Address;
+  Result := TDBGPtrInt(PGDBMIDisasm(AItem1)^.Address) - TDBGPtrInt(PGDBMIDisasm(AItem2)^.Address);
 end;
 
 function TGDBMIDebugger.GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
