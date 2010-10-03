@@ -411,12 +411,20 @@ begin
               begin;
                 SetLength(BufferWideString, Size div 2);
                 BufferStream.Read(BufferWideString[1], Size);
+                //BufferString may have pending #0 's (or garbage after a #0)
+                Size := Pos(#0, BufferWideString);
+                if Size > 0 then
+                  SetLength(BufferWideString, Size);
                 BufferString := UTF16ToUTF8(BufferWideString);
               end
               else
               begin
-                SetLength(BufferString, Size);
+                SetLength(BufferString, Size - 1);
                 BufferStream.Read(BufferString[1], Size);
+                //BufferString may have pending #0 's (or garbage after a #0)
+                Size := Pos(#0, BufferString);
+                if Size > 0 then
+                  SetLength(BufferString, Size - 1);
                 BufferString := AnsiToUtf8(BufferString);
               end;
               Stream.Write(BufferString[1], Length(BufferString));
