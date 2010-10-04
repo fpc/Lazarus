@@ -778,7 +778,7 @@ begin
   FChart.Canvas.Rectangle(FSelectionRect);
   with FSelectionRect do begin
     if (Left >= Right) or (Top >= Bottom) then begin
-      DoZoom(FChart.Extent.Extent, true);
+      DoZoom(FChart.GetFullExtent, true);
       exit;
     end;
     ext.a := FChart.ImageToGraph(TopLeft);
