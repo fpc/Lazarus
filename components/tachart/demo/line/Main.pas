@@ -67,7 +67,7 @@ begin
   for i := 1 to 10 do begin
     s := TLineSeries.Create(chFast);
     s.SeriesColor := clRed;
-    for j := 1 to 10000 do
+    for j := 1 to 50000 do
       s.AddXY(j, Random * 5 + chFast.SeriesCount * 10);
     chFast.AddSeries(s);
   end;

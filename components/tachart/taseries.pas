@@ -427,8 +427,8 @@ var
     orig, m: TDoublePoint;
   begin
     if LineType = ltNone then exit;
-    // For extremely long series (10000 points or more), the Canvas.Line
-    // call becomes a bottleneck. So represent a serie as a sequence of polylines.
+    // For extremely long series (10000 points or more), the Canvas.Line call
+    // becomes a bottleneck. So represent a serie as a sequence of polylines.
     // This achieves approximately 3x speedup for the typical case.
     SetLength(points, 2 * Length(FGraphPoints));
     SetLength(breaks, Length(FGraphPoints) + 1);
