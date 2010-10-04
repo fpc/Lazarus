@@ -196,7 +196,6 @@ type
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(const AValue: TBasicChartToolset);
-    procedure UpdateExtent;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
@@ -235,6 +234,7 @@ type
     procedure ClearSeries;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
+    function GetFullExtent: TDoubleRect;
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
@@ -479,7 +479,7 @@ begin
     Series[i].BeforeDraw;
 
   if not FIsZoomed then
-    UpdateExtent;
+    FLogicalExtent := GetFullExtent;
   FCurrentExtent := FLogicalExtent;
   DrawTitleFoot(ACanvas);
   PrepareLegend(ACanvas, legendItems, legendRect);
@@ -996,19 +996,7 @@ begin
       AProc(Series[i]);
 end;
 
-function TChart.GetSeriesCount: Integer;
-begin
-  Result := FSeries.FList.Count;
-end;
-
-function TChart.GetToolset: TBasicChartToolset;
-begin
-  Result := FToolset;
-  if Result = nil then
-    Result := FBuiltinToolset;
-end;
-
-procedure TChart.UpdateExtent;
+function TChart.GetFullExtent: TDoubleRect;
 
   procedure SetBounds(
     var ALo, AHi: Double; AMin, AMax: Double; AUseMin, AUseMax: Boolean);
@@ -1052,7 +1040,7 @@ begin
       if Transformations <> nil then
         Transformations.ClearBounds;
 
-  FLogicalExtent := EmptyExtent;
+  Result := EmptyExtent;
   for i := 0 to SeriesCount - 1 do begin
     s := Series[i];
     if not s.Active then continue;
@@ -1063,17 +1051,29 @@ begin
       s.Active := false;
       raise;
     end;
-    with FLogicalExtent do begin
+    with Result do begin
       a.X := Min(a.X, seriesBounds.a.X);
       b.X := Max(b.X, seriesBounds.b.X);
       a.Y := Min(a.Y, seriesBounds.a.Y);
       b.Y := Max(b.Y, seriesBounds.b.Y);
     end;
   end;
-  with FLogicalExtent, Extent do begin
-    SetBounds(a.X, b.X, XMin, XMax, UseXMin, UseXMax);
-    SetBounds(a.Y, b.Y, YMin, YMax, UseYMin, UseYMax);
+  with Extent do begin
+    SetBounds(Result.a.X, Result.b.X, XMin, XMax, UseXMin, UseXMax);
+    SetBounds(Result.a.Y, Result.b.Y, YMin, YMax, UseYMin, UseYMax);
   end;
+end;
+
+function TChart.GetSeriesCount: Integer;
+begin
+  Result := FSeries.FList.Count;
+end;
+
+function TChart.GetToolset: TBasicChartToolset;
+begin
+  Result := FToolset;
+  if Result = nil then
+    Result := FBuiltinToolset;
 end;
 
 procedure TChart.VisitSources(
