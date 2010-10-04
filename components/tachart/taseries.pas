@@ -43,13 +43,16 @@ type
   TBarSeries = class(TBasicPointSeries)
   private
     FBarBrush: TBrush;
+    FBarOffsetPercent: Integer;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
     FZeroLevel: Double;
 
-    function CalcBarWidth(AX: Double; AIndex: Integer): Double;
+    procedure BarOffsetWidth(
+      AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
     function IsZeroLevelStored: boolean;
     procedure SetBarBrush(Value: TBrush);
+    procedure SetBarOffsetPercent(const AValue: Integer);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetSeriesColor(AValue: TColor);
@@ -67,6 +70,8 @@ type
     property AxisIndexX;
     property AxisIndexY;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
+    property BarOffsetPercent: Integer
+      read FBarOffsetPercent write SetBarOffsetPercent default 0;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
       read FBarWidthPercent write SetBarWidthPercent default DEF_BAR_WIDTH_PERCENT;
@@ -694,9 +699,14 @@ end;
 
 { TBarSeries }
 
-function TBarSeries.CalcBarWidth(AX: Double; AIndex: Integer): Double;
+procedure TBarSeries.BarOffsetWidth(
+  AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
+var
+  r: Double;
 begin
-  Result := GetXRange(AX, AIndex) * FBarWidthPercent * PERCENT / 2;
+  r := GetXRange(AX, AIndex) * PERCENT;
+  AOffset := r * BarOffsetPercent;
+  AWidth := r * BarWidthPercent / 2;
 end;
 
 constructor TBarSeries.Create(AOwner: TComponent);
@@ -776,7 +786,7 @@ var
 
 var
   i, j: Integer;
-  z: Double;
+  z, ofs: Double;
 begin
   if IsEmpty then exit;
 
@@ -788,11 +798,15 @@ begin
   ACanvas.Brush.Assign(BarBrush);
   for i := FLoBound to FUpBound do begin
     p := FGraphPoints[i - FLoBound];
-    w := CalcBarWidth(GetGraphPointX(i), i);
-    if IsRotated then
-      z := AxisToGraphX(ZeroLevel)
-    else
+    BarOffsetWidth(GetGraphPointX(i), i, ofs, w);
+    if IsRotated then begin
+      z := AxisToGraphX(ZeroLevel);
+      p.Y += ofs;
+    end
+    else begin
       z := AxisToGraphY(ZeroLevel);
+      p.X += ofs;
+    end;
     cumulHeight := z;
     ACanvas.Brush.Color := GetColor(i);
     BuildBar(p.Y - z, 0);
@@ -805,16 +819,18 @@ end;
 
 function TBarSeries.Extent: TDoubleRect;
 var
-  x: Double;
+  x, ofs, w: Double;
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   x := GetGraphPointX(0);
-  Result.a.X := Min(Result.a.X, x - CalcBarWidth(x, 0));
+  BarOffsetWidth(x, 0, ofs, w);
+  Result.a.X := Min(Result.a.X, x + ofs - w);
   x := GetGraphPointX(Count - 1);
-  Result.b.X := Max(Result.b.X, x + CalcBarWidth(x, Count - 1));
+  BarOffsetWidth(x, Count - 1, ofs, w);
+  Result.b.X := Max(Result.b.X, x + ofs + w);
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -835,6 +851,13 @@ end;
 procedure TBarSeries.SetBarBrush(Value: TBrush);
 begin
   FBarBrush.Assign(Value);
+end;
+
+procedure TBarSeries.SetBarOffsetPercent(const AValue: Integer);
+begin
+  if FBarOffsetPercent = AValue then exit;
+  FBarOffsetPercent := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetBarPen(Value:TPen);

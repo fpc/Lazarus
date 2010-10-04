@@ -32,8 +32,8 @@ type
 
   TLegendItem = class
   private
-    FText: String;
     FColor: TColor;
+    FText: String;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); virtual;
