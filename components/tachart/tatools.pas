@@ -464,24 +464,19 @@ var
 begin
   if not Enabled or (FChart <> nil) and (FChart <> AChart) then exit;
   FChart := AChart;
-  try
-    ev := FMouseEvents[Ord(AEventId) + Ord(High(AEventId)) + 1];
-    if Assigned(ev) then begin
-      ev(Self, APoint);
-      if Toolset.FIsHandled then exit;
-    end;
-    case AEventId of
-      evidMouseDown: MouseDown(APoint);
-      evidMouseMove: MouseMove(APoint);
-      evidMouseUp  : MouseUp  (APoint);
-    end;
-    ev := FMouseEvents[Ord(AEventId)];
-    if Assigned(ev) then
-      ev(Self, APoint);
-  finally
-    if not IsActive then
-      FChart := nil;
+  ev := FMouseEvents[Ord(AEventId) + Ord(High(AEventId)) + 1];
+  if Assigned(ev) then begin
+    ev(Self, APoint);
+    if Toolset.FIsHandled then exit;
   end;
+  case AEventId of
+    evidMouseDown: MouseDown(APoint);
+    evidMouseMove: MouseMove(APoint);
+    evidMouseUp  : MouseUp  (APoint);
+  end;
+  ev := FMouseEvents[Ord(AEventId)];
+  if Assigned(ev) then
+    ev(Self, APoint);
 end;
 
 function TChartTool.GetIndex: Integer;
@@ -686,12 +681,12 @@ end;
 procedure TBasicZoomTool.DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
 begin
   if (AnimationInterval = 0) or (AnimationSteps = 0) then begin
-    if IsActive then
-      Deactivate;
     if AFull then
       FChart.ZoomFull
     else
       FChart.LogicalExtent := ANewExtent;
+    if IsActive then
+      Deactivate;
     exit;
   end;
   if not IsActive then
