@@ -730,8 +730,9 @@ const
     '41236', '47896', '87412', '89632', '84268',
     '183', '842', '862');
 begin
-  Unused(AColor); // TODO
   ACanvas.Brush.Assign(FBrush);
+  if AColor <> clTAColor then
+    ACanvas.Brush.Color := AColor;
   ACanvas.Pen.Assign(FPen);
 
   if FStyle = psCircle then
