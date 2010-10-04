@@ -961,19 +961,20 @@ end;
 procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
-  li: TLegendItemBrushRect;
+  br: TLegendItemBrushRect;
+  ps: TLegendItemPieSlice;
 begin
   case Legend.Multiplicity of
     lmSingle: begin
-      li := TLegendItemBrushRect.Create(nil, Title);
-      li.Color := SliceColor(0);
-      AItems.Add(li);
+      br := TLegendItemBrushRect.Create(nil, Title);
+      br.Color := SliceColor(0);
+      AItems.Add(br);
     end;
     lmPoint:
       for i := 0 to Count - 1 do begin
-        li := TLegendItemBrushRect.Create(nil, FormattedMark(i));
-        li.Color := SliceColor(i);
-        AItems.Add(li);
+        ps := TLegendItemPieSlice.Create(FormattedMark(i));
+        ps.Color := SliceColor(i);
+        AItems.Add(ps);
       end;
   end;
 end;

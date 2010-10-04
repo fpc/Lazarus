@@ -87,6 +87,13 @@ type
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
   end;
 
+  { TLegendItemPieSlice }
+
+  TLegendItemPieSlice = class(TLegendItem)
+  public
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+  end;
+
   TChartLegendItems = TObjectList;
 
   TChartLegendBrush = class(TBrush)
@@ -268,6 +275,21 @@ begin
   if Color <> clTAColor then
     ACanvas.Brush.Color := Color;
   ACanvas.Rectangle(ARect);
+end;
+
+{ TLegendItemPieSlice }
+
+procedure TLegendItemPieSlice.Draw(ACanvas: TCanvas; const ARect: TRect);
+const
+  ANGLE = 30 * 16;
+begin
+  inherited Draw(ACanvas, ARect);
+  ACanvas.Brush.Style := bsSolid;
+  if Color <> clTAColor then
+    ACanvas.Brush.Color := Color;
+  ACanvas.RadialPie(
+    2 * ARect.Left - ARect.Right, ARect.Top, ARect.Right, ARect.Bottom,
+    -ANGLE, 2 * ANGLE);
 end;
 
 { TChartLegend }
