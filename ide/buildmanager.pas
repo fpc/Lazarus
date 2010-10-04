@@ -115,6 +115,9 @@ type
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
     FUnitSetChangeStamp: integer;
+    // Macro FPCVer
+    FFPCVer: string;
+    FFPCVerChangeStamp: integer;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
@@ -220,6 +223,7 @@ end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
+  FFPCVerChangeStamp:=InvalidParseStamp;
   MainBuildBoss:=Self;
   inherited Create(AOwner);
 
@@ -571,6 +575,13 @@ var
 
 begin
   if ScanningCompilerDisabled then exit;
+  if ClearCaches then begin
+    { $IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines clear caches']);
+    { $ENDIF}
+    CodeToolBoss.FPCDefinesCache.ConfigCaches.Clear;
+    CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
+  end;
   if ResetBuildTarget then
     SetBuildTarget('','','',true);
   
@@ -582,11 +593,10 @@ begin
   TargetOS:=GetTargetOS(true);
   TargetCPU:=GetTargetCPU(true);
   CompilerFilename:=EnvironmentOptions.CompilerFilename;
-  FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory;
+  FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
 
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines A ',
-    ' ClearCaches=',ClearCaches,
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
@@ -594,14 +604,6 @@ begin
     ' FPCSrcDir=',FPCSrcDir,
     '']);
   {$ENDIF}
-
-  if ClearCaches then begin
-    { $IFDEF VerboseFPCSrcScan}
-    debugln(['TBuildManager.RescanCompilerDefines clear caches']);
-    { $ENDIF}
-    CodeToolBoss.FPCDefinesCache.ConfigCaches.Clear;
-    CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
-  end;
 
   UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
     CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
@@ -639,8 +641,8 @@ begin
   AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
 
   // create compiler macros for the lazarus sources
-  if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,true
-    )=nil
+  if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,
+    true)=nil
   then begin
     ADefTempl:=CreateLazarusSourceTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
@@ -1346,34 +1348,48 @@ end;
 
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
-var
-  FPCVersion, FPCRelease, FPCPatch: integer;
-  TargetOS: String;
-  TargetCPU: String;
-  CompilerFilename: String;
-  ConfigCache: TFPCTargetConfigCache;
-begin
-  Result:={$I %FPCVERSION%};   // Version.Release.Patch
-  if CodeToolBoss<>nil then begin
-    // fetch the FPC version from the current compiler
-    // Not from the fpc.exe, but from the real compiler
-    CompilerFilename:=EnvironmentOptions.CompilerFilename;
-    if CompilerFilename='' then exit;
-    TargetOS:=GetTargetOS(true);
-    TargetCPU:=GetTargetCPU(true);
-    ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+
+  function Compute: string;
+  var
+    FPCVersion, FPCRelease, FPCPatch: integer;
+    TargetOS: String;
+    TargetCPU: String;
+    CompilerFilename: String;
+    ConfigCache: TFPCTargetConfigCache;
+  begin
+    Result:={$I %FPCVERSION%};   // Version.Release.Patch
+    if CodeToolBoss<>nil then begin
+      // fetch the FPC version from the current compiler
+      // Not from the fpc.exe, but from the real compiler
+      CompilerFilename:=EnvironmentOptions.CompilerFilename;
+      if CompilerFilename='' then exit;
+      TargetOS:=GetTargetOS(true);
+      TargetCPU:=GetTargetCPU(true);
+      ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                                    CompilerFilename,'',TargetOS,TargetCPU,true);
-    if ConfigCache=nil then exit;
-    if (ConfigCache.CompilerDate=0) and ConfigCache.NeedsUpdate then begin
-      // ask compiler
-      if not ConfigCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
-                           CodeToolBoss.FPCDefinesCache.ExtraOptions,nil)
-      then
-        exit;
+      if ConfigCache=nil then exit;
+      if (ConfigCache.CompilerDate=0) and ConfigCache.NeedsUpdate then begin
+        // ask compiler
+        if not ConfigCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
+                                  CodeToolBoss.FPCDefinesCache.ExtraOptions,nil)
+        then
+          exit;
+      end;
+      ConfigCache.GetFPCVer(FPCVersion,FPCRelease,FPCPatch);
+      Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
     end;
-    ConfigCache.GetFPCVer(FPCVersion,FPCRelease,FPCPatch);
-    Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
   end;
+
+begin
+  if FFPCVerChangeStamp<>CompilerParseStamp then
+  begin
+    FFPCVer:=Compute;
+    FFPCVerChangeStamp:=CompilerParseStamp;
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.MacroFuncFPCVer ',FFPCVer]);
+    {$ENDIF}
+  end;
+  Result:=FFPCVer;
 end;
 
 function TBuildManager.MacroFuncParams(const Param: string; const Data: PtrInt;
