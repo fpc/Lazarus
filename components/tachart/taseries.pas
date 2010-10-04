@@ -952,8 +952,13 @@ procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
 begin
-  for i := 0 to Count - 1 do
-    AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
+  case LegendMultiplicity of
+    lmSingle:
+      AItems.Add(TLegendItemColorRect.Create(SliceColor(0), Title));
+    lmPoint:
+      for i := 0 to Count - 1 do
+        AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
+  end;
 end;
 
 procedure TPieSeries.SetExploded(const AValue: Boolean);

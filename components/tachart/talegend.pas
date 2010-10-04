@@ -28,6 +28,8 @@ const
   DEF_LEGEND_SYMBOL_WIDTH = 20;
 
 type
+  TLegendMultiplicity = (lmSingle, lmPoint);
+
   { TLegendItem }
 
   TLegendItem = class

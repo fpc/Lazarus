@@ -93,6 +93,7 @@ type
   TChartSeries = class(TCustomChartSeries)
   private
     FBuiltinSource: TCustomChartSource;
+    FLegendMultiplicity: TLegendMultiplicity;
     FListener: TListener;
     FMarks: TChartMarks;
     FOnGetMark: TChartGetMarkEvent;
@@ -102,6 +103,7 @@ type
 
     function GetSource: TCustomChartSource;
     function IsSourceStored: boolean;
+    procedure SetLegendMultiplicity(AValue: TLegendMultiplicity);
     procedure SetMarks(const AValue: TChartMarks);
     procedure SetOnGetMark(const AValue: TChartGetMarkEvent);
     procedure SetSource(AValue: TCustomChartSource);
@@ -156,6 +158,8 @@ type
       read GetSource write SetSource stored IsSourceStored;
   published
     property Active default true;
+    property LegendMultiplicity: TLegendMultiplicity
+      read FLegendMultiplicity write SetLegendMultiplicity default lmSingle;
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
     property Title;
@@ -593,6 +597,13 @@ end;
 procedure TChartSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
   Source[AIndex]^.Color := AColor;
+end;
+
+procedure TChartSeries.SetLegendMultiplicity(AValue: TLegendMultiplicity);
+begin
+  if FLegendMultiplicity = AValue then exit;
+  FLegendMultiplicity := AValue;
+  UpdateParentChart;
 end;
 
 procedure TChartSeries.SetMarks(const AValue: TChartMarks);
