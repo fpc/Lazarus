@@ -38,6 +38,20 @@ type
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); virtual;
   end;
 
+  TLegendItemDrawEvent =
+    procedure (ACanvas: TCanvas; const ARect: TRect) of object;
+
+  { TLegendItemUserDrawn }
+
+  TLegendItemUserDrawn = class(TLegendItem)
+  private
+    FOnDraw: TLegendItemDrawEvent;
+  public
+    constructor Create(AOnDraw: TLegendItemDrawEvent; const AText: String);
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    property OnDraw: TLegendItemDrawEvent read FOnDraw;
+  end;
+
   { TLegendItemLine }
 
   TLegendItemLine = class(TLegendItem)
@@ -162,6 +176,22 @@ end;
 procedure TLegendItem.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   ACanvas.TextOut(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top, FText);
+end;
+
+{ TLegendItemUserDrawn }
+
+constructor TLegendItemUserDrawn.Create(
+  AOnDraw: TLegendItemDrawEvent; const AText: String);
+begin
+  inherited Create(AText);
+  FOnDraw := AOnDraw;
+end;
+
+procedure TLegendItemUserDrawn.Draw(ACanvas: TCanvas; const ARect: TRect);
+begin
+  inherited Draw(ACanvas, ARect);
+  if Assigned(FOnDraw) then
+    FOnDraw(ACanvas, ARect);
 end;
 
 { TLegendItemLine }

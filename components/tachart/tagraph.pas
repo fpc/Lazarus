@@ -59,7 +59,7 @@ type
     // Some or all bounds may be left unset, in which case they will be ignored.
     procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetGraphBounds(var ABounds: TDoubleRect); virtual; abstract;
-    procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
+    procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
@@ -510,7 +510,7 @@ begin
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active and ShowInLegend then
-          GetLegendItems(ALegendItems);
+          GetLegendItemsBasic(ALegendItems);
     ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
   except
     FreeAndNil(ALegendItems);

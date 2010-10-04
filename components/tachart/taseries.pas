@@ -248,6 +248,7 @@ type
     property Active default true;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
+    property OnDrawLegend;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
     property SeriesColor: TColor
@@ -297,6 +298,7 @@ type
     property AxisIndexY;
     property Extent: TChartExtent read FExtent write SetExtent;
     property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
+    property OnDrawLegend;
     property Pen: TChartPen read FPen write SetPen;
     property ShowInLegend;
     property Step: TFuncSeriesStep read FStep write SetStep default 2;
@@ -326,6 +328,7 @@ type
     property ZPosition;
   published
     property OnDraw: TSeriesDrawEvent read FOnDraw write SetOnDraw;
+    property OnDrawLegend;
     property OnGetBounds: TSeriesGetBoundsEvent
       read FOnGetBounds write SetOnGetBounds;
   end;

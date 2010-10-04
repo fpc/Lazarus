@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartAxis, TAChartUtils, TAGraph, TASources, TAStyles, TATypes;
+  TAChartAxis, TAChartUtils, TAGraph, TALegend, TASources, TAStyles, TATypes;
 
 const
   DEF_AXIS_INDEX = -1;
@@ -36,11 +36,15 @@ type
   private
     FAxisIndexX: Integer;
     FAxisIndexY: Integer;
+    FOnDrawLegend: TLegendItemDrawEvent;
     procedure SetAxisIndexX(AValue: Integer);
     procedure SetAxisIndexY(AValue: Integer);
+    procedure SetOnDrawLegend(AValue: TLegendItemDrawEvent);
 
   protected
     procedure GetGraphBounds(var ABounds: TDoubleRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
+    procedure GetLegendItemsBasic(AItems: TChartLegendItems); override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -72,8 +76,13 @@ type
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
-    property AxisIndexX: Integer read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
-    property AxisIndexY: Integer read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
+    property AxisIndexX: Integer
+      read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
+    property AxisIndexY: Integer
+      read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
+
+    property OnDrawLegend: TLegendItemDrawEvent
+      read FOnDrawLegend write SetOnDrawLegend;
   end;
 
   TChartGetMarkEvent = procedure (
@@ -152,6 +161,7 @@ type
     property Title;
     property ZPosition;
   published
+    property OnDrawLegend;
     property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark;
   end;
 
@@ -254,6 +264,14 @@ begin
   Result := FChart.Series.List.IndexOf(Self);
 end;
 
+procedure TCustomChartSeries.GetLegendItemsBasic(AItems: TChartLegendItems);
+begin
+  if Assigned(FOnDrawLegend) then
+    AItems.Add(TLegendItemUserDrawn.Create(OnDrawLegend, Title))
+  else
+    GetLegendItems(AItems);
+end;
+
 function TCustomChartSeries.GetParentComponent: TComponent;
 begin
   Result := FChart;
@@ -320,6 +338,13 @@ procedure TCustomChartSeries.SetIndex(AValue: Integer);
 begin
   with FChart.Series.List do
     Move(Index, EnsureRange(AValue, 0, Count - 1));
+end;
+
+procedure TCustomChartSeries.SetOnDrawLegend(AValue: TLegendItemDrawEvent);
+begin
+  if FOnDrawLegend = AValue then exit;
+  FOnDrawLegend := AValue;
+  UpdateParentChart;
 end;
 
 procedure TCustomChartSeries.SetParentComponent(AParent: TComponent);
