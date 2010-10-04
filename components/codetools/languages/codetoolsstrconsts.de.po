@@ -730,6 +730,10 @@ msgstr "Ergebnistype der Funktion GetEnumerator nicht gefunden"
 msgid "Runtime library"
 msgstr "Laufzeitbibliothek"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; nach dem Eigenschaftenbeschreiber \"%s\" erwartet aber %s gefunden"

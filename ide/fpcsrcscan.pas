@@ -31,7 +31,8 @@ unit FPCSrcScan;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, DefineTemplates, ProgressWnd;
+  Classes, SysUtils, FileProcs, DefineTemplates, CodeToolManager,
+  LazarusIDEStrConsts, ProgressWnd, BaseBuildManager;
 
 type
   TFPCSrcScans = class;
@@ -40,10 +41,13 @@ type
 
   TFPCSrcScan = class(TThread)
   protected
+    Files: TStringList;
     procedure Execute; override;
+    procedure OnFilesGathered; // main thread, called after thread has collected Files
   public
     Directory: string;
     Scans: TFPCSrcScans;
+    ProgressItem: TIDEProgressItem;
   end;
 
   { TFPCSrcScans }
@@ -53,6 +57,7 @@ type
     fItems: TFPList;
     FCritSec: TRTLCriticalSection;
     function GetItems(Index: integer): TFPCSrcScan;
+    procedure Remove(Item: TFPCSrcScan);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -70,9 +75,40 @@ implementation
 
 procedure TFPCSrcScan.Execute;
 begin
-  // ToDo: scan fpc source directory, check for terminated
-  // ToDo: when finished, let main thread update the codetools fpc source cache
-  // ToDo: delete item in progress window
+  try
+    // scan fpc source directory, check for terminated
+    Files:=GatherFilesInFPCSources(Directory,nil);
+    //debugln(['TFPCSrcScan.Execute ',Files<>nil]);
+    // let main thread update the codetools fpc source cache
+    Synchronize(@OnFilesGathered);
+  except
+    on E: Exception do begin
+      debugln(['TFPCSrcScan.Execute error: ',E.Message]);
+    end;
+  end;
+end;
+
+procedure TFPCSrcScan.OnFilesGathered;
+var
+  SrcCache: TFPCSourceCache;
+begin
+  //debugln(['TFPCSrcScan.OnFilesGathered ',Directory,' FileCount=',Files.Count]);
+  // copy Files to codetools cache
+  if CodeToolBoss<>nil then
+  begin
+    SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(Directory,true);
+    SrcCache.Update(Files);
+
+    //debugln(['TFPCSrcScan.OnFilesGathered BuildBoss.RescanCompilerDefines ...']);
+    if BuildBoss<>nil then
+      BuildBoss.RescanCompilerDefines(false,false,false);
+  end;
+  FreeAndNil(Files);
+  // delete item in progress window
+  //debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
+  FreeAndNil(ProgressItem);
+  Scans.Remove(Self);
+  //debugln(['TFPCSrcScan.OnFilesGathered END']);
 end;
 
 { TFPCSrcScans }
@@ -80,6 +116,16 @@ end;
 function TFPCSrcScans.GetItems(Index: integer): TFPCSrcScan;
 begin
   Result:=TFPCSrcScan(fItems[Index]);
+end;
+
+procedure TFPCSrcScans.Remove(Item: TFPCSrcScan);
+begin
+  EnterCriticalsection;
+  try
+    fItems.Remove(Item);
+  finally
+    LeaveCriticalsection;
+  end;
 end;
 
 constructor TFPCSrcScans.Create(AOwner: TComponent);
@@ -138,17 +184,26 @@ end;
 procedure TFPCSrcScans.Scan(Directory: string);
 var
   i: Integer;
+  Item: TFPCSrcScan;
 begin
-  // check if already scanning that directory
   EnterCriticalsection;
   try
+    // check if already scanning that directory
     for i:=0 to Count-1 do
       if CompareFilenames(Directory,Items[i].Directory)=0 then exit;
+    // create thread and create progress window
+    Item:=TFPCSrcScan.Create(true);
+    Item.FreeOnTerminate:=true;
+    Item.Scans:=Self;
+    Item.Directory:=Directory;
+    fItems.Add(Item);
   finally
     LeaveCriticalsection;
   end;
-
-  // ToDo: create thread and create progress window
+  Item.ProgressItem:=CreateProgressItem('FPCSrcScan',
+    Format(lisCreatingFileIndexOfFPCSources, [Directory]),
+    lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio);
+  Item.Resume;
 end;
 
 end.

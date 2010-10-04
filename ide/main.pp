@@ -4383,7 +4383,7 @@ begin
   ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
 
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
-  debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
+  //debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
   if FPCCompilerChanged or FPCSrcDirChanged then
     MainBuildBoss.RescanCompilerDefines(true,false,false);
 
@@ -4578,7 +4578,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  MainBuildBoss.RescanCompilerDefines(false,true,true);
+  MainBuildBoss.RescanCompilerDefines(false,true,false);
 end;
 
 procedure TMainIDE.SaveEnvironment;

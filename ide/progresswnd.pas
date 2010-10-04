@@ -32,8 +32,8 @@ unit ProgressWnd;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ComCtrls, StdCtrls, ExtCtrls, LazIDEIntf;
 
 type
   TIDEProgressWindow = class;
@@ -94,9 +94,21 @@ type
   end;
 
 var
-  IDEProgressWindow: TIDEProgressWindow;
+  IDEProgressWindow: TIDEProgressWindow = nil;
+
+function CreateProgressItem(AName, ACaption, AHint: string): TIDEProgressItem;
 
 implementation
+
+function CreateProgressItem(AName, ACaption, AHint: string): TIDEProgressItem;
+begin
+  //debugln(['CreateProgressItem Name="',AName,'" Caption="',ACaption,'"']);
+  if IDEProgressWindow=nil then
+  begin
+    IDEProgressWindow:=TIDEProgressWindow.Create(LazarusIDE.OwningComponent);
+  end;
+  Result:=IDEProgressWindow.AddItem(AName,ACaption,AHint);
+end;
 
 {$R *.lfm}
 
@@ -265,6 +277,7 @@ destructor TIDEProgressWindow.Destroy;
 begin
   ClearItems;
   FreeAndNil(FItems);
+  if IDEProgressWindow=Self then IDEProgressWindow:=nil;
   inherited Destroy;
 end;
 
@@ -289,9 +302,19 @@ end;
 
 function TIDEProgressWindow.AddItem(AName, ACaption, AHint: string
   ): TIDEProgressItem;
+var
+  i: Integer;
+  NewName: String;
 begin
+  //debugln(['TIDEProgressWindow.AddItem Name="',AName,'" Caption="',ACaption,'"']);
   if FindComponent(AName)<>nil then
-    raise Exception.Create('TIDEProgressWindow.AddItem name already used: '+AName);
+  begin
+    i:=1;
+    repeat
+      NewName:=AName+IntToStr(i);
+    until FindComponent(NewName)=nil;
+    AName:=NewName;
+  end;
   Result:=TIDEProgressItem.Create(Self);
   Result.FWindow:=Self;
   Result.Name:=AName;
@@ -301,14 +324,19 @@ begin
   Result.Panel:=TPanel.Create(Result);
   Result.Panel.Align:=alTop;
   Result.Panel.AutoSize:=true;
+  Result.Panel.Constraints.MinWidth:=100;
+  Result.Panel.Constraints.MinHeight:=30;
   // add a label into the panel
   Result.CaptionLabel:=TLabel.Create(Result.Panel);
   Result.CaptionLabel.Align:=alTop;
   Result.CaptionLabel.AutoSize:=true;
+  Result.CaptionLabel.Parent:=Result.Panel;
   // add a progressbar below the label
   Result.ProgressBar:=TProgressBar.Create(Result.Panel);
   Result.ProgressBar.Align:=alTop;
   Result.ProgressBar.AutoSize:=true;
+  Result.ProgressBar.Parent:=Result.Panel;
+  Result.ProgressBar.Top:=10;
 
   // show panel
   DisableAutoSizing;

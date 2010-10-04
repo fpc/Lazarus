@@ -728,6 +728,10 @@ msgstr "nenalezen typ návratové hodnoty funkce GetEnumerator"
 msgid "Runtime library"
 msgstr "Běhová knihovna"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "očekáváno ; po specifikátoru vlastnosti \"%s\", ale nalezeno %s"

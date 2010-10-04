@@ -748,6 +748,7 @@ type
     procedure LoadFromFile(Filename: string);
     procedure SaveToFile(Filename: string);
     procedure Update(const OnProgress: TDefinePoolProgress = nil);
+    procedure Update(var NewFiles: TStringList); // NewFiles is used for Files! do not free NewFiles
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
   end;
@@ -894,7 +895,9 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
                                     ): TDefineTemplate;
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
-                     const OnProgress: TDefinePoolProgress): TStringList;
+                     const OnProgress: TDefinePoolProgress): TStringList; // thread safe
+function GatherFilesInFPCSources(Directory: string;
+                            const OnProgress: TDefinePoolProgress): TStringList; // thread safe
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
 function Compress1FileList(Files: TStrings): TStringList;
 function Decompress1FileList(Files: TStrings): TStringList;
@@ -1052,9 +1055,12 @@ var
 var
   Node: TAVLTreeNode;
   s: String;
+  NodeMgr: TAVLTreeNodeMemManager;
 begin
   Result:=nil;
   Files:=TAVLTree.Create(@CompareAnsiStringFilenames);
+  NodeMgr:=TAVLTreeNodeMemManager.Create;
+  Files.SetNodeManager(NodeMgr);
   Abort:=false;
   try
     FileCount:=0;
@@ -1071,7 +1077,15 @@ begin
       Node:=Files.FindSuccessor(Node);
     end;
     FreeAndNil(Files);
+    FreeAndNil(NodeMgr);
   end;
+end;
+
+function GatherFilesInFPCSources(Directory: string;
+  const OnProgress: TDefinePoolProgress): TStringList;
+begin
+  Result:=GatherFiles(Directory,'{.svn,CVS}',
+                      '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
 end;
 
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string
@@ -1526,7 +1540,8 @@ begin
       repeat
         inc(FileCount);
         if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-          OnProgress(nil,0,-1,'Scanned files: '+IntToStr(FileCount),Abort);
+          OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+            ), Abort);
           if Abort then break;
         end;
         ShortFilename:=FileInfo.Name;
@@ -8102,18 +8117,23 @@ end;
 
 procedure TFPCSourceCache.Update(const OnProgress: TDefinePoolProgress);
 var
-  OldFiles: TStrings;
+  NewFiles: TStringList;
+begin
+  Valid:=false;
+  NewFiles:=GatherFilesInFPCSources(Directory,OnProgress);
+  Update(NewFiles);
+end;
+
+procedure TFPCSourceCache.Update(var NewFiles: TStringList);
+var
+  OldFiles: TStringList;
   OldValid: Boolean;
 begin
   OldFiles:=Files;
-  Files:=nil;
   OldValid:=Valid;
   try
-    if (Directory<>'') then begin
-      debugln(['TFPCSourceCache.Update ',Directory,' ...']);
-      Files:=GatherFiles(Directory,'{.svn,CVS}',
-                              '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
-    end;
+    Files:=NewFiles;
+    NewFiles:=nil;
     Valid:=true;
     if (Valid<>OldValid)
     or ((Files=nil)<>(OldFiles=nil))
@@ -8352,7 +8372,7 @@ end;
 procedure TFPCDefinesCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
-  debugln(['TFPCDefinesCache.SaveToXMLConfig ']);
+  //debugln(['TFPCDefinesCache.SaveToXMLConfig ']);
   if ConfigCaches<>nil then begin
     ConfigCaches.SaveToXMLConfig(XMLConfig,Path+'FPCConfigs/');
     FConfigCachesSaveStamp:=ConfigCaches.ChangeStamp;

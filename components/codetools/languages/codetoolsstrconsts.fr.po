@@ -728,6 +728,10 @@ msgstr ""
 msgid "Runtime library"
 msgstr "Librairie Runtime"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; prévu après la propriété \"%s\", mais %s trouvé"

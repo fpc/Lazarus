@@ -4890,6 +4890,12 @@ resourcestring
   lisWithIncludes = '%s, with includes %s';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';
+  lisCreatingFileIndexOfFPCSources =
+    'Creating file index of FPC sources %s ...';
+  lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio = 'The file index is '
+    +'needed for functions like find declaration. While scanning you can edit '
+    +'sources and compile, but functions like find declaration will show unit-'
+    +'not-found errors. This can take a minute.';
 
 implementation
 

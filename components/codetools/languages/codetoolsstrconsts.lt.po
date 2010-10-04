@@ -729,6 +729,10 @@ msgstr "funkcijos „GetEnumerator“ rezultato tipas nerastas"
 msgid "Runtime library"
 msgstr "Veikos meto biblioteka"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; tikėtasi po „%s“ savybės specifikatoriaus, tačiau rasta %s"

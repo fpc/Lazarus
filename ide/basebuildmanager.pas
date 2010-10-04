@@ -64,6 +64,9 @@ type
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
 
+    procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
+                                    WaitTillDone: boolean); virtual; abstract;
+
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; virtual; abstract;
     function DeleteAmbiguousFiles(const Filename:string

@@ -119,6 +119,7 @@ type
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
     FUnitSetChangeStamp: integer;
+    FFPCSrcScans: TFPCSrcScans;
     // Macro FPCVer
     FFPCVer: string;
     FFPCVerChangeStamp: integer;
@@ -151,7 +152,7 @@ type
 
     procedure UpdateEnglishErrorMsgFilename;
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
-                                    WaitTillDone: boolean);
+                                    WaitTillDone: boolean); override;
     procedure LoadFPCDefinesCaches;
     procedure SaveFPCDefinesCaches;
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
@@ -177,6 +178,8 @@ type
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
                              ScanFPCSrc: TBMScanFPCSources = bmsfsSkip);
     procedure SetBuildTargetIDE;
+
+    property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
   end;
   
 var
@@ -239,6 +242,8 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
+  FreeAndNil(FFPCSrcScans);
+
   LazConfMacroFunc:=nil;
   OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
@@ -607,6 +612,7 @@ begin
     ' TargetCPU=',TargetCPU,
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
+    ' WaitTillDone=',WaitTillDone,
     '']);
   {$ENDIF}
 
@@ -614,28 +620,29 @@ begin
     CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
 
   NeedUpdateFPCSrcCache:=false;
-  if (not WaitTillDone) or (not HasGUI) then
+  //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
+  if DirectoryExistsUTF8(FPCSrcDir) and ((not WaitTillDone) or (not HasGUI)) then
   begin
     // FPC sources are not needed
     // => disable scan
     FPCSrcCache:=UnitSetCache.GetSourceCache(false);
     if (FPCSrcCache<>nil) and (not FPCSrcCache.Valid) then
     begin
-      {$IFDEF EnableDelayedFPCSrcScan}
       NeedUpdateFPCSrcCache:=HasGUI;
       FPCSrcCache.Valid:=true;
-      {$ENDIF}
+      if NeedUpdateFPCSrcCache then
+      begin
+        // start background scan of fpc source directory
+        //debugln(['TBuildManager.RescanCompilerDefines background scan '+FPCSrcCache.Directory]);
+        if FPCSrcScans=nil then
+          FFPCSrcScans:=TFPCSrcScans.Create(Self);
+        FPCSrcScans.Scan(FPCSrcDir);
+      end;
     end;
   end;
 
   // scan compiler, fpc sources and create indices for quick lookup
   UnitSetCache.Init;
-
-  if NeedUpdateFPCSrcCache then
-  begin
-    // start background scan of fpc source directory
-    debugln(['TBuildManager.RescanCompilerDefines TODO: implement background scan '+FPCSrcCache.Directory]);
-  end;
 
   if FUnitSetChangeStamp=UnitSetCache.ChangeStamp then begin
     {$IFDEF VerboseFPCSrcScan}

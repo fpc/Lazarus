@@ -727,6 +727,10 @@ msgstr "סוג הערך המוחזר של הפונקציה GetEnumerator לא נ
 msgid "Runtime library"
 msgstr "תיקיית זמן ריצה"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "צפוי נקודה פסיק אחרי מציין תכונה s%, אבל נמצא s%"

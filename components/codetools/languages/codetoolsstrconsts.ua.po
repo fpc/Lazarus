@@ -722,6 +722,10 @@ msgstr ""
 msgid "Runtime library"
 msgstr "Бібліотека часу виконання"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; очікується після модифікатора властивості \"%s\", але знайдено %s"

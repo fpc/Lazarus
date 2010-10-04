@@ -181,6 +181,7 @@ ResourceString
   ctsDefaultFPCSource2OperatingSystem = 'Default fpc source Operating System 2';
   ctsDefaultFPCTargetProcessor = 'Default fpc target processor';
   ctsFreePascalCompilerInitialMacros = 'Free Pascal Compiler initial macros';
+  ctsScannedFiles = 'Scanned files: %s';
   ctsFreePascalSourcesPlusDesc = 'Free Pascal Sources, %s';
   ctsSourceFilenamesForStandardFPCUnits =
                                   'Source filenames for the standard fpc units';

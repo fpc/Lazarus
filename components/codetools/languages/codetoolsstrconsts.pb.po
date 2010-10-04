@@ -727,6 +727,10 @@ msgstr "tipo retorno da função \"GetEnumerator\" não encontrado"
 msgid "Runtime library"
 msgstr "Biblioteca Tempo Execução"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "\";\" esperado após especificador de propriedade \"%s\", mas %s encontrado"

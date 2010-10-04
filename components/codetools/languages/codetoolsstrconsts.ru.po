@@ -727,6 +727,10 @@ msgstr "тип результата функции GetEnumerator не найде
 msgid "Runtime library"
 msgstr "Библиотека времени исполнения"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "; ожидается после модификатора свойства \"%s\", но найдено %s"

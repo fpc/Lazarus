@@ -727,6 +727,10 @@ msgstr ""
 msgid "Runtime library"
 msgstr "Biblioteca de temps d'execució"
 
+#: codetoolsstrconsts.ctsscannedfiles
+msgid "Scanned files: %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "s'esperava ; després de l'especificador de propietat \"%s\", però s'ha trobat %s"
