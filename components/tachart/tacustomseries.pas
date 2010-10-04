@@ -709,14 +709,17 @@ procedure TBasicPointSeries.GetLegendItemsRect(
   AItems: TChartLegendItems; ABrush: TBrush);
 var
   i: Integer;
+  li: TLegendItemBrushRect;
 begin
   case Legend.Multiplicity of
     lmSingle:
       AItems.Add(TLegendItemBrushRect.Create(ABrush, Title));
-    lmPoint: begin
-      for i := 0 to Count - 1 do
-        AItems.Add(TLegendItemColorRect.Create(GetColor(i), FormattedMark(i)));
-    end;
+    lmPoint:
+      for i := 0 to Count - 1 do begin
+        li := TLegendItemBrushRect.Create(ABrush, FormattedMark(i));
+        li.Color := GetColor(i);
+        AItems.Add(li);
+      end;
   end;
 end;
 

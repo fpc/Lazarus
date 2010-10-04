@@ -502,6 +502,7 @@ var
   lp: TPen;
   p: TSeriesPointer;
   i: Integer;
+  li: TLegendItemLinePointer;
 begin
   if LineType = ltNone then
     lp := nil
@@ -515,8 +516,11 @@ begin
     lmSingle:
       AItems.Add(TLegendItemLinePointer.Create(lp, p, Title));
     lmPoint: begin
-      for i := 0 to Count - 1 do
-        AItems.Add(TLegendItemLinePointer.Create(lp, p, FormattedMark(i)));
+      for i := 0 to Count - 1 do begin
+        li := TLegendItemLinePointer.Create(lp, p, FormattedMark(i));
+        li.Color := GetColor(i);
+        AItems.Add(li);
+      end;
     end;
   end;
 end;
@@ -957,13 +961,20 @@ end;
 procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
+  li: TLegendItemBrushRect;
 begin
   case Legend.Multiplicity of
-    lmSingle:
-      AItems.Add(TLegendItemColorRect.Create(SliceColor(0), Title));
+    lmSingle: begin
+      li := TLegendItemBrushRect.Create(nil, Title);
+      li.Color := SliceColor(0);
+      AItems.Add(li);
+    end;
     lmPoint:
-      for i := 0 to Count - 1 do
-        AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
+      for i := 0 to Count - 1 do begin
+        li := TLegendItemBrushRect.Create(nil, FormattedMark(i));
+        li.Color := SliceColor(i);
+        AItems.Add(li);
+      end;
   end;
 end;
 

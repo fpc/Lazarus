@@ -33,9 +33,12 @@ type
   TLegendItem = class
   private
     FText: String;
+    FColor: TColor;
   public
-    constructor Create(const AText: String);
+    constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); virtual;
+  public
+    property Color: TColor read FColor write FColor;
   end;
 
   TLegendItemDrawEvent =
@@ -81,16 +84,6 @@ type
     FBrush: TBrush;
   public
     constructor Create(ABrush: TBrush; const AText: String);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
-  end;
-
-  { TLegendItemColorRect }
-
-  TLegendItemColorRect = class(TLegendItem)
-  private
-    FColor: TColor;
-  public
-    constructor Create(AColor: TColor; const AText: String);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
   end;
 
@@ -189,8 +182,9 @@ const
 
 { TLegendItem }
 
-constructor TLegendItem.Create(const AText: String);
+constructor TLegendItem.Create(const AText: String; AColor: TColor);
 begin
+  FColor := AColor;
   FText := AText;
 end;
 
@@ -253,7 +247,7 @@ begin
   // Max width slightly narrower then ARect to leave place for the line.
   sz.X := Min(FPointer.HorizSize, (ARect.Right - ARect.Left) div 3);
   sz.Y := Min(FPointer.VertSize, (ARect.Bottom - ARect.Top) div 2);
-  FPointer.DrawSize(ACanvas, c, sz, clTAColor);
+  FPointer.DrawSize(ACanvas, c, sz, Color);
 end;
 
 { TLegendItemBrushRect }
@@ -267,23 +261,12 @@ end;
 procedure TLegendItemBrushRect.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   inherited Draw(ACanvas, ARect);
-  ACanvas.Brush.Assign(FBrush);
-  ACanvas.Rectangle(ARect);
-end;
-
-{ TLegendItemColorRect }
-
-constructor TLegendItemColorRect.Create(AColor: TColor; const AText: String);
-begin
-  inherited Create(AText);
-  FColor := AColor;
-end;
-
-procedure TLegendItemColorRect.Draw(ACanvas: TCanvas; const ARect: TRect);
-begin
-  inherited Draw(ACanvas, ARect);
-  ACanvas.Brush.Color := FColor;
-  ACanvas.Brush.Style := bsSolid;
+  if FBrush = nil then
+    ACanvas.Brush.Style := bsSolid
+  else
+    ACanvas.Brush.Assign(FBrush);
+  if Color <> clTAColor then
+    ACanvas.Brush.Color := Color;
   ACanvas.Rectangle(ARect);
 end;
 

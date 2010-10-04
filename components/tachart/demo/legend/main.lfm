@@ -201,7 +201,7 @@ object Form1: TForm1
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
       '0|0|?|'
-      '1|2|?|'
+      '1|2|$00FF00|'
       '2|5|?|'
       '3|1|?|'
       '4|6|?|'
