@@ -383,7 +383,11 @@ end;
 
 { Helper routine.
   Finds all files/directories directly inside a directory.
-  Does not recurse inside subdirectories. }
+  Does not recurse inside subdirectories.
+
+  AMask may contain multiple file masks separated by ;
+  Don't add a final ; after the last mask.
+}
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
   AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType);
 var
@@ -392,10 +396,11 @@ var
   IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
   ObjectData: TObject;
   SearchStr: string;
-  MaskStr: string;
+  CurMaskStr, MaskStr: string;
   Files: TList;
   FileItem: TFileItem;
   i: Integer;
+  MaskStrings: TStringList;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -411,53 +416,66 @@ begin
   if Trim(AMask) = '' then MaskStr := AllFilesMask
   else MaskStr := AMask;
 
-  if AFileSortType=fstNone then Files:=nil
-  else Files:=TList.Create;
+  // The string list implements support for multiple masks separated
+  // by semi-comma ";"
+  MaskStrings := TStringList.Create;
+  try
+    MaskStrings.Delimiter := ';';
+    MaskStrings.DelimitedText := MaskStr;
 
-  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr;
+    if AFileSortType=fstNone then Files:=nil
+    else Files:=TList.Create;
 
-  FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
-
-  while FindResult = 0 do
-  begin
-    Application.ProcessMessages;
-
-    IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
-
-    IsValidDirectory := (DirInfo.Name <> '.') and (DirInfo.Name <> '..');
-
-    IsHidden := (DirInfo.Attr and faHidden = faHidden);
-    {$IFDEF Unix}
-    if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
-      IsHidden:=true;
-    {$ENDIF}
-
-    // First check if we show hidden files
-    if IsHidden then AddFile := (otHidden in AObjectTypes)
-    else AddFile := True;
-
-    // If it is a directory, check if it is a valid one
-    if IsDirectory then
-      AddFile := AddFile and ((otFolders in AObjectTypes) and IsValidDirectory)
-    else
-      AddFile := AddFile and (otNonFolders in AObjectTypes);
-
-    // AddFile identifies if the file is valid or not
-    if AddFile then
+    for i := 0 to MaskStrings.Count - 1 do
     begin
-      if not Assigned(Files) then begin
-        // Mark if it is a directory (ObjectData <> nil)
-        if IsDirectory then ObjectData := AResult
-        else ObjectData := nil;
-        AResult.AddObject(DirInfo.Name, ObjectData)
-      end else
-        Files.Add ( TFileItem.Create(DirInfo));
+      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStrings.Strings[i];
+
+      FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
+
+      while FindResult = 0 do
+      begin
+        Application.ProcessMessages;
+
+        IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
+
+        IsValidDirectory := (DirInfo.Name <> '.') and (DirInfo.Name <> '..');
+
+        IsHidden := (DirInfo.Attr and faHidden = faHidden);
+        {$IFDEF Unix}
+        if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
+          IsHidden:=true;
+        {$ENDIF}
+
+        // First check if we show hidden files
+        if IsHidden then AddFile := (otHidden in AObjectTypes)
+        else AddFile := True;
+
+        // If it is a directory, check if it is a valid one
+        if IsDirectory then
+          AddFile := AddFile and ((otFolders in AObjectTypes) and IsValidDirectory)
+        else
+          AddFile := AddFile and (otNonFolders in AObjectTypes);
+
+        // AddFile identifies if the file is valid or not
+        if AddFile then
+        begin
+          if not Assigned(Files) then begin
+            // Mark if it is a directory (ObjectData <> nil)
+            if IsDirectory then ObjectData := AResult
+            else ObjectData := nil;
+            AResult.AddObject(DirInfo.Name, ObjectData)
+          end else
+            Files.Add ( TFileItem.Create(DirInfo));
+        end;
+
+        FindResult := FindNextUTF8(DirInfo);
+      end;
+
+      FindCloseUTF8(DirInfo);
     end;
-
-    FindResult := FindNextUTF8(DirInfo);
+  finally
+    MaskStrings.Free;
   end;
-
-  FindCloseUTF8(DirInfo);
 
   if Assigned(Files) then begin
     Objectdata:=AResult;
