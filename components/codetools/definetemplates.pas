@@ -735,6 +735,7 @@ type
     FChangeStamp: integer;
   public
     Directory: string;
+    Valid: boolean;
     Files: TStringList;
     Caches: TFPCSourceCaches;
     constructor Create(AOwner: TComponent); override;
@@ -7138,6 +7139,7 @@ end;
 
 constructor TFPCTargetConfigCache.Create(AOwner: TComponent);
 begin
+  FChangeStamp:=CTInvalidChangeStamp;
   inherited Create(AOwner);
   ConfigFiles:=TFPCConfigFileStateList.Create;
   if Owner is TFPCTargetConfigCaches then
@@ -7573,10 +7575,7 @@ end;
 
 procedure TFPCTargetConfigCache.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
   if Caches<>nil then
     Caches.IncreaseChangeStamp;
 end;
@@ -7704,6 +7703,7 @@ end;
 
 constructor TFPCTargetConfigCaches.Create(AOwner: TComponent);
 begin
+  FChangeStamp:=CTInvalidChangeStamp;
   inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCTargetConfigCacheItems);
 end;
@@ -7830,10 +7830,7 @@ end;
 
 procedure TFPCTargetConfigCaches.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 function TFPCTargetConfigCaches.Find(CompilerFilename, CompilerOptions,
@@ -7994,6 +7991,8 @@ constructor TFPCSourceCache.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Files:=TStringList.Create;
+  Valid:=false;
+  FChangeStamp:=CTInvalidChangeStamp;
   if Owner is TFPCSourceCaches then
     Caches:=TFPCSourceCaches(Owner);
 end;
@@ -8007,6 +8006,7 @@ end;
 procedure TFPCSourceCache.Clear;
 begin
   FreeAndNil(Files);
+  Valid:=false;
 end;
 
 procedure TFPCSourceCache.Assign(Source: TPersistent);
@@ -8017,6 +8017,7 @@ begin
     Cache:=TFPCSourceCache(Source);
     Directory:=Cache.Directory;
     Files.Assign(Cache.Files);
+    Valid:=Cache.Valid;
   end else
     inherited Assign(Source);
 end;
@@ -8024,6 +8025,7 @@ end;
 function TFPCSourceCache.Equals(Cache: TFPCSourceCache): boolean;
 begin
   Result:=false;
+  if Valid<>Cache.Valid then exit;
   if Directory<>Cache.Directory then exit;
   if not Files.Equals(Cache.Files) then exit;
   Result:=true;
@@ -8037,6 +8039,7 @@ begin
   Clear;
   List:=nil;
   try
+    Valid:=XMLConfig.GetValue(Path+'Valid',true);
     Directory:=XMLConfig.GetValue(Path+'Directory','');
     List:=TStringList.Create;
     List.StrictDelimiter:=true;
@@ -8058,6 +8061,7 @@ var
 begin
   List:=nil;
   try
+    XMLConfig.SetDeleteValue(Path+'Valid',Valid,true);
     XMLConfig.SetDeleteValue(Path+'Directory',Directory,'');
     if Files<>nil then begin
       List:=Compress1FileList(Files);
@@ -8099,16 +8103,20 @@ end;
 procedure TFPCSourceCache.Update(const OnProgress: TDefinePoolProgress);
 var
   OldFiles: TStrings;
+  OldValid: Boolean;
 begin
   OldFiles:=Files;
   Files:=nil;
+  OldValid:=Valid;
   try
     if (Directory<>'') then begin
       debugln(['TFPCSourceCache.Update ',Directory,' ...']);
       Files:=GatherFiles(Directory,'{.svn,CVS}',
                               '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
     end;
-    if ((Files=nil)<>(OldFiles=nil))
+    Valid:=true;
+    if (Valid<>OldValid)
+    or ((Files=nil)<>(OldFiles=nil))
     or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then begin
       IncreaseChangeStamp;
       debugln(['TFPCSourceCache.Update ',Directory,' has changed.']);
@@ -8120,10 +8128,7 @@ end;
 
 procedure TFPCSourceCache.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
   if Caches<>nil then
     Caches.IncreaseChangeStamp;
 end;
@@ -8132,6 +8137,7 @@ end;
 
 constructor TFPCSourceCaches.Create(AOwner: TComponent);
 begin
+  FChangeStamp:=CTInvalidChangeStamp;
   inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCSourceCacheItems);
 end;
@@ -8259,10 +8265,7 @@ end;
 
 procedure TFPCSourceCaches.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 function TFPCSourceCaches.Find(Directory: string;
@@ -8589,6 +8592,7 @@ end;
 constructor TFPCUnitSetCache.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FChangeStamp:=CTInvalidChangeStamp;
   FCaches:=TheOwner as TFPCDefinesCache;
   fUnitToSourceTree:=TStringToStringTree.Create(false);
   fSrcDuplicates:=TStringToStringTree.Create(false);
@@ -8765,10 +8769,7 @@ end;
 
 procedure TFPCUnitSetCache.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 function TFPCUnitSetCache.GetUnitSetID: string;

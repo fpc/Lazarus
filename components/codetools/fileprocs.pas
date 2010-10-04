@@ -145,6 +145,12 @@ function FindPathInSearchPath(APath: PChar; APathLen: integer;
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
     out StartPos: integer): boolean;
 
+const
+  CTInvalidChangeStamp = Low(integer);
+  CTInvalidChangeStamp64 = Low(int64);
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
+
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
 
@@ -1997,6 +2003,22 @@ begin
     inc(Position);
   end;
   Result:=StartPos<=length(CmdLine);
+end;
+
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
+begin
+  if ChangeStamp<High(ChangeStamp) then
+    inc(ChangeStamp)
+  else
+    ChangeStamp:=CTInvalidChangeStamp+1;
+end;
+
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
+begin
+  if ChangeStamp<High(ChangeStamp) then
+    inc(ChangeStamp)
+  else
+    ChangeStamp:=CTInvalidChangeStamp64+1;
 end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;
