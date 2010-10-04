@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-02 01:57+0300\n"
+"PO-Revision-Date: 2010-10-05 02:10+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -729,7 +729,7 @@ msgstr "Библиотека времени исполнения"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "Просмотренных файлов: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-02 02:15+0300\n"
+"PO-Revision-Date: 2010-10-05 02:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5710,6 +5710,10 @@ msgstr "Создать проект"
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
 msgstr "Создавать/обновлять файлы PO при сохранении файла LFM"
+
+#: lazarusidestrconsts.liscreatingfileindexoffpcsources
+msgid "Creating file index of FPC sources %s ..."
+msgstr "Создание индекса файлов исходного кода FPC %s ..."
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -12919,6 +12923,10 @@ msgstr "Файл %s%s%s"
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
 msgid "The file %s does not look like a lpi file."
 msgstr "Файл %s не выглядит, как файл LPI."
+
+#: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
+msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
+msgstr "Индекс файлов требуется для обеспечения работы функции поиска и ей подобных. Во время просмотра можно редактировать исходный код и компилировать, но функция поиска и ей подобные будут сообщать, что требуемые модули не найдены. Процесс может занять некоторое время."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"

@@ -5685,6 +5685,10 @@ msgstr ""
 msgid "Create/update .po file when saving a lfm file"
 msgstr ""
 
+#: lazarusidestrconsts.liscreatingfileindexoffpcsources
+msgid "Creating file index of FPC sources %s ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr ""
@@ -12890,6 +12894,10 @@ msgstr "Tiedosto %s%s%s"
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
 msgid "The file %s does not look like a lpi file."
 msgstr "Tiedosto %s ei vaikuttaisi olevan lpi-tiedosto."
+
+#: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
+msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
+msgstr ""
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
