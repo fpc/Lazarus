@@ -38,7 +38,7 @@ uses
   {$ELSE}
   Laz_DOM,
   {$ENDIF}
-  AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  FileProcs, AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   LazIDEIntf, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
@@ -98,7 +98,7 @@ function GatherIdentifierReferences(Files: TStringList;
   SearchInComments: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function GatherUnitReferences(Files: TStringList;
-  UnitCode: TCodeBuffer; SearchInComments, IgnoreErrors: boolean;
+  UnitCode: TCodeBuffer; SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -215,7 +215,7 @@ begin
 end;
 
 function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
-  SearchInComments, IgnoreErrors: boolean;
+  SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   ListOfPCodeXYPosition: TFPList;
@@ -233,6 +233,16 @@ begin
     // search in every file
     for i:=0 to Files.Count-1 do begin
       if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
+      if IgnoreMissingFiles then
+      begin
+        if FilenameIsAbsolute(Files[i]) then
+        begin
+          if not FileExistsCached(Files[i]) then continue;
+        end else begin
+          Code:=CodeToolBoss.LoadFile(Files[i],false,false);
+          if (Code=nil) then continue;
+        end;
+      end;
       LoadResult:=
           LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
       if LoadResult=mrAbort then begin

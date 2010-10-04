@@ -5582,7 +5582,7 @@ begin
         TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).CodeBuffer := NewSource;
         // the code is not changed, therefore the marks are kept
 
-    // change unitname in project and in source
+    // change unitname in lpi and in main source file
     AnUnitInfo.Unit_Name:=NewUnitName;
     if ResourceCode<>nil then begin
       // change resource filename in the source include directive
@@ -5613,7 +5613,7 @@ begin
       AnUnitInfo.Modified:=false;
     end;
 
-    // change packages containing the file
+    // change lpks containing the file
     Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename,
                                  AnUnitInfo.IsPartOfProject);
     if Result=mrAbort then exit;
@@ -17163,7 +17163,8 @@ begin
     end;
 
     // search pascal source references
-    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,PascalReferences);
+    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,
+                                 PascalReferences);
     if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'')
     then
       DoJumpToCodeToolBossError;
