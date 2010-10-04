@@ -50,6 +50,7 @@ object Form1: TForm1
       Source = RandomChartSource1
     end
     object Chart1PieSeries1: TPieSeries
+      Legend.Multiplicity = lmPoint
       Marks.Format = '%1:.2f%%'
       Marks.Style = smsPercent
       Exploded = True

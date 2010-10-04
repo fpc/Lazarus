@@ -501,6 +501,7 @@ procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   lp: TPen;
   p: TSeriesPointer;
+  i: Integer;
 begin
   if LineType = ltNone then
     lp := nil
@@ -510,7 +511,14 @@ begin
     p := Pointer
   else
     p := nil;
-  AItems.Add(TLegendItemLinePointer.Create(lp, p, Title));
+  case Legend.Multiplicity of
+    lmSingle:
+      AItems.Add(TLegendItemLinePointer.Create(lp, p, Title));
+    lmPoint: begin
+      for i := 0 to Count - 1 do
+        AItems.Add(TLegendItemLinePointer.Create(lp, p, FormattedMark(i)));
+    end;
+  end;
 end;
 
 function TLineSeries.GetSeriesColor: TColor;
@@ -807,7 +815,7 @@ end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemBrushRect.Create(BarBrush, Title));
+  GetLegendItemsRect(AItems, BarBrush);
 end;
 
 function TBarSeries.GetSeriesColor: TColor;
@@ -1131,7 +1139,7 @@ end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemBrushRect.Create(AreaBrush, Title));
+  GetLegendItemsRect(AItems, AreaBrush);
 end;
 
 function TAreaSeries.GetSeriesColor: TColor;

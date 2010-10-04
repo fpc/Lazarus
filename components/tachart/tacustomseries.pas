@@ -185,6 +185,7 @@ type
 
     procedure DrawLabels(ACanvas: TCanvas);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
+    procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
@@ -702,6 +703,21 @@ const
     ((ldTop, ldBottom), (ldRight, ldLeft));
 begin
   Result := DIR[IsRotated, GetGraphPointY(AIndex) < 0];
+end;
+
+procedure TBasicPointSeries.GetLegendItemsRect(
+  AItems: TChartLegendItems; ABrush: TBrush);
+var
+  i: Integer;
+begin
+  case Legend.Multiplicity of
+    lmSingle:
+      AItems.Add(TLegendItemBrushRect.Create(ABrush, Title));
+    lmPoint: begin
+      for i := 0 to Count - 1 do
+        AItems.Add(TLegendItemColorRect.Create(GetColor(i), FormattedMark(i)));
+    end;
+  end;
 end;
 
 function TBasicPointSeries.GetNearestPoint(

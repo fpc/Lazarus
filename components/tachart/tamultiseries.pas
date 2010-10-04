@@ -163,7 +163,7 @@ end;
 
 procedure TBubbleSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemBrushRect.Create(BubbleBrush, Title));
+  GetLegendItemsRect(AItems, BubbleBrush);
 end;
 
 function TBubbleSeries.GetSeriesColor: TColor;
@@ -298,7 +298,7 @@ end;
 
 procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemBrushRect.Create(BoxBrush, Title));
+  GetLegendItemsRect(AItems, BoxBrush);
 end;
 
 function TBoxAndWhiskerSeries.GetSeriesColor: TColor;

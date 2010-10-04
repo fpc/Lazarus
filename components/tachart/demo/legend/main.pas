@@ -5,7 +5,8 @@ unit main;
 interface
 
 uses
-  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, Classes, TALegend, Graphics;
+  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, Classes,
+  TALegend, Graphics;
 
 type
 
