@@ -463,12 +463,6 @@ begin
   StyleChanged(Self);
 end;
 
-procedure SkipObsoleteProperties;
-begin
-  RegisterPropertyEditor(
-    TypeInfo(TChartDistance), TChartLegend, 'Margin', THiddenPropertyEditor);
-end;
-
 { TChartSeriesLegend }
 
 procedure TChartSeriesLegend.Assign(Source: TPersistent);
@@ -502,6 +496,15 @@ begin
   FOnDraw := AValue;
   StyleChanged(Self);
 end;
+
+procedure SkipObsoleteProperties;
+begin
+  RegisterPropertyEditor(
+    TypeInfo(TChartDistance), TChartLegend, 'Margin', THiddenPropertyEditor);
+end;
+
+initialization
+  SkipObsoleteProperties;
 
 end.
 
