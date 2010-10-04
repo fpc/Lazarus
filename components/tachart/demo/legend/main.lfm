@@ -1,11 +1,12 @@
 object Form1: TForm1
-  Left = 328
+  Left = 1322
   Height = 361
-  Top = 151
+  Top = 181
   Width = 510
   Caption = 'Form1'
   ClientHeight = 361
   ClientWidth = 510
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
@@ -52,6 +53,16 @@ object Form1: TForm1
       Marks.Style = smsPercent
       Exploded = True
       Source = ListChartSource2
+    end
+    object Chart1FuncSeries1: TFuncSeries
+      Extent.XMax = 5
+      Extent.UseXMin = True
+      Extent.UseXMax = True
+      OnCalculate = Chart1FuncSeries1Calculate
+      OnDrawLegend = Chart1FuncSeries1DrawLegend
+      Pen.Color = clPurple
+      Pen.Width = 2
+      Title = 'Function'
     end
   end
   object pnControls: TPanel
