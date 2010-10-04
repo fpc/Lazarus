@@ -41,9 +41,12 @@ type
   { TBaseBuildManager }
 
   TBaseBuildManager = class(TComponent)
+  private
+    FHasGUI: boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property HasGUI: boolean read FHasGUI write FHasGUI;
 
     function GetBuildMacroOverride(const MacroName: string): string; virtual; abstract;
     function GetBuildMacroOverrides: TStrings; virtual; abstract;

@@ -747,7 +747,7 @@ begin
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create(nil);
-  MainBuildBoss.ScanningCompilerDisabled:=true;
+  MainBuildBoss.HasGUI:=false;
   LoadEnvironmentOptions;
   LoadMiscellaneousOptions;
   InteractiveSetup:=false;

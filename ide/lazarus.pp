@@ -39,9 +39,9 @@ program Lazarus;
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}{$ENDIF}
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}

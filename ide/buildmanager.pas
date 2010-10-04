@@ -45,11 +45,16 @@ uses
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
-  TransferMacros, CompilerOptions, OutputFilter, Compiler,
+  TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
   PackageDefs, PackageSystem, Project,
   BaseBuildManager, ApplicationBundle;
   
 type
+  TBMScanFPCSources = (
+    bmsfsSkip,
+    bmsfsWaitTillDone, // scan now and wait till finished
+    bmsfsBackground    // start in background
+    );
 
   { TBuildManager }
 
@@ -57,7 +62,6 @@ type
   private
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     FUnitSetCache: TFPCUnitSetCache;
-    FScanningCompilerDisabled: boolean;
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
@@ -146,9 +150,8 @@ type
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; override;
 
     procedure UpdateEnglishErrorMsgFilename;
-    procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches: boolean);
-    property ScanningCompilerDisabled: boolean read FScanningCompilerDisabled
-                                              write FScanningCompilerDisabled;
+    procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
+                                    WaitTillDone: boolean);
     procedure LoadFPCDefinesCaches;
     procedure SaveFPCDefinesCaches;
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
@@ -172,7 +175,7 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
-                             DoNotScanFPCSrc: boolean = false);
+                             ScanFPCSrc: TBMScanFPCSources = bmsfsSkip);
     procedure SetBuildTargetIDE;
   end;
   
@@ -226,6 +229,7 @@ begin
   FFPCVerChangeStamp:=InvalidParseStamp;
   MainBuildBoss:=Self;
   inherited Create(AOwner);
+  FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
@@ -536,12 +540,14 @@ begin
 end;
 
 procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
-  ClearCaches: boolean);
+  ClearCaches, WaitTillDone: boolean);
 var
   TargetOS, TargetCPU: string;
   CompilerFilename: String;
   FPCSrcDir: string;
   ADefTempl: TDefineTemplate;
+  FPCSrcCache: TFPCSourceCache;
+  NeedUpdateFPCSrcCache: Boolean;
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
     const ErrorMsg: string);
@@ -574,7 +580,6 @@ var
   end;
 
 begin
-  if ScanningCompilerDisabled then exit;
   if ClearCaches then begin
     { $IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines clear caches']);
@@ -583,7 +588,7 @@ begin
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','',true);
+    SetBuildTarget('','','');
   
   // start the compiler and ask for his settings
   // provide an english message file
@@ -608,7 +613,30 @@ begin
   UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
     CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
 
+  NeedUpdateFPCSrcCache:=false;
+  if (not WaitTillDone) or (not HasGUI) then
+  begin
+    // FPC sources are not needed
+    // => disable scan
+    FPCSrcCache:=UnitSetCache.GetSourceCache(false);
+    if (FPCSrcCache<>nil) and (not FPCSrcCache.Valid) then
+    begin
+      {$IFDEF EnableDelayedFPCSrcScan}
+      NeedUpdateFPCSrcCache:=HasGUI;
+      FPCSrcCache.Valid:=true;
+      {$ENDIF}
+    end;
+  end;
+
+  // scan compiler, fpc sources and create indices for quick lookup
   UnitSetCache.Init;
+
+  if NeedUpdateFPCSrcCache then
+  begin
+    // start background scan of fpc source directory
+    debugln(['TBuildManager.RescanCompilerDefines TODO: implement background scan '+FPCSrcCache.Directory]);
+  end;
+
   if FUnitSetChangeStamp=UnitSetCache.ChangeStamp then begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines nothing changed']);
@@ -1769,7 +1797,7 @@ begin
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string; DoNotScanFPCSrc: boolean);
+  LCLWidgetType: string; ScanFPCSrc: TBMScanFPCSources);
 var
   OldTargetOS: String;
   OldTargetCPU: String;
@@ -1799,8 +1827,8 @@ begin
 
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
-  if FPCTargetChanged and (not DoNotScanFPCSrc) then
-    RescanCompilerDefines(false,false);
+  if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
+    RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone);
 
   if FPCTargetChanged or LCLTargetChanged then begin
     IncreaseCompilerParseStamp;

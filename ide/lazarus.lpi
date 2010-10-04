@@ -53,7 +53,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="69">
+    <Units Count="71">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -526,6 +526,18 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="DebugManager"/>
       </Unit68>
+      <Unit69>
+        <Filename Value="progresswnd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IDEProgressWindow"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ProgressWnd"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="fpcsrcscan.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPCSrcScan"/>
+      </Unit70>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -534,8 +546,8 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="include/"/>
-      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/;../designer/"/>
+      <IncludeFiles Value="include"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

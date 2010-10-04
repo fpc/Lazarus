@@ -834,7 +834,7 @@ type
                             MustHavePPU: boolean = true;
                             SkipPPUCheckIfNoneExists: boolean = true): string;
     property ChangeStamp: integer read FChangeStamp;
-    function GetInvalidChangeStamp: integer;
+    class function GetInvalidChangeStamp: integer;
     procedure IncreaseChangeStamp;
     function GetUnitSetID: string;
   end;
@@ -8758,13 +8758,9 @@ begin
   end;
 end;
 
-function TFPCUnitSetCache.GetInvalidChangeStamp: integer;
+class function TFPCUnitSetCache.GetInvalidChangeStamp: integer;
 begin
-  Result:=ChangeStamp;
-  if Result>Low(Result) then
-    dec(Result)
-  else
-    Result:=High(Result);
+  Result:=CTInvalidChangeStamp;
 end;
 
 procedure TFPCUnitSetCache.IncreaseChangeStamp;

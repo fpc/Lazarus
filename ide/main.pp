@@ -1281,6 +1281,7 @@ begin
   {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create(nil);
+  MainBuildBoss.HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
 
   // load options
@@ -4384,7 +4385,7 @@ begin
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
   debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
   if FPCCompilerChanged or FPCSrcDirChanged then
-    MainBuildBoss.RescanCompilerDefines(true,false);
+    MainBuildBoss.RescanCompilerDefines(true,false,false);
 
   // update environment
   UpdateDesigners;
@@ -4548,7 +4549,7 @@ begin
   begin
     TBaseCompilerOptions(Sender).Modified := True;
     IncreaseCompilerParseStamp;
-    MainBuildBoss.RescanCompilerDefines(True, False);
+    MainBuildBoss.RescanCompilerDefines(True, False, false);
     IncreaseCompilerParseStamp;
     UpdateHighlighters; // because of FPC/Delphi mode
   end;
@@ -4577,7 +4578,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  MainBuildBoss.RescanCompilerDefines(false,true);
+  MainBuildBoss.RescanCompilerDefines(false,true,true);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -7586,7 +7587,7 @@ begin
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
 
-  MainBuildBoss.RescanCompilerDefines(true,false);
+  MainBuildBoss.RescanCompilerDefines(true,false,false);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -9666,7 +9667,7 @@ begin
       PkgBoss.AddDefaultDependencies(Project1);
 
       // rebuild codetools defines
-      MainBuildBoss.RescanCompilerDefines(true,false);
+      MainBuildBoss.RescanCompilerDefines(true,false,false);
 
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
@@ -13432,7 +13433,7 @@ begin
   // create defines for the lazarus sources
   SetupLazarusDirectory(InteractiveSetup);
 
-  MainBuildBoss.RescanCompilerDefines(true,false);
+  MainBuildBoss.RescanCompilerDefines(true,false,false);
 
   // load include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;

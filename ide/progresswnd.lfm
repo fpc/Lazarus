@@ -1,0 +1,10 @@
+object IDEProgressWindow: TIDEProgressWindow
+  Left = 275
+  Height = 109
+  Top = 250
+  Width = 437
+  AutoSize = True
+  Caption = 'IDEProgressWindow'
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+end
