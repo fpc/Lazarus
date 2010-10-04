@@ -43,6 +43,7 @@ type
     procedure SetShowInLegend(AValue: Boolean);
 
   protected
+    procedure AfterAdd; override;
     procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); override;
@@ -205,6 +206,11 @@ uses
   Math, PropEdits, Types;
 
 { TCustomChartSeries }
+
+procedure TCustomChartSeries.AfterAdd;
+begin
+  Legend.SetOwner(FChart);
+end;
 
 function TCustomChartSeries.AxisToGraph(
   const APoint: TDoublePoint): TDoublePoint;
@@ -408,6 +414,7 @@ end;
 
 procedure TChartSeries.AfterAdd;
 begin
+  inherited;
   FMarks.SetOwner(FChart);
 end;
 

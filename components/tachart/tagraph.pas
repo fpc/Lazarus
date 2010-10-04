@@ -51,7 +51,7 @@ type
     FTitle: String;
     FZPosition: TChartDistance;
 
-    procedure AfterAdd; virtual;
+    procedure AfterAdd; virtual; abstract;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
     // Set series bounds in axis coordinates.
@@ -711,6 +711,9 @@ end;
 
 procedure TChart.AddSeries(ASeries: TBasicChartSeries);
 begin
+  if ASeries.FChart = Self then exit;
+  if ASeries.FChart <> nil then
+    ASeries.FChart.DeleteSeries(ASeries);
   DrawReticule(Canvas);
   Series.FList.Add(ASeries);
   ASeries.FChart := Self;
@@ -1093,11 +1096,6 @@ begin
 end;
 
 { TBasicChartSeries }
-
-procedure TBasicChartSeries.AfterAdd;
-begin
-  // nothing
-end;
 
 procedure TBasicChartSeries.AfterDraw;
 begin

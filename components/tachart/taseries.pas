@@ -858,6 +858,7 @@ end;
 
 procedure TPieSeries.AfterAdd;
 begin
+  inherited;
   // disable axis when we have TPie series
   ParentChart.LeftAxis.Visible := false;
   ParentChart.BottomAxis.Visible := false;

@@ -318,9 +318,12 @@ end;
 
 procedure TChartElement.Assign(Source: TPersistent);
 begin
-  //inherited Assign(Source);
   if Source is TChartElement then
-    Self.FVisible := TChartElement(Source).FVisible;
+    with TChartElement(Source) do begin
+      Self.FVisible := FVisible;
+      Self.FOwner := FOwner;
+    end;
+  inherited Assign(Source);
 end;
 
 constructor TChartElement.Create(AOwner: TCustomChart);
@@ -427,7 +430,6 @@ end;
 
 procedure TGenericChartMarks.Assign(Source: TPersistent);
 begin
-  inherited Assign(Source);
   if Source is Self.ClassType then
     with TGenericChartMarks(Source) do begin
       Self.FClipped := FClipped;
@@ -440,6 +442,7 @@ begin
       Self.FOverlapPolicy := FOverlapPolicy;
       Self.FStyle := FStyle;
     end;
+  inherited Assign(Source);
 end;
 
 function TGenericChartMarks.CenterOffset(
