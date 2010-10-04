@@ -867,10 +867,10 @@ type
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
     property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
-                                Options, FPCSrcDir: string;
-                                CreateIfNotExists: boolean): TFPCUnitSetCache;
+                         Options, FPCSrcDir: string;
+                         CreateIfNotExists: boolean): TFPCUnitSetCache;
     function FindUnitSetWithID(const UnitSetID: string; out Changed: boolean;
-                                CreateIfNotExists: boolean): TFPCUnitSetCache;
+                               CreateIfNotExists: boolean): TFPCUnitSetCache;
     function GetUnitSetID(CompilerFilename, TargetOS, TargetCPU, Options,
                           FPCSrcDir: string; ChangeStamp: integer): string;
     procedure ParseUnitSetID(const ID: string; out CompilerFilename,
@@ -8644,7 +8644,7 @@ begin
     fSourceCache:=Caches.SourceCaches.Find(FPCSourceDirectory,true);
     fSourceCache.FreeNotification(Self);
   end;
-  if AutoUpdate and (fSourceCache.Files.Count=0) then
+  if AutoUpdate and (not fSourceCache.Valid) then
     fSourceCache.Update(nil);
   Result:=fSourceCache;
 end;
