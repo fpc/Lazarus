@@ -36,18 +36,19 @@ type
   private
     FAxisIndexX: Integer;
     FAxisIndexY: Integer;
-    FOnDrawLegend: TLegendItemDrawEvent;
+    FLegend: TChartSeriesLegend;
     procedure SetAxisIndexX(AValue: Integer);
     procedure SetAxisIndexY(AValue: Integer);
-    procedure SetOnDrawLegend(AValue: TLegendItemDrawEvent);
+    procedure SetLegend(AValue: TChartSeriesLegend);
+    procedure SetShowInLegend(AValue: Boolean);
 
   protected
     procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); override;
+    function GetShowInLegend: Boolean; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
-    procedure SetShowInLegend(AValue: Boolean); override;
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateParentChart;
@@ -73,6 +74,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
@@ -81,8 +83,10 @@ type
     property AxisIndexY: Integer
       read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
 
-    property OnDrawLegend: TLegendItemDrawEvent
-      read FOnDrawLegend write SetOnDrawLegend;
+  published
+    property Legend: TChartSeriesLegend read FLegend write SetLegend;
+    property ShowInLegend: Boolean
+      read GetShowInLegend write SetShowInLegend default true; deprecated;
   end;
 
   TChartGetMarkEvent = procedure (
@@ -93,7 +97,6 @@ type
   TChartSeries = class(TCustomChartSeries)
   private
     FBuiltinSource: TCustomChartSource;
-    FLegendMultiplicity: TLegendMultiplicity;
     FListener: TListener;
     FMarks: TChartMarks;
     FOnGetMark: TChartGetMarkEvent;
@@ -103,7 +106,6 @@ type
 
     function GetSource: TCustomChartSource;
     function IsSourceStored: boolean;
-    procedure SetLegendMultiplicity(AValue: TLegendMultiplicity);
     procedure SetMarks(const AValue: TChartMarks);
     procedure SetOnGetMark(const AValue: TChartGetMarkEvent);
     procedure SetSource(AValue: TCustomChartSource);
@@ -158,14 +160,11 @@ type
       read GetSource write SetSource stored IsSourceStored;
   published
     property Active default true;
-    property LegendMultiplicity: TLegendMultiplicity
-      read FLegendMultiplicity write SetLegendMultiplicity default lmSingle;
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
     property Title;
     property ZPosition;
   published
-    property OnDrawLegend;
     property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark;
   end;
 
@@ -203,7 +202,7 @@ type
 implementation
 
 uses
-  Math, Types;
+  Math, PropEdits, Types;
 
 { TCustomChartSeries }
 
@@ -229,9 +228,15 @@ constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := true;
-  FShowInLegend := true;
   FAxisIndexX := DEF_AXIS_INDEX;
   FAxisIndexY := DEF_AXIS_INDEX;
+  FLegend := TChartSeriesLegend.Create(FChart);
+end;
+
+destructor TCustomChartSeries.Destroy;
+begin
+  FreeAndNil(FLegend);
+  inherited Destroy;
 end;
 
 function TCustomChartSeries.GetAxisX: TChartAxis;
@@ -270,8 +275,8 @@ end;
 
 procedure TCustomChartSeries.GetLegendItemsBasic(AItems: TChartLegendItems);
 begin
-  if Assigned(FOnDrawLegend) then
-    AItems.Add(TLegendItemUserDrawn.Create(OnDrawLegend, Title))
+  if Assigned(Legend.OnDraw) then
+    AItems.Add(TLegendItemUserDrawn.Create(Legend.OnDraw, Title))
   else
     GetLegendItems(AItems);
 end;
@@ -279,6 +284,11 @@ end;
 function TCustomChartSeries.GetParentComponent: TComponent;
 begin
   Result := FChart;
+end;
+
+function TCustomChartSeries.GetShowInLegend: Boolean;
+begin
+  Result := Legend.Visible;
 end;
 
 function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
@@ -344,10 +354,10 @@ begin
     Move(Index, EnsureRange(AValue, 0, Count - 1));
 end;
 
-procedure TCustomChartSeries.SetOnDrawLegend(AValue: TLegendItemDrawEvent);
+procedure TCustomChartSeries.SetLegend(AValue: TChartSeriesLegend);
 begin
-  if FOnDrawLegend = AValue then exit;
-  FOnDrawLegend := AValue;
+  if FLegend = AValue then exit;
+  FLegend := AValue;
   UpdateParentChart;
 end;
 
@@ -359,9 +369,7 @@ end;
 
 procedure TCustomChartSeries.SetShowInLegend(AValue: Boolean);
 begin
-  if FShowInLegend = AValue then exit;
-  FShowInLegend := AValue;
-  UpdateParentChart;
+  Legend.Visible := AValue;
 end;
 
 procedure TCustomChartSeries.SetZPosition(AValue: TChartDistance);
@@ -599,13 +607,6 @@ begin
   Source[AIndex]^.Color := AColor;
 end;
 
-procedure TChartSeries.SetLegendMultiplicity(AValue: TLegendMultiplicity);
-begin
-  if FLegendMultiplicity = AValue then exit;
-  FLegendMultiplicity := AValue;
-  UpdateParentChart;
-end;
-
 procedure TChartSeries.SetMarks(const AValue: TChartMarks);
 begin
   if FMarks = AValue then exit;
@@ -817,6 +818,16 @@ begin
     m[dir] := Max(m[dir], dist + Marks.Distance + LABEL_TO_BORDER);
   end;
 end;
+
+procedure SkipObsoleteProperties;
+begin
+  RegisterPropertyEditor(
+    TypeInfo(Boolean), TCustomChartSeries,
+    'ShowInLegend', THiddenPropertyEditor);
+end;
+
+initialization
+  SkipObsoleteProperties;
 
 end.
 

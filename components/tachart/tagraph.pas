@@ -48,7 +48,6 @@ type
     FActive: Boolean;
     FChart: TChart;
     FDepth: TChartDistance;
-    FShowInLegend: Boolean;
     FTitle: String;
     FZPosition: TChartDistance;
 
@@ -60,9 +59,9 @@ type
     procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetGraphBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
+    function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
-    procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure VisitSources(
@@ -89,8 +88,6 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
-    property ShowInLegend: Boolean
-      read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   end;
@@ -509,7 +506,7 @@ begin
   try
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
-        if Active and ShowInLegend then
+        if Active and GetShowInLegend then
           GetLegendItemsBasic(ALegendItems);
     ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
   except

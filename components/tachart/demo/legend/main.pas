@@ -34,6 +34,7 @@ type
     procedure cbUseSidebarChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries1DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+    procedure FormCreate(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
     procedure seMarginXChange(Sender: TObject);
     procedure seMarginYChange(Sender: TObject);
@@ -73,6 +74,11 @@ begin
     ACanvas.LineTo(
       ARect.Left + x,
       Round(Sin(x / w * 2 * Pi) * (ARect.Bottom - ARect.Top) / 2) + y0);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Chart1FuncSeries1.Legend.OnDraw := @Chart1FuncSeries1DrawLegend;
 end;
 
 procedure TForm1.rgAlignmentClick(Sender: TObject);

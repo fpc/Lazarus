@@ -28,8 +28,6 @@ const
   DEF_LEGEND_SYMBOL_WIDTH = 20;
 
 type
-  TLegendMultiplicity = (lmSingle, lmPoint);
-
   { TLegendItem }
 
   TLegendItem = class
@@ -158,6 +156,27 @@ type
       read FSymbolWidth write SetSymbolWidth default DEF_LEGEND_SYMBOL_WIDTH;
     property UseSidebar: Boolean read FUseSidebar write SetUseSidebar default true;
     property Visible default false;
+  end;
+
+  TLegendMultiplicity = (lmSingle, lmPoint);
+
+  { TChartSeriesLegend }
+
+  TChartSeriesLegend = class(TChartElement)
+  private
+    FMultiplicity: TLegendMultiplicity;
+    FOnDraw: TLegendItemDrawEvent;
+    procedure SetMultiplicity(AValue: TLegendMultiplicity);
+    procedure SetOnDraw(AValue: TLegendItemDrawEvent);
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Multiplicity: TLegendMultiplicity
+      read FMultiplicity write SetMultiplicity default lmSingle;
+    property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
+    property Visible default true;
   end;
 
 implementation
@@ -450,8 +469,39 @@ begin
     TypeInfo(TChartDistance), TChartLegend, 'Margin', THiddenPropertyEditor);
 end;
 
-initialization
-  SkipObsoleteProperties;
+{ TChartSeriesLegend }
+
+procedure TChartSeriesLegend.Assign(Source: TPersistent);
+begin
+  if Source is TChartSeriesLegend then
+    with TChartSeriesLegend(Source) do begin
+      Self.FMultiplicity := FMultiplicity;
+      Self.FOnDraw := FOnDraw;
+      Self.FVisible := FVisible;
+    end;
+
+  inherited Assign(Source);
+end;
+
+constructor TChartSeriesLegend.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FVisible := true;
+end;
+
+procedure TChartSeriesLegend.SetMultiplicity(AValue: TLegendMultiplicity);
+begin
+  if FMultiplicity = AValue then exit;
+  FMultiplicity := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
+begin
+  if FOnDraw = AValue then exit;
+  FOnDraw := AValue;
+  StyleChanged(Self);
+end;
 
 end.
 

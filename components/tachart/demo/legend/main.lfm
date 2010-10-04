@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 361
   ClientWidth = 510
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
@@ -59,7 +60,6 @@ object Form1: TForm1
       Extent.UseXMin = True
       Extent.UseXMax = True
       OnCalculate = Chart1FuncSeries1Calculate
-      OnDrawLegend = Chart1FuncSeries1DrawLegend
       Pen.Color = clPurple
       Pen.Width = 2
       Title = 'Function'
