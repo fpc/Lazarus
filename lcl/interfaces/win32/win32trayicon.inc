@@ -436,6 +436,7 @@ class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIc
 var
   hWndTaskbar, hWndTray: HWND;
   TaskbarRect, TrayRect: TRect;
+  TaskbarMonitor: TMonitor;
 begin
   Result := Point(0, 0);
 
@@ -457,9 +458,28 @@ begin
   Windows.GetWindowRect(hWndTray, @TrayRect);
   // OBS: Here TrayRect seams to have a wrong value, so we don't use it
 
+  { We need this in order to "normalize" in later if statements. This is required to get right coordinates on multiple monitors }
+  TaskbarMonitor := Screen.MonitorFromWindow(hWndTaskbar);
+
   { Returns an aproximate position of the tray area }
-  Result.X := TaskbarRect.Right;
-  Result.Y := TaskbarRect.Top;
+  if (TaskbarRect.Top - TaskbarMonitor.Top = 0) and (TaskbarRect.Left - TaskbarMonitor.Left = 0) then
+  begin
+    { Taskbar is at the top of the monitor area OR on the left side of the monitor area }
+    Result.X := TaskbarRect.Right;
+    Result.Y := TaskbarRect.Bottom;
+  end
+  else if (TaskbarRect.Left - TaskbarMonitor.Left = 0) then
+  begin
+    { Taskbar is at the bottom of the monitor area }
+    Result.X := TaskbarRect.Right;
+    Result.Y := TaskbarRect.Top;
+  end
+  else
+  begin
+    Result.X := TaskbarRect.Left;
+    Result.Y := TaskbarRect.Bottom;
+    { Taskbar is on the right side of the monitor area }
+  end;
 end;
 
 
