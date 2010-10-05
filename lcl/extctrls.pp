@@ -1287,12 +1287,17 @@ type
 
   TCustomTrayIcon = class(TLCLComponent)
   private
+    FAnimate: Boolean;
+    FAnimateTimer: TTimer;
+    FCurAnimationStep: Integer;
     FBalloonFlags: TBalloonFlags;
     FBalloonHint: string;
     FBalloonTimeout: Integer;
     FBalloonTitle: string;
+    FIconList: TImageList;
     FPopUpMenu: TPopupMenu;
     FIcon: TIcon;
+    FIcons: TCustomImageList;
     FHint: string;
     FVisible, FShowIcon: Boolean;
     FNotifier: TPopupNotifier;
@@ -1300,13 +1305,18 @@ type
     FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;
+    function GetAnimateInterval: Cardinal;
     function  GetCanvas: TCanvas;
+    procedure SetAnimate(const AValue: Boolean);
+    procedure SetAnimateInterval(const AValue: Cardinal);
     procedure SetHint(const AValue: string);
     procedure SetIcon(const AValue: TIcon);
+    procedure SetIcons(const AValue: TCustomImageList);
     procedure SetPopUpMenu(const AValue: TPopupMenu);
     procedure SetVisible(Value: Boolean);
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
+    procedure HandleOnAnimateTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
@@ -1321,6 +1331,8 @@ type
     procedure ShowBalloonHint;
     function GetPosition: TPoint;
     { Properties }
+    property Animate: Boolean read FAnimate write SetAnimate default False;
+    property AnimateInterval: Cardinal read GetAnimateInterval write SetAnimateInterval default 1000;
     property BalloonFlags: TBalloonFlags read FBalloonFlags write FBalloonFlags default bfNone;
     property BalloonHint: string read FBalloonHint write FBalloonHint;
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
@@ -1328,6 +1340,7 @@ type
     property Canvas: TCanvas read GetCanvas;
     property PopUpMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property Icon: TIcon read FIcon write SetIcon;
+    property Icons: TCustomImageList read FIcons write SetIcons;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
     property Visible: Boolean read FVisible write SetVisible default False;

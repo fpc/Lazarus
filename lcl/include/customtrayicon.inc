@@ -47,6 +47,12 @@ begin
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;
 
+  // Animation objects
+  FIcons := TImageList.Create(Self);
+  FAnimateTimer := TTimer.Create(Self);
+  FAnimateTimer.Enabled := False;
+  FAnimateTimer.OnTimer := @HandleOnAnimateTimer;
+
   FNotifier := TPopupNotifier.Create(Self);
   FNotifier.OnClose := @HandleNotifierClose;
 
@@ -93,10 +99,13 @@ begin
 
   FVisible := False;
 
-  if not(csDesigning in ComponentState) then begin
+  if not(csDesigning in ComponentState) then
+  begin
     Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self);
     FVisible := not Result;
-  end else
+    FAnimateTimer.Enabled := False;
+  end
+  else
     Result := false;
 end;
 
@@ -116,10 +125,13 @@ begin
 
   FVisible := True;
 
-  if not(csDesigning in ComponentState) then begin
+  if not(csDesigning in ComponentState) then
+  begin
     Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self);
     FVisible := Result;
-  end else
+    FAnimateTimer.Enabled := FAnimate;
+  end
+  else
     Result := false;
 end;
 
@@ -161,6 +173,20 @@ begin
   FNotifier.Hide;
 end;
 
+procedure TCustomTrayIcon.HandleOnAnimateTimer(Sender: TObject);
+var
+  lBitmap: TBitmap;
+begin
+  lBitmap := TBitmap.Create;
+  try
+    FIcons.GetBitmap(FCurAnimationStep, lBitmap);
+    FIcon.Assign(lBitmap);
+    InternalUpdate();
+  finally
+    lBitmap.Free;
+  end;
+end;
+
 procedure TCustomTrayIcon.IconChanged(Sender: TObject);
 begin
   if Handle <> 0 then
@@ -189,7 +215,10 @@ end;
 *
 *                  Currently only the following parameters use this:
 *
+*                  - Animate
 *                  - Hint
+*                  - Icon
+*                  - Icons
 *
 *                  For event parameters (PopUpMenu, OnMouseMove, etc)
 *                  this isn't necessary because they are handled
@@ -263,6 +292,27 @@ begin
   Result := TWSCustomTrayIconClass(WidgetSetClass).GetCanvas(Self);
 end;
 
+function TCustomTrayIcon.GetAnimateInterval: Cardinal;
+begin
+  Result := FAnimateTimer.Interval;
+end;
+
+procedure TCustomTrayIcon.SetAnimate(const AValue: Boolean);
+begin
+  if FAnimate=AValue then Exit;
+  FAnimate := AValue;
+  if Visible and AValue then
+    FAnimateTimer.Enabled := True
+  else
+    FAnimateTimer.Enabled := False;
+end;
+
+procedure TCustomTrayIcon.SetAnimateInterval(const AValue: Cardinal);
+begin
+  if FAnimateTimer.Interval=AValue then exit;
+  FAnimateTimer.Interval := AValue;
+end;
+
 procedure TCustomTrayIcon.SetHint(const AValue: string);
 begin
   FHint := AValue;
@@ -272,7 +322,16 @@ end;
 
 procedure TCustomTrayIcon.SetIcon(const AValue: TIcon);
 begin
+  if FIcon=AValue then Exit;
   FIcon.Assign(AValue);
+  if Visible then InternalUpdate();
+end;
+
+procedure TCustomTrayIcon.SetIcons(const AValue: TCustomImageList);
+begin
+  if FIcons=AValue then Exit;
+  FIcons.Assign(AValue);
+  if Visible then InternalUpdate();
 end;
 
 procedure TCustomTrayIcon.SetPopUpMenu(const AValue: TPopupMenu);
