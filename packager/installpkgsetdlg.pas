@@ -59,6 +59,7 @@ type
     ExportButton: TButton;
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
+    lblMiddle: TLabel;
     NoteLabel: TLabel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
