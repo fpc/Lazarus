@@ -7614,7 +7614,7 @@ begin
     OldOptions.Assign(Self);
     Clear;
 
-    debugln(['TFPCTargetConfigCache.Update ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions]);
+    debugln(['TFPCTargetConfigCache.Update ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions,' PATH=',GetEnvironmentVariableUTF8('PATH')]);
     CompilerDate:=FileAgeCached(Compiler);
     if FileExistsCached(Compiler) then begin
 
