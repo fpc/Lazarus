@@ -182,6 +182,11 @@ begin
     FIcons.GetBitmap(FCurAnimationStep, lBitmap);
     FIcon.Assign(lBitmap);
     InternalUpdate();
+
+    // Code to iterate throw the icons
+    Inc(FCurAnimationStep);
+    if FCurAnimationStep >= FIcons.Count then
+      FCurAnimationStep := 0;
   finally
     lBitmap.Free;
   end;
