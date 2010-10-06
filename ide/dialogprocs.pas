@@ -55,7 +55,8 @@ type
     lbfRevert,
     lbfCheckIfText,
     lbfQuiet,
-    lbfCreateClearOnError
+    lbfCreateClearOnError,
+    lbfIgnoreMissing
     );
   TLoadBufferFlags = set of TLoadBufferFlag;
   
@@ -189,6 +190,8 @@ begin
   ACodeBuffer:=nil;
   if not FilenameIsAbsolute(AFilename) then
     Flags:=Flags-[lbfUpdateFromDisk,lbfRevert];
+  if lbfCreateClearOnError in Flags then
+    Exclude(Flags,lbfIgnoreMissing);
   if [lbfUpdateFromDisk,lbfRevert]*Flags=[] then begin
     // can use cache
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);
@@ -225,6 +228,12 @@ begin
     if ACodeBuffer<>nil then begin
       Result:=mrOk;
     end else begin
+      // read error
+      if lbfIgnoreMissing in Flags then begin
+        if (FilenameIsAbsolute(AFilename) and not FileExistsCached(AFilename))
+        then
+          exit(mrIgnore);
+      end;
       if lbfQuiet in Flags then
         Result:=mrCancel
       else begin

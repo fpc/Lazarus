@@ -178,7 +178,7 @@ begin
     for i:=0 to Files.Count-1 do begin
       //debugln(['GatherIdentifierReferences ',Files[i]]);
       LoadResult:=
-          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
+          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk,lbfIgnoreMissing],true);
       if LoadResult=mrAbort then begin
         debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
         exit;
