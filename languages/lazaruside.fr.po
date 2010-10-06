@@ -8830,6 +8830,10 @@ msgstr "Vidage Mémoire"
 msgid "Abort Build"
 msgstr "Arrêter la construction"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Point d'arrêt source"

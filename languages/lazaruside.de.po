@@ -8835,6 +8835,10 @@ msgstr "Speicherauszug"
 msgid "Abort Build"
 msgstr "Kompilieren abbrechen"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Quelltext-Haltepunkt"

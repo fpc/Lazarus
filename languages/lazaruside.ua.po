@@ -8795,6 +8795,10 @@ msgstr ""
 msgid "Abort Build"
 msgstr "Перервати збирання"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Точка зупину в коді"

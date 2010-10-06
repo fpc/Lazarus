@@ -8796,6 +8796,10 @@ msgstr ""
 msgid "Abort Build"
 msgstr "Avorta el muntatge"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Punt de ruptura de les fonts"

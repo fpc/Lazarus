@@ -8813,6 +8813,10 @@ msgstr "内存转储"
 msgid "Abort Build"
 msgstr "中断编译"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "源代码断点"

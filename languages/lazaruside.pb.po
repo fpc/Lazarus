@@ -8809,6 +8809,10 @@ msgstr "Despejo Memória"
 msgid "Abort Build"
 msgstr "Abortar Construção"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Ponto de parada no fonte"

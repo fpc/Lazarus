@@ -8813,6 +8813,10 @@ msgstr "Výpis pamäte"
 msgid "Abort Build"
 msgstr "Zrušiť budovanie"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Bod prerušenia zdrojového kódu"

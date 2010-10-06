@@ -8762,6 +8762,10 @@ msgstr ""
 msgid "Abort Build"
 msgstr "Oluşturmayı İptal Et"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Durma noktası kaynağı"

@@ -8810,6 +8810,10 @@ msgstr "Atminties išklotinė"
 msgid "Abort Build"
 msgstr "Nutraukti darymą"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Stabdos taškas pirminiame kode"

@@ -8808,6 +8808,10 @@ msgstr ""
 msgid "Abort Build"
 msgstr "Batalkan Pembangunan"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Sumber breakpoint"

@@ -8811,6 +8811,10 @@ msgstr "メモリダンプ"
 msgid "Abort Build"
 msgstr "構築中止"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "ソースのブレークポイント"

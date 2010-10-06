@@ -8810,6 +8810,10 @@ msgstr "Volcado de Memoria"
 msgid "Abort Build"
 msgstr "Abortar Construcción"
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Punto de ruptura fuente"

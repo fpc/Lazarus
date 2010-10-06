@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-05 02:22+0300\n"
+"PO-Revision-Date: 2010-10-07 00:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8814,6 +8814,10 @@ msgstr "Дамп памяти"
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "Прервать сборку"
+
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr "Информация о компиляторе FPC"
 
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"

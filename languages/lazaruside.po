@@ -8747,6 +8747,10 @@ msgstr ""
 msgid "Abort Build"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuaboutfpc
+msgid "About FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr ""
