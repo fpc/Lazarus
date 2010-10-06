@@ -515,35 +515,27 @@ begin
       OriginalFile:=TSourceLog.Create(TheText);
     end;
 
-    // convert case
-    if sesoMatchCase in Flags then begin
-      CaseFile:=OriginalFile;
-    end else begin
-      CaseFile:=TSourceLog.Create(UpperCaseStr(OriginalFile.Source));
-      TempSearch:=UpperCaseStr(TempSearch);
-    end;
+    CaseFile:=nil;
 
     if sesoRegExpr in Flags then begin
       // Setup the regular expression search engine
       RE:=TRegExpr.Create;
-      RE.ModifierI:=(sesoReplace in Flags) and (not (sesoMatchCase in Flags));
+      RE.ModifierI:=not (sesoMatchCase in Flags);
       RE.ModifierM:=true;
       RE.ModifierS:=sesoMultiLine in Flags;
-      if (sesoReplace in Flags) then begin
-        Src:=OriginalFile.Source;
-        if sesoWholeWord in Flags then
-          RE.Expression:= '\b'+SearchFor+'\b'
-        else
-          RE.Expression:= SearchFor;
-      end else begin
-        Src:=CaseFile.Source;
-        if sesoWholeWord in Flags then
-          RE.Expression:= '\b'+TempSearch+'\b'
-        else
-          RE.Expression:= TempSearch;
-      end;
+      Src:=OriginalFile.Source;
+      if sesoWholeWord in Flags then
+        RE.Expression:='\b'+SearchFor+'\b'
+      else
+        RE.Expression:=SearchFor;
     end else begin
-      Src:=CaseFile.Source;
+      // convert case if necessary
+      if not (sesoMatchCase in Flags) then begin
+        CaseFile:=TSourceLog.Create(UpperCaseStr(OriginalFile.Source));
+        TempSearch:=UpperCaseStr(TempSearch);
+        Src:=CaseFile.Source;
+      end else
+        Src:=OriginalFile.Source;
     end;
 
     //debugln(['TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch]);
