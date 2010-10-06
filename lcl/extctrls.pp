@@ -319,11 +319,15 @@ type
     property TabStop;
   end deprecated;
 
+  TUNBPage = class;
+
+  TBeforeShowPageEvent = procedure (ASender: TObject; ANewPage: TUNBPage; ANewIndex: Integer) of object;
+
   { TUNBPage }
 
   TUNBPage = class(TCustomControl)
   private
-    FOnBeforeShow: TNotifyEvent;
+    FOnBeforeShow: TBeforeShowPageEvent;
   protected
     procedure SetParent(AParent: TWinControl); override;
   public
@@ -333,7 +337,7 @@ type
     // Lazarus-specific TPage events
     // OnBeforeShow occurs before a page is displayed, so that
     // preparations can be executed in it's user interface, for example
-    property OnBeforeShow: TNotifyEvent read FOnBeforeShow write FOnBeforeShow;
+    property OnBeforeShow: TBeforeShowPageEvent read FOnBeforeShow write FOnBeforeShow;
     // Other events
     property ChildSizing;
     property ClientWidth;
