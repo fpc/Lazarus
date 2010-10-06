@@ -201,6 +201,14 @@ begin
             sl.Add('CfgFilename='+CfgFileItem.Filename);
         end;
       end;
+      sl.Add('Defines:');
+      if CfgCache.Defines<>nil then begin
+        sl.Add(CfgCache.Defines.AsText);
+      end;
+      sl.Add('Undefines:');
+      if CfgCache.Undefines<>nil then begin
+        sl.Add(CfgCache.Undefines.AsText);
+      end;
       sl.Add('UnitPaths:');
       if CfgCache.UnitPaths<>nil then begin
         sl.AddStrings(CfgCache.UnitPaths);
