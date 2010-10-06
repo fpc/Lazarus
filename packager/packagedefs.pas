@@ -362,9 +362,6 @@ type
     FLazPackage: TLazPackage;
     FSkipCompiler: Boolean;
   protected
-    function LoadTheCompilerOptions(const APath: string): TModalResult; override;
-    procedure SaveTheCompilerOptions(const APath: string); override;
-
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetModified(const NewValue: boolean); override;
     procedure SetCustomOptions(const AValue: string); override;
@@ -385,6 +382,8 @@ type
     function GetDefaultMainSourceFileName: string; override;
     function CreateTargetFilename(const MainSourceFileName: string): string; override;
 
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure Assign(Source: TPersistent); override;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
@@ -3613,18 +3612,19 @@ end;
 
 { TPkgCompilerOptions }
 
-function TPkgCompilerOptions.LoadTheCompilerOptions(const APath: string): TModalResult;
+procedure TPkgCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
 begin
-  Result:=inherited LoadTheCompilerOptions(APath);
+  inherited LoadFromXMLConfig(AXMLConfig,Path);
 
-  FSkipCompiler := XMLConfigFile.GetValue(APath+'SkipCompiler/Value', False);
+  FSkipCompiler := AXMLConfig.GetValue(Path+'SkipCompiler/Value', False);
 end;
 
-procedure TPkgCompilerOptions.SaveTheCompilerOptions(const APath: string);
+procedure TPkgCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
 begin
-  inherited SaveTheCompilerOptions(APath);
+  inherited SaveToXMLConfig(AXMLConfig,Path);
   
-  XMLConfigFile.SetDeleteValue(APath+'SkipCompiler/Value', FSkipCompiler, False);
+  AXMLConfig.SetDeleteValue(Path+'SkipCompiler/Value', FSkipCompiler, False);
 end;
 
 procedure TPkgCompilerOptions.SetLazPackage(const AValue: TLazPackage);

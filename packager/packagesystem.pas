@@ -3406,7 +3406,7 @@ begin
   MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
   if not DirectoryIsWritableCached(APackage.Directory) then begin
     // the Makefile.fpc is only needed for custom building
-    // if the package directory is not writable, then the user don't want to
+    // if the package directory is not writable, then the user does not want to
     // custom build
     // => silently skip
     DebugLn(['TPkgManager.DoWriteMakefile Skipping, because package directory is not writable: ',APackage.Directory]);

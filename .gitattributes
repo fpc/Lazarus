@@ -5369,7 +5369,6 @@ packager/registerlcl.pas svneol=native#text/pascal
 packager/registersynedit.pas svneol=native#text/pascal
 packager/registration/README.txt svneol=native#text/plain
 packager/registration/lazaruspackageintf.pas svneol=native#text/pascal
-packager/release.compiled svneol=native#text/plain
 packager/ucomponentmanmain.lfm svneol=native#text/plain
 packager/ucomponentmanmain.pas svneol=native#text/pascal
 packager/ufrmaddcomponent.lfm svneol=native#text/plain

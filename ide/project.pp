@@ -494,9 +494,6 @@ type
     FOwnerProject: TProject;
     FCompileReasons: TCompileReasons;
   protected
-    function LoadTheCompilerOptions(const APath: string): TModalResult; override;
-    procedure SaveTheCompilerOptions(const APath: string); override;
-
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetCustomOptions(const AValue: string); override;
@@ -515,6 +512,8 @@ type
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
     procedure Clear; override;
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     function CanBeDefaulForProject: boolean; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
@@ -532,7 +531,6 @@ type
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
-  
   
   { TProjectDefineTemplates }
 
@@ -625,6 +623,24 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; ClearModified: boolean = true);
     property Modified: boolean read GetModified write SetModified;
     property CfgVars: TCTCfgScriptVariables read FCfgVars;
+  end;
+
+  { TProjectBuildMode }
+
+  TProjectBuildMode = class(TComponent)
+  private
+    FCompilerOptions: TProjectCompilerOptions;
+    FBuildMacroValues: TProjectBuildMacros;
+    FIdentifier: string;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              ClearModified: boolean = true);
+    property Identifier: string read FIdentifier;// arbitrary string
+    property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
+    property BuildMacroValues: TProjectBuildMacros read FBuildMacroValues;
   end;
 
   { TProject }
@@ -991,6 +1007,7 @@ type
   
 const
   ResourceFileExt = '.lrs';
+  DefaultProjectCompilerOptionsFilename = 'compileroptions.xml';
 
 var
   Project1: TProject = nil;// the main project
@@ -5434,24 +5451,25 @@ end;
 
 { TProjectCompilerOptions }
 
-function TProjectCompilerOptions.LoadTheCompilerOptions(
-  const APath: string): TModalResult;
+procedure TProjectCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
 begin
-  Result:=inherited LoadTheCompilerOptions(APath);
+  inherited LoadFromXMLConfig(AXMLConfig,Path);
   
-  // old compatebility
-  if XMLConfigFile.GetValue(APath+'SkipCompiler/Value',false)
+  // old compatability
+  if AXMLConfig.GetValue(Path+'SkipCompiler/Value',false)
   then FCompileReasons := []
   else FCompileReasons :=
-                   LoadXMLCompileReasons(XMLConfigFile,APath+'CompileReasons/',
+                   LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',
                                          crAll);
 end;
 
-procedure TProjectCompilerOptions.SaveTheCompilerOptions(const APath: string);
+procedure TProjectCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
 begin
-  inherited SaveTheCompilerOptions(APath);
+  inherited SaveToXMLConfig(AXMLConfig,Path);
   
-  SaveXMLCompileReasons(XMLConfigFile, APath+'CompileReasons/', FCompileReasons,
+  SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
                         crAll);
 end;
 
@@ -6376,6 +6394,38 @@ begin
   end;
   if ClearModified then
     Modified:=false;
+end;
+
+{ TProjectBuildMode }
+
+constructor TProjectBuildMode.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBuildMacroValues:=TProjectBuildMacros.Create;
+  FCompilerOptions:=TProjectCompilerOptions.Create(Self);
+end;
+
+destructor TProjectBuildMode.Destroy;
+begin
+  FreeAndNil(FCompilerOptions);
+  FreeAndNil(FBuildMacroValues);
+  inherited Destroy;
+end;
+
+procedure TProjectBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  FIdentifier:=XMLConfig.GetValue('Identifier','');
+  FBuildMacroValues.LoadFromXMLConfig(XMLConfig,Path+'BuildMacros/');
+  FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
+end;
+
+procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; ClearModified: boolean);
+begin
+  XMLConfig.SetDeleteValue('Identifier',Identifier,'');
+  FBuildMacroValues.SaveToXMLConfig(XMLConfig,Path+'BuildMacros/',ClearModified);
+  FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
 initialization

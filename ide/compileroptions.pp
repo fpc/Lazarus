@@ -91,6 +91,8 @@
     - history
 
   ToDo:
+  - create Makefile: create a .compiled file and copy that after compile (delete before compile)
+  - writable package output directory: set it on load package
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units
@@ -490,13 +492,10 @@ type
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
-    fLoaded: Boolean;
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
     FUseAsDefault: Boolean;
-    fXMLFile: String;
-    FXMLConfig: TXMLConfig;
 
     // Compilation
     fExecuteBefore: TCompilationToolOptions;
@@ -538,8 +537,6 @@ type
     procedure SetTargetFilename(const AValue: String); override;
     procedure SetModified(const AValue: boolean); override;
   protected
-    function LoadTheCompilerOptions(const Path: string): TModalResult; virtual;
-    procedure SaveTheCompilerOptions(const Path: string); virtual;
     procedure ClearInheritedOptions;
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
@@ -551,11 +548,11 @@ type
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
 
-    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); virtual;
     
-    function LoadCompilerOptions(UseExistingFile: Boolean): TModalResult;
-    procedure SaveCompilerOptions(UseExistingFile: Boolean);
+    function LoadFromFile(AFilename: string): TModalResult;
+    function SaveToFile(AFilename: string): TModalResult;
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions; Diff: TStrings);
@@ -568,7 +565,6 @@ type
                                Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString: string; virtual;
-    function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
@@ -625,15 +621,16 @@ type
     procedure RenameMacro(const OldName, NewName: string;
               ChangeConditionals: boolean); virtual; // rename macro in paths and options, not in BuildMacros, not in dependencies
   public
-    // Properties
+    // not stored properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
-    property XMLFile: String read fXMLFile write fXMLFile;
-    property XMLConfigFile: TXMLConfig read FXMLConfig write FXMLConfig;
-    property Loaded: Boolean read fLoaded write fLoaded;
+    // for dialog only
+    property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
+
+    // stored properties
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
 
     // compilation
@@ -647,9 +644,6 @@ type
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
     property UseMsgFile: Boolean read fUseMsgFile write fUseMsgFile;
     property MsgFileName: String read fMsgFileName write fMsgFileName;
-
-    // for dialog only
-    property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
   end;
   
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
@@ -794,7 +788,6 @@ implementation
 
 const
   CompilerOptionsVersion = 9;
-  Config_Filename = 'compileroptions.xml';
 
 function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;
@@ -1100,56 +1093,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
-    const Path: string);
+  TBaseCompilerOptions LoadFromFile
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfigFile := AXMLConfig;
-  LoadTheCompilerOptions(Path);
-end;
-
-{------------------------------------------------------------------------------
-  procedure TBaseCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-    const Path: string);
-------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfigFile := AXMLConfig;
-  SaveTheCompilerOptions(Path);
-end;
-
-{------------------------------------------------------------------------------
-  TBaseCompilerOptions LoadCompilerOptions
-------------------------------------------------------------------------------}
-function TBaseCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean
+function TBaseCompilerOptions.LoadFromFile(AFilename: string
   ): TModalResult;
 var
-  confPath: String;
+  XMLConfig: TXMLConfig;
 begin
   Result:=mrCancel;
-  if (UseExistingFile and (XMLConfigFile <> nil)) then
-  begin
-    Result:=LoadTheCompilerOptions('CompilerOptions');
-  end
-  else
-  begin
-    confPath := GetXMLConfigPath;
+  try
+    XMLConfig := TXMLConfig.Create(AFilename);
     try
-      XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-      LoadTheCompilerOptions('CompilerOptions');
-      XMLConfigFile.Free;
-      XMLConfigFile := nil;
+      LoadFromXMLConfig(XMLConfig,'CompilerOptions');
       Result:=mrOk;
-    except
-      on E: Exception do begin
-        DebugLn('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
-      end;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('TBaseCompilerOptions.LoadFromFile '+Classname+' '+AFilename+' '+E.Message);
     end;
   end;
-  fLoaded := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -1334,7 +1298,8 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions LoadTheCompilerOptions
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string): TModalResult;
+procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
 var
   p: String;
   PathDelimChange: boolean;
@@ -1355,61 +1320,60 @@ var
   procedure ReadSmaller;
   begin
     if FileVersion<2 then begin
-      if XMLConfigFile.GetValue(p+'Generate/Value', 1)<>1 then
+      if aXMLConfig.GetValue(p+'Generate/Value', 1)<>1 then
         SmallerCode:=true;
     end else if FileVersion<8 then begin
-      if XMLConfigFile.GetValue(p+'Generate/Value','')='Smaller' then
+      if aXMLConfig.GetValue(p+'Generate/Value','')='Smaller' then
         SmallerCode:=true;
     end else
-      SmallerCode:=XMLConfigFile.GetValue(p+'SmallerCode/Value',false);
+      SmallerCode:=aXMLConfig.GetValue(p+'SmallerCode/Value',false);
   end;
   
   procedure ReadSmartLinkUnit;
   begin
     if FileVersion<3 then
-      SmartLinkUnit := XMLConfigFile.GetValue(p+'UnitStyle/Value', 1)=2
+      SmartLinkUnit := aXMLConfig.GetValue(p+'UnitStyle/Value', 1)=2
     else
-      SmartLinkUnit := XMLConfigFile.GetValue(p+'SmartLinkUnit/Value', false);
+      SmartLinkUnit := aXMLConfig.GetValue(p+'SmartLinkUnit/Value', false);
   end;
   
   procedure ReadLinkSmart;
   begin
     if FileVersion<3 then
-      LinkSmart := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1)=3
+      LinkSmart := aXMLConfig.GetValue(p+'LinkStyle/Value', 1)=3
     else
-      LinkSmart := XMLConfigFile.GetValue(p+'LinkSmart/Value', false);
+      LinkSmart := aXMLConfig.GetValue(p+'LinkSmart/Value', false);
   end;
 
 begin
-  Result:=mrOk;
   { Load the compiler options from the XML file }
   p:=Path;
-  FileVersion:=XMLConfigFile.GetValue(p+'Version/Value', 0);
-  StorePathDelim:=CheckPathDelim(XMLConfigFile.GetValue(p+'PathDelim/Value', '/'),PathDelimChange);
+  FileVersion:=aXMLConfig.GetValue(p+'Version/Value', 0);
+  StorePathDelim:=CheckPathDelim(aXMLConfig.GetValue(p+'PathDelim/Value', '/'),PathDelimChange);
 
   { Target }
   p:=Path+'Target/';
-  TargetFilename := f(XMLConfigFile.GetValue(p+'Filename/Value', ''));
+  TargetFilename := f(aXMLConfig.GetValue(p+'Filename/Value', ''));
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  IncludePath := sp(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
-  Libraries := sp(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
-  OtherUnitFiles := sp(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
-  UnitOutputDirectory := sp(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
-  ObjectPath := sp(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
-  SrcPath := sp(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
+  IncludePath := sp(aXMLConfig.GetValue(p+'IncludeFiles/Value', ''));
+  Libraries := sp(aXMLConfig.GetValue(p+'Libraries/Value', ''));
+  OtherUnitFiles := sp(aXMLConfig.GetValue(p+'OtherUnitFiles/Value', ''));
+  UnitOutputDirectory := sp(aXMLConfig.GetValue(p+'UnitOutputDirectory/Value', ''));
+  ObjectPath := sp(aXMLConfig.GetValue(p+'ObjectPath/Value', ''));
+  SrcPath := sp(aXMLConfig.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  FConditionals:=XMLConfigFile.GetValue(Path+'Conditionals/Value','');
-  TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(XMLConfigFile,
+  FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value','');
+  TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
   // ToDo: replace this with conditional compiler options
-  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
+  LCLWidgetType := aXMLConfig.GetValue(p+'LCLWidgetType/Value', '');
 
   { Parsing }
   p:=Path+'Parsing/';
-  AssemblerStyle := XMLConfigFile.GetValue(p+'Style/Value', 0);
+  AssemblerStyle := aXMLConfig.GetValue(p+'Style/Value', 0);
   
   { Syntax Options }
   if FileVersion>=5 then
@@ -1417,110 +1381,110 @@ begin
   else
     p:=Path+'SymantecChecking/';
   if FileVersion<6 then begin
-    if XMLConfigFile.GetValue(p+'D2Extensions/Value', true) then
+    if aXMLConfig.GetValue(p+'D2Extensions/Value', true) then
       FSyntaxMode:='ObjFPC';
-    if XMLConfigFile.GetValue(p+'TPCompatible/Value', false) then
+    if aXMLConfig.GetValue(p+'TPCompatible/Value', false) then
       FSyntaxMode:='TP';
-    if XMLConfigFile.GetValue(p+'DelphiCompat/Value', false) then
+    if aXMLConfig.GetValue(p+'DelphiCompat/Value', false) then
       FSyntaxMode:='Delphi';
-    if XMLConfigFile.GetValue(p+'GPCCompat/Value', false) then
+    if aXMLConfig.GetValue(p+'GPCCompat/Value', false) then
       FSyntaxMode:='GPC';
   end else begin
-    FSyntaxMode:=XMLConfigFile.GetValue(p+'SyntaxMode/Value', '');
+    FSyntaxMode:=aXMLConfig.GetValue(p+'SyntaxMode/Value', '');
     if FSyntaxMode='' then
       FSyntaxMode:='ObjFPC';
   end;
-  CStyleOperators := XMLConfigFile.GetValue(p+'CStyleOperator/Value', true);
-  IncludeAssertionCode := XMLConfigFile.GetValue(p+'IncludeAssertionCode/Value', false);
-  AllowLabel := XMLConfigFile.GetValue(p+'AllowLabel/Value', true);
-  CPPInline := XMLConfigFile.GetValue(p+'CPPInline/Value', true);
-  CStyleMacros := XMLConfigFile.GetValue(p+'CStyleMacros/Value', false);
-  InitConstructor := XMLConfigFile.GetValue(p+'InitConstructor/Value', false);
-  StaticKeyword := XMLConfigFile.GetValue(p+'StaticKeyword/Value', false);
-  UseAnsiStrings := XMLConfigFile.GetValue(p+'UseAnsiStrings/Value', FileVersion>=9);
+  CStyleOperators := aXMLConfig.GetValue(p+'CStyleOperator/Value', true);
+  IncludeAssertionCode := aXMLConfig.GetValue(p+'IncludeAssertionCode/Value', false);
+  AllowLabel := aXMLConfig.GetValue(p+'AllowLabel/Value', true);
+  CPPInline := aXMLConfig.GetValue(p+'CPPInline/Value', true);
+  CStyleMacros := aXMLConfig.GetValue(p+'CStyleMacros/Value', false);
+  InitConstructor := aXMLConfig.GetValue(p+'InitConstructor/Value', false);
+  StaticKeyword := aXMLConfig.GetValue(p+'StaticKeyword/Value', false);
+  UseAnsiStrings := aXMLConfig.GetValue(p+'UseAnsiStrings/Value', FileVersion>=9);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
   ReadSmartLinkUnit;
-  IOChecks := XMLConfigFile.GetValue(p+'Checks/IOChecks/Value', false);
-  RangeChecks := XMLConfigFile.GetValue(p+'Checks/RangeChecks/Value', false);
-  OverflowChecks := XMLConfigFile.GetValue(p+'Checks/OverflowChecks/Value', false);
-  StackChecks := XMLConfigFile.GetValue(p+'Checks/StackChecks/Value', false);
-  EmulatedFloatOpcodes := XMLConfigFile.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
-  HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 0);
-  VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
+  IOChecks := aXMLConfig.GetValue(p+'Checks/IOChecks/Value', false);
+  RangeChecks := aXMLConfig.GetValue(p+'Checks/RangeChecks/Value', false);
+  OverflowChecks := aXMLConfig.GetValue(p+'Checks/OverflowChecks/Value', false);
+  StackChecks := aXMLConfig.GetValue(p+'Checks/StackChecks/Value', false);
+  EmulatedFloatOpcodes := aXMLConfig.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
+  HeapSize := aXMLConfig.GetValue(p+'HeapSize/Value', 0);
+  VerifyObjMethodCall := aXMLConfig.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   ReadSmaller;
   if FileVersion<7 then begin
-    i:=XMLConfigFile.GetValue(p+'TargetProcessor/Value', 0);
+    i:=aXMLConfig.GetValue(p+'TargetProcessor/Value', 0);
     case i of
     1: TargetProcessor:='PENTIUM';
     2: TargetProcessor:='PENTIUM2';
     3: TargetProcessor:='PENTIUM3';
     end;
   end else
-    TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', '');
-  TargetCPU := XMLConfigFile.GetValue(p+'TargetCPU/Value', '');
-  VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
-  UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
-  OptimizationLevel := XMLConfigFile.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
-  TargetOS := XMLConfigFile.GetValue(p+'TargetOS/Value', '');
+    TargetProcessor := aXMLConfig.GetValue(p+'TargetProcessor/Value', '');
+  TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
+  VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
+  UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
+  OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
+  TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
 
   { Linking }
   p:=Path+'Linking/';
-  GenerateDebugInfo := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
-  UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
-  GenerateDwarf := XMLConfigFile.GetValue(p+'Debugging/GenerateDwarf/Value', false);
-  UseHeaptrc := XMLConfigFile.GetValue(p+'Debugging/UseHeaptrc/Value', false);
-  UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
-  GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
-  StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
-  UseExternalDbgSyms := XMLConfigFile.GetValue(p+'Debugging/UseExternalDbgSyms/Value', false);
+  GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
+  UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
+  GenerateDwarf := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
+  UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
+  UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
+  GenGProfCode := aXMLConfig.GetValue(p+'Debugging/GenGProfCode/Value', false);
+  StripSymbols := aXMLConfig.GetValue(p+'Debugging/StripSymbols/Value', false);
+  UseExternalDbgSyms := aXMLConfig.GetValue(p+'Debugging/UseExternalDbgSyms/Value', false);
   ReadLinkSmart;
-  PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
+  PassLinkerOptions := aXMLConfig.GetValue(p+'Options/PassLinkerOptions/Value', false);
   LinkerOptions := LineBreaksToSystemLineBreaks(
-                f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', '')));
-  Win32GraphicApp := XMLConfigFile.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
+                f(aXMLConfig.GetValue(p+'Options/LinkerOptions/Value', '')));
+  Win32GraphicApp := aXMLConfig.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
   ExecutableType := CompilationExecutableTypeNameToType(
-                    XMLConfigFile.GetValue(p+'Options/ExecutableType/Value',''));
+                    aXMLConfig.GetValue(p+'Options/ExecutableType/Value',''));
   //DebugLn('TBaseCompilerOptions.LoadTheCompilerOptions ',CompilationExecutableTypeNames[ExecutableType]);
 
   { Messages }
   p:=Path+'Other/';
-  ShowErrors := XMLConfigFile.GetValue(p+'Verbosity/ShowErrors/Value', true);
-  ShowWarn := XMLConfigFile.GetValue(p+'Verbosity/ShowWarn/Value', true);
-  ShowNotes := XMLConfigFile.GetValue(p+'Verbosity/ShowNotes/Value', true);
-  ShowHints := XMLConfigFile.GetValue(p+'Verbosity/ShowHints/Value', true);
-  ShowGenInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
-  ShowLineNum := XMLConfigFile.GetValue(p+'Verbosity/ShoLineNum/Value', false);
-  ShowAll := XMLConfigFile.GetValue(p+'Verbosity/ShowAll/Value', false);
-  ShowAllProcsOnError := XMLConfigFile.GetValue(p+'Verbosity/ShowAllProcsOnError/Value', false);
-  ShowDebugInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
-  ShowUsedFiles := XMLConfigFile.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
-  ShowTriedFiles := XMLConfigFile.GetValue(p+'Verbosity/ShowTriedFiles/Value', false);
-  ShowDefMacros := XMLConfigFile.GetValue(p+'Verbosity/ShowDefMacros/Value', false);
-  ShowCompProc := XMLConfigFile.GetValue(p+'Verbosity/ShowCompProc/Value', false);
-  ShowCond := XMLConfigFile.GetValue(p+'Verbosity/ShowCond/Value', false);
-  ShowExecInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
-  ShowNothing := XMLConfigFile.GetValue(p+'Verbosity/ShowNothing/Value', false);
-  ShowSummary := XMLConfigFile.GetValue(p+'Verbosity/ShowSummary/Value', false);
-  ShowHintsForUnusedUnitsInMainSrc := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
-  ShowHintsForSenderNotUsed := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', false);
-  WriteFPCLogo := XMLConfigFile.GetValue(p+'WriteFPCLogo/Value', true);
-  StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
+  ShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
+  ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
+  ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
+  ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
+  ShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
+  ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
+  ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
+  ShowAllProcsOnError := aXMLConfig.GetValue(p+'Verbosity/ShowAllProcsOnError/Value', false);
+  ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
+  ShowUsedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
+  ShowTriedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowTriedFiles/Value', false);
+  ShowDefMacros := aXMLConfig.GetValue(p+'Verbosity/ShowDefMacros/Value', false);
+  ShowCompProc := aXMLConfig.GetValue(p+'Verbosity/ShowCompProc/Value', false);
+  ShowCond := aXMLConfig.GetValue(p+'Verbosity/ShowCond/Value', false);
+  ShowExecInfo := aXMLConfig.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
+  ShowNothing := aXMLConfig.GetValue(p+'Verbosity/ShowNothing/Value', false);
+  ShowSummary := aXMLConfig.GetValue(p+'Verbosity/ShowSummary/Value', false);
+  ShowHintsForUnusedUnitsInMainSrc := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
+  ShowHintsForSenderNotUsed := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', false);
+  WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
+  StopAfterErrCount := aXMLConfig.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
-  UseMsgFile := XMLConfigFile.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-  MsgFileName := XMLConfigFile.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
+  UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
+  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
   if UseMsgFile and FileExists(MsgFileName) then
     fCompilerMessages.LoadMsgFile(MsgFileName);
 
   for i := 0 to fCompilerMessages.Count - 1 do begin
     with fCompilerMessages.Msg[i] do 
-      Ignored := XMLConfigFile.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false);
+      Ignored := aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false);
   end; 
 
   if UseMsgFile then 
-    with XMLConfigFile do begin
+    with aXMLConfig do begin
       // ErrorNames should be stored, because the Message file is not read (or parsed)
       // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
       CompilerMessages.fErrorNames[etHint]:=GetValue(p+'CompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
@@ -1533,54 +1497,51 @@ begin
   
   { Other }
   p:=Path+'Other/';
-  DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
+  DontUseConfigFile := aXMLConfig.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
   if FileVersion<=3 then
-    CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
+    CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
   else
-    CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
-  ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
-  CustomOptions := LineBreaksToSystemLineBreaks(XMLConfigFile.GetValue(p+'CustomOptions/Value', ''));
+    CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
+  ConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
+  CustomOptions := LineBreaksToSystemLineBreaks(aXMLConfig.GetValue(p+'CustomOptions/Value', ''));
 
   { Compilation }
-  CompilerPath := f(XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)'));
+  CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value','$(CompPath)'));
 
-  ExecuteBefore.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteBefore/',PathDelimChange);
-  ExecuteAfter.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteAfter/',PathDelimChange);
-  CreateMakefileOnBuild:=XMLConfigFile.GetValue(p+'CreateMakefileOnBuild/Value',false);
+  ExecuteBefore.LoadFromXMLConfig(aXMLConfig,p+'ExecuteBefore/',PathDelimChange);
+  ExecuteAfter.LoadFromXMLConfig(aXMLConfig,p+'ExecuteAfter/',PathDelimChange);
+  CreateMakefileOnBuild:=aXMLConfig.GetValue(p+'CreateMakefileOnBuild/Value',false);
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SaveCompilerOptions
+  TfrmCompilerOptions SaveToFile
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
+function TBaseCompilerOptions.SaveToFile(AFilename: string): TModalResult;
 var
-  confPath: String;
+  aXMLConfig: TXMLConfig;
 begin
-  if ((UseExistingFile) and (XMLConfigFile <> nil)) then
-  begin
-    SaveTheCompilerOptions('CompilerOptions');
-  end
-  else
-  begin
-    confPath := GetXMLConfigPath;
+  Result:=mrCancel;
+  try
+    aXMLConfig := TXMLConfig.Create(AFilename);
     try
-      XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-      SaveTheCompilerOptions('CompilerOptions');
-      XMLConfigFile.Free;
-      XMLConfigFile := nil;
-    except
-      on E: Exception do begin
-        DebugLn('TBaseCompilerOptions.SaveCompilerOptions '+Classname+' '+E.Message);
-      end;
+      SaveToXMLConfig(aXMLConfig,'CompilerOptions');
+      fModified:=false;
+      Result:=mrOk;
+    finally
+      aXMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('TBaseCompilerOptions.SaveToFile '+Classname+' '+AFilename+' '+E.Message);
     end;
   end;
-  fModified:=false;
 end;
 
 {------------------------------------------------------------------------------
   TfrmCompilerOptions SaveTheCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.SaveTheCompilerOptions(const Path: string);
+procedure TBaseCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
 var
   UsePathDelim: TPathDelimSwitch;
 
@@ -1596,134 +1557,134 @@ begin
   { Save the compiler options to the XML file }
   p:=Path;
   UsePathDelim:=StorePathDelim;
-  XMLConfigFile.SetValue(p+'Version/Value', CompilerOptionsVersion);
-  XMLConfigFile.SetDeleteValue(p+'PathDelim/Value',
+  aXMLConfig.SetValue(p+'Version/Value', CompilerOptionsVersion);
+  aXMLConfig.SetDeleteValue(p+'PathDelim/Value',
                                    PathDelimSwitchToDelim[UsePathDelim], '/');
 
   { Target }
   p:=Path+'Target/';
-  XMLConfigFile.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
+  aXMLConfig.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', f(IncludePath),'');
-  XMLConfigFile.SetDeleteValue(p+'Libraries/Value', f(Libraries),'');
-  XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', f(OtherUnitFiles),'');
-  XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', f(UnitOutputDirectory),'');
-  XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', f(ObjectPath),'');
-  XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', f(SrcPath),'');
+  aXMLConfig.SetDeleteValue(p+'IncludeFiles/Value', f(IncludePath),'');
+  aXMLConfig.SetDeleteValue(p+'Libraries/Value', f(Libraries),'');
+  aXMLConfig.SetDeleteValue(p+'OtherUnitFiles/Value', f(OtherUnitFiles),'');
+  aXMLConfig.SetDeleteValue(p+'UnitOutputDirectory/Value', f(UnitOutputDirectory),'');
+  aXMLConfig.SetDeleteValue(p+'ObjectPath/Value', f(ObjectPath),'');
+  aXMLConfig.SetDeleteValue(p+'SrcPath/Value', f(SrcPath),'');
 
   { Conditionals }
-  XMLConfigFile.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
-  TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(XMLConfigFile,
+  aXMLConfig.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
+  TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(aXMLConfig,
                                               Path+'BuildMacros/',UsePathDelim);
   // ToDo: remove
-  XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
+  aXMLConfig.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
   { Parsing }
   p:=Path+'Parsing/';
-  XMLConfigFile.SetDeleteValue(p+'Style/Value', AssemblerStyle,0);
+  aXMLConfig.SetDeleteValue(p+'Style/Value', AssemblerStyle,0);
   
   { Syntax Options }
   p:=Path+'Parsing/SyntaxOptions/';
-  XMLConfigFile.SetDeleteValue(p+'SyntaxMode/Value', SyntaxMode,'ObjFPC');
-  XMLConfigFile.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
-  XMLConfigFile.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
-  XMLConfigFile.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
-  XMLConfigFile.SetDeleteValue(p+'CPPInline/Value', CPPInline,true);
-  XMLConfigFile.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
-  XMLConfigFile.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
-  XMLConfigFile.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
-  XMLConfigFile.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,true);
+  aXMLConfig.SetDeleteValue(p+'SyntaxMode/Value', SyntaxMode,'ObjFPC');
+  aXMLConfig.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
+  aXMLConfig.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
+  aXMLConfig.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
+  aXMLConfig.SetDeleteValue(p+'CPPInline/Value', CPPInline,true);
+  aXMLConfig.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
+  aXMLConfig.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
+  aXMLConfig.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
+  aXMLConfig.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,true);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
-  XMLConfigFile.SetDeleteValue(p+'SmartLinkUnit/Value', SmartLinkUnit,false);
-  XMLConfigFile.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
-  XMLConfigFile.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
-  XMLConfigFile.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
-  XMLConfigFile.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
-  XMLConfigFile.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
-  XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
-  XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
-  XMLConfigFile.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
-  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
-  XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
-  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
-  XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
-  XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
-  XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
+  aXMLConfig.SetDeleteValue(p+'SmartLinkUnit/Value', SmartLinkUnit,false);
+  aXMLConfig.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
+  aXMLConfig.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
+  aXMLConfig.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
+  aXMLConfig.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
+  aXMLConfig.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
+  aXMLConfig.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
+  aXMLConfig.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
+  aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
+  aXMLConfig.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
+  aXMLConfig.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
+  aXMLConfig.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
+  aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
+  aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
+  aXMLConfig.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
 
   { Linking }
   p:=Path+'Linking/';
-  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDwarf/Value', GenerateDwarf, false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/UseExternalDbgSyms/Value', UseExternalDbgSyms,false);
-  XMLConfigFile.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
-  XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
-  XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value',
+  aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
+  aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDwarf/Value', GenerateDwarf, false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/UseExternalDbgSyms/Value', UseExternalDbgSyms,false);
+  aXMLConfig.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
+  aXMLConfig.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
+  aXMLConfig.SetDeleteValue(p+'Options/LinkerOptions/Value',
                                f(LineBreaksToSystemLineBreaks(LinkerOptions)),'');
-  XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
-  XMLConfigFile.SetDeleteValue(p+'Options/ExecutableType/Value',
+  aXMLConfig.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
+  aXMLConfig.SetDeleteValue(p+'Options/ExecutableType/Value',
                                  CompilationExecutableTypeNames[ExecutableType],
                                  CompilationExecutableTypeNames[cetProgram]);
   //DebugLn('TBaseCompilerOptions.SaveCompilerOptions ',CompilationExecutableTypeNames[ExecutableType]);
 
   { Messages }
   p:=Path+'Other/';
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo,true);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowTriedFiles/Value', ShowTriedFiles,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowDefMacros/Value', ShowDefMacros,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
-  XMLConfigFile.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowTriedFiles/Value', ShowTriedFiles,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDefMacros/Value', ShowDefMacros,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
+  aXMLConfig.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
   for i := 0 to CompilerMessages.Count - 1 do begin
     with CompilerMessages.Msg[i] do 
-      XMLConfigFile.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), Ignored, false);
+      aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), Ignored, false);
   end;
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
   
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Warning', CompilerMessages.ErrorNames[etWarning], FPCErrorTypeNames[etWarning]);
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Error',   CompilerMessages.ErrorNames[etError],   FPCErrorTypeNames[etError]);
-  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Fatal',   CompilerMessages.ErrorNames[etFatal],   FPCErrorTypeNames[etFatal]);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Warning', CompilerMessages.ErrorNames[etWarning], FPCErrorTypeNames[etWarning]);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Error',   CompilerMessages.ErrorNames[etError],   FPCErrorTypeNames[etError]);
+  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Fatal',   CompilerMessages.ErrorNames[etFatal],   FPCErrorTypeNames[etFatal]);
 
   { Other }
   p:=Path+'Other/';
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
-  XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value',
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
+  aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
                                f(LineBreaksToSystemLineBreaks(CustomOptions)),'');
 
   { Compilation }
-  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
-  ExecuteBefore.SaveToXMLConfig(XMLConfigFile,p+'ExecuteBefore/',UsePathDelim);
-  ExecuteAfter.SaveToXMLConfig(XMLConfigFile,p+'ExecuteAfter/',UsePathDelim);
-  XMLConfigFile.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
+  aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
+  ExecuteBefore.SaveToXMLConfig(aXMLConfig,p+'ExecuteBefore/',UsePathDelim);
+  ExecuteAfter.SaveToXMLConfig(aXMLConfig,p+'ExecuteAfter/',UsePathDelim);
+  aXMLConfig.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
                                CreateMakefileOnBuild,false);
 
   // write
@@ -2910,27 +2871,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TBaseCompilerOptions GetXMLConfigPath
- ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.GetXMLConfigPath: String;
-var
-  AFilename: String;
-begin
-  // Setup the filename to write to
-  AFilename := XMLFile;
-  if (AFilename = '') then
-    AFilename := Config_Filename;
-  Result := AppendPathDelim(GetPrimaryConfigPath) + AFilename;
-  CopySecondaryConfigFile(AFilename);
-end;
-
-{------------------------------------------------------------------------------
   TBaseCompilerOptions Clear
 ------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.Clear;
 begin
   fOptionsString := '';
-  fLoaded := false;
   FModified := false;
 
   // search paths
@@ -3036,7 +2981,6 @@ begin
   end;
   CompOpts:=TBaseCompilerOptions(Source);
   fOptionsString := CompOpts.fOptionsString;
-  fLoaded := CompOpts.fLoaded;
 
   // Target
   TargetFilename := CompOpts.TargetFilename;

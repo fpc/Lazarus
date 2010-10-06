@@ -4552,6 +4552,9 @@ begin
 end;
 
 procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject);
+var
+  ProjCompOpts: TProjectCompilerOptions;
+  aFilename: String;
 begin
   if not OldCompOpts.IsEqual(TBaseCompilerOptions(Sender)) then
   begin
@@ -4562,8 +4565,15 @@ begin
     UpdateHighlighters; // because of FPC/Delphi mode
   end;
   OldCompOpts.Free;
-  if TBaseCompilerOptions(Sender).UseAsDefault then
-    TBaseCompilerOptions(Sender).SaveCompilerOptions(False);
+  if Sender is TProjectCompilerOptions then
+  begin
+    ProjCompOpts:=TProjectCompilerOptions(Sender);
+    if ProjCompOpts.UseAsDefault then
+    begin
+      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+      ProjCompOpts.SaveToFile(aFilename);
+    end;
+  end;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
@@ -9613,10 +9623,15 @@ begin
 end;
 
 procedure TMainIDE.DoLoadDefaultCompilerOptions(AProject: TProject);
+var
+  AFilename: String;
 begin
   // load default compiler options if exists
-  if not FileExistsUTF8(AProject.CompilerOptions.GetXMLConfigPath) then exit;
-  if AProject.CompilerOptions.LoadCompilerOptions(false)<>mrOk then
+  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+  if not FileExistsUTF8(AFilename) then
+    CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
+  if not FileExistsUTF8(AFilename) then exit;
+  if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
     DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
 end;
 
