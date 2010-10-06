@@ -30,9 +30,9 @@ unit IDEFPCInfo;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  FileProcs, DefineTemplates,
-  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm;
+  Classes, SysUtils, AVL_Tree, FileUtil, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, FileProcs, DefineTemplates, CodeToolManager, BaseBuildManager,
+  Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm;
 
 type
 
@@ -48,7 +48,7 @@ type
     procedure GatherGlobalOptions(sl: TStrings);
     procedure GatherProjectOptions(sl: TStrings);
     procedure GatherActiveOptions(sl: TStrings);
-    procedure GatherFPCCfg(sl: TStrings);
+    procedure GatherFPCExecutable(UnitSetCache: TFPCUnitSetCache; sl: TStrings);
   public
   end;
 
@@ -82,6 +82,11 @@ end;
 procedure TIDEFPCInfoDialog.UpdateMemo;
 var
   sl: TStringList;
+  TargetOS: String;
+  TargetCPU: String;
+  CompilerFilename: String;
+  FPCSrcDir: String;
+  UnitSetCache: TFPCUnitSetCache;
 begin
   sl:=TStringList.Create;
   try
@@ -90,7 +95,15 @@ begin
     GatherGlobalOptions(sl);
     GatherProjectOptions(sl);
     GatherActiveOptions(sl);
-    GatherFPCCfg(sl);
+
+    TargetOS:=BuildBoss.GetTargetOS(true);
+    TargetCPU:=BuildBoss.GetTargetCPU(true);
+    CompilerFilename:=EnvironmentOptions.CompilerFilename;
+    FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
+    UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+      CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
+
+    GatherFPCExecutable(UnitSetCache,sl);
     Memo1.Lines.Assign(sl);
   finally
     sl.Free;
@@ -162,8 +175,42 @@ begin
   sl.Add('');
 end;
 
-procedure TIDEFPCInfoDialog.GatherFPCCfg(sl: TStrings);
+procedure TIDEFPCInfoDialog.GatherFPCExecutable(UnitSetCache: TFPCUnitSetCache;
+  sl: TStrings);
+var
+  CfgCache: TFPCTargetConfigCache;
+  i: Integer;
+  CfgFileItem: TFPCConfigFileState;
 begin
+  sl.Add('FPC executable:');
+  if UnitSetCache<>nil then begin
+    CfgCache:=UnitSetCache.GetConfigCache(false);
+    if CfgCache<>nil then begin
+      sl.Add('Compiler='+CfgCache.Compiler);
+      sl.Add('Options='+CfgCache.CompilerOptions);
+      sl.Add('CompilerDate='+DateTimeToStr(FileDateToDateTime(CfgCache.CompilerDate)));
+      sl.Add('RealCompiler='+CfgCache.RealCompiler);
+      sl.Add('RealCompilerDate='+DateTimeToStr(FileDateToDateTime(CfgCache.RealCompilerDate)));
+      sl.Add('RealTargetOS='+CfgCache.RealTargetOS);
+      sl.Add('RealTargetCPU='+CfgCache.RealTargetCPU);
+      sl.Add('RealCompilerInPath='+CfgCache.RealCompilerInPath);
+      if CfgCache.ConfigFiles<>nil then begin
+        for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
+          CfgFileItem:=CfgCache.ConfigFiles[i];
+          if CfgFileItem.FileExists then
+            sl.Add('CfgFilename='+CfgFileItem.Filename);
+        end;
+      end;
+      sl.Add('UnitPaths:');
+      if CfgCache.UnitPaths<>nil then begin
+        sl.AddStrings(CfgCache.UnitPaths);
+      end;
+      sl.add('Units:');
+      if CfgCache.Units<>nil then begin
+        sl.Add(CfgCache.Units.AsText);
+      end;
+    end;
+  end;
   sl.Add('');
 end;
 

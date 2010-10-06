@@ -18,6 +18,7 @@ object IDEFPCInfoDialog: TIDEFPCInfoDialog
     Lines.Strings = (
       'Memo1'
     )
+    ScrollBars = ssAutoBoth
     TabOrder = 0
   end
 end
