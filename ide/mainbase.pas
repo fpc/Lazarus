@@ -577,16 +577,17 @@ begin
     begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'debugger_watches');
       CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'debugger_breakpoints');
-      CreateMenuItem(itmViewDebugWindows,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables,'');
-      CreateMenuItem(itmViewDebugWindows,itmViewRegisters,'itmViewRegisters',lisMenuViewRegisters,'');
+      CreateMenuItem(itmViewDebugWindows,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables);
+      CreateMenuItem(itmViewDebugWindows,itmViewRegisters,'itmViewRegisters',lisMenuViewRegisters);
       CreateMenuItem(itmViewDebugWindows,itmViewCallStack,'itmViewCallStack',lisMenuViewCallStack,'debugger_call_stack');
-      CreateMenuItem(itmViewDebugWindows,itmViewAssembler,'itmViewAssembler',lisMenuViewAssembler,'');
+      CreateMenuItem(itmViewDebugWindows,itmViewAssembler,'itmViewAssembler',lisMenuViewAssembler);
       CreateMenuItem(itmViewDebugWindows,itmViewDebugEvents,'itmViewDebugEvents',lisMenuViewDebugEvents,''{'debugger_events'});
       CreateMenuItem(itmViewDebugWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
     end;
-    CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals, '');
+    CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
     begin
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks, '');
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
     end;
   end;
 end;

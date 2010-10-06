@@ -220,6 +220,7 @@ type
           itmViewDebugEvents: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;
+          itmViewFPCInfo: TIDEMenuCommand;
 
     // project menu
     //mnuProject: TIDEMenuSection;

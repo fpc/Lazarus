@@ -304,6 +304,7 @@ resourcestring
   lisMenuViewDebugEvents = 'Event Log';
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';
+  lisMenuAboutFPC = 'About FPC';
   
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from file ...';

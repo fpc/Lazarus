@@ -53,7 +53,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="71">
+    <Units Count="72">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -538,6 +538,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FPCSrcScan"/>
       </Unit70>
+      <Unit71>
+        <Filename Value="idefpcinfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IDEFPCInfoDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEFPCInfo"/>
+      </Unit71>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

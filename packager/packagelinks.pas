@@ -28,7 +28,9 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Package links helps the IDE to find package filenames by name
+    Package links helps the IDE to find package filenames by name.
+    If you are searching for the dialog to see the package links: pkglinksdlg.pas
+
 }
 unit PackageLinks;
 

@@ -1,0 +1,23 @@
+object IDEFPCInfoDialog: TIDEFPCInfoDialog
+  Left = 275
+  Height = 450
+  Top = 250
+  Width = 704
+  Caption = 'IDEFPCInfoDialog'
+  ClientHeight = 450
+  ClientWidth = 704
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Memo1: TMemo
+    Left = 0
+    Height = 450
+    Top = 0
+    Width = 704
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+end

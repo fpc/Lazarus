@@ -136,7 +136,7 @@ uses
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
-  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
+  IDEFPCInfo, ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, UnusedUnitsDlg, FindOverloadsDlg, CleanDirDlg,
@@ -272,6 +272,7 @@ type
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
     procedure mnuViewComponentPaletteClicked(Sender: TObject);
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
+    procedure mnuViewFPCInfoClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
@@ -2419,6 +2420,8 @@ begin
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
     itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
     itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
+
+    itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
   end;
 end;
 
@@ -2550,6 +2553,11 @@ end;
 procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
 begin
   DoToggleViewIDESpeedButtons;
+end;
+
+procedure TMainIDE.mnuViewFPCInfoClicked(Sender: TObject);
+begin
+  ShowFPCInfo;
 end;
 
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
