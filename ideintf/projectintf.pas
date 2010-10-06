@@ -121,6 +121,7 @@ type
 
   TLazCompilerOptions = class(TAbstractIDEProjectOptions)
   private
+    FActive: boolean;
     FOnModified: TNotifyEvent;
     fOwner: TObject;
   protected
@@ -236,6 +237,7 @@ type
   public
     constructor Create(const TheOwner: TObject); virtual;
   public
+    property Active: boolean read FActive write FActive;
     property Owner: TObject read fOwner write fOwner;
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;

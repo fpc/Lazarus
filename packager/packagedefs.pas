@@ -2419,6 +2419,7 @@ begin
   FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
+  FCompilerOptions.Active:=true;
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];

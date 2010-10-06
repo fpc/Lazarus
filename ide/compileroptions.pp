@@ -91,7 +91,13 @@
     - history
 
   ToDo:
-  - create Makefile: create a .compiled file and copy that after compile (delete before compile)
+  - remove TGlobalCompilerOptions
+  - create Makefile:
+     - create a special .compiled file
+     - makefile should delete the .compiled before compile
+     - makefile should copy the .compiled after compile
+     - a IDE created with make, without extra options should not recompile a
+       package with this special .compiled file
   - writable package output directory: set it on load package
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
@@ -439,8 +445,8 @@ type
   
   TCompilerMessagesList = class
   private
-    fItems      : TFPList; 
-    fHash       : array of array of TCompilerMessageConfig;  
+    fItems      : TFPList;
+    fHash       : array of array of TCompilerMessageConfig;
   protected
     fUsedMsgFile  : string; 
     fUpdating     : Integer; 
@@ -1138,7 +1144,8 @@ procedure TBaseCompilerOptions.SetConditionals(const AValue: string);
 begin
   if FConditionals=AValue then exit;
   FConditionals:=AValue;
-  IncreaseBuildMacroChangeStamp;
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
@@ -1170,21 +1177,24 @@ procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   if fTargetCPU=AValue then exit;
   fTargetCPU:=AValue;
-  IncreaseBuildMacroChangeStamp;
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetProc(const AValue: string);
 begin
   if fTargetProc=AValue then exit;
   fTargetProc:=AValue;
-  IncreaseBuildMacroChangeStamp;
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
-  IncreaseBuildMacroChangeStamp;
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);

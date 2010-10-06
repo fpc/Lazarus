@@ -2457,6 +2457,7 @@ begin
   FEditorInfoList := TUnitEditorInfoList.Create(nil);
   FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
+  CompilerOptions.Active:=true;
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
@@ -5476,13 +5477,15 @@ end;
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   inherited SetTargetCPU(AValue);
-  FGlobals.TargetCPU:=TargetCPU;
+  if Active then
+    FGlobals.TargetCPU:=TargetCPU;
 end;
 
 procedure TProjectCompilerOptions.SetTargetOS(const AValue: string);
 begin
   inherited SetTargetOS(AValue);
-  FGlobals.TargetOS:=TargetOS;
+  if Active then
+    FGlobals.TargetOS:=TargetOS;
 end;
 
 procedure TProjectCompilerOptions.SetCustomOptions(const AValue: string);
@@ -5490,7 +5493,7 @@ begin
   if CustomOptions=AValue then exit;
   InvalidateOptions;
   inherited SetCustomOptions(AValue);
-  if Project<>nil then
+  if Active and (Project<>nil) then
     Project.DefineTemplates.CustomDefinesChanged;
 end;
 
@@ -5541,7 +5544,7 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
-  if Project<>nil then
+  if Active and (Project<>nil) then
     Project.DefineTemplates.OutputDirectoryChanged;
 end;
 
@@ -5573,12 +5576,7 @@ end;
 function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions
   ): boolean;
 begin
-  Result:=false;
-  if not inherited IsEqual(CompOpts) then exit;
-  if CompOpts is TProjectCompilerOptions then begin
-
-  end;
-  Result:=true;
+  Result:=inherited IsEqual(CompOpts);
 end;
 
 procedure TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
@@ -5596,7 +5594,6 @@ end;
 procedure TProjectCompilerOptions.InvalidateOptions;
 begin
   if (Project=nil) then exit;
-  // TODO: propagate change to all dependant projects
 end;
 
 function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
@@ -5609,6 +5606,7 @@ end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;
 begin
+  if not Active then exit;
   FGlobals.TargetCPU:=TargetCPU;
   FGlobals.TargetOS:=TargetOS;
 end;
