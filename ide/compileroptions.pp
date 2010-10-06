@@ -89,9 +89,12 @@
     - words in conditionals
     - result identifiers
     - history
+  - refactor compiler options (default options, load, save to file)
+  - disabled project compiler options, used only for storage
 
   ToDo:
-  - remove TGlobalCompilerOptions
+  - replace property Active with function IsActive
+  - check if OwnerProject is still needed
   - create Makefile:
      - create a special .compiled file
      - makefile should delete the .compiled before compile
@@ -99,10 +102,6 @@
      - a IDE created with make, without extra options should not recompile a
        package with this special .compiled file
   - writable package output directory: set it on load package
-  - make lazbuild lcl independent, independent of packages except one
-    - license gpl2
-    - create package lazbuildsystem with some units
-    - move
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package
@@ -110,11 +109,17 @@
   - code completion
     - keypress event
   - help for add/delete macro speedbuttons
+  - change IDE options dialog to not depend on a global option instance
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
-    - refactor compiler options (default options, load, save to file)
     - store sets in lpi
     - store sets in lps
+  - make lazbuild lcl independent, independent of packages except one
+    - license gpl2
+    - create package lazbuildsystem with some units
+    - move
+  - remove TGlobalCompilerOptions
+    - implement switching active project
   - i18n for descriptions
   - keyword help for a build macro
 
