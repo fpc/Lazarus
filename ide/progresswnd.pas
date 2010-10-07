@@ -331,11 +331,13 @@ begin
   Result.CaptionLabel.Align:=alTop;
   Result.CaptionLabel.AutoSize:=true;
   Result.CaptionLabel.Parent:=Result.Panel;
+  Result.CaptionLabel.ShowHint:=true;
   // add a progressbar below the label
   Result.ProgressBar:=TProgressBar.Create(Result.Panel);
   Result.ProgressBar.Align:=alTop;
   Result.ProgressBar.AutoSize:=true;
   Result.ProgressBar.Parent:=Result.Panel;
+  Result.ProgressBar.ShowHint:=true;
   Result.ProgressBar.Top:=10;
 
   // show panel
