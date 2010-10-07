@@ -396,7 +396,7 @@ var
   IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
   ObjectData: TObject;
   SearchStr: string;
-  CurMaskStr, MaskStr: string;
+  MaskStr: string;
   Files: TList;
   FileItem: TFileItem;
   i: Integer;
