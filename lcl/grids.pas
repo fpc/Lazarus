@@ -919,10 +919,8 @@ type
     procedure HeaderSizing(const IsColumn:boolean; const AIndex,ASize:Integer); virtual;
     procedure InternalSetColCount(ACount: Integer);
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
-    procedure InvalidateRange(const aRange: TRect);
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
-    procedure InvalidateRow(ARow: Integer);
     procedure InvalidateFocused;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
@@ -1090,6 +1088,8 @@ type
 
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
+    procedure InvalidateRange(const aRange: TRect);
+    procedure InvalidateRow(ARow: Integer);
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
     function  MouseCoord(X,Y: Integer): TGridCoord;
