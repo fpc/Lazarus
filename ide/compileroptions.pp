@@ -112,7 +112,10 @@
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
     - store sets in lpi
+      - the default build mode should be stored in the old xml path, so that
+        old IDEs can open newer projects.
     - store sets in lps
+    - store active build mdoe in session
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units

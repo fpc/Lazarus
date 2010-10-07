@@ -1200,7 +1200,6 @@ type
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FSmallIconHandle: HICON;
     FIdleLockCount: Integer;
-    FFormList: TList;
     FLastKeyDownSender: TWinControl;
     FLastKeyDownKey: Word;
     FLastKeyDownShift: TShiftState;

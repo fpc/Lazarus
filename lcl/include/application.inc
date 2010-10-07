@@ -94,7 +94,6 @@ begin
   FHintHidePausePerChar := DefHintHidePausePerChar;
   FShowHint := true;
   FShowMainForm := true;
-  FFormList := nil;
   FRestoreStayOnTop := nil;
   FOnIdle := nil;
   FIcon := TIcon.Create;
@@ -153,7 +152,6 @@ begin
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
   FreeIconHandles;
-  FreeThenNil(FFormList);
   FreeThenNil(FRestoreStayOnTop);
 
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
@@ -965,7 +963,6 @@ procedure TApplication.DoIdleActions;
 var
   i: Integer;
   CurForm: TCustomForm;
-  AForm: TForm;
 begin
   i := 0;
   while i < Screen.CustomFormCount do begin { While loop to allow number of forms to change during loop }
@@ -974,12 +971,13 @@ begin
       CurForm.UpdateActions;
     Inc(i);
   end;
-  if FFormList<>nil then begin
-    for i:=0 to FFormList.Count-1 do begin
-      AForm:=TForm(FFormList[i]);
-      if AForm.FormStyle=fsSplash then
-        AForm.Hide;
-    end;
+  // hide splashscreen(s)
+  i := Screen.CustomFormCount-1;
+  while i >=0 do begin { While loop to allow number of forms to change during loop }
+    CurForm:=Screen.CustomForms[i];
+    if CurForm.FormStyle=fsSplash then
+      CurForm.Hide;
+    i:=Min(i,Screen.CustomFormCount)-1;
   end;
 end;
 
@@ -1064,12 +1062,17 @@ end;
 procedure TApplication.IconChanged(Sender: TObject);
 var
   i: integer;
+  CurForm: TCustomForm;
 begin
   FreeIconHandles;
   Widgetset.AppSetIcon(SmallIconHandle, BigIconHandle);
-  if FFormList <> nil then
-    for i := 0 to FFormList.Count - 1 do
-      TForm(FFormList[i]).Perform(CM_ICONCHANGED, 0, 0);
+
+  i := Screen.CustomFormCount-1;
+  while i >=0 do begin { While loop to allow number of forms to change during loop }
+    CurForm:=Screen.CustomForms[i];
+    CurForm.Perform(CM_ICONCHANGED, 0, 0);
+    i:=Min(i,Screen.CustomFormCount)-1;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2097,9 +2100,6 @@ begin
     UpdateMainForm(AForm);
     if FMainForm = AForm then
       AForm.HandleNeeded;
-    if not Assigned(FFormList) then
-      FFormList := TList.Create;
-    FFormList.Add(AForm);
     if AForm.FormStyle = fsSplash then
     begin
       // show the splash form and handle the paint message
