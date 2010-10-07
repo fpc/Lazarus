@@ -90,7 +90,8 @@ type
     iliHasParamListValid,
     iliHasParamList,
     iliIsReadOnlyValid,
-    iliIsReadOnly
+    iliIsReadOnly,
+    iliAtCursor // the item is the identifier at the completion
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -599,7 +600,8 @@ begin
       {$IFDEF ShowFilteredIdents}
       DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
       {$ENDIF}
-      if length(Prefix)=length(CurItem.Identifier) then
+      if (length(Prefix)=length(CurItem.Identifier))
+      and (not (iliAtCursor in CurItem.Flags)) then
         // put exact matches at the beginning
         FFilteredList.Insert(0,CurItem)
       else
@@ -787,6 +789,7 @@ begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if (CurItem.Identifier<>'')
     and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
+    and (not (iliAtCursor in CurItem.Flags))
     then begin
       if not FoundFirst then begin
         Result:=CurItem.Identifier;
@@ -948,6 +951,7 @@ var
   NewItem: TIdentifierListItem;
   Node: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
+  Lvl: LongInt;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -966,12 +970,19 @@ begin
     inc(FLastGatheredIdentLevel);
   end;
 
+  Lvl:=FLastGatheredIdentLevel;
+
   ProtectedForeignClass:=false;
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
     //  ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
     //  ,' fdfIgnoreUsedUnits='+dbgs(fdfIgnoreUsedUnits in Params.Flags));
+    if FoundContext.Node=CurrentIdentifierList.StartContext.Node then begin
+      // found identifier is in cursor node
+      // => show it at the end
+      Lvl:=1000;
+    end;
   end else begin
     // identifier is in another unit
     if (FoundContext.Node.Parent<>nil) then begin
@@ -1081,11 +1092,15 @@ begin
                             false,
                             0,
                             Ident,
-                            FLastGatheredIdentLevel,
+                            Lvl,
                             FoundContext.Node,
                             FoundContext.Tool,
                             ctnNone);
-  
+  if (FoundContext.Node=CurrentIdentifierList.StartContext.Node) then begin
+    // found identifier is in cursor node
+    Include(NewItem.Flags,iliAtCursor);
+  end;
+
   {$IFDEF ShowFoundIdents}
   DebugLn('  IDENT COLLECTED: ',NewItem.AsString);
   {$ENDIF}
