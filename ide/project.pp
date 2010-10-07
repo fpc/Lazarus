@@ -509,6 +509,7 @@ type
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
+    function IsActive: boolean; override;
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
     procedure Clear; override;
@@ -2457,7 +2458,6 @@ begin
   FEditorInfoList := TUnitEditorInfoList.Create(nil);
   FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
-  CompilerOptions.Active:=true;
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
@@ -5477,14 +5477,14 @@ end;
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   inherited SetTargetCPU(AValue);
-  if Active then
+  if IsActive then
     FGlobals.TargetCPU:=TargetCPU;
 end;
 
 procedure TProjectCompilerOptions.SetTargetOS(const AValue: string);
 begin
   inherited SetTargetOS(AValue);
-  if Active then
+  if IsActive then
     FGlobals.TargetOS:=TargetOS;
 end;
 
@@ -5493,7 +5493,7 @@ begin
   if CustomOptions=AValue then exit;
   InvalidateOptions;
   inherited SetCustomOptions(AValue);
-  if Active and (Project<>nil) then
+  if IsActive and (Project<>nil) then
     Project.DefineTemplates.CustomDefinesChanged;
 end;
 
@@ -5544,7 +5544,7 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
-  if Active and (Project<>nil) then
+  if IsActive and (Project<>nil) then
     Project.DefineTemplates.OutputDirectoryChanged;
 end;
 
@@ -5606,7 +5606,7 @@ end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;
 begin
-  if not Active then exit;
+  if not IsActive then exit;
   FGlobals.TargetCPU:=TargetCPU;
   FGlobals.TargetOS:=TargetOS;
 end;
@@ -5643,6 +5643,11 @@ destructor TProjectCompilerOptions.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FGlobals);
+end;
+
+function TProjectCompilerOptions.IsActive: boolean;
+begin
+  Result:=(OwnerProject<>nil) and (OwnerProject.CompilerOptions=Self);
 end;
 
 procedure TProjectCompilerOptions.Clear;

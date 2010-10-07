@@ -375,6 +375,7 @@ type
     procedure SetConditionals(const AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
+    function IsActive: boolean; override;
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     function GetOwnerName: string; override;
@@ -2419,7 +2420,6 @@ begin
   FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
-  FCompilerOptions.Active:=true;
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
@@ -3715,6 +3715,11 @@ begin
   inherited Create(AOwner);
   if AOwner<>nil then
     FLazPackage := AOwner as TLazPackage;
+end;
+
+function TPkgCompilerOptions.IsActive: boolean;
+begin
+  Result:=(LazPackage<>nil) and (LazPackage.CompilerOptions=Self);
 end;
 
 procedure TPkgCompilerOptions.Clear;

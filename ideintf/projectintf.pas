@@ -121,7 +121,6 @@ type
 
   TLazCompilerOptions = class(TAbstractIDEProjectOptions)
   private
-    FActive: boolean;
     FOnModified: TNotifyEvent;
     fOwner: TObject;
   protected
@@ -236,8 +235,8 @@ type
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
+    function IsActive: boolean; virtual; abstract;
   public
-    property Active: boolean read FActive write FActive;
     property Owner: TObject read fOwner write fOwner;
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;

@@ -93,7 +93,6 @@
   - disabled project compiler options, used only for storage
 
   ToDo:
-  - replace property Active with function IsActive
   - check if OwnerProject is still needed
   - create Makefile:
      - create a special .compiled file
