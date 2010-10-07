@@ -346,7 +346,7 @@ begin
   //debugln(['TBuildModesEditorFrame.ReadSettings ',DbgSName(AOptions)]);
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
-    FProject:=PCOptions.Project;
+    FProject:=PCOptions.LazProject;
     MacroValues.Assign(FProject.MacroValues);
     UpdateMacrosControls;
   end;
@@ -359,8 +359,8 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     Save(false);
-    if not PCOptions.Project.MacroValues.Equals(MacroValues) then begin
-      PCOptions.Project.MacroValues.Assign(MacroValues);
+    if not PCOptions.LazProject.MacroValues.Equals(MacroValues) then begin
+      PCOptions.LazProject.MacroValues.Assign(MacroValues);
       IncreaseBuildMacroChangeStamp;
     end;
   end;

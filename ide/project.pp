@@ -491,7 +491,7 @@ type
   TProjectCompilerOptions = class(TBaseCompilerOptions)
   private
     FGlobals: TGlobalCompilerOptions;
-    FOwnerProject: TProject;
+    FProject: TProject;
     FCompileReasons: TCompileReasons;
   protected
     procedure SetTargetCPU(const AValue: string); override;
@@ -526,8 +526,7 @@ type
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
   public
-    property OwnerProject: TProject read FOwnerProject;
-    property Project: TProject read FOwnerProject;
+    property LazProject: TProject read FProject;
     property Globals: TGlobalCompilerOptions read FGlobals;
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
@@ -5493,8 +5492,8 @@ begin
   if CustomOptions=AValue then exit;
   InvalidateOptions;
   inherited SetCustomOptions(AValue);
-  if IsActive and (Project<>nil) then
-    Project.DefineTemplates.CustomDefinesChanged;
+  if IsActive and (LazProject<>nil) then
+    LazProject.DefineTemplates.CustomDefinesChanged;
 end;
 
 procedure TProjectCompilerOptions.SetIncludePaths(const AValue: string);
@@ -5544,8 +5543,8 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
-  if IsActive and (Project<>nil) then
-    Project.DefineTemplates.OutputDirectoryChanged;
+  if IsActive and (LazProject<>nil) then
+    LazProject.DefineTemplates.OutputDirectoryChanged;
 end;
 
 procedure TProjectCompilerOptions.SetConditionals(const AValue: string);
@@ -5593,12 +5592,12 @@ end;
 
 procedure TProjectCompilerOptions.InvalidateOptions;
 begin
-  if (Project=nil) then exit;
+  if (LazProject=nil) then exit;
 end;
 
 function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
 begin
-  if OwnerProject.Requires(PackageGraph.LCLPackage,true) then
+  if LazProject.Requires(PackageGraph.LCLPackage,true) then
     Result:=inherited GetEffectiveLCLWidgetType
   else
     Result:=LCLPlatformDirNames[lpNoGUI];
@@ -5636,7 +5635,7 @@ begin
   end;
   UpdateGlobals;
   if AOwner <> nil
-  then FOwnerProject := AOwner as TProject;
+  then FProject := AOwner as TProject;
 end;
 
 destructor TProjectCompilerOptions.Destroy;
@@ -5647,7 +5646,7 @@ end;
 
 function TProjectCompilerOptions.IsActive: boolean;
 begin
-  Result:=(OwnerProject<>nil) and (OwnerProject.CompilerOptions=Self);
+  Result:=(LazProject<>nil) and (LazProject.CompilerOptions=Self);
 end;
 
 procedure TProjectCompilerOptions.Clear;
@@ -5662,15 +5661,15 @@ end;
 
 function TProjectCompilerOptions.GetOwnerName: string;
 begin
-  Result:=OwnerProject.Title;
-  if Result='' then Result:=ExtractFilename(OwnerProject.ProjectInfoFile);
+  Result:=LazProject.Title;
+  if Result='' then Result:=ExtractFilename(LazProject.ProjectInfoFile);
 end;
 
 function TProjectCompilerOptions.GetDefaultMainSourceFileName: string;
 var
   MainUnitInfo: TUnitInfo;
 begin
-  MainUnitInfo:=FOwnerProject.MainUnitInfo;
+  MainUnitInfo:=FProject.MainUnitInfo;
   if (MainUnitInfo<>nil) then
     Result:=ExtractFileName(MainUnitInfo.Filename);
   if Result='' then
@@ -5683,7 +5682,7 @@ var
   PkgList: TFPList;
 begin
   PkgList:=nil;
-  OwnerProject.GetAllRequiredPackages(PkgList);
+  LazProject.GetAllRequiredPackages(PkgList);
   OptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
 end;

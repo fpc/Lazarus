@@ -91,9 +91,9 @@
     - history
   - refactor compiler options (default options, load, save to file)
   - disabled project compiler options, used only for storage
+  - replaced OwnerProject with LazProject
 
   ToDo:
-  - check if OwnerProject is still needed
   - create Makefile:
      - create a special .compiled file
      - makefile should delete the .compiled before compile
