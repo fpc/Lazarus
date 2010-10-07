@@ -1526,7 +1526,7 @@ type
     NewItem:=TIdentifierListItem.Create(
         icompExact,false,0,
         CurrentIdentifierList.CreateIdentifier(Keyword),
-        0,nil,nil,ctnNone);
+        1000,nil,nil,ctnNone);
     include(NewItem.Flags,iliKeyword);
     CurrentIdentifierList.Add(NewItem);
   end;
