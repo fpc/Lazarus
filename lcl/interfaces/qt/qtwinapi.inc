@@ -4898,9 +4898,12 @@ end;
 
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  TQtWidget(HWnd).Activate;
-
-  Result := True;
+  Result := False;
+  if HWND <> 0 then
+  begin
+    Result := TQtWidget(HWND).IsActiveWindow;
+    TQtWidget(HWnd).Activate;
+  end;
 end;
 
 function TQtWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;

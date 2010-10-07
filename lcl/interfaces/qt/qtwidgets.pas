@@ -222,6 +222,7 @@ type
     function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
+    function IsActiveWindow: Boolean;
     function isMinimized: Boolean;
     function isMaximized: Boolean;
     function IsWindow: Boolean;
@@ -3533,6 +3534,11 @@ end;
 function TQtWidget.hasFocus: Boolean;
 begin
   Result := QWidget_hasFocus(Widget);
+end;
+
+function TQtWidget.IsActiveWindow: Boolean;
+begin
+  Result := QWidget_isActiveWindow(Widget);
 end;
 
 function TQtWidget.isMinimized: Boolean;
