@@ -328,7 +328,6 @@ begin
     if FButtons[TabOrders[FButtonOrder, i]] = nil then Continue;
     FButtons[TabOrders[FButtonOrder, i]].TabOrder := High(TabOrders[FButtonOrder]) - i;
   end;
-  Realign;
 end;
 
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
@@ -338,7 +337,6 @@ begin
     inherited SetAlign(Value);
     UpdateBevel;
     UpdateSizes;
-    Realign;
   finally
     EnableAutoSizing;
   end;
@@ -478,7 +476,6 @@ begin
   with FButtons[AButton] do
   begin
     Name     := NAMES[AButton];
-    Parent   := Self;
     Kind     := KINDS[AButton];
     Constraints.MinWidth := DefButtonSize.cx;
     Constraints.MinHeight := DefButtonSize.cy;
@@ -496,8 +493,9 @@ begin
     then Glyph.Assign(FGlyphs[AButton])
     else Glyph.Assign(nil);
     // set default
-    if AButton = FDefaultButton
-    then Default := True;
+    Default  := AButton = FDefaultButton;
+
+    Parent   := Self;
   end;
 end;
 
