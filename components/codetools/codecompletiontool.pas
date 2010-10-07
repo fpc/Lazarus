@@ -5310,6 +5310,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   end;
   
   procedure CompleteReadSpecifier;
+  var
+    IsGetterFunc: boolean;
   begin
     // check read specifier
     VariableName:='';
@@ -5361,6 +5363,13 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       end;
     end;
 
+    IsGetterFunc:=(Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
+      or (SysUtils.CompareText(AccessParamPrefix,
+            LeftStr(AccessParam,length(AccessParamPrefix)))=0)
+      or (CodeCompleteClassNode.Desc in AllClassInterfaces);
+    if not IsGetterFunc then
+      VariableName:=AccessParam;
+
     // check if read access method exists
     if (Parts[ppParamList].StartPos>0) then begin
       if (Parts[ppIndexWord].StartPos<1) then begin
@@ -5388,11 +5397,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete read access specifier
-    if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-    or (SysUtils.CompareText(AccessParamPrefix,
-            LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-    or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
-    begin
+    if IsGetterFunc then begin
       // the read identifier is a function
       {$IFDEF CTDEBUG}
       DebugLn('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAccessFunc,' does not exist');
@@ -5440,7 +5445,6 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                           ncpPrivateProcs,PropNode);
     end else begin
       // the read identifier is a variable
-      VariableName:=AccessParam;
       // variable does not exist yet -> add insert demand for variable
       AddClassInsertion(UpperCaseStr(VariableName),
          VariableName+':'+PropType+';',VariableName,ncpPrivateVars,PropNode);
