@@ -76,6 +76,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
+    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
@@ -263,6 +264,19 @@ begin
 
   g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'event',
     gtk_signal_func(@Gtk2FormEvent), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtk2WSCustomForm.CanFocus(const AWinControl: TWinControl
+  ): Boolean;
+var
+  Widget: PGtkWidget;
+begin
+  if AWinControl.HandleAllocated then
+  begin
+    Widget := PGtkWidget(AWinControl.Handle);
+    Result := GTK_WIDGET_VISIBLE(Widget) and GTK_WIDGET_SENSITIVE(Widget);
+  end else
+    Result := False;
 end;
 
 class function TGtk2WSCustomForm.CreateHandle(const AWinControl: TWinControl;
