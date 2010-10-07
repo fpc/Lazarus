@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg,
-  Controls, Forms, SynRegExpr, FileUtil, LCLProc,
+  Controls, Forms, SynRegExpr, FileProcs, LCLProc,
   ProjectIntf, PublishModule, LazIDEIntf,
   frmCustomApplicationOptions, IDEProcs, LazarusIDEStrConsts;
 
@@ -586,10 +586,7 @@ end;
 
 procedure TProjectJumpHistory.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 function TProjectJumpHistory.Add(
@@ -617,6 +614,7 @@ end;
 constructor TProjectJumpHistory.Create;
 begin
   inherited Create;
+  FChangeStamp:=CTInvalidChangeStamp;
   FPositions:=TList.Create;
   HistoryIndex:=-1;
   FMaxCount:=30;

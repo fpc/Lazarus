@@ -1139,12 +1139,14 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if IncludePath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosIncludePath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetCompilerPath(const AValue: String);
 begin
   if CompilerPath=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosCompilerPath,AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetConditionals(const AValue: string);
@@ -1153,6 +1155,7 @@ begin
   FConditionals:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
@@ -1160,6 +1163,7 @@ procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
 begin
   if FDefaultMakeOptionsFlags=AValue then exit;
   FDefaultMakeOptionsFlags:=AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetSrcPath(const AValue: string);
@@ -1169,6 +1173,7 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if SrcPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosSrcPath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetDebugPath(const AValue: string);
@@ -1178,6 +1183,7 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if DebugPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosDebugPath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
@@ -1186,6 +1192,7 @@ begin
   fTargetCPU:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetProc(const AValue: string);
@@ -1194,6 +1201,7 @@ begin
   fTargetProc:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
@@ -1202,13 +1210,14 @@ begin
   fTargetOS:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);
 begin
   if fTargetFilename=AValue then exit;
   fTargetFilename:=AValue;
-  Modified:=true;
+  IncreaseChangeStamp;
 end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;
@@ -1265,12 +1274,14 @@ procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
   if BaseDirectory=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosBaseDir,AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetCustomOptions(const AValue: string);
 begin
   if CustomOptions=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosCustomOptions,AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetLibraryPaths(const AValue: String);
@@ -1280,12 +1291,14 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if Libraries=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosLibraryPath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetLinkerOptions(const AValue: String);
 begin
   if LinkerOptions=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetUnitPaths(const AValue: String);
@@ -1295,12 +1308,14 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if OtherUnitFiles=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosUnitPath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetUnitOutputDir(const AValue: string);
 begin
   if UnitOutputDirectory=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosOutputDir,AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetObjectPath(const AValue: string);
@@ -1310,6 +1325,7 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if ObjectPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosObjectPath,NewValue);
+  IncreaseChangeStamp;
 end;
 
 {------------------------------------------------------------------------------
@@ -1542,7 +1558,7 @@ begin
     aXMLConfig := TXMLConfig.Create(AFilename);
     try
       SaveToXMLConfig(aXMLConfig,'CompilerOptions');
-      fModified:=false;
+      Modified:=false;
       Result:=mrOk;
     finally
       aXMLConfig.Free;
@@ -1705,15 +1721,19 @@ begin
                                CreateMakefileOnBuild,false);
 
   // write
-  FModified := False;
+  Modified := False;
 end;
 
 procedure TBaseCompilerOptions.SetModified(const AValue: boolean);
 begin
-  if FModified=AValue then exit;
-  FModified:=AValue;
-  if Assigned(OnModified) then
-    OnModified(Self);
+  if Modified=AValue then exit;
+  if AValue then begin
+    FChangeStamp:=InvalidChangeStamp;
+    if Assigned(OnModified) then
+      OnModified(Self);
+  end else begin
+    FSavedChangeStamp:=ChangeStamp;
+  end;
 end;
 
 class function TBaseCompilerOptions.GetInstance: TAbstractIDEOptions;
@@ -2893,7 +2913,6 @@ end;
 procedure TBaseCompilerOptions.Clear;
 begin
   fOptionsString := '';
-  FModified := false;
 
   // search paths
   IncludePath := '';
@@ -2986,6 +3005,8 @@ begin
   CompilerPath := '$(CompPath)';
   fExecuteBefore.Clear;
   fExecuteAfter.Clear;
+
+  Modified := false;
 end;
 
 procedure TBaseCompilerOptions.Assign(Source: TPersistent);
@@ -3836,6 +3857,7 @@ end;
 
 constructor TIDEBuildMacro.Create;
 begin
+  FChangeStamp:=CTInvalidChangeStamp;
   FValues:=TStringList.Create;
   FValueDescriptions:=TStringList.Create;
   FDefaultValue:='';
@@ -3905,10 +3927,7 @@ end;
 
 procedure TIDEBuildMacro.IncreaseChangeStamp;
 begin
-  if FChangeStamp=High(FChangeStamp) then
-    FChangeStamp:=low(FChangeStamp)
-  else
-    inc(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 { TIDEBuildMacros }

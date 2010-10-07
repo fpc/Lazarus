@@ -632,6 +632,8 @@ type
     FCompilerOptions: TProjectCompilerOptions;
     FBuildMacroValues: TProjectBuildMacros;
     FIdentifier: string;
+    FInSession: boolean;
+    procedure SetInSession(const AValue: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -641,6 +643,30 @@ type
     property Identifier: string read FIdentifier;// arbitrary string
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
     property BuildMacroValues: TProjectBuildMacros read FBuildMacroValues;
+    property InSession: boolean read FInSession write SetInSession;
+  end;
+
+  { TProjectBuildModes }
+
+  TProjectBuildModes = class(TComponent)
+  private
+    FActive: TProjectBuildMode;
+    FChangeStamp: integer;
+    fItems: TFPList;
+    function GetItems(Index: integer): TProjectBuildMode;
+    procedure SetActive(const AValue: TProjectBuildMode);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Delete(Index: integer);
+    function IndexOf(Identifier: string): integer;
+    function Add(Identifier: string): TProjectBuildMode;
+    function Count: integer;
+    property Items[Index: integer]: TProjectBuildMode read GetItems; default;
+    property ChangeStamp: integer read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    property Active: TProjectBuildMode read FActive write SetActive;
   end;
 
   { TProject }
@@ -6262,6 +6288,7 @@ constructor TProjectBuildMacros.Create;
 begin
   FItems:=TStringList.Create;
   FCfgVars:=TCTCfgScriptVariables.Create;
+  FChangeStamp:=CTInvalidChangeStamp;
 end;
 
 destructor TProjectBuildMacros.Destroy;
@@ -6345,10 +6372,7 @@ end;
 
 procedure TProjectBuildMacros.IncreaseChangeStamp;
 begin
-  if FChangeStamp=High(FChangeStamp) then
-    FChangeStamp:=low(FChangeStamp)
-  else
-    inc(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 procedure TProjectBuildMacros.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6400,6 +6424,12 @@ end;
 
 { TProjectBuildMode }
 
+procedure TProjectBuildMode.SetInSession(const AValue: boolean);
+begin
+  if FInSession=AValue then exit;
+  FInSession:=AValue;
+end;
+
 constructor TProjectBuildMode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -6428,6 +6458,74 @@ begin
   XMLConfig.SetDeleteValue('Identifier',Identifier,'');
   FBuildMacroValues.SaveToXMLConfig(XMLConfig,Path+'BuildMacros/',ClearModified);
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
+end;
+
+{ TProjectBuildModes }
+
+function TProjectBuildModes.GetItems(Index: integer): TProjectBuildMode;
+begin
+  Result:=TProjectBuildMode(fItems[Index]);
+end;
+
+procedure TProjectBuildModes.SetActive(const AValue: TProjectBuildMode);
+begin
+  if FActive=AValue then exit;
+  FActive:=AValue;
+  IncreaseChangeStamp;
+end;
+
+constructor TProjectBuildModes.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fItems:=TFPList.Create;
+  FChangeStamp:=CTInvalidChangeStamp;
+end;
+
+destructor TProjectBuildModes.Destroy;
+begin
+  Clear;
+  FreeAndNil(fItems);
+  inherited Destroy;
+end;
+
+procedure TProjectBuildModes.Clear;
+begin
+  while Count>0 do Delete(Count-1);
+end;
+
+procedure TProjectBuildModes.Delete(Index: integer);
+var
+  Item: TProjectBuildMode;
+begin
+  Item:=Items[Index];
+  fItems.Delete(Index);
+  Item.Free;
+  IncreaseChangeStamp;
+end;
+
+function TProjectBuildModes.IndexOf(Identifier: string): integer;
+begin
+  Result:=Count-1;
+  while (Count>=0)
+  and (SysUtils.CompareText(Identifier,Items[Result].Identifier)<>0) do
+    dec(Result);
+end;
+
+function TProjectBuildModes.Add(Identifier: string): TProjectBuildMode;
+begin
+  Result:=TProjectBuildMode.Create(Self);
+  Result.FIdentifier:=Identifier;
+  fItems.Add(Result);
+end;
+
+function TProjectBuildModes.Count: integer;
+begin
+  Result:=fItems.Count;
+end;
+
+procedure TProjectBuildModes.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 initialization

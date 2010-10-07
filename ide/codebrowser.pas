@@ -3101,15 +3101,13 @@ end;
 
 procedure TCodeBrowserViewOptions.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=Low(FChangeStamp);
+  CTIncreaseChangeStamp(FChangeStamp);
 end;
 
 constructor TCodeBrowserViewOptions.Create;
 begin
   FLevels:=TStringList.Create;
+  FChangeStamp:=CTInvalidChangeStamp;
   Clear;
 end;
 

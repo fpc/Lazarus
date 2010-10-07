@@ -123,8 +123,10 @@ type
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;
+    procedure SetLCLWidgetType(const AValue: string); virtual;
   protected
-    FModified: boolean;
+    FChangeStamp: int64;
+    FSavedChangeStamp: int64;
 
     // Paths:
 
@@ -213,6 +215,7 @@ type
     function GetDebugPath: string; virtual; abstract;
     function GetIncludePaths: String; virtual; abstract;
     function GetLibraryPaths: String; virtual; abstract;
+    function GetModified: boolean; virtual;
     function GetObjectPath: string; virtual; abstract;
     function GetSrcPath: string; virtual; abstract;
     function GetUnitOutputDir: string; virtual; abstract;
@@ -235,11 +238,14 @@ type
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
-    function IsActive: boolean; virtual; abstract;
+    function IsActive: boolean; virtual;
   public
     property Owner: TObject read fOwner write fOwner;
-    property Modified: boolean read FModified write SetModified;
+    property Modified: boolean read GetModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    class function InvalidChangeStamp: int64;
 
     // search paths:
     property IncludePath: String read GetIncludePaths write SetIncludePaths;
@@ -254,13 +260,13 @@ type
     property Conditionals: string read FConditionals write SetConditionals;
     property BuildMacros: TLazBuildMacros read fBuildMacros;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
-    property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
+    property LCLWidgetType: string read fLCLWidgetType write SetLCLWidgetType;
 
     // target:
     property TargetFilename: String read fTargetFilename write SetTargetFilename;
 
     // parsing:
-    property SyntaxMode: string read FSyntaxMode write FSyntaxMode;
+    property SyntaxMode: string read FSyntaxMode write fSyntaxMode;
     property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
     property IncludeAssertionCode: Boolean
@@ -1345,10 +1351,41 @@ end;
 
 { TLazCompilerOptions }
 
+procedure TLazCompilerOptions.SetLCLWidgetType(const AValue: string);
+begin
+  if AValue=LCLWidgetType then exit;
+  fLCLWidgetType:=AValue;
+  IncreaseChangeStamp;
+end;
+
+function TLazCompilerOptions.GetModified: boolean;
+begin
+  Result:=FSavedChangeStamp=FChangeStamp;
+end;
+
 constructor TLazCompilerOptions.Create(const TheOwner: TObject);
 begin
   inherited Create;
+  FChangeStamp:=InvalidChangeStamp;
   FOwner := TheOwner;
+end;
+
+function TLazCompilerOptions.IsActive: boolean;
+begin
+  Result:=false;
+end;
+
+procedure TLazCompilerOptions.IncreaseChangeStamp;
+begin
+  if fChangeStamp<High(ChangeStamp) then
+    inc(fChangeStamp)
+  else
+    fChangeStamp:=Low(int64)+1;
+end;
+
+class function TLazCompilerOptions.InvalidChangeStamp: int64;
+begin
+  Result:=Low(int64);
 end;
 
 { TNewItemProjectFile }
