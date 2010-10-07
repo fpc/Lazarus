@@ -82,6 +82,7 @@ type
     { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
       ADesigner: TComponentEditorDesigner); reintroduce;
+    destructor Destroy; override;
     property Designer: TComponentEditorDesigner read FDesigner write FDesigner;
     property ComponentEditor: TFieldsComponentEditor write FComponentEditor;
   end;
@@ -89,20 +90,10 @@ type
   { TActionListComponentEditor }
 
   TFieldsComponentEditor = class(TComponentEditor)
-  private
-    FDataSet: TDataset;
-    FFieldsEditorForm: TDSFieldsEditorFrm;
-    fWindowClosed: Boolean;
-  protected
   public
-    constructor Create(AComponent: TComponent;
-                       ADesigner: TComponentEditorDesigner); override;
-    destructor Destroy; override;
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
-    procedure EditorWindowClose;
-    property LinkDataset: TDataset read FDataSet write FDataSet;
   end;
 
 implementation
@@ -161,6 +152,12 @@ begin
   SelectionChanged;
 end;
 
+destructor TDSFieldsEditorFrm.Destroy;
+begin
+  UnregisterEditorForm(Self);
+  inherited Destroy;
+end;
+
 procedure TDSFieldsEditorFrm.DeleteFieldsActnExecute(Sender: TObject);
 var i: integer;
     PreActive: boolean;
@@ -196,7 +193,6 @@ begin
   if Assigned(FComponentEditor) then begin
     if Assigned(LinkDataset) And (Not (csDestroying in LinkDataset.ComponentState)) And (FieldsListBox.SelCount > 0) then
          GlobalDesignHook.SelectOnlyThis(LinkDataset);
-    FComponentEditor.EditorWindowClose;
   end;
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
@@ -433,20 +429,6 @@ end;
 
 { TFieldsComponentEditor }
 
-constructor TFieldsComponentEditor.Create(AComponent: TComponent;
-  ADesigner: TComponentEditorDesigner);
-begin
-  inherited Create(AComponent, ADesigner);
-  fWindowClosed := True;
-end;
-
-destructor TFieldsComponentEditor.Destroy;
-begin
-  if not fWindowClosed
-    then FreeThenNil(FFieldsEditorForm);
-  inherited Destroy;
-end;
-
 function TFieldsComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
@@ -460,31 +442,31 @@ begin
 end;
 
 procedure TFieldsComponentEditor.ExecuteVerb(Index: Integer);
-var ADataset: TDataset;
+var
+  ADataset: TDataset;
+  AEditor: TObject;
 begin
   case index of
-    0: begin
-      ADataset := GetComponent as TDataset;
-      if ADataset = nil
-      then raise Exception.Create('TFieldsComponentEditor.Edit LinkDataset=nil');
-      if fWindowClosed then begin
-        FFieldsEditorForm := TDSFieldsEditorFrm.Create(Application, ADataset, Designer);
-        fWindowClosed := False;
+    0:
+      begin
+        ADataset := GetComponent as TDataset;
+        if ADataset=nil then
+           raise Exception.Create('TFieldsComponentEditor.Edit LinkDataset=nil');
+
+        AEditor := FindEditorForm(ADataset);
+        if AEditor=nil then begin
+          AEditor := TDSFieldsEditorFrm.Create(Application, ADataset, Designer);
+          RegisterEditorForm(AEditor, ADataset);
+        end;
+
+        if AEditor<>nil then
+          with TDsFieldsEditorFrm(AEditor) do begin
+            ComponentEditor := Self;
+            ShowOnTop;
+          end;
       end;
-      with FFieldsEditorForm do begin
-        ComponentEditor := Self;
-        ShowOnTop;
-      end;
-    end;
   end;
 end;
-
-procedure TFieldsComponentEditor.EditorWindowClose;
-begin
-  fWindowClosed := True;
-  FFieldsEditorForm:=nil;
-end;
-
 
 initialization
   RegisterComponentEditor(TDataset, TFieldsComponentEditor);

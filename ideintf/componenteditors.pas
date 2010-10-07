@@ -25,7 +25,7 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
+  Classes, SysUtils, LResources, TypInfo, Maps, LCLProc, Forms, Controls, Menus,
   ExtCtrls, CustomTimer, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType,
   PropEdits, PropEditUtils,
@@ -386,7 +386,6 @@ type
     constructor Create(AComponent: TComponent;
       ADesigner: TComponentEditorDesigner); override;
   end;
-  
 
 { Register a component editor }
 type
@@ -408,7 +407,50 @@ type
     function(const ATestEditor: TPropertyEditor): Boolean of object;
 
 
+procedure RegisterEditorForm(const AEditorForm: TObject; const AComponent: TComponent);
+procedure UnregisterEditorForm(const AEditorForm: TObject);
+function FindEditorForm(const AComponent: TComponent): TObject;
+
 implementation
+
+var
+  EditorForms: TMap = nil;
+
+procedure RegisterEditorForm(const AEditorForm: TObject; const AComponent: TComponent);
+begin
+  if (AComponent<>nil) then begin
+    if EditorForms=nil then
+      EditorForms := TMap.Create(itsPtrSize, SizeOf(Pointer));
+    if not EditorForms.HasId(AEditorForm) then
+      EditorForms.Add(AEditorForm, AComponent);
+  end;
+end;
+
+procedure UnregisterEditorForm(const AEditorForm: TObject);
+begin
+  if EditorForms<>nil then
+    EditorForms.Delete(AEditorForm);
+end;
+
+function FindEditorForm(const AComponent: TComponent): TObject;
+var
+  Iterator: TMapIterator;
+  Comp: TComponent;
+begin
+  result := nil;
+  if EditorForms<>nil then begin
+    Iterator := TMapIterator.Create(EditorForms);
+    while not Iterator.EOM do begin
+      Iterator.GetData(Comp);
+      if Comp=AComponent then begin
+        Iterator.GetID(Result);
+        break;
+      end;
+      Iterator.Next;
+    end;
+    Iterator.Free;
+  end;
+end;
 
 { RegisterComponentEditor }
 type
@@ -1227,6 +1269,8 @@ begin
     end;
     ComponentClassList.Free;
   end;
+
+  EditorForms.Free;
 end;
 
 { TTabControlComponentEditor }
