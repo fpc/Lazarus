@@ -5,11 +5,11 @@ unit compiler_path_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls, LCLType, InterfaceBase, IDEOptionsIntf, Project,
-  CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs,
-  CheckCompilerOpts, MacroIntf, ShowCompilerOpts, MainIntf,
-  project_application_options;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs,
+  Buttons, StdCtrls, LCLType, InterfaceBase,
+  IDEOptionsIntf, MacroIntf,
+  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf,
+  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf;
 
 type
 
@@ -574,9 +574,10 @@ begin
   btnShowOptions := CreateButton(dlgCOShowOptions);
   btnShowOptions.LoadGlyphFromLazarusResource('menu_compiler_options');
   btnShowOptions.OnClick  := @DoShowOptions;
-  btnCheck := CreateButton(lisCompTest, bkYes);
+  btnCheck := CreateButton(lisCompTest);
   btnCheck.ModalResult := mrNone;
   btnCheck.OnClick  := @DoCheck;
+  btnCheck.LoadGlyphFromStock(idButtonYes);
   btnLoadSave := CreateButton('...');
   btnLoadSave.OnClick  := @DoLoadSave;
   btnLoadSave.Hint := dlgCOLoadSave;

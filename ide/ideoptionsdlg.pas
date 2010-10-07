@@ -508,6 +508,7 @@ function TIDEOptionsDialog.AddButton: TBitBtn;
 begin
   Result := TBitBtn.Create(Self);
   Result.Align := alCustom;
+  Result.Default := false;
   Result.Parent := ButtonPanel;
 end;
 
