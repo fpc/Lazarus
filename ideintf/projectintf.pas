@@ -123,7 +123,65 @@ type
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;
-    procedure SetLCLWidgetType(const AValue: string); virtual;
+    SetEmulatedFloatOpcodes: boolean;
+    procedure SetAllowLabel(const AValue: Boolean);
+    procedure SetAssemblerStyle(const AValue: Integer);
+    procedure SetCMacros(const AValue: Boolean);
+    procedure SetConfigFilePath(const AValue: String);
+    procedure SetCPPInline(const AValue: Boolean);
+    procedure SetCStyleOp(const AValue: Boolean);
+    procedure SetCustomConfigFile(const AValue: Boolean);
+    procedure SetDontUseConfigFile(const AValue: Boolean);
+    procedure SetExecutableType(const AValue: TCompilationExecutableType);
+    procedure SetGenDebugInfo(const AValue: Boolean);
+    procedure SetGenerateDwarf(const AValue: Boolean);
+    procedure SetGenGProfCode(const AValue: Boolean);
+    procedure SetHeapSize(const AValue: Integer);
+    procedure SetIncludeAssertionCode(const AValue: Boolean);
+    procedure SetInitConst(const AValue: Boolean);
+    procedure SetIOChecks(const AValue: Boolean);
+    procedure SetLCLWidgetType(const AValue: string);
+    procedure SetLinkSmart(const AValue: Boolean);
+    procedure SetOptLevel(const AValue: Integer);
+    procedure SetOverflowChecks(const AValue: Boolean);
+    procedure SetPassLinkerOpt(const AValue: Boolean);
+    procedure SetRangeChecks(const AValue: Boolean);
+    procedure SetShowAll(const AValue: Boolean);
+    procedure SetShowAllProcsOnError(const AValue: Boolean);
+    procedure SetShowCompProc(const AValue: Boolean);
+    procedure SetShowCond(const AValue: Boolean);
+    procedure SetShowDebugInfo(const AValue: Boolean);
+    procedure SetShowDefMacros(const AValue: Boolean);
+    procedure SetShowErrors(const AValue: Boolean);
+    procedure SetShowExecInfo(const AValue: Boolean);
+    procedure SetShowGenInfo(const AValue: Boolean);
+    procedure SetShowHints(const AValue: Boolean);
+    procedure SetShowHintsForSenderNotUsed(const AValue: Boolean);
+    procedure SetShowHintsForUnusedUnitsInMainSrc(const AValue: Boolean);
+    procedure SetShowLineNum(const AValue: Boolean);
+    procedure SetShowNotes(const AValue: Boolean);
+    procedure SetShowNothing(const AValue: Boolean);
+    procedure SetShowSummary(const AValue: Boolean);
+    procedure SetShowTriedFiles(const AValue: Boolean);
+    procedure SetShowUsedFiles(const AValue: Boolean);
+    procedure SetShowWarn(const AValue: Boolean);
+    procedure SetSmallerCode(const AValue: boolean);
+    procedure SetSmartLinkUnit(const AValue: Boolean);
+    procedure SetStackChecks(const AValue: Boolean);
+    procedure SetStaticKeyword(const AValue: Boolean);
+    procedure SetStopAfterErrCount(const AValue: integer);
+    procedure SetStripSymbols(const AValue: Boolean);
+    procedure SetSyntaxMode(const AValue: string);
+    procedure SetUncertainOpt(const AValue: Boolean);
+    procedure SetUseAnsiStr(const AValue: Boolean);
+    procedure SetUseExternalDbgSyms(const AValue: Boolean);
+    procedure SetUseHeaptrc(const AValue: Boolean);
+    procedure SetUseLineInfoUnit(const AValue: Boolean);
+    procedure SetUseValgrind(const AValue: Boolean);
+    procedure SetVarsInReg(const AValue: Boolean);
+    procedure SetVerifyObjMethodCall(const AValue: boolean);
+    procedure SetWin32GraphicApp(const AValue: boolean);
+    procedure SetWriteFPCLogo(const AValue: Boolean);
   protected
     FChangeStamp: int64;
     FSavedChangeStamp: int64;
@@ -266,86 +324,86 @@ type
     property TargetFilename: String read fTargetFilename write SetTargetFilename;
 
     // parsing:
-    property SyntaxMode: string read FSyntaxMode write fSyntaxMode;
-    property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
-    property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
+    property SyntaxMode: string read FSyntaxMode write SetSyntaxMode;
+    property AssemblerStyle: Integer read fAssemblerStyle write SetAssemblerStyle;
+    property CStyleOperators: Boolean read fCStyleOp write SetCStyleOp;
     property IncludeAssertionCode: Boolean
-                         read fIncludeAssertionCode write fIncludeAssertionCode;
-    property AllowLabel: Boolean read fAllowLabel write fAllowLabel;
-    property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
-    property CPPInline: Boolean read fCPPInline write fCPPInline;
-    property CStyleMacros: Boolean read fCMacros write fCMacros;
-    property InitConstructor: Boolean read fInitConst write fInitConst;
-    property StaticKeyword: Boolean read fStaticKeyword write fStaticKeyword;
+                         read fIncludeAssertionCode write SetIncludeAssertionCode;
+    property AllowLabel: Boolean read fAllowLabel write SetAllowLabel;
+    property UseAnsiStrings: Boolean read fUseAnsiStr write SetUseAnsiStr;
+    property CPPInline: Boolean read fCPPInline write SetCPPInline;
+    property CStyleMacros: Boolean read fCMacros write SetCMacros;
+    property InitConstructor: Boolean read fInitConst write SetInitConst;
+    property StaticKeyword: Boolean read fStaticKeyword write SetStaticKeyword;
 
     // code generation:
-    property IOChecks: Boolean read fIOChecks write fIOChecks;
-    property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
-    property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
-    property StackChecks: Boolean read fStackChecks write fStackChecks;
-    property SmartLinkUnit: Boolean read fSmartLinkUnit write fSmartLinkUnit;
-    property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes
-                                           write FEmulatedFloatOpcodes;
-    property HeapSize: Integer read fHeapSize write fHeapSize;
+    property IOChecks: Boolean read fIOChecks write SetIOChecks;
+    property RangeChecks: Boolean read fRangeChecks write SetRangeChecks;
+    property OverflowChecks: Boolean read fOverflowChecks write SetOverflowChecks;
+    property StackChecks: Boolean read fStackChecks write SetStackChecks;
+    property SmartLinkUnit: Boolean read fSmartLinkUnit write SetSmartLinkUnit;
+    property EmulatedFloatOpcodes: boolean read SetEmulatedFloatOpcodes
+                                           write SetEmulatedFloatOpcodes;
+    property HeapSize: Integer read fHeapSize write SetHeapSize;
     property VerifyObjMethodCall: boolean read FVerifyObjMethodCall
-                                          write FVerifyObjMethodCall;
-    property SmallerCode: boolean read FSmallerCode write FSmallerCode;
+                                          write SetVerifyObjMethodCall;
+    property SmallerCode: boolean read FSmallerCode write SetSmallerCode;
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
     property TargetProcessor: String read fTargetProc write SetTargetProc; // specific
     property TargetOS: string read fTargetOS write SetTargetOS;
-    property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
-    property UncertainOptimizations: Boolean read fUncertainOpt write fUncertainOpt;
-    property OptimizationLevel: Integer read fOptLevel write fOptLevel;
+    property VariablesInRegisters: Boolean read fVarsInReg write SetVarsInReg;
+    property UncertainOptimizations: Boolean read fUncertainOpt write SetUncertainOpt;
+    property OptimizationLevel: Integer read fOptLevel write SetOptLevel;
 
     // linking:
-    property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
-    property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
-    property GenerateDwarf: Boolean read FGenerateDwarf write FGenerateDwarf;
-    property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
-    property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
-    property GenGProfCode: Boolean read fGenGProfCode write fGenGProfCode;
-    property StripSymbols: Boolean read fStripSymbols write fStripSymbols;
-    property LinkSmart: Boolean read fLinkSmart write fLinkSmart;
-    property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
+    property GenerateDebugInfo: Boolean read fGenDebugInfo write SetGenDebugInfo;
+    property UseLineInfoUnit: Boolean read fUseLineInfoUnit write SetUseLineInfoUnit;
+    property GenerateDwarf: Boolean read FGenerateDwarf write SetGenerateDwarf;
+    property UseHeaptrc: Boolean read fUseHeaptrc write SetUseHeaptrc;
+    property UseValgrind: Boolean read fUseValgrind write SetUseValgrind;
+    property GenGProfCode: Boolean read fGenGProfCode write SetGenGProfCode;
+    property StripSymbols: Boolean read fStripSymbols write SetStripSymbols;
+    property LinkSmart: Boolean read fLinkSmart write SetLinkSmart;
+    property PassLinkerOptions: Boolean read fPassLinkerOpt write SetPassLinkerOpt;
     property LinkerOptions: String read fLinkerOptions write SetLinkerOptions;
-    property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;
+    property Win32GraphicApp: boolean read FWin32GraphicApp write SetWin32GraphicApp;
     property ExecutableType: TCompilationExecutableType
-                                     read FExecutableType write FExecutableType;
-    property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write FUseExternalDbgSyms;
+                                     read FExecutableType write SetExecutableType;
+    property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write SetUseExternalDbgSyms;
 
     // messages:
-    property ShowErrors: Boolean read fShowErrors write fShowErrors;
-    property ShowWarn: Boolean read fShowWarn write fShowWarn;
-    property ShowNotes: Boolean read fShowNotes write fShowNotes;
-    property ShowHints: Boolean read fShowHints write fShowHints;
-    property ShowGenInfo: Boolean read fShowGenInfo write fShowGenInfo;
-    property ShowLineNum: Boolean read fShowLineNum write fShowLineNum;
-    property ShowAll: Boolean read fShowAll write fShowAll;
+    property ShowErrors: Boolean read fShowErrors write SetShowErrors;
+    property ShowWarn: Boolean read fShowWarn write SetShowWarn;
+    property ShowNotes: Boolean read fShowNotes write SetShowNotes;
+    property ShowHints: Boolean read fShowHints write SetShowHints;
+    property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo;
+    property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum;
+    property ShowAll: Boolean read fShowAll write SetShowAll;
     property ShowAllProcsOnError: Boolean
-      read fShowAllProcsOnError write fShowAllProcsOnError;
-    property ShowDebugInfo: Boolean read fShowDebugInfo write fShowDebugInfo;
-    property ShowUsedFiles: Boolean read fShowUsedFiles write fShowUsedFiles;
-    property ShowTriedFiles: Boolean read fShowTriedFiles write fShowTriedFiles;
-    property ShowDefMacros: Boolean read fShowDefMacros write fShowDefMacros;
-    property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
-    property ShowCond: Boolean read fShowCond write fShowCond;
-    property ShowExecInfo: Boolean read fShowExecInfo write fShowExecInfo;
-    property ShowNothing: Boolean read fShowNothing write fShowNothing;
-    property ShowSummary: Boolean read FShowSummary write FShowSummary;
+      read fShowAllProcsOnError write SetShowAllProcsOnError;
+    property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo;
+    property ShowUsedFiles: Boolean read fShowUsedFiles write SetShowUsedFiles;
+    property ShowTriedFiles: Boolean read fShowTriedFiles write SetShowTriedFiles;
+    property ShowDefMacros: Boolean read fShowDefMacros write SetShowDefMacros;
+    property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc;
+    property ShowCond: Boolean read fShowCond write SetShowCond;
+    property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo;
+    property ShowNothing: Boolean read fShowNothing write SetShowNothing;
+    property ShowSummary: Boolean read FShowSummary write SetShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
-      read fShowHintsForUnusedUnitsInMainSrc write fShowHintsForUnusedUnitsInMainSrc;
+      read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
     property ShowHintsForSenderNotUsed: Boolean
-      read fShowHintsForSenderNotUsed write fShowHintsForSenderNotUsed;
-    property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
+      read fShowHintsForSenderNotUsed write SetShowHintsForSenderNotUsed;
+    property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer
-      read fStopAfterErrCount write fStopAfterErrCount;
+      read fStopAfterErrCount write SetStopAfterErrCount;
 
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile
-                                        write fDontUseConfigFile;
+                                        write SetDontUseConfigFile;
     property CustomConfigFile: Boolean read fCustomConfigFile
-                                       write fCustomConfigFile;
-    property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
+                                       write SetCustomConfigFile;
+    property ConfigFilePath: String read fConfigFilePath write SetConfigFilePath;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
   end;
 
@@ -1355,6 +1413,408 @@ procedure TLazCompilerOptions.SetLCLWidgetType(const AValue: string);
 begin
   if AValue=LCLWidgetType then exit;
   fLCLWidgetType:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetLinkSmart(const AValue: Boolean);
+begin
+  if fLinkSmart=AValue then exit;
+  fLinkSmart:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetOptLevel(const AValue: Integer);
+begin
+  if fOptLevel=AValue then exit;
+  fOptLevel:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetOverflowChecks(const AValue: Boolean);
+begin
+  if fOverflowChecks=AValue then exit;
+  fOverflowChecks:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetPassLinkerOpt(const AValue: Boolean);
+begin
+  if fPassLinkerOpt=AValue then exit;
+  fPassLinkerOpt:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetRangeChecks(const AValue: Boolean);
+begin
+  if fRangeChecks=AValue then exit;
+  fRangeChecks:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowAll(const AValue: Boolean);
+begin
+  if fShowAll=AValue then exit;
+  fShowAll:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowAllProcsOnError(const AValue: Boolean);
+begin
+  if fShowAllProcsOnError=AValue then exit;
+  fShowAllProcsOnError:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowCompProc(const AValue: Boolean);
+begin
+  if fShowCompProc=AValue then exit;
+  fShowCompProc:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowCond(const AValue: Boolean);
+begin
+  if fShowCond=AValue then exit;
+  fShowCond:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowDebugInfo(const AValue: Boolean);
+begin
+  if fShowDebugInfo=AValue then exit;
+  fShowDebugInfo:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowDefMacros(const AValue: Boolean);
+begin
+  if fShowDefMacros=AValue then exit;
+  fShowDefMacros:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowErrors(const AValue: Boolean);
+begin
+  if fShowErrors=AValue then exit;
+  fShowErrors:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowExecInfo(const AValue: Boolean);
+begin
+  if fShowExecInfo=AValue then exit;
+  fShowExecInfo:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowGenInfo(const AValue: Boolean);
+begin
+  if fShowGenInfo=AValue then exit;
+  fShowGenInfo:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowHints(const AValue: Boolean);
+begin
+  if fShowHints=AValue then exit;
+  fShowHints:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowHintsForSenderNotUsed(const AValue: Boolean
+  );
+begin
+  if fShowHintsForSenderNotUsed=AValue then exit;
+  fShowHintsForSenderNotUsed:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowHintsForUnusedUnitsInMainSrc(
+  const AValue: Boolean);
+begin
+  if fShowHintsForUnusedUnitsInMainSrc=AValue then exit;
+  fShowHintsForUnusedUnitsInMainSrc:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowLineNum(const AValue: Boolean);
+begin
+  if fShowLineNum=AValue then exit;
+  fShowLineNum:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowNotes(const AValue: Boolean);
+begin
+  if fShowNotes=AValue then exit;
+  fShowNotes:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowNothing(const AValue: Boolean);
+begin
+  if fShowNothing=AValue then exit;
+  fShowNothing:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowSummary(const AValue: Boolean);
+begin
+  if FShowSummary=AValue then exit;
+  FShowSummary:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowTriedFiles(const AValue: Boolean);
+begin
+  if fShowTriedFiles=AValue then exit;
+  fShowTriedFiles:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowUsedFiles(const AValue: Boolean);
+begin
+  if fShowUsedFiles=AValue then exit;
+  fShowUsedFiles:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetShowWarn(const AValue: Boolean);
+begin
+  if fShowWarn=AValue then exit;
+  fShowWarn:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetSmallerCode(const AValue: boolean);
+begin
+  if FSmallerCode=AValue then exit;
+  FSmallerCode:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetSmartLinkUnit(const AValue: Boolean);
+begin
+  if fSmartLinkUnit=AValue then exit;
+  fSmartLinkUnit:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetStackChecks(const AValue: Boolean);
+begin
+  if fStackChecks=AValue then exit;
+  fStackChecks:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetAllowLabel(const AValue: Boolean);
+begin
+  if fAllowLabel=AValue then exit;
+  fAllowLabel:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetAssemblerStyle(const AValue: Integer);
+begin
+  if fAssemblerStyle=AValue then exit;
+  fAssemblerStyle:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetCMacros(const AValue: Boolean);
+begin
+  if fCMacros=AValue then exit;
+  fCMacros:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetConfigFilePath(const AValue: String);
+begin
+  if fConfigFilePath=AValue then exit;
+  fConfigFilePath:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetCPPInline(const AValue: Boolean);
+begin
+  if fCPPInline=AValue then exit;
+  fCPPInline:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetCStyleOp(const AValue: Boolean);
+begin
+  if fCStyleOp=AValue then exit;
+  fCStyleOp:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetCustomConfigFile(const AValue: Boolean);
+begin
+  if fCustomConfigFile=AValue then exit;
+  fCustomConfigFile:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetDontUseConfigFile(const AValue: Boolean);
+begin
+  if fDontUseConfigFile=AValue then exit;
+  fDontUseConfigFile:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetExecutableType(
+  const AValue: TCompilationExecutableType);
+begin
+  if FExecutableType=AValue then exit;
+  FExecutableType:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetGenDebugInfo(const AValue: Boolean);
+begin
+  if fGenDebugInfo=AValue then exit;
+  fGenDebugInfo:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetGenerateDwarf(const AValue: Boolean);
+begin
+  if FGenerateDwarf=AValue then exit;
+  FGenerateDwarf:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetGenGProfCode(const AValue: Boolean);
+begin
+  if fGenGProfCode=AValue then exit;
+  fGenGProfCode:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetHeapSize(const AValue: Integer);
+begin
+  if fHeapSize=AValue then exit;
+  fHeapSize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetIncludeAssertionCode(const AValue: Boolean);
+begin
+  if fIncludeAssertionCode=AValue then exit;
+  fIncludeAssertionCode:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetInitConst(const AValue: Boolean);
+begin
+  if fInitConst=AValue then exit;
+  fInitConst:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetIOChecks(const AValue: Boolean);
+begin
+  if fIOChecks=AValue then exit;
+  fIOChecks:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetStaticKeyword(const AValue: Boolean);
+begin
+  if fStaticKeyword=AValue then exit;
+  fStaticKeyword:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetStopAfterErrCount(const AValue: integer);
+begin
+  if fStopAfterErrCount=AValue then exit;
+  fStopAfterErrCount:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetStripSymbols(const AValue: Boolean);
+begin
+  if fStripSymbols=AValue then exit;
+  fStripSymbols:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetSyntaxMode(const AValue: string);
+begin
+  if FSyntaxMode=AValue then exit;
+  FSyntaxMode:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUncertainOpt(const AValue: Boolean);
+begin
+  if fUncertainOpt=AValue then exit;
+  fUncertainOpt:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseAnsiStr(const AValue: Boolean);
+begin
+  if fUseAnsiStr=AValue then exit;
+  fUseAnsiStr:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseExternalDbgSyms(const AValue: Boolean);
+begin
+  if FUseExternalDbgSyms=AValue then exit;
+  FUseExternalDbgSyms:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseHeaptrc(const AValue: Boolean);
+begin
+  if fUseHeaptrc=AValue then exit;
+  fUseHeaptrc:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseLineInfoUnit(const AValue: Boolean);
+begin
+  if fUseLineInfoUnit=AValue then exit;
+  fUseLineInfoUnit:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetUseValgrind(const AValue: Boolean);
+begin
+  if fUseValgrind=AValue then exit;
+  fUseValgrind:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetVarsInReg(const AValue: Boolean);
+begin
+  if fVarsInReg=AValue then exit;
+  fVarsInReg:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetVerifyObjMethodCall(const AValue: boolean);
+begin
+  if FVerifyObjMethodCall=AValue then exit;
+  FVerifyObjMethodCall:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetWin32GraphicApp(const AValue: boolean);
+begin
+  if FWin32GraphicApp=AValue then exit;
+  FWin32GraphicApp:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetWriteFPCLogo(const AValue: Boolean);
+begin
+  if fWriteFPCLogo=AValue then exit;
+  fWriteFPCLogo:=AValue;
   IncreaseChangeStamp;
 end;
 
