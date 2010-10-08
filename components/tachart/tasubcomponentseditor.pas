@@ -43,7 +43,7 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: ansistring; override;
+    function GetValue: AnsiString; override;
   end;
 
   { TComponentListEditorForm }
@@ -51,11 +51,11 @@ type
   TComponentListEditorForm = class(TForm)
     ChildrenListBox: TListBox;
     menuAddItem: TPopupMenu;
-    tbCommands: TToolBar;
     tbAdd: TToolButton;
+    tbCommands: TToolBar;
     tbDelete: TToolButton;
-    tbMoveUp: TToolButton;
     tbMoveDown: TToolButton;
+    tbMoveUp: TToolButton;
     procedure ChildrenListBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -92,7 +92,7 @@ type
     constructor Create(
       AOwner, AParent: TComponent; AComponentEditor: TSubComponentListEditor;
       APropertyEditor: TComponentListPropertyEditor); reintroduce;
-    destructor destroy; override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -106,19 +106,18 @@ uses
 
 procedure TComponentListPropertyEditor.Edit;
 var
-  AReference: TPersistent;
-  AForm: TObject;
+  propValue: TPersistent;
+  editorForm: TForm;
 begin
-  AReference := GetComponent(0);
-  if AReference = nil then
+  propValue := GetComponent(0);
+  if propValue = nil then
     raise Exception.Create('TComponentListPropertyEditor.Component=nil');
-  AForm := FindEditorForm(AReference);
-  if AForm=nil then begin
-    AForm := MakeEditorForm;
-    RegisterEditorForm(AForm, AReference);
+  editorForm := FindEditorForm(propValue) as TForm;
+  if editorForm = nil then begin
+    editorForm := MakeEditorForm;
+    RegisterEditorForm(editorForm, propValue);
   end;
-  if AForm is TForm then
-    TForm(AForm).EnsureVisible;
+  editorForm.EnsureVisible;
 end;
 
 function TComponentListPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -141,20 +140,19 @@ end;
 
 procedure TSubComponentListEditor.ExecuteVerb(Index: Integer);
 var
-  AForm: TObject;
-  AReference: TPersistent;
+  propValue: TPersistent;
+  editorForm: TForm;
 begin
   if Index <> 0 then exit;
-  AReference := GetComponent;
-  if AReference = nil then
+  propValue := GetComponent;
+  if propValue = nil then
     raise Exception.Create('TSubComponentListEditor.Component=nil');
-  AForm := FindEditorForm(AReference);
-  if AForm=nil then begin
-    AForm := MakeEditorForm;
-    RegisterEditorForm(AForm, AReference);
+  editorForm := FindEditorForm(propValue) as TForm;
+  if editorForm = nil then begin
+    editorForm := MakeEditorForm;
+    RegisterEditorForm(editorForm, propValue);
   end;
-  if AForm is TForm then
-    TForm(AForm).ShowOnTop;
+  editorForm.ShowOnTop;
 end;
 
 function TSubComponentListEditor.GetVerbCount: Integer;
@@ -208,10 +206,10 @@ begin
   SelectionChanged;
 end;
 
-destructor TComponentListEditorForm.destroy;
+destructor TComponentListEditorForm.Destroy;
 begin
   UnregisterEditorForm(Self);
-  inherited destroy;
+  inherited Destroy;
 end;
 
 function TComponentListEditorForm.FindChild(
@@ -241,13 +239,12 @@ end;
 
 procedure TComponentListEditorForm.FormDestroy(Sender: TObject);
 begin
-  if FComponentEditor <> nil then begin
-    if
-      (FParent <> nil) and (not (csDestroying in FParent.ComponentState)) and
-      (ChildrenListBox.SelCount > 0)
-    then
-      GlobalDesignHook.SelectOnlyThis(FParent);
-  end;
+  if
+    (FComponentEditor <> nil) and (FParent <> nil) and
+    (not (csDestroying in FParent.ComponentState)) and
+    (ChildrenListBox.SelCount > 0)
+  then
+    GlobalDesignHook.SelectOnlyThis(FParent);
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;
@@ -376,7 +373,7 @@ begin
     sel.ForceUpdate := AOrderChanged;
     try
       OnGetSelection(sel);
-      FDesigner.PropertyEditorHook.SetSelection(sel) ;
+      FDesigner.PropertyEditorHook.SetSelection(sel);
     finally
       sel.Free;
     end;
