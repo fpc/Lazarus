@@ -148,6 +148,23 @@ begin
   g_idle_remove_by_data(Data);
 end;
 
+{$IFDEF HASX}
+function compositeManagerRunning: Boolean;
+var
+  XDisplay: PDisplay;
+  WMAtom: TAtom;
+begin
+  Result := False;
+  // who's running such old composition manager ?
+  if (gtk_major_version = 2) and (gtk_minor_version < 10) then
+    exit;
+  XDisplay := gdk_display;
+  WMAtom := XInternAtom(XDisplay,'_NET_WM_CM_S0', False);
+  if WMAtom > 0 then
+    Result := XGetSelectionOwner(XDisplay, WMAtom) <> 0;
+end;
+{$ENDIF}
+
 function Gtk2FormEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 var
   ACtl: TWinControl;
@@ -171,6 +188,13 @@ begin
         GetWidgetRelativePosition(PGtkWidget(ACtl.Handle), X, Y);
         Result := (event^.configure.send_event = 1) and
           not ((X <> ACtl.Left) or (Y <> ACtl.Top));
+
+        {$IFDEF HASX}
+        // fix for buggy compiz.
+        // see http://bugs.freepascal.org/view.php?id=17523
+        if compositeManagerRunning then
+          Result := False;
+        {$ENDIF}
       end;
     GDK_WINDOW_STATE:
       begin
@@ -252,7 +276,12 @@ begin
   if (TWinControl(AWidgetInfo^.LCLObject).Parent = nil) and (TWinControl(AWidgetInfo^.LCLObject).ParentWindow = 0) then
     with TGTK2WidgetSet(Widgetset) do
     begin
-      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      {$IFDEF HASX}
+      // fix for buggy compiz.
+      // see http://bugs.freepascal.org/view.php?id=17523
+      if not compositeManagerRunning then
+      {$ENDIF}
+         SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallBack(LM_ACTIVATE, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       if (gtk_major_version = 2) and (gtk_minor_version <= 8) then
@@ -762,7 +791,14 @@ begin
   if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
     with TGTK2WidgetSet(Widgetset) do
     begin
-      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      {$note test with smaller minor versions and check where LM_CONFIGUREEVENT
+       is needed.}
+       {$IFDEF HASX}
+       // fix for buggy compiz.
+       // see http://bugs.freepascal.org/view.php?id=17523
+       if not compositeManagerRunning then
+       {$ENDIF}
+         SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
     end;
 end;
 
