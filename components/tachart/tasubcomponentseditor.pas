@@ -27,12 +27,9 @@ type
   { TSubComponentListEditor }
 
   TSubComponentListEditor = class(TComponentEditor)
-  private
-    FEditorForm: TForm;
   protected
     function MakeEditorForm: TForm; virtual; abstract;
   public
-    destructor Destroy; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerbCount: Integer; override;
   end;
@@ -40,13 +37,10 @@ type
   { TComponentListPropertyEditor }
 
   TComponentListPropertyEditor = class(TPropertyEditor)
-  private
-    FEditorForm: TForm;
   protected
     function GetChildrenCount: Integer; virtual; abstract;
     function MakeEditorForm: TForm; virtual; abstract;
   public
-    destructor Destroy; override;
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: ansistring; override;
@@ -98,6 +92,7 @@ type
     constructor Create(
       AOwner, AParent: TComponent; AComponentEditor: TSubComponentListEditor;
       APropertyEditor: TComponentListPropertyEditor); reintroduce;
+    destructor destroy; override;
   end;
 
 implementation
@@ -109,19 +104,21 @@ uses
 
 { TComponentListPropertyEditor }
 
-destructor TComponentListPropertyEditor.Destroy;
-begin
-  FreeAndNil(FEditorForm);
-  inherited;
-end;
-
 procedure TComponentListPropertyEditor.Edit;
+var
+  AReference: TPersistent;
+  AForm: TObject;
 begin
-  if GetComponent(0) = nil then
+  AReference := GetComponent(0);
+  if AReference = nil then
     raise Exception.Create('TComponentListPropertyEditor.Component=nil');
-  if FEditorForm = nil then
-    FEditorForm := MakeEditorForm;
-  FEditorForm.EnsureVisible;
+  AForm := FindEditorForm(AReference);
+  if AForm=nil then begin
+    AForm := MakeEditorForm;
+    RegisterEditorForm(AForm, AReference);
+  end;
+  if AForm is TForm then
+    TForm(AForm).EnsureVisible;
 end;
 
 function TComponentListPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -142,20 +139,22 @@ end;
 
 { TSubComponentListEditor }
 
-destructor TSubComponentListEditor.Destroy;
-begin
-  FreeAndNil(FEditorForm);
-  inherited;
-end;
-
 procedure TSubComponentListEditor.ExecuteVerb(Index: Integer);
+var
+  AForm: TObject;
+  AReference: TPersistent;
 begin
   if Index <> 0 then exit;
-  if GetComponent = nil then
+  AReference := GetComponent;
+  if AReference = nil then
     raise Exception.Create('TSubComponentListEditor.Component=nil');
-  if FEditorForm = nil then
-    FEditorForm := MakeEditorForm;
-  FEditorForm.ShowOnTop;
+  AForm := FindEditorForm(AReference);
+  if AForm=nil then begin
+    AForm := MakeEditorForm;
+    RegisterEditorForm(AForm, AReference);
+  end;
+  if AForm is TForm then
+    TForm(AForm).ShowOnTop;
 end;
 
 function TSubComponentListEditor.GetVerbCount: Integer;
@@ -209,6 +208,12 @@ begin
   SelectionChanged;
 end;
 
+destructor TComponentListEditorForm.destroy;
+begin
+  UnregisterEditorForm(Self);
+  inherited destroy;
+end;
+
 function TComponentListEditorForm.FindChild(
   ACandidate: TPersistent; out AIndex: Integer): Boolean;
 begin
@@ -237,15 +242,12 @@ end;
 procedure TComponentListEditorForm.FormDestroy(Sender: TObject);
 begin
   if FComponentEditor <> nil then begin
-    FComponentEditor.FEditorForm := nil;
     if
       (FParent <> nil) and (not (csDestroying in FParent.ComponentState)) and
       (ChildrenListBox.SelCount > 0)
     then
       GlobalDesignHook.SelectOnlyThis(FParent);
   end;
-  if FPropertyEditor <> nil then
-    FPropertyEditor.FEditorForm := nil;
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;

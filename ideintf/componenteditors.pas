@@ -407,22 +407,22 @@ type
     function(const ATestEditor: TPropertyEditor): Boolean of object;
 
 
-procedure RegisterEditorForm(const AEditorForm: TObject; const AComponent: TComponent);
+procedure RegisterEditorForm(const AEditorForm: TObject; const AReference: TPersistent);
 procedure UnregisterEditorForm(const AEditorForm: TObject);
-function FindEditorForm(const AComponent: TComponent): TObject;
+function FindEditorForm(const AReference: TPersistent): TObject;
 
 implementation
 
 var
   EditorForms: TMap = nil;
 
-procedure RegisterEditorForm(const AEditorForm: TObject; const AComponent: TComponent);
+procedure RegisterEditorForm(const AEditorForm: TObject; const AReference: TPersistent);
 begin
-  if (AComponent<>nil) then begin
+  if (AReference<>nil) then begin
     if EditorForms=nil then
       EditorForms := TMap.Create(itsPtrSize, SizeOf(Pointer));
     if not EditorForms.HasId(AEditorForm) then
-      EditorForms.Add(AEditorForm, AComponent);
+      EditorForms.Add(AEditorForm, AReference);
   end;
 end;
 
@@ -432,17 +432,17 @@ begin
     EditorForms.Delete(AEditorForm);
 end;
 
-function FindEditorForm(const AComponent: TComponent): TObject;
+function FindEditorForm(const AReference: TPersistent): TObject;
 var
   Iterator: TMapIterator;
-  Comp: TComponent;
+  Reference: TPersistent;
 begin
   result := nil;
   if EditorForms<>nil then begin
     Iterator := TMapIterator.Create(EditorForms);
     while not Iterator.EOM do begin
-      Iterator.GetData(Comp);
-      if Comp=AComponent then begin
+      Iterator.GetData(Reference);
+      if Reference=AReference then begin
         Iterator.GetID(Result);
         break;
       end;
