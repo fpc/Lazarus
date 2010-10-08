@@ -4881,6 +4881,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
+var
+  W: TQtWidget;
 begin
   Result := 0;
   if hwnd<>0 then
@@ -4889,6 +4891,10 @@ begin
     WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
     {$endif}
     Result := GetFocus;
+    W := TQtWidget(HWND).getWindow;
+    if (W <> nil) and not W.IsActiveWindow and
+      not TQtMainWindow(W).Blocked then
+        W.Activate;
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
     DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);

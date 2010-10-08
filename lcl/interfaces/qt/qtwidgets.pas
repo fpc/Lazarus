@@ -219,6 +219,7 @@ type
     function getHeight: Integer;
     function getUpdatesEnabled: Boolean;
     function getWidth: Integer;
+    function getWindow: TQtWidget;
     function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
@@ -491,6 +492,7 @@ type
 
   TQtMainWindow = class(TQtWidget)
   private
+    FBlocked: Boolean;
     LayoutWidget: QBoxLayoutH;
     FCWEventHook: QObject_hookH;
     FShowOnTaskBar: Boolean;
@@ -524,6 +526,7 @@ type
     procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
     procedure setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
+    property Blocked: Boolean read FBlocked write FBlocked;
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     procedure AttachEvents; override;
@@ -3498,6 +3501,16 @@ begin
   Result := QWidget_width(Widget);
 end;
 
+function TQtWidget.getWindow: TQtWidget;
+var
+  W: QWidgetH;
+begin
+  Result := nil;
+  W := QWidget_window(Widget);
+  if W <> nil then
+    Result := TQtWidget(HwndFromWidgetH(W));
+end;
+
 function TQtWidget.getWindowState: QtWindowStates;
 begin
   Result := QWidget_windowState(Widget);
@@ -4581,6 +4594,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
+  FBlocked := False;
   FShowOnTaskBar := False;
   QtFormBorderStyle := Ord(bsSizeable);
   QtFormStyle := Ord(fsNormal);
@@ -4821,6 +4835,8 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventWindowUnblocked: Blocked := False;
+    QEventWindowBlocked: Blocked := True;
     QEventWindowActivate: SlotActivateWindow(True);
     QEventWindowDeactivate: SlotActivateWindow(False);
     QEventShowToParent:
