@@ -41,7 +41,7 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, Project, DialogProcs, EditorOptions, CompilerOptions,
+  IDEProcs, Project, ProjectDefs, DialogProcs, EditorOptions, CompilerOptions,
   PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg, ReplaceNamesUnit;
@@ -248,6 +248,13 @@ type
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
 
+  { TConvertedDelphiProjectDescriptor }
+
+  TConvertedDelphiProjectDescriptor = class(TProjectEmptyProgramDescriptor)
+  private
+  public
+    function InitProject(AProject: TLazProject): TModalResult; override;
+  end;
 
   // Some global functions from delphiunit2laz are not (yet) converted to class methods.
 
@@ -1316,6 +1323,8 @@ end;
 
 function TConvertDelphiProject.CreateInstance: TModalResult;
 // Open or create a project. If .lpi file does not exist, create it.
+var
+  Desc: TConvertedDelphiProjectDescriptor;
 begin
   LazProject:=Project1;
   if FileExistsUTF8(fLazPFilename) then begin
@@ -1329,7 +1338,12 @@ begin
     end;
   end else begin
     // create a new lazarus project
-    Result:=LazarusIDE.DoNewProject(ProjectDescriptorEmptyProject);
+    Desc:=TConvertedDelphiProjectDescriptor.Create;
+    try
+      Result:=LazarusIDE.DoNewProject(Desc);
+    finally
+      Desc.Free;
+    end;
     LazProject:=Project1;
     if Result<>mrOk then exit;
     LazProject.ProjectInfoFile:=fLazPFilename;
@@ -1889,6 +1903,15 @@ begin
   (fProjPack as TLazPackage).RemoveNonExistingFiles;
 end;
 
+
+{ TConvertedDelphiProjectDescriptor }
+
+function TConvertedDelphiProjectDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=inherited InitProject(AProject);
+  AProject.LazCompilerOptions.SyntaxMode:='delphi';
+end;
 
 end.
 
