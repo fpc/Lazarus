@@ -335,6 +335,7 @@ type
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging;
+    property OnCloseTabClicked;
     property OnContextPopup;
     property OnDockDrop;
     property OnDockOver;
@@ -357,6 +358,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property Options;
   end;
 
 
