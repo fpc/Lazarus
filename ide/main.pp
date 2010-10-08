@@ -579,6 +579,7 @@ type
     procedure OnGetLayout(Sender: TObject; aFormName: string;
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
+    FUserInputSinceLastIdle: boolean;
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
                                     // display the correct tab
@@ -15860,6 +15861,7 @@ end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
+  fUserInputSinceLastIdle:=true;
   if ToolStatus=itCodeTools then begin
     // abort codetools
     ToolStatus:=itCodeToolAborting;
@@ -15872,29 +15874,34 @@ var
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
 begin
-  UpdateWindowMenu;
   if FNeedUpdateHighlighters then
     UpdateHighlighters(true);
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
-  FormEditor1.CheckDesignerPositions;
-  FormEditor1.PaintAllDesignerItems;
-  GetCurrentUnit(SrcEdit,AnUnitInfo);
-  UpdateSaveMenuItemsAndButtons(true);
-  if Screen.ActiveForm<>nil then
+
+  if FUserInputSinceLastIdle then
   begin
-    AnIDesigner:=Screen.ActiveForm.Designer;
-    if AnIDesigner is TDesigner then
+    FUserInputSinceLastIdle:=false;
+    UpdateWindowMenu;
+    FormEditor1.CheckDesignerPositions;
+    FormEditor1.PaintAllDesignerItems;
+    GetCurrentUnit(SrcEdit,AnUnitInfo);
+    UpdateSaveMenuItemsAndButtons(true);
+    if Screen.ActiveForm<>nil then
     begin
-      MainIDEBar.itmViewToggleFormUnit.Enabled := true;
-    end
-    else
-    begin
-      MainIDEBar.itmViewToggleFormUnit.Enabled := (AnUnitInfo<>nil)
-                                             and AnUnitInfo.HasResources;
+      AnIDesigner:=Screen.ActiveForm.Designer;
+      if AnIDesigner is TDesigner then
+      begin
+        MainIDEBar.itmViewToggleFormUnit.Enabled := true;
+      end
+      else
+      begin
+        MainIDEBar.itmViewToggleFormUnit.Enabled := (AnUnitInfo<>nil)
+                                               and AnUnitInfo.HasResources;
+      end;
+      MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
     end;
-    MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
   end;
 
   if FCheckFilesOnDiskNeeded then
