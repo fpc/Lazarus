@@ -477,8 +477,8 @@ type
     CompileReasons: TCompileReasons;
     DefaultCompileReasons: TCompileReasons;
     procedure Clear; override;
-    procedure CreateDiff(CompOpts: TCompilationToolOptions;
-                         Tool: TCompilerDiffTool); override;
+    function CreateDiff(CompOpts: TCompilationToolOptions;
+                        Tool: TCompilerDiffTool): boolean; override;
     procedure Assign(Src: TCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); override;
@@ -521,8 +521,8 @@ type
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
-    procedure CreateDiff(CompOpts: TBaseCompilerOptions;
-                         Tool: TCompilerDiffTool); override;
+    function CreateDiff(CompOpts: TBaseCompilerOptions;
+                         Tool: TCompilerDiffTool): boolean; override;
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
   public
@@ -1046,8 +1046,8 @@ const
     'uifMarked'
     );
 
-procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
-  const PropertyName: string; const Old, New: TCompileReasons);
+function AddCompileReasonsDiff(const PropertyName: string;
+       const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
 function dbgs(aType: TUnitCompDependencyType): string; overload;
 function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 function dbgs(Flag: TUnitInfoFlag): string; overload;
@@ -1058,10 +1058,11 @@ implementation
 const
   ProjectInfoFileVersion = 9;
 
-procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
-  const PropertyName: string; const Old, New: TCompileReasons);
+function AddCompileReasonsDiff(const PropertyName: string;
+  const Old, New: TCompileReasons; Tool: TCompilerDiffTool): boolean;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
   Tool.AddSetDiff(PropertyName,integer(Old),integer(New),
                   PString(@CompileReasonNames[Low(TCompileReasons)]));
 end;
@@ -5447,16 +5448,17 @@ begin
   CompileReasons := crAll;
 end;
 
-procedure TProjectCompilationToolOptions.CreateDiff(
-  CompOpts: TCompilationToolOptions; Tool: TCompilerDiffTool);
+function TProjectCompilationToolOptions.CreateDiff(
+  CompOpts: TCompilationToolOptions; Tool: TCompilerDiffTool): boolean;
 begin
   if (CompOpts is TProjectCompilationToolOptions) then begin
-    AddCompileReasonsDiff(Tool,'CompileReasons',CompileReasons,
-                       TProjectCompilationToolOptions(CompOpts).CompileReasons);
+    Result:=AddCompileReasonsDiff('CompileReasons',CompileReasons,
+                  TProjectCompilationToolOptions(CompOpts).CompileReasons,Tool);
   end else begin
-    Tool.Differ:=true;
+    Result:=true;
+    if Tool<>nil then Tool.Differ:=true;
   end;
-  inherited CreateDiff(CompOpts, Tool);
+  Result:=Result or inherited CreateDiff(CompOpts, Tool);
 end;
 
 procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
@@ -5616,16 +5618,17 @@ begin
   Result:=inherited IsEqual(CompOpts);
 end;
 
-procedure TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
-  Tool: TCompilerDiffTool);
+function TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Tool: TCompilerDiffTool): boolean;
 begin
   if (CompOpts is TProjectCompilerOptions) then begin
-    AddCompileReasonsDiff(Tool,'CompileReasons',FCompileReasons,
-                          TProjectCompilerOptions(CompOpts).FCompileReasons);
+    Result:=AddCompileReasonsDiff('CompileReasons',FCompileReasons,
+                        TProjectCompilerOptions(CompOpts).FCompileReasons,Tool);
   end else begin
-    Tool.Differ:=true;
+    Result:=true;
+    if Tool<>nil then Tool.Differ:=true;
   end;
-  inherited CreateDiff(CompOpts, Tool);
+  Result:=Result or inherited CreateDiff(CompOpts, Tool);
 end;
 
 procedure TProjectCompilerOptions.InvalidateOptions;

@@ -58,13 +58,13 @@ type
   public
     constructor Create(DiffList: TStrings);
     procedure AddDiffItem(const PropertyName, Value: string);
-    procedure AddDiff(const PropertyName: string; const Old, New: string);
-    procedure AddDiff(const PropertyName: string; const Old, New: integer);
-    procedure AddDiff(const PropertyName: string; const Old, New: boolean);
-    procedure AddStringsDiff(const PropertyName: string; const OldList, NewList: TStrings);
-    procedure AddPathsDiff(const PropertyName: string; const Old, New: string);
-    procedure AddSetDiff(const PropertyName: string; const Old, New: integer;
-                         const EnumNames: PString);
+    function AddDiff(const PropertyName: string; const Old, New: string): boolean;
+    function AddDiff(const PropertyName: string; const Old, New: integer): boolean;
+    function AddDiff(const PropertyName: string; const Old, New: boolean): boolean;
+    function AddStringsDiff(const PropertyName: string; const OldList, NewList: TStrings): boolean;
+    function AddPathsDiff(const PropertyName: string; const Old, New: string): boolean;
+    function AddSetDiff(const PropertyName: string; const Old, New: integer;
+                         const EnumNames: PString): boolean;
     property Diff: TStrings read FDiff write SetDiff;
     property Path: string read FPath write SetPath;
     property Differ: boolean read FDiffer write SetDiffer;
@@ -76,18 +76,21 @@ implementation
 
 procedure TCompilerDiffTool.SetDiff(const AValue: TStrings);
 begin
+  if Self=nil then exit;
   if FDiff=AValue then exit;
   FDiff:=AValue;
 end;
 
 procedure TCompilerDiffTool.SetDiffer(const AValue: boolean);
 begin
+  if Self=nil then exit;
   if FDiffer=AValue then exit;
   FDiffer:=AValue;
 end;
 
 procedure TCompilerDiffTool.SetPath(const AValue: string);
 begin
+  if Self=nil then exit;
   if FPath=AValue then exit;
   FPath:=AValue;
   // ! config path, not file path. Always /, not PathDelim
@@ -103,34 +106,41 @@ end;
 
 procedure TCompilerDiffTool.AddDiffItem(const PropertyName, Value: string);
 begin
+  if Self=nil then exit;
   Differ:=true;
   if Diff<>nil then
     Diff.Add(Path+PropertyName+'='+Value);
 end;
 
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: string);
+function TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: string): boolean;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
+  if Self=nil then exit;
   AddDiffItem(PropertyName,New);
 end;
 
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: integer);
+function TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: integer): boolean;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
+  if Self=nil then exit;
   AddDiffItem(PropertyName,IntToStr(New));
 end;
 
-procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
-  New: boolean);
+function TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: boolean): boolean;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
+  if Self=nil then exit;
   AddDiffItem(PropertyName,dbgs(New));
 end;
 
-procedure TCompilerDiffTool.AddStringsDiff(const PropertyName: string;
-  const OldList, NewList: TStrings);
+function TCompilerDiffTool.AddStringsDiff(const PropertyName: string;
+  const OldList, NewList: TStrings): boolean;
 var
   i: Integer;
   OldCnt: Integer;
@@ -142,30 +152,41 @@ begin
   NewCnt:=0;
   if NewList<>nil then
     NewCnt:=NewList.Count;
-  AddDiff(PropertyName+'/Count',OldCnt,NewCnt);
+  Result:=AddDiff(PropertyName+'/Count',OldCnt,NewCnt);
+  if Result and (Self=nil) then exit;
   for i:=0 to OldCnt-1 do begin
-    if (i>=NewCnt) then
-      AddDiffItem(PropertyName+'/Item'+IntToStr(i),'deleted='+OldList[i])
-    else if (OldList[i]<>NewList[i]) then
+    if (i>=NewCnt) then begin
+      Result:=true;
+      if Self=nil then exit;
+      AddDiffItem(PropertyName+'/Item'+IntToStr(i),'deleted='+OldList[i]);
+    end
+    else if (OldList[i]<>NewList[i]) then begin
+      Result:=true;
+      if Self=nil then exit;
       AddDiffItem(PropertyName+'/Item'+IntToStr(i),NewList[i]);
+    end;
   end;
 end;
 
-procedure TCompilerDiffTool.AddPathsDiff(const PropertyName: string; const Old,
-  New: string);
+function TCompilerDiffTool.AddPathsDiff(const PropertyName: string; const Old,
+  New: string): boolean;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
+  if Self=nil then exit;
   AddDiff(PropertyName,Old,New);
 end;
 
-procedure TCompilerDiffTool.AddSetDiff(const PropertyName: string; const Old,
-  New: integer; const EnumNames: PString);
+function TCompilerDiffTool.AddSetDiff(const PropertyName: string; const Old,
+  New: integer; const EnumNames: PString): boolean;
 var
   i: Integer;
   Mask: LongInt;
   s: String;
 begin
-  if Old=New then exit;
+  if Old=New then exit(false);
+  Result:=true;
+  if Self=nil then exit;
   Mask := 1;
   s:='';
   for i := 0 to 31 do begin

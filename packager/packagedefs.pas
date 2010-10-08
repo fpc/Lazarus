@@ -386,8 +386,8 @@ type
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure Assign(Source: TPersistent); override;
-    procedure CreateDiff(CompOpts: TBaseCompilerOptions;
-                         Tool: TCompilerDiffTool); override;
+    function CreateDiff(CompOpts: TBaseCompilerOptions;
+                        Tool: TCompilerDiffTool = nil): boolean; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SkipCompiler: Boolean read FSkipCompiler write FSkipCompiler;
@@ -3777,16 +3777,17 @@ begin
   end;
 end;
 
-procedure TPkgCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
-  Tool: TCompilerDiffTool);
+function TPkgCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Tool: TCompilerDiffTool): boolean;
 begin
   if (CompOpts is TPkgCompilerOptions) then begin
-    Tool.AddDiff('SkipCompiler',FSkipCompiler,
+    Result:=Tool.AddDiff('SkipCompiler',FSkipCompiler,
                  TPkgCompilerOptions(CompOpts).FSkipCompiler);
   end else begin
-    Tool.Differ:=true;
+    Result:=true;
+    if Tool<>nil then Tool.Differ:=true;
   end;
-  inherited CreateDiff(CompOpts, Tool);
+  Result:=Result or inherited CreateDiff(CompOpts, Tool);
 end;
 
 { TPkgAdditionalCompilerOptions }
