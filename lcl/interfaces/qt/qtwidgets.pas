@@ -1860,7 +1860,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.CanSendLCLMessage: Boolean;
 begin
-  Result := (LCLObject <> nil) and
+  Result := (LCLObject <> nil) and getVisible and
     not ((csDestroying in LCLObject.ComponentState) or
          (csDestroyingHandle in LCLObject.ControlState));
 end;
