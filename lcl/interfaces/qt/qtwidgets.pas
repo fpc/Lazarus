@@ -2951,7 +2951,7 @@ begin
   Msg.Y := SmallInt(MousePos.Y);
 
   Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event));
-  
+
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
 
@@ -11177,8 +11177,13 @@ begin
       end else
         LCLObject.DoAdjustClientRectChange;
     end;
-    QEventLayoutRequest,
-    QEventWheel: ; // nothing to do here
+    QEventLayoutRequest: ; // nothing to do here
+    QEventWheel:
+    begin
+      inherited EventFilter(Sender, Event);
+      Result := True;
+      QEvent_ignore(Event);
+    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -11521,12 +11526,17 @@ begin
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick,
     QEventMouseMove,
+    QEventWheel,
     QEventContextMenu,
     QEventPaint:
     begin
       MouseEventTyp := (QEvent_type(Event) = QEventMouseButtonPress) or
         (QEvent_type(Event) = QEventMouseButtonRelease) or
-        (QEvent_type(Event) = QEventMouseButtonDblClick);
+        (QEvent_type(Event) = QEventMouseButtonDblClick) or
+        (QEvent_type(Event) = QEventWheel);
+
+      if QEvent_type(Event) = QEventWheel then
+        QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 
       retval^ := True;
 
