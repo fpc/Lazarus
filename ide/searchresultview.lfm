@@ -11,7 +11,7 @@ object SearchResultsView: TSearchResultsView
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object ResultsNoteBook: TNotebook
+  object ResultsNoteBook: TPageControl
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 248

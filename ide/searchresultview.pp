@@ -135,7 +135,7 @@ type
     popList: TPopupMenu;
     SearchInListEdit: TEdit;
     ImageList: TImageList;
-    ResultsNoteBook: TNotebook;
+    ResultsNoteBook: TPageControl;
     ToolBar: TToolBar;
     SearchAgainButton: TToolButton;
     ToolButton3: TToolButton;
@@ -189,7 +189,7 @@ type
                        const ReplaceText: string;
                        const ADirectory: string;
                        const AMask: string;
-                       const TheOptions: TLazFindInFileSearchOptions): TPage;
+                       const TheOptions: TLazFindInFileSearchOptions): TTabSheet;
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
@@ -683,14 +683,14 @@ procedure TSearchResultsView.ClosePage(PageIndex: integer);
 var
   CurrentTV: TLazSearchResultTV;
 begin
-  if (PageIndex<0) or (PageIndex>=ResultsNoteBook.Pages.Count) then exit;
+  if (PageIndex<0) or (PageIndex>=ResultsNoteBook.PageCount) then exit;
 
   CurrentTV:= GetTreeView(PageIndex);
   if Assigned(CurrentTV) and CurrentTV.UpdateState then
     exit;
 
-  ResultsNoteBook.Pages.Delete(PageIndex);
-  if ResultsNoteBook.Pages.Count = 0 then
+  ResultsNoteBook.Pages[PageIndex].Free;
+  if ResultsNoteBook.PageCount = 0 then
     Hide;
 end;
 
@@ -762,14 +762,9 @@ end;
 
 procedure TSearchResultsView.ResultsNoteBookCloseTabclicked(Sender: TObject);
 begin
-  if (Sender is TPage) then
-  begin
-    with Sender as TPage do
-    begin
-      ClosePage(PageIndex);
-    end;//with
-  end;//if
-end;//ResultsNoteBookClosetabclicked
+  if (Sender is TTabSheet) then
+    ClosePage(TTabSheet(Sender).PageIndex)
+end;
 
 procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
 var
@@ -796,9 +791,9 @@ var
 begin
   Result:= false;
   CurPagename:=BeautifyPageName(APageName);
-  for i:= 0 to ResultsNoteBook.Pages.Count - 1 do
+  for i:= 0 to ResultsNoteBook.PageCount - 1 do
   begin
-    if (ResultsNoteBook.Pages[i] = CurPageName) then
+    if (ResultsNoteBook.Page[i].Caption = CurPageName) then
     begin
       Result:= true;
       exit;
@@ -823,7 +818,7 @@ function TSearchResultsView.AddSearch(const ResultsName: string;
   const ReplaceText: string;
   const ADirectory: string;
   const AMask: string;
-  const TheOptions: TLazFindInFileSearchOptions): TPage;
+  const TheOptions: TLazFindInFileSearchOptions): TTabSheet;
 var
   NewTreeView: TLazSearchResultTV;
   NewPage: LongInt;
@@ -850,7 +845,7 @@ begin
       end//if
       else
       begin
-        NewPage:= Pages.Add(NewPageName);
+        NewPage:= TCustomNotebook(ResultsNoteBook).Pages.Add(NewPageName);
         ResultsNoteBook.PageIndex:= NewPage;
         ResultsNoteBook.Page[ResultsNoteBook.PageIndex].OnKeyDown := @TreeViewKeyDown;
         if NewPage > -1 then
@@ -886,7 +881,7 @@ begin
       SearchObj.SearchOptions:= TheOptions;
     end;
     NewTreeView.Skipped:=0;
-    Result:= ResultsNoteBook.Page[ResultsNoteBook.PageIndex];
+    Result:= ResultsNoteBook.Pages[ResultsNoteBook.PageIndex];
     SearchInListEdit.Clear;
   end;//if
 end;//AddResult
@@ -1031,7 +1026,7 @@ end;//GetSourceFileName
 {Returns the selected text in the currently active TreeView.}
 function TSearchResultsView.GetSelectedText: string;
 var
-  ThePage: TPage;
+  ThePage: TTabSheet;
   TheTreeView: TLazSearchResultTV;
   i: integer;
 begin
@@ -1039,7 +1034,7 @@ begin
   i:= ResultsNoteBook.PageIndex;
   if i > -1 then
   begin
-    ThePage:= ResultsNoteBook.Page[i];
+    ThePage:= ResultsNoteBook.Pages[i];
     if Assigned(ThePage) then
     begin
       TheTreeView:= GetTreeView(ThePage.PageIndex);
@@ -1051,7 +1046,7 @@ end;//GetSelectedText
 
 function TSearchResultsView.GetSelectedMatchPos: TLazSearchMatchPos;
 var
-  ThePage: TPage;
+  ThePage: TTabSheet;
   TheTreeView: TLazSearchResultTV;
   i: integer;
 begin
@@ -1059,14 +1054,14 @@ begin
   i:= ResultsNoteBook.PageIndex;
   if i > -1 then
   begin
-    ThePage:= ResultsNoteBook.Page[i];
+    ThePage:= ResultsNoteBook.Pages[i];
     if Assigned(ThePage) then
     begin
       TheTreeView:= GetTreeView(ThePage.PageIndex);
       if Assigned(TheTreeView.Selected) then
         Result := TLazSearchMatchPos(TheTreeView.Selected.Data);
-    end;//if
-  end;//if
+    end;
+  end;
 end;
 
 function TSearchResultsView.GetPageIndex(const APageName: string): integer;
@@ -1076,27 +1071,27 @@ var
 begin
   Result:= -1;
   CurPagename:=BeautifyPageName(APageName);
-  for i:= 0 to ResultsNoteBook.Pages.Count - 1 do
+  for i:= 0 to ResultsNoteBook.PageCount - 1 do
   begin
-    if (ResultsNoteBook.Pages[i] = CurPageName) then
+    if (ResultsNoteBook.Page[i].Caption = CurPageName) then
     begin
       Result:= i;
       break;
-    end;//if
-  end;//for
-end;//GetPageIndex
+    end;
+  end;
+end;
 
 {Returns a the TreeView control from a Tab if both the page and the TreeView
  exist else returns nil}
 function TSearchResultsView.GetTreeView(APageIndex: integer): TLazSearchResultTV;
 var
   i: integer;
-  ThePage: TPage;
+  ThePage: TTabSheet;
 begin
   Result:= nil;
-  if (APageIndex > -1) and (APageIndex < ResultsNoteBook.Pages.Count) then
+  if (APageIndex > -1) and (APageIndex < ResultsNoteBook.PageCount) then
   begin
-    ThePage:= ResultsNoteBook.Page[APageIndex];
+    ThePage:= ResultsNoteBook.Pages[APageIndex];
     if Assigned(ThePage) then
     begin
       for i:= 0 to ThePage.ComponentCount - 1 do
@@ -1105,11 +1100,11 @@ begin
         begin
           result:= TLazSearchResultTV(ThePage.Components[i]);
           break;
-        end;//if
-      end;//for
-    end;//if
-  end;//if
-end;//GetTreeView
+        end;
+      end;
+    end;
+  end;
+end;
 
 procedure TLazSearchResultTV.SetSkipped(const AValue: integer);
 var

@@ -33,7 +33,7 @@ interface
 uses
   // LCL
   Classes, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
+  Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil, ComCtrls,
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
@@ -71,7 +71,7 @@ type
     FReplaceText: string;
     fResultsListUpdating: boolean;
     fResultsList: TStrings;
-    fResultsWindow: TPage;
+    fResultsWindow: TTabSheet;
     fSearchFileList: TStringList;
     fSearchFiles: boolean;
     fSearchFor: String;
@@ -106,7 +106,7 @@ type
     property ResultsList: TStrings read fResultsList write SetResultsList;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
-    property ResultsWindow: TPage read fResultsWindow write fResultsWindow;
+    property ResultsWindow: TTabSheet read fResultsWindow write fResultsWindow;
     property PromptOnReplace: boolean read fPromptOnReplace write fPromptOnReplace;// this is asked once and can be changed when prompting
     property Progress: TIDESearchInTextProgress read FProgress;
   end;
@@ -877,14 +877,14 @@ end;
 
 procedure TSearchForm.DoSearchAndAddToSearchResults;
 var
-  ListPage: TPage;
+  ListPage: TTabSheet;
 begin
   ListPage:=SearchResultsView.AddSearch(SearchText,
-                                         SearchText,
-                                         ReplaceText,
-                                         SearchDirectory,
-                                         SearchMask,
-                                         SearchOptions);
+                                        SearchText,
+                                        ReplaceText,
+                                        SearchDirectory,
+                                        SearchMask,
+                                        SearchOptions);
 
   try
     (* BeginUpdate prevents ListPage from being closed,

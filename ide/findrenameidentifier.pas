@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
+  StdCtrls, Buttons, ExtCtrls, AvgLvlTree, ComCtrls,
   // codetools
   {$IFDEF NewXMLCfg}
   laz2_DOM,
@@ -285,8 +285,8 @@ function ShowIdentifierReferences(
   TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   Identifier: string;
-  OldSearchPageIndex: TPage;
-  SearchPageIndex: TPage;
+  OldSearchPageIndex: TTabSheet;
+  SearchPageIndex: TTabSheet;
 begin
   Result:=mrCancel;
   SearchPageIndex:=nil;
