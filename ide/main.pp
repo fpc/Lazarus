@@ -4269,8 +4269,7 @@ begin
 end;
 
 procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-      ACaption: String = '';
-      AOptionsFilter: TAbstractIDEOptionsClass = nil);
+  ACaption: String = ''; AOptionsFilter: TAbstractIDEOptionsClass = nil);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
 begin
@@ -4296,6 +4295,8 @@ begin
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll;
+      MainBuildBoss.SetBuildTarget(MainBuildBoss.GetTargetOS(false),
+        MainBuildBoss.GetTargetCPU(false),MainBuildBoss.GetLCLWidgetType(false));
       UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
       if EnvironmentOptions.SingleTaskBarButton then

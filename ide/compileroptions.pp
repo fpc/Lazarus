@@ -548,6 +548,7 @@ type
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFilename(const AValue: String); override;
+    procedure SetLCLWidgetType(const AValue: string); override;
     procedure SetModified(const AValue: boolean); override;
   protected
     procedure ClearInheritedOptions;
@@ -1218,6 +1219,14 @@ begin
   if fTargetFilename=AValue then exit;
   fTargetFilename:=AValue;
   IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetLCLWidgetType(const AValue: string);
+begin
+  if LCLWidgetType=AValue then exit;
+  inherited SetLCLWidgetType(AValue);
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;

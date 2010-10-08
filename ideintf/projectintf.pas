@@ -140,7 +140,6 @@ type
     procedure SetIncludeAssertionCode(const AValue: Boolean);
     procedure SetInitConst(const AValue: Boolean);
     procedure SetIOChecks(const AValue: Boolean);
-    procedure SetLCLWidgetType(const AValue: string);
     procedure SetLinkSmart(const AValue: Boolean);
     procedure SetOptLevel(const AValue: Integer);
     procedure SetOverflowChecks(const AValue: Boolean);
@@ -295,6 +294,7 @@ type
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
+    procedure SetLCLWidgetType(const AValue: string); virtual;
   public
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
