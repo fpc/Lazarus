@@ -1128,6 +1128,7 @@ begin
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   QuickBuildOptionsRadioGroup.ItemIndex:=Options.QuickBuildOption;
+  QuickBuildOptionsRadioGroupClick(Self);
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   TargetCPUComboBox.Text:=Options.TargetCPU;
