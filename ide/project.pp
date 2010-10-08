@@ -723,6 +723,7 @@ type
     fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
     fProjectInfoFileBuffer: TCodeBuffer;
+    fProjectInfoFileBufChangeStamp: integer;
     fProjectInfoFileDate: LongInt;
     FPublishOptions: TPublishProjectOptions;
     FResources: TProjectResources;
@@ -2792,10 +2793,11 @@ begin
       end;
       if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
         fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
-        try
-          fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
-        except
-        end;
+        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        if fProjectInfoFileBuffer<>nil then
+          fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep
+        else
+          fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
       end;
       try
         xmlconfig.Free;
@@ -3120,14 +3122,17 @@ begin
 
     ProjectInfoFile:=NewProjectInfoFile;
     fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+    fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
     try
       fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
       if fProjectInfoFileBuffer=nil then
         xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
-      else
+      else begin
         xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
                                                  fProjectInfoFileBuffer.Source);
+        fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
+      end;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
       MessageDlg(Format(lisUnableToReadTheProjectInfoFile, [#13, '"',
@@ -4228,6 +4233,7 @@ end;
 function TProject.HasProjectInfoFileChangedOnDisk: boolean;
 var
   AnUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
 begin
   Result:=false;
   if IsVirtual or Modified then exit;
@@ -4239,7 +4245,7 @@ begin
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
     if CompareFilenames(AnUnitInfo.Filename,ProjectInfoFile)=0 then begin
-      // revert locked
+      // revert is locked for this file
       exit;
     end;
     AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
@@ -4247,6 +4253,12 @@ begin
 
   if not FileExistsCached(ProjectInfoFile) then exit;
   if fProjectInfoFileDate=FileAgeCached(ProjectInfoFile) then exit;
+
+  // file on disk has changed, check content
+  Code:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+  if (Code<>nil) and (Code=fProjectInfoFileBuffer)
+    and (Code.ChangeStep=fProjectInfoFileBufChangeStamp)
+  then exit;
 
   //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',ProjectInfoFile,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(ProjectInfoFile)]);
   Result:=true;
