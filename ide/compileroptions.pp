@@ -568,7 +568,7 @@ type
     function SaveToFile(AFilename: string): TModalResult;
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
-    procedure CreateDiff(CompOpts: TBaseCompilerOptions; Diff: TStrings);
+    procedure CreateDiffAsText(CompOpts: TBaseCompilerOptions; Diff: TStrings);
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
 
@@ -3127,7 +3127,7 @@ begin
   Tool.Free;
 end;
 
-procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+procedure TBaseCompilerOptions.CreateDiffAsText(CompOpts: TBaseCompilerOptions;
   Diff: TStrings);
 var
   Tool: TCompilerDiffTool;

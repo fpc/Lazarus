@@ -185,6 +185,7 @@ type
   protected
     FChangeStamp: int64;
     FSavedChangeStamp: int64;
+    fOnChanged: TMethodList;
 
     // Paths:
 
@@ -296,6 +297,7 @@ type
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
+    destructor Destroy; override;
     function IsActive: boolean; virtual;
   public
     property Owner: TObject read fOwner write fOwner;
@@ -304,6 +306,8 @@ type
     property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
     class function InvalidChangeStamp: int64;
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
 
     // search paths:
     property IncludePath: String read GetIncludePaths write SetIncludePaths;
@@ -1826,8 +1830,15 @@ end;
 constructor TLazCompilerOptions.Create(const TheOwner: TObject);
 begin
   inherited Create;
+  fOnChanged:=TMethodList.Create;
   FChangeStamp:=InvalidChangeStamp;
   FOwner := TheOwner;
+end;
+
+destructor TLazCompilerOptions.Destroy;
+begin
+  FreeAndNil(fOnChanged);
+  inherited Destroy;
 end;
 
 function TLazCompilerOptions.IsActive: boolean;
@@ -1841,11 +1852,23 @@ begin
     inc(fChangeStamp)
   else
     fChangeStamp:=Low(int64)+1;
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
 end;
 
 class function TLazCompilerOptions.InvalidChangeStamp: int64;
 begin
   Result:=Low(int64);
+end;
+
+procedure TLazCompilerOptions.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TLazCompilerOptions.RemoveOnChangedHandler(const Handler: TNotifyEvent
+  );
+begin
+  fOnChanged.Remove(TMethod(Handler));
 end;
 
 { TNewItemProjectFile }

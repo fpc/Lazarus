@@ -522,7 +522,7 @@ type
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     function CreateDiff(CompOpts: TBaseCompilerOptions;
-                         Tool: TCompilerDiffTool): boolean; override;
+                         Tool: TCompilerDiffTool = nil): boolean; override;
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
   public
@@ -598,6 +598,7 @@ type
     FChangeStamp: integer;
     fLastSavedChangeStamp: integer;
     FItems: TStrings;
+    fOnChanged: TMethodList;
     function GetMacros(const Name: string): string;
     function GetModified: boolean;
     function GetNames(Index: integer): string;
@@ -621,6 +622,9 @@ type
     procedure IncreaseChangeStamp;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; ClearModified: boolean = true);
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+  public
     property Modified: boolean read GetModified write SetModified;
     property CfgVars: TCTCfgScriptVariables read FCfgVars;
   end;
@@ -629,32 +633,46 @@ type
 
   TProjectBuildMode = class(TComponent)
   private
+    FChangeStamp: int64;
     FCompilerOptions: TProjectCompilerOptions;
     FBuildMacroValues: TProjectBuildMacros;
     FIdentifier: string;
     FInSession: boolean;
+    fOnChanged: TMethodList;
+    procedure SetIdentifier(const AValue: string);
     procedure SetInSession(const AValue: boolean);
+    procedure OnItemChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Clear;
+    function Equals(Src: TProjectBuildMode): boolean; reintroduce;
+    procedure Assign(Src: TProjectBuildMode); reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               ClearModified: boolean = true);
-    property Identifier: string read FIdentifier;// arbitrary string
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+  public
+    property InSession: boolean read FInSession write SetInSession;
+    property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
+
+    // copied by Assign, compared by Equals, cleared by Clear
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
     property BuildMacroValues: TProjectBuildMacros read FBuildMacroValues;
-    property InSession: boolean read FInSession write SetInSession;
   end;
 
   { TProjectBuildModes }
 
   TProjectBuildModes = class(TComponent)
   private
-    FActive: TProjectBuildMode;
     FChangeStamp: integer;
     fItems: TFPList;
+    fOnChanged: TMethodList;
     function GetItems(Index: integer): TProjectBuildMode;
-    procedure SetActive(const AValue: TProjectBuildMode);
+    procedure OnItemChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -666,7 +684,8 @@ type
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
-    property Active: TProjectBuildMode read FActive write SetActive;
+    procedure AddOnChangedHandler(const Handler: TNotifyEvent);
+    procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
   end;
 
   { TProject }
@@ -6304,12 +6323,14 @@ begin
   FItems:=TStringList.Create;
   FCfgVars:=TCTCfgScriptVariables.Create;
   FChangeStamp:=CTInvalidChangeStamp;
+  fOnChanged:=TMethodList.Create;
 end;
 
 destructor TProjectBuildMacros.Destroy;
 begin
   FreeAndNil(FItems);
   FreeAndNil(FCfgVars);
+  FreeAndNil(fOnChanged);
   inherited Destroy;
 end;
 
@@ -6388,6 +6409,7 @@ end;
 procedure TProjectBuildMacros.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp(FChangeStamp);
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
 end;
 
 procedure TProjectBuildMacros.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6437,6 +6459,17 @@ begin
     Modified:=false;
 end;
 
+procedure TProjectBuildMacros.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TProjectBuildMacros.RemoveOnChangedHandler(const Handler: TNotifyEvent
+  );
+begin
+  fOnChanged.Remove(TMethod(Handler));
+end;
+
 { TProjectBuildMode }
 
 procedure TProjectBuildMode.SetInSession(const AValue: boolean);
@@ -6445,18 +6478,54 @@ begin
   FInSession:=AValue;
 end;
 
+procedure TProjectBuildMode.OnItemChanged(Sender: TObject);
+begin
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectBuildMode.SetIdentifier(const AValue: string);
+begin
+  if FIdentifier=AValue then exit;
+  FIdentifier:=AValue;
+  IncreaseChangeStamp;
+end;
+
 constructor TProjectBuildMode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fOnChanged:=TMethodList.Create;
+  FChangeStamp:=CTInvalidChangeStamp64;
   FBuildMacroValues:=TProjectBuildMacros.Create;
+  FBuildMacroValues.AddOnChangedHandler(@OnItemChanged);
   FCompilerOptions:=TProjectCompilerOptions.Create(Self);
+  FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
 end;
 
 destructor TProjectBuildMode.Destroy;
 begin
+  FreeAndNil(fOnChanged);
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FBuildMacroValues);
   inherited Destroy;
+end;
+
+procedure TProjectBuildMode.Clear;
+begin
+  CompilerOptions.Clear;
+  BuildMacroValues.Clear;
+end;
+
+function TProjectBuildMode.Equals(Src: TProjectBuildMode): boolean;
+begin
+  Result:=CompilerOptions.CreateDiff(Src.CompilerOptions)
+          and BuildMacroValues.Equals(Src.BuildMacroValues);
+end;
+
+procedure TProjectBuildMode.Assign(Src: TProjectBuildMode);
+begin
+  if Equals(Src) then exit;
+  CompilerOptions.Assign(Src.CompilerOptions);
+  BuildMacroValues.Assign(Src.BuildMacroValues);
 end;
 
 procedure TProjectBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6475,6 +6544,23 @@ begin
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
+procedure TProjectBuildMode.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp64(FChangeStamp);
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
+end;
+
+procedure TProjectBuildMode.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TProjectBuildMode.RemoveOnChangedHandler(const Handler: TNotifyEvent
+  );
+begin
+  fOnChanged.Remove(TMethod(Handler));
+end;
+
 { TProjectBuildModes }
 
 function TProjectBuildModes.GetItems(Index: integer): TProjectBuildMode;
@@ -6482,22 +6568,22 @@ begin
   Result:=TProjectBuildMode(fItems[Index]);
 end;
 
-procedure TProjectBuildModes.SetActive(const AValue: TProjectBuildMode);
+procedure TProjectBuildModes.OnItemChanged(Sender: TObject);
 begin
-  if FActive=AValue then exit;
-  FActive:=AValue;
   IncreaseChangeStamp;
 end;
 
 constructor TProjectBuildModes.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fOnChanged:=TMethodList.Create;
   fItems:=TFPList.Create;
   FChangeStamp:=CTInvalidChangeStamp;
 end;
 
 destructor TProjectBuildModes.Destroy;
 begin
+  FreeAndNil(fOnChanged);
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
@@ -6530,6 +6616,7 @@ function TProjectBuildModes.Add(Identifier: string): TProjectBuildMode;
 begin
   Result:=TProjectBuildMode.Create(Self);
   Result.FIdentifier:=Identifier;
+  Result.AddOnChangedHandler(@OnItemChanged);
   fItems.Add(Result);
 end;
 
@@ -6541,6 +6628,18 @@ end;
 procedure TProjectBuildModes.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp(FChangeStamp);
+  if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
+end;
+
+procedure TProjectBuildModes.AddOnChangedHandler(const Handler: TNotifyEvent);
+begin
+  fOnChanged.Add(TMethod(Handler));
+end;
+
+procedure TProjectBuildModes.RemoveOnChangedHandler(const Handler: TNotifyEvent
+  );
+begin
+  fOnChanged.Remove(TMethod(Handler));
 end;
 
 initialization
