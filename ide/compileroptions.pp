@@ -413,21 +413,35 @@ type
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class
+  private
+    FChangeStamp: int64;
+    FCommand: string;
+    FOnChanged: TNotifyEvent;
+    FScanForFPCMessages: boolean;
+    FScanForMakeMessages: boolean;
+    FShowAllMessages: boolean;
+    procedure SetCommand(const AValue: string);
+    procedure SetScanForFPCMessages(const AValue: boolean);
+    procedure SetScanForMakeMessages(const AValue: boolean);
+    procedure SetShowAllMessages(const AValue: boolean);
   public
-    Command: string;
-    ScanForFPCMessages: boolean;
-    ScanForMakeMessages: boolean;
-    ShowAllMessages: boolean;
     procedure Clear; virtual;
-    function IsEqual(CompOpts: TCompilationToolOptions): boolean;
+    function CreateDiff(CompOpts: TCompilationToolOptions;
+                         Tool: TCompilerDiffTool = nil): boolean; virtual;
     procedure Assign(Src: TCompilationToolOptions); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); virtual;
-    function CreateDiff(CompOpts: TCompilationToolOptions;
-                         Tool: TCompilerDiffTool = nil): boolean; virtual;
     function Execute(const WorkingDir, ToolTitle: string): TModalResult;
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+  public
+    property Command: string read FCommand write SetCommand;
+    property ScanForFPCMessages: boolean read FScanForFPCMessages write SetScanForFPCMessages;
+    property ScanForMakeMessages: boolean read FScanForMakeMessages write SetScanForMakeMessages;
+    property ShowAllMessages: boolean read FShowAllMessages write SetShowAllMessages;
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
@@ -521,6 +535,7 @@ type
     fMsgFileName: String;  // messages file name 
     fCompilerMessages: TCompilerMessagesList;
 
+    procedure OnItemChanged(Sender: TObject);
   protected
     function GetCompilerPath: String;
     function GetBaseDirectory: string;
@@ -1082,7 +1097,9 @@ begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
   FExecuteBefore := AToolClass.Create;
+  FExecuteBefore.OnChanged:=@OnItemChanged;
   FExecuteAfter := AToolClass.Create;
+  fExecuteAfter.OnChanged:=@OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
   FCompilerMessages:=TCompilerMessagesList.Create;
   Clear;
@@ -1227,6 +1244,11 @@ begin
   inherited SetLCLWidgetType(AValue);
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
+begin
+  IncreaseChangeStamp;
 end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;
@@ -3733,23 +3755,41 @@ end;
 
 { TCompilationToolOptions }
 
+procedure TCompilationToolOptions.SetCommand(const AValue: string);
+begin
+  if FCommand=AValue then exit;
+  FCommand:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TCompilationToolOptions.SetScanForFPCMessages(const AValue: boolean);
+begin
+  if FScanForFPCMessages=AValue then exit;
+  FScanForFPCMessages:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TCompilationToolOptions.SetScanForMakeMessages(const AValue: boolean
+  );
+begin
+  if FScanForMakeMessages=AValue then exit;
+  FScanForMakeMessages:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TCompilationToolOptions.SetShowAllMessages(const AValue: boolean);
+begin
+  if FShowAllMessages=AValue then exit;
+  FShowAllMessages:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TCompilationToolOptions.Clear;
 begin
   Command:='';
   ScanForFPCMessages:=false;
   ScanForMakeMessages:=false;
   ShowAllMessages:=false;
-end;
-
-function TCompilationToolOptions.IsEqual(CompOpts: TCompilationToolOptions
-  ): boolean;
-var
-  Tool: TCompilerDiffTool;
-begin
-  Tool:=TCompilerDiffTool.Create(nil);
-  CreateDiff(CompOpts,Tool);
-  Result:=Tool.Differ;
-  Tool.Free;
 end;
 
 procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
@@ -3830,6 +3870,12 @@ begin
     // clean up
     ExtTool.Free;
   end;
+end;
+
+procedure TCompilationToolOptions.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp64(FChangeStamp);
+  if assigned(OnChanged) then OnChanged(Self);
 end;
 
 { TGlobalCompilerOptions }
@@ -4189,7 +4235,7 @@ end;
 destructor TCompilerMessagesList.Destroy;
 begin
   Clear; 
-  fItems.Free; 
+  FreeAndNil(fItems);
   inherited Destroy;
 end;
 

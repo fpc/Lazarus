@@ -473,9 +473,12 @@ type
   { TProjectCompilationToolOptions }
 
   TProjectCompilationToolOptions = class(TCompilationToolOptions)
+  private
+    FCompileReasons: TCompileReasons;
+    FDefaultCompileReasons: TCompileReasons;
+    procedure SetCompileReasons(const AValue: TCompileReasons);
+    procedure SetDefaultCompileReasons(const AValue: TCompileReasons);
   public
-    CompileReasons: TCompileReasons;
-    DefaultCompileReasons: TCompileReasons;
     procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool): boolean; override;
@@ -484,6 +487,9 @@ type
                                 DoSwitchPathDelims: boolean); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); override;
+  public
+    property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
+    property DefaultCompileReasons: TCompileReasons read FDefaultCompileReasons write SetDefaultCompileReasons;
   end;
   
   { TProjectCompilerOptions }
@@ -645,6 +651,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function LazProject: TProject;
     procedure Clear;
     function Equals(Src: TProjectBuildMode): boolean; reintroduce;
     procedure Assign(Src: TProjectBuildMode); reintroduce;
@@ -669,10 +676,14 @@ type
   TProjectBuildModes = class(TComponent)
   private
     FChangeStamp: integer;
+    fSavedChangeStamp: int64;
     fItems: TFPList;
+    FLazProject: TProject;
     fOnChanged: TMethodList;
     function GetItems(Index: integer): TProjectBuildMode;
+    function GetModified: boolean;
     procedure OnItemChanged(Sender: TObject);
+    procedure SetModified(const AValue: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -686,6 +697,8 @@ type
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+    property LazProject: TProject read FLazProject write FLazProject;
+    property Modified: boolean read GetModified write SetModified;
   end;
 
   { TProject }
@@ -702,7 +715,9 @@ type
     
   TProject = class(TLazProject)
   private
+    FActiveBuildMode: TProjectBuildMode;
     FActiveWindowIndexAtStart: integer;
+    FBuildModes: TProjectBuildModes;
     FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
@@ -776,8 +791,9 @@ type
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
+    procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
-    procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
+    procedure SetBuildModes(const AValue: TProjectBuildModes);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
     procedure SetMainProject(const AValue: boolean);
@@ -977,6 +993,8 @@ type
     function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
     procedure DeleteBookmark(ID: Integer);
   public
+    property ActiveBuildMode: TProjectBuildMode read FActiveBuildMode
+                                                write SetActiveBuildMode;
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
     property AutoCreateForms: boolean
@@ -985,10 +1003,10 @@ type
                                          read FAutoOpenDesignerFormsDisabled
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
+    property BuildModes: TProjectBuildModes read FBuildModes write SetBuildModes;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
-    property CompilerOptions: TProjectCompilerOptions
-                                 read FCompilerOptions write SetCompilerOptions;
+    property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
@@ -2503,8 +2521,9 @@ begin
   FAutoCreateForms := true;
   FEditorInfoList := TUnitEditorInfoList.Create(nil);
   FBookmarks := TProjectBookmarkList.Create;
-  CompilerOptions := TProjectCompilerOptions.Create(Self);
-  CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
+  FBuildModes:=TProjectBuildModes.Create(nil);
+  FBuildModes.LazProject:=Self;
+  ActiveBuildMode:=FBuildModes.Add('Default');
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   FJumpHistory:=TProjectJumpHistory.Create;
@@ -2521,8 +2540,7 @@ begin
   FRunParameterOptions:=TRunParamsOptions.Create;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
-  FMacroValues:=TProjectBuildMacros.Create;
-  
+
   FResources := TProjectResources.Create(Self);
   FResources.OnModified := @EmbeddedObjectModified;
 end;
@@ -2534,8 +2552,9 @@ destructor TProject.Destroy;
 begin
   FDefineTemplates.Active := False;
   FDestroying := True;
+  ActiveBuildMode:=nil;
   Clear;
-  FreeAndNil(FMacroValues);
+  FreeAndNil(FBuildModes);
   FreeAndNil(FEditorInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
@@ -2544,7 +2563,6 @@ begin
   FreeThenNil(FSourceDirectories);
   FreeThenNil(FPublishOptions);
   FreeThenNil(FRunParameterOptions);
-  FreeThenNil(FCompilerOptions);
   FreeThenNil(FDefineTemplates);
 
   inherited Destroy;
@@ -3513,7 +3531,10 @@ begin
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
   FBookmarks.Clear;
-  FCompilerOptions.Clear;
+  ActiveBuildMode:=nil;
+  FBuildModes.Clear;
+  if not fDestroying then
+    ActiveBuildMode:=FBuildModes.Add('default');
   FDefineTemplates.Clear;
   FJumpHistory.Clear;
   fMainUnitID := -1;
@@ -3525,7 +3546,6 @@ begin
   UpdateProjectDirectory;
   FPublishOptions.Clear;
   Title := '';
-  FMacroValues.Clear;
 
   Modified := false;
   SessionModified := false;
@@ -3614,9 +3634,8 @@ end;
 
 function TProject.GetModified: boolean;
 begin
-  Result:=inherited GetModified;
-  if (not Result) and (MacroValues<>nil) then
-    Result:=MacroValues.Modified;
+  Result:=inherited GetModified
+    or ((BuildModes<>nil) and BuildModes.Modified);
 end;
 
 procedure TProject.SetMainUnitID(const AValue: Integer);
@@ -3639,14 +3658,13 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  if AValue = Modified then exit;
+  if fDestroying then exit;
   inherited SetModified(AValue);
-  if not Modified then
+  if not AValue then
   begin
     PublishOptions.Modified := False;
-    CompilerOptions.Modified := False;
     Resources.Modified := False;
-    MacroValues.Modified:=false;
+    BuildModes.Modified:=false;
     SessionModified := False;
   end;
 end;
@@ -4944,17 +4962,35 @@ begin
   end;
 end;
 
+procedure TProject.SetActiveBuildMode(const AValue: TProjectBuildMode);
+begin
+  if FActiveBuildMode=AValue then exit;
+  if FCompilerOptions<>nil then
+    FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=false;
+  FActiveBuildMode:=AValue;
+  if FActiveBuildMode<>nil then
+  begin
+    FMacroValues:=FActiveBuildMode.BuildMacroValues;
+    FCompilerOptions:=FActiveBuildMode.CompilerOptions;
+    FLazCompilerOptions:=FCompilerOptions;
+    FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
+    CompilerOptions.BaseDirectory:=fProjectDirectory;
+  end else begin
+    FCompilerOptions:=nil;
+    FLazCompilerOptions:=nil;
+    FMacroValues:=nil;
+  end;
+end;
+
 procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
 begin
   if FAutoOpenDesignerFormsDisabled=AValue then exit;
   FAutoOpenDesignerFormsDisabled:=AValue;
 end;
 
-procedure TProject.SetCompilerOptions(const AValue: TProjectCompilerOptions);
+procedure TProject.SetBuildModes(const AValue: TProjectBuildModes);
 begin
-  if FCompilerOptions=AValue then exit;
-  FCompilerOptions:=AValue;
-  inherited SetLazCompilerOptions(AValue);
+  FBuildModes.Assign(AValue);
 end;
 
 procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
@@ -5354,8 +5390,10 @@ end;
 
 procedure TProject.UpdateProjectDirectory;
 begin
+  if fDestroying then exit;
   fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
-  CompilerOptions.BaseDirectory:=fProjectDirectory;
+  if CompilerOptions<>nil then
+    CompilerOptions.BaseDirectory:=fProjectDirectory;
   if fProjectDirectory<>fProjectDirectoryReferenced then begin
     if fProjectDirectoryReferenced<>'' then
       FSourceDirectories.RemoveFilename(fProjectDirectoryReferenced);
@@ -5460,6 +5498,22 @@ begin
 end;
 
 { TProjectCompilationToolOptions }
+
+procedure TProjectCompilationToolOptions.SetCompileReasons(
+  const AValue: TCompileReasons);
+begin
+  if FCompileReasons=AValue then exit;
+  FCompileReasons:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectCompilationToolOptions.SetDefaultCompileReasons(
+  const AValue: TCompileReasons);
+begin
+  if FDefaultCompileReasons=AValue then exit;
+  FDefaultCompileReasons:=AValue;
+  IncreaseChangeStamp;
+end;
 
 procedure TProjectCompilationToolOptions.Clear;
 begin
@@ -6497,7 +6551,7 @@ begin
   FChangeStamp:=CTInvalidChangeStamp64;
   FBuildMacroValues:=TProjectBuildMacros.Create;
   FBuildMacroValues.AddOnChangedHandler(@OnItemChanged);
-  FCompilerOptions:=TProjectCompilerOptions.Create(Self);
+  FCompilerOptions:=TProjectCompilerOptions.Create(LazProject);
   FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
 end;
 
@@ -6507,6 +6561,12 @@ begin
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FBuildMacroValues);
   inherited Destroy;
+end;
+
+function TProjectBuildMode.LazProject: TProject;
+begin
+  if Owner is TProjectBuildModes then
+    Result:=TProjectBuildModes(Owner).LazProject;
 end;
 
 procedure TProjectBuildMode.Clear;
@@ -6568,9 +6628,22 @@ begin
   Result:=TProjectBuildMode(fItems[Index]);
 end;
 
+function TProjectBuildModes.GetModified: boolean;
+begin
+  Result:=fSavedChangeStamp<>FChangeStamp;
+end;
+
 procedure TProjectBuildModes.OnItemChanged(Sender: TObject);
 begin
   IncreaseChangeStamp;
+end;
+
+procedure TProjectBuildModes.SetModified(const AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else
+    fSavedChangeStamp:=FChangeStamp;
 end;
 
 constructor TProjectBuildModes.Create(AOwner: TComponent);
@@ -6579,6 +6652,7 @@ begin
   fOnChanged:=TMethodList.Create;
   fItems:=TFPList.Create;
   FChangeStamp:=CTInvalidChangeStamp;
+  fSavedChangeStamp:=FChangeStamp;
 end;
 
 destructor TProjectBuildModes.Destroy;

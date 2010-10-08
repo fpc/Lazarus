@@ -688,7 +688,6 @@ type
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;
     FExecutableType: TProjectExecutableType;
-    FLazCompilerOptions: TLazCompilerOptions;
     fModified: boolean;
     FProjectSessionFile: string;
     FSessionModified: boolean;
@@ -697,8 +696,8 @@ type
     FLazDocPaths: string;
     procedure SetLazDocPaths(const AValue: string);
   protected
+    FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
-    procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -740,8 +739,7 @@ type
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
-    property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions
-                                                     write SetLazCompilerOptions;
+    property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectSessionFile: string
@@ -1341,13 +1339,6 @@ begin
   if FExecutableType=AValue then exit;
   FExecutableType:=AValue;
   // not saved to lpi, so do not set Modified
-end;
-
-procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);
-begin
-  if FLazCompilerOptions=AValue then exit;
-  FLazCompilerOptions:=AValue;
-  Modified:=true;
 end;
 
 procedure TLazProject.SetTitle(const AValue: String);
