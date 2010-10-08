@@ -1128,12 +1128,13 @@ begin
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   QuickBuildOptionsRadioGroup.ItemIndex:=Options.QuickBuildOption;
-  QuickBuildOptionsRadioGroupClick(Self);
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   TargetCPUComboBox.Text:=Options.TargetCPU;
 
   Advanced := Options.Advanced;
+  if not Advanced then
+    QuickBuildOptionsRadioGroupClick(Self);
 
   Invalidate;
 end;

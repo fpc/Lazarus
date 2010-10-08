@@ -92,6 +92,9 @@
   - refactor compiler options (default options, load, save to file)
   - disabled project compiler options, used only for storage
   - replaced OwnerProject with LazProject
+  - added buildmodes to project
+  - moved compileroptions and macrovalues to active buildmode
+
 
   ToDo:
   - create Makefile:
@@ -110,12 +113,17 @@
   - help for add/delete macro speedbuttons
   - change IDE options dialog to not depend on a global option instance
   - a project can save the set of build macros and compiler options
-    - add changestamp, assign, equals to compiler options
     - store sets in lpi
       - the default build mode should be stored in the old xml path, so that
         old IDEs can open newer projects.
     - store sets in lps
     - store active build mode in session
+    - edit build modes:
+      - add
+      - delete
+      - move up
+      - move down
+      - make active
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units
