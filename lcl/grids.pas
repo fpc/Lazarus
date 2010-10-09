@@ -7985,6 +7985,7 @@ begin
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
+  FPickListEditor.AutoSize := false;
 
   FButtonStringEditor := TCompositeCellEditor.Create(nil);
   FButtonStringEditor.Name:='ButtonTextEditor';
