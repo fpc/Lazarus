@@ -91,7 +91,7 @@ type
 
   TSynGutterLOvLineMarks = class(TSynGutterLOvMarkList)
   private
-    FLine: Integer;
+    FPixLine: Integer;
   protected
     procedure ReSort; override; // by prior
     procedure ReSortByLine;
@@ -100,7 +100,7 @@ type
     constructor Create;
     procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer; AnItemHeight: Integer);
     procedure Add(AValue: TSynGutterLOvMark); override;
-    property Line: Integer read FLine;
+    property PixLine: Integer read FPixLine;
   end;
 
   { TSynGutterLOvLineMarksList
@@ -426,7 +426,7 @@ end;
 
 function TSynGutterLOvLineMarks.Compare(Other: TSynGutterLOvLineMarks): Integer;
 begin
-  Result := Line - Other.Line;
+  Result := PixLine - Other.PixLine;
   if Result <> 0 then exit;
   Result := PtrUint(self) - PtrUInt(Other);
 end;
@@ -442,13 +442,13 @@ procedure TSynGutterLOvLineMarks.Paint(Canvas: TCanvas; AClip: TRect; TopOffset:
 var
   bs: TFPBrushStyle;
 begin
-  if (FLine + AnItemHeight < AClip.Top - TopOffset) or
-     (FLine > AClip.Bottom - TopOffset)
+  if (FPixLine + AnItemHeight < AClip.Top - TopOffset) or
+     (FPixLine > AClip.Bottom - TopOffset)
   then
     exit;
 
-  AClip.Top    :=  FLine;
-  AClip.Bottom := Max(FLine+1, FLine + AnItemHeight - 1);
+  AClip.Top    :=  FPixLine;
+  AClip.Bottom := Max(FPixLine+1, FPixLine + AnItemHeight - 1);
   inc(AClip.Left);
   dec(AClip.Right);
 
@@ -496,7 +496,7 @@ var
 begin
   LMark := TSynGutterLOvMark(Sender).LineMarks;
   j := TextLineToPixLine(TSynGutterLOvMark(Sender).Line);
-  if (j >= LMark.Line) and (j < LMark.Line + ItemHeight) then begin
+  if (j >= LMark.PixLine) and (j < LMark.PixLine + ItemHeight) then begin
     LMark.ReSort;
     exit;
   end;
@@ -522,7 +522,8 @@ end;
 
 function TSynGutterLOvLineMarksList.TextLineToPixLine(ATxtLine: Integer): Integer;
 begin
-  Result:= (ATxtLine - 1) * Max(1, PixelHeight - ItemHeight + 1) div TextLineCount - 1;
+  Result := Int64(ATxtLine - 1) * Int64(Max(1, PixelHeight - ItemHeight + 1)) div TextLineCount - 1;
+  //Result := MulDiv(ATxtLine - 1, Max(1, PixelHeight - ItemHeight + 1), TextLineCount) - 1;
 end;
 
 procedure TSynGutterLOvLineMarksList.ReBuild(AFromIndex: Integer = -1);
@@ -534,9 +535,9 @@ procedure TSynGutterLOvLineMarksList.ReBuild(AFromIndex: Integer = -1);
     i := ASrc.Count -1;
     while i >= 0 do begin
        j := TextLineToPixLine(ASrc[i].Line);
-       if j >= ASrc.Line +ItemHeight then begin
-         if (ADest.Count = 0) or (ADest.Line > j) then
-           ADest.FLine := j;
+       if j >= ASrc.PixLine +ItemHeight then begin
+         if (ADest.Count = 0) or (ADest.PixLine > j) then
+           ADest.FPixLine := j;
          ADest.Add(ASrc[i]);
          ASrc.Delete(i);
        end;
@@ -552,7 +553,7 @@ procedure TSynGutterLOvLineMarksList.ReBuild(AFromIndex: Integer = -1);
     NewLine := MaxInt;
     while i >= 0 do begin
        j := TextLineToPixLine(ASrc[i].Line);
-       if j < ADest.Line + ItemHeight then begin
+       if j < ADest.PixLine + ItemHeight then begin
          ADest.Add(ASrc[i]);
          ASrc.Delete(i);
        end
@@ -560,7 +561,7 @@ procedure TSynGutterLOvLineMarksList.ReBuild(AFromIndex: Integer = -1);
          if j < NewLine then NewLine := j;
        dec(i);
     end;
-    ASrc.FLine := NewLine;
+    ASrc.FPixLine := NewLine;
   end;
 
 var
@@ -576,7 +577,7 @@ begin
       if (i = 0) or (j < NewIdx) then
         NewIdx := j;
     end;
-    Items[0][i].FLine := NewIdx;
+    Items[0].FPixLine := NewIdx;
     AFromIndex := 0;
   end;
 
@@ -585,7 +586,7 @@ begin
   NextItem := Items[AFromIndex];
   NextItem.Lock;
   while NextItem <> nil do begin
-    if (TmpItem.Count > 0) and (TmpItem.Line < NextItem.Line) then begin
+    if (TmpItem.Count > 0) and (TmpItem.PixLine < NextItem.PixLine) then begin
       Insert(AFromIndex, TmpItem);
       CurItem := TmpItem;
       TmpItem := TSynGutterLOvLineMarks.Create;
@@ -598,8 +599,8 @@ begin
     if AFromIndex < Count then begin
       NextItem := Items[AFromIndex];
       NextItem.Lock;
-      if NextItem.Line < CurItem.Line + ItemHeight then
-        NextItem.FLine := CurItem.Line + ItemHeight;
+      if NextItem.PixLine < CurItem.PixLine + ItemHeight then
+        NextItem.FPixLine := CurItem.PixLine + ItemHeight;
     end
     else
       NextItem := nil;
@@ -667,7 +668,7 @@ begin
   i := IndexForLine(PixLine, True);
   if i >= 0 then begin
     LMarks := Items[i];
-    if (PixLine >= LMarks.Line) and (PixLine < LMarks.Line + ItemHeight) then begin
+    if (PixLine >= LMarks.PixLine) and (PixLine < LMarks.PixLine + ItemHeight) then begin
       LMarks.Add(AMark);
       // sendinvalidate
       exit;
@@ -676,13 +677,13 @@ begin
 
   inc(i);
   LMarks := TSynGutterLOvLineMarks.Create;
-  LMarks.FLine := PixLine;
+  LMarks.FPixLine := PixLine;
   Insert(i, LMarks);
 
   LMarks.Add(AMark);
   // sendinvalidate
 
-  if (i < Count - 1) and (Items[i+1].Line < LMarks.Line + ItemHeight) then
+  if (i < Count - 1) and (Items[i+1].PixLine < LMarks.PixLine + ItemHeight) then
     ReBuild(i);
 end;
 
@@ -690,9 +691,9 @@ function TSynGutterLOvLineMarksList.IndexForLine(ALine: Integer;
   PreviousIfNotExist: Boolean = False): Integer;
 begin
   Result := Count - 1;
-  while (Result >= 0) and (Items[Result].Line > ALine) do
+  while (Result >= 0) and (Items[Result].PixLine > ALine) do
     dec(Result);
-  if ((Result >= 0) and (Items[Result].Line = ALine)) or (PreviousIfNotExist) then
+  if ((Result >= 0) and (Items[Result].PixLine = ALine)) or (PreviousIfNotExist) then
     exit;
   Result := -1;
 end;
@@ -704,10 +705,10 @@ var
   LMarks: TSynGutterLOvLineMarks;
 begin
   i := IndexForLine(ALine, CreateIfNotExists);
-  if CreateIfNotExists and ( (i < 0) or (Items[i].Line <> ALine) ) then begin
+  if CreateIfNotExists and ( (i < 0) or (Items[i].PixLine <> ALine) ) then begin
     inc(i);
     LMarks := TSynGutterLOvLineMarks.Create;
-    LMarks.FLine := i;
+    LMarks.FPixLine := i;
     Insert(i, LMarks);
   end;
   if  i >= 0 then
@@ -741,7 +742,7 @@ constructor TSynGutterLineOverviewProvider.Create(AOwner: TComponent);
 begin
   inherited;
   FGutterPart := Owner.Owner;
-  FColor := clGray;
+  FColor := clLtGray;
   FriendEdit := SynEdit;
   FMarkList := TSynGutterLOvMarkList.Create;
 end;
@@ -923,7 +924,7 @@ constructor TSynGutterLOvProviderCurrentPage.Create(AOwner: TComponent);
 begin
   inherited;
   FColor := 0;
-  Color := clGray;
+  Color := $C0C0C0;
   TSynEdit(SynEdit).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged,
                                                  [scTopLine, scLinesInWindow]);
 end;
@@ -1192,7 +1193,7 @@ begin
 
   FLineMarks := TSynGutterLOvLineMarksList.Create;
   FProviders := TSynGutterLineOverviewProviderList.Create(Self);
-  MarkupInfo.Background := clLtGray;
+  MarkupInfo.Background := $E0E0E0;
   LineCountchanged(nil, 0, 0);
 end;
 
