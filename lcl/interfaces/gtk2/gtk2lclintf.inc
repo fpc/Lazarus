@@ -853,6 +853,209 @@ begin
   Result:=true;
 end;
 
+function PromptUserBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
+  data: gPointer) : GBoolean; cdecl;
+var
+  ModalResult : PtrUInt;
+begin
+  { We were requested by window manager to close so return EscapeResult}
+  if PInteger(data)^ = 0 then
+  begin
+    ModalResult:= PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    { Don't allow to close if we don't have a default return value }
+    Result:= (ModalResult = 0);
+    if not Result then PInteger(data)^:= ModalResult
+    else DebugLn('Do not close !!!');
+  end else Result:= false;
+end;
+
+function PromptUserButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
+begin
+  PInteger(data)^ := PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  Result := False;
+end;
+
+function TGtk2WidgetSet.PromptUser(const DialogCaption: string;
+  const DialogMessage: string; DialogType: LongInt; Buttons: PLongInt;
+  ButtonCount: LongInt; DefaultIndex: LongInt; EscapeResult: LongInt): LongInt;
+var
+  Btn: PGtkButton;
+  Dialog: PGtkWidget;
+  ADialogResult: Integer;
+  GtkDialogType: TGtkMessageType;
+  Btns: TGtkButtonsType;
+  BtnIdx: Integer;
+  DefaultID: Integer;
+  X: Integer;
+  MainList,ChildList: PGList;
+  Title: String;
+
+  procedure CreateButton(const ALabel : PChar; const AResponse: Integer);
+  begin
+    gtk_dialog_add_button(PGtkDialog(Dialog), ALabel, AResponse);
+  end;
+
+  function ResponseID(const AnID: Integer): Integer;
+  begin
+    case AnID of
+      idButtonOK       : Result := GTK_RESPONSE_OK;
+      idButtonCancel   : Result := GTK_RESPONSE_CANCEL;
+      idButtonHelp     : Result := GTK_RESPONSE_HELP;
+      idButtonYes      : Result := GTK_RESPONSE_YES;
+      idButtonNo       : Result := GTK_RESPONSE_NO;
+      idButtonClose    : Result := GTK_RESPONSE_CLOSE;
+      idButtonAbort    : Result := GTK_RESPONSE_CANCEL;
+      idButtonRetry    : Result := GTK_RESPONSE_ACCEPT;
+      idButtonIgnore   : Result := GTK_RESPONSE_CLOSE;
+      idButtonNoToAll  : Result := GTK_RESPONSE_APPLY;
+      idButtonYesToAll : Result := GTK_RESPONSE_REJECT;
+    end;
+  end;
+
+begin
+  Result := -1;
+  ReleaseCapture;
+  ADialogResult := EscapeResult;
+  case DialogType of
+    idDialogWarning: GtkDialogType := GTK_MESSAGE_WARNING;
+    idDialogError: GtkDialogType := GTK_MESSAGE_ERROR;
+    idDialogInfo : GtkDialogType := GTK_MESSAGE_INFO;
+    idDialogConfirm : GtkDialogType := GTK_MESSAGE_QUESTION;
+  else
+    GtkDialogType := GTK_MESSAGE_INFO;
+  end;
+
+  Btns := GTK_BUTTONS_NONE;
+  DefaultId := 0;
+  for X := 0 to ButtonCount - 1 do
+  begin
+    if X = DefaultIndex then
+      DefaultID := Buttons[X];
+  end;
+
+  // simplify things for known situations
+  if (ButtonCount = 1) and (Buttons[0] in
+    [idButtonOK,idButtonClose,idButtonCancel]) then
+  begin
+    case Buttons[0] of
+      idButtonOK: Btns := GTK_BUTTONS_OK;
+      idButtonClose: Btns := GTK_BUTTONS_CLOSE;
+      idButtonCancel: Btns := GTK_BUTTONS_CANCEL;
+    end;
+  end else
+  if (ButtonCount = 2) and
+    ((Buttons[0] = idButtonYes) or (Buttons[1] = idButtonYes)) and
+    ((Buttons[0] = idButtonNo) or (Buttons[1] = idButtonNo)) then
+  begin
+    Btns := GTK_BUTTONS_YES_NO;
+  end else
+  if (ButtonCount = 2) and
+    ((Buttons[0] = idButtonOK) or (Buttons[1] = idButtonOK)) and
+    ((Buttons[0] = idButtonCancel) or (Buttons[1] = idButtonCancel)) then
+  begin
+    Btns := GTK_BUTTONS_OK_CANCEL;
+  end;
+
+  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
+    PGChar(DialogMessage));
+
+  g_signal_connect(PGtkObject(Dialog), 'delete-event',
+    TGtkSignalFunc(@PromptUserBoxClosed),
+    @ADialogResult);
+
+  if Btns = GTK_BUTTONS_NONE then
+  begin
+    // gtk2 have reverted buttons eg. No, Yes
+    for BtnIdx := ButtonCount-1 downto 0 do
+    begin
+      case Buttons[BtnIdx] of
+        idButtonOK       : CreateButton('gtk-ok', GTK_RESPONSE_OK);
+        idButtonCancel   : CreateButton('gtk-cancel', GTK_RESPONSE_CANCEL);
+        idButtonHelp     : CreateButton('gtk-help', GTK_RESPONSE_HELP);
+        idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
+        idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
+        idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
+        idButtonAbort    : CreateButton('gtk-stop', GTK_RESPONSE_REJECT);
+        idButtonRetry    : CreateButton('gtk-refresh', GTK_RESPONSE_ACCEPT);
+        idButtonIgnore   : CreateButton('gtk-remove', GTK_RESPONSE_CLOSE);
+        idButtonNoToAll  : CreateButton('gtk-no', GTK_RESPONSE_REJECT);
+        idButtonYesToAll : CreateButton('gtk-apply', GTK_RESPONSE_APPLY);
+      end;
+    end;
+  end;
+
+  MainList := gtk_container_children(PGtkContainer(PGtkDialog(Dialog)^.action_area));
+  ChildList := MainList;
+  BtnIdx := 0;
+
+  while ChildList <> nil do
+  begin
+    if (ChildList^.Data <> nil) then
+    begin
+      if GTK_IS_BUTTON(ChildList^.Data) then
+      begin
+        Btn := PGtkButton(ChildList^.Data);
+        {if we set new labels, stock id is lost (no image on button)
+        so gtk_button_set_image() is needed in that case.
+        case Buttons[BtnIdx] of
+          idButtonOK       : gtk_button_set_label(Btn, PGChar(rsMBOK));
+          idButtonCancel   : gtk_button_set_label(Btn, PGChar(rsMBCancel));
+          idButtonHelp     : gtk_button_set_label(Btn, PGChar(rsMBHelp));
+          idButtonYes      : gtk_button_set_label(Btn, PGChar(rsMBYes));
+          idButtonNo       : gtk_button_set_label(Btn, PGChar(rsMBNo));
+          idButtonClose    : gtk_button_set_label(Btn, PGChar(rsMBClose));
+          idButtonAbort    : gtk_button_set_label(Btn, PGChar(rsMBAbort));
+          idButtonRetry    : gtk_button_set_label(Btn, PGChar(rsMBRetry));
+          idButtonIgnore   : gtk_button_set_label(Btn, PGChar(rsMBIgnore));
+          idButtonNoToAll  : gtk_button_set_label(Btn, PGChar(rsMBNoToAll));
+          idButtonYesToAll : gtk_button_set_label(Btn, PGChar(rsMBYesToAll));
+        end;
+        }
+
+        if Buttons[BtnIdx] = idButtonCancel then
+           gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+
+        X := Buttons[BtnIdx];
+        gtk_object_set_data(PGtkObject(Btn), 'modal_result',
+          Pointer(PtrInt(X)));
+
+        g_signal_connect(PGtkObject(Btn), 'clicked',
+          TGtkSignalFunc(@PromptUserButtonClicked), @ADialogResult);
+
+        if DefaultID = Buttons[BtnIdx] then
+        begin
+          gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(Buttons[BtnIdx]));
+          X := Buttons[BtnIdx];
+          gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
+            Pointer(PtrInt(X)));
+        end;
+
+        inc(BtnIdx);
+      end;
+    end;
+    ChildList := g_list_next(ChildList);
+  end;
+  if MainList <> nil then
+    g_list_free(MainList);
+
+  if DialogCaption <> '' then
+    gtk_window_set_title(PGtkWindow(Dialog), PGChar(DialogCaption))
+  else
+  begin
+    Title := '';
+    case DialogType of
+      idDialogWarning: Title := rsMtWarning;
+      idDialogError: Title := rsMtError;
+      idDialogInfo : Title := rsMtInformation;
+      idDialogConfirm : Title := rsMtConfirmation;
+    end;
+    gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
+  end;
+  gtk_dialog_run(PGtkDialog(Dialog));
+  gtk_widget_destroy(Dialog);
+  Result := ADialogResult;
+end;
+
 function TGtk2WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
   MinItemsHeight, MinItemCount: integer): boolean;
 var

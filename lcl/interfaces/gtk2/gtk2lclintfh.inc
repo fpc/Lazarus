@@ -54,6 +54,14 @@ function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
+function PromptUser(const DialogCaption : string;
+                    const DialogMessage : string;
+                          DialogType    : LongInt;
+                          Buttons       : PLongInt;
+                          ButtonCount   : LongInt;
+                          DefaultIndex  : LongInt;
+                          EscapeResult  : LongInt) : LongInt; override;
+
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: boolean = False): boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): boolean; override;
 function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;
