@@ -199,8 +199,11 @@ end;
 procedure TDiskDiffsDlg.DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key=VK_Escape then
-    ModalResult:=mrCancel;
+  if Key = VK_Escape then
+    ModalResult := mrIgnore
+  else
+  if Key = VK_Return then
+    ModalResult := mrYesToAll;
 end;
 
 procedure TDiskDiffsDlg.FilesListBoxMouseUp(Sender: TOBject;

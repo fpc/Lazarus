@@ -1,11 +1,13 @@
 object DiskDiffsDlg: TDiskDiffsDlg
   Left = 314
   Height = 354
-  Top = 379
+  Top = 351
   Width = 600
+  ActiveControl = FilesListBox
   Caption = 'DiskDiffsDlg'
   ClientHeight = 354
   ClientWidth = 600
+  KeyPreview = True
   OnClose = FormClose
   OnKeyDown = DiskDiffsDlgKeyDown
   Position = poScreenCenter
@@ -21,11 +23,12 @@ object DiskDiffsDlg: TDiskDiffsDlg
     ItemHeight = 0
     OnMouseUp = FilesListBoxMouseUp
     TabOrder = 0
+    TopIndex = -1
   end
   inline DiffSynEdit: TSynEdit
     AnchorSideBottom.Control = CheckDiskChangesWithLoadingCheckBox
     Left = 6
-    Height = 189
+    Height = 182
     Top = 97
     Width = 588
     Align = alTop
@@ -41,8 +44,32 @@ object DiskDiffsDlg: TDiskDiffsDlg
     TabOrder = 1
     BookMarkOptions.Xoffset = -18
     Gutter.Visible = False
-    Gutter.Width = 0
+    Gutter.Width = 57
     Gutter.MouseActions = <    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccAny
+        ClickDir = cdDown
+        Command = 13
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbRight
+        ClickCount = ccSingle
+        ClickDir = cdUp
+        Command = 12
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end>
+    RightGutter.Width = 0
+    RightGutter.MouseActions = <    
       item
         Shift = []
         ShiftMask = []
@@ -517,10 +544,10 @@ object DiskDiffsDlg: TDiskDiffsDlg
     BracketHighlightStyle = sbhsBoth
     inline SynGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
-        Width = 23
+        Width = 24
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
-        Width = 25
+        Width = 17
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
@@ -622,6 +649,8 @@ object DiskDiffsDlg: TDiskDiffsDlg
           end>
       end
     end
+    inline SynRightGutterPartList1: TSynRightGutterPartList
+    end
   end
   object Splitter: TSplitter
     Cursor = crVSplit
@@ -636,9 +665,9 @@ object DiskDiffsDlg: TDiskDiffsDlg
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 19
-    Top = 292
-    Width = 241
+    Height = 22
+    Top = 285
+    Width = 302
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
@@ -646,20 +675,20 @@ object DiskDiffsDlg: TDiskDiffsDlg
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 37
-    Top = 317
+    Height = 41
+    Top = 313
     Width = 600
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 37
+    ClientHeight = 41
     ClientWidth = 600
     TabOrder = 4
     object RevertAllButton: TButton
-      Left = 485
-      Height = 25
+      Left = 472
+      Height = 29
       Top = 6
-      Width = 109
+      Width = 122
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -669,10 +698,10 @@ object DiskDiffsDlg: TDiskDiffsDlg
       TabOrder = 0
     end
     object IgnoreDiskChangesButton: TButton
-      Left = 315
-      Height = 25
+      Left = 278
+      Height = 29
       Top = 6
-      Width = 164
+      Width = 188
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
