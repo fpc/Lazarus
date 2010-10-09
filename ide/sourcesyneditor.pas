@@ -505,8 +505,8 @@ constructor TIDESynGutterLOvProviderPascal.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SingleLine := False;
-  Color  := $acacac;
-  Color2 := clLtGray;
+  Color  := $D4D4D4;
+  Color2 := $E8E8E8;
   TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
     TMethod({$IFDEF FPC}@{$ENDIF}HighlightChanged));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
@@ -542,7 +542,7 @@ end;
 constructor TIDESynGutterLOvProviderIDEMarks.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  BreakColor := $4466ff;
+  BreakColor := $0080C8;
 end;
 
 { TIDESynGutter }
@@ -560,19 +560,29 @@ begin
       Name := 'SynGutterSeparator1';
     with TIDESynGutterCodeFolding.Create(Parts) do
       Name := 'SynGutterCodeFolding1';
-  //end
-  //else begin
-  //  with TSynGutterLineOverview.Create(Parts) do begin
-  //    Name := 'SynGutterLineOverview1';
-  //    with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
-  //      Priority := 20;
-  //    with TSynGutterLOvProviderModifiedLines.Create(Providers) do
-  //      Priority := 9;
-  //    with TSynGutterLOvProviderCurrentPage.Create(Providers) do
-  //      Priority := 1;
-  //    with TIDESynGutterLOvProviderPascal.Create(Providers) do
-  //      Priority := 0;
-  //  end;
+  {$IFDEF WithSynOverviewGutter}
+  end
+  else begin
+    with TSynGutterSeparator.Create(Parts) do
+      Name := 'SynGutterSeparatorR';
+    with TSynGutterLineOverview.Create(Parts) do begin
+      Name := 'SynGutterLineOverview1';
+      with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
+        Priority := 20;
+      with TSynGutterLOvProviderModifiedLines.Create(Providers) do
+        Priority := 9;
+      with TSynGutterLOvProviderCurrentPage.Create(Providers) do
+        Priority := 1;
+      with TIDESynGutterLOvProviderPascal.Create(Providers) do
+        Priority := 0;
+    end;
+    with TSynGutterSeparator.Create(Parts) do begin
+      Name := 'SynGutterSeparatorR2';
+      AutoSize := False;
+      Width := 1;
+      LineWidth := 0;
+    end;
+  {$ENDIF}
   end;
 end;
 
