@@ -4575,7 +4575,7 @@ begin
       dec(P.Y, ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
       DebugLn(['TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
-      ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
+      ' MsgPos=',MouseMessage.Pos.X,',',MouseMessage.Pos.Y,
       ' Control=',Control.Left,',',Control.Top,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
       ' Scrolled=',GetClientScrollOffset.X,',',GetClientScrollOffset.Y,
