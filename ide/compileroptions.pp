@@ -112,6 +112,7 @@
     - keypress event
   - help for add/delete macro speedbuttons
   - change IDE options dialog to not depend on a global option instance
+  - TProjectBuildMacros: CreateDiff
   - a project can save the set of build macros and compiler options
     - store sets in lpi
       - the default build mode should be stored in the old xml path, so that

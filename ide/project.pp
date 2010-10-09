@@ -640,14 +640,17 @@ type
   TProjectBuildMode = class(TComponent)
   private
     FChangeStamp: int64;
+    fSavedChangeStamp: int64;
     FCompilerOptions: TProjectCompilerOptions;
-    FBuildMacroValues: TProjectBuildMacros;
+    FMacroValues: TProjectBuildMacros;
     FIdentifier: string;
     FInSession: boolean;
     fOnChanged: TMethodList;
+    function GetModified: boolean;
     procedure SetIdentifier(const AValue: string);
     procedure SetInSession(const AValue: boolean);
     procedure OnItemChanged(Sender: TObject);
+    procedure SetModified(const AValue: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -665,10 +668,11 @@ type
   public
     property InSession: boolean read FInSession write SetInSession;
     property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
+    property Modified: boolean read GetModified write SetModified;
 
     // copied by Assign, compared by Equals, cleared by Clear
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
-    property BuildMacroValues: TProjectBuildMacros read FBuildMacroValues;
+    property MacroValues: TProjectBuildMacros read FMacroValues;
   end;
 
   { TProjectBuildModes }
@@ -690,6 +694,7 @@ type
     procedure Clear;
     procedure Delete(Index: integer);
     function IndexOf(Identifier: string): integer;
+    function Find(Identifier: string): TProjectBuildMode;
     function Add(Identifier: string): TProjectBuildMode;
     function Count: integer;
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
@@ -697,6 +702,7 @@ type
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+    function IsModified(InSession: boolean): boolean;
     property LazProject: TProject read FLazProject write FLazProject;
     property Modified: boolean read GetModified write SetModified;
   end;
@@ -2622,7 +2628,52 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     end;
     Result:=true;
   end;
-  
+
+  procedure SaveBuildModes(XMLConfig: TXMLConfig; const Path: string;
+    SaveData, SaveSession: boolean);
+  var
+    CurMode: TProjectBuildMode;
+    i: Integer;
+    Cnt: Integer;
+    SubPath: String;
+  begin
+    // the first build mode is the default mode
+    if SaveData then
+    begin
+      // save the default build mode under the old xml path to let old IDEs
+      // open new projects
+      CurMode:=BuildModes[0];
+      CurMode.MacroValues.SaveToXMLConfig(XMLConfig,Path+'MacroValues/');
+      CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/'); // no Path!
+      // Note: the 0.9.29 reader already supports fetching the default build
+      //       mode from the BuildModes, so in one or two releases we can switch
+    end;
+
+    Cnt:=0;
+    for i:=0 to BuildModes.Count-1 do
+    begin
+      CurMode:=BuildModes[i];
+      if (CurMode.InSession and SaveSession)
+        or ((not CurMode.InSession) and SaveData) then
+      begin
+        inc(Cnt);
+        SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+        XMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
+        XMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
+        if i>0 then
+        begin
+          CurMode.MacroValues.SaveToXMLConfig(XMLConfig,SubPath+'MacroValues/');
+          CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
+        end;
+      end;
+    end;
+    XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+
+    // save what mode is currently active in the session
+    if SaveSession then
+      XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
+  end;
+
   procedure SaveUnits(XMLConfig: TXMLConfig; const Path: string;
     SaveData, SaveSession: boolean);
   var i, SaveUnitCount: integer;
@@ -2757,9 +2808,6 @@ begin
                                  ProjectSessionStorageNames[SessionStorage],
                                  ProjectSessionStorageNames[pssInProjectInfo]);
 
-        // save MacroValues
-        MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
-
         // properties
         xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
         xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
@@ -2787,8 +2835,8 @@ begin
         // save custom data
         SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
 
-        // Save the compiler options
-        CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
+        // Save the macro values and compiler options
+        SaveBuildModes(XMLConfig,Path,true,SaveSessionInfoInLPI);
 
         // save the Publish Options
         PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
@@ -2877,6 +2925,9 @@ begin
         xmlconfig.SetDeleteValue(Path+'PathDelim/Value',
                                 PathDelimSwitchToDelim[fCurStorePathDelim],'/');
         xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+
+        // Save the session build modes
+        SaveBuildModes(XMLConfig,Path,false,true);
 
         // save all units
         SaveUnits(XMLConfig,Path,true,true);
@@ -2972,23 +3023,81 @@ var
   FileVersion: Integer;
   NewMainUnitID: LongInt;
 
-  procedure LoadCompilerOptions(XMLConfig: TXMLConfig; const Path: string);
+  procedure LoadBuildModes(XMLConfig: TXMLConfig; const Path: string;
+    LoadData: boolean);
   var
     CompOptsPath: String;
+    Cnt: LongInt;
+    i: Integer;
+    SubPath: String;
+    ModeIdentifier: String;
+    CurMode: TProjectBuildMode;
+    MacroValsPath: String;
+    ActiveIdentifier: String;
   begin
-    CompOptsPath:='CompilerOptions/';
-    if FileVersion<3 then begin
+    if FileVersion<10 then begin
+      MacroValues.LoadFromXMLConfig(XMLConfig,Path+'MacroValues/');
+
+      CompOptsPath:='CompilerOptions/';
       // due to an old bug, the XML path can be 'CompilerOptions/' or ''
-      if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then
-        CompOptsPath:=''
-      else if XMLConfig.GetValue(
-        'CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
-      then
-        CompOptsPath:='CompilerOptions/';
+      if (FileVersion<3)
+      and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+        CompOptsPath:='';
+      CompilerOptions.LoadFromXMLConfig(xmlconfig,CompOptsPath);
+      if FileVersion<2 then
+        CompilerOptions.SrcPath:=xmlconfig.GetValue(Path+'General/SrcPath/Value','');
     end;
-    CompilerOptions.LoadFromXMLConfig(xmlconfig,CompOptsPath);
-    if FileVersion<2 then
-      CompilerOptions.SrcPath:=xmlconfig.GetValue(Path+'General/SrcPath/Value','');
+
+    Cnt:=XMLConfig.GetValue(Path+'BuildModes/Count',0);
+    if Cnt>0 then begin
+      for i:=1 to Cnt do begin
+        SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+        ModeIdentifier:=XMLConfig.GetValue(SubPath+'Name','');
+        if LoadData and (i=1) then begin
+          // the default mode (it already exists)
+          CurMode:=BuildModes[0];
+          CurMode.Identifier:=ModeIdentifier;
+        end else
+          // another mode
+          CurMode:=BuildModes.Add(ModeIdentifier);
+
+        if LoadData and (i=1) and XMLConfig.GetValue(SubPath+'Default',false) then
+        begin
+          // this is the default mode and it is stored at the old xml path
+          CompOptsPath:='CompilerOptions/';
+          // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+          if (FileVersion<3)
+          and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+            CompOptsPath:='';
+          MacroValsPath:=Path+'MacroValues/';
+        end else begin
+          CompOptsPath:=SubPath+'CompilerOptions/';
+          MacroValsPath:=SubPath+'MacroValues/';
+        end;
+
+        CurMode.InSession:=not LoadData;
+        CurMode.MacroValues.LoadFromXMLConfig(XMLConfig,MacroValsPath);
+        CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
+      end;
+
+      ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
+      CurMode:=BuildModes.Find(ActiveIdentifier);
+      if CurMode=nil then
+        CurMode:=BuildModes[0];
+      ActiveBuildMode:=CurMode;
+    end else begin
+      // no build modes => an old file format
+      CompOptsPath:='CompilerOptions/';
+      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+      if (FileVersion<3)
+      and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+        CompOptsPath:='';
+      MacroValsPath:=Path+'MacroValues/';
+      CurMode:=BuildModes[0];
+      CurMode.MacroValues.LoadFromXMLConfig(XMLConfig,MacroValsPath);
+      CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
+      ActiveBuildMode:=BuildModes[0];
+    end;
   end;
 
   function ReadOldProjectType(XMLConfig: TXMLConfig;
@@ -3207,9 +3316,6 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
-      // load MacroValues
-      MacroValues.LoadFromXMLConfig(xmlconfig,Path+'MacroValues/');
-
       // load properties
       // Note: in FileVersion<9 the default value was -1
       //   Since almost all projects have a MainUnit the value 0 was always
@@ -3239,8 +3345,8 @@ begin
       end;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-      // Load the compiler options
-      LoadCompilerOptions(XMLConfig,Path);
+      // load MacroValues and compiler options
+      LoadBuildModes(XMLConfig,Path,true);
 
       // Resources
       Resources.ReadFromProjectFile(xmlconfig, Path);
@@ -3296,6 +3402,9 @@ begin
           fCurStorePathDelim:=SessionStorePathDelim;
 
           FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+
+          // load MacroValues and compiler options
+          LoadBuildModes(XMLConfig,Path,false);
 
           // load session info
           LoadSessionInfo(XMLConfig,Path,true);
@@ -4970,16 +5079,16 @@ begin
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
   begin
-    FMacroValues:=FActiveBuildMode.BuildMacroValues;
+    FMacroValues:=FActiveBuildMode.MacroValues;
     FCompilerOptions:=FActiveBuildMode.CompilerOptions;
     FLazCompilerOptions:=FCompilerOptions;
     FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
-    CompilerOptions.BaseDirectory:=fProjectDirectory;
   end else begin
     FCompilerOptions:=nil;
     FLazCompilerOptions:=nil;
     FMacroValues:=nil;
   end;
+  SessionModified:=true;
 end;
 
 procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
@@ -5041,14 +5150,14 @@ begin
   if Modified then
   begin
     {$IFDEF VerboseProjectModified}
-    DebugLn('TProject.SomethingModified Modified');
+    DebugLn('TProject.SomeDataModified Modified');
     {$ENDIF}
     Exit;
   end;
-  if CompilerOptions.Modified then
+  if BuildModes.IsModified(false) then
   begin
     {$IFDEF VerboseProjectModified}
-    DebugLn(['TProject.SomethingModified CompilerOptions']);
+    DebugLn(['TProject.SomeDataModified CompilerOptions/BuildModes']);
     {$ENDIF}
     Exit;
   end;
@@ -5056,7 +5165,7 @@ begin
     if (Units[i].IsPartOfProject) and Units[i].Modified then
     begin
       {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
+      DebugLn('TProject.SomeDataModified PartOfProject ',Units[i].Filename);
       {$ENDIF}
       Exit;
     end;
@@ -5071,7 +5180,14 @@ begin
   if SessionModified then
   begin
     {$IFDEF VerboseProjectModified}
-    DebugLn('TProject.SomethingModified SessionModified');
+    DebugLn('TProject.SomeSessionModified SessionModified');
+    {$ENDIF}
+    Exit;
+  end;
+  if BuildModes.IsModified(true) then
+  begin
+    {$IFDEF VerboseProjectModified}
+    DebugLn(['TProject.SomeSessionModified CompilerOptions/BuildModes']);
     {$ENDIF}
     Exit;
   end;
@@ -5080,14 +5196,14 @@ begin
     if Units[i].SessionModified then
     begin
       {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
+      DebugLn('TProject.SomeSessionModified Session of ',Units[i].Filename);
       {$ENDIF}
       exit;
     end;
     if (not Units[i].IsPartOfProject) and Units[i].Modified then
     begin
       {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
+      DebugLn('TProject.SomeSessionModified Not PartOfProject ',Units[i].Filename);
       {$ENDIF}
       exit;
     end;
@@ -5389,11 +5505,14 @@ begin
 end;
 
 procedure TProject.UpdateProjectDirectory;
+var
+  i: Integer;
 begin
   if fDestroying then exit;
   fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
-  if CompilerOptions<>nil then
-    CompilerOptions.BaseDirectory:=fProjectDirectory;
+  if BuildModes<>nil then
+    for i:=0 to BuildModes.Count-1 do
+      BuildModes[i].CompilerOptions.BaseDirectory:=fProjectDirectory;
   if fProjectDirectory<>fProjectDirectoryReferenced then begin
     if fProjectDirectoryReferenced<>'' then
       FSourceDirectories.RemoveFilename(fProjectDirectoryReferenced);
@@ -6537,6 +6656,14 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TProjectBuildMode.SetModified(const AValue: boolean);
+begin
+  if AValue then
+    fSavedChangeStamp:=CTInvalidChangeStamp64
+  else
+    fSavedChangeStamp:=FChangeStamp;
+end;
+
 procedure TProjectBuildMode.SetIdentifier(const AValue: string);
 begin
   if FIdentifier=AValue then exit;
@@ -6544,13 +6671,19 @@ begin
   IncreaseChangeStamp;
 end;
 
+function TProjectBuildMode.GetModified: boolean;
+begin
+  Result:=fSavedChangeStamp=FChangeStamp;
+end;
+
 constructor TProjectBuildMode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fOnChanged:=TMethodList.Create;
   FChangeStamp:=CTInvalidChangeStamp64;
-  FBuildMacroValues:=TProjectBuildMacros.Create;
-  FBuildMacroValues.AddOnChangedHandler(@OnItemChanged);
+  fSavedChangeStamp:=FChangeStamp;
+  FMacroValues:=TProjectBuildMacros.Create;
+  FMacroValues.AddOnChangedHandler(@OnItemChanged);
   FCompilerOptions:=TProjectCompilerOptions.Create(LazProject);
   FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
 end;
@@ -6559,7 +6692,7 @@ destructor TProjectBuildMode.Destroy;
 begin
   FreeAndNil(fOnChanged);
   FreeAndNil(FCompilerOptions);
-  FreeAndNil(FBuildMacroValues);
+  FreeAndNil(FMacroValues);
   inherited Destroy;
 end;
 
@@ -6572,27 +6705,27 @@ end;
 procedure TProjectBuildMode.Clear;
 begin
   CompilerOptions.Clear;
-  BuildMacroValues.Clear;
+  MacroValues.Clear;
 end;
 
 function TProjectBuildMode.Equals(Src: TProjectBuildMode): boolean;
 begin
   Result:=CompilerOptions.CreateDiff(Src.CompilerOptions)
-          and BuildMacroValues.Equals(Src.BuildMacroValues);
+          and MacroValues.Equals(Src.MacroValues);
 end;
 
 procedure TProjectBuildMode.Assign(Src: TProjectBuildMode);
 begin
   if Equals(Src) then exit;
   CompilerOptions.Assign(Src.CompilerOptions);
-  BuildMacroValues.Assign(Src.BuildMacroValues);
+  MacroValues.Assign(Src.MacroValues);
 end;
 
 procedure TProjectBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   FIdentifier:=XMLConfig.GetValue('Identifier','');
-  FBuildMacroValues.LoadFromXMLConfig(XMLConfig,Path+'BuildMacros/');
+  FMacroValues.LoadFromXMLConfig(XMLConfig,Path+'BuildMacros/');
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
@@ -6600,7 +6733,7 @@ procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; ClearModified: boolean);
 begin
   XMLConfig.SetDeleteValue('Identifier',Identifier,'');
-  FBuildMacroValues.SaveToXMLConfig(XMLConfig,Path+'BuildMacros/',ClearModified);
+  FMacroValues.SaveToXMLConfig(XMLConfig,Path+'BuildMacros/',ClearModified);
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
@@ -6686,10 +6819,23 @@ begin
     dec(Result);
 end;
 
+function TProjectBuildModes.Find(Identifier: string): TProjectBuildMode;
+var
+  i: LongInt;
+begin
+  i:=IndexOf(Identifier);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
 function TProjectBuildModes.Add(Identifier: string): TProjectBuildMode;
 begin
   Result:=TProjectBuildMode.Create(Self);
   Result.FIdentifier:=Identifier;
+  if LazProject<>nil then
+    Result.CompilerOptions.BaseDirectory:=LazProject.ProjectDirectory;
   Result.AddOnChangedHandler(@OnItemChanged);
   fItems.Add(Result);
 end;
@@ -6714,6 +6860,16 @@ procedure TProjectBuildModes.RemoveOnChangedHandler(const Handler: TNotifyEvent
   );
 begin
   fOnChanged.Remove(TMethod(Handler));
+end;
+
+function TProjectBuildModes.IsModified(InSession: boolean): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    if (Items[i].InSession=InSession) and Items[i].Modified then
+      exit(true);
+  Result:=false;
 end;
 
 initialization
