@@ -2294,7 +2294,8 @@ end;
 
 procedure TCustomDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
-  FTempText := Value;
+  if not EditorIsReadOnly then
+    FTempText := Value;
 end;
 
 procedure TCustomDBGrid.SetFixedCols(const AValue: Integer);
@@ -2789,7 +2790,7 @@ begin
     AField := GetFieldFromGridColumn(Col);
     if assigned(AField) then
       Result := not AField.CanModify;
-    if not result then begin
+    if not result and not FDatalink.Editing then begin
       Include(FGridStatus, gsStartEditing);
       Result := not FDataLink.Edit;
       Exclude(FGridStatus, gsStartEditing);
