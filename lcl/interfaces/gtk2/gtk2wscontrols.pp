@@ -39,9 +39,9 @@ uses
   Graphics,
 
   gdk2pixbuf,
-  Gtk2, Gdk2, Glib2, Gtk2Globals, Gtk2Def,  Gtk2Extra,
+  Gtk2, Gdk2, Glib2, Gtk2Globals, Gtk2Def,
   Gtk2Proc, LCLType, LCLProc,
-  WSControls, WSLCLClasses, WSProc, Gtk2WinapiWindow;
+  WSControls, WSProc, Gtk2WinapiWindow;
   
 
 type

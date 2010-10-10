@@ -34,7 +34,7 @@ uses
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
   Gtk2Int, Gtk2WSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
-  WSDialogs, WSLCLClasses;
+  WSDialogs;
   
 type
   { TGtk2WSCommonDialog }

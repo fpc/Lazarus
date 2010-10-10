@@ -29,15 +29,14 @@ interface
 
 uses
   // Bindings
-  glib2,  gdk2, gtk2, Pango,
+  glib2,  gdk2, gtk2,
   // RTL, FCL, LCL
   Classes, SysUtils, Math, Controls, Graphics,
   StdCtrls, LMessages, LCLType, LCLProc,
   // Widgetset
-  WSControls, WSProc, WSStdCtrls, WSLCLClasses, Gtk2Int, Gtk2Def,
-  Gtk2CellRenderer, Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, InterfaceBase,
-  Gtk2WSControls,
-  Gtk2WSPrivate, Gtk2Extra;
+  WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
+  Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,
+  Gtk2WSControls, Gtk2Extra;
 
 type
 

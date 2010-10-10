@@ -30,13 +30,10 @@ uses
   // Bindings
   Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
   {$IFDEF HASX}
-  Gdk2x, X, XLib, ctypes,
+  Gdk2x, X, XLib,
   {$ENDIF}
-  // RTL, FCL, LCL
-  SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
-  Graphics, Dialogs,Forms, Math,
-  // Widgetset
-  WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
+  Classes, LCLType, Controls, LMessages, InterfaceBase,
+  Graphics,Forms, Math, WSForms, WSProc,
   Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls;
 
 type
