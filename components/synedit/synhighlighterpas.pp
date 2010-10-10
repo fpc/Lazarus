@@ -1172,8 +1172,10 @@ function TSynPasSyn.Func56: TtkTokenKind;
 begin
   if KeyComp('Index') then
   begin
-    if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
-  end else
+    if (rsProperty in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+      Result := tkKey else Result := tkIdentifier;
+  end
+  else
     if KeyComp('Out') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -1283,9 +1285,15 @@ begin
     else
       Result := tkIdentifier;
   end else
- if KeyComp('Dynamic') then Result := tkKey
- else
- if KeyComp('Message') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Dynamic') then
+    Result := tkKey
+  else
+  if KeyComp('Message') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
+  then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func71: TtkTokenKind;
