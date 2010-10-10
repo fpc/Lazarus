@@ -7938,16 +7938,25 @@ begin
   // the codetools are used)
   CodeToolBoss.IdentifierList.Clear;
   FDefaultCompletionForm.CurrentCompletionType:=ctNone;
+
+  (* SetFocus and Deactivate will all trigger this proc to be reentered.
+     Setting "CurrentCompletionType:=ctNone" ensures an immediate exit
+  *)
+
+  (* Due to a bug under XFCE we must move focus before we close the form
+     This is relevant if the form is closed by enter/escape key
+  *)
+  if PluginFocused and (ActiveEditor<>nil) then
+    TSourceEditor(ActiveEditor).FocusEditor;
+
+  (* hide/close the form *)
   FDefaultCompletionForm.Deactivate;
 
-  if PluginFocused and (ActiveEditor<>nil) then begin
-    {$IFDEF LCLQT}
-    // Need to force the correct form too (QT)
+  (* Ensure focus *after* the form was closed.
+     This is the normal implementation (all but XFCE)
+  *)
+  if PluginFocused and (ActiveEditor<>nil) then
     TSourceEditor(ActiveEditor).FocusEditor;
-    {$ELSE}
-    TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
-    {$ENDIF}
-  end;
 end;
 
 procedure TSourceEditorManagerBase.RegisterCompletionPlugin(
