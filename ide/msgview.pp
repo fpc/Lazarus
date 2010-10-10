@@ -43,12 +43,23 @@ uses
   LCLProc, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
   Menus, ExtCtrls, StdCtrls, ComCtrls, Graphics,
   CodeToolManager,
-  IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
-  DialogProcs, EnvironmentOpts,
+  IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf,
+  SrcEditorIntf, LazIDEIntf,
+  DialogProcs, EnvironmentOpts, SourceMarks,
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, infobuild,
   KeyMapping;
 
 type
+
+  { TMessageViewMarklings }
+
+  TMessageViewMarklings = class(TSourceMarklingProducer)
+  private
+  public
+    function GetMarklings(aFilename: string;
+                       out FreeList, FreeMarklings: boolean): TFPList; override;
+  end;
+
   TLazMsgLineFlag = (
     lmlfHasQuickFixValid,
     lmlfHasQuickFix
@@ -99,6 +110,7 @@ type
     procedure OnQuickFixClick(Sender: TObject);
   private
     FItems: TFPList; // list of TLazMessageLine
+    FMarklings: TMessageViewMarklings;
     FVisibleItems: TFPList; // list of TLazMessageLine (visible Items of FItems)
     FSrcPositions: TAVLTree;// tree of TLazMessageLine sorted for Filename and LineNumber
     FLastLineIsProgress: boolean;
@@ -176,6 +188,7 @@ type
                              read FOnSelectionChanged write FOnSelectionChanged;
     property Items[Index: integer]: TLazMessageLine read GetItems;
     property VisibleItems[Index: integer]: TLazMessageLine read GetVisibleItems;
+    property Marklings: TMessageViewMarklings read FMarklings;
   end;
 
 var
@@ -335,6 +348,9 @@ begin
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
   MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
+
+  FMarklings:=TMessageViewMarklings.Create(Self);
+  SourceEditorManagerIntf.RegisterMarklingProducer(FMarklings);
 end;
 
 destructor TMessagesView.Destroy;
@@ -429,7 +445,7 @@ begin
     NewMsg := TLazMessageLine.Create;
     FItems.Add(NewMsg);
   end;
-  
+
   NewMsg.Msg := Msg;
   NewMsg.Directory := CurDir;
   NewMsg.Position := FItems.Count-1;
@@ -439,6 +455,7 @@ begin
     if NewMsg.Parts=nil then
       NewMsg.Parts:=TStringList.Create;
     NewMsg.Parts.Assign(Parts);
+    NewMsg.Filename:=Parts.Values['Filename'];
   end;
   //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
 
@@ -467,6 +484,10 @@ begin
   end;
   //ConsistencyCheck;
   Changed;
+
+  //debugln(['TMessagesView.Add ',NewMsg.Filename,' ',NewMsg.LineNumber,',',NewMsg.Column,' ',NewMsg.Msg]);
+  if NewMsg.Filename<>'' then
+    Marklings.InvalidateFile(NewMsg.Filename);
 end;
 
 procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer;
@@ -1307,6 +1328,43 @@ end;
 procedure TLazMessageLine.UpdateSourcePosition;
 begin
   GetSourcePosition(FFilename, FLineNumber, FColumn);
+end;
+
+{ TMessageViewMarklings }
+
+function TMessageViewMarklings.GetMarklings(aFilename: string; out FreeList,
+  FreeMarklings: boolean): TFPList;
+var
+  i: Integer;
+  Msg: TLazMessageLine;
+  aType: TSourceMarklingType;
+  Markling: TSourceMarkling;
+  TypeStr: string;
+begin
+  Result:=TFPList.Create;
+  FreeList:=true;
+  FreeMarklings:=true;
+  for i:=0 to MessagesView.VisibleItemCount-1 do
+  begin
+    Msg:=MessagesView.VisibleItems[i];
+    //debugln(['TMessageViewMarklings.GetMarklings ',CompareFilenames(Msg.Filename,aFilename),' ',Msg.Filename,' ',Msg.LineNumber,',',Msg.Column,' ',Msg.Msg]);
+    if CompareFilenames(Msg.Filename,aFilename)=0 then
+    begin
+      aType:=smtHint;
+      if Msg.Parts<>nil then
+      begin
+        TypeStr:=Msg.Parts.Values['Type'];
+        if TypeStr='Error' then
+          aType:=smtError
+        else if TypeStr='Warning' then
+          aType:=smtWarning
+        else if TypeStr='Note' then
+          aType:=smtNote;
+      end;
+      Markling:=TSourceMarkling.Create(Self,i,Msg.LineNumber,Msg.Column,aType);
+      Result.Add(Markling);
+    end;
+  end;
 end;
 
 end.

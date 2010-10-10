@@ -24,6 +24,43 @@ uses
   ProjectIntf;
   
 type
+  TSourceMarklingType = (
+    smtHint,    // something is unusual or awkward
+    smtNote,    // something could be wrong or is not optimized
+    smtWarning, // something is probably wrong or likely to fail
+    smtError    // something is definitely wrong
+    );
+
+  { TSourceMarklingProducer }
+
+  TSourceMarklingProducer = class(TComponent)
+  public
+    procedure InvalidateAllFiles;
+    procedure InvalidateFile(aFilename: string);
+    function GetMarklings(aFilename: string;
+                          out FreeList, FreeMarklings: boolean): TFPList; virtual; abstract;
+  end;
+
+  { TSourceMarkling }
+
+  TSourceMarkling = class
+  private
+    FColumn: integer;
+    FProducer: TSourceMarklingProducer;
+    FId: integer;
+    FLine: integer;
+    fType: TSourceMarklingType;
+  public
+    constructor Create(aProducer: TSourceMarklingProducer;
+                    TheID, aLine, aColumn: integer; aType: TSourceMarklingType);
+    property Producer: TSourceMarklingProducer read FProducer;
+    property Id: integer read FId;
+    property Line: integer read FLine;
+    property Column: integer read FColumn;
+    property TheType: TSourceMarklingType read fType;
+  end;
+
+type
   TSrcEditSearchOption = (
     sesoMatchCase,
     sesoWholeWord,
@@ -219,18 +256,19 @@ type
   TSourceEditorManagerInterface = class(TComponent)
   protected
     function GetActiveSourceWindow: TSourceEditorWindowInterface; virtual; abstract;
-             virtual; abstract;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface);
-             virtual; abstract;
+                                    virtual; abstract;
     function GetSourceWindows(Index: integer): TSourceEditorWindowInterface;
-             virtual; abstract;
+                              virtual; abstract;
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface);
-              virtual; abstract;
+                              virtual; abstract;
     function GetSourceEditors(Index: integer): TSourceEditorInterface;
-              virtual; abstract;
+                              virtual; abstract;
     function GetUniqueSourceEditors(Index: integer): TSourceEditorInterface;
-              virtual; abstract;
+                                    virtual; abstract;
+    function GetMarklingProducers(Index: integer): TSourceMarklingProducer;
+                                  virtual; abstract;
   public
     // List of SourceEditorWindows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
@@ -274,6 +312,14 @@ type
   public
     procedure RegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
     procedure UnRegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
+  public
+    // source marklings
+    function MarklingProducerCount: integer; virtual; abstract;
+    property MarklingProducers[Index: integer]: TSourceMarklingProducer read GetMarklingProducers;
+    procedure RegisterMarklingProducer(aProducer: TSourceMarklingProducer); virtual; abstract;
+    procedure UnregisterMarklingProducer(aProducer: TSourceMarklingProducer); virtual; abstract;
+    procedure InvalidateMarklingsOfAllFiles(aProducer: TSourceMarklingProducer); virtual; abstract;
+    procedure InvalidateMarklings(aProducer: TSourceMarklingProducer; aFilename: string); virtual; abstract;
   end;
 
 
@@ -561,6 +607,30 @@ function TSourceEditorCompletionPlugin.MeasureItem(const AKey: string;
 begin
   // this is called if HasCustomPaint returns true
   Result:=Point(0,0);
+end;
+
+{ TSourceMarkling }
+
+constructor TSourceMarkling.Create(aProducer: TSourceMarklingProducer; TheID,
+  aLine, aColumn: integer; aType: TSourceMarklingType);
+begin
+  FProducer:=aProducer;
+  FLine:=aLine;
+  FColumn:=aColumn;
+  FId:=TheID;
+  fType:=aType;
+end;
+
+{ TSourceMarklingProducer }
+
+procedure TSourceMarklingProducer.InvalidateAllFiles;
+begin
+  SourceEditorManagerIntf.InvalidateMarklingsOfAllFiles(Self);
+end;
+
+procedure TSourceMarklingProducer.InvalidateFile(aFilename: string);
+begin
+  SourceEditorManagerIntf.InvalidateMarklings(Self,aFilename);
 end;
 
 end.

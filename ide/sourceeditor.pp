@@ -147,6 +147,7 @@ type
   end;
 
   TSourceEditor = class;
+
   { TSourceEditorSharedValues }
 
   TSourceEditorSharedValues = class
@@ -168,6 +169,7 @@ type
     FExecutionMark: TSourceMark;
     FExecutionLine: integer;
     FMarksRequested: Boolean;
+    FMarklingsValid: boolean;
   public
     UpdatingExecutionMark: Integer;
     procedure CreateExecutionMark;
@@ -835,6 +837,7 @@ type
     function GetSourceWindowByLastFocused(Index: Integer): TSourceEditorWindowInterface;
     procedure SetActiveSourceWindowIndex(const AValue: integer);
   protected
+    fProducers: TFPList; // list of TSourceMarklingProducer
     FChangeNotifyLists: Array [TsemChangeReason] of TMethodList;
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
@@ -846,6 +849,7 @@ type
     procedure DoEditorStatusChanged(AEditor: TSourceEditor);
     function  GetSourceEditors(Index: integer): TSourceEditorInterface; override;
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
+    function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
   public
     // Windows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
@@ -894,6 +898,12 @@ type
     destructor Destroy; override;
     procedure RegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); override;
     procedure UnRegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); override;
+    // producers
+    function MarklingProducerCount: integer; override;
+    procedure RegisterMarklingProducer(aProducer: TSourceMarklingProducer); override;
+    procedure UnregisterMarklingProducer(aProducer: TSourceMarklingProducer); override;
+    procedure InvalidateMarklingsOfAllFiles(aProducer: TSourceMarklingProducer); override;
+    procedure InvalidateMarklings(aProducer: TSourceMarklingProducer; aFilename: string); override;
   public
     procedure IncUpdateLock;
     procedure DecUpdateLock;
@@ -995,6 +1005,7 @@ type
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
     function SomethingModified: boolean;
     procedure HideHint;
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     procedure CloseFile(AEditor: TSourceEditorInterface);
@@ -7865,6 +7876,12 @@ begin
   FCompletionPlugins.Clear;
 end;
 
+function TSourceEditorManagerBase.GetMarklingProducers(Index: integer
+  ): TSourceMarklingProducer;
+begin
+  Result:=TSourceMarklingProducer(fProducers[Index]);
+end;
+
 function TSourceEditorManagerBase.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
   Result := FActiveCompletionPlugin;
@@ -7983,6 +8000,8 @@ begin
       fCompletionPlugins.Remove(AComponent);
     if ActiveCompletionPlugin = AComponent then
       DeactivateCompletionForm;
+    if AComponent is TSourceMarklingProducer then
+      fProducers.Remove(AComponent);
   end;
 end;
 
@@ -7998,13 +8017,18 @@ begin
   FCompletionPlugins := TFPList.Create;
   FUpdateLock := 0;
   FActiveEditorLock := 0;
+  fProducers := TFPList.Create;
   inherited;
 end;
 
 destructor TSourceEditorManagerBase.Destroy;
 var
-  i: TsemChangeReason;
+  i: integer;
+  cr: TsemChangeReason;
 begin
+  for i:=MarklingProducerCount-1 downto 0 do
+    MarklingProducers[i].Free;
+  FreeAndNil(fProducers);
   FActiveWindow := nil;
   FreeCompletionPlugins;
   FreeSourceWindows;
@@ -8012,8 +8036,8 @@ begin
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
   FreeAndNil(FSourceWindowByFocusList);
-  for i := low(TsemChangeReason) to high(TsemChangeReason) do
-    FChangeNotifyLists[i].Free;;
+  for cr := low(TsemChangeReason) to high(TsemChangeReason) do
+    FChangeNotifyLists[cr].Free;;
   inherited Destroy;
 end;
 
@@ -8027,6 +8051,72 @@ procedure TSourceEditorManagerBase.UnRegisterChangeEvent(
   AReason: TsemChangeReason; AHandler: TNotifyEvent);
 begin
   FChangeNotifyLists[AReason].Remove(TMethod(AHandler));
+end;
+
+function TSourceEditorManagerBase.MarklingProducerCount: integer;
+begin
+  Result:=fProducers.Count;
+end;
+
+procedure TSourceEditorManagerBase.RegisterMarklingProducer(
+  aProducer: TSourceMarklingProducer);
+begin
+  if fProducers.IndexOf(aProducer)>=0 then
+    RaiseException('TSourceEditorManagerBase.RegisterProducer already registered');
+  fProducers.Add(aProducer);
+  FreeNotification(aProducer);
+end;
+
+procedure TSourceEditorManagerBase.UnregisterMarklingProducer(
+  aProducer: TSourceMarklingProducer);
+var
+  i: LongInt;
+begin
+  i:=fProducers.IndexOf(aProducer);
+  if i<0 then exit;
+  fProducers.Delete(i);
+  RemoveFreeNotification(aProducer);
+end;
+
+procedure TSourceEditorManagerBase.InvalidateMarklingsOfAllFiles(
+  aProducer: TSourceMarklingProducer);
+var
+  SrcWnd: TSourceEditorWindowInterface;
+  i: Integer;
+  j: Integer;
+  SrcEdit: TSourceEditor;
+begin
+  if aProducer=nil then exit;
+  for i := 0 to SourceWindowCount - 1 do
+  begin
+    SrcWnd:=SourceWindows[i];
+    for j:=0 to SrcWnd.Count-1 do
+    begin
+      SrcEdit:=TSourceEditor(SrcWnd[j]);
+      SrcEdit.FSharedValues.FMarklingsValid:=false;
+    end;
+  end;
+end;
+
+procedure TSourceEditorManagerBase.InvalidateMarklings(
+  aProducer: TSourceMarklingProducer; aFilename: string);
+var
+  SrcWnd: TSourceEditorWindowInterface;
+  i: Integer;
+  j: Integer;
+  SrcEdit: TSourceEditor;
+begin
+  if aProducer=nil then exit;
+  for i := 0 to SourceWindowCount - 1 do
+  begin
+    SrcWnd:=SourceWindows[i];
+    for j:=0 to SrcWnd.Count-1 do
+    begin
+      SrcEdit:=TSourceEditor(SrcWnd[j]);
+      if CompareFilenames(SrcEdit.FileName,aFilename)=0 then
+        SrcEdit.FSharedValues.FMarklingsValid:=false;
+    end;
+  end;
 end;
 
 procedure TSourceEditorManagerBase.IncUpdateLock;
@@ -8547,6 +8637,44 @@ begin
     SourceWindows[i].HideHint;
 end;
 
+procedure TSourceEditorManager.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  SrcEdit: TSourceEditor;
+  i: Integer;
+  aFilename: String;
+  FreeList, FreeMarklings: boolean;
+  Marklings: TFPList;
+  j: Integer;
+  Markling: TSourceMarkling;
+begin
+  SrcEdit:=ActiveEditor;
+  if not SrcEdit.FSharedValues.FMarklingsValid then
+  begin
+    //debugln(['TSourceEditorManager.OnIdle ',MarklingProducerCount]);
+    aFilename:=SrcEdit.FileName;
+    SrcEdit.EditorComponent.BeginUpdate;
+    for i:=0 to MarklingProducerCount-1 do
+    begin
+      Marklings:=MarklingProducers[i].GetMarklings(aFilename,FreeList,FreeMarklings);
+      for j:=0 to Marklings.Count-1 do
+      begin
+        Markling:=TSourceMarkling(Marklings[j]);
+        if Markling=nil then ;
+        // ToDo: add mark to synedit
+        //debugln(['TSourceEditorManager.OnIdle ',Markling.Id,' ',Markling.Line,',',Markling.Column]);
+
+      end;
+      if FreeMarklings then
+        for j:=0 to Marklings.Count-1 do
+          TObject(Marklings[j]).Free;
+      if FreeList then
+        Marklings.Free;
+    end;
+    SrcEdit.EditorComponent.EndUpdate;
+    SrcEdit.FSharedValues.FMarklingsValid:=true;
+  end;
+end;
+
 procedure TSourceEditorManager.LockAllEditorsInSourceChangeCache;
 // lock all sourceeditors that are to be modified by the CodeToolBoss
 var
@@ -8848,10 +8976,13 @@ begin
     nil,@CreateSourceWindow,'250','100','+70%','+70%',
     NonModalIDEWindowNames[nmiwMainIDEName],alBottom,
     true,@GetDefaultLayout);
+
+  Application.AddOnIdleHandler(@OnIdle);
 end;
 
 destructor TSourceEditorManager.Destroy;
 begin
+  Application.RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
 
