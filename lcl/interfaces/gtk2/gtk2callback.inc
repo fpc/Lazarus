@@ -1854,6 +1854,7 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  AForm: TCustomForm;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1890,7 +1891,22 @@ begin
     end;
   end;
   if DeliverMouseUpMessage(Widget, Event, TWinControl(Data)) then
-    Result := not CallBackDefaultReturn;
+  begin
+    if not DragManager.IsDragging then
+      Result := not CallBackDefaultReturn
+    else
+    begin
+      // workaround for gtk2 bug where "clicked" isn't triggered
+      // because of Result=TRUE and we started modal form from OnDropDown event.
+      // see issue http://bugs.freepascal.org/view.php?id=14318 for details.
+      if GTK_IS_BUTTON(Widget) then
+      begin
+        AForm := GetParentForm(TWinControl(Data));
+        if (AForm <> nil) and (fsModal in AForm.FormState) then
+          gtk_button_clicked(PGtkButton(Widget));
+      end;
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
