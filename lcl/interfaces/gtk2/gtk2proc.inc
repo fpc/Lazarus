@@ -4467,6 +4467,9 @@ var
   OldMouseCaptureWidget,
   CurMouseCaptureWidget: PGtkWidget;
 begin
+  {$IFNDEF GTK2_USE_OLD_CAPTURE}
+  exit;
+  {$ENDIF}
   OldMouseCaptureWidget:=MouseCaptureWidget;
   CurMouseCaptureWidget:=gtk_grab_get_current;
 
@@ -4510,7 +4513,7 @@ begin
   {$ENDIF}
   if not (Owner in [mctGTKIntf,mctLCL]) then exit;
   // not every widget can capture the mouse
-  CaptureWidget:=GetDefaultMouseCaptureWidget(Widget);
+  CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
   if CaptureWidget=nil then exit;
 
   UpdateMouseCaptureControl;
@@ -4548,7 +4551,7 @@ var
   LCLObject: TObject;
   CanCapture: Boolean;
   Parent: TWinControl;
-  {$IFDEF DEBUG_GTK_MOUSECAPTURE}
+  {$IFDEF VerboseMouseCapture}
   CurrentGrab: PGtkWidget;
   GrabInfo: PWinWidgetInfo;
   {$ENDIF}
@@ -4571,7 +4574,6 @@ begin
 
   if CanCapture then
   begin
-
     if GTK_IS_NOTEBOOK(PGtkWidget(TWinControl(LCLObject).Handle)) then
       exit;
 
@@ -4584,7 +4586,7 @@ begin
     WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
     if WidgetInfo <> nil then
     begin
-      {$IFDEF DEBUG_GTK_MOUSECAPTURE}
+      {$IFDEF VerboseMouseCapture}
       CurrentGrab := gtk_grab_get_current;
       writeln('GetDefaultMouseCaptureWidget: ',TWinControl(LCLObject).ClassName,' core ',
         dbghex(PtrUInt(WidgetInfo^.CoreWidget)),' client ',dbghex(PtrUInt(WidgetInfo^.ClientWidget)),

@@ -813,13 +813,15 @@ var
 begin
   ACustomForm := TCustomForm(AWinControl);
 
-  p := gtk_window_new(gtk_window_popup);
+  p := gtk_window_new(GTK_WINDOW_POPUP);
   WidgetInfo := CreateWidgetInfo(p, AWinControl, AParams);
   gtk_window_set_policy(GTK_WINDOW(p), 0, 0, 0);
+  gtk_window_set_focus_on_map(P, False);
 
   // Create the form client area
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(p, TempWidget);
+  GTK_WIDGET_UNSET_FLAGS(TempWidget, GTK_CAN_FOCUS);
   gtk_widget_show(TempWidget);
   SetFixedWidget(p, TempWidget);
   SetMainWidget(p, TempWidget);

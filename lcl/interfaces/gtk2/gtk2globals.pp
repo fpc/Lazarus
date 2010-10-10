@@ -61,7 +61,6 @@ var
   MouseCaptureWidget: PGtkWidget;
   MouseCaptureType: TMouseCaptureType;
   MouseCaptureIndex: cardinal;
-  MousePositionValid: boolean = false;
   MousePosition: TPoint;
   MousePositionTime: TDateTime;
 

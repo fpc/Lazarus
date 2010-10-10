@@ -7738,6 +7738,9 @@ end;
 function TGtk2WidgetSet.SetCapture(AHandle: HWND): HWND;
 var
   Widget: PGtkWidget;
+  {$IFNDEF GTK2_USE_OLD_CAPTURE}
+  CaptureWidget: PGtkWidget;
+  {$ENDIF}
 begin
   Assert(False, Format('Trace:> [TGtk2WidgetSet.SetCapture] 0x%x', [AHandle]));
   Widget := PGtkWidget(AHandle);
@@ -7748,8 +7751,31 @@ begin
   // return old capture handle
   Result := GetCapture;
 
+  {$IFDEF GTK2_USE_OLD_CAPTURE}
   // capture
   CaptureMouseForWidget(Widget, mctLCL);
+  {$ELSE}
+
+  if Result <> 0 then
+    gtk_grab_remove(gtk_grab_get_current);
+
+  MouseCaptureWidget := nil;
+
+  if Widget = nil then
+    exit;
+
+  CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
+  if CaptureWidget = nil then exit;
+
+  if not gtk_widget_has_focus(CaptureWidget) then
+    gtk_widget_grab_focus(CaptureWidget);
+
+  gtk_grab_add(CaptureWidget);
+  MouseCaptureWidget := CaptureWidget;
+  if MouseCaptureWidget<>nil then
+    SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
+      Result);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

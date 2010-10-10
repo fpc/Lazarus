@@ -228,11 +228,13 @@ begin
   gtk_widget_size_allocate(Widget, @Allocation);
 
   Set_RC_Name(AWinControl, Widget);
-  
+
   TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
 
-  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value', TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
-  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value', TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
+    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
+    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
 
   g_signal_connect(Widget, 'scroll-event', TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
 end;

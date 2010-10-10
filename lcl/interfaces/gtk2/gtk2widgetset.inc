@@ -912,8 +912,23 @@ end;
 
 procedure TGtk2WidgetSet.SetCommonCallbacks(const AGTKObject: PGTKObject;
   const ALCLObject: TObject);
+var
+  Widget: PGtkWidget;
 begin
-  // original gtk1 code
+  if GTK_IS_SCROLLED_WINDOW(AGtkObject) then
+  begin
+    Widget := PGtkWidget(AGTKObject);
+    g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'button-press-event',
+      TGCallback(@gtk2ScrollBarMouseBtnPress), ALCLObject);
+    g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'button-release-event',
+      TGCallback(@gtk2ScrollBarMouseBtnRelease), ALCLObject);
+
+    g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-press-event',
+      TGCallback(@gtk2ScrollBarMouseBtnPress), ALCLObject);
+    g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-release-event',
+      TGCallback(@gtk2ScrollBarMouseBtnRelease), ALCLObject);
+  end;
+
   SetCallback(LM_SHOWWINDOW, AGTKObject, ALCLObject);
   SetCallback(LM_DESTROY, AGTKObject, ALCLObject);
   SetCallback(LM_FOCUS, AGTKObject, ALCLObject);

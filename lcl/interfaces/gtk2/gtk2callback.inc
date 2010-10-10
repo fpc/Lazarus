@@ -1277,10 +1277,11 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 var
   DesignOnlySignal: boolean;
   ShiftState: TShiftState;
+  {$IFNDEF GTK2_USE_OLD_CAPTURE}
+  W: PGtkWidget;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
-
-  MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1295,11 +1296,21 @@ begin
   UpdateMouseCaptureControl;
   
   ShiftState := GTKEventStateToShiftState(Event^.State);
-  if (MouseCaptureWidget=Widget)
-  and (MouseCaptureType=mctGTK)
-  and ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then begin
+
+  if (MouseCaptureWidget = Widget) and (MouseCaptureType = mctGTK) and
+    ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then
+  begin
+    {$IFNDEF GTK2_USE_OLD_CAPTURE}
+    W := gtk_grab_get_current;
+    {$ENDIF}
     {$IFDEF VerboseMouseCapture}
     DebugLn(['gtkMotionNotify gtk capture without mouse down: ',GetWidgetDebugReport(Widget)]);
+    {$ENDIF}
+    {$IFNDEF GTK2_USE_OLD_CAPTURE}
+    if W = nil then
+      SetCapture(0)
+    else
+      gtk_grab_remove(W);
     {$ENDIF}
   end;
 
@@ -1331,7 +1342,6 @@ function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
   Result := true; // stop event propagation
-  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',
@@ -1362,6 +1372,33 @@ begin
   if AControl=nil then exit;
   if GtkWidgetIsA(AWidget,gtk_toggle_button_get_type) then begin
   end;
+end;
+
+
+{-------------------------------------------------------------------------------
+We must stop delivery of events from scrollbars of GtkScrollable, otherwise
+if we make an double click on scollbar button, and after that click into
+our control client area we need 2 click to make it focused.
+gtk_signal_connect_after() is used, otherwise our scrollbar won't react on
+such event.
+-------------------------------------------------------------------------------}
+function gtk2ScrollBarMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+begin
+  Result := True;
+end;
+
+{-------------------------------------------------------------------------------
+We must stop delivery of events from scrollbars of GtkScrollable, otherwise
+if we make an double click on scollbar button, and after that click into
+our control client area we need 2 click to make it focused.
+gtk_signal_connect_after() is used, otherwise our scrollbar won't react on
+such event.
+-------------------------------------------------------------------------------}
+function gtk2ScrollBarMouseBtnRelease(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+begin
+  Result := True;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1429,7 +1466,6 @@ var
   {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
-  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   AWinControl := TWinControl(Data);
@@ -1640,7 +1676,6 @@ var
   end;
 
 begin
-  MousePositionValid := False;
 
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
@@ -1709,7 +1744,6 @@ function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result := True;
-  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
@@ -1822,7 +1856,6 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
-  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1856,7 +1889,6 @@ begin
       Result := not CallBackDefaultReturn;
     end;
   end;
-
   if DeliverMouseUpMessage(Widget, Event, TWinControl(Data)) then
     Result := not CallBackDefaultReturn;
 end;
@@ -1873,7 +1905,6 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result := True;
-  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',

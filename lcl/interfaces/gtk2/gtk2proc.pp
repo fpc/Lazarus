@@ -151,6 +151,14 @@ function ControlGetsMouseDownBefore(AControl: TControl;
                                     AWidget: PGtkWidget): boolean;
 procedure DeliverMouseDownMessage(widget: PGtkWidget; event: pgdkEventButton;
                                   AWinControl: TWinControl);
+
+function gtk2ScrollBarMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+
+function gtk2ScrollBarMouseBtnRelease(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+
+
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
                           data: gPointer): GBoolean; cdecl;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event: pgdkEventButton;
