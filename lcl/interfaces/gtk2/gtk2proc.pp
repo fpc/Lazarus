@@ -462,7 +462,9 @@ function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
 function SubtractScoll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
 
 // mouse capturing
+{$IFDEF GTK2_USE_OLD_CAPTURE}
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
+{$ENDIF}
 function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 procedure ReleaseMouseCapture;
 procedure ReleaseCaptureWidget(Widget : PGtkWidget);

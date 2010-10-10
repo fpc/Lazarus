@@ -4503,6 +4503,7 @@ begin
     MouseCaptureIndex:=0;
 end;
 
+{$IFDEF GTK2_USE_OLD_CAPTURE}
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
 var
   CaptureWidget: PGtkWidget;
@@ -4543,6 +4544,7 @@ begin
     gtk_grab_add(CaptureWidget);
   end;
 end;
+{$ENDIF}
 
 function GetDefaultMouseCaptureWidget(Widget: PGtkWidget
   ): PGtkWidget;
