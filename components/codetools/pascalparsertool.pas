@@ -1299,7 +1299,7 @@ var CloseBracket: char;
   procedure ReadPrefixModifier;
   begin
     // read parameter prefix modifier
-    if UpAtomIs('VAR') or UpAtomIs('CONST')
+    if UpAtomIs('VAR') or UpAtomIs('CONST') or UpAtomIs('CONSTREF')
     or (UpAtomIs('OUT') and (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmFPC]))
     then begin
       Desc:=ctnVarDefinition;

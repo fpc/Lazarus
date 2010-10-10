@@ -916,6 +916,7 @@ begin
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // is this really a keyword?
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -988,6 +989,7 @@ begin
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // is this really a keyword?
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1047,7 +1049,6 @@ begin
   KeyWordLists.Add(AllKeyWords);
   AllKeyWords.Add(WordIsKeyWord);
   with AllKeyWords do begin
-    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('GENERIC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue);
