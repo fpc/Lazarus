@@ -595,6 +595,7 @@ end;
 class procedure TGtk2WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AForm: TCustomForm;
+  GtkWindow: PGtkWindow;
 begin
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) then
@@ -608,23 +609,19 @@ begin
       not (csDestroying in AWinControl.ComponentState) then
         gtk_window_set_keep_above(PGtkWindow(AForm.Handle), GBoolean(False));
   end;
-  Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+  if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then
+  begin
+    GtkWindow := PGtkWindow(AForm.Handle);
+    gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
+    gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
+    GtkWindowShowModal(GtkWindow);
+  end else
+    Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
 end;
 
 class procedure TGtk2WSCustomForm.ShowModal(const AForm: TCustomForm);
-var
-  GtkWindow: PGtkWindow;
 begin
-  if not WSCheckHandleAllocated(AForm, 'ShowModal')
-  then Exit;
-
-  if AForm.Parent <> nil then Exit;
-  ReleaseMouseCapture;
-
-  GtkWindow := PGtkWindow(AForm.Handle);
-  gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
-  gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
-  GtkWindowShowModal(GtkWindow);
+  // modal is started in ShowHide
 end;
 
 class procedure TGtk2WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
