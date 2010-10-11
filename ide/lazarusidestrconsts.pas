@@ -4333,6 +4333,9 @@ resourcestring
   lisDebugOptionsFrmOSExceptions = 'OS Exceptions';
   lisDebugOptionsFrmSignals = 'Signals';
   lisDebugOptionsFrmName = 'Name';
+  lisSetMacroValues = 'Set macro values';
+  lisMacroName = 'Macro name';
+  lisMacroValue = 'Macro value';
   lisDebugOptionsFrmID = 'ID';
   lisDebugOptionsFrmHandledBy = 'Handled by';
   lisDebugOptionsFrmResume = 'Resume';
@@ -4897,6 +4900,9 @@ resourcestring
     +'needed for functions like find declaration. While scanning you can edit '
     +'sources and compile, but functions like find declaration will show unit-'
     +'not-found errors. This can take a minute.';
+  lisActive = 'Active';
+  lisBuildModes = 'Build modes';
+  lisInSession = 'In session';
 
 implementation
 
