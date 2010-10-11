@@ -4295,8 +4295,8 @@ begin
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll;
-      MainBuildBoss.SetBuildTarget(MainBuildBoss.GetTargetOS(false),
-        MainBuildBoss.GetTargetCPU(false),MainBuildBoss.GetLCLWidgetType(false));
+      MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
+        Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
       UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
       if EnvironmentOptions.SingleTaskBarButton then
