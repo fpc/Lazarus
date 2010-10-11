@@ -3428,6 +3428,10 @@ msgstr ""
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активувати синтаксис регулярних виразів для тексту і заміни (майже як в perl)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr ""
@@ -3903,6 +3907,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -7593,6 +7601,10 @@ msgstr ""
 msgid "Insert url tag"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr ""
@@ -8682,6 +8694,10 @@ msgstr ""
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Введіть дані"
@@ -8689,6 +8705,10 @@ msgstr "Введіть дані"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Введіть параметри запуску"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12453,6 +12473,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
+msgstr ""
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
 msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation

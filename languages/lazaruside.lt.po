@@ -3428,6 +3428,10 @@ msgstr "Veiksmai:"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Teksto paieškai ir pakeitimui galima naudoti reguliariojo reiškinio sintaksę (labai panašiai kaip ir Perl)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktyvus filtras"
@@ -3909,6 +3913,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Darymo veiksena"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7603,6 +7611,10 @@ msgstr "Įterpti laiką. Papildomai: formatuoti tekstą."
 msgid "Insert url tag"
 msgstr "Įterpti URL žymą"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "&Inspektuoti"
@@ -8697,6 +8709,10 @@ msgstr "Mac Pascal"
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Įveskite duomenis"
@@ -8704,6 +8720,10 @@ msgstr "Įveskite duomenis"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Įveskite starto parametrus"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12458,6 +12478,10 @@ msgstr "Parinkti aktyvią darymo veikseną"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Grąžinti numatytąjį"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"

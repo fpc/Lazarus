@@ -3402,6 +3402,10 @@ msgstr "Akce:"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Aktivovat syntaxi regulárních výrazů pro text a nahrazení (dost podobný jako perl)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktivní filtr"
@@ -3876,6 +3880,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Režim sestavení"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7565,6 +7573,10 @@ msgstr "Vložit čas, Volitelné: formátovaný řetězec"
 msgid "Insert url tag"
 msgstr "Vložit značku url"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "&Zkoumat"
@@ -8653,6 +8665,10 @@ msgstr "Mac Pascal"
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Zadejte údaje"
@@ -8660,6 +8676,10 @@ msgstr "Zadejte údaje"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Zadejte spouštěcí parametry"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12386,6 +12406,10 @@ msgstr "Vybrat aktivní režim sestavení"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Nastavit výchozí"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-07 00:23+0300\n"
+"PO-Revision-Date: 2010-10-12 00:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3445,6 +3445,10 @@ msgstr "Действия:"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr "Активен"
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Текущий фильтр"
@@ -3920,6 +3924,10 @@ msgstr "Макросы сборки:"
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Режим сборки"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr "Режимы сборки"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7610,6 +7618,10 @@ msgstr "Вставить время. Возможно форматировани
 msgid "Insert url tag"
 msgstr "Вставить тег URL"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr "В сессии"
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "&Просмотреть"
@@ -8702,6 +8714,10 @@ msgstr "Mac Pascal"
 msgid "Macro %s"
 msgstr "Макрос %s"
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr "Имя макроса"
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Введите данные"
@@ -8709,6 +8725,10 @@ msgstr "Введите данные"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Введите параметры запуска"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr "Значение макроса"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12461,6 +12481,10 @@ msgstr "Выбрать текущий режим сборки"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Установить по умолчанию"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr "Установка значений макросов"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"

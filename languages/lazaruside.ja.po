@@ -3438,6 +3438,10 @@ msgstr "動作："
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "テキストと置換のためのアクティブな正規表現語法(perlと類似)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "アクティブフィルタ"
@@ -3914,6 +3918,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "構築モード"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7607,6 +7615,10 @@ msgstr "時刻と挿入。オプションとして：書式化文字列"
 msgid "Insert url tag"
 msgstr "url タグを挿入"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "検査(&I)"
@@ -8698,6 +8710,10 @@ msgstr ""
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "データを入力してください"
@@ -8705,6 +8721,10 @@ msgstr "データを入力してください"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "実行時引数を入力してください"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12472,6 +12492,10 @@ msgstr ""
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "デフォルトにセット"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"

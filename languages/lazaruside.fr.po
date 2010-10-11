@@ -3451,6 +3451,10 @@ msgstr "Actions :"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Activer la syntaxe d'expression régulière pour le texte et les remplacements (assez semblable à perl)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Filtre actif"
@@ -3928,6 +3932,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Mode construction"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7627,6 +7635,10 @@ msgstr "Insérer la date. Facultatif:  format chaîne de caractère"
 msgid "Insert url tag"
 msgstr "Insérer une balise url"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "&Inspecter"
@@ -8717,6 +8729,10 @@ msgstr "Mac Pascal"
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "Entrez les données"
@@ -8724,6 +8740,10 @@ msgstr "Entrez les données"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Entrez les paramètres d'exécution"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12480,6 +12500,10 @@ msgstr "sélectionne le mode contruire actif"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Valeur par défaut"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"

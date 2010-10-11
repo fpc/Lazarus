@@ -3409,6 +3409,10 @@ msgstr "פעולות:"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "הפעל תחביר של ביטויים רגולרים עבור טקסט והחלפה (דומה לפרל)"
 
+#: lazarusidestrconsts.lisactive
+msgid "Active"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "מסנן פעיל"
@@ -3884,6 +3888,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "מוד בנייה"
+
+#: lazarusidestrconsts.lisbuildmodes
+msgid "Build modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -7575,6 +7583,10 @@ msgstr "הכנס שעה. אפשרי: עיצוב המחרוזת"
 msgid "Insert url tag"
 msgstr "הכנס תוית url"
 
+#: lazarusidestrconsts.lisinsession
+msgid "In session"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
 msgstr "פקח"
@@ -8666,6 +8678,10 @@ msgstr "פסקל של מאק"
 msgid "Macro %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismacroname
+msgid "Macro name"
+msgstr ""
+
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
 msgstr "הזן מידע"
@@ -8673,6 +8689,10 @@ msgstr "הזן מידע"
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "הזן פרמטרים לריצה"
+
+#: lazarusidestrconsts.lismacrovalue
+msgid "Macro value"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -12423,6 +12443,10 @@ msgstr "בחר את אופן הבניה הפעיל"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "קבע ברירת מחדל"
+
+#: lazarusidestrconsts.lissetmacrovalues
+msgid "Set macro values"
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
