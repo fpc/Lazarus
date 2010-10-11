@@ -661,7 +661,7 @@ var
 begin
   if Equals(aTable) then exit;
   Clear;
-  for i := 0 to Count - 1 do
+  for i := 0 to aTable.Count - 1 do
     inherited Add(aTable.Keys[i],aTable.ValuesByIndex[i]);
   DoModified;
 end;
