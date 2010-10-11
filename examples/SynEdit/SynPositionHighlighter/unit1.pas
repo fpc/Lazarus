@@ -51,9 +51,15 @@ begin
   Attr1:=Highlighter.CreateTokenID('Attr1',clRed,clNone,[]);
   Attr2:=Highlighter.CreateTokenID('Attr2',clBlue,clNone,[fsBold]);
 
-  // define
+  // define highlighted areas
+
+  // Line 0, from start of line to pos 3 (3 chars) highlighted as Attr1
   Highlighter.AddToken(0,3,Attr1);
-  Highlighter.AddToken(1,2,Attr2);
+
+  // Line 1, keep the first 3 chars as default
+  Highlighter.AddToken(1,3,tkText);
+  // Line 1, from pos 3 (end of prev token) to pos 5 (2 chars) highlighted as Attr2
+  Highlighter.AddToken(1,5,Attr2);
 
   // use highlighter
   SynEdit1.Highlighter:=Highlighter;
