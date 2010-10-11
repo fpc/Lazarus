@@ -3181,9 +3181,9 @@ var
     try
       {$ifdef RawimageConsistencyCheks}
       // consistency checks
-      if Description.Depth <> Image^.Depth then
+      if ADesc.Depth <> Image^.Depth then
         RaiseGDBException('ARawImage.Description.Depth<>Image^.Depth '+IntToStr(ADesc.Depth)+'<>'+IntToStr(Image^.Depth));
-      if Description.BitsPerPixel <> GetPGdkImageBitsPerPixel(Image) then
+      if ADesc.BitsPerPixel <> Image^.bits_per_pixel then
         RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
       {$endif}
 
@@ -3701,7 +3701,7 @@ var
 
     DebugLn('ScaleAndROP START DestGC=',DbgS(DestGC),
       ' SrcPixmap=',DbgS(SrcPixmap),
-      ' SrcMaskPixmap=',DbgS(SrcMaskPixmap));
+      ' SrcMaskPixmap=',DbgS(SrcMaskBitmap));
     {$ENDIF}
     Result := False;
 
@@ -3891,9 +3891,9 @@ var
 
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable ',
-      ' SrcPixmap=',DbgS(SrcPixmap),
+      ' SrcDrawable=',DbgS(SrcDrawable),
       ' XSrc='+dbgs(XSrc),' YSrc='+dbgs(YSrc),' SrcWidth='+dbgs(SrcWidth),' SrcHeight='+dbgs(SrcHeight),
-      ' MaskPixmap=',DbgS(MaskPixmap),
+      ' MaskPixmap=',DbgS(MskBitmap),
       ' XMask='+dbgs(XMask),' YMask='+dbgs(YMask),
       '');
     {$ENDIF}
@@ -4076,10 +4076,10 @@ begin
     ' SrcDrawable=',DbgS(TGtkDeviceContext(SrcDC).Drawable),
     ' SrcOrigin='+dbgs(SrcDCOrigin),
     ' DestDrawable='+DbgS(TGtkDeviceContext(DestDC).Drawable),
-    ' DestOrigin='+dbgs(DestDCOrigin),
+    ' DestOrigin='+dbgs(DstDCOrigin),
     ' Mask='+DbgS(Mask)+' XMask='+dbgs(XMask)+' YMask='+dbgs(YMask),
     ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial),
-    ' DestWhole='+dbgs(DestWholeWidth)+','+dbgs(DestWholeHeight),
+    ' DestWhole='+dbgs(DstWholeWidth)+','+dbgs(DstWholeHeight),
     ' SrcWhole='+dbgs(SrcWholeWidth)+','+dbgs(SrcWholeHeight),
     '');
   {$ENDIF}
