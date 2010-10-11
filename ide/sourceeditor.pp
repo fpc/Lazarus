@@ -8648,7 +8648,8 @@ var
   Markling: TSourceMarkling;
 begin
   SrcEdit:=ActiveEditor;
-  if not SrcEdit.FSharedValues.FMarklingsValid then
+  if (SrcEdit<>nil)
+  and (not SrcEdit.FSharedValues.FMarklingsValid) then
   begin
     //debugln(['TSourceEditorManager.OnIdle ',MarklingProducerCount]);
     aFilename:=SrcEdit.FileName;

@@ -3035,30 +3035,18 @@ var
     MacroValsPath: String;
     ActiveIdentifier: String;
   begin
-    if FileVersion<10 then begin
-      MacroValues.LoadFromXMLConfig(XMLConfig,Path+'MacroValues/');
-
-      CompOptsPath:='CompilerOptions/';
-      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
-      if (FileVersion<3)
-      and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-        CompOptsPath:='';
-      CompilerOptions.LoadFromXMLConfig(xmlconfig,CompOptsPath);
-      if FileVersion<2 then
-        CompilerOptions.SrcPath:=xmlconfig.GetValue(Path+'General/SrcPath/Value','');
-    end;
-
     Cnt:=XMLConfig.GetValue(Path+'BuildModes/Count',0);
+    //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
     if Cnt>0 then begin
       for i:=1 to Cnt do begin
-        SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+        SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
         ModeIdentifier:=XMLConfig.GetValue(SubPath+'Name','');
         if LoadData and (i=1) then begin
-          // the default mode (it already exists)
+          // load the default mode (it already exists)
           CurMode:=BuildModes[0];
           CurMode.Identifier:=ModeIdentifier;
         end else
-          // another mode
+          // add another mode
           CurMode:=BuildModes.Add(ModeIdentifier);
 
         if LoadData and (i=1) and XMLConfig.GetValue(SubPath+'Default',false) then
@@ -3085,7 +3073,7 @@ var
       if CurMode=nil then
         CurMode:=BuildModes[0];
       ActiveBuildMode:=CurMode;
-    end else begin
+    end else if LoadData then begin
       // no build modes => an old file format
       CompOptsPath:='CompilerOptions/';
       // due to an old bug, the XML path can be 'CompilerOptions/' or ''
@@ -5671,6 +5659,7 @@ begin
   inherited LoadFromXMLConfig(XMLConfig, Path, DoSwitchPathDelims);
   CompileReasons := LoadXMLCompileReasons(XMLConfig, Path+'CompileReasons/',
                                           DefaultCompileReasons);
+  //debugln(['TProjectCompilationToolOptions.LoadFromXMLConfig ',Path,' ',crCompile in CompileReasons]);
 end;
 
 procedure TProjectCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -5679,6 +5668,7 @@ begin
   inherited SaveToXMLConfig(XMLConfig, Path, UsePathDelim);
   SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons,
                         DefaultCompileReasons);
+  //debugln(['TProjectCompilationToolOptions.SaveToXMLConfig ',Path,' ',crCompile in CompileReasons]);
 end;
 
 { TProjectCompilerOptions }
@@ -5694,6 +5684,7 @@ begin
   else FCompileReasons :=
                    LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',
                                          crAll);
+  //debugln(['TProjectCompilerOptions.LoadFromXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 
 procedure TProjectCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
@@ -5703,6 +5694,7 @@ begin
   
   SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
                         crAll);
+  //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
