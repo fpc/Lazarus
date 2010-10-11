@@ -1300,17 +1300,8 @@ begin
   if (MouseCaptureWidget = Widget) and (MouseCaptureType = mctGTK) and
     ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then
   begin
-    {$IFNDEF GTK2_USE_OLD_CAPTURE}
-    W := gtk_grab_get_current;
-    {$ENDIF}
     {$IFDEF VerboseMouseCapture}
     DebugLn(['gtkMotionNotify gtk capture without mouse down: ',GetWidgetDebugReport(Widget)]);
-    {$ENDIF}
-    {$IFNDEF GTK2_USE_OLD_CAPTURE}
-    if W = nil then
-      SetCapture(0)
-    else
-      gtk_grab_remove(W);
     {$ENDIF}
   end;
 
