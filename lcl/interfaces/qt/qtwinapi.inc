@@ -4892,7 +4892,7 @@ begin
     {$endif}
     Result := GetFocus;
     W := TQtWidget(HWND).getWindow;
-    if (W <> nil) and not W.IsActiveWindow and
+    if (W <> nil) and W.getVisible and not W.IsActiveWindow and
       not TQtMainWindow(W).Blocked then
         W.Activate;
     TQtWidget(hWnd).setFocus;
