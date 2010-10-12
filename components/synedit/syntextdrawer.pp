@@ -71,11 +71,11 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLType, LCLIntf, GraphType, SynEditMiscProcs,
+  LCLProc, LCLType, LCLIntf, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Graphics, Types;
+  SysUtils, Classes, Graphics, Types, SynEditTypes, SynEditMiscProcs;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));
@@ -184,6 +184,13 @@ type
   { TheTextDrawer }
   EheTextDrawerException = class(Exception);
 
+  TSynFrameSide = (
+    sfdLeft,
+    sfdTop,
+    sfdRight,
+    sfdBottom
+  );
+
   TheTextDrawer = class(TObject)
   private
     FDC: HDC;
@@ -206,7 +213,8 @@ type
     // current font attributes
     FColor: TColor;
     FBkColor: TColor;
-    FFrameColor: TColor;
+    FFrameColor: array[TSynFrameSide] of TColor;
+    FFrameStyle: array[TSynFrameSide] of TSynLineStyle;
     FFrameStartX, FFrameEndX: Integer;
     FCharExtra: Integer;
 
@@ -226,7 +234,7 @@ type
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
     {$ENDIF}
-    function CreateColorPen(AColor: TColor): HPen;
+    function CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
     property FontStock: TheFontStock read FFontStock;
@@ -249,7 +257,11 @@ type
     procedure SetStyle(Value: TFontStyles); virtual;
     procedure SetForeColor(Value: TColor); virtual;
     procedure SetBackColor(Value: TColor); virtual;
-    procedure SetFrameColor(AValue: TColor); virtual;
+
+    procedure SetFrameColor(Side: TSynFrameSide; AValue: TColor); virtual; overload;
+    procedure SetFrameColor(AValue: TColor); virtual; overload;
+
+    procedure SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle); virtual;
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
 
@@ -262,7 +274,8 @@ type
     property BaseStyle: TFontStyles write SetBaseStyle;
     property ForeColor: TColor write SetForeColor;
     property BackColor: TColor read FBkColor write SetBackColor;
-    property FrameColor: TColor write SetFrameColor;
+    property FrameColor[Side: TSynFrameSide]: TColor write SetFrameColor;
+    property FrameStyle[Side: TSynFrameSide]: TSynLineStyle write SetFrameStyle;
     property FrameStartX: Integer read FFrameStartX write FFrameStartX;
     property FrameEndX: Integer read FFrameEndX write FFrameEndX;
 
@@ -956,6 +969,8 @@ end;
 { TheTextDrawer }
 
 constructor TheTextDrawer.Create(CalcExtentBaseStyle: TFontStyles; ABaseFont: TFont);
+var
+  Side: TSynFrameSide;
 begin
   inherited Create;
 
@@ -964,7 +979,12 @@ begin
   SetBaseFont(ABaseFont);
   FColor := clWindowText;
   FBkColor := clWindow;
-  FFrameColor := clNone;
+
+  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+  begin
+    FFrameColor[Side] := clNone;
+    FFrameStyle[Side] := slsSolid;
+  end;
 
   FOnFontChangedHandlers := TMethodList.Create;
   FOnFontChangedLock := 0;
@@ -994,18 +1014,26 @@ begin
   //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
 
-function TheTextDrawer.CreateColorPen(AColor: TColor): HPen;
+{$ENDIF}
+
+function TheTextDrawer.CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
 var
   lp: TLogPen;
 begin
   lp.lopnColor := ColorToRGB(AColor);
   lp.lopnWidth := Point(1, 0);
-  lp.lopnStyle := PS_SOLID;
+  lp.lopnStyle := AStyle;
 
   Result := CreatePenIndirect(lp);
 end;
 
-{$ENDIF}
+procedure TheTextDrawer.SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle);
+begin
+  if FFrameStyle[Side] <> AValue then
+  begin
+    FFrameStyle[Side] := AValue;
+  end;
+end;
 
 procedure TheTextDrawer.ReleaseETODist;
 begin
@@ -1164,12 +1192,20 @@ begin
   end;
 end;
 
-procedure TheTextDrawer.SetFrameColor(AValue: TColor);
+procedure TheTextDrawer.SetFrameColor(Side: TSynFrameSide; AValue: TColor);
 begin
-  if FFrameColor <> AValue then
+  if FFrameColor[Side] <> AValue then
   begin
-    FFrameColor := AValue;
+    FFrameColor[Side] := AValue;
   end;
+end;
+
+procedure TheTextDrawer.SetFrameColor(AValue: TColor);
+var
+  Side: TSynFrameSide;
+begin
+  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+    SetFrameColor(Side, AValue);
 end;
 
 procedure TheTextDrawer.SetCharExtra(Value: Integer);
@@ -1231,42 +1267,158 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
     FETOSizeInChar := TmpLen;
   end;
 
+  procedure WaveTo(ADC: HDC; X, Y, R: Integer);
+  var
+    Direction, Cur: Integer;
+    PenPos, Dummy: TPoint;
+  begin
+    dec(R);
+    // get the current pos
+    MoveToEx(ADC, 0, 0, @PenPos);
+    MoveToEx(ADC, PenPos.X, PenPos.Y, @Dummy);
+
+    Direction := 1;
+    // vertical wave
+    if PenPos.X = X then
+    begin
+      Cur := PenPos.Y;
+      if Cur < Y then
+        while (Cur < Y) do
+        begin
+          X := X + Direction * R;
+          LineTo(ADC, X, Cur + R);
+          Direction := -Direction;
+          inc(Cur, R);
+        end
+      else
+        while (Cur > Y) do
+        begin
+          X := X + Direction * R;
+          LineTo(ADC, X, Cur - R);
+          Direction := -Direction;
+          dec(Cur, R);
+        end;
+      LineTo(FDC, X, Y);
+    end
+    else
+    // horizontal wave
+    begin
+      Cur := PenPos.X;
+      if (Cur < X) then
+        while (Cur < X) do
+        begin
+          Y := Y + Direction * R;
+          LineTo(ADC, Cur + R, Y);
+          Direction := -Direction;
+          inc(Cur, R);
+        end
+      else
+        while (Cur > X) do
+        begin
+          Y := Y + Direction * R;
+          LineTo(ADC, Cur - R, Y);
+          Direction := -Direction;
+          dec(Cur, R);
+        end;
+      LineTo(FDC, X, Y);
+    end;
+  end;
+
+  function HasFrame: Boolean;
+  var
+    Side: TSynFrameSide;
+  begin
+    for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+      if FFrameColor[Side] <> clNone then
+        Exit(True);
+    Result := False;
+  end;
+
+const
+  WaveRadius = 3;
+const
+  PenStyle: array[TSynLineStyle] of LongWord = (
+ { slsSolid  } PS_SOLID,
+ { slsDashed } PS_DASH,
+ { slsDotted } PS_DOT,
+ { slsWaved  } PS_SOLID // we draw a wave using solid pen
+  );
 var
   NeedDistArray: Boolean;
   DistArray: PInteger;
   Pen, OldPen: HPen;
-  old : TPoint;
+  old: TPoint;
+  Side: TSynFrameSide;
 begin
-  if FFrameColor <> clNone then
+  if HasFrame then // draw background // TODO: only if not default bg color
   begin
-    // draw background // TODO: only if not default bg color
     InternalFillRect(FDC, ARect);
-
-    if FrameBottom < 0 then
-      FrameBottom := ARect.Bottom;
-    Pen := CreateColorPen(FFrameColor);
-    OldPen := SelectObject(FDC, Pen);
-    MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-    if ARect.Right = FFrameEndX then begin
-      LineTo(FDC, ARect.Right-1, ARect.Top);
-      LineTo(FDC, ARect.Right-1, FrameBottom-1);
-    end else begin
-      // Last point of the line may not be drawn, so paint one more
-      LineTo(FDC, ARect.Right, ARect.Top);
-      MoveToEx(FDC, ARect.Right-1, FrameBottom-1, @old);
-    end;
-    if ARect.Left = FFrameStartX then begin
-      LineTo(FDC, ARect.Left, FrameBottom-1);
-      LineTo(FDC, ARect.Left, ARect.Top);
-    end else begin
-      MoveToEx(FDC, ARect.Left, FrameBottom-1, @old);
-      LineTo(FDC, ARect.Right, FrameBottom-1);
-    end;
-    DeleteObject(SelectObject(FDC, OldPen));
-
     if (fuOptions and ETO_OPAQUE) > 0 then
       fuOptions := fuOptions - ETO_OPAQUE;
     fuOptions := 0;
+
+    if FrameBottom < 0 then
+      FrameBottom := ARect.Bottom;
+
+    OldPen := 0;
+    for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+    begin
+      if (OldPen = 0) or (FFrameColor[Side] <> FFrameColor[Pred(Side)]) or
+         (PenStyle[FFrameStyle[Side]] <> PenStyle[FFrameStyle[Pred(Side)]]) then
+      begin
+        if OldPen <> 0 then
+          DeleteObject(SelectObject(FDC, OldPen));
+        Pen := CreateColorPen(FFrameColor[Side], PenStyle[FFrameStyle[Side]]);
+        OldPen := SelectObject(FDC, Pen);
+      end;
+
+      case Side of
+        sfdLeft:
+          begin
+            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+            if FFrameStyle[Side] = slsWaved then
+              WaveTo(FDC, ARect.Left, FrameBottom, WaveRadius)
+            else
+              LineTo(FDC, ARect.Left, FrameBottom);
+          end;
+        sfdTop:
+          begin
+            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+            if FFrameStyle[Side] = slsWaved then
+              WaveTo(FDC, ARect.Right, ARect.Top, WaveRadius)
+            else
+              LineTo(FDC, ARect.Right, ARect.Top);
+          end;
+        sfdRight:
+          begin
+            if FFrameStyle[Side] = slsWaved then
+            begin
+              MoveToEx(FDC, ARect.Right - WaveRadius, ARect.Top, @old);
+              WaveTo(FDC, ARect.Right - WaveRadius, FrameBottom, WaveRadius)
+            end
+            else
+            begin
+              MoveToEx(FDC, ARect.Right - 1, ARect.Top, @old);
+              LineTo(FDC, ARect.Right - 1, FrameBottom);
+            end;
+          end;
+        sfdBottom:
+          begin
+            if FFrameStyle[Side] = slsWaved then
+            begin
+              MoveToEx(FDC, ARect.Left, FrameBottom - WaveRadius, @old);
+              WaveTo(FDC, ARect.Right, FrameBottom - WaveRadius, WaveRadius)
+            end
+            else
+            begin
+              MoveToEx(FDC, ARect.Left, FrameBottom - 1, @old);
+              LineTo(FDC, ARect.Right, FrameBottom - 1);
+            end;
+          end;
+      end;
+      MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+    end;
+    DeleteObject(SelectObject(FDC, OldPen));
   end;
 
   NeedDistArray:= ForceEto or (FCharExtra > 0) or

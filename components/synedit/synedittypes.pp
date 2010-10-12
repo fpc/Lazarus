@@ -86,6 +86,13 @@ type
    );
   TSynStatusChanges = set of TSynStatusChange;
 
+  TSynLineStyle = (
+    slsSolid,
+    slsDashed,
+    slsDotted,
+    slsWaved
+  );
+
 const
   scTextCleared = [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scSelection];
 
