@@ -39,7 +39,7 @@ msgstr "tipo base de \"%s\" não encontrada"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "\"begin\" em %s sem \"end\""
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
@@ -59,7 +59,7 @@ msgstr "esperado parentêses de abertura, mas %s encontrado"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "constante caractere fora de faixa"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -299,23 +299,23 @@ msgstr "acesso de execução negado para %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "\"(\" esperado, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "\")\" esperado, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "\":=\" esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "identificador esperado, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedstatementbutfound
 msgid "expected statement, but found %s"
-msgstr ""
+msgstr "declaração esperada, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -529,7 +529,7 @@ msgstr "opção \"modo\" inválida \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "operador %s inválido"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -581,7 +581,7 @@ msgstr "método tipo de definição não encontrado"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "faltando \":=\""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -645,19 +645,19 @@ msgstr "método antigo não encontrado: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "operando esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "operando esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "operador esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "operador esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -729,7 +729,7 @@ msgstr "Biblioteca Tempo Execução"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "Arquivos escaneados: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
@@ -793,7 +793,7 @@ msgstr "Termo não tem tipo simples"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "\"then\" esperado, mas %s encontrado"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -837,7 +837,7 @@ msgstr "palavra-chave inesperada \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "palavra-chave %s inesperada"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

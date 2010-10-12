@@ -11,7 +11,7 @@ msgstr ""
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
 msgid "No syntax errors in SQL statement."
-msgstr ""
+msgstr "Nenhum erro de sintaxe na declaração SQL."
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
@@ -19,17 +19,19 @@ msgstr "Resultados"
 
 #: sqlstringspropertyeditordlg.ssqlerror
 msgid "SQL Error"
-msgstr ""
+msgstr "Erro SQL"
 
 #: sqlstringspropertyeditordlg.ssqlok
 msgid "SQL OK"
-msgstr ""
+msgstr "SQL OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
 "Syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
+"Erro de sintaxe na declaração SQL:\n"
+"%s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

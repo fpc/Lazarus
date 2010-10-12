@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "Aplicação (serviço) \"Daemon\" é uma aplicação não visual que é executada em segundo plano."
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Aplicação (serviço) \"Daemon\""
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Aplicações (serviços) \"Daemon\""
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Módulo \"Daemon\" para inclusão em uma aplicação \"daemon\""
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+"Mapeador \"Daemon\" para inclusão em uma aplicação \"daemon\".\n"
+"Apenas um mapeador \"daemon\" deve existir por aplicação.\n"
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "Mapeador \"Daemon\""
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Módulo \"Daemon\""
+

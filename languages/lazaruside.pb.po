@@ -3440,7 +3440,7 @@ msgstr "Ativar a sintaxe de expressões regulares para texto e substituição (b
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
-msgstr ""
+msgstr "Ativo"
 
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
@@ -3460,7 +3460,7 @@ msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
-msgstr ""
+msgstr "Adicionar nova macro"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3508,7 +3508,7 @@ msgstr "Adicionar valor:"
 
 #: lazarusidestrconsts.lisaddvaluetomacro
 msgid "Add value to macro %s"
-msgstr ""
+msgstr "Adicionar valor para macro %s"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3726,7 +3726,7 @@ msgstr "Continuar autom. após:"
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
-msgstr ""
+msgstr "Automático"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -3912,7 +3912,7 @@ msgstr "Construir macros"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
-msgstr ""
+msgstr "Construir macros:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3920,7 +3920,7 @@ msgstr "Modo construção"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
-msgstr ""
+msgstr "Modos construção"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -5375,7 +5375,7 @@ msgstr "Condição"
 
 #: lazarusidestrconsts.lisconditionals
 msgid "Conditionals:"
-msgstr ""
+msgstr "Condicionais:"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -5453,19 +5453,19 @@ msgstr "Controle precisa de um controle-pai"
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
-msgstr ""
+msgstr "Um deslocamento é adicionado à coordenada \"Topo\" dos controles dentro do contâineres visuais"
 
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
-msgstr ""
+msgstr "Deslocamentos coordenadas"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
-msgstr ""
+msgstr "Função Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
-msgstr ""
+msgstr "Nome Delphi"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5488,27 +5488,24 @@ msgid "Convert project or package"
 msgstr "Converter projeto ou pacote"
 
 #: lazarusidestrconsts.lisconverttarget1
-#, fuzzy
 #| msgid "Lazarus / LCL"
 msgctxt "lazarusidestrconsts.lisconverttarget1"
 msgid "Lazarus"
-msgstr "Lazarus / LCL"
+msgstr "Lazarus"
 
 #: lazarusidestrconsts.lisconverttarget2
-#, fuzzy
 #| msgid "Lazarus / LCL for Windows only"
 msgid "Lazarus and Delphi"
-msgstr "Lazarus / LCL apenas para Windows"
+msgstr "Lazarus e Delphi"
 
 #: lazarusidestrconsts.lisconverttarget3
-#, fuzzy
 #| msgid "Both Lazarus / LCL and Delphi"
 msgid "Lazarus for Windows only"
-msgstr "Ambos Lazarus / LCL e Delphi"
+msgstr "Lazarus para Windows apenas"
 
 #: lazarusidestrconsts.lisconverttarget4
 msgid "Lazarus and Delphi with same DFM file"
-msgstr ""
+msgstr "Lazarus e Delphi com o mesmo arquivo DFM"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5529,19 +5526,19 @@ msgstr "Funções / procedimentos à subsituir"
 
 #: lazarusidestrconsts.lisconvleftoff
 msgid "Left offset"
-msgstr ""
+msgstr "Deslocamento esquerda"
 
 #: lazarusidestrconsts.lisconvnewname
 msgid "New Name"
-msgstr ""
+msgstr "Novo Nome"
 
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
-msgstr ""
+msgstr "Contâiner Pai"
 
 #: lazarusidestrconsts.lisconvtopoff
 msgid "Top offset"
-msgstr ""
+msgstr "Deslocamento Topo"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
@@ -5569,7 +5566,7 @@ msgstr "Unidades à substituir"
 
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
-msgstr ""
+msgstr "Propriedades desconhecidas"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5717,7 +5714,7 @@ msgstr "Criar/atualizar arquivo .po ao salvar o arquivo lfm"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
-msgstr ""
+msgstr "Criando índice arquivos fontes FPC %s ..."
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6039,7 +6036,7 @@ msgstr "Falha na exclusão do arquivo"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
-msgstr ""
+msgstr "Excluir macro %s"
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -7231,7 +7228,7 @@ msgstr "Ocultar mensagem via diretiva"
 
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
-msgstr ""
+msgstr "Dica: Um valor padrão pode ser definido nas condicionais."
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -7616,7 +7613,7 @@ msgstr "Inserir \"tag\" url"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
-msgstr ""
+msgstr "Na sessão"
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
@@ -7659,7 +7656,7 @@ msgstr "Instalar/Desinstalar pacotes"
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
-msgstr ""
+msgstr "Interativo"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
@@ -7667,7 +7664,7 @@ msgstr "Macro construção inválida %s%s%s. A macro construção deve ser um id
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
 msgid "Invalid build macro \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Macro construção \"%s\" inválida. O nome é uma palavra-chave."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7775,11 +7772,11 @@ msgstr "mantém"
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
-msgstr ""
+msgstr "Manter arquivos convertidos abertos no editor"
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
-msgstr ""
+msgstr "Todos os arquivos do projeto serão abertos no editor após conversão"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -8706,11 +8703,11 @@ msgstr "Mac Pascal"
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
-msgstr ""
+msgstr "Macro %s"
 
 #: lazarusidestrconsts.lismacroname
 msgid "Macro name"
-msgstr ""
+msgstr "Nome macro"
 
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
@@ -8722,7 +8719,7 @@ msgstr "Inserir parâmetros de execução"
 
 #: lazarusidestrconsts.lismacrovalue
 msgid "Macro value"
-msgstr ""
+msgstr "Valor Macro"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -8831,7 +8828,7 @@ msgstr "Abortar Construção"
 
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
-msgstr ""
+msgstr "Sobre FPC"
 
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
@@ -10020,7 +10017,7 @@ msgstr "Nenhuma opção de compilador herdada."
 
 #: lazarusidestrconsts.lisnoerrors
 msgid "No errors"
-msgstr ""
+msgstr "Nenhum erro"
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -10036,7 +10033,7 @@ msgstr "Nenhum arquivo LFM"
 
 #: lazarusidestrconsts.lisnomacroselected
 msgid "No macro selected"
-msgstr ""
+msgstr "Nenhuma macro selecionada"
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10417,7 +10414,7 @@ msgstr "unidade pacote"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ""
+msgstr ", analisado"
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12054,7 +12051,7 @@ msgstr "Abrir Projeto Recente"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
-msgstr ""
+msgstr "Criar variável local"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -12066,7 +12063,7 @@ msgstr "Correção rápida: Remover unidade"
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
-msgstr ""
+msgstr "Localizar identificador"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -12157,7 +12154,7 @@ msgstr "Falha ao renomear arquivo"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
-msgstr ""
+msgstr "Renomear para %s"
 
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
@@ -12177,7 +12174,7 @@ msgstr "Núm. Repetição:"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
-msgstr ""
+msgstr "Substituição"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"
@@ -12475,7 +12472,7 @@ msgstr "Definir padrão"
 
 #: lazarusidestrconsts.lissetmacrovalues
 msgid "Set macro values"
-msgstr ""
+msgstr "Definir valores macro"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -12788,14 +12785,13 @@ msgid "Target CPU"
 msgstr "CPU Alvo"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-#, fuzzy
 #| msgid "Target file name: (empty = use unit output directory)"
 msgid "Target file name: (-o, empty = use unit output directory)"
-msgstr "Nome arquivo alvo: (vazio = usar diretório de saída de unidades)"
+msgstr "Nome arquivo alvo: (-o, vazio = usar diretório de saída de unidades)"
 
 #: lazarusidestrconsts.listargetfilenameo
 msgid "Target file name (-o):"
-msgstr ""
+msgstr "Nome arquivo alvo (-o):"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
@@ -12838,7 +12834,7 @@ msgstr "A Aplicação Encartada foi criada para \"%s\""
 
 #: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
 msgid "The build macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "A macro construção \"%s\" não se inicia com \"%s\"."
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12946,7 +12942,7 @@ msgstr "O arquivo %s não parece ser um arquivo lpi."
 
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
-msgstr ""
+msgstr "O índice de arquivo é necessário para funcções como a localização de declarações. Enquanto escaneando você pode editar e compilar os fontes, mas funções como a localização de declarações exibirão erros de unidade-não-encontrada. Isto pode levar alguns minutos."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
@@ -13134,7 +13130,7 @@ msgstr "Já existe um formulário com o nome %s%s%s"
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
-msgstr ""
+msgstr "Já existe uma macro IDE com o nome \"%s\"."
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -13977,11 +13973,11 @@ msgstr "Ao mover o cursor do editor fonte, exibir o nó atual no explorador de c
 
 #: lazarusidestrconsts.liswithincludes
 msgid "%s, with includes %s"
-msgstr ""
+msgstr "%s, que inclue %s"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
-msgstr ""
+msgstr ", que inclui"
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

@@ -1137,10 +1137,9 @@ msgid "Filter name"
 msgstr "Nome filtro"
 
 #: objinspstrconsts.pirsunit
-#, fuzzy
 #| msgid "Unit"
 msgid "Pascal unit"
-msgstr "Unidade"
+msgstr "Unidade Pascal"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
