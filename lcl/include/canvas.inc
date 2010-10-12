@@ -1016,7 +1016,7 @@ function TCanvas.GetTextMetrics(out TM: TLCLTextMetric): boolean;
 var
   TTM: TTextMetric;
 begin
-  RequiredState([csHandleValid]);
+  RequiredState([csHandleValid, csFontValid]); // csFontValid added in patch from bug 17555
   Fillchar(TM, SizeOf(TM), 0);
   Result := LCLIntf.GetTextMetrics(FHandle, TTM);
   if Result then begin
