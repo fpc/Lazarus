@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditTypes, SynEditTextBase, SynEditPointClasses,
-  SynEditMiscClasses, SynEditMiscProcs, Controls, SynEditHighlighter;
+  SynEditMiscClasses, SynEditMiscProcs, Controls, SynEditHighlighter, LCLProc;
 
 type
 
@@ -480,11 +480,11 @@ end;
 
 function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
 var
-  i : integer;
+  i, EndCol : integer;
   c : TSynSelectedColor;
-  sMask : TFontStyles;
 begin
   Result := nil;
+  EndCol := GetNextMarkupColAfterRowCol(aRow, aCol) - 1;
 
   for i := 0 to fMarkUpList.Count-1 do begin
     if not TSynEditMarkup(fMarkUpList[i]).Enabled then continue;
@@ -493,20 +493,9 @@ begin
       if not Assigned(Result) then begin
         Result := MarkupInfo;
         Result.Assign(c);
+        Result.MergeFrames(nil, aCol, EndCol);
       end else begin
-        if c.Background <> clNone then Result.Background := c.Background;
-        if c.Foreground <> clNone then Result.Foreground := c.Foreground;
-        if c.FrameColor <> clNone then
-        begin
-          Result.FrameColor := c.FrameColor;
-          Result.FrameStyle := c.FrameStyle;
-          // Only frames need start/end info => copy *here* to separate fields if needed
-          Result.StartX := C.StartX;
-          Result.EndX := C.EndX;
-        end;
-        sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
-        Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
-        Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);
+        Result.Merge(c, aCol, EndCol);
       end;
     end;
   end;

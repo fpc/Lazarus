@@ -80,7 +80,11 @@ type
     property NeedsReScanRealStartIndex: Integer read GetNeedsReScanRealStartIndex;
   end;
 
-  TSynHighlighterAttrFeature = (hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask, hafFrameStyle);
+  TSynHighlighterAttrFeature =
+    ( hafBackColor, hafForeColor, hafFrameColor,
+      hafStyle, hafStyleMask,
+      hafFrameStyle, haFrameEdges
+    );
   TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
   { TSynHighlighterAttributes }
 
@@ -92,6 +96,8 @@ type
     FForegroundDefault: TColor;
     FFrameColor: TColor;
     FFrameColorDefault: TColor;
+    FFrameEdges: TSynFrameEdges;
+    FFrameEdgesDefault: TSynFrameEdges;
     FFrameStyle: TSynLineStyle;
     FFrameStyleDefault: TSynLineStyle;
     FStyle: TFontStyles;
@@ -109,10 +115,12 @@ type
     function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
     function GetFrameColorStored: boolean;
+    function GetFrameEdgesStored: boolean;
     function GetFrameStyleStored: boolean;
     procedure SetBackground(Value: TColor);
     procedure SetForeground(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
+    procedure SetFrameEdges(const AValue: TSynFrameEdges);
     procedure SetFrameStyle(const AValue: TSynLineStyle);
     procedure SetStyle(Value: TFontStyles);
     function GetStyleFromInt: integer;
@@ -145,6 +153,7 @@ type
     property Foreground: TColor read fForeground write SetForeground stored GetForegroundColorStored;
     property FrameColor: TColor read FFrameColor write SetFrameColor stored GetFrameColorStored;
     property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle stored GetFrameStyleStored;
+    property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges stored GetFrameEdgesStored;
     property Style: TFontStyles read fStyle write SetStyle stored GetFontStyleStored;
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask stored GetFontStyleMaskStored;
   end;
@@ -497,6 +506,7 @@ begin
       Foreground := src.fForeground;
       FrameColor := src.FFrameColor;
       FrameStyle := src.FFrameStyle;
+      FrameEdges := src.FFrameEdges;
       Style      := src.fStyle;
       StyleMask  := src.fStyleMask;
       FFeatures  := src.FFeatures;
@@ -525,11 +535,13 @@ begin
   Foreground := clNone;
   FFrameColor := clNone;
   FFrameStyle := slsSolid;
+  FFrameEdges := sfeAround;
   FBackgroundDefault := clNone;
   FForegroundDefault := clNone;
   FFrameColorDefault := clNone;
   FFrameStyleDefault := slsSolid;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle];
+  FFrameEdgesDefault := sfeAround;
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, haFrameEdges];
   fName := attribName;
   if aStoredName = '' then
     FStoredName := attribName
@@ -557,6 +569,11 @@ begin
   Result := FFrameColor <> FFrameColorDefault;
 end;
 
+function TSynHighlighterAttributes.GetFrameEdgesStored: boolean;
+begin
+  Result := FFrameEdges = FFrameEdgesDefault;
+end;
+
 function TSynHighlighterAttributes.GetFrameStyleStored: boolean;
 begin
   Result := FFrameStyle <> FFrameStyleDefault;
@@ -575,6 +592,7 @@ begin
   fBackgroundDefault := FBackground;
   FFrameColorDefault := FFrameColor;
   FFrameStyleDefault := FFrameStyle;
+  FFrameEdgesDefault := FFrameEdges;
   fStyleDefault      := fStyle;
   fStyleMaskDefault  := fStyleMask;
 end;
@@ -778,6 +796,13 @@ begin
     FFrameColor := AValue;
     Changed;
   end;
+end;
+
+procedure TSynHighlighterAttributes.SetFrameEdges(const AValue: TSynFrameEdges);
+begin
+  if FFrameEdges = AValue then exit;
+  FFrameEdges := AValue;
+  Changed;
 end;
 
 procedure TSynHighlighterAttributes.SetFrameStyle(const AValue: TSynLineStyle);

@@ -184,13 +184,6 @@ type
   { TheTextDrawer }
   EheTextDrawerException = class(Exception);
 
-  TSynFrameSide = (
-    sfdLeft,
-    sfdTop,
-    sfdRight,
-    sfdBottom
-  );
-
   TheTextDrawer = class(TObject)
   private
     FDC: HDC;
@@ -215,7 +208,6 @@ type
     FBkColor: TColor;
     FFrameColor: array[TSynFrameSide] of TColor;
     FFrameStyle: array[TSynFrameSide] of TSynLineStyle;
-    FFrameStartX, FFrameEndX: Integer;
     FCharExtra: Integer;
 
     // Begin/EndDrawing calling count
@@ -259,9 +251,9 @@ type
     procedure SetBackColor(Value: TColor); virtual;
 
     procedure SetFrameColor(Side: TSynFrameSide; AValue: TColor); virtual; overload;
-    procedure SetFrameColor(AValue: TColor); virtual; overload;
+    procedure SetFrameColor(AValue: TColor); virtual; overload; //deprecated;
     procedure SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle); virtual; overload;
-    procedure SetFrameStyle(AValue: TSynLineStyle); virtual; overload;
+    //procedure SetFrameStyle(AValue: TSynLineStyle); virtual; overload;
 
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
@@ -277,8 +269,6 @@ type
     property BackColor: TColor read FBkColor write SetBackColor;
     property FrameColor[Side: TSynFrameSide]: TColor write SetFrameColor;
     property FrameStyle[Side: TSynFrameSide]: TSynLineStyle write SetFrameStyle;
-    property FrameStartX: Integer read FFrameStartX write FFrameStartX;
-    property FrameEndX: Integer read FFrameEndX write FFrameEndX;
 
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
@@ -1036,13 +1026,13 @@ begin
   end;
 end;
 
-procedure TheTextDrawer.SetFrameStyle(AValue: TSynLineStyle);
-var
-  Side: TSynFrameSide;
-begin
-  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
-    SetFrameStyle(Side, AValue);
-end;
+//procedure TheTextDrawer.SetFrameStyle(AValue: TSynLineStyle);
+//var
+//  Side: TSynFrameSide;
+//begin
+//  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+//    SetFrameStyle(Side, AValue);
+//end;
 
 procedure TheTextDrawer.ReleaseETODist;
 begin
@@ -1358,6 +1348,8 @@ var
   Pen, OldPen: HPen;
   old: TPoint;
   Side: TSynFrameSide;
+  LastColor: TColor;
+  LastStyle: LongWord;
 begin
   if HasFrame then // draw background // TODO: only if not default bg color
   begin
@@ -1370,62 +1362,69 @@ begin
       FrameBottom := ARect.Bottom;
 
     OldPen := 0;
+    LastColor := clNone;
+    LastStyle := PS_NULL;
     for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
     begin
-      if (OldPen = 0) or (FFrameColor[Side] <> FFrameColor[Pred(Side)]) or
-         (PenStyle[FFrameStyle[Side]] <> PenStyle[FFrameStyle[Pred(Side)]]) then
+      if FFrameColor[Side] <> clNone then
       begin
-        if OldPen <> 0 then
-          DeleteObject(SelectObject(FDC, OldPen));
-        Pen := CreateColorPen(FFrameColor[Side], PenStyle[FFrameStyle[Side]]);
-        OldPen := SelectObject(FDC, Pen);
-      end;
+        if (OldPen = 0) or (FFrameColor[Side] <> LastColor) or
+           (PenStyle[FFrameStyle[Side]] <> LastStyle) then
+        begin
+          LastColor := FFrameColor[Side];
+          LastStyle := PenStyle[FFrameStyle[Side]];
+          if OldPen <> 0 then
+            DeleteObject(SelectObject(FDC, OldPen));
+          Pen := CreateColorPen(LastColor, LastStyle);
+          OldPen := SelectObject(FDC, Pen);
+        end;
 
-      case Side of
-        sfdLeft:
-          begin
-            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-            if FFrameStyle[Side] = slsWaved then
-              WaveTo(FDC, ARect.Left, FrameBottom, WaveRadius)
-            else
-              LineTo(FDC, ARect.Left, FrameBottom);
-          end;
-        sfdTop:
-          begin
-            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-            if FFrameStyle[Side] = slsWaved then
-              WaveTo(FDC, ARect.Right, ARect.Top, WaveRadius)
-            else
-              LineTo(FDC, ARect.Right, ARect.Top);
-          end;
-        sfdRight:
-          begin
-            if FFrameStyle[Side] = slsWaved then
+        case Side of
+          sfdLeft:
             begin
-              MoveToEx(FDC, ARect.Right - WaveRadius, ARect.Top, @old);
-              WaveTo(FDC, ARect.Right - WaveRadius, FrameBottom, WaveRadius)
-            end
-            else
-            begin
-              MoveToEx(FDC, ARect.Right - 1, ARect.Top, @old);
-              LineTo(FDC, ARect.Right - 1, FrameBottom);
+              MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+              if FFrameStyle[Side] = slsWaved then
+                WaveTo(FDC, ARect.Left, FrameBottom, WaveRadius)
+              else
+                LineTo(FDC, ARect.Left, FrameBottom);
             end;
-          end;
-        sfdBottom:
-          begin
-            if FFrameStyle[Side] = slsWaved then
+          sfdTop:
             begin
-              MoveToEx(FDC, ARect.Left, FrameBottom - WaveRadius, @old);
-              WaveTo(FDC, ARect.Right, FrameBottom - WaveRadius, WaveRadius)
-            end
-            else
-            begin
-              MoveToEx(FDC, ARect.Left, FrameBottom - 1, @old);
-              LineTo(FDC, ARect.Right, FrameBottom - 1);
+              MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+              if FFrameStyle[Side] = slsWaved then
+                WaveTo(FDC, ARect.Right, ARect.Top, WaveRadius)
+              else
+                LineTo(FDC, ARect.Right, ARect.Top);
             end;
-          end;
+          sfdRight:
+            begin
+              if FFrameStyle[Side] = slsWaved then
+              begin
+                MoveToEx(FDC, ARect.Right - WaveRadius, ARect.Top, @old);
+                WaveTo(FDC, ARect.Right - WaveRadius, FrameBottom, WaveRadius)
+              end
+              else
+              begin
+                MoveToEx(FDC, ARect.Right - 1, ARect.Top, @old);
+                LineTo(FDC, ARect.Right - 1, FrameBottom);
+              end;
+            end;
+          sfdBottom:
+            begin
+              if FFrameStyle[Side] = slsWaved then
+              begin
+                MoveToEx(FDC, ARect.Left, FrameBottom - WaveRadius, @old);
+                WaveTo(FDC, ARect.Right, FrameBottom - WaveRadius, WaveRadius)
+              end
+              else
+              begin
+                MoveToEx(FDC, ARect.Left, FrameBottom - 1, @old);
+                LineTo(FDC, ARect.Right, FrameBottom - 1);
+              end;
+            end;
+        end;
+        MoveToEx(FDC, ARect.Left, ARect.Top, @old);
       end;
-      MoveToEx(FDC, ARect.Left, ARect.Top, @old);
     end;
     DeleteObject(SelectObject(FDC, OldPen));
   end;

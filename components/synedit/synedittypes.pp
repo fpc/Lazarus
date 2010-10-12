@@ -99,6 +99,13 @@ type
     sfeLeft         // left part of the frame
   );
 
+  TSynFrameSide = (
+    sfdLeft,
+    sfdTop,
+    sfdRight,
+    sfdBottom
+  );
+
 const
   scTextCleared = [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scSelection];
 

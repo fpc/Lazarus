@@ -409,6 +409,7 @@ type
     FLeftGutter, FRightGutter: TSynGutter;
     fTabWidth: integer;
     fTextDrawer: TheTextDrawer;
+    FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
     fStateFlags: TSynStateFlags;
     fOptions: TSynEditorOptions;
     fOptions2: TSynEditorOptions2;
@@ -1649,6 +1650,8 @@ begin
   {$ENDIF}
 
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
+  FPaintLineColor := TSynSelectedColor.Create;
+  FPaintLineColor2 := TSynSelectedColor.Create;
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
@@ -1938,6 +1941,8 @@ begin
   FreeAndNil(FMouseSelActions);
   FreeAndNil(FLeftGutter);
   FreeAndNil(FRightGutter);
+  FreeAndNil(FPaintLineColor);
+  FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   FreeAndNil(fMarkList);
@@ -3087,9 +3092,10 @@ var
     Len, MaxLen: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
     p: PChar;
-    FG, BG, FC: TColor;
+    FG, BG: TColor;
     Style: TFontStyles;
-    FrameStyle: TSynLineStyle;
+    FrameColor: array[TSynFrameSide] of TColor;
+    FrameStyle: array[TSynFrameSide] of TSynLineStyle;
   end;
   dc: HDC;
 
@@ -3279,6 +3285,8 @@ var
     FillStyle: TFontStyles;
     tok: TRect;
     Attr: TSynHighlighterAttributes;
+    s: TSynFrameSide;
+    side: TSynFrameSide;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -3293,9 +3301,11 @@ var
       begin
         SetBackColor(TokenAccu.BG);
         SetForeColor(TokenAccu.FG);
-        SetFrameColor(TokenAccu.FC);
         SetStyle(TokenAccu.Style);
-        SetFrameStyle(TokenAccu.FrameStyle);
+        for s := low(TSynFrameSide) to high(TSynFrameSide) do begin
+          FrameColor[s] := TokenAccu.FrameColor[s];
+          FrameStyle[s] := TokenAccu.FrameStyle[s];
+        end;
       end;
       // Paint the chars
       rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
@@ -3392,16 +3402,23 @@ var
         rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
         rcToken.Right := ScreenColumnToXValue(CurPhysPos+6);
 
-        FTextDrawer.FrameColor := FillFrame;
-        FTextDrawer.FrameStyle := FrameStyle;
         FTextDrawer.ForeColor := FillFCol;
         FTextDrawer.BackColor := FillBCol;
         FTextDrawer.SetStyle(FillStyle);
 
         if Assigned(FoldedCodeInfo) and (FoldedCodeInfo.FrameColor <> clNone) then
         begin
-          FTextDrawer.FrameStartX := rcToken.Left;
-          FTextDrawer.FrameEndX := rcToken.Right;
+          for side := low(TSynFrameSide) to high(TSynFrameSide) do begin
+            if ( (FoldedCodeInfo.FrameEdges = sfeAround) or
+                 ((FoldedCodeInfo.FrameEdges = sfeBottom) and (side = sfdBottom)) or
+                 ((FoldedCodeInfo.FrameEdges = sfeLeft) and (side = sfdLeft))
+               )
+            then
+              FTextDrawer.FrameColor[side] := FoldedCodeInfo.FrameColor
+            else
+              FTextDrawer.FrameColor[side] := clNone;
+            FTextDrawer.FrameStyle[side] := FoldedCodeInfo.FrameStyle;
+          end;
         end;
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
         if rcToken.Right > rcToken.Left then begin
@@ -3413,34 +3430,33 @@ var
     end;
   end;
 
-  procedure AddHighlightToken(
-    Token: PChar;
+  procedure AddHighlightToken(Token: PChar;
     TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
-    Foreground, Background, FrameColor: TColor;
-    Style: TFontStyles; FrameStyle: TSynLineStyle);
+    MarkupInfo : TSynSelectedColor);
   var
-    bCanAppend: boolean;
-    bSpacesTest, bIsSpaces: boolean;
+    CanAppend: boolean;
+    SpacesTest, IsSpaces: boolean;
     i: integer;
+    s: TSynFrameSide;
 
     function TokenIsSpaces: boolean;
     var
       pTok: PChar;
       Cnt: Integer;
     begin
-      if not bSpacesTest then begin
-        bSpacesTest := TRUE;
-        bIsSpaces := TRUE;
+      if not SpacesTest then begin
+        SpacesTest := TRUE;
+        IsSpaces := not (eoShowSpecialChars in fOptions) ;
         pTok := PChar(Pointer(Token));
         Cnt := TokenLen;
-        while bIsSpaces and (Cnt > 0) do begin
+        while IsSpaces and (Cnt > 0) do begin
           if not (pTok^ in [' ',#9])
-          then bIsSpaces := False;
+          then IsSpaces := False;
           Inc(pTok);
           dec(Cnt);
         end;
       end;
-      Result := bIsSpaces;
+      Result := IsSpaces;
     end;
 
   begin
@@ -3449,39 +3465,41 @@ var
       ' Tok="',copy(Token,1,TokenLen),'"');}
 
     // Do we have to paint the old chars first, or can we just append?
-    bCanAppend := FALSE;
-    bSpacesTest := FALSE;
+    CanAppend := FALSE;
+    SpacesTest := FALSE;
+
     if (TokenAccu.Len > 0) then
     begin
-      // font style must be the same or token is only spaces
-      if (
-           (TokenAccu.Style = Style) or
-           ( not (fsUnderline in Style) and
-             not (fsUnderline in TokenAccu.Style) and
-             not (eoShowSpecialChars in fOptions) and TokenIsSpaces
-           )
-         )
-      // background color must be the same and
-      // frame color must be the same and
-      // foreground color must be the same or token is only spaces
-      and (
-            ( (TokenAccu.BG = Background) and
-              ((TokenAccu.FC = FrameColor) and (TokenAccu.FC = clNone)) and
-              (
-                (TokenAccu.FG = Foreground) or
-                (not (eoShowSpecialChars in fOptions) and TokenIsSpaces)
-              )
-            )
+      CanAppend :=
+        // Frame can be continued
+        (TokenAccu.FrameColor[sfdTop] = MarkupInfo.FrameSideColors[sfdTop]) and
+        (TokenAccu.FrameStyle[sfdTop] = MarkupInfo.FrameSideStyles[sfdTop]) and
+        (TokenAccu.FrameColor[sfdBottom] = MarkupInfo.FrameSideColors[sfdBottom]) and
+        (TokenAccu.FrameStyle[sfdBottom] = MarkupInfo.FrameSideStyles[sfdBottom]) and
+        (TokenAccu.FrameColor[sfdRight] = clNone) and
+        (MarkupInfo.FrameSideColors[sfdLeft] = clNone) and
+        // colors
+        (TokenAccu.BG = MarkupInfo.Background) and
+        // space-dependent
+        ( ( (TokenAccu.FG = MarkupInfo.Foreground) and
+            (TokenAccu.Style = MarkupInfo.Style)
+          ) or
+          // whitechar only token, can ignore Foreground color and certain styles (yet must match underline)
+          ( (TokenAccu.Style - [fsBold, fsItalic] = MarkupInfo.Style - [fsBold, fsItalic]) and
+            ( (TokenAccu.Style * [fsUnderline, fsStrikeOut] = []) or
+              (TokenAccu.FG = MarkupInfo.Foreground)
+            ) and
+            TokenIsSpaces
           )
-      then
-        bCanAppend := TRUE;
+        );
       // If we can't append it, then we have to paint the old token chars first.
-      if not bCanAppend then
+      if not CanAppend then
         PaintHighlightToken(FALSE);
     end;
+
     // Don't use AppendStr because it's more expensive.
     //if (CurLine=TopLine) then debugln('      -t-Accu len ',dbgs(TokenAccu.Len),' pstart ',dbgs(TokenAccu.PhysicalStartPos),' p-end ',dbgs(TokenAccu.PhysicalEndPos));
-    if bCanAppend then begin
+    if CanAppend then begin
       if (TokenAccu.Len + TokenLen > TokenAccu.MaxLen) then begin
         TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
         SetTokenAccuLength;
@@ -3492,6 +3510,8 @@ var
       end;
       Inc(TokenAccu.Len, TokenLen);
       TokenAccu.PhysicalEndPos := PhysicalEndPos;
+      TokenAccu.FrameColor[sfdRight] := MarkupInfo.FrameSideColors[sfdRight];
+      TokenAccu.FrameStyle[sfdRight] := MarkupInfo.FrameSideStyles[sfdRight];
     end else begin
       TokenAccu.Len := TokenLen;
       if (TokenAccu.Len > TokenAccu.MaxLen) then begin
@@ -3503,23 +3523,31 @@ var
       end;
       TokenAccu.PhysicalStartPos := PhysicalStartPos;
       TokenAccu.PhysicalEndPos := PhysicalEndPos;
-      TokenAccu.FG := Foreground;
-      TokenAccu.BG := Background;
-      TokenAccu.FC := FrameColor;
-      TokenAccu.Style := Style;
-      TokenAccu.FrameStyle := FrameStyle;
+      TokenAccu.FG := MarkupInfo.Foreground;
+      TokenAccu.BG := MarkupInfo.Background;
+      TokenAccu.Style := MarkupInfo.Style;
+      for s := low(TSynFrameSide) to high(TSynFrameSide) do begin
+        TokenAccu.FrameColor[s] := MarkupInfo.FrameSideColors[s];
+        TokenAccu.FrameStyle[s] := MarkupInfo.FrameSideStyles[s];
+      end;
     end;
-    {debugln('AddHighlightToken END bCanAppend=',dbgs(bCanAppend),
+    {debugln('AddHighlightToken END CanAppend=',dbgs(CanAppend),
       ' Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
       ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
       ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
   end;
 
-  var
-    LastFSX, LastFEX: integer;
   procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
     sToken: PChar; nTokenByteLen: integer);
+  var
+    DefaultFGCol, DefaultBGCol: TColor;
+    PhysicalStartPos: integer;
+    PhysicalEndPos: integer;
+    len: Integer;
+    SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
+    NextPhysPos : Integer;
+    MarkupInfo : TSynSelectedColor;
 
     function CharToByteLen(aCharLen: Integer) : Integer;
     begin
@@ -3531,20 +3559,41 @@ var
       end;
     end;
 
-  var
-    DefaultFGCol, DefaultBGCol, DefaultFCCol: TColor;
-    DefaultFrameStyle: TSynLineStyle;
-    DefaultStyle: TFontStyles;
-    BG, FG, FC : TColor;
-    FrameStyle: TSynLineStyle;
-    Style: TFontStyles;
-    PhysicalStartPos: integer;
-    PhysicalEndPos: integer;
-    len: Integer;
-    SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
-    NextPhysPos : Integer;
-    MarkupInfo : TSynSelectedColor;
-    CurTokenFrameStart, CurTokenFrameEnd: Integer;
+    procedure InitTokenColors;
+    begin
+      FPaintLineColor.Clear;
+      if Assigned(attr) then
+      begin
+        DefaultFGCol := attr.Foreground;
+        DefaultBGCol := attr.Background;
+        if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
+        if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
+
+        FPaintLineColor.FrameColor := attr.FrameColor;
+        FPaintLineColor.FrameStyle := attr.FrameStyle;
+        FPaintLineColor.FrameEdges := attr.FrameEdges;
+        FPaintLineColor.Style      := attr.Style;
+        FPaintLineColor.StyleMask  := attr.StyleMask;
+        if FPaintLineColor.Background = clNone then
+          FPaintLineColor.Background := colEditorBG;
+        if FPaintLineColor.Foreground = clNone then
+          FPaintLineColor.Foreground := Font.Color;
+        if attr.FrameColor <> clNone then begin
+          FPaintLineColor.StartX := PhysicalStartPos;
+          FPaintLineColor.EndX   := PhysicalStartPos + TokenCharLen - 1;
+          FPaintLineColor.MergeFrames(nil, PhysicalStartPos, PhysicalStartPos + TokenCharLen - 1);
+        end;
+      end else
+      begin
+        DefaultFGCol := Font.Color;
+        DefaultBGCol := colEditorBG;
+        FPaintLineColor.Style := Font.Style;
+      end;
+
+      FPaintLineColor.Foreground := DefaultFGCol;
+      FPaintLineColor.Background := DefaultBGCol;
+    end;
+
   begin
     if CurPhysPos > LastCol then exit;
 
@@ -3573,41 +3622,13 @@ var
       nTokenByteLen := CharToByteLen(TokenCharLen);
     end;
 
-    CurTokenFrameStart := -1;
-    CurTokenFrameEnd := -1;
-    if Assigned(attr) then
-    begin
-      DefaultFGCol := attr.Foreground;
-      DefaultBGCol := attr.Background;
-      DefaultFCCol := attr.FrameColor;
-      DefaultFrameStyle := attr.FrameStyle;
-      DefaultStyle := attr.Style;
-      if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
-      if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
-      if attr.FrameColor <> clNone then
-      begin
-        CurTokenFrameStart := PhysicalStartPos;
-        CurTokenFrameEnd := PhysicalStartPos + TokenCharLen - 1;
-        // force Paint
-        PaintHighlightToken(FALSE);
-        TokenAccu.Len := 0;
-        // Set Frame Boundaries
-        LastFSX := CurTokenFrameStart;
-        LastFEX := CurTokenFrameEnd;
-        FTextDrawer.FrameStartX := ScreenColumnToXValue(LastFSX);
-        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
-      end;
-    end else
-    begin
-      DefaultFGCol := Font.Color;
-      DefaultBGCol := colEditorBG;
-      DefaultFCCol := clNone;
-      DefaultFrameStyle := slsSolid;
-      DefaultStyle := Font.Style;
-    end;
+    InitTokenColors;
 
+    // Draw the token
     {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
     while (nTokenByteLen > 0) do begin
+      FPaintLineColor2.Assign(FPaintLineColor);
+
       // Calculate Token Sublen for current Markup
       NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol
                        (FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
@@ -3625,64 +3646,21 @@ var
       PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
 
       // Calculate Markup
-      BG := DefaultBGCol;
-      FG := DefaultFGCol;
-      FC := DefaultFCCol;
-      FrameStyle := DefaultFrameStyle;
-      Style := DefaultStyle;
       MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
       if Assigned(MarkupInfo) then
-        MarkupInfo.ModifyColors(FG, BG, FC, Style, FrameStyle);
-      // Deal with equal colors
-      if (BG = FG) then begin // or if diff(gb,fg) < x
-        if BG = DefaultBGCol
-        then FG := not(BG) and $00ffffff // or maybe Font.color ?
-        else FG := DefaultBGCol;
-      end;
+        FPaintLineColor2.Merge(MarkupInfo, PhysicalStartPos, PhysicalEndPos);
 
-      if not Assigned(MarkupInfo) then
-      begin
-        if (CurTokenFrameEnd > 0) then
-        begin
-          LastFEX := CurTokenFrameEnd;
-          FC := DefaultFCCol;
-          FrameStyle := DefaultFrameStyle;
-        end;
-        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
-      end
-      else if ((MarkupInfo.StartX <> LastFSX) or (MarkupInfo.EndX <> LastFEX)) and
-              ((TokenAccu.FC <> clNone) or (FC <> clNone))
-      then begin
-        // force Paint
-        PaintHighlightToken(FALSE);
-        TokenAccu.Len := 0;
-        // Set Frame Boundaries
-        LastFSX := MarkupInfo.StartX;
-        if (CurTokenFrameStart = PhysicalStartPos) and (LastFSX < 1) then
-        begin
-          LastFSX := CurTokenFrameStart;
-          FC := DefaultFCCol;
-          FrameStyle := DefaultFrameStyle;
-        end;
-        LastFEX := MarkupInfo.EndX;
-        if (CurTokenFrameEnd > 0) and (LastFEX < 1) then
-        begin
-          LastFEX := CurTokenFrameEnd;
-          FC := DefaultFCCol;
-          FrameStyle := DefaultFrameStyle;
-        end;
-        FTextDrawer.FrameStartX := ScreenColumnToXValue(LastFSX);
-        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
-      end;
-      if LastFEX + 1 = PhysicalStartPos then begin
-        // force Paint
-        PaintHighlightToken(FALSE);
-        TokenAccu.Len := 0;
+      // Deal with equal colors
+      if (FPaintLineColor2.Background = FPaintLineColor2.Foreground) then begin // or if diff(gb,fg) < x
+        if FPaintLineColor2.Background = DefaultBGCol then
+          FPaintLineColor2.Foreground := not(FPaintLineColor2.Background) and $00ffffff // or maybe Font.color ?
+        else
+          FPaintLineColor2.Foreground := DefaultBGCol;
       end;
 
       // Add to TokenAccu
       AddHighlightToken(sToken, SubTokenByteLen,
-        PhysicalStartPos, PhysicalEndPos, FG, BG, FC, Style, FrameStyle);
+        PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
 
       PhysicalStartPos:=PhysicalEndPos + 1;
       dec(nTokenByteLen,SubTokenByteLen);
@@ -3726,10 +3704,6 @@ var
     while CurLine<LastLine do begin
       inc(CurLine);
       CurTextIndex := FFoldedLinesView.TextIndex[CurLine];
-      FTextDrawer.FrameStartX := -1;
-      FTextDrawer.FrameEndX := -1;
-      LastFSX := -1;
-      LastFEX := -1;
       //CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
       CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
 
