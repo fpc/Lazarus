@@ -743,6 +743,7 @@ begin
       end;
       IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"', '', -1);
       Application.ProcessMessages;
+      Result:=mrCancel;
       exit;
     end;
   finally
