@@ -80,7 +80,7 @@ type
     property NeedsReScanRealStartIndex: Integer read GetNeedsReScanRealStartIndex;
   end;
 
-  TSynHighlighterAttrFeature = (hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask);
+  TSynHighlighterAttrFeature = (hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask, hafFrameStyle);
   TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
   { TSynHighlighterAttributes }
 
@@ -92,6 +92,8 @@ type
     FForegroundDefault: TColor;
     FFrameColor: TColor;
     FFrameColorDefault: TColor;
+    FFrameStyle: TSynLineStyle;
+    FFrameStyleDefault: TSynLineStyle;
     FStyle: TFontStyles;
     FStyleDefault: TFontStyles;
     FStyleMask: TFontStyles;
@@ -107,9 +109,11 @@ type
     function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
     function GetFrameColorStored: boolean;
+    function GetFrameStyleStored: boolean;
     procedure SetBackground(Value: TColor);
     procedure SetForeground(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
+    procedure SetFrameStyle(const AValue: TSynLineStyle);
     procedure SetStyle(Value: TFontStyles);
     function GetStyleFromInt: integer;
     procedure SetStyleFromInt(const Value: integer);
@@ -137,16 +141,12 @@ type
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property Features: TSynHighlighterAttrFeatures read FFeatures write FFeatures;
   published
-    property Background: TColor read fBackground write SetBackground
-             stored GetBackgroundColorStored;
-    property Foreground: TColor read fForeground write SetForeground
-             stored GetForegroundColorStored;
-    property FrameColor: TColor read FFrameColor write SetFrameColor
-             stored GetFrameColorStored;
-    property Style: TFontStyles read fStyle write SetStyle
-             stored GetFontStyleStored;
-    property StyleMask: TFontStyles read fStyleMask write SetStyleMask
-             stored GetFontStyleMaskStored;
+    property Background: TColor read fBackground write SetBackground stored GetBackgroundColorStored;
+    property Foreground: TColor read fForeground write SetForeground stored GetForegroundColorStored;
+    property FrameColor: TColor read FFrameColor write SetFrameColor stored GetFrameColorStored;
+    property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle stored GetFrameStyleStored;
+    property Style: TFontStyles read fStyle write SetStyle stored GetFontStyleStored;
+    property StyleMask: TFontStyles read fStyleMask write SetStyleMask stored GetFontStyleMaskStored;
   end;
 
   TSynHighlighterCapability = (
@@ -496,6 +496,7 @@ begin
       Background := src.FBackground;
       Foreground := src.fForeground;
       FrameColor := src.FFrameColor;
+      FrameStyle := src.FFrameStyle;
       Style      := src.fStyle;
       StyleMask  := src.fStyleMask;
       FFeatures  := src.FFeatures;
@@ -523,10 +524,12 @@ begin
   Background := clNone;
   Foreground := clNone;
   FFrameColor := clNone;
+  FFrameStyle := slsSolid;
   FBackgroundDefault := clNone;
   FForegroundDefault := clNone;
   FFrameColorDefault := clNone;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
+  FFrameStyleDefault := slsSolid;
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle];
   fName := attribName;
   if aStoredName = '' then
     FStoredName := attribName
@@ -554,6 +557,11 @@ begin
   Result := FFrameColor <> FFrameColorDefault;
 end;
 
+function TSynHighlighterAttributes.GetFrameStyleStored: boolean;
+begin
+  Result := FFrameStyle <> FFrameStyleDefault;
+end;
+
 function TSynHighlighterAttributes.GetFontStyleStored: boolean;
 begin
   Result := fStyle <> fStyleDefault;
@@ -563,9 +571,10 @@ procedure TSynHighlighterAttributes.InternalSaveDefaultValues;
 (* Called once from TSynCustomHighlighter.Create (and only from there),
    after all Attributes where created  *)
 begin
-  fForegroundDefault := fForeground;
-  fBackgroundDefault := fBackground;
+  fForegroundDefault := FForeground;
+  fBackgroundDefault := FBackground;
   FFrameColorDefault := FFrameColor;
+  FFrameStyleDefault := FFrameStyle;
   fStyleDefault      := fStyle;
   fStyleMaskDefault  := fStyleMask;
 end;
@@ -746,16 +755,18 @@ end; { TSynHighlighterAttributes.LoadFromBorlandRegistry }
 
 procedure TSynHighlighterAttributes.SetBackground(Value: TColor);
 begin
-  if fBackGround <> Value then begin
-    fBackGround := Value;
+  if FBackGround <> Value then
+  begin
+    FBackGround := Value;
     Changed;
   end;
 end;
 
 procedure TSynHighlighterAttributes.SetForeground(Value: TColor);
 begin
-  if fForeGround <> Value then begin
-    fForeGround := Value;
+  if FForeGround <> Value then
+  begin
+    FForeGround := Value;
     Changed;
   end;
 end;
@@ -765,6 +776,15 @@ begin
   if FFrameColor <> AValue then
   begin
     FFrameColor := AValue;
+    Changed;
+  end;
+end;
+
+procedure TSynHighlighterAttributes.SetFrameStyle(const AValue: TSynLineStyle);
+begin
+  if FFrameStyle <> AValue then
+  begin
+    FFrameStyle := AValue;
     Changed;
   end;
 end;

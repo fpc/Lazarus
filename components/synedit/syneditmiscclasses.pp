@@ -208,6 +208,7 @@ type
     FBG: TColor;
     FFG: TColor;
     FFrameColor: TColor;
+    FFrameStyle: TSynLineStyle;
     FStyle: TFontStyles;
     // StyleMask = 1 => Copy Style Bits
     // StyleMask = 0 => Invert where Style Bit = 1
@@ -220,6 +221,7 @@ type
     procedure SetBG(Value: TColor);
     procedure SetFG(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
+    procedure SetFrameStyle(const AValue: TSynLineStyle);
     procedure SetStyle(const AValue : TFontStyles);
     procedure SetStyleMask(const AValue : TFontStyles);
     procedure DoChange;
@@ -228,8 +230,9 @@ type
     procedure Assign(aSource: TPersistent); override;
     procedure Clear;
     function IsEnabled: boolean;
-    function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
-    procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor; var AStyle: TFontStyles);
+    function GetModifiedStyle(aStyle: TFontStyles): TFontStyles;
+    procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
+      var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle);
     property StartX: Integer read FStartX write FStartX;
     property EndX: Integer read FEndX write FEndX;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
@@ -239,6 +242,7 @@ type
     property Background: TColor read FBG write SetBG default clHighLight;
     property Foreground: TColor read FFG write SetFG default clHighLightText;
     property FrameColor: TColor read FFrameColor write SetFrameColor default clNone;
+    property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle default slsSolid;
     property Style: TFontStyles read FStyle write SetStyle default [];
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
   end;
@@ -461,9 +465,10 @@ end;
 constructor TSynSelectedColor.Create;
 begin
   inherited Create;
-  fBG := clHighLight;
-  fFG := clHighLightText;
+  FBG := clHighLight;
+  FFG := clHighLightText;
   FFrameColor:= clNone;
+  FFrameStyle := slsSolid;
   FUpdateCount := 0;
 end;
 
@@ -474,11 +479,17 @@ begin
             - (fsNot(FStyle)*FStyleMask);             // Remove Styles
 end;
 
-procedure TSynSelectedColor.ModifyColors(var AForeground, ABackground, AFrameColor: TColor; var AStyle: TFontStyles);
+procedure TSynSelectedColor.ModifyColors(var AForeground, ABackground,
+    AFrameColor: TColor; var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle);
 begin
   if Foreground <> clNone then AForeground := Foreground;
   if Background <> clNone then ABackground := Background;
-  if FrameColor <> clNone then AFrameColor := FrameColor;
+  if FrameColor <> clNone then
+  begin
+    AFrameColor := FrameColor;
+    AFrameStyle := FrameStyle;
+  end;
+
   AStyle := GetModifiedStyle(AStyle);
 end;
 
@@ -521,6 +532,15 @@ begin
   end;
 end;
 
+procedure TSynSelectedColor.SetFrameStyle(const AValue: TSynLineStyle);
+begin
+  if FFrameStyle <> AValue then
+  begin
+    FFrameStyle := AValue;
+    DoChange;
+  end;
+end;
+
 procedure TSynSelectedColor.SetStyle(const AValue : TFontStyles);
 begin
   if (FStyle <> AValue) then
@@ -559,6 +579,7 @@ begin
     FBG := Source.FBG;
     FFG := Source.FFG;
     FFrameColor := Source.FFrameColor;
+    FFrameStyle := Source.FFrameStyle;
     FStyle := Source.FStyle;
     FStyleMask := Source.FStyleMask;
     FStartX := Source.FStartX;
@@ -572,6 +593,7 @@ begin
   FBG := clNone;
   FFG := clNone;
   FFrameColor := clNone;
+  FFrameStyle := slsSolid;
   FStyle := [];
   FStyleMask := [];
   FStartX := -1;

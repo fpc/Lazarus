@@ -87,10 +87,16 @@ type
   TSynStatusChanges = set of TSynStatusChange;
 
   TSynLineStyle = (
-    slsSolid,
-    slsDashed,
-    slsDotted,
-    slsWaved
+    slsSolid,  // PS_SOLID pen
+    slsDashed, // PS_DASH pen
+    slsDotted, // PS_DOT
+    slsWaved   // solid wave
+  );
+
+  TSynFrameEdges = (
+    sfeAround,      // frame around
+    sfeBottom,      // bottom part of the frame
+    sfeLeft         // left part of the frame
   );
 
 const

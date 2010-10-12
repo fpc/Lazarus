@@ -26,7 +26,7 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTextBase, SynEditPointClasses,
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditTextBase, SynEditPointClasses,
   SynEditMiscClasses, SynEditMiscProcs, Controls, SynEditHighlighter;
 
 type
@@ -53,6 +53,7 @@ type
     function GetEnabled: Boolean;
     function GetFGColor : TColor;
     function GetFrameColor: TColor;
+    function GetFrameStyle: TSynLineStyle;
     function GetStyle : TFontStyles;
     procedure SetBGColor(const AValue : TColor);
     procedure SetEnabled(const AValue: Boolean);
@@ -106,6 +107,7 @@ type
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
+    property FrameStyle: TSynLineStyle read GetFrameStyle;
     property Style : TFontStyles read GetStyle;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Lines : TSynEditStrings read fLines write SetLines;
@@ -178,6 +180,11 @@ end;
 function TSynEditMarkup.GetFrameColor: TColor;
 begin
   Result := fMarkupInfo.FrameColor;
+end;
+
+function TSynEditMarkup.GetFrameStyle: TSynLineStyle;
+begin
+  Result := FMarkupInfo.FrameStyle;
 end;
 
 function TSynEditMarkup.GetStyle : TFontStyles;
@@ -489,15 +496,17 @@ begin
       end else begin
         if c.Background <> clNone then Result.Background := c.Background;
         if c.Foreground <> clNone then Result.Foreground := c.Foreground;
-        if c.FrameColor <> clNone then Result.FrameColor := c.FrameColor;
-        sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
-        Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
-        Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);
-        if c.FrameColor <> clNone then begin
+        if c.FrameColor <> clNone then
+        begin
+          Result.FrameColor := c.FrameColor;
+          Result.FrameStyle := c.FrameStyle;
           // Only frames need start/end info => copy *here* to separate fields if needed
           Result.StartX := C.StartX;
           Result.EndX := C.EndX;
         end;
+        sMask := c.StyleMask + (fsNot(c.StyleMask) * c.Style); // Styles to be taken from c
+        Result.Style:= (Result.Style * fsNot(sMask)) + (c.Style * sMask);
+        Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (c.StyleMask * sMask);
       end;
     end;
   end;

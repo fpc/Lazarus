@@ -260,8 +260,9 @@ type
 
     procedure SetFrameColor(Side: TSynFrameSide; AValue: TColor); virtual; overload;
     procedure SetFrameColor(AValue: TColor); virtual; overload;
+    procedure SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle); virtual; overload;
+    procedure SetFrameStyle(AValue: TSynLineStyle); virtual; overload;
 
-    procedure SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle); virtual;
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
 
@@ -1033,6 +1034,14 @@ begin
   begin
     FFrameStyle[Side] := AValue;
   end;
+end;
+
+procedure TheTextDrawer.SetFrameStyle(AValue: TSynLineStyle);
+var
+  Side: TSynFrameSide;
+begin
+  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+    SetFrameStyle(Side, AValue);
 end;
 
 procedure TheTextDrawer.ReleaseETODist;
