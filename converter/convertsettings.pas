@@ -451,6 +451,7 @@ begin
     // Others
     Categ:='Other';
     AddDefaultCategory(Categ);
+    AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
     AddFunc(Categ, 'ShellExecute',
                    'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '');
   end;
