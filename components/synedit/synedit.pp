@@ -1766,7 +1766,10 @@ procedure TCustomSynEdit.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   if root = self then begin
     Proc(FLeftGutter.Parts);
-    Proc(FRightGutter.Parts);
+    // only save right gutter, if it has gutter-parts
+    // move to parts-class
+    if FRightGutter.Parts.Count > 0 then
+      Proc(FRightGutter.Parts);
   end;
 end;
 
