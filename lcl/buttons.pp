@@ -93,9 +93,15 @@ type
     procedure ClearImages;
   protected
     // IUnknown
-    function QueryInterface(const iid: tguid; out obj): longint; stdcall;
-    function _AddRef: longint; stdcall;
-    function _Release: longint; stdcall;
+{$IFDEF FPC_HAS_CONSTREF}
+    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+{$ELSE}
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+{$ENDIF}
 
     // IImageCacheListener
     procedure CacheSetImageList(AImageList: TCustomImageList);

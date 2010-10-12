@@ -292,7 +292,11 @@ begin
     FImageIndexes[i] := -1;
 end;
 
-function TButtonGlyph.QueryInterface(const iid: tguid; out obj): longint; stdcall;
+{$IFDEF FPC_HAS_CONSTREF}
+function TButtonGlyph.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
+{$ELSE}
+function TButtonGlyph.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
+{$ENDIF}
 begin
   if GetInterface(iid, obj) then
     Result := 0
@@ -300,12 +304,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TButtonGlyph._AddRef: longint; stdcall;
+function TButtonGlyph._AddRef: longint; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TButtonGlyph._Release: longint; stdcall;
+function TButtonGlyph._Release: longint; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
 begin
   Result := -1;
 end;
