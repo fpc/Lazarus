@@ -256,6 +256,14 @@ type
     function InitProject(AProject: TLazProject): TModalResult; override;
   end;
 
+  { TConvertedDelphiPackageDescriptor }
+{
+  TConvertedDelphiPackageDescriptor = class(TPackageDescriptor)
+  private
+  public      // ToDo
+    procedure InitPackage(APackage: TLazPackage); override;
+  end;
+}
   // Some global functions from delphiunit2laz are not (yet) converted to class methods.
 
   function CheckDelphiFileExt(const Filename: string): TModalResult;
@@ -1655,13 +1663,11 @@ var
 begin
   LazPackage:=nil;
   if FileExistsUTF8(fLazPFilename) then begin
-    // there is already a lazarus package file
-    // open the package editor
+    // there is already a lazarus package file -> open the package editor
     Result:=PackageEditingInterface.DoOpenPackageFile(fLazPFilename,
                                                       [pofAddToRecent],true);
     if Result<>mrOk then exit;
   end;
-
   // search package in graph
   PkgName:=ExtractFileNameOnly(fLazPFilename);
   LazPackage:=PackageGraph.FindAPackageWithName(PkgName,nil);
@@ -1680,17 +1686,15 @@ begin
       Result:=mrOk;
     end;
   end else begin
-    // there is not yet a package with this name
-    // -> create a new package with LCL as dependency
+    // there is not yet a package with this name -> create a new package with LCL as dependency
     LazPackage:=PackageGraph.CreateNewPackage(PkgName);
     PackageGraph.AddDependencyToPackage(LazPackage,
                   PackageGraph.LCLPackage.CreateDependencyWithOwner(LazPackage));
     LazPackage.Filename:=fLazPFilename;
-
+    LazPackage.CompilerOptions.SyntaxMode:='delphi';
     // open a package editor
     CurEditor:=PackageEditors.OpenEditor(LazPackage);
     CurEditor.Show;
-
     // save .lpk file
     PackageEditors.SavePackage(LazPackage,false);
     Result:=mrOk;
