@@ -586,6 +586,7 @@ type
 
     constructor Create(ATyp: TfrBandType; AParent: TfrPage); overload;
     destructor Destroy; override;
+    function IsDataBand: boolean;
   end;
 
   TfrValue = class
@@ -627,9 +628,12 @@ type
     fColCount         : Integer;
     fColGap           : Integer;
     fColWidth         : Integer;
+    fLastBandType     : TfrBandType;
+    fLastRowHeight    : Integer;
     fMargins          : TfrRect;
     fOrientation      : TPrinterOrientation;
     fPrintToPrevPage  : Boolean;
+    fRowStarted       : boolean;
     fUseMargins       : Boolean;
     Skip              : Boolean;
     InitFlag          : Boolean;
@@ -695,6 +699,9 @@ type
     procedure NewColumn(Band: TfrBand);
     procedure NextColumn(Band: TFrBand);
     function RowsLayout: boolean;
+    procedure StartColumn;
+    procedure StartRowsLayoutNonDataBand(Band: TfrBand);
+    function  AdvanceRow(Band: TfrBand): boolean;
     
     property ColCount : Integer read fColCount write fColCount;
     property ColWidth : Integer read fColWidth write fColWidth;
@@ -704,6 +711,9 @@ type
     property PrintToPrevPage : Boolean read fPrintToPrevPage write fPrintToPrevPage;
     property Orientation : TPrinterOrientation read fOrientation write fOrientation;
     property LayoutOrder: TLayoutOrder read fLayoutOrder write fLayoutOrder;
+    property LastRowHeight: Integer read fLastRowHeight write fLastRowHeight;
+    property RowStarted: boolean read fRowStarted write fRowStarted;
+    property LastBandType: TfrBandType read fLastBandType write fLastbandType;
 
   published
     property Script;
@@ -4533,6 +4543,11 @@ begin
   inherited Destroy;
 end;
 
+function TfrBand.IsDataBand: boolean;
+begin
+  result := (typ in [btMasterData, btDetailData, btSubDetailData]);
+end;
+
 procedure TfrBand.InitDataSet(const Desc: String);
 begin
   if Typ = btGroupHeader then
@@ -4660,7 +4675,8 @@ var
   ox,oy: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.DrawObject INI t=%s:%s',[sspc,dbgsname(t),t.name]);
+  DebugLn('%sTfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d',[sspc,dbgsname(t),t.name,
+    Parent.XAdjust, Parent.LeftMargin]);
   IncSpc(1);
   {$ENDIF}
   CurPage := Parent;
@@ -4671,7 +4687,14 @@ begin
     begin
       ox := t.x; Inc(t.x, Parent.XAdjust - Parent.LeftMargin);
       oy := t.y; Inc(t.y, y);
+      {$IFDEF DebugLR}
+      DebugLn('%sPrinting view %s x=%d y=%d dx=%d dy=%d',[sspc,ViewInfo(t),t.x,t.y,t.dx,t.dy]);
+      IncSpc(1);
+      {$ENDIF}
       t.Print(MasterReport.EMFPages[PageNo]^.Stream);
+      {$IFDEF DebugLR}
+      IncSpc(-1);
+      {$ENDIF}
       t.x := ox; t.y := oy;
       if (t is TfrMemoView) and
          (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
@@ -5172,6 +5195,8 @@ begin
     [sspc, bandInfo(self), sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
   IncSpc(1);
   {$ENDIF}
+
+  Parent.RowStarted := True;
     
   if Stretched then
   begin
@@ -5196,22 +5221,27 @@ begin
         DrawCross;
     end;
     UnStretchObjects;
+
+    Parent.LastRowHeight := sh;
+
     if not WasSub then
       Inc(Parent.CurY, sh);
   end
   else
   begin
+
     if UseY then
     begin
       if not PageBreak then
         CheckPageBreak(y, dy, False);
       y := Parent.CurY;
     end;
+
     if PageBreak then
     begin
       maxdy := CalculatedHeight;
-//      maxdy := CalcHeight;
       DrawPageBreak;
+      Parent.LastRowHeight := maxdy;
     end
     else
     begin
@@ -5219,7 +5249,10 @@ begin
       if HasCross then
         DrawCross;
       if UseY and not WasSub then begin
-        if (not Parent.RowsLayout) or (Parent.CurColumn=Parent.ColCount-1) then
+
+        Parent.LastRowHeight := dy;
+
+        if Parent.AdvanceRow(Self) then
           Inc(Parent.CurY, dy);
       end;
     end;
@@ -5276,7 +5309,7 @@ begin
     CurReport.FOnBeginBand(Self);
   frInterpretator.DoScript(Script);
 
-  if Parent.RowsLayout then begin
+  if Parent.RowsLayout and IsDataBand then begin
   
     if Visible then
     begin
@@ -5301,6 +5334,11 @@ begin
 
   end else begin
 
+    if Parent.RowsLayout and (typ<>btColumnHeader) then
+
+      Parent.StartRowsLayoutNonDataBand(Self)
+
+    else
     // new page was requested in script
     if ForceNewPage then
     begin
@@ -5361,13 +5399,20 @@ begin
       if (Typ <> btPageFooter) or (PageNo = MasterReport.EMFPages.Count - 1) then
         InitValues;
 
+    // if in rows layout, reset starting column after non-data band
+    if Parent.RowsLayout and (typ<>btColumnHeader) then
+      Parent.StartColumn;
+
   end;
   
   if Assigned(CurReport.FOnEndBand) then
     CurReport.FOnEndBand(Self);
+
+  Parent.LastBandType := typ;
+
   {$IFDEF debugLr}
   IncSpc(-1);
-  DebugLn('%sTFrBand.Draw END %s y=%d PageNo=%d',[sspc, dbgsname(self),y, PageNo]);
+  DebugLn('%sTFrBand.Draw END %s y=%d PageNo=%d EOFReached=',[sspc, dbgsname(self),y, PageNo]);
   {$endif}
 end;
 
@@ -5981,6 +6026,7 @@ begin
   if b <> nil then
   begin
     {$IFDEF DebugLR}
+    DebugLn;
     DebugLn('%sTfrPage.ShowBand INI Band=%s',[sspc,BandInfo(b)]);
     IncSpc(1);
     {$ENDIF}
@@ -6218,11 +6264,7 @@ begin
     Inc(ColPos);
   end
   else
-  begin
-    CurColumn := 0;
-    ColPos:=1;
-    XAdjust := LeftMargin;
-  end;
+    StartColumn;
   {$IFDEF DebugLR}
   IncSpc(-1);
   DebugLn('%sTfrPage.NextColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
@@ -6233,6 +6275,38 @@ end;
 function TfrPage.RowsLayout: boolean;
 begin
   result := (ColCount>1) and (LayoutOrder=loRows)
+end;
+
+procedure TfrPage.StartColumn;
+begin
+  CurColumn := 0;
+  ColPos:=1;
+  XAdjust := LeftMargin;
+end;
+
+procedure TfrPage.StartRowsLayoutNonDataBand(Band: TfrBand);
+begin
+
+  // reset starting column
+  if Band.ForceNewPage then begin
+    CurColumn := ColCount - 1;
+    NewColumn(Band);
+  end else
+    StartColumn;
+
+  // check for partial rows
+  if LastBandType in [btMasterData, btDetailData, btSubdetailData] then
+  begin
+    if not RowStarted then
+      Inc(CurY, LastRowHeight);
+  end;
+
+end;
+
+function TfrPage.AdvanceRow(Band: TfrBand): boolean;
+begin
+  result := not RowsLayout or (not Band.IsDataBand) or (CurColumn=ColCount-1);
+  RowStarted := result;
 end;
 
 procedure TfrPage.DoAggregate(a: Array of TfrBandType);
