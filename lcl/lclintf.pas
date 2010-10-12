@@ -88,6 +88,7 @@ function GetTickCount: DWord;
 function GetTickStep: DWord;
 {$ENDIF}
 
+// Functions in the include file sysenvapis.inc
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 function OpenURL(AURL: String): Boolean;
 function OpenDocument(APath: String): Boolean;
@@ -200,143 +201,22 @@ begin
   if KeyData and $20000000 <> 0 then Include(Result, ssAlt);
 end;
 
-function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
-
-  function Find(const ShortFilename: String; out ABrowser: String): Boolean; inline;
-  begin
-    ABrowser := SearchFileInPath(ShortFilename + GetExeExt, '',
-                      GetEnvironmentVariableUTF8('PATH'), PathSeparator,
-                      [sffDontSearchInBasePath]);
-    Result := ABrowser <> '';
-  end;
-
-begin
-  {$IFDEF MSWindows}
-  Find('rundll32', ABrowser);
-  AParams := 'url.dll,FileProtocolHandler %s';
-  {$ELSE}
-    {$IFDEF DARWIN}
-    // open command launches url in the appropriate browser under Mac OS X
-    Find('open', ABrowser);
-    AParams := '"%s"';
-    {$ELSE}
-      ABrowser := '';
-    {$ENDIF}
-  {$ENDIF}
-  if ABrowser = '' then
-  begin
-    AParams := '"%s"';
-    // Then search in path. Prefer open source ;)
-    if Find('xdg-open', ABrowser)  // Portland OSDL/FreeDesktop standard on Linux
-    or Find('htmlview', ABrowser)  // some redhat systems
-    or Find('firefox', ABrowser)
-    or Find('mozilla', ABrowser)
-    or Find('galeon', ABrowser)
-    or Find('konqueror', ABrowser)
-    or Find('safari', ABrowser)
-    or Find('netscape', ABrowser)
-    or Find('opera', ABrowser)
-    or Find('iexplore', ABrowser) then ;// some windows systems
-  end;
-  Result := ABrowser <> '';
-end;
-
-function OpenURL(AURL: String): Boolean;
-{$IFDEF Windows}
-var
-{$IFDEF WinCE}
-  Info: SHELLEXECUTEINFO;
-{$ELSE}
-  ws: WideString;
-  ans: AnsiString;
-{$ENDIF}
-begin
-  Result := False;
-  if AURL = '' then Exit;
-
-  {$IFDEF WinCE}
-  FillChar(Info, SizeOf(Info), 0);
-  Info.cbSize := SizeOf(Info);
-  Info.fMask := SEE_MASK_FLAG_NO_UI;
-  Info.lpVerb := 'open';
-  Info.lpFile := PWideChar(UTF8Decode(AURL));
-  Result := ShellExecuteEx(@Info);
-  {$ELSE}
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    ws := UTF8Decode(AURL);
-    Result := ShellExecuteW(0, 'open', PWideChar(ws), nil, nil, SW_SHOWNORMAL) > 32;
-  end
-  else
-  begin
-    ans := Utf8ToAnsi(AURL); // utf8 must be converted to Windows Ansi-codepage
-    Result := ShellExecute(0, 'open', PAnsiChar(ans), nil, nil, SW_SHOWNORMAL) > 32;
-  end;
-  {$ENDIF}
-end;
-{$ELSE}
-{$IFDEF DARWIN}
-var
-  cf: CFStringRef;
-  url: CFURLRef;
-begin
-  if AURL = '' then
-    Exit(False);
-  cf := CFStringCreateWithCString(kCFAllocatorDefault, @AURL[1], kCFStringEncodingUTF8);
-  if not Assigned(cf) then
-    Exit(False);
-  url := CFURLCreateWithString(nil, cf, nil);
-  Result := LSOpenCFURLRef(url, nil) = 0;
-  CFRelease(url);
-  CFRelease(cf);
-end;
-{$ELSE}
-var
-  ABrowser, AParams: String;
-begin
-  Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
-  if not Result then
-    Exit;
-  RunCmdFromPath(ABrowser,Format(AParams, [AURL]));
-end;
-{$ENDIF}
-{$ENDIF}
-
-function OpenDocument(APath: String): Boolean;
-{$IFDEF Windows}
-begin
-  Result := OpenURL(APath);
-end;
-{$ELSE}
-{$IFDEF DARWIN}
-begin
-  Result := True;
-  RunCmdFromPath('open',APath);
-end;
-{$ELSE}
-var
-  lApp: string;
-begin
-  Result := True;
-  if not FileExistsUTF8(APath) then exit(false);
-
-  lApp:=FindFilenameOfCmd('xdg-open'); // Portland OSDL/FreeDesktop standard on Linux
-  if lApp='' then
-    lApp:=FindFilenameOfCmd('kfmclient'); // KDE command
-  if lApp='' then
-    lApp:=FindFilenameOfCmd('gnome-open'); // GNOME command
-  if lApp='' then
-    Exit(False);
-
-  if (APath<>'') and (APath[1]<>'"') then
-    APath:=QuotedStr(APath);
-  RunCmdFromPath(lApp,APath);
-end;
-{$ENDIF}
-{$ENDIF}
-
 {$I winapi.inc}
 {$I lclintf.inc}
+
+// System APIs which have an operating-system specific implementation
+// They should be moved to FPC eventually
+{$I sysenvapis.inc}
+{$ifdef Windows}
+  {$I sysenvapis_win.inc}
+{$endif}
+{$ifdef UNIX}
+  {$ifdef darwin}
+    {$I sysenvapis_mac.inc}
+  {$else}
+    {$I sysenvapis_unix.inc}
+  {$endif}
+{$endif}
 
 procedure InternalInit;
 var
