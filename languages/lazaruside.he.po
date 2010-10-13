@@ -2572,26 +2572,6 @@ msgstr "מחפש ..."
 msgid "Paths"
 msgstr "נתיבים"
 
-#: lazarusidestrconsts.dlgselectcolorsglobal
-msgid "Select global colors"
-msgstr "בחר צבע גלובלי"
-
-#: lazarusidestrconsts.dlgselectcolorslang
-msgid "Select colors for %s"
-msgstr "בחר צבעים עבור s%"
-
-#: lazarusidestrconsts.dlgselectcolorstomodify
-msgid "Modify colors/styles"
-msgstr "שנה צבעים/סוגים"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
-msgid "Modify global colors/styles"
-msgstr "שנה צבעים/סוגים גלובליים"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifylang
-msgid "Modify colors/styles for %s"
-msgstr "שנה צבעים/סוגים עבור s%"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "ה&טקסט שנבחר"
@@ -2922,8 +2902,14 @@ msgid "Failed to load user-scheme file %s"
 msgstr "נכשל בטעינת קובץ סכמת משתמש s%"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use global scheme settings"
+#, fuzzy
+#| msgid "Use global scheme settings"
+msgid "Use (and edit) global scheme settings"
 msgstr "השתמש בהגדרות סכמה גלובליות"
+
+#: lazarusidestrconsts.dlguseschemelocal
+msgid "Use local scheme settings"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"

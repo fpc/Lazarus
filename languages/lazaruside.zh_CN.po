@@ -2587,26 +2587,6 @@ msgstr "查找..."
 msgid "Paths"
 msgstr "路径"
 
-#: lazarusidestrconsts.dlgselectcolorsglobal
-msgid "Select global colors"
-msgstr ""
-
-#: lazarusidestrconsts.dlgselectcolorslang
-msgid "Select colors for %s"
-msgstr ""
-
-#: lazarusidestrconsts.dlgselectcolorstomodify
-msgid "Modify colors/styles"
-msgstr ""
-
-#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
-msgid "Modify global colors/styles"
-msgstr ""
-
-#: lazarusidestrconsts.dlgselectcolorstomodifylang
-msgid "Modify colors/styles for %s"
-msgstr ""
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "选择文本(&S)"
@@ -2937,7 +2917,11 @@ msgid "Failed to load user-scheme file %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use global scheme settings"
+msgid "Use (and edit) global scheme settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemelocal
+msgid "Use local scheme settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight

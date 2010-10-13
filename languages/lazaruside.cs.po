@@ -2567,26 +2567,6 @@ msgstr "Hledání..."
 msgid "Paths"
 msgstr "Cesty"
 
-#: lazarusidestrconsts.dlgselectcolorsglobal
-msgid "Select global colors"
-msgstr "Vybrat globální barvy"
-
-#: lazarusidestrconsts.dlgselectcolorslang
-msgid "Select colors for %s"
-msgstr "Vybrat barvy pro %s"
-
-#: lazarusidestrconsts.dlgselectcolorstomodify
-msgid "Modify colors/styles"
-msgstr "Úprava barev/stylů"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
-msgid "Modify global colors/styles"
-msgstr "Úprava globálních barev/stylů"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifylang
-msgid "Modify colors/styles for %s"
-msgstr "Upravit barvy/styly pro %s"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "&Vybraný text"
@@ -2917,8 +2897,14 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Chyba při nahrávání uživatelského schéma ze souboru %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use global scheme settings"
+#, fuzzy
+#| msgid "Use global scheme settings"
+msgid "Use (and edit) global scheme settings"
 msgstr "Použít nastavení globálního schéma"
+
+#: lazarusidestrconsts.dlguseschemelocal
+msgid "Use local scheme settings"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"

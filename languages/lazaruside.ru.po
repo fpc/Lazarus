@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-12 00:23+0300\n"
+"PO-Revision-Date: 2010-10-14 01:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2601,26 +2601,6 @@ msgstr "Поиск..."
 msgid "Paths"
 msgstr "Пути"
 
-#: lazarusidestrconsts.dlgselectcolorsglobal
-msgid "Select global colors"
-msgstr "Выбрать глобальные цвета"
-
-#: lazarusidestrconsts.dlgselectcolorslang
-msgid "Select colors for %s"
-msgstr "Выбрать цвета для %s"
-
-#: lazarusidestrconsts.dlgselectcolorstomodify
-msgid "Modify colors/styles"
-msgstr "Изменить цвета/стили"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
-msgid "Modify global colors/styles"
-msgstr "Изменить глобальные цвета/стили"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifylang
-msgid "Modify colors/styles for %s"
-msgstr "Изменить цвета/стили для %s"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "В вы&деленном"
@@ -2951,8 +2931,13 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Не удалось загрузить файл пользовательской схемы %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use global scheme settings"
-msgstr "Применять глобальную схему"
+#| msgid "Use global scheme settings"
+msgid "Use (and edit) global scheme settings"
+msgstr "Использовать (и менять) глобальную схему"
+
+#: lazarusidestrconsts.dlguseschemelocal
+msgid "Use local scheme settings"
+msgstr "Использовать локальную схему"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"

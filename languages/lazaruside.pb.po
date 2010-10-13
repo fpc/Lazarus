@@ -2593,26 +2593,6 @@ msgstr "Procurando..."
 msgid "Paths"
 msgstr "Caminhos"
 
-#: lazarusidestrconsts.dlgselectcolorsglobal
-msgid "Select global colors"
-msgstr "Selecionar cores globais"
-
-#: lazarusidestrconsts.dlgselectcolorslang
-msgid "Select colors for %s"
-msgstr "Selecionar cor para %s"
-
-#: lazarusidestrconsts.dlgselectcolorstomodify
-msgid "Modify colors/styles"
-msgstr "Modificar cores/estilos"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
-msgid "Modify global colors/styles"
-msgstr "Modificar cores/estilos globais"
-
-#: lazarusidestrconsts.dlgselectcolorstomodifylang
-msgid "Modify colors/styles for %s"
-msgstr "Modificar cores/estilos para %s"
-
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "Texto &Selecionado"
@@ -2943,8 +2923,14 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Falhou ao carregar esquema do usuário do arquivo %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-msgid "Use global scheme settings"
+#, fuzzy
+#| msgid "Use global scheme settings"
+msgid "Use (and edit) global scheme settings"
 msgstr "Usar o esquema global de configurações"
+
+#: lazarusidestrconsts.dlguseschemelocal
+msgid "Use local scheme settings"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
