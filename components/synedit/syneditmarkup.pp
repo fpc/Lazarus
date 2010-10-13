@@ -150,6 +150,7 @@ type
     Procedure EndMarkup; override;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    Procedure MergeMarkupAttributeAtRowCol(const aRow, aCol : Integer; AMarkup: TSynSelectedColor);
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
@@ -478,27 +479,28 @@ begin
       TSynEditMarkup(fMarkUpList[i]).PrepareMarkupForRow(aRow);
 end;
 
-function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol(const aRow, aCol: Integer;
+  AMarkup: TSynSelectedColor);
 var
   i, EndCol : integer;
   c : TSynSelectedColor;
 begin
-  Result := nil;
   EndCol := GetNextMarkupColAfterRowCol(aRow, aCol) - 1;
 
   for i := 0 to fMarkUpList.Count-1 do begin
     if not TSynEditMarkup(fMarkUpList[i]).Enabled then continue;
     c := TSynEditMarkup(fMarkUpList[i]).GetMarkupAttributeAtRowCol(aRow, aCol);
     if assigned(c) then begin
-      if not Assigned(Result) then begin
-        Result := MarkupInfo;
-        Result.Assign(c);
-        Result.MergeFrames(nil, aCol, EndCol);
-      end else begin
-        Result.Merge(c, aCol, EndCol);
-      end;
+      AMarkup.Merge(c, aCol, EndCol);
     end;
   end;
+end;
+
+function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+begin
+  Result := MarkupInfo;
+  Result.Clear;
+  MergeMarkupAttributeAtRowCol(aRow, aCol, Result);
 end;
 
 function TSynEditMarkupManager.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;

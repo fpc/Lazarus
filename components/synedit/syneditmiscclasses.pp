@@ -631,20 +631,22 @@ begin
     Other := nil;
   end;
 
-  if (Other = nil) and (FrameColor <> clNone) then begin
+  if (Other = nil) then begin // XXXX initialization...
     // initialize individual borders
     for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
       FFrameSideColors[i] := clNone;
       FFrameSideStyles[i] := slsSolid;
     end;
-    if (FrameEdges in [sfeAround, sfeLeft]) and (StartX = LeftCol) then
-      SetSide(sfdLeft, Self);
-    if (FrameEdges in [sfeAround]) and (EndX = RightCol) then
-      SetSide(sfdRight, Self);
-    if FrameEdges in [sfeAround, sfeBottom] then
-      SetSide(sfdBottom, Self);
-    if FrameEdges in [sfeAround] then
-      SetSide(sfdTop, Self);
+    if (FrameColor <> clNone) then begin
+      if (FrameEdges in [sfeAround, sfeLeft]) and (StartX = LeftCol) then
+        SetSide(sfdLeft, Self);
+      if (FrameEdges in [sfeAround]) and (EndX = RightCol) then
+        SetSide(sfdRight, Self);
+      if FrameEdges in [sfeAround, sfeBottom] then
+        SetSide(sfdBottom, Self);
+      if FrameEdges in [sfeAround] then
+        SetSide(sfdTop, Self);
+    end;
   end;
 
   If (Other = nil) or (Other.FrameColor = clNone) then

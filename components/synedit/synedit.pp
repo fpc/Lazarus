@@ -3547,7 +3547,6 @@ var
     len: Integer;
     SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
     NextPhysPos : Integer;
-    MarkupInfo : TSynSelectedColor;
 
     function CharToByteLen(aCharLen: Integer) : Integer;
     begin
@@ -3646,9 +3645,8 @@ var
       PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
 
       // Calculate Markup
-      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
-      if Assigned(MarkupInfo) then
-        FPaintLineColor2.Merge(MarkupInfo, PhysicalStartPos, PhysicalEndPos);
+      fMarkupManager.MergeMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1,
+        PhysicalStartPos, FPaintLineColor2);
 
       // Deal with equal colors
       if (FPaintLineColor2.Background = FPaintLineColor2.Foreground) then begin // or if diff(gb,fg) < x
