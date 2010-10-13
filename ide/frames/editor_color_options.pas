@@ -52,7 +52,6 @@ type
     pnlUnderline: TPanel;
     pnlBold: TPanel;
     pnlItalic: TPanel;
-    pnlUseGlobal: TPanel;
     PnlTop2: TPanel;
     pnlTop: TPanel;
     LanguageMenu: TPopupMenu;
@@ -74,10 +73,11 @@ type
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
     ColorElementTree: TTreeView;
-    tglGlobal: TToggleBox;
-    tglLocal: TToggleBox;
     ToolBar: TToolBar;
+    ToolBar1: TToolBar;
     ToolButton1: TToolButton;
+    tbtnGlobal: TToolButton;
+    tbtnLocal: TToolButton;
     UseSyntaxHighlightCheckBox: TToolButton;
     ToolButton2: TToolButton;
     LanguageButton: TToolButton;
@@ -533,8 +533,9 @@ begin
     FillRect(ARect);
     Pen.Width := 1;
     PCol := pen.Color;
-    pen.Color := clGray;
+    Pen.Color := clGray;
     Pen.Style := psDot;
+    Pen.EndCap := pecFlat;
     Rectangle(r);
     Pen.Width := 2;
     pen.Color := PCol;
@@ -564,6 +565,7 @@ begin
   begin
     FillRect(ARect);
     Pen.Width := 2;
+    pen.EndCap := pecFlat;
     case Index of
       0: Pen.Style := psSolid;
       1: Pen.Style := psDash;
@@ -815,12 +817,16 @@ begin
   DisableAlign;
   try
 
-  pnlUseGlobal.Enabled := (FCurHighlightElement.GetSchemeGlobal <> nil) and
+  ToolBar1.Enabled := (FCurHighlightElement.GetSchemeGlobal <> nil) and
                           not FIsEditingDefaults;
-  tglGlobal.Checked := FCurHighlightElement.IsUsingSchemeGlobals and
-                       pnlUseGlobal.Enabled;
-  tglLocal.Checked  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
-                       pnlUseGlobal.Enabled;
+  tbtnGlobal.Enabled := ToolBar1.Enabled;
+  tbtnLocal.Enabled := ToolBar1.Enabled;
+  tbtnGlobal.AllowAllUp := not ToolBar1.Enabled;
+  tbtnLocal.AllowAllUp := not ToolBar1.Enabled;
+  tbtnGlobal.Down := FCurHighlightElement.IsUsingSchemeGlobals and
+                     ToolBar1.Enabled;
+  tbtnLocal.Down  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
+                     ToolBar1.Enabled;
 
   AttrToShow := FCurHighlightElement;
   if FCurHighlightElement.IsUsingSchemeGlobals then
@@ -1317,8 +1323,8 @@ begin
   btnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
   btnExport.Hint := dlgColorExportButton;
 
-  tglGlobal.Caption := dlgUseSchemeDefaults;
-  tglLocal.Caption := dlgUseSchemeLocal;
+  tbtnGlobal.Caption := dlgUseSchemeDefaults;
+  tbtnLocal.Caption := dlgUseSchemeLocal;
 
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
@@ -1461,15 +1467,8 @@ begin
   if (FCurHighlightElement = nil) or UpdatingColor then
     exit;
 
-  UpdatingColor := True;
-  if Sender = tglGlobal then
-    tglLocal.Checked := not tglGlobal.Checked
-  else
-    tglGlobal.Checked := not tglLocal.Checked;
-  UpdatingColor := False;
-
   if (FCurHighlightElement.GetSchemeGlobal <> nil) then begin
-    FCurHighlightElement.UseSchemeGlobals := tglGlobal.Checked;
+    FCurHighlightElement.UseSchemeGlobals := tbtnGlobal.Down;
     ShowCurAttribute;
     UpdateCurrentScheme;
   end;

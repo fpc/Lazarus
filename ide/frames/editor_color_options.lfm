@@ -31,7 +31,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 42
+      Top = 47
       Width = 92
       BorderSpacing.Left = 6
       Caption = 'ForeGroundLabel'
@@ -44,7 +44,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 67
+      Top = 72
       Width = 94
       BorderSpacing.Left = 6
       Caption = 'BackGroundLabel'
@@ -57,7 +57,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 19
-      Top = 41
+      Top = 46
       Width = 192
       BorderSpacing.Left = 6
       Caption = 'ForeGroundUseDefaultCheckBox'
@@ -66,13 +66,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object ForegroundColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
-      AnchorSideTop.Control = pnlUseGlobal
+      AnchorSideTop.Control = ToolBar1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 39
+      Top = 44
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -92,7 +92,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 64
+      Top = 69
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -111,7 +111,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 66
+      Top = 71
       Width = 194
       BorderSpacing.Left = 6
       Caption = 'BackGroundUseDefaultCheckBox'
@@ -126,7 +126,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 89
+      Top = 94
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -145,7 +145,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 91
+      Top = 96
       Width = 191
       BorderSpacing.Left = 6
       Caption = 'FrameColorUseDefaultCheckBox'
@@ -166,62 +166,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Shape = bsSpacer
     end
     object bvlAttributeSection: TDividerBevel
-      AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = pnlElementAttributes
-      AnchorSideRight.Control = pnlElementAttributes
-      AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 17
       Top = 0
       Width = 640
       Caption = 'bvlAttributeSection'
-      Anchors = [akTop, akLeft, akRight]
+      Align = alTop
       Font.Style = [fsBold]
       ParentFont = False
-    end
-    object pnlUseGlobal: TPanel
-      AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = bvlAttributeSection
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnlElementAttributes
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 17
-      Width = 628
-      Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
-      BorderSpacing.Left = 6
-      BorderSpacing.Right = 6
-      BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 6
-      ChildSizing.VerticalSpacing = 6
-      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 2
-      ClientHeight = 19
-      ClientWidth = 628
-      ParentColor = False
-      TabOrder = 6
-      object tglGlobal: TToggleBox
-        Left = 0
-        Height = 19
-        Top = 0
-        Width = 314
-        Caption = 'tglGlobal'
-        OnChange = tglGlobalChange
-        TabOrder = 0
-      end
-      object tglLocal: TToggleBox
-        Left = 320
-        Height = 19
-        Top = 0
-        Width = 308
-        Caption = 'tglLocal'
-        OnChange = tglGlobalChange
-        TabOrder = 1
-      end
     end
     object pnlUnderline: TPanel
       AnchorSideLeft.Control = pnlElementAttributes
@@ -229,7 +181,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 40
-      Top = 138
+      Top = 143
       Width = 145
       AutoSize = True
       BorderSpacing.Left = 6
@@ -237,7 +189,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BevelOuter = bvNone
       ClientHeight = 40
       ClientWidth = 145
-      TabOrder = 7
+      TabOrder = 6
       object TextUnderlineRadioPanel: TPanel
         AnchorSideLeft.Control = TextUnderlineCheckBox
         AnchorSideTop.Control = TextUnderlineCheckBox
@@ -321,14 +273,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = pnlUnderline
       Left = 157
       Height = 40
-      Top = 138
+      Top = 143
       Width = 134
       AutoSize = True
       BorderSpacing.Left = 6
       BevelOuter = bvNone
       ClientHeight = 40
       ClientWidth = 134
-      TabOrder = 8
+      TabOrder = 7
       object TextBoldRadioPanel: TPanel
         AnchorSideLeft.Control = TextBoldCheckBox
         AnchorSideTop.Control = TextBoldCheckBox
@@ -412,14 +364,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = pnlUnderline
       Left = 297
       Height = 40
-      Top = 138
+      Top = 143
       Width = 134
       AutoSize = True
       BorderSpacing.Left = 6
       BevelOuter = bvNone
       ClientHeight = 40
       ClientWidth = 134
-      TabOrder = 9
+      TabOrder = 8
       object TextItalicRadioPanel: TPanel
         AnchorSideLeft.Control = TextItalicCheckBox
         AnchorSideTop.Control = TextItalicCheckBox
@@ -503,7 +455,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = FrameEdgesBox
       Left = 307
       Height = 21
-      Top = 114
+      Top = 119
       Width = 97
       BorderSpacing.Left = 6
       ItemHeight = 15
@@ -518,7 +470,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       OnDrawItem = FrameStyleBoxDrawItem
       ReadOnly = True
       Style = csOwnerDrawFixed
-      TabOrder = 10
+      TabOrder = 9
       Text = 'slsSolid'
     end
     object FrameEdgesBox: TComboBox
@@ -527,7 +479,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 204
       Height = 21
-      Top = 114
+      Top = 119
       Width = 97
       BorderSpacing.Top = 3
       ItemHeight = 15
@@ -541,8 +493,42 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       OnDrawItem = FrameEdgesBoxDrawItem
       ReadOnly = True
       Style = csOwnerDrawFixed
-      TabOrder = 11
+      TabOrder = 10
       Text = 'Around'
+    end
+    object ToolBar1: TToolBar
+      Left = 3
+      Height = 24
+      Top = 17
+      Width = 634
+      AutoSize = True
+      BorderSpacing.Left = 3
+      BorderSpacing.Right = 3
+      Caption = 'ToolBar1'
+      EdgeBorders = [ebBottom]
+      ShowCaptions = True
+      TabOrder = 11
+      object tbtnGlobal: TToolButton
+        Tag = 1
+        Left = 1
+        Top = 2
+        AutoSize = True
+        Caption = 'tbtnGlobal'
+        Down = True
+        Grouped = True
+        OnClick = tglGlobalChange
+        Style = tbsCheck
+      end
+      object tbtnLocal: TToolButton
+        Tag = 1
+        Left = 65
+        Top = 2
+        AutoSize = True
+        Caption = 'tbtnLocal'
+        Grouped = True
+        OnClick = tglGlobalChange
+        Style = tbsCheck
+      end
     end
   end
   object pnlTop: TPanel[1]
