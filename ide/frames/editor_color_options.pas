@@ -519,6 +519,7 @@ procedure TEditorColorOptionsFrame.FrameEdgesBoxDrawItem(Control: TWinControl; I
   ARect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
+  PCol: Integer;
 begin
   if Index  < 0 then exit;;
 
@@ -530,16 +531,23 @@ begin
   with TCustomComboBox(Control).Canvas do
   begin
     FillRect(ARect);
+    Pen.Width := 1;
+    PCol := pen.Color;
+    pen.Color := clGray;
+    Pen.Style := psDot;
+    Rectangle(r);
     Pen.Width := 2;
+    pen.Color := PCol;
+    Pen.Style := psSolid;
     case Index of
       0: Rectangle(r);
       1: begin
           MoveTo(r.Left, r.Bottom);
-          LineTo(r.Right, r.Bottom);
+          LineTo(r.Right-1, r.Bottom);
         end;
       2: begin
           MoveTo(r.Left, r.Top);
-          LineTo(r.Left, r.Bottom);
+          LineTo(r.Left, r.Bottom-1);
         end;
     end;
   end;
