@@ -157,8 +157,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Side = asrBottom
       Left = 204
-      Height = 1
-      Top = 177
+      Height = 16
+      Top = 159
       Width = 50
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
@@ -225,11 +225,11 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object pnlUnderline: TPanel
       AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = FrameColorBox
+      AnchorSideTop.Control = FrameEdgesBox
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 40
-      Top = 114
+      Top = 138
       Width = 145
       AutoSize = True
       BorderSpacing.Left = 6
@@ -321,7 +321,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = pnlUnderline
       Left = 157
       Height = 40
-      Top = 114
+      Top = 138
       Width = 134
       AutoSize = True
       BorderSpacing.Left = 6
@@ -412,7 +412,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = pnlUnderline
       Left = 297
       Height = 40
-      Top = 114
+      Top = 138
       Width = 134
       AutoSize = True
       BorderSpacing.Left = 6
@@ -496,6 +496,53 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         OnChange = GeneralCheckBoxOnChange
         TabOrder = 1
       end
+    end
+    object FrameStyleBox: TComboBox
+      AnchorSideLeft.Control = FrameEdgesBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FrameEdgesBox
+      Left = 307
+      Height = 21
+      Top = 114
+      Width = 97
+      BorderSpacing.Left = 6
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'slsSolid'
+        'slsDashed'
+        'slsDotted'
+        'slsWaved'
+      )
+      OnChange = ForegroundColorBoxChange
+      OnDrawItem = FrameStyleBoxDrawItem
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 10
+      Text = 'slsSolid'
+    end
+    object FrameEdgesBox: TComboBox
+      AnchorSideLeft.Control = ColumnPosBevel
+      AnchorSideTop.Control = FrameColorBox
+      AnchorSideTop.Side = asrBottom
+      Left = 204
+      Height = 21
+      Top = 114
+      Width = 97
+      BorderSpacing.Top = 3
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Around'
+        'Bottom'
+        'Left'
+      )
+      OnChange = ForegroundColorBoxChange
+      OnDrawItem = FrameEdgesBoxDrawItem
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 11
+      Text = 'Around'
     end
   end
   object pnlTop: TPanel[1]

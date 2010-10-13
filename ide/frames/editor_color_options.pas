@@ -27,10 +27,10 @@ interface
 uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, ColorBox, ComCtrls,
   LCLProc, LCLType, LCLIntf, Dialogs, Menus,
-  SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
-  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, DividerBevel,
+  SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
+  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, DividerBevel,
   EditorOptions, IDEOptionsIntf, editor_general_options, IDEImagesIntf,
-  LazarusIDEStrConsts, IDEProcs, typinfo, LazConf;
+  LazarusIDEStrConsts, IDEProcs, typinfo, LazConf, types;
 
 type
 
@@ -41,6 +41,8 @@ type
     ColumnPosBevel: TBevel;
     BackGroundLabel: TLabel;
     bvlAttributeSection: TDividerBevel;
+    FrameStyleBox: TComboBox;
+    FrameEdgesBox: TComboBox;
     FileExtensionsComboBox: TComboBox;
     FrameColorBox: TColorBox;
     BackGroundUseDefaultCheckBox: TCheckBox;
@@ -98,6 +100,10 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ForegroundColorBoxChange(Sender: TObject);
     procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
+    procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+      State: TOwnerDrawState);
+    procedure FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+      State: TOwnerDrawState);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure pnlElementAttributesResize(Sender: TObject);
@@ -484,6 +490,15 @@ begin
     AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
     FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
   end;
+  if Sender = FrameEdgesBox then
+  begin
+    AttrToEdit.FrameEdges := TSynFrameEdges(FrameEdgesBox.ItemIndex);
+  end;
+  if Sender = FrameStyleBox then
+  begin
+    AttrToEdit.FrameStyle := TSynLineStyle(FrameStyleBox.ItemIndex);
+  end;
+
   UpdatingColor := False;
   UpdateCurrentScheme;
 end;
@@ -497,6 +512,63 @@ begin
   if i >= 0 then begin
     Items[i] := dlgColorNotModified;
     Items.Move(i, 1);
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+var
+  r: TRect;
+begin
+  if Index  < 0 then exit;;
+
+  r.top := ARect.top + 3;
+  r.bottom := ARect.bottom - 3;
+  r.left := ARect.left + 5;
+  r.right := ARect.Right - 5;
+
+  with TCustomComboBox(Control).Canvas do
+  begin
+    FillRect(ARect);
+    Pen.Width := 2;
+    case Index of
+      0: Rectangle(r);
+      1: begin
+          MoveTo(r.Left, r.Bottom);
+          LineTo(r.Right, r.Bottom);
+        end;
+      2: begin
+          MoveTo(r.Left, r.Top);
+          LineTo(r.Left, r.Bottom);
+        end;
+    end;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+var
+  p: TPoint;
+begin
+  if Index  < 0 then exit;;
+
+  with TCustomComboBox(Control).Canvas do
+  begin
+    FillRect(ARect);
+    Pen.Width := 2;
+    case Index of
+      0: Pen.Style := psSolid;
+      1: Pen.Style := psDash;
+      2: Pen.Style := psDot;
+      3: Pen.Style := psSolid;
+    end;
+    if Index = 3 then begin
+      MoveToEx(Handle, ARect.Left + 5, (ARect.Top + ARect.Bottom) div 2 - 2, @p);
+      WaveTo(Handle, ARect.Right - 5, (ARect.Top + ARect.Bottom) div 2 - 2, 4);
+    end else begin
+      MoveTo(ARect.Left + 5, (ARect.Top + ARect.Bottom) div 2);
+      LineTo(ARect.Right - 5, (ARect.Top + ARect.Bottom) div 2);
+    end;
   end;
 end;
 
@@ -550,6 +622,8 @@ begin
          (DefaultToNone(FrameColorBox.Selected) <> AttrToEdit.FrameColor)
       then begin
         AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
+        FrameEdgesBox.Enabled := TCheckBox(Sender).Checked;
+        FrameStyleBox.Enabled := TCheckBox(Sender).Checked;
         UpdateCurrentScheme;
       end;
     end;
@@ -638,9 +712,6 @@ begin
   CheckControl(ForeGroundUseDefaultCheckBox);
   CheckControl(BackGroundUseDefaultCheckBox);
   CheckControl(FrameColorUseDefaultCheckBox);
-  CheckControl(TextUnderlineCheckBox);
-  CheckControl(TextBoldCheckBox);
-  CheckControl(TextItalicCheckBox);
 
   ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
 end;
@@ -801,6 +872,8 @@ begin
   // Frame
   FrameColorUseDefaultCheckBox.Visible := hafFrameColor in AttrToShow.Features;
   FrameColorBox.Visible                := hafFrameColor in AttrToShow.Features;
+  FrameEdgesBox.Visible                := hafFrameEdges in AttrToShow.Features;
+  FrameStyleBox.Visible                := hafFrameStyle in AttrToShow.Features;
 
   FrameColorBox.Selected := NoneToDefault(AttrToShow.FrameColor);
   if FrameColorBox.Selected = clDefault then
@@ -808,6 +881,8 @@ begin
   else
     FrameColorBox.Tag := FrameColorBox.Selected;
   FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
+  FrameEdgesBox.ItemIndex := integer(AttrToShow.FrameEdges);
+  FrameStyleBox.ItemIndex := integer(AttrToShow.FrameStyle);
 
   // Styles
   TextBoldCheckBox.Visible      := hafStyle in AttrToShow.Features;

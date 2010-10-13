@@ -1434,7 +1434,7 @@ resourcestring
   dlgColorNotModified = 'Not modified';
 
   dlgForecolor = 'Foreground';
-  dlgFrameColor = 'Frame color';
+  dlgFrameColor = 'Text-mark';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
   dlgGutterCollapsedColor = 'Collapsed';

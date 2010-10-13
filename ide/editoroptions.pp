@@ -39,7 +39,7 @@ uses
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms, Dialogs,
   // Synedit
-  SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditStrConst,
+  SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditStrConst, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
   SynPluginTemplateEdit, SynPluginSyncroEdit,
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber,
@@ -149,32 +149,32 @@ const
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TSynHighlighterAttrFeatures =
   (
-    { ahaNone }               [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaTextBlock }          [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaExecutionPoint }     [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaEnabledBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaDisabledBreakpoint } [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaInvalidBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaUnknownBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaErrorLine }          [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaIncrementalSearch }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaHighlightAll }       [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaBracketMatch }       [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaMouseLink }          [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaLineNumber }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
+    { ahaNone }               [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTextBlock }          [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaExecutionPoint }     [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaEnabledBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaDisabledBreakpoint } [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaInvalidBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaUnknownBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaErrorLine }          [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIncrementalSearch }  [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaHighlightAll }       [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaBracketMatch }       [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaMouseLink }          [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaLineNumber }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle],
+    { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaModifiedLine }       [hafBackColor, hafForeColor, hafFrameColor],
     { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
-    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaTemplateEditCur }    [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaTemplateEditSync }   [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaTemplateEditOther }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaSyncroEditCur }      [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaSyncroEditSync }     [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaSyncroEditOther }    [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
-    { ahaSyncroEditArea }     [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
+    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditCur }    [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditSync }   [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditOther }  [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditCur }      [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditSync }     [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditOther }    [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditArea }     [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaGutterSeparator }    [hafBackColor, hafForeColor],
     { ahaGutter }             [hafBackColor],
     { ahaRightMargin}         [hafForeColor]
@@ -1586,6 +1586,8 @@ begin
   Dest.Background := Src.Background;
   Dest.Foreground := Src.Foreground;
   Dest.FrameColor := Src.FrameColor;
+  Dest.FrameEdges := Src.FrameEdges;
+  Dest.FrameStyle := Src.FrameStyle;
   Dest.Style      := Src.Style;
   Dest.StyleMask  := Src.StyleMask;
 end;
@@ -4121,6 +4123,8 @@ begin
   aMarkup.Foreground := clNone;
   aMarkup.Background := clNone;
   aMarkup.FrameColor := clNone;
+  aMarkup.FrameEdges := sfeAround;
+  aMarkup.FrameStyle := slsSolid;
   aMarkup.Style := [];
   aMarkup.StyleMask := [];
 end;
@@ -4305,6 +4309,8 @@ begin
     aDest.Background := Src.Background;
     aDest.Foreground := Src.Foreground;
     aDest.FrameColor := Src.FrameColor;
+    aDest.FrameEdges := Src.FrameEdges;
+    aDest.FrameStyle := Src.FrameStyle;
     aDest.Style      := Src.Style;
     aDest.StyleMask  := Src.StyleMask;
     aDest.Features   := Src.Features;
@@ -4315,8 +4321,11 @@ begin
         aDest.Background := aDefault.Background;
       if Foreground = clDefault then
         aDest.Foreground := aDefault.Foreground;
-      if FrameColor = clDefault then
+      if FrameColor = clDefault then begin
         aDest.FrameColor := aDefault.FrameColor;
+        aDest.FrameEdges := aDefault.FrameEdges;
+        aDest.FrameStyle := aDefault.FrameStyle;
+      end;
     end;
     if aDest is TColorSchemeAttribute then
       TColorSchemeAttribute(aDest).Group := Src.Group;
@@ -4336,6 +4345,8 @@ begin
   aDest.Foreground := Src.Foreground;
   aDest.Background := Src.Background;
   aDest.FrameColor := Src.FrameColor;
+  aDest.FrameEdges := Src.FrameEdges;
+  aDest.FrameStyle := Src.FrameStyle;
   aDest.Style      := Src.Style;
   aDest.StyleMask  := Src.StyleMask;
   aDest.EndUpdate;
@@ -4359,6 +4370,11 @@ begin
             (Background  = Other.Background) and
             (Foreground  = Other.Foreground) and
             (FrameColor  = Other.FrameColor) and
+            ( (FrameColor = clNone) or
+              ( (FrameStyle = Other.FrameStyle) and
+                (FrameEdges = Other.FrameEdges)
+              )
+            ) and
             (Style       = Other.Style) and
             (StyleMask   = Other.StyleMask) and
             (Features   = Other.Features);
@@ -4421,6 +4437,8 @@ begin
       Background := Defaults.Background;
       Foreground := Defaults.Foreground;
       FrameColor := Defaults.FrameColor;
+      FrameEdges := Defaults.FrameEdges;
+      FrameStyle := Defaults.FrameStyle;
       Style      := Defaults.Style;
       StyleMask  := Defaults.StyleMask;
       UseSchemeGlobals := Defaults.UseSchemeGlobals;
