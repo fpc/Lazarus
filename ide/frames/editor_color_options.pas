@@ -891,6 +891,8 @@ begin
   FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
   FrameEdgesBox.ItemIndex := integer(AttrToShow.FrameEdges);
   FrameStyleBox.ItemIndex := integer(AttrToShow.FrameStyle);
+  FrameEdgesBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
+  FrameStyleBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
 
   // Styles
   TextBoldCheckBox.Visible      := hafStyle in AttrToShow.Features;
