@@ -26,10 +26,10 @@ interface
 
 uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, ColorBox, ComCtrls,
-  LCLProc, LCLType, LCLIntf, Dialogs,
+  LCLProc, LCLType, LCLIntf, Dialogs, Menus,
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter,
-  EditorOptions, IDEOptionsIntf, editor_general_options,
+  EditorOptions, IDEOptionsIntf, editor_general_options, IDEImagesIntf,
   LazarusIDEStrConsts, IDEProcs, typinfo, LazConf;
 
 type
@@ -41,9 +41,9 @@ type
     Bevel1: TBevel;
     Bevel1a: TBevel;
     ColumnPosBevel: TBevel;
-    btnExport: TButton;
     chkSchemeDefaults: TCheckBox;
     BackGroundLabel: TLabel;
+    FileExtensionsComboBox: TComboBox;
     FrameColorBox: TColorBox;
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
@@ -53,6 +53,8 @@ type
     ExportSaveDialog: TSaveDialog;
     PnlTop2: TPanel;
     pnlTop: TPanel;
+    LanguageMenu: TPopupMenu;
+    ColorSchemeMenu: TPopupMenu;
     Splitter1: TSplitter;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
@@ -70,15 +72,19 @@ type
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
     ColorElementTree: TTreeView;
-    UseSyntaxHighlightCheckBox: TCheckBox;
+    ToolBar: TToolBar;
+    ToolButton1: TToolButton;
+    UseSyntaxHighlightCheckBox: TToolButton;
+    ToolButton2: TToolButton;
+    LanguageButton: TToolButton;
+    ColorSchemeButton: TToolButton;
+    ToolButton5: TToolButton;
+    btnExport: TToolButton;
+    SetAllAttributesToDefaultButton: TToolButton;
+    SetAttributeToDefaultButton: TToolButton;
     ColorPreview: TSynEdit;
-    ColorSchemeComboBox: TComboBox;
-    FileExtensionsComboBox: TComboBox;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
-    LanguageComboBox: TComboBox;
-    SetAllAttributesToDefaultButton: TButton;
-    SetAttributeToDefaultButton: TButton;
     pnlElementAttributes: TPanel;
     procedure btnExportClick(Sender: TObject);
     procedure ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -133,6 +139,10 @@ type
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
+    procedure LanguageMenuItemClick(Sender: TObject);
+    procedure ColorSchemeMenuItemClick(Sender: TObject);
+    procedure SetLanguageItem(ALanguage: String);
+    procedure SetColorSchemeItem(AScheme: String);
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
@@ -339,7 +349,7 @@ begin
     XMLConfig.SetValue('Lazarus/ColorSchemes/Names/Item1/Value', NewName);
 
     NewScheme := TColorScheme.Create(NewName);
-    NewScheme.Assign(FTempColorSchemeSettings.ColorSchemeGroup[ColorSchemeComboBox.Text]);
+    NewScheme.Assign(FTempColorSchemeSettings.ColorSchemeGroup[ColorSchemeButton.Caption]);
     NewScheme.SaveToXml(XMLConfig, 'Lazarus/ColorSchemes/',nil);
     NewScheme.Free;
 
@@ -599,18 +609,9 @@ end;
 procedure TEditorColorOptionsFrame.ComboBoxOnExit(Sender: TObject);
 var
   Box: TComboBox absolute Sender;
-  NewVal: integer;
 begin
-  if Sender = ColorSchemeComboBox then begin
-    if Box.Text <> FCurrentColorScheme.Name then begin
-      // change the colorscheme
-      if not FIsEditingDefaults then
-        SetColorSchemeForLang(FCurrentHighlighter.LanguageName, Box.Text);
-      SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType), Box.Text);
-    end;
-  end
-  else
-  if Sender = FileExtensionsComboBox then begin
+  if Sender = FileExtensionsComboBox then
+  begin
     //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Old="',GetCurFileExtensions(FCurrentHighlighter.LanguageName),'" FCurrentHighlighter.LanguageName=',FCurrentHighlighter.LanguageName]);
     if Box.Text <> GetCurFileExtensions(FCurrentHighlighter.LanguageName) then
     begin
@@ -619,32 +620,6 @@ begin
     end;
     //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(FCurrentHighlighter.LanguageName),'" FCurrentHighlighter.LanguageName=',FCurrentHighlighter.LanguageName]);
   end
-  else
-  if Sender = LanguageComboBox then begin
-    if box.ItemIndex = 0 then begin
-      if not FIsEditingDefaults then begin
-        FIsEditingDefaults := True;
-        SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType),
-                         ColorSchemeComboBox.Text);
-      end;
-    end
-    else begin
-      if (Box.Text <> FCurrentHighlighter.LanguageName) or FIsEditingDefaults then begin
-        FIsEditingDefaults := False;
-        NewVal := EditorOpts.HighlighterList.FindByName(Box.Text);
-        if NewVal >= 0 then begin
-          CurLanguageID := NewVal;
-          SetCurrentScheme(EditorOpts.HighlighterList[CurLanguageID].SynClass,
-                          GetColorSchemeForLang(EditorOpts.HighlighterList
-                                       [CurLanguageID].SynClass.GetLanguageName));
-          SetComboBoxText(ColorSchemeComboBox,
-                          GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
-          SetComboBoxText(FileExtensionsComboBox,
-                          GetCurFileExtensions(FCurrentHighlighter.LanguageName));
-        end;
-      end;
-    end;
-  end;
 end;
 
 procedure TEditorColorOptionsFrame.pnlElementAttributesResize(Sender: TObject);
@@ -797,12 +772,12 @@ begin
       if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
         lblSelectModifications.Caption := dlgSelectColorsGlobal
       else
-        lblSelectModifications.Caption := Format(dlgSelectColorsLang, [LanguageComboBox.Text]);
+        lblSelectModifications.Caption := Format(dlgSelectColorsLang, [LanguageButton.Caption]);
     else
       if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
         lblSelectModifications.Caption := dlgSelectColorsToModifyGlobal
       else
-        lblSelectModifications.Caption := Format(dlgSelectColorsToModifyLang, [LanguageComboBox.Text]);
+        lblSelectModifications.Caption := Format(dlgSelectColorsToModifyLang, [LanguageButton.Caption]);
   end;
 
   if AttrToShow.Group = agnDefault then begin
@@ -993,15 +968,14 @@ begin
   FindCurHighlightElement;
 end;
 
-procedure TEditorColorOptionsFrame.SetColorElementsToDefaults(
-  OnlySelected: Boolean);
+procedure TEditorColorOptionsFrame.SetColorElementsToDefaults(OnlySelected: Boolean);
 var
   DefaultSchemeGrp: TColorScheme;
   DefaultColorScheme: TColorSchemeLanguage;
   DefAttri: TColorSchemeAttribute;
   i: Integer;
 begin
-  DefaultSchemeGrp := ColorSchemeFactory.ColorSchemeGroup[ColorSchemeComboBox.Text];
+  DefaultSchemeGrp := ColorSchemeFactory.ColorSchemeGroup[ColorSchemeButton.Caption];
   if DefaultSchemeGrp = nil then
     exit;
   if FIsEditingDefaults then
@@ -1088,7 +1062,7 @@ begin
       PreviewEdits[a].BeginUpdate;
     try
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
-        if UseSyntaxHighlightCheckBox.Checked then
+        if UseSyntaxHighlightCheckBox.Down then
           PreviewEdits[a].Highlighter := FCurrentHighlighter
         else
           PreviewEdits[a].Highlighter := nil;
@@ -1146,6 +1120,74 @@ begin
   Result := True;
 end;
 
+procedure TEditorColorOptionsFrame.LanguageMenuItemClick(Sender: TObject);
+var
+  Language: String;
+  NewVal: LongInt;
+begin
+  if (Sender as TMenuItem).MenuIndex = 0 then
+  begin
+    if not FIsEditingDefaults then
+    begin
+      FIsEditingDefaults := True;
+      SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType), ColorSchemeButton.Caption);
+    end;
+    LanguageButton.Caption := (Sender as TMenuItem).Caption;
+  end
+  else
+  begin
+    Language := (Sender as TMenuItem).Caption;
+    if (Language <> FCurrentHighlighter.LanguageName) or FIsEditingDefaults then
+    begin
+      FIsEditingDefaults := False;
+      NewVal := EditorOpts.HighlighterList.FindByName(Language);
+      if NewVal >= 0 then
+      begin
+        CurLanguageID := NewVal;
+        SetCurrentScheme(EditorOpts.HighlighterList[CurLanguageID].SynClass,
+                        GetColorSchemeForLang(EditorOpts.HighlighterList
+                                     [CurLanguageID].SynClass.GetLanguageName));
+        SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
+        SetComboBoxText(FileExtensionsComboBox, GetCurFileExtensions(FCurrentHighlighter.LanguageName));
+      end;
+    end;
+    LanguageButton.Caption := Language;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.ColorSchemeMenuItemClick(Sender: TObject);
+var
+  Scheme: String;
+begin
+  Scheme := (Sender as TMenuItem).Caption;
+  if Scheme <> FCurrentColorScheme.Name then
+  begin
+    // change the colorscheme
+    if not FIsEditingDefaults then
+      SetColorSchemeForLang(FCurrentHighlighter.LanguageName, Scheme);
+    SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType), Scheme);
+  end;
+  ColorSchemeButton.Caption := Scheme;
+end;
+
+procedure TEditorColorOptionsFrame.SetLanguageItem(ALanguage: String);
+var
+  i: Integer;
+begin
+  for i := 0 to LanguageMenu.Items.Count - 1 do
+    LanguageMenu.Items[i].Checked := LanguageMenu.Items[i].Caption = ALanguage;
+  LanguageButton.Caption := ALanguage;
+end;
+
+procedure TEditorColorOptionsFrame.SetColorSchemeItem(AScheme: String);
+var
+  i: Integer;
+begin
+  for i := 0 to ColorSchemeMenu.Items.Count - 1 do
+    ColorSchemeMenu.Items[i].Checked := ColorSchemeMenu.Items[i].Caption = AScheme;
+  ColorSchemeButton.Caption := AScheme;
+end;
+
 constructor TEditorColorOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1166,30 +1208,47 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  Items: TStringList;
+  Item: TMenuItem;
+  I: Integer;
 begin
   // Prevent the caret from moving
   ColorPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
   FDialog := ADialog;
   UpdatingColor := False;
   FCurHighlightElement := nil;
+  ToolBar.Images := IDEImages.Images_16;
 
-  UseSyntaxHighlightCheckBox.Caption := dlgUseSyntaxHighlight;
-
-  ColorSchemeComboBox.Sorted := True;
-  with ColorSchemeComboBox do
-  begin
+  Items := TStringList.Create;
+  try
+    Items.Sorted := True;
     ColorSchemeFactory.GetRegisteredSchemes(Items);
-    Text := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
+    for I := 0 to Items.Count - 1 do
+    begin
+      Item := NewItem(Items[I], 0, I = 0, True, @ColorSchemeMenuItemClick, 0, '');
+      Item.RadioItem := True;
+      Item.AutoCheck := True;
+      Item.GroupIndex := 1;
+      ColorSchemeMenu.Items.Add(Item);
+    end;
+  finally
+    Items.Free;
   end;
 
   ColumnPosBevel.Height := 1;
 
-  LanguageComboBox.Hint := dlgLang;
-  ColorSchemeComboBox.Hint := dlgClrScheme;
+  UseSyntaxHighlightCheckBox.ImageIndex := IDEImages.LoadImage(16, 'laz_highlighter');
+  UseSyntaxHighlightCheckBox.Hint := dlgUseSyntaxHighlight;
+  LanguageButton.Hint := dlgLang;
+  ColorSchemeButton.Hint := dlgClrScheme;
   FileExtensionsComboBox.hint := dlgFileExts;
-  SetAttributeToDefaultButton.Caption := dlgSetElementDefault;
-  SetAllAttributesToDefaultButton.Caption := dlgSetAllElementDefault;
-  btnExport.Caption := dlgColorExportButton;
+  SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage(16, 'laz_set_color_default');
+  SetAttributeToDefaultButton.Hint := dlgSetElementDefault;
+  SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage(16, 'laz_set_colors_default');
+  SetAllAttributesToDefaultButton.Hint := dlgSetAllElementDefault;
+  btnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  btnExport.Hint := dlgColorExportButton;
 
   chkSchemeDefaults.Caption := dlgUseSchemeDefaults;
 
@@ -1223,6 +1282,7 @@ end;
 procedure TEditorColorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
+  Item: TMenuItem;
 begin
   // here we are sure that Setup has been called for every frame =>
   // we can assign events to every registered preview control
@@ -1237,17 +1297,21 @@ begin
   with AOptions as TEditorOptions do
   begin
     FTempColorSchemeSettings.Assign(UserColorSchemeGroup);
-    UseSyntaxHighlightCheckBox.Checked := UseSyntaxHighlight;
+    UseSyntaxHighlightCheckBox.Down := UseSyntaxHighlight;
 
-    with LanguageComboBox do
-      with Items do
-      begin
-        BeginUpdate;
-        Add('- '+dlgEditSchemDefaults+' -');
-        for i := 0 to EditorOpts.HighlighterList.Count - 1 do
-          Add(HighlighterList[i].SynClass.GetLanguageName);
-        EndUpdate;
-      end;
+    Item := NewItem('- '+dlgEditSchemDefaults+' -', 0, False, True, @LanguageMenuItemClick, 0, '');
+    Item.RadioItem := True;
+    Item.AutoCheck := True;
+    Item.GroupIndex := 1;
+    LanguageMenu.Items.Add(Item);
+    for i := 0 to EditorOpts.HighlighterList.Count - 1 do
+    begin
+      Item := NewItem(HighlighterList[i].SynClass.GetLanguageName, 0, False, True, @LanguageMenuItemClick, 0, '');
+      Item.RadioItem := True;
+      Item.AutoCheck := True;
+      Item.GroupIndex := 1;
+      LanguageMenu.Items.Add(Item);
+    end;
 
     with FileExtensionsComboBox, GeneralPage do
       if CurLanguageID >= 0 then
@@ -1256,11 +1320,8 @@ begin
 
     SetCurrentScheme(TPreviewPasSyn, GetColorSchemeForLang(TPreviewPasSyn.GetLanguageName));
     CurLanguageID := HighlighterList.FindByClass(TCustomSynClass(FCurrentHighlighter.ClassType));
-
-    LanguageComboBox.Text := FCurrentHighlighter.LanguageName;
-    SetComboBoxText(LanguageComboBox, LanguageComboBox.Text);
-    ColorSchemeComboBox.Text := GetColorSchemeForLang(FCurrentHighlighter.LanguageName);
-    SetComboBoxText(ColorSchemeComboBox, ColorSchemeComboBox.Text);
+    SetLanguageItem(FCurrentHighlighter.LanguageName);
+    SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
 
     ShowCurAttribute;
     UpdateCurrentScheme;
@@ -1273,7 +1334,7 @@ var
 begin
   with AOptions as TEditorOptions do
   begin
-    UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Checked;
+    UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Down;
 
     if FFileExtensions <> nil then begin
       for i := 0 to FFileExtensions.Count - 1 do begin

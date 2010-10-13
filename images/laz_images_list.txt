@@ -11,10 +11,13 @@ actions/laz_copy.png
 actions/laz_cut.png
 actions/laz_delete.png
 actions/laz_edit.png
+actions/laz_highlighter.png
 actions/laz_open.png
 actions/laz_paste.png
 actions/laz_refresh.png
 actions/laz_save.png
+actions/laz_set_color_default.png
+actions/laz_set_colors_default.png
 actions/laz_wand.png
 items/item_character.png
 items/item_filter.png
