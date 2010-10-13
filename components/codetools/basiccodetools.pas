@@ -2076,7 +2076,9 @@ function FindStartOfAtom(const Source: string; Position: integer): integer;
   procedure ReadStringConstantBackward(var p: integer);
   var
     PrePos: integer;
+    StartPos: LongInt;
   begin
+    StartPos:=p;
     while (p>1) do begin
       case Source[p-1] of
       '''':
@@ -2086,6 +2088,8 @@ function FindStartOfAtom(const Source: string; Position: integer): integer;
           repeat
             dec(PrePos);
             if (PrePos<1) or (Source[PrePos] in [#10,#13]) then begin
+              // the StartPos was the start of a string constant
+              p:=StartPos-1;
               exit;
             end;
           until (Source[PrePos]='''');
@@ -2158,6 +2162,7 @@ begin
     end;
   '''':
     begin
+      // could be start or end
       inc(Result);
       ReadStringConstantBackward(Result);
     end;

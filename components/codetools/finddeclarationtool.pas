@@ -8127,6 +8127,7 @@ function TFindDeclarationTool.GetCurrentAtomType: TVariableAtomType;
 var
   Node: TCodeTreeNode;
 begin
+  //debugln(['TFindDeclarationTool.GetCurrentAtomType ',CurPos.StartPos,' ',CurPos.EndPos,' ',SrcLen,' ',GetAtom]);
   if (CurPos.StartPos=CurPos.EndPos) then
     Result:=vatSpace
   else if (CurPos.StartPos>SrcLen) then
