@@ -232,7 +232,7 @@ begin
   WinToDosTime(F.FindData.ftLastWriteTime,F.Time);
   f.size:=F.FindData.NFileSizeLow+(qword(maxdword)+1)*F.FindData.NFileSizeHigh;
   f.attr:=F.FindData.dwFileAttributes;
-  f.Name:=StrPas(@F.FindData.cFileName[0]);
+  f.Name:=F.FindData.cFileName;
   Result:=0;
 end;
 
