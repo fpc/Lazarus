@@ -1428,15 +1428,10 @@ resourcestring
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
   dlgColorExportButton = 'Export';
-  dlgUseSchemeDefaults = 'Use global scheme settings';
+  dlgUseSchemeDefaults = 'Use (and edit) global scheme settings';
+  dlgUseSchemeLocal    = 'Use local scheme settings';
   dlgColor = 'Color';
   dlgColorNotModified = 'Not modified';
-
-  dlgSelectColorsToModify = 'Modify colors/styles';
-  dlgSelectColorsToModifyLang = 'Modify colors/styles for %s';
-  dlgSelectColorsToModifyGlobal = 'Modify global colors/styles';
-  dlgSelectColorsLang = 'Select colors for %s';
-  dlgSelectColorsGlobal = 'Select global colors';
 
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';

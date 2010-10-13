@@ -28,7 +28,7 @@ uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, ColorBox, ComCtrls,
   LCLProc, LCLType, LCLIntf, Dialogs, Menus,
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
-  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter,
+  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, DividerBevel,
   EditorOptions, IDEOptionsIntf, editor_general_options, IDEImagesIntf,
   LazarusIDEStrConsts, IDEProcs, typinfo, LazConf;
 
@@ -38,19 +38,16 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
-    Bevel1: TBevel;
-    Bevel1a: TBevel;
     ColumnPosBevel: TBevel;
-    chkSchemeDefaults: TCheckBox;
     BackGroundLabel: TLabel;
+    bvlAttributeSection: TDividerBevel;
     FileExtensionsComboBox: TComboBox;
     FrameColorBox: TColorBox;
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
-    lblAttributeSection: TLabel;
-    lblSelectModifications: TLabel;
     ExportSaveDialog: TSaveDialog;
+    pnlUseGlobal: TPanel;
     PnlTop2: TPanel;
     pnlTop: TPanel;
     LanguageMenu: TPopupMenu;
@@ -72,6 +69,8 @@ type
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
     ColorElementTree: TTreeView;
+    tglGlobal: TToggleBox;
+    tglLocal: TToggleBox;
     ToolBar: TToolBar;
     ToolButton1: TToolButton;
     UseSyntaxHighlightCheckBox: TToolButton;
@@ -104,6 +103,7 @@ type
     procedure TextStyleRadioOnChange(Sender: TObject);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tglGlobalChange(Sender: TObject);
   private
     FTempColorSchemeSettings: TColorSchemeFactory;
 
@@ -511,15 +511,6 @@ begin
   if FCurHighlightElement = nil then
     exit;
 
-  if Sender = chkSchemeDefaults then begin
-    if (FCurHighlightElement.GetSchemeGlobal <> nil) and not UpdatingColor then begin
-      FCurHighlightElement.UseSchemeGlobals := chkSchemeDefaults.Checked;
-      ShowCurAttribute;
-      UpdateCurrentScheme;
-    end;
-    exit;
-  end;
-
   AttrToEdit := FCurHighlightElement;
   if FCurHighlightElement.IsUsingSchemeGlobals then
     AttrToEdit := FCurHighlightElement.GetSchemeGlobal;
@@ -742,9 +733,12 @@ begin
   DisableAlign;
   try
 
-  chkSchemeDefaults.Checked := FCurHighlightElement.IsUsingSchemeGlobals;
-  chkSchemeDefaults.Visible := (FCurHighlightElement.GetSchemeGlobal <> nil) and
-                               not FIsEditingDefaults;
+  pnlUseGlobal.Enabled := (FCurHighlightElement.GetSchemeGlobal <> nil) and
+                          not FIsEditingDefaults;
+  tglGlobal.Checked := FCurHighlightElement.IsUsingSchemeGlobals and
+                       pnlUseGlobal.Enabled;
+  tglLocal.Checked  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
+                       pnlUseGlobal.Enabled;
 
   AttrToShow := FCurHighlightElement;
   if FCurHighlightElement.IsUsingSchemeGlobals then
@@ -763,21 +757,6 @@ begin
      (AttrToShow.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
   then begin
     FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
-  end;
-
-  case FCurHighlightElement.Group of
-    agnLanguage:
-      lblSelectModifications.Caption := dlgSelectColorsToModify;
-    agnDefault:
-      if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
-        lblSelectModifications.Caption := dlgSelectColorsGlobal
-      else
-        lblSelectModifications.Caption := Format(dlgSelectColorsLang, [LanguageButton.Caption]);
-    else
-      if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
-        lblSelectModifications.Caption := dlgSelectColorsToModifyGlobal
-      else
-        lblSelectModifications.Caption := Format(dlgSelectColorsToModifyLang, [LanguageButton.Caption]);
   end;
 
   if AttrToShow.Group = agnDefault then begin
@@ -1250,15 +1229,15 @@ begin
   btnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
   btnExport.Hint := dlgColorExportButton;
 
-  chkSchemeDefaults.Caption := dlgUseSchemeDefaults;
+  tglGlobal.Caption := dlgUseSchemeDefaults;
+  tglLocal.Caption := dlgUseSchemeLocal;
 
-  lblSelectModifications.Caption := dlgSelectColorsToModify;
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
   ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
   BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
   FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
-  lblAttributeSection.Caption := dlgElementAttributes;
+  bvlAttributeSection.Caption := dlgElementAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;
@@ -1387,6 +1366,25 @@ procedure TEditorColorOptionsFrame.ComboBoxOnKeyDown(Sender: TObject; var Key: W
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
+end;
+
+procedure TEditorColorOptionsFrame.tglGlobalChange(Sender: TObject);
+begin
+  if (FCurHighlightElement = nil) or UpdatingColor then
+    exit;
+
+  UpdatingColor := True;
+  if Sender = tglGlobal then
+    tglLocal.Checked := not tglGlobal.Checked
+  else
+    tglLocal.Checked := not tglGlobal.Checked;
+  UpdatingColor := False;
+
+  if (FCurHighlightElement.GetSchemeGlobal <> nil) then begin
+    FCurHighlightElement.UseSchemeGlobals := tglGlobal.Checked;
+    ShowCurAttribute;
+    UpdateCurrentScheme;
+  end;
 end;
 
 function TEditorColorOptionsFrame.GetCurFileExtensions(const LanguageName: String): String;

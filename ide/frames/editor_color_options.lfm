@@ -31,36 +31,12 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 69
+      Top = 42
       Width = 92
       BorderSpacing.Left = 6
       Caption = 'ForeGroundLabel'
       ParentColor = False
       Visible = False
-    end
-    object chkSchemeDefaults: TCheckBox
-      AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = lblAttributeSection
-      AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 19
-      Top = 22
-      Width = 124
-      Caption = 'chkSchemeDefaults'
-      OnChange = GeneralCheckBoxOnChange
-      TabOrder = 0
-    end
-    object lblSelectModifications: TLabel
-      AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = chkSchemeDefaults
-      AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 16
-      Top = 47
-      Width = 118
-      BorderSpacing.Top = 6
-      Caption = 'lblSelectModifications'
-      ParentColor = False
     end
     object BackGroundLabel: TLabel
       AnchorSideLeft.Control = pnlElementAttributes
@@ -68,7 +44,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 94
+      Top = 67
       Width = 94
       BorderSpacing.Left = 6
       Caption = 'BackGroundLabel'
@@ -81,22 +57,22 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 19
-      Top = 68
+      Top = 41
       Width = 192
       BorderSpacing.Left = 6
       Caption = 'ForeGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 1
+      TabOrder = 0
     end
     object ForegroundColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
-      AnchorSideTop.Control = lblSelectModifications
+      AnchorSideTop.Control = pnlUseGlobal
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 66
+      Top = 39
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -106,7 +82,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Constraints.MaxWidth = 200
       ItemHeight = 16
       OnChange = ForegroundColorBoxChange
-      TabOrder = 2
+      TabOrder = 1
     end
     object BackGroundColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
@@ -116,7 +92,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 91
+      Top = 64
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -126,7 +102,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Constraints.MaxWidth = 200
       ItemHeight = 16
       OnChange = ForegroundColorBoxChange
-      TabOrder = 4
+      TabOrder = 3
     end
     object BackGroundUseDefaultCheckBox: TCheckBox
       AnchorSideLeft.Control = pnlElementAttributes
@@ -135,12 +111,12 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 93
+      Top = 66
       Width = 194
       BorderSpacing.Left = 6
       Caption = 'BackGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 3
+      TabOrder = 2
     end
     object FrameColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
@@ -150,7 +126,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 22
-      Top = 116
+      Top = 89
       Width = 200
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -160,7 +136,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Constraints.MaxWidth = 200
       ItemHeight = 16
       OnChange = ForegroundColorBoxChange
-      TabOrder = 6
+      TabOrder = 5
     end
     object FrameColorUseDefaultCheckBox: TCheckBox
       AnchorSideLeft.Control = pnlElementAttributes
@@ -169,12 +145,12 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 118
+      Top = 91
       Width = 191
       BorderSpacing.Left = 6
       Caption = 'FrameColorUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 5
+      TabOrder = 4
     end
     object TextUnderlineRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -183,13 +159,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 19
-      Top = 141
+      Top = 114
       Width = 129
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 19
       ClientWidth = 129
-      TabOrder = 8
+      TabOrder = 7
       object TextUnderlineRadioOn: TRadioButton
         Tag = 3
         AnchorSideTop.Control = TextUnderlineRadioPanel
@@ -241,13 +217,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 141
+      Top = 114
       Width = 145
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'TextUnderlineCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 7
+      TabOrder = 6
     end
     object TextBoldRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -256,13 +232,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 19
-      Top = 163
+      Top = 136
       Width = 129
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 19
       ClientWidth = 129
-      TabOrder = 10
+      TabOrder = 9
       object TextBoldRadioInvert: TRadioButton
         Tag = 2
         AnchorSideTop.Control = TextBoldRadioPanel
@@ -314,13 +290,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 163
+      Top = 136
       Width = 118
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'TextBoldCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 9
+      TabOrder = 8
     end
     object TextItalicRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -329,13 +305,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 204
       Height = 19
-      Top = 185
+      Top = 158
       Width = 129
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 19
       ClientWidth = 129
-      TabOrder = 12
+      TabOrder = 11
       object TextItalicRadioInvert: TRadioButton
         Tag = 2
         AnchorSideTop.Control = TextItalicRadioPanel
@@ -387,13 +363,13 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 185
+      Top = 158
       Width = 119
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'TextItalicCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 11
+      TabOrder = 10
     end
     object ColumnPosBevel: TBevel
       AnchorSideLeft.Control = ForeGroundUseDefaultCheckBox
@@ -401,51 +377,71 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideTop.Control = TextItalicCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 204
-      Height = 1
-      Top = 204
+      Height = 28
+      Top = 177
       Width = 50
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
       Constraints.MinHeight = 1
       Shape = bsSpacer
     end
-    object lblAttributeSection: TLabel
-      AnchorSideLeft.Control = Bevel1a
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = pnlElementAttributes
-      Left = 70
-      Height = 16
-      Top = 6
-      Width = 108
-      BorderSpacing.Left = 10
-      BorderSpacing.Top = 6
-      Caption = 'lblAttributeSection'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-    end
-    object Bevel1a: TBevel
+    object bvlAttributeSection: TDividerBevel
       AnchorSideLeft.Control = pnlElementAttributes
-      AnchorSideTop.Control = lblAttributeSection
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = pnlElementAttributes
+      AnchorSideRight.Control = pnlElementAttributes
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 3
-      Top = 13
-      Width = 60
-    end
-    object Bevel1: TBevel
-      AnchorSideLeft.Control = lblAttributeSection
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = lblAttributeSection
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Side = asrBottom
-      Left = 188
-      Height = 3
-      Top = 13
-      Width = 452
+      Height = 17
+      Top = 0
+      Width = 640
+      Caption = 'bvlAttributeSection'
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 10
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object pnlUseGlobal: TPanel
+      AnchorSideLeft.Control = pnlElementAttributes
+      AnchorSideTop.Control = bvlAttributeSection
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlElementAttributes
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 17
+      Width = 628
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BevelOuter = bvNone
+      ChildSizing.HorizontalSpacing = 6
+      ChildSizing.VerticalSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 19
+      ClientWidth = 628
+      ParentColor = False
+      TabOrder = 12
+      object tglGlobal: TToggleBox
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 314
+        Caption = 'tglGlobal'
+        OnChange = tglGlobalChange
+        TabOrder = 0
+      end
+      object tglLocal: TToggleBox
+        Left = 320
+        Height = 19
+        Top = 0
+        Width = 308
+        Caption = 'tglLocal'
+        OnChange = tglGlobalChange
+        TabOrder = 1
+      end
     end
   end
   object pnlTop: TPanel[1]
@@ -1233,15 +1229,15 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 533
-    top = 304
+    left = 568
+    top = 56
   end
   object LanguageMenu: TPopupMenu[5]
-    left = 533
-    top = 352
+    left = 568
+    top = 104
   end
   object ColorSchemeMenu: TPopupMenu[6]
-    left = 533
-    top = 408
+    left = 568
+    top = 160
   end
 end
