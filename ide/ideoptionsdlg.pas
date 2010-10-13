@@ -36,6 +36,12 @@ uses
   EditorOptions, IDECommands;
 
 type
+  TIDEOptsDlgAction = (
+    iodaRead,
+    iodaWrite,
+    iodaRestore
+    );
+
   { TIDEOptionsDialog }
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
@@ -77,8 +83,7 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; override;
     function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions);
-    procedure WriteSettings(AOptions: TAbstractIDEOptions);
+    procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     procedure ReadAll;
     procedure WriteAll;
 
@@ -204,7 +209,8 @@ begin
   ModalResult := mrCancel;
 end;
 
-procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TIDEOptionsDialog.TraverseSettings(AOptions: TAbstractIDEOptions;
+  anAction: TIDEOptsDlgAction);
 var
   ClassTypeForCompare: TClass;
 
@@ -216,7 +222,13 @@ var
         with TAbstractIDEOptionsEditor(Node.Data) do
           if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
              ((SupportedOptionsClass <> nil) and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
-            ReadSettings(AOptions);
+          begin
+            case anAction of
+            iodaRead: ReadSettings(AOptions);
+            iodaWrite: WriteSettings(AOptions);
+            iodaRestore: RestoreSettings(AOptions);
+            end;
+          end;
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
     end;
@@ -224,33 +236,6 @@ var
 
 begin
   CreateEditors;
-  if AOptions <> nil then
-    ClassTypeForCompare := AOptions.ClassType
-  else
-    ClassTypeForCompare := nil;
-
-  Traverse(CategoryTree.Items.GetFirstNode);
-end;
-
-procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  ClassTypeForCompare: TClass;
-
-  procedure Traverse(Node: TTreeNode);
-  begin
-    if Node <> nil then
-    begin
-      if Node.Data <> nil then
-        with TAbstractIDEOptionsEditor(Node.Data) do
-          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
-             ((SupportedOptionsClass <> nil) and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
-            WriteSettings(AOptions);
-      Traverse(Node.GetFirstChild);
-      Traverse(Node.GetNextSibling);
-    end;
-  end;
-
-begin
   if AOptions <> nil then
     ClassTypeForCompare := AOptions.ClassType
   else
@@ -281,14 +266,14 @@ begin
         begin
           InstanceList.Add(Instance);
           Instance.DoBeforeRead;
-          ReadSettings(Instance);
+          TraverseSettings(Instance,iodaRead);
           Instance.DoAfterRead;
         end;
       end;
     end;
   end;
   // load settings that does not belong to any group
-  ReadSettings(nil);
+  TraverseSettings(nil,iodaRead);
   InstanceList.Free;
 end;
 
@@ -311,14 +296,14 @@ begin
         if Instance <> nil then
         begin
           Instance.DoBeforeWrite;
-          WriteSettings(Instance);
+          TraverseSettings(Instance,iodaWrite);
           Instance.DoAfterWrite;
         end;
       end;
     end;
   end;
   // save settings that does not belong to any group
-  WriteSettings(nil);
+  TraverseSettings(nil,iodaWrite);
 end;
 
 function TIDEOptionsDialog.CheckValues: boolean;
@@ -348,12 +333,12 @@ procedure TIDEOptionsDialog.LoadIDEOptions(Sender: TObject; AOptions: TAbstractI
 begin
   if Assigned(OnLoadIDEOptions) then
     OnLoadIDEOptions(Self, AOptions);
-  ReadSettings(AOptions);
+  TraverseSettings(AOptions,iodaRead);
 end;
 
 procedure TIDEOptionsDialog.SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  WriteSettings(AOptions);
+  TraverseSettings(AOptions,iodaWrite);
   if Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, AOptions);
 end;

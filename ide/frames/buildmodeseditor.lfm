@@ -81,7 +81,10 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
           Width = 170
         end>
       FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       TabOrder = 0
+      OnCheckboxToggled = BuildModesStringGridCheckboxToggled
+      OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
         170
         170

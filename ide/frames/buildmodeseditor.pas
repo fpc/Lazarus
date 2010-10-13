@@ -21,7 +21,20 @@
   Abstract:
     The frame for 'build modes' on the compiler options.
     Allows to edit build modes and build macro values.
-    It does not allow to define new build macros.
+    It does not allow to define new build macros, only values.
+
+  ToDo:
+    - add build mode
+    - delete build mode
+    - move build mode up/down
+    - in session attribute
+    - cancel
+      - extend ide options with CancelSettings
+      - create central copy of build modes at setup and store modified flags
+      - access active build modes directly
+      - on cancel: copy back and restore modified flags
+      - on write: check is something has changed: if not restore modified flags
+    - activate another build mode
 }
 unit BuildModesEditor;
 
@@ -62,13 +75,17 @@ type
     procedure BuildModeDeleteSpeedButtonClick(Sender: TObject);
     procedure BuildModeMoveDownSpeedButtonClick(Sender: TObject);
     procedure BuildModeMoveUpSpeedButtonClick(Sender: TObject);
+    procedure BuildModesStringGridCheckboxToggled(sender: TObject; aCol,
+      aRow: Integer; aState: TCheckboxState);
+    procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
+      aRow: Integer; const OldValue: string; var NewValue: String);
   private
     FMacroValues: TProjectBuildMacros;
     FProject: TProject;
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
     procedure CleanMacrosGrid;
-    procedure Save(UpdateControls: boolean);
+    procedure SaveMacros(UpdateControls: boolean);
     procedure UpdateInheritedOptions;
     function FindOptionFrame(AClass: TComponentClass): TComponent;
     procedure FillBuildModesGrid;
@@ -155,7 +172,7 @@ procedure TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone(
   Sender: TObject);
 begin
   //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone ']);
-  Save(true);
+  SaveMacros(true);
 end;
 
 procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelection(
@@ -165,8 +182,21 @@ begin
 end;
 
 procedure TBuildModesEditorFrame.BuildModeAddSpeedButtonClick(Sender: TObject);
+var
+  i: Integer;
+  NewName: String;
 begin
-  ShowMessage('ToDo: TBuildModesEditorFrame.BuildModeAddSpeedButtonClick');
+  i:=0;
+  repeat
+    inc(i);
+    NewName:='Mode'+IntToStr(i);
+  until AProject.BuildModes.Find(NewName)=nil;
+  AProject.BuildModes.Add(NewName);
+  FillBuildModesGrid;
+  // select identifier
+  BuildModesStringGrid.Col:=2;
+  BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
+  BuildModesStringGrid.EditorMode:=true;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick(Sender: TObject
@@ -177,14 +207,108 @@ end;
 
 procedure TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick(
   Sender: TObject);
+var
+  i: Integer;
 begin
-  ShowMessage('ToDo: TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick');
+  i:=BuildModesStringGrid.Row-1;
+  if i+1>=AProject.BuildModes.Count then exit;
+  AProject.BuildModes.Move(i,i+1);
+  AProject.BuildModes[0].InSession:=false;
+  inc(i);
+  FillBuildModesGrid;
+  BuildModesStringGrid.Row:=i+1;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeMoveUpSpeedButtonClick(Sender: TObject
   );
+var
+  i: Integer;
 begin
-  ShowMessage('ToDo: TBuildModesEditorFrame.BuildModeMoveUpSpeedButtonClick');
+  i:=BuildModesStringGrid.Row-1;
+  if i<=0 then exit;
+  AProject.BuildModes.Move(i,i-1);
+  dec(i);
+  AProject.BuildModes[0].InSession:=false;
+  FillBuildModesGrid;
+  BuildModesStringGrid.Row:=i+1;
+end;
+
+procedure TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled(
+  sender: TObject; aCol, aRow: Integer; aState: TCheckboxState);
+var
+  CurMode: TProjectBuildMode;
+  b: Boolean;
+  i: Integer;
+begin
+  debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled Row=',aRow,' Col=',aCol,' ',ord(aState)]);
+  i:=aRow-1;
+  if (i<0) or (i>=AProject.BuildModes.Count) then exit;
+  debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled ',i]);
+  CurMode:=AProject.BuildModes[i];
+  case aCol of
+  0:
+    // activate
+    ;
+  1:
+    begin
+      // in session
+      b:=aState=cbChecked;
+      if b and (i=0) then
+      begin
+
+        MessageDlg('Error',
+          'The first build mode is the default mode and must be stored in the project, not in the session.',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      CurMode.InSession:=b;
+    end;
+  end;
+end;
+
+procedure TBuildModesEditorFrame.BuildModesStringGridValidateEntry(
+  sender: TObject; aCol, aRow: Integer; const OldValue: string;
+  var NewValue: String);
+var
+  CurMode: TProjectBuildMode;
+  s: string;
+  j: Integer;
+  b: Boolean;
+  i: Integer;
+begin
+  debugln(['TBuildModesEditorFrame.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol,' ',NewValue]);
+  i:=aRow-1;
+  if (i<0) or (i>=AProject.BuildModes.Count) then exit;
+  debugln(['TBuildModesEditorFrame.SaveModes ',i]);
+  CurMode:=AProject.BuildModes[i];
+  case aCol of
+  0:
+    // activate
+    ;
+  1:
+    begin
+      // in session
+      b:=NewValue=BuildModesStringGrid.Columns[1].ValueChecked;
+      if b and (i=0) then
+      begin
+        NewValue:=OldValue;
+        MessageDlg('Error',
+          'The first build mode is the default mode and must be stored in the project, not in the session.',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      CurMode.InSession:=b;
+    end;
+  2:
+    begin
+      // identifier
+      s:=NewValue;
+      for j:=1 to length(s) do
+        if s[j]<' ' then s[j]:=' ';
+      CurMode.Identifier:=s;
+      NewValue:=s;
+    end;
+  end;
 end;
 
 procedure TBuildModesEditorFrame.UpdateMacrosControls;
@@ -275,7 +399,7 @@ begin
   end;
 end;
 
-procedure TBuildModesEditorFrame.Save(UpdateControls: boolean);
+procedure TBuildModesEditorFrame.SaveMacros(UpdateControls: boolean);
 var
   Grid: TStringGrid;
   aRow: Integer;
@@ -399,6 +523,11 @@ begin
   BuildModesStringGrid.Cells[1, 0]:=lisInSession;
   BuildModesStringGrid.Cells[2, 0]:=lisDebugOptionsFrmName;
 
+  BuildModeAddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  BuildModeDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  BuildModeMoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+  BuildModeMoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+
   BuildMacroValuesGroupBox.Caption:=lisSetMacroValues;
   Grid:=BuildMacroValuesStringGrid;
   Grid.Columns.Add;
@@ -430,7 +559,7 @@ var
 begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
-    Save(false);
+    SaveMacros(false);
     if not PCOptions.LazProject.MacroValues.Equals(MacroValues) then begin
       PCOptions.LazProject.MacroValues.Assign(MacroValues);
       IncreaseBuildMacroChangeStamp;

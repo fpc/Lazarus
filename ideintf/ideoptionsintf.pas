@@ -87,6 +87,7 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); virtual; abstract;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
+    procedure RestoreSettings(AOptions: TAbstractIDEOptions); virtual;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
 
@@ -343,6 +344,12 @@ end;
 function TAbstractIDEOptionsEditor.Check: Boolean;
 begin
   Result := True;
+end;
+
+procedure TAbstractIDEOptionsEditor.RestoreSettings(
+  AOptions: TAbstractIDEOptions);
+begin
+
 end;
 
 class function TAbstractIDEOptionsEditor.DefaultCollapseChildNodes: Boolean;

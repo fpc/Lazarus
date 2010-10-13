@@ -696,6 +696,7 @@ type
     function IndexOf(Identifier: string): integer;
     function Find(Identifier: string): TProjectBuildMode;
     function Add(Identifier: string): TProjectBuildMode;
+    procedure Move(FromIndex, ToIndex: integer);
     function Count: integer;
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -6806,7 +6807,7 @@ end;
 function TProjectBuildModes.IndexOf(Identifier: string): integer;
 begin
   Result:=Count-1;
-  while (Count>=0)
+  while (Result>=0)
   and (SysUtils.CompareText(Identifier,Items[Result].Identifier)<>0) do
     dec(Result);
 end;
@@ -6830,6 +6831,11 @@ begin
     Result.CompilerOptions.BaseDirectory:=LazProject.ProjectDirectory;
   Result.AddOnChangedHandler(@OnItemChanged);
   fItems.Add(Result);
+end;
+
+procedure TProjectBuildModes.Move(FromIndex, ToIndex: integer);
+begin
+  fItems.Move(FromIndex,ToIndex);
 end;
 
 function TProjectBuildModes.Count: integer;
