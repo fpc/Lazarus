@@ -2834,7 +2834,8 @@ begin
     Exit;
 
   if not (csCaptureMouse in LCLObject.ControlStyle) and
-    not QWidget_isWindow(Widget) then
+    not QWidget_isWindow(Widget) and
+    not DragManager.IsDragging then
   begin
     MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
     GlobPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
