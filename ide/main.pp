@@ -4449,13 +4449,13 @@ procedure TMainIDE.DoProjectOptionsBeforeRead(Sender: TObject);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  AProject: TProject;
 begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
-  with Sender as TProject do
-  begin
-    UpdateExecutableType;
-    CompilerOptions.UseAsDefault := False;
-  end;
+  AProject:=TProject(Sender);
+  AProject.UpdateExecutableType;
+  AProject.CompilerOptions.UseAsDefault := False;
+  AProject.BuildModesBackup.Assign(AProject.BuildModes);
 end;
 
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean

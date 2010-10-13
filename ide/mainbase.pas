@@ -217,11 +217,13 @@ begin
 end;
 
 procedure TMainIDEBase.mnuWindowSourceItemClick(Sender: TObject);
-var page: longint;
+var
+  i: LongInt;
 begin
   if SourceEditorManager = nil then exit;
-  page := (sender as TIDEMenuCommand).tag;
-  SourceEditorManager.ActiveEditor := TSourceEditor(PtrInt(page));
+  i:=(sender as TIDEMenuCommand).tag;
+  if (i<0) or (i>=SourceEditorManager.SourceEditorCount) then exit;
+  SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditors[i];
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
@@ -1093,7 +1095,7 @@ begin
       CurMenuItem.Caption := SourceEditorManager.SourceEditors[i].PageName;
       CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = SourceEditorManager.SourceEditors[i] ;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
-      CurMenuItem.Tag := Integer(Pointer(SourceEditorManager.SourceEditors[i]));
+      CurMenuItem.Tag := i;
       inc(ItemCount);
     end;
   end;

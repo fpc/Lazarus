@@ -692,6 +692,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    function IsEqual(OtherModes: TProjectBuildModes): boolean;
+    procedure Assign(Source: TPersistent); override;
     procedure Delete(Index: integer);
     function IndexOf(Identifier: string): integer;
     function Find(Identifier: string): TProjectBuildMode;
@@ -725,6 +727,7 @@ type
     FActiveBuildMode: TProjectBuildMode;
     FActiveWindowIndexAtStart: integer;
     FBuildModes: TProjectBuildModes;
+    FBuildModesBackup: TProjectBuildModes;
     FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
@@ -1011,6 +1014,7 @@ type
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes write SetBuildModes;
+    property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
@@ -2528,9 +2532,13 @@ begin
   FAutoCreateForms := true;
   FEditorInfoList := TUnitEditorInfoList.Create(nil);
   FBookmarks := TProjectBookmarkList.Create;
+
   FBuildModes:=TProjectBuildModes.Create(nil);
   FBuildModes.LazProject:=Self;
+  FBuildModesBackup:=TProjectBuildModes.Create(nil);
+  FBuildModesBackup.LazProject:=Self;
   ActiveBuildMode:=FBuildModes.Add('Default');
+
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   FJumpHistory:=TProjectJumpHistory.Create;
@@ -2561,6 +2569,7 @@ begin
   FDestroying := True;
   ActiveBuildMode:=nil;
   Clear;
+  FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);
   FreeAndNil(FEditorInfoList);
   FreeThenNil(FResources);
@@ -6792,6 +6801,35 @@ end;
 procedure TProjectBuildModes.Clear;
 begin
   while Count>0 do Delete(Count-1);
+end;
+
+function TProjectBuildModes.IsEqual(OtherModes: TProjectBuildModes): boolean;
+var
+  i: Integer;
+begin
+  Result:=true;
+  if OtherModes.Count<>Count then exit;
+  for i:=0 to Count-1 do
+    if not Items[i].Equals(OtherModes[i]) then exit;
+  Result:=false;
+end;
+
+procedure TProjectBuildModes.Assign(Source: TPersistent);
+var
+  OtherModes: TProjectBuildModes;
+  i: Integer;
+  CurMode: TProjectBuildMode;
+begin
+  if Source is TProjectBuildModes then begin
+    OtherModes:=TProjectBuildModes(Source);
+    Clear;
+    for i:=0 to OtherModes.Count-1 do
+    begin
+      CurMode:=Add(OtherModes[i].Identifier);
+      CurMode.Assign(OtherModes[i]);
+    end;
+  end else
+    inherited Assign(Source);
 end;
 
 procedure TProjectBuildModes.Delete(Index: integer);

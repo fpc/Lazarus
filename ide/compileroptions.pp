@@ -4490,6 +4490,7 @@ begin
   Result := i - index > 0;
   if Result then begin 
     Val(Copy(s, Index, i - Index), Num, err);
+    if err=0 then ;
     index := i;
   end; 
 end; 
