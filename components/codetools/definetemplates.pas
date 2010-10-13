@@ -895,7 +895,7 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
                                     ): TDefineTemplate;
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
-                     const OnProgress: TDefinePoolProgress): TStringList; // thread safe
+         MaxLevel: integer; const OnProgress: TDefinePoolProgress): TStringList; // thread safe
 function GatherFilesInFPCSources(Directory: string;
                             const OnProgress: TDefinePoolProgress): TStringList; // thread safe
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
@@ -986,7 +986,7 @@ end;
 // some useful functions
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
-  const OnProgress: TDefinePoolProgress): TStringList;
+  MaxLevel: integer; const OnProgress: TDefinePoolProgress): TStringList;
 {  ExcludeDirMask: check FilenameIsMatching vs the short file name of a directory
    IncludeFileMask: check FilenameIsMatching vs the short file name of a file
 }
@@ -1008,12 +1008,13 @@ var
     Pointer(s):=nil;
   end;
 
-  procedure Search(CurDir: string);
+  procedure Search(CurDir: string; Level: integer);
   var
     FileInfo: TSearchRec;
     ShortFilename: String;
     Filename: String;
   begin
+    if Level>MaxLevel then exit;
     //DebugLn(['Search CurDir=',CurDir]);
     if FindFirstUTF8(Directory+CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
@@ -1032,7 +1033,7 @@ var
           if (ExcludeDirMask='')
           or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
           then begin
-            Search(Filename+PathDelim);
+            Search(Filename+PathDelim,Level+1);
             if Abort then break;
           end else begin
             //DebugLn(['Search DIR MISMATCH ',Filename]);
@@ -1065,7 +1066,7 @@ begin
   try
     FileCount:=0;
     Directory:=CleanAndExpandDirectory(Directory);
-    Search('');
+    Search('',0);
   finally
     if not Abort then
       Result:=TStringList.Create;
@@ -1085,7 +1086,7 @@ function GatherFilesInFPCSources(Directory: string;
   const OnProgress: TDefinePoolProgress): TStringList;
 begin
   Result:=GatherFiles(Directory,'{.svn,CVS}',
-                      '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
+                      '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',8,OnProgress);
 end;
 
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string
