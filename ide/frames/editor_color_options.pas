@@ -47,6 +47,9 @@ type
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
     ExportSaveDialog: TSaveDialog;
+    pnlUnderline: TPanel;
+    pnlBold: TPanel;
+    pnlItalic: TPanel;
     pnlUseGlobal: TPanel;
     PnlTop2: TPanel;
     pnlTop: TPanel;
