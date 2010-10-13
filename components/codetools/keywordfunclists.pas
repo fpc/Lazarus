@@ -916,7 +916,7 @@ begin
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // is this really a keyword?
+    //Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // only a keyword in parameter lists
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -989,7 +989,7 @@ begin
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // is this really a keyword?
+    //Add('CONSTREF',{$ifdef FPC}@{$endif}AllwaysTrue); // only a keyword in parameter lists
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
