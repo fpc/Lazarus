@@ -1465,7 +1465,7 @@ begin
   if Sender = tglGlobal then
     tglLocal.Checked := not tglGlobal.Checked
   else
-    tglLocal.Checked := not tglGlobal.Checked;
+    tglGlobal.Checked := not tglLocal.Checked;
   UpdatingColor := False;
 
   if (FCurHighlightElement.GetSchemeGlobal <> nil) then begin
