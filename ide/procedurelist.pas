@@ -231,7 +231,8 @@ begin
     Exit; //==>
   if Item.SubItems.Count < 4 then
     Exit; //==>
-  StatusBar.Panels[0].Text := Item.SubItems[4];
+  if Selected then
+    StatusBar.Panels[0].Text := Item.SubItems[4];
 end;
 
 
