@@ -51,7 +51,9 @@ type
     lblAttributeSection: TLabel;
     lblSelectModifications: TLabel;
     ExportSaveDialog: TSaveDialog;
+    PnlTop2: TPanel;
     pnlTop: TPanel;
+    Splitter1: TSplitter;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
     TextBoldRadioOff: TRadioButton;
