@@ -83,7 +83,7 @@ type
   TSynHighlighterAttrFeature =
     ( hafBackColor, hafForeColor, hafFrameColor,
       hafStyle, hafStyleMask,
-      hafFrameStyle, haFrameEdges
+      hafFrameStyle, hafFrameEdges
     );
   TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
   { TSynHighlighterAttributes }
@@ -541,7 +541,7 @@ begin
   FFrameColorDefault := clNone;
   FFrameStyleDefault := slsSolid;
   FFrameEdgesDefault := sfeAround;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, haFrameEdges];
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
   fName := attribName;
   if aStoredName = '' then
     FStoredName := attribName
