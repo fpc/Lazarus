@@ -1147,39 +1147,40 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Top = 0
     Width = 640
     Caption = 'ToolBar'
+    EdgeBorders = [ebBottom]
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 3
     object UseSyntaxHighlightCheckBox: TToolButton
       Left = 1
-      Top = 2
+      Top = 0
       OnClick = GeneralCheckBoxOnChange
       ShowCaption = False
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
       Left = 24
-      Top = 2
+      Top = 0
       Width = 4
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
     object LanguageButton: TToolButton
       Left = 28
-      Top = 2
+      Top = 0
       DropdownMenu = LanguageMenu
     end
     object ColorSchemeButton: TToolButton
       Left = 51
-      Top = 2
+      Top = 0
       DropdownMenu = ColorSchemeMenu
     end
     object FileExtensionsComboBox: TComboBox
       AnchorSideTop.Side = asrBottom
       Left = 74
       Height = 23
-      Top = 2
+      Top = 0
       Width = 139
       BorderSpacing.Top = 3
       ItemHeight = 15
@@ -1195,32 +1196,32 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object ToolButton5: TToolButton
       Left = 213
-      Top = 2
+      Top = 0
       Width = 4
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
     object btnExport: TToolButton
       Left = 217
-      Top = 2
+      Top = 0
       OnClick = btnExportClick
       ShowCaption = False
     end
     object SetAllAttributesToDefaultButton: TToolButton
       Left = 240
-      Top = 2
+      Top = 0
       OnClick = SetAllAttributesToDefaultButtonClick
       ShowCaption = False
     end
     object SetAttributeToDefaultButton: TToolButton
       Left = 267
-      Top = 2
+      Top = 0
       OnClick = SetAttributeToDefaultButtonClick
       ShowCaption = False
     end
     object ToolButton1: TToolButton
       Left = 263
-      Top = 2
+      Top = 0
       Width = 4
       Caption = 'ToolButton1'
       Style = tbsDivider
