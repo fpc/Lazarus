@@ -54,7 +54,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
-    procedure DoAfterWrite; override;
+    procedure DoAfterWrite(Restore: boolean); override;
   public
     constructor Create;
     procedure Clear;
@@ -110,9 +110,10 @@ begin
   Result := HelpOpts;
 end;
 
-procedure THelpOptions.DoAfterWrite;
+procedure THelpOptions.DoAfterWrite(Restore: boolean);
 begin
-  Save;
+  if not Restore then
+    Save;
 end;
 
 procedure THelpOptions.Clear;

@@ -22,6 +22,13 @@
 
   Abstract:
     Defines the standard message Quick Fix menu items.
+
+  ToDo:
+    - There is no method in an ancestor class to be overriden:
+      1. option: if the ancestor has a function with the same name: update the parameter list
+      2. option: remove the method
+      3. option: add a virtual method to the ancestor
+
 }
 unit MsgQuickFixes;
 

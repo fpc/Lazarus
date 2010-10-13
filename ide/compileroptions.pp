@@ -91,7 +91,8 @@
     - history
   - refactor compiler options (default options, load, save to file)
   - disabled project compiler options, used only for storage
-  - replaced OwnerProject with LazProject
+  - replaced project compiler options OwnerProject+Project with LazProject
+  - addded changestamp, assign, equals to compiler options
   - added buildmodes to project
   - moved compileroptions and macrovalues to active buildmode
 

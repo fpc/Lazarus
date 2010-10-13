@@ -20,7 +20,7 @@
 
   Abstract:
     The frame for 'build modes' on the compiler options.
-    Allows to edit build modes and build macro values.
+    Allows to add/delete/edit build modes and build macro values.
     It does not allow to define new build macros, only values.
 
   ToDo:

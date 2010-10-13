@@ -366,16 +366,16 @@ type
       AOptionsFilter: TAbstractIDEOptionsClass = nil); override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
-    procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject);
-    procedure DoEnvironmentOptionsAfterWrite(Sender: TObject);
+    procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
+    procedure DoEnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoEditorOptionsBeforeRead(Sender: TObject);
-    procedure DoEditorOptionsAfterWrite(Sender: TObject);
-    procedure DoCodetoolsOptionsAfterWrite(Sender: TObject);
-    procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject);
+    procedure DoEditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
-    procedure DoProjectOptionsAfterWrite(Sender: TObject);
-    procedure DoCompilerOptionsBeforeWrite(Sender: TObject);
-    procedure DoCompilerOptionsAfterWrite(Sender: TObject);
+    procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure DoCompilerOptionsBeforeWrite(Sender: TObject; Restore: boolean);
+    procedure DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -4294,7 +4294,7 @@ begin
       ReadAll;
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
-      IDEOptionsDialog.WriteAll;
+      IDEOptionsDialog.WriteAll(false);
       MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
         Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
       UpdateHighlighters(True);
@@ -4303,6 +4303,8 @@ begin
         Application.TaskBarBehavior := tbSingleButton
       else
         Application.TaskBarBehavior := tbDefault;
+    end else begin
+      IDEOptionsDialog.WriteAll(true);
     end;
   finally
     IDEOptionsDialog.Free;
@@ -4315,13 +4317,16 @@ begin
   SaveDesktopSettings(EnvironmentOptions);
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject);
+procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject;
+  Restore: boolean);
 begin
+  if Restore then exit;
   OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
   OldLanguage:=EnvironmentOptions.LanguageID;
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject;
+  Restore: boolean);
 var
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
@@ -4373,6 +4378,7 @@ var
   end;
 
 begin
+  if Restore then exit;
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
@@ -4416,21 +4422,25 @@ begin
   Project1.UpdateAllCustomHighlighter;
 end;
 
-procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
+  if Restore then exit;
   Project1.UpdateAllSyntaxHighlighter;
   UpdateHighlighters(True);
   SourceEditorManager.ReloadEditorOptions;
   ReloadMenuShortCuts;
 end;
 
-procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
+  if Restore then exit;
   CodeToolsOpts.AssignTo(CodeToolBoss);
 end;
 
-procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject;
+  Restore: boolean);
 begin
+  if Restore then exit;
   if CodeExplorerView<>nil then
     CodeExplorerView.Refresh(true);
 end;
@@ -4448,7 +4458,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean
+  );
 var
   Project: TProject absolute Sender;
 
@@ -4534,6 +4545,7 @@ var
   end;
 
 begin
+  if Restore then exit;
   SetTitle;
   SetAutoCreateForms;
   // extend include path
@@ -4547,17 +4559,21 @@ begin
   Project.DefineTemplates.AllChanged;
 end;
 
-procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject);
+procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject;
+  Restore: boolean);
 begin
+  if Restore then exit;
   OldCompOpts := TBaseCompilerOptionsClass(Sender.ClassType).Create(nil);
   OldCompOpts.Assign(TBaseCompilerOptions(Sender));
 end;
 
-procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject);
+procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean
+  );
 var
   ProjCompOpts: TProjectCompilerOptions;
   aFilename: String;
 begin
+  if Restore then exit;
   if not OldCompOpts.IsEqual(TBaseCompilerOptions(Sender)) then
   begin
     TBaseCompilerOptions(Sender).Modified := True;

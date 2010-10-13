@@ -85,7 +85,7 @@ type
     function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     procedure ReadAll;
-    procedure WriteAll;
+    procedure WriteAll(Restore: boolean);
 
     property OptionsFilter: TAbstractIDEOptionsClass read FOptionsFilter write FOptionsFilter;
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
@@ -277,7 +277,7 @@ begin
   InstanceList.Free;
 end;
 
-procedure TIDEOptionsDialog.WriteAll;
+procedure TIDEOptionsDialog.WriteAll(Restore: boolean);
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
@@ -295,9 +295,12 @@ begin
         Instance := Rec^.GroupClass.GetInstance;
         if Instance <> nil then
         begin
-          Instance.DoBeforeWrite;
-          TraverseSettings(Instance,iodaWrite);
-          Instance.DoAfterWrite;
+          Instance.DoBeforeWrite(Restore);
+          if Restore then
+            TraverseSettings(Instance,iodaWrite)
+          else
+            TraverseSettings(Instance,iodaRestore);
+          Instance.DoAfterWrite(Restore);
         end;
       end;
     end;

@@ -104,7 +104,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
-    procedure DoAfterWrite; override;
+    procedure DoAfterWrite(Restore: boolean); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -317,10 +317,11 @@ begin
   Result := CodeToolsOpts;
 end;
 
-procedure TCodeToolsOptions.DoAfterWrite;
+procedure TCodeToolsOptions.DoAfterWrite(Restore: boolean);
 begin
-  inherited DoAfterWrite;
-  Save;
+  inherited DoAfterWrite(Restore);
+  if not Restore then
+    Save;
 end;
 
 procedure TCodeToolsOptions.Load;

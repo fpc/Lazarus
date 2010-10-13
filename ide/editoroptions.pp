@@ -1009,7 +1009,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
-    procedure DoAfterWrite; override;
+    procedure DoAfterWrite(Restore: boolean); override;
   public
     constructor Create;
     constructor CreateDefaultOnly;
@@ -3709,9 +3709,10 @@ begin
   Result := EditorOpts;
 end;
 
-procedure TEditorOptions.DoAfterWrite;
+procedure TEditorOptions.DoAfterWrite(Restore: boolean);
 begin
-  Save;
+  if not Restore then
+    Save;
 end;
 
 function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption): string;

@@ -45,7 +45,7 @@ uses
 type
 
   { TCompilerDiffTool
-    A tool to create the difference between two option sets }
+    A tool to collect the difference between two option sets }
 
   TCompilerDiffTool = class
   private

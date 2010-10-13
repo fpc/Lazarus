@@ -25,7 +25,7 @@ unit IDEOptionsIntf;
 interface
 
 uses
-  Classes, SysUtils, Controls, Buttons, Forms;
+  Classes, SysUtils, LCLProc, Controls, Buttons, Forms;
 
 const
   NoParent = -1;
@@ -36,27 +36,50 @@ type
 
   // types
 
+  TIDEOptionsHandler = (
+    iohBeforeRead,
+    iohAfterRead,
+    iohBeforeWrite,
+    iohAfterWrite
+    );
+  TIDEOptionsHandlers = set of TIDEOptionsHandler;
+
+  TIDEOptionsWriteEvent = procedure(Sender: TObject; Restore: boolean) of object;
+
   { TAbstractIDEOptions }
 
   TAbstractIDEOptions = class(TPersistent)
   private
+    fHandlers: array[TIDEOptionsHandler] of TMethodList;
     FOnAfterRead: TNotifyEvent;
-    FOnAfterWrite: TNotifyEvent;
+    FOnAfterWrite: TIDEOptionsWriteEvent;
     FOnBeforeRead: TNotifyEvent;
-    FOnBeforeWrite: TNotifyEvent;
+    FOnBeforeWrite: TIDEOptionsWriteEvent;
   public
+    constructor Create;
+    destructor Destroy; override;
+
     class function GetGroupCaption: string; virtual; abstract;
     class function GetInstance: TAbstractIDEOptions; virtual; abstract;
 
     procedure DoBeforeRead; virtual;
     procedure DoAfterRead; virtual;
-    procedure DoBeforeWrite; virtual;
-    procedure DoAfterWrite; virtual;
+    procedure DoBeforeWrite(Restore: boolean); virtual;
+    procedure DoAfterWrite(Restore: boolean); virtual;
+
+    procedure AddHandlerBeforeRead(const Handler: TNotifyEvent; const AsFirst: boolean = true); // AsFirst means: first to call
+    procedure RemoveHandlerBeforeRead(const Handler: TNotifyEvent);
+    procedure AddHandlerAfterRead(const Handler: TNotifyEvent; const AsFirst: boolean = true); // AsFirst means: first to call
+    procedure RemoveHandlerAfterRead(const Handler: TNotifyEvent);
+    procedure AddHandlerBeforeWrite(const Handler: TIDEOptionsWriteEvent; const AsFirst: boolean = true); // AsFirst means: first to call
+    procedure RemoveHandlerBeforeWrite(const Handler: TIDEOptionsWriteEvent);
+    procedure AddHandlerAfterWrite(const Handler: TIDEOptionsWriteEvent; const AsFirst: boolean = true); // AsFirst means: first to call
+    procedure RemoveHandlerAfterWrite(const Handler: TIDEOptionsWriteEvent);
 
     property OnBeforeRead: TNotifyEvent read FOnBeforeRead write FOnBeforeRead;
     property OnAfterRead: TNotifyEvent read FOnAfterRead write FOnAfterRead;
-    property OnBeforeWrite: TNotifyEvent read FOnBeforeWrite write FOnBeforeWrite;
-    property OnAfterWrite: TNotifyEvent read FOnAfterWrite write FOnAfterWrite;
+    property OnBeforeWrite: TIDEOptionsWriteEvent read FOnBeforeWrite write FOnBeforeWrite;
+    property OnAfterWrite: TIDEOptionsWriteEvent read FOnAfterWrite write FOnAfterWrite;
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
@@ -139,7 +162,7 @@ type
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   public
     procedure Resort;
-    procedure DoAfterWrite;
+    procedure DoAfterWrite(Restore: boolean);
     function GetByIndex(AIndex: Integer): PIDEOptionsGroupRec;
     function GetByGroupClass(AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec;
     function Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec; reintroduce;
@@ -470,7 +493,7 @@ begin
       Items[i]^.Items.Resort;
 end;
 
-procedure TIDEOptionsGroupList.DoAfterWrite;
+procedure TIDEOptionsGroupList.DoAfterWrite(Restore: boolean);
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
@@ -485,7 +508,7 @@ begin
       begin
         Instance := Rec^.GroupClass.GetInstance;
         if Instance <> nil then
-          Instance.DoAfterWrite;
+          Instance.DoAfterWrite(Restore);
       end;
     end;
   end;
@@ -510,28 +533,105 @@ end;
 
 { TAbstractIDEOptions }
 
+constructor TAbstractIDEOptions.Create;
+var
+  h: TIDEOptionsHandler;
+begin
+  for h:=low(TIDEOptionsHandler) to high(TIDEOptionsHandler) do
+    fHandlers[h]:=TMethodList.Create;
+end;
+
+destructor TAbstractIDEOptions.Destroy;
+var
+  h: TIDEOptionsHandler;
+begin
+  for h:=low(TIDEOptionsHandler) to high(TIDEOptionsHandler) do
+    FreeAndNil(fHandlers[h]);
+  inherited Destroy;
+end;
+
 procedure TAbstractIDEOptions.DoBeforeRead;
 begin
   if Assigned(FOnBeforeRead) then
-    OnBeforeRead(Self);
+    FOnBeforeRead(Self);
+  fHandlers[iohBeforeRead].CallNotifyEvents(Self);
 end;
 
 procedure TAbstractIDEOptions.DoAfterRead;
 begin
   if Assigned(FOnAfterRead) then
-    OnAfterRead(Self);
+    FOnAfterRead(Self);
+  fHandlers[iohAfterRead].CallNotifyEvents(Self);
 end;
 
-procedure TAbstractIDEOptions.DoBeforeWrite;
+procedure TAbstractIDEOptions.DoBeforeWrite(Restore: boolean);
+var
+  i: LongInt;
 begin
   if Assigned(FOnBeforeWrite) then
-    OnBeforeWrite(Self);
+    FOnBeforeWrite(Self,Restore);
+  i:=fHandlers[iohBeforeWrite].Count;
+  while fHandlers[iohBeforeWrite].NextDownIndex(i) do
+    TIDEOptionsWriteEvent(fHandlers[iohBeforeWrite][i])(Self,Restore);
 end;
 
-procedure TAbstractIDEOptions.DoAfterWrite;
+procedure TAbstractIDEOptions.DoAfterWrite(Restore: boolean);
+var
+  i: LongInt;
 begin
   if Assigned(FOnAfterWrite) then
-    OnAfterWrite(Self);
+    FOnAfterWrite(Self,Restore);
+  i:=fHandlers[iohBeforeWrite].Count;
+  while fHandlers[iohBeforeWrite].NextDownIndex(i) do
+    TIDEOptionsWriteEvent(fHandlers[iohBeforeWrite][i])(Self,Restore);
+end;
+
+procedure TAbstractIDEOptions.AddHandlerBeforeRead(const Handler: TNotifyEvent;
+  const AsFirst: boolean);
+begin
+  fHandlers[iohBeforeRead].Add(TMethod(Handler),AsFirst);
+end;
+
+procedure TAbstractIDEOptions.RemoveHandlerBeforeRead(
+  const Handler: TNotifyEvent);
+begin
+  fHandlers[iohBeforeRead].Remove(TMethod(Handler));
+end;
+
+procedure TAbstractIDEOptions.AddHandlerAfterRead(const Handler: TNotifyEvent;
+  const AsFirst: boolean);
+begin
+  fHandlers[iohAfterRead].Add(TMethod(Handler),AsFirst);
+end;
+
+procedure TAbstractIDEOptions.RemoveHandlerAfterRead(const Handler: TNotifyEvent
+  );
+begin
+  fHandlers[iohAfterRead].Remove(TMethod(Handler));
+end;
+
+procedure TAbstractIDEOptions.AddHandlerBeforeWrite(
+  const Handler: TIDEOptionsWriteEvent; const AsFirst: boolean);
+begin
+  fHandlers[iohBeforeWrite].Add(TMethod(Handler),AsFirst);
+end;
+
+procedure TAbstractIDEOptions.RemoveHandlerBeforeWrite(
+  const Handler: TIDEOptionsWriteEvent);
+begin
+  fHandlers[iohBeforeWrite].Remove(TMethod(Handler));
+end;
+
+procedure TAbstractIDEOptions.AddHandlerAfterWrite(
+  const Handler: TIDEOptionsWriteEvent; const AsFirst: boolean);
+begin
+  fHandlers[iohAfterWrite].Add(TMethod(Handler),AsFirst);
+end;
+
+procedure TAbstractIDEOptions.RemoveHandlerAfterWrite(
+  const Handler: TIDEOptionsWriteEvent);
+begin
+  fHandlers[iohAfterWrite].Remove(TMethod(Handler));
 end;
 
 initialization
