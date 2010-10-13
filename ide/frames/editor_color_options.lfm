@@ -3,7 +3,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   Width = 640
   ClientHeight = 457
   ClientWidth = 640
-  TabOrder = 0
   Visible = False
   DesignLeft = 420
   DesignTop = 200
@@ -452,7 +451,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   object pnlTop: TPanel[1]
     Left = 0
     Height = 0
-    Top = 26
+    Top = 25
     Width = 640
     Align = alTop
     AutoSize = True
@@ -475,17 +474,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlElementAttributes
     Left = 0
-    Height = 201
-    Top = 26
+    Height = 202
+    Top = 25
     Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 201
+    ClientHeight = 202
     ClientWidth = 640
     TabOrder = 2
     object ColorElementTree: TTreeView
       Left = 0
-      Height = 195
+      Height = 196
       Top = 6
       Width = 200
       Align = alLeft
@@ -514,7 +513,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
       Left = 207
-      Height = 195
+      Height = 196
       Top = 6
       Width = 433
       BorderSpacing.Left = 1
@@ -1136,16 +1135,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 201
-      Height = 201
+      Height = 202
       Top = 0
       Width = 5
     end
   end
   object ToolBar: TToolBar[3]
     Left = 0
-    Height = 26
+    Height = 25
     Top = 0
     Width = 640
+    AutoSize = True
     Caption = 'ToolBar'
     EdgeBorders = [ebBottom]
     ParentShowHint = False
@@ -1170,15 +1170,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Left = 28
       Top = 0
       DropdownMenu = LanguageMenu
+      Style = tbsDropDown
     end
     object ColorSchemeButton: TToolButton
-      Left = 51
+      Left = 63
       Top = 0
       DropdownMenu = ColorSchemeMenu
+      Style = tbsDropDown
     end
     object FileExtensionsComboBox: TComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 74
+      Left = 98
       Height = 23
       Top = 0
       Width = 139
@@ -1195,32 +1197,32 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 0
     end
     object ToolButton5: TToolButton
-      Left = 213
+      Left = 237
       Top = 0
       Width = 4
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
     object btnExport: TToolButton
-      Left = 217
+      Left = 241
       Top = 0
       OnClick = btnExportClick
       ShowCaption = False
     end
     object SetAllAttributesToDefaultButton: TToolButton
-      Left = 240
+      Left = 264
       Top = 0
       OnClick = SetAllAttributesToDefaultButtonClick
       ShowCaption = False
     end
     object SetAttributeToDefaultButton: TToolButton
-      Left = 267
+      Left = 291
       Top = 0
       OnClick = SetAttributeToDefaultButtonClick
       ShowCaption = False
     end
     object ToolButton1: TToolButton
-      Left = 263
+      Left = 287
       Top = 0
       Width = 4
       Caption = 'ToolButton1'
