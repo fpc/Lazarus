@@ -25,7 +25,7 @@ unit files_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, Controls,
+  Classes, SysUtils, LCLProc, FileUtil, Forms, StdCtrls, Dialogs, Controls,
   EnvironmentOpts, MacroIntf, LazarusIDEStrConsts, InputHistory, LazConf,
   IDEProcs, IDEOptionsIntf;
 

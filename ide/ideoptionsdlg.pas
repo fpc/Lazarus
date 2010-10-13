@@ -297,9 +297,9 @@ begin
         begin
           Instance.DoBeforeWrite(Restore);
           if Restore then
-            TraverseSettings(Instance,iodaWrite)
+            TraverseSettings(Instance,iodaRestore)
           else
-            TraverseSettings(Instance,iodaRestore);
+            TraverseSettings(Instance,iodaWrite);
           Instance.DoAfterWrite(Restore);
         end;
       end;
