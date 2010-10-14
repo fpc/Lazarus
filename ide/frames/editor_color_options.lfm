@@ -517,6 +517,19 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         OnClick = tglGlobalChange
         Style = tbsCheck
       end
+      object SetAttributeToDefaultButton: TToolButton
+        Left = 131
+        Top = 0
+        OnClick = SetAttributeToDefaultButtonClick
+        ShowCaption = False
+      end
+      object ToolButton3: TToolButton
+        Left = 123
+        Top = 0
+        Width = 8
+        Caption = 'ToolButton3'
+        Style = tbsSeparator
+      end
     end
     object ColumnPosBevel: TPanel
       AnchorSideLeft.Control = ForeGroundUseDefaultCheckBox
@@ -1303,19 +1316,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 0
       OnClick = SetAllAttributesToDefaultButtonClick
       ShowCaption = False
-    end
-    object SetAttributeToDefaultButton: TToolButton
-      Left = 291
-      Top = 0
-      OnClick = SetAttributeToDefaultButtonClick
-      ShowCaption = False
-    end
-    object ToolButton1: TToolButton
-      Left = 287
-      Top = 0
-      Width = 4
-      Caption = 'ToolButton1'
-      Style = tbsDivider
     end
   end
   object ExportSaveDialog: TSaveDialog[4]

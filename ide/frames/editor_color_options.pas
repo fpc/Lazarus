@@ -75,9 +75,9 @@ type
     ColorElementTree: TTreeView;
     ToolBar: TToolBar;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
     tbtnGlobal: TToolButton;
     tbtnLocal: TToolButton;
+    ToolButton3: TToolButton;
     UseSyntaxHighlightCheckBox: TToolButton;
     ToolButton2: TToolButton;
     LanguageButton: TToolButton;
@@ -810,6 +810,7 @@ end;
 procedure TEditorColorOptionsFrame.ShowCurAttribute;
 var
   AttrToShow: TColorSchemeAttribute;
+  CanGlobal: Boolean;
 begin
   if (FCurHighlightElement = nil) or UpdatingColor then
     Exit;
@@ -817,16 +818,16 @@ begin
   DisableAlign;
   try
 
-  ToolBar1.Enabled := (FCurHighlightElement.GetSchemeGlobal <> nil) and
+  CanGlobal := (FCurHighlightElement.GetSchemeGlobal <> nil) and
                           not FIsEditingDefaults;
-  tbtnGlobal.Enabled := ToolBar1.Enabled;
-  tbtnLocal.Enabled := ToolBar1.Enabled;
-  tbtnGlobal.AllowAllUp := not ToolBar1.Enabled;
-  tbtnLocal.AllowAllUp := not ToolBar1.Enabled;
+  tbtnGlobal.Enabled := CanGlobal;
+  tbtnLocal.Enabled := CanGlobal;
+  tbtnGlobal.AllowAllUp := not CanGlobal;
+  tbtnLocal.AllowAllUp := not CanGlobal;
   tbtnGlobal.Down := FCurHighlightElement.IsUsingSchemeGlobals and
-                     ToolBar1.Enabled;
+                     CanGlobal;
   tbtnLocal.Down  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
-                     ToolBar1.Enabled;
+                     CanGlobal;
 
   AttrToShow := FCurHighlightElement;
   if FCurHighlightElement.IsUsingSchemeGlobals then
@@ -1292,6 +1293,7 @@ begin
   UpdatingColor := False;
   FCurHighlightElement := nil;
   ToolBar.Images := IDEImages.Images_16;
+  ToolBar1.Images := IDEImages.Images_16;
 
   Items := TStringList.Create;
   try
