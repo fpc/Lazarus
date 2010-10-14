@@ -38,9 +38,9 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
-    ColumnPosBevel: TBevel;
     BackGroundLabel: TLabel;
     bvlAttributeSection: TDividerBevel;
+    ColumnPosBevel: TPanel;
     FrameStyleBox: TComboBox;
     FrameEdgesBox: TComboBox;
     FileExtensionsComboBox: TComboBox;

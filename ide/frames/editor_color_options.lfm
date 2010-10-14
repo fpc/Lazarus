@@ -1,7 +1,7 @@
 inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
-  Height = 457
+  Height = 440
   Width = 640
-  ClientHeight = 457
+  ClientHeight = 440
   ClientWidth = 640
   Visible = False
   DesignLeft = 420
@@ -16,9 +16,10 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 200
-    Top = 257
+    Top = 240
     Width = 640
     Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 200
     ClientWidth = 640
@@ -65,7 +66,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 0
     end
     object ForegroundColorBox: TColorBox
-      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = ToolBar1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -85,7 +85,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 1
     end
     object BackGroundColorBox: TColorBox
-      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = ForegroundColorBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -119,7 +118,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 2
     end
     object FrameColorBox: TColorBox
-      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = BackGroundColorBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -151,19 +149,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Caption = 'FrameColorUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
       TabOrder = 4
-    end
-    object ColumnPosBevel: TBevel
-      AnchorSideLeft.Control = ForeGroundUseDefaultCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Side = asrBottom
-      Left = 204
-      Height = 16
-      Top = 159
-      Width = 50
-      Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.Left = 6
-      Constraints.MinHeight = 1
-      Shape = bsSpacer
     end
     object bvlAttributeSection: TDividerBevel
       Left = 0
@@ -453,7 +438,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideLeft.Control = FrameEdgesBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FrameEdgesBox
-      Left = 307
+      Left = -10115
       Height = 21
       Top = 119
       Width = 97
@@ -474,10 +459,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Text = 'slsSolid'
     end
     object FrameEdgesBox: TComboBox
-      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = FrameColorBox
       AnchorSideTop.Side = asrBottom
-      Left = 204
+      Left = -10218
       Height = 21
       Top = 119
       Width = 97
@@ -511,7 +495,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       object tbtnGlobal: TToolButton
         Tag = 1
         Left = 1
-        Top = 2
+        Top = 0
         AutoSize = True
         Caption = 'tbtnGlobal'
         Down = True
@@ -522,13 +506,31 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       object tbtnLocal: TToolButton
         Tag = 1
         Left = 65
-        Top = 2
+        Top = 0
         AutoSize = True
         Caption = 'tbtnLocal'
         Grouped = True
         OnClick = tglGlobalChange
         Style = tbsCheck
       end
+    end
+    object ColumnPosBevel: TPanel
+      AnchorSideLeft.Control = ForeGroundUseDefaultCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlUnderline
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = pnlElementAttributes
+      AnchorSideBottom.Side = asrBottom
+      Left = 204
+      Height = 1
+      Top = 183
+      Width = 50
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BevelOuter = bvNone
+      Constraints.MinHeight = 1
+      Constraints.MinWidth = 50
+      TabOrder = 12
     end
   end
   object pnlTop: TPanel[1]
@@ -557,17 +559,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlElementAttributes
     Left = 0
-    Height = 232
+    Height = 215
     Top = 25
     Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 232
+    ClientHeight = 215
     ClientWidth = 640
     TabOrder = 2
     object ColorElementTree: TTreeView
       Left = 0
-      Height = 226
+      Height = 209
       Top = 6
       Width = 200
       Align = alLeft
@@ -596,7 +598,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
       Left = 207
-      Height = 226
+      Height = 209
       Top = 6
       Width = 433
       BorderSpacing.Left = 1
@@ -1218,7 +1220,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 201
-      Height = 232
+      Height = 215
       Top = 0
       Width = 5
     end
