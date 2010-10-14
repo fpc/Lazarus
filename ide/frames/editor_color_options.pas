@@ -25,8 +25,8 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, ColorBox, ComCtrls,
-  LCLProc, LCLType, LCLIntf, Dialogs, Menus,
+  Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil, ColorBox,
+  ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus,
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, DividerBevel,
   EditorOptions, IDEOptionsIntf, editor_general_options, IDEImagesIntf,

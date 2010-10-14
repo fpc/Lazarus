@@ -75,7 +75,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Graphics, Types, SynEditTypes, SynEditMiscProcs;
+  SysUtils, Classes, Graphics, GraphUtil, Types, SynEditTypes, SynEditMiscProcs;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));
@@ -306,8 +306,6 @@ type
   end;
 
   function GetFontsInfoManager: TheFontsInfoManager;
-
-  procedure WaveTo(ADC: HDC; X, Y, R: Integer);
 
 {$IFNDEF VER93}
 {$IFNDEF VER90}
@@ -1238,63 +1236,6 @@ begin
   {$ELSE}
   Windows.TextOut(FDC, X, Y, Text, Length);
   {$ENDIF}
-end;
-
-procedure WaveTo(ADC: HDC; X, Y, R: Integer);
-var
-  Direction, Cur: Integer;
-  PenPos, Dummy: TPoint;
-begin
-  dec(R);
-  // get the current pos
-  MoveToEx(ADC, 0, 0, @PenPos);
-  MoveToEx(ADC, PenPos.X, PenPos.Y, @Dummy);
-
-  Direction := 1;
-  // vertical wave
-  if PenPos.X = X then
-  begin
-    Cur := PenPos.Y;
-    if Cur < Y then
-      while (Cur < Y) do
-      begin
-        X := X + Direction * R;
-        LineTo(ADC, X, Cur + R);
-        Direction := -Direction;
-        inc(Cur, R);
-      end
-    else
-      while (Cur > Y) do
-      begin
-        X := X + Direction * R;
-        LineTo(ADC, X, Cur - R);
-        Direction := -Direction;
-        dec(Cur, R);
-      end;
-    LineTo(ADC, X, Y);
-  end
-  else
-  // horizontal wave
-  begin
-    Cur := PenPos.X;
-    if (Cur < X) then
-      while (Cur < X) do
-      begin
-        Y := Y + Direction * R;
-        LineTo(ADC, Cur + R, Y);
-        Direction := -Direction;
-        inc(Cur, R);
-      end
-    else
-      while (Cur > X) do
-      begin
-        Y := Y + Direction * R;
-        LineTo(ADC, Cur - R, Y);
-        Direction := -Direction;
-        dec(Cur, R);
-      end;
-    LineTo(ADC, X, Y);
-  end;
 end;
 
 procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;

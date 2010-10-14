@@ -27,7 +27,7 @@ unit GraphUtil;
 interface
 
 uses
-  Types, Graphics, GraphType, Math, LCLType;
+  Types, Graphics, GraphType, Math, LCLType, LCLIntf;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
@@ -70,6 +70,7 @@ function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 
 // misc
 function NormalizeRect(const R: TRect): TRect;
+procedure WaveTo(ADC: HDC; X, Y, R: Integer);
 
 implementation
 
@@ -479,6 +480,61 @@ begin
   InflateRect(WindowRect, -1, -1);
   WindowRect.Bottom := WindowRect.Top + TitleHeight;
   DrawVerticalGradient(Canvas, WindowRect, GetHighLightColor(BaseColor), GetShadowColor(BaseColor));
+end;
+
+procedure WaveTo(ADC: HDC; X, Y, R: Integer);
+var
+  Direction, Cur: Integer;
+  PenPos, Dummy: TPoint;
+begin
+  dec(R);
+  // get the current pos
+  MoveToEx(ADC, 0, 0, @PenPos);
+  MoveToEx(ADC, PenPos.X, PenPos.Y, @Dummy);
+
+  Direction := 1;
+  // vertical wave
+  if PenPos.X = X then
+  begin
+    Cur := PenPos.Y;
+    if Cur < Y then
+      while (Cur < Y) do
+      begin
+        X := X + Direction * R;
+        LineTo(ADC, X, Cur + R);
+        Direction := -Direction;
+        inc(Cur, R);
+      end
+    else
+      while (Cur > Y) do
+      begin
+        X := X + Direction * R;
+        LineTo(ADC, X, Cur - R);
+        Direction := -Direction;
+        dec(Cur, R);
+      end;
+  end
+  else
+  // horizontal wave
+  begin
+    Cur := PenPos.X;
+    if (Cur < X) then
+      while (Cur < X) do
+      begin
+        Y := Y + Direction * R;
+        LineTo(ADC, Cur + R, Y);
+        Direction := -Direction;
+        inc(Cur, R);
+      end
+    else
+      while (Cur > X) do
+      begin
+        Y := Y + Direction * R;
+        LineTo(ADC, Cur - R, Y);
+        Direction := -Direction;
+        dec(Cur, R);
+      end;
+  end;
 end;
 
 end.
