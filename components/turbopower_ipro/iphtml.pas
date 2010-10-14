@@ -6976,7 +6976,6 @@ procedure TIpHtml.ParsePhraseElement(Parent : TIpHtmlNode;
 var
   CurPhrase : TIpHtmlNodePhrase;
 begin
-  NextToken;
   CurPhrase := TIpHtmlNodePhrase.Create(Parent);
   case StartToken of
   IpHtmlTagEM :
@@ -7001,6 +7000,7 @@ begin
     CurPhrase.Style := hpsACRONYM;
   end;
   CurPhrase.ParseBaseProps(Self);
+  NextToken; // this can not be before previous line, as NextToken resets properties
   ParseBodyText(CurPhrase, [EndToken] + EndTokens);
   if CurToken = EndToken then
     NextToken
@@ -12253,7 +12253,10 @@ end;
 
 function TIpHtmlNodeA.GetHint: string;
 begin
-  Result := HRef;
+  if Title = '' then
+    Result := HRef
+  else
+    Result := Title;
 end;
 
 { TIpHtmlNodeDIV }
@@ -17128,33 +17131,35 @@ var
   {$ENDIF}
 begin
   {$IFDEF IP_LAZARUS}
-  if HtmlPanel.ShowHints and (NewHint <> CurHint) then begin
+  if HtmlPanel.ShowHints then begin
   {$ELSE}
   IPHC := HtmlPanel; //JMN
   if Assigned (IPHC) and IPHC.ShowHints and (NewHint <> CurHint) then begin
   {$ENDIF}
     {$IFDEF IP_LAZARUS}
-    if (NewHint<>'') and not HintWindow.Visible then begin
+    if (NewHint<>'') then begin
       Tw := HintWindow.Canvas.TextWidth(NewHint);
       Th := HintWindow.Canvas.TextHeight(NewHint);
       Sc := ClientToScreen(Point(HintX,HintY));
-      HintWindow.ActivateHint(Rect(Sc.X - Tw div 2 - 6,
+      HintWindow.ActivateHint(Rect(Sc.X + 6,
                                    Sc.Y + 16 - 6,
-                                   Sc.X + Tw div 2 + 6,
+                                   Sc.X + Tw + 18,
                                    Sc.Y + Th + 16 + 6),
                               NewHint);
-    end;
+    end else
+      HideHint;
     {$ELSE}
     if (NewHint <> '') and not IsWindowVisible(HintWindow.Handle) then begin
       Tw := HintWindow.Canvas.TextWidth(NewHint);
       Th := HintWindow.Canvas.TextHeight(NewHint);
       Sc := ClientToScreen(Point(HintX,HintY));
-      HintWindow.ActivateHint(Rect(Sc.X - Tw div 2 - 4,
+      HintWindow.ActivateHint(Rect(Sc.X + 4,
                                    Sc.Y + 16,
-                                   Sc.X + Tw div 2 + 4,
+                                   Sc.X + Tw + 12,
                                    Sc.Y + Th + 16),
                               NewHint);
-    end;
+    end else
+      HideHint;
     {$ENDIF}
     CurHint := NewHint;
     HintShownHere := True;
@@ -17168,6 +17173,7 @@ var
   {$IFNDEF IP_LAZARUS}
   IPHC: TIpHtmlCustomPanel; //JMN
   {$ENDIF}
+  TmpOwnerNode: TIpHtmlNode;
 begin
   if MouseIsDown and HaveSelection then begin
     SelEnd := Point(X + ViewLeft, Y + ViewTop);
@@ -17223,17 +17229,32 @@ begin
   end;
   {$ENDIF}
   inherited;
-  if (Hint <> CurHint) and ((abs(HintX - X) > 4) or (abs(HintY - Y) > 4)) then begin
-    {$IFDEF IP_LAZARUS}
-    if HintWindow.Visible then
-    {$ELSE}
-    if IsWindowVisible(HintWindow.Handle) then
-    {$ENDIF}
-      HideHint;
-    HintShownHere := False;
+
+  // show hints for IpHtmlTagABBR and IpHtmlTagACRONYM
+  if (Hyper <> nil) and (Hyper.CurElement <> nil) then begin
+
+    TmpOwnerNode := Hyper.CurElement.Owner;
+    while TmpOwnerNode <> nil do begin
+      if TmpOwnerNode is TIpHtmlNodePhrase then begin
+        if (TIpHtmlNodePhrase(TmpOwnerNode).Style = hpsABBR) or (TIpHtmlNodePhrase(TmpOwnerNode).Style = hpsACRONYM) then begin
+          Hint := TIpHtmlNodePhrase(TmpOwnerNode).Title;
+          Break;
+        end else begin
+          TmpOwnerNode := TmpOwnerNode.FParentNode;
+        end;
+      end else begin
+        TmpOwnerNode := TmpOwnerNode.FParentNode;
+      end;
+    end;
+
   end;
-  HintX := X;
-  HintY := Y;
+
+  // "refresh" hint if it should have new value OR cursors position changes significantly (then we reposition the hint with the same text)
+  if (Hint <> CurHint) or ((abs(HintX - X) > 4) or (abs(HintY - Y) > 4)) then begin
+    HintShownHere := False;
+    HintX := X;
+    HintY := Y;
+  end;
   if not HintShownHere then
     ShowHintNow(Hint);
 end;
