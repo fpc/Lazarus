@@ -1009,13 +1009,15 @@ end;
 
 function TheTextDrawer.CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
 var
-  lp: TLogPen;
+  ALogBrush: TLogBrush;
 begin
-  lp.lopnColor := ColorToRGB(AColor);
-  lp.lopnWidth := Point(1, 0);
-  lp.lopnStyle := AStyle;
+  AStyle := AStyle + PS_ENDCAP_FLAT + PS_GEOMETRIC + PS_JOIN_MITER;
 
-  Result := CreatePenIndirect(lp);
+  ALogBrush.lbStyle := BS_SOLID;
+  ALogBrush.lbColor := ColorToRGB(AColor);
+  ALogBrush.lbHatch := 0;
+
+  Result := ExtCreatePen(AStyle, 1, ALogBrush, 0, nil);
 end;
 
 procedure TheTextDrawer.SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle);
