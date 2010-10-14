@@ -494,7 +494,9 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Right = 3
       Caption = 'ToolBar1'
       EdgeBorders = [ebBottom]
+      ParentShowHint = False
       ShowCaptions = True
+      ShowHint = True
       TabOrder = 11
       object tbtnGlobal: TToolButton
         Tag = 1
