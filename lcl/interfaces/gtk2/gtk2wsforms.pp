@@ -190,7 +190,13 @@ begin
         // fix for buggy compiz.
         // see http://bugs.freepascal.org/view.php?id=17523
         if compositeManagerRunning then
-          Result := False;
+        begin
+          if (X <> ACtl.Left) or (Y <> ACtl.Top) then
+            Result := gtkconfigureevent(widget, PGdkEventConfigure(event),
+              Data)
+          else
+            Result := False;
+        end;
         {$ENDIF}
       end;
     GDK_WINDOW_STATE:
