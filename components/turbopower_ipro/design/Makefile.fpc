@@ -10,7 +10,7 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+unitdir=../../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
 
