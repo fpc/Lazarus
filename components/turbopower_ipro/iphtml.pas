@@ -3123,6 +3123,7 @@ type
     procedure HideHint;
     function HtmlPanel: TIpHtmlCustomPanel;
     procedure BeginPrint;                                              {!!.10}
+    procedure ResetPrint;
     procedure EndPrint;                                                {!!.10}
   public
     ViewTop, ViewLeft : Integer;
@@ -3151,6 +3152,7 @@ type
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
+    function SelectPrinterDlg: boolean;
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
   end;
 
@@ -3603,7 +3605,8 @@ implementation
 
 uses
   Printers,
-  IpHtmlPv;  {!!.10}
+  IpHtmlPv,  {!!.10}
+  PrintersDlgs;
 
 {$IFNDEF IP_LAZARUS}
 {$R *.res}
@@ -17311,20 +17314,39 @@ end;
 
 {!!.10 new}
 procedure TIpHtmlInternalPanel.BeginPrint;
+begin
+  if InPrint = 0 then begin
+    Printed := False;
+    ScaleBitmaps := True;
+    ResetPrint;
+  end;
+  Inc(InPrint);
+end;
+
+{!!.10 new}
+procedure TIpHtmlInternalPanel.EndPrint;
+begin
+  Dec(InPrint);
+  if InPrint = 0 then begin
+    ScaleBitmaps := False;
+    InvalidateSize;
+  end;
+end;
+
+procedure TIpHtmlInternalPanel.ResetPrint;
 var
   LogPixX, LMarginPix, RMarginPix,
   LogPixY, TMarginPix, BMarginPix,
   H: Integer;
 begin
-  if InPrint = 0 then begin
+  // check ir BeginPrint was called
+  if not Printed then begin
     SetRectEmpty(PrintPageRect);
     if Hyper.TitleNode <> nil then
       Printer.Title := Hyper.TitleNode.Title
     else
       Printer.Title := 'HTML Document';
     Printer.BeginDoc;
-    Printed := False;
-    ScaleBitmaps := True;
     GetRelativeAspect(Printer.Canvas.Handle);
     {$IF DEFINED(IP_LAZARUS) AND NOT DEFINED(WINDOWS)}
     // this test looks weird, according to most references consulted, the number
@@ -17349,32 +17371,34 @@ begin
     {$ENDIF}
     TMarginPix := round(HtmlPanel.PrintSettings.MarginTop * LogPixY);
     BMarginPix := round(HtmlPanel.PrintSettings.MarginBottom * LogPixY);
-    PrintHeight := Printer.PageHeight - TMarginPix - BMarginPix;
+    if Printer.Printers.Count = 0 then begin
+      PrintHeight := 500;
+    end else begin
+      PrintHeight := Printer.PageHeight - TMarginPix - BMarginPix;
+    end;
     PrintTopLeft := Point(LMarginPix, TMarginPix);
     {PrintBottomRight := Point(
       Printer.PageWidth - RMarginPix,
-      Printer.PageHeight - BMarginPix);}                               {!!.12}
-    PrintPageRect := Hyper.GetPageRect(Printer.Canvas,
-      PrintWidth, PrintHeight);
+      Printer.PageHeight - BMarginPix);}                {!!.12}
+    PrintPageRect := Hyper.GetPageRect(Printer.Canvas, PrintWidth, PrintHeight);
     H := PrintPageRect.Bottom - PrintPageRect.Top;
     PageCount := H div PrintHeight;
     if H mod PrintHeight <> 0 then
       Inc(PageCount);
-  end;
-  Inc(InPrint);
+    Printer.Abort;
+  end else
+    raise Exception.Create('BeginPrint must be called before ResetPrint.');
 end;
 
-{!!.10 new}
-procedure TIpHtmlInternalPanel.EndPrint;
+function TIpHtmlInternalPanel.SelectPrinterDlg: boolean;
+var
+  printDialog: TPrintDialog;
 begin
-  Dec(InPrint);
-  if InPrint = 0 then begin
-    if Printed then
-      Printer.EndDoc
-    else
-      Printer.Abort;
-    ScaleBitmaps := False;
-    InvalidateSize;
+  Result := False;
+  printDialog := TPrintDialog.Create(nil);
+  if printDialog.Execute then begin
+    ResetPrint;
+    Result := true;
   end;
 end;
 
@@ -17386,8 +17410,8 @@ var
 begin
   {CR := Rect(0, 0, Printer.PageWidth, 0);}
   if (Hyper <> nil) then begin
-    {Printer.BeginDoc;}
     BeginPrint;                                                        {!!.10}
+    Printer.BeginDoc;
     try
       (*
       ScaleBitmaps := True;                                            {!!.02}
@@ -17406,7 +17430,10 @@ begin
       end;
     finally
       {ScaleBitmaps := False;}                                         {!!.10}
-      {Printer.EndDoc;}                                                {!!.10}
+      if Printed then
+        Printer.EndDoc
+      else
+        Printer.Abort;
       {InvalidateSize;}                                                {!!.10}
       EndPrint;                                                        {!!.10}
     end;

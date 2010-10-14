@@ -1,12 +1,11 @@
 object IpHTMLPreview: TIpHTMLPreview
-  Left = 196
-  Height = 338
-  Top = 103
-  Width = 558
-  ActiveControl = btnPrint
+  Left = 274
+  Height = 372
+  Top = 141
+  Width = 645
   Caption = 'Print preview'
-  ClientHeight = 338
-  ClientWidth = 558
+  ClientHeight = 372
+  ClientWidth = 645
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
@@ -14,117 +13,181 @@ object IpHTMLPreview: TIpHTMLPreview
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object Panel1: TPanel
-    Height = 41
-    Width = 558
+    Left = 0
+    Height = 33
+    Top = 0
+    Width = 645
     Align = alTop
-    BevelOuter = bvLowered
-    ClientHeight = 41
-    ClientWidth = 558
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 33
+    ClientWidth = 645
     TabOrder = 0
     object Label1: TLabel
-      Left = 360
+      AnchorSideLeft.Control = btnPrev
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 398
       Height = 14
-      Top = 14
+      Top = 9
       Width = 29
+      BorderSpacing.Around = 5
       Caption = 'Page:'
       ParentColor = False
     end
     object Label2: TLabel
-      Left = 440
+      AnchorSideLeft.Control = edtPage
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 469
       Height = 14
-      Top = 14
+      Top = 9
       Width = 10
+      BorderSpacing.Around = 5
       Caption = 'of'
       ParentColor = False
     end
     object lblMaxPage: TLabel
-      Left = 457
-      Height = 14
-      Top = 14
-      Width = 4
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 484
+      Height = 1
+      Top = 16
+      Width = 1
+      BorderSpacing.Around = 5
       ParentColor = False
     end
     object Label3: TLabel
-      Left = 96
+      AnchorSideLeft.Control = btnSelectPrinter
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 159
       Height = 14
-      Top = 16
+      Top = 9
       Width = 31
+      BorderSpacing.Around = 5
       Caption = 'Zoom:'
       ParentColor = False
     end
     object btnPrint: TButton
-      Left = 8
-      Height = 25
-      Top = 8
-      Width = 75
+      Left = 5
+      Height = 23
+      Top = 5
+      Width = 47
+      AutoSize = True
+      BorderSpacing.Around = 5
       Caption = 'Print'
       Default = True
       OnClick = btnPrintClick
       TabOrder = 0
     end
     object btnFirst: TButton
-      Left = 280
-      Height = 25
-      Top = 8
-      Width = 32
+      AnchorSideLeft.Control = btnClose
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 318
+      Height = 23
+      Top = 5
+      Width = 38
+      AutoSize = True
+      BorderSpacing.Around = 5
       Caption = '<<'
       OnClick = btnFirstClick
       TabOrder = 1
     end
     object btnPrev: TButton
-      Left = 320
-      Height = 25
-      Top = 8
+      AnchorSideLeft.Control = btnFirst
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 361
+      Height = 23
+      Top = 5
       Width = 32
+      AutoSize = True
+      BorderSpacing.Around = 5
       Caption = '<'
       OnClick = btnPrevClick
       TabOrder = 2
     end
     object btnNext: TButton
-      Left = 472
-      Height = 25
-      Top = 8
+      AnchorSideLeft.Control = lblMaxPage
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 490
+      Height = 23
+      Top = 5
       Width = 32
+      AutoSize = True
+      BorderSpacing.Around = 5
       Caption = '>'
       OnClick = btnNextClick
       TabOrder = 4
     end
     object btnLast: TButton
-      Left = 512
-      Height = 25
-      Top = 8
-      Width = 32
+      AnchorSideLeft.Control = btnNext
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 527
+      Height = 23
+      Top = 5
+      Width = 38
+      AutoSize = True
+      BorderSpacing.Around = 5
       Caption = '>>'
       OnClick = btnLastClick
       TabOrder = 5
     end
     object btnClose: TButton
-      Left = 200
-      Height = 25
-      Top = 8
-      Width = 75
+      AnchorSideLeft.Control = ZoomCombo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 261
+      Height = 23
+      Top = 5
+      Width = 52
+      AutoSize = True
+      BorderSpacing.Around = 5
       Cancel = True
       Caption = 'Close'
       ModalResult = 2
       TabOrder = 6
     end
     object edtPage: TEdit
-      Left = 400
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 432
       Height = 21
-      Top = 10
+      Top = 6
       Width = 32
+      BorderSpacing.Around = 5
       OnChange = edtPageChange
       TabOrder = 3
       Text = '1'
     end
     object ZoomCombo: TComboBox
-      Left = 132
+      AnchorSideLeft.Control = Label3
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 195
       Height = 21
-      Top = 10
+      Top = 6
       Width = 61
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      BorderSpacing.Around = 5
       ItemHeight = 13
       Items.Strings = (
         '10%'
@@ -137,35 +200,54 @@ object IpHTMLPreview: TIpHTMLPreview
         '300%'
         '400%'
       )
-      MaxLength = 0
       OnChange = ZoomComboChange
       Style = csDropDownList
       TabOrder = 7
     end
+    object btnSelectPrinter: TButton
+      AnchorSideLeft.Control = btnPrint
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 57
+      Height = 23
+      Top = 5
+      Width = 97
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Select printer...'
+      OnClick = btnSelectPrinterClick
+      TabOrder = 8
+    end
   end
   object ScrollBox1: TScrollBox
-    Height = 297
-    Top = 41
-    Width = 558
+    Left = 0
+    Height = 339
+    Top = 33
+    Width = 645
     Align = alClient
+    ClientHeight = 335
+    ClientWidth = 641
     Color = clBtnFace
     ParentColor = False
     TabOrder = 1
     object PaperPanel: TPanel
-      Left = 16
-      Height = 153
-      Top = 8
-      Width = 185
+      Left = 0
+      Height = 125
+      Top = 0
+      Width = 158
       BevelOuter = bvNone
-      ClientHeight = 153
-      ClientWidth = 185
+      ClientHeight = 125
+      ClientWidth = 158
       Color = clWhite
       ParentColor = False
       TabOrder = 0
       object PaintBox1: TPaintBox
-        Left = 16
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Side = asrCenter
+        Left = 0
         Height = 113
-        Top = 24
+        Top = 0
         Width = 145
         OnPaint = PaintBox1Paint
       end

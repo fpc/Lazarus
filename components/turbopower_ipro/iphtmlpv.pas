@@ -46,14 +46,28 @@ uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, IpHtml;
 
+resourcestring
+  rsIpHTMLPreviewPrintPreview = 'Print preview';
+  rsIpHTMLPreviewPrint = 'Print';
+  rsIpHTMLPreviewZoom = 'Zoom:';
+  rsIpHTMLPreviewClose = 'Close';
+  rsIpHTMLPreviewPage = 'Page:';
+  rsIpHTMLPreviewOf = 'of';
+  rsIpHTMLPreviewSelectPrinter = 'Select printer...';
+
 type
+
+  { TIpHTMLPreview }
+
   TIpHTMLPreview = class(TForm)
+    btnSelectPrinter: TButton;
     Label3: TLabel;
     ZoomCombo: TComboBox;
     PaperPanel: TPanel;
     PaintBox1: TPaintBox;
     procedure btnNextClick(Sender: TObject);
     procedure btnLastClick(Sender: TObject);
+    procedure btnSelectPrinterClick(Sender: TObject);
     procedure edtPageChange(Sender: TObject);
     procedure btnPrintClick(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
@@ -163,6 +177,13 @@ begin
   CurPage := OwnerPanel.PageCount;
 end;
 
+procedure TIpHTMLPreview.btnSelectPrinterClick(Sender: TObject);
+begin
+  if OwnerPanel <> nil then
+    if OwnerPanel.SelectPrinterDlg then
+      SetZoom(Zoom); {force recalc of preview sizes}
+end;
+
 procedure TIpHTMLPreview.edtPageChange(Sender: TObject);
 begin
   CurPage := StrToInt(edtPage.Text);
@@ -177,6 +198,7 @@ begin
   finally
     ScaleFonts := True;
     Screen.Cursor := crDefault;
+    Close;
   end;
 end;
 
@@ -263,6 +285,15 @@ begin
   Scratch := TBitmap.Create;
   Scratch.Width := SCRATCH_WIDTH;
   Scratch.Height := SCRATCH_HEIGHT;
+
+  // localization
+  Self.Caption := rsIpHTMLPreviewPrintPreview;
+  btnPrint.Caption := rsIpHTMLPreviewPrint;
+  Label3.Caption := rsIpHTMLPreviewZoom;
+  btnClose.Caption := rsIpHTMLPreviewClose;
+  Label1.Caption := rsIpHTMLPreviewPage;
+  Label2.Caption := rsIpHTMLPreviewOf;
+  btnSelectPrinter.Caption := rsIpHTMLPreviewSelectPrinter
 end;
 
 procedure TIpHTMLPreview.SetZoom(const Value: Integer);
