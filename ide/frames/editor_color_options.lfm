@@ -438,7 +438,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideLeft.Control = FrameEdgesBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FrameEdgesBox
-      Left = -10115
+      Left = 307
       Height = 21
       Top = 119
       Width = 97
@@ -459,9 +459,10 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Text = 'slsSolid'
     end
     object FrameEdgesBox: TComboBox
+      AnchorSideLeft.Control = FrameColorBox
       AnchorSideTop.Control = FrameColorBox
       AnchorSideTop.Side = asrBottom
-      Left = -10218
+      Left = 204
       Height = 21
       Top = 119
       Width = 97
@@ -1315,6 +1316,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
   end
   object ExportSaveDialog: TSaveDialog[4]
+    Title = 'Save file as'
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
