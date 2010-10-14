@@ -66,6 +66,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 0
     end
     object ForegroundColorBox: TColorBox
+      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = ToolBar1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -85,6 +86,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 1
     end
     object BackGroundColorBox: TColorBox
+      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = ForegroundColorBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -118,6 +120,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 2
     end
     object FrameColorBox: TColorBox
+      AnchorSideLeft.Control = ColumnPosBevel
       AnchorSideTop.Control = BackGroundColorBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlElementAttributes
@@ -1316,7 +1319,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
   end
   object ExportSaveDialog: TSaveDialog[4]
-    Title = 'Save file as'
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
