@@ -97,7 +97,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Width: integer read FWidth write SetWidth default 0;
     property Height: integer read FHeight write SetHeight default 0;
-    property Title: string read FTitle write FTitle stored IsTitleStored;
+    property Title: TTranslateString read FTitle write FTitle stored IsTitleStored;
   end;
 
 
