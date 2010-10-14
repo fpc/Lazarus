@@ -46,6 +46,7 @@ type
     FHighlightPos3: TWordPoint;
     FHighlighter: TSynCustomHighlighter;
     FNeedInvalidate: Boolean;
+    FForceInvalidate: Boolean;
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
   protected
     procedure FindMatchingWords(PhysCaret: TPoint;
@@ -308,6 +309,7 @@ end;
 
 procedure TSynEditMarkupWordGroup.DoMarkupChanged(AMarkup: TSynSelectedColor);
 begin
+  FForceInvalidate := True;
   InvalidateCurrentHighlight;
 end;
 
@@ -324,19 +326,21 @@ begin
 
   // invalidate old highlighting, if changed
   if (FHighlightPos1.Y > 0)
-  and (CompareWordPoints(FHighlightPos1, NewPos) <> 0)
+  and ((CompareWordPoints(FHighlightPos1, NewPos) <> 0) or FForceInvalidate)
   then
     InvalidateSynLines(FHighlightPos1.Y,FHighlightPos1.Y);
 
   if (FHighlightPos2.Y > 0)
-  and (CompareWordPoints(FHighlightPos2, NewAntiPos) <> 0)
+  and ((CompareWordPoints(FHighlightPos2, NewAntiPos) <> 0) or FForceInvalidate)
   then
     InvalidateSynLines(FHighlightPos2.Y,FHighlightPos2.Y);
 
   if (FHighlightPos3.Y > 0)
-  and (CompareWordPoints(FHighlightPos3, NewMiddlePos) <> 0)
+  and ((CompareWordPoints(FHighlightPos3, NewMiddlePos) <> 0) or FForceInvalidate)
   then
     InvalidateSynLines(FHighlightPos3.Y,FHighlightPos3.Y);
+
+  FForceInvalidate := False;
 
   // invalidate new highlighting, if changed
   if (NewPos.Y>0)
