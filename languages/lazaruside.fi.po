@@ -1411,7 +1411,7 @@ msgid "FPC source directory"
 msgstr "FPC:n (FreePascal:n) lähdekoodin kansio"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Frame color"
+msgid "Text-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfrmeditor

@@ -1419,7 +1419,9 @@ msgid "FPC source directory"
 msgstr "Zdrojový adresář FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Frame color"
+#, fuzzy
+#| msgid "Frame color"
+msgid "Text-mark"
 msgstr "Barva rámečku"
 
 #: lazarusidestrconsts.dlgfrmeditor

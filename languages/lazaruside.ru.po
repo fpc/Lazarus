@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-14 01:03+0300\n"
+"PO-Revision-Date: 2010-10-15 00:55+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1440,8 +1440,9 @@ msgid "FPC source directory"
 msgstr "Каталог исходного кода FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Frame color"
-msgstr "Цвет рамки"
+#| msgid "Frame color"
+msgid "Text-mark"
+msgstr "Отметка"
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"

@@ -1434,7 +1434,9 @@ msgid "FPC source directory"
 msgstr "Répertoire des sources de FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Frame color"
+#, fuzzy
+#| msgid "Frame color"
+msgid "Text-mark"
 msgstr "Couleur de cadre"
 
 #: lazarusidestrconsts.dlgfrmeditor
