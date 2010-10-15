@@ -1201,7 +1201,6 @@ function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
 function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 procedure RepairEditorFontHeight(var FontHeight: integer);
-//procedure CopyHiLightAttributeValues(Src, Dest: TSynHighlightElement);
 
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function ColorSchemeFactory: TColorSchemeFactory;
@@ -1579,17 +1578,6 @@ begin
   for i := 1 to length(Result) do
     if (not (Result[i] in ValidAttribChars)) then
       Result[i] := '_';
-end;
-
-procedure CopyHiLightAttributeValues(Src, Dest: TSynHighlightElement);
-begin
-  Dest.Background := Src.Background;
-  Dest.Foreground := Src.Foreground;
-  Dest.FrameColor := Src.FrameColor;
-  Dest.FrameEdges := Src.FrameEdges;
-  Dest.FrameStyle := Src.FrameStyle;
-  Dest.Style      := Src.Style;
-  Dest.StyleMask  := Src.StyleMask;
 end;
 
 { TRttiXMLConfig }
@@ -4348,7 +4336,10 @@ begin
   aDest.FrameEdges := Src.FrameEdges;
   aDest.FrameStyle := Src.FrameStyle;
   aDest.Style      := Src.Style;
-  aDest.StyleMask  := Src.StyleMask;
+  if hafStyleMask in Src.Features then
+    aDest.StyleMask  := Src.StyleMask
+  else
+    aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
   aDest.EndUpdate;
 end;
 
