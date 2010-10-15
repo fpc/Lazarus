@@ -856,7 +856,10 @@ begin
   
   if Result then
   begin
-    FControl.SelStart := Position - Length(SearchTxt);
+    if Down then
+      FControl.SelStart := Position - Length(SearchTxt)
+    else
+      FControl.SelStart := Position - 1;
     FControl.SelLength := Length(SearchTxt);
   end;
 end;
