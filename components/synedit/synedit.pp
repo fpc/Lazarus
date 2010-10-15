@@ -3572,7 +3572,10 @@ var
         FPaintLineColor.FrameStyle := attr.FrameStyle;
         FPaintLineColor.FrameEdges := attr.FrameEdges;
         FPaintLineColor.Style      := attr.Style;
-        FPaintLineColor.StyleMask  := attr.StyleMask;
+        // TSynSelectedColor.Style and StyleMask describe how to modify a style,
+        // but FPaintLineColor contains an actual style
+        FPaintLineColor.MergeFinalStyle := True;
+        FPaintLineColor.StyleMask  := [];
         if FPaintLineColor.Background = clNone then
           FPaintLineColor.Background := colEditorBG;
         if FPaintLineColor.Foreground = clNone then

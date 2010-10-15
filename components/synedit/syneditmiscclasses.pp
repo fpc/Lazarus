@@ -232,6 +232,10 @@ type
     procedure SetStyleMask(const AValue : TFontStyles);
     procedure DoChange;
   public
+    // TSynSelectedColor.Style and StyleMask describe how to modify a style,
+    // but PaintLines creates an instance that contains an actual style (without mask)
+    // Todo: always start with actual style
+    MergeFinalStyle: Boolean;
     procedure Merge(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
     procedure MergeFrames(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
     property FrameSideColors[Side: TSynFrameSide]: TColor read GetFrameSideColors;
@@ -255,6 +259,10 @@ type
     property FrameColor: TColor read FFrameColor write SetFrameColor default clNone;
     property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle default slsSolid;
     property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges default sfeAround;
+    // FStyle = [],       FStyleMask = []        ==> no modification
+    // FStyle = [fsBold], FStyleMask = []        ==> invert fsBold
+    // FStyle = [],       FStyleMask = [fsBold]  ==> clear  fsBold
+    // FStyle = [fsBold], FStyleMask = [fsBold]  ==> set    fsBold
     property Style: TFontStyles read FStyle write SetStyle default [];
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
   end;
@@ -477,6 +485,7 @@ end;
 constructor TSynSelectedColor.Create;
 begin
   inherited Create;
+  MergeFinalStyle := False;
   Clear;
   FBG := clHighLight;
   FFG := clHighLightText;
@@ -599,14 +608,35 @@ end;
 
 procedure TSynSelectedColor.Merge(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
 var
-  sMask: TFontStyles;
+  sSet, sClr, sInv, sInvInv, sKeep: TFontStyles;
 begin
   if Other.Background <> clNone then Background := Other.Background;
   if Other.Foreground <> clNone then Foreground := Other.Foreground;
   if Other.FrameColor <> clNone then MergeFrames(Other, LeftCol, RightCol);
-  sMask := Other.StyleMask + (fsNot(Other.StyleMask) * Other.Style); // Styles to be taken from Other
-  Style:= (Style * fsNot(sMask)) + (Other.Style * sMask);
-  StyleMask:= (StyleMask * fsNot(sMask)) + (Other.StyleMask * sMask);
+  sSet := Other.Style        * Other.StyleMask;
+  sClr := fsNot(Other.Style) * Other.StyleMask;
+  sInv := Other.Style        * fsNot(Other.StyleMask);
+
+  if MergeFinalStyle then begin
+    Style := fsXor(Style, sInv) + sSet - sClr;
+  end else begin
+    sKeep := fsNot(Other.Style) * fsNot(Other.StyleMask);
+    sInvInv := sInv * (Style * fsNot(StyleMask)); // invert * invert = not modified
+    sInv    := sInv - sInvInv;
+    sSet := sSet + sInv * (fsnot(Style) * StyleMask); // currently not set
+    sClr := sClr + sInv * (Style        * StyleMask); // currently set
+    sInv    := sInv - StyleMask; // now SInv only inverts currently "not modifying"
+
+    Style     := (Style     * sKeep) + sSet - sClr - sInvInv + sInv;
+    StyleMask := (StyleMask * sKeep) + sSet + sClr - sInvInv - sInv;
+  end;
+
+
+  //sMask := Other.StyleMask                            // Styles to be taken from Other
+  //       + (fsNot(Other.StyleMask) * Other.Style);    // Styles to be inverted
+  //Style     := (Style * fsNot(sMask))    // Styles that are neither taken, nor inverted
+  //           + (Other.Style * sMask);    // Styles that are either inverted or set
+  //StyleMask := (StyleMask * fsNot(sMask)) + (Other.StyleMask * sMask);
 end;
 
 procedure TSynSelectedColor.MergeFrames(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
