@@ -922,10 +922,10 @@ function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 begin
   Result := 0;
   case Style of
-  bsDialog:
-    Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-  bsToolWindow, bsSizeToolWin:
-    Result := WS_EX_TOOLWINDOW;
+    bsDialog:
+      Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+    bsToolWindow, bsSizeToolWin:
+      Result := WS_EX_TOOLWINDOW;
   end;
 end;
 

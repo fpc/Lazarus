@@ -490,11 +490,9 @@ begin
   //"urgency" flag) so we hide it again here.
   // This is the most important place to invoke UpdateShowInTaskBar, since
   //invoking it anywhere else seeems basically useless/frequently reversed.
-  if (ShowInTaskBar = stNever) or ((ShowInTaskBar = stDefault)
-    and (Application.TaskBarBehavior = tbSingleButton)) then
-  begin
+  if (ShowInTaskBar = stNever) or
+     ((ShowInTaskBar = stDefault) and (Application.TaskBarBehavior = tbSingleButton)) then
     UpdateShowInTaskBar;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -814,21 +812,26 @@ begin
   end;
 end;
 
+function TCustomForm.GetEffectiveShowInTaskBar: TShowInTaskBar;
+begin
+  Result := ShowInTaskBar;
+  if (Result = stDefault) or (csDesigning in ComponentState) then
+    case Application.TaskBarBehavior of
+      tbSingleButton: Result := stNever;
+      tbMultiButton: Result := stAlways;
+    end;
+end;
+
 procedure TCustomForm.UpdateShowInTaskBar;
 var
   Value: TShowInTaskBar;
 begin
-  if (Application.MainForm = Self) or (not HandleAllocated) or (Parent<>nil)
-    or (FormStyle = fsMDIChild) or (not Showing) then Exit;
-  Value := ShowInTaskBar;
-  if (Value = stDefault) or (csDesigning in ComponentState) then
-    case Application.TaskBarBehavior of
-      tbSingleButton: Value := stNever;
-      tbMultiButton: Value := stAlways;
-      else // nothing
-    end;
-  if FRealizedShowInTaskBar<>Value then begin
-    FRealizedShowInTaskBar:=Value;
+  if (Application.MainForm = Self) or (not HandleAllocated) or
+     Assigned(Parent) or (FormStyle = fsMDIChild) or not Showing then Exit;
+  Value := GetEffectiveShowInTaskBar;
+  if FRealizedShowInTaskBar <> Value then
+  begin
+    FRealizedShowInTaskBar := Value;
     TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
   end;
 end;
@@ -1951,6 +1954,7 @@ begin
     begin
       // define Parent according to PopupMode and PopupParent
       if not (csDesigning in ComponentState) and (Application.MainForm <> Self) then
+      begin
         case PopupMode of
           pmNone:;
           pmAuto:
@@ -1960,6 +1964,10 @@ begin
             if (PopupParent <> nil) then
               WndParent := PopupParent.Handle;
         end;
+
+        if (WndParent = 0) and (GetEffectiveShowInTaskBar = stAlways) then
+          ExStyle := ExStyle or WS_EX_APPWINDOW;
+      end;
       Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP or WS_CHILD);
     end;
   end;
@@ -2567,23 +2575,24 @@ begin
   DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
   {$ENDIF}
   // activate focus if visible
-  if Showing and (not (csDestroying in ComponentState)) then begin
-    if (ActiveControl = nil) and (not (csDesigning in ComponentState))
-    and (Parent=nil) then begin
+  if Showing and (not (csDestroying in ComponentState)) then
+  begin
+    if Assigned(ActiveControl) and (not (csDesigning in ComponentState)) and Assigned(Parent) then
+    begin
       // automatically choose a control to focus
       {$IFDEF VerboseFocus}
       DebugLn('TCustomForm.CreateWnd ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
       {$ENDIF}
       ActiveControl := FindDefaultForActiveControl;
     end;
-    if (Parent=nil)
-    and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-    and FActiveControl.CanFocus
-    and ([csLoading,csDestroying,csDesigning]*ComponentState=[]) then begin
+    if (Parent=nil) and Assigned(ActiveControl) and
+       ActiveControl.HandleAllocated and ActiveControl.CanFocus and
+       ([csLoading, csDestroying, csDesigning] * ComponentState = []) then
+    begin
       {$IFDEF VerboseFocus}
       DebugLn('TCustomForm.CreateWnd A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
       {$ENDIF}
-      LCLIntf.SetFocus(FActiveControl.Handle);
+      LCLIntf.SetFocus(ActiveControl.Handle);
     end;
     UpdateShowInTaskBar;
   end;

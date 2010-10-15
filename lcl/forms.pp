@@ -451,6 +451,7 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
     function GetPixelsPerInch: Longint;
     function GetRestoredLeft: integer;

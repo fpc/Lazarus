@@ -272,7 +272,10 @@ begin
   Flags := BorderStyleToWin32Flags(BorderStyle);
   if AForm.Parent <> nil then
     Flags := (Flags or WS_CHILD) and not WS_POPUP;
-  FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
+  // clear border style flags
+  FlagsEx := FlagsEx and not (WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE or WS_EX_TOOLWINDOW);
+  // set border style flags
+  FlagsEx := FlagsEx or BorderStyleToWin32FlagsEx(BorderStyle);
   if (AForm.FormStyle in fsAllStayOnTop) and 
       not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
@@ -392,10 +395,6 @@ begin
       Height := Bounds.Bottom - Bounds.Top;
     end;
     SubClassWndProc := @CustomFormWndProc;
-    if ((Application = nil) or (Application.MainForm <> lForm))  and
-       ( not (csDesigning in lForm.ComponentState) and
-        (lForm.ShowInTaskBar = stAlways)) then
-      FlagsEx := FlagsEx or WS_EX_APPWINDOW;
     if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
       FlagsEx := FlagsEx or WS_EX_LAYERED;
   end;
@@ -611,7 +610,7 @@ var
 begin
   if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
     Exit;
-  if (Application <> nil) and (AForm = Application.MainForm) then
+  if Assigned(Application) and (AForm = Application.MainForm) then
     Exit;
 
   OldStyle := GetWindowLong(AForm.Handle, GWL_EXSTYLE);
@@ -620,7 +619,7 @@ begin
     NewStyle := NewStyle or WS_EX_APPWINDOW
   else
     NewStyle := NewStyle and not WS_EX_APPWINDOW;
-  if OldStyle=NewStyle then exit;
+  if OldStyle = NewStyle then exit;
 
   // to apply this changes we need either to hide window or recreate it. Hide is
   // less difficult
