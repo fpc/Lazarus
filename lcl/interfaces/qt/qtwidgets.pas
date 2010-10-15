@@ -53,7 +53,8 @@ type
                           ccwComboBox,
                           ccwTreeWidget,
                           ccwAbstractScrollArea,
-                          ccwScrollingWinControl);
+                          ccwScrollingWinControl,
+                          ccwTabWidget);
 
   TQtGroupBoxType = (tgbtNormal,
                    tgbtCheckGroup,
@@ -12192,11 +12193,19 @@ end;
 procedure TQtPage.setIcon(const AIcon: QIconH);
 var
   AParent: QTabWidgetH;
+  TabWidget: TQtTabWidget;
 begin
   FIcon := AIcon;
   AParent := getTabWidget;
   if AParent <> nil then
-    QTabWidget_setTabIcon(AParent, getIndex, AIcon);
+  begin
+    if ChildOfComplexWidget = ccwTabWidget then
+    begin
+      TabWidget := TQtTabWidget(LCLObject.Parent.Handle);
+      TabWidget.setTabIcon(TabWidget.indexOf(Widget), AIcon);
+    end else
+      QTabWidget_setTabIcon(AParent, getIndex, AIcon);
+  end;
 end;
 
 procedure TQtPage.setText(const W: WideString);

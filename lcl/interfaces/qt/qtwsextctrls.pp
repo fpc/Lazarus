@@ -321,6 +321,7 @@ begin
   QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
     GetUtf8String(AChild.Caption));
   QtTabWidget.setUpdatesEnabled(True);
+  TQtPage(AChild.Handle).ChildOfComplexWidget := ccwTabWidget;
   TQtWsCustomPage.UpdateProperties(AChild);
 end;
 
