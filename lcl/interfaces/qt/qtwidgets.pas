@@ -779,6 +779,7 @@ type
     procedure setCurrentIndex(AIndex: Integer);
     procedure setCurrentWidget(APage: TQtWidget);
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
+    procedure setTabIcon(index: Integer; icon: QIconH);
     procedure setTabText(index: Integer; p2: WideString);
     procedure setTabsClosable(AValue: Boolean);
     function tabAt(APoint: TPoint): Integer;
@@ -7141,6 +7142,11 @@ end;
 procedure TQtTabWidget.setTabPosition(ATabPosition: QTabWidgetTabPosition);
 begin
   QTabWidget_setTabPosition(QTabWidgetH(Widget), ATabPosition);
+end;
+
+procedure TQtTabWidget.setTabIcon(index: Integer; icon: QIconH);
+begin
+  QTabWidget_setTabIcon(QTabWidgetH(Widget), index, icon);
 end;
 
 {------------------------------------------------------------------------------
