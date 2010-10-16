@@ -563,7 +563,7 @@ begin
   if lControl.Cursor = crDefault then
   begin
     // comboboxes, groupboxes,... may have internal child handles
-    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p), CWP_SKIPINVISIBLE);
+    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p), CWP_SKIPINVISIBLE or CWP_SKIPDISABLED);
     if h = 0 then exit;
     c := HCURSOR(GetClassLong(h, GCL_HCURSOR));
     if c <> 0 then
