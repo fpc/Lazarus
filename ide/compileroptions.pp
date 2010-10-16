@@ -95,7 +95,21 @@
   - addded changestamp, assign, equals to compiler options
   - added buildmodes to project
   - moved compileroptions and macrovalues to active buildmode
-
+  - compiler options: work on real options
+     - backup before read with modified flags
+     - restore on cancel
+  - TProjectBuildMacros: CreateDiff
+  - a project can save the set of build macros and compiler options
+    - store sets in lpi
+      - the default build mode is stored in the old xml path, so that
+        old IDEs can open newer projects.
+    - store sets in lps
+    - store active build mode in session
+    - edit build modes:
+      - add
+      - delete
+      - move up, down
+      - make active
 
   ToDo:
   - create Makefile:
@@ -112,20 +126,9 @@
   - code completion
     - keypress event
   - help for add/delete macro speedbuttons
-  - change IDE options dialog to not depend on a global option instance
-  - TProjectBuildMacros: CreateDiff
-  - a project can save the set of build macros and compiler options
-    - store sets in lpi
-      - the default build mode should be stored in the old xml path, so that
-        old IDEs can open newer projects.
-    - store sets in lps
-    - store active build mode in session
-    - edit build modes:
-      - add
-      - delete
-      - move up
-      - move down
-      - make active
+  - compiler options: work on real options
+    - show options
+    - test options
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units
@@ -596,7 +599,7 @@ type
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     procedure CreateDiffAsText(CompOpts: TBaseCompilerOptions; Diff: TStrings);
     function CreateDiff(CompOpts: TBaseCompilerOptions;
-                        Tool: TCompilerDiffTool = nil): boolean; virtual;
+                        Tool: TCompilerDiffTool = nil): boolean; virtual;// true if differ
 
     function MakeOptionsString(Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String;
@@ -3159,13 +3162,8 @@ begin
 end;
 
 function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
-var
-  Tool: TCompilerDiffTool;
 begin
-  Tool:=TCompilerDiffTool.Create(nil);
-  CreateDiff(CompOpts,Tool);
-  Result:=not Tool.Differ;
-  Tool.Free;
+  Result:= not CreateDiff(CompOpts,nil);
 end;
 
 procedure TBaseCompilerOptions.CreateDiffAsText(CompOpts: TBaseCompilerOptions;

@@ -374,8 +374,6 @@ type
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoCompilerOptionsBeforeWrite(Sender: TObject; Restore: boolean);
-    procedure DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -595,7 +593,6 @@ type
     FWaitForClose: Boolean;
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
-    OldCompOpts: TBaseCompilerOptions;
     OIChangedTimer: TIdleTimer;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
@@ -4451,17 +4448,19 @@ var
   ActiveUnitInfo: TUnitInfo;
   AProject: TProject;
 begin
+  //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   AProject:=TProject(Sender);
+  AProject.BackupBuildModes;
   AProject.UpdateExecutableType;
   AProject.CompilerOptions.UseAsDefault := False;
-  AProject.BuildModesBackup.Assign(AProject.BuildModes);
 end;
 
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean
   );
 var
   Project: TProject absolute Sender;
+  aFilename: String;
 
   function GetTitle: String;
   begin
@@ -4545,52 +4544,30 @@ var
   end;
 
 begin
-  if Restore then exit;
-  SetTitle;
-  SetAutoCreateForms;
-  // extend include path
-  Project.AutoAddOutputDirToIncPath;
-  if Project.Resources.Modified and (Project.MainUnitID >= 0) then
+  //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
+  if not Restore then
   begin
-    if not Project.Resources.Regenerate(Project.MainFilename, True, False, '') then
-      MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
-  end;
-  UpdateCaption;
-  Project.DefineTemplates.AllChanged;
-end;
-
-procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject;
-  Restore: boolean);
-begin
-  if Restore then exit;
-  OldCompOpts := TBaseCompilerOptionsClass(Sender.ClassType).Create(nil);
-  OldCompOpts.Assign(TBaseCompilerOptions(Sender));
-end;
-
-procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean
-  );
-var
-  ProjCompOpts: TProjectCompilerOptions;
-  aFilename: String;
-begin
-  if Restore then exit;
-  if not OldCompOpts.IsEqual(TBaseCompilerOptions(Sender)) then
-  begin
-    TBaseCompilerOptions(Sender).Modified := True;
-    IncreaseCompilerParseStamp;
-    MainBuildBoss.RescanCompilerDefines(True, False, false);
-    IncreaseCompilerParseStamp;
-    UpdateHighlighters; // because of FPC/Delphi mode
-  end;
-  OldCompOpts.Free;
-  if Sender is TProjectCompilerOptions then
-  begin
-    ProjCompOpts:=TProjectCompilerOptions(Sender);
-    if ProjCompOpts.UseAsDefault then
+    SetTitle;
+    SetAutoCreateForms;
+    // extend include path
+    Project.AutoAddOutputDirToIncPath;
+    if Project.Resources.Modified and (Project.MainUnitID >= 0) then
     begin
-      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
-      ProjCompOpts.SaveToFile(aFilename);
+      if not Project.Resources.Regenerate(Project.MainFilename, True, False, '') then
+        MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
     end;
+    UpdateCaption;
+    Project.DefineTemplates.AllChanged;
+  end;
+  if Restore then
+    Project.RestoreBuildModes;
+  IncreaseCompilerParseStamp;
+  MainBuildBoss.RescanCompilerDefines(True, False, false);
+  UpdateHighlighters; // because of FPC/Delphi mode
+  if (not Restore) and Project.CompilerOptions.UseAsDefault then
+  begin
+    aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+    Project.CompilerOptions.SaveToFile(aFilename);
   end;
 end;
 
@@ -7181,8 +7158,6 @@ begin
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
   Result.OnBeforeRead:=@DoProjectOptionsBeforeRead;
   Result.OnAfterWrite:=@DoProjectOptionsAfterWrite;
-  Result.CompilerOptions.OnBeforeWrite:=@DoCompilerOptionsBeforeWrite;
-  Result.CompilerOptions.OnAfterWrite:=@DoCompilerOptionsAfterWrite;
 end;
 
 procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);

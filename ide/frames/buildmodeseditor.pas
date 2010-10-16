@@ -22,19 +22,6 @@
     The frame for 'build modes' on the compiler options.
     Allows to add/delete/edit build modes and build macro values.
     It does not allow to define new build macros, only values.
-
-  ToDo:
-    - add build mode
-    - delete build mode
-    - move build mode up/down
-    - in session attribute
-    - cancel
-      - extend ide options with CancelSettings
-      - create central copy of build modes at setup and store modified flags
-      - access active build modes directly
-      - on cancel: copy back and restore modified flags
-      - on write: check is something has changed: if not restore modified flags
-    - activate another build mode
 }
 unit BuildModesEditor;
 
@@ -77,11 +64,16 @@ type
     procedure BuildModeMoveUpSpeedButtonClick(Sender: TObject);
     procedure BuildModesStringGridCheckboxToggled(sender: TObject; aCol,
       aRow: Integer; aState: TCheckboxState);
+    procedure BuildModesStringGridSelectCell(Sender: TObject; aCol,
+      aRow: Integer; var CanSelect: Boolean);
+    procedure BuildModesStringGridSelection(Sender: TObject; aCol, aRow: Integer
+      );
     procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
       aRow: Integer; const OldValue: string; var NewValue: String);
   private
     FMacroValues: TProjectBuildMacros;
     FProject: TProject;
+    FSwitchingMode: boolean;
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
     procedure CleanMacrosGrid;
@@ -90,6 +82,7 @@ type
     function FindOptionFrame(AClass: TComponentClass): TComponent;
     procedure FillBuildModesGrid;
     procedure UpdateBuildModeButtons;
+    procedure ActivateMode(aMode: TProjectBuildMode);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -100,6 +93,7 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property AProject: TProject read FProject;
     property MacroValues: TProjectBuildMacros read FMacroValues;
+    property SwitchingMode: boolean read FSwitchingMode; // the active mode is currently switched
   end;
 
 implementation
@@ -185,14 +179,36 @@ procedure TBuildModesEditorFrame.BuildModeAddSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
   NewName: String;
+  Identifier: String;
+  CurMode: TProjectBuildMode;
+  NewMode: TProjectBuildMode;
 begin
+  // use current mode as template
+  i:=BuildModesStringGrid.Row-1;
+  if (i>=0) then
+  begin
+    Identifier:=BuildModesStringGrid.Cells[2,i+1];
+    CurMode:=AProject.BuildModes[i];
+  end
+  else begin
+    Identifier:='Mode';
+    CurMode:=nil;
+  end;
+  // find unique name
   i:=0;
   repeat
     inc(i);
-    NewName:='Mode'+IntToStr(i);
+    NewName:=Identifier+IntToStr(i);
   until AProject.BuildModes.Find(NewName)=nil;
-  AProject.BuildModes.Add(NewName);
+  // create new mode
+  NewMode:=AProject.BuildModes.Add(NewName);
+  // clone
+  if CurMode<>nil then
+    NewMode.Assign(CurMode);
+  // show
   FillBuildModesGrid;
+  // activate
+  ActivateMode(NewMode);
   // select identifier
   BuildModesStringGrid.Col:=2;
   BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
@@ -201,8 +217,37 @@ end;
 
 procedure TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick(Sender: TObject
   );
+var
+  i: Integer;
+  CurMode: TProjectBuildMode;
+  Grid: TStringGrid;
 begin
-  ShowMessage('ToDo: TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick');
+  Grid:=BuildModesStringGrid;
+  i:=Grid.Row-1;
+  if i<0 then exit;
+  if AProject.BuildModes.Count=1 then
+  begin
+    MessageDlg('Error','There must be at least one build mode.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  CurMode:=AProject.BuildModes[i];
+  // when delete the activated: activate another
+  if AProject.ActiveBuildMode=CurMode then
+  begin
+    if i<AProject.BuildModes.Count-1 then
+      ActivateMode(AProject.BuildModes[i+1])
+    else
+      ActivateMode(AProject.BuildModes[i-1]);
+  end;
+  // delete mode
+  AProject.BuildModes.Delete(i);
+  FillBuildModesGrid;
+  // select next mode
+  if i>=Grid.RowCount then
+    Grid.Row:=Grid.RowCount-1
+  else
+    Grid.Row:=i;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick(
@@ -239,23 +284,29 @@ var
   CurMode: TProjectBuildMode;
   b: Boolean;
   i: Integer;
+  Grid: TStringGrid;
 begin
-  debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled Row=',aRow,' Col=',aCol,' ',ord(aState)]);
+  //debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled Row=',aRow,' Col=',aCol,' ',ord(aState)]);
   i:=aRow-1;
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
-  debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled ',i]);
+  //debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled ',i]);
   CurMode:=AProject.BuildModes[i];
+  Grid:=BuildModesStringGrid;
   case aCol of
   0:
     // activate
-    ;
+    if CurMode=AProject.ActiveBuildMode then
+      // there must always be an active mode
+      Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueChecked
+    else
+      ActivateMode(CurMode);
   1:
     begin
       // in session
       b:=aState=cbChecked;
       if b and (i=0) then
       begin
-
+        Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueUnchecked;
         MessageDlg('Error',
           'The first build mode is the default mode and must be stored in the project, not in the session.',
           mtError,[mbCancel],0);
@@ -264,6 +315,18 @@ begin
       CurMode.InSession:=b;
     end;
   end;
+end;
+
+procedure TBuildModesEditorFrame.BuildModesStringGridSelectCell(
+  Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
+begin
+
+end;
+
+procedure TBuildModesEditorFrame.BuildModesStringGridSelection(Sender: TObject;
+  aCol, aRow: Integer);
+begin
+  UpdateBuildModeButtons;
 end;
 
 procedure TBuildModesEditorFrame.BuildModesStringGridValidateEntry(
@@ -276,14 +339,14 @@ var
   b: Boolean;
   i: Integer;
 begin
-  debugln(['TBuildModesEditorFrame.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol,' ',NewValue]);
+  //debugln(['TBuildModesEditorFrame.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol,' ',NewValue]);
   i:=aRow-1;
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
-  debugln(['TBuildModesEditorFrame.SaveModes ',i]);
+  //debugln(['TBuildModesEditorFrame.SaveModes ',i]);
   CurMode:=AProject.BuildModes[i];
   case aCol of
   0:
-    // activate
+    // activate is done in BuildModesStringGridCheckboxToggled
     ;
   1:
     begin
@@ -490,11 +553,46 @@ begin
 end;
 
 procedure TBuildModesEditorFrame.UpdateBuildModeButtons;
+var
+  i: Integer;
+  CurMode: TProjectBuildMode;
+  Identifier: string;
 begin
-  BuildModeDeleteSpeedButton.Enabled:=BuildModesStringGrid.Row>1;
-  BuildModeMoveUpSpeedButton.Enabled:=BuildModesStringGrid.Row>1;
+  i:=BuildModesStringGrid.Row-1;
+  if (AProject<>nil) and (AProject.BuildModes<>nil)
+  and (i>=0) and (i<AProject.BuildModes.Count) then
+  begin
+    CurMode:=AProject.BuildModes[i];
+    Identifier:=BuildModesStringGrid.Cells[2,i+1];
+  end
+  else
+    CurMode:=nil;
+
+  BuildModeAddSpeedButton.Hint:='Add new build mode, copying settings from "'+Identifier+'"';
+  BuildModeDeleteSpeedButton.Enabled:=(CurMode<>nil) and (AProject.BuildModes.Count>1);
+  BuildModeDeleteSpeedButton.Hint:='Delete mode "'+Identifier+'"';
+  BuildModeMoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
+  BuildModeMoveUpSpeedButton.Hint:='Move "'+Identifier+'" one position up';
   BuildModeMoveDownSpeedButton.Enabled:=
-                       BuildModesStringGrid.Row<BuildModesStringGrid.RowCount-1;
+                       i<BuildModesStringGrid.RowCount-2;
+  BuildModeMoveDownSpeedButton.Hint:='Move "'+Identifier+'" one position down';
+end;
+
+procedure TBuildModesEditorFrame.ActivateMode(aMode: TProjectBuildMode);
+begin
+  if aMode=AProject.ActiveBuildMode then exit;
+  FSwitchingMode:=true;
+  try
+    // save changes
+    OnSaveIDEOptions(Self,AProject.CompilerOptions);
+    // switch
+    AProject.ActiveBuildMode:=aMode;
+    IncreaseBuildMacroChangeStamp;
+    // load options
+    OnLoadIDEOptions(Self,AProject.CompilerOptions);
+  finally
+    FSwitchingMode:=false;
+  end;
 end;
 
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);

@@ -892,7 +892,9 @@ begin
   BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
   Vars:=GetBuildMacroValues(Options,false);
   if Vars<>nil then
-    DefaultVariables.Assign(Vars);
+    DefaultVariables.Assign(Vars)
+  else
+    DefaultVariables.Clear;
 
   CondSynEdit.Lines.Text:=Options.Conditionals;
   EditorOpts.GetSynEditSettings(CondSynEdit);

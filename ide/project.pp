@@ -528,7 +528,7 @@ type
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     function CreateDiff(CompOpts: TBaseCompilerOptions;
-                         Tool: TCompilerDiffTool = nil): boolean; override;
+                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
   public
@@ -693,9 +693,10 @@ type
     destructor Destroy; override;
     procedure Clear;
     function IsEqual(OtherModes: TProjectBuildModes): boolean;
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(Source: TPersistent; WithModified: boolean); overload;
     procedure Delete(Index: integer);
     function IndexOf(Identifier: string): integer;
+    function IndexOf(aMode: TProjectBuildMode): integer;
     function Find(Identifier: string): TProjectBuildMode;
     function Add(Identifier: string): TProjectBuildMode;
     procedure Move(FromIndex, ToIndex: integer);
@@ -725,6 +726,7 @@ type
   TProject = class(TLazProject)
   private
     FActiveBuildMode: TProjectBuildMode;
+    FActiveBuildModeBackup: integer;
     FActiveWindowIndexAtStart: integer;
     FBuildModes: TProjectBuildModes;
     FBuildModesBackup: TProjectBuildModes;
@@ -803,7 +805,6 @@ type
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
-    procedure SetBuildModes(const AValue: TProjectBuildModes);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
     procedure SetMainProject(const AValue: boolean);
@@ -866,6 +867,8 @@ type
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
     procedure UpdateExecutableType; override;
+    procedure BackupBuildModes;
+    procedure RestoreBuildModes;
 
     // title
     function GetDefaultTitle: string;
@@ -1013,7 +1016,7 @@ type
                                          read FAutoOpenDesignerFormsDisabled
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
-    property BuildModes: TProjectBuildModes read FBuildModes write SetBuildModes;
+    property BuildModes: TProjectBuildModes read FBuildModes;
     property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
@@ -2996,6 +2999,23 @@ begin
     ExecutableType:=petPackage
   else
     ExecutableType:=petNone;
+end;
+
+procedure TProject.BackupBuildModes;
+begin
+  FActiveBuildModeBackup:=BuildModes.IndexOf(ActiveBuildMode);
+  BuildModesBackup.Assign(BuildModes,true);
+end;
+
+procedure TProject.RestoreBuildModes;
+begin
+  ActiveBuildMode:=nil;
+  BuildModes.Assign(BuildModesBackup,true);
+  if (FActiveBuildModeBackup>=0) and (FActiveBuildModeBackup<BuildModes.Count)
+  then
+    ActiveBuildMode:=BuildModes[FActiveBuildModeBackup]
+  else
+    ActiveBuildMode:=BuildModes[0];
 end;
 
 function TProject.GetDefaultTitle: string;
@@ -5095,11 +5115,6 @@ begin
   FAutoOpenDesignerFormsDisabled:=AValue;
 end;
 
-procedure TProject.SetBuildModes(const AValue: TProjectBuildModes);
-begin
-  FBuildModes.Assign(AValue);
-end;
-
 procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
 begin
   if FEnableI18NForLFM=AValue then exit;
@@ -6712,7 +6727,7 @@ end;
 
 function TProjectBuildMode.Equals(Src: TProjectBuildMode): boolean;
 begin
-  Result:=CompilerOptions.CreateDiff(Src.CompilerOptions)
+  Result:=CompilerOptions.IsEqual(Src.CompilerOptions)
           and MacroValues.Equals(Src.MacroValues);
 end;
 
@@ -6814,7 +6829,7 @@ begin
   Result:=false;
 end;
 
-procedure TProjectBuildModes.Assign(Source: TPersistent);
+procedure TProjectBuildModes.Assign(Source: TPersistent; WithModified: boolean);
 var
   OtherModes: TProjectBuildModes;
   i: Integer;
@@ -6827,7 +6842,11 @@ begin
     begin
       CurMode:=Add(OtherModes[i].Identifier);
       CurMode.Assign(OtherModes[i]);
+      if WithModified then
+        CurMode.Modified:=OtherModes[i].Modified;
     end;
+    if WithModified then
+      Modified:=OtherModes.Modified;
   end else
     inherited Assign(Source);
 end;
@@ -6848,6 +6867,11 @@ begin
   while (Result>=0)
   and (SysUtils.CompareText(Identifier,Items[Result].Identifier)<>0) do
     dec(Result);
+end;
+
+function TProjectBuildModes.IndexOf(aMode: TProjectBuildMode): integer;
+begin
+  Result:=fItems.IndexOf(aMode);
 end;
 
 function TProjectBuildModes.Find(Identifier: string): TProjectBuildMode;

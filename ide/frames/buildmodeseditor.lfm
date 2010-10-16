@@ -14,12 +14,12 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'BuildMacroValuesGroupBox'
-    ClientHeight = 213
+    ClientHeight = 212
     ClientWidth = 530
     TabOrder = 0
     object BuildMacroValuesStringGrid: TStringGrid
       Left = 0
-      Height = 213
+      Height = 212
       Top = 0
       Width = 530
       Align = alClient
@@ -34,8 +34,8 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       OnSelectEditor = BuildMacroValuesStringGridSelectEditor
       OnSelection = BuildMacroValuesStringGridSelection
       ColWidths = (
-        264
-        264
+        265
+        265
       )
     end
   end
@@ -47,14 +47,14 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 137
+    ClientHeight = 136
     ClientWidth = 530
     TabOrder = 1
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 115
+      Height = 114
       Top = 22
       Width = 530
       Align = alBottom
@@ -66,29 +66,31 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'Active'
-          Width = 170
+          Width = 176
         end      
         item
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'InSession'
-          Width = 170
+          Width = 176
         end      
         item
           MaxSize = 500
           SizePriority = 100
           Title.Caption = 'Title'
-          Width = 170
+          Width = 178
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       TabOrder = 0
       OnCheckboxToggled = BuildModesStringGridCheckboxToggled
+      OnSelection = BuildModesStringGridSelection
+      OnSelectCell = BuildModesStringGridSelectCell
       OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
-        170
-        170
-        170
+        176
+        176
+        178
       )
     end
     object BuildModeAddSpeedButton: TSpeedButton
