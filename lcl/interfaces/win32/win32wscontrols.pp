@@ -533,7 +533,8 @@ var
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
-  if csDesigning in AWinControl.ComponentState then begin
+  if csDesigning in AWinControl.ComponentState then
+  begin
     Windows.SetCursor(ACursor);
     exit;
   end;
@@ -559,12 +560,14 @@ begin
                                           capfAllowWinControls, capfRecursive]);
   if (lControl = nil) then
     lControl := AWinControl;
-  if lControl.Cursor = crDefault then begin
+  if lControl.Cursor = crDefault then
+  begin
     // comboboxes, groupboxes,... may have internal child handles
-    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p),CWP_ALL);
+    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p), CWP_SKIPINVISIBLE);
     if h = 0 then exit;
     c := HCURSOR(GetClassLong(h, GCL_HCURSOR));
-    if c <> 0 then begin
+    if c <> 0 then
+    begin
       Windows.SetCursor(c);
       exit;
     end;
@@ -625,7 +628,7 @@ const
   VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
 begin
   Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
-    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
+    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
 end;
 
 { TWin32WSDragImageList }

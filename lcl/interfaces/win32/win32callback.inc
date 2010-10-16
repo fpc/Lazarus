@@ -2426,7 +2426,7 @@ begin
     LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU, LM_MOUSEWHEEL:
     begin
       if PLMsg^.Result = 0 then
-        WinProcess := true;
+        WinProcess := True;
     end;
     WM_SYSCOMMAND:
     begin
