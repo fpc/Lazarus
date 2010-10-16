@@ -515,64 +515,31 @@ begin
 {$endif}
 end;
 
-class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
-  const ACursor: HCursor);
-  function WndClassName(Wnd: HWND): String; inline;
-  var
-    winClassName: array[0..19] of char;
-  begin
-    GetClassName(Wnd, @winClassName, 20);
-    Result := winClassName;
-  end;
+class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 var
-  P: TPoint;
-  lControl: TControl;
-  BoundsOffset: TRect;
+  CursorPos, P: TPoint;
   h: HWND;
-  c: HCURSOR;
+  HitTestCode: LResult;
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
   if csDesigning in AWinControl.ComponentState then
   begin
     Windows.SetCursor(ACursor);
-    exit;
+    Exit;
   end;
 
   if Screen.Cursor <> crDefault then exit;
 
-  Windows.GetCursorPos(Windows.POINT(P));
-  Windows.ScreenToClient(AWinControl.Handle, Windows.POINT(P));
-  if (P.X < 0) or (P.Y < 0) or
-     (P.X >= AWinControl.Width) or (P.Y > AWinControl.Height)
-  then
-    exit;
+  Windows.GetCursorPos(CursorPos);
 
-  // BoundsOffset also corrects for tabbed controls
-  // -capfHasScrollOffset only corrects scrolled controls
-  if GetLCLClientBoundsOffset(aWinControl, BoundsOffset) then
-  begin
-    Dec(P.X, BoundsOffset.Left);
-    Dec(P.Y, BoundsOffset.Top);
-  end;
+  h := AWinControl.Handle;
+  P := CursorPos;
+  Windows.ScreenToClient(h, @P);
+  h := Windows.ChildWindowFromPointEx(h, Windows.POINT(P), CWP_SKIPINVISIBLE or CWP_SKIPDISABLED);
 
-  lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas, capfHasScrollOffset,
-                                          capfAllowWinControls, capfRecursive]);
-  if (lControl = nil) then
-    lControl := AWinControl;
-  if lControl.Cursor = crDefault then
-  begin
-    // comboboxes, groupboxes,... may have internal child handles
-    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p), CWP_SKIPINVISIBLE or CWP_SKIPDISABLED);
-    if h = 0 then exit;
-    c := HCURSOR(GetClassLong(h, GCL_HCURSOR));
-    if c <> 0 then
-    begin
-      Windows.SetCursor(c);
-      exit;
-    end;
-  end;
-  Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
+  HitTestCode := SendMessage(h, WM_NCHITTEST, 0, LParam((CursorPos.X and $FFFF) or (CursorPos.Y shl 16)));
+  SendMessage(h, WM_SETCURSOR, h, MakeLong(HitTestCode, WM_MOUSEMOVE));
 end;
 
 class procedure TWin32WSWinControl.SetShape(const AWinControl: TWinControl;
