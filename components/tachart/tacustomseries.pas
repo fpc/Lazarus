@@ -68,6 +68,7 @@ type
     function AxisToGraphY(AY: Double): Double; override;
     function GetAxisX: TChartAxis;
     function GetAxisY: TChartAxis;
+    function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
     function GraphToAxisY(AY: Double): Double; override;
 
@@ -297,6 +298,13 @@ end;
 function TCustomChartSeries.GetShowInLegend: Boolean;
 begin
   Result := Legend.Visible;
+end;
+
+function TCustomChartSeries.GraphToAxis(APoint: TDoublePoint): TDoublePoint;
+begin
+  if IsRotated then
+    Exchange(APoint.X, APoint.Y);
+  Result := DoublePoint(GraphToAxisX(APoint.X), GraphToAxisY(APoint.Y));
 end;
 
 function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
