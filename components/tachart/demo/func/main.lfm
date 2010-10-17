@@ -117,6 +117,7 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
+        Toolset = ChartToolset1
         Align = alClient
         DoubleBuffered = True
         ParentColor = False
@@ -126,6 +127,7 @@ object Form1: TForm1
           Extent.UseXMin = True
           Extent.UseXMax = True
           ColorSource = ListChartSource1
+          OnCalculate = ChartColorMapColorMapSeries1Calculate
         end
       end
     end
@@ -146,5 +148,15 @@ object Form1: TForm1
     )
     left = 280
     top = 114
+  end
+  object ChartToolset1: TChartToolset
+    left = 280
+    top = 180
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+    end
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+    end
   end
 end

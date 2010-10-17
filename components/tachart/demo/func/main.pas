@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph, TASeries,
-  TASources;
+  TASources, TATools;
 
 type
 
@@ -22,6 +22,9 @@ type
     Chart1YAxis: TConstantLine;
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
+    ChartToolset1: TChartToolset;
+    ChartToolset1PanDragTool1: TPanDragTool;
+    ChartToolset1ZoomDragTool1: TZoomDragTool;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     tsDomain: TTabSheet;
