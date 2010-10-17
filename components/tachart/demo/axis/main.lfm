@@ -37,8 +37,6 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Summer temperature, °C'
-            Title.Font.Color = clRed
-            Title.Font.Orientation = 900
             Transformations = catTAuto
           end        
           item
@@ -57,8 +55,6 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Winter temperature, °F'
-            Title.Font.Color = clBlue
-            Title.Font.Orientation = 900
             Transformations = catT
           end>
         Foot.Brush.Color = clBtnFace
@@ -75,21 +71,18 @@ object Form1: TForm1
           AxisIndexY = 0
           LinePen.Color = clRed
           LinePen.Width = 2
-          SeriesColor = clRed
           Source = rcsTSummer
         end
         object ChartTWinterLine: TLineSeries
           AxisIndexY = 2
           LinePen.Color = clBlue
           LinePen.Width = 2
-          SeriesColor = clBlue
           Source = rcsTWinter
         end
         object ChartTWinterBar: TBarSeries
           AxisIndexY = 2
           BarBrush.Color = clBlue
           BarBrush.Style = bsDiagCross
-          SeriesColor = clBlue
           Source = rcsTWinter
         end
       end
@@ -127,7 +120,6 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left'
-            Title.Font.Orientation = 900
             Transformations = catLog
           end        
           item
@@ -142,7 +134,6 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Right 1'
-            Title.Font.Orientation = 900
           end        
           item
             Alignment = calTop
@@ -162,7 +153,6 @@ object Form1: TForm1
           AxisIndexY = 0
           LineType = ltNone
           Pointer.Brush.Color = clMaroon
-          SeriesColor = clBlack
           ShowPoints = True
         end
         object cfsLog: TFuncSeries
@@ -215,7 +205,6 @@ object Form1: TForm1
             Marks.Source = lcsMarks
             Marks.Style = smsCustom
             Title.LabelFont.Orientation = 900
-            Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
@@ -242,7 +231,6 @@ object Form1: TForm1
           BarBrush.Color = clGreen
           BarPen.Color = clLime
           BarPen.Width = 2
-          SeriesColor = clGreen
           Source = lcsMarks
         end
       end
@@ -262,7 +250,6 @@ object Form1: TForm1
             Group = 2
             TickLength = 0
             Title.LabelFont.Orientation = 900
-            Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
@@ -290,7 +277,6 @@ object Form1: TForm1
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
-            Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
@@ -312,7 +298,6 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object ChartDateTimeLineSeries1: TLineSeries
-          SeriesColor = clBlack
           Source = rcsDates
         end
       end

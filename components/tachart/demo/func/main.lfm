@@ -15,15 +15,10 @@ object Form1: TForm1
     Width = 461
     AxisList = <    
       item
-        Alignment = calLeft
-        Title.Font.Orientation = 900
-        Transformation.Offset = 0
-        Transformation.Scale = 1
+        Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end>
     ExpandPercentage = 10
     Extent.YMin = -6
@@ -52,20 +47,19 @@ object Form1: TForm1
       Title = '1 / Sin(x)'
     end
     object Chart1XAxis: TConstantLine
+      Legend.Visible = False
       Position = 0
       SeriesColor = clBlack
-      ShowInLegend = False
     end
     object Chart1YAxis: TConstantLine
+      Legend.Visible = False
       LineStyle = lsVertical
       Position = 0
       SeriesColor = clBlack
-      ShowInLegend = False
     end
     object Chart1BarSeries1: TBarSeries
       Title = 'Cos(x)'
       BarBrush.Color = clMoneyGreen
-      SeriesColor = clMoneyGreen
       Source = UserDefinedChartSource1
     end
     object Chart1UserDrawnSeries1: TUserDrawnSeries

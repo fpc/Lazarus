@@ -5,7 +5,8 @@ unit main;
 interface
 
 uses
-  Classes, StdCtrls, Forms, Graphics, TAGraph, TASeries, TASources;
+  Classes, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph, TASeries,
+  TASources;
 
 type
 
