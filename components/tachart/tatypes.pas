@@ -252,7 +252,6 @@ type
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
     procedure CheckBoundsOrder;
-    property Extent: TDoubleRect read FExtent;
   published
     property XMin: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
     property YMin: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
