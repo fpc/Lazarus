@@ -24,29 +24,49 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TALegend, TATypes;
+  TAChartUtils, TACustomSeries, TALegend, TASources, TATypes;
+
+const
+  DEF_COLORMAP_STEP = 4;
 
 type
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
 
   TFuncSeriesStep = 1..MaxInt;
 
+  { TBasicFuncSeries }
+
+  TBasicFuncSeries = class(TCustomChartSeries)
+  private
+    FExtent: TChartExtent;
+    procedure SetExtent(AValue: TChartExtent);
+  protected
+    procedure AfterAdd; override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Active default true;
+    property Extent: TChartExtent read FExtent write SetExtent;
+    property ShowInLegend;
+    property Title;
+    property ZPosition;
+  end;
+
   { TFuncSeries }
 
-  TFuncSeries = class(TCustomChartSeries)
+  TFuncSeries = class(TBasicFuncSeries)
   private
     FDomainExclusions: TIntervalList;
-    FExtent: TChartExtent;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
-    procedure SetExtent(const AValue: TChartExtent);
     procedure SetOnCalculate(const AValue: TFuncCalculateEvent);
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
-    procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
@@ -58,15 +78,45 @@ type
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
   published
-    property Active default true;
     property AxisIndexY;
-    property Extent: TChartExtent read FExtent write SetExtent;
-    property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
+    property OnCalculate: TFuncCalculateEvent
+      read FOnCalculate write SetOnCalculate;
     property Pen: TChartPen read FPen write SetPen;
-    property ShowInLegend;
     property Step: TFuncSeriesStep read FStep write SetStep default 2;
-    property Title;
-    property ZPosition;
+  end;
+
+  TFuncCalculate3DEvent =
+    procedure (const AX, AY: Double; out AZ: Double) of object;
+
+  { TColorMapSeries }
+
+  TColorMapSeries = class(TBasicFuncSeries)
+  private
+    FBrush: TBrush;
+    FColorSource: TCustomChartSource;
+    FOnCalculate: TFuncCalculate3DEvent;
+    FStepX: TFuncSeriesStep;
+    FStepY: TFuncSeriesStep;
+    procedure SetBrush(AValue: TBrush);
+    procedure SetColorSource(AValue: TCustomChartSource);
+    procedure SetOnCalculate(AValue: TFuncCalculate3DEvent);
+    procedure SetStepX(AValue: TFuncSeriesStep);
+    procedure SetStepY(AValue: TFuncSeriesStep);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+
+  public
+    procedure Draw(ACanvas: TCanvas); override;
+    function IsEmpty: Boolean; override;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property Brush: TBrush read FBrush write SetBrush;
+    property ColorSource: TCustomChartSource read FColorSource write SetColorSource;
+    property OnCalculate: TFuncCalculate3DEvent
+      read FOnCalculate write SetOnCalculate;
+    property StepX: TFuncSeriesStep read FStepX write SetStepX default DEF_COLORMAP_STEP;
+    property StepY: TFuncSeriesStep read FStepY write SetStepY default DEF_COLORMAP_STEP;
   end;
 
 implementation
@@ -74,12 +124,48 @@ implementation
 uses
   Math, SysUtils, TAGraph;
 
+{ TBasicFuncSeries }
+
+procedure TBasicFuncSeries.AfterAdd;
+begin
+  inherited AfterAdd;
+  FExtent.SetOwner(FChart);
+end;
+
+constructor TBasicFuncSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FExtent := TChartExtent.Create(FChart);
+end;
+
+destructor TBasicFuncSeries.Destroy;
+begin
+  FreeAndNil(FExtent);
+  inherited Destroy;
+end;
+
+procedure TBasicFuncSeries.GetBounds(var ABounds: TDoubleRect);
+begin
+  with Extent do begin
+    if UseXMin then ABounds.a.X := XMin;
+    if UseYMin then ABounds.a.Y := YMin;
+    if UseXMax then ABounds.b.X := XMax;
+    if UseYMax then ABounds.b.Y := YMax;
+  end;
+end;
+
+procedure TBasicFuncSeries.SetExtent(AValue: TChartExtent);
+begin
+  if FExtent = AValue then exit;
+  FExtent.Assign(AValue);
+  UpdateParentChart;
+end;
+
 { TFuncSeries }
 
 constructor TFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FExtent := TChartExtent.Create(FChart);
   FDomainExclusions := TIntervalList.Create;
   FDomainExclusions.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
@@ -89,7 +175,6 @@ end;
 
 destructor TFuncSeries.Destroy;
 begin
-  FreeAndNil(FExtent);
   FreeAndNil(FDomainExclusions);
   FreeAndNil(FPen);
   inherited;
@@ -149,16 +234,6 @@ begin
   end;
 end;
 
-procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
-begin
-  with Extent do begin
-    if UseXMin then ABounds.a.X := XMin;
-    if UseYMin then ABounds.a.Y := YMin;
-    if UseXMax then ABounds.b.X := XMax;
-    if UseYMax then ABounds.b.Y := YMax;
-  end;
-end;
-
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
@@ -167,13 +242,6 @@ end;
 function TFuncSeries.IsEmpty: Boolean;
 begin
   Result := not Assigned(OnCalculate);
-end;
-
-procedure TFuncSeries.SetExtent(const AValue: TChartExtent);
-begin
-  if FExtent = AValue then exit;
-  FExtent.Assign(AValue);
-  UpdateParentChart;
 end;
 
 procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
@@ -194,6 +262,59 @@ procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
+  UpdateParentChart;
+end;
+
+{ TColorMapSeries }
+
+procedure TColorMapSeries.Draw(ACanvas: TCanvas);
+begin
+  if IsEmpty then exit;
+  // TODO
+end;
+
+procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemBrushRect.Create(Brush, Title));
+end;
+
+function TColorMapSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(OnCalculate);
+end;
+
+procedure TColorMapSeries.SetBrush(AValue: TBrush);
+begin
+  if FBrush = AValue then exit;
+  FBrush := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetColorSource(AValue: TCustomChartSource);
+begin
+  if FColorSource = AValue then exit;
+  FColorSource := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetOnCalculate(AValue: TFuncCalculate3DEvent);
+begin
+  if FOnCalculate = AValue then exit;
+  FOnCalculate := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetStepX(AValue: TFuncSeriesStep);
+begin
+  if FStepX = AValue then exit;
+  FStepX := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetStepY(AValue: TFuncSeriesStep);
+begin
+  if FStepY = AValue then exit;
+  FStepY := AValue;
   UpdateParentChart;
 end;
 
