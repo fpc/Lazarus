@@ -372,8 +372,41 @@ begin
 end;
 
 procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
+var
+  i: Integer;
+  prev: Double;
+
+  function ItemTitle(const AText: String; AX: Double): String;
+  const
+    FORMATS: array [1..3] of String = ('z ≤ %1:g', '%g < z ≤ %g', '%g < z');
+  var
+    idx: Integer;
+  begin
+    if AText <> '' then exit(AText);
+    if ColorSource.Count = 1 then exit('');
+    if i = 0 then idx := 1
+    else if i = ColorSource.Count - 1 then idx := 3
+    else idx := 2;
+    Result := Format(FORMATS[idx], [prev, AX]);
+  end;
+
+var
+  li: TLegendItemBrushRect;
 begin
-  AItems.Add(TLegendItemBrushRect.Create(Brush, Title));
+  case Legend.Multiplicity of
+    lmSingle: AItems.Add(TLegendItemBrushRect.Create(Brush, Title));
+    lmPoint:
+      if ColorSource <> nil then begin
+        prev := 0.0;
+        for i := 0 to ColorSource.Count - 1 do
+          with ColorSource[i]^ do begin
+            li := TLegendItemBrushRect.Create(Brush, ItemTitle(Text, X));
+            li.Color := Color;
+            AItems.Add(li);
+            prev := X;
+          end;
+      end;
+  end;
 end;
 
 function TColorMapSeries.IsEmpty: Boolean;
