@@ -219,6 +219,8 @@ procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
+function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
+
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean; inline;
 function IsPointInPolygon(
   const AP: TPoint; const APolygon: array of TPoint): Boolean;
@@ -476,6 +478,20 @@ begin
     if m1 = m then break;
     m := m1;
   end;
+end;
+
+function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
+type
+  TBytes = packed array [1..4] of Byte;
+var
+  c1: TBytes absolute AColor1;
+  c2: TBytes absolute AColor2;
+  r: TBytes absolute Result;
+  i: Integer;
+begin
+  ACoeff := EnsureRange(ACoeff, 0.0, 1.0);
+  for i := 1 to 4 do
+    r[i] := Round(c1[i]  + (c2[i] - c1[i]) * ACoeff);
 end;
 
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;

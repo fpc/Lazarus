@@ -55,6 +55,14 @@ type
     procedure TestPolygonIntersectsPolygon;
   end;
 
+  { TColorTest }
+
+  TColorTest = class(TTestCase)
+  private
+    procedure AssertEqualsHex(Expected, Actual: Integer); overload;
+  published
+    procedure TestInterpolate;
+  end;
 
 implementation
 
@@ -256,9 +264,26 @@ begin
   AssertFalse(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(0, -6))));
 end;
 
+{ TColorTest }
+
+procedure TColorTest.AssertEqualsHex(Expected, Actual: Integer);
+begin
+  AssertTrue(
+    ComparisonMsg(IntToHex(Expected, 8), IntToHex(Actual, 8)),
+    Expected = Actual);
+end;
+
+procedure TColorTest.TestInterpolate;
+begin
+  AssertEqualsHex($01020304, InterpolateRGB($01020304, $00787980, 0.0));
+  AssertEqualsHex($00787980, InterpolateRGB($01020304, $00787980, 1.0));
+  AssertEqualsHex($003D3E42, InterpolateRGB($01020304, $00787980, 0.5));
+  AssertEqualsHex($01010102, InterpolateRGB($01010100, $02020214, 0.1));
+end;
+
 initialization
 
-  RegisterTests([TIntervalListTest, TGeometryTest]);
+  RegisterTests([TIntervalListTest, TGeometryTest, TColorTest]);
 
 end.
 
