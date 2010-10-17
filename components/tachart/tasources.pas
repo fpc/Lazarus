@@ -478,7 +478,7 @@ begin
     while (ALB < Count) and (Item[ALB]^.X < AXMin) do
       Inc(ALB);
     AUB := Count - 1;
-    while (AUB > 0) and (Item[AUB]^.X > AXMax) do
+    while (AUB >= 0) and (Item[AUB]^.X > AXMax) do
       Dec(AUB);
   end;
 end;
