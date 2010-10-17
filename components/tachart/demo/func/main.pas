@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     cbDomain: TCheckBox;
     cbInterpolate: TCheckBox;
+    cbMultLegend: TCheckBox;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1FuncSeries1: TFuncSeries;
@@ -33,6 +34,7 @@ type
     UserDefinedChartSource1: TUserDefinedChartSource;
     procedure cbDomainChange(Sender: TObject);
     procedure cbInterpolateChange(Sender: TObject);
+    procedure cbMultLegendChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
@@ -48,7 +50,7 @@ var
 implementation
 
 uses
-  TAChartUtils;
+  TAChartUtils, TALegend;
 
 {$R *.lfm}
 
@@ -70,6 +72,15 @@ end;
 procedure TForm1.cbInterpolateChange(Sender: TObject);
 begin
   ChartColorMapColorMapSeries1.Interpolate := cbInterpolate.Checked;
+end;
+
+procedure TForm1.cbMultLegendChange(Sender: TObject);
+begin
+  with ChartColorMapColorMapSeries1.Legend do
+    if cbMultLegend.Checked then
+      Multiplicity := lmPoint
+    else
+      Multiplicity := lmSingle;
 end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);

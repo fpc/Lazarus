@@ -133,7 +133,7 @@ object Form1: TForm1
         end
       end
       object cbInterpolate: TCheckBox
-        Left = 360
+        Left = 352
         Height = 17
         Top = 298
         Width = 74
@@ -141,6 +141,16 @@ object Form1: TForm1
         Caption = 'Interpolate'
         OnChange = cbInterpolateChange
         TabOrder = 1
+      end
+      object cbMultLegend: TCheckBox
+        Left = 352
+        Height = 17
+        Top = 274
+        Width = 91
+        Anchors = [akRight, akBottom]
+        Caption = 'Expand legend'
+        OnChange = cbMultLegendChange
+        TabOrder = 2
       end
     end
   end
