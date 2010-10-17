@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     cbDomain: TCheckBox;
+    cbInterpolate: TCheckBox;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1FuncSeries1: TFuncSeries;
@@ -31,6 +32,7 @@ type
     tsColorMap: TTabSheet;
     UserDefinedChartSource1: TUserDefinedChartSource;
     procedure cbDomainChange(Sender: TObject);
+    procedure cbInterpolateChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
@@ -63,6 +65,11 @@ begin
       for i := -10 to 10 do
         AddPoint(i * Pi);
   end;
+end;
+
+procedure TForm1.cbInterpolateChange(Sender: TObject);
+begin
+  ChartColorMapColorMapSeries1.Interpolate := cbInterpolate.Checked;
 end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
