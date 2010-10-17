@@ -106,6 +106,11 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+  public
+    function ColorByValue(AValue: Double): TColor;
     procedure Draw(ACanvas: TCanvas); override;
     function IsEmpty: Boolean; override;
   published
@@ -267,10 +272,69 @@ end;
 
 { TColorMapSeries }
 
+function TColorMapSeries.ColorByValue(AValue: Double): TColor;
+var
+  lb, ub: Integer;
+begin
+  if ColorSource = nil then exit(clTAColor);
+  ColorSource.FindBounds(AValue, Infinity, lb, ub);
+  Result := ColorSource[EnsureRange(lb, 0, ColorSource.Count - 1)]^.Color;
+end;
+
+constructor TColorMapSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBrush := TBrush.Create;
+  FBrush.OnChange := @StyleChanged;
+  FStepX := DEF_COLORMAP_STEP;
+  FStepY := DEF_COLORMAP_STEP;
+end;
+
+destructor TColorMapSeries.Destroy;
+begin
+  FreeAndNil(FBrush);
+  inherited Destroy;
+end;
+
 procedure TColorMapSeries.Draw(ACanvas: TCanvas);
+var
+  ext: TDoubleRect;
+  bounds: TDoubleRect =
+    (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
+  r: TRect;
+  pt, next: TPoint;
+  gp: TDoublePoint;
+  v: Double;
 begin
   if IsEmpty then exit;
-  // TODO
+
+  ext := ParentChart.CurrentExtent;
+  GetBounds(bounds);
+  bounds.a := AxisToGraph(bounds.a);
+  bounds.b := AxisToGraph(bounds.b);
+  if not RectIntersectsRect(ext, bounds) then exit;
+
+  r.TopLeft := ParentChart.GraphToImage(ext.a);
+  r.BottomRight := ParentChart.GraphToImage(ext.b);
+  NormalizeRect(r);
+
+  ACanvas.Brush := Brush;
+  ACanvas.Pen.Style := psClear;
+  pt.Y := r.Top div StepY * StepY;
+  while pt.Y <= r.Bottom do begin
+    next.Y := pt.Y + StepY;
+    pt.X := r.Left div StepX * StepX;
+    while pt.X <= r.Right do begin
+      next.X := pt.X + StepX;
+      gp := GraphToAxis(ParentChart.ImageToGraph(pt));
+      OnCalculate(gp.X, gp.Y, v);
+      if ColorSource <> nil then
+        ACanvas.Brush.Color := ColorByValue(v);
+      ACanvas.Rectangle(pt.X, pt.Y, next.X + 1, next.Y + 1);
+      pt.X := next.X;
+    end;
+    pt.Y := next.Y;
+  end;
 end;
 
 procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -320,6 +384,7 @@ end;
 
 initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
+  RegisterSeriesClass(TColorMapSeries, 'Color map series');
 
 end.
 
