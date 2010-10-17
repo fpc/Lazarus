@@ -50,6 +50,7 @@ type
     function GetShowInLegend: Boolean; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
+    procedure SetTitle(const AValue: String); override;
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateParentChart;
@@ -386,6 +387,13 @@ end;
 procedure TCustomChartSeries.SetShowInLegend(AValue: Boolean);
 begin
   Legend.Visible := AValue;
+end;
+
+procedure TCustomChartSeries.SetTitle(const AValue: String);
+begin
+  if FTitle = AValue then exit;
+  FTitle := AValue;
+  UpdateParentChart;
 end;
 
 procedure TCustomChartSeries.SetZPosition(AValue: TChartDistance);

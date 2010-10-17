@@ -62,6 +62,7 @@ type
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
+    procedure SetTitle(const AValue: String); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure VisitSources(
@@ -88,7 +89,7 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
-    property Title: String read FTitle write FTitle;
+    property Title: String read FTitle write SetTitle;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   end;
 
