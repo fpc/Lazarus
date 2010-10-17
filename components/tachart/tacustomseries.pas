@@ -87,7 +87,8 @@ type
   published
     property Legend: TChartSeriesLegend read FLegend write SetLegend;
     property ShowInLegend: Boolean
-      read GetShowInLegend write SetShowInLegend default true; deprecated;
+      read GetShowInLegend write SetShowInLegend stored false default true;
+      deprecated;
   end;
 
   TChartGetMarkEvent = procedure (
