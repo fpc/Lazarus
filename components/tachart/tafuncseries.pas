@@ -94,11 +94,13 @@ type
   private
     FBrush: TBrush;
     FColorSource: TCustomChartSource;
+    FInterpolate: Boolean;
     FOnCalculate: TFuncCalculate3DEvent;
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     procedure SetBrush(AValue: TBrush);
     procedure SetColorSource(AValue: TCustomChartSource);
+    procedure SetInterpolate(AValue: Boolean);
     procedure SetOnCalculate(AValue: TFuncCalculate3DEvent);
     procedure SetStepX(AValue: TFuncSeriesStep);
     procedure SetStepY(AValue: TFuncSeriesStep);
@@ -118,10 +120,14 @@ type
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
     property ColorSource: TCustomChartSource read FColorSource write SetColorSource;
+    property Interpolate: Boolean
+      read FInterpolate write SetInterpolate default false;
     property OnCalculate: TFuncCalculate3DEvent
       read FOnCalculate write SetOnCalculate;
-    property StepX: TFuncSeriesStep read FStepX write SetStepX default DEF_COLORMAP_STEP;
-    property StepY: TFuncSeriesStep read FStepY write SetStepY default DEF_COLORMAP_STEP;
+    property StepX: TFuncSeriesStep
+      read FStepX write SetStepX default DEF_COLORMAP_STEP;
+    property StepY: TFuncSeriesStep
+      read FStepY write SetStepY default DEF_COLORMAP_STEP;
   end;
 
 implementation
@@ -275,10 +281,27 @@ end;
 function TColorMapSeries.ColorByValue(AValue: Double): TColor;
 var
   lb, ub: Integer;
+  c1, c2: TColor;
+  v1, v2: Double;
 begin
   if ColorSource = nil then exit(clTAColor);
   ColorSource.FindBounds(AValue, Infinity, lb, ub);
-  Result := ColorSource[EnsureRange(lb, 0, ColorSource.Count - 1)]^.Color;
+  if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
+    with ColorSource[lb - 1]^ do begin
+      v1 := X;
+      c1 := Color;
+    end;
+    with ColorSource[lb]^ do begin
+      v2 := X;
+      c2 := Color;
+    end;
+    if v2 <= v1 then
+      Result := c1
+    else
+      Result := InterpolateRGB(c1, c2, (AValue - v1) / (v2 - v1));
+  end
+  else
+    Result := ColorSource[EnsureRange(lb, 0, ColorSource.Count - 1)]^.Color;
 end;
 
 constructor TColorMapSeries.Create(AOwner: TComponent);
@@ -317,7 +340,6 @@ begin
   r.TopLeft := ParentChart.GraphToImage(ext.a);
   r.BottomRight := ParentChart.GraphToImage(ext.b);
   NormalizeRect(r);
-
   offset := ParentChart.GraphToImage(ZeroDoublePoint);
 
   ACanvas.Brush := Brush;
@@ -370,6 +392,13 @@ procedure TColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 begin
   if FColorSource = AValue then exit;
   FColorSource := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetInterpolate(AValue: Boolean);
+begin
+  if FInterpolate = AValue then exit;
+  FInterpolate := AValue;
   UpdateParentChart;
 end;
 
