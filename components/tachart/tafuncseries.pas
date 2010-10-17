@@ -302,7 +302,7 @@ var
   bounds: TDoubleRect =
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
   r: TRect;
-  pt, next: TPoint;
+  pt, next, offset: TPoint;
   gp: TDoublePoint;
   v: Double;
 begin
@@ -318,19 +318,31 @@ begin
   r.BottomRight := ParentChart.GraphToImage(ext.b);
   NormalizeRect(r);
 
+  offset := ParentChart.GraphToImage(ZeroDoublePoint);
+
   ACanvas.Brush := Brush;
   ACanvas.Pen.Style := psClear;
-  pt.Y := r.Top div StepY * StepY;
+  pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
   while pt.Y <= r.Bottom do begin
     next.Y := pt.Y + StepY;
-    pt.X := r.Left div StepX * StepX;
+    if next.Y <= r.Top then begin
+      pt.Y := next.Y;
+      continue;
+    end;
+    pt.X := (r.Left div StepX  - 1) * StepX + offset.X mod StepX;
     while pt.X <= r.Right do begin
       next.X := pt.X + StepX;
-      gp := GraphToAxis(ParentChart.ImageToGraph(pt));
+      if next.X <= r.Left then begin
+        pt.X := next.X;
+        continue;
+      end;
+      gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
       OnCalculate(gp.X, gp.Y, v);
       if ColorSource <> nil then
         ACanvas.Brush.Color := ColorByValue(v);
-      ACanvas.Rectangle(pt.X, pt.Y, next.X + 1, next.Y + 1);
+      ACanvas.Rectangle(
+        Max(pt.X, r.Left), Max(pt.Y, r.Top),
+        Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
       pt.X := next.X;
     end;
     pt.Y := next.Y;
