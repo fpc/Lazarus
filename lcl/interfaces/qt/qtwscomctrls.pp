@@ -1250,7 +1250,7 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    TWI := QTreeWidgetItem_create(QTreeWidgetH(QtTreeWidget.Widget), 0);
+    TWI := QTreeWidgetItem_create(Integer(0));
     if AItem.Caption <> '' then
       Str := GetUtf8String(AItem.Caption)
     else
