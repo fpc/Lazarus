@@ -539,7 +539,7 @@ begin
   h := Windows.ChildWindowFromPointEx(h, Windows.POINT(P), CWP_SKIPINVISIBLE or CWP_SKIPDISABLED);
 
   HitTestCode := SendMessage(h, WM_NCHITTEST, 0, LParam((CursorPos.X and $FFFF) or (CursorPos.Y shl 16)));
-  SendMessage(h, WM_SETCURSOR, WParam(h), MakeLong(HitTestCode, WM_MOUSEMOVE));
+  SendMessage(h, WM_SETCURSOR, WParam(h), Windows.MAKELONG(HitTestCode, WM_MOUSEMOVE));
 end;
 
 class procedure TWin32WSWinControl.SetShape(const AWinControl: TWinControl;
