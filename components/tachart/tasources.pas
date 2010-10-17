@@ -590,13 +590,16 @@ end;
 function TListChartSourceStrings.Get(Index: Integer): String;
 var
   i: Integer;
+  fs: TFormatSettings;
 begin
+  fs := DefaultFormatSettings;
+  fs.DecimalSeparator := '.';
   with FSource[Index]^ do begin
-    Result := Format('%g', [X]);
+    Result := Format('%g', [X], fs);
     if FSource.YCount > 0 then
-      Result += Format('|%g', [Y]);
+      Result += Format('|%g', [Y], fs);
     for i := 0 to High(YList) do
-      Result += Format('|%g', [YList[i]]);
+      Result += Format('|%g', [YList[i]], fs);
     Result += Format('|%s|%s',
       [IfThen(Color = clTAColor, '?', '$' + IntToHex(Color, 6)), Text]);
   end;
@@ -622,6 +625,7 @@ procedure TListChartSourceStrings.Parse(
 var
   p: Integer = 0;
   parts: TStringList;
+  fs: TFormatSettings;
 
   function NextPart: String;
   begin
@@ -632,9 +636,21 @@ var
     p += 1;
   end;
 
+  function S2F(const AStr: String): Double;
+  begin
+    // Accept both locale-specific and default decimal separators.
+    if
+      not TryStrToFloat(AStr, Result, fs) and
+      not TryStrToFloat(AStr, Result)
+    then
+      Result := 0.0;
+  end;
+
 var
   i: Integer;
 begin
+  fs := DefaultFormatSettings;
+  fs.DecimalSeparator := '.';
   parts := TStringList.Create;
   try
     parts.Delimiter := '|';
@@ -642,11 +658,11 @@ begin
     if FSource.YCount + 3 < Cardinal(parts.Count) then
       FSource.YCount := parts.Count - 3;
     with ADataItem^ do begin
-      X := StrToFloatDef(NextPart, 0.0);
+      X := S2F(NextPart);
       if FSource.YCount > 0 then begin
-        Y := StrToFloatDef(NextPart, 0.0);
+        Y := S2F(NextPart);
         for i := 0 to High(YList) do
-          YList[i] := StrToFloatDef(NextPart, 0.0);
+          YList[i] := S2F(NextPart);
       end;
       Color := StrToIntDef(NextPart, clTAColor);
       Text := NextPart;
