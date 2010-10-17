@@ -141,6 +141,7 @@ type
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
     FVisible: Boolean;
+    FZPosition: TChartDistance;
 
     function GetTransform: TChartAxisTransformations;
     procedure SetAlignment(AValue: TChartAxisAlignment);
@@ -154,6 +155,7 @@ type
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetVisible(const AValue: Boolean);
+    procedure SetZPosition(const AValue: TChartDistance);
 
     procedure StyleChanged(ASender: TObject);
   protected
@@ -165,10 +167,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
-      const ATransf: ICoordTransformer; var ARect: TRect);
+      const ATransf: ICoordTransformer; const ARect: TRect);
     procedure DrawTitle(
       ACanvas: TCanvas; const ACenter: TPoint;
-      const AMeasureData: TChartAxisMeasureData; var ARect: TRect);
+      const AMeasureData: TChartAxisMeasureData; const ARect: TRect);
     function IsVertical: Boolean; inline;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
@@ -188,6 +190,7 @@ type
     property Transformations: TChartAxisTransformations
       read FTransformations write SetTransformations;
     property Visible: Boolean read FVisible write SetVisible default true;
+    property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   published
     property OnMarkToText: TChartAxisMarkToTextEvent
       read FOnMarkToText write SetOnMarkToText;
@@ -241,16 +244,16 @@ type
     FImageLo, FImageHi, FMarginLo, FMarginHi: Integer;
     FLo, FHi: Integer;
     FMin, FMax: PDouble;
+    function CalcOffset(AScale: Double): Double;
+    function CalcScale(ASign: Integer): Double;
     constructor Init(
       AAxis: TChartAxis; AImageLo, AImageHi, AMarginLo, AMarginHi: Integer;
       AMin, AMax: PDouble);
-    function CalcScale(ASign: Integer): Double;
-    function CalcOffset(AScale: Double): Double;
     procedure UpdateMinMax(AConv: TAxisConvFunc);
   end;
 
-  function SideByAlignment(
-    var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
+  procedure SideByAlignment(
+    var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer);
   function TransformByAxis(
     AAxisList: TChartAxisList; AIndex: Integer): TChartAxisTransformations;
 
@@ -267,12 +270,11 @@ type
 var
   VIdentityTransform: TChartAxisTransformations;
 
-function SideByAlignment(
-  var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
+procedure SideByAlignment(
+  var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer);
 var
   a: TChartAxisMargins absolute ARect;
 begin
-  Result := a[AAlignment];
   if AAlignment in [calLeft, calTop] then
     ADelta := -ADelta;
   a[AAlignment] += ADelta;
@@ -414,16 +416,23 @@ end;
 
 procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
-  const ATransf: ICoordTransformer; var ARect: TRect);
+  const ATransf: ICoordTransformer; const ARect: TRect);
 
 var
   prevLabelPoly: TPointArray = nil;
+  zoffset: TPoint;
+
+  procedure LineZ(AP1, AP2: TPoint);
+  begin
+    ACanvas.Line(AP1 + zoffset, AP2 + zoffset);
+  end;
 
   procedure DrawLabelAndTick(
-    const ALabelCenter: TPoint; const ATickRect: TRect; const AText: String);
+    ALabelCenter: TPoint; const ATickRect: TRect; const AText: String);
   begin
     PrepareSimplePen(ACanvas, TickColor);
-    ACanvas.Line(ATickRect);
+    LineZ(ATickRect.TopLeft, ATickRect.BottomRight);
+    ALabelCenter += zoffset;
     Marks.DrawLabel(ACanvas, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
   end;
 
@@ -436,9 +445,9 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
-      ACanvas.Line(
-        x, ATransf.YGraphToImage(AExtent.a.Y),
-        x, ATransf.YGraphToImage(AExtent.b.Y));
+      LineZ(
+        Point(x, ATransf.YGraphToImage(AExtent.a.Y)),
+        Point(x, ATransf.YGraphToImage(AExtent.b.Y)));
     end;
 
     d := TickLength + Marks.CenterOffset(ACanvas, AText).cy;
@@ -457,9 +466,9 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
-      ACanvas.Line(
-        ATransf.XGraphToImage(AExtent.a.X), y,
-        ATransf.XGraphToImage(AExtent.b.X), y);
+      LineZ(
+        Point(ATransf.XGraphToImage(AExtent.a.X), y),
+        Point(ATransf.XGraphToImage(AExtent.b.X), y));
     end;
 
     d := TickLength + Marks.CenterOffset(ACanvas, AText).cx;
@@ -472,10 +481,12 @@ var
 var
   i, coord: Integer;
   v: Double;
+  a: TChartAxisMargins absolute ARect;
 begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
-  coord := SideByAlignment(ARect, Alignment, 0);
+  coord := a[Alignment];
+  zoffset := Point(-ZPosition, ZPosition);
   for i := 0 to High(FMarkValues) do begin
     v := GetTransform.AxisToGraph(FMarkValues[i]);
     if IsVertical then
@@ -487,7 +498,7 @@ end;
 
 procedure TChartAxis.DrawTitle(
   ACanvas: TCanvas; const ACenter: TPoint;
-  const AMeasureData: TChartAxisMeasureData; var ARect: TRect);
+  const AMeasureData: TChartAxisMeasureData; const ARect: TRect);
 var
   p: TPoint;
   dummy: TPointArray = nil;
@@ -502,6 +513,7 @@ begin
     calRight: p.X := ARect.Right + d;
     calBottom: p.Y := ARect.Bottom + d;
   end;
+  p += Point(-ZPosition, ZPosition);
   Title.DrawLabel(ACanvas, p, p, Title.Caption, dummy);
 end;
 
@@ -696,6 +708,13 @@ procedure TChartAxis.SetVisible(const AValue: Boolean);
 begin
   if FVisible = AValue then exit;
   FVisible := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetZPosition(const AValue: TChartDistance);
+begin
+  if FZPosition = AValue then exit;
+  FZPosition := AValue;
   StyleChanged(Self);
 end;
 
