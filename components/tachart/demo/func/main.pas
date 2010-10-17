@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph, TASeries,
+  Classes, ComCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph, TASeries,
   TASources;
 
 type
@@ -13,17 +13,25 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    cbDomain: TCheckBox;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1FuncSeries1: TFuncSeries;
     Chart1UserDrawnSeries1: TUserDrawnSeries;
-    Chart1YAxis: TConstantLine;
     Chart1XAxis: TConstantLine;
-    cbDomain: TCheckBox;
+    Chart1YAxis: TConstantLine;
+    ChartColorMap: TChart;
+    ChartColorMapColorMapSeries1: TColorMapSeries;
+    ListChartSource1: TListChartSource;
+    PageControl1: TPageControl;
+    tsDomain: TTabSheet;
+    tsColorMap: TTabSheet;
     UserDefinedChartSource1: TUserDefinedChartSource;
     procedure cbDomainChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
+    procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
+      AZ: Double);
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
@@ -73,6 +81,12 @@ begin
   ACanvas.Pen.Style := psDash;
   ACanvas.Brush.Style := bsClear;
   ACanvas.Ellipse(r);
+end;
+
+procedure TForm1.ChartColorMapColorMapSeries1Calculate(
+  const AX, AY: Double; out AZ: Double);
+begin
+  AZ := Sin(10 * Sqr(AX) + 17 * Sqr(AY));
 end;
 
 procedure TForm1.UserDefinedChartSource1GetChartDataItem(

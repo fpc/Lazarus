@@ -8,78 +8,143 @@ object Form1: TForm1
   ClientWidth = 461
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object Chart1: TChart
+  object PageControl1: TPageControl
     Left = 0
     Height = 362
     Top = 0
     Width = 461
-    AxisList = <    
-      item
-        Title.LabelFont.Orientation = 900
-      end    
-      item
-        Alignment = calBottom
-      end>
-    ExpandPercentage = 10
-    Extent.YMin = -6
-    Extent.YMax = 6
-    Extent.UseYMin = True
-    Extent.UseYMax = True
-    Foot.Brush.Color = clBtnFace
-    Foot.Font.Color = clBlue
-    Legend.Visible = True
-    Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
-    Title.Text.Strings = (
-      'TAChart'
-    )
+    ActivePage = tsColorMap
     Align = alClient
-    ParentColor = False
-    object Chart1FuncSeries1: TFuncSeries
-      Extent.XMin = -6.28
-      Extent.XMax = 6.28
-      Extent.UseXMin = True
-      Extent.UseXMax = True
-      OnCalculate = Chart1FuncSeries1Calculate
-      Pen.Color = clOlive
-      Pen.Width = 2
-      Step = 4
-      Title = '1 / Sin(x)'
+    TabIndex = 1
+    TabOrder = 0
+    object tsDomain: TTabSheet
+      Caption = 'Domain'
+      ClientHeight = 336
+      ClientWidth = 453
+      object Chart1: TChart
+        Left = 0
+        Height = 336
+        Top = 0
+        Width = 453
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        ExpandPercentage = 10
+        Extent.YMin = -6
+        Extent.YMax = 6
+        Extent.UseYMin = True
+        Extent.UseYMax = True
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object Chart1FuncSeries1: TFuncSeries
+          Extent.XMin = -6.28
+          Extent.XMax = 6.28
+          Extent.UseXMin = True
+          Extent.UseXMax = True
+          Title = '1 / Sin(x)'
+          OnCalculate = Chart1FuncSeries1Calculate
+          Pen.Color = clOlive
+          Pen.Width = 2
+          Step = 4
+        end
+        object Chart1XAxis: TConstantLine
+          Legend.Visible = False
+          Position = 0
+          SeriesColor = clBlack
+        end
+        object Chart1YAxis: TConstantLine
+          Legend.Visible = False
+          LineStyle = lsVertical
+          Position = 0
+          SeriesColor = clBlack
+        end
+        object Chart1BarSeries1: TBarSeries
+          Title = 'Cos(x)'
+          BarBrush.Color = clMoneyGreen
+          Source = UserDefinedChartSource1
+        end
+        object Chart1UserDrawnSeries1: TUserDrawnSeries
+          OnDraw = Chart1UserDrawnSeries1Draw
+        end
+      end
+      object cbDomain: TCheckBox
+        Left = 388
+        Height = 17
+        Top = 298
+        Width = 55
+        Anchors = [akRight, akBottom]
+        Caption = 'Domain'
+        OnChange = cbDomainChange
+        TabOrder = 1
+      end
     end
-    object Chart1XAxis: TConstantLine
-      Legend.Visible = False
-      Position = 0
-      SeriesColor = clBlack
+    object tsColorMap: TTabSheet
+      Caption = 'Color map'
+      ClientHeight = 336
+      ClientWidth = 453
+      object ChartColorMap: TChart
+        Left = 0
+        Height = 336
+        Top = 0
+        Width = 453
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Extent.XMin = -1
+        Extent.XMax = 1
+        Extent.UseXMin = True
+        Extent.UseXMax = True
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object ChartColorMapColorMapSeries1: TColorMapSeries
+          Extent.XMin = -0.5
+          Extent.XMax = 0.5
+          Extent.UseXMin = True
+          Extent.UseXMax = True
+          ColorSource = ListChartSource1
+        end
+      end
     end
-    object Chart1YAxis: TConstantLine
-      Legend.Visible = False
-      LineStyle = lsVertical
-      Position = 0
-      SeriesColor = clBlack
-    end
-    object Chart1BarSeries1: TBarSeries
-      Title = 'Cos(x)'
-      BarBrush.Color = clMoneyGreen
-      Source = UserDefinedChartSource1
-    end
-    object Chart1UserDrawnSeries1: TUserDrawnSeries
-      OnDraw = Chart1UserDrawnSeries1Draw
-    end
-  end
-  object cbDomain: TCheckBox
-    Left = 392
-    Height = 17
-    Top = 316
-    Width = 55
-    Anchors = [akRight, akBottom]
-    Caption = 'Domain'
-    OnChange = cbDomainChange
-    TabOrder = 1
   end
   object UserDefinedChartSource1: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
     PointsNumber = 14
     left = 135
+    top = 114
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '-1|0|$0000FF|'
+      '-0.5|0|$C00000|'
+      '0|0|$808000|'
+      '0.5|0|$00C000|'
+      '1|0|$00FF00|'
+    )
+    left = 280
     top = 114
   end
 end
