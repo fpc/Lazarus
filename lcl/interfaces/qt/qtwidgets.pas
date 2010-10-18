@@ -166,6 +166,7 @@ type
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
+    procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); virtual;
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
@@ -385,6 +386,7 @@ type
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
+    procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     destructor Destroy; override;
     procedure Update(ARect: PRect = nil); override;
@@ -2202,6 +2204,12 @@ begin
     Result := TQtMainWindow(Form.Handle).getAcceptDropFiles;
 end;
 
+procedure TQtWidget.SetNoMousePropagation(Sender: QWidgetH;
+  const ANoMousePropagation: Boolean);
+begin
+  QWidget_setAttribute(Sender, QtWA_NoMousePropagation, ANoMousePropagation);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.SlotShow
   Params:  None
@@ -2379,7 +2387,7 @@ begin
     end;
     NotifyApplicationUserInput(Msg.Msg);
     DeliverMessage(Msg);
-    QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
+    SetNoMousePropagation(QWidgetH(Sender), True);
   end;
 end;
 
@@ -2712,7 +2720,7 @@ begin
       end;
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
-      QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
+      SetNoMousePropagation(QWidgetH(Sender), True);
     end;
     QEventMouseButtonRelease:
     begin
@@ -2727,7 +2735,7 @@ begin
 
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
-      QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
+      SetNoMousePropagation(QWidgetH(Sender), True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
@@ -2904,7 +2912,7 @@ begin
 
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
-  QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
+  SetNoMousePropagation(QWidgetH(Sender), True);
 end;
 
 {------------------------------------------------------------------------------
@@ -3216,7 +3224,7 @@ begin
   begin
     if Assigned(LCLObject.PopupMenu) then
       QEvent_ignore(Event);
-    QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+    SetNoMousePropagation(QWidgetH(Sender), False);
   end;
 
   if Result and (csDesigning in LCLObject.ComponentState) then
@@ -6861,7 +6869,7 @@ begin
         if QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton then
         begin
           Result := SlotTabBarMouse(Sender, Event);
-          QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+          SetNoMousePropagation(QWidgetH(Sender), False);
         end;
       end;
   else
@@ -11399,6 +11407,15 @@ begin
     end;
   end;
 
+end;
+
+procedure TQtAbstractScrollArea.SetNoMousePropagation(Sender: QWidgetH;
+  const ANoMousePropagation: Boolean);
+begin
+  if Sender = viewportWidget then
+    inherited SetNoMousePropagation(Sender, False)
+  else
+    inherited SetNoMousePropagation(Sender, ANoMousePropagation);
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
