@@ -110,25 +110,24 @@
       - delete
       - move up, down
       - make active
+  - a popup menu on IDE palette to quickly switch the build mode
 
   ToDo:
+  - a diff tool to compare two build modes
   - create Makefile:
      - create a special .compiled file
      - makefile should delete the .compiled before compile
      - makefile should copy the .compiled after compile
      - a IDE created with make, without extra options should not recompile a
        package with this special .compiled file
-  - writable package output directory: set it on load package
+  - writable package output directory: set it on load package or when output dir changes
+     - use the same macros to get the same diversity
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package
   - make FCL a package
   - code completion
     - keypress event
-  - help for add/delete macro speedbuttons
-  - compiler options: work on real options
-    - show options
-    - test options
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units

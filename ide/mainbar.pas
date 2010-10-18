@@ -67,6 +67,7 @@ type
       ViewFormsSpeedBtn    : TToolButton;
       tbDivider3           : TToolButton;
       RunSpeedButton       : TToolButton;
+      SetBuildModePopupMenu: TPopupMenu;
       PauseSpeedButton     : TToolButton;
       StopSpeedButton      : TToolButton;
       StepIntoSpeedButton  : TToolButton;
@@ -445,6 +446,9 @@ begin
   // create the popupmenu for the MainIDEBar.OpenFileArrowSpeedBtn
   OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
+
+  SetBuildModePopupMenu:=TPopupMenu.Create(TheOwner);
+  SetBuildModePopupMenu.Name:='SetBuildModePopupMenu';
 
   NewUnitFormPopupMenu:=TPopupMenu.Create(TheOwner);
   NewUnitFormPopupMenu.Name:='NewUnitFormPopupMenu';

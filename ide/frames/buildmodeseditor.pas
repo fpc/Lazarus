@@ -76,9 +76,9 @@ type
     FProject: TProject;
     FShowSession: boolean;
     FSwitchingMode: boolean;
-    fActiveCol: integer;
-    fInSessionCol: integer;
-    fNameCol: integer;
+    fModeActiveCol: integer;
+    fModeInSessionCol: integer;
+    fModeNameCol: integer;
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
     procedure CleanMacrosGrid;
@@ -197,7 +197,7 @@ begin
   i:=BuildModesStringGrid.Row-1;
   if (i>=0) then
   begin
-    Identifier:=BuildModesStringGrid.Cells[2,i+1];
+    Identifier:=BuildModesStringGrid.Cells[fModeNameCol,i+1];
     CurMode:=AProject.BuildModes[i];
   end
   else begin
@@ -220,7 +220,7 @@ begin
   // activate
   ActivateMode(NewMode);
   // select identifier
-  BuildModesStringGrid.Col:=fNameCol;
+  BuildModesStringGrid.Col:=fModeNameCol;
   BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
   BuildModesStringGrid.EditorMode:=true;
 end;
@@ -302,7 +302,7 @@ begin
   //debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled ',i]);
   CurMode:=AProject.BuildModes[i];
   Grid:=BuildModesStringGrid;
-  if aCol=fActiveCol then
+  if aCol=fModeActiveCol then
   begin
     // activate
     if CurMode=AProject.ActiveBuildMode then
@@ -310,7 +310,7 @@ begin
       Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueChecked
     else
       ActivateMode(CurMode);
-  end else if aCol=fInSessionCol then
+  end else if aCol=fModeInSessionCol then
   begin
     // in session
     b:=aState=cbChecked;
@@ -353,7 +353,7 @@ begin
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
   //debugln(['TBuildModesEditorFrame.SaveModes ',i]);
   CurMode:=AProject.BuildModes[i];
-  if aCol=fInSessionCol then
+  if aCol=fModeInSessionCol then
   begin
     // in session
     b:=NewValue=BuildModesStringGrid.Columns[aCol].ValueChecked;
@@ -367,7 +367,7 @@ begin
     end;
     CurMode.InSession:=b;
   end
-  else if aCol=fNameCol then
+  else if aCol=fModeNameCol then
   begin
     // identifier
     s:=NewValue;
@@ -409,31 +409,31 @@ var
 begin
   Grid:=BuildModesStringGrid;
   Grid.BeginUpdate;
-  fActiveCol:=0;
+  fModeActiveCol:=0;
   if FShowSession then
   begin
-    fInSessionCol:=1;
-    fNameCol:=2;
+    fModeInSessionCol:=1;
+    fModeNameCol:=2;
     if Grid.Columns.Count<3 then
-      Grid.Columns.Insert(fInSessionCol);
+      Grid.Columns.Insert(fModeInSessionCol);
   end else begin
-    fInSessionCol:=-1;
-    fNameCol:=1;
+    fModeInSessionCol:=-1;
+    fModeNameCol:=1;
     if Grid.Columns.Count>2 then
       Grid.Columns.Delete(1);
   end;
-  BuildModesStringGrid.Columns[fActiveCol].Title.Caption:=lisActive;
-  BuildModesStringGrid.Columns[fActiveCol].SizePriority:=1;
-  BuildModesStringGrid.Columns[fActiveCol].ButtonStyle:=cbsCheckboxColumn;
-  if fInSessionCol>=0 then
+  BuildModesStringGrid.Columns[fModeActiveCol].Title.Caption:=lisActive;
+  BuildModesStringGrid.Columns[fModeActiveCol].SizePriority:=1;
+  BuildModesStringGrid.Columns[fModeActiveCol].ButtonStyle:=cbsCheckboxColumn;
+  if fModeInSessionCol>=0 then
   begin
-    BuildModesStringGrid.Columns[fInSessionCol].Title.Caption:=lisInSession;
-    BuildModesStringGrid.Columns[fInSessionCol].SizePriority:=1;
-    BuildModesStringGrid.Columns[fInSessionCol].ButtonStyle:=cbsCheckboxColumn;
+    BuildModesStringGrid.Columns[fModeInSessionCol].Title.Caption:=lisInSession;
+    BuildModesStringGrid.Columns[fModeInSessionCol].SizePriority:=1;
+    BuildModesStringGrid.Columns[fModeInSessionCol].ButtonStyle:=cbsCheckboxColumn;
   end;
-  BuildModesStringGrid.Columns[fNameCol].Title.Caption:=lisDebugOptionsFrmName;
-  BuildModesStringGrid.Columns[fNameCol].SizePriority:=10;
-  BuildModesStringGrid.Columns[fNameCol].ButtonStyle:=cbsAuto;
+  BuildModesStringGrid.Columns[fModeNameCol].Title.Caption:=lisDebugOptionsFrmName;
+  BuildModesStringGrid.Columns[fModeNameCol].SizePriority:=10;
+  BuildModesStringGrid.Columns[fModeNameCol].ButtonStyle:=cbsAuto;
   Grid.EndUpdate(true);
 end;
 
@@ -565,17 +565,17 @@ begin
     CurMode:=AProject.BuildModes[i];
     // active
     if CurMode=AProject.ActiveBuildMode then
-      Grid.Cells[fActiveCol,i+1]:=Grid.Columns[fActiveCol].ValueChecked
+      Grid.Cells[fModeActiveCol,i+1]:=Grid.Columns[fModeActiveCol].ValueChecked
     else
-      Grid.Cells[fActiveCol,i+1]:=Grid.Columns[fActiveCol].ValueUnchecked;
+      Grid.Cells[fModeActiveCol,i+1]:=Grid.Columns[fModeActiveCol].ValueUnchecked;
     // in session
-    if fInSessionCol>=0 then
+    if fModeInSessionCol>=0 then
       if CurMode.InSession then
-        Grid.Cells[fInSessionCol,i+1]:=Grid.Columns[fInSessionCol].ValueChecked
+        Grid.Cells[fModeInSessionCol,i+1]:=Grid.Columns[fModeInSessionCol].ValueChecked
       else
-        Grid.Cells[fInSessionCol,i+1]:=Grid.Columns[fInSessionCol].ValueUnchecked;
+        Grid.Cells[fModeInSessionCol,i+1]:=Grid.Columns[fModeInSessionCol].ValueUnchecked;
     // identifier
-    Grid.Cells[fNameCol,i+1]:=CurMode.Identifier;
+    Grid.Cells[fModeNameCol,i+1]:=CurMode.Identifier;
   end;
   Grid.EndUpdate(true);
 end;
@@ -591,7 +591,7 @@ begin
   and (i>=0) and (i<AProject.BuildModes.Count) then
   begin
     CurMode:=AProject.BuildModes[i];
-    Identifier:=BuildModesStringGrid.Cells[fNameCol,i+1];
+    Identifier:=BuildModesStringGrid.Cells[fModeNameCol,i+1];
   end
   else
     CurMode:=nil;

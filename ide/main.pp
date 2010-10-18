@@ -340,6 +340,8 @@ type
 
     procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
+    procedure SetBuildModePopupMenuPopup(Sender: TObject);
+    procedure mnuSetBuildModeClick(Sender: TObject);
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -1808,6 +1810,9 @@ begin
   MainIDEBar.OpenFileSpeedBtn.DropDownMenu := MainIDEBar.OpenFilePopUpMenu;
   MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
 
+  MainIDEBar.RunSpeedButton.PopupMenu := MainIDEBar.SetBuildModePopupMenu;
+  MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
+
   MainIDEBar.PauseSpeedButton.Enabled := False;
   MainIDEBar.StopSpeedButton.Enabled := False;  
 end;
@@ -3266,6 +3271,70 @@ begin
       SaveEnvironment;
     end;
   end;
+end;
+
+procedure TMainIDE.SetBuildModePopupMenuPopup(Sender: TObject);
+var
+  aMenu: TPopupMenu;
+  CurIndex: Integer;
+  i: Integer;
+
+  procedure AddMode(CurMode: TProjectBuildMode);
+  var
+    AMenuItem: TMenuItem;
+    i: Integer;
+    aTitle: String;
+  begin
+    if aMenu.Items.Count > CurIndex then
+      AMenuItem := aMenu.Items[CurIndex]
+    else
+    begin
+      AMenuItem := TMenuItem.Create(OwningComponent);
+      AMenuItem.Name := aMenu.Name + 'Mode' + IntToStr(CurIndex);
+      AMenuItem.OnClick := @mnuSetBuildModeClick;
+      aMenu.Items.Add(AMenuItem);
+    end;
+    aTitle:=CurMode.Identifier;
+    for i:=length(aTitle) downto 1 do
+      if aTitle[i] in ['&',#0..#31,#127] then
+        System.Delete(aTitle,i,1);
+    if (aTitle='') then
+      aTitle:='['+IntToStr(CurIndex)+']';
+    AMenuItem.Caption := aTitle;
+    AMenuItem.Checked:=Project1.ActiveBuildMode=CurMode;
+    AMenuItem.ShowAlwaysCheckable:=true;
+    inc(CurIndex);
+  end;
+
+begin
+  // fill the PopupMenu:
+  CurIndex := 0;
+  aMenu := MainIDEBar.SetBuildModePopupMenu;
+  if Project1<>nil then
+    for i:=0 to Project1.BuildModes.Count-1 do
+      AddMode(Project1.BuildModes[i]);
+  // remove unused menuitems
+  while aMenu.Items.Count > CurIndex do
+    aMenu.Items[aMenu.Items.Count - 1].Free;
+end;
+
+procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
+var
+  TheMenuItem: TMenuItem;
+  Index: LongInt;
+  NewMode: TProjectBuildMode;
+begin
+  TheMenuItem:=(Sender as TMenuItem);
+  if TheMenuItem.Caption='-' then exit;
+  Index:=TheMenuItem.MenuIndex;
+  if (Index<0) or (Index>=Project1.BuildModes.Count) then exit;
+  NewMode:=Project1.BuildModes[Index];
+  if NewMode=Project1.ActiveBuildMode then exit;
+
+  Project1.ActiveBuildMode:=NewMode;
+  IncreaseBuildMacroChangeStamp;
+  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
