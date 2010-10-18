@@ -1232,7 +1232,7 @@ type
     function takeTopLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function topLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
-    function getHeaderHeight: Integer;
+    function getHeaderHeight(out AOrientation: QtOrientation): Integer;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
     function getTopItem: integer; override;
     function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; override;
@@ -1248,6 +1248,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function getClientBounds: TRect; override;
 
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
@@ -9855,15 +9856,17 @@ begin
   Result := ItemRect;
 end;
 
-function TQtTreeWidget.getHeaderHeight: Integer;
+function TQtTreeWidget.getHeaderHeight(out AOrientation: QtOrientation): Integer;
 var
   W: QHeaderViewH;
 begin
   Result := 0;
+  AOrientation := QtHorizontal;
   W := QTreeView_header(QTreeViewH(Widget));
   if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
   begin
-    if QHeaderView_orientation(W) = QtHorizontal then
+    AOrientation := QHeaderView_orientation(W);
+    if AOrientation = QtHorizontal then
       Result := QWidget_height(W)
     else
       Result := QWidget_width(W);
@@ -10059,6 +10062,23 @@ begin
     QHeaderView_hook_destroy(FSortChanged);
 
   inherited DetachEvents;
+end;
+
+function TQtTreeWidget.getClientBounds: TRect;
+var
+  H: QHeaderViewH;
+  Offset: Integer;
+  AOrientation: QtOrientation;
+begin
+  Result := inherited getClientBounds;
+  Offset := getHeaderHeight(AOrientation);
+  if Offset > 0 then
+  begin
+    if AOrientation = QtHorizontal then
+      Inc(Result.Top, Offset)
+    else
+      Inc(Result.Left, Offset);
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -1458,7 +1458,6 @@ var
   LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  HeaderOffset: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetItemAt') then
     Exit;
@@ -1469,10 +1468,8 @@ begin
     Result := QtListWidget.getRow(LWI);
   end else
   begin
-
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    HeaderOffset := QtTreeWidget.GetHeaderHeight;
-    TWI := QtTreeWidget.itemAt(x, y - HeaderOffset);
+    TWI := QtTreeWidget.itemAt(x, y);
     Result := QtTreeWidget.getRow(TWI);
   end;
 end;
