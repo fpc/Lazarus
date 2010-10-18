@@ -135,10 +135,15 @@ type
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
     // IUnknown implementation
-    function QueryInterface(const iid : tguid;out obj) : longint;stdcall;
-    function _AddRef : longint;stdcall;
-    function _Release : longint;stdcall;
-
+    {$IFDEF FPC_HAS_CONSTREF}
+      function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+      function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+      function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    {$ELSE}
+      function QueryInterface(const iid : tguid;out obj) : longint;stdcall;
+      function _AddRef : longint;stdcall;
+      function _Release : longint;stdcall;
+    {$ENDIF}
     function GetContext: HDC; virtual;
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure DestroyWidget; virtual;
@@ -4228,7 +4233,11 @@ begin
   if ssAlt   in Shift then Inc(Result, QtALT);
 end;
 
+{$IFDEF FPC_HAS_CONSTREF}
+function TQtWidget.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+{$ELSE}
 function TQtWidget.QueryInterface(const iid: tguid; out obj): longint; stdcall;
+{$ENDIF}
 begin
   if GetInterface(iid, obj) then
     Result := 0
@@ -4236,12 +4245,20 @@ begin
     Result := E_NOINTERFACE;
 end;
 
+{$IFDEF FPC_HAS_CONSTREF}
+function TQtWidget._AddRef: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+{$ELSE}
 function TQtWidget._AddRef: longint; stdcall;
+{$ENDIF}
 begin
   Result := -1; // no ref counting
 end;
 
+{$IFDEF FPC_HAS_CONSTREF}
+function TQtWidget._Release: longint; stdcall; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+{$ELSE}
 function TQtWidget._Release: longint; stdcall;
+{$ENDIF}
 begin
   Result := -1;
 end;
