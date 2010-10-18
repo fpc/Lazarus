@@ -113,6 +113,7 @@ type
     procedure RestoreSettings(AOptions: TAbstractIDEOptions); virtual;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
+    function FindOptionControl(AClass: TControlClass): TControl;
 
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveIDEOptions write FOnSaveIDEOptions;
@@ -378,6 +379,30 @@ end;
 class function TAbstractIDEOptionsEditor.DefaultCollapseChildNodes: Boolean;
 begin
   Result := False;
+end;
+
+function TAbstractIDEOptionsEditor.FindOptionControl(AClass: TControlClass
+  ): TControl;
+
+  function Search(AControl: TControl): TControl;
+  var
+    i: Integer;
+    AWinControl: TWinControl;
+  begin
+    if AControl is AClass then
+      exit(AControl);
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      for i:=0 to AWinControl.ControlCount-1 do begin
+        Result:=Search(AWinControl.Controls[i]);
+        if Result<>nil then exit;
+      end;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  Result:=Search(GetParentForm(Self));
 end;
 
 { TIDEOptionsEditorList }

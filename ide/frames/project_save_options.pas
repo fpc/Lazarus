@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc,
-  LazarusIDEStrConsts, IDEProcs;
+  LazarusIDEStrConsts, IDEProcs, BuildModesEditor;
 
 type
 
@@ -17,14 +17,17 @@ type
     SaveClosedUnitInfoCheckBox: TCheckBox;
     SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
     SaveSessionLocationRadioGroup: TRadioGroup;
+    procedure SaveSessionLocationRadioGroupClick(Sender: TObject);
   private
-    { private declarations }
+    fProject: TProject;
+    function GetSessionLocation: TProjectSessionStorage;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    property aProject: TProject read fProject;
   end;
 
 implementation
@@ -52,6 +55,26 @@ end;
 
 { TProjectSaveOptionsFrame }
 
+procedure TProjectSaveOptionsFrame.SaveSessionLocationRadioGroupClick(
+  Sender: TObject);
+var
+  BuildModesEditor: TBuildModesEditorFrame;
+begin
+  BuildModesEditor:=TBuildModesEditorFrame(FindOptionControl(TBuildModesEditorFrame));
+  if BuildModesEditor<>nil then
+  begin
+    BuildModesEditor.LoadShowSessionFromProjects:=false;
+    BuildModesEditor.ShowSession:=GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
+  end;
+end;
+
+function TProjectSaveOptionsFrame.GetSessionLocation: TProjectSessionStorage;
+begin
+  Result := LocalizedNameToProjectSessionStorage(
+                     SaveSessionLocationRadioGroup.Items[
+                                  SaveSessionLocationRadioGroup.ItemIndex]);
+end;
+
 function TProjectSaveOptionsFrame.GetTitle: string;
 begin
   Result := dlgPOSaveSession;
@@ -70,6 +93,8 @@ end;
 
 procedure TProjectSaveOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if not (AOptions is TProject) then exit;
+  fProject:=TProject(AOptions);
   with AOptions as TProject do
   begin
     SaveClosedUnitInfoCheckBox.Checked := (pfSaveClosedUnits in Flags);
@@ -82,6 +107,7 @@ procedure TProjectSaveOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   AFlags: TProjectFlags;
 begin
+  if not (AOptions is TProject) then exit;
   with AOptions as TProject do
   begin
     AFlags := Flags;
@@ -94,9 +120,7 @@ begin
     else
       exclude(AFlags, pfSaveOnlyProjectUnits);
     if SaveSessionLocationRadioGroup.ItemIndex >= 0 then
-      SessionStorage := LocalizedNameToProjectSessionStorage(
-                         SaveSessionLocationRadioGroup.Items[
-                                      SaveSessionLocationRadioGroup.ItemIndex]);
+      SessionStorage := Self.GetSessionLocation;
     Flags := AFlags;
   end;
 end;

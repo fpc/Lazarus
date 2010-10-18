@@ -6,9 +6,8 @@ inherited ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
+    Height = 18
     Top = 0
     Width = 320
     Align = alTop
@@ -22,8 +21,8 @@ inherited ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 23
+    Height = 18
+    Top = 24
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -37,8 +36,8 @@ inherited ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 4
-    Top = 46
+    Height = 21
+    Top = 48
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -53,6 +52,7 @@ inherited ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    OnClick = SaveSessionLocationRadioGroupClick
     TabOrder = 2
   end
 end

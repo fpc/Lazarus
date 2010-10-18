@@ -71,18 +71,25 @@ type
     procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
       aRow: Integer; const OldValue: string; var NewValue: String);
   private
+    FLoadShowSessionFromProject: boolean;
     FMacroValues: TProjectBuildMacros;
     FProject: TProject;
+    FShowSession: boolean;
     FSwitchingMode: boolean;
+    fActiveCol: integer;
+    fInSessionCol: integer;
+    fNameCol: integer;
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
     procedure CleanMacrosGrid;
     procedure SaveMacros(UpdateControls: boolean);
     procedure UpdateInheritedOptions;
-    function FindOptionFrame(AClass: TComponentClass): TComponent;
     procedure FillBuildModesGrid;
     procedure UpdateBuildModeButtons;
     procedure ActivateMode(aMode: TProjectBuildMode);
+    procedure UpdateShowSession;
+    procedure SetShowSession(const AValue: boolean);
+    procedure DoShowSession;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,6 +101,9 @@ type
     property AProject: TProject read FProject;
     property MacroValues: TProjectBuildMacros read FMacroValues;
     property SwitchingMode: boolean read FSwitchingMode; // the active mode is currently switched
+    property ShowSession: boolean read FShowSession write SetShowSession;
+    property LoadShowSessionFromProjects: boolean read FLoadShowSessionFromProject
+                                              write FLoadShowSessionFromProject;
   end;
 
 implementation
@@ -210,7 +220,7 @@ begin
   // activate
   ActivateMode(NewMode);
   // select identifier
-  BuildModesStringGrid.Col:=2;
+  BuildModesStringGrid.Col:=fNameCol;
   BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
   BuildModesStringGrid.EditorMode:=true;
 end;
@@ -227,7 +237,7 @@ begin
   if i<0 then exit;
   if AProject.BuildModes.Count=1 then
   begin
-    MessageDlg('Error','There must be at least one build mode.',
+    MessageDlg(lisCCOErrorCaption, lisThereMustBeAtLeastOneBuildMode,
       mtError,[mbCancel],0);
     exit;
   end;
@@ -292,28 +302,27 @@ begin
   //debugln(['TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled ',i]);
   CurMode:=AProject.BuildModes[i];
   Grid:=BuildModesStringGrid;
-  case aCol of
-  0:
+  if aCol=fActiveCol then
+  begin
     // activate
     if CurMode=AProject.ActiveBuildMode then
       // there must always be an active mode
       Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueChecked
     else
       ActivateMode(CurMode);
-  1:
+  end else if aCol=fInSessionCol then
+  begin
+    // in session
+    b:=aState=cbChecked;
+    if b and (i=0) then
     begin
-      // in session
-      b:=aState=cbChecked;
-      if b and (i=0) then
-      begin
-        Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueUnchecked;
-        MessageDlg('Error',
-          'The first build mode is the default mode and must be stored in the project, not in the session.',
-          mtError,[mbCancel],0);
-        exit;
-      end;
-      CurMode.InSession:=b;
+      Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueUnchecked;
+      MessageDlg(lisCCOErrorCaption,
+        lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
+        mtError,[mbCancel],0);
+      exit;
     end;
+    CurMode.InSession:=b;
   end;
 end;
 
@@ -344,33 +353,28 @@ begin
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
   //debugln(['TBuildModesEditorFrame.SaveModes ',i]);
   CurMode:=AProject.BuildModes[i];
-  case aCol of
-  0:
-    // activate is done in BuildModesStringGridCheckboxToggled
-    ;
-  1:
+  if aCol=fInSessionCol then
+  begin
+    // in session
+    b:=NewValue=BuildModesStringGrid.Columns[aCol].ValueChecked;
+    if b and (i=0) then
     begin
-      // in session
-      b:=NewValue=BuildModesStringGrid.Columns[1].ValueChecked;
-      if b and (i=0) then
-      begin
-        NewValue:=OldValue;
-        MessageDlg('Error',
-          'The first build mode is the default mode and must be stored in the project, not in the session.',
-          mtError,[mbCancel],0);
-        exit;
-      end;
-      CurMode.InSession:=b;
+      NewValue:=OldValue;
+      MessageDlg(lisCCOErrorCaption,
+        lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn2,
+        mtError,[mbCancel],0);
+      exit;
     end;
-  2:
-    begin
-      // identifier
-      s:=NewValue;
-      for j:=1 to length(s) do
-        if s[j]<' ' then s[j]:=' ';
-      CurMode.Identifier:=s;
-      NewValue:=s;
-    end;
+    CurMode.InSession:=b;
+  end
+  else if aCol=fNameCol then
+  begin
+    // identifier
+    s:=NewValue;
+    for j:=1 to length(s) do
+      if s[j]<' ' then s[j]:=' ';
+    CurMode.Identifier:=s;
+    NewValue:=s;
   end;
 end;
 
@@ -389,6 +393,48 @@ begin
   i:=MacroValues.Count+1;
   Grid.Cells[0,i]:='(none)';
   Grid.Cells[1,i]:='';
+end;
+
+procedure TBuildModesEditorFrame.SetShowSession(const AValue: boolean);
+begin
+  if AValue=FShowSession then exit;
+  FShowSession:=AValue;
+  DoShowSession;
+  FillBuildModesGrid;
+end;
+
+procedure TBuildModesEditorFrame.DoShowSession;
+var
+  Grid: TStringGrid;
+begin
+  Grid:=BuildModesStringGrid;
+  Grid.BeginUpdate;
+  fActiveCol:=0;
+  if FShowSession then
+  begin
+    fInSessionCol:=1;
+    fNameCol:=2;
+    if Grid.Columns.Count<3 then
+      Grid.Columns.Insert(fInSessionCol);
+  end else begin
+    fInSessionCol:=-1;
+    fNameCol:=1;
+    if Grid.Columns.Count>2 then
+      Grid.Columns.Delete(1);
+  end;
+  BuildModesStringGrid.Columns[fActiveCol].Title.Caption:=lisActive;
+  BuildModesStringGrid.Columns[fActiveCol].SizePriority:=1;
+  BuildModesStringGrid.Columns[fActiveCol].ButtonStyle:=cbsCheckboxColumn;
+  if fInSessionCol>=0 then
+  begin
+    BuildModesStringGrid.Columns[fInSessionCol].Title.Caption:=lisInSession;
+    BuildModesStringGrid.Columns[fInSessionCol].SizePriority:=1;
+    BuildModesStringGrid.Columns[fInSessionCol].ButtonStyle:=cbsCheckboxColumn;
+  end;
+  BuildModesStringGrid.Columns[fNameCol].Title.Caption:=lisDebugOptionsFrmName;
+  BuildModesStringGrid.Columns[fNameCol].SizePriority:=10;
+  BuildModesStringGrid.Columns[fNameCol].ButtonStyle:=cbsAuto;
+  Grid.EndUpdate(true);
 end;
 
 function TBuildModesEditorFrame.GetAllBuildMacros: TStrings;
@@ -497,59 +543,41 @@ var
   InhOptionCtrl: TCompilerInheritedOptionsFrame;
 begin
   InhOptionCtrl:=TCompilerInheritedOptionsFrame(
-                               FindOptionFrame(TCompilerInheritedOptionsFrame));
+                               FindOptionControl(TCompilerInheritedOptionsFrame));
   //debugln(['TBuildModesEditorFrame.UpdateInheritedOptions ',DbgSName(InhOptionCtrl)]);
   if InhOptionCtrl=nil then exit;
   InhOptionCtrl.UpdateInheritedTree(AProject.CompilerOptions);
-end;
-
-function TBuildModesEditorFrame.FindOptionFrame(AClass: TComponentClass
-  ): TComponent;
-
-  function Search(AControl: TControl): TComponent;
-  var
-    i: Integer;
-    AWinControl: TWinControl;
-  begin
-    if AControl is AClass then
-      exit(AControl);
-    if AControl is TWinControl then begin
-      AWinControl:=TWinControl(AControl);
-      for i:=0 to AWinControl.ControlCount-1 do begin
-        Result:=Search(AWinControl.Controls[i]);
-        if Result<>nil then exit;
-      end;
-    end;
-    Result:=nil;
-  end;
-
-begin
-  Result:=Search(GetParentForm(Self));
 end;
 
 procedure TBuildModesEditorFrame.FillBuildModesGrid;
 var
   i: Integer;
   CurMode: TProjectBuildMode;
+  Grid: TStringGrid;
 begin
   if AProject=nil then exit;
-  BuildModesStringGrid.RowCount:=AProject.BuildModes.Count+1;
+
+  Grid:=BuildModesStringGrid;
+  Grid.BeginUpdate;
+  Grid.RowCount:=AProject.BuildModes.Count+1;
 
   for i:=0 to AProject.BuildModes.Count-1 do begin
     CurMode:=AProject.BuildModes[i];
     // active
     if CurMode=AProject.ActiveBuildMode then
-      BuildModesStringGrid.Cells[0,i+1]:=BuildModesStringGrid.Columns[0].ValueChecked
+      Grid.Cells[fActiveCol,i+1]:=Grid.Columns[fActiveCol].ValueChecked
     else
-      BuildModesStringGrid.Cells[0,i+1]:=BuildModesStringGrid.Columns[0].ValueUnchecked;
+      Grid.Cells[fActiveCol,i+1]:=Grid.Columns[fActiveCol].ValueUnchecked;
     // in session
-    if CurMode.InSession then
-      BuildModesStringGrid.Cells[1,i+1]:=BuildModesStringGrid.Columns[0].ValueChecked
-    else
-      BuildModesStringGrid.Cells[1,i+1]:=BuildModesStringGrid.Columns[0].ValueUnchecked;
+    if fInSessionCol>=0 then
+      if CurMode.InSession then
+        Grid.Cells[fInSessionCol,i+1]:=Grid.Columns[fInSessionCol].ValueChecked
+      else
+        Grid.Cells[fInSessionCol,i+1]:=Grid.Columns[fInSessionCol].ValueUnchecked;
     // identifier
-    BuildModesStringGrid.Cells[2,i+1]:=CurMode.Identifier;
+    Grid.Cells[fNameCol,i+1]:=CurMode.Identifier;
   end;
+  Grid.EndUpdate(true);
 end;
 
 procedure TBuildModesEditorFrame.UpdateBuildModeButtons;
@@ -563,19 +591,21 @@ begin
   and (i>=0) and (i<AProject.BuildModes.Count) then
   begin
     CurMode:=AProject.BuildModes[i];
-    Identifier:=BuildModesStringGrid.Cells[2,i+1];
+    Identifier:=BuildModesStringGrid.Cells[fNameCol,i+1];
   end
   else
     CurMode:=nil;
 
-  BuildModeAddSpeedButton.Hint:='Add new build mode, copying settings from "'+Identifier+'"';
+  BuildModeAddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [
+    Identifier]);
   BuildModeDeleteSpeedButton.Enabled:=(CurMode<>nil) and (AProject.BuildModes.Count>1);
-  BuildModeDeleteSpeedButton.Hint:='Delete mode "'+Identifier+'"';
+  BuildModeDeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
   BuildModeMoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
-  BuildModeMoveUpSpeedButton.Hint:='Move "'+Identifier+'" one position up';
+  BuildModeMoveUpSpeedButton.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
   BuildModeMoveDownSpeedButton.Enabled:=
                        i<BuildModesStringGrid.RowCount-2;
-  BuildModeMoveDownSpeedButton.Hint:='Move "'+Identifier+'" one position down';
+  BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]
+    );
 end;
 
 procedure TBuildModesEditorFrame.ActivateMode(aMode: TProjectBuildMode);
@@ -595,9 +625,17 @@ begin
   end;
 end;
 
+procedure TBuildModesEditorFrame.UpdateShowSession;
+begin
+  if LoadShowSessionFromProjects then
+    ShowSession:=(AProject<>nil)
+      and (AProject.SessionStorage in [pssInProjectDir,pssInIDEConfig]);
+end;
+
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FLoadShowSessionFromProject:=true;
   FMacroValues:=TProjectBuildMacros.Create;
 end;
 
@@ -609,7 +647,7 @@ end;
 
 function TBuildModesEditorFrame.GetTitle: String;
 begin
-  Result := 'Build modes';
+  Result := lisBuildModes;
 end;
 
 procedure TBuildModesEditorFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -617,9 +655,7 @@ var
   Grid: TStringGrid;
 begin
   BuildModesGroupBox.Caption:=lisBuildModes;
-  BuildModesStringGrid.Columns[0].Title.Caption:=lisActive;
-  BuildModesStringGrid.Columns[1].Title.Caption:=lisInSession;
-  BuildModesStringGrid.Columns[2].Title.Caption:=lisDebugOptionsFrmName;
+  DoShowSession;
 
   BuildModeAddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
   BuildModeDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
@@ -644,10 +680,15 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
-    MacroValues.Assign(FProject.MacroValues);
-    UpdateMacrosControls;
+
+    // modes
+    UpdateShowSession;
     FillBuildModesGrid;
     UpdateBuildModeButtons;
+
+    // macros
+    MacroValues.Assign(FProject.MacroValues);
+    UpdateMacrosControls;
   end;
 end;
 

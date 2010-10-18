@@ -4898,6 +4898,18 @@ resourcestring
   lisActive = 'Active';
   lisBuildModes = 'Build modes';
   lisInSession = 'In session';
+  lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
+  lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
+    +'mode is the default mode and must be stored in the project, not in the '
+    +'session.';
+  lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn2 = 'The first build '
+    +'mode is the default mode and must be stored in the project, not in the '
+    +'session.';
+  lisAddNewBuildModeCopyingSettingsFrom = 'Add new build mode, copying '
+    +'settings from "%s"';
+  lisDeleteMode = 'Delete mode "%s"';
+  lisMoveOnePositionUp = 'Move "%s" one position up';
+  lisMoveOnePositionDown = 'Move "%s" one position down';
 
 implementation
 
