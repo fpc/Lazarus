@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-15 00:55+0300\n"
+"PO-Revision-Date: 2010-10-19 03:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3451,6 +3451,10 @@ msgstr "Добавить файлы каталога"
 msgid "Additional compiler options inherited from packages"
 msgstr "Дополнительные параметры компилятора, унаследованные от пакетов"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr "Добавить новый режим сборки с параметрами режима \"%s\""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Добавить новый макрос"
@@ -6030,6 +6034,10 @@ msgstr "Удаление файла не удалось"
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
 msgstr "Удалить макрос %s"
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
+msgstr "Удалить режим \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -9865,6 +9873,14 @@ msgstr "&Изменить"
 msgid "More"
 msgstr "Больше"
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr "Переместить \"%s\" на позицию вниз"
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr "Переместить \"%s\" на позицию вверх"
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Переместить страницу"
@@ -12691,7 +12707,7 @@ msgstr "Начать преобразование"
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
-msgstr "При запуске начинать новый проект"
+msgstr "Начать новый проект"
 
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
@@ -12978,6 +12994,16 @@ msgstr "Файл %s%s%s%sне найден.%sВы хотите поискать 
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Файл %s%s%s%sне найден.%sПропуск продолжит загрузку проекта,%sПрервать - остановит загрузку."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Следующие методы, используемые %s, отсутствуют в исходном коде%s%s%s%s%s%sУдалить некорректные ссылки?"
@@ -13137,6 +13163,10 @@ msgstr "Модуль с именем %s%s%s уже имеется. Иденти�
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "В проекте модуль с именем %s%s%s уже имеется.%sВыберите другое имя"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr "Должен иметься хотя бы один режим сборки."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

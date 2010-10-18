@@ -3443,6 +3443,10 @@ msgstr "Añadir archivos del directorio"
 msgid "Additional compiler options inherited from packages"
 msgstr "Opciones adicionales del compilador heredadas de los paquetes"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -6023,6 +6027,10 @@ msgstr "Fallo al borrar el archivo"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9862,6 +9870,14 @@ msgstr "&Modificar"
 msgid "More"
 msgstr "Más"
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Mover Página ..."
@@ -12981,6 +12997,16 @@ msgstr "No se encontró el archivo %s%s%s%s.%s¿Quiere localizarlo usted mismo?%
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "No se ha encontrado el archivo %s%s%s%s.%sIgnorar seguirá­a cargando el proyecto,%sAbortar parará­a la carga."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Los métodos siguientes usados por %s no están en el fuente%s%s%s%s%s%s¿Eliminar las referencias pendientes?"
@@ -13140,6 +13166,10 @@ msgstr "Ya hay una unidad con el nombre %s%s%s. Los identificadores Pascal deben
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Hay una unidad con el nombre %s%s%s en el proyecto.%sPor favor escoja un nombre diferente"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

@@ -3437,6 +3437,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Additionele compiler opties gelijk aan die van packages"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -6015,6 +6019,10 @@ msgstr "Verwijderen bestand mislukt"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9858,6 +9866,14 @@ msgstr ""
 msgid "More"
 msgstr ""
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr ""
@@ -12970,6 +12986,16 @@ msgstr "Het bestand %s%s%s%sis niet gevonden.%sWilt u het zelf zoeken?%s"
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Het bestand %s%s%s%sis niet gevonden.%sIgnore gaat door met het laden,%sAbort stopt het laden van het project."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "De volgende methoden gebruikt door %s zijn niet in de bron%s%s%s%s%s%sVerwijder deze referenties?"
@@ -13129,6 +13155,10 @@ msgstr "Er is al een unit met de naam %s%s%S. Pascal identifiers moeten uniek zi
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Er is een unit met de naam %s%s%s in het project.%sKies een andere naam"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

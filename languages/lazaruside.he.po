@@ -3417,6 +3417,10 @@ msgstr "הוסף קבצים של ספרייה"
 msgid "Additional compiler options inherited from packages"
 msgstr "אפשרויות מהדר נוספות מורשות מחבילות"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -5998,6 +6002,10 @@ msgstr "מחיקת קובץ נכשלה"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9828,6 +9836,14 @@ msgstr "שנה"
 msgid "More"
 msgstr "עוד"
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "הזז דף ..."
@@ -12942,6 +12958,16 @@ msgstr "הקובץ %s%s%s%s לא נמצא. האם אתה רוצה למצוא א�
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "הקובץ %s%s%s%s לא נמצא. \"התעלם\" יגרום להמשך טעינת הפרוייקט, \"צא\" יעצור את הטעינה."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "המתודות הבאות שבשימוש s% אינם במקורות %s%s%s%s%s%s האם להסיר את המקורות הרעועים?"
@@ -13101,6 +13127,10 @@ msgstr "יש כבר יחידה עם השם %s%s%s. מזהה פסקל חייב ל
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "יש כבר יחידה עם השם %s%s%s בפרוייקט. בחר שם אחר."
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

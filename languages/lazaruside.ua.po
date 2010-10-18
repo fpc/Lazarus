@@ -3432,6 +3432,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Додаткові параметри компілятора, наслідувані від пакунків"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -6012,6 +6016,10 @@ msgstr "Видалення файлу не вдалося"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9853,6 +9861,14 @@ msgstr ""
 msgid "More"
 msgstr ""
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr ""
@@ -12965,6 +12981,16 @@ msgstr "Файлу %s%s%s%sне знайдено.%sВи бажаєте пошу�
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Файл %s%s%s%sне знайдено.%sПропуск продовжить завантаження проекту,%sПереривання зупинить завантаження."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Наступні методи, що використовуються %s відсутні в програмному файлі%s%s%s%s%s%sПрибрати завислі посилання?"
@@ -13124,6 +13150,10 @@ msgstr "Вже існує модуль, що називається %s%s%s. Ід
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "В проекті є модуль з назвою %s%s%s.%sВиберіть іншу назву"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

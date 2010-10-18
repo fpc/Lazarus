@@ -3405,6 +3405,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Paketlerden miras alınan ilave derleyici seçenekleri"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -5979,6 +5983,10 @@ msgstr "Başarısız olan dosyayı sil"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9820,6 +9828,14 @@ msgstr ""
 msgid "More"
 msgstr ""
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr ""
@@ -12922,6 +12938,16 @@ msgstr ""
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "%s%s%s%s adlı dosya bulunamadı.%sYoksayarsan projenin yüklenmesine devam edilecek, %sDurdur'u seçersen yükleme durdurulacak."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr ""
@@ -13081,6 +13107,10 @@ msgstr "Zaten %s%s%s adlı bir birim var. Pascal tanımlayıcıları benzersiz o
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "projede %s%s%s adlı bir birim var.%sLütfen başka bir ad seçin"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

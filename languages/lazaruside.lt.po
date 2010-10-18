@@ -3434,6 +3434,10 @@ msgstr "Pridėti aplanko failus"
 msgid "Additional compiler options inherited from packages"
 msgstr "Papildomi iš paketų paveldėtos kompiliatoriaus parinktys"
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr ""
@@ -6022,6 +6026,10 @@ msgstr "Nepavyko ištrinti failą"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
@@ -9857,6 +9865,14 @@ msgstr "&Keisti"
 msgid "More"
 msgstr "Daugiau"
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Perkelti lapą…"
@@ -12974,6 +12990,16 @@ msgstr "Failas %s%s%s%s nerastas.%sIeškosite patys?%s"
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Failas %s%s%s%s nerastas.%sPaspaudus „Tęsti“ projektas bus įkeliamas toliau,%spaspaudus „Nutraukti“ įkėlimas bus nutrauktas."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Šių metodų, kuriuos naudoja %s, nėra pirminiame kode%s%s%s%s%s%sPašalinti betikslius įrašus?"
@@ -13133,6 +13159,10 @@ msgstr "Modulis tokiu pavadinimu %s%s%s jau yra. Paskalio identifikatoriai turi 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Projekte jau yra modulis %s%s%s tokiu pat pavadinimu.%sParinkite kitokį pavadinimą."
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."

@@ -3406,6 +3406,10 @@ msgstr "Přidat soubory nebo z adresáře"
 msgid "Additional compiler options inherited from packages"
 msgstr "Přídavné volby překladače zděděné z balíčků."
 
+#: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
+msgid "Add new build mode, copying settings from \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Přidat nové makri"
@@ -5979,6 +5983,10 @@ msgstr "Odstranění souboru selhalo"
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
 msgstr "Smazat makro %s"
+
+#: lazarusidestrconsts.lisdeletemode
+msgid "Delete mode \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -9791,6 +9799,14 @@ msgstr "&Pozměnit"
 msgid "More"
 msgstr "Více"
 
+#: lazarusidestrconsts.lismoveonepositiondown
+msgid "Move \"%s\" one position down"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveonepositionup
+msgid "Move \"%s\" one position up"
+msgstr ""
+
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Přesunout stránku..."
@@ -12892,6 +12908,16 @@ msgstr "Soubor %s%s%s%snebyl nalezen.%sChcete ho najít sami?%s"
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Soubor %s%s%s%snebyl nalezen.%sZvolte Ignorovat pro pokračování v načítání projektu,%szvolte Zrušit pro zastavení načítání."
 
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
+#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
+msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
+msgid "The first build mode is the default mode and must be stored in the project, not in the session."
+msgstr ""
+
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Následující metody použité v %s nejsou v zdrojovém kódu%s%s%s%s%s%sOdstranit tyto odkazy?"
@@ -13051,6 +13077,10 @@ msgstr "Jednotka se jménem %s%s%sjiž existuje. Identifikátory Pascalu musí b
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Jednotka se jménem %s%s%s již v projektu existuje.%sZvolte, prosím, jiné jméno"
+
+#: lazarusidestrconsts.listheremustbeatleastonebuildmode
+msgid "There must be at least one build mode."
+msgstr ""
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
