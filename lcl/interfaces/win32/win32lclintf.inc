@@ -207,8 +207,8 @@ begin
   if ACursor > crHigh then Exit;
 
   case ACursor of
-    crSqlWait..crDrag,
-    crHandPoint, crNone: begin
+    crSqlWait..crDrag, crNone:
+    begin
       // TODO: load custom cursors here not in the LCL
     end;
   else
