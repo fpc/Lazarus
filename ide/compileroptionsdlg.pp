@@ -781,9 +781,7 @@ begin
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
     // conditionals + build macros
-    {$IFDEF EnableBuildModes}
     BuildMacrosFrame.LoadFromOptions(Options);
-    {$ENDIF}
 
     // inherited tab
     UpdateInheritedTab;
@@ -1084,9 +1082,7 @@ begin
     Options.CompilerMessages.Assign(TempMessages);
 
     // conditionals
-    {$IFDEF EnableBuildModes}
     BuildMacrosFrame.SaveToOptions(Options);
-    {$ENDIF}
 
     // other
     Options.DontUseConfigFile := not chkConfigFile.Checked;

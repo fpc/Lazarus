@@ -617,9 +617,9 @@ var
   Grid: TStringGrid;
 begin
   BuildModesGroupBox.Caption:=lisBuildModes;
-  BuildModesStringGrid.Cells[0, 0]:=lisActive;
-  BuildModesStringGrid.Cells[1, 0]:=lisInSession;
-  BuildModesStringGrid.Cells[2, 0]:=lisDebugOptionsFrmName;
+  BuildModesStringGrid.Columns[0].Title.Caption:=lisActive;
+  BuildModesStringGrid.Columns[1].Title.Caption:=lisInSession;
+  BuildModesStringGrid.Columns[2].Title.Caption:=lisDebugOptionsFrmName;
 
   BuildModeAddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
   BuildModeDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');

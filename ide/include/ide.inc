@@ -35,7 +35,6 @@
 {off $define UseTurbopowerInHelp}
 {$define UseCHMHelp}
 {$define UseJCF}
-{off $define EnableBuildModes}
 
 // debug form load/save
 { $DEFINE VerboseJITForms}
