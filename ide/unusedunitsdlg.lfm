@@ -9,15 +9,15 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   ClientWidth = 503
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object UnitsTreeView: TTreeView
     Left = 6
-    Height = 286
+    Height = 291
     Top = 6
     Width = 491
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
@@ -26,20 +26,20 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   end
   object Panel1: TPanel
     Left = 0
-    Height = 45
-    Top = 298
+    Height = 40
+    Top = 303
     Width = 503
     Align = alBottom
     AutoSize = True
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 10
-    ClientHeight = 45
+    ClientHeight = 40
     ClientWidth = 503
     TabOrder = 1
     object CancelBitBtn: TBitBtn
       Left = 421
-      Height = 31
+      Height = 26
       Top = 7
       Width = 75
       Align = alRight
@@ -52,10 +52,10 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       TabOrder = 0
     end
     object RemoveSelectedBitBtn: TBitBtn
-      Left = 250
-      Height = 31
+      Left = 277
+      Height = 26
       Top = 7
-      Width = 161
+      Width = 134
       Align = alRight
       AutoSize = True
       Caption = 'RemoveSelectedBitBtn'
@@ -65,10 +65,10 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       TabOrder = 1
     end
     object RemoveAllBitBtn: TBitBtn
-      Left = 120
-      Height = 31
+      Left = 163
+      Height = 26
       Top = 7
-      Width = 120
+      Width = 104
       Align = alRight
       AutoSize = True
       Caption = 'RemoveAllBitBtn'

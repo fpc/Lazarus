@@ -103,7 +103,7 @@ uses
   ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser, OI_options, IdeOptionsDlg,
+  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, OI_options, IdeOptionsDlg,
   editor_general_options, formed_options,
   files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
@@ -470,8 +470,10 @@ type
                                      AnUnitInfo: TUnitInfo): TModalresult;
 
     // Checks if the UnitDirectory is part of the Unit Search Paths,
-    // if not, then ask the user if he wants to include the Unit Search Paths.
-    procedure CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+    // if not, then ask the user if he wants to extend dependencies
+    // or the Unit Search Paths.
+    procedure CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo;
+        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
@@ -1920,6 +1922,7 @@ procedure TMainIDE.SetupIDEMsgQuickFixItems;
 begin
   InitStandardIDEQuickFixItems;
   InitCodeBrowserQuickFixItems;
+  InitFindUnitQuickFixItems;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -5043,7 +5046,7 @@ begin
   OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
-    NewUnitName:=AnUnitInfo.UnitName;
+    NewUnitName:=AnUnitInfo.AUnitName;
   debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
@@ -5169,7 +5172,7 @@ begin
                                    // therefore the marks are kept
 
   // change unitname in project and in source
-  AnUnitInfo.UnitName:=NewUnitName;
+  AnUnitInfo.AUnitName:=NewUnitName;
   if ResourceCode<>nil then begin
     // change resource filename in the source include directive
     if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
@@ -5682,7 +5685,7 @@ begin
           FormEditor1.ClearSelection;
 
         // create JIT component
-        NewUnitName:=AnUnitInfo.UnitName;
+        NewUnitName:=AnUnitInfo.AUnitName;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
@@ -5738,8 +5741,8 @@ begin
   {$ENDIF}
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-  DesignerForm := nil;
-  if not (ofLoadHiddenResource in OpenFlags) then
+  DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
+  if (DesignerForm = nil) and not (ofLoadHiddenResource in OpenFlags) then
   begin
     CreateDesignerForComponent(NewComponent);
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
@@ -6714,7 +6717,7 @@ begin
     AFilename:='';
     // build a nice project info filename suggestion
     if UseMainSourceFile and (Project1.MainUnitID>=0) then
-      AFilename:=Project1.MainUnitInfo.UnitName;
+      AFilename:=Project1.MainUnitInfo.AUnitName;
     if AFilename='' then
       AFilename:=ExtractFileName(Project1.ProjectInfoFile);
     if AFilename='' then
@@ -6884,7 +6887,7 @@ begin
       MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
     // change program name
-    MainUnitInfo.UnitName:=NewProgramName;
+    MainUnitInfo.AUnitName:=NewProgramName;
     MainUnitInfo.Modified:=true;
 
     // update source notebook page names
@@ -7003,7 +7006,7 @@ begin
     // update marks and cursor positions in Project1, so that merging the old
     // settings during restoration will work
     SaveSourceEditorProjectSpecificSettings;
-    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
+    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.AUnitName,
       AFilename,-1),AnUnitInfo.Source,false);
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEditorCreated:=true;
@@ -7174,7 +7177,7 @@ begin
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
-    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
+    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.AUnitName,
                                                  NewUnitInfo.Filename,-1),
                            NewUnitInfo.Source,true);
     MainIDEBar.itmFileClose.Enabled:=True;
@@ -7528,8 +7531,8 @@ begin
       // ask user
       if ActiveUnitInfo.Filename<>'' then
         AText:=Format(lisFileHasChangedSave, ['"', ActiveUnitInfo.Filename, '"'])
-      else if ActiveUnitInfo.UnitName<>'' then
-        AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.Unitname, '"'])
+      else if ActiveUnitInfo.AUnitName<>'' then
+        AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.AUnitname, '"'])
       else
         AText:=Format(lisSourceOfPageHasChangedSave, ['"',
           ActiveSrcEdit.PageName, '"']);
@@ -7922,7 +7925,7 @@ function TMainIDE.SelectProjectItems(ItemList: TStringList;
   ItemType: TIDEProjectItem; MultiSelect: boolean): TModalResult;
 var
   i: integer;
-  UnitName, DlgCaption: string;
+  AUnitName, DlgCaption: string;
   MainUnitInfo: TUnitInfo;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -7939,7 +7942,7 @@ begin
       begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (Project1.Units[i].ResourceBaseClass = pfcbcFrame)) then
-          ItemList.AddObject(Project1.Units[i].UnitName,
+          ItemList.AddObject(Project1.Units[i].AUnitName,
             TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i,
                                    Project1.Units[i] = ActiveUnitInfo));
       end;
@@ -7948,10 +7951,10 @@ begin
       // add all unit names of project
       if (Project1.Units[i].FileName <> '') then
       begin
-        UnitName := ExtractFileName(Project1.Units[i].Filename);
-        if ItemList.IndexOf(UnitName) = -1 then
-          ItemList.AddObject(UnitName,
-            TViewUnitsEntry.Create(UnitName, i, Project1.Units[i] = ActiveUnitInfo));
+        AUnitName := ExtractFileName(Project1.Units[i].Filename);
+        if ItemList.IndexOf(AUnitName) = -1 then
+          ItemList.AddObject(AUnitName,
+            TViewUnitsEntry.Create(AUnitName, i, Project1.Units[i] = ActiveUnitInfo));
       end
       else
       if Project1.MainUnitID = i then
@@ -7959,11 +7962,11 @@ begin
         MainUnitInfo := Project1.MainUnitInfo;
         if pfMainUnitIsPascalSource in Project1.Flags then
         begin
-          UnitName := ExtractFileName(MainUnitInfo.Filename);
-          if (UnitName <> '') and (ItemList.IndexOf(UnitName) = -1) then
+          AUnitName := ExtractFileName(MainUnitInfo.Filename);
+          if (AUnitName <> '') and (ItemList.IndexOf(AUnitName) = -1) then
           begin
-            ItemList.AddObject(UnitName,
-              TViewUnitsEntry.Create(UnitName, i, MainUnitInfo = ActiveUnitInfo));
+            ItemList.AddObject(AUnitName,
+              TViewUnitsEntry.Create(AUnitName, i, MainUnitInfo = ActiveUnitInfo));
           end;
         end;
       end;
@@ -8388,7 +8391,7 @@ var
   BaseDir: String;
   NewFilename: string;
   Found: Boolean;
-  UnitName: String;
+  AUnitName: String;
   InFilename: String;
 begin
   Result:=mrCancel;
@@ -8416,11 +8419,11 @@ begin
     end else if FilenameIsPascalSource(FName) or (ExtractFileExt(FName)='') then
     begin
       // search pascal unit
-      UnitName:=ExtractFileNameOnly(FName);
+      AUnitName:=ExtractFileNameOnly(FName);
       InFilename:=FName;
       if ExtractFileExt(FName)='' then InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,UnitName,InFilename,true);
+                           BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
         FName:=NewFilename;
@@ -8435,10 +8438,10 @@ begin
       ActiveSrcEdit.EditorComponent.LogicalCaretXY);
     if (FName<>'') and IsValidIdent(FName) then begin
       // search pascal unit
-      UnitName:=FName;
+      AUnitName:=FName;
       InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,UnitName,InFilename,true);
+                           BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
         FName:=NewFilename;
@@ -9175,61 +9178,65 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
+  DependencyAdded: boolean;
 begin
   Result:=mrCancel;
-  if BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[])
-    and (ActiveUnitInfo<>nil) then begin
-    if not ActiveUnitInfo.IsPartOfProject then begin
-      if not ActiveUnitInfo.IsVirtual then
-        s:='"'+ActiveUnitInfo.Filename+'"'
-      else
-        s:='"'+ActiveSourceEditor.PageName+'"';
-      if (ActiveUnitInfo.UnitName<>'')
-      and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
-          true,ActiveUnitInfo)>=0) then
-      begin
-        MessageDlg(Format(
-          lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
-          mtInformation, [mbOk], 0);
-      end else begin
-        if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
-          mbCancel], 0) in [mrOk,mrYes]
+  if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
+  if (ActiveUnitInfo=nil) then exit;
+  if ActiveUnitInfo.IsPartOfProject then begin
+    if not ActiveUnitInfo.IsVirtual then
+      s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
+    else
+      s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
+    s:=Format(lisisAlreadyPartOfTheProject, [s]);
+    MessageDlg(s,mtInformation,[mbOk],0);
+    exit;
+  end;
+  if not ActiveUnitInfo.IsVirtual then
+    s:='"'+ActiveUnitInfo.Filename+'"'
+  else
+    s:='"'+ActiveSourceEditor.PageName+'"';
+  if (ActiveUnitInfo.AUnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.AUnitName,
+      true,ActiveUnitInfo)>=0) then
+  begin
+    MessageDlg(Format(
+      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
+      mtInformation, [mbOk], 0);
+  end else begin
+    if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
+    and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+    begin
+      // ask user to apply naming conventions
+      Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result<>mrOk then begin
+        debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+        exit;
+      end;
+    end;
+
+    if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
+      mbCancel], 0) in [mrOk,mrYes]
+    then begin
+      CheckUnitDirIsInSearchPath(ActiveUnitInfo,true,DependencyAdded);
+      if not DependencyAdded then begin
+        ActiveUnitInfo.IsPartOfProject:=true;
+        Project1.Modified:=true;
+        if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+        and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
         then begin
-          if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then begin
-            Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
-            if Result=mrIgnore then Result:=mrOk;
-            if Result<>mrOk then begin
-              debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-              exit;
-            end;
+          ActiveUnitInfo.ReadUnitNameFromSource(false);
+          ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+          if (ShortUnitName<>'') then begin
+            if CodeToolBoss.AddUnitToMainUsesSection(
+              Project1.MainUnitInfo.Source,ShortUnitName,'')
+            then
+              Project1.MainUnitInfo.Modified:=true;
           end;
-          ActiveUnitInfo.IsPartOfProject:=true;
-          Project1.Modified:=true;
-          if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-          and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-          then begin
-            ActiveUnitInfo.ReadUnitNameFromSource(false);
-            ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-            if (ShortUnitName<>'') then begin
-              if CodeToolBoss.AddUnitToMainUsesSection(
-                Project1.MainUnitInfo.Source,ShortUnitName,'')
-              then
-                Project1.MainUnitInfo.Modified:=true;
-            end;
-          end;
-          CheckUnitDirIsInSearchPath(ActiveUnitInfo);
         end;
       end;
-    end else begin
-      if not ActiveUnitInfo.IsVirtual then
-        s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
-      else
-        s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
-      s:=Format(lisisAlreadyPartOfTheProject, [s]);
-      MessageDlg(s,mtInformation,[mbOk],0);
     end;
-  end else begin
-    Result:=mrOk;
   end;
 end;
 
@@ -9265,10 +9272,10 @@ Begin
           if (Project1.MainUnitID >= 0) and
              (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then
           begin
-            if (AnUnitInfo.UnitName <> '') then
+            if (AnUnitInfo.AUnitName <> '') then
             begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project1.MainUnitInfo.Source, AnUnitInfo.UnitName)
+                Project1.MainUnitInfo.Source, AnUnitInfo.AUnitName)
               then
                 Project1.MainUnitInfo.Modified := true;
             end;
@@ -10903,7 +10910,7 @@ begin
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
-  NewUnitName:=AnUnitInfo.UnitName;
+  NewUnitName:=AnUnitInfo.AUnitName;
   if NewUnitName='' then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
@@ -13619,7 +13626,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if SysUtils.CompareText(ActiveUnitInfo.UnitName,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.AUnitName,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']
         ));
@@ -14329,25 +14336,52 @@ begin
   end;
 end;
 
-procedure TMainIDE.CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+procedure TMainIDE.CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo;
+  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
 var
   CurDirectory: String;
   CurUnitPath: String;
+  Owners: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
 begin
-  if not UnitInfo.IsVirtual then begin
-    CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-    CurDirectory:=UnitInfo.GetDirectory;
-    if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
-    begin
-      if MessageDlg(lisAddToUnitSearchPath,
-        Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
-          #13, CurDirectory]),
-        mtConfirmation,[mbYes,mbNo],0)=mrYes
-      then begin
-        Project1.CompilerOptions.OtherUnitFiles:=
-              MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
-                               CurDirectory);
+  DependencyAdded:=false;
+  if UnitInfo.IsVirtual then exit;
+  CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
+  if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
+  begin
+    if AllowAddingDependencies then begin
+      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
+      try
+        if (Owners<>nil) then begin
+          for i:=0 to Owners.Count-1 do begin
+            if TObject(Owners[i]) is TLazPackage then begin
+              APackage:=TLazPackage(Owners[i]);
+              if IDEMessageDialog(lisAddPackageRequirement,
+                Format(lisAddPackageToProject, [APackage.IDAsString]),
+                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
+              then
+                exit;
+              PkgBoss.AddProjectDependency(Project1,APackage);
+              DependencyAdded:=true;
+              exit;
+            end;
+          end;
+        end;
+      finally
+        Owners.Free;
       end;
+    end;
+    // unit is not in a package => extend unit path
+    if MessageDlg(lisAddToUnitSearchPath,
+      Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
+        #13, CurDirectory]),
+      mtConfirmation,[mbYes,mbNo],0)=mrYes
+    then begin
+      Project1.CompilerOptions.OtherUnitFiles:=
+            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                             CurDirectory);
     end;
   end;
 end;
@@ -14359,16 +14393,17 @@ var
   ActiveUnitInfo: TUnitInfo;
   ShortUnitName: String;
   Dummy: Boolean;
+  DependencyAdded: boolean;
 begin
   Result:=mrOk;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
-  CheckUnitDirIsInSearchPath(AnUnitInfo);
+  CheckUnitDirIsInSearchPath(AnUnitInfo,false,DependencyAdded);
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
-    ShortUnitName:=AnUnitInfo.UnitName;
+    ShortUnitName:=AnUnitInfo.AUnitName;
     if (ShortUnitName<>'') then begin
       Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
                                  Project1.MainUnitInfo.Source,ShortUnitName,'');
@@ -14401,7 +14436,7 @@ begin
     and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
     then begin
       BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-      ShortUnitName:=AnUnitInfo.UnitName;
+      ShortUnitName:=AnUnitInfo.AUnitName;
       if (ShortUnitName<>'') then begin
         Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
                                       Project1.MainUnitInfo.Source,ShortUnitName);

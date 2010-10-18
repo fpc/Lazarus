@@ -1595,14 +1595,14 @@ function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
   DefaultUnitName: string; TheOwner: TObject): string;
   
   function SearchLazDocFile(SearchPath: string;
-    const BaseDir, Unitname: string): string;
+    const BaseDir, AUnitname: string): string;
   var
     FPDocFilename: String;
   begin
     Result:='';
     if BaseDir='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
-    FPDocFilename:=lowercase(UnitName)+'.xml';
+    FPDocFilename:=lowercase(AUnitName)+'.xml';
     Result:=SearchFileInPath(FPDocFilename,'',SearchPath,';',ctsfcDefault);
   end;
   
@@ -1727,12 +1727,12 @@ function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
   out ModuleOwner: TObject; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
   out InvalidPath: integer; out CacheWasUsed: boolean): TCodeHelpParseResult;
 
-  function FindFPDocFilename(BaseDir, SearchPath, UnitName: string): string;
+  function FindFPDocFilename(BaseDir, SearchPath, AUnitName: string): string;
   begin
     Result:='';
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
-    //DebugLn(['FindFPDocFilename BaseDir=',BaseDir,' SearchPath=',SearchPath,' UnitName=',unitname]);
-    Result:=SearchFileInPath(UnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault);
+    //DebugLn(['FindFPDocFilename BaseDir=',BaseDir,' SearchPath=',SearchPath,' UnitName=',AUnitname]);
+    Result:=SearchFileInPath(AUnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault);
   end;
 
   function FindElement(StartPos: integer; aFPDocFile: TLazFPDocFile): boolean;
@@ -1764,7 +1764,7 @@ var
   StartPos, p: LongInt;
   PkgName: String;
   Pkg: TLazPackage;
-  UnitName: String;
+  AUnitName: String;
   AProject: TLazProject;
   FPDocFilename: String;
   BaseDir: String;
@@ -1810,21 +1810,21 @@ begin
 
   // search in another unit
   while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
-  UnitName:=copy(Path,StartPos,p-StartPos);
-  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode UnitName=',UnitName]);
-  if UnitName='' then exit;
+  AUnitName:=copy(Path,StartPos,p-StartPos);
+  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode UnitName=',AUnitName]);
+  if AUnitName='' then exit;
   FPDocFilename:='';
   if ModuleOwner is TLazProject then begin
     AProject:=TLazProject(ModuleOwner);
     if (AProject.LazDocPaths<>'') then begin
       BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-      FPDocFilename:=FindFPDocFilename(BaseDir,AProject.LazDocPaths,UnitName);
+      FPDocFilename:=FindFPDocFilename(BaseDir,AProject.LazDocPaths,AUnitName);
     end;
   end else if ModuleOwner is TLazPackage then begin
     Pkg:=TLazPackage(ModuleOwner);
     if Pkg.LazDocPaths<>'' then begin
       BaseDir:=Pkg.Directory;
-      FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.LazDocPaths,UnitName);
+      FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.LazDocPaths,AUnitName);
     end;
   end;
   //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode FPDocFilename=',FPDocFilename]);

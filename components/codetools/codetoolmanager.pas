@@ -288,7 +288,7 @@ type
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
     function GetCompiledSrcExtForDirectory(const Directory: string): string;
-    function FindUnitInUnitLinks(const Directory, UnitName: string): string;
+    function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
@@ -537,7 +537,7 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
-    // source name  e.g. 'unit UnitName;'
+    // source name  e.g. 'unit AUnitName;'
     function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
     function GetCachedSourceName(Code: TCodeBuffer): string;
     function RenameSource(Code: TCodeBuffer; const NewName: string): boolean;
@@ -1399,10 +1399,10 @@ begin
     Result:='.ppw';
 end;
 
-function TCodeToolManager.FindUnitInUnitLinks(const Directory, UnitName: string
+function TCodeToolManager.FindUnitInUnitLinks(const Directory, AUnitName: string
   ): string;
 begin
-  Result:=DirectoryCachePool.FindUnitInUnitLinks(Directory,UnitName);
+  Result:=DirectoryCachePool.FindUnitInUnitLinks(Directory,AUnitName);
 end;
 
 function TCodeToolManager.GetUnitLinksForDirectory(const Directory: string;
@@ -3886,11 +3886,11 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' AUnitName=',AnUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' AUnitName=',AnUnitName);
   {$ENDIF}
   OldIgnoreMissingIncludeFiles := FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
   try
@@ -3959,7 +3959,7 @@ function TCodeToolManager.RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' AUnitName=',AnUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try

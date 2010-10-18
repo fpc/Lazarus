@@ -175,7 +175,7 @@ end;
 procedure TUnusedUnitsDialog.RebuildUnitsTreeView;
 var
   i: Integer;
-  Unitname: string;
+  AUnitname: string;
   Flags: string;
   UseInterface: Boolean;
   InImplUsesSection: Boolean;
@@ -195,7 +195,7 @@ begin
   begin
     for i:=0 to Units.Count-1 do
     begin
-      Unitname:=Units.Names[i];
+      AUnitname:=Units.Names[i];
       Flags:=Units.ValueFromIndex[i];
       InImplUsesSection:=System.Pos(',implementation',Flags)>0;
       UseInterface:=System.Pos(',used',Flags)>0;
@@ -205,7 +205,7 @@ begin
           ParentNode:=ImplTreeNode
         else
           ParentNode:=IntfTreeNode;
-        TVNode:=UnitsTreeView.Items.AddChild(ParentNode,Unitname);
+        TVNode:=UnitsTreeView.Items.AddChild(ParentNode,AUnitname);
         if UseCode then
           TVNode.StateIndex:=ImgIDInitialization
         else

@@ -40,6 +40,9 @@ uses
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs,
   LCLProc, FileUtil, IDEProcs, MacroIntf, EnvironmentOpts, PackageDefs, LazConf;
   
+const
+  PkgLinksFileVersion = 2;
+
 type
 
   { TPackageLink
@@ -86,6 +89,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function MakeSense: boolean;
+    function GetEffectiveFilename: string;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property Filename: string read FFilename write SetFilename;
@@ -274,6 +278,14 @@ begin
            and (CompareText(Name,ExtractFileNameOnly(Filename))=0);
 end;
 
+function TPackageLink.GetEffectiveFilename: string;
+begin
+  Result:=Filename;
+  if (not FilenameIsAbsolute(Result))
+  and (EnvironmentOptions.LazarusDirectory<>'') then
+    Result:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+Result);
+end;
+
 { TPackageLinks }
 
 function TPackageLinks.FindLeftMostNode(LinkTree: TAVLTree;
@@ -426,7 +438,11 @@ begin
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(NewFilename);
-      NewPkgLink.Filename:=TrimFilename(NewFilename);
+      NewFilename:=TrimFilename(NewFilename);
+      if (EnvironmentOptions.LazarusDirectory<>'')
+      and (FileIsInDirectory(NewFilename,EnvironmentOptions.LazarusDirectory)) then
+        NewFilename:=CreateRelativePath(NewFilename,EnvironmentOptions.LazarusDirectory);
+      NewPkgLink.Filename:=NewFilename;
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
       //  ' PkgVersion=',NewPkgLink.Version.AsString,
       //  ' Filename="',NewPkgLink.Filename,'"',
@@ -452,6 +468,7 @@ var
   i: Integer;
   NewPkgLink: TPackageLink;
   ItemPath: String;
+  FileVersion: LongInt;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsUserLinksNeedUpdate);
@@ -470,11 +487,13 @@ begin
   
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
+  FileVersion:=PkgLinksFileVersion;
   XMLConfig:=nil;
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
     
     Path:='UserPkgLinks/';
+    FileVersion:=XMLConfig.GetValue(Path+'Version',0);
     LinkCount:=XMLConfig.GetValue(Path+'Count',0);
     for i:=1 to LinkCount do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
@@ -523,7 +542,7 @@ begin
     end;
   end;
   RemoveOldUserLinks;
-  Modified:=false;
+  Modified:=FileVersion<>PkgLinksFileVersion;
 end;
 
 procedure TPackageLinks.UpdateAll;
@@ -547,7 +566,9 @@ begin
     if NextNode=nil then break;
     OldPkgLink:=TPackageLink(ANode.Data);
     NewPkgLink:=TPackageLink(NextNode.Data);
-    if CompareFilenames(OldPkgLink.Filename,NewPkgLink.Filename)=0 then begin
+    if CompareFilenames(OldPkgLink.GetEffectiveFilename,
+      NewPkgLink.GetEffectiveFilename)=0
+    then begin
       // 2 links to the same file -> delete the older
       //debugln('TPackageLinks.RemoveOldUserLinks Newer=',NewPkgLink.IDAsString,
       // ' Older=',OldPkgLink.IDAsString);
@@ -581,6 +602,8 @@ var
   ANode: TAVLTreeNode;
   ItemPath: String;
   i: Integer;
+  LazSrcDir: String;
+  AFilename: String;
 begin
   ConfigFilename:=GetUserLinkFile;
   
@@ -590,6 +613,8 @@ begin
   and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
     exit;
   //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename]);
+
+  LazSrcDir:=EnvironmentOptions.LazarusDirectory;
 
   XMLConfig:=nil;
   try
@@ -604,7 +629,15 @@ begin
       CurPkgLink:=TPackageLink(ANode.Data);
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
       CurPkgLink.Version.SaveToXMLConfig(XMLConfig,ItemPath+'Version/');
-      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',CurPkgLink.Filename,'');
+
+      // save package files in lazarus directory relative
+      AFilename:=CurPkgLink.Filename;
+      if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
+        AFilename:=CreateRelativePath(AFilename,LazSrcDir);
+        //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
+      end;
+      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
+
       XMLConfig.SetDeleteValue(ItemPath+'LastCheckValid/Value',
                                CurPkgLink.LastCheckValid,false);
       if CurPkgLink.LastCheckValid then
@@ -704,12 +737,14 @@ procedure TPackageLinks.IteratePackagesInTree(MustExist: boolean;
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
+  AFilename: String;
 begin
   ANode:=LinkTree.FindLowest;
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
     //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
-    if (not MustExist) or FileExistsUTF8(PkgLink.Filename) then
+    AFilename:=PkgLink.GetEffectiveFilename;
+    if (not MustExist) or FileExistsUTF8(AFilename) then
       Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
   end;
@@ -773,7 +808,7 @@ begin
   if (OldLink<>nil) then begin
     // link exists -> check if it is already the right value
     if (OldLink.Compare(APackage)=0)
-    and (OldLink.Filename=APackage.Filename) then begin
+    and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
       Result:=OldLink;
       exit;
     end;
@@ -806,7 +841,7 @@ begin
   OldLink:=FindLinkWithPkgName(PkgName);
   if (OldLink<>nil) then begin
     // link exists
-    if CompareFilenames(OldLink.Filename,PkgFilename)=0 then begin
+    if CompareFilenames(OldLink.GetEffectiveFilename,PkgFilename)=0 then begin
       Result:=OldLink;
       exit;
     end;

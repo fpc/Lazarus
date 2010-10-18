@@ -165,8 +165,8 @@ begin
     else
       OriginStr:=lisPLDUser;
     PkgStringGrid.Cells[2,i]:=OriginStr;
-    PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.Filename));
-    PkgStringGrid.Cells[4,i]:=Link.Filename;
+    PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.GetEffectiveFilename));
+    PkgStringGrid.Cells[4,i]:=Link.GetEffectiveFilename;
     inc(i);
     Node:=FLinks.FindSuccessor(Node);
   end;

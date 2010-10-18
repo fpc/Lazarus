@@ -325,9 +325,13 @@ begin
       Config.ReadFromStream(ms);
     except
       on E: Exception do begin
-        Result:=MessageDlg(lisXMLError,
-          Format(lisXMLParserErrorInFileError, [Filename, #13, E.Message]),
-            mtError, [mbCancel], 0);
+        if (lbfQuiet in Flags) then begin
+          Result:=mrCancel;
+        end else begin
+          Result:=MessageDlg(lisXMLError,
+            Format(lisXMLParserErrorInFileError, [Filename, #13, E.Message]),
+              mtError, [mbCancel], 0);
+        end;
       end;
     end;
   finally

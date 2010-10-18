@@ -36,7 +36,7 @@ Type
   public
     Name: String;
     Page: String;
-    unitname: String;
+    Aunitname: String;
   end;
 
 type
@@ -179,7 +179,7 @@ begin
             MyObj := TRComponent.Create;
             MyObj.Name := FrmAddComponent.ListCompAdd.Items[i];
             MyObj.Page := 'Custom';
-            MyObj.unitname := FindUnitName;
+            MyObj.Aunitname := FindUnitName;
             ListComps.Items.AddObject(MyObj.Name, MyObj);
           end; // if not found
         end; // if listcompadd selected
@@ -277,7 +277,7 @@ begin
   if assigned(MyObj) then begin
     LblComponent.Caption := Myobj.Name;
     TxtPage.Text := MyObj.Page;
-    LblUnit.Caption := MyObj.unitname;
+    LblUnit.Caption := MyObj.Aunitname;
   end;
 
 end;
@@ -316,7 +316,7 @@ begin
     MyObj := TRComponent.Create;
     MyObj.Name := CompName;
     MyObj.Page := CompPage;
-    MyObj.UnitName := CompUnit;
+    MyObj.AUnitName := CompUnit;
     ListComps.Items.AddObject(CompName, MyObj);
   end;
   
@@ -378,11 +378,11 @@ begin
               MyObj2 := ListComps.Items.Objects[J] as TRComponent;
               //messagedlg('Comparing object '+MyObj.Name+' at '+inttostr(I)+' with '+MyObj2.Name, mtInformation,[mbOk],0);
               if assigned(MyOBj2) then begin
-                Found := AnsiCompareText(MyObj2.UnitName,Myobj.UnitName)=0;
+                Found := AnsiCompareText(MyObj2.AUnitName,Myobj.AUnitName)=0;
               end; // if assigned
             end; // for J
           end; // For I
-          if not(Found) then add('  '+MyObj.UnitName+',');
+          if not(Found) then add('  '+MyObj.AUnitName+',');
         end;
       end; // for I
       // remove last comma
@@ -415,7 +415,7 @@ begin
     for I := 0 to ListComps.Items.Count - 1 do begin
       MyObj := ListComps.Items.Objects[I] as TRComponent;
       if assigned(MyObj) then begin
-        MyFile.Add('  RegisterComponent('''+MyObj.Page+''','''+MyObj.unitname+''','+MyObj.Name+');');
+        MyFile.Add('  RegisterComponent('''+MyObj.Page+''','''+MyObj.Aunitname+''','+MyObj.Name+');');
       end;
     end;
   end;

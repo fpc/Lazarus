@@ -701,7 +701,7 @@ var
   ShortFilename: String;
   CurFilename: String;
   IsPascalUnit: Boolean;
-  UnitName: String;
+  AUnitName: String;
 begin
   Result:=mrOk;
   if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
@@ -713,7 +713,7 @@ begin
     begin
       ShortFilename:=ExtractFileName(Filename);
       IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
-      UnitName:=ExtractFilenameOnly(ShortFilename);
+      AUnitName:=ExtractFilenameOnly(ShortFilename);
       repeat
         if (FileInfo.Name='.') or (FileInfo.Name='..')
         or (FileInfo.Name='')
@@ -724,7 +724,7 @@ begin
         then begin
           // same name different case => ambiguous
         end else if IsPascalUnit and FilenameIsPascalUnit(FileInfo.Name)
-           and (SysUtils.CompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))=0)
+           and (SysUtils.CompareText(AUnitName,ExtractFilenameOnly(FileInfo.Name))=0)
         then begin
           // same unit name => ambiguous
         end else

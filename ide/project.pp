@@ -361,7 +361,7 @@ type
     property SyntaxHighlighter: TLazSyntaxHighlighter
                                read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
-    property UnitName: String read fUnitName write SetUnitName;
+    property AUnitName: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
@@ -1112,7 +1112,7 @@ end;
 
 function TUnitInfo.CreateUnitName: string;
 begin
-  Result:=UnitName;
+  Result:=AUnitName;
   if (Result='') and FilenameIsPascalSource(Filename) then
     Result:=ExtractFilenameOnly(Filename);
 end;
@@ -2659,7 +2659,7 @@ begin
   if AddToProjectUsesClause and (MainUnitID>=0) and (MainUnitID<>NewIndex) then
   begin
     // add unit to uses section
-    ShortUnitName:=AnUnit.UnitName;
+    ShortUnitName:=AnUnit.AUnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
       CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
         ShortUnitName,'',true);
@@ -2691,9 +2691,9 @@ begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
       if RemoveFromUsesSection then begin
-        if (OldUnitInfo.UnitName<>'') then begin
+        if (OldUnitInfo.AUnitName<>'') then begin
           CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
-            OldUnitInfo.UnitName);
+            OldUnitInfo.AUnitName);
         end;
         if (OldUnitInfo.ComponentName<>'') then begin
           CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
@@ -3060,7 +3060,7 @@ begin
     if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
     or (not OnlyProjectUnits))
     and (IgnoreUnit<>Units[Result]) then begin
-      if (AnsiCompareText(Units[Result].UnitName,AnUnitName)=0) then
+      if (AnsiCompareText(Units[Result].AUnitName,AnUnitName)=0) then
         exit;
     end;
     dec(Result);
@@ -4232,8 +4232,8 @@ begin
       // check if no other project unit has this name
       for i:=0 to UnitCount-1 do begin
         if (Units[i].IsPartOfProject)
-        and (Units[i]<>AnUnitInfo) and (Units[i].UnitName<>'')
-        and (CompareText(Units[i].UnitName,NewUnitName)=0) then begin
+        and (Units[i]<>AnUnitInfo) and (Units[i].AUnitName<>'')
+        and (CompareText(Units[i].AUnitName,NewUnitName)=0) then begin
           Allowed:=false;
           exit;
         end;
@@ -4611,7 +4611,7 @@ function TProject.ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
 begin
   Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
-    if CompareText(AnUnitName,Result.UnitName)=0 then exit;
+    if CompareText(AnUnitName,Result.AUnitName)=0 then exit;
     Result:=Result.fNext[uilPartOfProject];
   end;
 end;

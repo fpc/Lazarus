@@ -92,6 +92,8 @@ type
     procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
+    function AddProjectDependency(AProject: TProject;
+                                  ADependency: TPkgDependency): TModalResult; virtual; abstract;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
@@ -117,6 +119,8 @@ type
 
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
+    function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
+                                  OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
 
     // package graph
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;

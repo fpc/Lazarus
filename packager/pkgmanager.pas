@@ -119,7 +119,7 @@ type
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
-    procedure PackageGraphFindFPCUnit(const UnitName, Directory: string;
+    procedure PackageGraphFindFPCUnit(const AUnitName, Directory: string;
                                       var Filename: string);
 
     // menu
@@ -243,7 +243,7 @@ type
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function AddProjectDependency(AProject: TProject;
-                                  ADependency: TPkgDependency): TModalResult;
+                                  ADependency: TPkgDependency): TModalResult; override;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
@@ -274,6 +274,9 @@ type
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
+    function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
+                                  OnlyTestIfPossible: boolean = false): TModalResult; override;
+
 
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
@@ -751,7 +754,7 @@ begin
   and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
   NewSource:=
-     'unit '+Params.UnitName+';'+LE
+     'unit '+Params.AUnitName+';'+LE
     +LE
     +'{$mode objfpc}{$H+}'+LE
     +LE
@@ -946,14 +949,14 @@ begin
   end;
 end;
 
-procedure TPkgManager.PackageGraphFindFPCUnit(const UnitName,
+procedure TPkgManager.PackageGraphFindFPCUnit(const AUnitName,
   Directory: string; var Filename: string);
 begin
   if (Directory<>'') and not FilenameIsAbsolute(Directory) then
     RaiseGDBException(Directory);
   //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
   Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory,
-                                                                UnitName);
+                                                                AUnitName);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
@@ -1976,7 +1979,7 @@ var
   end;
 
   function GetPOFilenameParts(const Filename: string;
-    var UnitName, Language: string): boolean;
+    var AUnitName, Language: string): boolean;
   var
     UnitNameEnd: Integer;
     LangEnd: Integer;
@@ -1990,10 +1993,10 @@ var
     while (LangEnd<=length(Filename)) and (Filename[LangEnd]<>'.') do
       inc(LangEnd);
     if LangEnd<>length(Filename)-2 then exit;
-    UnitName:=copy(Filename,1,UnitNameEnd-1);
+    AUnitName:=copy(Filename,1,UnitNameEnd-1);
     Language:=copy(Filename,UnitNameEnd+1,LangEnd-UnitNameEnd-1);
-    Result:=IsValidIdent(UnitName) and (Language<>'');
-    //DebugLn(['GetPOFilenameParts UnitName=',UnitName,' Language=',Language,' Result=',Result]);
+    Result:=IsValidIdent(AUnitName) and (Language<>'');
+    //DebugLn(['GetPOFilenameParts AUnitName=',AUnitName,' Language=',Language,' Result=',Result]);
   end;
   
   procedure TranslateWithFileMask(APackage: TLazPackage;
@@ -2155,7 +2158,7 @@ begin
     APackage.Name)<>nil
   then begin
     // package already there
-    Result:=mrCancel;
+    Result:=mrOk;
     exit;
   end;
   ProvidingAPackage:=PackageGraph.FindPackageProvidingName(
@@ -2246,7 +2249,7 @@ begin
         #13, #13, #13, #13, #13, #13, #13, #13]);
       for i:=0 to MissingUnits.Count-1 do begin
         PkgFile:=TPkgFile(MissingUnits[i]);
-        Msg:=Format(lisUnitInPackage, [Msg, PkgFile.UnitName,
+        Msg:=Format(lisUnitInPackage, [Msg, PkgFile.AUnitName,
           PkgFile.LazPackage.IDAsString, #13]);
       end;
       Result:=IDEMessageDialog(lisPackageNeedsInstallation,
@@ -2269,6 +2272,7 @@ var
   NewPackage: TLazPackage;
   CurEditor: TPackageEditorForm;
 begin
+  Result:=mrCancel;
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.CreateNewPackage(NameToValidIdentifier(lisPkgMangNewPackage));
   PackageGraph.AddDependencyToPackage(NewPackage,
@@ -2278,7 +2282,8 @@ begin
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
   CurEditor.Show;
-  Result:=mrOk;
+
+  Result:=DoSavePackage(NewPackage,[psfSaveAs]);
 end;
 
 function TPkgManager.DoShowOpenInstalledPckDlg: TModalResult;
@@ -2829,7 +2834,7 @@ var
       end else begin
         ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
         if ClassUnitInfo<>nil then
-          NewUnitName:=ClassUnitInfo.UnitName;
+          NewUnitName:=ClassUnitInfo.AUnitName;
       end;
       if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
         // new needed unit
@@ -3499,6 +3504,29 @@ begin
           Result:=mrOk;
       end;
     end;
+  end;
+end;
+
+function TPkgManager.AddPackageDependency(APackage: TLazPackage;
+  const ReqPackage: string; OnlyTestIfPossible: boolean): TModalResult;
+var
+  NewDependency: TPkgDependency;
+  ADependency: TPkgDependency;
+begin
+  Result:=mrCancel;
+  NewDependency:=TPkgDependency.Create;
+  try
+    NewDependency.PackageName:=ReqPackage;
+    if not CheckAddingDependency(APackage,NewDependency) then
+      exit;
+    if not OnlyTestIfPossible then begin
+      ADependency:=NewDependency;
+      NewDependency:=nil;
+      PackageGraph.AddDependencyToPackage(APackage,ADependency);
+      Result:=mrOk;
+    end;
+  finally
+    NewDependency.Free;
   end;
 end;
 

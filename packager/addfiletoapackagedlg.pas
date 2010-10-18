@@ -80,27 +80,27 @@ type
     destructor Destroy; override;
     procedure UpdateAvailablePackages;
     property Filename: string read GetFilename write SetFilename;
-    property UnitName: string read GetUnitName write SetUnitName;
+    property AUnitName: string read GetUnitName write SetUnitName;
     property FileType: TPkgFileType read GetFileType write SetFileType;
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
   end;
 
 
-function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
+function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
   HasRegisterProc: boolean): TModalResult;
 
 
 implementation
 
 
-function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
+function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
   HasRegisterProc: boolean): TModalResult;
 var
   AddFileToAPackageDialog: TAddFileToAPackageDialog;
 begin
   AddFileToAPackageDialog:=TAddFileToAPackageDialog.Create(nil);
   AddFileToAPackageDialog.Filename:=Filename;
-  AddFileToAPackageDialog.UnitName:=UnitName;
+  AddFileToAPackageDialog.AUnitName:=AUnitName;
   AddFileToAPackageDialog.HasRegisterProc:=HasRegisterProc;
   AddFileToAPackageDialog.UpdateAvailablePackages;
   Result:=AddFileToAPackageDialog.ShowModal;
@@ -170,7 +170,7 @@ begin
       Include(FileFlags,pffAddToPkgUsesSection);
     if HasRegisterProc then
       Include(FileFlags,pffHasRegisterProc);
-    APackage.AddFile(Filename,UnitName,FileType,FileFlags,cpNormal);
+    APackage.AddFile(Filename,AUnitName,FileType,FileFlags,cpNormal);
     if APackage.Editor<>nil then APackage.Editor.UpdateAll;
     APackage.EndUpdate;
 
@@ -251,7 +251,7 @@ end;
 
 procedure TAddFileToAPackageDialog.SetUnitName(const AValue: string);
 begin
-  if UnitName=AValue then exit;
+  if AUnitName=AValue then exit;
   UnitNameEdit.Text:=AValue;
 end;
 

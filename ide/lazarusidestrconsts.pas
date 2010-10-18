@@ -908,6 +908,8 @@ resourcestring
   dlgNaming = 'Naming';
   lisFPDocEditor = 'FPDoc Editor';
   dlgCancel = 'Cancel';
+  lisInformation = 'Information';
+  lisQuickFixes = 'Quick fixes';
   lisAutoCompletionOn = 'Auto completion: on';
   lisAutoCompletionOff = 'Auto completion: off';
   lisSAMSelectNone = 'Select none';
@@ -4476,6 +4478,9 @@ resourcestring
   lisUseIdentifier = 'Use identifier';
   lisUsePackageInPackage2 = 'Use package in package';
   lisCenterForm = 'Center form';
+  lisFindMissingUnit = 'Find missing unit';
+  lisAddPackageRequirement = 'Add package requirement?';
+  lisAddPackageToProject = 'Add package %s to project?';
 
 implementation
 

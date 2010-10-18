@@ -450,10 +450,10 @@ begin
     end else begin
       // package not loaded -> read values from .lpk
       PkgLink:=PkgLinks.FindLinkWithPackageID(PkgID);
-      if (PkgLink<>nil) and FileExistsCached(PkgLink.Filename) then begin
+      if (PkgLink<>nil) and FileExistsCached(PkgLink.GetEffectiveFilename) then begin
         // load the package file
         try
-          XMLConfig:=TXMLConfig.Create(PkgLink.Filename);
+          XMLConfig:=TXMLConfig.Create(PkgLink.GetEffectiveFilename);
           try
             Author:=XMLConfig.GetValue('Package/Author/Value','');
             Description:=XMLConfig.GetValue('Package/Description/Value','');

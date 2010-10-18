@@ -752,7 +752,7 @@ type
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
-          const UnitName: string): TCodeTreeNode;
+          const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
@@ -1748,11 +1748,11 @@ begin
 end;
 
 function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
-  const UnitName: string): TCodeTreeNode;
+  const AUnitName: string): TCodeTreeNode;
 begin
   Result:=UsesNode.FirstChild;
   while (Result<>nil)
-  and (not CompareSrcIdentifiers(Result.StartPos,PChar(UnitName))) do
+  and (not CompareSrcIdentifiers(Result.StartPos,PChar(AUnitName))) do
     Result:=Result.NextBrother;
 end;
 
@@ -1878,7 +1878,7 @@ end;
 function TFindDeclarationTool.FindDeclarationInUsesSection(
   UsesNode: TCodeTreeNode; CleanPos: integer;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-var UnitName, UnitInFilename: string;
+var AUnitName, UnitInFilename: string;
   UnitNamePos, UnitInFilePos: TAtomPosition;
 begin
   Result:=false;
@@ -1908,19 +1908,19 @@ begin
     end else
       UnitInFilePos.StartPos:=-1;
     if CleanPos<UnitNamePos.EndPos then begin
-      // cursor is on a unitname -> try to locate it
-      UnitName:=copy(Src,UnitNamePos.StartPos,
+      // cursor is on a AUnitName -> try to locate it
+      AUnitName:=copy(Src,UnitNamePos.StartPos,
                      UnitNamePos.EndPos-UnitNamePos.StartPos);
       if UnitInFilePos.StartPos>=1 then begin
         UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
                              UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
       end else
         UnitInFilename:='';
-      NewPos.Code:=FindUnitSource(UnitName,UnitInFilename,true);
+      NewPos.Code:=FindUnitSource(AUnitName,UnitInFilename,true);
       if NewPos.Code=nil then
         RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[UnitName]),
-            UnitName));
+          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AUnitName]),
+            AUnitName));
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
@@ -1932,7 +1932,7 @@ begin
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
   until (CurPos.StartPos>SrcLen);
   {$IFDEF ShowTriedContexts}
-  DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on unitname');
+  DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on AUnitName');
   {$ENDIF}
 end;
 
@@ -3362,9 +3362,9 @@ begin
         end;
         if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
         then begin
-          // unitname.typename
+          // AUnitName.typename
           MoveCursorToNodeStart(Result.Node);
-          ReadNextAtom; // read unitname
+          ReadNextAtom; // read AUnitName
           if not ReadNextAtomIsChar('.') then
             RaiseCharExpectedButAtomFound('.');
           ReadNextAtom; // read type identifier
@@ -3523,9 +3523,9 @@ begin
         TypeFound:=FindIdentifierInContext(Params);
         if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
         then begin
-          // unitname.typename
+          // AUnitName.typename
           MoveCursorToNodeStart(NameNode);
-          ReadNextAtom; // read unitname
+          ReadNextAtom; // read AUnitName
           if not ReadNextAtomIsChar('.') then
             RaiseCharExpectedButAtomFound('.');
           ReadNextAtom; // read type identifier
@@ -4176,7 +4176,7 @@ end;
 function TFindDeclarationTool.FindUnitReferences(UnitCode: TCodeBuffer;
   SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 var
-  UnitName, UpperUnitName: String;
+  AUnitName, UpperUnitName: String;
 
   function CheckUsesSection(UsesNode: TCodeTreeNode; out Found: boolean): boolean;
   var
@@ -4197,7 +4197,7 @@ var
       if CurPos.StartPos>SrcLen then break;
       if AtomIsChar(';') then break;
       AtomIsIdentifier(true);
-      //DebugLn(['CheckUsesSection ',GetAtom,' ',UnitName]);
+      //DebugLn(['CheckUsesSection ',GetAtom,' ',AUnitName]);
       if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
           //DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
@@ -4244,8 +4244,8 @@ begin
   Result:=false;
   //debugln('FindUnitReferences UnitCode=',UnitCode.Filename,' SkipComments=',dbgs(SkipComments),' ',MainFilename);
 
-  UnitName:=ExtractFileNameOnly(UnitCode.Filename);
-  UpperUnitName:=UpperCaseStr(UnitName);
+  AUnitName:=ExtractFileNameOnly(UnitCode.Filename);
+  UpperUnitName:=UpperCaseStr(AUnitName);
   ListOfPCodeXYPosition:=nil;
   ActivateGlobalWriteLock;
   try
@@ -5222,7 +5222,7 @@ begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
       if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
-        // the searched identifier was a uses unitname, point to the identifier in
+        // the searched identifier was a uses AUnitName, point to the identifier in
         // the uses section
         Result:=true;
         Params.SetResult(Self,Node,Node.StartPos);
@@ -5354,7 +5354,7 @@ begin
     if CompareIdentifierPtrs(@Src[UnitNamePos.StartPos],
                              PChar(Pointer(AnUnitIdentifier)))=0
     then begin
-      // cursor is on a unitname -> try to locate it
+      // cursor is on a AUnitName -> try to locate it
       if UnitInFilePos.StartPos>=1 then begin
         UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
                              UnitInFilePos.EndPos-UnitInFilePos.StartPos-2)

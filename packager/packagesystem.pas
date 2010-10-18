@@ -56,8 +56,8 @@ uses
   // package registration
   LazarusPackageIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, DialogProcs,
-  IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
+  LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
+  DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
@@ -94,7 +94,7 @@ type
   TPkgTranslate = procedure(APackage: TLazPackage) of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
   TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
-  TFindFPCUnitEvent = procedure(const UnitName, Directory: string;
+  TFindFPCUnitEvent = procedure(const AUnitName, Directory: string;
                                 var Filename: string) of object;
   TPkgDeleteAmbiguousFiles = function(const Filename: string): TModalResult of object;
 
@@ -229,7 +229,7 @@ type
     function PackageNameExists(const PkgName: string;
                                IgnorePackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
-                                     out List: TFPList);
+                                     out List: TFPList); // for single search use FindDependencyRecursively
     procedure GetConnectionsTree(FirstDependency: TPkgDependency;
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
@@ -308,7 +308,7 @@ type
     procedure RegisterStaticBasePackages;
     procedure RegisterStaticPackage(APackage: TLazPackage;
                                     RegisterProc: TRegisterProc);
-    procedure RegisterDefaultPackageComponent(const Page, UnitName: ShortString;
+    procedure RegisterDefaultPackageComponent(const Page, AUnitName: ShortString;
                                               ComponentClass: TComponentClass);
     procedure CallRegisterProc(RegisterProc: TRegisterProc);
   public
@@ -369,10 +369,10 @@ var
 
 implementation
 
-procedure RegisterCustomIDEComponent(const Page, UnitName: ShortString;
+procedure RegisterCustomIDEComponent(const Page, AUnitName: ShortString;
   ComponentClass: TComponentClass);
 begin
-  PackageGraph.RegisterDefaultPackageComponent(Page,UnitName,ComponentClass);
+  PackageGraph.RegisterDefaultPackageComponent(Page,AUnitName,ComponentClass);
 end;
 
 procedure RegisterComponentsGlobalHandler(const Page: string;
@@ -449,7 +449,7 @@ begin
   XMLConfig:=nil;
   BeginUpdate(false);
   try
-    AFilename:=PkgLink.Filename;
+    AFilename:=PkgLink.GetEffectiveFilename;
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
@@ -1679,7 +1679,7 @@ procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
     PkgComponent: TPkgComponent;
   begin
     if (OldPkgFile.ComponentCount>0) then begin
-      OldUnitName:=OldPkgFile.UnitName;
+      OldUnitName:=OldPkgFile.AUnitName;
       if OldUnitName='' then RaiseException('MoveInstalledComponents');
       NewPkgFile:=NewPackage.FindUnit(OldUnitName,false);
       if NewPkgFile=nil then begin
@@ -2228,7 +2228,7 @@ var
     PackageTreeOfUnitTrees.Add(Result);
     for i:=0 to Pkg.FileCount-1 do begin
       PkgFile:=Pkg.Files[i];
-      if (PkgFile.FileType in FileTypes) and (PkgFile.UnitName<>'') then
+      if (PkgFile.FileType in FileTypes) and (PkgFile.AUnitName<>'') then
         Result.Add(PkgFile);
     end;
   end;
@@ -2255,9 +2255,9 @@ var
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
       if (PkgFile1.FileType in FileTypes)
-      and (PkgFile1.UnitName<>'') then begin
+      and (PkgFile1.AUnitName<>'') then begin
         // check if a unit of Pkg1 exists in Pkg2
-        PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.UnitName);
+        PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.AUnitName);
         if PkgFile2<>nil then begin
           File1:=PkgFile1;
           File2:=PkgFile2;
@@ -2265,7 +2265,7 @@ var
           exit;
         end;
         // check if a unit of Pkg1 has the same name as Pkg2
-        if AnsiCompareText(PkgFile1.UnitName,Pkg2.Name)=0 then begin
+        if AnsiCompareText(PkgFile1.AUnitName,Pkg2.Name)=0 then begin
           File1:=PkgFile1;
           ConflictPkg:=Pkg2;
           Result:=true;
@@ -2349,7 +2349,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
       CurFile:=Pkg1.Files[i];
       if (CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]))
       and (pffAddToPkgUsesSection in CurFile.Flags) then begin
-        Result:=CheckUnitName(CurFile.UnitName);
+        Result:=CheckUnitName(CurFile.AUnitName);
         if Result then begin
           File1:=CurFile;
           exit;
@@ -3142,7 +3142,7 @@ begin
     for i:=0 to APackage.FileCount-1 do begin
       CurFile:=APackage.Files[i];
       if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.UnitName+'.ppu';
+      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.AUnitName+'.ppu';
       Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
       if Result in [mrCancel,mrAbort] then exit;
     end;
@@ -3214,7 +3214,7 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     if CurFile.FileType<>pftUnit then continue;
-    CurUnitName:=lowercase(CurFile.UnitName);
+    CurUnitName:=lowercase(CurFile.AUnitName);
     if CurUnitName='' then continue;
     Result:=CheckFile(CurUnitName+'.ppu');
     if Result<>mrOk then exit;
@@ -3291,13 +3291,13 @@ begin
           if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
             CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
           // if it makes sense, update unitname
-          if SysUtils.CompareText(CurSrcUnitName,CurFile.UnitName)=0 then
-            CurFile.UnitName:=CurSrcUnitName;
+          if SysUtils.CompareText(CurSrcUnitName,CurFile.AUnitName)=0 then
+            CurFile.AUnitName:=CurSrcUnitName;
         end;
-        if SysUtils.CompareText(CurUnitName,CurFile.UnitName)=0 then
-          CurUnitName:=CurFile.UnitName
+        if SysUtils.CompareText(CurUnitName,CurFile.AUnitName)=0 then
+          CurUnitName:=CurFile.AUnitName
         else
-          CurFile.UnitName:=CurUnitName;
+          CurFile.AUnitName:=CurUnitName;
       end;
 
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
@@ -3638,15 +3638,15 @@ begin
 end;
 
 procedure TLazPackageGraph.RegisterDefaultPackageComponent(const Page,
-  UnitName: ShortString; ComponentClass: TComponentClass);
+  AUnitName: ShortString; ComponentClass: TComponentClass);
 var
   PkgFile: TPkgFile;
   NewPkgFilename: String;
 begin
-  PkgFile:=FDefaultPackage.FindUnit(UnitName,true);
+  PkgFile:=FDefaultPackage.FindUnit(AUnitName,true);
   if PkgFile=nil then begin
-    NewPkgFilename:=UnitName+'.pas';
-    PkgFile:=FDefaultPackage.AddFile(NewPkgFilename,UnitName,pftUnit,[],
+    NewPkgFilename:=AUnitName+'.pas';
+    PkgFile:=FDefaultPackage.AddFile(NewPkgFilename,AUnitName,pftUnit,[],
                                      cpOptional);
   end;
   FRegistrationFile:=PkgFile;

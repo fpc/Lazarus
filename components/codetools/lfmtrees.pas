@@ -597,14 +597,14 @@ begin
       CloseChildNode;
     end;
     
-  toString, toWString:
+  Classes.toString, toWString:
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvString;
       while NextToken = '+' do begin
         NextToken;   // Get next string fragment
-        if not (Parser.Token in [toString,toWString]) then
-          Parser.CheckToken(toString);
+        if not (Parser.Token in [Classes.toString,toWString]) then
+          Parser.CheckToken(Classes.toString);
       end;
       CloseChildNode;
     end;
