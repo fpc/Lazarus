@@ -1230,6 +1230,7 @@ type
     function takeTopLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function topLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
+    function getHeaderHeight: Integer;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
     function getTopItem: integer; override;
     function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; override;
@@ -9844,6 +9845,21 @@ var
 begin
   QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @ItemRect, AItem);
   Result := ItemRect;
+end;
+
+function TQtTreeWidget.getHeaderHeight: Integer;
+var
+  W: QHeaderViewH;
+begin
+  Result := 0;
+  W := QTreeView_header(QTreeViewH(Widget));
+  if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
+  begin
+    if QHeaderView_orientation(W) = QtHorizontal then
+      Result := QWidget_height(W)
+    else
+      Result := QWidget_width(W);
+  end;
 end;
 
 function TQtTreeWidget.getItemVisible(AItem: QTreeWidgetItemH): Boolean;
