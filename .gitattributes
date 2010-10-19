@@ -2159,6 +2159,7 @@ components/synedit/test/SynTest.lpi svneol=native#text/plain
 components/synedit/test/SynTest.lpr svneol=native#text/pascal
 components/synedit/test/testbase.pas svneol=native#text/pascal
 components/synedit/test/testbasicsynedit.pas svneol=native#text/pascal
+components/synedit/test/testbookmarks.pas svneol=native#text/pascal
 components/synedit/test/testfoldedview.pas svneol=native#text/pascal
 components/synedit/test/testhighlightmulti.pas svneol=native#text/pascal
 components/synedit/test/testhighlightpas.pas svneol=native#text/pascal
