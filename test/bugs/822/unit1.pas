@@ -37,7 +37,7 @@ begin
           [ScrollBar1.Width, LineEnding, GetSystemMetrics(SM_CXVSCROLL)]);
   if ParamStr(1)='--runtest' then begin
     if ScrollBar1.Width = GetSystemMetrics(SM_CXVSCROLL) then
-      writeln('ScrollBar1.Width = GetSystemMetrics(SM_CXVSCROLL) = ')
+      writeln('ScrollBar1.Width = GetSystemMetrics(SM_CXVSCROLL)')
     else
       writeln(
         format('ScrollBar1.Width (%d) <> GetSystemMetrics(SM_CXVSCROLL) (%d)',
