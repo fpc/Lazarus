@@ -4085,79 +4085,82 @@ var
 begin
   if [tvsUpdating,tvsPainting] * FStates <> [] then Exit;
   Include(FStates, tvsPainting);
-  if (tvoAutoItemHeight in fOptions) then
-    UpdateDefaultItemHeight;
-  UpdateScrollbars;
-  with Canvas do
-  begin
-    if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
+  try
+    if (tvoAutoItemHeight in fOptions) then
+      UpdateDefaultItemHeight;
+    UpdateScrollbars;
+    with Canvas do
     begin
-      DrawRect := ClientRect;
-      if not CustomDraw(DrawRect, cdPrePaint) then exit;
-    end;
-    // draw nodes
-    Node := TopItem;
-    //write('[TCustomTreeView.DoPaint] A Node=',DbgS(Node));
-    //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
-    while Node <> nil do
-    begin
-      DoPaintNode(Node);
-      Node := Node.GetNextVisible;
-      //write('[TCustomTreeView.DoPaint] B Node=',DbgS(Node));
+      if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
+      begin
+        DrawRect := ClientRect;
+        if not CustomDraw(DrawRect, cdPrePaint) then exit;
+      end;
+      // draw nodes
+      Node := TopItem;
+      //write('[TCustomTreeView.DoPaint] A Node=',DbgS(Node));
       //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
+      while Node <> nil do
+      begin
+        DoPaintNode(Node);
+        Node := Node.GetNextVisible;
+        //write('[TCustomTreeView.DoPaint] B Node=',DbgS(Node));
+        //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
+      end;
+      SpaceRect := Rect(BorderWidth, BorderWidth,
+                        (ClientWidth - ScrollBarWidth) - BorderWidth,
+                        (ClientHeight - ScrollBarWidth) - BorderWidth);
+      // draw insert mark for new root node
+      if (InsertMarkType = tvimAsFirstChild) and (Items.Count = 0) then
+      begin
+        Pen.Color := FTreeLineColor;
+        Brush.Color := FSelectedColor;
+        InsertMarkRect := SpaceRect;
+        InsertMarkRect.Bottom := InsertMarkRect.Top + 2;
+        Rectangle(InsertMarkRect);
+        SpaceRect.Top := InsertMarkRect.Bottom;
+      end;
+      // draw unused space below nodes
+      Node := BottomItem;
+      if Node <> nil then
+        SpaceRect.Top := Node.Top + Node.Height - FScrolledTop + BorderWidth;
+      //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
+      // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
+      if (FBackgroundColor <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
+      begin
+        //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
+        Brush.Color := FBackgroundColor;
+        FillRect(SpaceRect);
+      end;
+      // draw border
+      HalfBorderWidth := BorderWidth shr 1;
+      Pen.Color := clGray;
+      for a := 0 to BorderWidth - 1 do
+      begin
+        if a = HalfBorderWidth then
+          Pen.Color := clBlack;
+        MoveTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
+        LineTo(a, a);
+        LineTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
+      end;
+      Pen.Color := clWhite;
+      for a := 0 to BorderWidth - 1 do
+      begin
+        if a = HalfBorderWidth then
+          Pen.Color := clLtGray;
+        MoveTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
+        LineTo((ClientWidth - ScrollBarWidth) - 1 - a, (ClientHeight - ScrollBarWidth) - 1 - a);
+        LineTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
+      end;
+      if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
+      begin
+        DrawRect := ClientRect;
+        if not CustomDraw(DrawRect, cdPostPaint) then exit;
+      end;
     end;
-    SpaceRect := Rect(BorderWidth, BorderWidth,
-                      (ClientWidth - ScrollBarWidth) - BorderWidth,
-                      (ClientHeight - ScrollBarWidth) - BorderWidth);
-    // draw insert mark for new root node
-    if (InsertMarkType = tvimAsFirstChild) and (Items.Count = 0) then
-    begin
-      Pen.Color := FTreeLineColor;
-      Brush.Color := FSelectedColor;
-      InsertMarkRect := SpaceRect;
-      InsertMarkRect.Bottom := InsertMarkRect.Top + 2;
-      Rectangle(InsertMarkRect);
-      SpaceRect.Top := InsertMarkRect.Bottom;
-    end;
-    // draw unused space below nodes
-    Node := BottomItem;
-    if Node <> nil then
-      SpaceRect.Top := Node.Top + Node.Height - FScrolledTop + BorderWidth;
-    //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
-    // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-    if (FBackgroundColor <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
-    begin
-      //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
-      Brush.Color := FBackgroundColor;
-      FillRect(SpaceRect);
-    end;
-    // draw border
-    HalfBorderWidth := BorderWidth shr 1;
-    Pen.Color := clGray;
-    for a := 0 to BorderWidth - 1 do
-    begin
-      if a = HalfBorderWidth then
-        Pen.Color := clBlack;
-      MoveTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
-      LineTo(a, a);
-      LineTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
-    end;
-    Pen.Color := clWhite;
-    for a := 0 to BorderWidth - 1 do
-    begin
-      if a = HalfBorderWidth then
-        Pen.Color := clLtGray;
-      MoveTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
-      LineTo((ClientWidth - ScrollBarWidth) - 1 - a, (ClientHeight - ScrollBarWidth) - 1 - a);
-      LineTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
-    end;
-    if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
-    begin
-      DrawRect := ClientRect;
-      if not CustomDraw(DrawRect, cdPostPaint) then exit;
-    end;
+  finally
+    Exclude(FStates, tvsPainting);
   end;
-  Exclude(FStates, tvsPainting);
 end;
 
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
