@@ -63,7 +63,7 @@ type
   public
     constructor Create(AOwner: TSourceMark; AEditor: TSourceEditorInterface);
     destructor Destroy; override;
-    function GetEdit: TSynEdit; override;
+    function GetEdit: TSynEdit;
     property SourceMark: TSourceMark read FSourceMark write FSourceMark;
   end;
 
@@ -88,7 +88,7 @@ type
     function Add(Item: TSourceSynMark): Integer;
     property Items[Index: Integer]: TSourceSynMark read GetSM write PutSM; default;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    procedure InvalidateLine(ALine: Integer);
+    procedure DoChange(AChanges: TSynEditMarkChangeReasons);
     procedure DeleteWithSourceEditor(ASrcEditor: TSourceEditorInterface);
     function IndexOfSourceEditor(AEditor: TSourceEditorInterface): Integer;
     procedure IncChangeLock;
@@ -460,12 +460,12 @@ begin
   Result := inherited Add(Item);
 end;
 
-procedure TSourceSynMarkList.InvalidateLine(ALine: Integer);
+procedure TSourceSynMarkList.DoChange(AChanges: TSynEditMarkChangeReasons);
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    Items[i].GetEdit.InvalidateLine(ALine);
+    Items[i].DoChange(AChanges);
 end;
 
 procedure TSourceSynMarkList.DeleteWithSourceEditor(
@@ -609,7 +609,6 @@ begin
   FVisible := AValue;
   if FSynMarkLock = 0 then
     FSynMarks.Visible := AValue;
-  if EditorUpdateRequired then DoLineUpdate(True);
   Changed;
 end;
 
@@ -626,7 +625,7 @@ procedure TSourceMark.DoLineUpdate(Force: Boolean = False);
 begin
   if Line <= 0 then Exit;
   if Visible or Force then
-    FSynMarks.InvalidateLine(Line);
+    FSynMarks.DoChange([smcrChanged]);
 end;
 
 procedure TSourceMark.SetData(const AValue: TObject);
@@ -674,14 +673,12 @@ end;
 procedure TSourceMark.SetLine(const Value: Integer);
 begin
   if Line=Value then exit;
-  if EditorUpdateRequired then DoLineUpdate;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   FLine := Value;
   if FSynMarkLock = 0 then
     FSynMarks.Line := Value;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
-  if EditorUpdateRequired then DoLineUpdate;
   Changed;
 end;
 

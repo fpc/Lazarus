@@ -7402,11 +7402,11 @@ var
   ASrcEdit: TSourceEditor;
   ASynEdit: TSynEdit;
   EditCaret: TPoint;
-  LineMarks: TSynEditMarks;
   AMark: TSourceMark;
   i: integer;
   HintStr: String;
   CurHint: String;
+  MLine: TSynEditMarkLine;
 begin
   // hide other hints
   //debugln('TSourceNotebook.ShowSynEditHint A');
@@ -7422,17 +7422,25 @@ begin
   if EditPos.X<ASynEdit.Gutter.Width then begin
     // hint for a gutter item
     if EditorOpts.ShowGutterHints then begin
-      ASynEdit.Marks.GetMarksForLine(EditCaret.Y,LineMarks);
       HintStr:='';
-      for i:=Low(TSynEditMarks) to High(TSynEditMarks) do begin
-        if not (LineMarks[i] is TSourceSynMark) then continue;
-        AMark := TSourceSynMark(LineMarks[i]).SourceMark;
-        if AMark = nil then continue;
-        CurHint:=AMark.GetHint;
-        if CurHint='' then continue;
-        if HintStr<>'' then HintStr:=HintStr+LineEnding;
-        HintStr:=HintStr+CurHint;
+      MLine := ASynEdit.Marks.Line[EditCaret.Y];
+      if MLine <> nil then begin
+        if ASynEdit.BookMarkOptions.DrawBookmarksFirst then
+          MLine.Sort(smsoBookmarkFirst, smsoColumn)
+        else
+          MLine.Sort(smsoBookMarkLast, smsoColumn);
+
+        for i := 0 to MLine.Count - 1 do begin
+          if not (MLine[i] is TSourceSynMark) then continue;
+          AMark := TSourceSynMark(MLine[i]).SourceMark;
+          if AMark = nil then continue;
+          CurHint:=AMark.GetHint;
+          if CurHint='' then continue;
+          if HintStr<>'' then HintStr:=HintStr+LineEnding;
+          HintStr:=HintStr+CurHint;
+        end;
       end;
+
       if HintStr<>'' then
         ActivateHint(MousePos,'',HintStr);
     end;
