@@ -148,6 +148,21 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       ParentShowHint = False
     end
+    object BuildModeDiffSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModeMoveDownSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 102
+      Height = 22
+      Top = 0
+      Width = 23
+      BorderSpacing.Left = 10
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = BuildModeDiffSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
   end
   object Splitter1: TSplitter[2]
     Cursor = crVSplit

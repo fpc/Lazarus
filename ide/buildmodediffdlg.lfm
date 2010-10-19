@@ -1,0 +1,85 @@
+object BuildModeDiffDialog: TBuildModeDiffDialog
+  Left = 453
+  Height = 316
+  Top = 261
+  Width = 493
+  Caption = 'BuildModeDiffDialog'
+  ClientHeight = 316
+  ClientWidth = 493
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 30
+    Top = 280
+    Width = 481
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.Enabled = False
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object ModeLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 17
+    Top = 12
+    Width = 69
+    BorderSpacing.Left = 10
+    Caption = 'ModeLabel'
+    ParentColor = False
+  end
+  object ModeComboBox: TComboBox
+    AnchorSideLeft.Control = ModeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 89
+    Height = 21
+    Top = 10
+    Width = 394
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 10
+    ItemHeight = 0
+    TabOrder = 1
+    Text = 'ModeComboBox'
+  end
+  object DiffsGroupBox: TGroupBox
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 233
+    Top = 41
+    Width = 473
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 4
+    BorderSpacing.Right = 4
+    BorderSpacing.Around = 6
+    Caption = 'DiffsGroupBox'
+    ClientHeight = 211
+    ClientWidth = 465
+    TabOrder = 2
+    object DiffTreeView: TTreeView
+      Left = 0
+      Height = 211
+      Top = 0
+      Width = 465
+      Align = alClient
+      DefaultItemHeight = 18
+      TabOrder = 0
+    end
+  end
+end

@@ -56,7 +56,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="72">
+    <Units Count="73">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -548,6 +548,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEFPCInfo"/>
       </Unit71>
+      <Unit72>
+        <Filename Value="buildmodediffdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BuildModeDiffDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BuildModeDiffDlg"/>
+      </Unit72>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -563,7 +570,6 @@
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
-        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Other>

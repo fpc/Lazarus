@@ -36,13 +36,14 @@ uses
   ProjectIntf, IDEImagesIntf, IDEOptionsIntf,
   PackageDefs, compiler_inherited_options, TransferMacros,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
-  IDEProcs;
+  IDEProcs, BuildModeDiffDlg;
 
 type
 
   { TBuildModesEditorFrame }
 
   TBuildModesEditorFrame = class(TAbstractIDEOptionsEditor)
+    BuildModeDiffSpeedButton: TSpeedButton;
     BuildMacroValuesGroupBox: TGroupBox;
     BuildMacroValuesStringGrid: TStringGrid;
     BuildModeAddSpeedButton: TSpeedButton;
@@ -53,6 +54,7 @@ type
     BuildModesPopupMenu: TPopupMenu;
     BuildModesStringGrid: TStringGrid;
     Splitter1: TSplitter;
+    procedure BuildModeDiffSpeedButtonClick(Sender: TObject);
     procedure BuildMacroValuesStringGridEditingDone(Sender: TObject);
     procedure BuildMacroValuesStringGridSelectEditor(Sender: TObject; aCol,
       aRow: Integer; var Editor: TWinControl);
@@ -104,6 +106,7 @@ type
     property ShowSession: boolean read FShowSession write SetShowSession;
     property LoadShowSessionFromProjects: boolean read FLoadShowSessionFromProject
                                               write FLoadShowSessionFromProject;
+    function GetSelectedBuildMode: TProjectBuildMode;
   end;
 
 implementation
@@ -177,6 +180,22 @@ procedure TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone(
 begin
   //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone ']);
   SaveMacros(true);
+end;
+
+procedure TBuildModesEditorFrame.BuildModeDiffSpeedButtonClick(Sender: TObject);
+begin
+  FSwitchingMode:=true;
+  try
+    // save changes
+    OnSaveIDEOptions(Self,AProject.CompilerOptions);
+    // show diff dialog
+    ShowBuildModeDiffDialog(GetSelectedBuildMode);
+    IncreaseBuildMacroChangeStamp;
+    // load options
+    OnLoadIDEOptions(Self,AProject.CompilerOptions);
+  finally
+    FSwitchingMode:=false;
+  end;
 end;
 
 procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelection(
@@ -606,6 +625,7 @@ begin
                        i<BuildModesStringGrid.RowCount-2;
   BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]
     );
+  BuildModeDiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
 end;
 
 procedure TBuildModesEditorFrame.ActivateMode(aMode: TProjectBuildMode);
@@ -661,6 +681,7 @@ begin
   BuildModeDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
   BuildModeMoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
   BuildModeMoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  BuildModeDiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
 
   BuildMacroValuesGroupBox.Caption:=lisSetMacroValues;
   Grid:=BuildMacroValuesStringGrid;
@@ -709,6 +730,17 @@ end;
 class function TBuildModesEditorFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TProjectCompilerOptions;
+end;
+
+function TBuildModesEditorFrame.GetSelectedBuildMode: TProjectBuildMode;
+var
+  i: LongInt;
+begin
+  Result:=nil;
+  if aProject=nil then exit;
+  i:=BuildModesStringGrid.Row-1;
+  if (i<0) or (i>=AProject.BuildModes.Count) then exit;
+  Result:=AProject.BuildModes[i];
 end;
 
 {$IFDEF EnableBuildModes}

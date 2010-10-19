@@ -665,6 +665,8 @@ type
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
+    function GetCaption: string;
+    function GetIndex: integer;
   public
     property InSession: boolean read FInSession write SetInSession;
     property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
@@ -6769,6 +6771,28 @@ procedure TProjectBuildMode.RemoveOnChangedHandler(const Handler: TNotifyEvent
   );
 begin
   fOnChanged.Remove(TMethod(Handler));
+end;
+
+function TProjectBuildMode.GetCaption: string;
+var
+  i: Integer;
+begin
+  Result:=Identifier;
+  for i:=length(Result) downto 1 do
+    if Result[i] in ['&',#0..#31,#127] then
+      System.Delete(Result,i,1);
+  if Result<>'' then exit;
+  i:=GetIndex;
+  if i>=0 then
+    Result:='['+IntToStr(i)+']';
+end;
+
+function TProjectBuildMode.GetIndex: integer;
+begin
+  if LazProject<>nil then
+    Result:=LazProject.BuildModes.IndexOf(Self)
+  else
+    Result:=-1;
 end;
 
 { TProjectBuildModes }

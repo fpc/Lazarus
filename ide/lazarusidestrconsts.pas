@@ -4910,6 +4910,7 @@ resourcestring
   lisDeleteMode = 'Delete mode "%s"';
   lisMoveOnePositionUp = 'Move "%s" one position up';
   lisMoveOnePositionDown = 'Move "%s" one position down';
+  lisShowDifferencesBetweenModes = 'Show differences between modes ...';
 
 implementation
 

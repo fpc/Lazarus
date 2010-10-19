@@ -3282,8 +3282,6 @@ var
   procedure AddMode(CurMode: TProjectBuildMode);
   var
     AMenuItem: TMenuItem;
-    i: Integer;
-    aTitle: String;
   begin
     if aMenu.Items.Count > CurIndex then
       AMenuItem := aMenu.Items[CurIndex]
@@ -3294,13 +3292,7 @@ var
       AMenuItem.OnClick := @mnuSetBuildModeClick;
       aMenu.Items.Add(AMenuItem);
     end;
-    aTitle:=CurMode.Identifier;
-    for i:=length(aTitle) downto 1 do
-      if aTitle[i] in ['&',#0..#31,#127] then
-        System.Delete(aTitle,i,1);
-    if (aTitle='') then
-      aTitle:='['+IntToStr(CurIndex)+']';
-    AMenuItem.Caption := aTitle;
+    AMenuItem.Caption := CurMode.GetCaption;
     AMenuItem.Checked:=Project1.ActiveBuildMode=CurMode;
     AMenuItem.ShowAlwaysCheckable:=true;
     inc(CurIndex);
