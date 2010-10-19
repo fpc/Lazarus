@@ -380,6 +380,7 @@ type
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   public
+    procedure grabMouse; override;
     function GetContainerWidget: QWidgetH; override;
     function getClientOffset: TPoint; override;
     function getClientBounds: TRect; override;
@@ -415,7 +416,6 @@ type
   public
     function cornerWidget: TQtWidget;
     function viewport: TQtViewPort;
-    procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setCursor(const ACursor: QCursorH); override;
@@ -11277,6 +11277,17 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 
+procedure TQtAbstractScrollArea.grabMouse;
+var
+  W: QWidgetH;
+begin
+  W := viewportWidget;
+  if (W <> nil) and QWidget_isVisible(W) and QWidget_isEnabled(W) then
+    QWidget_grabMouse(W)
+  else
+    inherited grabMouse;
+end;
+
 function TQtAbstractScrollArea.GetContainerWidget: QWidgetH;
 begin
   Result := viewportWidget;
@@ -11712,14 +11723,6 @@ function TQtCustomControl.viewport: TQtViewport;
 begin
   viewportNeeded;
   Result := FViewPortWidget;
-end;
-
-procedure TQtCustomControl.grabMouse;
-begin
-  if LCLObject is TCustomControl then
-    viewport.grabMouse
-  else
-    inherited grabMouse;
 end;
 
 procedure TQtCustomControl.preferredSize(var PreferredWidth,
