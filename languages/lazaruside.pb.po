@@ -12498,6 +12498,10 @@ msgstr "Exibir"
 msgid "Show declaration hints"
 msgstr "Exibir dicas declarações"
 
+#: lazarusidestrconsts.lisshowdifferencesbetweenmodes
+msgid "Show differences between modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Exibir unidades/pacotes vazios"
