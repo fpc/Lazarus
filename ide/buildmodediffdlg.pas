@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
   StdCtrls, ComCtrls,
-  LazarusIDEStrConsts, Project, CompilerOptions;
+  LazarusIDEStrConsts, Project, CompilerOptions, CompOptsModes;
 
 type
 
@@ -111,6 +111,9 @@ var
   i: Integer;
   CurMode: TProjectBuildMode;
   ModeNode: TTreeNode;
+  Diff: TStringList;
+  DiffTool: TCompilerDiffTool;
+  j: Integer;
 begin
   DiffTreeView.BeginUpdate;
   DiffTreeView.Items.Clear;
@@ -121,7 +124,13 @@ begin
       CurMode:=fProject.BuildModes[i];
       if CurMode=BaseMode then continue;
       ModeNode:=DiffTreeView.Items.Add(nil,CurMode.GetCaption);
-      DiffTreeView.Items.AddChild(ModeNode,'todo');
+      Diff:=TStringList.Create;
+      DiffTool:=TCompilerDiffTool.Create(Diff);
+      BaseMode.CreateDiff(CurMode,DiffTool);
+      for j:=0 to Diff.Count-1 do
+        DiffTreeView.Items.AddChild(ModeNode,Diff[j]);
+      DiffTool.Free;
+      Diff.Free;
       ModeNode.Expand(true);
     end;
   end;

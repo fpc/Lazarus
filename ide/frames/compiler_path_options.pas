@@ -88,17 +88,27 @@ function TCompilerPathOptionsFrame.Check: boolean;
   end;
 
 var
-  OldIncludePath: String;
-  OldLibraryPath: String;
-  OldUnitPath: String;
-  OldSrcPath: String;
-  OldDebugPath: String;
+  OldParsedIncludePath: String;
+  OldParsedLibraryPath: String;
+  OldParsedUnitPath: String;
+  OldParsedSrcPath: String;
+  OldParsedDebugPath: String;
+  OldUnparsedIncludePath: String;
+  OldUnparsedLibraryPath: String;
+  OldUnparsedUnitPath: String;
+  OldUnparsedSrcPath: String;
+  OldUnparsedDebugPath: String;
 begin
-  OldIncludePath := FCompilerOpts.GetIncludePath(False);
-  OldLibraryPath := FCompilerOpts.GetLibraryPath(False);
-  OldUnitPath := FCompilerOpts.GetUnitPath(False);
-  OldSrcPath := FCompilerOpts.GetSrcPath(False);
-  OldDebugPath := FCompilerOpts.GetDebugPath(False);
+  OldParsedIncludePath := FCompilerOpts.GetIncludePath(False);
+  OldUnparsedIncludePath := FCompilerOpts.IncludePath;
+  OldParsedLibraryPath := FCompilerOpts.GetLibraryPath(False);
+  OldUnparsedLibraryPath := FCompilerOpts.Libraries;
+  OldParsedUnitPath := FCompilerOpts.GetUnitPath(False);
+  OldUnparsedUnitPath := FCompilerOpts.OtherUnitFiles;
+  OldParsedSrcPath := FCompilerOpts.GetSrcPath(False);
+  OldUnparsedSrcPath := FCompilerOpts.SrcPath;
+  OldParsedDebugPath := FCompilerOpts.GetDebugPath(False);
+  OldUnparsedDebugPath := FCompilerOpts.DebugPath;
 
   try
     FCompilerOpts.IncludePath := IncludeFilesEdit.Text;
@@ -106,22 +116,22 @@ begin
     FCompilerOpts.OtherUnitFiles := OtherUnitsEdit.Text;
     FCompilerOpts.SrcPath := OtherSourcesEdit.Text;
     FCompilerOpts.DebugPath := DebugPathEdit.Text;
-    if not CheckPutSearchPath('include search path', OldIncludePath, FCompilerOpts.GetIncludePath(False)) then
+    if not CheckPutSearchPath('include search path', OldParsedIncludePath, FCompilerOpts.GetIncludePath(False)) then
       Exit(False);
-    if not CheckPutSearchPath('library search path', OldLibraryPath, FCompilerOpts.GetLibraryPath(False)) then
+    if not CheckPutSearchPath('library search path', OldParsedLibraryPath, FCompilerOpts.GetLibraryPath(False)) then
       Exit(False);
-    if not CheckPutSearchPath('unit search path', OldUnitPath, FCompilerOpts.GetUnitPath(False)) then
+    if not CheckPutSearchPath('unit search path', OldParsedUnitPath, FCompilerOpts.GetUnitPath(False)) then
       Exit(False);
-    if not CheckPutSearchPath('source search path', OldSrcPath, FCompilerOpts.GetSrcPath(False)) then
+    if not CheckPutSearchPath('source search path', OldParsedSrcPath, FCompilerOpts.GetSrcPath(False)) then
       Exit(False);
-    if not CheckPutSearchPath('debugger search path', OldDebugPath, FCompilerOpts.GetDebugPath(False)) then
+    if not CheckPutSearchPath('debugger search path', OldParsedDebugPath, FCompilerOpts.GetDebugPath(False)) then
       Exit(False);
   finally
-    FCompilerOpts.IncludePath := OldIncludePath;
-    FCompilerOpts.Libraries := OldLibraryPath;
-    FCompilerOpts.OtherUnitFiles := OldUnitPath;
-    FCompilerOpts.SrcPath := OldSrcPath;
-    FCompilerOpts.DebugPath := OldDebugPath;
+    FCompilerOpts.IncludePath := OldUnparsedIncludePath;
+    FCompilerOpts.Libraries := OldUnparsedLibraryPath;
+    FCompilerOpts.OtherUnitFiles := OldUnparsedUnitPath;
+    FCompilerOpts.SrcPath := OldUnparsedSrcPath;
+    FCompilerOpts.DebugPath := OldUnparsedDebugPath;
   end;
   Result := True;
 end;

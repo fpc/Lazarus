@@ -439,7 +439,7 @@ type
   public
     procedure Clear; virtual;
     function CreateDiff(CompOpts: TCompilationToolOptions;
-                         Tool: TCompilerDiffTool = nil): boolean; virtual;
+                        Tool: TCompilerDiffTool = nil): boolean; virtual;
     procedure Assign(Src: TCompilationToolOptions); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
@@ -3178,6 +3178,12 @@ end;
 function TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
   Tool: TCompilerDiffTool): boolean;
 
+  function Done(Diff: boolean): boolean;
+  begin
+    if Diff then CreateDiff:=true;
+    Result:=(Tool=nil) and Diff;
+  end;
+
   function AddDiff(const PropertyName: string;
     const Old, New: TCompilationExecutableType): boolean;
   begin
@@ -3188,110 +3194,104 @@ function TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
 var
   i: Integer;
 begin
-  Result:=Tool.AddPathsDiff('StorePathDelim',PathDelimSwitchToDelim[FStorePathDelim],
-                            PathDelimSwitchToDelim[CompOpts.FStorePathDelim]);
+  Result:=false;
+  //if Tool<>nil then debugln(['TBaseCompilerOptions.CreateDiff ',DbgSName(Self)]);
+  if Done(Tool.AddPathsDiff('StorePathDelim',PathDelimSwitchToDelim[FStorePathDelim],
+                            PathDelimSwitchToDelim[CompOpts.FStorePathDelim])) then exit;
 
   // target
-  Result:=Result or Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename);
+  if Done(Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename)) then exit;
 
   // search paths
   if Tool<>nil then Tool.Path:='Paths';
-  Result:=Result
-    or Tool.AddPathsDiff('IncludePaths',IncludePath,CompOpts.IncludePath)
-    or Tool.AddPathsDiff('LibraryPaths',Libraries,CompOpts.Libraries)
-    or Tool.AddPathsDiff('UnitPaths',OtherUnitFiles,CompOpts.OtherUnitFiles)
-    or Tool.AddPathsDiff('UnitOutputDir',UnitOutputDirectory,CompOpts.UnitOutputDirectory)
-    or Tool.AddPathsDiff('ObjectPath',ObjectPath,CompOpts.ObjectPath)
-    or Tool.AddPathsDiff('SrcPath',SrcPath,CompOpts.SrcPath)
-    or Tool.AddPathsDiff('DebugPath',DebugPath,CompOpts.DebugPath);
+  if Done(Tool.AddPathsDiff('IncludePaths',IncludePath,CompOpts.IncludePath)) then exit;
+  if Done(Tool.AddPathsDiff('LibraryPaths',Libraries,CompOpts.Libraries)) then exit;
+  if Done(Tool.AddPathsDiff('UnitPaths',OtherUnitFiles,CompOpts.OtherUnitFiles)) then exit;
+  if Done(Tool.AddPathsDiff('UnitOutputDir',UnitOutputDirectory,CompOpts.UnitOutputDirectory)) then exit;
+  if Done(Tool.AddPathsDiff('ObjectPath',ObjectPath,CompOpts.ObjectPath)) then exit;
+  if Done(Tool.AddPathsDiff('SrcPath',SrcPath,CompOpts.SrcPath)) then exit;
+  if Done(Tool.AddPathsDiff('DebugPath',DebugPath,CompOpts.DebugPath)) then exit;
 
   // conditionals
-  Result:=Result
-    or Tool.AddPathsDiff('Conditionals',FConditionals,CompOpts.FConditionals);
+  if Done(Tool.AddPathsDiff('Conditionals',FConditionals,CompOpts.FConditionals)) then exit;
   if Tool<>nil then Tool.Path:='BuildModes';
-  Result:=Result
-    or TIDEBuildMacros(fBuildMacros).CreateDiff(CompOpts.BuildMacros,Tool)
-    or Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
+  if Done(TIDEBuildMacros(fBuildMacros).CreateDiff(CompOpts.BuildMacros,Tool)) then exit;
+  if Done(Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType)) then exit;
 
   // parsing
   if Tool<>nil then Tool.Path:='Parsing';
-  Result:=Result
-    or Tool.AddDiff('SyntaxMode',FSyntaxMode,CompOpts.FSyntaxMode)
-    or Tool.AddDiff('AssemblerStyle',fAssemblerStyle,CompOpts.fAssemblerStyle)
-    or Tool.AddDiff('CStyleOp',fCStyleOp,CompOpts.fCStyleOp)
-    or Tool.AddDiff('IncludeAssertionCode',fIncludeAssertionCode,CompOpts.fIncludeAssertionCode)
-    or Tool.AddDiff('AllowLabel',fAllowLabel,CompOpts.fAllowLabel)
-    or Tool.AddDiff('CPPInline',fCPPInline,CompOpts.fCPPInline)
-    or Tool.AddDiff('CMacros',fCMacros,CompOpts.fCMacros)
-    or Tool.AddDiff('InitConst',fInitConst,CompOpts.fInitConst)
-    or Tool.AddDiff('StaticKeyword',fStaticKeyword,CompOpts.fStaticKeyword)
-    or Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr);
+  if Done(Tool.AddDiff('SyntaxMode',FSyntaxMode,CompOpts.FSyntaxMode)) then exit;
+  if Done(Tool.AddDiff('AssemblerStyle',fAssemblerStyle,CompOpts.fAssemblerStyle)) then exit;
+  if Done(Tool.AddDiff('CStyleOp',fCStyleOp,CompOpts.fCStyleOp)) then exit;
+  if Done(Tool.AddDiff('IncludeAssertionCode',fIncludeAssertionCode,CompOpts.fIncludeAssertionCode)) then exit;
+  if Done(Tool.AddDiff('AllowLabel',fAllowLabel,CompOpts.fAllowLabel)) then exit;
+  if Done(Tool.AddDiff('CPPInline',fCPPInline,CompOpts.fCPPInline)) then exit;
+  if Done(Tool.AddDiff('CMacros',fCMacros,CompOpts.fCMacros)) then exit;
+  if Done(Tool.AddDiff('InitConst',fInitConst,CompOpts.fInitConst)) then exit;
+  if Done(Tool.AddDiff('StaticKeyword',fStaticKeyword,CompOpts.fStaticKeyword)) then exit;
+  if Done(Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr)) then exit;
 
   // code generation
   if Tool<>nil then Tool.Path:='Code';
-  Result:=Result
-    or Tool.AddDiff('SmartLinkUnit',fSmartLinkUnit,CompOpts.SmartLinkUnit)
-    or Tool.AddDiff('IOChecks',fIOChecks,CompOpts.fIOChecks)
-    or Tool.AddDiff('RangeChecks',fRangeChecks,CompOpts.fRangeChecks)
-    or Tool.AddDiff('OverflowChecks',fOverflowChecks,CompOpts.fOverflowChecks)
-    or Tool.AddDiff('StackChecks',fStackChecks,CompOpts.fStackChecks)
-    or Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes)
-    or Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize)
-    or Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes)
-    or Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)
-    or Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)
-    or Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)
-    or Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)
-    or Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)
-    or Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)
-    or Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS);
+  if Done(Tool.AddDiff('SmartLinkUnit',fSmartLinkUnit,CompOpts.SmartLinkUnit)) then exit;
+  if Done(Tool.AddDiff('IOChecks',fIOChecks,CompOpts.fIOChecks)) then exit;
+  if Done(Tool.AddDiff('RangeChecks',fRangeChecks,CompOpts.fRangeChecks)) then exit;
+  if Done(Tool.AddDiff('OverflowChecks',fOverflowChecks,CompOpts.fOverflowChecks)) then exit;
+  if Done(Tool.AddDiff('StackChecks',fStackChecks,CompOpts.fStackChecks)) then exit;
+  if Done(Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes)) then exit;
+  if Done(Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize)) then exit;
+  if Done(Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes)) then exit;
+  if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
+  if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;
+  if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;
+  if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
+  if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
+  if Done(Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)) then exit;
+  if Done(Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS)) then exit;
 
   // linking
   if Tool<>nil then Tool.Path:='Linking';
-  Result:=Result
-    or Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo)
-    or Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit)
-    or Tool.AddDiff('GenerateDwarf',FGenerateDwarf,CompOpts.FGenerateDwarf)
-    or Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc)
-    or Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind)
-    or Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode)
-    or Tool.AddDiff('StripSymbols',fStripSymbols,CompOpts.fStripSymbols)
-    or Tool.AddDiff('LinkSmart',fLinkSmart,CompOpts.fLinkSmart)
-    or Tool.AddDiff('PassLinkerOpt',fPassLinkerOpt,CompOpts.fPassLinkerOpt)
-    or Tool.AddDiff('LinkerOptions',fLinkerOptions,CompOpts.fLinkerOptions)
-    or Tool.AddDiff('Win32GraphicApp',FWin32GraphicApp,CompOpts.FWin32GraphicApp)
-    or AddDiff('ExecutableType',FExecutableType,CompOpts.FExecutableType);
+  if Done(Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo)) then exit;
+  if Done(Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit)) then exit;
+  if Done(Tool.AddDiff('GenerateDwarf',FGenerateDwarf,CompOpts.FGenerateDwarf)) then exit;
+  if Done(Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc)) then exit;
+  if Done(Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind)) then exit;
+  if Done(Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode)) then exit;
+  if Done(Tool.AddDiff('StripSymbols',fStripSymbols,CompOpts.fStripSymbols)) then exit;
+  if Done(Tool.AddDiff('LinkSmart',fLinkSmart,CompOpts.fLinkSmart)) then exit;
+  if Done(Tool.AddDiff('PassLinkerOpt',fPassLinkerOpt,CompOpts.fPassLinkerOpt)) then exit;
+  if Done(Tool.AddDiff('LinkerOptions',fLinkerOptions,CompOpts.fLinkerOptions)) then exit;
+  if Done(Tool.AddDiff('Win32GraphicApp',FWin32GraphicApp,CompOpts.FWin32GraphicApp)) then exit;
+  if Done(AddDiff('ExecutableType',FExecutableType,CompOpts.FExecutableType)) then exit;
 
   // verbosity
   if Tool<>nil then Tool.Path:='Verbosity';
-  Result:=Result
-    or Tool.AddDiff('ShowErrors',fShowErrors,CompOpts.fShowErrors)
-    or Tool.AddDiff('ShowWarn',fShowWarn,CompOpts.fShowWarn)
-    or Tool.AddDiff('ShowNotes',fShowNotes,CompOpts.fShowNotes)
-    or Tool.AddDiff('ShowHints',fShowHints,CompOpts.fShowHints)
-    or Tool.AddDiff('ShowGenInfo',fShowGenInfo,CompOpts.fShowGenInfo)
-    or Tool.AddDiff('ShowLineNum',fShowLineNum,CompOpts.fShowLineNum)
-    or Tool.AddDiff('ShowAll',fShowAll,CompOpts.fShowAll)
-    or Tool.AddDiff('ShowAllProcsOnError',fShowAllProcsOnError,CompOpts.fShowAllProcsOnError)
-    or Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo)
-    or Tool.AddDiff('ShowUsedFiles',fShowUsedFiles,CompOpts.fShowUsedFiles)
-    or Tool.AddDiff('ShowTriedFiles',fShowTriedFiles,CompOpts.fShowTriedFiles)
-    or Tool.AddDiff('ShowDefMacros',fShowDefMacros,CompOpts.fShowDefMacros)
-    or Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc)
-    or Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond)
-    or Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo)
-    or Tool.AddDiff('ShowNothing',fShowNothing,CompOpts.fShowNothing)
-    or Tool.AddDiff('ShowSummary',fShowSummary,CompOpts.fShowSummary)
-    or Tool.AddDiff('ShowHintsForUnusedUnitsInMainSrc',fShowHintsForUnusedUnitsInMainSrc,CompOpts.fShowHintsForUnusedUnitsInMainSrc)
-    or Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed)
-    or Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo);
+  if Done(Tool.AddDiff('ShowErrors',fShowErrors,CompOpts.fShowErrors)) then exit;
+  if Done(Tool.AddDiff('ShowWarn',fShowWarn,CompOpts.fShowWarn)) then exit;
+  if Done(Tool.AddDiff('ShowNotes',fShowNotes,CompOpts.fShowNotes)) then exit;
+  if Done(Tool.AddDiff('ShowHints',fShowHints,CompOpts.fShowHints)) then exit;
+  if Done(Tool.AddDiff('ShowGenInfo',fShowGenInfo,CompOpts.fShowGenInfo)) then exit;
+  if Done(Tool.AddDiff('ShowLineNum',fShowLineNum,CompOpts.fShowLineNum)) then exit;
+  if Done(Tool.AddDiff('ShowAll',fShowAll,CompOpts.fShowAll)) then exit;
+  if Done(Tool.AddDiff('ShowAllProcsOnError',fShowAllProcsOnError,CompOpts.fShowAllProcsOnError)) then exit;
+  if Done(Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo)) then exit;
+  if Done(Tool.AddDiff('ShowUsedFiles',fShowUsedFiles,CompOpts.fShowUsedFiles)) then exit;
+  if Done(Tool.AddDiff('ShowTriedFiles',fShowTriedFiles,CompOpts.fShowTriedFiles)) then exit;
+  if Done(Tool.AddDiff('ShowDefMacros',fShowDefMacros,CompOpts.fShowDefMacros)) then exit;
+  if Done(Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc)) then exit;
+  if Done(Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond)) then exit;
+  if Done(Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo)) then exit;
+  if Done(Tool.AddDiff('ShowNothing',fShowNothing,CompOpts.fShowNothing)) then exit;
+  if Done(Tool.AddDiff('ShowSummary',fShowSummary,CompOpts.fShowSummary)) then exit;
+  if Done(Tool.AddDiff('ShowHintsForUnusedUnitsInMainSrc',fShowHintsForUnusedUnitsInMainSrc,CompOpts.fShowHintsForUnusedUnitsInMainSrc)) then exit;
+  if Done(Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed)) then exit;
+  if Done(Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo)) then exit;
 
   //messages
   if Tool<>nil then Tool.Path:='Messages';
-  Result:=Result
-    or Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages)
-    or Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)
-    or Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName);
+  if Done(Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages)) then exit;
+  if Done(Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)) then exit;
+  if Done(Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName)) then exit;
   for i:=0 to fCompilerMessages.Count-1 do
     if fCompilerMessages.Msg[i].Ignored<>CompOpts.fCompilerMessages.Msg[i].Ignored
     then begin
@@ -3302,20 +3302,18 @@ begin
 
   // other
   if Tool<>nil then Tool.Path:='Other';
-  Result:=Result
-    or Tool.AddDiff('DontUseConfigFile',fDontUseConfigFile,CompOpts.fDontUseConfigFile)
-    or Tool.AddDiff('CustomConfigFile',fCustomConfigFile,CompOpts.fCustomConfigFile)
-    or Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath)
-    or Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount)
-    or Tool.AddDiff('CustomOptions',CustomOptions,CompOpts.CustomOptions);
+  if Done(Tool.AddDiff('DontUseConfigFile',fDontUseConfigFile,CompOpts.fDontUseConfigFile)) then exit;
+  if Done(Tool.AddDiff('CustomConfigFile',fCustomConfigFile,CompOpts.fCustomConfigFile)) then exit;
+  if Done(Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath)) then exit;
+  if Done(Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount)) then exit;
+  if Done(Tool.AddDiff('CustomOptions',CustomOptions,CompOpts.CustomOptions)) then exit;
 
   // compilation
   if Tool<>nil then Tool.Path:='Compilation';
-  Result:=Result
-    or Tool.AddDiff('CompilerPath',CompilerPath,CompOpts.CompilerPath)
-    or ExecuteBefore.CreateDiff(CompOpts.ExecuteBefore,Tool)
-    or ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool)
-    or Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild);
+  if Done(Tool.AddDiff('CompilerPath',CompilerPath,CompOpts.CompilerPath)) then exit;
+  if Done(ExecuteBefore.CreateDiff(CompOpts.ExecuteBefore,Tool)) then exit;
+  if Done(ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool)) then exit;
+  if Done(Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild)) then exit;
 end;
 
 
@@ -3834,11 +3832,19 @@ end;
 
 function TCompilationToolOptions.CreateDiff(CompOpts: TCompilationToolOptions;
   Tool: TCompilerDiffTool): boolean;
+
+  function Done(Diff: boolean): boolean;
+  begin
+    if Diff then CreateDiff:=true;
+    Result:=(Tool=nil) and Diff;
+  end;
+
 begin
-  Result:=Tool.AddDiff('Command',Command,CompOpts.Command)
-    or Tool.AddDiff('ScanForFPCMessages',ScanForFPCMessages,CompOpts.ScanForFPCMessages)
-    or Tool.AddDiff('ScanForMakeMessages',ScanForMakeMessages,CompOpts.ScanForMakeMessages)
-    or Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages);
+  Result:=false;
+  if Done(Tool.AddDiff('Command',Command,CompOpts.Command)) then exit;
+  if Done(Tool.AddDiff('ScanForFPCMessages',ScanForFPCMessages,CompOpts.ScanForFPCMessages)) then exit;
+  if Done(Tool.AddDiff('ScanForMakeMessages',ScanForMakeMessages,CompOpts.ScanForMakeMessages)) then exit;
+  if Done(Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages)) then exit;
 end;
 
 function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle: string
@@ -3997,11 +4003,19 @@ end;
 
 function TIDEBuildMacro.CreateDiff(OtherMode: TLazBuildMacro;
   Tool: TCompilerDiffTool): boolean;
+
+  function Done(Diff: boolean): boolean;
+  begin
+    if Diff then CreateDiff:=true;
+    Result:=(Tool=nil) and Diff;
+  end;
+
 begin
-  Result:=Tool.AddDiff('Identifier',Identifier,OtherMode.Identifier)
-    or Tool.AddDiff('Description',Description,OtherMode.Description)
-    or Tool.AddStringsDiff('Values',Values,OtherMode.Values)
-    or Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions);
+  Result:=false;
+  if Done(Tool.AddDiff('Identifier',Identifier,OtherMode.Identifier)) then exit;
+  if Done(Tool.AddDiff('Description',Description,OtherMode.Description)) then exit;
+  if Done(Tool.AddStringsDiff('Values',Values,OtherMode.Values)) then exit;
+  if Done(Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions)) then exit;
 end;
 
 procedure TIDEBuildMacro.IncreaseChangeStamp;
@@ -4115,13 +4129,30 @@ function TIDEBuildMacros.CreateDiff(OtherProperties: TLazBuildMacros;
   Tool: TCompilerDiffTool): boolean;
 var
   i: Integer;
+  OtherMacro: TLazBuildMacro;
 begin
-  Result:=Tool.AddDiff('Count',Count,OtherProperties.Count);
-  for i:=0 to Count-1 do begin
-    if i>=OtherProperties.Count then break;
-    if TIDEBuildMacro(Items[i]).CreateDiff(OtherProperties.Items[i],Tool) then
-      Result:=true;
+  if (Tool=nil) and (Count<>OtherProperties.Count) then exit(true);
+  for i:=0 to OtherProperties.Count-1 do begin
+    OtherMacro:=OtherProperties.Items[i];
+    if i>=Count then
+    begin
+      if Tool=nil then exit(true);
+      Tool.AddDiffItem('BuildMacros/'+OtherMacro.Identifier,'new');
+    end else begin
+      if Tool=nil then
+      begin
+        if not TIDEBuildMacro(Items[i]).Equals(OtherMacro) then exit(true);
+      end else
+      begin
+        Tool.Path:='BuildMacros/'+OtherMacro.Identifier;
+        if TIDEBuildMacro(Items[i]).CreateDiff(OtherProperties.Items[i],Tool) then
+          Result:=true;
+      end;
+    end;
   end;
+  if Tool<>nil then
+    for i:=OtherProperties.Count to Count-1 do
+      Tool.AddDiffItem('BuildMacros/'+Items[i].Identifier,'deleted');
 end;
 
 procedure TIDEBuildMacros.Assign(Source: TLazBuildMacros);

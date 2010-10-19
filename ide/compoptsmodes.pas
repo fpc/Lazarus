@@ -27,8 +27,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    This unit contains the implementation of the conditional compiler options
-    that depend on build macros/modes and environment.
+    This unit contains a class to create diffs between compiler options.
 }
 unit CompOptsModes;
 
@@ -58,6 +57,7 @@ type
   public
     constructor Create(DiffList: TStrings);
     procedure AddDiffItem(const PropertyName, Value: string);
+    procedure AddDiffItemUndefined(const PropertyName: string);
     function AddDiff(const PropertyName: string; const Old, New: string): boolean;
     function AddDiff(const PropertyName: string; const Old, New: integer): boolean;
     function AddDiff(const PropertyName: string; const Old, New: boolean): boolean;
@@ -112,9 +112,18 @@ begin
     Diff.Add(Path+PropertyName+'='+Value);
 end;
 
+procedure TCompilerDiffTool.AddDiffItemUndefined(const PropertyName: string);
+begin
+  if Self=nil then exit;
+  Differ:=true;
+  if Diff<>nil then
+    Diff.Add(Path+PropertyName+' undefined');
+end;
+
 function TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
   New: string): boolean;
 begin
+  //if Self<>nil then debugln(['TCompilerDiffTool.AddDiff ',PropertyName,'=',Old,',',New]);
   if Old=New then exit(false);
   Result:=true;
   if Self=nil then exit;

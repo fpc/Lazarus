@@ -528,7 +528,7 @@ type
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     function CreateDiff(CompOpts: TBaseCompilerOptions;
-                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
+                        Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
   public
@@ -617,6 +617,8 @@ type
     procedure Clear;
     function Equals(Other: TProjectBuildMacros): boolean; reintroduce;
     function Equals(aValues: TStringList): boolean; reintroduce;
+    function CreateDiff(Other: TProjectBuildMacros;
+                        Tool: TCompilerDiffTool = nil): boolean;
     procedure Assign(Src: TProjectBuildMacros); overload;
     procedure Assign(aValues: TStringList); overload;
     function Count: integer;
@@ -657,6 +659,8 @@ type
     function LazProject: TProject;
     procedure Clear;
     function Equals(Src: TProjectBuildMode): boolean; reintroduce;
+    function CreateDiff(Other: TProjectBuildMode;
+                        Tool: TCompilerDiffTool = nil): boolean;
     procedure Assign(Src: TProjectBuildMode); reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -5665,7 +5669,8 @@ begin
     Result:=true;
     if Tool<>nil then Tool.Differ:=true;
   end;
-  Result:=Result or inherited CreateDiff(CompOpts, Tool);
+  if (Tool=nil) and Result then exit;
+  if (inherited CreateDiff(CompOpts, Tool)) then Result:=true;
 end;
 
 procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
@@ -5832,6 +5837,7 @@ end;
 function TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
   Tool: TCompilerDiffTool): boolean;
 begin
+  //if Tool<>nil then debugln(['TProjectCompilerOptions.CreateDiff ',DbgSName(Self)]);
   if (CompOpts is TProjectCompilerOptions) then begin
     Result:=AddCompileReasonsDiff('CompileReasons',FCompileReasons,
                         TProjectCompilerOptions(CompOpts).FCompileReasons,Tool);
@@ -5839,7 +5845,10 @@ begin
     Result:=true;
     if Tool<>nil then Tool.Differ:=true;
   end;
-  Result:=Result or inherited CreateDiff(CompOpts, Tool);
+  //if Tool<>nil then debugln(['TProjectCompilerOptions.CreateDiff AAA1 ',Result]);
+  if (Tool=nil) and Result then exit;
+  if (inherited CreateDiff(CompOpts, Tool)) then
+    Result:=true;
 end;
 
 procedure TProjectCompilerOptions.InvalidateOptions;
@@ -6536,7 +6545,7 @@ end;
 
 function TProjectBuildMacros.Equals(Other: TProjectBuildMacros): boolean;
 begin
-  Result:=FItems.Equals(Other.FItems);
+  Result:=not CreateDiff(Other);
 end;
 
 function TProjectBuildMacros.Equals(aValues: TStringList): boolean;
@@ -6545,7 +6554,6 @@ var
   CurName: string;
   CurValue: string;
 begin
-  Result:=false;
   for i:=0 to aValues.Count-1 do begin
     CurName:=aValues.Names[i];
     CurValue:=aValues.ValueFromIndex[i];
@@ -6555,6 +6563,42 @@ begin
   end;
   //debugln(['TProjectBuildMacros.Equals END ',aValues.Count,' ',Count]);
   Result:=aValues.Count=Count;
+end;
+
+function TProjectBuildMacros.CreateDiff(Other: TProjectBuildMacros;
+  Tool: TCompilerDiffTool): boolean;
+{ add anything new or different in Other and if something is not in Other
+  add an undefined line
+}
+var
+  i: Integer;
+  CurName: string;
+  CurValue: string;
+begin
+  Result:=false;
+  for i:=0 to Other.Count-1 do begin
+    CurName:=Other.Names[i];
+    CurValue:=Other.ValueFromIndex(i);
+    //debugln(['TProjectBuildMacros.Equals ',CurName,' NewValue=',CurValue,' IsDefined=',IsDefined(CurName),' OldValue=',Values[CurName]]);
+    if Tool=nil then
+    begin
+      if Values[CurName]<>CurValue then exit(true);
+    end else
+      Result:=Result or Tool.AddDiff('BuildMacros/'+CurName,Values[CurName],CurValue);
+  end;
+  if Tool<>nil then
+  begin
+    for i:=0 to Count-1 do
+    begin
+      CurName:=ValueFromIndex(i);
+      if not Other.IsDefined(CurName) then
+      begin
+        Result:=true;
+        Tool.AddDiffItemUndefined('BuildMacros/'+CurName);
+      end;
+    end;
+  end;
+  //debugln(['TProjectBuildMacros.Equals END ',aValues.Count,' ',Count]);
 end;
 
 procedure TProjectBuildMacros.Assign(Src: TProjectBuildMacros);
@@ -6731,6 +6775,16 @@ function TProjectBuildMode.Equals(Src: TProjectBuildMode): boolean;
 begin
   Result:=CompilerOptions.IsEqual(Src.CompilerOptions)
           and MacroValues.Equals(Src.MacroValues);
+end;
+
+function TProjectBuildMode.CreateDiff(Other: TProjectBuildMode;
+  Tool: TCompilerDiffTool): boolean;
+begin
+  // Note: if there is a Tool all steps must be evaluated, if not exit on first diff
+  //if Tool<>nil then debugln(['TProjectBuildMode.CreateDiff ']);
+  Result:=CompilerOptions.CreateDiff(Other.CompilerOptions,Tool);
+  if (Tool=nil) and Result then exit;
+  if MacroValues.CreateDiff(Other.MacroValues,Tool) then Result:=true;
 end;
 
 procedure TProjectBuildMode.Assign(Src: TProjectBuildMode);
