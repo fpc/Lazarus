@@ -427,11 +427,11 @@ type
     FOnCutCopy: TSynCopyPasteEvent;
     FOnPaste: TSynCopyPasteEvent;
     fOnChange: TNotifyEvent;
-    fOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
+    FOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
     fOnCommandProcessed: TProcessCommandEvent;
     fOnDropFiles: TSynDropFilesEvent;
     fOnPaint: TPaintEvent;
-    fOnPlaceMark: TPlaceMarkEvent;
+    FOnPlaceMark: TPlaceMarkEvent;
     fOnProcessCommand: TProcessCommandEvent;
     fOnProcessUserCommand: TProcessCommandEvent;
     fOnReplaceText: TReplaceTextEvent;
@@ -668,13 +668,11 @@ type
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
     function GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
     procedure DoOnCommandProcessed(Command: TSynEditorCommand;
       AChar: TUTF8Char;
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
     procedure DoOnPaint; virtual;
-    procedure DoOnPlaceMark(var Mark: TSynEditMark); virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
       var AChar: TUTF8Char;
       Data: pointer); virtual;
@@ -952,16 +950,16 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCutCopy: TSynCopyPasteEvent read FOnCutCopy write FOnCutCopy;
     property OnPaste: TSynCopyPasteEvent read FOnPaste write FOnPaste;
-    property OnClearBookmark: TPlaceMarkEvent read fOnClearMark
-      write fOnClearMark;
     property OnCommandProcessed: TProcessCommandEvent
       read fOnCommandProcessed write fOnCommandProcessed;
     property OnDropFiles: TSynDropFilesEvent read fOnDropFiles write fOnDropFiles;
     property OnGutterClick: TGutterClickEvent
       read GetOnGutterClick write SetOnGutterClick;
     property OnPaint: TPaintEvent read fOnPaint write fOnPaint;
-    property OnPlaceBookmark: TPlaceMarkEvent
-      read FOnPlaceMark write FOnPlaceMark;
+    // OnPlaceBookmark only triggers for Bookmarks
+    property OnPlaceBookmark: TPlaceMarkEvent read FOnPlaceMark write FOnPlaceMark;
+    // OnClearBookmark only triggers for Bookmarks
+    property OnClearBookmark: TPlaceMarkEvent read FOnClearMark write FOnClearMark;
     property OnProcessUserCommand: TProcessCommandEvent
       read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText
@@ -5325,7 +5323,6 @@ end;
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then begin
-    DoOnClearBookmark(fBookMarks[BookMark]);                                    // djlp 2000-08-29
     FMarkList.Remove(fBookMarks[Bookmark]);
     fBookMarks[BookMark].Free;
     fBookMarks[BookMark] := nil;
@@ -5373,16 +5370,13 @@ begin
       Visible := true;
       InternalImage := (fBookMarkOpt.BookmarkImages = nil);
     end;
-    DoOnPlaceMark(Mark);
-    if (mark <> nil) and (BookMark in [0..9]) then begin
-      for i := 0 to 9 do
-        if assigned(fBookMarks[i]) and (fBookMarks[i].Line = Y) then
-          ClearBookmark(i);
-      if assigned(fBookMarks[BookMark]) then
-        ClearBookmark(BookMark);
-      fBookMarks[BookMark] := mark;
-      FMarkList.Add(fBookMarks[BookMark]);
-    end;
+    for i := 0 to 9 do
+      if assigned(fBookMarks[i]) and (fBookMarks[i].Line = Y) then
+        ClearBookmark(i);
+    if assigned(fBookMarks[BookMark]) then
+      ClearBookmark(BookMark);
+    fBookMarks[BookMark] := mark;
+    FMarkList.Add(fBookMarks[BookMark]);
   end;
 end;
 
@@ -6519,13 +6513,19 @@ end;
 
 procedure TCustomSynEdit.MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 begin
+  if (smcrAdded in Changes) and Sender.IsBookmark and Assigned(FOnPlaceMark) then
+    FOnPlaceMark(Self, Sender);
+  if (smcrRemoved in Changes) and Sender.IsBookmark and Assigned(fOnClearMark) then
+    FOnClearMark(Self, Sender);
+
   if (not Sender.Visible) and (not (smcrVisible in Changes)) then
     exit;
+
   if smcrLine in Changes then begin
-    InvalidateLine(Sender.OldLine);
+    InvalidateLine(Sender.OldLine); // TODO: only if mark has special line color, or other code markup
     InvalidateGutterLines(Sender.OldLine, Sender.OldLine);
   end;
-  InvalidateLine(Sender.Line);
+  InvalidateLine(Sender.Line);  // TODO: only if mark has special line color, or other code markup
   InvalidateGutterLines(Sender.Line, Sender.Line);
 end;
 
@@ -8470,14 +8470,6 @@ begin
     Command := ecNone;
 end;
 
-{begin}                                                                         // djlp - 2000-08-29
-procedure TCustomSynEdit.DoOnClearBookmark(var Mark: TSynEditMark);
-begin
-  if Assigned(fOnClearMark) then
-    fOnClearMark(Self, Mark);
-end;
-{end}                                                                           // djlp - 2000-08-29
-
 procedure TCustomSynEdit.DoOnPaint;
 begin
   if Assigned(fOnPaint) then begin
@@ -8485,12 +8477,6 @@ begin
     Canvas.Brush.Color := Color;
     fOnPaint(Self, Canvas);
   end;
-end;
-
-procedure TCustomSynEdit.DoOnPlaceMark(var Mark: TSynEditMark);
-begin
-  if Assigned(fOnPlaceMark) then
-    fOnPlaceMark(Self, Mark);
 end;
 
 function TCustomSynEdit.DoOnReplaceText(const ASearch, AReplace: string;

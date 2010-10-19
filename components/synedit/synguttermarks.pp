@@ -5,7 +5,7 @@ unit SynGutterMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
+  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, SynGutterBase,
   SynEditMiscClasses, SynEditMarks;
 
 type
@@ -109,22 +109,27 @@ var
 
 var
   iLine, j: Integer;
-  Marks: TSynEditMarks;
+  MLine: TSynEditMarkLine;
 begin
   LineHeight := TSynEdit(SynEdit).LineHeight;
   iLine := FoldView.TextIndex[aScreenLine] + 1;
-  TSynEdit(SynEdit).Marks.GetMarksForLine(iLine, Marks);
+
+  MLine := TSynEdit(SynEdit).Marks.Line[iLine];
+  if MLine = nil then
+    exit;;
+  if FBookMarkOpt.DrawBookmarksFirst then
+    MLine.Sort(smsoBookmarkFirst, smsoColumn)
+  else
+    MLine.Sort(smsoBookMarkLast, smsoColumn);
+
   Result := False;
-  for j := Low(Marks) to High(Marks) do
-  begin
-    if Marks[j] = nil then
-      break;
-    if not Marks[j].Visible then
+  for j := 0 to MLine.Count - 1 do begin
+    if not MLine[j].Visible then
       continue;
-    if Marks[j].IsBookmark and not FBookMarkOpt.GlyphsVisible then
+    if MLine[j].IsBookmark and not FBookMarkOpt.GlyphsVisible then
       continue;
-    DoPaintMark(Marks[j]);
-    Result := Result or not Marks[j].IsBookmark;
+    DoPaintMark(MLine[j]);
+    Result := Result or not MLine[j].IsBookmark;
   end;
 end;
 

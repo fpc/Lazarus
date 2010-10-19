@@ -37,28 +37,33 @@ uses
 
 type
 
-  TReplacedChildSite = (rplcLeft, rplcRight);
-
   { TSynTextFoldAVLNodeData }
 
-  TSynTextFoldAVLNodeData = Class
+  TSynTextFoldAVLNodeData = class(TSynSizedDifferentialAVLNode)
+  protected
+    function Left: TSynTextFoldAVLNodeData;
+    function Parent: TSynTextFoldAVLNodeData;
+    function Right: TSynTextFoldAVLNodeData;
+  public    (* Position / Size *)
+    (* FullCount:  Amount of lines in source for this fold only
+                   (excluding overlaps) *)
+    FullCount : Integer;
+    (* LineOffset: Line-Number Offset to parent node
+                   All line numbers are stored as offsets,
+                   for faster updates if lines are inserted/deleted *)
+    property LineOffset: Integer read FPositionOffset write FPositionOffset;
+    (* LeftCount:  Lines folded in left tree.
+                   Used to calculate how many lines are folded up to a specified line *)
+    property LeftCount: Integer read FLeftSizeSum write FLeftSizeSum;
+    (* MergedLineCount: Amount of lines folded away by this fold,
+                        FullCount + Lines covered by overlaps *)
+    property MergedLineCount: Integer read FSize write FSize;
   public
-    (* AVL Tree structure *)
-    Parent, Left, Right : TSynTextFoldAVLNodeData;    (* AVL Links *)
-    Balance : shortint;                               (* AVL Balance *)
-
     (* Sub-Tree  *)
     Nested : TSynTextFoldAVLNodeData; (* Nested folds (folds within this fold) do not need to be part of the searchable tree
                              They will be restored, if the outer fold (this fold) is unfolded
                              Nested points to a standalone tree, the root node in the nested tree, does *not* point back to this node *)
 
-    (* Position / Size *)
-    LineOffset : Integer;  (* Line-Number Offset to parent node
-                              All line numbers are stored as offsets, for faster updates if lines are inserted/deleted *)
-    LeftCount : Integer;   (* Lines folded in left tree. Used to calculate how many lines are folded up to a specified line *)
-    FullCount : Integer;   (* Amount of lines in source for this fold only (excluding overlaps) *)
-    MergedLineCount : Integer;   (* Amount of lines folded away by this fold,
-                              FullCount + Lines covered by overlaps *)
 
     (* Source Info *)
     FoldIndex: Integer;    (* Index of fold in line; if a line has more than one fold starting *)
@@ -68,26 +73,11 @@ type
                             *)
 
 
-    function TreeDepth: integer;           (* longest WAY down. Only one node => 1! *)
     function RecursiveFoldCount : Integer; (* Amount of lines covered by this and all child nodes *)
-
-    procedure SetLeftChild(ANode : TSynTextFoldAVLNodeData); overload; inline;
-    procedure SetLeftChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); overload; inline;
-    procedure SetLeftChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset, aLeftCount : Integer); overload; inline;
-
-    procedure SetRightChild(ANode : TSynTextFoldAVLNodeData); overload; inline;
-    procedure SetRightChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); overload; inline;
-
-    function ReplaceChild(OldNode, ANode : TSynTextFoldAVLNodeData) : TReplacedChildSite; overload; inline;
-    function ReplaceChild(OldNode, ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer) : TReplacedChildSite; overload; inline;
-
-    procedure AdjustLeftCount(AValue : Integer);
-    procedure AdjustParentLeftCount(AValue : Integer);
-
-    function Precessor : TSynTextFoldAVLNodeData;
-    function Successor : TSynTextFoldAVLNodeData;
-    function Precessor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
-    function Successor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
+    function Precessor : TSynTextFoldAVLNodeData; reintroduce;
+    function Successor : TSynTextFoldAVLNodeData; reintroduce;
+    function Precessor(var aStartPosition, aSizesBeforeSum : Integer) : TSynTextFoldAVLNodeData; reintroduce;
+    function Successor(var aStartPosition, aSizesBeforeSum : Integer) : TSynTextFoldAVLNodeData; reintroduce;
   end;
 
   { TSynTextFoldAVLNode }
@@ -147,31 +137,25 @@ type
     - TSynEditFoldedView uses this with 1-based lines (ToDo: make 0-based)
   }
 
-  TSynTextFoldAVLTree = class
+  TSynTextFoldAVLTree = class(TSynSizedDifferentialAVLTree)
   protected
-    fRoot: TSynTextFoldAVLNodeData;
     fNestParent: TSynTextFoldAVLNodeData;
     fNestedNodesTree: TSynTextFoldAVLTree; // FlyWeight Tree used for any nested subtree.
-    fRootOffset : Integer;
 
     function NewNode : TSynTextFoldAVLNodeData; inline;
-    procedure DisposeNode(var ANode : TSynTextFoldAVLNodeData); inline;
     Function RemoveFoldForNodeAtLine(ANode: TSynTextFoldAVLNode;
                                      ALine : Integer) : Integer; overload; // Line is for Nested Nodes
 
     // SetRoot, does not obbey fRootOffset => use SetRoot(node, -fRootOffset)
-    procedure SetRoot(ANode : TSynTextFoldAVLNodeData); overload; inline;
-    procedure SetRoot(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); overload; inline;
+    procedure SetRoot(ANode : TSynSizedDifferentialAVLNode); overload; override;
+    procedure SetRoot(ANode : TSynSizedDifferentialAVLNode; anAdjustChildLineOffset : Integer); overload; override;
 
-    Function  InsertNode(ANode : TSynTextFoldAVLNodeData) : Integer; // returns FoldedBefore // ANode may not have children
-    procedure RemoveNode(ANode: TSynTextFoldAVLNodeData);
-    procedure BalanceAfterInsert(ANode: TSynTextFoldAVLNodeData);
-    procedure BalanceAfterDelete(ANode: TSynTextFoldAVLNodeData);
+    Function  InsertNode(ANode : TSynTextFoldAVLNodeData) : Integer; reintroduce; // returns FoldedBefore // ANode may not have children
     function TreeForNestedNode(ANode: TSynTextFoldAVLNodeData; aOffset : Integer) : TSynTextFoldAVLTree;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear; override;
 
     (* Find Fold by Line in Real Text *)
     Function FindFoldForLine(ALine : Integer; FindNextNode : Boolean = False) : TSynTextFoldAVLNode;
@@ -188,7 +172,9 @@ type
     Function FindLastFold : TSynTextFoldAVLNode;
     Function FindFirstFold : TSynTextFoldAVLNode;
     Function LastFoldedLine : integer; // The actual line; LastNode.StartLine + LastNode.LineCount - 1
-    procedure debug;
+    {$IFDEF SynDebug}
+    procedure Debug; reintroduce;
+    {$ENDIF}
   end;
 
   { TSynFoldNodeInfoHelper }
@@ -352,7 +338,9 @@ type
   public
     procedure Lock;
     procedure UnLock;
+    {$IFDEF SynDebug}
     procedure debug;
+    {$ENDIF}
     (* Arguments for (Un)FoldAt* (Line, ViewPos, TextIndex):
        - ColumnIndex (0-based)
            Can be negative, to access the highest(-1) available, 2nd highest(-2) ...
@@ -1401,17 +1389,24 @@ end;
 
 { TSynTextFoldAVLNodeData }
 
-function TSynTextFoldAVLNodeData.TreeDepth : integer;
-var t: integer;
+function TSynTextFoldAVLNodeData.Left: TSynTextFoldAVLNodeData;
 begin
-  Result := 1;
-  if Left<>nil  then Result := Left.TreeDepth+1;
-  if Right<>nil then t := Right.TreeDepth+1 else t := 0;
-  if t> Result then Result := t;
+  Result := TSynTextFoldAVLNodeData(FLeft);
+end;
+
+function TSynTextFoldAVLNodeData.Parent: TSynTextFoldAVLNodeData;
+begin
+  Result := TSynTextFoldAVLNodeData(FParent);
+end;
+
+function TSynTextFoldAVLNodeData.Right: TSynTextFoldAVLNodeData;
+begin
+  Result := TSynTextFoldAVLNodeData(FRight);
 end;
 
 function TSynTextFoldAVLNodeData.RecursiveFoldCount : Integer;
-var ANode : TSynTextFoldAVLNodeData;
+var
+  ANode: TSynTextFoldAVLNodeData;
 begin
   Result := 0;
   ANode := self;
@@ -1421,158 +1416,26 @@ begin
   end;
 end;
 
-procedure TSynTextFoldAVLNodeData.SetLeftChild(ANode : TSynTextFoldAVLNodeData); inline;
+function TSynTextFoldAVLNodeData.Precessor: TSynTextFoldAVLNodeData;
 begin
-  Left := ANode;
-  if ANode <> nil then ANode.Parent := self;
+  Result := TSynTextFoldAVLNodeData(inherited Precessor);
 end;
 
-procedure TSynTextFoldAVLNodeData.SetLeftChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); inline;
+function TSynTextFoldAVLNodeData.Successor: TSynTextFoldAVLNodeData;
 begin
-  Left := ANode;
-  if ANode <> nil then begin
-    ANode.Parent := self;
-    ANode.LineOffset := ANode.LineOffset + anAdjustChildLineOffset;
-  end;
+  Result := TSynTextFoldAVLNodeData(inherited Successor);
 end;
 
-procedure TSynTextFoldAVLNodeData.SetLeftChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset, aLeftCount : Integer); inline;
+function TSynTextFoldAVLNodeData.Precessor(var aStartPosition,
+  aSizesBeforeSum: Integer): TSynTextFoldAVLNodeData;
 begin
-  Left := ANode;
-  LeftCount := aLeftCount;
-  if ANode <> nil then begin
-    ANode.Parent := self;
-    ANode.LineOffset := ANode.LineOffset + anAdjustChildLineOffset;
-  end
+  Result := TSynTextFoldAVLNodeData(inherited Precessor(aStartPosition, aSizesBeforeSum));
 end;
 
-procedure TSynTextFoldAVLNodeData.SetRightChild(ANode : TSynTextFoldAVLNodeData); inline;
+function TSynTextFoldAVLNodeData.Successor(var aStartPosition,
+  aSizesBeforeSum: Integer): TSynTextFoldAVLNodeData;
 begin
-  Right := ANode;
-  if ANode <> nil then ANode.Parent := self;
-end;
-
-procedure TSynTextFoldAVLNodeData.SetRightChild(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer); inline;
-begin
-  Right := ANode;
-  if ANode <> nil then begin
-    ANode.Parent := self;
-    ANode.LineOffset := ANode.LineOffset + anAdjustChildLineOffset;
-  end;
-end;
-
-function TSynTextFoldAVLNodeData.ReplaceChild(OldNode, ANode : TSynTextFoldAVLNodeData) : TReplacedChildSite; inline;
-begin
-  if Left = OldNode then begin
-    SetLeftChild(ANode);
-    exit(rplcLeft);
-  end;
-  SetRightChild(ANode);
-  result := rplcRight;
-end;
-
-function TSynTextFoldAVLNodeData.ReplaceChild(OldNode, ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer) : TReplacedChildSite;
-  inline;
-begin
-  if Left = OldNode then begin
-    SetLeftChild(ANode, anAdjustChildLineOffset);
-    exit(rplcLeft);
-  end;
-  SetRightChild(ANode, anAdjustChildLineOffset);
-  result := rplcRight;
-end;
-
-procedure TSynTextFoldAVLNodeData.AdjustLeftCount(AValue : Integer);
-begin
-  LeftCount := LeftCount + AValue;
-  AdjustParentLeftCount(AValue);
-end;
-
-procedure TSynTextFoldAVLNodeData.AdjustParentLeftCount(AValue : Integer);
-var
-  node, pnode : TSynTextFoldAVLNodeData;
-begin
-  node := self;
-  pnode := node.Parent;
-  while pnode <> nil do begin
-    if node = pnode.Left
-    then pnode.LeftCount := pnode.LeftCount + AValue;
-    node := pnode;
-    pnode := node.Parent;
-  end;
-end;
-
-function TSynTextFoldAVLNodeData.Precessor : TSynTextFoldAVLNodeData;
-begin
-  Result := Left;
-  if Result<>nil then begin
-    while (Result.Right<>nil) do Result := Result.Right;
-  end else begin
-    Result := self;
-    while (Result.Parent<>nil) and (Result.Parent.Left=Result) do
-      Result := Result.Parent;
-    Result := Result.Parent;
-  end;
-end;
-
-function TSynTextFoldAVLNodeData.Successor : TSynTextFoldAVLNodeData;
-begin
-  Result := Right;
-  if Result<>nil then begin
-    while (Result.Left<>nil) do Result := Result.Left;
-  end else begin
-    Result := self;
-    while (Result.Parent<>nil) and (Result.Parent.Right=Result) do
-      Result := Result.Parent;
-    Result := Result.Parent;
-  end;
-end;
-
-function TSynTextFoldAVLNodeData.Precessor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
-begin
-  Result := Left;
-  if Result<>nil then begin
-    aStartLine := aStartLine + Result.LineOffset;
-    while (Result.Right<>nil) do begin
-      Result := Result.Right;
-      aStartLine := aStartLine + Result.LineOffset;
-    end;
-  end else begin
-    Result := self;
-    while (Result.Parent<>nil) and (Result.Parent.Left=Result) do begin
-      aStartLine := aStartLine - Result.LineOffset;
-      Result := Result.Parent;
-    end;
-    // result is now a right son
-    aStartLine := aStartLine - Result.LineOffset;
-    Result := Result.Parent;
-  end;
-  if result <> nil then
-    aLinesBefore := aLinesBefore - result.MergedLineCount
-  else
-    aLinesBefore := 0;
-end;
-
-function TSynTextFoldAVLNodeData.Successor(var aStartLine, aLinesBefore : Integer) : TSynTextFoldAVLNodeData;
-begin
-  aLinesBefore := aLinesBefore + MergedLineCount;
-  Result := Right;
-  if Result<>nil then begin
-    aStartLine := aStartLine + Result.LineOffset;
-    while (Result.Left<>nil) do begin
-      Result := Result.Left;
-      aStartLine := aStartLine + Result.LineOffset;
-    end;
-  end else begin
-    Result := self;
-    while (Result.Parent<>nil) and (Result.Parent.Right=Result) do begin
-      aStartLine := aStartLine - Result.LineOffset;
-      Result := Result.Parent;
-    end;
-    // Result is now a left son; result has a negative LineOffset
-    aStartLine := aStartLine - Result.LineOffset;
-    Result := Result.Parent;
-  end;
+  Result := TSynTextFoldAVLNodeData(inherited Successor(aStartPosition, aSizesBeforeSum));
 end;
 
 { TSynTextFoldAVLNode }
@@ -1934,11 +1797,6 @@ begin
   Result := TSynTextFoldAVLNodeData.Create;
 end;
 
-procedure TSynTextFoldAVLTree.DisposeNode(var ANode : TSynTextFoldAVLNodeData);
-begin
-  FreeAndNil(ANode);
-end;
-
 destructor TSynTextFoldAVLTree.Destroy;
 begin
   Clear;
@@ -1951,34 +1809,28 @@ begin
 end;
 
 procedure TSynTextFoldAVLTree.Clear;
-  procedure DeleteNode(var ANode: TSynTextFoldAVLNodeData);
+  procedure DeleteNode({var} ANode: TSynTextFoldAVLNodeData);
   begin
     if ANode.Left <>nil   then DeleteNode(ANode.Left);
     if ANode.Right <>nil  then DeleteNode(ANode.Right);
     if ANode.Nested <>nil then DeleteNode(ANode.Nested);
-    DisposeNode(ANode);
+    DisposeNode(TSynSizedDifferentialAVLNode(ANode));
   end;
 begin
-  if fRoot <> nil then DeleteNode(fRoot);
+  if fRoot <> nil then DeleteNode(TSynTextFoldAVLNodeData(fRoot));
   SetRoot(nil);
 end;
 
-procedure TSynTextFoldAVLTree.SetRoot(ANode : TSynTextFoldAVLNodeData); inline;
+procedure TSynTextFoldAVLTree.SetRoot(ANode : TSynSizedDifferentialAVLNode);
 begin
-  fRoot := ANode;
-  if fNestParent <> nil then fNestParent.Nested := ANode;
-  if ANode <> nil then ANode.Parent := nil;
+  inherited;;
+  if fNestParent <> nil then fNestParent.Nested := TSynTextFoldAVLNodeData(ANode);
 end;
 
-procedure TSynTextFoldAVLTree.SetRoot(ANode : TSynTextFoldAVLNodeData; anAdjustChildLineOffset : Integer);
-  inline;
+procedure TSynTextFoldAVLTree.SetRoot(ANode : TSynSizedDifferentialAVLNode; anAdjustChildLineOffset : Integer);
 begin
-  fRoot := ANode;
-  if fNestParent <> nil then fNestParent.Nested := ANode;
-  if ANode <> nil then begin
-    ANode.Parent := nil;
-    ANode.LineOffset := ANode.LineOffset + anAdjustChildLineOffset;
-  end;
+  inherited;;
+  if fNestParent <> nil then fNestParent.Nested := TSynTextFoldAVLNodeData(ANode);
 end;
 
 (* Find Fold by Line in Real Text *)
@@ -1989,7 +1841,7 @@ var
   rStartLine : Integer;
   rFoldedBefore : Integer;
 begin
-  r := fRoot;
+  r := TSynTextFoldAVLNodeData(fRoot);
   rStartLine := fRootOffset;
   rFoldedBefore := 0;
   while (r <> nil) do begin
@@ -2025,7 +1877,7 @@ var
   rStartLine : Integer;
   rFoldedBefore : Integer;
 begin
-  r := fRoot;
+  r := TSynTextFoldAVLNodeData(fRoot);
   rStartLine := fRootOffset;
   rFoldedBefore := 0;
   while (r <> nil) do begin
@@ -2092,7 +1944,7 @@ procedure TSynTextFoldAVLTree.AdjustForLinesInserted(AStartLine, ALineCount : In
   end;
 
 begin
-  DoAdjustForLinesInserted(fRoot, fRootOffset);
+  DoAdjustForLinesInserted(TSynTextFoldAVLNodeData(fRoot), fRootOffset);
 end;
 
 procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
@@ -2160,7 +2012,7 @@ procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
   end;
 
 begin
-  AdjustNodeForLinesDeleted(fRoot, fRootOffset, AStartLine, ALineCount);
+  AdjustNodeForLinesDeleted(TSynTextFoldAVLNodeData(fRoot), fRootOffset, AStartLine, ALineCount);
 end;
 
 function TSynTextFoldAVLTree.FindLastFold : TSynTextFoldAVLNode;
@@ -2169,7 +2021,7 @@ var
   rStartLine : Integer;
   rFoldedBefore : Integer;
 begin
-  r := fRoot;
+  r := TSynTextFoldAVLNodeData(fRoot);
   rStartLine := fRootOffset;
   rFoldedBefore := 0;
   while (r <> nil) do begin
@@ -2187,7 +2039,7 @@ var
   r : TSynTextFoldAVLNodeData;
   rStartLine : Integer;
 begin
-  r := fRoot;
+  r := TSynTextFoldAVLNodeData(fRoot);
   rStartLine := fRootOffset;
   while (r <> nil) do begin
     rStartLine := rStartLine + r.LineOffset;
@@ -2207,6 +2059,7 @@ begin
   Result := n.StartLine + n.MergedLineCount - 1;
 end;
 
+{$IFDEF SynDebug}
 procedure TSynTextFoldAVLTree.debug;
   function debug2(ind, typ : String; ANode, AParent : TSynTextFoldAVLNodeData; offset : integer) :integer;
   begin
@@ -2218,7 +2071,7 @@ procedure TSynTextFoldAVLTree.debug;
                        offset + ANode.LineOffset + ANode.MergedLineCount-1, ANode.FoldIndex,
                        MergedLineCount, FullCount]),
                ind, typ, ' (',LineOffset, ')  LeftCount: ', LeftCount,
-               '     Balance: ',Balance]);
+               '     Balance: ',FBalance]);
     if ANode.Parent <> AParent then DebugLn([ind,'* Bad parent']);
     Result := debug2(ind+'   ', 'L', ANode.Left, ANode, offset+ANode.LineOffset);
     If Result <> ANode.LeftCount then  debugln([ind,'   ***** Leftcount was ',Result, ' but should be ', ANode.LeftCount]);
@@ -2227,8 +2080,9 @@ procedure TSynTextFoldAVLTree.debug;
     Result := Result + ANode.MergedLineCount;
   end;
 begin
-  debug2('', ' -', fRoot, nil, 0);
+  debug2('', ' -', TSynTextFoldAVLNodeData(fRoot), nil, 0);
 end;
+{$ENDIF}
 
 function TSynTextFoldAVLTree.InsertNewFold(ALine, AColumn, ACount, AVisibleLines: Integer) : TSynTextFoldAVLNode;
 var
@@ -2352,10 +2206,10 @@ begin
         MergeNode.LineOffset := MergeNode.LineOffset + NestedLine;
         if NestedNode <> nil then begin
           NestedNode.ReplaceChild(MergeNode, nil);
-          MergeNode.Parent := nil;
+          MergeNode.FParent := nil;
         end;
         MergeNode.LeftCount := 0;
-        MergeNode.Balance   := 0;
+        MergeNode.FBalance   := 0;
         InsertNode(MergeNode);
       end;
     end;
@@ -2363,7 +2217,7 @@ begin
   end;
 
   if not OnlyNested then
-    DisposeNode(ANode.fData);
+    DisposeNode(TSynSizedDifferentialAVLNode(ANode.fData));
 end;
 
 function TSynTextFoldAVLTree.InsertNode(ANode : TSynTextFoldAVLNodeData) : Integer;
@@ -2389,16 +2243,16 @@ var
 
     diff := current.LineOffset - ANode.LineOffset;
     ANode.Nested  := current;
-    ANode.Balance := current.Balance;
+    ANode.FBalance := current.FBalance;
     current.LineOffset := diff; // offset to ANode (via Nested)
-    current.Parent := nil;
-    current.Balance := 0;
+    current.FParent := nil;
+    current.FBalance := 0;
     
     ANode.SetLeftChild(current.Left, diff, current.LeftCount);
-    current.Left := nil;
+    current.FLeft := nil;
     current.LeftCount := 0;
     ANode.SetRightChild(current.Right, diff);
-    current.Right := nil;
+    current.FRight := nil;
 
     start2 := ALine; before2 := rFoldedBefore;
     p := ANode.Successor(start2, before2);
@@ -2461,7 +2315,7 @@ begin
   ALine := ANode.LineOffset;
   ACount := ANode.MergedLineCount;
   AEnd := ALine + ACount - 1;
-  current := fRoot;
+  current := TSynTextFoldAVLNodeData(fRoot);
   rStartLine := fRootOffset;
   rFoldedBefore := 0;
   Nest := nil;
@@ -2544,365 +2398,6 @@ begin
   Result := rFoldedBefore;
 end;
 
-procedure TSynTextFoldAVLTree.RemoveNode(ANode: TSynTextFoldAVLNodeData);
-var OldParent, Precessor, PrecOldParent, PrecOldLeft,
-  OldSubTree: TSynTextFoldAVLNodeData;
-  OldBalance, PrecOffset, PrecLeftCount: integer;
-
-begin
-  if ((ANode.Left<>nil) and (ANode.Right<>nil)) then begin
-    PrecOffset := 0;
-//    PrecOffset := ANode.LineOffset;
-    Precessor := ANode.Left;
-    while (Precessor.Right<>nil) do begin
-      PrecOffset := PrecOffset + Precessor.LineOffset;
-      Precessor := Precessor.Right;
-    end;
-(*                            *OR*
- PnL              PnL
-   \               \
-   Precessor       Anode
-   /               /
-  *               *                     PnL             PnL
- /               /                        \               \
-AnL   AnR       AnL      AnR        Precessor   AnR       AnL      AnR
-  \   /           \      /                  \   /           \      /
-   Anode          Precessor()               Anode          Precessor()
-*)
-    OldBalance := ANode.Balance;
-    ANode.Balance     := Precessor.Balance;
-    Precessor.Balance := OldBalance;
-
-    // Successor.Left = nil
-    PrecOldLeft   := Precessor.Left;
-    PrecOldParent := Precessor.Parent;
-
-    if (ANode.Parent<>nil)
-    then ANode.Parent.ReplaceChild(ANode, Precessor, PrecOffset + ANode.LineOffset)
-    else SetRoot(Precessor, PrecOffset + ANode.LineOffset);
-
-    Precessor.SetRightChild(ANode.Right,
-                           +ANode.LineOffset-Precessor.LineOffset);
-
-    PrecLeftCount := Precessor.LeftCount;
-    // ANode.Right will be empty  // ANode.Left will be Succesor.Left
-    if (PrecOldParent = ANode) then begin
-      // Precessor is left son of ANode
-      // set ANode.LineOffset=0 => LineOffset for the Prec-Children is already correct;
-      Precessor.SetLeftChild(ANode, -ANode.LineOffset,
-                             PrecLeftCount + ANode.MergedLineCount);
-      ANode.SetLeftChild(PrecOldLeft, 0, PrecLeftCount);
-    end else begin
-      // at least one node between ANode and Precessor ==> Precessor = PrecOldParent.Right
-      Precessor.SetLeftChild(ANode.Left, +ANode.LineOffset - Precessor.LineOffset,
-                             ANode.LeftCount + ANode.MergedLineCount - Precessor.MergedLineCount);
-      PrecOffset:=PrecOffset + ANode.LineOffset - Precessor.LineOffset;
-      // Set Anode.LineOffset, so ANode movesinto position of Precessor;
-      PrecOldParent.SetRightChild(ANode, - ANode.LineOffset -  PrecOffset);
-      ANode.SetLeftChild(PrecOldLeft, 0, PrecLeftCount);
-    end;
-
-    ANode.Right := nil;
-  end;
-
-  if (ANode.Right<>nil) then begin
-    OldSubTree := ANode.Right;
-    ANode.Right := nil;
-  end
-  else if (ANode.Left<>nil) then begin
-    OldSubTree := ANode.Left;
-    ANode.Left := nil;
-  end
-  else OldSubTree := nil;
-
-  OldParent := ANode.Parent;
-  ANode.Parent := nil;
-  ANode.Left := nil;
-  ANode.Right := nil;
-  ANode.Balance := 0;
-  ANode.LeftCount := 0;
-  // nested???
-
-  if (OldParent<>nil) then begin      // Node has parent
-    if OldParent.ReplaceChild(ANode, OldSubTree, ANode.LineOffset) = rplcLeft
-    then begin
-      Inc(OldParent.Balance);
-      OldParent.AdjustLeftCount(-ANode.MergedLineCount);
-    end
-    else begin
-      Dec(OldParent.Balance);
-      OldParent.AdjustParentLeftCount(-ANode.MergedLineCount);
-    end;
-    BalanceAfterDelete(OldParent);
-  end
-  else SetRoot(OldSubTree, ANode.LineOffset);
-end;
-
-
-procedure TSynTextFoldAVLTree.BalanceAfterInsert(ANode : TSynTextFoldAVLNodeData);
-var OldParent, OldParentParent, OldRight, OldRightLeft, OldRightRight, OldLeft,
-   OldLeftLeft, OldLeftRight: TSynTextFoldAVLNodeData;
-   tmp : integer;
-begin
-  OldParent := ANode.Parent;
-  if (OldParent=nil) then exit;
-
-  if (OldParent.Left=ANode) then begin
-    (* *** Node is left son *** *)
-    dec(OldParent.Balance);
-    if (OldParent.Balance=0) then exit;
-    if (OldParent.Balance=-1) then begin
-      BalanceAfterInsert(OldParent);
-      exit;
-    end;
-
-    // OldParent.Balance=-2
-    if (ANode.Balance=-1) then begin
-      (* ** single rotate ** *)
-      (*  []
-           \
-           []  ORight                     []    ORight    []
-            \   /                          \      \       /
-            ANode(-1)  []        =>        []     OldParent(0)
-               \       /                    \     /
-               OldParent(-2)                 ANode(0)
-      *)
-      OldRight := ANode.Right;
-      OldParentParent := OldParent.Parent;
-      (* ANode moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then OldParentParent.ReplaceChild(OldParent, ANode, OldParent.LineOffset)
-      else SetRoot(ANode, OldParent.LineOffset);
-
-      (* OldParent moves under ANode, replacing Anode.Right, which moves under OldParent *)
-      ANode.SetRightChild(OldParent, -ANode.LineOffset );
-      OldParent.SetLeftChild(OldRight, -OldParent.LineOffset, OldParent.LeftCount - ANode.MergedLineCount - ANode.LeftCount);
-
-      ANode.Balance := 0;
-      OldParent.Balance := 0;
-      (* ** END single rotate ** *)
-    end
-    else begin  // ANode.Balance = +1
-      (* ** double rotate ** *)
-      OldParentParent := OldParent.Parent;
-      OldRight := ANode.Right;
-      OldRightLeft := OldRight.Left;
-      OldRightRight := OldRight.Right;
-
-      (* OldRight moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then OldParentParent.ReplaceChild(OldParent, OldRight, OldParent.LineOffset + ANode.LineOffset)
-      else SetRoot(OldRight, OldParent.LineOffset + ANode.LineOffset);        // OldParent was root node. new root node
-      
-      OldRight.SetRightChild(OldParent, -OldRight.LineOffset);
-      OldRight.SetLeftChild(ANode, OldParent.LineOffset, OldRight.LeftCount + ANode.LeftCount + ANode.MergedLineCount);
-      ANode.SetRightChild(OldRightLeft, -ANode.LineOffset);
-      OldParent.SetLeftChild(OldRightRight, -OldParent.LineOffset, OldParent.LeftCount - OldRight.LeftCount - OldRight.MergedLineCount);
-
-      // balance
-      if (OldRight.Balance<=0)
-      then ANode.Balance := 0
-      else ANode.Balance := -1;
-      if (OldRight.Balance=-1)
-      then OldParent.Balance := 1
-      else OldParent.Balance := 0;
-      OldRight.Balance := 0;
-      (* ** END double rotate ** *)
-    end;
-    (* *** END Node is left son *** *)
-  end
-  else begin
-    (* *** Node is right son *** *)
-    Inc(OldParent.Balance);
-    if (OldParent.Balance=0) then exit;
-    if (OldParent.Balance=+1) then begin
-      BalanceAfterInsert(OldParent);
-      exit;
-    end;
-
-    // OldParent.Balance = +2
-    if(ANode.Balance=+1) then begin
-      (* ** single rotate ** *)
-      OldLeft := ANode.Left;
-      OldParentParent := OldParent.Parent;
-      
-      if (OldParentParent<>nil)
-      then  OldParentParent.ReplaceChild(OldParent, ANode, OldParent.LineOffset)
-      else SetRoot(ANode, OldParent.LineOffset);
-
-      (* OldParent moves under ANode, replacing Anode.Left, which moves under OldParent *)
-      ANode.SetLeftChild(OldParent, -ANode.LineOffset, ANode.LeftCount + OldParent.MergedLineCount + OldParent.LeftCount);
-      OldParent.SetRightChild(OldLeft, -OldParent.LineOffset);
-      
-      ANode.Balance := 0;
-      OldParent.Balance := 0;
-      (* ** END single rotate ** *)
-    end
-    else begin  // Node.Balance = -1
-      (* ** double rotate ** *)
-      OldLeft := ANode.Left;
-      OldParentParent := OldParent.Parent;
-      OldLeftLeft := OldLeft.Left;
-      OldLeftRight := OldLeft.Right;
-
-      (* OldLeft moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then  OldParentParent.ReplaceChild(OldParent, OldLeft, OldParent.LineOffset + ANode.LineOffset)
-      else SetRoot(OldLeft, OldParent.LineOffset + ANode.LineOffset);
-
-      tmp := OldLeft.LeftCount;
-      OldLeft.SetLeftChild (OldParent, -OldLeft.LineOffset, tmp + OldParent.LeftCount + OldParent.MergedLineCount);
-      OldLeft.SetRightChild(ANode, OldParent.LineOffset);
-
-      OldParent.SetRightChild(OldLeftLeft, -OldParent.LineOffset);
-      ANode.SetLeftChild(OldLeftRight, -ANode.LineOffset, ANode.LeftCount - tmp - OldLeft.MergedLineCount);
-
-      // Balance
-      if (OldLeft.Balance>=0)
-      then ANode.Balance := 0
-      else ANode.Balance := +1;
-      if (OldLeft.Balance=+1)
-      then OldParent.Balance := -1
-      else OldParent.Balance := 0;
-      OldLeft.Balance := 0;
-      (* ** END double rotate ** *)
-    end;
-  end;
-end;
-
-procedure TSynTextFoldAVLTree.BalanceAfterDelete(ANode : TSynTextFoldAVLNodeData);
-var OldParent, OldRight, OldRightLeft, OldLeft, OldLeftRight,
-  OldRightLeftLeft, OldRightLeftRight, OldLeftRightLeft, OldLeftRightRight
-  : TSynTextFoldAVLNodeData;
-  tmp : integer;
-begin
-  if (ANode=nil) then exit;
-  if ((ANode.Balance=+1) or (ANode.Balance=-1)) then exit;
-  OldParent := ANode.Parent;
-  if (ANode.Balance=0) then begin
-    // Treeheight has decreased by one
-    if (OldParent<>nil) then begin
-      if(OldParent.Left=ANode) then
-        Inc(OldParent.Balance)
-      else
-        Dec(OldParent.Balance);
-      BalanceAfterDelete(OldParent);
-    end;
-    exit;
-  end;
-
-  if (ANode.Balance=-2) then begin
-    // Node.Balance=-2
-    // Node is overweighted to the left
-    (*
-          OLftRight
-           /
-        OLeft(<=0)
-           \
-             ANode(-2)
-    *)
-    OldLeft := ANode.Left;
-    if (OldLeft.Balance<=0) then begin
-      // single rotate left
-      OldLeftRight := OldLeft.Right;
-      
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldLeft, ANode.LineOffset)
-      else SetRoot(OldLeft, ANode.LineOffset);
-
-      OldLeft.SetRightChild(ANode, -OldLeft.LineOffset);
-      ANode.SetLeftChild(OldLeftRight, -ANode.LineOffset, ANode.LeftCount - OldLeft.MergedLineCount - OldLeft.LeftCount);
-
-      ANode.Balance := (-1-OldLeft.Balance);
-      Inc(OldLeft.Balance);
-
-      BalanceAfterDelete(OldLeft);
-    end else begin
-      // OldLeft.Balance = 1
-      // double rotate left left
-      OldLeftRight := OldLeft.Right;
-      OldLeftRightLeft := OldLeftRight.Left;
-      OldLeftRightRight := OldLeftRight.Right;
-      
-(*
- OLR-Left   OLR-Right
-      \     /
-      OldLeftRight          OLR-Left    OLR-Right
-       /                       /            \
-   OldLeft                 OldLeft         ANode
-      \                         \           /
-     ANode                       OldLeftRight
-       |                            |
-     OldParent                   OldParent  (or root)
-*)
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldLeftRight, ANode.LineOffset + OldLeft.LineOffset)
-      else SetRoot(OldLeftRight, ANode.LineOffset + OldLeft.LineOffset);
-
-      OldLeftRight.SetRightChild(ANode, -OldLeftRight.LineOffset);
-      OldLeftRight.SetLeftChild(OldLeft, ANode.LineOffset, OldLeftRight.LeftCount + OldLeft.LeftCount + OldLeft.MergedLineCount);
-      OldLeft.SetRightChild(OldLeftRightLeft, -OldLeft.LineOffset);
-      ANode.SetLeftChild(OldLeftRightRight,  -ANode.LineOffset, ANode.LeftCount - OldLeftRight.LeftCount - OldLeftRight.MergedLineCount);
-
-      if (OldLeftRight.Balance<=0)
-      then OldLeft.Balance := 0
-      else OldLeft.Balance := -1;
-      if (OldLeftRight.Balance>=0)
-      then ANode.Balance := 0
-      else ANode.Balance := +1;
-      OldLeftRight.Balance := 0;
-      
-      BalanceAfterDelete(OldLeftRight);
-    end;
-  end else begin
-    // Node is overweighted to the right
-    OldRight := ANode.Right;
-    if (OldRight.Balance>=0) then begin
-      // OldRight.Balance=={0 or -1}
-      // single rotate right
-      OldRightLeft := OldRight.Left;
-      
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldRight, ANode.LineOffset)
-      else SetRoot(OldRight, ANode.LineOffset);
-      
-      OldRight.SetLeftChild(ANode, -OldRight.LineOffset, OldRight.LeftCount + ANode.MergedLineCount + ANode.LeftCount);
-      ANode.SetRightChild(OldRightLeft, -ANode.LineOffset);
-
-      ANode.Balance := (1-OldRight.Balance);
-      Dec(OldRight.Balance);
-
-      BalanceAfterDelete(OldRight);
-    end else begin
-      // OldRight.Balance=-1
-      // double rotate right left
-      OldRightLeft := OldRight.Left;
-      OldRightLeftLeft := OldRightLeft.Left;
-      OldRightLeftRight := OldRightLeft.Right;
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldRightLeft, ANode.LineOffset + OldRight.LineOffset)
-      else SetRoot(OldRightLeft, ANode.LineOffset + OldRight.LineOffset);
-      
-      tmp := OldRightLeft.LeftCount;
-      OldRightLeft.SetLeftChild(ANode, -OldRightLeft.LineOffset, tmp + ANode.LeftCount + ANode.MergedLineCount);
-      OldRightLeft.SetRightChild(OldRight, ANode.LineOffset);
-
-      ANode.SetRightChild(OldRightLeftLeft, -ANode.LineOffset);
-      OldRight.SetLeftChild(OldRightLeftRight, -OldRight.LineOffset, OldRight.LeftCount - tmp - OldRightLeft.MergedLineCount);
-        
-      if (OldRightLeft.Balance<=0)
-      then ANode.Balance := 0
-      else ANode.Balance := -1;
-      if (OldRightLeft.Balance>=0)
-      then OldRight.Balance := 0
-      else OldRight.Balance := +1;
-      OldRightLeft.Balance := 0;
-      BalanceAfterDelete(OldRightLeft);
-    end;
-  end;
-
-end;
-
 function TSynTextFoldAVLTree.TreeForNestedNode(ANode: TSynTextFoldAVLNodeData; aOffset : Integer) : TSynTextFoldAVLTree;
 begin
   if fNestedNodesTree = nil then fNestedNodesTree := TSynTextFoldAVLTree.Create;
@@ -2914,8 +2409,7 @@ end;
 
 constructor TSynTextFoldAVLTree.Create;
 begin
-  fRoot := nil;
-  fRootOffset := 0;
+  inherited;
   fNestParent := nil;
   fNestedNodesTree := nil;
 end;
@@ -4220,10 +3714,12 @@ begin
   end;
 end;
 
+{$IFDEF SynDebug}
 procedure TSynEditFoldedView.debug;
 begin
   fFoldTree.debug;
 end;
+{$ENDIF}
 
 initialization
   InitNumEncodeValues;

@@ -5,23 +5,29 @@ unit SynEditMarks;
 interface
 
 uses
-  Classes, SysUtils, math, SynEditMiscClasses, SynEditTextBase;
+  Classes, SysUtils, math, SynEditMiscClasses, SynEditTextBase, LCLProc;
 
 const
 // Max number of book/gutter marks returned from GetEditMarksForLine - that
 // really should be enough.
-  maxMarks = 16;
+  maxMarks = 16 deprecated;
 
 type
 
-  TSynEditMarkList = class;
   TSynEditMark = class;
+  TSynEditMarkLine = class;
+  TSynEditMarkLineList = class;
+  TSynEditMarkList = class;
 
   TSynEditMarkChangeReason = (smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged);
   TSynEditMarkChangeReasons = set of TSynEditMarkChangeReason;
 
+  TSynEditMarkSortOrder = (smsoUnsorted, smsoColumn, smsoPriority, smsoBookmarkFirst, smsoBookMarkLast);
+
   TSynEditMarkChangeEvent = procedure(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons)
     of object;
+
+  TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
 
   { TSynEditMarkChangedHandlerList }
 
@@ -32,22 +38,27 @@ type
     procedure CallMarkChangedHandlers(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
   end;
 
+
+  TSynEditMarks = array[1..maxMarks] of TSynEditMark deprecated;
+
   { TSynEditMark }
 
   TSynEditMark = class
   private
+    FMarkLine: TSynEditMarkLine;
+    FMarkList: TSynEditMarkList;
+    FLine: Integer; // Only valid, if not part of a TSynEditMarkLine
     FOldLine: integer;
+    function GetLine: integer;
+    procedure SetMarkLine(const AValue: TSynEditMarkLine);
     procedure SetMarkList(const AValue: TSynEditMarkList);
   protected
-    FLine, FColumn, FImage, FPriority: Integer;
-    FEdit: TSynEditBase;
-    FMarkList: TSynEditMarkList;
+    FColumn, FImage, FPriority: Integer;
     FVisible: boolean;
     FInternalImage: boolean;
     FBookmarkNum: integer;
     FChangeLock: Integer;
     FChanges: TSynEditMarkChangeReasons;
-    function  GetEdit: TSynEditBase; virtual;
     procedure SetColumn(const Value: Integer); virtual;
     procedure SetImage(const Value: Integer); virtual;
     procedure SetLine(const Value: Integer); virtual;
@@ -55,14 +66,19 @@ type
     procedure SetVisible(const Value: boolean); virtual;
     procedure SetInternalImage(const Value: boolean);
     function  GetIsBookmark: boolean;
-    procedure DoChange(AChanges: TSynEditMarkChangeReasons); virtual;
-    procedure ForceChange(AChanges: TSynEditMarkChangeReasons);
-  public
-    constructor Create(AOwner: TSynEditBase);
-    destructor Destroy; override;
+
     procedure IncChangeLock;
     procedure DecChangeLock;
-    property Line: integer read FLine write SetLine;
+    procedure DoChange(AChanges: TSynEditMarkChangeReasons); virtual;
+    procedure ForceChange(AChanges: TSynEditMarkChangeReasons);
+
+    property  MarkLine: TSynEditMarkLine read FMarkLine write SetMarkLine;
+    property  MarkList: TSynEditMarkList read FMarkList write SetMarkList;
+  public
+    constructor Create(ASynEdit: TSynEditBase);
+    destructor Destroy; override;
+
+    property Line: integer read GetLine write SetLine;
     property OldLine: integer read FOldLine;
     property Column: integer read FColumn write SetColumn;
     property Priority: integer read FPriority write SetPriority;
@@ -71,46 +87,170 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property InternalImage: boolean read FInternalImage write SetInternalImage;
     property IsBookmark: boolean read GetIsBookmark;
-    property MarkList: TSynEditMarkList read FMarkList write SetMarkList;
   end;
 
-  TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
+  { TSynEditMarkLine }
 
-  TSynEditMarks = array[1..maxMarks] of TSynEditMark;
-
-  { A list of mark objects. Each object cause a litle picture to be drawn in the
-    gutter. }
-
-  { TSynEditMarkList }
-
-  TSynEditMarkList = class(TList)
+  TSynEditMarkLine = class(TSynSizedDifferentialAVLNode)
+  private
+    FMarks: TFPList;
+    FLineList: TSynEditMarkLineList;
+    function GetLineNum: Integer;
+    function GetMark(Index: Integer): TSynEditMark;
+    function GetLeft: TSynEditMarkLine;
+    function GetRight: TSynEditMarkLine;
+    procedure SetMark(Index: Integer; const AValue: TSynEditMark);
   protected
-    FEdit: TSynEditBase;
+    FLockChangeSize: Integer;
+    FCurrentSort1, FCurrentSort2: TSynEditMarkSortOrder;
+    procedure ChangeSize;
+    procedure IncLockChangeSize; // used in global destruction
+    {$IFDEF SynDebug}
+    function Debug: String; override;
+    {$ENDIF}
+  protected
+    property Left: TSynEditMarkLine read GetLeft;
+    property Right: TSynEditMarkLine read GetRight;
+    property Size: Integer read FSize;
+    property LeftSizeSum: Integer read FLeftSizeSum;
+    property LineOffset: Integer read FPositionOffset write FPositionOffset;
+  public
+    constructor Create(ALineNum: Integer; AOwner: TSynEditMarkLineList);
+    destructor  Destroy; override;
+
+    procedure Sort(PrimaryOrder: TSynEditMarkSortOrder;
+                   SecondaryOrder: TSynEditMarkSortOrder = smsoUnsorted);
+    function  Add(Item: TSynEditMark): Integer;
+    procedure Delete(Index: Integer);
+    function  Remove(Item: TSynEditMark): Integer;
+    procedure Clear(FreeMarks: Boolean = False);
+    function  Count: Integer;
+    function  IndexOf(AMark: TSynEditMark): Integer;
+    property  Items[Index: Integer]: TSynEditMark read GetMark write SetMark; default;
+    property  LineNum: Integer read GetLineNum;
+  end;
+
+  { TSynEditMarkIterator }
+
+  TSynEditMarkIterator = class
+  private
+    FMarkList: TSynEditMarkList;
+    FCurrentItem: TSynEditMark;
+    FCurrentIndex: Integer;
+    FBOL, FEOL: Boolean;
+  public
+    constructor Create(AOwner: TSynEditMarkList);
+
+    procedure Invalidate;
+    procedure GotoMark(AMark: TSynEditMark);
+    procedure GotoBOL;
+    procedure GotoEOL;
+
+    function First: Boolean;
+    function Last: Boolean;
+    function Next: Boolean;
+    function Previous: Boolean;
+
+    function NextLine: Boolean;
+    function PreviousLine: Boolean;
+
+    function IsValid: Boolean;
+    function IsValidAndNotModified: Boolean;
+
+    property  BOL: Boolean read FBOL;
+    property  EOL: Boolean read FEOL;
+
+    property Mark: TSynEditMark read FCurrentItem;
+  end;
+
+  { TSynEditMarkLineList }
+
+  TSynEditMarkLineList = class(TSynSizedDifferentialAVLTree)
+  private
+    FMarkList: TSynEditMarkList;
+    FIndexIterator: TSynEditMarkIterator;
+    // marks
+    function  GetMark(Index : Integer): TSynEditMark;
+    function  GetMarkCount: Integer;
+    procedure SetMark(Index : Integer; const AValue: TSynEditMark);
+    // lines
+    function  GetMarkLineByMarkIndex(var AMarkIndex: Integer): TSynEditMarkLine;
+    function  GetMarkLine(LineNum: Integer): TSynEditMarkLine;
+    function  GetOrAddMarkLine(LineNum: Integer; AddIfNotExist: Boolean;
+                               UseNext: Boolean = False): TSynEditMarkLine;
+
+    Procedure AdjustForLinesInserted(AStartLine, ALineCount : Integer);
+    Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
+  protected
+    // will be reset by TSynEditMarkLine.ChangeSize;
+    FLastIteratorIndex: Integer;
+  public
+    constructor Create(AOwner: TSynEditMarkList);
+    destructor Destroy; override;
+
+    procedure  Remove(Item: TSynEditMarkLine; FreeMarks: Boolean = False);
+    procedure Clear; override; // FreeMarks=False;
+    procedure Clear(FreeMarks: Boolean);
+    function  GetOrAddLine(LineNum: Integer): TSynEditMarkLine;
+    function  GetLineOrNext(LineNum: Integer): TSynEditMarkLine;
+    property  Lines[LineNum: Integer]: TSynEditMarkLine read GetMarkLine;
+  public
+    function  AddMark(Item: TSynEditMark): Integer;
+    procedure DeleteMark(Index: Integer);
+    function  RemoveMark(Item: TSynEditMark): Integer;
+    function  IndexOfMark(AMark: TSynEditMark): Integer;
+    property  MarkCount: Integer read GetMarkCount;
+    property  Mark[Index : Integer]: TSynEditMark read GetMark write SetMark;
+  end;
+
+  { TSynEditMarkList
+    A list of mark objects. Each object cause a litle picture to be drawn in the
+    gutter.
+  }
+
+  TSynEditMarkList = class
+  private
+    function GetMarkLine(LineNum: Integer): TSynEditMarkLine;
+  protected
     FLines: TSynEditStrings;
+    FMarkLines: TSynEditMarkLineList;
     fOnChange: TNotifyEvent;
     FChangeHandlers: TSynEditMarkChangedHandlerList;
+    FInternalIterator: TSynEditMarkIterator;
     procedure DoChange;
     procedure MarkChanged(Sender: TSynEditMark; AChanges: TSynEditMarkChangeReasons); virtual;
-    function Get(Index: Integer): TSynEditMark;
+    function  Get(Index: Integer): TSynEditMark;
     procedure Put(Index: Integer; Item: TSynEditMark);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
   public
     constructor Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
-    destructor Destroy; override;
-    function Add(Item: TSynEditMark): Integer;
-    procedure ClearLine(line: integer);
+    destructor  Destroy; override;
+    {$IFDEF SynDebug}
+    procedure   Debug;
+    {$ENDIF}
+
+
+    function  Add(Item: TSynEditMark): Integer;
+    procedure Insert(Index: Integer; Item: TSynEditMark); deprecated {$IFDEF VER2_5}'List is always sorted, use ADD / to be removed after 0.9.30'{$ENDIF};
     procedure Delete(Index: Integer);
-    function First: TSynEditMark;
-    procedure GetMarksForLine(line: integer; var Marks: TSynEditMarks);
-    procedure Insert(Index: Integer; Item: TSynEditMark);
-    function Last: TSynEditMark;
-    procedure Place(Mark: TSynEditMark);
-    function Remove(Item: TSynEditMark): Integer;
+    function  Remove(Item: TSynEditMark): Integer;
+    function  IndexOf(Item: TSynEditMark): Integer;
+    function  Count: Integer;
+
+    function  First: TSynEditMark;       deprecated {$IFDEF VER2_5}'to be removed after 0.9.30'{$ENDIF};
+    function  Last: TSynEditMark;        deprecated {$IFDEF VER2_5}'to be removed after 0.9.30'{$ENDIF};
+    procedure Place(Mark: TSynEditMark); deprecated {$IFDEF VER2_5}'use add instead / to be removed after 0.9.30'{$ENDIF};
+
+    procedure GetMarksForLine(line: integer; BookmarksFirst: Boolean; var Marks: TSynEditMarks);
+      deprecated {$IFDEF VER2_5}'need replacment'{$ENDIF};
+    procedure ClearLine(line: integer);
+
     procedure RegisterChangeHandler(Handler: TSynEditMarkChangeEvent; Filter: TSynEditMarkChangeReasons);
     procedure UnRegisterChangeHandler(Handler: TSynEditMarkChangeEvent);
   public
     property Items[Index: Integer]: TSynEditMark read Get write Put; default;
+    property Line[LineNum: Integer]: TSynEditMarkLine read GetMarkLine;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -118,7 +258,6 @@ function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
 function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
 
 implementation
-uses SynEdit;
 
 function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
 var
@@ -134,11 +273,10 @@ begin
   if Mark2.IsBookmark then
     Result := 1
   else
-  if Mark1.Priority < Mark2.Priority then
-    Result := 1
+  if Mark1.Priority <> Mark2.Priority then
+    Result := Mark2.Priority - Mark1.Priority
   else
-  if Mark1.Priority > Mark2.Priority then
-    Result := -1;
+    Result := Mark2.Column - Mark1.Column;
 end;
 
 function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
@@ -155,11 +293,10 @@ begin
   if Mark2.IsBookmark then
     Result := -1
   else
-  if Mark1.Priority < Mark2.Priority then
-    Result := 1
+  if Mark1.Priority <> Mark2.Priority then
+    Result := Mark2.Priority - Mark1.Priority
   else
-  if Mark1.Priority > Mark2.Priority then
-    Result := -1;
+    Result := Mark2.Column - Mark1.Column;
 end;
 
 procedure SortMarks(var Marks: TSynEditMarks; Compare: TListSortCompare);
@@ -196,7 +333,9 @@ end;
 
 procedure TSynEditMark.SetMarkList(const AValue: TSynEditMarkList);
 begin
-  if AValue = nil then begin
+  if AValue = FMarkList then
+    exit;
+  if FMarkList <> nil then begin
     DoChange([smcrRemoved]);
     ForceChange(FChanges);
   end;
@@ -205,15 +344,21 @@ begin
     DoChange([smcrAdded]);
 end;
 
-function TSynEditMark.GetEdit: TSynEditBase;
+function TSynEditMark.GetLine: integer;
 begin
-  if FEdit <> nil then try
-    if TCustomSynEdit(FEdit).Marks.IndexOf(self) = -1 then
-      FEdit := nil;
-  except
-    FEdit := nil;
-  end;
-  Result := FEdit;
+  if FMarkLine <> nil then
+    Result := FMarkLine.LineNum
+  else
+    Result := FLine;
+end;
+
+procedure TSynEditMark.SetMarkLine(const AValue: TSynEditMarkLine);
+begin
+  if FMarkLine = AValue then exit;
+  // keep the current line, if we loose the markline
+  if (AValue = nil) and (FMarkLine <> nil) then
+    FLine := FMarkLine.LineNum;
+  FMarkLine := AValue;
 end;
 
 function TSynEditMark.GetIsBookmark: boolean;
@@ -262,11 +407,19 @@ begin
 end;
 
 procedure TSynEditMark.SetLine(const Value: Integer);
+var
+  f: Boolean;
 begin
-  if FLine = Value then
+  if Line = Value then
     exit;
+  f := FMarkLine <> nil;
+  if f then
+    FMarkLine.Remove(self);
+  FMarkLine := nil;;
   FOldLine := FLine;
   FLine := Value;
+  if f and (FMarkList <> nil) then
+    FMarkList.FMarkLines.AddMark(self);
   DoChange([smcrLine]);
 end;
 
@@ -278,11 +431,10 @@ begin
   DoChange([smcrVisible]);
 end;
 
-constructor TSynEditMark.Create(AOwner: TSynEditBase);
+constructor TSynEditMark.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create;
   FBookmarkNum := -1;
-  FEdit := AOwner;
   FPriority := 0;
 end;
 
@@ -307,46 +459,542 @@ begin
     DoChange(FChanges);
 end;
 
+{ TSynEditMarkLine }
+
+function TSynEditMarkLine.GetMark(Index: Integer): TSynEditMark;
+begin
+  Result := TSynEditMark(FMarks[Index]);
+end;
+
+function TSynEditMarkLine.GetLeft: TSynEditMarkLine;
+begin
+  Result := TSynEditMarkLine(FLeft);
+end;
+
+function TSynEditMarkLine.GetLineNum: Integer;
+begin
+  Result := LineOffset;
+  if FParent <> nil then
+    Result := Result + TSynEditMarkLine(FParent).GetLineNum;
+end;
+
+function TSynEditMarkLine.GetRight: TSynEditMarkLine;
+begin
+  Result := TSynEditMarkLine(FRight);
+end;
+
+procedure TSynEditMarkLine.SetMark(Index: Integer; const AValue: TSynEditMark);
+begin
+  if Items[Index] = AValue then
+    exit;
+  Items[Index].MarkLine := nil;
+  FMarks[Index] := AValue;
+  AValue.MarkLine := Self;
+end;
+
+procedure TSynEditMarkLine.ChangeSize;
+var
+  Cnt: SmallInt;
+begin
+  Cnt := Count;
+  if (FLockChangeSize > 0) or (FSize = Cnt) then exit;
+  FLineList.FLastIteratorIndex := -1;
+  if Cnt = 0 then begin
+    inc(FLockChangeSize);
+    FLineList.Remove(Self);
+  end else begin
+    AdjustParentLeftCount(Cnt - FSize);
+    FSize := Cnt;
+  end;
+end;
+
+procedure TSynEditMarkLine.IncLockChangeSize;
+begin
+  inc(FLockChangeSize);
+end;
+
+{$IFDEF SynDebug}
+function TSynEditMarkLine.Debug: String;
+var
+  i: Integer;
+begin
+  Result := inherited;
+  Result := Result
+          + Format('Cnt=%d, LineNm=%d  ', [Count, LineNum]);
+  for i := 0 to Count-1 do
+    Result := Result
+            + Format(': L=%d, C=%d, Bk=%d %s, Img=%d %s :',
+                     [Items[i].Line, Items[i].Column,
+                      Items[i].BookmarkNumber, dbgs(Items[i].IsBookmark),
+                      Items[i].ImageIndex, dbgs(Items[i].InternalImage) ]);
+end;
+{$ENDIF}
+
+constructor TSynEditMarkLine.Create(ALineNum: Integer; AOwner: TSynEditMarkLineList);
+begin
+  inherited Create;;
+  FMarks := TFPList.Create;
+  FLineList := AOwner;
+  FPositionOffset := ALineNum;
+  FLockChangeSize := 0;
+  FCurrentSort1 := smsoUnsorted;
+end;
+
+destructor TSynEditMarkLine.Destroy;
+begin
+  Clear(True);
+  inherited Destroy;
+  FreeAndNil(FMarks);
+end;
+
+function CompareSynEditMarks(Mark1, Mark2: Pointer): Integer;
+var
+  m1: TSynEditMark absolute Mark1;
+  m2: TSynEditMark absolute Mark1;
+begin
+  case m1.MarkLine.FCurrentSort1 of
+    smsoColumn:        Result := m2.Column - m1.Column;
+    smsoPriority:      Result := m2.Priority - m1.Priority;
+    smsoBookmarkFirst:
+      if (m1.IsBookmark) and (not m2.IsBookmark) then Result := -1
+      else if (not m1.IsBookmark) and (m2.IsBookmark) then Result := 1
+      else Result := 0;
+    smsoBookMarkLast:
+      if (m1.IsBookmark) and (not m2.IsBookmark) then Result := 1
+      else if (not m1.IsBookmark) and (m2.IsBookmark) then Result := -1
+      else Result := 0;
+    else
+      Result := 0;
+  end;
+  if Result <> 0 then
+    exit;
+
+  case m1.MarkLine.FCurrentSort2 of
+    smsoColumn:        Result := m2.Column - m1.Column;
+    smsoPriority:      Result := m2.Priority - m1.Priority;
+    smsoBookmarkFirst:
+      if (m1.IsBookmark) and (not m2.IsBookmark) then Result := -1
+      else if (not m1.IsBookmark) and (m2.IsBookmark) then Result := 1
+      else Result := 0;
+    smsoBookMarkLast:
+      if (m1.IsBookmark) and (not m2.IsBookmark) then Result := 1
+      else if (not m1.IsBookmark) and (m2.IsBookmark) then Result := -1
+      else Result := 0;
+    else
+      Result := 0;
+  end;
+  if Result <> 0 then
+    exit;
+
+  Result := m2.Column - m1.Column;
+  if Result <> 0 then
+    exit;
+
+  Result := m2.Priority - m1.Priority;
+  if Result <> 0 then
+    exit;
+
+  Result := PtrInt(m2) - PtrInt(m1);
+end;
+
+procedure TSynEditMarkLine.Sort(PrimaryOrder: TSynEditMarkSortOrder;
+  SecondaryOrder: TSynEditMarkSortOrder);
+begin
+  if PrimaryOrder = smsoUnsorted then
+    PrimaryOrder := SecondaryOrder;
+  if PrimaryOrder = SecondaryOrder then
+    SecondaryOrder := smsoUnsorted;
+
+  if (PrimaryOrder = FCurrentSort1) and (SecondaryOrder = FCurrentSort2) then
+    exit;
+
+  FCurrentSort1 := PrimaryOrder;
+  FCurrentSort1 := SecondaryOrder;
+
+  if PrimaryOrder = smsoUnsorted then
+    exit;
+
+  FMarks.Sort({$IFDEF FPC}@{$ENDIF}CompareSynEditMarks);
+end;
+
+function TSynEditMarkLine.Add(Item: TSynEditMark): Integer;
+begin
+  FCurrentSort1 := smsoUnsorted;
+  Result := FMarks.Add(Item);
+  Item.MarkLine := Self;
+  ChangeSize;
+end;
+
+procedure TSynEditMarkLine.Delete(Index: Integer);
+begin
+  Items[Index].MarkLine := Self;
+  FMarks.Delete(Index);
+  ChangeSize;
+end;
+
+function TSynEditMarkLine.Remove(Item: TSynEditMark): Integer;
+begin
+  Item.MarkLine := nil;
+  Result := FMarks.Remove(Item);
+  ChangeSize;
+end;
+
+procedure TSynEditMarkLine.Clear(FreeMarks: Boolean = False);
+begin
+  inc(FLockChangeSize);
+  try
+    while Count > 0 do begin
+      if FreeMarks then begin
+        Items[0].MarkList := nil; // stop destroy from removing item from list
+        Items[0].Free
+      end else
+        Items[0].MarkLine := nil;
+      Delete(0);
+    end;
+  finally
+    dec(FLockChangeSize);
+  end;
+  ChangeSize;
+end;
+
+function TSynEditMarkLine.Count: Integer;
+begin
+  Result := FMarks.Count;
+end;
+
+function TSynEditMarkLine.IndexOf(AMark: TSynEditMark): Integer;
+begin
+  Result := FMarks.IndexOf(AMark);
+end;
+
+{ TSynEditMarkLineList }
+
+function TSynEditMarkLineList.GetMark(Index : Integer): TSynEditMark;
+var
+  MLine: TSynEditMarkLine;
+  i: Integer;
+begin
+  (* If any Mark was added/removed from it's line then FLastIteratorIndex will be -1
+     If Items in the current line changed order then IsValidAndNotModified is False
+     If Items in another line changed order, it is valid to use the iterator
+  *)
+  if (FLastIteratorIndex >= 0) and
+     ( (FLastIteratorIndex - 1 = Index) or     // Return previous
+       (FLastIteratorIndex     = Index) or     // Return current
+       (FLastIteratorIndex + 1 = Index) ) and  // Return next
+     (FIndexIterator.IsValidAndNotModified)
+  then begin
+    // can use iterator for quick access
+    if (FLastIteratorIndex + 1 = Index) then
+      FIndexIterator.Next
+    else if (FLastIteratorIndex - 1 = Index) then
+      FIndexIterator.Previous;
+    Result := FIndexIterator.Mark;
+    FLastIteratorIndex := Index;
+    exit;
+  end;
+
+  i := Index;
+  MLine := GetMarkLineByMarkIndex(i);
+  Result := MLine[i];
+
+  FIndexIterator.GotoMark(Result);
+  FLastIteratorIndex := Index;
+end;
+
+function TSynEditMarkLineList.GetMarkCount: Integer;
+var
+  n: TSynEditMarkLine;
+begin
+  n := TSynEditMarkLine(FRoot);
+  Result := 0;
+  while n <> nil do begin
+    Result := Result + n.LeftSizeSum + n.Size;
+    n := n.Right;
+  end;
+end;
+
+function TSynEditMarkLineList.GetMarkLineByMarkIndex(var AMarkIndex: Integer): TSynEditMarkLine;
+begin
+  Result := TSynEditMarkLine(FRoot);
+  while Result <> nil do begin
+
+    if AMarkIndex < Result.LeftSizeSum then begin
+      Result := Result.Left;
+      continue;
+    end;
+
+    AMarkIndex := AMarkIndex - Result.LeftSizeSum;
+    if AMarkIndex < Result.Size then begin
+      break;
+    end
+    else begin
+      AMarkIndex := AMarkIndex - Result.Size;
+      Result := Result.Right;
+      continue;
+    end;
+
+  end;
+end;
+
+function TSynEditMarkLineList.GetMarkLine(LineNum: Integer): TSynEditMarkLine;
+begin
+  Result := GetOrAddMarkLine(LineNum, False);
+end;
+
+function TSynEditMarkLineList.GetOrAddMarkLine(LineNum: Integer;
+  AddIfNotExist: Boolean; UseNext: Boolean = False): TSynEditMarkLine;
+var
+  rStartPosition: Integer;
+  p: TSynEditMarkLine;
+begin
+  Result := TSynEditMarkLine(FRoot);
+  if (Result = nil) and AddIfNotExist then begin
+    Result := TSynEditMarkLine.Create(LineNum, Self);
+    SetRoot(Result);
+    exit;
+  end;
+
+  rStartPosition := fRootOffset;
+  p := nil;
+
+  while (Result <> nil) do begin
+    rStartPosition := rStartPosition + Result.FPositionOffset;
+
+    if rStartPosition > LineNum then begin
+      if (Result.Left = nil) and AddIfNotExist then begin
+        p := Result;
+        Result := TSynEditMarkLine.Create(LineNum, Self);
+        p.SetLeftChild(Result, -rStartPosition);
+        BalanceAfterInsert(Result);
+        break;
+      end;
+      // Store current in p, as posible UseNext
+      p := Result;
+      Result := Result.Left;
+    end
+
+    else if LineNum = rStartPosition then begin
+      break;
+    end
+
+    else if rStartPosition < LineNum then begin
+      if (Result.Right = nil) and AddIfNotExist then begin
+        p := Result;
+        Result := TSynEditMarkLine.Create(LineNum, Self);
+        p.SetRightChild(Result, -rStartPosition);
+        BalanceAfterInsert(Result);
+        break;
+      end;
+      Result := Result.Right;
+    end;
+  end; // while
+  if UseNext and (Result = nil) then
+    Result := p;
+end;
+
+procedure TSynEditMarkLineList.AdjustForLinesInserted(AStartLine, ALineCount: Integer);
+var
+  Current: TSynEditMarkLine;
+  CurrentLine: Integer;
+begin
+  Current := TSynEditMarkLine(fRoot);
+  CurrentLine := FRootOffset;
+  while (Current <> nil) do begin
+    CurrentLine := CurrentLine + Current.LineOffset;
+
+    if AStartLine <= CurrentLine then begin
+      // move current node
+      Current.LineOffset := Current.LineOffset + ALineCount;
+      CurrentLine := CurrentLine + ALineCount;
+      if Current.Left <> nil then
+        Current.Left.LineOffset := Current.Left.LineOffset - ALineCount;
+      Current := Current.Left;
+    end
+    else if AStartLine > CurrentLine then begin
+      // The new lines are entirly behind the current node
+      Current := Current.Right;
+    end
+  end;
+end;
+
+procedure TSynEditMarkLineList.AdjustForLinesDeleted(AStartLine, ALineCount: Integer);
+var
+  Current : TSynEditMarkLine;
+  CurrentLine, LastLineToDelete: Integer;
+begin
+  Current := TSynEditMarkLine(fRoot);
+  CurrentLine := FRootOffset;;
+  LastLineToDelete := AStartLine + ALineCount - 1; // only valid for delete; ALineCount < 0
+
+  while (Current <> nil) do begin
+    CurrentLine := CurrentLine + Current.LineOffset;
+
+    if (AStartLine = CurrentLine) or
+       ((AStartLine < CurrentLine) and (LastLineToDelete >= CurrentLine)) then begin
+      { $IFDEF AssertSynMemIndex}
+      raise Exception.Create('TSynEditMarkLineList.AdjustForLinesDeleted node to remove');
+      { $ENDIF}
+    end
+
+    else if AStartLine < CurrentLine then begin
+      // move current node (includes right subtree / left subtree needs eval)
+      Current.LineOffset := Current.LineOffset - ALineCount;
+      CurrentLine := CurrentLine - ALineCount;
+
+      Current := Current.Left;
+      if Current <> nil then
+        Current.LineOffset := Current.LineOffset + ALineCount;
+    end
+
+    else if AStartLine > CurrentLine then begin
+      // The deleted lines are entirly behind the current node
+      Current := Current.Right;
+    end;
+  end;
+end;
+
+constructor TSynEditMarkLineList.Create(AOwner: TSynEditMarkList);
+begin
+  inherited Create;
+  FMarkList := AOwner;
+  FIndexIterator := TSynEditMarkIterator.Create(FMarkList);
+  FLastIteratorIndex := -1;
+end;
+
+procedure TSynEditMarkLineList.SetMark(Index : Integer; const AValue: TSynEditMark);
+var
+  l: TSynEditMarkLine;
+begin
+  l := GetMarkLineByMarkIndex(Index);
+  l[Index] := AValue;
+end;
+
+destructor TSynEditMarkLineList.Destroy;
+begin
+  Clear(True);
+  FreeAndNil(FIndexIterator);
+  inherited Destroy;
+end;
+
+procedure TSynEditMarkLineList.Remove(Item: TSynEditMarkLine; FreeMarks: Boolean);
+begin
+  Item.Clear(FreeMarks);
+  RemoveNode(Item);
+  Item.Free;
+end;
+
+procedure TSynEditMarkLineList.Clear;
+begin
+  Clear(False);
+end;
+
+procedure TSynEditMarkLineList.Clear(FreeMarks: Boolean);
+  procedure DeleteNode(ANode: TSynEditMarkLine);
+  begin
+    ANode.IncLockChangeSize;
+    ANode.Clear(FreeMarks);
+    if ANode.Left  <> nil then DeleteNode(ANode.Left);
+    if ANode.Right <> nil then DeleteNode(ANode.Right);
+    DisposeNode(TSynSizedDifferentialAVLNode(ANode));
+  end;
+begin
+  if FRoot <> nil then DeleteNode(TSynEditMarkLine(FRoot));
+  SetRoot(nil);
+end;
+
+function TSynEditMarkLineList.GetOrAddLine(LineNum: Integer): TSynEditMarkLine;
+begin
+  Result := GetOrAddMarkLine(LineNum, True);
+end;
+
+function TSynEditMarkLineList.GetLineOrNext(LineNum: Integer): TSynEditMarkLine;
+begin
+  Result := GetOrAddMarkLine(LineNum, False, True);
+end;
+
+function TSynEditMarkLineList.AddMark(Item: TSynEditMark): Integer;
+var
+  l: TSynEditMarkLine;
+begin
+  l := GetOrAddLine(Item.Line);
+  Result := l.Add(Item);
+  Result := Result + l.GetSizesBeforeSum;
+end;
+
+procedure TSynEditMarkLineList.DeleteMark(Index: Integer);
+var
+  m: TSynEditMark;
+begin
+  m := Mark[Index];
+  m.MarkLine.Remove(m)
+end;
+
+function TSynEditMarkLineList.RemoveMark(Item: TSynEditMark): Integer;
+begin
+  if Item.MarkLine = nil then
+    exit;
+  Result := Item.MarkLine.GetSizesBeforeSum;
+  Result := Result + Item.MarkLine.Remove(Item);
+end;
+
+function TSynEditMarkLineList.IndexOfMark(AMark: TSynEditMark): Integer;
+var
+  l: TSynEditMarkLine;
+begin
+  l := AMark.MarkLine;
+  Result := l.GetSizesBeforeSum + l.IndexOf(AMark);
+end;
+
 { TSynEditMarkList }
 
 function TSynEditMarkList.Add(Item: TSynEditMark): Integer;
 begin
-  Item.MarkList := self;;
-  Result := inherited Add(Item);
+  Result := FMarkLines.AddMark(Item);
+  Item.MarkList := Self;
   DoChange;
 end;
 
 procedure TSynEditMarkList.ClearLine(Line: integer);
 var
-  i: integer;
+  l: TSynEditMarkLine;
 begin
-  for i := Count - 1 downto 0 do
-    if not Items[i].IsBookmark and (Items[i].Line = Line) then Delete(i);
+  // TODO: move to marklinelist
+  l := FMarkLines.Lines[Line];
+  if l <> nil then
+    l.Clear(True);
 end;
 
 constructor TSynEditMarkList.Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
 begin
+  FMarkLines := TSynEditMarkLineList.Create(Self);
   FChangeHandlers := TSynEditMarkChangedHandlerList.Create;
   inherited Create;
-  FEdit := AOwner;
   FLines := ALines;
   FLines.AddEditHandler(@DoLinesEdited);
+  FInternalIterator := TSynEditMarkIterator.Create(Self);
 end;
 
 destructor TSynEditMarkList.Destroy;
 begin
   FLines.RemoveEditHandler(@DoLinesEdited);
-  while Count > 0 do
-    Get(0).Free;
   inherited Destroy;
+  // Todo: clear changehandlers first?
+  FreeAndNil(FMarkLines);  // will free all Marks
   FreeAndNil(FChangeHandlers);
+  FreeAndNil(FInternalIterator);
 end;
 
-procedure TSynEditMarkList.Delete(Index: Integer);
+{$IFDEF SynDebug}
+procedure TSynEditMarkList.Debug;
 begin
-  Items[Index].MarkList := nil;
-  inherited Delete(Index);
-  DoChange;
+  FMarkLines.Debug;
+end;
+{$ENDIF}
+
+function TSynEditMarkList.GetMarkLine(LineNum: Integer): TSynEditMarkLine;
+begin
+  Result := FMarkLines.Lines[LineNum];
 end;
 
 procedure TSynEditMarkList.DoChange;
@@ -361,67 +1009,70 @@ begin
   FChangeHandlers.CallMarkChangedHandlers(Sender, AChanges);
 end;
 
-function TSynEditMarkList.First: TSynEditMark;
-begin
-  Result := TSynEditMark(inherited First);
-end;
-
 function TSynEditMarkList.Get(Index: Integer): TSynEditMark;
 begin
-  Result := TSynEditMark(inherited Get(Index));
+  Result := FMarkLines.Mark[Index];
 end;
 
 //Returns up to maxMarks book/gutter marks for a chosen line.
 
-procedure TSynEditMarkList.GetMarksForLine(line: integer;
+procedure TSynEditMarkList.GetMarksForLine(line: integer; BookmarksFirst: Boolean;
   var marks: TSynEditMarks);
 var
   cnt: integer;
   i: integer;
+  l: TSynEditMarkLine;
 begin
   FillChar(marks, SizeOf(marks), 0);
   cnt := 0;
-  for i := 0 to Count - 1 do
+  l := FMarkLines.Lines[line];
+  if l = nil then
+    exit;
+  for i := 0 to l.Count - 1 do
   begin
-    if Items[i].Line = line then
-    begin
-      Inc(cnt);
-      marks[cnt] := Items[i];
-      if cnt = maxMarks then break;
-    end;
+    Inc(cnt);
+    marks[cnt] := l.Items[i];
+    if cnt = maxMarks then break;
   end;
-  if Assigned(FEdit) then
-    if TSynEdit(FEdit).BookMarkOptions.DrawBookmarksFirst then
-      SortMarks(marks, @DoMarksCompareBookmarksFirst)
-    else
-      SortMarks(marks, @DoMarksCompareBookmarksLast);
+  if BookmarksFirst then
+    SortMarks(marks, @DoMarksCompareBookmarksFirst)
+  else
+    SortMarks(marks, @DoMarksCompareBookmarksLast);
 end;
 
 procedure TSynEditMarkList.Insert(Index: Integer; Item: TSynEditMark);
 begin
-  Item.MarkList := Self;
-  inherited Insert(Index, Item);
+  Add(Item);
+end;
+
+procedure TSynEditMarkList.Delete(Index: Integer);
+var
+  Mrk: TSynEditMark;
+begin
+  Mrk := FMarkLines.Mark[Index];
+  Mrk.MarkList := Self;
+  FMarkLines.RemoveMark(Mrk);
   DoChange;
 end;
 
 function TSynEditMarkList.Last: TSynEditMark;
 begin
-  Result := TSynEditMark(inherited Last);
+  if Count > 0 then
+    Result := Items[Count - 1]
+  else
+    Result := nil;
 end;
 
 procedure TSynEditMarkList.Place(mark: TSynEditMark);
 begin
-  if assigned(FEdit) then
-    if assigned(TSynEdit(FEdit).OnPlaceBookmark) then
-      TSynEdit(FEdit).OnPlaceBookmark(TSynEdit(FEdit), mark);
   if assigned(mark) then
     Add(mark);
-  DoChange;
 end;
 
 procedure TSynEditMarkList.Put(Index: Integer; Item: TSynEditMark);
 begin
-  inherited Put(Index, Item);
+  FMarkLines.Mark[Index] := Item;
+  Item.MarkList := Self;
   DoChange;
 end;
 
@@ -429,53 +1080,102 @@ procedure TSynEditMarkList.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aByt
   aLineBrkCnt: Integer; aText: String);
 var
   i, Col: Integer;
+  CurLine: TSynEditMarkLine;
+  LinePos, LineBSize: Integer;
+  f: Boolean;
+  Mrk: TSynEditMark;
 begin
-  if Count = 0 then exit;
+  CurLine := FMarkLines.GetLineOrNext(aLinePos);
+  if (CurLine = nil) then
+    exit;
+
+  LinePos := CurLine.LineNum;
   Col := FLines.LogicalToPhysicalPos(Point(aBytePos, aLinePos)).x;
-  if aLineBrkCnt > 0 then
-  begin
-    for i := 0 to Count - 1 do
-      if (Items[i].Line > aLinePos) then
-        Items[i].Line := Items[i].Line + aLineBrkCnt
-      else
-      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then begin
-        Items[i].Line := Items[i].Line + aLineBrkCnt;
-        Items[i].Column := Items[i].Column - Col + 1;
+  FInternalIterator.Invalidate; // TODO: better notification system
+
+  if aLineBrkCnt > 0 then begin
+    FMarkLines.AdjustForLinesInserted(aLinePos + 1, aLineBrkCnt);
+    FInternalIterator.GotoMark(CurLine[0]); // TODO: better notification system
+    if (LinePos = aLinePos) then begin
+      i := CurLine.Count - 1;
+      while i >= 0 do begin
+        Mrk := CurLine.Items[i];
+        if (Mrk.Column > col) then begin
+          Mrk.Line   := Mrk.Line + aLineBrkCnt;
+          Mrk.Column := Mrk.Column - Col + 1;
+        end;
+        dec(i);
       end;
+    end;
   end
+
   else
-  if aLineBrkCnt < 0 then
-  begin
-    for i := 0 to Count - 1 do
-      if (Items[i].Line > aLinePos - aLineBrkCnt) then
-        Items[i].Line := Items[i].Line + aLineBrkCnt
-      else
-      if (Items[i].Line > aLinePos) then begin
-        Items[i].Line := aLinePos;
-        Items[i].Column := Items[i].Column + Col - 1;
+  if aLineBrkCnt < 0 then begin
+    if (LinePos = aLinePos) then
+      CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
+    while (CurLine <> nil) and (LinePos <= aLinePos - aLineBrkCnt) do begin
+      f := LinePos = aLinePos - aLineBrkCnt;
+      i := CurLine.Count - 1;
+      while i >= 0 do begin
+        Mrk := CurLine.Items[i];
+        Mrk.Line := aLinePos;
+        if f then
+          Mrk.Column := Mrk.Column + Col - 1
+        else
+          Mrk.Column := Col;  // or delete ?
+        dec(i);
       end;
+      CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
+    end;
+    if CurLine <> nil then FInternalIterator.GotoMark(CurLine[0]); // TODO: better notification system
+    FMarkLines.AdjustForLinesDeleted(aLinePos + 1, -aLineBrkCnt);
   end
+
   else
-  if aCount > 0 then
-  begin
-    for i := 0 to Count - 1 do
-      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then
-        Items[i].Column := Items[i].Column + aCount;
-  end
-  else
-  if aCount < 0 then
-  begin
-    for i := 0 to Count - 1 do
-      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then
-        Items[i].Column := Max(Col, Items[i].Column + aCount);
+  if aLinePos = LinePos then begin
+    if aCount > 0 then begin
+      for i := 0 to CurLine.Count - 1 do
+        if (CurLine.Items[i].Column > col) then
+          CurLine.Items[i].Column := CurLine.Items[i].Column + aCount
+    end
+    else if aCount < 0 then begin
+      for i := 0 to CurLine.Count - 1 do
+        if (CurLine.Items[i].Column > col) then
+          CurLine.Items[i].Column := Max(Col, CurLine.Items[i].Column + aCount);
+    end;
   end;
+
+  if FInternalIterator.Mark <> nil then begin // TODO: better notification system
+    repeat
+      FInternalIterator.Mark.DoChange([smcrLine]);
+    until not FInternalIterator.Next;
+  end;
+
 end;
 
 function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;
 begin
   Item.MarkList := nil;
-  Result := inherited Remove(Item);
+  Result := FMarkLines.RemoveMark(Item);
   DoChange;
+end;
+
+function TSynEditMarkList.IndexOf(Item: TSynEditMark): Integer;
+begin
+  Result := FMarkLines.IndexOfMark(Item);
+end;
+
+function TSynEditMarkList.Count: Integer;
+begin
+  Result := FMarkLines.MarkCount;
+end;
+
+function TSynEditMarkList.First: TSynEditMark;
+begin
+  if Count > 0 then
+    Result := Items[0]
+  else
+    Result := nil;
 end;
 
 procedure TSynEditMarkList.RegisterChangeHandler(Handler: TSynEditMarkChangeEvent;
@@ -510,6 +1210,222 @@ begin
   i:=Count;
   while NextDownIndexBitFilter(i, LongInt(Changes)) do
     TSynEditMarkChangeEvent(FItems[i].FHandler)(Sender, Changes);
+end;
+
+{ TSynEditMarkIterator }
+
+procedure TSynEditMarkIterator.GotoBOL;
+begin
+  FBOL := True;
+  FEOL := False;
+  FCurrentItem := nil;
+end;
+
+procedure TSynEditMarkIterator.GotoEOL;
+begin
+  FBOL := False;
+  FEOL := True;
+  FCurrentItem := nil;
+end;
+
+constructor TSynEditMarkIterator.Create(AOwner: TSynEditMarkList);
+begin
+  inherited Create;
+  FMarkList := AOwner;
+  FCurrentItem := nil;
+  FBOL := False;
+  FEOL := False;
+end;
+
+procedure TSynEditMarkIterator.Invalidate;
+begin
+  FCurrentItem := nil;
+  FBOL := False;
+  FEOL := False;
+end;
+
+procedure TSynEditMarkIterator.GotoMark(AMark: TSynEditMark);
+begin
+  if  (AMark <> nil) and (AMark.FMarkList <> FMarkList) then
+    raise Exception.Create('Invalid list');
+
+  FCurrentItem := AMark;
+  FBOL := False;
+  FEOL := False;
+end;
+
+function TSynEditMarkIterator.First: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  ML := TSynEditMarkLine(FMarkList.FMarkLines.First);
+  if ML <> nil then
+    FCurrentItem := ML[0]
+  else
+    FCurrentItem := nil;
+  FCurrentIndex := 0;
+  FBOL := FCurrentItem = nil;
+  FEOL := FCurrentItem = nil;
+end;
+
+function TSynEditMarkIterator.Last: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  ML := TSynEditMarkLine(FMarkList.FMarkLines.Last);
+  if ML <> nil then
+    FCurrentItem := ML[ML.Count - 1]
+  else
+    FCurrentItem := nil;
+  FCurrentIndex := -1;
+  FBOL := FCurrentItem = nil;
+  FEOL := FCurrentItem = nil;
+end;
+
+function TSynEditMarkIterator.Next: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  if FBOL then begin
+    First;
+    Result := FCurrentItem <> nil;
+    exit;
+  end
+  else if FCurrentItem = nil then begin
+    FBOL := False;
+    FEOL := False;
+    Result := False;
+    exit;
+  end;
+
+  if (FCurrentIndex < 0) or (FCurrentIndex >= FCurrentItem.FMarkLine.Count) or
+     (FCurrentItem.FMarkLine[FCurrentIndex] <> FCurrentItem)
+  then
+    FCurrentIndex := FCurrentItem.FMarkLine.IndexOf(FCurrentItem);
+
+  inc(FCurrentIndex);
+  if FCurrentIndex < FCurrentItem.FMarkLine.Count then begin
+    FCurrentItem := FCurrentItem.FMarkLine[FCurrentIndex];
+    Result := True;
+  end else begin
+    ML := TSynEditMarkLine(FCurrentItem.FMarkLine.Successor);
+    if ML <> nil then begin
+      FCurrentIndex := 0;
+      FCurrentItem := ML[FCurrentIndex];
+      Result := True;
+    end else begin
+      FCurrentItem := nil;
+      FEOL := True;
+      Result := False;
+    end;
+  end;
+end;
+
+function TSynEditMarkIterator.Previous: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  if FEOL then begin
+    Last;
+    Result := FCurrentItem <> nil;
+    exit;
+  end
+  else if FCurrentItem = nil then begin
+    FBOL := False;
+    FEOL := False;
+    Result := False;
+    exit;
+  end;
+
+  if (FCurrentIndex < 0) or (FCurrentIndex >= FCurrentItem.FMarkLine.Count) or
+     (FCurrentItem.FMarkLine[FCurrentIndex] <> FCurrentItem)
+  then
+    FCurrentIndex := FCurrentItem.FMarkLine.IndexOf(FCurrentItem);
+
+  dec(FCurrentIndex);
+  if FCurrentIndex >= 0 then begin
+    FCurrentItem := FCurrentItem.FMarkLine[FCurrentIndex];
+    Result := True;
+  end else begin
+    ML := TSynEditMarkLine(FCurrentItem.FMarkLine.Precessor);
+    if ML <> nil then begin
+      FCurrentIndex := ML.Count - 1;
+      FCurrentItem := ML[FCurrentIndex];
+      Result := True;
+    end else begin
+      FCurrentItem := nil;
+      FBOL := True;
+      Result := False;
+    end;
+  end;
+end;
+
+function TSynEditMarkIterator.NextLine: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  if FBOL then begin
+    First;
+    Result := FCurrentItem <> nil;
+    exit;
+  end
+  else if FCurrentItem = nil then begin
+    FBOL := False;
+    FEOL := False;
+    Result := False;
+    exit;
+  end;
+
+  ML := TSynEditMarkLine(FCurrentItem.FMarkLine.Successor);
+  if ML <> nil then begin
+    FCurrentIndex := 0;
+    FCurrentItem := ML[FCurrentIndex];
+    Result := True;
+  end else begin
+    FCurrentItem := nil;
+    FEOL := True;
+    Result := False;
+  end;
+end;
+
+function TSynEditMarkIterator.PreviousLine: Boolean;
+var
+  ML: TSynEditMarkLine;
+begin
+  if FEOL then begin
+    Last;
+    Result := FCurrentItem <> nil;
+    exit;
+  end
+  else if FCurrentItem = nil then begin
+    FBOL := False;
+    FEOL := False;
+    Result := False;
+    exit;
+  end;
+
+  ML := TSynEditMarkLine(FCurrentItem.FMarkLine.Precessor);
+  if ML <> nil then begin
+    FCurrentIndex := ML.Count - 1;
+    FCurrentItem := ML[FCurrentIndex];
+    Result := True;
+  end else begin
+    FCurrentItem := nil;
+    FBOL := True;
+    Result := False;
+  end;
+end;
+
+function TSynEditMarkIterator.IsValid: Boolean;
+begin
+  Result := (FCurrentItem <> nil) or FBOL or FEOL;
+end;
+
+function TSynEditMarkIterator.IsValidAndNotModified: Boolean;
+begin
+  Result := IsValid and
+            (FCurrentIndex >= 0) and (FCurrentIndex < FCurrentItem.FMarkLine.Count) and
+            (FCurrentItem.FMarkLine[FCurrentIndex] = FCurrentItem);
 end;
 
 end.
