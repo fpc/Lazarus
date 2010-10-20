@@ -177,7 +177,7 @@ type
     function SaveToFile(Filename: string): TModalResult; virtual;
     function Load: TModalResult; virtual;
     function Save: TModalResult; virtual;
-    procedure DoAfterWrite; override;
+    procedure DoAfterWrite(Restore: boolean); override;
     procedure Apply; virtual;
     function GetFullFilename: string;
     function OnProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
@@ -426,12 +426,14 @@ begin
   FLastSavedChangeStep:=TEduOptsRootNode(Root).ChangeStep;
 end;
 
-procedure TEduOptions.DoAfterWrite;
+procedure TEduOptions.DoAfterWrite(Restore: boolean);
 begin
-  inherited DoAfterWrite;
-  if EducationOptions.Save<>mrOk then
-    DebugLn(['TEduOptions.DoAfterWrite Failed']);
-  Apply;
+  inherited DoAfterWrite(Restore);
+  if not Restore then begin
+    if EducationOptions.Save<>mrOk then
+      DebugLn(['TEduOptions.DoAfterWrite Failed']);
+    Apply;
+  end;
 end;
 
 procedure TEduOptions.Apply;
