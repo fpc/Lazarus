@@ -232,7 +232,7 @@ begin
     
     NL := StrTointDef(S,0);
     NLines := NLines + NL;
-    LNLines.Caption := FormatFloat('#,##0',NLines);
+    LNLines.Caption := AnsiToUTF8(FormatFloat('#,##0',NLines));
     Ok              := false;
   end;
   If Ok then PCurrentStatus.Caption := SStatus;
