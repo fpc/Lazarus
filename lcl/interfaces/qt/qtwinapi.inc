@@ -2041,11 +2041,11 @@ begin
   if not IsValidDC(DC) then
     Result := ERROR;
 
-  if Result <> ERROR
-  then with TQtDeviceContext(DC) do
+  if Result <> ERROR then
+  with TQtDeviceContext(DC) do
   begin
     {$ifdef VerboseQtWinAPI}
-      Write('TQtWidgetSet.GetClipBox FastClip=',
+      Writeln('TQtWidgetSet.GetClipBox FastClip=',
        ((vClipRect <> nil) and not vClipRectDirty) );
     {$endif}
 
@@ -2064,10 +2064,9 @@ begin
       try
         QPainter_clipRegion(Widget, ARegion);
         GetWindowOrgEx(DC, @Pt);
-        QRegion_translate(ARegion, -Pt.X, -Pt.Y);
+        if (Pt.X <> 0) or (Pt.Y <> 0) then
+          SetWindowOrgEx(DC, Pt.X, Pt.Y, @Pt);
         QRegion_boundingRect(ARegion, lpRect);
-        dec(lpRect^.Right, -Pt.X);
-        dec(lpRect^.Bottom, -Pt.Y);
       finally
         QRegion_destroy(ARegion);
       end;
@@ -2076,7 +2075,7 @@ begin
       if vImage <> nil then
         lpRect^ := Rect(0, 0, vImage.width, vImage.height);
     {$ifdef VerboseQtWinAPI}
-    WriteLn(' Rect=', dbgs(lprect^));
+    WriteLn('TQtWidgetSet.GetClipBox Rect=', dbgs(lprect^));
     {$endif}
   end;
 end;
@@ -4008,7 +4007,7 @@ var
   IntersectRgn, Rgn: QRegionH;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.IntersectClipRect] ');
+    WriteLn('[WinAPI TQtWidgetSet.IntersectClipRect] L ',Left,' T ',Top,' R ',Right,' B ',Bottom);
   {$endif}
   Result := ERROR;
   if not IsValidDC(DC) then exit;
