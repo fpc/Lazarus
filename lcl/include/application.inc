@@ -495,18 +495,18 @@ var
 begin
   GetCursorPos(P);
   //debugln(['TApplication.GetControlAtMouse p=',dbgs(p),' FLastMousePos=',dbgs(FLastMousePos)]);
-  if FLastMouseControlValid and (P.X=FLastMousePos.x) and (P.Y=FLastMousePos.Y)
-  then
+  if FLastMouseControlValid and (P.X = FLastMousePos.x) and (P.Y = FLastMousePos.Y) then
     Result := FLastMouseControl
   else
     Result := FindControlAtPosition(P, True);
   
   if (Result <> nil) and (csDesigning in Result.ComponentState) then
     Result := nil;
-  if Result<> nil then begin
-    FLastMouseControlValid:=true;
-    FLastMousePos:=p;
-    FLastMouseControl:=Result;
+  if Result <> nil then
+  begin
+    FLastMouseControlValid := True;
+    FLastMousePos := p;
+    FLastMouseControl := Result;
   end;
 end;
 
@@ -1959,7 +1959,7 @@ end;
 procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 begin
   //debugln(['TApplication.DoBeforeMouseMessage ',DbgSName(CurMouseControl)]);
-  UpdateMouseControl(GetControlAtMouse);
+  UpdateMouseControl(CurMouseControl);
 end;
 
 function TApplication.IsShortcut(var Message: TLMKey): boolean;

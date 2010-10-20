@@ -1242,7 +1242,6 @@ type
     function GetTitle: string;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    function GetControlAtMouse: TControl;
     procedure SetBidiMode(const AValue: TBiDiMode);
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
@@ -1293,6 +1292,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean = False);
+    function GetControlAtMouse: TControl;
     procedure ControlDestroyed(AControl: TControl);
     function BigIconHandle: HIcon;
     function SmallIconHandle: HIcon;

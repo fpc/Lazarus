@@ -1106,8 +1106,8 @@ type
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(var Message: TCMHittest) ; message CM_HITTEST;
-    procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
-    procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
+    procedure CMMouseEnter(var Message :TLMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message :TLMessage); message CM_MOUSELEAVE;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
@@ -2768,7 +2768,7 @@ begin
   begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowDisabled,capfAllowWinControls,capfRecursive]);
+                        [capfAllowDisabled, capfAllowWinControls, capfRecursive]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Control <> nil then
       Result := Control;

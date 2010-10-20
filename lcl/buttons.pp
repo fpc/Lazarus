@@ -285,7 +285,6 @@ type
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   private
-    procedure DoBeforeMouseMessage;
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;

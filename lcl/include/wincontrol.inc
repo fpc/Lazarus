@@ -5157,18 +5157,16 @@ begin
         Exit;
       end;
 
+    // exclude only LM_MOUSEENTER, LM_MOUSELEAVE
     LM_MOUSEFIRST..LM_MOUSELAST,
-    LM_LBUTTONTRIPLECLK,
-    LM_LBUTTONQUADCLK,
-    LM_MBUTTONTRIPLECLK,
-    LM_MBUTTONQUADCLK,
-    LM_RBUTTONTRIPLECLK,
-    LM_RBUTTONQUADCLK:
+    LM_MOUSEFIRST2..LM_RBUTTONQUADCLK,
+    LM_XBUTTONTRIPLECLK..LM_MOUSELAST2:
        begin
          {$IFDEF VerboseMouseBugfix}
          DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
          {$ENDIF}
          //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
+         DoBeforeMouseMessage;
          if IsControlMouseMSG(Message) then
            Exit
          else

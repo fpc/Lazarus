@@ -705,15 +705,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomSpeedButton.DoBeforeMouseMessage;
-------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.DoBeforeMouseMessage;
-begin
-  if Application<>nil then
-    Application.DoBeforeMouseMessage(Self);
-end;
-
-{------------------------------------------------------------------------------
        TCustomSpeedButton DoMouseUp  "Event Handler"
 ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
@@ -758,7 +749,6 @@ procedure TCustomSpeedButton.WMLButtonUp(var Message: TLMLButtonUp);
 var
   OldState: TButtonState;
 begin
-  DoBeforeMouseMessage;
   //DebugLn('TCustomSpeedButton.WMLButtonUp A ',DbgSName(Self),' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
   begin
