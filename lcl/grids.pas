@@ -1567,6 +1567,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetCheckboxState;
     property OnGetEditMask;
     property OnGetEditText;
     property OnHeaderClick;
@@ -1589,6 +1590,7 @@ type
     property OnSelectEditor;
     property OnSelection;
     property OnSelectCell;
+    property OnSetCheckboxState;
     property OnSetEditText;
     property OnShowHint;
     property OnStartDock;
