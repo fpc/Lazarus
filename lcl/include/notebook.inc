@@ -19,12 +19,12 @@
 
 function TNotebook.GetActiveNotebookPageComponent: TPage;
 begin
-  Result:=TPage(GetActivePageComponent);
+  Result:=TPage{%H-}(GetActivePageComponent);
 end;
 
 function TNotebook.GetNoteBookPage(Index: Integer): TPage;
 begin
-  Result:=TPage(GetPage(Index));
+  Result:=TPage{%H-}(GetPage(Index));
 end;
 
 procedure TNotebook.SetActiveNotebookPageComponent(const AValue: TPage);
@@ -37,7 +37,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TNotebook.Create(TheOwner: TComponent);
 begin
-  PageClass:=TPage;
+  PageClass:=TPage{%H-};
   inherited Create(TheOwner);
 end;
 

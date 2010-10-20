@@ -425,7 +425,7 @@ type
 
   TTabControlNoteBookStrings = class(TTabControlStrings)
   private
-    FNoteBook: TNoteBook;
+    FNoteBook: TNoteBook{%H-};
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;

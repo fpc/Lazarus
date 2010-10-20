@@ -1298,7 +1298,6 @@ type
     FBalloonHint: string;
     FBalloonTimeout: Integer;
     FBalloonTitle: string;
-    FIconList: TImageList;
     FPopUpMenu: TPopupMenu;
     FIcon: TIcon;
     FIcons: TCustomImageList;
@@ -1399,7 +1398,7 @@ begin
     {$ifdef INSTALL_TUNTABBEDNOTEBOOK} TUntabbedNotebook, {$ENDIF}
     TLabeledEdit, TSplitter, TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
-  RegisterNoIcon([TNotebook, TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
+  RegisterNoIcon([TNotebook{%H-}, TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
 end;
 
 {$I custompage.inc}
