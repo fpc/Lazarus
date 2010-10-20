@@ -332,6 +332,7 @@ type
     procedure LoadGlyphFromLazarusResource(const AName: String);
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property Color default clBtnFace;
     property Down: Boolean read FDown write SetDown default false;
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
