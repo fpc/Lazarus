@@ -111,9 +111,9 @@
       - move up, down
       - make active
   - a popup menu on IDE palette to quickly switch the build mode
+  - a diff tool to compare two build modes
 
   ToDo:
-  - a diff tool to compare two build modes
   - create Makefile:
      - create a special .compiled file
      - makefile should delete the .compiled before compile
@@ -128,6 +128,10 @@
   - make FCL a package
   - code completion
     - keypress event
+  - when adding/removing search path: do it for all build modes
+    - add unit to project
+    - remove unit from project
+    - move unit in project
   - make lazbuild lcl independent, independent of packages except one
     - license gpl2
     - create package lazbuildsystem with some units

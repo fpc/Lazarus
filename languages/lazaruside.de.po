@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-01 17:32+0100\n"
+"PO-Revision-Date: 2010-10-19 17:16+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -339,7 +339,7 @@ msgstr "Automat. Einrückung"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
-msgstr ""
+msgstr "(Einrückung festlegen)"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -2941,7 +2941,7 @@ msgstr "Globale Schema-Einstellungen verwenden"
 
 #: lazarusidestrconsts.dlguseschemelocal
 msgid "Use local scheme settings"
-msgstr ""
+msgstr "Lokale Schema-Einstellungen verwenden"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -3445,7 +3445,7 @@ msgstr "Aktiviere die Syntax regulärer Ausdrücke für Text und Ersetzen (sehr 
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
@@ -3469,7 +3469,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
-msgstr ""
+msgstr "Neues Makro hinzufügen"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3517,7 +3517,7 @@ msgstr "Wert hinzufügen:s"
 
 #: lazarusidestrconsts.lisaddvaluetomacro
 msgid "Add value to macro %s"
-msgstr ""
+msgstr "Wert zum Makro %s hinzufügen"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -5728,7 +5728,7 @@ msgstr ".po Datei beim Speichern einer lfm Datei erstellen/aktualisieren"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
-msgstr ""
+msgstr "Erzeuge Datei-Index des FPC-Quelltextverzeichnisses %s ..."
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6051,11 +6051,11 @@ msgstr "Löschen der Datei fehlgeschlagen"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
-msgstr ""
+msgstr "Lösche Makro %s"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
-msgstr ""
+msgstr "Lösche Modus \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -6187,7 +6187,7 @@ msgstr "Verzeichnis nicht beschreibbar"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
-msgstr ""
+msgstr "Verzeichnis wo die IDE die .po Dateien ablegt"
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -8728,11 +8728,11 @@ msgstr "Mac-Pascal"
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
-msgstr ""
+msgstr "Makro %s"
 
 #: lazarusidestrconsts.lismacroname
 msgid "Macro name"
-msgstr ""
+msgstr "Makro-Name"
 
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
@@ -8744,7 +8744,7 @@ msgstr "»Run«-Parameter angeben"
 
 #: lazarusidestrconsts.lismacrovalue
 msgid "Macro value"
-msgstr ""
+msgstr "Makro-Wert"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -8853,7 +8853,7 @@ msgstr "Kompilieren abbrechen"
 
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
-msgstr ""
+msgstr "Über FPC"
 
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
@@ -10065,7 +10065,7 @@ msgstr "Keine abgeleiteten Compilereinstellungen"
 
 #: lazarusidestrconsts.lisnoerrors
 msgid "No errors"
-msgstr ""
+msgstr "Keine Fehler"
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -10081,7 +10081,7 @@ msgstr "Keine LFM Datei"
 
 #: lazarusidestrconsts.lisnomacroselected
 msgid "No macro selected"
-msgstr ""
+msgstr "Kein Makro ausgewählt"
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -12205,7 +12205,7 @@ msgstr "Umbenennen der Datei ist fehlgeschlagen"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
-msgstr ""
+msgstr "Zu %s umbenennen"
 
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
@@ -12546,10 +12546,6 @@ msgstr "Zeigen"
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
 msgstr "Deklarations Hinweise anzeigen"
-
-#: lazarusidestrconsts.lisshowdifferencesbetweenmodes
-msgid "Show differences between modes ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
