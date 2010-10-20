@@ -426,6 +426,7 @@ var
   //LCLMenu: TPopUpMenu;
 begin
   AMenu := NSMenu.CreateWithHandle(sender);
+  if AMenu=nil then ;
 //  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));
 //  if (LCLMenu <> nil) and Assigned(LCLMenu.OnPopUp) then LCLMenu.OnPopUp(LCLMenu);
 end;

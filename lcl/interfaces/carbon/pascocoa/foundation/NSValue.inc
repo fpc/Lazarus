@@ -264,22 +264,22 @@ end;
 
 function NSNumber.charValue: char;
 begin
-  Result := char(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_charValue)), []));
+  Result := {%H-}char(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_charValue)), []));
 end;
 
 function NSNumber.unsignedCharValue: byte;
 begin
-  Result := byte(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedCharValue)), []));
+  Result := {%H-}byte(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedCharValue)), []));
 end;
 
 function NSNumber.shortValue: SmallInt;
 begin
-  Result := SmallInt(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_shortValue)), []));
+  Result := {%H-}SmallInt(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_shortValue)), []));
 end;
 
 function NSNumber.unsignedShortValue: Word;
 begin
-  Result := Word(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedShortValue)), []));
+  Result := {%H-}Word(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedShortValue)), []));
 end;
 
 function NSNumber.intValue: Integer;

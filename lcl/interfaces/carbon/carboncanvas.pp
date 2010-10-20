@@ -488,8 +488,6 @@ end;
   Note: must be used in pair with RestoreDC!
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
-var
-  current : HIShapeRef;
 begin
   if isClipped then
     CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
