@@ -22,7 +22,7 @@ program test1_2button;
 
 uses
   Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
-  LMessages, Buttons;
+  LMessages, stdctrls;
 
 type
 
