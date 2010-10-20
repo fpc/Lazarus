@@ -22,7 +22,7 @@ program test2_1buttonnavigation;
 
 uses
   Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
-  LMessages, Buttons;
+  LMessages, stdctrls;
 
 type
 
