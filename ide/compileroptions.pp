@@ -122,6 +122,7 @@
        package with this special .compiled file
   - writable package output directory: set it on load package or when output dir changes
      - use the same macros to get the same diversity
+     - use a readonly directory if package is valid
   - make synedit a package
   - make IDEIntf a package
   - make LCL a package

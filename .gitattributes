@@ -5343,6 +5343,7 @@ packager/globallinks/lazreportpdfexport-8.lpl svneol=native#text/plain
 packager/globallinks/lazsvnpkg-0.lpl svneol=native#text/plain
 packager/globallinks/lazthread-0.lpl svneol=native#text/plain
 packager/globallinks/lazwebextra-0.lpl svneol=native#text/plain
+packager/globallinks/lclbase-0.lpl svneol=native#text/plain
 packager/globallinks/leakview-0.lpl svneol=native#text/plain
 packager/globallinks/lhelpcontrolpkg-0.lpl svneol=native#text/plain
 packager/globallinks/lr_add_function-0.lpl svneol=native#text/plain
