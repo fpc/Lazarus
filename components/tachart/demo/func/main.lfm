@@ -102,9 +102,11 @@ object Form1: TForm1
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
+            ZPosition = 1
           end        
           item
             Alignment = calBottom
+            ZPosition = 1
           end>
         Extent.XMin = -1
         Extent.XMax = 1
