@@ -1815,7 +1815,8 @@ end;
 
 function TLazCompilerOptions.GetModified: boolean;
 begin
-  Result:=FSavedChangeStamp=FChangeStamp;
+  Result:=(FSavedChangeStamp=InvalidChangeStamp)
+         or (FSavedChangeStamp=FChangeStamp);
 end;
 
 constructor TLazCompilerOptions.Create(const TheOwner: TObject);
@@ -1823,6 +1824,7 @@ begin
   inherited Create;
   fOnChanged:=TMethodList.Create;
   FChangeStamp:=InvalidChangeStamp;
+  FSavedChangeStamp:=FChangeStamp;
   FOwner := TheOwner;
 end;
 

@@ -972,7 +972,7 @@ begin
     if not CheckPutSearchPath('debugger search path',OldPath,Options.GetDebugPath(false)) then
       exit(false);
 
-    // ToDo: will be replaced by buildmodes
+    // ToDo: will be replaced by build macro
     i:=LCLWidgetTypeComboBox.Itemindex;
     if i<=0 then
       Options.LCLWidgetType:=''
@@ -1154,6 +1154,7 @@ begin
   finally
     if not Result then begin
       Options.Assign(OldCompOpts);
+      Options.Modified:=OldCompOpts.Modified;
     end;
   end;
 end;
