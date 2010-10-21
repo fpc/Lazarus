@@ -739,7 +739,8 @@ initialization
   aygshelldllhandle := LoadLibrary('aygshell');
   if aygshelldllhandle <> 0 then
   begin
-    p := GetProcAddress(aygshelldllhandle, 'SHSendBackToFocusWindow');
+    // p := GetProcAddress(aygshelldllhandle, 'SHSendBackToFocusWindow'); <<-- This code doesn't work because the function is only exported by number
+    p := GetProcAddress(aygshelldllhandle, PWideChar(PtrInt(97)));
     if p <> nil then Pointer(SHSendBackToFocusWindow) := p
     else SHSendBackToFocusWindow := @_SHSendBackToFocusWindow_;
   end
