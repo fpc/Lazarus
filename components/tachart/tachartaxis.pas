@@ -114,7 +114,8 @@ type
   end;
 
 
-  TChartAxisMeasureData = record
+  TChartAxisGroup = record
+    FCount: Integer;
     FSize: Integer;
     FTitleSize: Integer;
   end;
@@ -178,7 +179,7 @@ type
     function IsVertical: Boolean; inline;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
-      var AMeasureData: TChartAxisMeasureData);
+      var AMeasureData: TChartAxisGroup);
   published
     property Alignment: TChartAxisAlignment
       read FAlignment write SetAlignment default calLeft;
@@ -214,10 +215,10 @@ type
     function GetAxes(AIndex: Integer): TChartAxis;
   private
     FCenterPoint: TPoint;
-    FCounts: TIntegerDynArray;
-    FMeasureData: array of TChartAxisMeasureData;
-    FOrder: TIntegerDynArray;
-    FZOrderedAxises: TFPList;
+    FGroupOrder: TFPList;
+    FGroups: array of TChartAxisGroup;
+    FZOrder: TFPList;
+    procedure InitAndSort(AList: TFPList; ACompare: TListSortCompare);
   protected
     function GetOwner: TPersistent; override;
   public
@@ -277,6 +278,16 @@ type
 
 var
   VIdentityTransform: TChartAxisTransformations;
+
+function AxisGroupCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := TChartAxis(Item1).Group - TChartAxis(Item2).Group;
+end;
+
+function AxisZCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := TChartAxis(Item1).ZPosition - TChartAxis(Item2).ZPosition;
+end;
 
 procedure SideByAlignment(
   var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer);
@@ -583,7 +594,7 @@ end;
 
 procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
-  AFirstPass: Boolean; var AMeasureData: TChartAxisMeasureData);
+  AFirstPass: Boolean; var AMeasureData: TChartAxisGroup);
 
   function CalcMarksSize(AMin, AMax: Double): TSize;
   const
@@ -770,12 +781,14 @@ constructor TChartAxisList.Create(AOwner: TCustomChart);
 begin
   inherited Create(TChartAxis);
   FChart := AOwner;
-  FZOrderedAxises := TFPList.Create;
+  FGroupOrder := TFPList.Create;
+  FZOrder := TFPList.Create;
 end;
 
 destructor TChartAxisList.Destroy;
 begin
-  FreeAndNil(FZOrderedAxises);
+  FreeAndNil(FGroupOrder);
+  FreeAndNil(FZOrder);
   inherited Destroy;
 end;
 
@@ -783,12 +796,12 @@ procedure TChartAxisList.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   const ATransf: ICoordTransformer; ACurrentZ: Integer; var AIndex: Integer);
 begin
-  while AIndex < FZOrderedAxises.Count do
-    with TChartAxis(FZOrderedAxises[AIndex]) do begin
+  while AIndex < FZOrder.Count do
+    with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
       Draw(ACanvas, AExtent, ATransf, FAxisRect);
       DrawTitle(
-        ACanvas, FCenterPoint, FMeasureData[FGroupIndex].FTitleSize, FTitleRect);
+        ACanvas, FCenterPoint, FGroups[FGroupIndex].FTitleSize, FTitleRect);
       AIndex += 1;
     end;
 end;
@@ -813,88 +826,85 @@ begin
   Result := FChart;
 end;
 
+procedure TChartAxisList.InitAndSort(
+  AList: TFPList; ACompare: TListSortCompare);
+var
+  i: Integer;
+begin
+  AList.Clear;
+  for i := 0 to Count - 1 do
+    AList.Add(Pointer(Axes[i]));
+  AList.Sort(ACompare);
+end;
+
 procedure TChartAxisList.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   AFirstPass: Boolean; var AMargins: TChartAxisMargins);
 var
   i, j, ai: Integer;
   axis: TChartAxis;
-  d: ^TChartAxisMeasureData;
+  g: ^TChartAxisGroup;
 begin
   ai := 0;
-  for i := 0 to High(FCounts) do begin
-    d := @FMeasureData[i];
-    d^.FSize := 0;
-    d^.FTitleSize := 0;
-    for j := 0 to FCounts[i] - 1 do begin
-      axis := Axes[FOrder[ai]];
-      axis.Measure(ACanvas, AExtent, AFirstPass, d^);
+  for i := 0 to High(FGroups) do begin
+    g := @FGroups[i];
+    g^.FSize := 0;
+    g^.FTitleSize := 0;
+    for j := 0 to g^.FCount - 1 do begin
+      axis := TChartAxis(FGroupOrder[ai]);
+      axis.Measure(ACanvas, AExtent, AFirstPass, g^);
       ai += 1;
     end;
     if AFirstPass then
-      AMargins[axis.Alignment] += d^.FSize + d^.FTitleSize;
+      AMargins[axis.Alignment] += g^.FSize + g^.FTitleSize;
   end;
-end;
-
-function AxisZCompare(Item1, Item2: Pointer): Integer;
-begin
-  Result := TChartAxis(Item1).ZPosition - TChartAxis(Item2).ZPosition;
 end;
 
 procedure TChartAxisList.Prepare(ARect: TRect);
 var
   i, j, ai: Integer;
   axis: TChartAxis;
+  g: ^TChartAxisGroup;
 begin
   FCenterPoint := CenterPoint(ARect);
   ai := 0;
-  for i := 0 to High(FCounts) do begin
-    for j := 0 to FCounts[i] - 1 do begin
-      axis := Axes[FOrder[ai + j]];
-      axis.FGroupIndex := i;
+  for i := 0 to High(FGroups) do begin
+    g := @FGroups[i];
+    for j := 0 to g^.FCount - 1 do begin
+      axis := TChartAxis(FGroupOrder[ai + j]);
       axis.FAxisRect := ARect;
     end;
-    SideByAlignment(ARect, axis.Alignment, FMeasureData[i].FSize);
-    for j := 0 to FCounts[i] - 1 do begin
-      axis := Axes[FOrder[ai]];
+    SideByAlignment(ARect, axis.Alignment, g^.FSize);
+    for j := 0 to g^.FCount - 1 do begin
+      axis := TChartAxis(FGroupOrder[ai]);
       axis.FTitleRect := ARect;
       ai += 1;
     end;
-    SideByAlignment(ARect, axis.Alignment, FMeasureData[i].FTitleSize);
+    SideByAlignment(ARect, axis.Alignment, g^.FTitleSize);
   end;
-  FZOrderedAxises.Clear;
-  for i := 0 to Count - 1 do
-    FZOrderedAxises.Add(Pointer(Axes[i]));
-  FZOrderedAxises.Sort(@AxisZCompare);
+  InitAndSort(FZOrder, @AxisZCompare);
 end;
 
 procedure TChartAxisList.PrepareGroups;
 var
-  i, j, g, m, groupCount: Integer;
+  i, g, prevGroup, groupCount: Integer;
 begin
-  SetLength(FOrder, Count);
-  for i := 0 to Count - 1 do
-    FOrder[i] := i;
-  for i := 0 to High(FOrder) - 1 do begin
-    m := i;
-    for j := i + 1 to High(FOrder) do
-      if Axes[FOrder[j]].Group < Axes[FOrder[m]].Group then
-        m := j;
-    if m <> i then
-      Exchange(FOrder[i], FOrder[m]);
-  end;
-  SetLength(FCounts, Count);
-  FCounts[0] := 1;
-  for i := 1 to High(FCounts) do
-    FCounts[i] := 0;
-  groupCount := 1;
-  for i := 1 to High(FOrder) do begin
-    g := Axes[FOrder[i]].Group;
-    groupCount += Ord((g = 0) or (g <> Axes[FOrder[i - 1]].Group));
-    FCounts[groupCount - 1] += 1;
-  end;
-  SetLength(FCounts, groupCount);
-  SetLength(FMeasureData, groupCount);
+  InitAndSort(FGroupOrder, @AxisGroupCompare);
+  SetLength(FGroups, Count);
+  groupCount := 0;
+  prevGroup := 0;
+  for i := 0 to FGroupOrder.Count - 1 do
+    with TChartAxis(FGroupOrder[i]) do begin
+      if (Group = 0) or (Group <> prevGroup) then begin
+        FGroups[groupCount].FCount := 1;
+        groupCount += 1;
+        prevGroup := Group;
+      end
+      else
+        FGroups[groupCount - 1].FCount += 1;
+      FGroupIndex := groupCount - 1;
+    end;
+  SetLength(FGroups, groupCount);
 end;
 
 procedure TChartAxisList.SetAxis(AIndex: Integer; AValue: TChartAxis);
