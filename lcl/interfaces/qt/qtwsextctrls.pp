@@ -554,7 +554,7 @@ begin
   SystemTrayIcon := TQtSystemTrayIcon.Create(IconH);
   SystemTrayIcon.FTrayIcon := ATrayIcon;
 
-  ATrayIcon.Handle := PtrInt(SystemTrayIcon);
+  ATrayIcon.Handle := HWND(SystemTrayIcon);
 
   Text := UTF8ToUTF16(ATrayIcon.Hint);
   SystemTrayIcon.setToolTip(Text);

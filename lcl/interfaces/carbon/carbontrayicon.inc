@@ -477,7 +477,7 @@ begin
   APrivateTrayIcon.bar := NSStatusBar.systemStatusBar();
   APrivateTrayIcon.LCLTrayIcon := ATrayIcon;
 
-  ATrayIcon.Handle := PtrInt(APrivateTrayIcon);
+  ATrayIcon.Handle := HWND(APrivateTrayIcon);
 
   { Converts the icon to NSImage }
 

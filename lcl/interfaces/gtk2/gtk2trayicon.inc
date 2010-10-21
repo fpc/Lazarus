@@ -474,7 +474,7 @@ begin
   Result := False;
 
   TrayIconHandle := TGtk2TrayIconHandle.Create(ATrayIcon);
-  ATrayIcon.Handle := PtrInt(TrayIconHandle);
+  ATrayIcon.Handle := HWND(TrayIconHandle);
   {*******************************************************************
   *  Now shows the GtkPlug
   *******************************************************************}

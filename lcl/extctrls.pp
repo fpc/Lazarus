@@ -1325,7 +1325,7 @@ type
     class procedure WSRegisterClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    Handle: PtrInt;
+    Handle: HWND;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function Hide: Boolean;
