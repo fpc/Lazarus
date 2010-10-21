@@ -461,11 +461,23 @@ end;
 procedure TCarbonWidget.UpdateLCLClientRect;
 var
   R: TRect;
+  ClientR: TRect;
+  LCLR: TRect;
+  LCLClientR: TRect;
+  RChanged: Boolean;
+  ClientChanged: Boolean;
 begin
   if not Resizing then begin
     GetBounds(R);
-    LCLObject.InvalidateClientRectCache(False);
-    LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
+    GetClientRect(ClientR);
+    LCLR:=LCLObject.BoundsRect;
+    LCLClientR:=LCLObject.ClientRect;
+    RChanged:=not CompareRect(@R,@LCLR);
+    ClientChanged:=not CompareRect(@ClientR,@LCLClientR);
+    if not ClientChanged then
+      LCLObject.InvalidateClientRectCache(False);
+    if RChanged or ClientChanged then
+      LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
   end;
 end;
 

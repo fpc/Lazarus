@@ -6681,7 +6681,7 @@ var
   var
     s: String;
   begin
-    s:='TWinControl.WMSize loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized);
+    s:='TWinControl.WMSize loop detected, the widgetset does not like the LCL bounds or sends unneeded wmsize messages: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized);
     if (OldClientSize.cx<>NewClientSize.cx)
       or (OldClientSize.cy<>NewClientSize.cy)
     then
