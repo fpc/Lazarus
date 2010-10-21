@@ -1138,7 +1138,7 @@ begin
           TargetObject := nil;
         end;
 
-        if TargetObject is TMenuItem then
+        if (TargetObject <> nil) and (TargetObject is TMenuItem) then
         begin
           {$ifdef VerboseWinCEMenu}
           DebugLn('[wincecallback] Sending menuitem Click');
@@ -1184,12 +1184,18 @@ begin
               BN_KILLFOCUS:
                 LMessage.Msg := LM_EXIT;
             end
-          end else
-          if lWinControl is TCustomButton then
+          end
+          // WM_COMMAND in the win32 interface to a button generates an OnClick event
+          // But in Windows CE this generates two OnClick events when the <ENTER> key
+          // is pressed in a button. Therefore this behavior was disabled.
+          // See bug 17680
+          else if lWinControl is TCustomButton then
+          begin
             case Hi(WParam) of
-              BN_CLICKED:   LMessage.Msg := LM_CLICKED;
+              BN_CLICKED:   LMessage.Msg := LM_NULL;//LM_CLICKED;
               BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
             end
+          end
           // TCustomMemo and TCustomFloatSpinEdit are also TCustomEdit
           // so do not check first only for TCustomEdit
           // Fixes bug http://bugs.freepascal.org/view.php?id=14378
