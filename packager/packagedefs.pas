@@ -363,7 +363,6 @@ type
     FSkipCompiler: Boolean;
   protected
     procedure SetLazPackage(const AValue: TLazPackage);
-    procedure SetModified(const NewValue: boolean); override;
     procedure SetCustomOptions(const AValue: string); override;
     procedure SetIncludePaths(const AValue: string); override;
     procedure SetLibraryPaths(const AValue: string); override;
@@ -2180,7 +2179,7 @@ end;
 
 function TLazPackage.GetModified: boolean;
 begin
-  Result:=lpfModified in FFlags;
+  Result:=(lpfModified in FFlags) or CompilerOptions.Modified;
 end;
 
 procedure TLazPackage.SetAddToProjectUsesSection(const AValue: boolean);
@@ -2376,7 +2375,10 @@ begin
     Exclude(FFlags,lpfModified);
   Exclude(FFlags,lpfSkipSaving);
   if not AValue then
+  begin
     PublishOptions.Modified:=false;
+    CompilerOptions.Modified:=false;
+  end;
   if (OldModified<>Modified) and (Editor<>nil) then
     Editor.UpdateAll(false);
 end;
@@ -3632,12 +3634,6 @@ procedure TPkgCompilerOptions.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
-end;
-
-procedure TPkgCompilerOptions.SetModified(const NewValue: boolean);
-begin
-  inherited SetModified(NewValue);
-  if Modified and (LazPackage<>nil) then LazPackage.Modified:=true;
 end;
 
 procedure TPkgCompilerOptions.SetCustomOptions(const AValue: string);

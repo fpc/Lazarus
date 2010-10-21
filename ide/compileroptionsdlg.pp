@@ -908,6 +908,7 @@ var
   NewConfigFilePath: String;
   AdditionalConfig: String;
   OldPath: String;
+  //Diff: TStringList;
 begin
   Result:=false;
 
@@ -1142,12 +1143,14 @@ begin
     end;
 
     // check for change and mark as modified
+    //debugln(['TfrmCompilerOptions.SaveFormToOptions "',OldCompOpts.CustomOptions,'" "',Options.CustomOptions,'"']);
     if not OldCompOpts.IsEqual(Options) then begin
       //Diff:=TStringList.Create;
-      //options.CreateDiff(OldCompOpts,Diff);
-      //debugln(Diff.Text);
+      //Options.CreateDiffAsText(OldCompOpts,Diff);
+      //debugln('DIFF:',Diff.Text);
       //Diff.Free;
       Options.Modified:=true;
+      //debugln(['TfrmCompilerOptions.SaveFormToOptions AAA1 ',Options.Modified,' ',dbgs(Options.ChangeStamp),' ',Options.ChangeStamp=Options.InvalidChangeStamp]);
       IncreaseCompilerParseStamp;
     end;
     Result:=true;
@@ -1157,6 +1160,7 @@ begin
       Options.Modified:=OldCompOpts.Modified;
     end;
   end;
+  //debugln(['TfrmCompilerOptions.SaveFormToOptions ',Options.Modified]);
 end;
 
 function TfrmCompilerOptions.SaveFormToOptions(

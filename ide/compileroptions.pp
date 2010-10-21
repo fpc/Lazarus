@@ -661,6 +661,7 @@ type
     function ShortenPath(const SearchPath: string;
                          MakeAlwaysRelative: boolean): string;
     function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
+    function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
     function GetEffectiveLCLWidgetType: string; virtual;
 
@@ -1326,9 +1327,13 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetCustomOptions(const AValue: string);
+var
+  NewValue: String;
 begin
-  if CustomOptions=AValue then exit;
-  ParsedOpts.SetUnparsedValue(pcosCustomOptions,AValue);
+  // Keep line breaks for formatting in options dialog
+  NewValue:=Trim(AValue);
+  if CustomOptions=NewValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosCustomOptions,NewValue);
   IncreaseChangeStamp;
 end;
 
@@ -2199,6 +2204,15 @@ begin
   
   // eliminate line breaks
   Result:=SpecialCharsToSpaces(Result,true);
+end;
+
+function TBaseCompilerOptions.TrimCustomOptions(o: string): string;
+var
+  i: Integer;
+begin
+  Result:=Trim(o);
+  for i:=length(Result) downto 1 do
+    if Result[i] in [#0..#31,#127] then System.Delete(Result,i,1);
 end;
 
 function TBaseCompilerOptions.GetOptionsForCTDefines: string;
@@ -3319,6 +3333,7 @@ begin
   if Done(ExecuteBefore.CreateDiff(CompOpts.ExecuteBefore,Tool)) then exit;
   if Done(ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool)) then exit;
   if Done(Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild)) then exit;
+  if Result then debugln(['TBaseCompilerOptions.CreateDiff END']);
 end;
 
 
@@ -4136,7 +4151,8 @@ var
   i: Integer;
   OtherMacro: TLazBuildMacro;
 begin
-  if (Tool=nil) and (Count<>OtherProperties.Count) then exit(true);
+  Result:=Tool.AddDiff('BuildMacros/Count',Count,OtherProperties.Count);
+  if (Tool=nil) and Result then exit;
   for i:=0 to OtherProperties.Count-1 do begin
     OtherMacro:=OtherProperties.Items[i];
     if i>=Count then

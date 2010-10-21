@@ -299,6 +299,7 @@ type
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
     function IsActive: boolean; virtual;
+    function TrimCustomOptions(o: string): string; virtual; abstract;
   public
     property Owner: TObject read fOwner write fOwner;
     property Modified: boolean read GetModified write SetModified;
@@ -1816,7 +1817,7 @@ end;
 function TLazCompilerOptions.GetModified: boolean;
 begin
   Result:=(FSavedChangeStamp=InvalidChangeStamp)
-         or (FSavedChangeStamp=FChangeStamp);
+         or (FSavedChangeStamp<>FChangeStamp);
 end;
 
 constructor TLazCompilerOptions.Create(const TheOwner: TObject);
