@@ -172,10 +172,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
-      const ATransf: ICoordTransformer; const ARect: TRect);
-    procedure DrawTitle(
-      ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer;
-      const ARect: TRect);
+      const ATransf: ICoordTransformer);
+    procedure DrawTitle(ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer);
     function IsVertical: Boolean; inline;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
@@ -435,7 +433,7 @@ end;
 
 procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
-  const ATransf: ICoordTransformer; const ARect: TRect);
+  const ATransf: ICoordTransformer);
 
 var
   prevLabelPoly: TPointArray = nil;
@@ -500,11 +498,10 @@ var
 var
   i, coord: Integer;
   v: Double;
-  a: TChartAxisMargins absolute ARect;
 begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
-  coord := a[Alignment];
+  coord := TChartAxisMargins(FAxisRect)[Alignment];
   zoffset := Point(-ZPosition, ZPosition);
   for i := 0 to High(FMarkValues) do begin
     v := GetTransform.AxisToGraph(FMarkValues[i]);
@@ -516,7 +513,7 @@ begin
 end;
 
 procedure TChartAxis.DrawTitle(
-  ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer; const ARect: TRect);
+  ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer);
 var
   p: TPoint;
   dummy: TPointArray = nil;
@@ -526,10 +523,10 @@ begin
   p := ACenter;
   d := (ASize + Title.Distance) div 2;
   case Alignment of
-    calLeft: p.X := ARect.Left - d;
-    calTop: p.Y := ARect.Top - d;
-    calRight: p.X := ARect.Right + d;
-    calBottom: p.Y := ARect.Bottom + d;
+    calLeft: p.X := FTitleRect.Left - d;
+    calTop: p.Y := FTitleRect.Top - d;
+    calRight: p.X := FTitleRect.Right + d;
+    calBottom: p.Y := FTitleRect.Bottom + d;
   end;
   p += Point(-ZPosition, ZPosition);
   Title.DrawLabel(ACanvas, p, p, Title.Caption, dummy);
@@ -799,9 +796,8 @@ begin
   while AIndex < FZOrder.Count do
     with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
-      Draw(ACanvas, AExtent, ATransf, FAxisRect);
-      DrawTitle(
-        ACanvas, FCenterPoint, FGroups[FGroupIndex].FTitleSize, FTitleRect);
+      Draw(ACanvas, AExtent, ATransf);
+      DrawTitle(ACanvas, FCenterPoint, FGroups[FGroupIndex].FTitleSize);
       AIndex += 1;
     end;
 end;
@@ -887,7 +883,7 @@ end;
 
 procedure TChartAxisList.PrepareGroups;
 var
-  i, g, prevGroup, groupCount: Integer;
+  i, prevGroup, groupCount: Integer;
 begin
   InitAndSort(FGroupOrder, @AxisGroupCompare);
   SetLength(FGroups, Count);

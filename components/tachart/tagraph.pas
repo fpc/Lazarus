@@ -203,7 +203,7 @@ type
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
-    procedure DrawAxis(ACanvas: TCanvas);
+    procedure DrawBackground(const ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -213,6 +213,7 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure PrepareAxis(ACanvas: TCanvas);
     procedure PrepareLegend(
       ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
       var AClipRect: TRect; out ALegendRect: TRect);
@@ -492,7 +493,8 @@ begin
   if Legend.Visible then
     PrepareLegend(ACanvas, legendItems, FClipRect, legendRect);
   try
-    DrawAxis(ACanvas);
+    PrepareAxis(ACanvas);
+    DrawBackground(ACanvas);
     DisplaySeries(ACanvas);
     if Legend.Visible then
       Legend.Draw(ACanvas, legendItems, legendRect);
@@ -522,6 +524,24 @@ begin
     FreeAndNil(ALegendItems);
     raise;
   end;
+end;
+
+procedure TChart.DrawBackground(const ACanvas: TCanvas);
+begin
+  with ACanvas do begin
+    if FFrame.Visible then
+      Pen.Assign(FFrame)
+    else
+      Pen.Style := psClear;
+    Brush.Color := BackColor;
+    with FClipRect do
+      Rectangle(Left, Top, Right + 1, Bottom + 1);
+  end;
+
+  // Z axis
+  if Depth > 0 then
+    with FClipRect do
+      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
 end;
 
 procedure TChart.HideReticule;
@@ -617,7 +637,7 @@ begin
   end;
 end;
 
-procedure TChart.DrawAxis(ACanvas: TCanvas);
+procedure TChart.PrepareAxis(ACanvas: TCanvas);
 var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
@@ -637,23 +657,7 @@ begin
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
   AxisList.Measure(ACanvas, CurrentExtent, false, axisMargin);
-
-  // Background
-  with ACanvas do begin
-    if FFrame.Visible then
-      Pen.Assign(FFrame)
-    else
-      Pen.Style := psClear;
-    Brush.Color := BackColor;
-    with FClipRect do
-      Rectangle(Left, Top, Right + 1, Bottom + 1);
-  end;
-
   AxisList.Prepare(FClipRect);
-  // Z axis
-  if Depth > 0 then
-    with FClipRect do
-      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
 end;
 
 procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
@@ -861,38 +865,39 @@ var
   i, d, axisIndex: Integer;
   seriesInZOrder: TFPList;
 begin
-  if SeriesCount = 0 then exit;
-
+  d := Depth;
   axisIndex := 0;
-  seriesInZOrder := TFPList.Create;
-  try
-    seriesInZOrder.Assign(FSeries.FList);
-    seriesInZOrder.Sort(@CompareZPosition);
+  if SeriesCount > 0 then begin;
+    seriesInZOrder := TFPList.Create;
+    try
+      seriesInZOrder.Assign(FSeries.FList);
+      seriesInZOrder.Sort(@CompareZPosition);
 
-    d := Depth;
-    for i := 0 to SeriesCount - 1 do
-      with TBasicChartSeries(seriesInZOrder[i]) do begin
-        AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, axisIndex);
-        if not Active then continue;
-        OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-        ACanvas.ClipRect := FClipRect;
-        ACanvas.Clipping := true;
-        try
+      for i := 0 to SeriesCount - 1 do
+        with TBasicChartSeries(seriesInZOrder[i]) do begin
+          if not Active then continue;
+          // Interleave axises with series according to ZPosition.
+          AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, axisIndex);
+          OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
+          ACanvas.ClipRect := FClipRect;
+          ACanvas.Clipping := true;
           try
-            Draw(ACanvas);
-          except
-            Active := false;
-            raise;
+            try
+              Draw(ACanvas);
+            except
+              Active := false;
+              raise;
+            end;
+          finally
+            OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
+            ACanvas.Clipping := false;
           end;
-        finally
-          OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
-          ACanvas.Clipping := false;
         end;
-      end;
-    AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, axisIndex);
-  finally
-    seriesInZOrder.Free;
+    finally
+      seriesInZOrder.Free;
+    end;
   end;
+  AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, axisIndex);
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
