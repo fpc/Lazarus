@@ -649,7 +649,7 @@ begin
       Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
 
-  AxisList.Draw(ACanvas, CurrentExtent, Self, FClipRect);
+  AxisList.Prepare(FClipRect);
   // Z axis
   if Depth > 0 then
     with FClipRect do
@@ -858,11 +858,12 @@ procedure TChart.DisplaySeries(ACanvas: TCanvas);
   end;
 
 var
-  i, d: Integer;
+  i, d, axisIndex: Integer;
   seriesInZOrder: TFPList;
 begin
   if SeriesCount = 0 then exit;
 
+  axisIndex := 0;
   seriesInZOrder := TFPList.Create;
   try
     seriesInZOrder.Assign(FSeries.FList);
@@ -871,6 +872,7 @@ begin
     d := Depth;
     for i := 0 to SeriesCount - 1 do
       with TBasicChartSeries(seriesInZOrder[i]) do begin
+        AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, axisIndex);
         if not Active then continue;
         OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
         ACanvas.ClipRect := FClipRect;
@@ -887,6 +889,7 @@ begin
           ACanvas.Clipping := false;
         end;
       end;
+    AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, axisIndex);
   finally
     seriesInZOrder.Free;
   end;
