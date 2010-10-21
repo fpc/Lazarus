@@ -1215,7 +1215,7 @@ type
 //    property HotTrackStyles;
 //    property HoverTime;
     property IconOptions;
-    property ItemIndex;
+//    property ItemIndex; shouldn't be published, see bug 16367
     property Items;
     property LargeImages;
     property MultiSelect;
