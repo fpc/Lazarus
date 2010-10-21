@@ -376,6 +376,10 @@ type
   { TQtAbstractScrollArea }
 
   TQtAbstractScrollArea = class(TQtFrame)
+  private
+    function getScrollBarsPolicy(AIndex: Boolean): QtScrollBarPolicy;
+    procedure setScrollBarPolicy(AIndex: Boolean;
+      const AValue: QtScrollBarPolicy);
   protected
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
@@ -397,6 +401,7 @@ type
     destructor Destroy; override;
     procedure Update(ARect: PRect = nil); override;
     procedure Repaint(ARect: PRect = nil); override;
+    property ScrollBarPolicy[AIndex: Boolean]: QtScrollBarPolicy read getScrollBarsPolicy write setScrollBarPolicy;
   end;
 
   { TQtCustomControl }
@@ -11276,6 +11281,21 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 
+procedure TQtAbstractScrollArea.setScrollBarPolicy(AIndex: Boolean;
+  const AValue: QtScrollBarPolicy);
+var
+  Area: QAbstractScrollAreaH;
+begin
+  Area := QAbstractScrollAreaH(Widget);
+  if getScrollBarsPolicy(AIndex) <> AValue then
+  begin
+    if AIndex then
+      QAbstractScrollArea_setVerticalScrollBarPolicy(Area, AValue)
+    else
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(Area, AValue);
+  end;
+end;
+
 procedure TQtAbstractScrollArea.grabMouse;
 var
   W: QWidgetH;
@@ -11333,6 +11353,18 @@ end;
 function TQtAbstractScrollArea.viewportWidget: QWidgetH;
 begin
   Result := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+end;
+
+function TQtAbstractScrollArea.getScrollBarsPolicy(AIndex: Boolean
+  ): QtScrollBarPolicy;
+var
+  Area: QAbstractScrollAreaH;
+begin
+  Area := QAbstractScrollAreaH(Widget);
+  if AIndex then
+    Result := QAbstractScrollArea_verticalScrollBarPolicy(Area)
+  else
+    Result := QAbstractScrollArea_horizontalScrollBarPolicy(Area);
 end;
 
 function TQtAbstractScrollArea.horizontalScrollBar: TQtScrollBar;
@@ -11423,34 +11455,26 @@ begin
   case AScrollStyle of
     ssNone:
     begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
+      ScrollBarPolicy[True] := QtScrollBarAlwaysOff;
+      ScrollBarPolicy[False] := QtScrollBarAlwaysOff;
     end;
-    ssHorizontal:
+    ssHorizontal, ssVertical:
     begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-    end;
-    ssVertical:
-    begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+      ScrollBarPolicy[AScrollStyle = ssVertical] := QtScrollBarAlwaysOn;
     end;
     ssBoth:
     begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+      ScrollBarPolicy[True] := QtScrollBarAlwaysOn;
+      ScrollBarPolicy[False] := QtScrollBarAlwaysOn;
     end;
-    ssAutoHorizontal:
+    ssAutoHorizontal, ssAutoVertical:
     begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-    end;
-    ssAutoVertical:
-    begin
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+      ScrollBarPolicy[AScrollStyle = ssAutoVertical] := QtScrollBarAsNeeded;
     end;
     ssAutoBoth:
     begin
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
-      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+      ScrollBarPolicy[True] := QtScrollBarAsNeeded;
+      ScrollBarPolicy[False] := QtScrollBarAsNeeded;
     end;
   end;
 

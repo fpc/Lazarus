@@ -5488,7 +5488,7 @@ begin
         if bShow then
           ScrollArea.setScrollStyle(ssHorizontal)
         else
-          QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
+          ScrollArea.ScrollBarPolicy[False] := QtScrollBarAlwaysOff;
       end;
 
       SB_VERT:
@@ -5496,7 +5496,7 @@ begin
         if bShow then
           ScrollArea.setScrollStyle(ssVertical)
         else
-          QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(ScrollArea.Widget), QtScrollBarAlwaysOff);
+          ScrollArea.ScrollBarPolicy[True] := QtScrollBarAlwaysOff;
       end;
 
       SB_CTL:
