@@ -1200,6 +1200,9 @@ var
   QtDC: TQtDeviceContext;
   F: Integer;
   Pt: TPoint;
+  ClipRect: TRect;
+  B: Boolean;
+
 
   procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
     var TextLeft,TextTop: Integer);
@@ -1245,7 +1248,7 @@ var
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DrawText] DC: ', dbghex(DC), ' Str: ', string(Str),
-     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT));
+     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT),' ARect ',dbgs(ARect));
   {$endif}
 
   Result := 0;
@@ -1259,6 +1262,31 @@ begin
     WideStr := GetUtf8String(Copy(Str, 1, Count))
   else
     WideStr := GetUtf8String(Str);
+
+
+  B := QtDC.getClipping;
+  if B and
+    (Flags and DT_NOCLIP = DT_NOCLIP) and
+    (Flags and DT_WORDBREAK = DT_WORDBREAK) then
+  begin
+    ClipRect := QtDC.getClipRegion.getBoundingRect;
+    //this is just to get same behaviour as gtk2 and win32
+    //IMO, we should change ARect.Left and/or ARect.Top if smaller than
+    //clip rect (map to clipRect). Then multiline text is drawn ok.
+    //look at issue http://bugs.freepascal.org/view.php?id=17678 . zeljko.
+    if (ARect.Left < ClipRect.Left) or (ARect.Top < ClipRect.Top) then
+    begin
+      {$note remove ifdef if I'm wrong about DT_WORDBREAK OBSERVATION}
+      {$IFDEF QT_DRAWTEXT_MAP_TO_CLIPRECT}
+      if ARect.Left < ClipRect.Left then
+        ARect.Left := ClipRect.Left;
+      if ARect.Top < ClipRect.Top then
+        ARect.Top := ClipRect.Top;
+      {$ELSE}
+      Flags := Flags and not DT_WORDBREAK;
+      {$ENDIF}
+    end;
+  end;
 
   F := DTFlagsToQtFlags(Flags);
 
@@ -1296,7 +1324,7 @@ begin
 
   // we cannot fit into rectangle, so use DT_SINGLELINE.See #17329.
   // http://msdn.microsoft.com/en-us/library/dd162498%28v=VS.85%29.aspx
-  if QtDC.getClipping and
+  if B and
     (Flags and DT_NOCLIP = DT_NOCLIP) and
     (Flags and DT_WORDBREAK = DT_WORDBREAK) and
     (Flags and DT_SINGLELINE = DT_SINGLELINE) and
