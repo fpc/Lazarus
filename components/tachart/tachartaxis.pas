@@ -172,8 +172,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
-      const ATransf: ICoordTransformer);
-    procedure DrawTitle(ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer);
+      const ATransf: ICoordTransformer; const AZOffset: TPoint);
+    procedure DrawTitle(
+      ACanvas: TCanvas; const ACenter, AZOffset: TPoint; ASize: Integer);
     function IsVertical: Boolean; inline;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
@@ -226,7 +227,8 @@ type
     function Add: TChartAxis; inline;
     procedure Draw(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
-      const ATransf: ICoordTransformer; ACurrentZ: Integer; var AIndex: Integer);
+      const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
+      var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
@@ -433,15 +435,15 @@ end;
 
 procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
-  const ATransf: ICoordTransformer);
+  const ATransf: ICoordTransformer; const AZOffset: TPoint);
 
 var
   prevLabelPoly: TPointArray = nil;
-  zoffset: TPoint;
+
 
   procedure LineZ(AP1, AP2: TPoint);
   begin
-    ACanvas.Line(AP1 + zoffset, AP2 + zoffset);
+    ACanvas.Line(AP1 + AZOffset, AP2 + AZOffset);
   end;
 
   procedure DrawLabelAndTick(
@@ -449,7 +451,7 @@ var
   begin
     PrepareSimplePen(ACanvas, TickColor);
     LineZ(ATickRect.TopLeft, ATickRect.BottomRight);
-    ALabelCenter += zoffset;
+    ALabelCenter += AZOffset;
     Marks.DrawLabel(ACanvas, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
   end;
 
@@ -502,7 +504,6 @@ begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
   coord := TChartAxisMargins(FAxisRect)[Alignment];
-  zoffset := Point(-ZPosition, ZPosition);
   for i := 0 to High(FMarkValues) do begin
     v := GetTransform.AxisToGraph(FMarkValues[i]);
     if IsVertical then
@@ -513,7 +514,7 @@ begin
 end;
 
 procedure TChartAxis.DrawTitle(
-  ACanvas: TCanvas; const ACenter: TPoint; ASize: Integer);
+  ACanvas: TCanvas; const ACenter, AZOffset: TPoint; ASize: Integer);
 var
   p: TPoint;
   dummy: TPointArray = nil;
@@ -528,7 +529,7 @@ begin
     calRight: p.X := FTitleRect.Right + d;
     calBottom: p.Y := FTitleRect.Bottom + d;
   end;
-  p += Point(-ZPosition, ZPosition);
+  p += AZOffset;
   Title.DrawLabel(ACanvas, p, p, Title.Caption, dummy);
 end;
 
@@ -791,13 +792,18 @@ end;
 
 procedure TChartAxisList.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
-  const ATransf: ICoordTransformer; ACurrentZ: Integer; var AIndex: Integer);
+  const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
+  var AIndex: Integer);
+var
+  zoffset: TPoint;
 begin
   while AIndex < FZOrder.Count do
     with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
-      Draw(ACanvas, AExtent, ATransf);
-      DrawTitle(ACanvas, FCenterPoint, FGroups[FGroupIndex].FTitleSize);
+      zoffset.Y := Min(ZPosition, AMaxZ);
+      zoffset.X := - zoffset.Y;
+      Draw(ACanvas, AExtent, ATransf, zoffset);
+      DrawTitle(ACanvas, FCenterPoint, zoffset, FGroups[FGroupIndex].FTitleSize);
       AIndex += 1;
     end;
 end;

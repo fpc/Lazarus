@@ -867,7 +867,7 @@ var
 begin
   d := Depth;
   axisIndex := 0;
-  if SeriesCount > 0 then begin;
+  if SeriesCount > 0 then begin
     seriesInZOrder := TFPList.Create;
     try
       seriesInZOrder.Assign(FSeries.FList);
@@ -877,7 +877,7 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, axisIndex);
+          AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
           ACanvas.ClipRect := FClipRect;
           ACanvas.Clipping := true;
@@ -897,7 +897,7 @@ begin
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, axisIndex);
+  AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, d, axisIndex);
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
