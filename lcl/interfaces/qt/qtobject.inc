@@ -575,14 +575,14 @@ begin
   begin
     //WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
     Msg.msg := LM_KILLFOCUS;
-    Msg.wParam := PtrUInt(NewWidget);
+    Msg.wParam := PtrInt(NewWidget);
     OldWidget.DeliverMessage(Msg);
   end;
   if NewWidget <> nil then
   begin
     //WriteLn('SET: ', NewWidget.LCLObject.ClassName);
     Msg.msg := LM_SETFOCUS;
-    Msg.wParam := PtrUInt(OldWidget);
+    Msg.wParam := PtrInt(OldWidget);
     NewWidget.DeliverMessage(Msg);
   end;
 end;
