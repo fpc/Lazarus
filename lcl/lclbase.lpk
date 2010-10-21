@@ -14,8 +14,6 @@
       <Conditionals Value="if SrcOS<>'win' then
   UnitPath := 'nonwin32';"/>
       <Other>
-        <CustomOptions Value="-Ur
-"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
