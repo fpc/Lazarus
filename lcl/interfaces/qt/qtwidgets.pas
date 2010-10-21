@@ -1726,7 +1726,7 @@ begin
 
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
-    [ptrint(Self), ptrint(Widget), LCLObject.Name]);
+    [HWND(Self), PtrUInt(Widget), LCLObject.Name]);
   {$endif}
 
   // set Handle->QWidget map
@@ -2056,7 +2056,7 @@ begin
   QEvent_accept(Event);
 
   {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
-  WriteLn('TQtWidget.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+  WriteLn('TQtWidget.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
     ' LCLObject=', dbgsName(LCLObject),
     ' Event=', EventTypeToStr(Event),' inUpdate=',InUpdate);
   {$endif}
@@ -4858,7 +4858,7 @@ begin
     (QEvent_type(Event)=QEventWindowDeactivate) or
     (QEvent_type(Event)=QEventShowToParent) or
     (QEvent_type(Event)=QEventWindowStateChange) then
-      WriteLn('TQtMainWindow.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+      WriteLn('TQtMainWindow.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
@@ -6859,7 +6859,7 @@ begin
   if LCLObject = nil then
     exit;
   {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
-  WriteLn('TQtTabBar.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+  WriteLn('TQtTabBar.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
     ' LCLObject=', dbgsName(LCLObject),
     ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
@@ -7055,7 +7055,7 @@ begin
   if (Sender = FStackWidget) then
   begin
     {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
-    WriteLn('TQtTabWidget.EventFilter: STACKWIDGET Sender=', IntToHex(ptrint(Sender),8),
+    WriteLn('TQtTabWidget.EventFilter: STACKWIDGET Sender=', IntToHex(PtrUInt(Sender),8),
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
     {$endif}
@@ -11229,7 +11229,7 @@ begin
   if (QEvent_type(Event) = QEventResize) or
     (QEvent_type(Event) = QEventLayoutRequest) or
     (QEvent_type(Event) = QEventWheel) then
-    WriteLn('TQtViewPort.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+    WriteLn('TQtViewPort.EventFilter: Sender=', IntToHex(PtrUInt(Sender),8),
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
