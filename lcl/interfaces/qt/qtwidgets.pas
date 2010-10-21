@@ -10083,7 +10083,6 @@ end;
 
 function TQtTreeWidget.getClientBounds: TRect;
 var
-  H: QHeaderViewH;
   Offset: Integer;
   AOrientation: QtOrientation;
 begin
