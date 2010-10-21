@@ -159,6 +159,7 @@ type
 
   private
     FActiveToolIndex: Integer;
+    FBroadcaster: TBroadcaster;
     FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
@@ -215,8 +216,6 @@ type
     procedure PrepareLegend(
       ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
       var AClipRect: TRect; out ALegendRect: TRect);
-    procedure StyleChanged(Sender: TObject);
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -242,6 +241,7 @@ type
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
+    procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull; override;
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
@@ -253,6 +253,7 @@ type
 
   public
     property ActiveToolIndex: Integer read FActiveToolIndex;
+    property Broadcaster: TBroadcaster read FBroadcaster;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
@@ -371,6 +372,7 @@ const
 begin
   inherited Create(AOwner);
 
+  FBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
   FAxisVisible := true;
 
@@ -428,6 +430,7 @@ begin
   FreeAndNil(FExtent);
   FreeAndNil(FMargins);
   FreeAndNil(FBuiltinToolset);
+  FreeAndNil(FBroadcaster);
 
   DrawData.DeleteByChart(Self);
   inherited;
@@ -456,6 +459,7 @@ end;
 procedure TChart.StyleChanged(Sender: TObject);
 begin
   Invalidate;
+  Broadcaster.Broadcast(Sender);
 end;
 
 procedure TChart.Paint;

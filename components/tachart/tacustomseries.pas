@@ -410,7 +410,8 @@ end;
 
 procedure TCustomChartSeries.UpdateParentChart;
 begin
-  if ParentChart <> nil then ParentChart.Invalidate;
+  if ParentChart <> nil then
+    ParentChart.StyleChanged(Self);
 end;
 
 { TChartSeries }

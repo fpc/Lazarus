@@ -20,7 +20,7 @@ unit TALegendPanel;
 interface
 
 uses
-  Classes, Controls, TAGraph;
+  Classes, Controls, TAChartUtils, TAGraph;
 
 type
 
@@ -29,9 +29,12 @@ type
   TChartLegendPanel = class(TCustomControl)
   private
     FChart: TChart;
-    procedure SetChart(const AValue: TChart);
+    FListener: TListener;
+    procedure ChartChanged(Sender: TObject);
+    procedure SetChart(AValue: TChart);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Paint; override;
   published
     property Chart: TChart read FChart write SetChart;
@@ -44,7 +47,7 @@ procedure Register;
 implementation
 
 uses
-  TAChartUtils;
+  SysUtils;
 
 procedure Register;
 begin
@@ -53,11 +56,24 @@ end;
 
 { TChartLegendPanel }
 
+procedure TChartLegendPanel.ChartChanged(Sender: TObject);
+begin
+  // TODO: Do not auto-update on chart zooming/scrolling.
+  Invalidate;
+end;
+
 constructor TChartLegendPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FListener := TListener.Create(@FChart, @ChartChanged);
   Width := 40;
   Height := 20;
+end;
+
+destructor TChartLegendPanel.Destroy;
+begin
+  FreeAndNil(FListener);
+  inherited Destroy;
 end;
 
 procedure TChartLegendPanel.Paint;
@@ -65,14 +81,18 @@ var
   r: TRect;
 begin
   if Chart = nil then exit;
-  r := Canvas.ClipRect;
+  r := Rect(0, 0, Width, Height);
   Chart.DrawLegendOn(Canvas, r);
 end;
 
-procedure TChartLegendPanel.SetChart(const AValue: TChart);
+procedure TChartLegendPanel.SetChart(AValue: TChart);
 begin
   if FChart = AValue then exit;
+  if FListener.IsListening then
+    FChart.Broadcaster.Unsubscribe(FListener);
   FChart := AValue;
+  if FChart <> nil then
+    FChart.Broadcaster.Subscribe(FListener);
   Invalidate;
 end;
 

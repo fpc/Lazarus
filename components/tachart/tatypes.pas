@@ -42,6 +42,7 @@ type
   TCustomChart = class(TCustomControl)
   public
     procedure ZoomFull; virtual; abstract;
+    procedure StyleChanged(Sender: TObject); virtual; abstract;
   end;
 
   { TChartPen }
@@ -352,7 +353,7 @@ end;
 procedure TChartElement.StyleChanged(Sender: TObject);
 begin
   if FOwner <> nil then
-    FOwner.Invalidate;
+    FOwner.StyleChanged(Sender);
 end;
 
 { TChartTitle }
