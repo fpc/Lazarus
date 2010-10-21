@@ -213,7 +213,8 @@ type
     procedure DoOnResize; override;
     {$ENDIF}
     procedure PrepareLegend(
-      ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
+      ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
+      var AClipRect: TRect; out ALegendRect: TRect);
     procedure StyleChanged(Sender: TObject);
 
   public
@@ -235,6 +236,7 @@ type
     procedure ClearSeries;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
+    procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     function GetFullExtent: TDoubleRect;
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
@@ -483,11 +485,13 @@ begin
     FLogicalExtent := GetFullExtent;
   FCurrentExtent := FLogicalExtent;
   DrawTitleFoot(ACanvas);
-  PrepareLegend(ACanvas, legendItems, legendRect);
+  if Legend.Visible then
+    PrepareLegend(ACanvas, legendItems, FClipRect, legendRect);
   try
     DrawAxis(ACanvas);
     DisplaySeries(ACanvas);
-    Legend.Draw(ACanvas, legendItems, legendRect);
+    if Legend.Visible then
+      Legend.Draw(ACanvas, legendItems, legendRect);
   finally
     legendItems.Free;
   end;
@@ -498,18 +502,18 @@ begin
 end;
 
 procedure TChart.PrepareLegend(
-  ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
+  ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
+  var AClipRect: TRect; out ALegendRect: TRect);
 var
   i: Integer;
 begin
-  if not Legend.Visible then exit;
   ALegendItems := TChartLegendItems.Create;
   try
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active and GetShowInLegend then
           GetLegendItemsBasic(ALegendItems);
-    ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
+    ALegendRect := Legend.Prepare(ACanvas, ALegendItems, AClipRect);
   except
     FreeAndNil(ALegendItems);
     raise;
@@ -646,6 +650,19 @@ begin
   if Depth > 0 then
     with FClipRect do
       ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
+end;
+
+procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
+var
+  legendItems: TChartLegendItems = nil;
+  legendRect: TRect;
+begin
+  try
+    PrepareLegend(ACanvas, legendItems, ARect, legendRect);
+    Legend.Draw(ACanvas, legendItems, legendRect);
+  finally
+    legendItems.Free;
+  end;
 end;
 
 procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);

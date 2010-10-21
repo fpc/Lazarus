@@ -335,7 +335,6 @@ var
   pbf: TPenBrushFontRecall;
   r: TRect;
 begin
-  if not Visible then exit;
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
   try
     // Draw the background and the border.
@@ -364,8 +363,6 @@ var
   w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
   f: TPenBrushFontRecall;
 begin
-  if not Visible then exit;
-
   f := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
   try
     ACanvas.Font.Assign(Font);

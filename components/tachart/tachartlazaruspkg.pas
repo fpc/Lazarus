@@ -10,7 +10,7 @@ uses
     TAChartAxis, TAChartUtils, TACustomSeries, TADbSource, TAGraph, TASeries, 
   TASeriesEditor, TASources, TASubcomponentsEditor, TATools, 
   TATransformations, TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, 
-  TAFuncSeries, LazarusPackageIntf;
+  TAFuncSeries, TALegendPanel, LazarusPackageIntf;
 
 implementation
 
@@ -23,6 +23,7 @@ begin
   RegisterUnit('TATools', @TATools.Register); 
   RegisterUnit('TATransformations', @TATransformations.Register); 
   RegisterUnit('TAStyles', @TAStyles.Register); 
+  RegisterUnit('TALegendPanel', @TALegendPanel.Register); 
 end; 
 
 initialization
