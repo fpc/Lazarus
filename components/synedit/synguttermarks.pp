@@ -20,6 +20,7 @@ type
     FBookMarkOpt: TSynBookMarkOpt;
     procedure Init; override;
     function  PreferedWidth: Integer; override;
+    // PaintMarks: True, if it has any Mark, that is *not* a bookmark
     function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
                        var aGutterOffs: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
@@ -111,18 +112,19 @@ var
   iLine, j: Integer;
   MLine: TSynEditMarkLine;
 begin
+  Result := False;
+
   LineHeight := TSynEdit(SynEdit).LineHeight;
   iLine := FoldView.TextIndex[aScreenLine] + 1;
 
   MLine := TSynEdit(SynEdit).Marks.Line[iLine];
   if MLine = nil then
-    exit;;
+    exit;
   if FBookMarkOpt.DrawBookmarksFirst then
     MLine.Sort(smsoBookmarkFirst, smsoColumn)
   else
     MLine.Sort(smsoBookMarkLast, smsoColumn);
 
-  Result := False;
   for j := 0 to MLine.Count - 1 do begin
     if not MLine[j].Visible then
       continue;
