@@ -5,8 +5,8 @@ unit main;
 interface
 
 uses
-  Classes, ComCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph, TASeries,
-  TASources, TATools;
+  Classes, ComCtrls, ExtCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph,
+  TALegendPanel, TASeries, TASources, TATools;
 
 type
 
@@ -24,11 +24,13 @@ type
     Chart1YAxis: TConstantLine;
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
+    ChartLegendPanel1: TChartLegendPanel;
     ChartToolset1: TChartToolset;
     ChartToolset1PanDragTool1: TPanDragTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
+    Panel1: TPanel;
     tsDomain: TTabSheet;
     tsColorMap: TTabSheet;
     UserDefinedChartSource1: TUserDefinedChartSource;

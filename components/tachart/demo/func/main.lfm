@@ -98,7 +98,7 @@ object Form1: TForm1
         Left = 0
         Height = 336
         Top = 0
-        Width = 453
+        Width = 332
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
@@ -112,7 +112,6 @@ object Form1: TForm1
         Extent.UseXMax = True
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
-        Legend.Visible = True
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
@@ -132,25 +131,44 @@ object Form1: TForm1
           OnCalculate = ChartColorMapColorMapSeries1Calculate
         end
       end
-      object cbInterpolate: TCheckBox
-        Left = 352
-        Height = 17
-        Top = 298
-        Width = 74
-        Anchors = [akRight, akBottom]
-        Caption = 'Interpolate'
-        OnChange = cbInterpolateChange
+      object Panel1: TPanel
+        Left = 332
+        Height = 336
+        Top = 0
+        Width = 121
+        Align = alRight
+        BevelOuter = bvNone
+        ClientHeight = 336
+        ClientWidth = 121
         TabOrder = 1
-      end
-      object cbMultLegend: TCheckBox
-        Left = 352
-        Height = 17
-        Top = 274
-        Width = 91
-        Anchors = [akRight, akBottom]
-        Caption = 'Expand legend'
-        OnChange = cbMultLegendChange
-        TabOrder = 2
+        object ChartLegendPanel1: TChartLegendPanel
+          Left = 0
+          Height = 197
+          Top = 0
+          Width = 121
+          Chart = ChartColorMap
+          Align = alTop
+        end
+        object cbInterpolate: TCheckBox
+          Left = 8
+          Height = 17
+          Top = 306
+          Width = 74
+          Anchors = [akLeft, akBottom]
+          Caption = 'Interpolate'
+          OnChange = cbInterpolateChange
+          TabOrder = 1
+        end
+        object cbMultLegend: TCheckBox
+          Left = 8
+          Height = 17
+          Top = 278
+          Width = 91
+          Anchors = [akLeft, akBottom]
+          Caption = 'Expand legend'
+          OnChange = cbMultLegendChange
+          TabOrder = 2
+        end
       end
     end
   end
