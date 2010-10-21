@@ -6,7 +6,7 @@ interface
 
 uses
   ExtCtrls, Forms, Spin, StdCtrls,
-  TAGraph, TASeries, TASources;
+  TAGraph, TASeries, TASources, Classes;
 
 type
 
@@ -18,11 +18,14 @@ type
     Chart1BarSeries2: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     lblDepth: TLabel;
+    lblAxisZ: TLabel;
     pnControls: TPanel;
     RandomChartSource1: TRandomChartSource;
     RandomChartSource2: TRandomChartSource;
     seDepth: TSpinEdit;
+    seAxisZ: TSpinEdit;
     procedure FormShow(Sender: TObject);
+    procedure seAxisZChange(Sender: TObject);
     procedure seDepthChange(Sender: TObject);
   end;
 
@@ -41,6 +44,12 @@ uses
 procedure TForm1.FormShow(Sender: TObject);
 begin
   seDepth.Value := Chart1.Depth;
+end;
+
+procedure TForm1.seAxisZChange(Sender: TObject);
+begin
+  Chart1.LeftAxis.ZPosition := seAxisZ.Value;
+  Chart1.BottomAxis.ZPosition := seAxisZ.Value;
 end;
 
 procedure TForm1.seDepthChange(Sender: TObject);
