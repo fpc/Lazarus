@@ -127,14 +127,14 @@ begin
   if ItemIndex < 0 then
     ItemIndex := 0;
 
-  MeasureItemStruct.itemID := ItemIndex;
-  MeasureItemStruct.itemWidth := width^;
-  MeasureItemStruct.itemHeight := height^;
+  MeasureItemStruct.itemID := UINT(ItemIndex);
+  MeasureItemStruct.itemWidth := UINT(width^);
+  MeasureItemStruct.itemHeight := UINT(height^);
   Msg.Msg := LM_MEASUREITEM;
   Msg.MeasureItemStruct := @MeasureItemStruct;
   DeliverMessage(AWinControl, Msg);
-  width^ := MeasureItemStruct.itemWidth;
-  height^ := MeasureItemStruct.itemHeight;
+  width^ := gint(MeasureItemStruct.itemWidth);
+  height^ := gint(MeasureItemStruct.itemHeight);
 end;
 
 function GtkCellRendererStateToListViewDrawState(CellState: TGtkCellRendererState): TCustomDrawState;
@@ -271,7 +271,7 @@ begin
   try
     FillChar(Msg.DrawListItemStruct^,SizeOf(TDrawListItemStruct),0);
     with Msg.DrawListItemStruct^ do begin
-      ItemID:=ItemIndex;
+      ItemID:=UINT(ItemIndex);
       Area:=AreaRect;
       //DebugLn(['LCLIntfCellRenderer_Render Widget=',GetWidgetDebugReport(Widget^.parent),' Area=',dbgs(Area)]);
       DCWidget:=Widget;

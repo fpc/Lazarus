@@ -433,7 +433,7 @@ type
 
   TLMMouse = record
     Msg : Cardinal;
-    Keys: PtrInt;
+    Keys: PtrUInt;
     case Integer of
     0: (
        XPos: SmallInt;

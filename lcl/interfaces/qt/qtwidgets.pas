@@ -7687,7 +7687,7 @@ begin
   dec(R.Bottom);
   QPainter_setClipRect(TQTDeviceContext(Msg.DC).Widget, @R);
 
-  DrawStruct.ItemID := CurrIndex;
+  DrawStruct.ItemID := UINT(CurrIndex);
   DrawStruct.Area := R;
   DrawStruct.DC := Msg.DC;
 
@@ -8811,7 +8811,7 @@ var
 begin
   QPainter_save(painter);
   State := QStyleOption_state(option);
-  DrawStruct.ItemID := QModelIndex_row(index);
+  DrawStruct.ItemID := UINT(QModelIndex_row(index));
 
   DrawStruct.Area := visualRect(index);
   DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
@@ -11029,7 +11029,7 @@ begin
       QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
     end;
 
-    ItemStruct^.itemID := ID;
+    ItemStruct^.itemID := UINT(ID);
     ItemStruct^._hDC := BeginPaint(THandle(Self), AStruct);
     FContext := ItemStruct^._hDC;
     ItemStruct^.rcItem := PaintData.ClipRect^;
@@ -12593,14 +12593,14 @@ var
   Msg: TLMMeasureItem;
   MeasureItemStruct: TMeasureItemStruct;
 begin
-  MeasureItemStruct.itemID := QModelIndex_row(index);
-  MeasureItemStruct.itemWidth := Size^.cx;
-  MeasureItemStruct.itemHeight := Size^.cy;
+  MeasureItemStruct.itemID := UINT(QModelIndex_row(index));
+  MeasureItemStruct.itemWidth := UINT(Size^.cx);
+  MeasureItemStruct.itemHeight := UINT(Size^.cy);
   Msg.Msg := LM_MEASUREITEM;
   Msg.MeasureItemStruct := @MeasureItemStruct;
   DeliverMessage(Msg);
-  Size^.cx := MeasureItemStruct.itemWidth;
-  Size^.cy := MeasureItemStruct.itemHeight;
+  Size^.cx := Longint(MeasureItemStruct.itemWidth);
+  Size^.cy := Longint(MeasureItemStruct.itemHeight);
 end;
 
 procedure TQtAbstractItemView.ItemDelegatePaint(painter: QPainterH;
