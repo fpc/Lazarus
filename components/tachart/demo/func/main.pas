@@ -33,6 +33,7 @@ type
     Panel1: TPanel;
     tsDomain: TTabSheet;
     tsColorMap: TTabSheet;
+    Splitter1: TSplitter;
     UserDefinedChartSource1: TUserDefinedChartSource;
     procedure cbDomainChange(Sender: TObject);
     procedure cbInterpolateChange(Sender: TObject);

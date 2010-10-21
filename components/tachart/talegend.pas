@@ -343,6 +343,10 @@ begin
     ACanvas.Pen.Assign(Frame);
     ACanvas.Rectangle(ABounds);
 
+    r := ABounds;
+    r.Right -= 1;
+    ACanvas.ClipRect :=  r;
+    ACanvas.Clipping := true;
     // Draw items.
     h := TypicalTextHeight(ACanvas);
     r := Bounds(ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, h);
@@ -373,9 +377,13 @@ begin
       with AItems[i] as TLegendItem do
         legendWidth := Max(ACanvas.TextWidth(FText), legendWidth);
     legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
+    w := 2 * MarginX;
+    with AClipRect do
+      legendWidth := EnsureRange(legendWidth, 0, Right - Left - w);
+    w += legendWidth;
+
     textHeight := TypicalTextHeight(ACanvas);
     legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
-    w := legendWidth + 2 * MarginX;
 
     // Determine position according to the alignment.
     if Alignment in [laTopLeft, laBottomLeft] then begin

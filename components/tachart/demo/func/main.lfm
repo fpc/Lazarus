@@ -98,7 +98,7 @@ object Form1: TForm1
         Left = 0
         Height = 336
         Top = 0
-        Width = 332
+        Width = 327
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
@@ -169,6 +169,14 @@ object Form1: TForm1
           OnChange = cbMultLegendChange
           TabOrder = 2
         end
+      end
+      object Splitter1: TSplitter
+        Left = 327
+        Height = 336
+        Top = 0
+        Width = 5
+        Align = alRight
+        ResizeAnchor = akRight
       end
     end
   end
