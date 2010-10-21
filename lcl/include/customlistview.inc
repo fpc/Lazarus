@@ -423,6 +423,8 @@ end;
 
 class procedure TCustomListView.WSRegisterClass;
 begin
+  RegisterPropertyToSkip(Self, 'ItemIndex', 
+    'Property streamed in older Lazarus revision', '');
   inherited WSRegisterClass;
   RegisterCustomListView;
 end;
