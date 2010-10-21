@@ -158,7 +158,7 @@ var
 begin
   QtTimer := TQtTimer.CreateTimer(Interval, TimerFunc, App);
   
-  Result := PtrInt(QtTimer);
+  Result := THandle(QtTimer);
 end;
 
 {------------------------------------------------------------------------------
