@@ -109,44 +109,36 @@ begin
   // check movement
   SynEdit.CaretXY := Point(1, 3); // between marks (first mar is not *behind*
   SynEdit.CommandProcessor(ecChar, 'M', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecChar between marks : 3/1 - 3/3 - 5/1', [ 3,3,   3,1,   5,2 ]);
 
   SynEdit.CaretXY := Point(1, 5); // before mark
   SynEdit.CommandProcessor(ecLineBreak, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecLineBreak before mark : 3/1 - 3/3 - 6/1', [ 3,3,   3,1,   6,2 ]);
 
   SynEdit.CaretXY := Point(2, 6); // after mark
   SynEdit.CommandProcessor(ecLineBreak, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecLineBreak after mark : 3/1 - 3/3 - 6/1', [ 3,3,   3,1,   6,2 ]);
 
   SynEdit.CaretXY := Point(2, 4); // prev line
   SynEdit.CommandProcessor(ecLineBreak, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecLineBreak prev line : 3/1 - 3/3 - 7/1', [ 3,3,   3,1,   7,2 ]);
 
   SynEdit.CaretXY := Point(1, 3); // between marks (first mar is not *behind*
   SynEdit.CommandProcessor(ecDeleteChar, 'M', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecDeleteChar between marks : 3/1 - 3/2 - 5/1', [ 3,2,   3,1,   7,2 ]);
 
   SynEdit.CaretXY := Point(1, 6); // prev line
   SynEdit.CommandProcessor(ecChar, '>', nil);
   SynEdit.CaretXY := Point(1, 7); // begin line
   SynEdit.CommandProcessor(ecDeleteLastChar, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecDeleteLine begin line : 3/1 - 3/3 - 6/3', [ 3,2,   3,1,   6,3 ]);
 
   SynEdit.CaretXY := Point(1, 5); // prev line
   SynEdit.CommandProcessor(ecDeleteLastChar, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecDeleteLine 2-prev line : 3/1 - 3/3 - 6/3', [ 3,2,   3,1,   5,3 ]);
 
   SynEdit.CaretXY := Point(1, 4); // direct prev line
   SynEdit.CommandProcessor(ecLineBreak, ' ', nil);
-  SynEdit.Marks.Debug;
   CheckMarks('ecLineBreak direct-prev line : 3/1 - 3/3 - 7/1', [ 3,2,   3,1,   6,3 ]);
 
   // more marks

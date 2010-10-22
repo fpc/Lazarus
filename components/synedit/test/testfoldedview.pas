@@ -62,7 +62,7 @@ var
   end;
 begin
   PushBaseName(AName);
-  if EnableDebug then FoldedView.debug;
+  //if EnableDebug then FoldedView.debug;
   ExpTxt := '';
   for i := 0 to high(ALines) do ExpTxt := ExpTxt + SynEdit.Lines[ALines[i]] + LineEnding;
   TestCompareString('', ExpTxt, GetFoldedText);

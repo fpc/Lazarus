@@ -34,11 +34,11 @@ type
     FBaseTestNames: Array of String;
     FFixedBaseTestNames: Integer;
     FForm : TForm;
-    FSynEdit : TTestSynEdit;
     function GetClipBoardText: String;
     procedure SetBaseTestName(const AValue: String);
     procedure SetClipBoardText(const AValue: String);
   protected
+    FSynEdit : TTestSynEdit;
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
     (* Relpl,must be an alteration of LineNum, LineText+
