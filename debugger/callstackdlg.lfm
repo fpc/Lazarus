@@ -3,7 +3,6 @@ inherited CallStackDlg: TCallStackDlg
   Height = 246
   Top = 191
   Width = 562
-  ActiveControl = Panel1
   Caption = 'CallStack'
   ClientHeight = 246
   ClientWidth = 562
@@ -22,7 +21,7 @@ inherited CallStackDlg: TCallStackDlg
       item
         AutoSize = True
         Caption = 'Index'
-        Width = 46
+        Width = 538
       end    
       item
         Caption = 'Source'
@@ -35,6 +34,7 @@ inherited CallStackDlg: TCallStackDlg
         Caption = 'Function'
         Width = 280
       end>
+    HideSelection = False
     ItemIndex = -1
     PopupMenu = mnuPopup
     ReadOnly = True
@@ -68,20 +68,20 @@ inherited CallStackDlg: TCallStackDlg
       Action = actSetCurrent
     end
     object ToolButton4: TToolButton
-      Left = 107
+      Left = 101
       Top = 0
-      Width = 3
+      Width = 8
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 176
+      Left = 166
       Top = 0
       Action = actViewMore
       ImageIndex = 1
     end
     object ToolButtonMax: TToolButton
-      Left = 110
+      Left = 109
       Top = 0
       Action = actViewLimit
       Caption = 'Max 10'
@@ -89,45 +89,45 @@ inherited CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 385
+      Left = 374
       Top = 0
       Action = actViewGoto
       ImageIndex = 4
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 438
+      Left = 432
       Top = 0
       Action = actCopyAll
       ImageIndex = 5
     end
     object ToolButton8: TToolButton
-      Left = 435
+      Left = 424
       Top = 0
-      Width = 3
+      Width = 8
       Caption = 'ToolButton8'
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 226
+      Left = 216
       Top = 0
-      Width = 3
+      Width = 8
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 229
+      Left = 224
       Top = 0
       Action = actViewTop
       ImageIndex = 2
     end
     object ToolButtonBottom: TToolButton
-      Left = 279
+      Left = 274
       Top = 0
       Action = actViewBottom
       ImageIndex = 3
     end
     object Panel1: TPanel
-      Left = 335
+      Left = 324
       Height = 40
       Top = 0
       Width = 50
@@ -137,7 +137,7 @@ inherited CallStackDlg: TCallStackDlg
       TabOrder = 0
       object txtGoto: TEdit
         Left = 2
-        Height = 27
+        Height = 23
         Top = 8
         Width = 46
         OnKeyPress = txtGotoKeyPress
