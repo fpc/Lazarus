@@ -1534,8 +1534,8 @@ function TSynFilteredMethodList.IndexOf(AHandler: TMethod): Integer;
 begin
   Result := FCount - 1;
   while (Result >= 0) and
-        (FItems[Result].FHandler.Code <> AHandler.Code) and
-        (FItems[Result].FHandler.Data <> AHandler.Data)
+        ( (FItems[Result].FHandler.Code <> AHandler.Code) or
+          (FItems[Result].FHandler.Data <> AHandler.Data) )
   do
     dec(Result);
 end;
@@ -1543,10 +1543,10 @@ end;
 function TSynFilteredMethodList.IndexOf(AHandler: TMethod; AFilter: LongInt): Integer;
 begin
   Result := FCount - 1;
-  while (Result >= 0) and
-        (FItems[Result].FHandler.Code <> AHandler.Code) and
-        (FItems[Result].FHandler.Data <> AHandler.Data) and
-        (FItems[Result].FFilter <> AFilter)
+  while (Result >= 0) and (
+        (FItems[Result].FHandler.Code <> AHandler.Code) or
+        (FItems[Result].FHandler.Data <> AHandler.Data) or
+        (FItems[Result].FFilter <> AFilter) )
   do
     dec(Result);
 end;
