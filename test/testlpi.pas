@@ -163,7 +163,7 @@ begin
     end;
     if LazBuild.ExitStatus<>0 then
       Fail(format('Compilation failed: ExitCode=%d%s%s',
-        [LazBuild.ExitStatus, LineEnding, {OutputLines.Text}'']));
+        [LazBuild.ExitStatus, LineEnding, AnsiToUtf8(OutputLines.Text)]));
   finally
     LazBuild.Free;
     OutputLines.Free;
