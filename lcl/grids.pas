@@ -10260,6 +10260,8 @@ end;
 
 procedure TGridColumn.SetWidth(const AValue: Integer);
 begin
+  if (AValue=0) and not Visible then
+    exit;
   if FWidth = nil then begin
     if AValue=GetDefaultWidth then
       exit;
