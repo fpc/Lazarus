@@ -84,7 +84,7 @@ begin
       writeln('StartX=',X);
       writeln('StartY=',Y);
     end;
-    if not CodeToolBoss.CompleteBlock(Code,X,Y,NewCode,NewX,NewY,NewTopLine) then begin
+    if not CodeToolBoss.CompleteBlock(Code,X,Y,false,NewCode,NewX,NewY,NewTopLine) then begin
       writeln('ERROR: complete block failed at ',Code.Filename,' X=',X,' Y=',Y);
       exit;
     end;
