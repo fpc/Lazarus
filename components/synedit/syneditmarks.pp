@@ -10,7 +10,7 @@ uses
 const
 // Max number of book/gutter marks returned from GetEditMarksForLine - that
 // really should be enough.
-  maxMarks = 16 deprecated;
+  maxMarks = 16;// deprecated;
 
 type
 
@@ -49,9 +49,11 @@ type
     FMarkList: TSynEditMarkList;
     FLine: Integer; // Only valid, if not part of a TSynEditMarkLine
     FOldLine: integer;
+    FOwnerEdit: TSynEditBase;
     function GetLine: integer;
     procedure SetMarkLine(const AValue: TSynEditMarkLine);
     procedure SetMarkList(const AValue: TSynEditMarkList);
+    procedure SetOwnerEdit(const AValue: TSynEditBase);
   protected
     FColumn, FImage, FPriority: Integer;
     FVisible: boolean;
@@ -78,6 +80,7 @@ type
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
 
+    property OwnerEdit: TSynEditBase read FOwnerEdit write SetOwnerEdit;
     property Line: integer read GetLine write SetLine;
     property OldLine: integer read FOldLine;
     property Column: integer read FColumn write SetColumn;
@@ -213,6 +216,7 @@ type
     function GetMarkLine(LineNum: Integer): TSynEditMarkLine;
   protected
     FLines: TSynEditStrings;
+    FOwnerList: TFPList;
     FMarkLines: TSynEditMarkLineList;
     fOnChange: TNotifyEvent;
     FChangeHandlers: TSynEditMarkChangedHandlerList;
@@ -223,6 +227,7 @@ type
     procedure Put(Index: Integer; Item: TSynEditMark);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
+    function HasOwnerEdit(AEdit: TSynEditBase): Boolean;
   public
     constructor Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
     destructor  Destroy; override;
@@ -243,7 +248,7 @@ type
     procedure Place(Mark: TSynEditMark); deprecated {$IFDEF VER2_5}'use add instead / to be removed after 0.9.30'{$ENDIF};
 
     procedure GetMarksForLine(line: integer; BookmarksFirst: Boolean; var Marks: TSynEditMarks);
-      deprecated {$IFDEF VER2_5}'need replacment'{$ENDIF};
+      deprecated {$IFDEF VER2_5}'use property Line'{$ENDIF};
     procedure ClearLine(line: integer);
 
     procedure RegisterChangeHandler(Handler: TSynEditMarkChangeEvent; Filter: TSynEditMarkChangeReasons);
@@ -344,6 +349,16 @@ begin
     DoChange([smcrAdded]);
 end;
 
+procedure TSynEditMark.SetOwnerEdit(const AValue: TSynEditBase);
+begin
+  if FOwnerEdit = AValue then exit;
+  if (AValue = nil) or (FMarkList = nil) or
+     (not FMarkList.HasOwnerEdit(AValue))
+  then
+    raise Exception.Create('Invalid Owner');
+  FOwnerEdit := AValue;
+end;
+
 function TSynEditMark.GetLine: integer;
 begin
   if FMarkLine <> nil then
@@ -434,6 +449,7 @@ end;
 constructor TSynEditMark.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create;
+  FOwnerEdit := ASynEdit;
   FBookmarkNum := -1;
   FPriority := 0;
 end;
@@ -442,8 +458,11 @@ destructor TSynEditMark.Destroy;
 begin
   if FMarkList <> nil then begin
     DoChange([smcrRemoved]);
-    FMarkList.Remove(self);
-  end;
+    FMarkList.Remove(self); // includes MarkLine
+  end
+  else
+  if FMarkLine <> nil then
+    FMarkLine.Remove(Self);
   inherited Destroy;
 end;
 
@@ -627,7 +646,7 @@ end;
 
 procedure TSynEditMarkLine.Delete(Index: Integer);
 begin
-  Items[Index].MarkLine := Self;
+  Items[Index].MarkLine := nil;
   FMarks.Delete(Index);
   ChangeSize;
 end;
@@ -646,10 +665,11 @@ begin
     while Count > 0 do begin
       if FreeMarks then begin
         Items[0].MarkList := nil; // stop destroy from removing item from list
+        Items[0].FMarkLine := nil; // stop destroy from removing item from self
         Items[0].Free
       end else
         Items[0].MarkLine := nil;
-      Delete(0);
+      FMarks.Delete(0);
     end;
   finally
     dec(FLockChangeSize);
@@ -967,6 +987,8 @@ end;
 
 constructor TSynEditMarkList.Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
 begin
+  FOwnerList := TFPList.Create;
+  FOwnerList.Add(AOwner);
   FMarkLines := TSynEditMarkLineList.Create(Self);
   FChangeHandlers := TSynEditMarkChangedHandlerList.Create;
   inherited Create;
@@ -983,6 +1005,7 @@ begin
   FreeAndNil(FMarkLines);  // will free all Marks
   FreeAndNil(FChangeHandlers);
   FreeAndNil(FInternalIterator);
+  FreeAndNil(FOwnerList);
 end;
 
 {$IFDEF SynDebug}
@@ -1153,6 +1176,11 @@ begin
 
 end;
 
+function TSynEditMarkList.HasOwnerEdit(AEdit: TSynEditBase): Boolean;
+begin
+  Result := FOwnerList.IndexOf(AEdit) >= 0;
+end;
+
 function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;
 begin
   Item.MarkList := nil;
@@ -1266,6 +1294,7 @@ begin
   FCurrentIndex := 0;
   FBOL := FCurrentItem = nil;
   FEOL := FCurrentItem = nil;
+  Result := FCurrentItem <> nil;
 end;
 
 function TSynEditMarkIterator.Last: Boolean;
@@ -1280,6 +1309,7 @@ begin
   FCurrentIndex := -1;
   FBOL := FCurrentItem = nil;
   FEOL := FCurrentItem = nil;
+  Result := FCurrentItem <> nil;
 end;
 
 function TSynEditMarkIterator.Next: Boolean;

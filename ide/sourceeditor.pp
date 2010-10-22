@@ -59,8 +59,7 @@ uses
   // IDE units
   IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
-  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
-  EnvironmentOpts, MsgView, InputHistory, CodeMacroPrompt,
+  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, MsgView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
@@ -150,17 +149,19 @@ type
 
   { TSourceEditorSharedValues }
 
-  TSourceEditorSharedValues = class
+  TSourceEditorSharedValues = class(TSourceEditorSharedValuesBase)
   private
     FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
     function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer): TSourceEditor;
     function GetSharedEditors(Index: Integer): TSourceEditor;
     function SynEditor: TIDESynEditor;
+  protected
+    function GetSharedEditorsBase(Index: Integer): TSourceEditorBase; override;
   public
     procedure AddSharedEditor(AnEditor: TSourceEditor);
     procedure RemoveSharedEditor(AnEditor: TSourceEditor);
     procedure SetActiveSharedEditor(AnEditor: TSourceEditor);
-    function  SharedEditorCount: Integer;
+    function  SharedEditorCount: Integer; override;
     function  OtherSharedEditorCount: Integer;
     property  SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
     property  OtherSharedEditors[Caller: TSourceEditor; Index: Integer]: TSourceEditor
@@ -197,8 +198,6 @@ type
     function NeedsUpdateCodeBuffer: boolean;
     procedure UpdateCodeBuffer;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
-  protected
-    BookmarkEventLock: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -208,7 +207,7 @@ type
   TSourceEditor is the class that controls access for a single source editor,
   which is part of TSourceNotebook. }
 
-  TSourceEditor = class(TSourceEditorInterface)
+  TSourceEditor = class(TSourceEditorBase)
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner: TComponent;
@@ -321,6 +320,7 @@ type
 
     function Manager: TSourceEditorManager;
     property Visible: Boolean read FVisible write SetVisible default False;
+    function GetSharedValues: TSourceEditorSharedValuesBase; override;
     function IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
     procedure BeforeCodeBufferReplace;
     procedure AfterCodeBufferReplace;
@@ -1024,7 +1024,6 @@ type
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
-    function OnSourceMarksGetSourceEditorID(ASrcEdit: TSourceEditorInterface): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
     property CodeTemplateModul: TSynEditAutoComplete
@@ -1994,6 +1993,11 @@ begin
   Result := SharedEditors[0].FEditor;
 end;
 
+function TSourceEditorSharedValues.GetSharedEditorsBase(Index: Integer): TSourceEditorBase;
+begin
+  Result := TSourceEditorBase(FSharedEditorList[Index]);
+end;
+
 procedure TSourceEditorSharedValues.SetCodeBuffer(const AValue: TCodeBuffer);
 var
   i: Integer;
@@ -2275,7 +2279,6 @@ end;
 constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
-  BookmarkEventLock := 0;
   FExecutionLine:=-1;
   FExecutionMark := nil;
   FMarksRequested := False;
@@ -2284,10 +2287,11 @@ end;
 
 destructor TSourceEditorSharedValues.Destroy;
 begin
+  SourceEditorMarks.DeleteAllForEditorID(Self);
   CodeBuffer := nil;
   FreeAndNil(FSharedEditorList);
-  // no need to care about ExecutionMark, it was removed in EditorClose
-  // via: SourceEditorMarks.DeleteAllForEditor(Self);
+  // no need to care about ExecutionMark, it is removed with all other marks,
+  // if the last SynEdit is destroyed (TSynEditMark.Destroy will free the SourceMark)
   inherited Destroy;
 end;
 
@@ -2298,8 +2302,6 @@ end;
   and the AParent is usually a page of a @link(TPageControl) }
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl;
   ASharedEditor: TSourceEditor = nil);
-var
-  i: Integer;
 Begin
   if ASharedEditor = nil then
     FSharedValues := TSourceEditorSharedValues.Create
@@ -2328,20 +2330,6 @@ Begin
     PageName := ASharedEditor.PageName;
     FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
     FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
-
-    // bookmakrs
-    inc(FSharedValues.BookmarkEventLock);
-    try
-      for i := 0 to ASharedEditor.FEditor.Marks.Count - 1 do
-        if ASharedEditor.FEditor.Marks[i].IsBookmark then
-          FEditor.SetBookMark(ASharedEditor.FEditor.Marks[i].BookmarkNumber,
-            ASharedEditor.FEditor.Marks[i].Column,
-            ASharedEditor.FEditor.Marks[i].Line);
-    finally
-      dec(FSharedValues.BookmarkEventLock);
-    end;
-
-    SourceEditorMarks.AddSourceEditor(Self, ASharedEditor);
   end;
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
@@ -2356,8 +2344,6 @@ begin
     UnbindEditor;
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
-    if SourceEditorMarks<>nil then
-      SourceEditorMarks.DeleteAllForEditor(Self);
     TSourceNotebook(FAOwner).ReleaseEditor(self);
     // free the synedit control after processing the events
     Application.ReleaseComponent(FEditor);
@@ -2713,6 +2699,11 @@ begin
     Result := FSourceNoteBook.Manager
   else
     Result := nil;
+end;
+
+function TSourceEditor.GetSharedValues: TSourceEditorSharedValuesBase;
+begin
+  Result := FSharedValues;
 end;
 
 function TSourceEditor.IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
@@ -4167,7 +4158,6 @@ Begin
   Result := True;
   Visible := False;
   Manager.EditorRemoved(Self);
-  SourceEditorMarks.DeleteAllForEditor(Self);
   UnbindEditor;
   FEditor.Parent:=nil;
   if FSharedValues.SharedEditorCount = 1 then
@@ -4283,35 +4273,14 @@ end;
 
 procedure TSourceEditor.EditorPlaceBookmark(Sender: TObject;
   var Mark: TSynEditMark);
-var
-  i: Integer;
 begin
-  if FSharedValues.BookmarkEventLock > 0 then exit;
-  inc(FSharedValues.BookmarkEventLock);
-  try
-    for i := 0 to FSharedValues.OtherSharedEditorCount -1 do
-      FSharedValues.OtherSharedEditors[Self, i].EditorComponent.SetBookMark
-        (Mark.BookmarkNumber, Mark.Column, Mark.Line);
-  finally
-    dec(FSharedValues.BookmarkEventLock);
-  end;
   if Assigned(Manager) and Assigned(Manager.OnPlaceBookmark) then
     Manager.OnPlaceBookmark(Self, Mark);
 end;
 
 procedure TSourceEditor.EditorClearBookmark(Sender: TObject;
   var Mark: TSynEditMark);
-var
-  i: Integer;
 begin
-  if FSharedValues.BookmarkEventLock > 0 then exit;
-  inc(FSharedValues.BookmarkEventLock);
-  try
-    for i := 0 to FSharedValues.OtherSharedEditorCount -1 do
-      FSharedValues.OtherSharedEditors[Self, i].EditorComponent.ClearBookMark(Mark.BookmarkNumber);
-  finally
-    dec(FSharedValues.BookmarkEventLock);
-  end;
   if Assigned(Manager) and Assigned(Manager.OnClearBookmark) then
     Manager.OnClearBookmark(Self, Mark);
 end;
@@ -4884,6 +4853,12 @@ begin
     Manager.RemoveWindow(Self);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
+
+  SourceEditorMarks.OnGetFilename := nil;
+  SourceEditorMarks.OnAction := nil;
+  // aWordCompletion is released in InternalFinal
+  aWordCompletion.OnGetSource := nil;
+
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
   FKeyStrokes.Free;
@@ -8892,12 +8867,6 @@ begin
   end;
 end;
 
-function TSourceEditorManager.OnSourceMarksGetSourceEditorID(
-  ASrcEdit: TSourceEditorInterface): TObject;
-begin
-  Result := TSourceEditor(ASrcEdit).FSharedValues;
-end;
-
 function TSourceEditorManager.OnSourceMarksGetFilename(ASourceEditor: TObject
   ): string;
 begin
@@ -8910,17 +8879,10 @@ procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
   AAction: TMarksAction);
 var
   Editor: TSourceEditor;
-  i: Integer;
 begin
   Editor := TSourceEditor(AMark.SourceEditor);
   if Editor = nil then
     Exit;
-
-  if AAction = maAdded then begin
-    for i := 0 to Editor.FSharedValues.SharedEditorCount - 1 do
-      if not AMark.HasSourceEditor(Editor.FSharedValues.SharedEditors[i]) then
-        AMark.AddSourceEditor(Editor.FSharedValues.SharedEditors[i]);
-  end;
 
   if ( AMark.IsBreakPoint and (Editor.FSharedValues.ExecutionMark <> nil) and
        (AMark.Line = Editor.ExecutionLine)
@@ -8962,7 +8924,6 @@ begin
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
-  SourceEditorMarks.OnGetSourceEditorID := @OnSourceMarksGetSourceEditorID;
   SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
   SourceEditorMarks.OnAction:=@OnSourceMarksAction;
 

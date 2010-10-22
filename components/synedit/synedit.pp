@@ -236,6 +236,12 @@ type
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
+  // options for textbuffersharing
+  TSynEditorShareOption = (
+    eosShareMarks              // Shared Editors use the same list of marks
+  );
+  TSynEditorShareOptions = set of TSynEditorShareOption;
+
 const
   // MouseAction related options will have no effect (as default), unless they
   // are also updated in the Constructor of the MouseAction-class
@@ -260,6 +266,10 @@ const
     ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
+  ];
+
+  SYNEDIT_DEFAULT_SHARE_OPTIONS = [
+    eosShareMarks
   ];
 
   {$IFDEF SYN_LAZARUS}
@@ -360,6 +370,7 @@ type
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
 
     FFoldedLinesView:  TSynEditFoldedView;
+    FShareOptions: TSynEditorShareOptions;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
@@ -402,7 +413,7 @@ type
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
-    fMarkList: TSynEditMarkList;
+    FMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
     FUseUTF8: boolean;
     fWantTabs: boolean;
@@ -458,6 +469,7 @@ type
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
+    procedure SetShareOptions(const AValue: TSynEditorShareOptions);
     procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
     procedure SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
       aCaretMode: TSynCaretAdjustMode; const AValue: String);
@@ -572,6 +584,9 @@ type
     procedure UpdateCaret(IgnorePaintLock: Boolean = False);
     procedure UpdateScrollBars;
     procedure ChangeTextBuffer(NewBuffer: TSynEditStringList);
+    function  IsMarkListShared: Boolean;
+    procedure RecreateMarkList;
+    procedure DestroyMarkList;
     procedure RemoveHandlers(ALines: TSynEditStrings = nil);
     procedure ExtraLineCharsChanged(Sender: TObject);
   protected
@@ -921,6 +936,8 @@ type
       default SYNEDIT_DEFAULT_OPTIONS;
     property Options2: TSynEditorOptions2 read fOptions2 write SetOptions2
       default SYNEDIT_DEFAULT_OPTIONS2;
+    property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
+      default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
       write SetOverwriteCaret default ctBlock;
     property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
@@ -980,6 +997,8 @@ type
   end;
 
   TSynEdit = class(TCustomSynEdit)
+  public
+    property ShareOptions;
   published
     // inherited properties
     property Align;
@@ -1109,12 +1128,22 @@ procedure Register;
 
 implementation
 
-// { $R SynEdit.res}
-
 const
   GutterTextDist = 2; //Pixel
 
 type
+
+  { TSynEditMarkListInternal }
+
+  TSynEditMarkListInternal = class(TSynEditMarkList)
+  private
+    function GetLinesView: TSynEditStrings;
+    procedure SetLinesView(const AValue: TSynEditStrings);
+  protected
+    procedure AddOwnerEdit(AEdit: TSynEditBase);
+    procedure RemoveOwnerEdit(AEdit: TSynEditBase);
+    property LinesView: TSynEditStrings read GetLinesView write SetLinesView;
+  end;
 
   TSynStatusChangedHandlerList = Class(TSynFilteredMethodList)
   public
@@ -1633,9 +1662,7 @@ begin
 
   FWordBreaker := TSynWordBreaker.Create;
 
-  fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
-  fMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
-    [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
+  RecreateMarkList;
 
 {$IFDEF SYN_COMPILER_4_UP}
 {$IFNDEF SYN_LAZARUS}
@@ -1748,8 +1775,9 @@ begin
   FFoldedLinesView.TopLine := 1;
   // find / replace
   fTSearch := TSynEditSearch.Create;
-  fOptions := SYNEDIT_DEFAULT_OPTIONS;
-  fOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
+  FOptions := SYNEDIT_DEFAULT_OPTIONS;
+  FOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
+  FShareOptions := SYNEDIT_DEFAULT_SHARE_OPTIONS;
   UpdateOptions;
   UpdateOptions2;
   fScrollTimer := TTimer.Create(Self);
@@ -1943,7 +1971,7 @@ begin
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
-  FreeAndNil(fMarkList);
+  DestroyMarkList;
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
@@ -5156,6 +5184,40 @@ begin
   TSynEditStringList(FLines).PaintLockOwner := AValue;
 end;
 
+procedure TCustomSynEdit.SetShareOptions(const AValue: TSynEditorShareOptions);
+var
+  ChangedOptions: TSynEditorShareOptions;
+  OldMarkList: TSynEditMarkList;
+  it: TSynEditMarkIterator;
+  MListShared: Boolean;
+begin
+  if FShareOptions = AValue then exit;
+
+  ChangedOptions:=(FShareOptions - AValue) + (AValue - FShareOptions);
+  FShareOptions := AValue;
+
+  if (eosShareMarks in ChangedOptions) then begin
+    MListShared := IsMarkListShared;
+    if ( (FShareOptions * [eosShareMarks] = []) and MListShared ) or
+       ( (eosShareMarks  in FShareOptions) and (not MListShared) and
+         (TSynEditStringList(FLines).AttachedSynEditCount > 1) )
+    then begin
+      OldMarkList := FMarkList;
+      FMarkList := nil;
+      RecreateMarkList;
+      it := TSynEditMarkIterator.Create(OldMarkList);
+      it.GotoBOL;
+      while it.Next do begin
+        // Todo: prevent notifications
+        if it.Mark.OwnerEdit = Self then
+          FMarkList.Add(it.Mark);
+      end;
+      it.Free;
+      FreeAndNil(FMarkList);
+    end;
+  end;
+end;
+
 procedure TCustomSynEdit.ChangeTextBuffer(NewBuffer: TSynEditStringList);
 var
   OldBuffer: TSynEditStringList;
@@ -5216,6 +5278,76 @@ begin
   OldBuffer.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
 end;
 
+function TCustomSynEdit.IsMarkListShared: Boolean;
+var
+  i, j: Integer;
+begin
+  j := 0;
+  i := TSynEditStringList(FLines).AttachedSynEditCount - 1;
+  while (i >= 0) and (j <= 1) do begin
+    if TSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).FMarkList = FMarkList then
+      inc(j);
+    dec(i);
+  end;
+  Result := j > 1;
+end;
+
+procedure TCustomSynEdit.RecreateMarkList;
+var
+  s: TSynEditBase;
+begin
+  DestroyMarkList;
+
+  if (TSynEditStringList(FLines).AttachedSynEditCount > 1) and
+     (eosShareMarks in FShareOptions)
+  then begin
+    s := TSynEditStringList(FLines).AttachedSynEdits[0];
+    if s = Self then
+      s := TSynEditStringList(FLines).AttachedSynEdits[1];
+    FMarkList := TSynEdit(s).FMarkList;
+    TSynEditMarkListInternal(fMarkList).AddOwnerEdit(Self);
+  end
+  else
+    FMarkList := TSynEditMarkListInternal.Create(self, FTheLinesView);
+
+  FMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
+    [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
+end;
+
+procedure TCustomSynEdit.DestroyMarkList;
+var
+  it: TSynEditMarkIterator;
+  s: TSynEditBase;
+begin
+  if FMarkList = nil then
+    exit;
+
+  TSynEditMarkListInternal(fMarkList).RemoveOwnerEdit(Self);
+
+  if IsMarkListShared then begin
+    s := TSynEditStringList(FLines).AttachedSynEdits[0];
+    if s = Self then
+      s := TSynEditStringList(FLines).AttachedSynEdits[1];
+
+    if TSynEditMarkListInternal(FMarkList).LinesView = FTheLinesView then
+      TSynEditMarkListInternal(FMarkList).LinesView := TSynEdit(s).FTheLinesView;
+
+    FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
+
+    it := TSynEditMarkIterator.Create(FMarkList);
+    it.GotoBOL;
+    while it.Next do begin
+      // Todo: prevent notifications
+      if it.Mark.OwnerEdit = Self then
+        it.Mark.OwnerEdit := s;
+    end;
+    it.Free;
+    FMarkList := nil;
+  end
+  else
+    FreeAndNil(FMarkList);
+end;
+
 procedure TCustomSynEdit.ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
 var
   OldBuffer: TSynEditStringList;
@@ -5225,6 +5357,9 @@ begin
 
   ChangeTextBuffer(TSynEditStringList(AShareEditor.FLines));
   TSynEditStringList(FLines).AttachSynEdit(Self);
+
+  // lost the textbuffer, all marks are invalidate
+  RecreateMarkList;
 
   OldBuffer.DetachSynEdit(Self);
   if OldBuffer.AttachedSynEditCount = 0 then
@@ -5239,6 +5374,9 @@ begin
 
   TSynEditStringList(FLines).DetachSynEdit(Self);
   ChangeTextBuffer(TSynEditStringList.Create);
+
+  // got a new empty textbuffer, all marks are invalidate
+  RecreateMarkList;
 end;
 
 procedure TCustomSynEdit.RemoveHandlers(ALines: TSynEditStrings = nil);
@@ -5325,7 +5463,6 @@ begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then begin
     FMarkList.Remove(fBookMarks[Bookmark]);
     fBookMarks[BookMark].Free;
-    fBookMarks[BookMark] := nil;
   end
 end;
 
@@ -5375,8 +5512,7 @@ begin
         ClearBookmark(i);
     if assigned(fBookMarks[BookMark]) then
       ClearBookmark(BookMark);
-    fBookMarks[BookMark] := mark;
-    FMarkList.Add(fBookMarks[BookMark]);
+    FMarkList.Add(mark);
   end;
 end;
 
@@ -6513,10 +6649,14 @@ end;
 
 procedure TCustomSynEdit.MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 begin
-  if (smcrAdded in Changes) and Sender.IsBookmark and Assigned(FOnPlaceMark) then
+  if (smcrAdded in Changes) and Sender.IsBookmark and Assigned(FOnPlaceMark) then begin
+    fBookMarks[Sender.BookmarkNumber] := Sender;
     FOnPlaceMark(Self, Sender);
-  if (smcrRemoved in Changes) and Sender.IsBookmark and Assigned(fOnClearMark) then
+  end;
+  if (smcrRemoved in Changes) and Sender.IsBookmark and Assigned(fOnClearMark) then begin
+    fBookMarks[Sender.BookmarkNumber] := nil;
     FOnClearMark(Self, Sender);
+  end;
 
   if (not Sender.Visible) and (not (smcrVisible in Changes)) then
     exit;
@@ -8685,6 +8825,28 @@ begin
   i:=Count;
   while NextDownIndexBitFilter(i, LongInt(Changes)) do
     TStatusChangeEvent(FItems[i].FHandler)(Sender, Changes);
+end;
+
+{ TSynEditMarkListInternal }
+
+function TSynEditMarkListInternal.GetLinesView: TSynEditStrings;
+begin
+  Result := FLines;
+end;
+
+procedure TSynEditMarkListInternal.SetLinesView(const AValue: TSynEditStrings);
+begin
+  FLines := AValue;
+end;
+
+procedure TSynEditMarkListInternal.AddOwnerEdit(AEdit: TSynEditBase);
+begin
+  FOwnerList.Add(AEdit);
+end;
+
+procedure TSynEditMarkListInternal.RemoveOwnerEdit(AEdit: TSynEditBase);
+begin
+  FOwnerList.Remove(AEdit);
 end;
 
 initialization
