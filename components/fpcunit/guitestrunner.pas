@@ -183,6 +183,17 @@ type
 
   TTreeNodeState=(tsUnChecked, tsChecked);
 
+function FirstLine(const s: string): string;
+var
+  NewLinePos: integer;
+begin
+  NewLinePos := pos(LineEnding, s);
+  if NewLinePos > 0 then
+    Result := copy(s, 1, NewLinePos-1)
+  else
+    Result := s;
+end;
+
 { TGUITestRunner }
 
 procedure TGUITestRunner.actCopyExecute(Sender: TObject);
@@ -571,7 +582,7 @@ begin
   if Assigned(FailureNode) then
   begin
     node := TestTree.Items.AddChild(FailureNode, Format(rsMessage, [
-      AFailure.ExceptionMessage]));
+      FirstLine(AFailure.ExceptionMessage)]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     node := TestTree.Items.AddChild(FailureNode, Format(rsException, [
@@ -594,7 +605,7 @@ begin
   if Assigned(ErrorNode) then
   begin
     node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionMes, [
-      AError.ExceptionMessage]));
+      FirstLine(AError.ExceptionMessage)]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
