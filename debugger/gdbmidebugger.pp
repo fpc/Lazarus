@@ -4249,7 +4249,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
       S := GetPart(['at address ', ' at '], ['.', ' '], R.Values);
       if S <> ''
       then begin
-        FMainAddr := StrToIntDef(S, 0);
+        FMainAddr := StrToQWordDef(S, 0);
         ExecuteCommand('-break-insert -t *%u', [FMainAddr],  [cfIgnoreError], R);
         Result := R.State <> dsError;
         if Result then Exit;
@@ -4261,7 +4261,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     if not Result then Exit;
 
     ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
-    FMainAddr := StrToIntDef(ResultList.Values['addr'], 0);
+    FMainAddr := StrToQWordDef(ResultList.Values['addr'], 0);
     ResultList.Free;
   end;
 
@@ -4359,7 +4359,7 @@ begin
   then begin
     // We could not set our initial break to get info and allow stepping
     // Try it with the program entry point
-    FMainAddr := StrToIntDef(EntryPoint, 0);
+    FMainAddr := StrToQWordDef(EntryPoint, 0);
     ExecuteCommand('-break-insert -t *%u', [FMainAddr], [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
@@ -4533,7 +4533,7 @@ begin
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if StrToIntDef(ResultList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
+      if StrToQWordDef(ResultList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
