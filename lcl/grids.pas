@@ -2599,6 +2599,8 @@ begin
     Target.FixedCols := FixedCols;
     Target.FixedRows := FixedRows;
     Target.DefaultRowHeight := DefaultRowHeight;
+    if not IsDefRowHeightStored then
+      Target.GridFlags := Target.GridFlags - [gfDefRowHeightChanged];
     Target.DefaultColWidth := DefaultColWidth;
     if not Columns.Enabled then
       Target.FCols.Assign(FCols);
@@ -2681,12 +2683,13 @@ procedure TCustomGrid.SetDefRowHeight(AValue: Integer);
 var
   i: Integer;
 begin
-  if AValue=fDefRowHeight then Exit;
-  include(FGridFlags, gfDefRowHeightChanged);
-  FDefRowheight:=AValue;
-  for i:=0 to RowCount-1 do
-    FRows[i] := Pointer(-1);
-  VisualChange;
+  if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then begin
+    include(FGridFlags, gfDefRowHeightChanged);
+    FDefRowheight:=AValue;
+    for i:=0 to RowCount-1 do
+      FRows[i] := Pointer(-1);
+    VisualChange;
+  end;
 end;
 
 procedure TCustomGrid.SetCol(AValue: Integer);
@@ -4575,9 +4578,7 @@ end;
 
 function TCustomGrid.IsDefRowHeightStored: boolean;
 begin
-  result :=
-    (gfDefRowHeightChanged in GridFlags) and
-    (FDefRowHeight<>GetDefaultRowHeight);
+  result := (gfDefRowHeightChanged in GridFlags);
 end;
 
 function TCustomGrid.IsAltColorStored: boolean;
@@ -7683,6 +7684,7 @@ begin
     Cfg.SetValue('grid/design/fixedcols', FixedCols);
     Cfg.SetValue('grid/design/fixedrows', Fixedrows);
     Cfg.SetValue('grid/design/defaultcolwidth', DefaultColWidth);
+    Cfg.SetValue('grid/design/isdefaultrowheight', ord(IsDefRowHeightStored));
     Cfg.SetValue('grid/design/defaultrowheight',DefaultRowHeight);
 
     if Columns.Enabled then
@@ -7828,7 +7830,9 @@ begin
       RowCount:=Cfg.GetValue('grid/design/rowcount', 5);
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
-      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
+      k := Cfg.GetValue('grid/design/isdefaultrowheight', -1);
+      if k<>0 then
+        DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
       DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
 
       if not Columns.Enabled then begin
