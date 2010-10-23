@@ -4,25 +4,20 @@
     <PathDelim Value="\"/>
     <Name Value="customdrawn"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="True"/>
-        </SyntaxOptions>
-      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Files Count="1">
       <Item1>
-        <Filename Value="customdrawncontrols.pas"/>
+        <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="customdrawncontrols"/>
+        <UnitName Value="customdrawnextras"/>
       </Item1>
     </Files>
     <Type Value="RunAndDesignTime"/>

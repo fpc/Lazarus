@@ -7,7 +7,7 @@
   such as a custom drawn version of TButton, of TEdit, of TPageControl, etc,
   eventually forming a full set of custom drawn components.
 }
-unit customdrawncontrols;
+unit customdrawnextras;
 
 {$mode objfpc}{$H+}
 
