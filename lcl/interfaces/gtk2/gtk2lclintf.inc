@@ -933,29 +933,6 @@ begin
       DefaultID := Buttons[X];
   end;
 
-  // simplify things for known situations
-  if (ButtonCount = 1) and (Buttons[0] in
-    [idButtonOK,idButtonClose,idButtonCancel]) then
-  begin
-    case Buttons[0] of
-      idButtonOK: Btns := GTK_BUTTONS_OK;
-      idButtonClose: Btns := GTK_BUTTONS_CLOSE;
-      idButtonCancel: Btns := GTK_BUTTONS_CANCEL;
-    end;
-  end else
-  if (ButtonCount = 2) and
-    ((Buttons[0] = idButtonYes) or (Buttons[1] = idButtonYes)) and
-    ((Buttons[0] = idButtonNo) or (Buttons[1] = idButtonNo)) then
-  begin
-    Btns := GTK_BUTTONS_YES_NO;
-  end else
-  if (ButtonCount = 2) and
-    ((Buttons[0] = idButtonOK) or (Buttons[1] = idButtonOK)) and
-    ((Buttons[0] = idButtonCancel) or (Buttons[1] = idButtonCancel)) then
-  begin
-    Btns := GTK_BUTTONS_OK_CANCEL;
-  end;
-
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
     PGChar(DialogMessage));
 
