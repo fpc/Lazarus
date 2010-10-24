@@ -482,7 +482,7 @@ end;
 procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol
   (const aRow, aCol, AEndCol: Integer; AMarkup: TSynSelectedColor);
 var
-  i, EndCol : integer;
+  i : integer;
   c : TSynSelectedColor;
 begin
   for i := 0 to fMarkUpList.Count-1 do begin

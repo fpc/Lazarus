@@ -291,7 +291,7 @@ begin
       if SysUtils.CompareText(Prefix,copy(s,1,length(Prefix)))<>0 then continue;
       if (Position<0) or (length(Prefix)=length(s)) then
         Position:=sl.Count;
-      sl.AddObject(s,TObject(Pointer(i)));
+      sl.AddObject(s,TObject({%H-}Pointer(i)));
     end;
     fSynCompletion.ItemList.Assign(sl);
   finally
@@ -919,7 +919,7 @@ begin
 
   // set index
   for i:=0 to CompletionValues.Count-1 do
-    CompletionValues.Objects[i]:=TObject(Pointer(i));
+    CompletionValues.Objects[i]:=TObject({%H-}Pointer(i));
 
   //debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
 end;
