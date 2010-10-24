@@ -5462,10 +5462,8 @@ end;
 
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
 begin
-  if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then begin
-    FMarkList.Remove(fBookMarks[Bookmark]);
-    fBookMarks[BookMark].Free;
-  end
+  if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then
+    FBookMarks[BookMark].Free;
 end;
 
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
