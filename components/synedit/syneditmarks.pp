@@ -19,7 +19,12 @@ type
   TSynEditMarkLineList = class;
   TSynEditMarkList = class;
 
-  TSynEditMarkChangeReason = (smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged);
+  TSynEditMarkChangeReason =
+    ( smcrAdded, smcrRemoved,
+      smcrLine, smcrColumn,
+      smcrVisible,
+      smcrChanged
+    );
   TSynEditMarkChangeReasons = set of TSynEditMarkChangeReason;
 
   TSynEditMarkSortOrder = (smsoUnsorted, smsoColumn, smsoPriority, smsoBookmarkFirst, smsoBookMarkLast);
@@ -69,8 +74,6 @@ type
     procedure SetInternalImage(const Value: boolean);
     function  GetIsBookmark: boolean;
 
-    procedure IncChangeLock;
-    procedure DecChangeLock;
     procedure DoChange(AChanges: TSynEditMarkChangeReasons); virtual;
     procedure ForceChange(AChanges: TSynEditMarkChangeReasons);
 
@@ -79,6 +82,8 @@ type
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
+    procedure IncChangeLock;
+    procedure DecChangeLock;
 
     property OwnerEdit: TSynEditBase read FOwnerEdit write SetOwnerEdit;
     property Line: integer read GetLine write SetLine;
@@ -402,7 +407,7 @@ begin
   if FColumn = Value then
     exit;
   FColumn := Value;
-  DoChange([smcrChanged]);
+  DoChange([smcrColumn]);
 end;
 
 procedure TSynEditMark.SetImage(const Value: Integer);
