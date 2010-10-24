@@ -768,10 +768,9 @@ begin
   Result:=AProject.BuildModes[i];
 end;
 
-{$IFDEF EnableBuildModes}
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TBuildModesEditorFrame,
     CompilerOptionsBuildModes);
-{$ENDIF}
+
 end.
 

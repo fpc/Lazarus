@@ -1067,11 +1067,9 @@ begin
   Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
 
-{$IFDEF EnableBuildModes}
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompOptBuildMacrosFrame,
     CompilerOptionsConditional);
-{$ENDIF}
 
 end.
 

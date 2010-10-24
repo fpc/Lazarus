@@ -47,10 +47,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
   AVL_Tree, LazConfigStorage,
-  {$IFDEF EnableBuildModes}
-  CodeToolsCfgScript,
-  {$ENDIF}
-  DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
+  CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
@@ -2033,11 +2030,9 @@ end;
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt;
   var Handled, Abort: boolean; Depth: integer);
-{$IFDEF EnableBuildModes}
 var
   Values: TCTCfgScriptVariables;
   Macro: PCTCfgScriptVariable;
-{$ENDIF}
 var
   NewValue: String;
 begin
@@ -2051,7 +2046,6 @@ begin
     end;
   end;
 
-  {$IFDEF EnableBuildModes}
   // check build macros
   if (MacroName<>'') and IsValidIdent(MacroName) then
   begin
@@ -2067,7 +2061,6 @@ begin
       end;
     end;
   end;
-  {$ENDIF}
 
   // check local macros
   if CompareText(MacroName,'PkgOutDir')=0 then begin

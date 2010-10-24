@@ -131,7 +131,7 @@
     <Node31 Name="ProjectApplicationOptionsFrame" Path="Project_Options" HasHelp="True" IsRoot="True"/>
     <Node32 Name="EditorMultiWindowOptionsFrame" Path="_Editor_Options_MultiWindow" HasHelp="True" IsRoot="True"/>
     <Node33 Name="CompilerPathOptionsFrame" Path="Compiler_Options#Paths" HasHelp="True" IsRoot="True"/>
-    <Node34 Name="BuildModesEditorFrame" Path="Compiler_Options#Build_Modes" HasHelp="True" IsRoot="True"/>
+    <Node34 Name="BuildModesEditorFrame" Path="Compiler_Options#Build_modes" HasHelp="True" IsRoot="True"/>
     <Node35 Name="CompilerParsingOptionsFrame" Path="Compiler_Options#Parsing" HasHelp="True" IsRoot="True"/>
     <Node36 Name="CompilerCodegenOptionsFrame" Path="Compiler_Options#Code" HasHelp="True" IsRoot="True"/>
     <Node37 Name="CompilerLinkingOptionsFrame" Path="Compiler_Options#Linking" HasHelp="True" IsRoot="True"/>

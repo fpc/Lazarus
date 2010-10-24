@@ -643,9 +643,6 @@ begin
 
     // build modes
     HasBuildModes:=(Options is TProjectCompilerOptions);
-    {$IFNDEF EnableBuildModes}
-    HasBuildModes:= false;
-    {$ENDIF}
     if HasBuildModes then begin
       // show build modes
       if FBuildModesTVNode=nil then begin
@@ -1524,10 +1521,8 @@ end;
 procedure TfrmCompilerOptions.SetupMacrosTab(Page: integer);
 begin
   MacrosPage:=MainNoteBook.Pages[Page];
-  MacrosPage.Caption:='Build macros';
-  {$IFDEF EnableBuildModes}
+  MacrosPage.Caption:=lisBuildMacros;
   CategoryTreeView.Items.AddObject(nil,MacrosPage.Caption,MacrosPage);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1732,9 +1727,7 @@ procedure TfrmCompilerOptions.SetupBuildModesTab(Page: integer);
 begin
   // Setup the Build Modes Tab
   MainNoteBook.Page[Page].Caption:='Build modes';
-  {$IFDEF EnableBuildModes}
   fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
-  {$ENDIF}
 
   fBuildModeFrame:=TBuildModesEditorFrame.Create(Self);
   fBuildModeFrame.Setup(nil);
