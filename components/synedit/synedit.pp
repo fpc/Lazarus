@@ -399,7 +399,7 @@ type
     fHighlighter: TSynCustomHighlighter;
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
-    fBookMarks: array[0..9] of TSynEditMark;
+    FBookMarks: array[0..9] of TSynEditMark;
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
@@ -1957,6 +1957,7 @@ begin
   fPlugins:=nil;
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
+  DestroyMarkList;
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
   FreeAndNil(fBookMarkOpt);
@@ -1971,7 +1972,6 @@ begin
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
-  DestroyMarkList;
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
@@ -5248,7 +5248,7 @@ begin
     LView := TSynEditStringsLinked(LView).NextLines;
   end;
   NewBuffer.CopyHanlders(OldBuffer, FFoldedLinesView);
-  NewBuffer.CopyHanlders(OldBuffer, FMarkList);
+  //NewBuffer.CopyHanlders(OldBuffer, FMarkList);
   NewBuffer.CopyHanlders(OldBuffer, FCaret);
   NewBuffer.CopyHanlders(OldBuffer, FInternalCaret);
   NewBuffer.CopyHanlders(OldBuffer, FBlockSelection);
@@ -5295,6 +5295,7 @@ end;
 procedure TCustomSynEdit.RecreateMarkList;
 var
   s: TSynEditBase;
+  i: Integer;
 begin
   DestroyMarkList;
 
@@ -5306,9 +5307,14 @@ begin
       s := TSynEditStringList(FLines).AttachedSynEdits[1];
     FMarkList := TSynEdit(s).FMarkList;
     TSynEditMarkListInternal(fMarkList).AddOwnerEdit(Self);
+    for i := 0 to 9 do
+      FBookMarks[i] := TSynEdit(s).fBookMarks[i];
   end
-  else
+  else begin
     FMarkList := TSynEditMarkListInternal.Create(self, FTheLinesView);
+    for i := 0 to 9 do
+      FBookMarks[i] := nil;
+  end;
 
   FMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
     [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
@@ -5323,6 +5329,7 @@ begin
     exit;
 
   TSynEditMarkListInternal(fMarkList).RemoveOwnerEdit(Self);
+  FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
 
   if IsMarkListShared then begin
     s := TSynEditStringList(FLines).AttachedSynEdits[0];
@@ -5331,8 +5338,6 @@ begin
 
     if TSynEditMarkListInternal(FMarkList).LinesView = FTheLinesView then
       TSynEditMarkListInternal(FMarkList).LinesView := TSynEdit(s).FTheLinesView;
-
-    FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
 
     it := TSynEditMarkIterator.Create(FMarkList);
     it.GotoBOL;
@@ -5355,15 +5360,16 @@ begin
   if fPaintLock <> 0 then RaiseGDBException('Cannot change TextBuffer while paintlocked');
   OldBuffer := TSynEditStringList(FLines);
 
+  DestroyMarkList;
   ChangeTextBuffer(TSynEditStringList(AShareEditor.FLines));
   TSynEditStringList(FLines).AttachSynEdit(Self);
-
   // lost the textbuffer, all marks are invalidate
   RecreateMarkList;
 
   OldBuffer.DetachSynEdit(Self);
   if OldBuffer.AttachedSynEditCount = 0 then
     OldBuffer.Free;
+
 end;
 
 procedure TCustomSynEdit.UnShareTextBuffer;
@@ -5372,10 +5378,10 @@ begin
   if TSynEditStringList(FLines).AttachedSynEditCount = 1 then
     exit;
 
+  DestroyMarkList;
   TSynEditStringList(FLines).DetachSynEdit(Self);
   ChangeTextBuffer(TSynEditStringList.Create);
-
-  // got a new empty textbuffer, all marks are invalidate
+  // lost the textbuffer, all marks are invalidate
   RecreateMarkList;
 end;
 
@@ -6649,13 +6655,15 @@ end;
 
 procedure TCustomSynEdit.MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 begin
-  if (smcrAdded in Changes) and Sender.IsBookmark and Assigned(FOnPlaceMark) then begin
-    fBookMarks[Sender.BookmarkNumber] := Sender;
-    FOnPlaceMark(Self, Sender);
+  if (smcrAdded in Changes) and Sender.IsBookmark then begin
+    FBookMarks[Sender.BookmarkNumber] := Sender;
+    if Assigned(FOnPlaceMark) then
+      FOnPlaceMark(Self, Sender);
   end;
-  if (smcrRemoved in Changes) and Sender.IsBookmark and Assigned(fOnClearMark) then begin
-    fBookMarks[Sender.BookmarkNumber] := nil;
-    FOnClearMark(Self, Sender);
+  if (smcrRemoved in Changes) and Sender.IsBookmark then begin
+    FBookMarks[Sender.BookmarkNumber] := nil;
+    if Assigned(FOnPlaceMark) then
+      FOnClearMark(Self, Sender);
   end;
 
   if (not Sender.Visible) and (not (smcrVisible in Changes)) then
