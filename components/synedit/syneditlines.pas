@@ -40,14 +40,26 @@ type
 
   TSavedNotification = Procedure of Object;
 
+  TSynLinesFileLineEndType =
+    ( sfleSystem,
+      sfleLoaded,
+      sfleCrLf,
+      sfleCr,
+      sfleLf
+    );
+
   { TSynEditLines }
 
   TSynEditLines = class(TStrings)
   private
-    fDosFileFormat: boolean;
+    FFileLineEndType: TSynLinesFileLineEndType;
+    FFileWriteLineEndType: TSynLinesFileLineEndType;
+    FLineEndType: TSynLinesFileLineEndType;
     FTextBuffer: TSynEditStringList;
     FOnSaved: TSavedNotification;
+    function GetDosFileFormat: boolean;
     function GetTextChangeStamp: int64;
+    procedure SetDosFileFormat(const AValue: boolean);
   protected
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
@@ -69,7 +81,11 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-    property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
+    property DosFileFormat: boolean read GetDosFileFormat write SetDosFileFormat;
+      deprecated {$IFDEF VER2_5}'use FileLineEndType and FileWriteLineEndType / to be removed'{$ENDIF};
+    property FileLineEndType: TSynLinesFileLineEndType read FFileLineEndType;
+    property FileWriteLineEndType: TSynLinesFileLineEndType
+             read FFileWriteLineEndType write FFileWriteLineEndType;
     property TextChangeStamp: int64 read GetTextChangeStamp;
   end;
 
@@ -80,11 +96,15 @@ type
 { TSynEditFiler }
 
   TSynEditFiler = class(TObject)
+  private
+    FLineEndString: String;
+    FLineEndLen: Integer;
+    FLineEndType: TSynLinesFileLineEndType;
+    procedure SetLineEndType(const AValue: TSynLinesFileLineEndType);
   protected
     fBuffer: PChar;
     fBufPtr: Cardinal;
     fBufSize: Cardinal;
-    fDosFile: boolean;
     fFiler: TFileStream;
     procedure Flush; virtual;
     procedure SetBufferSize(NewSize: Cardinal);
@@ -92,7 +112,7 @@ type
     constructor Create;
     destructor Destroy; override;
   public
-    property DosFile: boolean read fDosFile write fDosFile;
+    property LineEndType: TSynLinesFileLineEndType read FLineEndType write SetLineEndType;
   end;
 
 constructor TSynEditFiler.Create;
@@ -100,7 +120,7 @@ const
   kByte = 1024;
 begin
   inherited Create;
-  fDosFile := FALSE;
+  LineEndType := sfleSystem;
   SetBufferSize(16 * kByte);
   fBuffer[0] := #0;
 end;
@@ -111,6 +131,19 @@ begin
   fFiler.Free;
   SetBufferSize(0);
   inherited Destroy;
+end;
+
+procedure TSynEditFiler.SetLineEndType(const AValue: TSynLinesFileLineEndType);
+begin
+  FLineEndType := AValue;
+  case FLineEndType of
+    sfleCrLf: FLineEndString := #13#10;
+    sfleCr:   FLineEndString := #13;
+    sfleLf:   FLineEndString := #10;
+    else
+      FLineEndString := LineEnding;
+  end;
+  FLineEndLen := length(FLineEndString);
 end;
 
 procedure TSynEditFiler.Flush;
@@ -185,15 +218,17 @@ begin
         #10, #13:
           begin
             SetString(Result, S, P - S);
-            {$IFDEF SYN_LAZARUS}
             // a single #13 is used in Mac OS files
-            if (P[0] = #13) and (P[1] = #10) then begin
-            {$ELSE}
-            if P[0] = #13 then begin
-            {$ENDIF}
-              fDosFile := TRUE;
-              Inc(P);
-            end;
+            if (P[0] = #13) then begin
+              if (P[1] = #10) then begin
+                FLineEndType := sfleCrLf;
+                inc(P);
+              end
+              else
+                FLineEndType := sfleCr;
+            end
+            else
+              FLineEndType := sfleLf;
             Inc(P);
             fBufPtr := P - fBuffer;
             exit;
@@ -247,27 +282,22 @@ end;
 
 procedure TSynEditFileWriter.WriteLine(const S: string);
 var
-  L, NL: Cardinal;
+  L: Cardinal;
 begin
   L := Length(S);
-  NL := 1 + Ord(fDosFile);
   repeat
-    if fBufPtr + L + NL <= fBufSize then begin
+    if fBufPtr + L + FLineEndLen <= fBufSize then begin
       if L > 0 then begin
         Move(S[1], fBuffer[fBufPtr], L);
         fBufPtr := fBufPtr + L;
       end;
-      if fDosFile then begin
-        fBuffer[fBufPtr] := #13;
-        Inc(fBufPtr);
-      end;
-      fBuffer[fBufPtr] := #10;
-      Inc(fBufPtr);
+      Move(FLineEndString[1], fBuffer[fBufPtr], FLineEndLen);
+      Inc(fBufPtr, FLineEndLen);
       exit;
     end;
     Flush;
-    if L + NL > fBufSize then
-      SetBufferSize(L + NL);
+    if L + FLineEndLen > fBufSize then
+      SetBufferSize(L + FLineEndLen);
   until FALSE;
 end;
 
@@ -277,12 +307,27 @@ constructor TSynEditLines.Create(ATextBuffer: TSynEditStringList; OnSaved: TSave
 begin
   inherited Create;
   FTextBuffer := ATextBuffer;
+  FFileWriteLineEndType := sfleSystem;
+  FFileLineEndType := sfleSystem;
   FOnSaved := OnSaved;
 end;
 
 function TSynEditLines.GetTextChangeStamp: int64;
 begin
   Result:=FTextBuffer.TextChangeStamp;
+end;
+
+function TSynEditLines.GetDosFileFormat: boolean;
+begin
+  Result := FLineEndType = sfleCrLf;
+end;
+
+procedure TSynEditLines.SetDosFileFormat(const AValue: boolean);
+begin
+  if AValue then
+    FLineEndType := sfleCrLf
+  else
+    FLineEndType := sfleSystem;
 end;
 
 function TSynEditLines.Get(Index: integer): string;
@@ -369,11 +414,11 @@ begin
       Clear;
       while not Reader.EOF do
         Add(Reader.ReadLine);
-      fDosFileFormat := Reader.DosFile;
     finally
       EndUpdate;
     end;
   finally
+    FFileLineEndType := Reader.LineEndType;
     Reader.Free;
   end;
 end;
@@ -385,7 +430,10 @@ var
 begin
   Writer := TSynEditFileWriter.Create(FileName);
   try
-    Writer.DosFile := fDosFileFormat;
+    if FFileWriteLineEndType = sfleLoaded then
+      Writer.LineEndType := FFileLineEndType
+    else
+      Writer.LineEndType := FFileWriteLineEndType;
     for i := 0 to Count - 1 do
       Writer.WriteLine(Get(i));
   finally
