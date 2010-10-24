@@ -356,7 +356,7 @@ begin
   if not CheckHandle(ALV, Self, 'ColumnSetWidth') then Exit;
 
   Column := TCarbonListView(ALV.Handle).GetColumn(AIndex);
-  if Column <> nil then Column.SetWidth(AWidth); // Avoids crash
+  if Column <> nil then Column.SetWidth(AWidth, AColumn.AutoSize); // Avoids crash
 end;
 
 class procedure TCarbonWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;

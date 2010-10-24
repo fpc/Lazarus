@@ -78,7 +78,7 @@ type
     procedure SetMinWidth(AMinWidth: Integer);
     procedure SetMaxWidth(AMaxWidth: Integer);
     procedure SetVisible(AVisible: Boolean);
-    procedure SetWidth(AWidth: Integer);
+    procedure SetWidth(AWidth: Integer; AAutoSize: Boolean);
     property TextWithIcon: Boolean read fTextWithIcon write fTextWithIcon;
   end;
 
@@ -581,9 +581,22 @@ begin
   else Remove;
 end;
 
-procedure TCarbonListColumn.SetWidth(AWidth: Integer);
+procedure TCarbonListColumn.SetWidth(AWidth: Integer; AAutoSize: Boolean);
+var
+  lBmp: TBitmap;
 begin
-  FWidth := AWidth;
+  // Implements Column Autosizing
+  if AAutoSize then
+  begin
+    lBmp := TBitmap.Create;
+    // The standard Mac listview font is quite bigger then the standard TCanvas font
+    // plus, we also need an extra spacing
+    FWidth := lBmp.Canvas.TextWidth(FListColumn.Caption) * 2;
+    lBmp.Free;
+  end
+  else
+    FWidth := AWidth;
+
   if FVisible then SetHeaderWidth(FWidth);
 end;
 
