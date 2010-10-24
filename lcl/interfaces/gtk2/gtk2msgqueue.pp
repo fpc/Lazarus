@@ -26,7 +26,11 @@ unit Gtk2MsgQueue;
 
 interface
 
-uses LazLinkedList, LCLType, LMessages, Gtk2Globals, DynHashArray, Gtk2Proc;
+uses LazLinkedList, LCLType, LMessages, Gtk2Globals, DynHashArray, Gtk2Proc
+{$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+, glib2
+{$ENDIF}
+;
 
 type
   TFinalPaintMessageFlag=(FPMF_None,FPMF_Internal,FPMF_All);
@@ -47,7 +51,11 @@ type
   TGtkMessageQueue=class(TLinkList)
   private
     FPaintMessages: TDynHashArray; // Hash for paint messages
+    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    FMainContext: PGMainContext;
+    {$ELSE}
     FCritSec: TRTLCriticalSection;
+    {$ENDIF}
     fLock: integer;
   protected
     function CreateItem : TLinkListItem;override;
@@ -71,6 +79,9 @@ type
     function   HasNonPaintMessages:boolean;
     function   NumberOfPaintMessages:integer;
     function   PopFirstMessage: PMsg;
+    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    property   MainContext: PGMainContext read FMainContext;
+    {$ENDIF}
   end;
 
 
@@ -111,28 +122,46 @@ begin
   inherited Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
+  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
   InitCriticalSection(FCritSec);
+  {$ELSE}
+  FMainContext := g_main_context_new;
+  g_main_context_ref(FMainContext);
+  {$ENDIF}
 end;
 
 destructor TGtkMessageQueue.destroy;
 begin
   inherited Destroy;
   fPaintMessages.destroy;
+  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
   DoneCriticalsection(FCritSec);
+  {$ELSE}
+  g_main_context_unref(FMainContext);
+  FMainContext := nil;
+  {$ENDIF}
 end;
 
 procedure TGtkMessageQueue.Lock;
 begin
   inc(fLock);
   if fLock=1 then
+    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
     EnterCriticalsection(FCritSec);
+    {$ELSE}
+    g_main_context_acquire(FMainContext);
+    {$ENDIF}
 end;
 
 procedure TGtkMessageQueue.UnLock;
 begin
   dec(fLock);
   if fLock=0 then
+    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
     LeaveCriticalsection(FCritSec);
+    {$ELSE}
+    g_main_context_release(FMainContext);
+    {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -292,8 +321,12 @@ begin
   Lock;
   try
     vlItem := FirstMessageItem;
-    Result := vlItem.Msg;
-    RemoveMessage(vlItem,FPMF_none,false);
+    if vlItem <> nil then
+    begin
+      Result := vlItem.Msg;
+      RemoveMessage(vlItem,FPMF_none,false);
+    end else
+      Result := nil;
   finally
     UnLock;
   end;

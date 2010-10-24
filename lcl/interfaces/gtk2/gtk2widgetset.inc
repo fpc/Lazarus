@@ -23,6 +23,37 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+var
+  Gtk2MPF: TGPollFunc;
+
+function Gtk2PollFunction(ufds:PGPollFD; nfsd:guint; timeout:gint):gint;cdecl;
+var
+  i: Integer;
+begin
+  Result := nfsd;
+  if TimeOut = -1 then
+    Gtk2WidgetSet.FMainPoll := ufds
+  else
+    Gtk2WidgetSet.FMainPoll := nil;
+  if Gtk2MPF <> nil then
+  begin
+    if (glib_major_version = 2) and (glib_minor_version < 24) and
+      (Gtk2WidgetSet.FMainPoll <> nil) then
+    begin
+      while (Gtk2WidgetSet.FMainPoll <> nil) and
+        (Gtk2WidgetSet.FMainPoll^.revents = 0) do
+      begin
+        Gtk2MPF(ufds, nfsd, 1);
+        if Gtk2WidgetSet.FMessageQueue.Count > 0 then
+          break;
+      end;
+    end else
+      Gtk2MPF(ufds, nfsd, timeout);
+  end;
+end;
+{$ENDIF}
+
 function GTK2FocusCB( widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -1076,6 +1107,11 @@ constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
   Gtk1Create;
+  {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  FMainPoll := nil;
+  Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
+  g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
+  {$ENDIF}
   StayOnTopList := nil;
   im_context:=gtk_im_multicontext_new;
   g_signal_connect (G_OBJECT (im_context), 'commit',
@@ -2342,7 +2378,12 @@ procedure TGtk2WidgetSet.AppProcessMessages;
 
   function PendingGtkMessagesExists: boolean;
   begin
+    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
     Result:=(gtk_events_pending<>0) or LCLtoGtkMessagePending;
+    {$ELSE}
+    Result := g_main_context_pending(g_main_context_default) or
+      LCLtoGtkMessagePending;
+    {$ENDIF}
   end;
 
 var
@@ -2357,10 +2398,20 @@ begin
 
     // let gtk handle up to 100 messages and call our callbacks
     i:=100;
-    while (gtk_events_pending<>0) and (i>0) do begin
+
+    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    while (gtk_events_pending<>0) and (i>0) do
+    begin
       gtk_main_iteration_do(False);
       dec(i);
     end;
+    {$ELSE}
+    while g_main_context_pending(g_main_context_default) and (i>0) do
+    begin
+      g_main_context_iteration(g_main_context_default, False);
+      dec(i);
+    end;
+    {$ENDIF}
 
     //DebugLn(['TGtk2WidgetSet.AppProcessMessages SendCachedGtkMessages']);
     // send cached gtk messages to the lcl
@@ -2404,10 +2455,13 @@ begin
 
       //debugln(['TGtk2WidgetSet.AppProcessMessages ',vlMsg^.Message,' ',LM_CHAR,' ',dbgsname(GetLCLObject(Pointer(vlMsg^.hwnd)))]);
       // Send message
-      try
-        with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
-      finally
-        Dispose(vlMsg);
+      if vlMsg <> nil then
+      begin
+        try
+          with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
+        finally
+          Dispose(vlMsg);
+        end;
       end;
     end;
 
@@ -2425,10 +2479,13 @@ end;
 procedure TGtk2WidgetSet.AppWaitMessage;
 begin
   WaitingForMessages:=true;
+  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
   gtk_main_iteration_do(True);
+  {$ELSE}
+  g_main_context_iteration(g_main_context_default, True);
+  {$ENDIF}
   WaitingForMessages:=false;
 end;
-
 
 procedure TGtk2WidgetSet.FreeStockItems;
 

@@ -68,6 +68,9 @@ type
 
   TGtk2WidgetSet = class(TWidgetSet)
   private
+    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    FMainPoll: PGPollFD;
+    {$ENDIF}
     FMultiThreadingEnabled: boolean;
     FocusTimer: cardinal;
     FLastFocusIn: PGtkWidget;

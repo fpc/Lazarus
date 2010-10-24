@@ -6799,7 +6799,7 @@ begin
   AMessage^.WParam := WParam;
   AMessage^.LParam := LParam;
 
-  fMessageQueue.Lock;
+  FMessageQueue.Lock;
   try
     if (AMessage^.Message = LM_PAINT) or (AMessage^.Message = LM_GTKPAINT) then
     begin
@@ -6822,6 +6822,7 @@ begin
 
     FMessageQueue.AddMessage(AMessage);
 
+    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
     if GetCurrentThreadId <> MainThreadID then
     begin
       // awake gtk loop
@@ -6839,9 +6840,21 @@ begin
         DebugLn(['TGtk2WidgetSet.PostMessage ToDo: wake up gtk']);
       {$ENDIF}
     end;
+    {$ENDIF}
   finally
-    fMessageQueue.UnLock;
+    FMessageQueue.UnLock;
   end;
+
+  {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  if GetCurrentThreadId <> MainThreadID then
+  begin
+    // old glib versions needs another way to wake up.
+    if (glib_major_version = 2) and
+      (glib_minor_version < 24) and (FMainPoll <> nil) then
+      FMainPoll^.revents := 1;
+    g_main_context_wakeup(g_main_context_default);
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
