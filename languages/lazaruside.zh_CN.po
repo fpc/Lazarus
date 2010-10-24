@@ -4309,6 +4309,10 @@ msgstr "变量"
 msgid "Wrong indentation"
 msgstr ""
 
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "更改类"

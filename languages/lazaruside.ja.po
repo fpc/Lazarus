@@ -4305,6 +4305,10 @@ msgstr "変数"
 msgid "Wrong indentation"
 msgstr "間違ったインデント"
 
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "クラスを変更"

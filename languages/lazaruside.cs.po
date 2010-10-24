@@ -4265,6 +4265,10 @@ msgstr "Proměnné"
 msgid "Wrong indentation"
 msgstr "Nesprávné odsazení"
 
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "Změnit třídu"

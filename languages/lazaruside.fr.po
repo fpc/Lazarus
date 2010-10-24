@@ -4322,6 +4322,10 @@ msgstr "Variables"
 msgid "Wrong indentation"
 msgstr "Mauvaise indentation"
 
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "Modifier la classe"

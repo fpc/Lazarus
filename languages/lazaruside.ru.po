@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-20 03:10+0300\n"
+"PO-Revision-Date: 2010-10-25 03:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4312,6 +4312,10 @@ msgstr "Переменные"
 #: lazarusidestrconsts.liscewrongindentation
 msgid "Wrong indentation"
 msgstr "Неверные отступы"
+
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr "Сменить режим сборки"
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"

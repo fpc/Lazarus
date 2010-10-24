@@ -4276,6 +4276,10 @@ msgstr "משתנים"
 msgid "Wrong indentation"
 msgstr "הזחה שגויה"
 
+#: lazarusidestrconsts.lischangebuildmode
+msgid "Change build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "שנה את המחלקה"
