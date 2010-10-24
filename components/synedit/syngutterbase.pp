@@ -337,6 +337,7 @@ begin
   if FVisible <> AValue then
   begin
     FVisible := AValue;
+    DoResize(Self);
     DoChange(Self);
   end;
 end;

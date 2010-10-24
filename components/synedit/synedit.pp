@@ -522,6 +522,9 @@ type
     function SynGetText: string;
     procedure GutterChanged(Sender: TObject);
     procedure GutterResized(Sender: TObject);
+    // x-pixel pos of first char on canvas
+    function  TextLeftPixelOffset(IncludeGutterTextDist: Boolean = True): Integer;
+    function  TextRightPixelOffset: Integer;
     function IsPointInSelection(Value: TPoint): boolean;
     procedure LockUndo;
     procedure MoveCaretHorz(DX: integer);
@@ -1453,17 +1456,17 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
 var
   f: Single;
 begin
-  f := ((Pixels.X+(fLeftChar-1)*fCharWidth-FLeftGutter.Width-2)/fCharWidth)+1;
+  f := ( (Pixels.X
+          + (fLeftChar-1) * fCharWidth
+          - TextLeftPixelOffset
+         ) / fCharWidth
+       )+1;
   // don't return a partially visible last line
   if Pixels.Y >= fLinesInWindow * fTextHeight then begin
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
-  {$IFDEF SYN_LAZARUS}
   Result := Point(RoundOff(f), ScreenRowToRow(Pixels.Y div fTextHeight));
-  {$ELSE}
-  Result := Point(RoundOff(f), Pixels.Y div fTextHeight + TopLine);
-  {$ENDIF}
   {$IFDEF SYN_MBCSSUPPORT}
   if (Result.Y >= 1) and (Result.Y <= Lines.Count) then begin
     s := Lines[Result.Y - 1];
@@ -1688,7 +1691,7 @@ begin
   FRightGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   FRightGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
 
-  fTextOffset := FLeftGutter.Width + GutterTextDist;
+  fTextOffset := TextLeftPixelOffset;
 
   ControlStyle := ControlStyle + [csOpaque, csSetCaption
                     {$IFDEF SYN_LAZARUS}, csTripleClicks, csQuadClicks{$ENDIF}];
@@ -2242,18 +2245,22 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := Rect(0, 0, FLeftGutter.Width, ClientHeight - ScrollBarWidth);
-      {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
-      {$ENDIF}
-      InvalidateRect(Handle, @rcInval, FALSE);
+      if FLeftGutter.Visible then begin;
+        rcInval := Rect(0, 0, FLeftGutter.Width, ClientHeight - ScrollBarWidth);
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
+        {$ENDIF}
+        InvalidateRect(Handle, @rcInval, FALSE);
+      end;
       // right gutter
-      rcInval := Rect(ClientWidth - FRightGutter.Width - ScrollBarWidth, 0,
-                      ClientWidth - ScrollBarWidth, ClientHeight - ScrollBarWidth);
-      {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
-      {$ENDIF}
-      InvalidateRect(Handle, @rcInval, FALSE);
+      if FRightGutter.Visible then begin
+        rcInval := Rect(ClientWidth - FRightGutter.Width - ScrollBarWidth, 0,
+                        ClientWidth - ScrollBarWidth, ClientHeight - ScrollBarWidth);
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
+        {$ENDIF}
+        InvalidateRect(Handle, @rcInval, FALSE);
+      end;
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
@@ -2272,19 +2279,23 @@ begin
       FirstLine := Max(0, FirstLine);
       { any line visible? }
       if (LastLine >= FirstLine) then begin
-        rcInval := Rect(0, fTextHeight * FirstLine,
-          FLeftGutter.Width, fTextHeight * LastLine);
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
+        if FLeftGutter.Visible then begin;
+          rcInval := Rect(0, fTextHeight * FirstLine,
+            FLeftGutter.Width, fTextHeight * LastLine);
+          {$IFDEF VerboseSynEditInvalidate}
+          DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
+          {$ENDIF}
+          InvalidateRect(Handle, @rcInval, FALSE);
+        end;
         // right gutter
-        rcInval.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
-        rcInval.Right := ClientWidth - ScrollBarWidth;
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
+        if FRightGutter.Visible then begin
+          rcInval.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
+          rcInval.Right := ClientWidth - ScrollBarWidth;
+          {$IFDEF VerboseSynEditInvalidate}
+          DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
+          {$ENDIF}
+          InvalidateRect(Handle, @rcInval, FALSE);
+        end;
       end;
 
       FFoldedLinesView.TopLine := TopFoldLine;
@@ -2301,8 +2312,8 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
-      rcInval.Left := FLeftGutter.Width;
-      rcInval.Right := ClientWidth - FRightGutter.Width - ScrollBarWidth;
+      rcInval.Left := TextLeftPixelOffset(False);
+      rcInval.Right := ClientWidth - TextRightPixelOffset - ScrollBarWidth;
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
@@ -2325,8 +2336,8 @@ begin
       f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
-        rcInval := Rect(FLeftGutter.Width, fTextHeight * f,
-          ClientWidth - FRightGutter.Width - ScrollBarWidth, fTextHeight * l);
+        rcInval := Rect(TextLeftPixelOffset(False), fTextHeight * f,
+          ClientWidth - TextRightPixelOffset - ScrollBarWidth, fTextHeight * l);
         {$IFDEF VerboseSynEditInvalidate}
         DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
@@ -2655,19 +2666,19 @@ begin
     then
       exit;
     // mouse event occured in Gutter ?
-    if  (X < FLeftGutter.Width) then begin
+    if FLeftGutter.Visible and (X < FLeftGutter.Width) then begin
       FLeftGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
       exit;
       // No fallback to text actions
     end;
-    if  (X > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+    if FRightGutter.Visible and (X > ClientWidth - FRightGutter.Width) then begin
       FRightGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
       exit;
       // No fallback to text actions
     end;
     // mouse event occured in selected block ?
-    if SelAvail and (X >= FLeftGutter.Width + GutterTextDist) and
-       //(x < ClientWidth - FRightGutter.Width - ScrollBarWidth) and
+    if SelAvail and (X >= TextLeftPixelOffset) and
+       //(x < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
        IsPointInSelection(FInternalCaret.LineBytePos)
     then
       if DoHandleMouseAction(FMouseSelActions, Info) then
@@ -2721,11 +2732,11 @@ begin
   FMouseClickDoPopUp := False;
   IncPaintLock;
   try
-    if (X < FLeftGutter.Width) then begin
+    if (X < TextLeftPixelOffset(False)) then begin
       Include(fStateFlags, sfLeftGutterClick);
       FLeftGutter.MouseDown(Button, Shift, X, Y);
     end;
-    if (X > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+    if (X > ClientWidth - TextRightPixelOffset - ScrollBarWidth) then begin
       Include(fStateFlags, sfRightGutterClick);
       FRightGutter.MouseDown(Button, Shift, X, Y);
     end;
@@ -2778,8 +2789,8 @@ begin
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
-    if ((X >= FLeftGutter.Width) or (fLeftChar <= 1)) and
-       ( (X < ClientWidth - FRightGutter.Width - ScrollBarWidth)
+    if ((X >= TextLeftPixelOffset(False)) or (fLeftChar <= 1)) and
+       ( (X < ClientWidth - TextRightPixelOffset)
          or (LeftChar >= CurrentMaxLeftChar)) and
        ((Y >= 0) or (fTopLine <= 1)) and
        ((Y < ClientHeight-ScrollBarWidth) or (fTopLine >= CurrentMaxTopLine))
@@ -2792,7 +2803,7 @@ begin
     end
     else begin
       // begin scrolling?
-      Dec(X, FLeftGutter.Width);
+      Dec(X, TextLeftPixelOffset(False));
       // calculate chars past right
       Z := X - (fCharsInWindow * fCharWidth);
       if Z > 0 then
@@ -2850,7 +2861,7 @@ begin
     CurMousePos:=ScreenToClient(CurMousePos);
     C := PixelsToLogicalPos(CurMousePos);
     // recalculate scroll deltas
-    Dec(CurMousePos.X, FLeftGutter.Width);
+    Dec(CurMousePos.X, TextLeftPixelOffset(False));
     // calculate chars past right
     Z := CurMousePos.X - (fCharsInWindow * fCharWidth);
     if Z > 0 then
@@ -3003,11 +3014,11 @@ begin
   Exclude(fStateFlags, sfHasScrolled);
   // columns
   nC1 := LeftChar;
-  if (rcClip.Left > FLeftGutter.Width + GutterTextDist) then
-    Inc(nC1, (rcClip.Left - FLeftGutter.Width - GutterTextDist) div CharWidth);
+  if (rcClip.Left > TextLeftPixelOffset) then
+    Inc(nC1, (rcClip.Left - TextLeftPixelOffset) div CharWidth);
   nC2 := LeftChar +
-    ( Min(rcClip.Right, ClientWidth - FRightGutter.Width - ScrollBarWidth)
-     - FLeftGutter.Width - GutterTextDist + CharWidth - 1) div CharWidth;
+    ( Min(rcClip.Right, ClientWidth - TextRightPixelOffset - ScrollBarWidth)
+     - TextLeftPixelOffset + CharWidth - 1) div CharWidth;
   // lines
   nL1 := Max(rcClip.Top div fTextHeight, 0);
   nL2 := Min((rcClip.Bottom-1) div fTextHeight,
@@ -3020,20 +3031,20 @@ begin
   FScreenCaret.Hide;
   try
     // First paint the gutter area if it was (partly) invalidated.
-    if (rcClip.Left < FLeftGutter.Width) then begin
+    if FLeftGutter.Visible and (rcClip.Left < FLeftGutter.Width) then begin
       rcDraw := rcClip;
       rcDraw.Right := FLeftGutter.Width;
       FLeftGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // Then paint the text area if it was (partly) invalidated.
-    if (rcClip.Right > FLeftGutter.Width) then begin
+    if (rcClip.Right > TextLeftPixelOffset(False)) then begin
       rcDraw := rcClip;
-      rcDraw.Left  := Max(rcDraw.Left, FLeftGutter.Width); // Todo: This is also checked in paintLines (together with right side)
-      rcDraw.Right := Min(rcDraw.Right, ClientWidth - FRightGutter.Width - ScrollBarWidth);
+      rcDraw.Left  := Max(rcDraw.Left, TextLeftPixelOffset(False)); // Todo: This is also checked in paintLines (together with right side)
+      rcDraw.Right := Min(rcDraw.Right, ClientWidth - TextRightPixelOffset - ScrollBarWidth);
       PaintTextLines(rcDraw, nL1, nL2, nC1, nC2);
     end;
     // right gutter
-    if (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+    if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
       rcDraw := rcClip;
       rcDraw.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
       FRightGutter.Paint(Canvas, rcDraw, nL1, nL2);
@@ -3760,13 +3771,13 @@ var
       end else begin
         // draw splitter line
         DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
-        if (DividerInfo.Color <> clNone) and (nRightEdge > FLeftGutter.Width-1) then
+        if (DividerInfo.Color <> clNone) and (nRightEdge > TextLeftPixelOffset(False) - 1) then
         begin
           ypos := rcToken.Bottom - 1;
           cl := DividerInfo.Color;
           if cl = clDefault then
             cl := fRightEdgeColor;
-          fTextDrawer.DrawLine(nRightEdge, ypos, FLeftGutter.Width - 1, ypos, cl);
+          fTextDrawer.DrawLine(nRightEdge, ypos, TextLeftPixelOffset(False) - 1, ypos, cl);
           dec(rcToken.Bottom);
         end;
         // Initialize highlighter with line text and range info. It is
@@ -3801,8 +3812,8 @@ var
 { end local procedures }
 
 begin
-  if (AClip.Right < FLeftGutter.Width) then exit;
-  if (AClip.Left > ClientWidth - FRightGutter.Width) then exit;
+  if (AClip.Right < TextLeftPixelOffset(False)) then exit;
+  if (AClip.Left > ClientWidth - TextRightPixelOffset) then exit;
 
   //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
   CurLine:=-1;
@@ -3832,8 +3843,8 @@ begin
 
   // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
   EraseLeft := AClip.Left;
-  if (AClip.Left < FLeftGutter.Width + GutterTextDist) then
-    AClip.Left := FLeftGutter.Width + GutterTextDist;
+  if (AClip.Left < TextLeftPixelOffset) then
+    AClip.Left := TextLeftPixelOffset;
   DrawLeft := AClip.Left;
 
   if (LastLine >= FirstLine) then begin
@@ -4163,7 +4174,7 @@ begin
   Value := Max(Value, 1);
   if Value <> fLeftChar then begin
     fLeftChar := Value;
-    fTextOffset := FLeftGutter.Width + GutterTextDist - (LeftChar - 1) * fCharWidth;
+    fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
     UpdateScrollBars;
     InvalidateLines(-1, -1);
     StatusChanged([scLeftChar]);
@@ -4210,8 +4221,8 @@ begin
     inherited CreateHandle;   //SizeOrFontChanged will be called
     FLeftGutter.RecalcBounds;
     FRightGutter.RecalcBounds;
-    FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
-                                  ClientWidth - FRightGutter.Width - ScrollBarWidth,
+    FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+                                  ClientWidth - TextRightPixelOffset - ScrollBarWidth,
                                   ClientHeight - ScrollBarWidth);
     UpdateScrollBars;
   finally
@@ -4606,8 +4617,8 @@ begin
     if sfEnsureCursorPosAtResize in fStateFlags then
       EnsureCursorPosVisible;
     Exclude(fStateFlags, sfEnsureCursorPosAtResize);
-    FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
-                                  ClientWidth - FRightGutter.Width - ScrollBarWidth,
+    FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+                                  ClientWidth - TextRightPixelOffset - ScrollBarWidth,
                                   ClientHeight - ScrollBarWidth);
   finally
     FScreenCaret.UnLock;
@@ -5051,8 +5062,8 @@ begin
     exit;
   end;
 
-  if (FLastMousePoint.X >= FLeftGutter.Width) and
-     (FLastMousePoint.X < ClientWidth - FRightGutter.Width - ScrollBarWidth) and
+  if (FLastMousePoint.X >= TextLeftPixelOffset(False)) and
+     (FLastMousePoint.X < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
      (FLastMousePoint.Y >= 0) and (FLastMousePoint.Y < ClientHeight - ScrollBarWidth) then
   begin
     if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
@@ -6845,18 +6856,37 @@ end;
 procedure TCustomSynEdit.GutterResized(Sender: TObject);
 begin
   if (csLoading in ComponentState) then exit;
-  FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
-                                ClientWidth - FRightGutter.Width - ScrollBarWidth,
+  FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+                                ClientWidth - TextRightPixelOffset - ScrollBarWidth,
                                 ClientHeight - ScrollBarWidth);
   GutterChanged(Sender);
-  fTextOffset := FLeftGutter.Width + GutterTextDist - (LeftChar - 1) * fCharWidth;
+  fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
   if HandleAllocated then begin
-    FCharsInWindow := Max(1, (ClientWidth - FLeftGutter.Width - FRightGutter.Width
+    FCharsInWindow := Max(1, (ClientWidth - TextLeftPixelOffset - TextRightPixelOffset
                         - GutterTextDist - ScrollBarWidth) div fCharWidth);
     //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
     UpdateScrollBars;
     Invalidate;
   end;
+end;
+
+function TCustomSynEdit.TextLeftPixelOffset(IncludeGutterTextDist: Boolean): Integer;
+begin
+  if FLeftGutter.Visible then begin
+    Result := FLeftGutter.Width;
+    if IncludeGutterTextDist then
+      inc(Result, GutterTextDist);
+  end
+  else
+    Result := 0;
+end;
+
+function TCustomSynEdit.TextRightPixelOffset: Integer;
+begin
+  if FRightGutter.Visible then
+    Result := FRightGutter.Width
+  else
+    Result := 0;
 end;
 
 procedure TCustomSynEdit.LockUndo;
@@ -7370,8 +7400,9 @@ end;
 
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 begin
-  FCharsInWindow := Max(1, (ClientWidth - FLeftGutter.Width - FRightGutter.Width
-                            - GutterTextDist - ScrollBarWidth) div fCharWidth);
+  FCharsInWindow := Max(1, (ClientWidth
+                            - TextLeftPixelOffset - TextRightPixelOffset
+                            - ScrollBarWidth) div fCharWidth);
   FLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
   FFoldedLinesView.LinesInWindow := fLinesInWindow;
   FMarkupManager.LinesInWindow:= fLinesInWindow;
