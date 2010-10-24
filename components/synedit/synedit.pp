@@ -3676,7 +3676,7 @@ var
 
       // Calculate Markup
       fMarkupManager.MergeMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1,
-        PhysicalStartPos, FPaintLineColor2);
+        PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
 
       // Deal with equal colors
       if (FPaintLineColor2.Background = FPaintLineColor2.Foreground) then begin // or if diff(gb,fg) < x
