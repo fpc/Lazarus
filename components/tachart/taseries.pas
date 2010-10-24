@@ -723,10 +723,13 @@ var
     graphBar: TDoubleRect;
     imageBar: TRect;
   begin
+    graphBar := DoubleRect(p.X - w, cumulHeight, p.X + w, cumulHeight + AY);
     if IsRotated then
-      graphBar := DoubleRect(cumulHeight, p.Y - w, cumulHeight + AY, p.Y + w)
-    else
-      graphBar := DoubleRect(p.X - w, cumulHeight, p.X + w, cumulHeight + AY);
+      with graphBar do begin
+        Exchange(a.X, a.Y);
+        Exchange(b.X, b.Y);
+      end;
+
     cumulHeight += AY;
     if not RectIntersectsRect(graphBar, ext2) then exit;
 
@@ -754,17 +757,16 @@ begin
 
   PrepareGraphPoints(ext2, true);
   ACanvas.Brush.Assign(BarBrush);
+  if IsRotated then
+    z := AxisToGraphX(ZeroLevel)
+  else
+    z := AxisToGraphY(ZeroLevel);
   for i := FLoBound to FUpBound do begin
-    p := FGraphPoints[i - FLoBound];
     BarOffsetWidth(GetGraphPointX(i), i, ofs, w);
-    if IsRotated then begin
-      z := AxisToGraphX(ZeroLevel);
-      p.Y += ofs;
-    end
-    else begin
-      z := AxisToGraphY(ZeroLevel);
-      p.X += ofs;
-    end;
+    p := FGraphPoints[i - FLoBound];
+    if IsRotated then
+      Exchange(p.X, p.Y);
+    p.X += ofs;
     cumulHeight := z;
     ACanvas.Brush.Color := GetColor(i);
     BuildBar(p.Y - z, 0);

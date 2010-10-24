@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 372
   ClientWidth = 456
+  DefaultMonitor = dmDesktop
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
@@ -16,7 +17,6 @@ object Form1: TForm1
     AxisList = <    
       item
         Title.LabelFont.Orientation = 900
-        Title.Font.Orientation = 900
       end    
       item
         Alignment = calBottom
@@ -39,7 +39,6 @@ object Form1: TForm1
       LinePen.Color = clRed
       LinePen.Style = psDot
       LinePen.Width = 5
-      SeriesColor = clRed
       Source = RandomChartSource1
     end
     object Chart1BarSeries1: TBarSeries
@@ -47,7 +46,6 @@ object Form1: TForm1
       AxisIndexX = 1
       AxisIndexY = 0
       BarBrush.Color = clMoneyGreen
-      SeriesColor = clMoneyGreen
       Source = RandomChartSource1
     end
     object Chart1AreaSeries1: TAreaSeries
