@@ -1187,12 +1187,12 @@ begin
           end
           // WM_COMMAND in the win32 interface to a button generates an OnClick event
           // But in Windows CE this generates two OnClick events when the <ENTER> key
-          // is pressed in a button. Therefore this behavior was disabled.
-          // See bug 17680
+          // is pressed in a button. For this is required for button clicking.
+          // See bugs 17680 and 17702
           else if lWinControl is TCustomButton then
           begin
             case Hi(WParam) of
-              BN_CLICKED:   LMessage.Msg := LM_NULL;//LM_CLICKED;
+              BN_CLICKED:   LMessage.Msg := LM_CLICKED;
               BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
             end
           end
