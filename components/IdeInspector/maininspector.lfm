@@ -29,7 +29,7 @@ object IdeInspectForm: TIdeInspectForm
       Style = tbsDropDown
     end
     object btnSubComponent: TToolButton
-      Left = 67
+      Left = 75
       Top = 0
       AutoSize = True
       DropdownMenu = popSubComponent
@@ -48,6 +48,20 @@ object IdeInspectForm: TIdeInspectForm
       Top = 0
       ImageIndex = 0
       OnClick = btnRemoveSelectedClick
+    end
+    object ToolButton2: TToolButton
+      Left = 67
+      Top = 0
+      Width = 8
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object btnControls: TToolButton
+      Left = 110
+      Top = 0
+      DropdownMenu = popControls
+      OnClick = btnControlsClick
+      Style = tbsDropDown
     end
   end
   object TreeView1: TTreeView
@@ -119,5 +133,10 @@ object IdeInspectForm: TIdeInspectForm
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object popControls: TPopupMenu
+    OnPopup = popControlsPopup
+    left = 326
+    top = 49
   end
 end

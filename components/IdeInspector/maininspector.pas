@@ -16,17 +16,22 @@ type
     ImageList1: TImageList;
     popComponent: TPopupMenu;
     popSubComponent: TPopupMenu;
+    popControls: TPopupMenu;
     Splitter1: TSplitter;
     ToolBar1: TToolBar;
     btnComponent: TToolButton;
     btnSubComponent: TToolButton;
     ToolButton1: TToolButton;
     btnRemoveSelected: TToolButton;
+    ToolButton2: TToolButton;
+    btnControls: TToolButton;
     TreeView1: TTreeView;
+    procedure btnControlsClick(Sender: TObject);
     procedure btnSubComponentClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure btnComponentClick(Sender: TObject);
     procedure popComponentPopup(Sender: TObject);
+    procedure popControlsPopup(Sender: TObject);
     procedure popSubComponentPopup(Sender: TObject);
     procedure btnRemoveSelectedClick(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
@@ -53,8 +58,9 @@ resourcestring
   ideinspApplcicationComponents = 'Applcication.Components';
   ideinspScreenForms = 'Screen.Forms';
   ideinspQuickLinks = 'Quick links';
-  ideinspChildren = 'Children';
+  ideinspComponentsOwned = 'Components (Owned)';
   ideinspRemoveSelectedItemSFromTree = 'Remove selected item(s) from tree';
+  ideinspControlsChildren = 'Controls (Children)';
 
 procedure Register;
 
@@ -83,6 +89,11 @@ end;
 procedure TIdeInspectForm.btnSubComponentClick(Sender: TObject);
 begin
   btnSubComponent.CheckMenuDropdown;
+end;
+
+procedure TIdeInspectForm.btnControlsClick(Sender: TObject);
+begin
+  btnControls.CheckMenuDropdown;
 end;
 
 procedure TIdeInspectForm.btnComponentClick(Sender: TObject);
@@ -124,6 +135,26 @@ begin
     m.OnClick := @MenuItem1Click;
     popComponent.Items.Add(m);
  end;
+end;
+
+procedure TIdeInspectForm.popControlsPopup(Sender: TObject);
+var
+  i: Integer;
+  m: TExtMenuItem;
+begin
+  popControls.Items.Clear;
+  if (FSelected = nil) or not(FSelected is TWinControl) then
+    exit;
+
+  for i := 0 to TWinControl(FSelected).ControlCount - 1 do begin
+    m := TExtMenuItem.Create(Self);
+    m.Caption := TWinControl(FSelected).Controls[i].Name +
+                 ' ['+TWinControl(FSelected).Controls[i].ClassName+']'+
+                 ' ('+IntToStr(TWinControl(FSelected).Controls[i].ComponentCount)+')';
+    m.TheObject := TWinControl(FSelected).Controls[i];
+    m.OnClick := @MenuItem1Click;
+    popControls.Items.Add(m);
+  end;
 end;
 
 procedure TIdeInspectForm.popSubComponentPopup(Sender: TObject);
@@ -173,6 +204,8 @@ begin
   FSelected := AComp;
   FPropertiesGrid.TIObject := FSelected;
   btnSubComponent.Enabled := (FSelected <> nil) and (FSelected.ComponentCount > 0);
+  btnControls.Enabled := (FSelected <> nil) and
+                         (FSelected is TWinControl) and (TWinControl(FSelected).ControlCount > 0);
   UpdateTree;
 end;
 
@@ -228,7 +261,10 @@ begin
       end;
       ANode.Delete;
       UpdateTree;
-    end;
+    end
+    else
+    if AComponent = FSelected then
+      SetSelected(nil);
   end;
   inherited Notification(AComponent, Operation);
 end;
@@ -245,7 +281,8 @@ begin
     BorderSpacing.Around := 6;
   end;
   btnComponent.Caption := ideinspQuickLinks;
-  btnSubComponent.Caption := ideinspChildren;
+  btnSubComponent.Caption := ideinspComponentsOwned;
+  btnControls.Caption := ideinspControlsChildren;
   btnRemoveSelected.Hint := ideinspRemoveSelectedItemSFromTree;
 
   SetSelected(Application);
