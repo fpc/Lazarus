@@ -112,13 +112,14 @@
       - make active
   - a popup menu on IDE palette to quickly switch the build mode
   - a diff tool to compare two build modes
+  - Makefile:
+    - create special Makefile.compiled file, which is copied after compile
+      to be used by the IDE
 
   ToDo:
   - create Makefile:
      - create a special .compiled file
-     - makefile should delete the .compiled before compile
-     - makefile should copy the .compiled after compile
-     - a IDE created with make, without extra options should not recompile a
+     - an IDE created with make, without extra options should not recompile a
        package with this special .compiled file
   - writable package output directory: set it on load package or when output dir changes
      - use the same macros to get the same diversity
@@ -127,8 +128,6 @@
   - make IDEIntf a package
   - make LCL a package
   - make FCL a package
-  - code completion
-    - keypress event
   - when adding/removing search path: do it for all build modes
     - add unit to project
     - remove unit from project
@@ -423,7 +422,8 @@ type
     ccloNoLinkerOpts,  // exclude linker options
     ccloAddVerboseAll,  // add -va
     ccloDoNotAppendOutFileOption, // do not add -o option
-    ccloAbsolutePaths
+    ccloAbsolutePaths,
+    ccloNoMacroParams // no search paths, no linker options, no custom options
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
@@ -536,7 +536,6 @@ type
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
-    fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
     FUseAsDefault: Boolean;
@@ -2615,23 +2614,27 @@ begin
   if TargetProcessor<>'' then
     Switches:=Switches+' -Op'+UpperCase(TargetProcessor);
 
-  { Target OS
+  if not (ccloNoMacroParams in Flags) then
+  begin
+    { Target OS
        GO32V1 = DOS and version 1 of the DJ DELORIE extender (no longer maintained).
        GO32V2 = DOS and version 2 of the DJ DELORIE extender.
        LINUX = LINUX.
        OS2 = OS/2 (2.x) using the EMX extender.
        WIN32 = Windows 32 bit.
-       ... }
-  { Target OS }
-  if (Globals<>nil) and (Globals.TargetOS<>'') then
-    switches := switches + ' -T' + Globals.TargetOS
-  else if (TargetOS<>'') then
-    switches := switches + ' -T' + TargetOS;
-  { Target CPU }
-  if (Globals<>nil) and (Globals.TargetCPU<>'') then
-    switches := switches + ' -P' + Globals.TargetCPU
-  else if (TargetCPU<>'') then
-    switches := switches + ' -P' + TargetCPU;
+        ... }
+    { Target OS }
+    if (Globals<>nil) and (Globals.TargetOS<>'') then
+      switches := switches + ' -T' + Globals.TargetOS
+    else if (TargetOS<>'') then
+      switches := switches + ' -T' + TargetOS;
+    { Target CPU }
+    if (Globals<>nil) and (Globals.TargetCPU<>'') then
+      switches := switches + ' -P' + Globals.TargetCPU
+    else if (TargetCPU<>'') then
+      switches := switches + ' -P' + TargetCPU;
+  end;
+
   { --------------- Linking Tab ------------------- }
   
   { Debugging }
@@ -2675,24 +2678,21 @@ begin
   if (not (ccloNoLinkerOpts in Flags)) and LinkSmart then
     switches := switches + ' -XX';
 
+
   // additional Linker options
-  if PassLinkerOptions and (not (ccloNoLinkerOpts in Flags)) then begin
+  if PassLinkerOptions and (not (ccloNoLinkerOpts in Flags))
+  and (not (ccloNoMacroParams in Flags)) then begin
     CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
     if (CurLinkerOptions<>'') then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
-  end;
 
-  // inherited Linker options
-  if (not (ccloNoLinkerOpts in Flags)) then begin
+    // inherited Linker options
     InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,
       not (ccloAbsolutePaths in Flags),coptParsed);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
-  end;
-  
-  // add Linker options for widgetset
-  if not (ccloNoLinkerOpts in Flags) then
-  begin
+
+    // add Linker options for widgetset
     LinkerAddition := LCLWidgetLinkerAddition[DirNameToLCLPlatform(GetEffectiveLCLWidgetType)];
     if LinkerAddition <> '' then
       switches := switches + ' ' + LinkerAddition;
@@ -2762,51 +2762,55 @@ begin
     switches := switches + ' -n';
 
   { Use Custom Config File     @ = yes and path }
-  if (CustomConfigFile) and (ConfigFilePath<>'') then begin
+  if not (ccloNoMacroParams in Flags)
+  and (CustomConfigFile) and (ConfigFilePath<>'') then begin
     switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
   end;
 
   { ------------- Search Paths ---------------- }
-  
-  // include path
-  CurIncludePath:=GetIncludePath(not (ccloAbsolutePaths in Flags),
-                                 coptParsed,false);
-  if (CurIncludePath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
 
-  // library path
-  if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLibraryPath:=GetLibraryPath(not (ccloAbsolutePaths in Flags),
+  if not (ccloNoMacroParams in Flags) then
+  begin
+    // include path
+    CurIncludePath:=GetIncludePath(not (ccloAbsolutePaths in Flags),
                                    coptParsed,false);
-    if (CurLibraryPath <> '') then
-      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
+    if (CurIncludePath <> '') then
+      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
+
+    // library path
+    if (not (ccloNoLinkerOpts in Flags)) then begin
+      CurLibraryPath:=GetLibraryPath(not (ccloAbsolutePaths in Flags),
+                                     coptParsed,false);
+      if (CurLibraryPath <> '') then
+        switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
+    end;
+
+    // object path
+    CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
+                                 coptParsed,false);
+    if (CurObjectPath <> '') then
+      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
+
+    // unit path
+    CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
+    //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
+    // always add the current directory to the unit path, so that the compiler
+    // checks for changed files in the directory
+    CurUnitPath:=MergeSearchPaths(CurUnitPath,'.');
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
+
+    { CompilerPath - Nothing needs to be done with this one }
+
+    { Unit output directory }
+    if (UnitOutputDirectory<>'') then begin
+      CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
+      if not (ccloAbsolutePaths in Flags) then
+        CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
+    end else
+      CurOutputDir:='';
+    if CurOutputDir<>'' then
+      switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
-
-  // object path
-  CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
-                               coptParsed,false);
-  if (CurObjectPath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
-
-  // unit path
-  CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
-  //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
-  // always add the current directory to the unit path, so that the compiler
-  // checks for changed files in the directory
-  CurUnitPath:=MergeSearchPaths(CurUnitPath,'.');
-  switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
-
-  { CompilerPath - Nothing needs to be done with this one }
-  
-  { Unit output directory }
-  if (UnitOutputDirectory<>'') then begin
-    CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
-    if not (ccloAbsolutePaths in Flags) then
-      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
-  end else
-    CurOutputDir:='';
-  if CurOutputDir<>'' then
-    switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -2816,17 +2820,11 @@ begin
      oxxx = Object files
      rxxx = Compiler messages file
 }
-  try 
-    t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
-    if t <> '' then
-      switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-    if fUseMsgFile and FileExistsCached(MsgFileName)then
-      switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
-  except
-    on E: Exception do begin
-      DebugLn(['TBaseCompilerOptions.MakeOptionsString Error: ',E.Message]);
-    end;
-  end; 
+  t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+  if fUseMsgFile and FileExistsCached(MsgFileName)then
+    switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
 
 
   { ----------------------------------------------- }
@@ -2868,8 +2866,9 @@ begin
 }
   // append -o Option if neccessary
   //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
-  if (not (ccloDoNotAppendOutFileOption in Flags)) and
-    ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
+  if (not (ccloDoNotAppendOutFileOption in Flags))
+    and (not (ccloNoMacroParams in Flags))
+    and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
     NewTargetFilename := CreateTargetFilename(CurMainSrcFile);
     if (NewTargetFilename<>'') and
@@ -2896,13 +2895,14 @@ begin
   end;
 
   // custom options
-  CurCustomOptions:=GetCustomOptions(coptParsed);
-  if CurCustomOptions<>'' then
-    switches := switches+' '+CurCustomOptions;
+  if not (ccloNoMacroParams in Flags) then
+  begin
+    CurCustomOptions:=GetCustomOptions(coptParsed);
+    if CurCustomOptions<>'' then
+      switches := switches+' '+CurCustomOptions;
+  end;
 
-
-  fOptionsString := switches;
-  Result := fOptionsString;
+  Result := switches;
 end;
 
 function TBaseCompilerOptions.GetSyntaxOptionsString: string;
@@ -2974,8 +2974,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.Clear;
 begin
-  fOptionsString := '';
-
   // search paths
   IncludePath := '';
   Libraries := '';
@@ -3080,7 +3078,6 @@ begin
     exit;
   end;
   CompOpts:=TBaseCompilerOptions(Source);
-  fOptionsString := CompOpts.fOptionsString;
 
   // Target
   TargetFilename := CompOpts.TargetFilename;

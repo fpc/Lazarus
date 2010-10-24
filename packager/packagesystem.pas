@@ -291,7 +291,8 @@ type
                             ShowAbort: boolean;
                             Globals: TGlobalCompilerOptions = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
-    function WriteMakeFile(APackage: TLazPackage): TModalResult;
+    function WriteMakeFile(APackage: TLazPackage;
+                           Globals: TGlobalCompilerOptions): TModalResult;
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
@@ -3171,7 +3172,7 @@ begin
       // create Makefile
       if ((pcfCreateMakefile in Flags)
       or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
-        Result:=WriteMakeFile(APackage);
+        Result:=WriteMakeFile(APackage,Globals);
         if Result<>mrOk then begin
           DebugLn('TLazPackageGraph.CompilePackage DoWriteMakefile failed: ',APackage.IDAsString);
           exit;
@@ -3339,7 +3340,8 @@ begin
   Result:=mrOK;
 end;
 
-function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage): TModalResult;
+function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage;
+  Globals: TGlobalCompilerOptions): TModalResult;
 var
   PathDelimNeedsReplace: Boolean;
 
@@ -3399,11 +3401,13 @@ var
   MainSrcFile: String;
   CustomOptions: String;
   IncPath: String;
+  MakefileCompiledFilename: String;
+  XMLConfig: TXMLConfig;
+  OtherOptions: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
 
-  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
   if not DirectoryIsWritableCached(APackage.Directory) then begin
     // the Makefile.fpc is only needed for custom building
     // if the package directory is not writable, then the user does not want to
@@ -3413,6 +3417,8 @@ begin
     Result:=mrOk;
     exit;
   end;
+  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
+  MakefileCompiledFilename:=AppendPathDelim(APackage.Directory)+'Makefile.compiled';
 
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
@@ -3424,10 +3430,37 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  s:=APackage.CompilerOptions.GetSyntaxOptionsString;
-  if s<>'' then
-    CustomOptions:=CustomOptions+' '+s;
-  // TODO: other options
+  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(Globals,
+                              [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
+
+  try
+    XMLConfig:=TXMLConfig.CreateClean(MakefileCompiledFilename);
+    try
+      XMLConfig.SetValue('Makefile/Value',True);
+      s:=OtherOptions;
+      if UnitPath<>'' then
+        s:=s+' -Fu'+UnitPath;
+      if IncPath<>'' then
+        s:=s+' -Fi'+IncPath;
+      if CustomOptions<>'' then
+        s:=s+' '+CustomOptions;
+      //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
+      XMLConfig.SetValue('Params/Value',s);
+      InvalidateFileStateCache;
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', MakefileCompiledFilename,
+          '"', #13, APackage.IDAsString, #13, E.Message]),
+        mtError,[mbCancel],'');
+      exit;
+    end;
+  end;
+
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
@@ -3437,7 +3470,12 @@ begin
                                                 ChompPathDelim(UnitOutputPath));
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
-
+  OtherOptions:=ConvertLazarusOptionsToMakefileOptions(OtherOptions);
+  if CustomOptions<>'' then
+    if OtherOptions<>'' then
+      OtherOptions:=OtherOptions+' '+CustomOptions
+    else
+      OtherOptions:=CustomOptions;
 
   e:=LineEnding;
   s:='';
@@ -3457,7 +3495,7 @@ begin
     s:=s+'unitdir='+UnitPath+e;
   if IncPath<>'' then
     s:=s+'includedir='+IncPath+e;
-  s:=s+'options='+CustomOptions+e; // ToDo do the other options
+  s:=s+'options='+OtherOptions+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;
   s:=s+'units='+MainSrcFile+e;
@@ -3495,12 +3533,15 @@ begin
 
   s:=s+''+e;
   s:=s+'[rules]'+e;
-  s:=s+'.PHONY: cleartarget all'+e;
+  s:=s+'.PHONY: cleartarget compiled all'+e;
   s:=s+''+e;
   s:=s+'cleartarget:'+e;
   s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/'+MainUnitName+'$(PPUEXT)'+e;
   s:=s+''+e;
-  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT)'+e;
+  s:=s+'compiled:'+e;
+  s:=s+'        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+APackage.Name+'.compiled'+e;
+  s:=s+''+e;
+  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT) compiled'+e;
 
   //DebugLn('TPkgManager.DoWriteMakefile [',s,']');
 
@@ -3510,9 +3551,10 @@ begin
     if CodeBuffer=nil then begin
       if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename))
       then begin
-        // the package source is read only => no problem
+        // the package source is read only => ignore
         exit(mrOk);
       end;
+      debugln(['TLazPackageGraph.WriteMakeFile unable to create file '+MakefileFPCFilename]);
       exit(mrCancel);
     end;
   end;

@@ -341,7 +341,8 @@ type
     procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
     procedure SetBuildModePopupMenuPopup(Sender: TObject);
-    procedure mnuSetBuildModeClick(Sender: TObject);
+    procedure mnuChgBuildModeClicked(Sender: TObject);
+    procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -1797,6 +1798,7 @@ begin
   MainIDEBar.ViewUnitsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewUnitsSpeedBtn'  , 'menu_view_units'           , @mnuViewUnitsClicked, lisHintViewUnits);
   MainIDEBar.ViewFormsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewFormsSpeedBtn'  , 'menu_view_forms'           , @mnuViewFormsClicked, lisHintViewForms);
   MainIDEBar.tbDivider3          := CreateDivider(MainIDEBar.tbViewDebug);
+  MainIDEBar.BuildModeSpeedButton:= CreateButton(MainIDEBar.tbViewDebug, 'BuildModeSpeedButton', 'menu_compiler_options'    , @mnuChgBuildModeClicked, lisChangeBuildMode);
   MainIDEBar.RunSpeedButton      := CreateButton(MainIDEBar.tbViewDebug, 'RunSpeedButton'     , 'menu_run'                  , @mnuRunProjectClicked, lisHintRun);
   MainIDEBar.PauseSpeedButton    := CreateButton(MainIDEBar.tbViewDebug, 'PauseSpeedButton'   , 'menu_pause'                , @mnuPauseProjectClicked, lisHintPause);
   MainIDEBar.StopSpeedButton     := CreateButton(MainIDEBar.tbViewDebug, 'StopSpeedButton'    , 'menu_stop'                 , @mnuStopProjectClicked, lisHintStop);
@@ -1810,7 +1812,8 @@ begin
   MainIDEBar.OpenFileSpeedBtn.DropDownMenu := MainIDEBar.OpenFilePopUpMenu;
   MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
 
-  MainIDEBar.RunSpeedButton.PopupMenu := MainIDEBar.SetBuildModePopupMenu;
+  MainIDEBar.BuildModeSpeedButton.Style:=tbsDropDown;
+  MainIDEBar.BuildModeSpeedButton.DropdownMenu:=MainIDEBar.SetBuildModePopupMenu;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
 
   MainIDEBar.PauseSpeedButton.Enabled := False;
@@ -3310,6 +3313,11 @@ begin
     aMenu.Items[aMenu.Items.Count - 1].Free;
 end;
 
+procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
+begin
+  DoOpenIDEOptions(TBuildModesEditorFrame, '', TAbstractIDEProjectOptions);
+end;
+
 procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
 var
   TheMenuItem: TMenuItem;
@@ -4362,6 +4370,7 @@ begin
       else
         Application.TaskBarBehavior := tbDefault;
     end else begin
+      // restore
       IDEOptionsDialog.WriteAll(true);
     end;
   finally
@@ -7188,6 +7197,8 @@ begin
   if UpdateSaveAll then
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
   // toolbar buttons
+  MainIDEBar.BuildModeSpeedButton.Visible:=(Project1<>nil)
+                                           and (Project1.BuildModes.Count>1);
   MainIDEBar.SaveSpeedBtn.Enabled := MainIDEBar.itmFileSave.Enabled;
   if UpdateSaveAll then
     MainIDEBar.SaveAllSpeedBtn.Enabled := MainIDEBar.itmFileSaveAll.Enabled;

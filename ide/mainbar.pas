@@ -66,6 +66,7 @@ type
       ViewUnitsSpeedBtn    : TToolButton;
       ViewFormsSpeedBtn    : TToolButton;
       tbDivider3           : TToolButton;
+      BuildModeSpeedButton : TToolButton;
       RunSpeedButton       : TToolButton;
       SetBuildModePopupMenu: TPopupMenu;
       PauseSpeedButton     : TToolButton;

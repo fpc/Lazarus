@@ -29,7 +29,7 @@ unit Compiler_BuildMacro_Options;
 interface
 
 uses
-  Classes, SysUtils, types, AVL_Tree, LCLProc, FileUtil, Controls, Forms,
+  Classes, SysUtils, Math, types, AVL_Tree, LCLProc, FileUtil, Controls, Forms,
   StdCtrls, Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
   AvgLvlTree, SynEdit, SynHighlighterPas, SynEditKeyCmds, SynCompletion,
   KeywordFuncLists, CodeToolsCfgScript, IDEImagesIntf, IDECommands, ProjectIntf,
@@ -74,6 +74,9 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
+    procedure CondSynEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessCommand(Sender: TObject;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -82,6 +85,15 @@ type
       Changes: TSynStatusChanges);
     procedure fSynCompletionCancel(Sender: TObject);
     procedure fSynCompletionExecute(Sender: TObject);
+    procedure fSynCompletionKeyCompletePrefix(Sender: TObject);
+    procedure fSynCompletionKeyDelete(Sender: TObject);
+    procedure fSynCompletionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fSynCompletionKeyNextChar(Sender: TObject);
+    procedure fSynCompletionKeyPrevChar(Sender: TObject);
+    procedure fSynCompletionSearchPosition(var Position: integer);
+    procedure fSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+      );
     procedure fSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
       Shift: TShiftState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -117,6 +129,7 @@ type
     procedure UpdateStatusBar;
     procedure StartCompletion;
     procedure UpdateCompletionValues;
+    function GetCondCursorWord: string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -155,6 +168,17 @@ begin
   IdleConnected:=true;
 end;
 
+procedure TCompOptBuildMacrosFrame.CondSynEditKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditKeyPress(Sender: TObject;
+  var Key: char);
+begin
+  //debugln(['TCompOptBuildMacrosFrame.CondSynEditKeyPress ',ord(Key)]);
+end;
+
 procedure TCompOptBuildMacrosFrame.CondSynEditProcessCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 begin
@@ -172,6 +196,11 @@ end;
 procedure TCompOptBuildMacrosFrame.CondSynEditStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
+  if fSynCompletion.TheForm.Visible then
+  begin
+    //debugln(['TCompOptBuildMacrosFrame.CondSynEditStatusChange ']);
+    fSynCompletion.CurrentString := GetCondCursorWord;
+  end;
   UpdateStatusBar;
 end;
 
@@ -188,6 +217,94 @@ begin
   //debugln(['TCompOptBuildMacrosFrame.fSynCompletionExecute ']);
 end;
 
+procedure TCompOptBuildMacrosFrame.fSynCompletionKeyCompletePrefix(
+  Sender: TObject);
+begin
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionKeyCompletePrefix ToDo']);
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionKeyDelete(Sender: TObject);
+begin
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionKeyDelete']);
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionKeyDown ']);
+  if Key=VK_BACK then
+  begin
+    Key:=VK_UNKNOWN;
+    if fSynCompletion.CurrentString<>'' then
+      CondSynEdit.CommandProcessor(ecDeleteLastChar,#0,nil);
+  end;
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionKeyNextChar(Sender: TObject);
+var
+  XY: TPoint;
+  StartX: integer;
+  EndX: integer;
+  Line: string;
+begin
+  XY:=CondSynEdit.LogicalCaretXY;
+  if XY.Y>CondSynEdit.Lines.Count then exit;
+  CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
+  if EndX<=XY.X then exit;
+  Line := CondSynEdit.Lines[XY.Y - 1];
+  inc(XY.X,UTF8CharacterLength(@Line[XY.X-1]));
+  CondSynEdit.LogicalCaretXY:=XY;
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionKeyPrevChar(Sender: TObject);
+var
+  XY: TPoint;
+  StartX: integer;
+  EndX: integer;
+  Line: string;
+begin
+  XY:=CondSynEdit.LogicalCaretXY;
+  if XY.Y>CondSynEdit.Lines.Count then exit;
+  CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
+  if StartX>=XY.X then exit;
+  Line := CondSynEdit.Lines[XY.Y - 1];
+  XY.X:=UTF8FindNearestCharStart(PChar(Line),length(Line),XY.X-2)+1;
+  CondSynEdit.LogicalCaretXY:=XY;
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionSearchPosition(
+  var Position: integer);
+var
+  sl: TStringList;
+  Prefix: String;
+  s: string;
+  i: Integer;
+begin
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionSearchPosition "',fSynCompletion.CurrentString,'"']);
+  Prefix:=fSynCompletion.CurrentString;
+  sl:=TStringList.Create;
+  try
+    Position:=-1;
+    for i:=0 to CompletionValues.Count-1 do
+    begin
+      s:=CompletionValues[i];
+      if SysUtils.CompareText(Prefix,copy(s,1,length(Prefix)))<>0 then continue;
+      if (Position<0) or (length(Prefix)=length(s)) then
+        Position:=sl.Count;
+      sl.AddObject(s,TObject(Pointer(i)));
+    end;
+    fSynCompletion.ItemList.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TCompOptBuildMacrosFrame.fSynCompletionUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  //debugln(['TCompOptBuildMacrosFrame.fSynCompletionUTF8KeyPress ']);
+end;
+
 procedure TCompOptBuildMacrosFrame.fSynCompletionValidate(Sender: TObject;
   KeyChar: TUTF8Char; Shift: TShiftState);
 var
@@ -200,20 +317,23 @@ var
 begin
   //debugln(['TCompOptBuildMacrosFrame.fSynCompletionValidate ']);
   i:=fSynCompletion.Position;
-  if (i>=0) and (i<CompletionValues.Count) then begin
-    s:=CompletionValues[i];
-    p:=System.Pos(#9,s);
-    if p>0 then s:=copy(s,1,p-1);
-    TxtXY:=CondSynEdit.LogicalCaretXY;
-    CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
-    CondSynEdit.BeginUndoBlock();
-    CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
-    CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
-    CondSynEdit.SelText:=s;
-    CondSynEdit.EndUndoBlock();
-    FCompletionHistory.Insert(0,s);
-    if FCompletionHistory.Count>100 then
-      FCompletionHistory.Delete(FCompletionHistory.Count-1);
+  if (i>=0) and (i<fSynCompletion.ItemList.Count) then begin
+    i:=PtrUInt(fSynCompletion.ItemList.Objects[i]);
+    if (i>=0) and (i<CompletionValues.Count) then begin
+      s:=CompletionValues[i];
+      p:=System.Pos(#9,s);
+      if p>0 then s:=copy(s,1,p-1);
+      TxtXY:=CondSynEdit.LogicalCaretXY;
+      CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
+      CondSynEdit.BeginUndoBlock();
+      CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
+      CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
+      CondSynEdit.SelText:=s;
+      CondSynEdit.EndUndoBlock();
+      FCompletionHistory.Insert(0,s);
+      if FCompletionHistory.Count>100 then
+        FCompletionHistory.Delete(FCompletionHistory.Count-1);
+    end;
   end;
 
   fSynCompletion.Deactivate;
@@ -653,6 +773,7 @@ begin
   // get row and column of word start at cursor
   LogXY:=CondSynEdit.LogicalCaretXY;
   CondSynEdit.GetWordBoundsAtRowCol(LogXY,LogStartX,LogEndX);
+  LogEndX:=Min(LogEndX,LogXY.X);
   // convert text row,column to screen row,column
   ScreenXY:=CondSynEdit.PhysicalToLogicalPos(Point(LogStartX,LogXY.Y));
   // convert screen row,column to coordinates for the completion form
@@ -796,7 +917,31 @@ begin
       CompletionValues.Move(j,0);
   end;
 
+  // set index
+  for i:=0 to CompletionValues.Count-1 do
+    CompletionValues.Objects[i]:=TObject(Pointer(i));
+
   //debugln(['TCompOptBuildMacrosFrame.UpdateCompletionValues ',CompletionValues.Text]);
+end;
+
+function TCompOptBuildMacrosFrame.GetCondCursorWord: string;
+var
+  XY: TPoint;
+  StartX: integer;
+  EndX: integer;
+  Line: string;
+begin
+  XY:=CondSynEdit.LogicalCaretXY;
+  if (XY.Y>=1) and (XY.Y<=CondSynEdit.Lines.Count) then
+  begin
+    CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
+    //debugln(['TCompOptBuildMacrosFrame.GetCondCursorWord ',StartX,' ',EndX,' ',XY.X]);
+    EndX:=Min(EndX,XY.X);
+    Line := CondSynEdit.Lines[XY.Y - 1];
+    Result:= Copy(Line, StartX, EndX - StartX);
+  end else
+    Result:='';
+  //debugln(['TCompOptBuildMacrosFrame.GetCondCursorWord "',Result,'"']);
 end;
 
 procedure TCompOptBuildMacrosFrame.SaveItemProperties;
@@ -842,6 +987,13 @@ begin
   fSynCompletion.OnExecute:=@fSynCompletionExecute;
   fSynCompletion.OnCancel:=@fSynCompletionCancel;
   fSynCompletion.OnValidate:=@fSynCompletionValidate;
+  fSynCompletion.OnSearchPosition:=@fSynCompletionSearchPosition;
+  fSynCompletion.OnKeyCompletePrefix:=@fSynCompletionKeyCompletePrefix;
+  fSynCompletion.OnUTF8KeyPress:=@fSynCompletionUTF8KeyPress;
+  fSynCompletion.OnKeyNextChar:=@fSynCompletionKeyNextChar;
+  fSynCompletion.OnKeyPrevChar:=@fSynCompletionKeyPrevChar;
+  fSynCompletion.OnKeyDelete:=@fSynCompletionKeyDelete;
+  fSynCompletion.OnKeyDown:=@fSynCompletionKeyDown;
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

@@ -54,6 +54,7 @@ type
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
+    procedure IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
@@ -116,6 +117,8 @@ begin
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.Caption:= lisMenuHelp;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+
+  OnKeyPress:=@IDEOptionsDialogKeyPress;
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -124,6 +127,12 @@ begin
     ShowContextHelpForIDE(PrevEditor)
   else
     ShowContextHelpForIDE(Self);
+end;
+
+procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject;
+  var Key: char);
+begin
+  debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject;

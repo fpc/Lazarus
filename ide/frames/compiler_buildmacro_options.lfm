@@ -14,7 +14,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Width = 514
     Align = alTop
     Caption = 'MacrosGroupBox'
-    ClientHeight = 222
+    ClientHeight = 221
     ClientWidth = 506
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
@@ -25,12 +25,12 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 200
+      Height = 199
       Top = 22
       Width = 227
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Right = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 18
       RightClickSelect = True
       TabOrder = 0
       OnEdited = BuildMacrosTreeViewEdited
@@ -43,7 +43,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 233
-      Height = 222
+      Height = 221
       Top = 0
       Width = 5
       Align = alNone
@@ -53,20 +53,20 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideLeft.Control = Splitter1
       AnchorSideLeft.Side = asrBottom
       Left = 244
-      Height = 222
+      Height = 221
       Top = 0
       Width = 262
       Align = alRight
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
-      ClientHeight = 201
+      ClientHeight = 199
       ClientWidth = 254
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
         Left = 6
-        Height = 123
-        Top = 72
+        Height = 127
+        Top = 66
         Width = 242
         Align = alClient
         AutoSize = False
@@ -78,7 +78,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
       object BuildMacroDescriptionLabel: TLabel
         Left = 6
-        Height = 18
+        Height = 17
         Top = 6
         Width = 242
         Align = alTop
@@ -90,8 +90,8 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
       object BuildMacroDescriptionEdit: TEdit
         Left = 6
-        Height = 27
-        Top = 24
+        Height = 22
+        Top = 23
         Width = 242
         Align = alTop
         BorderSpacing.Left = 6
@@ -107,7 +107,6 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Height = 22
       Top = 0
       Width = 23
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BMAddMacroSpeedButtonClick
       ShowHint = True
@@ -122,7 +121,6 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Top = 0
       Width = 23
       BorderSpacing.Left = 6
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BMAddMacroValueSpeedButtonClick
       ShowHint = True
@@ -137,7 +135,6 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Top = 0
       Width = 23
       BorderSpacing.Left = 6
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BMDeleteSpeedButtonClick
       ShowHint = True
@@ -160,12 +157,12 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Width = 514
     Align = alClient
     Caption = 'ConditionalsGroupBox'
-    ClientHeight = 175
+    ClientHeight = 174
     ClientWidth = 506
     TabOrder = 2
     inline CondSynEdit: TSynEdit
       Left = 0
-      Height = 153
+      Height = 159
       Top = 0
       Width = 506
       Align = alClient
@@ -176,7 +173,9 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       ParentColor = False
       ParentFont = False
       TabOrder = 0
-      Gutter.Width = 51
+      OnKeyDown = CondSynEditKeyDown
+      OnKeyPress = CondSynEditKeyPress
+      Gutter.Width = 59
       Gutter.MouseActions = <      
         item
           Shift = []
@@ -780,7 +779,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
           Width = 24
         end
         object SynGutterLineNumber1: TSynGutterLineNumber
-          Width = 11
+          Width = 19
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -882,13 +881,11 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
             end>
         end
       end
-      inline SynRightGutterPartList1: TSynRightGutterPartList
-      end
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 22
-      Top = 153
+      Height = 15
+      Top = 159
       Width = 506
       Panels = <      
         item

@@ -92,6 +92,8 @@ type
     procedure UpdateShowSession;
     procedure SetShowSession(const AValue: boolean);
     procedure DoShowSession;
+    procedure UpdateDialogCaption;
+    function GetDialogCaption: string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -268,6 +270,10 @@ begin
       ActivateMode(AProject.BuildModes[i+1])
     else
       ActivateMode(AProject.BuildModes[i-1]);
+  end;
+  if AProject.ActiveBuildMode=CurMode then begin
+    debugln(['TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick activate failed']);
+    exit;
   end;
   // delete mode
   AProject.BuildModes.Delete(i);
@@ -456,6 +462,28 @@ begin
   Grid.EndUpdate(true);
 end;
 
+procedure TBuildModesEditorFrame.UpdateDialogCaption;
+var
+  Form: TCustomForm;
+begin
+  Form:=GetParentForm(Self);
+  if Form<>nil then
+    Form.Caption:=GetDialogCaption;
+end;
+
+function TBuildModesEditorFrame.GetDialogCaption: string;
+begin
+  if AProject<>nil then
+  begin
+    Result := aProject.Title;
+    if Result = '' then
+      Result := ExtractFilenameOnly(aProject.ProjectInfoFile);
+    Result:=Format(dlgProjectOptionsFor, [Result]);
+    Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);
+  end else
+    Result:='TBuildModesEditorFrame.GetDialogCaption: no project';
+end;
+
 function TBuildModesEditorFrame.GetAllBuildMacros: TStrings;
 
   procedure Add(aBuildMacro: TLazBuildMacro);
@@ -535,6 +563,7 @@ var
   Values: TStringList;
   Value: string;
 begin
+  if MacroValues=nil then exit;
   Grid:=BuildMacroValuesStringGrid;
   Values:=TStringList.Create;
   try
@@ -544,10 +573,11 @@ begin
       Value:=Grid.Cells[1,aRow];
       Values.Values[MacroName]:=Value;
     end;
-    //debugln(['TBuildModesEditorFrame.Save ',Values.Text,' changed=',not MacroValues.Equals(Values)]);
+    //debugln(['TBuildModesEditorFrame.Save changed=',not MacroValues.Equals(Values),' ',Values.Text]);
     if not MacroValues.Equals(Values) then begin
       // has changed
       MacroValues.Assign(Values);
+      IncreaseBuildMacroChangeStamp;
       if UpdateControls then begin
         UpdateInheritedOptions;
       end;
@@ -656,12 +686,10 @@ constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLoadShowSessionFromProject:=true;
-  FMacroValues:=TProjectBuildMacros.Create;
 end;
 
 destructor TBuildModesEditorFrame.Destroy;
 begin
-  FreeAndNil(FMacroValues);
   inherited Destroy;
 end;
 
@@ -701,6 +729,7 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
+    FMacroValues:=FProject.ActiveBuildMode.MacroValues;
 
     // modes
     UpdateShowSession;
@@ -710,20 +739,16 @@ begin
     // macros
     MacroValues.Assign(FProject.MacroValues);
     UpdateMacrosControls;
+
+    // options dialog
+    UpdateDialogCaption;
   end;
 end;
 
 procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  PCOptions: TProjectCompilerOptions;
 begin
   if AOptions is TProjectCompilerOptions then begin
-    PCOptions:=TProjectCompilerOptions(AOptions);
     SaveMacros(false);
-    if not PCOptions.LazProject.MacroValues.Equals(MacroValues) then begin
-      PCOptions.LazProject.MacroValues.Assign(MacroValues);
-      IncreaseBuildMacroChangeStamp;
-    end;
   end;
 end;
 

@@ -6554,6 +6554,8 @@ var
   CurName: string;
   CurValue: string;
 begin
+  Result:=false;
+  if aValues.Count<>Count then exit;
   for i:=0 to aValues.Count-1 do begin
     CurName:=aValues.Names[i];
     CurValue:=aValues.ValueFromIndex[i];
@@ -6561,8 +6563,8 @@ begin
     if not IsDefined(CurName) then exit;
     if Values[CurName]<>CurValue then exit;
   end;
+  Result:=true;
   //debugln(['TProjectBuildMacros.Equals END ',aValues.Count,' ',Count]);
-  Result:=aValues.Count=Count;
 end;
 
 function TProjectBuildMacros.CreateDiff(Other: TProjectBuildMacros;

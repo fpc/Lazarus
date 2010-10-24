@@ -605,8 +605,8 @@ procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LCLPlatform: TLCLPlatform;
 begin
-  if FCompilerOpts = nil then
-    FCompilerOpts := AOptions as TBaseCompilerOptions;
+  if not (AOptions is TBaseCompilerOptions) then exit;
+  FCompilerOpts := TBaseCompilerOptions(AOptions);
 
   if AOptions is TProjectCompilerOptions then
   begin
