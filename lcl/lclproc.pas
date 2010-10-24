@@ -3316,27 +3316,48 @@ begin
   end;
 end;
 
+{ Find the start of the UTF8 character which contains BytePos,
+  Len is length in byte, BytePos starts at 0 }
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
   BytePos: integer): integer;
-var
-  CharLen: LongInt;
 begin
   Result:=0;
-  if UTF8Str<>nil then begin
-    if BytePos>Len then BytePos:=Len;
-    while (BytePos>0) do begin
-      CharLen:=UTF8CharacterLength(UTF8Str);
-      dec(BytePos,CharLen);
-      if (BytePos<0) then exit;
-      inc(Result,CharLen);
-      if (BytePos=0) then exit;
-      inc(UTF8Str,CharLen);
+  if (UTF8Str<>nil) and (Len>0) and (BytePos>=0) then begin
+    Result:=BytePos;
+    if Result>Len then Result:=Len-1;
+    if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
+      dec(Result);
+      if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
+        dec(Result);
+        if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
+          dec(Result);
+          // should be four byte character
+          if (ord(UTF8Str[Result]) and %11111000<>%11110000) then begin
+            // broken UTF8 character
+            inc(Result,3);
+          end else begin
+            // is four byte character
+          end;
+        end else if (ord(UTF8Str[Result]) and %11110000<>%11100000) then begin
+          // broken UTF8 character, should be three byte
+          inc(Result,2);
+        end else
+        begin
+          // is three byte character
+        end;
+      end else if (ord(UTF8Str[Result]) and %11100000<>%11000000) then begin
+        // broken UTF8 character, should be two byte
+        inc(Result);
+      end else
+      begin
+        // is two byte character
+      end;
     end;
   end;
 end;
 
 { Len is the length in bytes of UTF8Str
-  CharIndex is the position of the desired char, in chars
+  CharIndex is the position of the desired char (starting at 0), in chars
 
   This function is similar to UTF8FindNearestCharStart
 }
