@@ -50,7 +50,7 @@ type
   TSourceEditorSharedValuesBase = class
   protected
     function GetSharedEditorsBase(Index: Integer): TSourceEditorBase; virtual abstract;
-    function  SharedEditorCount: Integer; virtual; abstract;
+    function SharedEditorCount: Integer; virtual; abstract;
   end;
 
   { TSourceEditorBase }
@@ -59,6 +59,8 @@ type
   protected
     function GetSharedValues: TSourceEditorSharedValuesBase; virtual; abstract;
   end;
+
+  { *** }
 
   TSourceMarks = class;
   TSourceMark = class;
@@ -81,61 +83,37 @@ type
   TMarksActionEvent = procedure(AMark: TSourceMark; Action: TMarksAction) of object;
 
 
-  { TSourceSynMark }
-
-  TSourceSynMark = class(TSynEditMark)
-  private
-    FOnChange: TNotifyEvent;
-  protected
-    FSourceMark: TSourceMark;
-    IsDestroying: Boolean;
-    procedure DoChange(AChanges: TSynEditMarkChangeReasons); override;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  public
-    constructor Create(AOwner: TSourceMark; ASynEditor: TSynEdit);
-    destructor Destroy; override;
-    property SourceMark: TSourceMark read FSourceMark write FSourceMark;
-  end;
-
   { TSourceMark }
   
-  TSourceMark = class
+  TSourceMark = class(TSynEditMark)
   private
-    FSynMark: TSourceSynMark;
     FData: TObject;
     FSourceMarks: TSourceMarks;
     FSourceEditorID: TSourceEditorSharedValuesBase;
     FHandlers: array[TSourceMarkHandler] of TMethodList;
-    FSynMarkLock: Integer;
     function  GetSourceEditor: TSourceEditorBase;
     procedure SetSourceMarks(const AValue: TSourceMarks);
     procedure Changed;
-    procedure SynMarkChanged(Sender: TObject);
   private
-    FLine: integer;
-    FColumn: integer;
-    FImage: integer;
-    FVisible: boolean;
-    FPriority: integer;
     FIsBreakPoint: boolean;
     FLineColorAttrib: TAdditionalHilightAttribute;
     FLineColorBackGround: TColor;
     FLineColorForeGround: TColor;
   protected
+    procedure DoChange(AChanges: TSynEditMarkChangeReasons); override;
     procedure AddHandler(HandlerType: TSourceMarkHandler;
                          const Handler: TMethod);
     procedure DoPositionChanged; virtual;
-    procedure DoLineUpdate(Force: Boolean = False); virtual;
-    procedure SetPriority(const AValue: integer);
-    procedure SetColumn(const Value: Integer);
+    procedure DoLineUpdate; virtual;
+
     procedure SetData(const AValue: TObject); virtual;
-    procedure SetImage(const Value: Integer);
     procedure SetIsBreakPoint(const AValue: boolean); virtual;
-    procedure SetLine(const Value: Integer);
     procedure SetLineColorAttrib(const AValue: TAdditionalHilightAttribute); virtual;
     procedure SetLineColorBackGround(const AValue: TColor); virtual;
     procedure SetLineColorForeGround(const AValue: TColor); virtual;
-    procedure SetVisible(const AValue: boolean);
+
+    procedure SetColumn(const Value: Integer); override;
+    procedure SetLine(const Value: Integer); override;
   public
     constructor Create(TheOwner: TSourceEditorBase; TheData: TObject);
     destructor Destroy; override;
@@ -145,8 +123,6 @@ type
     function GetFilename: string;
     function GetHint: string; virtual;
     procedure CreatePopupMenuItems(const AddMenuItemProc: TAddMenuItemProc);
-    procedure IncChangeLock;
-    procedure DecChangeLock;
   public    // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
     procedure AddPositionChangedHandler(OnPositionChanged: TNotifyEvent);
@@ -173,15 +149,7 @@ type
     property LineColorBackGround: TColor read FLineColorBackGround
                                          write SetLineColorBackGround;
   public
-    property Line: integer read FLine write SetLine;
-    property Column: integer read FColumn write SetColumn;
-    property Priority: integer read FPriority write SetPriority;
-    property ImageIndex: integer read FImage write SetImage;
-    property Visible: boolean read FVisible write SetVisible;
     property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
-    //property InternalImage: boolean read FInternalImage write SetInternalImage;
-    //property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
-    //property IsBookmark: boolean read GetIsBookmark;
   end;
   
   TSourceMarkClass = class of TSourceMark;
@@ -282,31 +250,6 @@ begin
   Result := -AMark.CompareEditorAndLine(EditorAndLine^.EditorID, EditorAndLine^.Line);
 end;
 
-{ TSourceSynMark }
-
-procedure TSourceSynMark.DoChange(AChanges: TSynEditMarkChangeReasons);
-begin
-  inherited DoChange(AChanges);
-  if FChangeLock > 0 then exit;
-  if assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-constructor TSourceSynMark.Create(AOwner: TSourceMark; ASynEditor: TSynEdit);
-begin
-  FSourceMark := AOwner;
-  Inherited Create(ASynEditor);
-  if OwnerEdit <> nil then
-    TSynEdit(OwnerEdit).Marks.Add(Self);
-end;
-
-destructor TSourceSynMark.Destroy;
-begin
-  IsDestroying := True;
-  FreeAndNil(FSourceMark);
-  inherited Destroy;
-end;
-
 { TSourceMark }
 
 procedure TSourceMark.SetSourceMarks(const AValue: TSourceMarks);
@@ -317,14 +260,6 @@ begin
   FSourceMarks := AValue;
   if AValue<>nil then
     AValue.Add(Self);
-end;
-
-procedure TSourceMark.SetPriority(const AValue: integer);
-begin
-  if FPriority = AValue then exit;
-  FPriority := AValue;
-  if FSynMarkLock = 0 then
-    FSynMark.Priority := AValue;
 end;
 
 function TSourceMark.GetSourceEditor: TSourceEditorBase;
@@ -341,16 +276,12 @@ begin
     FSourceMarks.OnAction(Self, maChanged);
 end;
 
-procedure TSourceMark.SynMarkChanged(Sender: TObject);
+procedure TSourceMark.DoChange(AChanges: TSynEditMarkChangeReasons);
 begin
-  // Only read Value from Mark => Do not write back to Mark(s)
-  inc(FSynMarkLock);
-  Line := TSourceSynMark(Sender).Line;
-  Column := TSourceSynMark(Sender).Column;
-  Priority := TSourceSynMark(Sender).Priority;
-  ImageIndex := TSourceSynMark(Sender).ImageIndex;
-  Visible := TSourceSynMark(Sender).Visible;
-  dec(FSynMarkLock);
+  inherited DoChange(AChanges);
+  if AChanges * [smcrLine, smcrColumn] <> [] then
+    DoPositionChanged;
+  Changed;
 end;
 
 procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
@@ -386,15 +317,6 @@ begin
   Changed;
 end;
 
-procedure TSourceMark.SetVisible(const AValue: boolean);
-begin
-  if Visible = AValue then Exit;
-  FVisible := AValue;
-  if FSynMarkLock = 0 then
-    FSynMark.Visible := AValue;
-  Changed;
-end;
-
 procedure TSourceMark.DoPositionChanged;
 var
   i: Integer;
@@ -404,11 +326,10 @@ begin
     TNotifyEvent(FHandlers[smhPositionChanged][i])(Self);
 end;
 
-procedure TSourceMark.DoLineUpdate(Force: Boolean = False);
+procedure TSourceMark.DoLineUpdate;
 begin
-  if Line <= 0 then Exit;
-  if Visible or Force then
-    FSynMark.DoChange([smcrChanged]);
+  if (Line <= 0) or (not Visible) then Exit;
+  DoChange([smcrChanged]);
 end;
 
 procedure TSourceMark.SetData(const AValue: TObject);
@@ -429,45 +350,36 @@ end;
 procedure TSourceMark.SetColumn(const Value: Integer);
 begin
   if Column=Value then exit;
-  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
-  FColumn := Value;
-  if FSynMarkLock = 0 then
-    FSynMark.Column := Value;
-  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
-  DoPositionChanged;
-end;
-
-procedure TSourceMark.SetImage(const Value: Integer);
-begin
-  if ImageIndex=Value then exit;
-  FImage := Value;
-  if FSynMarkLock = 0 then
-    FSynMark.ImageIndex := Value;
-  Changed;
+  IncChangeLock;
+  if FSourceMarks<>nil then
+    FSourceMarks.fSortedItems.Remove(Self);
+  inherited;
+  if FSourceMarks<>nil then
+    FSourceMarks.fSortedItems.Add(Self);
+  DecChangeLock;
 end;
 
 procedure TSourceMark.SetLine(const Value: Integer);
 begin
   if Line=Value then exit;
-  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
-  FLine := Value;
-  if FSynMarkLock = 0 then
-    FSynMark.Line := Value;
-  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
-  DoPositionChanged;
-  Changed;
+  IncChangeLock;
+  if FSourceMarks<>nil then
+    FSourceMarks.fSortedItems.Remove(Self);
+  inherited;
+  if FSourceMarks<>nil then
+    FSourceMarks.fSortedItems.Add(Self);
+  DecChangeLock;
 end;
 
 constructor TSourceMark.Create(TheOwner: TSourceEditorBase; TheData: TObject);
 begin
   FSourceEditorID := TheOwner.GetSharedValues;
-  FSynMarkLock := 0;
-  FSynMark := TSourceSynMark.Create(Self, TSynEdit(TheOwner.EditorControl));
-  FSynMark.OnChange := @SynMarkChanged;
+  inherited Create(TSynEdit(TheOwner.EditorControl));
   FData:=TheData;
   FLineColorAttrib:=ahaNone;
   FLineColorBackGround:=clNone;
   FLineColorForeGround:=clNone;
+  TSynEdit(TheOwner.EditorControl).Marks.Add(Self);
 end;
 
 destructor TSourceMark.Destroy;
@@ -482,10 +394,6 @@ begin
   // remove from source marks
   SourceMarks := nil;
   FSourceEditorID := nil;
-  FSynMark.FSourceMark := nil;
-  FSynMark.OnChange := nil;
-  if not FSynMark.IsDestroying then
-    FreeAndNil(FSynMark);
 
   // free handler lists
   for HandlerType:=Low(TSourceMarkHandler) to high(TSourceMarkHandler) do
@@ -541,16 +449,6 @@ begin
   while FHandlers[smhCreatePopupMenu].NextDownIndex(i) do
     TCreateSourceMarkPopupMenuEvent(FHandlers[smhCreatePopupMenu][i])
       (Self,AddMenuItemProc);
-end;
-
-procedure TSourceMark.IncChangeLock;
-begin
-  FSynMark.IncChangeLock;
-end;
-
-procedure TSourceMark.DecChangeLock;
-begin
-  FSynMark.DecChangeLock;
 end;
 
 procedure TSourceMark.RemoveAllHandlersForObject(HandlerObject: TObject);

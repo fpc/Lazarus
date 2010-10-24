@@ -7406,8 +7406,8 @@ begin
           MLine.Sort(smsoBookMarkLast, smsoColumn);
 
         for i := 0 to MLine.Count - 1 do begin
-          if not (MLine[i] is TSourceSynMark) then continue;
-          AMark := TSourceSynMark(MLine[i]).SourceMark;
+          if not (MLine[i] is TSourceMark) then continue;
+          AMark := TSourceMark(MLine[i]);
           if AMark = nil then continue;
           CurHint:=AMark.GetHint;
           if CurHint='' then continue;
