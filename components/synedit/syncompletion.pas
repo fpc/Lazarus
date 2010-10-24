@@ -200,6 +200,7 @@ type
     function GetClSelect: TColor;
     function GetLongLineHintTime: Integer;
     function GetLongLineHintType: TSynCompletionLongHintType;
+    function GetOnKeyDown: TKeyEvent;
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
     function GetOnPositionChanged: TNotifyEvent;
     procedure SetCaseSensitive(const AValue: boolean);
@@ -218,6 +219,7 @@ type
     procedure SetLongLineHintType(const AValue: TSynCompletionLongHintType);
     procedure SetNbLinesInWindow(const Value: Integer);
     procedure SetOnCancel(const Value: TNotifyEvent);
+    procedure SetOnKeyDown(const AValue: TKeyEvent);
     procedure SetOnKeyPress(const Value: TKeyPressEvent);
     procedure SetOnMeasureItem(const AValue: TSynBaseCompletionMeasureItem);
     procedure SetOnPositionChanged(const AValue: TNotifyEvent);
@@ -245,6 +247,7 @@ type
     procedure Deactivate;
     function IsActive: boolean;
     function TheForm: TSynBaseCompletionForm;
+    property OnKeyDown: TKeyEvent read GetOnKeyDown write SetOnKeyDown;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read GetOnUTF8KeyPress
                                                 write SetOnUTF8KeyPress;
     property OnKeyPress: TKeyPressEvent read GetOnKeyPress write SetOnKeyPress;
@@ -498,6 +501,8 @@ var
   Handled: Boolean;
 begin
   //debugln('TSynBaseCompletionForm.KeyDown A Key=',dbgs(Key));
+  inherited KeyDown(Key,Shift);
+  if Key=VK_UNKNOWN then exit;
   Handled:=true;
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
@@ -530,7 +535,7 @@ begin
     VK_BACK:
       if (Shift = []) and (Length(CurrentString) > 0) then begin
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
-        CurrentString := Copy(CurrentString, 1, Length(CurrentString) - 1);
+        CurrentString := UTF8Copy(CurrentString, 1, UTF8Length(CurrentString) - 1);
       end;
     VK_TAB:
       begin
@@ -555,10 +560,10 @@ end;
 
 procedure TSynBaseCompletionForm.KeyPress(var Key: char);
 begin
-  //debugln('TSynBaseCompletionForm.KeyPress A Key="',DbgStr(Key),'"');
+  debugln('TSynBaseCompletionForm.KeyPress A Key="',DbgStr(Key),'"');
   if Assigned(OnKeyPress) then
     OnKeyPress(Self, Key);
-  //debugln('TSynBaseCompletionForm.KeyPress B Key="',DbgStr(Key),'"');
+  debugln('TSynBaseCompletionForm.KeyPress B Key="',DbgStr(Key),'"');
   if Key=#0 then exit;
   case key of //
     #33..'z':
@@ -713,7 +718,7 @@ end;
 
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  //debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
+  debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
   if UTF8Key=#8 then
   begin
     // backspace
@@ -743,7 +748,7 @@ begin
       UTF8Key := '';
     end;
   end;
-  //debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
+  debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
 end;
 
 procedure TSynBaseCompletionForm.SetCurrentString(const Value: string);
@@ -1076,6 +1081,11 @@ begin
   form.OnCancel := Value;
 end;
 
+procedure TSynBaseCompletion.SetOnKeyDown(const AValue: TKeyEvent);
+begin
+  Form.OnKeyDown:=AValue;
+end;
+
 procedure TSynBaseCompletion.SetOnKeyPress(const Value: TKeyPressEvent);
 begin
   form.OnKeyPress := Value;
@@ -1121,6 +1131,11 @@ end;
 function TSynBaseCompletion.GetLongLineHintType: TSynCompletionLongHintType;
 begin
   Result := Form.LongLineHintType;
+end;
+
+function TSynBaseCompletion.GetOnKeyDown: TKeyEvent;
+begin
+  Result:=Form.OnKeyDown;
 end;
 
 function TSynBaseCompletion.GetCaseSensitive: boolean;
@@ -1385,8 +1400,6 @@ begin
     // completion form is visible, but the synedit got a key
     // -> redirect to form
     Form.KeyDown(Key,Shift);
-    // eat it
-    Key:=VK_UNKNOWN;
     //debugln('TSynCompletion.EditorKeyDown B ',dbgs(Key));
   end;
 
