@@ -1957,7 +1957,7 @@ begin
   fPlugins:=nil;
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
-  DestroyMarkList;
+  FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
   FreeAndNil(fBookMarkOpt);
@@ -1972,6 +1972,7 @@ begin
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
+  DestroyMarkList;
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
@@ -5225,6 +5226,8 @@ var
   i: Integer;
   TempPlugins: TList;
 begin
+  DestroyMarkList;
+
   // Remember all Plugins; Detach from Lines
   TempPlugins := TList.Create;
   for i := FPlugins.Count - 1 downto 0 do begin
@@ -5237,7 +5240,9 @@ begin
 
   // Set the New Lines
   OldBuffer := TSynEditStringList(FLines);
+
   Flines := NewBuffer;
+  TSynEditStringList(FLines).AttachSynEdit(Self);
   TSynEditStringsLinked(FTopLinesView).NextLines := FLines;
 
   // Todo: Todo Refactor all classes with events, so they an be told to re-attach
@@ -5264,6 +5269,10 @@ begin
   FreeAndNil(FStrings);
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
+  // Flines has been set to the new buffer; and self is attached to the new FLines
+  // FTheLinesView points to new FLines
+  RecreateMarkList;
+
   // Attach Highlighter
   if FHighlighter <> nil then
     FHighlighter.AttachToLines(FLines);
@@ -5274,8 +5283,11 @@ begin
   TempPlugins.Free;
 
   RemoveHandlers(OldBuffer);
+  OldBuffer.DetachSynEdit(Self);
   FLines.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
   OldBuffer.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
+  if OldBuffer.AttachedSynEditCount = 0 then
+    OldBuffer.Free;
 end;
 
 function TCustomSynEdit.IsMarkListShared: Boolean;
@@ -5354,22 +5366,10 @@ begin
 end;
 
 procedure TCustomSynEdit.ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
-var
-  OldBuffer: TSynEditStringList;
 begin
   if fPaintLock <> 0 then RaiseGDBException('Cannot change TextBuffer while paintlocked');
-  OldBuffer := TSynEditStringList(FLines);
 
-  DestroyMarkList;
   ChangeTextBuffer(TSynEditStringList(AShareEditor.FLines));
-  TSynEditStringList(FLines).AttachSynEdit(Self);
-  // lost the textbuffer, all marks are invalidate
-  RecreateMarkList;
-
-  OldBuffer.DetachSynEdit(Self);
-  if OldBuffer.AttachedSynEditCount = 0 then
-    OldBuffer.Free;
-
 end;
 
 procedure TCustomSynEdit.UnShareTextBuffer;
@@ -5378,11 +5378,7 @@ begin
   if TSynEditStringList(FLines).AttachedSynEditCount = 1 then
     exit;
 
-  DestroyMarkList;
-  TSynEditStringList(FLines).DetachSynEdit(Self);
   ChangeTextBuffer(TSynEditStringList.Create);
-  // lost the textbuffer, all marks are invalidate
-  RecreateMarkList;
 end;
 
 procedure TCustomSynEdit.RemoveHandlers(ALines: TSynEditStrings = nil);
