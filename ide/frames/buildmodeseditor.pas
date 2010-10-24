@@ -400,6 +400,7 @@ begin
       if s[j]<' ' then s[j]:=' ';
     CurMode.Identifier:=s;
     NewValue:=s;
+    UpdateDialogCaption;
   end;
 end;
 
@@ -479,7 +480,8 @@ begin
     if Result = '' then
       Result := ExtractFilenameOnly(aProject.ProjectInfoFile);
     Result:=Format(dlgProjectOptionsFor, [Result]);
-    Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);
+    if AProject.BuildModes.Count>1 then
+      Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);
   end else
     Result:='TBuildModesEditorFrame.GetDialogCaption: no project';
 end;
