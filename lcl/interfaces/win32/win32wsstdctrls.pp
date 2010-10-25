@@ -353,6 +353,7 @@ var
   Info: TComboboxInfo;
   WindowInfo: PWin32WindowInfo;
   NCCreateParams: PNCCreateParams;
+  LMessage: TLMessage;
 begin
   // darn MS: if combobox has edit control, and combobox receives focus, it
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
@@ -383,6 +384,23 @@ begin
           Exit;
         end;
       end;
+    WM_PAINT,
+    WM_ERASEBKGND:
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        if not WindowInfo^.WinControl.DoubleBuffered then
+        begin
+          LMessage.msg := Msg;
+          LMessage.wParam := WParam;
+          LMessage.lParam := LParam;
+          LMessage.Result := 0;
+          Result := DeliverMessage(WindowInfo^.WinControl, LMessage);
+        end
+        else
+          Result := WindowProc(Window, Msg, WParam, LParam);
+      end;
+    WM_PRINTCLIENT:
+      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
   end;
   // normal processing
   Result := WindowProc(Window, Msg, WParam, LParam);
