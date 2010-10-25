@@ -1,10 +1,10 @@
 object GUITestRunner: TGUITestRunner
-  Left = 652
-  Height = 613
-  Top = 255
+  Left = 312
+  Height = 590
+  Top = 123
   Width = 575
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 613
+  ClientHeight = 590
   ClientWidth = 575
   Constraints.MinHeight = 200
   Constraints.MinWidth = 250
@@ -49,14 +49,13 @@ object GUITestRunner: TGUITestRunner
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
-    Height = 84
+    Height = 88
     Top = 0
     Width = 575
     Align = alTop
-    AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvNone
-    ClientHeight = 84
+    ClientHeight = 88
     ClientWidth = 575
     Constraints.MinHeight = 50
     Constraints.MinWidth = 450
@@ -70,10 +69,10 @@ object GUITestRunner: TGUITestRunner
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 6
+      Left = 7
       Height = 30
-      Top = 46
-      Width = 563
+      Top = 47
+      Width = 561
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       OnPaint = pbBarPaint
@@ -81,9 +80,9 @@ object GUITestRunner: TGUITestRunner
     object BtnRun: TBitBtn
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
-      Left = 6
+      Left = 7
       Height = 34
-      Top = 6
+      Top = 7
       Width = 78
       Action = RunAction
       AutoSize = True
@@ -174,9 +173,9 @@ object GUITestRunner: TGUITestRunner
       AnchorSideTop.Control = Panel1
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 490
+      Left = 489
       Height = 34
-      Top = 6
+      Top = 7
       Width = 79
       Action = ActCloseForm
       Anchors = [akTop, akRight]
@@ -269,9 +268,9 @@ object GUITestRunner: TGUITestRunner
       AnchorSideLeft.Control = BtnRun
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 90
+      Left = 91
       Height = 32
-      Top = 6
+      Top = 7
       Width = 147
       Action = ActRunHighlightedTest
       AutoSize = True
@@ -349,19 +348,19 @@ object GUITestRunner: TGUITestRunner
   end
   object Panel2: TPanel
     Left = 0
-    Height = 529
-    Top = 84
+    Height = 502
+    Top = 88
     Width = 575
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 529
+    ClientHeight = 502
     ClientWidth = 575
     FullRepaint = False
     TabOrder = 1
     TabStop = True
     object PageControl1: TPageControl
       Left = 1
-      Height = 527
+      Height = 500
       Top = 1
       Width = 573
       ActivePage = tsTestTree
@@ -371,20 +370,20 @@ object GUITestRunner: TGUITestRunner
       TabOrder = 0
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 501
+        ClientHeight = 474
         ClientWidth = 565
         object Splitter1: TSplitter
           Cursor = crVSplit
           Left = 0
           Height = 5
-          Top = 363
+          Top = 336
           Width = 565
           Align = alBottom
           ResizeAnchor = akBottom
         end
         object TestTree: TTreeView
           Left = 6
-          Height = 351
+          Height = 324
           Top = 6
           Width = 553
           Align = alClient
@@ -406,7 +405,7 @@ object GUITestRunner: TGUITestRunner
         object Memo1: TMemo
           Left = 6
           Height = 121
-          Top = 374
+          Top = 347
           Width = 553
           Align = alBottom
           BorderSpacing.Around = 6
@@ -421,9 +420,6 @@ object GUITestRunner: TGUITestRunner
         ClientHeight = 497
         ClientWidth = 565
         inline XMLSynEdit: TSynEdit
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Side = asrBottom
           Left = 6
           Height = 451
           Top = 40
@@ -442,8 +438,32 @@ object GUITestRunner: TGUITestRunner
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 0
+          Gutter.Width = 57
           Gutter.MouseActions = <          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 13
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbRight
+              ClickCount = ccSingle
+              ClickDir = cdUp
+              Command = 12
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end>
+          RightGutter.Width = 0
+          RightGutter.MouseActions = <          
             item
               Shift = []
               ShiftMask = []
@@ -915,10 +935,10 @@ object GUITestRunner: TGUITestRunner
           BracketHighlightStyle = sbhsBoth
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 23
+              Width = 24
             end
             object TSynGutterLineNumber
-              Width = 25
+              Width = 17
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -2064,6 +2084,19 @@ object GUITestRunner: TGUITestRunner
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
     Enabled = False
+    ElementAttri.FrameEdges = sfeAround
+    AttributeAttri.FrameEdges = sfeAround
+    NamespaceAttributeAttri.FrameEdges = sfeAround
+    AttributeValueAttri.FrameEdges = sfeAround
+    NamespaceAttributeValueAttri.FrameEdges = sfeAround
+    TextAttri.FrameEdges = sfeAround
+    CDATAAttri.FrameEdges = sfeAround
+    EntityRefAttri.FrameEdges = sfeAround
+    ProcessingInstructionAttri.FrameEdges = sfeAround
+    CommentAttri.FrameEdges = sfeAround
+    DocTypeAttri.FrameEdges = sfeAround
+    SpaceAttri.FrameEdges = sfeAround
+    SymbolAttri.FrameEdges = sfeAround
     WantBracesParsed = False
     left = 80
     top = 176

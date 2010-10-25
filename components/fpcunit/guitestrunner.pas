@@ -309,13 +309,11 @@ begin
   end;
 end;
 
-
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
 begin
   if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
     RunExecute(Self);
 end;
-
 
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
 begin
