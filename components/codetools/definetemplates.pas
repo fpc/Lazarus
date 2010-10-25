@@ -889,6 +889,8 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''): string;
+function GetFPCTargetOS(TargetOS: string): string;
+function GetFPCTargetCPU(TargetCPU: string): string;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -2563,6 +2565,16 @@ begin
   else
     Result:='fpc';
   Result:=Result+ExeExt;
+end;
+
+function GetFPCTargetOS(TargetOS: string): string;
+begin
+  Result:=lowercase(TargetOS);
+end;
+
+function GetFPCTargetCPU(TargetCPU: string): string;
+begin
+  Result:=LowerCase(TargetCPU);
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string

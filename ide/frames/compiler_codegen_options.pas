@@ -5,8 +5,10 @@ unit compiler_codegen_options;
 interface
 
 uses
-  Classes,SysUtils,FileUtil,Forms,Controls,Graphics,Dialogs,StdCtrls,ExtCtrls,
-  IDEOptionsIntf,Project,CompilerOptions,LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls,
+  DefineTemplates, IDEOptionsIntf, Project, CompilerOptions,
+  LazarusIDEStrConsts;
 
 type
 
@@ -50,6 +52,16 @@ type
 implementation
 
 {$R *.lfm}
+
+function CaptionToOS(const OS: string): string;
+begin
+  Result:=LowerCase(OS);
+end;
+
+function CaptionToCPU(const CPU: string): string;
+begin
+  Result:=LowerCase(CPU);
+end;
 
 function ProcessorToCaption(const Processor: string): string;
 begin
@@ -264,12 +276,12 @@ begin
     NewTargetOS := TargetOSComboBox.Text;
     if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then
       NewTargetOS := '';
-    TargetOS := NewTargetOS;
+    TargetOS := CaptionToOS(NewTargetOS);
 
     NewTargetCPU := TargetCPUComboBox.Text;
     if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
       NewTargetCPU := '';
-    TargetCPU := NewTargetCPU;
+    TargetCPU := CaptionToCPU(NewTargetCPU);
 
     TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
     VariablesInRegisters := chkOptVarsInReg.Checked;

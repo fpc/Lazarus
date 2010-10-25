@@ -1222,9 +1222,12 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
+var
+  NewValue: String;
 begin
-  if fTargetCPU=AValue then exit;
-  fTargetCPU:=AValue;
+  NewValue:=GetFPCTargetCPU(AValue);
+  if fTargetCPU=NewValue then exit;
+  fTargetCPU:=NewValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
   IncreaseChangeStamp;
@@ -1240,9 +1243,12 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
+var
+  NewValue: String;
 begin
-  if fTargetOS=AValue then exit;
-  fTargetOS:=AValue;
+  NewValue:=GetFPCTargetOS(AValue);
+  if fTargetOS=NewValue then exit;
+  fTargetOS:=NewValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
   IncreaseChangeStamp;
@@ -1509,10 +1515,10 @@ begin
   end else
     TargetProcessor := aXMLConfig.GetValue(p+'TargetProcessor/Value', '');
   TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
+  TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
   VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
   OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
-  TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
 
   { Linking }
   p:=Path+'Linking/';
