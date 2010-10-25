@@ -40,7 +40,7 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -96,6 +96,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="idesemiautotests"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="semiauto\lclsemiautotests.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lclsemiautotests"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -32,7 +32,7 @@ uses
   // lcltests
   testunicode, testpen,
   // semi-automatic tests
-  semiautotests, idesemiautotests;
+  semiautotests, idesemiautotests, lclsemiautotests;
 
 implementation
 
