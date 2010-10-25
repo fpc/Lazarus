@@ -395,6 +395,7 @@ procedure TGUITestRunner.pbBarPaint(Sender: TObject);
 var
   msg: string;
   alltests: integer;
+  OldStyle: TBrushStyle;
 begin
   with (Sender as TPaintBox) do
   begin
@@ -404,18 +405,22 @@ begin
     Canvas.Font.Color := clWhite;
     if Assigned(TestSuite) then
     begin
-      alltests := TestSuite.CountTestCases;
-      if FailureCounter + ErrorCounter = 0 then
-        barColor := clGreen;
-      Canvas.Brush.Color := barColor;
       if TestsCounter <> 0 then
       begin
+        alltests := TestSuite.CountTestCases;
+        if FailureCounter + ErrorCounter = 0 then
+          barColor := clGreen;
+        Canvas.Brush.Color := barColor;
         Canvas.Rectangle(0, 0, round(TestsCounter / (alltests - skipsCounter) * Width), Height);
         msg := Format(rsRuns, [IntToStr(TestsCounter), IntToStr(alltests -
           skipsCounter)]);
         msg := Format(rsErrors, [msg, IntToStr(ErrorCounter)]);
         msg := Format(rsFailures, [msg, IntToStr(FailureCounter)]);
-        Canvas.Textout(10, 10,  msg)
+        //Canvas.Brush.Color := clNone;
+        OldStyle := Canvas.Brush.Style;
+        Canvas.Brush.Style := bsClear;
+        Canvas.Textout(10, 10,  msg);
+        Canvas.Brush.Style := OldStyle;
       end;
     end;
     Canvas.UnLock;
