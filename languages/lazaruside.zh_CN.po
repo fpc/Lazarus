@@ -14000,6 +14000,10 @@ msgstr "复位返回列表"
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告: 发现可疑文件: %s%s%s .源代码文件是:%s%s%s"
 
+#: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
+msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
+msgstr ""
+
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
 msgstr ""

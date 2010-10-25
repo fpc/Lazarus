@@ -13994,6 +13994,10 @@ msgstr "Reiniciar lista de resultados"
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Advertencia: encontrado archivo ambiguo : %s%s%s. El archivo fuente es: %s%s%s"
 
+#: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
+msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
+msgstr ""
+
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
 msgstr "&Watch"

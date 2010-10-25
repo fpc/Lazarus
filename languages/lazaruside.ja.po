@@ -13998,6 +13998,10 @@ msgstr "結果リストをリセット"
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告：紛らわしいファイルが見つかりました。ソースファイルは%s%s%sです。"
 
+#: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
+msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
+msgstr ""
+
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
 msgstr "監視(%W)"

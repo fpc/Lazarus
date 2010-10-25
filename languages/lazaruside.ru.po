@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-25 03:40+0300\n"
+"PO-Revision-Date: 2010-10-26 02:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13987,6 +13987,10 @@ msgstr "Сброс результатов"
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Предупреждение: найден файл с дублирующимся именем %s%s%s. Исходный файл: %s%s%s"
+
+#: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
+msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
+msgstr "%sВнимание: этот модуль является главным. Новым главным модулем будет %s.pas."
 
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"

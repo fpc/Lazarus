@@ -14004,6 +14004,10 @@ msgstr "Réinitialiser la liste des résultats"
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Avertissement: fichier litigieux trouvé: %s%s%s. Le fichier source est: %s%s%s"
 
+#: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
+msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
+msgstr ""
+
 #: lazarusidestrconsts.liswatch
 #, fuzzy
 msgid "&Watch"
