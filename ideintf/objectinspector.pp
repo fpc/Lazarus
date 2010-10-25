@@ -400,7 +400,7 @@ type
     procedure SetSubPropertiesColor(const AValue: TColor);
     procedure SetReadOnlyColor(const AValue: TColor);
     procedure UpdateScrollBar;
-    procedure FillComboboxItems;
+    function FillComboboxItems: boolean; // true if something changed
     function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -971,11 +971,12 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.FillComboboxItems;
+function TOICustomPropertyGrid.FillComboboxItems: boolean;
 var
   ExcludeUpdateFlag: boolean;
   CurRow: TOIPropertyGridRow;
 begin
+  Result:=false;
   ExcludeUpdateFlag:=not (pgsUpdatingEditControl in FStates);
   Include(FStates,pgsUpdatingEditControl);
   ValueComboBox.Items.BeginUpdate;
@@ -985,15 +986,18 @@ begin
     CurRow.Editor.GetValues(@AddStringToComboBox);
     if FNewComboBoxItems<>nil then begin
       FNewComboBoxItems.Sorted:=paSortList in CurRow.Editor.GetAttributes;
-      if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
-        ValueComboBox.Items.Assign(FNewComboBoxItems);
-      end;
+      if ValueComboBox.Items.Equals(FNewComboBoxItems) then exit;
+      ValueComboBox.Items.Assign(FNewComboBoxItems);
       //debugln('TOICustomPropertyGrid.FillComboboxItems "',FNewComboBoxItems.Text,'" Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
+    end else if ValueComboBox.Items.Count=0 then begin
+      exit;
     end else begin
       ValueComboBox.Items.Text:='';
       ValueComboBox.Items.Clear;
       //debugln('TOICustomPropertyGrid.FillComboboxItems FNewComboBoxItems=nil Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
     end;
+    Result:=true;
+    //debugln(['TOICustomPropertyGrid.FillComboboxItems CHANGED']);
   finally
     FreeAndNil(FNewComboBoxItems);
     ValueComboBox.Items.EndUpdate;
@@ -2930,6 +2934,11 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxGetItems(Sender: TObject);
+{ This event is called whenever the widgetset updates the list.
+  On gtk the list is updated just before the user popups the list.
+  Other widgetsets need the list always, which is bad, as this means collecting
+  all items even if the dropdown never happens.
+}
 var
   CurRow: TOIPropertyGridRow;
   MaxItemWidth, CurItemWidth, i, Cnt: integer;
@@ -2939,7 +2948,6 @@ var
 begin
   Include(FStates,pgsGetComboItemsCalled);
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
-    //debugln('TOICustomPropertyGrid.ValueComboBoxDropDown A');
     ExcludeUpdateFlag:=not (pgsUpdatingEditControl in FStates);
     Include(FStates,pgsUpdatingEditControl);
     ValueComboBox.Items.BeginUpdate;
@@ -2947,7 +2955,7 @@ begin
       CurRow:=Rows[FItemIndex];
 
       // Items
-      FillComboboxItems;
+      if not FillComboboxItems then exit;
 
       // Text and ItemIndex
       CurValue:=CurRow.Editor.GetVisualValue;
@@ -3167,7 +3175,6 @@ begin
     if TypeKind in [tkEnumeration, tkBool, tkSet] then 
     begin
       // set value to next value in list
-      FillComboboxItems;
       if ValueComboBox.Items.Count = 0 then Exit;
       if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count - 1) then
         ValueComboBox.ItemIndex := ValueComboBox.ItemIndex + 1
