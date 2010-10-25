@@ -276,6 +276,8 @@ function CopyImageData(AWidth, AHeight, ARowStride: Integer; ABPP: Word;
                        ADestinationOrder: TRawImageLineOrder; ADestinationEnd: TRawImageLineEnd;
                        out ADestination: Pointer; out ASize: PtrUInt): Boolean;
 
+function GetRectIntersect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
+
 var
   MissingBits: array[0..15] of array[0..7] of word;
 
@@ -563,7 +565,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: IntersectRect
+  Function: GetRectIntersect
   Params:  var DestRect: TRect; const SrcRect1, SrcRect2: TRect
   Returns: Boolean
 
@@ -572,7 +574,7 @@ end;
   SrcRect2. If SrcRect1 and SrcRect2 do not overlapp the Result is false, else
   true.
  ------------------------------------------------------------------------------}
-function IntersectRect(var DestRect: TRect;
+function GetRectIntersect(var DestRect: TRect;
   const SrcRect1, SrcRect2: TRect): Boolean;
 begin
   Result := False;
@@ -1419,7 +1421,7 @@ begin
   ADst.ReleaseData;
 
   // get intersection
-  IntersectRect(R, Rect(0, 0, Description.Width, Description.Height), ARect);
+  GetRectIntersect(R, Rect(0, 0, Description.Width, Description.Height), ARect);
   ADst.Description.Width := R.Right - R.Left;
   ADst.Description.Height := R.Bottom - R.Top;
   if (ADst.Description.Width <= 0)

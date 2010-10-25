@@ -1313,22 +1313,7 @@ end;
 function IntersectRect(var DestRect: TRect;
   const SrcRect1, SrcRect2: TRect): Boolean;
 begin
-  Result := False;
-
-  // test if rectangles intersects
-  Result:=(SrcRect2.Left < SrcRect1.Right)
-      and (SrcRect2.Right > SrcRect1.Left)
-      and (SrcRect2.Top < SrcRect1.Bottom)
-      and (SrcRect2.Bottom > SrcRect1.Top);
-
-  if Result then begin
-    DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
-    DestRect.Top:=Max(SrcRect1.Top,SrcRect2.Top);
-    DestRect.Right:=Min(SrcRect1.Right,SrcRect2.Right);
-    DestRect.Bottom:=Min(SrcRect1.Bottom,SrcRect2.Bottom);
-  end else begin
-    SetRectEmpty(DestRect);
-  end;
+  Result := GetRectIntersect(DestRect,SrcRect1,SrcRect2);
 end;
 
 {------------------------------------------------------------------------------
