@@ -30,9 +30,12 @@ uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
   // lcltests
-  testunicode, testpen,
+  testunicode, testpen
+   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
-  semiautotest, idesemiautotests, lclsemiautotests;
+  , semiautotest, idesemiautotests, lclsemiautotests
+  {$endif}
+  ;
 
 implementation
 
