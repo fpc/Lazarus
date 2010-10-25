@@ -878,6 +878,8 @@ var
   NodeIndex: Integer;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
+  s: String;
+  mt: TMsgDlgType;
 begin
   ANode:=FilesTreeView.Selected;
   if (ANode=nil) or LazPackage.ReadOnly then begin
@@ -890,10 +892,17 @@ begin
     CurFile:=LazPackage.Files[NodeIndex];
     if CurFile<>nil then begin
       // confirm deletion
+      s:='';
+      mt:=mtConfirmation;
+      if CurFile.FileType=pftMainUnit then begin
+        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas, [#13#13,
+          lowercase(LazPackage.Name)]);
+        mt:=mtWarning;
+      end;
       if MessageDlg(lisPckEditRemoveFile2,
         Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
-          #13, '"', LazPackage.IDAsString, '"']),
-        mtConfirmation,[mbYes,mbNo],0)=mrNo
+          #13, '"', LazPackage.IDAsString, '"'])+s,
+        mt,[mbYes,mbNo],0)=mrNo
       then
         exit;
       LazPackage.RemoveFile(CurFile);
