@@ -1277,9 +1277,6 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 var
   DesignOnlySignal: boolean;
   ShiftState: TShiftState;
-  {$IFNDEF GTK2_USE_OLD_CAPTURE}
-  W: PGtkWidget;
-  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 

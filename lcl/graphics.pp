@@ -795,7 +795,7 @@ type
     procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); virtual;
     procedure LoadFromLazarusResource(const ResName: String); virtual;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
-    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
+    procedure LoadFromResourceID(Instance: THandle; ResID: PtrUInt); virtual;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual;
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat); virtual;
@@ -1626,7 +1626,7 @@ type
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
-    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); override;
+    procedure LoadFromResourceID(Instance: THandle; ResID: PtrUInt); override;
     procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;

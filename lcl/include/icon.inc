@@ -682,7 +682,7 @@ begin
   LoadFromResourceHandle(Instance, ResHandle);
 end;
 
-procedure TCustomIcon.LoadFromResourceID(Instance: THandle; ResID: Integer);
+procedure TCustomIcon.LoadFromResourceID(Instance: THandle; ResID: PtrUInt);
 var
   ResType: TResourceType;
   ResHandle: TFPResourceHandle;
