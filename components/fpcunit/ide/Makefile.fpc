@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for fpcunitide 0.1
 #
-#   This file was generated on 20.09.2010
+#   This file was generated on 26.10.2010
 
 [package]
 name=fpcunitide
@@ -12,7 +12,7 @@ version=0.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=.
-options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
+options= -MObjFPC -Scgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=fpcunitide.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunitide$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunitide$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/fpcunitide.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunitide$(PPUEXT) compiled
