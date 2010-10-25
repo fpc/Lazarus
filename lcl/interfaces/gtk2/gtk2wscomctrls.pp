@@ -279,7 +279,11 @@ begin
     if (Orientation = trHorizontal) then
       Widget := gtk_hscale_new(Adjustment)
     else
+    begin
       Widget := gtk_vscale_new(Adjustment);
+      if not gtk_range_get_inverted(PGtkRange(Widget)) then
+        gtk_range_set_inverted(PGtkRange(Widget), True);
+    end;
 
      gtk_scale_set_digits(PGtkScale(Widget), 0);
   end;
@@ -307,9 +311,22 @@ var
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then
     Exit;
+
   with ATrackBar do
   begin
     wHandle := Handle;
+
+    if Orientation = trHorizontal then
+    begin
+      if gtk_range_get_inverted(PGtkRange(wHandle)) then
+       gtk_range_set_inverted(PGtkRange(wHandle), False);
+    end else
+    begin
+      if not gtk_range_get_inverted(PGtkRange(wHandle)) then
+       gtk_range_set_inverted(PGtkRange(wHandle), False);
+    end;
+
+
     Adjustment := gtk_range_get_adjustment(GTK_RANGE(Pointer(wHandle)));
     // min >= max causes crash
     Adjustment^.lower := Min;
