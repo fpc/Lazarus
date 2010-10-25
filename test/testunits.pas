@@ -31,7 +31,7 @@ uses
   bug8432, testfileutil, testfileproc,
   // lcltests
   testunicode, testpen
-   {$IFNDEF NoSemiAutomatedTests}
+  {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , semiautotest, idesemiautotests, lclsemiautotests
   {$endif}
