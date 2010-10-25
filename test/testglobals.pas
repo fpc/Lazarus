@@ -31,11 +31,13 @@ var
   PrimaryConfigPath: string;
   BugsTestSuite: TTestSuite;
   LCLTestSuite: TTestSuite;
+  SemiAutoTestSuite: TTestSuite;
 
 // reads the output from a process and puts it in a memory stream
 function ReadOutput(AProcess:TProcess): TStringList;
 procedure AddToBugsTestSuite(ATest: TTest);
 procedure AddToLCLTestSuite(ATestClass: TClass);
+procedure AddToSemiAutoTestSuite(ATestClass: TClass);
 
 implementation
 
@@ -98,12 +100,19 @@ begin
   LCLTestSuite.AddTestSuiteFromClass(ATestClass);
 end;
 
+procedure AddToSemiAutoTestSuite(ATestClass: TClass);
+begin
+  SemiAutoTestSuite.AddTestSuiteFromClass(ATestClass);
+end;
+
 initialization
   GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
   LCLTestSuite := TTestSuite.Create('LCL tests');
   GetTestRegistry.AddTest(LCLTestSuite);
+  SemiAutoTestSuite := TTestSuite.Create('Semi Automatic tests');
+  GetTestRegistry.AddTest(SemiAutoTestSuite);
 
 end.
 

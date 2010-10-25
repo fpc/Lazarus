@@ -40,7 +40,7 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="11">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -86,13 +86,23 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPen"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="semiauto\semiautotest.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="semiautotest"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="semiauto\idesemiautotests.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="idesemiautotests"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;lcltests"/>
+      <OtherUnitFiles Value="bugs;lcltests;semiauto"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
