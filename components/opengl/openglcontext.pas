@@ -277,7 +277,7 @@ begin
         Handle := Message.DC;
       Brush.Color:=clLtGray;
       Pen.Color:=clRed;
-      Rectangle(0,0,Self.Width-1,Self.Height-1);
+      Rectangle(0,0,Self.Width,Self.Height);
       MoveTo(0,0);
       LineTo(Self.Width,Self.Height);
       MoveTo(0,Self.Height);
