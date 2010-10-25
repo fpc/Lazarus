@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazControls 0.0
 #
-#   This file was generated on 25.10.2010
+#   This file was generated on 10/25/2010
 
 [package]
 name=lazcontrols
@@ -12,7 +12,7 @@ version=0.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=.
-options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scghi
+options= -MObjFPC -Scghi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=lazcontrols.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazcontrols$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontrols$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazControls.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontrols$(PPUEXT) compiled
