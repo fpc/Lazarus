@@ -209,9 +209,9 @@ type
     UpdateRevisionIncCheckBox: TCheckBox;
     WithStaticPackagesCheckBox: TCheckBox;
     ItemListHeader: THeaderControl;
-    Notebook: TNotebook;
-    QuickBuildOptionsPage: TPage;
-    AdvancedBuildOptionsPage: TPage;
+    Notebook: TPageControl;
+    QuickBuildOptionsPage: TTabSheet;
+    AdvancedBuildOptionsPage: TTabSheet;
     CBLDBtnPanel: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
     procedure AdvancedBuildOptionsPageResize(Sender: TObject);
@@ -1212,7 +1212,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.NotebookPageChanged(Sender: TObject);
 begin
-  FAdvanced := Notebook.ActivePageComponent = AdvancedBuildOptionsPage;
+  FAdvanced := Notebook.ActivePage = AdvancedBuildOptionsPage;
 end;
 
 procedure TConfigureBuildLazarusDlg.QuickBuildOptionsRadioGroupClick(
