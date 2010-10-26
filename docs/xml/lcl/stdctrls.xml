@@ -2346,8 +2346,9 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnGetItems">
-        <short>Event handler when items can be just-in-time populated before showing the drop-down list.</short>
-        <descr/>
+        <short>Event handler when items can be populated</short>
+        <descr>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation. This event allows to handle both cases with one event.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
