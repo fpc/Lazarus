@@ -98,6 +98,7 @@ type
   private
     fPropertyGrid : TCustomPropertiesGrid;
     {$IFNDEF EXTOI}
+    fcboxObjList  : TComboBox;
     fBtn,fBtn2    : TButton;
     fPanelHeader  : TPanel;
     fLastHeight   : Word;
@@ -118,12 +119,14 @@ type
     procedure DoHide; override;
     {$ELSE}
     procedure DoOnResize; override;
+    procedure DoSetSizes;
     {$ENDIF}
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
 
     procedure Select(Obj: TObject);
+    procedure cboxObjListOnChanged(Sender: TObject);
     procedure SetModifiedEvent(AEvent: TNotifyEvent);
     procedure Refresh;
   end;
@@ -6299,36 +6302,56 @@ end;
 procedure TfrObjectInspector.DoOnResize;
 begin
   inherited DoOnResize;
-
   if  not (Assigned(fPanelHeader) or Assigned(fBtn) or Assigned(fPropertyGrid)) then
     Exit;
+  DoSetSizes
+end;
+
+procedure TfrObjectInspector.DoSetSizes;
+var
+  iLeft, iWidth: integer;
+begin
+  iLeft := 5;
+  iWidth := Self.Width-10;
 
   with fPanelHeader do
   begin
     Height:=18;
-    Left  :=5;
+    Left  :=iLeft;
     Top   :=5;
-    Width :=Self.Width-10;
+    Width :=iWidth;
   end;
 
   with fBtn2 do
   begin
     Left   :=fPanelHeader.Width-14;
     Top    :=1;
+    Height :=15;
+    Width  :=15;
   end;
 
   with fBtn do
   begin
     Left   :=fPanelHeader.Width-30;
     Top    :=1;
+    Height :=15;
+    Width  :=15;
+  end;
+
+  with fcboxObjList do
+  begin
+    Left  :=iLeft;
+    Top   :=fPanelHeader.Top+fPanelHeader.Height+1;
+    Height:=18;
+    Width :=iWidth;
   end;
 
   with fPropertyGrid do
   begin
-    Left  :=5;
-    Top   :=fPanelHeader.Top+fPanelHeader.Height+1;
-    Width :=Self.Width-10;
-    Height:=self.Height-(fPanelHeader.Top+fPanelHeader.Height)-5;
+    Left  :=iLeft;
+    Top   :=fcboxObjList.Top+fcboxObjList.Height+2;
+    Width :=iWidth;
+    Height:=self.Height-(fcboxObjList.Top+fcboxObjList.Height)-5;
   end;
 end;
 {$ENDIF}
@@ -6339,7 +6362,7 @@ begin
 
   {$IFDEF EXTOI}
   Width  :=220;
-  Height :=250;
+  Height :=300;
   Top    :=Screen.Height div 2;
   Left   :=40;
   Visible     :=False;
@@ -6359,8 +6382,8 @@ begin
 
   Parent :=TWinControl(aOwner);
   Width  :=220;
-  Height :=250;
-  Top    :=40;
+  Height :=300;
+  Top    :=120;
   Left   :=40;
   Borderstyle :=bsNone;
   BevelInner  :=bvLowered;
@@ -6374,10 +6397,6 @@ begin
   with fPanelHeader do
   begin
     Parent:=Self;
-    Height:=18;
-    Left  :=5;
-    Top   :=5;
-    Width :=240-10;
     Color :=clSilver;
     BorderStyle:=bsNone;
     BevelInner:=bvNone;
@@ -6394,10 +6413,6 @@ begin
   begin
     Parent:=fPanelHeader;
     Caption:='-';
-    Height :=15;
-    Width  :=15;
-    Left   :=fPanelHeader.Width-30;
-    Top    :=1;
     TabStop:=False;
     OnClick:=@BtnClick;
   end;
@@ -6407,12 +6422,16 @@ begin
   begin
     Parent:=fPanelHeader;
     Caption:='x';
-    Height :=15;
-    Width  :=15;
-    Left   :=fPanelHeader.Width-14;
-    Top    :=1;
     TabStop:=False;
     OnClick:=@BtnClick;
+  end;
+
+  fcboxObjList  := TComboBox.Create(Self);
+  with fcboxObjList do
+  begin
+    Parent:=Self;
+    ShowHint:=false; //cause problems in windows
+    Onchange := @cboxObjListOnChanged;
   end;
 
   // create the ObjectInspector
@@ -6421,13 +6440,11 @@ begin
   begin
     Name  :='PropertyGrid';
     Parent:=Self;
-    Left  :=5;
-    Top   :=fPanelHeader.Top+fPanelHeader.Height+1;
-    Width :=240-10;
-    Height:=self.Height-(fPanelHeader.Top+fPanelHeader.Height)-5;
     ShowHint:=false; //cause problems in windows
     fPropertyGrid.SaveOnChangeTIObject:=false;
   end;
+
+  DoSetSizes;
   {$ENDIF}
 end;
 
@@ -6441,9 +6458,21 @@ procedure TfrObjectInspector.Select(Obj: TObject);
 var
   i      : Integer;
   NewSel : TPersistentSelectionList;
+  frDsg: TfrDesignerForm;
 begin
+  if Objects.Count <> fcboxObjList.Items.Count then
+  begin
+    fcboxObjList.Clear;
+    for i:=0 to Objects.Count-1 do
+       fcboxObjList.AddItem(TfrView(Objects[i]).Name, TObject(Objects[i]));
+  end;
+
   if (Obj=nil) or (Obj is TPersistent) then
-    fPropertyGrid.TIObject := TPersistent(Obj)
+  begin
+    fPropertyGrid.TIObject := TPersistent(Obj);
+    if Obj <> nil then
+      fcboxObjList.ItemIndex := fcboxObjList.Items.IndexOfObject(Obj);
+  end
   else
   if Obj is TFpList then
     with TFpList(Obj) do
@@ -6458,6 +6487,27 @@ begin
         NewSel.Free;
       end;
     end;
+end;
+
+procedure TfrObjectInspector.cboxObjListOnChanged(Sender: TObject);
+var
+  i: Integer;
+  vObj: TObject;
+begin
+  if fcboxObjList.ItemIndex >= 0 then
+  begin
+    SelNum := 0;
+    for i := 0 to Objects.Count - 1 do
+      TfrView(Objects[i]).Selected := False;
+    vObj := fcboxObjList.Items.Objects[fcboxObjList.ItemIndex];
+    if vObj is TfrView then
+    begin
+      TfrView(vObj).Selected:=True;
+      SelNum := 1;
+      frDesigner.Invalidate;
+    end;
+    Select(vObj);
+  end;
 end;
 
 procedure TfrObjectInspector.SetModifiedEvent(AEvent: TNotifyEvent);
