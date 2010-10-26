@@ -32,7 +32,7 @@ uses
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   // IDE
-  IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions,
+  IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
   MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
   BuildLazDialog, BuildManager, BaseBuildManager;
@@ -595,6 +595,9 @@ var
   CompilerParams: String;
   ToolBefore: TProjectCompilationToolOptions;
   ToolAfter: TProjectCompilationToolOptions;
+  UnitOutputDirectory: String;
+  TargetExeName: String;
+  TargetExeDir: String;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -636,13 +639,35 @@ begin
   WorkingDir:=Project1.ProjectDirectory;
   SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
+  // create unit output directory
+  UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
+  if not ForceDirectoriesUTF8(UnitOutputDirectory) then
+    Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
+
+  // create target output directory
+  TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+  TargetExeDir := ExtractFilePath(TargetExeName);
+  if not ForceDirectoriesUTF8(TargetExeDir) then
+    Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
+
   // update all lrs files
   MainBuildBoss.UpdateProjectAutomaticFiles('');
+
+  // create application bundle
+  if Project1.UseAppBundle and (Project1.MainUnitID>=0)
+  and (MainBuildBoss.GetLCLWidgetType(true)=LCLPlatformDirNames[lpCarbon])
+  then begin
+    if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
+      Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
+    if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
+      Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
+  end;
 
   // regenerate resources
   if not Project1.Resources.Regenerate(SrcFileName, False, True, '') then
     DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
 
+  // get compiler parameters
   if CompilerOverride <> '' then
     CompilerFilename := CompilerOverride
   else
