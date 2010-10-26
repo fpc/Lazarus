@@ -56,6 +56,7 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
+    function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -125,6 +126,12 @@ end;
 procedure TNoGUIWidgetSet.AppSetTitle(const ATitle: string);
 begin
 
+end;
+
+function TNoGUIWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+begin
+  Result:=0;
 end;
 
 constructor TNoGUIWidgetSet.Create;
