@@ -4604,6 +4604,7 @@ resourcestring
   lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = '%soverride the '
     +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
     +'environmentoptions.xml';
+  lisOverrideTheProjectBuildMode = '%soverride the project build mode.';
   lisNo = 'No';
   lisProjectChangedOnDisk = 'Project changed on disk';
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information '

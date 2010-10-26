@@ -5113,6 +5113,8 @@ begin
     FMacroValues:=nil;
   end;
   SessionModified:=true;
+  if Self=Project1 then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);

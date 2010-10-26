@@ -3332,7 +3332,6 @@ begin
   if NewMode=Project1.ActiveBuildMode then exit;
 
   Project1.ActiveBuildMode:=NewMode;
-  IncreaseBuildMacroChangeStamp;
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
     Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
 end;

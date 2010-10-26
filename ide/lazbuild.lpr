@@ -46,6 +46,7 @@ type
     FBuildAll: boolean;
     FBuildIDE: boolean;
     FBuildIDEOptions: string;
+    FBuildModeOverride: String;
     FBuildRecursive: boolean;
     fCompilerOverride: String;
     fLazarusDirOverride : String;
@@ -135,6 +136,7 @@ type
     property CPUOverride: String read fCPUOverride write fCPUOverride;
     property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
+    property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
   end;
 
 var
@@ -598,6 +600,7 @@ var
   UnitOutputDirectory: String;
   TargetExeName: String;
   TargetExeDir: String;
+  NewBuildMode: TProjectBuildMode;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -609,12 +612,21 @@ begin
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
 
-  if (Length(OSOverride) <> 0) then
+  // first override build mode
+  if (BuildModeOverride<>'') then begin
+    NewBuildMode:=Project1.BuildModes.Find(BuildModeOverride);
+    if NewBuildMode=nil then
+      Error(ErrorBuildFailed,'invalid build mode '+BuildModeOverride);
+    Project1.ActiveBuildMode:=NewBuildMode;
+  end;
+  // then override specific options
+  if (OSOverride<>'') then
     Project1.CompilerOptions.TargetOS:=OSOverride;
-  if (Length(CPUOverride) <> 0) then
+  if (CPUOverride<>'') then
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
-  if (Length(WidgetSetOverride) <> 0) then
+  if (WidgetSetOverride<>'') then
     Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+  // apply options
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
     Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
 
@@ -1080,6 +1092,8 @@ begin
     LongOptions.Add('operating-system:');
     LongOptions.Add('os:');
     LongOptions.Add('cpu:');
+    LongOptions.Add('bm:');
+    LongOptions.Add('build-mode:');
     LongOptions.Add('compiler:');
     LongOptions.Add('lazarusdir:');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
@@ -1139,7 +1153,13 @@ begin
     // cpu
     if HasOption('cpu') then
       CPUOverride := GetOptionValue('cpu');
-      
+
+    // build mode
+    if HasOption('bm') then
+      BuildModeOverride := GetOptionValue('bm')
+    else if HasOption('build-mode') then
+      BuildModeOverride := GetOptionValue('build-mode');
+
     // compiler
     if HasOption('compiler') then
       CompilerOverride := GetOptionValue('compiler');
@@ -1202,6 +1222,11 @@ begin
     lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [space,
     LazConf.GetDefaultTargetCPU]),
                       75, 22)));
+  writeln('');
+  writeln('--build-mode=<project build mode>');
+  writeln('or --bm=<project build mode>');
+  writeln(UTF8ToConsole(BreakString(Format(lisOverrideTheProjectBuildMode,
+    [space]), 75, 22)));
   writeln('');
   writeln('--compiler=<ppcXXX>');
   writeln(UTF8ToConsole(BreakString(Format(
