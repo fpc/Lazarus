@@ -749,7 +749,10 @@ begin
       + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command = ' + IntToStr(AMenuItem.Parent.Command));
     {$endif}
     if not GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
-      DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo failed');
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo failed')
+      {$endif}
+      ;
     if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
     begin
       //roozbeh: wont work on smartphones...i guess i have to remove and add new one with submenu flag
@@ -760,7 +763,10 @@ begin
         AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command = ' + IntToStr(AMenuItem.Parent.Command));
       {$endif}
       if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
-        DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfo failed');
+        {$ifdef VerboseWinCEMenu}
+        DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfo failed')
+        {$endif}
+        ;
     end;
   end;
 {  else if (AMenuItem.Parent.Parent = nil) and
