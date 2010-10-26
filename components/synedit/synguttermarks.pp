@@ -182,7 +182,10 @@ begin
     Canvas.Brush.Color := Gutter.Color;
   LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
 
-  FColumnWidth := FBookMarkOpt.BookmarkImages.Width;
+  if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then
+    FColumnWidth := FBookMarkOpt.BookmarkImages.Width
+  else
+    FColumnWidth := Width;
   FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
 
   if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
