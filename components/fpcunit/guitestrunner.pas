@@ -405,7 +405,7 @@ begin
     Canvas.Font.Color := clWhite;
     if Assigned(TestSuite) then
     begin
-      if TestsCounter <> 0 then
+      if alltests - skipsCounter <> 0 then
       begin
         alltests := TestSuite.CountTestCases;
         if FailureCounter + ErrorCounter = 0 then
@@ -416,7 +416,6 @@ begin
           skipsCounter)]);
         msg := Format(rsErrors, [msg, IntToStr(ErrorCounter)]);
         msg := Format(rsFailures, [msg, IntToStr(FailureCounter)]);
-        //Canvas.Brush.Color := clNone;
         OldStyle := Canvas.Brush.Style;
         Canvas.Brush.Style := bsClear;
         Canvas.Textout(10, 10,  msg);
@@ -697,6 +696,7 @@ begin
     SkipUncheckedTests(testResult, TestTree.Selected);
     skipsCounter := testResult.NumberOfSkippedTests;
     testResult.AddListener(self);
+    pbBar.Invalidate;
     w := TXMLResultsWriter.Create(nil);
     w.FileName := 'null'; // prevents output to the console
     testResult.AddListener(w);
