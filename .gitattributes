@@ -3209,8 +3209,6 @@ examples/gridexamples/spreadsheet/main.pas svneol=native#text/pascal
 examples/gridexamples/spreadsheet/spreadsheet.ico -text
 examples/gridexamples/spreadsheet/spreadsheet.lpi svneol=native#text/plain
 examples/gridexamples/spreadsheet/spreadsheet.lpr svneol=native#text/pascal
-examples/gridexamples/spreadsheet/spreadsheet.lrs svneol=native#text/pascal
-examples/gridexamples/spreadsheet/spreadsheet.rc svneol=native#text/plain
 examples/gridexamples/title_images/main.lfm svneol=native#text/plain
 examples/gridexamples/title_images/main.lrs svneol=native#text/pascal
 examples/gridexamples/title_images/main.pas svneol=native#text/plain
