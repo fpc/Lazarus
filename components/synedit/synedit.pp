@@ -5479,16 +5479,14 @@ end;
 
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
 var
-  NewCaret: TPoint;
   LogCaret: TPoint;
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark])
     and (fBookMarks[BookMark].Line <= fLines.Count)
   then begin
-    NewCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
-    LogCaret:=PhysicalToLogicalPos(NewCaret);
+    LogCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
     DoIncPaintLock(Self); // No editing is taking place
-    FCaret.LineCharPos := NewCaret;
+    FCaret.LineBytePos := LogCaret;
     SetBlockEnd(LogCaret);
     SetBlockBegin(LogCaret);
     DoDecPaintLock(Self);
@@ -5510,6 +5508,7 @@ begin
   if (BookMark in [0..9]) and (Y >= 1) and (Y <= Max(1, fLines.Count)) then
   begin
     mark := TSynEditMark.Create(self);
+    X := PhysicalToLogicalPos(Point(X, Y)).x;
     with mark do begin
       Line := Y;
       Column := X;
@@ -6812,6 +6811,7 @@ begin
       if Marks[i].IsBookmark and (Marks[i].BookmarkNumber = BookMark) then begin
         X := Marks[i].Column;
         Y := Marks[i].Line;
+        X := LogicalToPhysicalPos(Point(X, Y)).x;
         Result := true;
         Exit;
       end;

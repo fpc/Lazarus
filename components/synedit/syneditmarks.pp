@@ -90,7 +90,7 @@ type
 
     property OldLine: integer read FOldLine; // not used, if synedit insert/delete lines
     property Line: integer read GetLine write SetLine;
-    property Column: integer read FColumn write SetColumn;
+    property Column: integer read FColumn write SetColumn;  // Logical position
     property Priority: integer read FPriority write SetPriority;
     property Visible: boolean read FVisible write SetVisible;
 
@@ -1117,7 +1117,7 @@ end;
 procedure TSynEditMarkList.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
   aLineBrkCnt: Integer; aText: String);
 var
-  i, Col: Integer;
+  i: Integer;
   CurLine: TSynEditMarkLine;
   LinePos, LineBSize: Integer;
   f: Boolean;
@@ -1128,7 +1128,6 @@ begin
     exit;
 
   LinePos := CurLine.LineNum;
-  Col := FLines.LogicalToPhysicalPos(Point(aBytePos, aLinePos)).x;
   FInternalIterator.Invalidate; // TODO: better notification system
 
   if aLineBrkCnt > 0 then begin
@@ -1138,9 +1137,9 @@ begin
       i := CurLine.Count - 1;
       while i >= 0 do begin
         Mrk := CurLine.Items[i];
-        if (Mrk.Column > col) then begin
+        if (Mrk.Column > aBytePos) then begin
           Mrk.Line   := Mrk.Line + aLineBrkCnt;
-          Mrk.Column := Mrk.Column - Col + 1;
+          Mrk.Column := Mrk.Column - aBytePos + 1;
         end;
         dec(i);
       end;
@@ -1158,9 +1157,9 @@ begin
         Mrk := CurLine.Items[i];
         Mrk.Line := aLinePos;
         if f then
-          Mrk.Column := Mrk.Column + Col - 1
+          Mrk.Column := Mrk.Column + aBytePos - 1
         else
-          Mrk.Column := Col;  // or delete ?
+          Mrk.Column := aBytePos;  // or delete ?
         dec(i);
       end;
       CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
@@ -1173,13 +1172,13 @@ begin
   if aLinePos = LinePos then begin
     if aCount > 0 then begin
       for i := 0 to CurLine.Count - 1 do
-        if (CurLine.Items[i].Column > col) then
+        if (CurLine.Items[i].Column > aBytePos) then
           CurLine.Items[i].Column := CurLine.Items[i].Column + aCount
     end
     else if aCount < 0 then begin
       for i := 0 to CurLine.Count - 1 do
-        if (CurLine.Items[i].Column > col) then
-          CurLine.Items[i].Column := Max(Col, CurLine.Items[i].Column + aCount);
+        if (CurLine.Items[i].Column > aBytePos) then
+          CurLine.Items[i].Column := Max(aBytePos, CurLine.Items[i].Column + aCount);
     end;
   end;
 
