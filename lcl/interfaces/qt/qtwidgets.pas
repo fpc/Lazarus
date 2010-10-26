@@ -1259,6 +1259,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function getClientBounds: TRect; override;
+    function getClientOffset: TPoint; override;
 
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
@@ -9350,6 +9351,7 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtHeaderView.signalSectionClicked index ',logicalIndex);
   {$endif}
+
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
   
@@ -10100,6 +10102,18 @@ begin
     else
       Inc(Result.Left, Offset);
   end;
+end;
+
+function TQtTreeWidget.getClientOffset: TPoint;
+var
+  Offset: Integer;
+  AOrientation: QtOrientation;
+begin
+  Offset := getHeaderHeight(AOrientation);
+  if Offset > 0 then
+    Result := Point(0, 0)
+  else
+    Result := inherited getClientOffset;
 end;
 
 {------------------------------------------------------------------------------
