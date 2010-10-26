@@ -610,25 +610,19 @@ var
     itop : Longint;
     LineHeight: LongInt;
   begin
-    iTop := 0;
     if Line < 0 then Exit;
     if Assigned(FBookMarkOpt.BookmarkImages) and
        (DebugMarksImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
        (DebugMarksImageIndex >= 0) then
     begin
       LineHeight := TSynEdit(SynEdit).LineHeight;
-      if not FBookMarkOpt.DrawBookmarksFirst then
-        aGutterOffs := AClip.Left
-      else
-      if aGutterOffs = 0 then
-        aGutterOffs := FBookMarkOpt.BookmarkImages.Width + AClip.Left;
+      iTop := 0;
       if LineHeight > FBookMarkOpt.BookmarkImages.Height then
         iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
-      with FBookMarkOpt do
-        BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs,
-                            iTop + Line * LineHeight, DebugMarksImageIndex, True);
 
-      Inc(aGutterOffs, FBookMarkOpt.BookmarkImages.Width);
+      FBookMarkOpt.BookmarkImages.Draw
+        (Canvas, FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
+         iTop + Line * LineHeight, DebugMarksImageIndex, True);
     end
   end;
 

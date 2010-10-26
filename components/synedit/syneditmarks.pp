@@ -5,7 +5,7 @@ unit SynEditMarks;
 interface
 
 uses
-  Classes, SysUtils, math, SynEditMiscClasses, SynEditTextBase, LCLProc;
+  Classes, Controls, SysUtils, math, SynEditMiscClasses, SynEditTextBase, LCLProc;
 
 const
 // Max number of book/gutter marks returned from GetEditMarksForLine - that
@@ -50,6 +50,7 @@ type
 
   TSynEditMark = class
   private
+    FImageList: TImageList;
     FMarkLine: TSynEditMarkLine;
     FMarkList: TSynEditMarkList;
     FLine: Integer; // Only valid, if not part of a TSynEditMarkLine
@@ -86,15 +87,24 @@ type
     procedure DecChangeLock;
 
     property OwnerEdit: TSynEditBase read FOwnerEdit write SetOwnerEdit;
+
+    property OldLine: integer read FOldLine; // not used, if synedit insert/delete lines
     property Line: integer read GetLine write SetLine;
-    property OldLine: integer read FOldLine;
     property Column: integer read FColumn write SetColumn;
     property Priority: integer read FPriority write SetPriority;
-    property ImageIndex: integer read FImage write SetImage;
-    property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
     property Visible: boolean read FVisible write SetVisible;
-    property InternalImage: boolean read FInternalImage write SetInternalImage;
+
+    property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
     property IsBookmark: boolean read GetIsBookmark;
+
+    // InternalImage: Use Internal bookmark image 0..9;
+    //                Ignore "BookMarkOpt.BookmarkImages" or "ImageList"
+    property InternalImage: boolean read FInternalImage write SetInternalImage;
+    // ImageIndex:    Index in "BookMarkOpt.BookmarkImages" or "ImageList"
+    property ImageIndex: integer read FImage write SetImage;
+    // ImageList:     If assigned, then use instead of "BookMarkOpt.BookmarkImages"
+    //                Must have same width as "BookMarkOpt.BookmarkImages"
+    property ImageList: TImageList read FImageList write FImageList;
   end;
 
   { TSynEditMarkLine }
@@ -574,7 +584,7 @@ end;
 function CompareSynEditMarks(Mark1, Mark2: Pointer): Integer;
 var
   m1: TSynEditMark absolute Mark1;
-  m2: TSynEditMark absolute Mark1;
+  m2: TSynEditMark absolute Mark2;
 begin
   case m1.MarkLine.FCurrentSort1 of
     smsoColumn:        Result := m2.Column - m1.Column;
@@ -633,7 +643,7 @@ begin
     exit;
 
   FCurrentSort1 := PrimaryOrder;
-  FCurrentSort1 := SecondaryOrder;
+  FCurrentSort2 := SecondaryOrder;
 
   if PrimaryOrder = smsoUnsorted then
     exit;

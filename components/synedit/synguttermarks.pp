@@ -5,8 +5,8 @@ unit SynGutterMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, SynGutterBase,
-  SynEditMiscClasses, SynEditMarks;
+  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, Controls, math,
+  SynGutterBase, SynEditMiscClasses, SynEditMarks;
 
 type
 
@@ -14,6 +14,8 @@ type
 
   TSynGutterMarks = class(TSynGutterPartBase)
   private
+    FColumnCount: Integer;
+    FColumnWidth: Integer;
     FDebugMarksImageIndex: Integer;
     FInternalImage: TSynInternalImage;
   protected
@@ -22,8 +24,11 @@ type
     function  PreferedWidth: Integer; override;
     // PaintMarks: True, if it has any Mark, that is *not* a bookmark
     function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
-                       var aGutterOffs: integer): Boolean;
+                       var aFirstCustomColumnIdx: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
+
+    property ColumnWidth: Integer read FColumnWidth;
+    property ColumnCount: Integer read FColumnCount;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -64,74 +69,97 @@ begin
 end;
 
 function TSynGutterMarks.PaintMarks(aScreenLine: Integer; Canvas : TCanvas;
-  AClip : TRect; var aGutterOffs: integer): Boolean;
+  AClip : TRect; var aFirstCustomColumnIdx: integer): Boolean;
 var
   LineHeight: Integer;
 
-  procedure DoPaintMark(CurMark: TSynEditMark);
+  procedure DoPaintMark(CurMark: TSynEditMark; aRect: TRect);
   var
-    itop : Longint;
+    img: TImageList;
   begin
-    iTop := 0;
-    if Assigned(FBookMarkOpt.BookmarkImages) and not CurMark.InternalImage then
-    begin
-      if (CurMark.ImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
-         (CurMark.ImageIndex >= 0) then
-      begin
-        if CurMark.IsBookmark = FBookMarkOpt.DrawBookmarksFirst then
-          aGutterOffs := AClip.Left
-        else
-        if aGutterOffs = 0 then
-          aGutterOffs := FBookMarkOpt.BookmarkImages.Width + AClip.Left;
-        if LineHeight > FBookMarkOpt.BookmarkImages.Height then
-          iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
-        with FBookMarkOpt do
-          BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs,
-                              iTop + aScreenLine * LineHeight, CurMark.ImageIndex, True);
-
-        Inc(aGutterOffs, FBookMarkOpt.BookmarkImages.Width);
-      end;
-    end
-    else
-    begin
+    if CurMark.InternalImage or
+       ( (not assigned(FBookMarkOpt.BookmarkImages)) and
+         (not assigned(CurMark.ImageList)) )
+    then begin
+      // draw internal image
       if CurMark.ImageIndex in [0..9] then
       begin
         if not Assigned(FInternalImage) then
           FInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
-        if aGutterOffs = 0 then
-          aGutterOffs := AClip.Left;
-        FInternalImage.DrawMark(Canvas, CurMark.ImageIndex,
-            FBookMarkOpt.LeftMargin + aGutterOffs, aScreenLine * LineHeight,
-            LineHeight);
-        Inc(aGutterOffs, FBookMarkOpt.Xoffset);
+        FInternalImage.DrawMark(Canvas, CurMark.ImageIndex, aRect.Left, aRect.Top,
+                                LineHeight);
       end;
-    end;
+    end
+    else begin
+      // draw from ImageList
+      if assigned(CurMark.ImageList) then
+        img := CurMark.ImageList
+      else
+        img := FBookMarkOpt.BookmarkImages;
+
+      if (CurMark.ImageIndex <= img.Count) and (CurMark.ImageIndex >= 0) then begin
+        if LineHeight > img.Height then
+          aRect.Top := (aRect.Top + aRect.Bottom - img.Height) div 2;
+
+        img.Draw(Canvas, aRect.Left, aRect.Top, CurMark.ImageIndex, True);
+      end;
+    end
   end;
 
 var
-  iLine, j: Integer;
+  j: Integer;
   MLine: TSynEditMarkLine;
+  MarkRect: TRect;
+  LastMarkIsBookmark: Boolean;
 begin
   Result := False;
-
-  LineHeight := TSynEdit(SynEdit).LineHeight;
-  iLine := FoldView.TextIndex[aScreenLine] + 1;
-
-  MLine := TSynEdit(SynEdit).Marks.Line[iLine];
+  aFirstCustomColumnIdx := 0;
+  if FBookMarkOpt.DrawBookmarksFirst then
+    aFirstCustomColumnIdx := 1;
+  MLine := TSynEdit(SynEdit).Marks.Line[FoldView.TextIndex[aScreenLine] + 1];
   if MLine = nil then
     exit;
-  if FBookMarkOpt.DrawBookmarksFirst then
-    MLine.Sort(smsoBookmarkFirst, smsoColumn)
-  else
-    MLine.Sort(smsoBookMarkLast, smsoColumn);
 
+  if FBookMarkOpt.DrawBookmarksFirst then
+    MLine.Sort(smsoBookmarkFirst, smsoPriority)
+  else
+    MLine.Sort(smsoBookMarkLast, smsoPriority);
+
+  LineHeight := TSynEdit(SynEdit).LineHeight;
+  //Gutter.Paint always supplies AClip.Left = GutterPart.Left
+  MarkRect := Rect(AClip.Left + FBookMarkOpt.LeftMargin,
+                   aScreenLine * LineHeight,
+                   AClip.Left + FColumnWidth,
+                   (aScreenLine+1) * LineHeight);
+
+
+  LastMarkIsBookmark := FBookMarkOpt.DrawBookmarksFirst;
   for j := 0 to MLine.Count - 1 do begin
-    if not MLine[j].Visible then
+    if (not MLine[j].Visible) or
+       (MLine[j].IsBookmark and (not FBookMarkOpt.GlyphsVisible))
+    then
       continue;
-    if MLine[j].IsBookmark and not FBookMarkOpt.GlyphsVisible then
-      continue;
-    DoPaintMark(MLine[j]);
-    Result := Result or not MLine[j].IsBookmark;
+
+    if (MLine[j].IsBookmark <> LastMarkIsBookmark) and
+       (j = 0) and (FColumnCount > 1)
+    then begin
+      // leave one column empty
+      MarkRect.Left := MarkRect.Right;
+      MarkRect.Right := Max(MarkRect.Right + FColumnWidth, AClip.Right);
+    end;
+
+    DoPaintMark(MLine[j], MarkRect);
+    MarkRect.Left := MarkRect.Right;
+    MarkRect.Right := Max(MarkRect.Right + FColumnWidth, AClip.Right);
+
+    Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
+    if (MLine[j].IsBookmark <> LastMarkIsBookmark)  and
+       (not MLine[j].IsBookmark) and (j > 0)
+    then
+      aFirstCustomColumnIdx := j; // first none-bookmark column
+
+    if j > ColumnCount then break;
+    LastMarkIsBookmark := MLine[j].IsBookmark;
   end;
 end;
 
@@ -154,7 +182,9 @@ begin
     Canvas.Brush.Color := Gutter.Color;
   LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
 
-  // now the gutter marks
+  FColumnWidth := FBookMarkOpt.BookmarkImages.Width;
+  FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
+
   if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
   begin
     for i := FirstLine to LastLine do
