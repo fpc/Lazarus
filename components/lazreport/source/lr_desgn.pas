@@ -117,9 +117,6 @@ type
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     {$IFDEF EXTOI}
     procedure DoHide; override;
-    {$ELSE}
-    procedure DoOnResize; override;
-    procedure DoSetSizes;
     {$ENDIF}
   public
     constructor Create(aOwner : TComponent); override;
@@ -6219,7 +6216,7 @@ begin
     if fBtn.Caption='-' then
     begin
       fLastHeight:=Height;
-      Height:=fPanelHeader.Height+8;
+      Height:=fPanelHeader.Height + 2*BorderWidth + 3;
       fBtn.Caption:='+';
     end
     else
@@ -6306,63 +6303,6 @@ procedure TfrObjectInspector.DoHide;
 begin
   //TODO Uncheck Menue Item
 end;
-{$ELSE}
-
-procedure TfrObjectInspector.DoOnResize;
-begin
-  inherited DoOnResize;
-  if  not (Assigned(fPanelHeader) or Assigned(fBtn) or Assigned(fPropertyGrid)) then
-    Exit;
-  DoSetSizes
-end;
-
-procedure TfrObjectInspector.DoSetSizes;
-var
-  iLeft, iWidth: integer;
-begin
-  iLeft := 5;
-  iWidth := Self.Width-10;
-
-  with fPanelHeader do
-  begin
-    Height:=18;
-    Left  :=iLeft;
-    Top   :=5;
-    Width :=iWidth;
-  end;
-
-  with fBtn2 do
-  begin
-    Left   :=fPanelHeader.Width-14;
-    Top    :=1;
-    Height :=15;
-    Width  :=15;
-  end;
-
-  with fBtn do
-  begin
-    Left   :=fPanelHeader.Width-30;
-    Top    :=1;
-    Height :=15;
-    Width  :=15;
-  end;
-
-  with fcboxObjList do
-  begin
-    Left  :=iLeft;
-    Top   :=fPanelHeader.Top+fPanelHeader.Height+1;
-    Height:=18;
-    Width :=iWidth;
-  end;
-
-  with fPropertyGrid do
-  begin
-    Left  :=iLeft;
-    Top   :=fcboxObjList.Top+fcboxObjList.Height+2;
-    Width :=iWidth;
-    Height:=self.Height-(fcboxObjList.Top+fcboxObjList.Height)-5;
-  end;
-end;
 {$ENDIF}
 
 constructor TfrObjectInspector.Create(aOwner: TComponent);
@@ -6411,35 +6351,63 @@ begin
     BevelInner:=bvNone;
     BevelOuter:=bvNone;
     Caption:=sObjectInspector;
-
+    AnchorSideLeft.Control := self;
+    AnchorSideTop.Control := self;
+    AnchorSideRight.Control := self;
+    AnchorSideRight.Side := asrBottom;
+    Anchors := [akTop, akLeft, akRight];
+    Top := 0;
+    Height := 18;
     OnMouseDown:=@HeaderMDown;
     OnMouseMove:=@HeaderMMove;
     OnMouseUp  :=@HeaderMUp;
-  end;
-
-  fBtn:=TButton.Create(fPanelHeader);
-  with fBtn do
-  begin
-    Parent:=fPanelHeader;
-    Caption:='-';
-    TabStop:=False;
-    OnClick:=@BtnClick;
   end;
 
   fBtn2:=TButton.Create(fPanelHeader);
   with fBtn2 do
   begin
     Parent:=fPanelHeader;
+    AnchorSideTop.Control := fPanelHeader;
+    AnchorSideRight.Control := fPanelHeader;
+    AnchorSideRight.Side := asrBottom;
+    AnchorSideBottom.Control := fPanelHeader;
+    AnchorSideBottom.Side := asrBottom;
+    Anchors := [akTop, akRight, akBottom];
+    BorderSpacing.Around := 1;
+    Width := fPanelHeader.Height - 2*BorderSpacing.Around;
     Caption:='x';
     TabStop:=False;
     OnClick:=@BtnClick;
   end;
 
+  fBtn:=TButton.Create(fPanelHeader);
+  with fBtn do
+  begin
+    Parent:=fPanelHeader;
+    AnchorSideTop.Control := fPanelHeader;
+    AnchorSideRight.Control := fBtn2;
+    AnchorSideBottom.Control := fPanelHeader;
+    AnchorSideBottom.Side := asrBottom;
+    Anchors := [akTop, akRight, akBottom];
+    BorderSpacing.Around := 1;
+    Width := fPanelHeader.Height - 2*BorderSpacing.Around;
+    Caption:='-';
+    TabStop:=False;
+    OnClick:=@BtnClick;
+  end;
+
+
   fcboxObjList  := TComboBox.Create(Self);
   with fcboxObjList do
   begin
     Parent:=Self;
-    ShowHint:=false; //cause problems in windows
+    AnchorSideLeft.Control := Self;
+    AnchorSideTop.Control := fPanelHeader;
+    AnchorSideTop.Side := asrBottom;
+    AnchorSideRight.Control := self;
+    AnchorSideRight.Side := asrBottom;
+    Anchors := [akTop, akLeft, akRight];
+    ShowHint := false; //cause problems in windows
     Onchange := @cboxObjListOnChanged;
   end;
 
@@ -6449,11 +6417,18 @@ begin
   begin
     Name  :='PropertyGrid';
     Parent:=Self;
+    AnchorSideLeft.Control := Self;
+    AnchorSideTop.Control := fcboxObjList;
+    AnchorSideTop.Side := asrBottom;
+    AnchorSideRight.Control := Self;
+    AnchorSideRight.Side := asrBottom;
+    AnchorSideBottom.Control := Self;
+    AnchorSideBottom.Side := asrBottom;
+    Anchors := [akTop, akLeft, akRight, akBottom];
     ShowHint:=false; //cause problems in windows
     fPropertyGrid.SaveOnChangeTIObject:=false;
+    DefaultItemHeight := fcboxObjList.Height-3;
   end;
-
-  DoSetSizes;
   {$ENDIF}
 end;
 

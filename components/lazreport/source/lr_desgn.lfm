@@ -7,9 +7,8 @@ inherited frDesignerForm: TfrDesignerForm
   HorzScrollBar.Range = 304
   VertScrollBar.Page = 413
   VertScrollBar.Range = 149
-  ActiveControl = frDock1
   Caption = 'Designer'
-  ClientHeight = 411
+  ClientHeight = 414
   ClientWidth = 695
   KeyPreview = True
   Menu = MainMenu1
@@ -26,8 +25,8 @@ inherited frDesignerForm: TfrDesignerForm
   WindowState = wsMaximized
   object StatusBar1: TStatusBar[0]
     Left = 0
-    Height = 17
-    Top = 394
+    Height = 23
+    Top = 391
     Width = 695
     Panels = <    
       item
@@ -68,7 +67,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -116,7 +114,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -164,7 +161,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -212,7 +208,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -260,7 +255,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -308,7 +302,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -356,7 +349,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -404,7 +396,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -452,7 +443,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -500,7 +490,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -548,7 +537,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -628,7 +616,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -708,7 +695,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -757,7 +743,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -807,7 +792,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -866,7 +850,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 78
         Align = alLeft
         Caption = 'Close'
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -915,7 +898,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -995,7 +977,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -1075,7 +1056,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -1155,7 +1135,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -1204,7 +1183,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           42030000424D420300000000000036000000280000000F0000000D0000000100
@@ -1325,7 +1303,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -1372,7 +1349,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -1419,7 +1395,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -1467,7 +1442,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -1514,7 +1488,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -1564,7 +1537,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           22020000424D22020000000000004200000028000000100000000F0000000100
@@ -1598,7 +1570,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           22020000424D22020000000000004200000028000000100000000F0000000100
@@ -1632,7 +1603,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           22020000424D22020000000000004200000028000000100000000F0000000100
@@ -1665,7 +1635,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         NumGlyphs = 2
         OnClick = ClB1Click
@@ -1677,7 +1646,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36080000424D3608000000000000360000002800000020000000100000000100
@@ -1757,7 +1725,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -1806,7 +1773,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -1855,7 +1821,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -1949,10 +1914,10 @@ inherited frDesignerForm: TfrDesignerForm
         object C3: TComboBox
           Tag = 8
           Left = 161
-          Height = 29
+          Height = 21
           Top = 2
           Width = 67
-          ItemHeight = 0
+          ItemHeight = 13
           Items.Strings = (
             '5'
             '6'
@@ -1981,7 +1946,7 @@ inherited frDesignerForm: TfrDesignerForm
         object C2: TComboBox
           Tag = 7
           Left = 1
-          Height = 29
+          Height = 21
           Top = 2
           Width = 155
           ItemHeight = 15
@@ -2012,7 +1977,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2060,7 +2024,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2108,7 +2071,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2156,7 +2118,6 @@ inherited frDesignerForm: TfrDesignerForm
         Width = 22
         Align = alLeft
         AllowAllUp = True
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2203,7 +2164,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         NumGlyphs = 2
         OnClick = ClB1Click
@@ -2215,7 +2175,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         NumGlyphs = 2
         OnClick = ClB1Click
@@ -2227,7 +2186,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2273,7 +2231,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           F6030000424DF6030000000000003600000028000000100000000F0000000100
@@ -2318,7 +2275,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 22
         Align = alLeft
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2394,7 +2350,7 @@ inherited frDesignerForm: TfrDesignerForm
         object E1: TEdit
           Tag = 6
           Left = 4
-          Height = 20
+          Height = 21
           Top = 1
           Width = 31
           TabOrder = 0
@@ -2417,7 +2373,6 @@ inherited frDesignerForm: TfrDesignerForm
             Width = 16
             Align = alTop
             Anchors = [akTop, akRight]
-            Color = clBtnFace
             Glyph.Data = {
               A6000000424DA600000000000000360000002800000007000000040000000100
               2000000000007000000064000000640000000000000000000000000000000000
@@ -2437,7 +2392,6 @@ inherited frDesignerForm: TfrDesignerForm
             Width = 16
             Align = alBottom
             Anchors = [akTop, akRight]
-            Color = clBtnFace
             Glyph.Data = {
               A6000000424DA600000000000000360000002800000007000000040000000100
               2000000000007000000064000000640000000000000000000000000000000000
@@ -2463,21 +2417,21 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock2: TPanel[2]
     Left = 0
-    Height = 311
+    Height = 308
     Top = 83
     Width = 27
     Align = alLeft
-    ClientHeight = 311
+    ClientHeight = 308
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 1
     object Panel4: TPanel
       Left = 1
-      Height = 309
+      Height = 306
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 309
+      ClientHeight = 306
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 0
@@ -2488,7 +2442,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2536,7 +2489,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 25
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2585,7 +2537,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 47
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2634,7 +2585,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 69
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2683,7 +2633,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 91
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2732,7 +2681,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 113
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2787,11 +2735,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
     object panForDlg: TPanel
       Left = 1
-      Height = 309
+      Height = 306
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 309
+      ClientHeight = 306
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 1
@@ -2803,7 +2751,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 23
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -2859,7 +2806,7 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object Tab1: TTabControl[3]
     Left = 27
-    Height = 311
+    Height = 308
     Top = 83
     Width = 641
     Align = alClient
@@ -2873,11 +2820,11 @@ inherited frDesignerForm: TfrDesignerForm
     TabStop = False
     object ScrollBox1: TScrollBox
       Left = 2
-      Height = 279
+      Height = 276
       Top = 30
       Width = 637
       Align = alClient
-      ClientHeight = 275
+      ClientHeight = 272
       ClientWidth = 633
       Color = clGray
       ParentColor = False
@@ -3146,7 +3093,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 4
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -3321,7 +3267,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 21
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -3496,7 +3441,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 38
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -3671,7 +3615,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 55
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -3846,7 +3789,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 72
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -4021,7 +3963,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 17
           Top = 89
           Width = 90
-          Color = clBtnFace
           Flat = True
           Glyph.Data = {
             36140000424D3614000000000000360000002800000050000000100000000100
@@ -4195,12 +4136,12 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock4: TPanel[4]
     Left = 668
-    Height = 311
+    Height = 308
     Top = 83
     Width = 27
     Align = alRight
     Anchors = [akTop, akRight]
-    ClientHeight = 311
+    ClientHeight = 308
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 3
@@ -4220,7 +4161,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 1
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4277,7 +4217,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 23
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4334,7 +4273,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 45
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4391,7 +4329,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 67
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4448,7 +4385,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 89
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4505,7 +4441,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 113
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4562,7 +4497,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 135
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4619,7 +4553,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 157
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4676,7 +4609,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 179
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
@@ -4733,7 +4665,6 @@ inherited frDesignerForm: TfrDesignerForm
         Top = 201
         Width = 24
         Align = alTop
-        Color = clBtnFace
         Flat = True
         Glyph.Data = {
           46050000424D4605000000000000360000002800000012000000120000000100
