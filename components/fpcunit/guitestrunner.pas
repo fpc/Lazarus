@@ -677,9 +677,7 @@ procedure TGUITestRunner.RunTest(ATest: TTest);
   end;
 
 var
-  testResult:TTestResult;
-  FStopCrono: TDateTime;
-  FStartCrono: TDateTime;
+  TestResult:TTestResult;
   w: TXMLResultsWriter;
   m: TMemoryStream;
 
@@ -691,25 +689,22 @@ begin
   testsCounter := 0;
   skipsCounter := 0;
   EnableRunActions(false);
-  testResult := TTestResult.Create;
+  TestResult := TTestResult.Create;
   try
-    SkipUncheckedTests(testResult, TestTree.Selected);
-    skipsCounter := testResult.NumberOfSkippedTests;
-    testResult.AddListener(self);
+    SkipUncheckedTests(TestResult, TestTree.Selected);
+    skipsCounter := TestResult.NumberOfSkippedTests;
+    TestResult.AddListener(self);
     pbBar.Invalidate;
     w := TXMLResultsWriter.Create(nil);
     w.FileName := 'null'; // prevents output to the console
-    testResult.AddListener(w);
+    TestResult.AddListener(w);
 
     MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
-    FStartCrono := Now;
-    aTest.Run(testResult);
-    FStopCrono := Now;
-    // In the next fpc (post 2.0.4) we can pull the time from the TestResult
-    MemoLog(Format(rsNumberOfExec, [IntToStr(testResult.RunTests),
-      FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono)]));
+    aTest.Run(TestResult);
+    MemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
+      FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
 
-    w.WriteResult(testResult);
+    w.WriteResult(TestResult);
     m := TMemoryStream.Create;
     WriteXMLFile(w.Document, m);
     m.Position := 0;
@@ -721,7 +716,7 @@ begin
 
     m.free;
     w.Free;
-    testResult.Free;
+    TestResult.Free;
   end;
 end;
 
