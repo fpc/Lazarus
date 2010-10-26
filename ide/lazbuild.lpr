@@ -653,13 +653,13 @@ begin
 
   // create unit output directory
   UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-  if not ForceDirectoriesUTF8(UnitOutputDirectory) then
+  if not ForceDirectory(UnitOutputDirectory) then
     Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
 
   // create target output directory
   TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
   TargetExeDir := ExtractFilePath(TargetExeName);
-  if not ForceDirectoriesUTF8(TargetExeDir) then
+  if not ForceDirectory(TargetExeDir) then
     Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
 
   // update all lrs files
