@@ -179,10 +179,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.IsChanged;
 begin
-  if Assigned((FOwner as TCustomMemo).OnChange) then
+  if Assigned(FOwner) and Assigned((FOwner as TCustomMemo).OnChange) then
   begin
     (FOwner as TCustomMemo).Modified := False;
-    (FOwner as TCustomMemo).OnChange(self);
+    (FOwner as TCustomMemo).OnChange(FOwner);
   end;
 end;
 
