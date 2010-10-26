@@ -724,7 +724,7 @@ begin
         if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
         begin
           Signal := g_signal_connect(ASettings, 'notify::gtk-button-images', TGCallback(@ButtonImagesChange), Self);
-          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(Signal))
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(PtrUInt(Signal)))
         end;
       end;
     toShowMenuImages:
@@ -737,7 +737,7 @@ begin
         if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
         begin
           Signal := g_signal_connect(ASettings, 'notify::gtk-menu-images', TGCallback(@MenuImagesChange), Self);
-          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(Signal))
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(PtrUInt(Signal)))
         end;
       end;
   else

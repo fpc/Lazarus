@@ -421,11 +421,11 @@ end;
 class procedure TGtk2WSProgressBar.InternalSetStyle(
   AProgressBar: PGtkProgressBar; AStyle: TProgressBarStyle);
 begin
-  g_object_set_data(PGObject(AProgressBar), 'ProgressStyle', Pointer(Ord(AStyle)));
+  g_object_set_data(PGObject(AProgressBar), 'ProgressStyle', Pointer(PtrUInt(Ord(AStyle))));
   if AStyle = pbstMarquee then
   begin
     g_object_set_data_full(PGObject(AProgressBar), 'timeout',
-      Pointer(g_timeout_add(100, @ProgressPulseTimeout, AProgressBar)), @ProgressDestroy);
+      Pointer(PtrUInt(g_timeout_add(100, @ProgressPulseTimeout, AProgressBar))), @ProgressDestroy);
     gtk_progress_bar_pulse(AProgressBar);
   end;
 end;
