@@ -2940,6 +2940,15 @@ var
   StepX, StepY: Integer;
   i, tx, ty, tx1, ty1, d, d1: Integer;
   t, t1: TfrView;
+
+  procedure CheckStepFactor(var pStep: integer; aValue: integer);
+  begin
+    if (ssAlt in Shift) or (Shift = [ssShift,ssCtrl]) then
+      pStep := aValue * 10
+    else
+      pStep := aValue;
+  end;
+
 begin
   {$IFNDEF EXTOI}
   if (ActiveControl<>nil) and (ActiveControl.Parent=ObjInsp.fPropertyGrid) then
@@ -3018,10 +3027,10 @@ begin
     end;
   if SelNum > 0 then
   begin
-    if Key = vk_Up then StepY := -1
-    else if Key = vk_Down then StepY := 1
-    else if Key = vk_Left then StepX := -1
-    else if Key = vk_Right then StepX := 1;
+    if Key = vk_Up then CheckStepFactor(StepY, -1)
+    else if Key = vk_Down then CheckStepFactor(StepY, 1)
+    else if Key = vk_Left then CheckStepFactor(StepX, -1)
+    else if Key = vk_Right then CheckStepFactor(StepX, 1);
     if (StepX <> 0) or (StepY <> 0) then
     begin
       if ssCtrl in Shift then
