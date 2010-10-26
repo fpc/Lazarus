@@ -4879,8 +4879,10 @@ end;
 
 function TProject.GetStateFilename: string;
 begin
-  Result:=GetOutputDirectory
-          +ChangeFileExt(GetCompileSourceFilename,'.compiled');
+  Result:=GetOutputDirectory;
+  if (not FilenameIsAbsolute(Result)) and (not IsVirtual) then
+    Result:=ProjectDirectory;
+  Result:=AppendPathDelim(Result)+ChangeFileExt(GetCompileSourceFilename,'.compiled');
 end;
 
 function TProject.GetTestDirectory: string;
@@ -4919,7 +4921,8 @@ var
   CurStateFileAge: Integer;
 begin
   StateFile:=GetStateFilename;
-  if not FileExistsUTF8(StateFile) then begin
+  if (not FilenameIsAbsolute(StateFile)) or (not FileExistsUTF8(StateFile)) then
+  begin
     DebugLn('TProject.DoLoadStateFile Statefile not found: ',StateFile);
     StateFlags:=StateFlags-[lpsfStateFileLoaded];
     Result:=mrOk;
@@ -4969,6 +4972,7 @@ var
   CompilerFileDate: Integer;
 begin
   StateFile:=GetStateFilename;
+  if not FilenameIsAbsolute(StateFile) then exit(mrOk);
   try
     CompilerFileDate:=FileAgeCached(CompilerFilename);
     XMLConfig:=TCodeBufXMLConfig.CreateWithCache(StateFile,false);
