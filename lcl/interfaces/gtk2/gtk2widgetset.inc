@@ -3276,7 +3276,7 @@ var
   end;
 
 var
-  R: TRect;
+  R, R1: TRect;
   UseAlpha: Boolean;
 begin
   Result := False;
@@ -3298,7 +3298,8 @@ begin
   if ARect <> nil
   then begin
     // get intersection
-    IntersectRect(R, ARect^, R);
+    IntersectRect(R1, ARect^, R);
+    R := R1;
     ADesc.Width := R.Right - R.Left;
     ADesc.Height := R.Bottom - R.Top;
   end;
