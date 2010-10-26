@@ -1313,7 +1313,7 @@ end;
 function IntersectRect(var DestRect: TRect;
   const SrcRect1, SrcRect2: TRect): Boolean;
 begin
-  Result := GetRectIntersect(DestRect,SrcRect1,SrcRect2);
+  Result := Types.IntersectRect(DestRect,SrcRect1,SrcRect2);
 end;
 
 {------------------------------------------------------------------------------

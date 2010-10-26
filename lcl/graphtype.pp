@@ -29,7 +29,7 @@ unit GraphType;
 interface
 
 uses
-  FPCAdds, Classes, SysUtils, LCLType, LCLProc;
+  FPCAdds, Classes, SysUtils, LCLType, LCLProc, types;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -275,8 +275,6 @@ function CopyImageData(AWidth, AHeight, ARowStride: Integer; ABPP: Word;
                        ASource: Pointer; const ARect: TRect; ASourceOrder: TRawImageLineOrder;
                        ADestinationOrder: TRawImageLineOrder; ADestinationEnd: TRawImageLineEnd;
                        out ADestination: Pointer; out ASize: PtrUInt): Boolean;
-
-function GetRectIntersect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
 
 var
   MissingBits: array[0..15] of array[0..7] of word;
@@ -561,37 +559,6 @@ begin
         PrecMask := not(PrecMask shl AShift);
         PC^ := (PC^ and PrecMask) or (ABits shl AShift);
       end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetRectIntersect
-  Params:  var DestRect: TRect; const SrcRect1, SrcRect2: TRect
-  Returns: Boolean
-
-  Intersects SrcRect1 and SrcRect2 into DestRect.
-  Intersecting means that DestRect will be the overlapping area of SrcRect1 and
-  SrcRect2. If SrcRect1 and SrcRect2 do not overlapp the Result is false, else
-  true.
- ------------------------------------------------------------------------------}
-function GetRectIntersect(var DestRect: TRect;
-  const SrcRect1, SrcRect2: TRect): Boolean;
-begin
-  Result := False;
-
-  // test if rectangles intersects
-  Result:=(SrcRect2.Left < SrcRect1.Right)
-      and (SrcRect2.Right > SrcRect1.Left)
-      and (SrcRect2.Top < SrcRect1.Bottom)
-      and (SrcRect2.Bottom > SrcRect1.Top);
-
-  if Result then begin
-    DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
-    DestRect.Top:=Max(SrcRect1.Top,SrcRect2.Top);
-    DestRect.Right:=Min(SrcRect1.Right,SrcRect2.Right);
-    DestRect.Bottom:=Min(SrcRect1.Bottom,SrcRect2.Bottom);
-  end else begin
-    FillChar(DestRect,SizeOf(DestRect),0);
   end;
 end;
 
@@ -1421,7 +1388,7 @@ begin
   ADst.ReleaseData;
 
   // get intersection
-  GetRectIntersect(R, Rect(0, 0, Description.Width, Description.Height), ARect);
+  IntersectRect(R, Rect(0, 0, Description.Width, Description.Height), ARect);
   ADst.Description.Width := R.Right - R.Left;
   ADst.Description.Height := R.Bottom - R.Top;
   if (ADst.Description.Width <= 0)
