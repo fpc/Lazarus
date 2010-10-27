@@ -32,9 +32,11 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
-  LazarusIDEStrConsts, LazConf, Laz_XMLCfg, InterfaceBase, IDEProcs,
-  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, CompilerOptions, ButtonPanel;
+  ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs, ButtonPanel,
+  Laz_XMLCfg, DefineTemplates,
+  IDEImagesIntf, IDEMsgIntf,
+  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
+  IDEContextHelpEdit, CompilerOptions;
 
 type
 
@@ -438,8 +440,8 @@ begin
           MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]));
   FCleanAll          :=XMLConfig.GetValue(Path+'CleanAll/Value',false);
   FExtraOptions      :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
-  TargetOS           :=XMLConfig.GetValue(Path+'TargetOS/Value','');
-  TargetCPU          :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
+  TargetOS           :=GetFPCTargetOS(XMLConfig.GetValue(Path+'TargetOS/Value',''));
+  TargetCPU          :=GetFPCTargetCPU(XMLConfig.GetValue(Path+'TargetCPU/Value',''));
   LCLPlatformStr     :=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
   if LCLPlatformStr='' then
     fTargetPlatform  :=GetDefaultLCLWidgetType

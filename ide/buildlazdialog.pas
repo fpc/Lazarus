@@ -46,7 +46,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
+  InterfaceBase, Themes, ComCtrls,
+  DefineTemplates, Laz_XMLCfg,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
@@ -999,14 +1000,14 @@ procedure TConfigureBuildLazarusDlg.CopyUIToProfile(AProfile: TBuildLazarusProfi
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
   AProfile.ExtraOptions      :=OptionsEdit.Text;
-  AProfile.TargetPlatform  :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
+  AProfile.TargetPlatform    :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
   AProfile.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
-  AProfile.TargetOS          :=TargetOSComboBox.Text;
+  AProfile.TargetOS          :=GetFPCTargetOS(TargetOSComboBox.Text);
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
-  AProfile.TargetCPU         :=TargetCPUComboBox.Text;
+  AProfile.TargetCPU         :=GetFPCTargetCPU(TargetCPUComboBox.Text);
 end;
 
 procedure TConfigureBuildLazarusDlg.UpdateProfileNamesUI;
