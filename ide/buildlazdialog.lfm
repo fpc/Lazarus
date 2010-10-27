@@ -315,8 +315,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       OnSelect = BuildProfileComboBoxSelect
       ParentShowHint = False
       ShowHint = True
+      Style = csDropDownList
       TabOrder = 4
-      Text = 'BuildProfileComboBox'
     end
     object BuildProfileButton: TButton
       AnchorSideTop.Control = BuildProfileComboBox
