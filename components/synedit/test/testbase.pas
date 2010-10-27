@@ -85,6 +85,8 @@ type
   public
     procedure TestIsCaret(Name: String; X, Y: Integer); // logical caret
     procedure TestIsCaretPhys(Name: String; X, Y: Integer);
+    procedure TestIsCaretAndSel(Name: String; LogX1, LogY1, LogX2, LogY2: Integer); // logical caret
+    procedure TestIsCaretAndSelBackward(Name: String; LogX1, LogY1, LogX2, LogY2: Integer); // logical caret
 
     procedure TestCompareString(Name, Expect, Value: String; DbgInfo: String = '');
     procedure TestCompareString(Name: String; Expect, Value: Array of String; DbgInfo: String = '');
@@ -199,6 +201,33 @@ begin
     TestFail(Name, 'IsCaret(Phys)',
              Format('X/Y=(%d, %d)', [X, Y]),
              Format('X/Y=(%d, %d)', [SynEdit.CaretXY.X, SynEdit.CaretXY.Y]));
+end;
+
+procedure TTestBase.TestIsCaretAndSel(Name: String; LogX1, LogY1, LogX2, LogY2: Integer);
+begin
+  TestIsCaret(Name, LogX2, LogY2);
+  if (SynEdit.BlockBegin.X <> LogX1) or (SynEdit.BlockBegin.Y <> LogY1) then
+    TestFail(Name, 'IsBlockBegin(Log)',
+             Format('X/Y=(%d, %d)', [LogX1, LogY1]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y]));
+  if (SynEdit.BlockEnd.X <> LogX2) or (SynEdit.BlockEnd.Y <> LogY2) then
+    TestFail(Name, 'IsBlockEnd(Log)',
+             Format('X/Y=(%d, %d)', [LogX2, LogY2]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y]));
+end;
+
+procedure TTestBase.TestIsCaretAndSelBackward(Name: String; LogX1, LogY1, LogX2,
+  LogY2: Integer);
+begin
+  TestIsCaret(Name, LogX1, LogY1);
+  if (SynEdit.BlockBegin.X <> LogX1) or (SynEdit.BlockBegin.Y <> LogY1) then
+    TestFail(Name, 'IsBlockBegin(Log)',
+             Format('X/Y=(%d, %d)', [LogX1, LogY1]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y]));
+  if (SynEdit.BlockEnd.X <> LogX2) or (SynEdit.BlockEnd.Y <> LogY2) then
+    TestFail(Name, 'IsBlockEnd(Log)',
+             Format('X/Y=(%d, %d)', [LogX2, LogY2]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y]));
 end;
 
 procedure TTestBase.TestCompareString(Name, Expect, Value: String; DbgInfo: String);
@@ -433,8 +462,8 @@ begin
   if DoLock then
     SynEdit.BeginUpdate;
   SynEdit.LogicalCaretXY := Point(X1, Y1);
-  SynEdit.BlockBegin := Point(X1, Y1);
-  SynEdit.BlockEnd   := Point(X2, Y2);
+  SynEdit.BlockBegin := Point(X2, Y2);
+  SynEdit.BlockEnd   := Point(X1, Y1);
   if AMode <> smCurrent then
     SynEdit.SelectionMode := AMode;
   if DoLock then
