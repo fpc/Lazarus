@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, MenuIntf, LCLProc,
-  AVL_Tree, SrcEditorIntf, SynEdit, SynEditMarks, EditorOptions;
+  AVL_Tree, SrcEditorIntf, SynEdit, SynEditMarks, EditorOptions,
+  SynEditMarkupGutterMark;
   
 type
 
@@ -85,7 +86,7 @@ type
 
   { TSourceMark }
   
-  TSourceMark = class(TSynEditMark)
+  TSourceMark = class(TSynEditMarkupMark)
   private
     FData: TObject;
     FSourceMarks: TSourceMarks;

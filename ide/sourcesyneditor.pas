@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LCLProc, Graphics, Menus, math, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
-  SynGutterLineOverview,
+  SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
   SynPluginTemplateEdit, SynPluginSyncroEdit,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
@@ -55,6 +55,7 @@ type
   private
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
+    FMarkupForGutterMark: TSynEditMarkupGutterMark;
     function GetIDEGutterMarks: TIDESynGutterMarks;
   protected
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
@@ -223,6 +224,8 @@ begin
   inherited Create(AOwner);
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
+  FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
+  TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
 end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
