@@ -17,18 +17,18 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   LCLVersion = '0.9.29'
   object DetailsPanel: TPanel
     Left = 0
-    Height = 503
+    Height = 511
     Top = 0
     Width = 543
     Align = alClient
-    ClientHeight = 503
+    ClientHeight = 511
     ClientWidth = 543
     TabOrder = 0
     object BuildProfileLabel: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 17
-      Width = 86
+      Width = 56
       BorderSpacing.Top = 7
       BorderSpacing.Around = 6
       Caption = 'Build Profile'
@@ -42,7 +42,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideBottom.Control = MakeModeListBox
       AnchorSideBottom.Side = asrBottom
       Left = 326
-      Height = 228
+      Height = 236
       Top = 50
       Width = 216
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -61,7 +61,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     object DetailSettingPanel: TPanel
       Left = 1
       Height = 226
-      Top = 276
+      Top = 284
       Width = 541
       Align = alBottom
       ClientHeight = 226
@@ -72,9 +72,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = DetailSettingPanel
         AnchorSideRight.Control = OptionsEdit
         Left = 8
-        Height = 18
+        Height = 14
         Top = 20
-        Width = 55
+        Width = 38
         Alignment = taRightJustify
         BorderSpacing.Left = 7
         BorderSpacing.Top = 19
@@ -87,9 +87,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = TargetOSComboBox
         AnchorSideTop.Side = asrCenter
         Left = 8
-        Height = 18
-        Top = 50
-        Width = 68
+        Height = 14
+        Top = 43
+        Width = 50
         Alignment = taRightJustify
         Caption = 'Target OS'
         ParentColor = False
@@ -99,9 +99,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = TargetDirectoryComboBox
         AnchorSideTop.Side = asrCenter
         Left = 8
-        Height = 18
-        Top = 83
-        Width = 114
+        Height = 14
+        Top = 70
+        Width = 80
         Alignment = taRightJustify
         Caption = 'Target Directory'
         ParentColor = False
@@ -111,9 +111,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = TargetCPUComboBox
         AnchorSideTop.Side = asrCenter
         Left = 8
-        Height = 18
-        Top = 116
-        Width = 76
+        Height = 14
+        Top = 97
+        Width = 56
         Alignment = taRightJustify
         Caption = 'Target CPU'
         ParentColor = False
@@ -124,7 +124,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideRight.Control = DetailSettingPanel
         AnchorSideRight.Side = asrBottom
         Left = 151
-        Height = 27
+        Height = 21
         Top = 13
         Width = 383
         Anchors = [akTop, akLeft, akRight]
@@ -139,12 +139,12 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = TargetDirectoryButton
         Left = 151
-        Height = 27
-        Top = 79
+        Height = 21
+        Top = 67
         Width = 351
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
       end
       object TargetDirectoryButton: TButton
@@ -154,7 +154,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideBottom.Side = asrBottom
         Left = 508
         Height = 23
-        Top = 80
+        Top = 68
         Width = 22
         Anchors = [akTop, akRight]
         BorderSpacing.Left = 6
@@ -171,13 +171,13 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideRight.Control = DetailSettingPanel
         AnchorSideRight.Side = asrBottom
         Left = 151
-        Height = 27
-        Top = 112
+        Height = 21
+        Top = 94
         Width = 383
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
       end
       object RestartAfterBuildCheckBox: TCheckBox
@@ -185,9 +185,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = TargetCPUComboBox
         AnchorSideTop.Side = asrBottom
         Left = 8
-        Height = 22
-        Top = 149
-        Width = 219
+        Height = 17
+        Top = 125
+        Width = 148
         BorderSpacing.Left = 7
         BorderSpacing.Top = 10
         BorderSpacing.Bottom = 6
@@ -199,9 +199,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Control = RestartAfterBuildCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 8
-        Height = 22
-        Top = 177
-        Width = 188
+        Height = 17
+        Top = 148
+        Width = 124
         BorderSpacing.Top = 6
         Caption = 'ConfirmBuildCheckBox'
         TabOrder = 5
@@ -212,9 +212,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 302
-        Height = 22
-        Top = 149
-        Width = 89
+        Height = 17
+        Top = 125
+        Width = 59
         BorderSpacing.Left = 301
         BorderSpacing.Top = 10
         BorderSpacing.Bottom = 6
@@ -227,9 +227,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 302
-        Height = 22
-        Top = 177
-        Width = 233
+        Height = 17
+        Top = 148
+        Width = 159
         BorderSpacing.Top = 6
         Caption = 'WithStaticPackagesCheckBox'
         TabOrder = 7
@@ -241,13 +241,13 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideRight.Control = DetailSettingPanel
         AnchorSideRight.Side = asrBottom
         Left = 151
-        Height = 27
-        Top = 46
+        Height = 21
+        Top = 40
         Width = 383
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 8
       end
       object UpdateRevisionIncCheckBox: TCheckBox
@@ -256,9 +256,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
         Left = 302
-        Height = 22
-        Top = 205
-        Width = 223
+        Height = 17
+        Top = 171
+        Width = 155
         BorderSpacing.Top = 6
         Caption = 'UpdateRevisionIncCheckBox'
         TabOrder = 9
@@ -284,7 +284,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideRight.Control = MakeModeListHeader
       AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 203
+      Height = 211
       Top = 75
       Width = 325
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -302,13 +302,16 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildProfileLabel
       AnchorSideTop.Side = asrCenter
-      Left = 118
-      Height = 27
+      AnchorSideRight.Control = BuildProfileButton
+      Left = 70
+      Height = 21
       Hint = 'Name of the active profile.'
-      Top = 13
-      Width = 356
-      Anchors = [akTop]
-      ItemHeight = 0
+      Top = 14
+      Width = 422
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 13
       OnSelect = BuildProfileComboBoxSelect
       ParentShowHint = False
       ShowHint = True
@@ -318,15 +321,16 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     object BuildProfileButton: TButton
       AnchorSideTop.Control = BuildProfileComboBox
       AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = DetailsPanel
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = TargetDirectoryComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 496
+      Left = 498
       Height = 23
       Hint = 'Manage profiles'
-      Top = 15
-      Width = 22
+      Top = 13
+      Width = 38
       Anchors = [akTop, akRight]
+      AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = '...'
@@ -339,20 +343,20 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object CBLDBtnPanel: TPanel
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 46
-    Top = 503
+    Height = 38
+    Top = 511
     Width = 543
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 46
+    ClientHeight = 38
     ClientWidth = 543
     TabOrder = 1
     object CancelButton: TBitBtn
-      Left = 452
-      Height = 34
+      Left = 460
+      Height = 26
       Top = 6
-      Width = 85
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -364,10 +368,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       TabOrder = 0
     end
     object SaveSettingsButton: TBitBtn
-      Left = 339
-      Height = 34
+      Left = 363
+      Height = 26
       Top = 6
-      Width = 107
+      Width = 91
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -377,10 +381,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       TabOrder = 1
     end
     object CompileButton: TBitBtn
-      Left = 248
-      Height = 34
+      Left = 294
+      Height = 26
       Top = 6
-      Width = 85
+      Width = 63
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -391,9 +395,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     end
     object HelpButton: TBitBtn
       Left = 6
-      Height = 34
+      Height = 26
       Top = 6
-      Width = 85
+      Width = 66
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
