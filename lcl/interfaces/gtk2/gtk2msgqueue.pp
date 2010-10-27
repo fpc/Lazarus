@@ -27,7 +27,7 @@ unit Gtk2MsgQueue;
 interface
 
 uses LazLinkedList, LCLType, LMessages, Gtk2Globals, DynHashArray, Gtk2Proc
-{$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+{$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
 , glib2
 {$ENDIF}
 ;
@@ -51,7 +51,7 @@ type
   TGtkMessageQueue=class(TLinkList)
   private
     FPaintMessages: TDynHashArray; // Hash for paint messages
-    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainContext: PGMainContext;
     {$ELSE}
     FCritSec: TRTLCriticalSection;
@@ -79,7 +79,7 @@ type
     function   HasNonPaintMessages:boolean;
     function   NumberOfPaintMessages:integer;
     function   PopFirstMessage: PMsg;
-    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     property   MainContext: PGMainContext read FMainContext;
     {$ENDIF}
   end;
@@ -122,7 +122,7 @@ begin
   inherited Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
-  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   InitCriticalSection(FCritSec);
   {$ELSE}
   FMainContext := g_main_context_new;
@@ -134,7 +134,7 @@ destructor TGtkMessageQueue.destroy;
 begin
   inherited Destroy;
   fPaintMessages.destroy;
-  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   DoneCriticalsection(FCritSec);
   {$ELSE}
   g_main_context_unref(FMainContext);
@@ -146,7 +146,7 @@ procedure TGtkMessageQueue.Lock;
 begin
   inc(fLock);
   if fLock=1 then
-    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
     EnterCriticalsection(FCritSec);
     {$ELSE}
     g_main_context_acquire(FMainContext);
@@ -157,7 +157,7 @@ procedure TGtkMessageQueue.UnLock;
 begin
   dec(fLock);
   if fLock=0 then
-    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
     LeaveCriticalsection(FCritSec);
     {$ELSE}
     g_main_context_release(FMainContext);

@@ -23,7 +23,7 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-{$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+{$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
 var
   Gtk2MPF: TGPollFunc;
 
@@ -1107,7 +1107,7 @@ constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
   Gtk1Create;
-  {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   FMainPoll := nil;
   Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
   g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
@@ -2378,7 +2378,7 @@ procedure TGtk2WidgetSet.AppProcessMessages;
 
   function PendingGtkMessagesExists: boolean;
   begin
-    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
     Result:=(gtk_events_pending<>0) or LCLtoGtkMessagePending;
     {$ELSE}
     Result := g_main_context_pending(g_main_context_default) or
@@ -2399,7 +2399,7 @@ begin
     // let gtk handle up to 100 messages and call our callbacks
     i:=100;
 
-    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
     while (gtk_events_pending<>0) and (i>0) do
     begin
       gtk_main_iteration_do(False);
@@ -2479,7 +2479,7 @@ end;
 procedure TGtk2WidgetSet.AppWaitMessage;
 begin
   WaitingForMessages:=true;
-  {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
   gtk_main_iteration_do(True);
   {$ELSE}
   g_main_context_iteration(g_main_context_default, True);

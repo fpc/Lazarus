@@ -6822,7 +6822,7 @@ begin
 
     FMessageQueue.AddMessage(AMessage);
 
-    {$IFNDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFDEF USE_GTK_MAIN_OLD_ITERATION}
     if GetCurrentThreadId <> MainThreadID then
     begin
       // awake gtk loop
@@ -6845,7 +6845,7 @@ begin
     FMessageQueue.UnLock;
   end;
 
-  {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+  {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   if GetCurrentThreadId <> MainThreadID then
   begin
     // old glib versions needs another way to wake up.

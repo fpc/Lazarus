@@ -68,7 +68,7 @@ type
 
   TGtk2WidgetSet = class(TWidgetSet)
   private
-    {$IFDEF USE_GTK_MAIN_CONTEXT_ITERATION}
+    {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainPoll: PGPollFD;
     {$ENDIF}
     FMultiThreadingEnabled: boolean;
