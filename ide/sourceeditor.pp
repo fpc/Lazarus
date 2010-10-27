@@ -4854,8 +4854,6 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
 
-  SourceEditorMarks.OnGetFilename := nil;
-  SourceEditorMarks.OnAction := nil;
   // aWordCompletion is released in InternalFinal
   aWordCompletion.OnGetSource := nil;
 
@@ -6614,8 +6612,8 @@ begin
   if TempEditor=nil then exit;
   WasSelected:=PageIndex=APageIndex;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
-  try
+  //DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
+  //try
     EndIncrementalFind;
     TempEditor.Close;
     TempEditor.Free;
@@ -6637,9 +6635,9 @@ begin
       if not FIsClosing then
         Close;
     end;
-  finally
-    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
-  end;
+  //finally
+  //  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
+  //end;
   // Move focus from Notebook-tabs to editor
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
@@ -8952,6 +8950,8 @@ end;
 
 destructor TSourceEditorManager.Destroy;
 begin
+  SourceEditorMarks.OnGetFilename := nil;
+  SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
