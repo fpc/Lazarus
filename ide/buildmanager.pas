@@ -1694,6 +1694,7 @@ begin
     try
       for i:=0 to Overrides.Count-1 do
         Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
+      //debugln(['TBuildManager.OnGetBuildMacroValues ',Overrides.Text]);
     finally
       Overrides.Free;
     end;
@@ -1829,17 +1830,16 @@ begin
                     or (OldTargetCPU<>NewTargetCPU);
   LCLTargetChanged:=(OldLCLWidgetType<>NewLCLWidgetType);
 
-  //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-  //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
-
+  if FPCTargetChanged or LCLTargetChanged then begin
+    //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
+    //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
+    IncreaseBuildMacroChangeStamp;
+  end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
   if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
     RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone);
-
-  if FPCTargetChanged or LCLTargetChanged then begin
-    IncreaseCompilerParseStamp;
-  end;
+  //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS UNITPATH=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed)]);
 end;
 
 procedure TBuildManager.SetBuildTargetIDE;
