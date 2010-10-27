@@ -339,7 +339,7 @@ type
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
-    fBlockIndent: integer;
+    FBlockIndent: integer;
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FInternalBlockSelection: TSynEditSelection;
@@ -1005,11 +1005,9 @@ type
   published
     // inherited properties
     property Align;
-{$IFDEF SYN_LAZARUS}
     property Beautifier;
     property BlockIndent;
     property BorderSpacing;
-{$ENDIF}
 {$IFNDEF SYN_LAZARUS}
     property Ctl3D;
     property ParentCtl3D;
@@ -5001,8 +4999,19 @@ end;
 
 procedure TCustomSynEdit.RedoItem(Item: TSynEditUndoItem);
 var
-  Run, StrToDelete: PChar;
-  Len, x : integer;
+  Line, StrToDelete: PChar;
+  x, y, Len, Len2: integer;
+
+  function GetLeadWSLen : integer;
+  var
+    Run : PChar;
+  begin
+    Run := Line;
+    while (Run[0] in [' ', #9]) do
+      Inc(Run);
+    Result := Run - Line;
+  end;
+
 begin
   if Assigned(Item) then
   try
@@ -5026,24 +5035,15 @@ begin
       // Delete string
       fUndoList.Lock;
       StrToDelete := PChar(TSynEditUndoUnIndent(Item).FText);
-      CaretY := TSynEditUndoUnIndent(Item).FPosY1;
       x := -1;
-      repeat
-        Run := GetEOL(StrToDelete);
-        Len := Run - StrToDelete;
-        if x < 0 then
-          x:= Len;
-        if Len > 0 then
-          FTheLinesView.EditDelete(1, CaretY, Len);
-        if Run^ in [#10,#13] then begin
-          if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
-            Inc(Run,2)
-          else
-            Inc(Run);
-          CaretY := CaretY + 1;
-        end;
-        StrToDelete := Run;
-      until Run^ = #0;
+      for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
+        Line := PChar(FTheLinesView[y - 1]);
+        Len := GetLeadWSLen;
+        Len2 := GetEOL(StrToDelete) - StrToDelete;
+        if (Len2 > 0) and (Len >= Len2) then
+          FTheLinesView.EditDelete(1+Len-Len2, y, Len2);
+        inc(StrToDelete, Len2+1);
+      end;
       fUndoList.Unlock;
     end
     else
@@ -5110,34 +5110,59 @@ begin
 end;
 
 procedure TCustomSynEdit.UndoItem(Item: TSynEditUndoItem);
+var
+  Line, OldText: PChar;
+  y, Len, Len2: integer;
+
+  function GetLeadWSLen : integer;
+  var
+    Run : PChar;
+  begin
+    Run := Line;
+    while (Run[0] in [' ', #9]) do
+      Inc(Run);
+    Result := Run - Line;
+  end;
+
 begin
   if Assigned(Item) then try
     FCaret.IncForcePastEOL;
+
     if Item.ClassType = TSynEditUndoIndent then
     begin
-      // remove the column that was inserted // select the inserted column
-      BlockBegin := Point(1, TSynEditUndoIndent(Item).FPosY1);
-      BlockEnd := Point(1 + TSynEditUndoIndent(Item).FCnt, TSynEditUndoIndent(Item).FPosY2);
-      FBlockSelection.ActiveSelectionMode := smColumn;
       // add to redo list
       fRedoList.AddChange(TSynEditUndoIndent.Create(TSynEditUndoIndent(Item).FPosY1,
          TSynEditUndoIndent(Item).FPosY2, TSynEditUndoIndent(Item).FCnt));
-      // remove the column
+      // quick unintend (must all be spaces, as inserted...)
       fRedoList.Lock;
-      SetSelTextPrimitive(smNormal, nil);
+      Len2 := TSynEditUndoIndent(Item).FCnt;
+      for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
+        Line := PChar(FTheLinesView[y - 1]);
+        Len := GetLeadWSLen;
+        FTheLinesView.EditDelete(Len+1-Len2, y, Len2);
+      end;
       fRedoList.Unlock;
     end
     else
+
     if Item.ClassType = TSynEditUndoUnIndent then
     begin
       fRedoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
           TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
       // reinsert the string
       fRedoList.Lock;
-      FInternalBlockSelection.StartLineBytePos := Point(1, TSynEditUndoUnIndent(Item).FPosY1);
-      FInternalBlockSelection.SetSelTextPrimitive(smColumn, PChar(TSynEditUndoUnIndent(Item).FText));
+      OldText := PChar(TSynEditUndoUnIndent(Item).FText);
+      for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
+        Line := PChar(FTheLinesView[y - 1]);
+        Len := GetLeadWSLen;
+        Len2 := GetEOL(OldText) - OldText;
+        if Len2 > 0 then
+          FTheLinesView.EditInsert(Len+1, y, copy(OldText, 1, Len2));
+        inc(OldText, Len2+1);
+      end;
       fRedoList.Unlock;
     end
+
     else
       if not Item.PerformUndo(self) then
         FTheLinesView.EditUndo(Item);
@@ -7638,15 +7663,24 @@ end;
 procedure TCustomSynEdit.DoBlockIndent;
 var
   BB,BE            : TPoint;
-  Run,
-  StrToInsert      : PChar;
-  e, i, InsertStrLen   : integer;
-  Spaces           : String;
+  Line : PChar;
+  Len, e, y: integer;
+  Spaces: String;
+
+  function GetLeadWSLen : integer;
+  var
+    Run : PChar;
+  begin
+    Run := Line;
+    while (Run[0] in [' ', #9]) do
+      Inc(Run);
+    Result := Run - Line;
+  end;
+
 begin
   if not SelAvail then exit;
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
-  StrToInsert := nil;
   try
     // build text to insert
     BB := BlockBegin;
@@ -7655,34 +7689,23 @@ begin
       e := BE.y - 1
     else
       e := BE.y;
-    InsertStrLen := ((fBlockIndent+length(LineEnding))* (e - BB.y)+fBlockIndent+1);
-    //               chars per line * lines-1    + last line + null char
-    StrToInsert := StrAlloc(InsertStrLen);
+
+    Spaces := StringOfChar(#32, fBlockIndent);
+    fUndoList.Lock;
+    fRedoList.Lock;
     try
-      Run := StrToInsert;
-      Spaces := StringOfChar(#32, fBlockIndent);
-      for i := BB.Y to e-1 do
+      for y := BB.Y to e do
       begin
-        StrPCopy(Run, Spaces + LineEnding);
-        Inc(Run,fBlockIndent+length(LineEnding));
+        Line := PChar(FTheLinesView[y - 1]);
+        Len := GetLeadWSLen;
+        FTheLinesView.EditInsert(Len + 1, y, Spaces);
       end;
-      StrPCopy(Run, Spaces);
-
-      FInternalBlockSelection.StartLineBytePos := Point(1, BB.y);
-      fUndoList.Lock;
-      fRedoList.Lock;
-      try
-        FInternalBlockSelection.SetSelTextPrimitive(smColumn, StrToInsert);
-      finally
-        fUndoList.Unlock;
-        fRedoList.Unlock;
-      end;
-
-      fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, fBlockIndent));
-      TSynEditStringList(FLines).MarkModified(BB.Y, e);
     finally
-      StrDispose(StrToInsert);
+      fUndoList.Unlock;
+      fRedoList.Unlock;
     end;
+
+    fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, fBlockIndent));
   finally
     FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
     FCaret.LineBytePos := FBlockSelection.EndLineBytePos;
@@ -7692,26 +7715,27 @@ begin
 end;
 
 procedure TCustomSynEdit.DoBlockUnindent;
+const
+  LineEnd = #10;
 var
   BB, BE: TPoint;
   FullStrToDelete: PChar;
   Line: PChar;
-  Len, y, StrToDeleteLen, e : integer;
+  Len, LogP1, PhyP1, LogP2, PhyP2, y, StrToDeleteLen, e : integer;
   SomethingDeleted : Boolean;
+  HasTab: Boolean;
 
-  function GetDelLen : integer;
+  function GetLeadWSLen : integer;
   var
     Run : PChar;
   begin
-    Result := 0;
     Run := Line;
-    while (Run[0] = ' ')
-    and (Result < fBlockIndent) do
-    begin
-      Inc(Result);
+    HasTab := False;
+    while (Run[0] in [' ', #9]) do begin
+      HasTab := HasTab or (Run[0] = #9);
       Inc(Run);
-      SomethingDeleted := True;
     end;
+    Result := Run - Line;
   end;
 
 begin
@@ -7728,22 +7752,57 @@ begin
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
   // build string to delete
-  StrToDeleteLen := (fBlockIndent+length(LineEnding)) * (e - BB.y + 1) + 1;
+  StrToDeleteLen := (fBlockIndent+length(LineEnd)) * (e - BB.y + 1) + 1;
   //                 chars per line * lines-1    + last line + null char
   FullStrToDelete := StrAlloc(StrToDeleteLen);
   try
     FullStrToDelete[0] := #0;
     SomethingDeleted := False;
+
     fUndoList.Lock;
     fRedoList.Lock;
+
+    // before locking the undo list
     for y := BB.Y to e do
     begin
       Line := PChar(FTheLinesView[y - 1]);
-      Len := GetDelLen;
-      StrCat(FullStrToDelete, PChar(copy(Line, 1, Len)));
-      StrCat(FullStrToDelete, PChar(LineEnding));
-      if Len > 0 then
-        FTheLinesView.EditDelete(1, y, Len);
+      Len := GetLeadWSLen;
+      LogP1 := Len + 1;
+      if HasTab and (Len > 0) then begin
+        // LogP1, PhyP1 log and phys of the first none-whitespace
+        PhyP1 := LogicalToPhysicalPos(Point(LogP1, y)).x;
+        // LogP2, PhyP2 log and phys of the point to which to delete back
+        LogP2 := PhysicalToLogicalPos(Point( Max(PhyP1 - FBlockIndent, 1), y )).x;
+        PhyP2 := LogicalToPhysicalPos(Point(LogP2,y)).x;
+
+        if PhyP1 - PhyP2 <> FBlockIndent then begin
+          // need tab to space
+          StrCat(FullStrToDelete, PChar(copy(Line, LogP2, LogP1 - LogP2)));
+          StrCat(FullStrToDelete, PChar(LineEnd));
+          FTheLinesView.EditDelete(LogP2, y, LogP1 - LogP2);
+          SomethingDeleted := True;
+
+          fUndoList.Unlock;
+          fRedoList.Unlock;
+          FTheLinesView.EditInsert(LogP2, y, StringOfChar(' ', PhyP1 - PhyP2 - FBlockIndent));
+          fUndoList.Lock;
+          fRedoList.Lock;
+          continue;
+        end;
+        // tabs present, but no replacement needed (LogP1, LogP2 are correct
+      end
+      else begin
+        // no tabs present
+        LogP2 := Max(LogP1 - FBlockIndent, 1);
+      end;
+
+      // Remove spaces (or tab)
+      if LogP1 - LogP2 > 0 then
+        StrCat(FullStrToDelete, PChar(copy(Line, LogP2, LogP1 - LogP2)));
+      StrCat(FullStrToDelete, PChar(LineEnd));
+      if LogP1 - LogP2 > 0 then
+        FTheLinesView.EditDelete(LogP2, y, LogP1 - LogP2);
+      SomethingDeleted := SomethingDeleted or (LogP1 - LogP2 > 0);
     end;
 
     fUndoList.Unlock;
