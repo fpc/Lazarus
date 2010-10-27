@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-27 23:53+0300\n"
+"PO-Revision-Date: 2010-10-28 03:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8486,6 +8486,14 @@ msgstr "Библиотека виджетов"
 msgid "Manage Build Profiles"
 msgstr "Управление профилями сборки"
 
+#: lazarusidestrconsts.lislazbuildnewprof
+msgid "Add New Profile"
+msgstr "Добавить новый профиль"
+
+#: lazarusidestrconsts.lislazbuildnewprofinfo
+msgid "Current build options will be associated with:"
+msgstr "Текущие параметры сборки будут сохранены в профиле:"
+
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
 msgid "None"
@@ -8538,6 +8546,14 @@ msgstr "Удалить"
 msgctxt "lazarusidestrconsts.lislazbuildrename"
 msgid "Rename"
 msgstr "Переименовать"
+
+#: lazarusidestrconsts.lislazbuildrenameprof
+msgid "Rename Profile"
+msgstr "Переименовать профиль"
+
+#: lazarusidestrconsts.lislazbuildrenameprofinfo
+msgid "New name for profile:"
+msgstr "Новое имя профиля:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"

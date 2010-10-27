@@ -8484,6 +8484,14 @@ msgstr "LCL 接口"
 msgid "Manage Build Profiles"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildnewprof
+msgid "Add New Profile"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildnewprofinfo
+msgid "Current build options will be associated with:"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
 msgid "None"
@@ -8536,6 +8544,14 @@ msgstr "移除"
 msgctxt "lazarusidestrconsts.lislazbuildrename"
 msgid "Rename"
 msgstr "重命名"
+
+#: lazarusidestrconsts.lislazbuildrenameprof
+msgid "Rename Profile"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildrenameprofinfo
+msgid "New name for profile:"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
