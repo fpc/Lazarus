@@ -743,7 +743,8 @@ function TIDESynGutterMarks.SourceLineToDebugLine(aLinePos: Integer;
   AdjustOnError: Boolean): Integer;
 begin
   CheckTextBuffer;
-  if (aLinePos < 1) or (not HasDebugMarks) then exit(aLinePos);
+  if (aLinePos < 1) or (not HasDebugMarks) or (aLinePos >= FDebugMarkInfo.Count) then
+    exit(aLinePos);
   Result := FDebugMarkInfo[aLinePos - 1];
   while (Result = 0) and AdjustOnError and (aLinePos < FDebugMarkInfo.Count-1) do begin
     inc(aLinePos);
