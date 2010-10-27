@@ -71,9 +71,7 @@ type
     rsAnsi,   // *) comment
     rsBor,    // { comment
     rsSlash,  // //
-    {$IFDEF SYN_LAZARUS}
     rsDirective,
-    {$ENDIF}
     rsAsm,    // assembler block
     rsProperty,
     rsInterface,
@@ -85,7 +83,8 @@ type
     rsAtClass,
     rsAfterClass,
     rsAtClosingBracket, // ')'
-    rsAtCaseLabel
+    rsAtCaseLabel,
+    rsInProcHeader  // Declaration or implementation header of a Procedure, function, constructor...
   );
   TRangeStates = set of TRangeState;
 
@@ -1288,7 +1287,8 @@ begin
   if KeyComp('Dynamic') then
     Result := tkKey
   else
-  if KeyComp('Message') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+  if KeyComp('Message') and (not(rsInProcHeader in fRange)) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then
     Result := tkKey
@@ -1626,7 +1626,15 @@ end;
 
 function TSynPasSyn.Func100: TtkTokenKind;
 begin
-  if KeyComp('Automated') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Automated') then
+    Result := tkKey
+  else
+  if (rsInProcHeader in fRange) and KeyComp('constref') and
+     (PasCodeFoldRange.BracketNestLevel = 1)
+  then
+    Result := tkKey
+  else
+    Result := tkIdentifier
 end;
 
 function TSynPasSyn.Func101: TtkTokenKind;
@@ -1652,6 +1660,7 @@ begin
           not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
+      fRange := fRange + [rsInProcHeader];
     end;
     Result := tkKey;
   end
@@ -1675,6 +1684,7 @@ begin
           not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
+      fRange := fRange + [rsInProcHeader];
     end;
     Result := tkKey;
   end
@@ -1848,6 +1858,7 @@ begin
           not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
+      fRange := fRange + [rsInProcHeader];
     end;
     Result := tkKey;
   end else
@@ -1892,6 +1903,7 @@ begin
           not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]))
       then
         StartPascalCodeFoldBlock(cfbtProcedure);
+      fRange := fRange + [rsInProcHeader];
     end;
     Result := tkKey;
   end else
@@ -2601,8 +2613,10 @@ begin
     EndPascalCodeFoldBlock(True);
   if (tfb = cfbtCase) then
     fRange := fRange + [rsAtCaseLabel];
-  if (rsProperty in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
-    fRange := fRange - [rsProperty];
+  if (fRange * [rsProperty, rsInProcHeader] <> []) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
+  then
+    fRange := fRange - [rsProperty, rsInProcHeader];
 end;
 
 procedure TSynPasSyn.SlashProc;
