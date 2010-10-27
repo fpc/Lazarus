@@ -2849,6 +2849,7 @@ msgid "Unit dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
 msgstr ""
 
@@ -6353,6 +6354,10 @@ msgstr "Ctrl"
 msgid "Edit Tool"
 msgstr ""
 
+#: lazarusidestrconsts.lisedtexttoolhidemainform
+msgid "Hide main form"
+msgstr ""
+
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insit"
@@ -6777,6 +6782,7 @@ msgid "Up"
 msgstr "Op"
 
 #: lazarusidestrconsts.lisexttoolremove
+msgctxt "lazarusidestrconsts.lisexttoolremove"
 msgid "Remove"
 msgstr "Verwyder"
 
@@ -7105,6 +7111,7 @@ msgid "Invalid Identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisfrirename
+msgctxt "lazarusidestrconsts.lisfrirename"
 msgid "Rename"
 msgstr ""
 
@@ -8352,6 +8359,11 @@ msgstr ""
 msgid "Part"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildadd
+msgctxt "lazarusidestrconsts.lislazbuildadd"
+msgid "Add"
+msgstr "Voeg by"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr ""
@@ -8379,10 +8391,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildbuildoptions
-msgid "Build Options"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
@@ -8416,7 +8424,11 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-msgid "LCL interface"
+msgid "Widgetset"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles
+msgid "Manage Build Profiles"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnone
@@ -8433,8 +8445,8 @@ msgstr ""
 msgid "Options:"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildqboapplcltarget
-msgid "Target"
+#: lazarusidestrconsts.lislazbuildprofile
+msgid "Build Profile"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
@@ -8453,17 +8465,23 @@ msgstr ""
 msgid "Build LCL"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildqbobuildother
-msgctxt "lazarusidestrconsts.lislazbuildqbobuildother"
-msgid "Other"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildquickbuildoptions
-msgid "Quick Build Options"
+#: lazarusidestrconsts.lislazbuildrefresh
+msgctxt "lazarusidestrconsts.lislazbuildrefresh"
+msgid "Refresh"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildremove
+msgctxt "lazarusidestrconsts.lislazbuildremove"
+msgid "Remove"
+msgstr "Verwyder"
+
+#: lazarusidestrconsts.lislazbuildrename
+msgctxt "lazarusidestrconsts.lislazbuildrename"
+msgid "Rename"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
@@ -10302,6 +10320,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr ""
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64

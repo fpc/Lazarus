@@ -2868,6 +2868,7 @@ msgid "Unit dependencies"
 msgstr "Modulio priklausomybės"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
 msgstr "Atnaujinti"
 
@@ -6394,6 +6395,10 @@ msgstr "Ctrl"
 msgid "Edit Tool"
 msgstr "Keisti įrankį"
 
+#: lazarusidestrconsts.lisedtexttoolhidemainform
+msgid "Hide main form"
+msgstr ""
+
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insert"
@@ -6819,6 +6824,7 @@ msgid "Up"
 msgstr "Viršun"
 
 #: lazarusidestrconsts.lisexttoolremove
+msgctxt "lazarusidestrconsts.lisexttoolremove"
 msgid "Remove"
 msgstr "Pašalinti"
 
@@ -7148,6 +7154,7 @@ msgid "Invalid Identifier"
 msgstr "Klaidingas identifikatorius"
 
 #: lazarusidestrconsts.lisfrirename
+msgctxt "lazarusidestrconsts.lisfrirename"
 msgid "Rename"
 msgstr "Pervadinti"
 
@@ -8397,6 +8404,11 @@ msgstr "Nurodykite kuriame aplanke dėti IKA vykdomąjį failą "
 msgid "Part"
 msgstr "Dalis"
 
+#: lazarusidestrconsts.lislazbuildadd
+msgctxt "lazarusidestrconsts.lislazbuildadd"
+msgid "Add"
+msgstr "Pridėti"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Sudėtingesnės darymo parinktys"
@@ -8425,10 +8437,6 @@ msgstr "Daryti IKA"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Daryti JITForm"
-
-#: lazarusidestrconsts.lislazbuildbuildoptions
-msgid "Build Options"
-msgstr "Darymo parinktys"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -8461,8 +8469,14 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%s„lazbuild“ neinteraktyvus, darbas nutraukiamas."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-msgid "LCL interface"
+#, fuzzy
+#| msgid "LCL interface"
+msgid "Widgetset"
 msgstr "LCL interfeisas"
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles
+msgid "Manage Build Profiles"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8478,9 +8492,9 @@ msgstr "Tinka"
 msgid "Options:"
 msgstr "Parinktys:"
 
-#: lazarusidestrconsts.lislazbuildqboapplcltarget
-msgid "Target"
-msgstr "Paskyra"
+#: lazarusidestrconsts.lislazbuildprofile
+msgid "Build Profile"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8498,18 +8512,24 @@ msgstr "Daryti IKA kartu su paketais"
 msgid "Build LCL"
 msgstr "Daryti LCL"
 
-#: lazarusidestrconsts.lislazbuildqbobuildother
-msgctxt "lazarusidestrconsts.lislazbuildqbobuildother"
-msgid "Other"
-msgstr "Kiti"
-
 #: lazarusidestrconsts.lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "Išvalyti + Daryti viską"
 
-#: lazarusidestrconsts.lislazbuildquickbuildoptions
-msgid "Quick Build Options"
-msgstr "Lengvos darymo parinktys"
+#: lazarusidestrconsts.lislazbuildrefresh
+msgctxt "lazarusidestrconsts.lislazbuildrefresh"
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: lazarusidestrconsts.lislazbuildremove
+msgctxt "lazarusidestrconsts.lislazbuildremove"
+msgid "Remove"
+msgstr "Pašalinti"
+
+#: lazarusidestrconsts.lislazbuildrename
+msgctxt "lazarusidestrconsts.lislazbuildrename"
+msgid "Rename"
+msgstr "Pervadinti"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -10366,6 +10386,10 @@ msgstr "Viršesnė kalba. Pavyzdžiui: --language=de. Galimas vertes galite suž
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "%snaudoti kitą, nei numatyta, kompiliatorių. Pvz. ppc386 ppcx64 ppcppc ir pan. Numatytasis bus įrašytas failan „environmentoptions.xml“"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"

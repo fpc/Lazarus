@@ -2859,6 +2859,7 @@ msgid "Unit dependencies"
 msgstr "תלויות היחידה"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
 msgstr "לרענן"
 
@@ -6370,6 +6371,10 @@ msgstr "Ctrl"
 msgid "Edit Tool"
 msgstr "ערוך כלי"
 
+#: lazarusidestrconsts.lisedtexttoolhidemainform
+msgid "Hide main form"
+msgstr ""
+
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
 msgstr "הכנס"
@@ -6794,6 +6799,7 @@ msgid "Up"
 msgstr "למעלה"
 
 #: lazarusidestrconsts.lisexttoolremove
+msgctxt "lazarusidestrconsts.lisexttoolremove"
 msgid "Remove"
 msgstr "הסר"
 
@@ -7122,6 +7128,7 @@ msgid "Invalid Identifier"
 msgstr "מזהה לא חוקי"
 
 #: lazarusidestrconsts.lisfrirename
+msgctxt "lazarusidestrconsts.lisfrirename"
 msgid "Rename"
 msgstr "שנה שם"
 
@@ -8373,6 +8380,11 @@ msgstr "בחר בתיקיית הפלט לקבצי הריצה של הIDE"
 msgid "Part"
 msgstr "חלק"
 
+#: lazarusidestrconsts.lislazbuildadd
+msgctxt "lazarusidestrconsts.lislazbuildadd"
+msgid "Add"
+msgstr "הוסף"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "אפשרויות בניה מתקדמות"
@@ -8401,10 +8413,6 @@ msgstr "בנה את ה IDE"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "בנה JITForm"
-
-#: lazarusidestrconsts.lislazbuildbuildoptions
-msgid "Build Options"
-msgstr "אפשרויות בניה"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -8437,8 +8445,14 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "בונה לזארוס אינו אינטראקטיבי, יוצא עכשיו."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-msgid "LCL interface"
+#, fuzzy
+#| msgid "LCL interface"
+msgid "Widgetset"
 msgstr "ממשק LCL"
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles
+msgid "Manage Build Profiles"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8454,9 +8468,9 @@ msgstr "אשר"
 msgid "Options:"
 msgstr "אפשרויות:"
 
-#: lazarusidestrconsts.lislazbuildqboapplcltarget
-msgid "Target"
-msgstr "יעד"
+#: lazarusidestrconsts.lislazbuildprofile
+msgid "Build Profile"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8474,18 +8488,24 @@ msgstr "בנה את ה IDE עם חבילות"
 msgid "Build LCL"
 msgstr "בנה את LCL"
 
-#: lazarusidestrconsts.lislazbuildqbobuildother
-msgctxt "lazarusidestrconsts.lislazbuildqbobuildother"
-msgid "Other"
-msgstr "אחר"
-
 #: lazarusidestrconsts.lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "נקה ובנה הכל"
 
-#: lazarusidestrconsts.lislazbuildquickbuildoptions
-msgid "Quick Build Options"
-msgstr "אפשרויות לבנייה מהירה"
+#: lazarusidestrconsts.lislazbuildrefresh
+msgctxt "lazarusidestrconsts.lislazbuildrefresh"
+msgid "Refresh"
+msgstr "לרענן"
+
+#: lazarusidestrconsts.lislazbuildremove
+msgctxt "lazarusidestrconsts.lislazbuildremove"
+msgid "Remove"
+msgstr "הסר"
+
+#: lazarusidestrconsts.lislazbuildrename
+msgctxt "lazarusidestrconsts.lislazbuildrename"
+msgid "Rename"
+msgstr "שנה שם"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -10336,6 +10356,10 @@ msgstr "מעמיס על השפה. דוגמא: language=he--. בשביל לקבל
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "דרוס את מהדר ברירת המחדל לדוגמא ppc386 ppcx64 ppcppc וכו'. מהדר ברירת המחדל מאוחסן בקובץ environmentoptions.xml"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"

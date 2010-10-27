@@ -2891,6 +2891,7 @@ msgid "Unit dependencies"
 msgstr "Dépendances de l'unité"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
 msgstr "Rafraîchir"
 
@@ -6416,6 +6417,10 @@ msgstr "Ctrl"
 msgid "Edit Tool"
 msgstr "Editer les outils"
 
+#: lazarusidestrconsts.lisedtexttoolhidemainform
+msgid "Hide main form"
+msgstr ""
+
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insérer"
@@ -6841,6 +6846,7 @@ msgid "Up"
 msgstr "Haut"
 
 #: lazarusidestrconsts.lisexttoolremove
+msgctxt "lazarusidestrconsts.lisexttoolremove"
 msgid "Remove"
 msgstr "Retirer"
 
@@ -7172,6 +7178,7 @@ msgid "Invalid Identifier"
 msgstr "Identificateur non valide"
 
 #: lazarusidestrconsts.lisfrirename
+msgctxt "lazarusidestrconsts.lisfrirename"
 msgid "Rename"
 msgstr "Renommer"
 
@@ -8423,6 +8430,11 @@ msgstr "Choisissez le répertoire de sortie pour l'exécutable de l'EDI"
 msgid "Part"
 msgstr "Partie"
 
+#: lazarusidestrconsts.lislazbuildadd
+msgctxt "lazarusidestrconsts.lislazbuildadd"
+msgid "Add"
+msgstr "Ajouter"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Options de construction avancées"
@@ -8451,10 +8463,6 @@ msgstr "Construire l'EDI"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Construire la JITForm"
-
-#: lazarusidestrconsts.lislazbuildbuildoptions
-msgid "Build Options"
-msgstr "Options de construction"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -8487,8 +8495,14 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild n'est pas interactif, abandoner maintenant."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-msgid "LCL interface"
+#, fuzzy
+#| msgid "LCL interface"
+msgid "Widgetset"
 msgstr "Interface LCL"
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles
+msgid "Manage Build Profiles"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8504,9 +8518,9 @@ msgstr "OK"
 msgid "Options:"
 msgstr "Options :"
 
-#: lazarusidestrconsts.lislazbuildqboapplcltarget
-msgid "Target"
-msgstr "Cible"
+#: lazarusidestrconsts.lislazbuildprofile
+msgid "Build Profile"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8524,18 +8538,24 @@ msgstr "Construire l'EDI avec les paquets"
 msgid "Build LCL"
 msgstr "Construire la LCL"
 
-#: lazarusidestrconsts.lislazbuildqbobuildother
-msgctxt "lazarusidestrconsts.lislazbuildqbobuildother"
-msgid "Other"
-msgstr "Autre"
-
 #: lazarusidestrconsts.lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "Nettoyer + construire tout"
 
-#: lazarusidestrconsts.lislazbuildquickbuildoptions
-msgid "Quick Build Options"
-msgstr "Options de construction rapide"
+#: lazarusidestrconsts.lislazbuildrefresh
+msgctxt "lazarusidestrconsts.lislazbuildrefresh"
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: lazarusidestrconsts.lislazbuildremove
+msgctxt "lazarusidestrconsts.lislazbuildremove"
+msgid "Remove"
+msgstr "Retirer"
+
+#: lazarusidestrconsts.lislazbuildrename
+msgctxt "lazarusidestrconsts.lislazbuildrename"
+msgid "Rename"
+msgstr "Renommer"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -10393,6 +10413,10 @@ msgstr "Outrepasser le langage. Par exemple --language=de. Pour les valeurs poss
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "%sredefinie le compilateur par défaut. par exemple, ppc386 ppcx64 ppcppc etc par défaut est stocké dans environmentoptions.xml"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"

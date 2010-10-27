@@ -2852,6 +2852,7 @@ msgid "Unit dependencies"
 msgstr "Závislosti jednotky"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
 msgstr "Obnovit"
 
@@ -6350,6 +6351,10 @@ msgstr "Ctrl"
 msgid "Edit Tool"
 msgstr "Nástroj pro úpravy"
 
+#: lazarusidestrconsts.lisedtexttoolhidemainform
+msgid "Hide main form"
+msgstr ""
+
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
 msgstr "Vložit"
@@ -6774,6 +6779,7 @@ msgid "Up"
 msgstr "Nahoru"
 
 #: lazarusidestrconsts.lisexttoolremove
+msgctxt "lazarusidestrconsts.lisexttoolremove"
 msgid "Remove"
 msgstr "Odstranit"
 
@@ -7102,6 +7108,7 @@ msgid "Invalid Identifier"
 msgstr "Neplatný identifikátor"
 
 #: lazarusidestrconsts.lisfrirename
+msgctxt "lazarusidestrconsts.lisfrirename"
 msgid "Rename"
 msgstr "Přejmenování"
 
@@ -8350,6 +8357,11 @@ msgstr "Vybrat výstupní adresář spustitelných souborů IDE "
 msgid "Part"
 msgstr "Část"
 
+#: lazarusidestrconsts.lislazbuildadd
+msgctxt "lazarusidestrconsts.lislazbuildadd"
+msgid "Add"
+msgstr "Přidat"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Pokročilé volby sestavení"
@@ -8378,10 +8390,6 @@ msgstr "Sestavit IDE"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Sestavit JITForm"
-
-#: lazarusidestrconsts.lislazbuildbuildoptions
-msgid "Build Options"
-msgstr "Volby sestavení"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -8414,8 +8422,14 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild není interaktivní, nyní přerušuji."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-msgid "LCL interface"
+#, fuzzy
+#| msgid "LCL interface"
+msgid "Widgetset"
 msgstr "Rozhraní LCL"
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles
+msgid "Manage Build Profiles"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8431,9 +8445,9 @@ msgstr "Ok"
 msgid "Options:"
 msgstr "Nastavení:"
 
-#: lazarusidestrconsts.lislazbuildqboapplcltarget
-msgid "Target"
-msgstr "Cíl"
+#: lazarusidestrconsts.lislazbuildprofile
+msgid "Build Profile"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8451,18 +8465,24 @@ msgstr "Sestavit IDE s balíčky"
 msgid "Build LCL"
 msgstr "Sestavit LCL"
 
-#: lazarusidestrconsts.lislazbuildqbobuildother
-msgctxt "lazarusidestrconsts.lislazbuildqbobuildother"
-msgid "Other"
-msgstr "Jiné"
-
 #: lazarusidestrconsts.lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "Vyčistit + Sestavit vše"
 
-#: lazarusidestrconsts.lislazbuildquickbuildoptions
-msgid "Quick Build Options"
-msgstr "Volby rychlého sestavení"
+#: lazarusidestrconsts.lislazbuildrefresh
+msgctxt "lazarusidestrconsts.lislazbuildrefresh"
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: lazarusidestrconsts.lislazbuildremove
+msgctxt "lazarusidestrconsts.lislazbuildremove"
+msgid "Remove"
+msgstr "Odstranit"
+
+#: lazarusidestrconsts.lislazbuildrename
+msgctxt "lazarusidestrconsts.lislazbuildrename"
+msgid "Rename"
+msgstr "Přejmenování"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -10295,6 +10315,10 @@ msgstr "Vybrat jazyk. Na příklad --language=cz. Pro možné varianty se podív
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgstr "%spřepíše výchozí překladač. např. ppc386 ppcx64 ppcppc aj. výchozí je uložen v environmentoptions.xml"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
