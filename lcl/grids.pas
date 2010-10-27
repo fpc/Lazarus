@@ -522,7 +522,6 @@ type
       stored IsValueCheckedStored;
     property ValueUnchecked: string read GetValueUnchecked write SetValueUnchecked
       stored IsValueUncheckedStored;
-
   end;
 
   TGridPropertyBackup=record

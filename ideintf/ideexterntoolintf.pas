@@ -69,6 +69,7 @@ type
     fCmdLineParams: string;
     FEnvironmentOverrides: TStringList;
     fFilename: string;
+    FHideMainForm: boolean;
     FOnParseLine: TOnIDEExtToolParseLine;
     FScanners: TStrings;
     FScanOutput: boolean;
@@ -106,6 +107,7 @@ type
     property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
     property OnParseLine: TOnIDEExtToolParseLine read FOnParseLine write FOnParseLine;
     property Scanners: TStrings read FScanners write SetScanners;
+    property HideMainForm: boolean read FHideMainForm write FHideMainForm default true;
   end;
   
 type
@@ -152,6 +154,7 @@ begin
     FScanOutput:=Src.FScanOutput;
     FShowAllOutput:=Src.FShowAllOutput;
     FScanners.Assign(Src.FScanners);
+    FHideMainForm:=Src.HideMainForm;
   end else
     inherited Assign(Source);
 end;
@@ -161,6 +164,7 @@ begin
   inherited Create;
   FEnvironmentOverrides:=TStringList.Create;
   FScanners:=TStringList.Create;
+  FHideMainForm:=true;
   Clear;
 end;
 
@@ -181,6 +185,7 @@ begin
   fScanOutputForMakeMessages:=false;
   FScanOutput:=false;
   FShowAllOutput:=false;
+  FHideMainForm:=true;
   FEnvironmentOverrides.Clear;
   FScanners.Clear;
 end;
@@ -197,6 +202,7 @@ begin
   fScanOutputForMakeMessages:=Config.GetValue(
                                   'ScanOutputForMakeMessages/Value',false);
   FShowAllOutput:=Config.GetValue('ShowAllOutput/Value',false);
+  FHideMainForm:=Config.GetValue('HideMainForm/Value',true);
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
   Config.GetValue('Scanners/',FScanners);
   Result:=mrOk;
@@ -216,6 +222,7 @@ begin
              'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages,
              false);
   Config.SetDeleteValue('ShowAllOutput/Value',FShowAllOutput,false);
+  Config.SetDeleteValue('HideMainForm/Value',FHideMainForm,true);
   Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
   Config.SetValue('Scanners/',FScanners);
   Result:=mrOk;
