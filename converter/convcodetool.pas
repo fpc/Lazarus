@@ -212,12 +212,13 @@ begin
   if UsesNode<>nil then begin
     fCodeTool.MoveCursorToUsesStart(UsesNode);
     InsPos:=fCodeTool.CurPos.StartPos;
-    // Now don't remove or comment but add to Delphi block instead.
+    // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do begin
       s:=fUnitsToRemove[i];
       RemoveUsesUnit(s);
       DelphiOnlyUnits.Append(s);
     end;
+    // ... and don't comment the unit names either.
     for i:=0 to fUnitsToComment.Count-1 do begin
       s:=fUnitsToComment[i];
       RemoveUsesUnit(s);
