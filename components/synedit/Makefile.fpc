@@ -39,7 +39,8 @@ implicitunits=synbeautifier syncompletion syndesignstringconstants \
   synedit syneditautocomplete syneditexport syneditfoldedview synedithighlighter \
   synedithighlighterfoldbase synedithighlighterxmlbase syneditkeycmds \
   syneditlazdsgn syneditlines syneditmarks \
-  syneditmarkup syneditmarkupbracket syneditmarkupctrlmouselink syneditmarkuphighall \
+  syneditmarkup syneditmarkupbracket syneditmarkupctrlmouselink \
+  syneditmarkuphighall syneditmarkupguttermark\
   syneditmarkupselection syneditmarkupspecialline syneditmarkupwordgroup \
   syneditmiscclasses syneditmiscprocs syneditmousecmds syneditplugins \
   syneditpointclasses syneditregexsearch syneditsearch syneditstrconst synedittextbase \

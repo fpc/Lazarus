@@ -95,6 +95,7 @@ type
     Procedure EndMarkup; virtual;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; virtual; abstract;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; virtual; abstract;
+    procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor); virtual;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
@@ -148,9 +149,9 @@ type
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure FinishMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
-    Procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor);
+    Function  GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
+    Function  GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor); override;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
@@ -358,6 +359,16 @@ procedure TSynEditMarkup.EndMarkup;
 begin
 end;
 
+procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol: Integer;
+  AMarkup: TSynSelectedColor);
+var
+  c: TSynSelectedColor;
+begin
+  c := GetMarkupAttributeAtRowCol(aRow, aCol);
+  if assigned(c) then
+    AMarkup.Merge(c, aCol, AEndCol);
+end;
+
 procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
 begin
   DoTextChanged(aFirstCodeLine, aLastCodeLine);
@@ -483,14 +494,11 @@ procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol
   (const aRow, aCol, AEndCol: Integer; AMarkup: TSynSelectedColor);
 var
   i : integer;
-  c : TSynSelectedColor;
 begin
   for i := 0 to fMarkUpList.Count-1 do begin
-    if not TSynEditMarkup(fMarkUpList[i]).Enabled then continue;
-    c := TSynEditMarkup(fMarkUpList[i]).GetMarkupAttributeAtRowCol(aRow, aCol);
-    if assigned(c) then begin
-      AMarkup.Merge(c, aCol, AEndCol);
-    end;
+    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+      TSynEditMarkup(fMarkUpList[i]).MergeMarkupAttributeAtRowCol
+        (aRow, aCol, AEndCol, AMarkup);
   end;
 end;
 

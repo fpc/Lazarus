@@ -2121,6 +2121,7 @@ components/synedit/syneditmarks.pp svneol=native#text/plain
 components/synedit/syneditmarkup.pp svneol=native#text/plain
 components/synedit/syneditmarkupbracket.pp svneol=native#text/plain
 components/synedit/syneditmarkupctrlmouselink.pp svneol=native#text/plain
+components/synedit/syneditmarkupguttermark.pp svneol=native#text/pascal
 components/synedit/syneditmarkuphighall.pp svneol=native#text/plain
 components/synedit/syneditmarkupselection.pp svneol=native#text/plain
 components/synedit/syneditmarkupspecialline.pp svneol=native#text/plain

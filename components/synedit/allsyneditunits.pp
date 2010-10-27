@@ -43,6 +43,9 @@ uses
   SynHighlighterDiff,
   SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber,
   SynGutterMarks, SynGutterLineOverview,
+  SynEditMarkup, SynEditMarkupBracket, SynEditMarkupCtrlMouseLink,
+  SynEditMarkupHighAll, SynEditMarkupSelection, SynEditMarkupSpecialLine,
+  SynEditMarkupWordGroup, SynEditMarkupGutterMark,
   SynPropertyEditObjectList, SynDesignStringConstants;
 
 implementation

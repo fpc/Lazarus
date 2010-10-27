@@ -68,6 +68,7 @@ type
     procedure Reset;
 
     // aX is the position between the chars (as in CaretX)
+    // 1 is in front of the first char
     function IsInWord     (aLine: String; aX: Integer
                            ): Boolean;
     function IsAtWordStart(aLine: String; aX: Integer): Boolean;
@@ -82,6 +83,8 @@ type
                            aIncludeCurrent: Boolean = False): Integer;
 
     function NextBoundary (aLine: String; aX: Integer): Integer;
+    function PrevBoundary (aLine: String; aX: Integer;
+                           aIncludeCurrent: Boolean = False): Integer;
 
     property IdentChars: TSynIdentChars read FIdentChars write SetIdentChars;
     property WordChars: TSynIdentChars read FWordChars;
@@ -1465,6 +1468,25 @@ begin
   else
     while (aX <= len) and (aLine[aX] in FWhiteChars) do Inc(ax);
   Result := aX;
+end;
+
+function TSynWordBreaker.PrevBoundary(aLine: String; aX: Integer;
+  aIncludeCurrent: Boolean): Integer;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if not aIncludeCurrent then dec(ax);
+  if (aX < 1) or (aX > len) then exit(-1);
+
+  if (aLine[aX] in FWordChars) then
+    while (aX > 1) and (aLine[aX] in FWordChars) do dec(ax)
+  else
+  if (aLine[aX] in FWordBreakChars) then
+    while (aX > 1) and (aLine[aX] in FWordBreakChars) do dec(ax)
+  else
+    while (aX > 1) and (aLine[aX] in FWhiteChars) do dec(ax);
+  Result := aX + 1;
 end;
 
 { TSynMethodList }
