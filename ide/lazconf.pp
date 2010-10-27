@@ -52,14 +52,14 @@ uses
 const
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
       'gtk (deprecated)',
-      'gtk 2 (beta)',
+      'gtk 2',
       'win32/win64',
       'wince (beta)',
-      'carbon (beta)',
-      'qt (beta)',
-      'fpGUI (pre-alpha)',
+      'carbon',
+      'qt',
+      'fpGUI (alpha)',
       'NoGUI',
-      'cocoa (pre-alpha)'
+      'cocoa (alpha)'
     );
 
 
@@ -221,7 +221,7 @@ function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
 begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
     if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
-  Result:=lpGtk;
+  Result:=lpGtk2;
 end;
 
 function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;

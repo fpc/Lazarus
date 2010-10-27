@@ -135,14 +135,14 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg, EditDefineTree,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
-  BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
+  BuildLazDialog, BuildProfileManager, BuildManager,
+  MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, UnusedUnitsDlg, FindOverloadsDlg, CleanDirDlg,
   CodeContextForm, AboutFrm, CompatibilityRestrictions, RestrictionBrowser,
   ProjectWizardDlg, IDECmdLine, CodeExplOpts,
-  BuildManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -4220,7 +4220,7 @@ end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
-  if MiscellaneousOptions.BuildLazOpts.ConfirmBuild then
+  if MiscellaneousOptions.BuildLazProfiles.Current.ConfirmBuild then
     if MessageDlg(lisConfirmLazarusRebuild, mtConfirmation, mbYesNo, 0)<>mrYes then
       exit;
   DoBuildLazarus([]);
@@ -4233,7 +4233,7 @@ var
   LazSrcDirTemplate: TDefineTemplate;
   DlgResult: TModalResult;
 begin
-  DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts);
+  DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   if DlgResult in [mrOk,mrYes] then begin
     MiscellaneousOptions.Save;
     LazSrcTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
@@ -11338,7 +11338,7 @@ begin
 
   // save extra options
   IDEBuildFlags:=Flags+[blfOnlyIDE];
-  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
+  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
                              GlobalMacroList,PkgOptions,IDEBuildFlags);
   if Result<>mrOk then exit;
 end;
@@ -11373,7 +11373,10 @@ begin
     // but not the IDE
     SourceEditorManager.ClearErrorLines;
     CompileProgress.CreateDialog(OwningComponent, 'Lazarus...', '');
-    Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+//    SourceNotebook.ClearErrorLines;     // From Build profiles patch.
+//    CreateInfoBuilder(OwningComponent);
+//    PutInfoBuilderProject('Lazarus...');
+    Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
@@ -11385,8 +11388,10 @@ begin
 
     // then compile the 'installed' packages
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
-    and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then begin
+//    and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then begin
+    and (MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode=mmNone) then begin
       CompileProgress.Ready;
+//      AbleInfoBuilderExit;              // From Build profiles patch.
       exit;
     end;
 
@@ -11430,7 +11435,7 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
-    Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
+    Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
                                GlobalMacroList,PkgOptions,IDEBuildFlags);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
@@ -11439,7 +11444,7 @@ begin
 
     // make ide
     SourceEditorManager.ClearErrorLines;
-    Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+    Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,

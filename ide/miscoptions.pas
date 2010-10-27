@@ -30,9 +30,8 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, TextTools,
-  FileUtil, Laz_XMLCfg, LazConf,
-  IDEProcs;
+  Classes, SysUtils, LCLProc, BuildLazDialog, BuildProfileManager,
+  CodeToolsStructs, TextTools, FileUtil, Laz_XMLCfg, LazConf, IDEProcs;
 
 type
   { TFindRenameIdentifierOptions }
@@ -64,13 +63,14 @@ type
 
   TMiscellaneousOptions = class
   private
-    fBuildLazOpts: TBuildLazarusOptions;
+    fBuildLazProfiles: TBuildLazarusProfiles;
     FExtractProcName: string;
     fFilename: string;
     FFindRenameIdentifierOptions: TFindRenameIdentifierOptions;
     FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FSortSelDirection: TSortDirection;
     FSortSelDomain: TSortDomain;
+    function GetBuildLazOpts: TBuildLazarusProfile;
     function GetFilename: string;
   public
     constructor Create;
@@ -79,7 +79,8 @@ type
     procedure Save;
     property Filename: string read GetFilename;
 
-    property BuildLazOpts: TBuildLazarusOptions read fBuildLazOpts;
+    property BuildLazProfiles: TBuildLazarusProfiles read fBuildLazProfiles;
+    property BuildLazOpts: TBuildLazarusProfile read GetBuildLazOpts;
     property ExtractProcName: string read FExtractProcName write FExtractProcName;
     property SortSelDirection: TSortDirection read FSortSelDirection
                                               write FSortSelDirection;
@@ -117,7 +118,7 @@ implementation
 
 const
   MiscOptsFilename = 'miscellaneousoptions.xml';
-  MiscOptsVersion = 1;
+  MiscOptsVersion = 2;
 
 function SortDirectionNameToType(const s: string): TSortDirection;
 begin
@@ -154,7 +155,7 @@ end;
 constructor TMiscellaneousOptions.Create;
 begin
   inherited Create;
-  FBuildLazOpts:=TBuildLazarusOptions.Create;
+  fBuildLazProfiles:=TBuildLazarusProfiles.Create;
   FExtractProcName:='NewProc';
   fSortSelDirection:=sdAscending;
   fSortSelDomain:=sdLines;
@@ -164,7 +165,7 @@ end;
 
 destructor TMiscellaneousOptions.Destroy;
 begin
-  FBuildLazOpts.Free;
+  fBuildLazProfiles.Free;
   FFindRenameIdentifierOptions.Free;
   inherited Destroy;
 end;
@@ -184,6 +185,11 @@ begin
   Result:=fFilename;
 end;
 
+function TMiscellaneousOptions.GetBuildLazOpts: TBuildLazarusProfile;
+begin
+  Result:=BuildLazProfiles.Current;
+end;
+
 procedure TMiscellaneousOptions.Load;
 var XMLConfig: TXMLConfig;
   FileVersion: integer;
@@ -199,11 +205,9 @@ begin
     try
       Path:='MiscellaneousOptions/';
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
-
-      if (FileVersion<MiscOptsVersion) and (FileVersion<>0) then
-        DebugLn('NOTE: converting old miscellaneous options ...');
-
-      BuildLazOpts.Load(XMLConfig,Path+'BuildLazarusOptions/');
+//      if (FileVersion<MiscOptsVersion) and (FileVersion<>0) then
+//        DebugLn('NOTE: converting old miscellaneous options ...');
+      BuildLazProfiles.Load(XMLConfig,Path+'BuildLazarusOptions/',FileVersion);
       SortSelDirection:=SortDirectionNameToType(XMLConfig.GetValue(
            Path+'SortSelection/Direction',SortDirectionNames[sdAscending]));
       SortSelDomain:=SortDomainNameToType(XMLConfig.GetValue(
@@ -211,8 +215,7 @@ begin
       MakeResourceStringInsertPolicy:=ResourcestringInsertPolicyNameToType(
            XMLConfig.GetValue(Path+'MakeResourcestringInsertPolicy/Value',
                               ResourcestringInsertPolicyNames[rsipAppend]));
-      ExtractProcName:=XMLConfig.GetValue(
-                                        Path+'ExtractProcName/Value','NewProc');
+      ExtractProcName:=XMLConfig.GetValue(Path+'ExtractProcName/Value','NewProc');
       FindRenameIdentifierOptions.LoadFromXMLConfig(XMLConfig,
                                                   Path+'FindRenameIdentifier/');
     finally
@@ -244,7 +247,7 @@ begin
       Path:='MiscellaneousOptions/';
       XMLConfig.SetValue(Path+'Version/Value',MiscOptsVersion);
 
-      BuildLazOpts.Save(XMLConfig,Path+'BuildLazarusOptions/');
+      BuildLazProfiles.Save(XMLConfig,Path+'BuildLazarusOptions/');
       XMLConfig.SetDeleteValue(Path+'SortSelection/Direction',
            SortDirectionNames[SortSelDirection],
            SortDirectionNames[sdAscending]);

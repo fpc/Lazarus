@@ -35,7 +35,7 @@ uses
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
   MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
-  BuildLazDialog, BuildManager, BaseBuildManager;
+  BuildLazDialog, BuildProfileManager, BuildManager, BaseBuildManager;
   
 type
 
@@ -378,58 +378,60 @@ function TLazBuildApplication.BuildLazarusIDE: boolean;
 var
   Flags: TBuildLazarusFlags;
   CurResult: TModalResult;
-  BuildLazOptions: TBuildLazarusOptions;
-  i: Integer;
-  CurItem: TBuildLazarusItem;
+  BuildLazProfiles: TBuildLazarusProfiles;
+  CurProf: TBuildLazarusProfile;
+  MMDefs: TMakeModeDefs;
+  MMDef: TMakeModeDef;
   MakeMode: TMakeMode;
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
+  i: Integer;
 begin
   Result:=false;
-
   Init;
 
   LoadMiscellaneousOptions;
-  BuildLazOptions:=MiscellaneousOptions.BuildLazOpts;
+  BuildLazProfiles:=MiscellaneousOptions.BuildLazProfiles;
+  MMDefs:=BuildLazProfiles.MakeModeDefs;
+  CurProf:=BuildLazProfiles.Current;
   if (Length(OSOverride) <> 0) then
-    BuildLazOptions.TargetOS:=OSOverride;
+    CurProf.TargetOS:=OSOverride;
   if (Length(CPUOverride) <> 0) then
-    BuildLazOptions.TargetCPU:=CPUOverride;
+    CurProf.TargetCPU:=CPUOverride;
+
   if WidgetSetOverride<>'' then
-    BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
+    CurProf.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
   else
-    BuildLazOptions.TargetPlatform:=GetDefaultLCLWidgetType;
-  BuildLazOptions.LCLPlatform:=BuildLazOptions.TargetPlatform;
-  BuildLazOptions.IDEPlatform:=BuildLazOptions.TargetPlatform;
-  BuildLazOptions.ExtraOptions:=BuildIDEOptions;
+    CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
+  CurProf.ExtraOptions:=BuildIDEOptions;
   MakeMode:=mmNone;
   if BuildAll then begin
-    BuildLazOptions.CleanAll:=true;
+    CurProf.CleanAll:=true;
     MakeMode:=mmBuild;
   end;
-  for i:=0 to BuildLazOptions.Count-1 do begin
-    CurItem:=BuildLazOptions.Items[i];
-    if (BuildLazOptions.IndexOf(CurItem)<BuildLazOptions.IndexOf(BuildLazOptions.ItemIDE))
+  for i:=0 to MMDefs.Count-1 do begin
+    MMDef:=MMDefs[i];
+    if (MMDefs.IndexOf(MMDef) < MMDefs.IndexOf(MMDefs.ItemIDE))
     then
       // these items are needed for the IDE
-      CurItem.MakeMode:=MakeMode
-    else if CurItem=BuildLazOptions.ItemIDE then
+      CurProf.MakeModes[i]:=MakeMode
+    else if MMDef=MMDefs.ItemIDE then
       // always build the IDE
-      CurItem.MakeMode:=mmBuild
+      CurProf.MakeModes[i]:=mmBuild
     else
       // these are goodies (examples)
-      CurItem.MakeMode:=mmNone;
+      CurProf.MakeModes[i]:=mmNone;
   end;
 
   MainBuildBoss.SetBuildTargetIDE;
   Flags:=[];
 
   // try loading install packages
-  PackageGraph.LoadAutoInstallPackages(BuildLazOptions.StaticAutoInstallPackages);
+  PackageGraph.LoadAutoInstallPackages(BuildLazProfiles.StaticAutoInstallPackages);
 
   // save target directory
-  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  TargetDir:=CurProf.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed creating IDE target directory "',TargetDir,'"');
@@ -445,7 +447,7 @@ begin
 
   // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
   // but not the IDE
-  CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+  CurResult:=BuildLazarus(BuildLazProfiles,
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           '',EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
@@ -465,7 +467,7 @@ begin
   PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
   // save
-  CurResult:=SaveIDEMakeOptions(BuildLazOptions,
+  CurResult:=SaveIDEMakeOptions(BuildLazProfiles,
                                 GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
@@ -473,7 +475,7 @@ begin
   end;
 
   // compile IDE
-  CurResult:=BuildLazarus(BuildLazOptions,
+  CurResult:=BuildLazarus(BuildLazProfiles,
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           PkgOptions,EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
@@ -513,8 +515,8 @@ begin
 
     // compile all auto install dependencies
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                       PackageGraph.FirstAutoInstallDependency,
-                       MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
+                     PackageGraph.FirstAutoInstallDependency,
+                     MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
     if CurResult<>mrOk then exit;
 
   finally

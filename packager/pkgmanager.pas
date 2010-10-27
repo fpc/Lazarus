@@ -1525,7 +1525,7 @@ var
   sl: TStringList;
 begin
   if SetWithStaticPcksFlagForIDE then begin
-    MiscellaneousOptions.BuildLazOpts.WithStaticPackages:=true;
+    MiscellaneousOptions.BuildLazProfiles.Current.WithStaticPackages:=True;
   end;
 
   sl:=TStringList.Create;
@@ -1542,7 +1542,7 @@ begin
     end;
     Dependency:=Dependency.NextRequiresDependency;
   end;
-  MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages.Assign(sl);
+  MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Assign(sl);
   MiscellaneousOptions.Save;
   sl.Free;
 end;
@@ -1607,7 +1607,7 @@ begin
       NewDependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires)
     end else
       NewDependency.Free;
-    PackageList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
+    PackageList:=MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages;
     if PackageList.IndexOf(PackageName)<0 then
       PackageList.Add(PackageName);
   end else begin
@@ -1619,7 +1619,7 @@ procedure TPkgManager.LoadAutoInstallPackages;
 begin
   FLastLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
   PackageGraph.LoadAutoInstallPackages(
-    MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages);
+    MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages);
 end;
 
 procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
@@ -3844,7 +3844,7 @@ begin
     // compile all auto install dependencies
     Result:=PackageGraph.CompileRequiredPackages(nil,
                        PackageGraph.FirstAutoInstallDependency,
-                       MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
+                       MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally
@@ -3857,7 +3857,7 @@ function TPkgManager.DoSaveAutoInstallConfig: TModalResult;
 var
   TargetDir: String;
 begin
-  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  TargetDir:=MiscellaneousOptions.BuildLazProfiles.Current.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   TargetDir:=TrimFilename(TargetDir);
   if not ForceDirectory(TargetDir) then begin

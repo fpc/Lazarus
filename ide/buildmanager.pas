@@ -1850,7 +1850,7 @@ var
 begin
   NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
   NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
-  NewLCLWidgetSet:=LCLPlatformDirNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform];
+  NewLCLWidgetSet:=LCLPlatformDirNames[MiscellaneousOptions.BuildLazOpts.TargetPlatform];
   if (NewTargetOS='') or (NewTargetOS='default') then
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
