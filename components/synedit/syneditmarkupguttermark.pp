@@ -128,6 +128,7 @@ var
   i, FoundPri: Integer;
 begin
   FoundPri := 0;
+  Result := nil;
   for i := 0 to length(FRowData) - 1 do begin
     if (FRowData[i].StartX <= ACol) and (FRowData[i].EndX > ACol) and
        ( (FRowData[i].Priority < FoundPri) or (i = 0) )
