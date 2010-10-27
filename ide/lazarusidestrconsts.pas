@@ -2765,8 +2765,12 @@ resourcestring
   lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
   lisLazBuildOk = 'Ok';
   lisLazBuildAdd = 'Add';
+  lisLazBuildNewProf = 'Add New Profile';
+  lisLazBuildNewProfInfo = 'Current build options will be associated with:';
   lisLazBuildRemove = 'Remove';
   lisLazBuildRename = 'Rename';
+  lisLazBuildRenameProf = 'Rename Profile';
+  lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';

@@ -790,8 +790,8 @@ var
 begin
   with TAddProfileForm.Create(nil) do
   try
-    Caption:='Add New Profile';
-    ProfileHeaderLabel.Caption:='Current build options will be saved as:';
+    Caption:=lisLazBuildNewProf;
+    ProfileHeaderLabel.Caption:=lisLazBuildNewProfInfo;
     if (ShowModal=mrOk) and (NameEdit.Text<>'') then begin
       // Update ProfsToManage collection.
       NewProfile:=TBuildLazarusProfile.Create(fProfsToManage,NameEdit.Text);
@@ -834,8 +834,8 @@ begin
   if i<0 then exit;
   with TAddProfileForm.Create(nil) do
   try
-    Caption:='Rename Profile';
-    ProfileHeaderLabel.Caption:='New name for profile:';
+    Caption:=lisLazBuildRenameProf;
+    ProfileHeaderLabel.Caption:=lisLazBuildRenameProfInfo;
     NameEdit.Text:=ProfilesListbox.Items[i];
     if (ShowModal=mrOk) and (NameEdit.Text<>'') then begin
       // Update ProfsToManage collection.
