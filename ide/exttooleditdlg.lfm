@@ -3,7 +3,6 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
   Height = 501
   Top = 210
   Width = 661
-  ActiveControl = TitleEdit
   Caption = 'ExternalToolOptionDlg'
   ClientHeight = 501
   ClientWidth = 661
@@ -19,9 +18,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideTop.Control = TitleEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
+    Height = 14
     Top = 9
-    Width = 61
+    Width = 46
     BorderSpacing.Left = 6
     Caption = 'TitleLabel'
     ParentColor = False
@@ -31,9 +30,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideTop.Control = FilenameEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 40
-    Width = 92
+    Height = 14
+    Top = 36
+    Width = 68
     BorderSpacing.Left = 6
     Caption = 'FilenameLabel'
     ParentColor = False
@@ -43,9 +42,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideTop.Control = ParametersEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 71
-    Width = 109
+    Height = 14
+    Top = 63
+    Width = 81
     BorderSpacing.Left = 6
     Caption = 'ParametersLabel'
     ParentColor = False
@@ -55,9 +54,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideTop.Control = WorkingDirEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 102
-    Width = 102
+    Height = 14
+    Top = 90
+    Width = 78
     BorderSpacing.Left = 6
     Caption = 'WorkingDirLabel'
     ParentColor = False
@@ -67,7 +66,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 128
-    Height = 25
+    Height = 21
     Top = 6
     Width = 527
     Anchors = [akTop, akLeft, akRight]
@@ -81,9 +80,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = OpenButton
     Left = 128
-    Height = 25
-    Top = 37
-    Width = 499
+    Height = 21
+    Top = 33
+    Width = 483
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
@@ -96,10 +95,10 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilenameEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 633
-    Height = 25
-    Top = 37
-    Width = 22
+    Left = 617
+    Height = 21
+    Top = 33
+    Width = 38
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -116,8 +115,8 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 128
-    Height = 25
-    Top = 68
+    Height = 21
+    Top = 60
     Width = 527
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -132,8 +131,8 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 128
-    Height = 25
-    Top = 99
+    Height = 21
+    Top = 87
     Width = 527
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -148,8 +147,8 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 114
-    Top = 130
+    Height = 105
+    Top = 114
     Width = 649
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -157,14 +156,14 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     Caption = 'OptionsGroupBox'
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 5
-    ClientHeight = 95
+    ClientHeight = 87
     ClientWidth = 645
     TabOrder = 5
     object OptionScanOutputForFPCMessagesCheckBox: TCheckBox
       Left = 6
-      Height = 21
+      Height = 17
       Top = 6
-      Width = 321
+      Width = 242
       BorderSpacing.Around = 6
       Caption = 'OptionScanOutputForFPCMessagesCheckBox'
       TabOrder = 0
@@ -173,9 +172,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 33
-      Width = 321
+      Height = 17
+      Top = 29
+      Width = 242
       BorderSpacing.Around = 6
       Caption = 'OptionScanOutputForMakeMessagesCheckBox'
       TabOrder = 1
@@ -186,7 +185,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 29
-      Top = 60
+      Top = 52
       Width = 323
       BorderSpacing.Around = 6
       Caption = 'ScannersButton'
@@ -197,10 +196,10 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideLeft.Control = OptionScanOutputForFPCMessagesCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OptionScanOutputForFPCMessagesCheckBox
-      Left = 333
-      Height = 21
+      Left = 254
+      Height = 17
       Top = 6
-      Width = 136
+      Width = 101
       BorderSpacing.Left = 6
       Caption = 'chkHideMainForm'
       TabOrder = 3
@@ -214,7 +213,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 25
-    Top = 250
+    Top = 225
     Width = 649
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -231,13 +230,13 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 178
-    Top = 281
+    Height = 207
+    Top = 256
     Width = 649
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'MacrosGroupbox'
-    ClientHeight = 159
+    ClientHeight = 189
     ClientWidth = 645
     TabOrder = 7
     object MacrosListbox: TListBox
@@ -247,9 +246,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideBottom.Control = MacrosGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 151
+      Height = 181
       Top = 2
-      Width = 492
+      Width = 506
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -258,16 +257,15 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       OnClick = MacrosListboxClick
       OnDblClick = MacrosListboxDblClick
       TabOrder = 0
-      TopIndex = -1
     end
     object MacrosInsertButton: TButton
       AnchorSideTop.Control = MacrosGroupbox
       AnchorSideRight.Control = MacrosGroupbox
       AnchorSideRight.Side = asrBottom
-      Left = 504
-      Height = 27
+      Left = 518
+      Height = 23
       Top = 2
-      Width = 135
+      Width = 121
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Top = 2
@@ -280,13 +278,15 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 465
+    Height = 26
+    Top = 469
     Width = 649
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
