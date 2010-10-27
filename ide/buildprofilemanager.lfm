@@ -3,7 +3,6 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
   Height = 459
   Top = 176
   Width = 360
-  ActiveControl = ProfilesPanel
   Caption = 'Build Profiles'
   ClientHeight = 459
   ClientWidth = 360
@@ -19,67 +18,6 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
     ClientHeight = 459
     ClientWidth = 360
     TabOrder = 0
-    object CBLDBtnPanel: TPanel
-      Left = 1
-      Height = 43
-      Top = 415
-      Width = 358
-      Align = alBottom
-      AutoSize = True
-      BevelOuter = bvNone
-      ClientHeight = 43
-      ClientWidth = 358
-      TabOrder = 1
-      object HelpButton: TBitBtn
-        AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 31
-        Top = 6
-        Width = 82
-        Anchors = [akTop, akLeft, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = '&Help'
-        Kind = bkHelp
-        NumGlyphs = 0
-        OnClick = HelpButtonClick
-        TabOrder = 0
-      end
-      object CancelButton: TBitBtn
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Side = asrBottom
-        Left = 249
-        Height = 31
-        Top = 6
-        Width = 95
-        Anchors = [akTop, akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Cancel = True
-        Caption = 'Cancel'
-        Kind = bkCancel
-        ModalResult = 2
-        NumGlyphs = 0
-        TabOrder = 1
-      end
-      object OKButton: TBitBtn
-        AnchorSideBottom.Side = asrBottom
-        Left = 184
-        Height = 31
-        Top = 6
-        Width = 75
-        Anchors = [akTop, akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = '&OK'
-        Constraints.MinHeight = 25
-        Constraints.MinWidth = 75
-        Kind = bkOK
-        ModalResult = 1
-        NumGlyphs = 0
-        TabOrder = 2
-      end
-    end
     object ProfilesToolBar: TToolBar
       Left = 1
       Height = 92
@@ -93,7 +31,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
       ParentShowHint = False
       ShowCaptions = True
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 1
       object MoveDownButton: TToolButton
         Left = 1
         Top = 46
@@ -102,21 +40,21 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = MoveDownButtonClick
       end
       object MoveUpButton: TToolButton
-        Left = 246
+        Left = 201
         Top = 0
         Caption = 'MoveUpButton'
         ImageIndex = 3
         OnClick = MoveUpButtonClick
       end
       object EditButton: TToolButton
-        Left = 171
+        Left = 139
         Top = 0
         Caption = 'EditButton'
         ImageIndex = 2
         OnClick = EditButtonClick
       end
       object RemoveButton: TToolButton
-        Left = 73
+        Left = 60
         Top = 0
         Caption = 'RemoveButton'
         ImageIndex = 1
@@ -130,7 +68,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = AddButtonClick
       end
       object tbSeparator: TToolButton
-        Left = 242
+        Left = 197
         Top = 0
         Width = 4
         Caption = 'tbSeparator'
@@ -139,13 +77,32 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
     end
     object ProfilesListBox: TListBox
       Left = 1
-      Height = 322
+      Height = 327
       Top = 93
       Width = 358
       Align = alClient
       ItemHeight = 0
       OnClick = ProfilesListboxClick
       TabOrder = 0
+    end
+    object ButtonPanel: TButtonPanel
+      Left = 7
+      Height = 26
+      Top = 426
+      Width = 346
+      OKButton.Name = 'OKButton'
+      OKButton.Caption = '&ОК'
+      HelpButton.Name = 'HelpButton'
+      HelpButton.Caption = '&Справка'
+      HelpButton.OnClick = HelpButtonClick
+      CloseButton.Name = 'CloseButton'
+      CloseButton.Caption = '&Закрыть'
+      CloseButton.Enabled = False
+      CancelButton.Name = 'CancelButton'
+      CancelButton.Caption = 'Отмена'
+      TabOrder = 2
+      ShowButtons = [pbOK, pbCancel, pbHelp]
+      ShowBevel = False
     end
   end
 end

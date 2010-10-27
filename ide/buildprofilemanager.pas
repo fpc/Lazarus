@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
   LazarusIDEStrConsts, LazConf, Laz_XMLCfg, InterfaceBase, IDEProcs,
-  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, CompilerOptions;
+  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, CompilerOptions, ButtonPanel;
 
 type
 
@@ -183,11 +183,8 @@ type
 
   TBuildProfileManagerForm = class(TForm)
     AddButton: TToolButton;
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
-    CBLDBtnPanel: TPanel;
+    ButtonPanel:TButtonPanel;
     EditButton: TToolButton;
-    HelpButton: TBitBtn;
     MoveDownButton: TToolButton;
     MoveUpButton: TToolButton;
     ProfilesListBox: TListBox;
@@ -756,6 +753,10 @@ begin
   EditButton.Caption:=lisLazBuildRename;
   MoveUpButton.Caption:=lisExtToolMoveUp;
   MoveDownButton.Caption:=lisExtToolMoveDown;
+
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 
   fProfsToManage:=TBuildLazarusProfiles.Create;
 end;
