@@ -54,6 +54,7 @@ type
                            senrDecPaintLock,
                            senrAfterIncPaintLock, // For plugins, etc...
                            senrBeforeDecPaintLock,
+                           senrTextBufferChanging, // About to change
                            senrTextBufferChanged
                           );
 

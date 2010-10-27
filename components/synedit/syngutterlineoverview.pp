@@ -250,6 +250,8 @@ type
     procedure DoMarkChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
     function CreateGutterMark(ASynMark: TSynEditMark): TSynGutterLOvMark;
     function IndexOfSynMark(ASynMark: TSynEditMark): Integer;
+    procedure BufferChanging(Sender: TObject);
+    procedure BufferChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -1146,7 +1148,33 @@ begin
   while  Result >= 0 do begin;
     if FMarkList[Result].FData = Pointer(ASynMark) then exit;
     dec(Result);
+
   end;
+end;
+
+procedure TSynGutterLOvProviderBookmarks.BufferChanging(Sender: TObject);
+begin
+  TSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
+end;
+
+procedure TSynGutterLOvProviderBookmarks.BufferChanged(Sender: TObject);
+var
+  i: Integer;
+begin
+  TSynEditStringList(Sender).RemoveHanlders(self);
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanging));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+  TSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
+    [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
+
+  while FMarkList.Count > 0 do begin
+    FMarkList[0].Destroy;
+    FMarkList.Delete(0);
+  end;
+
+  for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do
+    if TSynEdit(SynEdit).Marks[i].Visible then
+      CreateGutterMark(TSynEdit(SynEdit).Marks[i]);
 end;
 
 constructor TSynGutterLOvProviderBookmarks.Create(AOwner: TComponent);
@@ -1155,8 +1183,12 @@ var
 begin
   inherited Create(AOwner);
   Color := clBlue;
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanging));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+
   TSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
+
   for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do
     if TSynEdit(SynEdit).Marks[i].Visible then
       CreateGutterMark(TSynEdit(SynEdit).Marks[i]);

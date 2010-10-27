@@ -5262,6 +5262,7 @@ var
   i: Integer;
   TempPlugins: TList;
 begin
+  FLines.SendNotification(senrTextBufferChanging, FLines); // Send the old buffer
   DestroyMarkList;
 
   // Remember all Plugins; Detach from Lines
