@@ -341,7 +341,10 @@ begin
       TheProcess := TOutputFilterProcess.Create(nil);
       TheProcess.CommandLine := Filename+' '+Params;
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
-      TheProcess.ShowWindow := swoHide;
+      if ExtTool.HideMainForm then
+        TheProcess.ShowWindow := swoHide
+      else
+        TheProcess.ShowWindow := swoShowNormal;
       TheProcess.CurrentDirectory := WorkingDir;
       if ExtTool.EnvironmentOverrides.Count>0 then
         ExtTool.AssignEnvironmentTo(TheProcess.Environment);

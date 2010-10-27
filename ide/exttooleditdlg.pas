@@ -87,6 +87,7 @@ type
     MacrosGroupbox: TGroupbox;
     MacrosListbox: TListbox;
     MacrosInsertButton: TButton;
+    chkHideMainForm: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -171,6 +172,7 @@ begin
     OptionScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.ScanOutputForMakeMessages:=
     OptionScanOutputForMakeMessagesCheckBox.Checked;
+  FOptions.HideMainForm := chkHideMainForm.Checked;
   fOptions.Scanners:=fScanners;
 end;
 
@@ -217,6 +219,7 @@ begin
     fOptions.ScanOutputForFPCMessages;
   OptionScanOutputForMakeMessagesCheckBox.Checked:=
     fOptions.ScanOutputForMakeMessages;
+  chkHideMainForm.Checked := FOptions.HideMainForm;
   fScanners.Assign(fOptions.Scanners);
   UpdateButtons;
 end;
@@ -249,6 +252,8 @@ begin
 
   with OptionScanOutputForMakeMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForMakeMessages;
+
+  chkHideMainForm.Caption := lisEdtExtToolHideMainForm;
 
   with KeyGroupBox do
     Caption:=lisEdtExtToolKey;
