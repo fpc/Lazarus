@@ -172,6 +172,7 @@ type
     procedure Load(XMLConfig: TXMLConfig; const Path: string; const FileVersion: integer);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
+    procedure UpdateGlobals;
   public
     property Globals: TGlobalCompilerOptions read fGlobals;
     property MakeModeDefs: TMakeModeDefs read fMakeModeDefs;
@@ -387,14 +388,12 @@ procedure TBuildLazarusProfile.SetTargetCPU(const AValue: string);
 begin
   if FTargetCPU=AValue then exit;
   FTargetCPU:=AValue;
-  fOwnerCnt.Globals.TargetCPU:=FPCTargetCPU;
 end;
 
 procedure TBuildLazarusProfile.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
-  fOwnerCnt.Globals.TargetOS:=FPCTargetOS;
 end;
 
 function TBuildLazarusProfile.GetTargetPlatform: TLCLPlatform;
@@ -721,6 +720,12 @@ procedure TBuildLazarusProfiles.Move(CurIndex, NewIndex: Integer);
 begin
   inherited Move(CurIndex, NewIndex);
   fCurrentIndex:=NewIndex;
+end;
+
+procedure TBuildLazarusProfiles.UpdateGlobals;
+begin
+  Globals.TargetOS:=Current.FPCTargetOS;
+  Globals.TargetCPU:=Current.FPCTargetCPU;
 end;
 
 function TBuildLazarusProfiles.GetCurrentProfile: TBuildLazarusProfile;

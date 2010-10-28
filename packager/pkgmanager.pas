@@ -3842,6 +3842,7 @@ begin
     end;
     
     // compile all auto install dependencies
+    MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
     Result:=PackageGraph.CompileRequiredPackages(nil,
                        PackageGraph.FirstAutoInstallDependency,
                        MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
