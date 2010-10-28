@@ -466,7 +466,7 @@ begin
                                MakeModeNames[fMakeModes[i]],
                                MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]);
   end;
-  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
+  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,false);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
