@@ -262,10 +262,10 @@ begin
       Tool.CmdLineParams:='cleanlaz';
       // append target OS
       if Options.TargetOS<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.FPCTargetOS;
       // append target CPU
       if Options.TargetCPU<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.TargetCPU;
+        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -329,10 +329,10 @@ begin
       Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
       // append target OS
       if Options.TargetOS<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.FPCTargetOS;
       // append target CPU
       if Options.TargetCPU<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.TargetCPU;
+        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
       // run
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
@@ -454,8 +454,8 @@ begin
     NewTargetDirectory:='';
     DefaultTargetOS:=GetDefaultTargetOS;
     DefaultTargetCPU:=GetDefaultTargetCPU;
-    NewTargetOS:=Options.TargetOS;
-    NewTargetCPU:=Options.TargetCPU;
+    NewTargetOS:=Options.FPCTargetOS;
+    NewTargetCPU:=Options.FPCTargetCPU;
     if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
     if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
     CrossCompiling:=(CompareText(NewTargetOS,DefaultTargetOS)<>0) or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0);
@@ -489,8 +489,8 @@ begin
         NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                             +PathDelim+NewTargetOS+'-'+NewTargetCPU;
         Macros.SubstituteStr(NewUnitDirectory);
-        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' Options.TargetCPU=',
-                Options.TargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
+        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.FPCTargetOS,' Options.TargetCPU=',
+                Options.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
         Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
         if Result<>mrOk then exit;
       end else begin
@@ -962,7 +962,7 @@ begin
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
     DirDialog.Title:=lisLazBuildABOChooseOutputDir+'(lazarus'+
-                      GetExecutableExt(Profiles.Current.TargetOS)+')';
+                      GetExecutableExt(Profiles.Current.FPCTargetOS)+')';
     if DirDialog.Execute then begin
       AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
       TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
@@ -1005,9 +1005,9 @@ begin
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
   AProfile.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
-  AProfile.TargetOS          :=GetFPCTargetOS(TargetOSComboBox.Text);
+  AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
-  AProfile.TargetCPU         :=GetFPCTargetCPU(TargetCPUComboBox.Text);
+  AProfile.TargetCPU         :=TargetCPUComboBox.Text;
 end;
 
 procedure TConfigureBuildLazarusDlg.UpdateProfileNamesUI;

@@ -135,6 +135,8 @@ type
     procedure Assign(Source: TBuildLazarusProfile; ACopyName: Boolean=True);
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
+    function FPCTargetOS: string;
+    function FPCTargetCPU: string;
   public
     property Name: string read fName;
     property CleanAll: boolean read fCleanAll write fCleanAll;
@@ -385,14 +387,14 @@ procedure TBuildLazarusProfile.SetTargetCPU(const AValue: string);
 begin
   if FTargetCPU=AValue then exit;
   FTargetCPU:=AValue;
-  fOwnerCnt.Globals.TargetCPU:=TargetCPU;
+  fOwnerCnt.Globals.TargetCPU:=FPCTargetCPU;
 end;
 
 procedure TBuildLazarusProfile.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
-  fOwnerCnt.Globals.TargetOS:=TargetOS;
+  fOwnerCnt.Globals.TargetOS:=FPCTargetOS;
 end;
 
 function TBuildLazarusProfile.GetTargetPlatform: TLCLPlatform;
@@ -439,8 +441,8 @@ begin
           MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]));
   FCleanAll          :=XMLConfig.GetValue(Path+'CleanAll/Value',false);
   FExtraOptions      :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
-  TargetOS           :=GetFPCTargetOS(XMLConfig.GetValue(Path+'TargetOS/Value',''));
-  TargetCPU          :=GetFPCTargetCPU(XMLConfig.GetValue(Path+'TargetCPU/Value',''));
+  TargetOS           :=XMLConfig.GetValue(Path+'TargetOS/Value','');
+  TargetCPU          :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
   LCLPlatformStr     :=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
   if LCLPlatformStr='' then
     fTargetPlatform  :=GetDefaultLCLWidgetType
@@ -498,6 +500,16 @@ begin
   ConfirmBuild      :=Source.ConfirmBuild;
   for i:=0 to Length(fMakeModes)-1 do
     fMakeModes[i]:=Source.MakeModes[i];
+end;
+
+function TBuildLazarusProfile.FPCTargetOS: string;
+begin
+  Result:=GetFPCTargetOS(TargetOS);
+end;
+
+function TBuildLazarusProfile.FPCTargetCPU: string;
+begin
+  Result:=GetFPCTargetCPU(TargetCPU);
 end;
 
 
