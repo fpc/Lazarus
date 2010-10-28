@@ -453,6 +453,7 @@ var
  i: Integer;
  SM: TChmSiteMap;
  HasSearchIndex: Boolean = False;
+ Stream: TMemoryStream;
 begin
   if fFillingToc or fFillingIndex then begin
     Application.QueueAsyncCall(@FillToc, Data);
