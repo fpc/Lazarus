@@ -2577,7 +2577,7 @@ begin
   // activate focus if visible
   if Showing and (not (csDestroying in ComponentState)) then
   begin
-    if Assigned(ActiveControl) and (not (csDesigning in ComponentState))
+    if (not Assigned(ActiveControl)) and (not (csDesigning in ComponentState))
     and (Parent=nil) then
     begin
       // automatically choose a control to focus
