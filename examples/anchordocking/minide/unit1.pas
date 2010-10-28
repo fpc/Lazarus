@@ -16,11 +16,11 @@ type
   TMainIDE = class(TForm)
     ImageList1: TImageList;
     MainMenu1: TMainMenu;
-    ComponentPalette: TNotebook;
+    ComponentPalette: TPageControl;
     NewFileMenuItem: TMenuItem;
     OpenFileMenuItem: TMenuItem;
-    Page1: TPage;
-    Page2: TPage;
+    Page1: TTabSheet;
+    Page2: TTabSheet;
     BtnPanel: TPanel;
     QuitMenuItem: TMenuItem;
     FileMenuItem: TMenuItem;
