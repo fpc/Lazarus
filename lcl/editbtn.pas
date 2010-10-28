@@ -824,7 +824,6 @@ end;
 
 procedure TFileNameEdit.TextChanged;
 begin
-  inherited TextChanged;
   if FFileNameChangeLock > 0 then
     Exit;
   Inc(FFileNameChangeLock);
@@ -836,6 +835,7 @@ begin
   finally
     Dec(FFileNameChangeLock);
   end;
+  inherited TextChanged; //do this _after_ we have updated FFileName
 end;
 
 { TDirectoryEdit }
