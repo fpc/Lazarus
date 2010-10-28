@@ -574,7 +574,7 @@ begin
 //    fTargetCPU: string;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=False;
-    fRestartAfterBuild:=False;
+    fRestartAfterBuild:=True;
     fConfirmBuild:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisLCL then
