@@ -358,10 +358,9 @@ end;
 
 function TBuildManager.GetTargetOS(UseCache: boolean): string;
 begin
-  if UseCache then ;
   if OverrideTargetOS<>'' then
     Result:=OverrideTargetOS
-  else if Project1<>nil then
+  else if (Project1<>nil) and (not UseCache) then
     Result:=Project1.CompilerOptions.TargetOS
   else
     Result:='';
@@ -372,10 +371,9 @@ end;
 
 function TBuildManager.GetTargetCPU(UseCache: boolean): string;
 begin
-  if UseCache then ;
   if OverrideTargetCPU<>'' then
     Result:=OverrideTargetCPU
-  else if Project1<>nil then
+  else if (Project1<>nil) and (not UseCache) then
     Result:=Project1.CompilerOptions.TargetCPU
   else
     Result:='';
@@ -1825,19 +1823,14 @@ begin
   NewTargetOS:=GetTargetOS(false);
   NewTargetCPU:=GetTargetCPU(false);
   NewLCLWidgetType:=GetLCLWidgetType(false);
-  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" NewTargetOS="',NewTargetOS,'" Def=',GetDefaultTargetOS]);
-  if Project1<>nil then
-    debugln(['TBuildManager.SetBuildTarget ProjOS=',Project1.CompilerOptions.TargetOS]);
 
   FPCTargetChanged:=(OldTargetOS<>NewTargetOS)
                     or (OldTargetCPU<>NewTargetCPU);
   LCLTargetChanged:=(OldLCLWidgetType<>NewLCLWidgetType);
 
-    DebugLn('TMainIDE.SetBuildTarget AAA1 Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-      ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
   if FPCTargetChanged or LCLTargetChanged then begin
-    DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-      ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
+    //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
+    //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
     IncreaseBuildMacroChangeStamp;
   end;
   if LCLTargetChanged then
