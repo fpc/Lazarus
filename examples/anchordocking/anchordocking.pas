@@ -2181,7 +2181,7 @@ begin
     RestoreLayouts.LoadFromConfig(Config);
     Config.UndoAppendBasePath;
 
-    WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
+    //WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
     //DebugWriteChildAnchors(Tree.Root);
 
     // close all unneeded forms/controls
@@ -4906,6 +4906,7 @@ begin
       else if AControl is TAnchorDockSplitter then
         b:=TAnchorDockSplitter(AControl).DockRestoreBounds;
       if (b.Right>b.Left) and (b.Bottom>b.Top) then begin
+        //debugln(['TAnchorDockManager.ResetBounds RESTORE ',DbgSName(AControl),' Cur=',dbgs(AControl.BoundsRect),' Restore=',dbgs(b)]);
         AControl.BoundsRect:=b;
         if AControl is TAnchorDockSplitter then
           TAnchorDockSplitter(AControl).UpdateDockBounds;
@@ -4928,7 +4929,7 @@ begin
     end else begin
       ChildMaxSize.Y:=Max(0,(ChildMaxSize.Y-SiteMinSize.Y));
     end;
-    debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize)]);
+    debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize),' Site.Client=',dbgs(Site.ClientRect)]);
   end;
 
   case ResizePolicy of
@@ -4936,8 +4937,11 @@ begin
     begin
       if Child.Align in [alLeft,alRight] then
         Child.Width:=Max(1,Min(ChildMaxSize.X,Child.Width+WidthDiff))
-      else
-        Child.Height:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
+      else begin
+        i:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
+        //debugln(['TAnchorDockManager.ResetBounds Child=',DbgSName(Child),' OldHeight=',Child.Height,' NewHeight=',i]);
+        Child.Height:=i;
+      end;
     end;
   end;
 end;
@@ -5055,7 +5059,8 @@ begin
 end;
 
 function TAnchorDockManager.GetSitePreferredClientSize: TPoint;
-{ Compute the preferred inner size of Site without the ChildSite
+{ Compute the preferred inner size of Site without the ChildSite and without
+  the splitter
 }
 var
   ChildSite: TAnchorDockHostSite;
@@ -5066,11 +5071,11 @@ begin
   Site.GetPreferredSize(Result.X,Result.Y);
   ChildSite:=GetChildSite;
   if ChildSite<>nil then begin
-    ChildSitePrefSize:=Point(0,0);
-    ChildSite.GetPreferredSize(ChildSitePrefSize.X,ChildSitePrefSize.Y,true);
+    // subtract the ChildSite and the splitter
     SplitterSize:=Point(0,0);
     if ChildSite.BoundSplitter<>nil then
       ChildSite.BoundSplitter.GetPreferredSize(SplitterSize.X,SplitterSize.Y);
+    ChildSitePrefSize:=Point(ChildSite.Width,ChildSite.Height);
     debugln(['TAnchorDockManager.GetSitePreferredClientSize Total=',dbgs(Result),' Child=',dbgs(ChildSitePrefSize),' Splitter=',dbgs(SplitterSize)]);
     if ChildSite.Align in [alLeft,alRight] then begin
       Result.X:=Max(0,Result.X-ChildSitePrefSize.X-SplitterSize.X);

@@ -287,6 +287,7 @@ begin
         DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
+        debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
         LoadDefaultLayout;
       end;
     finally
@@ -326,6 +327,7 @@ var
   XMLConfig: TXMLConfig;
   Config: TXMLConfigStorage;
 begin
+  //debugln(['TIDEAnchorDockMaster.LoadLayoutFromFile ',Filename]);
   XMLConfig:=TXMLConfig.Create(nil);
   try
     XMLConfig.Filename:=Filename;
