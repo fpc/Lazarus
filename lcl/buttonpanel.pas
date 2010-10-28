@@ -19,8 +19,8 @@ unit ButtonPanel;
 interface
 
 uses
-  Types, SysUtils, Classes, Controls, ExtCtrls, StdCtrls, Buttons, Forms, GraphType,
-  Graphics, LMessages, LCLStrConsts, Themes;
+  Math, Types, SysUtils, Classes, Controls, ExtCtrls, StdCtrls, Buttons, Forms,
+  GraphType, Graphics, LMessages, LCLStrConsts, Themes;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -81,15 +81,10 @@ type
     procedure UpdateBevel;
     procedure UpdateButtonOrder;
     procedure UpdateSizes;
+    procedure UpdateButtonLayout;
   protected
-    procedure CalculatePreferredSize(
-                         var PreferredWidth, PreferredHeight: integer;
-                         WithThemeSpace: Boolean); override;
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
-    procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop, ANewWidth,
-                                  ANewHeight: Integer; var AlignRect: TRect;
-                                  AlignInfo: TAlignInfo); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
@@ -163,6 +158,8 @@ begin
   RegisterComponents('Misc', [TButtonPanel]);
 end;
 
+{ TPanelBitBtn }
+
 constructor TPanelBitBtn.Create(AOwner: TComponent);
 begin
   inherited;
@@ -170,27 +167,39 @@ begin
   SetSubComponent(True);
 end;
 
+{ TCustomButtonPanel }
+
 procedure TCustomButtonPanel.DoShowButtons;
 var
   btn: TPanelButton;
+  aButton: TPanelBitBtn;
 begin
+  DisableAutoSizing;
+
   for btn := Low(btn) to High(btn) do
   begin
     if FButtons[btn] = nil
     then CreateButton(btn);
+    aButton:=FButtons[btn];
 
     if btn in FShowButtons
     then begin
-      FButtons[btn].Visible := True;
-      FButtons[btn].Enabled := True;
+      aButton.Visible := True;
+      aButton.Enabled := True;
+      if csDesigning in ComponentState then
+        aButton.ControlStyle:=aButton.ControlStyle-[csNoDesignVisible];
     end
     else begin
-      FButtons[btn].Visible := False;
-      FButtons[btn].Enabled := False;
+      aButton.Visible := False;
+      aButton.Enabled := False;
+      if csDesigning in ComponentState then
+        aButton.ControlStyle:=aButton.ControlStyle+[csNoDesignVisible];
     end;
   end;
 
   UpdateButtonOrder;
+  UpdateButtonLayout;
+  EnableAutoSizing;
 end;
 
 procedure TCustomButtonPanel.SetShowButtons(Value: TPanelButtons);
@@ -207,6 +216,7 @@ procedure TCustomButtonPanel.DoShowGlyphs;
 var
   btn: TPanelButton;
 begin
+  DisableAutoSizing;
   for btn := Low(btn) to High(btn) do
   begin
     if FButtons[btn] = nil then Continue;
@@ -220,6 +230,7 @@ begin
       FButtons[btn].Glyph.Assign(nil);
     end;
   end;
+  EnableAutoSizing;
 end;
 
 procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
@@ -243,12 +254,25 @@ begin
   if FBevel = nil then Exit;
 
   case Align of
-    alTop:   FBevel.Shape := bsBottomLine;
-    alLeft:  FBevel.Shape := bsRightLine;
-    alRight: FBevel.Shape := bsLeftLine;
+    alTop:
+      begin
+        FBevel.Shape := bsBottomLine;
+        FBevel.Align := alBottom;
+      end;
+    alLeft:
+      begin
+        FBevel.Shape := bsRightLine;
+        FBevel.Align := alRight;
+      end;
+    alRight:
+      begin
+        FBevel.Shape := bsLeftLine;
+        FBevel.Align := alLeft;
+      end
   else
     // default to bottom
     FBevel.Shape := bsTopLine;
+    FBevel.Align := alTop;
   end;
 
   if Align in [alLeft, alRight]
@@ -286,25 +310,28 @@ begin
   end;
 end;
 
-procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
+procedure TCustomButtonPanel.UpdateButtonLayout;
+var
+  aButton: TPanelBitBtn;
+  btn: TPanelButton;
 begin
-  if HandleAllocated then
+  for btn := Low(TPanelButton) to High(TPanelButton) do
   begin
-    UpdateSizes;
-    if Align in [alTop, alBottom] then
+    aButton:=FButtons[btn];
+    if FButtons[btn] = nil then Continue;
+    if Align in [alLeft,alRight] then
     begin
-      PreferredHeight := FButtonsHeight;
-      if ShowBevel then
-        inc(PreferredHeight, Spacing + FBevel.Height);
-    end
-    else
-    if Align in [alLeft, alRight] then
-    begin
-      PreferredWidth := FButtonsWidth;
-      if ShowBevel then
-        inc(PreferredWidth, Spacing + FBevel.Width);
+      if btn=pbHelp then
+        aButton.Align:=alBottom
+      else
+        aButton.Align:=alTop;
+    end else begin
+      if btn=pbHelp then
+        aButton.Align:=alLeft
+      else
+        aButton.Align:=alRight;
     end;
+    FButtons[btn].Default := FDefaultButton = btn;
   end;
 end;
 
@@ -335,6 +362,7 @@ begin
   DisableAutoSizing;
   try
     inherited SetAlign(Value);
+    UpdateButtonLayout;
     UpdateBevel;
     UpdateSizes;
   finally
@@ -391,7 +419,6 @@ begin
     FBevel := TBevel.Create(Self);
     FBevel.Parent := Self;
     FBevel.Name   := 'Bevel';
-    FBevel.Align := alCustom;
 
     UpdateBevel;
   finally
@@ -524,101 +551,6 @@ begin
       Exit(True)
     else
       Exit(False);
-  end;
-end;
-
-procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
-  ANewWidth, ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo);
-
-  function GetPrev: TControl;
-  var
-    Index: Integer;
-  begin
-    Index := AlignInfo.ControlIndex;
-    while Index > 0 do
-    begin
-       dec(Index);
-       Result := TControl(AlignInfo.AlignList[Index]);
-       if Result.Visible then
-         Exit;
-    end;
-    Result := nil;
-  end;
-
-var
-  Prev: TControl;
-begin
-  if AControl = FBevel
-  then begin
-    case Align of
-      alTop: begin
-        ANewTop := AlignRect.Top + FSpacing + FButtonsHeight;
-        ANewLeft := AlignRect.Left;
-        ANewWidth := AlignRect.Right - AlignRect.Left;
-      end;
-      alLeft: begin
-        ANewTop := AlignRect.Top;
-        ANewLeft := AlignRect.Left + FSpacing + FButtonsWidth;
-        ANewHeight := AlignRect.Bottom - AlignRect.Top;
-      end;
-      alRight: begin
-        ANewTop := AlignRect.Top;
-        ANewLeft := AlignRect.Right - ANewWidth - FSpacing - FButtonsWidth;
-        ANewHeight := AlignRect.Bottom - AlignRect.Top;
-      end;
-    else
-      // bottom, none and custom
-      ANewTop := AlignRect.Bottom - ANewHeight - FSpacing - FButtonsHeight;
-      ANewLeft := AlignRect.Left;
-      ANewWidth := AlignRect.Right - AlignRect.Left;
-    end;
-
-    Exit;
-  end;
-
-  if (csDesigning in ComponentState) and not AControl.Visible
-  then begin
-    // when designing, hide doesn't work, so position button outside panel
-    ANewLeft := -ANewWidth - 100;
-    Exit;
-  end;
-
-  // make all buttons the same height
-  ANewHeight := FButtonsHeight;
-  if Align in [alLeft, alRight]
-  then begin
-    ANewWidth := FButtonsWidth;
-
-    if AControl = FButtons[pbHelp]
-    then begin
-      ANewTop := AlignRect.Bottom - ANewHeight;
-    end
-    else begin
-      Prev := GetPrev;
-      if Prev = nil then
-        ANewTop := AlignRect.Top
-      else
-        ANewTop := Prev.Top + Prev.Height + FSpacing;
-    end;
-    if Align = alLeft
-    then ANewLeft := AlignRect.Left
-    else ANewLeft := AlignRect.Right - ANewWidth;
-  end
-  else begin
-    if AControl = FButtons[pbHelp]
-    then begin
-      ANewLeft := 0
-    end
-    else begin
-      Prev := GetPrev;
-      if Prev = nil then
-        ANewLeft := AlignRect.Right - ANewWidth
-      else
-        ANewLeft := Prev.Left - ANewWidth - FSpacing;
-    end;
-    if Align = alTop
-    then ANewTop := AlignRect.Top
-    else ANewTop := AlignRect.Bottom - ANewHeight;
   end;
 end;
 

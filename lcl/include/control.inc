@@ -4233,6 +4233,7 @@ begin
     for Side:=Low(FAnchorSides) to High(FAnchorSides) do
       FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
 
+    FBaseBounds.Right:=-1;
     FAnchors := [akLeft,akTop];
     FAlign := alNone;
     FCaptureMouseButtons := [mbLeft];

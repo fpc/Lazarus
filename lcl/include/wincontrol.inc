@@ -37,7 +37,7 @@ const CheckClientRectName = 'LCLInterfaceRadioGroup';
 {off $DEFINE VerboseSizeMsg}
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'cccBitBtn1';
+const CheckPostionClassName = 'TButtonPanel';
 const CheckPostionName = 'SaveAndRebuildButton';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
@@ -2710,8 +2710,7 @@ var
 
       // get base bounds of Control
       CurBaseBounds:=Control.FBaseBounds;
-      if (CurBaseBounds.Right=CurBaseBounds.Left)
-      and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
+      if not (cfBaseBoundsValid in FControlFlags) then
         CurBaseBounds:=Control.BoundsRect;
 
       {$IFDEF CHECK_POSITION}
