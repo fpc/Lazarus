@@ -135,7 +135,6 @@ type
     procedure Assign(Source: TBuildLazarusProfile; ACopyName: Boolean=True);
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
-    function CompiledUnitExt(FPCVersion, FPCRelease: integer): string;
   public
     property Name: string read fName;
     property CleanAll: boolean read fCleanAll write fCleanAll;
@@ -498,16 +497,6 @@ begin
   ConfirmBuild      :=Source.ConfirmBuild;
   for i:=0 to Length(fMakeModes)-1 do
     fMakeModes[i]:=Source.MakeModes[i];
-end;
-
-function TBuildLazarusProfile.CompiledUnitExt(FPCVersion, FPCRelease: integer): string;
-begin
-  Result:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
-  if (CompareText(TargetOS,'win32')=0)
-  and (FPCVersion=1) and (FPCRelease=0) then
-    Result:='.ppw'
-  else
-    Result:='.ppu';
 end;
 
 

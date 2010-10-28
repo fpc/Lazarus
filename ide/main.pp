@@ -11421,8 +11421,7 @@ begin
                                  EnvironmentOptions.LazarusDirectory,
                                  FPCVersion,FPCRelease,FPCPatch);
       if FPCPatch=0 then ;
-      CompiledUnitExt:=MiscellaneousOptions.BuildLazOpts.CompiledUnitExt(
-                         FPCVersion,FPCRelease);
+      CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
       Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
                        EnvironmentOptions.LazarusDirectory,
                        InheritedOptionStrings[icoUnitPath],
