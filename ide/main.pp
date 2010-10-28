@@ -2500,6 +2500,9 @@ begin
     itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
+    // Set initial caption for Build Lazarus item. Will be changed in BuildLazDialog.
+    if Assigned(MiscellaneousOptions) then
+      itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+MiscellaneousOptions.BuildLazOpts.Name+')';
   end;
   UpdateCustomToolsInMenu;
 end;

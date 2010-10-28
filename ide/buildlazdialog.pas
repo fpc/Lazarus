@@ -49,7 +49,7 @@ uses
   InterfaceBase, Themes, ComCtrls,
   DefineTemplates, Laz_XMLCfg,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
-  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf,
+  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
@@ -1065,12 +1065,14 @@ end;
 procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
 begin
   CopyUIToProfile(Profiles.Current);
+  MainIDEBar.itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+Profiles.Current.Name+')';
   ModalResult:=mrYes;
 end;
 
 procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
 begin
   CopyUIToProfile(Profiles.Current);
+  MainIDEBar.itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+Profiles.Current.Name+')';
   ModalResult:=mrOk;
 end;
 
