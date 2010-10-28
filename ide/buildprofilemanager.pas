@@ -448,10 +448,10 @@ begin
     fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
-  FRestartAfterBuild :=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
-  FConfirmBuild      :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
+  FRestartAfterBuild :=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+  FConfirmBuild      :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
 end;
 
 procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
@@ -473,10 +473,10 @@ begin
                            ''); //LCLPlatformDirNames[GetDefaultLCLWidgetType]
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
-  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
-  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,true);
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
+  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
+  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
 end;
 
 procedure TBuildLazarusProfile.Assign(Source: TBuildLazarusProfile; ACopyName: Boolean);
