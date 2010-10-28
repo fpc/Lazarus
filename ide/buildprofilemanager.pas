@@ -493,6 +493,7 @@ begin
   TargetCPU         :=Source.TargetCPU;
   TargetPlatform    :=Source.TargetPlatform;
   WithStaticPackages:=Source.WithStaticPackages;
+  UpdateRevisionInc :=Source.UpdateRevisionInc;
   RestartAfterBuild :=Source.RestartAfterBuild;
   ConfirmBuild      :=Source.ConfirmBuild;
   for i:=0 to Length(fMakeModes)-1 do
