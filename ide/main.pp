@@ -4360,8 +4360,6 @@ begin
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
-      MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-        Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
       UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
       if EnvironmentOptions.SingleTaskBarButton then
@@ -4631,8 +4629,8 @@ begin
   if Restore then
     Project.RestoreBuildModes;
   IncreaseCompilerParseStamp;
-  MainBuildBoss.RescanCompilerDefines(True, False, false);
-  UpdateHighlighters; // because of FPC/Delphi mode
+  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
   if (not Restore) and Project.CompilerOptions.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;

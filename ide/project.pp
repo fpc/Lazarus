@@ -5739,14 +5739,14 @@ procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   inherited SetTargetCPU(AValue);
   if IsActive then
-    FGlobals.TargetCPU:=TargetCPU;
+    FGlobals.TargetCPU:=GetFPCTargetCPU(TargetCPU);
 end;
 
 procedure TProjectCompilerOptions.SetTargetOS(const AValue: string);
 begin
   inherited SetTargetOS(AValue);
   if IsActive then
-    FGlobals.TargetOS:=TargetOS;
+    FGlobals.TargetOS:=GetFPCTargetOS(TargetOS);
 end;
 
 procedure TProjectCompilerOptions.SetCustomOptions(const AValue: string);

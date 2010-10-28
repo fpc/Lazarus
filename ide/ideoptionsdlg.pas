@@ -254,68 +254,99 @@ begin
 end;
 
 procedure TIDEOptionsDialog.ReadAll;
+type
+  TStage = (
+    sBefore,
+    sRead,
+    sAfter
+    );
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
   Instance: TAbstractIDEOptions;
   InstanceList: TFPList;
+  s: TStage;
 begin
-  InstanceList:=TFPList.Create;
-  for i := 0 to IDEEditorGroups.Count - 1 do
+  for s:=low(TStage) to High(TStage) do
   begin
-    Rec := IDEEditorGroups[i];
-    if not PassesFilter(Rec) then
-      Continue;
-    if Rec^.Items <> nil then
+    InstanceList:=TFPList.Create;
+    for i := 0 to IDEEditorGroups.Count - 1 do
     begin
-      if Rec^.GroupClass <> nil then
+      Rec := IDEEditorGroups[i];
+      if not PassesFilter(Rec) then
+        Continue;
+      if Rec^.Items <> nil then
       begin
-        Instance := Rec^.GroupClass.GetInstance;
-        if (InstanceList.IndexOf(Instance)<0) and (Instance <> nil) then
+        if Rec^.GroupClass <> nil then
         begin
-          InstanceList.Add(Instance);
-          Instance.DoBeforeRead;
-          TraverseSettings(Instance,iodaRead);
-          Instance.DoAfterRead;
+          Instance := Rec^.GroupClass.GetInstance;
+          if (InstanceList.IndexOf(Instance)<0) and (Instance <> nil) then
+          begin
+            InstanceList.Add(Instance);
+            case s of
+            sBefore:
+              Instance.DoBeforeRead;
+            sRead:
+              TraverseSettings(Instance,iodaRead);
+            sAfter:
+              Instance.DoAfterRead;
+            end;
+          end;
         end;
       end;
     end;
+    if s=sRead then
+      TraverseSettings(nil,iodaRead); // load settings that does not belong to any group
+    InstanceList.Free;
   end;
-  // load settings that does not belong to any group
-  TraverseSettings(nil,iodaRead);
-  InstanceList.Free;
 end;
 
 procedure TIDEOptionsDialog.WriteAll(Restore: boolean);
+type
+  TStage = (
+    sBefore,
+    sWrite,
+    sAfter
+    );
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
   Instance: TAbstractIDEOptions;
+  s: TStage;
 begin
-  for i := 0 to IDEEditorGroups.Count - 1 do
+  for s:=low(TStage) to High(TStage) do
   begin
-    Rec := IDEEditorGroups[i];
-    if not PassesFilter(Rec) then
-      Continue;
-    if Rec^.Items <> nil then
+    for i := 0 to IDEEditorGroups.Count - 1 do
     begin
-      if Rec^.GroupClass <> nil then
+      Rec := IDEEditorGroups[i];
+      if not PassesFilter(Rec) then
+        Continue;
+      if Rec^.Items <> nil then
       begin
-        Instance := Rec^.GroupClass.GetInstance;
-        if Instance <> nil then
+        if Rec^.GroupClass <> nil then
         begin
-          Instance.DoBeforeWrite(Restore);
-          if Restore then
-            TraverseSettings(Instance,iodaRestore)
-          else
-            TraverseSettings(Instance,iodaWrite);
-          Instance.DoAfterWrite(Restore);
+          Instance := Rec^.GroupClass.GetInstance;
+          if Instance <> nil then
+          begin
+            case s of
+            sBefore:
+              Instance.DoBeforeWrite(Restore);
+            sWrite:
+              if Restore then
+                TraverseSettings(Instance,iodaRestore)
+              else
+                TraverseSettings(Instance,iodaWrite);
+            sAfter:
+              Instance.DoAfterWrite(Restore);
+            end;
+          end;
         end;
       end;
     end;
+
+    if s=sWrite then
+      TraverseSettings(nil,iodaWrite); // save settings that does not belong to any group
   end;
-  // save settings that does not belong to any group
-  TraverseSettings(nil,iodaWrite);
 end;
 
 function TIDEOptionsDialog.CheckValues: boolean;
