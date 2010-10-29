@@ -56,6 +56,8 @@ procedure ShowSVNDiffFrm(ASwitches: string; AFileList: TStringList); overload;
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNClasses;
 
@@ -136,9 +138,6 @@ begin
   FFileList.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I svndiffform.lrs}
 
 end.
 

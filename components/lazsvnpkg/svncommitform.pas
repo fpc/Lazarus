@@ -30,6 +30,8 @@ procedure ShowSVNCommitFrm(ACmdLine: string);
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNClasses;
 
@@ -61,9 +63,6 @@ procedure TSVNCommitFrm.FormCreate(Sender: TObject);
 begin
   Caption := rsLazarusSVNCommit;
 end;
-
-initialization
-  {$I svncommitform.lrs}
 
 end.
 

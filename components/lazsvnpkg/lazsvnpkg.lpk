@@ -23,88 +23,64 @@
     <Description Value="A Lazarus SVN IDE plugin"/>
     <License Value="GPL"/>
     <Version Release="1"/>
-    <Files Count="20">
+    <Files Count="14">
       <Item1>
         <Filename Value="svnlogform.lfm"/>
         <Type Value="LFM"/>
       </Item1>
       <Item2>
-        <Filename Value="svnlogform.lrs"/>
-        <Type Value="LRS"/>
-      </Item2>
-      <Item3>
         <Filename Value="svnlogform.pas"/>
         <UnitName Value="SVNLogForm"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="svnupdateform.lfm"/>
         <Type Value="LFM"/>
-      </Item4>
-      <Item5>
-        <Filename Value="svnupdateform.lrs"/>
-        <Type Value="LRS"/>
-      </Item5>
-      <Item6>
+      </Item3>
+      <Item4>
         <Filename Value="svnupdateform.pas"/>
         <UnitName Value="SVNUpdateForm"/>
-      </Item6>
-      <Item7>
+      </Item4>
+      <Item5>
         <Filename Value="svndiffform.lfm"/>
         <Type Value="LFM"/>
-      </Item7>
-      <Item8>
-        <Filename Value="svndiffform.lrs"/>
-        <Type Value="LRS"/>
-      </Item8>
-      <Item9>
+      </Item5>
+      <Item6>
         <Filename Value="svndiffform.pas"/>
         <UnitName Value="SVNDiffForm"/>
-      </Item9>
-      <Item10>
+      </Item6>
+      <Item7>
         <Filename Value="svnclasses.pas"/>
         <UnitName Value="SVNClasses"/>
-      </Item10>
-      <Item11>
+      </Item7>
+      <Item8>
         <Filename Value="svnstatusform.lfm"/>
         <Type Value="LFM"/>
-      </Item11>
-      <Item12>
-        <Filename Value="svnstatusform.lrs"/>
-        <Type Value="LRS"/>
-      </Item12>
-      <Item13>
+      </Item8>
+      <Item9>
         <Filename Value="svnstatusform.pas"/>
         <UnitName Value="SVNStatusForm"/>
-      </Item13>
-      <Item14>
+      </Item9>
+      <Item10>
         <Filename Value="svncommitform.lfm"/>
         <Type Value="LFM"/>
-      </Item14>
-      <Item15>
-        <Filename Value="svncommitform.lrs"/>
-        <Type Value="LRS"/>
-      </Item15>
-      <Item16>
+      </Item10>
+      <Item11>
         <Filename Value="svncommitform.pas"/>
         <UnitName Value="SVNCommitForm"/>
-      </Item16>
-      <Item17>
+      </Item11>
+      <Item12>
         <Filename Value="lazsvnintf.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="LazSVNIntf"/>
-      </Item17>
-      <Item18>
+      </Item12>
+      <Item13>
         <Filename Value="svnaddprojectform.lfm"/>
         <Type Value="LFM"/>
-      </Item18>
-      <Item19>
-        <Filename Value="svnaddprojectform.lrs"/>
-        <Type Value="LRS"/>
-      </Item19>
-      <Item20>
+      </Item13>
+      <Item14>
         <Filename Value="svnaddprojectform.pas"/>
         <UnitName Value="SVNAddProjectForm"/>
-      </Item20>
+      </Item14>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

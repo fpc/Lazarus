@@ -56,6 +56,8 @@ procedure ShowSVNUpdateFrm(ARepoPath: string);
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNLogForm, SVNDiffForm, SVNClasses;
 
@@ -206,9 +208,6 @@ begin
   AProcess.Free;
   MemStream.Free;
 end;
-
-initialization
-  {$I svnupdateform.lrs}
 
 end.
 

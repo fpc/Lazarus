@@ -105,6 +105,8 @@ procedure ShowSVNLogFrm(ARepoPath: string);
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNDiffForm, SVNClasses;
 
@@ -516,9 +518,6 @@ begin
   UpdateLogListView;
   ChangeCursor(crDefault);
 end;
-
-initialization
-  {$I svnlogform.lrs}
 
 end.
 

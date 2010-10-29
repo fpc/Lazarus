@@ -71,6 +71,8 @@ procedure ShowSVNStatusFrm(ARepoPath: string);
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNDiffForm, SVNCommitForm;
 
@@ -395,9 +397,6 @@ procedure TSVNStatusFrm.FormDestroy(Sender: TObject);
 begin
   SVNStatus.Free;
 end;
-
-initialization
-  {$I svnstatusform.lrs}
 
 end.
 

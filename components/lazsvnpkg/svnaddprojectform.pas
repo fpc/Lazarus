@@ -51,6 +51,8 @@ function ShowSVNAddProjectFrm: TModalResult;
 
 implementation
 
+{$R *.lfm}
+
 uses
   SVNClasses, LazIDEIntf;
 
@@ -96,9 +98,6 @@ begin
   if SelectDirectoryDialog.Execute then
     RepositoryEdit.Text := SelectDirectoryDialog.FileName;
 end;
-
-initialization
-  {$I svnaddprojectform.lrs}
 
 end.
 
