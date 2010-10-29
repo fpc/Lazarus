@@ -1451,6 +1451,7 @@ resourcestring
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Word under Caret Highlight';
+  dlgBracketMatchGroup = 'Matching bracket pairs';
   dlgMarkupWordFullLen = 'Match word boundaries for words up to this length:';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
   dlgMarkupWordTrim = 'Trim Spaces (when highlighting current selection)';
@@ -1474,7 +1475,8 @@ resourcestring
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
-  lisAutomaticFeatures = 'Automatic features';
+  lisAutomaticFeatures = 'Completion and Hints';
+  lisAutoMarkup = 'Markup Matches';
 
   dlgMultiWinOptions = 'Pages and Windows';
   dlgMultiWinTabGroup = 'Notebook Tabs:';
