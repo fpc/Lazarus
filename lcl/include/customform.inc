@@ -1496,17 +1496,17 @@ function TCustomForm.DoExecuteAction(ExeAction: TBasicAction): boolean;
     AnAction: TBasicAction) : boolean;
   var
     i: integer;
-    ChildControl: TControl;
+    ChildComponent: TComponent;
   begin
     Result := True;
-    for i := 0 to ParentControl.ControlCount - 1 do
+    for i := 0 to ParentControl.ComponentCount - 1 do
     begin
-      ChildControl := ParentControl.Controls[i];
-      if ChildControl.Visible then
+      ChildComponent := ParentControl.Components[i];
+      if not (ChildComponent is TControl) or TControl(ChildComponent).Visible then
       begin
-        if ChildControl.ExecuteAction(AnAction) then Exit;
-        if (ChildControl is TWinControl) and
-           DoExecuteActionInChildControls(TWinControl(ChildControl), AnAction) then Exit;
+        if ChildComponent.ExecuteAction(AnAction) then Exit;
+        if (ChildComponent is TWinControl) and
+           DoExecuteActionInChildControls(TWinControl(ChildComponent), AnAction) then Exit;
       end;
     end;
     Result := False;
