@@ -8809,32 +8809,54 @@ var
   MainUnitInfo: TUnitInfo;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  CurUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  LFMType: String;
+  LFMComponentName: String;
+  LFMClassName: String;
+  anUnitName: String;
 begin
   GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
   for i := 0 to Project1.UnitCount - 1 do
   begin
-    if not Project1.Units[i].IsPartOfProject then
+    CurUnitInfo:=Project1.Units[i];
+    if not CurUnitInfo.IsPartOfProject then
       Continue;
     if ItemType in [piComponent, piFrame] then
     begin
       // add all form names of project
-      if Project1.Units[i].ComponentName <> '' then
+      if CurUnitInfo.ComponentName <> '' then
       begin
         if (ItemType = piComponent) or
-           ((ItemType = piFrame) and (Project1.Units[i].ResourceBaseClass = pfcbcFrame)) then
-          ItemList.AddObject(Project1.Units[i].Unit_Name,
-            TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i,
-                                   Project1.Units[i] = ActiveUnitInfo));
+           ((ItemType = piFrame) and (CurUnitInfo.ResourceBaseClass = pfcbcFrame)) then
+          ItemList.AddObject(CurUnitInfo.Unit_Name,
+            TViewUnitsEntry.Create(CurUnitInfo.ComponentName, i,
+                                   CurUnitInfo = ActiveUnitInfo));
+      end else if FilenameIsAbsolute(CurUnitInfo.Filename)
+      and FilenameIsPascalSource(CurUnitInfo.Filename)
+      and FileExistsCached(CurUnitInfo.Filename) then begin
+        LFMFilename:=ChangeFileExt(CurUnitInfo.Filename,'.lfm');
+        if FileExistsCached(LFMFilename) then begin
+          if ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+          then begin
+            anUnitName:=CurUnitInfo.Unit_Name;
+            if anUnitName='' then
+              anUnitName:=ExtractFileNameOnly(LFMFilename);
+            ItemList.AddObject(anUnitName,
+              TViewUnitsEntry.Create(LFMComponentName, i,
+                                     CurUnitInfo = ActiveUnitInfo));
+          end;
+        end;
       end;
     end else
     begin
       // add all unit names of project
-      if (Project1.Units[i].FileName <> '') then
+      if (CurUnitInfo.FileName <> '') then
       begin
-        AUnitName := ExtractFileName(Project1.Units[i].Filename);
+        AUnitName := ExtractFileName(CurUnitInfo.Filename);
         if ItemList.IndexOf(AUnitName) = -1 then
           ItemList.AddObject(AUnitName,
-            TViewUnitsEntry.Create(AUnitName, i, Project1.Units[i] = ActiveUnitInfo));
+            TViewUnitsEntry.Create(AUnitName, i, CurUnitInfo = ActiveUnitInfo));
       end
       else
       if Project1.MainUnitID = i then

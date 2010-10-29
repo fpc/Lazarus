@@ -487,6 +487,8 @@ procedure ReadLFMHeader(const LFMSource: string;
                         out LFMClassName: String; out LFMType: String);
 procedure ReadLFMHeader(const LFMSource: string;
                         out LFMType, LFMComponentName, LFMClassName: String);
+function ReadLFMHeaderFromFile(const Filename: string;
+                  out LFMType, LFMComponentName, LFMClassName: String): boolean;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
@@ -2046,6 +2048,29 @@ begin
   and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
     inc(p);
   LFMClassName:=copy(LFMSource,StartPos,p-StartPos);
+end;
+
+function ReadLFMHeaderFromFile(const Filename: string; out LFMType,
+  LFMComponentName, LFMClassName: String): boolean;
+var
+  fs: TFileStream;
+  Header: string;
+  Cnt: LongInt;
+begin
+  Result:=false;
+  try
+    fs:=TFileStream.Create(Filename,fmOpenRead);
+    try
+      SetLength(Header,600);
+      Cnt:=fs.Read(Header[1],length(Header));
+      SetLength(Header,Cnt);
+      ReadLFMHeader(Header,LFMType,LFMComponentName,LFMClassName);
+      Result:=LFMClassName<>'';
+    finally
+      fs.Free;
+    end;
+  except
+  end;
 end;
 
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
