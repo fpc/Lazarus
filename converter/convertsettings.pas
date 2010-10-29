@@ -453,7 +453,8 @@ begin
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
     AddFunc(Categ, 'ShellExecute',
-                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '');
+                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
+    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL','');
   end;
 end;
 
