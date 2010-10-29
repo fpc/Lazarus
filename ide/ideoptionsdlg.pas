@@ -537,6 +537,8 @@ begin
   Result := TBitBtn.Create(Self);
   Result.Align := alCustom;
   Result.Default := false;
+  Result.Constraints.MinWidth:=25;
+  Result.AutoSize := true;
   Result.Parent := ButtonPanel;
 end;
 

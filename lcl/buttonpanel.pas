@@ -85,6 +85,11 @@ type
   protected
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
+    procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
+      ANewWidth, ANewHeight: Integer; var AlignRect: TRect;
+      AlignInfo: TAlignInfo); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
@@ -318,20 +323,9 @@ begin
   for btn := Low(TPanelButton) to High(TPanelButton) do
   begin
     aButton:=FButtons[btn];
-    if FButtons[btn] = nil then Continue;
-    if Align in [alLeft,alRight] then
-    begin
-      if btn=pbHelp then
-        aButton.Align:=alBottom
-      else
-        aButton.Align:=alTop;
-    end else begin
-      if btn=pbHelp then
-        aButton.Align:=alLeft
-      else
-        aButton.Align:=alRight;
-    end;
-    FButtons[btn].Default := FDefaultButton = btn;
+    if aButton = nil then Continue;
+    aButton.Align := alCustom;
+    aButton.Default := FDefaultButton = btn;
   end;
 end;
 
@@ -536,7 +530,7 @@ begin
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
 
-  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
+  Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder;
   if not (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
   begin
     if AControl2 = FButtons[pbHelp] then
@@ -552,6 +546,86 @@ begin
     else
       Exit(False);
   end;
+end;
+
+procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl;
+  var ANewLeft, ANewTop, ANewWidth, ANewHeight: Integer; var AlignRect: TRect;
+  AlignInfo: TAlignInfo);
+begin
+  inherited CustomAlignPosition(AControl, ANewLeft, ANewTop, ANewWidth,
+    ANewHeight, AlignRect, AlignInfo);
+
+  if AControl=FButtons[pbHelp] then begin
+    if Align in [alLeft,alRight] then
+    begin
+      // put at top
+      ANewLeft:=AlignRect.Left;
+      ANewTop:=AlignRect.Top+Spacing;
+      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-Spacing);
+      if Align=alRight then
+        inc(ANewLeft,Spacing);
+      AlignRect.Top:=Min(AlignRect.Bottom,ANewTop+ANewHeight);
+    end else begin
+      // put at left
+      ANewLeft:=AlignRect.Left+Spacing;
+      ANewTop:=AlignRect.Top;
+      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-Spacing);
+      if Align=alBottom then
+        inc(ANewTop,Spacing);
+      AlignRect.Left:=Min(AlignRect.Right,ANewLeft+ANewWidth);
+    end;
+  end else begin
+    if Align in [alLeft,alRight] then
+    begin
+      // put at bottom
+      ANewLeft:=AlignRect.Left;
+      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-Spacing);
+      if Align=alRight then
+        inc(ANewLeft,Spacing);
+      ANewTop:=AlignRect.Bottom-ANewHeight-Spacing;
+      AlignRect.Bottom:=Max(AlignRect.Top,ANewTop);
+    end else begin
+      // put at right
+      ANewTop:=AlignRect.Top;
+      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-Spacing);
+      if Align=alBottom then
+        inc(ANewTop,Spacing);
+      ANewLeft:=AlignRect.Right-ANewWidth-Spacing;
+      AlignRect.Right:=Max(AlignRect.Left,ANewLeft);
+    end;
+  end;
+end;
+
+procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  i: Integer;
+  AControl: TControl;
+  MinWidth: Integer;
+  MinHeight: Integer;
+  CtrlPrefWidth, CtrlPrefHeight: integer;
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  MinWidth:=0;
+  MinHeight:=0;
+  for i:=0 to ControlCount-1 do
+  begin
+    AControl:=Controls[i];
+    if (AControl.Align<>alCustom) or (not AControl.IsControlVisible) then continue;
+    AControl.GetPreferredSize(CtrlPrefWidth,CtrlPrefHeight);
+    if Align in [alLeft,alRight] then
+    begin
+      inc(MinHeight,CtrlPrefHeight+Spacing);
+      MinWidth:=Max(MinWidth,CtrlPrefWidth);
+    end
+    else begin
+      inc(MinWidth,CtrlPrefWidth+Spacing);
+      MinHeight:=Max(MinHeight,CtrlPrefHeight);
+    end;
+  end;
+  PreferredWidth:=Max(PreferredWidth,MinWidth);
+  PreferredHeight:=Max(PreferredHeight,MinHeight);
 end;
 
 destructor TCustomButtonPanel.Destroy;
