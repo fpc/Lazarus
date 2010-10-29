@@ -1116,6 +1116,7 @@ type
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
+    procedure CMCursorChanged(var Message: TLMessage); message CM_CURSORCHANGED;
   protected
     // drag and drop
     procedure CalculateDockSizes;

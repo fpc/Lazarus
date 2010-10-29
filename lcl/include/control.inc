@@ -736,6 +736,12 @@ begin
     Message.Result := 1;
 end;
 
+procedure TControl.CMCursorChanged(var Message: TLMessage);
+begin
+  if not (csDesigning in ComponentState) then
+    SetTempCursor(Cursor);
+end;
+
 {------------------------------------------------------------------------------
        TControl.CMParentColorChanged
 
@@ -2595,8 +2601,7 @@ begin
   if FCursor <> Value then 
   begin
     FCursor := Value;
-    if not (csDesigning in ComponentState) then
-      SetTempCursor(Value);
+    Perform(CM_CURSORCHANGED, 0, 0);
   end;
 end;
 
