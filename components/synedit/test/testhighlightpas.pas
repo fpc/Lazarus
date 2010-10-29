@@ -36,8 +36,12 @@ type
     function TestTextFoldInfo2: TStringArray;
     function TestTextFoldInfo3: TStringArray;
     function TestTextFoldInfo4(AIfCol: Integer): TStringArray;
+
+    procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
+    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
   published
     procedure TestFoldInfo;
+    procedure TestProcedureInContext;
   end; 
 
 implementation
@@ -200,21 +204,24 @@ begin
 
 end;
 
+procedure TTestHighlighterPas.CheckFoldOpenCounts(Name: String; Expected: array of Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(Expected) do
+    AssertEquals(Name + 'OpenCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldOpenCount(i));
+end;
+
+procedure TTestHighlighterPas.CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions;
+  Expected: array of Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(Expected) do
+    AssertEquals(Name + 'InfoCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldNodeInfoCount[i, Filter]);
+end;
+
 procedure TTestHighlighterPas.TestFoldInfo;
-  procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
-  var
-    i: Integer;
-  begin
-    for i := 0 to high(Expected) do
-      AssertEquals(Name + 'OpenCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldOpenCount(i));
-  end;
-  procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
-  var
-    i: Integer;
-  begin
-    for i := 0 to high(Expected) do
-      AssertEquals(Name + 'InfoCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldNodeInfoCount[i, Filter]);
-  end;
 begin
   ReCreateEdit;
 
@@ -356,6 +363,53 @@ begin
                           [1, 1, 3, 0, 0, 0, 1]);
   {%endregion}
 
+
+end;
+
+procedure TTestHighlighterPas.TestProcedureInContext;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A;',
+       'interface',
+       '',
+       'var',
+       '  Foo: Procedure of object;', // no folding // do not end var block
+       '',
+       'type',
+       '  TBar: ',
+       '    Function(): Boolean;',  // no folding // do not end type block
+       '',
+       'Procedure a;', // no folding in interface
+       '',
+       'implementation',
+       '',
+       'var',
+       '  Foo2: Procedure of object;', // no folding // do not end var block
+       '',
+       'type',
+       '  TBar2: ',
+       '    Function(): Boolean;',  // no folding // do not end type block
+       '',
+       'Procedure a;', // fold
+       'var',
+       '  Foo3: Procedure of object;', // no folding // do not end var block
+       '',
+       'begin end;',
+       '',
+       'end.',
+       ''
+    ]);
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  CheckFoldOpenCounts('', [ 1, 1, 0, 1 {var}, 0, 0, 1 {type}, 0, 0, 0, 0 {Proc}, 0,
+                            1 {impl}, 0, 1 {var}, 0, 0, 1 {type}, 0, 0, 0,
+                            1 {proc}, 1 {var}, 0, 0, 0, 0, 0
+                     ]);
+  AssertEquals('Len var 1 ',   2, PasHighLighter.FoldLineLength(3, 0));
+  AssertEquals('Len type 1 ',  3, PasHighLighter.FoldLineLength(6, 0));
+  AssertEquals('Len var 2 ',   2, PasHighLighter.FoldLineLength(14, 0));
+  AssertEquals('Len type 2 ',  3, PasHighLighter.FoldLineLength(17, 0));
+  AssertEquals('Len var 3 ',   2, PasHighLighter.FoldLineLength(22, 0));
 
 end;
 
