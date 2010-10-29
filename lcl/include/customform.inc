@@ -1531,23 +1531,28 @@ end;
 
 function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
 
-  function ProcessUpdate(Control: TControl): Boolean;
+  function ProcessUpdate(Component: TComponent): Boolean;
   begin
-    Result := (Control <> nil) and
-      Control.UpdateAction(TheAction);
+    Result := (Component <> nil) and
+      Component.UpdateAction(TheAction);
+  end;
+
+  function ComponentAllowed(Component: TComponent): Boolean;
+  begin
+    result := not (Component is TControl) or TControl(Component).Visible;
   end;
 
   function TraverseClients(Container: TWinControl): Boolean;
   var
     I: Integer;
-    Control: TControl;
+    Component: TComponent;
   begin
     if Container.Showing then
-      for I := 0 to Container.ControlCount - 1 do
+      for I := 0 to Container.ComponentCount - 1 do
       begin
-        Control := Container.Controls[I];
-        if Control.Visible and ProcessUpdate(Control)
-        or (Control is TWinControl) and TraverseClients(TWinControl(Control))
+        Component := Container.Components[I];
+        if ComponentAllowed(Component) and ProcessUpdate(Component)
+        or (Component is TWinControl) and TraverseClients(TWinControl(Component))
         then begin
           Result := True;
           exit;

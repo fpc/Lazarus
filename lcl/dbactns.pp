@@ -157,7 +157,7 @@ function TDataSetAction.HandlesTarget(Target: TObject): Boolean;
 
 begin
   Result:=(DataSource<>Nil);
-  if Result then
+  if Result and (DataSource=Target) then
     Result:=(DataSource.DataSet<>Nil)
   else
     Result:=(Target is TDataSource) and (TDataSource(Target).DataSet<>Nil);
