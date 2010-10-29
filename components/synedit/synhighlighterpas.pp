@@ -68,17 +68,19 @@ type
 
   TRangeState = (
     // rsAnsi, rsBor, rsDirective are exclusive to each other
-    rsAnsi,   // *) comment
-    rsBor,    // { comment
-    rsSlash,  // //
+    rsAnsi,      // *) comment
+    rsBor,       // { comment
+    rsSlash,     // //
     rsDirective,
-    rsAsm,    // assembler block
+    rsAsm,       // assembler block
     rsProperty,
     rsInterface,
     rsImplementation,   // Program or Implementation
-    // we need to detect if procedure is a "type x = procedure"
-    rsAtEqual,      // "=" either in compare or in type/const assign
-    rsAfterEqual,
+    // we need to detect
+    //  type Tfoo = procedure; // must not fold
+    //  vare foo: procedure; // must not fold
+  //rsAtEqual,      // "=" either in compare or in type/const assign
+    rsAfterEqualOrColon,   // very first word after "=" or ":"
     // Detect if class/object is ended by ";" or "end;"
     rsAtClass,
     rsAfterClass,
@@ -1145,7 +1147,7 @@ function TSynPasSyn.Func54: TtkTokenKind;
 begin
   if KeyComp('Class') then begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1158,7 +1160,7 @@ function TSynPasSyn.Func55: TtkTokenKind;
 begin
   if KeyComp('Object') then begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1263,7 +1265,7 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (TopPascalCodeFoldBlockType in
         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtProgram,
-         cfbtUnit, cfbtUnitSection]) and not(rsAfterEqual in fRange)
+         cfbtUnit, cfbtUnitSection]) and not(rsAfterEqualOrColon in fRange)
     then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
@@ -1375,13 +1377,13 @@ begin
     if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
   end else
     if KeyComp('Interface') then begin
-      if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+      if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
       then begin
         fRange := fRange + [rsAtClass];
         StartPascalCodeFoldBlock(cfbtClass);
       end
       else
-      if not(rsAfterEqual in fRange) and
+      if not(rsAfterEqualOrColon in fRange) and
          (fRange * [rsInterface, rsImplementation] = []) then
       begin
         CloseBeginEndBlocksBeforeProc;
@@ -1408,7 +1410,7 @@ begin
   if KeyComp('ObjcClass') then
   begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1528,7 +1530,7 @@ begin
   if KeyComp('CppClass') then
   begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1651,7 +1653,7 @@ end;
 function TSynPasSyn.Func102: TtkTokenKind;
 begin
   if KeyComp('Function') then begin
-    if not(rsAfterEqual in fRange) then begin
+    if not(rsAfterEqualOrColon in fRange) then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -1675,7 +1677,7 @@ end;
 function TSynPasSyn.Func105: TtkTokenKind;
 begin
   if KeyComp('Procedure') then begin
-    if not(rsAfterEqual in fRange) then begin
+    if not(rsAfterEqualOrColon in fRange) then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -1713,7 +1715,7 @@ function TSynPasSyn.Func108: TtkTokenKind;
 begin
   if KeyComp('Operator') then
   begin
-    if not(rsAfterEqual in fRange) then
+    if not(rsAfterEqualOrColon in fRange) then
     begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
@@ -1765,7 +1767,7 @@ begin
   if KeyComp('Dispinterface') then
   begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1848,7 +1850,7 @@ function TSynPasSyn.Func143: TtkTokenKind;
 begin
   if KeyComp('Destructor') then
   begin
-    if not(rsAfterEqual in fRange) then
+    if not(rsAfterEqualOrColon in fRange) then
     begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
@@ -1873,7 +1875,7 @@ begin
   if KeyComp('ObjcProtocol') then
   begin
     Result := tkKey;
-    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -1894,7 +1896,7 @@ end;
 function TSynPasSyn.Func166: TtkTokenKind;
 begin
   if KeyComp('Constructor') then begin
-    if not(rsAfterEqual in fRange) then begin
+    if not(rsAfterEqualOrColon in fRange) then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -2377,7 +2379,10 @@ procedure TSynPasSyn.ColonOrGreaterProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  if fLine[Run] = '=' then
+    inc(Run)
+  else
+    fRange := fRange + [rsAfterEqualOrColon];
   fRange := fRange - [rsAtCaseLabel];
 end;
 
@@ -2597,7 +2602,7 @@ procedure TSynPasSyn.EqualSignProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
-  fRange := fRange + [rsAtEqual];
+  fRange := fRange + [rsAfterEqualOrColon];
 end;
 
 procedure TSynPasSyn.SemicolonProc;
@@ -2720,6 +2725,7 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
+  WasAtEqual: Boolean;
 begin
   fAsmStart := False;
   fTokenPos := Run;
@@ -2742,9 +2748,10 @@ begin
       else if rsSlash in fRange then
         SlashContinueProc
       else begin
-        if rsAtEqual in fRange then
-          fRange := fRange + [rsAfterEqual] - [rsAtEqual]
-        else
+        WasAtEqual := rsAfterEqualOrColon in fRange;
+        //if rsAtEqual in fRange then
+        //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
+        //else
         if rsAtClass in fRange then
           fRange := fRange + [rsAfterClass] - [rsAtClass];
         IsAtCaseLabel := rsAtCaseLabel in fRange;
@@ -2758,9 +2765,12 @@ begin
         end;
         if not (FTokenID in [tkSpace, tkComment, tkDirective]) then begin
           if (PasCodeFoldRange.BracketNestLevel = 0) and
-             not(rsAtClosingBracket in fRange) then
+             not(rsAtClosingBracket in fRange)
+          then
             fRange := fRange - [rsAfterClass];
-          fRange := fRange - [rsAfterEqual, rsAtClosingBracket];
+          if WasAtEqual then
+            fRange := fRange - [rsAfterEqualOrColon];
+          fRange := fRange - [rsAtClosingBracket];
         end
         else
           fRange := fRange - [rsAtClosingBracket];
