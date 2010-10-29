@@ -262,7 +262,7 @@ const
   CM_SHOWINGCHANGED       = CM_BASE + 25;
   CM_ENTER                = CM_BASE + 26;
   CM_EXIT                 = CM_BASE + 27;
-  CM_DESIGNHITTEST        = CM_BASE + 28;
+  CM_DESIGNHITTEST        = CM_BASE + 28; // implemented by custom controls
   CM_ICONCHANGED          = CM_BASE + 29;
   CM_WANTSPECIALKEY       = CM_BASE + 30;
   CM_INVOKEHELP           = CM_BASE + 31 unimplemented;
