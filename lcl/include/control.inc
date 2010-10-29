@@ -1204,7 +1204,7 @@ begin
   {$IFDEF VerboseDrag}
   DebugLn('TControl.DragDrop ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
-  If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
+  if Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -1216,6 +1216,7 @@ begin
   begin
     FColor := Value;
     FParentColor := False;
+    Perform(CM_COLORCHANGED, 0, 0);
     Invalidate;
   end;
 end;
@@ -1223,7 +1224,7 @@ end;
 {------------------------------------------------------------------------------
        TControl CanAutoSize
 ------------------------------------------------------------------------------}
-function TControl.CanAutoSize(Var NewWidth, NewHeight : Integer): Boolean;
+function TControl.CanAutoSize(var NewWidth, NewHeight : Integer): Boolean;
 begin
   Result := True;
 end;
