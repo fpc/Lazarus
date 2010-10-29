@@ -15941,6 +15941,7 @@ var
   SrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
+  HasResources: Boolean;
 begin
   if FNeedUpdateHighlighters then
     UpdateHighlighters(true);
@@ -15965,8 +15966,18 @@ begin
       end
       else
       begin
-        MainIDEBar.itmViewToggleFormUnit.Enabled := (AnUnitInfo<>nil)
-                                               and AnUnitInfo.HasResources;
+        HasResources:=false;
+        if AnUnitInfo<>nil then
+        begin
+          if AnUnitInfo.HasResources then
+            HasResources:=true
+          else if FilenameIsAbsolute(AnUnitInfo.Filename)
+            and FilenameIsPascalSource(AnUnitInfo.Filename)
+            and FileExistsCached(ChangeFileExt(AnUnitInfo.Filename,'.lfm'))
+          then
+            HasResources:=true;
+        end;
+        MainIDEBar.itmViewToggleFormUnit.Enabled := HasResources;
       end;
       MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
     end;
