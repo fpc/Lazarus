@@ -304,8 +304,7 @@ begin
      then Proc(TComponent (FItems [i]));
 end;
 
-procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean
-  );
+procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
 begin
   if ComponentState * [csLoading, csDestroying] = [] then
     DoChange(Source, Rebuild);

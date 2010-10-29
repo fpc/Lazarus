@@ -4128,10 +4128,11 @@ end;
 procedure TWinControl.SetTabStop(NewTabStop: Boolean);
 begin
   if FTabStop = NewTabStop then
-    exit;
+    Exit;
 
   FTabStop := NewTabStop;
   UpdateTabOrder(FTabOrder);
+  Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------

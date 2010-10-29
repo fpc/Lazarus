@@ -371,6 +371,7 @@ type
   protected
     procedure ItemChanged;
     class procedure WSRegisterClass; override;
+    procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     property WindowHandle: HWND read FWindowHandle write SetWindowHandle;

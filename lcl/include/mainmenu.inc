@@ -39,7 +39,6 @@ end;
 procedure TMainMenu.ItemChanged;
 begin
   MenuChanged(nil, nil, False);
-  // perform CM_MENUCHANGED in owner
 end;
 
 class procedure TMainMenu.WSRegisterClass;
@@ -47,6 +46,14 @@ begin
   inherited WSRegisterClass;
   RegisterMainMenu;
   RegisterPropertyToSkip(TMainMenu, 'AutoMerge', 'VCL compatibility property', '');
+end;
+
+procedure TMainMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
+begin
+  // pass CM_MENUCANGED to the form which own the menu
+  if WindowHandle <> 0 then
+    SendMessage(WindowHandle, CM_MENUCHANGED, 0, 0);
+  inherited MenuChanged(Sender, Source, Rebuild);
 end;
 
 {------------------------------------------------------------------------------
