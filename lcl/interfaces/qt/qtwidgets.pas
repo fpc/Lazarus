@@ -2388,8 +2388,8 @@ begin
     OffsetMousePos(@MousePos);
 
     case QEvent_type(Event) of
-      QEventHoverEnter: Msg.Msg := CM_MOUSEENTER;
-      QEventHoverLeave: Msg.Msg := CM_MOUSELEAVE;
+      QEventHoverEnter: Msg.Msg := LM_MOUSEENTER;
+      QEventHoverLeave: Msg.Msg := LM_MOUSELEAVE;
       QEventHoverMove:
         begin
           MouseMsg.Msg := LM_MOUSEMOVE;
@@ -2798,8 +2798,8 @@ begin
   Result := False;
   FillChar(Msg, SizeOf(Msg), #0);
   case QEvent_type(Event) of
-    QEventEnter: Msg.Msg := CM_MOUSEENTER;
-    QEventLeave: Msg.Msg := CM_MOUSELEAVE;
+    QEventEnter: Msg.Msg := LM_MOUSEENTER;
+    QEventLeave: Msg.Msg := LM_MOUSELEAVE;
   end;
   DeliverMessage(Msg);
 end;

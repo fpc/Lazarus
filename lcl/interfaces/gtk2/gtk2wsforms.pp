@@ -231,13 +231,13 @@ begin
     GDK_ENTER_NOTIFY:
       begin
         FillChar(Mess, SizeOf(Mess), #0);
-        Mess.msg := CM_MOUSEENTER;
+        Mess.msg := LM_MOUSEENTER;
         DeliverMessage(Data, Mess);
       end;
     GDK_LEAVE_NOTIFY:
       begin
         FillChar(Mess, SizeOf(Mess), #0);
-        Mess.msg := CM_MOUSELEAVE;
+        Mess.msg := LM_MOUSELEAVE;
         DeliverMessage(Data, Mess);
       end;
     GDK_FOCUS_CHANGE:

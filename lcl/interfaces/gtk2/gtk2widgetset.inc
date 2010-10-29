@@ -28,8 +28,6 @@ var
   Gtk2MPF: TGPollFunc;
 
 function Gtk2PollFunction(ufds:PGPollFD; nfsd:guint; timeout:gint):gint;cdecl;
-var
-  i: Integer;
 begin
   Result := nfsd;
   if TimeOut = -1 then

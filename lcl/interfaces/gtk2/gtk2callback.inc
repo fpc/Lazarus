@@ -1996,7 +1996,7 @@ begin
     g_signal_stop_emission_by_name(PGTKObject(Widget),'enter');
   end;
 
-  Mess.msg := CM_MOUSEENTER;
+  Mess.msg := LM_MOUSEENTER;
   DeliverMessage(Data, Mess);
 end;
 
@@ -2015,7 +2015,7 @@ begin
     g_signal_stop_emission_by_name(PGTKObject(Widget),'leave');
   end;
 
-  Mess.msg := CM_MOUSELEAVE;
+  Mess.msg := LM_MOUSELEAVE;
   DeliverMessage(Data, Mess);
 end;
 

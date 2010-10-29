@@ -299,8 +299,8 @@ begin
     // For the enter and exit events tracking must be enabled
     // tracking is enabled by defining a rect that you want to track
     // TODO: Tracking
-    kEventMouseEntered    : Msg.Message.Msg := CM_MOUSEENTER;
-    kEventMouseExited     : Msg.Message.Msg := CM_MOUSELEAVE;
+    kEventMouseEntered    : Msg.Message.Msg := LM_MOUSEENTER;
+    kEventMouseExited     : Msg.Message.Msg := LM_MOUSELEAVE;
 
     kEventMouseWheelMoved : HandleMouseWheelEvent(Msg);
   else
