@@ -1602,6 +1602,7 @@ components/lazsvnpkg/lazsvnintf.pas svneol=native#text/plain
 components/lazsvnpkg/lazsvnpkg.lpk svneol=native#text/plain
 components/lazsvnpkg/lazsvnpkg.pas svneol=native#text/plain
 components/lazsvnpkg/lazsvnpkg_images.bat svneol=native#text/x-msdos-program
+components/lazsvnpkg/lazsvnpkg_images.lrs svneol=native#text/plain
 components/lazsvnpkg/lazsvnpkg_images.sh svneol=native#text/plain
 components/lazsvnpkg/lazsvnpkg_images_list.txt svneol=native#text/plain
 components/lazsvnpkg/svnaddprojectform.lfm svneol=native#text/plain
