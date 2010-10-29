@@ -369,7 +369,7 @@ begin
    AutoSize       := False;
  //BiDiMode       := Form1.BiDiMode+[bdLefToRight];
  //BorderIcons    := Form1.BorderIcons+[biSystemMenu];
-   BorderStyle    := bsDialog;
+   BorderStyle    := bsSizeable;
    BorderWidth    := 0;
    Caption        := 'Test All Components V 0.2';
  //ClientHeight   := 333;
@@ -1906,10 +1906,10 @@ Memo1 := TMemo.Create(Self);
   //ImeMode	   := imDontCare;
   //ImeName
     Left 	   := 10;
-    Lines.Text     := #10#13+'                                     WELCOME'+#10#13+
+    Lines.Text     := #13#10+'                                     WELCOME'+#13#10+
                       'You will find the component you want to test in the MainMenu'+
                       ' "Components". 60 components are mentioned, but all do not exist yet.'+
-                      ' I hope this application will be usefull...'+#10#13+'Chris';
+                      ' I hope this application will be usefull...'+#13#10+'Chris';
   //MaxLength	   := 0;
     Name	   := 'Memo1';
   //OEMConvert	   := False;

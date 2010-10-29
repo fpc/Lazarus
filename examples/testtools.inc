@@ -26,9 +26,9 @@
 Const
 
 Info : Array[0..5] of PChar = ('        Do not exist yet...       ',
-                               ' This component is completed !  '+#10#13+' Minor errors could be at presence, '+#10#13+'report them to the Lazarus team.',
-                               ' Almost completed, some procedures '+#10#13+' are missing in consideration to '+#10#13+' Delphi5 compatibility and some minor '+#10#13+' errors are at presence',
-                               ' Basic code completed, finalization '+#10#13+' and cleanup is necessary. '+#10#13+' Errors are at presence.  ',
+                               ' This component is completed !  '+#13#10+' Minor errors could be at presence, '+#13#10+'report them to the Lazarus team.',
+                               ' Almost completed, some procedures '+#13#10+' are missing in consideration to '+#13#10+' Delphi5 compatibility and some minor '+#13#10+' errors are at presence',
+                               ' Basic code completed, finalization '+#13#10+' and cleanup is necessary. '+#13#10+' Errors are at presence.  ',
                                ' A few procedures are completed, many errors are at presence. ',
                                ' Could crash/freeze your system! It will be created when you push this button. Try it on your own risk!');
 FileN : Array[0..8] of String =('tbitbtn','tlistbox','btn_newform','btn_newunit',
@@ -1633,7 +1633,7 @@ lblAbout := TMemo.Create(Self);
     Top := 30;
     Caption := 'This program is free software; you can redistribute it and/or modify it'+
                ' under the terms of the GNU General Public License as published '+
-               'by the Free Software Foundation; either version 2 of the License, or'+#10#13+
+               'by the Free Software Foundation; either version 2 of the License, or'+#13#10+
                '(at your option) any later version.';
     ReadOnly := True;
     Visible := True;
