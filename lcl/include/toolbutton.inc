@@ -934,7 +934,6 @@ var
   TextSize: TSize;
   TextPos: TPoint;
   IconPos: TPoint;
-  DefSize: TSize;
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
@@ -999,9 +998,8 @@ begin
     begin
       inc(PreferredWidth, 4);
       inc(PreferredHeight, 4);
-      DefSize := GetControlClassDefaultSize;
-      PreferredWidth := Max(PreferredWidth, DefSize.CX);
-      PreferredHeight := Max(PreferredHeight, DefSize.CY);
+      PreferredWidth := Max(PreferredWidth, FToolBar.ButtonWidth);
+      PreferredHeight := Max(PreferredHeight, FToolBar.ButtonHeight);
       if Style = tbsDropDown then
         inc(PreferredWidth, FToolBar.FDropDownWidth);
     end
