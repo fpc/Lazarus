@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Action"
 msgstr ""
 
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr ""
+
 #: svnclasses.rsadded
 msgid "Added"
 msgstr ""
@@ -29,6 +33,10 @@ msgstr ""
 msgid "Copy from path"
 msgstr ""
 
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr ""
+
 #: svnclasses.rsdate
 msgid "Date"
 msgstr ""
@@ -51,6 +59,10 @@ msgstr ""
 
 #: svnclasses.rsextension
 msgid "Extension"
+msgstr ""
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
 msgstr ""
 
 #: svnclasses.rsfilestatus
@@ -89,6 +101,22 @@ msgstr ""
 msgid "(no author)"
 msgstr ""
 
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr ""
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr ""
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr ""
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr ""
+
 #: svnclasses.rspath
 msgid "Path"
 msgstr ""
@@ -117,6 +145,10 @@ msgstr ""
 msgid "Property status"
 msgstr ""
 
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr ""
+
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
 msgstr ""
@@ -141,8 +173,20 @@ msgstr ""
 msgid "Show diff"
 msgstr ""
 
+#: svnclasses.rsshowdiffbase
+msgid "Show diff of local changes"
+msgstr ""
+
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
+msgstr ""
+
+#: svnclasses.rsshowdiffhead
+msgid "Show diff against HEAD"
+msgstr ""
+
+#: svnclasses.rsshowdiffprev
+msgid "Show diff against previous version"
 msgstr ""
 
 #: svnclasses.rsshowlog

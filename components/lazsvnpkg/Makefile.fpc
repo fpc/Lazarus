@@ -1,0 +1,56 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for lazsvnpkg 0.0.1
+#
+#   This file was generated on 10/29/2010
+
+[package]
+name=lazsvnpkg
+version=0.0.1
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) lib/$(CPU_TARGET)-$(OS_TARGET) ../../units/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+includedir=.
+options= -MObjFPC -Sgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
+
+[target]
+units=lazsvnpkg.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget compiled all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazsvnpkg$(PPUEXT)
+
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazsvnpkg.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazsvnpkg$(PPUEXT) compiled

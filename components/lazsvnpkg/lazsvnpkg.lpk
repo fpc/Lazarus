@@ -2,16 +2,18 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="lazsvnpkg"/>
+    <AddToProjectUsesSection Value="False"/>
     <Author Value="Darius Blaszyk"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/lazsvnpkg/lib/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/"/>
+        <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/lazsvnpkg/lib/$(TargetCPU)-$(TargetOS);$(LazarusDir)/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -128,7 +130,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

@@ -13,6 +13,10 @@ msgstr ""
 msgid "Action"
 msgstr "Действие"
 
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr ""
+
 #: svnclasses.rsadded
 msgid "Added"
 msgstr "Добавлено"
@@ -37,6 +41,10 @@ msgstr "Конфликт"
 msgid "Copy from path"
 msgstr "Копия из пути"
 
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr ""
+
 #: svnclasses.rsdate
 msgid "Date"
 msgstr "Дата"
@@ -60,6 +68,10 @@ msgstr "Редактировать"
 #: svnclasses.rsextension
 msgid "Extension"
 msgstr "Расширение"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr ""
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -97,6 +109,22 @@ msgstr "Сообщение"
 msgid "(no author)"
 msgstr "(нет)"
 
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr ""
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr ""
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr ""
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr ""
+
 #: svnclasses.rspath
 msgid "Path"
 msgstr "Путь"
@@ -125,6 +153,10 @@ msgstr "Параметры проекта"
 msgid "Property status"
 msgstr "Статус свойства"
 
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr ""
+
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
 msgstr "Путь к репозитарию"
@@ -149,9 +181,21 @@ msgstr "Параметры"
 msgid "Show diff"
 msgstr "Показать разницу Diff"
 
+#: svnclasses.rsshowdiffbase
+msgid "Show diff of local changes"
+msgstr ""
+
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
 msgstr "Показать последние X ревизий"
+
+#: svnclasses.rsshowdiffhead
+msgid "Show diff against HEAD"
+msgstr ""
+
+#: svnclasses.rsshowdiffprev
+msgid "Show diff against previous version"
+msgstr ""
 
 #: svnclasses.rsshowlog
 msgid "Show log"

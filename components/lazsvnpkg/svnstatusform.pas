@@ -23,9 +23,9 @@ unit SVNStatusForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc, Process,
-  SVNClasses, Menus;
+  SVNClasses, Menus, LazIDEIntf;
 
 type
   { TSVNStatusFrm }
@@ -33,6 +33,9 @@ type
   TSVNStatusFrm = class(TForm)
     ButtonPanel: TButtonPanel;
     ImageList: TImageList;
+    mnuOpen: TMenuItem;
+    mnuRemove: TMenuItem;
+    mnuAdd: TMenuItem;
     mnuRevert: TMenuItem;
     mnuShowDiff: TMenuItem;
     PopupMenu1: TPopupMenu;
@@ -42,22 +45,26 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure mnuAddClick(Sender: TObject);
+    procedure mnuOpenClick(Sender: TObject);
+    procedure mnuRemoveClick(Sender: TObject);
     procedure mnuRevertClick(Sender: TObject);
     procedure mnuShowDiffClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
+    procedure PatchButtonClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
     procedure SVNFileListViewColumnClick(Sender: TObject; Column: TListColumn);
-    procedure SVNFileListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
   private
     FRepositoryPath: string;
-    { private declarations }
     SVNStatus: TSVNStatus;
-    procedure SetRepositoryPath(const AValue: string);
-    procedure UpdateFilesListView(Data: PtrInt);
+    procedure Initialize(Data: PtrInt);
+    procedure ExecuteSvnCommand(ACommand: String; AFile: String);
+    procedure UpdateFilesListView;
     procedure ChangeCursor(ACursor: TCursor);
+    procedure UpdateCheckedStatus;
   public
-    { public declarations }
-    property RepositoryPath: string read FRepositoryPath write SetRepositoryPath;
+    {path the root of the local working copy}
+    property RepositoryPath: string read FRepositoryPath write FRepositoryPath;
   end;
 
 procedure ShowSVNStatusFrm(ARepoPath: string);
@@ -72,6 +79,7 @@ var
   SVNStatusFrm: TSVNStatusFrm;
 begin
   SVNStatusFrm := TSVNStatusFrm.Create(nil);
+  SVNStatusFrm.ChangeCursor(crHourGlass);
 
   SVNStatusFrm.RepositoryPath:=ARepoPath;
   SVNStatusFrm.ShowModal;
@@ -83,39 +91,87 @@ end;
 
 procedure TSVNStatusFrm.FormShow(Sender: TObject);
 begin
-  SVNStatus := TSVNStatus.Create(RepositoryPath);
-  SVNStatus.Sort(siChecked, sdAscending);
-
   Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
-  Application.QueueAsyncCall(@UpdateFilesListView, 0);
+  Application.QueueAsyncCall(@Initialize, 0);
+end;
+
+procedure TSVNStatusFrm.Initialize(Data: PtrInt);
+begin
+  SVNStatus := TSVNStatus.Create(RepositoryPath, false);
+  SVNStatus.Sort(siChecked, sdAscending);
+  UpdateFilesListView;
+  ChangeCursor(crDefault);
 end;
 
 procedure TSVNStatusFrm.mnuRevertClick(Sender: TObject);
-var
-  AProcess: TProcess;
 begin
   if Assigned(SVNFileListView.Selected) then
   begin
-
-    AProcess := TProcess.Create(nil);
-
-    if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
-      AProcess.CommandLine := SVNExecutable + ' revert "' + SVNFileListView.Selected.SubItems[0] + '"'
-    else
-      AProcess.CommandLine := SVNExecutable + ' revert "' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0] + '"';
-
-    debugln('TSVNStatusFrm.mnuRevertClick commandline=', AProcess.CommandLine);
-    AProcess.Options := AProcess.Options + [poWaitOnExit];
-    AProcess.ShowWindow := swoHIDE;
-    AProcess.Execute;
-    AProcess.Free;
+    ExecuteSvnCommand('revert', SVNFileListView.Selected.SubItems[0]);
 
     //now delete the entry from the list
     SVNStatus.List.Delete(SVNFileListView.Selected.Index);
 
     //update the listview again
-    UpdateFilesListView(0);
+    UpdateFilesListView;
   end;
+end;
+
+procedure TSVNStatusFrm.mnuAddClick(Sender: TObject);
+begin
+  if Assigned(SVNFileListView.Selected) then
+  begin
+    ExecuteSvnCommand('add', SVNFileListView.Selected.SubItems[0]);
+
+    // completely re-read the status
+    SVNStatus.Free;
+    SVNStatus := TSVNStatus.Create(RepositoryPath, false);
+    SVNStatus.Sort(siChecked, sdAscending);
+    UpdateFilesListView;
+  end;
+end;
+
+procedure TSVNStatusFrm.mnuOpenClick(Sender: TObject);
+var
+  FileName: String;
+begin
+  if Assigned(SVNFileListView.Selected) then
+  begin
+    FileName := CreateAbsolutePath(SVNFileListView.Selected.SubItems[0], RepositoryPath);
+    LazarusIDE.DoOpenEditorFile(FileName, -1, -1, [ofOnlyIfExists]);
+  end;
+end;
+
+procedure TSVNStatusFrm.mnuRemoveClick(Sender: TObject);
+begin
+  if Assigned(SVNFileListView.Selected) then
+  begin
+    ExecuteSvnCommand('remove --keep-local', SVNFileListView.Selected.SubItems[0]);
+
+    // completely re-read the status
+    SVNStatus.Free;
+    SVNStatus := TSVNStatus.Create(RepositoryPath, false);
+    SVNStatus.Sort(siChecked, sdAscending);
+    UpdateFilesListView;
+  end;
+end;
+
+procedure TSVNStatusFrm.ExecuteSvnCommand(ACommand: String; AFile: String);
+var
+  AProcess: TProcess;
+begin
+  AProcess := TProcess.Create(nil);
+
+  if pos(RepositoryPath, AFile) <> 0 then
+    AProcess.CommandLine := SVNExecutable + ' ' + ACommand + ' "' + AFile + '"'
+  else
+    AProcess.CommandLine := SVNExecutable + ' ' + ACommand + ' "' + AppendPathDelim(RepositoryPath) + AFile + '"';
+
+  debugln('TSVNStatusFrm.ExecuteSvnCommand commandline=', AProcess.CommandLine);
+  AProcess.Options := AProcess.Options + [poWaitOnExit];
+  AProcess.ShowWindow := swoHIDE;
+  AProcess.Execute;
+  AProcess.Free;
 end;
 
 procedure TSVNStatusFrm.mnuShowDiffClick(Sender: TObject);
@@ -126,9 +182,9 @@ begin
     debugln('TSVNStatusFrm.mnuShowDiffClick Path=' ,SVNFileListView.Selected.SubItems[0]);
 
     if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
-      ShowSVNDiffFrm('-r HEAD', '"' + SVNFileListView.Selected.SubItems[0] + '"')
+      ShowSVNDiffFrm('-r BASE', SVNFileListView.Selected.SubItems[0])
     else
-      ShowSVNDiffFrm('-r HEAD', '"' + AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0] + '"');
+      ShowSVNDiffFrm('-r BASE', AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0]);
   end;
 end;
 
@@ -139,6 +195,7 @@ var
   StatusItem : PSVNStatusItem;
   FileName: string;
 begin
+  UpdateCheckedStatus;
   if SVNCommitMsgMemo.Text = '' then
     if MessageDlg ('No message set.', 'Do you wish to continue?', mtConfirmation,
                   [mbYes, mbNo],0) <> mrYes then
@@ -166,6 +223,54 @@ begin
   DeleteFile(FileName);
 end;
 
+procedure TSVNStatusFrm.PatchButtonClick(Sender: TObject);
+var
+  i: Integer;
+  StatusItem: PSVNStatusItem;
+  FileNames: TStringList;
+begin
+  UpdateCheckedStatus;
+  Filenames := TStringList.Create;
+  FileNames.Sorted := True;
+  for i := 0 to SVNStatus.List.Count - 1 do
+  begin
+    StatusItem := PSVNStatusItem(SVNStatus.List.Items[i]);
+    if StatusItem^.Checked then
+      if pos(RepositoryPath,StatusItem^.Path) = 0 then
+        FileNames.Append(AppendPathDelim(RepositoryPath) + StatusItem^.Path)
+      else
+        FileNames.Append(StatusItem^.Path);
+  end;
+  ShowSVNDiffFrm('-r BASE', FileNames);
+end;
+
+procedure TSVNStatusFrm.PopupMenu1Popup(Sender: TObject);
+var
+  P: TPoint;
+  LI: TListItem;
+begin
+  // make sure the row under the mouse is selected
+  P := SVNFileListView.ScreenToControl(Mouse.CursorPos);
+  LI := SVNFileListView.GetItemAt(P.X, P.Y);
+  if LI <> nil then begin
+    SVNFileListView.Selected := LI;
+    {$note: using hardcoded column index!}
+    if LI.SubItems[2] = 'unversioned' then
+      mnuRevert.Enabled := False
+    else
+      mnuRevert.Enabled := True;
+    if (LI.SubItems[2] = 'unversioned') or (LI.SubItems[2] = 'deleted') then begin
+      mnuShowDiff.Enabled := False;
+      mnuRemove.Enabled := False;
+      mnuAdd.Enabled := True;
+    end else begin
+      mnuShowDiff.Enabled := True;
+      mnuRemove.Enabled := True;
+      mnuAdd.Enabled := False;
+    end;
+  end;
+end;
+
 procedure TSVNStatusFrm.SVNFileListViewColumnClick(Sender: TObject;
   Column: TListColumn);
 begin
@@ -181,16 +286,10 @@ begin
     8: SVNStatus.ReverseSort(siDate);
   end;
 
-  UpdateFilesListView(0);
+  UpdateFilesListView;
 end;
 
-procedure TSVNStatusFrm.SVNFileListViewSelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
-begin
-  PSVNStatusItem(SVNStatus.List.Items[Item.Index])^.Checked:=Item.Checked;
-end;
-
-procedure TSVNStatusFrm.UpdateFilesListView(Data: PtrInt);
+procedure TSVNStatusFrm.UpdateFilesListView;
 var
   i: integer;
   StatusItem : PSVNStatusItem;
@@ -213,7 +312,7 @@ begin
       //path
       Path := StatusItem^.Path;
       if pos(RepositoryPath, Path) = 1 then
-        System.Delete(Path, 1, Length(RepositoryPath) - 1);
+        path := CreateRelativePath(path, RepositoryPath, false);
       SubItems.Add(Path);
 
       //extension
@@ -244,27 +343,37 @@ begin
     end;
   end;
   SVNFileListView.EndUpdate;
-
-  ChangeCursor(crDefault);
-end;
-
-procedure TSVNStatusFrm.SetRepositoryPath(const AValue: string);
-begin
-  FRepositoryPath := AppendPathDelim(AValue);
 end;
 
 procedure TSVNStatusFrm.ChangeCursor(ACursor: TCursor);
 begin
+  Cursor := ACursor;
   SVNCommitMsgMemo.Cursor := ACursor;
   SVNFileListView.Cursor := ACursor;
+  Application.ProcessMessages;
+end;
+
+procedure TSVNStatusFrm.UpdateCheckedStatus;
+var
+  i : Integer;
+begin
+  for i := 0 to SVNFileListView.Items.Count - 1 do
+  with SVNFileListView.Items[i] do
+  begin
+    PSVNStatusItem(SVNStatus.List.Items[Index])^.Checked := Checked;
+  end;
 end;
 
 procedure TSVNStatusFrm.FormCreate(Sender: TObject);
 begin
-  ChangeCursor(crHourGlass);
-
-  mnuShowDiff.Caption:=rsShowDiff;
+  mnuShowDiff.Caption := rsShowDiff;
+  mnuOpen.Caption := rsOpenFileInEditor;
   mnuRevert.Caption := rsRevert;
+  mnuAdd.Caption := rsAdd;
+  mnuRemove.Caption := rsRemove;
+
+  ButtonPanel.HelpButton.Caption:=rsCreatePatchFile;
+  ButtonPanel.OKButton.Caption:=rsCommit;
 
   ButtonPanel.OKButton.OnClick:=@OKButtonClick;
 

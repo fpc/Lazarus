@@ -1,41 +1,40 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TSVNStatusFrm','FORMDATA',[
-  'TPF0'#13'TSVNStatusFrm'#12'SVNStatusFrm'#4'Left'#3'6'#1#6'Height'#3#152#1#3
-  +'Top'#3#174#0#5'Width'#3#226#2#11'HelpContext'#2#0#13'ActiveControl'#7#15'SV'
-  +'NFileListView'#7'Caption'#6#12'SVNStatusFrm'#28'ChildSizing.LeftRightSpacin'
-  +'g'#2#0#28'ChildSizing.TopBottomSpacing'#2#0#29'ChildSizing.HorizontalSpacin'
-  +'g'#2#0#27'ChildSizing.VerticalSpacing'#2#0#27'ChildSizing.ControlsPerLine'#2
-  +#0#12'ClientHeight'#3#152#1#11'ClientWidth'#3#226#2#11'Font.Height'#2#0#10'F'
-  +'ont.Style'#11#0#8'OnCreate'#7#10'FormCreate'#6'OnShow'#7#8'FormShow'#8'Posi'
-  +'tion'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#9'TListView'#15'SVN'
-  +'FileListView'#4'Left'#2#6#6'Height'#3#10#1#3'Top'#2'X'#5'Width'#3#214#2#11
-  +'HelpContext'#2#0#5'Align'#7#8'alClient'#18'BorderSpacing.Left'#2#6#17'Borde'
-  +'rSpacing.Top'#2#0#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#6
-  +#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFil'
-  +'l'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#10'Checkboxes'#9#7'Colu'
-  +'mns'#14#1#8'AutoSize'#8#0#1#8'AutoSize'#8#0#1#8'AutoSize'#8#0#1#8'AutoSize'
-  +#8#0#1#8'AutoSize'#8#5'Width'#3'I'#1#0#1#8'AutoSize'#8#5'Width'#3#179#0#0#1#8
-  +'AutoSize'#8#0#1#8'AutoSize'#8#0#1#8'AutoSize'#8#0#0#9'PopupMenu'#7#10'Popup'
-  +'Menu1'#9'RowSelect'#9#10'SortColumn'#2#1#8'SortType'#7#6'stText'#8'TabOrder'
-  +#2#0#9'ViewStyle'#7#8'vsReport'#13'OnColumnClick'#7#26'SVNFileListViewColumn'
-  +'Click'#12'OnSelectItem'#7#25'SVNFileListViewSelectItem'#0#0#5'TMemo'#16'SVN'
-  +'CommitMsgMemo'#4'Left'#2#6#6'Height'#2'M'#3'Top'#2#6#5'Width'#3#214#2#11'He'
-  +'lpContext'#2#0#5'Align'#7#5'alTop'#18'BorderSpacing.Left'#2#6#17'BorderSpac'
-  +'ing.Top'#2#6#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#0#20'Bo'
-  +'rderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31
-  +'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#11'Font.Height'#2#0#10'Font.S'
-  +'tyle'#11#0#10'ParentFont'#8#8'TabOrder'#2#1#0#0#12'TButtonPanel'#11'ButtonP'
-  +'anel'#4'Left'#2#6#6'Height'#2'0'#3'Top'#3'h'#1#5'Width'#3#214#2#11'HelpCont'
-  +'ext'#2#0#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'
-  +#8'TabOrder'#2#2#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#8'pb'
-  +'Cancel'#0#0#0#9'TSplitter'#8'Splitter'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6
-  +'Height'#2#5#3'Top'#2'S'#5'Width'#3#226#2#11'HelpContext'#2#0#5'Align'#7#5'a'
-  +'lTop'#12'ResizeAnchor'#7#5'akTop'#0#0#10'TPopupMenu'#10'PopupMenu1'#6'Image'
-  +'s'#7#9'ImageList'#4'left'#2'5'#3'top'#3#213#0#0#9'TMenuItem'#11'mnuShowDiff'
-  +#7'Caption'#6#9'New Item1'#10'ImageIndex'#2#0#12'RightJustify'#8#19'ShowAlwa'
-  +'ysCheckable'#8#7'OnClick'#7#16'mnuShowDiffClick'#0#0#9'TMenuItem'#9'mnuReve'
-  +'rt'#7'Caption'#6#9'New Item2'#10'ImageIndex'#2#1#12'RightJustify'#8#19'Show'
-  +'AlwaysCheckable'#8#7'OnClick'#7#14'mnuRevertClick'#0#0#0#10'TImageList'#9'I'
-  +'mageList'#6'Masked'#8#4'left'#2'X'#3'top'#3#213#0#0#0#0
+  'TPF0'#13'TSVNStatusFrm'#12'SVNStatusFrm'#4'Left'#3#21#1#6'Height'#3#152#1#3
+  +'Top'#3#174#0#5'Width'#3#226#2#7'Caption'#6#12'SVNStatusFrm'#12'ClientHeight'
+  +#3#152#1#11'ClientWidth'#3#226#2#8'OnCreate'#7#10'FormCreate'#6'OnShow'#7#8
+  +'FormShow'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#12
+  +'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'"'#3'Top'#3'p'#1#5'Wi'
+  +'dth'#3#214#2#13'OKButton.Name'#6#8'OKButton'#16'OKButton.Caption'#6#7'&Comm'
+  +'it'#16'OKButton.OnClick'#7#13'OKButtonClick'#15'HelpButton.Name'#6#11'Patch'
+  +'Button'#18'HelpButton.Caption'#6#18'Create &Patch File'#18'HelpButton.OnCli'
+  +'ck'#7#16'PatchButtonClick'#16'CloseButton.Name'#6#15'PatchFileButton'#19'Cl'
+  +'oseButton.Caption'#6#5'Close'#19'CloseButton.Enabled'#8#17'CancelButton.Nam'
+  +'e'#6#12'CancelButton'#20'CancelButton.Caption'#6#6'Cancel'#8'TabOrder'#2#2
+  +#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#6'pbHelp'#0#10'ShowGlyphs'#11#4'pbOK'
+  +#8'pbCancel'#7'pbClose'#0#0#0#9'TListView'#15'SVNFileListView'#4'Left'#2#6#6
+  +'Height'#3#18#1#3'Top'#2'X'#5'Width'#3#214#2#5'Align'#7#8'alClient'#18'Borde'
+  +'rSpacing.Left'#2#6#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#6
+  +#10'Checkboxes'#9#7'Columns'#14#1#8'AutoSize'#9#5'Width'#2#6#0#1#8'AutoSize'
+  +#9#5'Width'#2#12#0#1#8'AutoSize'#9#5'Width'#2#12#0#1#8'AutoSize'#9#5'Width'#2
+  +#12#0#1#8'AutoSize'#9#5'Width'#2#12#0#1#8'AutoSize'#9#5'Width'#2#12#0#1#8'Au'
+  +'toSize'#9#5'Width'#2#12#0#1#8'AutoSize'#9#5'Width'#2#12#0#1#8'AutoSize'#9#5
+  +'Width'#2#12#0#0#9'ItemIndex'#2#255#9'PopupMenu'#7#10'PopupMenu1'#9'RowSelec'
+  +'t'#9#10'SortColumn'#2#1#8'SortType'#7#6'stText'#8'TabOrder'#2#0#9'ViewStyle'
+  +#7#8'vsReport'#13'OnColumnClick'#7#26'SVNFileListViewColumnClick'#0#0#5'TMem'
+  +'o'#16'SVNCommitMsgMemo'#4'Left'#2#6#6'Height'#2'M'#3'Top'#2#6#5'Width'#3#214
+  +#2#5'Align'#7#5'alTop'#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6
+  +#19'BorderSpacing.Right'#2#6#10'ParentFont'#8#8'TabOrder'#2#1#0#0#9'TSplitte'
+  +'r'#8'Splitter'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#5#3'Top'#2'S'
+  +#5'Width'#3#226#2#5'Align'#7#5'alTop'#12'ResizeAnchor'#7#5'akTop'#0#0#10'TPo'
+  +'pupMenu'#10'PopupMenu1'#6'Images'#7#9'ImageList'#7'OnPopup'#7#15'PopupMenu1'
+  +'Popup'#4'left'#2'5'#3'top'#3#213#0#0#9'TMenuItem'#11'mnuShowDiff'#7'Caption'
+  +#6#8'svn diff'#10'ImageIndex'#2#0#7'OnClick'#7#16'mnuShowDiffClick'#0#0#9'TM'
+  +'enuItem'#7'mnuOpen'#7'Caption'#6#4'open'#7'OnClick'#7#12'mnuOpenClick'#0#0#9
+  +'TMenuItem'#6'mnuAdd'#7'Caption'#6#7'svn add'#7'OnClick'#7#11'mnuAddClick'#0
+  +#0#9'TMenuItem'#9'mnuRemove'#7'Caption'#6#23'svn remove --keep-local'#7'OnCl'
+  +'ick'#7#14'mnuRemoveClick'#0#0#9'TMenuItem'#9'mnuRevert'#7'Caption'#6#10'svn'
+  +' revert'#10'ImageIndex'#2#1#7'OnClick'#7#14'mnuRevertClick'#0#0#0#10'TImage'
+  +'List'#9'ImageList'#4'left'#2'X'#3'top'#3#213#0#0#0#0
 ]);

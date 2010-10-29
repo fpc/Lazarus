@@ -1,69 +1,83 @@
 object SVNStatusFrm: TSVNStatusFrm
-  Left = 310
+  Left = 277
   Height = 408
   Top = 174
   Width = 738
-  HelpContext = 0
-  ActiveControl = SVNFileListView
   Caption = 'SVNStatusFrm'
-  ChildSizing.LeftRightSpacing = 0
-  ChildSizing.TopBottomSpacing = 0
-  ChildSizing.HorizontalSpacing = 0
-  ChildSizing.VerticalSpacing = 0
-  ChildSizing.ControlsPerLine = 0
   ClientHeight = 408
   ClientWidth = 738
-  Font.Height = 0
-  Font.Style = []
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 368
+    Width = 726
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&Commit'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'PatchButton'
+    HelpButton.Caption = 'Create &Patch File'
+    HelpButton.OnClick = PatchButtonClick
+    CloseButton.Name = 'PatchFileButton'
+    CloseButton.Caption = 'Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose]
+  end
   object SVNFileListView: TListView
     Left = 6
-    Height = 266
+    Height = 274
     Top = 88
     Width = 726
-    HelpContext = 0
     Align = alClient
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 0
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Checkboxes = True
     Columns = <    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 6
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
-        Width = 329
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
-        Width = 179
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end    
       item
-        AutoSize = False
+        AutoSize = True
+        Width = 12
       end>
+    ItemIndex = -1
     PopupMenu = PopupMenu1
     RowSelect = True
     SortColumn = 1
@@ -71,39 +85,18 @@ object SVNStatusFrm: TSVNStatusFrm
     TabOrder = 0
     ViewStyle = vsReport
     OnColumnClick = SVNFileListViewColumnClick
-    OnSelectItem = SVNFileListViewSelectItem
   end
   object SVNCommitMsgMemo: TMemo
     Left = 6
     Height = 77
     Top = 6
     Width = 726
-    HelpContext = 0
     Align = alTop
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Font.Height = 0
-    Font.Style = []
     ParentFont = False
     TabOrder = 1
-  end
-  object ButtonPanel: TButtonPanel
-    Left = 6
-    Height = 48
-    Top = 360
-    Width = 726
-    HelpContext = 0
-    Align = alBottom
-    AutoSize = True
-    ButtonOrder = boDefault
-    TabOrder = 2
-    DefaultButton = pbOK
-    ShowButtons = [pbOK, pbCancel]
   end
   object Splitter: TSplitter
     Cursor = crVSplit
@@ -111,31 +104,38 @@ object SVNStatusFrm: TSVNStatusFrm
     Height = 5
     Top = 83
     Width = 738
-    HelpContext = 0
     Align = alTop
     ResizeAnchor = akTop
   end
   object PopupMenu1: TPopupMenu
     Images = ImageList
+    OnPopup = PopupMenu1Popup
     left = 53
     top = 213
     object mnuShowDiff: TMenuItem
-      Caption = 'New Item1'
+      Caption = 'svn diff'
       ImageIndex = 0
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = mnuShowDiffClick
     end
+    object mnuOpen: TMenuItem
+      Caption = 'open'
+      OnClick = mnuOpenClick
+    end
+    object mnuAdd: TMenuItem
+      Caption = 'svn add'
+      OnClick = mnuAddClick
+    end
+    object mnuRemove: TMenuItem
+      Caption = 'svn remove --keep-local'
+      OnClick = mnuRemoveClick
+    end
     object mnuRevert: TMenuItem
-      Caption = 'New Item2'
+      Caption = 'svn revert'
       ImageIndex = 1
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = mnuRevertClick
     end
   end
   object ImageList: TImageList
-    Masked = False
     left = 88
     top = 213
   end

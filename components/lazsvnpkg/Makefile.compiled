@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Makefile Value="True"/>
+  <Params Value=" -MObjFPC -Sgi -O1 -gl -vewnhi -l -Fu../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../ideintf/units/%(CPU_TARGET)-%(OS_TARGET);lib/%(CPU_TARGET)-%(OS_TARGET);../../units/%(CPU_TARGET)-%(OS_TARGET);../codetools/units/%(CPU_TARGET)-%(OS_TARGET);../synedit/units/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Fi. -dLCL -dLCL%(LCL_PLATFORM)"/>
+</CONFIG>

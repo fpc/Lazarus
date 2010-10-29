@@ -13,6 +13,10 @@ msgstr ""
 msgid "Action"
 msgstr "Aktion"
 
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "Zu Versionskontrolle hinzufügen"
+
 #: svnclasses.rsadded
 msgid "Added"
 msgstr "Hinzugefügt"
@@ -37,6 +41,10 @@ msgstr "Konflikt"
 msgid "Copy from path"
 msgstr "kopiert von"
 
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "Patch erzeugen"
+
 #: svnclasses.rsdate
 msgid "Date"
 msgstr "Datum"
@@ -60,6 +68,10 @@ msgstr "Bearbeiten"
 #: svnclasses.rsextension
 msgid "Extension"
 msgstr "Erweiterung"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr "Datei ist nicht (mehr) Bestandteil der lokalen Arbeitskopie"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -97,6 +109,22 @@ msgstr "Meldung"
 msgid "(no author)"
 msgstr "(kein Autor)"
 
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr "Nur geänderte (M) Dateien können verglichen werden"
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "Öffne Datei im Editor"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "Öffne vorhergehende Version im Editor"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "Öffne diese Revision im Editor"
+
 #: svnclasses.rspath
 msgid "Path"
 msgstr "Pfad"
@@ -125,13 +153,17 @@ msgstr "Projekteinstellungen"
 msgid "Property status"
 msgstr "Eigenschaftsstatus"
 
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "Aus Versionskontrolle entfernen (lokal behalten)"
+
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
 msgstr "Repository-Pfad"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr "Umkehren"
+msgstr "Änderungen zurücknemen"
 
 #: svnclasses.rsrevision
 msgid "Revision"
@@ -149,9 +181,21 @@ msgstr "Einstellungen"
 msgid "Show diff"
 msgstr "Zeige Vergleich"
 
+#: svnclasses.rsshowdiffbase
+msgid "Show diff of local changes"
+msgstr "Zeige Vergleich der lokalen Änderungen"
+
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
 msgstr "Zeige letzte x Übertragungen"
+
+#: svnclasses.rsshowdiffhead
+msgid "Show diff against HEAD"
+msgstr "Zeige Vergleich mit HEAD"
+
+#: svnclasses.rsshowdiffprev
+msgid "Show diff against previous version"
+msgstr "Zeige Vergleich mit vorheriger Version"
 
 #: svnclasses.rsshowlog
 msgid "Show log"

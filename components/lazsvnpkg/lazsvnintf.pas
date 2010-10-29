@@ -23,12 +23,14 @@ unit LazSVNIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLtype, LResources, ProjectIntf, LCLProc;
+  SysUtils, LCLtype, LResources, LCLProc;
 
 procedure ProcSVNLog(Sender: TObject);
 procedure ProcSVNCommit(Sender: TObject);
 procedure ProcSVNUpdate(Sender: TObject);
 procedure ProcSVNDiff(Sender: TObject);
+procedure ProcSVNDiffPrev(Sender: TObject);
+procedure ProcSVNDiffHead(Sender: TObject);
 procedure ProcSVNSettings(Sender: TObject);
 procedure Register;
 
@@ -44,6 +46,8 @@ var
   CmdSVNCommit : TIDECommand;
   CmdSVNUpdate : TIDECommand;
   CmdSVNDiff : TIDECommand;
+  CmdSVNDiffPrev : TIDECommand;
+  CmdSVNDiffHead : TIDECommand;
   CmdSVNSettings : TIDECommand;
 
 procedure Register;
@@ -65,20 +69,25 @@ begin
   CmdSVNLog:=RegisterIDECommand(Cat, 'SVNLog', rsShowLog, Key, nil, @ProcSVNLog);
   CmdSVNCommit:=RegisterIDECommand(Cat, 'SVNCommit', rsCommit, Key, nil, @ProcSVNCommit);
   CmdSVNUpdate:=RegisterIDECommand(Cat, 'SVNUpdate', rsUpdate, Key, nil, @ProcSVNUpdate);
-  CmdSVNDiff:=RegisterIDECommand(Cat, 'SVNDiff', rsShowDiff, Key, nil, @ProcSVNDiff);
+  CmdSVNDiff:=RegisterIDECommand(Cat, 'SVNDiff', rsShowDiffBase, Key, nil, @ProcSVNDiff);
+  CmdSVNDiffPrev:=RegisterIDECommand(Cat, 'SVNDiffPrev', rsShowDiffPrev, Key, nil, @ProcSVNDiffPrev);
+  CmdSVNDiffHead:=RegisterIDECommand(Cat, 'SVNDiffHead', rsShowDiffHead, Key, nil, @ProcSVNDiffHead);
   CmdSVNSettings:=RegisterIDECommand(Cat, 'SVNSettings', rsSVNSettings, Key, nil, @ProcSVNSettings);
 
-  {$note add menu_svn bitmap in the main menu}
   mnuSVNMain := RegisterIDEMenuSection(itmCustomTools, 'SVN');
-  mnuSVNSection:=RegisterIDESubMenu(mnuSVNMain, 'SVN', 'SVN', nil, nil);
+  mnuSVNSection:=RegisterIDESubMenu(mnuSVNMain, 'SVN', 'SVN', nil, nil, 'menu_svn');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNLog', rsShowLog, nil, nil,
     CmdSVNLog, 'menu_svn_log');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNCommit', rsCommit, nil, nil,
     CmdSVNCommit, 'menu_svn_commit');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNUpdate', rsUpdate, nil, nil,
     CmdSVNUpdate, 'menu_svn_update');
-  RegisterIDEMenuCommand(mnuSVNSection, 'SVNDiff', rsShowDiff, nil, nil,
+  RegisterIDEMenuCommand(mnuSVNSection, 'SVNDiff', rsShowDiffBase, nil, nil,
     CmdSVNDiff, 'menu_svn_diff');
+  RegisterIDEMenuCommand(mnuSVNSection, 'SVNDiffPrev', rsShowDiffPrev, nil, nil,
+    CmdSVNDiffPrev, 'menu_svn_diff');
+  RegisterIDEMenuCommand(mnuSVNSection, 'SVNDiffHead', rsShowDiffHead, nil, nil,
+    CmdSVNDiffHead, 'menu_svn_diff');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNSettings', rsSettings, nil, nil,
     CmdSVNSettings, 'menu_environment_options');
 end;
@@ -151,7 +160,7 @@ begin
   end;
 end;
 
-procedure ProcSVNDiff(Sender: TObject);
+procedure DoSVNDiff(ASwitches: String);
 var
   Repo: string;
   IsActive: boolean;
@@ -170,15 +179,26 @@ begin
     if IsActive and (Repo <> '') then
     begin
       SrcFile := SourceEditorManagerIntf.ActiveEditor.FileName;
-
-      if LazarusIDE.ActiveProject.FindFile(SrcFile, [pfsfOnlyEditorFiles]).IsPartOfProject then
-        ShowSVNDiffFrm('-r PREV', '"' + SrcFile + '"')
-      else
-        ShowMessage(rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst);
+      ShowSVNDiffFrm(ASwitches, SrcFile);
     end
     else
       ShowMessage(rsProjectIsNotActiveInSVNSettingsPleaseActivateFirst);
   end;
+end;
+
+procedure ProcSvnDiff(Sender: TObject);
+begin
+  DoSvnDiff('-r BASE');
+end;
+
+procedure ProcSvnDiffHead(Sender: TObject);
+begin
+  DoSvnDiff('-r HEAD');
+end;
+
+procedure ProcSvnDiffPrev(Sender: TObject);
+begin
+  DoSvnDiff('-r PREV');
 end;
 
 procedure ProcSVNSettings(Sender: TObject);

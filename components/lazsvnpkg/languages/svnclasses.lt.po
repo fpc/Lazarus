@@ -15,6 +15,10 @@ msgstr ""
 msgid "Action"
 msgstr "Veiksmas"
 
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr ""
+
 #: svnclasses.rsadded
 msgid "Added"
 msgstr "Pridėta"
@@ -39,6 +43,10 @@ msgstr "Konfliktas"
 msgid "Copy from path"
 msgstr "Kopijuoti iš kelio"
 
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr ""
+
 #: svnclasses.rsdate
 msgid "Date"
 msgstr "Data"
@@ -62,6 +70,10 @@ msgstr "Keisti"
 #: svnclasses.rsextension
 msgid "Extension"
 msgstr "Plėtinys"
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr ""
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -99,6 +111,22 @@ msgstr "Pranešimas"
 msgid "(no author)"
 msgstr "(autoriaus nėra)"
 
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr ""
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr ""
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr ""
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr ""
+
 #: svnclasses.rspath
 msgid "Path"
 msgstr "Kelias"
@@ -127,6 +155,10 @@ msgstr "Projekto parinktys"
 msgid "Property status"
 msgstr "Savybės būsena"
 
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr ""
+
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
 msgstr "Saugyklos kelias"
@@ -151,9 +183,21 @@ msgstr "Nuostatos"
 msgid "Show diff"
 msgstr "Rodyti skirtumus"
 
+#: svnclasses.rsshowdiffbase
+msgid "Show diff of local changes"
+msgstr ""
+
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
 msgstr "Rodyti paskutiniuosius X nusiuntimus"
+
+#: svnclasses.rsshowdiffhead
+msgid "Show diff against HEAD"
+msgstr ""
+
+#: svnclasses.rsshowdiffprev
+msgid "Show diff against previous version"
+msgstr ""
 
 #: svnclasses.rsshowlog
 msgid "Show log"

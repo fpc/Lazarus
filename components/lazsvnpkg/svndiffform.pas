@@ -23,8 +23,8 @@ unit SVNDiffForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, Process, Buttons, LCLProc;
+  Classes, SysUtils, FileUtil, LResources, Forms, Dialogs,
+  ButtonPanel, StdCtrls, Buttons, LazIDEIntf;
 
 type
 
@@ -38,31 +38,44 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    destructor Destroy; override;
   private
-    FRepositoryPath: string;
-    { private declarations }
+    FFileList: TStringList;
     FSwitches: string;
+    FRepoBaseDir: string;
   public
-    { public declarations }
     procedure Execute(Data: PtrInt);
-    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
+    {list of filenames with absolute path}
+    property FileList: TStringList read FFileList write FFileList;
+    {switches for the diff command}
+    property Switches: string read FSwitches write FSwitches;
   end;
 
-procedure ShowSVNDiffFrm(ASwitches, ARepoPath: string);
+procedure ShowSVNDiffFrm(ASwitches, AFileName: string);
+procedure ShowSVNDiffFrm(ASwitches: string; AFileList: TStringList); overload;
 
 implementation
 
 uses
   SVNClasses;
 
-procedure ShowSVNDiffFrm(ASwitches, ARepoPath: string);
+procedure ShowSVNDiffFrm(ASwitches, AFileName: string);
+var
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  List.Append(AFileName);
+  ShowSVNDiffFrm(ASwitches, List);
+end;
+
+procedure ShowSVNDiffFrm(ASwitches: string; AFileList: TStringList);
 var
   SVNDiffFrm: TSVNDiffFrm;
 begin
   SVNDiffFrm := TSVNDiffFrm.Create(nil);
 
-  SVNDiffFrm.RepositoryPath:=ARepoPath;
-  SVNDiffFrm.FSwitches:=ASwitches;
+  SVNDiffFrm.FileList:=AFileList;
+  SVNDiffFrm.Switches:=ASwitches;
   SVNDiffFrm.ShowModal;
 
   SVNDiffFrm.Free;
@@ -71,13 +84,21 @@ end;
 { TSVNDiffFrm }
 
 procedure TSVNDiffFrm.FormShow(Sender: TObject);
+var
+  CaptionName: string;
 begin
-  Caption := Format(rsLazarusSVNDiff, [RepositoryPath]);
+  FRepoBaseDir := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+  if FileList.Count = 1 then
+    CaptionName := CreateRelativePath(FileList.Strings[0], FRepoBaseDir, false)
+  else
+    CaptionName := FRepoBaseDir;
+  Caption := Format(rsLazarusSVNDiff, [CaptionName]);
   Application.QueueAsyncCall(@Execute, 0);
 end;
 
 procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
+  SaveButton.Enabled := False;
   SaveButton.Caption:=rsSave;
 end;
 
@@ -88,9 +109,32 @@ begin
 end;
 
 procedure TSVNDiffFrm.Execute(Data: PtrInt);
+var
+  i: Integer;
+  FileNames: String; // all filenames concatenated for the command line
 begin
-  CmdLineToMemo(SVNExecutable + ' diff ' + FSwitches + ' ' + RepositoryPath + ' --non-interactive',
+  FileNames := '';
+  for i := 0 to FileList.Count - 1 do begin
+    if FileExists(FileList.Strings[i]) then
+      FileNames += ' "' + CreateRelativePath(FileList.Strings[i], FRepoBaseDir, False) + '"'
+    else
+      FileNames += ' "' + FileList.Strings[i] + '"' // might be a http:// url
+
+  end;
+
+  // in the previous step we made the filenames relative because we don't
+  // want absolute paths in our diff files. Now we must make sure we execute
+  // the svn diff command from within the repository base directory.
+  chdir(FRepoBaseDir);
+  CmdLineToMemo(SVNExecutable + ' diff ' + FSwitches + FileNames + ' --non-interactive',
                 SVNDiffMemo);
+  SaveButton.Enabled := True;
+end;
+
+destructor TSVNDiffFrm.Destroy;
+begin
+  FFileList.Free;
+  inherited Destroy;
 end;
 
 initialization

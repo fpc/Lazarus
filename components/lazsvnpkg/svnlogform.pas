@@ -23,9 +23,9 @@ unit SVNLogForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LResources, Forms, Dialogs, Controls, FileUtil,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Process, Spin, XMLRead, DOM,
-  Menus, LCLProc;
+  Menus, LCLProc, LazIDEIntf;
 
 type
   TActionItem = record
@@ -44,13 +44,12 @@ type
     FMsg: string;
     FRevision: integer;
     FAction: array of TActionItem;
-
-    function GetAction(Index: Integer): TActionItem;
   private
+    function GetAction(Index: Integer): TActionItem;
   public
     constructor Create;
     destructor Destroy; override;
-
+    function GetActionPointer(Index: Integer): Pointer;
     procedure AddAction(AActionItem: TActionItem);
     property Action[Index: Integer]: TActionItem read GetAction;
     property Count: integer read FCount write FCount;
@@ -64,6 +63,9 @@ type
 
   TSVNLogFrm = class(TForm)
     ImageList: TImageList;
+    mnuOpenCurent: TMenuItem;
+    mnuOpenPrevRevision: TMenuItem;
+    mnuOpenRevision: TMenuItem;
     mnuShowDiff: TMenuItem;
     SVNActionsPopupMenu: TPopupMenu;
     RefreshButton: TButton;
@@ -75,6 +77,9 @@ type
     SVNLogLimit: TSpinEdit;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
+    procedure mnuOpenCurentClick(Sender: TObject);
+    procedure mnuOpenPrevRevisionClick(Sender: TObject);
+    procedure mnuOpenRevisionClick(Sender: TObject);
     procedure mnuShowDiffClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -82,6 +87,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure LogListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
+    procedure SVNActionsPopupMenuPopup(Sender: TObject);
   private
     FRepositoryPath: string;
     { private declarations }
@@ -92,7 +98,7 @@ type
     { public declarations }
     procedure Execute(Data: PtrInt);
 
-    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
+    property RepositoryPath: string read FRepositoryPath write FRepositoryPath;
   end;
 
 procedure ShowSVNLogFrm(ARepoPath: string);
@@ -122,6 +128,13 @@ begin
     raise Exception.CreateFmt(rsIndexOutOfBoundsD, [Index]);
 
   Result := FAction[Index];
+end;
+
+function  TSVNLogItem.GetActionPointer(Index: Integer): Pointer;
+begin
+  if (Index < 0) or (Index >= Count) then
+    raise Exception.CreateFmt(rsIndexOutOfBoundsD, [Index]);
+    Result := @FAction[Index];
 end;
 
 constructor TSVNLogItem.Create;
@@ -201,6 +214,7 @@ begin
 
   SVNLogItem := FindSVNLogItemByRevision(LogList, RevNo);
 
+  SVNActionsListView.Visible := False; // BeginUpdate won't help when autosize is true
   SVNActionsListView.Clear;
 
   if Assigned(SVNLogItem) then
@@ -211,13 +225,27 @@ begin
       with SVNActionsListView.Items.Add do
       begin
         Caption := SVNLogItem.Action[i].Action;
-        SubItems.Add(SVNLogItem.Action[i].Path);
-        SubItems.Add(SVNLogItem.Action[i].CopyPath);
+        SubItems.Add(CreateRelativePath(SVNLogItem.Action[i].Path, RepositoryPath));
+        SubItems.Add(CreateRelativePath(SVNLogItem.Action[i].CopyPath, RepositoryPath));
         SubItems.Add(SVNLogItem.Action[i].CopyRev);
+        Data := SVNLogItem.GetActionPointer(i);
       end;
   end
   else
     SVNLogMsgMemo.Clear;
+  SVNActionsListView.Visible := True;
+end;
+
+procedure TSVNLogFrm.SVNActionsPopupMenuPopup(Sender: TObject);
+var
+  P: TPoint;
+  LI: TListItem;
+begin
+  // make sure the row under the mouse is selected
+  P :=  SVNActionsListView.ScreenToControl(Mouse.CursorPos);
+  LI := SVNActionsListView.GetItemAt(P.X, P.Y);
+  if LI <> nil then
+    SVNActionsListView.Selected := LI;
 end;
 
 procedure TSVNLogFrm.UpdateLogListView;
@@ -262,20 +290,43 @@ end;
 
 procedure TSVNLogFrm.mnuShowDiffClick(Sender: TObject);
 var
-  path: string;
+  Path: string;
   i: integer;
-  revision: integer;
+  Revision: integer;
 begin
-  {$note implement opening file in source editor}
   if Assigned(SVNActionsListView.Selected) and Assigned(LogListView.Selected) then
   begin
-    debugln('TSVNLogFrm.mnuShowDiffClick Path=' ,SVNActionsListView.Selected.SubItems[0]);
-    revision := StrToInt(LogListView.Selected.Caption);
-    path := SVNActionsListView.Selected.SubItems[0];
-    Delete(path, 1, 1);
-    i := pos('/', path);
-    ShowSVNDiffFrm(Format('-r %d:%d', [revision - 1, revision]),
-                   RepositoryPath + Copy(path, i, length(path) - i + 1));
+    Revision := StrToInt(LogListView.Selected.Caption);
+    Path := TActionItem(SVNActionsListView.Selected.Data^).Path;
+    DebugLn('TSVNLogFrm.mnuShowDiffClick Path=' , Path);
+    if TActionItem(SVNActionsListView.Selected.Data^).Action = 'M' then
+      ShowSVNDiffFrm(Format('-r %d:%d', [Revision - 1, Revision]), Path)
+    else
+      ShowMessage(rsOnlyModifiedItemsCanBeDiffed);
+  end;
+end;
+
+procedure TSVNLogFrm.mnuOpenRevisionClick(Sender: TObject);
+begin
+
+end;
+
+procedure TSVNLogFrm.mnuOpenPrevRevisionClick(Sender: TObject);
+begin
+
+end;
+
+procedure TSVNLogFrm.mnuOpenCurentClick(Sender: TObject);
+var
+  Path: String;
+begin
+  if Assigned(SVNActionsListView.Selected) and Assigned(LogListView.Selected) then
+  begin
+    Path := TActionItem(SVNActionsListView.Selected.Data^).Path;
+    if FileExists(Path) then
+      LazarusIDE.DoOpenEditorFile(Path, -1, -1, [ofOnlyIfExists])
+    else
+      ShowMessage(rsFileNotInWorkingCopyAnymore);
   end;
 end;
 
@@ -296,6 +347,10 @@ begin
   ImageList.AddLazarusResource('menu_svn_diff');
 
   mnuShowDiff.Caption := rsShowDiff;
+  mnuOpenCurent.Caption := rsOpenFileInEditor;
+  mnuOpenRevision.Caption := rsOpenThisRevisionInEditor;
+  mnuOpenPrevRevision.Caption := rsOpenPreviousRevisionInEditor;
+
   Label1.Caption:=rsShowDiffCountRev;
 end;
 
@@ -312,13 +367,11 @@ procedure TSVNLogFrm.Execute(Data: PtrInt);
 var
   ActionItem: TActionItem;
   ActionNode: TDOMNode;
-  AProcess: TProcess;
-  BytesRead: LongInt;
   Doc: TXMLDocument;
+  InfoUrl: String;
+  InfoRoot: String;
   i: integer;
   LogItem: TSVNLogItem;
-  M: TMemoryStream;
-  n: LongInt;
   Node: TDOMNode;
   NodeName: string;
   SubNode: TDOMNode;
@@ -332,57 +385,66 @@ var
       Caption := Node.NodeName;
     end;
   end;
-begin
-  debugln('TSVNLogFrm.Execute RepositoryPath=' ,RepositoryPath);
 
-  AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' "' + RepositoryPath  + '" --non-interactive';
-  debugln('TSVNLogFrm.Execute CommandLine ' + AProcess.CommandLine);
-  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
-  AProcess.ShowWindow := swoHIDE;
-  AProcess.Execute;
-
-  M := TMemoryStream.Create;
-  BytesRead := 0;
-
-  while AProcess.Running do
+  function AbsPath(APath: String): String;
+  var
+    Prefix: String;
+    PrefixLength: Integer;
+    APathBak: String;
   begin
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
+    // svn will always output a path that is relative
+    // to the repository root on the server
+    // it starts with '/trunk/' or '/branches/foo/'
+    // we have already done 'svn info' and this gave
+    // us 'root' and 'url' so we can now use this to
+    // cut off the prefix and then make
+    // it into an absolute path on our harddrive
 
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0
-    then begin
-      Inc(BytesRead, n);
-    end
-    else begin
-      // no data, wait 100 ms
-      Sleep(100);
+    PrefixLength := Length(InfoUrl) - Length(InfoRoot);
+    Prefix := InfoUrl;
+    Delete(Prefix, 1, Length(InfoRoot));
+
+    if Pos(Prefix, APath) = 1 then begin
+      APathBak := APath;
+      // first make the path relative to our working copy
+      // by cutting of the prefix (that only exists on the server)
+      Delete(APath, 1, PrefixLength + 1);
+
+      // now make it an absolute path with our local repository
+      // base path on our harddrive
+      Result := CreateAbsolutePath(APath, RepositoryPath);
+
+      // never ever return an absolute local path for a
+      // file that does not exist on our harddrive
+      if not FileExists(Result) then
+        Result := InfoRoot + APathBak;
+    end else begin
+      // if it does not have our prefix then it is from
+      // another directory or branch on the server.
+      Result := InfoRoot + APath;
     end;
   end;
 
-  // read last part
-  repeat
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
+begin
+  // first get 'svn info' because we need the paths 'root' and 'url'
+  // for some path manipulation to gnerate the absolute paths
+  // of the files on our hard drive
+  Doc := ExecuteSvnReturnXml('info --xml "' + RepositoryPath + '"');
+  try
+    Node := Doc.DocumentElement.FirstChild.FindNode('url');
+    InfoUrl := Node.TextContent;
+    Node := Doc.DocumentElement.FirstChild.FindNode('repository').FindNode('root');
+    InfoRoot := Node.TextContent;
+  except
+    Doc.Free;
+    UpdateLogListView;
+    ChangeCursor(crDefault);
+    exit();
+  end;
+  Doc.Free;
 
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0
-    then begin
-      Inc(BytesRead, n);
-    end;
-  until n <= 0;
-  M.SetSize(BytesRead);
-
-  ReadXMLFile(Doc, M);
-
-  M.Free;
-  AProcess.Free;
-
+  Doc := ExecuteSvnReturnXml('log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' "' + RepositoryPath  + '" --non-interactive');
   LogList.Clear;
-
   Node := Doc.DocumentElement.FirstChild;
   if Assigned(Node) then
   begin
@@ -395,8 +457,6 @@ begin
       LogItem.Revision := StrToInt(SubNode.Attributes.Item[0].NodeValue);
 
       //action
-      ActionItem.CopyRev := '';
-      ActionItem.CopyPath := '';
       tmpNode := SubNode.FirstChild;
       while Assigned(tmpNode) do
       begin
@@ -418,6 +478,8 @@ begin
         ActionNode := tmpNode.FirstChild;
         if Assigned(ActionNode) and Assigned(ActionNode.Attributes) then
         repeat
+          ActionItem.CopyRev := '';
+          ActionItem.CopyPath := '';
 
           //attributes
           for i := 0 to ActionNode.Attributes.Length-1 do
@@ -431,14 +493,14 @@ begin
                 ActionItem.CopyRev := ActionNode.Attributes.Item[i].NodeValue
               else
                 if t = 'copyfrom-path' then
-                  ActionItem.CopyPath := ActionNode.Attributes.Item[i].NodeValue;
+                  ActionItem.CopyPath := AbsPath(
+                    ActionNode.Attributes.Item[i].NodeValue);
           end;
 
           //paths
-          ActionItem.Path:=ActionNode.FirstChild.NodeValue;
+          ActionItem.Path:=AbsPath(ActionNode.FirstChild.NodeValue);
 
           LogItem.AddAction(ActionItem);
-
           ActionNode := ActionNode.NextSibling;
         until not Assigned(ActionNode);
         tmpNode := tmpNode.NextSibling;

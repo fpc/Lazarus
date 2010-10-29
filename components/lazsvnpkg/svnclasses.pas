@@ -23,23 +23,26 @@ unit SVNClasses;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Dialogs, Controls,
+  Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Controls,
   XMLRead, DOM, Process, StdCtrls, Forms;
 
 resourcestring
   rsAction = 'Action';
   rsAdded = 'Added';
+  rsAdd = 'Add to version control';
   rsAuthor = 'Author';
   rsCommit = 'Commit';
   rsCommitRevision = 'Commit revision';
   rsConflict = 'Conflict';
   rsCopyFromPath = 'Copy from path';
+  rsCreatePatchFile = 'Create patch file';
   rsDate = 'Date';
   rsDelete = 'Delete';
   rsDeleted = 'Deleted';
   rsDiffActiveFile = 'Diff active file';
   rsEdit = 'Edit';
   rsExtension = 'Extension';
+  rsFileNotInWorkingCopyAnymore = 'File is not part of local working copy (anymore)';
   rsFileStatus = 'File status';
   rsIndexOutOfBoundsD = 'Index out of bounds (%d)';
   rsLazarusSVNCommit = 'LazarusSVN Commit';
@@ -49,6 +52,10 @@ resourcestring
   rsMerged = 'Merged';
   rsMessage = 'Message';
   rsNoAuthor = '(no author)';
+  rsOpenFileInEditor = 'Open file in editor';
+  rsOpenThisRevisionInEditor = 'Open this revision in editor';
+  rsOpenPreviousRevisionInEditor = 'Open previous revision in editor';
+  rsOnlyModifiedItemsCanBeDiffed = 'Only modified (M) Items can be diffed';
   rsPath = 'Path';
   rsProjectFilename = 'Project filename';
   rsProjectIsActive = 'Project is active';
@@ -57,6 +64,7 @@ resourcestring
   rsProjectName = 'Project name';
   rsProjectOptions = 'Project options';
   rsPropertyStatus = 'Property status';
+  rsRemove = 'Remove from version control (keep local)';
   rsRepositoryPath = 'Repository path';
   rsRevert = 'Revert';
   rsRevision = 'Revision';
@@ -64,6 +72,9 @@ resourcestring
   rsSettings = 'Settings';
   rsSVNSettings = 'SVN settings';
   rsShowDiff = 'Show diff';
+  rsShowDiffBase = 'Show diff of local changes';
+  rsShowDiffPrev = 'Show diff against previous version';
+  rsShowDiffHead = 'Show diff against HEAD';
   rsShowDiffCountRev = 'Show last X commits';
   rsShowLog = 'Show log';
   rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst = 'Source file does not '
@@ -106,7 +117,7 @@ type
   public
     List: TFPList;
 
-    constructor Create(const ARepoPath: string);
+    constructor Create(const ARepoPath: string; verbose: Boolean);
     destructor Destroy; override;
 
     property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
@@ -117,6 +128,7 @@ type
   end;
 
 procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
+function ExecuteSvnReturnXml(ACommand: string): TXMLDocument;
 procedure SetColumn(ListView: TListView; ColNo, DefaultWidth: integer; AName: string; AutoSize: boolean = true);
 function SVNExecutable: string;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
@@ -124,8 +136,7 @@ function ISO8601ToDateTime(ADateTime: string): TDateTime;
 
 implementation
 
-uses
-  SVNAddProjectForm;
+
 
 procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
 var
@@ -133,25 +144,24 @@ var
   BytesRead: LongInt;
   n: LongInt;
   M: TMemoryStream;
-  ProcessMsg: string;
 
-  procedure UpdateStringsFromStream(Strings: TStrings; var M: TMemoryStream; var BytesRead: LongInt);
+  procedure UpdateMemoFromStream;
   var
     s: string;
   begin
-    SetLength(s, BytesRead);
-    M.Read(s[1], BytesRead);
+    if BytesRead > 0 then begin
+      SetLength(s, BytesRead);
+      M.Read(s[1], BytesRead);
 
-    ProcessMsg := ProcessMsg + ReplaceLineEndings(s, LineEnding);
-    Strings.Text := ProcessMsg;
+      // this woks exactly like Append() only without the newline bug
+      Memo.SelText := ReplaceLineEndings(s, LineEnding);
 
-    M.SetSize(0);
-    BytesRead:=0;
+      M.SetSize(0);
+      BytesRead:=0;
+    end;
   end;
 
 begin
-  ProcessMsg := '';
-
   AProcess := TProcess.Create(nil);
   AProcess.CommandLine := CmdLine;
   debugln('CmdLineToMemo commandline=', AProcess.CommandLine);
@@ -161,6 +171,7 @@ begin
 
   M := TMemoryStream.Create;
   BytesRead := 0;
+  Memo.Lines.Text := '';
 
   while AProcess.Running do
   begin
@@ -172,7 +183,7 @@ begin
     if n > 0
     then begin
       Inc(BytesRead, n);
-      UpdateStringsFromStream(Memo.Lines, M, BytesRead);
+      UpdateMemoFromStream;
       Application.ProcessMessages;
     end
     else
@@ -188,13 +199,10 @@ begin
     if n > 0
     then begin
       Inc(BytesRead, n);
-      UpdateStringsFromStream(Memo.Lines, M, BytesRead);
+      UpdateMemoFromStream;
       Application.ProcessMessages;
     end;
   until n <= 0;
-  M.SetSize(BytesRead);
-
-  UpdateStringsFromStream(Memo.Lines, M, BytesRead);
 
   AProcess.Free;
   M.Free;
@@ -251,22 +259,6 @@ begin
   Result := EncodeDate(y,m,d) + EncodeTime(h,n,s,0);
 end;
 
-function SortSelectedAscending(Item1, Item2: Pointer): Integer;
-begin
-   if PSVNStatusItem(Item1)^.Checked > PSVNStatusItem(Item2)^.Checked then
-     Result := 1
-   else
-     if PSVNStatusItem(Item1)^.Checked = PSVNStatusItem(Item2)^.Checked then
-       Result := 0
-     else
-       Result := -1;
-end;
-
-function SortSelectedDescending(Item1, Item2: Pointer): Integer;
-begin
-  Result := -SortSelectedAscending(Item1, Item2);
-end;
-
 function SortPathAscending(Item1, Item2: Pointer): Integer;
 begin
    Result := CompareText(PSVNStatusItem(Item1)^.Path, PSVNStatusItem(Item2)^.Path);
@@ -275,6 +267,22 @@ end;
 function SortPathDescending(Item1, Item2: Pointer): Integer;
 begin
   Result := -SortPathAscending(Item1, Item2);
+end;
+
+function SortSelectedAscending(Item1, Item2: Pointer): Integer;
+begin
+   if PSVNStatusItem(Item1)^.Checked > PSVNStatusItem(Item2)^.Checked then
+     Result := 1
+   else
+     if PSVNStatusItem(Item1)^.Checked = PSVNStatusItem(Item2)^.Checked then
+       Result := SortPathDescending(Item1, Item2)
+     else
+       Result := -1;
+end;
+
+function SortSelectedDescending(Item1, Item2: Pointer): Integer;
+begin
+  Result := -SortSelectedAscending(Item1, Item2);
 end;
 
 function SortExtensionAscending(Item1, Item2: Pointer): Integer;
@@ -365,19 +373,68 @@ begin
   Result := -SortPropertyDateAscending(Item1, Item2);
 end;
 
+function ExecuteSvnReturnXml(ACommand: string): TXMLDocument;
+var
+  AProcess: TProcess;
+  M: TMemoryStream;
+  n, BytesRead: Integer;
+begin
+  AProcess := TProcess.Create(nil);
+  AProcess.CommandLine := SVNExecutable + ' ' + ACommand;
+  debugln('TSVNLogFrm.ExecuteSvnReturnXml CommandLine ' + AProcess.CommandLine);
+  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
+  AProcess.ShowWindow := swoHIDE;
+  AProcess.Execute;
+
+  M := TMemoryStream.Create;
+  BytesRead := 0;
+
+  while AProcess.Running do
+  begin
+    // make sure we have room
+    M.SetSize(BytesRead + READ_BYTES);
+
+    // try reading it
+    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    if n > 0
+    then begin
+      Inc(BytesRead, n);
+    end
+    else begin
+      // no data, wait 100 ms
+      Sleep(100);
+    end;
+  end;
+
+  // read last part
+  repeat
+    // make sure we have room
+    M.SetSize(BytesRead + READ_BYTES);
+
+    // try reading it
+    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    if n > 0
+    then begin
+      Inc(BytesRead, n);
+    end;
+  until n <= 0;
+  M.SetSize(BytesRead);
+
+  ReadXMLFile(Result, M);
+
+  M.Free;
+  AProcess.Free;
+end;
+
 { TSVNStatus }
 
-constructor TSVNStatus.Create(const ARepoPath: string);
+constructor TSVNStatus.Create(const ARepoPath: string; Verbose: Boolean);
 var
   ActNode: TDOMNode;
-  AProcess: TProcess;
-  BytesRead: LongInt;
   Doc: TXMLDocument;
   F: LongInt;
   i: integer;
   ListItem: PSVNStatusItem;
-  M: TMemoryStream;
-  n: LongInt;
   Node: TDOMNode;
   NodeName: string;
   NodeValue: string;
@@ -387,53 +444,25 @@ begin
   List := TFPList.Create;
   RepositoryPath := ARepoPath;
 
-  M := TMemoryStream.Create;
-  BytesRead := 0;
+  if Verbose then
+    Doc := ExecuteSvnReturnXml('stat --verbose --xml "' + RepositoryPath  + '" --non-interactive')
+  else
+    Doc := ExecuteSvnReturnXml('stat --xml "' + RepositoryPath  + '" --non-interactive');
 
-  AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' stat --verbose --xml "' + RepositoryPath  + '" --non-interactive';
-  debugln('TSVNStatus.Create CommandLine ' + AProcess.CommandLine);
-  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
-  AProcess.ShowWindow := swoHIDE;
-  AProcess.Execute;
-
-  while AProcess.Running do
-  begin
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
-      Inc(BytesRead, n)
-    else
-      // no data, wait 100 ms
-      Sleep(100);
-  end;
-  // read last part
-  repeat
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
-      Inc(BytesRead, n);
-  until n <= 0;
-  M.SetSize(BytesRead);
-
-  ReadXMLFile(Doc, M);
-
-  AProcess.Free;
-  M.Free;
-
-  //now process the XML file
   Node := Doc.DocumentElement.FirstChild.FirstChild;
+  if Node = nil then begin
+    // no <entry> node found, list is empty.
+    Doc.Free;
+    Exit();
+  end;
+
   repeat
     SubNode := Node;
 
     New(ListItem);
 
     Path := SubNode.Attributes.Item[0].NodeValue;
+    debugln('TSVNStatus.Create ' + Path);
 
     F:=FileGetAttr(Path);
     If F<>-1 then
@@ -460,7 +489,7 @@ begin
           if NodeName = 'item' then
           begin
             //ItemStatus
-            ListItem^.ItemStatus := NodeValue;
+            ListItem^.ItemStatus := LowerCase(NodeValue);
 
             //Checked
             ListItem^.Checked:=(NodeValue<>'unversioned') and (NodeValue<>'normal');
@@ -506,6 +535,7 @@ begin
 
     Node := Node.NextSibling;
   until not Assigned(Node);
+  Doc.Free;
 end;
 
 destructor TSVNStatus.Destroy;
