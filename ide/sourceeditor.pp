@@ -347,7 +347,7 @@ type
        string; Line, Column: integer; var Action: TSrcEditReplaceAction); override;
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
-    function DoFindAndReplace: Integer;
+    function  DoFindAndReplace(aFindText, aReplaceText: String; anOptions: TSynSearchOptions): Integer;
     procedure FindNextUTF8;
     procedure FindPrevious;
     procedure FindNextWordOccurrence(DirectionForward: boolean);
@@ -2485,7 +2485,8 @@ begin
       InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
     InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
     InputHistories.Save;
-    DoFindAndReplace;
+    DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+      LazFindReplaceDialog.Options);
   finally
     //Restore original find options
     if bSelectedTextOption then
@@ -2518,44 +2519,39 @@ procedure TSourceEditor.FindNextUTF8;
 var
   OldOptions: TSynSearchOptions;
 begin
-  if snIncrementalFind in FSourceNoteBook.States
-  then begin
+  if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.IncrementalSearch(True, False);
   end
-  else if LazFindReplaceDialog.FindText = ''
-  then begin
+  else if LazFindReplaceDialog.FindText = '' then begin
     StartFindAndReplace(False)
   end
   else begin
-    OldOptions:=LazFindReplaceDialog.Options;
-    LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options
-                                     -[ssoEntireScope,ssoReplaceAll];
-    DoFindAndReplace;
-    LazFindReplaceDialog.Options:=OldOptions;
+    DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+      LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly, ssoReplaceAll]
+                                   + [ssoFindContinue]);
   end;
 End;
 
 {---------------------------F I N D   P R E V I O U S ------------------------}
 procedure TSourceEditor.FindPrevious;
 var
-  OldOptions: TSynSearchOptions;
+  SrchOptions: TSynSearchOptions;
 begin
-  if snIncrementalFind in FSourceNoteBook.States
-  then begin
+  if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.IncrementalSearch(True, True);
   end
-  else begin
-    OldOptions:=LazFindReplaceDialog.Options;
-    LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoEntireScope];
-    if ssoBackwards in LazFindReplaceDialog.Options then
-      LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoBackwards]
+  else if LazFindReplaceDialog.FindText = '' then begin
+    // TODO: maybe start with default set to backwards direction? But StartFindAndReplace replaces it with input-history
+    StartFindAndReplace(False);
+  end else begin
+    SrchOptions:=LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly, ssoReplaceAll]
+                                              + [ssoFindContinue];
+    if ssoBackwards in SrchOptions then
+      SrchOptions := SrchOptions - [ssoBackwards]
     else
-      LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options+[ssoBackwards];
-    if LazFindReplaceDialog.FindText = '' then
-      StartFindAndReplace(False)
-    else
-      DoFindAndReplace;
-    LazFindReplaceDialog.Options:=OldOptions;
+      SrchOptions := SrchOptions + [ssoBackwards];
+    DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+      SrchOptions);
   end;
 end;
 
@@ -2580,37 +2576,25 @@ begin
                                 '',Flags);
 end;
 
-function TSourceEditor.DoFindAndReplace: integer;
+function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
+  anOptions: TSynSearchOptions): integer;
 var
   OldCaretXY: TPoint;
   AText, ACaption: String;
   NewTopLine: integer;
 begin
   Result:=0;
-  if SourceNotebook<>nil then
-    Manager.AddJumpPointClicked(Self);
-  if (ssoReplace in LazFindReplaceDialog.Options)
-  and ReadOnly then begin
+  if (ssoReplace in anOptions) and ReadOnly then begin
     DebugLn(['TSourceEditor.DoFindAndReplace Read only']);
     exit;
   end;
+  if SourceNotebook<>nil then
+    Manager.AddJumpPointClicked(Self);
 
   OldCaretXY:=EditorComponent.CaretXY;
-  if EditorComponent.SelAvail and
-     not(ssoSelectedOnly in LazFindReplaceDialog.Options)
-  then begin
-    // Adjust the cursor. to exclude the selection from being searched
-    // needed for find next / find previous
-    if ssoBackwards in LazFindReplaceDialog.Options then
-      EditorComponent.LogicalCaretXY:=EditorComponent.BlockBegin
-    else
-      EditorComponent.LogicalCaretXY:=EditorComponent.BlockEnd
-  end;
-  //debugln('TSourceEditor.DoFindAndReplace A LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in LazFindReplaceDialog.Options),' ssoBackwards=',dbgs(ssoBackwards in LazFindReplaceDialog.Options));
+  //debugln('TSourceEditor.DoFindAndReplace A aFindText="',dbgstr(aFindText),'" ssoEntireScope=',dbgs(ssoEntireScope in anOptions),' ssoBackwards=',dbgs(ssoBackwards in anOptions));
   try
-    Result:=EditorComponent.SearchReplace(
-      LazFindReplaceDialog.FindText,LazFindReplaceDialog.ReplaceText,
-      LazFindReplaceDialog.Options);
+    Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
   except
     on E: ERegExpr do begin
       MessageDlg(lisUEErrorInRegularExpression,
@@ -2621,20 +2605,15 @@ begin
 
   if (OldCaretXY.X = EditorComponent.CaretX) and
      (OldCaretXY.Y = EditorComponent.CaretY) and
-     not (ssoReplaceAll in LazFindReplaceDialog.Options) then
-  begin
+     not (ssoReplaceAll in anOptions)
+  then begin
     ACaption := lisUENotFound;
-    AText := Format(lisUESearchStringNotFound, [ValidUTF8String(LazFindReplaceDialog.FindText)]);
+    AText := Format(lisUESearchStringNotFound, [ValidUTF8String(aFindText)]);
     MessageDlg(ACaption, AText, mtInformation, [mbOk], 0);
     Manager.DeleteLastJumpPointClicked(Self);
-  end else
-  if (EditorComponent.CaretY <= EditorComponent.TopLine + 1) or
-     (EditorComponent.CaretY >= EditorComponent.TopLine + EditorComponent.LinesInWindow - 1) then
-  begin
-    NewTopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
-    if NewTopLine < 1 then
-      NewTopLine := 1;
-    EditorComponent.TopLine := NewTopLine;
+  end
+  else begin
+    CenterCursor(True);
   end;
 end;
 
@@ -4566,17 +4545,15 @@ const
     ssoRegExprMultiLine
   );
 var
-  OldOptions, NewOptions: TSynSearchOptions;
+  NewOptions: TSynSearchOptions;
   o: TSrcEditSearchOption;
 begin
-  OldOptions:=LazFindReplaceDialog.Options;
   NewOptions:=[];
   for o:=Low(TSrcEditSearchOption) to High(TSrcEditSearchOption) do
     if o in SearchOptions then
       Include(NewOptions,SrcEdit2SynEditSearchOption[o]);
-  LazFindReplaceDialog.Options:=NewOptions;
-  Result:=DoFindAndReplace;
-  LazFindReplaceDialog.Options:=OldOptions;
+  Result:=DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+    NewOptions);
 end;
 
 function TSourceEditor.GetSourceText: string;

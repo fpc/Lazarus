@@ -824,10 +824,8 @@ type
                       {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
-    {$IFDEF SYN_LAZARUS}
     function SearchReplaceEx(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions; AStart: TPoint): integer;
-    {$ENDIF}
     procedure SelectAll;
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
     procedure SelectToBrace;
@@ -6991,14 +6989,22 @@ end;
 // find / replace
 function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
   AOptions: TSynSearchOptions): integer;
-{$IFDEF SYN_LAZARUS}
+var
+  StartPos: TPoint;
 begin
-  Result := SearchReplaceEx(ASearch, AReplace, AOptions, LogicalCaretXY);
+  if (ssoFindContinue in AOptions) and SelAvail then begin
+    if ssoBackwards in AOptions then
+      StartPos := BlockBegin
+    else
+      StartPos := BlockEnd;
+  end
+  else
+    StartPos := LogicalCaretXY;
+  Result := SearchReplaceEx(ASearch, AReplace, AOptions, StartPos);
 end;
 
 function TCustomSynEdit.SearchReplaceEx(const ASearch, AReplace: string;
   AOptions: TSynSearchOptions; AStart: TPoint): integer;
-{$ENDIF}
 var
   ptStart, ptEnd: TPoint; // start and end of the search range
   ptCurrent: TPoint; // current search position
@@ -7007,12 +7013,8 @@ var
   bPrompt: boolean;
   bReplace, bReplaceAll: boolean;
   nAction: TSynReplaceAction;
-  {$IFDEF SYN_LAZARUS}
   CurReplace: string;
   ptFoundStart, ptFoundEnd: TPoint;
-  {$ELSE}
-  n, nSearchLen, nReplaceLen, nInLine: integer;
-  {$ENDIF}
 
   function InValidSearchRange(First, Last: integer): boolean;
   begin
@@ -7060,9 +7062,9 @@ begin
     ptEnd.X := Length(FTheLinesView[ptEnd.Y - 1]) + 1;
     if bFromCursor then
       if bBackward then
-        ptEnd := {$IFDEF SYN_LAZARUS}AStart{$ELSE}CaretXY{$ENDIF}
+        ptEnd := AStart
       else
-        ptStart := {$IFDEF SYN_LAZARUS}AStart{$ELSE}CaretXY{$ENDIF};
+        ptStart := AStart;
     if bBackward then ptCurrent := ptEnd else ptCurrent := ptStart;
   end;
   // initialize the search engine
@@ -7070,18 +7072,12 @@ begin
   fTSearch.Whole := ssoWholeWord in AOptions;
   fTSearch.Pattern := ASearch;
   fTSearch.RegularExpressions := ssoRegExpr in AOptions;
-  {$IFDEF SYN_LAZARUS}
   fTSearch.RegExprMultiLine := ssoRegExprMultiLine in AOptions;
   fTSearch.Replacement:=AReplace;
   fTSearch.Backwards:=bBackward;
-  {$ELSE}
-  nSearchLen := Length(ASearch);
-  nReplaceLen := Length(AReplace);
-  {$ENDIF}
   // search while the current search position is inside of the search range
   IncPaintLock;
   try
-    {$IFDEF SYN_LAZARUS}
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
     while fTSearch.FindNextOne(FTheLinesView,ptStart,ptEnd,ptFoundStart,ptFoundEnd) do
     begin
@@ -7156,60 +7152,6 @@ begin
       end;
       //DebugLn(['TCustomSynEdit.SearchReplace FIND NEXT ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd)]);
     end;
-    {$ELSE}
-    while (ptCurrent.Y >= ptStart.Y) and (ptCurrent.Y <= ptEnd.Y) do begin
-      nInLine := fTSearch.FindAll(Lines[ptCurrent.Y - 1]);
-      if bBackward then n := Pred(fTSearch.ResultCount) else n := 0;
-      // Operate on all results in this line.
-      while nInLine > 0 do begin
-        nFound := fTSearch.Results[n];
-        if bBackward then Dec(n) else Inc(n);
-        Dec(nInLine);
-        // Is the search result entirely in the search range?
-        if not InValidSearchRange(nFound, nFound + nSearchLen) then continue;
-        Inc(Result);
-        // Select the text, so the user can see it in the OnReplaceText event
-        // handler or as the search result.
-        ptCurrent.X := nFound;
-        BlockBegin := ptCurrent;
-        if bBackward then CaretXY := ptCurrent;
-        Inc(ptCurrent.X, nSearchLen);
-        BlockEnd := ptCurrent;
-        if not bBackward then CaretXY := ptCurrent;
-        // If it's a search only we can leave the procedure now.
-        if not (bReplace or bReplaceAll) then exit;
-        // Prompt and replace or replace all.  If user chooses to replace
-        // all after prompting, turn off prompting.
-        if bPrompt and Assigned(fOnReplaceText) then begin
-          EnsureCursorPosVisible;
-          nAction := DoOnReplaceText(ASearch,AReplace,ptCurrent.Y, nFound);
-          if nAction = raCancel then exit;
-        end else
-          nAction := raReplace;
-        if not (nAction = raSkip) then begin
-          // user has been prompted and has requested to silently replace all
-          // so turn off prompting
-          if nAction = raReplaceAll then begin
-            if not bReplaceAll then begin
-              bReplaceAll := TRUE;
-            end;
-            bPrompt := False;
-          end;
-          SetSelTextExternal(AReplace);
-        end;
-        // fix the caret position and the remaining results
-        if not bBackward then begin
-          CaretX := nFound + nReplaceLen;
-          if (nSearchLen <> nReplaceLen) and (nAction <> raSkip) then
-            fTSearch.FixResults(nFound, nSearchLen - nReplaceLen);
-        end;
-        if not bReplaceAll then
-          exit;
-      end;
-      // search next / previous line
-      if bBackward then Dec(ptCurrent.Y) else Inc(ptCurrent.Y);
-    end;
-    {$ENDIF}
   finally
     DecPaintLock;
   end;

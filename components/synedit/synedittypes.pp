@@ -69,11 +69,17 @@ type
   TSynSelectionMode = (smNormal, smLine, smColumn, smCurrent);
 {$IFDEF SYN_LAZARUS}{$PACKENUM 4}{$ENDIF SYN_LAZARUS}
 
-  TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
-    ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
-    {$IFDEF SYN_LAZARUS},
-    ssoSearchInReplacement,// continue search in replacement
-    ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
+  TSynSearchOption =
+    ( ssoMatchCase, ssoWholeWord,
+      ssoBackwards,
+      ssoEntireScope, ssoSelectedOnly,
+      ssoReplace, ssoReplaceAll,
+      ssoPrompt,
+      ssoSearchInReplacement,    // continue search-replace in replacement (with ssoReplaceAll) // replace recursive
+      ssoRegExpr, ssoRegExprMultiLine,
+      ssoFindContinue      // Assume the current selection is the last match, and start search behind selection
+                           // (before if ssoBackward) // Default is to start at caret (Only SearchReplace / SearchReplaceEx has start/end param)
+    );
   TSynSearchOptions = set of TSynSearchOption;
 
   {$IFDEF SYN_LAZARUS}

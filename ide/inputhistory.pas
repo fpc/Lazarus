@@ -323,7 +323,8 @@ const
     'Prompt',
     'SearchInReplacement',
     'RegExpr',
-    'RegExprMultiLine'
+    'RegExprMultiLine',
+    'ssoFindContinue'
     );
   LazFindInFileSearchOptionsDefault = [fifSearchOpen];
   LazFindInFileSearchOptionNames: array[TLazFindInFileSearchOption] of string =(
