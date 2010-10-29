@@ -6605,6 +6605,7 @@ var
   TempEditor: TSourceEditor;
   WasSelected: Boolean;
 begin
+  (* Do not use DisableAutoSizing in here, if a new Editor is focused it needs immediate autosize (during handle creation) *)
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile A  APageIndex=',APageIndex);
   {$ENDIF}
@@ -6612,32 +6613,27 @@ begin
   if TempEditor=nil then exit;
   WasSelected:=PageIndex=APageIndex;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  //DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
-  //try
-    EndIncrementalFind;
-    TempEditor.Close;
-    TempEditor.Free;
-    TempEditor:=nil;
-    // delete the page
-    //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-    NoteBookDeletePage(APageIndex);
-    //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-    UpdateProjectFiles;
-    UpdatePageNames;
-    if WasSelected then
-      UpdateStatusBar;
-    // set focus to new editor
-    if (PageCount = 0) and (Parent=nil) then begin
-      {$IFnDEF SingleSrcWindow}
-      Manager.RemoveWindow(self);
-      FManager := nil;
-      {$ENDIF}
-      if not FIsClosing then
-        Close;
-    end;
-  //finally
-  //  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
-  //end;
+  EndIncrementalFind;
+  TempEditor.Close;
+  TempEditor.Free;
+  TempEditor:=nil;
+  // delete the page
+  //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+  NoteBookDeletePage(APageIndex);
+  //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+  UpdateProjectFiles;
+  UpdatePageNames;
+  if WasSelected then
+    UpdateStatusBar;
+  // set focus to new editor
+  if (PageCount = 0) and (Parent=nil) then begin
+    {$IFnDEF SingleSrcWindow}
+    Manager.RemoveWindow(self);
+    FManager := nil;
+    {$ENDIF}
+    if not FIsClosing then
+      Close;
+  end;
   // Move focus from Notebook-tabs to editor
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
