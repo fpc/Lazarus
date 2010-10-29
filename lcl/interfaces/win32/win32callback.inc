@@ -106,7 +106,10 @@ begin
         IsComboboxAndHasEdit(Window);
     if setComboWindow then
       ComboBoxHandleSizeWindow := Window;
-    Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
+    if UnicodeEnabledOS then
+      Result := Windows.CallWindowProcW(PrevWndProc, Window, Msg, WParam, LParam)
+    else
+      Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
     if setComboWindow then
       ComboBoxHandleSizeWindow := 0;
   end;
@@ -1883,7 +1886,7 @@ begin
       // which frees our form and we get a destructed lWinControl
       lWinControl := nil;
     end;
-    WM_NCMOUSEMOVE, WM_NCMOUSELEAVE:
+    WM_NCMOUSEMOVE, WM_NCMOUSEHOVER:
     begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
