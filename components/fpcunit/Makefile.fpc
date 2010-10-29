@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for FPCUnitTestRunner 0.1
 #
-#   This file was generated on 2010-10-20
+#   This file was generated on 10/29/2010
 
 [package]
 name=fpcunittestrunner
@@ -12,7 +12,7 @@ version=0.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=.
-options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
+options= -MObjFPC -Scgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=fpcunittestrunner.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunittestrunner$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/FPCUnitTestRunner.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT) compiled
