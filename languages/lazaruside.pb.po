@@ -1440,10 +1440,9 @@ msgid "FPC source directory"
 msgstr "Diretório Fonte FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-#, fuzzy
 #| msgid "Frame color"
 msgid "Text-mark"
-msgstr "Cor borda"
+msgstr "Marca-Texto"
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
@@ -2956,14 +2955,13 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Falhou ao carregar esquema do usuário do arquivo %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
 #| msgid "Use global scheme settings"
 msgid "Use (and edit) global scheme settings"
-msgstr "Usar o esquema global de configurações"
+msgstr "Usar (e editar) o esquema global de configurações"
 
 #: lazarusidestrconsts.dlguseschemelocal
 msgid "Use local scheme settings"
-msgstr ""
+msgstr "Usar esquema  configuração local"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -3479,7 +3477,7 @@ msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr ""
+msgstr "Adiciona novo modo construção, copiando configuração de \"%s\""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -3937,11 +3935,11 @@ msgstr "Construção Lazarus falhou"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr "Construir macros"
+msgstr "Macros Construção"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
-msgstr "Construir macros:"
+msgstr "Macros construção:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -4344,7 +4342,7 @@ msgstr "Recuo incorreto"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
-msgstr ""
+msgstr "Alterar modo construção"
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -5807,7 +5805,7 @@ msgstr "Linha do cursor no editor atual"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
-msgstr "Personaliza construção macros"
+msgstr "Personaliza macros construção"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -6073,7 +6071,7 @@ msgstr "Excluir macro %s"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
-msgstr ""
+msgstr "Excluir modo \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -6435,7 +6433,7 @@ msgstr "Editar Ferramenta"
 
 #: lazarusidestrconsts.lisedtexttoolhidemainform
 msgid "Hide main form"
-msgstr ""
+msgstr "Ocultar formulário principal"
 
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
@@ -8507,22 +8505,21 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%s\"lazbuild\" não é interativo, abortando agora."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
 #| msgid "LCL interface"
 msgid "Widgetset"
-msgstr "Interface LCL"
+msgstr "\"Widgetset\""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
-msgstr ""
+msgstr "Gerenciar Perfis Construção"
 
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
-msgstr ""
+msgstr "Adicionar Novo Perfil"
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
-msgstr ""
+msgstr "Opções de contrução atuais estão associadas com:"
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8540,7 +8537,7 @@ msgstr "Opções:"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Build Profile"
-msgstr ""
+msgstr "Perfil Construção"
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8579,11 +8576,11 @@ msgstr "Renomear"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
-msgstr ""
+msgstr "Renomear Perfil"
 
 #: lazarusidestrconsts.lislazbuildrenameprofinfo
 msgid "New name for profile:"
-msgstr ""
+msgstr "Novo nome para perfil:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -9940,11 +9937,11 @@ msgstr "Mais"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
-msgstr ""
+msgstr "Mover \"%s\" uma posição abaixo"
 
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
-msgstr ""
+msgstr "Mover \"%s\" uma posição acima"
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
@@ -10438,7 +10435,7 @@ msgstr "%ssobrepor o compilador padrão. ex. ppc386 ppcx64 ppcppc etc. padrão �
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project build mode."
-msgstr ""
+msgstr "%ssobrepõe o modo de construção do projeto."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
@@ -12580,7 +12577,7 @@ msgstr "Exibir dicas declarações"
 
 #: lazarusidestrconsts.lisshowdifferencesbetweenmodes
 msgid "Show differences between modes ..."
-msgstr ""
+msgstr "Exibir diferenças entre modos ..."
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
@@ -13071,12 +13068,12 @@ msgstr "O arquivo %s%s%s%s não foi encontrado.%sIgnorar continuará carregando 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "O primeiro modo de construção é o padrão e deve estar armazenado no projeto, não na sessão."
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "O primeiro modo de construção é o padrão e deve estar armazenado no projeto, não na sessão."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -13240,7 +13237,7 @@ msgstr "Há uma unidade com o nome %s%s%s no projeto.%sFavor escolher um nome di
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
-msgstr ""
+msgstr "Deve haver ao menos um modo de contrução."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
@@ -14055,7 +14052,7 @@ msgstr "Aviso: arquivo ambíguo encontrado: %s%s%s. Arquivo fonte é : %s%s%s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
-msgstr ""
+msgstr "%sAviso: Esta é a unidade principal. A nova unidade principal será %s.pas"
 
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
