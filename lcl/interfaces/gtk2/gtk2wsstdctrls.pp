@@ -670,8 +670,6 @@ var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
-  if WidgetInfo^.ChangeLock > 0 then
-    Exit;
   {$IFDEF EventTrace}
   EventTrace('gtk2ListSelectionChangedAfter', WidgetInfo^.LCLObject);
   {$ENDIF}
