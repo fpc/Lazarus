@@ -2516,8 +2516,6 @@ end;
 
 {------------------------------F I N D  A G A I N ----------------------------}
 procedure TSourceEditor.FindNextUTF8;
-var
-  OldOptions: TSynSearchOptions;
 begin
   if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.IncrementalSearch(True, False);
@@ -2581,7 +2579,6 @@ function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
 var
   OldCaretXY: TPoint;
   AText, ACaption: String;
-  NewTopLine: integer;
 begin
   Result:=0;
   if (ssoReplace in anOptions) and ReadOnly then begin
