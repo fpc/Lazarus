@@ -3519,6 +3519,8 @@ begin
       exit(false);
     end;
 
+    //debugln(['TAnchorSide.CheckSidePosition CurReferenceControl=',DbgSName(CurReferenceControl),' Kind=',dbgs(Kind),' Visible=',CurReferenceControl.IsControlVisible]);
+
     if CurReferenceControl.IsControlVisible then begin
       // ReferenceControl is visible
       if not Found then begin
@@ -3650,8 +3652,11 @@ begin
 
     // try next
     NextReferenceSide:=nil;
+    //debugln(['TAnchorSide.CheckSidePosition CurReferenceControl=',DbgSName(CurReferenceControl),' OwnerParent=',DbgSName(OwnerParent)]);
     if CurReferenceControl<>OwnerParent then
     begin
+      // anchored to an invisible control
+      //debugln(['TAnchorSide.CheckSidePosition skip invisible, try next CurReferenceControl=',DbgSName(CurReferenceControl),' Kind=',dbgs(Kind),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
       if CurReferenceSide=asrCenter then
       begin
         // center can only be anchored to another centered anchor
@@ -3665,13 +3670,19 @@ begin
         end;
       end else if (CurReferenceSide=asrLeft) = (Kind in [akLeft,akTop]) then
       begin
+        //debugln(['TAnchorSide.CheckSidePosition parallel CurReferenceControl=',DbgSName(CurReferenceControl),' Kind=',dbgs(Kind),' Anchors=',dbgs(CurReferenceControl.Anchors)]);
         // anchor parallel (e.g. a left side to a left side)
         if Kind in CurReferenceControl.Anchors then
-          NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
+          NextReferenceSide:=CurReferenceControl.AnchorSide[Kind]
+        else if OppositeAnchor[Kind] in CurReferenceControl.Anchors then
+          NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]];
       end else begin
+        //debugln(['TAnchorSide.CheckSidePosition opposite CurReferenceControl=',DbgSName(CurReferenceControl),' Kind=',dbgs(Kind),' Anchors=',dbgs(CurReferenceControl.Anchors)]);
         // anchor opposite (e.g. a left side to a right side)
         if OppositeAnchor[Kind] in CurReferenceControl.Anchors then
-          NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]];
+          NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]]
+        else if Kind in CurReferenceControl.Anchors then
+          NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
       end;
     end;
     if (NextReferenceSide=nil) then
