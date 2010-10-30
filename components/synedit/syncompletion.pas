@@ -142,13 +142,16 @@ type
     procedure FontChanged(Sender: TObject); override;
   private
     fCurrentEditor: TComponent;
+    FDrawBorderWidth: Integer;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
     procedure SetCurrentEditor(const AValue: TComponent);
+    procedure SetDrawBorderWidth(const AValue: Integer);
     procedure SetLongLineHintTime(const AValue: Integer);
     procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
   protected
     procedure SetVisible(Value: Boolean); override;
+    property DrawBorderWidth: Integer read FDrawBorderWidth write SetDrawBorderWidth;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -393,6 +396,7 @@ begin
   Scroll.Visible := True;
   Scroll.Anchors:=[akTop,akRight];
   Scroll.Align:=alRight;
+  DrawBorderWidth := 1;
   FTextColor:=clBlack;
   FTextSelectedColor:=clWhite;
   Caption:='Completion';
@@ -637,7 +641,8 @@ begin
     begin
       Canvas.Brush.Color := clSelect;
       Canvas.Pen.Color := clSelect;
-      Canvas.Rectangle(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1);
+      Canvas.Rectangle(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
+                      Width-2*DrawBorderWidth, (FFontHeight * (i + 1))+1);
       Canvas.Pen.Color := clBlack;
       Canvas.Font.Color := TextSelectedColor;
       Hint := ItemList[Position];
@@ -646,17 +651,18 @@ begin
     begin
       Canvas.Brush.Color := BackgroundColor;
       Canvas.Font.Color := TextColor;
-      Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
+      Canvas.FillRect(Rect(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
+                           Width-2*DrawBorderWidth, (FFontHeight * (i + 1))+1));
     end;
 
     //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
     if not Assigned(OnPaintItem) or
        not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
-        0, FFontHeight * i, i + Scroll.Position = Position,
+        DrawBorderWidth, DrawBorderWidth+FFontHeight * i, i + Scroll.Position = Position,
         i + Scroll.Position
         ) then
     begin
-      Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
+      Canvas.TextOut(DrawBorderWidth+2, DrawBorderWidth+FFontHeight * i, ItemList[Scroll.Position + i]);
     end;
   end;
   // paint the rest of the background
@@ -667,12 +673,15 @@ begin
     Canvas.FillRect(Rect(0, i, Width, Height));
   end;
   // draw a rectangle around the window
-  Canvas.Pen.Color := TextColor;
-  Canvas.Moveto(0, 0);
-  Canvas.LineTo(Width - 1, 0);
-  Canvas.LineTo(Width - 1, Height - 1);
-  Canvas.LineTo(0, Height - 1);
-  Canvas.LineTo(0, 0);
+  if DrawBorderWidth > 0 then begin
+    Canvas.Pen.Color := TextColor;
+    Canvas.Pen.Width := DrawBorderWidth;
+    Canvas.Moveto(0, 0);
+    Canvas.LineTo(Width - 1, 0);
+    Canvas.LineTo(Width - 1, Height - 1);
+    Canvas.LineTo(0, Height - 1);
+    Canvas.LineTo(0, 0);
+  end;
 end;
 
 procedure TSynBaseCompletionForm.AppDeactivated(Sender: TObject);
@@ -788,7 +797,7 @@ begin
   if ([csLoading,csDestroying]*ComponentState<>[]) or (Scroll=nil) then exit;
   if (fFontHeight > 0) and (FResizeLock = 0) then
   begin
-    FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
+    FNbLinesInWindow := (Height-2*DrawBorderWidth+(fFontHeight-1)) div fFontHeight;
     Invalidate;
   end;
 end;
@@ -844,6 +853,16 @@ begin
                                                           [scTopLine]);
 end;
 
+procedure TSynBaseCompletionForm.SetDrawBorderWidth(const AValue: Integer);
+begin
+  if FDrawBorderWidth = AValue then exit;
+  FDrawBorderWidth := AValue;
+  NbLinesInWindow := NbLinesInWindow;
+  Scroll.BorderSpacing.Top := FDrawBorderWidth;
+  Scroll.BorderSpacing.Bottom := FDrawBorderWidth;
+  Scroll.BorderSpacing.Right := FDrawBorderWidth;
+end;
+
 procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
 begin
   if Visible = Value then exit;;
@@ -874,7 +893,7 @@ begin
   inc(FResizeLock);   // prevent DoResize from recalculating NbLinesInWindow
   try
     FNbLinesInWindow := Value;
-    Height := fFontHeight * NbLinesInWindow + 2;
+    Height := fFontHeight * NbLinesInWindow + 2*DrawBorderWidth;
   finally
     dec(FResizeLock);
   end;
