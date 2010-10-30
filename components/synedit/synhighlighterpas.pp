@@ -84,7 +84,10 @@ type
     //                       var  foo: procedure;   // must not fold
     rsAfterEqualOrColon,   // very first word after "=" or ":"
 
-    // Detect if class/object is ended by ";" or "end;"
+    // Detect if class/object is   type TFoo = class; // forward declaration
+    //                                  TBar = class of TFoo;
+    // or full class declaration  TFoo = class ... end;
+    // Also included after class modifiers "sealed" and "abstract"
     rsAtClass,
     rsAfterClass,
 
@@ -1161,9 +1164,12 @@ end;
 
 function TSynPasSyn.Func46: TtkTokenKind;
 begin
-  // Todo: test sealed only if rsAfterClass in frange ?
-  if KeyComp('Sealed') and (TopPascalCodeFoldBlockType in [cfbtClass]) then
-    Result := tkKey
+  if (rsAfterClass in fRange) and KeyComp('Sealed') and
+     (TopPascalCodeFoldBlockType in [cfbtClass])
+  then begin
+    Result := tkKey;
+    fRange := fRange + [rsAtClass]; // forward, in case of further class modifiers
+  end
   else
     Result := tkIdentifier;
 end;
@@ -1440,52 +1446,57 @@ begin
   if KeyComp('Stored') then
   begin
     if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
-  end else
-    if KeyComp('Interface') then begin
-      if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
-      then begin
-        fRange := fRange + [rsAtClass];
-        StartPascalCodeFoldBlock(cfbtClass);
-      end
-      else
-      if not(rsAfterEqualOrColon in fRange) and
-         (fRange * [rsInterface, rsImplementation] = []) then
-      begin
-        CloseBeginEndBlocksBeforeProc;
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-          EndPascalCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
-        StartPascalCodeFoldBlock(cfbtUnitSection);
-        fRange := fRange + [rsInterface];
-        // Interface has no ";", implicit end of statement
-      end;
-      Result := tkKey
-    end
-    else if KeyComp('Deprecated') then begin
-      tbf := TopPascalCodeFoldBlockType;
-      if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
-           ( (tbf in [cfbtClass, cfbtClassSection]) and
-             (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
-           ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
-         ) and
-         ( fRange *[rsAfterEqualOrColon, rsInProcHeader, rsProperty] = [] ) and
-         (PasCodeFoldRange.BracketNestLevel = 0)
-      then
-        Result := tkKey
-      else
-        Result := tkIdentifier;
+  end
+  else if KeyComp('Interface') then begin
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    then begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
     end
     else
+    if not(rsAfterEqualOrColon in fRange) and
+       (fRange * [rsInterface, rsImplementation] = []) then
+    begin
+      CloseBeginEndBlocksBeforeProc;
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        EndPascalCodeFoldBlockLastLine;
+      if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
+      StartPascalCodeFoldBlock(cfbtUnitSection);
+      fRange := fRange + [rsInterface];
+      // Interface has no ";", implicit end of statement
+    end;
+    Result := tkKey
+  end
+  else if KeyComp('Deprecated') then begin
+    tbf := TopPascalCodeFoldBlockType;
+    if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
+         ( (tbf in [cfbtClass, cfbtClassSection]) and
+           (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
+         ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
+       ) and
+       ( fRange *[rsAfterEqualOrColon, rsInProcHeader, rsProperty] = [] ) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
+    then
+      Result := tkKey
+    else
       Result := tkIdentifier;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func84: TtkTokenKind;
 begin
-  if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
-    Result := tkKey
-  else
-  if KeyComp('ObjcClass') then
-  begin
+  if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+  then begin
+    Result := tkKey;
+    if (rsAfterClass in fRange) then
+      fRange := fRange + [rsAtClass] // forward, in case of further class modifiers  end
+    else
+    if not (rsAfterClassMembers in fRange) then
+      Result := tkIdentifier;
+  end
+  else if KeyComp('ObjcClass') then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
