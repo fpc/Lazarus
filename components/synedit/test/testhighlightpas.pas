@@ -46,7 +46,7 @@ type
     procedure TestContextForProcModifiers;
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
-    //procedure TestContextForDeprecated;
+    procedure TestContextForDeprecated;
   end;
 
 implementation
@@ -608,63 +608,86 @@ begin
 
 end;
 
-//procedure TTestHighlighterPas.TestContextForDeprecated;
-//begin
-//  ReCreateEdit;
-//  SetLines
-//    ([  'Unit A;',
-//        'interface',
-//        'var',
-//        'deprecated: Integer deprecated;',
-//        'unimplemented: Integer unimplemented;',
-//        'platform: Integer platform;',
-//        'experimental: Integer experimental;',
-//        ''
-//    ]);
-//  CheckTokensForLine('', 0, [tkKey, tkSpace, tkIdentifier, tkSymbol]);
-//  CheckTokensForLine('', 1, [tkKey]);
-//  CheckTokensForLine('', 2, [tkKey]);
-//  CheckTokensForLine('', 3, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
-//  CheckTokensForLine('', 4, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
-//  CheckTokensForLine('', 5, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
-//  CheckTokensForLine('', 6, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
-//
-//end;
+procedure TTestHighlighterPas.TestContextForDeprecated;
+  procedure SubTest(s: String);
+  begin
+    PushBaseName('test for '+s);
+    ReCreateEdit;
+    SetLines
+      ([  'Unit A; interface',
+          'var',
+           s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+          'foo, '+s+', bar: Integer '+s+';',
+          'type',
+          s+' = '+s+' '+s+';',   // nameDEPRECATED = typeDEPRECATED deprecated;
+          'procedure '+s+'('+s+': '+s+'); '+s+';',
+          ''
+      ]);
+    CheckTokensForLine('var', 2,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('multi var', 3,
+      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('type', 5,
+      [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('procedure', 6,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+      ]);
+
+
+    SetLines
+      ([  'Unit A; interface',
+          'type',
+          'TFoo=class',
+             s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+            'foo, '+s+', bar: Integer '+s+';',
+            'procedure '+s+'('+s+': '+s+'); '+s+';',
+          'private',
+             s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+            'foo, '+s+', bar: Integer '+s+';',
+            'property '+s+': '+s+' read '+s+'; '+s+';',
+            'procedure '+s+'('+s+': '+s+'); '+s+';',
+          'end',
+          ''
+      ]);
+
+    CheckTokensForLine('member in class', 3,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('multi member in class', 4,
+      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('procedure in class', 5,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+      ]);
+
+    CheckTokensForLine('member in class-sect', 7,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('multi member in class-sect', 8,
+      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('property in class-sect', 9,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol { : }, tkSpace, tkIdentifier, tkSpace,
+       tkKey { read }, tkSpace, tkIdentifier, tkSymbol { ; }, tkSpace, tkKey {the one and only}, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class-sect', 10,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+      ]);
+
+    PopBaseName;
+  end;
+begin
+  SubTest('deprecated');
+  SubTest('unimplemented');
+  SubTest('experimental');
+  SubTest('platform');
+end;
 
 initialization
 
   RegisterTest(TTestHighlighterPas); 
 end.
 
-{
 
-unit Unit1;
-interface
-
-var
-  //deprecated: Integer deprecated;
-  unimplemented: Integer unimplemented;
-  platform: Integer platform;
-  experimental: Integer experimental;
-
-//type
-  //deprecated = Integer deprecated;
-
-  deprecated = class
-    experimental: Integer experimental;
-  private
-    a: Integer platform;
-    platform: Integer platform;
-    procedure Foo; deprecated;
-    property unimplemented: Integer read experimental; deprecated;
-  end
-
-
-//procedure deprecated; deprecated;
-
-implementation
-
-
-end.
-
-}
