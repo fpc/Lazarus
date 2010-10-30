@@ -413,6 +413,11 @@ resourcestring
   fesOkBtn       = 'OK';
   fesCancelBtn   = 'Cancel';
   fesFieldCanTBeC = 'Field %s cannot be created!';
+
+  oisMoveUpHint = 'Move field up';
+  oisMoveDownHint = 'Move field down';
+  oisSelectAllHint = 'Select All Fields';
+  oisUnselectAllHint = 'Unselect All';
   
   //Key strings
   srVK_UNKNOWN    = 'Unknown';

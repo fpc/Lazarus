@@ -11,6 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+ Modified Date: 20.10.2010
+ By: Marcelo Borges de Paula
 }
 unit fieldseditor;
 
@@ -19,10 +22,10 @@ unit fieldseditor;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, Forms,
-  Controls, Menus, Graphics, Dialogs, ComCtrls,
-  db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
-  PropEdits, PropEditUtils, LCLType, NewField, FieldsList, ComponentReg;
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Menus, Graphics,
+  Dialogs, ComCtrls, db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
+  PropEdits, PropEditUtils, LCLType, ExtCtrls, NewField, FieldsList,
+  ComponentReg, types;
 
 type
 
@@ -31,8 +34,20 @@ type
   { TDSFieldsEditorFrm }
 
   TDSFieldsEditorFrm = class(TForm)
+    Fields: TImageList;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
+    tbCommands: TToolBar;
+    tbAddFld: TToolButton;
+    tbUnselect: TToolButton;
+    tbDeleteFld: TToolButton;
+    tbNewFld: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    tbMoveUp: TToolButton;
+    tbMoveDown: TToolButton;
+    ToolButton8: TToolButton;
+    tbSelect: TToolButton;
     UnselectAllActn: TAction;
     SelectAllActn: TAction;
     FieldsListBox: TListBox;
@@ -54,6 +69,8 @@ type
     procedure FieldsEditorFrmClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure FieldsEditorFrmDestroy(Sender: TObject);
+    procedure FieldsListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure FieldsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure NewActnExecute(Sender: TObject);
@@ -65,7 +82,7 @@ type
   protected
     { protected declarations }
     procedure DoSelected(All: boolean);
-    procedure SelectionChanged;
+    procedure SelectionChanged(AOrderChanged: Boolean = false);
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnGetSelection(const ASelection: TPersistentSelectionList);
@@ -78,6 +95,7 @@ type
     FComponentEditor: TFieldsComponentEditor;
     procedure ExchangeItems(const fFirst, fSecond: integer);
     procedure RefreshFieldsListBox(SelectAllNew: boolean);
+    function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
   public
     { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
@@ -99,6 +117,9 @@ type
 implementation
 
 {$R *.lfm}
+
+uses
+  IDEImagesIntf;
 
 { TDSFieldsEditorFrm }
 
@@ -126,6 +147,15 @@ constructor TDSFieldsEditorFrm.Create(AOwner: TComponent; ADataset: TDataset;
 begin
   inherited Create(AOwner);
 
+  tbCommands.Images := IDEImages.Images_16;
+  tbAddFld.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  tbDeleteFld.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  tbNewFld.ImageIndex := IDEImages.LoadImage(16,'menu_new');
+  tbMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  tbMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  tbSelect.ImageIndex := IDEImages.LoadImage(16, 'menu_select_all');
+  tbUnselect.ImageIndex := IDEImages.LoadImage(16, 'menu_close_all');
+
   LinkDataset := ADataset;
   FDesigner := ADesigner;
   Caption := fesFeTitle + ' - ' + LinkDataset.Name;
@@ -136,9 +166,13 @@ begin
   NewActn.Caption:=oisNew;
   NewActn.Hint:=oisCreateNewFieldAndAddItAtCurrentPosition;
   MoveUpActn.Caption:=oisMoveUp;
+  MoveUpActn.Hint:=oisMoveUpHint;
   MoveDownActn.Caption:=oisMoveDown;
+  MoveDownActn.Hint:=oisMoveDownHint;
   SelectAllActn.Caption:=oisSelectAll;
+  SelectAllActn.Hint:=oisSelectAllHint;
   UnselectAllActn.Caption:=oisUnselectAll;
+  UnselectAllActn.Hint:=oisUnselectAllHint;
 
   FieldsListBox.Clear;
   RefreshFieldsListBox(False);
@@ -161,23 +195,20 @@ end;
 procedure TDSFieldsEditorFrm.DeleteFieldsActnExecute(Sender: TObject);
 var i: integer;
     PreActive: boolean;
-    bModified: boolean;
     fld: TField;
 begin
   PreActive := LinkDataSet.Active;
   LinkDataSet.Active := False;
-  bModified := False;
+  if FieldsListBox.SelCount = 0 then exit;
   for i := FieldsListBox.Items.Count - 1 downto 0 do
     if FieldsListBox.Selected[i] then begin
       fld := TField(FieldsListBox.Items.Objects[i]);
       FieldsListBox.Items.Delete(i);
       FDesigner.PropertyEditorHook.PersistentDeleting(fld);
-      fld := nil;
-      bModified := True;
+      fld.Free;
     end;
+  FDesigner.Modified;
   SelectionChanged;
-  if bModified then
-    fDesigner.Modified;
   if PreActive then
     LinkDataSet.Active := True;
 end;
@@ -196,6 +227,30 @@ begin
   end;
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
+end;
+
+procedure TDSFieldsEditorFrm.FieldsListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var  fld: TField;
+begin
+  if Index < 0 then Exit;
+  if not Assigned(FieldsListBox.Items.Objects[Index]) then Exit;
+  //
+  FieldsListBox.Canvas.FillRect(ARect);
+  fld := TField(FieldsListBox.Items.Objects[Index]);
+  //
+  if pfinKey in fld.ProviderFlags then
+    Fields.Draw(FieldsListBox.Canvas,1,ARect.Top,0)
+  else
+    case fld.FieldKind of
+      fkData         : Fields.Draw(FieldsListBox.Canvas,1,ARect.Top,1);
+      fkCalculated   : Fields.Draw(FieldsListBox.Canvas,1,ARect.Top,2);
+      fkLookup       : Fields.Draw(FieldsListBox.Canvas,1,ARect.Top,3);
+      fkInternalCalc : Fields.Draw(FieldsListBox.Canvas,1,ARect.Top,4);
+    end;
+  //
+  FieldsListBox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
+                                FieldsListBox.Items[Index]);
 end;
 
 procedure TDSFieldsEditorFrm.FieldsListBoxKeyDown(Sender: TObject; var Key: Word;
@@ -241,7 +296,7 @@ begin
   if PreActive And LinkDataset.DefaultFields then
     LinkDataset.Close;
   //Deselect & refresh all existing
-  DoSelected(False);
+  FieldsListBox.ClearSelection;
   //Add new fields
   for i := 0 to LinkDataset.Fields.Count - 1 do begin
     fld := LinkDataset.Fields[i];
@@ -252,6 +307,16 @@ begin
   end;
   if PreActive and not LinkDataset.Active then
     LinkDataset.Active:=true;
+end;
+
+function TDSFieldsEditorFrm.FindChild(ACandidate: TPersistent; out
+  AIndex: Integer): Boolean;
+begin
+  if ACandidate is TField then
+    AIndex := FieldsListBox.Items.IndexOfObject(ACandidate)
+  else
+    AIndex := -1;
+  Result := AIndex >= 0;
 end;
 
 procedure TDSFieldsEditorFrm.NewActnExecute(Sender: TObject);
@@ -282,7 +347,7 @@ begin
       ExchangeItems(i, i + 1);
       bModified := True;
     end;
-  SelectionChanged;
+  SelectionChanged(True);
   if bModified then fDesigner.Modified;
 end;
 
@@ -297,7 +362,7 @@ begin
       ExchangeItems(i - 1, i);
       bModified := True;
     end;
-  SelectionChanged;
+  SelectionChanged(True);
   if bModified then fDesigner.Modified;
 end;
 
@@ -343,12 +408,13 @@ begin
   end;
 end;
 
-procedure TDSFieldsEditorFrm.SelectionChanged;
+procedure TDSFieldsEditorFrm.SelectionChanged(AOrderChanged: Boolean = false);
 var SelList: TPersistentSelectionList;
 begin
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try
     SelList := TPersistentSelectionList.Create;
+    SelList.ForceUpdate := AOrderChanged;
     try
       OnGetSelection(SelList);
       FDesigner.PropertyEditorHook.SetSelection(SelList) ;
@@ -379,12 +445,8 @@ end;
 procedure TDSFieldsEditorFrm.OnPersistentDeleting(APersistent: TPersistent);
 var i: integer;
 begin
-  if APersistent = LinkDataset then begin
-//    removing all fields here ?
-  end else begin
-    i := FieldsListBox.Items.IndexOfObject(APersistent as TObject);
-    if i >= 0 then FieldsListBox.Items.Delete( i );
-  end;
+  if FindChild(APersistent, i) then
+    FieldsListBox.Items.Delete(i);
 end;
 
 procedure TDSFieldsEditorFrm.OnGetSelection(
@@ -404,26 +466,24 @@ var i, j: integer;
 begin
   if Assigned(ASelection) then begin
     //Unselect all
-    DoSelected(False);
+    FieldsListBox.ClearSelection;
     //select from list
     for i := 0 to ASelection.Count - 1 do
-      if ASelection.Items[i] is TField then begin
-        j := FieldsListBox.Items.IndexOfObject(ASelection.Items[i]);
-        if j >= 0 then FieldsListBox.Selected[j] := True;
-      end;
+      if FindChild(ASelection.Items[i], j) then
+        FieldsListBox.Selected[j] := true;
   end;
 end;
 
 procedure TDSFieldsEditorFrm.OnPersistentAdded(APersistent: TPersistent;
   Select: boolean);
-var i: integer;
+var fld: TField;
 begin
   if Assigned(APersistent) And
      (APersistent is TField) And
      ((APersistent as TField).DataSet = LinkDataset) then begin
-    i := FieldsListBox.Items.AddObject( TField(APersistent).FieldName, APersistent );
-    FieldsListBox.Selected[i] := Select;
-    TField(APersistent).Index := i;
+       fld := APersistent as TField;
+       with FieldsListBox do
+         Selected[Items.AddObject(fld.FieldName, fld)] := Select;
   end;
 end;
 
