@@ -12509,8 +12509,8 @@ begin
     end;
   end;
   case ToolStatus of
-    itBuilder:
-      NewCaption := Format(liscompiling, [MiscellaneousOptions.BuildLazProfiles.Current.Name]);
+    // Should show MiscellaneousOptions.BuildLazProfiles.Current.Name when buildding Lazarus
+    itBuilder: NewCaption := Format(liscompiling, [NewCaption]);
     itDebugger:
     begin
       if DebugBoss.Commands - [dcRun, dcStop, dcEnvironment] <> [] then
