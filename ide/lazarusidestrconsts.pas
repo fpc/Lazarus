@@ -1452,6 +1452,12 @@ resourcestring
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Word under Caret Highlight';
   dlgBracketMatchGroup = 'Matching bracket pairs';
+  dlgPasExtKeywordsGroup = 'Extended Pascal keyword options';
+  dlgPasExtKeywords = 'Highlight control statements as keywords';
+  dlgPasStringKeywords = 'Highlight String keyword(s)';
+  dlgPasStringKeywordsOptDefault = 'Default';
+  dlgPasStringKeywordsOptString = 'Only "String"';
+  dlgPasStringKeywordsOptNone = 'None';
   dlgMarkupWordFullLen = 'Match word boundaries for words up to this length:';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
   dlgMarkupWordTrim = 'Trim Spaces (when highlighting current selection)';
@@ -1476,7 +1482,7 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Completion and Hints';
-  lisAutoMarkup = 'Markup Matches';
+  lisAutoMarkup = 'Markup and Matches';
 
   dlgMultiWinOptions = 'Pages and Windows';
   dlgMultiWinTabGroup = 'Notebook Tabs:';
