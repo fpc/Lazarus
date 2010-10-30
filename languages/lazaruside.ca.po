@@ -6182,6 +6182,10 @@ msgstr ""
 msgid "Directives"
 msgstr ""
 
+#: lazarusidestrconsts.lisdirectivesfornewunit
+msgid "Directives for new unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr ""
@@ -6273,6 +6277,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "No mostris la finestra de venvinguda"
+
+#: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
+msgid "Do not show this dialog for this project"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7731,6 +7739,10 @@ msgstr "El directori del codi font de Free Pascal no és vàlid"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidmode
+msgid "Invalid mode %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
@@ -13170,6 +13182,10 @@ msgstr ""
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "No s'ha trobat el programa %sMake%s.%sEs necessita aquesta eina per muntar el Lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
+msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr ""
@@ -13945,6 +13961,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
+msgstr ""
+
+#: lazarusidestrconsts.lisuseansistrings
+msgid "Use Ansistrings"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter

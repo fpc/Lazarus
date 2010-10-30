@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-30 15:27+0300\n"
+"PO-Revision-Date: 2010-10-30 15:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6199,6 +6199,10 @@ msgstr "Разряды:"
 msgid "Directives"
 msgstr "Директивы"
 
+#: lazarusidestrconsts.lisdirectivesfornewunit
+msgid "Directives for new unit"
+msgstr "Директивы в новом модуле"
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr "Каталог %s%s%s не найден."
@@ -6290,6 +6294,10 @@ msgstr "Не устанавливать"
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Не показывать начальную заставку"
+
+#: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
+msgid "Do not show this dialog for this project"
+msgstr "Не показывать этот диалог для данного проекта"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7751,6 +7759,10 @@ msgstr "Неверный каталог исходого кода FreePascal"
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
 msgstr "Неверные строка, столбец в сообщении%s%s"
+
+#: lazarusidestrconsts.lisinvalidmode
+msgid "Invalid mode %s"
+msgstr "Режим %s некорректен"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -13186,6 +13198,10 @@ msgstr "Пакет %s не имеет процедуры \"Register\". Обыч�
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "Программа %smake%s не найдена.%sЭто средство нужно, чтобы собрать Lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
+msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
+msgstr "Параметры компилятора для проекта не соответствуют директивам в главном файле исходного кода. В новом модуле будут использованы режим синтаксиса и тип строк в соответствии с параметрами проекта:"
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Проект не использует модуль LCL Interfaces, но, вероятно, требует его.%sКомпоновщик будет выдавать непонятные ошибки, если формы LCL будут использоваться без модуля Interfaces."
@@ -13961,6 +13977,10 @@ msgstr "Сообщение со справкой (параметр -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
 msgstr "Использовать..."
+
+#: lazarusidestrconsts.lisuseansistrings
+msgid "Use Ansistrings"
+msgstr "Использовать строки Ansistring"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

@@ -6215,6 +6215,10 @@ msgstr "Chiffres :"
 msgid "Directives"
 msgstr "Directives"
 
+#: lazarusidestrconsts.lisdirectivesfornewunit
+msgid "Directives for new unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr "Répertoire %s%s%s non trouvé."
@@ -6306,6 +6310,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Ne pas afficher le splashscreen"
+
+#: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
+msgid "Do not show this dialog for this project"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7770,6 +7778,10 @@ msgstr "Répertoire source Free Pascal non valide"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidmode
+msgid "Invalid mode %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
@@ -13205,6 +13217,10 @@ msgstr ""
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "Le programme %smake%s est introuvable.%sCet outil est nécessaire pour construire Lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
+msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Le projet n'utilise pas les interfaces de l'unité LCL, mais il semble qu'il en a besoin.%sVous obtiendrez des erreurs étranges avec l'éditeur de liens si vous utilisez les fiches LCL sans interfaces"
@@ -13978,6 +13994,10 @@ msgstr "Utiliser message (option -h)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
+msgstr ""
+
+#: lazarusidestrconsts.lisuseansistrings
+msgid "Use Ansistrings"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter

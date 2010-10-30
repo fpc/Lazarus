@@ -6199,6 +6199,10 @@ msgstr "数字:"
 msgid "Directives"
 msgstr "指示"
 
+#: lazarusidestrconsts.lisdirectivesfornewunit
+msgid "Directives for new unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr ""
@@ -6290,6 +6294,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "不显示开始闪屏"
+
+#: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
+msgid "Do not show this dialog for this project"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7750,6 +7758,10 @@ msgstr "无效 Free Pascal 源代码目录"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidmode
+msgid "Invalid mode %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
@@ -13197,6 +13209,10 @@ msgstr ""
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
 
+#: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
+msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr ""
@@ -13974,6 +13990,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
+msgstr ""
+
+#: lazarusidestrconsts.lisuseansistrings
+msgid "Use Ansistrings"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter

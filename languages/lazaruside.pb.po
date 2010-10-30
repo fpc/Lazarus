@@ -6193,6 +6193,10 @@ msgstr "Dígitos:"
 msgid "Directives"
 msgstr "Diretivas"
 
+#: lazarusidestrconsts.lisdirectivesfornewunit
+msgid "Directives for new unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr "Diretório %s%s%s não encontrado."
@@ -6284,6 +6288,10 @@ msgstr "Não instalar"
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Não exibir a tela de início"
+
+#: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
+msgid "Do not show this dialog for this project"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7746,6 +7754,10 @@ msgstr "Diretório fonte do Free Pascal inválido"
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
 msgstr "Linha, coluna inválida na mensagem%s%s"
+
+#: lazarusidestrconsts.lisinvalidmode
+msgid "Invalid mode %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -13175,6 +13187,10 @@ msgstr "O pacote %s não tem nenhum procedimento \"Register\", o que tipicamente
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "O programa %s\"make\"%s não foi encontrado.%s Esta ferramenta é necessária para construir o lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
+msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "O projeto não usa a unidade interfaces LCL, mas parece que necessita dela.%sVocê obterá erros estranhos do vinculador se utilizar formulários LCL sem interfaces."
@@ -13949,6 +13965,10 @@ msgstr "Mensagem forma de uso (opção -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
 msgstr "Usar..."
+
+#: lazarusidestrconsts.lisuseansistrings
+msgid "Use Ansistrings"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
