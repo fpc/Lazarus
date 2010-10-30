@@ -1572,11 +1572,38 @@ begin
 end;
 
 class function TGtk2WSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
+{$ifdef GTK_2_8}
+var
+  Res: Boolean;
+  s, e: PGtkTreePath;
+  Widgets: PTVWidgets;
+  Num: Pgint;
+{$endif}
 begin
   Result := -1;
-  
   if not WSCheckHandleAllocated(ALV, 'GetTopItem')
   then Exit;
+  {$ifdef GTK_2_8}
+  Res := false;
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  with Widgets^ do
+  begin
+    if GTK_IS_TREE_VIEW(MainView) then
+      Res := gtk_tree_view_get_visible_range(PGtkTreeView(Widgets^.MainView), s, e)
+    else
+      if GTK_IS_ICON_VIEW(MainView) then
+        Res := gtk_icon_view_get_visible_range(PGtkTreeView(Widgets^.MainView), s, e)
+      else
+        Exit;
+  end;
+  if Res then
+  begin
+    Num := gtk_tree_path_get_indices(s);
+    if Num <> nil then Result := Num^;
+    gtk_tree_path_free(s);
+    gtk_tree_path_free(e);
+  end;
+  {$endif}
 end;
 
 class function TGtk2WSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
@@ -1596,11 +1623,42 @@ begin
 end;
 
 class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
+{$ifdef GTK_2_8}
+var
+  Res: Boolean;
+  s, e: PGtkTreePath;
+  Widgets: PTVWidgets;
+  Num1,Num2: Pgint;
+{$endif}
 begin
   Result := -1;
 
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
   then Exit;
+  {$ifdef GTK_2_8}
+   Result := 0;
+   Res := false;
+   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+   with Widgets^ do
+   begin
+     if GTK_IS_TREE_VIEW(MainView) then
+       Res := gtk_tree_view_get_visible_range(PGtkTreeView(Widgets^.MainView), s, e)
+     else
+       if GTK_IS_ICON_VIEW(MainView) then
+         Res := gtk_icon_view_get_visible_range(PGtkTreeView(Widgets^.MainView), s, e)
+       else
+         Exit;
+   end;
+   if Res then
+   begin
+     Num1 := gtk_tree_path_get_indices(s);
+     Num2 := gtk_tree_path_get_indices(e);
+     if (Num1 <> nil) and (Num2 <> nil) then Result := Num2^-Num1^+1;
+     gtk_tree_path_free(s);
+     gtk_tree_path_free(e);
+   end;
+   {$endif}
+
 end;
 
 class procedure TGtk2WSCustomListView.SetAllocBy(const ALV: TCustomListView;

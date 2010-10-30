@@ -205,6 +205,8 @@ procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser
 procedure gtk_icon_view_scroll_to_path(icon_view: PGtkIconView; path: PGtkTreePath; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external gtklib;
 function gtk_icon_view_get_cursor(icon_view: PGtkIconView; var path: PGtkTreePath; var cell: PGtkCellRenderer): gboolean; cdecl; external gtklib;
 procedure gtk_icon_view_set_cursor(icon_view: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external gtklib;
+function gtk_tree_view_get_visible_range(tree_view: PGtkTreeView; out start_path, endpath: PGtkTreePath): gboolean; cdecl; external gtklib;
+function gtk_icon_view_get_visible_range(tree_view: PGtkTreeView; out start_path, endpath: PGtkTreePath): gboolean; cdecl; external gtklib;
 {$endif}
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
