@@ -43,6 +43,8 @@ type
   published
     procedure TestFoldInfo;
     procedure TestExtendedKeywordsAndStrings;
+    procedure TestContextForProcModifiers;
+    procedure TestContextForProperties;
     procedure TestContextForProcedure;
     //procedure TestContextForDeprecated;
   end;
@@ -232,6 +234,7 @@ begin
   PasHighLighter.StartAtLineIndex(LineIdx);
   c := 0;
   while not PasHighLighter.GetEol do begin
+    //DebugLn([PasHighLighter.GetToken,' (',PasHighLighter.GetTokenID ,') at ', PasHighLighter.GetTokenPos]);
     AssertEquals(Name + 'TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c),  ord(ExpTokens[c]), ord(PasHighLighter.GetTokenID));
     PasHighLighter.Next;
     inc(c);
@@ -441,6 +444,121 @@ begin
   CheckTokensForLine('wide',  10, [tkSpace, tkKey, tkSymbol ]);
   CheckTokensForLine('wide',  11, [tkSpace, tkKey, tkSymbol ]);
 
+end;
+
+procedure TTestHighlighterPas.TestContextForProcModifiers;
+begin
+  {%region message modifier for procedure}
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         '',
+         'Procedure message(message: message); message 100;',
+         ''
+      ]);
+  CheckTokensForLine('message',  2,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "Procedure",  " ", "message", "("
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
+      tkSymbol, tkSymbol, tkSpace,                   // ")", ";", " "
+      tkKey, // "message" as key
+      tkSpace, tkNumber, tkSymbol
+    ]);
+
+  {%endregion}
+end;
+
+procedure TTestHighlighterPas.TestContextForProperties;
+begin
+  {%region property and index}
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type TFoo = class',
+         'property Index[Index: Integer]: Integer read GetIndex write SetIndex Index 3;',
+         ''
+      ]);
+  CheckTokensForLine('property with index',  2,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "Index", "["
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Integer"
+      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Integer"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "GetIndex"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "SetIndex"
+      tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
+      tkSymbol
+    ]);
+
+    SetLines
+      ([ 'Unit A; interface',
+         'type TFoo = class',
+         'property AnIndex[Index: Index]: Index read Index write Index Index 3;',
+         ''
+      ]);
+  CheckTokensForLine('property with index 2',  2,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "AnIndex", "["
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Index"
+      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Index"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "Index"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "Index"
+      tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
+      tkSymbol
+    ]);
+
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'Index = Integer;',
+         'Foo = Index;',
+         '',
+         'var',
+         'Foo, Index: Index;',
+         'Index: Index;',
+         ''
+      ]);
+  CheckTokensForLine('index outside property',  2,
+    [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('index outside property',  3,
+    [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('index outside property',  6,
+    [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('index outside property',  7,
+    [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+
+  {%endregion}
+
+  {%region property and read/write}
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type TFoo = class',
+         'property read[read: read]: read read read write read;',
+         ''
+      ]);
+  CheckTokensForLine('property "read"',  2,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "read", "["
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "read",, ":", " ", "read"
+      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "read"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'READ', " ", "read"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "read"
+      tkSymbol
+    ]);
+
+
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type TFoo = class',
+         'property write[write: write]: write read write write write;',
+         ''
+      ]);
+  CheckTokensForLine('property "write"',  2,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "write", "["
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "write",, ":", " ", "write"
+      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "write"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "write"
+      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "write"
+      tkSymbol
+    ]);
+  {%endregion}
 end;
 
 procedure TTestHighlighterPas.TestContextForProcedure;
