@@ -39,10 +39,13 @@ type
 
     procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
     procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
+    procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TtkTokenKind);
   published
     procedure TestFoldInfo;
-    procedure TestProcedureInContext;
-  end; 
+    procedure TestExtendedKeywordsAndStrings;
+    procedure TestContextForProcedure;
+    //procedure TestContextForDeprecated;
+  end;
 
 implementation
 
@@ -221,6 +224,23 @@ begin
     AssertEquals(Name + 'InfoCount Line='+IntToStr(i),  Expected[i], PasHighLighter.FoldNodeInfoCount[i, Filter]);
 end;
 
+procedure TTestHighlighterPas.CheckTokensForLine(Name: String; LineIdx: Integer;
+  ExpTokens: array of TtkTokenKind);
+var
+  c: Integer;
+begin
+  PasHighLighter.StartAtLineIndex(LineIdx);
+  c := 0;
+  while not PasHighLighter.GetEol do begin
+    AssertEquals(Name + 'TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c),  ord(ExpTokens[c]), ord(PasHighLighter.GetTokenID));
+    PasHighLighter.Next;
+    inc(c);
+    if c >= length(ExpTokens) then
+      break;
+  end;
+  AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpTokens), c );
+end;
+
 procedure TTestHighlighterPas.TestFoldInfo;
 begin
   ReCreateEdit;
@@ -366,7 +386,64 @@ begin
 
 end;
 
-procedure TTestHighlighterPas.TestProcedureInContext;
+procedure TTestHighlighterPas.TestExtendedKeywordsAndStrings;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Program A;',
+       'var',
+       '  Foo1: String',
+       '  Foo2: AnsiString',
+       '  Foo3: WideString',
+       '  Foo4: Integer',
+       '',
+       'Procedure b;',
+       'begin',
+       ' while Foo1 <> '''' do',
+       ' continue;',
+       ' exit;',
+       'end',
+       '',
+       'begin',
+       'end',
+       ''
+    ]);
+
+  PushBaseName('spsmDefault');
+  PasHighLighter.StringKeywordMode := spsmDefault;
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
+  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+
+  PopPushBaseName('spsmStringOnly');
+  PasHighLighter.StringKeywordMode := spsmStringOnly;
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
+  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+
+  PopPushBaseName('spsmNone');
+  PasHighLighter.StringKeywordMode := spsmNone;
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
+  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+
+
+  PopPushBaseName('False');
+  PasHighLighter.ExtendedKeywordsMode := False;
+  CheckTokensForLine('wide',  10, [tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('wide',  11, [tkSpace, tkIdentifier, tkSymbol ]);
+
+  PopPushBaseName('True');
+  PasHighLighter.ExtendedKeywordsMode := True;
+  CheckTokensForLine('wide',  10, [tkSpace, tkKey, tkSymbol ]);
+  CheckTokensForLine('wide',  11, [tkSpace, tkKey, tkSymbol ]);
+
+end;
+
+procedure TTestHighlighterPas.TestContextForProcedure;
 begin
   ReCreateEdit;
   SetLines
@@ -413,8 +490,63 @@ begin
 
 end;
 
+//procedure TTestHighlighterPas.TestContextForDeprecated;
+//begin
+//  ReCreateEdit;
+//  SetLines
+//    ([  'Unit A;',
+//        'interface',
+//        'var',
+//        'deprecated: Integer deprecated;',
+//        'unimplemented: Integer unimplemented;',
+//        'platform: Integer platform;',
+//        'experimental: Integer experimental;',
+//        ''
+//    ]);
+//  CheckTokensForLine('', 0, [tkKey, tkSpace, tkIdentifier, tkSymbol]);
+//  CheckTokensForLine('', 1, [tkKey]);
+//  CheckTokensForLine('', 2, [tkKey]);
+//  CheckTokensForLine('', 3, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+//  CheckTokensForLine('', 4, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+//  CheckTokensForLine('', 5, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+//  CheckTokensForLine('', 6, [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+//
+//end;
+
 initialization
 
   RegisterTest(TTestHighlighterPas); 
 end.
 
+{
+
+unit Unit1;
+interface
+
+var
+  //deprecated: Integer deprecated;
+  unimplemented: Integer unimplemented;
+  platform: Integer platform;
+  experimental: Integer experimental;
+
+//type
+  //deprecated = Integer deprecated;
+
+  deprecated = class
+    experimental: Integer experimental;
+  private
+    a: Integer platform;
+    platform: Integer platform;
+    procedure Foo; deprecated;
+    property unimplemented: Integer read experimental; deprecated;
+  end
+
+
+//procedure deprecated; deprecated;
+
+implementation
+
+
+end.
+
+}
