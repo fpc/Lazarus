@@ -4255,7 +4255,7 @@ var
 var
   DlgResult, BuildResult: TModalResult;
   i, RealCurInd: Integer;
-  NeedRestart, FounfProfToBuild: Boolean;
+  NeedRestart, FoundProfToBuild: Boolean;
   s: String;
 begin
   DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
@@ -4269,14 +4269,14 @@ begin
         NeedRestart:=False;
         RealCurInd:=BuildLazProfiles.CurrentIndex;
         try
-          FounfProfToBuild:=False;
-          s:=sLineBreak + sLineBreak;
+          FoundProfToBuild:=False;
+          s:=sLineBreak+sLineBreak;
           for i:=0 to BuildLazProfiles.Count-1 do
             if BuildLazProfiles[i].BuildWithAll then begin
               s:=s+BuildLazProfiles[i].Name+sLineBreak;
-              FounfProfToBuild:=True;
+              FoundProfToBuild:=True;
             end;
-          if not FounfProfToBuild then begin
+          if not FoundProfToBuild then begin
             ShowMessage(lisNoBuildProfilesSelected);
             exit;
           end;
