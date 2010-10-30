@@ -1,0 +1,92 @@
+object CheckCompOptsForNewUnitDialog: TCheckCompOptsForNewUnitDialog
+  Left = 272
+  Height = 243
+  Top = 255
+  Width = 434
+  Caption = 'CheckCompOptsForNewUnitDialog'
+  ClientHeight = 243
+  ClientWidth = 434
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object NoteLabel: TLabel
+    Left = 6
+    Height = 94
+    Top = 6
+    Width = 422
+    Align = alTop
+    AutoSize = False
+    BorderSpacing.Around = 6
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object ModeLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 18
+    Top = 110
+    Width = 78
+    BorderSpacing.Left = 6
+    Caption = 'ModeLabel'
+    ParentColor = False
+  end
+  object ModeComboBox: TComboBox
+    AnchorSideLeft.Control = ModeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 90
+    Height = 27
+    Top = 106
+    Width = 135
+    BorderSpacing.Left = 6
+    ItemHeight = 0
+    TabOrder = 0
+    Text = 'ModeComboBox'
+  end
+  object AnsistringCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ModeComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 139
+    Width = 165
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'AnsistringCheckBox'
+    TabOrder = 1
+  end
+  object DoNotWarnCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AnsistringCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 171
+    Width = 178
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    Caption = 'DoNotWarnCheckBox'
+    TabOrder = 2
+  end
+  object OkButton: TButton
+    AnchorSideTop.Control = DoNotWarnCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 343
+    Height = 27
+    Top = 206
+    Width = 85
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 3
+  end
+end

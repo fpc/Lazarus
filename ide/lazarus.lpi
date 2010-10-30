@@ -56,7 +56,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="73">
+    <Units Count="74">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -555,6 +555,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="BuildModeDiffDlg"/>
       </Unit72>
+      <Unit73>
+        <Filename Value="checkcompoptsfornewunitdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CheckCompOptsForNewUnitDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CheckCompOptsForNewUnitDlg"/>
+      </Unit73>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

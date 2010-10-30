@@ -589,6 +589,11 @@ function FileDescriptorForm: TProjectFileDescriptor;
 function FileDescriptorDatamodule: TProjectFileDescriptor;
 function FileDescriptorText: TProjectFileDescriptor;
 
+type
+  TCheckCompOptsAndMainSrcForNewUnitEvent =
+    procedure(CompOpts: TLazCompilerOptions) of object;
+var
+  CheckCompOptsAndMainSrcForNewUnitEvent: TCheckCompOptsAndMainSrcForNewUnitEvent; // set by the IDE
 
 type
   TLazProject = class;
@@ -1152,6 +1157,8 @@ var
 begin
   Result:='{$mode objfpc}{$H+}';
   if CompOpts=nil then exit;
+  if Assigned(CheckCompOptsAndMainSrcForNewUnitEvent) then
+    CheckCompOptsAndMainSrcForNewUnitEvent(CompOpts);
   SyntaxMode:=CompOpts.SyntaxMode;
   if SyntaxMode<>'' then begin
     Result:='{$mode '+lowercase(SyntaxMode)+'}';

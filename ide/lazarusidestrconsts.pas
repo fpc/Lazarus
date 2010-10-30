@@ -1901,6 +1901,10 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisInvalidMode = 'Invalid mode %s';
+  lisTheProjectCompilerOptionsAndTheDirectivesInTheMain = 'The project '
+    +'compiler options and the directives in the main source differ. For the '
+    +'new unit the mode and string type of the project options are used:';
   lisThereIsAlreadyAnIDEMacroWithTheName = 'There is already an IDE macro '
     +'with the name "%s"';
   lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
@@ -4589,6 +4593,9 @@ resourcestring
   lisIdentifier = 'identifier';
   lisProjectUnit = 'project unit';
   lisSyntaxMode = 'Syntax mode';
+  lisUseAnsistrings = 'Use Ansistrings';
+  lisDoNotShowThisDialogForThisProject = 'Do not show this dialog for this '
+    +'project';
   lisObjectPascalDefault = 'Object Pascal - default';
   lisDelphi = 'Delphi';
   lisTurboPascal = 'Turbo Pascal';
@@ -4930,6 +4937,7 @@ resourcestring
   lisChangeBuildMode = 'Change build mode';
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';
+  lisDirectivesForNewUnit = 'Directives for new unit';
 
 implementation
 

@@ -135,7 +135,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg, EditDefineTree,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
-  BuildLazDialog, BuildProfileManager, BuildManager,
+  BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
@@ -514,6 +514,7 @@ type
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
+    procedure OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions);
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -1828,6 +1829,7 @@ begin
   IDEMessageDialog:=@OnIDEMessageDialog;
   IDEQuestionDialog:=@OnIDEQuestionDialog;
   TestCompilerOptions:=@OnCompilerOptionsDialogTest;
+  CheckCompOptsAndMainSrcForNewUnitEvent:=@OnCheckCompOptsAndMainSrcForNewUnit;
 end;
 
 procedure TMainIDE.SetupComponentPalette;
@@ -16340,6 +16342,12 @@ end;
 procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);
 begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
+end;
+
+procedure TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(
+  CompOpts: TLazCompilerOptions);
+begin
+  CheckCompOptsAndMainSrcForNewUnit(CompOpts);
 end;
 
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);

@@ -122,6 +122,9 @@ const
   FPCProcessorNames: array[1..6] of shortstring =(
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
+  FPCSyntaxModes: array[1..5] of shortstring = (
+    'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas'
+    );
 
   Lazarus_CPU_OS_Widget_Combinations: array[1..62] of shortstring = (
     'i386-linux-gtk',
