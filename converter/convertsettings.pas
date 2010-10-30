@@ -448,13 +448,15 @@ begin
     AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
     AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
     AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
+    // WindowsAPI
+    Categ:='WindowsAPI';
+    AddFunc(Categ, 'ShellExecute',
+                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
+    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL',''); // In Windows MMSystems unit.
     // Others
     Categ:='Other';
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
-    AddFunc(Categ, 'ShellExecute',
-                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
-    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL','');
   end;
 end;
 
