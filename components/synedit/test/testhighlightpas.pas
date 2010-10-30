@@ -676,6 +676,28 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
        tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
       ]);
 
+
+    SetLines
+      ([  'Program a',
+          'procedure '+s+'('+s+': '+s+');',
+          'var',
+             s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+            'foo, '+s+', bar: Integer '+s+';',
+          'begin end;',
+          ''
+      ]);
+
+    CheckTokensForLine('procedure in implement', 1,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol
+      ]);
+    CheckTokensForLine('var in procedure', 3,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('multi var in procedure', 4,
+      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+
+
     PopBaseName;
   end;
 begin
