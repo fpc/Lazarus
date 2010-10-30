@@ -406,6 +406,10 @@ msgstr "TP/BP 7.0-kompatibel"
 msgid "Bracket highlight"
 msgstr "Klammerhervorhebung"
 
+#: lazarusidestrconsts.dlgbracketmatchgroup
+msgid "Matching bracket pairs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
 msgstr "Nachrichtendateien des Free-Pascal-Compilers (*.msg)|*.msg|Alle Dateien (*.*)|*.*"
@@ -2317,9 +2321,35 @@ msgstr "Hinweise für die Komponentenpalette"
 msgid "Default pascal extension"
 msgstr "Voreingestellte Pascal-Dateiendung"
 
+#: lazarusidestrconsts.dlgpasextkeywords
+msgid "Highlight control statements as keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasextkeywordsgroup
+msgid "Extended Pascal keyword options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Linker zusätzliche Einstellungen übergeben (Leerzeichen trennt)"
+
+#: lazarusidestrconsts.dlgpasstringkeywords
+msgid "Highlight String keyword(s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
+msgid "Default"
+msgstr "Voreinstellung"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptnone
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
+msgid "None"
+msgstr "Keine"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptstring
+msgid "Only \"String\""
+msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3735,6 +3765,10 @@ msgstr "Automatisches Fortsetzen"
 msgid "Auto continue after:"
 msgstr "Automatisch fortsetzen nach:"
 
+#: lazarusidestrconsts.lisautomarkup
+msgid "Markup and Matches"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
 msgstr "Automatisch"
@@ -3764,7 +3798,9 @@ msgid "do not add character"
 msgstr "Zeichen nicht hinzufügen"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-msgid "Automatic features"
+#, fuzzy
+#| msgid "Automatic features"
+msgid "Completion and Hints"
 msgstr "Automatische Funktionen"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector

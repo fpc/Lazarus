@@ -627,8 +627,16 @@ msgstr "Metóda"
 msgid "Move &Down"
 msgstr ""
 
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr ""
+
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
+msgstr ""
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
 msgstr ""
 
 #: objinspstrconsts.oisnew
@@ -744,6 +752,10 @@ msgstr "Vybrať súbor"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
+msgstr ""
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
@@ -1109,6 +1121,10 @@ msgstr "Neznámy"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
+msgstr ""
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
 msgstr ""
 
 #: objinspstrconsts.oisvalue

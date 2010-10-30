@@ -400,6 +400,10 @@ msgstr "Compatible amb TP/BP 7.0"
 msgid "Bracket highlight"
 msgstr ""
 
+#: lazarusidestrconsts.dlgbracketmatchgroup
+msgid "Matching bracket pairs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
 msgstr ""
@@ -2294,9 +2298,35 @@ msgstr "Suggeriments per a la paleta de components"
 msgid "Default pascal extension"
 msgstr "Extensió Pascal predeterminada"
 
+#: lazarusidestrconsts.dlgpasextkeywords
+msgid "Highlight control statements as keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasextkeywordsgroup
+msgid "Extended Pascal keyword options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Passa les opcions a l'enllaçador (el delimitador és l'espai)"
+
+#: lazarusidestrconsts.dlgpasstringkeywords
+msgid "Highlight String keyword(s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
+msgid "Default"
+msgstr "Predeterminat"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptnone
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
+msgid "None"
+msgstr "Cap"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptstring
+msgid "Only \"String\""
+msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3707,6 +3737,10 @@ msgstr ""
 msgid "Auto continue after:"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomarkup
+msgid "Markup and Matches"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
 msgstr ""
@@ -3736,7 +3770,7 @@ msgid "do not add character"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticfeatures
-msgid "Automatic features"
+msgid "Completion and Hints"
 msgstr ""
 
 #: lazarusidestrconsts.lisautoshowobjectinspector

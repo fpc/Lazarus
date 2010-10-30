@@ -619,9 +619,17 @@ msgstr ""
 msgid "Move &Down"
 msgstr "下に移動(&D)"
 
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr ""
+
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
 msgstr "上に移動(&U)"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -737,6 +745,10 @@ msgstr "ファイルを選択"
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
 msgstr "すべて選択(&S)"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1102,6 +1114,10 @@ msgstr ""
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
 msgstr "すべての選択を解除(&U)"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr ""
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"

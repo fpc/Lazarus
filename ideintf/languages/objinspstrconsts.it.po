@@ -621,8 +621,16 @@ msgstr "Metodo"
 msgid "Move &Down"
 msgstr ""
 
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr ""
+
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
+msgstr ""
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
 msgstr ""
 
 #: objinspstrconsts.oisnew
@@ -738,6 +746,10 @@ msgstr "Seleziona un file"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
+msgstr ""
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
@@ -1103,6 +1115,10 @@ msgstr "Sconosciuto"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
+msgstr ""
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
 msgstr ""
 
 #: objinspstrconsts.oisvalue

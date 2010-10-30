@@ -15,7 +15,7 @@ msgstr "Действие"
 
 #: svnclasses.rsadd
 msgid "Add to version control"
-msgstr ""
+msgstr "Добавить под управление версиями"
 
 #: svnclasses.rsadded
 msgid "Added"
@@ -43,7 +43,7 @@ msgstr "Копия из пути"
 
 #: svnclasses.rscreatepatchfile
 msgid "Create patch file"
-msgstr ""
+msgstr "Создать файл patch"
 
 #: svnclasses.rsdate
 msgid "Date"
@@ -71,7 +71,7 @@ msgstr "Расширение"
 
 #: svnclasses.rsfilenotinworkingcopyanymore
 msgid "File is not part of local working copy (anymore)"
-msgstr ""
+msgstr "Файл (больше) не принадлежит локальной рабочей копии"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -111,19 +111,19 @@ msgstr "(нет)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
-msgstr ""
+msgstr "Разница Diff может быть выведена только для изменённых (M) файлов"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
-msgstr ""
+msgstr "Открыть файл в редакторе"
 
 #: svnclasses.rsopenpreviousrevisionineditor
 msgid "Open previous revision in editor"
-msgstr ""
+msgstr "Открыть предыдущую ревизию в редакторе"
 
 #: svnclasses.rsopenthisrevisionineditor
 msgid "Open this revision in editor"
-msgstr ""
+msgstr "Открыть эту ревизию в редакторе"
 
 #: svnclasses.rspath
 msgid "Path"
@@ -155,7 +155,7 @@ msgstr "Статус свойства"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
-msgstr ""
+msgstr "Вывести из-под управления версиями"
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
@@ -183,7 +183,7 @@ msgstr "Показать разницу Diff"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show diff of local changes"
-msgstr ""
+msgstr "Показать разницу Diff локальных изменений"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
@@ -191,11 +191,11 @@ msgstr "Показать последние X ревизий"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show diff against HEAD"
-msgstr ""
+msgstr "Показать разницу Diff относительно HEAD"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show diff against previous version"
-msgstr ""
+msgstr "Показать разницу Diff относительно предыдущей ревизии"
 
 #: svnclasses.rsshowlog
 msgid "Show log"

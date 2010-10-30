@@ -406,6 +406,10 @@ msgstr "Kompatibilní s TP/BP 7.0"
 msgid "Bracket highlight"
 msgstr "Zvýraznění závorky"
 
+#: lazarusidestrconsts.dlgbracketmatchgroup
+msgid "Matching bracket pairs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
 msgstr "Soubor zpráv překladače Free Pascal (*.msg)|*.msg|Jakýkoliv soubor (*.*)|*.*"
@@ -2289,9 +2293,35 @@ msgstr "Popisky pro paletu komponent"
 msgid "Default pascal extension"
 msgstr "Výchozí přípona pascalu"
 
+#: lazarusidestrconsts.dlgpasextkeywords
+msgid "Highlight control statements as keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasextkeywordsgroup
+msgid "Extended Pascal keyword options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Předat nastavení spojovači (mezera je oddělovač)"
+
+#: lazarusidestrconsts.dlgpasstringkeywords
+msgid "Highlight String keyword(s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
+msgid "Default"
+msgstr "Výchozí"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptnone
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
+msgid "None"
+msgstr "Žádné"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptstring
+msgid "Only \"String\""
+msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3676,6 +3706,10 @@ msgstr "Automaticky pokračovat"
 msgid "Auto continue after:"
 msgstr "Automaticky pokračovat po:"
 
+#: lazarusidestrconsts.lisautomarkup
+msgid "Markup and Matches"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
 msgstr "Automaticky"
@@ -3705,7 +3739,9 @@ msgid "do not add character"
 msgstr "nepřidávat znak"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-msgid "Automatic features"
+#, fuzzy
+#| msgid "Automatic features"
+msgid "Completion and Hints"
 msgstr "Automatické vlastnosti"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector

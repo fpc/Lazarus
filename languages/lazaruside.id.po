@@ -400,6 +400,10 @@ msgstr "Kompatibel TP/BP 7.0"
 msgid "Bracket highlight"
 msgstr ""
 
+#: lazarusidestrconsts.dlgbracketmatchgroup
+msgid "Matching bracket pairs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
 msgstr ""
@@ -2294,9 +2298,35 @@ msgstr "Petunjuk untuk palet komponen"
 msgid "Default pascal extension"
 msgstr "Ekstensi pascal default"
 
+#: lazarusidestrconsts.dlgpasextkeywords
+msgid "Highlight control statements as keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasextkeywordsgroup
+msgid "Extended Pascal keyword options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Opsi Operan Ke Penggabung (Pemisah adalah spasi)"
+
+#: lazarusidestrconsts.dlgpasstringkeywords
+msgid "Highlight String keyword(s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
+msgid "Default"
+msgstr "Default"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptnone
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
+msgid "None"
+msgstr "Tidak ada"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptstring
+msgid "Only \"String\""
+msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3711,6 +3741,10 @@ msgstr ""
 msgid "Auto continue after:"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomarkup
+msgid "Markup and Matches"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
 msgstr ""
@@ -3740,7 +3774,9 @@ msgid "do not add character"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticfeatures
-msgid "Automatic features"
+#, fuzzy
+#| msgid "Automatic features"
+msgid "Completion and Hints"
 msgstr "Fitur otomatis"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector

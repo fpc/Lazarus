@@ -609,9 +609,17 @@ msgstr "מתודה"
 msgid "Move &Down"
 msgstr "הזז למטה"
 
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr ""
+
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
 msgstr "הזז למעלה"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -725,6 +733,10 @@ msgstr "בחר קובץ"
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
 msgstr "בחר הכל"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1090,6 +1102,10 @@ msgstr "לא ידוע "
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
 msgstr "בטל את כל הבחירות"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr ""
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-28 03:41+0300\n"
+"PO-Revision-Date: 2010-10-30 15:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -414,6 +414,10 @@ msgstr "Совместимость с TP/BP 7.0"
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
 msgstr "Подсветка скобок"
+
+#: lazarusidestrconsts.dlgbracketmatchgroup
+msgid "Matching bracket pairs"
+msgstr "Парные скобки"
 
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
@@ -2321,9 +2325,35 @@ msgstr "Подсказки палитры компонентов"
 msgid "Default pascal extension"
 msgstr "Стандартное расширение Паскаля"
 
+#: lazarusidestrconsts.dlgpasextkeywords
+msgid "Highlight control statements as keywords"
+msgstr "Подсвечивать операторы управления как ключевые слова"
+
+#: lazarusidestrconsts.dlgpasextkeywordsgroup
+msgid "Extended Pascal keyword options"
+msgstr "Расширенные параметры ключевых слов Паскаля"
+
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Передавать параметры компоновщику (отделять пробелами)"
+
+#: lazarusidestrconsts.dlgpasstringkeywords
+msgid "Highlight String keyword(s)"
+msgstr "Подсветка ключевого слова String"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
+msgid "Default"
+msgstr "По умолчанию"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptnone
+msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
+msgid "None"
+msgstr "Нет"
+
+#: lazarusidestrconsts.dlgpasstringkeywordsoptstring
+msgid "Only \"String\""
+msgstr "Только \"String\""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3722,6 +3752,10 @@ msgstr "Продолжать автоматически"
 msgid "Auto continue after:"
 msgstr "Продолжить после:"
 
+#: lazarusidestrconsts.lisautomarkup
+msgid "Markup and Matches"
+msgstr "Подсветка и соответствия"
+
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
 msgstr "Автоматически"
@@ -3751,8 +3785,9 @@ msgid "do not add character"
 msgstr "не добавлять сам символ"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-msgid "Automatic features"
-msgstr "Автоматические функции"
+#| msgid "Automatic features"
+msgid "Completion and Hints"
+msgstr "Автозавершение и подсказки"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-18 05:04+0300\n"
+"PO-Revision-Date: 2010-10-30 15:23+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -621,9 +621,17 @@ msgstr "Метод"
 msgid "Move &Down"
 msgstr "Переместить в&низ"
 
+#: objinspstrconsts.oismovedownhint
+msgid "Move field down"
+msgstr "Переместить поле вниз"
+
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
 msgstr "Переместить &вверх"
+
+#: objinspstrconsts.oismoveuphint
+msgid "Move field up"
+msgstr "Переместить поле вверх"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -738,6 +746,10 @@ msgstr "Выберите файл"
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
 msgstr "Вы&делить все"
+
+#: objinspstrconsts.oisselectallhint
+msgid "Select All Fields"
+msgstr "Выделить все поля"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1103,6 +1115,10 @@ msgstr "Неизвестный"
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
 msgstr "&Снять выделение"
+
+#: objinspstrconsts.oisunselectallhint
+msgid "Unselect All"
+msgstr "Снять выделение"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
