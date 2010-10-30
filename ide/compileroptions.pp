@@ -3680,16 +3680,6 @@ var
 begin
   s:=OptionText;
 
-  {if (Option=pcosCustomOptions) and PlatformIndependent
-  and (Pos('LCLWidgetType',s)>0) then begin
-    DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
-    if Assigned(OnLocalSubstitute) then
-      s:=OnLocalSubstitute(s,PlatformIndependent);
-    DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
-    s:=ParseString(Self,s,PlatformIndependent);
-    DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
-  end;}
-
   // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then

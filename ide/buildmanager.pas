@@ -176,7 +176,7 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
-                             ScanFPCSrc: TBMScanFPCSources = bmsfsSkip);
+                             ScanFPCSrc: TBMScanFPCSources);
     procedure SetBuildTargetIDE;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
@@ -380,6 +380,7 @@ begin
   if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
     Result:=GetDefaultTargetCPU;
   Result:=GetFPCTargetCPU(Result);
+  //debugln(['TBuildManager.GetTargetCPU ',Result]);
 end;
 
 function TBuildManager.GetLCLWidgetType(UseCache: boolean): string;
@@ -591,7 +592,7 @@ begin
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','');
+    SetBuildTarget('','','',bmsfsSkip);
   
   // start the compiler and ask for his settings
   // provide an english message file
@@ -1686,9 +1687,14 @@ begin
     // return the values of the active project
     if (Project1=nil) or (Project1.MacroValues=nil) then exit;
     Result:=Project1.MacroValues.CfgVars;
+    if Project1.MacroValues.CfgVarsBuildMacroStamp=BuildMacroChangeStamp then
+      exit;
+    // rebuild project macros
+    Result.Clear;
+    Project1.MacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
 
     // set overrides
-    Overrides:=BuildBoss.GetBuildMacroOverrides;
+    Overrides:=GetBuildMacroOverrides;
     try
       for i:=0 to Overrides.Count-1 do
         Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
@@ -1837,7 +1843,7 @@ begin
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
   if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
     RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone);
-  //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS UNITPATH=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed)]);
+  //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
 end;
 
 procedure TBuildManager.SetBuildTargetIDE;
@@ -1846,6 +1852,7 @@ var
   NewTargetCPU: String;
   NewLCLWidgetSet: String;
 begin
+  MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
   NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
   NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
   NewLCLWidgetSet:=LCLPlatformDirNames[MiscellaneousOptions.BuildLazOpts.TargetPlatform];
@@ -1853,7 +1860,8 @@ begin
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet);
+  //debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground);
 end;
 
 end.

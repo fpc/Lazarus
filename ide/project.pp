@@ -601,6 +601,7 @@ type
   TProjectBuildMacros = class
   private
     FCfgVars: TCTCfgScriptVariables;
+    FCfgVarsBuildMacroStamp: integer;
     FChangeStamp: integer;
     fLastSavedChangeStamp: integer;
     FItems: TStrings;
@@ -635,6 +636,8 @@ type
   public
     property Modified: boolean read GetModified write SetModified;
     property CfgVars: TCTCfgScriptVariables read FCfgVars;
+    property CfgVarsBuildMacroStamp: integer read FCfgVarsBuildMacroStamp
+                                             write FCfgVarsBuildMacroStamp;
   end;
 
   { TProjectBuildMode }
@@ -6529,6 +6532,7 @@ constructor TProjectBuildMacros.Create;
 begin
   FItems:=TStringList.Create;
   FCfgVars:=TCTCfgScriptVariables.Create;
+  FCfgVarsBuildMacroStamp:=InvalidParseStamp;
   FChangeStamp:=CTInvalidChangeStamp;
   fOnChanged:=TMethodList.Create;
 end;

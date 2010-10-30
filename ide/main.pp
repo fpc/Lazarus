@@ -3340,7 +3340,8 @@ begin
 
   Project1.ActiveBuildMode:=NewMode;
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
+    bmsfsBackground);
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -4685,7 +4686,8 @@ begin
     Project.RestoreBuildModes;
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
+    bmsfsBackground);
   if (not Restore) and Project.CompilerOptions.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
@@ -11524,7 +11526,7 @@ begin
     if Result<>mrOk then exit;
 
   finally
-    MainBuildBoss.SetBuildTarget('','','');
+    MainBuildBoss.SetBuildTarget('','','',bmsfsBackground);
 
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
