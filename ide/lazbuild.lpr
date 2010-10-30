@@ -630,7 +630,8 @@ begin
     Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
   // apply options
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
+    bmsfsSkip);
 
   if not SkipDependencies then begin
     // compile required packages
@@ -800,7 +801,7 @@ begin
   // load static base packages
   PackageGraph.LoadStaticBasePackages;
 
-  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride);
+  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,bmsfsSkip);
 
   fInitResult:=true;
 end;
