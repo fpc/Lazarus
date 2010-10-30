@@ -930,7 +930,9 @@ type
   private
     FCompletionLongLineHintInMSec: Integer;
     FCompletionLongLineHintType: TSynCompletionLongHintType;
+    FPasExtendedKeywordsMode: Boolean;
     FHideSingleTabInWindow: Boolean;
+    FPasStringKeywordMode: TSynPasStringMode;
     xmlconfig: TRttiXMLConfig;
 
     // general options
@@ -1171,6 +1173,12 @@ type
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
     property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
+
+    // Highlighter Pas
+    property PasExtendedKeywordsMode: Boolean
+             read FPasExtendedKeywordsMode write FPasExtendedKeywordsMode default False;
+    property PasStringKeywordMode: TSynPasStringMode
+             read FPasStringKeywordMode write FPasStringKeywordMode default spsmDefault;
 
   end;
 
@@ -3282,6 +3290,11 @@ begin
 
   // Code folding
   FReverseFoldPopUpOrder := True;
+
+  // pas highlighter
+  FPasExtendedKeywordsMode := False;
+  FPasStringKeywordMode := spsmDefault;
+
 end;
 
 procedure TEditorOptions.Load;
@@ -4054,6 +4067,10 @@ begin
   ReadHighlighterSettings(Syn, '');
   ReadHighlighterFoldSettings(Syn);
   ReadHighlighterDivDrawSettings(Syn);
+  if Syn is TSynPasSyn then begin
+    TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
+    TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
+  end;;
 end;
 
 procedure TEditorOptions.SetMarkupColors(aSynEd: TSynEdit);

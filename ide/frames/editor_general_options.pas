@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  SynEdit, SynBeautifier, DividerBevel;
+  SynEdit, SynBeautifier, SynHighlighterPas, DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;
@@ -97,12 +97,17 @@ type
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
+    FPasExtendedKeywordsMode: Boolean;
+    FPasStringKeywordMode: TSynPasStringMode;
     function DefaultBookmarkImages: TImageList;
+    procedure SetExtendedKeywordsMode(const AValue: Boolean);
+    procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
   public
     PreviewEdits: array of TPreviewEditor;
     procedure AddPreviewEdit(AEditor: TPreviewEditor);
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
+    procedure UpdatePrevieEdits;
 
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
@@ -110,6 +115,11 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    // current previewmode
+    property PasExtendedKeywordsMode: Boolean
+             read FPasExtendedKeywordsMode write SetExtendedKeywordsMode default False;
+    property PasStringKeywordMode: TSynPasStringMode
+             read FPasStringKeywordMode write SetStringKeywordMode default spsmDefault;
   end;
 
 implementation
@@ -328,6 +338,17 @@ begin
   end;
 end;
 
+procedure TEditorGeneralOptionsFrame.UpdatePrevieEdits;
+var
+  a: Integer;
+begin
+  for a := Low(PreviewEdits) to High(PreviewEdits) do
+    if PreviewEdits[a].Highlighter is TSynPasSyn then begin
+      TSynPasSyn(PreviewEdits[a].Highlighter).ExtendedKeywordsMode := PasExtendedKeywordsMode;
+      TSynPasSyn(PreviewEdits[a].Highlighter).StringKeywordMode := PasStringKeywordMode;
+    end;
+end;
+
 procedure TEditorGeneralOptionsFrame.ComboboxOnChange(Sender: TObject);
 var
   ComboBox: TComboBox absolute Sender;
@@ -499,6 +520,20 @@ begin
   Result := FDefaultBookmarkImages;
 end;
 
+procedure TEditorGeneralOptionsFrame.SetExtendedKeywordsMode(const AValue: Boolean);
+begin
+  if FPasExtendedKeywordsMode = AValue then exit;
+  FPasExtendedKeywordsMode := AValue;
+  UpdatePrevieEdits;
+end;
+
+procedure TEditorGeneralOptionsFrame.SetStringKeywordMode(const AValue: TSynPasStringMode);
+begin
+  if FPasStringKeywordMode = AValue then exit;
+  FPasStringKeywordMode := AValue;
+  UpdatePrevieEdits;
+end;
+
 procedure TEditorGeneralOptionsFrame.AddPreviewEdit(AEditor: TPreviewEditor);
 begin
   SetLength(PreviewEdits, Length(PreviewEdits) + 1);
@@ -511,6 +546,10 @@ constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   PreviewEdits := nil;
+  if EditorOpts <> nil then begin
+    FPasExtendedKeywordsMode := EditorOpts.PasExtendedKeywordsMode;
+    FPasStringKeywordMode := EditorOpts.PasStringKeywordMode;
+  end;
 end;
 
 initialization

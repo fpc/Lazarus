@@ -28,7 +28,7 @@ uses
   Classes, StdCtrls, ComCtrls, Graphics, sysutils,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls,
   SynEditMarkupBracket, editor_color_options, editor_general_options,
-  SynEdit, SynCompletion, DividerBevel, LCLType;
+  SynEdit, SynCompletion, SynHighlighterPas, DividerBevel, LCLType;
 
 type
   { TEditorMarkupOptionsFrame }
@@ -37,8 +37,12 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
+    chkExtPasKeywords: TCheckBox;
+    dropPasStringKeywords: TComboBox;
+    divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
+    lblPasStringKeywords: TLabel;
     MarkupColorLink: TLabel;
     MarkupWordDelayLabel: TLabel;
     MarkupWordNoTimerCheckBox: TCheckBox;
@@ -54,6 +58,8 @@ type
     procedure BracketLinkClick(Sender: TObject);
     procedure BracketLinkMouseEnter(Sender: TObject);
     procedure BracketLinkMouseLeave(Sender: TObject);
+    procedure chkExtPasKeywordsChange(Sender: TObject);
+    procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     procedure MarkupColorLinkClick(Sender: TObject);
   private
@@ -132,6 +138,18 @@ begin
   (Sender as TLabel).Font.Color := clBlue;
 end;
 
+procedure TEditorMarkupOptionsFrame.chkExtPasKeywordsChange(Sender: TObject);
+begin
+  GeneralPage.PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
+  GeneralPage.UpdatePrevieEdits;
+end;
+
+procedure TEditorMarkupOptionsFrame.dropPasStringKeywordsChange(Sender: TObject);
+begin
+  GeneralPage.PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
+  GeneralPage.UpdatePrevieEdits;
+end;
+
 function TEditorMarkupOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
 begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
@@ -170,6 +188,13 @@ begin
   BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
   BracketCombo.Items.Add(dlgHighlightRightOfCursor);
   BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
+
+  divKeywords.Caption := dlgPasExtKeywordsGroup;
+  chkExtPasKeywords.Caption := dlgPasExtKeywords;
+  lblPasStringKeywords.Caption := dlgPasStringKeywords;
+  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptDefault);
+  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
+  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
 end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -186,6 +211,9 @@ begin
       BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
     else
       BracketCombo.ItemIndex := 0;
+
+    chkExtPasKeywords.Checked := PasExtendedKeywordsMode;
+    dropPasStringKeywords.ItemIndex := ord(PasStringKeywordMode);
   end;
   AutoDelayTrackBarChange(nil);
 end;
@@ -208,6 +236,8 @@ begin
       BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
     end;
 
+    PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
+    PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
   end;
 end;
 
