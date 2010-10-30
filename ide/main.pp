@@ -4270,7 +4270,7 @@ begin
         RealCurInd:=BuildLazProfiles.CurrentIndex;
         try
           FounfProfToBuild:=False;
-          s:=sLineBreak;
+          s:=sLineBreak + sLineBreak;
           for i:=0 to BuildLazProfiles.Count-1 do
             if BuildLazProfiles[i].BuildWithAll then begin
               s:=s+BuildLazProfiles[i].Name+sLineBreak;
