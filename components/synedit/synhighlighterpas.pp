@@ -62,6 +62,8 @@ uses
   SynEditStrConst;
 
 type
+  TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
+
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
     tkSpace, tkString, tkSymbol, {$IFDEF SYN_LAZARUS}tkDirective, {$ENDIF}
     tkUnknown);
@@ -235,10 +237,12 @@ type
   TSynPasSyn = class(TSynCustomFoldHighlighter)
   private
     fAsmStart: Boolean;
+    FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
     FStartCodeFoldBlockLevel: integer;
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
+    FStringKeywordMode: TSynPasStringMode;
     FSynPasRangeInfo: TSynPasRangeInfo;
     FAtLineStart: Boolean; // Line had only spaces or comments sofar
     {$IFDEF SYN_LAZARUS}
@@ -284,6 +288,8 @@ type
     procedure GrowNodeInfoList;
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
+    procedure SetExtendedKeywordsMode(const AValue: Boolean);
+    procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
     {$ELSE}
@@ -317,6 +323,7 @@ type
     function Func55: TtkTokenKind;
     function Func56: TtkTokenKind;
     function Func57: TtkTokenKind;
+    function Func58: TtkTokenKind;
     function Func59: TtkTokenKind;
     function Func60: TtkTokenKind;
     function Func61: TtkTokenKind;
@@ -527,6 +534,10 @@ protected
     property NestedComments: boolean read FNestedComments write FNestedComments;
     {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
+    property ExtendedKeywordsMode: Boolean
+             read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
+    property StringKeywordMode: TSynPasStringMode
+             read FStringKeywordMode write SetStringKeywordMode default spsmDefault;
   end;
 
   { TSynFreePascalSyn }
@@ -658,6 +669,7 @@ begin
   fIdentFuncTable[55] := @Func55;
   fIdentFuncTable[56] := @Func56;
   fIdentFuncTable[57] := @Func57;
+  fIdentFuncTable[58] := @Func58;
   fIdentFuncTable[59] := @Func59;
   fIdentFuncTable[60] := @Func60;
   fIdentFuncTable[61] := @Func61;
@@ -871,6 +883,22 @@ begin
   //DebugLn(['TSynPasSyn.SetCompilerMode FCompilerMode=',ord(FCompilerMode),' FNestedComments=',FNestedComments]);
 end;
 
+procedure TSynPasSyn.SetExtendedKeywordsMode(const AValue: Boolean);
+begin
+  if FExtendedKeywordsMode = AValue then exit;
+  FExtendedKeywordsMode := AValue;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
+end;
+
+procedure TSynPasSyn.SetStringKeywordMode(const AValue: TSynPasStringMode);
+begin
+  if FStringKeywordMode = AValue then exit;
+  FStringKeywordMode := AValue;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
+end;
+
 procedure TSynPasSyn.GrowNodeInfoList;
 begin
   if FNodeInfoCount < length(FNodeInfoList) then
@@ -1049,6 +1077,9 @@ begin
     else StartPascalCodeFoldBlock(cfbtBeginEnd);
     //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
+  if FExtendedKeywordsMode and KeyComp('Break') then
+    Result := tkKey
+  else
     Result := tkIdentifier;
 end;
 
@@ -1185,6 +1216,14 @@ begin
   if KeyComp('Goto') then Result := tkKey else
     if KeyComp('While') then Result := tkKey else
       if KeyComp('Xor') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func58: TtkTokenKind;
+begin
+  if FExtendedKeywordsMode and KeyComp('Exit') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func59: TtkTokenKind;
@@ -1438,7 +1477,10 @@ end;
 
 function TSynPasSyn.Func87: TtkTokenKind;
 begin
-  if KeyComp('String') then Result := tkKey else Result := tkIdentifier;
+  if (FStringKeywordMode in [spsmDefault, spsmStringOnly]) and KeyComp('String') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func88: TtkTokenKind;
@@ -1644,10 +1686,13 @@ begin
   if KeyComp('Register') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
     Result := tkKey
   else
-    if KeyComp('Platform') then
-      Result := tkKey
-    else
-      Result := tkIdentifier;
+  if KeyComp('Platform') then
+    Result := tkKey
+  else
+  if FExtendedKeywordsMode and KeyComp('Continue') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func102: TtkTokenKind;
@@ -1759,7 +1804,10 @@ end;
 
 function TSynPasSyn.Func128: TtkTokenKind;
 begin
-  if KeyComp('Widestring') then Result := tkKey else Result := tkIdentifier;
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('Widestring') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func129: TtkTokenKind;
@@ -1779,7 +1827,7 @@ end;
 
 function TSynPasSyn.Func130: TtkTokenKind;
 begin
-  if KeyComp('Ansistring') then
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('Ansistring') then
     Result := tkKey
   else
   if KeyComp('Enumerator') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
@@ -2063,6 +2111,8 @@ end;
 constructor TSynPasSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FStringKeywordMode := spsmDefault;
+  FExtendedKeywordsMode := False;
   CreateDividerDrawConfig;
   fD4syntax := true;
   fAsmAttri := TSynHighlighterAttributes.Create(SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
