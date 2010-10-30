@@ -47,6 +47,7 @@ type
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
     procedure TestContextForDeprecated;
+    procedure TestContextForClassModifier; // Sealed abstract
   end;
 
 implementation
@@ -705,6 +706,34 @@ begin
   SubTest('unimplemented');
   SubTest('experimental');
   SubTest('platform');
+end;
+
+procedure TTestHighlighterPas.TestContextForClassModifier;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class sealed abstract',
+         'a, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace,
+      tkKey {sealed}, tkSpace,
+      tkKey {abstract}
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  4,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
 end;
 
 initialization
