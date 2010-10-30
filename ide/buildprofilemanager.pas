@@ -122,6 +122,7 @@ type
     fUpdateRevisionInc: boolean;
     fRestartAfterBuild: boolean;
     fConfirmBuild: boolean;
+    fBuildWithAll: boolean;
     // MakeModeSettings is Synchronised with TMakeModeDefs, same indexes.
     fMakeModes: TMakeModeSettings;
 
@@ -149,6 +150,7 @@ type
     property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
     property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
     property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
+    property BuildWithAll: boolean read fBuildWithAll write fBuildWithAll;
     property MakeModes: TMakeModeSettings read fMakeModes;
   end;
 
@@ -453,6 +455,7 @@ begin
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
   FRestartAfterBuild :=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
   FConfirmBuild      :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+  fBuildWithAll      :=XMLConfig.GetValue(Path+'BuildWithAll/Value',true);
 end;
 
 procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
@@ -478,6 +481,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
   XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
   XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
+  XMLConfig.SetDeleteValue(Path+'BuildWithAll/Value',FBuildWithAll,true);
 end;
 
 procedure TBuildLazarusProfile.Assign(Source: TBuildLazarusProfile; ACopyName: Boolean);
@@ -497,6 +501,7 @@ begin
   UpdateRevisionInc :=Source.UpdateRevisionInc;
   RestartAfterBuild :=Source.RestartAfterBuild;
   ConfirmBuild      :=Source.ConfirmBuild;
+  BuildWithAll      :=Source.BuildWithAll;
   for i:=0 to Length(fMakeModes)-1 do
     fMakeModes[i]:=Source.MakeModes[i];
 end;
@@ -576,6 +581,7 @@ begin
     fWithStaticPackages:=False;
     fRestartAfterBuild:=True;
     fConfirmBuild:=True;
+    fBuildWithAll:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisLCL then
         fMakeModes[i]:=mmBuild
@@ -592,6 +598,7 @@ begin
     fWithStaticPackages:=True;
     fRestartAfterBuild:=True;
     fConfirmBuild:=True;
+    fBuildWithAll:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
@@ -608,6 +615,7 @@ begin
     fWithStaticPackages:=False;
     fRestartAfterBuild:=True;
     fConfirmBuild:=True;
+    fBuildWithAll:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
@@ -624,6 +632,7 @@ begin
     fWithStaticPackages:=True;
     fRestartAfterBuild:=True;
     fConfirmBuild:=True;
+    fBuildWithAll:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisExamples then
         fMakeModes[i]:=mmNone // All exept for examples.
@@ -640,6 +649,7 @@ begin
     fWithStaticPackages:=True;
     fRestartAfterBuild:=True;
     fConfirmBuild:=True;
+    fBuildWithAll:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       fMakeModes[i]:=mmCleanBuild;
   end;

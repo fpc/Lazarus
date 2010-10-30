@@ -76,7 +76,9 @@ type
     CleanAllCheckBox: TCheckBox;
     BuildProfileComboBox: TComboBox;
     CompileButton: TBitBtn;
+    CompileAllButton: TBitBtn;
     ConfirmBuildCheckBox: TCheckBox;
+    BuildWithAllCheckBox: TCheckBox;
     DetailsPanel: TPanel;
     HelpButton: TBitBtn;
     BuildProfileLabel: TLabel;
@@ -101,6 +103,7 @@ type
     WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildProfileButtonClick(Sender: TObject);
     procedure BuildProfileComboBoxSelect(Sender: TObject);
+    procedure CompileAllButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -123,6 +126,7 @@ type
     function GetMakeModeAtX(const X: Integer; out MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
+    procedure PrepareClose;
   public
     constructor Create(TheOwner: TComponent); overload; reintroduce;
     destructor Destroy; override;
@@ -178,6 +182,7 @@ end;
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 // mrOk=save
 // mrYes=save and compile
+// mrAll=save and compile all selected profiles
 var
   ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
 begin
@@ -186,7 +191,7 @@ begin
   try
     ConfigBuildLazDlg.Profiles.Assign(AProfiles); // Copy profiles to dialog.
     Result := ConfigBuildLazDlg.ShowModal;
-    if Result in [mrOk,mrYes] then begin
+    if Result in [mrOk,mrYes,mrAll] then begin
       AProfiles.Assign(ConfigBuildLazDlg.Profiles); // Copy profiles back from dialog.
     end;
   finally
@@ -761,7 +766,9 @@ begin
   UpdateRevisionIncCheckBox.Caption := lisUpdateRevisionInc;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
+  BuildWithAllCheckBox.Caption := lisLazBuildWithAll;
   CompileButton.Caption := lisMenuBuild;
+  CompileAllButton.Caption := lisMenuBuildAll;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   HelpButton.Caption := lisMenuHelp;
@@ -770,6 +777,7 @@ begin
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
+  CompileAllButton.LoadGlyphFromLazarusResource('menu_build_all');
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
     SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
@@ -991,6 +999,7 @@ begin
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
   RestartAfterBuildCheckBox.Checked :=AProfile.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked      :=AProfile.ConfirmBuild;
+  BuildWithAllCheckBox.Checked      :=AProfile.BuildWithAll;
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
   TargetCPUComboBox.Text            :=AProfile.TargetCPU;
@@ -1005,6 +1014,7 @@ begin
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
   AProfile.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
+  AProfile.BuildWithAll      :=BuildWithAllCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
@@ -1062,17 +1072,27 @@ begin
   end;
 end;
 
-procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.PrepareClose;
 begin
   CopyUIToProfile(Profiles.Current);
   MainIDEBar.itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+Profiles.Current.Name+')';
+end;
+
+procedure TConfigureBuildLazarusDlg.CompileAllButtonClick(Sender: TObject);
+begin
+  PrepareClose;
+  ModalResult:=mrAll;
+end;
+
+procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
+begin
+  PrepareClose;
   ModalResult:=mrYes;
 end;
 
 procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
 begin
-  CopyUIToProfile(Profiles.Current);
-  MainIDEBar.itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+Profiles.Current.Name+')';
+  PrepareClose;
   ModalResult:=mrOk;
 end;
 

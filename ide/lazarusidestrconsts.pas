@@ -2748,6 +2748,8 @@ resourcestring
    
   // Build lazarus dialog
   lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus?';
+  lisConfirmBuildAllProfiles = 'The following profiles will be built: %sContinue?';
+  lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
@@ -2780,6 +2782,7 @@ resourcestring
   lisLazBuildRestartAfterBuild = 'Restart after successful Build';
   lisUpdateRevisionInc = 'Update revision.inc';
   lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
+  lisLazBuildWithAll = 'Include this profile when building all';
   lisLazBuildOk = 'Ok';
   lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';
