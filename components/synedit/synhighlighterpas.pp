@@ -1463,7 +1463,7 @@ begin
     end
     else if KeyComp('Deprecated') then begin
       tbf := TopPascalCodeFoldBlockType;
-      if ( ( (tbf = cfbtVarType) and (rsVarTypeInSpecification in fRange) ) or
+      if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
            ( (tbf in [cfbtClass, cfbtClassSection]) and
              (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
            ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
@@ -1735,7 +1735,7 @@ begin
   else
   if KeyComp('Platform') then begin
     tbf := TopPascalCodeFoldBlockType;
-      if ( ( (tbf = cfbtVarType) and (rsVarTypeInSpecification in fRange) ) or
+      if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
            ( (tbf in [cfbtClass, cfbtClassSection]) and
              (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
            ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
@@ -1966,7 +1966,7 @@ var
 begin
   if KeyComp('Experimental') then begin
     tbf := TopPascalCodeFoldBlockType;
-      if ( ( (tbf = cfbtVarType) and (rsVarTypeInSpecification in fRange) ) or
+      if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
            ( (tbf in [cfbtClass, cfbtClassSection]) and
              (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
            ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
@@ -2033,7 +2033,7 @@ var
 begin
   if KeyComp('Unimplemented') then begin
     tbf := TopPascalCodeFoldBlockType;
-      if ( ( (tbf = cfbtVarType) and (rsVarTypeInSpecification in fRange) ) or
+      if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
            ( (tbf in [cfbtClass, cfbtClassSection]) and
              (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) ) or
            ( tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure] )
@@ -2549,7 +2549,7 @@ begin
     inc(Run) // ":="
   else begin
     fRange := fRange + [rsAfterEqualOrColon] - [rsAtCaseLabel];
-    if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtClass, cfbtClassSection]) and
+    if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection]) and
        not(rsAfterClassMembers in fRange)
     then
       fRange := fRange + [rsVarTypeInSpecification];
@@ -2781,7 +2781,7 @@ begin
   inc(Run);
   fTokenID := tkSymbol;
   fRange := fRange + [rsAfterEqualOrColon];
-  if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtClass, cfbtClassSection]) and
+  if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection]) and
      not(rsAfterClassMembers in fRange)
   then
     fRange := fRange + [rsVarTypeInSpecification];
