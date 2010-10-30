@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,7 +39,7 @@ msgstr "הסוג הבסיסי של \"%s\" לא נמצא"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "התחלה ב %s ללא סוף"
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
@@ -59,7 +59,7 @@ msgstr "צפויה פתיחת סוגריים, אבל s% נמצא"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "קבוע תו מחוץ לתחום"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -299,23 +299,23 @@ msgstr "הרשאת ריצה הוגדרה עבור s%"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "מחכה ל ), אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "מחכה ל (, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "מחכה ל =:, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "מחכה למזהה, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsexpectedstatementbutfound
 msgid "expected statement, but found %s"
-msgstr ""
+msgstr "מחכה למשפט, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -529,7 +529,7 @@ msgstr "מתג מצב לא חוקי  \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "אופרטור לא חוקי %s"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -581,7 +581,7 @@ msgstr "ההגדרה של סוג המתודה לא נמצאה"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "חסר =:"
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -645,19 +645,19 @@ msgstr "מתודה ישנה לא נמצאה: s%"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "מחכה לאופרנד אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "מחכה לאופרנד, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "מחכה לאופרטור, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "מחכה לאופרטור, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -729,7 +729,7 @@ msgstr "תיקיית זמן ריצה"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "קבצים סרוקים: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
@@ -793,7 +793,7 @@ msgstr "לביטוי אין סוג פשוט"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "מחכה ל then, אבל נמצא %s"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -837,7 +837,7 @@ msgstr "מלת מפתח לא צפויה \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "מלה שמורה לא צפוייה %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

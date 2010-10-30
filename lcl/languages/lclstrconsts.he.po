@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11,31 +11,31 @@ msgstr ""
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "דפדפן  %s%s%s אינו קובץ ריצה."
 
 #: lclstrconsts.hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "דפדפן  %s%s%s לא נמצא."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "שגיאה בזמן הרצת %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr ""
+msgstr "לא יכול למצוא דפדפן HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "לא נמצא דפדפן HTML. הגדר אחד ב  Environment -> Options -> Help -> Help Options"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "בסיס הנתונים של העזרה לא יכול למצוא את הקובץ %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "המאקרו %s ב BrowserParams  יוחלף ב URL."
 
 #: lclstrconsts.ifsalt
 msgid "Alt"
@@ -107,7 +107,7 @@ msgstr "סופי"
 
 #: lclstrconsts.ifsvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
@@ -125,11 +125,11 @@ msgstr "הכנס"
 
 #: lclstrconsts.ifsvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lclstrconsts.ifsvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lclstrconsts.ifsvk_lbutton
 msgid "Mouse Button Left"
@@ -240,7 +240,7 @@ msgstr "למעלה"
 
 #: lclstrconsts.liscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "לא יכול להריץ את %s"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -249,15 +249,15 @@ msgstr "משאב s% לא נמצא"
 
 #: lclstrconsts.lisprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "קובץ התוכנית %s לא נמצא "
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
-msgstr ""
+msgstr "צל כהה תלת ממדי"
 
 #: lclstrconsts.rs3dlightcolorcaption
 msgid "3D Light"
-msgstr ""
+msgstr "אור תלת ממדי"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
@@ -265,11 +265,11 @@ msgstr "פקד לא יכול לקבל את עצמו בתור הורה"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
-msgstr ""
+msgstr "גבול פעיל"
 
 #: lclstrconsts.rsactivecaptioncolorcaption
 msgid "Active Caption"
-msgstr ""
+msgstr "כותרת פעילה"
 
 #: lclstrconsts.rsallfiles
 msgid "All files (%s)|%s|%s"
@@ -277,7 +277,7 @@ msgstr "כל הקבצים  (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr ""
+msgstr "שטח עבודה של היישום"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
@@ -285,7 +285,7 @@ msgstr ""
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
-msgstr ""
+msgstr "שולחן עבודה"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
@@ -297,7 +297,7 @@ msgstr "מפת סיביות"
 
 #: lclstrconsts.rsblackcolorcaption
 msgid "Black"
-msgstr ""
+msgstr "שחור"
 
 #: lclstrconsts.rsblank
 msgid "Blank"
@@ -305,23 +305,23 @@ msgstr "תו רווח"
 
 #: lclstrconsts.rsbluecolorcaption
 msgid "Blue"
-msgstr ""
+msgstr "כחול"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
-msgstr ""
+msgstr "פאה תחתונה"
 
 #: lclstrconsts.rsbtnhighlightcolorcaption
 msgid "Button Highlight"
-msgstr ""
+msgstr "הדגשה תחתית"
 
 #: lclstrconsts.rsbtnshadowcolorcaption
 msgid "Button Shadow"
-msgstr ""
+msgstr "צל תחתון"
 
 #: lclstrconsts.rsbtntextcolorcaption
 msgid "Button Text"
-msgstr ""
+msgstr "טקסט תחתון"
 
 #: lclstrconsts.rscalculator
 msgid "Calculator"
@@ -342,7 +342,7 @@ msgstr "קנווס לא מאפשר שרטוט"
 
 #: lclstrconsts.rscaptiontextcolorcaption
 msgid "Caption Text"
-msgstr ""
+msgstr "טקס כותרת"
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
@@ -370,11 +370,11 @@ msgstr "סמן"
 
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
-msgstr ""
+msgstr "מותאם אישית ..."
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
-msgstr ""
+msgstr "ברירת מחדל"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -399,7 +399,7 @@ msgstr "תיקייה"
 
 #: lclstrconsts.rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "עיגון"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -411,7 +411,7 @@ msgstr "ערוך"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr ""
+msgstr "חפש בכל הקובץ"
 
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
@@ -524,11 +524,11 @@ msgstr "FixedRows can't be >= RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr ""
+msgstr "טופס"
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr ""
+msgstr "זרימת טופס  \"%s\" שגיאה: %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
@@ -556,11 +556,11 @@ msgstr "אזהרות ושגיאות שנוצרו ע\"י Gtk+/GDK יעצרו את
 
 #: lclstrconsts.rsgradientactivecaptioncolorcaption
 msgid "Gradient Active Caption"
-msgstr ""
+msgstr "כותרת מדורגת פעילה"
 
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
-msgstr ""
+msgstr "כותרת מדורגת לא פעילה"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
@@ -568,15 +568,15 @@ msgstr "גרפי"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
-msgstr ""
+msgstr "אפור"
 
 #: lclstrconsts.rsgraytextcolorcaption
 msgid "Gray Text"
-msgstr ""
+msgstr "טקסט אפור"
 
 #: lclstrconsts.rsgreencolorcaption
 msgid "Green"
-msgstr ""
+msgstr "ירוק"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -636,87 +636,87 @@ msgstr "קורא ל XSynchronize (display, True) אחרי בוסס הקשר עם
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "כבר רשום %s:"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "Help Context not found"
-msgstr ""
+msgstr "עזרה תלויית הקשר לא נמצאה"
 
 #: lclstrconsts.rshelpdatabasenotfound
 msgid "Help Database not found"
-msgstr ""
+msgstr "בסיס נתוני העזרה לא נמצא"
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
-msgstr ""
+msgstr "שגיאת עזרה"
 
 #: lclstrconsts.rshelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "עזרה תלויית הקשר %s לא נמצאה."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "עזרה תלויית הקשר %s לא נמצאה בבסיס הנתונים %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "בסיס הנתונים של העזרה %s%s%s  לא מצא תוכנה להצגת דף עזרה מסוג %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "בסיס הנתונים של העזרה %s%s%s  לא נמצא "
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "מלת מפתח לעזרה %s%s%s  לא נמצאה. "
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "מלת מפתח לעזרה %s%s%s  לא נמצאה בבסיס הנתונים %s%s%s. "
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "לצומת  העזרה %s%s% אין בסיס נתונים"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr ""
+msgstr "לא נמצאה עזרה לשורה %d, עמודה %d,  של %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
 msgid "No help nodes available"
-msgstr ""
+msgstr "אין צומת עזרה זמינה"
 
 #: lclstrconsts.rshelpnotfound
 msgid "Help not found"
-msgstr ""
+msgstr "עזרה לא נמצאה"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "לא רשום %s:"
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
-msgstr ""
+msgstr "שגיאת בורר העזרה"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 msgid "There is no viewer for help type %s%s%s"
-msgstr ""
+msgstr "אין תוכנה להצגת עזרה מסוג  %s%s%s"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
-msgstr ""
+msgstr "שגיאת מציג העזרה"
 
 #: lclstrconsts.rshelpviewernotfound
 msgid "Help Viewer not found"
-msgstr ""
+msgstr "לא נמצא מציג לעזרה"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
-msgstr ""
+msgstr "הדגשה"
 
 #: lclstrconsts.rshighlighttextcolorcaption
 msgid "Highlight Text"
-msgstr ""
+msgstr "הדגשת טקסט"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
@@ -758,17 +758,17 @@ msgstr "לצלמית אין דמות נוכחית"
 
 #: lclstrconsts.rsinactivebordercolorcaption
 msgid "Inactive Border"
-msgstr ""
+msgstr "גבול לא פעיל"
 
 #: lclstrconsts.rsinactivecaptioncolorcaption
 msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
 msgid "Inactive Caption"
-msgstr ""
+msgstr "כותרת לא פעילה"
 
 #: lclstrconsts.rsinactivecaptiontext
 msgctxt "lclstrconsts.rsinactivecaptiontext"
 msgid "Inactive Caption"
-msgstr ""
+msgstr "כותרת לא פעילה"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
@@ -780,11 +780,11 @@ msgstr "אידקס מחוץ לתחום תא [ עמודה=d% שורה=d% ]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
-msgstr ""
+msgstr "רקע המידע"
 
 #: lclstrconsts.rsinfotextcolorcaption
 msgid "Info Text"
-msgstr ""
+msgstr "טקסט המידע"
 
 #: lclstrconsts.rsinsertrecordhint
 msgctxt "lclstrconsts.rsinsertrecordhint"
@@ -902,11 +902,11 @@ msgstr "כן להכל"
 
 #: lclstrconsts.rsmedgraycolorcaption
 msgid "Medium Gray"
-msgstr ""
+msgstr "אפור בינוני"
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
-msgstr ""
+msgstr "לוח התפריט"
 
 #: lclstrconsts.rsmenucolorcaption
 msgctxt "lclstrconsts.rsmenucolorcaption"
@@ -915,11 +915,11 @@ msgstr "תפריט"
 
 #: lclstrconsts.rsmenuhighlightcolorcaption
 msgid "Menu Highlight"
-msgstr ""
+msgstr "הדגשת תפריט"
 
 #: lclstrconsts.rsmenutextcolorcaption
 msgid "Menu Text"
-msgstr ""
+msgstr "טקסט התפריט"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
@@ -927,7 +927,7 @@ msgstr "השתנה"
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
-msgstr ""
+msgstr "ירוק של שטרות כסף"
 
 #: lclstrconsts.rsmtauthentication
 msgid "Authentication"
@@ -956,7 +956,7 @@ msgstr "אזהרה"
 
 #: lclstrconsts.rsnavycolorcaption
 msgid "Navy"
-msgstr ""
+msgstr "חיל הים"
 
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
@@ -965,7 +965,7 @@ msgstr "הבא"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
-msgstr ""
+msgstr "ללא"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -977,7 +977,7 @@ msgstr "אין עצם של ערכת עצמים. בדוק אם היחידה  \"in
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
-msgstr ""
+msgstr "זית"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
@@ -1005,7 +1005,7 @@ msgstr "מפת פיקסלים ברת ניידות"
 
 #: lclstrconsts.rspostrecordhint
 msgid "Post"
-msgstr ""
+msgstr "אחרי"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
@@ -1022,7 +1022,7 @@ msgstr "התכונה s% לא קיימת"
 
 #: lclstrconsts.rspurplecolorcaption
 msgid "Purple"
-msgstr ""
+msgstr "סגול"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
@@ -1126,7 +1126,7 @@ msgstr "אי אפשר לעדכן הכל כאשר עדכון קנווס בלבד 
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
-msgstr ""
+msgstr "אדום"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
@@ -1147,7 +1147,7 @@ msgstr "משאב s% לא נמצא"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
-msgstr ""
+msgstr "פס גלילה"
 
 #: lclstrconsts.rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
@@ -1163,7 +1163,7 @@ msgstr "בחר גופן"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
-msgstr ""
+msgstr "כסף"
 
 #: lclstrconsts.rssize
 msgid "  size "
@@ -1171,7 +1171,7 @@ msgstr "גודל"
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
-msgstr ""
+msgstr "כחול שמיים"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1191,7 +1191,7 @@ msgstr "לא יכול לטעון את גופן ברירת המחדל"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr ""
+msgstr "שגיאה לא ידועה,  אנא דווח על הבאג"
 
 #: lclstrconsts.rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -1231,7 +1231,7 @@ msgstr "אזהרה: נשארו קישורים להודעות LM_PAINT/LM_GtkPAIN
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
-msgstr ""
+msgstr "לבן"
 
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
@@ -1247,19 +1247,19 @@ msgstr "אזהרה:"
 
 #: lclstrconsts.rswindowcolorcaption
 msgid "Window"
-msgstr ""
+msgstr "חלון"
 
 #: lclstrconsts.rswindowframecolorcaption
 msgid "Window Frame"
-msgstr ""
+msgstr "מסגרת החלון"
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
-msgstr ""
+msgstr "טקסט החלון"
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
-msgstr ""
+msgstr "צהוב"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
@@ -1311,7 +1311,7 @@ msgstr "תת התפריט לא בתפריט"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
-msgstr ""
+msgstr "מקש Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
@@ -1319,11 +1319,11 @@ msgstr "מקש חזור"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr ""
+msgstr "מקש Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr ""
+msgstr " מקש Del"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
@@ -1350,7 +1350,7 @@ msgstr "מקש התחלה (בית)"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr ""
+msgstr "מקש Ins"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
@@ -1359,7 +1359,7 @@ msgstr "שמאל"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
-msgstr ""
+msgstr "מקש Meta+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
@@ -1376,7 +1376,7 @@ msgstr "ימין"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr ""
+msgstr "מקש Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
@@ -1394,7 +1394,7 @@ msgstr "למעלה"
 
 #: lclstrconsts.snomdiform
 msgid "No MDI form present."
-msgstr ""
+msgstr "לא קיים טופס MDI "
 
 #: lclstrconsts.snotimers
 msgid "No timers available"
@@ -1402,15 +1402,15 @@ msgstr "אין קוצב זמן זמין"
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
-msgstr ""
+msgstr "סוג token שגוי: %s צפוי"
 
 #: lclstrconsts.sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr ""
+msgstr "מספר נקודה צפה לא חוקי: %s"
 
 #: lclstrconsts.sparinvalidinteger
 msgid "Invalid integer number: %s"
-msgstr ""
+msgstr "מספר שלם לא חוקי %s"
 
 #: lclstrconsts.sparlocinfo
 msgid " (at %d,%d, stream offset %.8x)"
@@ -1418,17 +1418,17 @@ msgstr ""
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr ""
+msgstr "ערך בית לא גמור"
 
 #: lclstrconsts.sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "מחרוזת לא גמורה"
 
 #: lclstrconsts.sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr ""
+msgstr "סוג token שגוי: %s צפוי אבל %s נמצא"
 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr ""
+msgstr "סוג token שגוי: %s צפוי אבל %s נמצא"
 

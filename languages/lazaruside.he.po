@@ -3,10 +3,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
-"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-24 21:31+0200\n"
+"PO-Revision-Date: 2010-10-30 07:48+0200\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "X-Generator: Lokalize 1.0\n"
@@ -631,10 +631,9 @@ msgid "Reverse fold-order in Popup"
 msgstr "הפוך סדר קיפול בתפריט קופץ"
 
 #: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
 #| msgid "Code"
 msgid "Code generation"
-msgstr "קוד"
+msgstr "יצירת קוד"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
@@ -1424,10 +1423,9 @@ msgid "FPC source directory"
 msgstr "תיקיית קבצי המקור של FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-#, fuzzy
 #| msgid "Frame color"
 msgid "Text-mark"
-msgstr "צבע המסגרת"
+msgstr "צבע הטקסט"
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
@@ -2935,14 +2933,13 @@ msgid "Failed to load user-scheme file %s"
 msgstr "נכשל בטעינת קובץ סכמת משתמש s%"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
 #| msgid "Use global scheme settings"
 msgid "Use (and edit) global scheme settings"
-msgstr "השתמש בהגדרות סכמה גלובליות"
+msgstr "השתמש (וערוך) בהגדרות סכמה גלובליות"
 
 #: lazarusidestrconsts.dlguseschemelocal
 msgid "Use local scheme settings"
-msgstr ""
+msgstr "השתמש בסכמת הגדרות מקומית"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -3430,7 +3427,7 @@ msgstr "הפעל תחביר של ביטויים רגולרים עבור טקסט
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
-msgstr ""
+msgstr "פעיל"
 
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
@@ -3450,11 +3447,11 @@ msgstr "אפשרויות מהדר נוספות מורשות מחבילות"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr ""
+msgstr "הוספת אופן בנייה, מעתיק הגדרות מ \"%s\""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
-msgstr ""
+msgstr "הוסף מאקרו חדש"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3502,7 +3499,7 @@ msgstr "הוסף ערך:"
 
 #: lazarusidestrconsts.lisaddvaluetomacro
 msgid "Add value to macro %s"
-msgstr ""
+msgstr "הוסף ערך למאקרו %s"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -3724,7 +3721,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
-msgstr ""
+msgstr "אוטומטי"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -3912,7 +3909,7 @@ msgstr "מאקרו לבניה"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
-msgstr ""
+msgstr "מאקרו בנייה:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3920,7 +3917,7 @@ msgstr "מוד בנייה"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
-msgstr ""
+msgstr "אופני בנייה"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -4315,7 +4312,7 @@ msgstr "הזחה שגויה"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
-msgstr ""
+msgstr "שנה את אופן הבנייה"
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -5378,7 +5375,7 @@ msgstr "מצב"
 
 #: lazarusidestrconsts.lisconditionals
 msgid "Conditionals:"
-msgstr ""
+msgstr "התניות"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -5498,20 +5495,18 @@ msgid "Lazarus"
 msgstr "לזארוס / LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-#, fuzzy
 #| msgid "Lazarus / LCL for Windows only"
 msgid "Lazarus and Delphi"
-msgstr "לזארוס / LCL עבור חלונות בלבד"
+msgstr "לזארוס ודלפי"
 
 #: lazarusidestrconsts.lisconverttarget3
-#, fuzzy
 #| msgid "Both Lazarus / LCL and Delphi"
 msgid "Lazarus for Windows only"
-msgstr "גם לזארוס / LCL וגם דלפי"
+msgstr "גם עבור חלונות בלבד"
 
 #: lazarusidestrconsts.lisconverttarget4
 msgid "Lazarus and Delphi with same DFM file"
-msgstr ""
+msgstr "לזארוס ודלפי בעלי אותו קובץ DFM"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5572,7 +5567,7 @@ msgstr "יחידות להחלפה"
 
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
-msgstr ""
+msgstr "תכונות לא ידועות"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5720,7 +5715,7 @@ msgstr "צור/עדכן קובץ po. כאשר אתה שומר את קובץ lfm"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
-msgstr ""
+msgstr "יוצר אינדקס לקובץ קוד של FPC "
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6043,11 +6038,11 @@ msgstr "מחיקת קובץ נכשלה"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro %s"
-msgstr ""
+msgstr "מחק מאקרו %s"
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
-msgstr ""
+msgstr "מחק אופן  \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -6417,7 +6412,7 @@ msgstr "ערוך כלי"
 
 #: lazarusidestrconsts.lisedtexttoolhidemainform
 msgid "Hide main form"
-msgstr ""
+msgstr "הסתר טופס ראשי"
 
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
@@ -7251,7 +7246,7 @@ msgstr "הסתר הודעה דרך הוראת מהדר"
 
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
-msgstr ""
+msgstr "טיפ: ניתן להגדיר ערך ברירת מחדל בהתניות עם:"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -7891,11 +7886,10 @@ msgid "Configure Help"
 msgstr "הגדר עזרה"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
 #| msgid "Configure installed packages"
 msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
 msgid "Install/Uninstall packages"
-msgstr "הגדרות חבילות מותקנות"
+msgstr "התקן/הסר חבילות"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
@@ -8493,22 +8487,21 @@ msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "בונה לזארוס אינו אינטראקטיבי, יוצא עכשיו."
 
 #: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
 #| msgid "LCL interface"
 msgid "Widgetset"
-msgstr "ממשק LCL"
+msgstr "סט עצמים"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
-msgstr ""
+msgstr "נהל פרופילי בנייה "
 
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
-msgstr ""
+msgstr "הוסף פרופיל חדש"
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
-msgstr ""
+msgstr "אפשרויות הבנייה הנוכחיות יקושרו עם:"
 
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
@@ -8526,7 +8519,7 @@ msgstr "אפשרויות:"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Build Profile"
-msgstr ""
+msgstr "פרופיל בנייה"
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8565,11 +8558,11 @@ msgstr "שנה שם"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
-msgstr ""
+msgstr "שנה שם הפרופיל"
 
 #: lazarusidestrconsts.lislazbuildrenameprofinfo
 msgid "New name for profile:"
-msgstr ""
+msgstr "שם חדש לפרופיל:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -8760,11 +8753,11 @@ msgstr "פסקל של מאק"
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
-msgstr ""
+msgstr "מאקרו %s"
 
 #: lazarusidestrconsts.lismacroname
 msgid "Macro name"
-msgstr ""
+msgstr "שם מאקרו"
 
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
@@ -8776,7 +8769,7 @@ msgstr "הזן פרמטרים לריצה"
 
 #: lazarusidestrconsts.lismacrovalue
 msgid "Macro value"
-msgstr ""
+msgstr "ערך מאקרו"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -8885,7 +8878,7 @@ msgstr "בטל בנייה"
 
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
-msgstr ""
+msgstr "אודות FPC"
 
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
@@ -9063,10 +9056,9 @@ msgid "Edit context sensitive Help"
 msgstr "ערוך עזרה רגישת הקשר"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-#, fuzzy
 #| msgid "Configure installed packages ..."
 msgid "Install/Uninstall packages ..."
-msgstr "הגדרות חבילות מותקנות ..."
+msgstr "התקן/הסר חבילות ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
@@ -9926,11 +9918,11 @@ msgstr "עוד"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
-msgstr ""
+msgstr "הזז  \"%s\" מיקום אחד למטה"
 
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
-msgstr ""
+msgstr "הזז  \"%s\" מיקום אחד למעלה"
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
@@ -10082,7 +10074,7 @@ msgstr "לא נורשו אפשרויות המהדר."
 
 #: lazarusidestrconsts.lisnoerrors
 msgid "No errors"
-msgstr ""
+msgstr "אין שגיאות"
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -10098,7 +10090,7 @@ msgstr "אין קובץ LFM"
 
 #: lazarusidestrconsts.lisnomacroselected
 msgid "No macro selected"
-msgstr ""
+msgstr "לא נבחר מאקרו"
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -10423,7 +10415,7 @@ msgstr "דרוס את מהדר ברירת המחדל לדוגמא ppc386 ppcx64 
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project build mode."
-msgstr ""
+msgstr "החלף את אופן הבנייה של הפרוייקט"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
@@ -10483,7 +10475,7 @@ msgstr "יחידה של החבילה"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ""
+msgstr "פרוש"
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -12224,7 +12216,7 @@ msgstr "שינוי שם הקובץ נכשל"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
-msgstr ""
+msgstr "שנה שם ל %s"
 
 #: lazarusidestrconsts.lisrenametolowercase
 msgid "Rename to lowercase"
@@ -12542,7 +12534,7 @@ msgstr "קבע ברירת מחדל"
 
 #: lazarusidestrconsts.lissetmacrovalues
 msgid "Set macro values"
-msgstr ""
+msgstr "קבע ערכי מאקרו"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -12566,7 +12558,7 @@ msgstr "הראה טיפים של הצהרה"
 
 #: lazarusidestrconsts.lisshowdifferencesbetweenmodes
 msgid "Show differences between modes ..."
-msgstr ""
+msgstr "הראה הבדלים בין האופנים..."
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
@@ -12861,14 +12853,13 @@ msgid "Target CPU"
 msgstr "מעבד היעד"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
-#, fuzzy
 #| msgid "Target file name: (empty = use unit output directory)"
 msgid "Target file name: (-o, empty = use unit output directory)"
-msgstr "שם קובץ המטרה: (ריק = השתמש בתיקיית הפלט)"
+msgstr "שם קובץ המטרה: (ריק = השתמש בתיקיית הפלט של היחידה)"
 
 #: lazarusidestrconsts.listargetfilenameo
 msgid "Target file name (-o):"
-msgstr ""
+msgstr "שם קובץ היעד (-o):"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
@@ -12908,7 +12899,7 @@ msgstr "חבילת היישומים נוצרה עבור \"%s\""
 
 #: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
 msgid "The build macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "מאקרו הבנייה  \"%s\" לא מתחיל ב \"%s\"."
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13016,7 +13007,7 @@ msgstr "הקובץ s% לא נראה כמו קובץ lpi."
 
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
-msgstr ""
+msgstr "אינדקס הקובץ דרוש לפונקציות כמו \"מצא הצהרה\". בזמן הסריקה אתה יכול לערוך את הקוד ולהדרו, אבל פונקציות כאלו יתנו שגיאות \"יחידה לא נמצאה\". זה יכול לקחת דקה."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
@@ -13057,12 +13048,12 @@ msgstr "הקובץ %s%s%s%s לא נמצא. \"התעלם\" יגרום להמשך 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל וחייב להשמר בפרוייקט ולא ב session."
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל וחייב להשמר בפרוייקט ולא ב session."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -13218,7 +13209,7 @@ msgstr "יש כבר טופס עם השם %s%s%s. "
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
-msgstr ""
+msgstr "יש כבר מאקרו של  IDE בשם  \"%s\""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -13230,7 +13221,7 @@ msgstr "יש כבר יחידה עם השם %s%s%s בפרוייקט. בחר שם 
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
-msgstr ""
+msgstr "חייב להיות לפחות אופן בנייה אחד."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
@@ -13837,7 +13828,7 @@ msgstr "לא יכול לכתוב את קובץ מידע הפרוייקט %s%s%s%
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr ""
+msgstr "לא יכול לכתוב את קובץ ה  session . שגיאה: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile
 msgid "Unable to write to file %s%s%s."
@@ -14045,7 +14036,7 @@ msgstr "אזהרה: נמצא קובץ רב משמעי: %s%s%s. קוד המקור
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
-msgstr ""
+msgstr "אזהרה: זאת היחידה הראשית, היחידה הראשית החדשה תהייה  s.pas%"
 
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
@@ -14069,11 +14060,11 @@ msgstr "כאשר הסמן של עורך הקוד נע, הראה את הצומת 
 
 #: lazarusidestrconsts.liswithincludes
 msgid "%s, with includes %s"
-msgstr ""
+msgstr "עם קבצי \"כלול\""
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
-msgstr ""
+msgstr "עם קבצי \"כלול\""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

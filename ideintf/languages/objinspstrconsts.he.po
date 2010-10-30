@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -855,11 +855,11 @@ msgstr "הבא"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "אחרי"
 
 #: objinspstrconsts.oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "אחרי"
 
 #: objinspstrconsts.oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -1071,7 +1071,7 @@ msgstr "בדוק דיאלוג ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
-msgstr ""
+msgstr "קלט נסיון"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
@@ -1232,7 +1232,7 @@ msgstr "נקה"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Crop"
 
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
@@ -1559,7 +1559,7 @@ msgstr "סופי"
 
 #: objinspstrconsts.srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: objinspstrconsts.srvk_help
 msgctxt "objinspstrconsts.srvk_help"
@@ -1581,11 +1581,11 @@ msgstr "בלתי רגיל"
 
 #: objinspstrconsts.srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: objinspstrconsts.srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: objinspstrconsts.srvk_lbutton
 msgid "Mouse Button Left"
@@ -1610,7 +1610,7 @@ msgstr "תפריט"
 
 #: objinspstrconsts.srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: objinspstrconsts.srvk_modechange
 msgid "Mode Change"
