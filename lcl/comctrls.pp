@@ -950,6 +950,7 @@ type
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
   TLVInsertEvent = TLVDeletedEvent;
   TLVDataEvent = TLVDeletedEvent;
+  TLVCheckedItemEvent = procedure (Sender: TObject; Item: TListItem) of object;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
   TLVCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
@@ -1034,6 +1035,7 @@ type
     FOnData: TLVDataEvent;
     FOnDeletion: TLVDeletedEvent;
     FOnInsert: TLVInsertEvent;
+    FOnItemChecked: TLVCheckedItemEvent;
     FOnSelectItem: TLVSelectItemEvent;
     FOnCustomDraw: TLVCustomDrawEvent;
     FOnCustomDrawItem: TLVCustomDrawItemEvent;
@@ -1100,6 +1102,7 @@ type
     procedure Delete(Item : TListItem);
     procedure DoDeletion(AItem: TListItem); virtual;
     procedure DoInsert(AItem: TListItem); virtual;
+    procedure DoItemChecked(AItem: TListItem);
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
     procedure InsertItem(Item : TListItem);
     procedure ImageChanged(Sender : TObject);
@@ -1137,6 +1140,7 @@ type
     property OnData: TLVDataEvent read FOnData write FOnData;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
+    property OnItemChecked: TLVCheckedItemEvent read FOnItemChecked write FOnItemChecked;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
     property OnCustomDraw: TLVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TLVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
@@ -1260,6 +1264,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnItemChecked;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;

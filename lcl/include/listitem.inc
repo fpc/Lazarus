@@ -648,8 +648,9 @@ var
 begin
   LV := FOwner.FOwner;
   FChecked := AValue;
-  if LV.Checkboxes and WSUpdateAllowed
-  then TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, GetIndex, Self, AValue);
+  if LV.Checkboxes and WSUpdateAllowed then
+    TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, GetIndex,
+      Self, AValue);
 end;
 
 {------------------------------------------------------------------------------}

@@ -231,47 +231,57 @@ begin
     LVN_ITEMCHANGING: begin
       //Check
     end;
-    LVN_ITEMCHANGED: begin
+    LVN_ITEMCHANGED:
+    begin
       Item := Items[nm^.iItem];
       //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
-      if (Item <> nil) and (not OwnerData) and (lifDestroying in Item.FFlags) then begin
+      if (Item <> nil) and (not OwnerData) and (lifDestroying in Item.FFlags) then
+      begin
         if Item=FFocused then
           FFocused:=nil;
         if Item=FSelected then
           InvalidateSelected;
-      end else begin
+      end else
+      begin
         // owner data
         Change(Item, nm^.uChanged);
-        if (nm^.uChanged = LVIF_STATE)
-        then begin
+        if (nm^.uChanged = LVIF_STATE) then
+        begin
+          // checkbox
+          if Checkboxes then
+            DoItemChecked(Item);
+
           // focus
-          if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED)
-          then begin
+          if (nm^.uOldState and LVIS_FOCUSED) <>
+            (nm^.uNewState and LVIS_FOCUSED) then
+          begin
             // focus state changed
-            if (nm^.uNewState and LVIS_FOCUSED) = 0
-            then begin
-              if FFocused = Item
-              then FFocused := nil;
-            end
-            else begin
+            if (nm^.uNewState and LVIS_FOCUSED) = 0 then
+            begin
+              if FFocused = Item then
+                FFocused := nil;
+            end else
+            begin
               FFocused := Item;
             end;
           end;
           // select
-          if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
-          then begin
+          if (nm^.uOldState and LVIS_SELECTED) <>
+            (nm^.uNewState and LVIS_SELECTED) then
+          begin
             // select state changed
-            if (nm^.uNewState and LVIS_SELECTED) = 0
-            then begin
+            if (nm^.uNewState and LVIS_SELECTED) = 0 then
+            begin
               if not OwnerData and (FSelected = Item) then
                 InvalidateSelected
-              else if OwnerData and (nm^.iItem=FSelectedIdx) then begin
+              else if OwnerData and (nm^.iItem=FSelectedIdx) then
+              begin
                 FSelectedIdx:=-1;
                 InvalidateSelected;
               end;
               DoSelectItem(Item, False);
-            end
-            else begin
+            end else
+            begin
               FSelected := Item;
               Include(FFlags,lffSelectedValid);
               if OwnerData then FSelectedIdx:=nm^.iItem;
@@ -389,6 +399,24 @@ end;
 procedure TCustomListView.DoInsert(AItem: TListItem);
 begin
   if Assigned(FOnInsert) then FOnInsert(Self, AItem);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView DoItemChecked                                              }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.DoItemChecked(AItem: TListItem);
+var
+  B: Boolean;
+begin
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  B := TWSCustomListViewClass(WidgetSetClass).ItemGetChecked(Self,
+    AItem.Index, AItem);
+  if B <> AItem.GetCheckedInternal then
+  begin
+    AItem.Checked := B;
+    if Assigned(FOnItemChecked) then
+      FOnItemChecked(Self, AItem);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
