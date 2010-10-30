@@ -1857,16 +1857,15 @@ begin
       ExprType:=FindExpressionResultType(Params,ProcStartPos,ProcNameAtom.StartPos);
       if ExprType.Desc<>xtContext then exit;
       Context:=ExprType.Context;
-      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context']);
+      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context: ',ExprTypeToString(ExprType)]);
     end;
 
     // find declaration of parameter list
     Params.ContextNode:=Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
-    Params.Flags:=fdfGlobals+[fdfSearchInAncestors,
-                              fdfFindVariable,fdfIgnoreCurContextNode];
+    Params.Flags:=fdfGlobals+[fdfSearchInAncestors,fdfFindVariable];
     if Context.Node=CursorNode then
-      Include(Params.Flags,fdfSearchInParentNodes);
+      Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
@@ -1878,7 +1877,7 @@ begin
     NewType:='';
     MissingUnitName:='';
     if Params.NewNode<>nil then begin
-      DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter Proc/PropNode=',Params.NewNode.DescAsString,' ',copy(Params.NewCodeTool.Src,Params.NewNode.StartPos,50));
+      //DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter Proc/PropNode=',Params.NewNode.DescAsString,' ',copy(Params.NewCodeTool.Src,Params.NewNode.StartPos,50));
       ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
                                                              ParameterIndex);
       if (ParameterNode=nil)
@@ -1887,7 +1886,7 @@ begin
         exit;
       end;
       if ParameterNode<>nil then begin
-        DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
+        //DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
         TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
         if TypeNode=nil then begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');

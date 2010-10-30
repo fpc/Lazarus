@@ -3022,7 +3022,7 @@ begin
   '"'+GetIdentifier(Params.Identifier)+'"',
   ' Context="'+ContextNode.DescAsString+'" "'+StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
   ' File="'+ExtractFilename(MainFilename)+'"',
-  ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
+  ' Flags=['+dbgs(Params.Flags)+']'
   );
   {$ELSE}
     {$IFDEF ShowCollect}
@@ -3031,7 +3031,7 @@ begin
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
-      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+      ' Flags=[',dbgs(Params.Flags),']'
       ]);
     end;
     {$ENDIF}
@@ -3054,7 +3054,7 @@ begin
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Loop Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
-      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+      ' Flags=[',dbgs(Params.Flags),']'
       );
       {$ELSE}
         {$IFDEF ShowCollect}
@@ -3062,7 +3062,7 @@ begin
           DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Loop Ident=',
           '"',GetIdentifier(Params.Identifier),'"',
           ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
-          ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+          ' Flags=[',dbgs(Params.Flags),']'
           );
         end;
         {$ENDIF}
