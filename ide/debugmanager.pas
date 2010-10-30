@@ -1049,7 +1049,6 @@ end;
 procedure TManagedBreakPoint.OnToggleEnableMenuItemClick(Sender: TObject);
 begin
   Enabled:=not Enabled;
-  InitialEnabled:=Enabled;
 end;
 
 procedure TManagedBreakPoint.OnDeleteMenuItemClick(Sender: TObject);
@@ -1162,6 +1161,7 @@ procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
 begin
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
+  InitialEnabled:=Enabled;
   if FMaster <> nil then FMaster.Enabled := AValue;
 end;
 
