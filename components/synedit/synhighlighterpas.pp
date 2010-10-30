@@ -76,6 +76,7 @@ type
     rsDirective,
     rsAsm,       // assembler block
     rsProperty,
+    rsAtPropertyOrReadWrite, // very first word after property (name of the property) or after read write in property
     rsInterface,
     rsImplementation,   // Program or Implementation
     // we need to detect
@@ -1013,17 +1014,24 @@ end;
 
 function TSynPasSyn.Func28: TtkTokenKind;
 begin
-  if KeyComp('Is') then Result := tkKey else
-    if KeyComp('Read') then
-    begin
-      if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
-    end else
-      if KeyComp('Case') then begin
-        if TopPascalCodeFoldBlockType in
-           [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
-          StartPascalCodeFoldBlock(cfbtCase);
-        Result := tkKey;
-      end else Result := tkIdentifier;
+  if KeyComp('Is') then
+    Result := tkKey
+  else
+  if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
+      (PasCodeFoldRange.BracketNestLevel = 0) and
+     KeyComp('Read')
+  then begin
+    Result := tkKey;
+    fRange := fRange + [rsAtPropertyOrReadWrite];
+  end
+  else if KeyComp('Case') then begin
+    if TopPascalCodeFoldBlockType in
+       [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
+      StartPascalCodeFoldBlock(cfbtCase);
+    Result := tkKey;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -1204,7 +1212,9 @@ function TSynPasSyn.Func56: TtkTokenKind;
 begin
   if KeyComp('Index') then
   begin
-    if (rsProperty in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
+    then
       Result := tkKey else Result := tkIdentifier;
   end
   else
@@ -1383,10 +1393,15 @@ end;
 
 function TSynPasSyn.Func75: TtkTokenKind;
 begin
-  if KeyComp('Write') then
+  if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
+      (PasCodeFoldRange.BracketNestLevel = 0) and
+      KeyComp('Write') then
   begin
-    if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
-  end else Result := tkIdentifier;
+    Result := tkKey;
+    fRange := fRange + [rsAtPropertyOrReadWrite];
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func76: TtkTokenKind;
@@ -1847,7 +1862,7 @@ begin
   if KeyComp('Property') then
   begin
     Result := tkKey;
-    fRange := fRange + [rsProperty];
+    fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite];
   end else Result := tkIdentifier;
 end;
 
@@ -2775,7 +2790,7 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
-  WasAtEqual: Boolean;
+  WasAtEqualOrColon, WasAtProperty: Boolean;
 begin
   fAsmStart := False;
   fTokenPos := Run;
@@ -2798,7 +2813,8 @@ begin
       else if rsSlash in fRange then
         SlashContinueProc
       else begin
-        WasAtEqual := rsAfterEqualOrColon in fRange;
+        WasAtEqualOrColon := rsAfterEqualOrColon in fRange;
+        WasAtProperty := rsAtPropertyOrReadWrite in fRange;
         //if rsAtEqual in fRange then
         //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
         //else
@@ -2818,8 +2834,10 @@ begin
              not(rsAtClosingBracket in fRange)
           then
             fRange := fRange - [rsAfterClass];
-          if WasAtEqual then
+          if WasAtEqualOrColon then
             fRange := fRange - [rsAfterEqualOrColon];
+          if WasAtProperty then
+            fRange := fRange - [rsAtPropertyOrReadWrite];
           fRange := fRange - [rsAtClosingBracket];
         end
         else
