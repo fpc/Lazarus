@@ -3613,6 +3613,7 @@ var
       UnitPath:=copy(UnitPath,2,Length(UnitPath));
     while (UnitPath<>'') and (RightStr(UnitPath,1)=';') do
       UnitPath:=copy(UnitPath,1,Length(UnitPath)-1);
+    UnitPath:=ChompPathDelim(TrimFilename(UnitPath));
     if SysUtils.CompareText(UnitPath,'$(PkgOutDir)')<>0 then
     begin
       IgnorePath:='InstallPkgAddsUnitPath/'+APackage.Filename;
