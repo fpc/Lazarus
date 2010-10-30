@@ -1617,7 +1617,7 @@ type
     );
   TControlAtPosFlags = set of TControlAtPosFlag;
 
-  // needed for VCL compatebility on custom aligning
+  // needed for VCL compatibility on custom aligning
   TAlignInfo = record
     AlignList: TFPList;    // The list of controls currently being aligned
     ControlIndex: Integer; // Index of current control

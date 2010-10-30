@@ -2816,6 +2816,7 @@ function TControl.WidthIsAnchored: boolean;
 var
   CurAnchors: TAnchors;
 begin
+  if Align=alCustom then exit(true); // width depends on parent
   CurAnchors:=Anchors;
   if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
   Result:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
@@ -2829,6 +2830,7 @@ function TControl.HeightIsAnchored: boolean;
 var
   CurAnchors: TAnchors;
 begin
+  if Align=alCustom then exit(true); // height depends on parent
   CurAnchors:=Anchors;
   if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
   Result:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);

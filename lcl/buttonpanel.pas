@@ -19,8 +19,8 @@ unit ButtonPanel;
 interface
 
 uses
-  Math, Types, SysUtils, Classes, Controls, ExtCtrls, StdCtrls, Buttons, Forms,
-  GraphType, Graphics, LMessages, LCLStrConsts, Themes;
+  Math, Types, SysUtils, Classes, LCLProc,Controls, ExtCtrls, StdCtrls, Buttons,
+  Forms, GraphType, Graphics, LMessages, LCLStrConsts, Themes;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -501,6 +501,7 @@ begin
     Constraints.MinWidth := DefButtonSize.cx;
     Constraints.MinHeight := DefButtonSize.cy;
     Caption  := GetCaption(AButton);
+    AutoSize := true;
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;
     if FGlyphs[AButton] = nil
@@ -552,6 +553,7 @@ procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl;
   var ANewLeft, ANewTop, ANewWidth, ANewHeight: Integer; var AlignRect: TRect;
   AlignInfo: TAlignInfo);
 begin
+  //debugln(['TCustomButtonPanel.CustomAlignPosition ',DbgSName(Self),' AControl=',DbgSName(AControl),' AlignRect=',dbgs(AlignRect),' New=',ANewLeft,',',ANewTop,',',ANewWidth,'x',ANewHeight]);
   inherited CustomAlignPosition(AControl, ANewLeft, ANewTop, ANewWidth,
     ANewHeight, AlignRect, AlignInfo);
 
@@ -594,6 +596,7 @@ begin
       AlignRect.Right:=Max(AlignRect.Left,ANewLeft);
     end;
   end;
+  //debugln(['TCustomButtonPanel.CustomAlignPosition END ',DbgSName(Self),' AControl=',DbgSName(AControl),' AlignRect=',dbgs(AlignRect),' New=',ANewLeft,',',ANewTop,',',ANewWidth,'x',ANewHeight]);
 end;
 
 procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
@@ -605,14 +608,13 @@ var
   MinHeight: Integer;
   CtrlPrefWidth, CtrlPrefHeight: integer;
 begin
-  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
-    WithThemeSpace);
   MinWidth:=0;
   MinHeight:=0;
   for i:=0 to ControlCount-1 do
   begin
     AControl:=Controls[i];
     if (AControl.Align<>alCustom) or (not AControl.IsControlVisible) then continue;
+    if AControl=FBevel then continue;
     AControl.GetPreferredSize(CtrlPrefWidth,CtrlPrefHeight);
     if Align in [alLeft,alRight] then
     begin
@@ -624,8 +626,16 @@ begin
       MinHeight:=Max(MinHeight,CtrlPrefHeight);
     end;
   end;
+  if FBevel<>nil then
+  begin
+    if Align in [alLeft,alRight] then
+      inc(MinWidth,FBevel.Width+Spacing)
+    else
+      inc(MinHeight,FBevel.Height+Spacing);
+  end;
   PreferredWidth:=Max(PreferredWidth,MinWidth);
   PreferredHeight:=Max(PreferredHeight,MinHeight);
+  //debugln(['TCustomButtonPanel.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight]);
 end;
 
 destructor TCustomButtonPanel.Destroy;
