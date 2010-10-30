@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
-  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
+  LCLProc, StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
   EnvironmentOpts, Clipbrd, FileUtil, Menus, LCLIntf;
 
 type
@@ -49,7 +49,7 @@ type
     function ActiveLineIsURL: boolean;
     procedure DoTimer(Sender: TObject);
     procedure SetActive(const AValue: boolean);
-    procedure Initialise;
+    procedure Init;
     procedure DrawScrollingText(Sender: TObject);
   protected
     procedure DoOnChangeBounds; override;
@@ -240,6 +240,7 @@ var
 begin
   ContributorsPage.ControlStyle := ContributorsPage.ControlStyle - [csOpaque];
   Contributors := TScrollingText.Create(ContributorsPage);
+  Contributors.Name:='Contributors';
   Contributors.Parent := ContributorsPage;
   Contributors.Align:=alClient;
 
@@ -259,6 +260,7 @@ var
   AcknowledgementsFileName: string;
 begin
   Acknowledgements := TScrollingText.Create(AcknowledgementsPage);
+  Acknowledgements.Name:='Acknowledgements';
   Acknowledgements.Parent := AcknowledgementsPage;
   Acknowledgements.Align:=alClient;
 
@@ -277,11 +279,12 @@ end;
 procedure TScrollingText.SetActive(const AValue: boolean);
 begin
   FActive := AValue;
-  Initialise;
+  if FActive then
+    Init;
   FTimer.Enabled:=Active;
 end;
 
-procedure TScrollingText.Initialise;
+procedure TScrollingText.Init;
 begin
   FBuffer.Width := Width;
   FBuffer.Height := Height;
@@ -382,7 +385,7 @@ procedure TScrollingText.DoOnChangeBounds;
 begin
   inherited DoOnChangeBounds;
 
-  Initialise;
+  Init;
 end;
 
 procedure TScrollingText.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
