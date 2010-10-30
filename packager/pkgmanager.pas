@@ -3583,6 +3583,56 @@ var
     while (Result>=0) and (TLazPackage(PkgList[Result])<>APackage) do
       dec(Result);
   end;
+
+  function WarnForSuspiciousPackage(APackage: TLazPackage): TModalResult;
+  var
+    IgnorePath: String;
+    UnitPath: String;
+  begin
+    if APackage.UsageOptions.IncludePath<>'' then
+    begin
+      IgnorePath:='InstallPkgAddsIncPath/'+APackage.Filename;
+      if InputHistories.Ignores.Find(IgnorePath)=nil then
+      begin
+        Result:=IDEQuestionDialog(lisSuspiciousIncludePath,
+          Format(lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI, [
+            APackage.IDAsString, dbgstr(APackage.UsageOptions.IncludePath), #13]
+            ),
+          mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
+        case Result of
+        mrYes: ;
+        mrYesToAll:
+          InputHistories.Ignores.Add(IgnorePath,iiidForever);
+        else
+          exit(mrCancel);
+        end;
+      end;
+    end;
+    UnitPath:=Trim(SetDirSeparators(APackage.UsageOptions.UnitPath));
+    while (UnitPath<>'') and (UnitPath[1]=';') do
+      UnitPath:=copy(UnitPath,2,Length(UnitPath));
+    while (UnitPath<>'') and (RightStr(UnitPath,1)=';') do
+      UnitPath:=copy(UnitPath,1,Length(UnitPath)-1);
+    if SysUtils.CompareText(UnitPath,'$(PkgOutDir)')<>0 then
+    begin
+      IgnorePath:='InstallPkgAddsUnitPath/'+APackage.Filename;
+      if InputHistories.Ignores.Find(IgnorePath)=nil then
+      begin
+        Result:=IDEQuestionDialog(lisSuspiciousUnitPath,
+          Format(lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr, [
+            APackage.IDAsString, dbgstr(APackage.UsageOptions.UnitPath), #13]),
+          mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
+        case Result of
+        mrYes: ;
+        mrYesToAll:
+          InputHistories.Ignores.Add(IgnorePath,iiidForever);
+        else
+          exit(mrCancel);
+        end;
+      end;
+    end;
+    Result:=mrOk;
+  end;
   
 var
   Dependency: TPkgDependency;
@@ -3628,7 +3678,7 @@ begin
       if (RequiredPackage.AutoInstall<>pitNope) then
         PkgList.Delete(i);
     end;
-    
+
     // now PkgList contains only the required packages that were added to the
     // list of installation packages
     // => show the user the list
@@ -3647,7 +3697,16 @@ begin
           lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2, [
           APackage.IDAsString]);
       Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
-        Msg+#13+s,mtConfirmation,[mbOk,mbCancel,mbAbort]);
+        Msg+#13+s,mtConfirmation,[mbOk,mbCancel]);
+      if Result<>mrOk then exit;
+    end;
+
+    // warn for packages with suspicious settings
+    Result:=WarnForSuspiciousPackage(APackage);
+    if Result<>mrOk then exit;
+    for i:=0 to PkgList.Count-1 do begin
+      RequiredPackage:=TLazPackage(PkgList[i]);
+      Result:=WarnForSuspiciousPackage(RequiredPackage);
       if Result<>mrOk then exit;
     end;
 

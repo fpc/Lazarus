@@ -346,6 +346,11 @@ resourcestring
   lisKMStopProgram = 'Stop program';
   lisMenuStop = 'Stop';
   lisContinue = 'Continue';
+  lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
+  lisSuspiciousUnitPath = 'Suspicious unit path';
+  lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr = 'The package %s '
+    +'adds the path "%s" to the unit path of the IDE.%sThis is probably a '
+    +'misconfiguration of the package.';
   lisMenuResetDebugger = 'Reset debugger';
   lisKMCompilerOptions = 'Compiler options';
   lisMenuCompilerOptions = 'Compiler Options ...';
@@ -3563,6 +3568,10 @@ resourcestring
   lisPkgMangTheFileOfPackageNeedsToBeSavedFirst = 'The file %s%s%s%sof '
     +'package %s needs to be saved first.';
   lisPkgMangIgnoreAndSavePackageNow = 'Ignore and save package now';
+  lisSuspiciousIncludePath = 'Suspicious include path';
+  lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI = 'The package %s '
+    +'adds the path "%s" to the include path of the IDE.%sThis is probably a '
+    +'misconfiguration of the package.';
   lisPkgMangPackageChangedSave = 'Package %s%s%s changed. Save?';
   lisPkgMangErrorWritingPackage = 'Error Writing Package';
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'

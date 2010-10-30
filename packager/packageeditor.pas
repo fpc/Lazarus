@@ -42,7 +42,7 @@ uses
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
   MenuIntf, HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg,
-  PackageIntf,
+  PackageIntf, IDEDialogs,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
@@ -2326,7 +2326,7 @@ end;
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if ShouldNotBeInstalled(APackage) then begin
-    if QuestionDlg(lisNotAnInstallPackage,
+    if IDEQuestionDialog(lisNotAnInstallPackage,
       Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi, [APackage.
         Name, #13, #13]),
       mtWarning,
