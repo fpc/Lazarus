@@ -105,6 +105,8 @@ type
   { TSynBaseCompletionForm }
 
   TSynBaseCompletionForm = class(TForm)
+    procedure SDKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SDKeyPress(Sender: TObject; var Key: char);
   protected
     FCurrentString: string;
     FOnKeyPress: TKeyPressEvent;
@@ -475,6 +477,7 @@ begin
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
   FHintLock := 0;
   BeginFormUpdate;
+  KeyPreview:= True;
   inherited Create(AOwner);
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
@@ -507,6 +510,9 @@ begin
   SizeDrag.AnchorSideBottom.Control := Self;
   SizeDrag.Height := Max(5, abs(Font.Height) * 2 div 3);
   SizeDrag.Cursor := crSizeNWSE;
+
+  SizeDrag.OnKeyPress:=@SDKeyPress;
+  SizeDrag.OnKeyDown:=@SDKeyDown;
 
   Scroll.Anchors:=[akTop,akRight, akBottom];
   Scroll.AnchorSide[akTop].Side := asrTop;
@@ -848,6 +854,17 @@ procedure TSynBaseCompletionForm.SelectPrec;
 begin
   if Position > 0 then
     Position := Position - 1;
+end;
+
+procedure TSynBaseCompletionForm.SDKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  KeyDown(key,shift);
+end;
+
+procedure TSynBaseCompletionForm.SDKeyPress(Sender: TObject; var Key: char);
+begin
+  KeyPress(key);
 end;
 
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
