@@ -610,6 +610,12 @@ var
 begin
   MinWidth:=0;
   MinHeight:=0;
+  // add on the left/top of the buttons
+  if Align in [alLeft,alRight] then
+    inc(MinHeight,Spacing)
+  else
+    inc(MinWidth,Spacing);
+  // add buttons
   for i:=0 to ControlCount-1 do
   begin
     AControl:=Controls[i];
@@ -626,6 +632,7 @@ begin
       MinHeight:=Max(MinHeight,CtrlPrefHeight);
     end;
   end;
+  // bevel
   if FBevel<>nil then
   begin
     if Align in [alLeft,alRight] then

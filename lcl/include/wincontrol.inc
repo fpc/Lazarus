@@ -37,8 +37,8 @@ const CheckClientRectName = 'LCLInterfaceRadioGroup';
 {off $DEFINE VerboseSizeMsg}
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TButtonPanel';
-const CheckPostionName = 'SaveAndRebuildButton';
+const CheckPostionClassName = 'TBreakPropertyDlg';
+const CheckPostionName = 'xxxTBreakPropertyDlg';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
