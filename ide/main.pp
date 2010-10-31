@@ -11560,11 +11560,15 @@ begin
                         true,CodeToolsOpts);
               CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                    StdDefTemplLazarusBuildOpts);
-            end;
+            end
+            else      // Temporary exceptions to find an error.
+              raise Exception.Create('LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir)'
+                            +' returned Nil for profile '+BuildLazProfiles.Current.Name);
           end
           else
             raise Exception.Create('CodeToolBoss.DefineTree.FindDefineTemplateByName('
-                                  +'StdDefTemplLazarusSources,true) returned Nil.');
+                          +'StdDefTemplLazarusSources,true) returned Nil for profile '
+                          +BuildLazProfiles.Current.Name);
           BuildResult:=DoBuildLazarusSub([]);
           if (BuildResult=mrOK) and BuildLazProfiles.Current.RestartAfterBuild then
             NeedRestart:=True
