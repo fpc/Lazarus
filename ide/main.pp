@@ -11526,8 +11526,6 @@ var
   NeedRestart, FoundProfToBuild: Boolean;
   s: String;
 begin
-  LazSrcTemplate:=
-    CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
   with MiscellaneousOptions do begin
     NeedRestart:=False;
     RealCurInd:=BuildLazProfiles.CurrentIndex;
@@ -11550,14 +11548,14 @@ begin
         if BuildLazProfiles[i].BuildWithAll then begin
 // does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
           BuildLazProfiles.CurrentIndex:=i; // Set current profile temporarily.
-//
+          LazSrcTemplate:=
+            CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
           if Assigned(LazSrcTemplate) then begin
             LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
             if Assigned(LazSrcDirTemplate) then begin
               CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                         StdDefTemplLazarusBuildOpts,
-                        MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
-                        true,CodeToolsOpts);
+                        BuildLazProfiles.Current.ExtraOptions,true,CodeToolsOpts);
               CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                    StdDefTemplLazarusBuildOpts);
             end
