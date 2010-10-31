@@ -112,23 +112,44 @@ type
   TGDBMIDebuggerCommand = class
   private
     FOnExecuted: TNotifyEvent;
+    FKeepFinished: Boolean;
     FState : TGDBMIDebuggerCommandState;
+    FTheDebugger: TGDBMIDebugger; // Set during Execute
+    procedure SetKeepFinished(const AValue: Boolean);
   protected
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoFree; virtual;
-    function  DoExecute(TheDebugger: TGDBMIDebugger): Boolean; virtual; abstract;
+    function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
+    // ExecuteCommand does execute direct. It does not use the queue
+    function  ExecuteCommand(const ACommand: String): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; out AResult: TGDBMIExecResult): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; out AResult: TGDBMIExecResult): Boolean; overload;
+    function  ProcessResult(var AResult: TGDBMIExecResult): Boolean;
+    function  GetText(const ALocation: TDBGPtr): String; overload;
+    function  GetText(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetWideText(const ALocation: TDBGPtr): String;
+    function  GetGDBTypeInfo(const AExpression: String): TGDBType;
+    function  GetClassName(const AClass: TDBGPtr): String; overload;
+    function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
+    function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetData(const ALocation: TDbgPtr): TDbgPtr; overload;
+    function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
+    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
   public
-    constructor Create;
+    constructor Create(AOwner: TGDBMIDebugger);
     // DoQueued:   Called if queued *behind* others
     procedure DoQueued;
     // DoFinished: Called after processing is done
     //             defaults to Destroy the object
     procedure DoFinished;
-    function Execute(TheDebugger: TGDBMIDebugger): Boolean;
+    function Execute: Boolean;
     property State: TGDBMIDebuggerCommandState read FState;
     property OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
+    property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
   end;
 
   { TGDBMIDebuggerSimpleCommand }
@@ -138,22 +159,36 @@ type
     FCommand: String;
     FFlags: TGDBMICmdFlags;
     FCallback: TGDBMICallback;
-    FKeepFinished: Boolean;
     FTag: PtrInt;
     FResult: TGDBMIExecResult;
-    procedure SetKeepFinished(const AValue: Boolean);
   protected
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
-    procedure DoFree; override;
-    function  DoExecute(TheDebugger: TGDBMIDebugger): Boolean; override;
+    function  DoExecute: Boolean; override;
   public
-    constructor Create(const ACommand: String;
+    constructor Create(AOwner: TGDBMIDebugger;
+                       const ACommand: String;
                        const AValues: array of const;
                        const AFlags: TGDBMICmdFlags;
                        const ACallback: TGDBMICallback;
                        const ATag: PtrInt);
     property  Result: TGDBMIExecResult read FResult;
-    property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
+  end;
+
+  { TGDBMIDebuggerCommandEvaluate }
+
+  TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
+  private
+    FExpression: String;
+    FTextValue: String;
+    FTypeInfo: TGDBType;
+  protected
+    function  GetStrValue(const AExpression: String; const AValues: array of const): String;
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger;const AExpression: String);
+    property Expression: String read FExpression;
+    property TextValue: String read FTextValue;
+    property TypeInfo: TGDBType read FTypeInfo;
   end;
 
   { TGDBMIDebugger }
@@ -193,6 +228,7 @@ type
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
+deprecated '/////////////////////////////////////////';
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
@@ -219,14 +255,11 @@ type
     function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
-    function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetData(const ALocation: TDbgPtr): TDbgPtr; overload;
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
     function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
     function  GetPtrValue(const AExpression: String; const AValues: array of const): TDbgPtr;
-    function  GetGDBTypeInfo(const AExpression: String): TGDBType;
-    function  ProcessResult(var AResult: TGDBMIExecResult): Boolean;
     function  ProcessRunning(var AStoppedParams: String): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     procedure ProcessFrame(const AFrame: String = '');
@@ -265,7 +298,10 @@ type
     procedure ClearCommandQueue;
     procedure DoState(const OldState: TDBGState); override;
     property  TargetPID: Integer read FTargetPID;
-    property PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
+    property  TargetPtrSize: Byte read FTargetPtrSize;
+    property  TargetFlags: TGDBMITargetFlags read FTargetFlags write FTargetFlags;
+    property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
+    property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -587,21 +623,21 @@ type
     procedure Pop(var AResult: PGDBMIExpressionResult);
     procedure DisposeList(AList: PGDBMIExpressionResult);
 
-    function  Solve(const ADebugger: TGDBMIDebugger; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveAddress(const ADebugger: TGDBMIDebugger; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveMath(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveIn(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveIs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveAs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveDeref(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
-    function  SolveDot(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; const ARight: String; out AVAlue: String; out AInfo: TGDBType): Boolean;
+    function  Solve(const ADebuggerCommand: TGDBMIDebuggerCommand; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveAddress(const ADebuggerCommand: TGDBMIDebuggerCommand; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveMath(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveIn(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveIs(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveAs(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveDeref(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+    function  SolveDot(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft: PGDBMIExpressionResult; const ARight: String; out AVAlue: String; out AInfo: TGDBType): Boolean;
   protected
-    function Evaluate(const ADebugger: TGDBMIDebugger; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
+    function Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
   public
     constructor Create(const AExpression: String);
     destructor Destroy; override;
     function DumpExpression: String;
-    function Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String; out AResultInfo: TGDBType): Boolean;
+    function Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; out AResult: String; out AResultInfo: TGDBType): Boolean;
   end;
 
   { TGDBMIType }
@@ -637,6 +673,109 @@ type
     ObjAddr: String;
     Name: String;
   end;
+
+(* Part of GetText method
+   Until all commands have moved to TGDBMIDebuggerCommand classes the GetText method is
+   required on the TGDBMIDebuggerCommand and TGDBMIDebugger class.
+   To reduce duplicated code, both use this function
+*)
+function ProcessGDBResultText(S: String): String;
+var
+  Trailor: String;
+  n, len, idx: Integer;
+  v: Integer;
+begin
+
+  // don't use ' as end terminator, there might be one as part of the text
+  // since ' will be the last char, simply strip it.
+  S := GetPart(['\t '], [], S);
+
+  // Scan the string
+  len := Length(S);
+  // Set the resultstring initially to the same size
+  SetLength(Result, len);
+  n := 0;
+  idx := 1;
+  Trailor:='';
+  while idx <= len do
+  begin
+    case S[idx] of
+      '''': begin
+        Inc(idx);
+        // scan till end
+        while idx <= len do
+        begin
+          case S[idx] of
+            '''' : begin
+              Inc(idx);
+              if idx > len then Break;
+              if S[idx] <> '''' then Break;
+            end;
+            '\' : begin
+              Inc(idx);
+              if idx > len then Break;
+              case S[idx] of
+                't': S[idx] := #9;
+                'n': S[idx] := #10;
+                'r': S[idx] := #13;
+              end;
+            end;
+          end;
+          Inc(n);
+          Result[n] := S[idx];
+          Inc(idx);
+        end;
+      end;
+      '#': begin
+        Inc(idx);
+        v := 0;
+        // scan till non number (correct input is assumed)
+        while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
+        begin
+          v := v * 10 + Ord(S[idx]) - Ord('0');
+          Inc(idx)
+        end;
+        Inc(n);
+        Result[n] := Chr(v and $FF);
+      end;
+      ',', ' ': begin
+        Inc(idx); //ignore them;
+      end;
+      '<': begin
+        // Debugger has returned something like <repeats 10 times>
+        v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
+        // Since we deleted the first part of S, reset idx
+        idx := 8; // the char after ' times>'
+        len := Length(S);
+        if v <= 1 then Continue;
+
+        // limit the amount of repeats
+        if v > 1000
+        then begin
+          Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
+          v := 1000;
+        end;
+
+        // make sure result has some room
+        SetLength(Result, Length(Result) + v - 1);
+        while v > 1 do begin
+          Inc(n);
+          Result[n] := Result[n - 1];
+          Dec(v);
+        end;
+      end;
+    else
+      // Debugger has returned something we don't know of
+      // Append the remainder to our parsed result
+      Delete(S, 1, idx - 1);
+      Trailor := Trailor + '###(gdb unparsed remainder:' + S + ')###';
+      Break;
+    end;
+  end;
+  SetLength(Result, n);
+  Result := Result + Trailor;
+end;
+
 
 { TGDBMILineInfo }
 
@@ -1381,7 +1520,7 @@ function TGDBMIDebugger.ExecuteCommandFull(const ACommand: String;
 var
   CommandObj: TGDBMIDebuggerSimpleCommand;
 begin
-  CommandObj := TGDBMIDebuggerSimpleCommand.Create(ACommand, AValues, AFlags, ACallback, ATag);
+  CommandObj := TGDBMIDebuggerSimpleCommand.Create(Self, ACommand, AValues, AFlags, ACallback, ATag);
   CommandObj.KeepFinished := True;
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuted, dcsFinished];
@@ -1409,7 +1548,7 @@ begin
     try
       Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
       FCommandQueue.Delete(0);
-      R := Cmd.Execute(Self);
+      R := Cmd.Execute;
       Cmd.DoFinished;
 
       if State = dsError
@@ -1431,7 +1570,7 @@ begin
         // reset state
         FPauseWaitState := pwsNone;
         // insert continue command
-        Cmd := TGDBMIDebuggerSimpleCommand.Create('-exec-continue', [], [], nil, 0);
+        Cmd := TGDBMIDebuggerSimpleCommand.Create(Self, '-exec-continue', [], [], nil, 0);
         FCommandQueue.Add(Cmd);
       end
       else Break; // Queue empty
@@ -1964,757 +2103,16 @@ begin
 end;
 
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
-
-  function MakePrintable(const AString: String): String;
-  var
-    n: Integer;
-    InString: Boolean;
-  begin
-    Result := '';
-    InString := False;
-    for n := 1 to Length(AString) do
-    begin
-      case AString[n] of
-        ' '..#127, #128..#255: begin
-          if not InString
-          then begin
-            InString := True;
-            Result := Result + '''';
-          end;
-          Result := Result + AString[n];
-          //if AString[n] = '''' then Result := Result + '''';
-        end;
-      else
-        if InString
-        then begin
-          InString := False;
-          Result := Result + '''';
-        end;
-        Result := Result + Format('#%d', [Ord(AString[n])]);
-      end;
-    end;
-    if InString
-    then Result := Result + '''';
-  end;
-
-  function FormatResult(const AInput: String): String;
-  const
-    INDENTSTRING = '  ';
-  var
-    Indent: String;
-    i: Integer;
-    InStr: Boolean;
-    InBrackets: Boolean;
-    Limit: Integer;
-    Skip: Integer;
-  begin
-    Indent := '';
-    Skip := 0;
-    InStr := False;
-    InBrackets := False;
-    Limit := Length(AInput);
-    Result := '';
-
-    for i := 1 to Limit do
-    begin
-      if Skip>0
-      then begin
-        Dec(SKip);
-        Continue;
-      end;
-
-      if AInput[i] in [#10, #13]
-      then begin
-        //Removes unneeded LineEnding.
-        Continue;
-      end;
-
-      Result := Result + AInput[i];
-      if InStr
-      then begin
-        InStr := AInput[i] <> '''';
-        Continue;
-      end;
-
-      if InBrackets
-      then begin
-        InBrackets := AInput[i] <> ']';
-        Continue;
-      end;
-
-      case AInput[i] of
-        '[': begin
-          InBrackets:=true;
-        end;
-        '''': begin
-          InStr:=true;
-        end;
-        '{': begin
-           if (i < Limit) and (AInput[i+1] <> '}')
-           then begin
-             Indent := Indent + INDENTSTRING;
-             Result := Result + LineEnding + Indent;
-           end;
-        end;
-        '}': begin
-           if (i > 0) and (AInput[i-1] <> '{')
-           then Delete(Indent, 1, Length(INDENTSTRING));
-        end;
-        ' ': begin
-           if (i > 0) and (AInput[i-1] = ',')
-           then Result := Result + LineEnding + Indent;
-        end;
-        '0': begin
-           if (i > 4) and (i < Limit - 2)
-           then begin
-             //Pascalize pointers  "Var = 0x12345 => Var = $12345"
-             if  (AInput[i-3] = ' ')
-             and (AInput[i-2] = '=')
-             and (AInput[i-1] = ' ')
-             and (AInput[i+1] = 'x')
-             then begin
-               Skip := 1;
-               Result[Length(Result)] := '$';
-             end;
-           end;
-        end;
-      end;
-
-    end;
-  end;
-
-  function WhichIsFirst(const ASource: String; const ASearchable: array of Char): Integer;
-  var
-    j, k: Integer;
-    InString: Boolean;
-  begin
-    InString := False;
-    for j := 1 to Length(ASource) do
-    begin
-      if ASource[j] = '''' then InString := not InString;
-      if InString then Continue;
-
-      for k := Low(ASearchable) to High(ASearchable) do
-      begin
-        if ASource[j] = ASearchable[k] then Exit(j);
-      end;
-    end;
-    Result := -1;
-  end;
-
-  function SkipPairs(var ASource: String; const ABeginChar: Char; const AEndChar: Char): String;
-  var
-    Deep,j: SizeInt;
-    InString: Boolean;
-  begin
-    DebugLn('->->', ASource);
-    Deep := 0;
-    InString := False;
-
-    for j := 1 to Length(ASource) do
-    begin
-      if ASource[j]='''' then InString := not InString;
-      if InString then Continue;
-
-      if ASource[j] = ABeginChar
-      then begin
-        Inc(Deep)
-      end
-      else begin
-        if ASource[j] = AEndChar
-        then Dec(Deep);
-      end;
-
-      if Deep=0
-      then begin
-        Result := Copy(ASource, 1, j);
-        ASource := Copy(ASource, j + 1, Length(ASource) - j);
-        Exit;
-      end;
-    end;
-  end;
-
-  function IsHexC(const ASource: String): Boolean;
-  begin
-    if Length(ASource) <= 2 then Exit(False);
-    if ASource[1] <> '0' then Exit(False);
-    Result := ASource[2] = 'x';
-  end;
-
-  function HexCToHexPascal(const ASource: String; MinChars: Byte = 0): String;
-  var
-    Zeros: String;
-  begin
-    if IsHexC(Asource)
-    then begin
-      Result := Copy(ASource, 3, Length(ASource) - 2);
-      if Length(Result) < MinChars then
-      begin
-        SetLength(Zeros, MinChars - Length(Result));
-        FillChar(Zeros[1], Length(Zeros), '0');
-        Result := Zeros + Result;
-      end;
-      Result := '$' + Result;
-    end
-    else Result := ASource;
-  end;
-
-  procedure PutValuesInTypeRecord(const AType: TDBGType; const ATextInfo: String);
-  var
-    GDBParser: TGDBStringIterator;
-    Payload: String;
-    Composite: Boolean;
-    StopChar: Char;
-    j: Integer;
-  begin
-    GDBParser := TGDBStringIterator.Create(ATextInfo);
-    GDBParser.ParseNext(Composite, Payload, StopChar);
-    GDBParser.Free;
-
-    if not Composite
-    then begin
-      //It is not a record
-      debugln('Expected record, but found: "', ATextInfo, '"');
-      exit;
-    end;
-
-    //Parse information between brackets...
-    GDBParser := TGDBStringIterator.Create(Payload);
-    for j := 0 to AType.Fields.Count-1 do
-    begin
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing');
-        Break;
-      end;
-
-      if Payload <> AType.Fields[j].Name
-      then begin
-        debugln('Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
-        Break;
-      end;
-
-      if StopChar <> '='
-      then begin
-        debugln('Expected assignement, but other found.');
-        Break;
-      end;
-
-      //Field name verified...
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing');
-        Break;
-      end;
-
-      if Composite
-      then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
-
-      AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
-    end;
-
-    GDBParser.Free;
-  end;
-
-  procedure PutValuesInClass(const AType: TGDBType; ATextInfo: String);
-  var
-    GDBParser: TGDBStringIterator;
-    Payload: String;
-    Composite: Boolean;
-    StopChar: Char;
-    j: Integer;
-  begin
-    GDBParser := TGDBStringIterator.Create(ATextInfo);
-    GDBParser.ParseNext(Composite, Payload, StopChar);
-    GDBParser.Free;
-
-    if not Composite
-    then begin
-      //It is not a record
-      debugln('Expected class, but found: "', ATextInfo, '"');
-      exit;
-    end;
-
-    //Parse information between brackets...
-    GDBParser := TGDBStringIterator.Create(Payload);
-    try
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing.');
-        exit;
-      end;
-
-      //APayload holds the ancestor name
-      if '<' + AType.Ancestor + '>' <> Payload
-      then begin
-        debugln('Ancestor does not match, expected ', AType.Ancestor,' but found ', Payload);
-        exit;
-      end;
-
-      //Special hidden field, skip as a decomposable, parse and forget...
-      if not GDBParser.ParseNext(Composite, Payload, StopChar)
-      then begin
-        debugln('Premature end of parsing.');
-        exit;
-      end;
-
-      while GDBParser.ParseNext(Composite, Payload, StopChar) do
-      begin
-        if StopChar <> '='
-        then begin
-          debugln('Expected assignement, but other found.');
-          exit;
-        end;
-
-        for j := 0 to AType.Fields.Count-1 do
-        begin
-          if Payload <> AType.Fields[j].Name then Continue;
-
-          //Field name verified...
-          if not GDBParser.ParseNext(Composite, Payload, StopChar)
-          then begin
-            debugln('Premature end of parsing.');
-            exit;
-          end;
-
-          if Composite
-          then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
-          AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
-          Break;
-        end;
-      end;
-    finally
-      GDBParser.Free;
-    end;
-  end;
-
-  procedure PutValuesInTree();
-  var
-    ValData: string;
-  begin
-    if not Assigned(ATypeInfo) then exit;
-
-    ValData := AResult;
-    case ATypeInfo.Kind of
-      skClass: begin
-        GetPart('','{',ValData);
-        PutValuesInClass(ATypeInfo,ValData);
-      end;
-      skRecord: begin
-        GetPart('','{',ValData);
-        PutValuesInTypeRecord(ATypeInfo,ValData);
-      end;
-      skVariant: begin
-        ATypeInfo.Value.AsString:=ValData;
-      end;
-//      skEnum: ;
-//      skSet: ;
-      skSimple: begin
-        ATypeInfo.Value.AsString:=ValData;
-      end;
-//      skPointer: ;
-    end;
-  end;
-
-  function SelectParentFrame(var aFrame: Integer): Boolean;
-  var
-    R: TGDBMIExecResult;
-    List: TGDBMINameValueList;
-    ParentFp, Fp: String;
-  begin
-    if not ExecuteCommand('-data-evaluate-expression parentfp', [cfIgnoreError], R)
-    or (R.State = dsError)
-    then Exit(False);
-
-    List := TGDBMINameValueList.Create(R);
-    ParentFP := List.Values['value'];
-    repeat
-      if not ExecuteCommand('-stack-select-frame %u', [aFrame+1], [cfIgnoreError], R)
-      or (R.State = dsError)
-      then begin
-        List.Free;
-        Exit(False);
-      end;
-      Inc(AFrame);
-
-      if not ExecuteCommand('-data-evaluate-expression $fp', [cfIgnoreError], R)
-      or (R.State = dsError)
-      then begin
-        List.Free;
-        Exit(False);
-      end;
-      Fp := List.Values['value'];
-    until ParentFP = Fp;
-    List.Free;
-  end;
-
-  function PascalizePointer(AString: String; const TypeCast: String = ''): String;
-  begin
-    if IsHexC(AString)
-    then begin
-      if GetPart([], [' '], AString, False, False) = '0x0'
-      then begin
-        Result := AString;
-        Result[1] := 'n';
-        Result[2] := 'i';
-        Result[3] := 'l';
-      end
-      else begin
-        // 0xabc0 => $0000ABC0
-        Result := UpperCase(HexCToHexPascal(AString, TargetWidth div 4));
-      end;
-    end
-    else Result := AString;
-    if TypeCast <> '' then
-      Result := TypeCast + '(' + Result + ')';
-  end;
-
-  function FormatCurrency(const AString: String): String;
-  var
-    i, e: Integer;
-    c: Currency;
-  begin
-    Result := AString;
-    Val(Result, i, e);
-    // debugger outputs 12345 for 1,2345 values
-    if e=0 then
-    begin
-      c := i / 10000;
-      Result := CurrToStr(c);
-    end;
-  end;
-
-  function GetVariantValue(AString: String): String;
-
-    function FormatVarError(const AString: String): String; inline;
-    begin
-      Result := 'Error('+AString+')';
-    end;
-
-  var
-    VarList: TGDBMINameValueList;
-    VType: Integer;
-    Addr: TDbgPtr;
-    dt: TDateTime;
-    e: Integer;
-  begin
-    VarList := TGDBMINameValueList.Create('');
-    try
-      VarList.UseTrim := True;
-      VarList.Init(AString);
-      VType := StrToIntDef(VarList.Values['VTYPE'], -1);
-      if VType = -1 then // can never happen if no error since varType is word
-        Exit('variant: unknown type');
-      case VType and not varTypeMask of
-        0:
-          begin
-            case VType of
-              varEmpty: Result := 'UnAssigned';
-              varNull: Result := 'Null';
-              varsmallint: Result := VarList.Values['VSMALLINT'];
-              varinteger: Result := VarList.Values['VINTEGER'];
-              varsingle: Result := VarList.Values['VSINGLE'];
-              vardouble: Result := VarList.Values['VDOUBLE'];
-              vardate:
-                begin
-                  // float number
-                  Result := VarList.Values['VDATE'];
-                  val(Result, dt, e);
-                  if e = 0 then
-                    Result := DateTimeToStr(dt);
-                end;
-              varcurrency: Result := FormatCurrency(VarList.Values['VCURRENCY']);
-              varolestr: Result := VarList.Values['VOLESTR'];
-              vardispatch: Result := PascalizePointer(VarList.Values['VDISPATCH'], 'IDispatch');
-              varerror: Result := FormatVarError(VarList.Values['VERROR']);
-              varboolean: Result := VarList.Values['VBOOLEAN'];
-              varunknown: Result := PascalizePointer(VarList.Values['VUNKNOWN'], 'IUnknown');
-              varshortint: Result := VarList.Values['VSHORTINT'];
-              varbyte: Result := VarList.Values['VBYTE'];
-              varword: Result := VarList.Values['VWORD'];
-              varlongword: Result := VarList.Values['VLONGWORD'];
-              varint64: Result := VarList.Values['VINT64'];
-              varqword: Result := VarList.Values['VQWORD'];
-              varstring:
-                begin
-                  // address of string
-                  Result := VarList.Values['VSTRING'];
-                  Val(Result, Addr, e);
-                  if e = 0 then
-                  begin
-                    if Addr = 0 then
-                      Result := ''''''
-                    else
-                      Result := MakePrintable(GetText(Addr));
-                  end;
-                end;
-              varany:  Result := VarList.Values['VANY'];
-            else
-              Result := 'unsupported variant type: ' + VarTypeAsText(VType);
-            end;
-          end;
-        varArray:
-          begin
-            Result := VarTypeAsText(VType);
-            // TODO: show variant array data?
-            // Result := VarList.Values['VARRAY'];
-          end;
-        varByRef:
-          begin
-            Result := VarList.Values['VPOINTER'];
-            Val(Result, Addr, e);
-            if e = 0 then
-            begin
-              if Addr = 0 then
-                Result := '???'
-              else
-              begin
-                // Result contains a valid address
-                case VType xor varByRef of
-                  varEmpty: Result := 'UnAssigned';
-                  varNull: Result := 'Null';
-                  varsmallint: Result := GetStrValue('psmallint(%s)^', [Result]);
-                  varinteger: Result := GetStrValue('pinteger(%s)^', [Result]);
-                  varsingle: Result := GetStrValue('psingle(%s)^', [Result]);
-                  vardouble: Result := GetStrValue('pdouble(%s)^', [Result]);
-                  vardate:
-                    begin
-                      // float number
-                      Result := GetStrValue('pdatetime(%s)^', [Result]);
-                      val(Result, dt, e);
-                      if e = 0 then
-                        Result := DateTimeToStr(dt);
-                    end;
-                  varcurrency: Result := FormatCurrency(GetStrValue('pcurrency(%s)^', [Result]));
-                  varolestr:
-                    begin
-                      Result := GetStrValue('^pointer(%s)^', [Result]);
-                      val(Result, Addr, e);
-                      if e = 0 then
-                        Result := MakePrintable(GetWideText(Addr));
-                    end;
-                  vardispatch: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IDispatch');
-                  varerror: Result := FormatVarError(GetStrValue('phresult(%s)^', [Result]));
-                  varboolean: Result := GetStrValue('pwordbool(%s)^', [Result]);
-                  varunknown: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IUnknown');
-                  varshortint: Result := GetStrValue('pshortint(%s)^', [Result]);
-                  varbyte: Result := GetStrValue('pbyte(%s)^', [Result]);
-                  varword: Result := GetStrValue('pword(%s)^', [Result]);
-                  varlongword: Result := GetStrValue('plongword(%s)^', [Result]);
-                  varint64: Result := GetStrValue('pint64(%s)^', [Result]);
-                  varqword: Result := GetStrValue('pqword(%s)^', [Result]);
-                  varstring: Result := MakePrintable(GetText('pansistring(%s)^', [Result]));
-                else
-                  Result := 'unsupported variant type: ' + VarTypeAsText(VType);
-                end;
-              end;
-            end;
-          end;
-        else
-          Result := 'unsupported variant type: ' + VarTypeAsText(VType);
-      end;
-    finally
-      VarList.Free;
-    end;
-  end;
-
-  function StripExprNewlines(const ASource: String): String;
-  var
-    len: Integer;
-    srcPtr, dstPtr: PChar;
-  begin
-    len := Length(ASource);
-    SetLength(Result, len);
-    if len = 0 then Exit;
-    srcPtr := @ASource[1];
-    dstPtr := @Result[1];
-    while len > 0 do
-    begin
-      case srcPtr^ of
-        #0:;
-        #10, #13: dstPtr^ := ' ';
-      else
-        dstPtr^ := srcPtr^;
-      end;
-      Dec(len);
-      Inc(srcPtr);
-      Inc(dstPtr);
-    end;
-  end;
-
 var
-  R, Rtmp: TGDBMIExecResult;
-  S: String;
-  ResultList: TGDBMINameValueList;
-  ResultInfo: TGDBType;
-  addr: TDbgPtr;
-  e: Integer;
-  Expr: TGDBMIExpression;
-  frame, frameidx: Integer;
-  PrintableString: String;
+  CommandObj: TGDBMIDebuggerCommandEvaluate;
 begin
-  AResult:='';
-  ATypeInfo:=nil;
-
-  S := StripExprNewlines(AExpression);
-
-  if S = '' then Exit(false);
-  if S[1] = '!'
-  then begin
-    //TESTING...
-    Delete(S, 1, 1);
-    Expr := TGDBMIExpression.Create(S);
-    AResult := Expr.DumpExpression;
-    AResult := AResult + LineEnding;
-    Expr.Evaluate(Self, S, ATypeInfo);
-    FreeAndNil(ATypeInfo);
-    AResult := AResult + S;
-    Expr.Free;
-    Exit(True);
-  end;
-
-  ResultList := TGDBMINameValueList.Create('');
-  // original
-  frame := -1;
-  frameidx := -1;
-  repeat
-    Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
-
-    if (R.State <> dsError)
-    then Break;
-
-    // check if there is a parentfp and try to evaluate there
-    if frame = -1
-    then begin
-      // store current
-      ExecuteCommand('-stack-info-frame', [cfIgnoreError], Rtmp);
-      ResultList.Init(Rtmp.Values);
-      ResultList.SetPath('frame');
-      frame := StrToIntDef(ResultList.Values['level'], -1);
-      if frame = -1 then Break;
-      frameidx := frame;
-    end;
-  until not SelectParentFrame(frameidx);
-
-  if frameidx <> frame
-  then begin
-    // Restore current frame
-    ExecuteCommand('-stack-select-frame %u', [frame], [cfIgnoreError]);
-  end;
-
-  ResultList.Init(R.Values);
-  if R.State = dsError
-  then AResult := ResultList.Values['msg']
-  else AResult := ResultList.Values['value'];
-  AResult := DeleteEscapeChars(AResult);
-  ResultList.Free;
-  if R.State = dsError
-  then Exit;
-
-  // Check for strings
-  ResultInfo := GetGDBTypeInfo(S);
-  if (ResultInfo = nil) then Exit;
-
-  try
-    case ResultInfo.Kind of
-      skPointer: begin
-        S := GetPart([], [' '], AResult, False, False);
-        Val(S, addr, e);
-        if e <> 0 then Exit;
-
-        S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
-          0, 1, 2: begin
-            if Addr = 0
-            then
-              AResult := ''''''
-            else
-              AResult := MakePrintable(GetText(Addr));
-              PrintableString := AResult;
-          end;
-          3: begin
-            if Addr = 0
-            then AResult := 'nil'
-            else begin
-              S := GetClassName(Addr);
-              if S = '' then S := '???';
-              AResult := 'class of ' + S + ' ' + AResult;
-            end;
-          end;
-          4,5: begin
-            // widestring handling
-            if Addr = 0
-            then AResult := ''''''
-            else AResult := MakePrintable(GetWideText(Addr));
-            PrintableString := AResult;
-          end;
-        else
-          if Addr = 0
-          then AResult := 'nil';
-
-          if (Length(S) > 0)
-          then begin
-            if (S <> 'pointer')
-            then begin
-              if S[1] = 't'
-              then begin
-                S[1] := 'T';
-                if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
-              end;
-              AResult := PascalizePointer(AResult, '^' + S);
-            end
-            else AResult := PascalizePointer(AResult);
-          end;
-        end;
-
-        ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
-        S := Format('$%x', [Addr]);
-        if PrintableString <> ''
-        then S := S + ' ' + PrintableString;
-        ResultInfo.Value.AsString := S;
-      end;
-
-      skClass: begin
-        Val(AResult, addr, e); //Get the class mem address
-        if e = 0 then begin //No error ?
-          if Addr = 0
-          then AResult := 'nil'
-          else begin
-            S := GetInstanceClassName(Addr);
-            if S = '' then S := '???'; //No instanced class found
-            AResult := 'class ' + S + ' ' + AResult;
-          end;
-        end;
-      end;
-
-      skVariant: begin
-        AResult := GetVariantValue(AResult);
-      end;
-      skRecord: begin
-        AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
-      end;
-
-      skSimple: begin
-        if ResultInfo.TypeName = 'CURRENCY' then
-          AResult := FormatCurrency(AResult)
-        else
-        if (ResultInfo.TypeName = '&ShortString') then
-          AResult := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
-        else
-          AResult := AResult;
-      end;
-    end;
-
-  finally
-    if frameidx <> frame
-    then begin
-      // Restore current frame
-      ExecuteCommand('-stack-select-frame %u', [frame], [cfIgnoreError]);
-    end
-  end;
-  ATypeInfo := ResultInfo;
-  PutValuesInTree;
-  AResult := FormatResult(AResult);
+  CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression);
+  CommandObj.KeepFinished := True;
+  QueueCommand(CommandObj);
+  Result := CommandObj.State in [dcsExecuted, dcsFinished];
+  AResult := CommandObj.TextValue;
+  ATypeInfo := CommandObj.TypeInfo;
+  CommandObj.KeepFinished := False;
 end;
 
 function TGDBMIDebugger.GDBModify(const AExpression, ANewValue: String): Boolean;
@@ -2932,20 +2330,6 @@ begin
   then SetState(dsStop);
 end;
 
-function TGDBMIDebugger.GetGDBTypeInfo(const AExpression: String): TGDBType;
-var
-  R: TGDBMIExecResult;
-begin
-  if not ExecuteCommand('ptype %s', [AExpression], [cfIgnoreError, cfNoMiCommand], R)
-  or (R.State = dsError)
-  then begin
-    Result := nil;
-  end
-  else begin
-    Result := TGdbMIType.CreateFromResult(R);
-  end;
-end;
-
 function TGDBMIDebugger.GetData(const ALocation: TDbgPtr): TDbgPtr;
 var
   S: String;
@@ -3023,141 +2407,14 @@ end;
 function TGDBMIDebugger.GetText(const AExpression: String;
   const AValues: array of const): String;
 var
-  S, Trailor: String;
   R: TGDBMIExecResult;
-  n, len, idx: Integer;
-  v: Integer;
 begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, [cfNoMICommand, cfIgnoreError], R)
   then begin
     Result := '';
     Exit;
   end;
-
-  S := StripLN(R.Values);
-  // don't use ' as end terminator, there might be one as part of the text
-  // since ' will be the last char, simply strip it.
-  S := GetPart(['\t '], [], S);
-
-  // Scan the string
-  len := Length(S);
-  // Set the resultstring initially to the same size
-  SetLength(Result, len);
-  n := 0;
-  idx := 1;
-  Trailor:='';
-  while idx <= len do
-  begin
-    case S[idx] of
-      '''': begin
-        Inc(idx);
-        // scan till end
-        while idx <= len do
-        begin
-          case S[idx] of
-            '''' : begin
-              Inc(idx);
-              if idx > len then Break;
-              if S[idx] <> '''' then Break;
-            end;
-            '\' : begin
-              Inc(idx);
-              if idx > len then Break;
-              case S[idx] of
-                't': S[idx] := #9;
-                'n': S[idx] := #10;
-                'r': S[idx] := #13;
-              end;
-            end;
-          end;
-          Inc(n);
-          Result[n] := S[idx];
-          Inc(idx);
-        end;
-      end;
-      '#': begin
-        Inc(idx);
-        v := 0;
-        // scan till non number (correct input is assumed)
-        while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
-        begin
-          v := v * 10 + Ord(S[idx]) - Ord('0');
-          Inc(idx)
-        end;
-        Inc(n);
-        Result[n] := Chr(v and $FF);
-      end;
-      ',', ' ': begin
-        Inc(idx); //ignore them;
-      end;
-      '<': begin
-        // Debugger has returned something like <repeats 10 times>
-        v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
-        // Since we deleted the first part of S, reset idx
-        idx := 8; // the char after ' times>'
-        len := Length(S);
-        if v <= 1 then Continue;
-
-        // limit the amount of repeats
-        if v > 1000
-        then begin
-          Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
-          v := 1000;
-        end;
-
-        // make sure result has some room
-        SetLength(Result, Length(Result) + v - 1);
-        while v > 1 do begin
-          Inc(n);
-          Result[n] := Result[n - 1];
-          Dec(v);
-        end;
-      end;
-    else
-      // Debugger has returned something we don't know of
-      // Append the remainder to our parsed result
-      Delete(S, 1, idx - 1);
-      Trailor := Trailor + '###(gdb unparsed remainder:' + S + ')###';
-      Break;
-    end;
-  end;
-  SetLength(Result, n);
-  Result := Result + Trailor;
-end;
-
-function TGDBMIDebugger.GetWideText(const ALocation: TDBGPtr): String;
-
-  function GetWideChar(const ALocation: TDBGPtr): WideChar;
-  var
-    Address, S: String;
-    R: TGDBMIExecResult;
-  begin
-    Str(ALocation, Address);
-    if not ExecuteCommand('x/uh' + Address, [], [cfNoMICommand, cfIgnoreError], R)
-    then begin
-      Result := #0;
-      Exit;
-    end;
-    S := StripLN(R.Values);
-    S := GetPart(['\t'], [], S);
-    Result := WideChar(StrToIntDef(S, 0) and $FFFF);
-  end;
-var
-  OneChar: WideChar;
-  CurLocation: TDBGPtr;
-  WStr: WideString;
-begin
-  WStr := '';
-  CurLocation := ALocation;
-  repeat
-    OneChar := GetWideChar(CurLocation);
-    if OneChar <> #0 then
-    begin
-      WStr := WStr + OneChar;
-      CurLocation := CurLocation + 2;
-    end;
-  until (OneChar = #0);
-  Result := UTF8Encode(WStr);
+  Result := ProcessGDBResultText(StripLN(R.Values));
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
@@ -3417,152 +2674,6 @@ begin
   Frame.Free;
 
   DoCurrent(Location);
-end;
-
-function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
-
-  function DoResultRecord(Line: String): Boolean;
-  var
-    ResultClass: String;
-  begin
-    ResultClass := GetPart('^', ',', Line);
-
-    if Line = ''
-    then begin
-      if AResult.Values <> ''
-      then Include(AResult.Flags, rfNoMI);
-    end
-    else begin
-      AResult.Values := Line;
-    end;
-
-    Result := True;
-    case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
-      0: begin // done
-      end;
-      1: begin // running
-        AResult.State := dsRun;
-      end;
-      2: begin // exit
-        AResult.State := dsIdle;
-      end;
-      3: begin // error
-        DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
-        // todo implement with values
-        if  (pos('msg=', Line) > 0)
-        and (pos('not being run', Line) > 0)
-        then AResult.State := dsStop
-        else AResult.State := dsError;
-      end;
-    else
-      Result := False;
-      DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
-    end;
-  end;
-
-  procedure DoConsoleStream(Line: String);
-  var
-    len: Integer;
-  begin
-    // check for symbol info
-    if Pos('no debugging symbols', Line) > 0
-    then begin
-      Exclude(FTargetFlags, tfHasSymbols);
-      DoDbgEvent(ecDebugger, Format('File ''%s'' has no debug symbols', [FileName]));
-    end
-    else begin
-      // Strip surrounding ~" "
-      len := Length(Line) - 3;
-      if len < 0 then Exit;
-      Line := Copy(Line, 3, len);
-      // strip trailing \n (unless it is escaped \\n)
-      if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
-      then begin
-        if len = 2
-        then Line := LineEnding
-        else if Line[len - 2] <> '\'
-        then begin
-          SetLength(Line, len - 2);
-          Line := Line + LineEnding;
-        end;
-      end;
-
-      AResult.Values := AResult.Values + Line;
-    end;
-  end;
-
-  procedure DoTargetStream(const Line: String);
-  begin
-    DebugLn('[Debugger] Target output: ', Line);
-  end;
-
-  procedure DoLogStream(const Line: String);
-  begin
-    DebugLn('[Debugger] Log output: ', Line);
-    if Line = '&"kill\n"'
-    then AResult.State := dsStop
-    else if LeftStr(Line, 8) = '&"Error '
-    then AResult.State := dsError;
-  end;
-
-  procedure DoExecAsync(Line: String);
-  var
-    EventText: String;
-  begin
-    EventText := GetPart(['*'], [','], Line, False, False);
-    if EventText = 'running'
-    then
-      DoDbgEvent(ecProcess, Line)
-    else
-      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
-  end;
-
-  procedure DoStatusAsync(const Line: String);
-  begin
-    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
-  end;
-
-  procedure DoNotifyAsync(Line: String);
-  var
-    EventText: String;
-  begin
-    EventText := GetPart(['='], [','], Line, False, False);
-    case StringCase(EventText, ['library-unloaded',
-      'thread-created', 'thread-group-created',
-      'thread-exited', 'thread-group-exited'], False, False)
-    of
-      0: DoDbgEvent(ecModule, Line);
-      1..4: DoDbgEvent(ecThread, Line);
-    else
-      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
-    end;
-  end;
-
-var
-  S: String;
-begin
-  Result := False;
-  AResult.Values := '';
-  AResult.Flags := [];
-  AResult.State := dsNone;
-  repeat
-    S := ReadLine;
-    if S = '' then Continue;
-    if S = '(gdb) ' then Break;
-
-    case S[1] of
-      '^': Result := DoResultRecord(S);
-      '~': DoConsoleStream(S);
-      '@': DoTargetStream(S);
-      '&': DoLogStream(S);
-      '*': DoExecAsync(S);
-      '+': DoStatusAsync(S);
-      '=': DoNotifyAsync(S);
-    else
-      DebugLn('[WARNING] Debugger: Unknown record: ', S);
-    end;
-    {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
-  until not DebugProcessRunning;
 end;
 
 function TGDBMIDebugger.ProcessRunning(var AStoppedParams: String): Boolean;
@@ -5632,7 +4743,7 @@ begin
   end;
 end;
 
-function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; out AResult: String; out AResultInfo: TGDBType): Boolean;
+function TGDBMIExpression.Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; out AResult: String; out AResultInfo: TGDBType): Boolean;
 
 const
   OPER_UNARY = [eoNot, eoNegate, eoPlus, eoAddress, eoBracket];
@@ -5676,14 +4787,14 @@ begin
     if (FStackPtr = nil)
     or (OPER_LEVEL[Sub^.OperTor] < OPER_LEVEL[FStackPtr^.OperTor])
     then begin
-      if not Evaluate(ADebugger, Sub^.Operand, R^.Value, R^.Info)
+      if not Evaluate(ADebuggerCommand, Sub^.Operand, R^.Value, R^.Info)
       then begin
         Result := False;
         Break;
       end;
     end
     else begin
-      if not Solve(ADebugger, OPER_LEVEL[Sub^.OperTor], Sub^.Operand, R^.Value, R^.Info)
+      if not Solve(ADebuggerCommand, OPER_LEVEL[Sub^.OperTor], Sub^.Operand, R^.Value, R^.Info)
       then begin
         Result := False;
         Break;
@@ -5699,7 +4810,7 @@ begin
   then begin
     New(R);
     FillByte(R^, SizeOf(R^), 0);
-    Result := Solve(ADebugger, 255, '', R^.Value, R^.Info);
+    Result := Solve(ADebuggerCommand, 255, '', R^.Value, R^.Info);
     Push(R); // make sure it gets cleaned later
   end;
 
@@ -5718,7 +4829,7 @@ begin
   end;
 end;
 
-function TGDBMIExpression.Evaluate(const ADebugger: TGDBMIDebugger; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
+function TGDBMIExpression.Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; const AText: String; out AResult: String; out AResultInfo: TGDBType): Boolean;
 var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
@@ -5738,7 +4849,7 @@ begin
     Exit(True);
   end;
 
-  Result := ADebugger.ExecuteCommand('-data-evaluate-expression %s', [AText], [cfIgnoreError, cfExternal], R)
+  Result := ADebuggerCommand.ExecuteCommand('-data-evaluate-expression %s', [AText], R)
         and (R.State <> dsError);
 
   ResultList := TGDBMINameValueList.Create(R);
@@ -5748,7 +4859,7 @@ begin
 //  AResult := DeleteEscapeChars(AResult);
   ResultList.Free;
   if Result
-  then AResultInfo := ADebugger.GetGDBTypeInfo(AText)
+  then AResultInfo := ADebuggerCommand.GetGDBTypeInfo(AText)
   else AResultInfo := nil;
 
   if AResultInfo = nil then Exit;
@@ -5789,7 +4900,7 @@ begin
   FillByte(AResult^, SizeOf(AResult^), 0);
 end;
 
-function TGDBMIExpression.Solve(const ADebugger: TGDBMIDebugger; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.Solve(const ADebuggerCommand: TGDBMIDebuggerCommand; ALimit: Byte; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
 var
   StartPtr, Left: PGDBMIExpressionResult;
   Right: TGDBMIExpressionResult;
@@ -5832,15 +4943,15 @@ begin
       eoShr: begin
         if Left^.Next = nil
         then begin
-          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
-                and SolveMath(ADebugger, Left, @Right, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Right.Value, Right.Info)
+                and SolveMath(ADebuggerCommand, Left, @Right, Value, Info);
           FreeAndNil(Right.Info);
         end
-        else Result := SolveMath(ADebugger, Left, Left^.Next, Value, Info);
+        else Result := SolveMath(ADebuggerCommand, Left, Left^.Next, Value, Info);
       end;
       eoDereference: begin
         Result := (ARight = '') // right part can not have value
-              and SolveDeref(ADebugger, Left, Value, Info);
+              and SolveDeref(ADebuggerCommand, Left, Value, Info);
       end;
       eoAddress: begin
         Result := (Left^.Info = nil);
@@ -5848,20 +4959,20 @@ begin
 
         if Left^.Next = nil
         then begin
-          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
-                and SolveAddress(ADebugger, @Right, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Right.Value, Right.Info)
+                and SolveAddress(ADebuggerCommand, @Right, Value, Info);
           FreeAndNil(Right.Info);
         end
-        else Result := SolveIn(ADebugger, Left, Left^.Next, Value, Info);
+        else Result := SolveIn(ADebuggerCommand, Left, Left^.Next, Value, Info);
       end;
       eoDot: begin
         // its impossible to have next already resolved. Its a member of left
-        Result := (Left^.Next = nil) and SolveDot(ADebugger, Left, ARight, Value, Info);
+        Result := (Left^.Next = nil) and SolveDot(ADebuggerCommand, Left, ARight, Value, Info);
       end;
 //    eoComma: begin
 //    end;
       eoBracket: begin
-        Result := Evaluate(ADebugger, ARight, Value, Info);
+        Result := Evaluate(ADebuggerCommand, ARight, Value, Info);
         // we can finish when closed
       end;
       eoIndex: begin
@@ -5870,39 +4981,39 @@ begin
           // only possible when part of "in"
           Result := (Left^.Prev <> nil)
                 and (Left^.Prev^.OperTor = eoIn)
-                and Evaluate(ADebugger, ARight, Value, Info);
+                and Evaluate(ADebuggerCommand, ARight, Value, Info);
         end
         else begin
-          Result := Evaluate(ADebugger, ARight, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Value, Info);
           // we can finish when closed
         end;
       end;
       eoIn: begin
         if Left^.Next = nil
         then begin
-          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
-                and SolveIn(ADebugger, Left, @Right, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Right.Value, Right.Info)
+                and SolveIn(ADebuggerCommand, Left, @Right, Value, Info);
           FreeAndNil(Right.Info);
         end
-        else Result := SolveIn(ADebugger, Left, Left^.Next, Value, Info);
+        else Result := SolveIn(ADebuggerCommand, Left, Left^.Next, Value, Info);
       end;
       eoIs: begin
         if Left^.Next = nil
         then begin
-          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
-                and SolveIs(ADebugger, Left, @Right, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Right.Value, Right.Info)
+                and SolveIs(ADebuggerCommand, Left, @Right, Value, Info);
           FreeAndNil(Right.Info);
         end
-        else Result := SolveIs(ADebugger, Left, Left^.Next, Value, Info);
+        else Result := SolveIs(ADebuggerCommand, Left, Left^.Next, Value, Info);
       end;
       eoAs: begin
         if Left^.Next = nil
         then begin
-          Result := Evaluate(ADebugger, ARight, Right.Value, Right.Info)
-                and SolveAs(ADebugger, Left, @Right, Value, Info);
+          Result := Evaluate(ADebuggerCommand, ARight, Right.Value, Right.Info)
+                and SolveAs(ADebuggerCommand, Left, @Right, Value, Info);
           FreeAndNil(Right.Info);
         end
-        else Result := SolveAs(ADebugger, Left, Left^.Next, Value, Info);
+        else Result := SolveAs(ADebuggerCommand, Left, Left^.Next, Value, Info);
       end;
     else
       Result := False;
@@ -5929,17 +5040,17 @@ begin
   end;
 end;
 
-function TGDBMIExpression.SolveAddress(const ADebugger: TGDBMIDebugger; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveAddress(const ADebuggerCommand: TGDBMIDebuggerCommand; ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 begin
   Result := False;
 end;
 
-function TGDBMIExpression.SolveAs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveAs(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 begin
   Result := False;
 end;
 
-function TGDBMIExpression.SolveDeref(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveDeref(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 var
   Eval: String;
 begin
@@ -5947,36 +5058,36 @@ begin
   if not Result then Exit;
 
   Eval := '^' + ALeft^.Info.TypeName + '(' + ALeft^.Value + ')^';
-  Result := Evaluate(ADebugger, Eval, AValue, AInfo);
+  Result := Evaluate(ADebuggerCommand, Eval, AValue, AInfo);
 end;
 
-function TGDBMIExpression.SolveDot(const ADebugger: TGDBMIDebugger; ALeft: PGDBMIExpressionResult; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveDot(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft: PGDBMIExpressionResult; const ARight: String; out AValue: String; out AInfo: TGDBType): Boolean;
 var
   Prefix: String;
 begin
   if not (ALeft^.Info.Kind in [skClass, skRecord]) then Exit(False);
 
   Prefix := '^' + ALeft^.Info.TypeName + '(' + ALeft^.Value + ')^.';
-  Result := Evaluate(ADebugger, Prefix + ARight, AValue, AInfo);
+  Result := Evaluate(ADebuggerCommand, Prefix + ARight, AValue, AInfo);
   if Result then Exit;
 
   // maybe property
-  Result := Evaluate(ADebugger, Prefix + 'F' + ARight, AValue, AInfo);
+  Result := Evaluate(ADebuggerCommand, Prefix + 'F' + ARight, AValue, AInfo);
 
   //todo: method call
 end;
 
-function TGDBMIExpression.SolveIn(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveIn(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 begin
   Result := False;
 end;
 
-function TGDBMIExpression.SolveIs(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveIs(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 begin
   Result := False;
 end;
 
-function TGDBMIExpression.SolveMath(const ADebugger: TGDBMIDebugger; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
+function TGDBMIExpression.SolveMath(const ADebuggerCommand: TGDBMIDebuggerCommand; ALeft, ARight: PGDBMIExpressionResult; out AValue: String; out AInfo: TGDBType): Boolean;
 const
   OPERATOR_TEXT: array[TDBGExpressionOperator] of string = (
     {eoNone            } '',
@@ -6024,7 +5135,7 @@ begin
     Eval := ALeft^.Value + OPERATOR_TEXT[ALeft^.Opertor] + ARight^.Value;
   end;
 
-  Result := Evaluate(ADebugger, Eval, AValue, AInfo);
+  Result := Evaluate(ADebuggerCommand, Eval, AValue, AInfo);
 end;
 
 { TGDBMIType }
@@ -6113,6 +5224,14 @@ end;
 
 { TGDBMIDebuggerCommand }
 
+procedure TGDBMIDebuggerCommand.SetKeepFinished(const AValue: Boolean);
+begin
+  if FKeepFinished = AValue then exit;
+  FKeepFinished := AValue;
+  if (not FKeepFinished) and (State = dcsFinished)
+  then DoFree;
+end;
+
 procedure TGDBMIDebuggerCommand.SetState(NewState: TGDBMIDebuggerCommandState);
 var
   OldState: TGDBMIDebuggerCommandState;
@@ -6133,7 +5252,8 @@ end;
 
 procedure TGDBMIDebuggerCommand.DoFree;
 begin
-  Self.Free;
+  if not FKeepFinished then
+    Self.Free;
 end;
 
 procedure TGDBMIDebuggerCommand.DoOnExecuted;
@@ -6142,9 +5262,350 @@ begin
     FOnExecuted(self);
 end;
 
-constructor TGDBMIDebuggerCommand.Create;
+function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String): Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  Result := ExecuteCommand(ACommand, R);
+end;
+
+function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
+  out AResult: TGDBMIExecResult): Boolean;
+begin
+  AResult.Values := '';
+  AResult.State := dsNone;
+  AResult.Flags := [];
+
+  FTheDebugger.SendCmdLn(ACommand);
+  Result := ProcessResult(AResult);
+
+  if not Result
+  then begin
+    DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',ACommand,'" failed.');
+    FTheDebugger.SetState(dsError);
+  end;
+end;
+
+function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
+  const AValues: array of const): Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  Result := ExecuteCommand(ACommand, AValues, R);
+end;
+
+function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
+  const AValues: array of const; out AResult: TGDBMIExecResult): Boolean;
+begin
+  Result := ExecuteCommand(Format(ACommand, AValues), AResult);
+end;
+
+function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
+
+  function DoResultRecord(Line: String): Boolean;
+  var
+    ResultClass: String;
+  begin
+    ResultClass := GetPart('^', ',', Line);
+
+    if Line = ''
+    then begin
+      if AResult.Values <> ''
+      then Include(AResult.Flags, rfNoMI);
+    end
+    else begin
+      AResult.Values := Line;
+    end;
+
+    Result := True;
+    case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
+      0: begin // done
+      end;
+      1: begin // running
+        AResult.State := dsRun;
+      end;
+      2: begin // exit
+        AResult.State := dsIdle;
+      end;
+      3: begin // error
+        DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
+        // todo implement with values
+        if  (pos('msg=', Line) > 0)
+        and (pos('not being run', Line) > 0)
+        then AResult.State := dsStop
+        else AResult.State := dsError;
+      end;
+    else
+      Result := False;
+      DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+    end;
+  end;
+
+  procedure DoConsoleStream(Line: String);
+  var
+    len: Integer;
+  begin
+    // check for symbol info
+    if Pos('no debugging symbols', Line) > 0
+    then begin
+      FTheDebugger.TargetFlags := FTheDebugger.TargetFlags - [tfHasSymbols];
+      DoDbgEvent(ecDebugger, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
+    end
+    else begin
+      // Strip surrounding ~" "
+      len := Length(Line) - 3;
+      if len < 0 then Exit;
+      Line := Copy(Line, 3, len);
+      // strip trailing \n (unless it is escaped \\n)
+      if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
+      then begin
+        if len = 2
+        then Line := LineEnding
+        else if Line[len - 2] <> '\'
+        then begin
+          SetLength(Line, len - 2);
+          Line := Line + LineEnding;
+        end;
+      end;
+
+      AResult.Values := AResult.Values + Line;
+    end;
+  end;
+
+  procedure DoTargetStream(const Line: String);
+  begin
+    DebugLn('[Debugger] Target output: ', Line);
+  end;
+
+  procedure DoLogStream(const Line: String);
+  begin
+    DebugLn('[Debugger] Log output: ', Line);
+    if Line = '&"kill\n"'
+    then AResult.State := dsStop
+    else if LeftStr(Line, 8) = '&"Error '
+    then AResult.State := dsError;
+  end;
+
+  procedure DoExecAsync(Line: String);
+  var
+    EventText: String;
+  begin
+    EventText := GetPart(['*'], [','], Line, False, False);
+    if EventText = 'running'
+    then
+      DoDbgEvent(ecProcess, Line)
+    else
+      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoStatusAsync(const Line: String);
+  begin
+    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoNotifyAsync(Line: String);
+  var
+    EventText: String;
+  begin
+    EventText := GetPart(['='], [','], Line, False, False);
+    case StringCase(EventText, ['library-unloaded',
+      'thread-created', 'thread-group-created',
+      'thread-exited', 'thread-group-exited'], False, False)
+    of
+      0: DoDbgEvent(ecModule, Line);
+      1..4: DoDbgEvent(ecThread, Line);
+    else
+      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+    end;
+  end;
+
+var
+  S: String;
+begin
+  Result := False;
+  AResult.Values := '';
+  AResult.Flags := [];
+  AResult.State := dsNone;
+  repeat
+    S := FTheDebugger.ReadLine;
+    if S = '' then Continue;
+    if S = '(gdb) ' then Break;
+
+    case S[1] of
+      '^': Result := DoResultRecord(S);
+      '~': DoConsoleStream(S);
+      '@': DoTargetStream(S);
+      '&': DoLogStream(S);
+      '*': DoExecAsync(S);
+      '+': DoStatusAsync(S);
+      '=': DoNotifyAsync(S);
+    else
+      DebugLn('[WARNING] Debugger: Unknown record: ', S);
+    end;
+    {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
+  until not FTheDebugger.DebugProcessRunning;
+end;
+
+function TGDBMIDebuggerCommand.GetText(const ALocation: TDBGPtr): String;
+var
+  S: String;
+begin
+  Str(ALocation, S);
+  Result := GetText(S, []);
+end;
+
+function TGDBMIDebuggerCommand.GetText(const AExpression: String;
+  const AValues: array of const): String;
+var
+  R: TGDBMIExecResult;
+begin
+  if not ExecuteCommand('x/s ' + AExpression, AValues, R)
+  then begin
+    Result := '';
+    Exit;
+  end;
+  Result := ProcessGDBResultText(StripLN(R.Values));
+end;
+
+function TGDBMIDebuggerCommand.GetWideText(const ALocation: TDBGPtr): String;
+
+  function GetWideChar(const ALocation: TDBGPtr): WideChar;
+  var
+    Address, S: String;
+    R: TGDBMIExecResult;
+  begin
+    Str(ALocation, Address);
+    if not ExecuteCommand('x/uh' + Address, [], R)
+    then begin
+      Result := #0;
+      Exit;
+    end;
+    S := StripLN(R.Values);
+    S := GetPart(['\t'], [], S);
+    Result := WideChar(StrToIntDef(S, 0) and $FFFF);
+  end;
+var
+  OneChar: WideChar;
+  CurLocation: TDBGPtr;
+  WStr: WideString;
+begin
+  WStr := '';
+  CurLocation := ALocation;
+  repeat
+    OneChar := GetWideChar(CurLocation);
+    if OneChar <> #0 then
+    begin
+      WStr := WStr + OneChar;
+      CurLocation := CurLocation + 2;
+    end;
+  until (OneChar = #0);
+  Result := UTF8Encode(WStr);
+end;
+
+function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String): TGDBType;
+var
+  R: TGDBMIExecResult;
+begin
+  if not ExecuteCommand('ptype %s', [AExpression], R)
+  or (R.State = dsError)
+  then begin
+    Result := nil;
+  end
+  else begin
+    Result := TGdbMIType.CreateFromResult(R);
+  end;
+end;
+
+function TGDBMIDebuggerCommand.GetClassName(const AClass: TDBGPtr): String;
+var
+  S: String;
+begin
+  // format has a problem with %u, so use Str for it
+  Str(AClass, S);
+  Result := GetClassName(S, []);
+end;
+
+function TGDBMIDebuggerCommand.GetClassName(const AExpression: String;
+  const AValues: array of const): String;
+var
+  OK: Boolean;
+  S: String;
+  R: TGDBMIExecResult;
+  ResultList: TGDBMINameValueList;
+begin
+  Result := '';
+
+  if dfImplicidTypes in FTheDebugger.DebuggerFlags
+  then begin
+    S := Format(AExpression, AValues);
+    OK :=  ExecuteCommand('-data-evaluate-expression ^^shortstring(%s+%d)^^',
+          [S, FTheDebugger.TargetPtrSize * 3], R);
+  end
+  else begin
+    Str(TDbgPtr(GetData(AExpression + '+12', AValues)), S);
+    OK := ExecuteCommand('-data-evaluate-expression pshortstring(%s)^', [S], R);
+  end;
+
+  if OK
+  then begin
+    ResultList := TGDBMINameValueList.Create(R);
+    S := DeleteEscapeChars(ResultList.Values['value']);
+    Result := GetPart('''', '''', S);
+    ResultList.Free;
+  end;
+end;
+
+function TGDBMIDebuggerCommand.GetInstanceClassName(const AInstance: TDBGPtr): String;
+var
+  S: String;
+begin
+  Str(AInstance, S);
+  Result := GetInstanceClassName(S, []);
+end;
+
+function TGDBMIDebuggerCommand.GetInstanceClassName(const AExpression: String;
+  const AValues: array of const): String;
+begin
+  if dfImplicidTypes in FTheDebugger.DebuggerFlags
+  then begin
+    Result := GetClassName('^pointer(' + AExpression + ')^', AValues);
+  end
+  else begin
+    Result := GetClassName(GetData(AExpression, AValues));
+  end;
+end;
+
+function TGDBMIDebuggerCommand.GetData(const ALocation: TDbgPtr): TDbgPtr;
+var
+  S: String;
+begin
+  Str(ALocation, S);
+  Result := GetData(S, []);
+end;
+
+function TGDBMIDebuggerCommand.GetData(const AExpression: String;
+  const AValues: array of const): TDbgPtr;
+var
+  R: TGDBMIExecResult;
+  e: Integer;
+begin
+  Result := 0;
+  if ExecuteCommand('x/d ' + AExpression, AValues, R)
+  then Val(StripLN(GetPart('\t', '', R.Values)), Result, e);
+  if e=0 then ;
+end;
+
+procedure TGDBMIDebuggerCommand.DoDbgEvent(const ACategory: TDBGEventCategory;
+  const AText: String);
+begin
+  FTheDebugger.DoDbgEvent(ACategory, AText);
+end;
+
+constructor TGDBMIDebuggerCommand.Create(AOwner: TGDBMIDebugger);
 begin
   FState := dcsNone;
+  FTheDebugger := AOwner;
+  FKeepFinished := False;
 end;
 
 procedure TGDBMIDebuggerCommand.DoQueued;
@@ -6157,23 +5618,15 @@ begin
   SetState(dcsFinished);
 end;
 
-function TGDBMIDebuggerCommand.Execute(TheDebugger: TGDBMIDebugger): Boolean;
+function TGDBMIDebuggerCommand.Execute: Boolean;
 begin
   // Set the state first, so DoExecute can set an error-state
   SetState(dcsExecuted);
-  Result := DoExecute(TheDebugger);
+  Result := DoExecute;
   DoOnExecuted;
 end;
 
 { TGDBMIDebuggerSimpleCommand }
-
-procedure TGDBMIDebuggerSimpleCommand.SetKeepFinished(const AValue: Boolean);
-begin
-  if FKeepFinished = AValue then exit;
-  FKeepFinished := AValue;
-  if (not FKeepFinished) and (State = dcsFinished)
-  then DoFree;
-end;
 
 procedure TGDBMIDebuggerSimpleCommand.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
 begin
@@ -6182,17 +5635,11 @@ begin
   then DebugLn('[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
 end;
 
-procedure TGDBMIDebuggerSimpleCommand.DoFree;
-begin
-  if not FKeepFinished then
-    inherited DoFree;
-end;
-
-constructor TGDBMIDebuggerSimpleCommand.Create(const ACommand: String;
-  const AValues: array of const; const AFlags: TGDBMICmdFlags;
+constructor TGDBMIDebuggerSimpleCommand.Create(AOwner: TGDBMIDebugger;
+  const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags;
   const ACallback: TGDBMICallback; const ATag: PtrInt);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FCommand := Format(ACommand, AValues);
   FFlags := AFlags;
   FCallback := ACallback;
@@ -6200,48 +5647,823 @@ begin
   FResult.Values := '';
   FResult.State := dsNone;
   FResult.Flags := [];
-  FKeepFinished := False;
 end;
 
-function TGDBMIDebuggerSimpleCommand.DoExecute(TheDebugger: TGDBMIDebugger): Boolean;
+function TGDBMIDebuggerSimpleCommand.DoExecute: Boolean;
 var
   R: Boolean;
   StoppedParams: String;
 begin
   Result := True;
-  TheDebugger.QueueExecuteLock; // prevent other commands from executing
+  FTheDebugger.QueueExecuteLock; // prevent other commands from executing
   try
-    FResult.Values := '';
-    FResult.State := dsNone;
-    FResult.Flags := [];
-
-    TheDebugger.SendCmdLn(FCommand);
-    R := TheDebugger.ProcessResult(FResult);
+    R := ExecuteCommand(FCommand, FResult);
     if not R
-    then begin
-      DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',FCommand,'" failed.');
-      TheDebugger.SetState(dsError);
-      exit;
-    end;
+    then exit;
 
     if (FResult.State <> dsNone)
     and not (cfIgnoreState in FFlags)
     and ((FResult.State <> dsError) or not (cfIgnoreError in FFlags))
-    then TheDebugger.SetState(FResult.State);
+    then FTheDebugger.SetState(FResult.State);
 
     StoppedParams := '';
     if FResult.State = dsRun
-    then Result := TheDebugger.ProcessRunning(StoppedParams);
+    then Result := FTheDebugger.ProcessRunning(StoppedParams);
 
   finally
-    TheDebugger.QueueExecuteUnlock; // allow other commands from executing
+    FTheDebugger.QueueExecuteUnlock; // allow other commands from executing
   end;
 
   if StoppedParams <> ''
-  then TheDebugger.ProcessStopped(StoppedParams, TheDebugger.PauseWaitState = pwsInternal);
+  then FTheDebugger.ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
 
   if Assigned(FCallback)
   then FCallback(FResult, FTag);
+end;
+
+{ TGDBMIDebuggerCommandEvaluate }
+
+function TGDBMIDebuggerCommandEvaluate.GetStrValue(const AExpression: String;
+  const AValues: array of const): String;
+var
+  R: TGDBMIExecResult;
+  ResultList: TGDBMINameValueList;
+begin
+  if ExecuteCommand('-data-evaluate-expression %s', [Format(AExpression, AValues)], R)
+  then begin
+    ResultList := TGDBMINameValueList.Create(R);
+    Result := DeleteEscapeChars(ResultList.Values['value']);
+    ResultList.Free;
+  end
+  else Result := '';
+end;
+
+function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
+
+  function MakePrintable(const AString: String): String;
+  var
+    n: Integer;
+    InString: Boolean;
+  begin
+    Result := '';
+    InString := False;
+    for n := 1 to Length(AString) do
+    begin
+      case AString[n] of
+        ' '..#127, #128..#255: begin
+          if not InString
+          then begin
+            InString := True;
+            Result := Result + '''';
+          end;
+          Result := Result + AString[n];
+          //if AString[n] = '''' then Result := Result + '''';
+        end;
+      else
+        if InString
+        then begin
+          InString := False;
+          Result := Result + '''';
+        end;
+        Result := Result + Format('#%d', [Ord(AString[n])]);
+      end;
+    end;
+    if InString
+    then Result := Result + '''';
+  end;
+
+  function FormatResult(const AInput: String): String;
+  const
+    INDENTSTRING = '  ';
+  var
+    Indent: String;
+    i: Integer;
+    InStr: Boolean;
+    InBrackets: Boolean;
+    Limit: Integer;
+    Skip: Integer;
+  begin
+    Indent := '';
+    Skip := 0;
+    InStr := False;
+    InBrackets := False;
+    Limit := Length(AInput);
+    Result := '';
+
+    for i := 1 to Limit do
+    begin
+      if Skip>0
+      then begin
+        Dec(SKip);
+        Continue;
+      end;
+
+      if AInput[i] in [#10, #13]
+      then begin
+        //Removes unneeded LineEnding.
+        Continue;
+      end;
+
+      Result := Result + AInput[i];
+      if InStr
+      then begin
+        InStr := AInput[i] <> '''';
+        Continue;
+      end;
+
+      if InBrackets
+      then begin
+        InBrackets := AInput[i] <> ']';
+        Continue;
+      end;
+
+      case AInput[i] of
+        '[': begin
+          InBrackets:=true;
+        end;
+        '''': begin
+          InStr:=true;
+        end;
+        '{': begin
+           if (i < Limit) and (AInput[i+1] <> '}')
+           then begin
+             Indent := Indent + INDENTSTRING;
+             Result := Result + LineEnding + Indent;
+           end;
+        end;
+        '}': begin
+           if (i > 0) and (AInput[i-1] <> '{')
+           then Delete(Indent, 1, Length(INDENTSTRING));
+        end;
+        ' ': begin
+           if (i > 0) and (AInput[i-1] = ',')
+           then Result := Result + LineEnding + Indent;
+        end;
+        '0': begin
+           if (i > 4) and (i < Limit - 2)
+           then begin
+             //Pascalize pointers  "Var = 0x12345 => Var = $12345"
+             if  (AInput[i-3] = ' ')
+             and (AInput[i-2] = '=')
+             and (AInput[i-1] = ' ')
+             and (AInput[i+1] = 'x')
+             then begin
+               Skip := 1;
+               Result[Length(Result)] := '$';
+             end;
+           end;
+        end;
+      end;
+
+    end;
+  end;
+
+  function WhichIsFirst(const ASource: String; const ASearchable: array of Char): Integer;
+  var
+    j, k: Integer;
+    InString: Boolean;
+  begin
+    InString := False;
+    for j := 1 to Length(ASource) do
+    begin
+      if ASource[j] = '''' then InString := not InString;
+      if InString then Continue;
+
+      for k := Low(ASearchable) to High(ASearchable) do
+      begin
+        if ASource[j] = ASearchable[k] then Exit(j);
+      end;
+    end;
+    Result := -1;
+  end;
+
+  function SkipPairs(var ASource: String; const ABeginChar: Char; const AEndChar: Char): String;
+  var
+    Deep,j: SizeInt;
+    InString: Boolean;
+  begin
+    DebugLn('->->', ASource);
+    Deep := 0;
+    InString := False;
+
+    for j := 1 to Length(ASource) do
+    begin
+      if ASource[j]='''' then InString := not InString;
+      if InString then Continue;
+
+      if ASource[j] = ABeginChar
+      then begin
+        Inc(Deep)
+      end
+      else begin
+        if ASource[j] = AEndChar
+        then Dec(Deep);
+      end;
+
+      if Deep=0
+      then begin
+        Result := Copy(ASource, 1, j);
+        ASource := Copy(ASource, j + 1, Length(ASource) - j);
+        Exit;
+      end;
+    end;
+  end;
+
+  function IsHexC(const ASource: String): Boolean;
+  begin
+    if Length(ASource) <= 2 then Exit(False);
+    if ASource[1] <> '0' then Exit(False);
+    Result := ASource[2] = 'x';
+  end;
+
+  function HexCToHexPascal(const ASource: String; MinChars: Byte = 0): String;
+  var
+    Zeros: String;
+  begin
+    if IsHexC(Asource)
+    then begin
+      Result := Copy(ASource, 3, Length(ASource) - 2);
+      if Length(Result) < MinChars then
+      begin
+        SetLength(Zeros, MinChars - Length(Result));
+        FillChar(Zeros[1], Length(Zeros), '0');
+        Result := Zeros + Result;
+      end;
+      Result := '$' + Result;
+    end
+    else Result := ASource;
+  end;
+
+  procedure PutValuesInTypeRecord(const AType: TDBGType; const ATextInfo: String);
+  var
+    GDBParser: TGDBStringIterator;
+    Payload: String;
+    Composite: Boolean;
+    StopChar: Char;
+    j: Integer;
+  begin
+    GDBParser := TGDBStringIterator.Create(ATextInfo);
+    GDBParser.ParseNext(Composite, Payload, StopChar);
+    GDBParser.Free;
+
+    if not Composite
+    then begin
+      //It is not a record
+      debugln('Expected record, but found: "', ATextInfo, '"');
+      exit;
+    end;
+
+    //Parse information between brackets...
+    GDBParser := TGDBStringIterator.Create(Payload);
+    for j := 0 to AType.Fields.Count-1 do
+    begin
+      if not GDBParser.ParseNext(Composite, Payload, StopChar)
+      then begin
+        debugln('Premature end of parsing');
+        Break;
+      end;
+
+      if Payload <> AType.Fields[j].Name
+      then begin
+        debugln('Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
+        Break;
+      end;
+
+      if StopChar <> '='
+      then begin
+        debugln('Expected assignement, but other found.');
+        Break;
+      end;
+
+      //Field name verified...
+      if not GDBParser.ParseNext(Composite, Payload, StopChar)
+      then begin
+        debugln('Premature end of parsing');
+        Break;
+      end;
+
+      if Composite
+      then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
+
+      AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
+    end;
+
+    GDBParser.Free;
+  end;
+
+  procedure PutValuesInClass(const AType: TGDBType; ATextInfo: String);
+  var
+    GDBParser: TGDBStringIterator;
+    Payload: String;
+    Composite: Boolean;
+    StopChar: Char;
+    j: Integer;
+  begin
+    GDBParser := TGDBStringIterator.Create(ATextInfo);
+    GDBParser.ParseNext(Composite, Payload, StopChar);
+    GDBParser.Free;
+
+    if not Composite
+    then begin
+      //It is not a record
+      debugln('Expected class, but found: "', ATextInfo, '"');
+      exit;
+    end;
+
+    //Parse information between brackets...
+    GDBParser := TGDBStringIterator.Create(Payload);
+    try
+      if not GDBParser.ParseNext(Composite, Payload, StopChar)
+      then begin
+        debugln('Premature end of parsing.');
+        exit;
+      end;
+
+      //APayload holds the ancestor name
+      if '<' + AType.Ancestor + '>' <> Payload
+      then begin
+        debugln('Ancestor does not match, expected ', AType.Ancestor,' but found ', Payload);
+        exit;
+      end;
+
+      //Special hidden field, skip as a decomposable, parse and forget...
+      if not GDBParser.ParseNext(Composite, Payload, StopChar)
+      then begin
+        debugln('Premature end of parsing.');
+        exit;
+      end;
+
+      while GDBParser.ParseNext(Composite, Payload, StopChar) do
+      begin
+        if StopChar <> '='
+        then begin
+          debugln('Expected assignement, but other found.');
+          exit;
+        end;
+
+        for j := 0 to AType.Fields.Count-1 do
+        begin
+          if Payload <> AType.Fields[j].Name then Continue;
+
+          //Field name verified...
+          if not GDBParser.ParseNext(Composite, Payload, StopChar)
+          then begin
+            debugln('Premature end of parsing.');
+            exit;
+          end;
+
+          if Composite
+          then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
+          AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
+          Break;
+        end;
+      end;
+    finally
+      GDBParser.Free;
+    end;
+  end;
+
+  procedure PutValuesInTree();
+  var
+    ValData: string;
+  begin
+    if not Assigned(FTypeInfo) then exit;
+
+    ValData := FTextValue;
+    case FTypeInfo.Kind of
+      skClass: begin
+        GetPart('','{',ValData);
+        PutValuesInClass(FTypeInfo,ValData);
+      end;
+      skRecord: begin
+        GetPart('','{',ValData);
+        PutValuesInTypeRecord(FTypeInfo,ValData);
+      end;
+      skVariant: begin
+        FTypeInfo.Value.AsString:=ValData;
+      end;
+//      skEnum: ;
+//      skSet: ;
+      skSimple: begin
+        FTypeInfo.Value.AsString:=ValData;
+      end;
+//      skPointer: ;
+    end;
+  end;
+
+  function SelectParentFrame(var aFrame: Integer): Boolean;
+  var
+    R: TGDBMIExecResult;
+    List: TGDBMINameValueList;
+    ParentFp, Fp: String;
+  begin
+    if not ExecuteCommand('-data-evaluate-expression parentfp', R)
+    or (R.State = dsError)
+    then Exit(False);
+
+    List := TGDBMINameValueList.Create(R);
+    ParentFP := List.Values['value'];
+    repeat
+      if not ExecuteCommand('-stack-select-frame %u', [aFrame+1], R)
+      or (R.State = dsError)
+      then begin
+        List.Free;
+        Exit(False);
+      end;
+      Inc(AFrame);
+
+      if not ExecuteCommand('-data-evaluate-expression $fp', R)
+      or (R.State = dsError)
+      then begin
+        List.Free;
+        Exit(False);
+      end;
+      Fp := List.Values['value'];
+    until ParentFP = Fp;
+    List.Free;
+  end;
+
+  function PascalizePointer(AString: String; const TypeCast: String = ''): String;
+  begin
+    if IsHexC(AString)
+    then begin
+      if GetPart([], [' '], AString, False, False) = '0x0'
+      then begin
+        Result := AString;
+        Result[1] := 'n';
+        Result[2] := 'i';
+        Result[3] := 'l';
+      end
+      else begin
+        // 0xabc0 => $0000ABC0
+        Result := UpperCase(HexCToHexPascal(AString, FTheDebugger.TargetWidth div 4));
+      end;
+    end
+    else Result := AString;
+    if TypeCast <> '' then
+      Result := TypeCast + '(' + Result + ')';
+  end;
+
+  function FormatCurrency(const AString: String): String;
+  var
+    i, e: Integer;
+    c: Currency;
+  begin
+    Result := AString;
+    Val(Result, i, e);
+    // debugger outputs 12345 for 1,2345 values
+    if e=0 then
+    begin
+      c := i / 10000;
+      Result := CurrToStr(c);
+    end;
+  end;
+
+  function GetVariantValue(AString: String): String;
+
+    function FormatVarError(const AString: String): String; inline;
+    begin
+      Result := 'Error('+AString+')';
+    end;
+
+  var
+    VarList: TGDBMINameValueList;
+    VType: Integer;
+    Addr: TDbgPtr;
+    dt: TDateTime;
+    e: Integer;
+  begin
+    VarList := TGDBMINameValueList.Create('');
+    try
+      VarList.UseTrim := True;
+      VarList.Init(AString);
+      VType := StrToIntDef(VarList.Values['VTYPE'], -1);
+      if VType = -1 then // can never happen if no error since varType is word
+        Exit('variant: unknown type');
+      case VType and not varTypeMask of
+        0:
+          begin
+            case VType of
+              varEmpty: Result := 'UnAssigned';
+              varNull: Result := 'Null';
+              varsmallint: Result := VarList.Values['VSMALLINT'];
+              varinteger: Result := VarList.Values['VINTEGER'];
+              varsingle: Result := VarList.Values['VSINGLE'];
+              vardouble: Result := VarList.Values['VDOUBLE'];
+              vardate:
+                begin
+                  // float number
+                  Result := VarList.Values['VDATE'];
+                  val(Result, dt, e);
+                  if e = 0 then
+                    Result := DateTimeToStr(dt);
+                end;
+              varcurrency: Result := FormatCurrency(VarList.Values['VCURRENCY']);
+              varolestr: Result := VarList.Values['VOLESTR'];
+              vardispatch: Result := PascalizePointer(VarList.Values['VDISPATCH'], 'IDispatch');
+              varerror: Result := FormatVarError(VarList.Values['VERROR']);
+              varboolean: Result := VarList.Values['VBOOLEAN'];
+              varunknown: Result := PascalizePointer(VarList.Values['VUNKNOWN'], 'IUnknown');
+              varshortint: Result := VarList.Values['VSHORTINT'];
+              varbyte: Result := VarList.Values['VBYTE'];
+              varword: Result := VarList.Values['VWORD'];
+              varlongword: Result := VarList.Values['VLONGWORD'];
+              varint64: Result := VarList.Values['VINT64'];
+              varqword: Result := VarList.Values['VQWORD'];
+              varstring:
+                begin
+                  // address of string
+                  Result := VarList.Values['VSTRING'];
+                  Val(Result, Addr, e);
+                  if e = 0 then
+                  begin
+                    if Addr = 0 then
+                      Result := ''''''
+                    else
+                      Result := MakePrintable(GetText(Addr));
+                  end;
+                end;
+              varany:  Result := VarList.Values['VANY'];
+            else
+              Result := 'unsupported variant type: ' + VarTypeAsText(VType);
+            end;
+          end;
+        varArray:
+          begin
+            Result := VarTypeAsText(VType);
+            // TODO: show variant array data?
+            // Result := VarList.Values['VARRAY'];
+          end;
+        varByRef:
+          begin
+            Result := VarList.Values['VPOINTER'];
+            Val(Result, Addr, e);
+            if e = 0 then
+            begin
+              if Addr = 0 then
+                Result := '???'
+              else
+              begin
+                // Result contains a valid address
+                case VType xor varByRef of
+                  varEmpty: Result := 'UnAssigned';
+                  varNull: Result := 'Null';
+                  varsmallint: Result := GetStrValue('psmallint(%s)^', [Result]);
+                  varinteger: Result := GetStrValue('pinteger(%s)^', [Result]);
+                  varsingle: Result := GetStrValue('psingle(%s)^', [Result]);
+                  vardouble: Result := GetStrValue('pdouble(%s)^', [Result]);
+                  vardate:
+                    begin
+                      // float number
+                      Result := GetStrValue('pdatetime(%s)^', [Result]);
+                      val(Result, dt, e);
+                      if e = 0 then
+                        Result := DateTimeToStr(dt);
+                    end;
+                  varcurrency: Result := FormatCurrency(GetStrValue('pcurrency(%s)^', [Result]));
+                  varolestr:
+                    begin
+                      Result := GetStrValue('^pointer(%s)^', [Result]);
+                      val(Result, Addr, e);
+                      if e = 0 then
+                        Result := MakePrintable(GetWideText(Addr));
+                    end;
+                  vardispatch: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IDispatch');
+                  varerror: Result := FormatVarError(GetStrValue('phresult(%s)^', [Result]));
+                  varboolean: Result := GetStrValue('pwordbool(%s)^', [Result]);
+                  varunknown: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IUnknown');
+                  varshortint: Result := GetStrValue('pshortint(%s)^', [Result]);
+                  varbyte: Result := GetStrValue('pbyte(%s)^', [Result]);
+                  varword: Result := GetStrValue('pword(%s)^', [Result]);
+                  varlongword: Result := GetStrValue('plongword(%s)^', [Result]);
+                  varint64: Result := GetStrValue('pint64(%s)^', [Result]);
+                  varqword: Result := GetStrValue('pqword(%s)^', [Result]);
+                  varstring: Result := MakePrintable(GetText('pansistring(%s)^', [Result]));
+                else
+                  Result := 'unsupported variant type: ' + VarTypeAsText(VType);
+                end;
+              end;
+            end;
+          end;
+        else
+          Result := 'unsupported variant type: ' + VarTypeAsText(VType);
+      end;
+    finally
+      VarList.Free;
+    end;
+  end;
+
+  function StripExprNewlines(const ASource: String): String;
+  var
+    len: Integer;
+    srcPtr, dstPtr: PChar;
+  begin
+    len := Length(ASource);
+    SetLength(Result, len);
+    if len = 0 then Exit;
+    srcPtr := @ASource[1];
+    dstPtr := @Result[1];
+    while len > 0 do
+    begin
+      case srcPtr^ of
+        #0:;
+        #10, #13: dstPtr^ := ' ';
+      else
+        dstPtr^ := srcPtr^;
+      end;
+      Dec(len);
+      Inc(srcPtr);
+      Inc(dstPtr);
+    end;
+  end;
+
+var
+  R, Rtmp: TGDBMIExecResult;
+  S: String;
+  ResultList: TGDBMINameValueList;
+  ResultInfo: TGDBType;
+  addr: TDbgPtr;
+  e: Integer;
+  Expr: TGDBMIExpression;
+  frame, frameidx: Integer;
+  PrintableString: String;
+begin
+  FTheDebugger.QueueExecuteLock;
+  try
+    FTextValue:='';
+    FTypeInfo:=nil;
+
+    S := StripExprNewlines(FExpression);
+
+    if S = '' then Exit(false);
+    if S[1] = '!'
+    then begin
+      //TESTING...
+      Delete(S, 1, 1);
+      Expr := TGDBMIExpression.Create(S);
+      FTextValue := Expr.DumpExpression;
+      FTextValue := FTextValue + LineEnding;
+      Expr.Evaluate(Self, S, FTypeInfo);
+      FreeAndNil(FTypeInfo);
+      FTextValue := FTextValue + S;
+      Expr.Free;
+      Exit(True);
+    end;
+
+    ResultList := TGDBMINameValueList.Create('');
+    // original
+    frame := -1;
+    frameidx := -1;
+    repeat
+      Result := ExecuteCommand('-data-evaluate-expression %s', [S], R);
+
+      if (R.State <> dsError)
+      then Break;
+
+      // check if there is a parentfp and try to evaluate there
+      if frame = -1
+      then begin
+        // store current
+        ExecuteCommand('-stack-info-frame', Rtmp);
+        ResultList.Init(Rtmp.Values);
+        ResultList.SetPath('frame');
+        frame := StrToIntDef(ResultList.Values['level'], -1);
+        if frame = -1 then Break;
+        frameidx := frame;
+      end;
+    until not SelectParentFrame(frameidx);
+
+    if frameidx <> frame
+    then begin
+      // Restore current frame
+      ExecuteCommand('-stack-select-frame %u', [frame]);
+    end;
+
+    ResultList.Init(R.Values);
+    if R.State = dsError
+    then FTextValue := ResultList.Values['msg']
+    else FTextValue := ResultList.Values['value'];
+    FTextValue := DeleteEscapeChars(FTextValue);
+    ResultList.Free;
+    if R.State = dsError
+    then Exit;
+
+    // Check for strings
+    ResultInfo := GetGDBTypeInfo(S);
+    if (ResultInfo = nil) then Exit;
+
+    try
+      case ResultInfo.Kind of
+        skPointer: begin
+          S := GetPart([], [' '], FTextValue, False, False);
+          Val(S, addr, e);
+          if e <> 0 then Exit;
+
+          S := Lowercase(ResultInfo.TypeName);
+          case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
+            0, 1, 2: begin
+              if Addr = 0
+              then
+                FTextValue := ''''''
+              else
+                FTextValue := MakePrintable(GetText(Addr));
+                PrintableString := FTextValue;
+            end;
+            3: begin
+              if Addr = 0
+              then FTextValue := 'nil'
+              else begin
+                S := GetClassName(Addr);
+                if S = '' then S := '???';
+                FTextValue := 'class of ' + S + ' ' + FTextValue;
+              end;
+            end;
+            4,5: begin
+              // widestring handling
+              if Addr = 0
+              then FTextValue := ''''''
+              else FTextValue := MakePrintable(GetWideText(Addr));
+              PrintableString := FTextValue;
+            end;
+          else
+            if Addr = 0
+            then FTextValue := 'nil';
+
+            if (Length(S) > 0)
+            then begin
+              if (S <> 'pointer')
+              then begin
+                if S[1] = 't'
+                then begin
+                  S[1] := 'T';
+                  if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+                end;
+                FTextValue := PascalizePointer(FTextValue, '^' + S);
+              end
+              else FTextValue := PascalizePointer(FTextValue);
+            end;
+          end;
+
+          ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
+          S := Format('$%x', [Addr]);
+          if PrintableString <> ''
+          then S := S + ' ' + PrintableString;
+          ResultInfo.Value.AsString := S;
+        end;
+
+        skClass: begin
+          Val(FTextValue, addr, e); //Get the class mem address
+          if e = 0 then begin //No error ?
+            if Addr = 0
+            then FTextValue := 'nil'
+            else begin
+              S := GetInstanceClassName(Addr);
+              if S = '' then S := '???'; //No instanced class found
+              FTextValue := 'class ' + S + ' ' + FTextValue;
+            end;
+          end;
+        end;
+
+        skVariant: begin
+          FTextValue := GetVariantValue(FTextValue);
+        end;
+        skRecord: begin
+          FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
+        end;
+
+        skSimple: begin
+          if ResultInfo.TypeName = 'CURRENCY' then
+            FTextValue := FormatCurrency(FTextValue)
+          else
+          if (ResultInfo.TypeName = '&ShortString') then
+            FTextValue := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
+          else
+            FTextValue := FTextValue;
+        end;
+      end;
+
+    finally
+      if frameidx <> frame
+      then begin
+        // Restore current frame
+        ExecuteCommand('-stack-select-frame %u', [frame]);
+      end
+    end;
+    FTypeInfo := ResultInfo;
+    PutValuesInTree;
+    FTextValue := FormatResult(FTextValue);
+  finally
+    FTheDebugger.QueueExecuteUnlock;
+  end;
+end;
+
+constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
+  const AExpression: String);
+begin
+  inherited Create(AOwner);
+  FExpression := AExpression;
+  FTextValue := '';
+  FTypeInfo:=nil;
 end;
 
 initialization
