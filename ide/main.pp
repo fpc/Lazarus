@@ -11545,7 +11545,9 @@ begin
   begin
     CompileProgress.Close;
     mnuRestartClicked(nil);
-  end;
+  end
+  else if Result=mrIgnore then
+    Result:=mrOK;
 end;
 
 function TMainIDE.DoBuildFile: TModalResult;
