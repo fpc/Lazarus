@@ -103,11 +103,61 @@ type
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
   end;
 
+  TGDBMIDebugger = class;
+
+  { TGDBMIDebuggerCommand }
+
+  TGDBMIDebuggerCommandState = (dcsNone, dcsQueued, dcsExecuted, dcsFinished);
+
+  TGDBMIDebuggerCommand = class
+  private
+    FState : TGDBMIDebuggerCommandState;
+  protected
+    procedure SetState(NewState: TGDBMIDebuggerCommandState);
+    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
+    procedure DoFree; virtual;
+  public
+    constructor Create;
+    // DoQueued:   Called if queued *behind* others
+    procedure DoQueued;
+    // DoFinished: Called after processing is done
+    //             defaults to Destroy the object
+    procedure DoFinished;
+    function Execute(TheDebugger: TGDBMIDebugger): Boolean; virtual;
+    property State: TGDBMIDebuggerCommandState read FState;
+  end;
+
+  { TGDBMIDebuggerSimpleCommand }
+
+  TGDBMIDebuggerSimpleCommand = class(TGDBMIDebuggerCommand)
+  private
+    FCommand: String;
+    FFlags: TGDBMICmdFlags;
+    FCallback: TGDBMICallback;
+    FKeepFinished: Boolean;
+    FTag: PtrInt;
+    FResult: TGDBMIExecResult;
+    procedure SetKeepFinished(const AValue: Boolean);
+  protected
+    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
+    procedure DoFree; override;
+  public
+    constructor Create(const ACommand: String;
+                       const AValues: array of const;
+                       const AFlags: TGDBMICmdFlags;
+                       const ACallback: TGDBMICallback;
+                       const ATag: PtrInt);
+    function  Execute(TheDebugger: TGDBMIDebugger): Boolean; override;
+    property  Result: TGDBMIExecResult read FResult;
+    property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
+  end;
+
   { TGDBMIDebugger }
 
   TGDBMIDebugger = class(TCmdLineDebugger)
   private
-    FCommandQueue: TStringList;
+    FCommandQueue: TList;
+    FCommandQueueExecLock: Integer;
 
     FMainAddr: TDbgPtr;
     FBreakAtMain: TDBGBreakPoint;
@@ -187,8 +237,12 @@ type
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
+    procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand);
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
+    procedure QueueExecuteLock;
+    procedure QueueExecuteUnlock;
+
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TDBGLocals; override;
@@ -207,6 +261,7 @@ type
     procedure ClearCommandQueue;
     procedure DoState(const OldState: TDBGState); override;
     property  TargetPID: Integer read FTargetPID;
+    property PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -1185,7 +1240,7 @@ begin
   FBreakErrorBreakID := -1;
   FRunErrorBreakID := -1;
   FExceptionBreakID := -1;
-  FCommandQueue := TStringList.Create;
+  FCommandQueue := TList.Create;
   FTargetPID := 0;
   FTargetFlags := [];
   FDebuggerFlags := [];
@@ -1195,6 +1250,7 @@ begin
   FSourceNames.Sorted := True;
   FSourceNames.Duplicates := dupError;
   FSourceNames.CaseSensitive := False;
+  FCommandQueueExecLock := 0;
 
 {$IFdef MSWindows}
   InitWin32;
@@ -1319,97 +1375,64 @@ function TGDBMIDebugger.ExecuteCommandFull(const ACommand: String;
   const ACallback: TGDBMICallback; const ATag: PtrInt;
   var AResult: TGDBMIExecResult): Boolean;
 var
-  Cmd: String;
-  CmdInfo: PGDBMICmdInfo;
-  R, FirstCmd: Boolean;
-  StoppedParams: String;
-  ExecResult: TGDBMIExecResult;
+  CommandObj: TGDBMIDebuggerSimpleCommand;
 begin
-  Result := False; // Assume queued
-  AResult.Values := '';
-  AResult.State := dsNone;
-  AResult.Flags := [];
+  CommandObj := TGDBMIDebuggerSimpleCommand.Create(ACommand, AValues, AFlags, ACallback, ATag);
+  CommandObj.KeepFinished := True;
+  QueueCommand(CommandObj);
+  Result := CommandObj.State in [dcsExecuted, dcsFinished];
+  if Result
+  then
+    AResult := CommandObj.Result;
+  CommandObj.KeepFinished := False;
+end;
 
-  New(CmdInfo);
-  CmdInfo^.Flags := AFlags;
-  CmdInfo^.Callback := ACallBack;
-  CmdInfo^.Tag := ATag;
-  FCommandQueue.AddObject(Format(ACommand, AValues), TObject(CmdInfo));
-
-  if FCommandQueue.Count > 1
+procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+var
+  R: Boolean;
+  Cmd: TGDBMIDebuggerCommand;
+begin
+  FCommandQueue.Add(ACommand);
+  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
   then begin
-    if cfExternal in AFlags
-    then DebugLn('[WARNING] Debugger: Execution of external command "', ACommand, '" while queue exists');
+    ACommand.DoQueued;
     Exit;
   end;
+
   // If we are here we can process the command directly
-  Result := True;
-  FirstCmd := True;
   repeat
     Inc(FInExecuteCount);
     try
-      ExecResult.Values := '';
-      ExecResult.State := dsNone;
-      ExecResult.Flags := [];
+      Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
+      FCommandQueue.Delete(0);
+      R := Cmd.Execute(Self);
+      Cmd.DoFinished;
 
-      Cmd := FCommandQueue[0];
-      CmdInfo := PGDBMICmdInfo(FCommandQueue.Objects[0]);
-      SendCmdLn(Cmd);
-      R := ProcessResult(ExecResult);
-      if not R
+      if State = dsError
       then begin
-        DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
-        SetState(dsError);
+        //DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
         Break;
       end;
 
-      if (ExecResult.State <> dsNone)
-      and not (cfIgnoreState in CmdInfo^.Flags)
-      and ((ExecResult.State <> dsError) or not (cfIgnoreError in CmdInfo^.Flags))
-      then SetState(ExecResult.State);
-
-      StoppedParams := '';
-      if ExecResult.State = dsRun
-      then R := ProcessRunning(StoppedParams);
-
-      // Delete command first to allow GDB access while processing stopped
-      FCommandQueue.Delete(0);
-      try
-
-        if StoppedParams <> ''
-        then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
-
-        if Assigned(CmdInfo^.Callback)
-        then CmdInfo^.Callback(ExecResult, CmdInfo^.Tag);
-      finally
-        Dispose(CmdInfo);
-      end;
-
-      if FirstCmd
-      then begin
-        FirstCmd := False;
-        AResult := ExecResult;
-      end;
     finally
       Dec(FInExecuteCount);
     end;
 
     if  FCommandQueue.Count = 0
     then begin
-      if  (FInExecuteCount = 0)
+      if  (FInExecuteCount = 0)                        // not in Recursive call
       and (FPauseWaitState = pwsInternal)
       and (State = dsRun)
       then begin
         // reset state
         FPauseWaitState := pwsNone;
         // insert continue command
-        New(CmdInfo);
-        CmdInfo^.Flags := [];
-        CmdInfo^.Callback := nil;
-        FCommandQueue.AddObject('-exec-continue', TObject(CmdInfo));
+        Cmd := TGDBMIDebuggerSimpleCommand.Create('-exec-continue', [], [], nil, 0);
+        FCommandQueue.Add(Cmd);
       end
-      else Break;
+      else Break; // Queue empty
     end;
+
   until not R;
 end;
 
@@ -3895,12 +3918,10 @@ end;
 
 procedure TGDBMIDebugger.ClearCommandQueue;
 var
-  CmdInfo: PGDBMICmdInfo;
   i: Integer;
 begin
   for i:=0 to FCommandQueue.Count-1 do begin
-    CmdInfo:=PGDBMICmdInfo(FCommandQueue.Objects[i]);
-    if CmdInfo<>nil then Dispose(CmdInfo);
+    TGDBMIDebuggerCommand(FCommandQueue[i]).Free;
   end;
   FCommandQueue.Clear;
 end;
@@ -4435,6 +4456,16 @@ begin
   then ProcessFrame;
 
   Result := True;
+end;
+
+procedure TGDBMIDebugger.QueueExecuteLock;
+begin
+  inc(FCommandQueueExecLock);
+end;
+
+procedure TGDBMIDebugger.QueueExecuteUnlock;
+begin
+  dec(FCommandQueueExecLock);
 end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
@@ -6074,6 +6105,131 @@ begin
   
   APayload := Copy(FParsableData, BeginString, EndString - BeginString + 1);
   Result := Length(APayload) > 0;
+end;
+
+{ TGDBMIDebuggerCommand }
+
+procedure TGDBMIDebuggerCommand.SetState(NewState: TGDBMIDebuggerCommandState);
+var
+  OldState: TGDBMIDebuggerCommandState;
+begin
+  if FState = NewState
+  then exit;
+  OldState := FState;
+  FState := NewState;
+  DoStateChanged(OldState);
+  if State = dcsFinished
+  then DoFree;
+end;
+
+procedure TGDBMIDebuggerCommand.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
+begin
+  // nothing
+end;
+
+procedure TGDBMIDebuggerCommand.DoFree;
+begin
+  Self.Free;
+end;
+
+constructor TGDBMIDebuggerCommand.Create;
+begin
+  FState := dcsNone;
+end;
+
+procedure TGDBMIDebuggerCommand.DoQueued;
+begin
+  SetState(dcsQueued);
+end;
+
+procedure TGDBMIDebuggerCommand.DoFinished;
+begin
+  SetState(dcsFinished);
+end;
+
+function TGDBMIDebuggerCommand.Execute(TheDebugger: TGDBMIDebugger): Boolean;
+begin
+  SetState(dcsExecuted);
+end;
+
+{ TGDBMIDebuggerSimpleCommand }
+
+procedure TGDBMIDebuggerSimpleCommand.SetKeepFinished(const AValue: Boolean);
+begin
+  if FKeepFinished = AValue then exit;
+  FKeepFinished := AValue;
+  if (not FKeepFinished) and (State = dcsFinished)
+  then DoFree;
+end;
+
+procedure TGDBMIDebuggerSimpleCommand.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
+begin
+  inherited DoStateChanged(OldState);
+  if (State = dcsQueued) and (cfExternal in FFlags)
+  then DebugLn('[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
+end;
+
+procedure TGDBMIDebuggerSimpleCommand.DoFree;
+begin
+  if not FKeepFinished then
+    inherited DoFree;
+end;
+
+constructor TGDBMIDebuggerSimpleCommand.Create(const ACommand: String;
+  const AValues: array of const; const AFlags: TGDBMICmdFlags;
+  const ACallback: TGDBMICallback; const ATag: PtrInt);
+begin
+  inherited Create;
+  FCommand := Format(ACommand, AValues);
+  FFlags := AFlags;
+  FCallback := ACallback;
+  FTag := ATag;
+  FResult.Values := '';
+  FResult.State := dsNone;
+  FResult.Flags := [];
+  FKeepFinished := False;
+end;
+
+function TGDBMIDebuggerSimpleCommand.Execute(TheDebugger: TGDBMIDebugger): Boolean;
+var
+  R: Boolean;
+  StoppedParams: String;
+begin
+  inherited;
+  Result := True;
+  TheDebugger.QueueExecuteLock; // prevent other commands from executing
+  try
+    FResult.Values := '';
+    FResult.State := dsNone;
+    FResult.Flags := [];
+
+    TheDebugger.SendCmdLn(FCommand);
+    R := TheDebugger.ProcessResult(FResult);
+    if not R
+    then begin
+      DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',FCommand,'" failed.');
+      TheDebugger.SetState(dsError);
+      exit;
+    end;
+
+    if (FResult.State <> dsNone)
+    and not (cfIgnoreState in FFlags)
+    and ((FResult.State <> dsError) or not (cfIgnoreError in FFlags))
+    then TheDebugger.SetState(FResult.State);
+
+    StoppedParams := '';
+    if FResult.State = dsRun
+    then Result := TheDebugger.ProcessRunning(StoppedParams);
+
+  finally
+    TheDebugger.QueueExecuteUnlock; // allow other commands from executing
+  end;
+
+  if StoppedParams <> ''
+  then TheDebugger.ProcessStopped(StoppedParams, TheDebugger.PauseWaitState = pwsInternal);
+
+  if Assigned(FCallback)
+  then FCallback(FResult, FTag);
 end;
 
 initialization
