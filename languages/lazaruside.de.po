@@ -5441,6 +5441,10 @@ msgstr "Neukompilieren von %s einrichten"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "%sLazarus kompilieren%s einstellen"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Änderungen bestätigen"
@@ -5450,7 +5454,9 @@ msgid "Confirm delete"
 msgstr "Löschen bestätigen"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "Wollen Sie Lazarus neu kompilieren?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5490,6 +5496,10 @@ msgstr "Kontextabhängig"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Fortsetzen"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8648,6 +8658,10 @@ msgstr "Zielsystem:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Kann Datei »%s« nicht schreiben: %s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "Mit Packages"
@@ -8987,6 +9001,14 @@ msgstr "Datei neu kompilieren"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Lazarus neu kompilieren"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10138,6 +10160,10 @@ msgstr "Nein"
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Keine Backups"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12897,6 +12923,14 @@ msgstr "Unterprozedur derselben Stufe"
 msgid "Success"
 msgstr "Erfolg"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "SVN-Revision: "
@@ -13221,6 +13255,14 @@ msgstr "Die Eigentümerklasse heißt"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "Der Eigentümer heißt"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."

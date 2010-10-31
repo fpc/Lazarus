@@ -5389,6 +5389,10 @@ msgstr "מגדיר את הבנייה של %s"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "הגדר ובנה את לזארוס"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "אשר שינויים"
@@ -5398,7 +5402,9 @@ msgid "Confirm delete"
 msgstr "וודא מחיקה"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "האם ברצונך לבנות מחדש את לזרוס?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5438,6 +5444,10 @@ msgstr "תלוי בהקשר"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "המשך"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8588,6 +8598,10 @@ msgstr "מערכת ההפעלה המיועדת"
 msgid "Unable to write file \"%s\":%s"
 msgstr "לא יכול לכתוב את הקובץ s%:%s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "עם החבילות"
@@ -8924,6 +8938,14 @@ msgstr "בנה קובץ"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "בנה את לזרוס"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10059,6 +10081,10 @@ msgstr "לא"
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "ללא קבצי גיבוי"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12816,6 +12842,14 @@ msgstr "תת שגרה באותה רמה"
 msgid "Success"
 msgstr "הצלחה"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "SVN Revision: "
@@ -13138,6 +13172,14 @@ msgstr "למחלקה שהיא הבעלים יש את השם הזה"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "לבעלים יש את השם הזה"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."

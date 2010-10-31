@@ -5411,6 +5411,10 @@ msgstr ""
 msgid "Configure %sBuild Lazarus%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Confirma els canvis"
@@ -5420,7 +5424,9 @@ msgid "Confirm delete"
 msgstr ""
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "Vols reconstruïr Lazarus?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5460,6 +5466,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Continuar"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8604,6 +8614,10 @@ msgstr "SO dest:"
 msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr ""
@@ -8942,6 +8956,14 @@ msgstr "Munta el fitxer"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Munta el Lazarus"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10089,6 +10111,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
+msgstr ""
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
 msgstr ""
 
 #: lazarusidestrconsts.lisnochange
@@ -12844,6 +12870,14 @@ msgstr "Subprocediment en el mateix nivell"
 msgid "Success"
 msgstr "Correcte!"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "Revisió SVN:"
@@ -13164,6 +13198,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname

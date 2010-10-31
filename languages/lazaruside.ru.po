@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-30 15:59+0300\n"
+"PO-Revision-Date: 2010-10-31 15:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5426,6 +5426,10 @@ msgstr "Параметры сборки %s"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Параметры %sСборки Lazarus%s"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr "Lazarus будет пересобран по следующим профилям:%sПродолжить?"
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Подтвердить изменения"
@@ -5435,8 +5439,9 @@ msgid "Confirm delete"
 msgstr "Подтвердите удаление"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
-msgstr "Вы хотите пересобрать Lazarus?"
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
+msgstr "Вы хотите пересобрать Lazarus по профилю: %s ?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -5475,6 +5480,10 @@ msgstr "С учётом контекста"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Продолжить"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr "Продолжить и больше не спрашивать"
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8626,6 +8635,10 @@ msgstr "Целевая ОС:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Невозможно записать файл \"%s\":%s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr "Включать текущий профиль в полную пересборку"
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "С пакетами"
@@ -8963,6 +8976,14 @@ msgstr "Собрать файл"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Собрать Lazarus"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr "Пересобрать Lazarus по выбранным профилям"
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr "Пересобрать Lazarus по профилю: %s"
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10103,6 +10124,10 @@ msgstr "Нет"
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Без файлов резервных копий"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr "Профилей сборки не выбрано."
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12856,6 +12881,14 @@ msgstr "Подпроцедура того же уровня"
 msgid "Success"
 msgstr "Успешно"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr "Подозрительный путь поиска включаемых файлов"
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr "Подозрительный путь поиска модулей"
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "Ревизия SVN: "
@@ -13181,6 +13214,14 @@ msgstr "Это имя уже имеет класс-владелец"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "Это имя уже имеет владелец"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr "Пакет %s добавляет путь \"%s\" к списку путей к включаемым файлам IDE.%sВероятно, это ошибка конфигурации пакета."
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr "Пакет %s добавляет путь \"%s\" к списку путей к модулям IDE.%sВероятно, это ошибка конфигурации пакета."
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."

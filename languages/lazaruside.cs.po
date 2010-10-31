@@ -5380,6 +5380,10 @@ msgstr "Nastavit sestavení %s"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Nastavení %sSestavení Lazarusu%s"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Potvrdit změny"
@@ -5389,7 +5393,9 @@ msgid "Confirm delete"
 msgstr "Potvrzení smazání"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "Chcete znovu sestavit Lazarus?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5429,6 +5435,10 @@ msgstr "Kontextová"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Pokračovat"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8572,6 +8582,10 @@ msgstr "Cílový OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nelze zapisovat do souboru \"%s\":%s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "S balíčky"
@@ -8908,6 +8922,14 @@ msgstr "Sestavit soubor"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Sestavit Lazarus"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10027,6 +10049,10 @@ msgstr "Ne"
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Nezálohovat soubory"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12773,6 +12799,14 @@ msgstr "Vnořená procedura na stejné úrovni"
 msgid "Success"
 msgstr "Úspěch"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "Revize SVN: "
@@ -13097,6 +13131,14 @@ msgstr "Vlastnící třída má toto jméno"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "Vlastník má toto jméno"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."

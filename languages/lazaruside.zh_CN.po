@@ -5428,6 +5428,10 @@ msgstr "配置构建 %s"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "配置%s构建Lazarus%s"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "确认更改"
@@ -5437,7 +5441,9 @@ msgid "Confirm delete"
 msgstr "删除确认"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "你想要重新构建 Lazarus 吗?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5477,6 +5483,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "继续"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8625,6 +8635,10 @@ msgstr "目标操作系统:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "不能写文件 \"%s\":%s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr ""
@@ -8963,6 +8977,14 @@ msgstr "构建文件"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "构建 Lazarus"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10115,6 +10137,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "没有备份文件"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12871,6 +12897,14 @@ msgstr "子程序相同的等级"
 msgid "Success"
 msgstr "成功"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "SVN 修订版本: "
@@ -13191,6 +13225,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname

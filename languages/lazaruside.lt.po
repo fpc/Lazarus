@@ -5417,6 +5417,10 @@ msgstr "Derinti %s daryklę"
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Derinti %sDaryti Lazarus%s"
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Patvirtinkit pakeitimus"
@@ -5426,7 +5430,9 @@ msgid "Confirm delete"
 msgstr "Trynimo patvirtinimas"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "Ar Lazarus daryti iš naujo?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5466,6 +5472,10 @@ msgstr "Kontekstinis"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Tęsti"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8619,6 +8629,10 @@ msgstr "Skirtas OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nepavyko rašyti į failą „%s“:%s"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "Su paketais"
@@ -8960,6 +8974,14 @@ msgstr "Daryti failą"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Daryti Lazarus"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10097,6 +10119,10 @@ msgstr "Ne"
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Nedaryti atsarginių kopijų"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12855,6 +12881,14 @@ msgstr "Vidinė procedūra tame pačiame lygyje"
 msgid "Success"
 msgstr "Tvarka"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "SVN poversijis:"
@@ -13179,6 +13213,14 @@ msgstr "Taip pat pavadinta ir savininko klasė"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "Taip pat pavadintas ir savininkas"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."

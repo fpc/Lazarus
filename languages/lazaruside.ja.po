@@ -5424,6 +5424,10 @@ msgstr "構築 %s を設定"
 msgid "Configure %sBuild Lazarus%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirmbuildallprofiles
+msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
 msgstr "変更箇所を確認"
@@ -5433,7 +5437,9 @@ msgid "Confirm delete"
 msgstr "削除を確認"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus?"
+#, fuzzy
+#| msgid "Do you want to rebuild Lazarus?"
+msgid "Do you want to rebuild Lazarus with profile: %s ?"
 msgstr "本当にLazarusを再構築しますか？"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -5473,6 +5479,10 @@ msgstr "状況感知"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "継続"
+
+#: lazarusidestrconsts.liscontinueanddonotaskagain
+msgid "Continue and do not ask again"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -8623,6 +8633,10 @@ msgstr "対象OS*"
 msgid "Unable to write file \"%s\":%s"
 msgstr "ファイル\"%s\":%sに書き込めません。"
 
+#: lazarusidestrconsts.lislazbuildwithall
+msgid "Include this profile when building all"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
 msgstr "パッケージ付き"
@@ -8961,6 +8975,14 @@ msgstr "ファイルを構築"
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Lazarusを構築"
+
+#: lazarusidestrconsts.lismenubuildlazarusall
+msgid "Build Lazarus with selected profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lismenubuildlazarusprof
+msgid "Build Lazarus with profile: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10115,6 +10137,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "バックアップファイルを作らない"
+
+#: lazarusidestrconsts.lisnobuildprofilesselected
+msgid "No profiles are selected to be built."
+msgstr ""
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -12869,6 +12895,14 @@ msgstr "同じレベルのサブ手続き"
 msgid "Success"
 msgstr "成功"
 
+#: lazarusidestrconsts.lissuspiciousincludepath
+msgid "Suspicious include path"
+msgstr ""
+
+#: lazarusidestrconsts.lissuspiciousunitpath
+msgid "Suspicious unit path"
+msgstr ""
+
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
 msgstr "SVN改定"
@@ -13190,6 +13224,14 @@ msgstr "オーナークラスは、この名前を持っています。"
 #: lazarusidestrconsts.listheownerhasthisname
 msgid "The owner has this name"
 msgstr "オーナーは、この名前を持っています。"
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
+msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
+
+#: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
+msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
+msgstr ""
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
