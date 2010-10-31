@@ -162,6 +162,9 @@ type
     FHideIDEOnRun: boolean;
     FHideMessagesIcons: boolean;
     FComponentPaletteVisible: boolean;
+    // CompletionWindow
+    FCompletionWindowWidth: Integer;
+    FCompletionWindowHeight: Integer;
 
     // designer
     FCreateComponentFocusNameProperty: boolean;
@@ -341,6 +344,11 @@ type
                                               write FComponentPaletteVisible;
     property IDESpeedButtonsVisible: boolean read FIDESpeedButtonsVisible
                                              write FIDESpeedButtonsVisible;
+
+    property CompletionWindowWidth: Integer read FCompletionWindowWidth
+                                            write FCompletionWindowWidth;
+    property CompletionWindowHeight: Integer read FCompletionWindowHeight
+                                             write FCompletionWindowHeight;
 
     // EnvironmentOptionsDialog editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
@@ -930,6 +938,10 @@ begin
         Path+'Desktop/ComponentPaletteVisible/Value',true);
       FIDESpeedButtonsVisible:=XMLConfig.GetValue(
         Path+'Desktop/IDESpeedButtonsVisible/Value',true);
+      FCompletionWindowWidth:=XMLConfig.GetValue(
+        Path+'Desktop/CompletionWindowWidth/Value', 320);
+      FCompletionWindowHeight:=XMLConfig.GetValue(
+        Path+'Desktop/CompletionWindowHeight/Value', 6);
 
       // EnvironmentOptionsDialog editor
       FShowGrid:=XMLConfig.GetValue(
@@ -1250,6 +1262,10 @@ begin
                                FComponentPaletteVisible,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',
                                FIDESpeedButtonsVisible,true);
+      XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
+                               FCompletionWindowWidth, 320);
+      XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
+                               FCompletionWindowHeight, 6);
 
       // EnvironmentOptionsDialog editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',

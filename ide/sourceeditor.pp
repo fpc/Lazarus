@@ -57,7 +57,7 @@ uses
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
   // IDE units
-  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
+  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions, EnvironmentOpts,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, MsgView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions,
@@ -108,6 +108,7 @@ type
   { TSourceEditCompletion }
 
   TSourceEditCompletion=class(TSynCompletion)
+    procedure CompletionFormResized(Sender: TObject);
   private
     FIdentCompletionJumpToError: boolean;
     ccSelection: String;
@@ -1423,6 +1424,12 @@ end;
 
 { TSourceEditCompletion }
 
+procedure TSourceEditCompletion.CompletionFormResized(Sender: TObject);
+begin
+  EnvironmentOptions.CompletionWindowWidth  := TheForm.Width;
+  EnvironmentOptions.CompletionWindowHeight := TheForm.NbLinesInWindow;
+end;
+
 procedure TSourceEditCompletion.ccExecute(Sender: TObject);
 // init completion form
 // called by OnExecute just before showing
@@ -1970,6 +1977,10 @@ begin
   OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
   OnPositionChanged:=@OnSynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
+  TheForm.ShowSizeDrag := True;
+  TheForm.Width := EnvironmentOptions.CompletionWindowWidth;
+  TheForm.NbLinesInWindow := EnvironmentOptions.CompletionWindowHeight;
+  TheForm.OnDragResized  := @CompletionFormResized;
 end;
 
 { TSourceEditorSharedValues }
