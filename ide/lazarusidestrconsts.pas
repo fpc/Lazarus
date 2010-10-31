@@ -400,7 +400,7 @@ resourcestring
   lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package ...';
   lisMenuConvertEncoding = 'Convert encoding of projects/packages ...';
   lisMenuBuildLazarus = 'Build Lazarus';
-  lisMenuBuildLazarusProf = 'Build Lazarus with profile %s';
+  lisMenuBuildLazarusProf = 'Build Lazarus with profile: %s';
   lisMenuBuildLazarusAll = 'Build Lazarus with selected profiles';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
@@ -2749,7 +2749,7 @@ resourcestring
   lisDocumentationEditor = 'Documentation Editor';
    
   // Build lazarus dialog
-  lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus?';
+  lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s ?';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
