@@ -88,6 +88,20 @@ type
                                 sclpExtendUnlimitedLeft
                                );
 
+  { TSynBaseCompletionFormSizeDrag }
+
+  TSynBaseCompletionFormSizeDrag = class(TPanel)
+  private
+    FMouseDownPos, FMouseLastPos, FWinSize: TPoint;
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure Paint; override;
+  end;
+
   { TSynBaseCompletionForm }
 
   TSynBaseCompletionForm = class(TForm)
@@ -102,6 +116,7 @@ type
     FFontHeight: integer;
     FResizeLock: Integer;
     Scroll: TScrollBar;
+    SizeDrag: TSynBaseCompletionFormSizeDrag;
     FOnValidate: TValidateEvent;
     FOnCancel: TNotifyEvent;
     FClSelect: TColor;
@@ -143,12 +158,15 @@ type
   private
     fCurrentEditor: TComponent;
     FDrawBorderWidth: Integer;
+    FOnDragResized: TNotifyEvent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
+    FShowSizeDrag: Boolean;
     procedure SetCurrentEditor(const AValue: TComponent);
     procedure SetDrawBorderWidth(const AValue: Integer);
     procedure SetLongLineHintTime(const AValue: Integer);
     procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure SetShowSizeDrag(const AValue: Boolean);
   protected
     procedure SetVisible(Value: Boolean); override;
     property DrawBorderWidth: Integer read FDrawBorderWidth write SetDrawBorderWidth;
@@ -189,6 +207,8 @@ type
              write SetLongLineHintTime default 0;
     property LongLineHintType: TSynCompletionLongHintType read FLongLineHintType
              write FLongLineHintType default sclpExtendRightOnly;
+    property ShowSizeDrag: Boolean read FShowSizeDrag write SetShowSizeDrag default False;
+    property OnDragResized: TNotifyEvent read FOnDragResized write FOnDragResized;
   end;
 
   { TSynBaseCompletion }
@@ -374,6 +394,75 @@ procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
 implementation
 
+{ TSynBaseCompletionFormSizeDrag }
+
+procedure TSynBaseCompletionFormSizeDrag.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  FMouseDownPos.x := x + Left;
+  FMouseDownPos.y := y + Top;
+  FMouseLastPos.x := x + Left;
+  FMouseLastPos.y := y + Top;
+  FWinSize.x := TSynBaseCompletionForm(Owner).Width;
+  FWinSize.y := TSynBaseCompletionForm(Owner).Height;
+  MouseCapture := True;
+end;
+
+procedure TSynBaseCompletionFormSizeDrag.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  F: TSynBaseCompletionForm;
+begin
+  inherited MouseMove(Shift, X, Y);
+  x := x + Left;
+  y := y + Top;
+  if (FMouseDownPos.y < 0) or
+     ((FMouseLastPos.x = x) and (FMouseLastPos.y = y))
+  then
+    exit;
+  FMouseLastPos.x := x;
+  FMouseLastPos.y := y;
+
+  F := TSynBaseCompletionForm(Owner);
+  F.Width :=
+    Max(FWinSize.x + x - FMouseDownPos.x, 100);
+  F.NbLinesInWindow :=
+    Max((FWinSize.y + y - FMouseDownPos.y) div F.FontHeight, 3);
+end;
+
+procedure TSynBaseCompletionFormSizeDrag.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  FMouseDownPos.y := -1;
+  MouseCapture := False;
+
+  if (FWinSize.x <> TSynBaseCompletionForm(Owner).Width) or
+     (FWinSize.y <> TSynBaseCompletionForm(Owner).Height)
+  then
+    TSynBaseCompletionForm(Owner).OnDragResized(Owner);
+end;
+
+constructor TSynBaseCompletionFormSizeDrag.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FMouseDownPos.y := -1;
+end;
+
+procedure TSynBaseCompletionFormSizeDrag.Paint;
+begin
+  Canvas.Brush.Color := clBtnFace;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(ClientRect);
+  Canvas.Pen.Color := clBtnShadow;
+  Canvas.MoveTo(ClientRect.Right-2, ClientRect.Bottom-1);
+  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-2);
+  Canvas.MoveTo(ClientRect.Right-5, ClientRect.Bottom-1);
+  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-5);
+  Canvas.MoveTo(ClientRect.Right-8, ClientRect.Bottom-1);
+  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-8);
+end;
+
 { TSynBaseCompletionForm }
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
@@ -394,8 +483,33 @@ begin
   Scroll.OnScroll := {$IFDEF FPC}@{$ENDIF}ScrollScroll;
   Scroll.TabStop := False;
   Scroll.Visible := True;
-  Scroll.Anchors:=[akTop,akRight];
-  Scroll.Align:=alRight;
+  //Scroll.Align:=alRight;
+
+  SizeDrag := TSynBaseCompletionFormSizeDrag.Create(Self);
+  SizeDrag.Parent := Self;
+  SizeDrag.BevelInner := bvNone;
+  SizeDrag.BevelOuter := bvNone;
+  SizeDrag.Caption := '';
+  SizeDrag.AutoSize := False;
+  SizeDrag.BorderStyle := bsNone;
+  SizeDrag.Anchors := [akBottom, akRight, akLeft];
+  SizeDrag.AnchorSideLeft.Side := asrTop;
+  SizeDrag.AnchorSideLeft.Control := Scroll;
+  SizeDrag.AnchorSideRight.Side := asrBottom;
+  SizeDrag.AnchorSideRight.Control := Self;
+  SizeDrag.AnchorSideBottom.Side := asrBottom;
+  SizeDrag.AnchorSideBottom.Control := Self;
+  SizeDrag.Height := Max(5, abs(Font.Height) * 2 div 3);
+  SizeDrag.Cursor := crSizeNWSE;
+
+  Scroll.Anchors:=[akTop,akRight, akBottom];
+  Scroll.AnchorSide[akTop].Side := asrTop;
+  Scroll.AnchorSide[akTop].Control := self;
+  Scroll.AnchorSide[akRight].Side := asrBottom;
+  Scroll.AnchorSide[akRight].Control := Self;
+  Scroll.AnchorSide[akBottom].Side := asrTop;
+  Scroll.AnchorSide[akBottom].Control := SizeDrag;
+
   DrawBorderWidth := 1;
   FTextColor:=clBlack;
   FTextSelectedColor:=clWhite;
@@ -433,7 +547,8 @@ end;
 
 destructor TSynBaseCompletionForm.Destroy;
 begin
-  Scroll.Free;
+  FreeAndNil(Scroll);
+  FreeAndNil(SizeDrag);
   FItemList.Free;
   FHintTimer.Free;
   FHint.Free;
@@ -599,8 +714,9 @@ end;
 
 procedure TSynBaseCompletionForm.MouseMove(Shift: TShiftState; X,Y: Integer);
 begin
+  if (Scroll.Visible) and (x > Scroll.Left) then
+    exit;
   Y := (Y - 1) div FFontHeight;
-
   ShowItemHint(Scroll.Position + Y);
 end;
 
@@ -823,6 +939,7 @@ begin
     GetTextMetrics(Canvas.Handle, TextMetric);
     FFontHeight := TextMetric.tmHeight+2;
     SetNblinesInWindow(FNbLinesInWindow);
+    SizeDrag.Height := Max(5, Font.Height);
   finally
     dec(FResizeLock);
   end;
@@ -842,6 +959,13 @@ begin
     OnCancel(Self);
 end;
 
+procedure TSynBaseCompletionForm.SetShowSizeDrag(const AValue: Boolean);
+begin
+  if FShowSizeDrag = AValue then exit;
+  FShowSizeDrag := AValue;
+  SizeDrag.Visible := AValue;
+end;
+
 procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TComponent);
 begin
   if fCurrentEditor = AValue then exit;
@@ -859,8 +983,9 @@ begin
   FDrawBorderWidth := AValue;
   NbLinesInWindow := NbLinesInWindow;
   Scroll.BorderSpacing.Top := FDrawBorderWidth;
-  Scroll.BorderSpacing.Bottom := FDrawBorderWidth;
   Scroll.BorderSpacing.Right := FDrawBorderWidth;
+  SizeDrag.BorderSpacing.Right := FDrawBorderWidth;
+  SizeDrag.BorderSpacing.Bottom := FDrawBorderWidth;
 end;
 
 procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
