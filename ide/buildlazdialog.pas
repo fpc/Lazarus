@@ -1075,7 +1075,8 @@ end;
 procedure TConfigureBuildLazarusDlg.PrepareClose;
 begin
   CopyUIToProfile(Profiles.Current);
-  MainIDEBar.itmToolBuildLazarus.Caption:=lisMenuBuildLazarus+' ('+Profiles.Current.Name+')';
+  MainIDEBar.itmToolBuildLazarus.Caption:=
+    Format(lisMenuBuildLazarusProf, [Profiles.Current.Name]);
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileAllButtonClick(Sender: TObject);
