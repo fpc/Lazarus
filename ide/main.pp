@@ -323,6 +323,7 @@ type
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
+    procedure mnuToolBuildLazarusAllClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
 
@@ -869,6 +870,7 @@ type
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
+    function DoBuildLazarusAll(Flags: TBuildLazarusFlags): TModalResult;
     function DoBuildFile: TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
@@ -2503,6 +2505,7 @@ begin
     itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
     itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
+    itmToolBuildLazarusAll.OnClick := @mnuToolBuildLazarusAllClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
     // Set initial caption for Build Lazarus item. Will be changed in BuildLazDialog.
     if Assigned(MiscellaneousOptions) then
@@ -4234,78 +4237,38 @@ begin
   DoBuildLazarus([]);
 end;
 
+procedure TMainIDE.mnuToolBuildLazarusAllClicked(Sender: TObject);
+begin
+  DoBuildLazarusAll([]);
+end;
+
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender: TObject);
 var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
   LazSrcDirTemplate: TDefineTemplate;
-
-  procedure ChangeCmd;
-  begin
-    if Assigned(LazSrcTemplate) and Assigned(LazSrcDirTemplate) then begin
-      CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                StdDefTemplLazarusBuildOpts,
-                MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
-                true,CodeToolsOpts);
-      CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
-                                           StdDefTemplLazarusBuildOpts);
-    end;
-  end;
-
-var
-  DlgResult, BuildResult: TModalResult;
-  i, RealCurInd: Integer;
-  NeedRestart, FoundProfToBuild: Boolean;
-  s: String;
+  DlgResult: TModalResult;
 begin
   DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
-    LazSrcTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
-                                                StdDefTemplLazarusSources,true);
-    LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
     if DlgResult=mrAll then begin
-      with MiscellaneousOptions do begin
-        NeedRestart:=False;
-        RealCurInd:=BuildLazProfiles.CurrentIndex;
-        try
-          FoundProfToBuild:=False;
-          s:=sLineBreak+sLineBreak;
-          for i:=0 to BuildLazProfiles.Count-1 do
-            if BuildLazProfiles[i].BuildWithAll then begin
-              s:=s+BuildLazProfiles[i].Name+sLineBreak;
-              FoundProfToBuild:=True;
-            end;
-          if not FoundProfToBuild then begin
-            ShowMessage(lisNoBuildProfilesSelected);
-            exit;
-          end;
-          if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
-                        mtConfirmation, mbYesNo, 0)<>mrYes then
-            exit;
-          for i:=0 to BuildLazProfiles.Count-1 do begin
-            if BuildLazProfiles[i].BuildWithAll then begin
-              IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
-              BuildLazProfiles.CurrentIndex:=i; // Set current profile temporarily.
-              ChangeCmd;
-              BuildResult:=DoBuildLazarusSub([]);
-              if (BuildResult=mrOK) and BuildLazProfiles.Current.RestartAfterBuild then
-                NeedRestart:=True
-              else
-                if BuildResult<>mrIgnore then exit;
-            end;
-          end;
-        finally
-          BuildLazProfiles.CurrentIndex:=RealCurInd;
-        end;
-        if NeedRestart then begin
-          CompileProgress.Close;
-          mnuRestartClicked(nil);
-        end;
-      end;
+      DoBuildLazarusAll([]);
     end
     else if DlgResult=mrYes then begin
-      ChangeCmd;
+      LazSrcTemplate:=
+        CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
+      if Assigned(LazSrcTemplate) then begin
+        LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
+        if Assigned(LazSrcDirTemplate) then begin
+          CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                    StdDefTemplLazarusBuildOpts,
+                    MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
+                    true,CodeToolsOpts);
+          CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
+                                               StdDefTemplLazarusBuildOpts);
+        end;
+      end;
       DoBuildLazarus([]);
     end;
   end;
@@ -11548,6 +11511,72 @@ begin
   end
   else if Result=mrIgnore then
     Result:=mrOK;
+end;
+
+function TMainIDE.DoBuildLazarusAll(Flags: TBuildLazarusFlags): TModalResult;
+var
+  CmdLineDefines: TDefineTemplate;
+  LazSrcTemplate: TDefineTemplate;
+  LazSrcDirTemplate: TDefineTemplate;
+  BuildResult: TModalResult;
+  i, RealCurInd: Integer;
+  NeedRestart, FoundProfToBuild: Boolean;
+  s: String;
+begin
+  LazSrcTemplate:=
+    CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
+  with MiscellaneousOptions do begin
+    NeedRestart:=False;
+    RealCurInd:=BuildLazProfiles.CurrentIndex;
+    try
+      FoundProfToBuild:=False;
+      s:=sLineBreak+sLineBreak;
+      for i:=0 to BuildLazProfiles.Count-1 do
+        if BuildLazProfiles[i].BuildWithAll then begin
+          s:=s+BuildLazProfiles[i].Name+sLineBreak;
+          FoundProfToBuild:=True;
+        end;
+      if not FoundProfToBuild then begin
+        ShowMessage(lisNoBuildProfilesSelected);
+        exit;
+      end;
+      if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
+                    mtConfirmation, mbYesNo, 0)<>mrYes then
+        exit;
+      for i:=0 to BuildLazProfiles.Count-1 do begin
+        if BuildLazProfiles[i].BuildWithAll then begin
+// does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
+          BuildLazProfiles.CurrentIndex:=i; // Set current profile temporarily.
+//
+          if Assigned(LazSrcTemplate) then begin
+            LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
+            if Assigned(LazSrcDirTemplate) then begin
+              CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                        StdDefTemplLazarusBuildOpts,
+                        MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
+                        true,CodeToolsOpts);
+              CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
+                                                   StdDefTemplLazarusBuildOpts);
+            end;
+          end
+          else
+            raise Exception.Create('CodeToolBoss.DefineTree.FindDefineTemplateByName('
+                                  +'StdDefTemplLazarusSources,true) returned Nil.');
+          BuildResult:=DoBuildLazarusSub([]);
+          if (BuildResult=mrOK) and BuildLazProfiles.Current.RestartAfterBuild then
+            NeedRestart:=True
+          else
+            if BuildResult<>mrIgnore then exit;
+        end;
+      end;
+    finally
+      BuildLazProfiles.CurrentIndex:=RealCurInd;
+    end;
+    if NeedRestart then begin
+      CompileProgress.Close;
+      mnuRestartClicked(nil);
+    end;
+  end;
 end;
 
 function TMainIDE.DoBuildFile: TModalResult;

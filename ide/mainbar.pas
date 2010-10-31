@@ -312,6 +312,7 @@ type
         itmToolConvertEncoding: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
         itmToolBuildLazarus: TIDEMenuCommand;
+        itmToolBuildLazarusAll: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;
 
     // environment menu

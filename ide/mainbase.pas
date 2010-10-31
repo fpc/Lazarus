@@ -748,6 +748,7 @@ begin
     ParentMI:=itmBuildingLazarus;
 
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_build_lazarus');
+    CreateMenuItem(ParentMI,itmToolBuildLazarusAll,'itmToolBuildLazarusAll',lisMenuBuildLazarusAll,'menu_build_all');
     CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
   end;
 end;
@@ -987,6 +988,7 @@ begin
     itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
     itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
+//    itmToolBuildLazarusAll.Command:=GetCommand(ecBuildLazarusAll);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 
     // environment menu
