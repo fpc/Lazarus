@@ -271,7 +271,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute(s: string; x, y: integer);
+    procedure Execute(s: string; x, y: integer); overload;
+    procedure Execute(s: string; TopLeft: TPoint); overload;
+    procedure Execute(s: string; TokenRect: TRect); overload; // Excute below or above the token // may be extended to adjust left corner too
     procedure Deactivate;
     function IsActive: boolean;
     function TheForm: TSynBaseCompletionForm;
@@ -481,6 +483,7 @@ begin
   inherited Create(AOwner);
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
+  FormStyle := fsSystemStayOnTop;
   Scroll := TScrollBar.Create(self);
   Scroll.Kind := sbVertical;
   {$IFNDEF SYN_LAZARUS}
@@ -529,6 +532,7 @@ begin
   Color:=clNone;
   FBackgroundColor:=clWhite;
   FHint := TSynBaseCompletionHint.Create(Self);
+  FHint.FormStyle := fsSystemStayOnTop;;
   FHintTimer := TTimer.Create(nil);
   FHintTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}OnHintTimer;
   FHintTimer.Interval := 0;
@@ -593,7 +597,7 @@ begin
     M := Monitor;
     P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
     case FLongLineHintType of
-      sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2);
+      sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2); // ClientWidth may be too much, if part of the ClientWidth extends to another screen.
       sclpExtendUnlimitedLeft: MinLeft := M.Left;
       else                     MinLeft := P.X;
     end;
@@ -751,7 +755,8 @@ begin
 //Writeln('[TSynBaseCompletionForm.Paint]');
 
   // update scroll bar
-  Scroll.Visible := ItemList.Count > NbLinesInWindow;
+  Scroll.Enabled := ItemList.Count > NbLinesInWindow;
+  Scroll.Visible := (ItemList.Count > NbLinesInWindow) or ShowSizeDrag;
 
   if Scroll.Visible then
   begin
@@ -1192,6 +1197,41 @@ begin
   Form.SetBounds(x,y,Form.Width,Form.Height);
   Form.Show;
   Form.Position := Form.Position;
+end;
+
+procedure TSynBaseCompletion.Execute(s: string; TopLeft: TPoint);
+begin
+  Execute(s, TopLeft.x, TopLeft.y);
+end;
+
+procedure TSynBaseCompletion.Execute(s: string; TokenRect: TRect);
+var
+  SpaceBelow, SpaceAbove: Integer;
+  Mon: TMonitor;
+begin
+  {$IFnDEF LCLGTK2}
+  Mon := Screen.MonitorFromPoint(TokenRect.TopLeft);
+  if Mon <> nil then
+    TokenRect.Left := Min(TokenRect.Left, Mon.Left + Mon.Width - Form.Width);
+  {$ENDIF}
+
+  SpaceBelow := Mon.Height - TokenRect.Bottom;
+  SpaceAbove := TokenRect.Top - Mon.Top;
+  if Form.Height < SpaceBelow then
+    Execute(s, TokenRect.Left, TokenRect.Bottom)
+  else
+  if Form.Height < SpaceAbove then
+    Execute(s, TokenRect.Left, TokenRect.Top - Form.Height)
+  else
+  begin
+    if SpaceBelow > SpaceAbove then begin
+      Form.NbLinesInWindow := Max(SpaceBelow div Form.FontHeight, 3); // temporary height
+    Execute(s, TokenRect.Left, TokenRect.Bottom);
+    end else begin
+      Form.NbLinesInWindow := Max(SpaceAbove div Form.FontHeight, 3); // temporary height
+      Execute(s, TokenRect.Left, TokenRect.Top - Form.Height);
+    end;;
+  end;
 end;
 
 function TSynBaseCompletion.GetCurrentString: string;

@@ -877,11 +877,12 @@ type
     FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
     function GetDefaultCompletionForm: TSourceEditCompletion;
     procedure  FreeCompletionPlugins;
+    function  GetScreenRectForToken(AnEditor: TCustomSynEdit; PhysColumn, PhysRow, EndColumn: Integer): TRect;
   protected
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
-    function FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
+    function  FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
                                var s: string; var BoxX, BoxY: integer;
                                var UseWordCompletion: boolean): boolean;
     property DefaultCompletionForm: TSourceEditCompletion
@@ -3925,11 +3926,11 @@ end;
 procedure TSourceEditor.StartIdentCompletionBox(JumpToError: boolean);
 var
   I: Integer;
-  P: TPoint;
   TextS, TextS2: String;
   LogCaret: TPoint;
   UseWordCompletion: Boolean;
   Completion: TSourceEditCompletion;
+  CompletionRect: TRect;
 begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox JumpToError: ',JumpToError]);
@@ -3950,20 +3951,17 @@ begin
       dec(i);
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
-  with FEditor do begin
-    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
-    P.X:=Max(0,Min(P.X,ClientWidth-Completion.Width));
-    P := ClientToScreen(p);
-  end;
   UseWordCompletion:=false;
+  CompletionRect := Manager.GetScreenRectForToken(FEditor, FEditor.CaretX-length(TextS2), FEditor.CaretY, FEditor.CaretX-1);
+
   if not Manager.FindIdentCompletionPlugin
-                 (Self, JumpToError, TextS2, P.X, P.Y, UseWordCompletion)
+    (Self, JumpToError, TextS2, CompletionRect.Top, CompletionRect.Left, UseWordCompletion)
   then
     exit;
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
 
-  Completion.Execute(TextS2,P.X,P.Y);
+  Completion.Execute(TextS2, CompletionRect);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox END Completion.TheForm.Visible=',Completion.TheForm.Visible]);
   {$ENDIF}
@@ -3975,7 +3973,6 @@ var
   LogCaret: TPoint;
   i: Integer;
   TextS2: String;
-  P: TPoint;
   Completion: TSourceEditCompletion;
 begin
   if (FEditor.ReadOnly) then exit;
@@ -3993,12 +3990,8 @@ begin
       dec(i);
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
-  with FEditor do begin
-    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
-    P.X:=Max(0,Min(P.X,ClientWidth - Completion.Width));
-    P := ClientToScreen(p);
-  end;
-  Completion.Execute(TextS2,P.X,P.Y);
+  Completion.Execute
+    (TextS2, Manager.GetScreenRectForToken(FEditor, FEditor.CaretX-length(TextS2), FEditor.CaretY, FEditor.CaretX-1));
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -7838,6 +7831,13 @@ begin
   FCompletionPlugins.Clear;
 end;
 
+function TSourceEditorManagerBase.GetScreenRectForToken(AnEditor: TCustomSynEdit;
+  PhysColumn, PhysRow, EndColumn: Integer): TRect;
+begin
+  Result.TopLeft := AnEditor.ClientToScreen(AnEditor.RowColumnToPixels(Point(PhysColumn, PhysRow)));
+  Result.BottomRight := AnEditor.ClientToScreen(AnEditor.RowColumnToPixels(Point(EndColumn+1, PhysRow+1)));
+end;
+
 function TSourceEditorManagerBase.GetMarklingProducers(Index: integer
   ): TSourceMarklingProducer;
 begin
@@ -8707,21 +8707,15 @@ end;
 
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
-var
-  P:TPoint;
 begin
   //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',DefaultCompletionForm.CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and
      (DefaultCompletionForm.CurrentCompletionType=ctNone)
   then begin
     DefaultCompletionForm.CurrentCompletionType:=ctTemplateCompletion;
-    with AnEditor do begin
-      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight + 1);
-      P.X:=Max(0,Min(P.X,ClientWidth-DefaultCompletionForm.Width));
-      P := ClientToScreen(p);
-    end;
     DefaultCompletionForm.Editor:=AnEditor;
-    DefaultCompletionForm.Execute(AToken,P.X,P.Y);
+    DefaultCompletionForm.Execute
+      (AToken, GetScreenRectForToken(AnEditor, AnEditor.CaretX-length(AToken), AnEditor.CaretY, AnEditor.CaretX-1));
   end;
 end;
 
