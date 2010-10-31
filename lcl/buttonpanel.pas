@@ -349,6 +349,7 @@ begin
     if FButtons[TabOrders[FButtonOrder, i]] = nil then Continue;
     FButtons[TabOrders[FButtonOrder, i]].TabOrder := High(TabOrders[FButtonOrder]) - i;
   end;
+  AdjustSize;
 end;
 
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
@@ -531,7 +532,7 @@ begin
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
 
-  Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder;
+  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
   if not (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
   begin
     if AControl2 = FButtons[pbHelp] then
