@@ -162,6 +162,7 @@ type
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
     FShowSizeDrag: Boolean;
+    FHintLock: Integer;
     procedure SetCurrentEditor(const AValue: TComponent);
     procedure SetDrawBorderWidth(const AValue: Integer);
     procedure SetLongLineHintTime(const AValue: Integer);
@@ -170,6 +171,8 @@ type
   protected
     procedure SetVisible(Value: Boolean); override;
     property DrawBorderWidth: Integer read FDrawBorderWidth write SetDrawBorderWidth;
+    procedure IncHintLock;
+    procedure DecHintLock;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -406,6 +409,7 @@ begin
   FMouseLastPos.y := y + Top;
   FWinSize.x := TSynBaseCompletionForm(Owner).Width;
   FWinSize.y := TSynBaseCompletionForm(Owner).Height;
+  TSynBaseCompletionForm(Owner).IncHintLock;
   MouseCapture := True;
 end;
 
@@ -436,6 +440,7 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   FMouseDownPos.y := -1;
   MouseCapture := False;
+  TSynBaseCompletionForm(Owner).DecHintLock;
 
   if (FWinSize.x <> TSynBaseCompletionForm(Owner).Width) or
      (FWinSize.y <> TSynBaseCompletionForm(Owner).Height)
@@ -468,6 +473,7 @@ end;
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
+  FHintLock := 0;
   BeginFormUpdate;
   inherited Create(AOwner);
   FItemList := TStringList.Create;
@@ -564,14 +570,15 @@ var
 begin
   FHintTimer.Enabled := False;
   if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) and
-     (FLongLineHintType <> sclpNone)
+     (FLongLineHintType <> sclpNone) and
+     (FHintLock = 0)
   then begin
     // CalcHintRect uses the current index
     FHint.Index := AIndex;
     // calculate the size
     R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
 
-    if R.Right <= ClientWidth then begin
+    if (R.Right <= Scroll.Left) then begin
       FHint.Hide;
       Exit;
     end;
@@ -714,9 +721,11 @@ end;
 
 procedure TSynBaseCompletionForm.MouseMove(Shift: TShiftState; X,Y: Integer);
 begin
-  if (Scroll.Visible) and (x > Scroll.Left) then
+  if ((Scroll.Visible) and (x > Scroll.Left)) or
+     (y  < DrawBorderWidth) or (y >= ClientHeight - DrawBorderWidth)
+  then
     exit;
-  Y := (Y - 1) div FFontHeight;
+  Y := (Y - DrawBorderWidth) div FFontHeight;
   ShowItemHint(Scroll.Position + Y);
 end;
 
@@ -1003,6 +1012,19 @@ begin
     Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated)
   else
     Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+end;
+
+procedure TSynBaseCompletionForm.IncHintLock;
+begin
+  inc(FHintLock);
+  FHint.Hide
+end;
+
+procedure TSynBaseCompletionForm.DecHintLock;
+begin
+  dec(FHintLock);
+  if FHintLock = 0 then
+    ShowItemHint(Position);
 end;
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
