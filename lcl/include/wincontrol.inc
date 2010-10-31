@@ -1160,7 +1160,8 @@ begin
   until ComputePositions;
   
   {$IFDEF VerboseAutoSizeCtrlData}
-  WriteDebugReport('Positions completed','');
+  //if WinControl.ClassName='TBreakPropertyDlg' then
+    WriteDebugReport('Positions completed','');
   {$ENDIF}
   
   // compute needed clientwidth/clientheight

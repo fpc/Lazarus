@@ -5,7 +5,7 @@ unit BreakPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
   ExtCtrls, StdCtrls, Buttons, DebuggerDlg, Debugger, ButtonPanel, EditBtn,
   BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts, InputHistory;
 
