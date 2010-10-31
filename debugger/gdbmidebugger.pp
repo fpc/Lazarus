@@ -111,11 +111,14 @@ type
 
   TGDBMIDebuggerCommand = class
   private
+    FOnExecuted: TNotifyEvent;
     FState : TGDBMIDebuggerCommandState;
   protected
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoFree; virtual;
+    function  DoExecute(TheDebugger: TGDBMIDebugger): Boolean; virtual; abstract;
+    procedure DoOnExecuted;
   public
     constructor Create;
     // DoQueued:   Called if queued *behind* others
@@ -123,8 +126,9 @@ type
     // DoFinished: Called after processing is done
     //             defaults to Destroy the object
     procedure DoFinished;
-    function Execute(TheDebugger: TGDBMIDebugger): Boolean; virtual;
+    function Execute(TheDebugger: TGDBMIDebugger): Boolean;
     property State: TGDBMIDebuggerCommandState read FState;
+    property OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
   end;
 
   { TGDBMIDebuggerSimpleCommand }
@@ -141,13 +145,13 @@ type
   protected
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
     procedure DoFree; override;
+    function  DoExecute(TheDebugger: TGDBMIDebugger): Boolean; override;
   public
     constructor Create(const ACommand: String;
                        const AValues: array of const;
                        const AFlags: TGDBMICmdFlags;
                        const ACallback: TGDBMICallback;
                        const ATag: PtrInt);
-    function  Execute(TheDebugger: TGDBMIDebugger): Boolean; override;
     property  Result: TGDBMIExecResult read FResult;
     property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
   end;
@@ -6132,6 +6136,12 @@ begin
   Self.Free;
 end;
 
+procedure TGDBMIDebuggerCommand.DoOnExecuted;
+begin
+  if assigned(FOnExecuted) then
+    FOnExecuted(self);
+end;
+
 constructor TGDBMIDebuggerCommand.Create;
 begin
   FState := dcsNone;
@@ -6149,7 +6159,10 @@ end;
 
 function TGDBMIDebuggerCommand.Execute(TheDebugger: TGDBMIDebugger): Boolean;
 begin
+  // Set the state first, so DoExecute can set an error-state
   SetState(dcsExecuted);
+  Result := DoExecute(TheDebugger);
+  DoOnExecuted;
 end;
 
 { TGDBMIDebuggerSimpleCommand }
@@ -6190,12 +6203,11 @@ begin
   FKeepFinished := False;
 end;
 
-function TGDBMIDebuggerSimpleCommand.Execute(TheDebugger: TGDBMIDebugger): Boolean;
+function TGDBMIDebuggerSimpleCommand.DoExecute(TheDebugger: TGDBMIDebugger): Boolean;
 var
   R: Boolean;
   StoppedParams: String;
 begin
-  inherited;
   Result := True;
   TheDebugger.QueueExecuteLock; // prevent other commands from executing
   try
