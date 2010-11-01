@@ -113,20 +113,19 @@ type
     fOwnerCnt: TBuildLazarusProfiles;
     fName: string;
     fCleanAll: boolean;
-    fExtraOptions: string;
+    fExOptions: string;
     fTargetOS: string;
     fTargetDirectory: string;
     fTargetCPU: string;
     fTargetPlatform: TLCLPlatform;
     fWithStaticPackages: boolean;
     fUpdateRevisionInc: boolean;
-    fRestartAfterBuild: boolean;
-    fConfirmBuild: boolean;
-    fBuildWithAll: boolean;
+    fSelected: boolean;
     // MakeModeSettings is Synchronised with TMakeModeDefs, same indexes.
     fMakeModes: TMakeModeSettings;
 
     function GetTargetPlatform: TLCLPlatform;
+    procedure SetExOptions(const AValue: string);
     procedure SetTargetCPU(const AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetTargetPlatform(const AValue: TLCLPlatform);
@@ -141,16 +140,14 @@ type
   public
     property Name: string read fName;
     property CleanAll: boolean read fCleanAll write fCleanAll;
-    property ExtraOptions: string read fExtraOptions write fExtraOptions;
+    property ExOptions: string read fExOptions write SetExOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
     property TargetCPU: string read fTargetCPU write SetTargetCPU;
     property TargetPlatform: TLCLPlatform read GetTargetPlatform write SetTargetPlatform;
     property WithStaticPackages: boolean read fWithStaticPackages write fWithStaticPackages;
     property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
-    property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
-    property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
-    property BuildWithAll: boolean read fBuildWithAll write fBuildWithAll;
+    property Selected: boolean read fSelected write fSelected;
     property MakeModes: TMakeModeSettings read fMakeModes;
   end;
 
@@ -160,6 +157,8 @@ type
   private
     fGlobals: TGlobalCompilerOptions;
     fMakeModeDefs: TMakeModeDefs;
+    fRestartAfterBuild: boolean;
+    fConfirmBuild: boolean;
     fStaticAutoInstallPackages: TStringList;
     fCurrentIndex: integer;
     function GetCurrentIdeMode: TMakeMode;
@@ -178,6 +177,8 @@ type
   public
     property Globals: TGlobalCompilerOptions read fGlobals;
     property MakeModeDefs: TMakeModeDefs read fMakeModeDefs;
+    property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
+    property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
     property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
     property CurrentIndex: integer read fCurrentIndex write fCurrentIndex;
     property Current: TBuildLazarusProfile read GetCurrentProfile;
@@ -386,30 +387,6 @@ end;
 
 { TBuildLazarusProfile }
 
-procedure TBuildLazarusProfile.SetTargetCPU(const AValue: string);
-begin
-  if FTargetCPU=AValue then exit;
-  FTargetCPU:=AValue;
-end;
-
-procedure TBuildLazarusProfile.SetTargetOS(const AValue: string);
-begin
-  if fTargetOS=AValue then exit;
-  fTargetOS:=AValue;
-end;
-
-function TBuildLazarusProfile.GetTargetPlatform: TLCLPlatform;
-begin
-  Result:=fTargetPlatform;
-//  if Result=lpDefault then
-//    Result:=GetDefaultLCLWidgetType;
-end;
-
-procedure TBuildLazarusProfile.SetTargetPlatform(const AValue: TLCLPlatform);
-begin
-  fTargetPlatform:=AValue;
-end;
-
 constructor TBuildLazarusProfile.Create(AOwnerCnt: TBuildLazarusProfiles;
                                         AName: string);
 var
@@ -441,7 +418,7 @@ begin
           Path+'Build'+fMakeModeDefs[i].Name+'/Value',
           MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]));
   FCleanAll          :=XMLConfig.GetValue(Path+'CleanAll/Value',false);
-  FExtraOptions      :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
+  fExOptions         :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS           :=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU          :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
   LCLPlatformStr     :=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
@@ -453,9 +430,7 @@ begin
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
-  FRestartAfterBuild :=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
-  FConfirmBuild      :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
-  fBuildWithAll      :=XMLConfig.GetValue(Path+'BuildWithAll/Value',true);
+  fSelected          :=XMLConfig.GetValue(Path+'BuildWithAll/Value',true);
 end;
 
 procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
@@ -469,7 +444,7 @@ begin
                                MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]);
   end;
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,false);
-  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
+  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
@@ -479,9 +454,7 @@ begin
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,true);
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
-  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
-  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
-  XMLConfig.SetDeleteValue(Path+'BuildWithAll/Value',FBuildWithAll,true);
+  XMLConfig.SetDeleteValue(Path+'BuildWithAll/Value',fSelected,true);
 end;
 
 procedure TBuildLazarusProfile.Assign(Source: TBuildLazarusProfile; ACopyName: Boolean);
@@ -492,16 +465,14 @@ begin
   if ACopyName then
     fName           :=Source.Name;
   CleanAll          :=Source.CleanAll;
-  ExtraOptions      :=Source.ExtraOptions;
+  ExOptions         :=Source.ExOptions;
   TargetOS          :=Source.TargetOS;
   TargetDirectory   :=Source.TargetDirectory;
   TargetCPU         :=Source.TargetCPU;
   TargetPlatform    :=Source.TargetPlatform;
   WithStaticPackages:=Source.WithStaticPackages;
   UpdateRevisionInc :=Source.UpdateRevisionInc;
-  RestartAfterBuild :=Source.RestartAfterBuild;
-  ConfirmBuild      :=Source.ConfirmBuild;
-  BuildWithAll      :=Source.BuildWithAll;
+  Selected          :=Source.Selected;
   for i:=0 to Length(fMakeModes)-1 do
     fMakeModes[i]:=Source.MakeModes[i];
 end;
@@ -516,6 +487,35 @@ begin
   Result:=GetFPCTargetCPU(TargetCPU);
 end;
 
+procedure TBuildLazarusProfile.SetTargetCPU(const AValue: string);
+begin
+  if FTargetCPU=AValue then exit;
+  FTargetCPU:=AValue;
+end;
+
+procedure TBuildLazarusProfile.SetTargetOS(const AValue: string);
+begin
+  if fTargetOS=AValue then exit;
+  fTargetOS:=AValue;
+end;
+
+function TBuildLazarusProfile.GetTargetPlatform: TLCLPlatform;
+begin
+  Result:=fTargetPlatform;
+//  if Result=lpDefault then
+//    Result:=GetDefaultLCLWidgetType;
+end;
+
+procedure TBuildLazarusProfile.SetTargetPlatform(const AValue: TLCLPlatform);
+begin
+  fTargetPlatform:=AValue;
+end;
+
+procedure TBuildLazarusProfile.SetExOptions(const AValue: string);
+begin
+  fExOptions:=Trim(StringReplace(AValue, sLineBreak, ' ', [rfReplaceAll]));
+end;
+
 
 { TBuildLazarusProfiles }
 
@@ -524,6 +524,8 @@ begin
   inherited Create;
   fGlobals:=TGlobalCompilerOptions.Create;
   fMakeModeDefs:=TMakeModeDefs.Create;
+  fRestartAfterBuild:=True;
+  fConfirmBuild:=True;
   fStaticAutoInstallPackages:=TStringList.Create;
 end;
 
@@ -551,6 +553,8 @@ begin
   fGlobals.TargetCPU:=Source.fGlobals.TargetCPU;
   fGlobals.TargetOS:=Source.fGlobals.TargetOS;
   fMakeModeDefs.Assign(Source.MakeModeDefs);
+  RestartAfterBuild :=Source.RestartAfterBuild;
+  ConfirmBuild      :=Source.ConfirmBuild;
   fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
   fCurrentIndex:=Source.fCurrentIndex;
   for i:=0 to Source.Count-1 do begin
@@ -573,15 +577,9 @@ begin
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildLCL);
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
-//    fExtraOptions: string;
-//    fTargetOS: string;
-//    fTargetDirectory: string;
-//    fTargetCPU: string;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=False;
-    fRestartAfterBuild:=True;
-    fConfirmBuild:=True;
-    fBuildWithAll:=True;
+    fSelected:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisLCL then
         fMakeModes[i]:=mmBuild
@@ -596,9 +594,7 @@ begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=True;
-    fRestartAfterBuild:=True;
-    fConfirmBuild:=True;
-    fBuildWithAll:=False;
+    fSelected:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
@@ -613,9 +609,7 @@ begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=False;
-    fRestartAfterBuild:=True;
-    fConfirmBuild:=True;
-    fBuildWithAll:=False;
+    fSelected:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
@@ -630,9 +624,7 @@ begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=True;
-    fRestartAfterBuild:=True;
-    fConfirmBuild:=True;
-    fBuildWithAll:=False;
+    fSelected:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisExamples then
         fMakeModes[i]:=mmNone // All exept for examples.
@@ -647,9 +639,7 @@ begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=True;
-    fRestartAfterBuild:=True;
-    fConfirmBuild:=True;
-    fBuildWithAll:=False;
+    fSelected:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       fMakeModes[i]:=mmCleanBuild;
   end;
@@ -672,6 +662,8 @@ begin
       Profile:=TBuildLazarusProfile.Create(Self, 'MyProfile');
       Profile.Load(XMLConfig, Path);
       Add(Profile);
+      FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+      FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
       ProfInd:=Count-1;       // Go to last MyProfile.
     end;
     // Latest config file version.
@@ -692,6 +684,9 @@ begin
         end;
         // Current profile ItemIndex.
         ProfInd:=XMLConfig.GetValue(Path+'ProfileIndex/Value',0);
+        // Other global build values.
+        FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+        FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
       end
     end;
     // A missing (or invalid) config file.
@@ -721,6 +716,9 @@ begin
   end;
   // Current profile ItemIndex.
   XMLConfig.SetDeleteValue(Path+'ProfileIndex/Value',CurrentIndex,0);
+  // Other global build values.
+  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
+  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
   // Save auto install packages
   SaveStringList(XMLConfig,fStaticAutoInstallPackages,
                  Path+'StaticAutoInstallPackages/');

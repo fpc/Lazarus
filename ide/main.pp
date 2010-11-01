@@ -4233,7 +4233,7 @@ end;
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
   with MiscellaneousOptions do
-    if BuildLazProfiles.Current.ConfirmBuild then
+    if BuildLazProfiles.ConfirmBuild then
       if MessageDlg(Format(lisConfirmLazarusRebuild, [BuildLazProfiles.Current.Name]),
                     mtConfirmation, mbYesNo, 0)<>mrYes then
         exit;
@@ -4266,7 +4266,7 @@ begin
         if Assigned(LazSrcDirTemplate) then begin
           CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                     StdDefTemplLazarusBuildOpts,
-                    MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
+                    MiscellaneousOptions.BuildLazProfiles.Current.ExOptions,
                     true,CodeToolsOpts);
           CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                StdDefTemplLazarusBuildOpts);
@@ -11507,7 +11507,7 @@ end;
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 begin
   Result:=DoBuildLazarusSub(Flags);
-  if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
+  if (Result=mrOK) and MiscellaneousOptions.BuildLazProfiles.RestartAfterBuild then
   begin
     CompileProgress.Close;
     mnuRestartClicked(nil);
@@ -11523,17 +11523,17 @@ var
   LazSrcDirTemplate: TDefineTemplate;
   BuildResult: TModalResult;
   i, RealCurInd: Integer;
-  NeedRestart, FoundProfToBuild: Boolean;
+  MayNeedRestart, FoundProfToBuild: Boolean;
   s: String;
 begin
   with MiscellaneousOptions do begin
-    NeedRestart:=False;
+    MayNeedRestart:=False;
     RealCurInd:=BuildLazProfiles.CurrentIndex;
     try
       FoundProfToBuild:=False;
       s:=sLineBreak+sLineBreak;
       for i:=0 to BuildLazProfiles.Count-1 do
-        if BuildLazProfiles[i].BuildWithAll then begin
+        if BuildLazProfiles[i].Selected then begin
           s:=s+BuildLazProfiles[i].Name+sLineBreak;
           FoundProfToBuild:=True;
         end;
@@ -11541,11 +11541,12 @@ begin
         ShowMessage(lisNoBuildProfilesSelected);
         exit;
       end;
-      if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
-                    mtConfirmation, mbYesNo, 0)<>mrYes then
-        exit;
+      if BuildLazProfiles.ConfirmBuild then
+        if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
+                      mtConfirmation, mbYesNo, 0)<>mrYes then
+          exit;
       for i:=0 to BuildLazProfiles.Count-1 do begin
-        if BuildLazProfiles[i].BuildWithAll then begin
+        if BuildLazProfiles[i].Selected then begin
 // does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
           BuildLazProfiles.CurrentIndex:=i; // Set current profile temporarily.
           LazSrcTemplate:=
@@ -11555,7 +11556,7 @@ begin
             if Assigned(LazSrcDirTemplate) then begin
               CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                         StdDefTemplLazarusBuildOpts,
-                        BuildLazProfiles.Current.ExtraOptions,true,CodeToolsOpts);
+                        BuildLazProfiles.Current.ExOptions,true,CodeToolsOpts);
               CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                    StdDefTemplLazarusBuildOpts);
             end
@@ -11568,8 +11569,8 @@ begin
                           +'StdDefTemplLazarusSources,true) returned Nil for profile '
                           +BuildLazProfiles.Current.Name);
           BuildResult:=DoBuildLazarusSub([]);
-          if (BuildResult=mrOK) and BuildLazProfiles.Current.RestartAfterBuild then
-            NeedRestart:=True
+          if BuildResult=mrOK then
+            MayNeedRestart:=True
           else
             if BuildResult<>mrIgnore then exit;
         end;
@@ -11577,7 +11578,7 @@ begin
     finally
       BuildLazProfiles.CurrentIndex:=RealCurInd;
     end;
-    if NeedRestart then begin
+    if MayNeedRestart and BuildLazProfiles.RestartAfterBuild then begin
       CompileProgress.Close;
       mnuRestartClicked(nil);
     end;

@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
   InterfaceBase, Themes, ComCtrls,
-  DefineTemplates, Laz_XMLCfg,
+  DefineTemplates, Laz_XMLCfg, DividerBevel,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
@@ -76,16 +76,17 @@ type
     CleanAllCheckBox: TCheckBox;
     BuildProfileComboBox: TComboBox;
     CompileButton: TBitBtn;
-    CompileAllButton: TBitBtn;
+    CompileSelectedButton: TBitBtn;
     ConfirmBuildCheckBox: TCheckBox;
-    BuildWithAllCheckBox: TCheckBox;
+    OptionsMemo: TMemo;
+    SelectedCheckBox: TCheckBox;
     DetailsPanel: TPanel;
+    CommonsDividerBevel: TDividerBevel;
     HelpButton: TBitBtn;
     BuildProfileLabel: TLabel;
     MakeModeListBox: TListBox;
     MakeModeListHeader: THeaderControl;
     LCLInterfaceRadioGroup: TRadioGroup;
-    OptionsEdit: TEdit;
     OptionsLabel: TLabel;
     DetailSettingPanel: TPanel;
     RestartAfterBuildCheckBox: TCheckBox;
@@ -103,7 +104,7 @@ type
     WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildProfileButtonClick(Sender: TObject);
     procedure BuildProfileComboBoxSelect(Sender: TObject);
-    procedure CompileAllButtonClick(Sender: TObject);
+    procedure CompileSelectedButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -410,7 +411,7 @@ begin
   MMDef:=Profiles.MakeModeDefs[ItemIndex];
 
   // create extra options
-  ExtraOptions:=Options.ExtraOptions;
+  ExtraOptions:=Options.ExOptions;
 
   if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
     // check for special IDE config file
@@ -752,32 +753,33 @@ begin
   end;
 
   // Show Build target names in radiogroup.
-  with LCLInterfaceRadioGroup do
-  begin
-    Caption := lisLazBuildLCLInterface;
-    for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
-      Items.Add(LCLPlatformDisplayNames[LCLInterface]);
-  end;
+  LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
+  for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
+    LCLInterfaceRadioGroup.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
 
   BuildProfileLabel.Caption:=lisLazBuildProfile;
-  CleanAllCheckBox.Caption := lisLazBuildCleanAll;
   OptionsLabel.Caption := lisLazBuildOptions;
-  WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
-  UpdateRevisionIncCheckBox.Caption := lisUpdateRevisionInc;
-  RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
-  ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
-  BuildWithAllCheckBox.Caption := lisLazBuildWithAll;
-  CompileButton.Caption := lisMenuBuild;
-  CompileAllButton.Caption := lisMenuBuildAll;
-  SaveSettingsButton.Caption := lisLazBuildSaveSettings;
-  CancelButton.Caption := lisLazBuildCancel;
-  HelpButton.Caption := lisMenuHelp;
   TargetOSLabel.Caption := lisLazBuildTargetOS;
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
+  CleanAllCheckBox.Caption := lisLazBuildCleanAll;
+  WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
+  UpdateRevisionIncCheckBox.Caption := lisLazBuildUpdateRevInc;
+  SelectedCheckBox.Caption := lisLazBuildSelected;
+
+  CommonsDividerBevel.Caption := lisLazBuildCommonSettings;
+  RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
+  ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
+
+  CompileButton.Caption := lisMenuBuild;
+  CompileSelectedButton.Caption := lisMenuBuildAll;
+  SaveSettingsButton.Caption := lisLazBuildSaveSettings;
+  CancelButton.Caption := lisLazBuildCancel;
+  HelpButton.Caption := lisMenuHelp;
+
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
-  CompileAllButton.LoadGlyphFromLazarusResource('menu_build_all');
+  CompileSelectedButton.LoadGlyphFromLazarusResource('menu_build_all');
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
     SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
@@ -993,13 +995,11 @@ end;
 procedure TConfigureBuildLazarusDlg.CopyProfileToUI(AProfile: TBuildLazarusProfile);
 begin
   CleanAllCheckBox.Checked          :=AProfile.CleanAll;
-  OptionsEdit.Text                  :=AProfile.ExtraOptions;
+  OptionsMemo.Text                  :=AProfile.ExOptions;
   LCLInterfaceRadioGroup.ItemIndex  :=ord(AProfile.TargetPlatform);
   WithStaticPackagesCheckBox.Checked:=AProfile.WithStaticPackages;
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
-  RestartAfterBuildCheckBox.Checked :=AProfile.RestartAfterBuild;
-  ConfirmBuildCheckBox.Checked      :=AProfile.ConfirmBuild;
-  BuildWithAllCheckBox.Checked      :=AProfile.BuildWithAll;
+  SelectedCheckBox.Checked          :=AProfile.Selected;
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
   TargetCPUComboBox.Text            :=AProfile.TargetCPU;
@@ -1008,13 +1008,11 @@ end;
 procedure TConfigureBuildLazarusDlg.CopyUIToProfile(AProfile: TBuildLazarusProfile);
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
-  AProfile.ExtraOptions      :=OptionsEdit.Text;
+  AProfile.ExOptions         :=OptionsMemo.Text;
   AProfile.TargetPlatform    :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
-  AProfile.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
-  AProfile.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
-  AProfile.BuildWithAll      :=BuildWithAllCheckBox.Checked;
+  AProfile.Selected          :=SelectedCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
@@ -1034,6 +1032,8 @@ begin
   CopyProfileToUI(fProfiles.Current); // Copy current selection to UI.
   BuildProfileComboBox.Items.EndUpdate;
   fUpdatingProfileCombo:=False;
+  RestartAfterBuildCheckBox.Checked:=fProfiles.RestartAfterBuild;
+  ConfirmBuildCheckBox.Checked     :=fProfiles.ConfirmBuild;
   MakeModeListBox.Invalidate;
 end;
 
@@ -1075,11 +1075,13 @@ end;
 procedure TConfigureBuildLazarusDlg.PrepareClose;
 begin
   CopyUIToProfile(Profiles.Current);
+  fProfiles.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
+  fProfiles.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
   MainIDEBar.itmToolBuildLazarus.Caption:=
     Format(lisMenuBuildLazarusProf, [Profiles.Current.Name]);
 end;
 
-procedure TConfigureBuildLazarusDlg.CompileAllButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.CompileSelectedButtonClick(Sender: TObject);
 begin
   PrepareClose;
   ModalResult:=mrAll;

@@ -329,7 +329,7 @@ resourcestring
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
     +'empty for file path)';
   lisBFBuildCommand = 'Build Command';
-  lisMenuBuildAll = 'Build all';
+  lisMenuBuildAll = 'Build selected';
   lisMenuQuickCompile = 'Quick compile';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = 'Run';
@@ -2781,10 +2781,11 @@ resourcestring
   lisLazBuildLCLInterface = 'Widgetset';
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With packages';
-  lisLazBuildRestartAfterBuild = 'Restart after successful Build';
-  lisUpdateRevisionInc = 'Update revision.inc';
+  lisLazBuildRestartAfterBuild = 'Restart after building the IDE';
+  lisLazBuildUpdateRevInc = 'Update revision.inc';
+  lisLazBuildSelected = 'Selected';
+  lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
-  lisLazBuildWithAll = 'Include this profile when building all';
   lisLazBuildOk = 'Ok';
   lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';

@@ -681,7 +681,7 @@ begin
     ADefTempl:=CreateLazarusSourceTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)',
-      MiscellaneousOptions.BuildLazOpts.ExtraOptions,nil);
+      MiscellaneousOptions.BuildLazOpts.ExOptions,nil);
     AddTemplate(ADefTempl,true,
       lisNOTECouldNotCreateDefineTemplateForLazarusSources);
   end;
@@ -1366,7 +1366,7 @@ begin
   if (MiscellaneousOptions<>nil)
   and (MiscellaneousOptions.BuildLazOpts<>nil)
   then
-    Result:=MiscellaneousOptions.BuildLazOpts.ExtraOptions
+    Result:=MiscellaneousOptions.BuildLazOpts.ExOptions
   else
     Result:='';
 end;
