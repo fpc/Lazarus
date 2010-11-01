@@ -149,7 +149,7 @@ function BuildLazarus(Profiles: TBuildLazarusProfiles;
 function CreateBuildLazarusOptions(Profiles: TBuildLazarusProfiles;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out UpdateRevisionInc: boolean;
+  var AExOptions: string; out UpdateRevisionInc: boolean;
   out OutputDirRedirected: boolean): TModalResult;
 
 function SaveIDEMakeOptions(Profiles: TBuildLazarusProfiles;
@@ -220,7 +220,7 @@ var
   Options: TBuildLazarusProfile;
   i: Integer;
   MMDef: TMakeModeDef;
-  ExtraOptions, LinkerAddition: String;
+  ExOptions, LinkerAddition: String;
   CurMakeMode: TMakeMode;
   WorkingDirectory: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
@@ -308,9 +308,9 @@ begin
       Tool.WorkingDirectory:=WorkingDirectory;
       Tool.CmdLineParams:=MMDef.Commands[CurMakeMode];
       // append extra options
-      ExtraOptions:='';
+      ExOptions:='';
       Result:=CreateBuildLazarusOptions(Profiles,i,Macros,PackageOptions,Flags,
-                                 ExtraOptions,UpdateRevisionInc,OutputDirRedirected);
+                                 ExOptions,UpdateRevisionInc,OutputDirRedirected);
       if Result<>mrOk then exit;
 
       if (not OutputDirRedirected)
@@ -321,14 +321,14 @@ begin
       LinkerAddition := LCLWidgetLinkerAddition[Options.TargetPlatform];
       if LinkerAddition <> '' then
       begin
-        if ExtraOptions <> '' then
-          ExtraOptions := ExtraOptions + ' ' + LinkerAddition
+        if ExOptions <> '' then
+          ExOptions := ExOptions + ' ' + LinkerAddition
         else
-          ExtraOptions := LinkerAddition;
+          ExOptions := LinkerAddition;
       end;
       
-      if ExtraOptions<>'' then
-        Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
+      if ExOptions<>'' then
+        Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
       if not UpdateRevisionInc then
         Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       // add -w option to print leaving/entering messages
@@ -352,7 +352,7 @@ end;
 function CreateBuildLazarusOptions(Profiles: TBuildLazarusProfiles;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out UpdateRevisionInc: boolean;
+  var AExOptions: string; out UpdateRevisionInc: boolean;
   out OutputDirRedirected: boolean): TModalResult;
 
   function RemoveProfilerOption(const ExtraOptions: string): string;
@@ -376,12 +376,13 @@ function CreateBuildLazarusOptions(Profiles: TBuildLazarusProfiles;
   procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
-    if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
+    if AExOptions<>'' then
+      AExOptions:=AExOptions+' ';
     if EncloseIfSpace and (Pos(' ',AddOption)>0) then
-      ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
+      AExOptions:=AExOptions+'"'+AddOption+'"'
     else
-      ExtraOptions:=ExtraOptions+AddOption;
-    //DebugLn(['AppendExtraOption ',ExtraOptions]);
+      AExOptions:=AExOptions+AddOption;
+    //DebugLn(['AppendExtraOption ',AExOptions]);
   end;
 
   procedure AppendExtraOption(const AddOption: string);
@@ -411,7 +412,7 @@ begin
   MMDef:=Profiles.MakeModeDefs[ItemIndex];
 
   // create extra options
-  ExtraOptions:=Options.ExtraOptions;
+  AExOptions:=Options.ExtraOptions;
 
   if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
     // check for special IDE config file
@@ -592,11 +593,11 @@ begin
     end;
 
     // add package options for IDE
-    //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',ExtraOptions,'" ',PackageOptions]);
+    //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',AExOptions,'" ',PackageOptions]);
     if not (blfUseMakeIDECfg in Flags) then
       AppendExtraOption(PackageOptions,false);
   end;
-  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',ExtraOptions]);
+  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',AExOptions]);
 end;
 
 function SaveIDEMakeOptions(Profiles: TBuildLazarusProfiles;
@@ -652,17 +653,17 @@ function SaveIDEMakeOptions(Profiles: TBuildLazarusProfiles;
   end;
 
 var
-  ExtraOptions: String;
+  ExOptions: String;
   Filename: String;
   fs: TFileStream;
   OptionsAsText: String;
   UpdateRevisionInc: boolean;
   OutputDirRedirected: boolean;
 begin
-  ExtraOptions:='';
+  ExOptions:='';
   Result:=CreateBuildLazarusOptions(Profiles,
              Profiles.MakeModeDefs.IndexOf(Profiles.MakeModeDefs.ItemIDE),
-             Macros, PackageOptions, Flags, ExtraOptions,
+             Macros, PackageOptions, Flags, ExOptions,
              UpdateRevisionInc, OutputDirRedirected);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
@@ -670,8 +671,8 @@ begin
     InvalidateFileStateCache;
     fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
     try
-      if ExtraOptions<>'' then begin
-        OptionsAsText:=BreakOptions(ExtraOptions);
+      if ExOptions<>'' then begin
+        OptionsAsText:=BreakOptions(ExOptions);
         fs.Write(OptionsAsText[1],length(OptionsAsText));
       end;
     finally
