@@ -329,7 +329,7 @@ resourcestring
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
     +'empty for file path)';
   lisBFBuildCommand = 'Build Command';
-  lisMenuBuildAll = 'Build selected';
+  lisMenuBuildAll = 'Build all';
   lisMenuQuickCompile = 'Quick compile';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = 'Run';
