@@ -128,6 +128,8 @@ type
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoFree; virtual;
+    procedure DoLockQueueExecute; virtual;
+    procedure DoUnockQueueExecute; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
     procedure DoOnCanceled;
@@ -364,6 +366,8 @@ type
     FResult: TGDBMIExecResult;
   protected
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
+    procedure DoLockQueueExecute; override;
+    procedure DoUnockQueueExecute; override;
     function  DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger;
@@ -513,6 +517,7 @@ type
   private
     FEvaluatedState: TGDBMIEvaluationState;
     FEvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
+    FInEvaluationNeeded: Boolean;
     FValue: String;
     FTypeInfo: TGDBType;
     procedure EvaluationNeeded;
@@ -1576,7 +1581,7 @@ begin
   if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
   then begin
     {$IFDEF GDMI_QUEUE_DEBUG}
-    debugln(['Queueing : "', ACommand.DebugText,'" at pos ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount]);
+    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count, ': "', ACommand.DebugText,'" State=',DBGStateNames[State] ]);
     {$ENDIF}
     ACommand.DoQueued;
     Exit;
@@ -1589,7 +1594,7 @@ begin
       Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
       FCommandQueue.Delete(0);
       {$IFDEF GDMI_QUEUE_DEBUG}
-      debugln(['Executing: "', ACommand.DebugText,'" while still ', FCommandQueue.Count, ' queued. Recurse-Count=', FInExecuteCount-1]);
+      debugln(['Executing (Recurse-Count=', FInExecuteCount-1, ') at pos ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
       R := Cmd.Execute;
       Cmd.DoFinished;
@@ -1615,13 +1620,16 @@ begin
         // insert continue command
         Cmd := TGDBMIDebuggerSimpleCommand.Create(Self, '-exec-continue', [], [], nil, 0);
         FCommandQueue.Add(Cmd);
+        {$IFDEF GDMI_QUEUE_DEBUG}
+        debugln(['Internal Queueing: exec-continue']);
+        {$ENDIF}
       end
       else Break; // Queue empty
     end;
 
   until not R;
   {$IFDEF GDMI_QUEUE_DEBUG}
-  debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount]);
+  debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
   {$ENDIF}
 end;
 
@@ -4163,7 +4171,9 @@ begin
   FTypeInfo := TGDBMIDebuggerCommandEvaluate(Sender).TypeInfo;
   FEvaluationCmdObj := nil;
   FEvaluatedState := esValid;
-  Changed;
+  // Do not recursively call, whoever is requesting the watch
+  if not FInEvaluationNeeded
+  then Changed;
 end;
 
 procedure TGDBMIWatch.EvaluationNeeded;
@@ -4174,6 +4184,7 @@ begin
   if (Debugger.State in [dsPause, dsStop])
   and Enabled
   then begin
+    FInEvaluationNeeded := True;
     ClearOwned;
     SetValid(vsValid);
     FEvaluatedState := esRequested;
@@ -4181,6 +4192,7 @@ begin
     FEvaluationCmdObj.OnExecuted  := @DoEvaluationFinished;
     TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
+    FInEvaluationNeeded := False;
   end
   else begin
     SetValid(vsInvalid);
@@ -5345,6 +5357,16 @@ begin
     Self.Free;
 end;
 
+procedure TGDBMIDebuggerCommand.DoLockQueueExecute;
+begin
+  FTheDebugger.QueueExecuteLock;
+end;
+
+procedure TGDBMIDebuggerCommand.DoUnockQueueExecute;
+begin
+  FTheDebugger.QueueExecuteUnlock;
+end;
+
 procedure TGDBMIDebuggerCommand.DoOnExecuted;
 begin
   if assigned(FOnExecuted) then
@@ -5717,8 +5739,13 @@ function TGDBMIDebuggerCommand.Execute: Boolean;
 begin
   // Set the state first, so DoExecute can set an error-state
   SetState(dcsExecuting);
-  Result := DoExecute;
-  DoOnExecuted;
+  DoLockQueueExecute;
+  try
+    Result := DoExecute;
+    DoOnExecuted;
+  finally
+    DoUnockQueueExecute;
+  end;
 end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
@@ -5741,6 +5768,16 @@ begin
   inherited DoStateChanged(OldState);
   if (State = dcsQueued) and (cfExternal in FFlags)
   then DebugLn('[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
+end;
+
+procedure TGDBMIDebuggerSimpleCommand.DoLockQueueExecute;
+begin
+  // prevent lock
+end;
+
+procedure TGDBMIDebuggerSimpleCommand.DoUnockQueueExecute;
+begin
+  // prevent lock
 end;
 
 constructor TGDBMIDebuggerSimpleCommand.Create(AOwner: TGDBMIDebugger;
@@ -6401,173 +6438,168 @@ var
   frame, frameidx: Integer;
   PrintableString: String;
 begin
-  FTheDebugger.QueueExecuteLock;
-  try
-    FTextValue:='';
-    FTypeInfo:=nil;
+  FTextValue:='';
+  FTypeInfo:=nil;
 
-    S := StripExprNewlines(FExpression);
+  S := StripExprNewlines(FExpression);
 
-    if S = '' then Exit(false);
-    if S[1] = '!'
+  if S = '' then Exit(false);
+  if S[1] = '!'
+  then begin
+    //TESTING...
+    Delete(S, 1, 1);
+    Expr := TGDBMIExpression.Create(S);
+    FTextValue := Expr.DumpExpression;
+    FTextValue := FTextValue + LineEnding;
+    Expr.Evaluate(Self, S, FTypeInfo);
+    FreeAndNil(FTypeInfo);
+    FTextValue := FTextValue + S;
+    Expr.Free;
+    Exit(True);
+  end;
+
+  ResultList := TGDBMINameValueList.Create('');
+  // original
+  frame := -1;
+  frameidx := -1;
+  repeat
+    Result := ExecuteCommand('-data-evaluate-expression %s', [S], R);
+
+    if (R.State <> dsError)
+    then Break;
+
+    // check if there is a parentfp and try to evaluate there
+    if frame = -1
     then begin
-      //TESTING...
-      Delete(S, 1, 1);
-      Expr := TGDBMIExpression.Create(S);
-      FTextValue := Expr.DumpExpression;
-      FTextValue := FTextValue + LineEnding;
-      Expr.Evaluate(Self, S, FTypeInfo);
-      FreeAndNil(FTypeInfo);
-      FTextValue := FTextValue + S;
-      Expr.Free;
-      Exit(True);
+      // store current
+      ExecuteCommand('-stack-info-frame', Rtmp);
+      ResultList.Init(Rtmp.Values);
+      ResultList.SetPath('frame');
+      frame := StrToIntDef(ResultList.Values['level'], -1);
+      if frame = -1 then Break;
+      frameidx := frame;
+    end;
+  until not SelectParentFrame(frameidx);
+
+  if frameidx <> frame
+  then begin
+    // Restore current frame
+    ExecuteCommand('-stack-select-frame %u', [frame]);
+  end;
+
+  ResultList.Init(R.Values);
+  if R.State = dsError
+  then FTextValue := ResultList.Values['msg']
+  else FTextValue := ResultList.Values['value'];
+  FTextValue := DeleteEscapeChars(FTextValue);
+  ResultList.Free;
+  if R.State = dsError
+  then Exit;
+
+  // Check for strings
+  ResultInfo := GetGDBTypeInfo(S);
+  if (ResultInfo = nil) then Exit;
+
+  try
+    case ResultInfo.Kind of
+      skPointer: begin
+        S := GetPart([], [' '], FTextValue, False, False);
+        Val(S, addr, e);
+        if e <> 0 then Exit;
+
+        S := Lowercase(ResultInfo.TypeName);
+        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
+          0, 1, 2: begin
+            if Addr = 0
+            then
+              FTextValue := ''''''
+            else
+              FTextValue := MakePrintable(GetText(Addr));
+              PrintableString := FTextValue;
+          end;
+          3: begin
+            if Addr = 0
+            then FTextValue := 'nil'
+            else begin
+              S := GetClassName(Addr);
+              if S = '' then S := '???';
+              FTextValue := 'class of ' + S + ' ' + FTextValue;
+            end;
+          end;
+          4,5: begin
+            // widestring handling
+            if Addr = 0
+            then FTextValue := ''''''
+            else FTextValue := MakePrintable(GetWideText(Addr));
+            PrintableString := FTextValue;
+          end;
+        else
+          if Addr = 0
+          then FTextValue := 'nil';
+
+          if (Length(S) > 0)
+          then begin
+            if (S <> 'pointer')
+            then begin
+              if S[1] = 't'
+              then begin
+                S[1] := 'T';
+                if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+              end;
+              FTextValue := PascalizePointer(FTextValue, '^' + S);
+            end
+            else FTextValue := PascalizePointer(FTextValue);
+          end;
+        end;
+
+        ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
+        S := Format('$%x', [Addr]);
+        if PrintableString <> ''
+        then S := S + ' ' + PrintableString;
+        ResultInfo.Value.AsString := S;
+      end;
+
+      skClass: begin
+        Val(FTextValue, addr, e); //Get the class mem address
+        if e = 0 then begin //No error ?
+          if Addr = 0
+          then FTextValue := 'nil'
+          else begin
+            S := GetInstanceClassName(Addr);
+            if S = '' then S := '???'; //No instanced class found
+            FTextValue := 'class ' + S + ' ' + FTextValue;
+          end;
+        end;
+      end;
+
+      skVariant: begin
+        FTextValue := GetVariantValue(FTextValue);
+      end;
+      skRecord: begin
+        FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
+      end;
+
+      skSimple: begin
+        if ResultInfo.TypeName = 'CURRENCY' then
+          FTextValue := FormatCurrency(FTextValue)
+        else
+        if (ResultInfo.TypeName = '&ShortString') then
+          FTextValue := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
+        else
+          FTextValue := FTextValue;
+      end;
     end;
 
-    ResultList := TGDBMINameValueList.Create('');
-    // original
-    frame := -1;
-    frameidx := -1;
-    repeat
-      Result := ExecuteCommand('-data-evaluate-expression %s', [S], R);
-
-      if (R.State <> dsError)
-      then Break;
-
-      // check if there is a parentfp and try to evaluate there
-      if frame = -1
-      then begin
-        // store current
-        ExecuteCommand('-stack-info-frame', Rtmp);
-        ResultList.Init(Rtmp.Values);
-        ResultList.SetPath('frame');
-        frame := StrToIntDef(ResultList.Values['level'], -1);
-        if frame = -1 then Break;
-        frameidx := frame;
-      end;
-    until not SelectParentFrame(frameidx);
-
+  finally
     if frameidx <> frame
     then begin
       // Restore current frame
       ExecuteCommand('-stack-select-frame %u', [frame]);
-    end;
-
-    ResultList.Init(R.Values);
-    if R.State = dsError
-    then FTextValue := ResultList.Values['msg']
-    else FTextValue := ResultList.Values['value'];
-    FTextValue := DeleteEscapeChars(FTextValue);
-    ResultList.Free;
-    if R.State = dsError
-    then Exit;
-
-    // Check for strings
-    ResultInfo := GetGDBTypeInfo(S);
-    if (ResultInfo = nil) then Exit;
-
-    try
-      case ResultInfo.Kind of
-        skPointer: begin
-          S := GetPart([], [' '], FTextValue, False, False);
-          Val(S, addr, e);
-          if e <> 0 then Exit;
-
-          S := Lowercase(ResultInfo.TypeName);
-          case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
-            0, 1, 2: begin
-              if Addr = 0
-              then
-                FTextValue := ''''''
-              else
-                FTextValue := MakePrintable(GetText(Addr));
-                PrintableString := FTextValue;
-            end;
-            3: begin
-              if Addr = 0
-              then FTextValue := 'nil'
-              else begin
-                S := GetClassName(Addr);
-                if S = '' then S := '???';
-                FTextValue := 'class of ' + S + ' ' + FTextValue;
-              end;
-            end;
-            4,5: begin
-              // widestring handling
-              if Addr = 0
-              then FTextValue := ''''''
-              else FTextValue := MakePrintable(GetWideText(Addr));
-              PrintableString := FTextValue;
-            end;
-          else
-            if Addr = 0
-            then FTextValue := 'nil';
-
-            if (Length(S) > 0)
-            then begin
-              if (S <> 'pointer')
-              then begin
-                if S[1] = 't'
-                then begin
-                  S[1] := 'T';
-                  if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
-                end;
-                FTextValue := PascalizePointer(FTextValue, '^' + S);
-              end
-              else FTextValue := PascalizePointer(FTextValue);
-            end;
-          end;
-
-          ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
-          S := Format('$%x', [Addr]);
-          if PrintableString <> ''
-          then S := S + ' ' + PrintableString;
-          ResultInfo.Value.AsString := S;
-        end;
-
-        skClass: begin
-          Val(FTextValue, addr, e); //Get the class mem address
-          if e = 0 then begin //No error ?
-            if Addr = 0
-            then FTextValue := 'nil'
-            else begin
-              S := GetInstanceClassName(Addr);
-              if S = '' then S := '???'; //No instanced class found
-              FTextValue := 'class ' + S + ' ' + FTextValue;
-            end;
-          end;
-        end;
-
-        skVariant: begin
-          FTextValue := GetVariantValue(FTextValue);
-        end;
-        skRecord: begin
-          FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
-        end;
-
-        skSimple: begin
-          if ResultInfo.TypeName = 'CURRENCY' then
-            FTextValue := FormatCurrency(FTextValue)
-          else
-          if (ResultInfo.TypeName = '&ShortString') then
-            FTextValue := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
-          else
-            FTextValue := FTextValue;
-        end;
-      end;
-
-    finally
-      if frameidx <> frame
-      then begin
-        // Restore current frame
-        ExecuteCommand('-stack-select-frame %u', [frame]);
-      end
-    end;
-    FTypeInfo := ResultInfo;
-    PutValuesInTree;
-    FTextValue := FormatResult(FTextValue);
-  finally
-    FTheDebugger.QueueExecuteUnlock;
+    end
   end;
+  FTypeInfo := ResultInfo;
+  PutValuesInTree;
+  FTextValue := FormatResult(FTextValue);
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
