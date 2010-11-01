@@ -758,7 +758,7 @@ begin
   Scroll.Enabled := ItemList.Count > NbLinesInWindow;
   Scroll.Visible := (ItemList.Count > NbLinesInWindow) or ShowSizeDrag;
 
-  if Scroll.Visible then
+  if Scroll.Visible and Scroll.Enabled then
   begin
     Scroll.Max := ItemList.Count - 1;
     Scroll.LargeChange := NbLinesInWindow;
@@ -766,7 +766,7 @@ begin
   end
   else
   begin
-    Scroll.PageSize := 0;
+    Scroll.PageSize := 1;
     Scroll.Max := 0;
   end;
 
