@@ -58,6 +58,8 @@ type
     // button state change
     procedure DoButtonDown();
     procedure DoButtonUp();
+    // inherited
+    procedure RealSetText(const Value: TCaption); override;
   protected
     // Properties
     property ImageBtn: TPicture read FImageBtn;
@@ -142,12 +144,61 @@ type
     property Options;
   end;
 
+  {@@
+    TCDTrackBar is a custom-drawn trackbar control
+  }
+
+//  TCDTrackBarDrawer = class;
+
+  { TCDTrackBar }
+
+{  TCDTrackBar = class(TCustomControl)
+  private
+    FMin: Integer;
+    FMax: Integer;
+    FPosition: Integer;
+    FOnChange: TNotifyEvent;
+    procedure SetMax(Value: Integer);
+    procedure SetMin(Value: Integer);
+    procedure SetPosition(Value: Integer);
+  protected
+    procedure Changed; virtual;
+    // keyboard
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    // mouse
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property Max: Integer read FMax write SetMax default 10;
+    property Min: Integer read FMin write SetMin default 0;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Position: Integer read FPosition write SetPosition;
+    property TabStop default True;
+  end;}
+
+  { TCDTrackBarDrawer }
+
+{  TCDTrackBarDrawer = class
+  public
+    procedure DrawToIntfImage(ADest: TLazIntfImage; CDTrackBar: TCDTrackBar); virtual; abstract;
+  end;}
+
 procedure Register;
 
 implementation
 
 const
-  INT_BitmappedButton_LineSpacing = 5;
+  INT_BitmappedButton_LineSpacing = 2;
 
 procedure Register;
 begin
@@ -250,6 +301,14 @@ begin
   end;
 end;
 
+procedure TCustomBitmappedButton.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+
+  // Makes sure that caption changes are drawn
+  Invalidate;
+end;
+
 constructor TCustomBitmappedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -345,6 +404,103 @@ begin
     Result := FImageBtn.Bitmap;
   end;
 end;
+
+{ TCDTrackBar }
+
+{procedure TCDTrackBar.SetMax(Value: Integer);
+begin
+  if Value = FMax then Exit;
+  FMax := Value;
+  Invalidate;
+end;
+
+procedure TCDTrackBar.SetMin(Value: Integer);
+begin
+  if Value = FMin then Exit;
+  FMin := Value;
+  Invalidate;
+end;
+
+procedure TCDTrackBar.SetPosition(Value: Integer);
+begin
+  if Value = FPosition then Exit;
+  FPosition := Value;
+  Invalidate;
+end;
+
+procedure TCDTrackBar.Changed;
+begin
+
+end;
+
+procedure TCDTrackBar.DoEnter;
+begin
+  inherited DoEnter;
+end;
+
+procedure TCDTrackBar.DoExit;
+begin
+  inherited DoExit;
+end;
+
+procedure TCDTrackBar.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TCDTrackBar.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+end;
+
+procedure TCDTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCDTrackBar.MouseEnter;
+begin
+  inherited MouseEnter;
+end;
+
+procedure TCDTrackBar.MouseLeave;
+begin
+  inherited MouseLeave;
+end;
+
+constructor TCDTrackBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TCDTrackBar.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCDTrackBar.EraseBackground(DC: HDC);
+begin
+  inherited EraseBackground(DC);
+end;
+
+procedure TCDTrackBar.Paint;
+begin
+  inherited Paint;
+end;}
+
+{ TCDTrackBarDrawer }
+
+//procedure TCDTrackBarDrawer.DrawToIntfImage(ADest: TLazIntfImage; CDTrackBar: TCDTrackBar);
+//begin
+//  inherited DrawToIntfImage(ADest);
+//end;
 
 end.
 
