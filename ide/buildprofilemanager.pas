@@ -113,7 +113,7 @@ type
     fOwnerCnt: TBuildLazarusProfiles;
     fName: string;
     fCleanAll: boolean;
-    fExOptions: string;
+    fExtraOptions: string;
     fTargetOS: string;
     fTargetDirectory: string;
     fTargetCPU: string;
@@ -125,7 +125,7 @@ type
     fMakeModes: TMakeModeSettings;
 
     function GetTargetPlatform: TLCLPlatform;
-    procedure SetExOptions(const AValue: string);
+    procedure SetExtraOptions(const AValue: string);
     procedure SetTargetCPU(const AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetTargetPlatform(const AValue: TLCLPlatform);
@@ -140,7 +140,7 @@ type
   public
     property Name: string read fName;
     property CleanAll: boolean read fCleanAll write fCleanAll;
-    property ExOptions: string read fExOptions write SetExOptions;
+    property ExtraOptions: string read fExtraOptions write SetExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
     property TargetCPU: string read fTargetCPU write SetTargetCPU;
@@ -418,7 +418,7 @@ begin
           Path+'Build'+fMakeModeDefs[i].Name+'/Value',
           MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]));
   FCleanAll          :=XMLConfig.GetValue(Path+'CleanAll/Value',false);
-  fExOptions         :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
+  fExtraOptions         :=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS           :=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU          :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
   LCLPlatformStr     :=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
@@ -444,7 +444,7 @@ begin
                                MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]);
   end;
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,false);
-  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExOptions,'');
+  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
@@ -465,7 +465,7 @@ begin
   if ACopyName then
     fName           :=Source.Name;
   CleanAll          :=Source.CleanAll;
-  ExOptions         :=Source.ExOptions;
+  ExtraOptions         :=Source.ExtraOptions;
   TargetOS          :=Source.TargetOS;
   TargetDirectory   :=Source.TargetDirectory;
   TargetCPU         :=Source.TargetCPU;
@@ -511,9 +511,9 @@ begin
   fTargetPlatform:=AValue;
 end;
 
-procedure TBuildLazarusProfile.SetExOptions(const AValue: string);
+procedure TBuildLazarusProfile.SetExtraOptions(const AValue: string);
 begin
-  fExOptions:=Trim(StringReplace(AValue, sLineBreak, ' ', [rfReplaceAll]));
+  fExtraOptions:=Trim(StringReplace(AValue, sLineBreak, ' ', [rfReplaceAll]));
 end;
 
 

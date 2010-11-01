@@ -411,7 +411,7 @@ begin
   MMDef:=Profiles.MakeModeDefs[ItemIndex];
 
   // create extra options
-  ExtraOptions:=Options.ExOptions;
+  ExtraOptions:=Options.ExtraOptions;
 
   if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
     // check for special IDE config file
@@ -995,7 +995,7 @@ end;
 procedure TConfigureBuildLazarusDlg.CopyProfileToUI(AProfile: TBuildLazarusProfile);
 begin
   CleanAllCheckBox.Checked          :=AProfile.CleanAll;
-  OptionsMemo.Text                  :=AProfile.ExOptions;
+  OptionsMemo.Text                  :=AProfile.ExtraOptions;
   LCLInterfaceRadioGroup.ItemIndex  :=ord(AProfile.TargetPlatform);
   WithStaticPackagesCheckBox.Checked:=AProfile.WithStaticPackages;
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
@@ -1008,7 +1008,7 @@ end;
 procedure TConfigureBuildLazarusDlg.CopyUIToProfile(AProfile: TBuildLazarusProfile);
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
-  AProfile.ExOptions         :=OptionsMemo.Text;
+  AProfile.ExtraOptions      :=OptionsMemo.Text;
   AProfile.TargetPlatform    :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;

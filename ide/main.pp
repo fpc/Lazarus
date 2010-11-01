@@ -4266,7 +4266,7 @@ begin
         if Assigned(LazSrcDirTemplate) then begin
           CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                     StdDefTemplLazarusBuildOpts,
-                    MiscellaneousOptions.BuildLazProfiles.Current.ExOptions,
+                    MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
                     true,CodeToolsOpts);
           CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                StdDefTemplLazarusBuildOpts);
@@ -11556,7 +11556,7 @@ begin
             if Assigned(LazSrcDirTemplate) then begin
               CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                         StdDefTemplLazarusBuildOpts,
-                        BuildLazProfiles.Current.ExOptions,true,CodeToolsOpts);
+                        BuildLazProfiles.Current.ExtraOptions,true,CodeToolsOpts);
               CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                    StdDefTemplLazarusBuildOpts);
             end;
