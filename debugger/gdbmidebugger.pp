@@ -107,10 +107,18 @@ type
 
   { TGDBMIDebuggerCommand }
 
-  TGDBMIDebuggerCommandState = (dcsNone, dcsQueued, dcsExecuted, dcsFinished);
+  TGDBMIDebuggerCommandState =
+    ( dcsNone,         // Initial State
+      dcsQueued,       // [None] => Queued behind other commands
+      dcsExecuting,    // [None, Queued] => currently running
+      // Final States, those lead to the object being freed, unless KeepFinished = True
+      dcsFinished,     // [Executing] => Finished Execution
+      dcsCanceled      // [Queued] => Never Executed
+    );
 
   TGDBMIDebuggerCommand = class
   private
+    FOnCancel: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
     FKeepFinished: Boolean;
     FState : TGDBMIDebuggerCommandState;
@@ -122,6 +130,7 @@ type
     procedure DoFree; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
+    procedure DoOnCanceled;
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; out AResult: TGDBMIExecResult): Boolean; overload;
@@ -146,9 +155,11 @@ type
     // DoFinished: Called after processing is done
     //             defaults to Destroy the object
     procedure DoFinished;
-    function Execute: Boolean;
-    property State: TGDBMIDebuggerCommandState read FState;
-    property OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
+    function  Execute: Boolean;
+    procedure Cancel;
+    property  State: TGDBMIDebuggerCommandState read FState;
+    property  OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
+    property  OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
   end;
 
@@ -228,7 +239,6 @@ type
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
-deprecated '/////////////////////////////////////////';
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
@@ -275,6 +285,7 @@ deprecated '/////////////////////////////////////////';
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+    procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
     procedure QueueExecuteLock;
@@ -474,12 +485,17 @@ type
 
   { TGDBMIWatch }
 
+  TGDBMIWatchEvaluationState = (wesInvalid, wesRequested, wesValid);
+
   TGDBMIWatch = class(TDBGWatch)
+    procedure DoEvaluationFinished(Sender: TObject);
   private
-    FEvaluated: Boolean;
+    FEvaluatedState: TGDBMIWatchEvaluationState;
+    FEvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
     FValue: String;
     FTypeInfo: TGDBType;
     procedure EvaluationNeeded;
+    procedure CancelEvaluation;
     procedure ClearOwned;
   protected
     procedure DoEnableChange; override;
@@ -1523,7 +1539,7 @@ begin
   CommandObj := TGDBMIDebuggerSimpleCommand.Create(Self, ACommand, AValues, AFlags, ACallback, ATag);
   CommandObj.KeepFinished := True;
   QueueCommand(CommandObj);
-  Result := CommandObj.State in [dcsExecuted, dcsFinished];
+  Result := CommandObj.State in [dcsExecuting, dcsFinished];
   if Result
   then
     AResult := CommandObj.Result;
@@ -1577,6 +1593,11 @@ begin
     end;
 
   until not R;
+end;
+
+procedure TGDBMIDebugger.UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
+begin
+  FCommandQueue.Remove(ACommand);
 end;
 
 class function TGDBMIDebugger.ExePaths: String;
@@ -2109,7 +2130,7 @@ begin
   CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression);
   CommandObj.KeepFinished := True;
   QueueCommand(CommandObj);
-  Result := CommandObj.State in [dcsExecuted, dcsFinished];
+  Result := CommandObj.State in [dcsExecuting, dcsFinished];
   AResult := CommandObj.TextValue;
   ATypeInfo := CommandObj.TypeInfo;
   CommandObj.KeepFinished := False;
@@ -4045,7 +4066,8 @@ end;
 
 constructor TGDBMIWatch.Create(ACollection: TCollection);
 begin
-  FEvaluated := False;
+  FEvaluatedState := wesInvalid;
+  FEvaluationCmdObj := nil;
   inherited;
 end;
 
@@ -4062,7 +4084,7 @@ end;
 
 procedure TGDBMIWatch.DoExpressionChange;
 begin
-  FEvaluated := False;
+  CancelEvaluation;
   inherited;
 end;
 
@@ -4078,7 +4100,7 @@ begin
   if Debugger.State in [dsPause, dsStop]
   then begin
     ClearOwned;
-    FEvaluated := False;
+    CancelEvaluation;
   end;
   if Debugger.State = dsPause then Changed;
 end;
@@ -4086,30 +4108,48 @@ end;
 procedure TGDBMIWatch.Invalidate;
 begin
   ClearOwned;
-  FEvaluated := False;
+  CancelEvaluation;
+end;
+
+procedure TGDBMIWatch.DoEvaluationFinished(Sender: TObject);
+begin
+  ClearOwned;
+  FValue := TGDBMIDebuggerCommandEvaluate(Sender).TextValue;
+  FTypeInfo := TGDBMIDebuggerCommandEvaluate(Sender).TypeInfo;
+  FEvaluationCmdObj := nil;
+  FEvaluatedState := wesValid;
+  Changed;
 end;
 
 procedure TGDBMIWatch.EvaluationNeeded;
 var
   ExprIsValid: Boolean;
 begin
-  if FEvaluated then Exit;
+  if FEvaluatedState in [wesValid, wesRequested] then Exit;
   if Debugger = nil then Exit;
 
   if (Debugger.State in [dsPause, dsStop])
   and Enabled
   then begin
     ClearOwned;
-    ExprIsValid:=TGDBMIDebugger(Debugger).GDBEvaluate(Expression, FValue, FTypeInfo);
-    if ExprIsValid then
-      SetValid(vsValid)
-    else
-      SetValid(vsInvalid);
+    SetValid(vsValid);
+    FEvaluatedState := wesRequested;
+    FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create(TGDBMIDebugger(Debugger), Expression);
+    FEvaluationCmdObj.OnExecuted  := @DoEvaluationFinished;
+    TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
+    (* DoEvaluationFinished may be called immediately at this point *)
   end
   else begin
     SetValid(vsInvalid);
   end;
-  FEvaluated := True;
+end;
+
+procedure TGDBMIWatch.CancelEvaluation;
+begin
+  FEvaluatedState := wesInvalid;
+  if FEvaluationCmdObj <> nil then
+    FEvaluationCmdObj.Cancel;
+  FEvaluationCmdObj := nil;
 end;
 
 procedure TGDBMIWatch.ClearOwned;
@@ -4125,7 +4165,11 @@ begin
   and Enabled
   then begin
     EvaluationNeeded;
-    Result := FValue;
+    case FEvaluatedState of
+      wesInvalid:   Result := inherited GetValue;
+      wesRequested: Result := '<evaluating>';
+      wesValid:     Result := FValue;
+    end;
   end
   else Result := inherited GetValue;
 end;
@@ -5228,7 +5272,7 @@ procedure TGDBMIDebuggerCommand.SetKeepFinished(const AValue: Boolean);
 begin
   if FKeepFinished = AValue then exit;
   FKeepFinished := AValue;
-  if (not FKeepFinished) and (State = dcsFinished)
+  if (not FKeepFinished) and (State in [dcsFinished, dcsCanceled])
   then DoFree;
 end;
 
@@ -5241,7 +5285,9 @@ begin
   OldState := FState;
   FState := NewState;
   DoStateChanged(OldState);
-  if State = dcsFinished
+  if State = dcsCanceled
+  then DoOnCanceled;
+  if State in [dcsFinished, dcsCanceled]
   then DoFree;
 end;
 
@@ -5260,6 +5306,12 @@ procedure TGDBMIDebuggerCommand.DoOnExecuted;
 begin
   if assigned(FOnExecuted) then
     FOnExecuted(self);
+end;
+
+procedure TGDBMIDebuggerCommand.DoOnCanceled;
+begin
+  if assigned(FOnCancel) then
+    FOnCancel(self);
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String): Boolean;
@@ -5621,9 +5673,17 @@ end;
 function TGDBMIDebuggerCommand.Execute: Boolean;
 begin
   // Set the state first, so DoExecute can set an error-state
-  SetState(dcsExecuted);
+  SetState(dcsExecuting);
   Result := DoExecute;
   DoOnExecuted;
+end;
+
+procedure TGDBMIDebuggerCommand.Cancel;
+begin
+  if State <> dcsQueued
+  then exit;
+  FTheDebugger.UnQueueCommand(Self);
+  SetState(dcsCanceled);
 end;
 
 { TGDBMIDebuggerSimpleCommand }
