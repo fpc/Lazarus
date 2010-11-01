@@ -2584,6 +2584,7 @@ begin
   EditorComponent.LogicalCaretXY:=LogCaret;
   EditorComponent.SearchReplace(EditorComponent.GetWordAtRowCol(LogCaret),
                                 '',Flags);
+  CenterCursor(True);
 end;
 
 function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
