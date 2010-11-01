@@ -11521,11 +11521,11 @@ var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
   LazSrcDirTemplate: TDefineTemplate;
-  BuildResult: TModalResult;
   i, RealCurInd: Integer;
   MayNeedRestart, FoundProfToBuild: Boolean;
   s: String;
 begin
+  Result:=mrOK;
   with MiscellaneousOptions do begin
     MayNeedRestart:=False;
     RealCurInd:=BuildLazProfiles.CurrentIndex;
@@ -11559,20 +11559,15 @@ begin
                         BuildLazProfiles.Current.ExOptions,true,CodeToolsOpts);
               CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                                    StdDefTemplLazarusBuildOpts);
-            end
-            else      // Temporary exceptions to find an error.
-              raise Exception.Create('LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir)'
-                            +' returned Nil for profile '+BuildLazProfiles.Current.Name);
-          end
-          else
-            raise Exception.Create('CodeToolBoss.DefineTree.FindDefineTemplateByName('
-                          +'StdDefTemplLazarusSources,true) returned Nil for profile '
-                          +BuildLazProfiles.Current.Name);
-          BuildResult:=DoBuildLazarusSub([]);
-          if BuildResult=mrOK then
+            end;
+          end;
+          Result:=DoBuildLazarusSub([]);
+          if Result=mrOK then
             MayNeedRestart:=True
+          else if Result=mrIgnore then
+            Result:=mrOK
           else
-            if BuildResult<>mrIgnore then exit;
+            exit;
         end;
       end;
     finally
