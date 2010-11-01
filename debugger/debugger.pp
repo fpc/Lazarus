@@ -904,6 +904,8 @@ type
 
   { TCallStackEntry }
 
+  TCallStackEntryState = (cseValid, cseRequested, cseInvalid);
+
   TCallStackEntry = class(TObject)
   private
     FOwner: TBaseCallStack;
@@ -914,16 +916,20 @@ type
     FArguments: TStrings;
     FSource: String;
     FFullFileName: String;
+    FState: TCallStackEntryState;
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
     function GetCurrent: Boolean;
+    function GetFullFileName: String;
+    function GetFunctionName: String;
+    function GetSource: String;
     procedure SetCurrent(const AValue: Boolean);
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const ASource: String; const AFullFileName: String;
-                       const ALine: Integer);
+                       const ALine: Integer; AState: TCallStackEntryState = cseValid);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
     property Adress: TDbgPtr read FAdress;
@@ -931,11 +937,12 @@ type
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
     property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
     property Current: Boolean read GetCurrent write SetCurrent;
-    property FunctionName: String read FFunctionName;
+    property FunctionName: String read GetFunctionName;
     property Index: Integer read FIndex;
     property Line: Integer read FLine;
-    property Source: String read FSource;
-    property FullFileName: String read FFullFileName;
+    property Source: String read GetSource;
+    property FullFileName: String read GetFullFileName;
+    property State: TCallStackEntryState read FState write FState;
   end;
 
   { TBaseCallStack }
@@ -3669,23 +3676,26 @@ end;
 constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const ASource: String; const AFullFileName: String;
-  const ALine: Integer);
+  const ALine: Integer; AState: TCallStackEntryState = cseValid);
 begin
   inherited Create;
   FIndex := AIndex;
   FAdress := AnAdress;
   FArguments := TStringlist.Create;
-  FArguments.Assign(AnArguments);
+  if AnArguments <> nil
+  then FArguments.Assign(AnArguments);
   FFunctionName := AFunctionName;
   FSource := ASource;
   FFullFileName := AFullFileName;
   FLine := ALine;
+  FState := AState;
 end;
 
 constructor TCallStackEntry.CreateCopy(const ASource: TCallStackEntry);
 begin
   Create(ASource.FIndex, ASource.FAdress, ASource.FArguments,
-         ASource.FunctionName, ASource.FSource, ASource.FFullFileName, ASource.FLine);
+         ASource.FFunctionName, ASource.FSource, ASource.FFullFileName,
+         ASource.FLine, ASource.FState);
 end;
 
 destructor TCallStackEntry.Destroy;
@@ -3713,6 +3723,29 @@ end;
 function TCallStackEntry.GetCurrent: Boolean;
 begin
   Result := (FOwner <> nil) and (FOwner.GetCurrent = Self)
+end;
+
+function TCallStackEntry.GetFullFileName: String;
+begin
+  if FState = cseValid
+  then Result := FFullFileName
+  else Result := '';
+end;
+
+function TCallStackEntry.GetFunctionName: String;
+begin
+  case FState of
+    cseValid:     Result := FFunctionName;
+    cseRequested: Result := '<evaluating>';
+    cseInvalid:   Result := '<unknown>';
+  end;
+end;
+
+function TCallStackEntry.GetSource: String;
+begin
+  if FState = cseValid
+  then Result := FSource
+  else Result := '';
 end;
 
 procedure TCallStackEntry.SetCurrent(const AValue: Boolean);
@@ -3943,7 +3976,11 @@ procedure TDBGCallStack.InternalSetEntry(AIndex: Integer; AEntry: TCallStackEntr
 var
   Dummy: TCallStackEntry;
 begin
-  if FEntries.GetData(AIndex, Dummy) then Exit;
+  if FEntries.GetData(AIndex, Dummy) then begin
+    //debugln(['TDBGCallStack.InternalSetEntry: replacing existing entry ', Dummy.Line]);
+    FEntries.Delete(AIndex);
+    Dummy.Free;
+  end;
   AEntry.FOwner := Self;
   FEntries.Add(AIndex, AEntry);
 end;
