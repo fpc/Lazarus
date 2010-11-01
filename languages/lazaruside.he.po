@@ -8483,6 +8483,10 @@ msgstr "נקה הכל"
 msgid "Clean+Build"
 msgstr "נקה ובנה"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "אשר לפני בנייה מחודשת של לזרוס"
@@ -8575,12 +8579,19 @@ msgid "New name for profile:"
 msgstr "שם חדש לפרופיל:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+#, fuzzy
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr "אתחל אחרי בנייה מוצלחת"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "שמור הגדרות"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr "נבחר"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8598,9 +8609,10 @@ msgstr "מערכת ההפעלה המיועדת"
 msgid "Unable to write file \"%s\":%s"
 msgstr "לא יכול לכתוב את הקובץ s%:%s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
-msgstr ""
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
+msgstr "עדכן את revision.inc"
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
@@ -12519,6 +12531,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "בחר טפסים של דלפי (dfm.*)"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "נבחר"
 
@@ -13951,10 +13964,6 @@ msgstr "עדכן תצוגה מקדימה"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "עדכן מקורות"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr "עדכן את revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

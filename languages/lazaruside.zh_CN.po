@@ -8519,6 +8519,10 @@ msgstr "清除所有"
 msgid "Clean+Build"
 msgstr "清除 + 构建"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "确认重新构建Lazarus"
@@ -8612,12 +8616,19 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+#, fuzzy
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr "构建成功后重新开始"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "保存设置"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8635,8 +8646,9 @@ msgstr "目标操作系统:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "不能写文件 \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
@@ -12576,6 +12588,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "选择 Delphi 窗体文件 (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr ""
 
@@ -14013,10 +14026,6 @@ msgstr "更新预览"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "更新引用？"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

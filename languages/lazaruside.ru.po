@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-31 15:57+0300\n"
+"PO-Revision-Date: 2010-11-02 01:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8520,6 +8520,10 @@ msgstr "Очистить все"
 msgid "Clean+Build"
 msgstr "Очистить+Собрать"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr "Общие параметры"
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "Спросить перед пересборкой Lazarus"
@@ -8612,12 +8616,18 @@ msgid "New name for profile:"
 msgstr "Новое имя профиля:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
-msgstr "Перезапустить после успешной сборки"
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
+msgstr "Перезапустить после сборки IDE"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Сохранить параметры"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr "Включить в пересборку"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8635,9 +8645,10 @@ msgstr "Целевая ОС:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Невозможно записать файл \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
-msgstr "Включать текущий профиль в полную пересборку"
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
+msgstr "Обновить revision.inc"
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
@@ -12560,6 +12571,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "Выберите файлы форм Delphi (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Выбор"
 
@@ -13998,10 +14010,6 @@ msgstr "Обновить предпросмотр"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Обновить ссылки?"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr "Обновить revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

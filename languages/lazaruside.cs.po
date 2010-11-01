@@ -8466,6 +8466,10 @@ msgstr "Vyčistit vše"
 msgid "Clean+Build"
 msgstr "Vyčistit + Sestavit"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "Potvrdit přes znovu-sestavením Lazarusu"
@@ -8559,12 +8563,19 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+#, fuzzy
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr "Restartovat po úspěšném sestavení"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Uložit nastavení"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr "Vybrané"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8582,9 +8593,10 @@ msgstr "Cílový OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nelze zapisovat do souboru \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
-msgstr ""
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
+msgstr "Aktualizovat revision.inc"
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
@@ -12478,6 +12490,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "Vybrat soubor formuláře Delphi (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Vybrané"
 
@@ -13910,10 +13923,6 @@ msgstr "Aktualizovat náhled"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Aktualizovat odkazy?"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr "Aktualizovat revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

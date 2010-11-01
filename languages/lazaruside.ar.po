@@ -8454,6 +8454,10 @@ msgstr ""
 msgid "Clean+Build"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr ""
@@ -8545,11 +8549,16 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
@@ -8568,8 +8577,9 @@ msgstr ""
 msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
@@ -12471,6 +12481,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr ""
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr ""
 
@@ -13899,10 +13910,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
-msgstr ""
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
 msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring

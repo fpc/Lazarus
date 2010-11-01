@@ -8542,6 +8542,10 @@ msgstr "Alles säubern"
 msgid "Clean+Build"
 msgstr "Säubern und neu erzeugen"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "Kompilieren von Lazarus bestätigen "
@@ -8635,12 +8639,19 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+#, fuzzy
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr "Nach dem Kompilieren neu starten"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Einstellungen speichern"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr "Ausgewählt"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8658,9 +8669,10 @@ msgstr "Zielsystem:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Kann Datei »%s« nicht schreiben: %s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
-msgstr ""
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
+msgstr "Aktualisiere revision.inc"
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"
@@ -12602,6 +12614,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphi-Formulardatei (*.dfm) auswählen"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Ausgewählt"
 
@@ -14040,10 +14053,6 @@ msgstr "Vorschau aktualisieren"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr "Aktualisiere revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

@@ -8513,6 +8513,10 @@ msgstr "Visiškas apvalymas"
 msgid "Clean+Build"
 msgstr "Apvalyti ir daryti"
 
+#: lazarusidestrconsts.lislazbuildcommonsettings
+msgid "Common Settings"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
 msgstr "Prieš darant Lazarus reikalauti patvirtinimo"
@@ -8606,12 +8610,19 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after successful Build"
+#, fuzzy
+#| msgid "Restart after successful Build"
+msgid "Restart after building the IDE"
 msgstr "Sėkmingai padarius, startuoti iš naujo"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Įrašyti nuostatas"
+
+#: lazarusidestrconsts.lislazbuildselected
+msgctxt "lazarusidestrconsts.lislazbuildselected"
+msgid "Selected"
+msgstr "Pažymėtas"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8629,8 +8640,9 @@ msgstr "Skirtas OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nepavyko rašyti į failą „%s“:%s"
 
-#: lazarusidestrconsts.lislazbuildwithall
-msgid "Include this profile when building all"
+#: lazarusidestrconsts.lislazbuildupdaterevinc
+msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
+msgid "Update revision.inc"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
@@ -12560,6 +12572,7 @@ msgid "Select Delphi form files (*.dfm)"
 msgstr "Nurodykite Delphi formos failus (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
+msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Pažymėtas"
 
@@ -14000,10 +14013,6 @@ msgstr "Naujinti peržiūrą"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Naujinti nuorodas?"
-
-#: lazarusidestrconsts.lisupdaterevisioninc
-msgid "Update revision.inc"
-msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
