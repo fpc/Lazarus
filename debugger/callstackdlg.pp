@@ -88,6 +88,7 @@ type
     procedure actViewTopExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lvCallStackClick(Sender: TObject);
+    procedure lvCallStackKeyPress(Sender: TObject; var Key: char);
     procedure popCountClick(Sender: TObject);
     procedure txtGotoKeyPress(Sender: TObject; var Key: char);
     procedure lvCallStackDBLCLICK(Sender: TObject);
@@ -533,6 +534,12 @@ begin
   // if clicked on the first column of a valid item
   if (Item <> nil) and (P.X <= lvCallStack.Column[0].Width) then
     ToggleBreakPoint(Item);
+end;
+
+procedure TCallStackDlg.lvCallStackKeyPress(Sender: TObject; var Key: char);
+begin
+  if key = #13
+  then lvCallStackDBLCLICK(Sender);
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
