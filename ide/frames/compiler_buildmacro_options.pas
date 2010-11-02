@@ -705,7 +705,11 @@ begin
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
     BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [
       aBuildMacro.Identifier]);
-    BMDeleteSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier]);
+    if NodeType=cbmntBuildMacro then
+      BMDeleteSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier])
+    else
+      BMDeleteSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.
+        Selected.Text]);
   end else begin
     BuildMacroSelectedGroupBox.Caption:=lisNoMacroSelected;
     BuildMacroSelectedGroupBox.Enabled:=false;

@@ -4916,6 +4916,7 @@ resourcestring
   lisRenameTo = 'Rename to %s';
   lisAddValueToMacro = 'Add value to macro %s';
   lisDeleteMacro = 'Delete macro %s';
+  lisDeleteValue2 = 'Delete value %s';
   lisNoMacroSelected = 'No macro selected';
   lisMacro = 'Macro %s';
   lisAddNewMacro = 'Add new macro';
