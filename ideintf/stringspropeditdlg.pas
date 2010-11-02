@@ -22,7 +22,7 @@ unit StringsPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, StdCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, StdCtrls,
   TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel;
   
 type
@@ -64,7 +64,7 @@ var
   I: Integer;
 begin
   NumChars := 0;
-  for I := 0 to Memo.Lines.Count - 1 do Inc(NumChars, Length(Memo.Lines[I]));
+  for I := 0 to Memo.Lines.Count - 1 do Inc(NumChars, Utf8Length(Memo.Lines[I]));
 
   if Memo.Lines.Count = 1 then
     StatusLabel.Caption := Format(ois1LineDChars, [NumChars])
