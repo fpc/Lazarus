@@ -1453,7 +1453,8 @@ begin
   else
     Layout.Form:=AForm;
 
-  if IDEDockMaster<>nil then
+  if (IDEDockMaster<>nil) and (FindWithName(AForm.Name)<>nil) then
+    // show dockable if it has a creator
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else if Assigned(OnShowForm) then
     OnShowForm(Self,AForm,BringToFront)

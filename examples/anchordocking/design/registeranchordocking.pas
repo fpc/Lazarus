@@ -29,12 +29,12 @@
 
   ToDo:
     - save settings after options dialog
-    - when opening another project first tab in source editor shows wrong page name
     - close source editor and show again
     - show anchor editor => too small
     - qt: focus on close page
     - gtk2: focus on cancel completion box
     - gtk2: focus on execute completion box
+    - gtk2: restore fails for mainidebar
 }
 unit RegisterAnchorDocking;
 
