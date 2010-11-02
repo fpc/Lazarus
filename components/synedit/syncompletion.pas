@@ -512,7 +512,7 @@ begin
   SizeDrag.AnchorSideRight.Control := Self;
   SizeDrag.AnchorSideBottom.Side := asrBottom;
   SizeDrag.AnchorSideBottom.Control := Self;
-  SizeDrag.Height := Max(5, abs(Font.Height) * 2 div 3);
+  SizeDrag.Height := Max(7, abs(Font.Height) * 2 div 3);
   SizeDrag.Cursor := crSizeNWSE;
 
   SizeDrag.OnKeyPress:=@SDKeyPress;
@@ -978,7 +978,7 @@ begin
     GetTextMetrics(Canvas.Handle, TextMetric);
     FFontHeight := TextMetric.tmHeight+2;
     SetNblinesInWindow(FNbLinesInWindow);
-    SizeDrag.Height := Max(5, Font.Height);
+    SizeDrag.Height := Max(7, FFontHeight * 2 div 3);
   finally
     dec(FResizeLock);
   end;
