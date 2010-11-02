@@ -622,6 +622,8 @@ begin
     AControl:=Controls[i];
     if (AControl.Align<>alCustom) or (not AControl.IsControlVisible) then continue;
     if AControl=FBevel then continue;
+    CtrlPrefWidth:=0;
+    CtrlPrefHeight:=0;
     AControl.GetPreferredSize(CtrlPrefWidth,CtrlPrefHeight);
     if Align in [alLeft,alRight] then
     begin
@@ -634,7 +636,7 @@ begin
     end;
   end;
   // bevel
-  if FBevel<>nil then
+  if (FBevel<>nil) and FBevel.IsControlVisible then
   begin
     if Align in [alLeft,alRight] then
       inc(MinWidth,FBevel.Width+Spacing)
