@@ -1533,9 +1533,12 @@ begin
   if gsAutoSized in GridStatus then
     exit;
 
+  BeginLayout;
+
   DatalinkActive := FDatalink.Active;
   if DatalinkActive then
     CurActiveRecord := FDatalink.ActiveRecord;
+
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
     for aCol:=FixedCols to ColCount-1 do begin
@@ -1548,7 +1551,12 @@ begin
         ColWidth := tmpCanvas.TextWidth(trim(C.Title.Caption));
         tmpCanvas.Font := C.Font;
       end else begin
-        ColWidth := 0;
+        if (Field<>nil) then begin
+          tmpCanvas.Font := TitleFont;
+          ColWidth := tmpCanvas.TextWidth(Field.FieldName);
+        end
+        else
+          ColWidth := 0;
         tmpCanvas.Font := Font;
       end;
 
@@ -1578,7 +1586,10 @@ begin
 
     if DatalinkActive then
       FDatalink.ActiveRecord := CurActiveRecord;
+
     include(FGridStatus, gsAutoSized);
+
+    EndLayout;
   end;
 
 end;
