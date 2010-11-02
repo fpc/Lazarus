@@ -199,15 +199,9 @@ var i: integer;
 begin
   PreActive := LinkDataSet.Active;
   LinkDataSet.Active := False;
-  if FieldsListBox.SelCount = 0 then exit;
-  for i := FieldsListBox.Items.Count - 1 downto 0 do
-    if FieldsListBox.Selected[i] then begin
-      fld := TField(FieldsListBox.Items.Objects[i]);
-      FieldsListBox.Items.Delete(i);
-      FDesigner.PropertyEditorHook.PersistentDeleting(fld);
-      fld.Free;
-    end;
-  FDesigner.Modified;
+  if FieldsListBox.SelCount = 0 then
+    exit;
+  FDesigner.DeleteSelection;
   SelectionChanged;
   if PreActive then
     LinkDataSet.Active := True;
