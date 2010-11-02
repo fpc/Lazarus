@@ -4260,6 +4260,7 @@ procedure TProject.SetSessionStorage(const AValue: TProjectSessionStorage);
 begin
   if SessionStorage=AValue then exit;
   inherited SetSessionStorage(AValue);
+  Modified:=true;
   UpdateSessionFilename;
 end;
 
