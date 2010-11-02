@@ -323,7 +323,6 @@ type
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
-    procedure mnuToolBuildLazarusAllClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
 
@@ -870,7 +869,7 @@ type
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
-    function DoBuildLazarusAll(Flags: TBuildLazarusFlags): TModalResult;
+    function DoBuildLazarusAll(ProfileNames: TStringList): TModalResult;
     function DoBuildFile: TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
@@ -2505,7 +2504,6 @@ begin
     itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
     itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
-    itmToolBuildLazarusAll.OnClick := @mnuToolBuildLazarusAllClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
     // Set initial caption for Build Lazarus item. Will be changed in BuildLazDialog.
     if Assigned(MiscellaneousOptions) then
@@ -4240,11 +4238,6 @@ begin
   DoBuildLazarus([]);
 end;
 
-procedure TMainIDE.mnuToolBuildLazarusAllClicked(Sender: TObject);
-begin
-  DoBuildLazarusAll([]);
-end;
-
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender: TObject);
 var
   CmdLineDefines: TDefineTemplate;
@@ -4256,7 +4249,8 @@ begin
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
     if DlgResult=mrAll then begin
-      DoBuildLazarusAll([]);
+      ShowMessage('Will let you build many profiles at one go. Under construction...');
+//      DoBuildLazarusAll(xxx);
     end
     else if DlgResult=mrYes then begin
       LazSrcTemplate:=
@@ -11516,12 +11510,12 @@ begin
     Result:=mrOK;
 end;
 
-function TMainIDE.DoBuildLazarusAll(Flags: TBuildLazarusFlags): TModalResult;
+function TMainIDE.DoBuildLazarusAll(ProfileNames: TStringList): TModalResult;
 var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
   LazSrcDirTemplate: TDefineTemplate;
-  i, RealCurInd: Integer;
+  i, ProfInd, RealCurInd: Integer;
   MayNeedRestart, FoundProfToBuild: Boolean;
   s: String;
 begin
@@ -11532,9 +11526,9 @@ begin
     try
       FoundProfToBuild:=False;
       s:=sLineBreak+sLineBreak;
-      for i:=0 to BuildLazProfiles.Count-1 do
-        if BuildLazProfiles[i].Selected then begin
-          s:=s+BuildLazProfiles[i].Name+sLineBreak;
+      for i:=0 to ProfileNames.Count-1 do
+        if BuildLazProfiles.IndexByName(ProfileNames[i])<>-1 then begin
+          s:=s+ProfileNames[i]+sLineBreak;
           FoundProfToBuild:=True;
         end;
       if not FoundProfToBuild then begin
@@ -11545,10 +11539,12 @@ begin
         if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
                       mtConfirmation, mbYesNo, 0)<>mrYes then
           exit;
-      for i:=0 to BuildLazProfiles.Count-1 do begin
-        if BuildLazProfiles[i].Selected then begin
+      for i:=0 to ProfileNames.Count-1 do begin
+        ProfInd:=BuildLazProfiles.IndexByName(ProfileNames[i]);
+        if ProfInd<>-1 then begin
+          // Set current profile temporarily, used by the codetools functions.
+          BuildLazProfiles.CurrentIndex:=ProfInd;
 // does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
-          BuildLazProfiles.CurrentIndex:=i; // Set current profile temporarily.
           LazSrcTemplate:=
             CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
           if Assigned(LazSrcTemplate) then begin

@@ -322,7 +322,7 @@ resourcestring
   lisMenuRemoveFromProject = 'Remove from Project ...';
   lisMenuViewSource = '&View Source';
   lisMenuProjectOptions = 'Project Options ...';
-  
+
   lisMenuBuild = 'Build';
   lisBFBuild = 'Build';
   lisBFRun = 'Run';
@@ -399,9 +399,8 @@ resourcestring
   lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';
   lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package ...';
   lisMenuConvertEncoding = 'Convert encoding of projects/packages ...';
-  lisMenuBuildLazarus = 'Build Lazarus';
+  lisMenuBuildLazarus = 'Build Lazarus with current profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with profile: %s';
-  lisMenuBuildLazarusAll = 'Build Lazarus with selected profiles';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
   lisMenuGeneralOptions = 'Options ...';
@@ -2783,7 +2782,7 @@ resourcestring
   lisLazBuildWithStaticPackages = 'With packages';
   lisLazBuildRestartAfterBuild = 'Restart after building the IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
-  lisLazBuildSelected = 'Selected';
+  lisLazBuildAdvanced = 'Build Advanced';
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
   lisLazBuildOk = 'Ok';

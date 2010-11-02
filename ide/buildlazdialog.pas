@@ -46,7 +46,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  InterfaceBase, Themes, ComCtrls,
+  InterfaceBase, Themes, ComCtrls, CheckLst,
   DefineTemplates, Laz_XMLCfg, DividerBevel,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
@@ -54,7 +54,7 @@ uses
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
   {$ENDIF}
-  ApplicationBundle, CompilerOptions, BuildProfileManager;
+  ApplicationBundle, CompilerOptions, BuildProfileManager, GenericListEditor;
 
 type
 
@@ -71,15 +71,17 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    DefinesButton: TButton;
     CancelButton: TBitBtn;
     CBLDBtnPanel: TPanel;
+    DefinesListBox: TCheckListBox;
     CleanAllCheckBox: TCheckBox;
     BuildProfileComboBox: TComboBox;
     CompileButton: TBitBtn;
-    CompileSelectedButton: TBitBtn;
+    CompileAdvancedButton: TBitBtn;
     ConfirmBuildCheckBox: TCheckBox;
+    DefinesLabel: TLabel;
     OptionsMemo: TMemo;
-    SelectedCheckBox: TCheckBox;
     DetailsPanel: TPanel;
     CommonsDividerBevel: TDividerBevel;
     HelpButton: TBitBtn;
@@ -104,8 +106,9 @@ type
     WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildProfileButtonClick(Sender: TObject);
     procedure BuildProfileComboBoxSelect(Sender: TObject);
-    procedure CompileSelectedButtonClick(Sender: TObject);
+    procedure CompileAdvancedButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
+    procedure DefinesButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -354,7 +357,7 @@ function CreateBuildLazarusOptions(Profiles: TBuildLazarusProfiles;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
   var AExOptions: string; out UpdateRevisionInc: boolean;
   out OutputDirRedirected: boolean): TModalResult;
-
+{
   function RemoveProfilerOption(const ExtraOptions: string): string;
   var
     p, StartPos: integer;
@@ -372,7 +375,7 @@ function CreateBuildLazarusOptions(Profiles: TBuildLazarusProfiles;
       System.Delete(Result,StartPos,p-StartPos+3);
     end;
   end;
-
+}
   procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
@@ -767,20 +770,19 @@ begin
   CleanAllCheckBox.Caption := lisLazBuildCleanAll;
   WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
   UpdateRevisionIncCheckBox.Caption := lisLazBuildUpdateRevInc;
-  SelectedCheckBox.Caption := lisLazBuildSelected;
 
   CommonsDividerBevel.Caption := lisLazBuildCommonSettings;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
   CompileButton.Caption := lisMenuBuild;
-  CompileSelectedButton.Caption := lisMenuBuildAll;
+  CompileAdvancedButton.Caption := lisLazBuildAdvanced;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   HelpButton.Caption := lisMenuHelp;
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
-  CompileSelectedButton.LoadGlyphFromLazarusResource('menu_build_all');
+  CompileAdvancedButton.LoadGlyphFromLazarusResource('menu_build_all');
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
     SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
@@ -994,35 +996,46 @@ begin
 end;
 
 procedure TConfigureBuildLazarusDlg.CopyProfileToUI(AProfile: TBuildLazarusProfile);
+var
+  i: Integer;
 begin
   CleanAllCheckBox.Checked          :=AProfile.CleanAll;
-  OptionsMemo.Text                  :=AProfile.ExtraOptions;
   LCLInterfaceRadioGroup.ItemIndex  :=ord(AProfile.TargetPlatform);
   WithStaticPackagesCheckBox.Checked:=AProfile.WithStaticPackages;
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
-  SelectedCheckBox.Checked          :=AProfile.Selected;
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
   TargetCPUComboBox.Text            :=AProfile.TargetCPU;
+  OptionsMemo.Lines.Assign(AProfile.OptionsLines);
+  for i:=0 to DefinesListBox.Items.Count-1 do
+    DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
 end;
 
 procedure TConfigureBuildLazarusDlg.CopyUIToProfile(AProfile: TBuildLazarusProfile);
+var
+  i: Integer;
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
-  AProfile.ExtraOptions      :=OptionsMemo.Text;
   AProfile.TargetPlatform    :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
-  AProfile.Selected          :=SelectedCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
+  AProfile.OptionsLines.Assign(OptionsMemo.Lines);
+  AProfile.Defines.Clear;
+  for i:=0 to DefinesListBox.Items.Count-1 do
+    if DefinesListBox.Checked[i] then
+      AProfile.Defines.Add(DefinesListBox.Items[i]);
 end;
 
 procedure TConfigureBuildLazarusDlg.UpdateProfileNamesUI;
 var
   i: Integer;
 begin
+  // List of defines to checklistbox.
+  for i:=0 to fProfiles.AllDefines.Count-1 do
+    DefinesListBox.Items.Add(fProfiles.AllDefines[i]);
   // Update the Profiles ComboBox.
   fUpdatingProfileCombo:=True;
   BuildProfileComboBox.Items.BeginUpdate;
@@ -1035,7 +1048,7 @@ begin
   fUpdatingProfileCombo:=False;
   RestartAfterBuildCheckBox.Checked:=fProfiles.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked     :=fProfiles.ConfirmBuild;
-  MakeModeListBox.Invalidate;
+  MakeModeListBox.Invalidate;         // Triggers owner-drawn update.
 end;
 
 function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
@@ -1082,7 +1095,7 @@ begin
     Format(lisMenuBuildLazarusProf, [Profiles.Current.Name]);
 end;
 
-procedure TConfigureBuildLazarusDlg.CompileSelectedButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
 begin
   PrepareClose;
   ModalResult:=mrAll;
@@ -1098,6 +1111,29 @@ procedure TConfigureBuildLazarusDlg.SaveSettingsButtonClick(Sender: TObject);
 begin
   PrepareClose;
   ModalResult:=mrOk;
+end;
+
+procedure TConfigureBuildLazarusDlg.DefinesButtonClick(Sender: TObject);
+var
+  EditForm: TGenericListEditForm;
+  i: Integer;
+begin
+  EditForm:=TGenericListEditForm.Create(Nil);
+  try
+    EditForm.Caption:='Edit Defines';
+    EditForm.Memo1.Lines.Assign(fProfiles.AllDefines);
+    if EditForm.ShowModal=mrOK then begin
+      CopyUIToProfile(Profiles.Current); // Make sure changed fields don't get lost.
+      fProfiles.AllDefines.Assign(EditForm.Memo1.Lines);
+      DefinesListBox.Items.Clear;
+      for i:=0 to fProfiles.AllDefines.Count-1 do
+        DefinesListBox.Items.Add(fProfiles.AllDefines[i]);
+      for i:=0 to DefinesListBox.Items.Count-1 do // Check the right boxes again.
+        DefinesListBox.Checked[i]:=fProfiles.Current.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
+    end;
+  finally
+    EditForm.Free;
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.BuildProfileButtonClick(Sender: TObject);

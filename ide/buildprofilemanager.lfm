@@ -8,6 +8,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
   ClientWidth = 360
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ProfilesPanel: TPanel
     Left = 0
@@ -40,21 +41,21 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = MoveDownButtonClick
       end
       object MoveUpButton: TToolButton
-        Left = 201
+        Left = 246
         Top = 0
         Caption = 'MoveUpButton'
         ImageIndex = 3
         OnClick = MoveUpButtonClick
       end
       object EditButton: TToolButton
-        Left = 139
+        Left = 171
         Top = 0
         Caption = 'EditButton'
         ImageIndex = 2
         OnClick = EditButtonClick
       end
       object RemoveButton: TToolButton
-        Left = 60
+        Left = 73
         Top = 0
         Caption = 'RemoveButton'
         ImageIndex = 1
@@ -68,7 +69,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = AddButtonClick
       end
       object tbSeparator: TToolButton
-        Left = 197
+        Left = 242
         Top = 0
         Width = 4
         Caption = 'tbSeparator'
@@ -77,7 +78,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
     end
     object ProfilesListBox: TListBox
       Left = 1
-      Height = 327
+      Height = 321
       Top = 93
       Width = 358
       Align = alClient
@@ -87,8 +88,8 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
     end
     object ButtonPanel: TButtonPanel
       Left = 7
-      Height = 26
-      Top = 426
+      Height = 32
+      Top = 420
       Width = 346
       OKButton.Name = 'OKButton'
       OKButton.Caption = '&ОК'
