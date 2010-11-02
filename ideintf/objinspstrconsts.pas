@@ -413,6 +413,7 @@ resourcestring
   fesOkBtn       = 'OK';
   fesCancelBtn   = 'Cancel';
   fesFieldCanTBeC = 'Field %s cannot be created!';
+  fesPersistentCompName = 'Co&mponent Name:';
 
   oisMoveUpHint = 'Move field up';
   oisMoveDownHint = 'Move field down';

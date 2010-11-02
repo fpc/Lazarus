@@ -13,7 +13,9 @@
  *                                                                           *
  *****************************************************************************
 }
-{ 2010-07-15 - New field type option (Data) Marcelo B. Paula }
+{ 2010-07-15 - New field type option (Data) Marcelo B. Paula
+  2010-10-30 - Persistent Name Edit...      Marcelo B. Paula }
+
 unit newfield;
 
 {$mode Delphi} {$H+}
@@ -30,7 +32,11 @@ type
   { TNewFieldFrm }
 
   TNewFieldFrm=class(TForm)
+    CancelBtn: TBitBtn;
+    EditCompName: TEdit;
+    Label7: TLabel;
     NoteLbl: TLabel;
+    OKBtn: TBitBtn;
     Panel2: TPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -52,9 +58,8 @@ type
     SelectResultField: TComboBox;
     DataSetsCombo: TComboBox;
     Panel4: TPanel;
-    OKBtn: TButton;
-    CancelBtn: TButton;
     procedure DataSetsComboChange(Sender: TObject);
+    procedure EditCompNameChange(Sender: TObject);
     procedure EditNameChange(Sender: TObject);
     procedure OKBtnClick(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
@@ -64,6 +69,9 @@ type
     procedure SelectTypeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure UpdateLookupDatasets(Sender: TObject);
+  private
+    function GetPersistentName: string;
+    procedure SetPersistentName(const AValue: string);
   private
     { Private declarations }
     LinkDataSet: TDataSet;
@@ -75,6 +83,8 @@ type
     procedure UpdateFieldsTypes;
     function GetLookupDataset: TDataset;
     procedure AddLookupDataset(const s:ansistring);
+    property PersistentName: string read GetPersistentName write SetPersistentName;
+    function SizeEnable:Boolean;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
@@ -126,7 +136,12 @@ begin
   if DefaultFieldClasses[fType] <> Nil then begin
     Result := DefaultFieldClasses[fType].Create(LinkDataSet.Owner);
     Result.FieldName := fName;
-    Result.Name := FDesigner.CreateUniqueComponentName(LinkDataset.Name + FName);
+    Result.Name := PersistentName;
+    try
+      if (EditSize.Enabled) and (Trim(EditSize.Text)<> '') then
+         Result.Size := StrToInt(EditSize.Text);
+    except
+    end;
     Result.DataSet := LinkDataSet;
   end;
 end;
@@ -148,8 +163,18 @@ begin
   SetButtons;
 end ;
 
+procedure TNewFieldFrm.EditCompNameChange(Sender: TObject);
+begin
+  SetButtons;
+end;
+
 procedure TNewFieldFrm.EditNameChange(Sender: TObject);
 begin
+  if Trim(EditName.Text) <> '' then
+     PersistentName := FDesigner.CreateUniqueComponentName(LinkDataset.Name + EditName.Text)
+  else
+    PersistentName := '';
+
   SetButtons;
 end ;
 
@@ -173,6 +198,7 @@ begin
   Label10.Caption := fesDataset;
   Label5.Caption := fesLookupKeys;
   Label6.Caption := fesResultField;
+  Label7.Caption := fesPersistentCompName;
   OkBtn.Caption := fesOkBtn;
   CancelBtn.Caption := fesCancelBtn;
 
@@ -189,7 +215,12 @@ begin
   for i := 0 to LinkDataSet.FieldDefs.Count - 1 do begin
     SelectKeyFields.Items.Add(LinkDataSet.FieldDefs[i].Name);
   end;
-  RadioGroup1.ItemIndex := 0;
+
+  if LinkDataSet.FieldDefs.Count <> 0 then
+     RadioGroup1.ItemIndex := 1
+  else
+    RadioGroup1.ItemIndex := 0;
+
   RadioGroup1Click(Nil);
 end;
 
@@ -202,6 +233,16 @@ begin
   FDesigner.PropertyEditorHook.GetComponentNames(GetTypeData(TDataset.ClassInfo),
     AddLookupDatasetProc);
   SelectLookupKeys.Text := sText;
+end;
+
+function TNewFieldFrm.GetPersistentName: string;
+begin
+  Result := EditCompName.Text;
+end;
+
+procedure TNewFieldFrm.SetPersistentName(const AValue: string);
+begin
+  EditCompName.Text := AValue;
 end;
 
 procedure TNewFieldFrm.OKBtnClick(Sender: TObject);
@@ -241,6 +282,7 @@ begin
   NewField := Nil;
   sActive := LinkDataSet.Active;
   LinkDataSet.Active := False;
+
   try
     case RadioGroup1.ItemIndex of
       0: begin //Create data field
@@ -330,19 +372,27 @@ procedure TNewFieldFrm.SelectTypeChange(Sender: TObject);
 begin
   UpdateResultFields;
   SetButtons;
+  if Trim(EditSize.Text) <> '' then
+     EditSize.Text := '';
 end ;
 
 procedure TNewFieldFrm.SetButtons;
 begin
-  if SelectType.ItemIndex >= 0 then
-    case TFieldType(PtrUInt( SelectType.Items.Objects[SelectType.ItemIndex])) of
-      ftString: EditSize.Enabled := True;
-      else EditSize.Enabled := False;
+  if SizeEnable then
+    begin
+      EditSize.Enabled := True;
+      EditSize.Color   := clWindow;
     end
-  else EditSize.Enabled := False;
+  else
+    begin
+      EditSize.Enabled := False;
+      EditSize.Color   := clBtnFace;
+    end;
+  //
   case RadioGroup1.ItemIndex of
     0..1: OkBtn.Enabled := (Length(EditName.Text) > 0) And
-                          (SelectType.ItemIndex > -1);
+                           (Length(PersistentName) > 0) And
+                           (SelectType.ItemIndex > -1);
     2: OkBtn.Enabled := (SelectKeyFields.Text <> '') And
                           (DataSetsCombo.ItemIndex > -1) And
                           (SelectLookupKeys.Text <> '') And
@@ -393,6 +443,30 @@ procedure TNewFieldFrm.AddLookupDataset(const s: ansistring);
 begin
   if (AnsiCompareText(s, LinkDataSet.Name) <> 0) then
     DataSetsCombo.Items.Add(s);
+end;
+
+function TNewFieldFrm.SizeEnable: Boolean;
+begin
+  if SelectType.ItemIndex >= 0 then
+    case TFieldType(PtrUInt( SelectType.Items.Objects[SelectType.ItemIndex])) of
+      ftADT:        Result := True;
+      ftArray:      Result := True;
+      ftBCD:        Result := True;
+      ftBlob:       Result := True;
+      ftBytes:      Result := True;
+      ftDataSet:    Result := True;
+      ftFMTBcd:     Result := True;
+      ftGraphic:    Result := True;
+      ftMemo:       Result := True;
+      ftString:     Result := True;
+      ftWideString: Result := True;
+      ftVarBytes:   Result := True;
+      ftVariant:    Result := True;
+    else
+      Result := False
+    end
+  else
+    Result := False;
 end;
 
 destructor TNewFieldFrm.Destroy;
