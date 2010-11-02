@@ -59,6 +59,11 @@ begin
   Result := FLookup.KeyField;
 end;
 
+function TDBLookupComboBox.GetKeyValue: variant;
+begin
+  result := FLookup.GetKeyValue(Text);
+end;
+
 function TDBLookupComboBox.GetListField: string;
 begin
   Result := FLookup.ListField;
@@ -83,6 +88,14 @@ procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
   ActiveChange(Self);
+end;
+
+procedure TDBLookupComboBox.SetKeyValue(const AValue: variant);
+var
+  AItemIndex: Integer;
+begin
+  if FLookup.GetListValue(AValue, AItemIndex) then
+    ItemIndex := AItemIndex;
 end;
 
 procedure TDBLookupComboBox.SetListField(const Value: string);

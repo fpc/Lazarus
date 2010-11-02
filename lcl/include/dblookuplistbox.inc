@@ -60,6 +60,14 @@ begin
   Result := FLookup.KeyField;
 end;
 
+function TDBLookupListBox.GetKeyValue: Variant;
+begin
+  if ItemIndex<0 then
+    result := NULL
+  else
+    result := FLookup.GetKeyValue(Items[ItemIndex]);
+end;
+
 function TDBLookupListBox.GetListField: string;
 begin
   Result := FLookup.ListField;
@@ -84,6 +92,14 @@ procedure TDBLookupListBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
   ActiveChange(Self);
+end;
+
+procedure TDBLookupListBox.SetKeyValue(const AValue: Variant);
+var
+  AItemIndex: Integer;
+begin
+  if FLookup.GetListValue(AValue, AItemIndex) then
+    ItemIndex := AItemIndex;
 end;
 
 procedure TDBLookupListBox.SetListField(const Value: string);

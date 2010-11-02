@@ -545,6 +545,8 @@ end;
 
 procedure TCustomListBox.SetItemIndex(AIndex: integer);
 begin
+  if AIndex=FItemIndex then
+    exit;
   if (AIndex >= FItems.Count) then
     RaiseIndexOutOfBounds(AIndex);
   if AIndex < 0 then AIndex := -1;

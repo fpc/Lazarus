@@ -163,6 +163,8 @@ Type
     procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
     function ListFieldValue: string;
     procedure UpdateData(const AListFieldValue: string);
+    function  GetKeyValue(const AListFieldValue: string): Variant;
+    function  GetListValue(const AKeyValue: Variant; out ItemIndex:Integer): boolean;
     property LookupCache: boolean read FLookupCache  write SetLookupCache;
     // properties to be published by owner control
     // these are not used where data control Field is dbLookup
@@ -437,11 +439,13 @@ Type
     FLookup: TDBLookup;
     procedure ActiveChange(Sender: TObject);
     function GetKeyField: string;
+    function GetKeyValue: Variant;
     function GetListField: string;
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
     function GetLookupCache: boolean;
     procedure SetKeyField(const Value: string);
+    procedure SetKeyValue(const AValue: Variant);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
@@ -452,6 +456,7 @@ Type
     procedure UpdateData(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
+    property KeyValue: Variant read GetKeyValue write SetKeyValue;
   published
     property Align;
     property Anchors;
@@ -745,11 +750,13 @@ Type
     FLookup: TDBLookup;
     procedure ActiveChange(Sender: TObject);
     function GetKeyField: string;
+    function GetKeyValue: variant;
     function GetListField: string;
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
     function GetLookupCache: boolean;
     procedure SetKeyField(const Value: string);
+    procedure SetKeyValue(const AValue: variant);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
@@ -760,6 +767,7 @@ Type
     procedure UpdateText; override;
   public
     constructor Create(AOwner: TComponent); override;
+    property KeyValue: variant read GetKeyValue write SetKeyValue;
   published
     property Align;
     property Anchors;
