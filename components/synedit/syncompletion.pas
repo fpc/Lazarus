@@ -107,6 +107,7 @@ type
   TSynBaseCompletionForm = class(TForm)
     procedure SDKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SDKeyPress(Sender: TObject; var Key: char);
+    procedure SDUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   protected
     FCurrentString: string;
     FOnKeyPress: TKeyPressEvent;
@@ -516,6 +517,7 @@ begin
 
   SizeDrag.OnKeyPress:=@SDKeyPress;
   SizeDrag.OnKeyDown:=@SDKeyDown;
+  SizeDrag.OnUTF8KeyPress:=@SDUtf8KeyPress;
 
   Scroll.Anchors:=[akTop,akRight, akBottom];
   Scroll.AnchorSide[akTop].Side := asrTop;
@@ -872,6 +874,12 @@ begin
   KeyPress(key);
 end;
 
+procedure TSynBaseCompletionForm.SDUtf8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  UTF8KeyPress(UTF8Key);
+end;
+
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
@@ -1209,8 +1217,8 @@ var
   SpaceBelow, SpaceAbove: Integer;
   Mon: TMonitor;
 begin
-  {$IFnDEF LCLGTK2}
   Mon := Screen.MonitorFromPoint(TokenRect.TopLeft);
+  {$IFnDEF LCLGTK2}
   if Mon <> nil then
     TokenRect.Left := Min(TokenRect.Left, Mon.Left + Mon.Width - Form.Width);
   {$ENDIF}
