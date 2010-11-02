@@ -44,6 +44,7 @@ type
     ModeComboBox: TComboBox;
     ModeLabel: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure ModeComboBoxChange(Sender: TObject);
   private
     FBaseMode: TProjectBuildMode;
     fProject: TProject;
@@ -84,6 +85,20 @@ begin
 
   ModeLabel.Caption:='Mode:';
   DiffsGroupBox.Caption:='Differences to other build modes';
+end;
+
+procedure TBuildModeDiffDialog.ModeComboBoxChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  if fProject<>nil then
+    for i:=0 to fProject.BuildModes.Count-1 do
+      if SysUtils.AnsiCompareText(fProject.BuildModes[i].GetCaption,ModeComboBox.Text)=0
+      then begin
+        fBaseMode:=fProject.BuildModes[i];
+        FillDiffTreeView;
+        break;
+      end;
 end;
 
 procedure TBuildModeDiffDialog.FillModeComboBox;

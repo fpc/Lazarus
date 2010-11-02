@@ -11,8 +11,8 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 280
+    Height = 40
+    Top = 270
     Width = 481
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -33,9 +33,9 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = ModeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 12
-    Width = 69
+    Height = 18
+    Top = 14
+    Width = 78
     BorderSpacing.Left = 10
     Caption = 'ModeLabel'
     ParentColor = False
@@ -46,13 +46,14 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 89
-    Height = 21
+    Left = 98
+    Height = 27
     Top = 10
-    Width = 394
+    Width = 385
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 10
     ItemHeight = 0
+    OnChange = ModeComboBoxChange
     TabOrder = 1
     Text = 'ModeComboBox'
   end
@@ -60,8 +61,8 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = ModeComboBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 233
-    Top = 41
+    Height = 217
+    Top = 47
     Width = 473
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -69,16 +70,16 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     BorderSpacing.Right = 4
     BorderSpacing.Around = 6
     Caption = 'DiffsGroupBox'
-    ClientHeight = 211
+    ClientHeight = 196
     ClientWidth = 465
     TabOrder = 2
     object DiffTreeView: TTreeView
       Left = 0
-      Height = 211
+      Height = 196
       Top = 0
       Width = 465
       Align = alClient
-      DefaultItemHeight = 18
+      DefaultItemHeight = 19
       TabOrder = 0
     end
   end
