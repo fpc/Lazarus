@@ -968,13 +968,13 @@ begin
   if AMenuItem.IsInMenuBar and not IsFlatMenus then
   begin
     if (ItemState and ODS_SELECTED) <> 0 then
-      DrawEdge(AHDC, ARect, BDR_SUNKENOUTER, BF_RECT)
+      DrawEdge(AHDC, ARect, BDR_SUNKENOUTER, BF_RECT or BF_ADJUST)
     else
     if (ItemState and ODS_HOTLIGHT) <> 0 then
       DrawEdge(AHDC, ARect, BDR_RAISEDINNER, BF_RECT);
   end;
 
-  TmpHeight := ARect.bottom - ARect.top;
+  TmpHeight := ARect.Bottom - ARect.Top;
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
@@ -992,10 +992,10 @@ begin
 {$endif}
 
   if IsRightToLeft then
-    Dec(ARect.Right, leftCaptionPosition(AMenuItem))
+    Dec(ARect.Right, LeftCaptionPosition(AMenuItem))
   else
-    Inc(ARect.Left, leftCaptionPosition(AMenuItem));
-  Inc(ARect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
+    Inc(ARect.Left, LeftCaptionPosition(AMenuItem));
+  Inc(ARect.Top, TopPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
