@@ -179,7 +179,7 @@ var
   btn: TPanelButton;
   aButton: TPanelBitBtn;
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.DoShowButtons'){$ENDIF};
 
   for btn := Low(btn) to High(btn) do
   begin
@@ -204,7 +204,7 @@ begin
 
   UpdateButtonOrder;
   UpdateButtonLayout;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.DoShowButtons'){$ENDIF};
 end;
 
 procedure TCustomButtonPanel.SetShowButtons(Value: TPanelButtons);
@@ -221,7 +221,7 @@ procedure TCustomButtonPanel.DoShowGlyphs;
 var
   btn: TPanelButton;
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.DoShowGlyphs'){$ENDIF};
   for btn := Low(btn) to High(btn) do
   begin
     if FButtons[btn] = nil then Continue;
@@ -235,7 +235,7 @@ begin
       FButtons[btn].Glyph.Assign(nil);
     end;
   end;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.DoShowGlyphs'){$ENDIF};
 end;
 
 procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
@@ -354,14 +354,14 @@ end;
 
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetAlign'){$ENDIF};
   try
     inherited SetAlign(Value);
     UpdateButtonLayout;
     UpdateBevel;
     UpdateSizes;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetAlign'){$ENDIF};
   end;
 end;
 
@@ -409,7 +409,7 @@ begin
     Exit;
   end;
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetShowBevel'){$ENDIF};
   try
     FBevel := TBevel.Create(Self);
     FBevel.Parent := Self;
@@ -417,7 +417,7 @@ begin
 
     UpdateBevel;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetShowBevel'){$ENDIF};
   end;
 end;
 

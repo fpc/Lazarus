@@ -509,7 +509,7 @@ begin
   if (FloatingClass<>nil) and (FloatingClass<>TWinControlClass(ClassType)) then
   begin
     Result := TWinControl(FloatingClass.NewInstance);
-    Result.DisableAutoSizing;
+    Result.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.CreateFloatingDockSite'){$ENDIF};
     Result.Create(Self);
     // resize with minimal resizes
     NewClientWidth:=Bounds.Right-Bounds.Left;
@@ -519,7 +519,7 @@ begin
     Result.SetBounds(Bounds.Left,Bounds.Top,NewWidth,NewHeight);
     Result.SetClientSize(Point(NewClientWidth,NewClientHeight));
     debugln('TControl.CreateFloatingDockSite A ',DbgSName(Self),' ',DbgSName(Result),' ',dbgs(Result.BoundsRect));
-    Result.EnableAutoSizing;
+    Result.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.CreateFloatingDockSite'){$ENDIF};
   end;
 end;
 
@@ -3807,7 +3807,7 @@ begin
     RaiseAlreadyDocking;
     
   // dock
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Dock'){$ENDIF};
   Include(FControlState, csDocking);
   try
     OldHostDockSite:=HostDockSite;
@@ -3837,7 +3837,7 @@ begin
       NewDockSite.FDockClients.Remove(Self);
     Exclude(FControlState, csDocking);
   end;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Dock'){$ENDIF};
 
   //DebugLn(['TControl.Dock END ',DbgSName(Self),' ',DbgSName(HostDockSite)]);
 end;
@@ -3861,9 +3861,9 @@ var
   NewPosition: TPoint;
 begin
   if DropControl<>nil then
-    DropControl.DisableAutoSizing;
+    DropControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualDock DropControl'){$ENDIF};
   if NewDockSite<>nil then
-    NewDockSite.DisableAutoSizing;
+    NewDockSite.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualDock NewDockSite'){$ENDIF};
   if (NewDockSite=nil) then begin
     // undock / float this control
     // float the control at the same screen position
@@ -3919,9 +3919,9 @@ begin
     end;
   end;
   if NewDockSite<>nil then
-    NewDockSite.EnableAutoSizing;
+    NewDockSite.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualDock NewDockSite'){$ENDIF};
   if DropControl<>nil then
-    DropControl.EnableAutoSizing;
+    DropControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualDock DropControl'){$ENDIF};
 end;
 
 {------------------------------------------------------------------------------
@@ -3938,7 +3938,7 @@ var
   FloatHost: TWinControl;
 begin
   DebugLn(['TControl.ManualFloat ',DbgSName(Self)]);
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualFloat'){$ENDIF};
   // undock from old host dock site
   if HostDockSite = nil then
   begin
@@ -3966,7 +3966,7 @@ begin
     else
       Dock(nil, TheScreenRect);
   end;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ManualFloat'){$ENDIF};
 end;
 
 {------------------------------------------------------------------------------
@@ -3983,7 +3983,7 @@ var
 begin
   Result := False;
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReplaceDockedControl'){$ENDIF};
   OldDockSite := Control.HostDockSite;
   if (OldDockSite<>nil) and (not HostDockSiteManagerAvailable(OldDockSite)) then
     exit;
@@ -3997,7 +3997,7 @@ begin
       OldDockSite.DockManager.SetReplacingControl(nil);
   end;
   Result:=Control.ManualDock(NewDockSite,DropControl,ControlSide);
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReplaceDockedControl'){$ENDIF};
 end;
 
 procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
@@ -4890,11 +4890,11 @@ begin
   if FBiDiMode=AValue then exit;
   FBiDiMode:=AValue;
   FParentBiDiMode := False;
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetBiDiMode'){$ENDIF};
   try
     Perform(CM_BIDIMODECHANGED, 0, 0); // see TWinControl.CMBiDiModeChanged
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetBiDiMode'){$ENDIF};
   end;
 end;
 

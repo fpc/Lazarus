@@ -3376,7 +3376,7 @@ var
   OldSide: TAnchorSideReference;
 begin
   if FSide=AValue then exit;
-  FOwner.DisableAutoSizing;
+  FOwner.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorSide.SetSide'){$ENDIF};
   if AValue=asrCenter then begin
     OldSide:=FSide;
     FixCenterAnchoring;
@@ -3386,7 +3386,7 @@ begin
   FOwner.AnchorSideChanged(Self);
   if FControl<>nil then
     FControl.ForeignAnchorSideChanged(Self,ascoChangeSide);
-  FOwner.EnableAutoSizing;
+  FOwner.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorSide.SetSide'){$ENDIF};
 end;
 
 function TAnchorSide.GetOwner: TPersistent;
