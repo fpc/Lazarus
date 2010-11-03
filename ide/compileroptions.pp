@@ -3145,6 +3145,7 @@ begin
   LinkerOptions := CompOpts.fLinkerOptions;
   Win32GraphicApp := CompOpts.Win32GraphicApp;
   ExecutableType := CompOpts.ExecutableType;
+  UseExternalDbgSyms := CompOpts.UseExternalDbgSyms;
 
   // Messages
   fShowErrors := CompOpts.fShowErrors;
