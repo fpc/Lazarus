@@ -4953,6 +4953,8 @@ resourcestring
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';
   lisDirectivesForNewUnit = 'Directives for new unit';
+  lisRemoveFromInstallList = 'Remove from install list';
+  lisKeepInInstallList = 'Keep in install list';
 
 implementation
 

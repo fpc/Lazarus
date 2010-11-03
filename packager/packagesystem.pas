@@ -3286,10 +3286,11 @@ begin
           // a package needed for installation failed to compile
           // -> ask user if the package should be removed from the installation
           // list
-          MsgResult:=IDEMessageDialog(lisInstallationFailed,
+          MsgResult:=IDEQuestionDialog(lisInstallationFailed,
             Format(lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati,
               ['"', APackage.IDAsString, '"', #13]), mtConfirmation,
-              [mbYes,mbIgnore]);
+              [mrYes, lisRemoveFromInstallList, mrIgnore, lisKeepInInstallList
+                ]);
           if MsgResult=mrIgnore then
             IgnoreQuestions.Add(GetIgnoreIdentifier,iiid24H)
           else if MsgResult=mrYes then
