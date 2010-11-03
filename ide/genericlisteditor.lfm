@@ -1,0 +1,40 @@
+object GenericListEditForm: TGenericListEditForm
+  Left = 452
+  Height = 301
+  Top = 526
+  Width = 343
+  Caption = 'GenericListEditForm'
+  ClientHeight = 301
+  ClientWidth = 343
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 255
+    Width = 331
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 249
+    Top = 0
+    Width = 343
+    Align = alClient
+    Lines.Strings = (
+      ''
+    )
+    TabOrder = 1
+  end
+end
