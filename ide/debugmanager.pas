@@ -2078,7 +2078,6 @@ begin
         CanRun:=true
       else if pfRunnable in Project1.Flags then
         CanRun:=true;
-      debugln(['TDebugManager.UpdateButtonsAndMenuItems ',pfRunnable in Project1.Flags]);
     end;
     RunSpeedButton.Enabled := CanRun
            and (DebuggerInvalid
