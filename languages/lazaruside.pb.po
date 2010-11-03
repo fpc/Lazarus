@@ -6115,6 +6115,10 @@ msgstr "Excluir configuração %s%s%s?"
 msgid "Delete value %s%s%s"
 msgstr "Excluir valor %s%s%s"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Falha ao eliminar arquivo %s%s%s"
@@ -7841,6 +7845,10 @@ msgstr "Manter arquivos convertidos abertos no editor"
 msgid "All project files will be open in editor after conversion"
 msgstr "Todos os arquivos do projeto serão abertos no editor após conversão"
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Manter nome"
@@ -8467,6 +8475,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Adicionar"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Opções Avançadas Construção"
@@ -8617,11 +8629,6 @@ msgstr "Reiniciar após construir com sucesso"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Salvar configurações"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr "Selecionado"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8979,12 +8986,10 @@ msgid "Build File"
 msgstr "Construir Arquivo"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "Construir Lazarus"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12242,6 +12247,10 @@ msgstr "Remover todas as propriedades inválidas"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "Remover todas unidades"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

@@ -6108,6 +6108,10 @@ msgstr ""
 msgid "Delete value %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Verwijderen van bestand %s%s%s mislukt."
@@ -7831,6 +7835,10 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Houd naam"
@@ -8458,6 +8466,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Toevoegen"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr ""
@@ -8607,11 +8619,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Sla instellingen op"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8970,12 +8977,10 @@ msgid "Build File"
 msgstr "Bouw bestand"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "Bouw Lazarus"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12249,6 +12254,10 @@ msgstr "Verwijder alle ongeldige properties"
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject

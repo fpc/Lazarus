@@ -6117,6 +6117,10 @@ msgstr "設定 %s%s%s を削除してもいいですか。"
 msgid "Delete value %s%s%s"
 msgstr "%s%s%sの値を削除"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "ファイル %s%s%sの削除に失敗"
@@ -7844,6 +7848,10 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "名前を保持"
@@ -8471,6 +8479,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "追加"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "上級構築オプション"
@@ -8622,11 +8634,6 @@ msgstr "構築に成功した後に再起動"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "設定を保存"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8985,12 +8992,10 @@ msgid "Build File"
 msgstr "ファイルを構築"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "Lazarusを構築"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12267,6 +12272,10 @@ msgstr "すべての無効なプロパティを削除"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "すべてのユニットを削除"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

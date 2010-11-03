@@ -6121,6 +6121,10 @@ msgstr ""
 msgid "Delete value %s%s%s"
 msgstr "删除值%s%s%s"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "删除文件 %s%s%s 失败."
@@ -7846,6 +7850,10 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "保存名字"
@@ -8473,6 +8481,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "添加"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "高级构建选项"
@@ -8624,11 +8636,6 @@ msgstr "构建成功后重新开始"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "保存设置"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8987,12 +8994,10 @@ msgid "Build File"
 msgstr "构建文件"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "构建 Lazarus"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12269,6 +12274,10 @@ msgstr "移除所有错误的属性"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "移除所有单元"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

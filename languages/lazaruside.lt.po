@@ -6115,6 +6115,10 @@ msgstr "Ar pašalinti nuostatą %s%s%s?"
 msgid "Delete value %s%s%s"
 msgstr "Pašalinti vertę %s%s%s"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Nepavyko ištrinti failą %s%s%s."
@@ -7840,6 +7844,10 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Nekeisti pavadinimo"
@@ -8467,6 +8475,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Pridėti"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Sudėtingesnės darymo parinktys"
@@ -8618,11 +8630,6 @@ msgstr "Sėkmingai padarius, startuoti iš naujo"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Įrašyti nuostatas"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr "Pažymėtas"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8984,12 +8991,10 @@ msgid "Build File"
 msgstr "Daryti failą"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "Daryti Lazarus"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12247,6 +12252,10 @@ msgstr "Pašalinti klaidingas savybes"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "Pašalinti visus modulius"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

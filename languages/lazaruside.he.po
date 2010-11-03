@@ -6086,6 +6086,10 @@ msgstr "מחק הגדרות s%s%s%?"
 msgid "Delete value %s%s%s"
 msgstr "מחק ערך s%s%s%"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "מחיקת הקובץ s%s%s% נכשלה."
@@ -7811,6 +7815,10 @@ msgstr "שמור את הקובץ שהומר פתוח בעורך"
 msgid "All project files will be open in editor after conversion"
 msgstr "כל קבצי הפרוייקט ישארו פתוחים בעורך אחרי ההמרה"
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "שמור שם"
@@ -8437,6 +8445,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "הוסף"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "אפשרויות בניה מתקדמות"
@@ -8587,11 +8599,6 @@ msgstr "אתחל אחרי בנייה מוצלחת"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "שמור הגדרות"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr "נבחר"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8948,12 +8955,10 @@ msgid "Build File"
 msgstr "בנה קובץ"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "בנה את לזרוס"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12211,6 +12216,10 @@ msgstr "הסר את כל התכונות הלא חוקיות"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "הסר את כל היחידות"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

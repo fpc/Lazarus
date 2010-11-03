@@ -6070,6 +6070,10 @@ msgstr ""
 msgid "Delete value %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "%s%s%s adlı dosya silinemedi"
@@ -7793,6 +7797,10 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Adı koru"
@@ -8420,6 +8428,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Ekle"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Gelişmiş inşa seçenekleri"
@@ -8566,11 +8578,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
@@ -8928,12 +8935,10 @@ msgid "Build File"
 msgstr "Dosyayı Oluştur"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
+#, fuzzy
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
 msgstr "Lazarus'u Oluştur"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12197,6 +12202,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject

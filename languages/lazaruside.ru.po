@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-02 01:07+0300\n"
+"PO-Revision-Date: 2010-11-04 00:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6120,6 +6120,10 @@ msgstr "Удалить параметр %s%s%s?"
 msgid "Delete value %s%s%s"
 msgstr "Удалить значение %s%s%s?"
 
+#: lazarusidestrconsts.lisdeletevalue2
+msgid "Delete value %s"
+msgstr "Удалить значение %s"
+
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Удаление файла  %s%s%s не удалось."
@@ -7846,6 +7850,10 @@ msgstr "Оставлять преобразованные файлы откры�
 msgid "All project files will be open in editor after conversion"
 msgstr "Все файлы проекта будут открыты в редакторе после преобразования"
 
+#: lazarusidestrconsts.liskeepininstalllist
+msgid "Keep in install list"
+msgstr "Оставить в списке на установку"
+
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Сохранить имя"
@@ -8474,6 +8482,10 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Добавить"
 
+#: lazarusidestrconsts.lislazbuildadvanced
+msgid "Build Advanced"
+msgstr "Собрать расширенно"
+
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Расширенные параметры сборки"
@@ -8623,11 +8635,6 @@ msgstr "Перезапустить после сборки IDE"
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Сохранить параметры"
-
-#: lazarusidestrconsts.lislazbuildselected
-msgctxt "lazarusidestrconsts.lislazbuildselected"
-msgid "Selected"
-msgstr "Включить в пересборку"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8985,12 +8992,9 @@ msgid "Build File"
 msgstr "Собрать файл"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-msgid "Build Lazarus"
-msgstr "Собрать Lazarus"
-
-#: lazarusidestrconsts.lismenubuildlazarusall
-msgid "Build Lazarus with selected profiles"
-msgstr "Пересобрать Lazarus по выбранным профилям"
+#| msgid "Build Lazarus"
+msgid "Build Lazarus with current profile"
+msgstr "Собрать Lazarus по текущему профилю"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
@@ -12251,6 +12255,10 @@ msgstr "Удалить все некорректные свойства"
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "Удалить все модули"
+
+#: lazarusidestrconsts.lisremovefrominstalllist
+msgid "Remove from install list"
+msgstr "Удалить из списка на установку"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"

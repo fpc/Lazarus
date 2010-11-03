@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-30 15:23+0300\n"
+"PO-Revision-Date: 2010-11-04 00:17+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -212,6 +212,10 @@ msgstr "Список полей недоступен, невозможно пр�
 msgctxt "objinspstrconsts.fesokbtn"
 msgid "OK"
 msgstr "OK"
+
+#: objinspstrconsts.fespersistentcompname
+msgid "Co&mponent Name:"
+msgstr "И&мя компонента:"
 
 #: objinspstrconsts.fesresultfield
 #| msgid "&Result Fields"

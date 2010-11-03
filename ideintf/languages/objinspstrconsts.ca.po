@@ -210,6 +210,10 @@ msgctxt "objinspstrconsts.fesokbtn"
 msgid "OK"
 msgstr "D'Acord"
 
+#: objinspstrconsts.fespersistentcompname
+msgid "Co&mponent Name:"
+msgstr ""
+
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
 msgstr ""
