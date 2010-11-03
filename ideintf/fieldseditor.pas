@@ -193,9 +193,8 @@ begin
 end;
 
 procedure TDSFieldsEditorFrm.DeleteFieldsActnExecute(Sender: TObject);
-var i: integer;
-    PreActive: boolean;
-    fld: TField;
+var
+  PreActive: boolean;
 begin
   PreActive := LinkDataSet.Active;
   LinkDataSet.Active := False;
