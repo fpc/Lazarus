@@ -16087,6 +16087,8 @@ begin
         MainIDEBar.itmViewToggleFormUnit.Enabled := HasResources;
       end;
       MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
+
+      DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
 

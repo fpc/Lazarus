@@ -2060,15 +2060,29 @@ end;
 procedure TDebugManager.UpdateButtonsAndMenuItems;
 var
   DebuggerInvalid: boolean;
+  CanRun: Boolean;
+  SrcEdit: TSourceEditorInterface;
+  AnUnitInfo: TUnitInfo;
 begin
   if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting)
   then exit;
 
   DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
+  MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
-    RunSpeedButton.Enabled := DebuggerInvalid
-                 or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
+    CanRun:=false;
+    if Project1<>nil then
+    begin
+      if (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) then
+        CanRun:=true
+      else if pfRunnable in Project1.Flags then
+        CanRun:=true;
+      debugln(['TDebugManager.UpdateButtonsAndMenuItems ',pfRunnable in Project1.Flags]);
+    end;
+    RunSpeedButton.Enabled := CanRun
+           and (DebuggerInvalid
+                or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
     PauseSpeedButton.Enabled := (not DebuggerInvalid)
                                 and (dcPause in FDebugger.Commands);
@@ -2100,8 +2114,6 @@ begin
     // menu view
     itmViewRegisters.Enabled := (not DebuggerInvalid);
     itmViewAssembler.Enabled := (not DebuggerInvalid);
-    // TODO: add other debugger menuitems
-    // TODO: implement by actions
   end;
 end;
 
