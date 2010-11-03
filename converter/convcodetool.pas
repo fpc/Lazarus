@@ -191,7 +191,7 @@ begin
       fSrcCache.EndUpdate;
     end;
     if fSettings.Target=ctLazarus then begin
-      // One way conversion -> remove, rename and comment out units.
+      // One way conversion -> remove and rename units.
       if not RemoveUnits then exit;
       if not RenameUnits then exit;
     end;
@@ -199,7 +199,7 @@ begin
       // Support Delphi. Add IFDEF blocks for units.
       if not AddDelphiAndLCLSections then exit;
     end
-    else  // ctLazarus or ctLazarusWin -> comment units if needed.
+    else  // [ctLazarus, ctLazarusWin] -> comment out units if needed.
       if not CommentOutUnits then exit;
     if not fCodeTool.FixUsedUnitCase(fSrcCache) then exit;
     if not fSrcCache.Apply then exit;
