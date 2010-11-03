@@ -754,14 +754,16 @@ end;
 
 function TConvertDelphiUnit.FixMissingUnits: TModalResult;
 var
-  UnitNames: TStringList;
+  ConvTool: TConvDelphiCodeTool;
 
   procedure RenameOrRemoveUnit(AOldName, ANewName: string);
   // Replace a unit name with a new name or remove it if there is no new name.
   var
     x: Integer;
   begin
-    if (ANewName<>'') and not UnitNames.Find(ANewName, x) then begin
+    if (ANewName<>'')
+    and (not ConvTool.ExistingUsesMain.Find(ANewName, x))
+    and (not ConvTool.ExistingUsesImplementation.Find(ANewName, x)) then begin
       fUnitsToRename[AOldName]:=ANewName;
       IDEMessagesWindow.AddMsg(Format(
         'Replaced unit "%s" with "%s" in uses section.',[AOldName, ANewName]),'',-1);
@@ -802,7 +804,6 @@ var
   MapToEdit: TStringToStringTree;
   Node: TAVLTreeNode;
   Item: PStringToStringTreeItem;
-  ConvTool: TConvDelphiCodeTool;
   i: Integer;
   UnitN, s: string;
 begin
@@ -811,15 +812,11 @@ begin
   ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
   if fSettings.UnitsReplaceMode=rlInteractive then
     MapToEdit:=TStringToStringTree.Create(false);
-  UnitNames:=nil;     // Will be created in ConvTool.UsesSectionsToUnitnames.
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
   try
     Result:=GetMissingUnits;
     if (Result<>mrOK) or (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
 
-    // Collect all unit names from uses sections.
-    UnitNames:=ConvTool.UsesSectionsToUnitnames;
-    UnitNames.Sorted:=true;
     // Find replacements for missing units from settings.
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
@@ -874,7 +871,6 @@ begin
     if fSettings.UnitsReplaceMode=rlInteractive then
       MapToEdit.Free;
     fMissingUnits.Free;
-    UnitNames.Free;
     ConvTool.Free;
     UnitUpdater.Free;
   end;
