@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLBase
+  ====================================================================
+-->
+
+<module name="LCLBase">
+<short></short>
+<descr>
+</descr>
+
+</module> <!-- LCLBase -->
+
+</package>
+</fpdoc-descriptions>
