@@ -132,10 +132,12 @@ begin
     // Get existing unit names from uses sections
     fCodeTool.BuildTree(False);
     UsesNode:=fCodeTool.FindMainUsesSection;
-    fExistingUsesMain:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
+    if UsesNode<>Nil then
+      fExistingUsesMain:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
     fExistingUsesMain.Sorted:=True;
     UsesNode:=fCodeTool.FindImplementationUsesSection;
-    fExistingUsesImplementation:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
+    if UsesNode<>Nil then
+      fExistingUsesImplementation:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
     fExistingUsesImplementation.Sorted:=True;
   except
     on e: Exception do
