@@ -72,7 +72,6 @@ const
   IncludePathMacroName     = ExternalMacroStart+'IncPath';
   SrcPathMacroName         = ExternalMacroStart+'SrcPath';
   PPUSrcPathMacroName      = ExternalMacroStart+'PPUSrcPath';
-  PPWSrcPathMacroName      = ExternalMacroStart+'PPWSrcPath';
   DCUSrcPathMacroName      = ExternalMacroStart+'DCUSrcPath';
   CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
   UnitLinksMacroName       = ExternalMacroStart+'UnitLinks';
@@ -86,7 +85,6 @@ const
   IncludePathMacro         = '$('+IncludePathMacroName+')';
   SrcPathMacro             = '$('+SrcPathMacroName+')';
   PPUSrcPathMacro          = '$('+PPUSrcPathMacroName+')';
-  PPWSrcPathMacro          = '$('+PPWSrcPathMacroName+')';
   DCUSrcPathMacro          = '$('+DCUSrcPathMacroName+')';
   CompiledSrcPathMacro     = '$('+CompiledSrcPathMacroName+')';
   UnitLinksMacro           = '$('+UnitLinksMacroName+')';
@@ -435,7 +433,6 @@ type
     function  GetIncludePathForDirectory(const Directory: string): string;
     function  GetLastRootTemplate: TDefineTemplate;
     function  GetPPUSrcPathForDirectory(const Directory: string): string;
-    function  GetPPWSrcPathForDirectory(const Directory: string): string;
     function  GetSrcPathForDirectory(const Directory: string): string;
     function  GetUnitPathForDirectory(const Directory: string): string;
     function  IsEqual(SrcDefineTree: TDefineTree): boolean;
@@ -3910,18 +3907,6 @@ begin
   Evaluator:=GetDefinesForDirectory(Directory,true);
   if Evaluator<>nil then begin
     Result:=Evaluator.Variables[PPUSrcPathMacroName];
-  end else begin
-    Result:='';
-  end;
-end;
-
-function TDefineTree.GetPPWSrcPathForDirectory(const Directory: string
-  ): string;
-var Evaluator: TExpressionEvaluator;
-begin
-  Evaluator:=GetDefinesForDirectory(Directory,true);
-  if Evaluator<>nil then begin
-    Result:=Evaluator.Variables[PPWSrcPathMacroName];
   end else begin
     Result:='';
   end;

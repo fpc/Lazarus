@@ -117,7 +117,7 @@ const
   PublishModulOptsVersion = 2;
 
   DefPublModIncFilter = '*.(pas|pp|inc|lpr|lfm|lrs|lpi|lpk|xml|sh)';
-  DefPublModExcFilter = '*.(bak|ppu|ppw|ppl|a|o|so);*~;backup';
+  DefPublModExcFilter = '*.(bak|ppu|ppl|a|o|so);*~;backup';
   DefPublishDirectory = '$(TestDir)/publishedproject/';
 
 implementation

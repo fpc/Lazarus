@@ -3748,8 +3748,6 @@ begin
     if CurUnitName='' then continue;
     Result:=CheckFile(CurUnitName+'.ppu');
     if Result<>mrOk then exit;
-    Result:=CheckFile(CurUnitName+'.ppw');
-    if Result<>mrOk then exit;
     Result:=CheckFile(CurUnitName+'.ppl');
     if Result<>mrOk then exit;
   end;

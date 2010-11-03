@@ -200,7 +200,7 @@ begin
 
       // set defaults
       AddStandardComboItem(DirCombobox,'$(ProjPath)');
-      AddStandardComboItem(RemoveCombobox,'*.(bak|ppu|ppw|ppl|o|or|a|so|dll)');
+      AddStandardComboItem(RemoveCombobox,'*.(bak|ppu|ppl|o|or|a|so|dll)');
       AddStandardComboItem(RemoveCombobox,'*.bak|*~');
       AddStandardComboItem(KeepCombobox,
                            '*.(pas|pp|lpr|lfm|lrs|lpi|lpk|inc|sh|xml)');

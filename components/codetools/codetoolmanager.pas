@@ -286,7 +286,6 @@ type
     function GetCompleteSrcPathForDirectory(const Directory: string;
                                             UseCache: boolean = true): string;
     function GetPPUSrcPathForDirectory(const Directory: string): string;
-    function GetPPWSrcPathForDirectory(const Directory: string): string;
     function GetDCUSrcPathForDirectory(const Directory: string): string;
     function GetCompiledSrcPathForDirectory(const Directory: string;
                                             UseCache: boolean = true): string;
@@ -1337,12 +1336,6 @@ begin
   Result:=DefineTree.GetPPUSrcPathForDirectory(Directory);
 end;
 
-function TCodeToolManager.GetPPWSrcPathForDirectory(const Directory: string
-  ): string;
-begin
-  Result:=DefineTree.GetPPWSrcPathForDirectory(Directory);
-end;
-
 function TCodeToolManager.GetDCUSrcPathForDirectory(const Directory: string
   ): string;
 begin
@@ -1400,14 +1393,8 @@ end;
 
 function TCodeToolManager.GetCompiledSrcExtForDirectory(const Directory: string
   ): string;
-var
-  Evaluator: TExpressionEvaluator;
 begin
   Result:='.ppu';
-  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
-  if Evaluator=nil then exit;
-  if Evaluator.IsDefined('WIN32') and Evaluator.IsDefined('VER1_0') then
-    Result:='.ppw';
 end;
 
 function TCodeToolManager.FindUnitInUnitLinks(const Directory, AUnitName: string
@@ -4781,8 +4768,6 @@ function TCodeToolManager.DoOnGetSrcPathForCompiledUnit(Sender: TObject;
 begin
   if CompareFileExt(AFilename,'.ppu',false)=0 then
     Result:=GetPPUSrcPathForDirectory(ExtractFilePath(AFilename))
-  else if CompareFileExt(AFilename,'.ppw',false)=0 then
-    Result:=GetPPWSrcPathForDirectory(ExtractFilePath(AFilename))
   else if CompareFileExt(AFilename,'.dcu',false)=0 then
     Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename));
   if Result='' then

@@ -34,7 +34,7 @@
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
-    - ppu, ppw, dcu files
+    - ppu, dcu files
     - many things, search for 'ToDo'
 }
 unit FindDeclarationTool;
@@ -2212,7 +2212,7 @@ begin
     ctnProcedure,ctnProcedureHead:
       begin
 
-        // ToDo: ppu, ppw, dcu files
+        // ToDo: ppu, dcu files
 
         Result:=Result+NewTool.ExtractProcHead(NewNode,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
@@ -2225,7 +2225,7 @@ begin
       begin
         IdentNode:=NewNode;
 
-        // ToDo: ppu, ppw, dcu files
+        // ToDo: ppu, dcu files
 
         NewTool.MoveCursorToNodeStart(IdentNode);
         NewTool.ReadNextAtom;
@@ -2246,7 +2246,7 @@ begin
       begin
         IdentNode:=NewNode;
 
-        // ToDo: ppu, ppw, dcu files
+        // ToDo: ppu, dcu files
 
         NewTool.MoveCursorToNodeStart(IdentNode);
         Result:=Result+'property ';
@@ -3693,7 +3693,7 @@ begin
     if (Result.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
       if (Result.Tool<>nil) and (Params.Identifier<>nil) then begin
 
-        // ToDo ppu, ppw, dcu
+        // ToDo ppu, dcu
 
         if (not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)) then
           RaiseInternalError;
@@ -4845,7 +4845,7 @@ begin
       Params.SetResult(ClassContext);
       // parse class and return class node
 
-      // ToDo: do no JIT parsing for PPU, PPW, DCU files
+      // ToDo: do no JIT parsing for PPU, DCU files
 
       ClassContext.Tool.BuildSubTreeForClass(ClassContext.Node);
     end;
@@ -4872,7 +4872,7 @@ begin
       +' invalid classnode');
   Result:=false;
   
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   // search the ancestor name
   BuildSubTreeForClass(ClassNode);
@@ -5708,7 +5708,7 @@ begin
   );
   {$ENDIF}
 
-  // ToDo: build codetree for ppu, ppw, dcu files
+  // ToDo: build codetree for ppu, dcu files
 
   // build tree for pascal source
   if not BuildInterfaceIdentifierCache(true) then exit(false);
@@ -7106,7 +7106,7 @@ begin
     begin
       // range type -> convert to special expression type
 
-      // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, dcu files
 
       MoveCursorToNodeStart(Node);
 
@@ -7123,7 +7123,7 @@ begin
     begin
       // const -> convert to special expression type
 
-      // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, dcu files
 
       MoveCursorToNodeStart(Node);
 
@@ -7145,7 +7145,7 @@ begin
   ctnIdentifier:
     begin
 
-      // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, dcu files
 
       MoveCursorToNodeStart(Node);
       ReadNextAtom;
@@ -7155,7 +7155,7 @@ begin
   ctnProperty,ctnGlobalProperty:
     begin
 
-      // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, dcu files
 
       ExtractPropType(Node,false,true);
       if CurPos.Flag<>cafEdgedBracketOpen then
@@ -7165,7 +7165,7 @@ begin
   ctnConstant:
     begin
 
-      // ToDo: ppu, ppw, dcu files
+      // ToDo: ppu, dcu files
 
       MoveCursorToNodeStart(Node);
       Params.Save(OldInput);
@@ -8080,7 +8080,7 @@ begin
 
         // ToDo: check if enums of expression fits into enums of target
 
-        // ToDo: ppu, ppw, dcu
+        // ToDo: ppu, dcu
 
         Result:=tcCompatible;
       end else
@@ -9910,7 +9910,7 @@ begin
           end;
         end;
 
-        // ToDo: PPU, PPW, DCU
+        // ToDo: PPU, DCU
 
         case FindContext.Node.Desc of
 

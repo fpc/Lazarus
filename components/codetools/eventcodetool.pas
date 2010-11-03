@@ -1006,7 +1006,7 @@ begin
     {$ENDIF}
     if ParamCompatibility=tcExact then begin
 
-      // ToDo: ppu, ppw, dcu
+      // ToDo: ppu, dcu
 
       ProcName:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
       if fGatheredCompatibleMethods.Find(ProcName)=nil then begin

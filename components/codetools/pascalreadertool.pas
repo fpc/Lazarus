@@ -998,7 +998,7 @@ function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
   ProcSpec: TProcedureSpecifier): boolean;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=MoveCursorToProcSpecifier(ProcNode,ProcSpec);
 end;
@@ -1007,7 +1007,7 @@ function TPascalReaderTool.GetProcNameIdentifier(ProcNode: TCodeTreeNode
   ): PChar;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=nil;
   if ProcNode=nil then exit;
@@ -1158,7 +1158,7 @@ end;
 function TPascalReaderTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode
   ): PChar;
 begin
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=nil;
   if PropNode=nil then exit;
@@ -1170,7 +1170,7 @@ function TPascalReaderTool.GetPropertyTypeIdentifier(PropNode: TCodeTreeNode
   ): PChar;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=nil;
   if PropNode=nil then exit;
@@ -1686,7 +1686,7 @@ begin
   if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
   and (ProcNode.FirstChild<>nil) then begin
 
-    // ToDo: ppu, ppw, dcu
+    // ToDo: ppu, dcu
 
     MoveCursorToNodeStart(ProcNode.FirstChild); // ctnProcedureHead
     ReadNextAtom;
@@ -2058,7 +2058,7 @@ function TPascalReaderTool.PropertyNodeHasParamList(PropNode: TCodeTreeNode
   ): boolean;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=false;
   if not MoveCursorToPropName(PropNode) then exit;
@@ -2070,7 +2070,7 @@ function TPascalReaderTool.PropNodeIsTypeLess(PropNode: TCodeTreeNode
   ): boolean;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=false;
   if not MoveCursorToPropName(PropNode) then exit;
@@ -2086,7 +2086,7 @@ function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
   const s: string; ExceptionOnNotFound: boolean): boolean;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=false;
   if not MoveCursorToPropName(PropNode) then exit;
@@ -2138,7 +2138,7 @@ function TPascalReaderTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode
   ): boolean;
 begin
 
-  // ToDo: ppu, ppw, dcu
+  // ToDo: ppu, dcu
 
   Result:=false;
   if ProcNode.Desc=ctnProcedure then

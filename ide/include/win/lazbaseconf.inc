@@ -93,10 +93,7 @@ end;
 
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
-  if (FPCVersion=1) and (FPCRelease=0) then
-    Result:='.ppw'
-  else
-    Result:='.ppu';
+  Result:='.ppu';
 end;
 
 function OSLocksExecutables: boolean;

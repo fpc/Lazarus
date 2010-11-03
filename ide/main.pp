@@ -13067,7 +13067,7 @@ end;
     Flags: TFindSourceFlags): string;
 
   AFilename can be an absolute or relative filename, of a source file or a
-  compiled unit (.ppu, .ppw).
+  compiled unit (.ppu).
   Find the source filename (pascal source or include file) and returns
   the absolute path.
 

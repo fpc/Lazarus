@@ -374,7 +374,7 @@ type
 
 const
   DefPublProjIncFilter = '*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)';
-  DefPublProjExcFilter = '*.(bak|ppu|ppw|o|so);*~;backup';
+  DefPublProjExcFilter = '*.(bak|ppu|o|so);*~;backup';
 
 
 implementation
