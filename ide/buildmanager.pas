@@ -1823,8 +1823,8 @@ begin
   OldTargetOS:=GetTargetOS(true);
   OldTargetCPU:=GetTargetCPU(true);
   OldLCLWidgetType:=GetLCLWidgetType(true);
-  OverrideTargetOS:=lowercase(TargetOS);
-  OverrideTargetCPU:=lowercase(TargetCPU);
+  OverrideTargetOS:=GetFPCTargetOS(TargetOS);
+  OverrideTargetCPU:=GetFPCTargetCPU(TargetCPU);
   OverrideLCLWidgetType:=lowercase(LCLWidgetType);
   NewTargetOS:=GetTargetOS(false);
   NewTargetCPU:=GetTargetCPU(false);
