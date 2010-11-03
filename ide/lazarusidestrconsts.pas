@@ -2780,11 +2780,11 @@ resourcestring
   lisLazBuildLCLInterface = 'Widgetset';
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With packages';
-  lisLazBuildRestartAfterBuild = 'Restart after building the IDE';
+  lisLazBuildRestartAfterBuild = 'Restart after building IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildAdvanced = 'Build Advanced';
   lisLazBuildCommonSettings = 'Common Settings';
-  lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
+  lisLazBuildConfirmBuild = 'Confirm before build';
   lisLazBuildOk = 'Ok';
   lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';
