@@ -46,7 +46,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  InterfaceBase, Themes, ComCtrls, CheckLst,
+  InterfaceBase, Themes, ComCtrls, CheckLst, Menus,
   DefineTemplates, Laz_XMLCfg, DividerBevel,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
@@ -81,6 +81,7 @@ type
     CompileAdvancedButton: TBitBtn;
     ConfirmBuildCheckBox: TCheckBox;
     DefinesLabel: TLabel;
+    ShowOptsMenuItem: TMenuItem;
     OptionsMemo: TMemo;
     DetailsPanel: TPanel;
     CommonsDividerBevel: TDividerBevel;
@@ -91,6 +92,7 @@ type
     LCLInterfaceRadioGroup: TRadioGroup;
     OptionsLabel: TLabel;
     DetailSettingPanel: TPanel;
+    OptionsPopupMenu: TPopupMenu;
     RestartAfterBuildCheckBox: TCheckBox;
     Panel2: TPanel;
     SaveSettingsButton: TBitBtn;
@@ -121,6 +123,7 @@ type
     procedure MakeModeListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MakeModeListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure ShowOptsMenuItemClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
@@ -964,6 +967,12 @@ begin
     if (i<0) or (i>=Profiles.MakeModeDefs.Count) then exit;
     HintStr:=MakeModeNames[MakeMode];
   end;
+end;
+
+procedure TConfigureBuildLazarusDlg.ShowOptsMenuItemClick(Sender: TObject);
+begin
+  CopyUIToProfile(Profiles.Current);
+  ShowMessage(fProfiles.Current.ExtraOptions);
 end;
 
 procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
