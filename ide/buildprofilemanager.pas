@@ -540,7 +540,7 @@ end;
 
 procedure TBuildLazarusProfile.SetExtraOptions(const AValue: string);
 begin
-  raise Exception.Create('SetExtraOptions should not be called.');
+  fOptions.Text:=AValue;
 end;
 
 
