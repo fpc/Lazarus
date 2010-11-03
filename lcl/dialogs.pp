@@ -113,7 +113,6 @@ type
     FFilterIndex: Integer;
     FHistoryList: TStrings;
     FInitialDir: string;
-    FOldWorkingDir: string;
     FOnHelpClicked: TNotifyEvent;
     FOnTypeChange: TNotifyEvent;
     procedure SetDefaultExt(const AValue: string);

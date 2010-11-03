@@ -56,13 +56,7 @@ end;
 {------------------------------------------------------------------------------}
 function TFileDialog.Execute : boolean;
 begin
-  FOldWorkingDir:=GetCurrentDirUTF8;
-  if FInitialDir<>'' then SetCurrentDirUTF8(FInitialDir);
-  try
-    Result:=inherited Execute;
-  finally
-    SetCurrentDirUTF8(FOldWorkingDir);
-  end;
+  Result:=inherited Execute;
 end;
 
 {------------------------------------------------------------------------------

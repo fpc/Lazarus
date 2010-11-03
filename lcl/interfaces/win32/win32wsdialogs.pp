@@ -723,11 +723,15 @@ end;
 class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   State: TApplicationState;
+  lOldWorkingDir, lInitialDir: string;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
     State := SaveApplicationState;
+    lOldWorkingDir:=GetCurrentDirUTF8;
     try
+      lInitialDir := TOpenDialog(ACommonDialog).InitialDir;
+      if lInitialDir <>'' then SetCurrentDirUTF8(lInitialDir);
     {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         ProcessFileDialogResult(TOpenDialog(ACommonDialog),
@@ -740,6 +744,7 @@ begin
         GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
     {$endif}
     finally
+      SetCurrentDirUTF8(lOldWorkingDir);
       RestoreApplicationState(State);
     end;
   end;
@@ -750,11 +755,15 @@ end;
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   State: TApplicationState;
+  lOldWorkingDir, lInitialDir: string;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
     State := SaveApplicationState;
+    lOldWorkingDir:=GetCurrentDirUTF8;
     try
+      lInitialDir := TSaveDialog(ACommonDialog).InitialDir;
+      if lInitialDir <>'' then SetCurrentDirUTF8(lInitialDir);
     {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         ProcessFileDialogResult(TOpenDialog(ACommonDialog),
@@ -767,6 +776,7 @@ begin
         GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
     {$endif}
     finally
+      SetCurrentDirUTF8(lOldWorkingDir);
       RestoreApplicationState(State);
     end;
   end;
