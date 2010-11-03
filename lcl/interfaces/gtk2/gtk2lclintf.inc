@@ -1,4 +1,4 @@
-{%MainUnit gtk2int.pp}
+{%MainUnit gtk2int.pas}
 { $Id$ }
 {******************************************************************************
                  All GTK2 interface communication implementations.
@@ -906,7 +906,7 @@ var
       idButtonClose    : Result := GTK_RESPONSE_CLOSE;
       idButtonAbort    : Result := GTK_RESPONSE_CANCEL;
       idButtonRetry    : Result := GTK_RESPONSE_ACCEPT;
-      idButtonIgnore   : Result := GTK_RESPONSE_CLOSE;
+      idButtonIgnore   : Result := GTK_RESPONSE_CANCEL;
       idButtonNoToAll  : Result := GTK_RESPONSE_APPLY;
       idButtonYesToAll : Result := GTK_RESPONSE_REJECT;
     end;
@@ -954,7 +954,7 @@ begin
         idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
         idButtonAbort    : CreateButton('gtk-stop', GTK_RESPONSE_REJECT);
         idButtonRetry    : CreateButton('gtk-refresh', GTK_RESPONSE_ACCEPT);
-        idButtonIgnore   : CreateButton('gtk-remove', GTK_RESPONSE_CLOSE);
+        idButtonIgnore   : CreateButton('gtk-cancel', GTK_RESPONSE_CLOSE);
         idButtonNoToAll  : CreateButton('gtk-no', GTK_RESPONSE_REJECT);
         idButtonYesToAll : CreateButton('gtk-apply', GTK_RESPONSE_APPLY);
       end;
