@@ -15,7 +15,9 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math;
+  Math,
+  // fpimage
+  fpcanvas, fpimgcanv, fpimage;
 
 type
 
@@ -142,6 +144,52 @@ type
     property ImageBtnDown;
     property ImageBtnFocused;
     property Options;
+  end;
+
+  TCDDrawStyle = (dsWinCE, dsCustom);
+
+  {@@
+    TCDGroupBox is a custom-drawn group box control
+  }
+
+  TCDGroupBoxDrawer = class;
+  TCDGroupBoxDrawerWinCE = class;
+
+  { TCDGroupBox }
+
+  TCDGroupBox = class(TCustomControl)
+  private
+    FDrawStyle: TCDDrawStyle;
+    FCurrentDrawer: TCDGroupBoxDrawer;
+    FDrawerWinCE: TCDGroupBoxDrawerWinCE;
+    procedure PrepareCurrentDrawer();
+    procedure SetDrawStyle(const AValue: TCDDrawStyle);
+  public
+    CustomDrawer: TCDGroupBoxDrawer; // Fill the field to use the dsCustom draw mode
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
+    property Caption;
+    property TabStop default False;
+  end;
+
+  { TCDGroupBoxDrawer }
+
+  TCDGroupBoxDrawer = class
+  public
+    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); virtual; abstract;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
+  end;
+
+  { TCDGroupBoxDrawerWinCE }
+
+  TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
+  public
+    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
   end;
 
   {@@
@@ -403,6 +451,90 @@ begin
   else
     Result := FImageBtn.Bitmap;
   end;
+end;
+
+{ TCDGroupBox }
+
+procedure TCDGroupBox.PrepareCurrentDrawer();
+begin
+  case DrawStyle of
+   dsWince:  FCurrentDrawer := FDrawerWinCE;
+   dsCustom: FCurrentDrawer := CustomDrawer;
+  end;
+end;
+
+procedure TCDGroupBox.SetDrawStyle(const AValue: TCDDrawStyle);
+begin
+  if FDrawStyle=AValue then exit;
+  FDrawStyle:=AValue;
+
+  Invalidate;
+
+  PrepareCurrentDrawer();
+  FCurrentDrawer.SetClientRectPos(Self);
+end;
+
+constructor TCDGroupBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  TabStop := False;
+
+  FDrawerWinCE := TCDGroupBoxDrawerWinCE.Create;
+end;
+
+destructor TCDGroupBox.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCDGroupBox.EraseBackground(DC: HDC);
+begin
+
+end;
+
+procedure TCDGroupBox.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
+begin
+//  inherited Paint;
+
+  PrepareCurrentDrawer();
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.create(AImage);
+    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
+    ABmp.LoadFromIntfImage(AImage);
+  finally
+    if lCanvas <> nil then lCanvas.Free;
+    if AImage <> nil then AImage.Free;
+    ABmp.Free;
+  end;
+end;
+
+{ TCDGroupBoxDrawerWinCE }
+
+procedure TCDGroupBoxDrawerWinCE.SetClientRectPos(CDGroupBox: TCDGroupBox);
+var
+  lRect: TRect;
+  lCaptionHeight: Integer;
+begin
+  lCaptionHeight := 10;
+  lRect := Rect(1, lCaptionHeight, CDGroupBox.Width - 1, CDGroupBox.Height - 1);
+  CDGroupBox.AdjustClientRect(lRect);
+end;
+
+procedure TCDGroupBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDGroupBox: TCDGroupBox);
+begin
+  ADest.Brush.FPColor := colRed;
+  ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.height);
 end;
 
 { TCDTrackBar }
