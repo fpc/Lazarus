@@ -175,6 +175,7 @@ function TConvDelphiCodeTool.Convert(aIsConsoleApp: boolean): TModalResult;
 // add {$mode delphi} directive
 // remove {$R *.dfm} or {$R *.xfm} directive
 // Change {$R *.RES} to {$R *.res} if needed
+// Add, remove, rename and comment out used unit names.
 // TODO: fix delphi ambiguouties like incomplete proc implementation headers
 begin
   Result:=mrCancel;
@@ -229,7 +230,8 @@ begin
 end;
 
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
-// add, remove and rename units for desired target.
+// Add unit names into conditional blocks for Delphi and Lazarus targets. If the name
+// would otherwise be deleted or commented out, now it is added to Delphi block.
 var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
