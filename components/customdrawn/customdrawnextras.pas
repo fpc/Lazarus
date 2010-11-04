@@ -534,8 +534,20 @@ end;
 procedure TCDGroupBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDGroupBox: TCDGroupBox);
 begin
-  ADest.Brush.FPColor := colRed;
+  // Background
+  ADest.Brush.FPColor := colGray;
+  ADest.Brush.Style:=bsSolid;
+  ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.height);
+
+  // frame
+  ADest.Pen.FPColor := colBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style:=bsClear;
+  ADest.Rectangle(0, 5, CDGroupBox.Width - 1, CDGroupBox.height - 1);
+
+  // Caption background and caption
+
 end;
 
 { TCDTrackBar }
