@@ -952,11 +952,11 @@ begin
         idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
         idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
         idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
-        idButtonAbort    : CreateButton('gtk-stop', GTK_RESPONSE_REJECT);
-        idButtonRetry    : CreateButton('gtk-refresh', GTK_RESPONSE_ACCEPT);
-        idButtonIgnore   : CreateButton('gtk-cancel', GTK_RESPONSE_CLOSE);
-        idButtonNoToAll  : CreateButton('gtk-no', GTK_RESPONSE_REJECT);
-        idButtonYesToAll : CreateButton('gtk-apply', GTK_RESPONSE_APPLY);
+        idButtonAbort    : CreateButton(PGChar(rsMBAbort), GTK_RESPONSE_REJECT);
+        idButtonRetry    : CreateButton(PGChar(rsMBRetry), GTK_RESPONSE_ACCEPT);
+        idButtonIgnore   : CreateButton(PGChar(rsMBIgnore), GTK_RESPONSE_CLOSE);
+        idButtonNoToAll  : CreateButton(PGChar(rsMBNoToAll), GTK_RESPONSE_REJECT);
+        idButtonYesToAll : CreateButton(PGChar(rsMBYesToAll), GTK_RESPONSE_APPLY);
       end;
     end;
   end;
@@ -972,22 +972,6 @@ begin
       if GTK_IS_BUTTON(ChildList^.Data) then
       begin
         Btn := PGtkButton(ChildList^.Data);
-        {if we set new labels, stock id is lost (no image on button)
-        so gtk_button_set_image() is needed in that case.
-        case Buttons[BtnIdx] of
-          idButtonOK       : gtk_button_set_label(Btn, PGChar(rsMBOK));
-          idButtonCancel   : gtk_button_set_label(Btn, PGChar(rsMBCancel));
-          idButtonHelp     : gtk_button_set_label(Btn, PGChar(rsMBHelp));
-          idButtonYes      : gtk_button_set_label(Btn, PGChar(rsMBYes));
-          idButtonNo       : gtk_button_set_label(Btn, PGChar(rsMBNo));
-          idButtonClose    : gtk_button_set_label(Btn, PGChar(rsMBClose));
-          idButtonAbort    : gtk_button_set_label(Btn, PGChar(rsMBAbort));
-          idButtonRetry    : gtk_button_set_label(Btn, PGChar(rsMBRetry));
-          idButtonIgnore   : gtk_button_set_label(Btn, PGChar(rsMBIgnore));
-          idButtonNoToAll  : gtk_button_set_label(Btn, PGChar(rsMBNoToAll));
-          idButtonYesToAll : gtk_button_set_label(Btn, PGChar(rsMBYesToAll));
-        end;
-        }
 
         if Buttons[BtnIdx] = idButtonCancel then
            gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
