@@ -164,6 +164,7 @@ type
     fRestartAfterBuild: boolean;
     fConfirmBuild: boolean;
     fAllDefines: TStringList;
+    fSelected: TStringList;
     fStaticAutoInstallPackages: TStringList;
     fCurrentIndex: integer;
     function GetCurrentIdeMode: TMakeMode;
@@ -186,6 +187,7 @@ type
     property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
     property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
     property AllDefines: TStringList read fAllDefines;
+    property Selected: TStringList read fSelected;
     property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
     property CurrentIndex: integer read fCurrentIndex write fCurrentIndex;
     property Current: TBuildLazarusProfile read GetCurrentProfile;
@@ -554,6 +556,7 @@ begin
   fRestartAfterBuild:=True;
   fConfirmBuild:=True;
   fAllDefines:=TStringList.Create;
+  fSelected:=TStringList.Create;
   fStaticAutoInstallPackages:=TStringList.Create;
 end;
 
@@ -564,12 +567,14 @@ begin
   inherited Destroy;
   // Clear is called by inherited Destroy. Must be freed later.
   fStaticAutoInstallPackages.Free;
+  fSelected.Free;
   fAllDefines.Free;
 end;
 
 procedure TBuildLazarusProfiles.Clear;
 begin
   fAllDefines.Clear;
+  fSelected.Clear;
   fStaticAutoInstallPackages.Clear;
   inherited Clear;
 end;
@@ -586,6 +591,7 @@ begin
   RestartAfterBuild :=Source.RestartAfterBuild;
   ConfirmBuild:=Source.ConfirmBuild;
   fAllDefines.Assign(Source.fAllDefines);
+  fSelected.Assign(Source.fSelected);
   fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
   fCurrentIndex:=Source.fCurrentIndex;
   for i:=0 to Source.Count-1 do begin
@@ -738,8 +744,9 @@ begin
       ProfInd:=0;
     end;
   end;
-  // Load auto install packages.
+  // Load defines, selected profiles and auto install packages.
   LoadStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
+  LoadStringList(XMLConfig,fSelected,Path+'SelectedProfiles/');
   LoadStringList(XMLConfig,fStaticAutoInstallPackages,Path+'StaticAutoInstallPackages/');
   // Defines to test.
   if fAllDefines.Count = 0 then begin
@@ -767,8 +774,9 @@ begin
   // Other global build values.
   XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
   XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
-  // Save auto install packages
+  // Save defines, selected profiles and auto install packages.
   SaveStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
+  SaveStringList(XMLConfig,fSelected,Path+'SelectedProfiles/');
   SaveStringList(XMLConfig,fStaticAutoInstallPackages,Path+'StaticAutoInstallPackages/');
 end;
 

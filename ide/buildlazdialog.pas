@@ -54,7 +54,8 @@ uses
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
   {$ENDIF}
-  ApplicationBundle, CompilerOptions, BuildProfileManager, GenericListEditor;
+  ApplicationBundle, CompilerOptions, BuildProfileManager,
+  GenericListEditor, GenericCheckList;
 
 type
 
@@ -198,9 +199,8 @@ begin
   try
     ConfigBuildLazDlg.Profiles.Assign(AProfiles); // Copy profiles to dialog.
     Result := ConfigBuildLazDlg.ShowModal;
-    if Result in [mrOk,mrYes,mrAll] then begin
+    if Result in [mrOk,mrYes,mrAll] then
       AProfiles.Assign(ConfigBuildLazDlg.Profiles); // Copy profiles back from dialog.
-    end;
   finally
     ConfigBuildLazDlg.Free;
   end;
@@ -778,8 +778,8 @@ begin
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
-  CompileButton.Caption := lisMenuBuild;
-  CompileAdvancedButton.Caption := lisLazBuildAdvanced;
+  CompileButton.Caption := lisLazBuildBuild;
+  CompileAdvancedButton.Caption := lisLazBuildBuildAdvanced;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   HelpButton.Caption := lisMenuHelp;
@@ -1043,6 +1043,7 @@ var
   i: Integer;
 begin
   // List of defines to checklistbox.
+  DefinesListBox.Items.Clear;
   for i:=0 to fProfiles.AllDefines.Count-1 do
     DefinesListBox.Items.Add(fProfiles.AllDefines[i]);
   // Update the Profiles ComboBox.
@@ -1105,9 +1106,33 @@ begin
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
+var
+  EditForm: TGenericCheckListForm;
+  i, ind: Integer;
 begin
   PrepareClose;
-  ModalResult:=mrAll;
+  EditForm:=TGenericCheckListForm.Create(Nil);
+  try
+    EditForm.Caption:='Select Profiles to Build';
+    // Copy profile names to checkboxlist and check the previously selected ones.
+    for i:=0 to fProfiles.Count-1 do begin
+      ind:=EditForm.CheckListBox1.Items.Add(fProfiles[i].Name);
+      if fProfiles.Selected.IndexOf(fProfiles[i].Name)>-1 then
+        EditForm.CheckListBox1.Checked[ind]:=True;
+    end;
+    // Show the form.
+    if EditForm.ShowModal=mrOK then begin
+      // Copy checked profile names to Selected.
+      fProfiles.Selected.Clear;
+      for i:=0 to fProfiles.Count-1 do begin      // fProfiles and CheckListBox1
+        if EditForm.CheckListBox1.Checked[i] then // indexes match now.
+          fProfiles.Selected.Add(fProfiles[i].Name);
+      end;
+      ModalResult:=mrAll;
+    end;
+  finally
+    EditForm.Free;
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);

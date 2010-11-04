@@ -4248,10 +4248,8 @@ begin
   DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
-    if DlgResult=mrAll then begin
-      ShowMessage('Will let you build many profiles at one go. Under construction...');
-//      DoBuildLazarusAll(xxx);
-    end
+    if DlgResult=mrAll then
+      DoBuildLazarusAll(MiscellaneousOptions.BuildLazProfiles.Selected)
     else if DlgResult=mrYes then begin
       LazSrcTemplate:=
         CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);

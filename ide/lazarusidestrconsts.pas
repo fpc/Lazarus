@@ -2782,7 +2782,6 @@ resourcestring
   lisLazBuildWithStaticPackages = 'With packages';
   lisLazBuildRestartAfterBuild = 'Restart after building IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
-  lisLazBuildAdvanced = 'Build Advanced';
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before build';
   lisLazBuildOk = 'Ok';
@@ -2798,6 +2797,7 @@ resourcestring
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
+  lisLazBuildBuildAdvanced = 'Build Advanced';
   lisLazBuildCleanBuild = 'Clean+Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='Build Profile';
