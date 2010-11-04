@@ -499,7 +499,7 @@ var
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-//  inherited Paint;
+  inherited Paint;
 
   PrepareCurrentDrawer();
 
@@ -511,6 +511,7 @@ begin
     lCanvas := TFPImageCanvas.create(AImage);
     FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
     ABmp.LoadFromIntfImage(AImage);
+    Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then lCanvas.Free;
     if AImage <> nil then AImage.Free;
