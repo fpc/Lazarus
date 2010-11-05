@@ -3539,14 +3539,11 @@ resourcestring
     +'old package %s?';
   lisPkgMangNewPackage = 'NewPackage';
   lisProbablyYouNeedToInstallSomePackagesForBeforeConti = 'Probably you need '
-    +'to install some packages for before continuing.%s%sWarning:%sThe '
-    +'following units belong to packages '
-    +'which are not yet installed in the IDE. If you try to open a form in '
-    +'the IDE, that uses such components, you will get errors about missing '
-    +'components and the form loading will probably create very unpleasant '
-    +'results.%s%sThis has no impact on opening the project or any of its '
-    +'sources.%s%sIt only means: It is a bad idea to open the forms for '
-    +'designing, before installing the missing packages.%s%s';
+    +'to install some packages before continuing.%s%sWarning:%sThe '
+    +'project uses the following design time packages, which might be needed '
+    +'to open the form in the designer. If you continue, you might get errors '
+    +'about missing components and the form loading will probably create very '
+    +'unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s';
   lisPackageNeedsInstallation = 'Package needs installation';
   lisUnitInPackage = '%s unit %s in package %s%s';
   lisPkgMangSkipThisPackage = 'Skip this package';

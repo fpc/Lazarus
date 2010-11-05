@@ -981,12 +981,13 @@ function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
   a caption. The default captions will be used.
 
   Examples for Buttons:
-    [mrOk,mrCancel,'Cancel now',mrIgnore,300,'Do it']
+    [mrOk,mrCancel,'Cancel now',mrIgnore,300,'Do it','IsDefault']
     This will result in 4 buttons:
       'Ok' returning mrOk
       'Cancel now' returning mrCancel
       'Ignore' returning mrIgnore
-      'Do it' returning 300
+      'Do it' returning 300. This will be the default button (focused)
+
 }
 var
   QuestionDialog: TQuestionDlg;

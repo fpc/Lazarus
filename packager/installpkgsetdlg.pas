@@ -46,7 +46,7 @@ uses
 
 type
   TOnCheckInstallPackageList =
-                          procedure(PkgIDs: TFPList; var Ok: boolean) of object;
+                          procedure(PkgIDs: TFPList; out Ok: boolean) of object;
 
   { TInstallPkgSetDialog }
 
@@ -472,7 +472,6 @@ end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
 begin
-  Result := False;
   OnCheckInstallPackageList(FNewInstalledPackages,Result);
 end;
 
