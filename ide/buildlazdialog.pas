@@ -72,38 +72,38 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    CleanAllCheckBox: TCheckBox;
+    CommonsDividerBevel: TDividerBevel;
+    ConfirmBuildCheckBox: TCheckBox;
     DefinesButton: TButton;
+    DefinesLabel: TLabel;
+    DefinesListBox: TCheckListBox;
     CancelButton: TBitBtn;
     CBLDBtnPanel: TPanel;
-    DefinesListBox: TCheckListBox;
-    CleanAllCheckBox: TCheckBox;
     BuildProfileComboBox: TComboBox;
     CompileButton: TBitBtn;
     CompileAdvancedButton: TBitBtn;
-    ConfirmBuildCheckBox: TCheckBox;
-    DefinesLabel: TLabel;
-    ShowOptsMenuItem: TMenuItem;
+    LCLWidgetTypeLabel: TLabel;
+    LCLWidgetTypeComboBox: TComboBox;
+    OptionsLabel: TLabel;
     OptionsMemo: TMemo;
+    RestartAfterBuildCheckBox: TCheckBox;
+    ShowOptsMenuItem: TMenuItem;
     DetailsPanel: TPanel;
-    CommonsDividerBevel: TDividerBevel;
     HelpButton: TBitBtn;
     BuildProfileLabel: TLabel;
     MakeModeListBox: TListBox;
     MakeModeListHeader: THeaderControl;
-    LCLInterfaceRadioGroup: TRadioGroup;
-    OptionsLabel: TLabel;
-    DetailSettingPanel: TPanel;
     OptionsPopupMenu: TPopupMenu;
-    RestartAfterBuildCheckBox: TCheckBox;
     Panel2: TPanel;
     SaveSettingsButton: TBitBtn;
-    TargetCPUComboBox: TComboBox;
     BuildProfileButton: TButton;
-    TargetOSComboBox: TComboBox;
+    TargetCPUComboBox: TComboBox;
     TargetCPULabel: TLabel;
     TargetDirectoryButton: TButton;
     TargetDirectoryComboBox: TComboBox;
     TargetDirectoryLabel: TLabel;
+    TargetOSComboBox: TComboBox;
     TargetOSLabel: TLabel;
     UpdateRevisionIncCheckBox: TCheckBox;
     WithStaticPackagesCheckBox: TCheckBox;
@@ -759,10 +759,10 @@ begin
     Text := lisLazBuildABOAction;
   end;
 
-  // Show Build target names in radiogroup.
-  LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
-  for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
-    LCLInterfaceRadioGroup.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
+  // Show Build target names in combobox.
+  LCLWidgetTypeLabel.Caption := lisLCLWidgetType;
+  for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do
+    LCLWidgetTypeComboBox.Items.Add(LCLPlatformDisplayNames[LCLInterface]);
 
   BuildProfileLabel.Caption:=lisLazBuildProfile;
   OptionsLabel.Caption := lisLazBuildOptions;
@@ -1009,7 +1009,7 @@ var
   i: Integer;
 begin
   CleanAllCheckBox.Checked          :=AProfile.CleanAll;
-  LCLInterfaceRadioGroup.ItemIndex  :=ord(AProfile.TargetPlatform);
+  LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
   WithStaticPackagesCheckBox.Checked:=AProfile.WithStaticPackages;
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
   TargetOSComboBox.Text             :=AProfile.TargetOS;
@@ -1025,7 +1025,7 @@ var
   i: Integer;
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
-  AProfile.TargetPlatform    :=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
+  AProfile.TargetPlatform    :=TLCLPlatform(LCLWidgetTypeComboBox.ItemIndex);
   AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;

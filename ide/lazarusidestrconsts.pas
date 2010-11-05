@@ -2777,7 +2777,6 @@ resourcestring
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildTargetCPU = 'Target CPU:';
   lisLazBuildTargetDirectory = 'Target directory:';
-  lisLazBuildLCLInterface = 'Widgetset';
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With packages';
   lisLazBuildRestartAfterBuild = 'Restart after building IDE';
