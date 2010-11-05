@@ -1204,44 +1204,42 @@ begin
     X := Left;
     Y := Top;
 
-    p:=Position;
+    p := Position;
     if (Position = poMainFormCenter) and (Application.Mainform=nil) then
-      p:=poScreenCenter;
+      p := poScreenCenter;
     case P of
-    poDesktopCenter :
-      begin
-        X := (Screen.DesktopWidth - Width) div 2;
-        Y := (Screen.DesktopHeight - Height) div 2;
-      end;
-    poScreenCenter :
-      begin
-        X := (Screen.Width - Width) div 2;
-        Y := (Screen.Height - Height) div 2;
-      end;
-    poMainFormCenter :
-      if (Self <> Application.MainForm) then
-      begin
-        if FormStyle = fsMDIChild then
+      poDesktopCenter :
         begin
-          X := (Application.Mainform.ClientWidth - Width) div 2;
-          Y := (Application.Mainform.ClientHeight - Height) div 2;
-        end else begin
-          X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
-          Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+          X := (Screen.DesktopWidth - Width) div 2;
+          Y := (Screen.DesktopHeight - Height) div 2;
         end;
-      end;
-    poOwnerFormCenter :
-      if (Owner is TCustomForm) then
-      begin
-        X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-        Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
-      end;
+      poScreenCenter :
+        begin
+          X := (Screen.Width - Width) div 2;
+          Y := (Screen.Height - Height) div 2;
+        end;
+      poMainFormCenter :
+        if (Self <> Application.MainForm) then
+        begin
+          if FormStyle = fsMDIChild then
+          begin
+            X := (Application.Mainform.ClientWidth - Width) div 2;
+            Y := (Application.Mainform.ClientHeight - Height) div 2;
+          end else begin
+            X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
+            Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+          end;
+        end;
+      poOwnerFormCenter :
+        if (Owner is TCustomForm) then
+        begin
+          X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
+          Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
+        end;
     end;
-    if (p in [poDefault,poDefaultPosOnly]) and HandleAllocated
-    then begin
-      // get current widgetset position
+    // get current widgetset position
+    if (p in [poDefault, poDefaultPosOnly]) and HandleAllocated then
       GetWindowRelativePosition(Handle,X,Y);
-    end;
     if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
       MoveToDefaultMonitor(X, Y);
     SetBounds(X, Y, Width, Height);
@@ -2860,23 +2858,21 @@ end;
 
 procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
 begin
-  if Sender=nil then ;
   Restore;
 end;
 
-procedure TFormPropertyStorage.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TFormPropertyStorage.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Sender=nil then ;
   Save;
 end;
 
 constructor TFormPropertyStorage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if Owner is TCustomForm then begin
-    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow,true);
-    TCustomForm(Owner).AddHandlerClose(@FormClose,true);
+  if Owner is TCustomForm then
+  begin
+    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow, True);
+    TCustomForm(Owner).AddHandlerClose(@FormClose, True);
   end;
 end;
 
