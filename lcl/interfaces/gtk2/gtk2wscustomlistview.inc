@@ -1034,6 +1034,16 @@ var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
   ItemRect: TGdkRectangle;
+
+  BitImage: TBitmap;
+  GDIObj: PGDIObject;
+  pixbuf: PGDKPixBuf;
+  pixmap: PGdkDrawable;
+  bitmap: PGdkBitmap;
+  Width, Height: integer;
+  i: Integer;
+  ImgList: TImageList;
+
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
@@ -1051,7 +1061,72 @@ begin
     gtk_tree_path_free(Path);
 
     if ItemRect.height <> 0 then // item is visible
-      gtk_widget_queue_draw(MainView);
+    begin
+      ImgList := TImageList.Create(nil);
+      try
+        if (TListView(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
+          (TListView(ALV).SmallImages <> nil) then
+          ImgList.Assign(TListView(ALV).SmallImages)
+        else
+        if (TListView(ALV).ViewStyle = vsIcon) and
+          (TListView(ALV).LargeImages <> nil) then
+            ImgList.Assign(TListView(ALV).LargeImages);
+
+        if (ImgList.Count > 0) and (AImageIndex >= 0) then
+        begin
+          if (ImgList.Count <> Widgets^.Images.Count) then
+          begin
+            if (TListView(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) then
+              SetImageList(ALV, lvilSmall, TListView(ALV).SmallImages)
+            else
+              SetImageList(ALV, lvilLarge, TListView(ALV).LargeImages);
+            exit;
+          end;
+
+          if (Widgets^.Images <> nil) then
+          begin
+            for i := 0 to Widgets^.Images.Count-1 do
+              if i = AImageIndex then
+                gdk_pixbuf_unref(PGdkPixBuf(Widgets^.Images.Items[i]));
+
+            pixbuf := nil;
+            BitImage := TBitmap.Create;
+            try
+              ImgList.GetBitmap(AImageIndex, BitImage);
+              GDIObj := PGDIObject(BitImage.Handle);
+              case GDIObj^.GDIBitmapType of
+                gbBitmap:
+                  begin
+                    bitmap := GDIObj^.GDIBitmapObject;
+                    gdk_drawable_get_size(bitmap, @Width, @Height);
+                    pixbuf := CreatePixbufFromDrawable(bitmap, nil, False, 0, 0, 0, 0, Width, Height);
+                  end;
+                gbPixmap:
+                  begin
+                    pixmap := GDIObj^.GDIPixmapObject.Image;
+                    if pixmap <> nil then
+                    begin
+                      gdk_drawable_get_size(pixmap, @Width, @Height);
+                      bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
+                      pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+                    end;
+                  end;
+                gbPixbuf:
+                  begin
+                    pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
+                  end;
+              end;
+              Widgets^.Images.Items[AImageIndex] := pixbuf;
+            finally
+              BitImage.Free;
+            end;
+          end;
+        end;
+        gtk_widget_queue_draw(MainView);
+      finally
+        ImgList.Free;
+      end;
+    end;
   end;
 end;
 
@@ -1717,7 +1792,6 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
-
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   gtk_widget_queue_draw(Widgets^.MainView);
   if ((AList = lvilLarge) and (TLVHack(ALV).ViewStyle = vsIcon)) or
