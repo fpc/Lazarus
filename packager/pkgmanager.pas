@@ -2052,6 +2052,7 @@ begin
         end else if Result=mrYes then
         begin
           // install
+          AProject.AutoOpenDesignerFormsDisabled:=true;
           DoInstallPackages(PkgList,true,true,false);
           Result:=mrAbort;
         end else begin
