@@ -889,10 +889,15 @@ var
   X: Integer;
   MainList,ChildList: PGList;
   Title: String;
+  ActiveWindow: HWND;
 
   procedure CreateButton(const ALabel : PChar; const AResponse: Integer);
+  var
+    NewButton: PGtkWidget;
   begin
-    gtk_dialog_add_button(PGtkDialog(Dialog), ALabel, AResponse);
+    NewButton := gtk_dialog_add_button(PGtkDialog(Dialog),
+      Ampersands2Underscore(ALabel), AResponse);
+    gtk_button_set_use_underline(PGtkButton(NewButton), True);
   end;
 
   function ResponseID(const AnID: Integer): Integer;
@@ -932,6 +937,7 @@ begin
     if X = DefaultIndex then
       DefaultID := Buttons[X];
   end;
+
 
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
     PGChar(DialogMessage));
@@ -1012,6 +1018,11 @@ begin
     end;
     gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
   end;
+
+  ActiveWindow := GetActiveWindow;
+  if ActiveWindow <> 0 then
+    gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
   Result := ADialogResult;
