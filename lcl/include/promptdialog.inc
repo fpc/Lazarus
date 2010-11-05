@@ -783,12 +783,15 @@ constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
 var
   i: Integer;
   CurBtnValue: TModalResult;
-  CurBtnCaption: String;
+  CurBtnCaption, CurOptions: String;
   NewButton: TBitBtn;
   NewKind: TBitBtnKind;
   NewCaption: String;
   dlgId: LongInt;
   ok: Boolean;
+  DefaultBtn: TBitBtn;
+  HasOptions: Boolean;
+  IsDefault: Boolean;
 begin
   inherited Create(nil);
 
@@ -811,11 +814,12 @@ begin
 
   ok := false;
   try
+    DefaultBtn:=nil;
     i:=Low(Buttons);
     while i<=High(Buttons) do begin
       if Buttons[i].VType<>vtInteger then
-        RaiseGDBException('TQuestionDlg.CreateQuestionDlg integer expected at '
-          +IntToStr(i)+' but '+IntToStr(ord(Buttons[i].VType))+' found.');
+        raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
+          +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
       if Buttons[i].VType=vtInteger then begin
         // get TModalResult
         CurBtnValue:=Buttons[i].VInteger;
@@ -839,7 +843,37 @@ begin
           end;
           inc(i);
         end;
-        //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption);
+
+        // get options
+        CurOptions:='';
+        IsDefault:=false;
+        if (i<=High(Buttons)) then begin
+          //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
+          HasOptions:=true;
+          case Buttons[i].VType of
+          vtString: CurOptions:=Buttons[i].VString^;
+          vtAnsiString: CurOptions:=AnsiString(Buttons[i].VAnsiString);
+          vtChar: CurOptions:=Buttons[i].VChar;
+          vtPChar: CurOptions:=Buttons[i].VPChar;
+          vtPWideChar: CurOptions:=Buttons[i].VPWideChar;
+          vtWideChar: CurOptions:=Buttons[i].VWideChar;
+          vtWidestring: CurOptions:=WideString(Buttons[i].VWideString);
+          else
+            HasOptions:=false;
+          end;
+          if HasOptions then
+          begin
+            if SysUtils.CompareText(CurOptions,'isdefault')<>0 then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
+                +IntToStr(i)+' but "'+CurOptions+'" found.');
+            if DefaultBtn<>nil then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
+            IsDefault:=true;
+            inc(i);
+          end;
+        end;
+        //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption,' CurOptions="',CurOptions,'"');
+
         if CurBtnCaption='' then begin
           // find default caption
           case CurBtnValue of
@@ -886,8 +920,11 @@ begin
           Kind:=NewKind;
           Caption:=curBtnCaption;
           Parent:=Self;
+          Default:=IsDefault;
           OnKeyDown:=@ButtonKeyDown;
         end;
+        if IsDefault then
+          DefaultBtn:=NewButton;
         FButtons.Add(NewButton);
       end else
         raise Exception.Create(
@@ -917,8 +954,10 @@ begin
   Caption:=NewCaption;
   
   // find default and cancel button
-  DefaultControl:=FindButton([mrYes,mrOk,mrYesToAll,mrAll,mrRetry,mrCancel,
+  if DefaultBtn=nil then
+    DefaultBtn:=FindButton([mrYes,mrOk,mrYesToAll,mrAll,mrRetry,mrCancel,
                               mrNo,mrNoToAll,mrAbort,mrIgnore]);
+  DefaultControl:=DefaultBtn;
   CancelControl:=FindButton([mrAbort,mrCancel,mrNo,mrIgnore,mrNoToAll,mrYes,
                              mrOk,mrRetry,mrAll,mrYesToAll])
 end;
