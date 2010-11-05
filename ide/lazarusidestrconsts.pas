@@ -305,6 +305,7 @@ resourcestring
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';
   lisMenuAboutFPC = 'About FPC';
+  lisAboutIDE = 'About IDE';
   
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from file ...';
@@ -4951,6 +4952,7 @@ resourcestring
   lisDirectivesForNewUnit = 'Directives for new unit';
   lisRemoveFromInstallList = 'Remove from install list';
   lisKeepInInstallList = 'Keep in install list';
+  lisInformationAboutUsedFPC = 'Information about used FPC';
 
 implementation
 

@@ -223,6 +223,7 @@ type
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;
           itmViewFPCInfo: TIDEMenuCommand;
+          itmViewIDEInfo: TIDEMenuCommand;
 
     // project menu
     //mnuProject: TIDEMenuSection;

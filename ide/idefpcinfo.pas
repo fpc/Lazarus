@@ -74,7 +74,7 @@ end;
 
 procedure TIDEFPCInfoDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Information about used FPC';
+  Caption:=lisInformationAboutUsedFPC;
 
   UpdateMemo;
 end;
@@ -102,8 +102,8 @@ begin
     FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
-
     GatherFPCExecutable(UnitSetCache,sl);
+
     Memo1.Lines.Assign(sl);
   finally
     sl.Free;

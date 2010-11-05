@@ -1,0 +1,22 @@
+object IDEInfoDialog: TIDEInfoDialog
+  Left = 269
+  Height = 330
+  Top = 294
+  Width = 644
+  Caption = 'IDEInfoDialog'
+  ClientHeight = 330
+  ClientWidth = 644
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object Memo1: TMemo
+    Left = 0
+    Height = 330
+    Top = 0
+    Width = 644
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+end
