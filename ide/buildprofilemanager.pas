@@ -883,13 +883,18 @@ end;
 
 procedure TBuildProfileManagerForm.RemoveButtonClick(Sender: TObject);
 var
-  i, NewI: integer;
+  i, SelI, NewI: integer;
 begin
   i := ProfilesListbox.ItemIndex;
   if i<0 then exit;
+  // Remove the item from selected list.
+  SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].fName);
+  if SelI>-1 then
+    fProfsToManage.Selected.Delete(SelI);
+  // New last item index.
   NewI:=i;
   if i=ProfilesListbox.Items.Count-1 then
-    Dec(NewI);                      // New last item index.
+    Dec(NewI);
   // Update ProfsToManage collection.
   fProfsToManage.Delete(i);
   fProfsToManage.fCurrentIndex:=NewI;
@@ -901,7 +906,7 @@ end;
 
 procedure TBuildProfileManagerForm.EditButtonClick(Sender: TObject);
 var
-  i: integer;
+  i, SelI: integer;
 begin
   i:=ProfilesListbox.ItemIndex;
   if i<0 then exit;
@@ -913,6 +918,10 @@ begin
     if (ShowModal=mrOk) and (NameEdit.Text<>'') then begin
       // Update ProfsToManage collection.
       fProfsToManage[i].fName:=NameEdit.Text;
+      // Update selected list.
+      SelI:=fProfsToManage.Selected.IndexOf(ProfilesListbox.Items[i]);
+      if SelI>-1 then
+        fProfsToManage.Selected[SelI]:=NameEdit.Text;
       // Update ListBox
       ProfilesListbox.Items[i]:=NameEdit.Text;
       EnableButtons;
