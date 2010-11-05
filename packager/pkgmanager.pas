@@ -301,7 +301,7 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
-    function DoInstallPackages(PkgIdList: TFPList; RebuildIDE, Quiet: boolean;
+    function DoInstallPackages(PkgIdList: TFPList; AddExisting, RebuildIDE, Quiet: boolean;
                                CheckList: boolean = true): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
@@ -415,7 +415,7 @@ begin
       @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
     then exit;
 
-    DoInstallPackages(PkgIDList,RebuildIDE,false,true);
+    DoInstallPackages(PkgIDList,false,RebuildIDE,false,true);
   finally
     if PkgIDList<>nil then FreeListObjects(PkgIDList,true);
   end;
@@ -2052,7 +2052,7 @@ begin
         end else if Result=mrYes then
         begin
           // install
-          DoInstallPackages(PkgList,true,false);
+          DoInstallPackages(PkgList,true,true,false);
           Result:=mrAbort;
         end else begin
           // do not warn again
@@ -3727,8 +3727,8 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoInstallPackages(PkgIdList: TFPList; RebuildIDE,
-  Quiet: boolean; CheckList: boolean): TModalResult;
+function TPkgManager.DoInstallPackages(PkgIdList: TFPList; AddExisting,
+  RebuildIDE, Quiet: boolean; CheckList: boolean): TModalResult;
 
   procedure CreateChangeReport(
     OldDependencyList, NewDependencyList: TPkgDependency; Report: TStrings);
@@ -3793,6 +3793,17 @@ begin
   NewFirstAutoInstallDependency:=nil;
   PkgList:=nil;
   try
+    if AddExisting then
+    begin
+      // add existing install packages to list
+      NewFirstAutoInstallDependency:=PackageGraph.FirstAutoInstallDependency;
+      while NewFirstAutoInstallDependency<>nil do begin
+        if NewFirstAutoInstallDependency.RequiredPackage<>nil then
+          PkgIdList.Add(NewFirstAutoInstallDependency.RequiredPackage);
+        NewFirstAutoInstallDependency:=NewFirstAutoInstallDependency.NextRequiresDependency;
+      end;
+    end;
+
     if CheckList then
     begin
       OnCheckInstallPackageList(PkgIDList,ok);
