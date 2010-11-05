@@ -3086,7 +3086,7 @@ begin
 {
   if Windows.GetFocus <> HWnd then
   begin
-    DebugLn(['TWin32WidgetSet.SetFocus ', ' Wnd = ', WndClassName(HWnd)]);
+    DebugLn(['TWin32WidgetSet.SetFocus ', ' Wnd = ', WndClassName(HWnd), ' LCLObject = ', dbgsName(GetLCLOwnerObject(HWnd))]);
     DumpStack;
   end;
 }

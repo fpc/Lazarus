@@ -7780,14 +7780,10 @@ begin
   CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
   if CaptureWidget = nil then exit;
 
-  if not gtk_widget_has_focus(CaptureWidget) then
-    gtk_widget_grab_focus(CaptureWidget);
-
   gtk_grab_add(CaptureWidget);
   MouseCaptureWidget := CaptureWidget;
   if MouseCaptureWidget<>nil then
-    SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
-      Result);
+    SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
   {$ENDIF}
 end;
 
