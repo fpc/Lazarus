@@ -74,6 +74,7 @@
 
 {$else}
   {$define GTK_2_10}
+  {$define USE_GTK_MAIN_OLD_ITERATION} // in other case it hangs
 {$endif}
 
 {$ifdef HasX}
