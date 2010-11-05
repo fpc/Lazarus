@@ -46,6 +46,8 @@ uses
 
 type
 
+  TUsesSection=(usMain, usImplementation);
+
   { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class
@@ -74,6 +76,8 @@ type
 
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
+    procedure ConvAddDelphiAndLCLUnitsToUsesSection(AUsesSection: TUsesSection;
+      DelphiOnlyUnits, LCLOnlyUnits: TStringList);
     function RenameResourceDirectives: boolean;
     function CommentOutUnits: boolean;
     function ReplaceFuncsInSource: boolean;
@@ -229,6 +233,81 @@ begin
   end;
 end;
 
+procedure TConvDelphiCodeTool.ConvAddDelphiAndLCLUnitsToUsesSection(
+  AUsesSection: TUsesSection; DelphiOnlyUnits, LCLOnlyUnits: TStringList);
+var
+  AUsesNode: TCodeTreeNode;
+  i: Integer;
+  InsPos: Integer;
+  nl: string;
+  s: string;
+  DelphiOnlyUnitsStr, LclOnlyUnitsStr: string;
+begin
+  if (LclOnlyUnits.Count=0) and (DelphiOnlyUnits.Count=0) then
+    exit;
+  DelphiOnlyUnitsStr:='';
+  for i:=0 to DelphiOnlyUnits.Count-1 do begin
+    if i<DelphiOnlyUnits.Count-1 then
+      DelphiOnlyUnitsStr:=DelphiOnlyUnitsStr+DelphiOnlyUnits[i]+', '
+    else
+      DelphiOnlyUnitsStr:=DelphiOnlyUnitsStr+DelphiOnlyUnits[i];
+  end;
+  LclOnlyUnitsStr:='';
+  for i:=0 to LclOnlyUnits.Count-1 do begin
+    if i<LclOnlyUnits.Count-1 then
+      LclOnlyUnitsStr:=LclOnlyUnitsStr+DelphiOnlyUnits[i]+', '
+    else
+      LclOnlyUnitsStr:=LclOnlyUnitsStr+DelphiOnlyUnits[i];
+  end;
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
+  fCodeTool.BuildTree(AUsesSection=usMain);
+  case AUsesSection Of
+    usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
+    usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
+  end;
+  nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+  if AUsesNode<>nil then begin
+    //uses section exists
+    s:='{$IFNDEF FPC}'+nl;
+    if DelphiOnlyUnits.Count>=1 then
+      s:=s+'  '+DelphiOnlyUnitsStr+','+nl;
+    s:=s+'{$ELSE}'+nl;
+    if LclOnlyUnits.Count>=1 then
+      s:=s+' '+LclOnlyUnitsStr+','+nl;
+    s:=s+'{$ENDIF}'+nl;
+    s:=s+'  ';
+    //TODO: check for special units
+    fCodeTool.MoveCursorToUsesStart(AUsesNode);
+    InsPos:=fCodeTool.CurPos.StartPos;
+  end
+  else begin
+    //uses section does not exist
+    s:=nl;
+    s:=s+'{$IFNDEF FPC}'+nl;
+    if DelphiOnlyUnits.Count>=1 then begin
+      s:=s+'uses'+nl;
+      s:=s+'  '+DelphiOnlyUnitsStr+';'+nl;
+    end;
+    s:=s+'{$ELSE}'+nl;
+    if LclOnlyUnits.Count>=1 then begin
+      s:=s+'uses'+nl;
+      s:=s+'  '+LclOnlyUnitsStr+';'+nl;
+    end;
+    s:=s+'{$ENDIF}';
+    case AUsesSection Of
+      usMain: AUsesNode:=fCodeTool.FindInterfaceNode;
+      usImplementation: AUsesNode:=fCodeTool.FindImplementationNode;
+    end;
+    // set insert position behind interface or implementation keyword
+    // TODO: what about program?
+    fCodeTool.MoveCursorToNodeStart(AUsesNode);
+    fCodeTool.ReadNextAtom;
+    InsPos:=fCodeTool.FindLineEndOrCodeAfterPosition(fCodeTool.CurPos.EndPos,false);
+  end;
+  // Now add the generated lines.
+  if not fSrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
+end;
+
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
 // Add unit names into conditional blocks for Delphi and Lazarus targets. If the name
 // would otherwise be deleted or commented out, now it is added to Delphi block.
@@ -237,18 +316,23 @@ var
   LclOnlyUnits: TStringList;     // LCL specific units.
   MainUsesNode, ImplementationUsesNode: TCodeTreeNode;
 
-  procedure ConvUsesUnits(AUsesNode: TCodeTreeNode; AUsesUnits: TStringList);
+  procedure ConvUsesUnits(AUsesSection: TUsesSection; AUsesUnits: TStringList);
   var
     i, ind: Integer;
-    InsPos: Integer;
-    nl: string;
     s: string;
     RenameList: TStringList;
+    AUsesNode: TCodeTreeNode;
   begin
     DelphiOnlyUnits.Clear;
     LCLOnlyUnits.Clear;
-    fCodeTool.MoveCursorToUsesStart(AUsesNode);
-    InsPos:=fCodeTool.CurPos.StartPos;
+    fSrcCache.MainScanner:=fCodeTool.Scanner;
+    fCodeTool.BuildTree(AUsesSection=usMain);
+    case AUsesSection Of
+      usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
+      usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
+    end;
+    if AUsesNode=nil then
+      exit;
     // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do begin
       s:=fUnitsToRemove[i];
@@ -280,21 +364,8 @@ var
     finally
       RenameList.Free;
     end;
-    { TODO : handling of one used unit in one line is not functional yet
-    ex: uses consts;}
-    if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
-      // Add LCL and Delphi sections for output.
-      nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-      s:='{$IFNDEF FPC}'+nl+'  ';
-      for i:=0 to DelphiOnlyUnits.Count-1 do
-        s:=s+DelphiOnlyUnits[i]+', ';
-      s:=s+nl+'{$ELSE}'+nl+'  ';
-      for i:=0 to LclOnlyUnits.Count-1 do
-        s:=s+LclOnlyUnits[i]+', ';
-      s:=s+nl+'{$ENDIF}';
-      // Now add the generated lines.
-      if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
-    end;
+    // Add LCL and Delphi sections for output.
+    ConvAddDelphiAndLCLUnitsToUsesSection(AUsesSection, DelphiOnlyUnits, LclOnlyUnits);
   end;
 
 begin
@@ -302,16 +373,10 @@ begin
   DelphiOnlyUnits:=TStringList.Create;
   LclOnlyUnits:=TStringList.Create;
   try
-    fCodeTool.BuildTree(false);
-    fSrcCache.MainScanner:=fCodeTool.Scanner;
     // Main uses section
-    MainUsesNode:=fCodeTool.FindMainUsesSection;
-    if MainUsesNode<>nil then
-      ConvUsesUnits(MainUsesNode, fExistingUsesMain);
+    ConvUsesUnits(usMain, fExistingUsesMain);
     // Implementation uses section
-    ImplementationUsesNode:=fCodeTool.FindImplementationUsesSection;
-    if ImplementationUsesNode<>nil then
-      ConvUsesUnits(ImplementationUsesNode, fExistingUsesImplementation);
+    ConvUsesUnits(usImplementation, fExistingUsesImplementation);
     Result:=true;
   finally
     LclOnlyUnits.Free;
