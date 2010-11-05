@@ -735,6 +735,11 @@ begin
 
     gtk_list_store_clear(FGtkListStore);
 
+    //resize columns to optimal width. See issue #17837
+    //TODO: see if this is needed by TComboBox and others.
+    if FOwner is TListBox then
+      gtk_tree_view_columns_autosize(PGtkTreeView(WidgetInfo^.CoreWidget));
+
     Dec(WidgetInfo^.ChangeLock);
     //Update the internal Index cache
     PInteger(WidgetInfo^.UserData)^ := -1;
