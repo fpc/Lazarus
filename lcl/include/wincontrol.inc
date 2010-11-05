@@ -3428,7 +3428,7 @@ procedure TWinControl.DoAllAutoSize;
   end;
 
   procedure UpdateShowingRecursive(AWinControl: TWinControl;
-    OnlyChilds: boolean);
+    OnlyChildren: boolean);
   var
     i: Integer;
   begin
@@ -3438,7 +3438,7 @@ procedure TWinControl.DoAllAutoSize;
         if TObject(AWinControl.FControls[i]) is TWinControl then
           UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]),false);
     // then make the control visible
-    if not OnlyChilds and AWinControl.HandleObjectShouldBeVisible and not AWinControl.Showing then
+    if not OnlyChildren and AWinControl.HandleObjectShouldBeVisible and not AWinControl.Showing then
       AWinControl.UpdateShowing;
   end;
 
@@ -3511,11 +3511,15 @@ begin
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
   {$ENDIF}
-  Include(FWinControlFlags, wcfUpdateShowing);
-  try
-    UpdateShowingRecursive(Self, False);
-  finally
-    Exclude(FWinControlFlags, wcfUpdateShowing);
+  if not (wcfUpdateShowing in FWinControlFlags) then
+  begin
+    Include(FWinControlFlags, wcfUpdateShowing);
+    try
+      if HandleObjectShouldBeVisible and not Showing then
+        UpdateShowing;
+    finally
+      Exclude(FWinControlFlags, wcfUpdateShowing);
+    end;
   end;
 end;
 
