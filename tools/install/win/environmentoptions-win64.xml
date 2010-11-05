@@ -6,7 +6,7 @@
     </LazarusDirectory>
     <CompilerFilename Value="%FpcBinDir%\fpc.exe">
     </CompilerFilename>
-    <FPCSourceDirectory Value="%FpcSrcDir%">
+    <FPCSourceDirectory Value="$(LazarusDir)fpc\$(FPCVer)\source">
     </FPCSourceDirectory>
     <MakeFilename Value="%FpcBinDir%\make.exe">
     </MakeFilename>
