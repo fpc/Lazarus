@@ -970,7 +970,8 @@ begin
   ADate := GetDate;
   if ADate = NullDate then
     ADate := SysUtils.Date;
-  ShowCalendarPopup(PopupOrigin, ADate, @CalendarPopupReturnDate, @CalendarPopupShowHide)
+  ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
+                    @CalendarPopupReturnDate, @CalendarPopupShowHide)
 end;
 
 procedure TDateEdit.DblClick;

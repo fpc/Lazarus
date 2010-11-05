@@ -42,14 +42,16 @@ type
   private
     FClosed: boolean;
     FOnReturnDate: TReturnDateEvent;
-    procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime);
+    procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime;
+                         const DisplaySettings: TDisplaySettings);
     procedure ReturnDate;
   protected
     procedure Paint; override;
   end;
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
-                            OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
+    const CalendarDisplaySettings: TDisplaySettings;
+    const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil);
 
 implementation
 
@@ -58,12 +60,13 @@ implementation
 {$ENDIF}
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
-                            OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
+  const CalendarDisplaySettings: TDisplaySettings;
+  const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil);
 var
   PopupForm: TCalendarPopupForm;
 begin
   PopupForm := TCalendarPopupForm.Create(nil);
-  PopupForm.Initialize(Position, ADate);
+  PopupForm.Initialize(Position, ADate, CalendarDisplaySettings);
   PopupForm.FOnReturnDate := OnReturnDate;
   PopupForm.OnShow := OnShowHide;
   PopupForm.OnHide := OnShowHide;
@@ -124,7 +127,7 @@ begin
 end;
 
 procedure TCalendarPopupForm.Initialize(const PopupOrigin: TPoint;
-                                              ADate: TDateTime);
+  ADate: TDateTime; const DisplaySettings: TDisplaySettings);
 var
   ABounds: TRect;
 begin
@@ -138,6 +141,7 @@ begin
   else
     Top := PopupOrigin.Y;
   Calendar.DateTime := ADate;
+  Calendar.DisplaySettings:=DisplaySettings;
 end;
 
 procedure TCalendarPopupForm.ReturnDate;
