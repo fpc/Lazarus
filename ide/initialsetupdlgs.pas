@@ -40,14 +40,15 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, FileUtil,
-  ComCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, FileUtil,
+  ComCtrls, Laz_XMLCfg,
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
   
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);
 procedure SetupLazarusDirectory(var InteractiveSetup: boolean);
 
+function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 
 implementation
 
@@ -60,6 +61,9 @@ begin
   CurCompilerFilename:=EnvironmentOptions.CompilerFilename;
   if CurCompilerFilename='' then
     CurCompilerFilename:=FindDefaultCompilerPath;
+  if not FileIsExecutable(CurCompilerFilename) then
+    CurCompilerFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+      'EnvironmentOptions/CompilerFilename/Value');
   if not FileIsExecutable(CurCompilerFilename) then begin
     if not InteractiveSetup then exit;
     if CurCompilerFilename='' then begin
@@ -99,6 +103,12 @@ begin
   Changed:=false;
   if CurFPCSrcDir='' then begin
     CurFPCSrcDir:=FindDefaultFPCSrcDirectory;
+    Changed:=true;
+  end;
+  if not DirectoryExistsUTF8(CurFPCSrcDir) then
+  begin
+    CurFPCSrcDir:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+      'EnvironmentOptions/FPCSourceDirectory/Value');
     Changed:=true;
   end;
   if not CheckFPCSourceDir(CurFPCSrcDir) then begin
@@ -145,6 +155,9 @@ begin
     if not CheckLazarusDirectory(CurLazDir) then
       CurLazDir:=FindDefaultLazarusSrcDirectory;
   end;
+  if not CheckLazarusDirectory(CurLazDir) then
+    CurLazDir:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+      'EnvironmentOptions/LazarusDirectory/Value');
   if not CheckLazarusDirectory(CurLazDir) then begin
     if not InteractiveSetup then exit;
     if CurLazDir='' then begin
@@ -170,6 +183,29 @@ begin
     end;
   end;
   EnvironmentOptions.LazarusDirectory:=CurLazDir;
+end;
+
+function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
+var
+  XMLConfig: TXMLConfig;
+begin
+  if not FilenameIsAbsolute(OptionFilename) then
+    OptionFilename:=AppendPathDelim(GetSecondaryConfigPath)+OptionFilename;
+  if FileExistsCached(OptionFilename) then
+  begin
+    try
+      XMLConfig:=TXMLConfig.Create(OptionFilename);
+      try
+        Result:=XMLConfig.GetValue(Path,'');
+      finally
+        XMLConfig.Free;
+      end;
+    except
+      on E: Exception do begin
+        debugln(['GetValueFromSecondaryConfig File='+OptionFilename+': '+E.Message]);
+      end;
+    end;
+  end;
 end;
 
 end.

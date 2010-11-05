@@ -1645,6 +1645,7 @@ procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
 begin
   if FFPCSourceDirectory=AValue then exit;
   FFPCSourceDirectory:=AppendPathDelim(TrimFilename(AValue));
+  FFPCSrcDirParsedValid:=false;
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
