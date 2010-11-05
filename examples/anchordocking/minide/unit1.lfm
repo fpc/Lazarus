@@ -3,16 +3,15 @@ object MainIDE: TMainIDE
   Height = 85
   Top = 199
   Width = 505
-  ActiveControl = Page2
   Caption = 'MainIDE'
-  ClientHeight = 85
+  ClientHeight = 60
   ClientWidth = 505
   Menu = MainMenu1
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object ComponentPalette: TPageControl
     Left = 208
-    Height = 85
+    Height = 60
     Top = 0
     Width = 297
     Align = alClient
@@ -26,11 +25,11 @@ object MainIDE: TMainIDE
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 85
+    Height = 60
     Top = 0
     Width = 208
     Align = alLeft
-    ClientHeight = 85
+    ClientHeight = 60
     ClientWidth = 208
     TabOrder = 1
     object ToolBar1: TToolBar
@@ -46,72 +45,72 @@ object MainIDE: TMainIDE
         Top = 2
         Caption = 'ViewSrcEditor1ToolButton'
         ImageIndex = 2
+        OnClick = ViewSrcEditor1ToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewSrcEditor1ToolButtonClick
       end
       object ViewSrcEdit2ToolButton: TToolButton
         Left = 24
         Top = 2
         Caption = 'ViewSrcEdit2ToolButton'
         ImageIndex = 2
+        OnClick = ViewSrcEdit2ToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewSrcEdit2ToolButtonClick
       end
       object ViewCodeExplToolButton: TToolButton
         Left = 47
         Top = 2
         Caption = 'ViewCodeExplToolButton'
         ImageIndex = 3
+        OnClick = ViewCodeExplToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewCodeExplToolButtonClick
       end
       object ViewOIToolButton: TToolButton
         Left = 70
         Top = 2
         Caption = 'ViewOIToolButton'
         ImageIndex = 4
+        OnClick = ViewOIToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewOIToolButtonClick
       end
       object ViewMessagesToolButton: TToolButton
         Left = 93
         Top = 2
         Caption = 'ViewMessagesToolButton'
         ImageIndex = 5
+        OnClick = ViewMessagesToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewMessagesToolButtonClick
       end
       object ViewFPDocEditorToolButton: TToolButton
         Left = 116
         Top = 2
         Caption = 'ViewFPDocEditorToolButton'
         ImageIndex = 6
+        OnClick = ViewFPDocEditorToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewFPDocEditorToolButtonClick
       end
       object ViewProjInspToolButton: TToolButton
         Left = 139
         Top = 2
         Caption = 'ViewProjInspToolButton'
         ImageIndex = 9
+        OnClick = ViewProjInspToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewProjInspToolButtonClick
       end
       object ViewDbgOutToolButton: TToolButton
         Left = 162
         Top = 2
         Caption = 'ViewDbgOutToolButton'
         ImageIndex = 10
+        OnClick = ViewDbgOutToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = ViewDbgOutToolButtonClick
       end
     end
     object ToolBar2: TToolBar
@@ -127,18 +126,18 @@ object MainIDE: TMainIDE
         Top = 2
         Caption = 'SaveLayoutToolButton'
         ImageIndex = 7
+        OnClick = SaveLayoutToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = SaveLayoutToolButtonClick
       end
       object LoadLayoutToolButton: TToolButton
         Left = 24
         Top = 2
         Caption = 'LoadLayoutToolButton'
         ImageIndex = 8
+        OnClick = LoadLayoutToolButtonClick
         ParentShowHint = False
         ShowHint = True
-        OnClick = LoadLayoutToolButtonClick
       end
     end
   end
@@ -152,6 +151,20 @@ object MainIDE: TMainIDE
       end
       object NewFileMenuItem: TMenuItem
         Caption = 'New file'
+      end
+      object MenuItem1: TMenuItem
+        Caption = '-'
+      end
+      object SaveLayoutAsMenuItem: TMenuItem
+        Caption = 'Save layout as ...'
+        OnClick = SaveLayoutAsMenuItemClick
+      end
+      object LoadLayoutMenuItem: TMenuItem
+        Caption = 'Load layout ...'
+        OnClick = LoadLayoutMenuItemClick
+      end
+      object MenuItem2: TMenuItem
+        Caption = '-'
       end
       object QuitMenuItem: TMenuItem
         Caption = 'Quit'

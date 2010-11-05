@@ -17,6 +17,10 @@ type
     ImageList1: TImageList;
     MainMenu1: TMainMenu;
     ComponentPalette: TPageControl;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    LoadLayoutMenuItem: TMenuItem;
+    SaveLayoutAsMenuItem: TMenuItem;
     NewFileMenuItem: TMenuItem;
     OpenFileMenuItem: TMenuItem;
     Page1: TTabSheet;
@@ -38,8 +42,10 @@ type
     ViewSrcEditor1ToolButton: TToolButton;
     procedure FileMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure LoadLayoutMenuItemClick(Sender: TObject);
     procedure LoadLayoutToolButtonClick(Sender: TObject);
     procedure QuitMenuItemClick(Sender: TObject);
+    procedure SaveLayoutAsMenuItemClick(Sender: TObject);
     procedure SaveLayoutToolButtonClick(Sender: TObject);
     procedure ViewCodeExplToolButtonClick(Sender: TObject);
     procedure ViewDbgOutToolButtonClick(Sender: TObject);
@@ -134,6 +140,22 @@ begin
   ViewFPDocEditorToolButtonClick(Self);
 end;
 
+procedure TMainIDE.LoadLayoutMenuItemClick(Sender: TObject);
+var
+  Dlg: TOpenDialog;
+begin
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    Dlg.Title:='Open layout file ...';
+    Dlg.Filter:='*.xml|*.xml';
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    if not Dlg.Execute then exit;
+    LoadLayout(Dlg.FileName);
+  finally
+    Dlg.Free;
+  end;
+end;
+
 procedure TMainIDE.LoadLayoutToolButtonClick(Sender: TObject);
 begin
   LoadLayout('layout.xml');
@@ -142,6 +164,26 @@ end;
 procedure TMainIDE.QuitMenuItemClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TMainIDE.SaveLayoutAsMenuItemClick(Sender: TObject);
+var
+  Dlg: TSaveDialog;
+  Filename: String;
+begin
+  Dlg:=TSaveDialog.Create(nil);
+  try
+    Dlg.Title:='Save layout as ...';
+    Dlg.Filter:='*.xml|*.xml';
+    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofHideReadOnly,ofOverwritePrompt];
+    if not Dlg.Execute then exit;
+    Filename:=Dlg.FileName;
+    if ExtractFileExt(Filename)='' then
+      Filename:=Filename+'.xml';
+    SaveLayout(FileName);
+  finally
+    Dlg.Free;
+  end;
 end;
 
 procedure TMainIDE.SaveLayoutToolButtonClick(Sender: TObject);
