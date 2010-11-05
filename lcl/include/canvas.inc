@@ -307,13 +307,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetLazBrush(Value : TBrush);
 begin
-  FBrush.Assign(Value);
+  FLazBrush.Assign(Value);
 end;
 
 procedure TCanvas.SetPenPos(const AValue: TPoint);
 begin
   MoveTo(AValue.X,AValue.Y);
-  // fpcanvas TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -324,7 +323,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetLazFont(Value : TFont);
 begin
-  FFont.Assign(Value);
+  FLazFont.Assign(Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -335,7 +334,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetLazPen(Value : TPen);
 begin
-  FPen.Assign(Value);
+  FLazPen.Assign(Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -1363,17 +1362,17 @@ begin
   FHandle := 0;
   ManageResources := true;
   inherited Create;
-  FFont := TFont(inherited Font);
-  FPen := TPen(inherited Pen);
-  FBrush := TBrush(inherited Brush);
-  FFont.OnChanging := @FontChanging;
-  FFont.OnChange := @FontChanged;
+  FLazFont := TFont(inherited Font);
+  FLazPen := TPen(inherited Pen);
+  FLazBrush := TBrush(inherited Brush);
+  FLazFont.OnChanging := @FontChanging;
+  FLazFont.OnChange := @FontChanged;
   FSavedFontHandle := 0;
-  FPen.OnChanging := @PenChanging;
-  FPen.OnChange := @PenChanged;
+  FLazPen.OnChanging := @PenChanging;
+  FLazPen.OnChange := @PenChanged;
   FSavedPenHandle := 0;
-  FBrush.OnChanging := @BrushChanging;
-  FBrush.OnChange := @BrushChanged;
+  FLazBrush.OnChanging := @BrushChanging;
+  FLazBrush.OnChange := @BrushChanged;
   FSavedBrushHandle := 0;
   FRegion := TRegion.Create;
   FRegion.OnChanging := @RegionChanging;
@@ -1449,9 +1448,9 @@ begin
     DeleteCriticalSection(FLock);
   inherited Destroy;
   // set resources to nil, so that dangling pointers are spotted early
-  FFont:=nil;
-  FPen:=nil;
-  FBrush:=nil;
+  FLazFont:=nil;
+  FLazPen:=nil;
+  FLazBrush:=nil;
 end;
 
 {------------------------------------------------------------------------------

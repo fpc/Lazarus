@@ -989,9 +989,9 @@ type
     FTextStyle: TTextStyle;
     FLock: TCriticalSection;// FLock is initialized on demand
     FRegion: TRegion;
-    FPen: TPen;
-    FFont: TFont;
-    FBrush: TBrush;
+    FLazPen: TPen;
+    FLazFont: TFont;
+    FLazBrush: TBrush;
     FSavedHandleStates: TFPList;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
@@ -1143,11 +1143,11 @@ type
   published
     property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
-    property Brush: TBrush read FBrush write SetLazBrush;
+    property Brush: TBrush read FLazBrush write SetLazBrush;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
-    property Font: TFont read FFont write SetLazFont;
+    property Font: TFont read FLazFont write SetLazFont;
     property Height: integer read GetHeight;
-    property Pen: TPen read FPen write SetLazPen;
+    property Pen: TPen read FLazPen write SetLazPen;
     property Region: TRegion read FRegion write SetRegion;
     property Width: integer read GetWidth;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;

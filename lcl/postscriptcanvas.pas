@@ -69,11 +69,10 @@ Type
     fcPenColor     : TColor;      //Color of Pen and Brush
     fcPenWidth     : Integer;
     fcPenStyle     : TPenStyle;
-    fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
     FFs            : TFormatSettings;
     fSaveCount     : Integer;
-    FClipRect      : TRect;
+    FLazClipRect   : TRect;
     FStatus        : TPsCanvasStatus;
 
     procedure psDrawRect(ARect:TRect);
@@ -776,7 +775,6 @@ end;
 //Save the last position
 procedure TPostScriptPrinterCanvas.SetPosition(X, Y: Integer);
 begin
-  fPenPos:= Point(X,Y);
   SetInternalPenPos(Point(X,Y));
 end;
 
@@ -913,7 +911,7 @@ procedure TPostScriptPrinterCanvas.MoveToLastPos;
 var
   pp:TpsPoint;
 begin
-  pp:=Self.TranslateCoord(fpenPos.X,fPenPos.Y);
+  pp:=Self.TranslateCoord(PenPos.X,PenPos.Y);
   write(Format('%f %f moveto',[pp.fx,pp.fy],Ffs)+' %last pos');
   Include(FStatus, pcsPosValid);
 end;
@@ -1098,7 +1096,7 @@ procedure TPostScriptPrinterCanvas.SaveClip;
 begin
   Self.WriteComment('Pushing and Setting current clip rect');
   Self.Write('clipsave');
-  psDrawRect(FClipRect);
+  psDrawRect(FLazClipRect);
   Write(FBuffer);
   Self.Write('clip');
   Include(FStatus, pcsClipSaved);
@@ -1203,7 +1201,7 @@ end;
 
 function TPostScriptPrinterCanvas.GetClipRect: TRect;
 begin
-  Result:=FClipRect;
+  Result:=FLazClipRect;
 end;
 
 constructor TPostScriptPrinterCanvas.Create(APrinter: TPrinter);
@@ -2276,7 +2274,7 @@ begin
   if pcsClipping in FStatus then
     RestoreClip;
 
-  FClipRect := ARect;
+  FLazClipRect := ARect;
 
   if pcsClipping in FStatus then
     SaveClip;
