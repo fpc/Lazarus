@@ -276,15 +276,20 @@ begin
   DebugLn('[TTreeNode.Destroy] Self=',DbgS(Self),' Self.Text=',Text);
   {$ENDIF}
   Include(FStates,nsDeleting);
+
+  // we must trigger TCustomTreeView.OnDeletion event before
+  // unbinding.See issue #17832.
+  if (Owner <> nil) and (Owner.Owner <> nil) then
+    Owner.Owner.Delete(Self);
+
   // delete childs
   HasChildren := false;
   // unbind all references
   Unbind;
-  if Owner<>nil then begin
-    if Owner.Owner<>nil then
-      Owner.Owner.Delete(Self);
+
+  if Owner<>nil then
     dec(Owner.FCount);
-  end;
+
   Data := nil;
   // free data
   if FItems<>nil then begin
