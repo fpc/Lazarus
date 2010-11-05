@@ -54,7 +54,7 @@ Name: associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
-Source: environmentoptions-{#FPCTargetOS}.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
+Source: environmentoptions.xml; DestDir: {app}; Flags: confirmoverwrite; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet=="qt"
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
@@ -218,7 +218,6 @@ begin
   LoadStringFromFile(FileName, Content);
   StringChange(Content, '%Temp%', GetTempDir);
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
-  StringChange(Content, '%FpcSrcDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\source'));
   StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\'));
   SaveStringToFile(FileName, Content, False);
 end;
