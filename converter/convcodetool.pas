@@ -314,7 +314,6 @@ function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
 var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
-  MainUsesNode, ImplementationUsesNode: TCodeTreeNode;
 
   procedure ConvUsesUnits(AUsesSection: TUsesSection; AUsesUnits: TStringList);
   var
