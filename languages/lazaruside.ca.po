@@ -3410,6 +3410,10 @@ msgstr ""
 msgid "Documentation:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Quant al Lazarus"
@@ -7588,6 +7592,10 @@ msgstr ""
 msgid "Information about %s"
 msgstr "Informació de %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr ""
@@ -8460,10 +8468,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Afegeix"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr ""
@@ -8472,6 +8476,11 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Munta"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8515,7 +8524,7 @@ msgid "Common Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
@@ -8526,12 +8535,6 @@ msgstr "S'ha produït un error mentre s'escrivia el fitxer"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "Interfície LCL"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8607,7 +8610,7 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11820,7 +11823,7 @@ msgid "Private Method"
 msgstr "Mètode privat"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprocedure

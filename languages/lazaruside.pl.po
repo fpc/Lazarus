@@ -3424,6 +3424,10 @@ msgstr ""
 msgid "Documentation:"
 msgstr "Dokumentacja:"
 
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
 msgstr "O programie Lazarus"
@@ -7600,6 +7604,10 @@ msgstr ""
 msgid "Information about %s"
 msgstr "Informacja o %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Przed spokrewnionym"
@@ -8474,10 +8482,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Dodaj"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Zaawansowane opcje budowania"
@@ -8486,6 +8490,11 @@ msgstr "Zaawansowane opcje budowania"
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Buduj"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8529,7 +8538,9 @@ msgid "Common Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
+#, fuzzy
+#| msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
 msgstr "Potwierdź zanim przebudujesz lazarusa"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
@@ -8540,12 +8551,6 @@ msgstr "Błąd podczas zapisu do pliku"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "Interfejs LCL"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8622,8 +8627,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #, fuzzy
-#| msgid "Restart after successful Build"
-msgid "Restart after building the IDE"
+#| msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr "Uruchom ponownie po pomyślnym budowaniu"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11833,7 +11838,7 @@ msgid "Private Method"
 msgstr "Metody prywatne"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprocedure

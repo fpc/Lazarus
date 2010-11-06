@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-04 00:25+0300\n"
+"PO-Revision-Date: 2010-11-06 03:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3424,6 +3424,10 @@ msgstr "Прервать всю загрузку"
 #: lazarusidestrconsts.lisaboutdocumentation
 msgid "Documentation:"
 msgstr "Документация:"
+
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr "Об IDE"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
@@ -7606,6 +7610,10 @@ msgstr "Сведения"
 msgid "Information about %s"
 msgstr "Информация о %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr "Информация об используемом компиляторе FPC"
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Перед связанными"
@@ -8482,10 +8490,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Добавить"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr "Собрать расширенно"
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Расширенные параметры сборки"
@@ -8494,6 +8498,11 @@ msgstr "Расширенные параметры сборки"
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Сборка"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr "Собрать расширенно"
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8537,8 +8546,9 @@ msgid "Common Settings"
 msgstr "Общие параметры"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
-msgstr "Спросить перед пересборкой Lazarus"
+#| msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
+msgstr "Спросить перед пересборкой"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
@@ -8548,11 +8558,6 @@ msgstr "Ошибка записи файла"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild неинтерактивен, остановка."
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "Библиотека виджетов"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8628,8 +8633,8 @@ msgid "New name for profile:"
 msgstr "Новое имя профиля:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-#| msgid "Restart after successful Build"
-msgid "Restart after building the IDE"
+#| msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr "Перезапустить после сборки IDE"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11831,9 +11836,9 @@ msgid "Private Method"
 msgstr "Скрытый метод"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "Вероятно, вам следует установить некоторые пакеты перед продолжением.%s%sВнимание:%sСледующие модули принадлежат пакетам, которые ещё не установлены в IDE. Если вы попытаетесь в IDE открыть форму, использующую эти компоненты, вы получите ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%s%sЭто не оказывает влияния на открытие проекта и принадлежащего ему исходного кода.%s%sЭто только означает, что открытие форм для редактирования перед установкой отсутствующих компонентов не рекомендуется.%s%s"
+#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+msgstr "Вероятно, вам следует установить некоторые пакеты перед продолжением.%s%sВнимание:%sПроект зависит от пакетов времени разработки, которые могут понадобиться для открытия форм в дизайнере. При продолжении вы можете получить ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%s%sРекомендуется прервать процесс и установить сначала эти пакеты.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"

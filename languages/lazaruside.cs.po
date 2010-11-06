@@ -3381,6 +3381,10 @@ msgstr "Přerušit celé načítání"
 msgid "Documentation:"
 msgstr "Dokumentace:"
 
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
 msgstr "O Lazarusu"
@@ -7555,6 +7559,10 @@ msgstr "Informace"
 msgid "Information about %s"
 msgstr "Informace o %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Před související"
@@ -8428,10 +8436,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Přidat"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Pokročilé volby sestavení"
@@ -8440,6 +8444,11 @@ msgstr "Pokročilé volby sestavení"
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Sestavit"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8483,7 +8492,9 @@ msgid "Common Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
+#, fuzzy
+#| msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
 msgstr "Potvrdit přes znovu-sestavením Lazarusu"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
@@ -8494,12 +8505,6 @@ msgstr "Chyba zapisování souboru"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild není interaktivní, nyní přerušuji."
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "Rozhraní LCL"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8576,8 +8581,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #, fuzzy
-#| msgid "Restart after successful Build"
-msgid "Restart after building the IDE"
+#| msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr "Restartovat po úspěšném sestavení"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11757,7 +11762,9 @@ msgid "Private Method"
 msgstr "Soukromá metoda"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+#, fuzzy
+#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr "Před pokračováním asi bude nutné nainstalovat některé balíčky .%s%sVarování:%sProjekt závisí na některých balíčcích, které obsahují jednotky s procedurou Register. Procedura Register se běžně používá k instalaci komponent v IDE, ale následující jednotky vypadají, jako by patřily do balíčků, které zatím v IDE nainstalovány nejsou. Pokud se pokusíte otevřít v IDE formulář, který používá takové komponenty, obdržíte chyby o chybějících komponentách a načítání formuláře může vyvolat neočekávané chování.%s%sToto nemá vliv na otevírání souborů projektu nebo jeho zdrojových kódů.%s%sZnamená to jen, že není dobrý nápad otevírat formulář v návrhovém zobrazení před instalací chybějících balíčků.%s%s"
 
 #: lazarusidestrconsts.lisprocedure

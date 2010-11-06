@@ -3412,6 +3412,10 @@ msgstr ""
 msgid "Documentation:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Informatie over Lazarus"
@@ -7592,6 +7596,10 @@ msgstr ""
 msgid "Information about %s"
 msgstr "Informatie over %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr ""
@@ -8466,10 +8474,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr ""
@@ -8478,6 +8482,11 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Bouw"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8521,7 +8530,7 @@ msgid "Common Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
@@ -8532,12 +8541,6 @@ msgstr "Fout bij schrijven bestand"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "LCL interface"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8613,7 +8616,7 @@ msgid "New name for profile:"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11829,8 +11832,8 @@ msgstr "Private methode"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 #, fuzzy
-#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr "Waarschijnlijk moet je nog wat pakketten installeren voordat je verder gaat.%s%sWaarschuwing:%sHet project is afhankelijk van sommige pakketten, die units bevatten met de Register procedure. De register procedure wordt gewoonlijk gebruikt voor het installeren van componenten in de IDE. De volgende pakketten zijn nog niet in de IDE geinstalleerd. Als je een form dat deze componenten bevat, probeert te openen in de IDE zal dat vervelende resultaten geven.%s%sDit heeft geen impact op het laden van het project of de bijbehorende broncode.%s%sDit betekent alleen: Het is een slecht idee om deze forms te openen om te bewerken, voordat de missende pakketten zijn geinstalleerd.%s%s"
 
 #: lazarusidestrconsts.lisprocedure

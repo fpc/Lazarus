@@ -3407,6 +3407,10 @@ msgstr "Nutraukti įkėlimą"
 msgid "Documentation:"
 msgstr "Dokumentacija:"
 
+#: lazarusidestrconsts.lisaboutide
+msgid "About IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Apie Lazarus"
@@ -7601,6 +7605,10 @@ msgstr "Informacija"
 msgid "Information about %s"
 msgstr "Informacija apie modulį %s"
 
+#: lazarusidestrconsts.lisinformationaboutusedfpc
+msgid "Information about used FPC"
+msgstr ""
+
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Priešais susijusį"
@@ -8475,10 +8483,6 @@ msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Pridėti"
 
-#: lazarusidestrconsts.lislazbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
 msgstr "Sudėtingesnės darymo parinktys"
@@ -8487,6 +8491,11 @@ msgstr "Sudėtingesnės darymo parinktys"
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Daryti"
+
+#: lazarusidestrconsts.lislazbuildbuildadvanced
+msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
+msgid "Build Advanced"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8530,7 +8539,9 @@ msgid "Common Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-msgid "Confirm before rebuilding Lazarus"
+#, fuzzy
+#| msgid "Confirm before rebuilding Lazarus"
+msgid "Confirm before build"
 msgstr "Prieš darant Lazarus reikalauti patvirtinimo"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
@@ -8541,12 +8552,6 @@ msgstr "Klaida rašant į failą"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%s„lazbuild“ neinteraktyvus, darbas nutraukiamas."
-
-#: lazarusidestrconsts.lislazbuildlclinterface
-#, fuzzy
-#| msgid "LCL interface"
-msgid "Widgetset"
-msgstr "LCL interfeisas"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8623,8 +8628,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #, fuzzy
-#| msgid "Restart after successful Build"
-msgid "Restart after building the IDE"
+#| msgid "Restart after building the IDE"
+msgid "Restart after building IDE"
 msgstr "Sėkmingai padarius, startuoti iš naujo"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
@@ -11829,8 +11834,8 @@ msgstr "Private metodas"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 #, fuzzy
-#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr "Prieš tęsiant reiktų įdiegti kai kuriuos paketus.%s%sDėmesio:%sProjektas priklauso nuo kai kurių paketų, kuriuose yra moduliai su Register procedūra. Įprastai Register procedūra naudojama komponentėms diegti į IKA. Tačiau šie moduliai priklauso paketams, kurie dar nėra įdiegti į IKA. Bandant IKA atverti formą, kuri naudoja šias komponentes, bus pranešta kad trūksta komponenčių ir tolesnis formos įkėlimas gali pridaryti nepageidautinų nemalonumų.%s%sTai neatsilieps projekto atvėrimui ar jo pirminiam kodui.%s%sTai tik reiškia, kad nėra gerai prieš diegiant trūkstamus paketu atverti formos kūrimui.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
