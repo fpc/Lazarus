@@ -17,7 +17,9 @@ uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   Math,
   // fpimage
-  fpcanvas, fpimgcanv, fpimage;
+  fpcanvas, fpimgcanv, fpimage,
+  // font support
+  {opc}ftfont;
 
 type
 
@@ -533,9 +535,14 @@ end;
 
 procedure TCDGroupBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDGroupBox: TCDGroupBox);
+var
+  AFont: TFreeTypeFont = nil;
 begin
   // Background
-  ADest.Brush.FPColor := colGray;
+  if CDGroupBox.Parent = nil then
+    ADest.Brush.FPColor := colLtGray
+  else
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Color));
   ADest.Brush.Style:=bsSolid;
   ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.height);
@@ -548,6 +555,27 @@ begin
 
   // Caption background and caption
 
+  // initialize free type font manager
+  opcftfont.InitEngine;
+//  FontMgr.SearchPath:='/usr/share/fonts/truetype/';
+  AFont:=TFreeTypeFont.Create;
+  try
+    // Text background
+    ADest.Pen.Style := psClear;
+    ADest.Brush.Style:=bsSolid;
+    // The brush color was already set previously and is already correct
+//    ADest.Rectangle(5, 0, AFont.GetTextWidth(CDGroupBox.Caption) + 5, 10);
+
+    // paint text
+    ADest.Pen.Style := psSolid;
+    ADest.Brush.Style:=bsClear;
+    ADest.Font:=AFont;
+    ADest.Font.Name:='Arial';
+    ADest.Font.Size:=10;
+    ADest.TextOut(5,10, CDGroupBox.Caption);
+  finally
+    AFont.Free;
+  end;
 end;
 
 { TCDTrackBar }
