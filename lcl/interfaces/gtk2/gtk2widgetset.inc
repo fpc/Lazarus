@@ -65,19 +65,6 @@ begin
     Result := False;
 end;
 
-function GTK2FocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
-  data: gPointer) : GBoolean; cdecl;
-var
-  Status : gBoolean;
-begin
-  Status := GTKFocusCBAfter(Widget, Event, Data);
-
-  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
-    Result := Status
-  else
-    Result := False;
-end;
-
 function gtk2HideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Status : GBoolean;
@@ -397,7 +384,6 @@ procedure TGtk2WidgetSet._SetCallbackEx(const AMsg: LongInt;
   procedure ConnectFocusEvents(const AnObject: PGTKObject);
   begin
     ConnectSenderSignal(AnObject, 'focus-in-event', @gtkFocusCB);
-    ConnectSenderSignalAfter(AnObject, 'focus-in-event', @gtkFocusCBAfter);
     ConnectSenderSignal(AnObject, 'focus-out-event', @gtkKillFocusCB);
     ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtkKillFocusCBAfter);
   end;
@@ -855,7 +841,6 @@ procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
   begin
     //DebugLn(['ConnectFocusEvents ',GetWidgetDebugReport(PGtkWidget(AnObject))]);
     ConnectSenderSignal(AnObject, 'focus-in-event', @gtk2FocusCB);
-    ConnectSenderSignalAfter(AnObject, 'focus-in-event', @gtk2FocusCBAfter);
     ConnectSenderSignal(AnObject, 'focus-out-event', @gtk2KillFocusCB);
     ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtk2KillFocusCBAfter);
   end;

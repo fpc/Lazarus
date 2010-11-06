@@ -128,8 +128,6 @@ function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey;
 
 function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
                     data: gPointer): GBoolean; cdecl;
-function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
-                         data: gPointer): GBoolean; cdecl;
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
                         data: gPointer): GBoolean; cdecl;
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;

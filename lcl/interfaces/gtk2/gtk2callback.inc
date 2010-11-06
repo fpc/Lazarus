@@ -761,54 +761,7 @@ begin
   Result := HandleGtkKeyUpDown(Widget,Event,Data,false,False,'key-release-event');
 end;
 
-function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
-  data: gPointer) : GBoolean; cdecl;
-{$IFDEF VerboseFocus}
-var
-  LCLObject: TObject;
-  CurFocusWidget: PGtkWidget;
-{$ENDIF}
-begin
-  {$IFDEF EventTrace}
-  EventTrace('focus', data);
-  {$ENDIF}
-  if (Widget=nil) or (Event=nil) then ;
-  //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
-  {$IFDEF VerboseFocus}
-  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
-  LCLObject:=TObject(data);
-  if LCLObject<>nil then begin
-    if LCLObject is TComponent then begin
-      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-    end else begin
-      write(' LCLObject=',LCLObject.ClassName)
-    end;
-  end else
-    write(' LCLObject=nil');
-  DebugLn(''); DbgOut('    ');
-  CurFocusWidget:=PGtkWidget(GetFocus);
-  if CurFocusWidget<>nil then begin
-    write(' GetFocus=',DbgS(CurFocusWidget));
-    LCLObject:=GetNearestLCLObject(CurFocusWidget);
-    if LCLObject<>nil then begin
-      if LCLObject is TComponent then begin
-        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-      end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName)
-      end;
-    end else
-      write(' LCLObject=nil');
-  end else begin
-    write(' GetFocus=nil');
-  end;
-  DebugLn('');
-  {$ENDIF}
-
-  Result:=CallBackDefaultReturn;
-end;
-
-function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
-  data: gPointer) : GBoolean; cdecl;
+function GTKFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
   LCLObject: TObject;
@@ -880,10 +833,11 @@ begin
   UpdateMouseCaptureControl;
 
   //TODO: fill in old focus
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.msg := LM_SETFOCUS;
   DeliverMessage(Data,  Mess);
-  Result:=true;
+
+  Result := CallBackDefaultReturn;
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
