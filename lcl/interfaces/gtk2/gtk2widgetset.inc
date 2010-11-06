@@ -607,9 +607,10 @@ begin
     LM_MOUSEMOVE:
     begin
       ConnectSenderSignal(gMouse, 'motion-notify-event', @GTKMotionNotify,
-                    GDK_POINTER_MOTION_MASK);
+                    GDK_POINTER_MOTION_HINT_MASK or GDK_POINTER_MOTION_MASK);
       ConnectSenderSignalAfter(gMouse, 'motion-notify-event',
-                    @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
+                    @GTKMotionNotifyAfter,
+                    GDK_POINTER_MOTION_HINT_MASK or GDK_POINTER_MOTION_MASK);
     end;
 
     LM_LBUTTONDOWN,

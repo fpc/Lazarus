@@ -1217,6 +1217,25 @@ begin
   Result:=true;
 end;
 
+procedure GTKGetDevicePointer(win: PGdkWindow; dev: PGdkDevice;
+  x, y: pgdouble; mask: PGdkModifierType);
+var
+  axes: pgdouble;
+  i: Integer;
+begin
+  axes := g_new(SizeOf(gdouble), dev^.num_axes);
+  gdk_device_get_state(dev, win, axes, mask);
+
+  for i := 0 to dev^.num_axes - 1 do
+    if (x^ <> 0) and (dev^.axes[i].use = GDK_AXIS_X) then
+      x^ := axes[i]
+    else if (y^ <> 0) and (dev^.axes[i].use = GDK_AXIS_Y) then
+      y^ := axes[i];
+
+  g_free(axes);
+end;
+
+
 {-------------------------------------------------------------------------------
   GTKMotionNotify
   Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
@@ -1233,6 +1252,10 @@ var
   ShiftState: TShiftState;
 begin
   Result := CallBackDefaultReturn;
+
+  if (Event^.is_hint <> 0) and (Event^._type = GDK_MOTION_NOTIFY) then
+    GTKGetDevicePointer(Event^.window, Event^.device,
+      @Event^.x, @Event^.y, @Event^.state);
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1284,6 +1307,10 @@ function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
   Result := true; // stop event propagation
+
+  if (Event^.is_hint <> 0) and (Event^._type = GDK_MOTION_NOTIFY) then
+    GTKGetDevicePointer(Event^.window, Event^.device,
+      @Event^.x, @Event^.y, @Event^.state);
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',
