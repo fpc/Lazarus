@@ -212,7 +212,7 @@ msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "No&me Componente:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
@@ -623,7 +623,7 @@ msgstr "Mover A&baixo"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Mover campo abaixo"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
@@ -631,7 +631,7 @@ msgstr "Mover Ac&ima"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Mover campo acima"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -749,7 +749,7 @@ msgstr "&Selecionar tudo"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Selecionar todos campos"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1118,7 +1118,7 @@ msgstr "&Desmarcar tudo"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Desmarcar todos"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"

@@ -416,7 +416,7 @@ msgstr "Realçar parênteses"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket pairs"
-msgstr ""
+msgstr "Correspondendo pares parênteses"
 
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
@@ -2318,11 +2318,11 @@ msgstr "Extensão Pascal padrão"
 
 #: lazarusidestrconsts.dlgpasextkeywords
 msgid "Highlight control statements as keywords"
-msgstr ""
+msgstr "Destacar declarações de controle como palavras-chave"
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal keyword options"
-msgstr ""
+msgstr "Opções palavras-chave Pascal Extendido"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
@@ -2330,7 +2330,7 @@ msgstr "Enviar opções ao vinculador (espaço como delimitador)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight String keyword(s)"
-msgstr ""
+msgstr "Destacar palavra(s)-chave \"String\""
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
@@ -2344,7 +2344,7 @@ msgstr "Nenhum"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptstring
 msgid "Only \"String\""
-msgstr ""
+msgstr "Apenas \"String\""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -3420,7 +3420,7 @@ msgstr "Documentação:"
 
 #: lazarusidestrconsts.lisaboutide
 msgid "About IDE"
-msgstr ""
+msgstr "Sobre IDE"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
@@ -3751,7 +3751,7 @@ msgstr "Continuar autom. após:"
 
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
-msgstr ""
+msgstr "Marcações e Correspondências"
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
@@ -3782,10 +3782,9 @@ msgid "do not add character"
 msgstr "não adicionar caractere"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-#, fuzzy
 #| msgid "Automatic features"
 msgid "Completion and Hints"
-msgstr "Características autom."
+msgstr "Complementos e Dicas"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
@@ -5426,7 +5425,7 @@ msgstr "Configurar %sConstrução Lazarus%s"
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
-msgstr ""
+msgstr "Lazarus será reconstruído com o seguinte perfil:%sContinuar?"
 
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
@@ -5437,10 +5436,9 @@ msgid "Confirm delete"
 msgstr "Confirmar exclusão"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-#, fuzzy
 #| msgid "Do you want to rebuild Lazarus?"
 msgid "Do you want to rebuild Lazarus with profile: %s ?"
-msgstr "Você deseja reconstruir o Lazarus?"
+msgstr "Você deseja reconstruir o Lazarus com o perfil: %s?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -5482,7 +5480,7 @@ msgstr "Continuar"
 
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
-msgstr ""
+msgstr "Continuar e não perguntar mais"
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -6121,7 +6119,7 @@ msgstr "Excluir valor %s%s%s"
 
 #: lazarusidestrconsts.lisdeletevalue2
 msgid "Delete value %s"
-msgstr ""
+msgstr "Excluir valor %s"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
@@ -6213,7 +6211,7 @@ msgstr "Diretivas"
 
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
-msgstr ""
+msgstr "Diretivas para nova unidade"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -6309,7 +6307,7 @@ msgstr "Não exibir a tela de início"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
 msgid "Do not show this dialog for this project"
-msgstr ""
+msgstr "Não exibir este diálogo para este projeto"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
@@ -7607,7 +7605,7 @@ msgstr "Informação sobre %s"
 
 #: lazarusidestrconsts.lisinformationaboutusedfpc
 msgid "Information about used FPC"
-msgstr ""
+msgstr "Informação sobre FPC usado"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -7779,7 +7777,7 @@ msgstr "Linha, coluna inválida na mensagem%s%s"
 
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
-msgstr ""
+msgstr "Modo inválido %s"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -7855,7 +7853,7 @@ msgstr "Todos os arquivos do projeto serão abertos no editor após conversão"
 
 #: lazarusidestrconsts.liskeepininstalllist
 msgid "Keep in install list"
-msgstr ""
+msgstr "Manter na lista instalação"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -8495,7 +8493,7 @@ msgstr "Construir"
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
-msgstr ""
+msgstr "Construção Avançada"
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8536,13 +8534,12 @@ msgstr "Limpar+Construir"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
-msgstr ""
+msgstr "Configurações Comuns"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-#, fuzzy
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
-msgstr "Confirmar antes de reconstruir o Lazarus"
+msgstr "Confirmar antes de construir"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
@@ -8627,10 +8624,9 @@ msgid "New name for profile:"
 msgstr "Novo nome para perfil:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-#, fuzzy
 #| msgid "Restart after building the IDE"
 msgid "Restart after building IDE"
-msgstr "Reiniciar após construir com sucesso"
+msgstr "Reiniciar após construir IDE"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
@@ -8992,14 +8988,13 @@ msgid "Build File"
 msgstr "Construir Arquivo"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-#, fuzzy
 #| msgid "Build Lazarus"
 msgid "Build Lazarus with current profile"
-msgstr "Construir Lazarus"
+msgstr "Construir Lazarus com o perfil atual"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
-msgstr ""
+msgstr "Construit Lazarus com perfil: %s"
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10139,7 +10134,7 @@ msgstr "Sem arquivo de segurança"
 
 #: lazarusidestrconsts.lisnobuildprofilesselected
 msgid "No profiles are selected to be built."
-msgstr ""
+msgstr "Nenhum perfil selecionado para ser construído."
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -11828,10 +11823,9 @@ msgid "Private Method"
 msgstr "Método Privado"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
 #| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
 msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
-msgstr "Provavelmente você necessita instalar alguns pacotes antes de continuar.%s%sAviso:%sAs seguintes unidades pertencem ao pacote que ainda não está instalado na IDE. Se você tentar abrir um formulário que use estes componentes, obterá erros de componentes faltando e a carga do formulário irá criar provalvemente resultados desagradáveis.%s%sIsso não tem nenhum impacto na abertura do projeto ou qualquer de seus fontes.%s%sIsso apenas significa que é uma péssima idéia abrir formulários para desenho antes de instalar os pacotes que estão faltando.%s%s"
+msgstr "Provavelmente você necessita instalar alguns pacotes antes de continuar.%s%sAviso:%sO projeto usa os seguintes pacotes de tempo de desenho, que podem ser necessários para abrir o formulário no editor. Se você continuar, poderá obter erros de componentes faltando e a carga do formulário provavelmente criará resultados indesejáveis.%s%sÉ recomendado cancelar e instalar estes pacotes primeiro.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -12257,7 +12251,7 @@ msgstr "Remover todas unidades"
 
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
-msgstr ""
+msgstr "Remover da lista instalação"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
@@ -12902,11 +12896,11 @@ msgstr "Sucesso"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
-msgstr ""
+msgstr "Caminho inclusões suspeito"
 
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
-msgstr ""
+msgstr "Caminho unidade suspeito"
 
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
@@ -13236,11 +13230,11 @@ msgstr "O proprietário tem este nome"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "O pacote %s adiciona o caminho \"%s\" ao caminho de inclusões da IDE.%sProvavelmente trata-se de uma má configuração do pacote."
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "O pacote %s adiciona o caminho \"%s\" ao caminho de unidades da IDE.%sProvavelmente trata-se de uma má configuração do pacote."
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
@@ -13260,7 +13254,7 @@ msgstr "O programa %s\"make\"%s não foi encontrado.%s Esta ferramenta é necess
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
-msgstr ""
+msgstr "As opções de compilação do projeto e as diretivas do fonte principal diferem. Para a nova unidade, o modo e o tipo \"string\" das opções do projeto são usados:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
@@ -14035,7 +14029,7 @@ msgstr "Usar..."
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
-msgstr ""
+msgstr "Usar \"Ansistrings\""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
