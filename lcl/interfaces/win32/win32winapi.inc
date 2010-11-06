@@ -229,6 +229,26 @@ var
     end;
   end;
 
+  procedure CallEraseBkgndHandler;
+  var
+    ARect: TRect;
+  begin
+    // if window has a default bg brush or no DC is passed then just call a
+    // default windows handler
+    if (GetClassLongPtr(Handle, GCLP_HBRBACKGROUND) <> 0) or (TLMessage(Message).WParam = 0) then
+    begin
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+    end
+    else
+    begin
+      //DebugLn(['No class color for window: ', WndClassName(Handle)]);
+      // erase with clBtnFace color
+      if GetClientRect(Handle, ARect) then
+        FillRect(HDC(TLMessage(Message).WParam), ARect, GetSysColorBrush(COLOR_BTNFACE));
+    end;
+  end;
+
 begin
   Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
@@ -236,7 +256,8 @@ begin
       CallWin32PaintHandler;
     LM_MOUSEWHEEL: // provide default wheel scrolling functionality
       CallMouseWheelHandler;
-    LM_ERASEBKGND,
+    LM_ERASEBKGND:
+      CallEraseBkgndHandler;
     LM_GETDLGCODE,
     LM_HELP:
       with TLMessage(Message) do
