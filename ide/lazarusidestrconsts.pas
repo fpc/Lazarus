@@ -2816,6 +2816,22 @@ resourcestring
   lisLazBuildDefines = 'Defines';
   lisLazBuildEditDefines = 'Edit Defines';
   lisLazBuildEditDefinesDialogCaption = 'Edit Defines';
+  lisLazBuildNameOfTheActiveProfile = 'Name of the active profile';
+  lisLazBuildManageProfiles2 = 'Manage profiles';
+  lisLazBuildDefinesWithoutD = 'Defines without -d';
+  lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
+  lisLazBuildLikeMakeCleanOnCmdLine = 'Like "make clean" on cmd line';
+  lisLazBuildUpadateRevisionInfoInAboutLazarusDialog = 'Upadate revision info '
+    +'in "About Lazarus" dialog';
+  lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary = 'Compile '
+    +'selected static packages into Lazarus binary';
+  lisLazBuildRestartLazarusAutomaticallyAfterBuildingTheIDEHasN = 'Restart '
+    +'Lazarus automatically after building the IDE (has no effect when '
+    +'building other parts)';
+  lisLazBuildShowConfirmationDialogWhenBuildingDirectlyFromTool = 'Show confirm'
+    +'ation dialog when building directly from Tools menu';
+  lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile = 'Edit list of '
+    +'defines which can be used by any profile';
   
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';

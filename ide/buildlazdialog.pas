@@ -787,6 +787,21 @@ begin
   DefinesLabel.Caption := lisLazBuildDefines;
   DefinesButton.Caption := lisLazBuildEditDefines;
 
+  BuildProfileComboBox.Hint := lisLazBuildNameOfTheActiveProfile;
+  BuildProfileButton.Hint := lisLazBuildManageProfiles2;
+  DefinesListBox.Hint := lisLazBuildDefinesWithoutD;
+  OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
+  CleanAllCheckBox.Hint := lisLazBuildLikeMakeCleanOnCmdLine;
+  UpdateRevisionIncCheckBox.Hint :=
+    lisLazBuildUpadateRevisionInfoInAboutLazarusDialog;
+  WithStaticPackagesCheckBox.Hint :=
+    lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary;
+  RestartAfterBuildCheckBox.Hint :=
+    lisLazBuildRestartLazarusAutomaticallyAfterBuildingTheIDEHasN;
+  ConfirmBuildCheckBox.Hint :=
+    lisLazBuildShowConfirmationDialogWhenBuildingDirectlyFromTool;
+  DefinesButton.Hint := lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile;
+
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
   CompileAdvancedButton.LoadGlyphFromLazarusResource('menu_build_all');
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
