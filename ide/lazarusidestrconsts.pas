@@ -2800,7 +2800,7 @@ resourcestring
   lisLazBuildBuildAdvanced = 'Build Advanced';
   lisLazBuildCleanBuild = 'Clean+Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';
-  lisLazBuildProfile ='Build Profile';
+  lisLazBuildProfile ='Profile to Build';
   lisLazBuildRefresh ='Refresh';
   lisLazBuildErrorWritingFile = 'Error writing file';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
