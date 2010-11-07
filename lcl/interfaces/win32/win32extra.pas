@@ -42,6 +42,8 @@ const
   LAYOUT_VBH                        = $00000004; // Vertical before horizontal
   LAYOUT_ORIENTATIONMASK            = (LAYOUT_RTL or LAYOUT_BTT or LAYOUT_VBH);
   LAYOUT_BITMAPORIENTATIONPRESERVED = $00000008;
+  // not defined in fpc 2.4.3
+  GCLP_HBRBACKGROUND                = -10;
 
 type
   tagMENUBARINFO = record
