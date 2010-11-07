@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-07 16:17+0300\n"
+"PO-Revision-Date: 2010-11-07 16:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8560,8 +8560,14 @@ msgid "Defines"
 msgstr "Определения"
 
 #: lazarusidestrconsts.lislazbuildeditdefines
+msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
 msgstr "Редактировать определения"
+
+#: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
+msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
+msgid "Edit Defines"
+msgstr "Редактирование определений"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"

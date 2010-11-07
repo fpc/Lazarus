@@ -8560,6 +8560,12 @@ msgid "Defines"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildeditdefines
+msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
+msgid "Edit Defines"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
+msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
 msgstr ""
 
