@@ -8498,11 +8498,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Esegui build"
 
-#: lazarusidestrconsts.lislazbuildbuild2
-msgctxt "lazarusidestrconsts.lislazbuildbuild2"
-msgid "Build"
-msgstr "Esegui build"
-
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-07 16:35+0300\n"
+"PO-Revision-Date: 2010-11-07 17:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8496,11 +8496,6 @@ msgstr "Расширенные параметры сборки"
 
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
-msgid "Build"
-msgstr "Сборка"
-
-#: lazarusidestrconsts.lislazbuildbuild2
-msgctxt "lazarusidestrconsts.lislazbuildbuild2"
 msgid "Build"
 msgstr "Собрать"
 

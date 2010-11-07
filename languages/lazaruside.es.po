@@ -8495,11 +8495,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Reconstruir"
 
-#: lazarusidestrconsts.lislazbuildbuild2
-msgctxt "lazarusidestrconsts.lislazbuildbuild2"
-msgid "Build"
-msgstr "Reconstruir"
-
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"

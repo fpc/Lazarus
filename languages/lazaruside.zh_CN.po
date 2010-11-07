@@ -8498,11 +8498,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "构建"
 
-#: lazarusidestrconsts.lislazbuildbuild2
-msgctxt "lazarusidestrconsts.lislazbuildbuild2"
-msgid "Build"
-msgstr "构建"
-
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"

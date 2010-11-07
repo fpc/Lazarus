@@ -8433,11 +8433,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "إبن"
 
-#: lazarusidestrconsts.lislazbuildbuild2
-msgctxt "lazarusidestrconsts.lislazbuildbuild2"
-msgid "Build"
-msgstr "إبن"
-
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
