@@ -6,18 +6,17 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons;
+  StdCtrls, ButtonPanel, LazarusIDEStrConsts;
 
 type
 
   { TAddProfileForm }
 
   TAddProfileForm = class(TForm)
-    CancelButton: TBitBtn;
-    NameLabel: TLabel;
+    ButtonPanel: TButtonPanel;
     NameEdit: TEdit;
     ProfileHeaderLabel: TLabel;
-    OKButton: TBitBtn;
+    procedure FormCreate(Sender:TObject);
   private
 
   public
@@ -31,6 +30,14 @@ implementation
 
 {$R *.lfm}
 
+
+{ TAddProfileForm }
+
+procedure TAddProfileForm.FormCreate(Sender:TObject);
+begin
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
+end;
 
 end.
 
