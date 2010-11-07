@@ -174,6 +174,7 @@ type
 
   TWSCustomPanel = class(TWSCustomControl)
   published
+    class function GetDefaultColor(const AControl: TControl): TColor; override;
   end;
 
   { TWSPanel }
@@ -507,6 +508,13 @@ begin
   if not WSRegisterCustomTrayIcon then
     RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
   Done := True;
+end;
+
+{ TWSCustomPanel }
+
+class function TWSCustomPanel.GetDefaultColor(const AControl: TControl): TColor;
+begin
+  Result := clBtnFace;
 end;
 
 end.

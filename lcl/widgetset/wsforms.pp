@@ -44,9 +44,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Forms,
+  Graphics, Controls, Forms, LCLType,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Controls, LCLType, WSFactory;
+  WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSScrollingWinControl }
@@ -95,6 +95,7 @@ type
       const APopupMode: TPopupMode; const APopupParent: TCustomForm); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
+    class function GetDefaultColor(const AControl: TControl): TColor; override;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -177,6 +178,11 @@ end;
 
 class procedure TWSCustomForm.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 begin
+end;
+
+class function TWSCustomForm.GetDefaultColor(const AControl: TControl): TColor;
+begin
+  Result := clForm;
 end;
    
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

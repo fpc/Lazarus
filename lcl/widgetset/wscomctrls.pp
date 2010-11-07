@@ -45,7 +45,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ComCtrls, Controls, ImgList, StdCtrls,
+  Graphics, ImgList, Controls, StdCtrls, ComCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSToolwin, WSFactory;
 
@@ -59,6 +59,7 @@ type
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); virtual;
     class procedure Update(const AStatusBar: TStatusBar); virtual;
+    class function GetDefaultColor(const AControl: TControl): TColor; override;
   end;
 
   { TWSTabSheet }
@@ -247,6 +248,11 @@ end;
 
 class procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
+end;
+
+class function TWSStatusBar.GetDefaultColor(const AControl: TControl): TColor;
+begin
+  Result := clBtnFace;
 end;
     
 { TWSCustomListView }

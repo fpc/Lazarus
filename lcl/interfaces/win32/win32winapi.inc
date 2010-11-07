@@ -232,20 +232,42 @@ var
   procedure CallEraseBkgndHandler;
   var
     ARect: TRect;
+    AColor: TColor;
+    ABrush: HBrush;
   begin
     // if window has a default bg brush or no DC is passed then just call a
     // default windows handler
-    if (GetClassLongPtr(Handle, GCLP_HBRBACKGROUND) <> 0) or (TLMessage(Message).WParam = 0) then
+    if TLMessage(Message).WParam = 0 then
     begin
       with TLMessage(Message) do
         Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
     end
     else
+    // we have a DC, so lets draw ourself
+    if GetClientRect(Handle, ARect) then
     begin
+      ABrush := GetClassLongPtr(Handle, GCLP_HBRBACKGROUND);
+      if ABrush <> 0 then
+      begin
+        //DebugLn(['Found class color for window: ', WndClassName(Handle)]);
+        FillRect(HDC(TLMessage(Message).WParam), ARect, ABrush);
+        Exit;
+      end;
       //DebugLn(['No class color for window: ', WndClassName(Handle)]);
-      // erase with clBtnFace color
-      if GetClientRect(Handle, ARect) then
-        FillRect(HDC(TLMessage(Message).WParam), ARect, GetSysColorBrush(COLOR_BTNFACE));
+      // get the default color
+      if Sender is TControl then
+        AColor := TWSWinControlClass(TControl(Sender).WidgetSetClass).GetDefaultColor(TControl(Sender))
+      else
+        AColor := clBtnFace;
+      if IsSysColor(AColor) then
+        FillRect(HDC(TLMessage(Message).WParam), ARect, GetSysColorBrush(SysColorToSysColorIndex(AColor)))
+      else
+      begin
+        // not possible since default color must be system color. but who knows?
+        ABrush := CreateSolidBrush(AColor);
+        FillRect(HDC(TLMessage(Message).WParam), ARect, ABrush);
+        DeleteObject(ABrush);
+      end;
     end;
   end;
 

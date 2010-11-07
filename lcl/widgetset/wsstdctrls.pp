@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls, Graphics,
+  Graphics, Controls, StdCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, Classes, WSFactory, Clipbrd;
 
@@ -209,6 +209,7 @@ type
 
   TWSButtonControl = class(TWSWinControl)
   published
+    class function GetDefaultColor(const AControl: TControl): TColor; override;
   end;
 
   { TWSButton }
@@ -773,6 +774,13 @@ begin
 //  if not WSRegisterCustomLabel then
 //    RegisterWSComponent(TCustomLabel, TWSCustomLabel);
   Done := True;
+end;
+
+{ TWSButtonControl }
+
+class function TWSButtonControl.GetDefaultColor(const AControl: TControl): TColor;
+begin
+  Result := clBtnFace;
 end;
 
 end.
