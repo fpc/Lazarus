@@ -8490,6 +8490,11 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Construir"
 
+#: lazarusidestrconsts.lislazbuildbuild2
+msgctxt "lazarusidestrconsts.lislazbuildbuild2"
+msgid "Build"
+msgstr "Construir"
+
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
@@ -8540,6 +8545,14 @@ msgstr "Configurações Comuns"
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Confirmar antes de construir"
+
+#: lazarusidestrconsts.lislazbuilddefines
+msgid "Defines"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildeditdefines
+msgid "Edit Defines"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"

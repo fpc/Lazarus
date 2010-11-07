@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-06 03:05+0300\n"
+"PO-Revision-Date: 2010-11-07 16:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8499,6 +8499,11 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Сборка"
 
+#: lazarusidestrconsts.lislazbuildbuild2
+msgctxt "lazarusidestrconsts.lislazbuildbuild2"
+msgid "Build"
+msgstr "Собрать"
+
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
@@ -8549,6 +8554,14 @@ msgstr "Общие параметры"
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Спросить перед пересборкой"
+
+#: lazarusidestrconsts.lislazbuilddefines
+msgid "Defines"
+msgstr "Определения"
+
+#: lazarusidestrconsts.lislazbuildeditdefines
+msgid "Edit Defines"
+msgstr "Редактировать определения"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"

@@ -8483,6 +8483,11 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Bouw"
 
+#: lazarusidestrconsts.lislazbuildbuild2
+msgctxt "lazarusidestrconsts.lislazbuildbuild2"
+msgid "Build"
+msgstr "Bouw"
+
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
@@ -8531,6 +8536,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuilddefines
+msgid "Defines"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildeditdefines
+msgid "Edit Defines"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
