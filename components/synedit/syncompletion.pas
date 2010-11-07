@@ -162,6 +162,7 @@ type
     procedure WMMouseWheel(var Msg: TLMMouseEvent); message WM_MOUSEWHEEL;
   private
     fCurrentEditor: TComponent;
+    FDoubleClickSelects: Boolean;
     FDrawBorderWidth: Integer;
     FOnDragResized: TNotifyEvent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
@@ -215,6 +216,7 @@ type
              write SetLongLineHintTime default 0;
     property LongLineHintType: TSynCompletionLongHintType read FLongLineHintType
              write FLongLineHintType default sclpExtendRightOnly;
+    property DoubleClickSelects: Boolean read FDoubleClickSelects write FDoubleClickSelects default True;
     property ShowSizeDrag: Boolean read FShowSizeDrag write SetShowSizeDrag default False;
     property OnDragResized: TNotifyEvent read FOnDragResized write FOnDragResized;
   end;
@@ -229,11 +231,13 @@ type
     FWidth: Integer;
     function GetCaseSensitive: boolean;
     function GetClSelect: TColor;
+    function GetDoubleClickSelects: Boolean;
     function GetLongLineHintTime: Integer;
     function GetLongLineHintType: TSynCompletionLongHintType;
     function GetOnKeyDown: TKeyEvent;
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
     function GetOnPositionChanged: TNotifyEvent;
+    function GetShowSizeDrag: Boolean;
     procedure SetCaseSensitive(const AValue: boolean);
     procedure SetClSelect(const Value: TColor);
     function GetCurrentString: string;
@@ -245,6 +249,7 @@ type
     function GetOnValidate: TValidateEvent;
     function GetPosition: Integer;
     procedure SetCurrentString(const Value: string);
+    procedure SetDoubleClickSelects(const AValue: Boolean);
     procedure SetItemList(const Value: TStrings);
     procedure SetLongLineHintTime(const AValue: Integer);
     procedure SetLongLineHintType(const AValue: TSynCompletionLongHintType);
@@ -259,6 +264,7 @@ type
     procedure SetOnValidate(const Value: TValidateEvent);
     function GetOnKeyDelete: TNotifyEvent;
     procedure SetOnKeyDelete(const Value: TNotifyEvent);
+    procedure SetShowSizeDrag(const AValue: Boolean);
     procedure SetWidth(Value: Integer);
     function GetOnUTF8KeyPress: TUTF8KeyPressEvent;
     procedure SetOnUTF8KeyPress(const AValue: TUTF8KeyPressEvent);
@@ -316,6 +322,8 @@ type
              write SetLongLineHintTime default 0;
     property LongLineHintType: TSynCompletionLongHintType read GetLongLineHintType
              write SetLongLineHintType default sclpExtendRightOnly;
+    property DoubleClickSelects: Boolean read GetDoubleClickSelects write SetDoubleClickSelects default True;
+    property ShowSizeDrag: Boolean read GetShowSizeDrag write SetShowSizeDrag default False;
   end;
 
   { TSynCompletion }
@@ -480,6 +488,7 @@ end;
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
+  FDoubleClickSelects := True;
   FHintLock := 0;
   BeginFormUpdate;
   KeyPreview:= True;
@@ -728,9 +737,16 @@ end;
 
 procedure TSynBaseCompletionForm.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  OldPosition: Integer;
 begin
+  OldPosition := Position;
   y := (y - 1) div FFontHeight;
   Position := Scroll.Position + y;
+  if DoubleClickSelects and (ssDouble in Shift) and (Position = OldPosition) and
+     Assigned(OnValidate)
+  then
+    OnValidate(Self, '', Shift);
 end;
 
 procedure TSynBaseCompletionForm.MouseMove(Shift: TShiftState; X,Y: Integer);
@@ -1302,6 +1318,11 @@ begin
   form.CurrentString := Value;
 end;
 
+procedure TSynBaseCompletion.SetDoubleClickSelects(const AValue: Boolean);
+begin
+  Form.DoubleClickSelects := AValue;
+end;
+
 procedure TSynBaseCompletion.SetItemList(const Value: TStrings);
 begin
   form.ItemList := Value;
@@ -1369,6 +1390,11 @@ begin
   Result := Form.ClSelect;
 end;
 
+function TSynBaseCompletion.GetDoubleClickSelects: Boolean;
+begin
+  Result := Form.DoubleClickSelects;
+end;
+
 function TSynBaseCompletion.GetLongLineHintTime: Integer;
 begin
   Result := Form.LongLineHintTime;
@@ -1399,6 +1425,11 @@ begin
   Result := Form.OnPositionChanged;
 end;
 
+function TSynBaseCompletion.GetShowSizeDrag: Boolean;
+begin
+  Result := Form.ShowSizeDrag;
+end;
+
 procedure TSynBaseCompletion.SetCaseSensitive(const AValue: boolean);
 begin
   Form.CaseSensitive := AValue;
@@ -1417,6 +1448,11 @@ end;
 procedure TSynBaseCompletion.SetOnKeyDelete(const Value: TNotifyEvent);
 begin
   form.OnKeyDelete := Value;
+end;
+
+procedure TSynBaseCompletion.SetShowSizeDrag(const AValue: Boolean);
+begin
+  Form.ShowSizeDrag := AValue;
 end;
 
 procedure TSynBaseCompletion.SetWidth(Value: Integer);
