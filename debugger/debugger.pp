@@ -78,7 +78,8 @@ type
     dsPause,
     dsInit,
     dsRun,
-    dsError
+    dsError,
+    dsDestroying
     );
 
   TDBGExceptionType = (
@@ -117,6 +118,11 @@ type
   dsError:
     Something unforseen has happened. A shutdown of the debugger is in
     most cases needed.
+
+  -dsDestroying
+    The debugger is about to be destroyed.
+    Should normally happen immediate on calling Release.
+    But the debugger may be in nested calls, and has to exit them first.
   --------------------------------------------------------------------------
 
 }
@@ -1323,6 +1329,7 @@ type
                              virtual; abstract; // True if succesful
     procedure SetExitCode(const AValue: Integer);
     procedure SetState(const AValue: TDBGState);
+    procedure DoRelease; virtual;
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
@@ -1339,6 +1346,7 @@ type
 
     procedure Init; virtual;                         // Initializes the debugger
     procedure Done; virtual;                         // Kills the debugger
+    procedure Release;                               // Free/Destroy self
     procedure Run;                                   // Starts / continues debugging
     procedure Pause;                                 // Stops running
     procedure Stop;                                  // quit debugging
@@ -1413,7 +1421,8 @@ const
     'Pause',
     'Init',
     'Run',
-    'Error'
+    'Error',
+    'Destroying'
     );
 
   DBGBreakPointActionNames: array[TIDEBreakPointAction] of string = (
@@ -1446,7 +1455,8 @@ const
              dcDisassemble],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
-  {dsError} [dcStop]
+  {dsError} [dcStop],
+  {dsDestroying} []
   );
 
 var
@@ -1652,6 +1662,12 @@ begin
   SetState(dsNone);
   FEnvironment.Clear;
   FCurEnvironment.Clear;
+end;
+
+procedure TDebugger.Release;
+begin
+  if Self <> nil
+  then Self.DoRelease;
 end;
 
 procedure TDebugger.DoCurrent(const ALocation: TDBGLocationRec);
@@ -1903,6 +1919,17 @@ procedure TDebugger.SetState(const AValue: TDBGState);
 var
   OldState: TDBGState;
 begin
+  // dsDestroying is final, do not unset
+  if FState = dsDestroying
+  then exit;
+
+  // dsDestroying must be silent. The ide believes the debugger is gone already
+  if AValue = dsDestroying
+  then begin
+    FState := AValue;
+    exit;
+  end;
+
   if AValue <> FState
   then begin
     OldState := FState;
@@ -1915,6 +1942,11 @@ begin
     FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
+end;
+
+procedure TDebugger.DoRelease;
+begin
+  Self.Free;
 end;
 
 procedure TDebugger.StepInto;

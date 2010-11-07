@@ -132,6 +132,7 @@ type
     procedure DoUnockQueueExecute; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
+    procedure DoCancel; virtual;
     procedure DoOnCanceled;
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String): Boolean; overload;
@@ -185,6 +186,7 @@ type
     FAsmCache: TTypedMap;
     FAsmCacheIter: TTypedMapIterator;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
+    FReleaseLock: Integer;
 
     // GDB info (move to ?)
     FGDBVersion: String;
@@ -215,6 +217,10 @@ type
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                              out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
     function  GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
+
+    // prevent destruction while nested in any call
+    procedure LockRelease;
+    procedure UnlockRelease;
 
     procedure CallStackSetCurrent(AIndex: Integer);
     function  ConvertPascalExpression(var AExpression: String): Boolean;
@@ -250,6 +256,7 @@ type
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
+    procedure CancelAllQueued;
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
     procedure QueueExecuteLock;
@@ -277,6 +284,7 @@ type
     property  TargetFlags: TGDBMITargetFlags read FTargetFlags write FTargetFlags;
     property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
+    procedure DoRelease; override;   // Destroy self (or schedule)
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -1594,6 +1602,7 @@ end;
 
 constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
+  FReleaseLock := 0;
   FBreakErrorBreakID := -1;
   FRunErrorBreakID := -1;
   FExceptionBreakID := -1;
@@ -1653,6 +1662,7 @@ end;
 
 destructor TGDBMIDebugger.Destroy;
 begin
+  LockRelease;
   inherited;
   ClearCommandQueue;
   FreeAndNil(FCommandQueue);
@@ -1664,9 +1674,15 @@ end;
 
 procedure TGDBMIDebugger.Done;
 begin
-  if State = dsRun then GDBPause(True);
-  ExecuteCommand('-gdb-exit', []);
-  inherited Done;
+  LockRelease;
+  try
+    CancelAllQueued;
+    if State = dsRun then GDBPause(True);
+    ExecuteCommand('-gdb-exit', []);
+    inherited Done;
+  finally
+    UnlockRelease;
+  end;
 end;
 
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
@@ -1679,6 +1695,15 @@ begin
   end;
 
   inherited DoState(OldState);
+end;
+
+procedure TGDBMIDebugger.DoRelease;
+begin
+  SetState(dsDestroying);
+  if FReleaseLock > 0
+  then exit;
+
+  inherited DoRelease;
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -1748,21 +1773,25 @@ procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand);
 var
   R: Boolean;
   Cmd: TGDBMIDebuggerCommand;
+  SavedInExecuteCount: LongInt;
 begin
-  FCommandQueue.Add(ACommand);
-  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
-  then begin
-    {$IFDEF GDMI_QUEUE_DEBUG}
-    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
-    {$ENDIF}
-    ACommand.DoQueued;
-    Exit;
-  end;
+  SavedInExecuteCount := FInExecuteCount;
+  LockRelease;
+  try
+    FCommandQueue.Add(ACommand);
+    if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
+    then begin
+      {$IFDEF GDMI_QUEUE_DEBUG}
+      debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
+      {$ENDIF}
+      ACommand.DoQueued;
+      Exit;
+    end;
 
-  // If we are here we can process the command directly
-  repeat
-    Inc(FInExecuteCount);
-    try
+    // If we are here we can process the command directly
+    repeat
+      Inc(FInExecuteCount);
+
       Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
       FCommandQueue.Delete(0);
       {$IFDEF GDMI_QUEUE_DEBUG}
@@ -1771,43 +1800,58 @@ begin
       R := Cmd.Execute;
       Cmd.DoFinished;
 
-      if State = dsError
+      Dec(FInExecuteCount);
+
+      if State in [dsError, dsDestroying]
       then begin
         //DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
         Break;
       end;
 
-    finally
-      Dec(FInExecuteCount);
-    end;
-
-    if  FCommandQueue.Count = 0
-    then begin
-      if  (FInExecuteCount = 0)                        // not in Recursive call
-      and (FPauseWaitState = pwsInternal)
-      and (State = dsRun)
+      if  FCommandQueue.Count = 0
       then begin
-        // reset state
-        FPauseWaitState := pwsNone;
-        // insert continue command
-        Cmd := TGDBMIDebuggerSimpleCommand.Create(Self, '-exec-continue', [], [], nil, 0);
-        FCommandQueue.Add(Cmd);
-        {$IFDEF GDMI_QUEUE_DEBUG}
-        debugln(['Internal Queueing: exec-continue']);
-        {$ENDIF}
-      end
-      else Break; // Queue empty
-    end;
+        if  (FInExecuteCount = 0)                        // not in Recursive call
+        and (FPauseWaitState = pwsInternal)
+        and (State = dsRun)
+        then begin
+          // reset state
+          FPauseWaitState := pwsNone;
+          // insert continue command
+          Cmd := TGDBMIDebuggerSimpleCommand.Create(Self, '-exec-continue', [], [], nil, 0);
+          FCommandQueue.Add(Cmd);
+          {$IFDEF GDMI_QUEUE_DEBUG}
+          debugln(['Internal Queueing: exec-continue']);
+          {$ENDIF}
+        end
+        else Break; // Queue empty
+      end;
 
-  until not R;
-  {$IFDEF GDMI_QUEUE_DEBUG}
-  debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
-  {$ENDIF}
+    until not R;
+    {$IFDEF GDMI_QUEUE_DEBUG}
+    debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
+    {$ENDIF}
+  finally
+    UnlockRelease;
+    FInExecuteCount := SavedInExecuteCount;
+  end;
 end;
 
 procedure TGDBMIDebugger.UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 begin
   FCommandQueue.Remove(ACommand);
+end;
+
+procedure TGDBMIDebugger.CancelAllQueued;
+var
+  i: Integer;
+begin
+  i := FCommandQueue.Count - 1;
+  while i >= 0 do begin
+    TGDBMIDebuggerCommand(FCommandQueue[i]).Cancel;
+    dec(i);
+    if i >= FCommandQueue.Count
+    then i := FCommandQueue.Count - 1;
+  end;
 end;
 
 class function TGDBMIDebugger.ExePaths: String;
@@ -2482,6 +2526,18 @@ begin
   LinesList.Free;
 end;
 
+procedure TGDBMIDebugger.LockRelease;
+begin
+  inc(FReleaseLock);
+end;
+
+procedure TGDBMIDebugger.UnlockRelease;
+begin
+  dec(FReleaseLock);
+  if (FReleaseLock = 0) and (State = dsDestroying)
+  then Release;
+end;
+
 function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
   Result := False;
@@ -2727,37 +2783,42 @@ procedure TGDBMIDebugger.Init;
 var
   Options: String;
 begin
-  FPauseWaitState := pwsNone;
-  FInExecuteCount := 0;
+  LockRelease;
+  try
+    FPauseWaitState := pwsNone;
+    FInExecuteCount := 0;
 
-  Options := '-silent -i mi -nx';
+    Options := '-silent -i mi -nx';
 
-  if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
-  then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
+    if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
+    then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
 
-  if CreateDebugProcess(Options)
-  then begin
-    if not ParseInitialization
+    if CreateDebugProcess(Options)
     then begin
+      if not ParseInitialization
+      then begin
+        SetState(dsError);
+        Exit;
+      end;
+
+      ExecuteCommand('-gdb-set confirm off', []);
+      // for win32, turn off a new console otherwise breaking gdb will fail
+      // ignore the error on other platforms
+      ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
+
+      if not ParseGDBVersionMI then ParseGDBVersion;
+      CheckGDBVersion;
+
+      inherited Init;
+    end
+    else begin
+      if DebugProcess = nil
+      then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
+      else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine]), mtError, [mbOK], 0);
       SetState(dsError);
-      Exit;
     end;
-
-    ExecuteCommand('-gdb-set confirm off', []);
-    // for win32, turn off a new console otherwise breaking gdb will fail
-    // ignore the error on other platforms
-    ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
-
-    if not ParseGDBVersionMI then ParseGDBVersion;
-    CheckGDBVersion;
-
-    inherited Init;
-  end
-  else begin
-    if DebugProcess = nil
-    then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
-    else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine]), mtError, [mbOK], 0);
-    SetState(dsError);
+  finally
+    UnlockRelease;
   end;
 end;
 
@@ -3244,21 +3305,26 @@ end;
 
 function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
 begin
-  case ACommand of
-    dcRun:         Result := GDBRun;
-    dcPause:       Result := GDBPause(False);
-    dcStop:        Result := GDBStop;
-    dcStepOver:    Result := GDBStepOver;
-    dcStepInto:    Result := GDBStepInto;
-    dcStepOut:     Result := GDBStepOut;
-    dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
-    dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
-    dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^),TGDBType(AParams[2].VPointer^));
-    dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
-    dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
-    dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
-                                            String(AParams[3].VPointer^), String(AParams[4].VPointer^),
-                                            String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
+  LockRelease;
+  try
+    case ACommand of
+      dcRun:         Result := GDBRun;
+      dcPause:       Result := GDBPause(False);
+      dcStop:        Result := GDBStop;
+      dcStepOver:    Result := GDBStepOver;
+      dcStepInto:    Result := GDBStepInto;
+      dcStepOut:     Result := GDBStepOut;
+      dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^),TGDBType(AParams[2].VPointer^));
+      dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
+      dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
+      dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
+                                              String(AParams[3].VPointer^), String(AParams[4].VPointer^),
+                                              String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
+    end;
+  finally
+    UnlockRelease;
   end;
 end;
 
@@ -5505,8 +5571,6 @@ begin
   OldState := FState;
   FState := NewState;
   DoStateChanged(OldState);
-  if State = dcsCanceled
-  then DoOnCanceled;
   if State in [dcsFinished, dcsCanceled]
   then DoFree;
 end;
@@ -5536,6 +5600,11 @@ procedure TGDBMIDebuggerCommand.DoOnExecuted;
 begin
   if assigned(FOnExecuted) then
     FOnExecuted(self);
+end;
+
+procedure TGDBMIDebuggerCommand.DoCancel;
+begin
+  // empty
 end;
 
 procedure TGDBMIDebuggerCommand.DoOnCanceled;
@@ -5915,9 +5984,9 @@ end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
 begin
-  if State <> dcsQueued
-  then exit;
   FTheDebugger.UnQueueCommand(Self);
+  DoCancel;
+  DoOnCanceled;
   SetState(dcsCanceled);
 end;
 

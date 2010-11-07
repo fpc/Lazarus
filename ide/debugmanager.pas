@@ -1503,8 +1503,8 @@ procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
 const
   // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-    // dsNone, dsIdle, dsStop, dsPause, dsInit,     dsRun,      dsError
-    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger, itDebugger
+    // dsNone, dsIdle, dsStop, dsPause, dsInit,     dsRun,      dsError,    dsDestroying
+    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger, itDebugger, itNone
   );
   //STATENAME: array[TDBGState] of string = (
   //  'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
@@ -2259,7 +2259,7 @@ var
 begin
   dbg := FDebugger;
   SetDebugger(nil);
-  dbg.Free;
+  dbg.Release;
   FManagerStates := [];
 
   if MainIDE.ToolStatus = itDebugger
