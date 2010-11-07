@@ -41,9 +41,9 @@ unit SynCompletion;
 interface
 
 uses
-  LCLProc, LCLIntf, LCLType, SynEditMiscProcs,
-  Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Menus,
-  SysUtils, SynEditKeyCmds, SynEdit, SynEditTypes;
+  LCLProc, LCLIntf, LCLType, LMessages, messages, Classes, Graphics, Forms,
+  Controls, StdCtrls, ExtCtrls, Menus, SysUtils,
+  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes;
 
 type
   TSynBaseCompletionPaintItem =
@@ -135,6 +135,7 @@ type
     FHintTimer: TTimer;
     FLongLineHintTime: Integer;
     FLongLineHintType: TSynCompletionLongHintType;
+    FMouseWheelAccumulator: Integer;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -158,6 +159,7 @@ type
     procedure DoOnResize; override;
     procedure SetBackgroundColor(const AValue: TColor);
     procedure FontChanged(Sender: TObject); override;
+    procedure WMMouseWheel(var Msg: TLMMouseEvent); message WM_MOUSEWHEEL;
   private
     fCurrentEditor: TComponent;
     FDrawBorderWidth: Integer;
@@ -982,6 +984,19 @@ begin
   finally
     dec(FResizeLock);
   end;
+end;
+
+procedure TSynBaseCompletionForm.WMMouseWheel(var Msg: TLMMouseEvent);
+const
+  WHEEL_DELTA = 120;
+var
+  WheelClicks: Integer;
+begin
+  Inc(FMouseWheelAccumulator, Msg.WheelDelta);
+  WheelClicks := FMouseWheelAccumulator div WHEEL_DELTA;
+  FMouseWheelAccumulator := FMouseWheelAccumulator - WheelClicks * WHEEL_DELTA;
+  WheelClicks := WheelClicks * Mouse.WheelScrollLines;
+  Scroll.Position := Max(0, Min(FItemList.Count - NbLinesInWindow, Scroll.Position - WheelClicks));
 end;
 
 procedure TSynBaseCompletionForm.SetLongLineHintTime(const AValue: Integer);
