@@ -2797,7 +2797,6 @@ resourcestring
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
-  lisLazBuildBuild2 = 'Build';
   lisLazBuildBuildAdvanced = 'Build Advanced';
   lisLazBuildCleanBuild = 'Clean+Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';

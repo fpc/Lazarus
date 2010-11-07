@@ -778,7 +778,7 @@ begin
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
-  CompileButton.Caption := lisLazBuildBuild2;
+  CompileButton.Caption := lisLazBuildBuild;
   CompileAdvancedButton.Caption := lisLazBuildBuildAdvanced;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
