@@ -1118,7 +1118,7 @@ procedure TSynEditMarkList.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aByt
   aLineBrkCnt: Integer; aText: String);
 var
   i: Integer;
-  CurLine: TSynEditMarkLine;
+  CurLine, NextLine: TSynEditMarkLine;
   LinePos, LineBSize: Integer;
   f: Boolean;
   Mrk: TSynEditMark;
@@ -1151,6 +1151,7 @@ begin
     if (LinePos = aLinePos) then
       CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
     while (CurLine <> nil) and (LinePos <= aLinePos - aLineBrkCnt) do begin
+      NextLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
       f := LinePos = aLinePos - aLineBrkCnt;
       i := CurLine.Count - 1;
       while i >= 0 do begin
@@ -1162,7 +1163,7 @@ begin
           Mrk.Column := aBytePos;  // or delete ?
         dec(i);
       end;
-      CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
+      CurLine := NextLine;
     end;
     if CurLine <> nil then FInternalIterator.GotoMark(CurLine[0]); // TODO: better notification system
     FMarkLines.AdjustForLinesDeleted(aLinePos + 1, -aLineBrkCnt);
