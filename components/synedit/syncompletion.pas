@@ -41,7 +41,7 @@ unit SynCompletion;
 interface
 
 uses
-  LCLProc, LCLIntf, LCLType, LMessages, messages, Classes, Graphics, Forms,
+  LCLProc, LCLIntf, LCLType, LMessages, Classes, Graphics, Forms,
   Controls, StdCtrls, ExtCtrls, Menus, SysUtils,
   SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes;
 
@@ -159,7 +159,7 @@ type
     procedure DoOnResize; override;
     procedure SetBackgroundColor(const AValue: TColor);
     procedure FontChanged(Sender: TObject); override;
-    procedure WMMouseWheel(var Msg: TLMMouseEvent); message WM_MOUSEWHEEL;
+    procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
   private
     fCurrentEditor: TComponent;
     FDoubleClickSelects: Boolean;
