@@ -8489,12 +8489,20 @@ msgstr ""
 msgid "Common Settings"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
+msgid "Compile selected static packages into Lazarus binary"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuilddefineswithoutd
+msgid "Defines without -d"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildeditdefines
@@ -8507,6 +8515,10 @@ msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
+msgid "Edit list of defines which can be used by any profile"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
@@ -8516,8 +8528,20 @@ msgstr ""
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
+msgid "Like \"make clean\" on cmd line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildmanageprofiles2
+msgid "Manage profiles"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
+msgid "Name of the active profile"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnewprof
@@ -8540,6 +8564,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
+msgid "Options passed to compiler"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
@@ -8593,9 +8621,17 @@ msgstr ""
 msgid "Restart after building IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Stoor voorkeure"
+
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+msgid "Show confirmation dialog when building directly from Tools menu"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8611,6 +8647,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildunabletowritefile
 msgid "Unable to write file \"%s\":%s"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
+msgid "Upadate revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc

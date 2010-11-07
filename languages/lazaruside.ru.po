@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-07 17:07+0300\n"
+"PO-Revision-Date: 2010-11-07 18:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8545,6 +8545,10 @@ msgstr "Очистить+Собрать"
 msgid "Common Settings"
 msgstr "Общие параметры"
 
+#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
+msgid "Compile selected static packages into Lazarus binary"
+msgstr "Включить выбранные пакеты в исполнимый файл Lazarus статически"
+
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
@@ -8553,6 +8557,10 @@ msgstr "Спросить перед пересборкой"
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Определения"
+
+#: lazarusidestrconsts.lislazbuilddefineswithoutd
+msgid "Defines without -d"
+msgstr "Определения без -d"
 
 #: lazarusidestrconsts.lislazbuildeditdefines
 msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
@@ -8564,6 +8572,10 @@ msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
 msgstr "Редактирование определений"
 
+#: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
+msgid "Edit list of defines which can be used by any profile"
+msgstr "Редактировать список определений для использования любым профилем"
+
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
@@ -8573,13 +8585,25 @@ msgstr "Ошибка записи файла"
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild неинтерактивен, остановка."
 
+#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
+msgid "Like \"make clean\" on cmd line"
+msgstr "Аналог команды \"make clean\" в командной строке"
+
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
 msgstr "Управление профилями сборки"
 
+#: lazarusidestrconsts.lislazbuildmanageprofiles2
+msgid "Manage profiles"
+msgstr "Управление профилями"
+
+#: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
+msgid "Name of the active profile"
+msgstr "Имя активного профиля"
+
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
-msgstr "Добавить новый профиль"
+msgstr "Добавление нового профиля"
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
@@ -8598,6 +8622,10 @@ msgstr "ОК"
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Параметры:"
+
+#: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
+msgid "Options passed to compiler"
+msgstr "Параметры, передаваемые компилятору"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Build Profile"
@@ -8651,9 +8679,17 @@ msgstr "Новое имя профиля:"
 msgid "Restart after building IDE"
 msgstr "Перезапустить после сборки IDE"
 
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
+msgstr "Перезапустить Lazarus автоматически после сборки IDE (не действует при сборке прочих частей среды разработки)"
+
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
 msgstr "Сохранить параметры"
+
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+msgid "Show confirmation dialog when building directly from Tools menu"
+msgstr "Выводить диалог подтверждения при пересборке напрямую из меню Сервис"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8670,6 +8706,10 @@ msgstr "Целевая ОС:"
 #: lazarusidestrconsts.lislazbuildunabletowritefile
 msgid "Unable to write file \"%s\":%s"
 msgstr "Невозможно записать файл \"%s\":%s"
+
+#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
+msgid "Upadate revision info in \"About Lazarus\" dialog"
+msgstr "Обновить информацию о ревизии в диалоге \"О проекте Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
