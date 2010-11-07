@@ -2318,7 +2318,7 @@ msgstr "Extensão Pascal padrão"
 
 #: lazarusidestrconsts.dlgpasextkeywords
 msgid "Highlight control statements as keywords"
-msgstr "Destacar declarações de controle como palavras-chave"
+msgstr "Realçar declarações de controle como palavras-chave"
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal keyword options"
@@ -2330,7 +2330,7 @@ msgstr "Enviar opções ao vinculador (espaço como delimitador)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight String keyword(s)"
-msgstr "Destacar palavra(s)-chave \"String\""
+msgstr "Realçar palavra(s)-chave \"String\""
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
@@ -5769,7 +5769,7 @@ msgstr "Valores do diretório de Ferramentas de Código"
 
 #: lazarusidestrconsts.lisctdefdefinetemplates
 msgid "Define templates"
-msgstr "Definir modelos"
+msgstr "Modelos definições"
 
 #: lazarusidestrconsts.lisctdefnovariableselected
 msgid "<no variable selected>"
@@ -8538,7 +8538,7 @@ msgstr "Configurações Comuns"
 
 #: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
 msgid "Compile selected static packages into Lazarus binary"
-msgstr ""
+msgstr "Compilar pacotes estáticos selecionados no binário do Lazarus"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #| msgid "Confirm before rebuilding Lazarus"
@@ -8547,25 +8547,25 @@ msgstr "Confirmar antes de construir"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
-msgstr ""
+msgstr "Definições"
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
 msgid "Defines without -d"
-msgstr ""
+msgstr "Definições sem -d"
 
 #: lazarusidestrconsts.lislazbuildeditdefines
 msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
-msgstr ""
+msgstr "Editar Definições"
 
 #: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
 msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
-msgstr ""
+msgstr "Editar Definições"
 
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
-msgstr ""
+msgstr "Editar lista de definições que podem ser usadas por qualquer perfil"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
@@ -8578,7 +8578,7 @@ msgstr "%s%s%s%s\"lazbuild\" não é interativo, abortando agora."
 
 #: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
 msgid "Like \"make clean\" on cmd line"
-msgstr ""
+msgstr "Como \"make clean\" na linha de comando"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -8586,11 +8586,11 @@ msgstr "Gerenciar Perfis Construção"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles2
 msgid "Manage profiles"
-msgstr ""
+msgstr "Gerenciar perfis"
 
 #: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
 msgid "Name of the active profile"
-msgstr ""
+msgstr "Nome do perfil ativo"
 
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
@@ -8616,7 +8616,7 @@ msgstr "Opções:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
-msgstr ""
+msgstr "Opções passadas ao compilador"
 
 #: lazarusidestrconsts.lislazbuildprofile
 #, fuzzy
@@ -8674,7 +8674,7 @@ msgstr "Reiniciar após construir IDE"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
-msgstr ""
+msgstr "Reiniciar Lazarus automaticamente após construção da IDE (sem efeito ao contruir outras partes)"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
@@ -8682,7 +8682,7 @@ msgstr "Salvar configurações"
 
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
 msgid "Show confirmation dialog when building directly from Tools menu"
-msgstr ""
+msgstr "Exibir diálogo confirmação ao contruir diretamente do menu Ferramentas"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -8702,7 +8702,7 @@ msgstr "Impossível escrever arquivo \"%s\":%s"
 
 #: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
 msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
+msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -9050,7 +9050,7 @@ msgstr "Construir Lazarus com o perfil atual"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
-msgstr "Construit Lazarus com perfil: %s"
+msgstr "Construir Lazarus com perfil: %s"
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
