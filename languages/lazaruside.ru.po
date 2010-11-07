@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-07 18:42+0300\n"
+"PO-Revision-Date: 2010-11-07 18:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8552,7 +8552,7 @@ msgstr "Включить выбранные пакеты в исполнимый
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
-msgstr "Спросить перед пересборкой"
+msgstr "Спрашивать перед пересборкой"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -8677,11 +8677,11 @@ msgstr "Новое имя профиля:"
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #| msgid "Restart after building the IDE"
 msgid "Restart after building IDE"
-msgstr "Перезапустить после сборки IDE"
+msgstr "Перезапускать после сборки IDE"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
-msgstr "Перезапустить Lazarus автоматически после сборки IDE (не действует при сборке прочих частей среды разработки)"
+msgstr "Перезапускать Lazarus автоматически после сборки IDE (не действует при сборке прочих частей среды разработки)"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
