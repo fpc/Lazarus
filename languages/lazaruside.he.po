@@ -8592,7 +8592,9 @@ msgid "Options passed to compiler"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
-msgid "Build Profile"
+#, fuzzy
+#| msgid "Build Profile"
+msgid "Profile to Build"
 msgstr "פרופיל בנייה"
 
 #: lazarusidestrconsts.lislazbuildqbobuildall

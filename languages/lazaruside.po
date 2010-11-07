@@ -8556,7 +8556,7 @@ msgid "Options passed to compiler"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
-msgid "Build Profile"
+msgid "Profile to Build"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildqbobuildall

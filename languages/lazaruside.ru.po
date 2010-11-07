@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-07 18:52+0300\n"
+"PO-Revision-Date: 2010-11-08 01:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8628,7 +8628,8 @@ msgid "Options passed to compiler"
 msgstr "Параметры, передаваемые компилятору"
 
 #: lazarusidestrconsts.lislazbuildprofile
-msgid "Build Profile"
+#| msgid "Build Profile"
+msgid "Profile to Build"
 msgstr "Профиль сборки"
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
