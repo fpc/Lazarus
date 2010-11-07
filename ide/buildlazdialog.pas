@@ -746,14 +746,14 @@ begin
   end;
   with MakeModeListHeader.Sections.Add do
   begin
-    Width := MakeModeListHeader.Width - 90 - 3 * ButtonSize;
+    Width := MakeModeListHeader.Width - 120 - 3 * ButtonSize;
     MinWidth := Width;
     MaxWidth := Width;
     Text := lisLazBuildABOPart;
   end;
   with MakeModeListHeader.Sections.Add do
   begin
-    Width := 90;
+    Width := 120;
     MinWidth := Width;
     MaxWidth := Width;
     Text := lisLazBuildABOAction;
@@ -877,7 +877,7 @@ end;
 procedure TConfigureBuildLazarusDlg.MakeModeListHeaderResize(Sender: TObject);
 begin
   if MakeModeListHeader.Sections.Count >= 3 then
-    MakeModeListHeader.Sections[3].Width := MakeModeListHeader.Width - 90 - 3 * ButtonSize;
+    MakeModeListHeader.Sections[3].Width := MakeModeListHeader.Width - 120 - 3 * ButtonSize;
 end;
 
 procedure TConfigureBuildLazarusDlg.MakeModeListHeaderSectionClick(
@@ -953,7 +953,7 @@ begin
   MakeModeListBox.Canvas.TextOut(x+2, ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
                                  CurMmDef.Description);
   // draw make mode text
-  x:=MakeModeListBox.ClientWidth-90;
+  x:=MakeModeListBox.ClientWidth-120;
   MakeModeListBox.Canvas.TextOut(x+2, ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
                                  GetTranslatedMakeModes(CurMmVal));
 end;
