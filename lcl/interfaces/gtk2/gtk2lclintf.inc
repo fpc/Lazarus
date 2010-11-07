@@ -1019,9 +1019,12 @@ begin
     gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
   end;
 
-  ActiveWindow := GetActiveWindow;
-  if ActiveWindow <> 0 then
-    gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+  if (gtk_major_version = 2) and (gtk_minor_version <= 12) then
+  begin
+    ActiveWindow := GetActiveWindow;
+    if ActiveWindow <> 0 then
+      gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+  end;
 
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
