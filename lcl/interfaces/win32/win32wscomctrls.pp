@@ -455,7 +455,10 @@ class procedure TWin32WSStatusBar.SetColor(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'TWin32WSStatusBar.SetColor') then
     Exit;
-  Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
+  if AWinControl.Color = clDefault then
+    Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(TWSWinControlClass(AWinControl.WidgetSetClass).GetDefaultColor(AWinControl)))
+  else
+    Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
 end;
 
 class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
