@@ -778,11 +778,14 @@ begin
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
-  CompileButton.Caption := lisLazBuildBuild;
+  CompileButton.Caption := lisLazBuildBuild2;
   CompileAdvancedButton.Caption := lisLazBuildBuildAdvanced;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   HelpButton.Caption := lisMenuHelp;
+
+  DefinesLabel.Caption := lisLazBuildDefines;
+  DefinesButton.Caption := lisLazBuildEditDefines;
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
   CompileAdvancedButton.LoadGlyphFromLazarusResource('menu_build_all');

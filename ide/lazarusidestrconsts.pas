@@ -2797,6 +2797,7 @@ resourcestring
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
+  lisLazBuildBuild2 = 'Build';
   lisLazBuildBuildAdvanced = 'Build Advanced';
   lisLazBuildCleanBuild = 'Clean+Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';
@@ -2813,6 +2814,8 @@ resourcestring
   lisLazBuildABOPart = 'Part';
   lisLazBuildABOAction = 'Action';
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
+  lisLazBuildDefines = 'Defines';
+  lisLazBuildEditDefines = 'Edit Defines';
   
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
