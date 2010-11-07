@@ -1157,7 +1157,7 @@ var
 begin
   EditForm:=TGenericListEditForm.Create(Nil);
   try
-    EditForm.Caption:='Edit Defines';
+    EditForm.Caption:=lisLazBuildEditDefinesDialogCaption;
     EditForm.Memo1.Lines.Assign(fProfiles.AllDefines);
     if EditForm.ShowModal=mrOK then begin
       CopyUIToProfile(Profiles.Current); // Make sure changed fields don't get lost.

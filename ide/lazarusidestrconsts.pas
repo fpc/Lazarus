@@ -2816,6 +2816,7 @@ resourcestring
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = 'Defines';
   lisLazBuildEditDefines = 'Edit Defines';
+  lisLazBuildEditDefinesDialogCaption = 'Edit Defines';
   
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
