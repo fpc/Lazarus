@@ -229,6 +229,7 @@ var
   Flags: dword;
   WindowDC: HDC;
   WindowPlacement: TWINDOWPLACEMENT;
+  WindowColor: TColor;
 
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
@@ -1355,8 +1356,19 @@ begin
         if ChildWinControl <> nil then
         begin
           Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
-          Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
-          LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
+          WindowColor := ChildWinControl.Brush.Color;
+          if WindowColor = clDefault then
+          begin
+            WindowColor := TWSWinControlClass(ChildWinControl.WidgetSetClass).GetDefaultColor(ChildWinControl);
+            Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
+            if IsSysColor(WindowColor) then
+              LMessage.Result := LResult(GetSysColorBrush(SysColorToSysColorIndex(WindowColor)));
+          end
+          else
+          begin
+            Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
+            LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
+          end;
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;
