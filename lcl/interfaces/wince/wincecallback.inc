@@ -191,6 +191,7 @@ Var
   WindowInfo: PWindowInfo;
   Flags: dword;
   ChildWindowInfo: PWindowInfo;
+  WindowColor: Integer;
 
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
@@ -1299,7 +1300,10 @@ begin
         if ChildWinControl <> nil then
         begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
-          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
+          WindowColor := ChildWinControl.Brush.Color;
+          if WindowColor = clDefault then
+            WindowColor := TWSWinControlClass(ChildWinControl.WidgetSetClass).GetDefaultColor(ChildWinControl);
+          Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
           LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling

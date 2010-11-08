@@ -179,23 +179,19 @@ var
     Brush: HBRUSH;
     Rect: Windows.Rect;
     Details: TThemedElementDetails;
-    OldColor, OldBackColor: COLORREF;
+    OldColor: COLORREF;
+    OldBkMode: Integer;
     WideBuffer: widestring;
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
     Enabled := CheckListBox.Enabled;
 
     { fill the background }
-    if Selected then
-      lgBrush.lbColor := LCLIntf.GetSysColor(COLOR_HIGHLIGHT) // $00D39137
-    else
-      // if default COLOR_WINDOW: $00FFFFFF
-      lgBrush.lbColor := ColorToRGB(CheckListBox.Color);
-    lgBrush.lbStyle := BS_SOLID;
-    Brush := CreateBrushIndirect(lgBrush);
     Rect := Data^.rcItem;
-    Windows.FillRect(Data^._HDC, Rect, Brush);
-    DeleteObject(Brush);
+    if Selected then
+      Windows.FillRect(Data^._HDC, Rect, GetSysColorBrush(COLOR_HIGHLIGHT))
+    else
+      Windows.FillRect(Data^._HDC, Rect, CheckListBox.Brush.Reference.Handle);
 
     // draw checkbox
     InflateRect(Rect, -1, -1);
@@ -218,7 +214,7 @@ var
       because the LCLIntf version makes sure that SYS_COLOR_INDEX_FLAG
       is added to the constant.
     }
-    OldBackColor := Windows.SetBkColor(Data^._HDC, lgBrush.lbColor);
+    OldBkMode := Windows.SetBkMode(Data^._HDC, TRANSPARENT);
 
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_GRAYTEXT))  // $00BFBFBF
@@ -233,7 +229,7 @@ var
 
     // Return to default text and background colors
     Windows.SetTextColor(Data^._HDC, OldColor);
-    Windows.SetBkColor(Data^._HDC, OldBackColor);
+    Windows.SetBkMode(Data^._HDC, OldBkMode);
   end;
 
 begin
@@ -2833,7 +2829,6 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SetBkMode(DC: HDC; BkMode: Integer): Integer;
 begin
-  // Your code here
   Result := Windows.SetBkMode(DC, BkMode);
 end;
 
