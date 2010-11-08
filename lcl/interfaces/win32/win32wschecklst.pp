@@ -104,7 +104,6 @@ var
   Count: LResult;
   Top: Integer;
   ARect: TRect;
-  Brush: HBrush;
 begin
   // move checlistbox specific code here
 
@@ -130,11 +129,7 @@ begin
           Windows.GetClientRect(Window, ARect);
           ARect.Top := Top;
           if not IsRectEmpty(ARect) then
-          begin
-            Brush := CreateSolidBrush(ColorToRGB(WindowInfo^.WinControl.Color));
-            Windows.FillRect(HDC(WParam), ARect, Brush);
-            DeleteObject(Brush);
-          end;
+            Windows.FillRect(HDC(WParam), ARect, WindowInfo^.WinControl.Brush.Reference.Handle);
           Result := 1;
         end
         else
@@ -182,7 +177,6 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     );
   var
     Enabled, Selected: Boolean;
-    Brush: HBRUSH;
     ARect, TextRect: Windows.Rect;
     Details: TThemedElementDetails;
     OldColor: COLORREF;
@@ -202,20 +196,11 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     // fill the background
     if Selected then
     begin
-      Brush := Windows.CreateSolidBrush(ColorToRGB(CheckListBox.Color));
-      Windows.FillRect(Data^._HDC, Rect(ARect.Left, ARect.Top, TextRect.Left, ARect.Bottom), Brush);
-      DeleteObject(Brush);
-
-      Brush := Windows.CreateSolidBrush(Windows.GetSysColor(COLOR_HIGHLIGHT));
-      Windows.FillRect(Data^._HDC, TextRect, Brush);
-      DeleteObject(Brush);
+      Windows.FillRect(Data^._HDC, Rect(ARect.Left, ARect.Top, TextRect.Left, ARect.Bottom), CheckListBox.Brush.Reference.Handle);
+      Windows.FillRect(Data^._HDC, TextRect, GetSysColorBrush(COLOR_HIGHLIGHT));
     end
     else
-    begin
-      Brush := Windows.CreateSolidBrush(ColorToRGB(CheckListBox.Color));
-      Windows.FillRect(Data^._HDC, ARect, Brush);
-      DeleteObject(Brush);
-    end;
+      Windows.FillRect(Data^._HDC, ARect, CheckListBox.Brush.Reference.Handle);
 
     // draw checkbox
     ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
