@@ -196,7 +196,7 @@ begin
   Include(FState, csBrushValid);
   // do not use color for hatched brushes. windows cannot draw hatches when SetBkColor is called
   if ([Brush.Style] * HatchBrushes) = [] then
-    SetBkColor(FHandle, Brush.Color);
+    SetBkColor(FHandle, Brush.GetColor);
   if Brush.Style = bsSolid then
     SetBkMode(FHandle, OPAQUE)
   else
