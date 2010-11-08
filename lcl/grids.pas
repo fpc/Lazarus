@@ -528,6 +528,8 @@ type
     ValidData: boolean;
     FixedRowCount: Integer;
     FixedColCount: Integer;
+    RowCount: Integer;
+    ColCount: Integer;
   end;
 
   { TGridColumns }
@@ -2019,15 +2021,23 @@ end;
 procedure TCustomGrid.InternalSetColCount(ACount: Integer);
 var
   OldC: Integer;
+  NewRowCount: Integer;
 begin
   OldC := FCols.Count;
   if ACount=OldC then Exit;
   if ACount<1 then
     Clear
   else begin
-    CheckFixedCount(ACount, RowCount, FFixedCols, FFixedRows);
-    CheckCount(ACount, RowCount);
+    NewRowCount := RowCount;
+    if (OldC=0) and FGridPropBackup.ValidData then begin
+      NewRowCount := FGridPropBackup.RowCount;
+      FFixedRows := Min(FGridPropBackup.FixedRowCount, NewRowCount);
+      FFixedCols := Min(FGridPropBackup.FixedColCount, ACount);
+    end;
+    CheckFixedCount(ACount, NewRowCount, FFixedCols, FFixedRows);
+    CheckCount(ACount, NewRowCount);
     AdjustCount(True, OldC, ACount);
+    FGridPropBackup.ValidData := false;
   end;
 end;
 
@@ -2520,7 +2530,7 @@ procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer
     Lst.Count:=aCount;
   end;
 var
-  OldCount: integer;
+  OldCount, NewCount: integer;
 begin
   if IsColumn then begin
     AddDel(FCols, NewValue);
@@ -2536,10 +2546,15 @@ begin
     if (OldValue=0)and(NewValue>=0) then begin
       FTopLeft.X:=FFixedCols;
       if RowCount=0 then begin
+        if FGridPropBackup.ValidData then begin
+          NewCount := FGridPropBackup.RowCount;
+          FFixedRows := Min(FGridPropBackup.FixedRowCount, NewCount);
+        end
+        else
+          NewCount := 1;
         FTopLeft.Y:=FFixedRows;
-        //DebugLn('TCustomGrid.AdjustCount A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
-        AddDel(FRows, 1);
-        FGCache.AccumHeight.Count:=1;
+        AddDel(FRows, NewCount);
+        FGCache.AccumHeight.Count:=NewCount;
       end;
     end;
     SizeChanged(OldValue, OldCount);
@@ -2559,10 +2574,17 @@ begin
       FTopleft.Y:=FFixedRows;
       //DebugLn('TCustomGrid.AdjustCount B ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
       if FCols.Count=0 then begin
-        FFixedCols:=0;
-        FTopLeft.X:=0;
-        AddDel(FCols, 1);
-        FGCache.AccumWidth.Count:=1;
+        if FGridPropBackup.ValidData then begin
+          NewCount := FGridPropBackup.ColCount;
+          FFixedCols := Min(FGridPropBackup.FixedColCount, NewCount);
+        end
+        else begin
+          NewCount := 1;
+          FFixedCols := 0;
+        end;
+        FTopLeft.X:=FFixedCols;
+        AddDel(FCols, NewCount);
+        FGCache.AccumWidth.Count:=NewCount;
       end;
     end;
     SizeChanged(OldCount, OldValue);
@@ -2635,32 +2657,33 @@ end;
 
 procedure TCustomGrid.SetRowCount(AValue: Integer);
 var
-  OldR: Integer;
+  OldR, OldC, NewColCount: Integer;
 begin
   OldR := FRows.Count;
-  if AValue=OldR then Exit;
-  if AValue<1 then
-    clear
-  else begin
-    if (OldR=0) and Columns.Enabled then begin
-      // there are custom columns, setup first enough columns
-      if FGridPropBackup.ValidData then begin
-        // Take in count previus fixed columns too.
-        // This value will be used in ColumnsChanged to
-        // get the right number of columns to setup
-        //
-        FFixedCols := FGridPropBackup.FixedColCount;
-        FGridPropBackup.ValidData:=False;
+  if AValue<>OldR then begin
+    if AValue>=1 then begin
+      NewColCount := ColCount;
+      if (OldR=0) and FGridPropBackup.ValidData then begin
+        NewColCount := FGridPropBackup.ColCount;
+        FFixedCols := Min(FGridPropBackup.FixedColCount, NewColCount);
+        FFixedRows := Min(FGridPropBackup.FixedRowCount, AValue);
+        // ignore backedup value of rowcount because
+        // finally rowcount will be AValue
+        FGridPropBackup.RowCount := AValue;
       end;
-      // setup custom columns
-      Self.ColumnsChanged(nil);
-      // still need to adjust rowcount?
-      if AValue=FRows.Count then
-        exit;
-    end;
-    CheckFixedCount(ColCount, AValue, FFixedCols, FFixedRows);
-    CheckCount(ColCount, AValue);
-    AdjustCount(False, OldR, AValue);
+      if Columns.Enabled then begin
+        // setup custom columns
+        Self.ColumnsChanged(nil);
+        FGridPropBackup.ValidData := false;
+        // still need to adjust rowcount?
+        if AValue=FRows.Count then
+          exit;
+      end;
+      CheckFixedCount(NewColCount, AValue, FFixedCols, FFixedRows);
+      CheckCount(NewColCount, AValue);
+      AdjustCount(False, OldR, AValue);
+    end else
+      Clear;
   end;
 end;
 
@@ -4501,7 +4524,7 @@ begin
     if (NewCol>=0) and (NewRow>=0) and ((NewCol <> Col) or (NewRow <> Row)) then
     begin
       CheckTopleft(NewCol, NewRow , NewCol<>Col, NewRow<>Row);
-      if FixEditor then
+      if FixEditor and (aNewColCount<>FFixedCols) and (aNewRowCount<>FFixedRows) then
         MoveNextSelectable(false, NewCol, NewRow);
     end;
   end;
@@ -8116,6 +8139,8 @@ begin
   FGridPropBackup.ValidData := True;
   FGridPropBackup.FixedRowCount := FFixedRows;
   FGridPropBackup.FixedColCount := FFixedCols;
+  FGridPropBackup.ColCount      := ColCount;
+  FGridPropBackup.RowCount      := RowCount;
 
   // clear structure
   OldR:=RowCount;
