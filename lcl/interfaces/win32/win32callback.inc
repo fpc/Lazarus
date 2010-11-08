@@ -188,6 +188,8 @@ function GetNeedParentPaint(AWindowInfo: PWin32WindowInfo; AWinControl: TWinCont
 begin
   Result := AWindowInfo^.needParentPaint
     and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
+  if ThemeServices.ThemesEnabled then
+    Result := Result or (Assigned(AWinControl) and ([csParentBackground, csOpaque] * AWinControl.ControlStyle = [csParentBackground]));
 end;
 
 {------------------------------------------------------------------------------

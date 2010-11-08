@@ -285,8 +285,7 @@ begin
       if not NCCreateParams.Handled then
       begin
         WindowInfo := AllocWindowInfo(Window);
-        WindowInfo^.needParentPaint := GetWin32WindowInfo(Parent)^.needParentPaint or
-          (Assigned(AWinControl) and (csParentBackground in AWinControl.ControlStyle));
+        WindowInfo^.needParentPaint := GetWin32WindowInfo(Parent)^.needParentPaint;
         WindowInfo^.WinControl := AWinControl;
         AWinControl.Handle := Window;
         if Assigned(SubClassWndProc) then
