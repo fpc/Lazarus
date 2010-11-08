@@ -1358,17 +1358,9 @@ begin
           Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           WindowColor := ChildWinControl.Brush.Color;
           if WindowColor = clDefault then
-          begin
             WindowColor := TWSWinControlClass(ChildWinControl.WidgetSetClass).GetDefaultColor(ChildWinControl);
-            Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
-            if IsSysColor(WindowColor) then
-              LMessage.Result := LResult(GetSysColorBrush(SysColorToSysColorIndex(WindowColor)));
-          end
-          else
-          begin
-            Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
-            LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
-          end;
+          Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
+          LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;

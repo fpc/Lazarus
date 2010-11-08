@@ -4621,13 +4621,17 @@ begin
   if Value=Color then exit;
   inherited SetColor(Value);
   if BrushCreated then
-    FBrush.Color := Color;
+    if Color = clDefault then
+      FBrush.Color := TWSWinControlClass(WidgetSetClass).GetDefaultColor(Self)
+    else
+      FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     TWSWinControlClass(WidgetSetClass).SetColor(Self);
-    Exclude(FWinControlFlags,wcfColorChanged);
-  end else
-    Include(FWinControlFlags,wcfColorChanged);
+    Exclude(FWinControlFlags, wcfColorChanged);
+  end
+  else
+    Include(FWinControlFlags, wcfColorChanged);
   NotifyControls(CM_PARENTCOLORCHANGED);
 end;
 
@@ -4818,7 +4822,10 @@ procedure TWinControl.CreateBrush;
 begin
   if BrushCreated then exit;
   FBrush := TBrush.Create;
-  FBrush.Color := Color;
+  if Color = clDefault then
+    FBrush.Color := TWSWinControlClass(WidgetSetClass).GetDefaultColor(Self)
+  else
+    FBrush.Color := Color;
   // ToDo: ParentColor
 end;
 
