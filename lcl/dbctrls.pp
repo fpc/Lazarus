@@ -143,6 +143,8 @@ Type
     FListField: TField;  // Result field in lookup dataset
     FLookupCache: boolean;
     FLookupList: TLookupList;
+    FNullValueKey: TShortcut;
+    FOnClearSelection: TNotifyEvent;
     procedure ActiveChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
@@ -154,9 +156,11 @@ Type
     procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
+    procedure NullKeyHandler(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    procedure DoClearSelection;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -172,6 +176,8 @@ Type
     property ListField: string read FListFieldName write SetListFieldName;
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
+    property NullValueKey: TShortcut read FNullValueKey write FNullValueKey;
+    property OnClearSelection: TNotifyEvent read FOnClearSelection write FOnClearSelection;
   end;
 
   { TDBEdit }
@@ -444,12 +450,15 @@ Type
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
     function GetLookupCache: boolean;
+    function GetNullValueKey: TShortCut;
     procedure SetKeyField(const Value: string);
     procedure SetKeyValue(const AValue: Variant);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
+    procedure RemoveSelection(Sender: TObject);
+    procedure SetNullValueKey(const AValue: TShortCut);
   protected
     procedure DataChange(Sender: TObject); override;
     procedure InitializeWnd; override;
@@ -473,6 +482,7 @@ Type
     property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
     property ListSource: TDataSource read GetListSource write SetListSource;
     property LookupCache: boolean read GetLookupCache  write SetLookupCache;
+    property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
 //    property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -755,12 +765,15 @@ Type
     function GetListFieldIndex: Integer;
     function GetListSource: TDataSource;
     function GetLookupCache: boolean;
+    function GetNullValueKey: TShortCut;
     procedure SetKeyField(const Value: string);
     procedure SetKeyValue(const AValue: variant);
     procedure SetListField(const Value: string);
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
+    procedure SetNullValueKey(const AValue: TShortCut);
+    procedure RemoveSelection(Sender: TObject);
   protected
     procedure InitializeWnd; override;
     procedure UpdateData(Sender: TObject); override;
@@ -792,6 +805,7 @@ Type
     property ListSource: TDataSource read GetListSource write SetListSource;
     property LookupCache: boolean read GetLookupCache  write SetLookupCache;
 //    property MaxLength default -1;
+    property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
