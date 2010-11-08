@@ -636,7 +636,7 @@ type
                       read FFormBorderStyle write SetFormBorderStyle default bsSizeable;
     property CancelControl: TControl read FCancelControl write SetCancelControl;
     property Caption stored IsForm;
-    property Color default clBtnFace;
+    property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property DefaultControl: TControl read FDefaultControl write SetDefaultControl;
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;

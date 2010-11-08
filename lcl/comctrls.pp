@@ -177,7 +177,7 @@ type
     property AutoHint: Boolean read FAutoHint write FAutoHint default false;
     property AutoSize default true;
     property BorderSpacing;
-    property Color default clBtnFace;
+    property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property Constraints;
     property DragCursor;
     property DragKind;

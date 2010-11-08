@@ -1216,7 +1216,7 @@ type
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
-    property Color default clBtnFace;
+    property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
     property ParentColor default true;
     property TabStop default False;

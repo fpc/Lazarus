@@ -40,7 +40,7 @@ begin
   FBevelWidth := 1;
   FAlignment := taCenter;
   FFullRepaint := True;
-  Color := clBtnFace;
+  Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   ParentColor := True;

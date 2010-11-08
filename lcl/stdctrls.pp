@@ -167,7 +167,7 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    constructor Create(AOwner: TComponent); Override;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 
@@ -1113,7 +1113,7 @@ type
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
-    property Color default clBtnFace;
+    property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property TabStop default true;
   end;
 

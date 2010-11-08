@@ -1363,12 +1363,12 @@ end;
 
 function TCustomForm.VisibleIsStored: boolean;
 begin
-  Result:=Visible;
+  Result := Visible;
 end;
 
 function TCustomForm.ColorIsStored: boolean;
 begin
-  Result := (Color <> clBtnFace);
+  Result := (Color <> {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif});
 end;
 
 procedure TCustomForm.DoSendBoundsToInterface;
@@ -1934,7 +1934,7 @@ begin
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;
   FKeyPreview :=  False;
-  Color := clBtnFace;
+  Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   FAllowDropFiles := False;

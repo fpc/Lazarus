@@ -1380,7 +1380,7 @@ type
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
     property ClientWidth: Integer read GetClientWidth write SetClientWidth stored IsClientWidthStored;
-    property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
+    property Color: TColor read FColor write SetColor stored ColorIsStored default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property Constraints: TSizeConstraints read FConstraints write SetConstraints;
     property ControlOrigin: TPoint read GetControlOrigin;
     property ControlState: TControlState read FControlState write FControlState;

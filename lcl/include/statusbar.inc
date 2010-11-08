@@ -28,7 +28,7 @@ begin
   FSimplePanel := True;
   FSizeGrip := True;
   FPanels := CreatePanels;
-  Color := clBtnFace;
+  Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   Align := alBottom;
   AutoSize := True;
 end;

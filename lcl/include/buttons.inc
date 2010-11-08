@@ -28,10 +28,10 @@ begin
   Inherited Create(TheOwner);
   // set the component style to csButton
   fCompStyle := csButton;
-  ControlStyle:=ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
-  Color:=clBtnFace;
-  ParentColor:=false;
-  TabStop := true;
+  ControlStyle := ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
+  Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
+  ParentColor := False;
+  TabStop := True;
   // set default alignment
   Align := alNone;
   // setup default sizes

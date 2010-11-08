@@ -4826,7 +4826,6 @@ begin
     FBrush.Color := TWSWinControlClass(WidgetSetClass).GetDefaultColor(Self)
   else
     FBrush.Color := Color;
-  // ToDo: ParentColor
 end;
 
 {------------------------------------------------------------------------------
@@ -7052,13 +7051,8 @@ procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   if (Message.DC <> 0) and (wcfEraseBackground in FWinControlFlags) then
   begin
-    if Color = clDefault then
-      DefaultHandler(Message)
-    else
-    begin
-      EraseBackground(Message.DC);
-      Message.Result := 1;
-    end;
+    EraseBackground(Message.DC);
+    Message.Result := 1;
   end;
 end;
 
@@ -7385,7 +7379,7 @@ begin
   if TWSWinControlClass(WidgetSetClass).GetText(Self, S) then
     FCaption := S;
   // if color has changed make sure it will be restored
-  if FColor<>clWindow then
+  if FColor <> {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif} then
     Include(FWinControlFlags,wcfColorChanged);
   RemoveProp(Handle,'WinControl');
   FAdjustClientRectRealized := Rect(0,0,0,0);
@@ -7496,7 +7490,7 @@ begin
       begin
         TWSWinControlClass(WidgetSetClass).SetColor(Self);
         NotifyControls(CM_PARENTCOLORCHANGED);
-        Exclude(FWinControlFlags,wcfColorChanged);
+        Exclude(FWinControlFlags, wcfColorChanged);
       end;
       if wcfFontChanged in FWinControlFlags then
       begin
