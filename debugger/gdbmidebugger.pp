@@ -332,6 +332,14 @@ type
     ValueLen: Integer;
   end;
 
+  TGDBMICpuRegister = record
+    Name: String;
+    Value: String;
+    Modified: Boolean;
+  end;
+  TGDBMICpuRegisters = Array of TGDBMICpuRegister;
+
+
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
 
   { TGDBMINameValueList }
@@ -454,6 +462,33 @@ type
     property Depth: Integer read FDepth;
   end;
 
+  { TGDBMIDebuggerCommandRegisterNames }
+
+  TGDBMIDebuggerCommandRegisterNames = class(TGDBMIDebuggerCommand)
+  private
+    FNames: Array of String;
+    function GetNames(Index: Integer): string;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    //function DebugText: String; override;
+    function Count: Integer;
+    property Names[Index: Integer]: string read GetNames;
+  end;
+
+  { TGDBMIDebuggerCommandRegisterValues }
+
+  TGDBMIDebuggerCommandRegisterValues = class(TGDBMIDebuggerCommand)
+  private
+    FRegistersToUpdate: TGDBMICpuRegisters;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    // updates the given array directly
+    constructor Create(AOwner: TGDBMIDebugger; RegistersToUpdate: TGDBMICpuRegisters);
+    function DebugText: String; override;
+  end;
+
   { TGDBMIBreakPoint }
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
@@ -533,14 +568,19 @@ type
   { TGDBMIRegisters }
 
   TGDBMIRegisters = class(TDBGRegisters)
+    procedure DoGetRegisterNamesFinished(Sender: TObject);
+    procedure DoGetRegValuesFinished(Sender: TObject);
   private
-    FRegisters: array of record
-      Name: String;
-      Value: String;
-      Modified: Boolean;
-    end;
-    FRegistersValid: Boolean;
-    FValuesValid: Boolean;
+    FRegisters: TGDBMICpuRegisters;
+
+    FGetRegisterCmdObj: TGDBMIDebuggerCommandRegisterNames;
+    FRegistersReqState: TGDBMIEvaluationState;
+    FInRegistersNeeded: Boolean;
+
+    FGetValuesCmdObj: TGDBMIDebuggerCommandRegisterValues;
+    FValuesReqState: TGDBMIEvaluationState;
+    FInValuesNeeded: Boolean;
+
     procedure RegistersNeeded;
     procedure ValuesNeeded;
   protected
@@ -652,6 +692,99 @@ type
     eoShl,
     eoShr
   );
+
+{ TGDBMIDebuggerCommandRegisterValues }
+
+function TGDBMIDebuggerCommandRegisterValues.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+  List, ValList: TGDBMINameValueList;
+  Item: PGDBMINameValue;
+  n, idx: Integer;
+begin
+  Result := True;
+  if length(FRegistersToUpdate) = 0
+  then exit;
+
+  for n := Low(FRegistersToUpdate) to High(FRegistersToUpdate) do
+  begin
+    FRegistersToUpdate[n].Value := '';
+    FRegistersToUpdate[n].Modified := False;
+  end;
+
+  ExecuteCommand('-data-list-register-values N', R);
+  if R.State = dsError then Exit;
+
+  ValList := TGDBMINameValueList.Create('');
+  List := TGDBMINameValueList.Create(R, ['register-values']);
+  for n := 0 to List.Count - 1 do
+  begin
+    Item := List.Items[n];
+    ValList.Init(Item^.NamePtr, Item^.NameLen);
+    idx := StrToIntDef(Unquote(ValList.Values['number']), -1);
+    if idx < Low(FRegistersToUpdate) then Continue;
+    if idx > High(FRegistersToUpdate) then Continue;
+
+    FRegistersToUpdate[idx].Value := Unquote(ValList.Values['value']);
+  end;
+  FreeAndNil(List);
+  FreeAndNil(ValList);
+
+  ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['changed-registers']);
+  for n := 0 to List.Count - 1 do
+  begin
+    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
+    if idx < Low(FRegistersToUpdate) then Continue;
+    if idx > High(FRegistersToUpdate) then Continue;
+
+    FRegistersToUpdate[idx].Modified := True;
+  end;
+  FreeAndNil(List);
+end;
+
+constructor TGDBMIDebuggerCommandRegisterValues.Create(AOwner: TGDBMIDebugger;
+  RegistersToUpdate: TGDBMICpuRegisters);
+begin
+  inherited Create(AOwner);
+  FRegistersToUpdate := RegistersToUpdate;
+end;
+
+function TGDBMIDebuggerCommandRegisterValues.DebugText: String;
+begin
+  Result := Format('%s: Reg-Cnt=%d', [ClassName, length(FRegistersToUpdate)]);
+end;
+
+{ TGDBMIDebuggerCommandRegisterNames }
+
+function TGDBMIDebuggerCommandRegisterNames.GetNames(Index: Integer): string;
+begin
+  Result := FNames[Index];
+end;
+
+function TGDBMIDebuggerCommandRegisterNames.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  n: Integer;
+begin
+  Result := True;
+  ExecuteCommand('-data-list-register-names', R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['register-names']);
+  SetLength(FNames, List.Count);
+  for n := 0 to List.Count - 1 do
+    FNames[n] := UnQuote(List.GetString(n));
+  FreeAndNil(List);
+end;
+
+function TGDBMIDebuggerCommandRegisterNames.Count: Integer;
+begin
+  Result := length(FNames);
+end;
 
 { TGDBMIDebuggerCommandStackDepth }
 
@@ -4205,7 +4338,11 @@ begin
   then begin
     case Debugger.State of
       dsPause: DoChange;
-      dsStop : FRegistersValid := False;
+      dsStop, dsInit:
+      begin
+        FRegistersReqState := esInvalid;
+        Invalidate;
+      end;
     else
       Invalidate
     end;
@@ -4222,7 +4359,7 @@ begin
     FRegisters[n].Value := '';
     FRegisters[n].Modified := False;
   end;
-  FValuesValid := False;
+  FValuesReqState := esInvalid;
 end;
 
 function TGDBMIRegisters.GetCount: Integer;
@@ -4240,8 +4377,8 @@ begin
   and (Debugger.State = dsPause)
   then ValuesNeeded;
 
-  if  FValuesValid
-  and FRegistersValid
+  if  (FValuesReqState = esValid)
+  and (FRegistersReqState = esValid)
   and (AnIndex >= Low(FRegisters))
   and (AnIndex <= High(FRegisters))
   then Result := FRegisters[AnIndex].Modified
@@ -4254,7 +4391,7 @@ begin
   and (Debugger.State = dsPause)
   then RegistersNeeded;
 
-  if  FRegistersValid
+  if  (FRegistersReqState = esValid)
   and (AnIndex >= Low(FRegisters))
   and (AnIndex <= High(FRegisters))
   then Result := FRegisters[AnIndex].Name
@@ -4267,88 +4404,79 @@ begin
   and (Debugger.State = dsPause)
   then ValuesNeeded;
 
-  if  FValuesValid
-  and FRegistersValid
+  if  (FValuesReqState = esValid)
+  and (FRegistersReqState = esValid)
   and (AnIndex >= Low(FRegisters))
   and (AnIndex <= High(FRegisters))
   then Result := FRegisters[AnIndex].Value
   else Result := '';
 end;
 
-procedure TGDBMIRegisters.RegistersNeeded;
+procedure TGDBMIRegisters.DoGetRegisterNamesFinished(Sender: TObject);
 var
-  R: TGDBMIExecResult;
-  List: TGDBMINameValueList;
+  Cmd: TGDBMIDebuggerCommandRegisterNames;
   n: Integer;
 begin
-  if Debugger = nil then Exit;
-  if FRegistersValid then Exit;
+  Cmd := TGDBMIDebuggerCommandRegisterNames(Sender);
 
-  FRegistersValid := True;
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-names', [cfIgnoreError], R);
-  if R.State = dsError then Exit;
-
-  List := TGDBMINameValueList.Create(R, ['register-names']);
-  SetLength(FRegisters, List.Count);
-  for n := 0 to List.Count - 1 do
+  SetLength(FRegisters, Cmd.Count);
+  for n := 0 to Cmd.Count - 1 do
   begin
-    FRegisters[n].Name := UnQuote(List.GetString(n));
+    FRegisters[n].Name := Cmd.Names[n];
     FRegisters[n].Value := '';
     FRegisters[n].Modified := False;
   end;
-  FreeAndNil(List);
+
+  FGetRegisterCmdObj:= nil;
+  FRegistersReqState := esValid;
+
+  if not FInRegistersNeeded
+  then Changed;
+end;
+
+procedure TGDBMIRegisters.RegistersNeeded;
+begin
+  if (Debugger = nil) or (FRegistersReqState in [esRequested, esValid])
+  then Exit;
+
+  if (Debugger.State in [dsPause, dsStop])
+  then begin
+    FInRegistersNeeded := True;
+    FRegistersReqState := esRequested;
+    SetLength(FRegisters, 0);
+
+    FGetRegisterCmdObj := TGDBMIDebuggerCommandRegisterNames.Create(TGDBMIDebugger(Debugger));
+    FGetRegisterCmdObj.OnExecuted   := @DoGetRegisterNamesFinished;
+    TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj);
+    (* DoEvaluationFinished may be called immediately at this point *)
+    FInRegistersNeeded := False;
+  end;
+end;
+
+procedure TGDBMIRegisters.DoGetRegValuesFinished(Sender: TObject);
+begin
+  FValuesReqState := esValid;
+  FGetValuesCmdObj := nil;
+  if not FInValuesNeeded
+  then inherited Changed;
 end;
 
 procedure TGDBMIRegisters.ValuesNeeded;
-var
-  R: TGDBMIExecResult;
-  List, ValList: TGDBMINameValueList;
-  Item: PGDBMINameValue;
-  n, idx: Integer;
 begin
-  if Debugger = nil then Exit;
-  if FValuesValid then Exit;
-  RegistersNeeded;
-  FValuesValid := True;
+  if (Debugger = nil) or (FValuesReqState in [esRequested, esValid]) or (Count = 0)
+  then Exit;
 
-  for n := Low(FRegisters) to High(FRegisters) do
-  begin
-    FRegisters[n].Value := '';
-    FRegisters[n].Modified := False;
+  if (Debugger.State in [dsPause, dsStop])
+  then begin
+    FInValuesNeeded := True;
+    FValuesReqState := esRequested;
+
+    FGetValuesCmdObj := TGDBMIDebuggerCommandRegisterValues.Create(TGDBMIDebugger(Debugger), FRegisters);
+    FGetValuesCmdObj.OnExecuted    := @DoGetRegValuesFinished;
+    TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj);
+    (* DoEvaluationFinished may be called immediately at this point *)
+    FInValuesNeeded := False;
   end;
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-register-values N', [cfIgnoreError], R);
-  if R.State = dsError then Exit;
-
-  ValList := TGDBMINameValueList.Create('');
-  List := TGDBMINameValueList.Create(R, ['register-values']);
-  for n := 0 to List.Count - 1 do
-  begin
-    Item := List.Items[n];
-    ValList.Init(Item^.NamePtr, Item^.NameLen);
-    idx := StrToIntDef(Unquote(ValList.Values['number']), -1);
-    if idx < Low(FRegisters) then Continue;
-    if idx > High(FRegisters) then Continue;
-
-    FRegisters[idx].Value := Unquote(ValList.Values['value']);
-  end;
-  FreeAndNil(List);
-  FreeAndNil(ValList);
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
-  if R.State = dsError then Exit;
-
-  List := TGDBMINameValueList.Create(R, ['changed-registers']);
-  for n := 0 to List.Count - 1 do
-  begin
-    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
-    if idx < Low(FRegisters) then Continue;
-    if idx > High(FRegisters) then Continue;
-
-    FRegisters[idx].Modified := True;
-  end;
-  FreeAndNil(List);
 end;
 
 { =========================================================================== }
