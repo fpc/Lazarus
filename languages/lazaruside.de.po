@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-19 17:16+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2010-11-08 23:42+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -4503,8 +4503,9 @@ msgid "Class Completion"
 msgstr "Klassenvervollständigung"
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
+#, fuzzy
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr "Die Klasse steht in Konflikt mit der .lfm-Datei:%sDie Unit %s%snutzt die Unit %s%die die Klasse %s enthält%aber die .lfm-Datei enthält bereits eine andere Klasse.%sEine Unit darf aber nur eine Design-Klasse enthalten.%sBitte verschieben Sie %s in eine andere Unit."
+msgstr "Die Klasse steht in Konflikt mit der .lfm-Datei:%sDie Unit %s%snutzt die Unit %s%sdie die Klasse %s enthält%saber die .lfm-Datei enthält bereits eine andere Klasse.%sEine Unit darf aber nur eine Design-Klasse enthalten.%sBitte verschieben Sie %s in eine andere Unit."
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
