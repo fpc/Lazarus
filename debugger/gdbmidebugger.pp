@@ -3066,7 +3066,19 @@ begin
   Line := ReadLine;
   while DebugProcessRunning and (Line <> '(gdb) ') do
   begin
-    S := S + Line + LineEnding;
+    case Line[1] of
+      '=': begin
+        case StringCase(GetPart(['='], [','], Line, False, False),
+          ['thread-group-added'])
+        of
+          0: {ignore};
+        else
+          S := S + Line + LineEnding;
+        end;
+      end;
+    else
+      S := S + Line + LineEnding;
+    end;
     Line := ReadLine;
   end;
   if S <> ''
