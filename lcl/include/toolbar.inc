@@ -60,7 +60,7 @@ var
 begin
   inherited Create(TheOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csDoubleClicks, csMenuEvents, csSetCaption, csParentBackground];
+    csDoubleClicks, csMenuEvents, csSetCaption, csParentBackground, csOpaque];
   FFlat := True;
   FButtonWidth := 23;
   FButtonHeight := 22;
