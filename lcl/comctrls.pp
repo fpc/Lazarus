@@ -1686,12 +1686,12 @@ type
     FSrcMenu: TMenu;
     FSrcMenuItem: TMenuItem;
     FToolBarFlags: TToolBarFlags;
-    FTransparent: Boolean;
     FUpdateCount: Integer;
     FWrapable: Boolean;
     procedure ApplyFontForButtons;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
+    function GetTransparent: Boolean;
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDisabledImages(const AValue: TCustomImageList);
@@ -1786,7 +1786,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Visible;
     property Wrapable: Boolean read FWrapable write SetWrapable default True;
     property OnClick;

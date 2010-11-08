@@ -60,7 +60,7 @@ var
 begin
   inherited Create(TheOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csDoubleClicks, csMenuEvents, csSetCaption];
+    csDoubleClicks, csMenuEvents, csSetCaption, csParentBackground];
   FFlat := True;
   FButtonWidth := 23;
   FButtonHeight := 22;
@@ -237,6 +237,11 @@ begin
   Result := FButtons.Count;
 end;
 
+function TToolBar.GetTransparent: Boolean;
+begin
+  Result := not (csOpaque in ControlStyle);
+end;
+
 procedure TToolBar.SetList(const AValue: Boolean);
 begin
   if FList = AValue then exit;
@@ -253,8 +258,11 @@ end;
 
 procedure TToolBar.SetTransparent(const AValue: Boolean);
 begin
-  if FTransparent = AValue then exit;
-  FTransparent := AValue;
+  if GetTransparent = AValue then exit;
+  if AValue then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
   Invalidate;
 end;
 
