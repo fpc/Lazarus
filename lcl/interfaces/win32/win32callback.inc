@@ -355,7 +355,6 @@ var
     isNotebook: boolean;
     isNativeControl: boolean;
     needParentPaint: boolean;
-    lNotebookFound: boolean;
     BufferWasSaved: Boolean;
     BackupBuffer: TDoubleBuffer;
   begin
@@ -370,24 +369,14 @@ var
     // create a paint message
     isNotebook := ThemeServices.ThemesEnabled and (WndClassName(Window) = TabControlClsName);
     isNativeControl := GetIsNativeControl(Window);
-    ParentPaintWindow := 0;
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
     // if needParentPaint and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
-    if WindowInfo^.isTabPage or (needParentPaint
-      and (not isNativeControl or (ControlDC <> 0))) then
-    begin
-      ParentPaintWindow := Window;
-      lNotebookFound := false;
-      while (ParentPaintWindow <> 0) and not lNotebookFound do
-      begin
-        // notebook is parent of window that has istabpage
-        if GetWin32WindowInfo(ParentPaintWindow)^.isTabPage then
-          lNotebookFound := true;
-        ParentPaintWindow := Windows.GetParent(ParentPaintWindow);
-      end;
-    end;
+    if WindowInfo^.isTabPage or (needParentPaint and (not isNativeControl or (ControlDC <> 0))) then
+      ParentPaintWindow := Windows.GetParent(Window)
+    else
+      ParentPaintWindow := 0;
 
     // if painting background of some control for tabpage, don't handle erase background
     // in parent of tabpage
