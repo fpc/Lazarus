@@ -17,9 +17,12 @@ uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   Math,
   // fpimage
-  fpcanvas, fpimgcanv, fpimage,
+  fpcanvas, fpimgcanv, fpimage
+  {$ifdef CUSTOMDRAWN_USE_FREETYPE}
   // font support
-  {opc}ftfont;
+  ,ftfont
+  {$endif}
+  ;
 
 type
 
@@ -184,14 +187,17 @@ type
   public
     procedure SetClientRectPos(CDGroupBox: TCDGroupBox); virtual; abstract;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
   end;
 
   { TCDGroupBoxDrawerWinCE }
 
   TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
   public
+    FCaptionMiddle: Integer;
     procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
   end;
 
   {@@
@@ -511,8 +517,11 @@ begin
     ABmp.Height := Height;
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.create(AImage);
+    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
     FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
     ABmp.LoadFromIntfImage(AImage);
+    // Second step of the drawing: LCL TCustomCanvas for easy font access
+    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self);
     Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then lCanvas.Free;
@@ -535,9 +544,13 @@ end;
 
 procedure TCDGroupBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDGroupBox: TCDGroupBox);
+{$ifdef CUSTOMDRAWN_USE_FREETYPE}
 var
   AFont: TFreeTypeFont = nil;
+{$endif}
 begin
+  FCaptionMiddle := CDGroupBox.Canvas.TextHeight('Ź') div 2;
+
   // Background
   if CDGroupBox.Parent = nil then
     ADest.Brush.FPColor := colLtGray
@@ -551,8 +564,9 @@ begin
   ADest.Pen.FPColor := colBlack;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style:=bsClear;
-  ADest.Rectangle(0, 5, CDGroupBox.Width - 1, CDGroupBox.height - 1);
+  ADest.Rectangle(0, FCaptionMiddle, CDGroupBox.Width - 1, CDGroupBox.height - 1);
 
+  {$ifdef CUSTOMDRAWN_USE_FREETYPE}
   // Caption background and caption
 
   // initialize free type font manager
@@ -576,6 +590,29 @@ begin
   finally
     AFont.Free;
   end;
+  {$endif}
+end;
+
+procedure TCDGroupBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas;
+  CDGroupBox: TCDGroupBox);
+begin
+  {$ifndef CUSTOMDRAWN_USE_FREETYPE}
+  if CDGroupBox.Parent = nil then
+    ADest.Brush.Color := clLtGray
+  else
+    ADest.Brush.Color := ColorToRGB(CDGroupBox.Parent.Color);
+
+  // Text background
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(FCaptionMiddle, 0, ADest.GetTextWidth(CDGroupBox.Caption) + FCaptionMiddle, 10);
+
+  // paint text
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style:=bsClear;
+  ADest.Font.Size:=10;
+  ADest.TextOut(FCaptionMiddle,0, CDGroupBox.Caption);
+  {$endif}
 end;
 
 { TCDTrackBar }
