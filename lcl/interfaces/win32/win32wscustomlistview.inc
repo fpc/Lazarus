@@ -984,11 +984,16 @@ begin
 end;
 
 class procedure TWin32WSCustomListView.SetColor(const AWinControl: TWinControl);
+var
+  Color: TColor;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetColor') then
     Exit;
-  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
-  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, ColorToRGB(AWinControl.Color));
+  Color := AWinControl.Color;
+  if Color = clDefault then
+    Color := TWSWinControlClass(AWinControl.WidgetSetClass).GetDefaultColor(AWinControl);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, ColorToRGB(Color));
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, ColorToRGB(Color));
 end;
 
 class procedure TWin32WSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
