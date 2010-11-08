@@ -553,10 +553,15 @@ var
 
   procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
   begin
-    GetWin32ControlPos(Window, Parent, P.X, P.Y);
-    MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
-    SendPaintMessage(ControlDC);
-    MoveWindowOrgEx(ControlDC, P.X, P.Y);
+    if ThemeServices.ThemesEnabled then
+      ThemeServices.DrawParentBackground(Window, ControlDC, nil, False)
+    else
+    begin
+      GetWin32ControlPos(Window, Parent, P.X, P.Y);
+      MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
+      SendPaintMessage(ControlDC);
+      MoveWindowOrgEx(ControlDC, P.X, P.Y);
+    end;
   end;
 
   procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
@@ -1328,16 +1333,22 @@ begin
       // only static and button controls have transparent parts
       // others need to erased with their window color
       // scrollbar also has buttons
-      WindowDC := HDC(WParam);
       ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
+      if Assigned(ChildWindowInfo^.ParentMsgHandler) then
+      begin
+        if ChildWindowInfo^.ParentMsgHandler(lWinControl,
+          Window, Msg, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
+      end;
+      WindowDC := HDC(WParam);
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
         ChildWinControl := ChildWindowInfo^.AWinControl;
+
       case Msg of
         WM_CTLCOLORSTATIC,
         WM_CTLCOLORBTN: begin
-          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl)
-            and not ChildWindowInfo^.ThemedCustomDraw then
+          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) and
+            not ChildWindowInfo^.ThemedCustomDraw then
           begin
             // need to draw transparently, draw background
             SendParentPaintMessage(HWND(LParam), Window, WindowDC);

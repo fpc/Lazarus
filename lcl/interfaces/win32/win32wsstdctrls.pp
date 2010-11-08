@@ -506,6 +506,29 @@ begin
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
+function GroupBoxParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
+      Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
+      var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
+var
+  Info: PWin32WindowInfo;
+begin
+  Result := False;
+  case Msg of
+    WM_CTLCOLORSTATIC:
+    begin
+      Info := GetWin32WindowInfo(HWND(LParam));
+      Result := Assigned(Info) and ThemeServices.ThemesAvailable and (Info^.WinControl.Color = AWinControl.Color);
+      if Result then
+      begin
+        ThemeServices.DrawParentBackground(HWND(LParam), HDC(WParam), nil, False);
+        MsgResult := GetStockObject(HOLLOW_BRUSH);
+        WinProcess := False;
+        SetBkMode(HDC(WParam), TRANSPARENT);
+      end;
+    end;
+  end;
+end;
+
 class function TWin32WSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -523,6 +546,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, False);
   Result := Params.Window;
+  Params.WindowInfo^.ParentMsgHandler := @GroupBoxParentMsgHandler;
 end;
 
 class procedure TWin32WSCustomGroupBox.SetBiDiMode(
@@ -1342,7 +1366,7 @@ function StaticTextWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 var
   WindowInfo: PWin32WindowInfo;
 begin
-  // move groupbox specific code here
+  // move static text specific code here
   case Msg of
     WM_NCPAINT:
     begin
