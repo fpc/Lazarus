@@ -38,15 +38,24 @@ end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
-  if (csLoading in ComponentState) then
-    Exit;
-  FLookup.Initialize(FDataLink, Items);
-  DataChange(Self);
+  if not (csLoading in ComponentState) and HandleAllocated then
+  begin
+    LockSelectionChange;
+    ItemIndex := -1;
+    FLookup.Initialize(FDataLink, Items);
+    UnLockSelectionChange;
+    DataChange(Self);
+  end;
 end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
 begin
-  ItemIndex:= Items.IndexOf(FLookup.ListFieldValue);
+  if FDatalink.Active then
+  begin
+    LockSelectionChange;
+    ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
+    UnlockSelectionChange;
+  end;
 end;
 
 procedure TDBLookupListBox.InitializeWnd;
