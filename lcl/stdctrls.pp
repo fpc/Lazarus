@@ -967,8 +967,10 @@ type
     FFocusControl: TWinControl;
     FShowAccelChar: boolean;
     FStaticBorderStyle: TStaticBorderStyle;
+    function GetTransparent: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
+    procedure SetTransparent(const AValue: Boolean);
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     class procedure WSRegisterClass; override;
@@ -985,6 +987,7 @@ type
     property BorderStyle: TStaticBorderStyle read FStaticBorderStyle write SetStaticBorderStyle default sbsNone;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
+    property Transparent: Boolean read GetTransparent write SetTransparent default True;
   end;
 
 
@@ -1028,6 +1031,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property Transparent;
     property Visible;
   end;
 

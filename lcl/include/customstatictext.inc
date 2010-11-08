@@ -32,7 +32,8 @@ begin
   fAlignment := taLeftJustify;
   FShowAccelChar:= true;
   FStaticBorderStyle:=sbsNone;
-  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  ControlStyle := ControlStyle + [csReplicatable];
+  Transparent := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;
@@ -80,6 +81,11 @@ begin
     if HandleAllocated then
       TWSCustomStaticTextClass(WidgetSetClass).SetAlignment(Self, Value);
   end;
+end;
+
+function TCustomStaticText.GetTransparent: Boolean;
+begin
+  Result := not (csOpaque in ControlStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -149,6 +155,17 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCustomStaticText.SetTransparent(const AValue: Boolean);
+begin
+  if Transparent = AValue then
+    Exit;
+  if AValue then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------

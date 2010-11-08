@@ -1384,6 +1384,28 @@ begin
   end;
 end;
 
+function StaticTextParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
+      Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
+      var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
+var
+  Info: PWin32WindowInfo;
+begin
+  Result := False;
+  case Msg of
+    WM_CTLCOLORSTATIC:
+    begin
+      Info := GetWin32WindowInfo(HWND(LParam));
+      Result := Assigned(Info) and ThemeServices.ThemesAvailable and TCustomStaticText(Info^.WinControl).Transparent;
+      if Result then
+      begin
+        ThemeServices.DrawParentBackground(HWND(LParam), HDC(WParam), nil, False);
+        MsgResult := GetStockObject(HOLLOW_BRUSH);
+        WinProcess := False;
+        SetBkMode(HDC(WParam), TRANSPARENT);
+      end;
+    end;
+  end;
+end;
 
 function CalcStaticTextFlags(
    const AAlignment: TAlignment;
@@ -1423,6 +1445,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  Params.WindowInfo^.ParentMsgHandler := @StaticTextParentMsgHandler;
 end;
 
 class procedure TWin32WSCustomStaticText.GetPreferredSize(
