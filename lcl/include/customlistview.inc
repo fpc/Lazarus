@@ -100,7 +100,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   ParentColor := False;
-  Color := clWindow;  
+  Color := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips, lvpWrapText];

@@ -1200,7 +1200,7 @@ type
     property BorderStyle;
     property BorderWidth;
     property Checkboxes;
-    property Color default clWindow;
+    property Color default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property Columns;
     property ColumnClick;
     property Constraints;
