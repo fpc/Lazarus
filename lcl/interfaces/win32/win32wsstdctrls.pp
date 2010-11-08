@@ -517,7 +517,7 @@ begin
     WM_CTLCOLORSTATIC:
     begin
       Info := GetWin32WindowInfo(HWND(LParam));
-      Result := Assigned(Info) and ThemeServices.ThemesAvailable and (Info^.WinControl.Color = AWinControl.Color);
+      Result := Assigned(Info) and ThemeServices.ThemesEnabled and (Info^.WinControl.Color = AWinControl.Color);
       if Result then
       begin
         ThemeServices.DrawParentBackground(HWND(LParam), HDC(WParam), nil, False);
@@ -1395,7 +1395,7 @@ begin
     WM_CTLCOLORSTATIC:
     begin
       Info := GetWin32WindowInfo(HWND(LParam));
-      Result := Assigned(Info) and ThemeServices.ThemesAvailable and TCustomStaticText(Info^.WinControl).Transparent;
+      Result := Assigned(Info) and ThemeServices.ThemesEnabled and TCustomStaticText(Info^.WinControl).Transparent;
       if Result then
       begin
         ThemeServices.DrawParentBackground(HWND(LParam), HDC(WParam), nil, False);
