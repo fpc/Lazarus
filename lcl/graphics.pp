@@ -665,6 +665,7 @@ type
     procedure FreeReference;
     function GetHandle: HBRUSH;
     function GetReference: TWSBrushReference;
+    function GetColor: TColor;
     procedure ReferenceNeeded;
     procedure SetHandle(const Value: HBRUSH);
     procedure DoChange(var Msg); message LM_CHANGED;
@@ -1039,6 +1040,7 @@ type
                          const SourceRect: TRect); override;
     procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
+    function GetDefaultColor: TColor; virtual;
   protected
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;

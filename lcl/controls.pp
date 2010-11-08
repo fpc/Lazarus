@@ -256,6 +256,7 @@ type
   protected
     procedure CreateHandle; override;
     procedure CreateFont; override;
+    function GetDefaultColor: TColor; override;
   public
     constructor Create;
     destructor Destroy; override;

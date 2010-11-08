@@ -650,6 +650,11 @@ begin
   debugln('TCanvas.CheckHelper ignored for ',DbgSName(AHelper));
 end;
 
+function TCanvas.GetDefaultColor: TColor;
+begin
+  Result := clDefault;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
   Params:   ALeft, ATop, ARight, ABottom, angle1, angle2

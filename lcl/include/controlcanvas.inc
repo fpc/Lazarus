@@ -42,6 +42,14 @@ begin
   //DebugLn('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
 end;
 
+function TControlCanvas.GetDefaultColor: TColor;
+begin
+  if Assigned(FControl) then
+    Result := TWSControlClass(FControl.WidgetSetClass).GetDefaultColor(FControl)
+  else
+    Result := inherited GetDefaultColor;
+end;
+
 {------------------------------------------------------------------------------
   Method: TControlCanvas.Create
   Params:  none

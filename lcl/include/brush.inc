@@ -39,7 +39,7 @@ end;
 
   Sets the style of a brush
  ------------------------------------------------------------------------------}
-procedure TBrush.SetColor(Value : TColor);
+procedure TBrush.SetColor(Value: TColor);
 begin
   if FColor <> Value then
     SetColor(Value, TColorToFPColor(Value));
@@ -196,6 +196,13 @@ begin
   Result := FReference;
 end;
 
+function TBrush.GetColor: TColor;
+begin
+  Result := FColor;
+  if (Result = clDefault) and Assigned(Canvas) and (Canvas is TCanvas) then
+    Result := TCanvas(Canvas).GetDefaultColor;
+end;
+
 procedure TBrush.ReferenceNeeded;
 var
   LogBrush: TLogBrush;
@@ -221,7 +228,7 @@ begin
         lbHatch := Ord(Style) - Ord(bsHorizontal);
       end;
     end;
-    lbColor := ColorRef(FColor);
+    lbColor := ColorRef(GetColor);
   end;
 
   BrushResourceCache.Lock;
