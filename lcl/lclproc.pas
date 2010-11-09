@@ -2414,10 +2414,11 @@ begin
     DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, DebugNestPrefix);
   DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
-  if DebugNestAtBOL and (s <> '') then
-    write(DebugText^, DebugNestPrefix);
-  if Assigned(DebugText) then
+  if Assigned(DebugText) then begin
+    if DebugNestAtBOL and (s <> '') then
+      write(DebugText^, DebugNestPrefix);
     write(DebugText^, s);
+  end;
   {$endif}
   DebugNestAtBOL := (s <> '') and not (s[length(s)] in [#10,#13]);
 end;
