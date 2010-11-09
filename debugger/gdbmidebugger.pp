@@ -1971,6 +1971,8 @@ var
   Cmd: TGDBMIDebuggerCommand;
   SavedInExecuteCount: LongInt;
 begin
+  if FCommandQueue.Count = 0
+  then exit;
   SavedInExecuteCount := FInExecuteCount;
   LockRelease;
   try
