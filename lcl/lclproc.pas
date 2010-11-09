@@ -2295,7 +2295,7 @@ begin
 
   FillChar(DebugNestPrefix^, NewLen, ' ');
   if s <> '' then
-    Move(s[1], DebugNestPrefix[0], length(s));
+    System.Move(s[1], DebugNestPrefix[0], length(s));
 
   if (NewLen >= DebugLnMaxNestPrefixLen) then
     DebugNestPrefix[DebugLnMaxNestPrefixLen] := #0
