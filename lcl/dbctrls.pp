@@ -63,6 +63,7 @@ Type
     FOnFocusRequest: TNotifyEvent;
     FOnLayoutChange: TNotifyEvent;
 
+    function FieldCanModify: boolean;
     function GetCanModify: Boolean;
 
     // set current field
@@ -1366,6 +1367,33 @@ begin
   RegFields(DefaultFieldClasses);
 end;
 
+function TFieldDataLink.FieldCanModify: boolean;
+var
+  FieldList: TList;
+  i: Integer;
+begin
+  result := Assigned(FField);
+  if not result then
+    exit;
+
+  if FField.FieldKind=fkLookup then
+  begin
+    FieldList := TList.Create;
+    try
+      DataSet.GetFieldList(FieldList, FField.KeyFields);
+      result := (FieldList.Count>0);
+      i := 0;
+      while result and (i<FieldList.Count) do
+      begin
+        result := TField(FieldList[i]).CanModify;
+        inc(i);
+      end;
+    finally
+      FieldList.Free;
+    end;
+  end else
+    result := FField.CanModify;
+end;
 
 {TFieldDataLink  Private Methods}
 {
@@ -1375,8 +1403,8 @@ end;
 }
 function TFieldDataLink.GetCanModify: Boolean;
 begin
-  if Assigned(FField) and (FField.CanModify) then
-     Result := not ReadOnly
+  if FieldCanModify then
+    Result := not ReadOnly
   else
     Result := False;
 end;
