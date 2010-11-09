@@ -211,6 +211,26 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16: string);
+
+procedure DebugLnEnter(const s: string = nil);
+procedure DebugLnEnter(Args: array of const);
+procedure DebugLnEnter(s: string; Args: array of const);
+procedure DebugLnEnter(const s1, s2: string; const s3: string = nil;
+                     const s4: string = nil; const s5: string = nil; const s6: string = nil;
+                     const s7: string = nil; const s8: string = nil; const s9: string = nil;
+                     const s10: string = nil; const s11: string = nil; const s12: string = nil;
+                     const s13: string = nil; const s14: string = nil; const s15: string = nil;
+                     const s16: string = nil; const s17: string = nil; const s18: string = nil);
+procedure DebugLnExit(const s: string = nil);
+procedure DebugLnExit(Args: array of const);
+procedure DebugLnExit(s: string; Args: array of const);
+procedure DebugLnExit (const s1, s2: string; const s3: string = nil;
+                     const s4: string = nil; const s5: string = nil; const s6: string = nil;
+                     const s7: string = nil; const s8: string = nil; const s9: string = nil;
+                     const s10: string = nil; const s11: string = nil; const s12: string = nil;
+                     const s13: string = nil; const s14: string = nil; const s15: string = nil;
+                     const s16: string = nil; const s17: string = nil; const s18: string = nil);
+
 function ConvertLineEndings(const s: string): string;
 
 procedure DbgOut(const S: String; Args: array of const);
@@ -355,6 +375,10 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
+var
+  DebugLnMaxNestPrefixLen: Integer = 15;
+  DebugLnNestLvlIndent: Integer = 2;
+
 implementation
 
 uses gettext;
@@ -367,6 +391,9 @@ var
   InterfaceFinalizationHandlers: TFPList = nil;
   DebugTextAllocated: boolean;
   DebugText: ^Text;
+  DebugNestLvl: Integer = 0;
+  DebugNestPrefix: PChar = nil;
+  DebugNestAtBOL: Boolean;
   LineInfoCache: TAvgLvlTree = nil;
 
 {$ifdef NewLowerCase}
@@ -2153,11 +2180,17 @@ end;
 procedure DebugLn(const s: string);
 begin
   {$ifdef WinCE}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
+  if DebugNestAtBOL and (s <> '') then
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, DebugNestPrefix+s)
+  else
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
   if not Assigned(DebugText) then exit;
+  if DebugNestAtBOL and (s <> '') then
+    write(DebugText^, DebugNestPrefix);
   writeln(DebugText^, ConvertLineEndings(s));
   {$endif}
+  DebugNestAtBOL := True;
 end;
 
 procedure DebugLn(const s1, s2: string);
@@ -2240,6 +2273,108 @@ begin
   DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16);
 end;
 
+procedure DebugLnNestCreatePrefix;
+const
+  CurrentLen: Integer = 0;
+var
+  s: String;
+  NewLen: Integer;
+begin
+  NewLen := DebugNestLvl * DebugLnNestLvlIndent;
+  if (NewLen >= DebugLnMaxNestPrefixLen) then begin
+    NewLen := DebugLnMaxNestPrefixLen;
+    s := IntToStr(DebugNestLvl);
+    if length(s)+1 > NewLen then
+      NewLen := length(s)+1;
+  end else
+    s := '';
+
+  if NewLen > CurrentLen then
+    ReAllocMem(DebugNestPrefix, NewLen+21);
+  CurrentLen := NewLen+20;
+
+  FillChar(DebugNestPrefix^, NewLen, ' ');
+  if s <> '' then
+    Move(s[1], DebugNestPrefix[0], length(s));
+
+  if (NewLen >= DebugLnMaxNestPrefixLen) then
+    DebugNestPrefix[DebugLnMaxNestPrefixLen] := #0
+  else
+    DebugNestPrefix[NewLen] := #0;
+end;
+
+procedure DebugLnNestFreePrefix;
+begin
+  if DebugNestPrefix <> nil then
+    ReAllocMem(DebugNestPrefix, 0);
+end;
+
+procedure DebugLnEnter(const s: string);
+begin
+  if not DebugNestAtBOL then
+    DebugLn;
+  if s <> '' then
+    DebugLn(s);
+  inc(DebugNestLvl);
+  DebugLnNestCreatePrefix;
+end;
+
+procedure DebugLnEnter(Args: array of const);
+begin
+  if not DebugNestAtBOL then
+    DebugLn;
+  DebugLn(Args);
+  inc(DebugNestLvl);
+  DebugLnNestCreatePrefix;
+end;
+
+procedure DebugLnEnter(s: string; Args: array of const);
+begin
+  DebugLnEnter(Format(s, Args));
+end;
+
+procedure DebugLnEnter(const s1: string; const s2: string; const s3: string;
+  const s4: string; const s5: string; const s6: string; const s7: string;
+  const s8: string; const s9: string; const s10: string; const s11: string;
+  const s12: string; const s13: string; const s14: string; const s15: string;
+  const s16: string; const s17: string; const s18: string);
+begin
+  DebugLnEnter(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
+end;
+
+procedure DebugLnExit(const s: string);
+begin
+  dec(DebugNestLvl);
+  DebugLnNestCreatePrefix;
+  if not DebugNestAtBOL then
+    DebugLn;
+  if s <> '' then
+    DebugLn(s);
+end;
+
+procedure DebugLnExit(Args: array of const);
+begin
+  dec(DebugNestLvl);
+  DebugLnNestCreatePrefix;
+  if not DebugNestAtBOL then
+    DebugLn;
+  DebugLn(Args);
+end;
+
+procedure DebugLnExit(s: string; Args: array of const);
+begin
+  DebugLnExit(Format(s, Args));
+end;
+
+procedure DebugLnExit(const s1: string; const s2: string; const s3: string;
+  const s4: string; const s5: string; const s6: string; const s7: string;
+  const s8: string; const s9: string; const s10: string; const s11: string;
+  const s12: string; const s13: string; const s14: string; const s15: string;
+  const s16: string; const s17: string; const s18: string);
+begin
+  DebugLnExit(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
+end;
+
 function ConvertLineEndings(const s: string): string;
 var
   i: Integer;
@@ -2275,11 +2410,16 @@ end;
 procedure DBGOut(const s: string);
 begin
   {$ifdef WinCE}
+  if DebugNestAtBOL and (s <> '') then
+    DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, DebugNestPrefix);
   DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
+  if DebugNestAtBOL and (s <> '') then
+    write(DebugText^, DebugNestPrefix);
   if Assigned(DebugText) then
     write(DebugText^, s);
   {$endif}
+  DebugNestAtBOL := (s <> '') and not (s[length(s)] in [#10,#13]);
 end;
 
 procedure DBGOut(const s1, s2: string);
@@ -4593,5 +4733,6 @@ finalization
   {$ENDIF}
   FreeLineInfoCache;
   FinalizeDebugOutput;
+  DebugLnNestFreePrefix;
 
 end.
