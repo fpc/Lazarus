@@ -165,6 +165,12 @@ type
     procedure DoToggleCallStack; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
+    //Some debuugers may do things like ProcessMessages while processing commands
+    //and that can cause side-effects
+    //The debugger may run it's queue either during UnLockCommandProcessing or later
+    procedure LockCommandProcessing; override;
+    procedure UnLockCommandProcessing; override;
+
     function StartDebugging: TModalResult; override; // returns immediately
     function RunDebugger: TModalResult; override; // waits till program ends
     procedure EndDebugging; override;
@@ -2542,6 +2548,18 @@ begin
   else
     Handled := False;
   end;
+end;
+
+procedure TDebugManager.LockCommandProcessing;
+begin
+  if assigned(FDebugger)
+  then FDebugger.LockCommandProcessing;
+end;
+
+procedure TDebugManager.UnLockCommandProcessing;
+begin
+  if assigned(FDebugger)
+  then FDebugger.UnLockCommandProcessing;
 end;
 
 function TDebugManager.StartDebugging: TModalResult;

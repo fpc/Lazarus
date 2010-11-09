@@ -1360,6 +1360,8 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
+    procedure LockCommandProcessing; virtual;
+    procedure UnLockCommandProcessing; virtual;
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -1653,6 +1655,16 @@ end;
 function TDebugger.Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
 begin
   Result := ReqCmd(dcDisassemble, [AAddr, ABackward, @ANextAddr, @ADump, @AStatement, @AFile, @ALine]);
+end;
+
+procedure TDebugger.LockCommandProcessing;
+begin
+  // nothing
+end;
+
+procedure TDebugger.UnLockCommandProcessing;
+begin
+  // nothing
 end;
 
 procedure TDebugger.Done;

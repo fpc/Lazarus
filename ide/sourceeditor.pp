@@ -6553,26 +6553,31 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+  DebugBoss.LockCommandProcessing;
   try
-    IDEWindowCreators.ShowForm(Self,false);
-    Result := NewSE(-1, -1, AShareEditor);
-    {$IFDEF IDE_DEBUG}
-    writeln('[TSourceNotebook.NewFile] B ');
-    {$ENDIF}
-    Result.CodeBuffer:=ASource;
-    {$IFDEF IDE_DEBUG}
-    writeln('[TSourceNotebook.NewFile] D ');
-    {$ENDIF}
-    //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
-    Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
-    UpdatePageNames;
-    UpdateProjectFiles;
-    UpdateStatusBar;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+    try
+      IDEWindowCreators.ShowForm(Self,false);
+      Result := NewSE(-1, -1, AShareEditor);
+      {$IFDEF IDE_DEBUG}
+      writeln('[TSourceNotebook.NewFile] B ');
+      {$ENDIF}
+      Result.CodeBuffer:=ASource;
+      {$IFDEF IDE_DEBUG}
+      writeln('[TSourceNotebook.NewFile] D ');
+      {$ENDIF}
+      //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
+      Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
+      UpdatePageNames;
+      UpdateProjectFiles;
+      UpdateStatusBar;
+    finally
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+    end;
+    if FocusIt then FocusEditor;
   finally
-    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+    DebugBoss.UnLockCommandProcessing;
   end;
-  if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
   {$ENDIF}

@@ -181,6 +181,7 @@ type
     FExceptionBreakID: Integer;
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
+    FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FCurrentStackFrame: Integer;
     FAsmCache: TTypedMap;
@@ -254,6 +255,7 @@ type
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
+    procedure RunQueue;
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
     procedure CancelAllQueued;
@@ -295,6 +297,11 @@ type
 
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
+
+    //LockCommandProcessing is more than just QueueExecuteLock
+    //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
+    procedure LockCommandProcessing; override;
+    procedure UnLockCommandProcessing; override;
 
     // internal testing
     procedure TestCmd(const ACommand: String); override;
@@ -1785,6 +1792,7 @@ begin
   FSourceNames.Duplicates := dupError;
   FSourceNames.CaseSensitive := False;
   FCommandQueueExecLock := 0;
+  FRunQueueOnUnlock := False;
 
 {$IFdef MSWindows}
   InitWin32;
@@ -1851,6 +1859,24 @@ begin
   finally
     UnlockRelease;
   end;
+end;
+
+procedure TGDBMIDebugger.LockCommandProcessing;
+begin
+  {$IFDEF GDMI_QUEUE_DEBUG}
+  DebugLnEnter(['TGDBMIDebugger.LockCommandProcessing FInExecuteCount=', FInExecuteCount, '  FRunQueueOnUnlock=', dbgs(FRunQueueOnUnlock) ]);
+  {$ENDIF}
+  if FInExecuteCount = 0
+  then FRunQueueOnUnlock := True;
+  QueueExecuteLock;
+end;
+
+procedure TGDBMIDebugger.UnLockCommandProcessing;
+begin
+  QueueExecuteUnlock;
+  {$IFDEF GDMI_QUEUE_DEBUG}
+  DebugLnExit(['TGDBMIDebugger.UnLockCommandProcessing']);
+  {$ENDIF}
 end;
 
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
@@ -1939,7 +1965,7 @@ begin
   CommandObj.KeepFinished := False;
 end;
 
-procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+procedure TGDBMIDebugger.RunQueue;
 var
   R: Boolean;
   Cmd: TGDBMIDebuggerCommand;
@@ -1948,17 +1974,6 @@ begin
   SavedInExecuteCount := FInExecuteCount;
   LockRelease;
   try
-    FCommandQueue.Add(ACommand);
-    if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
-    then begin
-      {$IFDEF GDMI_QUEUE_DEBUG}
-      debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
-      {$ENDIF}
-      ACommand.DoQueued;
-      Exit;
-    end;
-
-    // If we are here we can process the command directly
     repeat
       Inc(FInExecuteCount);
 
@@ -1974,6 +1989,8 @@ begin
       {$ENDIF}
 
       Dec(FInExecuteCount);
+      // Do not add code with callbacks outside "FInExecuteCount"
+      // Otherwhise "LockCommandProcessing" will fail to continue the queue
 
       if State in [dsError, dsDestroying]
       then begin
@@ -1998,7 +2015,6 @@ begin
         end
         else Break; // Queue empty
       end;
-
     until not R;
     {$IFDEF GDMI_QUEUE_DEBUG}
     debugln(['Leaving Queue with count: ', FCommandQueue.Count, ' Recurse-Count=', FInExecuteCount,' State=',DBGStateNames[State]]);
@@ -2007,6 +2023,22 @@ begin
     UnlockRelease;
     FInExecuteCount := SavedInExecuteCount;
   end;
+end;
+
+procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+begin
+  FCommandQueue.Add(ACommand);
+  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
+  then begin
+    {$IFDEF GDMI_QUEUE_DEBUG}
+    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
+    {$ENDIF}
+    ACommand.DoQueued;
+    Exit;
+  end;
+
+  // If we are here we can process the command directly
+  RunQueue;
 end;
 
 procedure TGDBMIDebugger.UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
@@ -4063,6 +4095,17 @@ end;
 procedure TGDBMIDebugger.QueueExecuteUnlock;
 begin
   dec(FCommandQueueExecLock);
+  if FRunQueueOnUnlock and (FCommandQueueExecLock = 0)
+  then begin
+    {$IFDEF GDMI_QUEUE_DEBUG}
+    DebugLnEnter(['TGDBMIDebugger.QueueExecuteUnlock: Execute RunQueue']);
+    {$ENDIF}
+    FRunQueueOnUnlock := False;
+    RunQueue;
+    {$IFDEF GDMI_QUEUE_DEBUG}
+    DebugLnExit(['TGDBMIDebugger.QueueExecuteUnlock: Finished RunQueue']);
+    {$ENDIF}
+  end;
 end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);

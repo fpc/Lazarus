@@ -124,6 +124,9 @@ type
     procedure DoToggleCallStack; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
 
+    procedure LockCommandProcessing; virtual; abstract;
+    procedure UnLockCommandProcessing; virtual; abstract;
+
     function StartDebugging: TModalResult; virtual; abstract; // set ToolStatus to itDebugger, but do not run debugger yet
     function RunDebugger: TModalResult; virtual; abstract; // run program, wait until program ends
     procedure EndDebugging; virtual; abstract;
