@@ -2390,7 +2390,7 @@ var
       New(Disasm);
       Disasm^.FileName := AFileName;
       Disasm^.Line := ALine;
-      Disasm^.Address := StrToIntDef(Unquote(InstList.Values['address']), 0);
+      Disasm^.Address := StrToQWordDef(Unquote(InstList.Values['address']), 0);
       S := InstList.Values['func-name'];
       if S <> FuncNameQ
       then begin
@@ -2641,7 +2641,7 @@ begin
         then begin
           Item := AsmList.Items[1];
           InstList.Init(Item^.NamePtr, Item^.NameLen);
-          AsmLine.Next := StrToIntDef(Unquote(InstList.Values['address']), 0);
+          AsmLine.Next := StrToQWordDef(Unquote(InstList.Values['address']), 0);
           AddAsmLine(Addr, AsmLine);
         end;
       end;
@@ -3201,8 +3201,8 @@ var
 begin
   // check if we need to get out of the interrupt thread
   S := AResult.Values;
-  S := GetPart(['.0x'], ['.'], S, True, False);
-  if StrToIntDef('$'+S, 0) <> ATag then Exit;
+  S := GetPart(['.0x'], ['.'], S, True, False); // From the line "using child thread"
+  if PtrInt(StrToQWordDef('$'+S, 0)) <> ATag then Exit;
 
   // we're stopped in our thread
   if FPauseWaitState = pwsInternal then Exit; // internal, do not care
@@ -3877,7 +3877,7 @@ function TGDBMIDebugger.StartDebugging(AContinueCommand: TGDBMIDebuggerCommand):
       S := GetPart(['at address ', ' at '], ['.', ' '], R.Values);
       if S <> ''
       then begin
-        ExecuteCommand('-break-insert *%u', [StrToIntDef(S, 0)],  [cfIgnoreError], R);
+        ExecuteCommand('-break-insert *%u', [StrToQWordDef(S, 0)],  [cfIgnoreError], R);
         if R.State = dsError then Exit(-1);
         ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
         Result := StrToIntDef(ResultList.Values['number'], -1);
