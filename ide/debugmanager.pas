@@ -1551,7 +1551,8 @@ begin
     end;
     FCurrentBreakPoint := nil;
   end
-  else begin
+  else
+  if FDebugger.State <> dsInit then begin
     if (FCurrentBreakPoint <> nil) and (FCurrentBreakPoint.AutoContinueTime > 0) then
     begin
       FAutoContinueTimer.Enabled := True;
@@ -1567,17 +1568,15 @@ begin
   end;
 
   // unmark execution line
-  if (FDebugger.State <> dsPause) and (SourceEditorManager <> nil)
+  if (not (FDebugger.State in [dsInit, dsPause])) and (SourceEditorManager <> nil)
   then
     SourceEditorManager.ClearExecutionLines;
 
-  if ((FDebugger.State = dsPause) or
-      ((FDebugger.State = dsRun) and (OldState = dsInit))
-     ) and (SourceEditorManager <> nil)
+  if (FDebugger.State in [dsPause, dsInit]) and (SourceEditorManager <> nil)
   then
     SourceEditorManager.FillExecutionMarks;
 
-  if not (FDebugger.State in [dsRun, dsPause]) and (SourceEditorManager <> nil)
+  if not (FDebugger.State in [dsRun, dsPause, dsInit]) and (SourceEditorManager <> nil)
   then begin
     SourceEditorManager.ClearExecutionMarks;
     // Refresh DebugExeLine

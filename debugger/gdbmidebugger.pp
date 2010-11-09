@@ -489,6 +489,21 @@ type
     function DebugText: String; override;
   end;
 
+  { TGDBMIDebuggerCommandLineSymbolInfo }
+
+  TGDBMIDebuggerCommandLineSymbolInfo = class(TGDBMIDebuggerCommand)
+  private
+    FResult: TGDBMIExecResult;
+    FSource: string;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; Source: string);
+    function DebugText: String; override;
+    property Result: TGDBMIExecResult read FResult;
+    property Source: string read FSource;
+  end;
+
   { TGDBMIBreakPoint }
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
@@ -536,22 +551,18 @@ type
 
   { TGDBMILineInfo }
 
-  TGDBMIAddressReqInfo = record
-    Source: String;
-    Trial: Byte;
-  end;
-  PGDBMIAddressReqInfo = ^TGDBMIAddressReqInfo;
-
   TGDBMILineInfo = class(TDBGLineInfo)
   private
     FSourceIndex: TStringList;
+    FRequestedSources: TStringList;
     FSourceMaps: array of record
       Source: String;
       Map: TMap;
     end;
+    FGetLineSymbolsCmdObj: TGDBMIDebuggerCommandLineSymbolInfo;
     procedure ClearSources;
-    procedure SymbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     procedure AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
+    procedure DoGetLineSymbolsFinished(Sender: TObject);
   protected
     function GetSource(const AIndex: integer): String; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
@@ -692,6 +703,36 @@ type
     eoShl,
     eoShr
   );
+
+{ TGDBMIDebuggerCommandLineSymbolInfo }
+
+function TGDBMIDebuggerCommandLineSymbolInfo.DoExecute: Boolean;
+var
+  Src: String;
+begin
+  Result := True;
+  ExecuteCommand('-symbol-list-lines %s', [FSource], FResult);
+
+  if FResult.State = dsError
+  then begin
+    // the second trial: gdb can return info to file w/o path
+    Src := ExtractFileName(FSource);
+    if Src <> FSource
+    then ExecuteCommand('-symbol-list-lines %s', [Src], FResult);
+  end;
+end;
+
+constructor TGDBMIDebuggerCommandLineSymbolInfo.Create(AOwner: TGDBMIDebugger;
+  Source: string);
+begin
+  inherited Create(AOwner);
+  FSource := Source;
+end;
+
+function TGDBMIDebuggerCommandLineSymbolInfo.DebugText: String;
+begin
+  Result := Format('%s: Source=%s', [ClassName, FSource]);
+end;
 
 { TGDBMIDebuggerCommandRegisterValues }
 
@@ -1140,45 +1181,12 @@ var
 begin
   for n := Low(FSourceMaps) to High(FSourceMaps) do
     FSourceMaps[n].Map.Free;
-
   Setlength(FSourceMaps, 0);
 
   for n := 0 to FSourceIndex.Count - 1 do
     DoChange(FSourceIndex[n]);
 
   FSourceIndex.Clear;
-end;
-
-procedure TGDBMILineInfo.SymbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
-var
-  Info: PGDBMIAddressReqInfo absolute ATag;
-  Source: String;
-begin
-  if AResult.State <> dsError
-  then begin
-    AddInfo(Info^.Source, AResult);
-    Dispose(Info);
-    Exit;
-  end;
-
-  if Info^.Trial > 1
-  then begin
-    Dispose(Info);
-    Exit;
-  end;
-
-  Source := ExtractFileName(Info^.Source);
-  if Source = Info^.Source
-  then begin
-    Dispose(Info);
-    Exit;
-  end;
-
-  // the second trial: gdb can return info to file w/o path
-  if Debugger.State = dsRun
-  then TGDBMIDebugger(Debugger).GDBPause(True);
-  Inc(Info^.Trial);
-  TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [Source], [cfIgnoreError], @SymbolListCallback, ATag);
 end;
 
 procedure TGDBMILineInfo.AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
@@ -1290,6 +1298,10 @@ begin
   FSourceIndex.Sorted := True;
   FSourceIndex.Duplicates := dupError;
   FSourceIndex.CaseSensitive := False;
+  FRequestedSources := TStringList.Create;
+  FRequestedSources.Sorted := True;
+  FRequestedSources.Duplicates := dupError;
+  FRequestedSources.CaseSensitive := False;
   inherited;
 end;
 
@@ -1297,26 +1309,49 @@ destructor TGDBMILineInfo.Destroy;
 begin
   ClearSources;
   FreeAndNil(FSourceIndex);
+  FreeAndNil(FRequestedSources);
   inherited Destroy;
+end;
+
+procedure TGDBMILineInfo.DoGetLineSymbolsFinished(Sender: TObject);
+var
+  Cmd: TGDBMIDebuggerCommandLineSymbolInfo;
+  idx: LongInt;
+begin
+  Cmd := TGDBMIDebuggerCommandLineSymbolInfo(Sender);
+  if Cmd.Result.State <> dsError
+  then
+    AddInfo(Cmd.Source, Cmd.Result);
+
+  idx := FRequestedSources.IndexOf(Cmd.Source);
+  if idx >= 0
+  then FRequestedSources.Delete(idx);
+
+  FGetLineSymbolsCmdObj := nil;
+  // DoChange is calle in AddInfo
 end;
 
 procedure TGDBMILineInfo.Request(const ASource: String);
 var
-  Info: PGDBMIAddressReqInfo;
   idx: Integer;
 begin
-  if ASource = '' then Exit; // we cannot request when source file name is empty
-  if Debugger = nil then Exit;
+  if (ASource = '') or (Debugger = nil) or (FRequestedSources.IndexOf(ASource) >= 0)
+  then Exit;
 
   idx := IndexOf(ASource);
   if (idx <> -1) and (FSourceMaps[idx].Map <> nil) then Exit; // already present
 
+  // add empty entry, to prevent further requests
+  FRequestedSources.Add(ASource);
+
+  // Need to interupt debugger
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-  New(Info);
-  Info^.Source := ASource;
-  Info^.Trial := 1;
-  TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SymbolListCallback, PtrInt(Info));
+
+  FGetLineSymbolsCmdObj := TGDBMIDebuggerCommandLineSymbolInfo.Create(TGDBMIDebugger(Debugger), ASource);
+  FGetLineSymbolsCmdObj.OnExecuted    := @DoGetLineSymbolsFinished;
+  TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
+  (* DoEvaluationFinished may be called immediately at this point *)
 end;
 
 { TGDBMINameValueList }
@@ -1826,6 +1861,8 @@ begin
     ClearSourceInfo;
     FPauseWaitState := pwsNone;
   end;
+  if (OldState = dsPause) and (State = dsRun) then
+    FPauseWaitState := pwsNone;
 
   inherited DoState(OldState);
 end;

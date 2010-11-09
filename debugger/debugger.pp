@@ -1443,8 +1443,6 @@ function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 implementation
 
 const
-  INTERNAL_STATES = [dsInit];
-
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
   {dsIdle } [dcEnvironment],
@@ -1708,7 +1706,6 @@ end;
 
 procedure TDebugger.DoState(const OldState: TDBGState);
 begin
-  if State in INTERNAL_STATES then Exit;
   if Assigned(FOnState) then FOnState(Self, OldState);
 end;
 
