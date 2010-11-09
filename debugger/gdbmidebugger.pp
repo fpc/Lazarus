@@ -1928,10 +1928,13 @@ begin
       Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
       FCommandQueue.Delete(0);
       {$IFDEF GDMI_QUEUE_DEBUG}
-      debugln(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
+      DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
       R := Cmd.Execute;
       Cmd.DoFinished;
+      {$IFDEF GDMI_QUEUE_DEBUG}
+      DebugLnExit('Exec done');
+      {$ENDIF}
 
       Dec(FInExecuteCount);
 
