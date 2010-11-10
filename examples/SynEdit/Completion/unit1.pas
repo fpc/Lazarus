@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    chkSizeDrag: TCheckBox;
     chkSearch: TCheckBox;
     chkExec: TCheckBox;
     Label1: TLabel;
@@ -28,6 +29,7 @@ type
     SynEdit1: TSynEdit;
     procedure chkExecChange(Sender: TObject);
     procedure chkSearchChange(Sender: TObject);
+    procedure chkSizeDragChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Memo1Change(Sender: TObject);
   private
@@ -106,6 +108,8 @@ begin
   SynCompletion.CaseSensitive := False;
   SynCompletion.OnExecute := @DoExecute;
   SynCompletion.OnSearchPosition := @DoSearchPosition;
+  SynCompletion.ShowSizeDrag := True;
+  SynCompletion.DoubleClickSelects := True;
 end;
 
 procedure TForm1.chkExecChange(Sender: TObject);
@@ -120,6 +124,11 @@ begin
   else
     SynCompletion.OnSearchPosition := nil;
   SynEdit1.SetFocus;
+end;
+
+procedure TForm1.chkSizeDragChange(Sender: TObject);
+begin
+  SynCompletion.ShowSizeDrag := chkSizeDrag.Checked;
 end;
 
 end.
