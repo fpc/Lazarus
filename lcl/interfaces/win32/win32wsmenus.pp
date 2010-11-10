@@ -221,7 +221,7 @@ var
   ncm: NONCLIENTMETRICS;
 begin
   ncm.cbSize := sizeof(ncm);
-  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), @ncm, 0) then
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, SizeOf(ncm), @ncm, 0) then
     lf := ncm.lfMenuFont
   else
     GetObject(GetStockObject(DEFAULT_GUI_FONT), SizeOf(LOGFONT), @lf);

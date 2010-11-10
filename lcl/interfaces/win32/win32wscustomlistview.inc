@@ -991,7 +991,7 @@ begin
     Exit;
   Color := AWinControl.Color;
   if Color = clDefault then
-    Color := TWSWinControlClass(AWinControl.WidgetSetClass).GetDefaultColor(AWinControl);
+    Color := AWinControl.GetDefaultColor;
   Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, ColorToRGB(Color));
   Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, ColorToRGB(Color));
 end;

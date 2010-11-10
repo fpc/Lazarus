@@ -165,7 +165,7 @@ end;
 
 class function TWSControl.GetDefaultColor(const AControl: TControl): TColor;
 begin
-  Result := clWindow;
+  Result := clDefault;
 end;
 
 class procedure TWSControl.ConstraintWidth(const AControl: TControl;

@@ -456,7 +456,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'TWin32WSStatusBar.SetColor') then
     Exit;
   if AWinControl.Color = clDefault then
-    Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(TWSWinControlClass(AWinControl.WidgetSetClass).GetDefaultColor(AWinControl)))
+    Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(AWinControl.GetDefaultColor))
   else
     Windows.SendMessage(AWinControl.Handle, SB_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
 end;

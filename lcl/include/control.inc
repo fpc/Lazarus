@@ -905,6 +905,16 @@ begin
   Result := not ParentColor;
 end;
 
+function TControl.GetDefaultColor: TColor;
+begin
+  Result := TWSControlClass(WidgetSetClass).GetDefaultColor(Self);
+  if (Result = clDefault) then
+    if ParentColor and Assigned(Parent) then
+      Result := Parent.GetDefaultColor
+    else
+      Result := clWindow;
+end;
+
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}

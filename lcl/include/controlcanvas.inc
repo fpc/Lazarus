@@ -45,7 +45,7 @@ end;
 function TControlCanvas.GetDefaultColor: TColor;
 begin
   if Assigned(FControl) then
-    Result := TWSControlClass(FControl.WidgetSetClass).GetDefaultColor(FControl)
+    Result := FControl.GetDefaultColor
   else
     Result := inherited GetDefaultColor;
 end;

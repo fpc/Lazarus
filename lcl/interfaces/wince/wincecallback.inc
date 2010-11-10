@@ -1302,7 +1302,7 @@ begin
           Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           WindowColor := ChildWinControl.Brush.Color;
           if WindowColor = clDefault then
-            WindowColor := TWSWinControlClass(ChildWinControl.WidgetSetClass).GetDefaultColor(ChildWinControl);
+            WindowColor := ChildWinControl.GetDefaultColor;
           Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
           LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);

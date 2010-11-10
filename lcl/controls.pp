@@ -1287,6 +1287,7 @@ type
                                WithThemeSpace: boolean = true); virtual;
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
+    function GetDefaultColor: TColor; virtual;
     function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;

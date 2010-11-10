@@ -4622,7 +4622,7 @@ begin
   inherited SetColor(Value);
   if BrushCreated then
     if Color = clDefault then
-      FBrush.Color := TWSWinControlClass(WidgetSetClass).GetDefaultColor(Self)
+      FBrush.Color := GetDefaultColor
     else
       FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -4823,7 +4823,7 @@ begin
   if BrushCreated then exit;
   FBrush := TBrush.Create;
   if Color = clDefault then
-    FBrush.Color := TWSWinControlClass(WidgetSetClass).GetDefaultColor(Self)
+    FBrush.Color := GetDefaultColor
   else
     FBrush.Color := Color;
 end;
