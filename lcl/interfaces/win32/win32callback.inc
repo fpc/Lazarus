@@ -119,6 +119,26 @@ begin
 {$endif}
 end;
 
+procedure DrawParentBackground(Window: HWND; ControlDC: HDC);
+var
+  Parent: HWND;
+  P: TPoint;
+begin
+  if ThemeServices.ThemesEnabled then
+    ThemeServices.DrawParentBackground(Window, ControlDC, nil, False)
+  else
+  begin
+    Parent := Windows.GetParent(Window);
+    P.X := 0;
+    P.Y := 0;
+    Windows.MapWindowPoints(Window, Parent, P, 1);
+    Windows.OffsetViewportOrgEx(ControlDC, -P.X, -P.Y, P);
+    Windows.SendMessage(Parent, WM_ERASEBKGND, ControlDC, 0);
+    Windows.SendMessage(Parent, WM_PRINTCLIENT, ControlDC, PRF_CLIENT);
+    Windows.SetViewportExtEx(ControlDC, P.X, P.Y, nil);
+  end;
+end;
+
 type
   TEraseBkgndCommand =
   (
@@ -496,7 +516,7 @@ var
 {$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
-        TWin32ThemeServices(ThemeServices).DrawParentBackground(Window, PaintMsg.DC, nil, False);
+        DrawParentBackground(Window, PaintMsg.DC);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (ControlDC = 0) or not needParentPaint then
@@ -539,19 +559,6 @@ var
         end;
 {$endif}
       end;
-    end;
-  end;
-
-  procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
-  begin
-    if ThemeServices.ThemesEnabled then
-      ThemeServices.DrawParentBackground(Window, ControlDC, nil, False)
-    else
-    begin
-      GetWin32ControlPos(Window, Parent, P.X, P.Y);
-      MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
-      SendPaintMessage(ControlDC);
-      MoveWindowOrgEx(ControlDC, P.X, P.Y);
     end;
   end;
 
@@ -1342,7 +1349,7 @@ begin
             not ChildWindowInfo^.ThemedCustomDraw then
           begin
             // need to draw transparently, draw background
-            SendParentPaintMessage(HWND(LParam), Window, WindowDC);
+            DrawParentBackground(HWND(LParam), WindowDC);
             LMessage.Result := GetStockObject(HOLLOW_BRUSH);
             SetBkMode(WindowDC, TRANSPARENT);
             WinProcess := false;
