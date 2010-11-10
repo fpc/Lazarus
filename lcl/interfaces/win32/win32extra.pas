@@ -84,6 +84,7 @@ var
   SetLayeredWindowAttributes: function (HWND: hwnd; crKey: COLORREF; bAlpha: byte; dwFlags: DWORD): BOOL; stdcall;
   UpdateLayeredWindow: function(hWnd: HWND; hdcDst: HDC; pptDst: PPoint; psize: PSize;
       hdcSrc: HDC; pptSrc: PPoint; crKey: COLORREF; pblend: PBlendFunction; dwFlags: DWORD): BOOL; stdcall;
+  IsProcessDPIAware: function: BOOL; stdcall;
 
 const
   // ComCtlVersions
@@ -561,6 +562,11 @@ begin
   Result := False;
 end;
 
+function _IsProcessDPIAware: BOOL; stdcall;
+begin
+  Result := False;
+end;
+
 const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
@@ -613,6 +619,7 @@ begin
   Pointer(GetWindowInfo) := @_GetWindowInfo;
   Pointer(SetLayeredWindowAttributes) := @_SetLayeredWindowAttributes;
   Pointer(UpdateLayeredWindow) := @_UpdateLayeredWindow;
+  Pointer(IsProcessDPIAware) := @_IsProcessDPIAware;
 
   user32handle := LoadLibrary(user32lib);
   if user32handle <> 0 then
@@ -636,6 +643,10 @@ begin
     p := GetProcAddress(user32handle, 'UpdateLayeredWindow');
     if p <> nil
     then Pointer(UpdateLayeredWindow) := p;
+
+    p := GetProcAddress(user32handle, 'IsProcessDPIAware');
+    if p <> nil
+    then Pointer(IsProcessDPIAware) := p;
   end;
 
   // Defaults
