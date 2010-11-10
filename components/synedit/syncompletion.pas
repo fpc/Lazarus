@@ -179,6 +179,7 @@ type
     property DrawBorderWidth: Integer read FDrawBorderWidth write SetDrawBorderWidth;
     procedure IncHintLock;
     procedure DecHintLock;
+    procedure DoOnDragResize(Sender: TObject);
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -460,7 +461,7 @@ begin
   if (FWinSize.x <> TSynBaseCompletionForm(Owner).Width) or
      (FWinSize.y <> TSynBaseCompletionForm(Owner).Height)
   then
-    TSynBaseCompletionForm(Owner).OnDragResized(Owner);
+    TSynBaseCompletionForm(Owner).DoOnDragResize(Owner);
 end;
 
 constructor TSynBaseCompletionFormSizeDrag.Create(TheOwner: TComponent);
@@ -525,6 +526,7 @@ begin
   SizeDrag.AnchorSideBottom.Control := Self;
   SizeDrag.Height := Max(7, abs(Font.Height) * 2 div 3);
   SizeDrag.Cursor := crSizeNWSE;
+  SizeDrag.Visible := False;
 
   SizeDrag.OnKeyPress:=@SDKeyPress;
   SizeDrag.OnKeyDown:=@SDKeyDown;
@@ -1054,6 +1056,10 @@ begin
   NbLinesInWindow := NbLinesInWindow;
   Scroll.BorderSpacing.Top := FDrawBorderWidth;
   Scroll.BorderSpacing.Right := FDrawBorderWidth;
+  if SizeDrag.Visible then
+    Scroll.BorderSpacing.Bottom := 0
+  else
+    Scroll.BorderSpacing.Bottom := FDrawBorderWidth;
   SizeDrag.BorderSpacing.Right := FDrawBorderWidth;
   SizeDrag.BorderSpacing.Bottom := FDrawBorderWidth;
 end;
@@ -1086,6 +1092,12 @@ begin
   dec(FHintLock);
   if FHintLock = 0 then
     ShowItemHint(Position);
+end;
+
+procedure TSynBaseCompletionForm.DoOnDragResize(Sender: TObject);
+begin
+  if assigned(FOnDragResized) then
+    FOnDragResized(Sender);
 end;
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
