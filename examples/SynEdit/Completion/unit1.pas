@@ -92,7 +92,10 @@ begin
   Add('Police Constable');
   Add('Police');
   Add('Constable');
-  APosition := 0;
+  if SynCompletion.ItemList.Count > 0 then
+    APosition := 0
+  else
+    APosition := -1;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
