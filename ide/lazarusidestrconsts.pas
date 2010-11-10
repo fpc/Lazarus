@@ -2028,7 +2028,8 @@ resourcestring
   lisTargetFileNameO = 'Target file name (-o):';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
-  dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';
+  dlgPOUseManifest = 'Use manifest file to enable themes (Windows only)';
+  dlgPODpiAware = 'Dpi Aware application (for Vista+)';
   dlgPOIcon = 'Icon:';
   dlgPOLoadIcon = 'Load Icon';
   dlgPOSaveIcon = 'Save Icon';

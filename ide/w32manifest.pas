@@ -46,7 +46,9 @@ type
 
   TProjectXPManifest = class(TAbstractProjectResource)
   private
+    FIsDpiaAware: boolean;
     FUseManifest: boolean;
+    procedure SetDpiAware(const AValue: boolean);
     procedure SetUseManifest(const AValue: boolean);
   public
     constructor Create; override;
@@ -55,12 +57,13 @@ type
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
+    property DpiAware: boolean read FIsDpiaAware write SetDpiAware;
   end;
 
 implementation
 
 const
-  sManifestFileData: String =
+  sManifestFileDataStart: String =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'#$D#$A+
     '<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">'#$D#$A+
     ' <assemblyIdentity version="1.0.0.0" processorArchitecture="*" name="CompanyName.ProductName.YourApp" type="win32"/>'#$D#$A+
@@ -76,8 +79,15 @@ const
     '    <requestedExecutionLevel level="asInvoker" uiAccess="false"/>'#$D#$A+
     '   </requestedPrivileges>'#$D#$A+
     '  </security>'#$D#$A+
-    ' </trustInfo>'#$D#$A+
+    ' </trustInfo>'#$D#$A;
+  sManifestFileDataEnd: String =
     '</assembly>';
+  sManifestFileDataDpiAware: String =
+    ' <asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">'#$D#$A+
+    '  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">'#$D#$A+
+    '   <dpiAware>true</dpiAware>'#$D#$A+
+    '  </asmv3:windowsSettings>'#$D#$A+
+    ' </asmv3:application>'#$D#$A;
 
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
 begin
@@ -86,10 +96,18 @@ begin
   Modified := True;
 end;
 
+procedure TProjectXPManifest.SetDpiAware(const AValue: boolean);
+begin
+  if FIsDpiaAware = AValue then exit;
+  FIsDpiaAware := AValue;
+  Modified := True;
+end;
+
 constructor TProjectXPManifest.Create;
 begin
   inherited Create;
   UseManifest := True;
+  DpiAware := False;
 end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
@@ -97,6 +115,7 @@ function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResource
 var
   Res: TGenericResource;
   RName, RType: TResourceDesc;
+  ManifestFileData: String;
 begin
   Result := True;
   if UseManifest then
@@ -106,7 +125,11 @@ begin
     Res := TGenericResource.Create(RType, RName);
     RType.Free; //no longer needed
     RName.Free;
-    Res.RawData.Write(sManifestFileData[1], Length(sManifestFileData));
+    ManifestFileData := sManifestFileDataStart;
+    if DpiAware then
+      ManifestFileData := ManifestFileData + sManifestFileDataDpiAware;
+    ManifestFileData := ManifestFileData + sManifestFileDataEnd;
+    Res.RawData.Write(ManifestFileData[1], Length(ManifestFileData));
     AResources.AddSystemResource(Res);
   end;
 end;
@@ -114,11 +137,13 @@ end;
 procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject; Path: String);
 begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', DpiAware, False);
 end;
 
 procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject; Path: String);
 begin
   UseManifest := TXMLConfig(AConfig).GetValue(Path+'General/UseXPManifest/Value', False);
+  DpiAware := TXMLConfig(AConfig).GetValue(Path+'General/XPManifest/DpiAware/Value', False);
 end;
 
 initialization

@@ -16,6 +16,7 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    DpiAwareCheckBox: TCheckBox;
     ClearIconButton: TBitBtn;
     CreateAppBundleButton: TBitBtn;
     IconImage: TImage;
@@ -37,6 +38,7 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
+    procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
     procedure SetIconFromStream(Value: TStream);
@@ -146,6 +148,11 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
+procedure TProjectApplicationOptionsFrame.UseXPManifestCheckBoxChange(Sender: TObject);
+begin
+  DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+end;
+
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
 begin
   IconImage.Picture.Clear;
@@ -182,7 +189,7 @@ begin
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
-  UseXPManifestCheckBox.Checked := False;
+  DpiAwareCheckBox.Caption := dlgPODpiAware;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
 
@@ -211,6 +218,7 @@ begin
     TitleEdit.Text := Title;
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest;
+    DpiAwareCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).DpiAware;
     AStream := TProjectIcon(Resources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
@@ -235,6 +243,7 @@ begin
     end;
     UseAppBundle := UseAppBundleCheckBox.Checked;
     TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
+    TProjectXPManifest(Resources[TProjectXPManifest]).DpiAware := DpiAwareCheckBox.Checked;
   end;
 end;
 
