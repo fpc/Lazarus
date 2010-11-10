@@ -450,15 +450,42 @@ begin
   if Parent <> nil then Parent.InvalidatePreferredSize;
 end;
 
+procedure TControl.ScaleConstraints(Multiplier, Divider: Integer);
+begin
+  with Constraints do
+  begin
+    if MinWidth > 0 then
+      MinWidth := MulDiv(MinWidth, Multiplier, Divider);
+    if MaxWidth > 0 then
+      MaxWidth := MulDiv(MaxWidth, Multiplier, Divider);
+    if MinHeight > 0 then
+      MinHeight := MulDiv(MinHeight, Multiplier, Divider);
+    if MaxHeight > 0 then
+      MaxHeight := MulDiv(MaxHeight, Multiplier, Divider);
+  end;
+end;
+
 {------------------------------------------------------------------------------
        TControl.ChangeScale
 
   Scale contorl by factor Multiplier/Divider
 ------------------------------------------------------------------------------}
 procedure TControl.ChangeScale(Multiplier, Divider: Integer);
+var
+  R: TRect;
 begin
-  // TODO: TCONTROL.CHANGESCALE
-  //Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
+  if Multiplier <> Divider then
+  begin
+    ScaleConstraints(Multiplier, Divider);
+    if not ParentFont then
+      Font.Size := MulDiv(Font.Size, Multiplier, Divider);
+    R := BaseBounds;
+    R.Left := MulDiv(R.Left, Multiplier, Divider);
+    R.Top := MulDiv(R.Top, Multiplier, Divider);
+    R.Right := MulDiv(R.Right, Multiplier, Divider);
+    R.Bottom := MulDiv(R.Bottom, Multiplier, Divider);
+    BoundsRect := R;
+  end;
 end;
 
 {------------------------------------------------------------------------------

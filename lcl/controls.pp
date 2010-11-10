@@ -1053,6 +1053,7 @@ type
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer; KeepBase: boolean); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure ScaleConstraints(Multiplier, Divider: Integer);
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure UpdateAlignIndex;
@@ -1741,6 +1742,8 @@ type
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     procedure CreateBrush; virtual;
+    procedure ScaleControls(Multiplier, Divider: Integer); virtual;
+    procedure ChangeScale(Multiplier, Divider: Integer); override;
   protected
     // messages
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
@@ -1951,6 +1954,7 @@ type
     procedure Update; override;
     procedure SetFocus; virtual;
     procedure FlipChildren(AllLevels: Boolean); virtual;
+    procedure ScaleBy(Multiplier, Divider: Integer);
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure UpdateDockCaption(Exclude: TControl = nil); virtual;
     procedure GetTabOrderList(List: TFPList);

@@ -4394,6 +4394,11 @@ begin
   end;
 end;
 
+procedure TWinControl.ScaleBy(Multiplier, Divider: Integer);
+begin
+  ChangeScale(Multiplier, Divider);
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl FindNextControl                                                 }
 {------------------------------------------------------------------------------}
@@ -4826,6 +4831,28 @@ begin
     FBrush.Color := GetDefaultColor
   else
     FBrush.Color := Color;
+end;
+
+procedure TWinControl.ScaleControls(Multiplier, Divider: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to ControlCount - 1 do
+    Controls[i].ChangeScale(Multiplier, Divider);
+end;
+
+procedure TWinControl.ChangeScale(Multiplier, Divider: Integer);
+begin
+  if Multiplier <> Divider then
+  begin
+    DisableAlign;
+    try
+      inherited;
+      ScaleControls(Multiplier, Divider);
+    finally
+      EnableAlign;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
