@@ -2161,25 +2161,28 @@ var
   ParentForm: TCustomForm;
   DC: HDC;
 begin
-  if FPixelsPerInch=0 then begin
-    if Parent<>nil then begin
-      ParentForm:=GetParentForm(Self);
-      if ParentForm<>nil then begin
-        FPixelsPerInch:=ParentForm.PixelsPerInch;
-      end;
+  if FPixelsPerInch = 0 then
+  begin
+    if Assigned(Parent) then
+    begin
+      ParentForm := GetParentForm(Self);
+      if Assigned(ParentForm) then
+        FPixelsPerInch := ParentForm.PixelsPerInch;
     end;
 
-    if FPixelsPerInch<=0 then begin
-      if HandleAllocated then begin
-        DC:=GetDC(Handle);
-        FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
-        ReleaseDC(Handle,DC);
-      end else begin
-        FPixelsPerInch:=Screen.PixelsPerInch;
-      end;
+    if FPixelsPerInch <= 0 then
+    begin
+      if HandleAllocated then
+      begin
+        DC := GetDC(Handle);
+        FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSX);
+        ReleaseDC(Handle, DC);
+      end
+      else
+        FPixelsPerInch := Screen.PixelsPerInch;
     end;
   end;
-  Result:=FPixelsPerInch;
+  Result := FPixelsPerInch;
 end;
 
 function TCustomForm.GetMonitor: TMonitor;
@@ -2476,10 +2479,10 @@ end;
 procedure TCustomForm.CreateWnd;
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
-  FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
+  FFormState := FFormState - [fsBorderStyleChanged, fsFormStyleChanged];
   inherited CreateWnd;
 
-  FPixelsPerInch:=0;
+  FPixelsPerInch := 0;
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
