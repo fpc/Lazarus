@@ -132,6 +132,7 @@ type
     function DoCompileProjectDependencies(AProject: TProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                              ShowAbort: boolean;
                               Globals: TGlobalCompilerOptions = nil): TModalResult; virtual; abstract;
 
     // package installation

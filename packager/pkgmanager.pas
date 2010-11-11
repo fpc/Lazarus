@@ -167,7 +167,8 @@ type
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
-                                 const Directory: string): TModalResult;
+                                 const Directory: string;
+                                 ShowAbort: boolean): TModalResult;
     function DoGetUnitRegisterInfo(const AFilename: string;
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
@@ -291,8 +292,10 @@ type
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                              ShowAbort: boolean;
                               Globals: TGlobalCompilerOptions = nil): TModalResult; override;
-    function DoCreatePackageMakefile(APackage: TLazPackage): TModalResult;
+    function DoCreatePackageMakefile(APackage: TLazPackage;
+                                     ShowAbort: boolean): TModalResult;
 
     // package installation
     procedure LoadInstalledPackages; override;
@@ -658,13 +661,13 @@ begin
   else
     Globals:=nil;
   //debugln('TPkgManager.OnPackageEditorCompilePackage OS=',Globals.TargetOS);
-  Result:=DoCompilePackage(APackage,Flags,Globals);
+  Result:=DoCompilePackage(APackage,Flags,false,Globals);
 end;
 
 function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoCreatePackageMakefile(APackage);
+  Result:=DoCreatePackageMakefile(APackage,false);
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -1245,7 +1248,8 @@ begin
 end;
 
 function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; const Directory: string): TModalResult;
+  FirstDependency: TPkgDependency; const Directory: string; ShowAbort: boolean
+  ): TModalResult;
 var
   PathList: TFPList;
   Dependency: TPkgDependency;
@@ -1262,9 +1266,9 @@ begin
     PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
     if PathList<>nil then begin
       DoShowPackageGraphPathList(PathList);
-      Result:=IDEMessageDialog(lisPkgMangUnsavedPackage,
+      Result:=IDEMessageDialogAb(lisPkgMangUnsavedPackage,
         lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages,
-        mtError,[mbCancel,mbAbort]);
+        mtError,[mbCancel],ShowAbort);
       exit;
     end;
 
@@ -1277,18 +1281,18 @@ begin
           // check if project
           if Dependency.Owner is TProject then begin
             MainIDE.DoShowProjectInspector(true);
-            Result:=IDEMessageDialog(lisPkgMangBrokenDependency,
+            Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
                 '"', Dependency.AsString, '"', #13]),
-              mtError,[mbCancel,mbAbort]);
+              mtError,[mbCancel],ShowAbort);
             exit;
           end;
         end;
       end;
       DoShowPackageGraphPathList(PathList);
-      Result:=IDEMessageDialog(lisPkgMangBrokenDependency,
+      Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
         lisPkgMangARequiredPackagesWasNotFound,
-        mtError,[mbCancel,mbAbort]);
+        mtError,[mbCancel],ShowAbort);
       exit;
     end;
 
@@ -1296,9 +1300,9 @@ begin
     PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then begin
       DoShowPackageGraphPathList(PathList);
-      Result:=IDEMessageDialog(lisPkgMangCircleInPackageDependencies,
+      Result:=IDEMessageDialogAb(lisPkgMangCircleInPackageDependencies,
         lisPkgMangThereIsACircleInTheRequiredPackages,
-        mtError,[mbCancel,mbAbort]);
+        mtError,[mbCancel],ShowAbort);
       exit;
     end;
 
@@ -1318,9 +1322,9 @@ begin
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
           +'Please report this bug and how you got here.'#13;
-      Result:=IDEMessageDialog(lisPkgMangAmbiguousUnitsFound, Format(
+      Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
-          mtError,[mbCancel,mbAbort]);
+          mtError,[mbCancel],ShowAbort);
       exit;
     end;
 
@@ -1337,8 +1341,8 @@ begin
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'#13;
-      Result:=IDEMessageDialog(lisPkgMangAmbiguousUnitsFound, s,
-          mtError,[mbCancel,mbAbort]);
+      Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, s,
+          mtError,[mbCancel],ShowAbort);
       exit;
     end;
 
@@ -2546,7 +2550,7 @@ begin
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(nil,
                                             AProject.FirstRequiredDependency,
-                                            AProject.ProjectDirectory);
+                                            AProject.ProjectDirectory,false);
     if Result<>mrOk then exit;
   end;
   
@@ -2574,7 +2578,8 @@ begin
 end;
 
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
-  Flags: TPkgCompileFlags; Globals: TGlobalCompilerOptions): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean; Globals: TGlobalCompilerOptions
+  ): TModalResult;
 begin
   Result:=mrCancel;
   
@@ -2587,7 +2592,7 @@ begin
   
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
-    Result:=CheckPackageGraphForCompilation(APackage,nil,APackage.Directory);
+    Result:=CheckPackageGraphForCompilation(APackage,nil,APackage.Directory,ShowAbort);
     if Result<>mrOk then exit;
   end;
   
@@ -2606,11 +2611,11 @@ begin
   Result:=PackageGraph.CompilePackage(APackage,Flags,false,Globals);
 end;
 
-function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage;
+  ShowAbort: boolean): TModalResult;
 begin
   Result:=DoCompilePackage(APackage,[pcfDoNotCompileDependencies,
-                           pcfDoNotCompilePackage,pcfCreateMakefile],nil);
+                       pcfDoNotCompilePackage,pcfCreateMakefile],ShowAbort,nil);
 end;
 
 function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string;
@@ -3551,7 +3556,7 @@ begin
 
     // check consistency
     Result:=CheckPackageGraphForCompilation(APackage,nil,
-                                           EnvironmentOptions.LazarusDirectory);
+                                     EnvironmentOptions.LazarusDirectory,false);
     if Result<>mrOk then exit;
     
     // get all required packages, which will also be auto installed
@@ -3940,7 +3945,7 @@ begin
     // check consistency
     Result:=CheckPackageGraphForCompilation(nil,
                                 PackageGraph.FirstAutoInstallDependency,
-                                EnvironmentOptions.LazarusDirectory);
+                                EnvironmentOptions.LazarusDirectory,false);
     if Result<>mrOk then exit;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
 
