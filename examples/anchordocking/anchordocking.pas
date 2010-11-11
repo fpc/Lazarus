@@ -1238,8 +1238,10 @@ var
     aManager: TAnchorDockManager;
     NewBounds: TRect;
   begin
-    if Parent=nil then
+    if Parent=nil then begin
       WorkArea:=Site.Monitor.WorkareaRect;
+      //debugln(['SetupSite WorkArea=',dbgs(WorkArea)]);
+    end;
     if IsCustomSite(Site) then begin
       aManager:=TAnchorDockManager(Site.DockManager);
       if Node.Count>0 then begin
@@ -4874,16 +4876,87 @@ end;
 
 procedure TAnchorDockManager.ResetBounds(Force: Boolean);
 var
-  Child: TAnchorDockHostSite;
   OldSiteClientRect: TRect;
   WidthDiff: Integer;
   HeightDiff: Integer;
-  SiteMinSize: TPoint;
-  ChildMaxSize: TPoint;
   ClientRectChanged: Boolean;
-  AControl: TControl;
-  b: TRect;
-  i: Integer;
+
+  procedure AlignChilds;
+  var
+    i: Integer;
+    b: TRect;
+    AControl: TControl;
+    ChildMaxSize: TPoint;
+    SiteMinSize: TPoint;
+    Child: TAnchorDockHostSite;
+  begin
+    if ClientRectChanged and DockMaster.Restoring then begin
+      // ClientRect changed => restore bounds
+      for i:=0 to Site.ControlCount-1 do begin
+        AControl:=Site.Controls[i];
+        b:=Rect(0,0,0,0);
+        if AControl is TAnchorDockHostSite then
+          b:=TAnchorDockHostSite(AControl).DockRestoreBounds
+        else if AControl is TAnchorDockSplitter then
+          b:=TAnchorDockSplitter(AControl).DockRestoreBounds;
+        if (b.Right<=b.Left) or (b.Bottom<=b.Top) then
+          b:=AControl.BoundsRect;
+        //debugln(['TAnchorDockManager.ResetBounds RESTORE ',DbgSName(AControl),' Cur=',dbgs(AControl.BoundsRect),' Restore=',dbgs(b)]);
+        if AControl is TAnchorDockSplitter then begin
+          // fit splitter into clientarea
+          if AControl.AnchorSide[akLeft].Control=nil then
+            b.Left:=Max(0,Min(b.Left,Site.ClientWidth-10));
+          if AControl.AnchorSide[akTop].Control=nil then
+            b.Top:=Max(0,Min(b.Top,Site.ClientHeight-10));
+          if TAnchorDockSplitter(AControl).ResizeAnchor in [akLeft,akRight] then
+          begin
+            b.Right:=b.Left+DockMaster.SplitterWidth;
+            b.Bottom:=Max(1,Min(b.Bottom,Site.ClientHeight-b.Top));
+          end
+          else begin
+            b.Right:=Max(1,Min(b.Right,Site.ClientWidth-b.Left));
+            b.Bottom:=b.Top+DockMaster.SplitterWidth;
+          end;
+        end;
+
+        AControl.BoundsRect:=b;
+        if AControl is TAnchorDockSplitter then
+          TAnchorDockSplitter(AControl).UpdateDockBounds;
+      end;
+      exit;
+    end;
+
+    if DockSite<>nil then exit;
+    Child:=GetChildSite;
+    if Child=nil then exit;
+
+    //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+    ChildMaxSize:=Point(Site.ClientWidth-DockMaster.SplitterWidth,
+                        Site.ClientHeight-DockMaster.SplitterWidth);
+    if PreferredSiteSizeAsSiteMinimum then begin
+      SiteMinSize:=GetSitePreferredClientSize;
+      if Child.Align in [alLeft,alRight] then begin
+        ChildMaxSize.X:=Max(0,(ChildMaxSize.X-SiteMinSize.X));
+      end else begin
+        ChildMaxSize.Y:=Max(0,(ChildMaxSize.Y-SiteMinSize.Y));
+      end;
+      debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize),' Site.Client=',dbgs(Site.ClientRect)]);
+    end;
+
+    case ResizePolicy of
+    admrpChild:
+      begin
+        if Child.Align in [alLeft,alRight] then
+          Child.Width:=Max(1,Min(ChildMaxSize.X,Child.Width+WidthDiff))
+        else begin
+          i:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
+          //debugln(['TAnchorDockManager.ResetBounds Child=',DbgSName(Child),' OldHeight=',Child.Height,' NewHeight=',i]);
+          Child.Height:=i;
+        end;
+      end;
+    end;
+  end;
+
 begin
   if Force then ;
 
@@ -4893,57 +4966,8 @@ begin
   WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
   HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
   ClientRectChanged:=(WidthDiff<>0) or (HeightDiff<>0);
-  if (not ClientRectChanged) and (not PreferredSiteSizeAsSiteMinimum) then
-    exit;
-
-  if ClientRectChanged and DockMaster.Restoring then begin
-    // ClientRect changed => restore bounds
-    for i:=0 to Site.ControlCount-1 do begin
-      AControl:=Site.Controls[i];
-      b:=Rect(0,0,0,0);
-      if AControl is TAnchorDockHostSite then
-        b:=TAnchorDockHostSite(AControl).DockRestoreBounds
-      else if AControl is TAnchorDockSplitter then
-        b:=TAnchorDockSplitter(AControl).DockRestoreBounds;
-      if (b.Right>b.Left) and (b.Bottom>b.Top) then begin
-        //debugln(['TAnchorDockManager.ResetBounds RESTORE ',DbgSName(AControl),' Cur=',dbgs(AControl.BoundsRect),' Restore=',dbgs(b)]);
-        AControl.BoundsRect:=b;
-        if AControl is TAnchorDockSplitter then
-          TAnchorDockSplitter(AControl).UpdateDockBounds;
-      end;
-    end;
-    exit;
-  end;
-
-  if DockSite<>nil then exit;
-  Child:=GetChildSite;
-  if Child=nil then exit;
-
-  //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
-  ChildMaxSize:=Point(Site.ClientWidth-DockMaster.SplitterWidth,
-                      Site.ClientHeight-DockMaster.SplitterWidth);
-  if PreferredSiteSizeAsSiteMinimum then begin
-    SiteMinSize:=GetSitePreferredClientSize;
-    if Child.Align in [alLeft,alRight] then begin
-      ChildMaxSize.X:=Max(0,(ChildMaxSize.X-SiteMinSize.X));
-    end else begin
-      ChildMaxSize.Y:=Max(0,(ChildMaxSize.Y-SiteMinSize.Y));
-    end;
-    debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize),' Site.Client=',dbgs(Site.ClientRect)]);
-  end;
-
-  case ResizePolicy of
-  admrpChild:
-    begin
-      if Child.Align in [alLeft,alRight] then
-        Child.Width:=Max(1,Min(ChildMaxSize.X,Child.Width+WidthDiff))
-      else begin
-        i:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
-        //debugln(['TAnchorDockManager.ResetBounds Child=',DbgSName(Child),' OldHeight=',Child.Height,' NewHeight=',i]);
-        Child.Height:=i;
-      end;
-    end;
-  end;
+  if ClientRectChanged or PreferredSiteSizeAsSiteMinimum then
+    AlignChilds;
 end;
 
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);
