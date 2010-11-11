@@ -48,7 +48,7 @@ uses
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
   InterfaceBase, Themes, ComCtrls, CheckLst, Menus,
   DefineTemplates, Laz_XMLCfg, DividerBevel,
-  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
+  LazarusIDEStrConsts, TransferMacros, LazIDEIntf, LazConf, IDEProcs, DialogProcs,
   IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
   {$IFDEF win32}
@@ -238,6 +238,9 @@ begin
     exit(mrOk); // only IDE, but skip both parts -> nothing to do
 
   Options:=Profiles.Current;
+  if LazarusIDE<>nil then
+    LazarusIDE.MainBarSubTitle:=Options.Name;
+
   Tool:=TExternalToolOptions.Create;
   try
     // setup external tool
@@ -352,6 +355,8 @@ begin
     Result:=mrOk;
   finally
     Tool.Free;
+    if LazarusIDE<>nil then
+      LazarusIDE.MainBarSubTitle:='';
   end;
 end;
 

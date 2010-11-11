@@ -677,7 +677,7 @@ resourcestring
     +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
     +'ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
-  lisnewProject = '%s - (new project)';
+  lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
   lisRunning = '%s (running ...)';

@@ -12505,14 +12505,25 @@ end;
 
 procedure TMainIDE.UpdateCaption;
 var
-  NewCaption, NewTitle, ProjectName, DirName: String;
+  NewCaption: String;
+
+  procedure AddToCaption(const CaptAddition: string);
+  begin
+    if EnvironmentOptions.IDETitleStartsWithProject then
+      NewCaption := CaptAddition + ' - ' + NewCaption
+    else
+      NewCaption := NewCaption + ' - ' + CaptAddition;
+  end;
+
+var
+  NewTitle, ProjectName, DirName: String;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   NewTitle := NewCaption;
   if MainBarSubTitle <> '' then
-    NewCaption := NewCaption + ' - ' + MainBarSubTitle
+    AddToCaption(MainBarSubTitle)
   else
   begin
     if Project1 <> nil then
@@ -12531,18 +12542,14 @@ begin
           if DirName <> '' then
             ProjectName := ProjectName + ' ('+DirName+')';
         end;
-        if EnvironmentOptions.IDETitleStartsWithProject then
-          NewCaption := ProjectName + ' - ' + NewCaption
-        else
-          NewCaption := NewCaption + ' - ' + ProjectName;
+        AddToCaption(ProjectName);
       end
       else
-        NewCaption := Format(lisnewProject, [NewCaption]);
+        AddToCaption(lisnewProject);
       NewTitle := NewCaption;
     end;
   end;
   case ToolStatus of
-    // Should show MiscellaneousOptions.BuildLazProfiles.Current.Name when buildding Lazarus
     itBuilder: NewCaption := Format(liscompiling, [NewCaption]);
     itDebugger:
     begin
