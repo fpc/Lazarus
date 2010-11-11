@@ -1870,7 +1870,8 @@ begin
   end;
   
   fFileName:=NewFilename;
-  UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(FFilename));
+  if EditorOpts<>nil then
+    UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(FFilename));
   UpdateSourceDirectoryReference;
 end;
 
@@ -3563,7 +3564,8 @@ var
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
   AnUnitInfo:=TUnitInfo.Create(NewBuf);
-  AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewBuf.Filename);
+  if EditorOpts<>nil then
+    AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewBuf.Filename);
   Result:=AnUnitInfo;
 end;
 
@@ -5010,6 +5012,7 @@ procedure TProject.UpdateAllCustomHighlighter;
 var
   i: Integer;
 begin
+  if EditorOpts=nil then exit;
   for i:=0 to UnitCount-1 do
     Units[i].UpdateHasCustomHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
@@ -5018,6 +5021,7 @@ procedure TProject.UpdateAllSyntaxHighlighter;
 var
   i: Integer;
 begin
+  if EditorOpts=nil then exit;
   for i:=0 to UnitCount-1 do
     Units[i].UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
