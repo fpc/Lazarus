@@ -1874,6 +1874,8 @@ var
   TheDialog: TIDEInspectDlg;
 begin
   TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
+  if (SourceEditorManager.GetActiveSE = nil) then
+    exit;
   if SourceEditorManager.GetActiveSE.SelectionAvailable then
     TheDialog.Execute(SourceEditorManager.GetActiveSE.Selection)
   else
