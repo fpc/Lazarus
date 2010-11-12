@@ -2357,6 +2357,10 @@ msgstr "アイコンをクリア"
 msgid "Create Application Bundle"
 msgstr "アプリケーションバンドルを作成"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "フォーム"
@@ -2412,7 +2416,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "アプリケーションバンドルを実行およびデバッグに用いてください。（darwinのみ）"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いてください（windowsのみ）。"
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6361,6 +6367,10 @@ msgstr "次の重複が見つかりました。 %s%s%s"
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "名称重複： %s%s%s という名前のコンポーネントは継承されたコンポーネント %s に既に存在します"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
@@ -10195,7 +10205,9 @@ msgid "New group - a set of modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (新規プロジェクト)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12364,6 +12376,10 @@ msgstr "選択されたユニットを削除"
 msgid "Remove them"
 msgstr "それらを削除"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr ""
@@ -13273,6 +13289,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "その新しいユニットはまだユニット検索パスにありません。%sディレクトリ%sを追加しますか？"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."

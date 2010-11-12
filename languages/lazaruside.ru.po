@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-08 23:47+0300\n"
+"PO-Revision-Date: 2010-11-13 00:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2379,6 +2379,10 @@ msgstr "Очистить значок"
 msgid "Create Application Bundle"
 msgstr "Создать Application Bundle"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr "Приложение с поддержкой DPI (для Vista+)"
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Формы"
@@ -2434,8 +2438,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "Использовать Application Bundle для запуска и отладки (только для Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
-msgstr "Использовать manifest-файл для включения тем (только Windows)"
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
+msgstr "Использовать manifest-файл для включения поддержки тем (только Windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
@@ -6364,6 +6369,10 @@ msgstr "Значение %s%s%s уже существует."
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Дублирующееся имя: Компонент с именем %s%s%s уже существует в унаследованном компоненте %s"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr "Путь поиска уже существует"
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Редактировать контекстно-зависимую справку"
@@ -10181,8 +10190,9 @@ msgid "New group - a set of modes"
 msgstr "Новая группа - набор режимов"
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
-msgstr "%s - (новый проект)"
+#| msgid "%s - (new project)"
+msgid "(new project)"
+msgstr "(новый проект)"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -12348,6 +12358,10 @@ msgstr "Удалить выбранные модули"
 msgid "Remove them"
 msgstr "Удалить их"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr "Удалить пути из списка \"Другие модули\""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "Удалить модуль из выражения Uses"
@@ -13262,6 +13276,10 @@ msgstr "Путь к новому включаемому файлу отсутс�
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Новый модуль ещё не находится в путях поиска.%sДобавить каталог %s?"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr "Список путей \"Другие исходные коды\" содержит путь, уже имеющийся в списке \"Другие модули\".%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."

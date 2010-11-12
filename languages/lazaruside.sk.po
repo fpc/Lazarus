@@ -2357,6 +2357,10 @@ msgstr "Zmazať ikonu"
 msgid "Create Application Bundle"
 msgstr "Vytvoriť zväzok aplikácií"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formuláre"
@@ -2412,7 +2416,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "Použiť zväzok aplikácií pre spustenie a ladenie (lem darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použiť súbor manifestu, pre zapnutie tém (len Windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6361,6 +6367,10 @@ msgstr ""
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Duplikované meno: Komponent pomenovaný %s%s%s už existuje v zdedených komponentoch %s"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Upraviť kontextovú pomoc"
@@ -10193,7 +10203,9 @@ msgid "New group - a set of modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (nový projekt)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12364,6 +12376,10 @@ msgstr ""
 msgid "Remove them"
 msgstr "Odstrániť ich"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr ""
@@ -13273,6 +13289,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Nová jednotka zatiaľ nie je v ceste hľadaní jednotiek.%sPridať adresár %s?"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."

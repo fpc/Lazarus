@@ -2347,6 +2347,10 @@ msgstr "Vyčistit ikonu"
 msgid "Create Application Bundle"
 msgstr "Vytvořit aplikační balík"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formuláře"
@@ -2402,7 +2406,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "Použít aplikační balík pro spuštění a ladění (pouze darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6315,6 +6321,10 @@ msgstr "Nalezeno zdvojení hodnoty %s%s%s."
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Zdvojené jméno: Komponenta pojmenovaná %s%s%s již existuje ve zděděné komponentě %s"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Upravit kontextovou nápovědu"
@@ -10107,7 +10117,9 @@ msgid "New group - a set of modes"
 msgstr "Nová skupina - sada režimů"
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (nový projekt)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12270,6 +12282,10 @@ msgstr "Odstranit vybrané jednotky"
 msgid "Remove them"
 msgstr "Odstranit je"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "Odstranit jednotku ze sekce uses"
@@ -13182,6 +13198,10 @@ msgstr "Nový zahrnovaný soubor ještě není ve vyhledávací cestě zahrnutí
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Nová jednotka zatím není v cestě hledání jednotek.%sPřidat adresář %s?"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."

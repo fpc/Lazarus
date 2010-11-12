@@ -2356,6 +2356,10 @@ msgstr "Remover Icono"
 msgid "Create Application Bundle"
 msgstr "Crear envoltorio de la aplicación"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formulario"
@@ -2411,7 +2415,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "Use el envoltorio de la aplicación para ejecución y depuración (sólo Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar el archivo de manifiesto para activar temas (sólo Windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6360,6 +6366,10 @@ msgstr "Se encontró duplicado del valor %s%s%s."
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Nombre duplicado: Un componente llamado %s%s%s ya existe en el componente heredado %s"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Editar ayuda contextual"
@@ -10186,7 +10196,9 @@ msgid "New group - a set of modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (nuevo proyecto)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12357,6 +12369,10 @@ msgstr "Remover las Unidades seleccionadas"
 msgid "Remove them"
 msgstr "Quitarlos"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr ""
@@ -13269,6 +13285,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "La nueva unidad no está todavía en la ruta de búsqueda de unidad.%s¿Añadir directorio %s?"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."

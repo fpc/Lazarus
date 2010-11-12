@@ -2352,6 +2352,10 @@ msgstr ""
 msgid "Create Application Bundle"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formes"
@@ -2407,7 +2411,7 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6348,6 +6352,10 @@ msgstr ""
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr ""
@@ -10166,7 +10174,9 @@ msgid "New group - a set of modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (nou projecte)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12335,6 +12345,10 @@ msgstr ""
 msgid "Remove them"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr ""
@@ -13243,6 +13257,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing

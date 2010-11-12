@@ -2357,6 +2357,10 @@ msgstr "Išvalyti piktogramą"
 msgid "Create Application Bundle"
 msgstr "Sukurti programą-rišulį"
 
+#: lazarusidestrconsts.dlgpodpiaware
+msgid "Dpi Aware application (for Vista+)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formos"
@@ -2412,7 +2416,9 @@ msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr "Startui ir derinimui naudoti programą-rišulį (tik dėl Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (windows only)"
+msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
@@ -6359,6 +6365,10 @@ msgstr "Rastas vertės %s%s%s dublikatas."
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Pavadinimai dubliuojasi: komponentas, pavadinimu %s%s%s, jau yra paveldėtame komponente %s"
 
+#: lazarusidestrconsts.lisduplicatesearchpath
+msgid "Duplicate search path"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Keisti kontekstinį žinyną"
@@ -10177,7 +10187,9 @@ msgid "New group - a set of modes"
 msgstr "Nauja grupė – veiksenų rinkinys"
 
 #: lazarusidestrconsts.lisnewproject
-msgid "%s - (new project)"
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
 msgstr "%s - (naujas projektas)"
 
 #: lazarusidestrconsts.lisnewsetting
@@ -12344,6 +12356,10 @@ msgstr "Pašalinti pažymėtus modulius"
 msgid "Remove them"
 msgstr "Pašalinti elementą"
 
+#: lazarusidestrconsts.lisremovethepathsfromothersources
+msgid "Remove the paths from \"Other sources\""
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr ""
@@ -13262,6 +13278,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Naujojo modulio nėra dar nėra modulių paieškos kelyje.%sĮtraukti modulio aplanką į modulių paieškos kelią?"
+
+#: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
+msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
