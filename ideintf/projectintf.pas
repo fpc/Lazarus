@@ -311,11 +311,11 @@ type
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
 
     // search paths:
-    property IncludePath: String read GetIncludePaths write SetIncludePaths;
-    property Libraries: String read GetLibraryPaths write SetLibraryPaths;
-    property OtherUnitFiles: String read GetUnitPaths write SetUnitPaths;
+    property IncludePath: String read GetIncludePaths write SetIncludePaths; // alias IncPath
+    property Libraries: String read GetLibraryPaths write SetLibraryPaths; // alias LibraryPath
+    property OtherUnitFiles: String read GetUnitPaths write SetUnitPaths; // alias UnitPath
     property ObjectPath: string read GetObjectPath write SetObjectPath;
-    property SrcPath: string read GetSrcPath write SetSrcPath;
+    property SrcPath: string read GetSrcPath write SetSrcPath;  // alias SrcPath
     property DebugPath: string read GetDebugPath write SetDebugPath;
     property UnitOutputDirectory: string read GetUnitOutputDir write SetUnitOutputDir;
 

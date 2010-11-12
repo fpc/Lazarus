@@ -47,6 +47,9 @@ type
     chkUseAsDefault: TCheckBox;
     function CheckSearchPath(const Context, ExpandedPath: string;
       Level: TCheckCompileOptionsMsgLvl): boolean;
+    function CheckSrcPathInUnitPath(OldParsedSrcPath, NewParsedSrcPath,
+      OldParsedUnitPath, NewParsedUnitPath: string;
+      out SrcPathChanged: boolean): boolean;
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -98,34 +101,62 @@ var
   OldUnparsedUnitPath: String;
   OldUnparsedSrcPath: String;
   OldUnparsedDebugPath: String;
+  NewParsedIncludePath: String;
+  NewParsedLibraries: String;
+  NewParsedUnitPath: String;
+  NewParsedSrcPath: String;
+  NewParsedDebugPath: String;
+  PathsChanged: boolean;
+
+  procedure GetParsedPaths;
+  begin
+    NewParsedIncludePath:=FCompilerOpts.GetIncludePath(False,coptParsed,false);
+    NewParsedLibraries:=FCompilerOpts.GetLibraryPath(False,coptParsed,false);
+    NewParsedUnitPath:=FCompilerOpts.GetUnitPath(False,coptParsed,false);
+    NewParsedSrcPath:=FCompilerOpts.GetSrcPath(False,coptParsed,false);
+    NewParsedDebugPath:=FCompilerOpts.GetDebugPath(False,coptParsed,false);
+  end;
+
 begin
-  OldParsedIncludePath := FCompilerOpts.GetIncludePath(False);
+  GetParsedPaths;
+  OldParsedIncludePath := NewParsedIncludePath;
   OldUnparsedIncludePath := FCompilerOpts.IncludePath;
-  OldParsedLibraryPath := FCompilerOpts.GetLibraryPath(False);
+  OldParsedLibraryPath := NewParsedLibraries;
   OldUnparsedLibraryPath := FCompilerOpts.Libraries;
-  OldParsedUnitPath := FCompilerOpts.GetUnitPath(False);
+  OldParsedUnitPath := NewParsedUnitPath;
   OldUnparsedUnitPath := FCompilerOpts.OtherUnitFiles;
-  OldParsedSrcPath := FCompilerOpts.GetSrcPath(False);
+  OldParsedSrcPath := NewParsedSrcPath;
   OldUnparsedSrcPath := FCompilerOpts.SrcPath;
-  OldParsedDebugPath := FCompilerOpts.GetDebugPath(False);
+  OldParsedDebugPath := NewParsedDebugPath;
   OldUnparsedDebugPath := FCompilerOpts.DebugPath;
 
+  Result:=false;
   try
     FCompilerOpts.IncludePath := IncludeFilesEdit.Text;
     FCompilerOpts.Libraries := LibrariesEdit.Text;
     FCompilerOpts.OtherUnitFiles := OtherUnitsEdit.Text;
     FCompilerOpts.SrcPath := OtherSourcesEdit.Text;
     FCompilerOpts.DebugPath := DebugPathEdit.Text;
-    if not CheckPutSearchPath('include search path', OldParsedIncludePath, FCompilerOpts.GetIncludePath(False)) then
-      Exit(False);
-    if not CheckPutSearchPath('library search path', OldParsedLibraryPath, FCompilerOpts.GetLibraryPath(False)) then
-      Exit(False);
-    if not CheckPutSearchPath('unit search path', OldParsedUnitPath, FCompilerOpts.GetUnitPath(False)) then
-      Exit(False);
-    if not CheckPutSearchPath('source search path', OldParsedSrcPath, FCompilerOpts.GetSrcPath(False)) then
-      Exit(False);
-    if not CheckPutSearchPath('debugger search path', OldParsedDebugPath, FCompilerOpts.GetDebugPath(False)) then
-      Exit(False);
+    GetParsedPaths;
+
+    if not CheckPutSearchPath('include search path', OldParsedIncludePath, NewParsedIncludePath) then
+      Exit;
+    if not CheckPutSearchPath('library search path', OldParsedLibraryPath, NewParsedLibraries) then
+      Exit;
+    if not CheckPutSearchPath('unit search path', OldParsedUnitPath, NewParsedUnitPath) then
+      Exit;
+    if not CheckPutSearchPath('source search path', OldParsedSrcPath, NewParsedSrcPath) then
+      Exit;
+    if not CheckPutSearchPath('debugger search path', OldParsedDebugPath, NewParsedDebugPath) then
+      Exit;
+
+    if not CheckSrcPathInUnitPath(OldParsedSrcPath,NewParsedSrcPath,
+      OldParsedUnitPath,NewParsedUnitPath,PathsChanged)
+    then
+      Exit;
+    if PathsChanged then
+      GetParsedPaths;
+
   finally
     FCompilerOpts.IncludePath := OldUnparsedIncludePath;
     FCompilerOpts.Libraries := OldUnparsedLibraryPath;
@@ -290,6 +321,85 @@ begin
   end;
 
   Result := True;
+end;
+
+function TCompilerPathOptionsFrame.CheckSrcPathInUnitPath(OldParsedSrcPath,
+  NewParsedSrcPath, OldParsedUnitPath, NewParsedUnitPath: string; out
+  SrcPathChanged: boolean): boolean;
+// checks if the SrcPath contains directories of the UnitPath
+// the SrcPath should only contain directories for the IDE, not for the compiler
+var
+  p: Integer;
+  CurPath: String;
+  Duplicates: TStringList;
+  i: PtrInt;
+  OldUnparsedSrcPath: String;
+  NewUnparsedSrcPath: String;
+  j: Integer;
+  BaseDir: String;
+begin
+  Result:=true;
+  SrcPathChanged:=false;
+  if (OldParsedSrcPath=NewParsedSrcPath)
+  and (OldParsedUnitPath=NewParsedUnitPath) then exit;
+
+  Duplicates:=TStringList.Create;
+  try
+    p:=1;
+    i:=0;
+    BaseDir:=AppendPathDelim(FCompilerOpts.BaseDirectory);
+    repeat
+      CurPath:=GetNextDirectoryInSearchPath(NewParsedSrcPath, p);
+      if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath)) and
+        (FilenameIsAbsolute(CurPath)) then
+      begin
+        if (SearchDirectoryInSearchPath(NewParsedUnitPath,CurPath)>0)
+        or (CompareFilenames(BaseDir,AppendPathDelim(CurPath))=0) then
+          Duplicates.AddObject(CurPath,TObject(Pointer(i)));
+      end;
+      inc(i);
+    until p>length(NewParsedSrcPath);
+
+    if Duplicates.Count>0 then
+    begin
+      debugln(['TCompilerPathOptionsFrame.CheckSrcPathInUnitPath OldParsedSrcPath="',OldParsedSrcPath,'" NewParsedSrcPath="',NewParsedSrcPath,'" OldParsedUnitPath="',OldParsedUnitPath,'" NewParsedUnitPath="',NewParsedUnitPath,'"']);
+      Result:=false;
+      Duplicates.Delimiter:=#13;
+      Duplicates.StrictDelimiter:=true;
+      if QuestionDlg(lisDuplicateSearchPath,
+        Format(lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT, [#13#13,
+          Duplicates.DelimitedText]),
+        mtError,
+        [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault'],
+        0)=mrYes
+      then begin
+        // remove paths from SrcPath
+        OldUnparsedSrcPath:=FCompilerOpts.SrcPath;
+        NewUnparsedSrcPath:='';
+        i:=0;
+        p:=1;
+        repeat
+          CurPath:=GetNextDirectoryInSearchPath(OldUnparsedSrcPath, p);
+          j:=Duplicates.Count-1;
+          while (j>=0) and (PtrUInt(Duplicates.Objects[j])<>i) do dec(j);
+          if j<0 then
+          begin
+            if NewUnparsedSrcPath<>'' then
+              NewUnparsedSrcPath:=NewUnparsedSrcPath+';';
+            NewUnparsedSrcPath:=NewUnparsedSrcPath+CurPath;
+          end;
+          inc(i);
+        until p>length(OldUnparsedSrcPath);
+        FCompilerOpts.SrcPath:=NewUnparsedSrcPath;
+        OtherSourcesEdit.Text:=FCompilerOpts.SrcPath;
+
+        SrcPathChanged:=true;
+        // do not set Result to true, let's user review the changes
+      end;
+    end;
+  finally
+    Duplicates.Free;
+  end;
 end;
 
 procedure TCompilerPathOptionsFrame.PathEditBtnClick(Sender: TObject);

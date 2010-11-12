@@ -2025,6 +2025,11 @@ resourcestring
   dlgPOTargetFileName = 'Target file name:';
   lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
     +'use unit output directory)';
+  lisDuplicateSearchPath = 'Duplicate search path';
+  lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other '
+    +'sources" contains a directory which is already in the "Other unit '
+    +'files".%s%s';
+  lisRemoveThePathsFromOtherSources = 'Remove the paths from "Other sources"';
   lisTargetFileNameO = 'Target file name (-o):';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
