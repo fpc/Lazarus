@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-13 00:09+0300\n"
+"PO-Revision-Date: 2010-11-13 00:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2381,7 +2381,7 @@ msgstr "Создать Application Bundle"
 
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Dpi Aware application (for Vista+)"
-msgstr "Приложение с поддержкой DPI (для Vista+)"
+msgstr "Приложение с поддержкой различных DPI (для Vista+)"
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
