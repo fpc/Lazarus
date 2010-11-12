@@ -478,7 +478,7 @@ begin
   begin
     ScaleConstraints(Multiplier, Divider);
     if not ParentFont then
-      Font.Size := MulDiv(Font.Size, Multiplier, Divider);
+      Font.Height := MulDiv(GetFontData(Font.Reference.Handle).Height, Multiplier, Divider);
     R := BaseBounds;
     R.Left := MulDiv(R.Left, Multiplier, Divider);
     R.Top := MulDiv(R.Top, Multiplier, Divider);

@@ -4847,8 +4847,8 @@ begin
   begin
     DisableAlign;
     try
-      inherited;
       ScaleControls(Multiplier, Divider);
+      inherited;
     finally
       EnableAlign;
     end;
@@ -6241,7 +6241,7 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.GetControl(const Index: Integer): TControl;
 begin
-  Result:=TControl(FControls[Index]);
+  Result := TControl(FControls[Index]);
 end;
 
 {------------------------------------------------------------------------------
