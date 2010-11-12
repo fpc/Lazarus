@@ -573,6 +573,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
+    TabOrder:=1;
   end;
   OtherUnitsEdit.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
 
@@ -592,6 +593,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
+    TabOrder:=3;
   end;
   IncludeFilesEdit.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
 
@@ -611,6 +613,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
+    TabOrder:=8;
   end;
   OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
 
@@ -630,6 +633,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
+    TabOrder:=5;
   end;
   LibrariesEdit.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
 
@@ -648,6 +652,7 @@ begin
     Caption := '...';
     OnClick := @FileBrowseBtnClick;
     Parent := Self;
+    TabOrder:=7;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
 
@@ -667,6 +672,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
+    TabOrder:=12;
   end;
   DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
 
