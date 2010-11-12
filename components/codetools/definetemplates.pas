@@ -7689,13 +7689,24 @@ end;
 
 function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
   ResolveLinks: boolean): string;
+var
+  ShortFileName: String;
 begin
+  Result:='';
   if aTargetCPU='' then
     aTargetCPU:=GetCompiledTargetCPU;
-  Result:=GetDefaultCompilerFilename(aTargetCPU);
-  if Result='' then exit;
-  Result:=SearchFileInPath(Result,GetCurrentDirUTF8,
+  ShortFileName:=GetDefaultCompilerFilename(aTargetCPU);
+  if ShortFileName='' then exit;
+  // try in PATH
+  Result:=SearchFileInPath(ShortFileName,GetCurrentDirUTF8,
     GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
+  if (Result='') and (Compiler<>'') then
+  begin
+    // try in directory of compiler
+    Result:=ExtractFilePath(Compiler)+ShortFileName;
+    if not FileExistsCached(Result) then
+      Result:='';
+  end;
   if Result='' then exit;
   if ResolveLinks then
     Result:=TryReadAllLinks(Result);
