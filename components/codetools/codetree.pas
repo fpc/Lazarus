@@ -36,6 +36,8 @@ interface
 
 {$I codetools.inc}
 
+{off $DEFINE DisableCTNodeExtMemManager}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -1076,6 +1078,7 @@ end;
 
 procedure TCodeTreeNodeExtMemManager.DisposeNode(ANode: TCodeTreeNodeExtension);
 begin
+  {$IFNDEF DisableCTNodeExtMemManager}
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add ANode to Free list
@@ -1084,9 +1087,12 @@ begin
     TCodeTreeNodeExtension(FFirstFree):=ANode;
     inc(FFreeCount);
   end else begin
+  {$ENDIF}
     // free list full -> free the ANode
     ANode.Free;
+  {$IFNDEF DisableCTNodeExtMemManager}
   end;
+  {$ENDIF}
   dec(FCount);
 end;
 

@@ -1525,7 +1525,7 @@ begin
     if IsIdentChar[AProcCode[NamePos]] then
       s:=s+' ';
     Result:=copy(AProcCode,1,NamePos-1)+s
-           +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)
+           +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1);
   end else begin
     // there is already a name
     if AClassName<>'' then begin
