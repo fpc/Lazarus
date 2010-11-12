@@ -12528,11 +12528,8 @@ begin
   begin
     if Project1 <> nil then
     begin
-      ProjectName := '';
-      if Project1.Title <> '' then
-        ProjectName := Project1.Title
-      else
-      if Project1.ProjectInfoFile <> '' then
+      ProjectName := Project1.Title;
+      if (ProjectName = '') and (Project1.ProjectInfoFile <> '') then
         ProjectName := ExtractFileName(Project1.ProjectInfoFile);
       if ProjectName <> '' then
       begin
