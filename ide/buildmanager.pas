@@ -643,7 +643,8 @@ begin
   // scan compiler, fpc sources and create indices for quick lookup
   UnitSetCache.Init;
 
-  if FUnitSetChangeStamp=UnitSetCache.ChangeStamp then begin
+  if (FUnitSetChangeStamp<>TFPCUnitSetCache.GetInvalidChangeStamp)
+  and (FUnitSetChangeStamp=UnitSetCache.ChangeStamp) then begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines nothing changed']);
     {$ENDIF}

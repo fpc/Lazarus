@@ -801,6 +801,7 @@ type
     fSourceRules: TFPCSourceRules;
     fRulesStampOfConfig: integer; // fSourceCache.ChangeStamp while creation of fFPCSourceRules
     fUnitToSourceTree: TStringToStringTree; // unit name to file name (maybe relative)
+    fUnitStampOfFPC: integer;   // FConfigCache.ChangeStamp at creation of fUnitToSourceTree
     fUnitStampOfFiles: integer; // fSourceCache.ChangeStamp at creation of fUnitToSourceTree
     fUnitStampOfRules: integer; // fSourceRules.ChangeStamp at creation of fUnitToSourceTree
     fSrcDuplicates: TStringToStringTree; // unit to semicolon separated list of files
@@ -8630,6 +8631,9 @@ begin
   fSrcDuplicates:=TStringToStringTree.Create(false);
   fSourceRules:=TFPCSourceRules.Create;
   fFlags:=[fuscfUnitTreeNeedsUpdate,fuscfSrcRulesNeedUpdate];
+  fUnitStampOfFPC:=CTInvalidChangeStamp;
+  fUnitStampOfFiles:=CTInvalidChangeStamp;
+  fUnitStampOfRules:=CTInvalidChangeStamp;
 end;
 
 destructor TFPCUnitSetCache.Destroy;
@@ -8715,12 +8719,14 @@ var
 begin
   Src:=GetSourceCache(AutoUpdate);
   SrcRules:=GetSourceRules(AutoUpdate);
+  ConfigCache:=GetConfigCache(false);
 
   if (fuscfUnitTreeNeedsUpdate in fFlags)
+  or (fUnitStampOfFPC<>ConfigCache.ChangeStamp)
   or (fUnitStampOfFiles<>Src.ChangeStamp)
-  or (fUnitStampOfRules<>SrcRules.ChangeStamp) then begin
+  or (fUnitStampOfRules<>SrcRules.ChangeStamp)
+  then begin
     Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
-    ConfigCache:=GetConfigCache(false);
     NewSrcDuplicates:=nil;
     NewUnitToSourceTree:=nil;
     try
@@ -8739,6 +8745,7 @@ begin
         fSrcDuplicates.Assign(NewSrcDuplicates);
         IncreaseChangeStamp;
       end;
+      fUnitStampOfFPC:=ConfigCache.ChangeStamp;
       fUnitStampOfFiles:=Src.ChangeStamp;
       fUnitStampOfRules:=SrcRules.ChangeStamp;
     finally
