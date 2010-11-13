@@ -254,13 +254,13 @@ begin
   if UnicodeEnabledOS then
     PreferredSizeStatusBar := CreateWindowExW(0, STATUSCLASSNAMEW,
       nil, Flags,
-      0, 0, 0, 0, Parent, 0, HInstance, Nil)
+      0, 0, 0, 0, Parent, 0, HInstance, nil)
   else
     PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
-      Flags, 0, 0, 0, 0, Parent,0 , HInstance, Nil);
+      Flags, 0, 0, 0, 0, Parent,0 , HInstance, nil);
   {$else}
     PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
-      Flags, 0, 0, 0, 0, Parent, 0, HInstance, Nil);
+      Flags, 0, 0, 0, 0, Parent, 0, HInstance, nil);
   {$endif}
   GetWindowRect(PreferredSizeStatusBar, R);
   PreferredStatusBarHeight := R.Bottom - R.Top;
@@ -464,7 +464,7 @@ end;
 class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  if (PreferredStatusBarHeight=0) then
+  if (PreferredStatusBarHeight = 0) then
     InitializePreferredStatusBarHeight;
 
   PreferredHeight := PreferredStatusBarHeight;

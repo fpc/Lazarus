@@ -590,6 +590,86 @@ begin
     Result := False;
 end;
 
+function TWin32WidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
+  DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+  EscapeResult: Longint): Longint;
+var
+  i: Integer;
+  Caption: String;
+  TaskConfig: TTASKDIALOGCONFIG;
+  DialogButtons: PTASKDIALOG_BUTTON;
+  State: TApplicationState;
+begin
+  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    FillChar(TaskConfig, SizeOf(TaskConfig), 0);
+    TaskConfig.cbSize := SizeOf(TaskConfig);
+    // if we skip hwndParent our form will be a root window - with the taskbar item and icon
+    // this is unwanted
+    if Assigned(Screen.ActiveCustomForm) then
+      TaskConfig.hwndParent := Screen.ActiveCustomForm.Handle
+    else
+    if Assigned(Application.MainForm) then
+      TaskConfig.hwndParent := Application.MainForm.Handle
+    else
+      TaskConfig.hwndParent := AppHandle;
+    TaskConfig.hInstance := HInstance;
+    TaskConfig.dwFlags := TDF_ALLOW_DIALOG_CANCELLATION;
+    if DialogCaption <> '' then
+      Caption := DialogCaption
+    else
+    case DialogType of
+      idDialogConfirm,
+      idDialogInfo,
+      idDialogWarning,
+      idDialogError: Caption := GetDialogCaption(DialogType);
+    else
+      Caption := Application.Title;
+    end;
+    TaskConfig.pszWindowTitle := PWideChar(UTF8ToUTF16(Caption));
+
+    case DialogType of
+      idDialogConfirm:
+        begin
+          TaskConfig.hMainIcon := LoadIcon(0, IDI_QUESTION);
+          TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+        end;
+      idDialogInfo: TaskConfig.pszMainIcon := TD_INFORMATION_ICON;
+      idDialogWarning: TaskConfig.pszMainIcon := TD_WARNING_ICON;
+      idDialogError: TaskConfig.pszMainIcon := TD_ERROR_ICON;
+      idDialogShield: TaskConfig.pszMainIcon := TD_SHIELD_ICON;
+    else
+      TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+    end;
+
+    TaskConfig.pszMainInstruction := PWideChar(UTF8ToUTF16(DialogMessage));
+
+    TaskConfig.cButtons := ButtonCount;
+    GetMem(DialogButtons, SizeOf(TTASKDIALOG_BUTTON) * ButtonCount);
+    for i := 0 to ButtonCount - 1 do
+    begin
+      DialogButtons[i].nButtonID := Buttons[i];
+      DialogButtons[i].pszButtonText := UTF8StringToPWideChar(GetButtonCaption(Buttons[i]));
+    end;
+    TaskConfig.pButtons := DialogButtons;
+    TaskConfig.nDefaultButton := DefaultIndex;
+
+    State := SaveApplicationState;
+    try
+      if TaskDialogIndirect(@TaskConfig, @Result, nil, nil) <> S_OK then
+        Result := EscapeResult;
+    finally
+      RestoreApplicationState(State);
+      for i := 0 to ButtonCount - 1 do
+        FreeMem(DialogButtons[i].pszButtonText);
+      FreeMem(DialogButtons);
+    end;
+  end
+  else
+    Result := inherited PromptUser(DialogCaption, DialogMessage, DialogType,
+      Buttons, ButtonCount, DefaultIndex, EscapeResult);
+end;
+
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
   Params: ARawImage:

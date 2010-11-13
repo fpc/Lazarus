@@ -122,6 +122,8 @@ function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
 
 function SaveApplicationState: TApplicationState;
 procedure RestoreApplicationState(AState: TApplicationState);
+function UTF8StringToPWideChar(const s: string) : PWideChar;
+function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
 
 implementation
 

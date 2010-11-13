@@ -35,7 +35,7 @@ interface
 }
 uses
   Windows, ActiveX, Classes, Translations, ComCtrls, Controls, Buttons,
-  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf,
+  ExtCtrls, Forms, Dialogs, GraphMath, GraphType, InterfaceBase, LCLIntf,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   MultiMon, Themes{, Win32Debug};
 
@@ -249,6 +249,7 @@ uses
   Win32WSMenus,
   Win32WSSpin,
   Win32WSStdCtrls,
+  Win32WSDialogs,
   Win32Themes,
 ////////////////////////////////////////////////////
   Win32Extra, LclProc, LCLMessageGlue;
