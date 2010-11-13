@@ -824,16 +824,17 @@ end;
 
 procedure TFileNameEdit.TextChanged;
 begin
-  if FFileNameChangeLock > 0 then
-    Exit;
-  Inc(FFileNameChangeLock);
-  try
-    if FHideDirectories and (ExtractFilePath(Text) = '') then
-      FFileName := ExtractFilePath(FFileName) + Text
-    else
-      FFileName := Text;
-  finally
-    Dec(FFileNameChangeLock);
+  if FFileNameChangeLock <= 0 then
+  begin
+    Inc(FFileNameChangeLock);
+    try
+      if FHideDirectories and (ExtractFilePath(Text) = '') then
+        FFileName := ExtractFilePath(FFileName) + Text
+      else
+        FFileName := Text;
+    finally
+      Dec(FFileNameChangeLock);
+    end;
   end;
   inherited TextChanged; //do this _after_ we have updated FFileName
 end;
