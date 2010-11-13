@@ -182,6 +182,7 @@ begin
   //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
   ControlStyle:= ControlStyle-[csSetCaption];
+  PopupMode := pmAuto;
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
   SetInitialBounds(0,0,200,100);
@@ -794,7 +795,7 @@ var
   IsDefault: Boolean;
 begin
   inherited Create(nil);
-
+  PopupMode := pmAuto;
   BorderStyle := bsDialog;
   Position := poScreenCenter;
   MessageTxt := ConvertLineEndings(aMsg);

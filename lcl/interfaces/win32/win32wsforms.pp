@@ -661,8 +661,14 @@ begin
 end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  Parent: HWND;
 begin
-  BringWindowToTop(ACustomForm.Handle);
+  Parent := GetParent(ACustomForm.Handle);
+  if (Parent <> 0) and (GetWindowLong(Parent, GWL_EXSTYLE) and WS_EX_TOPMOST <> 0) then
+    SetWindowPos(ACustomForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+  else
+    BringWindowToTop(ACustomForm.Handle);
 end;
 
 class procedure TWin32WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;

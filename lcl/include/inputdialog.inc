@@ -41,6 +41,7 @@ begin
   Form.CreateNew(nil, 0);
   with Form do
   begin
+    PopupMode := pmAuto;
     BorderStyle := bsDialog;
     Caption := InputCaption;
     Position := poScreenCenter;
