@@ -6235,6 +6235,10 @@ begin
     ReadPriorAtom;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
+    if CurAtomType=vatNone then begin
+      Result:=NextAtom.StartPos;
+      exit;
+    end;
     //DebugLn(['TFindDeclarationTool.FindStartOfTerm ',GetAtom,' Cur=',VariableAtomTypeNames[CurAtomType],' Next=',VariableAtomTypeNames[NextAtomType]]);
     if CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose] then begin
       if NextAtomType in [vatRoundBracketOpen,vatRoundBracketClose,
