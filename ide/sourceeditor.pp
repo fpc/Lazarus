@@ -8343,9 +8343,13 @@ end;
 procedure TSourceEditorManager.FillExecutionMarks;
 var
   i: Integer;
+  SE: TSourceEditor;
 begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    SourceWindows[i].GetActiveSE.FillExecutionMarks;
+  for i := FSourceWindowList.Count - 1 downto 0 do begin
+    SE := SourceWindows[i].GetActiveSE;
+    if SE <> nil then
+      SE.FillExecutionMarks;
+  end;
 end;
 
 procedure TSourceEditorManager.ReloadEditorOptions;
