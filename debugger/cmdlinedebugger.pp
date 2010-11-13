@@ -371,6 +371,9 @@ begin
   then FOutputBuf := '';
   FFlushAfterRead := False;
   //writeln('TCmdLineDebugger.ReadLine returns ', result);
+  {$IFDEF DBG_VERBOSE}
+  debugln('<< TCmdLineDebugger.ReadLn "',Result,'"');
+  {$ENDIF}
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
@@ -378,6 +381,9 @@ var
   LE: string[2];
 begin
   //writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
+  {$IFDEF DBG_VERBOSE}
+  debugln('>> TCmdLineDebugger.SendCmdLn "',ACommand,'"');
+  {$ENDIF}
   if DebugProcessRunning
   then begin
     DoDbgOutput('<' + ACommand + '>');
