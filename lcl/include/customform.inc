@@ -2663,7 +2663,6 @@ begin
     Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
     Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
-    Screen.MoveFormToZFront(Self);
     ModalResult := 0;
 
     try
