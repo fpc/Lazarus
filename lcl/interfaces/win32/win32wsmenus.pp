@@ -367,17 +367,17 @@ var
   AFont, OldFont: HFONT;
 begin
   Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
-  GetThemeMargins(Theme, 0, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
-  GetThemePartSize(Theme, 0, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
-  GetThemeMargins(Theme, 0, MENU_POPUPCHECK, 0, TMT_CONTENTMARGINS, nil, Result.CheckMargins);
-  GetThemeMargins(Theme, 0, MENU_POPUPCHECKBACKGROUND, 0, TMT_CONTENTMARGINS, nil, Result.CheckBgMargins);
-  GetThemePartSize(Theme, 0, MENU_POPUPGUTTER, 0, nil, TS_TRUE, Result.GutterSize);
-  GetThemePartSize(Theme, 0, MENU_POPUPSUBMENU, 0, nil, TS_TRUE, Result.SubMenuSize);
-  GetThemeMargins(Theme, 0, MENU_POPUPSUBMENU, 0, TMT_CONTENTMARGINS, nil, Result.SubMenuMargins);
+  GetThemeMargins(Theme, DC, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
+  GetThemePartSize(Theme, DC, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
+  GetThemeMargins(Theme, DC, MENU_POPUPCHECK, 0, TMT_CONTENTMARGINS, nil, Result.CheckMargins);
+  GetThemeMargins(Theme, DC, MENU_POPUPCHECKBACKGROUND, 0, TMT_CONTENTMARGINS, nil, Result.CheckBgMargins);
+  GetThemePartSize(Theme, DC, MENU_POPUPGUTTER, 0, nil, TS_TRUE, Result.GutterSize);
+  GetThemePartSize(Theme, DC, MENU_POPUPSUBMENU, 0, nil, TS_TRUE, Result.SubMenuSize);
+  GetThemeMargins(Theme, DC, MENU_POPUPSUBMENU, 0, TMT_CONTENTMARGINS, nil, Result.SubMenuMargins);
 
   if AMenuItem.IsLine then
   begin
-    GetThemePartSize(Theme, 0, MENU_POPUPSEPARATOR, 0, nil, TS_TRUE, Result.SeparatorSize);
+    GetThemePartSize(Theme, DC, MENU_POPUPSEPARATOR, 0, nil, TS_TRUE, Result.SeparatorSize);
     FillChar(Result.TextMargins, SizeOf(Result.TextMargins), 0);
     FillChar(Result.TextSize, SizeOf(Result.TextSize), 0);
   end
@@ -469,7 +469,7 @@ begin
   end
   else
   begin
-    Result.cy := Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
+    Result.cy := Metrics.CheckSize.cy + ScaleY(Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight, 96);
     if AMenuItem.HasIcon then
     begin
       Result.cy := Max(Result.cy, AMenuItem.GetIconSize.y);
@@ -655,7 +655,7 @@ begin
   // calc check/image rect
   CheckRect := ARect;
   CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
-  CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
+  CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + ScaleY(Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight, 96);
   // draw gutter
   GutterRect := CheckRect;
   GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;

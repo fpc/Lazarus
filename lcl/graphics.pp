@@ -1948,8 +1948,12 @@ function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
 var
   { Stores information about the current screen
     - initialized on Interface startup }
-  ScreenInfo: TScreenInfo=(PixelsPerInchX:72;PixelsPerInchY:72;
-                           ColorDepth:24;Initialized:false;);
+  ScreenInfo: TScreenInfo = (
+    PixelsPerInchX: 72;
+    PixelsPerInchY: 72;
+    ColorDepth: 24;
+    Initialized: False;
+  );
 
   FontResourceCache: TFontHandleCache;
   PenResourceCache: TPenHandleCache;
@@ -1982,6 +1986,9 @@ const
  ***************************************************************************)
 
 function DbgS(const Style: TFontStyles): string; overload;
+
+function ScaleX(const SizeX, FromDPI: Integer): Integer;
+function ScaleY(const SizeY, FromDPI: Integer): Integer;
 
 procedure Register;
 procedure UpdateHandleObjects;
@@ -2206,6 +2213,16 @@ begin
     if not ok then FreeAndNil(Result);
     IntfImg.Free;
   end;
+end;
+
+function ScaleX(const SizeX, FromDPI: Integer): Integer;
+begin
+  Result := MulDiv(SizeX, ScreenInfo.PixelsPerInchX, FromDPI);
+end;
+
+function ScaleY(const SizeY, FromDPI: Integer): Integer;
+begin
+  Result := MulDiv(SizeY, ScreenInfo.PixelsPerInchY, FromDPI);
 end;
 
 procedure Register;
