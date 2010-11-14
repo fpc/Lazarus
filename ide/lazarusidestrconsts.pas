@@ -4979,6 +4979,13 @@ resourcestring
   lisKeepInInstallList = 'Keep in install list';
   lisInformationAboutUsedFPC = 'Information about used FPC';
 
+  //Build mode differences dialog
+  lisBuildModeDiffDifferencesBetweenBuildModes = 'Differences between build '
+    +'modes';
+  lisBuildModeDiffMode = 'Mode:';
+  lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build '
+    +'modes';
+
 implementation
 
 end.

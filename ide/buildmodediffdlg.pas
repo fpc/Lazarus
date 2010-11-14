@@ -38,7 +38,7 @@ type
   { TBuildModeDiffDialog }
 
   TBuildModeDiffDialog = class(TForm)
-    ButtonPanel1: TButtonPanel;
+    ButtonPanel: TButtonPanel;
     DiffsGroupBox: TGroupBox;
     DiffTreeView: TTreeView;
     ModeComboBox: TComboBox;
@@ -81,10 +81,11 @@ end;
 
 procedure TBuildModeDiffDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Differences between build modes';
+  Caption:=lisBuildModeDiffDifferencesBetweenBuildModes;
 
-  ModeLabel.Caption:='Mode:';
-  DiffsGroupBox.Caption:='Differences to other build modes';
+  ModeLabel.Caption:=lisBuildModeDiffMode;
+  DiffsGroupBox.Caption:=lisBuildModeDiffDifferencesToOtherBuildModes;
+  ButtonPanel.CloseButton.Caption:=lisClose;
 end;
 
 procedure TBuildModeDiffDialog.ModeComboBoxChange(Sender: TObject);
