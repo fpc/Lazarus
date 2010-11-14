@@ -1031,7 +1031,8 @@ var
 begin
   if (FItems[Index].ParsedInfo.Dump <> '') or (FMemDump = nil)
   then exit;
-  {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$ENDIF} // Overflow is allowed to occur
+  {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+  // R- since addresses may not be sorted yet
   FItems[Index].ParsedInfo.Dump := ' ';
   Addr := FItems[Index].ParsedInfo.Addr;
   Offs := TDBGPtr(Addr - FMemDump.Addr);
@@ -1370,14 +1371,38 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
   end;
 
   procedure CopyToRange(const ADisAssList: TGDBMIDisassembleResultList;
-    const ADestRange: TDBGDisassemblerEntryRange; AFromIndex, ACount: Integer);
+    const ADestRange: TDBGDisassemblerEntryRange; AFromIndex, ACount: Integer;
+    const ASrcInfoDisAssList: TGDBMIDisassembleResultList = nil);
   var
-    i: Integer;
-    Itm, LastItem: PDisassemblerEntry;
+    i, j, MinInSrc, MaxInSrc: Integer;
+    Itm, Itm2, LastItem: PDisassemblerEntry;
   begin
     LastItem := nil;
+    MinInSrc := 0;
+    if ASrcInfoDisAssList <> nil
+    then MaxInSrc := ASrcInfoDisAssList.Count - 1;
     for i := AFromIndex to AFromIndex + ACount - 1 do begin
       Itm := ADisAssList.Item[i];
+      if ASrcInfoDisAssList <> nil
+      then begin
+        // Todo, maybe sort first and do bin search then?
+        j := MinInSrc;
+        while j <= MaxInSrc do begin
+          Itm2 := ASrcInfoDisAssList.Item[j];
+          if Itm2^.Addr = itm^.Addr
+          then break;
+          inc(j);
+        end;
+        if j <= MaxInSrc
+        then begin
+          Itm2^.Dump := Itm^.Dump;
+          Itm := Itm2;
+          if j = MaxInSrc
+          then dec(MaxInSrc);
+          if j = MinInSrc
+          then inc(MinInSrc);
+        end
+      end;
       if (LastItem <> nil) then begin
         // unify strings, to keep only one instance
         if (Itm^.SrcFileName = LastItem^.SrcFileName)
@@ -1392,7 +1417,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
 
   function DoDisassembleRange(AFirstAddr, ALastAddr: TDBGPtr; DiscardAtStart: Boolean): Boolean;
   var
-    DisAssList, DisAssListNew: TGDBMIDisassembleResultList;
+    DisAssList, DisAssListNew, DisAssListWithSrc: TGDBMIDisassembleResultList;
     MemDump: TGDBMIMemoryDumpResultList;
     NextProcIdx, StartIdx, StartOffs: Integer;
     i, j, Cnt: Integer;
@@ -1406,6 +1431,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     //           False: if failed to add anything
     (* Known issues with GDB's disassembler results:
       ** "-data-disassemble -s ### -e ### -- 1" with source
+         * Result may not be sorted by addresses
+         =>
          * Result may be empty, even where "-- 0" (no src info) does return data
          => Remedy: disassemble those secions without src-info
            If function-offset is available, this can be done per function
@@ -1426,6 +1453,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     Result := False;
     DisAssList := nil;
     DisAssListNew := nil;
+    DisAssListWithSrc := nil;
     MemDump := nil;
     OrigLastAddress := ALastAddr;
     OrigFirstAddress := AFirstAddr;
@@ -1441,11 +1469,9 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     then ALastAddr := AFirstAddr + 2 * DAssBytesPerCommandMax
     else ALastAddr := ALastAddr + 2 * DAssBytesPerCommandMax;
 
-    // be optimistic: ask for source-info
-    DisAssList := ExecDisassmble(AFirstAddr, ALastAddr, True);
-    // retry without source-info
-    if DisAssList.Count = 0
-    then DisAssList := ExecDisassmble(AFirstAddr, ALastAddr, False, DisAssList);
+    // Given that disassembler with source has gaps, or may be empty at all,
+    // and also would need sorting => let's start without src-info
+    DisAssList := ExecDisassmble(AFirstAddr, ALastAddr, False);
 
     Cnt := DisAssList.Count;
     if Cnt < 2
@@ -1489,15 +1515,13 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       if (not FirstLoopRun) and (DisAssList.Item[i]^.Offset <> 0)
       then begin
         // Current block starts with offset. Adjust and disassemble again
+        // Again without Source first....
         DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
-          NextProcAddr, True, DisAssListNew);
-        // Withou src-info, if error
-        if DisAssListNew.Count = 0
-        then DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
           NextProcAddr, False, DisAssListNew);
+        DisAssListWithSrc := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
+          NextProcAddr, True, DisAssListWithSrc);
 
-        DisAssListNew.AddMemDump(MemDump);
-        CopyToRange(DisAssListNew, NewRange, 0, DisAssListNew.Count);
+        CopyToRange(DisAssListNew, NewRange, 0, DisAssListWithSrc.Count, DisAssListWithSrc);
         i := NextProcIdx;
         Result := True;
         continue;
@@ -1530,24 +1554,19 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         and not (FirstLoopRun and (NextProcIdx >= Cnt) ) // only one proc, already tried to get src-info
         then begin
           // Try to get source-info (up to NextProcAddr, apparently the statement in NextProcAddr is not returned)
-          DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr,
-            NextProcAddr, True, DisAssListNew);
+          DisAssListWithSrc := ExecDisassmble(DisAssList.Item[i]^.Addr,
+            NextProcAddr, True, DisAssListWithSrc);
           {$IFDEF DBG_VERBOSE}
-          if (DisAssListNew.Count > 0) and (DisAssListNew.Count <> NextProcIdx - i)
+          if (DisAssListWithSrc.Count > 0) and (DisAssListWithSrc.Count <> NextProcIdx - i)
           then begin
             debugln(['Process Disassemble got srcinfo with different line count Count-without=', NextProcIdx-i,
-                     '  count-with=', DisAssListNew.Count, ' new has-src-info=', dbgs(DisAssListNew.HasSourceInfo)]);
+                     '  count-with=', DisAssListWithSrc.Count, ' new has-src-info=', dbgs(DisAssListWithSrc.HasSourceInfo)]);
           end;
           {$ENDIF}
           // We may have less lines with source, as we stripped padding at the end
-          if DisAssListNew.HasSourceInfo
+          if DisAssListWithSrc.HasSourceInfo
           then begin
-            DisAssListNew.AddMemDump(MemDump);
-            j := Min(NextProcIdx - i, DisAssListNew.Count);
-            CopyToRange(DisAssListNew, NewRange, 0, j);
-            i := i + j;
-            if i < NextProcIdx
-            then CopyToRange(DisAssList, NewRange, i, NextProcIdx - i);
+            CopyToRange(DisAssList, NewRange, i, NextProcIdx - i, DisAssListWithSrc);
             i := NextProcIdx;
             Result := True;
             continue;
@@ -1581,6 +1600,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
 
     FreeAndNil(DisAssList);
     FreeAndNil(DisAssListNew);
+    FreeAndNil(DisAssListWithSrc);
     FreeAndNil(MemDump);
   end;
 
