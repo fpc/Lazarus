@@ -220,6 +220,7 @@ begin
         // package not found
         NodeText:=Dependency.AsString;
         NodeImgIndex:=ImgIndexMissingPackage;
+        ChildPackage:=nil;
         // Todo broken packages
       end;
       // add node
