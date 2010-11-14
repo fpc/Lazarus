@@ -49,7 +49,7 @@ uses
   InterfaceBase, Themes, ComCtrls, CheckLst, Menus,
   DefineTemplates, Laz_XMLCfg, DividerBevel,
   LazarusIDEStrConsts, TransferMacros, LazIDEIntf, LazConf, IDEProcs, DialogProcs,
-  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, MainBar,
+  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, IDEWindowIntf, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
@@ -112,6 +112,7 @@ type
     procedure CompileAdvancedButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure DefinesButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -726,6 +727,8 @@ procedure TConfigureBuildLazarusDlg.FormCreate(Sender: TObject);
 var
   LCLInterface: TLCLPlatform;
 begin
+  IDEDialogLayoutList.ApplyLayout(Self,700,529);
+
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
 
   MakeModeListHeader.Images := IDEImages.Images_16;
@@ -1192,6 +1195,12 @@ begin
   finally
     EditForm.Free;
   end;
+end;
+
+procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject; var CloseAction:
+  TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TConfigureBuildLazarusDlg.BuildProfileButtonClick(Sender: TObject);

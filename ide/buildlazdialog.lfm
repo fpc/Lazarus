@@ -10,6 +10,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   ClientWidth = 700
   Constraints.MinHeight = 500
   Constraints.MinWidth = 462
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
