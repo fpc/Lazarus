@@ -3916,6 +3916,18 @@ msgstr "Sestavovací makra:"
 msgid "Build mode"
 msgstr "Režim sestavení"
 
+#: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
+msgid "Differences between build modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
+msgid "Differences to other build modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmodediffmode
+msgid "Mode:"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Režimy sestavení"

@@ -3925,6 +3925,18 @@ msgstr "מאקרו בנייה:"
 msgid "Build mode"
 msgstr "מוד בנייה"
 
+#: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
+msgid "Differences between build modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
+msgid "Differences to other build modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmodediffmode
+msgid "Mode:"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "אופני בנייה"

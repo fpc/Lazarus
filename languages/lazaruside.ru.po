@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-13 00:12+0300\n"
+"PO-Revision-Date: 2010-11-14 19:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3959,6 +3959,18 @@ msgstr "Макросы сборки:"
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Режим сборки"
+
+#: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
+msgid "Differences between build modes"
+msgstr "Различия между режимами сборки"
+
+#: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
+msgid "Differences to other build modes"
+msgstr "Отличия от других режимов сборки"
+
+#: lazarusidestrconsts.lisbuildmodediffmode
+msgid "Mode:"
+msgstr "Режим:"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
