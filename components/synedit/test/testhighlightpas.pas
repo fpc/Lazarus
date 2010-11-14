@@ -453,16 +453,30 @@ begin
     ReCreateEdit;
     SetLines
       ([ 'Unit A; interface',
-         '',
-         'Procedure message(message: message); message 100;',
-         ''
+         'type TFoo=class',
+           'message: message;',
+           'Procedure message(message: message); message 100;',
+         'end;',
+         'var',
+         '  message: message;',
+         'Procedure message(message: message);'
       ]);
-  CheckTokensForLine('message',  2,
+  CheckTokensForLine('class field',  2,
+    [ tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('class, proc message',  3,
     [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "Procedure",  " ", "message", "("
       tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
       tkSymbol, tkSymbol, tkSpace,                   // ")", ";", " "
       tkKey, // "message" as key
       tkSpace, tkNumber, tkSymbol
+    ]);
+  CheckTokensForLine('var',  6,
+    [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+
+  CheckTokensForLine('procedure',  7,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "Procedure",  " ", "message", "("
+      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
+      tkSymbol, tkSymbol                             // ")", ";"
     ]);
 
   {%endregion}
