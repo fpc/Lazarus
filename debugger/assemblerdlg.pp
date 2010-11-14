@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  EditorOptions, Maps, Math;
+  EditorOptions, Maps, Math, LCLProc;
 
 type
 
@@ -17,7 +17,8 @@ type
     lmsUnknown,
     lmsInvalid,    // debugger couldn't disassemble this address
     lmsStatement,  // display line as assembler
-    lmsSource      // display line as source
+    lmsSource,     // display line as source
+    lmsFuncName    // Name of function
   );
 
   TAssemblerDlg = class(TDebuggerDlg)
@@ -34,29 +35,37 @@ type
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
   private
     FDebugger: TDebugger;
+    FDisassembler: TIDEDisassembler;
+    FDisassemblerNotification: TIDEDisassemblerNotification;
+    FLocation: TDBGPtr;
+
     FTopLine: Integer;
+    FLastTopLine: Integer;
+    FLastTopLineIdx: Integer;
+    FLastTopLineIsSrc: Boolean; // The Source In Fron of Idx
+    FLastTopLineValid: Boolean;
+
     FSelectLine: Integer;
     FLineCount: Integer;
-    FLineHeight: Integer;
-    FLineMap: array[Byte] of record // cyclic buffer
+    FLineMap: array of record
       State: TAsmDlgLineMapState;
-      Line: Integer;
       Addr: TDbgPtr;
       Dump: String;
       Statement: String;
       FileName: String;
       SourceLine: Integer;
     end;
-    FLineMapMin: Byte;
-    FLineMapMax: Byte;
-    FLineMapValid: Boolean;
+    FLineHeight: Integer;
     FCharWidth: Integer;
     FGutterWidth: Integer;
     FUpdating: Boolean;
     FUpdateNeeded: Boolean;
-    procedure ClearLineMap;
-    procedure UpdateLineData(ALine: Integer);
+    procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
+    procedure DisassemblerChanged(Sender: TObject);
+    procedure SetDisassembler(const AValue: TIDEDisassembler);
+    procedure UpdateLineData;
     procedure SetSelection(ALine: Integer; AMakeVisible: Boolean);
+    procedure SetLineCount(ALineCount: Integer);
     procedure SetTopLine(ALine: Integer);
   protected
     procedure InitializeWnd; override;
@@ -65,6 +74,7 @@ type
     destructor Destroy; override;
 
     procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
+    property Disassembler: TIDEDisassembler read FDisassembler write SetDisassembler;
   end;
 
 implementation
@@ -76,23 +86,50 @@ uses
 
 { TAssemblerDlg }
 
-procedure TAssemblerDlg.ClearLineMap;
+procedure TAssemblerDlg.ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
 var
   n: Integer;
 begin
-  FLineMapMin := 0;
-  FLineMapMax := 0;
-  FLineMapValid := False;
+  FLastTopLineValid := False;
   for n := Low(FLineMap) to High(FLineMap) do
   begin
-    FLineMap[n].Line := n;
-    FLineMap[n].State := lmsUnknown;
+    FLineMap[n].State := AState;
+    FLineMap[n].Dump := '';
+    FLineMap[n].Statement := '';
+    if AState = lmsUnknown
+    then FLineMap[n].Addr := 0;
+  end;
+end;
+
+procedure TAssemblerDlg.SetDisassembler(const AValue: TIDEDisassembler);
+begin
+  if FDisassembler = AValue then exit;
+  BeginUpdate;
+  try
+    if FDisassembler <> nil
+    then begin
+      FDisassembler.RemoveNotification(FDisassemblerNotification);
+    end;
+
+    FDisassembler := AValue;
+
+    if FDisassembler <> nil
+    then begin
+      FDisassembler.AddNotification(FDisassemblerNotification);
+    end;
+
+    DisassemblerChanged(FDisassembler);
+  finally
+    EndUpdate;
   end;
 end;
 
 constructor TAssemblerDlg.Create(AOwner: TComponent);
 begin
   FGutterWidth := 32;
+  FDisassemblerNotification := TIDEDisassemblerNotification.Create;
+  FDisassemblerNotification.AddReference;
+  FDisassemblerNotification.OnChange  := @DisassemblerChanged;
 
   inherited Create(AOwner);
 //  DoubleBuffered := True;
@@ -104,6 +141,9 @@ end;
 
 destructor TAssemblerDlg.Destroy;
 begin
+  SetDisassembler(nil);
+  FDisassemblerNotification.OnChange := nil;
+  FDisassemblerNotification.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -134,6 +174,23 @@ begin
   pbAsm.Invalidate;
 end;
 
+procedure TAssemblerDlg.DisassemblerChanged(Sender: TObject);
+begin
+  if (FDisassembler = nil) or (FLocation = 0) or (FLineCount = 0)
+  then exit;
+  if FDebugger.State <> dsPause
+  then begin
+    // only for F9, not for F8,F7 single stepping with assembler is no good, if it clears all the time
+    //ClearLineMap;
+  end
+  else begin
+    // Check if anything is there, update BaseAddr
+    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    UpdateLineData;
+  end;
+  pbAsm.Invalidate;
+end;
+
 procedure TAssemblerDlg.FormResize(Sender: TObject);
 var
   R: TRect;
@@ -150,10 +207,7 @@ begin
   sbHorizontal.LargeChange := R.Right div 3;
 
   if FLineHeight <> 0
-  then begin
-    FLineCount := R.Bottom div FLineHeight;
-    UpdateLineData(FTopLine + FLineCount);
-  end;
+  then SetLineCount(R.Bottom div FLineHeight);
 
   pbAsm.SetBounds(0, 0, R.Right, R.Bottom);
 end;
@@ -169,8 +223,7 @@ begin
   sbHorizontal.SmallChange := FCHarWidth;
 
   FLineHeight := EditorOpts.ExtraLineSpacing + TM.tmHeight;
-  FLineCount := pbAsm.Height div FLineHeight;
-  UpdateLineData(FTopLine + FLineCount);
+  SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -190,20 +243,22 @@ end;
 procedure TAssemblerDlg.pbAsmPaint(Sender: TObject);
 var
   R: TRect;
-  n, X, Y, Line, idx, W: Integer;
+  n, X, Y, Line, W: Integer;
   S: String;
 begin
 
   R := pbAsm.ClientRect;
 //  pbAsm.Canvas.Brush.Color := clWindow;
   pbAsm.Canvas.FillRect(R);
-
   Inc(R.Left, FGutterWidth);
 
   X := FGutterWidth - sbHorizontal.Position;
   Y := 0;
   Line := FTopLine;
-  idx := Cardinal(Line) mod Length(FLineMap);
+
+  if FDebugger = nil
+  then W := 16
+  else W := FDebugger.TargetWidth div 4;
 
   for n := 0 to FLineCount do
   begin
@@ -217,35 +272,27 @@ begin
       pbAsm.Canvas.Brush.Color := pbAsm.Color;
       pbAsm.Canvas.Font.Color := pbAsm.Font.Color;
     end;
-    pbAsm.Canvas.Font.Bold := (FLineMap[idx].State = lmsSource);
+    pbAsm.Canvas.Font.Bold := (FLineMap[n].State in [lmsSource, lmsFuncName]);
 
     S := '';
-    //S :=  Format('[a:%8.8u l:%8.8d i:%3.3u] ', [Cardinal(FLineMap[idx].Addr), Line, idx]);
-    if FDebugger = nil
-    then W := 16
-    else W := FDebugger.TargetWidth div 4;
+    //S :=  Format('[a:%8.8u l:%8.8d i:%3.3u] ', [Cardinal(FLineMap[n].Addr), Line, n]);
+    S := S + HexStr(FLineMap[n].Addr, W) + ' ';
 
-    S := S + HexStr(FLineMap[idx].Addr, W) + ' ';
-
-    if FLineMap[idx].Line = Line
-    then begin
-      case FLineMap[idx].State of
-        lmsUnknown: S := S + '??????';
-        lmsInvalid: S := S + '......';
-        lmsStatement: S := S + Copy(FLineMap[idx].Dump + '                         ', 1, 25) + FLineMap[idx].Statement;
-        lmsSource: begin
-          if FLineMap[idx].SourceLine = 0
-          then S := '---'
-          else S :=  Format('%s:%u', [FLineMap[idx].FileName, FLineMap[idx].SourceLine]);
-        end;
+    case FLineMap[n].State of
+      lmsUnknown: S := S + '??????';
+      lmsInvalid: S := S + '......';
+      lmsStatement: S := S + Copy(FLineMap[n].Dump + '                         ', 1, 24) + ' ' + FLineMap[n].Statement;
+      lmsSource: begin
+        if FLineMap[n].SourceLine = 0
+        then S := '---'
+        else S :=  Format('%s:%u %s', [FLineMap[n].FileName, FLineMap[n].SourceLine, FLineMap[n].Statement]);
       end;
+      lmsFuncName: s:= FLineMap[n].FileName + ' ' + FLineMap[n].Statement;
     end;
     pbAsm.Canvas.TextRect(R, X, Y, S);
+
     Inc(Y, FLineHeight);
     Inc(Line);
-    if idx < High(FLineMap)
-    then Inc(Idx)
-    else Idx := 0;
   end;
 end;
 
@@ -298,18 +345,18 @@ end;
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
 begin
   FDebugger := ADebugger;
-  ClearLineMap;
-  FLineMapMin := 0;
-  FLineMapMax := 0;
-  FLineMap[0].Addr := AAddr;
-  FLineMap[0].Line := 0;
-  FLineMapValid := True;
-  FTopLine := 0;
-  FSelectLine := FTopLine;
-  UpdateLineData(0); // start
-  UpdateLineData(FLineCount); // rest
+  FTopLine := -(FLineCount div 2);
+  FSelectLine := 0;
+  FLocation := AAddr;
 
-  pbAsm.Invalidate;
+  if Visible then begin
+    // otherwhise in resize
+    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    UpdateLineData;
+    pbAsm.Invalidate;
+  end
+  else
+    ClearLineMap;
 end;
 
 procedure TAssemblerDlg.SetSelection(ALine: Integer; AMakeVisible: Boolean);
@@ -322,6 +369,7 @@ begin
   // set variable first
   OldLine := FSelectLine;
   FSelectLine := Aline;
+  FLastTopLineValid := False;
 
   if AMakeVisible
   then begin
@@ -339,257 +387,244 @@ begin
   pbAsm.Invalidate;
 end;
 
-procedure TAssemblerDlg.SetTopLine(ALine: Integer);
-var
-  OldTop: Integer;
+procedure TAssemblerDlg.SetLineCount(ALineCount: Integer);
 begin
-  if FTopLine = ALine then Exit;
-
-  if not FLineMapValid
+  if FLineCount = ALineCount
+  then exit;
+  FLineCount := ALineCount;
+  SetLength(FLineMap, FLineCount + 1);
+  if FLocation <> 0
   then begin
-    FTopLine := ALine;
-    pbAsm.Invalidate;
-    Exit;
+    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    UpdateLineData;
   end;
-
-  // UpdateLineData may cause eventhandling, so we enter here again
-  // set variable first
-  OldTop := FTopLine;
-  FTopLine := ALine;
-
-  if FTopLine < OldTop
-  then begin
-    // before
-    UpdateLineData(FTopLine);
-  end
-  else begin
-    // after
-    UpdateLineData(FTopLine + FLineCount);
-  end;
-
   pbAsm.Invalidate;
 end;
 
+procedure TAssemblerDlg.SetTopLine(ALine: Integer);
+var
+  PadFront, PadEnd: Integer;
+begin
+  if FTopLine = ALine then Exit;
+  // scrolled by user, get more padding lines
+  PadFront := 5;
+  PadEnd := 5;
+  if ALine < FTopLine
+  then PadFront := 25
+  else PadEnd := 25;
+  FTopLine := ALine;
+  if (FDisassembler.CountBefore < Max(0, -(FTopLine - PadFront)))
+  or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 1 + PadEnd))
+  then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - PadFront)), Max(0, FTopLine + FLineCount + 1 + PadEnd));
+  UpdateLineData;
+end;
 
-procedure TAssemblerDlg.UpdateLineData(ALine: Integer);
-  procedure DecLineMapMin;
+
+procedure TAssemblerDlg.UpdateLineData;
+
+  function GetItem(AIdx: Integer): PDisassemblerEntry;
   begin
-    if FLineMapMin = 0
-    then FLineMapMin := High(FLineMap)
-    else Dec(FLineMapMin);
-    // check if we overlap with our end
-    if FLineMapMin = FLineMapMax
-    then begin
-      if FLineMapMax = 0
-      then FLineMapMax := High(FLineMap)
-      else Dec(FLineMapMax);
-    end;
+    Result := nil;
+    if (AIdx >= -FDisassembler.CountBefore) and (AIdx < FDisassembler.CountAfter)
+    then Result := FDisassembler.EntriesPtr[AIdx];
   end;
 
-  procedure IncLineMapMax;
+  function IsSourceBeforeItem(AItm: PDisassemblerEntry;
+    APrvItm: PDisassemblerEntry = nil): Boolean;
   begin
-    if FLineMapMax = High(FLineMap)
-    then FLineMapMax := 0
-    else Inc(FLineMapMax);
-    // check if we overlap with our start
-    if FLineMapMin = FLineMapMax
-    then begin
-      if FLineMapMin = High(FLineMap)
-      then FLineMapMin := 0
-      else Inc(FLineMapMin);
-    end;
+    Result := (AItm <> nil)
+    and (   ( (AItm^.SrcFileName <> '') and (AItm^.SrcStatementIndex = 0) )
+         or (    (AItm^.FuncName <> '')
+             and (   (AItm^.Offset = 0)
+                  or ( (APrvItm <> nil) and (AItm^.FuncName <> APrvItm^.FuncName) )
+                 )
+            )
+        );
+  end;
+
+  function IsSourceBeforeItem(AIdx: Integer): Boolean;
+  begin
+    Result := IsSourceBeforeItem(GetItem(AIdx));
   end;
 
 var
-  Addr, NextAddr: TDbgPtr;
-  OK, SameFile, SameSource: Boolean;
-  Line, Line2, SourceLine: Integer;
-  Idx, OldIdx: Byte;
-  Dump, Statement, FileName: String;
-
+  DoneLocation: TDBGPtr;
+  DoneTopLine, DoneLineCount: Integer;
+  DoneCountBefore, DoneCountAfter: Integer;
+  Line, Idx: Integer;
+  Itm, NextItm: PDisassemblerEntry;
+  LineIsSrc, HasLineOutOfRange: Boolean;
 begin
   if FDebugger = nil then Exit;
-  if not FLineMapValid then Exit;
+  If FDebugger.State <> dsPause
+  then begin
+    ClearLineMap;  // set all to lmsUnknown;
+    exit;
+  end;
+  if FDisassembler.BaseAddr <> FLocation
+  then begin
+    ClearLineMap(lmsInvalid);
+    exit;
+  end;
 
-  // while accessing external debugger, events are handled, so we could enter here again
   if FUpdating
   then begin
     FUpdateNeeded := True;
     Exit;
   end;
   FUpdating := True;
+
   try
-    while FLineMap[FLineMapMin].Line > ALine do
-    begin
-      // get lines before min
-      Addr := FLineMap[FLineMapMin].Addr;
-      Line := FLineMap[FLineMapMin].Line - 1;
-      Line2 := Line;
-      OldIdx := FLineMapMin;
-      DecLineMapMin;
+    FUpdateNeeded := False;
+    DoneLocation    := FLocation;
+    DoneTopLine     := FTopLine;
+    DoneLineCount   := FLineCount;
+    DoneCountBefore := FDisassembler.CountBefore;
+    DoneCountAfter  := FDisassembler.CountAfter;
 
-      FLineMap[FLineMapMin].State := lmsUnknown;
-      FLineMap[FLineMapMin].Line := Line;
-      OK := FDebugger.Disassemble(Addr, True, NextAddr, Dump, Statement, FileName, SourceLine);
-      if OK
+    // Find Idx for topline
+    Line := 0;
+    Idx := 0;
+    LineIsSrc := False;
+    if FLastTopLineValid
+    and (abs(FTopLine - FLastTopLine) < FTopLine)
+    then begin
+      Line := FLastTopLine;
+      Idx := FLastTopLineIdx;
+      LineIsSrc := FLastTopLineIsSrc;
+    end;
+
+    while FTopLine > Line
+    do begin
+      if LineIsSrc
       then begin
-        SameFile := FileName = FLineMap[OldIdx].FileName;
-        // to reduce the amount of unique duplicated strings,
-        // use "our" copy of the filename and not the given one.
-        if SameFile
-        then FLineMap[FLineMapMin].FileName := FLineMap[OldIdx].FileName
-        else FLineMap[FLineMapMin].FileName := FileName;
-
-        SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
-        if SameSource
-        then begin
-          // Check if OldIdx points to a Source line
-          if FLineMap[OldIdx].State = lmsSource
-          then begin
-            FLineMap[FLineMapMin] := FLineMap[OldIdx];
-            FLineMap[FLineMapMin].Line := Line;
-            Inc(Line);
-            Idx := OldIdx;
-          end
-          else Idx := FLineMapMin;
-        end
-        else begin
-          // Insert source line
-          Idx := FLineMapMin;
-          DecLineMapMin;
-          FLineMap[FLineMapMin].State := lmsSource;
-          FLineMap[FLineMapMin].Line := Line - 1;
-          FLineMap[FLineMapMin].Dump := '';
-          FLineMap[FLineMapMin].Statement := '';
-          FLineMap[FLineMapMin].SourceLine := SourceLine;
-          FLineMap[FLineMapMin].FileName := FLineMap[idx].FileName;
-        end;
-
-        FLineMap[idx].Addr := NextAddr;
-        FLineMap[idx].State := lmsStatement;
-        FLineMap[idx].Dump := Dump;
-        FLineMap[idx].Statement := Statement;
-        FLineMap[idx].SourceLine := SourceLine;
+        LineIsSrc := False;
+      end
+      else if IsSourceBeforeItem(Idx+1)
+      then begin
+        inc(Idx);
+        LineIsSrc := True;
       end
       else begin
-        FLineMap[FLineMapMin].State := lmsInvalid;
-        NextAddr := Addr - 1;
+        inc(Idx);
       end;
-      FLineMap[FLineMapMin].Addr := NextAddr;
-      if OK and ((Line = ALine) or (Line2 = ALine)) then Exit;
+      inc(Line);
+    end;
+    while FTopLine < line
+    do begin
+      if LineIsSrc
+      then begin
+        dec(Idx);
+        LineIsSrc := False;
+      end
+      else if IsSourceBeforeItem(Idx)
+      then begin
+        LineIsSrc := True;
+      end
+      else begin
+        dec(Idx);
+      end;
+      Dec(Line);
     end;
 
-    if FLineMap[FLineMapMax].Line < ALine
-    then begin
-      // get lines after max
-      // get startingpoint
-      Addr := FLineMap[FLineMapMax].Addr;
-      if not FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine)
-      then NextAddr := Addr + 1;
+    FLastTopLine := FTopLine;
+    FLastTopLineIdx := Idx;
+    FLastTopLineIsSrc := LineIsSrc;
+    FLastTopLineValid := True;
 
-      while FLineMap[FLineMapMax].Line < ALine do
-      begin
-        Addr := NextAddr;
-        Line := FLineMap[FLineMapMax].Line + 1;
-        Line2 := Line;
-        OldIdx := FLineMapMax;
-        IncLineMapMax;
+    // Fill LineMap
+    HasLineOutOfRange := False;
+    Line := 0;
+    NextItm := GetItem(Idx);
+    while Line <= FLineCount do begin
+      Itm := NextItm;
+      NextItm := GetItem(Idx+1);
 
-        FLineMap[FLineMapMax].State := lmsUnknown;
-        FLineMap[FLineMapMax].Line := Line;
-        FLineMap[FLineMapMax].Addr := Addr;
-        OK := FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine);
-        if OK
+      if Itm = nil
+      then begin
+        FLineMap[Line].State := lmsInvalid;
+        HasLineOutOfRange := True;
+        inc(Line);
+        inc(idx);
+        continue;
+      end;
+
+      if ( (Line = 0) and LineIsSrc )
+      or ( (Line <> 0) and IsSourceBeforeItem(Itm) )
+      then begin
+        FLineMap[Line].Dump       := '';
+        FLineMap[Line].Statement  := '';
+        if Itm^.SrcFileName <> ''
         then begin
-          SameFile := FileName = FLineMap[OldIdx].FileName;
-          // to reduce the amount of unique duplicated strings,
-          // use "our" copy of the filename and not the given one.
-          if SameFile
-          then FLineMap[FLineMapMax].FileName := FLineMap[OldIdx].FileName
-          else FLineMap[FLineMapMax].FileName := FileName;
-
-          SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
-          if not SameSource
-          then begin
-            // Insert source line first
-            FLineMap[FLineMapMax].State := lmsSource;
-            FLineMap[FLineMapMax].Dump := '';
-            FLineMap[FLineMapMax].Statement := '';
-            FLineMap[FLineMapMax].SourceLine := SourceLine;
-
-            OldIdx := FLineMapMax;
-            IncLineMapMax;
-            Inc(Line);
-            FLineMap[FLineMapMax].Line := Line;
-            FLineMap[FLineMapMax].Addr := Addr;
-          end;
-
-          FLineMap[FLineMapMax].State := lmsStatement;
-          FLineMap[FLineMapMax].Dump := Dump;
-          FLineMap[FLineMapMax].Statement := Statement;
-          FLineMap[FLineMapMax].SourceLine := SourceLine;
-          FLineMap[FLineMapMax].FileName := FLineMap[OldIdx].FileName;
+          FLineMap[Line].State := lmsSource;
+          FLineMap[Line].SourceLine := Itm^.SrcFileLine;
+          FLineMap[Line].FileName   := Itm^.SrcFileName;
         end
         else begin
-          FLineMap[FLineMapMax].State := lmsInvalid;
-          NextAddr := Addr + 1;
+          FLineMap[Line].State := lmsFuncName;
+          FLineMap[Line].SourceLine := Itm^.Offset;
+          FLineMap[Line].FileName   := Itm^.FuncName;
         end;
-        if OK and ((Line = ALine) or (Line2 = ALine)) then Exit;
-      end;
-    end;
-
-    idx := Cardinal(ALine) mod Length(FLineMap);
-    if FLineMap[idx].State <> lmsUnknown then Exit;
-
-    FLineMap[idx].Line := ALine;
-    Addr := FLineMap[idx].Addr;
-    if FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine)
-    then begin
-      OldIdx := Cardinal(ALine-1) mod Length(FLineMap);
-
-      SameFile := FileName = FLineMap[OldIdx].FileName;
-      // to reduce the amount of unique duplicated strings,
-      // use "our" copy of the filename and not the given one.
-      if SameFile
-      then FLineMap[idx].FileName := FLineMap[OldIdx].FileName
-      else FLineMap[idx].FileName := FileName;
-
-      SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
-      if not SameSource
+        inc(Line);
+      end
+      else
+      if (Line = 0) // but it's not LineIsSrc
+      and ( ( (Itm^.SrcFileName <> '') and (Itm^.SrcStatementIndex <> Itm^.SrcStatementCount) )
+         or ( (Itm^.SrcFileName = '') and (Itm^.FuncName <> '') and (NextItm <> nil) and (Itm^.Offset < NextItm^.Offset) )
+      )
       then begin
-        // Insert source line first
-        FLineMap[idx].State := lmsSource;
-        FLineMap[idx].Dump := '';
-        FLineMap[idx].Statement := '';
-        FLineMap[idx].SourceLine := SourceLine;
-
-        if idx = FLineMapMax then IncLineMapMax;
-        OldIdx := idx;
-        Line := ALine + 1;
-        idx := Cardinal(Line) mod Length(FLineMap);
-        FLineMap[idx].Line := Line;
-        FLineMap[idx].Addr := Addr;
+        FLineMap[Line].Dump       := '';
+        FLineMap[Line].Statement  := '';
+        if Itm^.SrcFileName <> ''
+        then begin
+          FLineMap[Line].State := lmsSource;
+          FLineMap[Line].SourceLine := Itm^.SrcFileLine;
+          FLineMap[Line].FileName   := Itm^.SrcFileName;
+          if NextItm <> nil
+          then FLineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
+          else FLineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
+        end
+        else begin
+          FLineMap[Line].State := lmsFuncName;
+          FLineMap[Line].SourceLine := 0;
+          if NextItm <> nil
+          then FLineMap[Line].SourceLine := NextItm^.Offset;
+          FLineMap[Line].FileName   := Itm^.FuncName;
+          if NextItm <> nil
+          then FLineMap[Line].Statement  := Format('(%d)', [NextItm^.Offset])
+          else FLineMap[Line].Statement  := '(???)';
+        end;
+        inc(Line);
+        inc(idx); // displayed source-info, instead of asm (topline substituted)
+        LineIsSrc := False;
+        continue;
       end;
+      LineIsSrc := False; // only for topline
 
+      if Line > FLineCount
+      then break;
 
-      FLineMap[idx].State := lmsStatement;
-      FLineMap[idx].Dump := Dump;
-      FLineMap[idx].Statement := Statement;
-      FLineMap[idx].FileName := FLineMap[OldIdx].FileName;
-      FLineMap[idx].SourceLine := SourceLine;
-    end
-    else begin
-      FLineMap[idx].State := lmsUnknown;
+      FLineMap[Line].Addr       := Itm^.Addr;
+      FLineMap[Line].State      := lmsStatement;
+      FLineMap[Line].Dump       := Itm^.Dump;
+      FLineMap[Line].Statement  := Itm^.Statement;
+      FLineMap[Line].SourceLine := Itm^.SrcFileLine;
+
+      inc(Line);
+      inc(idx);
     end;
+
   finally
     FUpdating := False;
     if FUpdateNeeded
-    then begin
-      FUpdateNeeded := False;
-      // check begin and end
-      UpdateLineData(FTopLine);
-      UpdateLineData(FTopLine + FLineCount);
-    end;
+    and ( (DoneLocation    <> FLocation)
+       or (DoneTopLine     <> FTopLine)
+       or (DoneLineCount   <> FLineCount)
+       or (HasLineOutOfRange
+          and ( (DoneCountBefore <> FDisassembler.CountBefore)
+             or (DoneCountAfter  <> FDisassembler.CountAfter) )  )
+    )
+    then UpdateLineData;
   end;
 end;
 

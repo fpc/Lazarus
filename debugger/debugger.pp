@@ -36,7 +36,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg,
+  Classes, SysUtils, Laz_XMLCfg, math,
   LCLProc, IDEProcs, DebugUtils, maps;
 
 type
@@ -973,7 +973,6 @@ type
     property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
 
-
   { TIDECallStackNotification }
 
   TIDECallStackNotification = class(TDebuggerNotification)
@@ -1030,6 +1029,177 @@ type
     property OnClear: TNotifyEvent read FOnClear write FOnClear;
     property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
   end;
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   D I S A S S E M B L E R                                                **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+  PDisassemblerEntry = ^TDisassemblerEntry;
+  TDisassemblerEntry = record
+    Addr: TDbgPtr;                   // Address
+    Dump: String;                    // Raw Data
+    Statement: String;               // Asm
+    FuncName: String;                // Function, if avail
+    Offset: Integer;                 // Byte-Offest in Fonction
+    SrcFileName: String;             // SrcFile if avai;
+    SrcFileLine: Integer;            // Line in SrcFile
+    SrcStatementIndex: SmallInt;     // Index of Statement, within list of Stmnt of the same SrcLine
+    SrcStatementCount: SmallInt;     // Count of Statements for this SrcLine
+  end;
+
+  { TBaseDisassembler }
+
+  TBaseDisassembler = class(TObject)
+  private
+    FBaseAddr: TDbgPtr;
+    FCountAfter: Integer;
+    FCountBefore: Integer;
+    FChangedLockCount: Integer;
+    FIsChanged: Boolean;
+    function GetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+    function IndexError(AIndex: Integer): TCallStackEntry;
+    function GetEntry(AIndex: Integer): TDisassemblerEntry;
+  protected
+    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; virtual;
+    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; virtual;
+    procedure DoChanged; virtual;
+    procedure Changed;
+    procedure LockChanged;
+    procedure UnlockChanged;
+    procedure InternalIncreaseCountBefore(ACount: Integer);
+    procedure InternalIncreaseCountAfter(ACount: Integer);
+    procedure SetCountBefore(ACount: Integer);
+    procedure SetCountAfter(ACount: Integer);
+    procedure SetBaseAddr(AnAddr: TDbgPtr);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; virtual;
+    // Returns "True", if the range is valid, if not a ChangeNotification will be triggered later
+    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; virtual;
+    property BaseAddr: TDbgPtr read FBaseAddr;
+    property CountAfter: Integer read FCountAfter;
+    property CountBefore: Integer read FCountBefore;
+    property Entries[AIndex: Integer]: TDisassemblerEntry read GetEntry;
+    property EntriesPtr[Index: Integer]: PDisassemblerEntry read GetEntryPtr;
+  end;
+
+  { TIDEDisassemblerNotification }
+
+  TIDEDisassemblerNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TNotifyEvent;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TIDEDisassembler = class(TBaseDisassembler)
+  private
+    FNotificationList: TList;
+  protected
+    procedure DoChanged; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TIDEDisassemblerNotification);
+    procedure RemoveNotification(const ANotification: TIDEDisassemblerNotification);
+  end;
+
+  { TDBGDisassemblerEntryRange }
+
+  TDBGDisassemblerEntryRange = class
+  private
+    FCount: Integer;
+    FEntries: array of TDisassemblerEntry;
+    FLastEntryEndAddr: TDBGPtr;
+    FRangeEndAddr: TDBGPtr;
+    FRangeStartAddr: TDBGPtr;
+    function GetCapacity: Integer;
+    function GetEntry(Index: Integer): TDisassemblerEntry;
+    function GetEntryPtr(Index: Integer): PDisassemblerEntry;
+    procedure SetCapacity(const AValue: Integer);
+  public
+    procedure Clear;
+    function Append(const AnEntryPtr: PDisassemblerEntry): Integer;
+    procedure Merge(const AnotherRange: TDBGDisassemblerEntryRange);
+    // Actual addresses on the ranges
+    function FirstAddr: TDbgPtr;
+    function LastAddr: TDbgPtr;
+    function ContainsAddr(const AnAddr: TDbgPtr; IncludeNextAddr: Boolean = False): Boolean;
+    function IndexOfAddr(const AnAddr: TDbgPtr): Integer;
+    function IndexOfAddrWithOffs(const AnAddr: TDbgPtr): Integer;
+    function IndexOfAddrWithOffs(const AnAddr: TDbgPtr; out AOffs: Integer): Integer;
+    property Count: Integer read FCount;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    property Entries[Index: Integer]: TDisassemblerEntry read GetEntry;
+    property EntriesPtr[Index: Integer]: PDisassemblerEntry read GetEntryPtr;
+    // The first address behind last entry
+    property LastEntryEndAddr: TDBGPtr read FLastEntryEndAddr write FLastEntryEndAddr;
+    // The addresses for which the range was requested
+    // The range may bo more, than the entries, if there a gaps that cannot be retrieved.
+    property RangeStartAddr: TDBGPtr read FRangeStartAddr write FRangeStartAddr;
+    property RangeEndAddr: TDBGPtr read FRangeEndAddr write FRangeEndAddr;
+  end;
+
+  { TDBGDisassemblerEntryMap }
+
+  TDBGDisassemblerEntryMapMergeEvent
+    = procedure(MergeReceiver, MergeGiver: TDBGDisassemblerEntryRange) of object;
+
+  TDBGDisassemblerEntryMap = class(TMap)
+  private
+    FIterator: TMapIterator;
+    FOnDelete: TNotifyEvent;
+    FOnMerge: TDBGDisassemblerEntryMapMergeEvent;
+    FFreeItemLock: Boolean;
+  protected
+    procedure ReleaseData(ADataPtr: Pointer); override;
+  public
+    constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
+    destructor Destroy; override;
+    // AddRange, may destroy the object
+    procedure AddRange(const ARange: TDBGDisassemblerEntryRange);
+    function GetRangeForAddr(AnAddr: TDbgPtr; IncludeNextAddr: Boolean = False): TDBGDisassemblerEntryRange;
+    property OnDelete: TNotifyEvent read FOnDelete write FOnDelete;
+    property OnMerge: TDBGDisassemblerEntryMapMergeEvent
+             read FOnMerge write FOnMerge;
+  end;
+
+  { TDBGDisassembler }
+
+  TDBGDisassembler = class(TBaseDisassembler)
+  private
+    FDebugger: TDebugger;
+    FOnChange: TNotifyEvent;
+
+    FEntryRanges: TDBGDisassemblerEntryMap;
+    FCurrentRange: TDBGDisassemblerEntryRange;
+    procedure EntryRangesOnDelete(Sender: TObject);
+    procedure EntryRangesOnMerge(MergeReceiver, MergeGiver: TDBGDisassemblerEntryRange);
+    function FindRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean;
+  protected
+    procedure DoChanged; override;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; override;
+    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; override;
+    // PrepareEntries returns True, if it already added some entries
+    function  PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; virtual;
+    function  HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEntryRange;AnAddr:
+                 TDbgPtr; var ALinesBefore, ALinesAfter: Integer): boolean; virtual;
+    property Debugger: TDebugger read FDebugger;
+    property EntryRanges: TDBGDisassemblerEntryMap read FEntryRanges;
+  public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
+    procedure Clear; override;
+    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
 
 (******************************************************************************)
 (******************************************************************************)
@@ -1273,6 +1443,7 @@ type
     FBreakPoints: TDBGBreakPoints;
     FDebuggerEnvironment: TStrings;
     FCurEnvironment: TStrings;
+    FDisassembler: TDBGDisassembler;
     FEnvironment: TStrings;
     FExceptions: TDBGExceptions;
     FExitCode: Integer;
@@ -1309,6 +1480,7 @@ type
     function  CreateLineInfo: TDBGLineInfo; virtual;
     function  CreateRegisters: TDBGRegisters; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
+    function  CreateDisassembler: TDBGDisassembler; virtual;
     function  CreateWatches: TDBGWatches; virtual;
     function  CreateSignals: TDBGSignals; virtual;
     function  CreateExceptions: TDBGExceptions; virtual;
@@ -1359,13 +1531,14 @@ type
                           var ATypeInfo: TDBGType): Boolean;                     // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
-                          out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
+                          out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
     procedure LockCommandProcessing; virtual;
     procedure UnLockCommandProcessing; virtual;
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TDBGCallStack read FCallStack;
+    property Disassembler: TDBGDisassembler read FDisassembler;
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property DebuggerEnvironment: TStrings read FDebuggerEnvironment
                                            write SetDebuggerEnvironment;         // The environment passed to the debugger process
@@ -1461,6 +1634,18 @@ const
 
 var
   MDebuggerPropertiesList: TStringlist;
+
+function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
+var
+  fo: Integer;
+begin
+  if ADisassRange.Count > 0
+  then fo := ADisassRange.EntriesPtr[0]^.Offset
+  else fo := 0;
+  with ADisassRange do
+    Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, First=%u, RFirst=%u, Last=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
+      [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
+end;
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 begin
@@ -1565,6 +1750,7 @@ begin
   FLineInfo := CreateLineInfo;
   FRegisters := CreateRegisters;
   FCallStack := CreateCallStack;
+  FDisassembler := CreateDisassembler;
   FWatches := CreateWatches;
   FExceptions := CreateExceptions;
   FSignals := CreateSignals;
@@ -1579,6 +1765,11 @@ end;
 function TDebugger.CreateCallStack: TDBGCallStack;
 begin
   Result := TDBGCallStack.Create(Self);
+end;
+
+function TDebugger.CreateDisassembler: TDBGDisassembler;
+begin
+  Result := TDBGDisassembler.Create(Self);
 end;
 
 function TDebugger.CreateExceptions: TDBGExceptions;
@@ -1636,6 +1827,7 @@ begin
   FLineInfo.FDebugger := nil;
   FRegisters.FDebugger := nil;
   FCallStack.FDebugger := nil;
+  FDisassembler.FDebugger := nil;
   FWatches.FDebugger := nil;
 
   FreeAndNil(FExceptions);
@@ -1644,6 +1836,7 @@ begin
   FreeAndNil(FLineInfo);
   FreeAndNil(FRegisters);
   FreeAndNil(FCallStack);
+  FreeAndNil(FDisassembler);
   FreeAndNil(FWatches);
   FreeAndNil(FDebuggerEnvironment);
   FreeAndNil(FEnvironment);
@@ -1948,6 +2141,7 @@ begin
     FLineInfo.DoStateChange(OldState);
     FRegisters.DoStateChange(OldState);
     FCallStack.DoStateChange(OldState);
+    FDisassembler.DoStateChange(OldState);
     FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
@@ -4607,6 +4801,620 @@ constructor TDBGLineInfo.Create(const ADebugger: TDebugger);
 begin
   inherited Create;
   FDebugger := ADebugger;
+end;
+
+{ TBaseDisassembler }
+
+function TBaseDisassembler.IndexError(AIndex: Integer): TCallStackEntry;
+begin
+  Result:=nil;
+  raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+end;
+
+function TBaseDisassembler.GetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+begin
+  if (AIndex < -FCountBefore)
+  or (AIndex >= FCountAfter) then IndexError(Aindex);
+
+  Result := InternalGetEntryPtr(AIndex);
+end;
+
+function TBaseDisassembler.GetEntry(AIndex: Integer): TDisassemblerEntry;
+begin
+  if (AIndex < -FCountBefore)
+  or (AIndex >= FCountAfter) then IndexError(Aindex);
+
+  Result := InternalGetEntry(AIndex);
+end;
+
+function TBaseDisassembler.InternalGetEntry(AIndex: Integer): TDisassemblerEntry;
+begin
+  Result.Addr := 0;
+  Result.Offset := 0;
+  Result.SrcFileLine := 0;
+  Result.SrcStatementIndex := 0;
+  Result.SrcStatementCount := 0;
+end;
+
+function TBaseDisassembler.InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+begin
+  Result := nil;
+end;
+
+procedure TBaseDisassembler.DoChanged;
+begin
+  // nothing
+end;
+
+procedure TBaseDisassembler.Changed;
+begin
+  if FChangedLockCount > 0
+  then begin
+    FIsChanged := True;
+    exit;
+  end;
+  FIsChanged := False;
+  DoChanged;
+end;
+
+procedure TBaseDisassembler.LockChanged;
+begin
+  inc(FChangedLockCount);
+end;
+
+procedure TBaseDisassembler.UnlockChanged;
+begin
+  dec(FChangedLockCount);
+  if FIsChanged and (FChangedLockCount = 0)
+  then Changed;
+end;
+
+procedure TBaseDisassembler.InternalIncreaseCountBefore(ACount: Integer);
+begin
+  // increase count withou chnage notification
+  if ACount < FCountBefore
+  then begin
+    {$IFDEF DBG_VERBOSE}
+    debugln(['WARNING: TBaseDisassembler.InternalIncreaseCountBefore will decrease was ', FCountBefore , ' new=',ACount]);
+    {$ENDIF}
+    SetCountBefore(ACount);
+  end
+  else FCountBefore := ACount;
+end;
+
+procedure TBaseDisassembler.InternalIncreaseCountAfter(ACount: Integer);
+begin
+  // increase count withou chnage notification
+  if ACount < FCountAfter
+  then begin
+    {$IFDEF DBG_VERBOSE}
+    debugln(['WARNING: TBaseDisassembler.InternalIncreaseCountAfter will decrease was ', FCountAfter , ' new=',ACount]);
+    {$ENDIF}
+    SetCountAfter(ACount)
+  end
+  else FCountAfter := ACount;
+end;
+
+procedure TBaseDisassembler.SetCountBefore(ACount: Integer);
+begin
+  if FCountBefore = ACount
+  then exit;
+  FCountBefore := ACount;
+  Changed;
+end;
+
+procedure TBaseDisassembler.SetCountAfter(ACount: Integer);
+begin
+  if FCountAfter = ACount
+  then exit;
+  FCountAfter := ACount;
+  Changed;
+end;
+
+procedure TBaseDisassembler.SetBaseAddr(AnAddr: TDbgPtr);
+begin
+  if FBaseAddr = AnAddr
+  then exit;
+  FBaseAddr := AnAddr;
+  Changed;
+end;
+
+constructor TBaseDisassembler.Create;
+begin
+  Clear;
+  FChangedLockCount := 0;
+end;
+
+destructor TBaseDisassembler.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+end;
+
+procedure TBaseDisassembler.Clear;
+begin
+  FCountAfter := 0;
+  FCountBefore := 0;
+  FBaseAddr := 0;
+end;
+
+function TBaseDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+{ TIDEDisassembler }
+
+procedure TIDEDisassembler.DoChanged;
+var
+  n: Integer;
+  Notification: TIDEDisassemblerNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDEDisassemblerNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnChange)
+    then Notification.FOnChange(Self);
+  end;
+end;
+
+constructor TIDEDisassembler.Create;
+begin
+  FNotificationList := TList.Create;
+  inherited Create;
+end;
+
+destructor TIDEDisassembler.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+
+  inherited;
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TIDEDisassembler.AddNotification(const ANotification: TIDEDisassemblerNotification);
+begin
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+procedure TIDEDisassembler.RemoveNotification(const ANotification: TIDEDisassemblerNotification);
+begin
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
+{ TDBGDisassemblerEntryRange }
+
+function TDBGDisassemblerEntryRange.GetEntry(Index: Integer): TDisassemblerEntry;
+begin
+  if (Index < 0) or (Index >= FCount)
+  then raise Exception.Create('Illegal Index');
+  Result := FEntries[Index];
+end;
+
+function TDBGDisassemblerEntryRange.GetCapacity: Integer;
+begin
+  Result := length(FEntries);
+end;
+
+function TDBGDisassemblerEntryRange.GetEntryPtr(Index: Integer): PDisassemblerEntry;
+begin
+  if (Index < 0) or (Index >= FCount)
+  then raise Exception.Create('Illegal Index');
+  Result := @FEntries[Index];
+end;
+
+procedure TDBGDisassemblerEntryRange.SetCapacity(const AValue: Integer);
+begin
+  SetLength(FEntries, AValue);
+  if FCount >= AValue
+  then FCount := AValue - 1;
+end;
+
+procedure TDBGDisassemblerEntryRange.Clear;
+begin
+  SetCapacity(0);
+  FCount := 0;
+end;
+
+function TDBGDisassemblerEntryRange.Append(const AnEntryPtr: PDisassemblerEntry): Integer;
+begin
+  if FCount >= Capacity
+  then Capacity := FCount + Max(20, FCount div 4);
+
+  FEntries[FCount] := AnEntryPtr^;
+  Result := FCount;
+  inc(FCount);
+end;
+
+procedure TDBGDisassemblerEntryRange.Merge(const AnotherRange: TDBGDisassemblerEntryRange);
+var
+  i, j: Integer;
+  a: TDBGPtr;
+begin
+  if AnotherRange.RangeStartAddr < RangeStartAddr then
+  begin
+    // merge before
+    i := AnotherRange.Count - 1;
+    while (i >= 0) and (AnotherRange.EntriesPtr[i]^.Addr >= RangeStartAddr)
+    do dec(i);
+    inc(i);
+    {$IFDEF DBG_VERBOSE}
+    debugln(['INFO: TDBGDisassemblerEntryRange.Merge: Merged to START:   Other=', dbgs(AnotherRange), '  To other index=', i, ' INTO self=', dbgs(self) ]);
+    {$ENDIF}
+    if Capacity < Count + i
+    then Capacity := Count + i;
+    for j := Count-1 downto 0 do
+      FEntries[j+i] := FEntries[j];
+    for j := 0 to i - 1 do
+      FEntries[j] := AnotherRange.FEntries[j];
+    FCount := FCount + i;
+    FRangeStartAddr := AnotherRange.FRangeStartAddr;
+  end
+  else begin
+    // merge after
+    a:= RangeEndAddr;
+    if LastAddr > a
+    then a := LastAddr;
+    i := 0;
+    while (i < AnotherRange.Count) and (AnotherRange.EntriesPtr[i]^.Addr <= a)
+    do inc(i);
+    {$IFDEF DBG_VERBOSE}
+    debugln(['INFO: TDBGDisassemblerEntryRange.Merge to END:   Other=', dbgs(AnotherRange), '  From other index=', i, ' INTO self=', dbgs(self) ]);
+    {$ENDIF}
+    if Capacity < Count + AnotherRange.Count - i
+    then Capacity := Count + AnotherRange.Count - i;
+    for j := 0 to AnotherRange.Count - i - 1 do
+      FEntries[Count + j] := AnotherRange.FEntries[i + j];
+    FCount := FCount + AnotherRange.Count - i;
+    FRangeEndAddr := AnotherRange.FRangeEndAddr;
+    FLastEntryEndAddr := AnotherRange.FLastEntryEndAddr;
+  end;
+  {$IFDEF DBG_VERBOSE}
+  debugln(['INFO: TDBGDisassemblerEntryRange.Merge AFTER MERGE: ', dbgs(self) ]);
+  {$ENDIF}
+end;
+
+function TDBGDisassemblerEntryRange.FirstAddr: TDbgPtr;
+begin
+  if FCount = 0
+  then exit(0);
+  Result := FEntries[0].Addr;
+end;
+
+function TDBGDisassemblerEntryRange.LastAddr: TDbgPtr;
+begin
+  if FCount = 0
+  then exit(0);
+  Result := FEntries[FCount-1].Addr;
+end;
+
+function TDBGDisassemblerEntryRange.ContainsAddr(const AnAddr: TDbgPtr;
+  IncludeNextAddr: Boolean = False): Boolean;
+begin
+  if IncludeNextAddr
+  then  Result := (AnAddr >= RangeStartAddr) and (AnAddr <= RangeEndAddr)
+  else  Result := (AnAddr >= RangeStartAddr) and (AnAddr < RangeEndAddr);
+end;
+
+function TDBGDisassemblerEntryRange.IndexOfAddr(const AnAddr: TDbgPtr): Integer;
+begin
+  Result := FCount - 1;
+  while Result >= 0 do begin
+    if FEntries[Result].Addr = AnAddr
+    then exit;
+    dec(Result);
+  end;
+end;
+
+function TDBGDisassemblerEntryRange.IndexOfAddrWithOffs(const AnAddr: TDbgPtr): Integer;
+var
+  O: Integer;
+begin
+  Result := IndexOfAddrWithOffs(AnAddr, O);
+end;
+
+function TDBGDisassemblerEntryRange.IndexOfAddrWithOffs(const AnAddr: TDbgPtr; out
+  AOffs: Integer): Integer;
+begin
+  Result := FCount - 1;
+  while Result >= 0 do begin
+    if FEntries[Result].Addr <= AnAddr
+    then break;
+    dec(Result);
+  end;
+  AOffs := AnAddr - FEntries[Result].Addr;
+end;
+
+{ TDBGDisassemblerEntryMap }
+
+procedure TDBGDisassemblerEntryMap.ReleaseData(ADataPtr: Pointer);
+type
+  PDBGDisassemblerEntryRange = ^TDBGDisassemblerEntryRange;
+begin
+  if FFreeItemLock
+  then exit;
+  if Assigned(FOnDelete)
+  then FOnDelete(PDBGDisassemblerEntryRange(ADataPtr)^);
+  PDBGDisassemblerEntryRange(ADataPtr)^.Free;
+end;
+
+constructor TDBGDisassemblerEntryMap.Create(AIdType: TMapIdType; ADataSize: Cardinal);
+begin
+  inherited;
+  FIterator := TMapIterator.Create(Self);
+end;
+
+destructor TDBGDisassemblerEntryMap.Destroy;
+begin
+  FreeAndNil(FIterator);
+  inherited Destroy;
+end;
+
+procedure TDBGDisassemblerEntryMap.AddRange(const ARange: TDBGDisassemblerEntryRange);
+var
+  MergeRng, MergeRng2: TDBGDisassemblerEntryRange;
+  OldId: TDBGPtr;
+begin
+  {$IFDEF DBG_VERBOSE}
+  debugln(['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange)]);
+  {$ENDIF}
+  MergeRng := GetRangeForAddr(ARange.RangeStartAddr, True);
+  if MergeRng <> nil then begin
+    // merge to end ( ARange.RangeStartAddr >= MergeRng.RangeStartAddr )
+    // MergeRng keeps it's ID;
+    MergeRng.Merge(ARange);
+    if assigned(FOnMerge)
+    then FOnMerge(MergeRng, ARange);
+    ARange.Free;
+
+    MergeRng2 := GetRangeForAddr(MergeRng.RangeEndAddr, True);
+    if (MergeRng2 <> nil) and (MergeRng2 <> MergeRng) then begin
+      // MergeRng is located before MergeRng2
+      // MergeRng2 merges to end of MergeRng ( No ID changes )
+      MergeRng.Merge(MergeRng2);
+      if assigned(FOnMerge)
+      then FOnMerge(MergeRng, MergeRng2);
+      Delete(MergeRng2.RangeStartAddr);
+    end;
+    exit;
+  end;
+
+  MergeRng := GetRangeForAddr(ARange.RangeEndAddr, True);
+  if MergeRng <> nil then begin
+    // merge to start ( ARange.RangeEndAddr is in MergeRng )
+    if MergeRng.ContainsAddr(ARange.RangeStartAddr)
+    then begin
+      debugln(['ERROR: New Range is completly inside existing ', dbgs(MergeRng)]);
+      exit;
+    end;
+    // MergeRng changes ID
+    OldId := MergeRng.RangeStartAddr;
+    MergeRng.Merge(ARange);
+    if assigned(FOnMerge)
+    then FOnMerge(ARange, MergeRng);
+    FFreeItemLock := True; // prevent destruction of MergeRng
+    Delete(OldId);
+    FFreeItemLock := False;
+    Add(MergeRng.RangeStartAddr, MergeRng);
+    ARange.Free;
+    exit;
+  end;
+
+  Add(ARange.RangeStartAddr, ARange);
+end;
+
+function TDBGDisassemblerEntryMap.GetRangeForAddr(AnAddr: TDbgPtr;
+  IncludeNextAddr: Boolean = False): TDBGDisassemblerEntryRange;
+begin
+  Result := nil;
+  if not FIterator.Locate(AnAddr)
+  then if not FIterator.BOM
+  then FIterator.Previous;
+
+  if FIterator.BOM
+  then exit;
+
+  FIterator.GetData(Result);
+  if not Result.ContainsAddr(AnAddr, IncludeNextAddr)
+  then Result := nil;
+end;
+
+{ TDBGDisassembler }
+
+procedure TDBGDisassembler.EntryRangesOnDelete(Sender: TObject);
+begin
+  if FCurrentRange <> Sender
+  then exit;
+  LockChanged;
+  FCurrentRange := nil;
+  SetBaseAddr(0);
+  SetCountBefore(0);
+  SetCountAfter(0);
+  UnlockChanged;
+end;
+
+procedure TDBGDisassembler.EntryRangesOnMerge(MergeReceiver,
+  MergeGiver: TDBGDisassemblerEntryRange);
+var
+  i: LongInt;
+begin
+  // no need to call changed, will be done by whoever triggered this
+  if FCurrentRange = MergeGiver
+  then begin
+    FCurrentRange := MergeReceiver;
+    i := FCurrentRange.IndexOfAddr(BaseAddr);
+    InternalIncreaseCountBefore(i);
+    InternalIncreaseCountAfter(FCurrentRange.Count - 1 - i);
+  end;
+  if FCurrentRange = MergeReceiver
+  then begin
+    i := FCurrentRange.IndexOfAddr(BaseAddr);
+    InternalIncreaseCountBefore(i);
+    InternalIncreaseCountAfter(FCurrentRange.Count - 1 - i);
+  end;
+end;
+
+function TDBGDisassembler.FindRange(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+var
+  i: LongInt;
+  NewRange: TDBGDisassemblerEntryRange;
+begin
+  LockChanged;
+  try
+    Result := False;
+    NewRange := FEntryRanges.GetRangeForAddr(AnAddr);
+
+    if (NewRange <> nil)
+    and ( (NewRange.RangeStartAddr > AnAddr) or (NewRange.RangeEndAddr < AnAddr) )
+    then
+      NewRange := nil;
+
+    if NewRange = nil
+    then begin
+      {$IFDEF DBG_VERBOSE}
+      debugln(['INFO: TDBGDisassembler.FindRange: Adress not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+      {$ENDIF}
+      exit;
+    end;
+
+    i := NewRange.IndexOfAddr(AnAddr);
+    if i < 0
+    then begin
+      // address at incorrect offset
+      Result := HandleRangeWithInvalidAddr(NewRange, AnAddr, ALinesBefore, ALinesAfter);
+      {$IFDEF DBG_VERBOSE}
+      debugln(['WARNING: TDBGDisassembler.FindRange: Adress at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+      {$ENDIF}
+      if Result
+      then begin
+        FCurrentRange := NewRange;
+        SetBaseAddr(AnAddr);
+        SetCountBefore(ALinesBefore);
+        SetCountAfter(ALinesAfter);
+      end;
+      exit;
+    end;
+
+    FCurrentRange := NewRange;
+    SetBaseAddr(AnAddr);
+    SetCountBefore(i);
+    SetCountAfter(NewRange.Count - 1 - i);
+    Result := (i >= ALinesBefore) and (CountAfter >= ALinesAfter);
+    {$IFDEF DBG_VERBOSE}
+    debugln(['INFO: TDBGDisassembler.FindRange: Adress found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+    {$ENDIF}
+  finally
+    UnlockChanged;
+  end;
+end;
+
+procedure TDBGDisassembler.DoChanged;
+begin
+  inherited DoChanged;
+  if assigned(FOnChange)
+  then FOnChange(Self);
+end;
+
+procedure TDBGDisassembler.Clear;
+begin
+  {$IFDEF DBG_VERBOSE}
+  debugln(['INFO: TDBGDisassembler.Clear ' ]);
+  {$ENDIF}
+  FCurrentRange := nil;
+  FEntryRanges.Clear;
+  inherited Clear;
+  Changed;
+end;
+
+procedure TDBGDisassembler.DoStateChange(const AOldState: TDBGState);
+begin
+  if FDebugger.State = dsPause
+  then begin
+    Changed;
+  end
+  else begin
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    then Clear;
+  end;
+end;
+
+function TDBGDisassembler.InternalGetEntry(AIndex: Integer): TDisassemblerEntry;
+begin
+  Result := FCurrentRange.Entries[AIndex + CountBefore];
+end;
+
+function TDBGDisassembler.InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+begin
+  Result := FCurrentRange.EntriesPtr[AIndex + CountBefore];
+end;
+
+function TDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TDBGDisassembler.HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEntryRange;
+  AnAddr: TDbgPtr; var ALinesBefore, ALinesAfter: Integer): boolean;
+begin
+  Result := False;
+  FEntryRanges.Delete(FCurrentRange.RangeStartAddr);
+end;
+
+constructor TDBGDisassembler.Create(const ADebugger: TDebugger);
+begin
+  FDebugger := ADebugger;
+  FEntryRanges := TDBGDisassemblerEntryMap.Create(itu8, SizeOf(TDBGDisassemblerEntryRange));
+  FEntryRanges.OnDelete   := @EntryRangesOnDelete;
+  FEntryRanges.OnMerge   := @EntryRangesOnMerge;
+  inherited Create;
+end;
+
+destructor TDBGDisassembler.Destroy;
+begin
+  inherited Destroy;
+  FEntryRanges.OnDelete := nil;
+  Clear;
+  FreeAndNil(FEntryRanges);
+end;
+
+function TDBGDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+begin
+  Result := False;
+  if (Debugger = nil) or (Debugger.State <> dsPause) or (AnAddr = 0)
+  then exit;
+  if (ALinesBefore < 0) or (ALinesAfter < 0)
+  then raise Exception.Create('invalid PrepareRange request');
+
+  // Do not LockChange, if FindRange changes something, then notification must be send to syncronize counts on IDE-object
+  Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
+  {$IFDEF DBG_VERBOSE}
+  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found existing data  Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+  {$ENDIF}
+  if Result
+  then exit;
+
+  LockChanged;
+  try
+    {$IFDEF DBG_VERBOSE}
+    if result then debugln(['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+    {$ENDIF}
+    if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
+    then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
+    {$IFDEF DBG_VERBOSE}
+    if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+    {$ENDIF}
+  finally
+    UnlockChanged;
+  end;
 end;
 
 initialization

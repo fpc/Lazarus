@@ -82,6 +82,7 @@ type
   protected
     FDestroying: boolean;
     FCallStack: TIDECallStack;
+    FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
@@ -161,6 +162,7 @@ type
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TIDECallStack read FCallStack;
+    property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TIDELocals read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIDERegisters read FRegisters;

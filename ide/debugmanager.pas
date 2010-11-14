@@ -361,6 +361,23 @@ type
     property Master: TDBGCallStack read FMaster write SetMaster;
   end;
 
+  { TManagedDisassembler }
+
+  TManagedDisassembler = class(TIDEDisassembler)
+  private
+    FMaster: TDBGDisassembler;
+    procedure DisassemblerChanged(Sender: TObject);
+    procedure SetMaster(AMaster: TDBGDisassembler);
+  protected
+    procedure DoChanged; override;
+    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; override;
+    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; override;
+  public
+    procedure Clear; override;
+    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
+    property Master: TDBGDisassembler read FMaster write SetMaster;
+  end;
+
   TManagedSignal = class(TIDESignal)
   private
     FMaster: TDBGSignal;
@@ -413,6 +430,69 @@ type
   end;
 
   TDBGEventCategories = set of TDBGEventCategory;
+
+{ TManagedDisassembler }
+
+procedure TManagedDisassembler.DisassemblerChanged(Sender: TObject);
+begin
+  Changed;
+end;
+
+procedure TManagedDisassembler.SetMaster(AMaster: TDBGDisassembler);
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then FMaster.OnChange := nil;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then FMaster.OnChange := @DisassemblerChanged;
+
+  Changed;
+end;
+
+procedure TManagedDisassembler.DoChanged;
+begin
+  if FMaster <> nil
+  then begin
+    SetCountBefore(FMaster.CountBefore);
+    SetCountAfter(FMaster.CountAfter);
+    SetBaseAddr(FMaster.BaseAddr);
+  end
+  else Clear;
+  inherited DoChanged;
+end;
+
+function TManagedDisassembler.InternalGetEntry(AIndex: Integer): TDisassemblerEntry;
+begin
+  if FMaster <> nil
+  then Result := FMaster.Entries[AIndex]
+  else Result := inherited InternalGetEntry(AIndex);
+end;
+
+function TManagedDisassembler.InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+begin
+  if FMaster <> nil
+  then Result := FMaster.EntriesPtr[AIndex]
+  else Result := inherited InternalGetEntryPtr(AIndex);
+end;
+
+procedure TManagedDisassembler.Clear;
+begin
+  if FMaster <> nil
+  then FMaster.Clear
+  else inherited Clear;
+end;
+
+function TManagedDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+begin
+  if FMaster <> nil
+  then Result := FMaster.PrepareRange(AnAddr, ALinesBefore, ALinesAfter)
+  else Result := inherited PrepareRange(AnAddr, ALinesBefore, ALinesAfter);
+end;
 
 { TManagedLineInfo }
 
@@ -1788,6 +1868,10 @@ begin
       if (Project1<>nil) then
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
+    if (CurDialog is TAssemblerDlg)
+    then begin
+      TAssemblerDlg(CurDialog).SetLocation(FDebugger, FCurrentLocation.Address);
+    end;
   end;
   if not DoDisableAutoSizing then
     CurDialog.EnableAutoSizing;
@@ -1866,6 +1950,7 @@ var
   TheDialog: TAssemblerDlg;
 begin
   TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
+  TheDialog.Disassembler := FDisassembler;
   TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
 end;
 
@@ -1921,6 +2006,7 @@ begin
   FLocals := TManagedLocals.Create;
   FLineInfo := TManagedLineInfo.Create;
   FCallStack := TManagedCallStack.Create;
+  FDisassembler := TManagedDisassembler.Create;
   FRegisters := TManagedRegisters.Create;
 
   FUserSourceFiles := TStringList.Create;
@@ -1952,6 +2038,7 @@ begin
   FreeAndNil(FBreakPoints);
   FreeAndNil(FBreakPointGroups);
   FreeAndNil(FCallStack);
+  FreeAndNil(FDisassembler);
   FreeAndNil(FExceptions);
   FreeAndNil(FSignals);
   FreeAndNil(FLocals);
@@ -2797,6 +2884,7 @@ begin
     TManagedLocals(FLocals).Master := nil;
     TManagedLineInfo(FLineInfo).Master := nil;
     TManagedCallStack(FCallStack).Master := nil;
+    TManagedDisassembler(FDisassembler).Master := nil;
     TManagedExceptions(FExceptions).Master := nil;
     TManagedSignals(FSignals).Master := nil;
     TManagedRegisters(FRegisters).Master := nil;
@@ -2807,6 +2895,7 @@ begin
     TManagedLocals(FLocals).Master := FDebugger.Locals;
     TManagedLineInfo(FLineInfo).Master := FDebugger.LineInfo;
     TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
+    TManagedDisassembler(FDisassembler).Master := FDebugger.Disassembler;
     TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
     TManagedSignals(FSignals).Master := FDebugger.Signals;
     TManagedRegisters(FRegisters).Master := FDebugger.Registers;
