@@ -7448,6 +7448,10 @@ msgstr "EDI"
 msgid "IDE build options"
 msgstr "Options de construction de l'IDE"
 
+#: lazarusidestrconsts.lisideinfoinformationabouttheide
+msgid "Information about the IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
 msgstr "Interface EDI"

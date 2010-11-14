@@ -7424,6 +7424,10 @@ msgstr "IKA"
 msgid "IDE build options"
 msgstr "IKA darymo parinktys"
 
+#: lazarusidestrconsts.lisideinfoinformationabouttheide
+msgid "Information about the IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
 msgstr "IKA interfeisas"

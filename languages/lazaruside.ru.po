@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-14 21:35+0300\n"
+"PO-Revision-Date: 2010-11-15 00:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7427,6 +7427,10 @@ msgstr "IDE"
 #: lazarusidestrconsts.lisidebuildoptions
 msgid "IDE build options"
 msgstr "Параметры сборки IDE"
+
+#: lazarusidestrconsts.lisideinfoinformationabouttheide
+msgid "Information about the IDE"
+msgstr "Информация об IDE"
 
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"

@@ -7393,6 +7393,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "אפשרויות הבניה של ה IDE "
 
+#: lazarusidestrconsts.lisideinfoinformationabouttheide
+msgid "Information about the IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
 msgstr "ממשק ה IDE "
