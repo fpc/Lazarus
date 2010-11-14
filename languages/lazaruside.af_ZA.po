@@ -8458,6 +8458,10 @@ msgstr "Voeg by"
 msgid "Advanced Build Options"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
+msgid "Are you sure you want to delete this build profile?"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
@@ -8515,6 +8519,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildconfirmdeletion
+msgid "Confirm deletion"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilddefines

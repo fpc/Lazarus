@@ -8512,6 +8512,10 @@ msgstr "Añadir"
 msgid "Advanced Build Options"
 msgstr "Opciones avanzadas de construcción"
 
+#: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
+msgid "Are you sure you want to delete this build profile?"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
@@ -8572,6 +8576,10 @@ msgstr ""
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Confirmar antes de reconstruir Lazarus"
+
+#: lazarusidestrconsts.lislazbuildconfirmdeletion
+msgid "Confirm deletion"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
