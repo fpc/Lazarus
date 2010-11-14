@@ -37,7 +37,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Math, Variants, LCLProc, Dialogs, LazConf, DebugUtils,
+  Classes, SysUtils, Controls, Math, Variants, LCLProc, Dialogs, LazConf, DebugUtils,
   Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps,
 {$IFdef MSWindows}
   Windows,
@@ -775,6 +775,16 @@ begin
 
   if StoppedParams <> ''
   then FTheDebugger.ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+
+  if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+    debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
+    FTheDebugger.SetState(dsError); // we cannot be running anymore
+  end;
+  if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+    debugln(['ERROR: Got NO stop params at all, but was running']);
+    FTheDebugger.SetState(dsError); // we cannot be running anymore
+  end;
+
 end;
 
 constructor TGDBMIDebuggerCommandExecute.Create(AOwner: TGDBMIDebugger;
@@ -3591,6 +3601,11 @@ begin
           ProcessFrame(List.Values['frame']);
         end;
       end;
+      if (State = dsRun) and (FTargetPID <> 0) // not in startup
+      then begin
+        debugln('WARNING: breakpoint hit, but nothing known about it');
+        SetState(dsPause);
+      end;
       Exit;
     end;
 
@@ -6310,9 +6325,24 @@ begin
   try
     Result := DoExecute;
     DoOnExecuted;
-  finally
-    DoUnockQueueExecute;
+  except
+    on e: Exception do begin
+      debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '"']);
+      if MessageDlg('The debugger experienced an unknown condition.',
+        Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %s'
+          +'Exception: %s.with message "%s"',
+        [LineEnding, e.ClassName, e.Message]),
+        mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
+      then begin
+        try
+          FTheDebugger.CancelAllQueued;
+        finally
+          FTheDebugger.Stop;
+        end;
+      end;
+    end;
   end;
+  DoUnockQueueExecute;
 end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
@@ -6391,6 +6421,15 @@ begin
 
   if StoppedParams <> ''
   then FTheDebugger.ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+
+  if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+    debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
+    FTheDebugger.SetState(dsError); // we cannot be running anymore
+  end;
+  if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+    debugln(['ERROR: Got NO stop params at all, but was running']);
+    FTheDebugger.SetState(dsError); // we cannot be running anymore
+  end;
 
   if Assigned(FCallback)
   then FCallback(FResult, FTag);
