@@ -4990,6 +4990,9 @@ resourcestring
   lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build '
     +'modes';
 
+  //IDE info dialog
+  lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
+
 implementation
 
 end.

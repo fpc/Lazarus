@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  DefineTemplates, EnvironmentOpts, AboutFrm, LazConf;
+  DefineTemplates, EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts;
 
 type
 
@@ -74,7 +74,7 @@ end;
 
 procedure TIDEInfoDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Information about the IDE';
+  Caption:=lisIDEInfoInformationAboutTheIDE;
 
   UpdateMemo;
 end;
