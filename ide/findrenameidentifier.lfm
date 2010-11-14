@@ -3,7 +3,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   Height = 496
   Top = 160
   Width = 452
-  ActiveControl = CurrentListBox
   BorderStyle = bsSizeToolWin
   Caption = 'FindRenameIdentifierDialog'
   ClientHeight = 496
@@ -15,18 +14,18 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   LCLVersion = '0.9.29'
   object CurrentGroupBox: TGroupBox
     Left = 6
-    Height = 98
+    Height = 150
     Top = 6
     Width = 440
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'CurrentGroupBox'
-    ClientHeight = 79
+    ClientHeight = 132
     ClientWidth = 436
     TabOrder = 0
     object CurrentListBox: TListBox
       Left = 6
-      Height = 67
+      Height = 120
       Top = 6
       Width = 424
       Align = alClient
@@ -34,25 +33,24 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ClickOnSelChange = False
       ItemHeight = 0
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object NewGroupBox: TGroupBox
     Left = 6
-    Height = 86
-    Top = 110
+    Height = 74
+    Top = 162
     Width = 440
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 67
+    ClientHeight = 56
     ClientWidth = 436
     TabOrder = 1
     object NewEdit: TEdit
       Left = 6
-      Height = 27
-      Top = 34
+      Height = 21
+      Top = 29
       Width = 424
       Align = alTop
       BorderSpacing.Around = 6
@@ -61,7 +59,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object RenameCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
       Width = 424
       Align = alTop
@@ -73,20 +71,20 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 242
-    Top = 202
+    Height = 208
+    Top = 242
     Width = 440
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 223
+    ClientHeight = 190
     ClientWidth = 436
     TabOrder = 2
     object ScopeCommentsCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 195
+      Height = 17
+      Top = 167
       Width = 424
       Align = alTop
       BorderSpacing.Around = 6
@@ -95,7 +93,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeRadioGroup: TRadioGroup
       Left = 6
-      Height = 119
+      Height = 98
       Top = 6
       Width = 424
       Align = alTop
@@ -111,7 +109,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 100
+      ClientHeight = 80
       ClientWidth = 420
       Items.Strings = (
         'in current unit'
@@ -123,19 +121,19 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ExtraFilesGroupBox: TGroupBox
       Left = 6
-      Height = 58
-      Top = 131
+      Height = 51
+      Top = 110
       Width = 424
       Align = alTop
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'ExtraFilesGroupBox'
-      ClientHeight = 39
+      ClientHeight = 33
       ClientWidth = 420
       TabOrder = 2
       object ExtraFilesEdit: TEdit
         Left = 6
-        Height = 27
+        Height = 21
         Top = 6
         Width = 408
         Align = alTop
@@ -147,11 +145,12 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 450
+    Height = 34
+    Top = 456
     Width = 440
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = FindOrRenameButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
     HelpButton.Enabled = False

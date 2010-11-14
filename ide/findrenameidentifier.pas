@@ -519,6 +519,7 @@ begin
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisFRIRename;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
@@ -528,8 +529,6 @@ begin
   ScopeRadioGroup.Items[1]:=lisFRIinMainProject;
   ScopeRadioGroup.Items[2]:=lisFRIinProjectPackageOwningCurrentUnit;
   ScopeRadioGroup.Items[3]:=lisFRIinAllOpenPackagesAndProjects;
-
-  ButtonPanel1.OKButton.OnClick:=@FindOrRenameButtonClick;
 
   LoadFromConfig;
 end;
