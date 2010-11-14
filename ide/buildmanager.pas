@@ -47,7 +47,7 @@ uses
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
   PackageDefs, PackageSystem, Project,
-  BaseBuildManager, ApplicationBundle;
+  BaseBuildManager, ApplicationBundle, BuildProfileManager;
   
 type
   TBMScanFPCSources = (
@@ -1871,15 +1871,16 @@ var
   NewTargetOS: String;
   NewTargetCPU: String;
   NewLCLWidgetSet: TLCLPlatform;
+  BuildIDE: Boolean;
 begin
   MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
-  NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
-  NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
-  NewLCLWidgetSet:=MiscellaneousOptions.BuildLazOpts.TargetPlatform;
+  NewTargetOS:=LowerCase(MiscellaneousOptions.BuildLazProfiles.Current.TargetOS);
+  NewTargetCPU:=LowerCase(MiscellaneousOptions.BuildLazProfiles.Current.TargetCPU);
+  NewLCLWidgetSet:=MiscellaneousOptions.BuildLazProfiles.Current.TargetPlatform;
+  BuildIDE:=MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode in [mmBuild,mmCleanBuild];
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
-  Result:=((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
-      and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
-      and (NewLCLWidgetSet=GetDefaultLCLWidgetType);
+  Result:=BuildIDE and ((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
+                   and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU));
 end;
 
 end.

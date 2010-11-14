@@ -870,7 +870,7 @@ type
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
-    function DoBuildLazarusAll(ProfileNames: TStringList): TModalResult;
+    function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
     function DoBuildFile: TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
@@ -4256,7 +4256,7 @@ begin
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
     if DlgResult=mrAll then
-      DoBuildLazarusAll(MiscellaneousOptions.BuildLazProfiles.Selected)
+      DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
     else if DlgResult=mrYes then begin
       LazSrcTemplate:=
         CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
@@ -11352,8 +11352,7 @@ begin
   DoCheckFilesOnDisk;
 end;
 
-function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags
-  ): TModalResult;
+function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
   InheritedOptionStrings: TInheritedCompOptsStrings;
@@ -11510,46 +11509,32 @@ begin
   Result:=DoBuildLazarusSub(Flags);
   Profiles:=MiscellaneousOptions.BuildLazProfiles;
   //debugln(['TMainIDE.DoBuildLazarus Profiles.RestartAfterBuild=',Profiles.RestartAfterBuild,' Profiles.Current.TargetDirectory=',Profiles.Current.TargetDirectory,' ',MainBuildBoss.BuildTargetIDEIsDefault]);
-  if (Result=mrOK) and Profiles.RestartAfterBuild
-  and (Profiles.Current.TargetDirectory='')
-  and MainBuildBoss.BuildTargetIDEIsDefault then
-  begin
-    CompileProgress.Close;
-    mnuRestartClicked(nil);
+  if (Result=mrOK) then begin
+    if Profiles.RestartAfterBuild
+    and (Profiles.Current.TargetDirectory='')
+    and MainBuildBoss.BuildTargetIDEIsDefault then
+    begin
+      CompileProgress.Close;
+      mnuRestartClicked(nil);
+    end
   end
   else if Result=mrIgnore then
     Result:=mrOK;
 end;
 
-function TMainIDE.DoBuildLazarusAll(ProfileNames: TStringList): TModalResult;
+function TMainIDE.DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
 var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
   LazSrcDirTemplate: TDefineTemplate;
   i, ProfInd, RealCurInd: Integer;
-  MayNeedRestart, FoundProfToBuild: Boolean;
-  s: String;
+  MayNeedRestart: Boolean;
 begin
   Result:=mrOK;
   with MiscellaneousOptions do begin
     MayNeedRestart:=False;
     RealCurInd:=BuildLazProfiles.CurrentIndex;
     try
-      FoundProfToBuild:=False;
-      s:=sLineBreak+sLineBreak;
-      for i:=0 to ProfileNames.Count-1 do
-        if BuildLazProfiles.IndexByName(ProfileNames[i])<>-1 then begin
-          s:=s+ProfileNames[i]+sLineBreak;
-          FoundProfToBuild:=True;
-        end;
-      if not FoundProfToBuild then begin
-        ShowMessage(lisNoBuildProfilesSelected);
-        exit;
-      end;
-      if BuildLazProfiles.ConfirmBuild then
-        if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
-                      mtConfirmation, mbYesNo, 0)<>mrYes then
-          exit;
       for i:=0 to ProfileNames.Count-1 do begin
         ProfInd:=BuildLazProfiles.IndexByName(ProfileNames[i]);
         if ProfInd<>-1 then begin
@@ -11569,8 +11554,12 @@ begin
             end;
           end;
           Result:=DoBuildLazarusSub([]);
-          if Result=mrOK then
-            MayNeedRestart:=True
+          if (Result=mrOK) then begin
+            if BuildLazProfiles.RestartAfterBuild
+            and (BuildLazProfiles.Current.TargetDirectory='')
+            and MainBuildBoss.BuildTargetIDEIsDefault then
+              MayNeedRestart:=True
+          end
           else if Result=mrIgnore then
             Result:=mrOK
           else
