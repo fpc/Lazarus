@@ -2838,6 +2838,9 @@ resourcestring
     +'ation dialog when building directly from Tools menu';
   lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile = 'Edit list of '
     +'defines which can be used by any profile';
+  lisLazBuildConfirmDeletion = 'Confirm deletion';
+  lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile = 'Are you sure you '
+    +'want to delete this build profile?';
   
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';

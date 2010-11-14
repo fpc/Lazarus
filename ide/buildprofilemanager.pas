@@ -888,20 +888,25 @@ begin
   i := ProfilesListbox.ItemIndex;
   if i<0 then exit;
   // Remove the item from selected list.
-  SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].fName);
-  if SelI>-1 then
-    fProfsToManage.Selected.Delete(SelI);
-  // New last item index.
-  NewI:=i;
-  if i=ProfilesListbox.Items.Count-1 then
-    Dec(NewI);
-  // Update ProfsToManage collection.
-  fProfsToManage.Delete(i);
-  fProfsToManage.fCurrentIndex:=NewI;
-  // Update ListBox
-  ProfilesListBox.Items.Delete(i);
-  ProfilesListBox.ItemIndex:=NewI;
-  EnableButtons;
+  if MessageDlg(lisLazBuildConfirmDeletion,
+    lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile, mtConfirmation,
+    [mbYes, mbNo], 0)=mrYes then
+  begin
+    SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].fName);
+    if SelI>-1 then
+      fProfsToManage.Selected.Delete(SelI);
+    // New last item index.
+    NewI:=i;
+    if i=ProfilesListbox.Items.Count-1 then
+      Dec(NewI);
+    // Update ProfsToManage collection.
+    fProfsToManage.Delete(i);
+    fProfsToManage.fCurrentIndex:=NewI;
+    // Update ListBox
+    ProfilesListBox.Items.Delete(i);
+    ProfilesListBox.ItemIndex:=NewI;
+    EnableButtons;
+  end;
 end;
 
 procedure TBuildProfileManagerForm.EditButtonClick(Sender: TObject);
