@@ -6422,14 +6422,16 @@ begin
   if StoppedParams <> ''
   then FTheDebugger.ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
 
-  if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+  {$IFDEF DBG_VERBOSE}
+  if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) and (left(FCommand,1,5)='-exec') then begin
     debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
     //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
-  if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
+  if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) and (left(FCommand,1,5)='-exec') then begin
     debugln(['ERROR: Got NO stop params at all, but was running']);
     //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
+  {$ENDIF}
 
   if Assigned(FCallback)
   then FCallback(FResult, FTag);
