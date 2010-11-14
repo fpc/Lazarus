@@ -1353,8 +1353,8 @@ begin
   if KeyComp('Dynamic') then
     Result := tkKey
   else
-  if KeyComp('Message') and (not(rsInProcHeader in fRange)) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+  if KeyComp('Message') and (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then
     Result := tkKey
