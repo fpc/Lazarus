@@ -1854,10 +1854,12 @@ var
   NewTargetCPU: String;
   NewLCLWidgetSet: String;
 begin
-  MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
-  NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
-  NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
-  NewLCLWidgetSet:=LCLPlatformDirNames[MiscellaneousOptions.BuildLazOpts.TargetPlatform];
+  with MiscellaneousOptions do begin
+    BuildLazProfiles.UpdateGlobals;
+    NewTargetOS:=BuildLazOpts.TargetOS;
+    NewTargetCPU:=BuildLazOpts.TargetCPU;
+    NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
+  end;
   if (NewTargetOS='') or (NewTargetOS='default') then
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
@@ -1873,11 +1875,13 @@ var
   NewLCLWidgetSet: TLCLPlatform;
   BuildIDE: Boolean;
 begin
-  MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
-  NewTargetOS:=LowerCase(MiscellaneousOptions.BuildLazProfiles.Current.TargetOS);
-  NewTargetCPU:=LowerCase(MiscellaneousOptions.BuildLazProfiles.Current.TargetCPU);
-  NewLCLWidgetSet:=MiscellaneousOptions.BuildLazProfiles.Current.TargetPlatform;
-  BuildIDE:=MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode in [mmBuild,mmCleanBuild];
+  with MiscellaneousOptions do begin
+    BuildLazProfiles.UpdateGlobals;
+    NewTargetOS:=LowerCase(BuildLazOpts.TargetOS);
+    NewTargetCPU:=LowerCase(BuildLazOpts.TargetCPU);
+    NewLCLWidgetSet:=BuildLazOpts.TargetPlatform;
+    BuildIDE:=BuildLazProfiles.CurrentIdeMode in [mmBuild,mmCleanBuild];
+  end;
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
   Result:=BuildIDE and ((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
                    and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU));
