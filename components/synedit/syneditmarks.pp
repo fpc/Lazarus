@@ -1151,8 +1151,8 @@ begin
     if (LinePos = aLinePos) then
       CurLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
     while (CurLine <> nil) and (LinePos <= aLinePos - aLineBrkCnt) do begin
-      NextLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
       f := LinePos = aLinePos - aLineBrkCnt;
+      NextLine := TSynEditMarkLine(CurLine.Successor(LinePos, LineBSize));
       i := CurLine.Count - 1;
       while i >= 0 do begin
         Mrk := CurLine.Items[i];
