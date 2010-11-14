@@ -8688,6 +8688,10 @@ msgstr ""
 msgid "Save settings"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildselectprofilestobuild
+msgid "Select profiles to build"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""

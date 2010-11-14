@@ -8710,6 +8710,10 @@ msgstr "Reiniciar Lazarus automaticamente após construção da IDE (sem efeito 
 msgid "Save settings"
 msgstr "Salvar configurações"
 
+#: lazarusidestrconsts.lislazbuildselectprofilestobuild
+msgid "Select profiles to build"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Exibir diálogo confirmação ao contruir diretamente do menu Ferramentas"
