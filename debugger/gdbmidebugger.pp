@@ -778,11 +778,11 @@ begin
 
   if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
     debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
-    FTheDebugger.SetState(dsError); // we cannot be running anymore
+    //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
   if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
     debugln(['ERROR: Got NO stop params at all, but was running']);
-    FTheDebugger.SetState(dsError); // we cannot be running anymore
+    //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
 
 end;
@@ -6424,11 +6424,11 @@ begin
 
   if (StoppedParams <> '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
     debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
-    FTheDebugger.SetState(dsError); // we cannot be running anymore
+    //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
   if (StoppedParams = '') and (FTheDebugger.State = dsRun) and (FTheDebugger.FTargetPID <> 0) then begin
     debugln(['ERROR: Got NO stop params at all, but was running']);
-    FTheDebugger.SetState(dsError); // we cannot be running anymore
+    //FTheDebugger.SetState(dsError); // we cannot be running anymore
   end;
 
   if Assigned(FCallback)
