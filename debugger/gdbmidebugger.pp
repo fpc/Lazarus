@@ -446,6 +446,7 @@ type
     function GetItem(Index: Integer): PDisassemblerEntry;
     procedure ParseItem(Index: Integer);
     procedure ParseItemMemDmp(Index: Integer);
+    procedure SetItem(Index: Integer; const AValue: PDisassemblerEntry);
   protected
     procedure PreParse; override;
   public
@@ -453,7 +454,7 @@ type
     procedure AddMemDump(AMemDump: TGDBMIMemoryDumpResultList);
     property Count: Integer read FCount;
     property HasSourceInfo: Boolean read FHasSourceInfo;
-    property Item[Index: Integer]: PDisassemblerEntry read GetItem;
+    property Item[Index: Integer]: PDisassemblerEntry read GetItem write SetItem;
   end;
 
   { TGDBMIDebuggerSimpleCommand }
@@ -1059,6 +1060,13 @@ begin
   {$POP}
 end;
 
+procedure TGDBMIDisassembleResultList.SetItem(Index: Integer;
+  const AValue: PDisassemblerEntry);
+begin
+  FItems[Index].ParsedInfo := AValue^;
+  FItems[Index].AsmEntry.Ptr := nil;
+end;
+
 { TGDBMIMemoryDumpResultList }
 
 function TGDBMIMemoryDumpResultList.GetItemNum(Index: Integer): Integer;
@@ -1385,7 +1393,6 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       Itm := ADisAssList.Item[i];
       if ASrcInfoDisAssList <> nil
       then begin
-        // Todo, maybe sort first and do bin search then?
         j := MinInSrc;
         while j <= MaxInSrc do begin
           Itm2 := ASrcInfoDisAssList.Item[j];
@@ -1397,10 +1404,16 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         then begin
           Itm2^.Dump := Itm^.Dump;
           Itm := Itm2;
+
+          // reduce search range
           if j = MaxInSrc
-          then dec(MaxInSrc);
-          if j = MinInSrc
-          then inc(MinInSrc);
+          then dec(MaxInSrc)
+          else if j = MinInSrc
+          then inc(MinInSrc)
+          else begin
+            ASrcInfoDisAssList.Item[j] := ASrcInfoDisAssList.Item[MaxInSrc];
+            dec(MaxInSrc);
+          end;
         end
       end;
       if (LastItem <> nil) then begin
@@ -1515,13 +1528,22 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       if (not FirstLoopRun) and (DisAssList.Item[i]^.Offset <> 0)
       then begin
         // Current block starts with offset. Adjust and disassemble again
-        // Again without Source first....
-        DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
-          NextProcAddr, False, DisAssListNew);
+        // Try with source first, in case it returns dat without source
         DisAssListWithSrc := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
           NextProcAddr, True, DisAssListWithSrc);
+        if (DisAssListWithSrc.Count > 0) and (not DisAssListWithSrc.HasSourceInfo)
+        then begin
+          // no source avail, but got data
+          CopyToRange(DisAssListWithSrc, NewRange, 0, DisAssListWithSrc.Count);
+          i := NextProcIdx;
+          Result := True;
+          continue;
+        end;
 
-        CopyToRange(DisAssListNew, NewRange, 0, DisAssListWithSrc.Count, DisAssListWithSrc);
+        //get the source-less code as reference
+        DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
+          NextProcAddr, False, DisAssListNew);
+        CopyToRange(DisAssListNew, NewRange, 0, DisAssListNew.Count, DisAssListWithSrc);
         i := NextProcIdx;
         Result := True;
         continue;
