@@ -456,6 +456,7 @@ begin
          'type TFoo=class',
            'message: message;',
            'Procedure message(message: message); message 100;',
+           'property message: message read message;',
          'end;',
          'var',
          '  message: message;',
@@ -470,10 +471,12 @@ begin
       tkKey, // "message" as key
       tkSpace, tkNumber, tkSymbol
     ]);
-  CheckTokensForLine('var',  6,
-    [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('property',  4,
+    [ tkKey, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier ]);
 
-  CheckTokensForLine('procedure',  7,
+  CheckTokensForLine('var',  7,
+    [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('procedure',  8,
     [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "Procedure",  " ", "message", "("
       tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
       tkSymbol, tkSymbol                             // ")", ";"
