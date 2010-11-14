@@ -219,6 +219,7 @@ begin
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest;
     DpiAwareCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).DpiAware;
+    DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
     AStream := TProjectIcon(Resources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);

@@ -8,13 +8,13 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
   DesignTop = 290
   object AppSettingsGroupBox: TGroupBox[0]
     Left = 0
-    Height = 302
+    Height = 294
     Top = 0
     Width = 522
     Align = alTop
     AutoSize = True
     Caption = 'AppSettingsGroupBox'
-    ClientHeight = 284
+    ClientHeight = 276
     ClientWidth = 518
     TabOrder = 0
     object TitleLabel: TLabel
@@ -22,9 +22,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = TitleEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 16
+      Height = 14
       Top = 9
-      Width = 52
+      Width = 46
       BorderSpacing.Left = 6
       Caption = 'TitleLabel'
       ParentColor = False
@@ -33,9 +33,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideLeft.Control = AppSettingsGroupBox
       AnchorSideTop.Control = IconPanel
       Left = 6
-      Height = 16
-      Top = 35
-      Width = 52
+      Height = 14
+      Top = 33
+      Width = 47
       BorderSpacing.Left = 6
       Caption = 'IconLabel'
       ParentColor = False
@@ -47,9 +47,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = IconTrack
       Left = 240
-      Height = 16
-      Top = 175
-      Width = 81
+      Height = 14
+      Top = 174
+      Width = 73
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'IconTrackLabel'
@@ -57,7 +57,7 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
     end
     object TitleEdit: TEdit
       Left = 106
-      Height = 23
+      Height = 21
       Top = 6
       Width = 406
       Align = alTop
@@ -71,9 +71,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = IconTrack
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 209
-      Width = 150
+      Height = 17
+      Top = 207
+      Width = 134
       BorderSpacing.Around = 6
       Caption = 'UseAppBundleCheckBox'
       TabOrder = 1
@@ -83,9 +83,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = UseAppBundleCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 234
-      Width = 151
+      Height = 17
+      Top = 230
+      Width = 136
       BorderSpacing.Around = 6
       Caption = 'UseXPManifestCheckBox'
       OnChange = UseXPManifestCheckBoxChange
@@ -97,7 +97,7 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 106
       Height = 128
-      Top = 35
+      Top = 33
       Width = 128
       BorderSpacing.Left = 106
       BorderSpacing.Top = 6
@@ -125,9 +125,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideBottom.Control = IconPanel
       AnchorSideBottom.Side = asrBottom
       Left = 240
-      Height = 25
-      Top = 35
-      Width = 111
+      Height = 23
+      Top = 33
+      Width = 102
       AutoSize = True
       BorderSpacing.Left = 6
       Caption = 'LoadIconButton'
@@ -140,9 +140,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = LoadIconButton
       AnchorSideTop.Side = asrBottom
       Left = 240
-      Height = 25
-      Top = 66
-      Width = 109
+      Height = 23
+      Top = 62
+      Width = 103
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'SaveIconButton'
@@ -155,9 +155,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = SaveIconButton
       AnchorSideTop.Side = asrBottom
       Left = 240
-      Height = 25
-      Top = 97
-      Width = 112
+      Height = 23
+      Top = 91
+      Width = 104
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'ClearIconButton'
@@ -173,11 +173,12 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 106
       Height = 40
-      Top = 163
+      Top = 161
       Width = 128
       Max = 0
       OnChange = IconTrackChange
       Position = 0
+      ShowSelRange = False
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 7
     end
@@ -186,9 +187,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Control = UseXPManifestCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 19
-      Top = 259
-      Width = 123
+      Height = 17
+      Top = 253
+      Width = 111
       BorderSpacing.Around = 6
       Caption = 'DpiAwareCheckBox'
       TabOrder = 8
@@ -199,9 +200,9 @@ inherited ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
     AnchorSideTop.Control = AppSettingsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 25
-    Top = 308
-    Width = 155
+    Height = 23
+    Top = 300
+    Width = 142
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'CreateAppBundleButton'
