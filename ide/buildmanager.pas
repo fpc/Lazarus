@@ -178,6 +178,7 @@ type
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
                              ScanFPCSrc: TBMScanFPCSources);
     procedure SetBuildTargetIDE;
+    function BuildTargetIDEIsDefault: boolean;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
   end;
@@ -1863,6 +1864,22 @@ begin
     NewTargetCPU:=GetDefaultTargetCPU;
   //debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground);
+end;
+
+function TBuildManager.BuildTargetIDEIsDefault: boolean;
+var
+  NewTargetOS: String;
+  NewTargetCPU: String;
+  NewLCLWidgetSet: TLCLPlatform;
+begin
+  MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
+  NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
+  NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
+  NewLCLWidgetSet:=MiscellaneousOptions.BuildLazOpts.TargetPlatform;
+  //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
+  Result:=((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
+      and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
+      and (NewLCLWidgetSet=GetDefaultLCLWidgetType);
 end;
 
 end.

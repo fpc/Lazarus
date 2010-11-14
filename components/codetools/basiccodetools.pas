@@ -157,7 +157,7 @@ function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
 function StrBeginsWith(const s, Prefix: string): boolean;
-function IdentifierPos(Search, Identifier: PChar): PtrInt;
+function IdentifierPos(Search, Identifier: PChar): PtrInt; // search Search in Identifier
 function CompareAtom(p1, p2: PChar; NestedComments: boolean): integer;
 function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
 function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // compare case insensitive

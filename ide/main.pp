@@ -11504,9 +11504,15 @@ begin
 end;
 
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
+var
+  Profiles: TBuildLazarusProfiles;
 begin
   Result:=DoBuildLazarusSub(Flags);
-  if (Result=mrOK) and MiscellaneousOptions.BuildLazProfiles.RestartAfterBuild then
+  Profiles:=MiscellaneousOptions.BuildLazProfiles;
+  //debugln(['TMainIDE.DoBuildLazarus Profiles.RestartAfterBuild=',Profiles.RestartAfterBuild,' Profiles.Current.TargetDirectory=',Profiles.Current.TargetDirectory,' ',MainBuildBoss.BuildTargetIDEIsDefault]);
+  if (Result=mrOK) and Profiles.RestartAfterBuild
+  and (Profiles.Current.TargetDirectory='')
+  and MainBuildBoss.BuildTargetIDEIsDefault then
   begin
     CompileProgress.Close;
     mnuRestartClicked(nil);
