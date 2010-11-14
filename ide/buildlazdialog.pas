@@ -1136,7 +1136,7 @@ begin
   PrepareClose;
   EditForm:=TGenericCheckListForm.Create(Nil);
   try
-    EditForm.Caption:='Select Profiles to Build';
+    EditForm.Caption:=lisLazBuildSelectProfilesToBuild;
     // Copy profile names to checkboxlist and check the previously selected ones.
     for i:=0 to fProfiles.Count-1 do begin
       ind:=EditForm.CheckListBox1.Items.Add(fProfiles[i].Name);

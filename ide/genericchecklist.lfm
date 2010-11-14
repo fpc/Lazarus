@@ -6,6 +6,7 @@ object GenericCheckListForm: TGenericCheckListForm
   Caption = 'GenericCheckListForm'
   ClientHeight = 301
   ClientWidth = 343
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
@@ -34,6 +35,5 @@ object GenericCheckListForm: TGenericCheckListForm
     Align = alClient
     ItemHeight = 0
     TabOrder = 1
-    TopIndex = -1
   end
 end

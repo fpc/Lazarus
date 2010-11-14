@@ -2841,7 +2841,8 @@ resourcestring
   lisLazBuildConfirmDeletion = 'Confirm deletion';
   lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile = 'Are you sure you '
     +'want to delete this build profile?';
-  
+  lisLazBuildSelectProfilesToBuild = 'Select profiles to build';
+
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
   listCompilerInternalError = 'Internal compiler error! (%d)';
