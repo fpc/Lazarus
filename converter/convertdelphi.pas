@@ -59,6 +59,22 @@ type
 
   TConvertDelphiPBase = class;
 
+  { TCacheUnitsThread }
+
+  TCacheUnitsThread = class(TThread)
+  private
+    fConverter: TConvertDelphiPBase;
+    fPath: string;
+    // These 2 are references to the TConvertDelphiPBase variables.
+    fCachedUnitNames: TStringToStringTree;
+    fCachedRealFileNames: TStringToStringTree;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(aConverter: TConvertDelphiPBase; aBasePath: string);
+    destructor Destroy; override;
+  end;
+
   { TConvertDelphiUnit }
 
   TConvertDelphiUnit = class
@@ -428,6 +444,27 @@ begin
   end;
 end;
 
+
+{ TCacheUnitsThread }
+
+constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aBasePath: string);
+begin
+  inherited Create(True);
+  fConverter:=aConverter;
+  fPath:=TrimFilename(aBasePath+'../'); // Will scall one level up from base path.
+end;
+
+destructor TCacheUnitsThread.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCacheUnitsThread.Execute;
+// This assumes that cache is not used while updating it.
+// The main GUI thread must wait for this thread before starting conversion.
+begin
+  fConverter.CacheUnitsInPath(fPath);  // Scan for unit files.
+end;
 
 { TConvertDelphiUnit }
 
@@ -930,32 +967,46 @@ end;
 
 // Creates or updates a lazarus project (.lpi+.lpr) or package.
 function TConvertDelphiPBase.Convert: TModalResult;
+var
+  // The initial unit name cache is done in a thread so that GUI shows at once.
+  CacheUnitsThread: TCacheUnitsThread;
+  b: Boolean;
 begin
+  {$IFDEF UseCThreads}
+  ShowMessage('here we are!');
+  {$ENDIF}
   IDEMessagesWindow.Clear;
-  Application.AddOnIdleHandler(@OnIdle);
-  // Get settings from user.
-  Result:=fSettings.RunForm;
-  Application.RemoveOnIdleHandler(@OnIdle);
-  if (Result=mrOK) and fDoneScan then begin
-    // create/open lazarus project or package file
-    fLazPFilename:=fSettings.DelphiToLazFilename(fOrigPFilename, fLazPSuffix, false);
+  // Start scanning unit files one level above project path. The GUI will appear
+  // without delay but then we must wait for the thread before continuing.
+  CacheUnitsThread:=TCacheUnitsThread.Create(Self, fSettings.MainPath);
+  try
+    b := CacheUnitsThread.FreeOnTerminate;
+    CacheUnitsThread.Resume;
+    Result:=fSettings.RunForm;      // Get settings from user.
+    CacheUnitsThread.WaitFor;      // Make sure the thread has finished.
+    if Result=mrOK then begin
+      // create/open lazarus project or package file
+      fLazPFilename:=fSettings.DelphiToLazFilename(fOrigPFilename, fLazPSuffix, false);
 
-    // Find Delphi project / package file name
-    if CompareFileExt(fOrigPFilename,fDelphiPSuffix,false)=0 then
-      fDelphiPFilename:=fOrigPFilename
-    else
-      fDelphiPFilename:=ChangeFileExt(fOrigPFilename,fDelphiPSuffix);
-    if not FileExistsUTF8(fDelphiPFilename) then
-      fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigPFilename);
+      // Find Delphi project / package file name
+      if CompareFileExt(fOrigPFilename,fDelphiPSuffix,false)=0 then
+        fDelphiPFilename:=fOrigPFilename
+      else
+        fDelphiPFilename:=ChangeFileExt(fOrigPFilename,fDelphiPSuffix);
+      if not FileExistsUTF8(fDelphiPFilename) then
+        fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigPFilename);
 // ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
 
-    // Actual conversion.
-    Result:=ConvertSub;
+      // Actual conversion.
+      Result:=ConvertSub;
+    end;
+    if Result=mrOk then
+      IDEMessagesWindow.AddMsg('Conversion Ready.','',-1)
+    else
+      IDEMessagesWindow.AddMsg('Conversion Aborted.','',-1)
+  finally
+    CacheUnitsThread.Free;
   end;
-  if Result=mrOK then
-    IDEMessagesWindow.AddMsg('Conversion Ready.','',-1)
-  else
-    IDEMessagesWindow.AddMsg('Conversion Aborted.','',-1)
 end;
 
 function TConvertDelphiPBase.ConvertSub: TModalResult;
