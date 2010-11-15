@@ -449,7 +449,7 @@ constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aBasePath:
 begin
   inherited Create(True);
   fConverter:=aConverter;
-  fPath:=TrimFilename(aBasePath+'../'); // Will scall one level up from base path.
+  fPath:=TrimFilename(aBasePath+'../'); // Will scan one level up from base path.
 end;
 
 destructor TCacheUnitsThread.Destroy;
