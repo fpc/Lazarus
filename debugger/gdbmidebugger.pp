@@ -121,6 +121,7 @@ type
   TGDBMIDebuggerCommand = class
   private
     FOnCancel: TNotifyEvent;
+    FOnDestroy: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
     FKeepFinished: Boolean;
     FState : TGDBMIDebuggerCommandState;
@@ -155,6 +156,7 @@ type
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
   public
     constructor Create(AOwner: TGDBMIDebugger);
+    destructor Destroy; override;
     // DoQueued:   Called if queued *behind* others
     procedure DoQueued;
     // DoFinished: Called after processing is done
@@ -166,6 +168,7 @@ type
     property  State: TGDBMIDebuggerCommandState read FState;
     property  OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
     property  OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
+    property  OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
   end;
 
@@ -657,7 +660,6 @@ type
   { TGDBMILocals }
 
   TGDBMILocals = class(TDBGLocals)
-    procedure DoEvaluationFinished(Sender: TObject);
   private
     FEvaluatedState: TGDBMIEvaluationState;
     FEvaluationCmdObj: TGDBMIDebuggerCommandLocals;
@@ -666,6 +668,8 @@ type
     procedure LocalsNeeded;
     procedure CancelEvaluation;
     procedure AddLocals(const AParams:String);
+    procedure DoEvaluationDestroyed(Sender: TObject);
+    procedure DoEvaluationFinished(Sender: TObject);
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Invalidate;
@@ -689,6 +693,7 @@ type
       Map: TMap;
     end;
     FGetLineSymbolsCmdObj: TGDBMIDebuggerCommandLineSymbolInfo;
+    procedure DoGetLineSymbolsDestroyed(Sender: TObject);
     procedure ClearSources;
     procedure AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
     procedure DoGetLineSymbolsFinished(Sender: TObject);
@@ -708,8 +713,6 @@ type
   { TGDBMIRegisters }
 
   TGDBMIRegisters = class(TDBGRegisters)
-    procedure DoGetRegisterNamesFinished(Sender: TObject);
-    procedure DoGetRegValuesFinished(Sender: TObject);
   private
     FRegisters: TGDBMICpuRegisters;
 
@@ -723,6 +726,10 @@ type
 
     procedure RegistersNeeded;
     procedure ValuesNeeded;
+    procedure DoGetRegisterNamesDestroyed(Sender: TObject);
+    procedure DoGetRegisterNamesFinished(Sender: TObject);
+    procedure DoGetRegValuesDestroyed(Sender: TObject);
+    procedure DoGetRegValuesFinished(Sender: TObject);
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Invalidate;
@@ -737,7 +744,6 @@ type
   { TGDBMIWatch }
 
   TGDBMIWatch = class(TDBGWatch)
-    procedure DoEvaluationFinished(Sender: TObject);
   private
     FEvaluatedState: TGDBMIEvaluationState;
     FEvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
@@ -747,6 +753,8 @@ type
     procedure EvaluationNeeded;
     procedure CancelEvaluation;
     procedure ClearOwned;
+    procedure DoEvaluationFinished(Sender: TObject);
+    procedure DoEvaluationDestroyed(Sender: TObject);
   protected
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
@@ -774,14 +782,16 @@ type
   { TGDBMICallStack }
 
   TGDBMICallStack = class(TDBGCallStack)
-    procedure DoDepthCommandExecuted(Sender: TObject);
-    procedure DoFramesCommandExecuted(Sender: TObject);
   private
     FFramesEvalCmdObj: TGDBMIDebuggerCommandStackFrames;
     FDepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
     FInEvalDepth: Boolean;
     FInEvalFrames: Boolean;
     function InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo: TGDBMINameValueList): TCallStackEntry;
+    procedure DoDepthCommandExecuted(Sender: TObject);
+    procedure DoFramesCommandExecuted(Sender: TObject);
+    procedure DoDepthCommandDestroyed(Sender: TObject);
+    procedure DoFramesCommandDestroyed(Sender: TObject);
   protected
     procedure Clear; override;
     function CheckCount: Boolean; override;
@@ -806,6 +816,7 @@ type
     FDisassembleEvalCmdObj: TGDBMIDebuggerCommandDisassembe;
     FLastExecAddr: TDBGPtr;
     procedure DoDisassembleExecuted(Sender: TObject);
+    procedure DoDisassembleDestroyed(Sender: TObject);
   protected
     function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
     function  HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEntryRange;AnAddr:
@@ -1097,6 +1108,12 @@ end;
 
 { TGDBMIDisassembler }
 
+procedure TGDBMIDisassembler.DoDisassembleDestroyed(Sender: TObject);
+begin
+  if FDisassembleEvalCmdObj = Sender
+  then FDisassembleEvalCmdObj := nil;
+end;
+
 procedure TGDBMIDisassembler.DoDisassembleExecuted(Sender: TObject);
 begin
   // Results were added from inside the TGDBMIDebuggerCommandDisassembe object
@@ -1152,7 +1169,8 @@ begin
 
   FDisassembleEvalCmdObj := TGDBMIDebuggerCommandDisassembe.Create
     (TGDBMIDebugger(Debugger), EntryRanges, AnAddr, AnAddr, ALinesBefore, ALinesAfter);
-  FDisassembleEvalCmdObj.OnExecuted     := @DoDisassembleExecuted;
+  FDisassembleEvalCmdObj.OnExecuted := @DoDisassembleExecuted;
+  FDisassembleEvalCmdObj.OnDestroy  := @DoDisassembleDestroyed;
   TGDBMIDebugger(Debugger).QueueCommand(FDisassembleEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   Result := FDisassembleEvalCmdObj = nil; // already executed
@@ -1187,7 +1205,10 @@ procedure TGDBMIDisassembler.Clear;
 begin
   inherited Clear;
   if FDisassembleEvalCmdObj <> nil
-  then FDisassembleEvalCmdObj.Cancel;
+  then begin
+    FDisassembleEvalCmdObj.Cancel;
+    FDisassembleEvalCmdObj.OnDestroy := nil;
+  end;
   FDisassembleEvalCmdObj := nil;
 end;
 
@@ -2299,6 +2320,12 @@ end;
 
 { TGDBMILineInfo }
 
+procedure TGDBMILineInfo.DoGetLineSymbolsDestroyed(Sender: TObject);
+begin
+  if FGetLineSymbolsCmdObj = Sender
+  then FGetLineSymbolsCmdObj := nil;
+end;
+
 procedure TGDBMILineInfo.ClearSources;
 var
   n: Integer;
@@ -2473,7 +2500,8 @@ begin
   then TGDBMIDebugger(Debugger).GDBPause(True);
 
   FGetLineSymbolsCmdObj := TGDBMIDebuggerCommandLineSymbolInfo.Create(TGDBMIDebugger(Debugger), ASource);
-  FGetLineSymbolsCmdObj.OnExecuted    := @DoGetLineSymbolsFinished;
+  FGetLineSymbolsCmdObj.OnExecuted := @DoGetLineSymbolsFinished;
+  FGetLineSymbolsCmdObj.OnDestroy   := @DoGetLineSymbolsDestroyed;
   TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
@@ -4320,11 +4348,14 @@ begin
       end;
       if (State = dsRun) and (FTargetPID <> 0) // not in startup
       then begin
-        debugln(['WARNING: breakpoint hit, but nothing known about it BreakId=', BreakID, ' brbtno=', List.Values['bkptno'] ]);
+        debugln(['********** WARNING: breakpoint hit, but nothing known about it BreakId=', BreakID, ' brbtno=', List.Values['bkptno'] ]);
         {$IFDEF DBG_VERBOSE_BRKPOINT}
         debugln(['-*- List of breakpoints Cnt=', Breakpoints.Count]);
         for BreakID := 0 to Breakpoints.Count - 1 do
           debugln(['* ',Dbgs(Breakpoints[BreakID]), ':', DbgsName(Breakpoints[BreakID]), ' BreakId=',TGDBMIBreakPoint(Breakpoints[BreakID]).FBreakID, ' Source=', Breakpoints[BreakID].Source, ' Line=', Breakpoints[BreakID].Line ]);
+        debugln(['************************************************************************ ']);
+        debugln(['************************************************************************ ']);
+        debugln(['************************************************************************ ']);
         {$ENDIF}
         SetState(dsPause);
       end;
@@ -5189,6 +5220,7 @@ end;
 
 destructor TGDBMILocals.Destroy;
 begin
+  CancelEvaluation;
   inherited;
   FreeAndNil(FLocals);
 end;
@@ -5248,6 +5280,12 @@ begin
   else Result := '';
 end;
 
+procedure TGDBMILocals.DoEvaluationDestroyed(Sender: TObject);
+begin
+  if FEvaluationCmdObj = Sender
+  then FEvaluationCmdObj := nil;
+end;
+
 procedure TGDBMILocals.DoEvaluationFinished(Sender: TObject);
 var
   Cmd: TGDBMIDebuggerCommandLocals;
@@ -5274,7 +5312,8 @@ begin
   FInLocalsNeeded := True;
   FEvaluatedState := esRequested;
   FEvaluationCmdObj := TGDBMIDebuggerCommandLocals.Create(TGDBMIDebugger(Debugger));
-  FEvaluationCmdObj.OnExecuted   := @DoEvaluationFinished;
+  FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
+  FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
   TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
   FInLocalsNeeded := False;
@@ -5283,8 +5322,11 @@ end;
 procedure TGDBMILocals.CancelEvaluation;
 begin
   FEvaluatedState := esInvalid;
-  if FEvaluationCmdObj <> nil then
+  if FEvaluationCmdObj <> nil
+  then begin
     FEvaluationCmdObj.Cancel;
+    FEvaluationCmdObj.OnDestroy := nil;;
+  end;
   FEvaluationCmdObj := nil;
 end;
 
@@ -5378,6 +5420,12 @@ begin
   else Result := '';
 end;
 
+procedure TGDBMIRegisters.DoGetRegisterNamesDestroyed(Sender: TObject);
+begin
+  if FGetRegisterCmdObj = Sender
+  then FGetRegisterCmdObj := nil;
+end;
+
 procedure TGDBMIRegisters.DoGetRegisterNamesFinished(Sender: TObject);
 var
   Cmd: TGDBMIDebuggerCommandRegisterNames;
@@ -5400,6 +5448,12 @@ begin
   then Changed;
 end;
 
+procedure TGDBMIRegisters.DoGetRegValuesDestroyed(Sender: TObject);
+begin
+  if FGetValuesCmdObj = Sender
+  then FGetValuesCmdObj := nil;
+end;
+
 procedure TGDBMIRegisters.RegistersNeeded;
 begin
   if (Debugger = nil) or (FRegistersReqState in [esRequested, esValid])
@@ -5412,7 +5466,8 @@ begin
     SetLength(FRegisters, 0);
 
     FGetRegisterCmdObj := TGDBMIDebuggerCommandRegisterNames.Create(TGDBMIDebugger(Debugger));
-    FGetRegisterCmdObj.OnExecuted   := @DoGetRegisterNamesFinished;
+    FGetRegisterCmdObj.OnExecuted := @DoGetRegisterNamesFinished;
+    FGetRegisterCmdObj.OnDestroy   := @DoGetRegisterNamesDestroyed;
     TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInRegistersNeeded := False;
@@ -5438,7 +5493,8 @@ begin
     FValuesReqState := esRequested;
 
     FGetValuesCmdObj := TGDBMIDebuggerCommandRegisterValues.Create(TGDBMIDebugger(Debugger), FRegisters);
-    FGetValuesCmdObj.OnExecuted    := @DoGetRegValuesFinished;
+    FGetValuesCmdObj.OnExecuted := @DoGetRegValuesFinished;
+    FGetValuesCmdObj.OnDestroy   := @DoGetRegValuesDestroyed;
     TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInValuesNeeded := False;
@@ -5458,6 +5514,7 @@ end;
 
 destructor TGDBMIWatch.Destroy;
 begin
+  CancelEvaluation;
   FreeAndNil(FTypeInfo);
   inherited;
 end;
@@ -5508,6 +5565,12 @@ begin
   then Changed;
 end;
 
+procedure TGDBMIWatch.DoEvaluationDestroyed(Sender: TObject);
+begin
+  if FEvaluationCmdObj = Sender
+  then FEvaluationCmdObj := nil;
+end;
+
 procedure TGDBMIWatch.EvaluationNeeded;
 begin
   if FEvaluatedState in [esValid, esRequested] then Exit;
@@ -5521,7 +5584,8 @@ begin
     ClearOwned;
     SetValid(vsValid);
     FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create(TGDBMIDebugger(Debugger), Expression);
-    FEvaluationCmdObj.OnExecuted  := @DoEvaluationFinished;
+    FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
+    FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
     TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInEvaluationNeeded := False;
@@ -5534,8 +5598,11 @@ end;
 procedure TGDBMIWatch.CancelEvaluation;
 begin
   FEvaluatedState := esInvalid;
-  if FEvaluationCmdObj <> nil then
+  if FEvaluationCmdObj <> nil
+  then begin
     FEvaluationCmdObj.Cancel;
+    FEvaluationCmdObj.OnDestroy := nil;
+  end;
   FEvaluationCmdObj := nil;
 end;
 
@@ -5614,11 +5681,24 @@ begin
 
   FInEvalDepth := True;
   FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger));
-  FDepthEvalCmdObj.OnExecuted    := @DoDepthCommandExecuted;
+  FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
+  FDepthEvalCmdObj.OnDestroy   := @DoDepthCommandDestroyed;
   TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   FInEvalDepth := False;
   Result := FDepthEvalCmdObj = nil; // count is good
+end;
+
+procedure TGDBMICallStack.DoDepthCommandDestroyed(Sender: TObject);
+begin
+  if FDepthEvalCmdObj = Sender
+  then FDepthEvalCmdObj := nil;
+end;
+
+procedure TGDBMICallStack.DoFramesCommandDestroyed(Sender: TObject);
+begin
+  if FFramesEvalCmdObj = Sender
+  then FFramesEvalCmdObj := nil;
 end;
 
 function TGDBMICallStack.InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo : TGDBMINameValueList) : TCallStackEntry;
@@ -5675,10 +5755,17 @@ end;
 procedure TGDBMICallStack.Clear;
 begin
   if FDepthEvalCmdObj <> nil
-  then FDepthEvalCmdObj.Cancel;
+  then begin
+    FDepthEvalCmdObj.Cancel;
+    FDepthEvalCmdObj.OnDestroy := nil;
+  end;
   FDepthEvalCmdObj := nil;
+
   if FFramesEvalCmdObj <> nil
-  then FFramesEvalCmdObj.Cancel;
+  then begin
+    FFramesEvalCmdObj.Cancel;
+    FFramesEvalCmdObj.OnDestroy := nil;
+  end;
   FFramesEvalCmdObj := nil;
   inherited Clear;
 end;
@@ -5793,7 +5880,8 @@ begin
   FInEvalFrames := True;
   // Todo: keep the old reference too, so it can be canceled
   FFramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), AIndex, ACount);
-  FFramesEvalCmdObj.OnExecuted   := @DoFramesCommandExecuted;
+  FFramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
+  FFramesEvalCmdObj.OnDestroy  := @DoFramesCommandDestroyed;
   TGDBMIDebugger(Debugger).QueueCommand(FFramesEvalCmdObj);
   (* DoFramesCommandExecuted may be called immediately at this point *)
   FInEvalFrames := False;
@@ -7051,6 +7139,13 @@ begin
   FState := dcsNone;
   FTheDebugger := AOwner;
   FKeepFinished := False;
+end;
+
+destructor TGDBMIDebuggerCommand.Destroy;
+begin
+  if assigned(FOnDestroy)
+  then FOnDestroy(Self);
+  inherited Destroy;
 end;
 
 procedure TGDBMIDebuggerCommand.DoQueued;
