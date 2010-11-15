@@ -300,6 +300,7 @@ resourcestring
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewAssembler = 'Assembler';
+  lisDbgAsmCopyToClipboard = 'Copy to clipboard';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuViewDebugEvents = 'Event Log';
   lisMenuIDEInternals = 'IDE internals';
