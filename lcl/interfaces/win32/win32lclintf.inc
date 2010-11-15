@@ -642,7 +642,7 @@ begin
       TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
     end;
 
-    TaskConfig.pszMainInstruction := PWideChar(UTF8ToUTF16(DialogMessage));
+    TaskConfig.pszContent := PWideChar(UTF8ToUTF16(DialogMessage));
 
     TaskConfig.cButtons := ButtonCount;
     GetMem(DialogButtons, SizeOf(TTASKDIALOG_BUTTON) * ButtonCount);

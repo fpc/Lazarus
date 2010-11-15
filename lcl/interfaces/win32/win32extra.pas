@@ -178,9 +178,9 @@ type
     dwFlags: TASKDIALOG_FLAGS;                        // TASKDIALOG_FLAGS (TDF_XXX) flags
     dwCommonButtons: TASKDIALOG_COMMON_BUTTON_FLAGS;  // TASKDIALOG_COMMON_BUTTON (TDCBF_XXX) flags
     pszWindowTitle: PCWSTR;                           // string or MAKEINTRESOURCE()
-    case PtrInt of
-      0: (hMainIcon: HICON);
-      1: (
+    case Boolean of
+      False: (hMainIcon: HICON);
+      True: (
         pszMainIcon: PCWSTR;
         pszMainInstruction: PCWSTR;
         pszContent: PCWSTR;
@@ -194,9 +194,9 @@ type
         pszExpandedInformation: PCWSTR;
         pszExpandedControlText: PCWSTR;
         pszCollapsedControlText: PCWSTR;
-        case PtrInt of
-          0: (hFooterIcon: HICON);
-          1: (
+        case Boolean of
+          False: (hFooterIcon: HICON);
+          True: (
             pszFooterIcon: PCWSTR;
             pszFooter: PCWSTR;
             pfCallback: PFTASKDIALOGCALLBACK;
