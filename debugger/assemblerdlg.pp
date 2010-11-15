@@ -76,6 +76,7 @@ type
     procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
+    procedure SetDebugger(const AValue: TDebugger);
     function FormatLine(ALine: TAsmDlgLineEntry; W: Integer): String;
     procedure UpdateLineData;
     procedure UpdateLineDataEx(ALineMap: TAsmDlgLineEntries;
@@ -144,6 +145,18 @@ begin
   end;
 end;
 
+procedure TAssemblerDlg.SetDebugger(const AValue: TDebugger);
+begin
+  if FDebugger = AValue
+  then exit;
+
+  if FDebugger <> nil
+  then FDebugger.RemoveNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
+  FDebugger := AValue;
+  if FDebugger <> nil
+  then FDebugger.AddNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
+end;
+
 constructor TAssemblerDlg.Create(AOwner: TComponent);
 begin
   FGutterWidth := 32;
@@ -163,6 +176,7 @@ end;
 destructor TAssemblerDlg.Destroy;
 begin
   SetDisassembler(nil);
+  SetDebugger(nil);
   FDisassemblerNotification.OnChange := nil;
   FDisassemblerNotification.ReleaseReference;
   inherited Destroy;
@@ -440,14 +454,7 @@ end;
 
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
 begin
-  if FDebugger <> ADebugger
-  then begin
-    if FDebugger <> nil
-    then FDebugger.RemoveNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
-    FDebugger := ADebugger;
-    if FDebugger <> nil
-    then FDebugger.AddNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
-  end;
+  SetDebugger(ADebugger);
   FTopLine := -(FLineCount div 2);
   FSelectLine := 0;
   FSelectionEndLine := 0;
