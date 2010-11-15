@@ -155,8 +155,6 @@ type
     // Units that are found and will be added to project and converted.
     fUnitsToAddToProject: TStringList;
     fSettings: TConvertSettings;
-    fDoneScan: Boolean;
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
     procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
@@ -954,15 +952,6 @@ begin
   fCachedUnitNames.Free;
   fUnitSearchPaths.Free;
   inherited Destroy;
-end;
-
-procedure TConvertDelphiPBase.OnIdle(Sender: TObject; var Done: Boolean);
-begin
-  if not fDoneScan then begin
-    CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
-    fDoneScan:=True;
-  end;
-  Done:=True;
 end;
 
 // Creates or updates a lazarus project (.lpi+.lpr) or package.
