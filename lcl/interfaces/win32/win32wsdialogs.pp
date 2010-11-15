@@ -864,7 +864,7 @@ var
   I, Count: DWord;
 begin
   // TODO: ofExtensionDifferent, ofReadOnly
-  if (ADialog is IFileOpenDialog) then
+  if Supports(ADialog, IFileOpenDialog) then
   begin
     Result := (ADialog as IFileOpenDialog).GetResults(ShellItems);
     AOpenDialog.Files.Clear;
