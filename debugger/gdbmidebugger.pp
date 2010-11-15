@@ -1534,6 +1534,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         if (DisAssListWithSrc.Count > 0) and (not DisAssListWithSrc.HasSourceInfo)
         then begin
           // no source avail, but got data
+          DisAssListWithSrc.AddMemDump(MemDump);
           CopyToRange(DisAssListWithSrc, NewRange, 0, DisAssListWithSrc.Count);
           i := NextProcIdx;
           Result := True;
@@ -1543,6 +1544,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         //get the source-less code as reference
         DisAssListNew := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
           NextProcAddr, False, DisAssListNew);
+        DisAssListNew.AddMemDump(MemDump);
         CopyToRange(DisAssListNew, NewRange, 0, DisAssListNew.Count, DisAssListWithSrc);
         i := NextProcIdx;
         Result := True;
