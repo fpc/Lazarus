@@ -18,7 +18,10 @@ inherited AssemblerDlg: TAssemblerDlg
     Height = 272
     Top = 0
     Width = 376
+    PopupMenu = PopupMenu1
     OnMouseDown = pbAsmMouseDown
+    OnMouseMove = pbAsmMouseMove
+    OnMouseUp = pbAsmMouseUp
     OnMouseWheel = pbAsmMouseWheel
     OnPaint = pbAsmPaint
   end
@@ -45,5 +48,13 @@ inherited AssemblerDlg: TAssemblerDlg
     TabOrder = 1
     OnChange = sbVerticalChange
     OnScroll = sbVerticalScroll
+  end
+  object PopupMenu1: TPopupMenu[3]
+    left = 493
+    top = 43
+    object CopyToClipboard: TMenuItem
+      Caption = 'New Item1'
+      OnClick = CopyToClipboardClick
+    end
   end
 end

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  EditorOptions, Maps, Math, LCLProc;
+  EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd;
 
 type
 
@@ -21,13 +21,29 @@ type
     lmsFuncName    // Name of function
   );
 
+  TAsmDlgLineEntry = record
+    State: TAsmDlgLineMapState;
+    Addr: TDbgPtr;
+    Dump: String;
+    Statement: String;
+    FileName: String;
+    SourceLine: Integer;
+  end;
+  TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
+
   TAssemblerDlg = class(TDebuggerDlg)
+    CopyToClipboard: TMenuItem;
     pbAsm: TPaintBox;
+    PopupMenu1: TPopupMenu;
     sbHorizontal: TScrollBar;
     sbVertical: TScrollBar;
+    procedure CopyToClipboardClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure pbAsmMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure pbAsmMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure pbAsmPaint(Sender: TObject);
     procedure sbHorizontalChange(Sender: TObject);
@@ -38,6 +54,7 @@ type
     FDisassembler: TIDEDisassembler;
     FDisassemblerNotification: TIDEDisassemblerNotification;
     FLocation: TDBGPtr;
+    FMouseIsDown: Boolean;
 
     FTopLine: Integer;
     FLastTopLine: Integer;
@@ -46,15 +63,10 @@ type
     FLastTopLineValid: Boolean;
 
     FSelectLine: Integer;
+    FSelectionEndLine: Integer;
     FLineCount: Integer;
-    FLineMap: array of record
-      State: TAsmDlgLineMapState;
-      Addr: TDbgPtr;
-      Dump: String;
-      Statement: String;
-      FileName: String;
-      SourceLine: Integer;
-    end;
+    FLineMap: TAsmDlgLineEntries;
+
     FLineHeight: Integer;
     FCharWidth: Integer;
     FGutterWidth: Integer;
@@ -63,8 +75,15 @@ type
     procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
+    function FormatLine(ALine: TAsmDlgLineEntry; W: Integer): String;
     procedure UpdateLineData;
-    procedure SetSelection(ALine: Integer; AMakeVisible: Boolean);
+    procedure UpdateLineDataEx(ALineMap: TAsmDlgLineEntries;
+                               AFirstLine, ALineCount: Integer;
+                               var ACachedLine, ACachedIdx: Integer;
+                               var ACachedIsSrc, ACachedValid: Boolean;
+                               ACachedUpdate: Boolean
+                              );
+    procedure SetSelection(ALine: Integer; AMakeVisible: Boolean; AKeepSelEnd: Boolean = False);
     procedure SetLineCount(ALineCount: Integer);
     procedure SetTopLine(ALine: Integer);
   protected
@@ -137,6 +156,7 @@ begin
   pbAsm.Font.Height := EditorOpts.EditorFontHeight;
   pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
+  CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
 end;
 
 destructor TAssemblerDlg.Destroy;
@@ -148,30 +168,56 @@ begin
 end;
 
 procedure TAssemblerDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  i: LongInt;
 begin
-  if Shift <> [] then Exit;
+  if Shift - [ssShift] <> [] then Exit;
   case Key of
     VK_UP:   begin
-      SetSelection(FSelectLine - 1, True);
-      Exit;
+      SetSelection(FSelectLine - 1, True, ssShift in Shift);
     end;
     VK_DOWN: begin
-      SetSelection(FSelectLine + 1, True);
-      Exit;
+      SetSelection(FSelectLine + 1, True, ssShift in Shift);
     end;
     VK_PRIOR: begin
-      Dec(FSelectLine, FLineCount);
-      SetTopline(FTopLine - FLineCount);
+      i := FTopLine;
+      SetSelection(FSelectLine - FLineCount, False, ssShift in Shift);
+      SetTopline(i - FLineCount);
     end;
     VK_NEXT: begin
-      Inc(FSelectLine, FLineCount);
-      SetTopline(FTopLine + FLineCount);
+      i := FTopLine;
+      SetSelection(FSelectLine + FLineCount, False, ssShift in Shift);
+      SetTopline(i + FLineCount);
     end;
     VK_LEFT: sbHorizontal.Position := sbHorizontal.Position - sbHorizontal.SmallChange;
     VK_RIGHT: sbHorizontal.Position := sbHorizontal.Position + sbHorizontal.SmallChange;
     VK_HOME: sbHorizontal.Position := 0;
   end;
+  Key := 0;
   pbAsm.Invalidate;
+end;
+
+procedure TAssemblerDlg.CopyToClipboardClick(Sender: TObject);
+var
+  ALineMap: TAsmDlgLineEntries;
+  i, w: Integer;
+  s: String;
+begin
+  if FSelectionEndLine = FSelectLine
+  then exit;
+  SetLength(ALineMap, abs(FSelectionEndLine - FSelectLine)+1);
+  UpdateLineDataEx(ALineMap, Min(FSelectionEndLine, FSelectLine),
+    abs(FSelectionEndLine - FSelectLine),
+    FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, False );
+  if FDebugger = nil
+  then W := 16
+  else W := FDebugger.TargetWidth div 4;
+  s := '';
+  for i := 0 to length(ALineMap)-1 do
+  begin
+    s := s + FormatLine(ALineMap[i], W) + LineEnding;
+  end;
+  Clipboard.AsText := s;
 end;
 
 procedure TAssemblerDlg.DisassemblerChanged(Sender: TObject);
@@ -230,14 +276,33 @@ procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Sh
 begin
   if Button <> mbLeft then exit;
 
-  SetSelection(FTopLine + Y div FLineHeight, True);
+  SetSelection(FTopLine + Y div FLineHeight, False, ssShift in Shift);
+  FMouseIsDown := True;
+end;
+
+procedure TAssemblerDlg.pbAsmMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+  y := Y div FLineHeight;
+  if FMouseIsDown and (y >= 0) and (y < FLineCount)
+  then SetSelection(FTopLine + Y, False, True);
+end;
+
+procedure TAssemblerDlg.pbAsmMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FMouseIsDown := False;
 end;
 
 procedure TAssemblerDlg.pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+var
+  i, j: LongInt;
 begin
   Handled := True;
 
-  SetSelection(FSelectLine - (WheelDelta div 120), True);
+  j := WheelDelta div 120;
+  i := FTopLine ;
+  SetSelection(FSelectLine - j, False, ssShift in Shift);
+  SetTopline(i - j);
 end;
 
 procedure TAssemblerDlg.pbAsmPaint(Sender: TObject);
@@ -267,6 +332,22 @@ begin
       pbAsm.Canvas.Brush.Color := clHighlight;
       pbAsm.Canvas.Font.Color := clHighlightText;
       pbAsm.Canvas.FillRect(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
+      if (FSelectionEndLine <> FSelectLine)
+      then begin
+        pbAsm.Canvas.Brush.Color := clHotLight;
+        pbAsm.Canvas.Brush.Style := bsClear;
+        pbAsm.Canvas.Rectangle(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
+        pbAsm.Canvas.Brush.Style := bsSolid;
+        pbAsm.Canvas.Brush.Color := clHighlight;
+      end;
+    end
+    else if (FSelectionEndLine <> FSelectLine)
+    and (line >= Min(FSelectLine, FSelectionEndLine))
+    and (line <= Max(FSelectLine, FSelectionEndLine))
+    then begin
+      pbAsm.Canvas.Brush.Color := clHighlight;
+      pbAsm.Canvas.Font.Color := clHighlightText;
+      pbAsm.Canvas.FillRect(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
     end
     else begin
       pbAsm.Canvas.Brush.Color := pbAsm.Color;
@@ -274,25 +355,30 @@ begin
     end;
     pbAsm.Canvas.Font.Bold := (FLineMap[n].State in [lmsSource, lmsFuncName]);
 
-    S := '';
-    //S :=  Format('[a:%8.8u l:%8.8d i:%3.3u] ', [Cardinal(FLineMap[n].Addr), Line, n]);
-    S := S + HexStr(FLineMap[n].Addr, W) + ' ';
-
-    case FLineMap[n].State of
-      lmsUnknown: S := S + '??????';
-      lmsInvalid: S := S + '......';
-      lmsStatement: S := S + Copy(FLineMap[n].Dump + '                         ', 1, 24) + ' ' + FLineMap[n].Statement;
-      lmsSource: begin
-        if FLineMap[n].SourceLine = 0
-        then S := '---'
-        else S :=  Format('%s:%u %s', [FLineMap[n].FileName, FLineMap[n].SourceLine, FLineMap[n].Statement]);
-      end;
-      lmsFuncName: s:= FLineMap[n].FileName + ' ' + FLineMap[n].Statement;
-    end;
+    S := FormatLine(FLineMap[n], W);
     pbAsm.Canvas.TextRect(R, X, Y, S);
 
     Inc(Y, FLineHeight);
     Inc(Line);
+  end;
+end;
+
+function TAssemblerDlg.FormatLine(ALine: TAsmDlgLineEntry; W: Integer) : String;
+begin
+  Result := '';
+  //Result :=  Format('[a:%8.8u l:%8.8d i:%3.3u] ', [Cardinal(ALine.Addr), Line, n]);
+  Result := Result + HexStr(ALine.Addr, W) + ' ';
+
+  case ALine.State of
+    lmsUnknown: Result := Result + '??????';
+    lmsInvalid: Result := Result + '......';
+    lmsStatement: Result := Result + Copy(ALine.Dump + '                         ', 1, 24) + ' ' + ALine.Statement;
+    lmsSource: begin
+      if ALine.SourceLine = 0
+      then Result := '---'
+      else Result :=  Format('%s:%u %s', [ALine.FileName, ALine.SourceLine, ALine.Statement]);
+    end;
+    lmsFuncName: Result:= ALine.FileName + ' ' + ALine.Statement;
   end;
 end;
 
@@ -347,7 +433,9 @@ begin
   FDebugger := ADebugger;
   FTopLine := -(FLineCount div 2);
   FSelectLine := 0;
+  FSelectionEndLine := 0;
   FLocation := AAddr;
+  FLastTopLineValid := False;
 
   if Visible then begin
     // otherwhise in resize
@@ -359,7 +447,8 @@ begin
     ClearLineMap;
 end;
 
-procedure TAssemblerDlg.SetSelection(ALine: Integer; AMakeVisible: Boolean);
+procedure TAssemblerDlg.SetSelection(ALine: Integer; AMakeVisible: Boolean;
+  AKeepSelEnd: Boolean = False);
 var
   OldLine: Integer;
 begin
@@ -369,7 +458,9 @@ begin
   // set variable first
   OldLine := FSelectLine;
   FSelectLine := Aline;
-  FLastTopLineValid := False;
+
+  if not AKeepSelEnd
+  then FSelectionEndLine := FSelectLine;
 
   if AMakeVisible
   then begin
@@ -421,6 +512,14 @@ end;
 
 
 procedure TAssemblerDlg.UpdateLineData;
+begin
+  UpdateLineDataEx(FLineMap, FTopLine, FLineCount,
+    FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, True);
+end;
+
+procedure TAssemblerDlg.UpdateLineDataEx(ALineMap: TAsmDlgLineEntries; AFirstLine,
+  ALineCount: Integer; var ACachedLine, ACachedIdx: Integer;
+  var ACachedIsSrc, ACachedValid: Boolean; ACachedUpdate: Boolean);
 
   function GetItem(AIdx: Integer): PDisassemblerEntry;
   begin
@@ -477,8 +576,8 @@ begin
   try
     FUpdateNeeded := False;
     DoneLocation    := FLocation;
-    DoneTopLine     := FTopLine;
-    DoneLineCount   := FLineCount;
+    DoneTopLine     := AFirstLine;
+    DoneLineCount   := ALineCount;
     DoneCountBefore := FDisassembler.CountBefore;
     DoneCountAfter  := FDisassembler.CountAfter;
 
@@ -486,15 +585,15 @@ begin
     Line := 0;
     Idx := 0;
     LineIsSrc := False;
-    if FLastTopLineValid
-    and (abs(FTopLine - FLastTopLine) < FTopLine)
+    if ACachedValid
+    and (abs(AFirstLine - ACachedLine) < AFirstLine)
     then begin
-      Line := FLastTopLine;
-      Idx := FLastTopLineIdx;
-      LineIsSrc := FLastTopLineIsSrc;
+      Line := ACachedLine;
+      Idx := ACachedIdx;
+      LineIsSrc := ACachedIsSrc;
     end;
 
-    while FTopLine > Line
+    while AFirstLine > Line
     do begin
       if LineIsSrc
       then begin
@@ -510,7 +609,7 @@ begin
       end;
       inc(Line);
     end;
-    while FTopLine < line
+    while AFirstLine < line
     do begin
       if LineIsSrc
       then begin
@@ -527,22 +626,25 @@ begin
       Dec(Line);
     end;
 
-    FLastTopLine := FTopLine;
-    FLastTopLineIdx := Idx;
-    FLastTopLineIsSrc := LineIsSrc;
-    FLastTopLineValid := True;
+    if ACachedUpdate
+    then begin
+      ACachedLine := AFirstLine;
+      ACachedIdx := Idx;
+      ACachedIsSrc := LineIsSrc;
+      ACachedValid := True;
+    end;
 
     // Fill LineMap
     HasLineOutOfRange := False;
     Line := 0;
     NextItm := GetItem(Idx);
-    while Line <= FLineCount do begin
+    while Line <= ALineCount do begin
       Itm := NextItm;
       NextItm := GetItem(Idx+1);
 
       if Itm = nil
       then begin
-        FLineMap[Line].State := lmsInvalid;
+        ALineMap[Line].State := lmsInvalid;
         HasLineOutOfRange := True;
         inc(Line);
         inc(idx);
@@ -552,18 +654,18 @@ begin
       if ( (Line = 0) and LineIsSrc )
       or ( (Line <> 0) and IsSourceBeforeItem(Itm) )
       then begin
-        FLineMap[Line].Dump       := '';
-        FLineMap[Line].Statement  := '';
+        ALineMap[Line].Dump       := '';
+        ALineMap[Line].Statement  := '';
         if Itm^.SrcFileName <> ''
         then begin
-          FLineMap[Line].State := lmsSource;
-          FLineMap[Line].SourceLine := Itm^.SrcFileLine;
-          FLineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].State := lmsSource;
+          ALineMap[Line].SourceLine := Itm^.SrcFileLine;
+          ALineMap[Line].FileName   := Itm^.SrcFileName;
         end
         else begin
-          FLineMap[Line].State := lmsFuncName;
-          FLineMap[Line].SourceLine := Itm^.Offset;
-          FLineMap[Line].FileName   := Itm^.FuncName;
+          ALineMap[Line].State := lmsFuncName;
+          ALineMap[Line].SourceLine := Itm^.Offset;
+          ALineMap[Line].FileName   := Itm^.FuncName;
         end;
         inc(Line);
       end
@@ -573,26 +675,26 @@ begin
          or ( (Itm^.SrcFileName = '') and (Itm^.FuncName <> '') and (NextItm <> nil) and (Itm^.Offset < NextItm^.Offset) )
       )
       then begin
-        FLineMap[Line].Dump       := '';
-        FLineMap[Line].Statement  := '';
+        ALineMap[Line].Dump       := '';
+        ALineMap[Line].Statement  := '';
         if Itm^.SrcFileName <> ''
         then begin
-          FLineMap[Line].State := lmsSource;
-          FLineMap[Line].SourceLine := Itm^.SrcFileLine;
-          FLineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].State := lmsSource;
+          ALineMap[Line].SourceLine := Itm^.SrcFileLine;
+          ALineMap[Line].FileName   := Itm^.SrcFileName;
           if NextItm <> nil
-          then FLineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
-          else FLineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
+          then ALineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
+          else ALineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
         end
         else begin
-          FLineMap[Line].State := lmsFuncName;
-          FLineMap[Line].SourceLine := 0;
+          ALineMap[Line].State := lmsFuncName;
+          ALineMap[Line].SourceLine := 0;
           if NextItm <> nil
-          then FLineMap[Line].SourceLine := NextItm^.Offset;
-          FLineMap[Line].FileName   := Itm^.FuncName;
+          then ALineMap[Line].SourceLine := NextItm^.Offset;
+          ALineMap[Line].FileName   := Itm^.FuncName;
           if NextItm <> nil
-          then FLineMap[Line].Statement  := Format('(%d)', [NextItm^.Offset])
-          else FLineMap[Line].Statement  := '(???)';
+          then ALineMap[Line].Statement  := Format('(%d)', [NextItm^.Offset])
+          else ALineMap[Line].Statement  := '(???)';
         end;
         inc(Line);
         inc(idx); // displayed source-info, instead of asm (topline substituted)
@@ -601,14 +703,14 @@ begin
       end;
       LineIsSrc := False; // only for topline
 
-      if Line > FLineCount
+      if Line > ALineCount
       then break;
 
-      FLineMap[Line].Addr       := Itm^.Addr;
-      FLineMap[Line].State      := lmsStatement;
-      FLineMap[Line].Dump       := Itm^.Dump;
-      FLineMap[Line].Statement  := Itm^.Statement;
-      FLineMap[Line].SourceLine := Itm^.SrcFileLine;
+      ALineMap[Line].Addr       := Itm^.Addr;
+      ALineMap[Line].State      := lmsStatement;
+      ALineMap[Line].Dump       := Itm^.Dump;
+      ALineMap[Line].Statement  := Itm^.Statement;
+      ALineMap[Line].SourceLine := Itm^.SrcFileLine;
 
       inc(Line);
       inc(idx);
@@ -618,8 +720,8 @@ begin
     FUpdating := False;
     if FUpdateNeeded
     and ( (DoneLocation    <> FLocation)
-       or (DoneTopLine     <> FTopLine)
-       or (DoneLineCount   <> FLineCount)
+       or (DoneTopLine     <> AFirstLine)
+       or (DoneLineCount   <> ALineCount)
        or (HasLineOutOfRange
           and ( (DoneCountBefore <> FDisassembler.CountBefore)
              or (DoneCountAfter  <> FDisassembler.CountAfter) )  )
