@@ -2420,7 +2420,7 @@ begin
     write(DebugText^, s);
   end;
   {$endif}
-  DebugNestAtBOL := (s <> '') and not (s[length(s)] in [#10,#13]);
+  DebugNestAtBOL := (s = '') or (s[length(s)] in [#10,#13]);
 end;
 
 procedure DBGOut(const s1, s2: string);
