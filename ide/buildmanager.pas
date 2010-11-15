@@ -1884,7 +1884,8 @@ begin
   end;
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
   Result:=BuildIDE and ((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
-                   and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU));
+                   and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
+                   and (NewLCLWidgetSet<>lpNoGUI);
 end;
 
 end.
