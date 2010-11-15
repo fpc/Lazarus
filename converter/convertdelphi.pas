@@ -970,20 +970,15 @@ function TConvertDelphiPBase.Convert: TModalResult;
 var
   // The initial unit name cache is done in a thread so that GUI shows at once.
   CacheUnitsThread: TCacheUnitsThread;
-  b: Boolean;
 begin
-  {$IFDEF UseCThreads}
-  ShowMessage('here we are!');
-  {$ENDIF}
   IDEMessagesWindow.Clear;
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
   CacheUnitsThread:=TCacheUnitsThread.Create(Self, fSettings.MainPath);
   try
-    b := CacheUnitsThread.FreeOnTerminate;
     CacheUnitsThread.Resume;
     Result:=fSettings.RunForm;      // Get settings from user.
-    CacheUnitsThread.WaitFor;      // Make sure the thread has finished.
+    CacheUnitsThread.WaitFor;       // Make sure the thread has finished.
     if Result=mrOK then begin
       // create/open lazarus project or package file
       fLazPFilename:=fSettings.DelphiToLazFilename(fOrigPFilename, fLazPSuffix, false);
