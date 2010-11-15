@@ -200,8 +200,7 @@ type
     procedure DoSelectionChange; virtual;
     procedure IntfSetOption(const AOption: TOpenOption; const AValue: Boolean);
   published
-    property Options: TOpenOptions read FOptions write FOptions
-      default DefaultOpenDialogOptions;
+    property Options: TOpenOptions read FOptions write FOptions default DefaultOpenDialogOptions;
     property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;

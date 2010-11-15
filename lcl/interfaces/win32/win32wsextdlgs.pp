@@ -37,7 +37,7 @@ uses
   Windows,
 ////////////////////////////////////////////////////
   WSExtDlgs, WSLCLClasses, Win32WSDialogs, Win32WSControls, Win32Int, Win32Proc,
-  Types, Controls, Dialogs, ExtDlgs, LCLType, Graphics;
+  Types, Controls, Dialogs, ExtDlgs, LCLType, Graphics, Themes;
 
 type
 
@@ -171,7 +171,12 @@ end;
 class function TWin32WSOpenPictureDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
+  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    // ?
+  end
+  else
+    AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
 { TWin32WSPreviewFileControl }
@@ -200,7 +205,12 @@ class function TWin32WSSavePictureDialog.CreateHandle(
   const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
+  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    // ?
+  end
+  else
+    AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
 end.

@@ -25,6 +25,11 @@ unit Win32WSDialogs;
 {$mode objfpc}{$H+}
 {$I win32defines.inc}
 
+// TODO:
+// 1. Check selection change event
+// 2. Solve Cancel click and DoCanClose False return
+// 3. Decide what to do with PreviewPanel in picture dialogs
+
 interface
 
 uses
@@ -38,7 +43,7 @@ uses
   Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes,
   CommDlg,
 // lcl
-  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, FileUtil,
+  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, FileUtil, Themes, Masks,
 // ws
   WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
   Win32Proc;
@@ -75,6 +80,10 @@ type
   { TWin32WSOpenDialog }
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
+  public
+    class procedure SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
+    class function ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
+    class function GetParentWnd: HWND;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -85,6 +94,7 @@ type
 
   TWin32WSSaveDialog = class(TWSSaveDialog)
   published
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -117,6 +127,25 @@ type
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
+  { TFileDialogEvents }
+
+  TFileDialogEvents = class(TInterfacedObject, IFileDialogEvents)
+  private
+    FDialog: TOpenDialog;
+  protected
+    // IFileDialogEvents
+    function OnFileOk(pfd: IFileDialog): HResult; stdcall;
+    function OnFolderChanging(pfd: IFileDialog; psifolder: IShellItem): HResult; stdcall;
+    function OnFolderChange(pfd: IFileDialog): HResult; stdcall;
+    function OnSelectionChange(pfd: IFileDialog): HResult; stdcall;
+    function OnShareViolation(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
+    function OnTypeChange(pfd: IFileDialog): HResult; stdcall;
+    function OnOverwrite(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
+    // TODO: IFileDialogControlEvents
+  public
+    constructor Create(ADialog: TOpenDialog);
+  end;
+
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
 
@@ -124,6 +153,9 @@ function SaveApplicationState: TApplicationState;
 procedure RestoreApplicationState(AState: TApplicationState);
 function UTF8StringToPWideChar(const s: string) : PWideChar;
 function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
+
+const
+  UseVistaDialogs: Boolean = {$ifdef UseVistaDialogs}True{$else}False{$endif};
 
 implementation
 
@@ -674,6 +706,23 @@ begin
   Result := THandle(OpenFile);
 end;
 
+procedure DestroyFileDialogHandle(AHandle: THandle);
+var
+  OPENFILE: LPOPENFILENAME;
+begin
+  OPENFILE := LPOPENFILENAME(AHandle);
+  if OPENFILE^.lCustData <> 0 then
+    Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
+
+  FreeMem(OpenFile^.lpStrFilter);
+  FreeMem(OpenFile^.lpstrInitialDir);
+  FreeMem(OpenFile^.lpStrFile);
+  FreeMem(OpenFile^.lpStrTitle);
+  FreeMem(OpenFile^.lpTemplateName);
+  FreeMem(OpenFile^.lpstrDefExt);
+  FreeMem(OpenFile);
+end;
+
 procedure ProcessFileDialogResult(AOpenDialog: TOpenDialog; UserResult: WordBool);
 var
   OpenFile: LPOPENFILENAME;
@@ -697,54 +746,248 @@ end;
 
 { TWin32WSOpenDialog }
 
-class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class procedure TWin32WSOpenDialog.SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
+{ non-used flags
+FOS_PICKFOLDERS
+FOS_FORCEFILESYSTEM
+FOS_ALLNONSTORAGEITEMS
+FOS_HIDEMRUPLACES
+FOS_HIDEPINNEDPLACES
+FOS_DONTADDTORECENT
+FOS_DEFAULTNOMINIMODE
+FOS_FORCEPREVIEWPANEON}
+
+  function GetOptions(Options: TOpenOptions): FileOpenDialogOptions;
+  begin
+    Result := 0;
+    if ofAllowMultiSelect in Options then Result := Result or FOS_ALLOWMULTISELECT;
+    if ofCreatePrompt in Options then Result := Result or FOS_CREATEPROMPT;
+    if ofExtensionDifferent in Options then Result := Result or FOS_STRICTFILETYPES;
+    if ofFileMustExist in Options then Result := Result or FOS_FILEMUSTEXIST;
+    if ofNoChangeDir in Options then Result := Result or FOS_NOCHANGEDIR;
+    if ofNoDereferenceLinks in Options then Result := Result or FOS_NODEREFERENCELINKS;
+    if ofNoReadOnlyReturn in  Options then Result := Result or FOS_NOREADONLYRETURN;
+    if ofNoTestFileCreate in Options then Result := Result or FOS_NOTESTFILECREATE;
+    if ofNoValidate in Options then Result := Result or FOS_NOVALIDATE;
+    if ofOverwritePrompt in Options then Result := Result or FOS_OVERWRITEPROMPT;
+    if ofPathMustExist in Options then Result := Result or FOS_PATHMUSTEXIST;
+    if ofShareAware in Options then Result := Result or FOS_SHAREAWARE;
+    { unavailable options:
+      ofHideReadOnly
+      ofEnableSizing
+      ofNoLongNames
+      ofNoNetworkButton
+      ofReadOnly
+      ofShowHelp
+    }
+  end;
+
+  function GetDefaultExt: String;
+  begin
+    Result := AOpenDialog.DefaultExt;
+    if UTF8Pos('.', Result) = 1 then
+      UTF8Delete(Result, 1, 1);
+  end;
+
+var
+  I: Integer;
+  FileName, InitialDir: String;
+  DefaultFolderItem: IShellItem;
+  ParsedFilter: TParseStringList;
+  FileTypesArray: PCOMDLG_FILTERSPEC;
 begin
-  Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
+  FileName := AOpenDialog.FileName;
+  InitialDir := AOpenDialog.InitialDir;
+  if (FileName <> '') and (FileName[length(FileName)] = PathDelim) then
+  begin
+    // if the filename contains a directory, set the initial directory
+    // and clear the filename
+    InitialDir := Copy(FileName, 1, Length(FileName) - 1);
+    FileName := '';
+  end;
+  ADialog.SetTitle(PWideChar(UTF8ToUTF16(AOpenDialog.Title)));
+  ADialog.SetFileName(PWideChar(UTF8ToUTF16(FileName)));
+  ADialog.SetDefaultExtension(PWideChar(UTF8ToUTF16(GetDefaultExt)));
+
+  if InitialDir <> '' then
+  begin
+    if Succeeded(SHCreateItemFromParsingName(PWideChar(UTF8ToUTF16(InitialDir)), nil, IShellItem, DefaultFolderItem)) then
+      ADialog.SetDefaultFolder(DefaultFolderItem);
+  end;
+
+  ParsedFilter := TParseStringList.Create(AOpenDialog.Filter, '|');
+  if ParsedFilter.Count = 0 then
+  begin
+    ParsedFilter.Add('All File Types(*.*)');
+    ParsedFilter.Add('*.*');
+  end;
+  try
+    FileTypesArray := AllocMem((ParsedFilter.Count div 2) * SizeOf(TCOMDLG_FILTERSPEC));
+    for I := 0 to ParsedFilter.Count div 2 - 1 do
+    begin
+      FileTypesArray[I].pszName := UTF8StringToPWideChar(ParsedFilter[I * 2]);
+      FileTypesArray[I].pszSpec := UTF8StringToPWideChar(ParsedFilter[I * 2 + 1]);
+    end;
+    ADialog.SetFileTypes(ParsedFilter.Count div 2, FileTypesArray);
+    ADialog.SetFileTypeIndex(AOpenDialog.FilterIndex);
+    for I := 0 to ParsedFilter.Count div 2 - 1 do
+    begin
+      FreeMem(FileTypesArray[I].pszName);
+      FreeMem(FileTypesArray[I].pszSpec);
+    end;
+    FreeMem(FileTypesArray);
+  finally
+    ParsedFilter.Free;
+  end;
+
+  ADialog.SetOptions(GetOptions(AOpenDialog.Options));
+end;
+
+class function TWin32WSOpenDialog.ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
+
+  function GetFileName(ShellItem: IShellItem): String;
+  var
+    FilePath: LPWStr;
+  begin
+    if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), @FilePath)) then
+    begin
+      Result := UTF16ToUTF8(WideString(FilePath));
+      CoTaskMemFree(FilePath);
+    end
+    else
+      Result := '';
+  end;
+
+var
+  ShellItems: IShellItemArray;
+  ShellItem: IShellItem;
+  I, Count: DWord;
+begin
+  // TODO: ofExtensionDifferent, ofReadOnly
+  if (ADialog is IFileOpenDialog) then
+  begin
+    Result := (ADialog as IFileOpenDialog).GetResults(ShellItems);
+    AOpenDialog.Files.Clear;
+    if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count)) then
+    begin
+      I := 0;
+      while I < Count do
+      begin
+        if Succeeded(ShellItems.GetItemAt(I, ShellItem)) then
+          AOpenDialog.Files.Add(GetFileName(ShellItem));
+        inc(I);
+      end;
+    end;
+    if AOpenDialog.Files.Count > 0 then
+      AOpenDialog.FileName := AOpenDialog.Files[0]
+    else
+      AOpenDialog.FileName := '';
+  end
+  else
+  begin
+    Result := ADialog.GetResult(@ShellItem);
+    if Succeeded(Result) then
+    begin
+      AOpenDialog.Files.Clear;
+      AOpenDialog.FileName := GetFileName(ShellItem);
+      AOpenDialog.Files.Add(AOpenDialog.FileName);
+      Result := S_OK;
+    end
+    else
+    begin
+      AOpenDialog.Files.Clear;
+      AOpenDialog.FileName := '';
+    end;
+  end;
+end;
+
+class function TWin32WSOpenDialog.GetParentWnd: HWND;
+begin
+  if Assigned(Screen.ActiveCustomForm) then
+    Result := Screen.ActiveCustomForm.Handle
+  else
+  if Assigned(Application.MainForm) then
+    Result := Application.MainForm.Handle
+  else
+    Result := WidgetSet.AppHandle;
+end;
+
+class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+var
+  Dialog: IFileOpenDialog;
+begin
+  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
+    begin
+      Dialog._AddRef;
+      SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
+      Result := THandle(Dialog);
+    end;
+  end
+  else
+    Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
 end;
 
 class procedure TWin32WSOpenDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 var
-  OPENFILE: LPOPENFILENAME;
+  Dialog: IFileDialog;
 begin
   if ACommonDialog.Handle <> 0 then
-  begin
-    OPENFILE := LPOPENFILENAME(ACommonDialog.Handle);
-    if OPENFILE^.lCustData <> 0 then
-      Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
-
-    FreeMem(OpenFile^.lpStrFilter);
-    FreeMem(OpenFile^.lpstrInitialDir);
-    FreeMem(OpenFile^.lpStrFile);
-    FreeMem(OpenFile^.lpStrTitle);
-    FreeMem(OpenFile^.lpTemplateName);
-    FreeMem(OpenFile^.lpstrDefExt);
-    FreeMem(OpenFile);
-  end;
+    if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+    begin
+      Dialog := IFileDialog(ACommonDialog.Handle);
+      Dialog._Release;
+      Dialog := nil;
+    end
+    else
+      DestroyFileDialogHandle(ACommonDialog.Handle)
 end;
 
 class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
+  Dialog: IFileOpenDialog;
+  FileDialogEvents: IFileDialogEvents;
+  Cookie: DWord;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
     State := SaveApplicationState;
-    lOldWorkingDir:=GetCurrentDirUTF8;
+    lOldWorkingDir := GetCurrentDirUTF8;
     try
       lInitialDir := TOpenDialog(ACommonDialog).InitialDir;
-      if lInitialDir <>'' then SetCurrentDirUTF8(lInitialDir);
-    {$ifdef WindowsUnicodeSupport}
-      if UnicodeEnabledOS then
-        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-          GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+      if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
+      if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      begin
+        Dialog := IFileOpenDialog(ACommonDialog.Handle);
+        FileDialogEvents := TFileDialogEvents.Create(TOpenDialog(ACommonDialog));
+        Dialog.Advise(FileDialogEvents, @Cookie);
+        try
+          ACommonDialog.DoShow;
+          Dialog.Show(GetParentWnd);
+          if (ACommonDialog.UserChoice = mrNone) then
+            ACommonDialog.UserChoice := mrCancel;
+        finally
+          Dialog.unadvise(Cookie);
+          FileDialogEvents := nil;
+        end;
+      end
       else
-        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-          GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-    {$else}
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-    {$endif}
+      begin
+        {$ifdef WindowsUnicodeSupport}
+          if UnicodeEnabledOS then
+            ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+              GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+          else
+            ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+              GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+        {$else}
+          ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+            GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+        {$endif}
+      end;
     finally
       SetCurrentDirUTF8(lOldWorkingDir);
       RestoreApplicationState(State);
@@ -754,29 +997,67 @@ end;
 
 { TWin32WSSaveDialog }
 
+class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+var
+  Dialog: IFileSaveDialog;
+begin
+  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog)) and Assigned(Dialog) then
+    begin
+      Dialog._AddRef;
+      TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
+      Result := THandle(Dialog);
+    end;
+  end
+  else
+    Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
+end;
+
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
+  Dialog: IFileSaveDialog;
+  Cookie: DWord;
+  FileDialogEvents: TFileDialogEvents;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
     State := SaveApplicationState;
-    lOldWorkingDir:=GetCurrentDirUTF8;
+    lOldWorkingDir := GetCurrentDirUTF8;
     try
       lInitialDir := TSaveDialog(ACommonDialog).InitialDir;
-      if lInitialDir <>'' then SetCurrentDirUTF8(lInitialDir);
-    {$ifdef WindowsUnicodeSupport}
-      if UnicodeEnabledOS then
-        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-          GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+      if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
+      if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      begin
+        Dialog := IFileSaveDialog(ACommonDialog.Handle);
+        FileDialogEvents := TFileDialogEvents.Create(TOpenDialog(ACommonDialog));
+        Dialog.Advise(FileDialogEvents, @Cookie);
+        try
+          ACommonDialog.DoShow;
+          Dialog.Show(TWin32WSOpenDialog.GetParentWnd);
+          if (ACommonDialog.UserChoice = mrNone) then
+            ACommonDialog.UserChoice := mrCancel;
+        finally
+          Dialog.unadvise(Cookie);
+          FileDialogEvents := nil;
+        end;
+      end
       else
-        ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-          GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-    {$else}
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-    {$endif}
+      begin
+        {$ifdef WindowsUnicodeSupport}
+          if UnicodeEnabledOS then
+            ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+              GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+          else
+            ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+              GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+        {$else}
+          ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+            GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+        {$endif}
+      end;
     finally
       SetCurrentDirUTF8(lOldWorkingDir);
       RestoreApplicationState(State);
@@ -1078,6 +1359,69 @@ begin
   CoTaskMemFree(Buffer);
 
   Result := 0;
+end;
+
+{ TFileDialogEvents }
+
+function TFileDialogEvents.OnFileOk(pfd: IFileDialog): HResult; stdcall;
+var
+  CanClose: Boolean;
+begin
+  Result := TWin32WSOpenDialog.ProcessVistaDialogResult(pfd, FDialog);
+  if Succeeded(Result) then
+  begin
+    CanClose := True;
+    FDialog.DoCanClose(CanClose);
+    if CanClose then
+    begin
+      FDialog.UserChoice := mrOK;
+      Result := S_OK;
+    end
+    else
+      Result := S_FALSE;
+  end;
+end;
+
+function TFileDialogEvents.OnFolderChanging(pfd: IFileDialog; psifolder: IShellItem): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnFolderChange(pfd: IFileDialog): HResult; stdcall;
+begin
+  FDialog.DoFolderChange;
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnSelectionChange(pfd: IFileDialog): HResult; stdcall;
+begin
+  FDialog.DoSelectionChange;
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnShareViolation(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnTypeChange(pfd: IFileDialog): HResult; stdcall;
+var
+  NewIndex: UINT;
+begin
+  Result := pfd.GetFileTypeIndex(@NewIndex);
+  if Succeeded(Result) then
+    FDialog.IntfFileTypeChanged(NewIndex);
+end;
+
+function TFileDialogEvents.OnOverwrite(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+constructor TFileDialogEvents.Create(ADialog: TOpenDialog);
+begin
+  inherited Create;
+  FDialog := ADialog;
 end;
 
 initialization

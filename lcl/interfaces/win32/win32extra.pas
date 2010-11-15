@@ -32,7 +32,7 @@ unit Win32Extra;
 interface
 
 uses 
-  InterfaceBase, Classes, LCLType, Windows, GraphType, SysUtils;
+  InterfaceBase, Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj;
 
 { Win32 API constants not included in windows.pp }
 const
@@ -211,6 +211,120 @@ type
 
 // ==================== End TaskDialog =======================
 
+// File dialogs
+const
+  CLSID_FileOpenDialog: TGUID = '{DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7}';
+  CLSID_FileSaveDialog: TGUID = '{C0B4E2F3-BA21-4773-8DBA-335EC946EB8B}';
+
+  // GETPROPERTYSTOREFLAGS enum
+  GPS_DEFAULT	            = 0;
+  GPS_HANDLERPROPERTIESONLY = $1;
+  GPS_READWRITE	            = $2;
+  GPS_TEMPORARY	            = $4;
+  GPS_FASTPROPERTIESONLY    = $8;
+  GPS_OPENSLOWITEM	    = $10;
+  GPS_DELAYCREATION         = $20;
+  GPS_BESTEFFORT            = $40;
+  GPS_NO_OPLOCK	            = $80;
+  GPS_MASK_VALID            = $ff;
+
+  // SIATTRIBFLAGS enum
+  SIATTRIBFLAGS_AND       = $1;
+  SIATTRIBFLAGS_OR        = $2;
+  SIATTRIBFLAGS_APPCOMPAT = $3;
+  SIATTRIBFLAGS_MASK      = $3;
+  SIATTRIBFLAGS_ALLITEMS  = $4000;
+
+type
+  GETPROPERTYSTOREFLAGS = DWord;
+  SIATTRIBFLAGS = DWord;
+  _tagpropertykey = packed record
+      fmtid: TGUID;
+      pid: DWORD;
+  end;
+  PROPERTYKEY = _tagpropertykey;
+  REFPROPERTYKEY = ^PROPERTYKEY;
+  REFPROPVARIANT = ^TPROPVARIANT;
+
+  IEnumShellItems = interface(IUnknown)
+    ['{70629033-e363-4a28-a567-0db78006e6d7}']
+    function Next(celt: ULONG; out rgelt: IShellItem; var pceltFetched: ULONG): HResult; stdcall;
+    function Skip(celt: ULONG): HResult; stdcall;
+    function Reset: HResult; stdcall;
+    function Clone(out ppenum: IEnumShellItems): HResult; stdcall;
+  end;
+
+  IShellItemArray = interface(IUnknown)
+    ['{b63ea76d-1f85-456f-a19c-48159efa858b}']
+    function BindToHandler(pbc: IBindCtx; const bhid: TGUID; const riid: REFIID; out ppvOut): HResult; stdcall;
+    function GetPropertyStore(flags: GETPROPERTYSTOREFLAGS; const riid: REFIID; out ppv): HResult; stdcall;
+    function GetPropertyDescriptionList(keyType: REFPROPERTYKEY; const riid: REFIID; out ppv): HResult; stdcall;
+    function GetAttributes(AttribFlags: SIATTRIBFLAGS; sfgaoMask: SFGAOF; var psfgaoAttribs: SFGAOF): HResult; stdcall;
+    function GetCount(var pdwNumItems: DWORD): HResult; stdcall;
+    function GetItemAt(dwIndex: DWORD; var ppsi: IShellItem): HResult; stdcall;
+    function EnumItems(var ppenumShellItems: IEnumShellItems): HResult; stdcall;
+  end;
+
+  IPropertyStore = interface(IUnknown)
+    ['{886d8eeb-8cf2-4446-8d02-cdba1dbdcf99}']
+    function GetCount(out cProps: DWORD): HResult; stdcall;
+    function GetAt(iProp: DWORD; out pkey: PROPERTYKEY): HResult; stdcall;
+    function GetValue(key: REFPROPERTYKEY; out pv: PROPVARIANT): HResult; stdcall;
+    function SetValue(key: REFPROPERTYKEY; propvar: REFPROPVARIANT): HResult; stdcall;
+    function Commit: HResult; stdcall;
+  end;
+
+  IPropertyDescriptionList = interface(IUnknown)
+    ['{1f9fc1d0-c39b-4b26-817f-011967d3440e}']
+    function GetCount(out pcElem: UINT): HResult; stdcall;
+    function GetAt(iElem: UINT; const riid: REFIID; out ppv): HResult; stdcall;
+  end;
+
+  IFileOperationProgressSink = interface(IUnknown)
+    ['{04b0f1a7-9490-44bc-96e1-4296a31252e2}']
+    function StartOperations: HResult; stdcall;
+    function FinishOperations(hrResult: HResult): HResult; stdcall;
+    function PreRenameItem(dwFlags: DWORD; psiItem: IShellItem; pszNewName: LPCWSTR): HResult; stdcall;
+    function PostRenameItem(dwFlags: DWORD; psiItem: IShellItem; pszNewName: LPCWSTR; hrRename: HRESULT; psiNewlyCreated: IShellItem): HResult; stdcall;
+    function PreMoveItem(dwFlags: DWORD; psiItem: IShellItem; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR): HResult; stdcall;
+    function PostMoveItem(dwFlags: DWORD; psiItem: IShellItem; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR; hrMove: HRESULT; psiNewlyCreated: IShellItem): HResult; stdcall;
+    function PreCopyItem(dwFlags: DWORD; psiItem: IShellItem; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR): HResult; stdcall;
+    function PostCopyItem(dwFlags: DWORD; psiItem: IShellItem; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR; hrCopy: HRESULT; psiNewlyCreated: IShellItem): HResult; stdcall;
+    function PreDeleteItem(dwFlags: DWORD; psiItem: IShellItem): HResult; stdcall;
+    function PostDeleteItem(dwFlags: DWORD; psiItem: IShellItem; hrDelete: HRESULT; psiNewlyCreated: IShellItem): HResult; stdcall;
+    function PreNewItem(dwFlags: DWORD; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR): HResult; stdcall;
+    function PostNewItem(dwFlags: DWORD; psiDestinationFolder: IShellItem; pszNewName: LPCWSTR; pszTemplateName: LPCWSTR; dwFileAttributes: DWORD; hrNew: HRESULT; psiNewItem: IShellItem): HResult; stdcall;
+    function UpdateProgress(iWorkTotal: UINT; iWorkSoFar: UINT): HResult; stdcall;
+    function ResetTimer: HResult; stdcall;
+    function PauseTimer: HResult; stdcall;
+    function ResumeTimer: HResult; stdcall;
+  end;
+
+{ TODO:
+  IFileDialogControlEvents = interface(IUnknown)
+    ['{36116642-D713-4b97-9B83-7484A9D00433}']
+    function OnItemSelected(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
+    function OnButtonClicked(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
+    function OnCheckButtonToggled(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
+    function OnControlActivating(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
+  end;
+}
+
+  IFileOpenDialog = interface(IFileDialog)
+    ['{d57c7288-d4ad-4768-be02-9d969532d960}']
+    function GetResults(var ppenum: IShellItemArray): HResult; stdcall;
+    function GetSelectedItems(var ppsai: IShellItemArray): HResult; stdcall;
+  end;
+
+  IFileSaveDialog = interface(IFileDialog)
+    ['{84bccd23-5fde-4cdb-aea4-af64b83d78ab}']
+    function SetSaveAsItem(psi: IShellItem): HResult; stdcall;
+    function SetProperties(pStore: IPropertyStore): HResult; stdcall;
+    function SetCollectedProperties(pList: IPropertyDescriptionList; fAppendDefault: BOOL): HResult; stdcall;
+    function GetProperties(var ppStore: IPropertyStore): HResult; stdcall;
+    function ApplyProperties(psi: IShellItem; pStore: IPropertyStore; hwnd: HWND; pSink: IFileOperationProgressSink): HResult; stdcall;
+  end;
+
 
 // AlphaBlend is only defined for win98&2k and up
 // load dynamic and use ownfunction if not defined
@@ -228,6 +342,7 @@ var
   TaskDialogIndirect: function(const pTaskConfig: PTASKDIALOGCONFIG; pnButton: PInteger; pnRadioButton: PInteger; pfVerificationFlagChecked: PBOOL): HRESULT; stdcall;
   TaskDialog: function(hwndParent: HWND; hInstance: HINST; pszWindowTitle: PCWSTR; pszMainInstruction: PCWSTR; pszContent: PCWSTR;
       dwCommonButtons: TASKDIALOG_COMMON_BUTTON_FLAGS; pszIcon: PCWSTR; pnButton: PInteger): HRESULT; stdcall;
+  SHCreateItemFromParsingName: function(pszPath: PCWSTR; pbc: IBindCtx; const riid: REFIID; out ppv): HResult; stdcall;
 
 const
   // ComCtlVersions
@@ -721,6 +836,11 @@ begin
   Result := E_NOTIMPL;
 end;
 
+function _SHCreateItemFromParsingName(pszPath: PCWSTR; pbc: IBindCtx; const riid: REFIID; out ppv): HResult; stdcall;
+begin
+  Result := E_NOTIMPL;
+end;
+
 const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
@@ -807,6 +927,7 @@ begin
 
   // Defaults
   Pointer(SHGetStockIconInfo) := @_SHGetStockIconInfo;
+  Pointer(SHCreateItemFromParsingName) := @_SHCreateItemFromParsingName;
 
   shell32handle := LoadLibrary(shell32lib);
   if shell32handle <> 0 then
@@ -814,6 +935,10 @@ begin
     p := GetProcAddress(shell32handle, 'SHGetStockIconInfo');
     if p <> nil 
     then Pointer(SHGetStockIconInfo) := p;
+
+    p := GetProcAddress(shell32handle, 'SHCreateItemFromParsingName');
+    if p <> nil
+    then Pointer(SHCreateItemFromParsingName) := p;
   end;
 
   // Defaults
