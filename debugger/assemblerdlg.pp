@@ -72,6 +72,7 @@ type
     FGutterWidth: Integer;
     FUpdating: Boolean;
     FUpdateNeeded: Boolean;
+    procedure DoDebuggerDestroyed(Sender: TObject);
     procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
@@ -224,14 +225,15 @@ procedure TAssemblerDlg.DisassemblerChanged(Sender: TObject);
 begin
   if (FDisassembler = nil) or (FLocation = 0) or (FLineCount = 0)
   then exit;
-  if FDebugger.State <> dsPause
+  if (FDebugger <> nil) and (FDebugger.State <> dsPause)
   then begin
     // only for F9, not for F8,F7 single stepping with assembler is no good, if it clears all the time
     //ClearLineMap;
   end
   else begin
     // Check if anything is there, update BaseAddr
-    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    if FDisassembler <> nil
+    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
     UpdateLineData;
   end;
   pbAsm.Invalidate;
@@ -428,9 +430,24 @@ begin
   end;
 end;
 
+procedure TAssemblerDlg.DoDebuggerDestroyed(Sender: TObject);
+begin
+  FDebugger := nil;
+  FDisassembler := nil;
+  UpdateLineData;
+  pbAsm.Invalidate;
+end;
+
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
 begin
-  FDebugger := ADebugger;
+  if FDebugger <> ADebugger
+  then begin
+    if FDebugger <> nil
+    then FDebugger.RemoveNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
+    FDebugger := ADebugger;
+    if FDebugger <> nil
+    then FDebugger.AddNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
+  end;
   FTopLine := -(FLineCount div 2);
   FSelectLine := 0;
   FSelectionEndLine := 0;
@@ -439,7 +456,8 @@ begin
 
   if Visible then begin
     // otherwhise in resize
-    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    if FDisassembler <> nil
+    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
     UpdateLineData;
     pbAsm.Invalidate;
   end
@@ -486,7 +504,8 @@ begin
   SetLength(FLineMap, FLineCount + 1);
   if FLocation <> 0
   then begin
-    FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    if FDisassembler <> nil
+    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
     UpdateLineData;
   end;
   pbAsm.Invalidate;
@@ -504,8 +523,9 @@ begin
   then PadFront := 25
   else PadEnd := 25;
   FTopLine := ALine;
-  if (FDisassembler.CountBefore < Max(0, -(FTopLine - PadFront)))
-  or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 1 + PadEnd))
+  if (FDisassembler <> nil)
+  and ( (FDisassembler.CountBefore < Max(0, -(FTopLine - PadFront)))
+     or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 1 + PadEnd)) )
   then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - PadFront)), Max(0, FTopLine + FLineCount + 1 + PadEnd));
   UpdateLineData;
 end;
@@ -554,8 +574,7 @@ var
   Itm, NextItm: PDisassemblerEntry;
   LineIsSrc, HasLineOutOfRange: Boolean;
 begin
-  if FDebugger = nil then Exit;
-  If FDebugger.State <> dsPause
+  if (FDebugger = nil) or (FDisassembler = nil) or (FDebugger.State <> dsPause)
   then begin
     ClearLineMap;  // set all to lmsUnknown;
     exit;

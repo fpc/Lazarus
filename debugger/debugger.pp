@@ -1431,6 +1431,8 @@ type
                                  const AExceptionText: String;
                                  out AContinue: Boolean) of object;
 
+  TDebuggerNotifyReason = (dnrDestroy);
+
   TDebuggerProperties = class(TPersistent)
   private
   public
@@ -1466,6 +1468,7 @@ type
     FOnState: TDebuggerStateChangedEvent;
     FOnBreakPointHit: TDebuggerBreakPointHitEvent;
     FWorkingDir: String;
+    FDestroyNotificationList: array [TDebuggerNotifyReason] of TMethodList;
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
     function  GetState: TDBGState;
@@ -1534,6 +1537,8 @@ type
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
     procedure LockCommandProcessing; virtual;
     procedure UnLockCommandProcessing; virtual;
+    procedure AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
+    procedure RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -1729,8 +1734,11 @@ end;
 constructor TDebugger.Create(const AExternalDebugger: String);
 var
   list: TStringList;
+  nr: TDebuggerNotifyReason;
 begin
   inherited Create;
+  for nr := low(TDebuggerNotifyReason) to high(TDebuggerNotifyReason) do
+    FDestroyNotificationList[nr] := TMethodList.Create;
   FOnState := nil;
   FOnCurrent := nil;
   FOnOutput := nil;
@@ -1820,7 +1828,12 @@ begin
 end;
 
 destructor TDebugger.Destroy;
+var
+  nr: TDebuggerNotifyReason;
 begin
+  FDestroyNotificationList[dnrDestroy].CallNotifyEvents(Self);
+  for nr := low(TDebuggerNotifyReason) to high(TDebuggerNotifyReason) do
+    FreeAndNil(FDestroyNotificationList[nr]);
   // don't call events
   FOnState := nil;
   FOnCurrent := nil;
@@ -1866,6 +1879,16 @@ end;
 procedure TDebugger.UnLockCommandProcessing;
 begin
   // nothing
+end;
+
+procedure TDebugger.AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
+begin
+  FDestroyNotificationList[AReason].Add(TMethod(AnEvent));
+end;
+
+procedure TDebugger.RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
+begin
+  FDestroyNotificationList[AReason].Remove(TMethod(AnEvent));
 end;
 
 procedure TDebugger.Done;
