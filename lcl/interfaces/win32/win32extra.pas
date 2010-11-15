@@ -235,9 +235,17 @@ const
   SIATTRIBFLAGS_MASK      = $3;
   SIATTRIBFLAGS_ALLITEMS  = $4000;
 
+  // CDCONTROLSTATEF enum
+  CDCS_INACTIVE       = 0;
+  CDCS_ENABLED        = $1;
+  CDCS_VISIBLE        = $2;
+  CDCS_ENABLEDVISIBLE = $3;
+
 type
   GETPROPERTYSTOREFLAGS = DWord;
   SIATTRIBFLAGS = DWord;
+  CDCONTROLSTATEF = DWord;
+
   _tagpropertykey = packed record
       fmtid: TGUID;
       pid: DWORD;
@@ -300,7 +308,37 @@ type
     function ResumeTimer: HResult; stdcall;
   end;
 
-{ TODO:
+  IFileDialogCustomize = interface(IUnknown)
+    ['{e6fdd21a-163f-4975-9c8c-a69f1ba37034}']
+    function EnableOpenDropDown(dwIDCtl: DWORD): HResult; stdcall;
+    function AddMenu(dwIDCtl: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+    function AddPushButton(dwIDCtl: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+    function AddComboBox(dwIDCtl: DWORD): HResult; stdcall;
+    function AddRadioButtonList(dwIDCtl: DWORD): HResult; stdcall;
+    function AddCheckButton(dwIDCtl: DWORD; pszLabel: LPCWSTR; bChecked: BOOL): HResult; stdcall;
+    function AddEditBox(dwIDCtl: DWORD; pszText: LPCWSTR): HResult; stdcall;
+    function AddSeparator(dwIDCtl: DWORD): HResult; stdcall;
+    function AddText(dwIDCtl: DWORD; pszText: LPCWSTR): HResult; stdcall;
+    function SetControlLabel(dwIDCtl: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+    function GetControlState(dwIDCtl: DWORD; out pdwState: CDCONTROLSTATEF): HResult; stdcall;
+    function SetControlState(dwIDCtl: DWORD; dwState: CDCONTROLSTATEF): HResult; stdcall;
+    function GetEditBoxText(dwIDCtl: DWORD; out ppszText: WCHAR): HResult; stdcall;
+    function SetEditBoxText(dwIDCtl: DWORD; pszText: LPCWSTR): HResult; stdcall;
+    function GetCheckButtonState(dwIDCtl: DWORD; out pbChecked: BOOL): HResult; stdcall;
+    function SetCheckButtonState(dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
+    function AddControlItem(dwIDCtl: DWORD; dwIDItem: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+    function RemoveControlItem(dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
+    function RemoveAllControlItems(dwIDCtl: DWORD): HResult; stdcall;
+    function GetControlItemState(dwIDCtl: DWORD; dwIDItem: DWORD; out pdwState: CDCONTROLSTATEF): HResult; stdcall;
+    function SetControlItemState(dwIDCtl: DWORD; dwIDItem: DWORD; dwState: CDCONTROLSTATEF): HResult; stdcall;
+    function GetSelectedControlItem(dwIDCtl: DWORD; out pdwIDItem: DWORD): HResult; stdcall;
+    function SetSelectedControlItem(dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
+    function StartVisualGroup(dwIDCtl: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+    function EndVisualGroup: HResult; stdcall;
+    function MakeProminent(dwIDCtl: DWORD): HResult; stdcall;
+    function SetControlItemText(dwIDCtl: DWORD; dwIDItem: DWORD; pszLabel: LPCWSTR): HResult; stdcall;
+  end;
+
   IFileDialogControlEvents = interface(IUnknown)
     ['{36116642-D713-4b97-9B83-7484A9D00433}']
     function OnItemSelected(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
@@ -308,7 +346,6 @@ type
     function OnCheckButtonToggled(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
     function OnControlActivating(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
   end;
-}
 
   IFileOpenDialog = interface(IFileDialog)
     ['{d57c7288-d4ad-4768-be02-9d969532d960}']
