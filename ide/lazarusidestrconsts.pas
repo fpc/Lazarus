@@ -4990,7 +4990,6 @@ resourcestring
   lisBuildModeDiffMode = 'Mode:';
   lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build '
     +'modes';
-  lisDbgAsmCopyToClipboard = 'Copy to clipboard';
 
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
