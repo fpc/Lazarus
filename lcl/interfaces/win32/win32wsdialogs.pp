@@ -26,8 +26,7 @@ unit Win32WSDialogs;
 {$I win32defines.inc}
 
 // TODO:
-// 1. Solve Cancel click and DoCanClose False return
-// 2. Decide what to do with PreviewPanel in picture dialogs
+// 1. Decide what to do with PreviewPanel in picture dialogs
 
 interface
 
@@ -82,6 +81,7 @@ type
   public
     class procedure SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
+    class procedure VistaDialogShowModal(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function GetFileName(ShellItem: IShellItem): String;
     class function GetParentWnd: HWND;
   published
@@ -903,6 +903,33 @@ begin
   end;
 end;
 
+class procedure TWin32WSOpenDialog.VistaDialogShowModal(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
+var
+  FileDialogEvents: IFileDialogEvents;
+  Cookie: DWord;
+  CanClose: Boolean;
+begin
+  FileDialogEvents := TFileDialogEvents.Create(AOpenDialog);
+  ADialog.Advise(FileDialogEvents, @Cookie);
+  try
+    AOpenDialog.DoShow;
+    repeat
+      ADialog.Show(GetParentWnd);
+      if (AOpenDialog.UserChoice <> mrOk) then
+      begin
+        CanClose := True;
+        AOpenDialog.DoCanClose(CanClose);
+        AOpenDialog.UserChoice := mrCancel;
+      end
+      else
+        CanClose := True;
+    until CanClose;
+  finally
+    ADialog.unadvise(Cookie);
+    FileDialogEvents := nil;
+  end;
+end;
+
 class function TWin32WSOpenDialog.GetParentWnd: HWND;
 begin
   if Assigned(Screen.ActiveCustomForm) then
@@ -951,8 +978,6 @@ var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
   Dialog: IFileOpenDialog;
-  FileDialogEvents: IFileDialogEvents;
-  Cookie: DWord;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
@@ -964,17 +989,7 @@ begin
       if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileOpenDialog(ACommonDialog.Handle);
-        FileDialogEvents := TFileDialogEvents.Create(TOpenDialog(ACommonDialog));
-        Dialog.Advise(FileDialogEvents, @Cookie);
-        try
-          ACommonDialog.DoShow;
-          Dialog.Show(GetParentWnd);
-          if (ACommonDialog.UserChoice = mrNone) then
-            ACommonDialog.UserChoice := mrCancel;
-        finally
-          Dialog.unadvise(Cookie);
-          FileDialogEvents := nil;
-        end;
+        VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
       end
       else
       begin
@@ -1021,8 +1036,6 @@ var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
   Dialog: IFileSaveDialog;
-  Cookie: DWord;
-  FileDialogEvents: TFileDialogEvents;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
@@ -1034,17 +1047,7 @@ begin
       if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileSaveDialog(ACommonDialog.Handle);
-        FileDialogEvents := TFileDialogEvents.Create(TOpenDialog(ACommonDialog));
-        Dialog.Advise(FileDialogEvents, @Cookie);
-        try
-          ACommonDialog.DoShow;
-          Dialog.Show(TWin32WSOpenDialog.GetParentWnd);
-          if (ACommonDialog.UserChoice = mrNone) then
-            ACommonDialog.UserChoice := mrCancel;
-        finally
-          Dialog.unadvise(Cookie);
-          FileDialogEvents := nil;
-        end;
+        TWin32WSOpenDialog.VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
       end
       else
       begin
