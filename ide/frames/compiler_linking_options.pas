@@ -5,7 +5,7 @@ unit compiler_linking_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
   StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts;
 
 type

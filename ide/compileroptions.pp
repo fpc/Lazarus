@@ -1268,6 +1268,7 @@ end;
 procedure TBaseCompilerOptions.SetLinkerOptions(const AValue: String);
 begin
   if LinkerOptions=AValue then exit;
+  fLinkerOptions:=AValue;
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
   IncreaseChangeStamp;
 end;
