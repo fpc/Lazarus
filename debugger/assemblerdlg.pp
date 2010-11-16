@@ -556,21 +556,23 @@ procedure TAssemblerDlg.UpdateLineDataEx(ALineMap: TAsmDlgLineEntries; AFirstLin
   end;
 
   function IsSourceBeforeItem(AItm: PDisassemblerEntry;
-    APrvItm: PDisassemblerEntry = nil): Boolean;
+    APrvItm: PDisassemblerEntry): Boolean;
   begin
-    Result := (AItm <> nil)
-    and (   ( (AItm^.SrcFileName <> '') and (AItm^.SrcStatementIndex = 0) )
-         or (    (AItm^.FuncName <> '')
-             and (   (AItm^.Offset = 0)
-                  or ( (APrvItm <> nil) and (AItm^.FuncName <> APrvItm^.FuncName) )
-                 )
-            )
-        );
-  end;
+    if AItm = nil
+    then exit(False);
 
-  function IsSourceBeforeItem(AIdx: Integer): Boolean;
-  begin
-    Result := IsSourceBeforeItem(GetItem(AIdx));
+    if AItm^.SrcFileName <> '' then begin
+      Result := AItm^.SrcStatementIndex = 0;
+      if (not Result) and  (APrvItm <> nil)
+      then Result := (AItm^.SrcFileName <> APrvItm^.SrcFileName)
+                  or (AItm^.SrcFileLine <> APrvItm^.SrcFileLine);
+    end
+    else begin
+      Result :=  (AItm^.FuncName <> '');
+      if Result
+      then Result := (AItm^.Offset = 0)
+                  or ( (APrvItm <> nil) and (AItm^.FuncName <> APrvItm^.FuncName) );
+    end;
   end;
 
 var
@@ -578,7 +580,7 @@ var
   DoneTopLine, DoneLineCount: Integer;
   DoneCountBefore, DoneCountAfter: Integer;
   Line, Idx: Integer;
-  Itm, NextItm: PDisassemblerEntry;
+  Itm, NextItm, PrevItm: PDisassemblerEntry;
   LineIsSrc, HasLineOutOfRange: Boolean;
 begin
   if (FDebugger = nil) or (FDisassembler = nil) or (FDebugger.State <> dsPause)
@@ -619,35 +621,50 @@ begin
       LineIsSrc := ACachedIsSrc;
     end;
 
+    Itm := GetItem(Idx);
+    NextItm := GetItem(Idx + 1);
+
     while AFirstLine > Line
     do begin
+      NextItm := GetItem(Idx+1);
       if LineIsSrc
       then begin
         LineIsSrc := False;
       end
-      else if IsSourceBeforeItem(Idx+1)
+      else if IsSourceBeforeItem(NextItm, Itm)
       then begin
         inc(Idx);
+        Itm := NextItm;
+        NextItm := GetItem(Idx + 1);
         LineIsSrc := True;
       end
       else begin
         inc(Idx);
+        Itm := NextItm;
+        NextItm := GetItem(Idx + 1);
       end;
       inc(Line);
     end;
+
+    Itm := GetItem(Idx);
+    PrevItm := GetItem(Idx - 1);
     while AFirstLine < line
     do begin
       if LineIsSrc
       then begin
         dec(Idx);
+        Itm := PrevItm;
+        PrevItm := GetItem(Idx - 1);
         LineIsSrc := False;
       end
-      else if IsSourceBeforeItem(Idx)
+      else if IsSourceBeforeItem(Itm, PrevItm)
       then begin
         LineIsSrc := True;
       end
       else begin
         dec(Idx);
+        Itm := PrevItm;
+        PrevItm := GetItem(Idx - 1);
       end;
       Dec(Line);
     end;
@@ -663,8 +680,10 @@ begin
     // Fill LineMap
     HasLineOutOfRange := False;
     Line := 0;
+    PrevItm := GetItem(Idx - 1);
     NextItm := GetItem(Idx);
     while Line <= ALineCount do begin
+      PrevItm := Itm;
       Itm := NextItm;
       NextItm := GetItem(Idx+1);
 
@@ -678,7 +697,7 @@ begin
       end;
 
       if ( (Line = 0) and LineIsSrc )
-      or ( (Line <> 0) and IsSourceBeforeItem(Itm) )
+      or ( (Line <> 0) and IsSourceBeforeItem(Itm, PrevItm) )
       then begin
         ALineMap[Line].Dump       := '';
         ALineMap[Line].Statement  := '';
