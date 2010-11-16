@@ -26,9 +26,8 @@ unit Win32WSDialogs;
 {$I win32defines.inc}
 
 // TODO:
-// 1. Check selection change event
-// 2. Solve Cancel click and DoCanClose False return
-// 3. Decide what to do with PreviewPanel in picture dialogs
+// 1. Solve Cancel click and DoCanClose False return
+// 2. Decide what to do with PreviewPanel in picture dialogs
 
 interface
 
@@ -83,6 +82,7 @@ type
   public
     class procedure SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
+    class function GetFileName(ShellItem: IShellItem): String;
     class function GetParentWnd: HWND;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
@@ -129,7 +129,7 @@ type
 
   { TFileDialogEvents }
 
-  TFileDialogEvents = class(TInterfacedObject, IFileDialogEvents)
+  TFileDialogEvents = class(TInterfacedObject, IFileDialogEvents, IFileDialogControlEvents)
   private
     FDialog: TOpenDialog;
   protected
@@ -141,7 +141,11 @@ type
     function OnShareViolation(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
     function OnTypeChange(pfd: IFileDialog): HResult; stdcall;
     function OnOverwrite(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
-    // TODO: IFileDialogControlEvents
+    // IFileDialogControlEvents
+    function OnItemSelected(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
+    function OnButtonClicked(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
+    function OnCheckButtonToggled(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
+    function OnControlActivating(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
   public
     constructor Create(ADialog: TOpenDialog);
   end;
@@ -843,40 +847,39 @@ begin
   ADialog.SetOptions(GetOptions(AOpenDialog.Options));
 end;
 
-class function TWin32WSOpenDialog.ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
-
-  function GetFileName(ShellItem: IShellItem): String;
-  var
-    FilePath: LPWStr;
+class function TWin32WSOpenDialog.GetFileName(ShellItem: IShellItem): String;
+var
+  FilePath: LPWStr;
+begin
+  if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), @FilePath)) then
   begin
-    if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), @FilePath)) then
-    begin
-      Result := UTF16ToUTF8(WideString(FilePath));
-      CoTaskMemFree(FilePath);
-    end
-    else
-      Result := '';
-  end;
+    Result := UTF16ToUTF8(WideString(FilePath));
+    CoTaskMemFree(FilePath);
+  end
+  else
+    Result := '';
+end;
 
+class function TWin32WSOpenDialog.ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
 var
   ShellItems: IShellItemArray;
   ShellItem: IShellItem;
   I, Count: DWord;
 begin
   // TODO: ofExtensionDifferent, ofReadOnly
-  if Supports(ADialog, IFileOpenDialog) then
-  begin
+  if not Supports(ADialog, IFileOpenDialog) then
+    Result := E_FAIL
+  else
     Result := (ADialog as IFileOpenDialog).GetResults(ShellItems);
+  if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count)) then
+  begin
     AOpenDialog.Files.Clear;
-    if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count)) then
+    I := 0;
+    while I < Count do
     begin
-      I := 0;
-      while I < Count do
-      begin
-        if Succeeded(ShellItems.GetItemAt(I, ShellItem)) then
-          AOpenDialog.Files.Add(GetFileName(ShellItem));
-        inc(I);
-      end;
+      if Succeeded(ShellItems.GetItemAt(I, ShellItem)) then
+        AOpenDialog.Files.Add(GetFileName(ShellItem));
+      inc(I);
     end;
     if AOpenDialog.Files.Count > 0 then
       AOpenDialog.FileName := AOpenDialog.Files[0]
@@ -891,7 +894,6 @@ begin
       AOpenDialog.Files.Clear;
       AOpenDialog.FileName := GetFileName(ShellItem);
       AOpenDialog.Files.Add(AOpenDialog.FileName);
-      Result := S_OK;
     end
     else
     begin
@@ -1388,15 +1390,33 @@ begin
 end;
 
 function TFileDialogEvents.OnFolderChange(pfd: IFileDialog): HResult; stdcall;
+//var
+//  ShellItem: IShellItem;
 begin
+  //Result := pfd.Getfolder(@ShellItem);
+  //if Succeeded(Result) then
+  //begin
+  //  FDialog.Files.Clear;
+ //   FDialog.FileName := TWin32WSOpenDialog.GetFileName(ShellItem);
+ //   FDialog.Files.Add(FDialog.FileName);
+ //   FDialog.DoFolderChange;
+ // end;
   FDialog.DoFolderChange;
   Result := S_OK;
 end;
 
 function TFileDialogEvents.OnSelectionChange(pfd: IFileDialog): HResult; stdcall;
+var
+  ShellItem: IShellItem;
 begin
-  FDialog.DoSelectionChange;
-  Result := S_OK;
+  Result := pfd.GetCurrentSelection(@ShellItem);
+  if Succeeded(Result) then
+  begin
+    FDialog.Files.Clear;
+    FDialog.FileName := TWin32WSOpenDialog.GetFileName(ShellItem);
+    FDialog.Files.Add(FDialog.FileName);
+    FDialog.DoSelectionChange;
+  end;
 end;
 
 function TFileDialogEvents.OnShareViolation(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
@@ -1414,6 +1434,26 @@ begin
 end;
 
 function TFileDialogEvents.OnOverwrite(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnItemSelected(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnButtonClicked(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnCheckButtonToggled(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
+begin
+  Result := S_OK;
+end;
+
+function TFileDialogEvents.OnControlActivating(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
 begin
   Result := S_OK;
 end;
