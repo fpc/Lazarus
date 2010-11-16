@@ -390,6 +390,7 @@ type
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
+    FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
     fReadOnly: Boolean;
     fRightEdge: Integer;
@@ -1882,6 +1883,7 @@ begin
   if FIsInDecPaintLock then exit;
   if FPaintLock = 0 then begin
     SetUpdateState(True, Self);
+    FInvalidateRect := Rect(-1, -1, -2, -2);
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
   end;
@@ -1938,8 +1940,11 @@ begin
   finally
     FScreenCaret.UnLock;
     FIsInDecPaintLock := False;
-    if FPaintLock = 0 then
+    if FPaintLock = 0 then begin
       SetUpdateState(False, Self);
+      if FInvalidateRect.Bottom > FInvalidateRect.Top then
+        InvalidateRect(Handle, @FInvalidateRect, False);
+    end;
   end;
 end;
 
@@ -3014,6 +3019,12 @@ var
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   rcClip := Canvas.ClipRect;
+
+  If FPaintLock > 0 then begin
+    debugln(['Warning: SynEdit.Paint called during PaintLock']);
+    types.IntersectRect(FInvalidateRect, FInvalidateRect, rcClip);
+    exit
+  end;
   {$IFDEF EnableDoubleBuf}
   //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
   StartPaintBuffer(rcClip);
