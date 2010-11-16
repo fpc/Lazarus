@@ -1599,8 +1599,10 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         and (DisAssList.Item[i]^.FuncName <> '')
         and not (FirstLoopRun and (NextProcIdx >= Cnt) ) // only one proc, already tried to get src-info
         then begin
-          // Try to get source-info (up to NextProcAddr, apparently the statement in NextProcAddr is not returned)
-          DisAssListWithSrc := ExecDisassmble(DisAssList.Item[i]^.Addr,
+          // Try to get source-info (up to NextProcAddr
+          // Subtract offset from StartAddress, in case this is the first block
+          // (we may continue existing data, but src info must be retrieved in full, or may be incomplete)
+          DisAssListWithSrc := ExecDisassmble(DisAssList.Item[i]^.Addr - DisAssList.Item[i]^.Offset,
             NextProcAddr, True, DisAssListWithSrc);
           {$IFDEF DBG_VERBOSE}
           if (DisAssListWithSrc.Count > 0) and (DisAssListWithSrc.Count <> NextProcIdx - i)
@@ -7953,7 +7955,10 @@ begin
       skPointer: begin
         S := GetPart([], [' '], FTextValue, False, False);
         Val(S, addr, e);
-        if e <> 0 then Exit;
+        if e <> 0 then begin
+          FreeAndNil(ResultInfo);
+          Exit;
+        end;
 
         S := Lowercase(ResultInfo.TypeName);
         case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
