@@ -1652,12 +1652,18 @@ function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
 var
   fo: Integer;
 begin
-  if ADisassRange.Count > 0
-  then fo := ADisassRange.EntriesPtr[0]^.Offset
-  else fo := 0;
-  with ADisassRange do
-    Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, First=%u, RFirst=%u, Last=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
-      [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
+  if (ADisassRange = nil)
+  then begin
+    Result := 'Range(nil)'
+  end
+  else begin
+    if (ADisassRange.Count > 0)
+    then fo := ADisassRange.EntriesPtr[0]^.Offset
+    else fo := 0;
+    with ADisassRange do
+      Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, First=%u, RFirst=%u, Last=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
+        [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
+  end;
 end;
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
