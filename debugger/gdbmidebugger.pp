@@ -1058,7 +1058,7 @@ begin
     Len := FItems[Index+1].ParsedInfo.Addr - Addr;
   end
   else begin
-    Len := FMemDump.Count -Offs;
+    Len := FMemDump.Count - 1 - Offs;
   end;
   if Offs + Len >= FMemDump.Count
   then Len := FMemDump.Count - 1 - Offs;
@@ -1342,7 +1342,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     AFromIndex: Integer;
     out ANextIndex: Integer;              // Index of first Statement in next Procedure (or code without Proc)
     out AStartAddrFoundIndex,             // Index of statement that has FStartAddr (or -1)
-        AStartAddrFoundOffset: Integer    // FStartAddr was found n bytes from statement (-1, if FStartAddr was not in block)
+        AStartAddrFoundOffset: Integer;   // FStartAddr was found n bytes from statement (-1, if FStartAddr was not in block)
+        AIgnoreLast: Boolean = False
     ): Boolean;
   var
     Cnt: Integer;
@@ -1352,6 +1353,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     Itm: PDisassemblerEntry;
   begin
     Cnt := ADisAssList.Count;
+    if AIgnoreLast
+    then dec(Cnt);
     if AFromIndex >= Cnt
     then raise Exception.Create('internal error');
 
@@ -1432,11 +1435,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
           if j = MaxInSrc
           then dec(MaxInSrc)
           else if j = MinInSrc
-          then inc(MinInSrc)
-          else begin
-            ASrcInfoDisAssList.Item[j] := ASrcInfoDisAssList.Item[MaxInSrc];
-            dec(MaxInSrc);
-          end;
+          then inc(MinInSrc);
         end
       end;
       if (LastItem <> nil) then begin
@@ -1519,7 +1518,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
 
     // we may have gotten more lines than ask, and the last line we don't know the length
     dec(cnt);
-    ALastAddr := DisAssList.Item[Cnt - 1]^.Addr;
+    ALastAddr := DisAssList.Item[Cnt]^.Addr;
 
     i := 0;
     if DiscardAtStart
@@ -1542,7 +1541,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     FirstLoopRun := True;
     while i < Cnt
     do begin
-      BlockOk := FindProcEnd(DisAssList, i, NextProcIdx, StartIdx, StartOffs);
+      BlockOk := FindProcEnd(DisAssList, i, NextProcIdx, StartIdx, StartOffs, True);
 
       if NextProcIdx < Cnt
       then NextProcAddr := DisAssList.Item[NextProcIdx]^.Addr - DisAssList.Item[NextProcIdx]^.Offset
