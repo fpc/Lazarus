@@ -5802,6 +5802,10 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr ""

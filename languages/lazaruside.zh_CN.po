@@ -5870,6 +5870,10 @@ msgstr ""
 msgid "Date"
 msgstr "日期"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "没有指定调试器"

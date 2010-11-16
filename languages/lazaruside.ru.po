@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-15 00:16+0300\n"
+"PO-Revision-Date: 2010-11-16 03:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5867,6 +5867,10 @@ msgstr "Модуль данных"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Дата"
+
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"

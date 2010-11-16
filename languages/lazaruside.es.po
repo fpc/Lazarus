@@ -5865,6 +5865,10 @@ msgstr "Módulo de Datos"
 msgid "Date"
 msgstr "Fecha"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "No se ha especificado un depurador"

@@ -5886,6 +5886,10 @@ msgstr "Module de données"
 msgid "Date"
 msgstr "Date"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Pas de débogueuer spécifié"

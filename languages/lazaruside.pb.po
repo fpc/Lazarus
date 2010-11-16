@@ -5862,6 +5862,10 @@ msgstr "Data Module"
 msgid "Date"
 msgstr "Data"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Nenhum depurador especificado"

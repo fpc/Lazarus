@@ -5820,6 +5820,10 @@ msgstr "Datový modul"
 msgid "Date"
 msgstr "Datum"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Nebyl určen ladící nástroj"

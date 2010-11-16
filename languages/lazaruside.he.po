@@ -5833,6 +5833,10 @@ msgstr "מודול תאריך"
 msgid "Date"
 msgstr "תאריך"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "לא צויין מנפה שגיאות"

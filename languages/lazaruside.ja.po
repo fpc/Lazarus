@@ -5866,6 +5866,10 @@ msgstr "データモジュール"
 msgid "Date"
 msgstr "日付"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "デバッガが指定されていません。"

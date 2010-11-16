@@ -5842,6 +5842,10 @@ msgstr ""
 msgid "Date"
 msgstr "Olla peräisin"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Virheenjäljitintä (debugger) ei ole valittu"

@@ -5852,6 +5852,10 @@ msgstr ""
 msgid "Date"
 msgstr "Дата"
 
+#: lazarusidestrconsts.lisdbgasmcopytoclipboard
+msgid "Copy to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Налагоджувач не визначений"
