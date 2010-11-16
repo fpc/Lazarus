@@ -3,7 +3,6 @@
 /usr/lib/lazarus/%{lazarusversion}/components/jcf2
 #/usr/lib/lazarus/%{lazarusversion}/components/rx
 #/usr/lib/lazarus/%{lazarusversion}/components/sqlite
-/usr/lib/lazarus/%{lazarusversion}/components/cgi
 /usr/lib/lazarus/%{lazarusversion}/components/fpcunit
 /usr/lib/lazarus/%{lazarusversion}/components/memds
 /usr/lib/lazarus/%{lazarusversion}/components/sqldb
@@ -17,6 +16,7 @@
 /usr/lib/lazarus/%{lazarusversion}/components/tdbf
 /usr/lib/lazarus/%{lazarusversion}/components/turbopower_ipro
 #/usr/lib/lazarus/%{lazarusversion}/components/lazreport
+/usr/lib/lazarus/%{lazarusversion}/components/lazcontrols
 #/usr/lib/lazarus/%{lazarusversion}/components/chmhelp
 #/usr/lib/lazarus/%{lazarusversion}/components/macfiles
 #/usr/lib/lazarus/%{lazarusversion}/components/mpaslex
