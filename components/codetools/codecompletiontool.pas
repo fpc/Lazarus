@@ -223,6 +223,7 @@ type
                            var NewPos: TCodeXYPosition; var NewTopLine: integer;
                            SourceChangeCache: TSourceChangeCache): boolean;
   protected
+    procedure DoDeleteNodes; override;
     property CodeCompleteClassNode: TCodeTreeNode
                      read FCodeCompleteClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
@@ -2354,6 +2355,12 @@ begin
   finally
     NewProcPath.Free;
   end;
+end;
+
+procedure TCodeCompletionCodeTool.DoDeleteNodes;
+begin
+  inherited DoDeleteNodes;
+  FreeClassInsertionList;
 end;
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
