@@ -527,12 +527,12 @@ begin
   PadFront := 5;
   PadEnd := 5;
   if ALine < FTopLine
-  then PadFront := 25
-  else PadEnd := 25;
+  then PadFront := 20
+  else PadEnd := 20;
   FTopLine := ALine;
   if (FDisassembler <> nil)
-  and ( (FDisassembler.CountBefore < Max(0, -(FTopLine - PadFront)))
-     or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 1 + PadEnd)) )
+  and ( (FDisassembler.CountBefore < Max(0, -(FTopLine - 1)))
+     or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 2)) )
   then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - PadFront)), Max(0, FTopLine + FLineCount + 1 + PadEnd));
   UpdateLineData;
 end;
