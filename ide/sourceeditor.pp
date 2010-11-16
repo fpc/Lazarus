@@ -2020,31 +2020,41 @@ begin
   FCodeBuffer := AValue;
   if FCodeBuffer <> nil then
   begin
-    FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
-    if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
-    then begin
-      {$IFDEF IDE_DEBUG}
-      debugln(' *** WARNING *** : TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
-      {$ENDIF}
-      for i := 0 to FSharedEditorList.Count - 1 do
-        if assigned(SharedEditors[i].FEditPlugin) then
-          SharedEditors[i].FEditPlugin.Enabled := False;
-      SynEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(SynEditor.Lines, false);
-      FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
-      SynEditor.EndUpdate;
-      for i := 0 to FSharedEditorList.Count - 1 do
-        if assigned(SharedEditors[i].FEditPlugin) then
-          SharedEditors[i].FEditPlugin.Enabled := True;
-    end;
-    for i := 0 to FSharedEditorList.Count - 1 do begin
-      if SharedEditors[i].IsActiveOnNoteBook then SharedEditors[i].SourceNotebook.UpdateStatusBar;
-      // HasExecutionMarks is shared through synedit => this is only needed once
-      // but HasExecutionMarks must be called on each synedit, so each synedit is notified
-      if (DebugBoss.State in [dsPause, dsRun]) and
-         not SharedEditors[i].HasExecutionMarks and (FCodeBuffer.FileName <> '')
-      then
-        SharedEditors[i].FillExecutionMarks;
+    DebugBoss.LockCommandProcessing;
+    try
+      for i := 0 to FSharedEditorList.Count - 1 do begin
+        // HasExecutionMarks is shared through synedit => this is only needed once
+        // but HasExecutionMarks must be called on each synedit, so each synedit is notified
+        SharedEditors[i].ClearExecutionMarks;
+      end;
+      FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
+      if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
+      then begin
+        {$IFDEF IDE_DEBUG}
+        debugln(' *** WARNING *** : TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
+        {$ENDIF}
+        for i := 0 to FSharedEditorList.Count - 1 do
+          if assigned(SharedEditors[i].FEditPlugin) then
+            SharedEditors[i].FEditPlugin.Enabled := False;
+        SynEditor.BeginUpdate;
+        FCodeBuffer.AssignTo(SynEditor.Lines, false);
+        FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
+        SynEditor.EndUpdate;
+        for i := 0 to FSharedEditorList.Count - 1 do
+          if assigned(SharedEditors[i].FEditPlugin) then
+            SharedEditors[i].FEditPlugin.Enabled := True;
+      end;
+      for i := 0 to FSharedEditorList.Count - 1 do begin
+        if SharedEditors[i].IsActiveOnNoteBook then SharedEditors[i].SourceNotebook.UpdateStatusBar;
+        // HasExecutionMarks is shared through synedit => this is only needed once
+        // but HasExecutionMarks must be called on each synedit, so each synedit is notified
+        if (DebugBoss.State in [dsPause, dsRun]) and
+           not SharedEditors[i].HasExecutionMarks and (FCodeBuffer.FileName <> '')
+        then
+          SharedEditors[i].FillExecutionMarks;
+      end;
+    finally
+      DebugBoss.UnLockCommandProcessing;
     end;
   end;
 end;
@@ -2102,61 +2112,72 @@ begin
   debugln(['[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil]);
   {$ENDIF}
   if FIgnoreCodeBufferLock>0 then exit;
-  CodeToolsInSync:=not NeedsUpdateCodeBuffer;
-  if SrcLogEntry<>nil then begin
-    SynEditor.BeginUpdate;
-    SynEditor.BeginUndoBlock;
-    SynEditor.TemplateEdit.IncExternalEditLock;
-    SynEditor.SyncroEdit.IncExternalEditLock;
-    try
-      case SrcLogEntry.Operation of
-        sleoInsert:
-          begin
-            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-            if StartPos.Y>=1 then
-              SynEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
-          end;
-        sleoDelete:
-          begin
-            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-            Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-              EndPos.Y,EndPos.X);
-            if (StartPos.Y>=1) and (EndPos.Y>=1) then
-              SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-          end;
-        sleoMove:
-          begin
-            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-            Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-              EndPos.Y,EndPos.X);
-            Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
-            if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
-              MoveTxt(StartPos, EndPos, MoveToPos,
-                SrcLogEntry.Position<SrcLogEntry.MoveTo);
-          end;
+  DebugBoss.LockCommandProcessing;
+  SynEditor.BeginUpdate;
+  try
+    CodeToolsInSync:=not NeedsUpdateCodeBuffer;
+    if SrcLogEntry<>nil then begin
+      SynEditor.BeginUndoBlock;
+      SynEditor.TemplateEdit.IncExternalEditLock;
+      SynEditor.SyncroEdit.IncExternalEditLock;
+      try
+        case SrcLogEntry.Operation of
+          sleoInsert:
+            begin
+              Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+              if StartPos.Y>=1 then
+                SynEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
+            end;
+          sleoDelete:
+            begin
+              Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+              Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+                EndPos.Y,EndPos.X);
+              if (StartPos.Y>=1) and (EndPos.Y>=1) then
+                SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+            end;
+          sleoMove:
+            begin
+              Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+              Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+                EndPos.Y,EndPos.X);
+              Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
+              if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
+                MoveTxt(StartPos, EndPos, MoveToPos,
+                  SrcLogEntry.Position<SrcLogEntry.MoveTo);
+            end;
+        end;
+      finally
+        SynEditor.SyncroEdit.DecExternalEditLock;
+        SynEditor.TemplateEdit.DecExternalEditLock;
+        SynEditor.EndUndoBlock;
       end;
-    finally
-      SynEditor.SyncroEdit.DecExternalEditLock;
-      SynEditor.TemplateEdit.DecExternalEditLock;
-      SynEditor.EndUndoBlock;
-      SynEditor.EndUpdate;
+    end else begin
+      {$IFDEF VerboseSrcEditBufClean}
+      debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
+      DumpStack;
+      {$ENDIF}
+      // HasExecutionMarks is shared through synedit => this is only needed once // but HasExecutionMarks must be called on each synedit, so each synedit is notified
+      for i := 0 to FSharedEditorList.Count - 1 do
+        SharedEditors[i].ClearExecutionMarks;
+      for i := 0 to SharedEditorCount-1 do
+        SharedEditors[i].BeforeCodeBufferReplace;
+
+      Sender.AssignTo(SynEditor.Lines,false);
+
+      for i := 0 to SharedEditorCount-1 do
+        SharedEditors[i].AfterCodeBufferReplace;
+      // HasExecutionMarks is shared through synedit => this is only needed once // but HasExecutionMarks must be called on each synedit, so each synedit is notified
+      for i := 0 to FSharedEditorList.Count - 1 do
+        SharedEditors[i].FillExecutionMarks;
     end;
-  end else begin
-    {$IFDEF VerboseSrcEditBufClean}
-    debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
-    DumpStack;
-    {$ENDIF}
-    SynEditor.BeginUpdate;
-    for i := 0 to SharedEditorCount-1 do
-      SharedEditors[i].BeforeCodeBufferReplace;
-    Sender.AssignTo(SynEditor.Lines,false);
-    for i := 0 to SharedEditorCount-1 do
-      SharedEditors[i].AfterCodeBufferReplace;
+    if CodeToolsInSync then begin
+      // synedit and codetools were in sync -> mark as still in sync
+      FEditorStampCommitedToCodetools:=TSynEditLines(SynEditor.Lines).TextChangeStamp;
+    end;
+  finally
     SynEditor.EndUpdate;
-  end;
-  if CodeToolsInSync then begin
-    // synedit and codetools were in sync -> mark as still in sync
-    FEditorStampCommitedToCodetools:=TSynEditLines(SynEditor.Lines).TextChangeStamp;
+    DebugBoss.UnLockCommandProcessing;
   end;
 end;
 
