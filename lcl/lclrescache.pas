@@ -211,7 +211,7 @@ begin
   if FReferenceCount = 0 then
     RaiseRefCountZero;
   dec(FReferenceCount);
-  if FReferenceCount =0  then
+  if FReferenceCount = 0  then
     Cache.ItemUnused(Self);
   //debugln('TResourceCacheItem.DecreaseRefCount END ');
 end;

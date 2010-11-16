@@ -2010,7 +2010,8 @@ begin
       GraphicsUpdateCount:=Low(GraphicsUpdateCount);
     inc(GraphicsUpdateCount);
     // at moment update only brushes, but later maybe we will need to update others
-    BrushResourceCache.Clear;
+    // don't clear BrushResourceCache because TBrush instances have references to cache items
+    // BrushResourceCache.Clear;
   finally
     UpdateLock.Leave;
   end;
