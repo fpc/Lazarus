@@ -841,7 +841,7 @@ begin
   begin
     // 3d menu bar always have standard color
     if aIsInMenuBar then
-      Result := GetSysColor(COLOR_3DFACE)
+      Result := GetSysColor(COLOR_MENU)
     else
     if (ItemState and ODS_SELECTED) <> 0 then
       Result := GetSysColor(COLOR_HIGHLIGHT)
