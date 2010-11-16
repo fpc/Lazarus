@@ -79,11 +79,13 @@ type
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
   public
+    {$ifdef UseVistaDialogs}
     class procedure SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
     class procedure VistaDialogShowModal(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function GetFileName(ShellItem: IShellItem): String;
     class function GetParentWnd: HWND;
+    {$endif}
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -127,6 +129,8 @@ type
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
+{$ifdef UseVistaDialogs}
+
   { TFileDialogEvents }
 
   TFileDialogEvents = class(TInterfacedObject, IFileDialogEvents, IFileDialogControlEvents)
@@ -149,6 +153,7 @@ type
   public
     constructor Create(ADialog: TOpenDialog);
   end;
+{$endif}
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
@@ -157,9 +162,6 @@ function SaveApplicationState: TApplicationState;
 procedure RestoreApplicationState(AState: TApplicationState);
 function UTF8StringToPWideChar(const s: string) : PWideChar;
 function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
-
-const
-  UseVistaDialogs: Boolean = {$ifdef UseVistaDialogs}True{$else}False{$endif};
 
 implementation
 
@@ -749,7 +751,7 @@ begin
 end;
 
 { TWin32WSOpenDialog }
-
+{$ifdef UseVistaDialogs}
 class procedure TWin32WSOpenDialog.SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
 { non-used flags
 FOS_PICKFOLDERS
@@ -940,12 +942,16 @@ begin
   else
     Result := WidgetSet.AppHandle;
 end;
+{$endif}
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+{$ifdef UseVistaDialogs}
 var
   Dialog: IFileOpenDialog;
+{$endif}
 begin
-  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  {$ifdef UseVistaDialogs}
+  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
     begin
@@ -955,21 +961,26 @@ begin
     end;
   end
   else
+  {$endif}
     Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
 end;
 
 class procedure TWin32WSOpenDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+{$ifdef UseVistaDialogs}
 var
   Dialog: IFileDialog;
+{$endif}
 begin
   if ACommonDialog.Handle <> 0 then
-    if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  {$ifdef UseVistaDialogs}
+    if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
       Dialog._Release;
       Dialog := nil;
     end
     else
+  {$endif}
       DestroyFileDialogHandle(ACommonDialog.Handle)
 end;
 
@@ -977,7 +988,9 @@ class procedure TWin32WSOpenDialog.ShowModal(const ACommonDialog: TCommonDialog)
 var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
+  {$ifdef UseVistaDialogs}
   Dialog: IFileOpenDialog;
+  {$endif}
 begin
   if ACommonDialog.Handle <> 0 then
   begin
@@ -986,12 +999,14 @@ begin
     try
       lInitialDir := TOpenDialog(ACommonDialog).InitialDir;
       if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
-      if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      {$ifdef UseVistaDialogs}
+      if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileOpenDialog(ACommonDialog.Handle);
         VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
       end
       else
+      {$endif}
       begin
         {$ifdef WindowsUnicodeSupport}
           if UnicodeEnabledOS then
@@ -1015,10 +1030,13 @@ end;
 { TWin32WSSaveDialog }
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+{$ifdef UseVistaDialogs}
 var
   Dialog: IFileSaveDialog;
+{$endif}
 begin
-  if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  {$ifdef UseVistaDialogs}
+  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog)) and Assigned(Dialog) then
     begin
@@ -1028,6 +1046,7 @@ begin
     end;
   end
   else
+  {$endif}
     Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
 end;
 
@@ -1035,7 +1054,9 @@ class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog)
 var
   State: TApplicationState;
   lOldWorkingDir, lInitialDir: string;
+  {$ifdef UseVistaDialogs}
   Dialog: IFileSaveDialog;
+  {$endif}
 begin
   if ACommonDialog.Handle <> 0 then
   begin
@@ -1044,12 +1065,14 @@ begin
     try
       lInitialDir := TSaveDialog(ACommonDialog).InitialDir;
       if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
-      if UseVistaDialogs and (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      {$ifdef UseVistaDialogs}
+      if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileSaveDialog(ACommonDialog.Handle);
         TWin32WSOpenDialog.VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
       end
       else
+      {$endif}
       begin
         {$ifdef WindowsUnicodeSupport}
           if UnicodeEnabledOS then
@@ -1366,6 +1389,7 @@ begin
   Result := 0;
 end;
 
+{$ifdef UseVistaDialogs}
 { TFileDialogEvents }
 
 function TFileDialogEvents.OnFileOk(pfd: IFileDialog): HResult; stdcall;
@@ -1466,6 +1490,7 @@ begin
   inherited Create;
   FDialog := ADialog;
 end;
+{$endif}
 
 initialization
   if (Win32MajorVersion = 4) then
