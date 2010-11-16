@@ -1339,51 +1339,6 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     end;
   end;
 
-  // True, if a good start was found
-  //function AdjustStartAndEndAddr(var AStartAddr, AnEndAddr: TDbgPtr;
-  //  ARangeBefore, ARangeAfter: TDBGDisassemblerEntryRange;      // surrounding ranges
-  //  out AStartAddrOffs: Integer; // -1 => unknown
-  //  AStartIsKnown: Boolean  // Adjust start only to range, do not try to find proc-start
-  //  ): Boolean;
-  //var
-  //  DisAssList: TGDBMIDisassembleResultList;
-  //  DisAssItm: PDisassemblerEntry;
-  //begin
-  //  Result := AStartIsKnown;
-  //  AStartAddrOffs := -1; // => unknown
-  //  DisAssList := nil;
-  //
-  //  if (ARangeBefore <> nil)
-  //  and (ARangeBefore.ContainsAddr(AStartAddr) or (ARangeBefore.RangeEndAddr >= AStartAddr - 2 * DAssBytesPerCommandAvg))
-  //  then begin
-  //    AStartAddr := ARangeBefore.RangeEndAddr;                                        // This should always be good
-  //    AStartAddrOffs := ARangeBefore.EntriesPtr[ARangeBefore.Count-1]^.Offset;
-  //    Result := True;
-  //  end
-  //  else
-  //  if not AStartIsKnown
-  //  then begin
-  //    // no starting point, see if we have an offset into a function
-  //    if AdjustToKnowFunctionStart(AStartAddr)
-  //    then begin
-  //      AStartAddrOffs := 0;
-  //      Result := True;
-  //      // we may have gone back into the range
-  //      if (ARangeBefore <> nil)
-  //      and (ARangeBefore.ContainsAddr(AStartAddr))
-  //      then begin
-  //        AStartAddr := ARangeBefore.RangeEndAddr;
-  //      end;
-  //    end;
-  //  end;
-  //
-  //  // end addr
-  //  if (ARangeAfter <> nil) and (AnEndAddr >= ARangeAfter.RangeStartAddr)
-  //  then AnEndAddr := ARangeAfter.RangeStartAddr;
-  //
-  //  FreeAndNil(DisAssList);
-  //end;
-
   function FindProcEnd(const ADisAssList: TGDBMIDisassembleResultList;
     AFromIndex: Integer;
     out ANextIndex: Integer;              // Index of first Statement in next Procedure (or code without Proc)
@@ -1577,6 +1532,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     OrigLastAddress, OrigFirstAddress: TDBGPtr;
     FirstLoopRun, BlockOk, GotFullDisAss: Boolean;
     s: String;
+    Itm: TDisassemblerEntry;
   begin
     // Returns   True: If some data was added
     //           False: if failed to add anything
@@ -1646,6 +1602,20 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     if Cnt < 2
     then begin
       debugln('Error failed to get enough data for dsassemble');
+      // create a dummy range, so we will not retry
+      NewRange := TDBGDisassemblerEntryRange.Create;
+      NewRange.Capacity := 1;
+      NewRange.LastEntryEndAddr := ALastAddr;
+      NewRange.RangeStartAddr := AFirstAddr;
+      NewRange.RangeEndAddr := OrigLastAddress;
+      Itm.Addr := AFirstAddr;
+      Itm.Dump := ' ';
+      Itm.SrcFileLine := 0;
+      Itm.Offset := 0;
+      itm.Statement := '<error>';
+      NewRange.Append(@Itm);
+      FKnownRanges.AddRange(NewRange);  // NewRange is now owned by FKnownRanges
+      NewRange := nil;
       FreeAndNil(DisAssList);
       exit;
     end;
@@ -1677,12 +1647,13 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
 
     InitialIndex := i;
     GotLinesAfter := 0;
+    NextProcAddr := 0;
     while i < Cnt
     do begin
       if (StopAfterAddress <> 0) and (GotLinesAfter > StopAfterNumLines) then
       begin
         // got enough lines
-        NewRange.LastEntryEndAddr := NextProcAddr;;
+        NewRange.LastEntryEndAddr := NextProcAddr;
         NewRange.RangeEndAddr := NextProcAddr;
         break;
       end;
