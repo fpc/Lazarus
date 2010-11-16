@@ -1074,7 +1074,7 @@ begin
     repeat
       if not DirPathExists(SubDir) then begin
         if not CreateDirUTF8(SubDir) then begin
-          Result:=IDEMessageDialog('Warning',
+          Result:=IDEMessageDialog(lisCCOWarningCaption,
                    Format(lisUnableToCreateBackupDirectory, ['"',SubDir, '"'])
                    ,mtWarning,[mbAbort,mbRetry,mbIgnore]);
           if Result=mrAbort then exit;
