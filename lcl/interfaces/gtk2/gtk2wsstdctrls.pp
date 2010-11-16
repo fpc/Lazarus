@@ -2090,11 +2090,18 @@ var
 begin
   Widget := PGtkWidget(AWinControl.Handle);
 
-  PreferredWidth := gtk_widget_get_xthickness(Widget) * 2 +
+  if Assigned(PGtkFrame(Widget)^.label_widget) then
+  begin
+    PreferredWidth := gtk_widget_get_xthickness(Widget) * 2 +
                     gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
-  PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
+    PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
                          gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget)) +
                      gtk_widget_get_ythickness(Widget);
+  end else
+  begin
+    PreferredWidth := gtk_widget_get_xthickness(Widget) * 2;
+    PreferredHeight := gtk_widget_get_ythickness(Widget) * 2;
+  end;
 
   if WithThemeSpace then
   begin
