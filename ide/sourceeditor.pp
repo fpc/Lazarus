@@ -253,6 +253,7 @@ type
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
+    procedure EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
     function GetCodeBuffer: TCodeBuffer;
     function GetExecutionLine: integer;
     function GetHasExecutionMarks: Boolean;
@@ -3920,6 +3921,7 @@ Begin
       OnEnter:=@EditorEnter;
       OnPlaceBookmark := @EditorPlaceBookmark;
       OnClearBookmark := @EditorClearBookmark;
+      OnChangeUpdating  := @EditorChangeUpdating;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
     end;
@@ -4328,6 +4330,14 @@ end;
 function TSourceEditor.GetSharedEditors(Index: Integer): TSourceEditor;
 begin
   Result := FSharedValues.SharedEditors[Index];
+end;
+
+procedure TSourceEditor.EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
+begin
+  If AnUpdating then
+    DebugBoss.LockCommandProcessing
+  else
+    DebugBoss.UnLockCommandProcessing;
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
@@ -4757,6 +4767,7 @@ begin
     OnEnter := nil;
     OnPlaceBookmark := nil;
     OnClearBookmark := nil;
+    OnChangeUpdating := nil;
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
     if EditorComponent.Plugin[i] is TSynPluginSyncronizedEditBase then begin
