@@ -872,6 +872,10 @@ begin
     BeginUpdate;
     FreeReference;
     FStyle := Value;
+    inherited SetFlags(5, fsBold in FStyle);
+    inherited SetFlags(6, fsItalic in FStyle);
+    inherited SetFlags(7, fsUnderline in FStyle);
+    inherited SetFlags(8, fsStrikeOut in FStyle);
     if IsFontNameXLogicalFontDesc(Name) then
       Name := ClearXLFDStyle(Name);
     Changed;
