@@ -243,10 +243,11 @@ begin
   then begin
     // only for F9, not for F8,F7 single stepping with assembler is no good, if it clears all the time
     //ClearLineMap;
+    FLocation := 0;
   end
   else begin
     // Check if anything is there, update BaseAddr
-    if FDisassembler <> nil
+    if (FDisassembler <> nil) and (FLocation <> 0)
     then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
     UpdateLineData;
   end;
