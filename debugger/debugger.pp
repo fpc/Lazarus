@@ -5451,19 +5451,14 @@ begin
   if Result
   then exit;
 
-  LockChanged;
-  try
-    {$IFDEF DBG_VERBOSE}
-    if result then debugln(['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-    {$ENDIF}
-    if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
-    then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
-    {$IFDEF DBG_VERBOSE}
-    if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-    {$ENDIF}
-  finally
-    UnlockChanged;
-  end;
+  {$IFDEF DBG_VERBOSE}
+  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+  {$ENDIF}
+  if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
+  then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
+  {$IFDEF DBG_VERBOSE}
+  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+  {$ENDIF}
 end;
 
 initialization
