@@ -148,6 +148,8 @@ type
 
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
+  TChangeUpdatingEvent = procedure(ASender: TObject; AnUpdating: Boolean) of object;
+
   TProcessCommandEvent = procedure(Sender: TObject;
     var Command: TSynEditorCommand;
     var AChar: TUTF8Char;
@@ -343,6 +345,7 @@ type
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FInternalBlockSelection: TSynEditSelection;
+    FOnChangeUpdating: TChangeUpdatingEvent;
     FScreenCaret: TSynEditScreenCaret;
     FMouseSelectionMode: TSynSelectionMode;
     fCtrlMouseActive: boolean;                                                  // deprecated since 0.9.29
@@ -627,6 +630,7 @@ type
     procedure DoDecPaintLock(Sender: TObject);
     procedure DoIncForeignPaintLock(Sender: TObject);
     procedure DoDecForeignPaintLock(Sender: TObject);
+    procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -967,6 +971,7 @@ type
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChangeUpdating: TChangeUpdatingEvent read FOnChangeUpdating write FOnChangeUpdating;
     property OnCutCopy: TSynCopyPasteEvent read FOnCutCopy write FOnCutCopy;
     property OnPaste: TSynCopyPasteEvent read FOnPaste write FOnPaste;
     property OnCommandProcessed: TProcessCommandEvent
@@ -1106,6 +1111,7 @@ type
     property WantTabs;
     // TCustomSynEdit events
     property OnChange;
+    property OnChangeUpdating;
     property OnCutCopy;
     property OnPaste;
     property OnClearBookmark;                                                   // djlp 2000-08-29
@@ -1865,10 +1871,17 @@ begin
   FCaret.DecAutoMoveOnEdit;
 end;
 
+procedure TCustomSynEdit.SetUpdateState(NewUpdating: Boolean; Sender: TObject);
+begin
+  if assigned(FOnChangeUpdating) then
+    FOnChangeUpdating(Self, NewUpdating);
+end;
+
 procedure TCustomSynEdit.DoIncPaintLock(Sender: TObject);
 begin
   if FIsInDecPaintLock then exit;
   if FPaintLock = 0 then begin
+    SetUpdateState(True, Self);
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
   end;
@@ -1925,6 +1938,8 @@ begin
   finally
     FScreenCaret.UnLock;
     FIsInDecPaintLock := False;
+    if FPaintLock = 0 then
+      SetUpdateState(False, Self);
   end;
 end;
 
