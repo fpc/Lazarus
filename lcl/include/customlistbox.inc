@@ -619,6 +619,7 @@ begin
   begin
     for i := 0 to Items.Count - 1 do
       Selected[i] := true;
+    DoSelectionChange(false);
   end else
   begin
     i := ItemIndex;
