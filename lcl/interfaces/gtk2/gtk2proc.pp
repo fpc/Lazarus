@@ -310,6 +310,7 @@ function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+procedure InvalidateLastWFPResult(AControl: TWinControl; const ABounds: TRect);
 
 // glib
 procedure MoveGListLinkBehind(First, Item, After: PGList);

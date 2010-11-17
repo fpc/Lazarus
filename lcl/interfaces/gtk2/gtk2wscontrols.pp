@@ -591,6 +591,7 @@ class procedure TGtk2WSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods use ShowHide also, can't move code
   Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
 class procedure TGtk2WSWinControl.SetBounds(const AWinControl: TWinControl;
@@ -600,6 +601,7 @@ begin
   then Exit;
 
   ResizeHandle(AWinControl);
+  InvalidateLastWFPResult(AWinControl, Rect(ALeft, ATop, AWidth, AHeight));
 end;
 
 

@@ -2677,6 +2677,7 @@ begin
   begin
     Result := not GTK_WIDGET_SENSITIVE(PGtkWidget(HWND));
     gtk_widget_set_sensitive(PGtkWidget(hWnd), bEnable);
+    InvalidateLastWFPResult(nil, RectFromGdkRect(PGtkWidget(HWND)^.allocation));
   end;
 end;
 

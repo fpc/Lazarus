@@ -690,6 +690,26 @@ begin
   Result := Info^.ChangeLock;
 end;
 
+{------------------------------------------------------------------------------
+  Reset cached LastWFPResult used by WindowFromPoint.LastWFPResult should be
+  invalidated when some control at LastWFPMousePos is hidden, shown, enabled,
+  disabled, moved.
+ ------------------------------------------------------------------------------}
+procedure InvalidateLastWFPResult(AControl: TWinControl; const ABounds: TRect);
+begin
+  if PtInRect(ABounds, LastWFPMousePos) and
+    GTK_IS_OBJECT(Pointer(LastWFPResult)) then
+  begin
+    if (AControl <> nil) and (AControl.Handle = LastWFPResult) and
+      AControl.Enabled and AControl.Visible then
+        exit;
+    g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
+      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    LastWFPResult := 0;
+    LastWFPMousePos := Point(High(Integer), High(Integer));
+  end;
+end;
+
 procedure SetFormShowInTaskbar(AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 var

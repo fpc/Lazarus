@@ -620,6 +620,7 @@ begin
     GtkWindowShowModal(GtkWindow);
   end else
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
 class procedure TGtk2WSCustomForm.ShowModal(const AForm: TCustomForm);
