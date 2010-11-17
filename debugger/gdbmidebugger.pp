@@ -197,8 +197,6 @@ type
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FCurrentStackFrame: Integer;
-    FAsmCache: TTypedMap;
-    FAsmCacheIter: TTypedMapIterator;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
 
@@ -315,26 +313,6 @@ type
 implementation
 
 type
-  TGDBMIAsmLine = record
-    Dump: String;
-    Statement: String;
-    FileName: String;
-    Line: Integer;
-    FuncName: String;
-    Offset: Integer;
-    Next: TDbgPtr;
-  end;
-
-  PGDBMIDisasm = ^TGDBMIDisasm;
-  TGDBMIDisasm = record
-    FileName: String;
-    Line: Integer;
-    Address: TDbgPtr;
-    Statement: String;
-    FuncName: String;
-    Offset: Integer;
-  end;
-
   TPCharWithLen = record
     Ptr: PChar;
     Len: Integer;
@@ -3618,8 +3596,6 @@ begin
   FTargetPID := 0;
   FTargetFlags := [];
   FDebuggerFlags := [];
-  FAsmCache := TTypedMap.Create(itu8, TypeInfo(TGDBMIAsmLine));
-  FAsmCacheIter := TTypedMapIterator.Create(FAsmCache);
   FSourceNames := TStringList.Create;
   FSourceNames.Sorted := True;
   FSourceNames.Duplicates := dupError;
@@ -3680,8 +3656,6 @@ begin
   inherited;
   ClearCommandQueue;
   FreeAndNil(FCommandQueue);
-  FreeAndNil(FAsmCacheIter);
-  FreeAndNil(FAsmCache);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
 end;
@@ -3736,7 +3710,6 @@ procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
 begin
   if State in [dsStop, dsError]
   then begin
-    FAsmCache.Clear;
     ClearSourceInfo;
     FPauseWaitState := pwsNone;
   end;
@@ -3986,19 +3959,6 @@ begin
     end else
       exit;
   until false;
-end;
-
-
-
-function DisasmSortCompare(AItem1, AItem2: Pointer): Integer;
-begin
-  if PGDBMIDisasm(AItem1)^.Address < PGDBMIDisasm(AItem2)^.Address then
-    Result := -1
-  else
-  if PGDBMIDisasm(AItem1)^.Address > PGDBMIDisasm(AItem2)^.Address then
-    Result := 1
-  else
-    Result := 0;
 end;
 
 function TGDBMIDebugger.GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean;
