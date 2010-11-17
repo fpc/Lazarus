@@ -3221,7 +3221,7 @@ begin
 
         PkgCompileTool:=TIDEExternalToolOptions.Create;
         try
-          PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+          PkgCompileTool.Title:=Format(lisPkgMangCompilingPackage, [APackage.IDAsString]);
           PkgCompileTool.ScanOutputForFPCMessages:=true;
           PkgCompileTool.ScanOutputForMakeMessages:=true;
           PkgCompileTool.WorkingDirectory:=APackage.Directory;
@@ -3254,7 +3254,9 @@ begin
       if (APackage.POOutputDirectory<>'') then begin
         Result:=ConvertPackageRSTFiles(APackage);
         if Result<>mrOk then begin
-          IDEMessagesWindow.AddMsg('Error: updating po files failed for package '+APackage.IDAsString,APackage.Directory,-1);
+          IDEMessagesWindow.AddMsg(Format(
+            lisPkgMangErrorUpdatingPoFilesFailedForPackage, [APackage.IDAsString
+            ]), APackage.Directory, -1);
           DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
           exit;
         end;
@@ -3265,7 +3267,9 @@ begin
         Result:=APackage.CompilerOptions.ExecuteAfter.Execute(
                                   APackage.Directory,'Executing command after');
         if Result<>mrOk then begin
-          IDEMessagesWindow.AddMsg('Error: running ''compile after'' tool failed for package '+APackage.IDAsString,APackage.Directory,-1);
+          IDEMessagesWindow.AddMsg(Format(
+            lisIDEInfoErrorRunningCompileAfterToolFailedForPackage, [APackage.
+            IDAsString]), APackage.Directory, -1);
           DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
           exit;
         end;
@@ -3582,7 +3586,8 @@ begin
   // call fpcmake to create the Makefile
   FPCMakeTool:=TIDEExternalToolOptions.Create;
   try
-    FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
+    FPCMakeTool.Title:=Format(lisIDEInfoCreatingMakefileForPackage, [APackage.
+      IDAsString]);
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
     FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetExecutableExt,
                                       EnvironmentOptions.CompilerFilename);
@@ -3842,8 +3847,8 @@ begin
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
         end;
       end else begin
-        AddMessage('WARNING: unit name invalid '+CurFile.Filename
-           +', package='+APackage.IDAsString,
+        AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.
+          Filename, APackage.IDAsString]),
            APackage.Directory);
       end;
     end;

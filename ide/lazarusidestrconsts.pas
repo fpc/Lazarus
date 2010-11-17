@@ -3676,6 +3676,14 @@ resourcestring
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
     +'target directory for lazarus:%s%s%s%s.%sThis directory is needed for '
     +'the new changed lazarus IDE with your custom packages.';
+  lisPkgMangCompilingPackage = 'Compiling package %s';
+  lisPkgMangErrorUpdatingPoFilesFailedForPackage = 'Error: updating po files '
+    +'failed for package %s';
+  lisIDEInfoErrorRunningCompileAfterToolFailedForPackage = 'Error: running ''co'
+    +'mpile after'' tool failed for package %s';
+  lisIDEInfoCreatingMakefileForPackage = 'Creating Makefile for package %s';
+  lisIDEInfoWARNINGUnitNameInvalidPackage = 'WARNING: unit name invalid %s, '
+    +'package=%s';
 
   // package system
   lisPkgSysInvalidUnitname = 'Invalid Unitname: %s';
