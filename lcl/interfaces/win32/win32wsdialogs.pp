@@ -25,9 +25,6 @@ unit Win32WSDialogs;
 {$mode objfpc}{$H+}
 {$I win32defines.inc}
 
-// TODO:
-// 1. Decide what to do with PreviewPanel in picture dialogs
-
 interface
 
 uses

@@ -169,12 +169,22 @@ end;
 { TWin32WSOpenPictureDialog }
 
 class function TWin32WSOpenPictureDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+{$ifdef UseVistaDialogs}
+var
+  Dialog: IFileOpenDialog;
+  fos: FILEOPENDIALOGOPTIONS;
+{$endif}
 begin
   Result := inherited CreateHandle(ACommonDialog);
   {$ifdef UseVistaDialogs}
   if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
-    //?
+    Dialog := IFileOpenDialog(Result);
+    if Succeeded(Dialog.GetOptions(@fos)) then
+    begin
+      fos := fos or FOS_FORCEPREVIEWPANEON;
+      Dialog.SetOptions(fos);
+    end;
   end
   else
   {$endif}
@@ -205,12 +215,22 @@ end;
 
 class function TWin32WSSavePictureDialog.CreateHandle(
   const ACommonDialog: TCommonDialog): THandle;
+{$ifdef UseVistaDialogs}
+var
+  Dialog: IFileSaveDialog;
+  fos: FILEOPENDIALOGOPTIONS;
+{$endif}
 begin
   Result := inherited CreateHandle(ACommonDialog);
   {$ifdef UseVistaDialogs}
   if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
-    // ?
+    Dialog := IFileSaveDialog(Result);
+    if Succeeded(Dialog.GetOptions(@fos)) then
+    begin
+      fos := fos or FOS_FORCEPREVIEWPANEON;
+      Dialog.SetOptions(fos);
+    end;
   end
   else
   {$endif}
