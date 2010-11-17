@@ -229,6 +229,7 @@ type
     procedure DoChanged; override;
     function GetHitCount: Integer; override;
     function GetValid: TValidState; override;
+    procedure SetBreakHitCount(const AValue: Integer); override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
@@ -1228,6 +1229,13 @@ begin
   if FMaster = nil
   then Result := vsUnknown
   else Result := FMaster.Valid;
+end;
+
+procedure TManagedBreakPoint.SetBreakHitCount(const AValue: Integer);
+begin
+  if BreakHitCount = AValue then exit;
+  inherited SetBreakHitCount(AValue);
+  if FMaster <> nil then FMaster.BreakHitCount := AValue;
 end;
 
 procedure TManagedBreakPoint.ResetMaster;
