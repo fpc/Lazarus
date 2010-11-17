@@ -318,12 +318,6 @@ type
     Len: Integer;
   end;
 
-  PGDBMINameValue = ^TGDBMINameValue;
-  TGDBMINameValue = record
-    Name: TPCharWithLen;
-    Value: TPCharWithLen;
-  end;
-
   TGDBMICpuRegister = record
     Name: String;
     Value: String;
@@ -344,6 +338,14 @@ type
       ectReturn            // -exec-return (step out immediately, skip execution)
     );
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
+
+{%region       *****  TGDBMINameValueList and Parsers  *****   }
+
+  PGDBMINameValue = ^TGDBMINameValue;
+  TGDBMINameValue = record
+    Name: TPCharWithLen;
+    Value: TPCharWithLen;
+  end;
 
   { TGDBMINameValueList }
 
@@ -433,6 +435,10 @@ type
     property HasSourceInfo: Boolean read FHasSourceInfo;
     property Item[Index: Integer]: PDisassemblerEntry read GetItem write SetItem;
   end;
+
+{%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
+
+{%region       *****  TGDBMIDebuggerCommands  *****   }
 
   { TGDBMIDebuggerSimpleCommand }
 
@@ -618,6 +624,10 @@ type
     property LinesAfter:  Integer read FLinesAfter  write FLinesAfter;
     property OnProgress: TNotifyEvent read FOnProgress write FOnProgress;
   end;
+
+{%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
+
+{%region       *****  Info/Data Providers  *****   }
 
   { TGDBMIBreakPoint }
 
@@ -810,6 +820,10 @@ type
     function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
   end;
 
+{%endregion    *^^^*  Info/Data Providers  *^^^*   }
+
+{%region       *****  TGDBMIExpression  *****   }
+
   { TGDBMIExpression }
   // TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
   // It is not completed and buggy. Since 5.3 expression evaluation is OK, so maybe in future the
@@ -930,6 +944,8 @@ type
     function Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; out AResult: String; out AResultInfo: TGDBType): Boolean;
   end;
 
+{%endregion    *^^^*  TGDBMIExpression  *^^^*   }
+
   { TGDBMIType }
 
   TGDBMIType = class(TGDBType)
@@ -950,13 +966,6 @@ type
   public
     constructor Create(const AParsableData: String);
     function ParseNext(out ADecomposable: Boolean; out APayload: String; out ACharStopper: Char): Boolean;
-  end;
-
-  PGDBMICmdInfo = ^TGDBMICmdInfo;
-  TGDBMICmdInfo = record
-    Flags: TGDBMICmdFlags;
-    CallBack: TGDBMICallback;
-    Tag: PtrInt;
   end;
 
   TGDBMIExceptionInfo = record
