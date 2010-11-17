@@ -185,6 +185,7 @@ type
   private
     FCommandQueue: TList;
     FCommandQueueExecLock: Integer;
+    FCommandProcessingLock: Integer;
 
     FMainAddr: TDbgPtr;
     FBreakAtMain: TDBGBreakPoint;
@@ -3632,14 +3633,35 @@ end;
 
 procedure TGDBMIDebugger.LockCommandProcessing;
 begin
-  if FInExecuteCount = 0
-  then FRunQueueOnUnlock := True;
-  QueueExecuteLock;
+  // Keep a different counter than QueueExecuteLock
+  // So we can detect, if RunQueue was blocked by this
+  inc(FCommandProcessingLock);
 end;
 
 procedure TGDBMIDebugger.UnLockCommandProcessing;
+{$IFDEF DBGMI_QUEUE_DEBUG}
+var
+  c: Boolean;
+{$ENDIF}
 begin
-  QueueExecuteUnlock;
+  dec(FCommandProcessingLock);
+  if (FCommandProcessingLock = 0)
+  and FRunQueueOnUnlock
+  then begin
+    FRunQueueOnUnlock := False;
+    // if FCommandQueueExecLock, then queu will be run, by however has that lock
+    if (FCommandQueueExecLock = 0)
+    then begin
+      {$IFDEF DBGMI_QUEUE_DEBUG}
+      c := FCommandQueue.Count > 0;
+      if c then DebugLnEnter(['TGDBMIDebugger.UnLockCommandProcessing: Execute RunQueue ']);
+      {$ENDIF}
+      RunQueue;
+      {$IFDEF DBGMI_QUEUE_DEBUG}
+      if c then DebugLnExit(['TGDBMIDebugger.UnLockCommandProcessing: Finished RunQueue']);
+      {$ENDIF}
+    end
+  end;
 end;
 
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
@@ -3736,6 +3758,13 @@ var
 begin
   if FCommandQueue.Count = 0
   then exit;
+
+  if FCommandProcessingLock > 0
+  then begin
+    FRunQueueOnUnlock := True;
+    exit
+  end;
+
   SavedInExecuteCount := FInExecuteCount;
   LockRelease;
   try
@@ -5108,17 +5137,6 @@ end;
 procedure TGDBMIDebugger.QueueExecuteUnlock;
 begin
   dec(FCommandQueueExecLock);
-  if FRunQueueOnUnlock and (FCommandQueueExecLock = 0)
-  then begin
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    DebugLnEnter(['TGDBMIDebugger.QueueExecuteUnlock: Execute RunQueue ']);
-    {$ENDIF}
-    FRunQueueOnUnlock := False;
-    RunQueue;
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    DebugLnExit(['TGDBMIDebugger.QueueExecuteUnlock: Finished RunQueue']);
-    {$ENDIF}
-  end;
 end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
