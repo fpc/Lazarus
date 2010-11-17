@@ -157,6 +157,7 @@ type
   TCDButtonDrawer = class;
   TCDButtonDrawerWinCE = class;
   TCDButtonDrawerAndroid = class;
+  TCDButtonDrawerXPTB = class;
 
   TCDButton = class(TCustomControl)
   private
@@ -164,6 +165,7 @@ type
     FCurrentDrawer: TCDButtonDrawer;
     FDrawerWinCE: TCDButtonDrawerWinCE;
     FDrawerAndroid: TCDButtonDrawerAndroid;
+    FDrawerXPTB: TCDButtonDrawerXPTB;
     procedure PrepareCurrentDrawer();
     procedure SetDrawStyle(const AValue: TCDDrawStyle);
   protected
@@ -249,6 +251,14 @@ type
 
   { TCDButtonDrawerAndroid }
   TCDButtonDrawerAndroid = class(TCDButtonDrawer)
+  public
+    procedure SetClientRectPos(CDButton: TCDButton); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
+      FState: TBitmappedButtonState); override;
+  end;
+
+  TCDButtonDrawerXPTB = class(TCDButtonDrawer)
   public
     procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
@@ -576,11 +586,13 @@ begin
   end;
 end;
 
-procedure GradientFill(Clr1, Clr2: TColor; TheBitmap: TBitmap);
+procedure GradientFill(Clr1, Clr2: TColor; Canvas: TCanvas);
 var
   RGBFrom: array[0..2] of byte;
   RGBDiff: array[0..2] of integer;
-  ColorBand: TRect; I: integer; R, G, B: byte;
+  ColorBand: TRect;
+  I: integer;
+  R, G, B: byte;
 begin
   RGBFrom[0] := GetRValue(ColorToRGB(Clr1));
   RGBFrom[1] := GetGValue(ColorToRGB(Clr1));
@@ -588,19 +600,19 @@ begin
   RGBDiff[0] := GetRValue(ColorToRGB(Clr2)) - RGBFrom[0];
   RGBDiff[1] := GetGValue(ColorToRGB(Clr2)) - RGBFrom[1];
   RGBDiff[2] := GetBValue(ColorToRGB(Clr2)) - RGBFrom[2];
-  TheBitmap.Canvas.Pen.Style := psSolid;
-  TheBitmap.Canvas.Pen.Mode := pmCopy;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Mode := pmCopy;
   ColorBand.Left := 0;
-  ColorBand.Right := TheBitmap.Width;
+  ColorBand.Right := Canvas.Width;
   for I := 0 to $ff do
   begin
-    ColorBand.Top := MulDiv(I, TheBitmap.Height, $100);
-    ColorBand.Bottom := MulDiv(I + 1, TheBitmap.Height, $100);
+    ColorBand.Top := MulDiv(I, Canvas.Height, $100);
+    ColorBand.Bottom := MulDiv(I + 1, Canvas.Height, $100);
     R := RGBFrom[0] + MulDiv(I, RGBDiff[0], $ff);
     G := RGBFrom[1] + MulDiv(I, RGBDiff[1], $ff);
     B := RGBFrom[2] + MulDiv(I, RGBDiff[2], $ff);
-    TheBitmap.Canvas.Brush.Color := RGB(R, G, B);
-    TheBitmap.Canvas.FillRect(ColorBand);
+    Canvas.Brush.Color := RGB(R, G, B);
+    Canvas.FillRect(ColorBand);
   end;
 end;
 
@@ -749,6 +761,7 @@ begin
     dsWince: FCurrentDrawer := FDrawerWinCE;
     dsCustom: FCurrentDrawer := CustomDrawer;
     dsAndroid: FCurrentDrawer := FDrawerAndroid;
+    dsXPTaskbar: FCurrentDrawer := FDrawerXPTB;
   end;
 end;
 
@@ -761,7 +774,7 @@ begin
   Invalidate;
 
   PrepareCurrentDrawer();
-//  FCurrentDrawer.SetClientRectPos(Self); the button shouldn't receive controls inside it
+  //  FCurrentDrawer.SetClientRectPos(Self); the button shouldn't receive controls inside it
 end;
 
 procedure TCDButton.RealSetText(const Value: TCaption);
@@ -773,9 +786,10 @@ end;
 constructor TCDButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TabStop := False;
+  TabStop := True;
   FDrawerWinCE := TCDButtonDrawerWinCE.Create;
   FDrawerAndroid := TCDButtonDrawerAndroid.Create;
+  FDrawerXPTB := TCDButtonDrawerXPTB.Create;
   Width := 120;
   Height := 43;
   //Color := clTeal;
@@ -800,7 +814,7 @@ var
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-//  inherited Paint;
+  //  inherited Paint;
 
   PrepareCurrentDrawer();
 
@@ -815,7 +829,7 @@ begin
     ABmp.LoadFromIntfImage(AImage);
     // Second step of the drawing: LCL TCustomCanvas for easy font access
     FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self, FState);
-    //
+
     Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then
@@ -842,16 +856,8 @@ begin
 
 end;
 
-function GetEndColor(Color: TColor): TColor;
-var
-  r, g, b: byte;
+function ResetCDColor(r, g, b: byte): TColor;
 begin
-  r := GetRValue(ColorToRGB(Color));
-  g := GetGValue(ColorToRGB(Color));
-  b := GetBValue(ColorToRGB(Color));
-  r := r * 50 div 100;
-  g := g * 50 div 100;
-  b := b * 50 div 100;
   if r <= 0 then
     r := 1;
   if g <= 0 then
@@ -861,30 +867,52 @@ begin
   Result := RGB(r, g, b);
 end;
 
-function GetBeginColor(Color: TColor): TColor;
+function GetEndColor(Color: TColor; Rate: byte): TColor;
 var
   r, g, b: byte;
 begin
   r := GetRValue(ColorToRGB(Color));
   g := GetGValue(ColorToRGB(Color));
   b := GetBValue(ColorToRGB(Color));
-  r := r * 100 div 60;
-  g := g * 100 div 60;
-  b := b * 100 div 60;
-  if r >= 256 then
-    r := 255;
-  if g >= 256 then
-    g := 255;
-  if b >= 256 then
-    b := 255;
-  Result := RGB(r, g, b);
+  r := r * Rate div 100;
+  g := g * Rate div 100;
+  b := b * Rate div 100;
+  Result := ResetCDColor(r, g, b);
+end;
+
+function GetBeginColor(Color: TColor; Rate: byte): TColor;
+var
+  r, g, b: byte;
+begin
+  r := GetRValue(ColorToRGB(Color));
+  g := GetGValue(ColorToRGB(Color));
+  b := GetBValue(ColorToRGB(Color));
+  r := r * 100 div Rate;
+  g := g * 100 div Rate;
+  b := b * 100 div Rate;
+  Result := ResetCDColor(r, g, b);
+end;
+
+procedure DrawCDButtonDown(Canvas: TCanvas; CDButton: TCDButton);
+begin
+  With Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := CDButton.Color;
+    Pen.Color := Brush.Color;
+    Rectangle(0, 0, Width, Height);
+    FillRect(0, 0, Width, Height);
+    Brush.Color := GetEndColor(CDButton.Color, 90);
+    Pen.Color := GetEndColor(Brush.Color, 86);
+    RoundRect(0, 0, Width, Height, 5, 5);
+  end;
 end;
 
 procedure TCDButtonDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
   FState: TBitmappedButtonState);
 var
   TmpB: TBitmap;
-  Str: String;
+  Str: string;
 begin
   // Button shape -> This crashes in Gtk2
   TmpB := TBitmap.Create;
@@ -894,20 +922,34 @@ begin
   TmpB.Canvas.Brush.Style := bsSolid;
   TmpB.Canvas.RoundRect(0, 0, TmpB.Width, TmpB.Height, 8, 8);
   CDButton.SetShape(TmpB);
-  ADest.Draw(0, 0, TmpB);
-  TmpB.Free;
+
+  with TmpB.Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := CDButton.Color;
+    Pen.Color := Brush.Color;
+    Rectangle(0, 0, Width, Height);
+    FillRect(0, 0, Width, Height);
+    Brush.Color := GetEndColor(CDButton.Color, 90);
+  end;
 
   // Button image
   case FState of
     bbsDown:
     begin
-
+      DrawCDButtonDown(ADest, CDButton);
     end;
     bbsFocused:
-      GradientFill(GetBeginColor(CDButton.Color), GetEndColor(CDButton.Color), TmpB);
+      //GradientFill(GetBeginColor(CDButton.Color, 50), GetEndColor(CDButton.Color, 60), TmpB.Canvas);
+      GradientFill(clWhite, GetEndColor(CDButton.Color, 80), TmpB.Canvas);
     else
-      GradientFill(GetBeginColor(CDButton.Color), GetEndColor(CDButton.Color), TmpB);
+      //GradientFill(GetBeginColor(CDButton.Color, 10), GetEndColor(CDButton.Color, 20), TmpB.Canvas);
+      GradientFill(clWhite, CDButton.Color, TmpB.Canvas);
   end;
+
+  ADest.Draw(0, 0, TmpB);
+
+  TmpB.Free;
 
   // Button text
   {$ifndef CUSTOMDRAWN_USE_FREETYPE}
@@ -934,11 +976,11 @@ begin
 
 end;
 
-procedure TCDButtonDrawerAndroid.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-  FState: TBitmappedButtonState);
+procedure TCDButtonDrawerAndroid.DrawToCanvas(ADest: TCanvas;
+  CDButton: TCDButton; FState: TBitmappedButtonState);
 var
-  TmpB: TBitmap;
-  Str: String;
+  //TmpB: TBitmap;
+  Str: string;
 begin
   // Button shape -> This crashes in Gtk2
 {  TmpB.Canvas.Brush.Color := CDButton.Color;
@@ -953,14 +995,83 @@ begin
   case FState of
     bbsDown:
     begin
-
+      DrawCDButtonDown(ADest, CDButton);
     end;
     bbsFocused:
     begin
-      DrawAndroidButton(ADest, CDButton.Color);
+      DrawAndroidButton(ADest, GetEndColor(CDButton.Color, 98));
     end;
     else
       DrawAndroidButton(ADest, CDButton.Color);
+  end;
+
+  // Button text
+  {$ifndef CUSTOMDRAWN_USE_FREETYPE}
+  ADest.Font.Assign(CDButton.Font);
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psSolid;
+  Str := CDButton.Caption;
+  ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
+    (CDButton.Height - ADest.TextHeight(Str)) div 2, Str);
+  {$endif}
+end;
+
+procedure TCDButtonDrawerXPTB.SetClientRectPos(CDButton: TCDButton);
+var
+  lRect: TRect;
+begin
+  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
+  CDButton.AdjustClientRect(lRect);
+end;
+
+procedure TCDButtonDrawerXPTB.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDButton: TCDButton);
+begin
+
+end;
+
+procedure DrawXPTaskbarButton(Canvas: TCanvas; aColor: TColor);
+begin
+  with Canvas do
+  begin
+    Brush.Color := aColor;
+    Brush.Style := bsSolid;
+    FillRect(0, 0, Width, Height);
+    Pen.Color := aColor;
+    RecTangle(0, 0, Width, Height);
+    Pen.Color := GetEndColor(aColor, 86);
+    RoundRect(0, 0, Width, Canvas.Height, 5, 5);
+    Pen.Color := aColor;
+    RecTangle(0, 6, Width, Height);
+    Pen.Color := GetEndColor(aColor, 86);
+    Line(0, 3, 0, Height - 3);
+    Line(Width - 1, 3, Width - 1, Height - 3);
+    Line(4, Height - 1, Width - 4, Height - 1);
+    Line(3, Height - 2, Width - 3, Height - 2);
+    Line(2, Height - 3, Width - 2, Height - 3);
+    Pen.Color := GetEndColor(aColor, 92);
+    Line(1, Height - 4, Width - 1, Height - 4);
+    Line(Width - 2, 3, Width - 2, Height - 3);
+    Line(1, 3, 1, Height - 3);
+  end;
+end;
+
+procedure TCDButtonDrawerXPTB.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
+  FState: TBitmappedButtonState);
+var
+  Str: string;
+begin
+  case FState of
+    bbsDown:
+    begin
+      DrawCDButtonDown(ADest, CDButton);
+    end;
+    bbsFocused:
+    begin
+      DrawXPTaskbarButton(ADest, GetEndColor(CDButton.Color, 98));
+    end;
+    else
+      DrawXPTaskbarButton(ADest, CDButton.Color);
   end;
 
   // Button text
