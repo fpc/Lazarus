@@ -3743,7 +3743,9 @@ begin
   if (OldState = dsPause) and (State = dsRun)
   then begin
     FPauseWaitState := pwsNone;
+    {$IFDEF MSWindows}
     FPauseRequestInThreadID := 0;
+    {$ENDIF}
   end;
 
   inherited DoState(OldState);
