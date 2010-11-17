@@ -228,6 +228,7 @@ type
     FErrorLine: integer;
     FErrorColumn: integer;
     FLineInfoNotification: TIDELineInfoNotification;
+    FInEditorChangedUpdating: Boolean;
 
     FOnEditorChange: TNotifyEvent;
     FVisible: Boolean;
@@ -2337,6 +2338,8 @@ end;
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl;
   ASharedEditor: TSourceEditor = nil);
 Begin
+  FInEditorChangedUpdating := False;
+
   if ASharedEditor = nil then
     FSharedValues := TSourceEditorSharedValues.Create
   else
@@ -2374,6 +2377,12 @@ end;
 
 destructor TSourceEditor.Destroy;
 begin
+  if FInEditorChangedUpdating then begin
+    debugln(['***** TSourceEditor.Destroy: FInEditorChangedUpdating was true']);
+    DebugBoss.UnLockCommandProcessing;
+    FInEditorChangedUpdating := False;
+  end;
+
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     UnbindEditor;
     FEditor.Visible:=false;
@@ -4334,10 +4343,20 @@ end;
 
 procedure TSourceEditor.EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
 begin
-  If AnUpdating then
-    DebugBoss.LockCommandProcessing
-  else
-    DebugBoss.UnLockCommandProcessing;
+  If AnUpdating then begin
+    //if FInEditorChangedUpdating then
+    //  debugln(['***** TSourceEditor.EditorChangeUpdating: Updating=True, but FInEditorChangedUpdating was true already']);
+    if not FInEditorChangedUpdating then
+      DebugBoss.LockCommandProcessing;
+    FInEditorChangedUpdating := True;
+  end else
+  begin
+    //if not FInEditorChangedUpdating then
+    //  debugln(['***** TSourceEditor.EditorChangeUpdating: Updating=False, but FInEditorChangedUpdating was false already']);
+    if FInEditorChangedUpdating then
+      DebugBoss.UnLockCommandProcessing;
+    FInEditorChangedUpdating := False;
+  end;
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
