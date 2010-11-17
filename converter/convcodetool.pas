@@ -614,6 +614,7 @@ end;
 function TConvDelphiCodeTool.ReplaceFuncsInSource: boolean;
 // Replace the function names and parameters in source.
 var
+  // Replacement parameter positions, will be converted to integers.
   ParamList: TStringList;
   BodyEnd: Integer;                     // End of function body.
 
@@ -627,7 +628,7 @@ var
     Result:=1;
     ParamBeg:=Pos('(', aStr);
     if ParamBeg>0 then begin
-      ParamEnd:=Pos(')', aStr);
+      ParamEnd:=PosEx(')', aStr, ParamBeg+1);
       if ParamEnd=0 then
         raise EDelphiConverterError.Create('")" is missing from replacement function.');
       s:=Copy(aStr, ParamBeg+1, ParamEnd-ParamBeg-1);
@@ -639,6 +640,7 @@ var
 
   function CollectParams(aParams: TStringList): string;
   // Collect parameters from original call. Construct and return a new parameter list.
+  //  aParams - parameters from the original function call.
   var
     Param: String;
     ParamPos: Integer;             // Position of parameter in the original call.
@@ -686,7 +688,7 @@ var
 
 var
   FuncInfo: TFuncReplacement;
-  PossibleCommPos: Integer;                    // Start looking for comments here.
+  PossibleCommentPos: Integer;               // Start looking for comments here.
   i: Integer;
   s, NewFunc, NewParamStr, Comment: String;
 begin
@@ -697,24 +699,28 @@ begin
     for i:=fFuncsToReplace.Count-1 downto 0 do begin
       FuncInfo:=TFuncReplacement(fFuncsToReplace[i]);
       BodyEnd:=-1;
-      PossibleCommPos:=ParseReplacementParams(FuncInfo.ReplFunc);
-      NewParamStr:=CollectParams(FuncInfo.Params);
-      Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommPos);
-      // Separate function body
-      if BodyEnd=-1 then
-        BodyEnd:=Length(FuncInfo.ReplFunc);
-      NewFunc:=Trim(Copy(FuncInfo.ReplFunc, 1, BodyEnd));
-      NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
-        [NewFunc, NewParamStr, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
-      // Old function call with params for IDE message output.
-      s:=copy(fCodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
-      s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
-      // Now replace it.
-      fSrcCache.MainScanner:=fCodeTool.Scanner;
-      if not fSrcCache.Replace(gtNone, gtNone,
-                          FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
-      IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
-      IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
+      // Update ParamList.
+      PossibleCommentPos:=ParseReplacementParams(FuncInfo.ReplFunc);
+      // Replace only if the params match somehow, so eg. a variable is not replaced.
+      if (FuncInfo.Params.Count>0) or (ParamList.Count=0) then begin
+        NewParamStr:=CollectParams(FuncInfo.Params);
+        Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
+        // Separate function body
+        if BodyEnd=-1 then
+          BodyEnd:=Length(FuncInfo.ReplFunc);
+        NewFunc:=Trim(Copy(FuncInfo.ReplFunc, 1, BodyEnd));
+        NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
+          [NewFunc, NewParamStr, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
+        // Old function call with params for IDE message output.
+        s:=copy(fCodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
+        s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
+        // Now replace it.
+        fSrcCache.MainScanner:=fCodeTool.Scanner;
+        if not fSrcCache.Replace(gtNone, gtNone,
+                            FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
+        IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
+        IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
+      end;
     end;
   finally
     ParamList.Free;
