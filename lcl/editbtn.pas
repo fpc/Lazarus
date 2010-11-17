@@ -162,6 +162,7 @@ type
     FDialogTitle: String;
     FFilter: String;
     FFilterIndex: Integer;
+    FDefaultExt: String;
     FHideDirectories: Boolean;
     FInitialDir: String;
     FOnAcceptFN: TAcceptFileNameEvent;
@@ -189,6 +190,7 @@ type
     property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions;
     property Filter: String read FFilter write FFilter;
     property FilterIndex: Integer read FFilterIndex write FFIlterIndex;
+    property DefaultExt: String read FDefaultExt write FDefaultExt;
     property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
     property ButtonWidth;
@@ -756,6 +758,7 @@ begin
     dkSave, dkPictureSave:
     begin
       S:=TSaveDialog.Create(Self);
+      S.DefaultExt:= FDefaultExt;
       S.Filter:=Filter;
       S.FilterIndex:=FilterIndex;
       Result:=S;
