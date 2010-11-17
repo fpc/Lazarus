@@ -5178,18 +5178,12 @@ end;
 
 constructor TGDBMIBreakPoint.Create(ACollection: TCollection);
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.Create ',Dbgs(Self), ':', DbgsName(Self)]);
-  {$ENDIF}
   inherited Create(ACollection);
   FBreakID := 0;
 end;
 
 destructor TGDBMIBreakPoint.Destroy;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.Destroy ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   ReleaseBreakPoint;
   inherited Destroy;
 end;
@@ -5229,9 +5223,6 @@ end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.SetBreakPoint ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   if Debugger = nil then Exit;
 
   if FBreakID <> 0
@@ -5252,9 +5243,6 @@ procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult
 var
   ResultList: TGDBMINameValueList;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.SetBreakPointCallback ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger), ' State=', dbgs(TGDBMIDebugger(Debugger).State)]);
-  {$ENDIF}
   BeginUpdate;
   try
     ResultList := TGDBMINameValueList.Create(AResult, ['bkpt']);
@@ -5287,9 +5275,6 @@ end;
 
 procedure TGDBMIBreakPoint.ReleaseBreakPoint;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.ReleaseBreakPoint ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   if FBreakID = 0 then Exit;
   if Debugger = nil then Exit;
 
@@ -5302,9 +5287,6 @@ end;
 
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.SetLocation ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger) ]);
-  {$ENDIF}
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if Debugger = nil then Exit;
@@ -5317,9 +5299,6 @@ const
   // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
   CMD: array[Boolean] of ShortString = ('disable', 'enable');
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.UpdateEnable ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger) ]);
-  {$ENDIF}
   if FBreakID = 0 then Exit;
   if Debugger = nil then Exit;
 
@@ -5331,9 +5310,6 @@ end;
 
 procedure TGDBMIBreakPoint.UpdateExpression;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TGDBMIBreakPoint.UpdateExpression ',Dbgs(Self), ':', DbgsName(Self), ' BreakId=',FBreakID, ' Debugger=', Dbgs(Debugger), ':', DbgsName(Debugger), ' State=', dbgs(TGDBMIDebugger(Debugger).State)]);
-  {$ENDIF}
   if FBreakID = 0 then Exit;
   if Debugger = nil then Exit;
 

@@ -2360,9 +2360,6 @@ end;
 
 procedure TBaseBreakPoint.SetLocation (const ASource: String; const ALine: Integer );
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TBaseBreakPoint.SetLocation',Dbgs(Self), ':', DbgsName(Self), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   if (FSource = ASource) and (FLine = ALine) then exit;
   FSource := ASource;
   FLine := ALine;
@@ -2371,9 +2368,6 @@ end;
 
 procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TBaseBreakPoint.SetValid',Dbgs(Self), ':', DbgsName(Self), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   if FValid <> AValue
   then begin
     FValid := AValue;
@@ -2443,9 +2437,6 @@ end;
 
 constructor TIDEBreakPoint.Create(ACollection: TCollection);
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TIDEBreakPoint.Create ',Dbgs(Self), ':', DbgsName(Self)]);
-  {$ENDIF}
   inherited Create(ACollection);
   FGroup := nil;
   FActions := [bpaStop];
@@ -2455,9 +2446,6 @@ end;
 
 destructor TIDEBreakPoint.Destroy;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TIDEBreakPoint.Create ',Dbgs(Self), ':', DbgsName(Self), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   if (TIDEBreakPoints(Collection) <> nil)
   then TIDEBreakPoints(Collection).NotifyRemove(Self);
 
@@ -2714,9 +2702,6 @@ procedure TDBGBreakPoint.Hit(var ACanContinue: Boolean);
 var
   cnt: Integer;
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TDBGBreakPoint.Hit ',Dbgs(Self), ':', DbgsName(Self), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   cnt := HitCount + 1;
   if BreakHitcount > 0
   then ACanContinue := cnt < BreakHitcount;
@@ -2753,9 +2738,6 @@ end;
 
 procedure TDBGBreakPoint.SetSlave(const ASlave : TBaseBreakPoint);
 begin
-  {$IFDEF DBG_VERBOSE_BRKPOINT}
-  debugln(['-*- TDBGBreakPoint.SetSlave ',Dbgs(Self), ':', DbgsName(Self),' CurSlave=', Dbgs(FSlave), ':', DbgsName(FSlave), ' NewSlave=', Dbgs(ASlave), ':', DbgsName(ASlave), ' Src=', Source, ' Line=',Line]);
-  {$ENDIF}
   Assert(FSlave = nil, 'TDBGBreakPoint.SetSlave already has a slave');
   FSlave := ASlave;
 end;

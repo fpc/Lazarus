@@ -1083,7 +1083,7 @@ begin
 
   if FManager.FDebugger <> nil
   then begin
-    BP := FManager.FDebugger.BreakPoints.Add(ABreakpoint.Source, ABreakpoint.Line);
+    BP := FManager.FDebugger.BreakPoints.Add(ABreakpoint.Source, TManagedBreakPoint(ABreakpoint).DebugExeLine);
     BP.Assign(ABreakPoint);
   end;
   FManager.CreateSourceMarkForBreakPoint(ABreakpoint,nil);
@@ -1344,11 +1344,17 @@ begin
 end;
 
 function TManagedBreakPoint.DebugExeLine: Integer;
+var
+  se: TSourceEditor;
 begin
+  Result := Line;
   if (FSourceMark <> nil) and (FSourceMark.SourceEditor <> nil) then
     Result := TSourceEditor(FSourceMark.SourceEditor).SourceToDebugLine(Line)
-  else
-    Result := Line;
+  else begin
+    se := SourceEditorManager.SourceEditorIntfWithFilename(Source);
+    if se <> nil
+    then Result := se.SourceToDebugLine(Line);
+  end;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMark;
