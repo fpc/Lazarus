@@ -891,12 +891,12 @@ var
   Title: String;
   ActiveWindow: HWND;
 
-  procedure CreateButton(const ALabel : PChar; const AResponse: Integer);
+  procedure CreateButton(const ALabel : String; const AResponse: Integer);
   var
     NewButton: PGtkWidget;
   begin
     NewButton := gtk_dialog_add_button(PGtkDialog(Dialog),
-      Ampersands2Underscore(ALabel), AResponse);
+      PgChar(Ampersands2Underscore(ALabel)), AResponse);
     gtk_button_set_use_underline(PGtkButton(NewButton), True);
   end;
 
@@ -958,11 +958,11 @@ begin
         idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
         idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
         idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
-        idButtonAbort    : CreateButton(PGChar(rsMBAbort), GTK_RESPONSE_REJECT);
-        idButtonRetry    : CreateButton(PGChar(rsMBRetry), GTK_RESPONSE_ACCEPT);
-        idButtonIgnore   : CreateButton(PGChar(rsMBIgnore), GTK_RESPONSE_CLOSE);
-        idButtonNoToAll  : CreateButton(PGChar(rsMBNoToAll), GTK_RESPONSE_REJECT);
-        idButtonYesToAll : CreateButton(PGChar(rsMBYesToAll), GTK_RESPONSE_APPLY);
+        idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
+        idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_ACCEPT);
+        idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_CLOSE);
+        idButtonNoToAll  : CreateButton(rsMBNoToAll, GTK_RESPONSE_REJECT);
+        idButtonYesToAll : CreateButton(rsMBYesToAll, GTK_RESPONSE_APPLY);
       end;
     end;
   end;
