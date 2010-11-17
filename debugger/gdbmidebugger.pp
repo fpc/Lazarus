@@ -264,6 +264,9 @@ type
     procedure CancelAllQueued;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand): Boolean;
   protected
+    {$IFDEF MSWindows}
+    FPauseRequestInThreadID: Cardinal;
+    {$ENDIF}
     procedure QueueExecuteLock;
     procedure QueueExecuteUnlock;
 
@@ -278,9 +281,6 @@ type
     function  GetSupportedCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
-    {$IFdef MSWindows}
-    procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt); virtual;
-    {$ENDIF}
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
@@ -492,6 +492,9 @@ type
     procedure DoUnockQueueExecute; override;
     function  ProcessRunning(var AStoppedParams: String): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
+    {$IFDEF MSWindows}
+    function FixThreadForSigTrap: Boolean;
+    {$ENDIF}
     function  DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType);
@@ -1459,9 +1462,10 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     then if not FRangeIterator.BOM
     then FRangeIterator.Previous;
 
-    if not FRangeIterator.BOM
-    then FRangeIterator.GetData(Result);
+    if FRangeIterator.BOM
+    then exit;
 
+    FRangeIterator.GetData(Result);
     if (not APrevious) and not(Result.ContainsAddr(AnAddr))
     then Result := nil;
   end;
@@ -2043,9 +2047,9 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
   end;
 
 var
-  TryStartAt, TryEndAt: TDbgPtr;
+  TryStartAt, TryEndAt, TmpAddr: TDbgPtr;
   DiscardAtStart: Boolean;
-  i, TryStartAtOffs: Integer;
+  GotCnt, LastGotCnt, TryStartAtOffs: Integer;
   RngBefore, RngAfter: TDBGDisassemblerEntryRange;
 begin
   Result := True;
@@ -2077,21 +2081,32 @@ begin
   TryEndAt := FEndAddr + FLinesAfter * DAssBytesPerCommandAvg;
 
   // Read as many unknown ranges, until LinesAfter is met
+  GotCnt := -1;
   while(True)
   do begin
     // check if we need any LinesAfter
-    i := 0;
+    LastGotCnt:= GotCnt;
+    GotCnt := 0;
+    TmpAddr := FEndAddr;
     if RngBefore <> nil
     then begin
-      i := RngBefore.IndexOfAddrWithOffs(FEndAddr);
-      if i >= 0 then begin
-        i := RngBefore.Count - 1 - i;  // the amount of LinesAfter, that are already known
-        if (i >= FLinesAfter)
+      TmpAddr := RngBefore.RangeEndAddr;
+      if RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > TmpAddr
+      then TmpAddr := RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr;
+      GotCnt := RngBefore.IndexOfAddrWithOffs(FEndAddr);
+      if GotCnt >= 0 then begin
+        GotCnt := RngBefore.Count - 1 - GotCnt;  // the amount of LinesAfter, that are already known
+        if (GotCnt >= FLinesAfter)
         then break;
         // adjust end address
-        TryEndAt := RngBefore.RangeEndAddr + (FLinesAfter-i) * DAssBytesPerCommandAvg;
+        TryEndAt := RngBefore.RangeEndAddr + (FLinesAfter-GotCnt) * DAssBytesPerCommandAvg;
       end
-      else i := 0;
+      else GotCnt := 0;
+    end;
+    if LastGotCnt >= GotCnt
+    then begin
+      debugln(['Disassembler: *** Failure to get any mor lines while scanning forward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesAfter]);
+      break;
     end;
 
     RngAfter := GetNextRange;
@@ -2101,7 +2116,7 @@ begin
 
     // Try to disassemble the range
     if not DoDisassembleRange(TryStartAt, TryEndAt, DiscardAtStart, TryStartAtOffs,
-      False, FEndAddr, FLinesAfter-i)
+      False, TmpAddr, FLinesAfter-GotCnt)
     then begin
       // disassemble failed
       debugln(['ERROR: Failed to disassemble from ', TryStartAt,' to ', TryEndAt]);
@@ -2123,18 +2138,24 @@ begin
 
   // Find LinesBefore
   RngAfter := GetRangeForAddr(FStartAddr, False);
-
+  GotCnt := -1;
   while(True)
   do begin
+    LastGotCnt:= GotCnt;
     if (RngAfter = nil)
     then begin
       debugln(['INTERNAL ERROR: (linesbefore) Missing the data, that was disassembled: from ', TryStartAt,' to ', TryEndAt]);
       break;
     end;
 
-    i := RngAfter.IndexOfAddrWithOffs(FEndAddr);  // already known before
-    if i >= FLinesBefore
+    GotCnt := RngAfter.IndexOfAddrWithOffs(FEndAddr);  // already known before
+    if GotCnt >= FLinesBefore
     then break;
+    if LastGotCnt >= GotCnt
+    then begin
+      debugln(['Disassembler: *** Failure to get any mor lines while scanning backward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesBefore]);
+      break;
+    end;
 
     TryEndAt := RngAfter.RangeStartAddr;
     TryStartAt := TryEndAt - 1;
@@ -2143,11 +2164,11 @@ begin
     {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
     if (RngBefore <> nil)
     and (TryStartAt > RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr)
-    and (TryStartAt - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > (FLinesBefore - i) * DAssBytesPerCommandAvg)
+    and (TryStartAt - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > (FLinesBefore - GotCnt) * DAssBytesPerCommandAvg)
     then RngBefore := nil;
     {$POP}
     AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore,
-      TryEndAt - (FLinesBefore - i) * DAssBytesPerCommandAvg, TryStartAtOffs, DiscardAtStart);
+      TryEndAt - (FLinesBefore - GotCnt) * DAssBytesPerCommandAvg, TryStartAtOffs, DiscardAtStart);
 
     // Try to disassemble the range
     if not DoDisassembleRange(TryStartAt, TryEndAt, DiscardAtStart, TryStartAtOffs,
@@ -2407,11 +2428,12 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   procedure ProcessSignalReceived(const AList: TGDBMINameValueList);
   var
     SigInt, CanContinue: Boolean;
-    S: String;
+    S, F: String;
   begin
     // TODO: check to run (un)handled
 
     S := AList.Values['signal-name'];
+    F := AList.Values['frame'];
     {$IFdef MSWindows}
     SigInt := S = 'SIGTRAP';
     {$ELSE}
@@ -2419,14 +2441,21 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     {$ENDIF}
     if not AIgnoreSigIntState
     or not SigInt
-    then SetDebuggerState(dsPause);
+    then begin
+      {$IFdef MSWindows}
+      // Before anything else goes => correct the thred
+      if FixThreadForSigTrap
+      then F := '';
+      {$ENDIF}
+      SetDebuggerState(dsPause);
+    end;
 
     if not SigInt
     then FTheDebugger.DoException(deExternal, 'External: ' + S, '', CanContinue);
 
     if not AIgnoreSigIntState
     or not SigInt
-    then ProcessFrame(AList.Values['frame']);
+    then ProcessFrame(F);
   end;
 
 var
@@ -2541,6 +2570,7 @@ begin
         debugln(['************************************************************************ ']);
         {$ENDIF}
         SetDebuggerState(dsPause);
+        ProcessFrame(List.Values['frame']); // and jump to it
       end;
       Exit;
     end;
@@ -2571,6 +2601,43 @@ begin
     List.Free;
   end;
 end;
+
+{$IFDEF MSWindows}
+function TGDBMIDebuggerCommandExecute.FixThreadForSigTrap: Boolean;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  S: string;
+  n, ID1, ID2: Integer;
+begin
+  Result := False;
+  if not ExecuteCommand('info program', R)
+  then exit;
+  S := GetPart(['.0x'], ['.'], R.Values, True, False); // From the line "using child thread"
+  if PtrInt(StrToQWordDef('$'+S, 0)) <> FTheDebugger.FPauseRequestInThreadID
+  then Exit;
+
+
+  if not ExecuteCommand('-thread-list-ids', R)
+  then Exit;
+  List := TGDBMINameValueList.Create(R);
+  try
+    n := StrToIntDef(List.Values['number-of-threads'], 0);
+    if n < 2 then Exit; //nothing to switch
+    List.SetPath(['thread-ids']);
+    if List.Count < 2 then Exit; // ???
+    ID1 := StrToIntDef(List.Values['thread-id'], 0);
+    List.Delete(0);
+    ID2 := StrToIntDef(List.Values['thread-id'], 0);
+
+    if ID1 = ID2 then Exit;
+  finally
+    List.Free;
+  end;
+
+  Result := ExecuteCommand('-thread-select %d', [ID2]);
+end;
+{$ENDIF}
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
 var
@@ -3397,13 +3464,14 @@ var
   len: Integer;
 begin
   len := Length(AName);
-  Result := Count-1;
-  while Result >= 0 do begin
+  Result := 0;
+  while Result < FCount do begin
     if (FIndex[Result].Name.Len = len)
     and (strlcomp(FIndex[Result].Name.Ptr, PChar(AName), len) = 0)
     then exit;
-    dec(Result);
+    inc(Result);
   end;
+  Result := -1;
 end;
 
 
@@ -3672,8 +3740,11 @@ begin
     ClearSourceInfo;
     FPauseWaitState := pwsNone;
   end;
-  if (OldState = dsPause) and (State = dsRun) then
+  if (OldState = dsPause) and (State = dsRun)
+  then begin
     FPauseWaitState := pwsNone;
+    FPauseRequestInThreadID := 0;
+  end;
 
   inherited DoState(OldState);
 end;
@@ -4392,7 +4463,6 @@ procedure TGDBMIDebugger.InterruptTarget;
   var
     hProcess: THandle;
     hThread: THandle;
-    ThreadID: Cardinal;
     E: Integer;
     Emsg: PChar;
   begin
@@ -4402,7 +4472,7 @@ procedure TGDBMIDebugger.InterruptTarget;
     if hProcess = 0 then Exit;
 
     try
-      hThread := _CreateRemoteThread(hProcess, nil, 0, DebugBreakAddr, nil, 0, ThreadID);
+      hThread := _CreateRemoteThread(hProcess, nil, 0, DebugBreakAddr, nil, 0, FPauseRequestInThreadID);
       if hThread = 0
       then begin
         E := GetLastError;
@@ -4415,9 +4485,6 @@ procedure TGDBMIDebugger.InterruptTarget;
       end;
       Result := True;
       CloseHandle(hThread);
-
-      // queue an info to find out if we are stopped in our interrupt thread
-      ExecuteCommand('info program', [cfNoMICommand], @InterruptTargetCallback, ThreadID);
     finally
       CloseHandle(hProcess);
     end;
@@ -4446,45 +4513,6 @@ begin
   end;
 {$ENDIF}
 end;
-
-{$IFdef MSWindows}
-procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
-var
-  R: TGDBMIExecResult;
-  S: String;
-  List: TGDBMINameValueList;
-  n: Integer;
-  ID1, ID2: Integer;
-begin
-  // check if we need to get out of the interrupt thread
-  S := AResult.Values;
-  S := GetPart(['.0x'], ['.'], S, True, False); // From the line "using child thread"
-  if PtrInt(StrToQWordDef('$'+S, 0)) <> ATag then Exit;
-
-  // we're stopped in our thread
-  if FPauseWaitState = pwsInternal then Exit; // internal, do not care
-
-  S := '';
-  if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
-  List := TGDBMINameValueList.Create(R);
-  try
-    n := StrToIntDef(List.Values['number-of-threads'], 0);
-    if n < 2 then Exit; //nothing to switch
-    List.SetPath(['thread-ids']);
-    if List.Count < 2 then Exit; // ???
-    ID1 := StrToIntDef(List.Values['thread-id'], 0);
-    List.Delete(0);
-    ID2 := StrToIntDef(List.Values['thread-id'], 0);
-
-    if ID1 = ID2 then Exit;
-  finally
-    List.Free;
-  end;
-
-
-  if not ExecuteCommand('-thread-select %d', [ID2], [cfIgnoreError]) then Exit;
-end;
-{$ENDIF}
 
 function TGDBMIDebugger.ParseInitialization: Boolean;
 var

@@ -491,6 +491,9 @@ end;
 function TManagedDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
   ALinesAfter: Integer): Boolean;
 begin
+  if (AnAddr = BaseAddr) and (ALinesAfter < CountBefore) and (ALinesAfter < CountAfter)
+  then exit(True);
+
   if FMaster <> nil
   then Result := FMaster.PrepareRange(AnAddr, ALinesBefore, ALinesAfter)
   else Result := inherited PrepareRange(AnAddr, ALinesBefore, ALinesAfter);

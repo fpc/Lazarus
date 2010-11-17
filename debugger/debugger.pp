@@ -5298,20 +5298,41 @@ procedure TDBGDisassembler.EntryRangesOnMerge(MergeReceiver,
   MergeGiver: TDBGDisassemblerEntryRange);
 var
   i: LongInt;
+  lb, la: Integer;
 begin
   // no need to call changed, will be done by whoever triggered this
   if FCurrentRange = MergeGiver
-  then begin
-    FCurrentRange := MergeReceiver;
-    i := FCurrentRange.IndexOfAddr(BaseAddr);
-    InternalIncreaseCountBefore(i);
-    InternalIncreaseCountAfter(FCurrentRange.Count - 1 - i);
-  end;
+  then FCurrentRange := MergeReceiver;
+
   if FCurrentRange = MergeReceiver
   then begin
-    i := FCurrentRange.IndexOfAddr(BaseAddr);
-    InternalIncreaseCountBefore(i);
-    InternalIncreaseCountAfter(FCurrentRange.Count - 1 - i);
+    i := FCurrentRange.IndexOfAddrWithOffs(BaseAddr);
+    if i >= 0
+    then begin
+      InternalIncreaseCountBefore(i);
+      InternalIncreaseCountAfter(FCurrentRange.Count - 1 - i);
+      exit;
+    end
+    else if FCurrentRange.ContainsAddr(BaseAddr)
+    then begin
+      {$IFDEF DBG_VERBOSE}
+      debugln(['WARNING: TDBGDisassembler.OnMerge: Adress at odd offset ',BaseAddr, ' before=',CountBefore, ' after=', CountAfter]);
+      {$ENDIF}
+      lb := CountBefore;
+      la := CountAfter;
+      if HandleRangeWithInvalidAddr(FCurrentRange, BaseAddr, lb, la)
+      then begin
+        InternalIncreaseCountBefore(lb);
+        InternalIncreaseCountAfter(la);
+        exit;
+      end;
+    end;
+
+    LockChanged;
+    SetBaseAddr(0);
+    SetCountBefore(0);
+    SetCountAfter(0);
+    UnlockChanged;
   end;
 end;
 
