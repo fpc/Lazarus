@@ -95,6 +95,7 @@ type
     // last hit breakpoint
     FCurrentBreakpoint: TIDEBreakpoint;
     FAutoContinueTimer: TTimer;
+    FIsInitializingDebugger: Boolean;
 
     // When a source file is not found, the user can choose one
     // here are all choices stored
@@ -2026,6 +2027,8 @@ begin
   FRunTimer.Interval := 1;
   FRunTimer.OnTimer := @OnRunTimer;
 
+  FIsInitializingDebugger:= False;
+
   inherited Create(TheOwner);
 end;
 
@@ -2363,6 +2366,7 @@ begin
   SetDebugger(nil);
   dbg.Release;
   FManagerStates := [];
+  FIsInitializingDebugger:= False;
 
   if MainIDE.ToolStatus = itDebugger
   then MainIDE.ToolStatus := itNone;
@@ -2391,142 +2395,165 @@ begin
 {$endif}
 
   Result := False;
-  if (Project1.MainUnitID < 0) or Destroying then Exit;
-
-  DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
-  if DebuggerClass = nil then
-    DebuggerClass := TProcessDebugger;
-
-  LaunchingCmdLine := BuildBoss.GetRunCommandLine;
-
-  SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
-
-  if BuildBoss.GetProjectUsesAppBundle then
-  begin
-    // it is Application Bundle (darwin only)
-
-    if not DirectoryExistsUTF8(LaunchingApplication) then
-    begin
-      if MessageDlg(lisLaunchingApplicationInvalid,
-        Format(lisTheLaunchingApplicationBundleDoesNotExists,
-          [LaunchingCmdLine, #13, #13, #13, #13]),
-        mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
-      begin
-        if not BuildBoss.CreateProjectApplicationBundle then Exit;
-      end
-      else
-        Exit;
-    end;
-
-    if DebuggerClass = TProcessDebugger then
-    begin // use executable path inside Application Bundle (darwin only)
-      LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
-        ExtractFileNameOnly(LaunchingApplication);
-      LaunchingParams := LaunchingParams;
-    end;
-  end
-  else
-    if not FileIsExecutable(LaunchingApplication)
-    then begin
-      MessageDlg(lisLaunchingApplicationInvalid,
-        Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-          LaunchingCmdLine, '"', #13, #13, #13]),
-        mtError, [mbOK],0);
-      Exit;
-    end;
-
-  //todo: this check depends on the debugger class
-  if (DebuggerClass <> TProcessDebugger)
-  and not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
-  then begin
-    MessageDlg(lisDebuggerInvalid,
-      Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-      mtError,[mbOK],0);
-    Exit;
-  end;
-
-  if (dmsDebuggerObjectBroken in FManagerStates)
-  then FreeDebugger;
-
-  // check if debugger is already created with the right type
-  if (FDebugger <> nil)
-  and (not (FDebugger is DebuggerClass)
-        or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
-      )
-  then begin
-    // the current debugger is the wrong type -> free it
-    FreeDebugger;
-  end;
-
-  // create debugger object
-  if FDebugger = nil
-  then SetDebugger(DebuggerClass.Create(EnvironmentOptions.DebuggerFilename));
-
-  if FDebugger = nil
-  then begin
-    // something went wrong
-    Exit;
-  end;
-
-  ClearDebugOutputLog;
-  if EnvironmentOptions.DebuggerEventLogClearOnRun then
-    ClearDebugEventsLog;
-
-  FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
-  FDebugger.OnState         := @DebuggerChangeState;
-  FDebugger.OnCurrent       := @DebuggerCurrentLine;
-  FDebugger.OnDbgOutput     := @DebuggerOutput;
-  FDebugger.OnDbgEvent      := @DebuggerEvent;
-  FDebugger.OnException     := @DebuggerException;
-
-  if FDebugger.State = dsNone
-  then begin
-    Include(FManagerStates,dmsInitializingDebuggerObject);
-    Exclude(FManagerStates,dmsInitializingDebuggerObjectFailed);
-    FDebugger.Init;
-    Exclude(FManagerStates,dmsInitializingDebuggerObject);
-    if dmsInitializingDebuggerObjectFailed in FManagerStates
-    then begin
-      FreeDebugger;
-      Exit;
-    end;
-  end;
-
-  Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-  NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-  if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
-    MessageDlg(lisUnableToRun,
-      Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
-        NewWorkingDir, '"', #13]),
-      mtError,[mbCancel],0);
+  if FIsInitializingDebugger then begin
+    DebugLn('[TDebugManager.DoInitDebugger] *** Re-Entered');
     exit;
   end;
-  if NewWorkingDir='' then begin
-    NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
+  if (Project1.MainUnitID < 0) or Destroying then Exit;
+
+  FIsInitializingDebugger:= True;
+  try
+    DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
+    if DebuggerClass = nil then
+      DebuggerClass := TProcessDebugger;
+
+    LaunchingCmdLine := BuildBoss.GetRunCommandLine;
+
+    SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
+
+    if BuildBoss.GetProjectUsesAppBundle then
+    begin
+      // it is Application Bundle (darwin only)
+
+      if not DirectoryExistsUTF8(LaunchingApplication) then
+      begin
+        if MessageDlg(lisLaunchingApplicationInvalid,
+          Format(lisTheLaunchingApplicationBundleDoesNotExists,
+            [LaunchingCmdLine, #13, #13, #13, #13]),
+          mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+        begin
+          if not BuildBoss.CreateProjectApplicationBundle then Exit;
+        end
+        else
+          Exit;
+      end;
+
+      if DebuggerClass = TProcessDebugger then
+      begin // use executable path inside Application Bundle (darwin only)
+        LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
+          ExtractFileNameOnly(LaunchingApplication);
+        LaunchingParams := LaunchingParams;
+      end;
+    end
+    else
+      if not FileIsExecutable(LaunchingApplication)
+      then begin
+        MessageDlg(lisLaunchingApplicationInvalid,
+          Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+            LaunchingCmdLine, '"', #13, #13, #13]),
+          mtError, [mbOK],0);
+        Exit;
+      end;
+
+    //todo: this check depends on the debugger class
+    if (DebuggerClass <> TProcessDebugger)
+    and not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
+    then begin
+      MessageDlg(lisDebuggerInvalid,
+        Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+          EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+        mtError,[mbOK],0);
+      Exit;
+    end;
+
+    if (dmsDebuggerObjectBroken in FManagerStates)
+    then FreeDebugger;
+
+    // check if debugger is already created with the right type
+    if (FDebugger <> nil)
+    and (not (FDebugger is DebuggerClass)
+          or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+        )
+    then begin
+      // the current debugger is the wrong type -> free it
+      FreeDebugger;
+    end;
+
+    // create debugger object
+    if FDebugger = nil
+    then SetDebugger(DebuggerClass.Create(EnvironmentOptions.DebuggerFilename));
+
+    if FDebugger = nil
+    then begin
+      // something went wrong
+      Exit;
+    end;
+
+    ClearDebugOutputLog;
+    if EnvironmentOptions.DebuggerEventLogClearOnRun then
+      ClearDebugEventsLog;
+
+    FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
+    FDebugger.OnState         := @DebuggerChangeState;
+    FDebugger.OnCurrent       := @DebuggerCurrentLine;
+    FDebugger.OnDbgOutput     := @DebuggerOutput;
+    FDebugger.OnDbgEvent      := @DebuggerEvent;
+    FDebugger.OnException     := @DebuggerException;
+
+    if FDebugger.State = dsNone
+    then begin
+      Include(FManagerStates,dmsInitializingDebuggerObject);
+      Exclude(FManagerStates,dmsInitializingDebuggerObjectFailed);
+      // The following commands may call ProcessMessages, and FDebugger can be nil after each
+      FDebugger.Init;
+      Exclude(FManagerStates,dmsInitializingDebuggerObject);
+      if (FDebugger = nil) or (dmsInitializingDebuggerObjectFailed in FManagerStates)
+      then begin
+        FreeDebugger;
+        Exit;
+      end;
+    end;
+
+    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
+    NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
     if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
       MessageDlg(lisUnableToRun,
-        Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
+        Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
           NewWorkingDir, '"', #13]),
         mtError,[mbCancel],0);
       exit;
     end;
-  end;
-  FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
-  // set filename after workingdir
-  FDebugger.FileName := LaunchingApplication;
-  FDebugger.Arguments := LaunchingParams;
-  FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
+    if NewWorkingDir='' then begin
+      NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
+      if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
+        MessageDlg(lisUnableToRun,
+          Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
+            NewWorkingDir, '"', #13]),
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
 
-  // check if debugging needs restart
-  // mwe: can this still happen ?
-  if (dmsDebuggerObjectBroken in FManagerStates)
-  then begin
-    FreeDebugger;
-    Exit;
-  end;
+    // The following commands may call ProcessMessages, and FDebugger can be nil after each
 
-  Result := True;
+    if FDebugger <> nil
+    then FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
+    // set filename after workingdir
+    if FDebugger <> nil
+    then FDebugger.FileName := LaunchingApplication;
+    if FDebugger <> nil
+    then FDebugger.Arguments := LaunchingParams;
+    if FDebugger <> nil
+    then FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
+
+    // check if debugging needs restart
+    // mwe: can this still happen ?
+    if (FDebugger = nil) or (dmsDebuggerObjectBroken in FManagerStates)
+    then begin
+      FreeDebugger;
+      Exit;
+    end;
+
+    Result := True;
+  finally
+    // Since ProcessMessages has been called, debugger may have been reseted, even during initialization...
+    if not FIsInitializingDebugger
+    then begin
+      Result := False;
+      ResetDebugger;
+    end;
+    FIsInitializingDebugger:= False;
+  end;
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] END');
 {$endif}
@@ -2605,6 +2632,10 @@ end;
 function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
+
+  FRunTimer.Enabled:=false;
+  Exclude(FManagerStates,dmsWaitForRun);
+
   SourceEditorManager.ClearExecutionLines;
   if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
   then begin
@@ -2884,6 +2915,10 @@ end;
 procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);
 begin
   if FDebugger = ADebugger then Exit;
+
+  FRunTimer.Enabled:=false;
+  Exclude(FManagerStates,dmsWaitForRun);
+
   FDebugger := ADebugger;
   if FDebugger = nil
   then begin
