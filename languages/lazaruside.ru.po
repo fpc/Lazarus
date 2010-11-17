@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-16 03:00+0300\n"
+"PO-Revision-Date: 2010-11-18 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7432,9 +7432,21 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Параметры сборки IDE"
 
+#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
+msgid "Creating Makefile for package %s"
+msgstr "Создание Makefile для пакета %s"
+
+#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
+msgid "Error: running 'compile after' tool failed for package %s"
+msgstr "Ошибка: для пакета %s не удалось запустить средство, определённое для выполнения после компиляции"
+
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "Информация об IDE"
+
+#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
+msgid "WARNING: unit name invalid %s, package=%s"
+msgstr "ПРЕДУПРЕЖДЕНИЕ: некорректное имя модуля %s, пакет %s"
 
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
@@ -11307,6 +11319,10 @@ msgstr "Нарушенная зависимость"
 msgid "Circle in package dependencies"
 msgstr "Циклическая зависимость пакетов"
 
+#: lazarusidestrconsts.lispkgmangcompilingpackage
+msgid "Compiling package %s"
+msgstr "Компиляция пакета %s"
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "Удаление не удалось"
@@ -11330,6 +11346,10 @@ msgstr "Ошибка чтения файла"
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Ошибка чтения пакета"
+
+#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
+msgid "Error: updating po files failed for package %s"
+msgstr "Ошибка: обновление файлов PO для пакета %s не удалось"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"

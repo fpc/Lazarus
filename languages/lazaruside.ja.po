@@ -7432,8 +7432,20 @@ msgstr ""
 msgid "IDE build options"
 msgstr "IDE 構築オプション"
 
+#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
+msgid "Creating Makefile for package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
+msgid "Error: running 'compile after' tool failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
+msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisideintf
@@ -11322,6 +11334,10 @@ msgstr "壊れた依存性"
 msgid "Circle in package dependencies"
 msgstr "パッケージ依存性の循環構造"
 
+#: lazarusidestrconsts.lispkgmangcompilingpackage
+msgid "Compiling package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "削除に失敗"
@@ -11345,6 +11361,10 @@ msgstr "ファイルの読みとり中にエラー"
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "パッケージ読み込み中にエラー"
+
+#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
+msgid "Error: updating po files failed for package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"

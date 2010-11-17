@@ -7417,8 +7417,20 @@ msgstr ""
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
+msgid "Creating Makefile for package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
+msgid "Error: running 'compile after' tool failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
+msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisideintf
@@ -11301,6 +11313,10 @@ msgstr "Gebroken Dependency"
 msgid "Circle in package dependencies"
 msgstr "Circulaire verbindingen in package afhankelijkheden"
 
+#: lazarusidestrconsts.lispkgmangcompilingpackage
+msgid "Compiling package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "Verwijderen mislukt"
@@ -11324,6 +11340,10 @@ msgstr "Fout bij lezen bestand"
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Fout bij Lezen Pakket"
+
+#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
+msgid "Error: updating po files failed for package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"

@@ -7414,8 +7414,20 @@ msgstr ""
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
+msgid "Creating Makefile for package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
+msgid "Error: running 'compile after' tool failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
+msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisideintf
@@ -11296,6 +11308,10 @@ msgstr "Залежність порушена"
 msgid "Circle in package dependencies"
 msgstr "Циклічна залежність пакунків"
 
+#: lazarusidestrconsts.lispkgmangcompilingpackage
+msgid "Compiling package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "Видалення не вдалося"
@@ -11319,6 +11335,10 @@ msgstr "Помилка читання файлу"
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Помилка читання пакунку"
+
+#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
+msgid "Error: updating po files failed for package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"

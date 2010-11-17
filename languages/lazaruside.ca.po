@@ -7413,8 +7413,20 @@ msgstr ""
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
+msgid "Creating Makefile for package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
+msgid "Error: running 'compile after' tool failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
+msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisideintf
@@ -11293,6 +11305,10 @@ msgstr "Dependència Interrompuda"
 msgid "Circle in package dependencies"
 msgstr "Cercle en les dependències del paquet"
 
+#: lazarusidestrconsts.lispkgmangcompilingpackage
+msgid "Compiling package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "Ha fallat l'eliminació"
@@ -11316,6 +11332,10 @@ msgstr "S'ha produït un error mentre es llegia el fitxer"
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "S'ha produït un error mentre es llegia el paquet"
+
+#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
+msgid "Error: updating po files failed for package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
