@@ -34,6 +34,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
+{$ifdef Windows}
+  ShlObj,
+{$endif}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
   Laz_XMLCfg, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
@@ -1486,6 +1489,9 @@ end;
 procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
 begin
   AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles);
+  {$ifdef Windows}
+  SHAddToRecentDocs(SHARD_PATHW, PWideChar(UTF8ToUTF16(AFileName)));
+  {$endif}
 end;
 
 procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(
