@@ -1396,13 +1396,12 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
     // When in browse mode and a listbox is focused and nothing is selected,
     // the first item is focused.
     // Clicking with the mouse on this item won't select it.
-
     Info := GetWidgetInfo(Widget, false);
     if Info = nil then Exit;
     if Info^.CoreWidget = nil then Exit;
-    if not GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then Exit;
+    if not GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
+      Exit;
     ListWidget := PGtkList(Info^.CoreWidget);
-
     // Check mode
     if selection_mode(ListWidget^) <> GTK_SELECTION_BROWSE then Exit;
 
@@ -1430,6 +1429,7 @@ var
   W: PGtkWidget;
   Info: PWidgetInfo;
   Old: TObject;
+  Mess: TLMessage;
   {$IFDEF VerboseMouseBugfix}
   AWinControl: TWinControl;
   {$ENDIF}
@@ -1496,6 +1496,19 @@ begin
           break;
         W := gtk_widget_get_parent(W);
       end;
+
+      {emit selection change when right mouse button pressed
+       otherwise LCL is not updated since ChangeLock = 1 in case
+       of pressing right mouse button and 'changed' signal never reach lcl.
+       Issues #16972, #17888. }
+      if GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
+      begin
+        Result := False;
+        FillChar(Mess,SizeOf(Mess),0);
+        Mess.msg := LM_SelChange;
+        DeliverMessage(TWinControl(Data), Mess);
+      end;
+
     end;
   end else begin
     if (event^.Button=1) and
@@ -1826,7 +1839,6 @@ var
   AForm: TCustomForm;
 begin
   Result := CallBackDefaultReturn;
-
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
   DebugLn(['[gtkMouseBtnRelease] A ',DbgSName(TObject(Data)),' ',

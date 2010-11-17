@@ -590,6 +590,7 @@ begin
 
   if Path <> nil then
     gtk_tree_path_free(Path);
+
   Dec(WidgetInfo^.ChangeLock);
 end;
 
@@ -670,6 +671,8 @@ var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
+  if WidgetInfo^.ChangeLock > 0 then
+    Exit;
   {$IFDEF EventTrace}
   EventTrace('gtk2ListSelectionChangedAfter', WidgetInfo^.LCLObject);
   {$ENDIF}
