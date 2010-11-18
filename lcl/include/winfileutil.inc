@@ -55,16 +55,24 @@ end;
   function FileIsSymlink(const AFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function FileIsSymlink(const AFilename: string): boolean;
+const
+  IO_REPARSE_TAG_MOUNT_POINT = $A0000003;
+  IO_REPARSE_TAG_SYMLINK     = $A000000C;
 var
-  FileHandle: THandle;
-  FileInfo: TBYHANDLEFILEINFORMATION;
+  Attr: Longint;
+  Rec: TSearchRec;
 begin
-  FileHandle := FileOpen(UTF8ToSys(AFileName), fmOpenRead or fmShareDenyNone);
-  if FileHandle <> feInvalidHandle then
+  Attr := FileGetAttrUTF8(AFilename);
+  if (Attr <> -1) and (Attr and FILE_ATTRIBUTE_REPARSE_POINT <> 0) then
   begin
-    GetFileInformationByHandle(HFile(FileHandle), FileInfo);
-    Result := FileInfo.nNumberOfLinks > 1;
-    FileClose(FileHandle);
+    FindFirstUTF8(AFilename, Attr, Rec);
+    if Rec.FindHandle <> feInvalidHandle then
+    begin
+      Windows.FindClose(Rec.FindHandle);
+      Result := (Rec.FindData.dwReserved0 = IO_REPARSE_TAG_SYMLINK) or (Rec.FindData.dwReserved0 = IO_REPARSE_TAG_MOUNT_POINT);
+    end
+    else
+      Result := False;
   end
   else
     Result := False;
