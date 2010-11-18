@@ -65,16 +65,17 @@ type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
 
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
-    tkSpace, tkString, tkSymbol, {$IFDEF SYN_LAZARUS}tkDirective, {$ENDIF}
+    tkSpace, tkString, tkSymbol, tkDirective, tkIDEDirective,
     tkUnknown);
 
   TRangeState = (
     // rsAnsi, rsBor, rsDirective are exclusive to each other
-    rsAnsi,      // *) comment
-    rsBor,       // { comment
-    rsSlash,     // //
-    rsDirective,
-    rsAsm,       // assembler block
+    rsAnsi,         // *) comment
+    rsBor,          // { comment
+    rsSlash,        // //
+    rsIDEDirective, // {%
+    rsDirective,    // {$
+    rsAsm,          // assembler block
     rsProperty,
     rsAtPropertyOrReadWrite, // very first word after property (name of the property) or after read write in property
     rsInterface,
@@ -279,14 +280,14 @@ type
     fSymbolAttri: TSynHighlighterAttributes;
     fAsmAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
+    FIDEDirectiveAttri: TSynHighlighterAttributes;
+    FCurIDEDirectiveAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
     FCaseLabelAttri: TSynHighlighterAttributes;
     FCurCaseLabelAttri: TSynHighlighterAttributes;
-    {$IFDEF SYN_LAZARUS}
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
-    {$ENDIF}
     fD4syntax: boolean;
     {$IFDEF SYN_LAZARUS}
     FCatchNodeInfo: Boolean;
@@ -523,6 +524,8 @@ protected
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
+    property IDEDirectiveAttri: TSynHighlighterAttributes read FIDEDirectiveAttri
+      write FIDEDirectiveAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
       write fIdentifierAttri;
     property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
@@ -2248,6 +2251,10 @@ begin
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style:= [fsItalic];
   AddAttribute(fCommentAttri);
+  FIDEDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
+  FIDEDirectiveAttri.Features := FIDEDirectiveAttri.Features + [hafStyleMask];
+  AddAttribute(FIDEDirectiveAttri);
+  FCurIDEDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   fIdentifierAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
   fKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
@@ -2265,12 +2272,10 @@ begin
   FCaseLabelAttri.Features := FCaseLabelAttri.Features + [hafStyleMask];
   AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
-  {$IFDEF SYN_LAZARUS}
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective, SYNS_XML_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
   CompilerMode:=pcmDelphi;
-  {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
 
   InitIdent;
@@ -2285,6 +2290,7 @@ destructor TSynPasSyn.Destroy;
 begin
   DestroyDividerDrawConfig;
   FreeAndNil(FCurCaseLabelAttri);
+  FreeAndNil(FCurIDEDirectiveAttri);
   inherited Destroy;
 end;
 
@@ -2357,9 +2363,10 @@ procedure TSynPasSyn.BorProc;
 var
   p: LongInt;
 begin
-  {$IFDEF SYN_LAZARUS}
   p:=Run;
   fTokenID := tkComment;
+  if rsIDEDirective in fRange then
+    fTokenID := tkIDEDirective;
   repeat
     case fLine[p] of
     #0,#10,#13: break;
@@ -2370,7 +2377,7 @@ begin
         EndPascalCodeFoldBlock;
         p:=Run;
       end else begin
-        fRange := fRange - [rsBor];
+        fRange := fRange - [rsBor, rsIDEDirective];
         Inc(p);
         if TopPascalCodeFoldBlockType=cfbtBorCommand then
           EndPascalCodeFoldBlock;
@@ -2387,24 +2394,6 @@ begin
     Inc(p);
   until (p>=fLineLen);
   Run:=p;
-  {$ELSE}
-  case fLine[Run] of
-     #0: NullProc;
-    #10: LFProc;
-    #13: CRProc;
-    else begin
-      fTokenID := tkComment;
-      repeat
-        if fLine[Run] = '}' then begin
-          Inc(Run);
-          fRange := fRange - [rsBor];
-          break;
-        end;
-        Inc(Run);
-      until (fLine[Run] in [#0, #10, #13]);
-    end;
-  end;
-  {$ENDIF}
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -2523,8 +2512,9 @@ begin
     // curly bracket open -> borland comment
     fStringLen := 1; // length of "{"
     inc(Run);
-    fRange := fRange + [rsBor];
     if (Run < fLineLen) and (fLine[Run] = '%') then begin
+      fRange := fRange + [rsIDEDirective];
+    // IDE directive {%xxx } rsIDEDirective
       inc(Run);
       fToIdent := Run;
       KeyHash;
@@ -2545,6 +2535,7 @@ begin
       end;
     end
     else begin
+      fRange := fRange + [rsBor];
       dec(Run);
       StartPascalCodeFoldBlock(cfbtBorCommand);
       inc(Run);
@@ -2940,7 +2931,7 @@ begin
     else
       if rsAnsi in fRange then
         AnsiProc
-      else if rsBor in fRange then
+      else if fRange * [rsBor, rsIDEDirective] <> [] then
         BorProc
       else if rsDirective in fRange then
         DirectiveProc
@@ -2963,7 +2954,7 @@ begin
           if (FTokenID = tkKey) then
             fRange := fRange - [rsAtCaseLabel];
         end;
-        if not (FTokenID in [tkSpace, tkComment, tkDirective]) then begin
+        if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective]) then begin
           if (PasCodeFoldRange.BracketNestLevel = 0) and
              not(rsAtClosingBracket in fRange)
           then
@@ -2978,7 +2969,7 @@ begin
           fRange := fRange - [rsAtClosingBracket];
       end
   end;
-  if FAtLineStart and not(FTokenID in [tkSpace, tkComment]) then
+  if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
     FAtLineStart := False;
   //DebugLn(['TSynPasSyn.Next Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
 end;
@@ -3031,8 +3022,8 @@ end;
 
 function TSynPasSyn.GetTokenID: TtkTokenKind;
 begin
-  if not fAsmStart and (fRange * [rsAnsi, rsBor, rsDirective, rsAsm] = [rsAsm])
-    and not (fTokenId in [tkNull, tkComment, tkSpace, tkDirective])
+  if not fAsmStart and (fRange * [rsAnsi, rsBor, rsIDEDirective, rsDirective, rsAsm] = [rsAsm])
+    and not (fTokenId in [tkNull, tkComment, tkIDEDirective, tkSpace, tkDirective])
   then
     Result := tkAsm
   else
@@ -3046,15 +3037,23 @@ begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
     tkComment: Result := fCommentAttri;
+    tkIDEDirective: begin
+      Result := FCurIDEDirectiveAttri;
+      Result.Assign(FCommentAttri);
+      if FIDEDirectiveAttri.Background <> clNone then Result.Background := FIDEDirectiveAttri.Background;
+      if FIDEDirectiveAttri.Foreground <> clNone then Result.Foreground := FIDEDirectiveAttri.Foreground;
+      if FIDEDirectiveAttri.FrameColor <> clNone then Result.FrameColor := FIDEDirectiveAttri.FrameColor;
+      sMask := FIDEDirectiveAttri.StyleMask + (fsNot(FIDEDirectiveAttri.StyleMask) * FIDEDirectiveAttri.Style); // Styles to be taken from FIDEDirectiveAttri
+      Result.Style:= (Result.Style * fsNot(sMask)) + (FIDEDirectiveAttri.Style * sMask);
+      Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (FIDEDirectiveAttri.StyleMask * sMask);
+    end;
     tkIdentifier: Result := fIdentifierAttri;
     tkKey: Result := fKeyAttri;
     tkNumber: Result := fNumberAttri;
     tkSpace: Result := fSpaceAttri;
     tkString: Result := fStringAttri;
     tkSymbol: Result := fSymbolAttri;
-    {$IFDEF SYN_LAZARUS}
     tkDirective: Result := fDirectiveAttri;
-    {$ENDIF}
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
@@ -4010,6 +4009,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
           fSymbolAttri    .Assign(tmpSymbolAttri);
           fAsmAttri       .Assign(tmpAsmAttri);
           fCommentAttri   .Assign(tmpCommentAttri);
+          FIDEDirectiveAttri.Assign(tmpCommentAttri);
           {$IFDEF SYN_LAZARUS}
           fDirectiveAttri .Assign(tmpDirectiveAttri);
           {$ENDIF}

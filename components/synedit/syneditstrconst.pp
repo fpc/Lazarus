@@ -74,6 +74,7 @@ resourcestring
   SYNS_AttrCharacter            =  'Character';
   SYNS_AttrClass                =  'Class';
   SYNS_AttrComment              =  'Comment';
+  SYNS_AttrIDEDirective         =  'IDE Directive';
   SYNS_AttrCondition            =  'Condition';
   SYNS_AttrDataType             =  'Data type';
   SYNS_AttrDefaultPackage       =  'Default packages';
@@ -182,6 +183,7 @@ const
   SYNS_XML_AttrCharacter            :String = SYNS_AttrCharacter;            // 'Character';
   SYNS_XML_AttrClass                :String = SYNS_AttrClass;                // 'Class';
   SYNS_XML_AttrComment              :String = SYNS_AttrComment;              // 'Comment';
+  SYNS_XML_AttrIDEDirective         :String = SYNS_AttrIDEDirective;         // 'IDE Directive';
   SYNS_XML_AttrCondition            :String = SYNS_AttrCondition;            // 'Condition';
   SYNS_XML_AttrDataType             :String = SYNS_AttrDataType;             // 'Data type';
   SYNS_XML_AttrDefaultPackage       :String = SYNS_AttrDefaultPackage;       // 'Default packages';
