@@ -744,13 +744,17 @@ begin
   // TODO ???
 end;
 
-class procedure TWinCEWSCustomListView.SetFont(const AWinControl: TWinControl;
-  const AFont: TFont);
+class procedure TWinCEWSCustomListView.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+var
+  Color: TColor;
 begin
   // call inherited SetFont; need to do it this way,
   // because the compile time ancestor class is TWSCustomListView
   TWSWinControlClass(ClassParent).SetFont(AWinControl, AFont);
-  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, ColorToRGB(AFont.Color));
+  Color := AFont.Color;
+  if Color = clDefault then
+   Color := AWinControl.GetDefaultColor(dctFont);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, ColorToRGB(Color));
 end;
 
 //roozbeh not supported!

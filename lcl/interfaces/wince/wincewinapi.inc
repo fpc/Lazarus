@@ -221,7 +221,12 @@ var
     else if Selected then
       OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_HIGHLIGHTTEXT))
     else
-      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(CheckListBox.Font.Color));
+    begin
+      OldColor := CheckListBox.Font.Color;
+      if OldColor = clDefault then
+        OldColor := CheckListBox.GetDefaultColor(dctFont);
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(OldColor));
+    end;
 
     WideBuffer := UTF8Decode(CheckListBox.Items[Data^.ItemID]);
     Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
