@@ -6636,13 +6636,15 @@ var
       if (ImplementationNode.FirstChild=nil)
       or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-        InsertPos:=ImplementationNode.EndPos
+        InsertPos:=ImplementationNode.EndPos;
+        exit;
       end;
       StartSearchProc:=ImplementationNode.FirstChild;
     end else begin
       // class is not in interface section
       StartSearchProc:=CodeCompleteClassNode;
-      while StartSearchProc.Desc<>ctnTypeSection do
+      while (StartSearchProc.Parent<>nil)
+      and (StartSearchProc.Desc<>ctnTypeSection) do
         StartSearchProc:=StartSearchProc.Parent;
     end;
     case ASourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy of
@@ -6674,7 +6676,9 @@ var
         // Try to insert new proc behind existing methods
 
         // find last method (go to last brother and search backwards)
-        NearestProcNode:=StartSearchProc.Parent.LastChild;
+        if (StartSearchProc<>nil)
+        and (StartSearchProc.Parent<>nil) then
+          NearestProcNode:=StartSearchProc.Parent.LastChild;
         while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
           NearestProcNode:=NearestProcNode.PriorBrother;
         if NearestProcNode<>nil then begin
@@ -6685,7 +6689,9 @@ var
     end;
 
     // Default position: Insert behind last node
-    NearestProcNode:=StartSearchProc.Parent.LastChild;
+    if (StartSearchProc<>nil)
+    and (StartSearchProc.Parent<>nil) then
+      NearestProcNode:=StartSearchProc.Parent.LastChild;
     if NearestProcNode<>nil then begin
       Indent:=0;
       InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.EndPos);
