@@ -3786,6 +3786,13 @@ end;
 
 procedure TGDBMIDebugger.Done;
 begin
+  if State = dsDestroying
+  then begin
+    ClearCommandQueue;
+    inherited Done;
+    exit;
+  end;
+
   LockRelease;
   try
     CancelAllQueued;
