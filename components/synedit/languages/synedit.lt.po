@@ -147,6 +147,10 @@ msgstr "Šešioliktainis"
 msgid "Icon reference"
 msgstr "Rodyklė į piktogramą"
 
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr ""
+
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
 msgstr "Identifikatorius"

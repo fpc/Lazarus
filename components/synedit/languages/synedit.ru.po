@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-22 19:25+0300\n"
+"PO-Revision-Date: 2010-11-19 02:02+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -144,6 +144,10 @@ msgstr "Шестнадцатеричное число"
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
 msgstr "Ссылка на значок"
+
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr "Директива IDE"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"

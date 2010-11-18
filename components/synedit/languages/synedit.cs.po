@@ -146,6 +146,10 @@ msgstr "Hexadecimální"
 msgid "Icon reference"
 msgstr "Ikonový odkaz"
 
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr ""
+
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
 msgstr "Identifikátor"

@@ -145,6 +145,10 @@ msgstr "הקסה-דצימלי"
 msgid "Icon reference"
 msgstr "מראה מקום האיקון"
 
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr ""
+
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
 msgstr "מזהה"

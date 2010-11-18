@@ -149,6 +149,10 @@ msgstr "Hexadezimal"
 msgid "Icon reference"
 msgstr "Icon-Verweis"
 
+#: syneditstrconst.syns_attridedirective
+msgid "IDE Directive"
+msgstr ""
+
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
 msgstr "Bezeichner"
