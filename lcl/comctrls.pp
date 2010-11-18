@@ -1818,6 +1818,7 @@ type
   TCustomTrackBar = class(TWinControl)
   private
     FOrientation: TTrackBarOrientation;
+    FReversed: Boolean;
     FSelEnd: Integer;
     FSelStart: Integer;
     FShowSelRange: Boolean;
@@ -1840,6 +1841,7 @@ type
     procedure SetPageSize(Value: Integer);
     procedure SetParams(APosition, AMin, AMax: Integer);
     procedure SetPosition(Value: Integer);
+    procedure SetReversed(const AValue: Boolean);
     procedure SetScalePos(Value: TTrackBarScalePos);
     procedure SetSelEnd(const AValue: Integer);
     procedure SetSelStart(const AValue: Integer);
@@ -1868,6 +1870,7 @@ type
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property PageSize: Integer read FPageSize write SetPageSize default 2;
     property Position: Integer read FPosition write SetPosition;
+    property Reversed: Boolean read FReversed write SetReversed default False;
     property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos default trTop;
     property SelEnd: Integer read FSelEnd write SetSelEnd default 0;
     property SelStart: Integer read FSelStart write SetSelStart default 0;
@@ -1922,6 +1925,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property Position;
+    property Reversed;
     property ScalePos;
     property SelEnd;
     property SelStart;

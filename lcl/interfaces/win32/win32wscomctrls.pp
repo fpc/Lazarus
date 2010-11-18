@@ -877,22 +877,26 @@ var
   NewStyle: integer;
 const
   StyleMask = TBS_AUTOTICKS or TBS_NOTICKS or TBS_VERT or TBS_TOP or TBS_BOTH or
-    TBS_ENABLESELRANGE;
+    TBS_ENABLESELRANGE or TBS_REVERSED;
   TickStyleStyle: array[TTickStyle] of DWORD = (TBS_NOTICKS, TBS_AUTOTICKS, 0);
   OrientationStyle: array[TTrackBarOrientation] of DWORD = (TBS_HORZ, TBS_VERT);
   TickMarksStyle: array[TTickMark] of DWORD = (TBS_BOTTOM, TBS_TOP, TBS_BOTH);
   SelRangeStyle: array[Boolean] of DWORD = (0, TBS_ENABLESELRANGE);
+  ReversedStyle: array[Boolean] of DWORD = (0, TBS_REVERSED);
 begin
   with ATrackBar do
   begin
     { cache handle }
     wHandle := Handle;
     NewStyle := TickStyleStyle[TickStyle] or OrientationStyle[Orientation] or
-                TickMarksStyle[TickMarks] or SelRangeStyle[ShowSelRange];
+                TickMarksStyle[TickMarks] or SelRangeStyle[ShowSelRange] or ReversedStyle[Reversed];
     UpdateWindowStyle(wHandle, NewStyle, StyleMask);
     Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
     Windows.SendMessage(wHandle, TBM_SETRANGEMIN, Windows.WPARAM(True), Min);
-    Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(True), Position);
+    if Reversed then
+      Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(True), Max + Min - Position)
+    else
+      Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(True), Position);
     Windows.SendMessage(wHandle, TBM_SETLINESIZE, 0, LineSize);
     Windows.SendMessage(wHandle, TBM_SETPAGESIZE, 0, PageSize);
     Windows.SendMessage(wHandle, TBM_SETTICFREQ, Frequency, 0);
@@ -908,12 +912,17 @@ end;
 
 class function TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
-  Result := SendMessage(ATrackBar.Handle, TBM_GETPOS, 0, 0)
+  Result := SendMessage(ATrackBar.Handle, TBM_GETPOS, 0, 0);
+  if (GetWindowLong(ATrackBar.Handle, GWL_STYLE) and TBS_REVERSED) <> 0 then
+    Result := ATrackBar.Max + ATrackBar.Min - Result;
 end;
 
 class procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 begin
-  Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
+  if (GetWindowLong(ATrackBar.Handle, GWL_STYLE) and TBS_REVERSED) <> 0 then
+    Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(ATrackBar.Max + ATrackBar.Min - NewPosition))
+  else
+    Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
 end;
 
 class procedure TWin32WSTrackBar.SetTick(const ATrackBar: TCustomTrackBar;

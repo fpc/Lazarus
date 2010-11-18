@@ -72,6 +72,7 @@ begin
   FSelStart := 0;
   FSelEnd := 0;
   FShowSelRange := True;
+  FReversed := False;
   TabStop := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -126,7 +127,8 @@ begin
     FOrientation := Value;
     // switch width and height, but not when loading, because we assume that the
     // lfm contains a consistent combination of Orientation and (width, height)
-    if not (csLoading in ComponentState) then begin
+    if not (csLoading in ComponentState) then
+    begin
       OldWidth:=Width;
       OldHeight:=Height;
       SetBounds(Left,Top,OldHeight,OldWidth);
@@ -177,6 +179,15 @@ begin
       TWSTrackBarClass(WidgetSetClass).SetPosition(Self, FPosition);
     if not (csLoading in ComponentState) then 
       Changed;
+  end;
+end;
+
+procedure TCustomTrackBar.SetReversed(const AValue: Boolean);
+begin
+  if FReversed <> AValue then
+  begin
+    FReversed := AValue;
+    ApplyChanges;
   end;
 end;
 

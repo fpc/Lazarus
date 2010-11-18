@@ -191,7 +191,6 @@ type
 
   { TWSTrackBar }
 
-  TWSTrackBarClass = class of TWSTrackBar;
   TWSTrackBar = class(TWSWinControl)
   published
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
@@ -199,6 +198,7 @@ type
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
   end;
+  TWSTrackBarClass = class of TWSTrackBar;
 
   { TWSCustomTreeView }
 
