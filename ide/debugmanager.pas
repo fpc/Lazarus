@@ -2478,6 +2478,7 @@ begin
     then begin
       // the current debugger is the wrong type -> free it
       FreeDebugger;
+      FIsInitializingDebugger:= True; // been reset by FreeDebuger
     end;
 
     // create debugger object
@@ -2761,6 +2762,7 @@ end;
 
 procedure TDebugManager.EndDebugging;
 begin
+  FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
   if FDebugger <> nil then FDebugger.Done;
   // if not already freed
