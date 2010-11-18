@@ -1501,7 +1501,7 @@ begin
        otherwise LCL is not updated since ChangeLock = 1 in case
        of pressing right mouse button and 'changed' signal never reach lcl.
        Issues #16972, #17888. }
-      if GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
+      if Result and GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
       begin
         Result := False;
         FillChar(Mess,SizeOf(Mess),0);
