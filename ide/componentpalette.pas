@@ -81,7 +81,6 @@ type
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnClick(Sender: TObject);
     procedure ComponentBtnDblClick(Sender: TObject);
-    procedure SetSelected(const AValue: TRegisteredComponent);
     procedure CreatePopupMenu;
   protected
     procedure DoBeginUpdate; override;
@@ -92,6 +91,8 @@ type
     procedure Update; override;
     procedure CheckComponentDesignerVisible(AComponent: TComponent;
                                             var Invisible: boolean);
+    procedure SetSelected(const AValue: TRegisteredComponent); override;
+    function GetSelected: TRegisteredComponent; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -111,7 +112,6 @@ type
     procedure UpdateVisible; override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
-    property Selected: TRegisteredComponent read FSelected write SetSelected;
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
@@ -322,6 +322,11 @@ begin
     TSpeedButton(FSelected.Button).Down:=true;
     FPageControl.ActivePage:=TTabSheet(FSelected.Page.PageComponent);
   end;
+end;
+
+function TComponentPalette.GetSelected: TRegisteredComponent;
+begin
+  Result:=FSelected;
 end;
 
 procedure TComponentPalette.CreatePopupMenu;

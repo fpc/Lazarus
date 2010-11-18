@@ -172,10 +172,12 @@ type
     procedure OnPageVisibleChanged(APage: TBaseComponentPage); virtual;
     procedure Update; virtual;
     procedure UpdateVisible(AComponent: TRegisteredComponent); virtual;
+    function GetSelected: TRegisteredComponent; virtual;
     procedure SetBaseComponentPageClass(
                                 const AValue: TBaseComponentPageClass); virtual;
     procedure SetRegisteredComponentClass(
                               const AValue: TRegisteredComponentClass); virtual;
+    procedure SetSelected(const AValue: TRegisteredComponent); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -219,6 +221,7 @@ type
     property RegisteredComponentClass: TRegisteredComponentClass
                                                  read FRegisteredComponentClass;
     property HideControls: boolean read FHideControls write SetHideControls;
+    property Selected: TRegisteredComponent read GetSelected write SetSelected;
   end;
   
 
@@ -466,6 +469,11 @@ begin
   FHandlers[HandlerType].Add(AMethod);
 end;
 
+function TBaseComponentPalette.GetSelected: TRegisteredComponent;
+begin
+  result := nil;
+end;
+
 procedure TBaseComponentPalette.RemoveHandler(
   HandlerType: TComponentPaletteHandlerType; const AMethod: TMethod);
 begin
@@ -477,6 +485,11 @@ begin
   if FHideControls=AValue then exit;
   FHideControls:=AValue;
   UpdateVisible;
+end;
+
+procedure TBaseComponentPalette.SetSelected(const AValue: TRegisteredComponent);
+begin
+  // ignore
 end;
 
 procedure TBaseComponentPalette.DoChange;

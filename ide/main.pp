@@ -13289,7 +13289,7 @@ end;
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject;
   var RegisteredComponent: TRegisteredComponent);
 begin
-  RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
+  RegisteredComponent:=IDEComponentPalette.Selected;
 end;
 
 procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject);
