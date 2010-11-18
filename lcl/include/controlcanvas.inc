@@ -42,12 +42,12 @@ begin
   //DebugLn('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
 end;
 
-function TControlCanvas.GetDefaultColor: TColor;
+function TControlCanvas.GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor;
 begin
   if Assigned(FControl) then
-    Result := FControl.GetDefaultColor(dctBrush)
+    Result := FControl.GetDefaultColor(ADefaultColorType)
   else
-    Result := inherited GetDefaultColor;
+    Result := inherited GetDefaultColor(ADefaultColorType);
 end;
 
 {------------------------------------------------------------------------------

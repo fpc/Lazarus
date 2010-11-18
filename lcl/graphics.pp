@@ -972,6 +972,11 @@ type
     Height: Integer;
   end;
 
+  TDefaultColorType = (
+    dctBrush,
+    dctFont
+  );
+
   { TCanvas }
 
   TCanvas = class(TFPCustomCanvas)
@@ -1040,7 +1045,7 @@ type
                          const SourceRect: TRect); override;
     procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
-    function GetDefaultColor: TColor; virtual;
+    function GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor; virtual;
   protected
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;

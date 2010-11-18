@@ -256,7 +256,7 @@ type
   protected
     procedure CreateHandle; override;
     procedure CreateFont; override;
-    function GetDefaultColor: TColor; override;
+    function GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -845,11 +845,6 @@ type
     chtOnVisibleChanged,
     chtOnKeyDown
     );
-
-  TDefaultColorType = (
-    dctBrush,
-    dctFont
-  );
 
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to

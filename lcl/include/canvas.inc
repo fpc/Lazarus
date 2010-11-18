@@ -650,7 +650,7 @@ begin
   debugln('TCanvas.CheckHelper ignored for ',DbgSName(AHelper));
 end;
 
-function TCanvas.GetDefaultColor: TColor;
+function TCanvas.GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor;
 begin
   Result := clDefault;
 end;

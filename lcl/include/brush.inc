@@ -200,7 +200,7 @@ function TBrush.GetColor: TColor;
 begin
   Result := FColor;
   if (Result = clDefault) and Assigned(Canvas) and (Canvas is TCanvas) then
-    Result := TCanvas(Canvas).GetDefaultColor;
+    Result := TCanvas(Canvas).GetDefaultColor(dctBrush);
 end;
 
 procedure TBrush.ReferenceNeeded;
