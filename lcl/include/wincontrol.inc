@@ -5164,10 +5164,9 @@ begin
         DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
         {$ENDIF}
         Form := GetParentForm(Self);
-        if (Form<>nil)
-        and (not (csDestroyingHandle in ControlState))
-        and (not (csDestroying in ComponentState))
-        then begin
+        if Assigned(Form) and not (csDesigning in Form.ComponentState) and
+           not (csDestroyingHandle in ControlState) and not (csDestroying in ComponentState) then
+        begin
           if not Form.SetFocusedControl(Self) then Exit;
           Message.Result := 0;
         end;
