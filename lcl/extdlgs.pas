@@ -477,12 +477,12 @@ procedure SetDefaultFont(AFont: TFont; Layout: TCalculatorLayout);
 
 begin
   with AFont do
-    begin
-    Color:=clWindowText;
-    Name:='MS Sans Serif';
-    Size:=8;
-    Style:=[fsBold];
-    end;
+  begin
+    Color := clWindowText;
+    Name := 'MS Sans Serif';
+    Size := 8;
+    Style := [fsBold];
+  end;
 end;
 
 function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; AHelpContext: THelpContext): TCalculatorForm;
@@ -492,11 +492,11 @@ begin
     try
       HelpContext:=AHelpContext;
       if Screen.PixelsPerInch <> 96 then
-        begin { scale to screen res }
+      begin { scale to screen res }
         SetDefaultFont(Font, ALayout);
         Left:=(Screen.Width div 2) - (Width div 2);
         Top:=(Screen.Height div 2) - (Height div 2);
-        end;
+      end;
     except
       Free;
       raise;

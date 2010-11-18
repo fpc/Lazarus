@@ -1364,7 +1364,10 @@ begin
       begin
         if ChildWinControl <> nil then
         begin
-          Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
+          WindowColor := ChildWinControl.Font.Color;
+          if WindowColor = clDefault then
+            WindowColor := ChildWinControl.GetDefaultColor(dctFont);
+          Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
           WindowColor := ChildWinControl.Brush.Color;
           if WindowColor = clDefault then
             WindowColor := ChildWinControl.GetDefaultColor(dctBrush);

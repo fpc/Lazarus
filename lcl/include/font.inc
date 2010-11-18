@@ -600,7 +600,7 @@ end;
 constructor TFont.Create;
 begin
   inherited Create;
-  FColor := clWindowText;
+  FColor := {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
   FPixelsPerInch := ScreenInfo.PixelsPerInchY;
   FPitch := DefFontData.Pitch;
   FCharSet := DefFontData.CharSet;
@@ -743,7 +743,7 @@ end;
 function TFont.IsDefault: boolean;
 begin
   Result:=(CharSet=DEFAULT_CHARSET)
-         and (Color=clWindowText)
+         and (Color={$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif})
          and (Height=0)
          and (not IsNameStored)
          and (Pitch=fpDefault)
@@ -767,7 +767,7 @@ begin
     Pitch := DefFontData.Pitch;
     Quality := DefFontData.Quality;
     Style := DefFontData.Style;
-    Color := clWindowText;
+    Color := {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
   finally
     EndUpdate;
   end;
@@ -894,6 +894,13 @@ procedure TFont.SetColor(Value : TColor);
 begin
   if FColor <> Value then
     SetColor(Value, TColorToFPColor(Value));
+end;
+
+function TFont.GetColor: TColor;
+begin
+  Result := Color;
+  if (Result = clDefault) and Assigned(Canvas) and (Canvas is TCanvas) then
+    Result := TCanvas(Canvas).GetDefaultColor(dctFont);
 end;
 
 {------------------------------------------------------------------------------

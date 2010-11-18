@@ -187,6 +187,7 @@ var
     Options: TDTTOpts;
     Details: TThemedElementDetails;
     ShowAccel: Boolean;
+    Color: TColor;
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
@@ -215,7 +216,10 @@ var
     else
     begin
       Windows.FillRect(TmpDC, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
-      SetTextColor(TmpDC, ColorToRGB(BitBtn.Font.Color));
+      Color := BitBtn.Font.Color;
+      if Color = clDefault then
+        Color := BitBtn.GetDefaultColor(dctFont);
+      SetTextColor(TmpDC, ColorToRGB(Color));
     end;
 
     if AState <> bsDisabled then
@@ -297,7 +301,10 @@ var
       if AState <> bsDisabled then
       begin
         // change color to requested or it will be black
-        Options.crText := ThemeServices.ColorToRGB(BitBtn.Font.Color, @Details);
+        Color := BitBtn.Font.Color;
+        if Color = clDefault then
+          Color := BitBtn.GetDefaultColor(dctFont);
+        Options.crText := ThemeServices.ColorToRGB(Color, @Details);
         Options.crShadow := Options.crText;
         Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
       end;

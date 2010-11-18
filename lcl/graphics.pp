@@ -516,6 +516,7 @@ type
     procedure SetCharSet(const AValue: TFontCharSet);
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetColor(Value: TColor);
+    function GetColor: TColor;
     procedure SetFlags(Index: integer; AValue: boolean); override;
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetHeight(Avalue: Integer);
@@ -544,7 +545,7 @@ type
     property Reference: TWSFontReference read GetReference;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
-    property Color: TColor read FColor write SetColor default clWindowText;
+    property Color: TColor read FColor write SetColor default {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
     property Height: Integer read GetHeight write SetHeight stored IsHeightStored;
     property Name: string read GetName write SetName stored IsNameStored;
     property Orientation: Integer read GetOrientation write SetOrientation default 0;

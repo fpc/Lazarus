@@ -259,10 +259,10 @@ begin
   // The TFont will call DeleteObject itself, so we never need to call it.
   OldHandle := SelectObject(FHandle, HGDIOBJ(Font.Reference.Handle));
   //DebugLn(['TCanvas.CreateFont OldHandle=',dbghex(OldHandle),' Font.Handle=',dbghex(Font.Handle)]);
-  if (OldHandle <> HFONT(Font.Reference.Handle)) and (FSavedFontHandle=0) then
+  if (OldHandle <> HFONT(Font.Reference.Handle)) and (FSavedFontHandle = 0) then
     FSavedFontHandle := OldHandle;
   Include(FState, csFontValid);
-  SetTextColor(FHandle, Font.Color);
+  SetTextColor(FHandle, Font.GetColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -1203,7 +1203,8 @@ begin
     SetBkMode(DC, TRANSPARENT);
 
   if Style.SystemFont then
-    SetTextColor(DC, Font.Color);
+    SetTextColor(DC, Font.GetColor);
+
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(DC, pChar(Text), Length(Text), fRect, Options);
   

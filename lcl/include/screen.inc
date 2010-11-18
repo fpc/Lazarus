@@ -731,7 +731,7 @@ begin
   if not WidgetSet.InitStockFont(FSystemFont, sfSystem) then
   begin
     FSystemFont.FontData := DefFontData;
-    FSystemFont.Color := clWindowText;
+    FSystemFont.Color := {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
   end;
   Result := FSystemFont;
 end;
@@ -755,7 +755,7 @@ begin
   if not WidgetSet.InitStockFont(FIconFont, sfIcon) then
   begin
     FIconFont.FontData := DefFontData;
-    FIconFont.Color := clWindowText;
+    FIconFont.Color := {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
   end;
   Result := FIconFont;
 end;
