@@ -22,10 +22,6 @@
   TODO:- multiselect for the actions and categories
        - drag & drop for the actions and categories
        - standard icon for "Standard Action"
-       - sometimes click in listbox causes selecting last item
-         (it's an strange gtk error. The LCL and the gtk intf do not send any
-          change to the gtk. Either it is a bug in the gtk1 or we are doing
-          something wrong in the handlers.)
 }
 unit ActionsEditor;
 
@@ -144,9 +140,11 @@ type
     procedure lstActionNameDblClick(Sender: TObject);
   protected
     procedure OnComponentRenamed(AComponent: TComponent);
-    procedure OnComponentSelection(const OnSetSelection: TPersistentSelectionList);
+    procedure OnComponentSelection(const NewSelection: TPersistentSelectionList);
     procedure OnRefreshPropertyValues;
     function GetSelectedAction: TContainedAction;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   private
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
@@ -288,12 +286,13 @@ function FindActionEditor(AList: TActionList): TActionListEditor;
 var
   i : Integer;
 begin
-  for i:=0 to EditorForms.Count-1 do begin
-    if TActionListEditor(EditorForms[i]).FActionList=AList then begin
-      Result:=TActionListEditor(EditorForms[i]);
-      Exit;
+  if AList<>nil then
+    for i:=0 to EditorForms.Count-1 do begin
+      if TActionListEditor(EditorForms[i]).FActionList=AList then begin
+        Result:=TActionListEditor(EditorForms[i]);
+        Exit;
+      end;
     end;
-  end;
   Result:=nil
 end;
 
@@ -378,12 +377,14 @@ end;
 
 procedure TActionListEditor.OnComponentRenamed(AComponent: TComponent);
 begin
-  if (not Self.Visible) or (not Assigned(FActionList.ActionByName(AComponent.Name)))
+  if (not Visible) or (FActionList=nil)
+  or (not Assigned(FActionList.ActionByName(AComponent.Name)))
   then Exit;
   lstActionName.Items[lstActionName.ItemIndex] := AComponent.Name;
 end;
 
-procedure TActionListEditor.OnComponentSelection(const OnSetSelection: TPersistentSelectionList);
+procedure TActionListEditor.OnComponentSelection(
+  const NewSelection: TPersistentSelectionList);
 var
   CurSelect: TContainedAction;
   tmpCategory: String;
@@ -403,14 +404,14 @@ var
 begin
   // TODO: multiselect
   if Self.Visible
-     and Assigned(OnSetSelection)
-     and (OnSetSelection.Count > 0)
-     and (OnSetSelection.Items[0] is TContainedAction)
-     and (TContainedAction(OnSetSelection.Items[0]).ActionList = FActionList) then
+     and Assigned(NewSelection)
+     and (NewSelection.Count > 0)
+     and (NewSelection.Items[0] is TContainedAction)
+     and (TContainedAction(NewSelection.Items[0]).ActionList = FActionList) then
     begin
-      if GetSelectedAction = OnSetSelection.Items[0]
+      if GetSelectedAction = NewSelection.Items[0]
       then Exit;
-      CurSelect := TContainedAction(OnSetSelection.Items[0]);
+      CurSelect := TContainedAction(NewSelection.Items[0]);
       CurSelect.Category := Trim(CurSelect.Category);
       tmpCategory := CurSelect.Category;
       if (tmpCategory <> '')
@@ -446,12 +447,13 @@ procedure TActionListEditor.OnRefreshPropertyValues;
          and (i = lstCategory.Items.IndexOf(cActionListEditorAllCategory))
       then Break;
       bool := False;
-      for j:= FActionList.ActionCount-1 downto 0 do begin
-        if TContainedAction(FActionList.Actions[j]).Category = lstCategory.Items[i] then begin
-          bool := True;
-          Break;
+      if FActionList<>nil then
+        for j:= FActionList.ActionCount-1 downto 0 do begin
+          if TContainedAction(FActionList.Actions[j]).Category = lstCategory.Items[i] then begin
+            bool := True;
+            Break;
+          end;
         end;
-      end;
       if not bool then begin
         Result := False;
         Break;
@@ -487,7 +489,8 @@ begin
     try
       if (ASelections.Count > 0)
          and (ASelections.Items[0] is TContainedAction)
-         and (TContainedAction(ASelections.Items[0]).ActionList = FActionList) then begin
+         and (TContainedAction(ASelections.Items[0]).ActionList = FActionList)
+      then begin
         curSelect := TContainedAction(ASelections.Items[0]);
         CurSelect.Category := Trim(CurSelect.Category);
         oldSelCategory := lstCategory.Items[lstCategory.ItemIndex];
@@ -497,35 +500,20 @@ begin
         tmpIsActCategory := IsCategory(CurSelect.Category);
         
         if tmpCategory = '' then tmpCategory := cActionListEditorUnknownCategory;
-           // je¿eli nie ma tej kategorii na liscie
         if ((curSelect.Category <> '') and not tmpIsActCategory)
-           // nie wszystkie kategorie z lstCategory istniej¹ w FActionList
-           // (usuniecie kategorii)
            or not tmpValidCategory
-           // je¿eli kategoria jest inna od oznaczonej
-           // oraz nie jest to kategoria '(All)' ani '(Unknown)'
            or ((tmpCategory <> lstCategory.Items[lstCategory.Items.IndexOf(tmpCategory)])
                and ((lstCategory.Items.IndexOf(cActionListEditorAllCategory) >= 0)
                       and (tmpCategory <> lstCategory.Items[lstCategory.Items.IndexOf(cActionListEditorAllCategory)]))
                and (tmpCategory <> lstCategory.Items[lstCategory.Items.IndexOf(cActionListEditorUnknownCategory)]))
         then FillCategories;
 
-        tmpIndex := lstCategory.Items.IndexOf(tmpCategory);  // ???
-        // s¹ kategorie (nie tylko Unknown) rownie¿ All i inne
+        tmpIndex := lstCategory.Items.IndexOf(tmpCategory);
         if (lstCategory.Items.Count > 1)
-                  // nie istniala nowa kategoria
-                  // nie istniala zaznaczona kategoria
            and ( ((not tmpIsActCategory) and (not tmpValidCategory))
-                  // istniej zaznaczona kategoria
-                  // nie istniala nowa kategoria
                  or ((lstCategory.Items.IndexOf(oldSelCategory) >=0) and (not tmpIsActCategory))
-                  // nie istnieje zaznaczona kategoria
-                  // istniej nowa kategoria
                  or ((lstCategory.Items.IndexOf(oldSelCategory) = -1) and (tmpIndex >= 0))
-                  // istnieje zaznaczona kategoria
-                  // istnieje nowa kategoria
                  or ((lstCategory.Items.IndexOf(oldSelCategory) >= 0) and (tmpIndex >= 0)) )
-           // oraz poprzednio zaznaczona kategoria to nie (All)
            and (oldSelCategory <> cActionListEditorAllCategory) then begin
           lstCategory.ItemIndex := tmpIndex;
           lstCategory.Click;
@@ -544,9 +532,24 @@ end;
 
 function TActionListEditor.GetSelectedAction: TContainedAction;
 begin
-  if lstActionName.ItemIndex >= 0
-  then Result := FActionList.ActionByName(lstActionName.Items[lstActionName.ItemIndex])
-  else Result := nil;
+  if (lstActionName.ItemIndex >= 0)
+  and (FActionList<>nil) then
+    Result := FActionList.ActionByName(lstActionName.Items[lstActionName.ItemIndex])
+  else
+    Result := nil;
+end;
+
+procedure TActionListEditor.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=FActionList then begin
+      FActionList:=nil;
+      FillCategories;
+      FillActionByCategory(-1);
+    end;
+  end;
 end;
 
 procedure TActionListEditor.ResultStdActProc(const Category: string;
@@ -555,6 +558,7 @@ procedure TActionListEditor.ResultStdActProc(const Category: string;
 var
   NewAction: TContainedAction;
 begin
+  if FActionList=nil then exit;
   NewAction := ActionClass.Create(FActionList.Owner) as TContainedAction;
 //  NewAction := CreateAction(FActionList.Owner, ActionClass) as TContainedAction;
   if Category <> cActionListEditorUnknownCategory
@@ -626,6 +630,7 @@ var
   lboxIndex: Integer;
   direction: Integer;
 begin
+  if FActionList=nil then exit;
   if TComponent(Sender).Name = 'ActMoveUp'
   then direction := -1
   else direction := 1;
@@ -658,6 +663,7 @@ procedure TActionListEditor.ActNewExecute(Sender: TObject);
 var
   NewAction: TContainedAction;
 begin
+  if FActionList=nil then exit;
   NewAction := TAction.Create(FActionList.Owner);
   NewAction.Name := FDesigner.CreateUniqueComponentName(NewAction.ClassName);
 
@@ -720,6 +726,7 @@ var
   AAction: TCustomAction;
   S: String;
 begin
+  if FActionList=nil then exit;;
   ACanvas := TListBox(Control).Canvas;
   if odSelected in State then
   begin
@@ -786,6 +793,7 @@ var
   OldAction: TContainedAction;
   OldIndex: LongInt;
 begin
+  if FActionList=nil then exit;
   iNameIndex := lstActionName.ItemIndex;
   if iNameIndex < 0 then Exit;
   OldName := lstActionName.Items[iNameIndex];
@@ -907,12 +915,12 @@ end;
 
 procedure TActionListEditor.SetActionList(AActionList: TActionList);
 begin
-  if FActionList <> AActionList then
-  begin
-    FActionList := AActionList;
-    FillCategories;
-    FillActionByCategory(-1);
-  end;
+  if FActionList = AActionList then exit;
+  if FActionList<>nil then RemoveFreeNotification(FActionList);
+  FActionList := AActionList;
+  if FActionList<>nil then FreeNotification(FActionList);
+  FillCategories;
+  FillActionByCategory(-1);
 end;
 
 procedure TActionListEditor.FillCategories;
@@ -933,14 +941,15 @@ begin
     countCategory := lstCategory.Items.Count;
     lstCategory.Clear;
 
-    for i := 0 to FActionList.ActionCount-1 do begin
-      sCategory := FActionList.Actions[i].Category;
-      if sCategory = ''
-      then Continue;
-      xIndex := lstCategory.Items.IndexOf(sCategory);
-      if xIndex < 0
-      then lstCategory.Items.Add(sCategory);
-    end;
+    if FActionList<>nil then
+      for i := 0 to FActionList.ActionCount-1 do begin
+        sCategory := FActionList.Actions[i].Category;
+        if sCategory = ''
+        then Continue;
+        xIndex := lstCategory.Items.IndexOf(sCategory);
+        if xIndex < 0
+        then lstCategory.Items.Add(sCategory);
+      end;
     if lstCategory.Items.Count > 0
     then lstCategory.Sorted := True;
     lstCategory.Sorted := False;
@@ -980,19 +989,23 @@ var
   sCategory: String;
   IndexedActionName: String;
 begin
-
+  if FActionList=nil then
+  begin
+    lstActionName.Items.Clear;
+    exit;
+  end;
   lstActionName.Items.BeginUpdate;
-  if iIndex < 0 then iIndex := 0;  // the first possition
   try
+    if iIndex < 0 then iIndex := 0;  // the first possition
     if lstActionName.ItemIndex > -1
     then IndexedActionName := lstActionName.Items[lstActionName.ItemIndex];
 
     lstActionName.Clear;
     // handle all
-    if iIndex = lstCategory.Items.IndexOf(cActionListEditorAllCategory) then begin
+    if (iIndex = lstCategory.Items.IndexOf(cActionListEditorAllCategory)) then begin
       for i := 0 to FActionList.ActionCount-1 do
         lstActionName.Items.AddObject(FActionList.Actions[i].Name, FActionList.Actions[i]);
-      Exit; //throught finally
+      Exit;
     end;
 
     // handle unknown
@@ -1017,7 +1030,7 @@ begin
        and (lstActionName.Items.IndexOf(IndexedActionName) > -1)
     then lstActionName.ItemIndex := lstActionName.Items.IndexOf(IndexedActionName)
     else if lstActionName.ItemIndex = -1
-    then FDesigner.SelectOnlyThisComponent(FActionList);;
+    then FDesigner.SelectOnlyThisComponent(FActionList);
   end;
 end;
 
