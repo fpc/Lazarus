@@ -1693,7 +1693,9 @@ begin
     {$ifdef VerboseDebugger}
       DebugLn('Ooops, the debugger entered the error state');
     {$endif}
-      MessageDlg(lisDebuggerError,
+      // shutting down lazarus may kill gdb, so we get an error
+      if not Application.Terminated
+      then MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
         mtError, [mbOK],0);
