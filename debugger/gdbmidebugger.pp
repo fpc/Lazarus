@@ -117,6 +117,7 @@ type
       dcsFinished,     // [Executing] => Finished Execution
       dcsCanceled      // [Queued] => Never Executed
     );
+  TGDBMIDebuggerCommandStates = set of TGDBMIDebuggerCommandState;
 
   TGDBMIDebuggerCommand = class
   private
@@ -124,7 +125,10 @@ type
     FOnDestroy: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
     FKeepFinished: Boolean;
+    FFreeLock: Integer;
+    FFreeRequested: Boolean;
     FState : TGDBMIDebuggerCommandState;
+    FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
     procedure SetKeepFinished(const AValue: Boolean);
   protected
@@ -132,12 +136,15 @@ type
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoFree; virtual;
+    procedure LockFree;
+    procedure UnlockFree;
     procedure DoLockQueueExecute; virtual;
     procedure DoUnockQueueExecute; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
     procedure DoCancel; virtual;
     procedure DoOnCanceled;
+    property SeenStates: TGDBMIDebuggerCommandStates read FSeenStates;
   protected
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String): Boolean; overload;
@@ -579,20 +586,104 @@ type
 
   {%endregion   ^^^^^  LineSymbolInfo  ^^^^^   }
 
-  {%region}
+  {%region      *****  BreakPoints  *****  }
+
+  { TGDBMIDebuggerCommandBreakPointBase }
+
+  TGDBMIDebuggerCommandBreakPointBase = class(TGDBMIDebuggerCommand)
+  protected
+    function ExecBreakDelete(ABreakId: Integer): Boolean;
+    function ExecBreakInsert(ASource: string; ALine: Integer; AEnabled: Boolean;
+                             out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
+    function ExecBreakEnabled(ABreakId: Integer; AnEnabled: Boolean): Boolean;
+    function ExecBreakCondition(ABreakId: Integer; AnExpression: string): Boolean;
+  end;
+
+  { TGDBMIDebuggerCommandBreakInsert }
+
+  TGDBMIDebuggerCommandBreakInsert = class(TGDBMIDebuggerCommandBreakPointBase)
+  private
+    FSource: string;
+    FLine: Integer;
+    FEnabled: Boolean;
+    FExpression: string;
+    FReplaceId: Integer;
+
+    FAddr: TDBGPtr;
+    FBreakID: Integer;
+    FHitCnt: Integer;
+    FValid: Boolean;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; ASource: string; ALine: Integer;
+                       AEnabled: Boolean; AnExpression: string; AReplaceId: Integer);
+    function DebugText: String; override;
+    property Source: string read FSource write FSource;
+    property Line: Integer read FLine write FLine;
+    property Enabled: Boolean read FEnabled write FEnabled;
+    property Expression: string read FExpression write FExpression;
+    property ReplaceId: Integer read FReplaceId write FReplaceId;
+    // result values
+    property BreakID: Integer read FBreakID;
+    property Addr: TDBGPtr read FAddr;
+    property HitCnt: Integer read FHitCnt;
+    property Valid: Boolean read FValid;
+  end;
+
+  { TGDBMIDebuggerCommandBreakRemove }
+
+  TGDBMIDebuggerCommandBreakRemove = class(TGDBMIDebuggerCommandBreakPointBase)
+  private
+    FBreakId: Integer;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer);
+    function DebugText: String; override;
+  end;
+
+  { TGDBMIDebuggerCommandBreakUpdate }
+
+  TGDBMIDebuggerCommandBreakUpdate = class(TGDBMIDebuggerCommandBreakPointBase)
+  private
+    FBreakID: Integer;
+    FEnabled: Boolean;
+    FExpression: string;
+    FUpdateEnabled: Boolean;
+    FUpdateExpression: Boolean;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger);
+    constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnEnabled: Boolean);
+    constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnExpression: string);
+    constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnEnabled: Boolean; AnExpression: string);
+    function DebugText: String; override;
+    property UpdateEnabled: Boolean read FUpdateEnabled write FUpdateEnabled;
+    property UpdateExpression: Boolean read FUpdateExpression write FUpdateExpression;
+    property Enabled: Boolean read FEnabled write FEnabled;
+    property Expression: string read FExpression write FExpression;
+  end;
 
   { TGDBMIBreakPoint       *****  BreakPoints  *****   }
+
+  TGDBMIBreakPointUpdateFlag = (bufSetBreakPoint, bufEnabled, bufCondition);
+  TGDBMIBreakPointUpdateFlags = set of TGDBMIBreakPointUpdateFlag;
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
     FParsedExpression: String;
-    procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+    FCurrentCmd: TGDBMIDebuggerCommandBreakPointBase;
+    FUpdateFlags: TGDBMIBreakPointUpdateFlags;
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
-    procedure UpdateEnable;
-    procedure UpdateExpression;
+    procedure UpdateProperties(AFlags: TGDBMIBreakPointUpdateFlags);
+    procedure DoCommandDestroyed(Sender: TObject);
+    procedure DoCommandExecuted(Sender: TObject);
   protected
+    //procedure DoChanged; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
@@ -3855,8 +3946,12 @@ begin
       {$IFDEF DBGMI_QUEUE_DEBUG}
       DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
+      // cmd may be canceled while executed => don't loose it while working with it
+      Cmd.LockFree;
+      // excute, has it's own try-except block => so we don't have one here
       R := Cmd.Execute;
       Cmd.DoFinished;
+      Cmd.UnlockFree;
       {$IFDEF DBGMI_QUEUE_DEBUG}
       DebugLnExit('Exec done');
       {$ENDIF}
@@ -3908,6 +4003,15 @@ begin
     {$ENDIF}
     ACommand.DoQueued;
     Exit;
+  end;
+
+  // FCommandProcessingLock still must call RunQueue
+  if FCommandProcessingLock > 0
+  then begin
+    {$IFDEF DBGMI_QUEUE_DEBUG}
+    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
+    {$ENDIF}
+    ACommand.DoQueued;
   end;
 
   // If we are here we can process the command directly
@@ -5167,6 +5271,184 @@ begin
   ExecuteCommand(ACommand, [cfIgnoreError]);
 end;
 
+{%region      *****  BreakPoints  *****  }
+
+{ TGDBMIDebuggerCommandBreakPointBase }
+
+function TGDBMIDebuggerCommandBreakPointBase.ExecBreakDelete(ABreakId: Integer): Boolean;
+begin
+  Result := False;
+  if ABreakID = 0 then Exit;
+
+  Result := ExecuteCommand('-break-delete %d', [ABreakID]);
+end;
+
+function TGDBMIDebuggerCommandBreakPointBase.ExecBreakInsert(ASource: string; ALine: Integer;
+  AEnabled: Boolean; out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
+var
+  R: TGDBMIExecResult;
+  ResultList: TGDBMINameValueList;
+begin
+  Result := False;
+  ABreakId := 0;
+  AHitCnt := 0;
+  AnAddr := 0;
+  If (ASource = '') or (ALine < 0) then exit;
+
+  if dfForceBreak in FTheDebugger.FDebuggerFlags
+  then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(ASource), ALine], R)
+  else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(ASource), ALine], R);
+
+  ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
+  ABreakID := StrToIntDef(ResultList.Values['number'], 0);
+  AHitCnt  := StrToIntDef(ResultList.Values['times'], 0);
+  AnAddr   := StrToQWordDef(ResultList.Values['addr'], 0);
+  if ABreakID = 0
+  then Result := False;
+  ResultList.Free;
+end;
+
+function TGDBMIDebuggerCommandBreakPointBase.ExecBreakEnabled(ABreakId: Integer;
+  AnEnabled: Boolean): Boolean;
+const
+  // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
+  CMD: array[Boolean] of ShortString = ('disable', 'enable');
+begin
+  Result := False;
+  if ABreakID = 0 then Exit;
+
+  Result := ExecuteCommand('-break-%s %d', [CMD[AnEnabled], ABreakID]);
+end;
+
+function TGDBMIDebuggerCommandBreakPointBase.ExecBreakCondition(ABreakId: Integer;
+  AnExpression: string): Boolean;
+begin
+  Result := False;
+  if ABreakID = 0 then Exit;
+
+  Result := ExecuteCommand('-break-condition %d %s', [ABreakID, AnExpression]);
+end;
+
+{ TGDBMIDebuggerCommandBreakInsert }
+
+function TGDBMIDebuggerCommandBreakInsert.DoExecute: Boolean;
+begin
+  Result := True;
+  FValid := False;
+
+  if FReplaceId <> 0
+  then ExecBreakDelete(FReplaceId);
+
+  FValid := ExecBreakInsert(FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddr);
+  if not FValid then Exit;
+
+  if (FExpression <> '') and not (dcsCanceled in SeenStates)
+  then ExecBreakCondition(FBreakID, FExpression);
+
+  if not (dcsCanceled in SeenStates)
+  then ExecBreakEnabled(FBreakID, FEnabled);
+
+  if dcsCanceled in SeenStates
+  then begin
+    ExecBreakDelete(FBreakID);
+    FBreakID := 0;
+    FValid := False;
+    FAddr := 0;
+    FHitCnt := 0;
+  end;
+end;
+
+constructor TGDBMIDebuggerCommandBreakInsert.Create(AOwner: TGDBMIDebugger; ASource: string;
+  ALine: Integer; AEnabled: Boolean; AnExpression: string; AReplaceId: Integer);
+begin
+  inherited Create(AOwner);
+  FSource := ASource;
+  FLine := ALine;
+  FEnabled := AEnabled;
+  FExpression := AnExpression;
+  FReplaceId := AReplaceId;
+end;
+
+function TGDBMIDebuggerCommandBreakInsert.DebugText: String;
+begin
+  Result := Format('%s: Source=%s, Line=%d, Enabled=%s', [ClassName, FSource, FLine, dbgs(FEnabled)]);
+end;
+
+{ TGDBMIDebuggerCommandBreakRemove }
+
+function TGDBMIDebuggerCommandBreakRemove.DoExecute: Boolean;
+begin
+  Result := True;
+  ExecBreakDelete(FBreakId);
+end;
+
+constructor TGDBMIDebuggerCommandBreakRemove.Create(AOwner: TGDBMIDebugger;
+  ABreakId: Integer);
+begin
+  inherited Create(AOwner);
+  FBreakId := ABreakId;
+end;
+
+function TGDBMIDebuggerCommandBreakRemove.DebugText: String;
+begin
+  Result := Format('%s: BreakId=%d', [ClassName, FBreakId]);
+end;
+
+{ TGDBMIDebuggerCommandBreakUpdate }
+
+function TGDBMIDebuggerCommandBreakUpdate.DoExecute: Boolean;
+begin
+  Result := True;
+  if FUpdateExpression
+  then ExecBreakCondition(FBreakID, FExpression);
+  if FUpdateEnabled
+  then ExecBreakEnabled(FBreakID, FEnabled);
+end;
+
+constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger);
+begin
+  inherited Create(AOwner);
+  FUpdateEnabled := False;
+  FUpdateExpression := False;
+end;
+
+constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger;
+  ABreakId: Integer; AnEnabled: Boolean);
+begin
+  inherited Create(AOwner);
+  FBreakID := ABreakId;
+  FEnabled := AnEnabled;
+  FUpdateEnabled := True;
+  FUpdateExpression := False;
+end;
+
+constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger;
+  ABreakId: Integer; AnExpression: string);
+begin
+  inherited Create(AOwner);
+  FBreakID := ABreakId;
+  FExpression := AnExpression;
+  FUpdateExpression := True;
+  FUpdateEnabled := False;
+end;
+
+constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger;
+  ABreakId: Integer; AnEnabled: Boolean; AnExpression: string);
+begin
+  inherited Create(AOwner);
+  FBreakID := ABreakId;
+  FEnabled := AnEnabled;
+  FUpdateEnabled := True;
+  FExpression := AnExpression;
+  FUpdateExpression := True;
+end;
+
+function TGDBMIDebuggerCommandBreakUpdate.DebugText: String;
+begin
+  Result := Format('%s: BreakId=%d ChangeEnabled=%s NewEnable=%s ChangeEpression=%s NewExpression=%s',
+   [ClassName, FBreakId, dbgs(FUpdateEnabled), dbgs(FEnabled), dbgs(FUpdateExpression), FExpression]);
+end;
+
 { =========================================================================== }
 { TGDBMIBreakPoint }
 { =========================================================================== }
@@ -5174,18 +5456,27 @@ end;
 constructor TGDBMIBreakPoint.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
+  FCurrentCmd := nil;
+  FUpdateFlags := [];
   FBreakID := 0;
 end;
 
 destructor TGDBMIBreakPoint.Destroy;
 begin
   ReleaseBreakPoint;
+  if FCurrentCmd <> nil
+  then begin
+    // keep the command running
+    FCurrentCmd.OnDestroy := nil;
+    FCurrentCmd.OnCancel := nil;
+    FCurrentCmd.OnExecuted := nil;
+  end;
   inherited Destroy;
 end;
 
 procedure TGDBMIBreakPoint.DoEnableChange;
 begin
-  UpdateEnable;
+  UpdateProperties([bufEnabled]);
   inherited;
 end;
 
@@ -5197,7 +5488,7 @@ begin
   if TGDBMIDebugger(Debugger).ConvertPascalExpression(S)
   then FParsedExpression := S
   else FParsedExpression := Expression;
-  UpdateExpression;
+  UpdateProperties([bufCondition]);
   inherited;
 end;
 
@@ -5220,64 +5511,125 @@ procedure TGDBMIBreakPoint.SetBreakpoint;
 begin
   if Debugger = nil then Exit;
 
-  if FBreakID <> 0
-  then ReleaseBreakPoint;
+  if (FCurrentCmd <> nil)
+  then begin
+    // We can not be changed, while we get destroyed
+    if (FCurrentCmd is TGDBMIDebuggerCommandBreakRemove)
+    then begin
+      SetValid(vsInvalid);
+      exit;
+    end;
+
+    if (FCurrentCmd is TGDBMIDebuggerCommandBreakInsert) and (FCurrentCmd.State = dcsQueued)
+    then begin
+      // update the current object
+      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Source  := Source;
+      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Line    := Line;
+      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Enabled := Enabled;
+      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Expression := FParsedExpression;
+      exit;
+    end;
+
+    if (FCurrentCmd.State = dcsQueued)
+    then begin
+      // must be update for enabled or expression. both will be included in BreakInsert
+      // cancel and schedule BreakInsert
+      FCurrentCmd.OnDestroy := nil;
+      FCurrentCmd.OnCancel := nil;
+      FCurrentCmd.OnExecuted := nil;
+      FCurrentCmd.Cancel;
+    end
+    else begin
+      // let the command run (remove flags for enabled/condition)
+      FUpdateFlags := [bufSetBreakPoint];
+      exit;
+    end;
+  end;
+
+  FUpdateFlags := [];
+  FCurrentCmd:= TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger),
+    Source, Line , Enabled, FParsedExpression, FBreakID);
+  FBreakID := 0; // will be replaced => no longer valid
+  FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
+  FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-
-  if dfForceBreak in TGDBMIDebugger(Debugger).FDebuggerFlags
-  then TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert -f %s:%d',
-    [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0)
-  else TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d',
-    [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0);
-
 end;
 
-procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
-var
-  ResultList: TGDBMINameValueList;
+procedure TGDBMIBreakPoint.DoCommandDestroyed(Sender: TObject);
 begin
-  BeginUpdate;
-  try
-    ResultList := TGDBMINameValueList.Create(AResult, ['bkpt']);
-    FBreakID := StrToIntDef(ResultList.Values['number'], 0);
-    SetHitCount(StrToIntDef(ResultList.Values['times'], 0));
-    if FBreakID = 0
-    then begin
-      ResultList.Free;
-      SetValid(vsInvalid);
-      Exit;
-    end;
+  if Sender = FCurrentCmd
+  then FCurrentCmd := nil;
+  // in case of cancelation
+  if bufSetBreakPoint in FUpdateFlags
+  then SetBreakPoint;
+  if FUpdateFlags * [bufEnabled, bufCondition] <> []
+  then UpdateProperties(FUpdateFlags);
+end;
 
-    SetValid(vsValid);
-    if FParsedExpression <> '' then UpdateExpression;
-    UpdateEnable;
+procedure TGDBMIBreakPoint.DoCommandExecuted(Sender: TObject);
+begin
+  if Sender = FCurrentCmd
+  then FCurrentCmd := nil;
+
+  if (Sender is TGDBMIDebuggerCommandBreakInsert)
+  then begin
+    BeginUpdate;
+    if TGDBMIDebuggerCommandBreakInsert(Sender).Valid
+    then SetValid(vsValid)
+    else SetValid(vsInvalid);
+    FBreakID := TGDBMIDebuggerCommandBreakInsert(Sender).BreakID;
+    SetHitCount(TGDBMIDebuggerCommandBreakInsert(Sender).HitCnt);
 
     if Enabled
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if StrToQWordDef(ResultList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
+      if TGDBMIDebuggerCommandBreakInsert(Sender).Addr = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
-    ResultList.Free;
-  finally
     EndUpdate;
   end;
+
+  if bufSetBreakPoint in FUpdateFlags
+  then SetBreakPoint;
+  if FUpdateFlags * [bufEnabled, bufCondition] <> []
+  then UpdateProperties(FUpdateFlags);
 end;
 
 procedure TGDBMIBreakPoint.ReleaseBreakPoint;
 begin
-  if FBreakID = 0 then Exit;
   if Debugger = nil then Exit;
+
+  FUpdateFlags := [];
+  if (FCurrentCmd <> nil) and (FCurrentCmd is TGDBMIDebuggerCommandBreakRemove)
+  then exit;
+
+  // Cancel any other current command
+  if (FCurrentCmd <> nil)
+  then begin
+    FCurrentCmd.OnDestroy := nil;
+    FCurrentCmd.OnCancel := nil;
+    FCurrentCmd.OnExecuted := nil;
+    // if CurrenCmd is TGDBMIDebuggerCommandBreakInsert then it will remove itself
+    FCurrentCmd.Cancel;
+  end;
+
+  if FBreakID = 0 then Exit;
+
+  FCurrentCmd := TGDBMIDebuggerCommandBreakRemove.Create(TGDBMIDebugger(Debugger), FBreakID);
+  FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
+  FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
+
+  FBreakID:=0;
+  SetHitCount(0);
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID], []);
-  FBreakID:=0;
-  SetHitCount(0);
 end;
 
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
@@ -5289,30 +5641,77 @@ begin
   then SetBreakpoint;
 end;
 
-procedure TGDBMIBreakPoint.UpdateEnable;
-const
-  // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
-  CMD: array[Boolean] of ShortString = ('disable', 'enable');
+procedure TGDBMIBreakPoint.UpdateProperties(AFlags: TGDBMIBreakPointUpdateFlags);
 begin
-  if FBreakID = 0 then Exit;
-  if Debugger = nil then Exit;
+  if (Debugger = nil) then Exit;
+  if AFlags * [bufEnabled, bufCondition] = [] then Exit;
+
+  if (FCurrentCmd <> nil)
+  then begin
+    // We can not be changed, while we get destroyed
+    if (FCurrentCmd is TGDBMIDebuggerCommandBreakRemove)
+    then begin
+      SetValid(vsInvalid);
+      exit;
+    end;
+
+    if (FCurrentCmd is TGDBMIDebuggerCommandBreakInsert) and (FCurrentCmd.State = dcsQueued)
+    then begin
+      if bufEnabled in AFlags
+      then TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Enabled := Enabled;
+      if bufCondition in AFlags
+      then TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Expression := Expression;
+      exit;
+    end;
+
+    if (FCurrentCmd is TGDBMIDebuggerCommandBreakUpdate) and (FCurrentCmd.State = dcsQueued)
+    then begin
+      // update the current object
+      if bufEnabled in AFlags
+      then begin
+        TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateEnabled := True;
+        TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Enabled := Enabled;
+      end;
+      if bufCondition in AFlags
+      then begin
+        TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateExpression := True;
+        TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Expression := FParsedExpression;
+      end;
+      exit;
+    end;
+
+    if bufSetBreakPoint in FUpdateFlags
+    then exit;
+
+    // let the command run
+    FUpdateFlags := FUpdateFlags + AFlags;
+    exit;
+  end;
+
+  if (FBreakID = 0) then Exit;
+
+  FUpdateFlags := FUpdateFlags - [bufEnabled, bufCondition];
+
+  FCurrentCmd:= TGDBMIDebuggerCommandBreakUpdate.Create(TGDBMIDebugger(Debugger));
+  if bufEnabled in AFlags
+  then begin
+    TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateEnabled := True;
+    TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Enabled := Enabled;
+  end;
+  if bufCondition in FUpdateFlags
+  then begin
+    TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateExpression := True;
+    TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Expression := FParsedExpression;
+  end;
+  FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
+  FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID], []);
 end;
 
-procedure TGDBMIBreakPoint.UpdateExpression;
-begin
-  if FBreakID = 0 then Exit;
-  if Debugger = nil then Exit;
-
-  if Debugger.State = dsRun
-  then TGDBMIDebugger(Debugger).GDBPause(True);
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-condition %d %s', [FBreakID, FParsedExpression], [cfIgnoreError, cfExternal]);
-end;
+{%endregion   ^^^^^  BreakPoints  ^^^^^  }
 
 { =========================================================================== }
 { TGDBMILocals }
@@ -6892,7 +7291,7 @@ procedure TGDBMIDebuggerCommand.SetKeepFinished(const AValue: Boolean);
 begin
   if FKeepFinished = AValue then exit;
   FKeepFinished := AValue;
-  if (not FKeepFinished) and (State in [dcsFinished, dcsCanceled])
+  if (not FKeepFinished) and FFreeRequested
   then DoFree;
 end;
 
@@ -6909,6 +7308,7 @@ begin
   then exit;
   OldState := FState;
   FState := NewState;
+  Include(FSeenStates, NewState);
   DoStateChanged(OldState);
   if State in [dcsFinished, dcsCanceled]
   then DoFree;
@@ -6921,8 +7321,22 @@ end;
 
 procedure TGDBMIDebuggerCommand.DoFree;
 begin
-  if not FKeepFinished then
-    Self.Free;
+  FFreeRequested := True;
+  if KeepFinished or (FFreeLock > 0)
+  then exit;
+  Self.Free;
+end;
+
+procedure TGDBMIDebuggerCommand.LockFree;
+begin
+  inc(FFreeLock);
+end;
+
+procedure TGDBMIDebuggerCommand.UnlockFree;
+begin
+  dec(FFreeLock);
+  if (FFreeLock = 0) and FFreeRequested
+  then DoFree;
 end;
 
 procedure TGDBMIDebuggerCommand.DoLockQueueExecute;
@@ -7372,6 +7786,8 @@ begin
   FState := dcsNone;
   FTheDebugger := AOwner;
   FKeepFinished := False;
+  FFreeRequested := False;
+  FFreeLock := 0;
 end;
 
 destructor TGDBMIDebuggerCommand.Destroy;
@@ -7392,16 +7808,29 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.Execute: Boolean;
+var
+  I: Integer;
+  Frames: PPointer;
+  Report: string;
 begin
   // Set the state first, so DoExecute can set an error-state
   SetState(dcsExecuting);
+  LockFree;
   DoLockQueueExecute;
   try
     Result := DoExecute;
     DoOnExecuted;
   except
     on e: Exception do begin
-      debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '"']);
+      try
+      debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '" Addr=', dbgs(ExceptAddr)]);
+      Report :=  BackTraceStrFunc(ExceptAddr);
+      Frames := ExceptFrames;
+      for I := 0 to ExceptFrameCount - 1 do
+        Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
+      except end;
+      debugln(Report);
+
       if MessageDlg('The debugger experienced an unknown condition.',
         Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %s'
           +'Exception: %s.with message "%s"',
@@ -7416,7 +7845,9 @@ begin
       end;
     end;
   end;
+  // No re-raise in the except block. So no try-finally required
   DoUnockQueueExecute;
+  UnlockFree;
 end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
