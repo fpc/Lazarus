@@ -5397,7 +5397,7 @@ begin
                   // stream text to file
                   TxtCompStream.Position:=0;
                   LFMCode.LoadFromStream(TxtCompStream);
-                  Result:=SaveCodeBufferToFile(LFMCode,LFMCode.Filename);
+                  Result:=SaveCodeBufferToFile(LFMCode,LFMCode.Filename,true);
                   if not Result=mrOk then exit;
                   Result:=mrCancel;
                 finally
