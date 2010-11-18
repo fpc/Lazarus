@@ -6611,13 +6611,26 @@ var
   end;
   
   procedure FindInsertPointForNewClass(out InsertPos, Indent: LongInt);
+
+    procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
+    begin
+      Indent:=GetLineIndent(Src,Node.StartPos);
+      if Behind then
+        InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
+      else
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+    end;
+
+  var
+    StartSearchProc: TCodeTreeNode;
+    NearestProcNode: TCodeTreeNode;
   begin
     InsertPos:=0;
     Indent:=0;
+    ImplementationNode:=FindImplementationNode;
     if NodeHasParentOfType(CodeCompleteClassNode,ctnInterface) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
-      ImplementationNode:=FindImplementationNode;
       if ImplementationNode=nil then
         RaiseException(ctsImplementationNodeNotFound);
       Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
@@ -6630,17 +6643,59 @@ var
       end;
     end else begin
       // class is not in interface section
-      // -> insert at the end of the type section
-      ANode:=CodeCompleteClassNode.GetNodeOfTypes(
-                                            [ctnTypeDefinition,ctnGenericType]);
-      if ANode=nil then
-        RaiseException(ctsClassNodeWithoutParentNode);
-      if ANode.Parent.Desc=ctnTypeSection then
-        ANode:=ANode.Parent; // type section
-      if ANode=nil then
-        RaiseException(ctsTypeSectionOfClassNotFound);
-      Indent:=GetLineIndent(Src,ANode.StartPos);
-      InsertPos:=ANode.EndPos;
+      StartSearchProc:=CodeCompleteClassNode;
+      while StartSearchProc.Desc<>ctnTypeSection do
+        StartSearchProc:=StartSearchProc.Parent;
+      case ASourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy of
+      fpipInFrontOfMethods:
+        begin
+          // Try to insert new proc in front of existing methods
+
+          // find first method
+          NearestProcNode:=StartSearchProc;
+          while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+            NearestProcNode:=NearestProcNode.NextBrother;
+          if NearestProcNode<>nil then begin
+            // the comments in front of the first method probably belong to the class
+            // Therefore insert behind the node in front of the first method
+            Indent:=GetLineIndent(Src,NearestProcNode.StartPos);
+            if NearestProcNode.PriorBrother<>nil then begin
+              InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.PriorBrother.EndPos);
+            end else begin
+              InsertPos:=NearestProcNode.Parent.StartPos;
+              while (InsertPos<=NearestProcNode.StartPos)
+              and (not IsSpaceChar[Src[InsertPos]]) do
+                inc(InsertPos);
+            end;
+            exit;
+          end;
+        end;
+      fpipBehindMethods:
+        begin
+          // Try to insert new proc behind existing methods
+
+          // find last method (go to last brother and search backwards)
+          NearestProcNode:=StartSearchProc.Parent.LastChild;
+          while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+            NearestProcNode:=NearestProcNode.PriorBrother;
+          if NearestProcNode<>nil then begin
+            SetIndentAndInsertPos(NearestProcNode,true);
+            exit;
+          end;
+        end;
+      end;
+
+      // Default position: Insert behind last node
+      NearestProcNode:=StartSearchProc.Parent.LastChild;
+      if NearestProcNode<>nil then begin
+        Indent:=0;
+        InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.EndPos);
+        SetIndentAndInsertPos(NearestProcNode,true);
+        exit;
+      end;
+
+      RaiseException('TCodeCompletionCodeTool.CreateMissingProcBodies.FindInsertPointForNewClass '
+       +' Internal Error: no insert position found');
     end;
   end;
   

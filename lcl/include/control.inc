@@ -1017,10 +1017,7 @@ end;
 procedure TControl.DoBorderSpacingChange(Sender: TObject;
   InnerSpaceChanged: Boolean);
 begin
-  if InnerSpaceChanged then
-    AdjustSize
-  else
-    RequestAlign;
+  AdjustSize;
   if (csDesigning in ComponentState) and (Parent <> nil) then
     Parent.Invalidate;
 end;
