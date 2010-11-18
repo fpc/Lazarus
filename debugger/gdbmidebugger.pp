@@ -339,7 +339,7 @@ type
     );
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
 
-{%region       *****  TGDBMINameValueList and Parsers  *****   }
+  {%region       *****  TGDBMINameValueList and Parsers  *****   }
 
   PGDBMINameValue = ^TGDBMINameValue;
   TGDBMINameValue = record
@@ -436,9 +436,9 @@ type
     property Item[Index: Integer]: PDisassemblerEntry read GetItem write SetItem;
   end;
 
-{%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
+  {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
 
-{%region       *****  TGDBMIDebuggerCommands  *****   }
+  {%region       *****  TGDBMIDebuggerCommands  *****   }
 
   { TGDBMIDebuggerSimpleCommand }
 
@@ -487,22 +487,9 @@ type
     property  Result: TGDBMIExecResult read FResult;
   end;
 
-  { TGDBMIDebuggerCommandEvaluate }
+  {%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
 
-  TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
-  private
-    FExpression: String;
-    FTextValue: String;
-    FTypeInfo: TGDBType;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger;const AExpression: String);
-    function DebugText: String; override;
-    property Expression: String read FExpression;
-    property TextValue: String read FTextValue;
-    property TypeInfo: TGDBType read FTypeInfo;
-  end;
+  {%region      *****  Locals  *****   }
 
   { TGDBMIDebuggerCommandLocals }
 
@@ -516,138 +503,6 @@ type
     function DebugText: String; override;
     property Args: String read FArgs;
     property Vars: String read FVars;
-  end;
-
-  { TGDBMIDebuggerCommandStackFrames }
-
-  TGDBMINameValueListArray = array of TGDBMINameValueList;
-
-  TGDBMIDebuggerCommandStackFrames = class(TGDBMIDebuggerCommand)
-  private
-    FArgs: TGDBMINameValueListArray;
-    FFrames: TGDBMINameValueListArray;
-    FIndex: Integer;
-    FCount: Integer;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AIndex, ACount: Integer);
-    destructor  Destroy; override;
-    function DebugText: String; override;
-    property Index: Integer read FIndex write FIndex;
-    property Count: Integer read FCount write FCount;
-    property Args: TGDBMINameValueListArray read FArgs;
-    property Frames: TGDBMINameValueListArray read FFrames;
-  end;
-
-  { TGDBMIDebuggerCommandStackDepth }
-
-  TGDBMIDebuggerCommandStackDepth = class(TGDBMIDebuggerCommand)
-  private
-    FDepth: Integer;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    function DebugText: String; override;
-    property Depth: Integer read FDepth;
-  end;
-
-  { TGDBMIDebuggerCommandRegisterNames }
-
-  TGDBMIDebuggerCommandRegisterNames = class(TGDBMIDebuggerCommand)
-  private
-    FNames: Array of String;
-    function GetNames(Index: Integer): string;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    //function DebugText: String; override;
-    function Count: Integer;
-    property Names[Index: Integer]: string read GetNames;
-  end;
-
-  { TGDBMIDebuggerCommandRegisterValues }
-
-  TGDBMIDebuggerCommandRegisterValues = class(TGDBMIDebuggerCommand)
-  private
-    FRegistersToUpdate: TGDBMICpuRegisters;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    // updates the given array directly
-    constructor Create(AOwner: TGDBMIDebugger; RegistersToUpdate: TGDBMICpuRegisters);
-    function DebugText: String; override;
-  end;
-
-  { TGDBMIDebuggerCommandLineSymbolInfo }
-
-  TGDBMIDebuggerCommandLineSymbolInfo = class(TGDBMIDebuggerCommand)
-  private
-    FResult: TGDBMIExecResult;
-    FSource: string;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; Source: string);
-    function DebugText: String; override;
-    property Result: TGDBMIExecResult read FResult;
-    property Source: string read FSource;
-  end;
-
-  { TGDBMIDebuggerCommandDisassembe }
-
-  TGDBMIDisAssAddrRange = record
-     FirstAddr, LastAddr: TDBGPtr;
-  end;
-
-  TGDBMIDebuggerCommandDisassembe = class(TGDBMIDebuggerCommand)
-  private
-    FEndAddr: TDbgPtr;
-    FLinesAfter: Integer;
-    FLinesBefore: Integer;
-    FOnProgress: TNotifyEvent;
-    FStartAddr: TDbgPtr;
-    FKnownRanges: TDBGDisassemblerEntryMap;
-    FRangeIterator: TMapIterator;
-    FMemDumpsNeeded: array of TGDBMIDisAssAddrRange;
-    procedure DoProgress;
-  protected
-    function DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AKnownRanges: TDBGDisassemblerEntryMap;
-                       AStartAddr, AEndAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer);
-    destructor Destroy; override;
-    function DebugText: String; override;
-    property StartAddr: TDbgPtr read FStartAddr write FStartAddr;
-    property EndAddr:   TDbgPtr read FEndAddr   write FEndAddr;
-    property LinesBefore: Integer read FLinesBefore write FLinesBefore;
-    property LinesAfter:  Integer read FLinesAfter  write FLinesAfter;
-    property OnProgress: TNotifyEvent read FOnProgress write FOnProgress;
-  end;
-
-{%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
-
-{%region       *****  Info/Data Providers  *****   }
-
-  { TGDBMIBreakPoint }
-
-  TGDBMIBreakPoint = class(TDBGBreakPoint)
-  private
-    FBreakID: Integer;
-    FParsedExpression: String;
-    procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
-    procedure SetBreakPoint;
-    procedure ReleaseBreakPoint;
-    procedure UpdateEnable;
-    procedure UpdateExpression;
-  protected
-    procedure DoEnableChange; override;
-    procedure DoExpressionChange; override;
-    procedure DoStateChange(const AOldState: TDBGState); override;
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-    procedure SetLocation(const ASource: String; const ALine: Integer); override;
   end;
 
   { TGDBMILocals }
@@ -673,6 +528,25 @@ type
     procedure Changed; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
+  end;
+
+  {%endregion   ^^^^^  Locals  ^^^^^   }
+
+  {%region      *****  LineSymbolInfo  *****   }
+
+  { TGDBMIDebuggerCommandLineSymbolInfo }
+
+  TGDBMIDebuggerCommandLineSymbolInfo = class(TGDBMIDebuggerCommand)
+  private
+    FResult: TGDBMIExecResult;
+    FSource: string;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; Source: string);
+    function DebugText: String; override;
+    property Result: TGDBMIExecResult read FResult;
+    property Source: string read FSource;
   end;
 
   { TGDBMILineInfo }
@@ -701,6 +575,62 @@ type
     function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
+  end;
+
+  {%endregion   ^^^^^  LineSymbolInfo  ^^^^^   }
+
+  {%region}
+
+  { TGDBMIBreakPoint       *****  BreakPoints  *****   }
+
+  TGDBMIBreakPoint = class(TDBGBreakPoint)
+  private
+    FBreakID: Integer;
+    FParsedExpression: String;
+    procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+    procedure SetBreakPoint;
+    procedure ReleaseBreakPoint;
+    procedure UpdateEnable;
+    procedure UpdateExpression;
+  protected
+    procedure DoEnableChange; override;
+    procedure DoExpressionChange; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure SetLocation(const ASource: String; const ALine: Integer); override;
+  end;
+
+  {%endregion   ^^^^^  BreakPoints  ^^^^^   }
+
+  {%region      *****  Register  *****   }
+
+  { TGDBMIDebuggerCommandRegisterNames }
+
+  TGDBMIDebuggerCommandRegisterNames = class(TGDBMIDebuggerCommand)
+  private
+    FNames: Array of String;
+    function GetNames(Index: Integer): string;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    //function DebugText: String; override;
+    function Count: Integer;
+    property Names[Index: Integer]: string read GetNames;
+  end;
+
+  { TGDBMIDebuggerCommandRegisterValues }
+
+  TGDBMIDebuggerCommandRegisterValues = class(TGDBMIDebuggerCommand)
+  private
+    FRegistersToUpdate: TGDBMICpuRegisters;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    // updates the given array directly
+    constructor Create(AOwner: TGDBMIDebugger; RegistersToUpdate: TGDBMICpuRegisters);
+    function DebugText: String; override;
   end;
 
   { TGDBMIRegisters }
@@ -732,6 +662,27 @@ type
     function GetValue(const AnIndex: Integer): String; override;
   public
     procedure Changed; override;
+  end;
+
+  {%endregion   ^^^^^  Register  ^^^^^   }
+
+  {%region      *****  Watches  *****   }
+
+  { TGDBMIDebuggerCommandEvaluate }
+
+  TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
+  private
+    FExpression: String;
+    FTextValue: String;
+    FTypeInfo: TGDBType;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger;const AExpression: String);
+    function DebugText: String; override;
+    property Expression: String read FExpression;
+    property TextValue: String read FTextValue;
+    property TypeInfo: TGDBType read FTypeInfo;
   end;
 
   { TGDBMIWatch }
@@ -772,6 +723,44 @@ type
   public
   end;
 
+  {%endregion   ^^^^^  Watches  ^^^^^   }
+
+  {%region      *****  Stack  *****   }
+
+  { TGDBMIDebuggerCommandStackFrames }
+
+  TGDBMINameValueListArray = array of TGDBMINameValueList;
+
+  TGDBMIDebuggerCommandStackFrames = class(TGDBMIDebuggerCommand)
+  private
+    FArgs: TGDBMINameValueListArray;
+    FFrames: TGDBMINameValueListArray;
+    FIndex: Integer;
+    FCount: Integer;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AIndex, ACount: Integer);
+    destructor  Destroy; override;
+    function DebugText: String; override;
+    property Index: Integer read FIndex write FIndex;
+    property Count: Integer read FCount write FCount;
+    property Args: TGDBMINameValueListArray read FArgs;
+    property Frames: TGDBMINameValueListArray read FFrames;
+  end;
+
+  { TGDBMIDebuggerCommandStackDepth }
+
+  TGDBMIDebuggerCommandStackDepth = class(TGDBMIDebuggerCommand)
+  private
+    FDepth: Integer;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    function DebugText: String; override;
+    property Depth: Integer read FDepth;
+  end;
+
   { TGDBMICallStack }
 
   TGDBMICallStack = class(TDBGCallStack)
@@ -796,13 +785,47 @@ type
   public
   end;
 
-  { TGDBMIDisassembler }
+  {%endregion   ^^^^^  Stack  ^^^^^   }
+
+  {%region      *****  Disassembler  *****   }
+
 const
   // Some values to calculate how many bytes to disassemble for a given amount of lines
   // Those values are only guesses
   DAssBytesPerCommandAvg = 8;   // Average len: Used for LinesBefore/LinesAfter. (should rather be to big than to small)
   DAssBytesPerCommandMax = 24;  // Max possible len. Only used for up to 5 lines
 type
+
+  { TGDBMIDebuggerCommandDisassembe }
+
+  TGDBMIDisAssAddrRange = record
+     FirstAddr, LastAddr: TDBGPtr;
+  end;
+
+  TGDBMIDebuggerCommandDisassembe = class(TGDBMIDebuggerCommand)
+  private
+    FEndAddr: TDbgPtr;
+    FLinesAfter: Integer;
+    FLinesBefore: Integer;
+    FOnProgress: TNotifyEvent;
+    FStartAddr: TDbgPtr;
+    FKnownRanges: TDBGDisassemblerEntryMap;
+    FRangeIterator: TMapIterator;
+    FMemDumpsNeeded: array of TGDBMIDisAssAddrRange;
+    procedure DoProgress;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AKnownRanges: TDBGDisassemblerEntryMap;
+                       AStartAddr, AEndAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer);
+    destructor Destroy; override;
+    function DebugText: String; override;
+    property StartAddr: TDbgPtr read FStartAddr write FStartAddr;
+    property EndAddr:   TDbgPtr read FEndAddr   write FEndAddr;
+    property LinesBefore: Integer read FLinesBefore write FLinesBefore;
+    property LinesAfter:  Integer read FLinesAfter  write FLinesAfter;
+    property OnProgress: TNotifyEvent read FOnProgress write FOnProgress;
+  end;
 
   TGDBMIDisassembler = class(TDBGDisassembler)
   private
@@ -820,9 +843,10 @@ type
     function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
   end;
 
-{%endregion    *^^^*  Info/Data Providers  *^^^*   }
+  {%endregion   ^^^^^  Disassembler  ^^^^^   }
 
-{%region       *****  TGDBMIExpression  *****   }
+
+  {%region       *****  TGDBMIExpression  *****   }
 
   { TGDBMIExpression }
   // TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
@@ -944,7 +968,7 @@ type
     function Evaluate(const ADebuggerCommand: TGDBMIDebuggerCommand; out AResult: String; out AResultInfo: TGDBType): Boolean;
   end;
 
-{%endregion    *^^^*  TGDBMIExpression  *^^^*   }
+  {%endregion    *^^^*  TGDBMIExpression  *^^^*   }
 
   { TGDBMIType }
 
