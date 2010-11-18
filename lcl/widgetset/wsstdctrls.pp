@@ -209,7 +209,7 @@ type
 
   TWSButtonControl = class(TWSWinControl)
   published
-    class function GetDefaultColor(const AControl: TControl): TColor; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSButton }
@@ -778,9 +778,14 @@ end;
 
 { TWSButtonControl }
 
-class function TWSButtonControl.GetDefaultColor(const AControl: TControl): TColor;
+class function TWSButtonControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBtnFace,
+ { dctFont  } clBtnText
+  );
 begin
-  Result := clBtnFace;
+  Result := DefColors[ADefaultColorType];
 end;
 
 end.

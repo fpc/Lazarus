@@ -59,7 +59,7 @@ type
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); virtual;
     class procedure Update(const AStatusBar: TStatusBar); virtual;
-    class function GetDefaultColor(const AControl: TControl): TColor; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSTabSheet }
@@ -250,9 +250,14 @@ class procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
 end;
 
-class function TWSStatusBar.GetDefaultColor(const AControl: TControl): TColor;
+class function TWSStatusBar.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBtnFace,
+ { dctFont  } clBtnText
+  );
 begin
-  Result := clBtnFace;
+  Result := DefColors[ADefaultColorType];
 end;
     
 { TWSCustomListView }

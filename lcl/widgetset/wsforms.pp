@@ -95,7 +95,7 @@ type
       const APopupMode: TPopupMode; const APopupParent: TCustomForm); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
-    class function GetDefaultColor(const AControl: TControl): TColor; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -180,9 +180,14 @@ class procedure TWSCustomForm.SetZPosition(const AWinControl: TWinControl; const
 begin
 end;
 
-class function TWSCustomForm.GetDefaultColor(const AControl: TControl): TColor;
+class function TWSCustomForm.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clForm,
+ { dctFont  } clBtnText
+  );
 begin
-  Result := clForm;
+  Result := DefColors[ADefaultColorType];
 end;
    
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

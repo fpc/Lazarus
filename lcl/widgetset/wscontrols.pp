@@ -66,14 +66,14 @@ type
   end;
 
   TWSDragImageListClass = class of TWSDragImageList;
-  
+
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
   published
     class procedure AddControl(const AControl: TControl); virtual;
     class function GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean; virtual;
-    class function GetDefaultColor(const AControl: TControl): TColor; virtual;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; virtual;
     class procedure ConstraintWidth(const AControl: TControl; const AConstraints: TObject; var aWidth: integer); virtual;
     class procedure ConstraintHeight(const AControl: TControl; const AConstraints: TObject; var aHeight: integer); virtual;
   end;
@@ -163,7 +163,7 @@ begin
   Result := WidgetSet.GetControlConstraints(AConstraints);
 end;
 
-class function TWSControl.GetDefaultColor(const AControl: TControl): TColor;
+class function TWSControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
 begin
   Result := clDefault;
 end;

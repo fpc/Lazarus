@@ -846,6 +846,11 @@ type
     chtOnKeyDown
     );
 
+  TDefaultColorType = (
+    dctBrush,
+    dctFont
+  );
+
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
  * exchange text between widgets and VCL. This means a lot of
@@ -1288,7 +1293,7 @@ type
                                WithThemeSpace: boolean = true); virtual;
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
-    function GetDefaultColor: TColor; virtual;
+    function GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor; virtual;
     function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;

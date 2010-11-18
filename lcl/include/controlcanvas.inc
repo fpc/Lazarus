@@ -45,7 +45,7 @@ end;
 function TControlCanvas.GetDefaultColor: TColor;
 begin
   if Assigned(FControl) then
-    Result := FControl.GetDefaultColor
+    Result := FControl.GetDefaultColor(dctBrush)
   else
     Result := inherited GetDefaultColor;
 end;

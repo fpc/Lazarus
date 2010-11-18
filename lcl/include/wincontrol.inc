@@ -4623,11 +4623,11 @@ end;
 
 procedure TWinControl.SetColor(Value: TColor);
 begin
-  if Value=Color then exit;
+  if Value = Color then Exit;
   inherited SetColor(Value);
   if BrushCreated then
     if Color = clDefault then
-      FBrush.Color := GetDefaultColor
+      FBrush.Color := GetDefaultColor(dctBrush)
     else
       FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -4828,7 +4828,7 @@ begin
   if BrushCreated then exit;
   FBrush := TBrush.Create;
   if Color = clDefault then
-    FBrush.Color := GetDefaultColor
+    FBrush.Color := GetDefaultColor(dctBrush)
   else
     FBrush.Color := Color;
 end;

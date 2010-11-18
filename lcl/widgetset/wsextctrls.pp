@@ -174,7 +174,7 @@ type
 
   TWSCustomPanel = class(TWSCustomControl)
   published
-    class function GetDefaultColor(const AControl: TControl): TColor; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSPanel }
@@ -512,9 +512,14 @@ end;
 
 { TWSCustomPanel }
 
-class function TWSCustomPanel.GetDefaultColor(const AControl: TControl): TColor;
+class function TWSCustomPanel.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBtnFace,
+ { dctFont  } clBtnText
+  );
 begin
-  Result := clBtnFace;
+  Result := DefColors[ADefaultColorType];
 end;
 
 end.

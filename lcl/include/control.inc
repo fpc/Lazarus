@@ -932,14 +932,19 @@ begin
   Result := not ParentColor;
 end;
 
-function TControl.GetDefaultColor: TColor;
+function TControl.GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clWindow,
+ { dctFont  } clWindowText
+  );
 begin
-  Result := TWSControlClass(WidgetSetClass).GetDefaultColor(Self);
+  Result := TWSControlClass(WidgetSetClass).GetDefaultColor(Self, DefaultColorType);
   if (Result = clDefault) then
     if ParentColor and Assigned(Parent) then
-      Result := Parent.GetDefaultColor
+      Result := Parent.GetDefaultColor(DefaultColorType)
     else
-      Result := clWindow;
+      Result := DefColors[DefaultColorType];
 end;
 
 {------------------------------------------------------------------------------
