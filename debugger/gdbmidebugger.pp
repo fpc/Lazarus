@@ -655,7 +655,7 @@ type
   protected
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger);
+    constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer);
     constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnEnabled: Boolean);
     constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnExpression: string);
     constructor Create(AOwner: TGDBMIDebugger; ABreakId: Integer; AnEnabled: Boolean; AnExpression: string);
@@ -5405,9 +5405,10 @@ begin
   then ExecBreakEnabled(FBreakID, FEnabled);
 end;
 
-constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger);
+constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger; ABreakId: Integer);
 begin
   inherited Create(AOwner);
+  FBreakID := ABreakId;
   FUpdateEnabled := False;
   FUpdateExpression := False;
 end;
@@ -5692,7 +5693,7 @@ begin
 
   FUpdateFlags := FUpdateFlags - [bufEnabled, bufCondition];
 
-  FCurrentCmd:= TGDBMIDebuggerCommandBreakUpdate.Create(TGDBMIDebugger(Debugger));
+  FCurrentCmd:= TGDBMIDebuggerCommandBreakUpdate.Create(TGDBMIDebugger(Debugger), FBreakID);
   if bufEnabled in AFlags
   then begin
     TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateEnabled := True;
