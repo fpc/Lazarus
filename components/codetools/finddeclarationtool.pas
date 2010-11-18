@@ -1489,7 +1489,10 @@ begin
       GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                  CurPos.StartPos,CurPos.EndPos);
       CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
-      IdentifierStart:=@Src[CurPos.StartPos];
+      if CursorAtIdentifier then
+        IdentifierStart:=@Src[CurPos.StartPos]
+      else
+        IdentifierStart:=PChar(Src);
     end;
     if CursorAtIdentifier then begin
       // find declaration of identifier
