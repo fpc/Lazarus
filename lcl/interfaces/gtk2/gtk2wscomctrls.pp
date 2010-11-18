@@ -279,13 +279,10 @@ begin
     if (Orientation = trHorizontal) then
       Widget := gtk_hscale_new(Adjustment)
     else
-    begin
       Widget := gtk_vscale_new(Adjustment);
-      if not gtk_range_get_inverted(PGtkRange(Widget)) then
-        gtk_range_set_inverted(PGtkRange(Widget), True);
-    end;
 
-     gtk_scale_set_digits(PGtkScale(Widget), 0);
+    gtk_range_set_inverted(PGtkRange(Widget), Reversed);
+    gtk_scale_set_digits(PGtkScale(Widget), 0);
   end;
   Result := TLCLIntfHandle(PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
@@ -315,17 +312,8 @@ begin
   with ATrackBar do
   begin
     wHandle := Handle;
-
-    if Orientation = trHorizontal then
-    begin
-      if gtk_range_get_inverted(PGtkRange(wHandle)) then
-       gtk_range_set_inverted(PGtkRange(wHandle), False);
-    end else
-    begin
-      if not gtk_range_get_inverted(PGtkRange(wHandle)) then
-       gtk_range_set_inverted(PGtkRange(wHandle), False);
-    end;
-
+    if gtk_range_get_inverted(PGtkRange(wHandle)) <> Reversed then
+      gtk_range_set_inverted(PGtkRange(wHandle), Reversed);
 
     Adjustment := gtk_range_get_adjustment(GTK_RANGE(Pointer(wHandle)));
     // min >= max causes crash
