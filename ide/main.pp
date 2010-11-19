@@ -11097,14 +11097,12 @@ begin
 
   // Check if we can run this project
   debugln('TMainIDE.DoInitProjectRun A ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
-  if (not (pfRunnable in Project1.Flags))
-  or (Project1.MainUnitID < 0)
-  then Exit;
+  if not ((Project1.CompilerOptions.ExecutableType=cetProgram) and
+          (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0)) then Exit;
 
   debugln('TMainIDE.DoInitProjectRun B');
   // Build project first
-  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk
-  then Exit;
+  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then Exit;
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);

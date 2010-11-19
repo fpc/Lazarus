@@ -2190,40 +2190,37 @@ begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     CanRun:=false;
     if Project1<>nil then
-    begin
-      if (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) then
-        CanRun:=true
-      else if pfRunnable in Project1.Flags then
-        CanRun:=true;
-    end;
-    RunSpeedButton.Enabled := CanRun
-           and (DebuggerInvalid
-                or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
+      CanRun:=((AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive)) or
+              ((Project1.CompilerOptions.ExecutableType=cetProgram)
+                and (pfRunnable in Project1.Flags));
+    RunSpeedButton.Enabled := CanRun and (DebuggerInvalid
+            or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
-    PauseSpeedButton.Enabled := (not DebuggerInvalid)
-                                and (dcPause in FDebugger.Commands);
+    PauseSpeedButton.Enabled := CanRun
+            and (not DebuggerInvalid) and (dcPause in FDebugger.Commands);
     itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
-    itmRunMenuShowExecutionPoint.Enabled := (not DebuggerInvalid) and (FDebugger.State = dsPause);
-    StepIntoSpeedButton.Enabled := DebuggerInvalid
-            or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
+    itmRunMenuShowExecutionPoint.Enabled := CanRun
+            and (not DebuggerInvalid) and (FDebugger.State = dsPause);
+    StepIntoSpeedButton.Enabled := CanRun and (DebuggerInvalid
+            or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
-    StepOverSpeedButton.Enabled := DebuggerInvalid or
-              (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
+    StepOverSpeedButton.Enabled := CanRun and (DebuggerInvalid or
+              (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
-    StepOutSpeedButton.Enabled := DebuggerInvalid or
-              (dcStepOut in FDebugger.Commands)  or (FDebugger.State = dsIdle);
+    StepOutSpeedButton.Enabled := CanRun and (DebuggerInvalid or
+              (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
 
-    itmRunMenuRunToCursor.Enabled := DebuggerInvalid
-                                     or (dcRunTo in FDebugger.Commands);
-    itmRunMenuStop.Enabled := not DebuggerInvalid;
+    itmRunMenuRunToCursor.Enabled := CanRun
+            and (DebuggerInvalid or (dcRunTo in FDebugger.Commands));
+    itmRunMenuStop.Enabled := CanRun and not DebuggerInvalid;
     StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
 
-    itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
+    itmRunMenuEvaluate.Enabled := CanRun and (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
-    SrcEditMenuEvaluateModify.Enabled := (not DebuggerInvalid)
+    SrcEditMenuEvaluateModify.Enabled := CanRun and (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
-    SrcEditMenuInspect.Enabled := (not DebuggerInvalid)
+    SrcEditMenuInspect.Enabled := CanRun and (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
 
