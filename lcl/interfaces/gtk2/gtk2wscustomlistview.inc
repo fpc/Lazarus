@@ -188,6 +188,57 @@ begin
   Widgets^.ItemCache.Clear;
 end;
 
+procedure Gtk2_IconViewSelectionChanged(AIconView: PGtkIconView; WidgetInfo: PWidgetInfo); cdecl;
+var
+  msg: TLMNotify;
+  NM: TNMListView;
+  Widgets: PTVWidgets;
+  AIndex: String;
+  i: Integer;
+  List: PGList;
+  Path: PGtkTreePath;
+begin
+  Widgets := PTVWidgets(WidgetInfo^.UserData);
+  msg.Msg := CN_NOTIFY;
+
+  if (Widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
+  begin
+    if (Widgets^.ItemCache <> nil) and (Widgets^.ItemCache.Count = 0) then
+    begin
+      List := gtk_icon_view_get_selected_items(AIconView);
+      if (List <> nil) then
+      begin
+        Path := PGtkTreePath(g_list_first(List)^.data);
+        Widgets^.ItemCache.Add(gtk_tree_path_to_string(Path));
+      end else
+        exit;
+    end else
+      Exit;
+  end;
+
+  // LCL already sent selection !
+  if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
+    exit;
+
+  for i := 0 to Widgets^.ItemCache.Count -1 do
+  begin
+    FillChar(NM, SizeOf(NM), 0);
+    NM.hdr.hwndfrom := PtrUInt(Widgets^.MainView);
+    NM.hdr.code := LVN_ITEMCHANGED;
+    AIndex := Widgets^.ItemCache.Strings[i];
+    NM.iItem := StrToInt(AIndex);
+    NM.iSubItem := 0;//AColumn;
+    if Widgets^.ItemCache.Objects[i] <> nil then
+      NM.uOldState := LVIS_SELECTED
+    else
+      NM.uNewState := LVIS_SELECTED;
+    NM.uChanged := LVIF_STATE;
+    msg.NMHdr := @NM.hdr;
+    DeliverMessage(WidgetInfo^.LCLObject, msg);
+  end;
+  Widgets^.ItemCache.Clear;
+end;
+
 function Gtk2WSLV_ItemSelected(selection: PGtkTreeSelection; model: PGtkTreeModel;
            path: PGtkTreePath; path_is_currently_selected: GBoolean; WidgetInfo: PWidgetInfo): GBoolean; cdecl;
 var
@@ -540,7 +591,7 @@ begin
   else
   if GTK_IS_ICON_VIEW(Widgets^.MainView) then
   begin
-    SignalConnect(Widgets^.MainView, 'selection-changed',  @Gtk2_ItemSelectionChanged,    AWidgetInfo);
+    SignalConnect(Widgets^.MainView, 'selection-changed',  @Gtk2_IconViewSelectionChanged,    AWidgetInfo);
     SignalConnect(Widgets^.MainView, 'toggle-cursor-item', @Gtk2_ItemFocusChanged,        AWidgetInfo);
   end;
   SignalConnect(PGtkWidget(Widgets^.TreeModel), 'row-changed',  @Gtk2_ItemChanged,  AWidgetInfo);
@@ -1177,7 +1228,7 @@ begin
             if AIsSet then
               gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
             else
-              gtk_icon_view_set_cursor(PGtkIconView(MainView), nil, nil, False);
+              gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False);
           end
         {$ENDIF};
           gtk_tree_path_free(Path);
