@@ -704,6 +704,8 @@ end;
 
 function TScreen.GetMonitor(Index: Integer): TMonitor;
 begin
+  if FMonitors.Count = 0 then
+    UpdateMonitors;
   Result := FMonitors[Index];
 end;
 
