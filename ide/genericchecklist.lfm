@@ -26,6 +26,7 @@ object GenericCheckListForm: TGenericCheckListForm
     CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object CheckListBox1: TCheckListBox
     Left = 0
