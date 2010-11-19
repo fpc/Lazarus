@@ -3131,7 +3131,7 @@ begin
       Icon.SetSize(TextSize.cx, TextSize.cy);
       TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
       if FDDC.Form <> nil then
-        Icon.Canvas.Brush.Color := FDDC.Form.Canvas.Brush.Color
+        Icon.Canvas.Brush.Color := FDDC.Form.Brush.Color
       else
         Icon.Canvas.Brush.Color := clBtnFace;
       Icon.Canvas.FillRect(TextRect);
