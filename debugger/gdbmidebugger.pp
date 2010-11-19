@@ -2445,7 +2445,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     if ExecuteCommand('info line * pointer(%s)', [S], R)
     then begin
       Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
-      Result.SrcFile := ConvertPathDelims(GetPart('\"', '\"', R.Values));
+      Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
     end;
   end;
 
@@ -4671,8 +4671,8 @@ begin
   Val(Frame.Values['addr'], Location.Address, e);
   if e=0 then ;
   Location.FuncName := Frame.Values['func'];
-  Location.SrcFile := ConvertPathDelims(Frame.Values['file']);
-  Location.SrcFullName := ConvertPathDelims(Frame.Values['fullname']);
+  Location.SrcFile := ConvertGdbPathAndFile(Frame.Values['file']);
+  Location.SrcFullName := ConvertGdbPathAndFile(Frame.Values['fullname']);
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
@@ -6313,8 +6313,8 @@ begin
     Val(AFrameInfo.Values['addr'], addr, e);
     if e=0 then ;
     func := AFrameInfo.Values['func'];
-    filename := ConvertPathDelims(AFrameInfo.Values['file']);
-    fullname := ConvertPathDelims(AFrameInfo.Values['fullname']);
+    filename := ConvertGdbPathAndFile(AFrameInfo.Values['file']);
+    fullname := ConvertGdbPathAndFile(AFrameInfo.Values['fullname']);
     line := AFrameInfo.Values['line'];
   end;
 
@@ -7794,8 +7794,8 @@ begin
   Val(Frame.Values['addr'], Location.Address, e);
   if e=0 then ;
   Location.FuncName := Frame.Values['func'];
-  Location.SrcFile := ConvertPathDelims(Frame.Values['file']);
-  Location.SrcFullName := ConvertPathDelims(Frame.Values['fullname']);
+  Location.SrcFile := ConvertGdbPathAndFile(Frame.Values['file']);
+  Location.SrcFullName := ConvertGdbPathAndFile(Frame.Values['fullname']);
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;

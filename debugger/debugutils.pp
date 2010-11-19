@@ -61,7 +61,9 @@ function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
 function ConvertPathDelims(const AFileName: String): String;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
+function UnEscapeOctal(const AValue: String): String;
 function UnQuote(const AValue: String): String;
+function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 
 
 procedure SmartWriteln(const s: string);
@@ -181,6 +183,54 @@ begin
       Result[i] := PathDelim;
 end;
 
+function UnEscapeOctal(const AValue: String): String;
+var
+  c, cnt, len: Integer;
+  Src, Dst: PChar;
+  Oct: PChar;
+begin
+  len := Length(AValue);
+  if len = 0 then Exit('');
+
+  Src := @AValue[1];
+  cnt := len;
+  SetLength(Result, len); // allocate initial space
+
+  Dst := @Result[1];
+  while cnt > 0 do
+  begin
+    if (Src^ = '\') and ((Src+1)^ in ['0'..'7', '\'])
+    then begin
+      inc(Src);
+      dec(cnt);
+      if Src^ <> '\'
+      then begin
+        Oct := Src;
+        c := 0;
+        while (Src^ in ['0'..'7']) and (cnt > 0)
+        do begin
+          c := (c * 8) + ord(Src^) - ord('0');
+          Inc(Src);
+          Dec(cnt);
+        end;
+        //c := UnicodeToUTF8SkipErrors(c, Dst);
+        //inc(Dst, c);
+        Dst^ := chr(c and 255);
+        if (c and 255) <> 0
+        then Inc(Dst);
+        if cnt = 0 then Break;
+        continue;
+      end;
+    end;
+    Dst^ := Src^;
+    Inc(Dst);
+    Inc(Src);
+    Dec(cnt);
+  end;
+
+  SetLength(Result, Dst - @Result[1]); // adjust to actual length
+end;
+
 function Unquote(const AValue: String): String;
 var
   len: Integer;
@@ -191,6 +241,11 @@ begin
   if (AValue[1] = '"') and (AValue[len] = '"')
   then Result := Copy(AValue, 2, len - 2)
   else Result := AValue;
+end;
+
+function ConvertGdbPathAndFile(const AValue: String): String;
+begin
+  Result := AnsiToUtf8(ConvertPathDelims(UnEscapeOctal(AValue)));
 end;
 
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;
