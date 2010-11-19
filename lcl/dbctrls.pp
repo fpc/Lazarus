@@ -599,7 +599,6 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetValueCheck(const AValue: string);
     procedure SetValueUncheck(const AValue: string);
-    function ValueEqualsField(const AValue, AFieldText: string): boolean;
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;

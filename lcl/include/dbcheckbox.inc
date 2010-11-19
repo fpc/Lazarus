@@ -85,9 +85,9 @@ begin
   end else begin
     Result:=cbGrayed;
     FieldText:=FDatalink.Field.AsString;
-    if ValueEqualsField(FValueCheck,FieldText) then
+    if AnsiSameText(FValueCheck,FieldText) then
       Result:=cbChecked
-    else if ValueEqualsField(FValueUncheck,FieldText) then
+    else if AnsiSameText(FValueUncheck,FieldText) then
       Result:=cbUnchecked;
   end;
 end;
@@ -149,12 +149,6 @@ begin
   end else
     State:=GetFieldCheckState;
   inherited EditingDone;
-end;
-
-function TDBCheckBox.ValueEqualsField(const AValue, AFieldText: string
-  ): boolean;
-begin
-  Result:=AnsiCompareText(AValue,AFieldText)=0;
 end;
 
 procedure TDBCheckBox.CMGetDataLink(var Message: TLMessage);
