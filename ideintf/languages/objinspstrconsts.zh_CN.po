@@ -1742,6 +1742,22 @@ msgstr "分割图片"
 msgid "Do you want to split the image?"
 msgstr "想要分割图片吗？"
 
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr ""
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr ""
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr ""
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr ""
+
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
 msgstr "添加页面"

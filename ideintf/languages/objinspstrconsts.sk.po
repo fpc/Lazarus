@@ -1743,6 +1743,22 @@ msgstr "Rozdeliť obrázok"
 msgid "Do you want to split the image?"
 msgstr "Chcete rozdeliť obrázok?"
 
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr ""
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr ""
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr ""
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr ""
+
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
 msgstr "Pridať záložku"

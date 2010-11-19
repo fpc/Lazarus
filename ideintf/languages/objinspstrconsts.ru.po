@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-04 00:17+0300\n"
+"PO-Revision-Date: 2010-11-20 02:49+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1734,6 +1734,22 @@ msgstr "Разбить изображение"
 #: objinspstrconsts.s_suggestsplitimage
 msgid "Do you want to split the image?"
 msgstr "Вы хотите разбить изображение?"
+
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr "Новая кнопка"
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr "Новая переключаемая кнопка"
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr "Новый разделитель-линия"
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr "Новый разделитель"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"

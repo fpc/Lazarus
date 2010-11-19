@@ -1735,6 +1735,22 @@ msgstr "Perskelti paveikslą"
 msgid "Do you want to split the image?"
 msgstr "Ar norite perskelti paveikslą?"
 
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr ""
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr ""
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr ""
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr ""
+
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
 msgstr "Pridėti kortelę"

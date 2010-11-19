@@ -1721,6 +1721,22 @@ msgstr "פצל דמות"
 msgid "Do you want to split the image?"
 msgstr "האם אתה רוצה לפצל את הדמות?"
 
+#: objinspstrconsts.tbcenewbutton
+msgid "New Button"
+msgstr ""
+
+#: objinspstrconsts.tbcenewcheckbutton
+msgid "New CheckButton"
+msgstr ""
+
+#: objinspstrconsts.tbcenewdivider
+msgid "New Divider"
+msgstr ""
+
+#: objinspstrconsts.tbcenewseparator
+msgid "New Separator"
+msgstr ""
+
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
 msgstr "הוסף לשונית"
