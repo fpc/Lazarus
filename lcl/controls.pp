@@ -255,7 +255,6 @@ type
     procedure SetControl(AControl: TControl);
   protected
     procedure CreateHandle; override;
-    procedure CreateFont; override;
     function GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor; override;
   public
     constructor Create;

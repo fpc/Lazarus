@@ -56,8 +56,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomControl.Destroy;
 begin
-  FCanvas.Free;
-  FCanvas:=nil;
+  FreeAndNil(FCanvas);
   inherited Destroy;
 end;
 
@@ -82,15 +81,15 @@ end;
 
 procedure TCustomControl.FontChanged(Sender: TObject);
 begin
-  Canvas.Font:=Font;
+  Canvas.Font := Font;
   inherited FontChanged(Sender);
 end;
 
 procedure TCustomControl.SetColor(Value: TColor);
 begin
-  if Value=Color then exit;
+  if Value = Color then Exit;
   inherited SetColor(Value);
-  Canvas.Brush.Color:=Color;
+  Canvas.Brush.Color := Color;
 end;
 
 class procedure TCustomControl.WSRegisterClass;

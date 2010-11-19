@@ -33,15 +33,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TControlCanvas.CreateFont;
- ------------------------------------------------------------------------------}
-procedure TControlCanvas.CreateFont;
-begin
-  inherited CreateFont;
-  //DebugLn('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
-end;
-
 function TControlCanvas.GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor;
 begin
   if Assigned(FControl) then
@@ -90,7 +81,8 @@ begin
   //DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',DbgS(FDeviceContext,8),' WinHandle=',DbgS(FWindowHandle,8));
   if FControl = nil then
     inherited CreateHandle
-  else begin
+  else
+  begin
     if ControlIsPainting then
       debugln(['TControlCanvas.CreateHandle WARNING: accessing the canvas of '+DbgSName(FControl)+' is not supported outside of paint message']);
     if FDeviceContext = 0 then
@@ -122,5 +114,5 @@ end;
 
 function TControlCanvas.ControlIsPainting: boolean;
 begin
-  Result:=(FControl<>nil) and FControl.IsProcessingPaintMsg;
+  Result := Assigned(FControl) and FControl.IsProcessingPaintMsg;
 end;
