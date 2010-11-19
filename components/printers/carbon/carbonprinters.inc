@@ -227,7 +227,13 @@ begin
     P := CFArrayGetValueAtIndex(FPaperArray, I);
     if OSError(PMPaperGetName(P, CFString), Self, SName, 'PMPaperGetName') then Continue;
     PaperName := CFStringToStr(CFString);
-
+    //MacOSX 10.4 returns wrong paper name in case of US Letter.
+    //In system we can choose US Letter, but here it returns Letter.Issue #17698
+    if PaperName = 'Letter' then
+      PaperName := 'US Letter'
+    else
+    if PaperName = 'Legal' then
+      PaperName := 'US Legal';
     Lst.Add(PaperName);
   end;
 end;
