@@ -27,6 +27,7 @@
 unit Forms;
 
 {$mode objfpc}{$H+}{$macro on}
+{$I lcl_defines.inc}
 
 interface
 

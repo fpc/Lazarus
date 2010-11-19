@@ -25,6 +25,7 @@
 unit Controls;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 {off $DEFINE BUFFERED_WMPAINT}
 
 interface

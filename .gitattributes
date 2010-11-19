@@ -4659,6 +4659,7 @@ lcl/include/interfacebase.inc svneol=native#text/pascal
 lcl/include/intfbaselcl.inc svneol=native#text/pascal
 lcl/include/intfbasewinapi.inc svneol=native#text/pascal
 lcl/include/jpegimage.inc svneol=native#text/pascal
+lcl/include/lcl_defines.inc svneol=native#text/pascal
 lcl/include/lclaction.inc svneol=native#text/pascal
 lcl/include/lclintf.inc svneol=native#text/pascal
 lcl/include/lclintfh.inc svneol=native#text/pascal

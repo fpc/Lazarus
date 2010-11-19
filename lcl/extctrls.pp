@@ -23,8 +23,8 @@
 }
 unit ExtCtrls;
 
-{$mode objfpc}
-{$H+}
+{$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 interface
 
