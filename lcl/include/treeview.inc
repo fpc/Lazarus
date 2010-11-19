@@ -3668,9 +3668,8 @@ begin
 
   else
     if (Key=EditKey) and (Shift=EditKeyShift) and (not ReadOnly) then
-      BeginEditing(Selected)
-    else
-      lNode := nil;
+      BeginEditing(Selected);
+    lNode := nil; { No change in selection }
   end;
 
   if lNode <> nil then
