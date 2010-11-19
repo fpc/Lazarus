@@ -190,6 +190,10 @@ resourcestring
   tccesDeleteTab = 'Delete tab';
   tccesMoveTabLeft = 'Move tab left';
   tccesMoveTabRight = 'Move tab right';
+  tbceNewButton = 'New Button';
+  tbceNewCheckbutton = 'New CheckButton';
+  tbceNewSeparator = 'New Separator';
+  tbceNewDivider = 'New Divider';
 
   //checklistbox editor
   clbCheckListBoxEditor = 'CheckListBox Editor';

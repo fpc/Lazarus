@@ -1213,10 +1213,10 @@ end;
 function TToolBarComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'New Button';
-    1: Result := 'New Checkbutton';
-    2: Result := 'New Separator';
-    3: Result := 'New Divider';
+    0: Result := tbceNewButton;
+    1: Result := tbceNewCheckbutton;
+    2: Result := tbceNewSeparator;
+    3: Result := tbceNewDivider;
   else
     Result := '';
   end;
