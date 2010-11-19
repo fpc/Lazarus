@@ -1083,7 +1083,8 @@ begin
 
   if FManager.FDebugger <> nil
   then begin
-    BP := FManager.FDebugger.BreakPoints.Add(ABreakpoint.Source, TManagedBreakPoint(ABreakpoint).DebugExeLine);
+    // create without source. it will be set in assign (but during Begin/EndUpdate)
+    BP := FManager.FDebugger.BreakPoints.Add('', 0);
     BP.Assign(ABreakPoint);
   end;
   FManager.CreateSourceMarkForBreakPoint(ABreakpoint,nil);
