@@ -553,46 +553,57 @@ end;
 procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl;
   var ANewLeft, ANewTop, ANewWidth, ANewHeight: Integer; var AlignRect: TRect;
   AlignInfo: TAlignInfo);
+var
+  BevelSpacing: TSpacingSize;
 begin
   //debugln(['TCustomButtonPanel.CustomAlignPosition ',DbgSName(Self),' AControl=',DbgSName(AControl),' AlignRect=',dbgs(AlignRect),' New=',ANewLeft,',',ANewTop,',',ANewWidth,'x',ANewHeight]);
   inherited CustomAlignPosition(AControl, ANewLeft, ANewTop, ANewWidth,
     ANewHeight, AlignRect, AlignInfo);
 
-  if AControl=FButtons[pbHelp] then begin
+  if Assigned(FBevel) and FBevel.IsControlVisible then
+    BevelSpacing := Spacing
+  else
+    BevelSpacing := 0;
+
+  if AControl=FButtons[pbHelp] then
+  begin
     if Align in [alLeft,alRight] then
     begin
       // put at top
       ANewLeft:=AlignRect.Left;
-      ANewTop:=AlignRect.Top+Spacing;
-      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-Spacing);
+      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-BevelSpacing);
       if Align=alRight then
-        inc(ANewLeft,Spacing);
+        inc(ANewLeft,BevelSpacing);
+      ANewTop:=AlignRect.Top+Spacing;
       AlignRect.Top:=Min(AlignRect.Bottom,ANewTop+ANewHeight);
-    end else begin
+    end else
+    begin
       // put at left
-      ANewLeft:=AlignRect.Left+Spacing;
       ANewTop:=AlignRect.Top;
-      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-Spacing);
+      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-BevelSpacing);
       if Align=alBottom then
-        inc(ANewTop,Spacing);
+        inc(ANewTop,BevelSpacing);
+      ANewLeft:=AlignRect.Left+Spacing;
       AlignRect.Left:=Min(AlignRect.Right,ANewLeft+ANewWidth);
     end;
-  end else begin
+  end else
+  begin
     if Align in [alLeft,alRight] then
     begin
       // put at bottom
       ANewLeft:=AlignRect.Left;
-      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-Spacing);
+      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-BevelSpacing);
       if Align=alRight then
-        inc(ANewLeft,Spacing);
+        inc(ANewLeft,BevelSpacing);
       ANewTop:=AlignRect.Bottom-ANewHeight-Spacing;
       AlignRect.Bottom:=Max(AlignRect.Top,ANewTop);
-    end else begin
+    end else
+    begin
       // put at right
       ANewTop:=AlignRect.Top;
-      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-Spacing);
+      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-BevelSpacing);
       if Align=alBottom then
-        inc(ANewTop,Spacing);
+        inc(ANewTop,BevelSpacing);
       ANewLeft:=AlignRect.Right-ANewWidth-Spacing;
       AlignRect.Right:=Max(AlignRect.Left,ANewLeft);
     end;
