@@ -164,25 +164,30 @@ begin
     Caption := AHint;
     AMonitor := Screen.MonitorFromPoint(ARect.TopLeft);
     ABounds := AMonitor.BoundsRect;
-    // limit width, height by monitor
-    if (ARect.Right - ARect.Left) > (ABounds.Right - ABounds.Left) then
-      ARect.Right := ARect.Left + (ABounds.Right - ABounds.Left);
 
-    if (ARect.Bottom - ARect.Top) > (ABounds.Bottom - ABounds.Top) then
-      ARect.Bottom := ARect.Top + (ABounds.Bottom - ABounds.Top);
     // offset hint to fit into monitor
     if ARect.Bottom > ABounds.Bottom then
     begin
       ARect.Top := ABounds.Bottom - (ARect.Bottom - ARect.Top);
       ARect.Bottom := ABounds.Bottom;
     end;
+    if ARect.Top < ABounds.Top then
+    begin
+      ARect.Bottom := Min(ABounds.Top + (ARect.Bottom - ARect.Top), ABounds.Bottom);
+      ARect.Top := ABounds.Top;
+    end;
+
     if ARect.Right > ABounds.Right then
     begin
       ARect.Left := ABounds.Right - (ARect.Right - ARect.Left);
       ARect.Right := ABounds.Right;
     end;
-    if ARect.Left < ABounds.Left then ARect.Left := ABounds.Left;
-    if ARect.Top < ABounds.Top then ARect.Top := ABounds.Top;
+    if ARect.Left < ABounds.Left then
+    begin
+      ARect.Right:= Min(ABounds.Left + (ARect.Right - ARect.Left), ABounds.Right);
+      ARect.Left := ABounds.Left;
+    end;
+
     SetBounds(ARect.Left, ARect.Top,
               ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
     Visible := True;
