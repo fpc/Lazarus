@@ -26,6 +26,7 @@ object GenericListEditForm: TGenericListEditForm
     CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object Memo1: TMemo
     Left = 0
