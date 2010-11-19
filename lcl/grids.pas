@@ -2657,7 +2657,7 @@ end;
 
 procedure TCustomGrid.SetRowCount(AValue: Integer);
 var
-  OldR, OldC, NewColCount: Integer;
+  OldR, NewColCount: Integer;
 begin
   OldR := FRows.Count;
   if AValue<>OldR then begin
