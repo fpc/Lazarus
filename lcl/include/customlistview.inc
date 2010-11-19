@@ -301,6 +301,7 @@ end;
 procedure TCustomListView.InvalidateSelected;
 begin
   FSelected:=nil;
+  FSelectedIdx := -1;
   Exclude(FFlags,lffSelectedValid);
 end;
 
