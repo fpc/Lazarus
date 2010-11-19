@@ -3718,6 +3718,7 @@ procedure TDesigner.HintTimer(Sender: TObject);
       S := AComponentEditor.GetCustomHint;
       if S <> '' then
         Result := Result + LineEnding + S;
+      AComponentEditor.Free;
     end;
   end;
 
