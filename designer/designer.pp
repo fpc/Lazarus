@@ -3697,6 +3697,8 @@ procedure TDesigner.HintTimer(Sender: TObject);
   var
     AControl: TControl absolute AComponent;
     AWinControl: TWinControl absolute AComponent;
+    AComponentEditor: TBaseComponentEditor;
+    S: String;
   begin
     // component name and classname
     Result := Format(HintNameStr, [AComponent.Name, AComponent.ClassName]);
@@ -3709,6 +3711,13 @@ procedure TDesigner.HintTimer(Sender: TObject);
       // and TabStop, TabOrder for TWinControl
       if (AComponent is TWinControl) and not (AComponent = Form) then
         Result := Result + LineEnding + Format(HintTabStr, [BoolToStr(AWinControl.TabStop, True), AWinControl.TabOrder]);
+    end;
+    AComponentEditor := TheFormEditor.GetComponentEditor(AComponent);
+    if Assigned(AComponentEditor) then
+    begin
+      S := AComponentEditor.GetCustomHint;
+      if S <> '' then
+        Result := Result + LineEnding + S;
     end;
   end;
 

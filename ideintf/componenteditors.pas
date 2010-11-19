@@ -164,16 +164,17 @@ type
   public
     constructor Create(AComponent: TComponent;
       ADesigner: TComponentEditorDesigner); virtual;
+    procedure Copy; virtual; abstract;
     procedure Edit; virtual; abstract;
     procedure ExecuteVerb(Index: Integer); virtual; abstract;
-    function GetVerb(Index: Integer): string; virtual; abstract;
-    function GetVerbCount: Integer; virtual; abstract;
-    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); virtual; abstract;
-    procedure Copy; virtual; abstract;
-    function IsInInlined: Boolean; virtual; abstract;
     function GetComponent: TComponent; virtual; abstract;
+    function GetCustomHint: String; virtual; abstract;
     function GetDesigner: TComponentEditorDesigner; virtual; abstract;
     function GetHook(out Hook: TPropertyEditorHook): boolean; virtual; abstract;
+    function GetVerb(Index: Integer): string; virtual; abstract;
+    function GetVerbCount: Integer; virtual; abstract;
+    function IsInInlined: Boolean; virtual; abstract;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); virtual; abstract;
     procedure Modified; virtual; abstract;
   end;
 
@@ -196,6 +197,7 @@ type
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetComponent: TComponent; override;
+    function GetCustomHint: String; override;
     function GetDesigner: TComponentEditorDesigner; override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -540,6 +542,11 @@ end;
 function TComponentEditor.GetComponent: TComponent;
 begin
   Result := FComponent;
+end;
+
+function TComponentEditor.GetCustomHint: String;
+begin
+  Result := '';
 end;
 
 function TComponentEditor.GetDesigner: TComponentEditorDesigner;
