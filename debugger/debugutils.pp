@@ -38,6 +38,9 @@ uses
   Classes, LCLProc;
 
 type
+
+  { TDelayedUdateItem }
+
   TDelayedUdateItem = class(TCollectionItem)
   private
     FUpdateCount: Integer;
@@ -45,11 +48,13 @@ type
   protected
     procedure Changed;
     procedure DoChanged; virtual;
+    procedure DoEndUpdate; virtual; // even if not changed
   public
     procedure Assign(ASource: TPersistent); override;
     procedure BeginUpdate;
     constructor Create(ACollection: TCollection); override;
     procedure EndUpdate;
+    function IsUpdating: Boolean;
   end;
   
 function GetLine(var ABuffer: String): String;
@@ -257,15 +262,27 @@ begin
   inherited Changed(False);
 end;
 
+procedure TDelayedUdateItem.DoEndUpdate;
+begin
+  //
+end;
+
 procedure TDelayedUdateItem.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount < 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
+  if (FUpdateCount = 0)
+  then DoEndUpdate;
   if (FUpdateCount = 0) and FDoChanged
   then begin
     DoChanged;
     FDoChanged := False;
   end;
+end;
+
+function TDelayedUdateItem.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
 end;
 
 initialization

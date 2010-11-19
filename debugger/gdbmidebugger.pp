@@ -683,7 +683,7 @@ type
     procedure DoCommandDestroyed(Sender: TObject);
     procedure DoCommandExecuted(Sender: TObject);
   protected
-    //procedure DoChanged; override;
+    procedure DoEndUpdate; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
@@ -5518,6 +5518,11 @@ end;
 procedure TGDBMIBreakPoint.SetBreakpoint;
 begin
   if Debugger = nil then Exit;
+  if IsUpdating
+  then begin
+    FUpdateFlags := [bufSetBreakPoint];
+    exit;
+  end;
 
   if (FCurrentCmd <> nil)
   then begin
@@ -5608,6 +5613,15 @@ begin
   then UpdateProperties(FUpdateFlags);
 end;
 
+procedure TGDBMIBreakPoint.DoEndUpdate;
+begin
+  if bufSetBreakPoint in FUpdateFlags
+  then SetBreakPoint;
+  if FUpdateFlags * [bufEnabled, bufCondition] <> []
+  then UpdateProperties(FUpdateFlags);
+  inherited DoChanged;
+end;
+
 procedure TGDBMIBreakPoint.ReleaseBreakPoint;
 begin
   if Debugger = nil then Exit;
@@ -5644,7 +5658,7 @@ procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integ
 begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
-  if Debugger = nil then Exit;
+  if (Debugger = nil) or (Source = '')  then Exit;
   if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsRun]
   then SetBreakpoint;
 end;
@@ -5653,6 +5667,12 @@ procedure TGDBMIBreakPoint.UpdateProperties(AFlags: TGDBMIBreakPointUpdateFlags)
 begin
   if (Debugger = nil) then Exit;
   if AFlags * [bufEnabled, bufCondition] = [] then Exit;
+  if IsUpdating
+  then begin
+    if not(bufSetBreakPoint in FUpdateFlags)
+    then FUpdateFlags := FUpdateFlags + AFlags;
+    exit;
+  end;
 
   if (FCurrentCmd <> nil)
   then begin
