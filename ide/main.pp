@@ -11097,8 +11097,9 @@ begin
 
   // Check if we can run this project
   debugln('TMainIDE.DoInitProjectRun A ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
-  if not ((Project1.CompilerOptions.ExecutableType=cetProgram) and
-          (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0)) then Exit;
+  if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
+            (Project1.RunParameterOptions.HostApplicationFilename<>''))
+          and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) ) then Exit;
 
   debugln('TMainIDE.DoInitProjectRun B');
   // Build project first

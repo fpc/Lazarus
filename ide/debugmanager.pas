@@ -2190,9 +2190,11 @@ begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     CanRun:=false;
     if Project1<>nil then
-      CanRun:=((AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive)) or
-              ((Project1.CompilerOptions.ExecutableType=cetProgram)
-                and (pfRunnable in Project1.Flags));
+      CanRun:=( (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) ) or
+              ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
+                 (Project1.RunParameterOptions.HostApplicationFilename<>''))
+               and (pfRunnable in Project1.Flags)
+              );
     RunSpeedButton.Enabled := CanRun and (DebuggerInvalid
             or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
