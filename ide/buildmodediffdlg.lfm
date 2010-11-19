@@ -27,6 +27,7 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose]
+    ShowBevel = False
   end
   object ModeLabel: TLabel
     AnchorSideLeft.Control = Owner
