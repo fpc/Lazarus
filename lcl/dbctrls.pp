@@ -604,7 +604,6 @@ Type
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
     procedure DataChange(Sender: TObject); virtual;
-    procedure DoOnChange; override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;

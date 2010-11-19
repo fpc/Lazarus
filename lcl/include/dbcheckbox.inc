@@ -97,28 +97,6 @@ begin
   State:=GetFieldCheckState;
 end;
 
-procedure TDBCheckBox.DoOnChange;
-var
-  EditingOk: boolean;
-begin
-  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then begin
-    exit;
-  end;
-
-  // enter edit state avoiding FDatalink.Reset which would
-  // not honour external event (generated perhaps by user interaction)
-  FDatalink.OnDataChange:=nil;
-  EditingOk := FDatalink.Edit;
-  FDatalink.OnDataChange:=@DataChange;
-
-  EditingDone;
-
-  if EditingOk then begin
-    if Assigned(OnChange) then
-      OnChange(Self);
-  end;
-end;
-
 procedure TDBCheckBox.UpdateData(Sender: TObject);
 var
   NewFieldText: string;
@@ -165,7 +143,7 @@ end;
 
 procedure TDBCheckBox.EditingDone;
 begin
-  if FDatalink.Editing then begin
+  if FDatalink.Edit then begin
     FDatalink.Modified;
     FDataLink.UpdateRecord;
   end else
@@ -200,8 +178,7 @@ end;
 
 destructor TDBCheckBox.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 
