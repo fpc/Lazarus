@@ -55,13 +55,16 @@ end;
   function FileIsSymlink(const AFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function FileIsSymlink(const AFilename: string): boolean;
+{$ifndef wince}
 const
   IO_REPARSE_TAG_MOUNT_POINT = $A0000003;
   IO_REPARSE_TAG_SYMLINK     = $A000000C;
 var
   Attr: Longint;
   Rec: TSearchRec;
+{$endif}
 begin
+{$ifndef wince}
   Attr := FileGetAttrUTF8(AFilename);
   if (Attr <> -1) and (Attr and FILE_ATTRIBUTE_REPARSE_POINT <> 0) then
   begin
@@ -75,6 +78,7 @@ begin
       Result := False;
   end
   else
+{$endif}
     Result := False;
 end;
 
