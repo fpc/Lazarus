@@ -2431,6 +2431,10 @@ begin
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
+
+  if sfIgnoreNextChar in fStateFlags then
+    Exclude(FStateFlags, sfIgnoreNextChar);
+
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState(Shift);
   UpdateCursor;
