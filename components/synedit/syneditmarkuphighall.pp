@@ -105,7 +105,7 @@ type
     Procedure FindStartPoint;
     Procedure FindInitialize(Backward: Boolean);
     function GetMatchCount: Integer;
-    Procedure ValidateMatches;
+    Procedure ValidateMatches(RePaint: Boolean = True; KeepStartPoint: Boolean = False);
     procedure SetSearchOptions(const AValue : TSynSearchOptions);
   protected
     procedure SetSearchString(const AValue : String); virtual;
@@ -122,7 +122,7 @@ type
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
-    Procedure Invalidate;
+    Procedure Invalidate(RePaint: Boolean = True);
     Procedure SendLineInvalidation;
 
     property SearchString : String read fSearchString write SetSearchString;
@@ -312,6 +312,7 @@ end;
 constructor TSynEditMarkupHighlightAll.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
+  fStartPoint.y := -1;
   fSearch := TSynEditSearch.Create;
   fMatches := TSynMarkupHighAllMatchList.Create;
   fSearchString:='';
@@ -344,17 +345,16 @@ end;
 
 procedure TSynEditMarkupHighlightAll.DoTopLineChanged(OldTopLine : Integer);
 begin
-  // {TODO: XXX}
-  // Need indication if Bitmap was scrooled => Scrolled part does not need invalidateLines
-  Invalidate;
-  ValidateMatches;
+  // {TODO: Only do a partial search on the new area}
+  Invalidate(False);
+  ValidateMatches(False, (fStartPoint.y < TopLine) and (fStartPoint.y >= 0));
 end;
 
 procedure TSynEditMarkupHighlightAll.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
-  // {TODO: XXX}
-  Invalidate;
-  ValidateMatches;
+  // {TODO: Only do a partial search on the new area}
+  Invalidate(False);;
+  ValidateMatches(False, True);
 end;
 
 procedure TSynEditMarkupHighlightAll.DoMarkupChanged(AMarkup : TSynSelectedColor);
@@ -393,7 +393,8 @@ begin
   else fStartPoint := ptEnd;
 end;
 
-procedure TSynEditMarkupHighlightAll.ValidateMatches;
+procedure TSynEditMarkupHighlightAll.ValidateMatches(RePaint: Boolean = True;
+  KeepStartPoint: Boolean = False);
 var
   LastLine : Integer;
   Pos : Integer;
@@ -411,7 +412,8 @@ begin
   LastLine := ScreenRowToRow(LinesInWindow);
 
   { TODO: need a list of invalidated lines, so we can keep valid matches }
-  FindStartPoint;
+  if not KeepStartPoint then
+    FindStartPoint;
   ptStart := fStartPoint;
   Pos := 0;
 
@@ -434,7 +436,7 @@ begin
 
   fMatches.Count := Pos;
   fMatches.MaybeReduceCapacity;
-  if not(HideSingleMatch) or (fMatches.Count > 1) then
+  if RePaint and ( not(HideSingleMatch) or (fMatches.Count > 1) ) then
     SendLineInvalidation;
 end;
 
@@ -445,9 +447,10 @@ begin
   ValidateMatches;
 end;
 
-procedure TSynEditMarkupHighlightAll.Invalidate;
+procedure TSynEditMarkupHighlightAll.Invalidate(RePaint: Boolean = True);
 begin
-  SendLineInvalidation;
+  if RePaint then
+    SendLineInvalidation;
   fHasInvalidLines := True;
   fMatches.Count := 0;
   if SearchString = '' then fMatches.MaybeReduceCapacity;

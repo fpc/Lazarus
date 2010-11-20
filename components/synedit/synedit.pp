@@ -400,6 +400,7 @@ type
     fTextOffset: Integer;
     fTopLine: Integer;
     FOldTopLine, FOldTopView: Integer;
+    FLastTextChangeStamp: Int64;
     fHighlighter: TSynCustomHighlighter;
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
@@ -535,7 +536,7 @@ type
     procedure MoveCaretVert(DY: integer);
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
-    procedure ScanRanges;
+    procedure ScanRanges(ATextChanged: Boolean = True);
     procedure IdleScanRanges(Sender: TObject; var Done: Boolean);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
@@ -1886,6 +1887,7 @@ begin
     FInvalidateRect := Rect(-1, -1, -2, -2);
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
+    FLastTextChangeStamp := TSynEditStringList(FLines).TextChangeStamp;
   end;
   inc(FPaintLock);
   FMarkupManager.IncPaintLock;
@@ -1901,7 +1903,7 @@ begin
   FIsInDecPaintLock := True;
   try
     if (FPaintLock=1) and HandleAllocated then begin
-      ScanRanges;
+      ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
         AfterLoadFromFile;
       if FChangedLinesStart > 0 then begin
@@ -4744,7 +4746,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.ScanRanges;
+procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
 begin
   if not HandleAllocated then begin
     Application.RemoveOnIdleHandler(@IdleScanRanges); // avoid duplicate add
@@ -4753,7 +4755,8 @@ begin
     exit;
   end;
   if not assigned(FHighlighter) then begin
-    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+    if ATextChanged then
+      fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
     Topline := TopLine;
     exit;
   end;
@@ -4761,7 +4764,8 @@ begin
   FHighlighter.ScanRanges;
 
   // Todo: text may not have changed
-  fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+  if ATextChanged then
+    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
   Topline := TopLine;
 end;
 
