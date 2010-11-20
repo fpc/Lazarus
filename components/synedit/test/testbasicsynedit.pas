@@ -26,7 +26,8 @@ type
     procedure ReCreateEdit; reintroduce;
   published
     procedure TestEditEmpty;
-  end; 
+    procedure TestEditTabs;
+  end;
 
 implementation
 
@@ -136,6 +137,39 @@ begin
       InsertFlag := False;
       DoChecks;
     PopBaseName;
+
+end;
+
+procedure TTestBasicSynEdit.TestEditTabs;
+begin
+  ReCreateEdit;
+  // witout eoAutoIndent
+  SynEdit.Options  := SynEdit.Options
+                    - [eoTabIndent, eoTabsToSpaces, eoSpacesToTabs, eoAutoIndent, eoSmartTabs, eoSmartTabDelete];
+  SynEdit.TabWidth := 4;
+  SetLines(['  abc', #9'abcde', '']);
+  SetCaret(2, 2); // after tab
+  TestIsCaretPhys('Before delete tab', 5, 2);
+  SynEdit.CommandProcessor(ecDeleteLastChar, '', nil);
+
+  TestIsCaret('After delete tab', 1, 2);
+  TestIsCaretPhys('After delete tab', 1, 2);
+  TestIsText('After delete tab', ['  abc', 'abcde', '']);
+
+  ReCreateEdit;
+  // with eoAutoIndent
+  SynEdit.Options  := SynEdit.Options + [eoSmartTabs, eoSmartTabDelete, eoAutoIndent]
+                    - [eoTabIndent, eoTabsToSpaces, eoSpacesToTabs];
+  SynEdit.TabWidth := 4;
+  SetLines(['  abc', #9'abcde', '']);
+  SetCaret(2, 2); // after tab
+  TestIsCaretPhys('Before delete tab', 5, 2);
+  SynEdit.CommandProcessor(ecDeleteLastChar, '', nil);
+
+  // reuqired indent is filled up with spaces
+  TestIsCaret('After delete tab (smart)', 3, 2);
+  TestIsCaretPhys('After delete tab (smart)', 3, 2);
+  TestIsText('After delete tab (smart)', ['  abc', '  abcde', '']);
 
 end;
 
