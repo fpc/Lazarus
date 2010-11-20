@@ -1030,6 +1030,7 @@ type
     property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
   end;
 
+{%region      *****  Disassembler  *****   }
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -1150,9 +1151,19 @@ type
   TDBGDisassemblerEntryMapMergeEvent
     = procedure(MergeReceiver, MergeGiver: TDBGDisassemblerEntryRange) of object;
 
+  { TDBGDisassemblerEntryMapIterator }
+  TDBGDisassemblerEntryMap = class;
+
+  TDBGDisassemblerEntryMapIterator = class(TMapIterator)
+  public
+    function GetRangeForAddr(AnAddr: TDbgPtr; IncludeNextAddr: Boolean = False): TDBGDisassemblerEntryRange;
+    function NextRange: TDBGDisassemblerEntryRange;
+    function PreviousRange: TDBGDisassemblerEntryRange;
+  end;
+
   TDBGDisassemblerEntryMap = class(TMap)
   private
-    FIterator: TMapIterator;
+    FIterator: TDBGDisassemblerEntryMapIterator;
     FOnDelete: TNotifyEvent;
     FOnMerge: TDBGDisassemblerEntryMapMergeEvent;
     FFreeItemLock: Boolean;
@@ -1200,6 +1211,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+{%endregion   ^^^^^  Disassembler  ^^^^^   }
 
 (******************************************************************************)
 (******************************************************************************)
@@ -5168,6 +5180,46 @@ begin
   AOffs := AnAddr - FEntries[Result].Addr;
 end;
 
+{ TDBGDisassemblerEntryMapIterator }
+
+function TDBGDisassemblerEntryMapIterator.GetRangeForAddr(AnAddr: TDbgPtr;
+  IncludeNextAddr: Boolean): TDBGDisassemblerEntryRange;
+begin
+  Result := nil;
+  if not Locate(AnAddr)
+  then if not BOM
+  then Previous;
+
+  if BOM
+  then exit;
+
+  GetData(Result);
+  if not Result.ContainsAddr(AnAddr, IncludeNextAddr)
+  then Result := nil;
+end;
+
+function TDBGDisassemblerEntryMapIterator.NextRange: TDBGDisassemblerEntryRange;
+begin
+  Result := nil;
+  if EOM
+  then exit;
+
+  Next;
+  if not EOM
+  then GetData(Result);
+end;
+
+function TDBGDisassemblerEntryMapIterator.PreviousRange: TDBGDisassemblerEntryRange;
+begin
+  Result := nil;
+  if BOM
+  then exit;
+
+  Previous;
+  if not BOM
+  then GetData(Result);
+end;
+
 { TDBGDisassemblerEntryMap }
 
 procedure TDBGDisassemblerEntryMap.ReleaseData(ADataPtr: Pointer);
@@ -5184,7 +5236,7 @@ end;
 constructor TDBGDisassemblerEntryMap.Create(AIdType: TMapIdType; ADataSize: Cardinal);
 begin
   inherited;
-  FIterator := TMapIterator.Create(Self);
+  FIterator := TDBGDisassemblerEntryMapIterator.Create(Self);
 end;
 
 destructor TDBGDisassemblerEntryMap.Destroy;
@@ -5249,17 +5301,7 @@ end;
 function TDBGDisassemblerEntryMap.GetRangeForAddr(AnAddr: TDbgPtr;
   IncludeNextAddr: Boolean = False): TDBGDisassemblerEntryRange;
 begin
-  Result := nil;
-  if not FIterator.Locate(AnAddr)
-  then if not FIterator.BOM
-  then FIterator.Previous;
-
-  if FIterator.BOM
-  then exit;
-
-  FIterator.GetData(Result);
-  if not Result.ContainsAddr(AnAddr, IncludeNextAddr)
-  then Result := nil;
+  Result := FIterator.GetRangeForAddr(AnAddr, IncludeNextAddr);
 end;
 
 { TDBGDisassembler }
