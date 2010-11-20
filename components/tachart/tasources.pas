@@ -654,6 +654,7 @@ begin
   parts := TStringList.Create;
   try
     parts.Delimiter := '|';
+    parts.StrictDelimiter := true;
     parts.DelimitedText := AString;
     if FSource.YCount + 3 < Cardinal(parts.Count) then
       FSource.YCount := parts.Count - 3;

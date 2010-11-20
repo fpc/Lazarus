@@ -78,6 +78,8 @@ begin
   AssertEquals($FF0000, FSource[1]^.Color);
   FSource[0]^.Color := 0;
   AssertEquals('3|4|$000000|text1', FSource.DataPoints[0]);
+  FSource.DataPoints.Add('7|8|0|two words');
+  AssertEquals('two words', FSource[2]^.Text);
 end;
 
 procedure TListSourceTest.SetUp;
