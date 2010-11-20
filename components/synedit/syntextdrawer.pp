@@ -403,7 +403,6 @@ end;
 {$ENDIF}
 {$ENDIF}
 
-{$IFDEF SYN_LAZARUS}
 function GetStyleIndex(Value: TFontStyles): Integer;
 var
   item: TFontStyle;
@@ -413,7 +412,6 @@ begin
     if item in Value then
       result := result + 1 shl ord(item);
 end;
-{$ENDIF}
 
 { TheFontsInfoManager }
 
@@ -891,19 +889,10 @@ var
   hOldFont: HFONT;
   p: PheFontData;
 begin
-  {$IFDEF HE_ASSERT}
-  ASSERT(SizeOf(TFontStyles) = 1,
-    'TheTextDrawer.SetStyle: There''s more than four font styles but the current '+
-    'code expects only four styles.');
-  {$ELSE}
-  ASSERT(SizeOf(TFontStyles) = 1);
-  {$ENDIF}
-  {$IFDEF SYN_LAZARUS}
   idx := GetStyleIndex(Value);
-  {$ELSE}
-  idx := PByte(@Value)^;
-  {$ENDIF}
+  {$IFDEF HE_ASSERT}
   ASSERT(idx <= High(TheStockFontPatterns));
+  {$ENDIF}
 
   UseFontHandles;
   p := FontData[idx];
