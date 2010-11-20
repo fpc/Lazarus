@@ -826,6 +826,7 @@ end;
 procedure TCarbonControl.SetColor(const AColor: TColor);
 var
   FontStyle: ControlFontStyleRec;
+  Color: TColor;
 begin
   // get current font style preserve other font settings
   OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
@@ -833,7 +834,10 @@ begin
     SGetData, SControlFont);
 
   FontStyle.flags := FontStyle.flags or kControlUseBackColorMask;
-  FontStyle.backColor := ColorToRGBColor(AColor);
+  Color := AColor;
+  if Color = clDefault then
+    Color := LCLObject.GetDefaultColor(dctBrush);
+  FontStyle.backColor := ColorToRGBColor(Color);
 
   OSError(SetControlFontStyle(ControlRef(Widget), FontStyle), Self, SSetColor,
     SSetFontStyle);

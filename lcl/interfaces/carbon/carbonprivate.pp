@@ -1146,7 +1146,7 @@ begin
 
   try
     Context := nil;
-    if ABox.FBoxColor <> clBtnFace then
+    if (ABox.FBoxColor <> clBtnFace) and (ABox.FBoxColor <> clDefault) then
     begin
       if OSError(
         GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
