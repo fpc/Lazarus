@@ -895,12 +895,28 @@ var
       ARadius := Trunc(ARadius / (Max(Source.Extent.b.X, 0) + 1));
   end;
 
+  function LabelExtraDist(AAngle: Double; AIndex: Integer): Double;
+  const
+    ALMOST_INF = 1e10;
+  var
+    z, e: TDoublePoint;
+    r: TDoubleRect;
+  begin
+    z := ZeroDoublePoint;
+    e := RotatePoint(DoublePoint(ALMOST_INF, 0), AAngle + Pi);
+    r.a.X := -labelWidths[AIndex] / 2;
+    r.b.X := -r.a.X;
+    r.a.Y := -labelHeights[AIndex] / 2;
+    r.b.Y := -r.a.Y;
+    LineIntersectsRect(z, e, r);
+    Result := Norm([e.X, e.Y]);
+  end;
+
 var
   i, radius: Integer;
   prevAngle: Double = 0;
   d, angleStep, sliceCenterAngle: Double;
   c, center: TPoint;
-  sa, ca: Extended;
   prevLabelPoly: TPointArray = nil;
 const
   RAD_TO_DEG16 = 360 * 16;
@@ -929,10 +945,7 @@ begin
     prevAngle += angleStep;
 
     if not Marks.IsMarkLabelsVisible then continue;
-
-    // This is a crude approximation of label "radius", it may be improved.
-    SinCos(DegToRad(sliceCenterAngle / 16), sa, ca);
-    d := Max(Abs(labelWidths[i] * ca), Abs(labelHeights[i] * sa)) / 2;
+    d := LabelExtraDist(DegToRad(sliceCenterAngle / 16), i);
     Marks.DrawLabel(
       ACanvas,
       LineEndPoint(c, sliceCenterAngle, radius),

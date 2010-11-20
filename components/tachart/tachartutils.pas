@@ -245,7 +245,8 @@ function ProjToRect(
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
-function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
+function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
+function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RoundChecked(A: Double): Integer; inline;
 
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
@@ -691,6 +692,15 @@ begin
     Result :=
       RangesIntersect(a.X, b.X, AFixed.a.X, AFixed.b.X, a.X, b.X) and
       RangesIntersect(a.Y, b.Y, AFixed.a.Y, AFixed.b.Y, a.Y, b.Y);
+end;
+
+function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint;
+var
+  sa, ca: Extended;
+begin
+  SinCos(AAngle, sa, ca);
+  Result.X := ca * APoint.X - sa * APoint.Y;
+  Result.Y := sa * APoint.X + ca * APoint.Y;
 end;
 
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
