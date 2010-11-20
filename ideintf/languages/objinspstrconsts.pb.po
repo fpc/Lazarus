@@ -1735,19 +1735,19 @@ msgstr "Você quer separar a imagem?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Novo Botão"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "Novo \"CheckButton\""
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "Novo Divisor"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Novo Separador"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"

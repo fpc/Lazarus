@@ -147,7 +147,7 @@ msgstr "Referência ícone"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "Diretiva IDE"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
