@@ -372,7 +372,12 @@ begin
   FFlushAfterRead := False;
   //writeln('TCmdLineDebugger.ReadLine returns ', result);
   {$IFDEF DBG_VERBOSE}
-  debugln('<< TCmdLineDebugger.ReadLn "',Result,'"');
+  {$IFnDEF DBG_VERBOSE_FULL_DATA} if length(Result) < 150 then  {$ENDIF}
+  debugln('<< TCmdLineDebugger.ReadLn "',Result,'"')
+  {$IFnDEF DBG_VERBOSE_FULL_DATA}
+  else  debugln('<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 100), '" ... "',copy(Result, length(Result)-50, 50),'"')
+  {$ENDIF}
+  ;
   {$ENDIF}
 end;
 
