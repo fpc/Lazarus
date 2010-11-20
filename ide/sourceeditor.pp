@@ -2807,6 +2807,8 @@ begin
         Command:=ecNone;
       end;
 
+    ecScrollUp, ecScrollDown, ecScrollLeft, ecScrollRight: ; // ignore
+
     else
       FSourceNoteBook.EndIncrementalFind;
     end;
