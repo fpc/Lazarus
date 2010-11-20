@@ -291,12 +291,12 @@ function TSynBeautifier.UnIndentLine(const ACaret: TSynEditCaret;
   out CaretNewX: Integer): Boolean;
 var
   SpaceCount1, SpaceCount2: Integer;
-  BackCounter, LogSpacePos: Integer;
+  BackCounter, LogSpacePos, FillSpace: Integer;
   LogCaret: TPoint;
   Line, Temp: String;
 begin
   Line := ACaret.LineText;
-  SpaceCount1 := GetIndentForLine(FCurrentEditor, Line, true);
+  SpaceCount1 := GetIndentForLine(FCurrentEditor, Line, true); // physical, desired pos
   SpaceCount2 := 0;
   if (SpaceCount1 > 0) then begin
     BackCounter := ACaret.LinePos - 2;
@@ -312,9 +312,12 @@ begin
     SpaceCount2 := 0;
   // remove visible spaces
   LogSpacePos := FCurrentLines.PhysicalToLogicalCol(Line, ACaret.LinePos-1, SpaceCount2 + 1);
+  FillSpace := SpaceCount2 + 1 - FCurrentLines.LogicalToPhysicalCol(Line, ACaret.LinePos-1, LogSpacePos);
   LogCaret := ACaret.LineBytePos;
   CaretNewX :=  SpaceCount2 + 1;
   FCurrentLines.EditDelete(LogSpacePos, ACaret.LinePos, LogCaret.X - LogSpacePos);
+  if FillSpace > 0 then
+    FCurrentLines.EditInsert(LogSpacePos, ACaret.LinePos, StringOfChar(' ', FillSpace));
   Result := True;
 end;
 
