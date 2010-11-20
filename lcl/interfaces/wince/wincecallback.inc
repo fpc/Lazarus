@@ -1302,7 +1302,7 @@ begin
           WindowColor := ChildWinControl.Font.Color;
           if WindowColor = clDefault then
             WindowColor := ChildWinControl.GetDefaultColor(dctFont);
-          Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(WindowColor)));
+          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(WindowColor)));
           WindowColor := ChildWinControl.Brush.Color;
           if WindowColor = clDefault then
             WindowColor := ChildWinControl.GetDefaultColor(dctBrush);
