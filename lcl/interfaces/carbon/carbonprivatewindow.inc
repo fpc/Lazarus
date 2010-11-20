@@ -1231,7 +1231,8 @@ begin
   SetBounds(LCLObject.BoundsRect);
   SetText(AParams.Caption);
   //DebugLn('TCarbonWindow.CreateWidget succeeds');
-  SetColor(LCLObject.Color);
+  if LCLObject.Color <> clDefault then;
+    SetColor(LCLObject.Color);
 
   MinSize.width := LCLObject.Constraints.EffectiveMinWidth;
   MinSize.height := LCLObject.Constraints.EffectiveMinHeight;
@@ -1599,10 +1600,17 @@ end;
   Sets the color of window content
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetColor(const AColor: TColor);
+var
+  Color: TColor;
 begin
   if Assigned(fWindowRef) then
-    OSError(SetWindowContentColor(fWindowRef, ColorToRGBColor(AColor)),
-      Self, SSetColor, 'SetWindowContentColor')
+  begin
+    Color := AColor;
+    if Color = clDefault then
+      Color := LCLObject.GetDefaultColor(dctBrush);
+    OSError(SetWindowContentColor(fWindowRef, ColorToRGBColor(Color)),
+      Self, SSetColor, 'SetWindowContentColor');
+  end
   else
     inherited SetColor(AColor);
 end;

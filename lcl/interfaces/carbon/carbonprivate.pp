@@ -791,6 +791,7 @@ end;
 procedure TCarbonCustomControl.Draw;
 var
   DC: TCarbonDeviceContext;
+  Color: TColor;
 begin
   if Context <> nil then
   begin
@@ -800,13 +801,18 @@ begin
     begin
       if DC.CurrentBrush <> nil then // apply control background color
       begin
-        if LCLObject.Color <> clBtnFace then
-          DC.CurrentBrush.SetColor(LCLObject.Color, True)
+        Color := LCLObject.Color;
+        if Color = clDefault then
+          DC.CurrentBrush.SetColor(LCLObject.GetDefaultColor(dctBrush), False)
         else
-          DC.CurrentBrush.SetColor(LCLObject.Color, False);
+        if Color <> clBtnFace then
+          DC.CurrentBrush.SetColor(Color, True)
+        else
+          DC.CurrentBrush.SetColor(Color, False);
 
         DC.CurrentBrush.Apply(DC, False);
-        if LCLObject.Color <> clBtnFace then DC.FillRect(DC.GetClipRect, DC.CurrentBrush);
+        if (Color <> clBtnFace) and (Color <> clDefault) then
+          DC.FillRect(DC.GetClipRect, DC.CurrentBrush);
       end;
     end;
     
