@@ -3056,6 +3056,8 @@ begin
     end;
 
     DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
+    SetDebuggerState(dsPause);
+    ProcessFrame(List.Values['frame']);
   finally
     List.Free;
   end;
