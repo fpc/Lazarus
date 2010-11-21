@@ -197,6 +197,7 @@ type
                              AFlags: TGDBMICommandFlags = []
                             ): Boolean; overload;
     function  ProcessResult(var AResult: TGDBMIExecResult): Boolean;
+    function  ProcessGDBResultText(S: String): String;
     function  GetFrame(const AIndex: Integer): String;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
@@ -288,17 +289,13 @@ type
     procedure ClearSourceInfo;
     procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
-    function  GetText(const ALocation: TDBGPtr): String; overload;  // To be deprecated / moved to TGDBMIDebuggerCommand
-    function  GetText(const AExpression: String; const AValues: array of const): String; overload; //**** once GetText is removed, make ProcessGDBResultText local to CommandObject
     procedure SelectStackFrame(AIndex: Integer);
 
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure RunQueue;
@@ -523,14 +520,14 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FArgs: String;
-    FVars: String;
+    FResult: TStringList;
   protected
     function DoExecute: Boolean; override;
   public
+    constructor Create(AOwner: TGDBMIDebugger);
+    destructor Destroy; override;
     function DebugText: String; override;
-    property Args: String read FArgs;
-    property Vars: String read FVars;
+    property Result: TStringList read FResult;
   end;
 
   { TGDBMILocals }
@@ -543,7 +540,6 @@ type
     FLocals: TStringList;
     procedure LocalsNeeded;
     procedure CancelEvaluation;
-    procedure AddLocals(const AParams:String);
     procedure DoEvaluationDestroyed(Sender: TObject);
     procedure DoEvaluationFinished(Sender: TObject);
   protected
@@ -1238,109 +1234,6 @@ begin
   {$WARNINGS on}
   Result := '"' + Result + '"';
 end;
-
-(* Part of GetText method
-   Until all commands have moved to TGDBMIDebuggerCommand classes the GetText method is
-   required on the TGDBMIDebuggerCommand and TGDBMIDebugger class.
-   To reduce duplicated code, both use this function
-*)
-function ProcessGDBResultText(S: String): String;
-var
-  Trailor: String;
-  n, len, idx: Integer;
-  v: Integer;
-begin
-
-  // don't use ' as end terminator, there might be one as part of the text
-  // since ' will be the last char, simply strip it.
-  S := GetPart(['\t '], [], S);
-
-  // Scan the string
-  len := Length(S);
-  // Set the resultstring initially to the same size
-  SetLength(Result, len);
-  n := 0;
-  idx := 1;
-  Trailor:='';
-  while idx <= len do
-  begin
-    case S[idx] of
-      '''': begin
-        Inc(idx);
-        // scan till end
-        while idx <= len do
-        begin
-          case S[idx] of
-            '''' : begin
-              Inc(idx);
-              if idx > len then Break;
-              if S[idx] <> '''' then Break;
-            end;
-            '\' : begin
-              Inc(idx);
-              if idx > len then Break;
-              case S[idx] of
-                't': S[idx] := #9;
-                'n': S[idx] := #10;
-                'r': S[idx] := #13;
-              end;
-            end;
-          end;
-          Inc(n);
-          Result[n] := S[idx];
-          Inc(idx);
-        end;
-      end;
-      '#': begin
-        Inc(idx);
-        v := 0;
-        // scan till non number (correct input is assumed)
-        while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
-        begin
-          v := v * 10 + Ord(S[idx]) - Ord('0');
-          Inc(idx)
-        end;
-        Inc(n);
-        Result[n] := Chr(v and $FF);
-      end;
-      ',', ' ': begin
-        Inc(idx); //ignore them;
-      end;
-      '<': begin
-        // Debugger has returned something like <repeats 10 times>
-        v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
-        // Since we deleted the first part of S, reset idx
-        idx := 8; // the char after ' times>'
-        len := Length(S);
-        if v <= 1 then Continue;
-
-        // limit the amount of repeats
-        if v > 1000
-        then begin
-          Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
-          v := 1000;
-        end;
-
-        // make sure result has some room
-        SetLength(Result, Length(Result) + v - 1);
-        while v > 1 do begin
-          Inc(n);
-          Result[n] := Result[n - 1];
-          Dec(v);
-        end;
-      end;
-    else
-      // Debugger has returned something we don't know of
-      // Append the remainder to our parsed result
-      Delete(S, 1, idx - 1);
-      Trailor := Trailor + '###(gdb unparsed remainder:' + S + ')###';
-      Break;
-    end;
-  end;
-  SetLength(Result, n);
-  Result := Result + Trailor;
-end;
-
 
 function PCLenToString(const AVal: TPCharWithLen; UnQuote: Boolean = False): String;
 begin
@@ -3078,17 +2971,11 @@ begin
     then begin
       CommandObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectRun);
       CommandObj.Execute;
-      //CommandObj.KeepFinished := True;
-      //FTheDebugger.QueueCommand(CommandObj);
-      //if CommandObj.State in [dcsExecuting, dcsFinished]
-      //then begin
-        // some versions of gdb (OSX) output the PID here
-        R := CommandObj.Result;
-        TargetPIDPart := GetPart(['process '], [' local', ']'], R.Values, True);
-        TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
-        R.State := dsNone;
-      //end;
-      //CommandObj.KeepFinished := False;
+      // some versions of gdb (OSX) output the PID here
+      R := CommandObj.Result;
+      TargetPIDPart := GetPart(['process '], [' local', ']'], R.Values, True);
+      TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
+      R.State := dsNone;
       CommandObj.DoFinished;
     end;
 
@@ -4690,27 +4577,12 @@ begin
   Result := ExecuteCommandFull(ACommand, [], AFlags, ACallback, ATag, R);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags;
-  var AResult: TGDBMIExecResult): Boolean;
-begin
-  Result := ExecuteCommandFull(ACommand, [], AFlags, nil, 0, AResult);
-end;
-
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean;
 var
   R: TGDBMIExecResult;
 begin
   Result := ExecuteCommandFull(ACommand, AValues, AFlags, nil, 0, R);
-end;
-
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AValues: array of const; const AFlags: TGDBMICmdFlags;
-  const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean;
-var
-  R: TGDBMIExecResult;
-begin
-  Result := ExecuteCommandFull(ACommand, AValues, AFlags, ACallback, ATag, R);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -5218,27 +5090,6 @@ begin
 
   if Pos('not being run', R.Values) > 0
   then SetState(dsStop);
-end;
-
-function TGDBMIDebugger.GetText(const ALocation: TDBGPtr): String;
-var
-  S: String;
-begin
-  Str(ALocation, S);
-  Result := GetText(S, []);
-end;
-
-function TGDBMIDebugger.GetText(const AExpression: String;
-  const AValues: array of const): String;
-var
-  R: TGDBMIExecResult;
-begin
-  if not ExecuteCommand('x/s ' + AExpression, AValues, [cfNoMICommand, cfIgnoreError], R)
-  then begin
-    Result := '';
-    Exit;
-  end;
-  Result := ProcessGDBResultText(StripLN(R.Values));
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
@@ -6153,46 +6004,93 @@ end;
 
 {%endregion   ^^^^^  BreakPoints  ^^^^^  }
 
+{%region      *****  Locals  *****  }
+{ TGDBMIDebuggerCommandLocals }
+
+function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
+
+  procedure AddLocals(const AParams: String);
+  var
+    n, e: Integer;
+    addr: TDbgPtr;
+    LocList, List: TGDBMINameValueList;
+    Item: PGDBMINameValue;
+    S, Name, Value: String;
+  begin
+    LocList := TGDBMINameValueList.Create(AParams);
+    List := TGDBMINameValueList.Create('');
+    for n := 0 to LocList.Count - 1 do
+    begin
+      Item := LocList.Items[n];
+      List.Init(Item^.Name);
+      Name := List.Values['name'];
+      if Name = 'this'
+      then Name := 'Self';
+
+      Value := DeleteEscapeChars(List.Values['value']);
+      // try to deref. strings
+      S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
+      if S <> ''
+      then begin
+        addr := 0;
+        Val(S, addr, e);
+        if e=0 then ;
+        if addr = 0
+        then Value := ''''''
+        else Value := '''' + GetText(addr) + '''';
+      end;
+
+      FResult.Add(Name + '=' + Value);
+    end;
+    FreeAndNil(List);
+    FreeAndNil(LocList);
+  end;
+
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+begin
+  Result := True;
+  // args
+  ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
+    [FTheDebugger.FCurrentStackFrame], R);
+  if R.State <> dsError
+  then begin
+    List := TGDBMINameValueList.Create(R, ['stack-args', 'frame']);
+    AddLocals(List.Values['args']);
+    FreeAndNil(List);
+  end;
+
+  // variables
+  ExecuteCommand('-stack-list-locals 1', R);
+  if R.State <> dsError
+  then begin
+    List := TGDBMINameValueList.Create(R);
+    AddLocals(List.Values['locals']);
+    FreeAndNil(List);
+  end;
+end;
+
+constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger);
+begin
+  inherited Create(AOwner);
+  FResult := TStringList.Create;
+end;
+
+destructor TGDBMIDebuggerCommandLocals.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FResult);
+end;
+
+function TGDBMIDebuggerCommandLocals.DebugText: String;
+begin
+  Result := Format('%s:', [ClassName]);
+end;
+
 { =========================================================================== }
 { TGDBMILocals }
 { =========================================================================== }
-
-procedure TGDBMILocals.AddLocals(const AParams: String);
-var
-  n, e: Integer;
-  addr: TDbgPtr;
-  LocList, List: TGDBMINameValueList;
-  Item: PGDBMINameValue;
-  S, Name, Value: String;
-begin
-  LocList := TGDBMINameValueList.Create(AParams);
-  List := TGDBMINameValueList.Create('');
-  for n := 0 to LocList.Count - 1 do
-  begin
-    Item := LocList.Items[n];
-    List.Init(Item^.Name);
-    Name := List.Values['name'];
-    if Name = 'this'
-    then Name := 'Self';
-
-    Value := DeleteEscapeChars(List.Values['value']);
-    // try to deref. strings
-    S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
-    if S <> ''
-    then begin
-      addr := 0;
-      Val(S, addr, e);
-      if e=0 then ;
-      if addr = 0
-      then Value := ''''''
-      else Value := '''' + TGDBMIDebugger(Debugger).GetText(addr) + '''';
-    end;
-
-    FLocals.Add(Name + '=' + Value);
-  end;
-  FreeAndNil(List);
-  FreeAndNil(LocList);
-end;
 
 procedure TGDBMILocals.Changed;
 begin
@@ -6285,10 +6183,7 @@ begin
   FEvaluatedState := esValid;
   FEvaluationCmdObj := nil;
   Cmd := TGDBMIDebuggerCommandLocals(Sender);
-  if Cmd.Args <> ''
-  then AddLocals(Cmd.Args);
-  if Cmd.Vars <> ''
-  then AddLocals(Cmd.Vars);
+  FLocals.Assign(Cmd.Result);
   // Do not recursively call, whoever is requesting the locals
   if not FInLocalsNeeded
   then inherited Changed;
@@ -6321,6 +6216,8 @@ begin
   end;
   FEvaluationCmdObj := nil;
 end;
+
+{%endregion   ^^^^^  BreakPoints  ^^^^^  }
 
 { =========================================================================== }
 { TGDBMIRegisters }
@@ -8015,6 +7912,103 @@ begin
   until not FTheDebugger.DebugProcessRunning;
 end;
 
+function TGDBMIDebuggerCommand.ProcessGDBResultText(S: String): String;
+var
+  Trailor: String;
+  n, len, idx: Integer;
+  v: Integer;
+begin
+
+  // don't use ' as end terminator, there might be one as part of the text
+  // since ' will be the last char, simply strip it.
+  S := GetPart(['\t '], [], S);
+
+  // Scan the string
+  len := Length(S);
+  // Set the resultstring initially to the same size
+  SetLength(Result, len);
+  n := 0;
+  idx := 1;
+  Trailor:='';
+  while idx <= len do
+  begin
+    case S[idx] of
+      '''': begin
+        Inc(idx);
+        // scan till end
+        while idx <= len do
+        begin
+          case S[idx] of
+            '''' : begin
+              Inc(idx);
+              if idx > len then Break;
+              if S[idx] <> '''' then Break;
+            end;
+            '\' : begin
+              Inc(idx);
+              if idx > len then Break;
+              case S[idx] of
+                't': S[idx] := #9;
+                'n': S[idx] := #10;
+                'r': S[idx] := #13;
+              end;
+            end;
+          end;
+          Inc(n);
+          Result[n] := S[idx];
+          Inc(idx);
+        end;
+      end;
+      '#': begin
+        Inc(idx);
+        v := 0;
+        // scan till non number (correct input is assumed)
+        while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
+        begin
+          v := v * 10 + Ord(S[idx]) - Ord('0');
+          Inc(idx)
+        end;
+        Inc(n);
+        Result[n] := Chr(v and $FF);
+      end;
+      ',', ' ': begin
+        Inc(idx); //ignore them;
+      end;
+      '<': begin
+        // Debugger has returned something like <repeats 10 times>
+        v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
+        // Since we deleted the first part of S, reset idx
+        idx := 8; // the char after ' times>'
+        len := Length(S);
+        if v <= 1 then Continue;
+
+        // limit the amount of repeats
+        if v > 1000
+        then begin
+          Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
+          v := 1000;
+        end;
+
+        // make sure result has some room
+        SetLength(Result, Length(Result) + v - 1);
+        while v > 1 do begin
+          Inc(n);
+          Result[n] := Result[n - 1];
+          Dec(v);
+        end;
+      end;
+    else
+      // Debugger has returned something we don't know of
+      // Append the remainder to our parsed result
+      Delete(S, 1, idx - 1);
+      Trailor := Trailor + '###(gdb unparsed remainder:' + S + ')###';
+      Break;
+    end;
+  end;
+  SetLength(Result, n);
+  Result := Result + Trailor;
+end;
+
 function TGDBMIDebuggerCommand.GetFrame(const AIndex: Integer): String;
 var
   R: TGDBMIExecResult;
@@ -9142,39 +9136,6 @@ end;
 function TGDBMIDebuggerCommandEvaluate.DebugText: String;
 begin
   Result := Format('%s: %s', [ClassName, FExpression]);
-end;
-
-{ TGDBMIDebuggerCommandLocals }
-
-function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
-var
-  R: TGDBMIExecResult;
-  List: TGDBMINameValueList;
-begin
-  Result := True;
-  // args
-  ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
-    [FTheDebugger.FCurrentStackFrame], R);
-  if R.State <> dsError
-  then begin
-    List := TGDBMINameValueList.Create(R, ['stack-args', 'frame']);
-    FArgs := List.Values['args'];
-    FreeAndNil(List);
-  end;
-
-  // variables
-  ExecuteCommand('-stack-list-locals 1', R);
-  if R.State <> dsError
-  then begin
-    List := TGDBMINameValueList.Create(R);
-    FVars := List.Values['locals'];
-    FreeAndNil(List);
-  end;
-end;
-
-function TGDBMIDebuggerCommandLocals.DebugText: String;
-begin
-  Result := Format('%s:', [ClassName]);
 end;
 
 initialization
