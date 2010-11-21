@@ -159,6 +159,9 @@ end;
 
 constructor TAssemblerDlg.Create(AOwner: TComponent);
 begin
+  FLocation := 0;
+  FLineCount := 0;
+  SetLength(FLineMap, FLineCount + 1);
   FGutterWidth := 32;
   FDisassemblerNotification := TIDEDisassemblerNotification.Create;
   FDisassemblerNotification.AddReference;
