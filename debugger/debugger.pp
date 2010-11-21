@@ -5251,7 +5251,7 @@ var
   OldId: TDBGPtr;
 begin
   {$IFDEF DBG_VERBOSE}
-  debugln(['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange)]);
+  debugln(['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange), ' to map with count=', Count ]);
   {$ENDIF}
   MergeRng := GetRangeForAddr(ARange.RangeStartAddr, True);
   if MergeRng <> nil then begin
@@ -5379,7 +5379,7 @@ begin
     if NewRange = nil
     then begin
       {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: TDBGDisassembler.FindRange: Adress not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+      debugln(['INFO: TDBGDisassembler.FindRange: Adress not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count ]);
       {$ENDIF}
       exit;
     end;
@@ -5390,7 +5390,7 @@ begin
       // address at incorrect offset
       Result := HandleRangeWithInvalidAddr(NewRange, AnAddr, ALinesBefore, ALinesAfter);
       {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: TDBGDisassembler.FindRange: Adress at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+      debugln(['WARNING: TDBGDisassembler.FindRange: Adress at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
       {$ENDIF}
       if Result
       then begin
@@ -5408,7 +5408,7 @@ begin
     SetCountAfter(NewRange.Count - 1 - i);
     Result := (i >= ALinesBefore) and (CountAfter >= ALinesAfter);
     {$IFDEF DBG_VERBOSE}
-    debugln(['INFO: TDBGDisassembler.FindRange: Adress found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter]);
+    debugln(['INFO: TDBGDisassembler.FindRange: Adress found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
     {$ENDIF}
   finally
     UnlockChanged;
@@ -5425,7 +5425,7 @@ end;
 procedure TDBGDisassembler.Clear;
 begin
   {$IFDEF DBG_VERBOSE}
-  debugln(['INFO: TDBGDisassembler.Clear ' ]);
+  debugln(['INFO: TDBGDisassembler.Clear:  map had count=', FEntryRanges.Count ]);
   {$ENDIF}
   FCurrentRange := nil;
   FEntryRanges.Clear;
