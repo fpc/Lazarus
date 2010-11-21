@@ -1964,6 +1964,7 @@ const
           ItmPtr2^.Dump := ItmPtr^.Dump;
           ItmPtr := ItmPtr2;
         end
+        else ItmPtr2 := nil;
       end;
       if (LastItem <> nil) then begin
         // unify strings, to keep only one instance
