@@ -1265,6 +1265,7 @@ var
   
 {$IFDEF DebugLR}
 var
+  wspc: integer = 4;
   nspc: integer = 0;
   sspc: string = '';
 procedure IncSpc(aInc:Integer);
@@ -1273,9 +1274,9 @@ begin
   if nspc<0 then
     nspc := 0;
   //WriteLn('[',nspc,']');
-  SetLength(sspc, nspc*2);
+  SetLength(sspc, nspc*wspc);
   if aInc>0 then
-    fillchar(sspc[1], nspc*2, ' ');
+    fillchar(sspc[1], nspc*wspc, ' ');
 end;
 
 function Bandtyp2str(typ: TfrBandType): string;
@@ -1414,7 +1415,7 @@ begin
         for i := 0 to frAddInsCount - 1 do
         begin
           {$IFDEF DebugLR}
-          DebugLn(format('frCreateObject classname compare %s=%s',[frAddIns[i].ClassRef.ClassName,ClassName]));
+          DebugLn('%sfrCreateObject classname compare %s=%s',[sspc,frAddIns[i].ClassRef.ClassName,ClassName]);
           {$ENDIF}
 
           if frAddIns[i].ClassRef.ClassName = ClassName then
@@ -1433,7 +1434,7 @@ begin
   if Result <> nil then
   begin
     {$IFDEF DebugLR}
-    DebugLn(format('frCreateObject instance classname=%s',[ClassName]));
+    DebugLn('%sfrCreateObject instance classname=%s',[sspc,ClassName]);
     {$ENDIF}
 
     Result.ID := ObjID;
@@ -2485,7 +2486,7 @@ begin
   with aCanvas do
   begin
     {$IFDEF DebugLR}
-    DebugLn('AssignFont('+self.Font.Name+')');
+    DebugLn('%sAssignFont(%s)',[sspc,self.Font.Name]);
     {$ENDIF}
 //**    Brush.Style := bsClear;
     Font.Assign(Self.Font);
@@ -2797,7 +2798,7 @@ var
         
         nw := Round(w * ScaleX);                    // needed width
         {$IFDEF DebugLR}
-        DebugLn('2 Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
+        DebugLn('%sCanvas.Font.Size=%d TextWidth=%d',[sspc,Canvas.Font.Size,Canvas.TextWidth(St)]);
         {$ENDIF}
         (*
         while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
@@ -2810,10 +2811,10 @@ var
         *)
         th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
         {$IFDEF DebugLR}
-        DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
-        Debugln('2 Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
+        DebugLn('%sTh=%d Canvas.TextHeight(H)=%d',[sspc,Th,Canvas.TextHeight('H')]);
+        Debugln('%sCanvas.Font.Size=%d TextWidth=%d',[sspc,Canvas.Font.Size,Canvas.TextWidth(St)]);
         aw := Canvas.TextWidth(St);                // actual width
-        DebugLn('nw=%d  aw=%d',[nw,aw]);
+        DebugLn('%snw=%d  aw=%d',[sspc,nw,aw]);
         {$ENDIF}
         case Alignment of
           Classes.taLeftJustify : CurX :=x+gapx;
@@ -2839,7 +2840,7 @@ var
 
     th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
     {$IFDEF DebugLR}
-    DebugLn('Th=',IntToStr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')), 'DR=',dbgs(DR));
+    DebugLn('%sTh=%d Canvas.TextHeight(H)=%d DR=%s',[sspc,Th,Canvas.TextHeight('H'),dbgs(DR)]);
     {$ENDIF}
 
     CurStrNo := 0;
@@ -2973,18 +2974,17 @@ var
   DTFlags: Cardinal;
 begin
   {$IFDEF DebugLR}
-  DbgOut('TfrMemoView.CalcWidth: text=',dbgstr(aMemo.Text),
-  ' Font.PPI=', dbgs(Font.PixelsPerInch),
-  ' Font.Size=', dbgs(Font.Size),' dx=',dbgs(Dx),' dy=',dbgs(dy));
+  DbgOut('%sTfrMemoView.CalcWidth INIT text=%s Font.PPI=%d Font.Size=%d dx=%d dy=%d',
+    [sspc,aMemo.Text,Font.PixelsPerInch,Font.Size,Dx,dy]);
+  IncSpc(1);
   {$ENDIF}
   CalcRect := Rect(0, 0, dx, dy);
   Canvas.Font.Assign(Font);
   Canvas.Font.Height := -Round(Font.Size * 96 / 72);
   {$IFDEF DebugLR}
-  DbgOut(' Canvas.Font.PPI=',dbgs(Canvas.Font.PixelsPerInch),
-  ' Canvas.Font.Size=',dbgs(Canvas.Font.Size));
+  DbgOut('%sCanvas.Font.PPI=%d Canvas.Font.Size=%d',
+    [sspc,Canvas.Font.PixelsPerInch,Canvas.Font.Size]);
   {$ENDIF}
-
   DTFlags := DT_CALCRECT;
   if Flags and flWordBreak <> 0 then
     DTFlags := DT_CALCRECT or DT_WORDBREAK;
@@ -2998,9 +2998,9 @@ begin
   DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DTFlags);
   Result := CalcRect.Right + Round(2 * FrameWidth) + 2;
   {$IFDEF DebugLR}
-  DebugLn('RR Width=', dbgs(Result),' Rect=', dbgs(CalcRect));
+  IncSpc(-1);
+  DbgOut('%sTfrMemoView.CalcWidth DONE Width=%d Rect=%s',[sspc,Result,dbgs(CalcRect)]);
   {$ENDIF}
-
 end;
 
 procedure TfrMemoView.Draw(aCanvas: TCanvas);
@@ -3013,10 +3013,9 @@ begin
   BeginDraw(aCanvas);
   {$IFDEF DebugLR}
   if IsPrinting then begin
-  DebugLn('');
-  Debugln('TfrMemoView.Draw: Name=',Name,
-    ' Printing=', dbgs(IsPrinting),
-    ' Canvas.Font.PPI=',dbgs(Canvas.Font.PixelsPerInch));
+    DebugLn('');
+    Debugln('%sTfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
+      [sspc,Name,dbgs(IsPrinting),Canvas.Font.PixelsPerInch]);
   end;
   NewDx := 0;
   {$ENDIF}
@@ -3033,7 +3032,7 @@ begin
       dx := newdx;
   end;
   {$IFDEF DebugLR}
-  DebugLn('NewDx=',dbgs(NewDx),' Dx=',dbgs(dx));
+  DebugLn('%sNewDx=%d Dx=%d',[sspc,NewDx,dx]);
   {$ENDIF}
   Streaming := False;
   Memo1.Assign(Memo);
@@ -3050,8 +3049,8 @@ begin
   begin
     NeedWrap := Pos(#1, Memo1.Text) = 0;
     {$IFDEF DebugLR}
-    DebugLn('  Memo1: Count=',dbgs(Memo1.Count),' Text=',dbgstr(Memo1.text),
-      ' NeedWrap=',dbgs(needwrap));
+    DebugLn('%sMemo1: Count=%d Text=%s NeedWrap=%s',
+      [sspc,Memo1.Count,dbgstr(Memo1.text),dbgs(needwrap)]);
     {$ENDIF}
     if Memo1[Memo1.Count - 1] = #1 then
       Memo1.Delete(Memo1.Count - 1);
@@ -3241,7 +3240,7 @@ var
   TmpLayout: TTextLayout;
 begin
   {$IFDEF DebugLR}
-  DebugLn('Stream.Position=',IntToStr(Stream.Position),' Stream.Size=',InttoStr(Stream.Size));
+  DebugLn('%sStream.Position=%d Stream.Size=%d',[sspc,Stream.Position,Stream.Size]);
   {$ENDIF}
 
   inherited LoadFromStream(Stream);
@@ -4109,6 +4108,10 @@ var
   end;
 
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrPictureView.Draw INI',[sspc]);
+  IncSpc(1);
+  {$ENDIF}
   BeginDraw(aCanvas);
   CalcGaps;
   with aCanvas do
@@ -4166,6 +4169,10 @@ begin
     ShowFrame;
   end;
   RestoreCoord;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrPictureView.Draw DONE',[sspc]);
+  {$ENDIF}
 end;
 
 const
@@ -4273,6 +4280,7 @@ begin
   Stream.Write(b, 1);
   n := Stream.Position;
   Stream.Write(n, 4);
+  DebugLn('%sTfrPictureView.SaveToStream Type=%d',[sspc,ord(b)]);
   if b <> pkNone then
     Picture.Graphic.SaveToStream(Stream);
   o := Stream.Position;
@@ -4314,7 +4322,7 @@ begin
     Picture.Assign(nil)
   else begin
     // todo: TBlobField.AssignTo is not implemented yet
-    s := TDataset(FDataset).CreateBlobStream(TField(b),bmRead);
+    s := TDataset(FDataSet).CreateBlobStream(TField(b),bmRead);
     if s.Size = 0 then
       begin
         Picture.Clear;
@@ -4675,8 +4683,8 @@ var
   ox,oy: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d',[sspc,dbgsname(t),t.name,
-    Parent.XAdjust, Parent.LeftMargin]);
+  DebugLn('%sTfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d DiableDrawing=%s',
+  [sspc,dbgsname(t),t.name,Parent.XAdjust,Parent.LeftMargin,BoolToStr(DisableDrawing,true)]);
   IncSpc(1);
   {$ENDIF}
   CurPage := Parent;
@@ -5984,7 +5992,19 @@ var
   DSet: TfrTDataSet;
   Field: TfrTField;
 begin
-  if (MasterReport.DoublePass and MasterReport.FinalPass) then Exit;
+  {$ifdef DebugLR}
+  DebugLn('%sTfrPage.PrepareObjects INIT',[sspc]);
+  IncSpc(1);
+  {$endif}
+
+  if (MasterReport.DoublePass and MasterReport.FinalPass) then
+  begin
+    {$ifdef DebugLR}
+    IncSpc(-1);
+    DebugLn('%sTfrPage.PrepareObjects DONE, EXIT DoublePass&FinalPass',[sspc]);
+    {$endif}
+    Exit;
+  end;
   CurPage := Self;
   for i := 0 to RTObjects.Count - 1 do
   begin
@@ -6007,6 +6027,9 @@ begin
         frGetDatasetAndField(s, DSet, Field);
         if Field <> nil then
         begin
+          {$ifdef DebugLR}
+          DebugLn('%sFor View=%s found Field=%s',[sspc,ViewInfo(t),Field.FieldName]);
+          {$endif}
           t.FDataSet := DSet;
           t.FField := Field.FieldName;
         end;
@@ -6019,6 +6042,10 @@ begin
         end;
     end;
   end;
+  {$ifdef DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrPage.PrepareObjects DONE',[sspc]);
+  {$endif}
 end;
 
 procedure TfrPage.ShowBand(b: TfrBand);
@@ -7066,10 +7093,9 @@ var
 begin
   IsPrinting := Printer.Printing and (Canvas is TPrinterCanvas);
   {$IFDEF DebugLR}
-  DebugLn('TfrEMFPages.Draw IsPrinting=%d PageIndex=%d Canvas.ClassName=%s '+
-          'CanvasPPI=%d',[ord(IsPrinting), Index, Canvas.ClassName,
+  DebugLn('%sTfrEMFPages.Draw IsPrinting=%d PageIndex=%d Canvas.ClassName=%s '+
+          'CanvasPPI=%d',[sspc, ord(IsPrinting), Index, Canvas.ClassName,
           Canvas.Font.pixelsPerInch]);
-  DebugLn('----------------------------------------------------');
   {$ENDIF}
 
   DocMode := dmPrinting;
@@ -7763,6 +7789,9 @@ end;
 
 procedure TfrReport.InternalOnEnterRect(Memo: TStringList; View: TfrView);
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrReport.InternalOnEnterRect View=%s',[sspc,ViewInfo(View)]);
+  {$ENDIF}
   with View do
     if (FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))) then
       GetBlob(TfrTField(FDataSet.FindField(FField)));
@@ -8334,7 +8363,8 @@ var
 procedure TfrReport.BuildBeforeModal(Sender: TObject);
 begin
   {$IFDEF DebugLR}
-  DebugLn('TfrReport.BuildBeforeModal INIT FinalPass=',dbgs(FinalPass),' DoublePass=',dbgs(DoublePass));
+  DebugLn('%sTfrReport.BuildBeforeModal INIT FinalPass=%s DoublePass=%s',[sspc,dbgs(FinalPass),dbgs(DoublePass)]);
+  IncSpc(1);
   {$ENDIF}
   DoBuildReport;
   if FinalPass then
@@ -8354,7 +8384,8 @@ begin
     DoublePass := True;
   end;
   {$IFDEF DebugLR}
-  DebugLn('TfrReport.BuildBeforeModal DONE');
+  IncSpc(-1);
+  DebugLn('%sTfrReport.BuildBeforeModal DONE',[sspc]);
   {$ENDIF}
 end;
 
@@ -8362,6 +8393,10 @@ function TfrReport.PrepareReport: Boolean;
 var
   ParamOk: Boolean;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrReport.PrepareReport INIT',[sspc]);
+  IncSpc(1);
+  {$ENDIF}
   DocMode := dmPrinting;
   CurDate := Date;
   CurTime := Time;
@@ -8389,6 +8424,10 @@ begin
     
   if Assigned(FOnEndDoc) then
     FOnEndDoc;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrReport.PrepareReport DONE',[sspc]);
+  {$ENDIF}
 end;
 
 function TfrReport.DoPrepareReport: Boolean;
@@ -8405,14 +8444,16 @@ begin
   EMFPages.Clear;
 
   {$IFDEF DebugLR}
-  DebugLn('DoPrepareReport DoublePass=',BoolToStr(DoublePass));
+  DebugLn('%sDoPrepareReport INIT DoublePass=%s',[sspc,BoolToStr(DoublePass)]);
+  IncSpc(1);
   {$ENDIF}
 
   s := sReportPreparing;
   if DoublePass then
   begin
     {$IFDEF DebugLR}
-    DebugLn('DoPrepareReport FirstPass Begin');
+    DebugLn('%sDoPrepareReport FirstPass Begin',[sspc]);
+    IncSpc(1);
     {$ENDIF}
 
     DisableDrawing := True;
@@ -8433,23 +8474,29 @@ begin
       end;
       
       {$IFDEF DebugLR}
-      DebugLn('DoPrepareReport FirstPass End');
+      IncSpc(-1);
+      DebugLn('%sDoPrepareReport FirstPass End',[sspc]);
       {$ENDIF}
     end
     else BuildBeforeModal(nil);
+    {$IFDEF DebugLR}
+    IncSpc(-1);
+    DebugLn('%sDoPrepareReport DONE',[sspc]);
+    {$ENDIF}
     Exit;
   end;
   
   if not Assigned(FOnProgress) and FShowProgress then
   begin
     {$IFDEF DebugLR}
-    DebugLn('DoPrepareReport SecondPass begin');
+    DebugLn('%sDoPrepareReport SecondPass begin',[sspc]);
+    IncSpc(1);
     {$ENDIF}
 
     with frProgressForm do
     begin
       {$IFDEF DebugLR}
-      DebugLn('1');
+      DebugLn('%s1',[sspc]);
       {$ENDIF}
       if Title = '' then
         Caption := s
@@ -8459,41 +8506,46 @@ begin
       Label1.Caption := FirstCaption + '  1';
       OnBeforeModal:=@BuildBeforeModal;
       {$IFDEF DebugLR}
-      DebugLn('2');
+      DebugLn('%s2',[sspc]);
       {$ENDIF}
       if Visible then
       begin
         {$IFDEF DebugLR}
-        DebugLn('3');
+        DebugLn('%s3',[sspc]);
         {$ENDIF}
         if not FirstPassTerminated then
            DoublePass := True;
            
         BuildBeforeModal(nil);
         {$IFDEF DebugLR}
-        DebugLn('4');
+        DebugLn('%s4',[sspc]);
         {$ENDIF}
       end
       else
       begin
         {$IFDEF DebugLR}
-        DebugLn('5');
+        DebugLn('%s5',[sspc]);
         {$ENDIF}
         SavedAllPages := 0;
         if Show_Modal(Self) = mrCancel then
           Result := False;
         {$IFDEF DebugLR}
-        DebugLn('6');
+        DebugLn('%s6',[sspc]);
         {$ENDIF}
       end;
       
       {$IFDEF DebugLR}
-      DebugLn('DoPrepareReport SecondPass End');
+      IncSpc(-1);
+      DebugLn('%sDoPrepareReport SecondPass End',[sspc]);
       {$ENDIF}
     end;
   end
   else BuildBeforeModal(nil);
   Terminated := False;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sDoPrepareReport DONE',[sspc]);
+  {$ENDIF}
 end;
 
 var
@@ -8582,6 +8634,10 @@ var
   b  : Boolean;
   BM : Pointer;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrReport.DoBuildReport INIT',[sspc]);
+  IncSpc(1);
+  {$ENDIF}
   HookList.Clear;
   CanRebuild := True;
   DocMode := dmPrinting;
@@ -8610,11 +8666,11 @@ begin
 
     repeat
       {$IFDEF DebugLR}
-      DebugLn('p1');
+      DebugLn('%sp1',[sspc]);
       {$ENDIF}
       InternalOnProgress(PageNo + 1);
       {$IFDEF DebugLR}
-      DebugLn('p2');
+      DebugLn('%sp2',[sspc]);
       {$ENDIF}
 
       for i := 0 to Pages.Count - 1 do
@@ -8631,7 +8687,7 @@ begin
             FCurPage.FormPage;
 
         {$IFDEF DebugLR}
-        debugLn('p3');
+        debugLn('%sp3',[sspc]);
         {$ENDIF}
 
           Append := False;
@@ -8651,7 +8707,7 @@ begin
         end;
       end;
       {$IFDEF DebugLR}
-      DebugLn('p4');
+      DebugLn('%sp4',[sspc]);
       {$ENDIF}
 
       InternalOnProgress(PageNo);
@@ -8673,6 +8729,10 @@ begin
   if (frDataManager <> nil) and FinalPass then
     frDataManager.AfterPreparing;
   Values.Items.Sorted := False;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrReport.DoBuildReport DONE',[sspc]);
+  {$ENDIF}
 end;
 
 procedure TfrReport.ShowReport;
@@ -8692,6 +8752,10 @@ var
   s: String;
   p: TfrPreviewForm;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrReport.ShowPreparedReport INIT',[sspc]);
+  IncSpc(1);
+  {$ENDIF}
   CurReport := Self;
   MasterReport := Self;
   DocMode := dmPrinting;
@@ -8709,14 +8773,18 @@ begin
     p := TfrPreviewForm.Create(nil);
     p.BorderIcons:=p.BorderIcons - [biMinimize];
     {$IFDEF DebugLR}
-    DebugLn('1 TfrPreviewForm.visible=',BooLToStr(p.Visible));
+    DebugLn('%s1 TfrPreviewForm.visible=%s',[sspc,BooLToStr(p.Visible)]);
     {$ENDIF}
     p.Caption := s;
     {$IFDEF DebugLR}
-    DebugLn('2 TfrPreviewForm.visible=',BooLToStr(p.Visible));
+    DebugLn('%s2 TfrPreviewForm.visible=%s',[sspc,BooLToStr(p.Visible)]);
     {$ENDIF}
     p.Show_Modal(Self);
   end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrReport.ShowPreparedReport DONE',[sspc]);
+  {$ENDIF}
 end;
 
 procedure TfrReport.PrintBeforeModal(Sender: TObject);
