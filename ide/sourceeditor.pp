@@ -1424,7 +1424,7 @@ begin
 
       // register the Debug submenu items
       SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand
-          (AParent,'Toggle Breakpoint', uemToggleBreakpoint);
+          (AParent,'Toggle Breakpoint', uemToggleBreakpoint, nil, @ExecuteIdeMenuClick);
       SrcEditMenuEvaluateModify:=RegisterIDEMenuCommand
           (AParent,'Evaluate/Modify...', uemEvaluateModify, nil, nil, nil,'debugger_modify');
       SrcEditMenuEvaluateModify.Enabled:=False;
@@ -1435,8 +1435,8 @@ begin
       SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
                                                 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
-      SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
-                                            'View Call Stack', uemViewCallStack, nil, nil, nil, 'debugger_call_stack');
+      SrcEditMenuViewCallStack:=RegisterIDEMenuCommand
+        (AParent, 'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
   {%endregion}
 
   {%region *** Refactoring Section ***}
@@ -6426,18 +6426,6 @@ end;
 procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecFindOverloads);
-end;
-
-procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
-var
-  Command: TSynEditorCommand;
-  AChar: TUTF8Char;
-  Handled: boolean;
-begin
-  Command:=ecToggleCallStack;
-  AChar:=#0;
-  Handled:=false;
-  ProcessParentCommand(Self,Command,AChar,nil,Handled);
 end;
 
 function TSourceNotebook.NewFile(const NewShortName: String;
