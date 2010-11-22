@@ -753,6 +753,7 @@ end;
 procedure TCustomSpeedButton.WMLButtonUp(var Message: TLMLButtonUp);
 var
   OldState: TButtonState;
+  NeedClick: Boolean;
 begin
   //DebugLn('TCustomSpeedButton.WMLButtonUp A ',DbgSName(Self),' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
@@ -762,6 +763,8 @@ begin
     {$ENDIF}
     MouseCapture := False;
   end;
+
+  NeedClick := False;
 
   if not (csDesigning in ComponentState) and FDragging then
   begin
@@ -778,6 +781,7 @@ begin
     if (Message.XPos >= 0) and (Message.XPos < Width) and (Message.YPos >= 0) and (Message.YPos < Height) then
     begin
       SetDown(not FDown);
+      NeedClick := True;
     end;
   end;
 
@@ -791,10 +795,13 @@ begin
     begin
       //DebugLn('TCustomSpeedButton.WMLButtonUp C');
       // Important: Calling Click can invoke modal dialogs, so call this as last
+      NeedClick := False;
       Click;
     end;
   end;
   
+  if NeedClick then
+    Click;
   //DebugLn('TCustomSpeedButton.WMLButtonUp END');
 end;
 
