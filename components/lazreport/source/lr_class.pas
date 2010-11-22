@@ -4182,7 +4182,7 @@ const
   pkIcon = 3;
   pkJPEG = 4;
   pkPNG  = 5;
-  pkXPM  = 6;
+  pkAny  = 255;
 
 procedure StreamToXML(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
@@ -4232,12 +4232,25 @@ procedure TfrPictureView.LoadFromStream(Stream: TStream);
 var
   b: Byte;
   n: Integer;
+  AGraphicClass: TGraphicClass;
   Graphic: TGraphic;
+  Ext: string;
 begin
   inherited LoadFromStream(Stream);
   Stream.Read(b, 1);
+
+  if b=pkAny then
+  begin
+    AGraphicClass := GetGraphicClassForFileExtension(Stream.ReadAnsiString);
+    if AGraphicClass<>nil then
+      Graphic := AGraphicClass.Create
+    else
+      Graphic := nil;
+  end else
+    Graphic := PictureTypeToGraphic(b);
+
   Stream.Read(n, 4);
-  Graphic := PictureTypeToGraphic(b);
+
   Picture.Graphic := Graphic;
   if Graphic <> nil then
   begin
@@ -4275,13 +4288,20 @@ procedure TfrPictureView.SaveToStream(Stream: TStream);
 var
   b: Byte;
   n, o: Integer;
+  ext: string;
 begin
   inherited SaveToStream(Stream);
+
   b := GetPictureType;
   Stream.Write(b, 1);
+  if b<>pkNone then
+  begin
+    ext := GraphicExtension(TGraphicClass(Picture.Graphic.ClassType));
+    Stream.WriteAnsiString(ext);
+  end;
+
   n := Stream.Position;
   Stream.Write(n, 4);
-  DebugLn('%sTfrPictureView.SaveToStream Type=%d',[sspc,ord(b)]);
   if b <> pkNone then
     Picture.Graphic.SaveToStream(Stream);
   o := Stream.Position;
@@ -4411,16 +4431,7 @@ function TfrPictureView.GetPictureType: byte;
 begin
   result := pkNone;
   if Picture.Graphic <> nil then
-    if Picture.Graphic is TPortableNetworkGraphic then
-      result := pkPNG
-    else if Picture.Graphic is TJPEGImage then
-      result := pkJPEG
-    else if Picture.Graphic is TIcon then
-      result := pkIcon
-    else if Picture.Graphic is TBitmap then
-      result := pkBitmap
-    else if Picture.Graphic is TPixmap then
-      result := pkXPM;
+    result := pkAny;
 end;
 
 function TfrPictureView.PictureTypeToGraphic(b: Byte): TGraphic;
@@ -4431,7 +4442,6 @@ begin
     pkIcon:     result := TIcon.Create;
     pkJPEG:     result := TJPEGImage.Create;
     pkPNG:      result := TPortableNetworkGraphic.Create;
-    pkXPM:      result := TPixmap.Create;
   end;
 end;
 
