@@ -174,7 +174,6 @@ procedure TCustomImageList.AllocData(ACount: Integer);
 var
   n: Integer;
 begin
-  Assert(FAllocCount >= FCount, 'Less space allocated than images');
   if FAllocCount >= ACount
   then Exit;
 
