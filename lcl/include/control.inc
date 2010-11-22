@@ -917,7 +917,7 @@ var
 begin
   if Assigned(Application) then
   begin
-    NewMouseControl := CaptureControl;
+    NewMouseControl := GetCaptureControl;
     if NewMouseControl = nil then
       NewMouseControl := Application.GetControlAtMouse;
     Application.DoBeforeMouseMessage(NewMouseControl);

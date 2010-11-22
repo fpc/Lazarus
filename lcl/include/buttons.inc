@@ -28,7 +28,7 @@ begin
   Inherited Create(TheOwner);
   // set the component style to csButton
   fCompStyle := csButton;
-  ControlStyle := ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
+  ControlStyle := ControlStyle - [csClickEvents] + [csHasDefaultAction, csHasCancelAction];
   Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   ParentColor := False;
   TabStop := True;
