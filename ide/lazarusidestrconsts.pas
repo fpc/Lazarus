@@ -472,10 +472,10 @@ resourcestring
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
-  lisConvertTarget1 = 'Lazarus';
-  lisConvertTarget2 = 'Lazarus and Delphi';
-  lisConvertTarget3 = 'Lazarus for Windows only';
-  lisConvertTarget4 = 'Lazarus and Delphi with same DFM file';
+  lisConvertTargetLaz = 'Lazarus';
+  lisConvertTargetLazAndDelphi = 'Lazarus and Delphi';
+  lisConvertTargetLazWinOnly = 'Lazarus for Windows only';
+  lisConvertTargetLazAndDelphiSameDfm = 'Lazarus and Delphi with same DFM file';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
   lisKeepFileOpen = 'Keep converted files open in editor';
   lisKeepFileOpenHint = 'All project files will be open in editor after conversion';

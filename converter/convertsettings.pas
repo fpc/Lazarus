@@ -638,10 +638,10 @@ begin
   KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
 
   TargetRadioGroup.Items.Clear;
-  TargetRadioGroup.Items.Add(lisConvertTarget1);
-  TargetRadioGroup.Items.Add(lisConvertTarget2);
-  TargetRadioGroup.Items.Add(lisConvertTarget3);
-  TargetRadioGroup.Items.Add(lisConvertTarget4);
+  TargetRadioGroup.Items.Add(lisConvertTargetLaz);
+  TargetRadioGroup.Items.Add(lisConvertTargetLazAndDelphi);
+  TargetRadioGroup.Items.Add(lisConvertTargetLazWinOnly);
+  TargetRadioGroup.Items.Add(lisConvertTargetLazAndDelphiSameDfm);
   TargetRadioGroup.ItemIndex:=0;
   TargetRadioGroup.Hint:=lisConvertTargetHint;
 
