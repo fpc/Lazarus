@@ -90,7 +90,7 @@ type
     procedure EnumerateItems(const Method: TLCLEnumItemsMethod);
   end;
 
-{$IF (FPC_VERSION=2) AND (FPC_RELEASE>4)}
+{$IF FPC_FULLVERSION>20402}
   TStreamSizeType = PtrInt;
 {$ELSE}
   TStreamSizeType = Longint;
