@@ -1149,7 +1149,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DblClick;
 begin
-  If Assigned(FOnDblClick) then FOnDblClick(Self);
+  if Assigned(FOnDblClick) then FOnDblClick(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1157,7 +1157,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.TripleClick;
 begin
-  If Assigned(FOnTripleClick) then FOnTripleClick(Self);
+  if Assigned(FOnTripleClick) then FOnTripleClick(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1165,7 +1165,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.QuadClick;
 begin
-  If Assigned(FOnQuadClick) then FOnQuadClick(Self);
+  if Assigned(FOnQuadClick) then FOnQuadClick(Self);
 end;
 
 {------------------------------------------------------------------------------

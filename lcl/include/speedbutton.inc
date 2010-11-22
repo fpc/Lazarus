@@ -88,26 +88,28 @@ function TCustomSpeedButton.FindDownButton: TCustomSpeedButton;
     Child: TControl;
     Button: TCustomSpeedButton;
   begin
-    if AWinControl=nil then exit(nil);
-    for i:=0 to AWinControl.ControlCount-1 do begin
-      Child:=AWinControl.Controls[i];
-      if Child is TCustomSpeedButton then begin
-        Button:=TCustomSpeedButton(Child);
-        if (Button.GroupIndex=GroupIndex)
-        and (Button.Down) then
-          exit(Button);
+    if AWinControl = nil then Exit(nil);
+    for i := 0 to AWinControl.ControlCount-1 do
+    begin
+      Child := AWinControl.Controls[i];
+      if Child is TCustomSpeedButton then
+      begin
+        Button := TCustomSpeedButton(Child);
+        if (Button.GroupIndex=GroupIndex) and (Button.Down) then
+          Exit(Button);
       end;
-      if Child is TWinControl then begin
-        Result:=FindDown(TWinControl(Child));
-        if Result<>nil then exit;
+      if Child is TWinControl then
+      begin
+        Result := FindDown(TWinControl(Child));
+        if Result <> nil then Exit;
       end;
     end;
-    Result:=nil;
+    Result := nil;
   end;
 
 begin
   if Down or (GroupIndex=0) then exit(Self);
-  Result:=FindDown(GetFirstParentForm(Self));
+  Result := FindDown(GetFirstParentForm(Self));
 end;
 
 procedure TCustomSpeedButton.Click;
@@ -123,8 +125,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetAllowAllUp(Value : Boolean);
 begin
-  if FAllowAllUp <> Value
-  then begin
+  if FAllowAllUp <> Value then
+  begin
     FAllowAllUp := Value;
     UpdateExclusive;
   end;
@@ -205,7 +207,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetGroupIndex(const Value : Integer);
 begin
-  if FGroupIndex <> Value then begin
+  if FGroupIndex <> Value then
+  begin
     FGroupIndex := Value;
     UpdateExclusive;
   end;
@@ -219,7 +222,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetMargin(const Value : Integer);
 begin
-  if FMargin <> Value then begin
+  if FMargin <> Value then
+  begin
     FMargin := Value;
     Invalidate;
   end;
@@ -232,12 +236,12 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetNumGlyphs(Value : integer);
-Begin
+begin
   if Value < 0 then Value := 1;
   if Value > High(TNumGlyphs) then Value := High(TNumGlyphs);
 
   if Value <> TButtonGlyph(fGlyph).NumGlyphs then
-  Begin
+  begin
     TButtonGlyph(fGlyph).NumGlyphs := TNumGlyphs(Value);
     Invalidate;
   end;
@@ -251,7 +255,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetSpacing(const Value : Integer);
 begin
-  if FSpacing <> Value then begin
+  if FSpacing <> Value then
+  begin
     FSpacing := Value;
     Invalidate;
   end;
@@ -259,7 +264,8 @@ end;
 
 procedure TCustomSpeedButton.SetShowAccelChar(Value : Boolean);
 begin
-  If FShowAccelChar <> Value then begin
+  If FShowAccelChar <> Value then
+  begin
     FShowAccelChar := Value;
     Invalidate;
   end;
@@ -383,12 +389,14 @@ procedure TCustomSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
 begin
   inherited ActionChange(Sender,CheckDefaults);
-  if Sender is TCustomAction then begin
-    with TCustomAction(Sender) do begin
+  if Sender is TCustomAction then
+  begin
+    with TCustomAction(Sender) do
+    begin
       if CheckDefaults or (Self.GroupIndex = 0) then
         Self.GroupIndex := GroupIndex;
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil)
-      and (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
+         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
         ActionList.Images.GetBitmap(ImageIndex, Glyph);
     end;
   end;
@@ -415,9 +423,8 @@ procedure TCustomSpeedButton.UpdateExclusive;
 var
   msg : TLMessage;
 begin
-  if (FGroupIndex <> 0) and (Parent <> nil)
-  and (not (csLoading in ComponentState))
-  then begin
+  if (FGroupIndex <> 0) and (Parent <> nil) and (not (csLoading in ComponentState)) then
+  begin
     Msg.Msg := CM_ButtonPressed;
     Msg.WParam := FGroupIndex;
     Msg.LParam := PtrInt(Self);
@@ -674,9 +681,7 @@ begin
       NewState := bsExclusive
     else
     begin
-      if  (X >= 0) and (X < Width)
-      and (Y >= 0) and (Y < Height) 
-      then
+      if  (X >= 0) and (X < Width) and (Y >= 0) and (Y < Height) then
         NewState := bsDown
       else
         NewState := UpState[FMouseInControl];
@@ -709,9 +714,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 begin
-  if not (csNoStdEvents in ControlStyle)
-  then with Message do
-    MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+  if not (csNoStdEvents in ControlStyle) then
+    with Message do
+      MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
 end;
 
 procedure TCustomSpeedButton.WMLButtonDown(var Message: TLMLButtonDown);
@@ -725,11 +730,11 @@ end;
 procedure TCustomSpeedButton.WMLButtonDBLCLK(var Message: TLMLButtonDblClk);
 begin
   inherited;
-  
   // if in a group, raise dblclick event, otherwise translate to click event
-  if Down
-    then DblClick
-    else Click;
+  if Down then
+    DblClick
+  else
+    Click;
 end;
 
 class procedure TCustomSpeedButton.WSRegisterClass;
@@ -769,9 +774,11 @@ begin
       if OldState <> FState then
         Invalidate;
     end
-    else if (Message.XPos >= 0) and (Message.XPos < Width)
-        and (Message.YPos >= 0) and (Message.YPos < Height) then
+    else
+    if (Message.XPos >= 0) and (Message.XPos < Width) and (Message.YPos >= 0) and (Message.YPos < Height) then
+    begin
       SetDown(not FDown);
+    end;
   end;
 
   DoMouseUp(Message, mbLeft);
@@ -780,14 +787,13 @@ begin
   begin
     Exclude(FControlState, csClicked);
     //DebugLn('TCustomSpeedButton.WMLButtonUp B ',dbgs(ClientRect.Left),',',dbgs(ClientRect.Top),',',dbgs(ClientRect.Right),',',dbgs(ClientRect.Bottom),' ',dbgs(Message.Pos.X),',',dbgs(Message.Pos.Y));
-    if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
-    then begin
+    if PtInRect(ClientRect, SmallPointToPoint(Message.Pos)) then
+    begin
       //DebugLn('TCustomSpeedButton.WMLButtonUp C');
       // Important: Calling Click can invoke modal dialogs, so call this as last
       Click;
     end;
   end;
-  
   
   //DebugLn('TCustomSpeedButton.WMLButtonUp END');
 end;
@@ -800,7 +806,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetLayout(const Value : TButtonLayout);
 begin
-  if Value <> FLayout then begin
+  if Value <> FLayout then
+  begin
     FLayout:= Value;
     Invalidate;
   end;
@@ -838,13 +845,13 @@ var
   Sender : TCustomSpeedButton;
 begin
   if csDestroying in ComponentState then exit;
-  if Message.WParam = WParam(FGroupIndex)
-  then begin
+  if Message.WParam = WParam(FGroupIndex) then
+  begin
     Sender := TCustomSpeedButton(Message.LParam);
-    if Sender <> Self
-    then begin
-      if Sender.Down and FDown
-      then begin
+    if Sender <> Self then
+    begin
+      if Sender.Down and FDown then
+      begin
         FDown := False;
         FState := UpState[FMouseInControl];
         Invalidate;
@@ -908,9 +915,10 @@ end;
 
 function TCustomSpeedButton.GetTransparent: Boolean;
 begin
-  if FGlyph.TransparentMode = gtmGlyph
-  then Result := FGlyph.FOriginal.Transparent
-  else Result := FGlyph.TransparentMode = gtmTransparent;
+  if FGlyph.TransparentMode = gtmGlyph then
+    Result := FGlyph.FOriginal.Transparent
+  else
+    Result := FGlyph.TransparentMode = gtmTransparent;
 end;
 
 function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
