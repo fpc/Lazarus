@@ -1820,9 +1820,6 @@ begin
   MainIDEBar.BuildModeSpeedButton.Style:=tbsDropDown;
   MainIDEBar.BuildModeSpeedButton.DropdownMenu:=MainIDEBar.SetBuildModePopupMenu;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
-
-  MainIDEBar.PauseSpeedButton.Enabled := False;
-  MainIDEBar.StopSpeedButton.Enabled := False;  
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -2467,15 +2464,12 @@ begin
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
-    itmRunMenuPause.Enabled := False;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
-    itmRunMenuShowExecutionPoint.Enabled := False;
     itmRunMenuShowExecutionPoint.OnClick := @mnuShowExecutionPointClicked;
     itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
     itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
     itmRunMenuStepOut.OnClick := @mnuStepOutProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
-    itmRunMenuStop.Enabled := False;
     itmRunMenuStop.OnClick := @mnuStopProjectClicked;
     itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
     itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
