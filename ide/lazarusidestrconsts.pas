@@ -5006,6 +5006,51 @@ resourcestring
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
 
+  //Delphi units and projects converter
+  lisConvDelphiSkipThisFile = 'Skip this file';
+  lisConvDelphiSkipThisStep = 'Skip this step';
+  lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
+  lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';
+  lisConvDelphiReady = 'Ready.';
+  lisConvDelphiAborted = 'Aborted.';
+  lisConvDelphiConvertingUnitFile = 'Converting unit file %s';
+  lisConvDelphiRepairingFormFile = 'Repairing form file %s';
+  lisConvDelphiErrorCanTFindUnit = '%s(%s,%s) Error: Can''t find unit %s';
+  lisConvDelphiAllSubDirectoriesWillBeScannedForUnitFiles = 'All sub-directorie'
+    +'s will be scanned for unit files';
+  lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
+  lisConvDelphiError = 'Error="%s"';
+  lisConvDelphiReplacedUnitSWithSInUsesSection = 'Replaced unit "%s" with "%'
+    +'s" in uses section.';
+  lisConvDelphiRemovedUsedUnitSInUsesSection = 'Removed used unit "%s" in '
+    +'uses section.';
+  lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
+  lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
+  lisConvDelphiFailedToConvertUnit = 'Failed to convert unit%s%s%s';
+  lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
+  lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
+  lisConvDelphiConversionReady = 'Conversion Ready.';
+  lisConvDelphiConversionAborted = 'Conversion Aborted.';
+  lisConvDelphiRepairingFormFiles = '*** Repairing form files... ***';
+  lisConvDelphiUnitnameExistsTwice = 'Unitname exists twice';
+  lisConvDelphiThereAreTwoUnitsWithTheSameUnitname = 'There are two units '
+    +'with the same unitname:%s%s%s%s%s';
+  lisConvDelphiRemoveFirst = 'Remove first';
+  lisConvDelphiRemoveSecond = 'Remove second';
+  lisConvDelphiKeepBoth = 'Keep both';
+  lisConvDelphiFindAllUnitFiles = '*** Find all unit files... ***';
+  lisConvDelphiAtThisPointThereShouldBeNoMissingUnits = 'At this point there '
+    +'should be no missing units!';
+  lisConvDelphiConvertingUnitFiles = '*** Converting unit files... ***';
+  lisConvDelphiPackageNameExists = 'Package name exists';
+  lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
+    +'already a package with the name "%s"%sPlease close this package first.';
+  lisConvDelphiUnitsNotFound = 'Units not found';
+  lisConvDelphiSomeUnitsOfTheDelphiPackageAreMissing = 'Some units of the '
+    +'Delphi package are missing:%s%s';
+  lisConvDelphiDelphiPackageMainSourceDpkFileNotFoundForPackage = 'Delphi '
+    +'package main source (.dpk) file not found for package%s%s';
+
 implementation
 
 end.
