@@ -187,7 +187,6 @@ function UnEscapeOctal(const AValue: String): String;
 var
   c, cnt, len: Integer;
   Src, Dst: PChar;
-  Oct: PChar;
 begin
   len := Length(AValue);
   if len = 0 then Exit('');
@@ -205,7 +204,6 @@ begin
       dec(cnt);
       if Src^ <> '\'
       then begin
-        Oct := Src;
         c := 0;
         while (Src^ in ['0'..'7']) and (cnt > 0)
         do begin

@@ -66,6 +66,7 @@ type
     fConverter: TConvertDelphiPBase;
     fPath: string;
     // These 2 are references to the TConvertDelphiPBase variables.
+    // MG: No, they are not, I will delete them eventually ...
     fCachedUnitNames: TStringToStringTree;
     fCachedRealFileNames: TStringToStringTree;
   protected
