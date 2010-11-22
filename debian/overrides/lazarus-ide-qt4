@@ -2,3 +2,4 @@
 # see BTS #472304. The zlib functionality is provided without a proper 
 # way to turn it off. 
 #lazarus-ide-qt4: embedded-zlib
+lazarus-ide-qt4: debian-revision-should-not-be-zero

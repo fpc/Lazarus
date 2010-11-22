@@ -1,4 +1,1 @@
-# The Free Pascal Compiler does not properly support linking. Please
-# see BTS #472304. The zlib functionality is provided without a proper 
-# way to turn it off. 
-lazarus-ide-gtk2: embedded-zlib
+lazarus-ide-gtk2: debian-revision-should-not-be-zero

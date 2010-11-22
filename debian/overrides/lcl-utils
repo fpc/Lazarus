@@ -1,4 +1,1 @@
-# The Free Pascal Compiler does not properly support linking. Please
-# see BTS #472304. The zlib functionality is provided without a proper 
-# way to turn it off. 
-lcl-utils: embedded-zlib
+lcl-utils: debian-revision-should-not-be-zero
