@@ -2254,6 +2254,7 @@ end;
 procedure TMainIDE.SetupMainMenu;
 begin
   inherited SetupMainMenu;
+  mnuMain.MenuItem:=MainIDEBar.mnuMainMenu.Items;
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
@@ -2265,7 +2266,6 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
-  mnuMain.MenuItem:=MainIDEBar.mnuMainMenu.Items;
 end;
 
 procedure TMainIDE.SetupStandardIDEMenuItems;
