@@ -25,7 +25,7 @@ begin
 
   if (TObject(Target) is TCustomControl) then begin
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
-    TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+    TWinControl(Target).Perform(LM_ERASEBKGND, PtrInt(PaintMsg.DC), 0);
     Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
   end;
 
