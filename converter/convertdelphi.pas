@@ -1400,19 +1400,21 @@ end;
 function TConvertDelphiProject.CreateMainSourceFile: TModalResult;
 // if .lpr does not exists, copy the .dpr file to the .lpr
 // adds the .lpr as main unit to the project, if not already done
-const
-  LprExt='.lpr';
 var
   MainUnitInfo: TUnitInfo;
 begin
   // Converter for main LPR file.
   fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
-  fMainUnitConverter.LazFileExt:=LprExt;
+  if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
+    fMainUnitConverter.LazFileExt:=ExtractFileExt(fOrigPFilename)
+  else
+    fMainUnitConverter.LazFileExt:='.lpr';
   fMainUnitConverter.CopyAndLoadFile;
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
-    MainUnitInfo.DefaultSyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(LprExt);
+    MainUnitInfo.DefaultSyntaxHighlighter:=
+                    ExtensionToLazSyntaxHighlighter(fMainUnitConverter.LazFileExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;
