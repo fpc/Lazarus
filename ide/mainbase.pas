@@ -89,7 +89,7 @@ type
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
-                             var MenuItem: TIDEMenuCommand;
+                             var MenuCommand: TIDEMenuCommand;
                              const MenuItemName, MenuItemCaption: String;
                              const bmpName: String = '';
                              mnuEnabled: Boolean = true;
@@ -302,14 +302,14 @@ begin
 end;
 
 procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
-  var MenuItem: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
+  var MenuCommand: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
   const bmpName: String; mnuEnabled: Boolean; mnuChecked: Boolean);
 begin
-  MenuItem:=RegisterIDEMenuCommand(Section,MenuItemName,MenuItemCaption);
-  MenuItem.Enabled:=mnuEnabled;
-  MenuItem.Checked:=mnuChecked;
+  MenuCommand:=RegisterIDEMenuCommand(Section,MenuItemName,MenuItemCaption);
+  MenuCommand.Enabled:=mnuEnabled;
+  MenuCommand.Checked:=mnuChecked;
   if bmpName<>'' then
-    MenuItem.ImageIndex := IDEImages.LoadImage(16, bmpName);
+    MenuCommand.ImageIndex := IDEImages.LoadImage(16, bmpName);
 end;
 
 procedure TMainIDEBase.CreateMenuSeparatorSection(
