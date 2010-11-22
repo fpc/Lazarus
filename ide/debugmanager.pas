@@ -1508,8 +1508,11 @@ begin
       WatchVar := SE.GetOperandAtCurrentCaret;
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
-       if (Watches.Find(WatchVar) <> nil) or (Watches.Add(WatchVar) <> nil) then
+      if (Watches.Find(WatchVar) <> nil) or (Watches.Add(WatchVar) <> nil)
+      then begin
+        ViewDebugDialog(ddtWatches, False);
         Exit;
+      end;
     end;
   end;
 
