@@ -6874,13 +6874,23 @@ end;
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
+var
+  IDECmd: TIDECommand;
+  r: Boolean;
 begin
   //DebugLn(['TSourceNotebook.ProcessParentCommand START ',dbgsName(Sender),' Command=',Command,' AChar=',AChar]);
 
   FProcessingCommand:=true;
   if Assigned(Manager.OnProcessUserCommand) then begin
     Handled:=false;
+    IDECmd:=IDECommandList.FindIDECommand(Command);
+    r := (IDECmd <> nil) and (IDECmd.OnExecuteProc = @ExecuteIdeMenuClick);
+    if r then IDECmd.OnExecuteProc := nil;
+
     Manager.OnProcessUserCommand(Self,Command,Handled);
+
+    if r then IDECmd.OnExecuteProc := @ExecuteIdeMenuClick;
+
     if Handled or (Command=ecNone) then begin
       FProcessingCommand:=false;
       Command:=ecNone;
