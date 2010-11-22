@@ -3963,6 +3963,7 @@ images/actions/laz_copy.png -text svneol=unset#image/png
 images/actions/laz_cut.png -text svneol=unset#image/png
 images/actions/laz_delete.png -text svneol=unset#image/png
 images/actions/laz_edit.png -text svneol=unset#image/png
+images/actions/laz_highlighter.png -text svneol=unset#image/png
 images/actions/laz_open.png -text svneol=unset#image/png
 images/actions/laz_paste.png -text svneol=unset#image/png
 images/actions/laz_refresh.png -text svneol=unset#image/png
