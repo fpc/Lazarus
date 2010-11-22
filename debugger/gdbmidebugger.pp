@@ -271,6 +271,8 @@ type
     function  GDBStop: Boolean;
     function  GDBStepOver: Boolean;
     function  GDBStepInto: Boolean;
+    function  GDBStepOverInstr: Boolean;
+    function  GDBStepIntoInstr: Boolean;
     function  GDBStepOut: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
@@ -2385,7 +2387,8 @@ const
           // Subtract offset from StartAddress, in case this is the first block
           //   (we may continue existing data, but src info must be retrieved in full, or may be incomplete)
           // If we are in IsFirstSubList, we already tried
-          if (not GotFullDisAss) and ( (not DisAssIterator.IsFirstSubList) and SkipDisAssInFirstLoop )
+          if (not GotFullDisAss)
+          and not(DisAssIterator.IsFirstSubList and SkipDisAssInFirstLoop)
           then DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
             DisAssIterator.NextStartAddr, True, DisAssListWithSrc, True);
           // We may have less lines with source, as we stripped padding at the end
@@ -5027,6 +5030,40 @@ begin
   end;
 end;
 
+function TGDBMIDebugger.GDBStepOverInstr: Boolean;
+begin
+  Result := False;
+  case State of
+    dsStop: begin
+      Result := StartDebugging;
+    end;
+    dsPause: begin
+      QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepOverInstruction));
+      Result := True;
+    end;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to step over instr in idle state');
+    end;
+  end;
+end;
+
+function TGDBMIDebugger.GDBStepIntoInstr: Boolean;
+begin
+  Result := False;
+  case State of
+    dsStop: begin
+      Result := StartDebugging;
+    end;
+    dsPause: begin
+      QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepIntoInstruction));
+      Result := True;
+    end;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to step in instr idle state');
+    end;
+  end;
+end;
+
 function TGDBMIDebugger.GDBStepOut: Boolean;
 begin
   Result := False;
@@ -5094,7 +5131,8 @@ end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto,
+  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
+             dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble];
 end;
@@ -5319,6 +5357,8 @@ begin
       dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
                                               String(AParams[3].VPointer^), String(AParams[4].VPointer^),
                                               String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
+      dcStepOverInstr: Result := GDBStepOverInstr;
+      dcStepIntoInstr: Result := GDBStepIntoInstr;
     end;
   finally
     UnlockRelease;

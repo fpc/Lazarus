@@ -343,6 +343,8 @@ resourcestring
   lisMenuShowExecutionPoint = 'Show execution point';
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
+  lisMenuStepIntoInstr = 'Step into instruction';
+  lisMenuStepOverInstr = 'Step over instruction';
   lisMenuStepOut = 'Step out';
   lisMenuRunToCursor = 'Run to cursor';
   lisKMStopProgram = 'Stop program';

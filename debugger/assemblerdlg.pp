@@ -193,25 +193,37 @@ begin
   case Key of
     VK_UP:   begin
       SetSelection(FSelectLine - 1, True, ssShift in Shift);
+      Key := 0;
     end;
     VK_DOWN: begin
       SetSelection(FSelectLine + 1, True, ssShift in Shift);
+      Key := 0;
     end;
     VK_PRIOR: begin
       i := FTopLine;
       SetSelection(FSelectLine - FLineCount, False, ssShift in Shift);
       SetTopline(i - FLineCount);
+      Key := 0;
     end;
     VK_NEXT: begin
       i := FTopLine;
       SetSelection(FSelectLine + FLineCount, False, ssShift in Shift);
       SetTopline(i + FLineCount);
+      Key := 0;
     end;
-    VK_LEFT: sbHorizontal.Position := sbHorizontal.Position - sbHorizontal.SmallChange;
-    VK_RIGHT: sbHorizontal.Position := sbHorizontal.Position + sbHorizontal.SmallChange;
-    VK_HOME: sbHorizontal.Position := 0;
+    VK_LEFT: begin
+      sbHorizontal.Position := sbHorizontal.Position - sbHorizontal.SmallChange;
+      Key := 0;
+    end;
+    VK_RIGHT: begin
+      sbHorizontal.Position := sbHorizontal.Position + sbHorizontal.SmallChange;
+      Key := 0;
+    end;
+    VK_HOME: begin
+      sbHorizontal.Position := 0;
+      Key := 0;
+    end;
   end;
-  Key := 0;
   pbAsm.Invalidate;
 end;
 

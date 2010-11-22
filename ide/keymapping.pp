@@ -552,6 +552,8 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[]);
   ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
+  ecStepIntoInstr: SetResult(VK_F7,[ssAlt],VK_UNKNOWN,[]);
+  ecStepOverInstr: SetResult(VK_F8,[ssAlt],VK_UNKNOWN,[]);
   ecStepOut: SetResult(VK_F8,[ssShift],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_F2,[SSCtrl],VK_UNKNOWN,[]);
@@ -988,6 +990,8 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepIntoInstr: SetResult(VK_F7,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepOverInstr: SetResult(VK_F8,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepOut: SetResult(VK_F8,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2135,6 +2139,8 @@ begin
     ecShowExecutionPoint      : Result:= srkmecShowExecutionPoint;
     ecStepInto                : Result:= lisMenuStepInto;
     ecStepOver                : Result:= lisMenuStepOver;
+    ecStepIntoInstr           : Result:= lisMenuStepIntoInstr;
+    ecStepOverInstr           : Result:= lisMenuStepOverInstr;
     ecStepOut                 : Result:= lisMenuStepOut;
     ecRunToCursor             : Result:= lisMenuRunToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
@@ -2844,6 +2850,8 @@ begin
   AddDefault(C, 'Show execution point', lisMenuShowExecutionPoint, ecShowExecutionPoint);
   AddDefault(C, 'Step into', lisMenuStepInto, ecStepInto);
   AddDefault(C, 'Step over', lisMenuStepOver, ecStepOver);
+  AddDefault(C, 'Step into instr', lisMenuStepIntoInstr, ecStepIntoInstr);
+  AddDefault(C, 'Step over instr', lisMenuStepOverInstr, ecStepOverInstr);
   AddDefault(C, 'Step out', lisMenuStepOut, ecStepOut);
   AddDefault(C, 'Run to cursor', lisMenuRunToCursor, ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);

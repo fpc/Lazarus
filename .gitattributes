@@ -4275,8 +4275,10 @@ images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_stepinto.png -text svneol=unset#image/png
+images/menu/menu_stepinto_instr.png -text svneol=unset#image/png
 images/menu/menu_stepout.png -text svneol=unset#image/png
 images/menu/menu_stepover.png -text svneol=unset#image/png
+images/menu/menu_stepover_instr.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png

@@ -120,6 +120,8 @@ type
     function DoStepIntoProject: TModalResult; virtual; abstract;
     function DoStepOverProject: TModalResult; virtual; abstract;
     function DoStepOutProject: TModalResult; virtual; abstract;
+    function DoStepIntoInstrProject: TModalResult; virtual; abstract;
+    function DoStepOverInstrProject: TModalResult; virtual; abstract;
     function DoRunToCursor: TModalResult; virtual; abstract;
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;

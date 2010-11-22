@@ -67,7 +67,9 @@ type
     dcModify,
     dcEnvironment,
     dcSetStackFrame,
-    dcDisassemble
+    dcDisassemble,
+    dcStepOverInstr,
+    dcStepIntoInstr
     );
   TDBGCommands = set of TDBGCommand;
 
@@ -1539,6 +1541,8 @@ type
     procedure Stop;                                  // quit debugging
     procedure StepOver;
     procedure StepInto;
+    procedure StepOverInstr;
+    procedure StepIntoInstr;
     procedure StepOut;
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
@@ -1603,7 +1607,9 @@ const
     'Modify',
     'Environment',
     'SetStackFrame',
-    'Disassemble'
+    'Disassemble',
+    'StepOverInstr',
+    'StepIntoInstr'
     );
 
   DBGStateNames: array[TDBGState] of string = (
@@ -1641,11 +1647,11 @@ const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
   {dsIdle } [dcEnvironment],
-  {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch,
-             dcEvaluate, dcEnvironment],
-  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto, dcBreak,
-             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame,
-             dcDisassemble],
+  {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
+             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcEvaluate, dcEnvironment],
+  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
+             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
+             dcEnvironment, dcSetStackFrame, dcDisassemble],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop],
@@ -2205,6 +2211,18 @@ procedure TDebugger.StepInto;
 begin
   if ReqCmd(dcStepInto, []) then exit;
   DebugLn('TDebugger.StepInto Class=',ClassName,' failed.');
+end;
+
+procedure TDebugger.StepOverInstr;
+begin
+  if ReqCmd(dcStepOverInstr, []) then exit;
+  DebugLn('TDebugger.StepOverInstr Class=',ClassName,' failed.');
+end;
+
+procedure TDebugger.StepIntoInstr;
+begin
+  if ReqCmd(dcStepIntoInstr, []) then exit;
+  DebugLn('TDebugger.StepIntoInstr Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepOut;

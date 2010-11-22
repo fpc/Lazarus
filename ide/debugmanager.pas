@@ -160,6 +160,8 @@ type
     function DoShowExecutionPoint: TModalResult; override;
     function DoStepIntoProject: TModalResult; override;
     function DoStepOverProject: TModalResult; override;
+    function DoStepIntoInstrProject: TModalResult; override;
+    function DoStepOverInstrProject: TModalResult; override;
     function DoStepOutProject: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
@@ -1635,7 +1637,8 @@ begin
 
   // All conmmands
   // -------------------
-  // dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch
+  // dcRun, dcPause, dcStop, dcStepOver, dcStepInto,  dcStepOverInstrcution, dcStepIntoInstrcution,
+  // dcRunTo, dcJumpto, dcBreak, dcWatch
   // -------------------
 
   UpdateButtonsAndMenuItems;
@@ -2213,6 +2216,10 @@ begin
     StepOverSpeedButton.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
+    itmRunMenuStepIntoInstr.Enabled := CanRun and (not DebuggerIsValid or
+              (dcStepIntoInstr in FDebugger.Commands)  or (FDebugger.State = dsIdle));
+    itmRunMenuStepOverInstr.Enabled := CanRun and (not DebuggerIsValid or
+              (dcStepOverInstr in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     // Step out
     StepOutSpeedButton.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
@@ -2636,6 +2643,38 @@ begin
   Result := mrOk;
 end;
 
+function TDebugManager.DoStepIntoInstrProject: TModalResult;
+begin
+  if (MainIDE.DoInitProjectRun <> mrOK)
+  or (MainIDE.ToolStatus <> itDebugger)
+  or (FDebugger = nil) or Destroying
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  FDebugger.StepIntoInstr;
+  Result := mrOk;
+  // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
+  ViewDebugDialog(ddtAssembler);
+end;
+
+function TDebugManager.DoStepOverInstrProject: TModalResult;
+begin
+  if (MainIDE.DoInitProjectRun <> mrOK)
+  or (MainIDE.ToolStatus <> itDebugger)
+  or (FDebugger = nil) or Destroying
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  FDebugger.StepOverInstr;
+  Result := mrOk;
+  // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
+  ViewDebugDialog(ddtAssembler);
+end;
+
 function TDebugManager.DoStepOutProject: TModalResult;
 begin
   if (MainIDE.DoInitProjectRun <> mrOK)
@@ -2682,6 +2721,8 @@ begin
     ecPause:             DoPauseProject;
     ecStepInto:          DoStepIntoProject;
     ecStepOver:          DoStepOverProject;
+    ecStepIntoInstr:     DoStepIntoInstrProject;
+    ecStepOverInstr:     DoStepOverInstrProject;
     ecStepOut:           DoStepOutProject;
     ecRunToCursor:       DoRunToCursor;
     ecStopProgram:       DoStopProject;
