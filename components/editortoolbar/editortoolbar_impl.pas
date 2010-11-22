@@ -103,9 +103,28 @@ uses
   ,BaseIDEIntf
   ;
 
+type
+
+  { TEditToolBarToolButton }
+
+  TEditToolBarToolButton = class(TToolButton)
+  private
+    FMenuItem: TIDEMenuItem;
+  protected
+    procedure Click; override;
+  public
+    property MenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
+  end;
 
 var
   uEditorToolbarList: TEditorToolbarList;
+
+procedure TEditToolBarToolButton.Click;
+begin
+  inherited Click;
+  if assigned(FMenuItem) then
+    FMenuItem.TriggerClick;
+end;
 
 { TEditorToolbarList }
 
@@ -212,9 +231,9 @@ end;
 
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
 var
-  B: TToolButton;
+  B: TEditToolBarToolButton;
 begin
-  B := TToolButton.Create(TB);
+  B := TEditToolBarToolButton.Create(TB);
   B.Caption     := AMenuItem.Caption;
   B.Hint        := AMenuItem.Caption; // or should we use AMenuItem.Hint?
   // If we have a image, us it. Otherwise supply a default.
@@ -224,7 +243,8 @@ begin
     B.ImageIndex  := IDEImages.LoadImage(16, 'execute16');
 
   B.Style       := tbsButton;
-  B.OnClick     := AMenuItem.OnClick;
+  B.MenuItem := AMenuItem;
+  //B.OnClick     := AMenuItem.OnClick;
   PositionAtEnd(TB, B);
 end;
 

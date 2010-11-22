@@ -97,6 +97,7 @@ type
     procedure WriteDebugReport(const Prefix: string;
                                MenuItemDebugReport: boolean); virtual;
     procedure ConsistencyCheck; virtual;
+    procedure TriggerClick;
   public
     property Name: string read FName write SetName;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
@@ -901,6 +902,11 @@ begin
     if SectionIndex<0 then
       RaiseError;
   end;
+end;
+
+procedure TIDEMenuItem.TriggerClick;
+begin
+  MenuItemClick(Self);
 end;
 
 { TIDEMenuSection }
