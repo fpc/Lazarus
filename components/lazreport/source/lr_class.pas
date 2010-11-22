@@ -5997,14 +5997,6 @@ begin
   IncSpc(1);
   {$endif}
 
-  if (MasterReport.DoublePass and MasterReport.FinalPass) then
-  begin
-    {$ifdef DebugLR}
-    IncSpc(-1);
-    DebugLn('%sTfrPage.PrepareObjects DONE, EXIT DoublePass&FinalPass',[sspc]);
-    {$endif}
-    Exit;
-  end;
   CurPage := Self;
   for i := 0 to RTObjects.Count - 1 do
   begin
