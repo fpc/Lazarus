@@ -1701,8 +1701,12 @@ begin
   if Line>fLastBuffer.LineCount then exit;
   fLastBuffer.LineColToPosition(Line,Column,p);
   Src:=fLastBuffer.Source;
+  if p>length(Src) then
+    p:=length(Src);
+  if (p>1) and (Src[p] in [',',';']) then
+    dec(p);
   while (p>1) do begin
-    if Src[p] in [#10,#13,',',';'] then exit(false);
+    if Src[p] in [#10,#13,',',';'] then exit;
     if Src[p]='}' then begin
       // could be a IDE directive
       while (p>0) do begin
