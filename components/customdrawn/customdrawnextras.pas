@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math,
+  Math, customdrawnutils,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
   {$ifdef CUSTOMDRAWN_USE_FREETYPE}
@@ -318,16 +318,17 @@ type
     TCDTrackBar is a custom-drawn trackbar control
   }
 
-//  TCDTrackBarDrawer = class;
+  TCDTrackBarDrawer = class;
 
 { TCDTrackBar }
 
-{  TCDTrackBar = class(TCustomControl)
+  TCDTrackBar = class(TCustomControl)
   private
     FMin: Integer;
     FMax: Integer;
     FPosition: Integer;
     FOnChange: TNotifyEvent;
+    FCurrentDrawer: TCDTrackBarDrawer;
     procedure SetMax(Value: Integer);
     procedure SetMin(Value: Integer);
     procedure SetPosition(Value: Integer);
@@ -354,14 +355,19 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Position: Integer read FPosition write SetPosition;
     property TabStop default True;
-  end;}
+  end;
 
 { TCDTrackBarDrawer }
 
-{  TCDTrackBarDrawer = class
+  TCDTrackBarDrawer = class
   public
-    procedure DrawToIntfImage(ADest: TLazIntfImage; CDTrackBar: TCDTrackBar); virtual; abstract;
-  end;}
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar); virtual; abstract;
+  end;
+
+  TCDTrackBarDrawerGraph = class(TCDTrackBarDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar); override;
+  end;
 
 procedure Register;
 
@@ -373,6 +379,7 @@ const
 procedure Register;
 begin
   RegisterComponents('Common Controls', [TCDButton]);
+  RegisterComponents('Common Controls', [TCDTrackBar]);
 end;
 
 { TCustomBitmappedButton }
@@ -586,87 +593,6 @@ begin
   end;
 end;
 
-procedure GradientFill(Clr1, Clr2: TColor; Canvas: TCanvas);
-var
-  RGBFrom: array[0..2] of byte;
-  RGBDiff: array[0..2] of integer;
-  ColorBand: TRect;
-  I: integer;
-  R, G, B: byte;
-begin
-  RGBFrom[0] := GetRValue(ColorToRGB(Clr1));
-  RGBFrom[1] := GetGValue(ColorToRGB(Clr1));
-  RGBFrom[2] := GetBValue(ColorToRGB(Clr1));
-  RGBDiff[0] := GetRValue(ColorToRGB(Clr2)) - RGBFrom[0];
-  RGBDiff[1] := GetGValue(ColorToRGB(Clr2)) - RGBFrom[1];
-  RGBDiff[2] := GetBValue(ColorToRGB(Clr2)) - RGBFrom[2];
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Mode := pmCopy;
-  ColorBand.Left := 0;
-  ColorBand.Right := Canvas.Width;
-  for I := 0 to $ff do
-  begin
-    ColorBand.Top := MulDiv(I, Canvas.Height, $100);
-    ColorBand.Bottom := MulDiv(I + 1, Canvas.Height, $100);
-    R := RGBFrom[0] + MulDiv(I, RGBDiff[0], $ff);
-    G := RGBFrom[1] + MulDiv(I, RGBDiff[1], $ff);
-    B := RGBFrom[2] + MulDiv(I, RGBDiff[2], $ff);
-    Canvas.Brush.Color := RGB(R, G, B);
-    Canvas.FillRect(ColorBand);
-  end;
-end;
-
-function GetNomalColor(a: byte): byte;
-begin
-  Result := a;
-  if a < 1 then
-    a := 1;
-  if a > 255 then
-    a := 255;
-end;
-
-procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
-const
-  vedge = 12;
-  rr = 3;
-var
-  i, xx, yy: integer;
-  c2: TColor;
-  r, g, b, r1, g1, b1: byte;
-begin
-  Canvas.Brush.Color := clWhite;
-  Canvas.FillRect(0, 0, Canvas.Width, Canvas.Height);
-  Canvas.Brush.Color := Color;
-  Canvas.Pen.Color := Color;
-  r1 := GetRValue(Color);
-  g1 := GetGValue(Color);
-  b1 := GetBValue(Color);
-  for yy := 0 to Canvas.Height do
-  begin
-    Canvas.MoveTo(0, yy);
- {   if yy < vedge then
-    begin
-      r := GetNomalColor(r1 - (vedge - yy) * rr);
-      g := GetNomalColor(g1 - (vedge - yy) * rr);
-      b := GetNomalColor(b1 - (vedge - yy) * rr);
-      c2 := RGB(r, g, b);
-      Canvas.Pen.Color := c2;
-    end
-    else       }
-    if yy > Canvas.Height - vedge then
-    begin
-      r := GetNomalColor(r1 - (yy - Canvas.Height + vedge) * rr);
-      g := GetNomalColor(g1 - (yy - Canvas.Height + vedge) * rr);
-      b := GetNomalColor(b1 - (yy - Canvas.Height + vedge) * rr);
-      c2 := RGB(r, g, b);
-      Canvas.Pen.Color := c2;
-    end
-    else
-      Canvas.Pen.Color := Color;
-    Canvas.LineTo(Canvas.Width, yy);
-  end;
-end;
-
 procedure TCDButton.DoEnter;
 begin
   DoButtonUp();
@@ -795,7 +721,7 @@ begin
   //Color := clTeal;
   ParentFont := True;
   FDrawStyle := dsAndroid;
-  Color := clWhite;
+  Color := $00F1F5F5;
 end;
 
 destructor TCDButton.Destroy;
@@ -808,11 +734,27 @@ begin
 
 end;
 
+procedure DrawCDButtonDown(Canvas: TCanvas; CDButton: TCDButton);
+begin
+  with Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := CDButton.Color;
+    Pen.Color := Brush.Color;
+    Rectangle(0, 0, Width, Height);
+    FillRect(0, 0, Width, Height);
+    Brush.Color := GetAColor(CDButton.Color, 93);
+    Pen.Color := GetAColor(Brush.Color, 76);
+    RoundRect(0, 0, Width, Height, 8, 8);
+  end;
+end;
+
 procedure TCDButton.Paint;
 var
   AImage: TLazIntfImage = nil;
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
+  pColor: TColor;
 begin
   //  inherited Paint;
 
@@ -830,6 +772,34 @@ begin
     // Second step of the drawing: LCL TCustomCanvas for easy font access
     FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self, FState);
 
+    with ABmp.Canvas do
+    begin
+      Brush.Style := bsClear;
+      if FState <> bbsDown then
+      begin
+        Pen.Color := GetAColor(Color, 86);
+        RoundRect(0, 0, Width, Height, 8, 8);
+      end;
+      Pen.Style := psSolid;
+      Pen.Color := Parent.Color;
+      Line(0, 2, 0, 0);
+      Line(0, 0, 2, 0);
+      Pixels[2, 0] := Pen.Color;
+      Line(Width - 3, 0, Width - 1, 0);
+      Line(Width - 1, 0, Width - 1, 2);
+      Line(0, Height - 3, 0, Height - 1);
+      Line(0, Height - 1, 2, Height - 1);
+      Line(Width - 1, Height - 3, Width - 1, Height - 1);
+      Line(Width - 1, Height - 1, Width - 3, Height - 1);
+      Pixels[Width - 1, 2] := Pen.Color;
+      Pixels[Width - 3, Height - 1] := Pen.Color;
+      Pixels[2, Height - 1] := Pen.Color;
+      pColor := Parent.Color; //GetAColor(Parent.Color, 96);
+      Pixels[1, 1] := pColor;
+      Pixels[Width - 2, 1] := pColor;
+      Pixels[Width - 2, Height - 2] := pColor;
+      Pixels[1, Height - 2] := pColor;
+    end;
     Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then
@@ -856,58 +826,6 @@ begin
 
 end;
 
-function ResetCDColor(r, g, b: byte): TColor;
-begin
-  if r <= 0 then
-    r := 1;
-  if g <= 0 then
-    g := 1;
-  if b <= 0 then
-    b := 1;
-  Result := RGB(r, g, b);
-end;
-
-function GetEndColor(Color: TColor; Rate: byte): TColor;
-var
-  r, g, b: byte;
-begin
-  r := GetRValue(ColorToRGB(Color));
-  g := GetGValue(ColorToRGB(Color));
-  b := GetBValue(ColorToRGB(Color));
-  r := r * Rate div 100;
-  g := g * Rate div 100;
-  b := b * Rate div 100;
-  Result := ResetCDColor(r, g, b);
-end;
-
-function GetBeginColor(Color: TColor; Rate: byte): TColor;
-var
-  r, g, b: byte;
-begin
-  r := GetRValue(ColorToRGB(Color));
-  g := GetGValue(ColorToRGB(Color));
-  b := GetBValue(ColorToRGB(Color));
-  r := r * 100 div Rate;
-  g := g * 100 div Rate;
-  b := b * 100 div Rate;
-  Result := ResetCDColor(r, g, b);
-end;
-
-procedure DrawCDButtonDown(Canvas: TCanvas; CDButton: TCDButton);
-begin
-  With Canvas do
-  begin
-    Brush.Style := bsSolid;
-    Brush.Color := CDButton.Color;
-    Pen.Color := Brush.Color;
-    Rectangle(0, 0, Width, Height);
-    FillRect(0, 0, Width, Height);
-    Brush.Color := GetEndColor(CDButton.Color, 90);
-    Pen.Color := GetEndColor(Brush.Color, 86);
-    RoundRect(0, 0, Width, Height, 5, 5);
-  end;
-end;
-
 procedure TCDButtonDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
   FState: TBitmappedButtonState);
 var
@@ -921,29 +839,29 @@ begin
   TmpB.Canvas.Brush.Color := CDButton.Color;
   TmpB.Canvas.Brush.Style := bsSolid;
   TmpB.Canvas.RoundRect(0, 0, TmpB.Width, TmpB.Height, 8, 8);
-  CDButton.SetShape(TmpB);
+  //  CDButton.SetShape(TmpB);
 
   with TmpB.Canvas do
   begin
     Brush.Style := bsSolid;
-    Brush.Color := CDButton.Color;
+    Brush.Color := CDButton.Parent.Color;
     Pen.Color := Brush.Color;
     Rectangle(0, 0, Width, Height);
     FillRect(0, 0, Width, Height);
-    Brush.Color := GetEndColor(CDButton.Color, 90);
+    Brush.Color := GetAColor(CDButton.Color, 90);
   end;
 
   // Button image
   case FState of
     bbsDown:
     begin
-      DrawCDButtonDown(ADest, CDButton);
+      DrawCDButtonDown(TmpB.Canvas, CDButton);
     end;
     bbsFocused:
-      //GradientFill(GetBeginColor(CDButton.Color, 50), GetEndColor(CDButton.Color, 60), TmpB.Canvas);
-      GradientFill(clWhite, GetEndColor(CDButton.Color, 80), TmpB.Canvas);
+      //GradientFill(GetUColor(CDButton.Color, 50), GetAColor(CDButton.Color, 60), TmpB.Canvas);
+      GradientFill(clWhite, GetAColor(CDButton.Color, 96), TmpB.Canvas);
     else
-      //GradientFill(GetBeginColor(CDButton.Color, 10), GetEndColor(CDButton.Color, 20), TmpB.Canvas);
+      //GradientFill(GetUColor(CDButton.Color, 10), GetAColor(CDButton.Color, 20), TmpB.Canvas);
       GradientFill(clWhite, CDButton.Color, TmpB.Canvas);
   end;
 
@@ -991,6 +909,11 @@ begin
   TmpB.Free;
   }
 
+  ADest.Brush.Color := CDButton.Parent.Color;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Color := ADest.Brush.Color;
+  ADest.RecTangle(0, 0, CDButton.Width, CDButton.Height);
+
   // Button image
   case FState of
     bbsDown:
@@ -999,10 +922,10 @@ begin
     end;
     bbsFocused:
     begin
-      DrawAndroidButton(ADest, GetEndColor(CDButton.Color, 98));
+      DrawAndroidButton(ADest, GetAColor(CDButton.Color, 98));
     end;
     else
-      DrawAndroidButton(ADest, CDButton.Color);
+      DrawAndroidButton(ADest, GetAColor(CDButton.Color, 96));
   end;
 
   // Button text
@@ -1030,29 +953,35 @@ begin
 
 end;
 
-procedure DrawXPTaskbarButton(Canvas: TCanvas; aColor: TColor);
+procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
+var
+  aColor: TColor;
 begin
+  aColor := GetUColor(Color, 96);
   with Canvas do
   begin
-    Brush.Color := aColor;
+    Brush.Color := Color;
     Brush.Style := bsSolid;
     FillRect(0, 0, Width, Height);
     Pen.Color := aColor;
     RecTangle(0, 0, Width, Height);
-    Pen.Color := GetEndColor(aColor, 86);
-    RoundRect(0, 0, Width, Canvas.Height, 5, 5);
-    Pen.Color := aColor;
-    RecTangle(0, 6, Width, Height);
-    Pen.Color := GetEndColor(aColor, 86);
+    Pen.Color := GetAColor(aColor, 86);
+    RoundRect(0, 0, Width, Canvas.Height, 8, 8);
+//    Pen.Color := aColor;
+//    RecTangle(0, 6, Width, Height);
+    Pen.Color := GetAColor(aColor, 86);
     Line(0, 3, 0, Height - 3);
-    Line(Width - 1, 3, Width - 1, Height - 3);
-    Line(4, Height - 1, Width - 4, Height - 1);
-    Line(3, Height - 2, Width - 3, Height - 2);
-    Line(2, Height - 3, Width - 2, Height - 3);
-    Pen.Color := GetEndColor(aColor, 92);
+    Line(Width, 3, Width, Height - 3);
+    Line(3, Height - 1, Width - 3, Height - 1);
+    Line(2, Height - 2, Width - 2, Height - 2);
+    Pen.Color := GetAColor(aColor, 93);
     Line(1, Height - 4, Width - 1, Height - 4);
-    Line(Width - 2, 3, Width - 2, Height - 3);
-    Line(1, 3, 1, Height - 3);
+    Pen.Color := GetAColor(aColor, 91);
+    Line(1, Height - 3, Width - 1, Height - 3);
+    Pen.Color := GetAColor(aColor, 88);
+    Line(Width - 2, 4, Width - 2, Height - 3);
+    //Pen.Color := GetAColor(aColor, 94);
+    //Line(2, 2, 6, 2);
   end;
 end;
 
@@ -1068,7 +997,7 @@ begin
     end;
     bbsFocused:
     begin
-      DrawXPTaskbarButton(ADest, GetEndColor(CDButton.Color, 98));
+      DrawXPTaskbarButton(ADest, GetAColor(CDButton.Color, 98));
     end;
     else
       DrawXPTaskbarButton(ADest, CDButton.Color);
@@ -1110,6 +1039,9 @@ end;
 constructor TCDGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  Width := 100;
+  Height := 100;
 
   TabStop := False;
 
@@ -1244,7 +1176,7 @@ end;
 
 { TCDTrackBar }
 
-{procedure TCDTrackBar.SetMax(Value: Integer);
+procedure TCDTrackBar.SetMax(Value: Integer);
 begin
   if Value = FMax then Exit;
   FMax := Value;
@@ -1283,6 +1215,7 @@ end;
 procedure TCDTrackBar.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
+  //if Key =
 end;
 
 procedure TCDTrackBar.KeyUp(var Key: Word; Shift: TShiftState);
@@ -1294,6 +1227,8 @@ procedure TCDTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  FPosition := FMin + (X - 8) * (FMax - FMin) div (Width - 15);
+  invalidate;
 end;
 
 procedure TCDTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
@@ -1315,10 +1250,18 @@ end;
 constructor TCDTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Height := 25;
+  Width := 100;
+  FCurrentDrawer := TCDTrackBarDrawerGraph.Create;
+  Color := clBtnFace;
+  FMax := 100;
+  FMin := 0;
+  TabStop := True;
 end;
 
 destructor TCDTrackBar.Destroy;
 begin
+  FCurrentDrawer.Free;
   inherited Destroy;
 end;
 
@@ -1328,16 +1271,68 @@ begin
 end;
 
 procedure TCDTrackBar.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
 begin
   inherited Paint;
-end;}
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.Create(AImage);
+    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
+    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
+    ABmp.LoadFromIntfImage(AImage);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    if lCanvas <> nil then
+      lCanvas.Free;
+    if AImage <> nil then
+      AImage.Free;
+    ABmp.Free;
+  end;
+end;
 
 { TCDTrackBarDrawer }
 
-//procedure TCDTrackBarDrawer.DrawToIntfImage(ADest: TLazIntfImage; CDTrackBar: TCDTrackBar);
-//begin
-//  inherited DrawToIntfImage(ADest);
-//end;
+procedure TCDTrackBarDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar);
+var aStart, RNum, i, pStart: integer;
+begin
+  // Background
+  if CDTrackBar.Parent = nil then
+    ADest.Brush.FPColor := colLtGray
+  else
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDTrackBar.Color));
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, CDTrackBar.Width, CDTrackBar.Height);
+  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
+  aStart := CDTrackBar.Height div 2 + 1;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
+  //ADest.Rectangle(0, aStart, CDTrackBar.Width, aStart);
+  ADest.Line(0, aStart, CDTrackBar.Width, aStart);
+  ADest.Line(3, aStart - 1, 6, aStart - 1);
+  ADest.Line(5, aStart - 2, 6, aStart - 2);
+  ADest.Line(3, aStart + 1, 6, aStart + 1);
+  ADest.Line(5, aStart + 2, 6, aStart + 2);
+  pStart := ((CDTrackBar.Position - CDTrackBar.Min) * (CDTrackBar.Width - 15)) div (CDTrackBar.Max - CDTrackBar.Min);
+  ADest.Rectangle(8 + pStart, aStart + 1, 8 + pStart + 10, aStart + 11);
+  ADest.Line(CDTrackBar.Width - 1 - 3, aStart - 1, CDTrackBar.Width - 1 - 6, aStart - 1);
+  ADest.Line(CDTrackBar.Width - 1 - 5, aStart - 2, CDTrackBar.Width - 1 - 6, aStart - 2);
+  ADest.Line(CDTrackBar.Width - 1 - 3, aStart + 1, CDTrackBar.Width - 1 - 6, aStart + 1);
+  ADest.Line(CDTrackBar.Width - 1 - 5, aStart + 2, CDTrackBar.Width - 1 - 6, aStart + 2);
+  RNum := (CDTrackBar.Width - 15) div 9;
+  ADest.Pen.FPColor :=  TColorToFPColor(ColorToRGB(clGray));
+  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($00F0F0F0));
+  for i := 0 to RNum - 1 do
+  begin
+    ADest.RecTangle(10 + i * 9, aStart - 3 - i, 10 + i * 9 + 9 - 2, aStart - 1);
+  end;
+end;
 
 end.
 
