@@ -210,7 +210,9 @@ procedure TEvaluateDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
-    Close;
+    Close
+  else
+    inherited;;
 end;
 
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);

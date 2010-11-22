@@ -93,7 +93,7 @@ uses
   // LRT stuff
   Translations,
   // debugger
-  RunParamsOpts, BaseDebugManager, DebugManager, debugger,
+  RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
   // packager
   PackageSystem, PkgManager, BasePkgManager,
   // source editing
@@ -1349,6 +1349,8 @@ begin
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(nil);
   DebugBoss.ConnectMainBarEvents;
+  DebuggerDlg.OnProcessCommand := @OnProcessIDECommand;
+
   PkgBoss:=TPkgManager.Create(nil);
   PkgBoss.ConnectMainBarEvents;
   HelpBoss:=TIDEHelpManager.Create(nil);
@@ -2470,8 +2472,6 @@ begin
     itmRunMenuShowExecutionPoint.OnClick := @mnuShowExecutionPointClicked;
     itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
     itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
-    itmRunMenuStepIntoInstr.OnClick  := @mnuStepIntoInstrProjectClicked;
-    itmRunMenuStepOverInstr.OnClick  := @mnuStepOverInstrProjectClicked;
     itmRunMenuStepOut.OnClick := @mnuStepOutProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
     itmRunMenuStop.OnClick := @mnuStopProjectClicked;

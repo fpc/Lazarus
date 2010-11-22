@@ -93,8 +93,6 @@ menu/menu_search_replace.png
 menu/menu_select_all.png
 menu/menu_stepinto.png
 menu/menu_stepover.png
-menu/menu_stepinto_instr.png
-menu/menu_stepover_instr.png
 menu/menu_stepout.png
 menu/menu_stop.png
 menu/menu_tool_check_lfm.png

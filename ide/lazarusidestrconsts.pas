@@ -345,6 +345,8 @@ resourcestring
   lisMenuStepOver = 'Step over';
   lisMenuStepIntoInstr = 'Step into instruction';
   lisMenuStepOverInstr = 'Step over instruction';
+  lisMenuStepIntoContext = 'Step into (Context)';
+  lisMenuStepOverContext = 'Step over (Context)';
   lisMenuStepOut = 'Step out';
   lisMenuRunToCursor = 'Run to cursor';
   lisKMStopProgram = 'Stop program';

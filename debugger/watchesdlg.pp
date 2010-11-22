@@ -221,6 +221,8 @@ begin
 
     //insert key pressed: add new item
     VK_INSERT: popAddClick(Sender);
+    else
+      inherited;
   end;
 end;
 

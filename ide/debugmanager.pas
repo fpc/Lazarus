@@ -2219,10 +2219,6 @@ begin
     StepOverSpeedButton.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
-    itmRunMenuStepIntoInstr.Enabled := CanRun and (not DebuggerIsValid or
-              (dcStepIntoInstr in FDebugger.Commands)  or (FDebugger.State = dsIdle));
-    itmRunMenuStepOverInstr.Enabled := CanRun and (not DebuggerIsValid or
-              (dcStepOverInstr in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     // Step out
     StepOutSpeedButton.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
@@ -2726,6 +2722,16 @@ begin
     ecStepOver:          DoStepOverProject;
     ecStepIntoInstr:     DoStepIntoInstrProject;
     ecStepOverInstr:     DoStepOverInstrProject;
+    ecStepIntoContext:   begin
+                           if (FDialogs[ddtAssembler] <> nil) and FDialogs[ddtAssembler].Active
+                           then DoStepIntoInstrProject
+                           else DoStepIntoProject;
+                         end;
+    ecStepOverContext:   begin
+                           if (FDialogs[ddtAssembler] <> nil) and FDialogs[ddtAssembler].Active
+                           then DoStepOverInstrProject
+                           else DoStepOverProject;
+                         end;
     ecStepOut:           DoStepOutProject;
     ecRunToCursor:       DoRunToCursor;
     ecStopProgram:       DoStopProject;

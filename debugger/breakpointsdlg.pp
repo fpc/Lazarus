@@ -332,7 +332,9 @@ begin
     Handled := false;
 
   if Handled then
-    Key := 0;
+    Key := 0
+  else
+    inherited;;
 end;
 
 

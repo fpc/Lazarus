@@ -189,7 +189,10 @@ procedure TAssemblerDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShif
 var
   i: LongInt;
 begin
-  if Shift - [ssShift] <> [] then Exit;
+  if Shift - [ssShift] <> [] then begin
+    inherited;
+    Exit;
+  end;
   case Key of
     VK_UP:   begin
       SetSelection(FSelectLine - 1, True, ssShift in Shift);
@@ -223,6 +226,8 @@ begin
       sbHorizontal.Position := 0;
       Key := 0;
     end;
+    else
+      inherited;
   end;
   pbAsm.Invalidate;
 end;

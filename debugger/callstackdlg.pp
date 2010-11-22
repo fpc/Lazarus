@@ -539,7 +539,8 @@ end;
 procedure TCallStackDlg.lvCallStackKeyPress(Sender: TObject; var Key: char);
 begin
   if key = #13
-  then lvCallStackDBLCLICK(Sender);
+  then lvCallStackDBLCLICK(Sender)
+  else inherited;;
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);

@@ -260,8 +260,6 @@ type
         itmRunMenuShowExecutionPoint: TIDEMenuCommand;
         itmRunMenuStepInto: TIDEMenuCommand;
         itmRunMenuStepOver: TIDEMenuCommand;
-        itmRunMenuStepIntoInstr: TIDEMenuCommand;
-        itmRunMenuStepOverInstr: TIDEMenuCommand;
         itmRunMenuStepOut: TIDEMenuCommand;
         itmRunMenuRunToCursor: TIDEMenuCommand;
         itmRunMenuStop: TIDEMenuCommand;

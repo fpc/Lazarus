@@ -2141,6 +2141,8 @@ begin
     ecStepOver                : Result:= lisMenuStepOver;
     ecStepIntoInstr           : Result:= lisMenuStepIntoInstr;
     ecStepOverInstr           : Result:= lisMenuStepOverInstr;
+    ecStepIntoContext         : Result:= lisMenuStepIntoContext;
+    ecStepOverContext         : Result:= lisMenuStepOverContext;
     ecStepOut                 : Result:= lisMenuStepOut;
     ecRunToCursor             : Result:= lisMenuRunToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
@@ -2852,6 +2854,8 @@ begin
   AddDefault(C, 'Step over', lisMenuStepOver, ecStepOver);
   AddDefault(C, 'Step into instr', lisMenuStepIntoInstr, ecStepIntoInstr);
   AddDefault(C, 'Step over instr', lisMenuStepOverInstr, ecStepOverInstr);
+  AddDefault(C, 'Step into context', lisMenuStepIntoContext, ecStepIntoContext);
+  AddDefault(C, 'Step over context', lisMenuStepOverContext, ecStepOverContext);
   AddDefault(C, 'Step out', lisMenuStepOut, ecStepOut);
   AddDefault(C, 'Run to cursor', lisMenuRunToCursor, ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);

@@ -37,13 +37,18 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts, IDEOptionDefs;
+  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts, IDEOptionDefs,
+  EditorOptions, IDECommands;
 
 type
+
+  { TDebuggerDlg }
+
   TDebuggerDlg = class(TForm)
   private
     FUpdateCount: integer;
   protected
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate; virtual;
@@ -53,6 +58,9 @@ type
     function UpdateCount: integer;
   end;
   TDebuggerDlgClass = class of TDebuggerDlg;
+
+var
+  OnProcessCommand: procedure(Sender: TObject; Command: word; var Handled: boolean) of object;
 
 implementation
 
@@ -74,6 +82,21 @@ end;
 function TDebuggerDlg.UpdateCount: integer;
 begin
   Result := FUpdateCount;
+end;
+
+procedure TDebuggerDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  Command: Word;
+  Handled: Boolean;
+begin
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,TDebuggerDlg);
+
+  if Assigned(OnProcessCommand) and (Command <> ecNone)
+  then begin
+    OnProcessCommand(Self,Command,Handled);
+    Handled := Handled or (Command = ecNone);
+  end;
+
 end;
 
 (*
