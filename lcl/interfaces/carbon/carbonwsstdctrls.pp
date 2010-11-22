@@ -55,6 +55,7 @@ type
   TCarbonWSCustomGroupBox = class(TWSCustomGroupBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TCarbonWSGroupBox }
@@ -291,6 +292,18 @@ class function TCarbonWSCustomGroupBox.CreateHandle(const AWinControl: TWinContr
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TCarbonGroupBox.Create(AWinControl, AParams));
+end;
+
+class function TCarbonWSCustomGroupBox.GetDefaultColor(
+  const AControl: TControl; const ADefaultColorType: TDefaultColorType
+  ): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBtnFace,
+ { dctFont  } clBtnText
+  );
+begin
+  Result := DefColors[ADefaultColorType];
 end;
 
 { TCarbonWSCustomComboBox }

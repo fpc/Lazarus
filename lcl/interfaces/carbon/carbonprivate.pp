@@ -1290,9 +1290,14 @@ end;
   Sets groupbox's color
  ------------------------------------------------------------------------------}
 procedure TCarbonGroupBox.SetColor(const AColor: TColor);
+var
+  TempColor: TColor;
 begin
-  FBoxColor:=AColor;
-  inherited SetColor(AColor);
+  TempColor := AColor;
+  if TempColor = clDefault then
+    TempColor := LCLObject.GetDefaultColor(dctBrush);
+  FBoxColor := TempColor;
+  inherited SetColor(TempColor);
 end;
 
 { TCarbonStatusBar }
