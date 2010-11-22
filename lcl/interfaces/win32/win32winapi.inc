@@ -1493,9 +1493,11 @@ const
 {bvRaised } BDR_RAISEDINNER,
 {bvSpace  } 0
   );
+var
+  I: Integer;
 begin
-  Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
-  InflateRect(Rect, -FrameWidth, -FrameWidth);
+  for I := 0 to FrameWidth - 1 do
+    Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT or BF_ADJUST));
 end;
 
 function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
