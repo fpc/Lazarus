@@ -4182,6 +4182,7 @@ const
   pkIcon = 3;
   pkJPEG = 4;
   pkPNG  = 5;
+  pkXPM  = 6;
 
 procedure StreamToXML(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
@@ -4417,7 +4418,9 @@ begin
     else if Picture.Graphic is TIcon then
       result := pkIcon
     else if Picture.Graphic is TBitmap then
-      result := pkBitmap;
+      result := pkBitmap
+    else if Picture.Graphic is TPixmap then
+      result := pkXPM;
 end;
 
 function TfrPictureView.PictureTypeToGraphic(b: Byte): TGraphic;
@@ -4428,6 +4431,7 @@ begin
     pkIcon:     result := TIcon.Create;
     pkJPEG:     result := TJPEGImage.Create;
     pkPNG:      result := TPortableNetworkGraphic.Create;
+    pkXPM:      result := TPixmap.Create;
   end;
 end;
 
