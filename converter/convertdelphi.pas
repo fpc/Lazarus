@@ -967,7 +967,12 @@ begin
   try
     CacheUnitsThread.Resume;
     Result:=fSettings.RunForm;      // Get settings from user.
-    CacheUnitsThread.WaitFor;       // Make sure the thread has finished.
+    Screen.Cursor:=crHourGlass;
+    try
+      CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
+    finally
+      Screen.Cursor:=crDefault;
+    end;
     if Result=mrOK then begin
       // create/open lazarus project or package file
       fLazPFilename:=fSettings.DelphiToLazFilename(fOrigPFilename, fLazPSuffix, false);
