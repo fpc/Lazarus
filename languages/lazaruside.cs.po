@@ -5510,26 +5510,29 @@ msgstr "Převést kódování projektů/balíčků"
 msgid "Convert project or package"
 msgstr "Převést projekt nebo balíček"
 
-#: lazarusidestrconsts.lisconverttarget1
-msgctxt "lazarusidestrconsts.lisconverttarget1"
-msgid "Lazarus"
-msgstr "Lazarus"
-
-#: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus and Delphi"
-msgstr "Lazarus a Delphi"
-
-#: lazarusidestrconsts.lisconverttarget3
-msgid "Lazarus for Windows only"
-msgstr "Pouze Lazarus pro Windows"
-
-#: lazarusidestrconsts.lisconverttarget4
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "Lazarus a Delphi se stejným souborem DFM"
-
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Převaděč přidá podmíněný překlad k podpoře různých cílů"
+
+#: lazarusidestrconsts.lisconverttargetlaz
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
+msgid "Lazarus and Delphi"
+msgstr "Lazarus a Delphi"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
+msgid "Lazarus and Delphi with same DFM file"
+msgstr "Lazarus a Delphi se stejným souborem DFM"
+
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
+msgstr "Pouze Lazarus pro Windows"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -9699,6 +9702,14 @@ msgstr "Seřadit výběr"
 msgid "Step into"
 msgstr "Vejít do"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr "Vejít do"
@@ -9706,6 +9717,14 @@ msgstr "Vejít do"
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Přejít přes"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"

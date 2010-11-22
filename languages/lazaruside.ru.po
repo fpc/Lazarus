@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-18 01:25+0300\n"
+"PO-Revision-Date: 2010-11-23 00:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5554,29 +5554,29 @@ msgstr "Преобразовать кодировку проектов/паке�
 msgid "Convert project or package"
 msgstr "Преобразование проекта либо пакета"
 
-#: lazarusidestrconsts.lisconverttarget1
-#| msgid "Lazarus / LCL"
-msgctxt "lazarusidestrconsts.lisconverttarget1"
-msgid "Lazarus"
-msgstr "Lazarus"
-
-#: lazarusidestrconsts.lisconverttarget2
-#| msgid "Lazarus / LCL for Windows only"
-msgid "Lazarus and Delphi"
-msgstr "Lazarus и Delphi"
-
-#: lazarusidestrconsts.lisconverttarget3
-#| msgid "Both Lazarus / LCL and Delphi"
-msgid "Lazarus for Windows only"
-msgstr "Только Lazarus для Windows"
-
-#: lazarusidestrconsts.lisconverttarget4
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "Lazarus и Delphi с общим файлом DFM"
-
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Добавление директив условной компиляции для поддержки различных целей"
+
+#: lazarusidestrconsts.lisconverttargetlaz
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
+msgid "Lazarus and Delphi"
+msgstr "Lazarus и Delphi"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
+msgid "Lazarus and Delphi with same DFM file"
+msgstr "Lazarus и Delphi с общим файлом DFM"
+
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
+msgstr "Только Lazarus для Windows"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -9758,6 +9758,14 @@ msgstr "Сортировать выделенное ..."
 msgid "Step into"
 msgstr "Шаг со входом"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr "Шаг со входом (контекстно-зависимый)"
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr "Шаг со входом в инструкцию"
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr "Шаг с выходом"
@@ -9765,6 +9773,14 @@ msgstr "Шаг с выходом"
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Шаг в обход"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr "Шаг в обход (контекстно-зависимый)"
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr "Шаг в обход инструкции"
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"

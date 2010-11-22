@@ -5507,25 +5507,28 @@ msgstr ""
 msgid "Convert project or package"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttarget1
-msgctxt "lazarusidestrconsts.lisconverttarget1"
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetlaz
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
 msgid "Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttarget2
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
 msgid "Lazarus and Delphi"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttarget3
-msgid "Lazarus for Windows only"
-msgstr ""
-
-#: lazarusidestrconsts.lisconverttarget4
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
 msgid "Lazarus and Delphi with same DFM file"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttargethint
-msgid "Converter adds conditional compilation to support different targets"
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvfuncreplacements
@@ -9695,6 +9698,14 @@ msgstr "Sorteer seleksie"
 msgid "Step into"
 msgstr "Stap in"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr ""
@@ -9702,6 +9713,14 @@ msgstr ""
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Stap oor"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"

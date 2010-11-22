@@ -5572,32 +5572,35 @@ msgstr "Kodierung von Projekten/Packages umwandeln"
 msgid "Convert project or package"
 msgstr "Projekt oder Package umwandeln"
 
-#: lazarusidestrconsts.lisconverttarget1
-#, fuzzy
-#| msgid "Lazarus / LCL"
-msgctxt "lazarusidestrconsts.lisconverttarget1"
-msgid "Lazarus"
-msgstr "Lazarus/LCLs"
-
-#: lazarusidestrconsts.lisconverttarget2
-#, fuzzy
-#| msgid "Lazarus / LCL for Windows only"
-msgid "Lazarus and Delphi"
-msgstr "Lazarus/LCL (Windows-spezifisch)"
-
-#: lazarusidestrconsts.lisconverttarget3
-#, fuzzy
-#| msgid "Both Lazarus / LCL and Delphi"
-msgid "Lazarus for Windows only"
-msgstr "Für Lazarus/LCL und Delphi"
-
-#: lazarusidestrconsts.lisconverttarget4
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "Lazarus und Delphi mit derselben DFM-Datei"
-
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetlaz
+#, fuzzy
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
+msgid "Lazarus"
+msgstr "Lazarus/LCLs"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+#, fuzzy
+#| msgid "Lazarus / LCL for Windows only"
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
+msgid "Lazarus and Delphi"
+msgstr "Lazarus/LCL (Windows-spezifisch)"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
+msgid "Lazarus and Delphi with same DFM file"
+msgstr "Lazarus und Delphi mit derselben DFM-Datei"
+
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+#, fuzzy
+#| msgid "Both Lazarus / LCL and Delphi"
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
+msgstr "Für Lazarus/LCL und Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -9788,6 +9791,14 @@ msgstr "Auswahl sortieren ..."
 msgid "Step into"
 msgstr "Einen Schritt hinein"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr "Hinausgehen"
@@ -9795,6 +9806,14 @@ msgstr "Hinausgehen"
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Einen Schritt weiter"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"

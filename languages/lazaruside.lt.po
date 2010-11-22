@@ -5547,32 +5547,35 @@ msgstr "Konvertuoti projektų/paketų koduotę"
 msgid "Convert project or package"
 msgstr "Konvertuoti projektą ar paketą"
 
-#: lazarusidestrconsts.lisconverttarget1
-#, fuzzy
-#| msgid "Lazarus / LCL"
-msgctxt "lazarusidestrconsts.lisconverttarget1"
-msgid "Lazarus"
-msgstr "Lazarus/LCL"
-
-#: lazarusidestrconsts.lisconverttarget2
-#, fuzzy
-#| msgid "Lazarus / LCL for Windows only"
-msgid "Lazarus and Delphi"
-msgstr "Lazarus/LCL skirtas tik Windows"
-
-#: lazarusidestrconsts.lisconverttarget3
-#, fuzzy
-#| msgid "Both Lazarus / LCL and Delphi"
-msgid "Lazarus for Windows only"
-msgstr "Abu, Lazarus/LCL ir Delphi"
-
-#: lazarusidestrconsts.lisconverttarget4
-msgid "Lazarus and Delphi with same DFM file"
-msgstr ""
-
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetlaz
+#, fuzzy
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
+msgid "Lazarus"
+msgstr "Lazarus/LCL"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+#, fuzzy
+#| msgid "Lazarus / LCL for Windows only"
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
+msgid "Lazarus and Delphi"
+msgstr "Lazarus/LCL skirtas tik Windows"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
+msgid "Lazarus and Delphi with same DFM file"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+#, fuzzy
+#| msgid "Both Lazarus / LCL and Delphi"
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
+msgstr "Abu, Lazarus/LCL ir Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -9759,6 +9762,14 @@ msgstr "Rūšiuoti pažymėtą…"
 msgid "Step into"
 msgstr "Žengti gilyn"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr "Žengti laukan"
@@ -9766,6 +9777,14 @@ msgstr "Žengti laukan"
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Žengti virš"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"

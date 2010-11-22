@@ -5519,30 +5519,31 @@ msgstr "המר את קידוד הפרויקט/חבילה"
 msgid "Convert project or package"
 msgstr "המר פרויקט או חבילה"
 
-#: lazarusidestrconsts.lisconverttarget1
-#, fuzzy
-#| msgid "Lazarus / LCL"
-msgctxt "lazarusidestrconsts.lisconverttarget1"
-msgid "Lazarus"
-msgstr "לזארוס / LCL"
-
-#: lazarusidestrconsts.lisconverttarget2
-#| msgid "Lazarus / LCL for Windows only"
-msgid "Lazarus and Delphi"
-msgstr "לזארוס ודלפי"
-
-#: lazarusidestrconsts.lisconverttarget3
-#| msgid "Both Lazarus / LCL and Delphi"
-msgid "Lazarus for Windows only"
-msgstr "גם עבור חלונות בלבד"
-
-#: lazarusidestrconsts.lisconverttarget4
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "לזארוס ודלפי בעלי אותו קובץ DFM"
-
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "הממיר מוסיף הידור מותנה כדי לתמוך ביעדים שונים"
+
+#: lazarusidestrconsts.lisconverttargetlaz
+#, fuzzy
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttargetlaz"
+msgid "Lazarus"
+msgstr "לזארוס / LCL"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphi
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
+msgid "Lazarus and Delphi"
+msgstr "לזארוס ודלפי"
+
+#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
+msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
+msgid "Lazarus and Delphi with same DFM file"
+msgstr "לזארוס ודלפי בעלי אותו קובץ DFM"
+
+#: lazarusidestrconsts.lisconverttargetlazwinonly
+msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
+msgid "Lazarus for Windows only"
+msgstr "גם עבור חלונות בלבד"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -9725,6 +9726,14 @@ msgstr "סדר את הבחירה ..."
 msgid "Step into"
 msgstr "קפוץ לתוך"
 
+#: lazarusidestrconsts.lismenustepintocontext
+msgid "Step into (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstr
+msgid "Step into instruction"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
 msgstr "קפוץ החוצה"
@@ -9732,6 +9741,14 @@ msgstr "קפוץ החוצה"
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "קפוץ מעבר ל"
+
+#: lazarusidestrconsts.lismenustepovercontext
+msgid "Step over (Context)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstr
+msgid "Step over instruction"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"
