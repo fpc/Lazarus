@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-23 00:06+0300\n"
+"PO-Revision-Date: 2010-11-23 02:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5526,13 +5526,155 @@ msgstr "Добавление смещения к координатам видж
 msgid "Coordinate offsets"
 msgstr "Смещения координат"
 
+#: lazarusidestrconsts.lisconvdelphiaborted
+msgid "Aborted."
+msgstr "Прервано."
+
+#: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
+msgid "All sub-directories will be scanned for unit files"
+msgstr "Поиск файлов модулей будет производиться во всех подкаталогах"
+
+#: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
+msgid "At this point there should be no missing units!"
+msgstr "В данный момент не должно быть отсутствующих модулей!"
+
+#: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
+msgid "BeginCodeTools failed!"
+msgstr "Ошибка BeginCodeTools!"
+
+#: lazarusidestrconsts.lisconvdelphiconversionaborted
+msgid "Conversion Aborted."
+msgstr "Преобразование прервано."
+
+#: lazarusidestrconsts.lisconvdelphiconversionready
+msgid "Conversion Ready."
+msgstr "Преобразование завершено."
+
+#: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
+msgid "Convert Delphi package"
+msgstr "Преобразование пакета Delphi"
+
+#: lazarusidestrconsts.lisconvdelphiconvertdelphiproject
+msgid "Convert Delphi project"
+msgstr "Преобразование проекта Delphi"
+
+#: lazarusidestrconsts.lisconvdelphiconvertdelphiunit
+#| msgid "Convert Delphi Unit"
+msgid "Convert Delphi unit"
+msgstr "Преобразование модуля Delphi"
+
+#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
+msgid "Converting unit file %s"
+msgstr "Преобразование файла модуля %s"
+
+#: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
+msgid "*** Converting unit files... ***"
+msgstr "*** Преобразование файлов модулей... ***"
+
+#: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
+msgid "Delphi package main source (.dpk) file not found for package%s%s"
+msgstr "Главный файл пакета Delphi (.dpk) не найден для пакета%s%s"
+
+#: lazarusidestrconsts.lisconvdelphierror
+msgid "Error=\"%s\""
+msgstr "Ошибка=\"%s\""
+
+#: lazarusidestrconsts.lisconvdelphierrorcantfindunit
+msgid "%s(%s,%s) Error: Can't find unit %s"
+msgstr "%s(%s,%s) Ошибка: невозможно найти модуль %s"
+
+#: lazarusidestrconsts.lisconvdelphifailedconvertingunit
+msgid "Failed converting unit"
+msgstr "Не удалось преобразовать модуль"
+
+#: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
+msgid "Failed to convert unit%s%s%s"
+msgstr "Не удалось преобразовать модуль%s%s%s"
+
+#: lazarusidestrconsts.lisconvdelphifindallunitfiles
+msgid "*** Find all unit files... ***"
+msgstr "*** Поиск всех файлов модулей... ***"
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Функция Delphi"
 
+#: lazarusidestrconsts.lisconvdelphikeepboth
+msgid "Keep both"
+msgstr "Оставить оба"
+
+#: lazarusidestrconsts.lisconvdelphimissingincludefile
+msgid "%s(%s,%s) missing include file"
+msgstr "%s(%s,%s) отсутствует включаемый файл"
+
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
 msgstr "Имя Delphi"
+
+#: lazarusidestrconsts.lisconvdelphipackagenameexists
+msgid "Package name exists"
+msgstr "Имя пакета уже существует"
+
+#: lazarusidestrconsts.lisconvdelphiready
+msgid "Ready."
+msgstr "Готово."
+
+#: lazarusidestrconsts.lisconvdelphiremovedusedunitsinusessection
+msgid "Removed used unit \"%s\" in uses section."
+msgstr "Модуль \"%s\" удалён из выражения Uses."
+
+#: lazarusidestrconsts.lisconvdelphiremovefirst
+msgid "Remove first"
+msgstr "Удалить первый"
+
+#: lazarusidestrconsts.lisconvdelphiremovesecond
+msgid "Remove second"
+msgstr "Удалить второй"
+
+#: lazarusidestrconsts.lisconvdelphirepairingformfile
+msgid "Repairing form file %s"
+msgstr "Исправление файла формы %s"
+
+#: lazarusidestrconsts.lisconvdelphirepairingformfiles
+msgid "*** Repairing form files... ***"
+msgstr "*** Исправление файлов форм... ***"
+
+#: lazarusidestrconsts.lisconvdelphireplacedunitswithsinusessection
+msgid "Replaced unit \"%s\" with \"%s\" in uses section."
+msgstr "Модуль \"%s\" в выражении Uses заменён на \"%s\"."
+
+#: lazarusidestrconsts.lisconvdelphiskipthisfile
+msgid "Skip this file"
+msgstr "Пропустить этот файл"
+
+#: lazarusidestrconsts.lisconvdelphiskipthisstep
+msgid "Skip this step"
+msgstr "Пропустить этот шаг"
+
+#: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
+msgid "Some units of the Delphi package are missing:%s%s"
+msgstr "Некоторые модули пакета Delphi отсутствуют:%s%s"
+
+#: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
+msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
+msgid "There are two units with the same unitname:%s%s%s%s%s"
+msgstr "Имеется два модуля с одинаковыми именами:%s%s%s%s%s"
+
+#: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
+msgid "There is already a package with the name \"%s\"%sPlease close this package first."
+msgstr "Пакет с именем \"%s\" уже имеется.%sСначала закройте его."
+
+#: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
+msgid "Unitname exists twice"
+msgstr "Имя модуля повторяется"
+
+#: lazarusidestrconsts.lisconvdelphiunitsnotfound
+msgid "Units not found"
+msgstr "Модули не найдены"
+
+#: lazarusidestrconsts.lisconvdelphiunitstoreplacein
+msgid "Units to replace in %s"
+msgstr "Модули для замены в %s"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -10348,11 +10490,11 @@ msgstr "Не найдено строковой константы"
 
 #: lazarusidestrconsts.lisnotadelphiproject
 msgid "Not a Delphi project"
-msgstr "Не проект Delphi"
+msgstr "Файл не является проектом Delphi"
 
 #: lazarusidestrconsts.lisnotadelphiunit
 msgid "Not a Delphi unit"
-msgstr "Не модуль Delphi"
+msgstr "Файл не является модулем Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13253,11 +13395,11 @@ msgstr "Файл %s%s%s является символической ссылко
 
 #: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
 msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "Файл %s%s%s не проект Delphi (.dpr)"
+msgstr "Файл %s%s%s не является проектом Delphi (.dpr)"
 
 #: lazarusidestrconsts.listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
-msgstr "Файл %s%s%s - не модуль Delphi."
+msgstr "Файл %s%s%s не является модулем Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
