@@ -2176,15 +2176,14 @@ end;
 
 procedure TDebugManager.UpdateButtonsAndMenuItems;
 var
-  DebuggerInvalid: boolean;
+  DebuggerIsValid: boolean;
   CanRun: Boolean;
   SrcEdit: TSourceEditorInterface;
   AnUnitInfo: TUnitInfo;
 begin
-  if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting)
-  then exit;
+  if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting) then exit;
 
-  DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
+  DebuggerIsValid:=(FDebugger<>nil) and (MainIDE.ToolStatus=itDebugger);
   MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
@@ -2195,40 +2194,50 @@ begin
                  (Project1.RunParameterOptions.HostApplicationFilename<>''))
                and (pfRunnable in Project1.Flags)
               );
-    RunSpeedButton.Enabled := CanRun and (DebuggerInvalid
-            or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
+    // Run
+    RunSpeedButton.Enabled := CanRun {and DebuggerIsValid
+            and ((dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle))};
     itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
-    PauseSpeedButton.Enabled := CanRun
-            and (not DebuggerInvalid) and (dcPause in FDebugger.Commands);
+    // Pause
+    PauseSpeedButton.Enabled := CanRun and DebuggerIsValid
+            and (dcPause in FDebugger.Commands);
     itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
-    itmRunMenuShowExecutionPoint.Enabled := CanRun
-            and (not DebuggerInvalid) and (FDebugger.State = dsPause);
-    StepIntoSpeedButton.Enabled := CanRun and (DebuggerInvalid
+    // Show execution point
+    itmRunMenuShowExecutionPoint.Enabled := CanRun and DebuggerIsValid
+            and (FDebugger.State = dsPause);
+    // Step into
+    StepIntoSpeedButton.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
-    StepOverSpeedButton.Enabled := CanRun and (DebuggerInvalid or
-              (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
+    // Step over
+    StepOverSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+            or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
-    StepOutSpeedButton.Enabled := CanRun and (DebuggerInvalid or
-              (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
+    // Step out
+    StepOutSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+            or (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
-
-    itmRunMenuRunToCursor.Enabled := CanRun
-            and (DebuggerInvalid or (dcRunTo in FDebugger.Commands));
-    itmRunMenuStop.Enabled := CanRun and not DebuggerInvalid;
+    // Run to cursor
+    itmRunMenuRunToCursor.Enabled := CanRun and (not DebuggerIsValid
+            or (dcRunTo in FDebugger.Commands));
+    // Stop
+    itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
     StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
-
-    itmRunMenuEvaluate.Enabled := CanRun and (not DebuggerInvalid)
-                              and (dcEvaluate in FDebugger.Commands);
-    SrcEditMenuEvaluateModify.Enabled := CanRun and (not DebuggerInvalid)
-                              and (dcEvaluate in FDebugger.Commands);
-    SrcEditMenuInspect.Enabled := CanRun and (not DebuggerInvalid)
-                              and (dcEvaluate in FDebugger.Commands);
+    // Evaluate
+    itmRunMenuEvaluate.Enabled := CanRun and DebuggerIsValid
+            and (dcEvaluate in FDebugger.Commands);
+    // Evaluate / modify
+    SrcEditMenuEvaluateModify.Enabled := CanRun and DebuggerIsValid
+            and (dcEvaluate in FDebugger.Commands);
+    // Inspect
+    SrcEditMenuInspect.Enabled := CanRun and DebuggerIsValid
+            and (dcEvaluate in FDebugger.Commands);
+    // Add watch
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
 
     // menu view
-    itmViewRegisters.Enabled := (not DebuggerInvalid);
-    itmViewAssembler.Enabled := (not DebuggerInvalid);
+    itmViewRegisters.Enabled := DebuggerIsValid;
+    itmViewAssembler.Enabled := DebuggerIsValid;
   end;
 end;
 
