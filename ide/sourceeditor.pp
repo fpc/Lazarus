@@ -546,7 +546,6 @@ type
     SrcPopUpMenu: TPopupMenu;
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
-    procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
@@ -555,9 +554,6 @@ type
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
     procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
     procedure FindOverloadsMenuItemClick(Sender: TObject);
-    procedure RunToClicked(Sender: TObject);
-    procedure ViewCallStackClick(Sender: TObject);
-    procedure EditorPropertiesClicked(Sender: TObject);
     procedure LineEndingClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
@@ -599,7 +595,6 @@ type
     FUpdateTabAndPageTimer: TTimer;
     // PopupMenu
     procedure BuildPopupMenu;
-    procedure AssignPopupMenu;
     //forwarders to FNoteBook
     function GetNoteBookPage(Index: Integer): TTabSheet;
     function GetNotebookPages: TStrings;
@@ -1029,6 +1024,8 @@ type
     procedure ToggleI18NForLFMClicked(Sender: TObject);
     procedure ShowUnitInfo(Sender: TObject);
     procedure CopyFilenameClicked(Sender: TObject);
+    procedure EncloseSelectionMenuItemClick(Sender: TObject);
+    procedure EditorPropertiesClicked(Sender: TObject);
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnClearBookmark: TPlaceBookMarkEvent;
@@ -1418,6 +1415,7 @@ begin
   {%endregion}
 
   {%region *** Debug Section ***}
+    // Commands will be assigned by DebugManager
     SrcEditMenuSectionDebug:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Debug section');
     // register the Debug submenu
     SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionDebug,
@@ -1426,7 +1424,7 @@ begin
 
       // register the Debug submenu items
       SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand
-          (AParent,'Toggle Breakpoint', uemToggleBreakpoint, nil, @ExecuteIdeMenuClick);
+          (AParent,'Toggle Breakpoint', uemToggleBreakpoint);
       SrcEditMenuEvaluateModify:=RegisterIDEMenuCommand
           (AParent,'Evaluate/Modify...', uemEvaluateModify, nil, nil, nil,'debugger_modify');
       SrcEditMenuEvaluateModify.Enabled:=False;
@@ -1442,29 +1440,30 @@ begin
   {%endregion}
 
   {%region *** Refactoring Section ***}
-  SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
-                                             'Refactoring',uemRefactor);
-  AParent:=SrcEditSubMenuRefactor;
-    SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(AParent,'CompleteCode',
-                                                    uemCompleteCode);
-    SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(AParent,
-                                        'EncloseSelection',uemEncloseSelection);
-    SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(AParent,
-                                        'RenameIdentifier',uemRenameIdentifier);
-    SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(AParent,
-                        'FindIdentifierReferences',uemFindIdentifierReferences);
-    SrcEditMenuExtractProc:=RegisterIDEMenuCommand(AParent,
-                                                 'ExtractProc',uemExtractProc);
-    SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
-                                        'InvertAssignment',uemInvertAssignment);
-    SrcEditMenuShowAbstractMethods:=RegisterIDEMenuCommand(AParent,
-                               'ShowAbstractMethods',srkmecShowAbstractMethods);
-    SrcEditMenuShowEmptyMethods:=RegisterIDEMenuCommand(AParent,
-                               'ShowEmptyMethods', lisCodeHelpShowEmptyMethods);
-    SrcEditMenuShowUnusedUnits:=RegisterIDEMenuCommand(AParent,
-                               'ShowUnusedUnits', lisCodeHelpShowUnusedUnits);
-    SrcEditMenuFindOverloads:=RegisterIDEMenuCommand(AParent,
-                               'FindOverloads', srkmecFindOverloads);
+    SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
+                                               'Refactoring',uemRefactor);
+    AParent:=SrcEditSubMenuRefactor;
+
+    SrcEditMenuCompleteCode := RegisterIDEMenuCommand
+        (AParent,'CompleteCode', uemCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
+        (AParent, 'EncloseSelection',uemEncloseSelection);
+    SrcEditMenuRenameIdentifier := RegisterIDEMenuCommand
+        (AParent, 'RenameIdentifier',uemRenameIdentifier, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
+        (AParent, 'FindIdentifierReferences',uemFindIdentifierReferences, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuExtractProc := RegisterIDEMenuCommand
+        (AParent, 'ExtractProc',uemExtractProc, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
+        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuShowAbstractMethods := RegisterIDEMenuCommand
+        (AParent, 'ShowAbstractMethods',srkmecShowAbstractMethods, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuShowEmptyMethods := RegisterIDEMenuCommand
+        (AParent, 'ShowEmptyMethods', lisCodeHelpShowEmptyMethods, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuShowUnusedUnits := RegisterIDEMenuCommand
+        (AParent, 'ShowUnusedUnits', lisCodeHelpShowUnusedUnits, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuFindOverloads := RegisterIDEMenuCommand
+        (AParent, 'FindOverloads', srkmecFindOverloads, nil, @ExecuteIdeMenuClick);
    {$IFNDEF EnableFindOverloads}
    SrcEditMenuFindOverloads.Visible:=false;
    {$ENDIF}
@@ -5017,12 +5016,6 @@ Begin
   {$ENDIF}
 End;
 
-procedure TSourceNotebook.EditorPropertiesClicked(Sender: TObject);
-begin
-  if assigned(Manager) and Assigned(Manager.OnEditorPropertiesClicked) then
-    Manager.OnEditorPropertiesClicked(Sender);
-end;
-
 type
   TLineEnding = (leLF, leCR, leCRLF);
 const
@@ -5200,7 +5193,6 @@ begin
 
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
-  AssignPopupMenu; // Point all on click events to this SourceNoteBook
   try
     RemoveUserDefinedMenuItems;
     RemoveContextMenuItems;
@@ -5410,27 +5402,6 @@ begin
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceEditorMenuRoot.ConsistencyCheck;
   {$ENDIF}
-end;
-
-procedure TSourceNotebook.AssignPopupMenu;
-begin
-
-  SrcEditMenuRunToCursor.OnClick:=@RunToClicked;
-  SrcEditMenuViewCallStack.OnClick:=@ViewCallStackClick;
-
-  SrcEditMenuCompleteCode.OnClick:=@CompleteCodeMenuItemClick;
-  SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
-  SrcEditMenuExtractProc.OnClick:=@ExtractProcMenuItemClick;
-  SrcEditMenuInvertAssignment.OnClick:=@InvertAssignmentMenuItemClick;
-  SrcEditMenuFindIdentifierReferences.OnClick:=
-                                         @FindIdentifierReferencesMenuItemClick;
-  SrcEditMenuRenameIdentifier.OnClick:=@RenameIdentifierMenuItemClick;
-  SrcEditMenuShowAbstractMethods.OnClick:=@ShowAbstractMethodsMenuItemClick;
-  SrcEditMenuShowEmptyMethods.OnClick:=@ShowEmptyMethodsMenuItemClick;
-  SrcEditMenuShowUnusedUnits.OnClick:=@ShowUnusedUnitsMenuItemClick;
-  SrcEditMenuFindOverloads.OnClick:=@FindOverloadsMenuItemClick;
-
-  SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 end;
 
 function TSourceNotebook.GetNoteBookPage(Index: Integer): TTabSheet;
@@ -6412,15 +6383,6 @@ begin
                                ASrcEdit.EditorComponent.CaretY);
 end;
 
-procedure TSourceNotebook.EncloseSelectionMenuItemClick(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-begin
-  ASrcEdit:=GetActiveSE;
-  if ASrcEdit=nil then exit;
-  ASrcEdit.EncloseSelection;
-end;
-
 procedure TSourceNotebook.ExtractProcMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecExtractProc);
@@ -6464,15 +6426,6 @@ end;
 procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecFindOverloads);
-end;
-
-procedure TSourceNotebook.RunToClicked(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-begin
-  ASrcEdit:=GetActiveSE;
-  if ASrcEdit=nil then exit;
-  DebugBoss.DoRunToCursor;
 end;
 
 procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
@@ -8497,18 +8450,20 @@ begin
       .Command := GetCommand(ecToggleMarker0 + i);
   end;
 
+  {%region *** Refactoring Section ***}
+    SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
+    SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
+    SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
+    SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
+    SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
+    SrcEditMenuInvertAssignment.Command:=GetCommand(ecInvertAssignment);
+    SrcEditMenuShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
+    SrcEditMenuShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
+    SrcEditMenuShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
+    SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
+  {%endregion}
 
-  SrcEditMenuToggleBreakpoint.Command := GetCommand(ecToggleBreakPoint);
-
-
-  SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
-  SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
-  SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
-  SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
-  SrcEditMenuShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
-  SrcEditMenuShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
-  SrcEditMenuShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
-  SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
+  SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 
   DebugBoss.SetupSourceMenuShortCuts;
 end;
@@ -9015,6 +8970,21 @@ begin
   ActSE := GetActiveSE;
   if ActSE <> nil then
     Clipboard.AsText:=ActSE.FileName;
+end;
+
+procedure TSourceEditorManager.EncloseSelectionMenuItemClick(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  ASrcEdit:=ActiveEditor;
+  if ASrcEdit=nil then exit;
+  ASrcEdit.EncloseSelection;
+end;
+
+procedure TSourceEditorManager.EditorPropertiesClicked(Sender: TObject);
+begin
+  if Assigned(OnEditorPropertiesClicked) then
+    OnEditorPropertiesClicked(Sender);
 end;
 
 initialization
