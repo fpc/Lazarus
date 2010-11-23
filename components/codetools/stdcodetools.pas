@@ -55,6 +55,8 @@ uses
   CustomCodeTool, CodeToolsStructs;
 
 type
+  TUsesSection = (usMain, usImplementation);
+
   TOnFindDefinePropertyForContext = procedure(Sender: TObject;
     const ClassContext, AncestorClassContext: TFindContext;
     LFMNode: TLFMTreeNode;
@@ -88,9 +90,23 @@ type
           const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache;
           AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+    function AddUnitToSpecificUsesSection(UsesSection: TUsesSection;
+          const NewUnitName, NewUnitInFile: string;
+          SourceChangeCache: TSourceChangeCache;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function AddUnitToMainUsesSection(const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache;
           AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+    function AddUnitToImplementationUsesSection(const NewUnitName,
+          NewUnitInFile: string;
+          SourceChangeCache: TSourceChangeCache;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+    function UnitExistsInUsesSection(UsesSection: TUsesSection;
+          const UpperUnitName: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
+                                const UpperUnitName: string;
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
                                 const UpperUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
@@ -890,16 +906,36 @@ end;
 function TStandardCodeTool.AddUnitToMainUsesSection(const NewUnitName,
   NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
   AsLast: boolean; CheckSpecialUnits: boolean): boolean;
-var UsesNode, SectionNode: TCodeTreeNode;
+begin
+  Result:=AddUnitToSpecificUsesSection(usMain, NewUnitName, NewUnitInFile, SourceChangeCache,
+    AsLast, CheckSpecialUnits);
+end;
+
+function TStandardCodeTool.AddUnitToImplementationUsesSection(const NewUnitName,
+  NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
+  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
+begin
+  Result:=AddUnitToSpecificUsesSection(usImplementation, NewUnitName, NewUnitInFile, SourceChangeCache,
+    AsLast, CheckSpecialUnits);
+end;
+
+function TStandardCodeTool.AddUnitToSpecificUsesSection(UsesSection: TUsesSection;
+  const NewUnitName, NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
+  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
+var
+  UsesNode, SectionNode: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
   Junk     : TAtomPosition;
 begin
   Result:=false;
   if (NewUnitName='') or (length(NewUnitName)>255) then exit;
-  BuildTree(true);
+  BuildTree(UsesSection=usMain);
   SourceChangeCache.MainScanner:=Scanner;
-  UsesNode:=FindMainUsesSection;
+  case UsesSection Of
+    usMain: UsesNode:=FindMainUsesSection;
+    usImplementation: UsesNode:=FindImplementationUsesSection;
+  end;
   if UsesNode<>nil then begin
     // add unit to existing uses section
     if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
@@ -917,31 +953,48 @@ begin
     NewUsesTerm:='';
     if SectionNode.Desc=ctnUnit then begin
       // unit
-      SectionNode:=FindInterfaceNode;
-      if SectionNode=nil then begin
-        // unit without interface section
-        NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('interface')
-          +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+      case UsesSection of
+      usMain: SectionNode:=FindInterfaceNode;
+      usImplementation: SectionNode:=FindImplementationNode;
+      end;
+      if SectionNode<>nil then begin
+        // add uses to existing interface/implementation behind title and directives
+        if SectionNode.FirstChild<>nil then begin
+          // section not empty => add in front of first node
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
+            true);
+        end else begin
+          // section empty => add at end of interface section
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
+        end;
       end else begin
-        // insert behind interface keyword
-        MoveCursorToNodeStart(SectionNode);
-        ReadNextAtom;
-        InsertPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,false);
+        // section is missing => add it
+        SectionNode:=Tree.Root;
+        case UsesSection of
+        usMain: NewUsesTerm:='interface';
+        usImplementation: NewUsesTerm:='implementation';
+        end;
+        NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(NewUsesTerm)
+                    +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+        if SectionNode.FirstChild<>nil then begin
+          // unit not empty => add in front of first node
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
+            true);
+        end else begin
+          // unit empty => add at end
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
+        end;
       end;
     end;
     if InsertPos<1 then begin
-      // insert after title and directives
+      // not a unit (i.e. program)
+      // => insert after title and directives
       if SectionNode.Next<>nil then begin
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.Next.StartPos,
           true);
       end else begin
-        MoveCursorToNodeStart(SectionNode);
-        ReadNextAtom; // read keyword
-        ReadNextAtom; // read name
-        ReadNextAtom; // read semicolon
-        if CurPos.Flag<>cafSemicolon then
-          RaiseCharExpectedButAtomFound(';');
-        InsertPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,true);
+        // program empty => add at end
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
       end;
     end;
     NewUsesTerm:=NewUsesTerm
@@ -956,6 +1009,53 @@ begin
     if not SourceChangeCache.Apply then exit;
   end;
   Result:=true;
+end;
+
+function TStandardCodeTool.UnitExistsInUsesSection(UsesSection: TUsesSection;
+  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  UsesNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if (UpperUnitName='') or (length(UpperUnitName)>255) then
+    exit;
+  BuildTree(UsesSection=usMain);
+  SourceChangeCache.MainScanner:=Scanner;
+  case UsesSection Of
+    usMain: UsesNode:=FindMainUsesSection;
+    usImplementation: UsesNode:=FindImplementationUsesSection;
+  end;
+  Result:=UnitExistsInUsesSection(UsesNode,UpperUnitName,SourceChangeCache);
+end;
+
+function TStandardCodeTool.UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
+  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  UnitCount: integer;
+begin
+  Result:=false;
+  if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255) then
+    exit;
+  MoveCursorToNodeStart(UsesNode);
+  ReadNextAtom; // read 'uses'
+  UnitCount:=0;
+  repeat
+    ReadNextAtom; // read name
+    if not AtomIsIdentifier(false) then exit;
+    inc(UnitCount);
+    if UpAtomIs(UpperUnitName) then begin
+      // unit found
+      Result:=true;
+      exit;
+    end;
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      ReadNextAtom;
+    end;
+    if AtomIsChar(';') then break;
+    if not AtomIsChar(',') then break;
+  until (CurPos.StartPos>UsesNode.EndPos) or (CurPos.StartPos>SrcLen);
 end;
 
 function TStandardCodeTool.RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
