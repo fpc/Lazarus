@@ -1,9 +1,6 @@
 {%MainUnit ../printersdlgs.pp}
 
 
-const
-  SExecute = 'Execute';
-  
 { TPageSetupDialog }
 
 function TPageSetupDialog.Execute: Boolean;
