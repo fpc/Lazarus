@@ -257,6 +257,7 @@ function DbgS(const p: pointer): string; overload;
 function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
 function DbgS(const b: boolean): string; overload;
 function DbgS(const s: TComponentState): string; overload;
+function DbgS(const m: TMethod): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
@@ -2548,6 +2549,19 @@ begin
   if csInline in s then Add('csInline');
   if csDesignInstance in s then Add('csDesignInstance');
   Result:='['+Result+']';
+end;
+
+function DbgS(const m: TMethod): string;
+var
+  o: TObject;
+  aMethodName: ShortString;
+begin
+  o:=TObject(m.Data);
+  Result:=dbgsname(o)+'.'+dbgs(m.Code);
+  if (o<>nil) and (m.Code<>nil) then begin
+    aMethodName:=o.MethodName(m.Code);
+    Result:=Result+'='''+aMethodName+'''';
+  end;
 end;
 
 function DbgSName(const p: TObject): string;
