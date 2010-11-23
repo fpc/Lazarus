@@ -1231,8 +1231,7 @@ begin
   SetBounds(LCLObject.BoundsRect);
   SetText(AParams.Caption);
   //DebugLn('TCarbonWindow.CreateWidget succeeds');
-  if LCLObject.Color <> clDefault then;
-    SetColor(LCLObject.Color);
+  SetColor(LCLObject.Color);
 
   MinSize.width := LCLObject.Constraints.EffectiveMinWidth;
   MinSize.height := LCLObject.Constraints.EffectiveMinHeight;
