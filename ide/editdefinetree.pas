@@ -50,10 +50,12 @@ function CreateUseDefaultsFlagTemplate: TDefineTemplate;
 procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate);
 
 // FPC sources
+function CreateFPCSourceTemplate(Config: TFPCUnitSetCache;
+                                 Owner: TObject): TDefineTemplate; overload;
 function CreateFPCSourceTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
                       DefaultTargetOS, DefaultProcessorName: string;
                       UnitLinkListValid: boolean; var UnitLinkList: string;
-                      Owner: TObject): TDefineTemplate;
+                      Owner: TObject): TDefineTemplate; overload;
 function CreateLazarusSourceTemplate(
                       const LazarusSrcDir, WidgetType, ExtraOptions: string;
                       Owner: TObject): TDefineTemplate;
@@ -121,6 +123,13 @@ begin
     Result:=nil
   else
     Result:=PkgTempl.FindChildByName(PkgID);
+end;
+
+function CreateFPCSourceTemplate(Config: TFPCUnitSetCache; Owner: TObject
+  ): TDefineTemplate;
+begin
+  Result:=CreateFPCSrcTemplate(Config,Owner);
+  DisableDefaultsInDirectories(Result);
 end;
 
 function CreateFPCSourceTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,

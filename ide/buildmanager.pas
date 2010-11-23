@@ -673,7 +673,7 @@ begin
   AddTemplate(ADefTempl,false,
            'NOTE: Could not create Define Template for Free Pascal Compiler');
   // create template for FPC source directory
-  ADefTempl:=CreateFPCSrcTemplate(UnitSetCache,nil);
+  ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
   AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
 
   // create compiler macros for the lazarus sources
