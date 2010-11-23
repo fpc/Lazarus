@@ -1004,6 +1004,7 @@ type
 
     // Multi window
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
+    FCtrlMiddleTabClickClosesOthers: Boolean;
 
     FDefaultValues: TEditorOptions;
 
@@ -1180,6 +1181,9 @@ type
     property PasStringKeywordMode: TSynPasStringMode
              read FPasStringKeywordMode write FPasStringKeywordMode default spsmDefault;
 
+    // Multi window
+    property CtrlMiddleTabClickClosesOthers: Boolean
+      read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers default True;
   end;
 
 const
@@ -3295,6 +3299,8 @@ begin
   FPasExtendedKeywordsMode := False;
   FPasStringKeywordMode := spsmDefault;
 
+  // Multi window
+  FCtrlMiddleTabClickClosesOthers := True;
 end;
 
 procedure TEditorOptions.Load;

@@ -716,8 +716,7 @@ type
     procedure EndAutoFocusLock;
 
   protected
-    procedure CloseTabClicked(Sender: TObject);
-    procedure CloseClicked(Sender: TObject);
+    procedure CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
@@ -4994,7 +4993,6 @@ Begin
       Options:=Options-[nboShowCloseButtons];
     TabPosition := EditorOpts.TabPosition;
     OnPageChanged := @NotebookPageChanged;
-    OnCloseTabClicked:=@CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
     TabDragMode := dmAutomatic;
     OnTabDragOverEx  := @NotebookCanDragTabMove;
@@ -6546,10 +6544,10 @@ begin
   Result:=FSourceEditorList.Count;
 end;
 
-Procedure TSourceNotebook.CloseClicked(Sender: TObject);
+Procedure TSourceNotebook.CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
 Begin
   if assigned(Manager) and Assigned(Manager.OnCloseClicked) then
-    Manager.OnCloseClicked(Sender, False);
+    Manager.OnCloseClicked(Sender, CloseOthers);
 end;
 
 procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
@@ -6738,7 +6736,8 @@ begin
   if (Button = mbMiddle) then begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
-      CloseClicked(NoteBookPage[TabIndex])
+      CloseClicked(NoteBookPage[TabIndex],
+                   (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
   end;
 end;
 
@@ -7380,13 +7379,6 @@ var
 begin
   for i := 0 to EditorCount - 1 do
     Editors[i].ClearExecutionMarks;
-end;
-
-procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
-begin
-  FPageIndex := PageIndex;
-  if assigned(manager) and Assigned(Manager.OnCloseClicked) then
-    Manager.OnCloseClicked(Sender, GetKeyState(VK_CONTROL) < 0);
 end;
 
 { TSynEditPlugin1 }

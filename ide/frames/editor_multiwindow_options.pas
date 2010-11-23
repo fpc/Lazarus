@@ -37,6 +37,7 @@ type
     Bevel1a: TBevel;
     Bevel2a: TBevel;
     Bevel2: TBevel;
+    chkCtrlMiddleCloseOthers: TCheckBox;
     chkUseTabHistory: TCheckBox;
     chkShowCloseBtn: TCheckBox;
     chkShowNumbers: TCheckBox;
@@ -131,6 +132,7 @@ begin
   chkShowNumbers.Caption := dlgTabNumbersNotebook;
   chkShowCloseBtn.Caption := dlgCloseButtonsNotebook;
   chkUseTabHistory.Caption := dlgUseTabsHistory;
+  chkCtrlMiddleCloseOthers.Caption := dlgCtrlMiddleTabCloseOtherPages;
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(
@@ -143,6 +145,7 @@ begin
     chkShowNumbers.Checked := ShowTabNumbers;
     chkShowCloseBtn.Checked := ShowTabCloseButtons;
     chkUseTabHistory.Checked := UseTabHistory;
+    chkCtrlMiddleCloseOthers.Checked := CtrlMiddleTabClickClosesOthers;
   end;
   FMultiWinEditAccessOrder.Assign(TEditorOptions(AOptions).MultiWinEditAccessOrder);
 
@@ -167,6 +170,7 @@ begin
     ShowTabNumbers := chkShowNumbers.Checked;
     ShowTabCloseButtons := chkShowCloseBtn.Checked;
     UseTabHistory := chkUseTabHistory.Checked;
+    CtrlMiddleTabClickClosesOthers := chkCtrlMiddleCloseOthers.Checked;
   end;
 end;
 
