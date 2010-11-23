@@ -112,6 +112,7 @@ begin
   RFForm:=TReplaceFuncsForm.Create(nil);
   try
     RFForm.Caption:=aTitle;
+    RFForm.CategoriesLabel.Caption:=lisConvDelphiCategories;
     RFForm.Grid.Columns[0].Title.Caption:=lisCEOModeCategory;
     RFForm.Grid.Columns[1].Title.Caption:=lisConvDelphiFunc;
     RFForm.Grid.Columns[2].Title.Caption:=lisReplacement;

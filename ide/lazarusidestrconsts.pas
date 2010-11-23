@@ -489,6 +489,7 @@ resourcestring
   lisConvCoordOffs = 'Coordinate offsets';
   lisConvCoordHint = 'An offset is added to Top coordinate of controls inside visual containers';
   lisConvFuncsToReplace = 'Functions / procedures to replace';
+  lisConvDelphiCategories = 'Categories:';
   lisConvFuncReplacements = 'Function Replacements';
   lisConvFuncReplHint = 'Some Delphi functions can be replaced with LCL function';
   lisConvDelphiName = 'Delphi Name';

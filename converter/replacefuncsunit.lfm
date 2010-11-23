@@ -11,8 +11,8 @@ object ReplaceFuncsForm: TReplaceFuncsForm
   LCLVersion = '0.9.29'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 581
+    Height = 34
+    Top = 586
     Width = 916
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -32,7 +32,7 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 162
-    Height = 575
+    Height = 580
     Top = 0
     Width = 766
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -77,8 +77,8 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 544
-    Top = 31
+    Height = 553
+    Top = 27
     Width = 157
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
@@ -95,11 +95,11 @@ object ReplaceFuncsForm: TReplaceFuncsForm
   end
   object CategoriesLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 14
     Top = 8
-    Width = 149
-    Caption = 'Categories to convert :'
-    Font.Height = -13
+    Width = 110
+    BorderSpacing.Right = 6
+    Caption = 'Categories to convert:'
     ParentColor = False
     ParentFont = False
   end
