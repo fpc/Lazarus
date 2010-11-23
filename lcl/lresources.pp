@@ -3364,11 +3364,8 @@ begin
     ReverseBytes(@Result,10);
     {$ENDIF}
   {$ELSE}
-    {$IFDEF FPC_BIG_ENDIAN}
-      Result:=ReadLRSEndianLittleExtendedAsDouble(s);
-    {$ELSE}
-      Debugln('Reading of extended on little endian cpus without 80 bits extended is not yet implemented');
-    {$ENDIF}
+    // possible endian conversion is handled in ConvertLRSExtendedToDouble
+    Result:=ReadLRSEndianLittleExtendedAsDouble(s);
   {$ENDIF}
 end;
 
@@ -4389,21 +4386,23 @@ begin
 end;
 
 procedure TLRSObjectWriter.WriteExtendedContent(e: Extended);
-{$IFDEF FPC_BIG_ENDIAN}
+{$IFNDEF FPC_HAS_TYPE_EXTENDED}
 var
   LRSExtended: array[1..10] of byte;
 {$endif}
 begin
-  {$IFDEF FPC_BIG_ENDIAN}
-    {$IFDEF FPC_HAS_TYPE_EXTENDED}
+  {$IFDEF FPC_HAS_TYPE_EXTENDED}
+    {$IFDEF FPC_BIG_ENDIAN}
       ReverseBytes(@e,10);
-      Write(e,10);
-    {$ELSE}
-      ConvertEndianBigDoubleToLRSExtended(@e,@LRSExtended);
-      Write(LRSExtended,10);
     {$ENDIF}
+      Write(e,10);
   {$ELSE}
-  Write(e,10);
+    {$IFDEF FPC_BIG_ENDIAN}
+      ConvertEndianBigDoubleToLRSExtended(@e,@LRSExtended);
+    {$ELSE}
+      ConvertLEDoubleToLRSExtended(@e,@LRSExtended);
+    {$ENDIF}
+      Write(LRSExtended,10);
   {$ENDIF}
 end;
 
