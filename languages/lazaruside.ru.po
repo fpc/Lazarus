@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-23 02:32+0300\n"
+"PO-Revision-Date: 2010-11-23 03:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5541,6 +5541,10 @@ msgstr "В данный момент не должно быть отсутств
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
 msgstr "Ошибка BeginCodeTools!"
+
+#: lazarusidestrconsts.lisconvdelphicategories
+msgid "Categories:"
+msgstr "Категории:"
 
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."

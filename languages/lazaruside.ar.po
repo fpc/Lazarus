@@ -5485,6 +5485,10 @@ msgstr ""
 msgid "BeginCodeTools failed!"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphicategories
+msgid "Categories:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
