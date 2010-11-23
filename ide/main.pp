@@ -1357,7 +1357,6 @@ begin
   HelpBoss.ConnectMainBarEvents;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
   // setup the IDE components
-  LoadMenuShortCuts;
   SetupOutputFilter;
   MainBuildBoss.SetupCompilerInterface;
   SetupObjectInspector;
@@ -1365,6 +1364,8 @@ begin
   SetupSourceNotebook;
   SetupControlSelection;
   SetupTextConverters;
+  // all IDE objects created => connect the events between them
+  LoadMenuShortCuts;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
   // load installed packages
