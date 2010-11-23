@@ -260,6 +260,7 @@ Type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -490,6 +491,7 @@ Type
     property OnDragDrop;
     property OnDragOver;
 //    property OnDrawItem;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -892,6 +894,7 @@ Type
     property OnChange;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
