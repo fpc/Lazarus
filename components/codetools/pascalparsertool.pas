@@ -2547,7 +2547,7 @@ begin
   end;
   IsFunction:=UpAtomIs('FUNCTION');
   IsOperator:=UpAtomIs('OPERATOR');
-  ReadNextAtom;// read first atom of head (= name + parameterlist + resulttype;)
+  ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
   if not IsOperator then AtomIsIdentifier(true);
   if ChildCreated then begin
     // create node for procedure head
@@ -2556,7 +2556,8 @@ begin
     CurNode.SubDesc:=ctnsNeedJITParsing;
   end;
   ReadNextAtom;
-  if (CurSection<>ctnInterface) and (CurPos.Flag=cafPoint) then begin
+  if (CurSection<>ctnInterface) and (CurPos.Flag=cafPoint) and (not IsOperator)
+  then begin
     // read procedure name of a class method (the name after the . )
     ReadNextAtom;
     AtomIsIdentifier(true);
@@ -3269,6 +3270,19 @@ function TPascalParserTool.KeyWordFuncType: boolean;
     procedure c;
     type d=e;
 }
+
+  function IsTypeName: boolean;
+  begin
+    Result:=false;
+    if not AtomIsIdentifier(false) then exit;
+    if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) then begin
+      if UpAtomIs('PROPERTY') or UpAtomIs('OPERATOR') then
+        exit;
+    end;
+    //debugln(['IsTypeName ',GetAtom,' ',CompilerModeNames[Scanner.CompilerMode]]);
+    Result:=true;
+  end;
+
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
@@ -3330,10 +3344,7 @@ begin
       // close ctnGenericType
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
-    end else if AtomIsIdentifier(false)
-    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
-         or (not UpAtomIs('PROPERTY')))
-    then begin
+    end else if IsTypeName then begin
       CreateChildNode;
       CurNode.Desc:=ctnTypeDefinition;
       ReadEqualsType;
