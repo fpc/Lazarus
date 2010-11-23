@@ -46,7 +46,8 @@ uses
 
 type
 
-  TUsesSection=(usMain, usImplementation);
+  //defined in StdCodeTools
+  //TUsesSection=(usMain, usImplementation);
 
   { TConvDelphiCodeTool }
 
@@ -62,19 +63,33 @@ type
     fDfmDirectiveEnd: integer;
     fExistingUsesMain: TStringList;
     fExistingUsesImplementation: TStringList;
+    // List of Delphi only units
+    fDelphiOnlyMainUnits: TStringList;
+    fDelphiOnlyImplementationUnits: TStringList;
+    // List of LCL only units
+    fLCLOnlyMainUnits: TStringList;
+    fLCLOnlyImplementationUnits: TStringList;
+    // List of common units
+    fCommonMainUnits: TStringList;
+    fCommonImplementationUnits: TStringList;
     // List of units to remove.
-    fUnitsToRemove: TStringList;
+    //fUnitsToRemove: TStringList;
+    fMainUnitsToRemove: TStringList;
+    fImplementationUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
-    fUnitsToRename: TStringToStringTree;
+    //fUnitsToRename: TStringToStringTree;
+    fMainUnitsToRename: TStringToStringTree;
+    fImplementationUnitsToRename: TStringToStringTree;
     // List of units to be commented.
-    fUnitsToComment: TStringList;
+    //fUnitsToComment: TStringList;
+    fMainUnitsToComment: TStringList;
+    fImplementationUnitsToComment: TStringList;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
     // List of TFuncReplacement.
     fFuncsToReplace: TObjectList;
     fSettings: TConvertSettings;          // Conversion settings.
 
-    function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     procedure ConvAddDelphiAndLCLUnitsToUsesSection(AUsesSection: TUsesSection;
       DelphiOnlyUnits, LCLOnlyUnits: TStringList);
@@ -89,21 +104,37 @@ type
     destructor Destroy; override;
     function Convert(aIsConsoleApp: boolean): TModalResult;
     function FindApptypeConsole: boolean;
-    function RemoveUnits: boolean;
-    function RenameUnits: boolean;
+    function AddUnits(AMainUnitsToAdd, AImplementationUnitsToAdd: TStrings): boolean;
+    function RemoveUnits(AUnitsToRemove: TStrings): boolean;
+    function RenameUnits(AUnitsToRename: TStringToStringTree): boolean;
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
     function CheckTopOffsets(LFMBuf: TCodeBuffer; LFMTree: TLFMTree;
                VisOffsets: TVisualOffsets; ValueNodes: TObjectList): boolean;
+    function AddDelphiAndLCLSections: boolean;//should be private
+    procedure CommentUsesSection(AUsesSection: TUsesSection);//should be private
+    procedure UnCommentUsesSection(AUsesSection: TUsesSection);//should be private
+    function AddLCLUnitsToUsesSections(LCLMainUnits,
+      LCLImplementationUnits: TStringList): boolean;//should be private
   public
     property ExistingUsesMain: TStringList read fExistingUsesMain;
     property ExistingUsesImplementation: TStringList read fExistingUsesImplementation;
     property Ask: Boolean read fAsk write fAsk;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
-    property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
-    property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
-    property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
+    property DelphiOnlyMainUnits: TStringList read fDelphiOnlyMainUnits write fDelphiOnlyMainUnits;
+    property DelphiOnlyImplementationUnits: TStringList read fDelphiOnlyImplementationUnits write fDelphiOnlyImplementationUnits;
+    property LCLOnlyMainUnits: TStringList read fLCLOnlyMainUnits write fLCLOnlyMainUnits;
+    property LCLOnlyImplementationUnits: TStringList read fLCLOnlyImplementationUnits write fLCLOnlyImplementationUnits;
+    property CommonMainUnits: TStringList read fCommonMainUnits write fCommonMainUnits;
+    property CommonImplementationUnits: TStringList read fCommonImplementationUnits write fCommonImplementationUnits;
+
+    property MainUnitsToRemove: TStringList read fMainUnitsToRemove write fMainUnitsToRemove;
+    property ImplementationUnitsToRemove: TStringList read fImplementationUnitsToRemove write fImplementationUnitsToRemove;
+    property MainUnitsToRename: TStringToStringTree read fMainUnitsToRename write fMainUnitsToRename;
+    property ImplementationUnitsToRename: TStringToStringTree read fImplementationUnitsToRename write fImplementationUnitsToRename;
+    property MainUnitsToComment: TStringList read fMainUnitsToComment write fMainUnitsToComment;
+    property ImplementationUnitsToComment: TStringList read fImplementationUnitsToComment write fImplementationUnitsToComment;
     property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
@@ -120,9 +151,12 @@ begin
   // Default values for vars.
   fAsk:=true;
   fLowerCaseRes:=false;
-  fUnitsToRemove:=nil;            // These are set from outside.
-  fUnitsToComment:=nil;
-  fUnitsToRename:=nil;
+  fMainUnitsToRemove:=nil;            // These are set from outside.
+  fImplementationUnitsToRemove:=nil;
+  fMainUnitsToComment:=nil;
+  fImplementationUnitsToComment:=nil;
+  fMainUnitsToRename:=nil;
+  fImplementationUnitsToRename:=nil;
   fExistingUsesMain:=TStringList.Create;
   fExistingUsesMain.CaseSensitive:=false;
   fExistingUsesImplementation:=TStringList.Create;
@@ -197,8 +231,10 @@ begin
     end;
     if fSettings.Target=ctLazarus then begin
       // One way conversion -> remove and rename units.
-      if not RemoveUnits then exit;
-      if not RenameUnits then exit;
+      if not RemoveUnits(fMainUnitsToRemove) then exit;
+      if not RemoveUnits(fImplementationUnitsToRemove) then exit;
+      if not RenameUnits(fMainUnitsToRename) then exit;
+      if not RenameUnits(fImplementationUnitsToRename) then exit;
     end;
     if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
       // Support Delphi. Add IFDEF blocks for units.
@@ -233,6 +269,56 @@ begin
   end;
 end;
 
+procedure TConvDelphiCodeTool.CommentUsesSection(AUsesSection: TUsesSection);
+var
+  AUsesNode: TCodeTreeNode;
+  InsPos1, InsPos2: Integer;
+begin
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
+  fCodeTool.BuildTree(AUsesSection=usMain);
+  case AUsesSection Of
+    usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
+    usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
+  end;
+  if AUsesNode=nil then
+    exit;
+  InsPos1:=AUsesNode.StartPos;
+  fCodeTool.MoveCursorToUsesEnd(AUsesNode);
+  InsPos2:=fCodeTool.CurPos.EndPos;
+  //fSrcCache.ReplaceEx();
+  fCodeTool.CommentCode(InsPos1, InsPos2, fSrcCache, true);
+end;
+
+procedure TConvDelphiCodeTool.UnCommentUsesSection(AUsesSection: TUsesSection);
+var
+  AUsesNode: TCodeTreeNode;
+  InsPos1, InsPos2: Integer;
+begin
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
+  fCodeTool.BuildTree(AUsesSection=usMain);
+  case AUsesSection Of
+    usMain: AUsesNode:=fCodeTool.FindInterfaceNode;
+    usImplementation: AUsesNode:=fCodeTool.FindImplementationNode;
+  end;
+  if AUsesNode=nil then
+    exit;
+  case AUsesSection Of
+    usMain: fCodeTool.AddUnitToMainUsesSection('windows', '', fSrcCache, false);
+    usImplementation: ;//fCodeTool.AddUnitToImplementationUsesSection('consts', '', fSrcCache, false);
+  end;
+
+  fSrcCache.Apply;
+  fCodeTool.MoveCursorToNodeStart(AUsesNode);
+  //while not fCodeTool.AtomIs('end') do begin
+  //  fCodeTool.ReadNextAtom;
+  //end;
+  //
+  //InsPos1:=AUsesNode.StartPos;
+  //fCodeTool.MoveCursorToUsesEnd(AUsesNode);
+  //InsPos2:=fCodeTool.CurPos.EndPos;
+  //fCodeTool.CommentCode(InsPos1, InsPos2, fSrcCache, true);
+end;
+
 procedure TConvDelphiCodeTool.ConvAddDelphiAndLCLUnitsToUsesSection(
   AUsesSection: TUsesSection; DelphiOnlyUnits, LCLOnlyUnits: TStringList);
 var
@@ -255,9 +341,9 @@ begin
   LclOnlyUnitsStr:='';
   for i:=0 to LclOnlyUnits.Count-1 do begin
     if i<LclOnlyUnits.Count-1 then
-      LclOnlyUnitsStr:=LclOnlyUnitsStr+DelphiOnlyUnits[i]+', '
+      LclOnlyUnitsStr:=LclOnlyUnitsStr+LCLOnlyUnits[i]+', '
     else
-      LclOnlyUnitsStr:=LclOnlyUnitsStr+DelphiOnlyUnits[i];
+      LclOnlyUnitsStr:=LclOnlyUnitsStr+LCLOnlyUnits[i];
   end;
   fSrcCache.MainScanner:=fCodeTool.Scanner;
   fCodeTool.BuildTree(AUsesSection=usMain);
@@ -308,6 +394,49 @@ begin
   if not fSrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
 end;
 
+function TConvDelphiCodeTool.AddLCLUnitsToUsesSections(LCLMainUnits, LCLImplementationUnits: TStringList): boolean;
+var
+  AUsesNode: TCodeTreeNode;
+  s: string;
+  InsPos, i: integer;
+begin
+  Result:=true;
+  if Assigned(LCLMainUnits) and (LCLMainUnits.Count>=1) then begin
+    s:='uses '+LCLMainUnits[0];
+    for i:=1 to LCLMainUnits.Count-1 do
+      s:=s+', '+LCLMainUnits[i];
+    s:=s+';';
+    fSrcCache.MainScanner:=fCodeTool.Scanner;
+    fCodeTool.BuildTree(true);
+    AUsesNode:=fCodeTool.FindInterfaceNode;
+    if Assigned(AUsesNode) then begin
+      InsPos:=AUsesNode.EndPos;
+      Result:=fSrcCache.Replace(gtNone,gtNone,InsPos,InsPos,s);
+    end
+    else
+      ShowMessage('Debug AddLCLUnitsToUsesSections: No InterfaceNode in this file! (will be fixed soon)');
+  end;
+  if not Result then
+    exit;
+  if Assigned(LCLImplementationUnits) and (LCLImplementationUnits.Count>=1) then begin
+    s:='uses '+LCLImplementationUnits[0];
+    for i:=1 to LCLImplementationUnits.Count-1 do
+      s:=s+', '+LCLImplementationUnits[i];
+    s:=s+';';
+    fSrcCache.MainScanner:=fCodeTool.Scanner;
+    fCodeTool.BuildTree(false);
+    AUsesNode:=fCodeTool.FindImplementationNode;
+    if Assigned(AUsesNode) then begin
+      InsPos:=AUsesNode.EndPos;
+      Result:=fSrcCache.Replace(gtNone,gtNone,InsPos,InsPos,s);
+    end
+    else
+      ShowMessage('Debug AddLCLUnitsToUsesSections: No ImplementationNode in this file!');
+  end;
+  if not Result then
+    exit;
+end;
+
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
 // Add unit names into conditional blocks for Delphi and Lazarus targets. If the name
 // would otherwise be deleted or commented out, now it is added to Delphi block.
@@ -315,7 +444,7 @@ var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
 
-  procedure ConvUsesUnits(AUsesSection: TUsesSection; AUsesUnits: TStringList);
+  procedure ConvUsesUnits(AUsesSection: TUsesSection; AUsesUnits, AUnitsToRemove, AUnitsToComment: TStringList; AUnitsToRename: TStringToStringTree);
   var
     i, ind: Integer;
     s: string;
@@ -333,16 +462,16 @@ var
     if AUsesNode=nil then
       exit;
     // Don't remove the unit names but add to Delphi block instead.
-    for i:=0 to fUnitsToRemove.Count-1 do begin
-      s:=fUnitsToRemove[i];
+    for i:=0 to AUnitsToRemove.Count-1 do begin
+      s:=AUnitsToRemove[i];
       if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then
         fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
         DelphiOnlyUnits.Append(s);
       end;
     end;
     // ... and don't comment the unit names either.
-    for i:=0 to fUnitsToComment.Count-1 do begin
-      s:=fUnitsToComment[i];
+    for i:=0 to AUnitsToComment.Count-1 do begin
+      s:=AUnitsToComment[i];
       if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then
         fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
         DelphiOnlyUnits.Append(s);
@@ -351,13 +480,13 @@ var
     RenameList:=TStringList.Create;
     try
       // Add replacement units to LCL block.
-      fUnitsToRename.GetNames(RenameList);
+      AUnitsToRename.GetNames(RenameList);
       for i:=0 to RenameList.Count-1 do begin
         s:=RenameList[i];
         if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then begin
           fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
           DelphiOnlyUnits.Append(s);
-          LCLOnlyUnits.Append(fUnitsToRename[s]);
+          LCLOnlyUnits.Append(AUnitsToRename[s]);
         end;
       end;
     finally
@@ -373,9 +502,9 @@ begin
   LclOnlyUnits:=TStringList.Create;
   try
     // Main uses section
-    ConvUsesUnits(usMain, fExistingUsesMain);
+    ConvUsesUnits(usMain, fExistingUsesMain, fMainUnitsToRemove, fMainUnitsToComment, fMainUnitsToRename);
     // Implementation uses section
-    ConvUsesUnits(usImplementation, fExistingUsesImplementation);
+    ConvUsesUnits(usImplementation, fExistingUsesImplementation, fImplementationUnitsToRemove, fImplementationUnitsToComment, fImplementationUnitsToRename);
     Result:=true;
   finally
     LclOnlyUnits.Free;
@@ -486,34 +615,46 @@ begin
   Result:=true;
 end;
 
-function TConvDelphiCodeTool.RemoveUnits: boolean;
+function TConvDelphiCodeTool.AddUnits(AMainUnitsToAdd, AImplementationUnitsToAdd: TStrings): boolean;
+var
+  i: Integer;
+begin
+  if AMainUnitsToAdd<>nil then;
+    for i:=0 to AMainUnitsToAdd.Count-1 do
+      fCodeTool.AddUnitToSpecificUsesSection(usMain, AMainUnitsToAdd[i], '', fSrcCache);
+  if AImplementationUnitsToAdd<>nil then;
+    for i:=0 to AImplementationUnitsToAdd.Count-1 do
+      fCodeTool.AddUnitToSpecificUsesSection(usImplementation, AImplementationUnitsToAdd[i], '', fSrcCache);
+end;
+
+function TConvDelphiCodeTool.RemoveUnits(AUnitsToRemove: TStrings): boolean;
 // Remove units
 var
   i: Integer;
 begin
   Result:=false;
-  if Assigned(fUnitsToRemove) then begin
-    for i:=0 to fUnitsToRemove.Count-1 do begin
+  if Assigned(AUnitsToRemove) then begin
+    for i:=0 to AUnitsToRemove.Count-1 do begin
       fSrcCache:=CodeToolBoss.SourceChangeCache;
       fSrcCache.MainScanner:=fCodeTool.Scanner;
-      if not fCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(fUnitsToRemove[i]),
+      if not fCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AUnitsToRemove[i]),
                                                      fSrcCache) then
         exit;
       if not fSrcCache.Apply then exit;
     end;
   end;
-  fUnitsToRemove.Clear;
+  //AUnitsToRemove.Clear;
   Result:=true;
 end;
 
-function TConvDelphiCodeTool.RenameUnits: boolean;
+function TConvDelphiCodeTool.RenameUnits(AUnitsToRename: TStringToStringTree): boolean;
 // Rename units
 begin
   Result:=false;
-  if Assigned(fUnitsToRename) then
-    if not fCodeTool.ReplaceUsedUnits(fUnitsToRename, fSrcCache) then
+  if Assigned(AUnitsToRename) then
+    if not fCodeTool.ReplaceUsedUnits(AUnitsToRename, fSrcCache) then
       exit;
-  fUnitsToRename.Clear;
+  AUnitsToRename.Clear;
   Result:=true;
 end;
 
@@ -521,8 +662,11 @@ function TConvDelphiCodeTool.CommentOutUnits: boolean;
 // Comment out missing units
 begin
   Result:=false;
-  if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
-    if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
+  if Assigned(fMainUnitsToComment) and (fMainUnitsToComment.Count>0) then
+    if not fCodeTool.CommentUnitsInUsesSections(fMainUnitsToComment, fSrcCache) then
+      exit;
+  if Assigned(fImplementationUnitsToComment) and (fImplementationUnitsToComment.Count>0) then
+    if not fCodeTool.CommentUnitsInUsesSections(fImplementationUnitsToComment, fSrcCache) then
       exit;
   Result:=true;
 end;

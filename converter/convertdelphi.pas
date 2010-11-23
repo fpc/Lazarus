@@ -91,13 +91,13 @@ type
     fLFMBuffer: TCodeBuffer;
     fFlags: TConvertUnitFlags;
     // Units not found in project dir or packages.
-    fMissingUnits: TStrings;
+    fMissingMainUnits, fMissingImplementationUnits: TStringList;
     // List of units to remove (or keep in IFDEF when Delphi is supported).
-    fUnitsToRemove: TStringList;
+    fMainUnitsToRemove, fImplementationUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
-    fUnitsToRename: TStringToStringTree;
+    fMainUnitsToRename, fImplementationUnitsToRename: TStringToStringTree;
     // Units to be commented later.
-    fUnitsToComment: TStringList;
+    fMainUnitsToComment, fImplementationUnitsToComment: TStringList;
 
     fSettings: TConvertSettings;
     function GetDfmFileName: string;
@@ -105,8 +105,8 @@ type
     function ConvertUnitFile: TModalResult;
     function ConvertFormFile: TModalResult;
     function MissingUnitToMsg(MissingUnit: string): string;
-    function CommentAutomatically: integer;
-    function AskUnitPathFromUser: TModalResult;
+    function CommentAutomatically(AMissingUnits: TStrings; AUnitsToComment: TStringList): integer;
+    function AskUnitPathFromUser(AMissingUnits: TStrings; AUnitsToComment: TStringList; AUnitsToRename: TStringToStringTree): TModalResult;
     function FixIncludeFiles: TModalResult;
     function FixMissingUnits: TModalResult;
   protected
@@ -557,9 +557,12 @@ var
   ConvTool: TConvDelphiCodeTool;
 begin
   Result:=mrOK;
-  fUnitsToRemove:=TStringList.Create;
-  fUnitsToRename:=TStringToStringTree.Create(false);
-  fUnitsToComment:=TStringList.Create;
+  fMainUnitsToRemove:=TStringList.Create;
+  fImplementationUnitsToRemove:=TStringList.Create;
+  fMainUnitsToRename:=TStringToStringTree.Create(false);
+  fImplementationUnitsToRename:=TStringToStringTree.Create(false);
+  fMainUnitsToComment:=TStringList.Create;
+  fImplementationUnitsToComment:=TStringList.Create;
   try
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingUnitFile, [
       fOrigUnitFilename]), '', -1);
@@ -624,17 +627,23 @@ begin
       ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
       ConvTool.HasFormFile:=DfmFilename<>'';
       ConvTool.Settings:=fSettings;
-      ConvTool.UnitsToRemove:=fUnitsToRemove;
-      ConvTool.UnitsToRename:=fUnitsToRename;
-      ConvTool.UnitsToComment:=fUnitsToComment;
+      ConvTool.MainUnitsToRemove:=fMainUnitsToRemove;
+      ConvTool.ImplementationUnitsToRemove:=fImplementationUnitsToRemove;
+      ConvTool.MainUnitsToRename:=fMainUnitsToRename;
+      ConvTool.ImplementationUnitsToRename:=fImplementationUnitsToRename;
+      ConvTool.MainUnitsToComment:=fMainUnitsToComment;
+      ConvTool.ImplementationUnitsToComment:=fImplementationUnitsToComment;
       Result:=ConvTool.Convert(ConsApp);
     finally
       ConvTool.Free;
     end;
   finally
-    fUnitsToComment.Free;
-    fUnitsToRename.Free;
-    fUnitsToRemove.Free;
+    fMainUnitsToComment.Free;
+    fImplementationUnitsToComment.Free;
+    fMainUnitsToRename.Free;
+    fImplementationUnitsToRename.Free;
+    fMainUnitsToRemove.Free;
+    fImplementationUnitsToRemove.Free;
   end;
 end;
 
@@ -690,24 +699,24 @@ begin
     , IntToStr(Col), MissingUnit]);
 end;
 
-function TConvertDelphiUnit.CommentAutomatically: integer;
+function TConvertDelphiUnit.CommentAutomatically(AMissingUnits: TStrings; AUnitsToComment: TStringList): integer;
 // Comment automatically unit names that were commented in other files.
 // Return the number of missing units still left.
 var
   i, x: Integer;
   s: string;
 begin
-  for i:=fMissingUnits.Count-1 downto 0 do begin
-    s:=fMissingUnits[i];
+  for i:=AMissingUnits.Count-1 downto 0 do begin
+    s:=AMissingUnits[i];
     if fOwnerConverter.fAllMissingUnits.Find(s, x) then begin
-      fUnitsToComment.Append(s);
-      fMissingUnits.Delete(i);
+      AUnitsToComment.Append(s);
+      AMissingUnits.Delete(i);
     end;
   end;
-  Result:=fMissingUnits.Count;
+  Result:=AMissingUnits.Count;
 end;
 
-function TConvertDelphiUnit.AskUnitPathFromUser: TModalResult;
+function TConvertDelphiUnit.AskUnitPathFromUser(AMissingUnits: TStrings; AUnitsToComment: TStringList; AUnitsToRename: TStringToStringTree): TModalResult;
 var
   TryAgain: Boolean;
   UnitDirDialog: TSelectDirectoryDialog;
@@ -715,15 +724,15 @@ begin
   // ask user what to do
   repeat
     TryAgain:=False;
-    Result:=AskMissingUnits(fMissingUnits, ExtractFileName(fLazUnitFilename),
+    Result:=AskMissingUnits(AMissingUnits, ExtractFileName(fLazUnitFilename),
                     fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm]);
     case Result of
       // mrOK means: comment out.
       mrOK: begin
         // These units will be commented automatically in this project/package.
         if Assigned(fOwnerConverter) then
-          fOwnerConverter.fAllMissingUnits.AddStrings(fMissingUnits);
-        fUnitsToComment.AddStrings(fMissingUnits);
+          fOwnerConverter.fAllMissingUnits.AddStrings(AMissingUnits);
+        AUnitsToComment.AddStrings(AMissingUnits);
       end;
       // mrYes means: Search for unit path.
       mrYes: begin
@@ -737,7 +746,7 @@ begin
               fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
               // Add the new path to project if missing units are found.
               fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
-              TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits, fUnitsToRename)>0;
+              TryAgain:=fOwnerConverter.DoMissingUnits(AMissingUnits, AUnitsToRename)>0;
             end;
           end
           else
@@ -791,22 +800,21 @@ end;
 function TConvertDelphiUnit.FixMissingUnits: TModalResult;
 var
   ConvTool: TConvDelphiCodeTool;
+  MapToEdit: TStringToStringTree;
+  UnitUpdater: TStringMapUpdater;
+  AUsedMainUnits, AUsedImplementationUnits: TStrings;
 
-  procedure RenameOrRemoveUnit(AOldName, ANewName: string);
+  procedure RenameOrRemoveUnit(AOldName, ANewName: string; AUnitsToRename: TStringToStringTree; AUnitsToRemove: TStringList);
   // Replace a unit name with a new name or remove it if there is no new name.
-  var
-    x: Integer;
   begin
-    if (ANewName<>'')
-    and (not ConvTool.ExistingUsesMain.Find(ANewName, x))
-    and (not ConvTool.ExistingUsesImplementation.Find(ANewName, x)) then begin
-      fUnitsToRename[AOldName]:=ANewName;
+    if ANewName<>'' then begin
+      AUnitsToRename[AOldName]:=ANewName;
       IDEMessagesWindow.AddMsg(Format(
         lisConvDelphiReplacedUnitSWithSInUsesSection, [AOldName, ANewName]), ''
           , -1);
     end
     else begin
-      fUnitsToRemove.Append(AOldName);
+      AUnitsToRemove.Append(AOldName);
       IDEMessagesWindow.AddMsg(Format(
           lisConvDelphiRemovedUsedUnitSInUsesSection, [AOldName]), '', -1);
     end;
@@ -818,46 +826,48 @@ var
     CTResult: Boolean;
     i: Integer;
     s: String;
+    AAllMissingUnits: TStrings;
   begin
     Result:=mrOk;
-    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
-    if not CTResult then begin
-      IDEMessagesWindow.AddMsg(Format(lisConvDelphiError, [CodeToolBoss.
-        ErrorMessage]), '', -1);
-      Result:=mrCancel;
-      exit;
-    end;
-    // Remove Windows specific units from the list if target is "Windows only".
-    if (fSettings.Target=ctLazarusWin) and Assigned(fMissingUnits) then begin
-      for i:=fMissingUnits.Count-1 downto 0 do begin
-        s:=LowerCase(fMissingUnits[i]);
-        if (s='windows') or (s='variants') or (s='shellapi') then
-          fMissingUnits.Delete(i);
+    fMissingMainUnits.Clear;
+    fMissingImplementationUnits.Clear;
+    AAllMissingUnits:=nil;// AAllMissingUnits will be created by CodeToolBoss.FindMissingUnits
+    try
+      CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,AAllMissingUnits,true);
+      if not CTResult then begin
+        IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+        Result:=mrCancel;
+        exit;
       end;
+      // Remove Windows specific units from the list if target is "Windows only".
+      if (fSettings.Target=ctLazarusWin) and Assigned(AAllMissingUnits) then begin
+        for i:=AAllMissingUnits.Count-1 downto 0 do begin
+          s:=LowerCase(AAllMissingUnits[i]);
+          if (s='windows') or (s='variants') or (s='shellapi') then
+            AAllMissingUnits.Delete(i);
+        end;
+      end;
+      // Split AAllMissingUnits into Main and Implementation
+      if Assigned(AAllMissingUnits) then begin
+        for i:=0 to AAllMissingUnits.Count-1 do begin
+          if AUsedMainUnits.IndexOf(AAllMissingUnits[i])<>-1 then
+            fMissingMainUnits.Add(AAllMissingUnits[i]);
+          if AUsedImplementationUnits.IndexOf(AAllMissingUnits[i])<>-1 then
+            fMissingImplementationUnits.Add(AAllMissingUnits[i]);
+        end;
+      end;
+    finally
+      AAllMissingUnits.Free;
     end;
   end;
 
-var
-  UnitUpdater: TStringMapUpdater;
-  MapToEdit: TStringToStringTree;
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-  i: Integer;
-  UnitN, s: string;
-begin
-  Result:=mrOk;
-  UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
-  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
-  if fSettings.UnitsReplaceMode=rlInteractive then
-    MapToEdit:=TStringToStringTree.Create(false);
-  fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
-  try
-    Result:=GetMissingUnits;
-    if (Result<>mrOK) or (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
-
-    // Find replacements for missing units from settings.
-    for i:=fMissingUnits.Count-1 downto 0 do begin
-      UnitN:=fMissingUnits[i];
+  procedure FindReplacementForMissingUnits(AMissingUnits: TStrings; AUnitsToRename: TStringToStringTree; AUnitsToRemove: TStringList);
+  var
+    i: integer;
+    UnitN, s: string;
+  begin
+    for i:=AMissingUnits.Count-1 downto 0 do begin
+      UnitN:=AMissingUnits[i];
       if UnitUpdater.FindReplacement(UnitN, s) then begin
         // Don't replace Windows unit with LCL units in a console application.
         if (LowerCase(UnitN)='windows') and
@@ -866,9 +876,45 @@ begin
         if fSettings.UnitsReplaceMode=rlInteractive then
           MapToEdit[UnitN]:=s                  // Add for interactive editing.
         else
-          RenameOrRemoveUnit(UnitN, s);        // Automatic rename / remove.
-      end;
+          if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
+            AUnitsToRename.Add(UnitN,s)
+          else
+            RenameOrRemoveUnit(UnitN, s, AUnitsToRename, AUnitsToRemove);        // Automatic rename / remove.
+      end
+      else
+        AUnitsToRemove.Add(UnitN);
     end;
+  end;
+
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  i: Integer;
+  UnitN, s: string;
+  LCLOnlyMainUnits, LCLOnlyImplementationUnits: TStringList;
+  RenameList: TStringList;
+begin
+  Result:=mrOk;
+  UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
+  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+  if fSettings.UnitsReplaceMode=rlInteractive then
+    MapToEdit:=TStringToStringTree.Create(false);
+  AUsedMainUnits:=nil;// AAllMissingUnits will be created by CodeToolBoss.FindMissingUnits
+  AUsedImplementationUnits:=nil;// AAllMissingUnits will be created by CodeToolBoss.FindMissingUnits
+  fMissingMainUnits:=TStringList.Create;
+  fMissingImplementationUnits:=TStringList.Create;
+  try
+    if not CodeToolBoss.FindUsedUnitNames(fPascalBuffer, AUsedMainUnits, AUsedImplementationUnits) then begin
+      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+      Result:=mrCancel;
+      exit;
+    end;
+    Result:=GetMissingUnits;
+    if (Result<>mrOK) or ((fMissingMainUnits=nil) or ((fMissingMainUnits.Count=0)) and ((fMissingImplementationUnits=nil) or (fMissingImplementationUnits.Count=0))) then exit;
+
+    // Find replacements for missing units from settings.
+    FindReplacementForMissingUnits(fMissingMainUnits, fMainUnitsToRename, fMainUnitsToRemove);
+    FindReplacementForMissingUnits(fMissingImplementationUnits, fImplementationUnitsToRename, fImplementationUnitsToRemove);
     if (fSettings.UnitsReplaceMode=rlInteractive) and (MapToEdit.Tree.Count>0) then begin
       // Edit, then remove or replace units.
       Result:=EditMap(MapToEdit, Format(lisConvDelphiUnitsToReplaceIn, [
@@ -878,38 +924,148 @@ begin
       Node:=MapToEdit.Tree.FindLowest;
       while Node<>nil do begin
         Item:=PStringToStringTreeItem(Node.Data);
-        RenameOrRemoveUnit(Item^.Name, Item^.Value);
+        UnitN:=Item^.Name;
+        s:=Item^.Value;
+        if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
+          if AUsedMainUnits.IndexOf(UnitN)<>-1 then
+            fMainUnitsToRename.Add(UnitN,s);
+          if AUsedImplementationUnits.IndexOf(UnitN)<>-1 then
+            fImplementationUnitsToRename.Add(UnitN,s);
+        end else
+        if AUsedMainUnits.IndexOf(UnitN)<>-1 then
+          RenameOrRemoveUnit(UnitN,s, fMainUnitsToRename, fMainUnitsToRemove);
+          if AUsedImplementationUnits.IndexOf(UnitN)<>-1 then
+            RenameOrRemoveUnit(UnitN,s, fImplementationUnitsToRename, fImplementationUnitsToRemove);
         Node:=MapToEdit.Tree.FindSuccessor(Node);
       end;
     end;
-    // Remove and rename missing units. More of them may be added later.
-    ConvTool.UnitsToRename:=fUnitsToRename;
-    ConvTool.RenameUnits;
-    ConvTool.UnitsToRemove:=fUnitsToRemove;
-    ConvTool.RemoveUnits;
-    // Find missing units again. Some replacements may not be valid.
-    fMissingUnits.Clear;
-    Result:=GetMissingUnits;
-    if (Result<>mrOK) or (fMissingUnits.Count=0) then exit;
+    // delete all uses sections
+      ConvTool.RemoveUnits(AUsedMainUnits);
+      ConvTool.RemoveUnits(AUsedImplementationUnits);
+    //// comment out all uses clauses
+    //ConvTool.CommentUsesSection(usMain);
+    //ConvTool.CommentUsesSection(usImplementation);
+    // Add FPC uses clauses only for further investigation
+    LCLOnlyMainUnits:=TStringList.Create;
+    LCLOnlyImplementationUnits:=TStringList.Create;
+    RenameList:=TStringList.Create;
+    try
 
-    if Assigned(fOwnerConverter) then begin
-      // Try to find from subdirectories scanned earlier.
-      if fOwnerConverter.DoMissingUnits(fMissingUnits, fUnitsToRename)=0 then exit;
-      // Comment out automatically units that were commented in other files.
-      if CommentAutomatically=0 then exit;
+      LCLOnlyMainUnits.Assign(AUsedMainUnits);
+      for i:=0 to fMainUnitsToRemove.Count-1 do
+        if LCLOnlyMainUnits.IndexOf(fMainUnitsToRemove[i])<>-1 then
+          LCLOnlyMainUnits.Delete(LCLOnlyMainUnits.IndexOf(fMainUnitsToRemove[i]));
+      for i:=0 to fMainUnitsToComment.Count-1 do
+        if LCLOnlyMainUnits.IndexOf(fMainUnitsToComment[i])<>-1 then
+          LCLOnlyMainUnits.Delete(LCLOnlyMainUnits.IndexOf(fMainUnitsToComment[i]));
+      fMainUnitsToRename.GetNames(RenameList);
+      for i:=0 to RenameList.Count-1 do begin
+        if LCLOnlyMainUnits.IndexOf(RenameList[i])<>-1 then
+          LCLOnlyMainUnits.Delete(LCLOnlyMainUnits.IndexOf(RenameList[i]));
+      end;
+       for i:=0 to RenameList.Count-1 do begin
+        if LCLOnlyMainUnits.IndexOf(fMainUnitsToRename[RenameList[i]])<>-1 then
+          LCLOnlyMainUnits.Add(fMainUnitsToRename[RenameList[i]]);
+      end;
+
+      LCLOnlyImplementationUnits.Assign(AUsedImplementationUnits);
+      for i:=0 to fImplementationUnitsToRemove.Count-1 do
+        if LCLOnlyImplementationUnits.IndexOf(fImplementationUnitsToRemove[i])<>-1 then
+          LCLOnlyImplementationUnits.Delete(LCLOnlyImplementationUnits.IndexOf(fImplementationUnitsToRemove[i]));
+      for i:=0 to fImplementationUnitsToComment.Count-1 do
+        if LCLOnlyImplementationUnits.IndexOf(fImplementationUnitsToComment[i])<>-1 then
+          LCLOnlyImplementationUnits.Delete(LCLOnlyImplementationUnits.IndexOf(fImplementationUnitsToComment[i]));
+      fImplementationUnitsToRename.GetNames(RenameList);
+      for i:=0 to RenameList.Count-1 do begin
+        if LCLOnlyImplementationUnits.IndexOf(RenameList[i])<>-1 then
+          LCLOnlyImplementationUnits.Delete(LCLOnlyImplementationUnits.IndexOf(RenameList[i]));
+      end;
+      for i:=0 to RenameList.Count-1 do begin
+        if LCLOnlyImplementationUnits.IndexOf(fImplementationUnitsToRename[RenameList[i]])<>-1 then
+          LCLOnlyImplementationUnits.Add(fImplementationUnitsToRename[RenameList[i]]);
+      end;
+      ConvTool.AddLCLUnitsToUsesSections(LCLOnlyMainUnits, LCLOnlyImplementationUnits);
+      // Remove and rename missing units. More of them may be added later.
+      //ConvTool.RenameUnits;
+      //ConvTool.DeleteUsesSection;
+      //ConvTool.RemoveUnits;
+
+      //ConvTool.CommonMainUnits.Assign(AUsedMainUnits);
+      //ConvTool.DelphiOnlyMainUnits.Clear;
+      //ConvTool.LCLOnlyMainUnits.Clear;
+      //for i:=0 to fMainUnitsToRemove.Count-1 do begin
+      //  ConvTool.DelphiOnlyMainUnits.Add(fMainUnitsToRemove[i]);
+      //  if ConvTool.CommonMainUnits.IndexOf(fMainUnitsToRemove[i])<>-1 then
+      //    ConvTool.CommonMainUnits.Delete(AUsedMainUnits.IndexOf(fMainUnitsToRemove[i]));
+      //end;
+      //for i:=0 to fMainUnitsToComment.Count-1 do begin
+      //  ConvTool.DelphiOnlyMainUnits.Add(fMainUnitsToComment[i]);
+      //  if AUsedMainUnits.IndexOf(fMainUnitsToComment[i])<>-1 then
+      //    AUsedMainUnits.Delete(AUsedMainUnits.IndexOf(fMainUnitsToComment[i]));
+      //end;
+      //for i:=0 to fMainUnitsToRename.Count-1 do begin
+      //  ConvTool.DelphiOnlyMainUnits.Add(fMainUnitsToRename[i]);
+      //  if AUsedMainUnits.IndexOf(fMainUnitsToRename[i])<>-1 then
+      //    AUsedMainUnits.Delete(AUsedMainUnits.IndexOf(fMainUnitsToRename[i]));
+      //end;
+      //ConvTool.CommonMainUnits;
+      //ConvTool.DelphiOnlyMainUnits
+
+      // Find missing units again. Some replacements may not be valid.
+      fMissingMainUnits.Clear;
+      fMissingImplementationUnits.Clear;
+      Result:=GetMissingUnits;
+      if (Result=mrOK) and ((fMissingMainUnits.Count<>0) or (fMissingImplementationUnits.Count<>0)) then begin
+         if Assigned(fOwnerConverter) then begin
+          // Try to find from subdirectories scanned earlier.
+          if fOwnerConverter.DoMissingUnits(fMissingMainUnits, fMainUnitsToRename)=0 then exit;
+          if fOwnerConverter.DoMissingUnits(fMissingImplementationUnits, fImplementationUnitsToRename)=0 then exit;
+          // Comment out automatically units that were commented in other files.
+          if CommentAutomatically(fMissingMainUnits, fMainUnitsToComment)=0 then exit;
+          if CommentAutomatically(fMissingImplementationUnits, fImplementationUnitsToComment)=0 then exit;
+        end;
+        // Interactive dialog for searching unit.
+        Result:=AskUnitPathFromUser(fMissingMainUnits, fMainUnitsToComment, fMainUnitsToRename);
+        if Result<>mrOK then exit;
+        Result:=AskUnitPathFromUser(fMissingImplementationUnits, fImplementationUnitsToComment, fImplementationUnitsToRename);
+        if Result<>mrOK then exit;
+      end;
+
+      // remove all uses section
+      ConvTool.RemoveUnits(LCLOnlyMainUnits);
+      ConvTool.RemoveUnits(LCLOnlyImplementationUnits);
+      //// uncomment old uses sections
+      //ConvTool.UnCommentUsesSection(usMain);
+      //ConvTool.UnCommentUsesSection(usImplementation);
+      //Add back original uses sections
+      ConvTool.AddUnits(AUsedMainUnits, AUsedImplementationUnits);
+
+      ConvTool.MainUnitsToRename:=fMainUnitsToRename;
+      ConvTool.ImplementationUnitsToRename:=fImplementationUnitsToRename;
+      ConvTool.MainUnitsToRemove:=fMainUnitsToRemove;
+      ConvTool.ImplementationUnitsToRemove:=fImplementationUnitsToRemove;
+      ConvTool.MainUnitsToComment:=fMainUnitsToComment;
+      ConvTool.ImplementationUnitsToComment:=fImplementationUnitsToComment;
+      ConvTool.AddDelphiAndLCLSections;
+    finally
+      LCLOnlyMainUnits.Free;
+      LCLOnlyImplementationUnits.Free;
+      RenameList.Free;
     end;
-    // Interactive dialog for searching unit.
-    Result:=AskUnitPathFromUser;
-    if Result<>mrOK then exit;
 
-    // add error messages, so the user can click on them
-    for i:=0 to fMissingUnits.Count-1 do
-      IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingUnits[i]),'',-1);
+// add error messages, so the user can click on them
+    for i:=0 to fMissingMainUnits.Count-1 do
+      IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingMainUnits[i]),'',-1);
+    for i:=0 to fMissingImplementationUnits.Count-1 do
+      IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingImplementationUnits[i]),'',-1);
     Application.ProcessMessages;
   finally
     if fSettings.UnitsReplaceMode=rlInteractive then
       MapToEdit.Free;
-    fMissingUnits.Free;
+    AUsedMainUnits.Free;
+    AUsedImplementationUnits.Free;
+    fMissingMainUnits.Free;
+    fMissingImplementationUnits.Free;
     ConvTool.Free;
     UnitUpdater.Free;
   end;
