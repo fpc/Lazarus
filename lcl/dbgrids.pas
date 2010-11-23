@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Math, FileUtil, DB,
   LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
-  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes;
+  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants;
 
 type
   TCustomDbGrid = class;
@@ -574,12 +574,6 @@ procedure Register;
 
 implementation
 
-type
-  TLookupListCracker = class(TObject)
-  private
-    FList: TList;
-  end;
-
 procedure Register;
 begin
   RegisterComponents('Data Controls',[TDBGrid]);
@@ -634,6 +628,38 @@ begin
     end; // if HasTitle ...
 
   end; // if (Field=nil) or (Field.DisplayWidth=0) ...
+end;
+
+var
+  LookupTmpSetActive: Boolean;
+  LookupBookMark: TBookmark;
+
+procedure LookupGetBookMark(ALookupField: TField);
+begin
+  LookupTmpSetActive := not ALookupField.LookupDataSet.Active;
+  if LookupTmpSetActive then
+    ALookupField.LookupDataSet.Active := True
+  else
+  begin
+    LookupBookMark := ALookupField.LookupDataSet.GetBookmark;
+    ALookupField.LookupDataSet.DisableControls;
+  end;
+end;
+
+procedure LookupGotoBookMark(ALookupField: TField);
+begin
+  if LookupTmpSetActive then
+  begin
+    ALookupField.LookupDataSet.Active := False;
+    LookupTmpSetActive := False;
+  end
+  else
+  try
+    ALookupField.LookupDataSet.GotoBookmark(LookupBookMark);
+    ALookupField.LookupDataSet.FreeBookmark(LookupBookMark);
+  finally
+    ALookupField.LookupDataSet.EnableControls;
+  end;
 end;
 
 { TCustomDBGrid }
@@ -1044,8 +1070,7 @@ end;
 procedure TCustomDBGrid.UpdateData;
 var
   selField,edField: TField;
-  i: Integer;
-  lst: TList;
+  LookupKeyValues: Variant;
 begin
   // get Editor text and update field content
   if not UpdatingData and (FEditingColumn>-1) and FDatalink.Editing then begin
@@ -1059,20 +1084,25 @@ begin
 
       StartUpdating;
       edField.Text := FTempText;
-      {$ifndef ver2_2_0}
-      if edField.Lookup and edField.LookupCache then begin
-        {$WARNINGS OFF}
-        lst := TLookupListCracker(edField.LookupList).FList;
-        {$WARNINGS ON}
-        for i := 0 to lst.Count - 1 do begin
-          with PLookupListRec(lst[i])^ do
-            if Value = FTempText then begin
-              edField.DataSet.FieldValues[edField.KeyFields] := Key;
-              break;
-             end;
+      if edField.Lookup then
+      begin
+        LookupKeyValues := Null;
+        if edField.LookupCache then
+          LookupKeyValues := edField.LookupList.FirstKeyByValue(FTempText)
+        else
+        begin
+          LookupGetBookMark(edField);
+          try
+            if edField.LookupDataSet.Locate(edField.LookupResultField,
+              VarArrayOf([FTempText]), []) then
+                LookupKeyValues :=
+                  edField.LookupDataSet.FieldValues[edField.LookupKeyFields];
+          finally
+            LookupGotoBookMark(edField);
+          end;
         end;
+        edField.DataSet.FieldValues[edField.KeyFields] := LookupKeyValues;
       end;
-      {$endif}
       EndUpdating;
 
       EditingColumn(FEditingColumn, False);
@@ -1752,11 +1782,11 @@ begin
           DrawButtonCell(aCol, aRow, aRect, aState);
 
         {$ifdef dbggridpaint}
-        DbgOut('Col=%d',[ACol]);
+        DbgOut(' Col=%d',[ACol]);
         {$endif}
         if F<>nil then begin
           {$ifdef dbgGridPaint}
-          DbgOut('Field=%s',[F.FieldName]);
+          DbgOut(' Field=%s',[F.FieldName]);
           {$endif}
           if F.dataType <> ftBlob then
             S := F.DisplayText
@@ -1765,7 +1795,7 @@ begin
         end else
           S := '';
         {$ifdef dbggridpaint}
-        DbgOut('Value=%s ',[S]);
+        DbgOut(' Value=%s ',[S]);
         {$endif}
         DrawCellText(aCol,aRow,aRect,aState,S);
       end;
@@ -2795,17 +2825,47 @@ end;
 function TCustomDBGrid.EditorIsReadOnly: boolean;
 var
   AField : TField;
+  FieldList: TList;
+  I: Integer;
 begin
   Result := inherited EditorIsReadOnly;
   if not Result then begin
+
     AField := GetFieldFromGridColumn(Col);
-    if assigned(AField) then
-      Result := not AField.CanModify;
-    if not result and not FDatalink.Editing then begin
-      Include(FGridStatus, gsStartEditing);
-      Result := not FDataLink.Edit;
-      Exclude(FGridStatus, gsStartEditing);
-    end;
+    if assigned(AField) then begin
+
+      // if field can't be modified, it's assumed readonly
+      result := not AField.CanModify;
+
+      // if field is readonly, check if it's a lookup field
+      if result and AField.Lookup then begin
+        FieldList := TList.Create;
+        try
+          AField.DataSet.GetFieldList(FieldList, AField.KeyFields);
+          // check if any keyfields are there
+          result := (FieldList.Count=0); // if not simply is still readonly
+                                         // if yes assumed keyfields are modifiable
+          for I := 0 to FieldList.Count-1 do
+            if not TField(FieldList[I]).CanModify then begin
+              result := true; // at least one keyfield is readonly
+              break;
+            end;
+        finally
+          FieldList.Free;
+        end;
+      end;
+
+      // if it's not readonly and is not already editing, start editing.
+      if not result and not FDatalink.Editing then begin
+        Include(FGridStatus, gsStartEditing);
+        Result := not FDataLink.Edit;
+        Exclude(FGridStatus, gsStartEditing);
+      end;
+
+    end
+    else
+      result := true;  // field is nil so it's readonly
+
     EditingColumn(Col, not Result);
   end;
 end;
@@ -3404,24 +3464,31 @@ begin
 end;
 
 function TColumn.GetPickList: TStrings;
-var
-  i: Integer;
-  lst: TList;
-  p: PLookupListRec;
 begin
   Result := inherited GetPickList;
-  {$ifndef ver2_2_0}
-  if (Field<>nil) and Field.Lookup and Field.LookupCache then begin
-    Result.Clear;
-    {$WARNINGS OFF}
-    lst := TLookupListCracker(Field.LookupList).FList;
-    {$WARNINGS ON}
-    for i := 0 to lst.Count - 1 do begin
-      p := PLookupListRec(lst.Items[i]);
-      Result.AddObject(p^.Value, TObject(p));
+  if (Field<>nil) and FField.Lookup then
+  begin
+    if FField.LookupCache then
+      FField.LookupList.ValuesToStrings(Result)
+    else
+    begin
+      Result.Clear;
+      LookupGetBookMark(FField);
+      try
+      with FField.LookupDataSet do
+      begin
+        First;
+        while not EOF do
+        begin
+          Result.Add(FieldbyName(FField.LookupResultField).AsString);
+          Next;
+        end;
+      end;
+      finally
+        LookupGotoBookMark(FField);
+      end;
     end;
   end;
-  {$endif}
 end;
 
 procedure TColumn.ApplyDisplayFormat;
