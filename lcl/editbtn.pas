@@ -166,6 +166,7 @@ type
     FHideDirectories: Boolean;
     FInitialDir: String;
     FOnAcceptFN: TAcceptFileNameEvent;
+    FOnFolderChange: TNotifyEvent;
     FFileNameChangeLock: Integer;
     procedure SetFileName(const AValue: String);
   protected
@@ -176,6 +177,7 @@ type
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
     procedure TextChanged; override;
+    procedure DoFolderChange(Sender:TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -185,6 +187,7 @@ type
     property FileName: String read FFileName write SetFileName;
     property InitialDir: String read FInitialDir write FInitialDir;
     property OnAcceptFileName: TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
+    property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property DialogKind: TDialogKind read FDialogKind write FDialogKind default dkOpen;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions;
@@ -840,6 +843,12 @@ begin
     end;
   end;
   inherited TextChanged; //do this _after_ we have updated FFileName
+end;
+
+procedure TFileNameEdit.DoFolderChange(Sender: TObject);
+begin
+  if Assigned(FOnFolderChange) then
+    FOnFolderChange(Self);
 end;
 
 { TDirectoryEdit }
