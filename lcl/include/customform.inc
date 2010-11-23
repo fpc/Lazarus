@@ -2258,6 +2258,9 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
 var
   ParentForm: TCustomForm;
+  {$IFDEF EnableActiveControl2}
+  CurControl: TWinControl;
+  {$ENDIF}
 begin
   LastFocusedControl := Control;
   Result := False;
@@ -2323,6 +2326,22 @@ begin
     try
       if not Screen.SetFocusedForm(Self) then
         Exit;
+      {$IFDEF EnableActiveControl2}
+      // update ActiveControls of all parent forms
+      CurControl := Control.Parent;
+      while CurControl <> nil do
+      begin
+        if CurControl is TCustomForm then begin
+          {$IFDEF VerboseFocus}
+          if TCustomForm(CurControl).FActiveControl<>Control then
+            debugln(['TCustomForm.SetFocusedControl Self=',DbgSName(Self),' SomeParent=',DbgSName(CurControl),' OldActiveControl=',DbgSName(TCustomForm(CurControl).FActiveControl),' New=',DbgSName(Control)]);
+          {$ENDIF}
+          TCustomForm(CurControl).FActiveControl := Control;
+          TCustomForm(CurControl).FreeNotification(Control);
+        end;
+        CurControl := CurControl.Parent;
+      end;
+      {$ENDIF}
       Result := SendEnterExitLoop;
     finally
       Control.ControlState := Control.ControlState - [csFocusing];
