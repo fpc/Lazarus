@@ -1196,6 +1196,7 @@ end;
 
 destructor TSynGutterLOvProviderBookmarks.Destroy;
 begin
+  TSynEditStringList(TextBuffer).RemoveHanlders(self);
   TSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
   inherited Destroy;
 end;
