@@ -1509,9 +1509,13 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
+    procedure AddButton(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean;
+      const AEscapeBtn: Boolean); overload;
     procedure AddButton(ABtnType: QMessageBoxStandardButton; ACaption: WideString;
-      AIsDefaultBtn: Boolean; Const AEscapeBtn: Boolean = False);
-    function exec: QMessageBoxStandardButton;
+      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False); overload;
+    procedure AddButton(AResult: Int64; ACaption: WideString;
+      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False);
+    function exec: Int64;
     property DetailText: WideString read getDetailText write setDetailText;
     property MessageStr: WideString read getMessageStr write setMessageStr;
     property MsgBoxType:QMessageBoxIcon read getMsgBoxType write setMsgBoxType;
@@ -4264,7 +4268,7 @@ begin
 end;
 
 {$IFDEF FPC_HAS_CONSTREF}
-function TQtWidget._Release: longint; stdcall; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+function TQtWidget._Release: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 {$ELSE}
 function TQtWidget._Release: longint; stdcall;
 {$ENDIF}
@@ -13485,38 +13489,53 @@ begin
     Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
-  ACaption: WideString; AIsDefaultBtn: Boolean; const AEscapeBtn: Boolean);
+procedure TQtMessageBox.AddButton(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
 var
-  ABtn: QPushButtonH;
-  Str: WideString;
   v: QVariantH;
 begin
-  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
-  Str := GetUTF8String(ACaption);
-  QAbstractButton_setText(ABtn, @Str);
-
-  if AIsDefaultBtn then
+  if ADefaultBtn then
     QMessageBox_setDefaultButton(QMessageBoxH(Widget), ABtn);
 
   if AEscapeBtn then
     QMessageBox_setEscapeButton(QMessageBoxH(Widget), ABtn);
 
-  v := QVariant_create(Int64(PtrUInt(ABtnType)));
+  v := QVariant_create(AResult);
   try
     QObject_setProperty(ABtn, 'lclmsgboxbutton', v);
   finally
     QVariant_destroy(v);
   end;
-
 end;
 
-function TQtMessageBox.exec: QMessageBoxStandardButton;
+procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
+  ACaption: WideString; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
+var
+  ABtn: QPushButtonH;
+  Str: WideString;
+begin
+  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
+  Str := GetUTF8String(ACaption);
+  QAbstractButton_setText(ABtn, @Str);
+  AddButton(ABtn, Int64(ABtnType), ADefaultBtn, AEscapeBtn);
+end;
+
+procedure TQtMessageBox.AddButton(AResult: Int64; ACaption: WideString; const ADefaultBtn: Boolean;
+  const AEscapeBtn: Boolean);
+var
+  ABtn: QPushButtonH;
+  Str: WideString;
+begin
+  Str := GetUTF8String(ACaption);
+  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
+  AddButton(ABtn, AResult, ADefaultBtn, AEscapeBtn);
+end;
+
+function TQtMessageBox.exec: Int64;
 var
   ABtn: QPushButtonH;
   v: QVariantH;
   ok: Boolean;
-  QResult: QMessageBoxStandardButton;
+  QResult: Int64;
 begin
   Result := QMessageBoxNoButton;
   {$IFDEF QTDIALOGS_USES_QT_LOOP}
@@ -13537,7 +13556,7 @@ begin
       QObject_property(ABtn, v, 'lclmsgboxbutton');
       if QVariant_isValid(v) then
       begin
-        QResult := QVariant_toULongLong(v, @Ok);
+        QResult := QVariant_toLongLong(v, @Ok);
         if Ok then
           Result := QResult;
       end;
