@@ -2441,6 +2441,7 @@ type
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
     function GetKeepCollapsedNodes: boolean;
+    function GetMultiSelect: Boolean;
     function GetReadOnly: boolean;
     function GetRightClickSelect: boolean;
     function GetRowSelect: boolean;
@@ -2466,6 +2467,7 @@ type
     procedure SetInsertMarkNode(const AValue: TTreeNode);
     procedure SetInsertMarkType(const AValue: TTreeViewInsertMarkType);
     procedure SetKeepCollapsedNodes(Value: Boolean);
+    procedure SetMultiSelect(const AValue: Boolean);
     procedure SetReadOnly(Value: Boolean);
     procedure SetRightClickSelect(Value: Boolean);
     procedure SetRowSelect(Value: Boolean);
@@ -2577,6 +2579,7 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property Indent: Integer read FIndent write SetIndent default 15;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
+    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
       read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
@@ -2702,6 +2705,7 @@ type
     property HotTrack;
     property Images;
     property Indent;
+    property MultiSelect;
     //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;

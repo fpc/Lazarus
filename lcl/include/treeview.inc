@@ -3260,6 +3260,17 @@ begin
   Items.KeepCollapsedNodes:=Value;
 end;
 
+procedure TCustomTreeView.SetMultiSelect(const AValue: Boolean);
+begin
+  if MultiSelect <> AValue then
+  begin
+    if AValue then
+      Include(FOptions,tvoAllowMultiselect)
+    else
+      Exclude(FOptions,tvoAllowMultiselect);
+  end;
+end;
+
 procedure TCustomTreeView.SetReadOnly(Value: Boolean);
 begin
   if ReadOnly = Value then exit;
@@ -3932,6 +3943,11 @@ end;
 function TCustomTreeView.GetKeepCollapsedNodes: boolean;
 begin
   Result:=(tvoKeepCollapsedNodes in FOptions);
+end;
+
+function TCustomTreeView.GetMultiSelect: Boolean;
+begin
+  Result := (tvoAllowMultiSelect in FOptions);
 end;
 
 function TCustomTreeView.GetReadOnly: boolean;
