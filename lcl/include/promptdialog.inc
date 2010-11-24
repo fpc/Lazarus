@@ -20,11 +20,9 @@ type
   { TPromptDialog }
 
   TPromptDialog = class(TForm)
-    procedure PromptDialogKeyDown(Sender: TObject; var Key: Word;
-          Shift: TShiftState);
+    procedure PromptDialogKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer
-      ): Integer;
+    function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer): Integer;
   public
     IsSmallDevice: Boolean;
   
@@ -46,61 +44,10 @@ type
     destructor Destroy; override;
   end;
 
-procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  OldFocusControl, NewFocusControl: TWinControl;
-  i: integer;
+procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if (Key=VK_Escape) then
+  if (Key = VK_Escape) then
     ModalResult := -1;
-
-  if (Key=VK_LEFT) or (Key=VK_RIGHT) then begin
-    // focus the next button to the left or right
-    
-    // search old focused button
-    OldFocusControl:=FindOwnerControl(LCLIntf.GetFocus);
-    if (OldFocusControl=nil) or (GetParentForm(OldFocusControl)<>Self)
-    or (not (OldFocusControl is TCustomButton)) then
-    begin
-      OldFocusControl:=nil;
-      for i:=0 to ComponentCount-1 do
-        if (Components[i] is TCustomButton)
-        and (TCustomButton(Components[i]).Default) then
-        begin
-          OldFocusControl:=TCustomButton(Components[i]);
-          break;
-        end;
-    end;
-    
-    // find next focused button
-    if (OldFocusControl<>nil) then begin
-      i:=ComponentCount-1;
-      while i>=0 do begin
-        if Components[i]=OldFocusControl then
-          break
-        else
-          dec(i);
-      end;
-      if i<0 then exit;
-      NewFocusControl:=nil;
-      repeat
-        if Key=VK_LEFT then begin
-          dec(i);
-          if i<0 then i:=ComponentCount-1;
-        end else begin
-          inc(i);
-          if i>=ComponentCount then i:=0;
-        end;
-        if Components[i] is TCustomButton then begin
-          NewFocusControl:=TWinControl(Components[i]);
-          break;
-        end;
-      until false;
-      ActiveControl:=NewFocusControl;
-      Key:=VK_UNKNOWN;
-    end;
-  end;
 end;
 
 function TPromptDialog.CreateButtons(AVerticalLayout: Boolean;
@@ -115,7 +62,7 @@ begin
   ButtonIndex := -1;
   for curBtn := 0 to NumButtons - 1 do
   begin
-    If (Buttons[curBtn] >= Low(DialogButtonKind)) and
+    if (Buttons[curBtn] >= Low(DialogButtonKind)) and
       (Buttons[curBtn] <= High(DialogButtonKind))
     then
     begin
@@ -177,8 +124,8 @@ begin
 
   IsSmallDevice := (Screen.Width <= 300);
 
-  AutoScroll:=false;
-  OnKeyDown :=@PromptDialogKeyDown;
+  AutoScroll := False;
+  OnKeyDown := @PromptDialogKeyDown;
   //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
   ControlStyle:= ControlStyle-[csSetCaption];
@@ -214,12 +161,10 @@ begin
   NumButtons := ButtonCount;
   Buttons := TheButtons;
 
-  if (DefaultIndex >= ButtonCount) or
-    (DefaultIndex < 0)
-  then
+  if (DefaultIndex >= ButtonCount) or (DefaultIndex < 0) then
     TheDefaultIndex := 0
   else
-    theDefaultIndex := DefaultIndex;
+    TheDefaultIndex := DefaultIndex;
 
   // Assures a minimum text size
   if MSG = '' then MSG := '   ';
@@ -237,9 +182,9 @@ begin
   end;
 
   if IsSmallDevice then
-    LayoutDialogSmallDevice()
+    LayoutDialogSmallDevice
   else
-    LayoutDialog();
+    LayoutDialog;
 end;
 
 destructor TPromptDialog.Destroy;
@@ -249,7 +194,7 @@ begin
 end;
 
 procedure TPromptDialog.LayoutDialog;
-Const
+const
   cBtnCalcWidth  = 50;
   cBtnCalcHeight = 13;
   cBtnCalcSpace   = 4;
@@ -555,34 +500,28 @@ begin
     end;
 end;
 
-
-function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType;
-                             Buttons: TMsgDlgButtons): TForm;
-var PDlg: TPromptDialog;
-    aCaption: String;
-    Btns: PLongInt;
-    CancelValue, DefaultIndex, ButtonCount: Longint;
+function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm;
+var
+  PDlg: TPromptDialog;
+  aCaption: String;
+  Btns: PLongInt;
+  CancelValue, DefaultIndex, ButtonCount: Longint;
 begin
   if DlgType <> mtCustom then
     aCaption := MsgDlgCaptions[DlgType]
   else
     aCaption := Application.Title;
-  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
-                               False, mbOk);
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount, False, mbOk);
   PDlg := TPromptDialog.CreateMessageDialog(aCaption, Msg, DialogIds[DlgType], Btns, ButtonCount, DefaultIndex);
   Result := TForm(PDlg);
   ReallocMem(Btns, 0);
 end;
-
-
 
 type
 
   { TQuestionDlg }
 
   TQuestionDlg = class(TForm)
-    procedure ButtonKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
   private
     FButtons: TList;
     FBitmap: TCustomBitmap;
@@ -743,40 +682,22 @@ var
   CurValue: TModalResult;
   j: Integer;
 begin
-  if FButtons=nil then begin
-    Result:=nil;
-    exit;
+  if FButtons = nil then
+  begin
+    Result := nil;
+    Exit;
   end;
-  for i:=Low(Order) to High(Order) do begin
-    CurValue:=Order[i];
-    for j:=0 to FButtons.Count-1 do begin
-      Result:=TBitBtn(FButtons[j]);
-      if Result.ModalResult=CurValue then exit;
+  for i := Low(Order) to High(Order) do
+  begin
+    CurValue := Order[i];
+    for j := 0 to FButtons.Count - 1 do
+    begin
+      Result := TBitBtn(FButtons[j]);
+      if Result.ModalResult = CurValue then
+        Exit;
     end;
   end;
-  Result:=nil;
-end;
-
-procedure TQuestionDlg.ButtonKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  Handled: Boolean;
-begin
-  if Shift<>[] then exit;
-  Handled:=true;
-  if (Key=VK_ESCAPE) and (CancelControl<>nil) then
-    CancelControl.ExecuteCancelAction
-  else if (Key in [VK_RETURN,VK_SPACE]) and (Sender is TBitBtn) then
-    ModalResult:=TBitBtn(Sender).ModalResult
-  else if (Key=VK_RETURN) and (DefaultControl<>nil) then
-    DefaultControl.ExecuteDefaultAction
-  else if (Key=VK_LEFT) then
-    TWinControl(Sender).PerformTab(false)
-  else if (Key=VK_RIGHT) then
-    TWinControl(Sender).PerformTab(true)
-  else
-    Handled:=false;
-  if Handled then Key:=VK_UNKNOWN;
+  Result := nil;
 end;
 
 constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
@@ -800,7 +721,6 @@ begin
   Position := poScreenCenter;
   MessageTxt := ConvertLineEndings(aMsg);
   HelpContext := HelpCtx;
-  OnKeyDown := @ButtonKeyDown;
 
   // Initialize TextStyle
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
@@ -817,28 +737,31 @@ begin
   try
     DefaultBtn:=nil;
     i:=Low(Buttons);
-    while i<=High(Buttons) do begin
-      if Buttons[i].VType<>vtInteger then
+    while i <= High(Buttons) do
+    begin
+      if Buttons[i].VType <> vtInteger then
         raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
           +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
-      if Buttons[i].VType=vtInteger then begin
+      if Buttons[i].VType = vtInteger then
+      begin
         // get TModalResult
-        CurBtnValue:=Buttons[i].VInteger;
+        CurBtnValue := Buttons[i].VInteger;
         //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' CurBtnValue=',dbgs(CurBtnValue));
         inc(i);
         
         // get button caption
-        CurBtnCaption:='';
-        if (i<=High(Buttons)) then begin
+        CurBtnCaption := '';
+        if (i <= High(Buttons)) then
+        begin
           //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
           case Buttons[i].VType of
-          vtString: CurBtnCaption:=Buttons[i].VString^;
-          vtAnsiString: CurBtnCaption:=AnsiString(Buttons[i].VAnsiString);
-          vtChar: CurBtnCaption:=Buttons[i].VChar;
-          vtPChar: CurBtnCaption:=Buttons[i].VPChar;
-          vtPWideChar: CurBtnCaption:=Buttons[i].VPWideChar;
-          vtWideChar: CurBtnCaption:=Buttons[i].VWideChar;
-          vtWidestring: CurBtnCaption:=WideString(Buttons[i].VWideString);
+            vtString: CurBtnCaption := Buttons[i].VString^;
+            vtAnsiString: CurBtnCaption := AnsiString(Buttons[i].VAnsiString);
+            vtChar: CurBtnCaption := Buttons[i].VChar;
+            vtPChar: CurBtnCaption := Buttons[i].VPChar;
+            vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
+            vtWideChar: CurBtnCaption := Buttons[i].VWideChar;
+            vtWidestring: CurBtnCaption := WideString(Buttons[i].VWideString);
           else
             dec(i); // prevent the following inc(i)
           end;
@@ -846,21 +769,22 @@ begin
         end;
 
         // get options
-        CurOptions:='';
-        IsDefault:=false;
-        if (i<=High(Buttons)) then begin
+        CurOptions := '';
+        IsDefault := False;
+        if (i<=High(Buttons)) then
+        begin
           //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
-          HasOptions:=true;
+          HasOptions := True;
           case Buttons[i].VType of
-          vtString: CurOptions:=Buttons[i].VString^;
-          vtAnsiString: CurOptions:=AnsiString(Buttons[i].VAnsiString);
-          vtChar: CurOptions:=Buttons[i].VChar;
-          vtPChar: CurOptions:=Buttons[i].VPChar;
-          vtPWideChar: CurOptions:=Buttons[i].VPWideChar;
-          vtWideChar: CurOptions:=Buttons[i].VWideChar;
-          vtWidestring: CurOptions:=WideString(Buttons[i].VWideString);
+            vtString: CurOptions := Buttons[i].VString^;
+            vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
+            vtChar: CurOptions := Buttons[i].VChar;
+            vtPChar: CurOptions := Buttons[i].VPChar;
+            vtPWideChar: CurOptions := Buttons[i].VPWideChar;
+            vtWideChar: CurOptions := Buttons[i].VWideChar;
+            vtWidestring: CurOptions := WideString(Buttons[i].VWideString);
           else
-            HasOptions:=false;
+            HasOptions := False;
           end;
           if HasOptions then
           begin
@@ -869,69 +793,70 @@ begin
                 +IntToStr(i)+' but "'+CurOptions+'" found.');
             if DefaultBtn<>nil then
               raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault:=true;
+            IsDefault := True;
             inc(i);
           end;
         end;
         //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption,' CurOptions="',CurOptions,'"');
 
-        if CurBtnCaption='' then begin
+        if CurBtnCaption = '' then
+        begin
           // find default caption
           case CurBtnValue of
-            mrOk       : CurBtnCaption:=rsmbOk;
-            mrCancel   : CurBtnCaption:=rsmbCancel;
-            mrYes      : CurBtnCaption:=rsmbYes;
-            mrNo       : CurBtnCaption:=rsmbNo;
-            mrAbort    : CurBtnCaption:=rsmbAbort;
-            mrRetry    : CurBtnCaption:=rsmbRetry;
-            mrIgnore   : CurBtnCaption:=rsmbIgnore;
-            mrAll      : CurBtnCaption:=rsmbAll;
-            mrYesToAll : CurBtnCaption:=rsmbYesToAll;
-            mrNoToAll  : CurBtnCaption:=rsmbNoToAll;
+            mrOk       : CurBtnCaption := rsmbOk;
+            mrCancel   : CurBtnCaption := rsmbCancel;
+            mrYes      : CurBtnCaption := rsmbYes;
+            mrNo       : CurBtnCaption := rsmbNo;
+            mrAbort    : CurBtnCaption := rsmbAbort;
+            mrRetry    : CurBtnCaption := rsmbRetry;
+            mrIgnore   : CurBtnCaption := rsmbIgnore;
+            mrAll      : CurBtnCaption := rsmbAll;
+            mrYesToAll : CurBtnCaption := rsmbYesToAll;
+            mrNoToAll  : CurBtnCaption := rsmbNoToAll;
           end;
         end;
-        if CurBtnCaption='' then begin
-          raise Exception.Create(
-            'TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
-        end;
-        
+        if CurBtnCaption = '' then
+          raise Exception.Create('TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
+
         // get button kind
         case curBtnValue of
-        mrOk:       NewKind:=bkOK;
-        mrCancel:   NewKind:=bkCancel;
-        mrYes:      NewKind:=bkYes;
-        mrNo:       NewKind:=bkNo;
-        mrAbort:    NewKind:=bkAbort;
-        mrRetry:    NewKind:=bkRetry;
-        mrIgnore:   NewKind:=bkIgnore;
-        mrAll:      NewKind:=bkAll;
-        mrNoToAll:  NewKind:=bkNoToAll;
-        mrYesToAll: NewKind:=bkYesToAll;
-        else NewKind:=bkCustom;
+          mrOk:       NewKind := bkOK;
+          mrCancel:   NewKind := bkCancel;
+          mrYes:      NewKind := bkYes;
+          mrNo:       NewKind := bkNo;
+          mrAbort:    NewKind := bkAbort;
+          mrRetry:    NewKind := bkRetry;
+          mrIgnore:   NewKind := bkIgnore;
+          mrAll:      NewKind := bkAll;
+          mrNoToAll:  NewKind := bkNoToAll;
+          mrYesToAll: NewKind := bkYesToAll;
+        else
+          NewKind := bkCustom;
         end;
 
         // add button
-        if FButtons=nil then FButtons:=TList.Create;
-        NewButton:=TBitBtn.Create(Self);
-        with NewButton do begin
-          AutoSize:=false;
-          Anchors:=[akLeft, akBottom];
-          ModalResult:=curBtnValue;
-          Layout:=blGlyphLeft;
-          Kind:=NewKind;
-          Caption:=curBtnCaption;
-          Parent:=Self;
-          Default:=IsDefault;
-          OnKeyDown:=@ButtonKeyDown;
+        if FButtons = nil then
+          FButtons := TList.Create;
+        NewButton := TBitBtn.Create(Self);
+        with NewButton do
+        begin
+          AutoSize := False;
+          Anchors := [akLeft, akBottom];
+          ModalResult := curBtnValue;
+          Layout := blGlyphLeft;
+          Kind := NewKind;
+          Caption := curBtnCaption;
+          Parent := Self;
+          Default := IsDefault;
         end;
         if IsDefault then
-          DefaultBtn:=NewButton;
+          DefaultBtn := NewButton;
         FButtons.Add(NewButton);
-      end else
-        raise Exception.Create(
-          'TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
+      end
+      else
+        raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
     end;
-    ok:=true;
+    ok := True;
   finally
     if not Ok then
       FreeAndNil(FButtons);
@@ -955,12 +880,10 @@ begin
   Caption:=NewCaption;
   
   // find default and cancel button
-  if DefaultBtn=nil then
-    DefaultBtn:=FindButton([mrYes,mrOk,mrYesToAll,mrAll,mrRetry,mrCancel,
-                              mrNo,mrNoToAll,mrAbort,mrIgnore]);
-  DefaultControl:=DefaultBtn;
-  CancelControl:=FindButton([mrAbort,mrCancel,mrNo,mrIgnore,mrNoToAll,mrYes,
-                             mrOk,mrRetry,mrAll,mrYesToAll])
+  if DefaultBtn = nil then
+    DefaultBtn := FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
+  DefaultControl := DefaultBtn;
+  CancelControl := FindButton([mrAbort, mrCancel, mrNo, mrIgnore, mrNoToAll, mrYes, mrOk, mrRetry, mrAll, mrYesToAll])
 end;
 
 destructor TQuestionDlg.Destroy;
@@ -993,10 +916,9 @@ function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
 var
   QuestionDialog: TQuestionDlg;
 begin
-  QuestionDialog:=TQuestionDlg.CreateQuestionDlg(aCaption,aMsg,DlgType,Buttons,
-                                                 HelpCtx);
+  QuestionDialog := TQuestionDlg.CreateQuestionDlg(aCaption, aMsg, DlgType, Buttons, HelpCtx);
   try
-    Result:=QuestionDialog.ShowModal;
+    Result := QuestionDialog.ShowModal;
   finally
     QuestionDialog.Free;
   end;
@@ -1006,7 +928,7 @@ function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
   Buttons: array of const; const HelpKeyword: string): TModalResult;
 begin
   // TODO: handle HelpKeyword
-  Result:=QuestionDlg(aCaption,aMsg,DlgType,Buttons,0);
+  Result := QuestionDlg(aCaption, aMsg, DlgType, Buttons, 0);
 end;
 
 // included by dialogs.pp
