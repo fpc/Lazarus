@@ -414,7 +414,7 @@ begin
   if MonitorHandle = MONITOR_UNIMPL then
   begin
     R.TopLeft := Point;
-    R.BottomRight := Point;
+    R.BottomRight := Types.Point(Point.X + 1, Point.Y + 1);
     Result := MonitorFromRect(R, MonitorDefault);
   end
   else
