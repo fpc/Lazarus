@@ -242,7 +242,7 @@ type
     csDestroyingHandle,
     csDocking,
     csVisibleSetInLoading
-    );
+  );
   TControlState = set of TControlStateType;
 
 

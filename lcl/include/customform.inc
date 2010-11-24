@@ -185,8 +185,8 @@ begin
           FDefaultControl := nil;
         if AComponent = FCancelControl then
           FCancelControl := nil;
-        if AComponent=FLastFocusedControl then
-          FLastFocusedControl:=nil;
+        if AComponent = FLastFocusedControl then
+          FLastFocusedControl := nil;
         // then do stuff which can trigger things
         if (FActionLists <> nil) and (AComponent is TCustomActionList) then
           DoRemoveActionList(TCustomActionList(AComponent))
@@ -1128,12 +1128,12 @@ end;
 
 procedure TCustomForm.SetParent(NewParent: TWinControl);
 begin
-  if Parent=NewParent then exit;
+  if Parent = NewParent then exit;
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
   try
     if HandleAllocated then DestroyHandle;
     inherited SetParent(NewParent);
-    if (Parent=nil) and Visible then
+    if (Parent = nil) and Visible then
       HandleNeeded;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
@@ -2233,7 +2233,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     while not FLastFocusedControl.ContainsControl(Control) do
     begin
       LastState := SaveFocusState;
-      if FLastFocusedControl=nil then exit(false);
+      if FLastFocusedControl = nil then Exit(False);
       // calling of CM_EXIT can cause other focus changes - so FLastFocusedControl can change after the call
       // therefore we need to change it before the call
       Tmp := FLastFocusedControl;
@@ -2247,7 +2247,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     while FLastFocusedControl <> Control do
     begin
       SetLastFocusedControl(NextChildControl(FLastFocusedControl, Control));
-      if FLastFocusedControl=nil then exit(false);
+      if FLastFocusedControl = nil then Exit(False);
       LastState := SaveFocusState;
       FLastFocusedControl.Perform(CM_ENTER, 0, 0);
       if SaveFocusState <> LastState then
@@ -2333,7 +2333,7 @@ begin
       begin
         if CurControl is TCustomForm then begin
           {$IFDEF VerboseFocus}
-          if TCustomForm(CurControl).FActiveControl<>Control then
+          if TCustomForm(CurControl).FActiveControl <> Control then
             debugln(['TCustomForm.SetFocusedControl Self=',DbgSName(Self),' SomeParent=',DbgSName(CurControl),' OldActiveControl=',DbgSName(TCustomForm(CurControl).FActiveControl),' New=',DbgSName(Control)]);
           {$ENDIF}
           TCustomForm(CurControl).FActiveControl := Control;
@@ -2352,8 +2352,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm Method WantChildKey
 ------------------------------------------------------------------------------}
-function TCustomForm.WantChildKey(Child : TControl;
-  var Message : TLMessage):Boolean;
+function TCustomForm.WantChildKey(Child : TControl; var Message : TLMessage):Boolean;
 begin
   Result := False;
 end;
