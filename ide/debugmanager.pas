@@ -92,6 +92,7 @@ type
     FPrevShownWindow: HWND;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
+    FIgnoreSourceFiles: TStringList; // a list of unfindable sourcefiles, that should not be prompted anymore
     // last hit breakpoint
     FCurrentBreakpoint: TIDEBreakpoint;
     FAutoContinueTimer: TTimer;
@@ -1740,6 +1741,13 @@ procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TD
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
 // if SrcLine < 1 then no source is available
+
+  function FileLocationToId(ALoc: TDBGLocationRec): string;
+  begin
+    Result := IntToStr(length(ALoc.SrcFile)) + ':' + ALoc.SrcFile + ':'
+            + IntToStr(length(ALoc.SrcFullName)) + ':' + ALoc.SrcFullName;
+  end;
+
 var
   SrcFile, SrcFullName: String;
   NewSource: TCodeBuffer;
@@ -1748,6 +1756,7 @@ var
   i: Integer;
   StackEntry: TCallStackEntry;
   FocusEditor: Boolean;
+  InIgnore: Boolean;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
@@ -1790,15 +1799,27 @@ begin
   if (SrcFullName = '') or not GetFullFilename(SrcFullName, False) then
   begin
     SrcFullName := SrcFile;
-    if not GetFullFilename(SrcFullName, true) then exit;
+    InIgnore := FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) >= 0;
+    if not GetFullFilename(SrcFullName, not InIgnore) then begin
+      if not InIgnore
+      then FIgnoreSourceFiles.Add(FileLocationToId(ALocation));
+      ViewDebugDialog(ddtAssembler);
+      exit;
+    end;
   end;
 
   NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
   if NewSource = nil
   then begin
-    MessageDlg(lisDebugUnableToLoadFile,
-      Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
-      mtError,[mbCancel],0);
+    InIgnore := FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) >= 0;
+    if (FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) < 0)
+    then begin
+      FIgnoreSourceFiles.Add(FileLocationToId(ALocation));
+      MessageDlg(lisDebugUnableToLoadFile,
+        Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
+        mtError,[mbCancel],0);
+    end;
+    ViewDebugDialog(ddtAssembler);
     Exit;
   end;
 
@@ -2045,6 +2066,7 @@ begin
   FRegisters := TManagedRegisters.Create;
 
   FUserSourceFiles := TStringList.Create;
+  FIgnoreSourceFiles := TStringList.Create;
 
   FAutoContinueTimer := TTimer.Create(Self);
   FAutoContinueTimer.Enabled := False;
@@ -2083,6 +2105,7 @@ begin
   FreeAndNil(FRegisters);
 
   FreeAndNil(FUserSourceFiles);
+  FreeAndNil(FIgnoreSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);
   FreeAndNil(FHiddenDebugEventsLog);
 
@@ -2097,6 +2120,7 @@ begin
   FExceptions.Reset;
   FSignals.Reset;
   FUserSourceFiles.Clear;
+  FIgnoreSourceFiles.Clear;
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
@@ -2435,6 +2459,7 @@ begin
   end;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
 
+  FIgnoreSourceFiles.Clear;
   FIsInitializingDebugger:= True;
   try
     DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
@@ -2712,6 +2737,8 @@ begin
     if (MainIDE.ToolStatus=itDebugger) then
       MainIDE.ToolStatus:=itNone;
   end;
+
+  FIgnoreSourceFiles.Clear;
   Result := mrOk;
 end;
 
