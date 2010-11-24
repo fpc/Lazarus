@@ -67,6 +67,7 @@ FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO
 %MAKEEXE% -C utils/fpcm all FPC=%COMPILER% 
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
+IF ERRORLEVEL 1 GOTO CLEANUP
 SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%PPCNAME%
 SET CPU_TARGET=%TARGETCPU%
 SET OS_TARGET=%TARGETOS%
@@ -76,6 +77,7 @@ SET BINUTILSPREFIX=%FPCFULLTARGET%-
 %MAKEEXE% -C rtl clean FPC=%COMPILER%
 %MAKEEXE% -C packages clean FPC=%COMPILER%
 %MAKEEXE% rtl packages FPC=%COMPILER% 
+IF ERRORLEVEL 1 GOTO CLEANUP
 
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
 FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
@@ -99,6 +101,7 @@ SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 %BUILDDRIVE%
 cd %BUILDDIR%\lcl
 %MAKEEXE% FPC=%compiler%
+IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lcl\units
 cp -pr %BUILDDIR%\lcl\units\%FPCFULLTARGET% %BUILDDIR%\image\lcl\units\%FPCFULLTARGET%
 
@@ -106,6 +109,7 @@ gmkdir -p %BUILDDIR%\packager
 %SVN% export %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
 cd %BUILDDIR%\packager\registration
 %MAKEEXE% FPC=%compiler%
+IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
@@ -113,6 +117,7 @@ cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units
 :: export images dir, the ideintf includes them
 %SVN% export %LAZSVNDIR%\images %BUILDDIR%\images
 cd %BUILDDIR%\ideintf
+IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\ideintf\units
 cp -pr %BUILDDIR%\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\ideintf\units\%FPCFULLTARGET%
@@ -120,6 +125,7 @@ cp -pr %BUILDDIR%\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\ideintf\units\%
 gmkdir -p %BUILDDIR%\components
 %SVN% export %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
 cd %BUILDDIR%\components\synedit
+IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\synedit\units
 cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\components\synedit\units\%FPCFULLTARGET%
@@ -131,6 +137,7 @@ cd %OLDCURDIR%
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 %ISCC% lazarus-cross.iss 
 
+:CLEANUP
 SET CPU_TARGET=
 SET OS_TARGET=
 SET CROSSBINDIR=
