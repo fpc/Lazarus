@@ -1959,6 +1959,10 @@ type
 
   TAddMode = (taAddFirst, taAdd, taInsert);
 
+  TMultiSelectStyles = (msControlSelect, msShiftSelect,
+    msVisibleOnly, msSiblingOnly);
+  TMultiSelectStyle = set of TMultiSelectStyles;
+
   TTreeNodeArray = ^TTreeNode;
 
   ETreeNodeError = class(Exception);
@@ -2364,6 +2368,7 @@ const
   DefaultTreeViewOptions = [tvoShowRoot, tvoShowLines, tvoShowButtons,
                             tvoHideSelection, tvoToolTips,
                             tvoKeepCollapsedNodes, tvoAutoItemHeight, tvoThemedDraw];
+  DefaultMultiSelectStyle = [msControlSelect];
 
 type
   TTreeViewExpandSignType = (
@@ -2400,6 +2405,7 @@ type
     FMaxLvl: integer; // maximum level of all nodes
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
     fMouseDownPos: TPoint;
+    FMultiSelectStyle: TMultiSelectStyle;
     FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
     FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;
@@ -2475,6 +2481,7 @@ type
     procedure SetInsertMarkType(const AValue: TTreeViewInsertMarkType);
     procedure SetKeepCollapsedNodes(Value: Boolean);
     procedure SetMultiSelect(const AValue: Boolean);
+    procedure SetMultiSelectStyle(const AValue: TMultiSelectStyle);
     procedure SetReadOnly(Value: Boolean);
     procedure SetRightClickSelect(Value: Boolean);
     procedure SetRowSelect(Value: Boolean);
@@ -2672,12 +2679,14 @@ type
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property KeepCollapsedNodes: boolean
       read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
+    property MultiSelectStyle: TMultiSelectStyle read FMultiSelectStyle
+      write SetMultiSelectStyle default DefaultMultiSelectStyle;
     property Options: TTreeViewOptions read FOptions write SetOptions default DefaultTreeViewOptions;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
-    property SelectionCount: Cardinal read GetSelectionCount;
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
+    property SelectionCount: Cardinal read GetSelectionCount;
     property Selections[AIndex: Integer]: TTreeNode read GetSelections;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
@@ -2715,6 +2724,7 @@ type
     property Images;
     property Indent;
     property MultiSelect;
+    property MultiSelectStyle;
     //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;

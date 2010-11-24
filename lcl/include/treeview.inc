@@ -2817,6 +2817,7 @@ begin
   FTreeNodes := TTreeNodes.Create(Self);
   BorderStyle := bsSingle;
   BorderWidth := 0;
+  FMultiSelectStyle := DefaultMultiSelectStyle;
   FOptions := DefaultTreeViewOptions;
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;
@@ -3310,6 +3311,16 @@ begin
     else
       Exclude(FOptions,tvoAllowMultiselect);
   end;
+end;
+
+procedure TCustomTreeView.SetMultiSelectStyle(const AValue: TMultiSelectStyle);
+begin
+  if FMultiSelectStyle=AValue then exit;
+  FMultiSelectStyle:=AValue;
+  // there must be at least one multiselectstyle according to docs
+  // http://docs.embarcadero.com/products/rad_studio/delphiAndcpp2009/HelpUpdate2/EN/html/delphivclwin32/ComCtrls_TCustomTreeView_MultiSelectStyle.html
+  if FMultiSelectStyle = [] then
+    FMultiSelectStyle := DefaultMultiSelectStyle;
 end;
 
 procedure TCustomTreeView.SetReadOnly(Value: Boolean);
