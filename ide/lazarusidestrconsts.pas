@@ -166,6 +166,7 @@ resourcestring
   lisKMSaveAs = 'SaveAs';
   lisKMSaveAll = 'SaveAll';
   lisDiscardChanges = 'Discard changes';
+  lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisMenuSaveAs = 'Save &As ...';
@@ -589,6 +590,7 @@ resourcestring
   lisFileHasChangedSave = 'File %s%s%s has changed. Save?';
   lisUnitHasChangedSave = 'Unit %s%s%s has changed. Save?';
   lisSourceOfPageHasChangedSave = 'Source of page %s%s%s has changed. Save?';
+  lisSourceOfPageHasChangedSaveExtended = 'Sources of more than one page have changed. Save page %s%s%s? (%d more)';
   lisSourceModified = 'Source modified';
   lisOpenProject = 'Open Project?';
   lisOpenTheProject = 'Open the project %s?';

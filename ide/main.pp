@@ -606,6 +606,7 @@ type
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
+    function CheckEditorNeedsSave(AEditor: TSourceEditorInterface; IgnoreSharedEdits: Boolean): Boolean;
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     procedure Notification(AComponent: TComponent;
@@ -2789,14 +2790,83 @@ begin
   DoCloseEditorFile(NB.FindSourceEditorWithPageIndex(PageIndex), [cfSaveFirst]);
 end;
 
-procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
+function TMainIDE.CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
+  IgnoreSharedEdits: Boolean): Boolean;
+var
+  AnEditorInfo: TUnitEditorInfo;
+  AnUnitInfo: TUnitInfo;
 begin
-  DoSaveAll([]);
+  Result := False;
+  if AEditor = nil then exit;
+  AnEditorInfo := Project1.EditorInfoWithEditorComponent(AEditor);
+  if AnEditorInfo = nil then exit;
+
+  AnUnitInfo := AnEditorInfo.UnitInfo;
+  if (AnUnitInfo.OpenEditorInfoCount > 1) and IgnoreSharedEdits then
+    exit;
+
+  // save some meta data of the source
+  SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
+
+  Result := (AEditor.Modified) or (AnUnitInfo.Modified);
+end;
+
+procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
+var
+  i, NeedSave, Idx: Integer;
+  r: TModalResult;
+  Ed: TSourceEditor;
+begin
+  NeedSave := 0;
+  for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
+    if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
+      inc(NeedSave);
+      if NeedSave = 1 then Idx := i;
+    end;
+  end;
+  if NeedSave = 1 then begin
+    Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[Idx]);
+    r := QuestionDlg(lisSourceModified,
+                     Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
+                     mtConfirmation,
+                     [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort], 0);
+    case r of
+      mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
+      mrNo: ; // don't save
+      mrAbort: exit;
+    end;
+
+  end
+  else if NeedSave > 1 then begin
+    for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
+      if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
+        dec(NeedSave);
+        Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
+        r := QuestionDlg(lisSourceModified,
+                         Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
+                         mtConfirmation,
+                         [mrYes, lisMenuSave, mrAll, lisMenuSaveAll,
+                          mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
+                          mrAbort], 0);
+        case r of
+          mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
+          mrNo: ; // don't save
+          mrAll: begin
+              DoSaveAll([]);
+              break
+            end;
+          mrIgnore: break; // don't save anymore
+          mrAbort: exit;
+        end;
+      end;
+    end;
+  end;
+
   SourceEditorManager.IncUpdateLock;
   try
     while (SourceEditorManager.SourceEditorCount > 0) and
       (DoCloseEditorFile(SourceEditorManager.SourceEditors[0],
-         [cfSaveFirst]) = mrOk)
+         []) = mrOk)
     do ;
   finally
     SourceEditorManager.DecUpdateLock;
@@ -2817,8 +2887,10 @@ Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject;
   InvertedClose: boolean);
 var
   PageIndex: LongInt;
-  i: Integer;
+  i, NeedSave, Idx: Integer;
   ActiveSrcNoteBook: TSourceNotebook;
+  Ed: TSourceEditor;
+  r: TModalResult;
 begin
   if InvertedClose then begin
     // close all source editors except the clicked
@@ -2831,13 +2903,60 @@ begin
       if ActiveSrcNoteBook = nil then exit;
       PageIndex := ActiveSrcNoteBook.PageIndex;
     end;
+
+    NeedSave := 0;
+    for i := 0 to ActiveSrcNoteBook.EditorCount - 1 do begin
+      if CheckEditorNeedsSave(ActiveSrcNoteBook.Editors[i], True) then begin
+        inc(NeedSave);
+        if NeedSave = 1 then Idx := i;
+      end;
+    end;
+    if NeedSave = 1 then begin
+      Ed := ActiveSrcNoteBook.Editors[Idx];
+      r := QuestionDlg(lisSourceModified,
+                       Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
+                       mtConfirmation,
+                       [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort], 0);
+      case r of
+        mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
+        mrNo: ; // don't save
+        mrAbort: exit;
+      end;
+
+    end
+    else if NeedSave > 1 then begin
+      for i := 0 to ActiveSrcNoteBook.EditorCount - 1 do begin
+        if CheckEditorNeedsSave(ActiveSrcNoteBook.Editors[i], True) then begin
+          dec(NeedSave);
+          Ed := ActiveSrcNoteBook.Editors[i];
+          r := QuestionDlg(lisSourceModified,
+                           Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
+                           mtConfirmation,
+                           [mrYes, lisMenuSave, mrAll, lisMenuSaveAll,
+                            mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
+                            mrAbort], 0);
+          case r of
+            mrYes: DoSaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
+            mrNo: ; // don't save
+            mrAll: begin
+                DoSaveAll([]);
+                break
+              end;
+            mrIgnore: break; // don't save anymore
+            mrAbort: exit;
+          end;
+        end;
+      end;
+    end;
+
+
     SourceEditorManager.IncUpdateLock;
     try
       repeat
         i:=ActiveSrcNoteBook.PageCount-1;
         if i=PageIndex then dec(i);
         if i<0 then break;
-        if DoCloseEditorFile(ActiveSrcNoteBook.FindSourceEditorWithPageIndex(i),[cfSaveFirst])<>mrOk then exit;
+        if DoCloseEditorFile(ActiveSrcNoteBook.FindSourceEditorWithPageIndex(i),[])<>mrOk then exit;
         if i<PageIndex then PageIndex:=i;
       until false;
     finally
