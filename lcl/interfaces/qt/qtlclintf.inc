@@ -135,6 +135,50 @@ begin
   Result := nil;
 end;
 
+function TQtWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
+  DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+var
+  BtnIdx: LongInt;
+  QtMessageBox: TQtMessageBox;
+begin
+  ReleaseCapture;
+  QtMessageBox := TQtMessageBox.Create(nil);
+  QtMessageBox.AttachEvents;
+  try
+    {Convert LCL "id" button values to Qt values}
+    for BtnIdx := 0 to Buttons.Count - 1 do
+    begin
+      with Buttons[BtnIdx] do
+        QtMessageBox.AddButton(ModalResult, Caption, Default, Cancel);
+    end;
+
+    if DialogCaption <> '' then
+      QtMessageBox.Title := DialogCaption
+    else
+      case DialogType of
+        idDialogWarning: QtMessageBox.Title := rsMtWarning;
+        idDialogError: QtMessageBox.Title := rsMtError;
+        idDialogInfo : QtMessageBox.Title := rsMtInformation;
+        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation;
+      end;
+
+    QtMessageBox.MessageStr := DialogMessage;
+
+    case DialogType of
+      idDialogWarning: QtMessageBox.MsgBoxType := QMessageBoxWarning;
+      idDialogError: QtMessageBox.MsgBoxType := QMessageBoxCritical;
+      idDialogInfo : QtMessageBox.MsgBoxType := QMessageBoxInformation;
+      idDialogConfirm : QtMessageBox.MsgBoxType := QMessageBoxQuestion;
+      else
+        QtMessageBox.MsgBoxType := QMessageBoxNoIcon;
+    end;
+
+    Result := QtMessageBox.exec;
+  finally
+    QtMessageBox.Free;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: CreateEmptyRegion

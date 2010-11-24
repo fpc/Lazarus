@@ -39,6 +39,8 @@ function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
+function AskUser(const DialogCaption, DialogMessage: string; DialogType:
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
 
 function CreateEmptyRegion: hRGN; override;
 function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
