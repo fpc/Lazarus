@@ -1261,10 +1261,8 @@ var
   Mon: TMonitor;
 begin
   Mon := Screen.MonitorFromPoint(TokenRect.TopLeft);
-  {$IFnDEF LCLGTK2}
   if Mon <> nil then
     TokenRect.Left := Min(TokenRect.Left, Mon.Left + Mon.Width - Form.Width);
-  {$ENDIF}
 
   SpaceBelow := Mon.Height - TokenRect.Bottom;
   SpaceAbove := TokenRect.Top - Mon.Top;
