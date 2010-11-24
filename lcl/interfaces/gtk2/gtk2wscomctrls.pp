@@ -147,6 +147,7 @@ type
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
 //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;

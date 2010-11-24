@@ -1815,6 +1815,22 @@ begin
   then Exit;
 end;
 
+class procedure TGtk2WSCustomListView.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
+    Exit;
+  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := GetWidgetInfo(Widget, True)^.CoreWidget;
+  Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
+  Gtk2WidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+                               GTK_STYLE_TEXT]);
+end;
+
 class procedure TGtk2WSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
   const AValue: TListHotTrackStyles);
 begin
