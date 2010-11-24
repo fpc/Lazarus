@@ -41,5 +41,6 @@
 /usr/lib/lazarus/%{lazarusversion}/ideintf
 /usr/lib/lazarus/%{lazarusversion}/lcl/units/*/*.ppu
 /usr/lib/lazarus/%{lazarusversion}/lcl/units/*/*.o
+/usr/lib/lazarus/%{lazarusversion}/lcl/units/*/*.lfm
 /usr/lib/lazarus/%{lazarusversion}/packager
 /usr/lib/lazarus/%{lazarusversion}/units
