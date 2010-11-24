@@ -345,8 +345,11 @@ begin
 
   if Sections.Count > 0 then
     FPaintRect.Left := Sections[Sections.Count - 1].Right;
-  Details := ThemeServices.GetElementDetails(thHeaderItemRightNormal);
-  ThemeServices.DrawElement(Canvas.Handle, Details, FPaintRect);
+  if FPaintRect.Left < FPaintRect.Right then
+  begin
+    Details := ThemeServices.GetElementDetails(thHeaderItemRightNormal);
+    ThemeServices.DrawElement(Canvas.Handle, Details, FPaintRect);
+  end;
 
   if FDragging then
   begin
@@ -384,7 +387,8 @@ begin
   ARect := FPaintRect;
   ARect.Left := FPaintRect.Left + Section.Left;
   ARect.Right := FPaintRect.Left + Section.Right;
-
+  if ARect.Right <= ARect.Left then
+    exit;
   Details := ThemeServices.GetElementDetails(HeaderStateMap[Section.State]);
     
   ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
