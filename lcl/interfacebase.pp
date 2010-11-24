@@ -83,6 +83,47 @@ type
     lcLMHelpSupport             // support for LM_HELP command
   );
 
+  { TDialogButton }
+
+  TDialogButton = class(TCollectionItem)
+  private
+    FCaption: string;
+    FModalResult: LongInt;
+    function GetCancel: Boolean;
+    function GetDefault: Boolean;
+    procedure SetCancel(const AValue: Boolean);
+    procedure SetDefault(const AValue: Boolean);
+  protected
+    function GetDisplayName: string; override;
+    procedure SetCaption(const AValue: string); virtual;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property Caption: string read FCaption write SetCaption;
+    property Cancel: Boolean read GetCancel write SetCancel;
+    property Default: Boolean read GetDefault write SetDefault;
+    property ModalResult: LongInt read FModalResult write FModalResult;
+  end;
+
+  { TDialogButtons }
+
+  TDialogButtons = class(TCollection)
+  protected
+    FCancelButton: TDialogButton;
+    FDefaultButton: TDialogButton;
+    function GetItem(Index: Integer): TDialogButton;
+    procedure SetCancelButton(const AValue: TDialogButton); virtual;
+    procedure SetDefaultButton(const Value: TDialogButton); virtual;
+    procedure SetItem(Index: Integer; const Value: TDialogButton);
+  public
+    destructor Destroy; override;
+    function Add: TDialogButton;
+    function FindButton(AModalResult: LongInt): TDialogButton;
+    function FindButton(Order: array of LongInt): TDialogButton;
+    property DefaultButton: TDialogButton read FDefaultButton write SetDefaultButton;
+    property CancelButton: TDialogButton read FCancelButton write SetCancelButton;
+    property Items[Index: Integer]: TDialogButton read GetItem write SetItem; default;
+  end;
+
 type
   TWSTimerProc = procedure of object;
 
@@ -169,7 +210,7 @@ type
     UseDefaultPos: boolean;
     X, Y : Longint) : Longint;
   TQuestionDialogFunction = function(const aCaption, aMsg: string;
-    DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
+    DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 
 var
   InputDialogFunction: TInputDialogFunction = nil;
@@ -184,6 +225,106 @@ implementation
 const
   UNKNOWN_VK_PREFIX = 'Word(''';
   UNKNOWN_VK_POSTFIX = ''')';
+
+{ TDialogButtons }
+
+procedure TDialogButtons.SetCancelButton(const AValue: TDialogButton);
+begin
+  FCancelButton := AValue;
+end;
+
+function TDialogButtons.GetItem(Index: Integer): TDialogButton;
+begin
+  Result := TDialogButton(inherited GetItem(Index));
+end;
+
+procedure TDialogButtons.SetDefaultButton(const Value: TDialogButton);
+begin
+  FDefaultButton := Value;
+end;
+
+procedure TDialogButtons.SetItem(Index: Integer; const Value: TDialogButton);
+begin
+  inherited SetItem(Index, Value);
+end;
+
+destructor TDialogButtons.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TDialogButtons.Add: TDialogButton;
+begin
+  Result := TDialogButton(inherited Add);
+end;
+
+function TDialogButtons.FindButton(AModalResult: LongInt): TDialogButton;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].ModalResult = AModalResult then
+      Exit(Items[i]);
+  Result := nil;
+end;
+
+function TDialogButtons.FindButton(Order: array of LongInt): TDialogButton;
+var
+  i: Integer;
+begin
+  for i := Low(Order) to High(Order) do
+  begin
+    Result := FindButton(Order[i]);
+    if Result <> nil then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+{ TDialogButton }
+
+procedure TDialogButton.SetCaption(const AValue: string);
+begin
+  FCaption := AValue;
+end;
+
+function TDialogButton.GetDefault: Boolean;
+begin
+  Result := TDialogButtons(Collection).DefaultButton = Self;
+end;
+
+function TDialogButton.GetCancel: Boolean;
+begin
+  Result := TDialogButtons(Collection).CancelButton = Self;
+end;
+
+procedure TDialogButton.SetCancel(const AValue: Boolean);
+begin
+  if AValue then
+    TDialogButtons(Collection).CancelButton := Self
+  else
+    TDialogButtons(Collection).CancelButton := nil;
+end;
+
+procedure TDialogButton.SetDefault(const AValue: Boolean);
+begin
+  if AValue then
+    TDialogButtons(Collection).DefaultButton := Self
+  else
+    TDialogButtons(Collection).DefaultButton := nil;
+end;
+
+function TDialogButton.GetDisplayName: string;
+begin
+  Result := FCaption;
+end;
+
+constructor TDialogButton.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FCaption := '';
+  FModalResult := 0;
+end;
 
 {$I interfacebase.inc}
 {$I intfbasewinapi.inc}

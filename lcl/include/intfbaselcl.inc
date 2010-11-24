@@ -49,11 +49,11 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.AskUser(const aCaption, aMsg: string;
-    DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
+function TWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
+    DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 begin
   if QuestionDialogFunction <> nil then
-    Result := QuestionDialogFunction(aCaption, aMsg, DlgType, Buttons, HelpCtx)
+    Result := QuestionDialogFunction(DialogCaption, DialogMessage, DialogType, Buttons, HelpCtx)
   else
     Result := 0;
 end;

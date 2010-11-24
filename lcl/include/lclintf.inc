@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit ../lclintf.pas}
 { $Id$
 ******************************************************************************
   All interface communication related stuff goes here.
@@ -56,9 +56,9 @@ begin
   Result := WidgetSet.AllocateHWnd(Method);
 end;
 
-function AskUser(const aCaption, aMsg: string; DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
+function AskUser(const DialogCaption, DialogMessage: string; DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 begin
-  Result := WidgetSet.AskUser(aCaption, aMsg, DlgType, Buttons, HelpCtx);
+  Result := WidgetSet.AskUser(DialogCaption, DialogMessage, DialogType, Buttons, HelpCtx);
 end;
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message);

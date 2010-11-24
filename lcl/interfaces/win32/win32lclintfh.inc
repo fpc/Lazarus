@@ -36,6 +36,7 @@ function AddPipeEventHandler(AHandle: THandle;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
+function AskUser(const DialogCaption, DialogMessage: string; DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
@@ -57,7 +58,7 @@ function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function IntfSendsUTF8KeyPress: boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
-function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint; override;
+function PromptUser(const DialogCaption, DialogMessage: String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint; override;
 
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;

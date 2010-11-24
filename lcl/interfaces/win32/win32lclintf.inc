@@ -328,6 +328,90 @@ begin
   Self.SetWindowLong(Result, GWL_WNDPROC, PtrInt(@CallbackAllocateHWnd))
 end;
 
+function TWin32WidgetSet.AskUser(const DialogCaption, DialogMessage: string;
+  DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+var
+  i: Integer;
+  Caption: String;
+  TaskConfig: TTASKDIALOGCONFIG;
+  DialogButtons: PTASKDIALOG_BUTTON;
+  State: TApplicationState;
+begin
+  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    FillChar(TaskConfig, SizeOf(TaskConfig), 0);
+    TaskConfig.cbSize := SizeOf(TaskConfig);
+    // if we skip hwndParent our form will be a root window - with the taskbar item and icon
+    // this is unwanted
+    if Assigned(Screen.ActiveCustomForm) then
+      TaskConfig.hwndParent := Screen.ActiveCustomForm.Handle
+    else
+    if Assigned(Application.MainForm) then
+      TaskConfig.hwndParent := Application.MainForm.Handle
+    else
+      TaskConfig.hwndParent := AppHandle;
+    TaskConfig.hInstance := HInstance;
+    TaskConfig.dwFlags := TDF_ALLOW_DIALOG_CANCELLATION;
+    if DialogCaption <> '' then
+      Caption := DialogCaption
+    else
+    case DialogType of
+      idDialogConfirm,
+      idDialogInfo,
+      idDialogWarning,
+      idDialogError: Caption := GetDialogCaption(DialogType);
+    else
+      Caption := Application.Title;
+    end;
+    TaskConfig.pszWindowTitle := PWideChar(UTF8ToUTF16(Caption));
+
+    case DialogType of
+      idDialogConfirm:
+        begin
+          TaskConfig.hMainIcon := LoadIcon(0, IDI_QUESTION);
+          TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+        end;
+      idDialogInfo: TaskConfig.pszMainIcon := TD_INFORMATION_ICON;
+      idDialogWarning: TaskConfig.pszMainIcon := TD_WARNING_ICON;
+      idDialogError: TaskConfig.pszMainIcon := TD_ERROR_ICON;
+      idDialogShield: TaskConfig.pszMainIcon := TD_SHIELD_ICON;
+    else
+      TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+    end;
+
+    TaskConfig.pszContent := PWideChar(UTF8ToUTF16(DialogMessage));
+
+    // question dialog button magic :)
+
+    TaskConfig.cButtons := Buttons.Count;
+    GetMem(DialogButtons, SizeOf(TTASKDIALOG_BUTTON) * TaskConfig.cButtons);
+    for i := 0 to TaskConfig.cButtons - 1 do
+    begin
+      DialogButtons[i].nButtonID := Buttons[i].ModalResult;
+      DialogButtons[i].pszButtonText := UTF8StringToPWideChar(Buttons[i].Caption);
+    end;
+    TaskConfig.pButtons := DialogButtons;
+    if Assigned(Buttons.DefaultButton) then
+      TaskConfig.nDefaultButton := Buttons.DefaultButton.Index;
+
+    State := SaveApplicationState;
+    try
+      Result := IDCANCEL;
+      TaskDialogIndirect(@TaskConfig, @Result, nil, nil);
+      if (Result = IDCANCEL) and Assigned(Buttons.CancelButton) then
+        Result := Buttons.CancelButton.ModalResult;
+    finally
+      RestoreApplicationState(State);
+      for i := 0 to TaskConfig.cButtons - 1 do
+        FreeMem(DialogButtons[i].pszButtonText);
+      FreeMem(DialogButtons);
+    end;
+  end
+  else
+    Result := inherited AskUser(DialogCaption, DialogMessage, DialogType,
+      Buttons, HelpCtx);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DeallocateHWnd
   Params:   Wnd   - A Window handle, that was created with AllocateHWnd
@@ -656,7 +740,9 @@ begin
 
     State := SaveApplicationState;
     try
-      if TaskDialogIndirect(@TaskConfig, @Result, nil, nil) <> S_OK then
+      Result := IDCANCEL;
+      TaskDialogIndirect(@TaskConfig, @Result, nil, nil);
+      if Result = IDCANCEL then
         Result := EscapeResult;
     finally
       RestoreApplicationState(State);

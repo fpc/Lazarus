@@ -531,12 +531,11 @@ type
     TextStyle : TTextStyle;
     MessageTxt: String;
     constructor CreateQuestionDlg(const aCaption, aMsg: string;
-      DlgType: LongInt; Buttons: array of const; HelpCtx: Longint);
+      DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint);
     destructor Destroy; override;
     procedure Paint; override;
     procedure LayoutDialog;
     function ShowModal: TModalResult; override;
-    function FindButton(Order: array of TModalResult): TBitBtn;
   end;
 
 { TQuestionDlg }
@@ -676,43 +675,14 @@ begin
   Result := inherited ShowModal;
 end;
 
-function TQuestionDlg.FindButton(Order: array of TModalResult): TBitBtn;
-var
-  i: Integer;
-  CurValue: TModalResult;
-  j: Integer;
-begin
-  if FButtons = nil then
-  begin
-    Result := nil;
-    Exit;
-  end;
-  for i := Low(Order) to High(Order) do
-  begin
-    CurValue := Order[i];
-    for j := 0 to FButtons.Count - 1 do
-    begin
-      Result := TBitBtn(FButtons[j]);
-      if Result.ModalResult = CurValue then
-        Exit;
-    end;
-  end;
-  Result := nil;
-end;
-
 constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
-  DlgType: LongInt; Buttons: array of const; HelpCtx: Longint);
+  DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint);
 var
-  i: Integer;
-  CurBtnValue: TModalResult;
-  CurBtnCaption, CurOptions: String;
+  i: integer;
+  CurBtn: TDialogButton;
   NewButton: TBitBtn;
   NewKind: TBitBtnKind;
   NewCaption: String;
-  ok: Boolean;
-  DefaultBtn: TBitBtn;
-  HasOptions: Boolean;
-  IsDefault: Boolean;
 begin
   inherited Create(nil);
   PopupMode := pmAuto;
@@ -732,135 +702,6 @@ begin
     ShowPrefix := True;
   end;
 
-  ok := false;
-  try
-    DefaultBtn:=nil;
-    i:=Low(Buttons);
-    while i <= High(Buttons) do
-    begin
-      if Buttons[i].VType <> vtInteger then
-        raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
-          +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
-      if Buttons[i].VType = vtInteger then
-      begin
-        // get TModalResult
-        CurBtnValue := Buttons[i].VInteger;
-        //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' CurBtnValue=',dbgs(CurBtnValue));
-        inc(i);
-        
-        // get button caption
-        CurBtnCaption := '';
-        if (i <= High(Buttons)) then
-        begin
-          //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
-          case Buttons[i].VType of
-            vtString: CurBtnCaption := Buttons[i].VString^;
-            vtAnsiString: CurBtnCaption := AnsiString(Buttons[i].VAnsiString);
-            vtChar: CurBtnCaption := Buttons[i].VChar;
-            vtPChar: CurBtnCaption := Buttons[i].VPChar;
-            vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
-            vtWideChar: CurBtnCaption := Buttons[i].VWideChar;
-            vtWidestring: CurBtnCaption := WideString(Buttons[i].VWideString);
-          else
-            dec(i); // prevent the following inc(i)
-          end;
-          inc(i);
-        end;
-
-        // get options
-        CurOptions := '';
-        IsDefault := False;
-        if (i<=High(Buttons)) then
-        begin
-          //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
-          HasOptions := True;
-          case Buttons[i].VType of
-            vtString: CurOptions := Buttons[i].VString^;
-            vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
-            vtChar: CurOptions := Buttons[i].VChar;
-            vtPChar: CurOptions := Buttons[i].VPChar;
-            vtPWideChar: CurOptions := Buttons[i].VPWideChar;
-            vtWideChar: CurOptions := Buttons[i].VWideChar;
-            vtWidestring: CurOptions := WideString(Buttons[i].VWideString);
-          else
-            HasOptions := False;
-          end;
-          if HasOptions then
-          begin
-            if SysUtils.CompareText(CurOptions,'isdefault')<>0 then
-              raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
-                +IntToStr(i)+' but "'+CurOptions+'" found.');
-            if DefaultBtn<>nil then
-              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
-            IsDefault := True;
-            inc(i);
-          end;
-        end;
-        //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption,' CurOptions="',CurOptions,'"');
-
-        if CurBtnCaption = '' then
-        begin
-          // find default caption
-          case CurBtnValue of
-            mrOk       : CurBtnCaption := rsmbOk;
-            mrCancel   : CurBtnCaption := rsmbCancel;
-            mrYes      : CurBtnCaption := rsmbYes;
-            mrNo       : CurBtnCaption := rsmbNo;
-            mrAbort    : CurBtnCaption := rsmbAbort;
-            mrRetry    : CurBtnCaption := rsmbRetry;
-            mrIgnore   : CurBtnCaption := rsmbIgnore;
-            mrAll      : CurBtnCaption := rsmbAll;
-            mrYesToAll : CurBtnCaption := rsmbYesToAll;
-            mrNoToAll  : CurBtnCaption := rsmbNoToAll;
-          end;
-        end;
-        if CurBtnCaption = '' then
-          raise Exception.Create('TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
-
-        // get button kind
-        case curBtnValue of
-          mrOk:       NewKind := bkOK;
-          mrCancel:   NewKind := bkCancel;
-          mrYes:      NewKind := bkYes;
-          mrNo:       NewKind := bkNo;
-          mrAbort:    NewKind := bkAbort;
-          mrRetry:    NewKind := bkRetry;
-          mrIgnore:   NewKind := bkIgnore;
-          mrAll:      NewKind := bkAll;
-          mrNoToAll:  NewKind := bkNoToAll;
-          mrYesToAll: NewKind := bkYesToAll;
-        else
-          NewKind := bkCustom;
-        end;
-
-        // add button
-        if FButtons = nil then
-          FButtons := TList.Create;
-        NewButton := TBitBtn.Create(Self);
-        with NewButton do
-        begin
-          AutoSize := False;
-          Anchors := [akLeft, akBottom];
-          ModalResult := curBtnValue;
-          Layout := blGlyphLeft;
-          Kind := NewKind;
-          Caption := curBtnCaption;
-          Parent := Self;
-          Default := IsDefault;
-        end;
-        if IsDefault then
-          DefaultBtn := NewButton;
-        FButtons.Add(NewButton);
-      end
-      else
-        raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
-    end;
-    ok := True;
-  finally
-    if not Ok then
-      FreeAndNil(FButtons);
-  end;
-
   FBitmap := nil;
   NewCaption := ACaption;
   case DlgType of
@@ -876,12 +717,43 @@ begin
   if NewCaption = '' then
     NewCaption := Application.Title;
   Caption := NewCaption;
-  
-  // find default and cancel button
-  if DefaultBtn = nil then
-    DefaultBtn := FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
-  DefaultControl := DefaultBtn;
-  CancelControl := FindButton([mrAbort, mrCancel, mrNo, mrIgnore, mrNoToAll, mrYes, mrOk, mrRetry, mrAll, mrYesToAll])
+
+  for i := 0 to Buttons.Count - 1 do
+  begin
+    CurBtn := Buttons[i];
+    // get button kind
+    case CurBtn.ModalResult of
+      mrOk:       NewKind := bkOK;
+      mrCancel:   NewKind := bkCancel;
+      mrYes:      NewKind := bkYes;
+      mrNo:       NewKind := bkNo;
+      mrAbort:    NewKind := bkAbort;
+      mrRetry:    NewKind := bkRetry;
+      mrIgnore:   NewKind := bkIgnore;
+      mrAll:      NewKind := bkAll;
+      mrNoToAll:  NewKind := bkNoToAll;
+      mrYesToAll: NewKind := bkYesToAll;
+    else
+      NewKind := bkCustom;
+    end;
+
+    NewButton := TBitBtn.Create(Self);
+    with NewButton do
+    begin
+      AutoSize := False;
+      Anchors := [akLeft, akBottom];
+      ModalResult := CurBtn.ModalResult;
+      Layout := blGlyphLeft;
+      Kind := NewKind;
+      Caption := CurBtn.Caption;
+      Parent := Self;
+      Default := CurBtn.Default;
+      Cancel := CurBtn.Cancel;
+    end;
+    if FButtons = nil then
+      FButtons := TList.Create;
+    FButtons.Add(NewButton);
+  end;
 end;
 
 destructor TQuestionDlg.Destroy;
@@ -893,7 +765,7 @@ end;
 
 
 function ShowQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
-  Buttons: array of const; HelpCtx: Longint): LongInt;
+  Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 { Show a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
   HelpCtx as Help context and Buttons to define the shown buttons and their
   TModalResult.
@@ -924,8 +796,113 @@ end;
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; HelpCtx: Longint): TModalResult;
+var
+  DialogButtons: TDialogButtons;
+  i: integer;
+  CurBtnValue: TModalResult;
+  CurBtnCaption, CurOptions: String;
+  HasOptions: Boolean;
+  IsDefault: Boolean;
+  NewButton: TDialogButton;
 begin
-  Result := WidgetSet.AskUser(aCaption, aMsg, DialogIds[DlgType], Buttons, HelpCtx);
+  DialogButtons := TDialogButtons.Create(TDialogButton);
+  try
+    i := Low(Buttons);
+    while i <= High(Buttons) do
+    begin
+      if Buttons[i].VType <> vtInteger then
+        raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
+          +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
+      if Buttons[i].VType = vtInteger then
+      begin
+        // get TModalResult
+        CurBtnValue := Buttons[i].VInteger;
+        inc(i);
+
+        // get button caption
+        CurBtnCaption := '';
+        if (i <= High(Buttons)) then
+        begin
+          case Buttons[i].VType of
+            vtString: CurBtnCaption := Buttons[i].VString^;
+            vtAnsiString: CurBtnCaption := AnsiString(Buttons[i].VAnsiString);
+            vtChar: CurBtnCaption := Buttons[i].VChar;
+            vtPChar: CurBtnCaption := Buttons[i].VPChar;
+            vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
+            vtWideChar: CurBtnCaption := Buttons[i].VWideChar;
+            vtWidestring: CurBtnCaption := WideString(Buttons[i].VWideString);
+          else
+            dec(i); // prevent the following inc(i)
+          end;
+          inc(i);
+        end;
+
+        // get options
+        CurOptions := '';
+        IsDefault := False;
+        if (i <= High(Buttons)) then
+        begin
+          HasOptions := True;
+          case Buttons[i].VType of
+            vtString: CurOptions := Buttons[i].VString^;
+            vtAnsiString: CurOptions := AnsiString(Buttons[i].VAnsiString);
+            vtChar: CurOptions := Buttons[i].VChar;
+            vtPChar: CurOptions := Buttons[i].VPChar;
+            vtPWideChar: CurOptions := Buttons[i].VPWideChar;
+            vtWideChar: CurOptions := Buttons[i].VWideChar;
+            vtWidestring: CurOptions := WideString(Buttons[i].VWideString);
+          else
+            HasOptions := False;
+          end;
+          if HasOptions then
+          begin
+            if SysUtils.CompareText(CurOptions,'isdefault')<>0 then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg option expected at '
+                +IntToStr(i)+' but "'+CurOptions+'" found.');
+            if DialogButtons.DefaultButton <> nil then
+              raise Exception.Create('TQuestionDlg.CreateQuestionDlg only one button can be default');
+            IsDefault := True;
+            inc(i);
+          end;
+        end;
+
+        if CurBtnCaption = '' then
+        begin
+          // find default caption
+          case CurBtnValue of
+            mrOk       : CurBtnCaption := rsmbOk;
+            mrCancel   : CurBtnCaption := rsmbCancel;
+            mrYes      : CurBtnCaption := rsmbYes;
+            mrNo       : CurBtnCaption := rsmbNo;
+            mrAbort    : CurBtnCaption := rsmbAbort;
+            mrRetry    : CurBtnCaption := rsmbRetry;
+            mrIgnore   : CurBtnCaption := rsmbIgnore;
+            mrAll      : CurBtnCaption := rsmbAll;
+            mrYesToAll : CurBtnCaption := rsmbYesToAll;
+            mrNoToAll  : CurBtnCaption := rsmbNoToAll;
+          end;
+        end;
+        if CurBtnCaption = '' then
+          raise Exception.Create('TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
+        NewButton := DialogButtons.Add;
+        with NewButton do
+        begin
+          Caption := CurBtnCaption;
+          ModalResult := CurBtnValue;
+        end;
+        if IsDefault then
+          DialogButtons.DefaultButton := NewButton;
+      end
+      else
+        raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
+    end;
+    if DialogButtons.DefaultButton = nil then
+      DialogButtons.DefaultButton := DialogButtons.FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
+    DialogButtons.CancelButton := DialogButtons.FindButton([mrAbort, mrCancel, mrNo, mrIgnore, mrNoToAll, mrYes, mrOk, mrRetry, mrAll, mrYesToAll]);
+    Result := WidgetSet.AskUser(aCaption, aMsg, DialogIds[DlgType], DialogButtons, HelpCtx);
+  finally
+    DialogButtons.Free;
+  end;
 end;
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
