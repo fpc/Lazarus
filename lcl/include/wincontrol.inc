@@ -6248,14 +6248,14 @@ end;
 function TWinControl.GetControlCount: Integer;
 begin
   if FControls <> nil then
-    Result:=FControls.Count
+    Result := FControls.Count
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TWinControl.GetDockClientCount: Integer;
 begin
-  if FDockClients<>nil then
+  if FDockClients <> nil then
     Result := FDockClients.Count
   else
     Result := 0;
@@ -6263,7 +6263,7 @@ end;
 
 function TWinControl.GetDockClients(Index: Integer): TControl;
 begin
-  if FDockClients<>nil then
+  if FDockClients <> nil then
     Result := TControl(FDockClients[Index])
   else
     Result := nil;
