@@ -146,6 +146,9 @@ install-arch-stamp:
 		$(CURDIR)/tools/updatepofiles
 	# Install the library files
 	find -regex '.*\.\(a\|o\|so\.*\|ppu\)' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
+	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/lcl/units/$(FPCTARGET) \
+		$(CURDIR)/lcl/units/$(FPCTARGET)/*.lfm
+     
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
