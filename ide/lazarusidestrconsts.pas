@@ -4581,6 +4581,7 @@ resourcestring
   lisCharacter = 'Character';
   lisString = 'String';
   lisDecimal = 'Decimal';
+  lisUnsigned = 'Unsigned';
   lisHexadecimal = 'Hexadecimal';
   lisFloatingPoin = 'Floating Point';
   lisPointer = 'Pointer';

@@ -275,6 +275,7 @@ type
     function GetTypeInfo: TDBGType; override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
+    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); override;
   public
     destructor Destroy; override;
     procedure ResetMaster;
@@ -825,6 +826,13 @@ begin
   if AValue = Expression then Exit;
   inherited SetExpression(AValue);
   if FMaster <> nil then FMaster.Expression := AValue;
+end;
+
+procedure TManagedWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
+begin
+  if AValue = DisplayFormat then Exit;
+  inherited SetDisplayFormat(AValue);
+  if FMaster <> nil then FMaster.DisplayFormat := AValue;
 end;
 
 destructor TManagedWatch.Destroy;

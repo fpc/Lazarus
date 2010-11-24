@@ -162,6 +162,7 @@ type
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
+    FLastExecResult: TGDBMIExecResult;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
     procedure SetKeepFinished(const AValue: Boolean);
@@ -201,6 +202,8 @@ type
     function  GetFrame(const AIndex: Integer): String;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetChar(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetFloat(const AExpression: String; const AValues: array of const): String;
     function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetGDBTypeInfo(const AExpression: String): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
@@ -211,10 +214,11 @@ type
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
     function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
-    function  GetPtrValue(const AExpression: String; const AValues: array of const): TDbgPtr;
+    function  GetPtrValue(const AExpression: String; const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
     procedure ProcessFrame(const AFrame: String = '');
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
+    property  LastExecResult: TGDBMIExecResult read FLastExecResult;
   public
     constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
@@ -436,6 +440,7 @@ type
   TGDBMIMemoryDumpResultList = class(TGDBMINameValueBasedList)
   private
     FAddr: TDBGPtr;
+    function GetItem(Index: Integer): TPCharWithLen;
     function GetItemNum(Index: Integer): Integer;
     function GetItemTxt(Index: Integer): string;
   protected
@@ -443,9 +448,11 @@ type
   public
     // Expected input format: 1 row with hex values
     function Count: Integer;
+    property Item[Index: Integer]: TPCharWithLen read GetItem;
     property ItemTxt[Index: Integer]: string  read GetItemTxt;
     property ItemNum[Index: Integer]: Integer read GetItemNum;
     property Addr: TDBGPtr read FAddr;
+    function AsText(AStartOffs, ACount: Integer; AAddrWidth: Integer): string;
   end;
 
   {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
@@ -783,14 +790,17 @@ type
   TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
   private
     FExpression: String;
+    FDisplayFormat: TWatchDisplayFormat;
     FTextValue: String;
     FTypeInfo: TGDBType;
   protected
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger;const AExpression: String);
+    constructor Create(AOwner: TGDBMIDebugger; const AExpression: String;
+      const ADisplayFormat: TWatchDisplayFormat);
     function DebugText: String; override;
     property Expression: String read FExpression;
+    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     property TextValue: String read FTextValue;
     property TypeInfo: TGDBType read FTypeInfo;
   end;
@@ -812,6 +822,7 @@ type
   protected
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
+    procedure DoDisplayFormatChanged; override;
     procedure DoChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     function  GetValue: String; override;
@@ -1237,6 +1248,17 @@ begin
   Result := '"' + Result + '"';
 end;
 
+function PCLenPartToString(const AVal: TPCharWithLen; AStartOffs, ALen: Integer): String;
+begin
+  if AStartOffs + ALen > AVal.Len
+  then ALen := AVal.Len - AStartOffs;
+  if ALen <= 0
+  then exit('');
+
+  SetLength(Result, ALen);
+  Move((AVal.Ptr+AStartOffs)^, Result[1], aLen)
+end;
+
 function PCLenToString(const AVal: TPCharWithLen; UnQuote: Boolean = False): String;
 begin
   if UnQuote and (AVal.Len >= 2) and (AVal.Ptr[0] = '"') and (AVal.Ptr[AVal.Len-1] = '"')
@@ -1629,6 +1651,11 @@ begin
   Result := PCLenToInt(FNameValueList.Items[Index]^.Name, 0);
 end;
 
+function TGDBMIMemoryDumpResultList.GetItem(Index: Integer): TPCharWithLen;
+begin
+  Result := FNameValueList.Items[Index]^.Name;
+end;
+
 function TGDBMIMemoryDumpResultList.GetItemTxt(Index: Integer): string;
 begin
   Result := PCLenToString(FNameValueList.Items[Index]^.Name, True);
@@ -1646,6 +1673,20 @@ end;
 function TGDBMIMemoryDumpResultList.Count: Integer;
 begin
   Result := FNameValueList.Count;
+end;
+
+function TGDBMIMemoryDumpResultList.AsText(AStartOffs, ACount: Integer;
+  AAddrWidth: Integer): string;
+var
+  i: LongInt;
+begin
+  if AAddrWidth > 0
+  then Result := IntToHex(addr + AStartOffs, AAddrWidth) + ':'
+  else Result := '';
+  for i := AStartOffs to AStartOffs + ACount do begin
+    if i >= ACount then exit;
+    Result := Result + ' ' + PCLenPartToString(Item[i], 3, 2);
+  end;
 end;
 
 { TGDBMIDisassembler }
@@ -4854,7 +4895,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
 var
   CommandObj: TGDBMIDebuggerCommandEvaluate;
 begin
-  CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression);
+  CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
   CommandObj.KeepFinished := True;
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuting, dcsFinished];
@@ -6459,6 +6500,12 @@ begin
   inherited;
 end;
 
+procedure TGDBMIWatch.DoDisplayFormatChanged;
+begin
+  CancelEvaluation;
+  inherited;
+end;
+
 procedure TGDBMIWatch.DoChange;
 begin
   Changed;
@@ -6512,7 +6559,8 @@ begin
     FEvaluatedState := esRequested;
     ClearOwned;
     SetValid(vsValid);
-    FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create(TGDBMIDebugger(Debugger), Expression);
+    FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create
+      (TGDBMIDebugger(Debugger), Expression, DisplayFormat);
     FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
     FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
     TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
@@ -7774,6 +7822,7 @@ begin
 
   FTheDebugger.SendCmdLn(ACommand);
   Result := ProcessResult(AResult);
+  FLastExecResult := AResult;
 
   if not Result
   then begin
@@ -8084,6 +8133,32 @@ begin
   Result := ProcessGDBResultText(StripLN(R.Values));
 end;
 
+function TGDBMIDebuggerCommand.GetChar(const AExpression: String;
+  const AValues: array of const): String;
+var
+  R: TGDBMIExecResult;
+begin
+  if not ExecuteCommand('x/c ' + AExpression, AValues, R)
+  then begin
+    Result := '';
+    Exit;
+  end;
+  Result := ProcessGDBResultText(StripLN(R.Values));
+end;
+
+function TGDBMIDebuggerCommand.GetFloat(const AExpression: String;
+  const AValues: array of const): String;
+var
+  R: TGDBMIExecResult;
+begin
+  if not ExecuteCommand('x/f ' + AExpression, AValues, R)
+  then begin
+    Result := '';
+    Exit;
+  end;
+  Result := ProcessGDBResultText(StripLN(R.Values));
+end;
+
 function TGDBMIDebuggerCommand.GetWideText(const ALocation: TDBGPtr): String;
 
   function GetWideChar(const ALocation: TDBGPtr): WideChar;
@@ -8238,12 +8313,20 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.GetPtrValue(const AExpression: String;
-  const AValues: array of const): TDbgPtr;
+  const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
 var
   e: Integer;
+  i: Int64;
+  s: String;
 begin
   Result := 0;
-  Val(GetStrValue(AExpression, AValues), Result, e);
+  s := GetStrValue(AExpression, AValues);
+  if (s <> '') and (s[1] = '-')
+  then begin
+    Val(s, i, e);
+    Result := TDBGPtr(i);
+  end
+  else Val(s, Result, e);
   if e=0 then ;
 end;
 
@@ -8986,16 +9069,310 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     end;
   end;
 
+  procedure FixUpResult(AnExpression: string);
+  var
+    ResultInfo: TGDBType;
+    addr: TDbgPtr;
+    e: Integer;
+    PrintableString: String;
+  begin
+    // Check for strings
+    ResultInfo := GetGDBTypeInfo(AnExpression);
+    if (ResultInfo = nil) then Exit;
+
+    case ResultInfo.Kind of
+      skPointer: begin
+        AnExpression := GetPart([], [' '], FTextValue, False, False);
+        Val(AnExpression, addr, e);
+        if e <> 0 then begin
+          FreeAndNil(ResultInfo);
+          Exit;
+        end;
+
+        AnExpression := Lowercase(ResultInfo.TypeName);
+        case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar', 'pointer']) of
+          0, 1, 2: begin
+            if Addr = 0
+            then
+              FTextValue := ''''''
+            else
+              FTextValue := MakePrintable(GetText(Addr));
+              PrintableString := FTextValue;
+          end;
+          3: begin
+            if Addr = 0
+            then FTextValue := 'nil'
+            else begin
+              AnExpression := GetClassName(Addr);
+              if AnExpression = '' then AnExpression := '???';
+              FTextValue := 'class of ' + AnExpression + ' ' + FTextValue;
+            end;
+          end;
+          4,5: begin
+            // widestring handling
+            if Addr = 0
+            then FTextValue := ''''''
+            else FTextValue := MakePrintable(GetWideText(Addr));
+            PrintableString := FTextValue;
+          end;
+          6: begin // pointer
+            if Addr = 0
+            then FTextValue := 'nil';
+            FTextValue := PascalizePointer(FTextValue);
+          end;
+        else
+          if Addr = 0
+          then FTextValue := 'nil';
+          if (Length(AnExpression) > 0)
+          then begin
+            if AnExpression[1] = 't'
+            then begin
+              AnExpression[1] := 'T';
+              if Length(AnExpression) > 1 then AnExpression[2] := UpperCase(AnExpression[2])[1];
+            end;
+            FTextValue := PascalizePointer(FTextValue, '^' + AnExpression);
+          end;
+
+        end;
+
+        ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
+        AnExpression := Format('$%x', [Addr]);
+        if PrintableString <> ''
+        then AnExpression := AnExpression + ' ' + PrintableString;
+        ResultInfo.Value.AsString := AnExpression;
+      end;
+
+      skClass: begin
+        Val(FTextValue, addr, e); //Get the class mem address
+        if e = 0 then begin //No error ?
+          if Addr = 0
+          then FTextValue := 'nil'
+          else begin
+            AnExpression := GetInstanceClassName(Addr);
+            if AnExpression = '' then AnExpression := '???'; //No instanced class found
+            FTextValue := 'class ' + AnExpression + ' ' + FTextValue;
+          end;
+        end;
+      end;
+
+      skVariant: begin
+        FTextValue := GetVariantValue(FTextValue);
+      end;
+      skRecord: begin
+        FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
+      end;
+
+      skSimple: begin
+        if ResultInfo.TypeName = 'CURRENCY' then
+          FTextValue := FormatCurrency(FTextValue)
+        else
+        if (ResultInfo.TypeName = '&ShortString') then
+          FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
+        else
+          FTextValue := FTextValue;
+      end;
+    end;
+
+    FTypeInfo := ResultInfo;
+    PutValuesInTree;
+    FTextValue := FormatResult(FTextValue);
+  end;
+
+  function AddAddressOfToExpression(const AnExpression: string; TypeInfo: TGDBType): String;
+  var
+    UseAt: Boolean;
+  begin
+    UseAt := True;
+    case TypeInfo.Kind of // (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant)
+      skPointer: begin
+          case StringCase(Lowercase(TypeInfo.TypeName),
+                          ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar', 'pointer']
+                         )
+          of
+            2: UseAt := False;
+            3: UseAt := False;
+          end;
+        end;
+    end;
+
+    if UseAt
+    then Result := '@(' + AnExpression + ')'
+    else Result := AnExpression;
+  end;
+
+  function QuoteExpr(const AnExpression: string): string;
+    var
+      i, j, Cnt: integer;
+    begin
+    if pos(' ', AnExpression) < 1
+    then exit(AnExpression);
+    Cnt := length(AnExpression);
+    SetLength(Result, 2 * Cnt + 2);
+    Result[1] := '"';
+    i := 1;
+    j := 2;
+    while i <= Cnt do begin
+      if AnExpression[i] in ['"', '\']
+      then begin
+        Result[j] := '\';
+        inc(j);
+      end;
+      Result[j] := AnExpression[i];
+      inc(i);
+      inc(j);
+    end;
+    Result[j] := '"';
+    SetLength(Result, j + 1);
+  end;
+
+  function TryExecute(AnExpression: string; StoreError: Boolean): Boolean;
+
+    function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
+    var
+      ResultInfo: TGDBType;
+    begin
+      ResultInfo := GetGDBTypeInfo(expr);
+      Result := ResultInfo <> nil;
+      if (not Result) and StoreError
+      then FTextValue := '<error>';
+      if not Result
+      then exit;
+
+      if NoAddressOp
+      then expr := QuoteExpr(expr)
+      else expr := QuoteExpr(AddAddressOfToExpression(expr, ResultInfo));
+      FreeAndNil(ResultInfo);
+    end;
+
+  var
+    ResultList: TGDBMINameValueList;
+    R: TGDBMIExecResult;
+    MemDump: TGDBMIMemoryDumpResultList;
+    Size: integer;
+  begin
+    Result := False;
+
+    case FDisplayFormat of
+      wdfStructure:
+        begin
+          Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
+          Result := Result and (R.State <> dsError);
+          if (not Result) and (not StoreError)
+          then exit;
+
+          ResultList := TGDBMINameValueList.Create(R.Values);
+          if Result
+          then FTextValue := ResultList.Values['value']
+          else FTextValue := ResultList.Values['msg'];
+          FTextValue := DeleteEscapeChars(FTextValue);
+          ResultList.Free;
+
+          if Result
+          then FixUpResult(AnExpression);
+        end;
+      wdfChar:
+        begin
+          Result := PrepareExpr(AnExpression);
+          if not Result
+          then exit;
+          FTextValue := GetChar(AnExpression, []);
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      wdfString:
+        begin
+          Result := PrepareExpr(AnExpression);
+          if not Result
+          then exit;
+          FTextValue := GetText(AnExpression, []); // GetText takes Addr
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      wdfDecimal:
+        begin
+          Result := PrepareExpr(AnExpression, True);
+          if not Result
+          then exit;
+          FTextValue := IntToStr(Int64(GetPtrValue(AnExpression, [], True)));
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      wdfUnsigned:
+        begin
+          Result := PrepareExpr(AnExpression, True);
+          if not Result
+          then exit;
+          FTextValue := IntToStr(GetPtrValue(AnExpression, [], True));
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      //wdfFloat:
+      //  begin
+      //    Result := PrepareExpr(AnExpression);
+      //    if not Result
+      //    then exit;
+      //    FTextValue := GetFloat(AnExpression, []);  // GetFloat takes address
+      //    if LastExecResult.State = dsError
+      //    then FTextValue := '<error>';
+      //  end;
+      wdfHex:
+        begin
+          Result := PrepareExpr(AnExpression, True);
+          if not Result
+          then exit;
+          FTextValue := IntToHex(GetPtrValue(AnExpression, [], True), 2);
+          if length(FTextValue) mod 2 = 1
+          then FTextValue := '0'+FTextValue; // make it an even number of digets
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      wdfPointer:
+        begin
+          Result := PrepareExpr(AnExpression, True);
+          if not Result
+          then exit;
+          FTextValue := IntToHex(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2);
+          if LastExecResult.State = dsError
+          then FTextValue := '<error>';
+        end;
+      wdfMemDump:
+        begin
+          Result := PrepareExpr(AnExpression);
+          if not Result
+          then exit;
+
+          Size := 256;
+          ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
+          MemDump := TGDBMIMemoryDumpResultList.Create(R);
+          FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
+          MemDump.Free;
+        end;
+      else // wdfDefault
+        begin
+          Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
+          Result := Result and (R.State <> dsError);
+          if (not Result) and (not StoreError)
+          then exit;
+
+          ResultList := TGDBMINameValueList.Create(R.Values);
+          if Result
+          then FTextValue := ResultList.Values['value']
+          else FTextValue := ResultList.Values['msg'];
+          FTextValue := DeleteEscapeChars(FTextValue);
+          ResultList.Free;
+
+          if Result
+          then FixUpResult(AnExpression);
+        end;
+    end;
+  end;
+
 var
-  R, Rtmp: TGDBMIExecResult;
+  R: TGDBMIExecResult;
   S: String;
   ResultList: TGDBMINameValueList;
-  ResultInfo: TGDBType;
-  addr: TDbgPtr;
-  e: Integer;
   Expr: TGDBMIExpression;
   frame, frameidx: Integer;
-  PrintableString: String;
 begin
   FTextValue:='';
   FTypeInfo:=nil;
@@ -9021,154 +9398,41 @@ begin
   // original
   frame := -1;
   frameidx := -1;
-  repeat
-    Result := ExecuteCommand('-data-evaluate-expression %s', [S], R);
-
-    if (R.State <> dsError)
-    then Break;
-
-    // check if there is a parentfp and try to evaluate there
-    if frame = -1
-    then begin
-      // store current
-      ExecuteCommand('-stack-info-frame', Rtmp);
-      ResultList.Init(Rtmp.Values);
-      ResultList.SetPath('frame');
-      frame := StrToIntDef(ResultList.Values['level'], -1);
-      if frame = -1 then Break;
-      frameidx := frame;
-    end;
-  until not SelectParentFrame(frameidx);
-
-  if frameidx <> frame
-  then begin
-    // Restore current frame
-    ExecuteCommand('-stack-select-frame %u', [frame], []);
-  end;
-
-  ResultList.Init(R.Values);
-  if R.State = dsError
-  then FTextValue := ResultList.Values['msg']
-  else FTextValue := ResultList.Values['value'];
-  FTextValue := DeleteEscapeChars(FTextValue);
-  ResultList.Free;
-  if R.State = dsError
-  then Exit;
-
-  // Check for strings
-  ResultInfo := GetGDBTypeInfo(S);
-  if (ResultInfo = nil) then Exit;
-
   try
-    case ResultInfo.Kind of
-      skPointer: begin
-        S := GetPart([], [' '], FTextValue, False, False);
-        Val(S, addr, e);
-        if e <> 0 then begin
-          FreeAndNil(ResultInfo);
-          Exit;
-        end;
+    repeat
+      if TryExecute(S, frame = -1)
+      then Break;
 
-        S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
-          0, 1, 2: begin
-            if Addr = 0
-            then
-              FTextValue := ''''''
-            else
-              FTextValue := MakePrintable(GetText(Addr));
-              PrintableString := FTextValue;
-          end;
-          3: begin
-            if Addr = 0
-            then FTextValue := 'nil'
-            else begin
-              S := GetClassName(Addr);
-              if S = '' then S := '???';
-              FTextValue := 'class of ' + S + ' ' + FTextValue;
-            end;
-          end;
-          4,5: begin
-            // widestring handling
-            if Addr = 0
-            then FTextValue := ''''''
-            else FTextValue := MakePrintable(GetWideText(Addr));
-            PrintableString := FTextValue;
-          end;
-        else
-          if Addr = 0
-          then FTextValue := 'nil';
-
-          if (Length(S) > 0)
-          then begin
-            if (S <> 'pointer')
-            then begin
-              if S[1] = 't'
-              then begin
-                S[1] := 'T';
-                if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
-              end;
-              FTextValue := PascalizePointer(FTextValue, '^' + S);
-            end
-            else FTextValue := PascalizePointer(FTextValue);
-          end;
-        end;
-
-        ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
-        S := Format('$%x', [Addr]);
-        if PrintableString <> ''
-        then S := S + ' ' + PrintableString;
-        ResultInfo.Value.AsString := S;
+      // check if there is a parentfp and try to evaluate there
+      if frame = -1
+      then begin
+        // store current
+        ExecuteCommand('-stack-info-frame', R);
+        ResultList.Init(R.Values);
+        ResultList.SetPath('frame');
+        frame := StrToIntDef(ResultList.Values['level'], -1);
+        if frame = -1 then Break;
+        frameidx := frame;
       end;
-
-      skClass: begin
-        Val(FTextValue, addr, e); //Get the class mem address
-        if e = 0 then begin //No error ?
-          if Addr = 0
-          then FTextValue := 'nil'
-          else begin
-            S := GetInstanceClassName(Addr);
-            if S = '' then S := '???'; //No instanced class found
-            FTextValue := 'class ' + S + ' ' + FTextValue;
-          end;
-        end;
-      end;
-
-      skVariant: begin
-        FTextValue := GetVariantValue(FTextValue);
-      end;
-      skRecord: begin
-        FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
-      end;
-
-      skSimple: begin
-        if ResultInfo.TypeName = 'CURRENCY' then
-          FTextValue := FormatCurrency(FTextValue)
-        else
-        if (ResultInfo.TypeName = '&ShortString') then
-          FTextValue := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
-        else
-          FTextValue := FTextValue;
-      end;
-    end;
+    until not SelectParentFrame(frameidx);
 
   finally
     if frameidx <> frame
     then begin
       // Restore current frame
       ExecuteCommand('-stack-select-frame %u', [frame], []);
-    end
+    end;
+    FreeAndNil(ResultList);
   end;
-  FTypeInfo := ResultInfo;
-  PutValuesInTree;
-  FTextValue := FormatResult(FTextValue);
+  Result := True;
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
-  const AExpression: String);
+  const AExpression: String; const ADisplayFormat: TWatchDisplayFormat);
 begin
   inherited Create(AOwner);
   FExpression := AExpression;
+  FDisplayFormat := ADisplayFormat;
   FTextValue := '';
   FTypeInfo:=nil;
 end;

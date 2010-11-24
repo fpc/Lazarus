@@ -562,34 +562,60 @@ type
 (******************************************************************************)
 (******************************************************************************)
 
+  TWatchDisplayFormat =
+    (wdfDefault,
+     wdfStructure,
+     wdfChar, wdfString,
+     wdfDecimal, wdfUnsigned, wdfFloat, wdfHex,
+     wdfPointer,
+     wdfMemDump
+    );
+
+const
+  TWatchDisplayFormatNames: array [TWatchDisplayFormat] of string =
+    ('wdfDefault',
+     'wdfStructure',
+     'wdfChar', 'wdfString',
+     'wdfDecimal', 'wdfUnsigned', 'wdfFloat', 'wdfHex',
+     'wdfPointer',
+     'wdfMemDump'
+    );
+
+type
+
   { TBaseWatch }
 
   TBaseWatch = class(TDelayedUdateItem)
   private
     FEnabled: Boolean;
     FExpression: String;
+    FDisplayFormat: TWatchDisplayFormat;
     FValid: TValidState;
     function GetEnabled: Boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
+    procedure DoDisplayFormatChanged; virtual;
     procedure SetValid(const AValue: TValidState);
 
   protected
     // virtual properties
     function GetExpression: String; virtual;
+    function GetDisplayFormat: TWatchDisplayFormat; virtual;
     function GetValid: TValidState; virtual;
     function GetValue: String; virtual;
     function GetTypeInfo: TDBGType; virtual;
 
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
+    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); virtual;
   public
     constructor Create(ACollection: TCollection); override;
   public
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
+    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
     property Valid: TValidState read GetValid;
     property Value: String read GetValue;
     property TypeInfo: TDBGType read GetTypeInfo;
@@ -3356,6 +3382,7 @@ begin
   then begin
     TBaseWatch(Dest).SetExpression(FExpression);
     TBaseWatch(Dest).SetEnabled(FEnabled);
+    TBaseWatch(Dest).SetDisplayFormat(FDisplayFormat);
   end
   else inherited;
 end;
@@ -3378,9 +3405,26 @@ begin
   Changed;
 end;
 
+procedure TBaseWatch.DoDisplayFormatChanged;
+begin
+  Changed;
+end;
+
 function TBaseWatch.GetEnabled: Boolean;
 begin
   Result := FEnabled;
+end;
+
+function TBaseWatch.GetDisplayFormat: TWatchDisplayFormat;
+begin
+  Result := FDisplayFormat;
+end;
+
+procedure TBaseWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
+begin
+  if AValue = FDisplayFormat then exit;
+  FDisplayFormat := AValue;
+  DoDisplayFormatChanged;
 end;
 
 function TBaseWatch.GetExpression: String;
@@ -3456,15 +3500,25 @@ begin
 end;
 
 procedure TIDEWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  i: Integer;
 begin
   Expression := AConfig.GetValue(APath + 'Expression/Value', '');
   Enabled := AConfig.GetValue(APath + 'Enabled/Value', true);
+  i := StringCase
+    (AConfig.GetValue(APath + 'DisplayStyle/Value', TWatchDisplayFormatNames[wdfDefault]),
+    TWatchDisplayFormatNames);
+  if i >= 0
+  then DisplayFormat := TWatchDisplayFormat(i)
+  else DisplayFormat := wdfDefault;
 end;
 
 procedure TIDEWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 begin
   AConfig.SetDeleteValue(APath + 'Expression/Value', Expression, '');
   AConfig.SetDeleteValue(APath + 'Enabled/Value', Enabled, true);
+  AConfig.SetDeleteValue(APath + 'DisplayStyle/Value',
+    TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
 end;
 
 

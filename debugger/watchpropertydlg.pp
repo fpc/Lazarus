@@ -77,6 +77,12 @@ uses
 { TWatchPropertyDlg }
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
+const
+  StyleToDispFormat: Array [0..8] of TWatchDisplayFormat =
+    (wdfChar, wdfString, wdfDecimal,
+     wdfHex, wdfUnsigned, wdfPointer,
+     wdfStructure, wdfDefault, wdfMemDump
+    );
 begin
   if FWatch = nil
   then begin
@@ -85,7 +91,12 @@ begin
   else begin
     FWatch.Expression := txtExpression.Text;
   end;
-  
+
+  if (rgStyle.ItemIndex >= low(StyleToDispFormat))
+  and (rgStyle.ItemIndex <= High(StyleToDispFormat))
+  then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
+  else FWatch.DisplayFormat := wdfDefault;
+
   FWatch.Enabled := chkEnabled.Checked;
 end;
 
@@ -96,6 +107,14 @@ end;
 
 constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch;
   const AWatchExpression: String = '');
+const
+  DispFormatToStyle: Array [TWatchDisplayFormat] of Integer =
+    (7, 6, //wdfDefault, wdfStructure,
+     0, 1, //wdfChar, wdfString,
+     2, 4, //wdfDecimal, wdfUnsigned, (TODO unsigned)
+     7, 3, //wdfFloat, wdfHex,
+     5, 8   //wdfPointer, wdfMemDump
+    );
 begin
   FWatch := AWatch;
   inherited Create(AOwner);
@@ -103,19 +122,20 @@ begin
   then begin 
     chkEnabled.Checked := True;
     txtExpression.Text := AWatchExpression;
+    rgStyle.ItemIndex := 7;
   end
   else begin
     txtExpression.Text := FWatch.Expression;
     chkEnabled.Checked := FWatch.Enabled;
+    rgStyle.ItemIndex := DispFormatToStyle[FWatch.DisplayFormat];
   end;
-  
+
   lblRepCount.Enabled := False;
   txtRepCount.Enabled := False;
   lblDigits.Enabled := False;
   txtDigits.Enabled := False;
   chkAllowFunc.Enabled := False;
-  rgStyle.Enabled := False;
-  
+
   Caption:= lisWatchPropert;
   lblExpression.Caption:= lisExpression;
   lblRepCount.Caption:= lisRepeatCount;
@@ -127,11 +147,12 @@ begin
   rgStyle.Items[1]:= lisString;
   rgStyle.Items[2]:= lisDecimal;
   rgStyle.Items[3]:= lisHexadecimal;
-  rgStyle.Items[4]:= lisFloatingPoin;
+  rgStyle.Items[4]:= lisUnsigned;
   rgStyle.Items[5]:= lisPointer;
   rgStyle.Items[6]:= lisRecordStruct;
   rgStyle.Items[7]:= dlgAssemblerDefault;
   rgStyle.Items[8]:= lisMemoryDump;
+  //rgStyle.Items[9]:= lisFloatingPoin;
 
   ButtonPanel.OKButton.OnClick := @btnOKClick;
   ButtonPanel.HelpButton.OnClick := @btnHelpClick;

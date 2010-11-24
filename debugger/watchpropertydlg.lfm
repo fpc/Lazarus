@@ -1,7 +1,7 @@
 object WatchPropertyDlg: TWatchPropertyDlg
-  Left = 331
+  Left = 542
   Height = 210
-  Top = 184
+  Top = 214
   Width = 420
   ActiveControl = chkAllowFunc
   BorderIcons = [biSystemMenu]
@@ -16,9 +16,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
+    Height = 16
     Top = 9
-    Width = 57
+    Width = 59
     BorderSpacing.Left = 6
     Caption = 'Expression:'
     ParentColor = False
@@ -28,9 +28,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
-    Top = 36
-    Width = 72
+    Height = 16
+    Top = 38
+    Width = 76
     BorderSpacing.Left = 6
     Caption = 'Repeat Count:'
     ParentColor = False
@@ -41,9 +41,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtDigits
     AnchorSideTop.Side = asrCenter
     Left = 171
-    Height = 14
-    Top = 36
-    Width = 31
+    Height = 16
+    Top = 38
+    Width = 34
     BorderSpacing.Left = 6
     Caption = 'Digits:'
     ParentColor = False
@@ -53,7 +53,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 105
-    Height = 21
+    Height = 23
     Top = 6
     Width = 309
     Anchors = [akTop, akLeft, akRight]
@@ -65,8 +65,8 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrBottom
     Left = 105
-    Height = 21
-    Top = 33
+    Height = 23
+    Top = 35
     Width = 60
     BorderSpacing.Top = 6
     TabOrder = 2
@@ -77,9 +77,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrBottom
-    Left = 208
-    Height = 21
-    Top = 33
+    Left = 211
+    Height = 23
+    Top = 35
     Width = 60
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -90,9 +90,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkAllowFunc
     Left = 6
-    Height = 17
-    Top = 60
-    Width = 56
+    Height = 19
+    Top = 64
+    Width = 62
     AllowGrayed = True
     BorderSpacing.Left = 6
     Caption = 'Enabled'
@@ -102,9 +102,9 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrBottom
     Left = 105
-    Height = 17
-    Top = 60
-    Width = 112
+    Height = 19
+    Top = 64
+    Width = 128
     AllowGrayed = True
     BorderSpacing.Top = 6
     Caption = 'Allow Function Calls'
@@ -118,7 +118,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 78
-    Top = 83
+    Top = 89
     Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -143,7 +143,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
       'String'
       'Decimal'
       'Hexadecimal'
-      'Floating Point'
+      'Unsigned'
       'Pointer'
       'Record/Structure'
       'Default'
@@ -155,10 +155,19 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = rgStyle
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 37
-    Top = 167
+    Height = 31
+    Top = 173
     Width = 408
     Anchors = [akTop, akLeft, akRight, akBottom]
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
