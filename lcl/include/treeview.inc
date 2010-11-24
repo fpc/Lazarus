@@ -661,11 +661,17 @@ var
 begin
   if AValue=GetSelected then exit;
   TV:=TreeView;
-  if AValue then begin
+  if AValue then
+  begin
     Include(FStates,nsSelected);
-    if (TV<>nil) then begin
+    if (TV<>nil) then
+    begin
       TV.EndEditing(true);
       MultiSelect:=tvoAllowMultiselect in TV.Options;
+
+      if not MultiSelect and Assigned(FOwner) then
+        FOwner.SelectionsChanged(Self, True);
+
       if MultiSelect then TV.LockSelectionChangeEvent;
       try
         TV.Selected:=Self;
@@ -677,9 +683,13 @@ begin
         if MultiSelect then TV.UnlockSelectionChangeEvent;
       end;
     end;
-  end else begin
+  end else
+  begin
+    if not MultiSelected and Assigned(FOwner) then
+      FOwner.SelectionsChanged(Self, False);
     Exclude(FStates,nsSelected);
-    if (TV<>nil) and (TV.Selected=Self) then begin
+    if (TV<>nil) and (TV.Selected=Self) then
+    begin
       TV.EndEditing(true);
       TV.Selected:=nil;
       if TV.Selected=Self then
@@ -1030,9 +1040,13 @@ begin
   if AValue then begin
     if (Treeview<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
       exit;
+    if Assigned(FOwner) then
+      FOwner.SelectionsChanged(Self, True);
     Include(FStates,nsMultiSelected);
     if TreeNodes<>nil then BindToMultiSelected;
   end else begin
+    if Assigned(FOwner) then
+      FOwner.SelectionsChanged(Self, False);
     Exclude(FStates,nsMultiSelected);
     if TreeNodes<>nil then UnbindFromMultiSelected;
   end;
@@ -1817,12 +1831,14 @@ end;
 constructor TTreeNodes.Create(AnOwner: TCustomTreeView);
 begin
   inherited Create;
+  FSelection := TFPList.Create;
   FOwner := AnOwner;
 end;
 
 destructor TTreeNodes.Destroy;
 begin
   Clear;
+  FreeThenNil(FSelection);
   inherited Destroy;
 end;
 
@@ -1863,6 +1879,7 @@ begin
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
   end;
+  FSelection.Clear;
   EndUpdate;
 end;
 
@@ -1938,6 +1955,25 @@ begin
   else
     ParentNode := nil;
   Result := InternalAddObject(ParentNode, S, Data, taAddFirst);
+end;
+
+procedure TTreeNodes.SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
+begin
+  if ANode <> nil then
+  begin
+    if AIsSelected then
+      FSelection.Add(ANode)
+    else
+      FSelection.Remove(ANode);
+  end;
+end;
+
+function TTreeNodes.GetSelections(const AIndex: Integer): TTreeNode;
+begin
+  if (AIndex < 0) or (AIndex > FSelection.Count - 1) then
+    TreeNodeError('TTreeNodes.GetSelections Index '+IntToStr(AIndex)
+      +' out of bounds (Count='+IntToStr(FSelection.Count)+')');
+  Result := TTreeNode(FSelection.Items[AIndex]);
 end;
 
 function TTreeNodes.Add(SiblingNode: TTreeNode; const S: string): TTreeNode;
@@ -2184,6 +2220,11 @@ begin
   if Result = nil then RaiseCountTooBig;
   FNodeCache.CacheNode := Result;
   FNodeCache.CacheIndex := Index;
+end;
+
+function TTreeNodes.GetSelectionCount: Cardinal;
+begin
+  Result := Cardinal(FSelection.Count);
 end;
 
 {function TTreeNodes.GetNode(ItemId: HTreeItem): TTreeNode;
@@ -3826,6 +3867,19 @@ begin
     Result := FRClickNode
   else
     Result := FSelectedNode;
+end;
+
+function TCustomTreeView.GetSelectionCount: Cardinal;
+begin
+  Result := Items.SelectionCount;
+end;
+
+function TCustomTreeView.GetSelections(AIndex: Integer): TTreeNode;
+begin
+  if (AIndex >= 0) and (AIndex < Items.SelectionCount) then
+    Result := Items.GetSelections(AIndex)
+  else
+    Result := nil;
 end;
 
 procedure TCustomTreeView.SetSelection(Value: TTreeNode);

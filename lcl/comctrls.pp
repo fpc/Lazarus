@@ -2227,6 +2227,7 @@ type
   TTreeNodes = class(TPersistent)
   private
     FCount: integer;
+    FSelection: TFPList;
     FFirstMultiSelected: TTreeNode;
     FLastMultiSelected: TTreeNode;
     FKeepCollapsedNodes: boolean;
@@ -2239,6 +2240,7 @@ type
     procedure ClearCache;
     function GetHandle: THandle;
     function GetNodeFromIndex(Index: Integer): TTreeNode;
+    function GetSelectionCount: Cardinal;
     function GetTopLvlItems(Index: integer): TTreeNode;
     procedure GrowTopLvlItems;
     function IndexOfTopLvlItem(Node: TTreeNode): integer;
@@ -2287,6 +2289,7 @@ type
     function GetLastNode: TTreeNode; // last top level node
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
+    function GetSelections(const AIndex: Integer): TTreeNode;
     function FindTopLvlNode(const NodeText: string): TTreeNode;
     function FindNodeWithText(const NodeText: string): TTreeNode;
     function FindNodeWithData(const NodeData: Pointer): TTreeNode;
@@ -2296,6 +2299,7 @@ type
     function InsertBehind(PrevNode: TTreeNode; const S: string): TTreeNode;
     function InsertObjectBehind(PrevNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
+    procedure SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
     procedure SortTopLevelNodes(SortProc: TTreeNodeCompare);
     procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
@@ -2304,6 +2308,7 @@ type
     property KeepCollapsedNodes: boolean
       read FKeepCollapsedNodes write FKeepCollapsedNodes;
     property Owner: TCustomTreeView read FOwner;
+    property SelectionCount: Cardinal read GetSelectionCount;
     property TopLvlCount: integer read FTopLvlCount;
     property TopLvlItems[Index: integer]: TTreeNode
       read GetTopLvlItems write SetTopLvlItems;
@@ -2446,6 +2451,8 @@ type
     function GetRightClickSelect: boolean;
     function GetRowSelect: boolean;
     function GetSelection: TTreeNode;
+    function GetSelectionCount: Cardinal;
+    function GetSelections(AIndex: Integer): TTreeNode;
     function GetShowButtons: boolean;
     function GetShowLines: boolean;
     function GetShowRoot: boolean;
@@ -2669,7 +2676,9 @@ type
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
+    property SelectionCount: Cardinal read GetSelectionCount;
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
+    property Selections[AIndex: Integer]: TTreeNode read GetSelections;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
