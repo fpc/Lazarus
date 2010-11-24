@@ -716,6 +716,7 @@ type
     procedure EndAutoFocusLock;
 
   protected
+    procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
@@ -4993,6 +4994,7 @@ Begin
       Options:=Options-[nboShowCloseButtons];
     TabPosition := EditorOpts.TabPosition;
     OnPageChanged := @NotebookPageChanged;
+    OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
     TabDragMode := dmAutomatic;
     OnTabDragOverEx  := @NotebookCanDragTabMove;
@@ -6521,6 +6523,16 @@ procedure TSourceNotebook.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   Cursor:=crDefault;
+end;
+
+procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
+var
+  TabIndex: Integer;
+begin
+  TabIndex:=FNotebook.TabIndex;
+  if TabIndex>=0 then
+    CloseClicked(NoteBookPage[TabIndex],
+      (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
 end;
 
 function TSourceNotebook.GetEditors(Index:integer):TSourceEditor;
