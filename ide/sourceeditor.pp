@@ -6529,10 +6529,8 @@ procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 var
   TabIndex: Integer;
 begin
-  TabIndex:=FNotebook.TabIndex;
-  if TabIndex>=0 then
-    CloseClicked(NoteBookPage[TabIndex],
-      (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
+  CloseClicked(Sender,
+              (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
 end;
 
 function TSourceNotebook.GetEditors(Index:integer):TSourceEditor;
