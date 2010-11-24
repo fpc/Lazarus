@@ -823,6 +823,10 @@ msgstr "קולניות"
 msgid "C++ Styled INLINE"
 msgstr "פנימי בסגנון ++C"
 
+#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
+msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "סמן לאחר סיום השורה"
@@ -6389,6 +6393,10 @@ msgstr "נטרל I18N עבור LFM"
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "בטל שינויים"
+
+#: lazarusidestrconsts.lisdiscardchangesall
+msgid "Discard all changes"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -13073,6 +13081,10 @@ msgstr "המקור השתנה"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "המקור של דף השתנה %s%s%s. לשמור?"
+
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
+msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"

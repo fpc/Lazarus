@@ -822,6 +822,10 @@ msgstr ""
 msgid "C++ Styled INLINE"
 msgstr "INLINE in stile C++"
 
+#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
+msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "Cursore oltre EOL"
@@ -6424,6 +6428,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Annulla modifiche"
+
+#: lazarusidestrconsts.lisdiscardchangesall
+msgid "Discard all changes"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -13122,6 +13130,10 @@ msgstr "Sorgente modificato"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Il sorgente della pagina %s%s%s è cambiato. Salvarlo?"
+
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
+msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"

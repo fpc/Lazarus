@@ -825,6 +825,10 @@ msgstr "冗余"
 msgid "C++ Styled INLINE"
 msgstr "C++ 风格的 INLINE"
 
+#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
+msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "允许光标超过行末"
@@ -6426,6 +6430,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "忽略"
+
+#: lazarusidestrconsts.lisdiscardchangesall
+msgid "Discard all changes"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -13128,6 +13136,10 @@ msgstr "源代码已更改"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "%s%s%s 页的源代码已经更改. 保存么?"
+
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
+msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"

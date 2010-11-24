@@ -825,6 +825,10 @@ msgstr "情報をより多く表示"
 msgid "C++ Styled INLINE"
 msgstr "C++スタイルのインライン"
 
+#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
+msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "EOL（ファイル終端）を越えたカーソル"
@@ -6421,6 +6425,10 @@ msgstr "LFMの国際化を無効化"
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "変更を破棄"
+
+#: lazarusidestrconsts.lisdiscardchangesall
+msgid "Discard all changes"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -13125,6 +13133,10 @@ msgstr "ソースが変更されています"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "ページ %s%s%sのソースが変更されています。保存しますか？"
+
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
+msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"

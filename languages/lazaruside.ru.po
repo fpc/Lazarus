@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-23 03:17+0300\n"
+"PO-Revision-Date: 2010-11-25 00:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -835,6 +835,10 @@ msgstr "Подробность вывода"
 #: lazarusidestrconsts.dlgcppinline
 msgid "C++ Styled INLINE"
 msgstr "INLINE в стиле C++"
+
+#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
+msgid "Ctrl-middle-click on tab closes all others"
+msgstr "По Ctrl-средней кнопке мыши на вкладке закрывать остальные"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -6422,6 +6426,10 @@ msgstr "Отключить i18n для LFM"
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Отбросить изменения"
+
+#: lazarusidestrconsts.lisdiscardchangesall
+msgid "Discard all changes"
+msgstr "Отбросить все изменения"
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -13107,6 +13115,10 @@ msgstr "Исходный код изменён"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
 msgstr "Исходный код  на странице %s%s%s изменён. Сохранить?"
+
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
+msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+msgstr "Исходный код был изменён в нескольких вкладках. Сохранить содержимое вкладки %s%s%s? (осталось %d)"
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"
