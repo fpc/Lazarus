@@ -56,6 +56,11 @@ begin
   Result := WidgetSet.AllocateHWnd(Method);
 end;
 
+function AskUser(const aCaption, aMsg: string; DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
+begin
+  Result := WidgetSet.AskUser(aCaption, aMsg, DlgType, Buttons, HelpCtx);
+end;
+
 procedure CallDefaultWndHandler(Sender: TObject; var Message);
 begin
   WidgetSet.CallDefaultWndHandler(Sender,Message);

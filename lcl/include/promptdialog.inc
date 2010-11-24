@@ -40,7 +40,7 @@ type
     procedure LayoutDialogSmallDevice;
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
-      DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
+      DialogType: Longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
     destructor Destroy; override;
   end;
 
@@ -531,7 +531,7 @@ type
     TextStyle : TTextStyle;
     MessageTxt: String;
     constructor CreateQuestionDlg(const aCaption, aMsg: string;
-      DlgType: TMsgDlgType; Buttons: array of const; HelpCtx: Longint);
+      DlgType: LongInt; Buttons: array of const; HelpCtx: Longint);
     destructor Destroy; override;
     procedure Paint; override;
     procedure LayoutDialog;
@@ -701,7 +701,7 @@ begin
 end;
 
 constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType; Buttons: array of const; HelpCtx: Longint);
+  DlgType: LongInt; Buttons: array of const; HelpCtx: Longint);
 var
   i: Integer;
   CurBtnValue: TModalResult;
@@ -709,7 +709,6 @@ var
   NewButton: TBitBtn;
   NewKind: TBitBtnKind;
   NewCaption: String;
-  dlgId: LongInt;
   ok: Boolean;
   DefaultBtn: TBitBtn;
   HasOptions: Boolean;
@@ -863,21 +862,20 @@ begin
   end;
 
   FBitmap := nil;
-  NewCaption:=ACaption;
+  NewCaption := ACaption;
   case DlgType of
-    mtWarning, mtError, mtInformation, mtConfirmation:
+    idDialogConfirm, idDialogInfo, idDialogWarning, idDialogError:
       begin
-        dlgId := DialogIds[DlgType];
-        FBitmap := GetDialogIcon(dlgId);
-        if NewCaption='' then
-          NewCaption := GetDialogCaption(dlgId);
+        FBitmap := GetDialogIcon(DlgType);
+        if NewCaption = '' then
+          NewCaption := GetDialogCaption(DlgType);
       end;
     else
       FBitmap := GetDialogIcon(idDialogInfo);
   end;
-  if NewCaption='' then
+  if NewCaption = '' then
     NewCaption := Application.Title;
-  Caption:=NewCaption;
+  Caption := NewCaption;
   
   // find default and cancel button
   if DefaultBtn = nil then
@@ -894,8 +892,8 @@ begin
 end;
 
 
-function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-  Buttons: array of const; HelpCtx: Longint): TModalResult;
+function ShowQuestionDialog(const aCaption, aMsg: string; DlgType: LongInt;
+  Buttons: array of const; HelpCtx: Longint): LongInt;
 { Show a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
   HelpCtx as Help context and Buttons to define the shown buttons and their
   TModalResult.
@@ -922,6 +920,12 @@ begin
   finally
     QuestionDialog.Free;
   end;
+end;
+
+function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: array of const; HelpCtx: Longint): TModalResult;
+begin
+  Result := WidgetSet.AskUser(aCaption, aMsg, DialogIds[DlgType], Buttons, HelpCtx);
 end;
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;

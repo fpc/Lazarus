@@ -702,12 +702,14 @@ begin
 end;
 
 initialization
-  Forms.MessageBoxFunction:=@ShowMessageBox;
-  InterfaceBase.InputDialogFunction:=@ShowInputDialog;
-  InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
+  Forms.MessageBoxFunction := @ShowMessageBox;
+  InterfaceBase.InputDialogFunction := @ShowInputDialog;
+  InterfaceBase.PromptDialogFunction := @ShowPromptDialog;
+  InterfaceBase.QuestionDialogFunction := @ShowQuestionDialog;
   {$I dialog_icons.lrs}
 
 finalization
-  InterfaceBase.InputDialogFunction:=nil;
+  InterfaceBase.InputDialogFunction := nil;
+  InterfaceBase.QuestionDialogFunction := nil;
 
 end.

@@ -163,20 +163,21 @@ type
 type
   TInputDialogFunction = function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;
-var
-  InputDialogFunction: TInputDialogFunction = nil;
-
-type
-  TPromptDialogFunction = Function(const DialogCaption, DialogMessage : String;
+  TPromptDialogFunction = function(const DialogCaption, DialogMessage : String;
     DialogType : longint; Buttons : PLongint;
     ButtonCount, DefaultIndex, EscapeResult : Longint;
     UseDefaultPos: boolean;
     X, Y : Longint) : Longint;
-var
-  PromptDialogFunction: TPromptDialogFunction = nil;
+  TQuestionDialogFunction = function(const aCaption, aMsg: string;
+    DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
 
 var
-  WidgetSet: TWidgetSet=nil;
+  InputDialogFunction: TInputDialogFunction = nil;
+  PromptDialogFunction: TPromptDialogFunction = nil;
+  QuestionDialogFunction: TQuestionDialogFunction = nil;
+
+var
+  WidgetSet: TWidgetSet = nil;
 
 implementation
 

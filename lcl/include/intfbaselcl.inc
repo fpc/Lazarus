@@ -49,6 +49,15 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.AskUser(const aCaption, aMsg: string;
+    DlgType: LongInt; Buttons: array of const; HelpCtx: Longint): LongInt;
+begin
+  if QuestionDialogFunction <> nil then
+    Result := QuestionDialogFunction(aCaption, aMsg, DlgType, Buttons, HelpCtx)
+  else
+    Result := 0;
+end;
+
 procedure TWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 begin
 end;
@@ -611,10 +620,10 @@ function TWidgetSet.PromptUserAtXY(const DialogCaption,
   X, Y: Longint): Longint;
 begin
   if PromptDialogFunction<>nil then
-    Result:=PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
-       Buttons, ButtonCount, DefaultIndex, EscapeResult, false, X, Y)
+    Result := PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
+       Buttons, ButtonCount, DefaultIndex, EscapeResult, False, X, Y)
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TWidgetSet.RadialArc(DC: HDC;
