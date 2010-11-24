@@ -87,7 +87,7 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; overri
 function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; override;
 function FloodFill(DC: HDC; X, Y: Integer; Color: TGraphicsColor; FillStyle: TGraphicsFillStyle;   Brush: HBRUSH): Boolean; override;
 { Draws a 3D border in GTK native style. }
-function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; override;
+function Frame3D(DC: HDC; var ARect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer; override;
 
 function GetActiveWindow: HWND; override;

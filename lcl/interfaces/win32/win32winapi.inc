@@ -1483,7 +1483,7 @@ end;
   Draws a 3D border in win32 native style.
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
-function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
+function TWin32WidgetSet.Frame3D(DC: HDC; var ARect: TRect;
   const FrameWidth: Integer; const Style: TBevelCut): Boolean;
 const
   Edge: array[TBevelCut] of Integer =
@@ -1497,7 +1497,7 @@ var
   I: Integer;
 begin
   for I := 0 to FrameWidth - 1 do
-    Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT or BF_ADJUST));
+    Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT or BF_ADJUST));
 end;
 
 function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
