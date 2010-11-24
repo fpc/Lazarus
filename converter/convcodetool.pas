@@ -292,7 +292,6 @@ end;
 procedure TConvDelphiCodeTool.UnCommentUsesSection(AUsesSection: TUsesSection);
 var
   AUsesNode: TCodeTreeNode;
-  InsPos1, InsPos2: Integer;
 begin
   fSrcCache.MainScanner:=fCodeTool.Scanner;
   fCodeTool.BuildTree(AUsesSection=usMain);
@@ -619,12 +618,14 @@ function TConvDelphiCodeTool.AddUnits(AMainUnitsToAdd, AImplementationUnitsToAdd
 var
   i: Integer;
 begin
+  Result:=false;
   if AMainUnitsToAdd<>nil then;
     for i:=0 to AMainUnitsToAdd.Count-1 do
-      fCodeTool.AddUnitToSpecificUsesSection(usMain, AMainUnitsToAdd[i], '', fSrcCache);
+      if not fCodeTool.AddUnitToSpecificUsesSection(usMain, AMainUnitsToAdd[i], '', fSrcCache) then exit;
   if AImplementationUnitsToAdd<>nil then;
     for i:=0 to AImplementationUnitsToAdd.Count-1 do
-      fCodeTool.AddUnitToSpecificUsesSection(usImplementation, AImplementationUnitsToAdd[i], '', fSrcCache);
+      if not fCodeTool.AddUnitToSpecificUsesSection(usImplementation, AImplementationUnitsToAdd[i], '', fSrcCache) then exit;
+  Result:=true;
 end;
 
 function TConvDelphiCodeTool.RemoveUnits(AUnitsToRemove: TStrings): boolean;
