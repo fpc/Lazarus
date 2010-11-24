@@ -1438,7 +1438,7 @@ begin
           aSize := -MulDiv(lfheight, 72, ScreenInfo.PixelsPerInchY) * PANGO_SCALE
         else
           aSize := lfHeight * PANGO_SCALE;
-        pango_font_description_set_size(PangoDesc, aSize);
+        pango_font_description_set_absolute_size(PangoDesc, aSize);
       end;
       
       // create font
