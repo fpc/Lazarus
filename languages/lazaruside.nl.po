@@ -14308,6 +14308,10 @@ msgstr "Unit paden"
 msgid "Units not found in"
 msgstr "Units niet gevonden"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

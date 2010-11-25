@@ -14331,6 +14331,10 @@ msgstr "单元路径"
 msgid "Units not found in"
 msgstr "单元没有找到"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "未用单元"

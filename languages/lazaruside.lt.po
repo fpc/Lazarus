@@ -14318,6 +14318,10 @@ msgstr "Modulių keliai"
 msgid "Units not found in"
 msgstr "Moduliai nerasti, ieškota čia:"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Nenaudojami moduliai"

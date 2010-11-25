@@ -14196,6 +14196,10 @@ msgstr ""
 msgid "Units not found in"
 msgstr ""
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

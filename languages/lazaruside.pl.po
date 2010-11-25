@@ -14313,6 +14313,10 @@ msgstr "Ścieżki do modułów"
 msgid "Units not found in"
 msgstr "Nie znaleziono modułów"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

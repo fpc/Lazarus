@@ -14328,6 +14328,10 @@ msgstr "ユニットパス"
 msgid "Units not found in"
 msgstr "ユニットが見つかりません"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "使われていないユニット"

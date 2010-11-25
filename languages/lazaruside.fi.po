@@ -14281,6 +14281,10 @@ msgstr ""
 msgid "Units not found in"
 msgstr "Käännösyksikköjä (unit) ei löydetty"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Käyttämättömät käännösyksiköt (unit)"

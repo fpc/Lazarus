@@ -14230,6 +14230,10 @@ msgstr "Cesty jednotky"
 msgid "Units not found in"
 msgstr "Jednotky nenalezeny v"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Nepoužité jednotky"

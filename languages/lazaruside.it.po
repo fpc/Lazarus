@@ -14325,6 +14325,10 @@ msgstr "Path di ricerca delle Unit"
 msgid "Units not found in"
 msgstr "Units non trovate"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

@@ -14270,6 +14270,10 @@ msgstr "נתיבי היחידה"
 msgid "Units not found in"
 msgstr "היחידה לא נמצאה ב"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "יחידות שאינן בשימוש"

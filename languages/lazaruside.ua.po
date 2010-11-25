@@ -14303,6 +14303,10 @@ msgstr "Шляхи до модулів"
 msgid "Units not found in"
 msgstr "Модулі не знайдені"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

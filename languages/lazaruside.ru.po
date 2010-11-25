@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-25 00:57+0300\n"
+"PO-Revision-Date: 2010-11-26 02:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -14310,6 +14310,10 @@ msgstr "Пути к модулям"
 #| msgid "Units not found"
 msgid "Units not found in"
 msgstr "Модули не найдены в"
+
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr "Беззнаковое"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"

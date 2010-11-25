@@ -14318,6 +14318,10 @@ msgstr "Path Unit"
 msgid "Units not found in"
 msgstr "Unit tidak ditemukan"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""

@@ -14256,6 +14256,10 @@ msgstr "Birim yolları"
 msgid "Units not found in"
 msgstr "Birimler bulunamadı"
 
+#: lazarusidestrconsts.lisunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""
