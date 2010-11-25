@@ -424,9 +424,9 @@ begin
   LastLine:='';
   if not CfgStrToDate(NextLine,BaseDate) then BaseDate:=Date;
   repeat
-    IncludeFilename:=NextUncompressedLine;
+    IncludeFilename:=TrimFilename(NextUncompressedLine);
     if IncludeFilename='' then exit;
-    IncludedByFile:=NextUncompressedLine;
+    IncludedByFile:=TrimFilename(NextUncompressedLine);
     if IncludedByFile='' then begin
       debugln(['TCodeCache.LoadIncludeLinksDataFromList missing IncludedByFile: IncludeFilename=',IncludeFilename,' line=',Index]);
       exit;
@@ -549,7 +549,7 @@ var
       inc(p2);
     end;
     p:=p1-PChar(Line);
-    List.Add(IntToStr(p)+':'+copy(Line,p,length(Line)));
+    List.Add(IntToStr(p)+':'+copy(Line,p+1,length(Line)));
     LastLine:=Line;
   end;
 
