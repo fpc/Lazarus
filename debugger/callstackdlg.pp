@@ -56,6 +56,8 @@ type
     actSetCurrent: TAction;
     actShow: TAction;
     popToggle: TMenuItem;
+    ToolButtonPower: TToolButton;
+    ToolButton2: TToolButton;
     ToolButtonTop: TToolButton;
     ToolButtonBottom: TToolButton;
     ToolButtonCopyAll: TToolButton;
@@ -90,6 +92,7 @@ type
     procedure lvCallStackClick(Sender: TObject);
     procedure lvCallStackKeyPress(Sender: TObject; var Key: char);
     procedure popCountClick(Sender: TObject);
+    procedure ToolButtonPowerClick(Sender: TObject);
     procedure txtGotoKeyPress(Sender: TObject; var Key: char);
     procedure lvCallStackDBLCLICK(Sender: TObject);
     procedure actCopyAllClick(Sender: TObject);
@@ -103,6 +106,7 @@ type
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
     function GetImageIndex(Entry: TCallStackEntry): Integer;
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
     procedure SetViewLimit(const AValue: Integer);
@@ -171,6 +175,7 @@ end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
+  if not ToolButtonPower.Down then exit;
   if FViewStart = 0
   then UpdateView
   else SetViewStart(0);
@@ -179,6 +184,7 @@ end;
 
 procedure TCallStackDlg.CallStackCurrent(Sender: TObject);
 begin
+  if not ToolButtonPower.Down then exit;
   UpdateView;
 end;
 
@@ -224,6 +230,7 @@ var
   First, Count: Integer;
   Source: String;
 begin
+  if not ToolButtonPower.Down then exit;
   BeginUpdate;
   try
     if (CallStack = nil) or (CallStack.Count=0)
@@ -403,6 +410,16 @@ begin
   actViewLimit.Caption := TMenuItem(Sender).Caption;
 end;
 
+procedure TCallStackDlg.ToolButtonPowerClick(Sender: TObject);
+begin
+  if ToolButtonPower.Down
+  then begin
+    ToolButtonPower.ImageIndex := FPowerImgIdx;
+    UpdateView;
+  end
+  else ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
+end;
+
 procedure TCallStackDlg.txtGotoKeyPress(Sender: TObject; var Key: char);
 begin
   case Key of
@@ -452,11 +469,15 @@ end;
 
 procedure TCallStackDlg.actViewMoreExecute(Sender: TObject);
 begin
+  ToolButtonPower.Down := False;
+  ToolButtonPowerClick(nil);
   ViewLimit := ViewLimit + FViewCount;
 end;
 
 procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
 begin
+  ToolButtonPower.Down := False;
+  ToolButtonPowerClick(nil);
   SetViewStart(0);
 end;
 
@@ -487,6 +508,8 @@ var
   i: integer;
 begin
   Caption:= lisMenuViewCallStack;
+  ToolButtonPower.Caption := lisDbgWinPower;
+  ToolButtonPower.Hint := lisDbgWinPowerHint;
   ToolButtonShow.Caption:= lisShow;
   ToolButtonCurrent.Caption:= lisCurrent;
   for i:= 0 to mnuLimit.Items.Count-1 do
@@ -508,6 +531,9 @@ begin
   ToolButtonBottom.ImageIndex := IDEImages.LoadImage(16, 'callstack_bottom');
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
   ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  ToolButtonPower.ImageIndex := FPowerImgIdx;
 
   lvCallStack.SmallImages := IDEImages.Images_16;
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
@@ -545,13 +571,17 @@ end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
 begin
+  ToolButtonPower.Down := False;
+  ToolButtonPowerClick(nil);
   ViewLimit := FViewCount;
 end;
 
 procedure TCallStackDlg.SetViewStart(AStart: Integer);
 begin
   if CallStack = nil then Exit;
-  
+  ToolButtonPower.Down := False;
+  ToolButtonPowerClick(nil);
+
   if (AStart > CallStack.Count - FViewLimit)
   then AStart := CallStack.Count - FViewLimit;
   if AStart < 0 then AStart := 0;
@@ -595,6 +625,8 @@ end;
 
 procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
 begin
+  ToolButtonPower.Down := False;
+  ToolButtonPowerClick(nil);
   if FViewLimit = AValue then Exit;
   if (CallStack <> nil)
   and (FViewStart + FViewLimit >= CallStack.Count)

@@ -175,7 +175,16 @@ debugger/callstack_top.png
 debugger/debugger_current_line.png
 debugger/debugger_current_line_breakpoint.png
 debugger/debugger_current_line_disabled_breakpoint.png
+debugger/debugger_disable.png
+debugger/debugger_disable_all.png
+debugger/debugger_enable.png
+debugger/debugger_enable_all.png
+debugger/debugger_power.png
+debugger/debugger_power_grey.png
+debugger/debugger_trashcan.png
+debugger/debugger_trashcan_all.png
 debugger/debugger.png
+debugger/debugger__gen_setting.png
 debugger/debugger_breakpoints.png
 debugger/debugger_call_stack.png
 debugger/debugger_evaluate.png

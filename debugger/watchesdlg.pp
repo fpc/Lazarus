@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, Menus, ComCtrls, LCLType,
+  StdCtrls, Buttons, Menus, ComCtrls, LCLType, ActnList, IDEImagesIntf,
   LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
@@ -47,6 +47,17 @@ type
   { TWatchesDlg }
 
   TWatchesDlg = class(TDebuggerDlg)
+    actDeleteAll: TAction;
+    actDeleteSelected: TAction;
+    actDisableAll: TAction;
+    actDisableSelected: TAction;
+    actEnableAll: TAction;
+    actEnableSelected: TAction;
+    actAddWatch: TAction;
+    actToggleCurrentEnable: TAction;
+    actPower: TAction;
+    ActionList1: TActionList;
+    actProperties: TAction;
     lvWatches: TListView;
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
@@ -58,9 +69,24 @@ type
     popDisableAll: TMenuItem;
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
+    ToolBar1: TToolBar;
+    ToolButtonProperties: TToolButton;
+    ToolButtonAdd: TToolButton;
+    ToolButtonPower: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButtonEnable: TToolButton;
+    ToolButtonDisable: TToolButton;
+    ToolButtonTrash: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButtonEnableAll: TToolButton;
+    ToolButtonDisableAll: TToolButton;
+    ToolButtonTrashAll: TToolButton;
+    procedure actDisableSelectedExecute(Sender: TObject);
+    procedure actEnableSelectedExecute(Sender: TObject);
+    procedure actPowerExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
     procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
@@ -76,6 +102,7 @@ type
   private
     FWatches: TIDEWatches;
     FWatchesNotification: TIDEWatchesNotification;
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
     function GetSelected: TIDEWatch;
     procedure SetWatches(const AValue: TIDEWatches);
     procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -83,6 +110,7 @@ type
     procedure WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 
     procedure UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
+    procedure UpdateAll;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -106,7 +134,53 @@ begin
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
   FWatchesNotification.OnRemove := @WatchRemove;
-  
+
+  ActionList1.Images := IDEImages.Images_16;
+  ToolBar1.Images := IDEImages.Images_16;
+  mnuPopup.Images := IDEImages.Images_16;
+
+  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  actPower.ImageIndex := FPowerImgIdx;
+  actPower.Caption := lisDbgWinPower;
+  actPower.Hint := lisDbgWinPowerHint;
+
+  actAddWatch.Caption:=liswlAdd;
+  actAddWatch.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+
+  actToggleCurrentEnable.Caption := liswlEnabled;
+
+  actEnableSelected.Caption := lisDbgItemEnable;
+  actEnableSelected.Hint    := lisDbgItemEnableHint;
+  actEnableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable');
+
+  actDisableSelected.Caption := lisDbgItemDisable;
+  actDisableSelected.Hint    := lisDbgItemDisableHint;
+  actDisableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable');
+
+  actDeleteSelected.Caption := liswlDelete; //lisDbgItemDelete;
+  actDeleteSelected.Hint    := lisDbgItemDeleteHint;
+  actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan');
+
+  actEnableAll.Caption := liswlENableAll; //lisDbgAllItemEnable;
+  actEnableAll.Hint    := lisDbgAllItemEnableHint;
+  actEnableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable_all');
+
+  actDisableAll.Caption := liswlDIsableAll; //lisDbgAllItemDisable;
+  actDisableAll.Hint    := lisDbgAllItemDisableHint;
+  actDisableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable_all');
+
+  actDeleteAll.Caption := liswlDeLeteAll; //lisDbgAllItemDelete;
+  actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
+  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan_all');
+
+  actProperties.Caption:= liswlProperties;
+  actProperties.ImageIndex := IDEImages.LoadImage(16, 'debugger__gen_setting');
+
+  Caption:=liswlWatchList;
+
+  lvWatches.Columns[0].Caption:=liswlExpression;
+  lvWatches.Columns[1].Caption:=dlgValueColor;
   lvWatches.Column[0].Width := 100;
   lvWatches.Column[1].Width := 200;
 end;
@@ -164,15 +238,44 @@ end;
 
 procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
-  Enable: Boolean;
+  ItemSelected: Boolean;
   Watch: TIDEWatch;
+  SelCanEnable, SelCanDisable: Boolean;
+  AllCanEnable, AllCanDisable: Boolean;
+  i: Integer;
 begin
-  Watch := GetSelected;
-  Enable := Watch <> nil;
-  popProperties.Enabled := Enable;
-  popEnabled.Enabled := Enable;
-  popDelete.Enabled := Enable;   
-  popEnabled.Checked := Enable and Watch.Enabled;
+  ItemSelected := lvWatches.Selected <> nil;
+  if ItemSelected then
+    Watch:=TIDEWatch(lvWatches.Selected.Data)
+  else
+    Watch:=nil;
+  SelCanEnable := False;
+  SelCanDisable := False;
+  AllCanEnable := False;
+  AllCanDisable := False;
+  for i := 0 to lvWatches.Items.Count - 1 do begin
+    if lvWatches.Items[i].Data = nil then
+      continue;
+    if lvWatches.Items[i].Selected then begin
+      SelCanEnable := SelCanEnable or not TIDEWatch(lvWatches.Items[i].Data).Enabled;
+      SelCanDisable := SelCanDisable or TIDEWatch(lvWatches.Items[i].Data).Enabled;
+    end;
+    AllCanEnable := AllCanEnable or not TIDEWatch(lvWatches.Items[i].Data).Enabled;
+    AllCanDisable := AllCanDisable or TIDEWatch(lvWatches.Items[i].Data).Enabled;
+  end;
+
+  actToggleCurrentEnable.Enabled := ItemSelected;
+  actToggleCurrentEnable.Checked := ItemSelected and Watch.Enabled;
+
+  actEnableSelected.Enabled := SelCanEnable;
+  actDisableSelected.Enabled := SelCanDisable;
+  actDeleteSelected.Enabled := ItemSelected;
+
+  actEnableAll.Enabled := AllCanEnable;
+  actDisableAll.Enabled := AllCanDisable;
+  actDeleteAll.Enabled := lvWatches.Items.Count > 0;
+
+  actProperties.Enabled := ItemSelected;
 end;
 
 procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
@@ -181,20 +284,6 @@ begin
     popPropertiesClick(Sender)
   else
     popAddClick(Sender);
-end;
-
-procedure TWatchesDlg.FormCreate(Sender: TObject);
-begin
-  Caption:=liswlWatchList;
-  lvWatches.Columns[0].Caption:=liswlExpression;
-  lvWatches.Columns[1].Caption:=dlgValueColor;
-  popAdd.Caption:=liswlAdd;
-  popProperties.Caption:=liswlProperties;
-  popEnabled.Caption:=liswlEnabled;
-  popDelete.Caption:=liswlDelete;
-  popDisableAll.Caption:=liswlDIsableAll;
-  popEnableAll.Caption:=liswlENableAll;
-  popDeleteAll.Caption:=liswlDeLeteAll;
 end;
 
 procedure TWatchesDlg.FormDestroy(Sender: TObject);
@@ -210,6 +299,46 @@ end;
 procedure TWatchesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   //DebugLn('TWatchesDlg.FormClose ',dbgs(ord(CloseAction)));
+end;
+
+procedure TWatchesDlg.actPowerExecute(Sender: TObject);
+begin
+  if ToolButtonPower.Down
+  then begin
+    actPower.ImageIndex := FPowerImgIdx;
+    ToolButtonPower.ImageIndex := FPowerImgIdx;
+    UpdateAll;
+  end
+  else begin
+    actPower.ImageIndex := FPowerImgIdxGrey;
+    ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
+  end;
+end;
+
+procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+begin
+  for n := 0 to lvWatches.Items.Count -1 do
+  begin
+    Item := lvWatches.Items[n];
+    if Item.Selected then
+      TIDEWatch(Item.Data).Enabled := True;
+  end;
+end;
+
+procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+begin
+  for n := 0 to lvWatches.Items.Count -1 do
+  begin
+    Item := lvWatches.Items[n];
+    if Item.Selected then
+      TIDEWatch(Item.Data).Enabled := False;
+  end;
 end;
 
 procedure TWatchesDlg.lvWatchesKeyDown(Sender: TObject; var Key: Word;
@@ -326,7 +455,16 @@ begin
 // Expression
 // Result
   AItem.Caption := AWatch.Expression;
+  if not ToolButtonPower.Down then exit;
   AItem.SubItems[0] := ClearMultiline(AWatch.Value);
+end;
+
+procedure TWatchesDlg.UpdateAll;
+var
+  i: Integer;
+begin
+  for i:=0 to FWatches.Count-1 do
+    WatchUpdate(FWatches, FWatches.Items[i]);
 end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -347,6 +485,7 @@ begin
   if Watch <> nil then Watch.Enabled := True;
 
   UpdateItem(Item, AWatch);
+  lvWatchesSelectItem(nil, nil, False);
 end;
 
 procedure TWatchesDlg.WatchUpdate(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -359,11 +498,14 @@ begin
   if Item = nil
   then WatchAdd(ASender, AWatch)
   else UpdateItem(Item, AWatch);
+
+  lvWatchesSelectItem(nil, nil, False);
 end;
 
 procedure TWatchesDlg.WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 begin
   lvWatches.Items.FindData(AWatch).Free;
+  lvWatchesSelectItem(nil, nil, False);
 end;
 
 end.

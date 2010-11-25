@@ -12,8 +12,10 @@ inherited BreakpointsDlg: TBreakpointsDlg
   ClientWidth = 560
   OnCreate = BreakpointsDlgCREATE
   Visible = True
-  object lvBreakPoints: TListView
-    Height = 205
+  object lvBreakPoints: TListView[0]
+    Left = 0
+    Height = 179
+    Top = 26
     Width = 560
     HelpType = htKeyword
     Align = alClient
@@ -52,14 +54,74 @@ inherited BreakpointsDlg: TBreakpointsDlg
     SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
+    OnClick = lvBreakPointsClick
     OnColumnClick = lvBreakPointsColumnClick
     OnDblClick = lvBreakPointsDBLCLICK
     OnKeyDown = lvBreakPointsKeyDown
+    OnSelectItem = lvBreakPointsSelectItem
   end
-  object mnuPopup: TPopupMenu
-    OnPopup = mnuPopupPopup
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 560
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    object ToolButtonEnable: TToolButton
+      Left = 1
+      Top = 2
+      Action = actEnableSelected
+    end
+    object ToolButtonDisable: TToolButton
+      Left = 24
+      Top = 2
+      Action = actDisableSelected
+    end
+    object ToolButtonTrash: TToolButton
+      Left = 47
+      Top = 2
+      Action = actDeleteSelected
+    end
+    object ToolButton6: TToolButton
+      Left = 70
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton6'
+      Style = tbsSeparator
+    end
+    object ToolButtonEnableAll: TToolButton
+      Left = 78
+      Top = 2
+      Action = actEnableAll
+    end
+    object ToolButtonDisableAll: TToolButton
+      Left = 101
+      Top = 2
+      Action = actDisableAll
+    end
+    object ToolButtonTrashAll: TToolButton
+      Left = 124
+      Top = 2
+      Action = actDeleteAll
+    end
+    object ToolButton10: TToolButton
+      Left = 147
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton10'
+      Style = tbsSeparator
+    end
+    object ToolButtonProperties: TToolButton
+      Left = 155
+      Top = 2
+      Action = actProperties
+    end
+  end
+  object mnuPopup: TPopupMenu[2]
     left = 24
-    top = 8
+    top = 40
     object popShow: TMenuItem
       Caption = 'Show'
       Default = True
@@ -81,49 +143,86 @@ inherited BreakpointsDlg: TBreakpointsDlg
       Caption = '-'
     end
     object popProperties: TMenuItem
-      Caption = '&Properties'
-      OnClick = popPropertiesClick
+      Action = actProperties
     end
     object popEnabled: TMenuItem
-      Caption = '&Enabled'
-      ShortCut = 16462
+      Action = actToggleCurrentEnable
       ShowAlwaysCheckable = True
-      OnClick = popEnabledClick
     end
     object popDelete: TMenuItem
-      Caption = '&Delete'
-      ShortCut = 46
-      OnClick = popDeleteClick
+      Action = actDeleteSelected
     end
     object N2: TMenuItem
       Caption = '-'
     end
     object popDisableAll: TMenuItem
-      Caption = 'D&isable All'
-      OnClick = popDisableAllClick
+      Action = actDisableAll
     end
     object popEnableAll: TMenuItem
-      Caption = '&Enable All'
-      OnClick = popEnableAllClick
+      Action = actEnableAll
     end
     object popDeleteAll: TMenuItem
-      Caption = '&Delete All'
-      OnClick = popDeleteAllClick
+      Action = actDeleteAll
     end
     object N3: TMenuItem
       Caption = '-'
     end
     object popDisableAllSameSource: TMenuItem
-      Caption = 'Disable All in same source'
-      OnClick = popDisableAllSameSourceCLICK
+      Action = actDisableAllInSrc
     end
     object popEnableAllSameSource: TMenuItem
-      Caption = 'Enable All in same source'
-      OnClick = popEnableAllSameSourceCLICK
+      Action = actEnableAllInSrc
     end
     object popDeleteAllSameSource: TMenuItem
-      Caption = 'Delete All in same source'
-      OnClick = popDeleteAllSameSourceCLICK
+      Action = actDeleteAllInSrc
+    end
+  end
+  object ActionList1: TActionList[3]
+    left = 108
+    top = 49
+    object actToggleCurrentEnable: TAction
+      Caption = 'actToggleCurrentEnable'
+      OnExecute = popEnabledClick
+    end
+    object actEnableSelected: TAction
+      Caption = 'actEnableSelected'
+      OnExecute = actEnableSelectedExecute
+    end
+    object actDisableSelected: TAction
+      Caption = 'actDisableSelected'
+      OnExecute = actDisableSelectedExecute
+    end
+    object actDeleteSelected: TAction
+      Caption = 'actDeleteSelected'
+      OnExecute = popDeleteClick
+    end
+    object actEnableAll: TAction
+      Caption = 'actEnableAll'
+      OnExecute = popEnableAllClick
+    end
+    object actDisableAll: TAction
+      Caption = 'actDisableAll'
+      OnExecute = popDisableAllClick
+    end
+    object actDeleteAll: TAction
+      Caption = 'actDeleteAll'
+      OnExecute = popDeleteAllClick
+    end
+    object actEnableAllInSrc: TAction
+      Caption = 'actEnableAllInSrc'
+      OnExecute = popEnableAllSameSourceCLICK
+    end
+    object actDisableAllInSrc: TAction
+      Caption = 'actDisableAllInSrc'
+      OnExecute = popDisableAllSameSourceCLICK
+    end
+    object actDeleteAllInSrc: TAction
+      Caption = 'actDeleteAllInSrc'
+      OnExecute = popDeleteAllSameSourceCLICK
+    end
+    object actProperties: TAction
+      Caption = 'actProperties'
+      OnExecute = popPropertiesClick
     end
   end
 end

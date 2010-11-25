@@ -4510,6 +4510,23 @@ resourcestring
   lisMovePage = 'Move Page ...';
   lisFileSettings = 'File Settings ...';
 
+  // Debugger Dialogs
+  lisDbgWinPower = 'On/Off';
+  lisDbgWinPowerHint = 'Disable/Enable updates for the entire window';
+
+  lisDbgItemEnable          = 'Enable';
+  lisDbgItemEnableHint      = 'Enable';
+  lisDbgItemDisable         = 'Disable';
+  lisDbgItemDisableHint     = 'Disable';
+  lisDbgItemDelete          = 'Delete';
+  lisDbgItemDeleteHint      = 'Delete';
+  lisDbgAllItemEnable       = 'Enable all';
+  lisDbgAllItemEnableHint   = 'Enable all';
+  lisDbgAllItemDisable      = 'Disable all';
+  lisDbgAllItemDisableHint  = 'Disable all';
+  lisDbgAllItemDelete       = 'Delete all';
+  lisDbgAllItemDeleteHint   = 'Delete all';
+
   // Call Stack Dialog
   lisShow = 'Show';
   lisCurrent = 'Current';

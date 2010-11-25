@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, MainBase;
+  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, ActnList, MainBase,
+  IDEImagesIntf;
 
 type
   TBreakPointsDlgState = (
@@ -50,6 +51,18 @@ type
   { TBreakPointsDlg }
 
   TBreakPointsDlg = class(TDebuggerDlg)
+    actProperties: TAction;
+    actToggleCurrentEnable: TAction;
+    actDeleteAllInSrc: TAction;
+    actEnableSelected: TAction;
+    actDisableSelected: TAction;
+    actDeleteSelected: TAction;
+    actEnableAll: TAction;
+    actDisableAll: TAction;
+    actDeleteAll: TAction;
+    actEnableAllInSrc: TAction;
+    actDisableAllInSrc: TAction;
+    ActionList1: TActionList;
     lvBreakPoints: TListView;
     N0: TMenuItem;
     popShow: TMenuItem;
@@ -68,12 +81,25 @@ type
     popDisableAllSameSource: TMenuItem;
     popEnableAllSameSource: TMenuItem;
     popDeleteAllSameSource: TMenuItem;
+    ToolBar1: TToolBar;
+    ToolButtonProperties: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButtonEnable: TToolButton;
+    ToolButtonDisable: TToolButton;
+    ToolButtonTrash: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButtonEnableAll: TToolButton;
+    ToolButtonDisableAll: TToolButton;
+    ToolButtonTrashAll: TToolButton;
+    procedure actDisableSelectedExecute(Sender: TObject);
+    procedure actEnableSelectedExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
+    procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure mnuPopupPopup(Sender: TObject);
+    procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure popAddSourceBPClick(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
@@ -90,6 +116,7 @@ type
     FBreakPoints: TIDEBreakPoints;
     FBreakpointsNotification: TIDEBreakPointsNotification;
     FStates: TBreakPointsDlgStates;
+    FLockActionUpdate: Integer;
     procedure BreakPointAdd(const ASender: TIDEBreakPoints;
                             const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
@@ -247,7 +274,46 @@ begin
   FBreakpointsNotification.OnAdd := @BreakPointAdd;
   FBreakpointsNotification.OnUpdate := @BreakPointUpdate;
   FBreakpointsNotification.OnRemove := @BreakPointRemove;
-end;       
+
+  ActionList1.Images := IDEImages.Images_16;
+  ToolBar1.Images := IDEImages.Images_16;
+  mnuPopup.Images := IDEImages.Images_16;
+
+  actEnableSelected.Caption := lisDbgItemEnable;
+  actEnableSelected.Hint    := lisDbgItemEnableHint;
+  actEnableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable');
+
+  actDisableSelected.Caption := lisDbgItemDisable;
+  actDisableSelected.Hint    := lisDbgItemDisableHint;
+  actDisableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable');
+
+  actDeleteSelected.Caption := liswlDelete; //lisDbgItemDelete;
+  actDeleteSelected.Hint    := lisDbgItemDeleteHint;
+  actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan');
+
+  actEnableAll.Caption := lisEnableAll; //lisDbgAllItemEnable;
+  actEnableAll.Hint    := lisDbgAllItemEnableHint;
+  actEnableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable_all');
+
+  actDisableAll.Caption := liswlDIsableAll; //lisDbgAllItemDisable;
+  actDisableAll.Hint    := lisDbgAllItemDisableHint;
+  actDisableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable_all');
+
+  actDeleteAll.Caption := lisDeleteAll; //lisDbgAllItemDelete;
+  actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
+  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan_all');
+
+  actProperties.Caption:= liswlProperties;
+  actProperties.ImageIndex := IDEImages.LoadImage(16, 'debugger__gen_setting');
+
+  actToggleCurrentEnable.Caption:= liswlEnabled;
+
+  actEnableAllInSrc.Caption:= lisEnableAllInSameSource;
+  actDisableAllInSrc.Caption:= lisDisableAllInSameSource;
+  actDeleteAllInSrc.Caption:= lisDeleteAllInSameSource;
+
+  FLockActionUpdate := 0;
+end;
 
 destructor TBreakPointsDlg.Destroy;
 begin
@@ -279,19 +345,42 @@ begin
   popShow.Caption:= lisShow;
   popAdd.Caption:= dlgEdAdd;
   popAddSourceBP.Caption:= lisSourceBreakpoint;
-  popProperties.Caption:= liswlProperties;
-  popEnabled.Caption:= liswlEnabled;
-  popDelete.Caption:= liswlDelete;
-  popDisableAll.Caption:= liswlDIsableAll;
-  popEnableAll.Caption:= lisEnableAll;
-  popDeleteAll.Caption:= lisDeleteAll;
-  popDisableAllSameSource.Caption:= lisDisableAllInSameSource;
-  popEnableAllSameSource.Caption:= lisEnableAllInSameSource;
-  popDeleteAllSameSource.Caption:= lisDeleteAllInSameSource;
+end;
+
+procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+begin
+  for n := 0 to lvBreakPoints.Items.Count -1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    if Item.Selected then
+      TIDEBreakPoint(Item.Data).Enabled := True;
+  end;
+end;
+
+procedure TBreakPointsDlg.actDisableSelectedExecute(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+begin
+  for n := 0 to lvBreakPoints.Items.Count -1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    if Item.Selected then
+      TIDEBreakPoint(Item.Data).Enabled := False;
+  end;
+end;
+
+procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
+begin
+  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
 begin
+  lvBreakPointsSelectItem(nil, nil, False);
   JumpToCurrentBreakPoint;
 end;
 
@@ -335,42 +424,64 @@ begin
     Key := 0
   else
     inherited;;
+  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
-
-procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
+procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
 var
-  Enable: Boolean;
+  ItemSelected: Boolean;
+  SelCanEnable, SelCanDisable: Boolean;
+  AllCanEnable, AllCanDisable: Boolean;
   CurBreakPoint: TIDEBreakPoint;
+  i: Integer;
 begin
-  Enable := lvBreakPoints.Selected <> nil;
-  if Enable then
+  if FLockActionUpdate > 0 then exit;
+
+  ItemSelected := lvBreakPoints.Selected <> nil;
+  if ItemSelected then
     CurBreakPoint:=TIDEBreakPoint(lvBreakPoints.Selected.Data)
   else
     CurBreakPoint:=nil;
-  popProperties.Enabled := Enable;
-  popEnabled.Enabled := Enable;
-  if CurBreakPoint<>nil then
-    popEnabled.Checked := CurBreakPoint.Enabled
-  else
-    popEnabled.Checked := false;
-  popDelete.Enabled := Enable;
-  
-  // 'All in same source' menuitems
-  popDisableAllSameSource.Enabled := Enable;
-  popDeleteAllSameSource.Enabled := Enable;
-  popEnableAllSameSource.Enabled := Enable;
+  SelCanEnable := False;
+  SelCanDisable := False;
+  AllCanEnable := False;
+  allCanDisable := False;
+  for i := 0 to lvBreakPoints.Items.Count - 1 do begin
+    if lvBreakPoints.Items[i].Data = nil then
+      continue;
+    if lvBreakPoints.Items[i].Selected then begin
+      SelCanEnable := SelCanEnable or not TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
+      SelCanDisable := SelCanDisable or TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
+    end;
+    AllCanEnable := AllCanEnable or not TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
+    AllCanDisable := AllCanDisable or TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
+  end;
 
-  // 'All' menuitems
-  Enable := lvBreakPoints.Items.Count>0;
-  popDisableAll.Enabled := Enable;
-  popDeleteAll.Enabled := Enable;
-  popEnableAll.Enabled := Enable;
+  actToggleCurrentEnable.Enabled := ItemSelected;
+  actToggleCurrentEnable.Checked := (CurBreakPoint <> nil) and CurBreakPoint.Enabled;
+
+  actEnableSelected.Enabled := SelCanEnable;
+  actDisableSelected.Enabled := SelCanDisable;
+  actDeleteSelected.Enabled := ItemSelected;
+
+  actEnableAll.Enabled := AllCanEnable;
+  actDisableAll.Enabled := AllCanDisable;
+  actDeleteAll.Enabled := lvBreakPoints.Items.Count > 0;
+
+  actEnableAllInSrc.Enabled := ItemSelected;
+  actDisableAllInSrc.Enabled := ItemSelected;
+  actDeleteAllInSrc.Enabled := ItemSelected;
+
+  actProperties.Enabled := ItemSelected;
+  popShow.Enabled := ItemSelected;
 end;
 
 procedure TBreakPointsDlg.popAddSourceBPClick(Sender: TObject);
 begin
+
 end;
+
 
 procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);
 var
@@ -564,6 +675,8 @@ begin
   if ABreakpoint.Group = nil
   then AnItem.SubItems[5] := ''
   else AnItem.SubItems[5] := ABreakpoint.Group.Name;
+
+  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
 procedure TBreakPointsDlg.UpdateAll;
@@ -576,10 +689,13 @@ begin
     exit;
   end;
   Exclude(FStates,bpdsItemsNeedUpdate);
+  inc(FLockActionUpdate);
   for i:=0 to lvBreakPoints.Items.Count-1 do begin
     CurItem:=lvBreakPoints.Items[i];
     UpdateItem(CurItem,TIDEBreakPoint(CurItem.Data));
   end;
+  dec(FLockActionUpdate);
+  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
 procedure TBreakPointsDlg.DeleteSelectedBreakpoints;
