@@ -149,7 +149,7 @@ begin
     for BtnIdx := 0 to Buttons.Count - 1 do
     begin
       with Buttons[BtnIdx] do
-        QtMessageBox.AddButton(ModalResult, Caption, Default, Cancel);
+        QtMessageBox.AddButton(Caption, ModalResult, Default, Cancel);
     end;
 
     if DialogCaption <> '' then

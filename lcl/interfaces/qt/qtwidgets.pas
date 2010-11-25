@@ -1513,7 +1513,7 @@ type
       const AEscapeBtn: Boolean); overload;
     procedure AddButton(ABtnType: QMessageBoxStandardButton; ACaption: WideString;
       const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False); overload;
-    procedure AddButton(AResult: Int64; ACaption: WideString;
+    procedure AddButton(ACaption: WideString; AResult: Int64;
       const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False);
     function exec: Int64;
     property DetailText: WideString read getDetailText write setDetailText;
@@ -13519,7 +13519,7 @@ begin
   AddButton(ABtn, Int64(ABtnType), ADefaultBtn, AEscapeBtn);
 end;
 
-procedure TQtMessageBox.AddButton(AResult: Int64; ACaption: WideString; const ADefaultBtn: Boolean;
+procedure TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
   const AEscapeBtn: Boolean);
 var
   ABtn: QPushButtonH;
