@@ -2926,6 +2926,7 @@ begin
   
   if APackage.AutoUpdate=pupManually then exit(mrNo);
 
+  //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
   if (APackage.LastCompilerFilename<>CompilerFilename)
   or (ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
       <>ExtractCompilerParamsForBuildAll(CompilerParams))
@@ -2994,14 +2995,14 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if ExtractCompilerParamsForBuildAll(CompilerParams)
-    <>ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
+  if CompilerParams<>APackage.LastCompilerParams
   then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',APackage.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
     exit(mrYes);
   end;
+  //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
   
   // compiler and parameters are the same
   // quick compile is possible
@@ -3015,7 +3016,7 @@ begin
 
   // check all required packages
   Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
-                                             StateFileAge);
+                                            StateFileAge);
   if Result<>mrNo then exit;
 
   // check package files
