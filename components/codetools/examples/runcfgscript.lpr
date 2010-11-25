@@ -55,7 +55,8 @@ begin
     //Src:='a:=2; b:=3; if a+b=5 then Result:=13';
     //Src:='if (TargetOS=''win32'') then Result:=3';
     //Src:='a:=2; b:=3; b+=a;';
-    Src:='a:=2; b:=''3''; b+=a;';
+    //Src:='a:=2; b:=''3''; b+=a;';
+    Src:='a:=''1''; if a=1 then b:=3;';
   end;
 
   Engine:=TCTConfigScriptEngine.Create;
