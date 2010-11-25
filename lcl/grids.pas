@@ -2667,6 +2667,8 @@ begin
         NewColCount := FGridPropBackup.ColCount;
         FFixedCols := Min(FGridPropBackup.FixedColCount, NewColCount);
         FFixedRows := Min(FGridPropBackup.FixedRowCount, AValue);
+        FTopLeft.X := FFixedCols;
+        FTopLeft.Y := FFixedRows;
         // ignore backedup value of rowcount because
         // finally rowcount will be AValue
         FGridPropBackup.RowCount := AValue;

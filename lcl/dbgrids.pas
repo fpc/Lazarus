@@ -719,10 +719,8 @@ begin
   OldFixedCols := FixedCols;
   OldFixedRows := FixedRows;
   Clear;
-  ColCount := OldFixedCols + 1;
   RowCount := OldFixedRows + 1;
-  FixedCols := OldFixedCols;
-  FixedRows := OldFixedRows;
+  ColCount := OldFixedCols + 1;
   if dgIndicator in Options then
     ColWidths[0]:=12;
 end;
