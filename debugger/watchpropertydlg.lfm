@@ -1,36 +1,36 @@
 object WatchPropertyDlg: TWatchPropertyDlg
   Left = 542
-  Height = 210
+  Height = 203
   Top = 214
   Width = 420
   ActiveControl = chkAllowFunc
+  AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Watch Properties'
-  ClientHeight = 210
+  ClientHeight = 203
   ClientWidth = 420
+  Constraints.MinWidth = 400
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object lblExpression: TLabel
-    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 16
+    Height = 14
     Top = 9
-    Width = 59
+    Width = 57
     BorderSpacing.Left = 6
     Caption = 'Expression:'
     ParentColor = False
   end
   object lblRepCount: TLabel
-    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 16
-    Top = 38
-    Width = 76
+    Height = 14
+    Top = 36
+    Width = 72
     BorderSpacing.Left = 6
     Caption = 'Repeat Count:'
     ParentColor = False
@@ -40,34 +40,38 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = txtDigits
     AnchorSideTop.Side = asrCenter
-    Left = 171
-    Height = 16
-    Top = 38
-    Width = 34
-    BorderSpacing.Left = 6
+    Left = 156
+    Height = 14
+    Top = 36
+    Width = 31
+    BorderSpacing.Left = 12
     Caption = 'Digits:'
     ParentColor = False
   end
   object txtExpression: TEdit
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
+    AnchorSideLeft.Control = lblExpression
+    AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 105
-    Height = 23
+    Left = 69
+    Height = 21
     Top = 6
-    Width = 309
+    Width = 345
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     TabOrder = 1
   end
   object txtRepCount: TEdit
+    AnchorSideLeft.Control = lblRepCount
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrBottom
-    Left = 105
-    Height = 23
-    Top = 35
+    Left = 84
+    Height = 21
+    Top = 33
     Width = 60
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     TabOrder = 2
     Text = '0'
@@ -75,11 +79,11 @@ object WatchPropertyDlg: TWatchPropertyDlg
   object txtDigits: TEdit
     AnchorSideLeft.Control = lblDigits
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = txtExpression
-    AnchorSideTop.Side = asrBottom
-    Left = 211
-    Height = 23
-    Top = 35
+    AnchorSideTop.Control = txtRepCount
+    AnchorSideTop.Side = asrCenter
+    Left = 193
+    Height = 21
+    Top = 33
     Width = 60
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -88,40 +92,44 @@ object WatchPropertyDlg: TWatchPropertyDlg
   end
   object chkEnabled: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = chkAllowFunc
+    AnchorSideTop.Control = txtRepCount
+    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 64
-    Width = 62
+    Height = 17
+    Top = 60
+    Width = 56
     AllowGrayed = True
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Enabled'
     TabOrder = 5
   end
   object chkAllowFunc: TCheckBox
+    AnchorSideLeft.Control = chkEnabled
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = txtRepCount
     AnchorSideTop.Side = asrBottom
-    Left = 105
-    Height = 19
-    Top = 64
-    Width = 128
+    Left = 92
+    Height = 17
+    Top = 60
+    Width = 112
     AllowGrayed = True
+    BorderSpacing.Left = 30
     BorderSpacing.Top = 6
     Caption = 'Allow Function Calls'
     TabOrder = 0
   end
   object rgStyle: TRadioGroup
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = chkAllowFunc
+    AnchorSideTop.Control = chkEnabled
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 78
-    Top = 89
+    Height = 81
+    Top = 83
     Width = 408
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
@@ -134,7 +142,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 60
+    ClientHeight = 63
     ClientWidth = 404
     Columns = 3
     ItemIndex = 7
@@ -155,14 +163,16 @@ object WatchPropertyDlg: TWatchPropertyDlg
     AnchorSideTop.Control = rgStyle
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 31
-    Top = 173
+    Height = 27
+    Top = 170
     Width = 408
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = btnOKClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
+    HelpButton.OnClick = btnHelpClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CloseButton.Enabled = False

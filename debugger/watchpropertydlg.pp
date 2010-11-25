@@ -154,8 +154,9 @@ begin
   rgStyle.Items[8]:= lisMemoryDump;
   //rgStyle.Items[9]:= lisFloatingPoin;
 
-  ButtonPanel.OKButton.OnClick := @btnOKClick;
-  ButtonPanel.HelpButton.OnClick := @btnHelpClick;
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 destructor TWatchPropertyDlg.destroy;
