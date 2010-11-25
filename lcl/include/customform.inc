@@ -2258,9 +2258,6 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
 var
   ParentForm: TCustomForm;
-  {$IFDEF EnableActiveControl2}
-  CurControl: TWinControl;
-  {$ENDIF}
 begin
   LastFocusedControl := Control;
   Result := False;
