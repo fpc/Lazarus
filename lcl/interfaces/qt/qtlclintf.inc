@@ -157,8 +157,13 @@ end;
 
 function TQtWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
   DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+const
+  ButtonResults : array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
 var
-  BtnIdx: LongInt;
+  BtnIdx, BtnID: LongInt;
   QtMessageBox: TQtMessageBox;
 begin
   ReleaseCapture;
@@ -169,12 +174,18 @@ begin
     for BtnIdx := 0 to Buttons.Count - 1 do
     begin
       with Buttons[BtnIdx] do
-        if (ModalResult >= Low(IdButtonToQtStandardButton)) and
-           (ModalResult <= High(IdButtonToQtStandardButton)) and
-           (IdButtonToQtStandardButton[ModalResult] <> QMessageBoxNoButton) then
-          QtMessageBox.AddButton(Caption, IdButtonToQtStandardButton[ModalResult], ModalResult, Default, Cancel)
+      begin
+        if (ModalResult >= Low(ButtonResults)) and (ModalResult <= High(ButtonResults)) then
+          BtnID := ButtonResults[ModalResult]
+        else
+          BtnID := -1;
+        if (BtnID >= Low(IdButtonToQtStandardButton)) and
+           (BtnID <= High(IdButtonToQtStandardButton)) and
+           (IdButtonToQtStandardButton[BtnID] <> QMessageBoxNoButton) then
+          QtMessageBox.AddButton(Caption, IdButtonToQtStandardButton[BtnID], ModalResult, Default, Cancel)
         else
           QtMessageBox.AddButton(Caption, ModalResult, Default, Cancel);
+      end;
     end;
 
     if DialogCaption <> '' then
