@@ -112,8 +112,6 @@ begin
 end;
 
 procedure TQtPrinters.EnumQPapers(Lst: TStrings);
-const
-  SName = 'EnumQPapers';
 begin
   Lst.Text := FPagesEnum.Text;
 end;
@@ -285,8 +283,6 @@ begin
 end;
 
 function TQtPrinters.DoGetPaperName: string;
-const
-  SName = 'DoGetPaperName';
 var
   i: Integer;
 begin
@@ -325,8 +321,6 @@ begin
 end;
 
 function TQtPrinters.DoGetPaperRect(AName: string; var APaperRc: TPaperRect): Integer;
-const
-  SName = 'DoGetPaperRect';
 var
   i: Integer;
 begin

@@ -57,7 +57,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
+    function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
 
     property ColorMode: QPrinterColorMode read GetColorMode write SetColorMode;
     property FullPage: Boolean read GetFullPage write SetFullPage;
