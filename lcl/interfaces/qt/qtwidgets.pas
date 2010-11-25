@@ -1509,12 +1509,12 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
-    procedure AddButton(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean;
-      const AEscapeBtn: Boolean); overload;
-    procedure AddButton(ABtnType: QMessageBoxStandardButton; ACaption: WideString;
-      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False); overload;
-    procedure AddButton(ACaption: WideString; AResult: Int64;
-      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False);
+    function AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton; AResult: Int64;
+      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False): QPushButtonH; overload;
+    function AddButton(ACaption: WideString; AResult: Int64;
+      const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False): QPushButtonH;
+    procedure SetButtonProps(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean;
+      const AEscapeBtn: Boolean);
     function exec: Int64;
     property DetailText: WideString read getDetailText write setDetailText;
     property MessageStr: WideString read getMessageStr write setMessageStr;
@@ -13489,7 +13489,7 @@ begin
     Result := inherited EventFilter(Sender, Event);
 end;
 
-procedure TQtMessageBox.AddButton(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
+procedure TQtMessageBox.SetButtonProps(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
 var
   v: QVariantH;
 begin
@@ -13507,27 +13507,25 @@ begin
   end;
 end;
 
-procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
-  ACaption: WideString; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
+function TQtMessageBox.AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton;
+   AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean): QPushButtonH;
 var
-  ABtn: QPushButtonH;
   Str: WideString;
 begin
-  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
+  Result := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
   Str := GetUTF8String(ACaption);
-  QAbstractButton_setText(ABtn, @Str);
-  AddButton(ABtn, Int64(ABtnType), ADefaultBtn, AEscapeBtn);
+  QAbstractButton_setText(Result, @Str);
+  SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
-procedure TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
-  const AEscapeBtn: Boolean);
+function TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
+  const AEscapeBtn: Boolean): QPushButtonH;
 var
-  ABtn: QPushButtonH;
   Str: WideString;
 begin
   Str := GetUTF8String(ACaption);
-  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
-  AddButton(ABtn, AResult, ADefaultBtn, AEscapeBtn);
+  Result := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
+  SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
 function TQtMessageBox.exec: Int64;
