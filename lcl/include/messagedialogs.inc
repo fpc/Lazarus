@@ -131,18 +131,21 @@ var
 begin
  if (Buttons = []) or (Buttons = [mbHelp]) then
     Buttons := Buttons + [mbOk];
-  CancelValue := ButtonResults[ModalEscapeValue (Buttons)];
+  CancelValue := ButtonResults[ModalEscapeValue(Buttons)];
   if UseDefButton then
-    DefaultButton := DefButton else
+    DefaultButton := DefButton
+  else
     DefaultButton := ModalDefaultButton(Buttons);
   DefaultIndex := 0;
   ButtonCount := 0;
   Result := nil;
-  for CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
-    If CurBtn in Buttons then begin
+  for CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+  begin
+    if CurBtn in Buttons then
+    begin
       ReallocMem(Result, (ButtonCount + 1)*SizeOf(Longint));
       Result[ButtonCount] := ButtonIds[CurBtn];
-      If DefaultButton = CurBtn then
+      if DefaultButton = CurBtn then
         DefaultIndex := ButtonCount;
       Inc(ButtonCount)
     end;
