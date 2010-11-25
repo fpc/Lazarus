@@ -4313,7 +4313,7 @@ begin
   end;
   AFilename:=TrimFilename(AFilename);
   
-  ProjectPath:=ProjectDirectory;
+  ProjectPath:=AppendPathDelim(ProjectDirectory);
   if ProjectPath<>'' then begin
     if Load then begin
       // make filename absolute

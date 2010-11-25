@@ -1435,19 +1435,18 @@ begin
       inc(BaseDirPos);
     end;
   end;
+  UpDirCount:=0;
   if ((BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]=PathDelim))
   and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
   begin
     inc(DirCount);
     inc(BaseDirPos);
-  end;
+  end else
+    inc(UpDirCount);
   if DirCount=0 then exit;
   if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
 
   // calculate needed up directories
-  UpDirCount:=0;
-  if (BaseDirPos<=BaseDirLen) and (CmpBaseDirectory[BaseDirPos]<>PathDelim) then
-    inc(UpDirCount);
   while (BaseDirPos<=BaseDirLen) do begin
     if (CmpBaseDirectory[BaseDirPos]=PathDelim) then
     begin
