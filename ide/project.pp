@@ -635,6 +635,7 @@ type
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
   public
     property Modified: boolean read GetModified write SetModified;
+    // CfgVars are updated by TBuildManager.OnGetBuildMacroValues
     property CfgVars: TCTCfgScriptVariables read FCfgVars;
     property CfgVarsBuildMacroStamp: integer read FCfgVarsBuildMacroStamp
                                              write FCfgVarsBuildMacroStamp;
@@ -6529,7 +6530,6 @@ begin
   if (Name='') or not IsValidIdent(Name) then exit;
   if Values[Name]=AValue then exit;
   FItems.Values[Name]:=AValue;
-  FCfgVars.Define(PChar(Name),AValue);
   IncreaseChangeStamp;
 end;
 
@@ -6556,6 +6556,7 @@ begin
   IncreaseChangeStamp;
   FItems.Clear;
   FCfgVars.Clear;
+  FCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
 end;
 
 function TProjectBuildMacros.Equals(Other: TProjectBuildMacros): boolean;
@@ -6622,7 +6623,8 @@ procedure TProjectBuildMacros.Assign(Src: TProjectBuildMacros);
 begin
   if Equals(Src) then exit;
   FItems.Assign(Src.FItems);
-  CfgVars.Assign(Src.CfgVars);
+  CfgVars.Clear;
+  FCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   IncreaseChangeStamp;
 end;
 
@@ -6639,7 +6641,8 @@ begin
     CurValue:=aValues.ValueFromIndex[i];
     FItems.Values[CurName]:=CurValue;
   end;
-  CfgVars.Assign(aValues);
+  CfgVars.Clear;
+  FCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   IncreaseChangeStamp;
 end;
 
@@ -6688,7 +6691,8 @@ begin
     if not FItems.Equals(NewItems) then begin
       IncreaseChangeStamp;
       FItems.Assign(NewItems);
-      FCfgVars.Assign(FItems);
+      FCfgVars.Clear;
+      FCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
     end;
     fLastSavedChangeStamp:=ChangeStamp;
   finally

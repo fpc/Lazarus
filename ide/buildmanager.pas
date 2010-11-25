@@ -1692,6 +1692,8 @@ var
   Overrides: TStrings;
   i: Integer;
   s: String;
+  aName: string;
+  aValue: String;
 begin
   Result:=nil;
   if Options=nil then begin
@@ -1702,6 +1704,11 @@ begin
       exit;
     // rebuild project macros
     Result.Clear;
+    for i:=0 to Project1.MacroValues.Count-1 do begin
+      aName:=Project1.MacroValues.Names[i];
+      aValue:=Project1.MacroValues.ValueFromIndex(i);
+      Result.Define(PChar(aName),aValue);
+    end;
     Project1.MacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
 
     // set overrides
@@ -1709,7 +1716,7 @@ begin
     try
       for i:=0 to Overrides.Count-1 do
         Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
-      //debugln(['TBuildManager.OnGetBuildMacroValues ',Overrides.Text]);
+      //debugln(['TBuildManager.OnGetBuildMacroValues Overrides=',dbgstr(Overrides.Text)]);
     finally
       Overrides.Free;
     end;
