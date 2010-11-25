@@ -6526,8 +6526,6 @@ begin
 end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
-var
-  TabIndex: Integer;
 begin
   CloseClicked(Sender,
               (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
