@@ -6,6 +6,7 @@ inherited WatchesDlg: TWatchesDlg
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   ActiveControl = lvWatches
+  BorderStyle = bsSizeToolWin
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500

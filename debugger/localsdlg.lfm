@@ -1,16 +1,20 @@
-object LocalsDlg: TLocalsDlg
-  ActiveControl = lvLocals
-  Caption = 'Locals'
-  ClientHeight = 200
-  ClientWidth = 500
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 199
+inherited LocalsDlg: TLocalsDlg
   Left = 359
   Height = 200
   Top = 126
   Width = 500
-  object lvLocals: TListView
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
+  ActiveControl = lvLocals
+  BorderStyle = bsSizeToolWin
+  Caption = 'Locals'
+  ClientHeight = 200
+  ClientWidth = 500
+  object lvLocals: TListView[0]
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 500
     Align = alClient
     Columns = <    
       item
@@ -24,7 +28,5 @@ object LocalsDlg: TLocalsDlg
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
-    Height = 200
-    Width = 500
   end
 end

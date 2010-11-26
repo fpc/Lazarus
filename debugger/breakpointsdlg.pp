@@ -100,7 +100,6 @@ type
     procedure lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-    procedure popAddSourceBPClick(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
     procedure popEnableAllSameSourceCLICK(Sender: TObject);
@@ -476,12 +475,6 @@ begin
   actProperties.Enabled := ItemSelected;
   popShow.Enabled := ItemSelected;
 end;
-
-procedure TBreakPointsDlg.popAddSourceBPClick(Sender: TObject);
-begin
-
-end;
-
 
 procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);
 var
