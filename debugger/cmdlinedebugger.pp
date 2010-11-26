@@ -90,7 +90,14 @@ uses
    Unix,BaseUnix,
 {$ENDIF}
   SysUtils;
-  
+
+{$IFnDEF MSWindows}
+function GetTickCount: DWORD;
+begin
+  Result := round(Now*86400000) mod (High(DWord) + 1);
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Function: WaitForHandles
   Params:  AHandles:              A set of handles to wait for (max 32)

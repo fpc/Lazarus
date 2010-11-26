@@ -1236,6 +1236,13 @@ begin
 end;
 {$ENDIF}
 
+// None windows
+{$IFnDEF MSWindows}
+function GetTickCount: DWORD;
+begin
+  Result := round(Now*86400000) mod (High(DWord) + 1);
+end;
+{$ENDIF}
 { =========================================================================== }
 { Helpers }
 { =========================================================================== }
