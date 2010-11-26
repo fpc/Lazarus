@@ -37,6 +37,7 @@ type
     Bevel1a: TBevel;
     Bevel2a: TBevel;
     Bevel2: TBevel;
+    CenterLabel: TLabel;
     chkCtrlMiddleCloseOthers: TCheckBox;
     chkUseTabHistory: TCheckBox;
     chkShowCloseBtn: TCheckBox;
