@@ -1087,7 +1087,6 @@ begin
         if AtomIsChar(';') then begin
           // last unit in uses section -> delete whole uses section
           StartPos:=FindLineEndOrCodeInFrontOfPosition(UsesNode.StartPos,true,true);
-          debugln(['TStandardCodeTool.RemoveUnitFromUsesSection AAA1 "',dbgstr(copy(Src,StartPos,UsesNode.EndPos-StartPos)),'"']);
           if not SourceChangeCache.Replace(gtNone,gtNone,
             StartPos,UsesNode.EndPos,'') then exit;
         end else begin
