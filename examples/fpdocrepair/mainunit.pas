@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  contnrs;
+  contnrs, XMLRead;
 
 type
 
@@ -41,16 +41,12 @@ type
 procedure FixFPDocFragment(var Fragment: string; Fix: boolean;
   out ErrorList: TObjectList);
 { - Fix all tags to lowercase to reduce svn commits
-  - remove unneeded spaces
-     < b   =>  <b
-     b >   =>  b>
-     a  b  =>  a b
   - auto close comments
   - remove #0 from comments
-  - auto close unclosed tags
-  - fix & without ;
   - convert special characters to &x;
+  - fix &name; lower case
   - fix unclosed attribute values
+  - auto close unclosed tags
 }
 type
   TStackItemTyp = (
@@ -292,6 +288,125 @@ var
     HandleSpecialChar;
   end;
 
+  procedure LowerCaseName;
+  var
+    Start: PChar;
+    NeedLowercase: PChar;
+  begin
+    Start:=p;
+    NeedLowercase:=nil;
+    repeat
+      case p^ of
+      'a'..'z': inc(p);
+      'A'..'Z':
+        begin
+          inc(p);
+          if NeedLowercase=nil then
+            NeedLowercase:=p;
+        end;
+      else break;
+      end;
+    until false;
+    if NeedLowercase<>nil then begin
+      if Fix then begin
+        Replace(Rel(Start),p-Start,lowercase(copy(Fragment,Rel(Start),p-Start)));
+      end else begin
+        // all current tags must be lower case
+        Error(NeedLowercase,'tags must be lower case');
+      end;
+    end;
+  end;
+
+  procedure ParseAttribute;
+  begin
+    // attribute name
+    LowerCaseName;
+    while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+    if p^<>'=' then begin
+      // missing value
+      if Fix then begin
+        Replace(Rel(p),0,'=');
+      end else begin
+        Error(p,'expected =');
+      end;
+    end;
+    if p^='=' then begin
+      inc(p);
+      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+      if p^<>'"' then begin
+        // missing quotes
+        if Fix then begin
+          Replace(Rel(p),0,'"');
+        end else begin
+          Error(p,'expected "');
+        end;
+      end;
+    end;
+    if p^='"' then begin
+      // read value
+      inc(p);
+      repeat
+        case p^ of
+        '>',#0..#8,#11,#12,#14..#31,#127:
+          // the > is not allowed in the quotes, probably the ending quot is missing
+          if Fix then begin
+            Replace(Rel(p),0,'"');
+          end else begin
+            Error(p,'expected ending "');
+            break;
+          end;
+        '&':
+          ParseAmpersand;
+        '"':
+          begin
+            inc(p);
+            break;
+          end
+        else
+          inc(p);
+        end;
+      until false;
+    end;
+  end;
+
+  procedure ParseLowerThan;
+  begin
+    // comment, tag or 'lower than'
+    if (p[1]='!') and (p[2]='-') and (p[3]='-') then begin
+      // comment
+      ParseComment;
+      exit;
+    end;
+    if p[1] in ['a'..'z','A'..'Z'] then begin
+      // open tag
+      Push(sitTag);
+      TopItem^.StartPos:=Rel(p);
+      inc(p);
+      TopItem^.NameStartPos:=Rel(p);
+      LowerCaseName;
+      TopItem^.NameEndPos:=Rel(p);
+      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+      case p^ of
+      'a'..'z','A'..'Z':
+        ParseAttribute;
+      '/':
+        begin
+          // ToDo: close tag
+          RaiseGDBException('ToDo');
+        end;
+      '>':
+        begin
+          // ToDo:
+        end;
+      end;
+    end else if p[1]='/' then begin
+      // ToDo: close tag
+      RaiseGDBException('ToDo');
+    end;
+    // invalid character => convert or skip
+    HandleSpecialChar;
+  end;
+
 begin
   ErrorList:=nil;
   if Fragment='' then exit;
@@ -314,16 +429,7 @@ begin
           end;
         end;
       '<':
-        begin
-          // comment, tag or 'lower than'
-          if (p[1]='!') and (p[2]='-') and (p[3]='-') then
-            // comment
-            ParseComment
-          else begin
-            // invalid character => convert or skip
-            HandleSpecialChar;
-          end;
-        end;
+        ParseLowerThan;
       '>':
         // invalid character => convert or skip
         HandleSpecialChar;
@@ -346,8 +452,8 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  TestComment;
-  TestInvalidCharacters;
+  //TestComment;
+  //TestInvalidCharacters;
 end;
 
 procedure TForm1.TestComment;

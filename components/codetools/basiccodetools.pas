@@ -109,7 +109,8 @@ function IsFirstNonSpaceCharInLine(const Source: string;
     Position: integer): boolean;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean;
-    StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true): integer;
+    StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true;
+    SkipEmptyLines: boolean = false): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean;
     StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false;
@@ -2463,11 +2464,14 @@ begin
 end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
-   Position, MinPosition: integer; NestedComments: boolean;
-   StopAtDirectives: boolean; SkipSemicolonComma: boolean): integer;
+  Position, MinPosition: integer; NestedComments: boolean;
+  StopAtDirectives: boolean; SkipSemicolonComma: boolean;
+  SkipEmptyLines: boolean): integer;
 { search backward for a line end or code
   ignore line ends in comments or at the end of comment lines
    (comment lines are lines without code and at least one comment)
+  comment lines directly in front are skipped too
+  if SkipEmptyLines=true then empty lines are skipped too.
   Result is Position of Start of Line End
 
   examples: Position points at char 'a'
@@ -2585,6 +2589,28 @@ begin
           if IsEmpty then begin
             // the line is empty => return start of line end
             Result:=LineEndPos;
+            if SkipEmptyLines then begin
+              // skip all empty lines
+              LineStartPos:=Result;
+              while (LineStartPos>SrcStart) do begin
+                case Source[LineStartPos-1] of
+                  #10,#13:
+                    begin
+                      // empty line
+                      LineEndPos:=LineStartPos-1;
+                      if (LineEndPos>SrcStart) and (Source[LineEndPos-1] in [#10,#13])
+                      and (Source[LineEndPos]<>Source[LineEndPos-1]) then
+                        dec(LineEndPos);
+                      Result:=LineEndPos;
+                    end;
+                  ' ',#9: ;
+                else
+                  // not empty
+                  break;
+                end;
+                dec(LineStartPos);
+              end;
+            end;
             exit;
           end;
           TestPos:=LineStartPos;

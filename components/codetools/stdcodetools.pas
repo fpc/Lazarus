@@ -1086,8 +1086,10 @@ begin
         // first unit in uses section
         if AtomIsChar(';') then begin
           // last unit in uses section -> delete whole uses section
+          StartPos:=FindLineEndOrCodeInFrontOfPosition(UsesNode.StartPos,true,true);
+          debugln(['TStandardCodeTool.RemoveUnitFromUsesSection AAA1 "',dbgstr(copy(Src,StartPos,UsesNode.EndPos-StartPos)),'"']);
           if not SourceChangeCache.Replace(gtNone,gtNone,
-            UsesNode.StartPos,UsesNode.EndPos,'') then exit;
+            StartPos,UsesNode.EndPos,'') then exit;
         end else begin
           // not last unit -> delete with comma behind
           EndPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos);
