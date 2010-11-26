@@ -6519,8 +6519,9 @@ begin
   then begin
     ClearOwned;
     CancelEvaluation;
+    if (Debugger.State = dsPause) or (AOldState in [dsRun, dsPause])
+    then Changed;
   end;
-  if Debugger.State = dsPause then Changed;
 end;
 
 procedure TGDBMIWatch.Invalidate;
@@ -6593,7 +6594,7 @@ end;
 function TGDBMIWatch.GetValue: String;
 begin
   if  (Debugger <> nil)
-  and (Debugger.State in [dsStop, dsPause])
+  and (Debugger.State in [dsPause])
   and Enabled
   then begin
     EvaluationNeeded;
@@ -6609,7 +6610,7 @@ end;
 function TGDBMIWatch.GetTypeInfo: TDBGType;
 begin
   if  (Debugger <> nil)
-  and (Debugger.State in [dsStop, dsPause])
+  and (Debugger.State in [dsPause])
   and Enabled
   then begin
     EvaluationNeeded;
