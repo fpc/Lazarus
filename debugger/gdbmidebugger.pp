@@ -7823,6 +7823,8 @@ end;
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
   ATimeOut: Integer = -1): Boolean;
+var
+  R: TGDBMIExecResult;
 begin
   AResult.Values := '';
   AResult.State := dsNone;
@@ -7836,13 +7838,19 @@ begin
   if ProcessResultTimedOut then begin
     FTheDebugger.SendCmdLn('-data-evaluate-expression 1');
     Result := ProcessResult(AResult, Min(ATimeOut, 1000));
-    ProcessResult(AResult, 500); // catch the 2nd <gdb> prompt, if indeed any
-    AResult.State := dsError;
-    if ProcessResultTimedOut then
-      Result := False
-    else
+
+    if ProcessResultTimedOut then begin
+      // still timed out
+      Result := False; // => dsError
+    end
+    else begin
       MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
-                 mtWarning, [mbOK], 0);
+             mtWarning, [mbOK], 0);
+
+      ProcessResult(R, 500); // catch the 2nd <gdb> prompt, if indeed any
+      if ProcessResultTimedOut then
+        AResult.State := dsError;
+    end;
   end;
 
   if not Result
@@ -7998,21 +8006,18 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
 
 var
   S: String;
-  t, t2: DWord;
 begin
   Result := False;
   FProcessResultTimedOut := False;
-  if ATimeOut > 0
-  then t := GetTickCount;
   AResult.Values := '';
   AResult.Flags := [];
   AResult.State := dsNone;
   repeat
     S := FTheDebugger.ReadLine(ATimeOut);
-    if S = '' then Continue;
     if S = '(gdb) ' then Break;
 
-    case S[1] of
+    if s <> ''
+    then case S[1] of
       '^': Result := DoResultRecord(S);
       '~': DoConsoleStream(S);
       '@': DoTargetStream(S);
@@ -8028,19 +8033,6 @@ begin
     then begin
       FProcessResultTimedOut := True;
       break;
-    end;
-    if (ATimeOut > 0) then begin
-      t2 := GetTickCount;
-      if t2 < t
-      then t2 := t2 + High(t) - t
-      else t2 := t2 - t;
-      if (t2 >= ATimeOut)
-      then begin
-        FProcessResultTimedOut := True;
-        break;
-      end;
-      ATimeOut := ATimeOut - t2;
-      t := t2;
     end;
   until not FTheDebugger.DebugProcessRunning;
 end;

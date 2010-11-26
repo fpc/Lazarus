@@ -95,17 +95,17 @@ uses
 {------------------------------------------------------------------------------
   Function: WaitForHandles
   Params:  AHandles:              A set of handles to wait for (max 32)
-  TimeOut: Max Time in milli-secs
+  TimeOut: Max Time in milli-secs => set to 0 if timeout occured
   Returns: BitArray of handles set, 0 when an error occoured
  ------------------------------------------------------------------------------}
-function WaitForHandles(const AHandles: array of Integer; ATimeOut: Integer = -1): Integer;
+function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer;
 {$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
   FDSWait, FDS: TFDSet;
   Step: Integer;
-  t, t2: DWord;
+  t, t2, t3: DWord;
 begin
   Result := 0;
   Max := 0;
@@ -145,10 +145,17 @@ begin
     if (ATimeOut > 0) then begin
       t2 := GetTickCount;
       if t2 < t
-      then t2 := t2 + High(t) - t
-      else t2 := t2 - t;
-      if (t2 > ATimeOut)
-      then break;
+      then t3 := t2 + (High(t) - t)
+      else t3 := t2 - t;
+      if (t3 >= ATimeOut)
+      then begin
+        ATimeOut := 0;
+        break;
+      end
+      else begin
+        ATimeOut := ATimeOut - t3;
+        t := t2;
+      end;
     end;
 
     inc(Step);
@@ -181,7 +188,7 @@ var
   R: LongBool;
   n: integer;
   Step: Integer;
-  t, t2: DWord;
+  t, t2, t3: DWord;
 begin
   Result := 0;
   Step:=0;
@@ -211,10 +218,17 @@ begin
     if (ATimeOut > 0) then begin
       t2 := GetTickCount;
       if t2 < t
-      then t2 := t2 + High(t) - t
-      else t2 := t2 - t;
-      if (t2 > ATimeOut)
-      then break;
+      then t3 := t2 + (High(t) - t)
+      else t3 := t2 - t;
+      if (t3 >= ATimeOut)
+      then begin
+        ATimeOut := 0;
+        break;
+      end
+      else begin
+        ATimeOut := ATimeOut - t3;
+        t := t2;
+      end;
     end;
 
     // process messages
@@ -236,6 +250,14 @@ begin
 end;
 {$ENDIF win32}
 {$ENDIF linux}
+
+function WaitForHandles(const AHandles: array of Integer): Integer; overload;
+var
+  t: Integer;
+begin
+  t := -1;
+  WaitForHandles(AHandles, t);
+end;
 
 //////////////////////////////////////////////////
 
@@ -327,14 +349,11 @@ var
   WaitSet: Integer;
   LineEndMatch: String;
   n, Idx, MinIdx, PeekCount: Integer;
-  t, t2: DWord;
-begin                
+begin
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
 // TODO: get extra handles to wait for
 // TODO: Fix multiple peeks
-  if ATimeOut > 0
-  then t := GetTickCount;
   Result := '';
   FReadLineTimedOut := False;
 
@@ -376,29 +395,23 @@ begin
       end;
     end;
 
-    if (ATimeOut > 0) then begin
-      t2 := GetTickCount;
-      if t2 < t
-      then t2 := t2 + High(t) - t
-      else t2 := t2 - t;
-      if (t2 >= ATimeOut)
-      then begin
-        FReadLineTimedOut := True;
-        break;
-      end;
-      ATimeOut := ATimeOut - t2;
-      t := t2;
-    end;
+    if FReadLineTimedOut
+    then break;
 
     WaitSet := WaitForHandles([FDbgProcess.Output.Handle], ATimeOut);
-    if WaitSet = 0
+
+    if (ATimeOut = 0)
+    then FReadLineTimedOut := True;
+
+
+    if (WaitSet = 0) and not FReadLineTimedOut
     then begin
       SmartWriteln('[TCmdLineDebugger.Getoutput] Error waiting ');
       SetState(dsError);
       Break;
     end;
-    
-    if  ((WaitSet and 1) <> 0) 
+
+    if  ((WaitSet and 1) <> 0)
     and (FDbgProcess <> nil)
     and (ReadData(FDbgProcess.Output, FOutputBuf) > 0) 
     then Continue; // start lineend search
