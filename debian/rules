@@ -39,13 +39,10 @@ endif
 ifndef CP
 CP=cp -Rfpl
 endif
-RM:=rm -rf
-ifndef LAZBUILD
-LAZBUILD=${CURDIR}/lazbuild
+ifndef MV
+MV=mv
 endif
-# Set default compilation options
-BUILDOPTS=
-INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
+RM:=rm -rf
 # Get fpcmake from path if none is specified.
 ifndef FPCMAKE
 FPCMAKE=fpcmake
@@ -54,6 +51,12 @@ endif
 ifndef FPCDIR
 export FPCDIR=/usr/share/fpcsrc/${FPCVER}
 endif
+ifndef LAZBUILD
+LAZBUILD=${CURDIR}/lazbuild
+endif
+# Set default compilation options
+BUILDOPTS=
+INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
 # Configure patch system
 include /usr/share/quilt/quilt.make
 
@@ -83,7 +86,7 @@ clean-patched:
 	$(MAKE) distclean ${BUILDOPTS}
 	$(MAKE) -C docs/html clean
 	find -regex '.*\.\(a\|or?\|so\.*\|ppu\)' -delete
-
+	dh_prep
 
 ###################
 # Debian files
@@ -118,7 +121,7 @@ build-arch-stamp:
 	dh_testdir
 	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
 	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
-	mv $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
+	${MV} $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
 	$(MAKE) lazbuilder $(BUILDOPTS)
 	$(MAKE) tools $(BUILDOPTS)
 	touch build-arch-stamp
@@ -128,7 +131,6 @@ install-arch-stamp:
 	@echo "--- Installing"
 	dh_testdir
 	dh_testroot
-	dh_prep
 	dh_installdirs
 	# create all necessary directories
 	install -d $(INSTALL_DIR)/usr/bin
@@ -152,15 +154,16 @@ install-arch-stamp:
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
-	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus.xpm
+	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.xpm
 	chmod 644 $(INSTALL_DIR)/usr/share/pixmaps/*.xpm
-	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus.desktop
+	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
 	# Install man pages
 	$(MAKE) -C install/man installman $(INSTALLOPTS) INSTALL_PREFIX=$(INSTALL_DIR)/usr/share
+	test -z ${PACKAGESUFFIX} || for s in 1 2 3 4 5 6 7 8 9 ; do test -d ${INSTALL_DIR}/usr/share/man/man$${s} && for f in ${INSTALL_DIR}/usr/share/man/man$${s}/*.? ; do n=`basename $${f}` ; ${MV} $${f} `dirname $${f}`/$${n%%.*}${PACKAGESUFFIX}."$${n#*.}" ; done ; done || true
 	# Install configuration files
-	${MKDIR} $(INSTALL_DIR)/etc/lazarus
-	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus/environmentoptions.xml
-	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/helpoptions.xml -o $(INSTALL_DIR)/etc/lazarus/helpoptions.xml
+	${MKDIR} $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}
+	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/environmentoptions.xml
+	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/helpoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/helpoptions.xml
 	# Install contributer list
 	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs
 	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs \
@@ -168,11 +171,11 @@ install-arch-stamp:
 		$(CURDIR)/docs/contributors.utf8 \
 		$(CURDIR)/docs/acknowledgements.txt
 	# Install lintian override files
-	set -x; cd debian/overrides ; for PACKAGE in * ; do \
-	  if [ -d ../$${PACKAGE} ] ; \
+	set -x -e ; cd debian/overrides ; for PACKAGE in * ; do \
+	  if [ -d ../$${PACKAGE}${PACKAGESUFFIX} ] ; \
 	  then \
-	    install -m644 -D $${PACKAGE} \
-	      ../$${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  	${MKDIR} ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides ; \
+	    sed -e "s/$${PACKAGE}/&${PACKAGESUFFIX}/g" $${PACKAGE} > ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides/$${PACKAGE}${PACKAGESUFFIX} ; \
 	  fi ; \
 	done
 	find ${INSTALL_DIR} -empty -delete
@@ -205,7 +208,6 @@ install-doc-stamp:
 	@echo "--- Installing Documentation"
 	dh_testdir
 	dh_testroot
-	dh_prep
 	${MAKE} -C docs/html ${DOCTYPE}install INSTALL_PREFIX=${INSTALL_DIR}/usr INSTALL_DOCDIR=${DOC_DIR}
 	cd docs ; ${CP} --parents -t ${DOC_DIR} \
 	  index.html \
@@ -264,11 +266,11 @@ binary-indep: clean-patched build-doc install-doc install-source debian-files
 	dh_installchangelogs -i
 	dh_install -i --sourcedir=debian/tmp --list-missing
 	# Install lintian override files
-	set -x; cd debian/overrides ; for PACKAGE in * ; do \
-	  if [ -d ../$${PACKAGE} ] ; \
+	set -x -e ; cd debian/overrides ; for PACKAGE in * ; do \
+	  if [ -d ../$${PACKAGE}${PACKAGESUFFIX} ] ; \
 	  then \
-	    install -m644 -D $${PACKAGE} \
-	      ../$${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  	${MKDIR} ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides ; \
+	    sed -e "s/$${PACKAGE}/&${PACKAGESUFFIX}/g" $${PACKAGE} > ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides/$${PACKAGE}${PACKAGESUFFIX} ; \
 	  fi ; \
 	done
 	dh_compress -i -X.pdf

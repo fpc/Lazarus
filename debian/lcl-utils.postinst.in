@@ -1,0 +1,24 @@
+#! /bin/sh
+
+set -e
+
+LAZARUS_DIR=/usr/lib/lazarus/${VERSION}
+MAN_DIR=/usr/share/man/man1
+
+# Add alternatives
+update-alternatives \
+	--install /usr/lib/lazarus/default lazarus ${LAZARUS_DIR} 20 \
+	--slave /etc/lazarus lazarus.cfg /etc/lazarus-${VERSION} \
+    --slave /usr/bin/lazbuild lazbuild ${LAZARUS_DIR}/lazbuild \
+    --slave ${MAN_DIR}/lazbuild.1.gz lazbuild.1.gz ${MAN_DIR}/lazbuild-${VERSION}.1.gz \
+	--slave /usr/bin/lazres lazres ${LAZARUS_DIR}/tools/lazres \
+	--slave ${MAN_DIR}/lazre.1.gzs lazres.1.gz ${MAN_DIR}/lazres-${VERSION}.1.gz \
+	--slave /usr/bin/lrstolfm lrstolfm ${LAZARUS_DIR}/tools/lrstolfm \
+	--slave ${MAN_DIR}/lrstolfm.1.gz lrstolfm.1.gz ${MAN_DIR}/lrstolfm-${VERSION}.1.gz \
+	--slave /usr/bin/svn2revisioninc svn2revisioninc ${LAZARUS_DIR}/tools/svn2revisioninc \
+	--slave ${MAN_DIR}/svn2revisioninc.1.gz svn2revisioninc.1.gz ${MAN_DIR}/svn2revisioninc-${VERSION}.1.gz \
+	--slave /usr/bin/updatepofiles updatepofiles ${LAZARUS_DIR}/tools/updatepofiles \
+	--slave ${MAN_DIR}/updatepofiles.1.gz updatepofiles.1.gz ${MAN_DIR}/updatepofiles-${VERSION}.1.gz
+
+# Debhelper code
+#DEBHELPER#
