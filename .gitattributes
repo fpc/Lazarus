@@ -4150,7 +4150,6 @@ images/debugger/callstack_more.png -text
 images/debugger/callstack_show.png -text
 images/debugger/callstack_top.png -text
 images/debugger/debugger.png -text svneol=unset#image/png
-images/debugger/debugger__gen_setting.png -text svneol=unset#images/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
 images/debugger/debugger_current_line.png -text
@@ -4170,8 +4169,6 @@ images/debugger/debugger_power.png -text svneol=unset#images/png
 images/debugger/debugger_power_grey.png -text svneol=unset#images/png
 images/debugger/debugger_show_execution_point.png -text svneol=unset#image/png
 images/debugger/debugger_source_line.png -text
-images/debugger/debugger_trashcan.png -text svneol=unset#images/png
-images/debugger/debugger_trashcan_all.png -text svneol=unset#images/png
 images/debugger/debugger_watches.png -text svneol=unset#image/png
 images/designer/Order_back_one.png -text
 images/designer/Order_forward_one.png -text

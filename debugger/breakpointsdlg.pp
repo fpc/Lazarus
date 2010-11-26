@@ -289,7 +289,7 @@ begin
 
   actDeleteSelected.Caption := liswlDelete; //lisDbgItemDelete;
   actDeleteSelected.Hint    := lisDbgItemDeleteHint;
-  actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan');
+  actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
 
   actEnableAll.Caption := lisEnableAll; //lisDbgAllItemEnable;
   actEnableAll.Hint    := lisDbgAllItemEnableHint;
@@ -301,10 +301,10 @@ begin
 
   actDeleteAll.Caption := lisDeleteAll; //lisDbgAllItemDelete;
   actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
-  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_trashcan_all');
+  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
   actProperties.Caption:= liswlProperties;
-  actProperties.ImageIndex := IDEImages.LoadImage(16, 'debugger__gen_setting');
+  actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
 
   actToggleCurrentEnable.Caption:= liswlEnabled;
 
