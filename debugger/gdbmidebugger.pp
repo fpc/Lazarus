@@ -8169,7 +8169,7 @@ function TGDBMIDebuggerCommand.GetText(const AExpression: String;
 var
   R: TGDBMIExecResult;
 begin
-  if not ExecuteCommand('x/s ' + AExpression, AValues, R {$IFDEF DBG_WIT_TIMEOUT}, 2500{$ENDIF})
+  if not ExecuteCommand('x/s ' + AExpression, AValues, R {$IFDEF DBG_WITH_TIMEOUT}, 2500{$ENDIF})
   then begin
     Result := '';
     Exit;
