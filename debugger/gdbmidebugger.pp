@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Math, Variants, LCLProc, Dialogs, LazConf, DebugUtils,
-  Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps,
+  Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -1236,13 +1236,6 @@ begin
 end;
 {$ENDIF}
 
-// None windows
-{$IFnDEF MSWindows}
-function GetTickCount: DWORD;
-begin
-  Result := round(Now*86400000) mod (High(DWord) + 1);
-end;
-{$ENDIF}
 { =========================================================================== }
 { Helpers }
 { =========================================================================== }
