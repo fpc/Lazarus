@@ -159,6 +159,7 @@ type
     FKeepFinished: Boolean;
     FFreeLock: Integer;
     FFreeRequested: Boolean;
+    FProcessResultTimedOut: Boolean;
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
@@ -184,20 +185,24 @@ type
   protected
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String;
-                             AFlags: TGDBMICommandFlags = []
+                             AFlags: TGDBMICommandFlags = [];
+                             ATimeOut: Integer = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String;
                              out AResult: TGDBMIExecResult;
-                             AFlags: TGDBMICommandFlags = []
+                             AFlags: TGDBMICommandFlags = [];
+                             ATimeOut: Integer = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const;
-                             AFlags: TGDBMICommandFlags
+                             AFlags: TGDBMICommandFlags;
+                             ATimeOut: Integer = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const;
                              out AResult: TGDBMIExecResult;
-                             AFlags: TGDBMICommandFlags = []
+                             AFlags: TGDBMICommandFlags = [];
+                             ATimeOut: Integer = -1
                             ): Boolean; overload;
-    function  ProcessResult(var AResult: TGDBMIExecResult): Boolean;
+    function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
     function  ProcessGDBResultText(S: String): String;
     function  GetFrame(const AIndex: Integer): String;
     function  GetText(const ALocation: TDBGPtr): String; overload;
@@ -219,6 +224,7 @@ type
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
+    property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;
   public
     constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
@@ -7807,23 +7813,37 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
-  AFlags: TGDBMICommandFlags = []): Boolean;
+  AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
 var
   R: TGDBMIExecResult;
 begin
-  Result := ExecuteCommand(ACommand, R, AFlags);
+  Result := ExecuteCommand(ACommand, R, AFlags, ATimeOut);
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
-  out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = []): Boolean;
+  out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
+  ATimeOut: Integer = -1): Boolean;
 begin
   AResult.Values := '';
   AResult.State := dsNone;
   AResult.Flags := [];
 
   FTheDebugger.SendCmdLn(ACommand);
-  Result := ProcessResult(AResult);
+
+  Result := ProcessResult(AResult, ATimeOut);
   FLastExecResult := AResult;
+
+  if ProcessResultTimedOut then begin
+    FTheDebugger.SendCmdLn('-data-evaluate-expression 1');
+    Result := ProcessResult(AResult, Min(ATimeOut, 1000));
+    ProcessResult(AResult, 500); // catch the 2nd <gdb> prompt, if indeed any
+    AResult.State := dsError;
+    if ProcessResultTimedOut then
+      Result := False
+    else
+      MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
+                 mtWarning, [mbOK], 0);
+  end;
 
   if not Result
   then begin
@@ -7841,21 +7861,22 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
-  const AValues: array of const; AFlags: TGDBMICommandFlags): Boolean;
+  const AValues: array of const; AFlags: TGDBMICommandFlags;
+  ATimeOut: Integer = -1): Boolean;
 var
   R: TGDBMIExecResult;
 begin
-  Result := ExecuteCommand(ACommand, AValues, R, AFlags);
+  Result := ExecuteCommand(ACommand, AValues, R, AFlags, ATimeOut);
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   const AValues: array of const; out AResult: TGDBMIExecResult;
-  AFlags: TGDBMICommandFlags = []): Boolean;
+  AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
 begin
-  Result := ExecuteCommand(Format(ACommand, AValues), AResult, AFlags);
+  Result := ExecuteCommand(Format(ACommand, AValues), AResult, AFlags, ATimeOut);
 end;
 
-function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
+function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Integer = -1): Boolean;
 
   function DoResultRecord(Line: String): Boolean;
   var
@@ -7977,13 +7998,17 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult): Boo
 
 var
   S: String;
+  t, t2: DWord;
 begin
   Result := False;
+  FProcessResultTimedOut := False;
+  if ATimeOut > 0
+  then t := GetTickCount;
   AResult.Values := '';
   AResult.Flags := [];
   AResult.State := dsNone;
   repeat
-    S := FTheDebugger.ReadLine;
+    S := FTheDebugger.ReadLine(ATimeOut);
     if S = '' then Continue;
     if S = '(gdb) ' then Break;
 
@@ -7999,6 +8024,24 @@ begin
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
     {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
+    if FTheDebugger.ReadLineTimedOut
+    then begin
+      FProcessResultTimedOut := True;
+      break;
+    end;
+    if (ATimeOut > 0) then begin
+      t2 := GetTickCount;
+      if t2 < t
+      then t2 := t2 + High(t) - t
+      else t2 := t2 - t;
+      if (t2 >= ATimeOut)
+      then begin
+        FProcessResultTimedOut := True;
+        break;
+      end;
+      ATimeOut := ATimeOut - t2;
+      t := t2;
+    end;
   until not FTheDebugger.DebugProcessRunning;
 end;
 
@@ -8126,7 +8169,7 @@ function TGDBMIDebuggerCommand.GetText(const AExpression: String;
 var
   R: TGDBMIExecResult;
 begin
-  if not ExecuteCommand('x/s ' + AExpression, AValues, R)
+  if not ExecuteCommand('x/s ' + AExpression, AValues, R {$IFDEF DBG_WIT_TIMEOUT}, 2500{$ENDIF})
   then begin
     Result := '';
     Exit;

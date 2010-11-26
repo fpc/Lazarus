@@ -53,16 +53,18 @@ type
     FReading: Boolean;       // Set if we are in the ReadLine loop
     FFlushAfterRead: Boolean;// Set if we should flush after finished reading
     FPeekOffset: Integer;    // Count the number of lines we have peeked
+    FReadLineTimedOut: Boolean;
     function GetDebugProcessRunning: Boolean;
   protected
     function  CreateDebugProcess(const AOptions: String): Boolean;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
-    function  ReadLine: String; overload;
-    function  ReadLine(const APeek: Boolean): String; overload;
+    function  ReadLine(ATimeOut: Integer = -1): String; overload;
+    function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     procedure SetLineEnds(ALineEnds: TStringDynArray);
+    property ReadLineTimedOut: Boolean read FReadLineTimedOut;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -92,16 +94,18 @@ uses
 {------------------------------------------------------------------------------
   Function: WaitForHandles
   Params:  AHandles:              A set of handles to wait for (max 32)
+  TimeOut: Max Time in milli-secs
   Returns: BitArray of handles set, 0 when an error occoured
  ------------------------------------------------------------------------------}
-function WaitForHandles(const AHandles: array of Integer): Integer;
+function WaitForHandles(const AHandles: array of Integer; ATimeOut: Integer = -1): Integer;
 {$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
   FDSWait, FDS: TFDSet;
   Step: Integer;
-begin      
+  t, t2: DWord;
+begin
   Result := 0;
   Max := 0;
   Count := High(AHandles);
@@ -124,6 +128,9 @@ begin
     exit;
   end;
 
+  if ATimeOut > 0
+  then t := GetTickCount;
+
   // wait for all handles
   Step:=0;
   repeat
@@ -133,6 +140,16 @@ begin
     // R = -1 on error, 0 on timeout, >0 on success and is number of handles
     // FDSWait is changed, and indicates what descriptors have changed
     R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
+
+    if (ATimeOut > 0) then begin
+      t2 := GetTickCount;
+      if t2 < t
+      then t2 := t2 + High(t) - t
+      else t2 := t2 - t;
+      if (t2 > ATimeOut)
+      then break;
+    end;
+
     inc(Step);
     if Step=50 then begin
       Step:=0;
@@ -154,6 +171,7 @@ begin
         if R=0 then Break;
       end;
   end;
+end;
 {$ELSE linux}
 {$IFdef MSWindows}
 var
@@ -162,9 +180,12 @@ var
   R: LongBool;
   n: integer;
   Step: Integer;
+  t, t2: DWord;
 begin
   Result := 0;
   Step:=0;
+  if ATimeOut > 0
+  then t := GetTickCount;
 
   while Result=0 do
   begin
@@ -185,6 +206,16 @@ begin
         end;
       end;
     end;
+
+    if (ATimeOut > 0) then begin
+      t2 := GetTickCount;
+      if t2 < t
+      then t2 := t2 + High(t) - t
+      else t2 := t2 - t;
+      if (t2 > ATimeOut)
+      then break;
+    end;
+
     // process messages
     inc(Step);
     if Step=20 then begin
@@ -196,13 +227,14 @@ begin
     // sleep a bit
     Sleep(10);
   end;
+end;
 {$ELSE win32}
 begin
   DebugLn('ToDo: implement WaitForHandles for this OS');
   Result := 0;
+end;
 {$ENDIF win32}
 {$ENDIF linux}
-end;
 
 //////////////////////////////////////////////////
 
@@ -270,12 +302,12 @@ begin
   Result := FReading;
 end;
 
-function TCmdLineDebugger.ReadLine: String;
+function TCmdLineDebugger.ReadLine(ATimeOut: Integer = -1): String;
 begin
-  Result := ReadLine(False);
+  Result := ReadLine(False, ATimeOut);
 end;
 
-function TCmdLineDebugger.ReadLine(const APeek: Boolean): String;
+function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String;
 
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
   var
@@ -294,12 +326,18 @@ var
   WaitSet: Integer;
   LineEndMatch: String;
   n, Idx, MinIdx, PeekCount: Integer;
+  t, t2: DWord;
 begin                
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
 // TODO: get extra handles to wait for
 // TODO: Fix multiple peeks
-  if not APeek 
+  if ATimeOut > 0
+  then t := GetTickCount;
+  Result := '';
+  FReadLineTimedOut := False;
+
+  if not APeek
   then FPeekOffset := 0;
   FReading := True;
   PeekCount := 0;
@@ -337,7 +375,21 @@ begin
       end;
     end;
 
-    WaitSet := WaitForHandles([FDbgProcess.Output.Handle]);
+    if (ATimeOut > 0) then begin
+      t2 := GetTickCount;
+      if t2 < t
+      then t2 := t2 + High(t) - t
+      else t2 := t2 - t;
+      if (t2 >= ATimeOut)
+      then begin
+        FReadLineTimedOut := True;
+        break;
+      end;
+      ATimeOut := ATimeOut - t2;
+      t := t2;
+    end;
+
+    WaitSet := WaitForHandles([FDbgProcess.Output.Handle], ATimeOut);
     if WaitSet = 0
     then begin
       SmartWriteln('[TCmdLineDebugger.Getoutput] Error waiting ');
@@ -372,10 +424,10 @@ begin
   FFlushAfterRead := False;
   //writeln('TCmdLineDebugger.ReadLine returns ', result);
   {$IFDEF DBG_VERBOSE}
-  {$IFnDEF DBG_VERBOSE_FULL_DATA} if length(Result) < 150 then  {$ENDIF}
+  {$IFnDEF DBG_VERBOSE_FULL_DATA} if length(Result) < 300 then  {$ENDIF}
   debugln('<< TCmdLineDebugger.ReadLn "',Result,'"')
   {$IFnDEF DBG_VERBOSE_FULL_DATA}
-  else  debugln('<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 100), '" ... "',copy(Result, length(Result)-50, 50),'"')
+  else  debugln(['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-100, 100),'"'])
   {$ENDIF}
   ;
   {$ENDIF}
