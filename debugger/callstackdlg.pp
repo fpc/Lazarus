@@ -469,14 +469,14 @@ end;
 
 procedure TCallStackDlg.actViewMoreExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := False;
+  ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
   ViewLimit := ViewLimit + FViewCount;
 end;
 
 procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := False;
+  ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
   SetViewStart(0);
 end;
@@ -571,7 +571,7 @@ end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := False;
+  ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
   ViewLimit := FViewCount;
 end;
@@ -579,7 +579,7 @@ end;
 procedure TCallStackDlg.SetViewStart(AStart: Integer);
 begin
   if CallStack = nil then Exit;
-  ToolButtonPower.Down := False;
+  ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
 
   if (AStart > CallStack.Count - FViewLimit)
@@ -625,7 +625,7 @@ end;
 
 procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
 begin
-  ToolButtonPower.Down := False;
+  ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
   if FViewLimit = AValue then Exit;
   if (CallStack <> nil)
