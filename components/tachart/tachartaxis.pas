@@ -42,10 +42,11 @@ type
     property Style default psClear;
   end;
 
+  TCustomChartAxisTitle = specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+
   { TChartAxisTitle }
 
-  TChartAxisTitle = class(
-    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
+  TChartAxisTitle = class(TCustomChartAxisTitle)
   private
     FCaption: String;
 
@@ -83,10 +84,11 @@ type
     property Style default psDot;
   end;
 
+  TCustomChartAxisMarks = specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+
   { TChartAxisMarks }
 
-  TChartAxisMarks = class(
-    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
+  TChartAxisMarks = class(TCustomChartAxisMarks)
   private
     FAtDataOnly: Boolean;
     FDefaultSource: TIntervalChartSource;

@@ -183,10 +183,10 @@ type
     property Color default clYellow;
   end;
 
+  TCustomChartMarks = specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>;
   { TChartMarks }
 
-  TChartMarks = class(
-    specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>)
+  TChartMarks = class(TCustomChartMarks)
   public
     constructor Create(AOwner: TCustomChart);
   published
