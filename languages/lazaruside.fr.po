@@ -6038,8 +6038,68 @@ msgstr "Module de données"
 msgid "Date"
 msgstr "Date"
 
+#: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdelete
+msgctxt "lazarusidestrconsts.lisdbgitemdelete"
+msgid "Delete"
+msgstr "Supprimer"
+
+#: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Supprimer"
+
+#: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
@@ -6053,6 +6113,14 @@ msgstr "Placer le point d'arrêt de toute façon"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgstr "Il n'y a aucun débogueur d'indiqué.%sPlaçer des points d'arrêts n'aura aucun effet jusqu'à ce qu'un débogueur soit configuré dans le dialogue des options du débogueur dans le menu."
+
+#: lazarusidestrconsts.lisdbgwinpower
+msgid "On/Off"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgwinpowerhint
+msgid "Disable/Enable updates for the entire window"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"

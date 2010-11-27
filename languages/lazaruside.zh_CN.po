@@ -6022,8 +6022,68 @@ msgstr ""
 msgid "Date"
 msgstr "日期"
 
+#: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdelete
+msgctxt "lazarusidestrconsts.lisdbgitemdelete"
+msgid "Delete"
+msgstr "删除"
+
+#: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "删除"
+
+#: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
@@ -6037,6 +6097,14 @@ msgstr "强制设置断点"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgstr "没有详细的调试器.%s设置断点没有任何作用,除非你在调试器选项中设置了一个调试器."
+
+#: lazarusidestrconsts.lisdbgwinpower
+msgid "On/Off"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgwinpowerhint
+msgid "Disable/Enable updates for the entire window"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"

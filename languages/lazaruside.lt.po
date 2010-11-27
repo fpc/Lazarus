@@ -6016,8 +6016,68 @@ msgstr "Duomenų modulis"
 msgid "Date"
 msgstr "Data"
 
+#: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdelete
+msgctxt "lazarusidestrconsts.lisdbgitemdelete"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
@@ -6031,6 +6091,14 @@ msgstr "Vistiek padėti stabdos tašką"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgstr "Nenurodyta derintuvė.%sStabdos taškai neveiks kol nebus nurodyta derintuvė. Ji nurodoma menių esančiame derintuvės parinkčių dialoge."
+
+#: lazarusidestrconsts.lisdbgwinpower
+msgid "On/Off"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgwinpowerhint
+msgid "Disable/Enable updates for the entire window"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"

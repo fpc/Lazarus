@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-26 02:47+0300\n"
+"PO-Revision-Date: 2010-11-27 19:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6018,9 +6018,69 @@ msgstr "Модуль данных"
 msgid "Date"
 msgstr "Дата"
 
+#: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr "Удалить все"
+
+#: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr "Удалить все"
+
+#: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr "Отключить все"
+
+#: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr "Отключить все"
+
+#: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr "Включить все"
+
+#: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr "Включить все"
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
+
+#: lazarusidestrconsts.lisdbgitemdelete
+msgctxt "lazarusidestrconsts.lisdbgitemdelete"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr "Отключить"
+
+#: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr "Отключить"
+
+#: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr "Включить"
+
+#: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr "Включить"
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
@@ -6033,6 +6093,14 @@ msgstr "Установить точку останова всё равно"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgstr "Не указан отладчик.%sТочки останова не будут иметь эффекта, пока вы не настроите отладчик в диалоге \"Параметры отладчика\" в меню."
+
+#: lazarusidestrconsts.lisdbgwinpower
+msgid "On/Off"
+msgstr "Вкл./выкл."
+
+#: lazarusidestrconsts.lisdbgwinpowerhint
+msgid "Disable/Enable updates for the entire window"
+msgstr "Отключить/включить обновления для всего окна"
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
