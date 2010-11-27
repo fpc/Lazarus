@@ -548,8 +548,10 @@ begin
       
       NewPkgLink.NotFoundCount:=
                            XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
-      CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
-                            NewPkgLink.FLastUsed);
+      if not CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
+                            NewPkgLink.FLastUsed)
+      then
+        NewPkgLink.FLastUsed := 0;
 
       if NewPkgLink.MakeSense then begin
         FUserLinksSortID.Add(NewPkgLink);
