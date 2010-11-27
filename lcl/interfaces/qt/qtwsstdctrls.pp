@@ -635,14 +635,16 @@ var
   QtTextEdit: TQtTextEdit;
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
-  QtTextEdit.AttachEvents;
+  QtTextEdit.ClearText;
   QtTextEdit.setBorder(TCustomMemo(AWinControl).BorderStyle = bsSingle);
   QtTextEdit.setReadOnly(TCustomMemo(AWinControl).ReadOnly);
   QtTextEdit.setLineWrapMode(WordWrapMap[TCustomMemo(AWinControl).WordWrap]);
   // create our FList helper
-  QtTextEdit.FList := TQtMemoStrings.Create(QTextEditH(QtTextEdit.Widget), TCustomMemo(AWinControl));
+  QtTextEdit.FList := TQtMemoStrings.Create(TCustomMemo(AWinControl));
   QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
   QtTextEdit.setTabChangesFocus(not TCustomMemo(AWinControl).WantTabs);
+
+  QtTextEdit.AttachEvents;
 
   Result := TLCLIntfHandle(QtTextEdit);
 end;
@@ -659,7 +661,9 @@ begin
   if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') or (Length(AText) = 0) then
     Exit;
   AStr := GetUtf8String(AText);
-  TQtTextEdit(ACustomMemo.Handle).append(AStr);
+  TQtTextEdit(ACustomMemo.Handle).BeginUpdate;
+  TQtTextEdit(ACustomMemo.Handle).Append(AStr);
+  TQtTextEdit(ACustomMemo.Handle).EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -668,16 +672,11 @@ end;
   Returns: Memo Contents as TStrings
  ------------------------------------------------------------------------------}
 class function TQtWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
-var
-  TextEditH: QTextEditH;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'GetStrings') then
     Exit;
   if not Assigned(TQtTextEdit(ACustomMemo.Handle).FList) then
-  begin
-    TextEditH := QTextEditH((TQtTextEdit(ACustomMemo.Handle).Widget));  // set to proper type
-    TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(TextEditH, ACustomMemo);
-  end;
+    TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(ACustomMemo);
   
   Result := TQtTextEdit(ACustomMemo.Handle).FList;
 end;
@@ -695,7 +694,6 @@ class procedure TQtWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollBars') then
     Exit;
-
   TQtTextEdit(ACustomMemo.Handle).setScrollStyle(NewScrollBars);
 end;
 

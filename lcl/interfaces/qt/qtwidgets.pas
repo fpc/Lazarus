@@ -700,12 +700,14 @@ type
   private
     FViewportEventHook: QObject_hookH;
     FUndoAvailableHook: QTextEdit_hookH;
+    FTextChangedHook: QTextEdit_hookH;
     FUndoAvailable: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    procedure append(AStr: WideString);
+    procedure Append(const AStr: WideString);
+    procedure ClearText;
     function getAlignment: QtAlignment;
     function getBlockCount: Integer;
     function getCursorPosition: Integer;
@@ -741,6 +743,7 @@ type
     function getContextMenuPolicy: QtContextMenuPolicy; override;
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); override;
     procedure SignalUndoAvailable(b: Boolean); cdecl;
+    procedure SignalTextChanged(); cdecl;
   end;
 
   { TQtTabBar }
@@ -1633,6 +1636,7 @@ uses
   LCLMessageGlue,
   qtCaret,
   qtproc,
+  qtprivate,
   WSControls;
 
 const
@@ -6386,9 +6390,14 @@ begin
   QWidget_setAcceptDrops(Result, False);
 end;
 
-procedure TQtTextEdit.append(AStr: WideString);
+procedure TQtTextEdit.Append(const AStr: WideString);
 begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
+end;
+
+procedure TQtTextEdit.ClearText;
+begin
+  QTextEdit_clear(QTextEditH(Widget));
 end;
 
 function TQtTextEdit.getAlignment: QtAlignment;
@@ -6700,6 +6709,9 @@ begin
   FUndoAvailableHook := QTextEdit_hook_create(Widget);
   QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, @SignalUndoAvailable);
 
+  FTextChangedHook := QTextEdit_hook_create(Widget);
+  QTextEdit_hook_hook_textChanged(FTextChangedHook, @SignalTextChanged);
+
   FViewportEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FViewportEventHook, @viewportEventFilter);
 
@@ -6707,6 +6719,12 @@ end;
 
 procedure TQtTextEdit.DetachEvents;
 begin
+  if FUndoAvailableHook <> nil then
+    QTextEdit_hook_destroy(FUndoAvailableHook);
+
+  if FTextChangedHook <> nil then
+    QTextEdit_hook_destroy(FTextChangedHook);
+
   QObject_hook_destroy(FViewportEventHook);
   inherited DetachEvents;
 end;
@@ -6737,6 +6755,22 @@ end;
 procedure TQtTextEdit.SignalUndoAvailable(b: Boolean); cdecl;
 begin
   FUndoAvailable := b;
+end;
+
+procedure TQtTextEdit.SignalTextChanged(); cdecl;
+var
+  Mess: TLMessage;
+begin
+  if (LCLObject = nil) or not GetVisible then
+    exit;
+  if Assigned(FList) then
+    TQtMemoStrings(FList).TextChanged := True;
+  if not InUpdate then
+  begin
+    FillChar(Mess, SizeOf(Mess), #0);
+    Mess.Msg := CM_TEXTCHANGED;
+    DeliverMessage(Mess);
+  end;
 end;
 
 { TQtTabBar }

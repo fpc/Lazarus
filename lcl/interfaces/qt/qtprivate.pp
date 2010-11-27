@@ -87,22 +87,20 @@ type
 
   TQtMemoStrings = class(TStrings)
   private
-    FTextChangedHook : QTextEdit_hookH;
-    FTextChanged: Boolean; // StringList and QtTextEdit out of sync
+    FTextChanged: Boolean; // Inform TQtMemoStrings about change in TextChange event
     FStringList: TStringList; // Holds the lines to show
     FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
-    FUpdating: Boolean;       // We're changing Qt Widget
     procedure InternalUpdate;
-    procedure ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
-    procedure IsChanged; // OnChange triggered by program action
+    procedure ExternalUpdate(var AStr: WideString;
+      AClear, ABlockSignals: Boolean);
   protected
-    function getTextEdit: QTextEditH; // QtWidget handle
     function GetTextStr: string; override;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     procedure Put(Index: Integer; const S: string); override;
+    procedure SetTextStr(const Value: string); override;
   public
-    constructor Create(TextEdit : QTextEditH; TheOwner: TWinControl);
+    constructor Create(TheOwner: TWinControl);
     destructor Destroy; override;
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
@@ -111,7 +109,7 @@ type
     procedure SetText(TheText: PChar); override;
   public
     property Owner: TWinControl read FOwner;
-    procedure TextChangedHandler; cdecl;
+    property TextChanged: Boolean read FTextChanged write FTextChanged;
   end;
 
 implementation
@@ -128,69 +126,61 @@ implementation
 procedure TQtMemoStrings.InternalUpdate;
 var
   W: WideString;
-  TextEdit: QTextEditH;
+  TextEdit: TQtTextEdit;
 begin
-  TextEdit := getTextEdit;
-  if TextEdit <> nil then
-    QTextEdit_toPlainText(TextEdit, @W); // get the memo content
-  FStringList.Text := UTF16ToUTF8(W);
+  W := '';
+  if FOwner.HandleAllocated then
+  begin
+    TextEdit := TQtTextEdit(FOwner.Handle);
+    W := TextEdit.getText;
+  end;
+  if W <> '' then
+    FStringList.Text := UTF16ToUTF8(W) + LineEnding
+  else
+    FStringList.Text := '';
   FTextChanged := False;
 end;
 
 {------------------------------------------------------------------------------
   Private Method: TQtMemoStrings.ExternalUpdate
-  Params:  Astr: Text for Qt Widget; Clear: if we must clear first
+  Params:  AStr: Text for Qt Widget; Clear: if we must clear first
+           ABlockSignals: block SignalTextChanged() so it does not send an
+           message to LCL.
   Returns: Nothing
 
   Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
  ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
+procedure TQtMemoStrings.ExternalUpdate(var AStr: WideString;
+  AClear, ABlockSignals: Boolean);
 var
   W: WideString;
-  TextEdit: QTextEditH;
+  TextEdit: TQtTextEdit;
+  B: Boolean;
 begin
-  FUpdating := True;
+  if not FOwner.HandleAllocated then
+    exit;
+  {$ifdef VerboseQtMemoStrings}
+  writeln('TQtMemoStrings.ExternalUpdate');
+  {$endif}
+  TextEdit := TQtTextEdit(FOwner.Handle);
+  if ABlockSignals then
+    TextEdit.BeginUpdate;
   W := GetUtf8String(AStr);
-  TextEdit := getTextEdit;
-  if TextEdit <> nil then
+  if AClear then
   begin
-    if AClear then
-    begin
-      QTextEdit_clear(TextEdit);
-      QTextEdit_setPlainText(TextEdit,@W);
-    end else
-      QTextEdit_append(TextEdit,@W);
+    // never trigger changed signal when clearing text here.
+    // we must clear text since QTextEdit can contain html text.
+    TextEdit.BeginUpdate;
+    TextEdit.ClearText;
+    TextEdit.EndUpdate;
+    TextEdit.setText(W);
+  end else
+    TextEdit.Append(W);
 
-    if QTextEdit_alignment(TextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
-      QTextEdit_setAlignment(TextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
-  end;
-    
-  FUpdating := False;
-  IsChanged;
-  FUpdating := False;
-end;
-
-{------------------------------------------------------------------------------
-  Private Method: TQtMemoStrings.IsChanged
-  Params:  None
-  Returns: Nothing
-
-  Triggers the OnChange Event, with modified set to false
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.IsChanged;
-begin
-  if Assigned(FOwner) and Assigned((FOwner as TCustomMemo).OnChange) then
-  begin
-    (FOwner as TCustomMemo).Modified := False;
-    (FOwner as TCustomMemo).OnChange(FOwner);
-  end;
-end;
-
-function TQtMemoStrings.getTextEdit: QTextEditH;
-begin
-  Result := nil;
-  if FOwner.HandleAllocated then
-    Result := QTextEditH(TQtTextEdit(FOwner.Handle).Widget);
+  if TextEdit.getAlignment <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
+    TextEdit.setAlignment(AlignmentMap[TCustomMemo(FOwner).Alignment]);
+  if ABlockSignals then
+    TextEdit.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -201,9 +191,22 @@ end;
   Return the whole StringList content as a single string
  ------------------------------------------------------------------------------}
 function TQtMemoStrings.GetTextStr: string;
+var
+  TextLen: Integer;
 begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.GetTextStr');
+  {$endif}
   if FTextChanged then InternalUpdate;
   Result := FStringList.Text;
+
+  // remove trailing line break
+  TextLen := Length(Result);
+  if (TextLen > 0) and (Result[TextLen] = #10) then
+    Dec(TextLen);
+  if (TextLen > 0) and (Result[TextLen] = #13) then
+    Dec(TextLen);
+  SetLength(Result, TextLen);
 end;
 
 {------------------------------------------------------------------------------
@@ -215,6 +218,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtMemoStrings.GetCount: integer;
 begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.GetCount');
+  {$endif}
   if FTextChanged then InternalUpdate;
   Result := FStringList.Count;
 end;
@@ -228,20 +234,42 @@ end;
  ------------------------------------------------------------------------------}
 function TQtMemoStrings.Get(Index: Integer): string;
 begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.Get Index=',Index);
+  {$endif}
   if FTextChanged then InternalUpdate;
   if Index < FStringList.Count then
-     Result := FStringList.Strings[Index]
-  else Result := '';
+    Result := FStringList.Strings[Index]
+  else
+    Result := '';
 end;
 
 procedure TQtMemoStrings.Put(Index: Integer; const S: string);
 var
   W: WideString;
 begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.Put Index=',Index,' S=',S);
+  {$endif}
   if FTextChanged then InternalUpdate;
   FStringList[Index] := S;
   W := GetUTF8String(S);
+  TQtTextEdit(FOwner.Handle).BeginUpdate;
   TQtTextEdit(FOwner.Handle).setLineText(Index, W);
+  TQtTextEdit(FOwner.Handle).EndUpdate;
+end;
+
+procedure TQtMemoStrings.SetTextStr(const Value: string);
+var
+  W: WideString;
+begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.SetTextStr Value=',Value);
+  {$endif}
+  inherited SetTextStr(Value);
+  FStringList.Text := Value;
+  W := FStringList.Text;
+  ExternalUpdate(W, True, False);
 end;
 
 {------------------------------------------------------------------------------
@@ -251,22 +279,15 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
+constructor TQtMemoStrings.Create(TheOwner: TWinControl);
 begin
   inherited Create;
-
   {$ifdef VerboseQt}
-    if (TextEdit = nil) then WriteLn('TQtMemoStrings.Create Unspecified TextEdit widget');
-    if (TheOwner = nil) then WriteLn('TQtMemoStrings.Create Unspecified owner');
+  if (TheOwner = nil) then
+    WriteLn('TQtMemoStrings.Create Unspecified owner');
   {$endif}
-
   FStringList := TStringList.Create;
-  QTextEdit_clear(TextEdit);
-  FOwner:=TheOwner;
-  // Callback Event
-  {Method := MemoChanged;   }
-  FTextChangedHook := QTextEdit_hook_create(TextEdit);
-  QTextEdit_hook_hook_textChanged(FTextChangedHook, @TextChangedHandler);
+  FOwner := TheOwner;
 end;
 
 {------------------------------------------------------------------------------
@@ -280,30 +301,7 @@ destructor TQtMemoStrings.Destroy;
 begin
   Clear;
   FStringList.Free;
-  // don't destroy the widgets
-  if FTextChangedHook <> nil then
-    QTextEdit_hook_destroy(FTextChangedHook);
   inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.TextChangedHandler
-  Params:  None
-  Returns: Nothing
-
-  Signal handler for the TextChanged Signal.
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.TextChangedHandler; cdecl;
-var
-  Mess: TLMessage;
-begin
-  if not FUpdating then
-  begin
-    FTextChanged := True;
-    FillChar(Mess, SizeOf(Mess), #0);
-    Mess.Msg := CM_TEXTCHANGED;
-    FOwner.Dispatch(TLMessage(Mess));
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -317,15 +315,20 @@ procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
   W: WideString;
 begin
-  if (Source=Self) or (Source=nil)
-  then
+  if (Source=Self) or (Source=nil) then
     exit;
+  if not FOwner.HandleAllocated then
+    exit;
+
   if Source is TStrings then
   begin
+    {$ifdef VerboseQtMemoStrings}
+    writeln('TQtMemoStrings.Assign - handle ? ', FOwner.HandleAllocated);
+    {$endif}
     FStringList.Clear;
     FStringList.Text := TStrings(Source).Text;
     W := FStringList.Text;
-    ExternalUpdate(W,True);
+    ExternalUpdate(W, True, False);
     FTextChanged := False;
     exit;
   end;
@@ -340,20 +343,20 @@ end;
   Clears all.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
-var
-  TextEdit: QTextEditH;
 begin
-  FUpdating := True;
   FStringList.Clear;
-  TextEdit := getTextEdit;
-  if not (csDestroying in FOwner.ComponentState)
-  and not (csFreeNotification in FOwner.ComponentState)
-  and (TextEdit <> nil) then
-    QTextEdit_clear(TextEdit);
-    
-  FTextChanged := False;
-  FUpdating := False;
-  IsChanged;
+  if not (csDestroying in FOwner.ComponentState) and
+    not (csFreeNotification in FOwner.ComponentState) and
+    FOwner.HandleAllocated then
+  begin
+    {$ifdef VerboseQtMemoStrings}
+    writeln('TQtMemoStrings.Clear');
+    {$endif}
+    TQtTextEdit(FOwner.Handle).BeginUpdate;
+    TQtTextEdit(FOwner.Handle).ClearText;
+    TQtTextEdit(FOwner.Handle).EndUpdate;
+    FTextChanged := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -368,8 +371,13 @@ begin
   if FTextChanged then InternalUpdate;
   if (Index >= 0) and (Index < FStringList.Count) then
   begin
+    {$ifdef VerboseQtMemoStrings}
+    writeln('TQtMemoStrings.Delete');
+    {$endif}
     FStringList.Delete(Index);
-    TQtTextEdit(FOwner.Handle).removeLine(Index);
+    TQtTextEdit(FOwner.Handle).BeginUpdate;
+    TQtTextEdit(FOwner.Handle).RemoveLine(Index);
+    TQtTextEdit(FOwner.Handle).EndUpdate;
   end;
 end;
 
@@ -386,6 +394,11 @@ var
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
+
+  {$ifdef VerboseQtMemoStrings}
+  writeln('TQtMemoStrings.Insert Index=',Index);
+  {$endif}
+
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index, S);
@@ -395,18 +408,22 @@ begin
       begin
         // workaround for qt richtext parser bug
         W := GetUTF8String(S);
+        TQtTextEdit(FOwner.Handle).BeginUpdate;
         TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+        TQtTextEdit(FOwner.Handle).EndUpdate;
       end else
       begin
         // append is much faster in case when we add strings
         W := S;
-        ExternalUpdate(W, False);
+        ExternalUpdate(W, False, True);
         FTextChanged := False;
       end;
     end else
     begin
       W := GetUTF8String(S);
+      TQtTextEdit(FOwner.Handle).BeginUpdate;
       TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+      TQtTextEdit(FOwner.Handle).EndUpdate;
     end;
   end;
 end;
@@ -423,10 +440,13 @@ Var
   S: String;
   W: WideString;
 begin
+  {$ifdef VerboseQtMemoStrings}
+  writeln('TQtMemoStrings.SetText');
+  {$endif}
   S := StrPas(TheText);
   FStringList.Text := S;
   W := S;
-  ExternalUpdate(W,True);
+  ExternalUpdate(W, True, False);
   FTextChanged := False;
 end;
 
