@@ -3821,7 +3821,7 @@ begin
               SaveRaiseException(ctsEndForClassNotFound);
           'C':
             if CompareSrcIdentifiers(p,'CONST')
-            and (BracketLvl>0) then
+            and (not (LastAtomIs(0,';') or LastAtomIs(0,'(') or LastAtomIs(0,'[')  or LastAtomIs(0,'of'))) then
               SaveRaiseException(ctsEndForClassNotFound);
           'I':
             if CompareSrcIdentifiers(p,'INTERFACE')
@@ -3838,9 +3838,8 @@ begin
               SaveRaiseException(ctsEndForClassNotFound);
           'V':
             if CompareSrcIdentifiers(p,'VAR')
-            and (BracketLvl>1) then begin
+            and (not (LastAtomIs(0,';') or LastAtomIs(0,'(') or LastAtomIs(0,'['))) then
               SaveRaiseException(ctsEndForClassNotFound);
-            end;
           end;
         end;
       end;

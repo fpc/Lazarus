@@ -391,8 +391,15 @@ var
         ParseAttribute;
       '/':
         begin
-          // ToDo: close tag
-          RaiseGDBException('ToDo');
+          inc(p);
+          if p^<>'>' then begin
+            if Fix then begin
+              Replace(Rel(p),0,'>');
+            end else begin
+              Error(p,'expected >');
+            end;
+          end;
+          exit;
         end;
       '>':
         begin
