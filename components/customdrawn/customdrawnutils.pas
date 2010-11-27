@@ -9,12 +9,15 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, LMessages, LCLProc, Controls, Graphics,
-  Types, IntfGraphics, FPImage, Math;
+  Types, IntfGraphics, FPImage, Math, FPImgCanv;
 
 function GetAColor(Color: TColor; Rate: byte): TColor;
 function GetUColor(Color: TColor; Rate: byte): TColor;
 procedure GradientFill(Clr1, Clr2: TColor; Canvas: TCanvas);
+procedure GradHFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
+procedure GradHCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
 procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
+procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
 
 type
   PRGBTripleArray = ^TRGBTripleArray;
@@ -89,6 +92,52 @@ begin
   end;
 end;
 
+procedure GradHCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
+var lRect: TRect;
+begin
+  lRect.Left := aRect.Left;
+  lRect.Top := aRect.Top;
+  lRect.Right := aRect.Left + Ceil(rate * (aRect.Right - aRect.Left));
+  lRect.Bottom := aRect.Bottom;
+  GradHFill(Canvas, lRect, Clr1, Clr2);
+  lRect.Left := aRect.Left + Ceil(rate * (aRect.Right - aRect.Left));
+  lRect.Top := aRect.Top;
+  lRect.Right := aRect.Right;
+  lRect.Bottom := aRect.Bottom;
+  GradHFill(Canvas, lRect, Clr2, Clr1);
+end;
+
+procedure GradHFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
+var
+  RGBFrom: array[0..2] of byte;
+  RGBDiff: array[0..2] of integer;
+  I: integer;
+  R, G, B: byte;
+  RBand: TRect;
+begin
+  RGBFrom[0] := GetRValue(ColorToRGB(Clr1));
+  RGBFrom[1] := GetGValue(ColorToRGB(Clr1));
+  RGBFrom[2] := GetBValue(ColorToRGB(Clr1));
+  RGBDiff[0] := GetRValue(ColorToRGB(Clr2)) - RGBFrom[0];
+  RGBDiff[1] := GetGValue(ColorToRGB(Clr2)) - RGBFrom[1];
+  RGBDiff[2] := GetBValue(ColorToRGB(Clr2)) - RGBFrom[2];
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Mode := pmCopy;
+  RBand.Bottom := aRect.Bottom;
+  RBand.Top := aRect.Top;
+  for I := 0 to $ff do
+  begin
+    RBand.Left := aRect.Left + MulDiv(I, aRect.Right - aRect.Left, $100);
+    RBand.Right := aRect.Left + MulDiv(I + 1, aRect.Right - aRect.Left, $100);
+    R := RGBFrom[0] + MulDiv(I, RGBDiff[0], $ff);
+    G := RGBFrom[1] + MulDiv(I, RGBDiff[1], $ff);
+    B := RGBFrom[2] + MulDiv(I, RGBDiff[2], $ff);
+    Canvas.Brush.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
+    Canvas.Pen.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
+    Canvas.RecTangle(RBand);
+  end;
+end;
+
 function GetNomalColor(a: byte): byte;
 begin
   Result := a;
@@ -146,79 +195,35 @@ begin
   end;
 end;
 
-//DrawGradient functions
-
-procedure GradHorizontal(Canvas: TCanvas; Rect: TRect; FromColor, ToColor: TColor);
+procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
 var
-  X: integer;
-  dr, dg, db: extended;
-  C1, C2: TColor;
-  r1, r2, g1, g2, b1, b2: byte;
-  R, G, B: byte;
-  cnt: integer;
+  aColor: TColor;
 begin
-  C1 := FromColor;
-  R1 := GetRValue(C1);
-  G1 := GetGValue(C1);
-  B1 := GetBValue(C1);
-
-  C2 := ToColor;
-  R2 := GetRValue(C2);
-  G2 := GetGValue(C2);
-  B2 := GetBValue(C2);
-
-  dr := (R2 - R1) / Rect.Right - Rect.Left;
-  dg := (G2 - G1) / Rect.Right - Rect.Left;
-  db := (B2 - B1) / Rect.Right - Rect.Left;
-
-  cnt := 0;
-  for X := Rect.Left to Rect.Right - 1 do
+  aColor := GetUColor(Color, 96);
+  with Canvas do
   begin
-    R := R1 + Ceil(dr * cnt);
-    G := G1 + Ceil(dg * cnt);
-    B := B1 + Ceil(db * cnt);
-
-    Canvas.Pen.Color := RGB(R, G, B);
-    Canvas.MoveTo(X, Rect.Top);
-    Canvas.LineTo(X, Rect.Bottom);
-    Inc(cnt);
-  end;
-end;
-
-procedure GradVertical(Canvas: TCanvas; Rect: TRect; FromColor, ToColor: TColor);
-var
-  Y: integer;
-  dr, dg, db: extended;
-  C1, C2: TColor;
-  r1, r2, g1, g2, b1, b2: byte;
-  R, G, B: byte;
-  cnt: integer;
-begin
-  C1 := FromColor;
-  R1 := GetRValue(C1);
-  G1 := GetGValue(C1);
-  B1 := GetBValue(C1);
-
-  C2 := ToColor;
-  R2 := GetRValue(C2);
-  G2 := GetGValue(C2);
-  B2 := GetBValue(C2);
-
-  dr := (R2 - R1) / Rect.Bottom - Rect.Top;
-  dg := (G2 - G1) / Rect.Bottom - Rect.Top;
-  db := (B2 - B1) / Rect.Bottom - Rect.Top;
-
-  cnt := 0;
-  for Y := Rect.Top to Rect.Bottom - 1 do
-  begin
-    R := R1 + Ceil(dr * cnt);
-    G := G1 + Ceil(dg * cnt);
-    B := B1 + Ceil(db * cnt);
-
-    Canvas.Pen.Color := RGB(R, G, B);
-    Canvas.MoveTo(Rect.Left, Y);
-    Canvas.LineTo(Rect.Right, Y);
-    Inc(cnt);
+    Brush.Color := Color;
+    Brush.Style := bsSolid;
+    FillRect(0, 0, Width, Height);
+    Pen.Color := aColor;
+    RecTangle(0, 0, Width, Height);
+    Pen.Color := GetAColor(aColor, 86);
+    RoundRect(0, 0, Width, Canvas.Height, 8, 8);
+    //    Pen.Color := aColor;
+    //    RecTangle(0, 6, Width, Height);
+    Pen.Color := GetAColor(aColor, 86);
+    Line(0, 3, 0, Height - 3);
+    Line(Width, 3, Width, Height - 3);
+    Line(3, Height - 1, Width - 3, Height - 1);
+    Line(2, Height - 2, Width - 2, Height - 2);
+    Pen.Color := GetAColor(aColor, 93);
+    Line(1, Height - 4, Width - 1, Height - 4);
+    Pen.Color := GetAColor(aColor, 91);
+    Line(1, Height - 3, Width - 1, Height - 3);
+    Pen.Color := GetAColor(aColor, 88);
+    Line(Width - 2, 4, Width - 2, Height - 3);
+    //Pen.Color := GetAColor(aColor, 94);
+    //Line(2, 2, 6, 2);
   end;
 end;
 

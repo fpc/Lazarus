@@ -1,4 +1,4 @@
-{
+﻿{
   Copyright (C) 2010 Felipe Monteiro de Carvalho
 
   License: The same modifying LGPL with static linking exception as the LCL
@@ -320,28 +320,36 @@ type
 
   TCDTrackBarDrawer = class;
 
-{ TCDTrackBar }
+  { TCDTrackBar }
 
   TCDTrackBar = class(TCustomControl)
   private
-    FMin: Integer;
-    FMax: Integer;
-    FPosition: Integer;
+    FMDown: Boolean;
+    FMin: integer;
+    FMax: integer;
+    FPosition: integer;
     FOnChange: TNotifyEvent;
     FCurrentDrawer: TCDTrackBarDrawer;
-    procedure SetMax(Value: Integer);
-    procedure SetMin(Value: Integer);
-    procedure SetPosition(Value: Integer);
+    FFromColor, FToColor: TColor;
+    FStepWidth: integer;
+    procedure SetMax(Value: integer);
+    procedure SetMin(Value: integer);
+    procedure SetPosition(Value: integer);
+    procedure SetFromColor(Value: TColor);
+    procedure SetToColor(Value: TColor);
+    procedure SetStepWidth(Value: integer);
   protected
     procedure Changed; virtual;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
     // mouse
-    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
   public
@@ -350,23 +358,30 @@ type
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   published
-    property Max: Integer read FMax write SetMax default 10;
-    property Min: Integer read FMin write SetMin default 0;
+    property Color;
+    property Max: integer read FMax write SetMax default 10;
+    property Min: integer read FMin write SetMin default 0;
+    property FromColor: TColor read FFromColor write SetFromColor;
+    property StepWidth: integer read FStepWidth write SetStepWidth;
+    property ToColor: TColor read FToColor write SetToColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Position: Integer read FPosition write SetPosition;
+    property Position: integer read FPosition write SetPosition;
     property TabStop default True;
   end;
 
-{ TCDTrackBarDrawer }
+  { TCDTrackBarDrawer }
 
   TCDTrackBarDrawer = class
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar); virtual; abstract;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
+      CDTrackBar: TCDTrackBar; FromColor, ToColor: TColor; pWidth: integer);
+      virtual; abstract;
   end;
 
   TCDTrackBarDrawerGraph = class(TCDTrackBarDrawer)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
+      CDTrackBar: TCDTrackBar; FromColor, ToColor: TColor; pWidth: integer); override;
   end;
 
 procedure Register;
@@ -953,38 +968,6 @@ begin
 
 end;
 
-procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
-var
-  aColor: TColor;
-begin
-  aColor := GetUColor(Color, 96);
-  with Canvas do
-  begin
-    Brush.Color := Color;
-    Brush.Style := bsSolid;
-    FillRect(0, 0, Width, Height);
-    Pen.Color := aColor;
-    RecTangle(0, 0, Width, Height);
-    Pen.Color := GetAColor(aColor, 86);
-    RoundRect(0, 0, Width, Canvas.Height, 8, 8);
-//    Pen.Color := aColor;
-//    RecTangle(0, 6, Width, Height);
-    Pen.Color := GetAColor(aColor, 86);
-    Line(0, 3, 0, Height - 3);
-    Line(Width, 3, Width, Height - 3);
-    Line(3, Height - 1, Width - 3, Height - 1);
-    Line(2, Height - 2, Width - 2, Height - 2);
-    Pen.Color := GetAColor(aColor, 93);
-    Line(1, Height - 4, Width - 1, Height - 4);
-    Pen.Color := GetAColor(aColor, 91);
-    Line(1, Height - 3, Width - 1, Height - 3);
-    Pen.Color := GetAColor(aColor, 88);
-    Line(Width - 2, 4, Width - 2, Height - 3);
-    //Pen.Color := GetAColor(aColor, 94);
-    //Line(2, 2, 6, 2);
-  end;
-end;
-
 procedure TCDButtonDrawerXPTB.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
   FState: TBitmappedButtonState);
 var
@@ -1176,23 +1159,26 @@ end;
 
 { TCDTrackBar }
 
-procedure TCDTrackBar.SetMax(Value: Integer);
+procedure TCDTrackBar.SetMax(Value: integer);
 begin
-  if Value = FMax then Exit;
+  if Value = FMax then
+    Exit;
   FMax := Value;
   Invalidate;
 end;
 
-procedure TCDTrackBar.SetMin(Value: Integer);
+procedure TCDTrackBar.SetMin(Value: integer);
 begin
-  if Value = FMin then Exit;
+  if Value = FMin then
+    Exit;
   FMin := Value;
   Invalidate;
 end;
 
-procedure TCDTrackBar.SetPosition(Value: Integer);
+procedure TCDTrackBar.SetPosition(Value: integer);
 begin
-  if Value = FPosition then Exit;
+  if Value = FPosition then
+    Exit;
   FPosition := Value;
   Invalidate;
 end;
@@ -1212,29 +1198,48 @@ begin
   inherited DoExit;
 end;
 
-procedure TCDTrackBar.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCDTrackBar.KeyDown(var Key: word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   //if Key =
 end;
 
-procedure TCDTrackBar.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TCDTrackBar.KeyUp(var Key: word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
 end;
 
-procedure TCDTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TCDTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
   FPosition := FMin + (X - 8) * (FMax - FMin) div (Width - 15);
+  if X > Width - 7 then
+    FPosition := FMax;
+  if X < 8 then
+    FPosition := 0;
   invalidate;
+  FMDown := True;
 end;
 
-procedure TCDTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TCDTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
+  FMDown := False;
   inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCDTrackBar.MouseMove(Shift: TShiftState; X,Y: Integer);
+begin
+  if FMDown then
+  begin
+    FPosition := FMin + (X - 8) * (FMax - FMin) div (Width - 15);
+    if X > Width - 7 then
+      FPosition := FMax;
+    invalidate;
+    if X < 8 then
+      FPosition := 0;
+  end;
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TCDTrackBar.MouseEnter;
@@ -1257,6 +1262,9 @@ begin
   FMax := 100;
   FMin := 0;
   TabStop := True;
+  FFromColor := clWhite;
+  FToColor := clGray;
+  FStepWidth := 11;
 end;
 
 destructor TCDTrackBar.Destroy;
@@ -1284,7 +1292,7 @@ begin
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.Create(AImage);
     // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
+    FCurrentDrawer.DrawToIntfImage(lCanvas, AImage, Self, FFromColor, FToColor, FStepWidth);
     ABmp.LoadFromIntfImage(AImage);
     Canvas.Draw(0, 0, ABmp);
   finally
@@ -1296,10 +1304,52 @@ begin
   end;
 end;
 
+procedure TCDTrackBar.SetFromColor(Value: TColor);
+begin
+  FFromColor := Value;
+  invalidate;
+end;
+
+procedure TCDTrackBar.SetToColor(Value: TColor);
+begin
+  FToColor := Value;
+  invalidate;
+end;
+
+procedure TCDTrackBar.SetStepWidth(Value: integer);
+begin
+  FStepWidth := Value;
+  invalidate;
+end;
+
+procedure FPIMGCopyRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect);
+var FadeStep, px, py: Integer; Row1, Row2: PRGBTripleArray;
+begin
+  for FadeStep := 1 to 32 do
+  begin
+    for py := lRect.Top to lRect.Bottom - 1 do
+    begin
+      Row1 := IntfImg1.GetDataLineStart(py);
+      Row2 := IntfImg2.GetDataLineStart(py);
+      for px := lRect.Left to lRect.Right - 1 do
+      begin
+        Row2^[px].rgbtRed := Row1^[px].rgbtRed;
+        Row2^[px].rgbtGreen := Row1^[px].rgbtGreen;
+        Row2^[px].rgbtBlue := Row1^[px].rgbtBlue;
+      end;
+    end;
+  end;
+end;
+
 { TCDTrackBarDrawer }
 
-procedure TCDTrackBarDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas; CDTrackBar: TCDTrackBar);
-var aStart, RNum, i, pStart: integer;
+procedure TCDTrackBarDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas;
+  FPImg: TLazIntfImage; CDTrackBar: TCDTrackBar; FromColor, ToColor: TColor; pWidth: integer);
+var
+  aStart, RNum, i, pStart: integer;
+  dRect: TRect;
+  TempB: TLazIntfImage;
+  BCanvas: TFPImageCanvas; ABmp: TBitmap = nil;
 begin
   // Background
   if CDTrackBar.Parent = nil then
@@ -1310,7 +1360,8 @@ begin
   ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, CDTrackBar.Width, CDTrackBar.Height);
   ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
-  aStart := CDTrackBar.Height div 2 + 1;
+  //aStart := CDTrackBar.Height div 2 + 1;
+  aStart := CDTrackBar.Height - 10;
   ADest.Pen.Style := psSolid;
   ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
   //ADest.Rectangle(0, aStart, CDTrackBar.Width, aStart);
@@ -1319,19 +1370,68 @@ begin
   ADest.Line(5, aStart - 2, 6, aStart - 2);
   ADest.Line(3, aStart + 1, 6, aStart + 1);
   ADest.Line(5, aStart + 2, 6, aStart + 2);
-  pStart := ((CDTrackBar.Position - CDTrackBar.Min) * (CDTrackBar.Width - 15)) div (CDTrackBar.Max - CDTrackBar.Min);
-  ADest.Rectangle(8 + pStart, aStart + 1, 8 + pStart + 10, aStart + 11);
+  pStart := ((CDTrackBar.Position - CDTrackBar.Min) * (CDTrackBar.Width - 32)) div
+    (CDTrackBar.Max - CDTrackBar.Min) + 2;
+  ADest.Rectangle(8 + pStart, aStart + 1, 8 + pStart + 10, aStart + 6);
   ADest.Line(CDTrackBar.Width - 1 - 3, aStart - 1, CDTrackBar.Width - 1 - 6, aStart - 1);
   ADest.Line(CDTrackBar.Width - 1 - 5, aStart - 2, CDTrackBar.Width - 1 - 6, aStart - 2);
   ADest.Line(CDTrackBar.Width - 1 - 3, aStart + 1, CDTrackBar.Width - 1 - 6, aStart + 1);
   ADest.Line(CDTrackBar.Width - 1 - 5, aStart + 2, CDTrackBar.Width - 1 - 6, aStart + 2);
-  RNum := (CDTrackBar.Width - 15) div 9;
-  ADest.Pen.FPColor :=  TColorToFPColor(ColorToRGB(clGray));
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($005BA6C6));
+  ADest.RecTangle(8 + pStart, aStart + 2, 8 + pStart + 11, aStart + 7);
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
+  ADest.RecTangle(8 + pStart, aStart, 8 + pStart + 11, aStart + 2);
+  RNum := (CDTrackBar.Width - 15) div pWidth;
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clGray));
   ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($00F0F0F0));
+  ABmp := TBitmap.Create;
+  ABmp.Width := CDTrackBar.Width;
+  ABmp.Height := CDTrackBar.Height;
+  TempB := ABmp.CreateIntfImage;
+  //TempB := TLazIntfImage.Create(0, 0);
+  //TempB.UsePalette := False;
+  //TempB.Width := CDTrackBar.Width;
+  //TempB.Height := CDTrackBar.Height;
+  BCanvas := TFPImageCanvas.Create(TempB);
+  //BCanvas.Brush.FPColor := TColorToFPColor(ColorToRGB(clRed));
+  BCanvas.Brush.Style := bsSolid;
+  //GradHFill(BCanvas, Rect(0, 0, CDTrackBar.Width, CDTrackBar.Height),
+  //  GetAColor(FromColor, 70 + i), GetAColor(ToColor, 90 + i));
+  GradHCenterFill(BCanvas, Rect(0, 0, CDTrackBar.Width, CDTrackBar.Height),
+    FromColor, ToColor, CDTrackBar.Position / (CDTrackBar.Max - CDTrackBar.Min));
   for i := 0 to RNum - 1 do
   begin
-    ADest.RecTangle(10 + i * 9, aStart - 3 - i, 10 + i * 9 + 9 - 2, aStart - 1);
+    dRect := Rect(10 + i * pWidth, aStart - 5 - i, 10 + i * pWidth +
+      pWidth - 3, aStart - 1);
+    ADest.Brush.Style := bsSolid;
+    //  GradHFill(ADest, dRect, GetAColor(FromColor, 70 + i), GetAColor(ToColor, 90 + i));
+    FPIMGCopyRect(TempB, FPImg, Rect(10 + i * pWidth, aStart - 5 - i, 10 + i * pWidth +
+      pWidth - 3, aStart - 1));
+    ADest.Brush.Style := bsClear;
+    ADest.RecTangle(10 + i * pWidth, aStart - 5 - i, 10 + i * pWidth +
+      pWidth - 3, aStart - 1);
   end;
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($007BC6F6));
+  ADest.Line(7, aStart - 1, CDTrackBar.Width - 8, aStart - 1);
+  ADest.Line(7, aStart + 1, CDTrackBar.Width - 8, aStart + 1);
+  ADest.Colors[2, aStart - 1] := ADest.Pen.FPColor;
+  ADest.Colors[4, aStart - 2] := ADest.Pen.FPColor;
+  ADest.Colors[2, aStart + 1] := ADest.Pen.FPColor;
+  ADest.Colors[4, aStart + 2] := ADest.Pen.FPColor;
+  ADest.Colors[6, aStart - 3] := ADest.Pen.FPColor;
+  ADest.Colors[6, aStart + 3] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 2, aStart - 1] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 4, aStart - 2] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 2, aStart + 1] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 4, aStart + 2] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 6, aStart - 3] := ADest.Pen.FPColor;
+  ADest.Colors[CDTrackBar.Width - 1 - 6, aStart + 3] := ADest.Pen.FPColor;
+  //ADest.Draw(0,0,TempB);
+  //ADest.CopyRect(0, 0, BCanvas, Rect(0, 0, CDTrackBar.Width, CDTrackBar.Height));
+  //FPIMGCopyRect(TempB, FPImg, Rect(10, 10, CDTrackBar.Width - 11, CDTrackBar.Height - 11));
+  BCanvas.Free;
+  TempB.Free;
+  ABmp.Free;
 end;
 
 end.
