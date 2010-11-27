@@ -256,7 +256,7 @@ var
   t: Integer;
 begin
   t := -1;
-  WaitForHandles(AHandles, t);
+  Result := WaitForHandles(AHandles, t);
 end;
 
 //////////////////////////////////////////////////
