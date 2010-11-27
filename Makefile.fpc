@@ -157,7 +157,7 @@ endif
 # Link Tree
 ifdef LINKISCOPY
 ifndef LINKTREE
-LINKTREE:=$(CPPROG) -Rfp
+LINKTREE:=$(CPPROG) -Rfpl
 endif
 else
 ifndef LINKTREE
@@ -172,9 +172,9 @@ ifneq ($(wildcard ${DEBDIR}/changelog),)
 DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
 DEBVERSION=$(firstword $(subst -, ,${DEBPACKAGEVERSION}))
 DEBBUILD=$(lastword $(subst -, ,${DEBPACKAGEVERSION}))
-DEBSRC=lazarus-${DEBVERSION}
+DEBSRC=${PACKAGE_NAME}-${DEBVERSION}
 DEBSRCDIR=${BUILDDIR}/${DEBSRC}
-DEBSRC_ORIG=lazarus_${DEBVERSION}.orig
+DEBSRC_ORIG=${PACKAGE_NAME}_${DEBVERSION}.orig
 BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
 ifdef MENTORS
 DEB_BUILDPKG_OPT=-sa
@@ -210,28 +210,27 @@ endif
 
 debcopy: distclean
 	${DELTREE} ${BUILDDIR}
-	${MKDIRTREE} $(DEBSRCDIR)
+	${MKDIRTREE} ${DEBSRCDIR}
 ifdef DEBUSESVN
-	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
-	$(LINKTREE) COPYING.* $(DEBSRCDIR)
-	$(LINKTREE) README.txt $(DEBSRCDIR)
-	$(LINKTREE) components $(DEBSRCDIR)
-	$(LINKTREE) converter $(DEBSRCDIR)
-	$(LINKTREE) debugger $(DEBSRCDIR)
-	$(LINKTREE) designer $(DEBSRCDIR)
-	$(LINKTREE) doceditor $(DEBSRCDIR)
-	$(LINKTREE) docs $(DEBSRCDIR)
-	$(LINKTREE) install $(DEBSRCDIR)
-	$(LINKTREE) examples $(DEBSRCDIR)
-	$(LINKTREE) ide $(DEBSRCDIR)
-	$(LINKTREE) ideintf $(DEBSRCDIR)
-	$(LINKTREE) images $(DEBSRCDIR)
-	$(LINKTREE) languages $(DEBSRCDIR)
-	$(LINKTREE) lazarus.app $(DEBSRCDIR)
-	$(LINKTREE) lcl $(DEBSRCDIR)
-	$(LINKTREE) packager $(DEBSRCDIR)
-	$(LINKTREE) test $(DEBSRCDIR)
-	$(LINKTREE) tools $(DEBSRCDIR)
+	$(LINKTREE) -t $(DEBSRCDIR) \
+		Makefile.fpc COPYING.* README.txt \
+		components \
+		converter \
+		debugger \
+		designer \
+		doceditor \
+		docs \
+		install \
+		examples \
+		ide \
+		ideintf \
+		images \
+		languages \
+		lazarus.app \
+		lcl \
+		packager \
+		test \
+		tools \
 	# add ide/revision.inc
 	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
 else
@@ -240,20 +239,20 @@ else
 endif
 
 debsetup:
-	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
+	$(COPYTREE) ${DEBDIR} $(DEBSRCDIR)/debian
 ifdef SNAPSHOT
 	sed -e "s/${DEBPACKAGEVERSION}/${DEBPACKAGEVERSION}-${BUILDDATE}/" $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
 	${MOVE} $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
 endif
 	chmod 755 $(DEBSRCDIR)/debian/rules
-	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
+	find $(DEBSRCDIR) -name '.svn' | xargs ${DELTREE}
 
 debbuild:
 	cd ${DEBSRCDIR} ; dpkg-buildpackage ${DEB_BUILDPKG_OPT}
 
 debcheckpolicy:
 ifdef LINTIAN
-	cd ${DEBSRCDIR} ; lintian -i ../*.changes
+	cd ${DEBSRCDIR} ; lintian -I -i ../*.changes
 endif
 
 debclean:
