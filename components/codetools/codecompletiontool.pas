@@ -6654,7 +6654,8 @@ var
 
         // find first method
         NearestProcNode:=StartSearchProc;
-        while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+        while (NearestProcNode<>nil) and (NearestProcNode.Desc<>ctnBeginBlock)
+        and (not NodeIsMethodBody(NearestProcNode)) do
           NearestProcNode:=NearestProcNode.NextBrother;
         if NearestProcNode<>nil then begin
           // the comments in front of the first method probably belong to the class
@@ -6677,12 +6678,13 @@ var
 
         // find last method (go to last brother and search backwards)
         if (StartSearchProc<>nil)
-        and (StartSearchProc.Parent<>nil) then
+        and (StartSearchProc.Parent<>nil) then begin
           NearestProcNode:=StartSearchProc.Parent.LastChild;
+        end;
         while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
           NearestProcNode:=NearestProcNode.PriorBrother;
         if NearestProcNode<>nil then begin
-          SetIndentAndInsertPos(NearestProcNode,true);
+          SetIndentAndInsertPos(NearestProcNode,NearestProcNode.Desc<>ctnBeginBlock);
           exit;
         end;
       end;
@@ -6690,8 +6692,11 @@ var
 
     // Default position: Insert behind last node
     if (StartSearchProc<>nil)
-    and (StartSearchProc.Parent<>nil) then
+    and (StartSearchProc.Parent<>nil) then begin
       NearestProcNode:=StartSearchProc.Parent.LastChild;
+      if NearestProcNode.Desc=ctnBeginBlock then
+        NearestProcNode:=NearestProcNode.PriorBrother;
+    end;
     if NearestProcNode<>nil then begin
       Indent:=0;
       InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.EndPos);
