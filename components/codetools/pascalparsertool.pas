@@ -138,6 +138,7 @@ type
     function KeyWordFuncExports: boolean;
     function KeyWordFuncLabel: boolean;
     function KeyWordFuncProperty: boolean;
+    procedure ReadConst;
     // types
     procedure ReadEqualsType;
     function KeyWordFuncClass: boolean;
@@ -160,6 +161,7 @@ type
     function KeyWordFuncBeginEnd: boolean;
     // class/object elements
     function KeyWordFuncClassSection: boolean;
+    function KeyWordFuncClassConstSection: boolean;
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
     function KeyWordFuncClassClass: boolean;
@@ -443,7 +445,8 @@ begin
   'C':
     case UpChars[p[1]] of
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
-    'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod);
+    'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod)
+         else if CompareSrcIdentifiers(p,'CONST') then exit(KeyWordFuncClassConstSection);
     end;
   'D':
     if CompareSrcIdentifiers(p,'DESTRUCTOR') then exit(KeyWordFuncClassMethod);
@@ -875,7 +878,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
-{ parse class variable or type
+{ parse class variable or type or const
 
   examples for variables:
     Name: TypeName;
@@ -902,11 +905,19 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
     MyRange: 3..5;
 }
 begin
-  if CurNode.Desc in AllClassTypeSections then begin
+  if CurNode.Desc = ctnClassType then begin
     // create type definition node
     CreateChildNode;
     CurNode.Desc:=ctnTypeDefinition;
     ReadEqualsType;
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end else 
+  if CurNode.Desc = ctnClassConst then begin
+    // create const definition node
+    CreateChildNode;
+    CurNode.Desc:=ctnConstDefinition;
+    ReadConst;
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end else begin
@@ -1097,6 +1108,17 @@ begin
   Result:=true;
 end;
 
+function TPascalParserTool.KeyWordFuncClassConstSection: boolean;
+begin
+  // end last section
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+  // start new section
+  CreateChildNode;
+  CurNode.Desc:=ctnClassConst;
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncClassTypeSection: boolean;
 begin
   // end last section
@@ -1104,39 +1126,14 @@ begin
   EndChildNode;
   // start new section
   CreateChildNode;
-  if UpAtomIs('CLASS') then ReadNextAtom;
-  ReadNextAtom;
-  if UpAtomIs('PUBLIC') then
-    CurNode.Desc:=ctnClassTypePublic
-  else if UpAtomIs('PRIVATE') then
-    CurNode.Desc:=ctnClassTypePrivate
-  else if UpAtomIs('PROTECTED') then
-    CurNode.Desc:=ctnClassTypeProtected
-  else if UpAtomIs('PUBLISHED') then
-    CurNode.Desc:=ctnClassTypePublished
-  else begin
-    if CurNode.PriorBrother<>nil then begin
-      case CurNode.PriorBrother.Desc of
-      ctnClassPrivate:  CurNode.Desc:=ctnClassTypePrivate;
-      ctnClassProtected:  CurNode.Desc:=ctnClassTypeProtected;
-      ctnClassPublic:  CurNode.Desc:=ctnClassTypePublic;
-      ctnClassPublished:  CurNode.Desc:=ctnClassTypePublished;
-      else
-        RaiseStringExpectedButAtomFound('public');
-      end;
-    end;
-    UndoReadNextAtom;
-  end;
+  CurNode.Desc:=ctnClassType;
   Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncClassVarSection: boolean;
 {
-  var private
-  var protected
-  var public
-  var published
-  class var private
+  var
+  class var
 }
 begin
   // end last section
@@ -1144,19 +1141,13 @@ begin
   EndChildNode;
   // start new section
   CreateChildNode;
-  CurNode.Desc:=ctnClassVarPublic;
-  if UpAtomIs('CLASS') then ReadNextAtom;
-  ReadNextAtom;
-  if UpAtomIs('PUBLIC') then
-    CurNode.Desc:=ctnClassVarPublic
-  else if UpAtomIs('PRIVATE') then
-    CurNode.Desc:=ctnClassVarPrivate
-  else if UpAtomIs('PROTECTED') then
-    CurNode.Desc:=ctnClassVarProtected
-  else if UpAtomIs('PUBLISHED') then
-    CurNode.Desc:=ctnClassVarPublished
+  if UpAtomIs('CLASS') then 
+  begin
+    CurNode.Desc:=ctnClassClassVar;
+    ReadNextAtom;
+  end
   else
-    RaiseStringExpectedButAtomFound('public');
+    CurNode.Desc:=ctnClassVar; 
   Result:=true;
 end;
 
@@ -1167,7 +1158,6 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
     class constructor
     class destructor
     class var
-    class type
 }
 begin
   ReadNextAtom;
@@ -3454,32 +3444,7 @@ begin
     then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
-      ReadNextAtom;
-      if (CurPos.Flag=cafColon) then begin
-        // read type
-        ReadNextAtom;
-        ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-      end;
-      if (CurPos.Flag<>cafEqual) then
-        RaiseCharExpectedButAtomFound('=');
-      // read constant
-      ReadNextAtom;
-      CreateChildNode;
-      CurNode.Desc:=ctnConstant;
-      repeat
-        if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
-          ReadTilBracketClose(true);
-        if (CurPos.Flag in AllCommonAtomWords)
-        and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
-          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-        and AtomIsKeyWord then
-          RaiseStringExpectedButAtomFound('constant');
-        if (CurPos.Flag=cafSemicolon) then break;
-        CurNode.EndPos:=CurPos.EndPos;
-        ReadNextAtom;
-      until (CurPos.StartPos>SrcLen);
-      // close ctnConstant node
-      EndChildNode;
+      ReadConst;
       // close ctnConstDefinition node
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
@@ -3661,6 +3626,36 @@ begin
   Result:=true;
 end;
 
+procedure TPascalParserTool.ReadConst;
+begin
+  ReadNextAtom;
+  if (CurPos.Flag=cafColon) then begin
+    // read type
+    ReadNextAtom;
+    ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  end;
+  if (CurPos.Flag<>cafEqual) then
+    RaiseCharExpectedButAtomFound('=');
+  // read constant
+  ReadNextAtom;
+  CreateChildNode;
+  CurNode.Desc:=ctnConstant;
+  repeat
+    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
+      ReadTilBracketClose(true);
+    if (CurPos.Flag in AllCommonAtomWords)
+    and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+    and AtomIsKeyWord then
+      RaiseStringExpectedButAtomFound('constant');
+    if (CurPos.Flag=cafSemicolon) then break;
+    CurNode.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+  until (CurPos.StartPos>SrcLen);
+  // close ctnConstant node
+  EndChildNode;
+end;
+
 procedure TPascalParserTool.ReadEqualsType;
 // read   = type;
 begin
@@ -3826,7 +3821,7 @@ begin
               SaveRaiseException(ctsEndForClassNotFound);
           'C':
             if CompareSrcIdentifiers(p,'CONST')
-            and (BracketLvl=0) then
+            and (BracketLvl>0) then
               SaveRaiseException(ctsEndForClassNotFound);
           'I':
             if CompareSrcIdentifiers(p,'INTERFACE')

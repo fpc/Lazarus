@@ -1105,7 +1105,7 @@ begin
           end;
         end;
 
-      ctnClassTypePrivate..ctnClassPublished:
+      ctnClassConst..ctnClassPublished:
         begin
           if (cefcUnsortedClassVisibility in ObserverCats)
           and (CodeNode.PriorBrother<>nil)
@@ -2222,18 +2222,14 @@ const
       Result:=4;
 
     // class sections
-    ctnClassTypePrivate,
-    ctnClassTypeProtected,
-    ctnClassTypePublic,
-    ctnClassTypePublished,
-    ctnClassVarPrivate,
-    ctnClassVarProtected,
-    ctnClassVarPublic,
-    ctnClassVarPublished,
+    ctnClassConst,
+    ctnClassType,
+    ctnClassVar,
+    ctnClassClassVar,
     ctnClassPrivate,
     ctnClassProtected,
     ctnClassPublic,
-    ctnClassPublished   : Result:=Desc-ctnClassTypePrivate;
+    ctnClassPublished   : Result:=Desc-ctnClassConst;
     
     else Result:=10000;
     end;

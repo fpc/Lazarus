@@ -2148,14 +2148,19 @@ begin
       while ANode<>nil do begin
         if ANode.Desc in AllClassSections then begin
           case ANode.Desc of
-          ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
+          ctnClassPrivate:
             Result:=Result+'private ';
-          ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
+          ctnClassProtected:
             Result:=Result+'protected ';
-          ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
+          ctnClassPublic:
             Result:=Result+'public ';
-          ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
+          ctnClassPublished:
             Result:=Result+'published ';
+          else
+            begin
+              ANode:=ANode.Parent;
+              Continue;
+            end;
           end;
           break;
         end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
@@ -2967,8 +2972,7 @@ var
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
-        ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
-        ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
+        ctnClassConst,ctnClassType,ctnClassVar,ctnClassClassVar,
         ctnRecordVariant,
         ctnProcedureHead, ctnParameterList,
         ctnClassInheritance:
@@ -3087,8 +3091,7 @@ begin
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
-        ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
-        ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
+        ctnClassConst, ctnClassType, ctnClassVar, ctnClassClassVar,
         ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordVariant,

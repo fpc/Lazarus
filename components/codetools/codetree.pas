@@ -95,20 +95,16 @@ const
   ctnClassSealed        = 41;
   ctnClassInheritance   = 42;
   ctnClassGUID          = 43;
-  ctnClassTypePrivate   = 44;
-  ctnClassTypeProtected = 45;
-  ctnClassTypePublic    = 46;
-  ctnClassTypePublished = 47;
-  ctnClassVarPrivate    = 48;
-  ctnClassVarProtected  = 49;
-  ctnClassVarPublic     = 50;
-  ctnClassVarPublished  = 51;
-  ctnClassPrivate       = 52;
-  ctnClassProtected     = 53;
-  ctnClassPublic        = 54;
-  ctnClassPublished     = 55;
-  ctnProperty           = 56;
-  ctnMethodMap          = 57;
+  ctnClassConst         = 44;
+  ctnClassType          = 45;
+  ctnClassVar           = 46;
+  ctnClassClassVar      = 47;
+  ctnClassPrivate       = 48;
+  ctnClassProtected     = 49;
+  ctnClassPublic        = 50;
+  ctnClassPublished     = 51;
+  ctnProperty           = 52;
+  ctnMethodMap          = 53;
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
@@ -159,14 +155,8 @@ const
      + [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
   AllClassBaseSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
-  AllClassTypeSections =
-     [ctnClassTypePublic,ctnClassTypePublished,ctnClassTypePrivate,
-      ctnClassTypeProtected];
-  AllClassVarSections =
-     [ctnClassVarPublic,ctnClassVarPublished,ctnClassVarPrivate,
-      ctnClassVarProtected];
   AllClassSections =
-    AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
+    AllClassBaseSections+[ctnClassConst, ctnClassType, ctnClassVar, ctnClassClassVar];
   AllClasses =
      [ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
       ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
@@ -386,14 +376,10 @@ begin
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
-  ctnClassTypePublished: Result:='Type Published';
-  ctnClassTypePrivate: Result:='Type Private';
-  ctnClassTypeProtected: Result:='Type Protected';
-  ctnClassTypePublic: Result:='Type Public';
-  ctnClassVarPublished: Result:='Var Published';
-  ctnClassVarPrivate: Result:='Var Private';
-  ctnClassVarProtected: Result:='Var Protected';
-  ctnClassVarPublic: Result:='Var Public';
+  ctnClassConst: Result:='Const';
+  ctnClassType: Result:='Type';
+  ctnClassVar: Result:='Var';
+  ctnClassClassVar: Result:='Class Var';
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';
 

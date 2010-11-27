@@ -5901,7 +5901,7 @@ begin
             if ClassSectionNode.NextBrother<>nil then
               Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                       +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          end else if (ClassSectionNode.Desc in (AllClassBaseSections+AllClassTypeSections))
+          end else if (ClassSectionNode.Desc in (AllClassBaseSections+[ctnClassType]))
           then begin
             // skip keyword
             MoveCursorToCleanPos(InsertPos);
