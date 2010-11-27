@@ -1780,7 +1780,7 @@ msgstr "Estado caixa postal indefinido ou outro"
 
 #: ipconst.ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
-msgstr "Caixa postal desabilitada, não está aceitando mensagens"
+msgstr "Caixa postal desativada, não está aceitando mensagens"
 
 #: ipconst.ssmtpresponse22
 msgid "Mailbox full"

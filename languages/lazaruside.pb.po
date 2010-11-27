@@ -142,11 +142,11 @@ msgstr "Texto Padrão"
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
-msgstr "Ponto de parada desabilitado"
+msgstr "Ponto de parada desativado"
 
 #: lazarusidestrconsts.dlgaddhiattrenabledbreakpoint
 msgid "Enabled breakpoint"
-msgstr "Ponto de parada habilitado"
+msgstr "Ponto de parada ativo"
 
 #: lazarusidestrconsts.dlgaddhiattrerrorline
 msgid "Error line"
@@ -837,7 +837,7 @@ msgstr "INLINE Estilo C++"
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
-msgstr ""
+msgstr "Ctrl-clique-central na aba fecha todas as outras"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -921,7 +921,7 @@ msgstr "Diretório inexistente"
 
 #: lazarusidestrconsts.dlgdisableantialiasing
 msgid "Disable anti-aliasing"
-msgstr "Desabilitar \"anti-aliasing\""
+msgstr "Desativar \"anti-aliasing\""
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1799,7 +1799,7 @@ msgstr "Ignorar Palavras-Chave"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
 msgid "Disable Timer for Markup Current Word"
-msgstr "Desabilite cronômetro para remarcar palavra atual"
+msgstr "Desativar cronômetro para remarcar palavra atual"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 #| msgid "Trim Spaces"
@@ -1869,7 +1869,7 @@ msgstr "Expandir Um (Alguns retraídos)"
 #: lazarusidestrconsts.dlgmousefoldenabled
 msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
 msgid "Enabled"
-msgstr "Ativado"
+msgstr "Ativo"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
@@ -2434,7 +2434,7 @@ msgstr "Usar Aplicação encartada para execução e depuração (somente darwin
 #: lazarusidestrconsts.dlgpousemanifest
 #| msgid "Use manifest file to enable themes (windows only)"
 msgid "Use manifest file to enable themes (Windows only)"
-msgstr "Usar arquivo de manifesto para habilitar temas (somente windows)"
+msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
 #: lazarusidestrconsts.dlgprojectoptions
 msgid "Project Options"
@@ -3670,7 +3670,7 @@ msgstr "Editor de Âncora - nenhum controle selecionado"
 
 #: lazarusidestrconsts.lisanchorenabledhint
 msgid "Enabled = Include %s in Anchors"
-msgstr "Habilitado = Incluir %s nas Âncoras"
+msgstr "Ativo = Incluir %s nas Âncoras"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -5524,75 +5524,75 @@ msgstr "Deslocamentos coordenadas"
 
 #: lazarusidestrconsts.lisconvdelphiaborted
 msgid "Aborted."
-msgstr ""
+msgstr "Abortado."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
 msgid "All sub-directories will be scanned for unit files"
-msgstr ""
+msgstr "Todos os subdiretórios serão escaneados por arquivos unidades"
 
 #: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
 msgid "At this point there should be no missing units!"
-msgstr ""
+msgstr "Neste ponto não deve haver nenhuma unidade faltando!"
 
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
-msgstr ""
+msgstr "\"BeginCodeTools\" fahou!"
 
 #: lazarusidestrconsts.lisconvdelphicategories
 msgid "Categories:"
-msgstr ""
+msgstr "Categorias:"
 
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
-msgstr ""
+msgstr "Convsersão abortada."
 
 #: lazarusidestrconsts.lisconvdelphiconversionready
 msgid "Conversion Ready."
-msgstr ""
+msgstr "Conversão Pronta."
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
-msgstr ""
+msgstr "Converter pacote Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiproject
 msgid "Convert Delphi project"
-msgstr ""
+msgstr "Converter projeto Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiunit
 msgid "Convert Delphi unit"
-msgstr ""
+msgstr "Converter unidade Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfile
 msgid "Converting unit file %s"
-msgstr ""
+msgstr "Convertendo arquivo unidade %s"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
-msgstr ""
+msgstr "*** Convertendo arquivos unidades... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
-msgstr ""
+msgstr "Arquivo fonte principal (.dpk) do pacote Delphi não encontrado para o pacote%s%s"
 
 #: lazarusidestrconsts.lisconvdelphierror
 msgid "Error=\"%s\""
-msgstr ""
+msgstr "Erro=\"%s\""
 
 #: lazarusidestrconsts.lisconvdelphierrorcantfindunit
 msgid "%s(%s,%s) Error: Can't find unit %s"
-msgstr ""
+msgstr "%s(%s,%s) Erro: Impossível localizar unidade %s"
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
-msgstr ""
+msgstr "Falha ao converter unidade"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
 msgid "Failed to convert unit%s%s%s"
-msgstr ""
+msgstr "Falha ao converter unidade%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
 msgid "*** Find all unit files... ***"
-msgstr ""
+msgstr "*** Localizar todos arquivos unidade ***"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -5600,11 +5600,11 @@ msgstr "Função Delphi"
 
 #: lazarusidestrconsts.lisconvdelphikeepboth
 msgid "Keep both"
-msgstr ""
+msgstr "Manter ambos"
 
 #: lazarusidestrconsts.lisconvdelphimissingincludefile
 msgid "%s(%s,%s) missing include file"
-msgstr ""
+msgstr "%s(%s,%s) arquivo inclusão faltando"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
@@ -5612,68 +5612,68 @@ msgstr "Nome Delphi"
 
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
-msgstr ""
+msgstr "Nome do pacote já existe"
 
 #: lazarusidestrconsts.lisconvdelphiready
 msgid "Ready."
-msgstr ""
+msgstr "Pronto."
 
 #: lazarusidestrconsts.lisconvdelphiremovedusedunitsinusessection
 msgid "Removed used unit \"%s\" in uses section."
-msgstr ""
+msgstr "Removida unidade usada \"%s\" da seção \"uses\"."
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
-msgstr ""
+msgstr "Remover primeiro"
 
 #: lazarusidestrconsts.lisconvdelphiremovesecond
 msgid "Remove second"
-msgstr ""
+msgstr "Remover segundo"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
 msgid "Repairing form file %s"
-msgstr ""
+msgstr "Reparando arquivo formulário %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
-msgstr ""
+msgstr "*** Reparando arquivos formulários... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitswithsinusessection
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
-msgstr ""
+msgstr "Unidade \"%s\" substituída com \"%s\" na seção \"uses\"."
 
 #: lazarusidestrconsts.lisconvdelphiskipthisfile
 msgid "Skip this file"
-msgstr ""
+msgstr "Saltar este arquivo"
 
 #: lazarusidestrconsts.lisconvdelphiskipthisstep
 msgid "Skip this step"
-msgstr ""
+msgstr "Saltar este passo"
 
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
-msgstr ""
+msgstr "Algumas unidades do pacote Delphi estão faltando:%s%s"
 
 #: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
 msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
 msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr ""
+msgstr "Há duas unidades com o mesmo nome de unidade:%s%s%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
-msgstr ""
+msgstr "Já existe um pacote com o nome \"%s\"%sFavor fechar este pacote primeiro."
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
-msgstr ""
+msgstr "Nome de unidade duplicado"
 
 #: lazarusidestrconsts.lisconvdelphiunitsnotfound
 msgid "Units not found"
-msgstr ""
+msgstr "Unidades não encontradas"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
-msgstr ""
+msgstr "Unidades à substituir em %s"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -6009,9 +6009,69 @@ msgstr "Data Module"
 msgid "Date"
 msgstr "Data"
 
+#: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "Copiar para Área Transferência"
+
+#: lazarusidestrconsts.lisdbgitemdelete
+msgctxt "lazarusidestrconsts.lisdbgitemdelete"
+msgid "Delete"
+msgstr "Excluir"
+
+#: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Excluir"
+
+#: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
@@ -6024,6 +6084,14 @@ msgstr "Marcar ponto de parada assim mesmo"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgstr "Não há um depurador especificado.%sConfiguração de pontos de parada não tem efeito até que você configure um Depurador, no diálogo de opções de depurador, no menu."
+
+#: lazarusidestrconsts.lisdbgwinpower
+msgid "On/Off"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgwinpowerhint
+msgid "Disable/Enable updates for the entire window"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
@@ -6396,23 +6464,23 @@ msgstr "Diretório onde a IDE coloca os arquivos .po"
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
-msgstr "Desabiltar Tudo no mesmo código fonte"
+msgstr "Desativar Tudo no mesmo código fonte"
 
 #: lazarusidestrconsts.lisdisablebreakpoint
 msgid "Disable Breakpoint"
-msgstr "Desabilitar Ponto de Parada"
+msgstr "Desativar Ponto de Parada"
 
 #: lazarusidestrconsts.lisdisabled
 msgid "Disabled"
-msgstr "Desabilitado"
+msgstr "Desativado"
 
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
-msgstr "Desabilitar Grupo"
+msgstr "Desativar Grupo"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr "Desabilitar I18N para LFM"
+msgstr "Desativar I18N para LFM"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6420,7 +6488,7 @@ msgstr "&Descartar alterações"
 
 #: lazarusidestrconsts.lisdiscardchangesall
 msgid "Discard all changes"
-msgstr ""
+msgstr "Descartar todas alterações"
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -6716,28 +6784,28 @@ msgstr "Vazio"
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
-msgstr "&Habilitar Tudo"
+msgstr "&Ativar Tudo"
 
 #: lazarusidestrconsts.lisenableallinsamesource
 msgid "Enable All in same source"
-msgstr "Habilitar tudo no mesmo código fonte"
+msgstr "Ativar tudo no mesmo código fonte"
 
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
-msgstr "Habilitar Ponto de Parada"
+msgstr "Ativar Ponto de Parada"
 
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
-msgstr "Ativado"
+msgstr "Ativo"
 
 #: lazarusidestrconsts.lisenablegroup
 msgid "Enable Group"
-msgstr "Habilitar Grupo"
+msgstr "Ativar Grupo"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
-msgstr "Habilitar internacionalização e suporte a tradução"
+msgstr "Ativar internacionalização e suporte a tradução"
 
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
@@ -7506,7 +7574,7 @@ msgstr "Salvar tudo"
 
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
-msgstr "Passar para"
+msgstr "Passar Dentro"
 
 #: lazarusidestrconsts.lishintstepout
 msgid "Run until function returns"
@@ -7514,7 +7582,7 @@ msgstr "Executar até o retorno da função"
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
-msgstr "Passar sobre"
+msgstr "Passar Sobre"
 
 #: lazarusidestrconsts.lishintstop
 msgctxt "lazarusidestrconsts.lishintstop"
@@ -9898,31 +9966,31 @@ msgstr "Ordenar seleção ..."
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
-msgstr "Passar Para"
+msgstr "Passar dentro"
 
 #: lazarusidestrconsts.lismenustepintocontext
 msgid "Step into (Context)"
-msgstr ""
+msgstr "Passar dentro (Contexto)"
 
 #: lazarusidestrconsts.lismenustepintoinstr
 msgid "Step into instruction"
-msgstr ""
+msgstr "Passar dentro instrução"
 
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
-msgstr "Passar Fora"
+msgstr "Passar fora"
 
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
-msgstr "Passar Sobre"
+msgstr "Passar sobre"
 
 #: lazarusidestrconsts.lismenustepovercontext
 msgid "Step over (Context)"
-msgstr ""
+msgstr "Passar sobre (Contexto)"
 
 #: lazarusidestrconsts.lismenustepoverinstr
 msgid "Step over instruction"
-msgstr ""
+msgstr "Passar sobre instrução"
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"
@@ -13102,7 +13170,7 @@ msgstr "Fonte da página %s%s%s foi alterado. Salvar?"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
 msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
-msgstr ""
+msgstr "Fontes de mais de uma página foram alterados. Salvar página %s%s%s? (mais %d)"
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"
@@ -14296,7 +14364,7 @@ msgstr "Unidades não encontradas em"
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"
-msgstr ""
+msgstr "Não assinado"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
@@ -14448,7 +14516,7 @@ msgstr "Quando uma unidade for renomeada, atualizar referências ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
-msgstr "Quando habilitado as opções atuais são salvas para um modelo, que é usado ao criar novos projetos"
+msgstr "Quando ativo, as opções atuais são salvas para um modelo, que é usado ao criar novos projetos"
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
@@ -14488,7 +14556,7 @@ msgstr "H&abillitar tudo"
 
 #: lazarusidestrconsts.liswlenabled
 msgid "&Enabled"
-msgstr "&Habilitado"
+msgstr "&Ativo"
 
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
@@ -14536,7 +14604,7 @@ msgstr "Erro análise XML no arquivo %s%sErro: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr "Você pode desabilitar isto para formulários individuais através do menu de contexto no inspetor de projeto"
+msgstr "Você pode desativar isto para formulários individuais através do menu de contexto no inspetor de projeto"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
@@ -14598,7 +14666,7 @@ msgstr "Criação de vínculos simbólicos não suportada por esta plataforma!"
 
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
-msgstr "Habilitar \"i18n\""
+msgstr "Ativar \"i18n\""
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
 msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
@@ -15986,7 +16054,7 @@ msgstr "&Fechar Página"
 #: lazarusidestrconsts.uemcompletecode
 msgctxt "lazarusidestrconsts.uemcompletecode"
 msgid "Complete Code"
-msgstr "Código completo"
+msgstr "Completar Código"
 
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"

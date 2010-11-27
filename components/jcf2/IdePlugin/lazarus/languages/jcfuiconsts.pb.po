@@ -99,15 +99,15 @@ msgstr "&Maiúsculas/minúsculas"
 
 #: jcfuiconsts.lisasmenabled
 msgid "&Enabled"
-msgstr "&Habilitado"
+msgstr "&Ativo"
 
 #: jcfuiconsts.lisasmenabled2
 msgid "E&nabled"
-msgstr "Hab&ilitado"
+msgstr "A&tivo"
 
 #: jcfuiconsts.lisasmenabled3
 msgid "En&abled"
-msgstr "Ha&bilitado"
+msgstr "Ati&vo"
 
 #: jcfuiconsts.lisasmindent
 msgid "Indent"
@@ -199,7 +199,7 @@ msgstr "Qualquer Palavra"
 
 #: jcfuiconsts.liscapsanywordenable
 msgid "Enable"
-msgstr "Habilitado"
+msgstr "Ativar"
 
 #: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
 msgid "Set capitalisation on these words:"
@@ -219,7 +219,7 @@ msgstr "Diretivas"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
-msgstr "Habilitar correção maiúsculas/minúsculas"
+msgstr "Ativar correção maiúsculas/minúsculas"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -398,7 +398,7 @@ msgstr "Erro gravando arquivo de configurações: %s é apenas leitura"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
-msgstr "Habilita localizar e substituir"
+msgstr "Ativar localizar e substituir"
 
 #: jcfuiconsts.lisfindreplacefindandreplace
 msgid "Find and Replace"
@@ -583,7 +583,7 @@ msgstr "Opções definidas do compilador para compilação condicional:"
 
 #: jcfuiconsts.lisprpenablepreprocessorparsing
 msgid "Enable preprocessor parsing"
-msgstr "Habilta análise pré-processador"
+msgstr "Ativar análise pré-processador"
 
 #: jcfuiconsts.lisprppreprocessor
 msgid "PreProcessor"

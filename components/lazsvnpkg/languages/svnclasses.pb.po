@@ -15,7 +15,7 @@ msgstr "Ação"
 
 #: svnclasses.rsadd
 msgid "Add to version control"
-msgstr ""
+msgstr "Adicionar ao controle de versão"
 
 #: svnclasses.rsadded
 msgid "Added"
@@ -43,7 +43,7 @@ msgstr "Copiar do caminho"
 
 #: svnclasses.rscreatepatchfile
 msgid "Create patch file"
-msgstr ""
+msgstr "Criar arquivo \"patch\""
 
 #: svnclasses.rsdate
 msgid "Date"
@@ -71,7 +71,7 @@ msgstr "Extensão"
 
 #: svnclasses.rsfilenotinworkingcopyanymore
 msgid "File is not part of local working copy (anymore)"
-msgstr ""
+msgstr "Arquivo nõ faz parte da cópia de trabalho local (não mais)"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -111,19 +111,19 @@ msgstr "(nenhum autor)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
-msgstr ""
+msgstr "Apenas itens modificados (M) podem ser comparados"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
-msgstr ""
+msgstr "Abrir arquivo no editor"
 
 #: svnclasses.rsopenpreviousrevisionineditor
 msgid "Open previous revision in editor"
-msgstr ""
+msgstr "Abrir revisão prévia no editor"
 
 #: svnclasses.rsopenthisrevisionineditor
 msgid "Open this revision in editor"
-msgstr ""
+msgstr "Abrir esta revisão no editor"
 
 #: svnclasses.rspath
 msgid "Path"
@@ -155,7 +155,7 @@ msgstr "Estado Propriedade"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
-msgstr ""
+msgstr "Remover do controle de versão (manter local)"
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
@@ -183,7 +183,7 @@ msgstr "Exibir diferenças"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show diff of local changes"
-msgstr ""
+msgstr "Exibir diferenças das alterações locais"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
@@ -191,11 +191,11 @@ msgstr "Exibir últimos X envios"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show diff against HEAD"
-msgstr ""
+msgstr "Exibir diferenças contra HEAD"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show diff against previous version"
-msgstr ""
+msgstr "Exibir diferenças contra versão prévia"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
