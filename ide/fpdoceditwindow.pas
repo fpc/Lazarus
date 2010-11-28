@@ -31,7 +31,7 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, StrUtils,
+  Classes, SysUtils, StrUtils, contnrs,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType,
@@ -39,6 +39,7 @@ uses
   SynEdit,
   // codetools
   BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
+  CTXMLFixFragment,
   {$IFDEF NewXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
@@ -1259,29 +1260,38 @@ var
         CurName:=Element.FPDocFile.Filename
       else
         CurName:=Element.ElementName;
-      MessageDlg('Write error',
-        'Error writing "'+CurName+'"'#13
-        +Msg,mtError,[mbCancel],0);
+      MessageDlg(lisCodeToolsDefsWriteError,
+        Format(lisFPDocErrorWriting, [CurName, #13, Msg]), mtError, [mbCancel],
+          0);
     end;
   end;
 
   function SetValue(Item: TFPDocItem): boolean;
   var
     NewValue: String;
+    ErrorList: TObjectList;
   begin
     Result:=false;
     NewValue:=Values[Item];
+    ErrorList:=nil;
     try
-      CurDocFile.SetChildValue(TopNode,FPDocItemNames[Item],NewValue);
-      Result:=true;
-    except
-      on E: EXMLReadError do begin
-        DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
-        JumpToError(Item,E.LineCol);
-        MessageDlg('FPDoc syntax error',
-          'There is a syntax error in the fpdoc element "'+FPDocItemNames[Item]+'":'#13#13
-          +E.Message,mtError,[mbOk],'');
+      try
+        FixFPDocFragment(NewValue,
+               Item in [fpdiShort,fpdiDescription,fpdiErrors,fpdiSeeAlso],
+               true,ErrorList);
+        CurDocFile.SetChildValue(TopNode,FPDocItemNames[Item],NewValue);
+        Result:=true;
+      except
+        on E: EXMLReadError do begin
+          DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
+          JumpToError(Item,E.LineCol);
+          MessageDlg(lisFPDocFPDocSyntaxError,
+            Format(lisFPDocThereIsASyntaxErrorInTheFpdocElement, [FPDocItemNames
+              [Item], #13#13, E.Message]), mtError, [mbOk], '');
+        end;
       end;
+    finally
+      FreeAndNil(ErrorList);
     end;
   end;
 

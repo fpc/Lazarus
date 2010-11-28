@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, contnrs, BasicCodeTools;
 
-procedure FixFPDocFragment(var Fragment: string; Fix: boolean;
+procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean;
   out ErrorList: TObjectList; Verbose: boolean = false);
 
 implementation
@@ -46,7 +46,7 @@ type
     Msg: string;
   end;
 
-procedure FixFPDocFragment(var Fragment: string; Fix: boolean;
+procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean;
   out ErrorList: TObjectList; Verbose: boolean);
 { - Fix all tags to lowercase to reduce svn commits
   - auto close comments
@@ -463,7 +463,10 @@ var
   procedure ParseLowerThan;
   begin
     // comment, tag or 'lower than'
-    if (p[1]='!') and (p[2]='-') and (p[3]='-') then begin
+    if not AllowTags then begin
+      // invalid character => convert or skip
+      HandleSpecialChar;
+    end else if (p[1]='!') and (p[2]='-') and (p[3]='-') then begin
       // comment
       ParseComment;
     end else if p[1] in ['a'..'z','A'..'Z'] then begin

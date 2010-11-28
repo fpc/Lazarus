@@ -102,7 +102,7 @@ begin
   Result:=true;
   try
     s:=Fragment;
-    FixFPDocFragment(s,true,ErrorList,Verbose);
+    FixFPDocFragment(s,true,true,ErrorList,Verbose);
     if s<>FixedFragment then begin
       Result:=false;
       debugln(['failed: ',Title]);

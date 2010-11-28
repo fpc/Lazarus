@@ -2890,6 +2890,10 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisFPDocErrorWriting = 'Error writing "%s"%s%s';
+  lisFPDocFPDocSyntaxError = 'FPDoc syntax error';
+  lisFPDocThereIsASyntaxErrorInTheFpdocElement = 'There is a syntax error in '
+    +'the fpdoc element "%s":%s%s';
   lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
   lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project '
     +'session file%s"%s".%sError: %s';
