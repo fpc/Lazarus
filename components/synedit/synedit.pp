@@ -2718,7 +2718,7 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   CType: TSynMAClickCount;
 begin
-  //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //DebugLn(['TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y]);
   Exclude(FStateFlags, sfHideCursor);
   FInMouseClickEvent := True;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
@@ -3028,8 +3028,13 @@ begin
 
   If FPaintLock > 0 then begin
     debugln(['Warning: SynEdit.Paint called during PaintLock']);
-    types.IntersectRect(FInvalidateRect, FInvalidateRect, rcClip);
-    exit
+    if FInvalidateRect.Top < 0 then
+      FInvalidateRect := rcClip
+    else
+      types.UnionRect(FInvalidateRect, FInvalidateRect, rcClip);
+    // Todo: painting is not save
+    FHighlighter.ScanRanges; // at least prevent some dangers
+    //exit;
   end;
   {$IFDEF EnableDoubleBuf}
   //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
