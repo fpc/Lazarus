@@ -1,0 +1,85 @@
+object Form1: TForm1
+  Left = 477
+  Height = 433
+  Top = 164
+  Width = 566
+  Caption = 'Form1'
+  ClientHeight = 433
+  ClientWidth = 566
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 433
+    Top = 0
+    Width = 566
+    ActivePage = tsPie
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsPie: TTabSheet
+      Caption = 'Pie'
+      ClientHeight = 407
+      ClientWidth = 558
+      object ChartPie: TChart
+        Left = 0
+        Height = 372
+        Top = 35
+        Width = 558
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+            Visible = False
+          end        
+          item
+            Alignment = calBottom
+            Visible = False
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        ParentColor = False
+        OnMouseDown = ChartPieMouseDown
+        object ChartPiePieSeries1: TPieSeries
+          Exploded = True
+          Source = ListChartSource1
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 35
+        Top = 0
+        Width = 558
+        Align = alTop
+        Caption = 'Click on the slice to explodede/unxeplode it'
+        TabOrder = 1
+      end
+    end
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0|2|?|'
+      '0|3|?|'
+      '0|0|?|'
+    )
+    left = 440
+    top = 136
+  end
+  object ChartToolset1: TChartToolset
+    left = 440
+    top = 80
+  end
+end
