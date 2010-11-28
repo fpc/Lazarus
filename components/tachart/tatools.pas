@@ -56,7 +56,7 @@ type
     procedure Activate; override;
     procedure Deactivate; override;
     procedure Dispatch(
-      AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
+      AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
     function GetIndex: Integer; override;
     function IsActive: Boolean;
     procedure MouseDown(APoint: TPoint); virtual;

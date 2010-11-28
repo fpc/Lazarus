@@ -111,7 +111,7 @@ type
   protected
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
-      AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract;
+      AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract; overload;
   end;
 
   { TChartSeriesList }
