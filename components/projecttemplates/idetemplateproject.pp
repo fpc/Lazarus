@@ -17,6 +17,7 @@ type
     FTemplate : TProjectTemplate;
     FProjectDirectory : String;
     FProjectName : String;
+    FIgnoreExts,
     FVariables : TStrings;
     Function ShowOptionsDialog : TModalResult;
   public
@@ -243,10 +244,13 @@ begin
   else
     Name:='Template Project';
   FVariables:=TStringList.Create;
+  FIgnoreExts:=TStringList.Create;
+  FIgnoreExts.CommaText:='.lpr,.lps,.lfm,.lrs,.ico,.res,.lpi,.bak';
 end;
 
 destructor TTemplateProjectDescriptor.destroy;
 begin
+  FreeAndNil(FIgnoreExts);
   FTemplate:=Nil;
   FreeAndNil(FVariables);
   Inherited;
@@ -297,7 +301,6 @@ begin
       If B then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
-        Writeln('Project file',FN);
         AFile:=AProject.CreateProjectFile(FN);
         AFile.IsPartOfProject:=true;
         AProject.AddFile(AFile,Not B);
@@ -331,11 +334,10 @@ begin
       begin
       FN:=FTemplate.FileNames[I];
       E:=ExtractFileExt(FN);
-      If (CompareText(E,'.lpr')<>0) and (CompareText(E,'.lps')<>0)
-         and (CompareText(E,'.lfm')<>0) and (CompareText(E,'.lrs')<>0) then
+      If (FIgnoreExts.IndexOf(E)=-1) then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
-        LazarusIDE.DoOpenEditorFile(FN,-1,[ofAddToProject]);
+        LazarusIDE.DoOpenEditorFile(FN,-1,[ofProjectLoading,ofQuiet,ofAddToProject]);
         end;
       end;
     end
