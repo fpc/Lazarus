@@ -3828,6 +3828,9 @@ begin
             if CompareSrcIdentifiers(p,'INTERFACE')
             or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
               SaveRaiseException(ctsEndForClassNotFound);
+          'O':
+            if CompareSrcIdentifiers(p,'OBJECT') then
+              inc(Level);
           'R':
             if CompareSrcIdentifiers(p,'RECORD') then
               inc(Level)
