@@ -6,7 +6,7 @@ interface
 
 uses
   ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, Classes,
-  TALegend, Graphics;
+  TALegend, TAFuncSeries, Graphics;
 
 type
 

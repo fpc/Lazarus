@@ -41,7 +41,6 @@ object Form1: TForm1
       LinePen.Color = clRed
       Pointer.Brush.Color = clRed
       ShowPoints = True
-      Source = ListChartSource1
     end
     object Chart1AreaSeries1: TAreaSeries
       Title = 'Area'
@@ -51,8 +50,8 @@ object Form1: TForm1
     end
     object Chart1PieSeries1: TPieSeries
       Legend.Multiplicity = lmPoint
-      Marks.Format = '%1:.2f%%'
-      Marks.Style = smsPercent
+      Marks.Format = '%2:s %1:.2f%%'
+      Marks.Style = smsLabelPercent
       Exploded = True
       Source = ListChartSource2
     end
@@ -60,10 +59,10 @@ object Form1: TForm1
       Extent.XMax = 5
       Extent.UseXMin = True
       Extent.UseXMax = True
+      Title = 'Function'
       OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clPurple
       Pen.Width = 2
-      Title = 'Function'
     end
   end
   object pnControls: TPanel
@@ -211,11 +210,11 @@ object Form1: TForm1
   end
   object ListChartSource2: TListChartSource
     DataPoints.Strings = (
-      '0|5|?|'
-      '0|6|?|'
-      '0,2|4|?|'
-      '0|7|?|'
-      '0|2|?|'
+      '0|5|?|abcc'
+      '0|6|?|def'
+      '0.2|4|?|пример'
+      '0|7|?|ещё'
+      '0|2|?|два слова'
     )
     left = 380
     top = 228
