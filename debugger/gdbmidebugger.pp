@@ -3449,6 +3449,7 @@ begin
           ProcessFrame(List.Values['frame']);
         end;
       end;
+      // The temp-at-start breakpoint is not checked. Ignore it
       if (DebuggerState = dsRun) and (FTheDebugger.TargetPID <> 0) // not in startup
       then begin
         debugln(['********** WARNING: breakpoint hit, but nothing known about it BreakId=', BreakID, ' brbtno=', List.Values['bkptno'] ]);
@@ -3487,9 +3488,14 @@ begin
       Exit;
     end;
 
-    DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
-    SetDebuggerState(dsPause);
-    ProcessFrame(List.Values['frame']);
+    // Some versions of GDB do not give any reason if hitting a temporary breakpoint
+    // (like the temp-at-main during startup)
+    if (FTheDebugger.TargetPID <> 0) // not in startup
+    then begin
+      DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
+      SetDebuggerState(dsPause);
+      ProcessFrame(List.Values['frame']);
+    end;
   finally
     List.Free;
   end;
