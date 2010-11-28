@@ -535,6 +535,7 @@ end;
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
 begin
   Save;
+  UpdateValueControls;
 end;
 
 procedure TFPDocEditor.SeeAlsoMemoChange(Sender: TObject);
