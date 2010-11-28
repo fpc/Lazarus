@@ -79,10 +79,6 @@ type
 
   public
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
-    function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      virtual;
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
 
@@ -1152,17 +1148,6 @@ begin
   if FChart <> nil then
     FChart.DeleteSeries(Self);
   inherited;
-end;
-
-function TBasicChartSeries.GetNearestPoint(
-  ADistFunc: TPointDistFunc; const APoint: TPoint;
-  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-begin
-  Unused(ADistFunc, APoint);
-  AIndex := 0;
-  AImg := Point(0, 0);
-  AValue := ZeroDoublePoint;
-  Result := false;
 end;
 
 function TBasicChartSeries.GraphToAxisX(AX: Double): Double;

@@ -284,7 +284,7 @@ implementation
 
 uses
   ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
-  TADrawUtils, TASubcomponentsEditor;
+  TACustomSeries, TADrawUtils, TASubcomponentsEditor;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
 {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
@@ -812,7 +812,8 @@ begin
   df := DIST_FUNCS[FChart.ReticuleMode];
   for i := 0 to FChart.SeriesCount - 1 do
     if
-      FChart.Series[i].GetNearestPoint(
+      (FChart.Series[i] is TCustomChartSeries) and
+      (FChart.Series[i] as TCustomChartSeries).GetNearestPoint(
         df, APoint, cur.pointIndex, cur.retPos, cur.value) and
       PtInRect(FChart.ClipRect, cur.retPos)
     then begin
@@ -1015,7 +1016,8 @@ end;
 procedure TDataPointDragTool.MouseDown(APoint: TPoint);
 var
   i, d, bestd, idx: Integer;
-  s, bests: TBasicChartSeries;
+  bests: TBasicChartSeries;
+  s: TCustomChartSeries;
   affected: TBooleanDynArray;
   dummy: TDoublePoint;
   nearest: TPoint;
@@ -1024,9 +1026,11 @@ begin
   bests := nil;
   affected := ParseAffectedSeries;
   for i := 0 to FChart.SeriesCount - 1 do begin
-    if not affected[i] then continue;
-    s := FChart.Series[i];
-    if not s.GetNearestPoint(@PointDist, APoint, idx, nearest, dummy) then continue;
+    if not affected[i] or not (FChart.Series[i] is TCustomChartSeries) then
+      continue;
+    s := FChart.Series[i] as TCustomChartSeries;
+    if not s.GetNearestPoint(@PointDist, APoint, idx, nearest, dummy) then
+      continue;
     d := PointDist(APoint, nearest);
     if d < bestd then begin
       bestd := d;

@@ -78,6 +78,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      virtual;
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
@@ -289,6 +293,17 @@ begin
     AItems.Add(TLegendItemUserDrawn.Create(Legend.OnDraw, Title))
   else
     GetLegendItems(AItems);
+end;
+
+function TCustomChartSeries.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint; out AIndex: Integer;
+  out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+begin
+  Unused(ADistFunc, APoint);
+  AIndex := 0;
+  AImg := Point(0, 0);
+  AValue := ZeroDoublePoint;
+  Result := false;
 end;
 
 function TCustomChartSeries.GetParentComponent: TComponent;
