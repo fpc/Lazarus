@@ -4,13 +4,15 @@
     <Name Value="ProjTemplates"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
@@ -21,7 +23,7 @@
     <License Value="Modified LGPL as per the FCL license
 "/>
     <Version Major="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="projecttemplates.pp"/>
         <UnitName Value="ProjectTemplates"/>
@@ -48,6 +50,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frmtemplatesettings"/>
       </Item6>
+      <Item7>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item7>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -70,5 +76,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Childs="ExternHelp">
+      <_ExternHelp Childs="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
