@@ -956,7 +956,7 @@ function TPascalParserTool.KeyWordFuncClassVarTypePacked: boolean;
 // 'packed' record
 begin
   ReadNextAtom;
-  if CurPos.Flag=cafRECORD then
+  if UpAtomIs('RECORD') then
     Result:=KeyWordFuncClassVarTypeRecord
   else begin
     RaiseStringExpectedButAtomFound('"record"');
@@ -1000,7 +1000,7 @@ begin
   Level:=1;
   while (CurPos.StartPos<=SrcLen) and (Level>0) do begin
     ReadNextAtom;
-    if CurPos.Flag=cafRECORD then inc(Level)
+    if UpAtomIs('RECORD') then inc(Level)
     else if (CurPos.Flag=cafEND) then dec(Level);
   end;
   if CurPos.StartPos>SrcLen then
@@ -2638,7 +2638,7 @@ begin
     BlockType:=ebtCase
   else if UpAtomIs('ASM') then
     BlockType:=ebtAsm
-  else if CurPos.Flag=cafRECORD then
+  else if UpAtomIs('RECORD') then
     BlockType:=ebtRecord
   else
     RaiseUnknownBlockType;
@@ -2788,8 +2788,7 @@ begin
     begin
       if (CurPos.Flag=cafEND) or (UpAtomIs('UNTIL')) then begin
         ReadBackTilBlockEnd(false);
-      end else if UpAtomIs('BEGIN') or (CurPos.Flag in [cafRECORD])
-        or UpAtomIs('ASM')
+      end else if UpAtomIs('BEGIN') or UpAtomIs('RECORD') or UpAtomIs('ASM')
       then begin
         if BlockType=ebtBegin then
           break
@@ -2827,7 +2826,7 @@ begin
             begin
               if UpAtomIs('CASE') then begin
                 // could be another variant record, -> read further ...
-              end else if CurPos.Flag=cafRECORD then begin
+              end else if UpAtomIs('RECORD') then begin
                 // record start found -> the case is a variant record
                 // block start found
                 break;
@@ -3804,8 +3803,6 @@ begin
           dec(Level);
           if Level=0 then break;
         end;
-      cafRECORD:
-        inc(Level);
       cafRoundBracketOpen,cafEdgedBracketOpen:
         inc(BracketLvl);
       cafRoundBracketClose,cafEdgedBracketClose:
@@ -3832,7 +3829,9 @@ begin
             or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
               SaveRaiseException(ctsEndForClassNotFound);
           'R':
-            if CompareSrcIdentifiers(p,'RESOURCESTRING') then
+            if CompareSrcIdentifiers(p,'RECORD') then
+              inc(Level)
+            else if CompareSrcIdentifiers(p,'RESOURCESTRING') then
               SaveRaiseException(ctsEndForClassNotFound);
           'T':
             if CompareSrcIdentifiers(p,'THREADVAR') then

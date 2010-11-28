@@ -1055,11 +1055,6 @@ begin
           and ((CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@'))
           then
             CurPos.Flag:=cafEnd;
-        'r','R':
-          if (CurPos.EndPos-CurPos.StartPos=6)
-          and UpAtomIs('RECORD')
-          then
-            CurPos.Flag:=cafRecord;
         end;
       end;
     '''','#':
@@ -1472,11 +1467,6 @@ begin
                   CurPos.Flag:=cafEnd
                 else
                   CurPos.Flag:=cafWord;
-              'R':
-                if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
-                  CurPos.Flag:=cafRecord
-                else
-                  CurPos.Flag:=cafWord;
               else
                 CurPos.Flag:=cafWord;
               end;
@@ -1588,9 +1578,6 @@ begin
           'E':
             if CompareSrcIdentifiers(CurPos.StartPos,'END') then
               CurPos.Flag:=cafEnd;
-          'R':
-            if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
-              CurPos.Flag:=cafRecord;
           end;
         end;
       end;
@@ -1676,7 +1663,7 @@ begin
     ReadNextAtom;
     if (CurPos.Flag=CloseBracket) then break;
     if (CurPos.StartPos>SrcLen)
-    or (CurPos.Flag in [cafEnd,cafRecord,AntiCloseBracket])
+    or (CurPos.Flag in [cafEnd,AntiCloseBracket])
     then begin
       SetNiceErrorPos(Start.StartPos);
       if ExceptionOnNotFound then begin
