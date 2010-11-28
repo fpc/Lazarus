@@ -16,8 +16,7 @@ object Form1: TForm1
     Width = 483
     AxisList = <    
       item
-        Alignment = calLeft
-        Title.Font.Orientation = 900
+        Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
@@ -42,7 +41,6 @@ object Form1: TForm1
       Pointer.HorizSize = 6
       Pointer.Style = psDiamond
       Pointer.VertSize = 6
-      SeriesColor = clBlack
       ShowPoints = True
     end
   end
