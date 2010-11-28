@@ -19,8 +19,7 @@
         <Verbosity>
           <ShowHints Value="False"/>
         </Verbosity>
-        <CustomOptions Value="$(IDEBuildOptions)
-"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -28,7 +27,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="62">
+    <Files Count="63">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -278,6 +277,10 @@
         <Filename Value="codetoolscfgscript.pas"/>
         <UnitName Value="CodeToolsCfgScript"/>
       </Item62>
+      <Item63>
+        <Filename Value="ctxmlfixfragment.pas"/>
+        <UnitName Value="ctxmlfixfragment"/>
+      </Item63>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

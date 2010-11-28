@@ -18,7 +18,8 @@ uses
   MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
   SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, laz2_xmlutils, 
-  laz2_DOM, laz2_XMLWrite, laz2_XMLRead, CodeToolsCfgScript, LazarusPackageIntf;
+  laz2_DOM, laz2_XMLWrite, laz2_XMLRead, CodeToolsCfgScript, CTXMLFixFragment, 
+  LazarusPackageIntf;
 
 implementation
 
