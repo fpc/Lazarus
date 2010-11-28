@@ -3703,13 +3703,13 @@ function TPascalParserTool.KeyWordFuncClass: boolean;
 //   the nodes for the methods and properties are created in a second
 //   parsing phase (in KeyWordFuncClassMethod)
 var
+  BracketLvl: Integer;
   ChildCreated: boolean;
   ClassAtomPos: TAtomPosition;
   Level: integer;
   ContextDesc: Word;
   IsForward: Boolean;
   p: PChar;
-  BracketLvl: Integer;
   ClassDesc: TCodeTreeNodeDesc;
 begin
   ContextDesc:=CurNode.Desc;
@@ -3820,9 +3820,13 @@ begin
             if CompareSrcIdentifiers(p,'BEGIN') then
               SaveRaiseException(ctsEndForClassNotFound);
           'C':
-            if CompareSrcIdentifiers(p,'CONST')
-            and (not (LastAtomIs(0,';') or LastAtomIs(0,'(') or LastAtomIs(0,'[')  or LastAtomIs(0,'of'))) then
-              SaveRaiseException(ctsEndForClassNotFound);
+            if CompareSrcIdentifiers(p,'CONST') then begin
+              if BracketLvl>0 then begin
+                if (not (LastAtomIs(0,';') or LastAtomIs(0,'(')
+                or LastAtomIs(0,'[')  or LastUpAtomIs(0,'OF'))) then
+                  SaveRaiseException(ctsEndForClassNotFound);
+              end;
+            end;
           'I':
             if CompareSrcIdentifiers(p,'INTERFACE')
             or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
@@ -3837,9 +3841,13 @@ begin
             and (BracketLvl>0) then
               SaveRaiseException(ctsEndForClassNotFound);
           'V':
-            if CompareSrcIdentifiers(p,'VAR')
-            and (not (LastAtomIs(0,';') or LastAtomIs(0,'(') or LastAtomIs(0,'['))) then
-              SaveRaiseException(ctsEndForClassNotFound);
+            if CompareSrcIdentifiers(p,'VAR') then begin
+              if BracketLvl>0 then begin
+                if (not (LastAtomIs(0,';') or LastAtomIs(0,'(')
+                or LastAtomIs(0,'[')  or LastUpAtomIs(0,'OF'))) then
+                  SaveRaiseException(ctsEndForClassNotFound);
+              end;
+            end;
           end;
         end;
       end;
