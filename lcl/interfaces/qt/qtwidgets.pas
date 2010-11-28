@@ -166,6 +166,7 @@ type
     procedure Release; override;
     procedure Destroyed; cdecl; override;
   public
+    function CanAdjustClientRectOnResize: Boolean; virtual;
     function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean; virtual;
     function DeliverMessage(var Msg): LRESULT; virtual;
@@ -419,6 +420,7 @@ type
 
     procedure DestroyNotify(AWidget: TQtWidget); override;
   public
+    function CanAdjustClientRectOnResize: Boolean; override;
     function cornerWidget: TQtWidget;
     function viewport: TQtViewPort;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -1875,6 +1877,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidget.CanAdjustClientRectOnResize
+  Params:  None
+  Returns: Boolean
+  Checks if our control can call LCLObject.DoAdjustClientRect from SlotResize.
+  eg. TQtCustomControl does not call it since DoAdjustClientRect is called
+  from TQtViewport.EventFilter.This avoids deadlocks with autosizing.
+ ------------------------------------------------------------------------------}
+function TQtWidget.CanAdjustClientRectOnResize: Boolean;
+begin
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtWidget.CanSendLCLMessage
   Params:  None
   Returns: Boolean
@@ -3169,12 +3184,11 @@ begin
   if not (csDesigning in LCLObject.ComponentState) then
     if not (ClassType = TQtMainWindow) and InUpdate then
       exit;
-  
-  if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
-     (LCLObject.ClientRectNeedsInterfaceUpdate) then
-  begin
+
+  if CanAdjustClientRectOnResize and
+    ((NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
+     LCLObject.ClientRectNeedsInterfaceUpdate) then
     LCLObject.DoAdjustClientRectChange;
-  end;
 
   FillChar(Msg, SizeOf(Msg), #0);
 
@@ -11301,7 +11315,13 @@ begin
       begin
         HaveVertBar := Assigned(TQtCustomControl(FOwner).FVScrollbar);
         HaveHorzBar := Assigned(TQtCustomControl(FOwner).FHScrollbar);
-        LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
+        if (caspComputingBounds in LCLObject.AutoSizePhases) then
+          {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtCustomControlResizeDeadlock)}
+          writeln('*** INTERCEPTED RESIZE DEADLOCK *** ',LCLObject.ClassName,
+            ':',LCLObject.Name)
+          {$ENDIF}
+        else
+          LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
       end else
         LCLObject.DoAdjustClientRectChange;
     end;
@@ -11707,19 +11727,8 @@ begin
 
       retval^ := True;
 
-      {$note this is workaround for infinite loop with some
-       applications since qt doesn't have scrollbars on forms yet.
-       example of problem: #16413.
-       After implementing TQtMainWindow.Widget from QAbstractScrollArea
-       remove this workaround.}
-      if (QEvent_type(Event) = QEventResize) and
-        (FChildOfComplexWidget = ccwScrollingWinControl) and
-        Assigned(LCLObject.Parent) then
-      begin
-        AForm := GetParentForm(LCLObject);
-        LCLObject.DoAdjustClientRectChange(not AForm.AutoScroll);
-      end else
-        Viewport.EventFilter(ViewPort.Widget, Event);
+      Viewport.EventFilter(ViewPort.Widget, Event);
+
       // do not allow qt to call notifications on user input events (mouse)
       // otherwise we can crash since our object maybe does not exist
       // after mouse clicks
@@ -11740,6 +11749,12 @@ begin
     FViewPortWidget := nil;
 
   inherited DestroyNotify(AWidget);
+end;
+
+function TQtCustomControl.CanAdjustClientRectOnResize: Boolean;
+begin
+  // DoAdjustClientRectChange(); is called from TQtViewport resize event !
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
