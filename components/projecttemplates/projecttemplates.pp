@@ -143,8 +143,27 @@ end;
 
 Function SimpleFileCopy(Const Source,Dest : String) : Boolean;
 
+Var
+  F1,F2 : TFileStream;
+
 begin
-  Result:=True;
+  Result:=False;
+  try
+    F1:=TFileStream.Create(Source,fmOpenRead);
+    try
+      F2:=TFileStream.Create(Dest,fmCreate);
+      try
+        F2.CopyFrom(F1,0);
+      finally
+        F2.Free;
+      end;
+    finally
+      F1.Free;
+    end;
+    Result:=True;
+  except
+    //
+  end;
 end;
 
 
