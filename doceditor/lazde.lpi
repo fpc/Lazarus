@@ -8,7 +8,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="LazDocEditor"/>
+      <Title Value="Lazarus documentation editor."/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
@@ -184,6 +184,9 @@
       <ConfigFile>
         <StopAfterErrCount Value="10"/>
       </ConfigFile>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

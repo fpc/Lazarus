@@ -76,6 +76,8 @@ ResourceString
   SMakeSkelFromSource = 'Make new document from source file';
   SSkelErrorWithFile = 'makeskel reported an error (%d). Try to load produced file anyway ?';
   SSkelErrorWithoutFile = 'makeskel reported an error (%d) and produced no file.';
+  SLinksTo = ' links to ';
+  SHintEditElementLink = 'Edit element link';
   //SOptConfirmDelete = 'Confirm node deletion';
   //SOptCreateBackup = 'Backup existing files';
   //SOptSkipEmptyNodes = 'Do not create empty nodes';

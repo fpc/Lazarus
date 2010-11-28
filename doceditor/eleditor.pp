@@ -106,10 +106,13 @@ Type
     BAddSeeAlso,
     BEditSeeAlso,
     BDeleteSeeAlso : TToolButton;
+    TBLink : TToolbar;
+    TBEditLink : TToolbutton;
     //ILElements : TImageList;
     FSeeAlso,
     FExamples : TListBox;
     FCurrentEditable : TWinControl;
+    FElementLink : String;
     Procedure GetNodes;
     Function  CurrentEditable : TWinControl;
     procedure OnEnterControl(Sender : TObject);
@@ -120,7 +123,9 @@ Type
     Procedure DoAddSeeAlso(Sender : TObject);
     Procedure DoEditSeeAlso(Sender : TObject);
     Procedure DoDeleteSeeAlso(Sender : TObject);
+    Procedure DoEditElementLink(Sender : TObject);
     Function EditLink(Var Value,ALinkText : String) : Boolean;
+    procedure ShowElementCaption;
   Public
     Constructor Create (AOwner : TComponent); override;
     Destructor Destroy; override;
@@ -235,17 +240,42 @@ begin
     BevelOuter:=bvNone;
     AutoSize:=true;
   end;
+  P1:=TPanel.Create(Self);
+  with P1 do
+  begin
+    Parent:=P0;
+    Align:=alClient;
+    BevelOuter:=bvNone;
+    AutoSize:=true;
+  end;
   FLabel:=TLabel.Create(Self);
   With FLabel do
   begin
-    parent:=P0;
+    parent:=P1;
     Caption:='<New element>';
     Align:=alTop;
   end;
+  TBLink:=TToolbar.Create(Self);
+  With TBLink do
+    begin
+    PArent:=P0;
+    Align:=alRight;
+    Width:=50;
+    Transparent := True;
+    Images:=MainForm.ILElements; //ILElements;
+    end;
+  TBEditLink:=TToolbutton.Create(Self);
+  With TBEditLink do
+    begin
+    Parent:=TBLink;
+    OnClick:=@DoEditElementLink;
+    ImageIndex:=1;
+    Hint := SHintEditElementLink;
+    end;
   L:=TLabel.Create(self);
   With L do
     begin
-    L.Parent:=P0;
+    L.Parent:=P1;
     Top := 15;
     L.Align:=alTop;
     L.Caption:=SShortDescription;
@@ -253,7 +283,7 @@ begin
   FShortEntry:=TEdit.Create(Self);
   With FShortEntry do
   begin
-    Parent:=P0;
+    Parent:=P1;
     Top := 35;
     Align:=alTop;
     height:=24;
@@ -485,6 +515,24 @@ begin
   Element:=Nil;
 end;
 
+Procedure TElementEditor.ShowElementCaption;
+
+
+Var
+  ST : String;
+
+begin
+  If Assigned(Felement) then
+  begin
+  ST:=Format(SDataForElement,[FElement['name']]);
+  If (FElementLink<>'') then
+    ST:=ST+SLinksTo+FElementLink;
+  end
+else
+  ST := SNoElement;
+FLabel.Caption:=ST;
+end;
+
 Procedure TElementEditor.Refresh;
 
   function RemoveLFAfterTags(S : String) : String;
@@ -559,10 +607,7 @@ Var
 
 begin
   GetNodes;
-  If Assigned(Felement) then
-    FLabel.Caption := Format(SDataForElement,[FElement['name']])
-  else
-    FLabel.Caption := SNoElement;
+  ShowElementCaption;
   S := TStringStream.Create('');
   LockOnChange;
   Try
@@ -700,6 +745,8 @@ begin
         SS.Seek(0,soFromBeginning);
         ReadXMLFragment(FElement,SS);
         FModified:=False;
+        If (FElementLink<>'') then
+          FElement['link']:=FElementLink;
         // We must get the nodes back, because they were deleted !
         GetNodes;
         Result:=True;
@@ -814,6 +861,7 @@ begin
   FExampleNodes.Clear;
   If Assigned(FElement) then
     begin
+    FElementLink:=FElement['link'];
     Node:=FElement.FirstChild;
     While Assigned(Node) do
       begin
@@ -999,6 +1047,32 @@ begin
       Items.Delete(ItemIndex);
       Modified:=True;
       end;
+end;
+
+procedure TElementEditor.DoEditElementLink(Sender: TObject);
+begin
+  With TLinkForm.Create(Self) do
+    try
+      Caption:=SHintEditElementLink;
+      If Assigned(OnGetElementList) then
+        begin
+        Links.BeginUpdate;
+        Try
+          OnGetElementList(Links);
+        Finally
+          Links.EndUpdate;
+        end;
+        end;
+      Link:=FElementLink;
+      EnableLinkText:=False;
+      If ShowModal=mrOK then
+        begin
+        FElementLink:=Link;
+        ShowElementCaption;
+        end;
+    Finally
+      Free;
+    end;
 end;
 
 Function TElementEditor.GetCurrentSelection : String;

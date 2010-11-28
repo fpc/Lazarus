@@ -40,9 +40,11 @@ type
     LLinkTarget: TLabel;
     LELinkText: TLabel;
   private
+    function GetELT: Boolean;
     function GetL: TStrings;
     function GetLL: String;
     function GetLT: String;
+    procedure SetELT(const AValue: Boolean);
     procedure SetL(const AValue: TStrings);
     procedure SetLL(const AValue: String);
     procedure SetLT(const AValue: String);
@@ -52,6 +54,7 @@ type
     Property Links : TStrings Read GetL Write SetL;
     property Link : String Read GetLL Write SetLL;
     Property LinkText :  String Read GetLT Write SetLT;
+    Property EnableLinkText : Boolean Read GetELT Write SetELT;
   end; 
 
 var
@@ -62,6 +65,11 @@ implementation
 {$R *.lfm}
 
 { TLinkForm }
+
+function TLinkForm.GetELT: Boolean;
+begin
+  Result:=ELinkText.Enabled;
+end;
 
 function TLinkForm.GetL: TStrings;
 begin
@@ -76,6 +84,11 @@ end;
 function TLinkForm.GetLT: String;
 begin
   Result:=ELinkText.Text;
+end;
+
+procedure TLinkForm.SetELT(const AValue: Boolean);
+begin
+  ELinkText.Enabled:=AValue
 end;
 
 procedure TLinkForm.SetL(const AValue: TStrings);

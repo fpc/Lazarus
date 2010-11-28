@@ -1065,7 +1065,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="MainForm">
+<element name="MainForm" link="otherform">
 <short></short>
 <descr>
 </descr>
