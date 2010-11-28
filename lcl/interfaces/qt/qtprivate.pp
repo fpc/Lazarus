@@ -93,6 +93,8 @@ type
     procedure InternalUpdate;
     procedure ExternalUpdate(var AStr: WideString;
       AClear, ABlockSignals: Boolean);
+    function GetInternalText: string;
+    procedure SetInternalText(const Value: string);
   protected
     function GetTextStr: string; override;
     function GetCount: integer; override;
@@ -106,7 +108,6 @@ type
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
   public
     property Owner: TWinControl read FOwner;
     property TextChanged: Boolean read FTextChanged write FTextChanged;
@@ -135,7 +136,7 @@ begin
     W := TextEdit.getText;
   end;
   if W <> '' then
-    FStringList.Text := UTF16ToUTF8(W) + LineEnding
+    SetInternalText(UTF16ToUTF8(W))
   else
     FStringList.Text := '';
   FTextChanged := False;
@@ -183,21 +184,10 @@ begin
     TextEdit.EndUpdate;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.GetTextStr
-  Params:  None
-  Returns: a string
-
-  Return the whole StringList content as a single string
- ------------------------------------------------------------------------------}
-function TQtMemoStrings.GetTextStr: string;
+function TQtMemoStrings.GetInternalText: string;
 var
   TextLen: Integer;
 begin
-  {$ifdef VerboseQtMemoStrings}
-  WriteLn('TQtMemoStrings.GetTextStr');
-  {$endif}
-  if FTextChanged then InternalUpdate;
   Result := FStringList.Text;
 
   // remove trailing line break
@@ -207,6 +197,27 @@ begin
   if (TextLen > 0) and (Result[TextLen] = #13) then
     Dec(TextLen);
   SetLength(Result, TextLen);
+end;
+
+procedure TQtMemoStrings.SetInternalText(const Value: string);
+begin
+  FStringList.Text := Value + LineEnding;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtMemoStrings.GetTextStr
+  Params:  None
+  Returns: a string
+
+  Return the whole StringList content as a single string
+ ------------------------------------------------------------------------------}
+function TQtMemoStrings.GetTextStr: string;
+begin
+  {$ifdef VerboseQtMemoStrings}
+  WriteLn('TQtMemoStrings.GetTextStr');
+  {$endif}
+  if FTextChanged then InternalUpdate;
+  Result := GetInternalText;
 end;
 
 {------------------------------------------------------------------------------
@@ -266,10 +277,10 @@ begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.SetTextStr Value=',Value);
   {$endif}
-  inherited SetTextStr(Value);
-  FStringList.Text := Value;
-  W := FStringList.Text;
+  SetInternalText(Value);
+  W := GetInternalText;
   ExternalUpdate(W, True, False);
+  FTextChanged := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -326,8 +337,8 @@ begin
     writeln('TQtMemoStrings.Assign - handle ? ', FOwner.HandleAllocated);
     {$endif}
     FStringList.Clear;
-    FStringList.Text := TStrings(Source).Text;
-    W := FStringList.Text;
+    SetInternalText(TStrings(Source).Text);
+    W := GetInternalText;
     ExternalUpdate(W, True, False);
     FTextChanged := False;
     exit;
@@ -426,28 +437,6 @@ begin
       TQtTextEdit(FOwner.Handle).EndUpdate;
     end;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.SetText
-  Params:  A null terminated string
-  Returns: Nothing
-
-  Fills the memo with the string
- ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.SetText(TheText: PChar);
-Var
-  S: String;
-  W: WideString;
-begin
-  {$ifdef VerboseQtMemoStrings}
-  writeln('TQtMemoStrings.SetText');
-  {$endif}
-  S := StrPas(TheText);
-  FStringList.Text := S;
-  W := S;
-  ExternalUpdate(W, True, False);
-  FTextChanged := False;
 end;
 
 { TQtComboStrings }
