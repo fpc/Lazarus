@@ -135,6 +135,9 @@ implementation
 uses
   Math, SysUtils, TAGraph;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
+{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
+
 { TBasicFuncSeries }
 
 procedure TBasicFuncSeries.AfterAdd;
@@ -285,7 +288,9 @@ var
   v1, v2: Double;
 begin
   if ColorSource = nil then exit(clTAColor);
+  {$R-}{$Q-}
   ColorSource.FindBounds(AValue, Infinity, lb, ub);
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
   if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
     with ColorSource[lb - 1]^ do begin
       v1 := X;
