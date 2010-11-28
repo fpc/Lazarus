@@ -463,6 +463,11 @@ begin
   if (CurPos.Flag=cafRoundBracketOpen) then
     ReadParamList(false,true,Attr);
   ExtractProcHeadPos:=phepParamList;
+  if IsOperator and (CurPos.Flag=cafWord) then begin
+    // read operator result name
+    ExtractNextAtom([phpWithParameterNames,phpWithResultType]*Attr
+                   =[phpWithParameterNames,phpWithResultType],Attr);
+  end;
   // read result type
   if (CurPos.Flag=cafColon) then begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);

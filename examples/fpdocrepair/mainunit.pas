@@ -28,7 +28,9 @@ type
   end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
+
+operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
 
 implementation
 
