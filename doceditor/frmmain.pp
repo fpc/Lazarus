@@ -757,7 +757,7 @@ begin
   With S do
     begin
     cmd:=cmdMakeSkel+' ';
-    cmd:=cmd+format('--input=''%s %s''',[Inputfile,Additionaloptions]);
+    cmd:=cmd+format('"--input=%s %s"',[Inputfile,Additionaloptions]);
     cmd:=cmd+' --output='+OutputFile;
     cmd:=cmd+' --package='+PackageName;
     If DisableErrors then
@@ -879,15 +879,15 @@ begin
     With TLinkForm.Create(Self) do
       Try
         Caption:=SInsertLink;
-        ELinkText.Text:=CurrentEditor.CurrentSelection;
-        CBTarget.Items.BeginUpdate;
+        Link:=CurrentEditor.CurrentSelection;
+        Links.BeginUpdate;
         Try
-          CurrentEditor.GetElementList(CBTarget.Items);
+          CurrentEditor.GetElementList(Links);
         Finally
-          CBTarget.Items.EndUpdate;
+          Links.EndUpdate;
         end;
         If ShowModal=mrOK Then
-          CurrentEditor.InsertLink(CBTarget.Text, ELinkText.Text);
+          CurrentEditor.InsertLink(Link,LinkText);
       Finally
         free;
       end;

@@ -15,9 +15,9 @@ object LinkForm: TLinkForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 19
     Top = 6
-    Width = 85
+    Width = 73
     BorderSpacing.Around = 6
     Caption = '&Link target'
     FocusControl = CBTarget
@@ -29,11 +29,11 @@ object LinkForm: TLinkForm
     AnchorSideTop.Control = CBTarget
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 65
-    Width = 72
+    Height = 19
+    Top = 63
+    Width = 58
     BorderSpacing.Around = 6
-    Caption = 'LELinkText'
+    Caption = 'Link text'
     Layout = tlCenter
     ParentColor = False
   end
@@ -44,8 +44,8 @@ object LinkForm: TLinkForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 29
-    Top = 30
+    Height = 26
+    Top = 31
     Width = 422
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
@@ -62,8 +62,8 @@ object LinkForm: TLinkForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 29
-    Top = 89
+    Height = 26
+    Top = 88
     Width = 422
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -71,9 +71,18 @@ object LinkForm: TLinkForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 137
+    Height = 36
+    Top = 141
     Width = 428
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

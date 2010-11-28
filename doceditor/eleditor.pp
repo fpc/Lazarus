@@ -120,7 +120,7 @@ Type
     Procedure DoAddSeeAlso(Sender : TObject);
     Procedure DoEditSeeAlso(Sender : TObject);
     Procedure DoDeleteSeeAlso(Sender : TObject);
-    Function EditLink(Var Value : String) : Boolean;
+    Function EditLink(Var Value,ALinkText : String) : Boolean;
   Public
     Constructor Create (AOwner : TComponent); override;
     Destructor Destroy; override;
@@ -142,6 +142,33 @@ Type
 implementation
 
 uses frmexample, frmLink, StrUtils, LCLProc, FrmMain;
+
+Function JoinLinkText(L,T : String): String;
+begin
+  Result:=L;
+  If (T<>'') then
+    Result:=Result+'|'+T;
+end;
+
+Procedure SplitLinkText(LT : String; Var L,T : String);
+
+Var
+  P : Integer;
+
+begin
+  P:=Pos('|',LT);
+  If (P=0) then
+    begin
+    L:=LT;
+    T:='';
+    end
+  else
+    begin
+    T:=LT;
+    L:=Copy(LT,1,P-1);
+    Delete(T,1,P);
+    end;
+end;
 
 {$R *.lfm}
 
@@ -361,6 +388,7 @@ begin
     Align:=alTop;
     Height:=50;
     OnEnter:=@OnEnterControl;
+    OnDblClick:=@DoEditSeeAlso;
     end;
   FSPlit3:=TSplitter.Create(Self);
   With FSplit3 do
@@ -548,7 +576,7 @@ begin
       While N<>Nil do
         begin
         If IsLinkNode(N) then
-          FSeeAlso.Items.Add(TDomElement(N)['id']);
+          FSeeAlso.Items.Add(JoinLinkText(TDomElement(N)['id'],NodeToString(TDomElement(N))));
         N:=N.NextSibling;
         end;
       end;
@@ -596,6 +624,7 @@ begin
     end;
 end;
 
+
 Function  TElementEditor.CurrentXML : String;
 
   Function GetNodeString(NodeName,Value : String) : String;
@@ -609,8 +638,8 @@ Function  TElementEditor.CurrentXML : String;
   end;
 
 Var
-  I : Integer;
-  S : String;
+  I,P : Integer;
+  S,L,LT : String;
 
 begin
   Result:='';
@@ -621,8 +650,17 @@ begin
   Result:=Result+GetNodeString('errors',trim(FErrorsMemo.Text));
   S:='';
   for I:=0 to FSeeAlso.Items.Count-1 do
-    if Trim(FSeeAlso.Items[i])<>'' then
-      S:=S+'<link id="'+Trim(FSeeAlso.Items[i])+'"/>';
+    begin
+    LT:=Trim(FSeeAlso.Items[i]);
+    if (LT<>'') then
+      begin
+      SplitLinkText(LT,L,LT);
+      If (LT<>'') then
+        S:=S+'<link id="'+L+'">'+LT+'</link>'
+      else
+        S:=S+'<link id="'+L+'"/>';
+      end;
+    end;
   Result:=Result+GetNodeString('seealso',S);
   S:='';
   for I:=0 to FExamples.Items.Count-1 do
@@ -873,24 +911,29 @@ begin
     end;
 end;
 
-Function TElementEditor.EditLink(Var Value : String) : Boolean;
+Function TElementEditor.EditLink(Var Value,ALinkText : String) : Boolean;
 
 begin
   With TLinkForm.Create(Self) do
     try
+      Caption:=SInsertLink;
       If Assigned(OnGetElementList) then
         begin
-        CBTarget.Items.BeginUpdate;
+        Links.BeginUpdate;
         Try
-          OnGetElementList(CBTarget.Items);
+          OnGetElementList(Links);
         Finally
-          CBTarget.Items.EndUpdate;
+          Links.EndUpdate;
         end;
         end;
-      CBTarget.Text:=Value;
+      Link:=Value;
+      LinkText:=ALinkText;
       Result:=ShowModal=mrOK;
       If Result then
+        begin
         Value:=CBTarget.Text;
+        ALinkText:=LinkText;
+        end;
     Finally
       Free;
     end;
@@ -899,13 +942,15 @@ end;
 procedure TElementEditor.DoAddSeeAlso(Sender: TObject);
 
 Var
-  S : String;
+  S,T : String;
 
 begin
   if Sender=nil then ;
   S:='';
-  If EditLink(S) then
+  T:='';
+  If EditLink(S,T) then
     begin
+    S:=JoinLinkText(S,T);
       if FSeeAlso.Items.IndexOf(S)<0 then
         begin
           FSeeAlso.Items.Add(S);
@@ -917,18 +962,25 @@ end;
 procedure TElementEditor.DoEditSeeAlso(Sender: TObject);
 
 Var
-  S : String;
+  S,T : String;
+  P : Integer;
 
 begin
   if Sender=nil then ;
   With FSeeAlso do
     begin
     If (ItemIndex>=0) then
-      S:=Items[ItemIndex]
-    else
-      S:='';
-    If EditLink(S) then
       begin
+      SplitLinkText(Items[ItemIndex],S,T);
+      end
+    else
+      begin
+      S:='';
+      T:='';
+      end;
+    If EditLink(S,T) then
+      begin
+      S:=JoinLinkText(S,T);
       If (ItemIndex>=0) then
         Items[ItemIndex]:=S
       else
