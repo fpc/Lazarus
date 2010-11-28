@@ -159,6 +159,10 @@ msgstr ""
 msgid "&Hide protected methods"
 msgstr ""
 
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr ""
+
 #: lazdemsg.shintfileclose
 msgid "Close current file"
 msgstr ""
@@ -291,6 +295,10 @@ msgstr ""
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
+msgstr ""
+
+#: lazdemsg.slinksto
+msgid " links to "
 msgstr ""
 
 #: lazdemsg.sload

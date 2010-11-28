@@ -169,6 +169,10 @@ msgstr " temoje "
 msgid "&Hide protected methods"
 msgstr "&Slėpti apsaugotuosius metodus"
 
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr ""
+
 #: lazdemsg.shintfileclose
 msgid "Close current file"
 msgstr "Užverti dabartinį failą"
@@ -302,6 +306,10 @@ msgstr "Įterpti lentelę"
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
 msgstr "Lazarus dokumentacijos rengyklė"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"

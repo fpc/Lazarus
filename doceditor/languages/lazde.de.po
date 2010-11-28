@@ -167,6 +167,10 @@ msgstr " im Eintrag"
 msgid "&Hide protected methods"
 msgstr "Protected-Met&hoden verbergen"
 
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr ""
+
 #: lazdemsg.shintfileclose
 msgid "Close current file"
 msgstr "Aktuelle Datei schließen"
@@ -300,6 +304,10 @@ msgstr "Tabelle einfügen"
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
 msgstr "Lazarus-Dokumentations-Editor"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"

@@ -167,6 +167,10 @@ msgstr "no tópico"
 msgid "&Hide protected methods"
 msgstr "&Ocultar métodos protegidos"
 
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr ""
+
 #: lazdemsg.shintfileclose
 msgid "Close current file"
 msgstr "Fechar arquivo atual"
@@ -300,6 +304,10 @@ msgstr "Inserir tabela"
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
 msgstr "Editor Documentação Lazarus"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"

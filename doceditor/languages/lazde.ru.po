@@ -182,6 +182,10 @@ msgctxt "lazdemsg.shideprotectedmethods"
 msgid "&Hide protected methods"
 msgstr "Скрывать &protected-методы"
 
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Редактировать ссылку на элемент"
+
 #: lazdemsg.shintfileclose
 msgid "Close current file"
 msgstr "Закрыть текущий файл"
@@ -317,6 +321,10 @@ msgstr "Вставить таблицу"
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
 msgstr "Редактор документации Lazarus"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " ссылается на "
 
 #: lazdemsg.sload
 msgctxt "lazdemsg.sload"
