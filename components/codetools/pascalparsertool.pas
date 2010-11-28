@@ -1387,8 +1387,11 @@ begin
           if not Extract then
             ReadNextAtom
           else
-            ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],
-                            Attr);
+            // extract the colon if parameter names and types are requested
+            ExtractNextAtom(
+              [phpWithoutParamList,phpWithoutParamTypes,phpWithParameterNames]*Attr
+              =[phpWithParameterNames],
+              Attr);
           if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
           if CurPos.Flag=cafEqual then begin
             // read default value
@@ -1557,6 +1560,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    procedure Intf.Method = ImplementingMethodName;
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
+   operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
    
    Delphi mode:
    Function TPOSControler.Logout; // missing function type

@@ -120,6 +120,7 @@ type
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;
     function NodeIsOperator(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsResultIdentifier(Node: TCodeTreeNode): boolean;
     function NodeIsResultType(Node: TCodeTreeNode): boolean;
 
     // classes
@@ -1757,6 +1758,15 @@ begin
     ProcNode:=ProcNode.Parent;
   if ProcNode.Desc<>ctnProcedure then exit;
   Result:=CompareIdentifiers('operator',@Src[ProcNode.StartPos])=0;
+end;
+
+function TPascalReaderTool.NodeIsResultIdentifier(Node: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=(Node<>nil)
+    and (Node.Desc=ctnVarDefinition)
+    and (Node.Parent<>nil)
+    and (Node.Parent.Desc=ctnProcedureHead);
 end;
 
 function TPascalReaderTool.NodeIsResultType(Node: TCodeTreeNode): boolean;
