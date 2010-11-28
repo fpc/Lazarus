@@ -29,7 +29,7 @@ unit TASeries;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, Types,
   TAChartUtils, TADrawUtils, TACustomSeries, TALegend, TATypes;
 
 const
@@ -85,19 +85,29 @@ type
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   end;
 
+
+  TPieBasicDrawData = class
+  end;
+
   { TPieSeries }
 
   TPieSeries = class(TChartSeries)
   private
+    FDrawData: TPieBasicDrawData;
     FExploded: Boolean;
+    procedure Measure(ACanvas: TCanvas);
     procedure SetExploded(const AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
     procedure Draw(ACanvas: TCanvas); override;
+    function FindContainingSlice(const APoint: TPoint): Integer;
   published
     // Offset slices away from center based on X value.
     property Exploded: Boolean read FExploded write SetExploded default false;
@@ -296,8 +306,27 @@ type
 implementation
 
 uses
-  GraphMath, LResources, Math, PropEdits, SysUtils, Types,
-  TAGraph;
+  GraphMath, LResources, Math, PropEdits, SysUtils,
+  TAGraph, TASources;
+
+type
+  TLabelParams = record
+    FSize: TSize;
+    FText: String;
+  end;
+
+  TPieSlice = record
+    FAngle: Double;
+    FOffset: TPoint;
+  end;
+
+  TPieDrawData = class(TPieBasicDrawData)
+  private
+    FCenter: TPoint;
+    FLabels: array of TLabelParams;
+    FRadius: Integer;
+    FSlices: array of TPieSlice;
+  end;
 
 { TLineSeries }
 
@@ -859,41 +888,21 @@ begin
   ParentChart.BottomAxis.Visible := false;
 end;
 
+constructor TPieSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDrawData := TPieDrawData.Create;
+end;
+
+destructor TPieSeries.Destroy;
+begin
+  FreeAndNil(FDrawData);
+  inherited Destroy;
+end;
+
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
-  labelWidths, labelHeights: TIntegerDynArray;
-  labelTexts: TStringDynArray;
-
-  procedure Measure(out ACenter: TPoint; out ARadius: Integer);
-  const
-    MARGIN = 8;
-  var
-    i: Integer;
-  begin
-    SetLength(labelWidths, Count);
-    SetLength(labelHeights, Count);
-    SetLength(labelTexts, Count);
-    for i := 0 to Count - 1 do begin
-      labelTexts[i] := FormattedMark(i);
-      with Marks.MeasureLabel(ACanvas, labelTexts[i]) do begin
-        labelWidths[i] := cx;
-        labelHeights[i] := cy;
-      end;
-    end;
-
-    with ParentChart do begin
-      ACenter := CenterPoint(ClipRect);
-      // Reserve space for labels.
-      ARadius := Min(
-        ClipRect.Right - ACenter.x - MaxIntValue(labelWidths),
-        ClipRect.Bottom - ACenter.y - MaxIntValue(labelHeights));
-    end;
-    if Marks.IsMarkLabelsVisible then
-      ARadius -= Marks.Distance;
-    ARadius := Max(ARadius - MARGIN, 0);
-    if Exploded then
-      ARadius := Trunc(ARadius / (Max(Source.Extent.b.X, 0) + 1));
-  end;
+  d: TPieDrawData;
 
   function LabelExtraDist(AAngle: Double; AIndex: Integer): Double;
   const
@@ -904,54 +913,75 @@ var
   begin
     z := ZeroDoublePoint;
     e := RotatePoint(DoublePoint(ALMOST_INF, 0), AAngle + Pi);
-    r.a.X := -labelWidths[AIndex] / 2;
+    r.a.X := -d.FLabels[AIndex].FSize.cx / 2;
     r.b.X := -r.a.X;
-    r.a.Y := -labelHeights[AIndex] / 2;
+    r.a.Y := -d.FLabels[AIndex].FSize.cy / 2;
     r.b.Y := -r.a.Y;
     LineIntersectsRect(z, e, r);
     Result := Norm([e.X, e.Y]);
   end;
 
 var
-  i, radius: Integer;
+  i: Integer;
   prevAngle: Double = 0;
-  d, angleStep, sliceCenterAngle: Double;
-  c, center: TPoint;
+  ed, sliceCenterAngle: Double;
+  c: TPoint;
   prevLabelPoly: TPointArray = nil;
-const
-  RAD_TO_DEG16 = 360 * 16;
 begin
   if IsEmpty then exit;
 
-  Measure(center, radius);
+  Measure(ACanvas);
+  d := FDrawData as TPieDrawData;
+
   for i := 0 to Count - 1 do begin
     ACanvas.Pen.Color := clBlack;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Brush.Style := bsSolid;
     ACanvas.Brush.Color := SliceColor(i);
 
-    with Source[i]^ do begin
-      angleStep := Y / Source.ValuesTotal * RAD_TO_DEG16;
-      sliceCenterAngle := prevAngle + angleStep / 2;
-      if Exploded and (X > 0) then
-        c := LineEndPoint(center, sliceCenterAngle, radius * X)
-      else
-        c := center;
+    with d.FSlices[i] do begin
+      sliceCenterAngle := (prevAngle + FAngle / 2);
+      c := d.FCenter + FOffset;
+      ACanvas.RadialPie(
+        c.x - d.FRadius, c.y - d.FRadius, c.x + d.FRadius, c.y + d.FRadius,
+        RadToDeg16(prevAngle), RadToDeg16(FAngle));
+      prevAngle += FAngle;
     end;
-    ACanvas.RadialPie(
-      c.x - radius, c.y - radius, c.x + radius, c.y + radius,
-      round(prevAngle), round(angleStep));
-
-    prevAngle += angleStep;
 
     if not Marks.IsMarkLabelsVisible then continue;
-    d := LabelExtraDist(DegToRad(sliceCenterAngle / 16), i);
+    ed := LabelExtraDist(sliceCenterAngle, i);
     Marks.DrawLabel(
       ACanvas,
-      LineEndPoint(c, sliceCenterAngle, radius),
-      LineEndPoint(c, sliceCenterAngle, radius + Marks.Distance + d),
-      labelTexts[i], prevLabelPoly);
+      LineEndPoint(c, RadToDeg16(sliceCenterAngle), d.FRadius),
+      LineEndPoint(c, RadToDeg16(sliceCenterAngle), d.FRadius + Marks.Distance + ed),
+      d.FLabels[i].FText, prevLabelPoly);
   end;
+end;
+
+function TPieSeries.FindContainingSlice(const APoint: TPoint): Integer;
+var
+  prevAngle: Double = 0;
+  c: TPoint;
+  d: TPieDrawData;
+  pointAngle: Double;
+begin
+  if IsEmpty then exit(-1);
+
+  d := FDrawData as TPieDrawData;
+  for Result := 0 to Count - 1 do
+    with d.FSlices[Result] do begin
+      c := APoint - d.FCenter - FOffset;
+      pointAngle := ArcTan2(-c.Y, c.X);
+      if pointAngle < 0 then
+        pointAngle += 2 * Pi;
+      if
+        InRange(pointAngle - prevAngle, 0, FAngle) and
+        (Sqr(c.X) + Sqr(c.Y) <= Sqr(d.FRadius))
+      then
+        exit;
+      prevAngle += FAngle;
+    end;
+  Result := -1;
 end;
 
 procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -972,6 +1002,52 @@ begin
         ps.Color := SliceColor(i);
         AItems.Add(ps);
       end;
+  end;
+end;
+
+procedure TPieSeries.Measure(ACanvas: TCanvas);
+const
+  MARGIN = 8;
+var
+  i: Integer;
+  d: TPieDrawData;
+  m: TPoint = (X: 0; Y: 0);
+  di: PChartDataItem;
+  prevAngle: Double = 0;
+begin
+  d := FDrawData as TPieDrawData;
+  SetLength(d.FLabels, Count);
+  SetLength(d.FSlices, Count);
+  for i := 0 to Count - 1 do
+    with d.FLabels[i] do begin
+      FText := FormattedMark(i);
+      FSize := Marks.MeasureLabel(ACanvas, FText);
+      m.X := Max(m.X, FSize.cx);
+      m.Y := Max(m.Y, FSize.cy);
+    end;
+
+  d.FCenter := CenterPoint(ParentChart.ClipRect);
+  // Reserve space for labels.
+  m := ParentChart.ClipRect.BottomRight - d.FCenter - m;
+  d.FRadius := Min(m.X, m.Y);
+  if Marks.IsMarkLabelsVisible then
+    d.FRadius -= Marks.Distance;
+  d.FRadius := Max(d.FRadius - MARGIN, 0);
+  if Exploded then
+    d.FRadius := Trunc(d.FRadius / (Max(Source.Extent.b.X, 0) + 1));
+
+  for i := 0 to Count - 1 do begin
+    di := Source[i];
+    with d.FSlices[i] do begin
+      FAngle := CycleToRad(di^.Y / Source.ValuesTotal);
+      FOffset := Point(0, 0);
+      if Exploded and (di^.X > 0) then begin
+        FOffset.X := Round(d.FRadius * di^.X);
+        FOffset := RotatePoint(FOffset, prevAngle + FAngle / 2);
+        FOffset.Y := - FOffset.Y;
+      end;
+      prevAngle += FAngle;
+    end;
   end;
 end;
 

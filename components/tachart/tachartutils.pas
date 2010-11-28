@@ -242,6 +242,8 @@ function PointDistY(const A, B: TPoint): Integer; inline;
 function ProjToRect(
   const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
 
+function RadToDeg16(ARad: Double): Integer; inline;
+
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
@@ -673,6 +675,11 @@ function ProjToRect(
 begin
   Result.X := EnsureRange(APt.X, ARect.a.X, ARect.b.X);
   Result.Y := EnsureRange(APt.Y, ARect.a.Y, ARect.b.Y);
+end;
+
+function RadToDeg16(ARad: Double): Integer;
+begin
+  Result := Round(RadToDeg(ARad) * 16);
 end;
 
 function RectIntersectsRect(
