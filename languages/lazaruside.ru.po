@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-27 19:56+0300\n"
+"PO-Revision-Date: 2010-11-28 16:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7389,6 +7389,18 @@ msgstr "Версия FPC (например, 2.2.2)"
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "Редактор FPDoc"
+
+#: lazarusidestrconsts.lisfpdocerrorwriting
+msgid "Error writing \"%s\"%s%s"
+msgstr "При записи \"%s\" произошла ошибка%s%s"
+
+#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "Синтаксическая ошибка FPDoc"
+
+#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "В элементе FPDoc \"%s\" имеется синтаксическая ошибка:%s%s"
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"

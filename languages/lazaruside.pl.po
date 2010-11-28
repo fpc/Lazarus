@@ -7388,6 +7388,18 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr ""
 
+#: lazarusidestrconsts.lisfpdocerrorwriting
+msgid "Error writing \"%s\"%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr ""
