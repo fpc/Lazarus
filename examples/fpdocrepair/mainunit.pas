@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  contnrs, XMLRead;
+  contnrs, BasicCodeTools, XMLRead;
 
 type
 
@@ -15,17 +15,23 @@ type
   TForm1 = class(TForm)
     procedure FormCreate(Sender: TObject);
   private
+    FVerbose: boolean;
   public
     procedure TestComment;
     procedure TestInvalidCharacters;
+    procedure TestOpenTag;
+    procedure TestAttribute;
+    procedure TestCloseTag;
+    procedure TestBugReports;
     function Test(Title, Fragment, FixedFragment: string): boolean;
+    property Verbose: boolean read FVerbose write FVerbose;
   end;
 
 var
   Form1: TForm1; 
 
 procedure FixFPDocFragment(var Fragment: string; Fix: boolean;
-  out ErrorList: TObjectList);
+  out ErrorList: TObjectList; Verbose: boolean = false);
 
 implementation
 
@@ -39,7 +45,7 @@ type
   end;
 
 procedure FixFPDocFragment(var Fragment: string; Fix: boolean;
-  out ErrorList: TObjectList);
+  out ErrorList: TObjectList; Verbose: boolean);
 { - Fix all tags to lowercase to reduce svn commits
   - auto close comments
   - remove #0 from comments
@@ -55,10 +61,9 @@ type
     );
   TStackItem = record
     Typ: TStackItemTyp;
-    StartPos: integer;
-    NameStartPos: integer;
-    NameEndPos: integer;
-    EndPos: integer;
+    StartPos: integer; // position of <
+    EndPos: integer; // position behind >
+    CloseStartPos: integer; // position of <
   end;
   PStackItem = ^TStackItem;
 var
@@ -77,37 +82,23 @@ var
   var
     Line: Integer;
     Col: Integer;
-    i: Integer;
   begin
-    Line:=1;
-    Col:=1;
-    if pt>length(Fragment) then pt:=length(Fragment)+1;
-    i:=1;
-    while i<pt do begin
-      case Fragment[i] of
-      #10,#13:
-        begin
-          inc(Line);
-          inc(i);
-          if (i<=length(Fragment)) and (Fragment[i] in [#10,#13])
-            and (Fragment[i-1]<>Fragment[i])
-          then
-            inc(i);
-          Col:=1;
-        end;
-      else
-        inc(Col);
-      end;
-      inc(i);
-    end;
+    SrcPosToLineCol(Fragment,pt,Line,Col);
     Result:=IntToStr(Line)+','+IntToStr(Col);
   end;
 
   procedure Error(ErrorPos: PChar; ErrorMsg: string);
   var
     NewError: TFPDocFragmentError;
+    LineStart,LineEnd: integer;
   begin
-    debugln(['Error ',ErrorMsg]);
+    if Verbose then begin
+      debugln(['Error at ',LineCol(Rel(ErrorPos)),': ',ErrorMsg]);
+      GetLineStartEndAtPosition(Fragment,Rel(ErrorPos),LineStart,LineEnd);
+      debugln(['  Line: ',copy(Fragment,LineStart,Rel(ErrorPos)-LineStart),'|',
+                          copy(Fragment,Rel(ErrorPos),LineEnd-Rel(ErrorPos)+1)]);
+    end;
+    if not Fix then exit;
     if ErrorList=nil then
       ErrorList:=TObjectList.Create(true);
     NewError:=TFPDocFragmentError.Create;
@@ -135,19 +126,19 @@ var
         Item:=@Stack[i];
         if Item^.StartPos>StartPos then inc(Item^.StartPos,Diff);
         if Item^.EndPos>StartPos then inc(Item^.EndPos,Diff);
-        if Item^.NameStartPos>StartPos then inc(Item^.NameStartPos,Diff);
-        if Item^.NameEndPos>StartPos then inc(Item^.NameEndPos,Diff);
+        if Item^.CloseStartPos>StartPos then inc(Item^.CloseStartPos,Diff);
       end;
     end;
     p:=PChar(Fragment)+OldP-1;
-    debugln(['Replace ',dbgstr(copy(Fragment,1,Rel(p)-1)),'|',dbgstr(copy(Fragment,Rel(p),length(Fragment)))]);
+    //debugln(['Replace ',dbgstr(copy(Fragment,1,Rel(p)-1)),'|',dbgstr(copy(Fragment,Rel(p),length(Fragment)))]);
   end;
 
   procedure HandleSpecialChar;
   var
-    c: Integer;
+    c: char;
   begin
-    c:=ord(p^);
+    c:=p^;
+    Error(p,'invalid character '+dbgstr(c));
     if Fix then begin
       case p^ of
       #0..#31,#127:
@@ -160,12 +151,11 @@ var
       '"': Replace(Rel(p),1,'&quot;');
       else
         // convert
-        Replace(Rel(p),1,'&'+IntToStr(c)+';');
+        Replace(Rel(p),1,'&'+IntToStr(ord(c))+';');
       end;
     end
     else begin
       // skip
-      Error(p,'invalid character #'+IntToStr(c));
       inc(p);
     end;
   end;
@@ -187,6 +177,10 @@ var
   begin
     if Top<0 then raise Exception.Create('bug');
     dec(Top);
+    if Top>=0 then
+      TopItem:=@Stack[Top]
+    else
+      TopItem:=nil;
   end;
 
   procedure ParseComment;
@@ -201,20 +195,19 @@ var
         if (p^=#0) and (p-PChar(Fragment)=length(Fragment)) then
         begin
           // reached end of fragment => close comment
+          Error(p,'comment end not found, start at '+LineCol(TopItem^.StartPos));
           if Fix then begin
             Replace(Rel(p),0,'-->');
             inc(p,3);
-          end else
-            Error(p,'comment end not found, start at '+LineCol(TopItem^.StartPos));
+          end;
           break;
         end else begin
           // invalid #0 character in comment => delete
+          Error(p,'invalid character');
           if Fix then
             Replace(Rel(p),1,'')
-          else begin
-            Error(p,'invalid character');
+          else
             inc(p);
-          end;
         end;
       end else if (p^='-') and (p[1]='-') and (p[2]='>') then
       begin
@@ -268,13 +261,12 @@ var
         end;
         if p^=';' then begin
           if NeedLowercase<>nil then begin
+            Error(NeedLowercase,'character name must be lower case');
             if Fix then begin
               len:=(p-AmpPos)-1;
               Replace(Rel(AmpPos)+1,len,lowercase(copy(Fragment,Rel(AmpPos)+1,len)));
-            end else begin
-              Error(NeedLowercase,'special character name is not lower case');
+            end else
               inc(p);
-            end;
           end else begin
             // ok
             inc(p);
@@ -300,73 +292,170 @@ var
       'a'..'z': inc(p);
       'A'..'Z':
         begin
-          inc(p);
           if NeedLowercase=nil then
             NeedLowercase:=p;
+          inc(p);
         end;
       else break;
       end;
     until false;
     if NeedLowercase<>nil then begin
-      if Fix then begin
+      Error(NeedLowercase,'names must be lower case');
+      if Fix then
         Replace(Rel(Start),p-Start,lowercase(copy(Fragment,Rel(Start),p-Start)));
-      end else begin
-        // all current tags must be lower case
-        Error(NeedLowercase,'tags must be lower case');
-      end;
     end;
   end;
 
   procedure ParseAttribute;
+  var
+    Quot: Char;
   begin
-    // attribute name
+    // read attribute name
     LowerCaseName;
     while p^ in [' ',#9,#10,#13] do inc(p); // skip space
     if p^<>'=' then begin
       // missing value
-      if Fix then begin
+      Error(p,'expected =');
+      if Fix then
         Replace(Rel(p),0,'=');
-      end else begin
-        Error(p,'expected =');
-      end;
     end;
     if p^='=' then begin
+      // read equal
       inc(p);
       while p^ in [' ',#9,#10,#13] do inc(p); // skip space
-      if p^<>'"' then begin
-        // missing quotes
-        if Fix then begin
+      if not (p^ in ['"','''']) then begin
+        // missing quote
+        Error(p,'expected "');
+        if Fix then
           Replace(Rel(p),0,'"');
-        end else begin
-          Error(p,'expected "');
-        end;
       end;
     end;
-    if p^='"' then begin
+    if p^ in ['"',''''] then begin
+      Quot:=p^;
       // read value
       inc(p);
       repeat
         case p^ of
         '>',#0..#8,#11,#12,#14..#31,#127:
-          // the > is not allowed in the quotes, probably the ending quot is missing
-          if Fix then begin
-            Replace(Rel(p),0,'"');
-          end else begin
-            Error(p,'expected ending "');
-            break;
+          begin
+            // the > is not allowed in the quotes, probably the ending quot is missing
+            Error(p,'expected ending '+Quot);
+            if Fix then
+              Replace(Rel(p),0,Quot)
+            else
+              break;
           end;
         '&':
           ParseAmpersand;
-        '"':
+        else
+          if p^=Quot then
           begin
             inc(p);
             break;
-          end
-        else
+          end;
           inc(p);
         end;
       until false;
     end;
+  end;
+
+  procedure ParseCloseTag;
+  var
+    i: LongInt;
+  begin
+    if (p^<>'<') or (p[1]<>'/') or (not (p[2] in ['a'..'z','A'..'Z'])) then
+    begin
+      HandleSpecialChar;
+      exit;
+    end;
+    // p stands on < of </tagname>
+    i:=Top;
+    while (i>=0)
+    and (CompareIdentifiers(p+2,@Fragment[Stack[i].StartPos+1])<>0) do
+      dec(i);
+    if i<0 then begin
+      // no corresponding open tag
+      Error(p,'tag was never opened');
+      HandleSpecialChar;
+      exit;
+    end;
+    TopItem^.CloseStartPos:=Rel(p);
+    inc(p,2); // skip </
+    // read name
+    LowerCaseName;
+    // close unclosed sub tag
+    i:=Top;
+    while CompareIdentifiers(@Fragment[Stack[i].StartPos+1],
+                             @Fragment[TopItem^.CloseStartPos+2])<>0
+    do begin
+      Error(@Fragment[TopItem^.StartPos],'tag must be closed');
+      if Fix then
+        Replace(TopItem^.EndPos-1,0,'/');
+      Pop;
+      dec(i);
+    end;
+    // skip space
+    while (p^ in [' ',#9,#10,#13]) do inc(p);
+    if p^='/' then begin
+      // uneeded close /
+      Error(p,'invalid close /');
+      if Fix then
+        Replace(Rel(p),1,'')
+      else
+        inc(p);
+    end;
+    if p^<>'>' then begin
+      Error(p,'missing >');
+      if Fix then
+        Replace(Rel(p),0,'>');
+    end;
+    if p^='>' then inc(p);
+    // close tag
+    Pop;
+  end;
+
+  procedure ParseOpenTag;
+  begin
+    Push(sitTag);
+    TopItem^.StartPos:=Rel(p);
+    inc(p);
+    LowerCaseName;
+    repeat
+      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+      case p^ of
+      'a'..'z','A'..'Z':
+        ParseAttribute;
+      '/':
+        begin
+          // end and close tag
+          inc(p);
+          if p^<>'>' then begin
+            Error(p,'expected >');
+            if Fix then begin
+              Replace(Rel(p),0,'>');
+              inc(p);
+            end;
+          end;
+          Pop;
+          exit;
+        end;
+      '>':
+        begin
+          // end tag
+          inc(p);
+          TopItem^.EndPos:=Rel(p);
+          exit;
+        end;
+      else
+        // invalid character => end tag
+        Error(p,'expected >');
+        if Fix then begin
+          Replace(Rel(p),0,'>');
+          inc(p);
+        end;
+        exit;
+      end;
+    until false;
   end;
 
   procedure ParseLowerThan;
@@ -375,49 +464,22 @@ var
     if (p[1]='!') and (p[2]='-') and (p[3]='-') then begin
       // comment
       ParseComment;
-      exit;
-    end;
-    if p[1] in ['a'..'z','A'..'Z'] then begin
-      // open tag
-      Push(sitTag);
-      TopItem^.StartPos:=Rel(p);
-      inc(p);
-      TopItem^.NameStartPos:=Rel(p);
-      LowerCaseName;
-      TopItem^.NameEndPos:=Rel(p);
-      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
-      case p^ of
-      'a'..'z','A'..'Z':
-        ParseAttribute;
-      '/':
-        begin
-          inc(p);
-          if p^<>'>' then begin
-            if Fix then begin
-              Replace(Rel(p),0,'>');
-            end else begin
-              Error(p,'expected >');
-            end;
-          end;
-          exit;
-        end;
-      '>':
-        begin
-          // ToDo:
-        end;
-      end;
+    end else if p[1] in ['a'..'z','A'..'Z'] then begin
+      // start tag
+      ParseOpenTag;
     end else if p[1]='/' then begin
-      // ToDo: close tag
-      RaiseGDBException('ToDo');
-    end;
-    // invalid character => convert or skip
-    HandleSpecialChar;
+      // close tag
+      ParseCloseTag;
+    end else
+      // invalid character => convert or skip
+      HandleSpecialChar;
   end;
 
 begin
   ErrorList:=nil;
   if Fragment='' then exit;
   Top:=-1;
+  TopItem:=nil;
   Capacity:=0;
   Stack:=nil;
   try
@@ -446,9 +508,12 @@ begin
         inc(p);
       end;
     until false;
-    if Top>=0 then begin
-      // ToDo: fix unclosed tags
-      debugln(['FixFPDocFragment ToDo: fix unclosed tags']);
+    while Top>=0 do begin
+      // fix unclosed tags
+      Error(@Fragment[TopItem^.StartPos],'tag must be closed');
+      if Fix then
+        Replace(TopItem^.EndPos-1,0,'/');
+      Pop;
     end;
   finally
     ReAllocMem(Stack,0);
@@ -459,8 +524,13 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  //TestComment;
-  //TestInvalidCharacters;
+  Verbose:=false;
+  TestComment;
+  TestInvalidCharacters;
+  TestOpenTag;
+  TestAttribute;
+  TestCloseTag;
+  TestBugReports;
 end;
 
 procedure TForm1.TestComment;
@@ -472,8 +542,42 @@ end;
 procedure TForm1.TestInvalidCharacters;
 begin
   Test('delete special characters','A'#0'B'#1#127,'AB');
-  Test('replace tag characters','LT<GT>AMP&','LT&lt;GT&gt;AMP&amp;');
+  Test('replace tag characters','LT< GT>AMP&','LT&lt; GT&gt;AMP&amp;');
   Test('lower case special characters','&LT;','&lt;');
+end;
+
+procedure TForm1.TestOpenTag;
+begin
+  Test('missing tag name','<>','&lt;&gt;');
+  Test('lower case tag name','<A></a>','<a></a>');
+  Test('invalid character in tag','<a "></a>','<a >"&gt;</a>');
+end;
+
+procedure TForm1.TestAttribute;
+begin
+  Test('lower case attribute name','<a Name=""></a>','<a name=""></a>');
+  Test('missing attribute equal','<a name ""></a>','<a name =""></a>');
+  Test('missing attribute value','<a name=></a>','<a name=""></a>');
+  Test('missing attribute quotes','<a name=1></a>','<a name="1"></a>');
+  Test('missing attribute ending quote','<a name="1></a>','<a name="1"></a>');
+  Test('invalid character in attribute value','<a name="&"></a>','<a name="&amp;"></a>');
+  Test('amp attribute value','<a name="&amp;"></a>','<a name="&amp;"></a>');
+end;
+
+procedure TForm1.TestCloseTag;
+begin
+  Test('lower case close tag name','<a></A>','<a></a>');
+  Test('close open tag','<a>','<a/>');
+  Test('close open sub tag','<p><a></p>','<p><a/></p>');
+  Test('disable invalid close tag','</p>','&lt;/p&gt;');
+end;
+
+procedure TForm1.TestBugReports;
+begin
+  Test('15120','operator <(TPoint, TPoint): Boolean',
+                 'operator &lt;(TPoint, TPoint): Boolean');
+  Test('16671','<br>',
+               '<br/>');
 end;
 
 function TForm1.Test(Title, Fragment, FixedFragment: string): boolean;
@@ -484,7 +588,7 @@ begin
   Result:=true;
   try
     s:=Fragment;
-    FixFPDocFragment(s,true,ErrorList);
+    FixFPDocFragment(s,true,ErrorList,Verbose);
     if s<>FixedFragment then begin
       Result:=false;
       debugln(['failed: ',Title]);

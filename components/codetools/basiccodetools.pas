@@ -92,9 +92,12 @@ function IsValidIdentPair(const NamePair: string;
     out First, Second: string): boolean;
 
 // line/code ends
-procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
-    out LineStart,LineEnd:integer);
-function GetLineStartPosition(const Source:string; Position:integer): integer;
+function SrcPosToLineCol(const s: string; Position: integer;
+    out Line, Col: integer): boolean;
+procedure GetLineStartEndAtPosition(const Source: string; Position:integer;
+    out LineStart,LineEnd:integer); // LineEnd at first line break character
+function GetLineStartPosition(const Source: string; Position:integer): integer;
+function GetLineInSrc(const Source: string; Position:integer): string;
 function LineEndCount(const Txt: string): integer; inline;
 function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer; inline;
 function LineEndCount(const Txt: string; StartPos, EndPos: integer;
@@ -122,8 +125,6 @@ function FindFirstLineEndAfterInCode(const Source: string;
 function ChompLineEndsAtEnd(const s: string): string;
 function ChompOneLineEndAtEnd(const s: string): string;
 function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
-function SrcPosToLineCol(const s: string; Position: integer;
-  out Line, Col: integer): boolean;
 
 // brackets
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
@@ -2782,6 +2783,7 @@ end;
 
 function SrcPosToLineCol(const s: string; Position: integer;
   out Line, Col: integer): boolean;
+// returns false if Postion<1 or >length(s)+1
 var
   p: LongInt;
   l: Integer;
@@ -2816,7 +2818,7 @@ begin
       inc(Col);
     end;
   end;
-  if p=Position then Result:=true;
+  Result:=p=Position;
 end;
 
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
@@ -4080,6 +4082,14 @@ begin
   Result:=Position;
   while (Result>1) and (not (Source[Result-1] in [#10,#13])) do
     dec(Result);
+end;
+
+function GetLineInSrc(const Source: string; Position: integer): string;
+var
+  LineStart, LineEnd: integer;
+begin
+  GetLineStartEndAtPosition(Source,Position,LineStart,LineEnd);
+  Result:=copy(Source,LineStart,LineEnd);
 end;
 
 function LineEndCount(const Txt: string): integer;
