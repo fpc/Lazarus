@@ -156,11 +156,11 @@ object Form1: TForm1
           ShowPoints = True
         end
         object cfsLog: TFuncSeries
-          AxisIndexY = 0
           Extent.XMin = -1
           Extent.XMax = 3
           Extent.UseXMin = True
           Extent.UseXMax = True
+          AxisIndexY = 0
           OnCalculate = ChartLogFuncSeries1Calculate
         end
       end
@@ -263,6 +263,59 @@ object Form1: TForm1
         )
         Align = alClient
         ParentColor = False
+      end
+    end
+    object tsSubmarks: TTabSheet
+      Caption = 'Submarks'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartSubmarks: TChart
+        Left = 0
+        Height = 307
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Group = 1
+            Marks.Source = udcsMain
+            TickLength = 6
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Group = 2
+            Marks.Source = udcsMain
+            TickLength = 6
+          end        
+          item
+            Grid.Visible = False
+            Group = 1
+            Marks.Visible = False
+            Marks.Source = udcsSub
+            Marks.Style = smsNone
+            TickLength = 2
+          end        
+          item
+            Alignment = calBottom
+            Grid.Visible = False
+            Group = 2
+            Marks.Visible = False
+            Marks.Source = udcsSub
+            Marks.Style = smsNone
+            TickLength = 2
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartSubmarksLineSeries1: TLineSeries
+          Source = udcsGraph
+        end
       end
     end
     object tsDateTime: TTabSheet
@@ -377,8 +430,8 @@ object Form1: TForm1
     top = 232
   end
   object ChartToolsetDateTime: TChartToolset
-    left = 446
-    top = 172
+    left = 440
+    top = 232
     object ChartToolset1ZoomIn: TZoomClickTool
       Shift = [ssLeft]
       FixedPoint = True
@@ -391,5 +444,23 @@ object Form1: TForm1
       ZoomFactor = 0.25
       ZoomRatio = 4
     end
+  end
+  object udcsMain: TUserDefinedChartSource
+    OnGetChartDataItem = udcsMainGetChartDataItem
+    PointsNumber = 10
+    left = 440
+    top = 60
+  end
+  object udcsSub: TUserDefinedChartSource
+    OnGetChartDataItem = udcsSubGetChartDataItem
+    PointsNumber = 50
+    left = 440
+    top = 112
+  end
+  object udcsGraph: TUserDefinedChartSource
+    OnGetChartDataItem = udcsGraphGetChartDataItem
+    PointsNumber = 100
+    left = 440
+    top = 172
   end
 end

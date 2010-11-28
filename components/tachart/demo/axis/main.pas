@@ -17,12 +17,14 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
     cbAuto: TCheckBox;
+    ChartSubmarks: TChart;
     ChartDateTime: TChart;
     ChartAxisGroup: TChart;
     ChartDateTimeLineSeries1: TLineSeries;
     ChartLog: TChart;
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
+    ChartSubmarksLineSeries1: TLineSeries;
     ChartToolsetDateTime: TChartToolset;
     ChartToolset1ZoomIn: TZoomClickTool;
     ChartToolset1ZoomOut: TZoomClickTool;
@@ -47,15 +49,25 @@ type
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
+    tsSubmarks: TTabSheet;
     tsDateTime: TTabSheet;
     tsAxisGroup: TTabSheet;
     tsLog: TTabSheet;
     tsCustomMarks: TTabSheet;
+    udcsMain: TUserDefinedChartSource;
+    udcsGraph: TUserDefinedChartSource;
+    udcsSub: TUserDefinedChartSource;
     procedure cbAutoChange(Sender: TObject);
     procedure cbLogChange(Sender: TObject);
     procedure ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
     procedure TChartAxisList1MarkToText(var AText: String; AMark: Double);
+    procedure udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;
+      AIndex: Integer; var AItem: TChartDataItem);
+    procedure udcsMainGetChartDataItem(ASource: TUserDefinedChartSource;
+      AIndex: Integer; var AItem: TChartDataItem);
+    procedure udcsSubGetChartDataItem(ASource: TUserDefinedChartSource;
+      AIndex: Integer; var AItem: TChartDataItem);
   end;
 
 var
@@ -140,6 +152,27 @@ procedure TForm1.TChartAxisList1MarkToText(var AText: String; AMark: Double);
 begin
   if AMark < 15 then
     AText := '*' + AText + '*';
+end;
+
+procedure TForm1.udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;
+  AIndex: Integer; var AItem: TChartDataItem);
+begin
+  AItem.X := (AIndex - 50) * 0.1;
+  AItem.Y := Sin(AItem.X * 3) + AItem.X / 10;
+end;
+
+procedure TForm1.udcsMainGetChartDataItem(
+  ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
+begin
+  AItem.X := AIndex - 5;
+  AItem.Y := AItem.X;
+end;
+
+procedure TForm1.udcsSubGetChartDataItem(
+  ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
+begin
+  AItem.X := (AIndex - 25) * 0.2;
+  AItem.Y := AItem.X;
 end;
 
 end.
