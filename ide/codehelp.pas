@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, AvgLvlTree,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
-  CodeCache, CacheCodeTools, FileProcs,
+  PascalParserTool, CodeCache, CacheCodeTools, FileProcs,
   {$IFDEF NewXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
@@ -1750,12 +1750,22 @@ begin
   end else begin
     while CodeNode<>nil do begin
       case CodeNode.Desc of
-      ctnVarDefinition, ctnConstDefinition, ctnTypeDefinition, ctnGenericType:
+      ctnVarDefinition:
+        if Tool.NodeIsResultIdentifier(CodeNode) then
+          // fpdoc prefixes the result variable with 'Identifier ' (don't ask)
+          NodeName:='Identifier '+Tool.ExtractDefinitionName(CodeNode)
+        else
+          NodeName:=Tool.ExtractDefinitionName(CodeNode);
+      ctnConstDefinition, ctnTypeDefinition, ctnGenericType:
         NodeName:=Tool.ExtractDefinitionName(CodeNode);
       ctnProperty:
         NodeName:=Tool.ExtractPropName(CodeNode,false);
       ctnProcedure:
-        NodeName:=Tool.ExtractProcName(CodeNode,[]);
+        if Tool.NodeIsOperator(CodeNode) then
+          NodeName:=Tool.ExtractProcHead(CodeNode,
+                           [phpWithStart,phpWithResultType,phpWithoutSemicolon])
+        else
+          NodeName:=Tool.ExtractProcName(CodeNode,[]);
       ctnEnumIdentifier:
         NodeName:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
       ctnIdentifier:
