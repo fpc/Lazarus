@@ -5,9 +5,11 @@ object MakeSkelForm: TMakeSkelForm
   Width = 486
   HorzScrollBar.Page = 412
   VertScrollBar.Page = 276
+  ActiveControl = EPackage
   Caption = 'Create new file from pascal source'
   ClientHeight = 391
   ClientWidth = 486
+  OnShow = CheckEnabled
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Label1: TLabel
@@ -15,9 +17,9 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Control = EPackage
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 65
-    Width = 73
+    Height = 19
+    Top = 63
+    Width = 61
     BorderSpacing.Around = 6
     Caption = 'I&nput file'
     Color = clBtnFace
@@ -31,9 +33,9 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Control = FEinputFile
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 124
-    Width = 86
+    Height = 19
+    Top = 120
+    Width = 74
     BorderSpacing.Around = 6
     Caption = 'O&utput file'
     Color = clBtnFace
@@ -46,9 +48,9 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 19
     Top = 6
-    Width = 114
+    Width = 102
     BorderSpacing.Around = 6
     Caption = 'Pac&kage name'
     Color = clBtnFace
@@ -62,9 +64,9 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Control = Panel1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 278
-    Width = 103
+    Height = 19
+    Top = 277
+    Width = 91
     BorderSpacing.Around = 6
     Caption = 'E&xtra options'
     Color = clBtnFace
@@ -78,32 +80,9 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 29
-    Top = 89
+    Height = 26
+    Top = 88
     Width = 449
-    DialogOptions = []
-    FilterIndex = 0
-    HideDirectories = False
-    ButtonWidth = 23
-    NumGlyphs = 1
-    Flat = True
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    MaxLength = 0
-    TabOrder = 0
-    OnChange = CheckEnabled
-  end
-  object FEoutputFIle: TFileNameEdit
-    AnchorSideLeft.Control = Label1
-    AnchorSideTop.Control = Label2
-    AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 29
-    Top = 148
-    Width = 449
-    DialogKind = dkSave
-    DialogTitle = 'Select file to save to'
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
@@ -117,6 +96,29 @@ object MakeSkelForm: TMakeSkelForm
     TabOrder = 1
     OnChange = CheckEnabled
   end
+  object FEoutputFIle: TFileNameEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 26
+    Top = 145
+    Width = 449
+    DialogKind = dkSave
+    DialogTitle = 'Select file to save to'
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 2
+    OnChange = CheckEnabled
+  end
   object EPackage: TEdit
     AnchorSideLeft.Control = LEPackage
     AnchorSideTop.Control = LEPackage
@@ -124,14 +126,14 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 29
-    Top = 30
+    Height = 26
+    Top = 31
     Width = 468
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     OnChange = CheckEnabled
-    TabOrder = 2
-    Text = '<package name>'
+    TabOrder = 0
+    Text = 'MyPackage'
   end
   object EAdditionalOptions: TEdit
     AnchorSideLeft.Control = Label3
@@ -140,19 +142,29 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 29
+    Height = 26
     Top = 302
     Width = 468
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    TabOrder = 3
+    TabOrder = 5
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 345
+    Height = 36
+    Top = 349
     Width = 474
-    TabOrder = 4
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object Panel1: TGroupBox
@@ -160,21 +172,21 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Control = FEoutputFIle
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 89
-    Top = 183
-    Width = 201
+    Height = 94
+    Top = 177
+    Width = 200
     AutoSize = True
     BorderSpacing.Around = 6
-    ClientHeight = 81
-    ClientWidth = 193
-    TabOrder = 5
+    ClientHeight = 90
+    ClientWidth = 196
+    TabOrder = 3
     object CBDisableArguments: TCheckBox
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 6
-      Height = 19
+      Height = 22
       Top = 6
-      Width = 181
+      Width = 184
       BorderSpacing.Around = 6
       Caption = 'No &arguments sections'
       TabOrder = 0
@@ -184,9 +196,9 @@ object MakeSkelForm: TMakeSkelForm
       AnchorSideTop.Control = CBDisableArguments
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 31
-      Width = 153
+      Height = 22
+      Top = 34
+      Width = 156
       BorderSpacing.Around = 6
       Caption = 'No &results sections'
       TabOrder = 1
@@ -196,9 +208,9 @@ object MakeSkelForm: TMakeSkelForm
       AnchorSideTop.Control = CBDisableResults
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 56
-      Width = 160
+      Height = 22
+      Top = 62
+      Width = 163
       BorderSpacing.Around = 6
       Caption = 'No &seealso sections'
       TabOrder = 2
@@ -211,23 +223,23 @@ object MakeSkelForm: TMakeSkelForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 219
-    Height = 89
-    Top = 183
-    Width = 261
+    Left = 218
+    Height = 94
+    Top = 177
+    Width = 262
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
-    ClientHeight = 81
-    ClientWidth = 253
-    TabOrder = 6
+    ClientHeight = 90
+    ClientWidth = 258
+    TabOrder = 4
     object CBDisableProtected: TCheckBox
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
       Left = 6
-      Height = 19
+      Height = 22
       Top = 6
-      Width = 177
+      Width = 180
       BorderSpacing.Around = 6
       Caption = 'No &protected methods'
       TabOrder = 0
@@ -237,9 +249,9 @@ object MakeSkelForm: TMakeSkelForm
       AnchorSideTop.Control = CBDisableProtected
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 31
-      Width = 155
+      Height = 22
+      Top = 34
+      Width = 158
       BorderSpacing.Around = 6
       Caption = 'No pr&ivate methods'
       TabOrder = 1
@@ -249,9 +261,9 @@ object MakeSkelForm: TMakeSkelForm
       AnchorSideTop.Control = CBDisablePrivate
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 56
-      Width = 147
+      Height = 22
+      Top = 62
+      Width = 150
       BorderSpacing.Around = 6
       Caption = 'No &errors sections'
       TabOrder = 2

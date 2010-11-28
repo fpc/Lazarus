@@ -54,6 +54,10 @@ type
     Panel2: TGroupBox;
     procedure CheckEnabled(Sender: TObject);
   private
+    procedure CheckOKEnabled;
+    function InputFileOK: Boolean;
+    function OutputFileOK: Boolean;
+    function PackageOK: Boolean;
     { private declarations }
   public
     { public declarations }
@@ -70,7 +74,30 @@ implementation
 
 procedure TMakeSkelForm.CheckEnabled(Sender: TObject);
 begin
-  if Sender=nil then ;
+  CheckOKEnabled;
+end;
+
+procedure TMakeSkelForm.CheckOKEnabled;
+begin
+   ButtonPanel1.OkButton.Enabled:=PackageOK and InputFileOK and OutputFileOK;
+end;
+
+Function TMakeSkelForm.PackageOK : Boolean;
+
+begin
+  Result:=(EPackage.Text<>'') and IsValidIdent(EPackage.Text);
+end;
+
+Function TMakeSkelForm.InputFileOK : Boolean;
+
+begin
+  Result:=(FEInputFile.Text<>'') and (FEInputFile.Text<>FEOutputFile.Text)
+end;
+
+Function TMakeSkelForm.OutputFileOK : Boolean;
+
+begin
+  Result:=(FEOutputFile.Text<>'') and (FEInputFile.Text<>FEOutputFile.Text)
 end;
 
 end.
