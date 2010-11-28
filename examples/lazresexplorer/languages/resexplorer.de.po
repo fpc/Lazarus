@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reconstsunit.sabout
+msgid "About..."
+msgstr "Über..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Build-Datum :"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr ""
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Beenden"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Datei"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "FPC-Version :"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr ""
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr ""
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr ""
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Hilfe"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Bild"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "LCL-Version:"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr ""
+
+#: reconstsunit.sopen
+msgid "Open..."
+msgstr "Öffnen..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr ""
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr ""
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr ""
+
+#: reconstsunit.ssaveresource
+msgid "Save resource..."
+msgstr ""
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr ""
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "Ziel-CPU :"
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "Ziel-OS :"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr ""
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr ""
+

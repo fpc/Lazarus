@@ -4,14 +4,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
 msgid "No syntax errors in SQL statement."
-msgstr ""
+msgstr "Keine Syntaxfehler in SQL-Anweisung."
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
@@ -19,17 +19,19 @@ msgstr "Ergebnisse"
 
 #: sqlstringspropertyeditordlg.ssqlerror
 msgid "SQL Error"
-msgstr ""
+msgstr "SQL-Fehler"
 
 #: sqlstringspropertyeditordlg.ssqlok
 msgid "SQL OK"
-msgstr ""
+msgstr "SQL OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
 "Syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
+"Syntaxfehler in SQL-Anweisung:\n"
+"%s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

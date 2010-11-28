@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-05 14:31+0100\n"
+"PO-Revision-Date: 2010-11-28 17:26+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,11 +11,11 @@ msgstr ""
 
 #: frmtemplatevariables.sbtncancel
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: frmtemplatevariables.sbtnok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
@@ -35,7 +35,7 @@ msgstr "Das Projekt enthält keine weiteren Variablen."
 
 #: frmtemplatevariables.sthisproject
 msgid "This project contains some additional variables. Please provide values for these variables."
-msgstr ""
+msgstr "Dieses Projekt enthält zusätzliche Variablen. Bitte geben sie Werte für diese Variablen an."
 
 #: frmtemplatevariables.stitle
 msgid "New project from template"

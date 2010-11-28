@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-08 23:42+0300\n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"PO-Revision-Date: 2010-11-28 18:18+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1981,7 +1981,6 @@ msgid "Make Fallback"
 msgstr "Fallback anlegen"
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
-#, fuzzy
 #| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
 msgid "OK"
@@ -2331,7 +2330,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal keyword options"
-msgstr ""
+msgstr "Erweiterte Pascal-Schlüsselwort-Einstellungen"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
@@ -2353,7 +2352,7 @@ msgstr "Keine"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptstring
 msgid "Only \"String\""
-msgstr ""
+msgstr "Nur \"String\""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
@@ -2381,7 +2380,7 @@ msgstr "Anwendungsbundle erzeugen"
 
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Dpi Aware application (for Vista+)"
-msgstr ""
+msgstr "dpi-abhängige Anwendung (für Vista+)"
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
@@ -3125,7 +3124,6 @@ msgid "Option: Snap to guide lines"
 msgstr "Einstellung: An Hilfslinien ausrichten"
 
 #: lazarusidestrconsts.fdmtaborder
-#, fuzzy
 #| msgid "Tab order..."
 msgid "Tab Order..."
 msgstr "Tabulatorreihenfolge"
@@ -3448,7 +3446,7 @@ msgstr "Dokumentation:"
 
 #: lazarusidestrconsts.lisaboutide
 msgid "About IDE"
-msgstr ""
+msgstr "Über die IDE"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
@@ -5481,10 +5479,9 @@ msgid "Confirm delete"
 msgstr "Löschen bestätigen"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-#, fuzzy
 #| msgid "Do you want to rebuild Lazarus?"
 msgid "Do you want to rebuild Lazarus with profile: %s ?"
-msgstr "Wollen Sie Lazarus neu kompilieren?"
+msgstr "Wollen Sie Lazarus mit Profil %s neu kompilieren?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -5526,7 +5523,7 @@ msgstr "Fortsetzen"
 
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
-msgstr ""
+msgstr "Fortsetzen und nicht mehr nachfragen"
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -5550,7 +5547,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiaborted
 msgid "Aborted."
-msgstr ""
+msgstr "Abgebrochen."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
 msgid "All sub-directories will be scanned for unit files"
@@ -5566,11 +5563,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphicategories
 msgid "Categories:"
-msgstr ""
+msgstr "Kategorien:"
 
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
-msgstr ""
+msgstr "Konvertierung abgebrochen."
 
 #: lazarusidestrconsts.lisconvdelphiconversionready
 msgid "Conversion Ready."
@@ -5578,15 +5575,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
-msgstr ""
+msgstr "Delphi-Package konvertieren"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiproject
 msgid "Convert Delphi project"
-msgstr ""
+msgstr "Delphi-Projekt konvertieren"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphiunit
 msgid "Convert Delphi unit"
-msgstr ""
+msgstr "Delphi-Unit konvertieren"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfile
 msgid "Converting unit file %s"
@@ -5602,7 +5599,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphierror
 msgid "Error=\"%s\""
-msgstr ""
+msgstr "Fehler=\"%s\""
 
 #: lazarusidestrconsts.lisconvdelphierrorcantfindunit
 msgid "%s(%s,%s) Error: Can't find unit %s"
@@ -5626,11 +5623,11 @@ msgstr "Delphi Funktion"
 
 #: lazarusidestrconsts.lisconvdelphikeepboth
 msgid "Keep both"
-msgstr ""
+msgstr "Beide behalten"
 
 #: lazarusidestrconsts.lisconvdelphimissingincludefile
 msgid "%s(%s,%s) missing include file"
-msgstr ""
+msgstr "%s(%s,%s) fehlende Include-Datei"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
@@ -5658,7 +5655,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
 msgid "Repairing form file %s"
-msgstr ""
+msgstr "Repariere Form-Datei %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
@@ -5670,11 +5667,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiskipthisfile
 msgid "Skip this file"
-msgstr ""
+msgstr "Diese Datei überspringen"
 
 #: lazarusidestrconsts.lisconvdelphiskipthisstep
 msgid "Skip this step"
-msgstr ""
+msgstr "Diesen Schritt überspringen"
 
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
@@ -5691,15 +5688,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
-msgstr ""
+msgstr "Unitname existiert doppelt"
 
 #: lazarusidestrconsts.lisconvdelphiunitsnotfound
 msgid "Units not found"
-msgstr ""
+msgstr "Units nicht gefunden"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
-msgstr ""
+msgstr "Units zum Ersetzen in %s"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5753,7 +5750,7 @@ msgstr "Für Lazarus/LCL und Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
-msgstr ""
+msgstr "Funktionsersetzungen"
 
 #: lazarusidestrconsts.lisconvfuncreplhint
 msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
@@ -6045,36 +6042,36 @@ msgstr "Datum"
 #: lazarusidestrconsts.lisdbgallitemdelete
 msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
 msgid "Delete all"
-msgstr ""
+msgstr "Alle löschen"
 
 #: lazarusidestrconsts.lisdbgallitemdeletehint
 msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
 msgid "Delete all"
-msgstr ""
+msgstr "Alle löschen"
 
 #: lazarusidestrconsts.lisdbgallitemdisable
 msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
 msgid "Disable all"
-msgstr ""
+msgstr "Alle deaktivieren"
 
 #: lazarusidestrconsts.lisdbgallitemdisablehint
 msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
 msgid "Disable all"
-msgstr ""
+msgstr "Alle deaktivieren"
 
 #: lazarusidestrconsts.lisdbgallitemenable
 msgctxt "lazarusidestrconsts.lisdbgallitemenable"
 msgid "Enable all"
-msgstr ""
+msgstr "Alle aktivieren"
 
 #: lazarusidestrconsts.lisdbgallitemenablehint
 msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
-msgstr ""
+msgstr "Alle aktivieren"
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
-msgstr ""
+msgstr "In Zwischenablage kopieren"
 
 #: lazarusidestrconsts.lisdbgitemdelete
 msgctxt "lazarusidestrconsts.lisdbgitemdelete"
@@ -6389,7 +6386,7 @@ msgstr "Wert %s%s%s löschen"
 
 #: lazarusidestrconsts.lisdeletevalue2
 msgid "Delete value %s"
-msgstr ""
+msgstr "Lösche Wert %s"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
@@ -6521,7 +6518,7 @@ msgstr "Änderungen verwerfen"
 
 #: lazarusidestrconsts.lisdiscardchangesall
 msgid "Discard all changes"
-msgstr ""
+msgstr "Alle Änderungen verwerfen"
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -6633,7 +6630,7 @@ msgstr "Doppelter Name: Eine Komponente namens %s%s%s existiert bereits in der e
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
-msgstr ""
+msgstr "Suchpfad duplizieren"
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -6735,7 +6732,7 @@ msgstr "Werkzeug bearbeiten"
 
 #: lazarusidestrconsts.lisedtexttoolhidemainform
 msgid "Hide main form"
-msgstr ""
+msgstr "Hauptformular verbergen"
 
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
@@ -7421,11 +7418,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
-msgstr ""
+msgstr "FPDoc Syntaxfehler"
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr ""
+msgstr "Es gibt einen Syntaxfehler im fpdoc Element \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
@@ -7702,7 +7699,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
-msgstr ""
+msgstr "Informationen über die IDE"
 
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
@@ -7913,7 +7910,7 @@ msgstr "Informationen zu %s"
 
 #: lazarusidestrconsts.lisinformationaboutusedfpc
 msgid "Information about used FPC"
-msgstr ""
+msgstr "Informationen über verwendeten FPC"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -8160,7 +8157,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeepininstalllist
 msgid "Keep in install list"
-msgstr ""
+msgstr "In Installationsliste behalten"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -8862,7 +8859,7 @@ msgstr "Kompilieren von Lazarus bestätigen "
 
 #: lazarusidestrconsts.lislazbuildconfirmdeletion
 msgid "Confirm deletion"
-msgstr ""
+msgstr "Löschung bestätigen"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -8909,11 +8906,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
 msgid "Name of the active profile"
-msgstr ""
+msgstr "Name des aktiven Profils"
 
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
-msgstr ""
+msgstr "Neues Profil hinzufügen"
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
@@ -8939,7 +8936,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
-msgstr ""
+msgstr "Profil zum Kompilieren"
 
 #: lazarusidestrconsts.lislazbuildqbobuildall
 msgid "Build All"
@@ -8978,11 +8975,11 @@ msgstr "Umbenennen"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
-msgstr ""
+msgstr "Profil umbenennen"
 
 #: lazarusidestrconsts.lislazbuildrenameprofinfo
 msgid "New name for profile:"
-msgstr ""
+msgstr "Neuer Name für Profil:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #, fuzzy
@@ -9024,7 +9021,7 @@ msgstr "Kann Datei »%s« nicht schreiben: %s"
 
 #: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
 msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
+msgstr "Aktualisiere Revisions-Info im \"About Lazarus\" Dialog"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -9368,14 +9365,13 @@ msgid "Build File"
 msgstr "Datei neu kompilieren"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-#, fuzzy
 #| msgid "Build Lazarus"
 msgid "Build Lazarus with current profile"
-msgstr "Lazarus neu kompilieren"
+msgstr "Lazarus mit aktuellem Profil neu kompilieren"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with profile: %s"
-msgstr ""
+msgstr "Kompiliere Lazarus mit Profil: %s"
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM file in editor"
@@ -10525,10 +10521,9 @@ msgid "New group - a set of modes"
 msgstr "Neue Gruppe - eine Menge von Modi"
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy
 #| msgid "%s - (new project)"
 msgid "(new project)"
-msgstr "%s - (Neues Projekt)"
+msgstr "(neues Projekt)"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -10787,10 +10782,9 @@ msgid "%sThis package was automatically created"
 msgstr "%sDieses Package wurde automatisch erzeugt"
 
 #: lazarusidestrconsts.lisok
-#, fuzzy
 #| msgid "&Ok"
 msgid "&OK"
-msgstr "&Ok"
+msgstr "&OK"
 
 #: lazarusidestrconsts.lisold
 msgid "old"
@@ -12676,7 +12670,7 @@ msgstr "Alle Units entfernen"
 
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
-msgstr ""
+msgstr "Aus Installationsliste entfernen"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
@@ -12744,7 +12738,7 @@ msgstr "Wiederholungen:"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
-msgstr ""
+msgstr "Ersetzung"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"
@@ -12752,7 +12746,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
-msgstr ""
+msgstr "Ersetzungen"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
 #, fuzzy
@@ -13964,7 +13958,6 @@ msgid "Font without UTF-8"
 msgstr "Schriftart ohne UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-#, fuzzy
 #| msgid "Goto line :"
 msgid "Goto line:"
 msgstr "Springe zu Zeile:"
@@ -14473,7 +14466,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
-msgstr ""
+msgstr "Verwende Ansistrings"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

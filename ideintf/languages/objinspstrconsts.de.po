@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-05 14:59+0100\n"
+"PO-Revision-Date: 2010-11-28 17:17+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -63,7 +63,7 @@ msgstr "Neue Action"
 
 #: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Neue Standard-Action"
+msgstr "Neue Standard-Aktion"
 
 #: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -160,7 +160,7 @@ msgstr "Felder bearbeiten"
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "Feld %s kann nicht erzeugt werden!"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
@@ -216,7 +216,7 @@ msgstr "Ok"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "Ko&mponentenname:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
@@ -603,7 +603,7 @@ msgstr "%u Einträge registriert"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Springe zu Deklaration von %s"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -758,7 +758,7 @@ msgstr "Alle au&swählen"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Alle Felder auswählen"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1025,11 +1025,11 @@ msgstr "Schriftauswahl"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr "&Inhalt"
+msgstr "&Inhalte"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Hilfeinhalt"
+msgstr "Hilfeinhalte"
 
 #: objinspstrconsts.oistdacthelphelphelpheadline
 msgid "&Help on Help"
@@ -1753,7 +1753,7 @@ msgstr "Soll das Bild geteilt werden?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Neuer Button"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"

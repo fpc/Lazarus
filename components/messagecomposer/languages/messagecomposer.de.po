@@ -17,7 +17,6 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: messagecomposer.rsok
-#, fuzzy
 #| msgid "Ok"
 msgid "OK"
 msgstr "OK"
@@ -44,7 +43,7 @@ msgstr "\"Case\" Ergebnis"
 
 #: messagecomposer.sdefault
 msgid "Default"
-msgstr ""
+msgstr "Vorgabe"
 
 #: messagecomposer.sdelete
 msgid "Delete"
@@ -52,7 +51,7 @@ msgstr "Löschen"
 
 #: messagecomposer.sdlgcaption
 msgid "Dialog caption"
-msgstr ""
+msgstr "Dialogtitel"
 
 #: messagecomposer.sdlgtype
 msgid "Dialog type"
@@ -86,11 +85,10 @@ msgid "Mask input"
 msgstr "Maskeneingabe"
 
 #: messagecomposer.smessagecomposercaption
-#, fuzzy
 #| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
-msgstr "Message-Composer ..."
+msgstr "Message-Composer"
 
 #: messagecomposer.smessagecomposermenucaption
 #, fuzzy

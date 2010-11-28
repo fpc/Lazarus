@@ -3306,6 +3306,7 @@ examples/lazintfimage/mainunit1.lfm svneol=native#text/plain
 examples/lazintfimage/mainunit1.lrs svneol=native#text/pascal
 examples/lazintfimage/mainunit1.pas svneol=native#text/pascal
 examples/lazresexplorer/languages/resexplorer.cs.po svneol=native#text/plain
+examples/lazresexplorer/languages/resexplorer.de.po svneol=native#text/plain
 examples/lazresexplorer/languages/resexplorer.lt.po svneol=native#text/plain
 examples/lazresexplorer/languages/resexplorer.pb.po svneol=native#text/plain
 examples/lazresexplorer/languages/resexplorer.po svneol=native#text/plain
