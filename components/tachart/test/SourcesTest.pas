@@ -36,6 +36,7 @@ type
   published
     procedure Basic;
     procedure DataPoint;
+    procedure Extent;
   end;
 
   { TRandomSourceTest }
@@ -48,7 +49,7 @@ type
 implementation
 
 uses
-  TAChartUtils;
+  Math, TAChartUtils;
 
 { TListSourceTest }
 
@@ -80,6 +81,42 @@ begin
   AssertEquals('3|4|$000000|text1', FSource.DataPoints[0]);
   FSource.DataPoints.Add('7|8|0|two words');
   AssertEquals('two words', FSource[2]^.Text);
+end;
+
+procedure TListSourceTest.Extent;
+
+  procedure AssertExtent(AX1, AY1, AX2, AY2: Double);
+  begin
+    with FSource.Extent do begin
+      AssertEquals('X1', AX1, a.X);
+      AssertEquals('Y1', AY1, a.Y);
+      AssertEquals('X2', AX2, b.X);
+      AssertEquals('Y2', AY2, b.Y);
+    end;
+  end;
+
+begin
+  FSource.Clear;
+  Assert(IsInfinite(FSource.Extent.a.X) and IsInfinite(FSource.Extent.a.Y));
+  Assert(IsInfinite(FSource.Extent.b.X) and IsInfinite(FSource.Extent.b.Y));
+
+  FSource.Add(1, 2, '', 0);
+  AssertExtent(1, 2, 1, 2);
+
+  FSource.Add(3, 4, '', 0);
+  AssertExtent(1, 2, 3, 4);
+
+  FSource.SetXValue(0, -1);
+  AssertExtent(-1, 2, 3, 4);
+
+  FSource.SetXValue(1, -2);
+  AssertExtent(-2, 2, -1, 4);
+
+  FSource.SetYValue(0, 5);
+  AssertExtent(-2, 4, -1, 5);
+
+  FSource.SetYValue(0, 4.5);
+  AssertExtent(-2, 4, -1, 4.5);
 end;
 
 procedure TListSourceTest.SetUp;

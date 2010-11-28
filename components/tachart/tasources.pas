@@ -833,20 +833,18 @@ begin
 
   if FExtentIsValid then begin
     if AValue <= FExtent.a.X then FExtent.a.X := AValue
-    else if AValue >= FExtent.b.X then FExtent.b.X := AValue
-    else begin
-      if oldX = FExtent.b.X then begin
-        FExtent.b.X := NegInfinity;
-        for i := 0 to Count - 1 do
-          FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
-      end;
-      if oldX = FExtent.a.X then begin
-        {$R-}{$Q-}
-        FExtent.a.X := Infinity;
-        {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
-        for i := 0 to Count - 1 do
-          FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
-      end;
+    else if AValue >= FExtent.b.X then FExtent.b.X := AValue;
+    if oldX = FExtent.b.X then begin
+      FExtent.b.X := NegInfinity;
+      for i := 0 to Count - 1 do
+        FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
+    end;
+    if oldX = FExtent.a.X then begin
+      {$R-}{$Q-}
+      FExtent.a.X := Infinity;
+      {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
+      for i := 0 to Count - 1 do
+        FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
     end;
   end;
 
@@ -896,20 +894,18 @@ begin
 
   if FExtentIsValid then begin
     if AValue <= FExtent.a.Y then FExtent.a.Y := AValue
-    else if AValue >= FExtent.b.Y then FExtent.b.Y := AValue
-    else begin
-      if oldY = FExtent.b.Y then begin
-        FExtent.b.Y := NegInfinity;
-        for i := 0 to Count - 1 do
-          FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
-      end;
-      if oldY = FExtent.a.Y then begin
-        {$R-}{$Q-}
-        FExtent.a.Y := Infinity;
-        {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
-        for i := 0 to Count - 1 do
-          FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
-      end;
+    else if AValue >= FExtent.b.Y then FExtent.b.Y := AValue;
+    if oldY = FExtent.b.Y then begin
+      FExtent.b.Y := NegInfinity;
+      for i := 0 to Count - 1 do
+        FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
+    end;
+    if oldY = FExtent.a.Y then begin
+      {$R-}{$Q-}
+      FExtent.a.Y := Infinity;
+      {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
+      for i := 0 to Count - 1 do
+        FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
     end;
   end;
   Notify;
