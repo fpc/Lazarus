@@ -5031,6 +5031,7 @@ var
   Persistent: TPersistent;
 begin
   RemoveComponentEditorMenuItems;
+  ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
@@ -5098,7 +5099,6 @@ begin
     CurRow := GetActivePropertyRow;
     UndoPropertyPopupMenuItem.Visible := True;
     UndoPropertyPopupMenuItem.Enabled := (CurRow<>nil) and (CurRow.Editor.GetVisualValue <> CurGrid.CurrentEditValue);
-    ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
     if CurRow=nil then begin
       FindDeclarationPopupmenuItem.Visible := False;
     end

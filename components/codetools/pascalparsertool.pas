@@ -903,6 +903,8 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
     MyEnum: (MyEnumm1, MyEnumm2 := 2, MyEnummy3);
     MySet: set of (MyEnummy4 := 4 , MyEnummy5);
     MyRange: 3..5;
+  examples for type:
+    TCompareFunc = function(const Item1, Item2: T): Integer;
 }
 begin
   if CurNode.Desc = ctnClassType then begin
