@@ -156,7 +156,6 @@ procedure TQtMemoStrings.ExternalUpdate(var AStr: WideString;
 var
   W: WideString;
   TextEdit: TQtTextEdit;
-  B: Boolean;
 begin
   if not FOwner.HandleAllocated then
     exit;

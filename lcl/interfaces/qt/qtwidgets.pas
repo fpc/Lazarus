@@ -11699,7 +11699,6 @@ end;
 procedure TQtCustomControl.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
 var
   MouseEventTyp: Boolean;
-  AForm: TCustomForm;
 begin
   {$ifdef VerboseViewPortEventFilter}
     WriteLn('ViewPortEventFilter ',QEvent_type(Event));
