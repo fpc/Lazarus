@@ -948,7 +948,8 @@ begin
       prevAngle += FAngle;
     end;
 
-    if not Marks.IsMarkLabelsVisible then continue;
+    if not Marks.IsMarkLabelsVisible or (d.FLabels[i].FText = '') then
+      continue;
     ed := LabelExtraDist(sliceCenterAngle, i);
     Marks.DrawLabel(
       ACanvas,
