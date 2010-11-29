@@ -8133,7 +8133,10 @@ var
   NewFiles: TStringList;
 begin
   Valid:=false;
-  NewFiles:=GatherFilesInFPCSources(Directory,OnProgress);
+  if Directory<>'' then
+    NewFiles:=GatherFilesInFPCSources(Directory,OnProgress)
+  else
+    NewFiles:=TStringList.Create;
   Update(NewFiles);
 end;
 
