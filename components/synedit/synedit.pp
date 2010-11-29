@@ -3033,7 +3033,8 @@ begin
     else
       types.UnionRect(FInvalidateRect, FInvalidateRect, rcClip);
     // Todo: painting is not save
-    FHighlighter.ScanRanges; // at least prevent some dangers
+    if fHighlighter <> nil then
+      FHighlighter.ScanRanges; // at least prevent some dangers
     //exit;
   end;
   {$IFDEF EnableDoubleBuf}
