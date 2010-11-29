@@ -2448,7 +2448,9 @@ var
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
-  TheKey: Integer;
+  {$IFDEF UNIX}
+  ScanCode: LongWord;
+  {$ENDIF}
   AChar: Char;
   AKeyEvent: QKeyEventH;
 begin
@@ -2485,19 +2487,24 @@ begin
 
   {$note TQtWidget.SlotKey: this is workaround for Qt bug which reports
    wrong keys with Shift+Ctrl pressed. Fixes #13450.
-   LAST REVISION: Qt-4.5.2 git snapshot 20090607. zeljko}
-  if (Modifiers = QtShiftModifier or QtControlModifier) then
+   LAST REVISION: Qt-4.7.0-8 20101129. zeljko}
+  {$IFDEF UNIX}
+  if (Modifiers = QtShiftModifier or QtControlModifier) or
+    (Modifiers = QtShiftModifier) then
   begin
-    TheKey := QKeyEvent_key(QKeyEventH(Event));
-    if (length(Text) = 1) and (TheKey in [33..41,61]) then
+    ScanCode := QKeyEvent_nativeScanCode(QKeyEventH(Event));
+    if (length(Text) = 1) and (ScanCode in [10..19]) then
     begin
-      if TheKey = 61 then
-        TheKey := 32;
-      ACharCode := QtKeyToLCLKey( TheKey + 16, Text);
-      KeyMsg.CharCode := ACharCode;
-      Text := '';
+      if ScanCode = 19 then
+        ScanCode := 48
+      else
+        ScanCode := ScanCode + 39;
+      KeyMsg.CharCode := Word(ScanCode);
+      if (Modifiers = QtShiftModifier or QtControlModifier) then
+        Text := '';
     end;
   end;
+  {$ENDIF}
 
   // Translates a Qt4 Key to a LCL VK_* key
   if KeyMsg.CharCode = 0 then
