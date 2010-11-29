@@ -35,6 +35,8 @@ function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
+function AskUser(const DialogCaption, DialogMessage: string; DialogType:
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;

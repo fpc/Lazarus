@@ -875,6 +875,179 @@ begin
   Result := False;
 end;
 
+function TGtk2WidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+
+const
+  ButtonResults : array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
+
+var
+  Btn: PGtkButton;
+  BtnId: Longint;
+  Dialog: PGtkWidget;
+  ADialogResult: Integer;
+  GtkDialogType: TGtkMessageType;
+  Btns: TGtkButtonsType;
+  BtnIdx: Integer;
+  DefaultID: Integer;
+  X: Integer;
+  MainList,ChildList: PGList;
+  Title: String;
+  ActiveWindow: HWND;
+
+  procedure CreateButton(const ALabel : String; const AResponse: Integer);
+  var
+    NewButton: PGtkWidget;
+  begin
+    NewButton := gtk_dialog_add_button(PGtkDialog(Dialog),
+      PgChar(Ampersands2Underscore(ALabel)), AResponse);
+    gtk_button_set_use_underline(PGtkButton(NewButton), True);
+  end;
+
+  function ResponseID(const AnID: Integer): Integer;
+  begin
+    case AnID of
+      idButtonOK       : Result := GTK_RESPONSE_OK;
+      idButtonCancel   : Result := GTK_RESPONSE_CANCEL;
+      idButtonHelp     : Result := GTK_RESPONSE_HELP;
+      idButtonYes      : Result := GTK_RESPONSE_YES;
+      idButtonNo       : Result := GTK_RESPONSE_NO;
+      idButtonClose    : Result := GTK_RESPONSE_CLOSE;
+      idButtonAbort    : Result := GTK_RESPONSE_CANCEL;
+      idButtonRetry    : Result := GTK_RESPONSE_ACCEPT;
+      idButtonIgnore   : Result := GTK_RESPONSE_CANCEL;
+      idButtonNoToAll  : Result := GTK_RESPONSE_APPLY;
+      idButtonYesToAll : Result := GTK_RESPONSE_REJECT;
+    end;
+  end;
+begin
+  Result := mrNone;
+  ReleaseCapture;
+  ADialogResult := mrNone;
+  case DialogType of
+    idDialogWarning: GtkDialogType := GTK_MESSAGE_WARNING;
+    idDialogError: GtkDialogType := GTK_MESSAGE_ERROR;
+    idDialogInfo : GtkDialogType := GTK_MESSAGE_INFO;
+    idDialogConfirm : GtkDialogType := GTK_MESSAGE_QUESTION;
+  else
+    GtkDialogType := GTK_MESSAGE_INFO;
+  end;
+
+  Btns := GTK_BUTTONS_NONE;
+  DefaultId := 0;
+  for X := 0 to Buttons.Count - 1 do
+  begin
+    if Buttons[X].Default then
+      DefaultID := X;
+
+    if (ADialogResult = mrNone) and
+      (Buttons[X].ModalResult in [mrCancel, mrAbort, mrIgnore,
+        mrNo, mrNoToAll]) then
+      ADialogResult := Buttons[X].ModalResult;
+  end;
+
+
+  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
+    PGChar(DialogMessage));
+
+  g_signal_connect(PGtkObject(Dialog), 'delete-event',
+    TGtkSignalFunc(@PromptUserBoxClosed),
+    @ADialogResult);
+
+  if Btns = GTK_BUTTONS_NONE then
+  begin
+    // gtk2 have reverted buttons eg. No, Yes
+    for BtnIdx := Buttons.Count - 1 downto 0 do
+    begin
+      with Buttons[BtnIdx] do
+        if (ModalResult >= Low(ButtonResults)) and (ModalResult <= High(ButtonResults)) then
+        begin
+          BtnID := ButtonResults[ModalResult];
+          case BtnID of
+            idButtonOK       : CreateButton('gtk-ok', GTK_RESPONSE_OK);
+            idButtonCancel   : CreateButton('gtk-cancel', GTK_RESPONSE_CANCEL);
+            idButtonHelp     : CreateButton('gtk-help', GTK_RESPONSE_HELP);
+            idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
+            idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
+            idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
+            idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
+            idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_ACCEPT);
+            idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_CLOSE);
+            idButtonNoToAll  : CreateButton(rsMBNoToAll, GTK_RESPONSE_REJECT);
+            idButtonYesToAll : CreateButton(rsMBYesToAll, GTK_RESPONSE_APPLY);
+          end;
+        end;
+    end;
+  end;
+
+  MainList := gtk_container_children(PGtkContainer(PGtkDialog(Dialog)^.action_area));
+  ChildList := MainList;
+  BtnIdx := 0;
+
+  while ChildList <> nil do
+  begin
+    if (ChildList^.Data <> nil) then
+    begin
+      if GTK_IS_BUTTON(ChildList^.Data) then
+      begin
+        Btn := PGtkButton(ChildList^.Data);
+
+        BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
+        if BtnID = idButtonCancel then
+           gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+
+        X := Buttons[BtnIdx].ModalResult;
+        gtk_object_set_data(PGtkObject(Btn), 'modal_result',
+          Pointer(PtrInt(X)));
+
+        g_signal_connect(PGtkObject(Btn), 'clicked',
+          TGtkSignalFunc(@PromptUserButtonClicked), @ADialogResult);
+
+        if DefaultID = BtnIdx then
+        begin
+          gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(BtnID));
+          X := Buttons[BtnIdx].ModalResult;
+          gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
+            Pointer(PtrInt(X)));
+        end;
+
+        inc(BtnIdx);
+      end;
+    end;
+    ChildList := g_list_next(ChildList);
+  end;
+  if MainList <> nil then
+    g_list_free(MainList);
+
+  if DialogCaption <> '' then
+    gtk_window_set_title(PGtkWindow(Dialog), PGChar(DialogCaption))
+  else
+  begin
+    Title := '';
+    case DialogType of
+      idDialogWarning: Title := rsMtWarning;
+      idDialogError: Title := rsMtError;
+      idDialogInfo : Title := rsMtInformation;
+      idDialogConfirm : Title := rsMtConfirmation;
+    end;
+    gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
+  end;
+
+  if (gtk_major_version = 2) and (gtk_minor_version <= 12) then
+  begin
+    ActiveWindow := GetActiveWindow;
+    if ActiveWindow <> 0 then
+      gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+  end;
+
+  gtk_dialog_run(PGtkDialog(Dialog));
+  gtk_widget_destroy(Dialog);
+  Result := ADialogResult;
+end;
+
 function TGtk2WidgetSet.PromptUser(const DialogCaption: string;
   const DialogMessage: string; DialogType: LongInt; Buttons: PLongInt;
   ButtonCount: LongInt; DefaultIndex: LongInt; EscapeResult: LongInt): LongInt;
