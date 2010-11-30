@@ -58,7 +58,7 @@ var
   CurCompilerFilename: String;
   r: integer;
 begin
-  CurCompilerFilename:=EnvironmentOptions.CompilerFilename;
+  CurCompilerFilename:=EnvironmentOptions.GetCompilerFilename;
   if CurCompilerFilename='' then
     CurCompilerFilename:=FindDefaultCompilerPath;
   if not FileIsExecutable(CurCompilerFilename) then
@@ -113,7 +113,7 @@ begin
   end;
   if not CheckFPCSourceDir(CurFPCSrcDir) then begin
     if (not InteractiveSetup)
-    or (not FileIsExecutable(EnvironmentOptions.CompilerFilename)) then
+    or (not FileIsExecutable(EnvironmentOptions.GetCompilerFilename)) then
       exit;
     if CurFPCSrcDir='' then begin
       MessageDlg(lisFreePascalSourcesNotFound,

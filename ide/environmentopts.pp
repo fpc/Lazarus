@@ -210,10 +210,11 @@ type
     FLazarusDirectory: string;
     FLazarusDirsHistory: TStringList;
     FCompilerFilename: string;
+    FCompilerFilenameParsed: string;
+    FCompilerFilenameParsedStamp: integer;
     FCompilerFileHistory: TStringList;
     FFPCSourceDirectory: string;
     FFPCSrcDirParsed: string;
-    FFPCSrcDirParsedValid: boolean;
     FFPCSrcDirParsedStamp: integer;
     FFPCSourceDirHistory: TStringList;
     FMakeFileName: string;
@@ -304,6 +305,7 @@ type
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
     function GetFPCSourceDirectory: string;
+    function GetCompilerFilename: string;
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -727,8 +729,10 @@ begin
   LazarusDirectory:=IDEProcs.ProgramDirectory(true);
   FLazarusDirsHistory:=TStringList.Create;
   CompilerFilename:='';
+  FCompilerFilenameParsedStamp:=InvalidParseStamp;
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
+  FFPCSrcDirParsedStamp:=InvalidParseStamp;
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:='';
   FMakeFileHistory:=TStringList.Create;
@@ -1523,14 +1527,26 @@ end;
 
 function TEnvironmentOptions.GetFPCSourceDirectory: string;
 begin
-  if (not FFPCSrcDirParsedValid) or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
+  if (FFPCSrcDirParsedStamp=InvalidParseStamp)
+  or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
   then begin
     FFPCSrcDirParsed:=FFPCSourceDirectory;
     GlobalMacroList.SubstituteStr(FFPCSrcDirParsed);
     FFPCSrcDirParsedStamp:=CompilerParseStamp;
-    FFPCSrcDirParsedValid:=true;
   end;
   Result:=FFPCSrcDirParsed;
+end;
+
+function TEnvironmentOptions.GetCompilerFilename: string;
+begin
+  if (FCompilerFilenameParsedStamp=InvalidParseStamp)
+  or (FCompilerFilenameParsedStamp<>CompilerParseStamp)
+  then begin
+    FCompilerFilenameParsed:=FCompilerFilename;
+    GlobalMacroList.SubstituteStr(FCompilerFilenameParsed);
+    FCompilerFilenameParsedStamp:=CompilerParseStamp;
+  end;
+  Result:=FCompilerFilenameParsed;
 end;
 
 procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);
@@ -1558,13 +1574,13 @@ end;
 function TEnvironmentOptions.MacroFuncCompPath(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=CompilerFilename;
+  Result:=GetCompilerFilename;
 end;
 
 function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=FPCSourceDirectory;
+  Result:=GetFPCSourceDirectory;
 end;
 
 function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
@@ -1651,13 +1667,14 @@ procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
 begin
   if FFPCSourceDirectory=AValue then exit;
   FFPCSourceDirectory:=AppendPathDelim(TrimFilename(AValue));
-  FFPCSrcDirParsedValid:=false;
+  FFPCSrcDirParsedStamp:=InvalidParseStamp;
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
 begin
   if FCompilerFilename=AValue then exit;
   FCompilerFilename:=TrimFilename(AValue);
+  FCompilerFilenameParsedStamp:=InvalidParseStamp;
 end;
 
 procedure TEnvironmentOptions.SetDebuggerSearchPath(const AValue: string);

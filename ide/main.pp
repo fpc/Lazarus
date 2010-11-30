@@ -11543,7 +11543,7 @@ begin
     CompileProgress.CreateDialog(OwningComponent, 'Lazarus...', '');
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
-                         '',EnvironmentOptions.CompilerFilename,
+                         '',EnvironmentOptions.GetCompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
     if Result<>mrOk then begin
@@ -11610,7 +11610,7 @@ begin
     SourceEditorManager.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
-                         PkgOptions,EnvironmentOptions.CompilerFilename,
+                         PkgOptions,EnvironmentOptions.GetCompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          IDEBuildFlags+[blfUseMakeIDECfg]
                          );
@@ -13720,7 +13720,7 @@ begin
     'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  if (not FileExistsCached(EnvironmentOptions.CompilerFilename)) then begin
+  if (not FileExistsCached(EnvironmentOptions.GetCompilerFilename)) then begin
     DebugLn('');
     DebugLn('NOTE: Compiler filename not set! (see Environment / Options ... / Environment / Files)');
   end;

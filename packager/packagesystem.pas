@@ -3591,7 +3591,7 @@ begin
       IDAsString]);
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
     FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetExecutableExt,
-                                      EnvironmentOptions.CompilerFilename);
+                                      EnvironmentOptions.GetCompilerFilename);
     FPCMakeTool.CmdLineParams:='-q -TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
                             'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
