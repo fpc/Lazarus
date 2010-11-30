@@ -4287,19 +4287,19 @@ begin
   inherited LoadFromXML(XML, Path);
 
   Shared:=XML.GetValue(Path+'Picture/Shared/Value',false);
+  b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
+  Ext := XML.GetValue(Path+'Picture/Type/Ext', '');
 
   M := nil;
-  b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
-  if b=pkAny then begin
-    Ext := XML.GetValue(Path+'Picture/Type/Ext', '');
-    if Ext='' then begin
-      GetPictureStream;
-      Graphic := StreamToGraphic(M);
-    end else
-      Graphic := ExtensionToGraphic(Ext)
-  end
+  if (b=pkAny) and (Ext<>'') then
+    Graphic := ExtensionToGraphic(Ext)
   else
-    Graphic := PictureTypeToGraphic(b);
+  if (b>pkBitmap) then
+    Graphic := PictureTypeToGraphic(b)
+  else begin
+    GetPictureStream;
+    Graphic := StreamToGraphic(M);
+  end;
 
   Picture.Graphic := Graphic;
   if Graphic <> nil then
@@ -4308,8 +4308,12 @@ begin
     if M=nil then
       GetPictureStream;
     try
-      M.Position := 0;
-      Picture.Graphic.LoadFromStream(M);
+      try
+        M.Position := 0;
+        Picture.Graphic.LoadFromStream(M);
+      except
+        ShowMessage('Unknown Image Format!');
+      end;
     finally
       M.Free;
     end;
@@ -4517,6 +4521,12 @@ function TfrPictureView.StreamToGraphic(M: TMemoryStream): TGraphic;
   end;
 
 begin
+
+  if M=nil then begin
+    result := nil;
+    exit;
+  end;
+
   M.Position := 0;
 
   if TestStreamIsBMP(M) then
