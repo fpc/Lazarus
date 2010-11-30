@@ -465,11 +465,14 @@ type
   TfrPictureView = class(TfrView)
   private
     fPicture: TPicture;
+    FShared: boolean;
     
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
     function GetPictureType: byte;
     function PictureTypeToGraphic(b: Byte): TGraphic;
+    function ExtensionToGraphic(const Ext: string): TGraphic;
+    function StreamToGraphic(M: TMemoryStream): TGraphic;
     procedure SetPicture(const AValue: TPicture);
   protected
     procedure GetBlob(b: TfrTField); override;
@@ -484,7 +487,6 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
-    class function GetFilter: string;
   published
     property Picture : TPicture read fPicture write SetPicture;
 
@@ -495,6 +497,7 @@ type
     property FrameStyle;
     property FrameWidth;
     property Stretched;
+    property Shared: boolean read FShared write FShared;
   end;
 
   { TfrLineView }
@@ -4067,6 +4070,7 @@ procedure TfrPictureView.Assign(From: TfrView);
 begin
   inherited Assign(From);
   Picture.Assign(TfrPictureView(From).Picture);
+  FShared := TFrPictureView(From).Shared;
 end;
 
 procedure TfrPictureView.Draw(aCanvas: TCanvas);
@@ -4186,19 +4190,24 @@ const
 
 procedure StreamToXML(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
-  Buf: Array[0..1023] of byte;
-  S: String;
-  i: integer;
+  Buf: array[0..1023] of byte;
+  S: string;
+  i,c: integer;
   procedure WriteBuf(Count: Integer);
   var
     j: Integer;
+    St: string[3];
   begin
-    for j:=0 to Count-1 do
-      S := S + IntToHex(Buf[j], 2);
+    for j:=0 to Count-1 do begin
+      St := IntToHex(Buf[j], 2);
+      Move(St[1], S[C], 2);
+      inc(c,2);
+    end;
   end;
 begin
   XML.SetValue(Path+'Size/Value', Stream.Size);
-  S := '';
+  SetLength(S, Stream.Size*2);
+  c := 1;
   for i:=1 to Stream.Size div SizeOf(Buf) do begin
     Stream.Read(Buf, SizeOf(buf));
     WriteBuf(SizeOf(Buf));
@@ -4240,15 +4249,11 @@ begin
   Stream.Read(b, 1);
 
   if b=pkAny then
-  begin
-    AGraphicClass := GetGraphicClassForFileExtension(Stream.ReadAnsiString);
-    if AGraphicClass<>nil then
-      Graphic := AGraphicClass.Create
-    else
-      Graphic := nil;
-  end else
+    Graphic := ExtensionToGraphic(Stream.ReadAnsiString)
+  else
     Graphic := PictureTypeToGraphic(b);
 
+  Stream.Read(FShared, SizeOf(FShared));
   Stream.Read(n, 4);
 
   Picture.Graphic := Graphic;
@@ -4265,17 +4270,44 @@ var
   b: Byte;
   m: TMemoryStream;
   Graphic: TGraphic;
+  Ext: string;
+
+  procedure GetPictureStream;
+  begin
+    M := TMemoryStream.Create;
+    try
+      XMLToStream(XML, Path+'Picture/', M);
+    except
+      M.Free;
+      M := nil;
+    end;
+  end;
+
 begin
   inherited LoadFromXML(XML, Path);
+
+  Shared:=XML.GetValue(Path+'Picture/Shared/Value',false);
+
+  M := nil;
   b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
-  Graphic := PictureTypeToGraphic(b);
+  if b=pkAny then begin
+    Ext := XML.GetValue(Path+'Picture/Type/Ext', '');
+    if Ext='' then begin
+      GetPictureStream;
+      Graphic := StreamToGraphic(M);
+    end else
+      Graphic := ExtensionToGraphic(Ext)
+  end
+  else
+    Graphic := PictureTypeToGraphic(b);
+
   Picture.Graphic := Graphic;
   if Graphic <> nil then
   begin
     Graphic.Free;
-    M := TMemoryStream.Create;
+    if M=nil then
+      GetPictureStream;
     try
-      XMLToStream(XML, Path+'Picture/', M);
       M.Position := 0;
       Picture.Graphic.LoadFromStream(M);
     finally
@@ -4299,7 +4331,7 @@ begin
     ext := GraphicExtension(TGraphicClass(Picture.Graphic.ClassType));
     Stream.WriteAnsiString(ext);
   end;
-
+  Stream.Write(FShared, SizeOf(FShared));
   n := Stream.Position;
   Stream.Write(n, 4);
   if b <> pkNone then
@@ -4318,9 +4350,13 @@ var
 begin
   inherited SaveToXML(XML, Path);
   b := GetPictureType;
+
+  XML.SetValue(Path+'Picture/Shared/Value', FShared);
   XML.SetValue(Path+'Picture/Type/Value', b);
   if b <> pkNone then
   begin
+    XML.SetValue(Path+'Picture/Type/Ext',
+                 GraphicExtension(TGraphicClass(Picture.Graphic.ClassType)));
     M := TMemoryStream.Create;
     try
       Picture.Graphic.SaveToStream(M);
@@ -4445,30 +4481,81 @@ begin
   end;
 end;
 
+function TfrPictureView.ExtensionToGraphic(const Ext: string): TGraphic;
+var
+  AGraphicClass: TGraphicClass;
+begin
+  AGraphicClass := GetGraphicClassForFileExtension(Ext);
+  if AGraphicClass<>nil then
+    result := AGraphicClass.Create
+  else
+    result := nil;
+end;
+
+function TfrPictureView.StreamToGraphic(M: TMemoryStream): TGraphic;
+
+  function ReadString(Len: Integer): string;
+  begin
+    SetLength(result, Len);
+    M.Read(result[1], Len);
+  end;
+
+  function TestStreamIsPNG: boolean;
+  begin
+    result := ReadString(8) = #137'PNG'#13#10#26#10;
+    M.Position := 0;
+  end;
+
+  function TestStreamIsJPEG: boolean;
+  begin
+    Result := ReadString(4) = #$FF#$D8#$FF#$E0;
+    if result then begin
+      M.Position := 6;
+      result := ReadString(5) = 'JFIF'#0
+    end;
+    M.Position := 0;
+  end;
+
+begin
+  M.Position := 0;
+
+  if TestStreamIsBMP(M) then
+  begin
+    result := PictureTypeToGraphic(pkBitmap);
+    exit;
+  end;
+
+  if TestStreamIsIcon(M) then begin
+    result := PictureTypeToGraphic(pkIcon);
+    exit;
+  end;
+
+  if TestStreamIsXPM(M) then
+  begin
+    result := TPixmap.Create;
+    exit;
+  end;
+
+  if TestStreamIsPNG then
+  begin
+    result := PictureTypeToGraphic(pkPNG);
+    exit;
+  end;
+
+  if TestStreamIsJPEG then
+  begin
+    result := PictureTypeToGraphic(pkJPEG);
+    exit;
+  end;
+
+  result := nil;
+end;
+
 procedure TfrPictureView.SetPicture(const AValue: TPicture);
 begin
   BeforeChange;
   fPicture := AValue;
   AfterChange;
-end;
-
-class function TfrPictureView.GetFilter: string;
-  procedure AddFilter(G:TGraphicClass);
-  var
-    S: string;
-  begin
-    if result<>'' then
-      Result := Result + ';';
-    Result := Result + '*.' + StringReplace(G.GetFileExtensions, ';', ';*.',
-                                            [rfReplaceAll]);
-  end;
-begin
-  Result := '';
-  AddFilter(TBitmap);
-  AddFilter(TIcon);
-  AddFilter(TJpegImage);
-  AddFilter(TPortableNetworkGraphic);
-  Result := '(' + Result + ')|'+Result;
 end;
 
 function TfrLineView.GetFrames: TfrFrameBorders;

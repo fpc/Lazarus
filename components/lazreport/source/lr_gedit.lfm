@@ -30,9 +30,9 @@ object frGEditorForm: TfrGEditorForm
   end
   object CB1: TCheckBox
     Left = 256
-    Height = 22
+    Height = 17
     Top = 232
-    Width = 71
+    Width = 53
     HelpContext = 82
     AllowGrayed = True
     Caption = '&Stretch'
@@ -90,11 +90,8 @@ object frGEditorForm: TfrGEditorForm
     OnClick = Button5Click
     TabOrder = 5
   end
-  object OpenDlg: TOpenDialog
-    DefaultExt = '.bmp'
-    FilterIndex = 0
-    Options = [ofHideReadOnly]
-    left = 52
+  object OpenDlg: TOpenPictureDialog
+    left = 120
     top = 40
   end
 end

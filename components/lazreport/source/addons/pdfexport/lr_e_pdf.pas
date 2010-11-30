@@ -222,7 +222,7 @@ begin
         PRImage := TPRImage.Create(PRPanel);
         PRImage.Parent := PRPanel;
         PRImage.Stretch := True;
-        PRImage.SharedImage := False;
+        PRImage.SharedImage := View.Shared;
         PRImage.Left := x;
         PRImage.Top := y;
         PRImage.Height := h;

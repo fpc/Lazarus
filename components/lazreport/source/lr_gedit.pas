@@ -17,21 +17,24 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls,
+  ExtCtrls, Buttons, StdCtrls, ExtDlgs,
 
   LR_Const;
 
 type
+
+  { TfrGEditorForm }
+
   TfrGEditorForm = class(TForm)
     Image1: TImage;
     Bevel1: TBevel;
-    OpenDlg: TOpenDialog;
     CB1: TCheckBox;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
+    OpenDlg: TOpenPictureDialog;
     procedure BitBtn1Click(Sender: TObject);
     procedure CB1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
@@ -54,9 +57,6 @@ uses LR_Class, LR_Desgn;
 
 procedure TfrGEditorForm.BitBtn1Click(Sender: TObject);
 begin
-  OpenDlg.Filter := sPictFile + ' ' +
-    TfrPictureView.GetFilter + '|' +sAllFiles + '|*.*';
-
   if OpenDlg.Execute then
     Image1.Picture.LoadFromFile(OpenDlg.FileName);
 end;
