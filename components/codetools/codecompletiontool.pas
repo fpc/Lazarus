@@ -5505,21 +5505,21 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       if (Parts[ppIndexWord].StartPos<1) then begin
         // param list, no index
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+';'
-                           +' :'+UpperCaseStr(PropType)+');';
+                           +UpperCaseStr(PropType)+');';
       end else begin
         // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
-                  +CleanParamList+'; :'+UpperCaseStr(PropType)+');';
+        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
+                  +CleanParamList+';'+UpperCaseStr(PropType)+');';
       end;
     end else begin
       if (Parts[ppIndexWord].StartPos<1) then begin
         // no param list, no index
         CleanAccessFunc:=UpperCaseStr(AccessParam)
-                            +'( :'+UpperCaseStr(PropType)+');';
+                            +'('+UpperCaseStr(PropType)+');';
       end else begin
         // index, no param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
-                            +' :'+UpperCaseStr(PropType)+');';
+        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
+                            +UpperCaseStr(PropType)+');';
       end;
     end;
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
