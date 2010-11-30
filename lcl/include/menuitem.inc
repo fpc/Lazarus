@@ -322,8 +322,7 @@ begin
   if not assigned (FItems) then exit;
 
   for i := 0 to FItems.Count - 1 do
-    if TComponent (FItems[i]).Owner = Root then
-      Proc(TComponent(FItems[i]));
+    Proc(TComponent(FItems[i]));
 end;
 
 function TMenuItem.GetAction: TBasicAction;

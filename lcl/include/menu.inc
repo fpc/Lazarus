@@ -297,11 +297,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
-   i : integer;
+  i: integer;
 begin
-   for i := 0 to FItems.Count - 1 do
-     if FItems[i].Owner = Root
-     then Proc(TComponent (FItems [i]));
+  for i := 0 to FItems.Count - 1 do
+    Proc(TComponent(FItems[i]));
 end;
 
 procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
