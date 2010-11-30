@@ -877,6 +877,7 @@ type
     procedure EditorSelectAll;
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorShowInCell(const aCol,aRow:Integer); virtual;
+    procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     function  FirstGridColumn: integer; virtual;
     function  FixedGrid: boolean;
@@ -6907,6 +6908,11 @@ begin
   end;
 end;
 
+procedure TCustomGrid.EditorTextChanged(const aCol,aRow: Integer; const aText:string);
+begin
+  SetEditText(aCol, aRow, aText);
+end;
+
 procedure TCustomGrid.EditorWidthChanged(aCol, aWidth: Integer);
 begin
   EditorPos;
@@ -10857,7 +10863,7 @@ end;
 procedure TPickListCellEditor.Select;
 begin
   if FGrid<>nil then begin
-    FGrid.SetEditText(FCol, FRow, Text);
+    FGrid.EditorTextChanged(FCol, FRow, Text);
     FGrid.PickListItemSelected(Self);
   end;
   inherited Select;
@@ -10865,9 +10871,8 @@ end;
 
 procedure TPickListCellEditor.Change;
 begin
-  if FGrid<>nil then begin
-    FGrid.SetEditText(FCol, FRow, Text);
-  end;
+  if FGrid<>nil then
+    FGrid.EditorTextChanged(FCol, FRow, Text);
   inherited Change;
 end;
 

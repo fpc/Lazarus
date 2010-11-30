@@ -390,6 +390,7 @@ type
     procedure EditorDoGetValue; override;
     function  EditorCanAcceptKey(const ch: TUTF8Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
+    procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); override;
     procedure EndLayout;
     function  FieldIndexFromGridColumn(AGridCol: Integer): Integer;
     function  FirstGridColumn: Integer; override;
@@ -2333,8 +2334,7 @@ end;
 
 procedure TCustomDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
-  if not EditorIsReadOnly then
-    FTempText := Value;
+  FTempText := Value;
 end;
 
 procedure TCustomDBGrid.SetFixedCols(const AValue: Integer);
@@ -2866,6 +2866,13 @@ begin
 
     EditingColumn(Col, not Result);
   end;
+end;
+
+procedure TCustomDBGrid.EditorTextChanged(const aCol, aRow: Integer;
+  const aText: string);
+begin
+  if not EditorIsReadonly then
+    SetEditText(aCol, aRow, aText);
 end;
 
 procedure TCustomDBGrid.HeaderSized(IsColumn: Boolean; Index: Integer);
