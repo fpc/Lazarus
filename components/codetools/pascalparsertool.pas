@@ -3129,6 +3129,8 @@ begin
         RaiseCharExpectedButAtomFound(';');
     until (CurPos.Flag=cafSemicolon) or (CurPos.StartPos>SrcLen);
   end;
+  if UpAtomIs('DEPRECATED') then
+    ReadNextAtom;
   // read ;
   if CurPos.Flag<>cafSemicolon then
     RaiseCharExpectedButAtomFound(';');
@@ -4235,7 +4237,7 @@ begin
       CurNode.EndPos:=CurPos.StartPos;
     end else if AtomIsChar('<') and (Scanner.CompilerMode in [cmOBJFPC,cmFPC])
     and (LastUpAtomIs(0,'STRING')) then begin
-      // string<
+      // string<   a string with an encoding
       CurNode.Desc:=ctnIdentifier;
       repeat
         ReadNextAtom;
