@@ -34,7 +34,8 @@ type
     seMarginY: TSpinEdit;
     procedure cbUseSidebarChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
-    procedure Chart1FuncSeries1DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+    procedure Chart1FuncSeries1DrawLegend(
+      ACanvas: TCanvas; AIndex: Integer; const ARect: TRect);
     procedure FormCreate(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
     procedure seMarginXChange(Sender: TObject);
@@ -63,7 +64,7 @@ begin
 end;
 
 procedure TForm1.Chart1FuncSeries1DrawLegend(
-  ACanvas: TCanvas; const ARect: TRect);
+  ACanvas: TCanvas; AIndex: Integer; const ARect: TRect);
 var
   x, y0, w: Integer;
 begin

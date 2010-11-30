@@ -42,15 +42,17 @@ type
   end;
 
   TLegendItemDrawEvent =
-    procedure (ACanvas: TCanvas; const ARect: TRect) of object;
+    procedure (ACanvas: TCanvas; AIndex: Integer; const ARect: TRect) of object;
 
   { TLegendItemUserDrawn }
 
   TLegendItemUserDrawn = class(TLegendItem)
   private
+    FIndex: Integer;
     FOnDraw: TLegendItemDrawEvent;
   public
-    constructor Create(AOnDraw: TLegendItemDrawEvent; const AText: String);
+    constructor Create(
+      AIndex: Integer; AOnDraw: TLegendItemDrawEvent; const AText: String);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     property OnDraw: TLegendItemDrawEvent read FOnDraw;
   end;
@@ -166,8 +168,10 @@ type
   private
     FMultiplicity: TLegendMultiplicity;
     FOnDraw: TLegendItemDrawEvent;
+    FUserItemsCount: Integer;
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
     procedure SetOnDraw(AValue: TLegendItemDrawEvent);
+    procedure SetUserItemsCount(AValue: Integer);
   public
     constructor Create(AOwner: TCustomChart);
   public
@@ -176,6 +180,8 @@ type
     property Multiplicity: TLegendMultiplicity
       read FMultiplicity write SetMultiplicity default lmSingle;
     property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
+    property UserItemsCount: Integer
+      read FUserItemsCount write SetUserItemsCount default 1;
     property Visible default true;
   end;
 
@@ -203,9 +209,10 @@ end;
 { TLegendItemUserDrawn }
 
 constructor TLegendItemUserDrawn.Create(
-  AOnDraw: TLegendItemDrawEvent; const AText: String);
+  AIndex: Integer; AOnDraw: TLegendItemDrawEvent; const AText: String);
 begin
   inherited Create(AText);
+  FIndex := AIndex;
   FOnDraw := AOnDraw;
 end;
 
@@ -213,7 +220,7 @@ procedure TLegendItemUserDrawn.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   inherited Draw(ACanvas, ARect);
   if Assigned(FOnDraw) then
-    FOnDraw(ACanvas, ARect);
+    FOnDraw(ACanvas, FIndex, ARect);
 end;
 
 { TLegendItemLine }
@@ -491,6 +498,7 @@ constructor TChartSeriesLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FVisible := true;
+  FUserItemsCount := 1;
 end;
 
 procedure TChartSeriesLegend.SetMultiplicity(AValue: TLegendMultiplicity);
@@ -504,6 +512,13 @@ procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
 begin
   if FOnDraw = AValue then exit;
   FOnDraw := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartSeriesLegend.SetUserItemsCount(AValue: Integer);
+begin
+  if FUserItemsCount = AValue then exit;
+  FUserItemsCount := AValue;
   StyleChanged(Self);
 end;
 

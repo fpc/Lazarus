@@ -288,9 +288,12 @@ begin
 end;
 
 procedure TCustomChartSeries.GetLegendItemsBasic(AItems: TChartLegendItems);
+var
+  i: Integer;
 begin
   if Assigned(Legend.OnDraw) then
-    AItems.Add(TLegendItemUserDrawn.Create(Legend.OnDraw, Title))
+    for i := 0 to Legend.UserItemsCount - 1 do
+      AItems.Add(TLegendItemUserDrawn.Create(i, Legend.OnDraw, Title))
   else
     GetLegendItems(AItems);
 end;
