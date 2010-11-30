@@ -20,7 +20,8 @@ interface
 
 uses
     SysUtils, Classes, Graphics, Forms, StdCtrls, lr_class, lr_BarC,
-    lr_shape, PdfDoc, PdfTypes, PdfFonts, PReport, Dialogs, Controls;
+    lr_shape, PdfDoc, PdfTypes, PdfFonts, PRJpegImage, PReport, Dialogs,
+    Controls;
 
 type
     TfrTNPDFExport = class(TComponent) // fake component
@@ -214,26 +215,37 @@ end;
 procedure TfrTNPDFExportFilter.ShowPicture(View: TfrPictureView; x, y, h,
     w: integer);
 var
-    Bitmap: TBitmap;
-    PRImage: TPRImage;
+  Bitmap: TBitmap;
+  PRImage: TPRImage;
 begin
+
+  if View.Picture.Graphic is TJpegImage then
+    PRImage := TPRJpegImage.Create(PRPanel)
+  else
+    PRImage := TPRImage.Create(PRPanel);
+  PRImage.Parent := PRPanel;
+  PRImage.Stretch := True;
+  PRImage.SharedImage := View.Shared;
+  PRImage.Left := x;
+  PRImage.Top := y;
+  PRImage.Height := h;
+  PRImage.Width := w;
+
+  if View.Picture.Graphic is TJpegImage then
+    PRImage.Picture.Graphic := View.Picture.Graphic
+  else
+  begin
     Bitmap := TBitmap.Create;
     try
-        PRImage := TPRImage.Create(PRPanel);
-        PRImage.Parent := PRPanel;
-        PRImage.Stretch := True;
-        PRImage.SharedImage := View.Shared;
-        PRImage.Left := x;
-        PRImage.Top := y;
-        PRImage.Height := h;
-        PRImage.Width := w;
-        Bitmap.Height := View.Picture.Height;
-        Bitmap.Width := View.Picture.Width;
-        Bitmap.Canvas.Draw(0, 0, View.Picture.Graphic);
-        PRImage.Picture.Bitmap := Bitmap;
+      Bitmap.Height := View.Picture.Height;
+      Bitmap.Width := View.Picture.Width;
+      Bitmap.Canvas.Draw(0, 0, View.Picture.Graphic);
+      PRImage.Picture.Bitmap := Bitmap;
     finally
-        FreeAndNil(Bitmap);
+      FreeAndNil(Bitmap);
     end;
+  end;
+
 end;
 
 procedure TfrTNPDFExportFilter.ShowShape(View: TfrShapeView; x, y, h, w: integer
