@@ -5575,9 +5575,21 @@ var
       case CurPos.Flag of
       cafEnd:
         if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos]='.') then begin
+          { end. of source found
+            The parsing started in a begin block, valid cases:
+
+              program a;
+              begin|
+              end.
+
+              implementation
+              begin|
+              end.
+          }
           if (Stack.Top=0) and (TopBlockType(Stack)=btBegin)
           and (StartNode.Desc=ctnBeginBlock)
-          and ((StartNode.Parent=nil) or (StartNode.Parent.Desc in AllSourceTypes))
+          and ((StartNode.Parent=nil)
+            or (StartNode.Parent.Desc in AllSourceTypes+[ctnInterface,ctnImplementation]))
           then begin
             if not EndBlockIsOk then exit; // close main begin
           end else begin
