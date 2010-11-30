@@ -1861,7 +1861,10 @@ procedure TCarbonMemo.SetColor(const AColor: TColor);
 var
   CGColor: CGColorRef;
 begin
-  CGColor := CreateCGColor(AColor);
+  if AColor = clDefault then
+    CGColor := CreateCGColor(LCLObject.GetDefaultColor(dctBrush))
+  else
+    CGColor := CreateCGColor(AColor);
   try
     OSError(HITextViewSetBackgroundColor(HIViewRef(Widget), CGColor),
       Self, SSetColor, 'HITextViewSetBackgroundColor');
@@ -1903,7 +1906,10 @@ begin
   ATSUCreateAndCopyStyle(TCarbonFont(AFont.Reference.Handle).Style, SavedStyle);
   try
     // set font color
-    TCarbonFont(AFont.Reference.Handle).SetColor(AFont.Color);
+    if AFont.Color = clDefault then
+      TCarbonFont(AFont.Reference.Handle).SetColor(LCLObject.GetDefaultColor(dctFont))
+    else
+      TCarbonFont(AFont.Reference.Handle).SetColor(AFont.Color);
 
     // font style
     Attrs[3].tag := kTXNATSUIStyle;
