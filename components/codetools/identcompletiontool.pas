@@ -1944,7 +1944,7 @@ var
     Node:=CursorNode;
     Can:=false;
     if (Node.Parent<>nil)
-    and (Node.Parent.Desc in [ctnClassVar,ctnClassClassVar])
+    and (Node.Parent.Desc in AllClassSections)
     and (Node.Desc=ctnVarDefinition)
     and (CurrentIdentifierList.StartAtomBehind.Flag<>cafColon) then begin
       { cursor is at a class variable definition without type
