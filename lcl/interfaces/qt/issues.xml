@@ -10,5 +10,11 @@
 		<issue name="TMemo.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
+		<issue name="TPageControl.MultiLine">
+			<short>MultiLine property is not supported</short>
+		</issue>
+		<issue name="TTabControl.MultiLine">
+			<short>MultiLine property is not supported</short>
+		</issue>
 	</widgetset>
 </package>
