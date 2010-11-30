@@ -211,8 +211,8 @@ begin
       end else
         s:='';
       if phpWithParameterNames in Attr then
-        s:=s+ParamType.ParamName;
-      s:=s+':'+ParamType.TypeName;
+        s:=s+ParamType.ParamName+':';
+      s:=s+ParamType.TypeName;
       if Reverse then begin
         if i>0 then s:=s+';';
         ParamString:=s+ParamString;
