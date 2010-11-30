@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree, SourceLog,
-  FileProcs, LazConf, StdCtrls, ExtCtrls;
+  FileProcs, CodeToolManager, CodeToolsConfig, CodeCache, LazConf,
+  StdCtrls, ExtCtrls;
 
 type
   // comments
@@ -184,6 +185,7 @@ procedure LoadStringToStringTree(XMLConfig: TXMLConfig;
 procedure SaveStringToStringTree(XMLConfig: TXMLConfig;
                                  Tree: TStringToStringTree; const Path: string);
 procedure MakeXMLName(var Name: string);
+function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
   
 
 function FindProgram(const Programname, BaseDirectory: string;
@@ -998,6 +1000,22 @@ begin
       inc(i);
     end else begin
       System.Delete(Name,i,1);
+    end;
+  end;
+end;
+
+function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
+var
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+  try
+    Result:=TCodeBufXMLConfig.CreateWithCache(Filename);
+  except
+    on E: Exception do begin
+      debugln(['LoadXMLConfigViaCodeBuffer Filename="',Filename,'": ',E.Message]);
     end;
   end;
 end;

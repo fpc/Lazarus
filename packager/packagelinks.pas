@@ -39,10 +39,9 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs,
-  LCLProc, FileUtil,
-  MacroIntf, PackageIntf,
-  IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs, CodeToolManager,
+  CodeCache, LCLProc, FileUtil, MacroIntf, PackageIntf, IDEProcs, DialogProcs,
+  EnvironmentOpts, PackageDefs, LazConf;
   
 const
   PkgLinksFileVersion = 2;
@@ -168,7 +167,7 @@ type
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
                               Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
-    function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
+    function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;// do not this use if package is open in IDE
     procedure RemoveLink(APackageID: TLazPackageID);
   public
     property Modified: boolean read FModified write SetModified;
@@ -886,34 +885,53 @@ function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string
 var
   OldLink: TPackageLink;
   NewLink: TPackageLink;
+  LPK: TXMLConfig;
+  PkgVersion: TPkgVersion;
 begin
   BeginUpdate;
-  // check if link already exists
-  OldLink:=FindLinkWithPkgName(PkgName);
-  if (OldLink<>nil) then begin
-    // link exists
-    if CompareFilenames(OldLink.GetEffectiveFilename,PkgFilename)=0 then begin
-      Result:=OldLink;
-      Result.LastUsed:=Now;
-      exit;
+  PkgVersion:=TPkgVersion.Create;
+  LPK:=nil;
+  try
+    // load version
+    LPK:=LoadXMLConfigViaCodeBuffer(PkgFilename);
+    if LPK<>nil then
+      PkgVersionLoadFromXMLConfig(PkgVersion,LPK);
+
+    // check if link already exists
+    OldLink:=FindLinkWithPkgName(PkgName);
+    if (OldLink<>nil) then begin
+      // link exists
+      if CompareFilenames(OldLink.GetEffectiveFilename,PkgFilename)=0 then begin
+        Result:=OldLink;
+        Result.LastUsed:=Now;
+        if LPK<>nil then
+          Result.Version.Assign(PkgVersion);
+        exit;
+      end;
     end;
+    // add user link
+    NewLink:=TPackageLink.Create;
+    NewLink.Reference;
+    NewLink.Name:=PkgName;
+    NewLink.Filename:=PkgFilename;
+    if LPK<>nil then
+      NewLink.Version.Assign(PkgVersion);
+    if NewLink.MakeSense then begin
+      FUserLinksSortID.Add(NewLink);
+      FUserLinksSortFile.Add(NewLink);
+      Modified:=true;
+    end else begin
+      NewLink.Release;
+      NewLink:=nil;
+    end;
+    EndUpdate;
+    Result:=NewLink;
+    if Result<>nil then
+      Result.LastUsed:=Now;
+  finally
+    PkgVersion.Free;
+    LPK.Free;
   end;
-  // add user link
-  NewLink:=TPackageLink.Create;
-  NewLink.Reference;
-  NewLink.Name:=PkgName;
-  NewLink.Filename:=PkgFilename;
-  if NewLink.MakeSense then begin
-    FUserLinksSortID.Add(NewLink);
-    FUserLinksSortFile.Add(NewLink);
-    Modified:=true;
-  end else begin
-    NewLink.Release;
-    NewLink:=nil;
-  end;
-  EndUpdate;
-  Result:=NewLink;
-  Result.LastUsed:=Now;
 end;
 
 procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);

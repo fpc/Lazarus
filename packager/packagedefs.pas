@@ -911,6 +911,9 @@ procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig; const Path: string; FileVersion: integer);
 procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
   const Path: string);
+procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
+  XMLConfig: TXMLConfig);
+
 
 implementation
 
@@ -1351,6 +1354,17 @@ begin
   XMLConfig.SetDeleteValue(Path+'Minor',Version.Minor,0);
   XMLConfig.SetDeleteValue(Path+'Release',Version.Release,0);
   XMLConfig.SetDeleteValue(Path+'Build',Version.Build,0);
+end;
+
+procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
+  XMLConfig: TXMLConfig);
+var
+  Path: String;
+  FileVersion: LongInt;
+begin
+  Path:='Package/';
+  FileVersion:=XMLConfig.GetValue(Path+'Version',0);
+  PkgVersionLoadFromXMLConfig(Version,XMLConfig,Path+'Version/',FileVersion);
 end;
 
 function IndexOfDependencyInList(First: TPkgDependency;
