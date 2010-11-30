@@ -1982,6 +1982,8 @@ type
   TTVChangedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
   TTVEditingEvent = procedure(Sender: TObject; Node: TTreeNode;
                               var AllowEdit: Boolean) of object;
+  TTVEditingEndEvent = procedure(Sender: TObject; Node: TTreeNode;
+                              Cancel: Boolean) of object;
   TTVEditedEvent = procedure(Sender: TObject; Node: TTreeNode;
                              var S: string) of object;
   TTVExpandingEvent = procedure(Sender: TObject; Node: TTreeNode;
@@ -2420,6 +2422,7 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnDeletion: TTVExpandedEvent;
     FOnEditing: TTVEditingEvent;
+    FOnEditingEnd: TTVEditingEndEvent;
     FOnEdited: TTVEditedEvent;
     FOnExpanded: TTVExpandedEvent;
     FOnExpanding: TTVExpandingEvent;
@@ -2612,6 +2615,7 @@ type
     property OnDeletion: TTVExpandedEvent read FOnDeletion write FOnDeletion;
     property OnEdited: TTVEditedEvent read FOnEdited write FOnEdited;
     property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
+    property OnEditingEnd: TTVEditingEndEvent read FOnEditingEnd write FOnEditingEnd;
     property OnExpanded: TTVExpandedEvent read FOnExpanded write FOnExpanded;
     property OnExpanding: TTVExpandingEvent read FOnExpanding write FOnExpanding;
     property OnGetImageIndex: TTVExpandedEvent
@@ -2766,6 +2770,7 @@ type
     property OnDragOver;
     property OnEdited;
     property OnEditing;
+    property OnEditingEnd;
     //property OnEndDock;
     property OnEndDrag;
     property OnEnter;

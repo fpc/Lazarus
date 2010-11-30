@@ -4779,6 +4779,7 @@ begin
         Node.Text:=NewText;
       end;
     end;
+    if Assigned(FOnEditingEnd) then FOnEditingEnd(Self, FEditingItem, Cancel);
   end;
   FEditingItem := nil;
   Invalidate;
