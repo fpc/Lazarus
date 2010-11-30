@@ -35,7 +35,7 @@ type
     procedure cbUseSidebarChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries1DrawLegend(
-      ACanvas: TCanvas; AIndex: Integer; const ARect: TRect);
+      ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
     procedure FormCreate(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
     procedure seMarginXChange(Sender: TObject);
@@ -51,6 +51,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  SysUtils;
+
 { TForm1 }
 
 procedure TForm1.cbUseSidebarChange(Sender: TObject);
@@ -64,10 +67,11 @@ begin
 end;
 
 procedure TForm1.Chart1FuncSeries1DrawLegend(
-  ACanvas: TCanvas; AIndex: Integer; const ARect: TRect);
+  ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
 var
   x, y0, w: Integer;
 begin
+  AText := 'Function ' + IntToStr(AIndex);
   ACanvas.Pen := Chart1FuncSeries1.Pen;
   y0 := (ARect.Top + ARect.Bottom) div 2;
   ACanvas.MoveTo(ARect.Left, y0);

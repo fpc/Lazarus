@@ -41,8 +41,9 @@ type
     property Color: TColor read FColor write FColor;
   end;
 
-  TLegendItemDrawEvent =
-    procedure (ACanvas: TCanvas; AIndex: Integer; const ARect: TRect) of object;
+  TLegendItemDrawEvent = procedure (
+    ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String
+  ) of object;
 
   { TLegendItemUserDrawn }
 
@@ -218,9 +219,9 @@ end;
 
 procedure TLegendItemUserDrawn.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
-  inherited Draw(ACanvas, ARect);
   if Assigned(FOnDraw) then
-    FOnDraw(ACanvas, FIndex, ARect);
+    FOnDraw(ACanvas, ARect, FIndex, FText);
+  inherited Draw(ACanvas, ARect);
 end;
 
 { TLegendItemLine }

@@ -56,6 +56,7 @@ object Form1: TForm1
       Source = ListChartSource2
     end
     object Chart1FuncSeries1: TFuncSeries
+      Legend.UserItemsCount = 2
       Extent.XMax = 5
       Extent.UseXMin = True
       Extent.UseXMax = True
