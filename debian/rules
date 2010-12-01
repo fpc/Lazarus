@@ -155,8 +155,7 @@ install-arch-stamp:
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.xpm
-	chmod 644 $(INSTALL_DIR)/usr/share/pixmaps/*.xpm
-	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
+	sed -e 's/Lazarus.*/& (${DEB_UPSTREAM_MAIN_VERSION})/' -e 's/Exec=startlazarus/&-${DEB_UPSTREAM_MAIN_VERSION}/' $(CURDIR)/install/lazarus.desktop > $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
 	# Install man pages
 	$(MAKE) -C install/man installman $(INSTALLOPTS) INSTALL_PREFIX=$(INSTALL_DIR)/usr/share
 	for s in 1 2 3 4 5 6 7 8 9 ; do test -d ${INSTALL_DIR}/usr/share/man/man$${s} && for f in ${INSTALL_DIR}/usr/share/man/man$${s}/*.? ; do n=`basename $${f}` ; ${MV} $${f} `dirname $${f}`/$${n%%.*}-${DEB_UPSTREAM_MAIN_VERSION}."$${n#*.}" ; done ; done || true
