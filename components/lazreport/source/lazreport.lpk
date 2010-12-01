@@ -26,7 +26,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
     <License Value="Modified LGPL
 See license.txt and license-lazreport.txt for details.
 "/>
-    <Version Minor="9" Release="7"/>
+    <Version Minor="9" Release="8"/>
     <Files Count="59">
       <Item1>
         <Filename Value="lr_about.pas"/>
@@ -290,7 +290,7 @@ See license.txt and license-lazreport.txt for details.
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

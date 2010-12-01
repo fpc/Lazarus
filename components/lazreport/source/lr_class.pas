@@ -465,7 +465,7 @@ type
   TfrPictureView = class(TfrView)
   private
     fPicture: TPicture;
-    FShared: boolean;
+    FSharedName: string;
     
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
@@ -497,7 +497,7 @@ type
     property FrameStyle;
     property FrameWidth;
     property Stretched;
-    property Shared: boolean read FShared write FShared;
+    property SharedName: string read FSharedName write FSharedName;
   end;
 
   { TfrLineView }
@@ -4070,7 +4070,7 @@ procedure TfrPictureView.Assign(From: TfrView);
 begin
   inherited Assign(From);
   Picture.Assign(TfrPictureView(From).Picture);
-  FShared := TFrPictureView(From).Shared;
+  FSharedName := TFrPictureView(From).SharedName;
 end;
 
 procedure TfrPictureView.Draw(aCanvas: TCanvas);
@@ -4253,7 +4253,8 @@ begin
   else
     Graphic := PictureTypeToGraphic(b);
 
-  Stream.Read(FShared, SizeOf(FShared));
+  FSharedName := Stream.ReadAnsiString;
+
   Stream.Read(n, 4);
 
   Picture.Graphic := Graphic;
@@ -4286,7 +4287,7 @@ var
 begin
   inherited LoadFromXML(XML, Path);
 
-  Shared:=XML.GetValue(Path+'Picture/Shared/Value',false);
+  SharedName := XML.GetValue(Path+'Picture/SharedName/Value','');
   b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
   Ext := XML.GetValue(Path+'Picture/Type/Ext', '');
 
@@ -4294,7 +4295,7 @@ begin
   if (b=pkAny) and (Ext<>'') then
     Graphic := ExtensionToGraphic(Ext)
   else
-  if (b>pkBitmap) then
+  if (b>pkBitmap) and (b<pkAny) then
     Graphic := PictureTypeToGraphic(b)
   else begin
     GetPictureStream;
@@ -4335,7 +4336,7 @@ begin
     ext := GraphicExtension(TGraphicClass(Picture.Graphic.ClassType));
     Stream.WriteAnsiString(ext);
   end;
-  Stream.Write(FShared, SizeOf(FShared));
+  Stream.WriteAnsiString(FSharedName);
   n := Stream.Position;
   Stream.Write(n, 4);
   if b <> pkNone then
@@ -4355,7 +4356,7 @@ begin
   inherited SaveToXML(XML, Path);
   b := GetPictureType;
 
-  XML.SetValue(Path+'Picture/Shared/Value', FShared);
+  XML.SetValue(Path+'Picture/SharedName/Value', SharedName);
   XML.SetValue(Path+'Picture/Type/Value', b);
   if b <> pkNone then
   begin
