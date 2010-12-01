@@ -52,33 +52,33 @@ type
   { LCLViewExtension }
 
   LCLViewExtension = objccategory(NSView)
-    function lclIsVisible: Boolean; message 'lclIsVisible';
-    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
-    procedure lclInvalidate; message 'lclInvalidate';
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
-    function lclParent: id; message 'lclParent';
-    function lclFrame: TRect; message 'lclFrame';
-    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
-    function lclClientFrame: TRect; message 'lclClientFrame';
+    function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
+    procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    function lclParent: id; message 'lclParent'; reintroduce;
+    function lclFrame: TRect; message 'lclFrame'; reintroduce;
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
+    function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
   end;
 
   { LCLControlExtension }
 
   LCLControlExtension = objccategory(NSControl)
-    function lclIsEnabled: Boolean; message 'lclIsEnabled';
-    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
+    function lclIsEnabled: Boolean; message 'lclIsEnabled'; reintroduce;
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
   end;
 
   { LCLWindowExtension }
 
   LCLWindowExtension = objccategory(NSWindow)
-    function lclIsVisible: Boolean; message 'lclIsVisible';
-    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
-    procedure lclInvalidate; message 'lclInvalidate';
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
-    function lclFrame: TRect; message 'lclFrame';
-    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
-    function lclClientFrame: TRect; message 'lclClientFrame';
+    function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
+    procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    function lclFrame: TRect; message 'lclFrame'; reintroduce;
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
+    function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
   end;
 
   { TCommonCallback }
