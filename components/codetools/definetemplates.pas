@@ -2401,7 +2401,7 @@ var
   SrcRule1: TFPCSourceRule absolute Rule1;
   SrcRule2: TFPCSourceRule absolute Rule2;
 begin
-  Result:=CompareStr(SrcRule1.Filename,SrcRule2.Filename);
+  Result:=CompareFilenames(SrcRule1.Filename,SrcRule2.Filename);
 end;
 
 function CompareFPCTargetConfigCacheItems(CacheItem1, CacheItem2: Pointer): integer;
@@ -2421,7 +2421,7 @@ var
   Src1: TFPCSourceCache absolute CacheItem1;
   Src2: TFPCSourceCache absolute CacheItem2;
 begin
-  Result:=CompareStr(Src1.Directory,Src2.Directory);
+  Result:=CompareFilenames(Src1.Directory,Src2.Directory);
 end;
 
 function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer
@@ -2429,7 +2429,7 @@ function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer
 var
   Src: TFPCSourceCache absolute CacheItem;
 begin
-  Result:=CompareStr(AnsiString(AString),Src.Directory);
+  Result:=CompareFilenames(AnsiString(AString),Src.Directory);
 end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
@@ -7041,7 +7041,7 @@ begin
   Node:=RulesSortedForFilenameStart.Root;
   while true do begin
     Rule:=TFPCSourceRule(Node.Data);
-    cmp:=CompareStr(Filename,Rule.Filename);
+    cmp:=CompareFilenames(Filename,Rule.Filename);
     //DebugLn(['TFPCSourceRules.GetScore Rule.Filename=',Rule.Filename,' Filename=',Filename,' cmp=',cmp]);
     if cmp=0 then
       break;
