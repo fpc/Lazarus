@@ -1021,6 +1021,7 @@ Type
     property DragCursor;
     property DragMode;
     property OnClick;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
