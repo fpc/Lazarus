@@ -2214,7 +2214,7 @@ msgstr "ネーミング"
 #, fuzzy
 #| msgid "no automatic renaming"
 msgid "No automatic renaming"
-msgstr "r "自動的にリネームしない"
+msgstr "r \"自動的にリネームしない"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
@@ -16317,5 +16317,4 @@ msgstr "読み取り専用"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
-
 
