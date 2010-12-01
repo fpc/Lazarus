@@ -5,7 +5,7 @@
     <Name Value="lazreportpdfexport"/>
     <Author Value="Jesus Reyes A."/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -13,6 +13,7 @@
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -21,7 +22,7 @@
     </CompilerOptions>
     <Description Value="PDF Exporter for PDF
 "/>
-    <Version Minor="6"/>
+    <Version Minor="7"/>
     <Files Count="2">
       <Item1>
         <Filename Value="lr_e_pdf.pas"/>
@@ -43,7 +44,7 @@
       </Item2>
       <Item3>
         <PackageName Value="pack_powerpdf"/>
-        <MinVersion Minor="9" Release="4" Valid="True"/>
+        <MinVersion Minor="9" Release="6" Valid="True"/>
       </Item3>
       <Item4>
         <PackageName Value="lazreport"/>
@@ -54,7 +55,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
