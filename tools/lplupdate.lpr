@@ -384,8 +384,12 @@ begin
         or (Link.Minor<>Pkg.Minor)
         or (Link.Release<>Pkg.Release)
         // ignore build
-        then
-          writeln('Version mismatch link ',ExtractFileNameOnly(Link.Filename),' <> ',Pkg.VersionAsString,' in ',CreateRelativePath(Pkg.Filename,PkgDir));
+        then begin
+          if not (Quiet and WriteCommands) then
+            writeln('Version mismatch link ',ExtractFileNameOnly(Link.Filename),' <> ',Pkg.VersionAsString,' in ',CreateRelativePath(Pkg.Filename,PkgDir));
+          if WriteCommands then
+            writeln('svn mv ',CreateRelativePath(Link.Filename,LazarusDir),' ',CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl');
+        end;
         break;
       end;
       dec(j);
@@ -417,6 +421,7 @@ begin
   writeln;
   writeln('-c, --commands');
   writeln('    Write shell commands to fix issues.');
+  writeln('    Hint: use -q -c to get only the commands.');
   writeln;
   writeln('-p <directory of lpk files>, --pkgdir=<dir>');
   writeln('    The directory where to search for lpk files, including sub directories.');
