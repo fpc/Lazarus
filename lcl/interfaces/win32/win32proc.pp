@@ -1259,6 +1259,7 @@ begin
   then begin
     DbgLog('Getinfo');
     // failed ???
+    Windows.ReleaseDC(0, DC);
     Exit(riloBottomToTop);
   end;
 
