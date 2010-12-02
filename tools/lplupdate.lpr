@@ -339,11 +339,19 @@ procedure TLPLUpdate.WriteMissingLinks(Packages: TPackages; Links: TLinks);
 var
   i: Integer;
   Pkg: TPackage;
+  LinkFilename: String;
 begin
   for i:=0 to Packages.Count-1 do begin
     Pkg:=Packages[i];
-    if Links.FindLinkWithName(Pkg.Name)=nil then
-      writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
+    if Links.FindLinkWithName(Pkg.Name)=nil then begin
+      if not (Quiet and WriteCommands) then
+        writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
+      if WriteCommands then begin
+        LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+        writeln('echo ''$(LazarusDir)/'+CreateRelativePath(Pkg.Filename,PkgDir)+''' > '+LinkFilename);
+        writeln('svn add '+LinkFilename);
+      end;
+    end;
   end;
 end;
 
