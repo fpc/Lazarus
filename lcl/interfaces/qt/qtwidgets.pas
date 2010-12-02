@@ -10704,8 +10704,8 @@ begin
     Group := TQtActionGroup(FActions.Items[i]);
     if Group.GroupIndex = AItem.GroupIndex then
     begin
-      QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, True);
-      QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, True);
+      QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, AItem.Enabled);
+      QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, AItem.Visible);
       Group.addAction(TQtMenu(AItem.Handle).actionHandle);
       Group.Exclusive := AItem.RadioItem;
       Group.Visible := True;
@@ -10719,8 +10719,8 @@ begin
     Group := TQtActionGroup.Create(Widget);
     Group.Exclusive := AItem.RadioItem;
     Group.GroupIndex := AItem.GroupIndex;
-    QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, True);
-    QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, True);
+    QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, AItem.Enabled);
+    QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, AItem.Visible);
     Group.addAction(TQtMenu(AItem.Handle).actionHandle);
     Group.Visible := True;
     Group.Enabled := True;
