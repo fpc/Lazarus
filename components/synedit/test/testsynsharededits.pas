@@ -98,6 +98,10 @@ var
   m: TSynEditMark;
   i: Integer;
 begin
+  //for i := 0 to FSynEdits[EditIndex].Marks.Count - 1 do begin
+  //  m := FSynEdits[EditIndex].Marks[i];
+  //  debugln(['Mark ',i,' Line=',m.Line,' Col=',m.Column]);
+  //end;
   AssertEquals(Name + ' Edit: '+IntToStr(EditIndex)+' Count: ', length(MarkList) div 2, FSynEdits[EditIndex].Marks.Count);
 
   for i := 0 to (length(MarkList) div 2) - 1 do begin
@@ -118,7 +122,9 @@ end;
 
 procedure TTestSynSharedEdits.TestMarks;
 begin
+  {%region share with marks}
   ReCreateEdit(2);
+  PushBaseName('share with marks');
 
   // default setting is shared marklist
   FSynEdits[1].ShareOptions := [eosShareMarks];
@@ -136,9 +142,91 @@ begin
   CheckMarks('3/2 - 5/1', 0, [ 3,2,   5,2 ]);
   CheckMarks('3/2 - 5/1', 1, [ 3,2,   5,2 ]);
 
+  // move both
+  FSynEdits[0].CaretXY := Point(1, 4);
+  FSynEdits[0].CommandProcessor(ecLineBreak, ' ', nil);
+  CheckMarks('newline 3/2 - 6/1', 0, [ 3,2,   6,2 ]);
+  CheckMarks('newline 3/2 - 6/1', 1, [ 3,2,   6,2 ]);
+
+  // unshare again
+  FSynEdits[1].UnShareTextBuffer;
+  CheckMarks('unshared 3/2 - 5/1', 0, [ 3,2,   6,2 ]);
+  CheckMarks('unshared 3/2 - 5/1', 1, []); // empty has no marks of it's own
+
+  //move 1
+  FSynEdits[0].CaretXY := Point(1, 4); // after mark
+  FSynEdits[0].CommandProcessor(ecLineBreak, ' ', nil);
+
+  CheckMarks('unshared newline 3/2 - 5/1', 0, [ 3,2,   7,2 ]);
+  CheckMarks('unshared newline 3/2 - 5/1', 1, []); // empty has no marks of it's own
+
+  AddMark(0, 7,1);
+  CheckMarks('unshared add(0)', 0, [ 3,2,   7,2,   7,1 ]);
+  CheckMarks('unshared add(0)', 1, []);
 
 
+  AddMark(1, 3,1);
+  CheckMarks('unshared add(1)', 0, [ 3,2,   7,2,   7,1 ]);
+  CheckMarks('unshared add(1)', 1, [ 3,1]);
+
+  // delete mark from edit 0
+  FSynEdits[0].Marks[0].Free;
+  CheckMarks('unshared del(0)', 0, [7,2,   7,1 ]);
+  CheckMarks('unshared del(0)', 1, [ 3,1 ]);
+
+  {%endregion}
+
+  {%region share with marks / destroy 1st}
   ReCreateEdit(2);
+  PopPushBaseName('share with marks / destroy 2nd');
+  // default setting is shared marklist
+  FSynEdits[1].ShareOptions := [eosShareMarks];
+  FSynEdits[1].ShareTextBufferFrom(FSynEdits[0]);
+  SetLines(TestText1);
+
+  // create setup
+  AddMark(0, 3,2);
+  AddMark(1, 5,2);
+  CheckMarks('3/2 - 5/1', 0, [ 3,2,   5,2 ]);
+  CheckMarks('3/2 - 5/1', 1, [ 3,2,   5,2 ]);
+
+  FreeAndNil(FSynEdits[0]);
+  CheckMarks('other destroyed', 1, [ 3,2,   5,2 ]);
+
+  //move 1
+  FSynEdits[1].CaretXY := Point(1, 4); // after mark
+  FSynEdits[1].CommandProcessor(ecLineBreak, ' ', nil);
+
+  CheckMarks('unshared newline 3/2 - 5/1', 1, [ 3,2,   6,2 ]);
+  {%endregion}
+
+  {%region share with marks / destroy 2nd}
+  ReCreateEdit(2);
+  PopPushBaseName('share with marks / destroy 2nd');
+  // default setting is shared marklist
+  FSynEdits[1].ShareOptions := [eosShareMarks];
+  FSynEdits[1].ShareTextBufferFrom(FSynEdits[0]);
+  SetLines(TestText1);
+
+  // create setup
+  AddMark(0, 3,2);
+  AddMark(1, 5,2);
+  CheckMarks('3/2 - 5/1', 0, [ 3,2,   5,2 ]);
+  CheckMarks('3/2 - 5/1', 1, [ 3,2,   5,2 ]);
+
+  FreeAndNil(FSynEdits[1]);
+  CheckMarks('other destroyed', 0, [ 3,2,   5,2 ]);
+
+  //move 1
+  FSynEdits[0].CaretXY := Point(1, 4); // after mark
+  FSynEdits[0].CommandProcessor(ecLineBreak, ' ', nil);
+
+  CheckMarks('unshared newline 3/2 - 5/1', 0, [ 3,2,   6,2 ]);
+  {%endregion}
+
+  {%region share, but separate marks}
+  ReCreateEdit(2);
+  PopPushBaseName('share, but separate marks');
 
   // setting is not shared marklist
   FSynEdits[1].ShareOptions := [];
@@ -156,6 +244,69 @@ begin
   CheckMarks('3/2 - 5/1', 0, [ 3,2 ]);
   CheckMarks('3/2 - 5/1', 1, [ 5,2 ]);
 
+  // unshare again
+  FSynEdits[1].UnShareTextBuffer;
+  CheckMarks('unshared', 0, [ 3,2 ]);
+  CheckMarks('unshared', 1, [ ]); // empty, even though it had own marks,. they were related to the text it has no longer
+
+  FSynEdits[0].CaretXY := Point(1, 1);
+  FSynEdits[0].CommandProcessor(ecLineBreak, ' ', nil);
+  CheckMarks('unshared newline', 0, [ 4,2 ]);
+  CheckMarks('unshared newline', 1, [ ]); // empty, even though it had own marks,. they were related to the text it has no longer
+
+  // delete mark from edit 0
+  FSynEdits[0].Marks[0].Free;
+  CheckMarks('unshared del', 0, [ ]);
+  CheckMarks('unshared del', 1, [ ]);
+  {%endregion}
+
+  {%region share but separate marks / destroy 1st}
+  ReCreateEdit(2);
+  PopPushBaseName('share with marks / destroy 2nd');
+  // default setting is shared marklist
+  FSynEdits[1].ShareOptions := [];
+  FSynEdits[1].ShareTextBufferFrom(FSynEdits[0]);
+  SetLines(TestText1);
+
+  // create setup
+  AddMark(0, 3,2);
+  AddMark(1, 5,2);
+  CheckMarks('3/2 - 5/1', 0, [ 3,2 ]);
+  CheckMarks('3/2 - 5/1', 1, [ 5,2 ]);
+
+  FreeAndNil(FSynEdits[0]);
+  CheckMarks('other destroyed', 1, [ 5,2 ]);
+
+  //move 1
+  FSynEdits[1].CaretXY := Point(1, 1);
+  FSynEdits[1].CommandProcessor(ecLineBreak, ' ', nil);
+
+  CheckMarks('unshared newline 3/2 - 5/1', 1, [ 6,2 ]);
+  {%endregion}
+
+  {%region share, but separate marks / destroy 2nd}
+  ReCreateEdit(2);
+  PopPushBaseName('share with marks / destroy 2nd');
+  // default setting is shared marklist
+  FSynEdits[1].ShareOptions := [];
+  FSynEdits[1].ShareTextBufferFrom(FSynEdits[0]);
+  SetLines(TestText1);
+
+  // create setup
+  AddMark(0, 3,2);
+  AddMark(1, 5,2);
+  CheckMarks('3/2 - 5/1', 0, [ 3,2 ]);
+  CheckMarks('3/2 - 5/1', 1, [ 5,2 ]);
+
+  FreeAndNil(FSynEdits[1]);
+  CheckMarks('other destroyed', 0, [ 3,2 ]);
+
+  //move 1
+  FSynEdits[0].CaretXY := Point(1, 1);
+  FSynEdits[0].CommandProcessor(ecLineBreak, ' ', nil);
+
+  CheckMarks('unshared newline 3/2 - 5/1', 0, [ 4,2 ]);
+  {%endregion}
 
 end;
 

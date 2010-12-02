@@ -1994,7 +1994,7 @@ begin
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
-  DestroyMarkList;
+  DestroyMarkList; // before detach from FLines
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
@@ -5422,7 +5422,7 @@ begin
   if IsMarkListShared then begin
     s := TSynEditStringList(FLines).AttachedSynEdits[0];
     if s = Self then
-      s := TSynEditStringList(FLines).AttachedSynEdits[1];
+      s := TSynEditStringList(FLines).AttachedSynEdits[1]; // TODO: find one that shares the MarkList (if someday partial sharing of Marks is avail)
 
     if TSynEditMarkListInternal(FMarkList).LinesView = FTheLinesView then
       TSynEditMarkListInternal(FMarkList).LinesView := TSynEdit(s).FTheLinesView;
@@ -5473,7 +5473,6 @@ begin
     LView := TSynEditStringsLinked(LView).NextLines;
   end;
   TSynEditStringList(ALines).RemoveHanlders(FFoldedLinesView);
-  TSynEditStringList(ALines).RemoveHanlders(FMarkList);
   TSynEditStringList(ALines).RemoveHanlders(FCaret);
   TSynEditStringList(ALines).RemoveHanlders(FInternalCaret);
   TSynEditStringList(ALines).RemoveHanlders(FBlockSelection);
