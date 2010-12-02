@@ -77,14 +77,14 @@ Type
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
-procedure AssertEx(Const Message: String; Const PassErr: Boolean;
-  Const Severity: Byte);
-procedure AssertEx(Const PassErr: Boolean; Const Message: String);
-procedure AssertEx(Const Message: String);
+procedure AssertEx(const Message: String; const PassErr: Boolean;
+  const Severity: Byte);
+procedure AssertEx(const PassErr: Boolean; const Message: String);
+procedure AssertEx(const Message: String);
 function GetShiftState: TShiftState;
-procedure CallEvent(Const Target: TObject; Event: TNotifyEvent;
-  Const Data: Pointer; Const EventType: TEventType);
-function ObjectToHWND(Const AObject: TObject): HWND;
+procedure CallEvent(const Target: TObject; Event: TNotifyEvent;
+  const Data: Pointer; const EventType: TEventType);
+function ObjectToHWND(const AObject: TObject): HWND;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
@@ -535,9 +535,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure EventTrace(Message: String; Data: TObject);
 begin
-  If Data = Nil Then
+  if Data = nil then
     Assert(False, Format('Trace:Event [%S] fired', [Message]))
-  Else
+  else
     Assert(False, Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
 end;
 
@@ -551,7 +551,7 @@ end;
 
   An expanded, better version of Assert
  ------------------------------------------------------------------------------}
-procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
+procedure AssertEx(const Message: String; const PassErr: Boolean; const Severity: Byte);
 begin
   Case Severity Of
     0:
@@ -584,19 +584,19 @@ begin
         end;
         False:
         begin
-          MessageBox(0, PChar(Message), Nil, MB_OK);
+          MessageBox(0, PChar(Message), nil, MB_OK);
         end;
       end;
     end;
   end;
 end;
 
-procedure AssertEx(Const PassErr: Boolean; Const Message: String);
+procedure AssertEx(const PassErr: Boolean; const Message: String);
 begin
   AssertEx(Message, PassErr, 0);
 end;
 
-procedure AssertEx(Const Message: String);
+procedure AssertEx(const Message: String);
 begin
   AssertEx(Message, False, 0);
 end;
@@ -614,26 +614,26 @@ begin
   // NOTE: it may be better to use GetAsyncKeyState
   // if GetKeyState AND $8000 <> 0 then down (e.g. shift)
   // if GetKeyState AND 1 <> 0, then toggled on (e.g. num lock)
-  If (GetKeyState(VK_SHIFT) and $8000) <> 0 then
+  if (GetKeyState(VK_SHIFT) and $8000) <> 0 then
     Result := Result + [ssShift];
-  If (GetKeyState(VK_CAPITAL) and 1) <> 0 then
+  if (GetKeyState(VK_CAPITAL) and 1) <> 0 then
     Result := Result + [ssCaps];
-  If (GetKeyState(VK_CONTROL) and $8000) <> 0 then
+  if (GetKeyState(VK_CONTROL) and $8000) <> 0 then
     Result := Result + [ssCtrl];
-  If (GetKeyState(VK_MENU) and $8000) <> 0 then
+  if (GetKeyState(VK_MENU) and $8000) <> 0 then
     Result := Result + [ssAlt];
-  If (GetKeyState(VK_NUMLOCK) and 1) <> 0 then
+  if (GetKeyState(VK_NUMLOCK) and 1) <> 0 then
     Result := Result + [ssNum];
   //TODO: ssSuper
-  If (GetKeyState(VK_SCROLL) and 1) <> 0 then
+  if (GetKeyState(VK_SCROLL) and 1) <> 0 then
     Result := Result + [ssScroll];
   // GetKeyState takes mouse button swap into account (GetAsyncKeyState doesn't),
   // so no need to test GetSystemMetrics(SM_SWAPBUTTON)
-  If (GetKeyState(VK_LBUTTON) and $8000) <> 0 then
+  if (GetKeyState(VK_LBUTTON) and $8000) <> 0 then
     Result := Result + [ssLeft];
-  If (GetKeyState(VK_MBUTTON) and $8000) <> 0 then
+  if (GetKeyState(VK_MBUTTON) and $8000) <> 0 then
     Result := Result + [ssMiddle];
-  If (GetKeyState(VK_RBUTTON) and $8000) <> 0 then
+  if (GetKeyState(VK_RBUTTON) and $8000) <> 0 then
     Result := Result + [ssRight];
   //TODO: ssAltGr
 end;
@@ -643,16 +643,16 @@ end;
   Params:  Event      - Requested info
            KeyCode    - the ASCII key code of the eventkey
            VirtualKey - the virtual key code of the eventkey
-           SysKey     - True If the key is a syskey
-           ExtEnded   - True If the key is an extended key
-           Toggle     - True If the key is a toggle key and its value is on
+           SysKey     - True if the key is a syskey
+           ExtEnded   - True if the key is an extended key
+           Toggle     - True if the key is a toggle key and its value is on
   Returns: Nothing
 
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 {
 procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
-Const
+const
   MVK_UNIFY_SIDES = 1;
 begin
   Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
@@ -674,9 +674,9 @@ end;
 
   Calls an event
 -------------------------------------------------------------------------------}
-procedure CallEvent(Const Target: TObject; Event: TNotifyEvent; Const Data: Pointer; Const EventType: TEventType);
+procedure CallEvent(const Target: TObject; Event: TNotifyEvent; const Data: Pointer; const EventType: TEventType);
 begin
-  If Assigned(Target) And Assigned(Event) Then
+  if Assigned(Target) And Assigned(Event) then
   begin
     Case EventType Of
       etNotify:
@@ -694,42 +694,43 @@ end;
 
   Returns the Window handle of the given object, 0 if no object available
  ------------------------------------------------------------------------------}
-function ObjectToHWND(Const AObject: TObject): HWND;
-Var
+function ObjectToHWND(const AObject: TObject): HWND;
+var
   Handle: HWND;
 begin
-  Handle:=0;
-  If not assigned(AObject) Then
+  Handle := 0;
+  if not assigned(AObject) then
+    Assert (False, 'TRACE:[ObjectToHWND] Object not assigned')
+  else
+  if (AObject is TWinControl) then
   begin
-    Assert (False, 'TRACE:[ObjectToHWND] Object not assigned');
-  End
-  Else If (AObject Is TWinControl) Then
-  begin
-    If TWinControl(AObject).HandleAllocated Then
+    if TWinControl(AObject).HandleAllocated then
       Handle := TWinControl(AObject).Handle
-  End
-  Else If (AObject Is TMenuItem) Then
+  end
+  else
+  if (AObject is TMenuItem) then
   begin
-    If TMenuItem(AObject).HandleAllocated Then
+    if TMenuItem(AObject).HandleAllocated then
       Handle := TMenuItem(AObject).Handle
-  End
-  Else If (AObject Is TMenu) Then
+  end
+  else
+  if (AObject is TMenu) then
   begin
-    If TMenu(AObject).HandleAllocated Then
+    if TMenu(AObject).HandleAllocated then
       Handle := TMenu(AObject).Items.Handle
-  End
-  Else If (AObject Is TCommonDialog) Then
+  end
+  else
+  if (AObject is TCommonDialog) then
   begin
-    {If TCommonDialog(AObject).HandleAllocated Then }
+    {if TCommonDialog(AObject).HandleAllocated then }
     Handle := TCommonDialog(AObject).Handle
-  End
-  Else
-  begin
+  end
+  else
     Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
-  end;
+
   Result := Handle;
-  If Handle = 0 Then
-    Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
+  if Handle = 0 then
+    Assert(False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 end;
 
 (***********************************************************************
@@ -890,7 +891,7 @@ end;
   The new style is the Style parameter.
   Only the bits set in the StyleMask are changed,
   the other bits remain untouched.
-  If the bits in the StyleMask are not used in the Style,
+  if the bits in the StyleMask are not used in the Style,
   there are cleared.
 }
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
@@ -1113,8 +1114,8 @@ begin
   begin
     TextLen := Windows.GetWindowTextLengthW(AHandle);
     SetLength(WideBuffer, TextLen);
-    If TextLen > 0 // Never give Windows the chance to write to System.emptychar
-    Then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
+    if TextLen > 0 // Never give Windows the chance to write to System.emptychar
+    then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
     SetLength(WideBuffer, TextLen);
     Result := UTF16ToUTF8(WideBuffer);
   end
@@ -1122,8 +1123,8 @@ begin
   begin
     TextLen := Windows.GetWindowTextLength(AHandle);
     SetLength(AnsiBuffer, TextLen);
-    If TextLen > 0 // Never give Windows the chance to write to System.emptychar
-    Then TextLen := Windows.GetWindowText(AHandle, PChar(AnsiBuffer), TextLen + 1);
+    if TextLen > 0 // Never give Windows the chance to write to System.emptychar
+    then TextLen := Windows.GetWindowText(AHandle, PChar(AnsiBuffer), TextLen + 1);
     SetLength(AnsiBuffer, TextLen);
     Result := AnsiToUtf8(AnsiBuffer);
   end;
