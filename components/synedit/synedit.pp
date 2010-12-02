@@ -6942,8 +6942,11 @@ begin
     if IncludeGutterTextDist then
       inc(Result, GutterTextDist);
   end
-  else
+  else begin
     Result := 0;
+    if IncludeGutterTextDist then
+      inc(Result, 1);  // include space for caret at pos.x=1 (if FOffsetX = -1)
+  end;
 end;
 
 function TCustomSynEdit.TextRightPixelOffset: Integer;
