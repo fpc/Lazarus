@@ -954,7 +954,7 @@ end;
 
 procedure TDateEdit.DateFormatChanged;
 begin
-  FDateFormat := ShortDateFormat;
+  FDateFormat := DefaultFormatSettings.ShortDateFormat;
 end;
 
 function TDateEdit.GetDateFormat: string;
@@ -1034,13 +1034,13 @@ Var
 
 begin
   Result:=Def;
-  P:=Pos(DateSeparator,S);
+  P:=Pos(DefaultFormatSettings.DateSeparator,S);
   If (P=0) then
     Exit;
   N1:=StrToIntDef(Copy(S,1,P-1),-1);
   If (N1=-1) then Exit;
   Delete(S,1,P);
-  P:=Pos(DateSeparator,S);
+  P:=Pos(DefaultFormatSettings.DateSeparator,S);
   If (P=0) then
     Exit;
   N2:=StrToIntDef(Copy(S,1,P-1),-1);

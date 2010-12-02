@@ -2533,15 +2533,15 @@ begin
   Input.Read(Signature[1], length(Signature));
   if Signature<>FilerSignature then
     raise EReadError.Create('Illegal stream image' {###SInvalidImage});
-  OldDecimalSeparator:=DecimalSeparator;
-  DecimalSeparator:='.';
-  OldThousandSeparator:=ThousandSeparator;
-  ThousandSeparator:=',';
+  OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
+  DefaultFormatSettings.DecimalSeparator:='.';
+  OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
+  DefaultFormatSettings.ThousandSeparator:=',';
   try
     ReadObject('');
   finally
-    DecimalSeparator:=OldDecimalSeparator;
-    ThousandSeparator:=OldThousandSeparator;
+    DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
+    DefaultFormatSettings.ThousandSeparator:=OldThousandSeparator;
   end;
 end;
 
@@ -2965,17 +2965,17 @@ begin
     Links.Sort(true);
   end;
   parser := {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF}.Create(Input);
-  OldDecimalSeparator:=DecimalSeparator;
-  DecimalSeparator:='.';
-  OldThousandSeparator:=ThousandSeparator;
-  ThousandSeparator:=',';
+  OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
+  DefaultFormatSettings.DecimalSeparator:='.';
+  OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
+  DefaultFormatSettings.ThousandSeparator:=',';
   try
     Output.Write(FilerSignature[1], length(FilerSignature));
     ProcessObject;
   finally
     parser.Free;
-    DecimalSeparator:=OldDecimalSeparator;
-    ThousandSeparator:=OldThousandSeparator;
+    DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
+    DefaultFormatSettings.ThousandSeparator:=OldThousandSeparator;
   end;
 end;
 
@@ -3510,7 +3510,7 @@ begin
       DeletePos:=p;
       while (DeletePos>1) and (Result[DeletePos]='0') do
         Dec(DeletePos);
-      if (DeletePos>0) and (Result[DeletePos]=DecimalSeparator) Then
+      if (DeletePos>0) and (Result[DeletePos]=DefaultFormatSettings.DecimalSeparator) Then
         Dec(DeletePos);
       if (DeletePos<p) then
         system.Delete(Result,DeletePos,p-DeletePos);
@@ -3521,7 +3521,7 @@ begin
     P := Length(Result);
     While (P>0) and (Result[P] = '0') Do
       Dec(P);
-    If (P>0) and (Result[P]=DecimalSeparator) Then
+    If (P>0) and (Result[P]=DefaultFormatSettings.DecimalSeparator) Then
       Dec(P);
     SetLength(Result, P);
   end;

@@ -904,8 +904,8 @@ begin
     Char_AllFixedUpCase      : OK := Ch in [#32..#126]; //True;
     Char_AllFixedDownCase    : OK := Ch in [#32..#126]; //True;
    {Char_Space               : OK := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
-    Char_HourSeparator       : OK := Ch in [TimeSeparator];
-    Char_DateSeparator       : OK := Ch in [DateSeparator];
+    Char_HourSeparator       : OK := Ch in [DefaultFormatSettings.TimeSeparator];
+    Char_DateSeparator       : OK := Ch in [DefaultFormatSettings.DateSeparator];
     else//it's a literal
     begin
       OK := (Ch = FMask[Position]);
@@ -1003,8 +1003,8 @@ begin
        Char_AllFixedUpCase      : Result := FSpaceChar; //'0';
        Char_AllFixedDownCase    : Result := FSpaceChar; //'0';
        {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
-       Char_HourSeparator       : Result := TimeSeparator;
-       Char_DateSeparator       : Result := DateSeparator;
+       Char_HourSeparator       : Result := DefaultFormatSettings.TimeSeparator;
+       Char_DateSeparator       : Result := DefaultFormatSettings.DateSeparator;
   end;
 end;
 
@@ -1091,8 +1091,8 @@ Begin
        Char_AllFixedUpCase      : Result := Ch in [#32..#126]; //True;
        Char_AllFixedDownCase    : Result := Ch in [#32..#126]; //True;
       {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
-       Char_HourSeparator       : Result := Ch in [TimeSeparator];
-       Char_DateSeparator       : Result := Ch in [DateSeparator];
+       Char_HourSeparator       : Result := Ch in [DefaultFormatSettings.TimeSeparator];
+       Char_DateSeparator       : Result := Ch in [DefaultFormatSettings.DateSeparator];
   end;
 end;
 

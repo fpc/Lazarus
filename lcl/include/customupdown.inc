@@ -418,7 +418,7 @@ begin
     str := Trim(Associate.Caption);
     InvalidNumber := str = '';
     For I := Length(str) downto 1 do
-      if str[I] = ThousandSeparator then
+      if str[I] = DefaultFormatSettings.ThousandSeparator then
         Delete(Str,I,1)
       else if str[I] in ['0'..'9'] then
       else begin

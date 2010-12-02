@@ -111,9 +111,9 @@ procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
 }
 begin
   inherited KeyPress(Key);
-  if (Key in ['.',',']) then Key := Decimalseparator;
-  if not (Key in ['0'..'9',DecimalSeparator,'+','-',#8,#9]) then Key := #0;
-  if (Key = DecimalSeparator) and (FDecimals = 0) then Key := #0;
+  if (Key in ['.',',']) then Key := DefaultFormatSettings.Decimalseparator;
+  if not (Key in ['0'..'9', DefaultFormatSettings.DecimalSeparator,'+','-',#8,#9]) then Key := #0;
+  if (Key = DefaultFormatSettings.DecimalSeparator) and (FDecimals = 0) then Key := #0;
 end;
 
 class function TCustomFloatSpinEdit.GetControlClassDefaultSize: TSize;

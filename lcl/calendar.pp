@@ -254,7 +254,7 @@ begin
         DateToStr(CalendarMinDate), DateToStr(CalendarMaxDate)]);
   {$ENDIF}
   FDate:=AValue;
-  FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
+  FDateAsString:=FormatDateTime(DefaultFormatSettings.ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
   DebugLn('TCustomCalendar.SetDateTime FDate=',DateToStr(FDate),' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
   {$ENDIF}
@@ -266,7 +266,7 @@ begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     FDate := TWSCustomCalendarClass(WidgetSetClass).GetDateTime(Self);
-    FDateAsString := FormatDateTime(ShortDateFormat,FDate);
+    FDateAsString := FormatDateTime(DefaultFormatSettings.ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.GetProps A ',DateToStr(FDate),' ',FDateAsString);
     {$ENDIF}

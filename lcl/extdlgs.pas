@@ -545,7 +545,7 @@ begin
       if Kind in [cbNum0..cbNum9] then
         Caption:=IntToStr(Tag)
       else if Kind = cbDcm then
-        Caption:=DecimalSeparator
+        Caption:=DefaultFormatSettings.DecimalSeparator
       else if Kind in [cbSgn..cbMC] then
         Caption:=BtnCaptions[Kind];
       Left:=BtnPos[ALayout, Kind].X;
@@ -792,11 +792,11 @@ begin
     Key:=#0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [DefaultFormatSettings.DecimalSeparator, '.', ','] then
     begin
     CheckFirst;
-    if Pos(DecimalSeparator, FText) = 0 then
-      SetCalcText(FText + DecimalSeparator);
+    if Pos(DefaultFormatSettings.DecimalSeparator, FText) = 0 then
+      SetCalcText(FText + DefaultFormatSettings.DecimalSeparator);
     end
   else
     case Key of
@@ -903,7 +903,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [DefaultFormatSettings.DecimalSeparator, '.', ','] then
     Key:='.'
   else if Key = #13 then
     Key:='='
@@ -929,7 +929,7 @@ begin
   case TCalcButton(Sender).Kind of
     cbNum0..cbNum9: CalcKey(Char(TComponent(Sender).Tag + Ord('0')));
     cbSgn: CalcKey('_');
-    cbDcm: CalcKey(DecimalSeparator);
+    cbDcm: CalcKey(DefaultFormatSettings.DecimalSeparator);
     cbDiv: CalcKey('/');
     cbMul: CalcKey('*');
     cbSub: CalcKey('-');
