@@ -95,6 +95,7 @@ type
     FPkgDir: string;
     FQuiet: Boolean;
     FVerbose: Boolean;
+    FWriteCommands: boolean;
   protected
     procedure DoRun; override;
     procedure Error(Msg: string);
@@ -118,6 +119,7 @@ type
     property LinksDir: string read FLinksDir write FLinksDir;
     property Verbose: Boolean read FVerbose write FVerbose;
     property Quiet: Boolean read FQuiet write FQuiet;
+    property WriteCommands: boolean read FWriteCommands write FWriteCommands;
   end;
 
 { TLPLUpdate }
@@ -129,7 +131,7 @@ var
   Links: TLinks;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hvqlLp','help verbose quiet lazarusdir pkgdir linksdir');
+  ErrorMsg:=CheckOptions('hvqlLpc','help verbose quiet lazarusdir pkgdir linksdir commands');
   if ErrorMsg<>'' then begin
     Error(ErrorMsg);
     Terminate;
@@ -166,6 +168,8 @@ begin
     LinksDir:=GetDefaultLinksDirectory;
   if not DirectoryExistsUTF8(LinksDir) then
     Error('links directory not found: '+LinksDir);
+
+  WriteCommands:=HasOption('c','commands');
 
   if Verbose then begin
     writeln('TLPLUpdate.DoRun LazarusDir=',LazarusDir);
@@ -351,8 +355,13 @@ var
 begin
   for i:=0 to Links.Count-1 do begin
     Link:=Links[i];
-    if not FileExistsUTF8(Link.ExpFilename) then
-      writeln('Dead link ',ExtractFileNameOnly(Link.Filename),' to missing '+CreateRelativePath(Link.PkgFilename,PkgDir));
+    if not FileExistsUTF8(Link.ExpFilename) then begin
+      if not (Quiet and WriteCommands) then
+        writeln('Dead link ',ExtractFileNameOnly(Link.Filename),' to missing '+CreateRelativePath(Link.PkgFilename,PkgDir));
+      if WriteCommands then begin
+        writeln('svn rm ',CreateRelativePath(Link.Filename,LazarusDir));
+      end;
+    end;
   end;
 end;
 
@@ -405,6 +414,9 @@ begin
   writeln('-L <lazarus directory>, --lazarusdir=<dir>');
   writeln('    The lazarus source directory.');
   writeln('    Default is ',GetDefaultLazarusDir);
+  writeln;
+  writeln('-c, --commands');
+  writeln('    Write shell commands to fix issues.');
   writeln;
   writeln('-p <directory of lpk files>, --pkgdir=<dir>');
   writeln('    The directory where to search for lpk files, including sub directories.');
