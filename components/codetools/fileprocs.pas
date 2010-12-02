@@ -315,6 +315,7 @@ function CfgStrToDate(const s: string; out Date: TDateTime): boolean;
 
 // debugging
 procedure RaiseCatchableException(const Msg: string);
+procedure RaiseAndCatchException;
 
 type
   TCTDbgOutEvent = procedure(const s: string);
@@ -431,6 +432,14 @@ begin
   // creates an exception, that gdb catches:
   DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure RaiseAndCatchException;
+begin
+  try
+    if (length(ctsAddsDirToIncludePath) div (length(ctsAddsDirToIncludePath) div 10000))=0 then ;
+  except
+  end;
 end;
 
 var
