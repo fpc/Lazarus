@@ -3,9 +3,39 @@
   <package name="SynEdit">
     <descr>
       <p>Related Topics:</p>
-       <p><link id="SynEditTextBase.TextBuffer and Views">TextBuffer and Views  (Virtual Text Representation)</link></p>
+      <p>
+        <link id="SynEditTextBase.TextBuffer and Views">TextBuffer and Views  (Virtual Text Representation)</link>
+      </p>
     </descr>
     <module name="SynEdit">
+      <element name="TCustomSynEdit.BeginUpdate">
+        <short>Disables updates of internal data strucures, in order to speed up contineous updates. Also disables painting</short>
+        <descr>BeginUpdate disables the updating of many internal values and structures.
+
+If an application want's to apply several changes at once to SynEdit, it should call BeginUpdate. This will speed up the process, as SynEdit only needs to calculate those values once, when all vhanges are applied.
+
+The application must make sure to call EndUpdate once for each time it called BeginUpdate.
+
+While in a BeginUpdate/EndUpdate block SynEdit will not repaint. Any paint request received, will be delayed untill the Endupdate is executed.
+
+SynEdit will trigger OnChangeUpdating, if the update state changes. This is for the most outer calls to Begin/EndUpdate, but not for nested calls.
+
+Some items not updated wile in a Begin/EndUpdate block:
+* Highlight info
+* Fold info
+* CaretPos (will be updated on EndUpdate, to the last caret pos that was requested)
+* Trailing spaces (if trimming is enabled)
+* delay of certain events, like OnStatusChange
+
+This means for example, that setting the caret pos temporarily to a position outside the visible area, will not force an update of the topline, while in update state.
+
+It also allows to insert code like the begin and end of a multiline comment "(*" / "*)" as 2 separate changes, without folded code below the new comment being affected (even the code would temporarily become a comment, and not have any keywords (begin/end) on which to fold)
+
+</descr>
+      </element>
+      <element name="TCustomSynEdit.EndUpdate">
+        <short>Enable updates  internal data strucures, and applies all changes since BeginUpdate</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
