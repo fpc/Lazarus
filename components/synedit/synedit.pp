@@ -1946,8 +1946,13 @@ begin
     FIsInDecPaintLock := False;
     if FPaintLock = 0 then begin
       SetUpdateState(False, Self);
-      if FInvalidateRect.Bottom > FInvalidateRect.Top then
+      if FInvalidateRect.Bottom > FInvalidateRect.Top then begin
         InvalidateRect(Handle, @FInvalidateRect, False);
+        {$IFDEF SynCheckPaintLock}
+        debugln('Returning from Paintlock, wich had Paint called while active');
+        DumpStack;
+        {$ENDIF}
+      end;
     end;
   end;
 end;
@@ -3030,15 +3035,22 @@ begin
 
   If FPaintLock > 0 then begin
     debugln(['Warning: SynEdit.Paint called during PaintLock']);
+    // Ensure this will be repainted after PaintLock
     if FInvalidateRect.Top < 0 then
       FInvalidateRect := rcClip
     else
       types.UnionRect(FInvalidateRect, FInvalidateRect, rcClip);
-    // Todo: painting is not save
-    if fHighlighter <> nil then
-      FHighlighter.ScanRanges; // at least prevent some dangers
-    //exit;
+    // Just paint the background
+    SetBkColor(Canvas.Handle, ColorToRGB(Color));
+    InternalFillRect(Canvas.Handle, rcClip);
+    if rcClip.Left <= TextLeftPixelOffset(False) then begin
+      rcClip.Right := TextLeftPixelOffset(False)+1;
+      SetBkColor(Canvas.Handle, ColorToRGB(FLeftGutter.Color));
+      InternalFillRect(Canvas.Handle, rcClip);
+    end;
+    exit;
   end;
+
   {$IFDEF EnableDoubleBuf}
   //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
   StartPaintBuffer(rcClip);
