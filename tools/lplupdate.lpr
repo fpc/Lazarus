@@ -73,7 +73,7 @@ type
     Release: integer;
     Build: integer;
     PkgFilename: string;
-    ExpFilename: string; // PkgFilename without macros
+    ExpFilename: string; // full PkgFilename without macros
   end;
 
   { TLinks }
@@ -326,7 +326,7 @@ begin
     Link.InLazarusDir:=CompareText(copy(Link.PkgFilename,1,length(LazDirMacro)),LazDirMacro)=0;
     if Link.InLazarusDir then
       Link.ExpFilename:=LazarusDir+copy(Link.PkgFilename,length(LazDirMacro)+1,length(Link.PkgFilename));
-    Link.ExpFilename:=CleanAndExpandFilename(Link.ExpFilename);
+    Link.ExpFilename:=CleanAndExpandFilename(SetDirSeparators(Link.ExpFilename));
   finally
     sl.Free;
   end;
@@ -348,7 +348,7 @@ begin
         writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
       if WriteCommands then begin
         LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
-        writeln('echo ''$(LazarusDir)/'+CreateRelativePath(Pkg.Filename,PkgDir)+''' > '+LinkFilename);
+        writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
         writeln('svn add '+LinkFilename);
       end;
     end;
