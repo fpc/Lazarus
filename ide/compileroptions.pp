@@ -1700,7 +1700,7 @@ procedure TBaseCompilerOptions.SetModified(const AValue: boolean);
 begin
   if Modified=AValue then exit;
   if AValue then begin
-    FChangeStamp:=InvalidChangeStamp;
+    IncreaseChangeStamp;
     if Assigned(OnModified) then
       OnModified(Self);
   end else begin
