@@ -791,9 +791,9 @@ begin
   LoadEnvironmentOptions;
   LoadMiscellaneousOptions;
   InteractiveSetup:=false;
+  SetupMacros;
   SetupCompilerFilename(InteractiveSetup);
   SetupLazarusDirectory(InteractiveSetup);
-  SetupMacros;
   SetupPackageSystem;
   SetupOutputFilter;
   MainBuildBoss.SetupCompilerInterface;
