@@ -1303,7 +1303,7 @@ begin
   List:=TStringToStringTree.Create(false);
   BuildTree(false);
   Collect(FindMainUsesSection,'Main');
-  Collect(FindMainUsesSection,'Implementation');
+  Collect(FindImplementationUsesSection,'Implementation');
   Result:=true;
 end;
 
