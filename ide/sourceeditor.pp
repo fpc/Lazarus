@@ -984,7 +984,7 @@ type
     procedure SetupShortCuts;
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
-    function SomethingModified: boolean;
+    function SomethingModified(Verbose: boolean = false): boolean;
     procedure HideHint;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure LockAllEditorsInSourceChangeCache;
@@ -8514,12 +8514,20 @@ begin
   end;
 end;
 
-function TSourceEditorManager.SomethingModified: boolean;
+function TSourceEditorManager.SomethingModified(Verbose: boolean): boolean;
 var
   i: integer;
 begin
+  for i:=0 to SourceEditorCount - 1 do
+  begin
+    if SourceEditors[i].Modified then
+    begin
+      if Verbose then
+        debugln(['TSourceEditorManager.SomethingModified ',SourceEditors[i].FileName]);
+      exit(true);
+    end;
+  end;
   Result:=false;
-  for i:=0 to SourceEditorCount - 1 do Result := Result or SourceEditors[i].Modified;
 end;
 
 procedure TSourceEditorManager.HideHint;

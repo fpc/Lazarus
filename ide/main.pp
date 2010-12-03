@@ -853,7 +853,7 @@ type
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
-    function SomethingOfProjectIsModified: boolean;
+    function SomethingOfProjectIsModified(Verbose: boolean = false): boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectIfChanged: TModalResult;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
@@ -4667,6 +4667,7 @@ begin
   //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   AProject:=TProject(Sender);
+  AProject.BackupSession;
   AProject.BackupBuildModes;
   AProject.UpdateExecutableType;
   AProject.CompilerOptions.UseAsDefault := False;
@@ -4675,15 +4676,15 @@ end;
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean
   );
 var
-  Project: TProject absolute Sender;
+  AProject: TProject absolute Sender;
   aFilename: String;
 
   function GetTitle: String;
   begin
     Result := '';
-    if (Project = nil) or (Project.MainUnitID < 0) then
+    if (AProject = nil) or (AProject.MainUnitID < 0) then
       Exit;
-    CodeToolBoss.GetApplicationTitleStatement(Project.MainUnitInfo.Source, Result);
+    CodeToolBoss.GetApplicationTitleStatement(AProject.MainUnitInfo.Source, Result);
   end;
 
   function SetTitle: Boolean;
@@ -4691,15 +4692,15 @@ var
     OldTitle: String;
   begin
     Result := True;
-    if (Project.MainUnitID < 0) or
-      (not (pfMainUnitHasTitleStatement in Project.Flags)) then
+    if (AProject.MainUnitID < 0) or
+      (not (pfMainUnitHasTitleStatement in AProject.Flags)) then
       Exit;
     OldTitle := GetTitle;
-    if (OldTitle = '') and Project.TitleIsDefault then
+    if (OldTitle = '') and AProject.TitleIsDefault then
       Exit;
 
-    if (OldTitle <> Project.Title) and (not Project.TitleIsDefault) then
-      if not CodeToolBoss.SetApplicationTitleStatement(Project.MainUnitInfo.Source, Project.Title) then
+    if (OldTitle <> AProject.Title) and (not AProject.TitleIsDefault) then
+      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, AProject.Title) then
       begin
         MessageDlg(lisProjOptsError,
           'Unable to change project title in source.'#13 +
@@ -4709,8 +4710,8 @@ var
         Exit;
       end;// set Application.Title:= statement
 
-    if (OldTitle <> '') and Project.TitleIsDefault then
-      if not CodeToolBoss.RemoveApplicationTitleStatement(Project.MainUnitInfo.Source) then
+    if (OldTitle <> '') and AProject.TitleIsDefault then
+      if not CodeToolBoss.RemoveApplicationTitleStatement(AProject.MainUnitInfo.Source) then
       begin
         MessageDlg(lisProjOptsError,
           'Unable to remove project title from source.'#13 +
@@ -4727,26 +4728,26 @@ var
     OldList: TStrings;
   begin
     Result := True;
-    if (Project.MainUnitID < 0) or
-      (not (pfMainUnitHasUsesSectionForAllUnits in Project.Flags)) then
+    if (AProject.MainUnitID < 0) or
+      (not (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)) then
       Exit;
-    OldList := Project.GetAutoCreatedFormsList;
+    OldList := AProject.GetAutoCreatedFormsList;
     if (OldList = nil) then
       Exit;
     try
-      if OldList.Count = Project.TmpAutoCreatedForms.Count then
+      if OldList.Count = AProject.TmpAutoCreatedForms.Count then
       begin
 
         { Just exit if the form list is the same }
         i := OldList.Count - 1;
-        while (i >= 0) and (SysUtils.CompareText(OldList[i], Project.TmpAutoCreatedForms[i]) = 0) do
+        while (i >= 0) and (SysUtils.CompareText(OldList[i], AProject.TmpAutoCreatedForms[i]) = 0) do
           Dec(i);
         if i < 0 then
           Exit;
       end;
 
-      if not CodeToolBoss.SetAllCreateFromStatements(Project.MainUnitInfo.Source,
-        Project.TmpAutoCreatedForms) then
+      if not CodeToolBoss.SetAllCreateFromStatements(AProject.MainUnitInfo.Source,
+        AProject.TmpAutoCreatedForms) then
       begin
         MessageDlg(lisProjOptsError,
           Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
@@ -4766,26 +4767,28 @@ begin
     SetTitle;
     SetAutoCreateForms;
     // extend include path
-    Project.AutoAddOutputDirToIncPath;
-    if Project.Resources.Modified and (Project.MainUnitID >= 0) then
+    AProject.AutoAddOutputDirToIncPath;
+    if AProject.Resources.Modified and (AProject.MainUnitID >= 0) then
     begin
-      if not Project.Resources.Regenerate(Project.MainFilename, True, False, '') then
-        MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
+      if not AProject.Resources.Regenerate(AProject.MainFilename, True, False, '') then
+        MessageDlg(AProject.Resources.Messages.Text, mtWarning, [mbOk], 0);
     end;
     UpdateCaption;
-    Project.DefineTemplates.AllChanged;
+    AProject.DefineTemplates.AllChanged;
   end;
   if Restore then
-    Project.RestoreBuildModes;
+    AProject.RestoreBuildModes;
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
     Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
     bmsfsBackground);
-  if (not Restore) and Project.CompilerOptions.UseAsDefault then
+  if (not Restore) and AProject.CompilerOptions.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
-    Project.CompilerOptions.SaveToFile(aFilename);
+    AProject.CompilerOptions.SaveToFile(aFilename);
   end;
+  if Restore then
+    AProject.RestoreSession;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
@@ -11272,11 +11275,11 @@ begin
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
 
-function TMainIDE.SomethingOfProjectIsModified: boolean;
+function TMainIDE.SomethingOfProjectIsModified(Verbose: boolean): boolean;
 begin
   Result:=(Project1<>nil)
-      and (Project1.SomethingModified(true,true)
-           or SourceEditorManager.SomethingModified);
+      and (Project1.SomethingModified(true,true,Verbose)
+           or SourceEditorManager.SomethingModified(Verbose));
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;

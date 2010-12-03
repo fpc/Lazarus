@@ -785,6 +785,7 @@ type
     FResources: TProjectResources;
     FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
+    FSessionModifiedBackup: boolean;
     FSessionStorePathDelim: TPathDelimSwitch;
     FSkipCheckLCLInterfaces: boolean;
     FSourceDirectories: TFileReferenceList;
@@ -866,9 +867,9 @@ type
 
     // load/save
     function IsVirtual: boolean;
-    function SomethingModified(CheckData, CheckSession: boolean): boolean;
-    function SomeDataModified: boolean;
-    function SomeSessionModified: boolean;
+    function SomethingModified(CheckData, CheckSession: boolean; Verbose: boolean = false): boolean;
+    function SomeDataModified(Verbose: boolean = false): boolean;
+    function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
@@ -877,6 +878,8 @@ type
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
     procedure UpdateExecutableType; override;
+    procedure BackupSession;
+    procedure RestoreSession;
     procedure BackupBuildModes;
     procedure RestoreBuildModes;
 
@@ -3010,6 +3013,16 @@ begin
     ExecutableType:=petPackage
   else
     ExecutableType:=petNone;
+end;
+
+procedure TProject.BackupSession;
+begin
+  FSessionModifiedBackup:=SessionModified;
+end;
+
+procedure TProject.RestoreSession;
+begin
+  SessionModified:=FSessionModifiedBackup;
 end;
 
 procedure TProject.BackupBuildModes;
@@ -5168,77 +5181,71 @@ begin
   Result:=(i>=0) and (Units[i].OpenEditorInfoCount > 0);
 end;
 
-function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
+function TProject.SomethingModified(CheckData, CheckSession: boolean;
+  Verbose: boolean): boolean;
 begin
   Result := True;
-  if CheckData and SomeDataModified then exit;
-  if CheckSession and SomeSessionModified then exit;
+  if CheckData and SomeDataModified(Verbose) then exit;
+  if CheckSession and SomeSessionModified(Verbose) then exit;
   Result := False;
 end;
 
-function TProject.SomeDataModified: boolean;
+function TProject.SomeDataModified(Verbose: boolean): boolean;
 var
   i: Integer;
 begin
   Result:=true;
   if Modified then
   begin
-    {$IFDEF VerboseProjectModified}
-    DebugLn('TProject.SomeDataModified Modified');
-    {$ENDIF}
+    if Verbose then
+      DebugLn('TProject.SomeDataModified Modified');
     Exit;
   end;
   if BuildModes.IsModified(false) then
   begin
-    {$IFDEF VerboseProjectModified}
-    DebugLn(['TProject.SomeDataModified CompilerOptions/BuildModes']);
-    {$ENDIF}
+    if Verbose then
+      DebugLn(['TProject.SomeDataModified CompilerOptions/BuildModes']);
     Exit;
   end;
   for i := 0 to UnitCount - 1 do
     if (Units[i].IsPartOfProject) and Units[i].Modified then
     begin
-      {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomeDataModified PartOfProject ',Units[i].Filename);
-      {$ENDIF}
+      if Verbose then
+        DebugLn('TProject.SomeDataModified PartOfProject ',Units[i].Filename);
       Exit;
     end;
   Result:=false;
 end;
 
-function TProject.SomeSessionModified: boolean;
+function TProject.SomeSessionModified(Verbose: boolean): boolean;
 var
   i: Integer;
 begin
   Result:=true;
   if SessionModified then
   begin
-    {$IFDEF VerboseProjectModified}
-    DebugLn('TProject.SomeSessionModified SessionModified');
-    {$ENDIF}
+    if Verbose then
+      DebugLn('TProject.SomeSessionModified SessionModified');
     Exit;
   end;
   if BuildModes.IsModified(true) then
   begin
-    {$IFDEF VerboseProjectModified}
-    DebugLn(['TProject.SomeSessionModified CompilerOptions/BuildModes']);
-    {$ENDIF}
+    if Verbose then
+      DebugLn(['TProject.SomeSessionModified CompilerOptions/BuildModes']);
     Exit;
   end;
   for i := 0 to UnitCount - 1 do
   begin
     if Units[i].SessionModified then
     begin
-      {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomeSessionModified Session of ',Units[i].Filename);
-      {$ENDIF}
+      if Verbose then
+        DebugLn('TProject.SomeSessionModified Session of ',Units[i].Filename);
       exit;
     end;
     if (not Units[i].IsPartOfProject) and Units[i].Modified then
     begin
-      {$IFDEF VerboseProjectModified}
-      DebugLn('TProject.SomeSessionModified Not PartOfProject ',Units[i].Filename);
-      {$ENDIF}
+      if Verbose then
+        DebugLn('TProject.SomeSessionModified Not PartOfProject ',Units[i].Filename);
       exit;
     end;
   end;
