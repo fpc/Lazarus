@@ -410,28 +410,27 @@ var
   OldDecimalSeparator: Char;
   OldThousandSeparator: Char;
 begin
-  OldDecimalSeparator:=DecimalSeparator;
-  OldThousandSeparator:=ThousandSeparator;
-  DecimalSeparator:='.';
-  ThousandSeparator:=',';
+  OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
+  OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
+  DefaultFormatSettings.DecimalSeparator:='.';
+  DefaultFormatSettings.ThousandSeparator:=',';
   Result:=FloatToStr(e);
-  DecimalSeparator:=OldDecimalSeparator;
-  ThousandSeparator:=OldThousandSeparator;
+  DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
+  DefaultFormatSettings.ThousandSeparator:=OldThousandSeparator;
 end;
 
-function TXMLConfig.StrToExtended(const s: string; const ADefault: extended
-  ): extended;
+function TXMLConfig.StrToExtended(const s: string; const ADefault: extended): extended;
 var
   OldDecimalSeparator: Char;
   OldThousandSeparator: Char;
 begin
-  OldDecimalSeparator:=DecimalSeparator;
-  OldThousandSeparator:=ThousandSeparator;
-  DecimalSeparator:='.';
-  ThousandSeparator:=',';
+  OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
+  OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
+  DefaultFormatSettings.DecimalSeparator:='.';
+  DefaultFormatSettings.ThousandSeparator:=',';
   Result:=StrToFloatDef(s,ADefault);
-  DecimalSeparator:=OldDecimalSeparator;
-  ThousandSeparator:=OldThousandSeparator;
+  DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
+  DefaultFormatSettings.ThousandSeparator:=OldThousandSeparator;
 end;
 
 procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
