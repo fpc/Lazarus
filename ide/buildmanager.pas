@@ -1880,7 +1880,7 @@ begin
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
-  //debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
+  debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground);
 end;
 

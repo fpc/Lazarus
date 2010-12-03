@@ -308,12 +308,9 @@ type
                                CheckList: boolean = true): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
-    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
-                                          ): TModalResult; override;
+    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
+                                          OnlyBase: boolean): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
-    function DoGetIDEInstallPackageOptions(
-                           var InheritedOptionStrings: TInheritedCompOptsStrings
-                           ): string; override;
     function DoPublishPackage(APackage: TLazPackage; Flags: TPkgSaveFlags;
                               ShowDialog: boolean): TModalResult;
                               
@@ -3917,34 +3914,64 @@ begin
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,[ofRegularFile]);
 end;
 
-function TPkgManager.DoCompileAutoInstallPackages(
-  Flags: TPkgCompileFlags): TModalResult;
+function TPkgManager.DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
+  OnlyBase: boolean): TModalResult;
 var
   Dependency: TPkgDependency;
   OldDependency: TPkgDependency;
+  Dependencies: TPkgDependency;
+  AutoRemove: Boolean;
 begin
   PackageGraph.BeginUpdate(false);
+  Dependencies:=PackageGraph.FirstAutoInstallDependency;
   try
-    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    if OnlyBase then
+    begin
+      // create the list of base packages
+      OldDependency:=PackageGraph.FirstAutoInstallDependency;
+      Dependencies:=nil;
+      while OldDependency<>nil do begin
+        if (OldDependency.RequiredPackage<>nil)
+        and PackageGraph.IsStaticBasePackage(OldDependency.RequiredPackage.Name) then
+        begin
+          Dependency:=TPkgDependency.Create;
+          Dependency.Assign(OldDependency);
+          Dependency.AddToEndOfList(Dependencies,pdlRequires);
+        end;
+        OldDependency:=OldDependency.NextRequiresDependency;
+      end;
+      Dependencies:=GetFirstDependency(Dependencies,pdlRequires);
+      PackageGraph.OpenRequiredDependencyList(Dependencies);
+    end;
+
+    // check every installed package if it was loaded correctly
+    Dependency:=Dependencies;
+    AutoRemove:=false;
     while Dependency<>nil do begin
       OldDependency:=Dependency;
       Dependency:=Dependency.NextRequiresDependency;
       if OldDependency.LoadPackageResult<>lprSuccess then begin
-        Result:=IDEMessageDialog(lisProjAddPackageNotFound,
-          Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
-            '"', OldDependency.AsString, '"', #13]),
-          mtError,[mbYes,mbNo,mbAbort]);
-        if Result=mrNo then Result:=mrCancel;
-        if Result<>mrYes then exit;
+        if not AutoRemove then begin
+          Result:=IDEMessageDialog(lisProjAddPackageNotFound,
+            Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
+              '"', OldDependency.AsString, '"', #13]),
+            mtError,[mbYes,mbYesToAll,mbAbort]);
+          case Result of
+          mrYes: ;
+          mrYesToAll: AutoRemove:=true;
+          else
+            SaveAutoInstallDependencies(true);
+            exit;
+          end;
+        end;
         OldDependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
         OldDependency.Free;
-        SaveAutoInstallDependencies(true);
       end;
     end;
-    
+    SaveAutoInstallDependencies(true);
+
     // check consistency
-    Result:=CheckPackageGraphForCompilation(nil,
-                                PackageGraph.FirstAutoInstallDependency,
+    Result:=CheckPackageGraphForCompilation(nil,Dependencies,
                                 EnvironmentOptions.LazarusDirectory,false);
     if Result<>mrOk then exit;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
@@ -3957,12 +3984,13 @@ begin
     
     // compile all auto install dependencies
     MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
-    Result:=PackageGraph.CompileRequiredPackages(nil,
-                       PackageGraph.FirstAutoInstallDependency,
-                       MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
+    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,
+                   MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally
+    if OnlyBase then
+      FreeDependencyList(Dependencies,pdlRequires);
     PackageGraph.EndUpdate;
   end;
   Result:=mrOk;
@@ -3984,12 +4012,6 @@ begin
   end;
 
   Result:=PackageGraph.SaveAutoInstallConfig;
-end;
-
-function TPkgManager.DoGetIDEInstallPackageOptions(
-  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
-begin
-  Result:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 end;
 
 function TPkgManager.DoPublishPackage(APackage: TLazPackage;

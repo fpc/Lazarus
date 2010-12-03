@@ -11498,7 +11498,8 @@ begin
   if (blfWithStaticPackages in Flags)
   or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
     // create inherited compiler options
-    PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+                PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
     CodeToolBoss.GetFPCVersionForDirectory(
@@ -11521,6 +11522,7 @@ var
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
+  OnlyBase: boolean;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -11556,57 +11558,65 @@ begin
     end;
 
     // then compile the 'installed' packages
-    if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
+    if (not (blfOnlyIDE in Flags))
     and (MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode=mmNone) then begin
       CompileProgress.Ready;
       Result:=mrIgnore;
       exit;
     end;
 
+    OnlyBase:=not (blfWithStaticPackages in Flags);
+
     // prepare static auto install packages
     PkgOptions:='';
-    if (blfWithStaticPackages in Flags)
-    or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
-      // compile auto install static packages
-      Result:=PkgBoss.DoCompileAutoInstallPackages([]);
-      if Result<>mrOk then begin
-        DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
-        exit;
-      end;
+    // compile auto install static packages
+    Result:=PkgBoss.DoCompileAutoInstallPackages([],OnlyBase);
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
+      exit;
+    end;
 
-      // create uses section addition for lazarus.pp
+    // create uses section addition for lazarus.pp
+    if not OnlyBase then begin
       Result:=PkgBoss.DoSaveAutoInstallConfig;
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
         exit;
       end;
+    end;
 
-      // create inherited compiler options
-      PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+    // create inherited compiler options
+    if OnlyBase then
+      PkgOptions:=''
+    else
+      PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+                PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
-      // check ambiguous units
-      CodeToolBoss.GetFPCVersionForDirectory(
-                                 EnvironmentOptions.LazarusDirectory,
-                                 FPCVersion,FPCRelease,FPCPatch);
-      if FPCPatch=0 then ;
-      CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
-      Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
-                       EnvironmentOptions.LazarusDirectory,
-                       InheritedOptionStrings[icoUnitPath],
-                       CompiledUnitExt,'IDE');
-      if Result<>mrOk then begin
-        DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
-        exit;
-      end;
+    // check ambiguous units
+    CodeToolBoss.GetFPCVersionForDirectory(
+                               EnvironmentOptions.LazarusDirectory,
+                               FPCVersion,FPCRelease,FPCPatch);
+    if FPCPatch=0 then ;
+    CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
+    Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
+                     EnvironmentOptions.LazarusDirectory+PathDelim+'ide',
+                     InheritedOptionStrings[icoUnitPath],
+                     CompiledUnitExt,'IDE');
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
+      exit;
     end;
 
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
-    Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                               GlobalMacroList,PkgOptions,IDEBuildFlags);
-    if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
-      exit;
+    if not OnlyBase then
+    begin
+      Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
+                                 GlobalMacroList,PkgOptions,IDEBuildFlags);
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
+        exit;
+      end;
     end;
 
     // make ide

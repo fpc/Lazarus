@@ -874,7 +874,7 @@ function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
 
-procedure SortDependencyList(Dependencies: TFPList);
+procedure SortDependencyListAlphabetically(Dependencies: TFPList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages, SortList: boolean);
@@ -897,6 +897,8 @@ function GetDependencyWithIndex(First: TPkgDependency;
   ListType: TPkgDependencyList; Index: integer): TPkgDependency;
 function IndexOfDependencyInList(First: TPkgDependency;
   ListType: TPkgDependencyList; FindDependency: TPkgDependency): integer;
+function GetFirstDependency(ListItem: TPkgDependency;
+  ListType: TPkgDependencyList): TPkgDependency;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
 function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
@@ -999,7 +1001,7 @@ begin
       PkgDependency.Free;
   end;
   if SortList then
-    SortDependencyList(List);
+    SortDependencyListAlphabetically(List);
   Last:=First;
   if Last<>nil then
     while Last.NextDependency[ListType]<>nil do
@@ -1072,7 +1074,7 @@ begin
   end;
 end;
 
-procedure SortDependencyList(Dependencies: TFPList);
+procedure SortDependencyListAlphabetically(Dependencies: TFPList);
 var
   Count: Integer;
   i, j: Integer;
@@ -1380,6 +1382,15 @@ begin
     Dependency:=Dependency.NextDependency[ListType];
   end;
   Result:=-1;
+end;
+
+function GetFirstDependency(ListItem: TPkgDependency;
+  ListType: TPkgDependencyList): TPkgDependency;
+begin
+  Result:=ListItem;
+  if Result=nil then exit;
+  while Result.PrevDependency[ListType]<>nil do
+    Result:=Result.PrevDependency[ListType];
 end;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;

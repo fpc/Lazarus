@@ -139,13 +139,10 @@ type
     procedure LoadInstalledPackages; virtual; abstract;
     function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
-    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
-                                          ): TModalResult; virtual; abstract;
+    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
+                                          OnlyBase: boolean): TModalResult; virtual; abstract;
     function DoSaveAutoInstallConfig: TModalResult; virtual; abstract;
-    function DoGetIDEInstallPackageOptions(
-                           var InheritedOptionStrings: TInheritedCompOptsStrings
-                           ): string; virtual; abstract;
-                           
+
     // components
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; virtual; abstract; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
