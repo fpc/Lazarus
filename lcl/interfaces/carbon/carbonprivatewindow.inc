@@ -285,6 +285,8 @@ begin
   if Control = nil then Exit;
   
   Widget := GetCarbonWidget(Control);
+  while Assigned(Widget) and not Widget.IsEnabled do
+    Widget := TCarbonWidget(CarbonWidgetset.GetParent(HWND(Widget)));
   if Widget = nil then Exit;
 
   FillChar(Msg, SizeOf(Msg), 0);

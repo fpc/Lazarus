@@ -1768,8 +1768,11 @@ begin
   if not CheckWidget(Handle, 'GetParent') then Exit;
   
   if TCarbonWidget(Handle) is TCarbonControl then
-     Result :=
-       HWnd(GetCarbonWidget(HIViewGetSuperview(TCarbonControl(Handle).Widget)));
+  begin
+    Result := HWnd(GetCarbonWidget(HIViewGetSuperview(TCarbonControl(Handle).Widget)));
+    if Result = 0 then // no parent control => then parent is a window?
+      Result := HWnd(GetCarbonWidget(HIViewGetWindow(TCarbonControl(Handle).Widget)));
+  end;
   // Carbon windows has no parent
   
   {$IFDEF VerboseWinAPI}
