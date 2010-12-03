@@ -3061,7 +3061,7 @@ begin
   ExecutableType := CompOpts.ExecutableType;
   UseExternalDbgSyms := CompOpts.UseExternalDbgSyms;
 
-  // Messages
+  // Verbosity
   fShowErrors := CompOpts.fShowErrors;
   fShowWarn := CompOpts.fShowWarn;
   fShowNotes := CompOpts.fShowNotes;
@@ -3082,12 +3082,18 @@ begin
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fShowHintsForSenderNotUsed := CompOpts.fShowHintsForSenderNotUsed;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
-  fStopAfterErrCount := CompOpts.fStopAfterErrCount;
+
+  // Messages
+  fUseCustomMessages := CompOpts.fUseCustomMessages;
+  fUseMsgFile := CompOpts.fUseMsgFile;
+  fMsgFileName := CompOpts.fMsgFileName;
+  fCompilerMessages.Assign(CompOpts.fCompilerMessages);
 
   // Other
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
   fCustomConfigFile := CompOpts.fCustomConfigFile;
   fConfigFilePath := CompOpts.fConfigFilePath;
+  fStopAfterErrCount := CompOpts.fStopAfterErrCount;
   CustomOptions := CompOpts.CustomOptions;
 
   // compilation
