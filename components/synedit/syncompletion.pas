@@ -1592,6 +1592,7 @@ begin
   if F.CurrentEditor is TCustomSynEdit then
     with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
+      BeginUpdate;
       LogCaret:=PhysicalToLogicalPos(CaretXY);
       NewBlockBegin:=LogCaret;
       CurLine:=Lines[NewBlockBegin.Y - 1];
@@ -1626,7 +1627,8 @@ begin
           TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
           TCustomSynEdit(F.CurrentEditor).SetFocus;
         end;
-      end;       
+      end;
+      EndUpdate;
       EndUndoBlock;
     end;
 end;

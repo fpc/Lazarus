@@ -597,6 +597,8 @@ type
     procedure DestroyMarkList;
     procedure RemoveHandlers(ALines: TSynEditStrings = nil);
     procedure ExtraLineCharsChanged(Sender: TObject);
+    procedure InternalBeginUndoBlock(aList: TSynEditUndoList = nil); // includes paintlock
+    procedure InternalEndUndoBlock(aList: TSynEditUndoList = nil);
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -738,7 +740,7 @@ type
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
     procedure AfterLoadFromFile;
-    procedure BeginUndoBlock(aList: TSynEditUndoList = nil);
+    procedure BeginUndoBlock;
     procedure BeginUpdate;
     function CaretXPix: Integer;
     function CaretYPix: Integer;
@@ -755,7 +757,7 @@ type
     destructor Destroy; override;
     procedure DoCopyToClipboard(SText: string; FoldInfo: String = '');
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    procedure EndUndoBlock(aList: TSynEditUndoList = nil);
+    procedure EndUndoBlock;
     procedure EndUpdate;
     procedure EnsureCursorPosVisible;
 {$IFDEF SYN_COMPILER_4_UP}
@@ -4009,7 +4011,7 @@ var
   PasteAction: TSynCopyPasteAction;
 begin
   Result := False;
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   try
     PTxt := ClipHelper.TextP;
     PMode := ClipHelper.SelectionMode;
@@ -4050,7 +4052,7 @@ begin
       end;
     end;
   finally
-    EndUndoBlock;
+    InternalEndUndoBlock;
   end;
 end;
 
@@ -4296,11 +4298,11 @@ end;
 procedure TCustomSynEdit.SetSelTextExternal(const Value: string);
 begin
   // undo entry added
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   try
     FBlockSelection.SelText := Value;
   finally
-    EndUndoBlock;
+    InternalEndUndoBlock;
   end;
 end;
 
@@ -5016,7 +5018,7 @@ begin
     FTheLinesView.IsRedoing := True;
     Item := Group.Pop;
     if Item <> nil then begin
-      BeginUndoBlock;
+      InternalBeginUndoBlock;
       fUndoList.CurrentGroup.Reason := Group.Reason;
       fUndoList.IsInsideRedo := True;
       try
@@ -5025,7 +5027,7 @@ begin
           Item := Group.Pop;
         until (Item = nil);
       finally
-        EndUndoBlock;
+        InternalEndUndoBlock;
       end;
     end;
     FTheLinesView.IsRedoing := False;
@@ -5125,7 +5127,7 @@ begin
     FTheLinesView.IsUndoing := True;
     Item := Group.Pop;
     if Item <> nil then begin
-      BeginUndoBlock(fRedoList);
+      InternalBeginUndoBlock(fRedoList);
       fRedoList.CurrentGroup.Reason := Group.Reason;
       fUndoList.Lock;
       try
@@ -5137,7 +5139,7 @@ begin
         // Todo: Decide what do to, If there are any trimable spaces.
         FTrimmedLinesView.ForceTrim;
         fUndoList.UnLock;
-        EndUndoBlock(fRedoList);
+        InternalEndUndoBlock(fRedoList);
       end;
     end;
     FTheLinesView.IsUndoing := False;
@@ -5490,21 +5492,21 @@ end;
 procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
   const AValue: String);
 begin
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   try
     FInternalBlockSelection.SelectionMode := smNormal;
     FInternalBlockSelection.StartLineBytePos := aStartPoint;
     FInternalBlockSelection.EndLineBytePos := aEndPoint;
     FInternalBlockSelection.SelText := AValue;
   finally
-    EndUndoBlock;
+    InternalEndUndoBlock;
   end;
 end;
 
 procedure TCustomSynEdit.SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
   aCaretMode: TSynCaretAdjustMode; const AValue: String);
 begin
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   try
     if aCaretMode = scamAdjust then
       FCaret.IncAutoMoveOnEdit;
@@ -5519,7 +5521,7 @@ begin
   finally
     if aCaretMode = scamAdjust then
       FCaret.DecAutoMoveOnEdit;
-    EndUndoBlock;
+    InternalEndUndoBlock;
   end;
 end;
 
@@ -5666,7 +5668,7 @@ begin
           or ((NewCaret.Y = BB.Y) and (NewCaret.X < BB.X));
       end;
       if DoDrop then begin
-        BeginUndoBlock;                                                         //mh 2000-11-20
+        InternalBeginUndoBlock;                                                         //mh 2000-11-20
         try
           DragDropText := TCustomSynEdit(Source).SelText;
           BlockSel := TCustomSynEdit(Source).FBlockSelection;
@@ -5714,7 +5716,7 @@ begin
           BlockEnd := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                         {$ELSE}CaretXY{$ENDIF};
         finally
-          EndUndoBlock;
+          InternalEndUndoBlock;
         end;
       end;
     finally
@@ -5996,7 +5998,7 @@ begin
   DoOnProcessCommand(Command, AChar, Data);
   if Command <> ecNone then begin
     try
-      BeginUndoBlock;
+      InternalBeginUndoBlock;
       FBeautifyStartLineIdx := -1;
       FBeautifyEndLineIdx := -1;
       if assigned(FBeautifier) then begin
@@ -6024,7 +6026,7 @@ begin
                                  FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
       end;
     finally
-      EndUndoBlock;
+      InternalEndUndoBlock;
     end;
   end;
 end;
@@ -6629,10 +6631,10 @@ end;
 procedure TCustomSynEdit.ClearAll;
 begin
   {$IFDEF SYN_LAZARUS}
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   SelectAll;
   SelText:='';
-  EndUndoBlock;
+  InternalEndUndoBlock;
   {$ELSE}
   Lines.Clear;
   {$ENDIF}
@@ -6654,8 +6656,7 @@ begin
   fBlockSelection.ActiveSelectionMode := Value;
 end;
 
-{begin}                                                                         //sbs 2000-11-19
-procedure TCustomSynEdit.BeginUndoBlock(aList: TSynEditUndoList = nil);
+procedure TCustomSynEdit.InternalBeginUndoBlock(aList: TSynEditUndoList);
 begin
   if aList = nil then aList := fUndoList;
   aList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
@@ -6663,15 +6664,8 @@ begin
   IncPaintLock;
   FFoldedLinesView.Lock;
 end;
-{end}                                                                           //sbs 2000-11-19
 
-procedure TCustomSynEdit.BeginUpdate;
-begin
-  IncPaintLock;
-end;
-
-{begin}                                                                         //sbs 2000-11-19
-procedure TCustomSynEdit.EndUndoBlock(aList: TSynEditUndoList = nil);
+procedure TCustomSynEdit.InternalEndUndoBlock(aList: TSynEditUndoList);
 begin
   if aList = nil then aList := fUndoList;
   // Write all trimming info to the end of the undo block,
@@ -6682,7 +6676,28 @@ begin
   DecPaintLock;
   aList.EndBlock; // Todo: Doing this after DecPaintLock, can cause duplicate calls to StatusChanged(scModified)
 end;
-{end}                                                                           //sbs 2000-11-19
+
+procedure TCustomSynEdit.BeginUndoBlock;
+begin
+  fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
+  fUndoList.BeginBlock;
+  ////FFoldedLinesView.Lock;
+  //FTrimmedLinesView.Lock;
+end;
+
+procedure TCustomSynEdit.BeginUpdate;
+begin
+  IncPaintLock;
+end;
+
+procedure TCustomSynEdit.EndUndoBlock;
+begin
+  // Write all trimming info to the end of the undo block,
+  // so it will be undone first, and other UndoItems do see the expected spaces
+  //FTrimmedLinesView.UnLock;
+  ////FFoldedLinesView.UnLock;
+  fUndoList.EndBlock;
+end;
 
 procedure TCustomSynEdit.EndUpdate;
 begin
@@ -7565,7 +7580,7 @@ begin
     exit;
   end;
 
-  BeginUndoBlock;
+  InternalBeginUndoBlock;
   try
     i := 0;
     OldCaretX := CaretX;
@@ -7609,7 +7624,7 @@ begin
     CaretX := OldCaretX + i;
     //debugln('TCustomSynEdit.DoTabKey StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd),' Spaces="',Spaces,'"');
   finally
-    EndUndoBlock;
+    InternalEndUndoBlock;
   end;
   EnsureCursorPosVisible;
 end;

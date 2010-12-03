@@ -17,7 +17,7 @@ or between two empty lines
 
 uses
   Classes, SysUtils, Forms, testregistry, TestBase, LCLProc, LCLType,
-  SynEdit, SynEditKeyCmds;
+  SynEdit, SynEditKeyCmds, SynEditTextTrimmer;
 
 type
 
@@ -43,6 +43,7 @@ type
     procedure TrimUndoRedo;
     procedure TrimUndoRedoEc;
     procedure NoTrimUndoRedo;
+    procedure TestInUndoBlock;
   end;
 
 implementation
@@ -63,14 +64,14 @@ begin
     AssertEquals(FTName+' ('+ASubName+') Caret X', AExpX, SynEdit.CaretX);
     AssertEquals(FTName+' ('+ASubName+') Caret Y', AExpY, SynEdit.CaretY);
   end;
-debugln(['done ',ASubName]);
+//debugln(['done ',ASubName]);
 end;
 
 procedure TTestTrimSpace.test_start(AName, Txt: String);
 begin
   FTName := AName;
   SynEdit.Text := Txt;
-debugln(['----- START ',AName]);
+//debugln(['----- START ',AName]);
 end;
 
 
@@ -523,6 +524,74 @@ begin
   test_caret('trim(2)', 1,1, cr+'ab '+cr+'12', 1,1);
   test_redo('+del(3)',       cr+'ab   12',     6,2);  // redo with mis-place caret
 
+end;
+
+procedure TTestTrimSpace.TestInUndoBlock;
+type TUpdateMode = (umNone, umOuter, umInner);
+var UpdateMode: TUpdateMode;
+
+  procedure BeginUndoBlock;
+  begin
+    if UpdateMode = umOuter then SynEdit.BeginUpdate;
+    SynEdit.BeginUndoBlock;
+    if UpdateMode = umInner then SynEdit.BeginUpdate;
+  end;
+
+  procedure EndUndoBlock;
+  begin
+    if UpdateMode = umInner then SynEdit.EndUpdate;
+    SynEdit.EndUndoBlock;
+    if UpdateMode = umOuter then SynEdit.EndUpdate;
+  end;
+
+  procedure DoTestInUndoBlock;
+  begin
+    ReCreateEdit;
+    SynEdit.Options := [eoTrimTrailingSpaces, eoAutoIndent, eoScrollPastEol]; // eoGroupUndo
+    SynEdit.TrimSpaceType := settLeaveLine;
+    SetLines(['abc d', 'mno', 'xyz', '']);
+    SetCaret(1,1);
+    // need to add space later, so it is regocnized as trailing
+
+    BeginUndoBlock;
+      SynEdit.TextBetweenPointsEx[point(5,1), point(6,1), scamEnd] := ''; // delete d
+      SynEdit.TextBetweenPointsEx[point(4,2), point(4,2), scamEnd] := ' '; // add space
+    EndUndoBlock;
+    TestIsFullText ('modified after block', ['abc', 'mno ', 'xyz', '']);
+    TestIsCaret('modified after block', 5,2);
+
+    SynEdit.Undo;
+    TestIsFullText ('Undone', ['abc d', 'mno', 'xyz', '']);
+    TestIsCaret('UnDone', 1,1);
+
+    SynEdit.Redo;
+    TestIsFullText ('Redone', ['abc', 'mno ', 'xyz', '']);
+    TestIsCaret('Redone', 5,2);
+
+    SynEdit.Undo;
+    TestIsFullText ('Undone 2', ['abc d', 'mno', 'xyz', '']);
+    TestIsCaret('UnDone 2', 1,1);
+
+    SynEdit.Redo;
+    TestIsFullText ('Redone 2', ['abc', 'mno ', 'xyz', '']);
+    TestIsCaret('Redone 2', 5,2);
+
+  end;
+
+begin
+  UpdateMode := umNone;
+  PushBaseName('Without BeginUpdate');
+  DoTestInUndoBlock;
+
+  UpdateMode := umInner;
+  PushBaseName('With BeginUpdate inside');
+  DoTestInUndoBlock;
+
+  UpdateMode := umOuter;
+  PushBaseName('With BeginUpdate outside');
+  DoTestInUndoBlock;
+
+  PopBaseName;
 end;
 
 

@@ -2170,6 +2170,7 @@ begin
     CodeToolsInSync:=not NeedsUpdateCodeBuffer;
     if SrcLogEntry<>nil then begin
       SynEditor.BeginUndoBlock;
+      SynEditor.BeginUpdate;
       SynEditor.TemplateEdit.IncExternalEditLock;
       SynEditor.SyncroEdit.IncExternalEditLock;
       try
@@ -2202,6 +2203,7 @@ begin
       finally
         SynEditor.SyncroEdit.DecExternalEditLock;
         SynEditor.TemplateEdit.DecExternalEditLock;
+        SynEditor.EndUpdate;
         SynEditor.EndUndoBlock;
       end;
     end else begin
@@ -3384,7 +3386,6 @@ var
   P: TPoint;
 begin
   if ReadOnly then exit;
-  FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   if not EditorComponent.SelAvail then begin
     P.Y := FEditor.CaretY;
@@ -3398,9 +3399,9 @@ begin
   i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
   if i>=0 then
     IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
+  // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
   FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
   FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
 end;
 
 procedure TSourceEditor.SortSelection;
@@ -3884,9 +3885,11 @@ begin
     // user typed 'begin'
     if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
     FEditor.BeginUndoBlock;
+    FEditor.BeginUpdate;
     try
       if not CodeToolBoss.CompleteBlock(CodeBuffer,p.X,p.Y,true) then exit;
     finally
+      FEditor.EndUpdate;
       FEditor.EndUndoBlock;
     end;
   end;
@@ -3901,6 +3904,7 @@ begin
   if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
   XY:=FEditor.LogicalCaretXY;
   FEditor.BeginUndoBlock;
+  FEditor.BeginUpdate;
   try
     if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,false,
                                       NewCode,NewX,NewY,NewTopLine) then exit;
@@ -3913,6 +3917,7 @@ begin
       FEditor.LogicalCaretXY:=XY;
     end;
   finally
+    FEditor.EndUpdate;
     FEditor.EndUndoBlock;
   end;
 end;
