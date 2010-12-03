@@ -464,7 +464,8 @@ begin
   end;
   
   // create inherited compiler options
-  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+           PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings{%H-});
 
   // save
   CurResult:=SaveIDEMakeOptions(BuildLazProfiles,
