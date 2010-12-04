@@ -1683,7 +1683,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
-                               f(LineBreaksToSystemLineBreaks(CustomOptions)),'');
+                            LineBreaksToSystemLineBreaks(CustomOptions),''); // do not touch / \ characters
 
   { Compilation }
   aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
