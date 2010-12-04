@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for CodeTools 1.0.1
 #
-#   This file was generated on 07/02/2010
+#   This file was generated on 12/04/2010
 
 [package]
 name=codetools
@@ -10,9 +10,9 @@ version=1.0.1
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
-includedir=./
-options=-gh -gl -dVerboseIndenter -dEnableBuildModes -dVerboseBug16168 -MObjFPC -Sci
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+includedir=.
+options= -MObjFPC -Sci -O1 -gl -vewni -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter
 
 [target]
 units=codetools.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/codetools$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/CodeTools.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT) compiled

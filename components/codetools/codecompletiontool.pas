@@ -157,7 +157,7 @@ type
     function InsertMissingClassSemicolons: boolean;
     function InsertAllNewUnitsToMainUsesSection: boolean;
     function FindClassMethodsComment(StartPos: integer;
-           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
+           out CommentStart, CommentEnd: integer): boolean;
     function CreateMissingProcBodies: boolean;
     function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
            OldTopLine: integer;
@@ -4898,8 +4898,6 @@ var
   FromPos: LongInt;
   ToPos: LongInt;
   FirstGroup: Boolean;
-  CommentStart: TCodeXYPosition;
-  CommentEnd: TCodeXYPosition;
   CommentEndPos: integer;
   CommentStartPos: integer;
   ProcDefNodes: TAVLTree;
@@ -4941,15 +4939,12 @@ begin
         debugln(['TCodeCompletionCodeTool.RemoveEmptyMethods ',dbgstr(copy(Src,FromPos,ToPos-FromPos))]);
         {$ENDIF}
         if AllRemoved and FirstGroup
-        and FindClassMethodsComment(FromPos,CommentStart,CommentEnd) then begin
+        and FindClassMethodsComment(FromPos,CommentStartPos,CommentEndPos) then begin
           // all method bodies will be removed => remove the default comment too
-          if CaretToCleanPos(CommentEnd,CommentEndPos)=0 then begin
-            if FindNextNonSpace(Src,CommentEndPos)>=FromPos then begin
-              // the default comment is directly in front
-              // => remove it too
-              if CaretToCleanPos(CommentStart,CommentStartPos)=0 then
-                FromPos:=FindLineEndOrCodeInFrontOfPosition(CommentStartPos,true);
-            end;
+          if FindNextNonSpace(Src,CommentEndPos)>=FromPos then begin
+            // the default comment is directly in front
+            // => remove it too
+            FromPos:=FindLineEndOrCodeInFrontOfPosition(CommentStartPos,true);
           end;
         end;
         if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then
@@ -6292,17 +6287,15 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindClassMethodsComment(StartPos: integer; out
-  CommentStart, CommentEnd: TCodeXYPosition): boolean;
+  CommentStart, CommentEnd: integer): boolean;
 var
-  InsertXYPos: TCodeXYPosition;
   Code: String;
 begin
   Result:=false;
-  if not CleanPosToCaret(StartPos,InsertXYPos) then exit;
   Code:=ExtractClassName(CodeCompleteClassNode,false);
   // search the comment
-  Result:=FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,true,
-                        CommentStart,CommentEnd)
+  Result:=FindCommentInFront(StartPos,Code,false,true,false,true,true,
+                             CommentStart,CommentEnd)
 end;
 
 procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
@@ -6635,8 +6628,12 @@ var
         RaiseException(ctsImplementationNodeNotFound);
       if (ImplementationNode.FirstChild=nil)
       or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
+        // implementation is empty
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-        InsertPos:=ImplementationNode.EndPos;
+        if ImplementationNode.FirstChild<>nil then
+          InsertPos:=ImplementationNode.FirstChild.StartPos
+        else
+          InsertPos:=ImplementationNode.EndPos;
         exit;
       end;
       StartSearchProc:=ImplementationNode.FirstChild;
@@ -6710,7 +6707,8 @@ var
   
   procedure InsertClassMethodsComment(InsertPos, Indent: integer);
   var
-    CommentStart, CommentEnd: TCodeXYPosition;
+    CommentStartPos: integer;
+    CommentEndPos: integer;
   begin
     // insert class comment
     if ClassProcs.Count=0 then exit;
@@ -6719,13 +6717,10 @@ var
       exit;
     // find the start of the class (the position in front of the class name)
     // check if there is already a comment in front
-    if FindClassMethodsComment(InsertPos,CommentStart,CommentEnd) then begin
+    if FindClassMethodsComment(InsertPos,CommentStartPos,CommentEndPos) then begin
       // comment already exists
       exit;
     end;
-    if CommentStart.Code=nil then ;
-    if CommentEnd.Code=nil then ;
-
     ClassStartComment:=GetIndentStr(Indent)
                        +'{ '+ExtractClassName(CodeCompleteClassNode,false)+' }';
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
@@ -6823,6 +6818,7 @@ begin
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
       {$ENDIF}
       FindInsertPointForNewClass(InsertPos,Indent);
+      //debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
       InsertClassMethodsComment(InsertPos,Indent);
 
       // insert all proc bodies

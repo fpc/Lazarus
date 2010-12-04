@@ -2799,6 +2799,7 @@ begin
         APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
         APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
         APackage.LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
+        // XMLConfig.GetValue('Makefile/Value',False);
       finally
         XMLConfig.Free;
       end;
