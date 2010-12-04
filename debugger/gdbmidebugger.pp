@@ -3049,6 +3049,15 @@ begin
       List.Free;
     end;
 
+    // apple / MacPort 7.1 / 32 bit dwarf
+    if (TargetInfo^.TargetPID = 0)
+    and ExecuteCommand('info threads', [], R, [cfCheckState])
+    and (R.State <> dsError)
+    then begin
+      TargetPIDPart := GetPart(['of process '], [' '], R.Values, True);
+      TargetInfo^.TargetPID := StrToIntDef(TargetPIDPart, 0);
+    end;
+
     if TargetInfo^.TargetPID = 0
     then begin
       Result := False;
