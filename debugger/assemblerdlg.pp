@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd;
+  EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd, ActnList,
+  IDECommands, IDEImagesIntf;
 
 type
 
@@ -32,12 +33,37 @@ type
   TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
 
   TAssemblerDlg = class(TDebuggerDlg)
+    actCurrentInstr: TAction;
+    actGotoAddr: TAction;
+    actCopy: TAction;
+    actStepOverInstr: TAction;
+    actStepIntoInstr: TAction;
+    ActionList1: TActionList;
     CopyToClipboard: TMenuItem;
+    EditGotoAddr: TEdit;
+    ImageList1: TImageList;
+    pnlToolAddr: TPanel;
     pbAsm: TPaintBox;
     PopupMenu1: TPopupMenu;
     sbHorizontal: TScrollBar;
     sbVertical: TScrollBar;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButtonCopy: TToolButton;
+    ToolButtonGoto: TToolButton;
+    ToolButtonGotoCurrent: TToolButton;
+    ToolButtonStepOverInstr: TToolButton;
+    ToolButtonStepIntoInstr: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButtonPower: TToolButton;
+    ToolButton2: TToolButton;
+    procedure actCurrentInstrExecute(Sender: TObject);
+    procedure actGotoAddrExecute(Sender: TObject);
+    procedure actStepIntoInstrExecute(Sender: TObject);
+    procedure actStepOverInstrExecute(Sender: TObject);
     procedure CopyToClipboardClick(Sender: TObject);
+    procedure EditGotoAddrChange(Sender: TObject);
+    procedure EditGotoAddrKeyPress(Sender: TObject; var Key: char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -49,11 +75,12 @@ type
     procedure sbHorizontalChange(Sender: TObject);
     procedure sbVerticalChange(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure ToolButtonPowerClick(Sender: TObject);
   private
     FDebugger: TDebugger;
     FDisassembler: TIDEDisassembler;
     FDisassemblerNotification: TIDEDisassemblerNotification;
-    FLocation: TDBGPtr;
+    FCurrentLocation, FLocation: TDBGPtr;
     FMouseIsDown: Boolean;
 
     FTopLine: Integer;
@@ -72,12 +99,18 @@ type
     FGutterWidth: Integer;
     FUpdating: Boolean;
     FUpdateNeeded: Boolean;
+
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
+    FCurLineImgIdx: Integer;
+
     procedure DoDebuggerDestroyed(Sender: TObject);
     procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
     procedure SetDebugger(const AValue: TDebugger);
     function FormatLine(ALine: TAsmDlgLineEntry; W: Integer): String;
+    procedure UpdateView;
+    procedure UpdateActions;
     procedure UpdateLineData;
     procedure UpdateLineDataEx(ALineMap: TAsmDlgLineEntries;
                                AFirstLine, ALineCount: Integer;
@@ -88,6 +121,8 @@ type
     procedure SetSelection(ALine: Integer; AMakeVisible: Boolean; AKeepSelEnd: Boolean = False);
     procedure SetLineCount(ALineCount: Integer);
     procedure SetTopLine(ALine: Integer);
+    function  IndexOfAddr(const AAddr: TDBGPtr): Integer;
+    procedure UpdateLocation(const AAddr: TDBGPtr);
   protected
     procedure InitializeWnd; override;
   public
@@ -143,6 +178,7 @@ begin
   finally
     EndUpdate;
   end;
+  UpdateActions;
 end;
 
 procedure TAssemblerDlg.SetDebugger(const AValue: TDebugger);
@@ -155,10 +191,12 @@ begin
   FDebugger := AValue;
   if FDebugger <> nil
   then FDebugger.AddNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
+  UpdateActions;
 end;
 
 constructor TAssemblerDlg.Create(AOwner: TComponent);
 begin
+  FCurrentLocation := 0;
   FLocation := 0;
   FLineCount := 0;
   SetLength(FLineMap, FLineCount + 1);
@@ -174,6 +212,37 @@ begin
   pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
   CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
+
+
+  ToolBar1.Images := IDEImages.Images_16;
+  PopupMenu1.Images := IDEImages.Images_16;
+
+  actStepOverInstr.Caption := lisMenuStepOverInstr;
+  actStepOverInstr.Hint := lisMenuStepOverInstrHint;
+  actStepOverInstr.ImageIndex := IDEImages.LoadImage(16, 'menu_stepover_instr');
+
+  actStepIntoInstr.Caption := lisMenuStepIntoInstr;
+  actStepIntoInstr.Hint := lisMenuStepIntoInstrHint;
+  actStepIntoInstr.ImageIndex := IDEImages.LoadImage(16, 'menu_stepinto_instr');
+
+  actCurrentInstr.Caption := lisDisAssGotoCurrentAddress;
+  actCurrentInstr.Hint := lisDisAssGotoCurrentAddressHint;
+  actCurrentInstr.ImageIndex := IDEImages.LoadImage(16, 'debugger_current_line');
+
+  actGotoAddr.Caption := lisDisAssGotoAddress;
+  actGotoAddr.Hint := lisDisAssGotoAddressHint;
+  actGotoAddr.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+
+  actCopy.Caption := lisMenuCopy;
+  actCopy.Hint := lisMenuCopy;
+  actCopy.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+
+
+  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  ToolButtonPower.ImageIndex := FPowerImgIdx;
+
+  FCurLineImgIdx := IDEImages.LoadImage(16, 'debugger_current_line');
 end;
 
 destructor TAssemblerDlg.Destroy;
@@ -195,20 +264,28 @@ begin
   end;
   case Key of
     VK_UP:   begin
+      ToolButtonPower.Down := True;
+      ToolButtonPowerClick(nil);
       SetSelection(FSelectLine - 1, True, ssShift in Shift);
       Key := 0;
     end;
     VK_DOWN: begin
+      ToolButtonPower.Down := True;
+      ToolButtonPowerClick(nil);
       SetSelection(FSelectLine + 1, True, ssShift in Shift);
       Key := 0;
     end;
     VK_PRIOR: begin
+      ToolButtonPower.Down := True;
+      ToolButtonPowerClick(nil);
       i := FTopLine;
       SetSelection(FSelectLine - FLineCount, False, ssShift in Shift);
       SetTopline(i - FLineCount);
       Key := 0;
     end;
     VK_NEXT: begin
+      ToolButtonPower.Down := True;
+      ToolButtonPowerClick(nil);
       i := FTopLine;
       SetSelection(FSelectLine + FLineCount, False, ssShift in Shift);
       SetTopline(i + FLineCount);
@@ -255,44 +332,81 @@ begin
   Clipboard.AsText := s;
 end;
 
+procedure TAssemblerDlg.EditGotoAddrChange(Sender: TObject);
+var
+  HasDisassembler: Boolean;
+begin
+  HasDisassembler := (FDebugger <> nil) and (FDisassembler <> nil);
+  actGotoAddr.Enabled := HasDisassembler and (StrToQWordDef(EditGotoAddr.Text, 0) <> 0);
+end;
+
+procedure TAssemblerDlg.EditGotoAddrKeyPress(Sender: TObject; var Key: char);
+begin
+  if (key = #13) and (StrToQWordDef(EditGotoAddr.Text, 0) <> 0)
+  then actGotoAddr.Execute;
+end;
+
+procedure TAssemblerDlg.actStepOverInstrExecute(Sender: TObject);
+var
+  Handled: Boolean;
+begin
+  if Assigned(OnProcessCommand)
+  then OnProcessCommand(Self, ecStepOverInstr, Handled);
+end;
+
+procedure TAssemblerDlg.actStepIntoInstrExecute(Sender: TObject);
+var
+  Handled: Boolean;
+begin
+  if Assigned(OnProcessCommand)
+  then OnProcessCommand(Self, ecStepIntoInstr, Handled);
+end;
+
+procedure TAssemblerDlg.actCurrentInstrExecute(Sender: TObject);
+begin
+  if FDisassembler.BaseAddr <> FLocation
+  then begin
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
+  end;
+  UpdateLocation(FLocation);
+end;
+
+procedure TAssemblerDlg.actGotoAddrExecute(Sender: TObject);
+var
+  Addr: TDBGPtr;
+begin
+  ToolButtonPower.Down := True;
+  ToolButtonPowerClick(nil);
+  Addr := StrToQWordDef(EditGotoAddr.Text, 0);
+  if Addr <> 0
+  then UpdateLocation(Addr);
+end;
+
 procedure TAssemblerDlg.DisassemblerChanged(Sender: TObject);
 begin
-  if (FDisassembler = nil) or (FLocation = 0) or (FLineCount = 0)
+  if (FDisassembler = nil) or (FCurrentLocation = 0) or (FLineCount = 0)
   then exit;
   if (FDebugger <> nil) and (FDebugger.State <> dsPause)
   then begin
     // only for F9, not for F8,F7 single stepping with assembler is no good, if it clears all the time
     //ClearLineMap;
+    FCurrentLocation := 0;
     FLocation := 0;
   end
   else begin
-    // Check if anything is there, update BaseAddr
-    if (FDisassembler <> nil) and (FLocation <> 0)
-    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
-    UpdateLineData;
+    UpdateView;
   end;
   pbAsm.Invalidate;
 end;
 
 procedure TAssemblerDlg.FormResize(Sender: TObject);
-var
-  R: TRect;
 begin
-  R := ClientRect;
-  Dec(R.Right, sbVertical.Width);
-  Dec(R.Bottom, sbHorizontal.Height);
-  sbVertical.Left := R.Right;
-  sbVertical.Height := R.Bottom;
-
-  sbHorizontal.Top := R.Bottom;
-  sbHorizontal.Width := R.Right;
-  sbHorizontal.PageSize := R.Right;
-  sbHorizontal.LargeChange := R.Right div 3;
+  sbHorizontal.PageSize    := pbAsm.Width;
+  sbHorizontal.LargeChange := pbAsm.Width div 3;
 
   if FLineHeight <> 0
-  then SetLineCount(R.Bottom div FLineHeight);
-
-  pbAsm.SetBounds(0, 0, R.Right, R.Bottom);
+  then SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
 procedure TAssemblerDlg.InitializeWnd;
@@ -334,11 +448,13 @@ procedure TAssemblerDlg.pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; Whe
 var
   i, j: LongInt;
 begin
+  if not ToolButtonPower.Down then exit;
   Handled := True;
 
   j := WheelDelta div 120;
   i := FTopLine ;
-  SetSelection(FSelectLine - j, False, ssShift in Shift);
+  if FSelectLine <> MaxInt
+  then SetSelection(FSelectLine - j, False, ssShift in Shift);
   SetTopline(i - j);
 end;
 
@@ -392,6 +508,9 @@ begin
     end;
     pbAsm.Canvas.Font.Bold := (FLineMap[n].State in [lmsSource, lmsFuncName]);
 
+    if (FLineMap[n].State = lmsStatement) and (FLineMap[n].Addr = FLocation)
+    then IDEImages.Images_16.Draw(pbAsm.Canvas, FGutterWidth - 16, Y, FCurLineImgIdx, True);
+
     S := FormatLine(FLineMap[n], W);
     pbAsm.Canvas.TextRect(R, X, Y, S);
 
@@ -419,6 +538,32 @@ begin
   end;
 end;
 
+procedure TAssemblerDlg.UpdateView;
+begin
+  if not ToolButtonPower.Down
+  then exit;
+
+  if (FDisassembler <> nil) and (FCurrentLocation <> 0)
+  then begin
+    FDisassembler.PrepareRange(FCurrentLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+    UpdateLineData;
+  end
+  else ClearLineMap;
+  pbAsm.Invalidate;
+end;
+
+procedure TAssemblerDlg.UpdateActions;
+var
+  HasDisassembler: Boolean;
+begin
+  HasDisassembler := (FDebugger <> nil) and (FDisassembler <> nil);
+  actCurrentInstr.Enabled := HasDisassembler and (FLocation <> 0);
+  actGotoAddr.Enabled := HasDisassembler and (StrToQWordDef(EditGotoAddr.Text, 0) <> 0);
+  actCopy.Enabled := HasDisassembler;
+  actStepOverInstr.Enabled := HasDisassembler;
+  actStepIntoInstr.Enabled := HasDisassembler;
+end;
+
 procedure TAssemblerDlg.sbHorizontalChange(Sender: TObject);
 begin
   pbAsm.Invalidate;
@@ -426,6 +571,8 @@ end;
 
 procedure TAssemblerDlg.sbVerticalChange(Sender: TObject);
 begin
+  ToolButtonPower.Down := True;
+  ToolButtonPowerClick(nil);
   sbVertical.Position := 475;
   pbAsm.Invalidate;
 end;
@@ -465,30 +612,86 @@ begin
   end;
 end;
 
+procedure TAssemblerDlg.ToolButtonPowerClick(Sender: TObject);
+begin
+  if ToolButtonPower.Down
+  then begin
+    ToolButtonPower.ImageIndex := FPowerImgIdx;
+    UpdateView;
+  end
+  else ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
+end;
+
 procedure TAssemblerDlg.DoDebuggerDestroyed(Sender: TObject);
 begin
   FDebugger := nil;
   FDisassembler := nil;
-  UpdateLineData;
-  pbAsm.Invalidate;
+  UpdateView;
+end;
+
+function TAssemblerDlg.IndexOfAddr(const AAddr: TDBGPtr): Integer;
+begin
+  Result := length(FLineMap) - 1;
+  while Result >= 0  do begin
+    if (FLineMap[Result].State = lmsStatement) and (FLineMap[Result].Addr = FCurrentLocation)
+    then exit;
+    dec(Result);
+  end;
+end;
+
+procedure TAssemblerDlg.UpdateLocation(const AAddr: TDBGPtr);
+var
+  i: Integer;
+begin
+  if FCurrentLocation <> AAddr
+  then begin
+    FCurrentLocation := AAddr;
+    FLastTopLineValid := False;
+  end;
+
+  i := IndexOfAddr(FCurrentLocation);
+  if (i >= 0) and (i < FLineCount - 1)
+  then begin
+    FSelectLine := FTopLine + i;
+  end
+  else begin
+    FTopLine := -(FLineCount div 2);
+    FSelectLine := 0;
+  end;
+  FSelectionEndLine := FSelectLine;
+  UpdateActions;
+  UpdateView;
 end;
 
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
+var
+  i: Integer;
 begin
   SetDebugger(ADebugger);
-  FTopLine := -(FLineCount div 2);
-  FSelectLine := 0;
-  FSelectionEndLine := 0;
+
+  FCurrentLocation := AAddr;
   FLocation := AAddr;
   FLastTopLineValid := False;
 
-  if Visible then begin
-    // otherwhise in resize
-    if FDisassembler <> nil
-    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
-    UpdateLineData;
+  if not ToolButtonPower.Down
+  then begin
+    i := IndexOfAddr(FCurrentLocation);
+    if (i >= 0)
+    then FSelectLine := FTopLine + i
+    else FSelectLine := MaxInt;
+    FSelectionEndLine := FSelectLine;
+
     pbAsm.Invalidate;
-  end
+    exit;
+  end;
+
+  FTopLine := -(FLineCount div 2);
+  FSelectLine := 0;
+  FSelectionEndLine := 0;
+
+  UpdateActions;
+  if Visible then // otherwhise in resize
+    UpdateView
   else
     ClearLineMap;
 end;
@@ -530,19 +733,16 @@ begin
   then exit;
   FLineCount := ALineCount;
   SetLength(FLineMap, FLineCount + 1);
-  if FLocation <> 0
-  then begin
-    if FDisassembler <> nil
-    then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
-    UpdateLineData;
-  end;
-  pbAsm.Invalidate;
+  UpdateView;
 end;
 
 procedure TAssemblerDlg.SetTopLine(ALine: Integer);
 var
   PadFront, PadEnd: Integer;
 begin
+  if not ToolButtonPower.Down
+  then exit;
+
   if FTopLine = ALine then Exit;
   // scrolled by user, get more padding lines
   PadFront := 5;
@@ -554,10 +754,9 @@ begin
   if (FDisassembler <> nil)
   and ( (FDisassembler.CountBefore < Max(0, -(FTopLine - 1)))
      or (FDisassembler.CountAfter < Max(0, FTopLine + FLineCount + 2)) )
-  then FDisassembler.PrepareRange(FLocation, Max(0, -(FTopLine - PadFront)), Max(0, FTopLine + FLineCount + 1 + PadEnd));
+  then FDisassembler.PrepareRange(FCurrentLocation, Max(0, -(FTopLine - PadFront)), Max(0, FTopLine + FLineCount + 1 + PadEnd));
   UpdateLineData;
 end;
-
 
 procedure TAssemblerDlg.UpdateLineData;
 begin
@@ -609,7 +808,7 @@ begin
     ClearLineMap;  // set all to lmsUnknown;
     exit;
   end;
-  if FDisassembler.BaseAddr <> FLocation
+  if FDisassembler.BaseAddr <> FCurrentLocation
   then begin
     ClearLineMap(lmsInvalid);
     exit;
@@ -624,7 +823,7 @@ begin
 
   try
     FUpdateNeeded := False;
-    DoneLocation    := FLocation;
+    DoneLocation    := FCurrentLocation;
     DoneTopLine     := AFirstLine;
     DoneLineCount   := ALineCount;
     DoneCountBefore := FDisassembler.CountBefore;
@@ -785,7 +984,7 @@ begin
   finally
     FUpdating := False;
     if FUpdateNeeded
-    and ( (DoneLocation    <> FLocation)
+    and ( (DoneLocation    <> FCurrentLocation)
        or (DoneTopLine     <> AFirstLine)
        or (DoneLineCount   <> ALineCount)
        or (HasLineOutOfRange

@@ -14,10 +14,16 @@ inherited AssemblerDlg: TAssemblerDlg
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   object pbAsm: TPaintBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = sbVertical
+    AnchorSideBottom.Control = sbHorizontal
     Left = 0
-    Height = 272
-    Top = 0
-    Width = 376
+    Height = 260
+    Top = 26
+    Width = 706
+    Anchors = [akTop, akLeft, akRight, akBottom]
     PopupMenu = PopupMenu1
     OnMouseDown = pbAsmMouseDown
     OnMouseMove = pbAsmMouseMove
@@ -26,20 +32,31 @@ inherited AssemblerDlg: TAssemblerDlg
     OnPaint = pbAsmPaint
   end
   object sbHorizontal: TScrollBar[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = sbVertical
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 285
-    Width = 384
+    Top = 286
+    Width = 706
+    Anchors = [akLeft, akRight, akBottom]
     Max = 1000
     PageSize = 200
     TabOrder = 0
     OnChange = sbHorizontalChange
   end
   object sbVertical: TScrollBar[2]
-    Left = 384
-    Height = 280
-    Top = 0
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = sbHorizontal
+    Left = 706
+    Height = 260
+    Top = 26
     Width = 15
+    Anchors = [akTop, akRight, akBottom]
     Kind = sbVertical
     LargeChange = 10
     Max = 1000
@@ -49,12 +66,130 @@ inherited AssemblerDlg: TAssemblerDlg
     OnChange = sbVerticalChange
     OnScroll = sbVerticalScroll
   end
-  object PopupMenu1: TPopupMenu[3]
+  object ToolBar1: TToolBar[3]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 721
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 2
+      AllowAllUp = True
+      Caption = 'ToolButtonPower'
+      Down = True
+      OnClick = ToolButtonPowerClick
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 24
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object ToolButtonStepOverInstr: TToolButton
+      Left = 32
+      Top = 2
+      Action = actStepOverInstr
+    end
+    object ToolButtonStepIntoInstr: TToolButton
+      Left = 55
+      Top = 2
+      Action = actStepIntoInstr
+    end
+    object ToolButton4: TToolButton
+      Left = 78
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object ToolButtonGotoCurrent: TToolButton
+      Left = 86
+      Top = 2
+      Action = actCurrentInstr
+    end
+    object pnlToolAddr: TPanel
+      Left = 109
+      Height = 23
+      Top = 2
+      Width = 80
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousSpaceResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 23
+      ClientWidth = 80
+      TabOrder = 0
+      object EditGotoAddr: TEdit
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 80
+        OnChange = EditGotoAddrChange
+        OnKeyPress = EditGotoAddrKeyPress
+        TabOrder = 0
+      end
+    end
+    object ToolButtonGoto: TToolButton
+      Left = 189
+      Top = 2
+      Action = actGotoAddr
+    end
+    object ToolButton1: TToolButton
+      Left = 212
+      Top = 2
+      Width = 4
+      Caption = 'ToolButton1'
+      Style = tbsDivider
+    end
+    object ToolButtonCopy: TToolButton
+      Left = 216
+      Top = 2
+      Action = actCopy
+    end
+  end
+  object PopupMenu1: TPopupMenu[4]
     left = 493
     top = 43
     object CopyToClipboard: TMenuItem
-      Caption = 'New Item1'
+      Action = actCopy
       OnClick = CopyToClipboardClick
     end
+  end
+  object ActionList1: TActionList[5]
+    left = 104
+    top = 32
+    object actStepOverInstr: TAction
+      Caption = 'actStepOverInstr'
+      OnExecute = actStepOverInstrExecute
+    end
+    object actStepIntoInstr: TAction
+      Caption = 'actStepIntoInstr'
+      OnExecute = actStepIntoInstrExecute
+    end
+    object actCurrentInstr: TAction
+      Caption = 'actCurrentInstr'
+      OnExecute = actCurrentInstrExecute
+    end
+    object actGotoAddr: TAction
+      Caption = 'actGotoAddr'
+      OnExecute = actGotoAddrExecute
+    end
+    object actCopy: TAction
+      Caption = 'actCopy'
+      OnExecute = CopyToClipboardClick
+    end
+  end
+  object ImageList1: TImageList[6]
+    left = 24
+    top = 32
   end
 end

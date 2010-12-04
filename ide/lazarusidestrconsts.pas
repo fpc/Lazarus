@@ -339,13 +339,21 @@ resourcestring
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
   lisBFWorkingDirectoryLeaveEmptyForFilePath2 = 'Working Directory (Leave '
     +'empty for file path)';
+
+  lisDisAssGotoCurrentAddress = 'Goto current address';
+  lisDisAssGotoCurrentAddressHint = 'Goto current address';
+  lisDisAssGotoAddress = 'Goto address';
+  lisDisAssGotoAddressHint = 'Goto address';
+
   lisBFRunCommand = 'Run Command';
   lisMenuPause = 'Pause';
   lisMenuShowExecutionPoint = 'Show execution point';
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
   lisMenuStepIntoInstr = 'Step into instruction';
+  lisMenuStepIntoInstrHint = 'Step into instruction';
   lisMenuStepOverInstr = 'Step over instruction';
+  lisMenuStepOverInstrHint = 'Step over instruction';
   lisMenuStepIntoContext = 'Step into (Context)';
   lisMenuStepOverContext = 'Step over (Context)';
   lisMenuStepOut = 'Step out';

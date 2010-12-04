@@ -94,9 +94,7 @@ begin
   if Assigned(OnProcessCommand) and (Command <> ecNone)
   then begin
     OnProcessCommand(Self,Command,Handled);
-    Handled := Handled or (Command = ecNone);
   end;
-
 end;
 
 (*
