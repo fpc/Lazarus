@@ -110,7 +110,7 @@ type
     procedure SetDebugger(const AValue: TDebugger);
     function FormatLine(ALine: TAsmDlgLineEntry; W: Integer): String;
     procedure UpdateView;
-    procedure UpdateActions;
+    procedure UpdateActionEnabled;
     procedure UpdateLineData;
     procedure UpdateLineDataEx(ALineMap: TAsmDlgLineEntries;
                                AFirstLine, ALineCount: Integer;
@@ -178,7 +178,7 @@ begin
   finally
     EndUpdate;
   end;
-  UpdateActions;
+  UpdateActionEnabled;
 end;
 
 procedure TAssemblerDlg.SetDebugger(const AValue: TDebugger);
@@ -191,7 +191,7 @@ begin
   FDebugger := AValue;
   if FDebugger <> nil
   then FDebugger.AddNotifyEvent(dnrDestroy, @DoDebuggerDestroyed);
-  UpdateActions;
+  UpdateActionEnabled;
 end;
 
 constructor TAssemblerDlg.Create(AOwner: TComponent);
@@ -231,7 +231,7 @@ begin
 
   actGotoAddr.Caption := lisDisAssGotoAddress;
   actGotoAddr.Hint := lisDisAssGotoAddressHint;
-  actGotoAddr.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+  actGotoAddr.ImageIndex := IDEImages.LoadImage(16, 'callstack_show');
 
   actCopy.Caption := lisMenuCopy;
   actCopy.Hint := lisMenuCopy;
@@ -552,7 +552,7 @@ begin
   pbAsm.Invalidate;
 end;
 
-procedure TAssemblerDlg.UpdateActions;
+procedure TAssemblerDlg.UpdateActionEnabled;
 var
   HasDisassembler: Boolean;
 begin
@@ -659,7 +659,7 @@ begin
     FSelectLine := 0;
   end;
   FSelectionEndLine := FSelectLine;
-  UpdateActions;
+  UpdateActionEnabled;
   UpdateView;
 end;
 
@@ -689,7 +689,7 @@ begin
   FSelectLine := 0;
   FSelectionEndLine := 0;
 
-  UpdateActions;
+  UpdateActionEnabled;
   if Visible then // otherwhise in resize
     UpdateView
   else

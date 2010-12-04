@@ -4,11 +4,14 @@ inherited RegistersDlg: TRegistersDlg
   Top = 117
   Width = 346
   ActiveControl = lvRegisters
+  BorderStyle = bsSizeToolWin
   Caption = 'Registers'
   ClientHeight = 253
   ClientWidth = 346
   object lvRegisters: TListView[0]
+    Left = 0
     Height = 253
+    Top = 0
     Width = 346
     Align = alClient
     Columns = <    

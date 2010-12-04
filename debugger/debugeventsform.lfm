@@ -3,6 +3,7 @@ inherited DbgEventsForm: TDbgEventsForm
   Height = 208
   Top = 368
   Width = 577
+  BorderStyle = bsSizeToolWin
   ClientHeight = 208
   ClientWidth = 577
   object lstFilteredEvents: TListView[0]
@@ -15,7 +16,6 @@ inherited DbgEventsForm: TDbgEventsForm
       item
         Width = 100
       end>
-    ItemIndex = -1
     ShowColumnHeaders = False
     SmallImages = imlMain
     TabOrder = 0
