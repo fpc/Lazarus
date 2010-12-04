@@ -1267,21 +1267,6 @@ var
   MaxTitleSize: Integer = 0;
   
 {$IFDEF DebugLR}
-var
-  wspc: integer = 4;
-  nspc: integer = 0;
-  sspc: string = '';
-procedure IncSpc(aInc:Integer);
-begin
-  nspc := nspc + aInc;
-  if nspc<0 then
-    nspc := 0;
-  //WriteLn('[',nspc,']');
-  SetLength(sspc, nspc*wspc);
-  if aInc>0 then
-    fillchar(sspc[1], nspc*wspc, ' ');
-end;
-
 function Bandtyp2str(typ: TfrBandType): string;
 begin
   case typ of
@@ -1418,7 +1403,7 @@ begin
         for i := 0 to frAddInsCount - 1 do
         begin
           {$IFDEF DebugLR}
-          DebugLn('%sfrCreateObject classname compare %s=%s',[sspc,frAddIns[i].ClassRef.ClassName,ClassName]);
+          DebugLn('frCreateObject classname compare %s=%s',[frAddIns[i].ClassRef.ClassName,ClassName]);
           {$ENDIF}
 
           if frAddIns[i].ClassRef.ClassName = ClassName then
@@ -1437,7 +1422,7 @@ begin
   if Result <> nil then
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sfrCreateObject instance classname=%s',[sspc,ClassName]);
+    DebugLn('frCreateObject instance classname=%s',[ClassName]);
     {$ENDIF}
 
     Result.ID := ObjID;
@@ -1662,7 +1647,7 @@ begin
   wy1 := Round((FrameWidth * ScaleY - 1) / 2);
   wy2 := Round(FrameWidth * ScaleY / 2);
   {$IFDEF DebugLR}
-  DebugLn('%sCalcGaps: dx=%d ScaleX=%f',[sspc,dx,ScaleX]);
+  DebugLn('CalcGaps: dx=%d ScaleX=%f',[dx,ScaleX]);
   {$ENDIF}
   fFrameWidth := FrameWidth * ScaleX;
   gapx := wx2 + 2;
@@ -1840,7 +1825,7 @@ end;
 procedure TfrView.Print(Stream: TStream);
 begin
   {$IFDEF DebugLR}
-  DebugLn('%s%s.TfrView.Print()',[sspc,name]);
+  DebugLn('%s.TfrView.Print()',[name]);
   {$ENDIF}
   BeginDraw(Canvas);
   Memo1.Assign(Memo);
@@ -1853,7 +1838,7 @@ begin
     frWriteString(Stream, ClassName);
   SaveToStream(Stream);
   {$IFDEF DebugLR}
-  DebugLn('%s%s.TfrView.Print() end',[sspc,name]);
+  DebugLn('%s.TfrView.Print() end',[name]);
   {$ENDIF}
 end;
 
@@ -1869,8 +1854,8 @@ var
   i  : Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%s%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
-    [sspc,name,Ord(StreamMode),ClassName]);
+  DebugLn('%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
+    [name,Ord(StreamMode),ClassName]);
   {$ENDIF}
   with Stream do
   begin
@@ -1917,7 +1902,7 @@ begin
 
   end;
   {$IFDEF DebugLR}
-  DebugLn('%s%s.TfrView.LoadFromStream end',[sspc,name]);
+  DebugLn('%s.TfrView.LoadFromStream end',[name]);
   {$ENDIF}
 end;
 
@@ -1970,7 +1955,7 @@ var
   B: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%s%s.SaveToStream begin',[sspc,name]);
+  DebugLn('%s.SaveToStream begin',[name]);
   {$ENDIF}
 
   with Stream do
@@ -2010,7 +1995,7 @@ begin
 
   end;
   {$IFDEF DebugLR}
-  Debugln('%s%s.SaveToStream end',[sspc,name]);
+  Debugln('%s.SaveToStream end',[name]);
   {$ENDIF}
 end;
 
@@ -2489,7 +2474,7 @@ begin
   with aCanvas do
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sAssignFont(%s)',[sspc,self.Font.Name]);
+    DebugLn('AssignFont(%s)',[self.Font.Name]);
     {$ENDIF}
 //**    Brush.Style := bsClear;
     Font.Assign(Self.Font);
@@ -2542,9 +2527,9 @@ begin
     until i > Len - 2;
   end;
   {$IFDEF DebugLR}
-  IncSpc(1);
-  debugLn('%sbreakword: s=%s result=%s',[sspc,dbgstr(s),dbgstr(result)]);
-  IncSpc(-1);
+  DebugLnEnter('');
+  debugLn('breakword: s=%s result=%s',[dbgstr(s),dbgstr(result)]);
+  DebugLnExit('');
   {$ENDIF}
 end;
 
@@ -2564,7 +2549,7 @@ var
       w := WCanvas.TextWidth(Copy(str, 1, n - 1)) else
       w := WCanvas.TextWidth(str);
     {$IFDEF DebugLR}
-    debugLn('%sOutline: str="%s" w/=%d w%%=%d',[sspc, str,w div 256, w mod 256]);
+    debugLn('Outline: str="%s" w/=%d w%%=%d',[str,w div 256, w mod 256]);
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
@@ -2698,7 +2683,7 @@ var
     size1 := -WCanvas.Font.Height + LineSpacing;
     maxWidth := dx - gapx - gapx;
     {$IFDEF DebugLR}
-    DebugLn('%sOutMemo: Size=%d Size1=%d MaxWidth=%d dx=%d gapx=%d',[sspc,Size,Size1,MaxWidth,dx,gapx]);
+    DebugLn('OutMemo: Size=%d Size1=%d MaxWidth=%d dx=%d gapx=%d',[Size,Size1,MaxWidth,dx,gapx]);
     {$ENDIF}
     for i := 0 to Memo1.Count - 1 do
     begin
@@ -2740,9 +2725,8 @@ begin
   WCanvas.Font.Assign(Font);
   WCanvas.Font.Height := -Round(Font.Size * 96 / 72);
   {$IFDEF DebugLR}
-  DebugLn('%sTfrMemoView.WrapMemo INI Font.PPI=%d Font.Size=%d Canvas.Font.PPI=%d WCanvas.Font.Size=%d',
-    [sspc, Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
-  IncSpc(1);
+  DebugLnEnter('TfrMemoView.WrapMemo INI Font.PPI=%d Font.Size=%d Canvas.Font.PPI=%d WCanvas.Font.Size=%d',
+    [Font.PixelsPerInch, Font.Size,Canvas.Font.PixelsPerInch,WCanvas.Font.Size]);
   {$ENDIF}
 
   SetTextCharacterExtra(WCanvas.Handle, CharacterSpacing);
@@ -2752,8 +2736,7 @@ begin
   else
     OutMemo;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrMemoView.WrapMemo DONE',[sspc]);
+  DebugLnExit('TfrMemoView.WrapMemo DONE',[]);
   {$ENDIF}
 end;
 
@@ -2801,7 +2784,7 @@ var
         
         nw := Round(w * ScaleX);                    // needed width
         {$IFDEF DebugLR}
-        DebugLn('%sCanvas.Font.Size=%d TextWidth=%d',[sspc,Canvas.Font.Size,Canvas.TextWidth(St)]);
+        DebugLn('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         {$ENDIF}
         (*
         while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
@@ -2814,10 +2797,10 @@ var
         *)
         th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
         {$IFDEF DebugLR}
-        DebugLn('%sTh=%d Canvas.TextHeight(H)=%d',[sspc,Th,Canvas.TextHeight('H')]);
-        Debugln('%sCanvas.Font.Size=%d TextWidth=%d',[sspc,Canvas.Font.Size,Canvas.TextWidth(St)]);
+        DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
+        Debugln('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         aw := Canvas.TextWidth(St);                // actual width
-        DebugLn('%snw=%d  aw=%d',[sspc,nw,aw]);
+        DebugLn('nw=%d  aw=%d',[nw,aw]);
         {$ENDIF}
         case Alignment of
           Classes.taLeftJustify : CurX :=x+gapx;
@@ -2843,7 +2826,7 @@ var
 
     th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
     {$IFDEF DebugLR}
-    DebugLn('%sTh=%d Canvas.TextHeight(H)=%d DR=%s',[sspc,Th,Canvas.TextHeight('H'),dbgs(DR)]);
+    DebugLn('Th=%d Canvas.TextHeight(H)=%d DR=%s',[Th,Canvas.TextHeight('H'),dbgs(DR)]);
     {$ENDIF}
 
     CurStrNo := 0;
@@ -2977,16 +2960,14 @@ var
   DTFlags: Cardinal;
 begin
   {$IFDEF DebugLR}
-  DbgOut('%sTfrMemoView.CalcWidth INIT text=%s Font.PPI=%d Font.Size=%d dx=%d dy=%d',
-    [sspc,aMemo.Text,Font.PixelsPerInch,Font.Size,Dx,dy]);
-  IncSpc(1);
+  DebugLnEnter('TfrMemoView.CalcWidth INIT text=%s Font.PPI=%d Font.Size=%d dx=%d dy=%d',
+    [aMemo.Text,Font.PixelsPerInch,Font.Size,Dx,dy]);
   {$ENDIF}
   CalcRect := Rect(0, 0, dx, dy);
   Canvas.Font.Assign(Font);
   Canvas.Font.Height := -Round(Font.Size * 96 / 72);
   {$IFDEF DebugLR}
-  DbgOut('%sCanvas.Font.PPI=%d Canvas.Font.Size=%d',
-    [sspc,Canvas.Font.PixelsPerInch,Canvas.Font.Size]);
+  DebugLn('Canvas.Font.PPI=%d Canvas.Font.Size=%d',[Canvas.Font.PixelsPerInch,Canvas.Font.Size]);
   {$ENDIF}
   DTFlags := DT_CALCRECT;
   if Flags and flWordBreak <> 0 then
@@ -3001,8 +2982,7 @@ begin
   DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DTFlags);
   Result := CalcRect.Right + Round(2 * FrameWidth) + 2;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DbgOut('%sTfrMemoView.CalcWidth DONE Width=%d Rect=%s',[sspc,Result,dbgs(CalcRect)]);
+  DebugLnExit('TfrMemoView.CalcWidth DONE Width=%d Rect=%s',[Result,dbgs(CalcRect)]);
   {$ENDIF}
 end;
 
@@ -3017,8 +2997,8 @@ begin
   {$IFDEF DebugLR}
   if IsPrinting then begin
     DebugLn('');
-    Debugln('%sTfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
-      [sspc,Name,dbgs(IsPrinting),Canvas.Font.PixelsPerInch]);
+    Debugln('TfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
+      [Name,dbgs(IsPrinting),Canvas.Font.PixelsPerInch]);
   end;
   NewDx := 0;
   {$ENDIF}
@@ -3035,7 +3015,7 @@ begin
       dx := newdx;
   end;
   {$IFDEF DebugLR}
-  DebugLn('%sNewDx=%d Dx=%d',[sspc,NewDx,dx]);
+  DebugLn('NewDx=%d Dx=%d',[NewDx,dx]);
   {$ENDIF}
   Streaming := False;
   Memo1.Assign(Memo);
@@ -3052,8 +3032,7 @@ begin
   begin
     NeedWrap := Pos(#1, Memo1.Text) = 0;
     {$IFDEF DebugLR}
-    DebugLn('%sMemo1: Count=%d Text=%s NeedWrap=%s',
-      [sspc,Memo1.Count,dbgstr(Memo1.text),dbgs(needwrap)]);
+    DebugLn('Memo1: Count=%d Text=%s NeedWrap=%s', [Memo1.Count,dbgstr(Memo1.text),dbgs(needwrap)]);
     {$ENDIF}
     if Memo1[Memo1.Count - 1] = #1 then
       Memo1.Delete(Memo1.Count - 1);
@@ -3092,7 +3071,7 @@ var
   i: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrMemoView.Print %s',[sspc,Name]);
+  DebugLn('TfrMemoView.Print %s',[Name]);
   {$ENDIF}
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
@@ -3243,7 +3222,7 @@ var
   TmpLayout: TTextLayout;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sStream.Position=%d Stream.Size=%d',[sspc,Stream.Position,Stream.Size]);
+  DebugLn('Stream.Position=%d Stream.Size=%d',[Stream.Position,Stream.Size]);
   {$ENDIF}
 
   inherited LoadFromStream(Stream);
@@ -4113,8 +4092,7 @@ var
 
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrPictureView.Draw INI',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('TfrPictureView.Draw INI');
   {$ENDIF}
   BeginDraw(aCanvas);
   CalcGaps;
@@ -4174,8 +4152,7 @@ begin
   end;
   RestoreCoord;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrPictureView.Draw DONE',[sspc]);
+  DebugLnExit('TfrPictureView.Draw DONE');
   {$ENDIF}
 end;
 
@@ -4795,9 +4772,8 @@ var
   ox,oy: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d DiableDrawing=%s',
-  [sspc,dbgsname(t),t.name,Parent.XAdjust,Parent.LeftMargin,BoolToStr(DisableDrawing,true)]);
-  IncSpc(1);
+  DebugLnEnter('TfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d DiableDrawing=%s',
+  [dbgsname(t),t.name,Parent.XAdjust,Parent.LeftMargin,BoolToStr(DisableDrawing,true)]);
   {$ENDIF}
   CurPage := Parent;
   CurBand := Self;
@@ -4808,12 +4784,11 @@ begin
       ox := t.x; Inc(t.x, Parent.XAdjust - Parent.LeftMargin);
       oy := t.y; Inc(t.y, y);
       {$IFDEF DebugLR}
-      DebugLn('%sPrinting view %s x=%d y=%d dx=%d dy=%d',[sspc,ViewInfo(t),t.x,t.y,t.dx,t.dy]);
-      IncSpc(1);
+      DebugLnEnter('Printing view %s x=%d y=%d dx=%d dy=%d',[ViewInfo(t),t.x,t.y,t.dx,t.dy]);
       {$ENDIF}
       t.Print(MasterReport.EMFPages[PageNo]^.Stream);
       {$IFDEF DebugLR}
-      IncSpc(-1);
+      DebugLnExit('');
       {$ENDIF}
       t.x := ox; t.y := oy;
       if (t is TfrMemoView) and
@@ -4824,8 +4799,7 @@ begin
     on exception do DoError;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrBand.DrawObject DONE t=%s:%s',[sspc,dbgsname(t),t.name]);
+  DebugLnExit('TfrBand.DrawObject DONE t=%s:%s',[dbgsname(t),t.name]);
   {$ENDIF}
 end;
 
@@ -4913,8 +4887,7 @@ var
   t: TfrView;
 begin
   {$ifdef DebugLR}
-  DebugLn('%sDrawObjects INIT',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('DrawObjects INIT');
   {$endif}
   Result := False;
   for i := 0 to Objects.Count - 1 do
@@ -4937,8 +4910,7 @@ begin
     if MasterReport.Terminated then break;
   end;
   {$ifdef DebugLR}
-  IncSpc(-1);
-  DebugLn('%sDrawObjects DONE result=%s',[sspc,BoolToStr(result,true)]);
+  DebugLnExit('DrawObjects DONE result=%s',[BoolToStr(result,true)]);
   {$endif}
 end;
 
@@ -5091,15 +5063,12 @@ end;
 function TfrBand.CheckPageBreak(ay, ady: Integer; PBreak: Boolean): Boolean;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.CheckPageBreak INI ay=%d ady=%d Pbreak=%d',
-    [sspc,ay,ady,ord(pbreak)]);
-  IncSpc(1);
+  DebugLnEnter('TfrBand.CheckPageBreak INI ay=%d ady=%d Pbreak=%d',[ay,ady,ord(pbreak)]);
   {$ENDIF}
   Result := False;
   with Parent do begin
     {$IFDEF DebugLR}
-    DebugLn('%say+dy+ady=%d CurBottomY=%d',
-      [sspc, ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
+    DebugLn('say+dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
     {$ENDIF}
     if not RowsLayout then begin
       if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
@@ -5111,9 +5080,7 @@ begin
     end;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrBand.CheckPageBreak END ay=%d ady=%d Result=%d',
-    [sspc,ay,ady,ord(Result)]);
+  DebugLnExit('TfrBand.CheckPageBreak END ay=%d ady=%d Result=%d',[ay,ady,ord(Result)]);
   {$ENDIF}
 end;
 
@@ -5125,15 +5092,15 @@ begin
     if (CurColumn=0) and (typ=btMasterData) then begin
       BandHeight := DoCalcHeight;
       {$IFDEF DebugLR}
-      DebugLn('%sTfrBand.CheckNextColumn INI CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
-        [sspc,CurY,BandHeight,CurY+BandHeight,CurBottomY]);
+      DebugLn('TfrBand.CheckNextColumn INI CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
+        [CurY,BandHeight,CurY+BandHeight,CurBottomY]);
       {$ENDIF}
       // check left height space when on last column
       if CurY + BandHeight>CurBottomY then
         NewPage;
       {$IFDEF DebugLR}
-      DebugLn('%sTfrBand.CheckNextColumn END CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
-        [sspc,CurY,BandHeight,CurY+BandHeight,CurBottomY]);
+      DebugLn('TfrBand.CheckNextColumn END CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
+        [CurY,BandHeight,CurY+BandHeight,CurBottomY]);
       {$ENDIF}
     end;
   end;
@@ -5162,8 +5129,7 @@ var
 
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sDrawPageBreak INI y=%d Maxdy=%d',[sspc,y,maxdy]);
-  IncSpc(1);
+  DebugLnEnter('DrawPageBreak INI y=%d Maxdy=%d',[y,maxdy]);
   {$ENDIF}
   for i := 0 to Objects.Count - 1 do
   begin
@@ -5183,14 +5149,12 @@ begin
       if t is TfrMemoView then
       begin
         {$IFDEF DebugLR}
-        DebugLn('%sCalcHeight Memo INI',[sspc]);
-        IncSpc(1);
+        DebugLnEnter('CalcHeight Memo INI');
         {$ENDIF}
         TfrMemoView(t).CalcHeight; // wraps a memo onto separate lines
         t.Memo1.Assign(SMemo);
         {$IFDEF DebugLR}
-        IncSpc(-1);
-        DebugLn('%sCalcHeight Memo DONE',[sspc]);
+        DebugLnExit('CalcHeight Memo DONE');
         {$ENDIF}
       end;
     end;
@@ -5277,8 +5241,7 @@ begin
   end;
   Inc(Parent.CurY, maxdy);
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sDrawPageBreak END Parent.CurY=%d',[sspc,Parent.CurY]);
+  DebugLnExit('DrawPageBreak END Parent.CurY=%d',[Parent.CurY]);
   {$ENDIF}
 end;
 
@@ -5311,9 +5274,8 @@ begin
   if UseY then
     y := Parent.CurY;
   {$IFDEF DebugLR}
-  DebugLn('%sTfrBand.DoDraw INI Band=%s sfy=%d y=%d dy=%d XAdjust=%d CurY=%d Stretch=%d PageBreak=%d',
-    [sspc, bandInfo(self), sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
-  IncSpc(1);
+  DebugLnEnter('TfrBand.DoDraw INI Band=%s sfy=%d y=%d dy=%d XAdjust=%d CurY=%d Stretch=%d PageBreak=%d',
+    [bandInfo(self), sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
   {$ENDIF}
 
   Parent.RowStarted := True;
@@ -5382,9 +5344,8 @@ begin
     Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
                  btSubDetailFooter, btGroupFooter, btReportSummary]);
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrBand.DoDraw END sfy=%d y=%d dy=%d xadjust=%d CurY=%d',
-    [sspc, sfy, y, dy, parent.xadjust, parent.cury]);
+  DebugLnExit('TfrBand.DoDraw END sfy=%d y=%d dy=%d xadjust=%d CurY=%d',
+    [sfy, y, dy, parent.xadjust, parent.cury]);
   {$ENDIF}
 end;
 
@@ -5415,8 +5376,7 @@ var
   b: TfrBand;
 begin
   {$IFDEF debugLr}
-  DebugLn('%sTFrBand.Draw INI Band=%s y=%d vis=%s',[sspc,BandInfo(self),y,BoolToStr(Visible,true)]);
-  IncSpc(1);
+  DebugLnEnter('TFrBand.Draw INI Band=%s y=%d vis=%s',[BandInfo(self),y,BoolToStr(Visible,true)]);
   {$endif}
   Result := False;
   CurView := View;
@@ -5531,8 +5491,7 @@ begin
   Parent.LastBandType := typ;
 
   {$IFDEF debugLr}
-  IncSpc(-1);
-  DebugLn('%sTFrBand.Draw END %s y=%d PageNo=%d EOFReached=',[sspc, dbgsname(self),y, PageNo]);
+  DebugLnExit('TFrBand.Draw END %s y=%d PageNo=%d EOFReached=',[dbgsname(self),y, PageNo]);
   {$endif}
 end;
 
@@ -5580,14 +5539,13 @@ var
   v: Boolean;
 begin
   {$ifdef DebugLR}
-  DebugLn('%sTfrBand.DoAggregate INIT Band=%s',[sspc, BandInfo(self)]);
-  IncSpc(1);
+  DebugLnEnter('TfrBand.DoAggregate INIT Band=%s',[BandInfo(self)]);
   {$endif}
  for i := 0 to Values.Count - 1 do
   begin
     s := Values[i];
     {$ifdef DebugLR}
-    DbgOut(sspc,'Mangling Values[',dbgs(i),']=',QuotedStr(DecodeValue(s)),' ==> ');
+    DbgOut('Mangling Values[',dbgs(i),']=',QuotedStr(DecodeValue(s)),' ==> ');
     {$endif}
     Values[i] := Copy(s, 1, Pos('=', s) - 1) + '=0' + Copy(s, Pos('=', s) + 2, 255);
     {$ifdef DebugLR}
@@ -5608,8 +5566,7 @@ begin
   Visible := v;
   Inc(Count);
   {$ifdef DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrBand.DoAggregate DONE Band=%s',[sspc, BandInfo(self)]);
+  DebugLnExit('TfrBand.DoAggregate DONE Band=%s',[BandInfo(self)]);
   {$endif}
 end;
 
@@ -6105,8 +6062,7 @@ var
   Field: TfrTField;
 begin
   {$ifdef DebugLR}
-  DebugLn('%sTfrPage.PrepareObjects INIT',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('TfrPage.PrepareObjects INIT');
   {$endif}
 
   CurPage := Self;
@@ -6132,7 +6088,7 @@ begin
         if Field <> nil then
         begin
           {$ifdef DebugLR}
-          DebugLn('%sFor View=%s found Field=%s',[sspc,ViewInfo(t),Field.FieldName]);
+          DebugLn('For View=%s found Field=%s',[ViewInfo(t),Field.FieldName]);
           {$endif}
           t.FDataSet := DSet;
           t.FField := Field.FieldName;
@@ -6147,8 +6103,7 @@ begin
     end;
   end;
   {$ifdef DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrPage.PrepareObjects DONE',[sspc]);
+  DebugLnExit('TfrPage.PrepareObjects DONE');
   {$endif}
 end;
 
@@ -6158,15 +6113,13 @@ begin
   begin
     {$IFDEF DebugLR}
     DebugLn;
-    DebugLn('%sTfrPage.ShowBand INI Band=%s',[sspc,BandInfo(b)]);
-    IncSpc(1);
+    DebugLnEnter('TfrPage.ShowBand INI Band=%s',[BandInfo(b)]);
     {$ENDIF}
     if Mode = pmBuildList then
       AddRecord(b, rtShowBand) else
       b.Draw;
     {$IFDEF DebugLR}
-    IncSpc(-1);
-    DebugLn('%sTfrPage.ShowBand END Band=%s',[sspc,BandInfo(b)]);
+    DebugLnExit('TfrPage.ShowBand END Band=%s',[BandInfo(b)]);
     {$ENDIF}
   end;
 end;
@@ -6281,8 +6234,8 @@ end;
 procedure TfrPage.DrawPageFooters;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTFrPage.DrawPageFootersPage INI PageNo=%d XAdjust=%d CurColumn=%d',
-    [sspc,PageNo, XAdjust, CurColumn]);
+  DebugLn('TFrPage.DrawPageFootersPage INI PageNo=%d XAdjust=%d CurColumn=%d',
+    [PageNo, XAdjust, CurColumn]);
   {$ENDIF}
   CurColumn := 0;
   XAdjust := LeftMargin;
@@ -6303,17 +6256,16 @@ begin
     end;
   PageNo := MasterReport.EMFPages.Count;
   {$IFDEF DebugLR}
-  DebugLn('%sTFrPage.DrawPageFootersPage FIN PageNo=%d XAdjust=%d CurColumn=%d',
-    [sspc, PageNo, XAdjust, CurColumn]);
+  DebugLn('TFrPage.DrawPageFootersPage FIN PageNo=%d XAdjust=%d CurColumn=%d',
+    [PageNo, XAdjust, CurColumn]);
   {$ENDIF}
 end;
 
 procedure TfrPage.NewPage;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTFrPage.NewPage INI PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
-    [sspc,PageNo, CurBottomY, CurY, XAdjust]);
-  IncSpc(1);
+  DebugLnEnter('TFrPage.NewPage INI PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
+    [PageNo, CurBottomY, CurY, XAdjust]);
   {$ENDIF}
 
   CurReport.InternalOnProgress(PageNo + 1);
@@ -6324,7 +6276,7 @@ begin
   MasterReport.EMFPages.Add(Self);
   Append := False;
   {$IFDEF DebugLR}
-  DebugLn('%s---- Start of new page ----',[sspc]);
+  DebugLn('---- Start of new page ----');
   {$ENDIF}
   ShowBand(Bands[btOverlay]);
   CurY := TopMargin;
@@ -6332,9 +6284,8 @@ begin
   if not RowsLayout then
     ShowBand(Bands[btColumnHeader]);
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTFrPage.NewPage END PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
-    [sspc,PageNo, CurBottomY, CurY, XAdjust]);
+  DebugLnExit('TFrPage.NewPage END PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
+    [PageNo, CurBottomY, CurY, XAdjust]);
   {$ENDIF}
 end;
 
@@ -6343,9 +6294,8 @@ var
   b: TfrBand;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrPage.NewColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
-    [sspc,CurColumn, ColCount, CurY, XAdjust]);
-  IncSpc(1);
+  DebugLnEnter('TfrPage.NewColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [CurColumn, ColCount, CurY, XAdjust]);
   {$ENDIF}
   if CurColumn < ColCount - 1 then
   begin
@@ -6375,18 +6325,16 @@ begin
     Band.ResetLastValues;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrPage.NewColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
-    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  DebugLnExit('TfrPage.NewColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [CurColumn, ColCount, CurY, XAdjust]);
   {$ENDIF}
 end;
 
 procedure TfrPage.NextColumn(Band: TFrBand);
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrPage.NextColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
-    [sspc,CurColumn, ColCount, CurY, XAdjust]);
-  IncSpc(1);
+  DebugLnEnter('TfrPage.NextColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [CurColumn, ColCount, CurY, XAdjust]);
   {$ENDIF}
   if CurColumn < ColCount - 1 then
   begin
@@ -6397,9 +6345,8 @@ begin
   else
     StartColumn;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrPage.NextColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
-    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  DebugLnExit('TfrPage.NextColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [CurColumn, ColCount, CurY, XAdjust]);
   {$ENDIF}
 end;
 
@@ -6527,14 +6474,14 @@ var
     i: Integer;
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sShowStack INI',[sspc]);
+    DebugLnEnter('ShowStack INI');
     {$ENDIF}
     for i := 1 to BndStackTop do
       if BandExists(BndStack[i]) then
         ShowBand(BndStack[i]);
     BndStackTop := 0;
     {$IFDEF DebugLR}
-    DebugLn('%sShowStack END',[sspc]);
+    DebugLnExit('ShowStack END');
     {$ENDIF}
   end;
 
@@ -6558,8 +6505,7 @@ var
   begin
     b := Bands[Bnds[Level, bpData]];
     {$IFDEF DebugLR}
-    DebugLn('%sDoop(Level=%d) INI b=%s mode=',[sspc,Level,bandinfo(b)]);
-    IncSpc(1);
+    DebugLnEnter('Doop(Level=%d) INI b=%s mode=',[Level,bandinfo(b)]);
     {$ENDIF}
     while (b <> nil) and (b.Dataset <> nil) do
     begin
@@ -6628,8 +6574,8 @@ var
                 begin
                   curGroupValue := frParser.Calc(b1.GroupCondition);
                   {$IFDEF DebugLR}
-                  DebugLn('%sGroupCondition=%s LastGroupValue=%s curGroupValue=%s',
-                    [sspc,b1.GroupCondition,varstr(b1.LastGroupValue),varstr(curGroupValue)]);
+                  DebugLn('GroupCondition=%s LastGroupValue=%s curGroupValue=%s',
+                    [b1.GroupCondition,varstr(b1.LastGroupValue),varstr(curGroupValue)]);
                   {$ENDIF}
                   if (curGroupValue <> b1.LastGroupValue) or
                     b.Dataset.Eof then
@@ -6698,15 +6644,13 @@ var
       b := b.Next;
     end;
     {$IFDEF DebugLR}
-    IncSpc(-1);
-    DebugLn('%sDoop(Level=%d) END',[sspc,Level]);
+    DebugLnExit('Doop(Level=%d) END',[Level]);
     {$ENDIF}
   end;
 
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrPage.FormPage INI Mode=%d',[sspc,ord(mode)]);
-  IncSpc(1);
+  DebugLnEnter('TfrPage.FormPage INI Mode=%d',[ord(mode)]);
   {$ENDIF}
   if Mode = pmNormal then
   begin
@@ -6728,7 +6672,7 @@ begin
     CurColumn := 0;
     XAdjust := LeftMargin;
     {$IFDEF DebugLR}
-    DebugLn('%sXAdjust=%d CurBottomY=%d PrevY=%d',[sspc,XAdjust,CurBottomY,PrevY]);
+    DebugLn('XAdjust=%d CurBottomY=%d PrevY=%d',[XAdjust,CurBottomY,PrevY]);
     {$ENDIF}
     if not Append then
     begin
@@ -6741,7 +6685,7 @@ begin
       CurY := PrevY;
     sfPage := PageNo;
     {$IFDEF DebugLR}
-    DebugLn('%sXAdjust=%d CurY=%d sfPage=%d',[sspc,XAdjust,CurY,sfpage]);
+    DebugLn('XAdjust=%d CurY=%d sfPage=%d',[XAdjust,CurY,sfpage]);
     {$ENDIF}
     ShowBand(Bands[btReportTitle]);
     if PageNo = sfPage then // check if new page was formed
@@ -6767,7 +6711,7 @@ begin
   end;
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
-  DebugLn('%sGroupsCount=%d MaxLevel=%d doing DoLoop(1)',[sspc,
+  DebugLn('GroupsCount=%d MaxLevel=%d doing DoLoop(1)',[
     Bands[btGroupHeader].Objects.Count, MaxLevel]);
   {$ENDIF}
   DisableControls;
@@ -6795,9 +6739,8 @@ begin
     PageNo := sfPage + 1;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrPage.FormPage END PrevY=%d PrevBottomY=%d PageNo=%d XAdjust=%d',
-    [sspc,PrevY,PrevBottomY,PageNo,XAdjust]);
+  DebugLnExit('TfrPage.FormPage END PrevY=%d PrevBottomY=%d PageNo=%d XAdjust=%d',
+    [PrevY,PrevBottomY,PageNo,XAdjust]);
   {$ENDIF}
 end;
 
@@ -7197,8 +7140,8 @@ var
 begin
   IsPrinting := Printer.Printing and (Canvas is TPrinterCanvas);
   {$IFDEF DebugLR}
-  DebugLn('%sTfrEMFPages.Draw IsPrinting=%d PageIndex=%d Canvas.ClassName=%s '+
-          'CanvasPPI=%d',[sspc, ord(IsPrinting), Index, Canvas.ClassName,
+  DebugLn('TfrEMFPages.Draw IsPrinting=%d PageIndex=%d Canvas.ClassName=%s '+
+          'CanvasPPI=%d',[ord(IsPrinting), Index, Canvas.ClassName,
           Canvas.Font.pixelsPerInch]);
   {$ENDIF}
 
@@ -7887,14 +7830,14 @@ begin
   ParValue := FormatValueStr(ValStr, Format, FormatStr);
   }
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.InternalOnGetValue(%s) Value=%s',[sspc,ParName,ParValue]);
+  DebugLn('TfrReport.InternalOnGetValue(%s) Value=%s',[ParName,ParValue]);
   {$ENDIF}
 end;
 
 procedure TfrReport.InternalOnEnterRect(Memo: TStringList; View: TfrView);
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.InternalOnEnterRect View=%s',[sspc,ViewInfo(View)]);
+  DebugLn('TfrReport.InternalOnEnterRect View=%s',[ViewInfo(View)]);
   {$ENDIF}
   with View do
     if (FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))) then
@@ -8122,7 +8065,7 @@ begin
 //  val := '0';
   val := varempty;
   {$ifdef DebugLR}
-  DebugLn('%sOnGetParsFunction aName=%s p1=%s p2=%s p3=%s',[sspc,aName,p1,p2,p3]);
+  DebugLn('OnGetParsFunction aName=%s p1=%s p2=%s p3=%s',[aName,p1,p2,p3]);
   {$endif}
   for i := 0 to frFunctionsCount - 1 do
     if frFunctions[i].FunctionLibrary.OnFunction(aName, p1, p2, p3, val) then
@@ -8467,8 +8410,7 @@ var
 procedure TfrReport.BuildBeforeModal(Sender: TObject);
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.BuildBeforeModal INIT FinalPass=%s DoublePass=%s',[sspc,dbgs(FinalPass),dbgs(DoublePass)]);
-  IncSpc(1);
+  DebugLnEnter('TfrReport.BuildBeforeModal INIT FinalPass=%s DoublePass=%s',[dbgs(FinalPass),dbgs(DoublePass)]);
   {$ENDIF}
   DoBuildReport;
   if FinalPass then
@@ -8488,8 +8430,7 @@ begin
     DoublePass := True;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrReport.BuildBeforeModal DONE',[sspc]);
+  DebugLnExit('TfrReport.BuildBeforeModal DONE');
   {$ENDIF}
 end;
 
@@ -8498,8 +8439,7 @@ var
   ParamOk: Boolean;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.PrepareReport INIT',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('TfrReport.PrepareReport INIT');
   {$ENDIF}
   DocMode := dmPrinting;
   CurDate := Date;
@@ -8529,8 +8469,7 @@ begin
   if Assigned(FOnEndDoc) then
     FOnEndDoc;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrReport.PrepareReport DONE',[sspc]);
+  DebugLnExit('TfrReport.PrepareReport DONE');
   {$ENDIF}
 end;
 
@@ -8548,16 +8487,14 @@ begin
   EMFPages.Clear;
 
   {$IFDEF DebugLR}
-  DebugLn('%sDoPrepareReport INIT DoublePass=%s',[sspc,BoolToStr(DoublePass)]);
-  IncSpc(1);
+  DebugLnEnter('DoPrepareReport INIT DoublePass=%s',[BoolToStr(DoublePass)]);
   {$ENDIF}
 
   s := sReportPreparing;
   if DoublePass then
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sDoPrepareReport FirstPass Begin',[sspc]);
-    IncSpc(1);
+    DebugLnEnter('DoPrepareReport FirstPass Begin');
     {$ENDIF}
 
     DisableDrawing := True;
@@ -8578,14 +8515,12 @@ begin
       end;
       
       {$IFDEF DebugLR}
-      IncSpc(-1);
-      DebugLn('%sDoPrepareReport FirstPass End',[sspc]);
+      DebugLnExit('DoPrepareReport FirstPass End');
       {$ENDIF}
     end
     else BuildBeforeModal(nil);
     {$IFDEF DebugLR}
-    IncSpc(-1);
-    DebugLn('%sDoPrepareReport DONE',[sspc]);
+    DebugLnExit('DoPrepareReport DONE');
     {$ENDIF}
     Exit;
   end;
@@ -8593,14 +8528,13 @@ begin
   if not Assigned(FOnProgress) and FShowProgress then
   begin
     {$IFDEF DebugLR}
-    DebugLn('%sDoPrepareReport SecondPass begin',[sspc]);
-    IncSpc(1);
+    DebugLnEnter('DoPrepareReport SecondPass begin');
     {$ENDIF}
 
     with frProgressForm do
     begin
       {$IFDEF DebugLR}
-      DebugLn('%s1',[sspc]);
+      DebugLn('1');
       {$ENDIF}
       if Title = '' then
         Caption := s
@@ -8610,45 +8544,43 @@ begin
       Label1.Caption := FirstCaption + '  1';
       OnBeforeModal:=@BuildBeforeModal;
       {$IFDEF DebugLR}
-      DebugLn('%s2',[sspc]);
+      DebugLn('2');
       {$ENDIF}
       if Visible then
       begin
         {$IFDEF DebugLR}
-        DebugLn('%s3',[sspc]);
+        DebugLn('3');
         {$ENDIF}
         if not FirstPassTerminated then
            DoublePass := True;
            
         BuildBeforeModal(nil);
         {$IFDEF DebugLR}
-        DebugLn('%s4',[sspc]);
+        DebugLn('4');
         {$ENDIF}
       end
       else
       begin
         {$IFDEF DebugLR}
-        DebugLn('%s5',[sspc]);
+        DebugLn('5');
         {$ENDIF}
         SavedAllPages := 0;
         if Show_Modal(Self) = mrCancel then
           Result := False;
         {$IFDEF DebugLR}
-        DebugLn('%s6',[sspc]);
+        DebugLn('6');
         {$ENDIF}
       end;
       
       {$IFDEF DebugLR}
-      IncSpc(-1);
-      DebugLn('%sDoPrepareReport SecondPass End',[sspc]);
+      DebugLnExit('DoPrepareReport SecondPass End');
       {$ENDIF}
     end;
   end
   else BuildBeforeModal(nil);
   Terminated := False;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sDoPrepareReport DONE',[sspc]);
+  DebugLnExit('DoPrepareReport DONE');
   {$ENDIF}
 end;
 
@@ -8739,8 +8671,7 @@ var
   BM : Pointer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.DoBuildReport INIT',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('TfrReport.DoBuildReport INIT');
   {$ENDIF}
   HookList.Clear;
   CanRebuild := True;
@@ -8770,11 +8701,11 @@ begin
 
     repeat
       {$IFDEF DebugLR}
-      DebugLn('%sp1',[sspc]);
+      DebugLn('p1');
       {$ENDIF}
       InternalOnProgress(PageNo + 1);
       {$IFDEF DebugLR}
-      DebugLn('%sp2',[sspc]);
+      DebugLn('p2');
       {$ENDIF}
 
       for i := 0 to Pages.Count - 1 do
@@ -8791,7 +8722,7 @@ begin
             FCurPage.FormPage;
 
         {$IFDEF DebugLR}
-        debugLn('%sp3',[sspc]);
+        debugLn('p3');
         {$ENDIF}
 
           Append := False;
@@ -8811,7 +8742,7 @@ begin
         end;
       end;
       {$IFDEF DebugLR}
-      DebugLn('%sp4',[sspc]);
+      DebugLn('p4');
       {$ENDIF}
 
       InternalOnProgress(PageNo);
@@ -8834,8 +8765,7 @@ begin
     frDataManager.AfterPreparing;
   Values.Items.Sorted := False;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrReport.DoBuildReport DONE',[sspc]);
+  DebugLnExit('TfrReport.DoBuildReport DONE');
   {$ENDIF}
 end;
 
@@ -8857,8 +8787,7 @@ var
   p: TfrPreviewForm;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrReport.ShowPreparedReport INIT',[sspc]);
-  IncSpc(1);
+  DebugLnEnter('TfrReport.ShowPreparedReport INIT');
   {$ENDIF}
   CurReport := Self;
   MasterReport := Self;
@@ -8877,17 +8806,16 @@ begin
     p := TfrPreviewForm.Create(nil);
     p.BorderIcons:=p.BorderIcons - [biMinimize];
     {$IFDEF DebugLR}
-    DebugLn('%s1 TfrPreviewForm.visible=%s',[sspc,BooLToStr(p.Visible)]);
+    DebugLn('1 TfrPreviewForm.visible=%s',[BooLToStr(p.Visible)]);
     {$ENDIF}
     p.Caption := s;
     {$IFDEF DebugLR}
-    DebugLn('%s2 TfrPreviewForm.visible=%s',[sspc,BooLToStr(p.Visible)]);
+    DebugLn('2 TfrPreviewForm.visible=%s',[BooLToStr(p.Visible)]);
     {$ENDIF}
     p.Show_Modal(Self);
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrReport.ShowPreparedReport DONE',[sspc]);
+  DebugLnExit('TfrReport.ShowPreparedReport DONE');
   {$ENDIF}
 end;
 
@@ -9708,8 +9636,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF DebugLR}
-  DebugLn('%sTfrStdFunctionLibrary.DoFunction FNo=%d (%s) p1=%s p2=%s p3=%s val=%s',[sspc,FNo,FNoStr,p1,p2,p3,val]);
-  IncSpc(1);
+  DebugLnEnter('TfrStdFunctionLibrary.DoFunction FNo=%d (%s) p1=%s p2=%s p3=%s val=%s',[FNo,FNoStr,p1,p2,p3,val]);
   {$ENDIF}
   dk := dkNone;
   val := '0';
@@ -9834,8 +9761,8 @@ begin
     else if (CurBand.View<>nil) and ((DataSet = nil) or (Field = nil)) then
     begin
       {$IFDEF DebugLR}
-      DebugLn('%sCurBand=%s CurBand.View=%s AggrBand=%s',
-        [sspc,BandInfo(CurBand),dbgsName(CurBand.View),BandInfo(AggrBand)]);
+      DebugLn('CurBand=%s CurBand.View=%s AggrBand=%s',
+        [BandInfo(CurBand),dbgsName(CurBand.View),BandInfo(AggrBand)]);
       {$ENDIF}
       s1 := Trim(string(p2));
       if s1 = '' then begin
@@ -9857,7 +9784,7 @@ begin
             VarName := VarName + '00' else
             VarName := VarName + IntToStr(CurPage.ColPos);
         {$ifdef DebugLR}
-        dbgOut(sspc, 'VarName=', QuotedStr(VarName));
+        dbgOut('VarName=', QuotedStr(VarName));
         {$endif}
         if not AggrBand.Visible and (AnsiCompareText(CurBand.View.Name, s1) = 0) then
         begin
@@ -9904,15 +9831,14 @@ begin
           if dk = dkAvg then
             val := val / AggrBand.Count;
           {$ifdef DebugLR}
-          DebugLn('%s Value=%s',[sspc,Val]);
+          DebugLn('Value=%s',[Val]);
           {$endif}
         end;
       end;
     end;
   end;
   {$IFDEF DebugLR}
-  IncSpc(-1);
-  DebugLn('%sTfrStdFunctionLibrary.DoFunction DONE val=%s',[sspc,val]);
+  DebugLnExit('TfrStdFunctionLibrary.DoFunction DONE val=%s',[val]);
   {$ENDIF}
 end;
 

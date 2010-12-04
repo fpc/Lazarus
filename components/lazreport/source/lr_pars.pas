@@ -39,7 +39,11 @@ function GetBrackedVariable(s: String; var i, j: Integer): String;
 
 implementation
 
-uses SysUtils, Variants;
+uses SysUtils, Variants
+  {$IFDEF DebugLRCalcs}
+  , LCLProc
+  {$ENDIF}
+  ;
 
 const
   ttGe = #1; ttLe = #2;
@@ -93,6 +97,9 @@ var
   nm: Array[1..32] of Variant;
   v: Double;
 begin
+  {$IFDEF DebugLRCalcs}
+  DebugLnEnter('TfrParser.CalcOPZ INIT s=%s',[dbgstr(s)]);
+  {$ENDIF}
   st := 1;
   i := 1;
   nm[1] := 0;
@@ -177,7 +184,13 @@ begin
           if Assigned(FOnGetValue) then
           begin
             nm[st] := Null;
+            {$IFDEF DebugLRCalcs}
+            DebugLnEnter('TfrParser.CalcOPZ "[" -> FOnGetValue s1=%s',[s1]);
+            {$ENDIF}
             FOnGetValue(s1, nm[st]);
+            {$IFDEF DebugLRCalcs}
+            DebugLnExit('TfrParser.CalcOPZ "[" <- FOnGetValue res=%s',[string(nm[st])]);
+            {$ENDIF}
           end;
           Inc(st);
         end
@@ -227,7 +240,13 @@ begin
                 if Int(StrToFloat(Calc(s2))) <> 0 then
                   s1 := s3 else
                   s1 := s4;
+                {$IFDEF DebugLRCalcs}
+                DebugLnEnter('TfrParser.CalcOPZ IF -> S1=%s',[s1]);
+                {$ENDIF}
                 nm[st] := Calc(s1);
+                {$IFDEF DebugLRCalcs}
+                DebugLnExit('TfrParser.CalcOPZ IF <- Res=%s',[string(nm[st])]);
+                {$ENDIF}
               end
               else if s1 = 'STRTODATE' then
                 nm[st] := StrToDate(Calc(s2))
@@ -257,6 +276,9 @@ begin
     Inc(i);
   end;
   Result := nm[1];
+  {$IFDEF DebugLRCalcs}
+  DebugLnExit('TfrParser.CalcOPZ DONE res=%s',[string(result)]);
+  {$ENDIF}
 end;
 
 function TfrParser.GetIdentify(const s: String; var i: Integer): String;
@@ -375,6 +397,9 @@ var
   end;
 
 begin
+  {$IFDEF DebugLRCalcs}
+  DebugLnEnter('TfrParser.Str2OPZ INIT s=%s',[dbgstr(s)]);
+  {$ENDIF}
   res := '';
   stack := '';
   i := 1; vr := False;
@@ -525,11 +550,20 @@ begin
   end;
   if stack <> '' then res := res + stack;
   Result := res;
+  {$IFDEF DebugLRCalcs}
+  DebugLnExit('TfrParser.Str2OPZ DONE result=%s',[dbgstr(string(result))]);
+  {$ENDIF}
 end;
 
 function TfrParser.Calc(const s: String): Variant;
 begin
+  {$IFDEF DebugLRCalcs}
+  DebugLnEnter('TfrParser.Calc INIT s=%s',[dbgstr(s)]);
+  {$ENDIF}
   Result := CalcOPZ(Str2OPZ(s));
+  {$IFDEF DebugLRCalcs}
+  DebugLnExit('TfrParser.Calc DONE res=%s',[string(result)]);
+  {$ENDIF}
 end;
 
 end.
