@@ -1494,7 +1494,25 @@ end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
 begin
-  ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
+  if Sender is TIDEMenuItem
+  then begin
+    ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
+  end;
+
+  if Sender is TIDECommand then begin
+    case TIDECommand(Sender).Command of
+      ecToggleWatches     : ViewDebugDialog(ddtWatches);
+      ecToggleBreakPoints : ViewDebugDialog(ddtBreakpoints);
+      ecToggleDebuggerOut : ViewDebugDialog(ddtOutput);
+      ecToggleLocals      : ViewDebugDialog(ddtLocals);
+      ecToggleCallStack   : ViewDebugDialog(ddtCallStack);
+      ecToggleRegisters   : ViewDebugDialog(ddtRegisters);
+      ecToggleAssembler   : ViewDebugDialog(ddtAssembler);
+      ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
+      ecEvaluate          : ViewDebugDialog(ddtEvaluate);
+      ecInspect           : ViewDebugDialog(ddtInspect);
+    end;
+  end;
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);

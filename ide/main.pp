@@ -3233,7 +3233,7 @@ begin
     IDECmd:=IDECommandList.FindIDECommand(Command);
     //DebugLn('TMainIDE.OnProcessIDECommand Command=',dbgs(Command),' ',dbgs(IDECmd));
     if (IDECmd<>nil) then begin
-      Handled:=IDECmd.Execute(Self);
+      Handled:=IDECmd.Execute(IDECmd);
     end;
   end;
 
