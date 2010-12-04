@@ -11565,7 +11565,8 @@ begin
       exit;
     end;
 
-    OnlyBase:=not (blfWithStaticPackages in Flags);
+    OnlyBase:=not ((blfWithStaticPackages in Flags)
+                   or MiscellaneousOptions.BuildLazOpts.WithStaticPackages);
 
     // prepare static auto install packages
     PkgOptions:='';
