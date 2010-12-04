@@ -4,6 +4,7 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   Top = 236
   Width = 503
   ActiveControl = UnitsTreeView
+  BorderStyle = bsDialog
   Caption = 'UnusedUnitsDialog'
   ClientHeight = 343
   ClientWidth = 503
@@ -17,7 +18,8 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     Width = 491
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 17
+    MultiSelect = True
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
@@ -52,10 +54,10 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       TabOrder = 0
     end
     object RemoveSelectedBitBtn: TBitBtn
-      Left = 277
+      Left = 266
       Height = 26
       Top = 7
-      Width = 134
+      Width = 145
       Align = alRight
       AutoSize = True
       Caption = 'RemoveSelectedBitBtn'
@@ -65,10 +67,10 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       TabOrder = 1
     end
     object RemoveAllBitBtn: TBitBtn
-      Left = 163
+      Left = 141
       Height = 26
       Top = 7
-      Width = 104
+      Width = 115
       Align = alRight
       AutoSize = True
       Caption = 'RemoveAllBitBtn'

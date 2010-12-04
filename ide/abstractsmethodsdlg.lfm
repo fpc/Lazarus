@@ -4,15 +4,16 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
   Top = 291
   Width = 581
   ActiveControl = MethodsCheckListBox
+  BorderStyle = bsDialog
   Caption = 'AbstractMethodsDialog'
   ClientHeight = 344
   ClientWidth = 581
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object NoteLabel: TLabel
     Left = 0
-    Height = 14
+    Height = 16
     Top = 0
     Width = 581
     Align = alTop
@@ -22,19 +23,19 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
   end
   object MethodsGroupBox: TGroupBox
     Left = 0
-    Height = 292
-    Top = 14
+    Height = 290
+    Top = 16
     Width = 581
     Align = alClient
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'MethodsGroupBox'
-    ClientHeight = 274
+    ClientHeight = 272
     ClientWidth = 577
     TabOrder = 0
     object MethodsCheckListBox: TCheckListBox
       AnchorSideBottom.Control = SelectAllButton
       Left = 0
-      Height = 239
+      Height = 235
       Top = 0
       Width = 577
       Align = alTop
@@ -48,9 +49,9 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideBottom.Control = MethodsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 245
-      Width = 98
+      Height = 25
+      Top = 241
+      Width = 107
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -63,10 +64,10 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = MethodsGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 110
-      Height = 23
-      Top = 245
-      Width = 113
+      Left = 119
+      Height = 25
+      Top = 241
+      Width = 122
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -91,10 +92,10 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 498
+      Left = 494
       Height = 26
       Top = 6
-      Width = 77
+      Width = 81
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -110,7 +111,7 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideRight.Control = AddAllBitBtn
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 322
+      Left = 313
       Height = 26
       Top = 6
       Width = 75
@@ -130,10 +131,10 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideRight.Control = CancelBitBtn
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 403
+      Left = 394
       Height = 26
       Top = 6
-      Width = 89
+      Width = 94
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6

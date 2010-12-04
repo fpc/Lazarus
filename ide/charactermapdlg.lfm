@@ -4,6 +4,7 @@ object CharacterMapDialog: TCharacterMapDialog
   Top = 128
   Width = 484
   ActiveControl = PageControl1
+  BorderStyle = bsDialog
   Caption = 'CharacterMapDialog'
   ClientHeight = 432
   ClientWidth = 484
@@ -12,12 +13,22 @@ object CharacterMapDialog: TCharacterMapDialog
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 396
+    Height = 26
+    Top = 400
     Width = 472
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
     ShowBevel = False
@@ -29,7 +40,7 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 384
+    Height = 388
     Top = 6
     Width = 472
     ActivePage = TabSheet1
@@ -39,7 +50,7 @@ object CharacterMapDialog: TCharacterMapDialog
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 358
+      ClientHeight = 360
       ClientWidth = 464
       object CharInfoLabel: TLabel
         AnchorSideLeft.Control = TabSheet1
@@ -49,7 +60,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = TabSheet1
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 14
+        Height = 16
         Top = 338
         Width = 452
         Anchors = [akLeft, akRight, akBottom]
@@ -118,14 +129,12 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = TabSheet2
         AnchorSideBottom.Side = asrBottom
         Left = 246
-        Height = 21
+        Height = 23
         Top = 331
         Width = 212
         Anchors = [akRight, akBottom]
-        AutoComplete = False
         BorderSpacing.Around = 6
-        ItemHeight = 13
-        ItemWidth = 0
+        ItemHeight = 15
         OnSelect = cbUniRangeSelect
         Style = csDropDownList
         TabOrder = 1

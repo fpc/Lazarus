@@ -3,6 +3,7 @@ object SearchResultsView: TSearchResultsView
   Height = 273
   Top = 325
   Width = 799
+  BorderStyle = bsSizeToolWin
   Caption = 'SearchResultsView'
   ClientHeight = 273
   ClientWidth = 799
@@ -12,17 +13,17 @@ object SearchResultsView: TSearchResultsView
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ResultsNoteBook: TPageControl
-    AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 248
     Top = 25
     Width = 799
     Align = alClient
+    MultiLine = True
+    TabOrder = 0
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
     OnPageChanged = ResultsNoteBookPageChanged
     Options = [nboShowCloseButtons, nboMultiLine]
-    TabOrder = 0
   end
   object ToolBar: TToolBar
     Left = 0

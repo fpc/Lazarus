@@ -4,6 +4,7 @@ inherited MessagesView: TMessagesView
   Top = 640
   Width = 722
   ActiveControl = MessageTreeView
+  BorderStyle = bsToolWindow
   Caption = 'MessagesView'
   ClientHeight = 79
   ClientWidth = 722
@@ -16,7 +17,8 @@ inherited MessagesView: TMessagesView
     Top = 0
     Width = 722
     Align = alClient
-    DefaultItemHeight = 15
+    DefaultItemHeight = 17
+    MultiSelect = True
     PopupMenu = MainPopupMenu
     ReadOnly = True
     ScrollBars = ssAutoBoth
