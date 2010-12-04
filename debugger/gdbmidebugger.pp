@@ -2909,6 +2909,7 @@ var
   CommandObj: TGDBMIDebuggerCommandExecute;
 begin
   Result := True;
+  FSuccess := False;
 
   try
     if not (DebuggerState in [dsStop])
@@ -3051,6 +3052,7 @@ begin
     if TargetInfo^.TargetPID = 0
     then begin
       Result := False;
+      FSuccess := False;
       SetDebuggerState(dsError);
       Exit;
     end;
@@ -3083,6 +3085,7 @@ begin
     then FContinueCommand.Free;
   end;
 
+  FSuccess := True;
 end;
 
 constructor TGDBMIDebuggerCommandStartDebugging.Create(AOwner: TGDBMIDebugger;
