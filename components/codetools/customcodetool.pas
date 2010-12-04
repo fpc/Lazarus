@@ -2442,7 +2442,7 @@ begin
     else
       Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X);
   end else
-    Result:='y=?,x=?';
+    Result:='y=?,x=?,c='+IntToStr(CleanPos)+'('+dbgstr(copy(Src,CleanPos-5,5)+'|'+copy(Src,CleanPos,5))+')';
 end;
 
 function TCustomCodeTool.CleanPosToRelativeStr(CleanPos: integer;

@@ -689,6 +689,7 @@ begin
     StartNode:=FindNextNodeOnSameLvl(Result);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
   end;
+  //if Result<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode Result=',CleanPosToStr(Result.StartPos),' ',dbgstr(copy(Src,Result.StartPos,50))]);
 end;
 
 function TPascalReaderTool.FindCorrespondingProcParamNode(
