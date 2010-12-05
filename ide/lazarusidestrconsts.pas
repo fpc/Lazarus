@@ -5085,6 +5085,9 @@ resourcestring
   lisConvDelphiDelphiPackageMainSourceDpkFileNotFoundForPackage = 'Delphi '
     +'package main source (.dpk) file not found for package%s%s';
 
+  //Disassembler dialog
+  lisDisAssAssembler = 'Assembler';
+
 implementation
 
 end.

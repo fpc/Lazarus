@@ -208,6 +208,8 @@ begin
   inherited Create(AOwner);
 //  DoubleBuffered := True;
 
+  Caption := lisDisAssAssembler;
+
   pbAsm.Font.Height := EditorOpts.EditorFontHeight;
   pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
