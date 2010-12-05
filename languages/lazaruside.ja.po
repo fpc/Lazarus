@@ -6490,6 +6490,31 @@ msgstr "グループを無効化"
 msgid "Disable I18N for LFM"
 msgstr "LFMの国際化を無効化"
 
+#: lazarusidestrconsts.lisdisassassembler
+msgctxt "lazarusidestrconsts.lisdisassassembler"
+msgid "Assembler"
+msgstr "アセンブラ"
+
+#: lazarusidestrconsts.lisdisassgotoaddress
+msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotoaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddress
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
+msgid "Goto current address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
+msgid "Goto current address"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "変更を破棄"
@@ -10007,6 +10032,12 @@ msgid "Step into (Context)"
 msgstr "ステップイン（コンテクスト）"
 
 #: lazarusidestrconsts.lismenustepintoinstr
+msgctxt "lazarusidestrconsts.lismenustepintoinstr"
+msgid "Step into instruction"
+msgstr "ステップイン命令"
+
+#: lazarusidestrconsts.lismenustepintoinstrhint
+msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
 msgid "Step into instruction"
 msgstr "ステップイン命令"
 
@@ -10023,6 +10054,12 @@ msgid "Step over (Context)"
 msgstr "ステップオーバー（コンテクスト）"
 
 #: lazarusidestrconsts.lismenustepoverinstr
+msgctxt "lazarusidestrconsts.lismenustepoverinstr"
+msgid "Step over instruction"
+msgstr "ステップオーバー命令"
+
+#: lazarusidestrconsts.lismenustepoverinstrhint
+msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step over instruction"
 msgstr "ステップオーバー命令"
 
@@ -10177,6 +10214,7 @@ msgid "Anchor Editor"
 msgstr "アンカーエディタを表示"
 
 #: lazarusidestrconsts.lismenuviewassembler
+msgctxt "lazarusidestrconsts.lismenuviewassembler"
 msgid "Assembler"
 msgstr "アセンブラ"
 

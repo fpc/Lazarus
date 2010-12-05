@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-28 16:21+0300\n"
+"PO-Revision-Date: 2010-12-05 17:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6491,6 +6491,31 @@ msgstr "Отключить группу"
 msgid "Disable I18N for LFM"
 msgstr "Отключить i18n для LFM"
 
+#: lazarusidestrconsts.lisdisassassembler
+msgctxt "lazarusidestrconsts.lisdisassassembler"
+msgid "Assembler"
+msgstr "Ассемблер"
+
+#: lazarusidestrconsts.lisdisassgotoaddress
+msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
+msgid "Goto address"
+msgstr "Перейти по адресу"
+
+#: lazarusidestrconsts.lisdisassgotoaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
+msgid "Goto address"
+msgstr "Перейти по адресу"
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddress
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
+msgid "Goto current address"
+msgstr "Перейти по текущему адресу"
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
+msgid "Goto current address"
+msgstr "Перейти по текущему адресу"
+
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Отбросить изменения"
@@ -9997,6 +10022,12 @@ msgid "Step into (Context)"
 msgstr "Шаг со входом (контекстно-зависимый)"
 
 #: lazarusidestrconsts.lismenustepintoinstr
+msgctxt "lazarusidestrconsts.lismenustepintoinstr"
+msgid "Step into instruction"
+msgstr "Шаг со входом в инструкцию"
+
+#: lazarusidestrconsts.lismenustepintoinstrhint
+msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
 msgid "Step into instruction"
 msgstr "Шаг со входом в инструкцию"
 
@@ -10013,6 +10044,12 @@ msgid "Step over (Context)"
 msgstr "Шаг в обход (контекстно-зависимый)"
 
 #: lazarusidestrconsts.lismenustepoverinstr
+msgctxt "lazarusidestrconsts.lismenustepoverinstr"
+msgid "Step over instruction"
+msgstr "Шаг в обход инструкции"
+
+#: lazarusidestrconsts.lismenustepoverinstrhint
+msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step over instruction"
 msgstr "Шаг в обход инструкции"
 
@@ -10166,6 +10203,7 @@ msgid "Anchor Editor"
 msgstr "Редактор привязок"
 
 #: lazarusidestrconsts.lismenuviewassembler
+msgctxt "lazarusidestrconsts.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Ассемблер"
 

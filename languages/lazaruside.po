@@ -6426,6 +6426,31 @@ msgstr ""
 msgid "Disable I18N for LFM"
 msgstr ""
 
+#: lazarusidestrconsts.lisdisassassembler
+msgctxt "lazarusidestrconsts.lisdisassassembler"
+msgid "Assembler"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotoaddress
+msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotoaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddress
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
+msgid "Goto current address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
+msgid "Goto current address"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr ""
@@ -9913,6 +9938,12 @@ msgid "Step into (Context)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepintoinstr
+msgctxt "lazarusidestrconsts.lismenustepintoinstr"
+msgid "Step into instruction"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepintoinstrhint
+msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
 msgid "Step into instruction"
 msgstr ""
 
@@ -9929,6 +9960,12 @@ msgid "Step over (Context)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepoverinstr
+msgctxt "lazarusidestrconsts.lismenustepoverinstr"
+msgid "Step over instruction"
+msgstr ""
+
+#: lazarusidestrconsts.lismenustepoverinstrhint
+msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step over instruction"
 msgstr ""
 
@@ -10081,6 +10118,7 @@ msgid "Anchor Editor"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewassembler
+msgctxt "lazarusidestrconsts.lismenuviewassembler"
 msgid "Assembler"
 msgstr ""
 

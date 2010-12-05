@@ -6482,6 +6482,31 @@ msgstr "Desativar Grupo"
 msgid "Disable I18N for LFM"
 msgstr "Desativar I18N para LFM"
 
+#: lazarusidestrconsts.lisdisassassembler
+msgctxt "lazarusidestrconsts.lisdisassassembler"
+msgid "Assembler"
+msgstr "Assembler"
+
+#: lazarusidestrconsts.lisdisassgotoaddress
+msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotoaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
+msgid "Goto address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddress
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
+msgid "Goto current address"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
+msgid "Goto current address"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "&Descartar alterações"
@@ -9985,6 +10010,12 @@ msgid "Step into (Context)"
 msgstr "Passar dentro (Contexto)"
 
 #: lazarusidestrconsts.lismenustepintoinstr
+msgctxt "lazarusidestrconsts.lismenustepintoinstr"
+msgid "Step into instruction"
+msgstr "Passar dentro instrução"
+
+#: lazarusidestrconsts.lismenustepintoinstrhint
+msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
 msgid "Step into instruction"
 msgstr "Passar dentro instrução"
 
@@ -10001,6 +10032,12 @@ msgid "Step over (Context)"
 msgstr "Passar sobre (Contexto)"
 
 #: lazarusidestrconsts.lismenustepoverinstr
+msgctxt "lazarusidestrconsts.lismenustepoverinstr"
+msgid "Step over instruction"
+msgstr "Passar sobre instrução"
+
+#: lazarusidestrconsts.lismenustepoverinstrhint
+msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
 msgid "Step over instruction"
 msgstr "Passar sobre instrução"
 
@@ -10154,6 +10191,7 @@ msgid "Anchor Editor"
 msgstr "Editor de Âncora"
 
 #: lazarusidestrconsts.lismenuviewassembler
+msgctxt "lazarusidestrconsts.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Assembler"
 
