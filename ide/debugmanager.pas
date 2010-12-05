@@ -136,6 +136,7 @@ type
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
+    function GetDebuggerClass: TDebuggerClass;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -2154,12 +2155,10 @@ begin
     itmViewLocals.Tag := Ord(ddtLocals);
     itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
     itmViewRegisters.Tag := Ord(ddtRegisters);
-    itmViewRegisters.Enabled := False;
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
     itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
     itmViewAssembler.Tag := Ord(ddtAssembler);
-    itmViewAssembler.Enabled := False;
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
     itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
@@ -2173,6 +2172,9 @@ begin
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
 //    itmRunMenuAddBpSource.OnClick := @;
+
+    // TODO: add capacibilities to DebuggerClass
+    // and disable unsuported items
   end;
 
   for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
@@ -2251,8 +2253,8 @@ begin
                and (pfRunnable in Project1.Flags)
               );
     // Run
-    RunSpeedButton.Enabled := CanRun {and DebuggerIsValid
-            and ((dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle))};
+    RunSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+            or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
     // Pause
     PauseSpeedButton.Enabled := CanRun and DebuggerIsValid
@@ -2270,8 +2272,8 @@ begin
             or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
     // Step out
-    StepOutSpeedButton.Enabled := CanRun and (not DebuggerIsValid
-            or (dcStepOut in FDebugger.Commands) or (FDebugger.State = dsIdle));
+    StepOutSpeedButton.Enabled := CanRun and DebuggerIsValid
+            and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
     itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
     // Run to cursor
     itmRunMenuRunToCursor.Enabled := CanRun and (not DebuggerIsValid
@@ -2291,9 +2293,10 @@ begin
     // Add watch
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
 
+    // TODO: add capacibilities to DebuggerClass
     // menu view
-    itmViewRegisters.Enabled := DebuggerIsValid;
-    itmViewAssembler.Enabled := DebuggerIsValid;
+    //itmViewRegisters.Enabled := DebuggerIsValid;
+    //itmViewAssembler.Enabled := DebuggerIsValid;
   end;
 end;
 
@@ -2480,10 +2483,7 @@ begin
   FIgnoreSourceFiles.Clear;
   FIsInitializingDebugger:= True;
   try
-    DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
-    if DebuggerClass = nil then
-      DebuggerClass := TProcessDebugger;
-
+    DebuggerClass := GetDebuggerClass;
     LaunchingCmdLine := BuildBoss.GetRunCommandLine;
 
     SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
@@ -3025,6 +3025,13 @@ begin
   if FDebugger = nil
   then Result := []
   else Result := FDebugger.Commands;
+end;
+
+function TDebugManager.GetDebuggerClass: TDebuggerClass;
+begin
+  Result := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
+  if Result = nil then
+    Result := TProcessDebugger;
 end;
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
