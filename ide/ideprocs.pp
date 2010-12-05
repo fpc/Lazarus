@@ -1343,6 +1343,7 @@ end;
   - Removes empty paths.
   - Uses TrimFilename on every path.
   - If BaseDirectory<>'' then every relative Filename will be expanded.
+  - removes doubles
 -------------------------------------------------------------------------------}
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 var
@@ -1366,9 +1367,13 @@ begin
     while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
     CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
     if CurPath<>'' then begin
+      // non empty path => expand, trim and normalize
       if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
       CurPath:=ChompPathDelim(TrimFilename(CurPath));
+      // check if path already exists
+      // ToDo:
+
       if Result<>'' then
         CurPath:=';'+CurPath;
       if CurPath<>'' then

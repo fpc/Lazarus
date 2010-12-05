@@ -369,6 +369,7 @@ begin
           end;
         end;
         if not Handled then begin
+          if fBusy=nil then fBusy:=TStringList.Create;
           try
             fBusy.Add(MacroName);
             if not SubstituteStr(MacroParam,Data,Depth+1) then begin
