@@ -3,6 +3,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   Height = 669
   Top = 175
   Width = 275
+  BorderStyle = bsSizeToolWin
   Caption = 'ObjectInspectorDlg'
   ClientHeight = 669
   ClientWidth = 275

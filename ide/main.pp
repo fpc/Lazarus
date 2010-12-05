@@ -1905,7 +1905,6 @@ begin
 
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.Name:=DefaultObjectInspectorName;
-  ObjectInspector1.BorderStyle:=bsSizeable;
   ObjectInspector1.ShowFavorites:=True;
   ObjectInspector1.ShowRestricted:=True;
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
