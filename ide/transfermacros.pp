@@ -74,11 +74,15 @@ type
       AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
   end;
 
+  { TTransferMacroList }
+
   TTransferMacroList = class
   private
-    fItems: TList;  // list of TTransferMacro
+    fItems: TFPList;  // list of TTransferMacro
     FMarkUnhandledMacros: boolean;
+    FMaxUsePerMacro: integer;
     fOnSubstitution: TOnSubstitution;
+    fBusy: TStringList; // current working Macros, used for circle detection
     function GetItems(Index: integer): TTransferMacro;
     procedure SetItems(Index: integer; NewMacro: TTransferMacro);
     procedure SetMarkUnhandledMacros(const AValue: boolean);
@@ -107,7 +111,8 @@ type
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
-                                          write SetMarkUnhandledMacros;
+                                          write SetMarkUnhandledMacros default true;
+    property MaxUsePerMacro: integer read FMaxUsePerMacro write FMaxUsePerMacro default 1;
   end;
 
 { TLazIDEMacros }
@@ -180,8 +185,9 @@ end;
 constructor TTransferMacroList.Create;
 begin
   inherited Create;
-  fItems:=TList.Create;
+  fItems:=TFPList.Create;
   FMarkUnhandledMacros:=true;
+  FMaxUsePerMacro:=3;
   Add(TTransferMacro.Create('Ext', '', lisTMFunctionExtractFileExtension,
     @MF_Ext, []));
   Add(TTransferMacro.Create('Path', '', lisTMFunctionExtractFilePath, @MF_Path,
@@ -199,7 +205,8 @@ end;
 destructor TTransferMacroList.Destroy;
 begin
   Clear;
-  fItems.Free;
+  FreeAndNil(fItems);
+  FreeAndNil(fBusy);
   inherited Destroy;
 end;
 
@@ -289,6 +296,8 @@ var
   NewStringPos: Integer;
   sLen: Integer;
   LoopPos, LoopDepth: integer;
+  InUse: Integer;
+  i: Integer;
 
   function SearchBracketClose(Position:integer): integer;
   var BracketClose:char;
@@ -346,18 +355,37 @@ begin
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);
-        if not SubstituteStr(MacroParam,Data,Depth+1) then begin
-          Result:=false;
-          exit;
-        end;
         AMacro:=FindByName(MacroName);
-        if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
-          if Handled then
-            MacroStr:=MacroParam
-          else if Abort then begin
-            Result:=false;
-            exit;
+        InUse:=0;
+        for i:=0 to fBusy.Count-1 do begin
+          if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
+            inc(InUse);
+            if InUse>MaxUsePerMacro then begin
+              // circle detected
+              Handled:=true;
+              MacroStr:='<CIRCLE:'+MacroName+'>';
+              break;
+            end;
+          end;
+        end;
+        if not Handled then begin
+          try
+            fBusy.Add(MacroName);
+            if not SubstituteStr(MacroParam,Data,Depth+1) then begin
+              Result:=false;
+              exit;
+            end;
+          finally
+            fBusy.Delete(fBusy.Count-1);
+          end;
+          if Assigned(fOnSubstitution) then begin
+            fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
+            if Handled then
+              MacroStr:=MacroParam
+            else if Abort then begin
+              Result:=false;
+              exit;
+            end;
           end;
         end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
