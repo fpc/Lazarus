@@ -560,6 +560,7 @@ type
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
     FLastCompilerParams: string;
+    FLastCompilerViaMakefile: boolean;
     FLastStateFileName: string;
     FLazDocPaths: string;
     FLicense: string;
@@ -665,6 +666,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
+    function GetLastCompilerParams: string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string;
                                  PlatformIndependent: boolean): string;
@@ -772,6 +774,8 @@ type
                                         write FLastCompilerParams;
     property LastCompileComplete: boolean read FLastCompileComplete
                                           write FLastCompileComplete;
+    property LastCompilerViaMakefile: boolean read FLastCompilerViaMakefile
+                                              write FLastCompilerViaMakefile;
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
     property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
@@ -3452,6 +3456,17 @@ end;
 function TLazPackage.GetSrcPath(RelativeToBaseDir: boolean): string;
 begin
   Result:=CompilerOptions.GetSrcPath(RelativeToBaseDir);
+end;
+
+function TLazPackage.GetLastCompilerParams: string;
+begin
+  Result:=FLastCompilerParams;
+  if LastCompilerViaMakefile then begin
+    Result:=StringReplace(Result,'%(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
+    Result:=StringReplace(Result,'%(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
+    Result:=StringReplace(Result,'%(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
+    Result:=SubstitutePkgMacros(Result,false);
+  end;
 end;
 
 function TLazPackage.NeedsDefineTemplates: boolean;

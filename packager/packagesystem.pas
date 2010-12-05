@@ -274,7 +274,6 @@ type
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
                                            StateFileAge: longint): TModalResult;
-    function ExtractCompilerParamsForBuildAll(const CompParams: string): string;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
                     out NeedBuildAllFlag: boolean): TModalResult;
@@ -373,6 +372,11 @@ type
 var
   PackageGraph: TLazPackageGraph = nil;
 
+function ExtractFPCParamsForBuildAll(const CompParams: string): string;
+function ExtractSearchPathsFromFPCParams(const CompParams: string;
+  CreateReduced: boolean = false;
+  BaseDir: string = ''; MakeRelative: boolean = false): TStringList;
+
 implementation
 
 procedure RegisterCustomIDEComponent(const Page, AUnitName: ShortString;
@@ -391,6 +395,91 @@ procedure RegisterNoIconGlobalHandler(
   ComponentClasses: array of TComponentClass);
 begin
   PackageGraph.RegisterComponentsHandler('',ComponentClasses);
+end;
+
+function ExtractFPCParamsForBuildAll(const CompParams: string): string;
+{ Some compiler flags require a clean build -B, because the compiler
+  does not recompile/update some ppu itself.
+  Remove all flags that do not require build all:
+  -l -F -B -e -i -o -s -v }
+var
+  EndPos: Integer;
+  StartPos: integer;
+begin
+  Result:=CompParams;
+  EndPos:=1;
+  while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
+    if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
+      case Result[StartPos+1] of
+      'l','F','B','e','i','o','s','v':
+        begin
+          while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
+            dec(StartPos);
+          //DebugLn(['TLazPackageGraph.ExtractFPCParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
+          while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9]) do
+            inc(EndPos);
+          System.Delete(Result,StartPos,EndPos-StartPos);
+          EndPos:=StartPos;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function ExtractSearchPathsFromFPCParams(const CompParams: string;
+  CreateReduced: boolean; BaseDir: string; MakeRelative: boolean): TStringList;
+var
+  AllPaths: TStringList;
+  EndPos: Integer;
+  StartPos: integer;
+  Path: String;
+  Reduced: String;
+  i: Integer;
+
+  procedure AddSearchPath(Typ: string);
+  begin
+    AllPaths.Values[Typ]:=MergeSearchPaths(AllPaths.Values[Typ],Path);
+  end;
+
+begin
+  Result:=TStringList.Create;
+  Reduced:=CompParams;
+  AllPaths:=Result;
+  EndPos:=1;
+  while ReadNextFPCParameter(Reduced,EndPos,StartPos) do begin
+    if (Reduced[StartPos]='-') and (StartPos<length(Reduced)) then begin
+      case Reduced[StartPos+1] of
+      'F':
+        if StartPos<length(Reduced)-1 then begin
+          Path:=copy(Reduced,StartPos+3,EndPos-StartPos-3);
+          if (Path<>'') and (Path[1] in ['''','"']) then
+            Path:=AnsiDequotedStr(Path,Path[1]);
+          case CompParams[StartPos+2] of
+          'u': AddSearchPath('UnitPath');
+          'U': AllPaths.Values['UnitOutputDir']:=Path;
+          'i': AddSearchPath('IncPath');
+          'o': AddSearchPath('ObjectPath');
+          'l': AddSearchPath('LibPath');
+          end;
+          while (EndPos<=length(Reduced)) and (Reduced[EndPos] in [' ',#9]) do
+            inc(EndPos);
+          System.Delete(Reduced,StartPos,EndPos-StartPos);
+          EndPos:=StartPos;
+        end;
+      end;
+    end;
+  end;
+  if BaseDir<>'' then begin
+    for i:=0 to AllPaths.Count-1 do begin
+      Path:=AllPaths.ValueFromIndex[i];
+      if MakeRelative then
+        AllPaths[i]:=AllPaths.Names[i]+'='+CreateRelativeSearchPath(Path,BaseDir)
+      else
+        AllPaths[i]:=AllPaths.Names[i]+'='+CreateAbsoluteSearchPath(Path,BaseDir);
+    end;
+  end;
+  if CreateReduced then
+    AllPaths.Values['Reduced']:=Reduced;
 end;
 
 { TLazPackageGraph }
@@ -2743,6 +2832,7 @@ begin
     APackage.LastCompilerFileDate:=CompilerFileDate;
     APackage.LastCompilerParams:=CompilerParams;
     APackage.LastCompileComplete:=Complete;
+    APackage.LastCompilerViaMakefile:=false;
 
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
@@ -2799,7 +2889,7 @@ begin
         APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
         APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
         APackage.LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
-        // XMLConfig.GetValue('Makefile/Value',False);
+        APackage.LastCompilerViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
       finally
         XMLConfig.Free;
       end;
@@ -2881,34 +2971,6 @@ begin
   Result:=mrNo;
 end;
 
-function TLazPackageGraph.ExtractCompilerParamsForBuildAll(
-  const CompParams: string): string;
-{ Some compiler flags require a clean build -B, because the compiler
-  does not recompile/update some ppu itself.
-  Remove all flags that do not require build all:
-  -l -F -B -e -i -o -s -v }
-var
-  EndPos: Integer;
-  StartPos: integer;
-begin
-  Result:=CompParams;
-  EndPos:=1;
-  while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
-    if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
-      case Result[StartPos+1] of
-      'l','F','B','e','i','o','s','v':
-        begin
-          while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
-            dec(StartPos);
-          //DebugLn(['TLazPackageGraph.ExtractCompilerParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
-          System.Delete(Result,StartPos,EndPos-StartPos);
-          EndPos:=StartPos;
-        end;
-      end;
-    end;
-  end;
-end;
-
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
   const CompilerFilename, CompilerParams, SrcFilename: string;
   out NeedBuildAllFlag: boolean): TModalResult;
@@ -2919,6 +2981,11 @@ var
   CurFile: TPkgFile;
   NewOutputDir: String;
   OutputDir: String;
+  LastParams: String;
+  LastPaths: TStringList;
+  CurPaths: TStringList;
+  OldValue: string;
+  NewValue: string;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -2930,8 +2997,8 @@ begin
 
   //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
   if (APackage.LastCompilerFilename<>CompilerFilename)
-  or (ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
-      <>ExtractCompilerParamsForBuildAll(CompilerParams))
+  or (ExtractFPCParamsForBuildAll(APackage.LastCompilerParams)
+      <>ExtractFPCParamsForBuildAll(CompilerParams))
   or ((APackage.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
       and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate))
@@ -2981,7 +3048,8 @@ begin
   end;
 
   // check compiler and params
-  if CompilerFilename<>APackage.LastCompilerFilename then begin
+  if (not APackage.LastCompilerViaMakefile)
+  and (CompilerFilename<>APackage.LastCompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
     DebugLn('  Old="',APackage.LastCompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
@@ -2992,20 +3060,61 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate then begin
+  if (not APackage.LastCompilerViaMakefile)
+  and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if CompilerParams<>APackage.LastCompilerParams
-  then begin
+  LastParams:=APackage.GetLastCompilerParams;
+  if APackage.LastCompilerViaMakefile then begin
+    // the package was compiled via Makefile
+    CurPaths:=nil;
+    LastPaths:=nil;
+    try
+      CurPaths:=ExtractSearchPathsFromFPCParams(CompilerParams,true);
+      LastPaths:=ExtractSearchPathsFromFPCParams(LastParams,true);
+      // compare custom options
+      OldValue:=LastPaths.Values['Reduced'];
+      NewValue:=CurPaths.Values['Reduced'];
+      if NewValue<>OldValue then begin
+        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler custom params changed for ',APackage.IDAsString);
+        DebugLn('  Old="',OldValue,'"');
+        DebugLn('  Now="',NewValue,'"');
+        exit(mrYes);
+      end;
+      // compare unit paths
+      OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory);
+      NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory);
+      if NewValue<>OldValue then begin
+        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler unit paths changed for ',APackage.IDAsString);
+        DebugLn('  Old="',OldValue,'"');
+        DebugLn('  Now="',NewValue,'"');
+        exit(mrYes);
+      end;
+      // compare include paths
+      OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory);
+      NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory);
+      if NewValue<>OldValue then begin
+        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler include paths changed for ',APackage.IDAsString);
+        DebugLn('  Old="',OldValue,'"');
+        DebugLn('  Now="',NewValue,'"');
+        exit(mrYes);
+      end;
+    finally
+      CurPaths.Free;
+      LastPaths.Free;
+    end;
+  end else if CompilerParams<>LastParams then begin
+    // package was compiled by Lazarus
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
-    DebugLn('  Old="',APackage.LastCompilerParams,'"');
+    DebugLn('  Old="',LastParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
     exit(mrYes);
   end;
+
   //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
-  
+
   // compiler and parameters are the same
   // quick compile is possible
   NeedBuildAllFlag:=false;
@@ -3452,6 +3561,7 @@ begin
         s:=s+' -Fi'+IncPath;
       if CustomOptions<>'' then
         s:=s+' '+CustomOptions;
+      s:=s+' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
       //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
       XMLConfig.SetValue('Params/Value',s);
       InvalidateFileStateCache;
