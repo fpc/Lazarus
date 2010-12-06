@@ -2239,7 +2239,7 @@ type
   tagLOGBRUSH = record
     lbStyle: LongWord;
     lbColor: TColorRef;
-    lbHatch: PtrInt;
+    lbHatch: PtrUInt;
   end;
   TLogBrush = tagLOGBRUSH;
   LOGBRUSH = tagLOGBRUSH;
