@@ -267,6 +267,7 @@ type
     // GDB info (move to ?)
     FGDBVersion: String;
     FGDBCPU: String;
+    FGDBPtrSize: integer; // PointerSize of the GDB-cpu
     FGDBOS: String;
 
     // Target info (move to record ?)
@@ -1239,6 +1240,16 @@ end;
 { =========================================================================== }
 { Helpers }
 { =========================================================================== }
+
+function CpuNameToPtrSize(const CpuName: String): Integer;
+begin
+  //'x86', 'i386', 'i486', 'i586', 'i686',
+  //'ia64', 'x86_64', 'powerpc',
+  //'sparc', 'arm'
+  Result := 4;
+  if (LowerCase(CpuName) = 'ia64') or (LowerCase(CpuName) = 'x86_64')
+  then Result := 8;
+end;
 
 function ConvertToGDBPath(APath: string): string;
 // GDB wants forward slashes in its filenames, even on win32.
@@ -2778,9 +2789,14 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
   end;
 
   procedure SetTargetInfo(const AFileType: String);
+  var
+    FoundPtrSize: Boolean;
   begin
     // assume some defaults
-    TargetInfo^.TargetPtrSize := 4;
+    TargetInfo^.TargetPtrSize := GetIntValue('sizeof(POINTER)', []);
+    FoundPtrSize := (FLastExecResult.State <> dsError) and (TargetInfo^.TargetPtrSize > 0);
+    if not FoundPtrSize
+    then TargetInfo^.TargetPtrSize := 4;
     TargetInfo^.TargetIsBE := False;
 
     case StringCase(AFileType, [
@@ -2792,7 +2808,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       'pei-arm-big'
     ], True, False) of
       0..3: TargetInfo^.TargetCPU := 'x86';
-      4: TargetInfo^.TargetCPU := 'x86_64';
+      4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
       5: begin
          //mach-o-be
         TargetInfo^.TargetIsBE := True;
@@ -2802,9 +2818,21 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
       6: begin
         //mach-o-le
-        if FTheDebugger.FGDBCPU <> ''
-        then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
-        else TargetInfo^.TargetCPU := 'x86'; // guess
+        if FoundPtrSize then begin
+          if FTheDebugger.FGDBPtrSize = TargetInfo^.TargetPtrSize
+          then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
+          else // guess
+            case TargetInfo^.TargetPtrSize of
+              4: TargetInfo^.TargetCPU := 'x86'; // guess
+              8: TargetInfo^.TargetCPU := 'x86_64'; // guess
+              else TargetInfo^.TargetCPU := 'x86'; // guess
+            end
+        end
+        else begin
+          if FTheDebugger.FGDBCPU <> ''
+          then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
+          else TargetInfo^.TargetCPU := 'x86'; // guess
+        end;
       end;
       7: begin
         TargetInfo^.TargetCPU := 'arm';
@@ -2818,7 +2846,11 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       DebugLn('[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
 
       TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU;
+      // Todo, check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
     end;
+
+    if not FoundPtrSize
+    then TargetInfo^.TargetPtrSize := CpuNameToPtrSize(TargetInfo^.TargetCPU);
 
     case StringCase(TargetInfo^.TargetCPU, [
       'x86', 'i386', 'i486', 'i586', 'i686',
@@ -2831,10 +2863,17 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         TargetInfo^.TargetRegisters[2] := '$ecx';
       end;
       5, 6: begin // ia64, x86_64
-        TargetInfo^.TargetRegisters[0] := '$rdi';
-        TargetInfo^.TargetRegisters[1] := '$rsi';
-        TargetInfo^.TargetRegisters[2] := '$rdx';
-        TargetInfo^.TargetPtrSize := 8;
+        if TargetInfo^.TargetPtrSize = 4
+        then begin
+          TargetInfo^.TargetRegisters[0] := '$eax';
+          TargetInfo^.TargetRegisters[1] := '$edx';
+          TargetInfo^.TargetRegisters[2] := '$ecx';
+        end
+        else begin
+          TargetInfo^.TargetRegisters[0] := '$rdi';
+          TargetInfo^.TargetRegisters[1] := '$rsi';
+          TargetInfo^.TargetRegisters[2] := '$rdx';
+        end;
       end;
       7: begin // powerpc
         TargetInfo^.TargetIsBE := True;
@@ -3243,7 +3282,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     else Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
 
     Str(Result.Address, S);
-    if ExecuteCommand('info line * pointer(%s)', [S], R)
+    if ExecuteCommand('info line * POINTER(%s)', [S], R)
     then begin
       Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
       Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
@@ -3256,7 +3295,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     then  Result.ObjAddr := TargetInfo^.TargetRegisters[0]
     else begin
       if dfImplicidTypes in FTheDebugger.DebuggerFlags
-      then Result.ObjAddr := Format('^pointer($fp+%d)^', [TargetInfo^.TargetPtrSize * 2])
+      then Result.ObjAddr := Format('^POINTER($fp+%d)^', [TargetInfo^.TargetPtrSize * 2])
       else Str(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]), Result.ObjAddr);
     end;
     Result.Name := GetInstanceClassName(Result.ObjAddr, []);
@@ -5308,6 +5347,8 @@ begin
       else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine]), mtError, [mbOK], 0);
       SetState(dsError);
     end;
+
+    FGDBPtrSize := CpuNameToPtrSize(FGDBCPU);
   finally
     UnlockRelease;
   end;
@@ -8286,6 +8327,9 @@ begin
     S := Format(AExpression, AValues);
     OK :=  ExecuteCommand('-data-evaluate-expression ^^shortstring(%s+%d)^^',
           [S, TargetInfo^.TargetPtrSize * 3], R);
+    if (not OK) or (LastExecResult.State = dsError)
+    then OK :=  ExecuteCommand('-data-evaluate-expression ^char(^pointer(%s+%d)^+1)',
+          [S, TargetInfo^.TargetPtrSize * 3], R);
   end
   else begin
     Str(TDbgPtr(GetData(AExpression + '+12', AValues)), S);
@@ -8314,7 +8358,7 @@ function TGDBMIDebuggerCommand.GetInstanceClassName(const AExpression: String;
 begin
   if dfImplicidTypes in FTheDebugger.DebuggerFlags
   then begin
-    Result := GetClassName('^pointer(' + AExpression + ')^', AValues);
+    Result := GetClassName('^POINTER(' + AExpression + ')^', AValues);
   end
   else begin
     Result := GetClassName(GetData(AExpression, AValues));
