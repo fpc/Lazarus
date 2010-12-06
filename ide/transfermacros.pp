@@ -357,14 +357,16 @@ begin
                                   length(MacroStr)-length(MacroName)-3);
         AMacro:=FindByName(MacroName);
         InUse:=0;
-        for i:=0 to fBusy.Count-1 do begin
-          if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
-            inc(InUse);
-            if InUse>MaxUsePerMacro then begin
-              // circle detected
-              Handled:=true;
-              MacroStr:='<CIRCLE:'+MacroName+'>';
-              break;
+        if fBusy<>nil then begin
+          for i:=0 to fBusy.Count-1 do begin
+            if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
+              inc(InUse);
+              if InUse>MaxUsePerMacro then begin
+                // circle detected
+                Handled:=true;
+                MacroStr:='<CIRCLE:'+MacroName+'>';
+                break;
+              end;
             end;
           end;
         end;
