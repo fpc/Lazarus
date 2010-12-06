@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TACustomSeries, TALegend;
+  TACustomSeries, TALegend, TAChartUtils;
 
 type
   TLabelParams = record
@@ -41,12 +41,14 @@ type
   TCustomPieSeries = class(TChartSeries)
   private
     FCenter: TPoint;
+    FExploded: Boolean;
+    FFixedRadius: TChartDistance;
     FLabels: array of TLabelParams;
     FRadius: Integer;
     FSlices: array of TPieSlice;
-    FExploded: Boolean;
     procedure Measure(ACanvas: TCanvas);
-    procedure SetExploded(const AValue: Boolean);
+    procedure SetExploded(AValue: Boolean);
+    procedure SetFixedRadius(AValue: TChartDistance);
     function SliceColor(AIndex: Integer): TColor;
   protected
     procedure AfterAdd; override;
@@ -58,6 +60,8 @@ type
 
     // Offset slices away from center based on X value.
     property Exploded: Boolean read FExploded write SetExploded default false;
+    property FixedRadius: TChartDistance
+      read FFixedRadius write SetFixedRadius default 0;
     property Source;
   end;
 
@@ -65,11 +69,12 @@ implementation
 
 uses
   Math, GraphMath,
-  TAChartUtils, TADrawUtils, TASources;
+  TADrawUtils, TASources;
 
 { TCustomPieSeries }
 
-function TCustomPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
+function TCustomPieSeries.AddPie(
+  Value: Double; Text: String; Color: TColor): Longint;
 begin
   Result := AddXY(GetXMaxVal + 1, Value, Text, Color);
 end;
@@ -192,26 +197,37 @@ var
   di: PChartDataItem;
   prevAngle: Double = 0;
 begin
-  SetLength(FLabels, Count);
-  SetLength(FSlices, Count);
-  for i := 0 to Count - 1 do
-    with FLabels[i] do begin
-      FText := FormattedMark(i);
-      FSize := Marks.MeasureLabel(ACanvas, FText);
-      m.X := Max(m.X, FSize.cx);
-      m.Y := Max(m.Y, FSize.cy);
-    end;
-
   FCenter := CenterPoint(ParentChart.ClipRect);
+
+  if Marks.IsMarkLabelsVisible then begin
+    SetLength(FLabels, Count);
+    for i := 0 to Count - 1 do
+      with FLabels[i] do begin
+        FText := FormattedMark(i);
+        if FText = '' then
+          FSize := Size(0, 0)
+        else
+          FSize := Marks.MeasureLabel(ACanvas, FText);
+        m.X := Max(m.X, FSize.cx);
+        m.Y := Max(m.Y, FSize.cy);
+      end;
+  end;
+
   // Reserve space for labels.
   m := ParentChart.ClipRect.BottomRight - FCenter - m;
-  FRadius := Min(m.X, m.Y);
-  if Marks.IsMarkLabelsVisible then
-    FRadius -= Marks.Distance;
-  FRadius := Max(FRadius - MARGIN, 0);
-  if Exploded then
-    FRadius := Trunc(FRadius / (Max(Source.Extent.b.X, 0) + 1));
 
+  if FixedRadius = 0 then begin
+    FRadius := Min(m.X, m.Y);
+    if Marks.IsMarkLabelsVisible then
+      FRadius -= Marks.Distance;
+    FRadius := Max(FRadius - MARGIN, 0);
+    if Exploded then
+      FRadius := Trunc(FRadius / (Max(Source.Extent.b.X, 0) + 1));
+  end
+  else
+    FRadius := FixedRadius;
+
+  SetLength(FSlices, Count);
   for i := 0 to Count - 1 do begin
     di := Source[i];
     with FSlices[i] do begin
@@ -227,10 +243,17 @@ begin
   end;
 end;
 
-procedure TCustomPieSeries.SetExploded(const AValue: Boolean);
+procedure TCustomPieSeries.SetExploded(AValue: Boolean);
 begin
   if FExploded = AValue then exit;
   FExploded := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomPieSeries.SetFixedRadius(AValue: TChartDistance);
+begin
+  if FFixedRadius = AValue then exit;
+  FFixedRadius := AValue;
   UpdateParentChart;
 end;
 

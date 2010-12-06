@@ -91,6 +91,7 @@ type
   TPieSeries = class(TCustomPieSeries)
   published
     property Exploded;
+    property FixedRadius;
     property Source;
   end;
 
