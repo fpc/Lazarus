@@ -105,7 +105,7 @@ begin
   AssertTrue('Has Debuggers', GdbList.Count > 0);
 
   for i := 0 to FpcList.Count - 1 do begin
-    TestExeName := AppDir + 'lib/ExceptPrg.exe';
+    TestExeName := AppDir + 'lib' + DirectorySeparator + 'ExceptPrg.exe';
     AssertFalse('exe doesn''t exist yet', FileExists(TestExeName));
     try
       TestCompileWith('-gw', TestExeName, FpcList[i], '-gw');
