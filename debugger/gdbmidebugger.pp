@@ -153,6 +153,7 @@ type
 
   TGDBMIDebuggerCommand = class
   private
+    FDefaultTimeOut: Integer;
     FOnCancel: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
@@ -224,6 +225,7 @@ type
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
+    property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
     property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;
   public
     constructor Create(AOwner: TGDBMIDebugger);
@@ -7889,6 +7891,9 @@ begin
   AResult.State := dsNone;
   AResult.Flags := [];
 
+  if (ATimeOut = -1) and (DefaultTimeOut > 0)
+  then ATimeOut := DefaultTimeOut;
+
   FTheDebugger.SendCmdLn(ACommand);
 
   Result := ProcessResult(AResult, ATimeOut);
@@ -8467,6 +8472,7 @@ begin
   FTheDebugger := AOwner;
   FKeepFinished := False;
   FFreeRequested := False;
+  FDefaultTimeOut := -1;
   FFreeLock := 0;
 end;
 
@@ -9350,6 +9356,10 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   begin
     Result := False;
 
+    {$IFDEF DBG_WITH_TIMEOUT}
+    DefaultTimeOut := 1500;
+    try
+    {$ENDIF}
     case FDisplayFormat of
       wdfStructure:
         begin
@@ -9463,6 +9473,12 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           then FixUpResult(AnExpression);
         end;
     end;
+    {$IFDEF DBG_WITH_TIMEOUT}
+    finally
+      DefaultTimeOut := -1;
+    end
+    {$ENDIF}
+
   end;
 
 var
