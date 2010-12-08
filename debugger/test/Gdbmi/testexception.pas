@@ -5,14 +5,14 @@ unit TestException;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, CompileHelpers,
-  Debugger, GDBMIDebugger;
+  Classes, fpcunit, testutils, testregistry,
+  TestBase, Debugger, GDBMIDebugger, LCLProc;
 
 type
 
-  { TTestException }
+  { TTestExceptionOne }
 
-  TTestException = class(TTestCase)
+  TTestExceptionOne = class(TGDBTestCase)
   private
     FGotExceptCount: Integer;
     FGotExceptClass: String;
@@ -21,16 +21,16 @@ type
 
     procedure DoDebuggerException(Sender: TObject; const AExceptionType: TDBGExceptionType;
       const AExceptionClass: String; const AExceptionText: String; out AContinue: Boolean);
-  protected
-    procedure SetUp; override; 
-    procedure TearDown; override; 
   published
-    procedure TestException1;
+    procedure TestException;
   end; 
+
+
+
 
 implementation
 
-procedure TTestException.DoDebuggerException(Sender: TObject;
+procedure TTestExceptionOne.DoDebuggerException(Sender: TObject;
   const AExceptionType: TDBGExceptionType; const AExceptionClass: String;
   const AExceptionText: String; out AContinue: Boolean);
 begin
@@ -41,115 +41,47 @@ begin
   AContinue := False;
 end;
 
-procedure TTestException.TestException1;
+procedure TTestExceptionOne.TestException;
 var
-  AppDir: String;
-
-  procedure TestCompileWith(const Name, TestExeName, Fpc, Opts: string);
-  var
-    ErrMsg: String;
-  begin
-    ErrMsg := TestCompile(AppDir + 'ExceptPrg.pas', Opts, TestExeName, Fpc);
-    if ErrMsg <> '' then
-      Fail(Name + ' Compilation Failed '+ErrMsg);
-  end;
-
-  procedure TestEceptWith(const Name, TestExeName, Gdb: string);
-  var
-    dbg: TGDBMIDebugger;
-    AppDir: String;
-  begin
-    FGotExceptCount := 0;
-
-    dbg := TGDBMIDebugger.Create(Gdb);
-    try
-      //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
-      //dbg.OnState         := @DebuggerChangeState;
-      //dbg.OnCurrent       := @DebuggerCurrentLine;
-      //dbg.OnDbgOutput     := @DebuggerOutput;
-      //dbg.OnDbgEvent      := @DebuggerEvent;
-      dbg.OnException      := @DoDebuggerException;
-
-      dbg.Init;
-      if dbg.State = dsError then
-        Fail(Name + ' Failed Init');
-      //dbg.Environment
-
-      dbg.WorkingDir := AppDir;
-      dbg.FileName   := TestExeName;
-      dbg.Arguments := '';
-      dbg.ShowConsole := True;
-
-      dbg.Run;
-      dbg.Stop;
-    finally
-      dbg.Release;
-    end;
-
-    AssertEquals(Name + ' Got 1 exception', 1, FGotExceptCount);
-    AssertEquals(Name + ' Got class', 'Exception', FGotExceptClass);
-    AssertEquals(Name + ' Got msg',   'foo', FGotExceptMsg);
-  end;
-
-var
-  FpcList, GdbList: TStringList;
-  i, j: Integer;
   TestExeName: string;
-
+  dbg: TGDBMIDebugger;
 begin
-  AppDir := ExtractFilePath(Paramstr(0)) + DirectorySeparator+ 'TestApps' + DirectorySeparator;
+  FGotExceptCount := 0;
 
-  FpcList := GetCompilers;
-  GdbList := GetDebuggers;
-  AssertTrue('Has Compilers', FpcList.Count > 0);
-  AssertTrue('Has Debuggers', GdbList.Count > 0);
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName);
 
-  for i := 0 to FpcList.Count - 1 do begin
-    TestExeName := AppDir + 'lib' + DirectorySeparator + 'ExceptPrg.exe';
-    AssertFalse('exe doesn''t exist yet', FileExists(TestExeName));
-    try
-      TestCompileWith('-gw', TestExeName, FpcList[i], '-gw');
-      for j := 0 to GdbList.Count - 1 do begin
-        TestEceptWith('-gw', TestExeName, GdbList[j]);
-      end;
+  try
+    dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
+    //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
+    //dbg.OnState         := @DebuggerChangeState;
+    //dbg.OnCurrent       := @DebuggerCurrentLine;
+    //dbg.OnDbgOutput     := @DebuggerOutput;
+    //dbg.OnDbgEvent      := @DebuggerEvent;
+    dbg.OnException      := @DoDebuggerException;
 
-      DeleteFile(TestExeName);
-      AssertFalse('exe doesn''t exist yet', FileExists(TestExeName));
-      TestCompileWith('-gs', TestExeName, FpcList[i], '-gs');
-      for j := 0 to GdbList.Count - 1 do begin
-        TestEceptWith('-gs', TestExeName, GdbList[j]);
-      end;
+    dbg.Init;
+    if dbg.State = dsError then
+      Fail(' Failed Init');
+    //dbg.Environment
 
-// gw3: msg does not work yet
-      //DeleteFile(TestExeName);
-      //AssertFalse('exe doesn''t exist yet', FileExists(TestExeName));
-      //TestCompileWith('-gw3', TestExeName, FpcList[i], '-gw3');
-      //for j := 0 to GdbList.Count - 1 do begin
-      //  TestEceptWith('-gw3', TestExeName, GdbList[j]);
-      //end;
+    dbg.WorkingDir := AppDir;
+    dbg.FileName   := TestExeName;
+    dbg.Arguments := '';
+    dbg.ShowConsole := True;
 
-    finally
-      DeleteFile(TestExeName);
-    end;
+    dbg.Run;
+    dbg.Stop;
+  finally
+    dbg.Free;
   end;
 
-
-  FreeAndNil(FpcList);
-  FreeAndNil(GdbList);
-end;
-
-procedure TTestException.SetUp;
-begin
-//
-end; 
-
-procedure TTestException.TearDown; 
-begin
-//
+  AssertEquals(' Got 1 exception', 1, FGotExceptCount);
+  AssertEquals(' Got class', 'Exception', FGotExceptClass);
+  AssertEquals(' Got msg',   'foo', FGotExceptMsg);
 end;
 
 initialization
+  RegisterDbgTest(TTestExceptionOne);
 
-  RegisterTest(TTestException); 
 end.
 

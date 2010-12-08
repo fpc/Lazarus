@@ -42,35 +42,386 @@
         <PackageName Value="FCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="27">
       <Unit0>
         <Filename Value="TestGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestGdbmi"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="57"/>
       </Unit0>
       <Unit1>
         <Filename Value="testexception.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestException"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
-        <WindowIndex Value="1"/>
-        <TopLine Value="59"/>
-        <CursorPos X="27" Y="102"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="17"/>
+        <CursorPos X="46" Y="58"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
-          <IsVisibleTab Value="True"/>
           <EditorIndex Value="0"/>
-          <WindowIndex Value="0"/>
-          <TopLine Value="1"/>
-          <CursorPos X="1" Y="136"/>
+          <WindowIndex Value="1"/>
+          <TopLine Value="17"/>
+          <CursorPos X="1" Y="56"/>
         </ExtraEditor1>
-        <UsageCount Value="26"/>
+        <UsageCount Value="57"/>
         <Loaded Value="True"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="compilehelpers.pas"/>
+        <UnitName Value="CompileHelpers"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="29"/>
+        <CursorPos X="1" Y="79"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\objpas\classes\classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="599"/>
+        <CursorPos X="14" Y="634"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\objpas\classes\stringl.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1160"/>
+        <CursorPos X="3" Y="1170"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBase"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="595"/>
+        <CursorPos X="1" Y="653"/>
+        <ExtraEditorCount Value="1"/>
+        <ExtraEditor1>
+          <EditorIndex Value="5"/>
+          <WindowIndex Value="0"/>
+          <TopLine Value="102"/>
+          <CursorPos X="69" Y="129"/>
+          <IsLocked Value="True"/>
+        </ExtraEditor1>
+        <UsageCount Value="51"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <UnitName Value="GDBMIDebugger"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="6589"/>
+        <CursorPos X="7" Y="6631"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3152"/>
+        <CursorPos X="3" Y="3159"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="A:\debugger\test\Gdbmi\gdblist.txt"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="5" Y="1"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="A:\debugger\test\Gdbmi\fpclist.txt"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="3"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="A:\debugger\test\Gdbmi\gdblist - Copy.txt"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="2"/>
+        <UsageCount Value="7"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\test\testlpi.pas"/>
+        <UnitName Value="TestLpi"/>
+        <EditorIndex Value="8"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="71"/>
+        <CursorPos X="20" Y="129"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="C:\FPC\SVN\trunc\packages\fcl-fpcunit\src\fpcunit.pp"/>
+        <UnitName Value="fpcunit"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="992"/>
+        <CursorPos X="1" Y="1026"/>
+        <UsageCount Value="22"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="A:\debugger\test\Gdbmi\TestApps\ExceptPrg.pas"/>
+        <UnitName Value="ExceptPrg"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="5" Y="21"/>
+        <UsageCount Value="21"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\FPC\SVN\trunc\packages\fcl-fpcunit\src\testregistry.pp"/>
+        <UnitName Value="testregistry"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="86"/>
+        <CursorPos X="24" Y="117"/>
+        <UsageCount Value="12"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="30" ID="1"/>
+        </Bookmarks>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\..\components\fpcunit\guitestrunner.pas"/>
+        <UnitName Value="GuiTestRunner"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="668"/>
+        <CursorPos X="1" Y="712"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\win32\system.pp"/>
+        <UnitName Value="System"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="2"/>
+        <CursorPos X="2" Y="37"/>
+        <UsageCount Value="11"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\..\lcl\fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="75"/>
+        <CursorPos X="10" Y="110"/>
+        <UsageCount Value="11"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\..\lcl\include\fileutil.inc"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1441"/>
+        <CursorPos X="3" Y="1443"/>
+        <UsageCount Value="11"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\..\lcl\include\winfileutil.inc"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="3" Y="14"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\objpas\sysutils\finah.inc"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="10" Y="26"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="testwatches.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Testwatches"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="42"/>
+        <CursorPos X="1" Y="88"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="TestApps\WatchesPrg.pas"/>
+        <UnitName Value="WatchesPrg"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="23" Y="15"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\debugger.pp"/>
+        <UnitName Value="Debugger"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="3403"/>
+        <CursorPos X="19" Y="3437"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\debugutils.pp"/>
+        <UnitName Value="DebugUtils"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="274"/>
+        <CursorPos X="3" Y="302"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\inc\generic.inc"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="789"/>
+        <CursorPos X="1" Y="827"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="C:\FPC\SVN\trunc\rtl\i386\i386.inc"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1558"/>
+        <CursorPos X="1" Y="1603"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit26>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6603" Column="1" TopLine="6594"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6604" Column="1" TopLine="6594"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6605" Column="1" TopLine="6594"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6610" Column="5" TopLine="6594"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6608" Column="1" TopLine="6594"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6610" Column="1" TopLine="6594"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="7863" Column="1" TopLine="7828"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="8535" Column="1" TopLine="8500"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="8536" Column="1" TopLine="8500"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="8537" Column="1" TopLine="8500"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4751" Column="1" TopLine="4716"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4752" Column="1" TopLine="4716"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4754" Column="1" TopLine="4716"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4757" Column="1" TopLine="4716"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4761" Column="1" TopLine="4716"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4767" Column="1" TopLine="4716"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="4816" Column="1" TopLine="4781"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6636" Column="1" TopLine="6601"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6641" Column="1" TopLine="6601"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6692" Column="1" TopLine="6657"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\debugger.pp"/>
+        <Caret Line="3437" Column="19" TopLine="3403"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6626" Column="1" TopLine="6606"/>
+      </Position22>
+      <Position23>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="66" Column="36" TopLine="39"/>
+      </Position23>
+      <Position24>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="49" Column="1" TopLine="39"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\gdbmidebugger.pp"/>
+        <Caret Line="6626" Column="59" TopLine="6573"/>
+      </Position25>
+      <Position26>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="96" Column="18" TopLine="42"/>
+      </Position26>
+      <Position27>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="85" Column="14" TopLine="42"/>
+      </Position27>
+      <Position28>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="97" Column="1" TopLine="42"/>
+      </Position28>
+      <Position29>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="98" Column="1" TopLine="42"/>
+      </Position29>
+      <Position30>
+        <Filename Value="testwatches.pas"/>
+        <Caret Line="81" Column="9" TopLine="42"/>
+      </Position30>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="9"/>
@@ -90,7 +441,18 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="testexception.pas"/>
+        <Line Value="51"/>
+      </Item1>
+    </BreakPoints>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="FTestIntWatch"/>
+      </Item1>
+    </Watches>
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -100,6 +462,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="EAssertionFailedError"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

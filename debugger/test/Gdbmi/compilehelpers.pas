@@ -5,13 +5,9 @@ unit CompileHelpers;
 interface
 
 uses
-  Classes, SysUtils, process, UTF8Process, EnvironmentOpts;
+  Classes, SysUtils, process, UTF8Process, LCLProc;
 
 function TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
-
-function GetCompilers: TStringList;
-function GetDebuggers: TStringList;
-
 
 implementation
 
@@ -98,38 +94,6 @@ begin
     OutputLines.Free;
   end;
 end;
-
-function GetCompilers: TStringList;
-var
-  AppDir: String;
-begin
-  AppDir := ExtractFilePath(Paramstr(0));
-  Result := TStringList.Create;
-  if FileExists(AppDir + 'fpclist.txt') then
-    Result.LoadFromFile(AppDir + 'fpclist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then
-    Result.Add(EnvironmentOptions.CompilerFilename);
-end;
-
-function GetDebuggers: TStringList;
-var
-  AppDir: String;
-begin
-  AppDir := ExtractFilePath(Paramstr(0));
-  Result := TStringList.Create;
-  if FileExists(AppDir + 'gdblist.txt') then
-    Result.LoadFromFile(AppDir + 'gdblist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.DebuggerFilename <> '') then
-    Result.Add(EnvironmentOptions.DebuggerFilename);
-end;
-
-initialization
-  EnvironmentOptions := TEnvironmentOptions.Create;
-  with EnvironmentOptions do
-  begin
-    SetLazarusDefaultFilename;
-    Load(false);
-  end;
 
 end.
 

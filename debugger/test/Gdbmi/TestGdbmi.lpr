@@ -3,7 +3,7 @@ program TestGdbmi;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, TestException, CompileHelpers;
+  Interfaces, Forms, GuiTestRunner, TestException, CompileHelpers, TestBase, Testwatches;
 
 {$R *.res}
 
