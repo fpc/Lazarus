@@ -37,21 +37,23 @@ uses
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;
   TBitBtnWidgetInfo = record
-    LabelWidget: Pointer;
     ImageWidget: Pointer;
-    SpaceWidget: Pointer; 
-    AlignWidget: Pointer; 
-    TableWidget: Pointer; 
+    LabelWidget: Pointer;
   end;
 
   { TGtk2WSBitBtn }
 
   TGtk2WSBitBtn = class(TWSBitBtn)
   private
+    class procedure BuildWidget(ABitBtn: TCustomBitBtn; MainWidget: PGtkWidget;
+      ABitBtnInfo: PBitBtnWidgetInfo; const ACaption: String);
+    class procedure UnparentWidget(Widget: PGtkWidget);
+    class procedure UpdateImageWidget(ImageWidget: PGtkImage; Bitmap: TBitmap);
+    class procedure UpdateLabelFont(LabelWidget: PGtkWidget; Font: TFont);
   protected
-    class procedure UpdateGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph; const AButtonState: TButtonState);
-    class procedure UpdateLayout(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
-    class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
+    class function UpdateGlyph(const ABitBtn: TCustomBitBtn; BitBtnInfo: PBitBtnWidgetInfo;
+      const AValue: TButtonGlyph; const AButtonState: TButtonState): Boolean;
+    class procedure UpdateMargin(const ABitBtn: TCustomBitBtn; const AAlignWidget: PGtkAlignment; const AMargin: Integer);
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -94,39 +96,105 @@ type
   TCustomBitBtnAccess = class(TCustomBitBtn)
   end;
 
+  TWinControlAccess = class(TWinControl)
+  end;
+
 procedure GtkWSBitBtn_StateChanged(AWidget: PGtkWidget; AState: TGtkStateType; AInfo: PWidgetInfo); cdecl;
+var
+  BitBtn: TCustomBitBtnAccess;
 begin
   //WriteLn(Astate, ' :: ', GTK_WIDGET_STATE(AWidget));
-  TGtk2WSBitBtnClass(TCustomBitBtn(AInfo^.LCLObject).WidgetSetClass).UpdateGlyph(
-    TBitBtn(AInfo^.LCLObject),
-    TCustomBitBtnAccess(AInfo^.LCLObject).FButtonGlyph,
-    GtkStateToButtonState[GTK_WIDGET_STATE(AWidget)]);
+  BitBtn := TCustomBitBtnAccess(AInfo^.LCLObject);
+  TGtk2WSBitBtn.UpdateGlyph(BitBtn, PBitBtnWidgetInfo(AInfo^.UserData),
+    BitBtn.FButtonGlyph, GtkStateToButtonState[GTK_WIDGET_STATE(AWidget)]);
 end;
 
 { TGtk2WSBitBtn }
 
-{
- The interiour of TBitBtn is created with a 4X4 table
- Depending in how the image and label are aligned, only a 
- columns or rows are used (like a 4x1 or 1x4 table). 
- This way the table doesn't have to be recreated on changes.
- So there are 4 positions 0, 1, 2, 3.
- Positions 1 and 2 are used for the label and image.
- Since this is always the case, spacing can be implemented
- by setting the spacing of row/col 1
- To get a margin, a gtkInvisible is needed for bottom and 
- right, so the invisible is always in position 3. 
-}
+class procedure TGtk2WSBitBtn.BuildWidget(ABitBtn: TCustomBitBtn; MainWidget: PGtkWidget; ABitBtnInfo: PBitBtnWidgetInfo; const ACaption: String);
+var
+  AlignWidget: PGtkWidget;
+  LabelWidget: PGtkWidget;
+  ImageWidget: PGtkWidget;
+  ContentWidget: PGtkWidget;
+begin
+  ImageWidget := ABitBtnInfo^.ImageWidget;
+  // keep a temporary reference to avoid the destruction and remove ImageWidget
+  if ImageWidget <> nil then
+  begin
+    g_object_ref(ImageWidget);
+    UnparentWidget(ImageWidget);
+  end;
+  // clear the widget (will destroy the children)
+  ContentWidget := gtk_bin_get_child(PGtkBin(MainWidget));
+  if ContentWidget <> nil then
+    gtk_container_remove(PGtkContainer(MainWidget), ContentWidget);
+  ContentWidget := nil;
+  // setup label
+  LabelWidget := nil;
+  if ACaption <> '' then
+  begin
+    LabelWidget := gtk_label_new(nil);
+    GTK2WidgetSet.SetLabelCaption(PGtkLabel(LabelWidget), ACaption);
+    UpdateLabelFont(LabelWidget, ABitBtn.Font);
+  end;
+  // button with image and label
+  if (ImageWidget <> nil) and (LabelWidget <> nil) then
+  begin
+    if (ABitBtn.Layout in [blGlyphLeft, blGlyphRight]) then
+      ContentWidget := gtk_hbox_new(False, ABitBtn.Spacing)
+    else
+      ContentWidget := gtk_vbox_new(False, ABitBtn.Spacing);
+
+    if (ABitBtn.Layout in [blGlyphLeft, blGlyphTop]) then
+      gtk_box_pack_start(PGtkBox(ContentWidget), ImageWidget, True, True, 0)
+    else
+      gtk_box_pack_end(PGtkBox(ContentWidget), ImageWidget, True, True, 0);
+
+    if (ABitBtn.Layout in [blGlyphRight, blGlyphBottom]) then
+      gtk_box_pack_start(PGtkBox(ContentWidget), LabelWidget, True, True, 0)
+    else
+      gtk_box_pack_end(PGtkBox(ContentWidget), LabelWidget, True, True, 0);
+  end
+  else
+  begin
+    // only image or label (or none)
+    if ImageWidget <> nil then
+      ContentWidget := ImageWidget
+    else if LabelWidget <> nil then
+      ContentWidget := LabelWidget;
+  end;
+  // setup align and build the widget
+  AlignWidget := gtk_alignment_new(0, 0, 0, 0);
+  UpdateMargin(ABitBtn, PGtkAlignment(AlignWidget), ABitBtn.Margin);
+  gtk_container_add(PGtkContainer(MainWidget), AlignWidget);
+  if ContentWidget <> nil then
+    gtk_container_add(PGtkContainer(AlignWidget), ContentWidget);
+  gtk_widget_show_all(AlignWidget);
+  // Release the temporary reference
+  if ImageWidget <> nil then
+    g_object_unref(ImageWidget);
+
+  ABitBtnInfo^.LabelWidget := LabelWidget;
+end;
+
+class procedure TGtk2WSBitBtn.UnparentWidget(Widget: PGtkWidget);
+var
+  ParentWidget: PGtkWidget;
+begin
+  ParentWidget := gtk_widget_get_parent(Widget);
+  if ParentWidget <> nil then
+    gtk_container_remove(PGtkContainer(ParentWidget), Widget);
+end;
+
 class function TGtk2WSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  BitBtn: TCustomBitBtn;
+  BitBtn: TCustomBitBtn absolute AWinControl;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  BitBtn := AWinControl as TCustomBitBtn;
-
   Result := TLCLIntfHandle(PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
@@ -140,22 +208,7 @@ begin
   WidgetInfo^.UserData := BitBtnInfo;
   WidgetInfo^.DataOwner := True;
 
-  BitBtnInfo^.AlignWidget := gtk_alignment_new(0.5, 0.5, 0, 0);
-  gtk_container_add(Pointer(Result), BitBtnInfo^.AlignWidget);
-
-  BitBtnInfo^.TableWidget := gtk_table_new(4, 4, False);
-  gtk_container_add(BitBtnInfo^.AlignWidget, BitBtnInfo^.TableWidget);
-  
-  BitBtnInfo^.LabelWidget := gtk_label_new('bitbtn');
-  gtk_table_attach(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget,
-                   2, 3, 0, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-
-  BitBtnInfo^.SpaceWidget := nil;
-  BitBtnInfo^.ImageWidget := nil;
-
-  gtk_widget_show(BitBtnInfo^.AlignWidget);
-  gtk_widget_show(BitBtnInfo^.TableWidget);
-  gtk_widget_show(BitBtnInfo^.LabelWidget);
+  gtk_widget_show(PGtkWidget(Result));
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
@@ -169,84 +222,95 @@ end;
 
 class procedure TGtk2WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
+var
+  MainWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  BitBtnInfo: PBitBtnWidgetInfo;
+  BuildNeeded: Boolean;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph')
-  then Exit;
-  
-  UpdateGlyph(ABitBtn, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(PGtkWidget(ABitBtn.Handle))]);
+  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
+    Exit;
+  MainWidget := PGtkWidget(ABitBtn.Handle);
+  WidgetInfo := GetWidgetInfo(MainWidget);
+  BitBtnInfo := WidgetInfo^.UserData;
+  BuildNeeded := UpdateGlyph(ABitBtn, BitBtnInfo, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(MainWidget)]);
+  // at initialization widget will be built in SetLayout
+  if not (wcfInitializing in TWinControlAccess(ABitBtn).FWinControlFlags) and BuildNeeded then
+    BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
 end;
 
 class procedure TGtk2WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 var
+  MainWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout')
-  then Exit;
-
-  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;                       
-  UpdateLayout(BitBtnInfo, AValue, ABitBtn.Margin);
+  if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then
+    Exit;
+  MainWidget := Pointer(ABitBtn.Handle);
+  WidgetInfo := GetWidgetInfo(MainWidget);
+  BitBtnInfo := WidgetInfo^.UserData;
+  BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
 end;
 
 class procedure TGtk2WSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
-  WidgetInfo: PWidgetInfo;
-  BitBtnInfo: PBitBtnWidgetInfo;
+  MainWidget: PGtkWidget;
+  AlignWidget: PGtkAlignment;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetMargin')
-  then Exit;
-
-  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;                       
-  UpdateMargin(BitBtnInfo, ABitBtn.Layout, AValue);
+  if not WSCheckHandleAllocated(ABitBtn, 'SetMargin') then
+    Exit;
+  MainWidget := PGtkWidget(ABitBtn.Handle);
+  AlignWidget := PGtkAlignment(gtk_bin_get_child(PGtkBin(MainWidget)));
+  if GTK_IS_ALIGNMENT(AlignWidget) then
+    UpdateMargin(ABitBtn, AlignWidget, AValue);
 end;
 
 class procedure TGtk2WSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
-  WidgetInfo: PWidgetInfo;
-  BitBtnInfo: PBitBtnWidgetInfo;
+  MainWidget: PGtkWidget;
+  ChildWidget: PGtkWidget;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing')
-  then Exit;
-  
-  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;                       
-  gtk_table_set_col_spacing(BitBtnInfo^.TableWidget, 1, AValue);
-  gtk_table_set_row_spacing(BitBtnInfo^.TableWidget, 1, AValue);
+  if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing') then
+    Exit;
+  MainWidget := Pointer(ABitBtn.Handle);
+  ChildWidget := gtk_bin_get_child(PGtkBin(MainWidget));
+  if GTK_IS_ALIGNMENT(ChildWidget) then
+  begin
+    ChildWidget := gtk_bin_get_child(PGtkBin(ChildWidget));
+    if GTK_IS_BOX(ChildWidget) then
+      gtk_box_set_spacing(PGtkBox(ChildWidget), AValue);
+  end;
 end;
 
 class procedure TGtk2WSBitBtn.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
+  MainWidget: PGtkWidget;
+  LabelWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
-begin          
-  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
-  then Exit;
-
-  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;                       
-
-  if AText = '' then
+  BuildNeeded: Boolean;
+begin
+  // at initialization widget will be built in SetLayout
+  if (wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags)
+    or not WSCheckHandleAllocated(AWincontrol, 'SetText') then
+    Exit;
+  MainWidget := Pointer(AWinControl.Handle);
+  WidgetInfo := GetWidgetInfo(MainWidget);
+  BitBtnInfo := WidgetInfo^.UserData;
+  LabelWidget := BitBtnInfo^.LabelWidget;
+  BuildNeeded := (LabelWidget = nil) xor (AText = '');
+  if BuildNeeded then
+    BuildWidget(TBitBtn(AWinControl), MainWidget, BitBtnInfo, AText)
+  else
   begin
-    gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget);
-    BitBtnInfo^.LabelWidget := nil;
-  end else
-  begin
-    if BitBtnInfo^.LabelWidget = nil then
-    begin
-      BitBtnInfo^.LabelWidget := gtk_label_new(nil);
-      gtk_widget_show(BitBtnInfo^.LabelWidget);
-    end;
-
-    Gtk2WidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText);
+    if LabelWidget <> nil then
+      Gtk2WidgetSet.SetLabelCaption(PGtkLabel(LabelWidget), AText);
   end;
-
-  UpdateLayout(BitBtnInfo, TBitBtn(AWincontrol).Layout, TBitBtn(AWincontrol).Margin);
 end;
 
 class procedure TGtk2WSBitBtn.SetColor(const AWinControl: TWinControl);
@@ -264,236 +328,88 @@ class procedure TGtk2WSBitBtn.SetFont(const AWinControl: TWinControl;
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
-  Widget: PGTKWidget;
+  LabelWidget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  
-  Widget:= PGtkWidget(AWinControl.Handle);
-  WidgetInfo := GetWidgetInfo(Widget);
-  BitBtnInfo := WidgetInfo^.UserData;
 
-  if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
-  Gtk2WidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AFont.Color,
-    clNone,
-    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-  Gtk2WidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
+  WidgetInfo := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  BitBtnInfo := WidgetInfo^.UserData;
+  LabelWidget := BitBtnInfo^.LabelWidget;
+  if LabelWidget <> nil then
+    UpdateLabelFont(LabelWidget, AFont);
 end;
 
-class procedure TGtk2WSBitBtn.UpdateGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TButtonGlyph; const AButtonState: TButtonState);
+{
+  UpdateGlyph: update the bitbtn glyph and returns if the structure changed
+}
+
+class function TGtk2WSBitBtn.UpdateGlyph(const ABitBtn: TCustomBitBtn; BitBtnInfo: PBitBtnWidgetInfo;
+  const AValue: TButtonGlyph; const AButtonState: TButtonState): Boolean;
 var
-  WidgetInfo: PWidgetInfo;
-  BitBtnInfo: PBitBtnWidgetInfo;
-  GDIObject: PGDIObject;
-  Pixbuf: PGdkPixbuf;
-  Mask: PGdkBitmap;
+  ShowGlyph: Boolean;
+  ImageWidget: PGtkWidget;
   AGlyph: TBitmap;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
-  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;
-
-  if ABitBtn.CanShowGlyph then
+  ShowGlyph := ABitBtn.CanShowGlyph;
+  if ShowGlyph then
   begin
+    ImageWidget := BitBtnInfo^.ImageWidget;
     AGlyph := TBitmap.Create;
     AValue.GetImageIndexAndEffect(AButtonState, AIndex, AEffect);
     if (AIndex <> -1) and (AValue.Images <> nil) then
       AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+    ShowGlyph := not AGlyph.Empty;
+    if ShowGlyph then
+    begin
+      if ImageWidget = nil then
+        ImageWidget := gtk_image_new;
+      UpdateImageWidget(PGtkImage(ImageWidget), AGlyph);
+    end;
+    AGlyph.Destroy;
   end
   else
-    AGlyph := nil;
-  // check if an image is needed
-  if (AGlyph = nil) or AGlyph.Empty then
+    ImageWidget := nil;
+  // Return true if the image was removed or added
+  Result := ImageWidget <> BitBtnInfo^.ImageWidget;
+  if Result then
   begin
-    if BitBtnInfo^.ImageWidget <> nil then
-    begin
-      gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.ImageWidget);
-      BitBtnInfo^.ImageWidget := nil;
-    end;
-    AGlyph.Free;
-    Exit;
+    // BitBtnInfo^.ImageWidget <> nil -> remove from parent
+    if not ShowGlyph then
+      UnparentWidget(BitBtnInfo^.ImageWidget);
+    BitBtnInfo^.ImageWidget := ImageWidget;
   end;
-
-  GDIObject := PGDIObject(AGlyph.Handle);
-  Mask := nil;
-  Pixbuf := nil;
-  if GDIObject^.GDIBitmapType = gbPixbuf then
-    Pixbuf := GDIObject^.GDIPixbufObject
-  else
-    Mask := CreateGdkMaskBitmap(AGlyph.Handle, AGlyph.MaskHandle);
-  // check for image
-  if BitBtnInfo^.ImageWidget = nil then
-  begin
-    BitBtnInfo^.ImageWidget := gtk_image_new;
-    gtk_widget_show(BitBtnInfo^.ImageWidget);
-    UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
-  end;
-
-  if Pixbuf <> nil then
-  begin
-    gtk_image_set_from_pixbuf(BitBtnInfo^.ImageWidget, Pixbuf);
-    //DbgDumpPixbuf(Pixbuf);
-  end else
-  begin
-    gtk_image_set_from_pixmap(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
-    //DbgDumpPixmap(GDIObject^.GDIPixmapObject.Image);
-    //DbgDumpBitmap(Mask);
-  end;
-
-  if Mask <> nil then
-    gdk_pixmap_unref(Mask);
-  AGlyph.Free;
 end;
 
-class procedure TGtk2WSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
-  const ALayout: TButtonLayout; const AMargin: Integer);
-begin
-  if (AInfo^.ImageWidget = nil) and (AMargin < 0) then Exit; // nothing to do
-  
-  // add references and remove it from the table
-  if AInfo^.LabelWidget <> nil then
-  begin
-    gtk_object_ref(AInfo^.LabelWidget);
-    if PGtkWidget(AInfo^.LabelWidget)^.Parent <> nil then
-      gtk_container_remove(AInfo^.TableWidget, AInfo^.LabelWidget);
-  end;
-  if AInfo^.ImageWidget <> nil then
-  begin
-    gtk_object_ref(AInfo^.ImageWidget);                          
-    if PGtkWidget(AInfo^.ImageWidget)^.Parent <> nil then
-      gtk_container_remove(AInfo^.TableWidget, AInfo^.ImageWidget);
-  end;
-  if AInfo^.SpaceWidget <> nil then
-  begin
-    gtk_object_ref(AInfo^.SpaceWidget);
-    if PGtkWidget(AInfo^.SpaceWidget)^.Parent <> nil then
-      gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
-  end;
-
-  if ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.text = '')) and
-     (AInfo^.ImageWidget <> nil) then
-  begin
-    gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                     0, 3, 0, 3, GTK_EXPAND or GTK_FILL, GTK_EXPAND or GTK_FILL, 0, 0);
-  end
-  else
-  case ALayout of 
-    blGlyphLeft:
-    begin
-      if AInfo^.ImageWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                         1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-    end;
-    blGlyphRight:
-    begin
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.ImageWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                         2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.SpaceWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                         3, 4, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-    end;
-    blGlyphTop:
-    begin
-      if AInfo^.ImageWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                         1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-    end; 
-    blGlyphBottom:
-    begin
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.ImageWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                        1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.SpaceWidget <> nil then
-        gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                         1, 3, 3, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-    end;
-  end;
-  
-  // remove temp reference
-  if AInfo^.SpaceWidget <> nil then
-    gtk_object_unref(AInfo^.SpaceWidget);
-  if AInfo^.ImageWidget <> nil then
-    gtk_object_unref(AInfo^.ImageWidget);
-  if AInfo^.LabelWidget <> nil then
-    gtk_object_unref(AInfo^.LabelWidget);
-  
-  if AMargin >= 0 then
-    UpdateMargin(AInfo, ALayout, AMargin)
-end;
-
-class procedure TGtk2WSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;
-  const ALayout: TButtonLayout; const AMargin: Integer);
+class procedure TGtk2WSBitBtn.UpdateMargin(const ABitBtn: TCustomBitBtn;
+  const AAlignWidget: PGtkAlignment; const AMargin: Integer);
 begin
   if AMargin < 0 then
+    gtk_alignment_set (AAlignWidget, 0.5, 0.5, 0.0, 0.0)
+  else
   begin
-    if AInfo^.SpaceWidget <> nil then
-    begin
-      gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
-      AInfo^.SpaceWidget := nil;
-
-      gtk_alignment_set(AInfo^.AlignWidget, 0.5, 0.5, 0, 0);
-      
-      case ALayout of 
-        blGlyphLeft:   gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-        blGlyphRight:  gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-        blGlyphTop:    gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-        blGlyphBottom: gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-      end;
-    end;
-  end else
-  begin
-    if (AInfo^.SpaceWidget = nil)
-    and (ALayout in [blGlyphRight, blGlyphBottom]) then
-    begin
-      // do not use gtk_invisible_new - it cannot have parent
-      AInfo^.SpaceWidget := gtk_image_new;
-      UpdateLayout(AInfo, ALayout, AMargin);
-    end else
-    begin
-      case ALayout of 
-        blGlyphLeft:
-          begin
-            gtk_alignment_set(AInfo^.AlignWidget, 0, 0.5, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, AMargin);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-          end;
-        blGlyphRight:
-          begin
-            gtk_alignment_set(AInfo^.AlignWidget, 1, 0.5, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, AMargin);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-          end;
-        blGlyphTop:
-          begin
-            gtk_alignment_set(AInfo^.AlignWidget, 0.5, 0, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, AMargin);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-          end;
-        blGlyphBottom:
-          begin
-            gtk_alignment_set(AInfo^.AlignWidget, 0.5, 1, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, AMargin);
-          end;
-      end;
+    case ABitBtn.Layout of
+      blGlyphLeft:
+        begin
+          gtk_alignment_set(AAlignWidget, 0, 0.5, 0, 0);
+          gtk_alignment_set_padding(AAlignWidget, 0, 0, AMargin, 0);
+        end;
+      blGlyphRight:
+        begin
+          gtk_alignment_set(AAlignWidget, 1, 0.5, 0, 0);
+          gtk_alignment_set_padding(AAlignWidget, 0, 0, 0, AMargin);
+        end;
+      blGlyphTop:
+        begin
+          gtk_alignment_set(AAlignWidget, 0.5, 0, 0, 0);
+          gtk_alignment_set_padding(AAlignWidget, AMargin, 0, 0, 0);
+        end;
+      blGlyphBottom:
+        begin
+          gtk_alignment_set(AAlignWidget, 0.5, 1, 0, 0);
+          gtk_alignment_set_padding(AAlignWidget, 0, AMargin, 0, 0);
+        end;
     end;
   end;
 end;
@@ -505,5 +421,36 @@ begin
 
   SignalConnect(AGtkWidget, 'state-changed', @GtkWSBitBtn_StateChanged, AWidgetInfo);
 end;
+
+class procedure TGtk2WSBitBtn.UpdateImageWidget(ImageWidget: PGtkImage; Bitmap: TBitmap);
+var
+  GDIObject: PGDIObject;
+  Pixbuf: PGdkPixbuf;
+  Mask: PGdkBitmap;
+begin
+  GDIObject := PGDIObject(Bitmap.Handle);
+  Mask := nil;
+  Pixbuf := nil;
+  if GDIObject^.GDIBitmapType = gbPixbuf then
+    Pixbuf := GDIObject^.GDIPixbufObject
+  else
+    Mask := CreateGdkMaskBitmap(Bitmap.Handle, Bitmap.MaskHandle);
+
+  if Pixbuf <> nil then
+    gtk_image_set_from_pixbuf(ImageWidget, Pixbuf)
+  else
+    gtk_image_set_from_pixmap(ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
+
+  if Mask <> nil then
+    g_object_unref(Mask);
+end;
+
+class procedure TGtk2WSBitBtn.UpdateLabelFont(LabelWidget: PGtkWidget; Font: TFont);
+begin
+  Gtk2WidgetSet.SetWidgetColor(LabelWidget, Font.Color, clNone,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  Gtk2WidgetSet.SetWidgetFont(LabelWidget, Font);
+end;
+
 
 end.
