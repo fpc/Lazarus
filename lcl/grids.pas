@@ -3097,30 +3097,57 @@ var
   RNew: TRect;
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
+  CHeight,CWidth: Integer;
 begin
   OldTopLeft:=fTopLeft;
+  CHeight := FGCache.ClientHeight + GetBorderWidth;
+  CWidth  := FGCache.ClientWidth  + GetBorderWidth;
+
+  {$IFDEF dbgGridScroll}
+  DebugLn('aCol=%d aRow=%d FixHeight=%d CHeight=%d FixWidth=%d CWidth=%d',
+          [aCol,aRow,FGCache.FixedHeight,CHeight, FGCache.FixedWidth, CWidth]);
+  {$Endif}
 
   while (fTopLeft.x>=0) and
         (fTopLeft.x<ColCount)and
         (fTopLeft.y>=0) and
-        (fTopLeft.y<RowCount) do begin
-
+        (fTopLeft.y<RowCount) do
+  begin
     RNew:=CellRect(aCol,aRow);
+    RNew.Left := FlipX(RNew.Left);
+    RNew.Right := FlipX(RNew.Right);
 
-    Xinc:=0;
-    if FlipX(RNew.Left) + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
-    else if (FlipX(RNew.Right)+FGCache.TLColOff > (FGCache.ClientWidth+GetBorderWidth))
-            and (FlipX(RNew.Left+FGCache.TLColOff-GetColWidths(aCol)) >= FGCache.FixedWidth)
-              then XInc:=1;
-              // Only scroll left if the left edge of the cell does not become
-              // invisible as a result
-    Yinc:=0;
-    if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
-    else if (RNew.Bottom+FGCache.TLRowOff > (FGCache.ClientHeight+GetBorderWidth))
-            and (RNew.Top+FGCache.TLRowOff-GetRowHeights(aRow) >= FGCache.FixedHeight)
-            then YInc:=1;
-            // Only scroll up if the top edge of the cell does not become
-            // invisible as a result
+    Xinc := 0;
+    if RNew.Right <= FGCache.FixedWidth then
+      Xinc := -1              // hidden at the left of fixedwidth line
+    else
+    if RNew.Left >= CWidth then
+      Xinc := 1               // hidden at the right of clientwidth line
+    else
+    if (RNew.Left > FGCache.FixedWidth) and
+       (RNew.Left < CWidth) and (CWidth < RNew.Right) then begin
+      Xinc := 1;              // partially visible at the right
+      FGCache.TLColOff := 0;  // cancel col-offset for next calcs
+    end;
+
+    Yinc := 0;
+    if RNew.Bottom <= FGCache.FixedHeight then
+      Yinc := -1              // hidden at the top of fixedheight line
+    else
+    if (RNew.Top >= CHeight) then
+      YInc := 1               // hidden at the bottom of clientheight line
+    else
+    if (RNew.Top > FGCache.FixedHeight) and
+       (RNew.Top < CHeight) and (CHeight < RNew.Bottom) then begin
+      Yinc := 1;              // partially visible at bottom
+      FGCache.TLRowOff := 0;  // cancel row-offset for next calcs
+    end;
+
+    {$IFDEF dbgGridScroll}
+    with FTopLeft,RNew,FGCache do
+    DebugLn('  TL.C=%d TL.R=%d RNew:L=%d T=%d R=%d B=%d Xinc=%d YInc=%d ColOff=%d RowOff=%d',
+      [X,Y,Left,Top,Right,Bottom,XInc,YInc,TLColOff,TLRowOff]);
+    {$ENDIF}
 
     with FTopLeft do
     if ((XInc=0)and(YInc=0)) or // the cell is already visible
@@ -3133,7 +3160,6 @@ begin
     Inc(FTopLeft.x, XInc);
     Inc(FTopLeft.y, YInc);
   end;
-  //DebugLn('TCustomGrid.ScrollToCell A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
 
   Result:=not PointIgual(OldTopleft,FTopLeft);
   if result then begin
@@ -7880,7 +7906,7 @@ begin
       k:=cfg.getValue(Path+'rowcount',0);
       for i:=1 to k do begin
         j:=cfg.getValue(Path+'row'+IntToStr(i)+'/index',-1);
-        if (j>=0)and(j<=ColCount-1) then begin
+        if (j>=0)and(j<=RowCount-1) then begin
           RowHeights[j]:=cfg.getValue(Path+'row'+IntToStr(i)+'/height',-1);
         end;
       end;
