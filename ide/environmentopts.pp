@@ -1678,9 +1678,12 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetDebuggerSearchPath(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FDebuggerSearchPath=AValue then exit;
-  FDebuggerSearchPath:=TrimSearchPath(AValue,'');
+  NewValue:=TrimSearchPath(AValue,'');
+  if FDebuggerSearchPath=NewValue then exit;
+  FDebuggerSearchPath:=NewValue;
 end;
 
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);

@@ -135,7 +135,8 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
 
 // search paths
-function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
+function TrimSearchPath(const SearchPath, BaseDirectory: string;
+                        DeleteDoubles: boolean = false): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
@@ -1345,7 +1346,8 @@ end;
   - If BaseDirectory<>'' then every relative Filename will be expanded.
   - removes doubles
 -------------------------------------------------------------------------------}
-function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
+function TrimSearchPath(const SearchPath, BaseDirectory: string;
+  DeleteDoubles: boolean): string;
 var
   CurPath: String;
   EndPos: Integer;
@@ -1371,15 +1373,18 @@ begin
       if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
       CurPath:=ChompPathDelim(TrimFilename(CurPath));
+      if CurPath='' then CurPath:='.';
       // check if path already exists
-      // ToDo:
-
-      if Result<>'' then
-        CurPath:=';'+CurPath;
-      if CurPath<>'' then
-        Result:=Result+CurPath
-      else
-        Result:=Result+'.';
+      if (not DeleteDoubles)
+        or (SearchDirectoryInSearchPath(SearchPath,CurPath)<1)
+      then begin
+        if Result<>'' then
+          CurPath:=';'+CurPath;
+        if CurPath<>'' then
+          Result:=Result+CurPath
+        else
+          Result:=Result+'.';
+      end;
     end;
   end;
 end;

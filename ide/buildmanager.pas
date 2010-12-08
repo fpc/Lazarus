@@ -948,7 +948,7 @@ var
   IgnoreAll: Boolean;
 begin
   Result:=mrOk;
-  UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
+  UnitPath:=TrimSearchPath(TheUnitPath,BaseDir,true);
 
   SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
   CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));

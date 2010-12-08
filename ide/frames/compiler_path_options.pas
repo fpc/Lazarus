@@ -464,7 +464,7 @@ procedure TCompilerPathOptionsFrame.PathEditBtnExecuted(Sender: TObject);
     BaseDir: string;
   begin
     BaseDir := FCompilerOpts.BaseDirectory;
-    ExpandedPath := TrimSearchPath(NewPath, BaseDir);
+    ExpandedPath := TrimSearchPath(NewPath, BaseDir, true);
     Result := CheckSearchPath(Context, ExpandedPath, ccomlHints);
   end;
 

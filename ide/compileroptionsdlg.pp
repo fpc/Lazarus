@@ -1876,7 +1876,7 @@ procedure TfrmCompilerOptions.PathEditBtnExecuted(Sender: TObject);
     BaseDir: String;
   begin
     BaseDir:=CompilerOpts.BaseDirectory;
-    ExpandedPath:=TrimSearchPath(NewPath,BaseDir);
+    ExpandedPath:=TrimSearchPath(NewPath,BaseDir,true);
     Result:=CheckSearchPath(Context,ExpandedPath,ccomlHints);
   end;
 

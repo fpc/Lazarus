@@ -1401,7 +1401,7 @@ begin
       AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);
       // search with include path of directory
       if Assigned(OnGetIncludePath) then begin
-        IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir,false),FullDir);
+        IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir,false),FullDir,true);
         IncludePath:=RemoveSearchPaths(IncludePath,AlreadySearchedIncPaths);
         if IncludePath<>'' then begin
           Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
