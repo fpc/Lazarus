@@ -448,7 +448,7 @@ begin
   if  fLockCount > 0 then begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del)  locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
     for i := fLockList.Count-1 downto 0 do begin
-      j := Integer(Pointer(fLockList.Objects[i]));
+      j := Integer(PtrUInt(Pointer(fLockList.Objects[i])));
       if (j >= Index) and (j < Index - N) then
         fLockList.Delete(i)
       else if j >= Index then
@@ -520,9 +520,9 @@ var
 begin
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- StoreSpacesforLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Spacestr=',length(SpaceStr), ' LineStr=',length(LineStr),  '  fLockCount=',fLockCount]);{$ENDIF}
   if fLockCount > 0 then begin
-    i := fLockList.IndexOfObject(TObject(pointer(Index)));
+    i := fLockList.IndexOfObject(TObject(pointer(PtrUInt(Index))));
     if i < 0 then
-      fLockList.AddObject(SpaceStr, TObject(pointer(Index)))
+      fLockList.AddObject(SpaceStr, TObject(pointer(PtrUInt(Index))))
     else
       fLockList[i] := SpaceStr;
   end;
@@ -538,7 +538,7 @@ var
 begin
   if (not fEnabled) then exit('');
   if fLockCount > 0 then begin
-    i := fLockList.IndexOfObject(TObject(Pointer(Index)));
+    i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(Index))));
     if i < 0 then
       result := ''
     else
@@ -559,7 +559,7 @@ end;
 procedure TSynEditStringTrimmingList.Lock;
 begin
   if (fLockCount = 0) and (fLineIndex >= 0) and Enabled then begin
-    fLockList.AddObject(Spaces(fLineIndex), TObject(Pointer(fLineIndex)));
+    fLockList.AddObject(Spaces(fLineIndex), TObject(Pointer(PtrUInt(fLineIndex))));
     FLineEdited := False;
   end;
   inc(fLockCount);
@@ -579,7 +579,7 @@ begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
-  i := fLockList.IndexOfObject(TObject(Pointer(fLineIndex)));
+  i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(fLineIndex))));
   if i >= 0 then begin
     fSpaces:= fLockList[i];
     if (fLineIndex >= 0) and (fLineIndex < fSynStrings.Count) then
@@ -591,7 +591,7 @@ begin
   BeginUpdate;
   try
     for i := 0 to fLockList.Count-1 do begin
-      index := Integer(Pointer(fLockList.Objects[i]));
+      index := Integer(PtrUInt(Pointer(fLockList.Objects[i])));
       slen := length(fLockList[i]);
       if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
         ltext := fSynStrings[index];
@@ -732,7 +732,7 @@ begin
   // check if we need to apend spaces
   if (not fEnabled) then exit;
   if (fLockCount = 0) and (fLineIndex <> ALineIndex) then exit;
-  if (fLockCount > 0) and (fLockList.IndexOfObject(TObject(Pointer(ALineIndex))) < 0) then exit;
+  if (fLockCount > 0) and (fLockList.IndexOfObject(TObject(Pointer(PtrUInt(ALineIndex)))) < 0) then exit;
 
   Result:= GetPCharSpaces(ALineIndex, ALen);
 end;
