@@ -1908,7 +1908,7 @@ begin
       inc(FSetBookmarLock);
       try
         // Adjust bookmarks
-        for i := 0 to Bookmarks.Count - 1 do begin
+        for i := Bookmarks.Count - 1 downto 0 do begin
           BookmarkID := Bookmarks[i].ID;
           j := Project1.Bookmarks.IndexOfID(BookmarkID);
           if (j < 0) then
