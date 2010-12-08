@@ -6620,23 +6620,28 @@ begin
   if FEvaluatedState in [esValid, esRequested] then Exit;
   if Debugger = nil then Exit;
 
-  if (Debugger.State in [dsPause, dsStop])
+  if (Debugger.State = dsPause)
   and Enabled
   then begin
-    FInEvaluationNeeded := True;
-    FEvaluatedState := esRequested;
-    ClearOwned;
-    SetValid(vsValid);
-    FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create
-      (TGDBMIDebugger(Debugger), Expression, DisplayFormat);
-    FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
-    FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
-    TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
-    (* DoEvaluationFinished may be called immediately at this point *)
-    FInEvaluationNeeded := False;
+    BeginUpdate; // aviod change early trigger bt SetValid
+    try
+      FInEvaluationNeeded := True;
+      FEvaluatedState := esRequested;
+      ClearOwned;
+      SetValid(vsValid);
+      FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create
+        (TGDBMIDebugger(Debugger), Expression, DisplayFormat);
+      FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
+      FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
+      TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
+      (* DoEvaluationFinished may be called immediately at this point *)
+      FInEvaluationNeeded := False;
+    finally
+      EndUpdate;
+    end;
   end
   else begin
-    SetValid(vsInvalid);
+    SetValid(vsUnknown);
   end;
 end;
 

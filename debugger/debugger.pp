@@ -3434,7 +3434,7 @@ end;
 
 function TBaseWatch.GetValid: TValidState;
 begin
-  Result := vsUnknown;
+  Result := FValid;
 end;
 
 function TBaseWatch.GetValue: String;
