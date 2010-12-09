@@ -40,6 +40,9 @@
        will leave the file as is. Otherwise it will create a new revision.inc,
        indicating that the revision number is unknown.
 
+       If the source directory don't contains a .svn subdirectory, it search for
+       a .git directory. If i exist, it tries to execute git to get the revision
+       number.
 }
 program Svn2RevisionInc;
 
@@ -87,6 +90,42 @@ const
 function TSvn2RevisionApplication.FindRevision: boolean;
 var
   SvnDir: string;
+  GitDir: string;
+
+  function GetRevisionFromGitVersion : boolean;
+  var
+    GitVersionProcess: TProcessUTF8;
+    Buffer: string;
+    n: LongInt;
+  begin
+    Result:=false;
+    GitVersionProcess := TProcessUTF8.Create(nil);
+    try
+      with GitVersionProcess do begin
+        CommandLine := 'git log -1 --pretty=format:"%b"';
+        Options := [poUsePipes, poWaitOnExit];
+        try
+          CurrentDirectory:=GitDir;
+          Execute;
+          SetLength(Buffer, 80);
+          n:=OutPut.Read(Buffer[1], 80);
+
+          if (Pos('git-svn-id:', Buffer) > 0) then begin
+            //Read version is OK
+            Result:=true;
+            RevisionStr := Copy(Buffer, 1, n);
+            System.Delete(RevisionStr, 1, Pos('@', RevisionStr));
+            System.Delete(RevisionStr, Pos(' ', RevisionStr), Length(RevisionStr));
+          end;
+        except
+        // ignore error, default result is false
+        end;
+      end;
+    finally
+      GitVersionProcess.Free;
+    end;
+  end;
+
   function GetRevisionFromSvnVersion : boolean;
   var
     SvnVersionProcess: TProcessUTF8;
@@ -104,7 +143,7 @@ var
           SetLength(Buffer, 80);
           n:=OutPut.Read(Buffer[1], 80);
           RevisionStr := Copy(Buffer, 1, n);
-          
+
           SetLength(Buffer, 1024);
           n:=Stderr.Read(Buffer[1], 1024);
 
@@ -185,15 +224,20 @@ var
 begin
   Result:=false;
   SvnDir:= AppendPathDelim(SourceDirectory)+'.svn';
-  if DirectoryExistsUTF8(SvnDir) then
-    Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt
-      or GetRevisionFromEntriesXml;
+  if DirectoryExistsUTF8(SvnDir) then begin
+    Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
+              GetRevisionFromEntriesXml;
+  end else begin
+    GitDir:= AppendPathDelim(SourceDirectory) + '.git';
+    if DirectoryExistsUTF8(GitDir) then
+      Result:=GetRevisionFromGitVersion;
+  end;
 end;
 
 constructor TSvn2RevisionApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  
+
   RevisionStr := 'Unknown';
 end;
 
@@ -287,17 +331,17 @@ begin
       Inc(index);
     end;
   end;
-  
+
   //parse options
   if HasOption('h', 'help') or HasOption('?') then
     ShowHelp;
-  
+
   if HasOption('v') then
     Verbose := True;
-    
+
   if HasOption('s') then
     UseStdOut := True;
-    
+
   if HasOption('c') then
     ConstName := GetOptionValue('c');
 
@@ -316,19 +360,19 @@ begin
     debugln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
     exit;
   end;
-  
+
   RevisionIncDirName:=ExtractFilePath(ExpandFileNameUTF8(RevisionIncFileName));
   if (not UseStdOut) and (not DirectoryExistsUTF8(RevisionIncDirName)) then begin
     debugln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
-  
+
   if ConstName[1] in ['0'..'9'] then
   begin
     debugln('Error: Invalid constant name ', ConstName, '.');
     exit;
   end;
-  
+
   Result := True;
 end;
 
@@ -357,7 +401,7 @@ begin
     ShowHelp;
 
   if not CanCreateRevisionInc then exit;
-  
+
   if UseStdOut then begin
     if FindRevision then
       debugln(RevisionStr);
