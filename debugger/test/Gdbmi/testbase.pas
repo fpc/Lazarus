@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, LCLProc, CompileHelpers;
+  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs;
 
 (*
   fpclist.txt contains lines of format:
@@ -649,7 +649,26 @@ end;
 
 
 initialization
-  AppDir := AppendPathDelim(AppendPathDelim(ExtractFilePath(Paramstr(0))) + 'TestApps');
+  AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));
+  if DirectoryExistsUTF8(AppDir + 'TestApps') then
+    AppDir := AppendPathDelim(AppDir + 'TestApps')
+  else
+  if RightStr(AppDir, length('lib' + DirectorySeparator)) = 'lib' + DirectorySeparator
+  then begin
+    AppDir := copy(AppDir, 1, length(AppDir) - length('lib' + DirectorySeparator));
+    if DirectoryExistsUTF8(AppDir + 'TestApps') then
+      AppDir := AppendPathDelim(AppDir + 'TestApps')
+    else with TSelectDirectoryDialog.Create(nil) do begin
+      if Execute then AppDir := FileName;
+      Free;
+    end;
+  end
+  else with TSelectDirectoryDialog.Create(nil) do begin
+    if Execute then AppDir := FileName;
+    Free;
+  end;
+
+
   EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do
   begin
