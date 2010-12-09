@@ -15774,7 +15774,10 @@ begin
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
-  or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName)) then begin
+  or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName))
+  or WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(PChar(NewName))
+  or WordIsPredefinedDelphiIdentifier.DoItCaseInsensitive(PChar(NewName))
+  then begin
     raise Exception.Create(Format(lisComponentNameIsAPascalKeyword, [NewName]));
   end;
   if AComponent.Name='' then begin
