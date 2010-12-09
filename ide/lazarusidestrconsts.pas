@@ -731,6 +731,7 @@ resourcestring
     +'ResourceString section in this or any of the used units.';
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
+  lisComponentNameIsAPascalKeyword = 'Component name "%s" is a pascal keyword.';
   lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
     +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '

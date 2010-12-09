@@ -67,6 +67,7 @@ uses
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  KeywordFuncLists,
   // synedit
   SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
@@ -15772,6 +15773,10 @@ begin
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
+  if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
+  or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName)) then begin
+    raise Exception.Create(Format(lisComponentNameIsAPascalKeyword, [NewName]));
+  end;
   if AComponent.Name='' then begin
     // this component was never added to the source. It is a new component.
     exit;
