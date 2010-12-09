@@ -647,25 +647,52 @@ begin
   end;
 end;
 
+function CheckAppDir(var AppDir: string): Boolean;
+begin
+  Result := DirectoryExistsUTF8(AppDir + 'TestApps');
+  if Result then
+    AppDir := AppendPathDelim(AppDir + 'TestApps');
+end;
+
+function CheckAppDirLib(var AppDir: string): Boolean;
+var
+  s: string;
+begin
+  Result := False;
+  if RightStr(AppDir, length('lib' + DirectorySeparator)) = 'lib' + DirectorySeparator
+  then begin
+    s := copy(AppDir, 1, length(AppDir) - length('lib' + DirectorySeparator));
+    Result :=  DirectoryExistsUTF8(s + 'TestApps');
+    if Result then
+      AppDir := AppendPathDelim(s + 'TestApps');
+  end;
+end;
+
+function AppDirStripAppBundle(AppDir: string): String;
+var
+  p: LongInt;
+begin
+  Result := AppDir;
+  p := pos('.app' + DirectorySeparator, AppDir);
+  while (p > 1) and (AppDir[p-1] <> DirectorySeparator) do
+    dec(p);
+  if p > 1 then
+    Result := Copy(AppDir, 1, p - 1);
+end;
 
 initialization
   AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));
-  if DirectoryExistsUTF8(AppDir + 'TestApps') then
-    AppDir := AppendPathDelim(AppDir + 'TestApps')
-  else
-  if RightStr(AppDir, length('lib' + DirectorySeparator)) = 'lib' + DirectorySeparator
+  if  not(CheckAppDir(AppDir))
+  and not(CheckAppDirLib(AppDir))
   then begin
-    AppDir := copy(AppDir, 1, length(AppDir) - length('lib' + DirectorySeparator));
-    if DirectoryExistsUTF8(AppDir + 'TestApps') then
-      AppDir := AppendPathDelim(AppDir + 'TestApps')
-    else with TSelectDirectoryDialog.Create(nil) do begin
-      if Execute then AppDir := FileName;
-      Free;
-    end;
-  end
-  else with TSelectDirectoryDialog.Create(nil) do begin
-    if Execute then AppDir := FileName;
-    Free;
+    AppDir := AppDirStripAppBundle(AppDir);
+    if  not(CheckAppDir(AppDir))
+    and not(CheckAppDirLib(AppDir))
+    then
+      with TSelectDirectoryDialog.Create(nil) do begin
+        if Execute then AppDir := AppendPathDelim(FileName);
+        Free;
+      end;
   end;
 
 
