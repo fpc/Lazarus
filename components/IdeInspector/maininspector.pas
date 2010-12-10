@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  ComCtrls, Menus, MenuIntf, ObjectInspector, types;
+  ComCtrls, Menus, MenuIntf, ObjectInspector, types, typinfo;
 
 type
 
@@ -14,9 +14,12 @@ type
 
   TIdeInspectForm = class(TForm)
     ImageList1: TImageList;
+    menuFollowForm: TMenuItem;
+    menuFollowFrame: TMenuItem;
     popComponent: TPopupMenu;
     popSubComponent: TPopupMenu;
     popControls: TPopupMenu;
+    popFollowType: TPopupMenu;
     Splitter1: TSplitter;
     ToolBar1: TToolBar;
     btnComponent: TToolButton;
@@ -25,15 +28,22 @@ type
     btnRemoveSelected: TToolButton;
     ToolButton2: TToolButton;
     btnControls: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButtonActiveType: TToolButton;
+    ToolButtonFollowActive: TToolButton;
     TreeView1: TTreeView;
     procedure btnControlsClick(Sender: TObject);
     procedure btnSubComponentClick(Sender: TObject);
+    procedure menuFollowFormClick(Sender: TObject);
+    procedure menuFollowFrameClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure btnComponentClick(Sender: TObject);
     procedure popComponentPopup(Sender: TObject);
     procedure popControlsPopup(Sender: TObject);
     procedure popSubComponentPopup(Sender: TObject);
     procedure btnRemoveSelectedClick(Sender: TObject);
+    procedure ToolButtonActiveTypeClick(Sender: TObject);
+    procedure ToolButtonFollowActiveClick(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure TreeView1Click(Sender: TObject);
   private
@@ -41,9 +51,12 @@ type
   protected
     FPropertiesGrid: TCustomPropertiesGrid;
     FSelected: TComponent;
+    FFollowFrames: Boolean;
     procedure SetSelected(AComp: TComponent);
     procedure UpdateTree;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure DoActiveFormChanged(Sender: TObject; Form: TCustomForm);
+    procedure DoActiveControChanged(Sender: TObject; LastControl: TControl);
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -61,6 +74,9 @@ resourcestring
   ideinspComponentsOwned = 'Components (Owned)';
   ideinspRemoveSelectedItemSFromTree = 'Remove selected item(s) from tree';
   ideinspControlsChildren = 'Controls (Children)';
+  ideinspInspectingNameClassUnit = 'Inspecting %s: %s (Unit: %s)';
+  ideinspInspectingNameClass = 'Inspecting %s: %s';
+  ideinspIdeInspector = 'Ide Inspector';
 
 procedure Register;
 
@@ -89,6 +105,18 @@ end;
 procedure TIdeInspectForm.btnSubComponentClick(Sender: TObject);
 begin
   btnSubComponent.CheckMenuDropdown;
+end;
+
+procedure TIdeInspectForm.menuFollowFormClick(Sender: TObject);
+begin
+  FFollowFrames := False;
+  ToolButtonActiveType.Caption := menuFollowForm.Caption;
+end;
+
+procedure TIdeInspectForm.menuFollowFrameClick(Sender: TObject);
+begin
+  FFollowFrames := True;
+  ToolButtonActiveType.Caption := menuFollowFrame.Caption;
 end;
 
 procedure TIdeInspectForm.btnControlsClick(Sender: TObject);
@@ -187,6 +215,17 @@ begin
   UpdateTree;
 end;
 
+procedure TIdeInspectForm.ToolButtonActiveTypeClick(Sender: TObject);
+begin
+  ToolButtonActiveType.CheckMenuDropdown;
+end;
+
+procedure TIdeInspectForm.ToolButtonFollowActiveClick(Sender: TObject);
+begin
+  if ToolButtonFollowActive.Down then
+    SetSelected(Self);
+end;
+
 procedure TIdeInspectForm.TreeView1Change(Sender: TObject; Node: TTreeNode);
 begin
   TreeView1Click(nil);
@@ -200,6 +239,8 @@ begin
 end;
 
 procedure TIdeInspectForm.SetSelected(AComp: TComponent);
+var
+  TypeInfo: PTypeData;
 begin
   FSelected := AComp;
   FPropertiesGrid.TIObject := FSelected;
@@ -207,6 +248,18 @@ begin
   btnControls.Enabled := (FSelected <> nil) and
                          (FSelected is TWinControl) and (TWinControl(FSelected).ControlCount > 0);
   UpdateTree;
+
+  if FSelected <> nil then begin
+    TypeInfo := GetTypeData(PTypeInfo(FSelected.ClassType.ClassInfo));
+    if (TypeInfo <> nil) then begin
+      Caption := Format(ideinspInspectingNameClassUnit, [FSelected.Name, FSelected.ClassName,
+        TypeInfo ^ .UnitName]);
+    end
+    else
+      Caption := Format(ideinspInspectingNameClass, [FSelected.Name, FSelected.ClassName]);
+  end
+  else
+    Caption := ideinspIdeInspector
 end;
 
 procedure TIdeInspectForm.UpdateTree;
@@ -269,8 +322,30 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
+procedure TIdeInspectForm.DoActiveFormChanged(Sender: TObject; Form: TCustomForm);
+begin
+  If not ToolButtonFollowActive.Down then
+    exit;
+
+  if Form <> Self then
+    SetSelected(Form);
+end;
+
+procedure TIdeInspectForm.DoActiveControChanged(Sender: TObject; LastControl: TControl);
+begin
+  If (not ToolButtonFollowActive.Down) or (not FFollowFrames) then
+    exit;
+  if Screen.ActiveForm = Self then
+    exit;
+
+  if (Screen.ActiveControl <> nil) and (Screen.ActiveControl.Owner <> nil) then
+    SetSelected(Screen.ActiveControl.Owner);
+end;
+
 constructor TIdeInspectForm.Create(TheOwner: TComponent);
 begin
+  Screen.AddHandlerActiveFormChanged(@DoActiveFormChanged);
+  Screen.AddHandlerActiveControlChanged(@DoActiveControChanged);
   inherited Create(TheOwner);
   FPropertiesGrid := TCustomPropertiesGrid.Create(Self);
   with FPropertiesGrid do
@@ -285,11 +360,16 @@ begin
   btnControls.Caption := ideinspControlsChildren;
   btnRemoveSelected.Hint := ideinspRemoveSelectedItemSFromTree;
 
+  FFollowFrames := False;
+  ToolButtonActiveType.Caption := menuFollowForm.Caption;
+
   SetSelected(Application);
 end;
 
 destructor TIdeInspectForm.Destroy;
 begin
+  Screen.RemoveHandlerActiveControlChanged(@DoActiveControChanged);
+  Screen.RemoveHandlerActiveFormChanged(@DoActiveFormChanged);
   FreeAndNil(TreeView1);
   inherited Destroy;
 end;
