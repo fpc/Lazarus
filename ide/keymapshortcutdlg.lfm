@@ -5,6 +5,7 @@ object ShortCutDialog: TShortCutDialog
   Width = 545
   ActiveControl = BtnPanel
   AutoSize = True
+  BorderStyle = bsDialog
   Caption = 'ShortCutDialog'
   ClientHeight = 260
   ClientWidth = 545

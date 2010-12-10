@@ -4,6 +4,7 @@ object ChooseKeySchemeDlg: TChooseKeySchemeDlg
   Top = 307
   Width = 433
   ActiveControl = SchemeRadiogroup.RadioButton0
+  BorderStyle = bsDialog
   Caption = 'ChooseKeySchemeDlg'
   ClientHeight = 233
   ClientWidth = 433
