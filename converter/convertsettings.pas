@@ -493,7 +493,7 @@ begin
   fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
     with fSettingsForm do begin
-      Caption:=fTitle;
+      Caption:=fTitle + ' - ' + ExtractFileName(fMainFilename);
       ProjectPathEdit.Text:=fMainPath;
       // Settings --> UI. Loaded from ConfigSettings earlier.
       BackupCheckBox.Checked          :=fBackupFiles;
