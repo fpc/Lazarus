@@ -1,7 +1,7 @@
 object IdeInspectForm: TIdeInspectForm
-  Left = 2033
+  Left = 2070
   Height = 479
-  Top = 182
+  Top = 157
   Width = 498
   Caption = 'IdeInspectForm'
   ClientHeight = 479
@@ -90,7 +90,7 @@ object IdeInspectForm: TIdeInspectForm
   end
   object TreeView1: TTreeView
     Left = 0
-    Height = 453
+    Height = 364
     Top = 26
     Width = 217
     Align = alLeft
@@ -105,9 +105,92 @@ object IdeInspectForm: TIdeInspectForm
   end
   object Splitter1: TSplitter
     Left = 217
-    Height = 453
+    Height = 364
     Top = 26
     Width = 5
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 89
+    Top = 390
+    Width = 498
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 89
+    ClientWidth = 498
+    TabOrder = 3
+    object ComboHistory: TComboBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 23
+      Top = 5
+      Width = 488
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      ItemHeight = 15
+      OnChange = ComboHistoryChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object EditFile: TEdit
+      AnchorSideLeft.Control = ComboHistory
+      AnchorSideTop.Control = EditUnit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = btnOpenFile
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 5
+      Height = 23
+      Top = 61
+      Width = 454
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      BorderSpacing.Bottom = 5
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object EditUnit: TEdit
+      AnchorSideLeft.Control = ComboHistory
+      AnchorSideTop.Control = ComboHistory
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = btnOpenFile
+      Left = 5
+      Height = 23
+      Top = 33
+      Width = 454
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      ReadOnly = True
+      TabOrder = 2
+    end
+    object btnOpenFile: TSpeedButton
+      AnchorSideTop.Control = EditFile
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 464
+      Height = 22
+      Hint = 'Open File'
+      Top = 61
+      Width = 29
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = '...'
+      NumGlyphs = 0
+      OnClick = btnOpenFileClick
+      ShowHint = True
+      ParentShowHint = False
+    end
   end
   object popComponent: TPopupMenu
     OnPopup = popComponentPopup
