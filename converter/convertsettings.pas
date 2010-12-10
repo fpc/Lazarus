@@ -372,12 +372,16 @@ begin
   TheMap:=fReplaceUnits;
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
-  MapReplacement('Variants',            '');
   MapReplacement('ShellApi',            '');
   MapReplacement('pngImage',            '');
   MapReplacement('Jpeg',                '');
   MapReplacement('gifimage',            '');
-  MapReplacement('^Q(.+)',              '$1');           // Kylix unit names.
+  MapReplacement('WinTypes',            '');
+  MapReplacement('WinProcs',            '');
+  MapReplacement('^FastMM.*',           '');           // External memory manager.
+  MapReplacement('MMSystem',            '');
+  MapReplacement('.*dll.*',             '');
+  MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
   // Tnt* third party components.
   MapReplacement('TntLXStringGrids',    'Grids');
   MapReplacement('TntLXCombos',         '');

@@ -235,8 +235,8 @@ begin
     try
       for i:=0 to fMapNames.Count-1 do begin
         Key:=fMapNames[i];       // fMapNames has names extracted from fStringMap.
-        // If key contains '(' assume it is a regexp.
-        if Pos('(', Key)>0 then begin
+        // If key contains special chars, assume it is a regexp.
+        if (Pos('(',Key)>0) or (Pos('*',Key)>0) or (Pos('+',Key)>0) then begin
           RE.Expression:=Key;
           if RE.Exec(AIdent) then begin  // Match with regexp.
             AReplacement:=RE.Substitute(fStringMap[Key]);
