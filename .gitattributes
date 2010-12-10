@@ -2441,6 +2441,7 @@ converter/replacefuncsunit.lfm svneol=native#text/plain
 converter/replacefuncsunit.pas svneol=native#text/plain
 converter/replacenamesunit.lfm svneol=native#text/plain
 converter/replacenamesunit.pas svneol=native#text/plain
+converter/usedunits.pas svneol=native#text/pascal
 debian/README.Debian svneol=native#text/plain
 debian/README.source svneol=native#text/plain
 debian/changelog svneol=native#text/plain
