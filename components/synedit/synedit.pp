@@ -6953,8 +6953,9 @@ begin
   GutterChanged(Sender);
   fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
   if HandleAllocated then begin
-    FCharsInWindow := Max(1, (ClientWidth - TextLeftPixelOffset - TextRightPixelOffset
-                        - GutterTextDist - ScrollBarWidth) div fCharWidth);
+    FCharsInWindow := Max(1, (ClientWidth
+                              - TextLeftPixelOffset - TextRightPixelOffset
+                              - ScrollBarWidth) div fCharWidth);
     //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
     UpdateScrollBars;
     Invalidate;
