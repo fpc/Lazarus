@@ -21,7 +21,7 @@
   Author: Juha Manninen
 
   Abstract:
-    Methods that use and extend features of codetools. Needed by Delphi converter.
+    Methods that use and extend codetools features. Needed by Delphi converter.
     Some of these methods could be made part of codetools.
 }
 unit ConvCodeTool;
@@ -39,158 +39,111 @@ uses
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeAtom, AVL_Tree,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, LFMTrees,
-  CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
-  //defined in StdCodeTools
-  //TUsesSection=(usMain, usImplementation);
+  { TCodeToolLink }
+
+  TCodeToolLink = class
+  private
+  protected
+    fCodeTool: TCodeTool;
+    fCode: TCodeBuffer;
+    fSrcCache: TSourceChangeCache;
+    fIsConsoleApp: Boolean;
+    fAsk: Boolean;
+    fSettings: TConvertSettings;          // Conversion settings.
+    procedure InitCodeTool;
+    function HandleCodetoolError: TModalResult;
+  public
+    constructor Create(ACode: TCodeBuffer);
+    destructor Destroy; override;
+    procedure ResetMainScanner;
+  public
+    property CodeTool: TCodeTool read fCodeTool;
+    property Code: TCodeBuffer read fCode;
+    property SrcCache: TSourceChangeCache read fSrcCache;
+    property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
+    property Ask: Boolean read fAsk write fAsk;
+    property Settings: TConvertSettings read fSettings write fSettings;
+  end;
 
   { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class
   private
-    fCodeTool: TCodeTool;
-    fCode: TCodeBuffer;
-    fSrcCache: TSourceChangeCache;
-    fAsk: Boolean;
+    fCTLink: TCodeToolLink;
     fHasFormFile: boolean;
     fLowerCaseRes: boolean;
     fDfmDirectiveStart: integer;
     fDfmDirectiveEnd: integer;
-    fExistingUsesMain: TStringList;
-    fExistingUsesImplementation: TStringList;
-    // List of Delphi only units
-    fDelphiOnlyMainUnits: TStringList;
-    fDelphiOnlyImplementationUnits: TStringList;
-    // List of LCL only units
-    fLCLOnlyMainUnits: TStringList;
-    fLCLOnlyImplementationUnits: TStringList;
-    // List of common units
-    fCommonMainUnits: TStringList;
-    fCommonImplementationUnits: TStringList;
-    // List of units to remove.
-    //fUnitsToRemove: TStringList;
-    fMainUnitsToRemove: TStringList;
-    fImplementationUnitsToRemove: TStringList;
-    // Units to rename. Map of unit name -> real unit name.
-    //fUnitsToRename: TStringToStringTree;
-    fMainUnitsToRename: TStringToStringTree;
-    fImplementationUnitsToRename: TStringToStringTree;
-    // List of units to be commented.
-    //fUnitsToComment: TStringList;
-    fMainUnitsToComment: TStringList;
-    fImplementationUnitsToComment: TStringList;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
     // List of TFuncReplacement.
     fFuncsToReplace: TObjectList;
-    fSettings: TConvertSettings;          // Conversion settings.
 
     function AddModeDelphiDirective: boolean;
-    procedure ConvAddDelphiAndLCLUnitsToUsesSection(AUsesSection: TUsesSection;
-      DelphiOnlyUnits, LCLOnlyUnits: TStringList);
     function RenameResourceDirectives: boolean;
-    function CommentOutUnits: boolean;
     function ReplaceFuncsInSource: boolean;
     function RememberProcDefinition(aNode: TCodeTreeNode): TCodeTreeNode;
     function ReplaceFuncCalls(aIsConsoleApp: boolean): boolean;
-    function HandleCodetoolError: TModalResult;
   public
-    constructor Create(Code: TCodeBuffer);
+    constructor Create(ACTLink: TCodeToolLink);
     destructor Destroy; override;
-    function Convert(aIsConsoleApp: boolean): TModalResult;
+    function Convert: TModalResult;
     function FindApptypeConsole: boolean;
-    function AddUnits(AMainUnitsToAdd, AImplementationUnitsToAdd: TStrings): boolean;
-    function RemoveUnits(AUnitsToRemove: TStrings): boolean;
-    function RenameUnits(AUnitsToRename: TStringToStringTree): boolean;
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
     function CheckTopOffsets(LFMBuf: TCodeBuffer; LFMTree: TLFMTree;
                VisOffsets: TVisualOffsets; ValueNodes: TObjectList): boolean;
-    function AddDelphiAndLCLSections: boolean;//should be private
-    procedure CommentUsesSection(AUsesSection: TUsesSection);//should be private
-    procedure UnCommentUsesSection(AUsesSection: TUsesSection);//should be private
-    function AddLCLUnitsToUsesSections(LCLMainUnits,
-      LCLImplementationUnits: TStringList): boolean;//should be private
   public
-    property ExistingUsesMain: TStringList read fExistingUsesMain;
-    property ExistingUsesImplementation: TStringList read fExistingUsesImplementation;
-    property Ask: Boolean read fAsk write fAsk;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
-    property DelphiOnlyMainUnits: TStringList read fDelphiOnlyMainUnits write fDelphiOnlyMainUnits;
-    property DelphiOnlyImplementationUnits: TStringList read fDelphiOnlyImplementationUnits write fDelphiOnlyImplementationUnits;
-    property LCLOnlyMainUnits: TStringList read fLCLOnlyMainUnits write fLCLOnlyMainUnits;
-    property LCLOnlyImplementationUnits: TStringList read fLCLOnlyImplementationUnits write fLCLOnlyImplementationUnits;
-    property CommonMainUnits: TStringList read fCommonMainUnits write fCommonMainUnits;
-    property CommonImplementationUnits: TStringList read fCommonImplementationUnits write fCommonImplementationUnits;
-
-    property MainUnitsToRemove: TStringList read fMainUnitsToRemove write fMainUnitsToRemove;
-    property ImplementationUnitsToRemove: TStringList read fImplementationUnitsToRemove write fImplementationUnitsToRemove;
-    property MainUnitsToRename: TStringToStringTree read fMainUnitsToRename write fMainUnitsToRename;
-    property ImplementationUnitsToRename: TStringToStringTree read fImplementationUnitsToRename write fImplementationUnitsToRename;
-    property MainUnitsToComment: TStringList read fMainUnitsToComment write fMainUnitsToComment;
-    property ImplementationUnitsToComment: TStringList read fImplementationUnitsToComment write fImplementationUnitsToComment;
-    property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
 
 implementation
 
-{ TConvDelphiCodeTool }
+{ TCodeToolLink }
 
-constructor TConvDelphiCodeTool.Create(Code: TCodeBuffer);
-var
-  UsesNode: TCodeTreeNode;
+constructor TCodeToolLink.Create(ACode: TCodeBuffer);
 begin
-  fCode:=Code;
-  // Default values for vars.
-  fAsk:=true;
-  fLowerCaseRes:=false;
-  fMainUnitsToRemove:=nil;            // These are set from outside.
-  fImplementationUnitsToRemove:=nil;
-  fMainUnitsToComment:=nil;
-  fImplementationUnitsToComment:=nil;
-  fMainUnitsToRename:=nil;
-  fImplementationUnitsToRename:=nil;
-  fExistingUsesMain:=TStringList.Create;
-  fExistingUsesMain.CaseSensitive:=false;
-  fExistingUsesImplementation:=TStringList.Create;
-  fExistingUsesImplementation.CaseSensitive:=false;
+  inherited Create;
+  fCode:=ACode;
+  fIsConsoleApp:=False;
+  fAsk:=True;
+  InitCodeTool;
+end;
+
+destructor TCodeToolLink.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCodeToolLink.InitCodeTool;
+begin
   // Initialize codetools. (Copied from TCodeToolManager.)
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
   try
     fCodeTool:=CodeToolBoss.CurCodeTool;
     fSrcCache:=CodeToolBoss.SourceChangeCache;
-    fSrcCache.MainScanner:=fCodeTool.Scanner;
-    // Get existing unit names from uses sections
-    fCodeTool.BuildTree(False);
-    UsesNode:=fCodeTool.FindMainUsesSection;
-    if UsesNode<>Nil then
-      fExistingUsesMain:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
-    fExistingUsesMain.Sorted:=True;
-    UsesNode:=fCodeTool.FindImplementationUsesSection;
-    if UsesNode<>Nil then
-      fExistingUsesImplementation:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
-    fExistingUsesImplementation.Sorted:=True;
+    ResetMainScanner;
   except
     on e: Exception do
       CodeToolBoss.HandleException(e);
   end;
 end;
 
-destructor TConvDelphiCodeTool.Destroy;
+procedure TCodeToolLink.ResetMainScanner;
 begin
-  fExistingUsesImplementation.Free;
-  fExistingUsesMain.Free;
-  inherited Destroy;
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
 end;
 
-function TConvDelphiCodeTool.HandleCodetoolError: TModalResult;
+function TCodeToolLink.HandleCodetoolError: TModalResult;
 // returns mrOk or mrAbort
 const
   CodetoolsFoundError='The codetools found an error in unit %s:%s%s%s';
@@ -209,46 +162,45 @@ begin
   end;
 end;
 
-function TConvDelphiCodeTool.Convert(aIsConsoleApp: boolean): TModalResult;
+{ TConvDelphiCodeTool }
+
+constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
+begin
+  inherited Create;
+  fCTLink:=ACTLink;
+  fLowerCaseRes:=false;
+end;
+
+destructor TConvDelphiCodeTool.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TConvDelphiCodeTool.Convert: TModalResult;
 // add {$mode delphi} directive
 // remove {$R *.dfm} or {$R *.xfm} directive
 // Change {$R *.RES} to {$R *.res} if needed
-// Add, remove, rename and comment out used unit names.
 // TODO: fix delphi ambiguouties like incomplete proc implementation headers
 begin
   Result:=mrCancel;
   try
-    fSrcCache.BeginUpdate;
+    fCTLink.SrcCache.BeginUpdate;
     try
       // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
       if not RenameResourceDirectives then exit;
-      if fSettings.FuncReplaceMode=rsEnabled then
-        if not ReplaceFuncCalls(aIsConsoleApp) then exit;
-      if not fSrcCache.Apply then exit;
+      if fCTLink.Settings.FuncReplaceMode=rsEnabled then
+        if not ReplaceFuncCalls(fCTLink.IsConsoleApp) then exit;
+//      if not fSrcCache.Apply then exit;
     finally
-      fSrcCache.EndUpdate;
+      fCTLink.SrcCache.EndUpdate;
     end;
-    if fSettings.Target=ctLazarus then begin
-      // One way conversion -> remove and rename units.
-      if not RemoveUnits(fMainUnitsToRemove) then exit;
-      if not RemoveUnits(fImplementationUnitsToRemove) then exit;
-      if not RenameUnits(fMainUnitsToRename) then exit;
-      if not RenameUnits(fImplementationUnitsToRename) then exit;
-    end;
-    if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
-      // Support Delphi. Add IFDEF blocks for units.
-      if not AddDelphiAndLCLSections then exit;
-    end
-    else  // [ctLazarus, ctLazarusWin] -> comment out units if needed.
-      if not CommentOutUnits then exit;
-    if not fCodeTool.FixUsedUnitCase(fSrcCache) then exit;
-    if not fSrcCache.Apply then exit;
+//    if not fCTLink.SrcCache.Apply then exit;
     Result:=mrOK;
   except
     on e: Exception do begin
       CodeToolBoss.HandleException(e);
-      Result:=HandleCodetoolError;
+      Result:=fCTLink.HandleCodetoolError;
     end;
   end;
 end;
@@ -260,7 +212,7 @@ var
 begin
   Result:=false;
   ACleanPos:=0;
-  with fCodeTool do begin
+  with fCTLink.CodeTool do begin
     BuildTree(true);
     ACleanPos:=FindNextCompilerDirectiveWithName(Src, 1, 'Apptype',
                                                  Scanner.NestedComments, ParamPos);
@@ -269,256 +221,14 @@ begin
   end;
 end;
 
-procedure TConvDelphiCodeTool.CommentUsesSection(AUsesSection: TUsesSection);
-var
-  AUsesNode: TCodeTreeNode;
-  InsPos1, InsPos2: Integer;
-begin
-  fSrcCache.MainScanner:=fCodeTool.Scanner;
-  fCodeTool.BuildTree(AUsesSection=usMain);
-  case AUsesSection Of
-    usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
-    usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
-  end;
-  if AUsesNode=nil then
-    exit;
-  InsPos1:=AUsesNode.StartPos;
-  fCodeTool.MoveCursorToUsesEnd(AUsesNode);
-  InsPos2:=fCodeTool.CurPos.EndPos;
-  //fSrcCache.ReplaceEx();
-  fCodeTool.CommentCode(InsPos1, InsPos2, fSrcCache, true);
-end;
-
-procedure TConvDelphiCodeTool.UnCommentUsesSection(AUsesSection: TUsesSection);
-var
-  AUsesNode: TCodeTreeNode;
-begin
-  fSrcCache.MainScanner:=fCodeTool.Scanner;
-  fCodeTool.BuildTree(AUsesSection=usMain);
-  case AUsesSection Of
-    usMain: AUsesNode:=fCodeTool.FindInterfaceNode;
-    usImplementation: AUsesNode:=fCodeTool.FindImplementationNode;
-  end;
-  if AUsesNode=nil then
-    exit;
-  case AUsesSection Of
-    usMain: fCodeTool.AddUnitToMainUsesSection('windows', '', fSrcCache, false);
-    usImplementation: ;//fCodeTool.AddUnitToImplementationUsesSection('consts', '', fSrcCache, false);
-  end;
-
-  fSrcCache.Apply;
-  fCodeTool.MoveCursorToNodeStart(AUsesNode);
-  //while not fCodeTool.AtomIs('end') do begin
-  //  fCodeTool.ReadNextAtom;
-  //end;
-  //
-  //InsPos1:=AUsesNode.StartPos;
-  //fCodeTool.MoveCursorToUsesEnd(AUsesNode);
-  //InsPos2:=fCodeTool.CurPos.EndPos;
-  //fCodeTool.CommentCode(InsPos1, InsPos2, fSrcCache, true);
-end;
-
-procedure TConvDelphiCodeTool.ConvAddDelphiAndLCLUnitsToUsesSection(
-  AUsesSection: TUsesSection; DelphiOnlyUnits, LCLOnlyUnits: TStringList);
-var
-  AUsesNode: TCodeTreeNode;
-  i: Integer;
-  InsPos: Integer;
-  nl: string;
-  s: string;
-  DelphiOnlyUnitsStr, LclOnlyUnitsStr: string;
-begin
-  if (LclOnlyUnits.Count=0) and (DelphiOnlyUnits.Count=0) then
-    exit;
-  DelphiOnlyUnitsStr:='';
-  for i:=0 to DelphiOnlyUnits.Count-1 do begin
-    if i<DelphiOnlyUnits.Count-1 then
-      DelphiOnlyUnitsStr:=DelphiOnlyUnitsStr+DelphiOnlyUnits[i]+', '
-    else
-      DelphiOnlyUnitsStr:=DelphiOnlyUnitsStr+DelphiOnlyUnits[i];
-  end;
-  LclOnlyUnitsStr:='';
-  for i:=0 to LclOnlyUnits.Count-1 do begin
-    if i<LclOnlyUnits.Count-1 then
-      LclOnlyUnitsStr:=LclOnlyUnitsStr+LCLOnlyUnits[i]+', '
-    else
-      LclOnlyUnitsStr:=LclOnlyUnitsStr+LCLOnlyUnits[i];
-  end;
-  fSrcCache.MainScanner:=fCodeTool.Scanner;
-  fCodeTool.BuildTree(AUsesSection=usMain);
-  case AUsesSection Of
-    usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
-    usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
-  end;
-  nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-  if AUsesNode<>nil then begin
-    //uses section exists
-    s:='{$IFNDEF FPC}'+nl;
-    if DelphiOnlyUnits.Count>=1 then
-      s:=s+'  '+DelphiOnlyUnitsStr+','+nl;
-    s:=s+'{$ELSE}'+nl;
-    if LclOnlyUnits.Count>=1 then
-      s:=s+' '+LclOnlyUnitsStr+','+nl;
-    s:=s+'{$ENDIF}'+nl;
-    s:=s+'  ';
-    //TODO: check for special units
-    fCodeTool.MoveCursorToUsesStart(AUsesNode);
-    InsPos:=fCodeTool.CurPos.StartPos;
-  end
-  else begin
-    //uses section does not exist
-    s:=nl;
-    s:=s+'{$IFNDEF FPC}'+nl;
-    if DelphiOnlyUnits.Count>=1 then begin
-      s:=s+'uses'+nl;
-      s:=s+'  '+DelphiOnlyUnitsStr+';'+nl;
-    end;
-    s:=s+'{$ELSE}'+nl;
-    if LclOnlyUnits.Count>=1 then begin
-      s:=s+'uses'+nl;
-      s:=s+'  '+LclOnlyUnitsStr+';'+nl;
-    end;
-    s:=s+'{$ENDIF}';
-    case AUsesSection Of
-      usMain: AUsesNode:=fCodeTool.FindInterfaceNode;
-      usImplementation: AUsesNode:=fCodeTool.FindImplementationNode;
-    end;
-    // set insert position behind interface or implementation keyword
-    // TODO: what about program?
-    fCodeTool.MoveCursorToNodeStart(AUsesNode);
-    fCodeTool.ReadNextAtom;
-    InsPos:=fCodeTool.FindLineEndOrCodeAfterPosition(fCodeTool.CurPos.EndPos,false);
-  end;
-  // Now add the generated lines.
-  if not fSrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
-end;
-
-function TConvDelphiCodeTool.AddLCLUnitsToUsesSections(LCLMainUnits, LCLImplementationUnits: TStringList): boolean;
-var
-  AUsesNode: TCodeTreeNode;
-  s: string;
-  InsPos, i: integer;
-begin
-  Result:=true;
-  if Assigned(LCLMainUnits) and (LCLMainUnits.Count>=1) then begin
-    s:='uses '+LCLMainUnits[0];
-    for i:=1 to LCLMainUnits.Count-1 do
-      s:=s+', '+LCLMainUnits[i];
-    s:=s+';';
-    fSrcCache.MainScanner:=fCodeTool.Scanner;
-    fCodeTool.BuildTree(true);
-    AUsesNode:=fCodeTool.FindInterfaceNode;
-    if Assigned(AUsesNode) then begin
-      InsPos:=AUsesNode.EndPos;
-      Result:=fSrcCache.Replace(gtNone,gtNone,InsPos,InsPos,s);
-    end
-    else
-      ShowMessage('Debug AddLCLUnitsToUsesSections: No InterfaceNode in this file! (will be fixed soon)');
-  end;
-  if not Result then
-    exit;
-  if Assigned(LCLImplementationUnits) and (LCLImplementationUnits.Count>=1) then begin
-    s:='uses '+LCLImplementationUnits[0];
-    for i:=1 to LCLImplementationUnits.Count-1 do
-      s:=s+', '+LCLImplementationUnits[i];
-    s:=s+';';
-    fSrcCache.MainScanner:=fCodeTool.Scanner;
-    fCodeTool.BuildTree(false);
-    AUsesNode:=fCodeTool.FindImplementationNode;
-    if Assigned(AUsesNode) then begin
-      InsPos:=AUsesNode.EndPos;
-      Result:=fSrcCache.Replace(gtNone,gtNone,InsPos,InsPos,s);
-    end
-    else
-      ShowMessage('Debug AddLCLUnitsToUsesSections: No ImplementationNode in this file!');
-  end;
-  if not Result then
-    exit;
-end;
-
-function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
-// Add unit names into conditional blocks for Delphi and Lazarus targets. If the name
-// would otherwise be deleted or commented out, now it is added to Delphi block.
-var
-  DelphiOnlyUnits: TStringList;  // Delphi specific units.
-  LclOnlyUnits: TStringList;     // LCL specific units.
-
-  procedure ConvUsesUnits(AUsesSection: TUsesSection; AUsesUnits, AUnitsToRemove, AUnitsToComment: TStringList; AUnitsToRename: TStringToStringTree);
-  var
-    i, ind: Integer;
-    s: string;
-    RenameList: TStringList;
-    AUsesNode: TCodeTreeNode;
-  begin
-    DelphiOnlyUnits.Clear;
-    LCLOnlyUnits.Clear;
-    fSrcCache.MainScanner:=fCodeTool.Scanner;
-    fCodeTool.BuildTree(AUsesSection=usMain);
-    case AUsesSection Of
-      usMain: AUsesNode:=fCodeTool.FindMainUsesSection;
-      usImplementation: AUsesNode:=fCodeTool.FindImplementationUsesSection;
-    end;
-    if AUsesNode=nil then
-      exit;
-    // Don't remove the unit names but add to Delphi block instead.
-    for i:=0 to AUnitsToRemove.Count-1 do begin
-      s:=AUnitsToRemove[i];
-      if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then
-        fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
-        DelphiOnlyUnits.Append(s);
-      end;
-    end;
-    // ... and don't comment the unit names either.
-    for i:=0 to AUnitsToComment.Count-1 do begin
-      s:=AUnitsToComment[i];
-      if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then
-        fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
-        DelphiOnlyUnits.Append(s);
-      end;
-    end;
-    RenameList:=TStringList.Create;
-    try
-      // Add replacement units to LCL block.
-      AUnitsToRename.GetNames(RenameList);
-      for i:=0 to RenameList.Count-1 do begin
-        s:=RenameList[i];
-        if AUsesUnits.Find(s, ind) then begin // if RemoveUsesUnit(AUsesNode, s) then begin
-          fCodeTool.RemoveUnitFromUsesSection(AUsesNode, UpperCaseStr(s), fSrcCache);
-          DelphiOnlyUnits.Append(s);
-          LCLOnlyUnits.Append(AUnitsToRename[s]);
-        end;
-      end;
-    finally
-      RenameList.Free;
-    end;
-    // Add LCL and Delphi sections for output.
-    ConvAddDelphiAndLCLUnitsToUsesSection(AUsesSection, DelphiOnlyUnits, LclOnlyUnits);
-  end;
-
-begin
-  Result:=false;
-  DelphiOnlyUnits:=TStringList.Create;
-  LclOnlyUnits:=TStringList.Create;
-  try
-    // Main uses section
-    ConvUsesUnits(usMain, fExistingUsesMain, fMainUnitsToRemove, fMainUnitsToComment, fMainUnitsToRename);
-    // Implementation uses section
-    ConvUsesUnits(usImplementation, fExistingUsesImplementation, fImplementationUnitsToRemove, fImplementationUnitsToComment, fImplementationUnitsToRename);
-    Result:=true;
-  finally
-    LclOnlyUnits.Free;
-    DelphiOnlyUnits.Free;
-  end;
-end;
-
 function TConvDelphiCodeTool.AddModeDelphiDirective: boolean;
 var
   ModeDirectivePos: integer;
   InsertPos: Integer;
-  s, nl: String;
+  s: String;
 begin
   Result:=false;
-  with fCodeTool do begin
+  with fCTLink.CodeTool do begin
     BuildTree(true);
     if not FindModeDirective(false,ModeDirectivePos) then begin
       // add {$MODE Delphi} behind source type
@@ -528,12 +238,11 @@ begin
       ReadNextAtom; // name
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
-      nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-      if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
-        s:='{$IFDEF FPC}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
+      if fCTLink.Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
+        s:='{$IFDEF FPC}'+LineEnding+'  {$MODE Delphi}'+LineEnding+'{$ENDIF}'
       else
         s:='{$MODE Delphi}';
-      fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
+      fCTLink.SrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
     end;
     // changing mode requires rescan
     BuildTree(false);
@@ -545,10 +254,9 @@ function TConvDelphiCodeTool.RenameResourceDirectives: boolean;
 // rename {$R *.dfm} directive to {$R *.lfm}, or lowercase it.
 // lowercase {$R *.RES} to {$R *.res}
 var
-  ParamPos: Integer;
-  ACleanPos: Integer;
+  ParamPos, ACleanPos: Integer;
   Key, LowKey, NewKey: String;
-  s, nl: string;
+  s: string;
   AlreadyIsLfm: Boolean;
 begin
   Result:=false;
@@ -557,24 +265,22 @@ begin
   fDfmDirectiveEnd:=-1;
   ACleanPos:=1;
   // find $R directive
-  with fCodeTool do
+  with fCTLink.CodeTool do
     repeat
       ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
                                                    Scanner.NestedComments, ParamPos);
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
       NewKey:='';
       if (Src[ACleanPos]='{') and
-         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and
-         (Src[ParamPos+5]='}')
+         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
       then begin
         Key:=copy(Src,ParamPos+2,3);
         LowKey:=LowerCase(Key);
-
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
+          if fCTLink.Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
             // Use the same dfm file. Lowercase existing key.
-            if (fSettings.Target=ctLazarusDelphiSameDfm) and (Key<>LowKey) then
+            if (fCTLink.Settings.Target=ctLazarusDelphiSameDfm) and (Key<>LowKey) then
               NewKey:=LowKey;
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
@@ -583,92 +289,29 @@ begin
           else       // Change .dfm to .lfm.
             NewKey:='lfm';
         end
-
         // If there already is .lfm, prevent adding IFDEF for .dfm / .lfm.
-        else if LowKey='lfm' then begin
-          AlreadyIsLfm:=true;
-        end
-
+        else if LowKey='lfm' then
+          AlreadyIsLfm:=true
         // lowercase {$R *.RES} to {$R *.res}
         else if (Key='RES') and fLowerCaseRes then
           NewKey:=LowKey;
-
         // Now change code.
         if NewKey<>'' then
-          if not fSrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
+          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
       end;
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if (fSettings.Target=ctLazarusDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
-  begin
+  if (fCTLink.Settings.Target=ctLazarusDelphi) and (fDfmDirectiveStart<>-1)
+  and not AlreadyIsLfm then begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
-    nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-    s:='{$IFNDEF FPC}'+nl+
-       '  {$R *.dfm}'+nl+
-       '{$ELSE}'+nl+
-       '  {$R *.lfm}'+nl+
+    s:='{$IFNDEF FPC}'+LineEnding+
+       '  {$R *.dfm}'+LineEnding+
+       '{$ELSE}'+LineEnding+
+       '  {$R *.lfm}'+LineEnding+
        '{$ENDIF}';
-    Result:=fSrcCache.Replace(gtNone,gtNone,fDfmDirectiveStart,fDfmDirectiveEnd,s);
+    Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,fDfmDirectiveStart,fDfmDirectiveEnd,s);
   end;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.AddUnits(AMainUnitsToAdd, AImplementationUnitsToAdd: TStrings): boolean;
-var
-  i: Integer;
-begin
-  Result:=false;
-  if AMainUnitsToAdd<>nil then;
-    for i:=0 to AMainUnitsToAdd.Count-1 do
-      if not fCodeTool.AddUnitToSpecificUsesSection(usMain, AMainUnitsToAdd[i], '', fSrcCache) then exit;
-  if AImplementationUnitsToAdd<>nil then;
-    for i:=0 to AImplementationUnitsToAdd.Count-1 do
-      if not fCodeTool.AddUnitToSpecificUsesSection(usImplementation, AImplementationUnitsToAdd[i], '', fSrcCache) then exit;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.RemoveUnits(AUnitsToRemove: TStrings): boolean;
-// Remove units
-var
-  i: Integer;
-begin
-  Result:=false;
-  if Assigned(AUnitsToRemove) then begin
-    for i:=0 to AUnitsToRemove.Count-1 do begin
-      fSrcCache:=CodeToolBoss.SourceChangeCache;
-      fSrcCache.MainScanner:=fCodeTool.Scanner;
-      if not fCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AUnitsToRemove[i]),
-                                                     fSrcCache) then
-        exit;
-      if not fSrcCache.Apply then exit;
-    end;
-  end;
-  //AUnitsToRemove.Clear;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.RenameUnits(AUnitsToRename: TStringToStringTree): boolean;
-// Rename units
-begin
-  Result:=false;
-  if Assigned(AUnitsToRename) then
-    if not fCodeTool.ReplaceUsedUnits(AUnitsToRename, fSrcCache) then
-      exit;
-  AUnitsToRename.Clear;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.CommentOutUnits: boolean;
-// Comment out missing units
-begin
-  Result:=false;
-  if Assigned(fMainUnitsToComment) and (fMainUnitsToComment.Count>0) then
-    if not fCodeTool.CommentUnitsInUsesSections(fMainUnitsToComment, fSrcCache) then
-      exit;
-  if Assigned(fImplementationUnitsToComment) and (fImplementationUnitsToComment.Count>0) then
-    if not fCodeTool.CommentUnitsInUsesSections(fImplementationUnitsToComment, fSrcCache) then
-      exit;
   Result:=true;
 end;
 
@@ -681,7 +324,7 @@ var
   OldType, NewType: String;
 begin
   Result:=false;
-  with fCodeTool do begin
+  with fCTLink.CodeTool do begin
     BuildTree(true);
     // Find the class name that the main class inherits from.
     ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
@@ -700,10 +343,10 @@ begin
     try
       // Find replacement for ancestor type maybe using regexp syntax.
       if TypeUpdater.FindReplacement(OldType, NewType) then begin
-        fSrcCache.MainScanner:=Scanner;
-        if not fSrcCache.Replace(gtNone, gtNone,
-                      CurPos.StartPos, CurPos.EndPos, NewType) then exit;
-        if not fSrcCache.Apply then exit;
+        fCTLink.ResetMainScanner;
+        if not fCTLink.SrcCache.Replace(gtNone, gtNone,
+                               CurPos.StartPos, CurPos.EndPos, NewType) then exit;
+        if not fCTLink.SrcCache.Apply then exit;
       end;
     finally
       TypeUpdater.Free;
@@ -857,11 +500,11 @@ begin
         NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
           [NewFunc, NewParamStr, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
         // Old function call with params for IDE message output.
-        s:=copy(fCodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
+        s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
         s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
         // Now replace it.
-        fSrcCache.MainScanner:=fCodeTool.Scanner;
-        if not fSrcCache.Replace(gtNone, gtNone,
+        fCTLink.ResetMainScanner;
+        if not fCTLink.SrcCache.Replace(gtNone, gtNone,
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
         IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
         IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
@@ -879,7 +522,7 @@ function TConvDelphiCodeTool.RememberProcDefinition(aNode: TCodeTreeNode): TCode
 var
   ProcName: string;
 begin
-  with fCodeTool do begin
+  with fCTLink.CodeTool do begin
     MoveCursorToCleanPos(aNode.StartPos);
     ReadNextAtom;               // Read proc name.
     ProcName:=GetAtom;
@@ -899,7 +542,7 @@ var
 
   procedure CheckSemiColon(FuncInfo: TFuncReplacement);
   begin
-    with fCodeTool do
+    with fCTLink.CodeTool do
       if AtomIsChar(';') then begin
         FuncInfo.EndPos:=CurPos.EndPos;
         FuncInfo.InclSemiColon:=';';
@@ -912,7 +555,7 @@ var
   begin
     FuncInfo.InclSemiColon:='';
     FuncInfo.StartPos:=xStart;
-    with fCodeTool do begin
+    with fCTLink.CodeTool do begin
       MoveCursorToCleanPos(xStart);
       ReadNextAtom;                     // Read func name.
       ReadNextAtom;                     // Read first atom after proc name.
@@ -962,17 +605,17 @@ var
     i, x, IdentEndPos: Integer;
   begin
     IdentEndPos:=xStart;
-    with fCodeTool do begin
+    with fCTLink.CodeTool, fCTLink.Settings do begin
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
-      for i:=0 to fSettings.ReplaceFuncs.Funcs.Count-1 do begin
-        FuncName:=fSettings.ReplaceFuncs.Funcs[i];
+      for i:=0 to ReplaceFuncs.Funcs.Count-1 do begin
+        FuncName:=ReplaceFuncs.Funcs[i];
         if (IdentEndPos-xStart=length(FuncName))
         and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
-          FuncDefInfo:=fSettings.ReplaceFuncs.FuncAtInd(i);
-          if fSettings.ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
+          FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
+          if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
           then begin
             // Create a new replacement object for params, position and other info.
@@ -994,7 +637,7 @@ var
     InStrConst: Boolean;
   begin
     xStart:=aNode.StartPos;
-    with fCodeTool do
+    with fCTLink.CodeTool do
     while xStart<=aNode.EndPos do begin
       case Src[xStart] of
 
@@ -1085,7 +728,7 @@ var
   Node: TCodeTreeNode;
 begin
   Result:=false;
-  with fCodeTool do begin
+  with fCTLink.CodeTool do begin
     fFuncsToReplace:=TObjectList.Create;
     fDefinedProcNames:=TStringList.Create;
     fDefinedProcNames.Sorted:=True;
@@ -1094,7 +737,7 @@ begin
     try
       BuildTree(false);
       // Only convert identifiers in ctnBeginBlock nodes
-      Node:=fCodeTool.Tree.Root;
+      Node:=fCTLink.CodeTool.Tree.Root;
       while Node<>nil do begin
         if Node.Desc=ctnBeginBlock then
           Node:=SearchFuncCalls(Node)
@@ -1229,13 +872,13 @@ var
   begin
     Result:=CleanFindContext;
     Params:=TFindDeclarationParams.Create;
-    StartTool:=fCodeTool;
+    StartTool:=fCTLink.CodeTool;
     Identifier:=PChar(Pointer(ClassName));
     try
       Params.Flags:=[fdfExceptionOnNotFound, fdfSearchInParentNodes,
                      fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
                      fdfIgnoreOverloadedProcs];
-      with fCodeTool do begin
+      with fCTLink.CodeTool do begin
         Params.ContextNode:=FindInterfaceNode;
         if Params.ContextNode=nil then
           Params.ContextNode:=FindMainUsesSection;
@@ -1395,10 +1038,11 @@ var
     if LookupRootTypeName='' then exit;
 
     // find root type
-    RootClassNode:=fCodeTool.FindClassNodeInUnit(LookupRootTypeName,true,false,false,false);
+    RootClassNode:=fCTLink.CodeTool.FindClassNodeInUnit(LookupRootTypeName,
+                                                        true,false,false,false);
     RootContext:=CleanFindContext;
     RootContext.Node:=RootClassNode;
-    RootContext.Tool:=fCodeTool;
+    RootContext.Tool:=fCTLink.CodeTool;
     if RootClassNode=nil then exit;
     Result:=CheckLFMObjectValues(LookupRootLFMNode, RootContext, '');
   end;
@@ -1409,11 +1053,11 @@ begin
   Result:=false;
   // create tree from LFM file
   LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuf,true);
-  fCodeTool.ActivateGlobalWriteLock;
+  fCTLink.CodeTool.ActivateGlobalWriteLock;
   try
     if not LFMTree.ParseIfNeeded then exit;
     // parse unit and find LookupRoot
-    fCodeTool.BuildTree(true);
+    fCTLink.CodeTool.BuildTree(true);
     // find every identifier
     CurRootLFMNode:=LFMTree.Root;
     while CurRootLFMNode<>nil do begin
@@ -1421,7 +1065,7 @@ begin
       CurRootLFMNode:=CurRootLFMNode.NextSibling;
     end;
   finally
-    fCodeTool.DeactivateGlobalWriteLock;
+    fCTLink.CodeTool.DeactivateGlobalWriteLock;
   end;
   Result:=LFMTree.FirstError=nil;
 end;  // CheckTopOffsets

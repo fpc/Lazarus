@@ -67,6 +67,7 @@ type
 
   TLFMFixer = class(TLFMChecker)
   private
+    fCTLink: TCodeToolLink;
     fSettings: TConvertSettings;
     // List of property values which need to be adjusted.
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
@@ -82,7 +83,7 @@ type
     procedure LoadLFM;
     function ShowRepairLFMWizard: TModalResult; override;
   public
-    constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
+    constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer;
                        const AOnOutput: TOnAddFilteredLine);
     destructor Destroy; override;
     function Repair: TModalResult;
@@ -242,10 +243,11 @@ end;
 
 { TLFMFixer }
 
-constructor TLFMFixer.Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
+constructor TLFMFixer.Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer;
   const AOnOutput: TOnAddFilteredLine);
 begin
-  inherited Create(APascalBuffer, ALFMBuffer, AOnOutput);
+  inherited Create(ACTLink.Code, ALFMBuffer, AOnOutput);
+  fCTLink:=ACTLink;
   fHasMissingProperties:=false;
   fHasMissingObjectTypes:=false;
 end;
@@ -452,7 +454,7 @@ begin
   fLFMTree:=DefaultLFMTrees.GetLFMTree(fLFMBuffer, true);
   if not fLFMTree.ParseIfNeeded then exit;
   // Change a type that main form inherits from to a fall-back type if needed.
-  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+  ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
   ValueTreeNodes:=TObjectList.Create;
   try
     if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,

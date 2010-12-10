@@ -76,25 +76,47 @@ type
 var
   MissingUnitsDialog: TMissingUnitsDialog;
 
-function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string;
-                         ATargetDelphi: boolean): TModalResult;
+function AskMissingUnits(AMainMissingUnits, AImplMissingUnits: TStrings;
+                         AMainUnitName: string; ATargetDelphi: boolean): TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string;
-                         ATargetDelphi: boolean): TModalResult;
+function AskMissingUnits(AMainMissingUnits, AImplMissingUnits: TStrings;
+                         AMainUnitName: string; ATargetDelphi: boolean): TModalResult;
 var
   UNFDialog: TMissingUnitsDialog;
-  UnitsTitle: string;
+
+  procedure AddUnitsToListBox(AMissingUnits: TStrings);
+  var
+    i: Integer;
+  begin         // Add missing units to CheckListBox.
+    for i:=0 to AMissingUnits.Count-1 do begin
+      UNFDialog.MissingUnitsCheckListBox.Items.Append(AMissingUnits[i]);
+      UNFDialog.MissingUnitsCheckListBox.Checked[i]:=true;
+    end;
+  end;
+
+  function RemoveFromMissing(AUnit: string; AList: TStrings): Boolean;
+  var
+    i: Integer;
+  begin
+    i:=AList.IndexOf(AUnit);
+    Result:=i<>-1;
+    if Result then
+      AList.Delete(i);
+  end;
+
+var
+  UnitsTitle, s: string;
   i: Integer;
+  ImplRemoved: Boolean;
 begin
   Result:=mrCancel;
-
   // A title text containing filename.
-  if AMissingUnits.Count=1 then
+  if (AMainMissingUnits.Count + AImplMissingUnits.Count) = 1 then
     UnitsTitle:=lisUnitNotFound+' '+AMainUnitName
   else
     UnitsTitle:=lisUnitsNotFound2+' '+AMainUnitName;
@@ -116,17 +138,18 @@ begin
     Info2Label.Caption:=lisMissingUnitsInfo2;
     Info3Label.Caption:=lisMissingUnitsInfo3;
     // Add missing units to CheckListBox.
-    for i:=0 to AMissingUnits.Count-1 do begin
-      MissingUnitsCheckListBox.Items.Append(AMissingUnits[i]);
-      MissingUnitsCheckListBox.Checked[i]:=true;
-    end;
-    // Show dialog and get user action.
+    AddUnitsToListBox(AMainMissingUnits);
+    AddUnitsToListBox(AImplMissingUnits);
+    // Show dialog and delete the entries that user has unchecked.
     Result:=ShowModal;
     if Result=mrOK then begin
-      AMissingUnits.Clear;
       for i:=0 to MissingUnitsCheckListBox.Count-1 do begin
-        if MissingUnitsCheckListBox.Checked[i] then begin
-          AMissingUnits.Append(MissingUnitsCheckListBox.Items[i]);
+        if not MissingUnitsCheckListBox.Checked[i] then begin
+          s:=MissingUnitsCheckListBox.Items[i];
+          if not RemoveFromMissing(s, AMainMissingUnits) then begin
+            ImplRemoved:=RemoveFromMissing(s, AImplMissingUnits);
+            Assert(ImplRemoved, 'Error with Missing Units in AskMissingUnits.');
+          end;
         end;
       end;
     end;
