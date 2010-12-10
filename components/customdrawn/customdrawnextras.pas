@@ -1233,7 +1233,7 @@ begin
   if CDGroupBox.Parent = nil then
     ADest.Brush.FPColor := colLtGray
   else
-    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Color));
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Brush.Color));
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.Height);
