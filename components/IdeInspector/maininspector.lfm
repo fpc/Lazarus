@@ -3,6 +3,7 @@ object IdeInspectForm: TIdeInspectForm
   Height = 479
   Top = 157
   Width = 498
+  BorderStyle = bsSizeToolWin
   Caption = 'IdeInspectForm'
   ClientHeight = 479
   ClientWidth = 498
@@ -192,19 +193,35 @@ object IdeInspectForm: TIdeInspectForm
       ParentShowHint = False
     end
   end
+  object TabControl1: TTabControl
+    Left = 222
+    Height = 364
+    Top = 26
+    Width = 276
+    Align = alClient
+    OnChange = TabControl1Change
+    TabIndex = 0
+    TabOrder = 4
+    Tabs.Strings = (
+      'Properties'
+      'Events'
+      'All'
+    )
+    TabStop = False
+  end
   object popComponent: TPopupMenu
     OnPopup = popComponentPopup
-    left = 80
+    left = 16
     top = 40
   end
   object popSubComponent: TPopupMenu
     OnPopup = popSubComponentPopup
-    left = 192
+    left = 120
     top = 40
   end
   object ImageList1: TImageList
-    left = 290
-    top = 130
+    left = 48
+    top = 200
     Bitmap = {
       4C69020000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF006360
@@ -275,12 +292,12 @@ object IdeInspectForm: TIdeInspectForm
   end
   object popControls: TPopupMenu
     OnPopup = popControlsPopup
-    left = 326
-    top = 49
+    left = 136
+    top = 120
   end
   object popFollowType: TPopupMenu
-    left = 79
-    top = 129
+    left = 24
+    top = 112
     object menuFollowForm: TMenuItem
       Caption = 'Form'
       OnClick = menuFollowFormClick

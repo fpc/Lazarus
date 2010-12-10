@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  ComCtrls, Menus, StdCtrls, MenuIntf, ObjectInspector, types, LazIDEIntf;
+  ComCtrls, Menus, StdCtrls, MenuIntf, ObjectInspector, PropEdits, types, typinfo,
+  LazIDEIntf, LCLProc;
 
 type
 
@@ -40,6 +41,7 @@ type
     popFollowType: TPopupMenu;
     btnOpenFile: TSpeedButton;
     Splitter1: TSplitter;
+    TabControl1: TTabControl;
     ToolBar1: TToolBar;
     btnComponent: TToolButton;
     btnSubComponent: TToolButton;
@@ -63,6 +65,7 @@ type
     procedure popControlsPopup(Sender: TObject);
     procedure popSubComponentPopup(Sender: TObject);
     procedure btnRemoveSelectedClick(Sender: TObject);
+    procedure TabControl1Change(Sender: TObject);
     procedure ToolButtonActiveTypeClick(Sender: TObject);
     procedure ToolButtonFollowActiveClick(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
@@ -74,6 +77,7 @@ type
     FHistoryList: TList;
     FCurEntry: THistoryEntry;
     FIsUpdatingHistory: Boolean;
+    procedure DoPropSelChanged(Sender: TObject);
   protected
     FPropertiesGrid: TCustomPropertiesGrid;
     procedure SetSelected(AComp: TComponent);
@@ -111,6 +115,9 @@ implementation
 
 const
   MAX_HIST_CNT = 25;
+
+var
+  OriginalBackTraceStrFunc: TBackTraceStrFunc;
 
 type
 
@@ -176,6 +183,55 @@ begin
   if FCurEntry.Comp <> nil then
     SetSelected(FCurEntry.Comp);
   UpdateCurrent;
+end;
+
+procedure TIdeInspectForm.DoPropSelChanged(Sender: TObject);
+var
+  i: LongInt;
+  Row: TOIPropertyGridRow;
+  Method: TMethod;
+  s, s2, OName: string;
+begin
+  Row := FPropertiesGrid.GetActiveRow;
+  Method.Code := nil;;
+  if (Row <> nil) and (Row.Editor is TMethodPropertyEditor) then
+    Method := TMethodPropertyEditor(Row.Editor).GetMethodValue;
+
+  if Method.Code = nil then begin
+    SetSelected(FSelected);
+    exit;
+  end;
+
+  If TObject(Method.Data) is TComponent then
+    OName := '('+TComponent(Method.Data).Name+')'
+  else
+    OName := '';
+
+  s := TObject(Method.Data).MethodName(Method.Code);
+  if s = '' then
+    s := IntToHex(PtrUint(Method.Code), 2*SizeOf(Pointer));
+
+  s := TObject(Method.Data).ClassName + OName + '.' + s;
+
+  try
+    s2 := Trim(OriginalBackTraceStrFunc(Method.Code));
+    i := pos(' ', s2);
+    if (s2 <> '') and (s2[1] = '$') and (i > 0) then
+      s2 := copy(s2, i, length(s));
+    if s2<>'' then
+      s := s + '  ' + s2;
+  except
+  end;
+
+
+  FCurEntry.Display := s;
+  FCurEntry.Comp := nil;
+  FCurEntry.TheUnitName := TObject(Method.Data).ClassType.UnitName;
+  FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName);
+
+    //LazarusIDE.DoOpenFileAndJumpToIdentifier(AFile, copy(AName,1,i), -1, -1, [ofOnlyIfExists, ofRegularFile]);
+    //LazarusIDE.DoOpenFileAndJumpToPos(AFile, Point(1,i), Max(i-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile]);
+  UpdateHistory;
 end;
 
 procedure TIdeInspectForm.menuFollowFormClick(Sender: TObject);
@@ -291,6 +347,15 @@ begin
     SetSelected(nil);
   TreeView1.Selected.Delete;
   UpdateTree;
+end;
+
+procedure TIdeInspectForm.TabControl1Change(Sender: TObject);
+begin
+  case TabControl1.TabIndex of
+    0: FPropertiesGrid.Filter := [low(TTypeKind)..high(TTypeKind)] - [tkMethod];
+    1: FPropertiesGrid.Filter := [tkMethod];
+    2: FPropertiesGrid.Filter := [];
+  end;
 end;
 
 procedure TIdeInspectForm.ToolButtonActiveTypeClick(Sender: TObject);
@@ -498,14 +563,16 @@ begin
   Screen.AddHandlerActiveFormChanged(@DoActiveFormChanged);
   Screen.AddHandlerActiveControlChanged(@DoActiveControChanged);
   inherited Create(TheOwner);
+
   FPropertiesGrid := TCustomPropertiesGrid.Create(Self);
   with FPropertiesGrid do
   begin
     Name := 'FPropertiesGrid';
-    Parent := self;
+    Parent := TabControl1;
     Align := alClient;
-    BorderSpacing.Around := 6;
+    OnSelectionChange  := @DoPropSelChanged;
   end;
+
   btnComponent.Caption := ideinspQuickLinks;
   btnSubComponent.Caption := ideinspComponentsOwned;
   btnControls.Caption := ideinspControlsChildren;
@@ -513,6 +580,7 @@ begin
 
   FFollowFrames := True;
   ToolButtonActiveType.Caption := menuFollowFrame.Caption;
+  TabControl1Change(nil);
   SetSelected(Application);
 end;
 
@@ -543,6 +611,10 @@ begin
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'mnuIdeInspector', ideinspInspectIDE, nil,
     @IDEMenuClicked);
 end;
+
+initialization
+  OriginalBackTraceStrFunc := BackTraceStrFunc;
+
 
 end.
 
