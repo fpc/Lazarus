@@ -1,4 +1,8 @@
 {
+  Copyright (C) 2010 Felipe Monteiro de Carvalho
+
+  License: The same modifying LGPL with static linking exception as the LCL
+
   Utility functions utilized by the custom drawn controls
 }
 unit customdrawnutils;
@@ -9,21 +13,54 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, LMessages, LCLProc, Controls, Graphics,
-  Types, IntfGraphics, FPImage, Math, FPImgCanv;
+  Forms, Types, IntfGraphics, FPImage, Math, FPImgCanv;
 
 function GetAColor(Color: TColor; Rate: byte): TColor;
 function GetUColor(Color: TColor; Rate: byte): TColor;
 procedure GradientFill(Clr1, Clr2: TColor; Canvas: TCanvas);
-procedure GradHFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
-procedure GradHCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
+procedure GradientFillFP(Clr1, Clr2: TColor; Canvas: TFPImageCanvas; lRect: TRect);
+procedure GradFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
+procedure GradCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
 procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
 procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
+procedure FPImgCloneRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect; Fast: boolean);
+function GetUniqueName(const Name: string; PControl: TComponent): string;
 
 type
   PRGBTripleArray = ^TRGBTripleArray;
   TRGBTripleArray = array[0..32767] of TRGBTriple;
 
 implementation
+
+function GetUniqueName(const Name: string; PControl: TComponent): string;
+var
+  i: integer; TName: string;
+
+  function GetTheName: boolean;
+  var
+    j: integer;
+  begin
+    Result := False;
+    for j := 0 to PControl.ComponentCount - 1 do
+    begin
+      if PControl.Components[j].Name = TName then
+      begin
+        Result := True;
+        exit;
+      end;
+      //ShowMessage(TName);
+    end;
+  end;
+
+begin
+  TName := Name;
+  i := 0;
+  repeat
+    Inc(i);
+    TName := Name + IntToStr(i);
+  until not GetTheName;
+  Result := TName;
+end;
 
 function ResetCDColor(r, g, b: byte): TColor;
 begin
@@ -64,63 +101,86 @@ end;
 
 procedure GradientFill(Clr1, Clr2: TColor; Canvas: TCanvas);
 var
-  RGBFrom: array[0..2] of byte;
-  RGBDiff: array[0..2] of integer;
-  ColorBand: TRect;
-  I: integer;
-  R, G, B: byte;
+  ColorFrom: array[0..2] of byte; ColorDiff: array[0..2] of integer;
+  DrawBand: TRect; I: integer; R, G, B: byte;
 begin
-  RGBFrom[0] := GetRValue(ColorToRGB(Clr1));
-  RGBFrom[1] := GetGValue(ColorToRGB(Clr1));
-  RGBFrom[2] := GetBValue(ColorToRGB(Clr1));
-  RGBDiff[0] := GetRValue(ColorToRGB(Clr2)) - RGBFrom[0];
-  RGBDiff[1] := GetGValue(ColorToRGB(Clr2)) - RGBFrom[1];
-  RGBDiff[2] := GetBValue(ColorToRGB(Clr2)) - RGBFrom[2];
+  ColorFrom[0] := GetRValue(ColorToRGB(Clr1));
+  ColorFrom[1] := GetGValue(ColorToRGB(Clr1));
+  ColorFrom[2] := GetBValue(ColorToRGB(Clr1));
+  ColorDiff[0] := GetRValue(ColorToRGB(Clr2)) - ColorFrom[0];
+  ColorDiff[1] := GetGValue(ColorToRGB(Clr2)) - ColorFrom[1];
+  ColorDiff[2] := GetBValue(ColorToRGB(Clr2)) - ColorFrom[2];
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Mode := pmCopy;
-  ColorBand.Left := 0;
-  ColorBand.Right := Canvas.Width;
+  DrawBand.Left := 0;
+  DrawBand.Right := Canvas.Width;
   for I := 0 to $ff do
   begin
-    ColorBand.Top := MulDiv(I, Canvas.Height, $100);
-    ColorBand.Bottom := MulDiv(I + 1, Canvas.Height, $100);
-    R := RGBFrom[0] + MulDiv(I, RGBDiff[0], $ff);
-    G := RGBFrom[1] + MulDiv(I, RGBDiff[1], $ff);
-    B := RGBFrom[2] + MulDiv(I, RGBDiff[2], $ff);
+    DrawBand.Top := MulDiv(I, Canvas.Height, $100);
+    DrawBand.Bottom := MulDiv(I + 1, Canvas.Height, $100);
+    R := ColorFrom[0] + MulDiv(I, ColorDiff[0], $ff);
+    G := ColorFrom[1] + MulDiv(I, ColorDiff[1], $ff);
+    B := ColorFrom[2] + MulDiv(I, ColorDiff[2], $ff);
     Canvas.Brush.Color := RGB(R, G, B);
-    Canvas.FillRect(ColorBand);
+    Canvas.FillRect(DrawBand);
   end;
 end;
 
-procedure GradHCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
+procedure GradientFillFP(Clr1, Clr2: TColor; Canvas: TFPImageCanvas; lRect: TRect);
+var
+  ColorFrom: array[0..2] of byte; ColorDiff: array[0..2] of integer;
+  DrawBand: TRect; I: integer; R, G, B: byte;
+begin
+  ColorFrom[0] := GetRValue(ColorToRGB(Clr1));
+  ColorFrom[1] := GetGValue(ColorToRGB(Clr1));
+  ColorFrom[2] := GetBValue(ColorToRGB(Clr1));
+  ColorDiff[0] := GetRValue(ColorToRGB(Clr2)) - ColorFrom[0];
+  ColorDiff[1] := GetGValue(ColorToRGB(Clr2)) - ColorFrom[1];
+  ColorDiff[2] := GetBValue(ColorToRGB(Clr2)) - ColorFrom[2];
+  Canvas.Pen.Style := psSolid;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Pen.Mode := pmCopy;
+  DrawBand.Left := lRect.Left;
+  DrawBand.Right := lRect.Right;
+  for I := 0 to $ff do
+  begin
+    DrawBand.Top := lRect.Top + MulDiv(I, lRect.Bottom, $100);
+    DrawBand.Bottom := lRect.Top + MulDiv(I + 1, lRect.Bottom, $100);
+    R := ColorFrom[0] + MulDiv(I, ColorDiff[0], $ff);
+    G := ColorFrom[1] + MulDiv(I, ColorDiff[1], $ff);
+    B := ColorFrom[2] + MulDiv(I, ColorDiff[2], $ff);
+    Canvas.Brush.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
+    Canvas.Pen.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
+    Canvas.Rectangle(DrawBand);
+  end;
+end;
+
+procedure GradCenterFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor; rate: float);
 var lRect: TRect;
 begin
   lRect.Left := aRect.Left;
   lRect.Top := aRect.Top;
   lRect.Right := aRect.Left + Ceil(rate * (aRect.Right - aRect.Left));
   lRect.Bottom := aRect.Bottom;
-  GradHFill(Canvas, lRect, Clr1, Clr2);
+  GradFill(Canvas, lRect, Clr1, Clr2);
   lRect.Left := aRect.Left + Ceil(rate * (aRect.Right - aRect.Left));
   lRect.Top := aRect.Top;
   lRect.Right := aRect.Right;
   lRect.Bottom := aRect.Bottom;
-  GradHFill(Canvas, lRect, Clr2, Clr1);
+  GradFill(Canvas, lRect, Clr2, Clr1);
 end;
 
-procedure GradHFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
+procedure GradFill(Canvas: TFPImageCanvas; aRect: TRect; Clr1, Clr2: TColor);
 var
-  RGBFrom: array[0..2] of byte;
-  RGBDiff: array[0..2] of integer;
-  I: integer;
-  R, G, B: byte;
-  RBand: TRect;
+  ColorFrom: array[0..2] of byte; ColorDiff: array[0..2] of integer;
+  I: integer; R, G, B: byte; RBand: TRect;
 begin
-  RGBFrom[0] := GetRValue(ColorToRGB(Clr1));
-  RGBFrom[1] := GetGValue(ColorToRGB(Clr1));
-  RGBFrom[2] := GetBValue(ColorToRGB(Clr1));
-  RGBDiff[0] := GetRValue(ColorToRGB(Clr2)) - RGBFrom[0];
-  RGBDiff[1] := GetGValue(ColorToRGB(Clr2)) - RGBFrom[1];
-  RGBDiff[2] := GetBValue(ColorToRGB(Clr2)) - RGBFrom[2];
+  ColorFrom[0] := GetRValue(ColorToRGB(Clr1));
+  ColorFrom[1] := GetGValue(ColorToRGB(Clr1));
+  ColorFrom[2] := GetBValue(ColorToRGB(Clr1));
+  ColorDiff[0] := GetRValue(ColorToRGB(Clr2)) - ColorFrom[0];
+  ColorDiff[1] := GetGValue(ColorToRGB(Clr2)) - ColorFrom[1];
+  ColorDiff[2] := GetBValue(ColorToRGB(Clr2)) - ColorFrom[2];
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Mode := pmCopy;
   RBand.Bottom := aRect.Bottom;
@@ -129,9 +189,9 @@ begin
   begin
     RBand.Left := aRect.Left + MulDiv(I, aRect.Right - aRect.Left, $100);
     RBand.Right := aRect.Left + MulDiv(I + 1, aRect.Right - aRect.Left, $100);
-    R := RGBFrom[0] + MulDiv(I, RGBDiff[0], $ff);
-    G := RGBFrom[1] + MulDiv(I, RGBDiff[1], $ff);
-    B := RGBFrom[2] + MulDiv(I, RGBDiff[2], $ff);
+    R := ColorFrom[0] + MulDiv(I, ColorDiff[0], $ff);
+    G := ColorFrom[1] + MulDiv(I, ColorDiff[1], $ff);
+    B := ColorFrom[2] + MulDiv(I, ColorDiff[2], $ff);
     Canvas.Brush.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
     Canvas.Pen.FPColor := TColorToFPColor(ColorToRGB(RGB(R, G, B)));
     Canvas.RecTangle(RBand);
@@ -145,6 +205,35 @@ begin
     a := 1;
   if a > 255 then
     a := 255;
+end;
+
+procedure FPImgCloneRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect; Fast: boolean);
+var
+  FadeStep, px, py: integer;
+  Row1, Row2: PRGBTripleArray;
+begin
+  for FadeStep := 1 to 32 do
+  begin
+    for py := lRect.Top to lRect.Bottom - 1 do
+    begin
+      if fast then
+      begin
+        Row1 := IntfImg1.GetDataLineStart(py);
+        Row2 := IntfImg2.GetDataLineStart(py);
+      end;
+      for px := lRect.Left to lRect.Right - 1 do
+      begin
+        if fast then
+        begin
+          Row2^[px].rgbtRed := Row1^[px].rgbtRed;
+          Row2^[px].rgbtGreen := Row1^[px].rgbtGreen;
+          Row2^[px].rgbtBlue := Row1^[px].rgbtBlue;
+        end
+        else
+          IntfImg2.Colors[px, py] := IntfImg1.Colors[px, py];
+      end;
+    end;
+  end;
 end;
 
 procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
