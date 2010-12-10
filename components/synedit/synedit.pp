@@ -390,6 +390,7 @@ type
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
+    FScrollBarUpdateLock: Integer;
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
     fReadOnly: Boolean;
@@ -1602,6 +1603,7 @@ begin
   inherited Create(AOwner);
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
+  FScrollBarUpdateLock := 0;
 
   FStatusChangedList := TSynStatusChangedHandlerList.Create;
 
@@ -4479,6 +4481,7 @@ procedure TCustomSynEdit.UpdateScrollBars;
 var
   ScrollInfo: TScrollInfo;
 begin
+  if FScrollBarUpdateLock <> 0 then exit;
   if not HandleAllocated or (PaintLock <> 0) then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
@@ -4658,6 +4661,7 @@ begin
   if (not HandleAllocated) or ((ClientWidth = FOldWidth) and (ClientHeight = FOldHeight)) then exit;
   FOldWidth := ClientWidth;
   FOldHeight := ClientHeight;
+  inc(FScrollBarUpdateLock);
   FScreenCaret.Lock;
   try
     FLeftGutter.RecalcBounds;
@@ -4671,6 +4675,8 @@ begin
                                   ClientHeight - ScrollBarWidth);
   finally
     FScreenCaret.UnLock;
+    dec(FScrollBarUpdateLock);
+    UpdateScrollBars;
   end;
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
