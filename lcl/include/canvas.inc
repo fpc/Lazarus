@@ -1162,10 +1162,7 @@ begin
     SaveState;
 
   if Style.SystemFont then
-  begin
-    Options := Options or DT_INTERNAL;
     SelectObject(DC, OnGetSystemFont());
-  end;
 
   // calculate text rectangle
   fRect := ARect;
