@@ -604,6 +604,7 @@ type
       PushedCell: TPoint;     // Cell coords of cell being pushed
       PushedMouse: TPoint;    // mouse Coords of the cell being pushed
       ClickCellPushed: boolean;   // Header Cell is currently pushed?
+      FullVisibleGrid: TRect; // visible cells excluding partially visible cells
     end;
 
 type
@@ -4830,6 +4831,8 @@ end;
 
 { Save to the cache the current visible grid (excluding fixed cells) }
 procedure TCustomGrid.CacheVisibleGrid;
+var
+  R: TRect;
 begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
@@ -4838,6 +4841,19 @@ begin
       ValidCols := (top>=0) and (bottom>=Top) and (ColCount>0) and (RowCount>0);
       ValidGrid := ValidRows and ValidCols;
     end;
+    FullVisibleGrid := VisibleGrid;
+    if ValidGrid then
+      with FullVisibleGrid do begin
+        if TLColOff>0 then
+          Left := Min(Left+1, Right);
+        if TLRowOff>0 then
+          Top  := Min(Top+1, Bottom);
+        R := CellRect(Right, Bottom);
+        if R.Right>(ClientWidth+GetBorderWidth) then
+          Right := Max(Right-1, Left);
+        if R.Bottom>(ClientHeight+GetBorderWidth) then
+          Bottom := Max(Bottom-1, Top);
+      end;
   end;
 end;
 
@@ -6237,12 +6253,12 @@ begin
       end;
     VK_PRIOR:
       begin
-        R:=FGCache.Visiblegrid;
+        R:=FGCache.FullVisiblegrid;
         MoveSel(True, 0, R.Top-R.Bottom);
       end;
     VK_NEXT:
       begin
-        R:=FGCache.VisibleGrid;
+        R:=FGCache.FullVisibleGrid;
         MoveSel(True, 0, R.Bottom-R.Top);
       end;
     VK_HOME:
