@@ -4742,6 +4742,7 @@ resourcestring
   lisCEIsARootControl = 'Is a root control';
   lisHasHelp = 'Has Help';
   lisCreateHelpNode = 'Create Help node';
+  lisOpen = 'Open ...';
   lisEditContextHelp = 'Edit context help';
   lisNoNodeSelected = 'no node selected';
   lisNoIDEWindowSelected = 'No IDE window selected';

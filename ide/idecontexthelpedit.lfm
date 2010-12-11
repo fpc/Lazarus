@@ -1,7 +1,7 @@
 object ContextHelpEditorDlg: TContextHelpEditorDlg
-  Left = 241
+  Left = 331
   Height = 515
-  Top = 160
+  Top = 177
   Width = 655
   ActiveControl = ControlsTreeView
   Caption = 'ContextHelpEditorDlg'
@@ -28,11 +28,13 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     ClientWidth = 297
     TabOrder = 0
     object ControlsTreeView: TTreeView
+      AnchorSideBottom.Control = OpenDeclarationBitBtn
       Left = 6
-      Height = 350
+      Height = 317
       Top = 6
       Width = 285
-      Align = alClient
+      Align = alTop
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DefaultItemHeight = 19
       ParentShowHint = False
@@ -63,6 +65,23 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Caption = 'TestButton'
       OnClick = TestButtonClick
       TabOrder = 2
+    end
+    object OpenDeclarationBitBtn: TBitBtn
+      AnchorSideLeft.Control = WindowControlsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CreateHelpNodeForControlButton
+      Left = 6
+      Height = 27
+      Top = 329
+      Width = 178
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'OpenDeclarationBitBtn'
+      OnClick = OpenDeclarationBitBtnClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
     end
   end
   object NodesGroupBox: TGroupBox

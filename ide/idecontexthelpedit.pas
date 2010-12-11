@@ -41,12 +41,32 @@ uses
 
 type
 
+  { TOpenIDEFileOnIdle }
+
+  TOpenIDEFileOnIdle = class(TComponent)
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+  public
+    Filename: string;
+    X, Y: integer;
+    CloseDialogs: TFPList; // list of modal TCustomForm to cancel
+    CancelDialogs: TFPList; // list of modal TCustomForm tried to cancel
+    Ending: boolean;
+    constructor Create(AOwner: TComponent); override;
+    procedure Run;
+    destructor Destroy; override;
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
+  end;
+
+
   { TContextHelpEditorDlg }
 
   TContextHelpEditorDlg = class(TForm)
     ButtonPanel: TButtonPanel;
     FullPathEdit: TEdit;
     NodeIsRootCheckBox: TCheckBox;
+    OpenDeclarationBitBtn: TBitBtn;
     TestButton: TButton;
     CreateHelpNodeForControlButton: TButton;
     NodeNameEdit: TEdit;
@@ -71,6 +91,9 @@ type
     procedure NodeNameEditEditingDone(Sender: TObject);
     procedure NodePathEditEditingDone(Sender: TObject);
     procedure OkBitBtnClick(Sender: TObject);
+    procedure OpenDeclarationBitBtnClick(Sender: TObject);
+    procedure OpenDeclarationBitBtnShowHint(Sender: TObject; HintInfo: PHintInfo
+      );
     procedure TestButtonClick(Sender: TObject);
   private
     FIDEWindow: TCustomForm;
@@ -222,6 +245,8 @@ begin
   
   TestButton.Caption:=dlgCCOTest;
   CreateHelpNodeForControlButton.Caption:=lisCreateHelpNode;
+  OpenDeclarationBitBtn.Caption:=lisOpen;
+  OpenDeclarationBitBtn.OnShowHint:=@OpenDeclarationBitBtnShowHint;
   NodeHasHelpCheckBox.Caption:=lisHasHelp;
   NodeIsRootCheckBox.Caption:=lisCEIsARootControl;
   NodePathLabel.Caption:=lisPath;
@@ -275,6 +300,38 @@ begin
   IDEWindowHelpNodes.Assign(WorkingHelpNodes);
   SaveIDEWindowHelp;
   ModalResult:=mrOk;
+end;
+
+procedure TContextHelpEditorDlg.OpenDeclarationBitBtnClick(Sender: TObject);
+var
+  AControl: TControl;
+  Closer: TOpenIDEFileOnIdle;
+  Filename: string;
+  X: integer;
+  Y: integer;
+begin
+  AControl:=GetCurrentControl;
+  if AControl=nil then begin
+    MessageDlg('Error','Please select a control first',mtError,[mbCancel],0);
+    exit;
+  end;
+  if not FindDeclarationOfIDEControl(AControl,Filename,X,Y) then begin
+    MessageDlg('Error','No declaration found for '+DbgSName(AControl),mtError,[mbCancel],0);
+    exit;
+  end;
+  MessageDlg('Close dialogs?','This will close all currently open modal forms and open the file '+Filename+' in the editor.',
+    mtConfirmation,[mbOk,mbCancel],0);
+  Closer:=TOpenIDEFileOnIdle.Create(LazarusIDE.OwningComponent);
+  Closer.Filename:=Filename;
+  Closer.X:=X;
+  Closer.Y:=Y;
+  Closer.Run;
+end;
+
+procedure TContextHelpEditorDlg.OpenDeclarationBitBtnShowHint(Sender: TObject;
+  HintInfo: PHintInfo);
+begin
+  HintInfo^.HintStr:='Open declaration '+GetHintForControl(GetCurrentControl);
 end;
 
 procedure TContextHelpEditorDlg.TestButtonClick(Sender: TObject);
@@ -497,6 +554,100 @@ begin
   FIDEWindow:=AValue;
   UpdateWindowControlsGroupBoxCaption;
   FillControlsTreeView;
+end;
+
+{ TOpenIDEFileOnIdle }
+
+procedure TOpenIDEFileOnIdle.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    CloseDialogs.Remove(AComponent);
+    CancelDialogs.Remove(AComponent);
+  end;
+end;
+
+constructor TOpenIDEFileOnIdle.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CloseDialogs:=TFPList.Create;
+  CancelDialogs:=TFPList.Create;
+end;
+
+procedure TOpenIDEFileOnIdle.Run;
+var
+  i: Integer;
+  Form: TCustomForm;
+begin
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    Form:=Screen.CustomForms[i];
+    if (CloseDialogs.IndexOf(Form)<0) and (fsModal in Form.FormState) then
+    begin
+      FreeNotification(Form);
+      CloseDialogs.Add(Form);
+    end;
+  end;
+  Application.AddOnIdleHandler(@OnIdle);
+end;
+
+destructor TOpenIDEFileOnIdle.Destroy;
+begin
+  Application.RemoveOnIdleHandler(@OnIdle);
+  inherited Destroy;
+  FreeAndNil(CloseDialogs);
+  FreeAndNil(CancelDialogs);
+end;
+
+procedure TOpenIDEFileOnIdle.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  i: Integer;
+  Form: TCustomForm;
+begin
+  if Ending then exit;
+
+  { For example:
+    User press ok:
+    - cancel the context help dialog
+    - cancel the options dialog
+    - a question is asked
+  }
+
+  // remove pending forms that are no longer modal
+  for i:=CloseDialogs.Count-1 downto 0 do begin
+    Form:=TCustomForm(CloseDialogs[i]);
+    if not (fsModal in Form.FormState) then
+      CloseDialogs.Delete(i);
+  end;
+  Form:=Screen.GetCurrentModalForm;
+  debugln(['TOpenIDEFileOnIdle.OnIdle Modal=',DbgSName(Form)]);
+  // check if complete
+  if CloseDialogs.Count=0 then begin
+    debugln(['TOpenIDEFileOnIdle.OnIdle no more closing ...']);
+    Ending:=true;
+    if Form=nil then begin
+      // no more modal forms open
+      debugln(['TOpenIDEFileOnIdle.OnIdle opening ...']);
+      LazarusIDE.DoOpenFileAndJumpToPos(Filename,Point(X,Y),-1,-1,-1,[ofDoNotLoadResource]);
+    end;
+    Free;
+  end
+  else begin
+    // close a modal dialog
+    if CancelDialogs.IndexOf(Form)>=0 then begin
+      // this form was already cancelled, but is still there on idle
+      // => user cancelled or something went wrong
+      debugln(['TOpenIDEFileOnIdle.OnIdle closing failed']);
+      Ending:=true;
+      Free;
+    end else if CloseDialogs.IndexOf(Form)>=0 then begin
+      // close modal dialog
+      debugln(['TOpenIDEFileOnIdle.OnIdle closing ',DbgSName(Form)]);
+      CancelDialogs.Add(Form);
+      CloseDialogs.Remove(Form);
+      Form.ModalResult:=mrCancel;
+    end;
+  end;
 end;
 
 end.
