@@ -340,11 +340,11 @@ end;
 
 procedure TIdeInspectForm.btnOpenFileClick(Sender: TObject);
 begin
-  if FCurEntry.Line > 0 then
-    LazarusIDE.DoOpenFileAndJumpToPos(EditFile.Text, Point(1,FCurEntry.Line), Max(FCurEntry.Line-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile])
-  else
   if FCurEntry.IdentifierName <> '' then
     LazarusIDE.DoOpenFileAndJumpToIdentifier(EditFile.Text, FCurEntry.IdentifierName, -1, -1, [ofOnlyIfExists, ofRegularFile])
+  else
+  if FCurEntry.Line > 0 then
+    LazarusIDE.DoOpenFileAndJumpToPos(EditFile.Text, Point(1,FCurEntry.Line), Max(FCurEntry.Line-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile])
   else
     LazarusIDE.DoOpenEditorFile(EditFile.Text, -1, -1, [ofOnlyIfExists, ofRegularFile]);
 end;
