@@ -19,8 +19,10 @@ type
   public
     Comp: TComponent;
     Display: string;
+    IdentifierName: string;
     TheUnitName: string;
     FileName: string;
+    Line: Integer;
     procedure Assign(Other: THistoryEntry);
     procedure UpdateDisplayName;
   end;
@@ -164,6 +166,8 @@ begin
   FBaseDisplay := Other.FBaseDisplay;
   Display := Other.Display;
   TheUnitName := Other.TheUnitName;
+  IdentifierName := Other.IdentifierName;
+  Line := Other.Line;
   FileName := Other.FileName;
 end;
 
@@ -239,6 +243,7 @@ var
   Row: TOIPropertyGridRow;
   Method: TMethod;
   s, s2, OName: string;
+  MethName: String;
 begin
   Row := FPropertiesGrid.GetActiveRow;
   Method.Code := nil;;
@@ -255,12 +260,14 @@ begin
   else
     OName := '';
 
-  s := TObject(Method.Data).MethodName(Method.Code);
+  MethName := TObject(Method.Data).MethodName(Method.Code);
+  s := MethName;;
   if s = '' then
     s := IntToHex(QWord(PtrUint(Method.Code)), 2*SizeOf(Pointer));
 
   s := TObject(Method.Data).ClassName + OName + '.' + s;
 
+  FCurEntry.Line := -1;
   try
     s2 := Trim(OriginalBackTraceStrFunc(Method.Code));
     i := pos(' ', s2);
@@ -268,6 +275,13 @@ begin
       s2 := copy(s2, i, length(s));
     if s2<>'' then
       s := s + '  ' + s2;
+    i := pos('line ', LowerCase(s));
+    if i > 0 then begin
+      s2 := Trim(copy(s, i+4, length(s2)));
+      i := pos(' ', s2)-1;
+      if i < 1 then i := length(s2);
+      FCurEntry.Line := StrToIntDef(copy(s2, 1, i), -1);
+    end;
   except
   end;
 
@@ -276,9 +290,11 @@ begin
   FCurEntry.Comp := nil;
   FCurEntry.TheUnitName := TObject(Method.Data).ClassType.UnitName;
   FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+  if MethName <> '' then
+    FCurEntry.IdentifierName := TObject(Method.Data).ClassName + '.' + MethName
+  else
+    FCurEntry.IdentifierName := '';
 
-    //LazarusIDE.DoOpenFileAndJumpToIdentifier(AFile, copy(AName,1,i), -1, -1, [ofOnlyIfExists, ofRegularFile]);
-    //LazarusIDE.DoOpenFileAndJumpToPos(AFile, Point(1,i), Max(i-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile]);
   UpdateHistory;
 end;
 
@@ -324,7 +340,13 @@ end;
 
 procedure TIdeInspectForm.btnOpenFileClick(Sender: TObject);
 begin
-  LazarusIDE.DoOpenEditorFile(EditFile.Text, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+  if FCurEntry.Line > 0 then
+    LazarusIDE.DoOpenFileAndJumpToPos(EditFile.Text, Point(1,FCurEntry.Line), Max(FCurEntry.Line-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile])
+  else
+  if FCurEntry.IdentifierName <> '' then
+    LazarusIDE.DoOpenFileAndJumpToIdentifier(EditFile.Text, FCurEntry.IdentifierName, -1, -1, [ofOnlyIfExists, ofRegularFile])
+  else
+    LazarusIDE.DoOpenEditorFile(EditFile.Text, -1, -1, [ofOnlyIfExists, ofRegularFile]);
 end;
 
 procedure TIdeInspectForm.btnSaveHistClick(Sender: TObject);
@@ -491,10 +513,14 @@ begin
     if FSelected <> nil then begin
       FCurEntry.TheUnitName := FSelected.UnitName;
       FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+      FCurEntry.IdentifierName := FSelected.ClassName;
+      FCurEntry.Line := -1;
     end
     else begin
       FCurEntry.TheUnitName := '';
       FCurEntry.FileName := '';
+      FCurEntry.IdentifierName := '';
+      FCurEntry.Line := -1;
     end;
     UpdateHistory;
   end;
