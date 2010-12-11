@@ -672,6 +672,7 @@ var
   NewRealIndex: Integer;
 begin
   NotebookHandle := ANotebook.Handle;
+  // get the current top window
   OldPageHandle := GetTopWindow(NotebookHandle);
   NewPageHandle := 0;
   NewRealIndex := GetPageRealIndex(ANotebook, AIndex);
@@ -687,8 +688,13 @@ begin
       SendSelChangeMessage(ANotebook, NotebookHandle, AIndex);
       NotebookFocusNewControl(ANotebook, AIndex);
     end;
-    if (OldPageHandle <> 0) and (OldPageHandle <> NewPageHandle) then
-      Windows.SetWindowPos(OldPageHandle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_HIDEWINDOW or SWP_NOACTIVATE);
+    // traverse children and hide them if needed
+    while OldPageHandle <> 0 do
+    begin
+      if (OldPageHandle <> NewPageHandle) and IsWindowVisible(OldPageHandle) then
+        Windows.SetWindowPos(OldPageHandle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_HIDEWINDOW or SWP_NOACTIVATE);
+      OldPageHandle := GetNextWindow(OldPageHandle, GW_HWNDNEXT);
+    end;
   end;
 end;
 
