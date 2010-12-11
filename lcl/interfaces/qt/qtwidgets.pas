@@ -2556,8 +2556,13 @@ begin
       Exit;
     end;
   end;
-  { Also sends a utf-8 key event for key down }
 
+  { if our LCLObject dissappeared in the meantime just exit, otherwise
+    we'll run into problems.}
+  if (LCLObject = nil) then
+    Exit(False);
+
+  { Also sends a utf-8 key event for key down }
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
     UTF8Text := UTF16ToUTF8(Text);
