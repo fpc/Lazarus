@@ -2424,7 +2424,7 @@ procedure TControl.DoAllAutoSize;
     begin
       AWinControl := TWinControl(AControl);
       for i := 0 to AWinControl.ControlCount - 1 do
-        if not CallAllOnResize(AWinControl.Controls[i]) then Exit;
+        if AWinControl.Controls[i].IsControlVisible and not CallAllOnResize(AWinControl.Controls[i]) then Exit;
     end;
     AControl.Resize;
     Result := True;
