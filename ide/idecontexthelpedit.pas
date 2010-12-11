@@ -319,8 +319,8 @@ begin
     MessageDlg('Error','No declaration found for '+DbgSName(AControl),mtError,[mbCancel],0);
     exit;
   end;
-  MessageDlg('Close dialogs?','This will close all currently open modal forms and open the file '+Filename+' in the editor.',
-    mtConfirmation,[mbOk,mbCancel],0);
+  if MessageDlg('Close dialogs?','This will close all currently open modal forms and open the file '+Filename+' in the editor.',
+    mtConfirmation,[mbOk,mbCancel],0)<>mrOk then exit;
   Closer:=TOpenIDEFileOnIdle.Create(LazarusIDE.OwningComponent);
   Closer.Filename:=Filename;
   Closer.X:=X;
