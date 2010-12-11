@@ -13181,6 +13181,19 @@ end;
 function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
   Flags: TFindUnitFileFlags): string;
 
+  function FindInBaseIDE: string;
+  var
+    AnUnitName: String;
+    BaseDir: String;
+    UnitInFilename: String;
+  begin
+    AnUnitName:=ExtractFileNameOnly(AFilename);
+    BaseDir:=EnvironmentOptions.LazarusDirectory+PathDelim+'ide';
+    UnitInFilename:='';
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                                       BaseDir,AnUnitName,UnitInFilename,true);
+  end;
+
   function FindInProject(AProject: TProject): string;
   var
     AnUnitInfo: TUnitInfo;
@@ -13250,8 +13263,11 @@ begin
   end;
 
   if TheOwner=Self then begin
-    // search in IDE
-    // first search in installed packages
+    // search in base IDE
+    Result:=FindInBaseIDE;
+    if Result<>'' then exit;
+
+    // search in installed packages
     for i:=0 to PackageGraph.Count-1 do
       if (PackageGraph[i].Installed<>pitNope)
       and ((not (fuffIgnoreUninstallPackages in Flags))
@@ -13260,7 +13276,7 @@ begin
         Result:=FindInPackage(PackageGraph[i]);
         if Result<>'' then exit;
       end;
-    // then search in auto install packages
+    // search in auto install packages
     for i:=0 to PackageGraph.Count-1 do
       if (PackageGraph[i].Installed=pitNope)
       and (PackageGraph[i].AutoInstall<>pitNope) then begin

@@ -656,6 +656,7 @@ type
     function RemoveApplicationTitleStatement(Code: TCodeBuffer): boolean;
 
     // forms
+    // Hint: to find the class use FindDeclarationInInterface
     function RenameForm(Code: TCodeBuffer;
       const OldFormName, OldFormClassName: string;
       const NewFormName, NewFormClassName: string): boolean;

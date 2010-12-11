@@ -32,8 +32,10 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   Buttons, ButtonPanel, StdCtrls, ComCtrls,
+  // codetools
+  CodeToolManager, CodeCache,
   // IDEIntf
-  IDEWindowIntf,
+  LazIDEIntf, IDEWindowIntf,
   // IDE
   IDEWindowHelp, LazarusIDEStrConsts, ExtCtrls;
 
@@ -58,6 +60,7 @@ type
     HelpNodesTreeView: TTreeView;
     Splitter1: TSplitter;
     WindowControlsGroupBox: TGroupBox;
+    procedure ControlsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure CreateHelpNodeForControlButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -87,6 +90,7 @@ type
     function GetCurrentControl: TControl;
     function GetCurrentHelpNode: TIWHelpNode;
     procedure SaveHelpNodeProperties;
+    function GetHintForControl(AControl: TControl): string;
   public
     property Invoker: TObject read FInvoker write SetInvoker;
     property IDEWindow: TCustomForm read FIDEWindow write SetIDEWindow;
@@ -98,6 +102,9 @@ var
 
 function ShowContextHelpEditor(Sender: TObject): TModalResult;
 procedure ShowContextHelpForIDE(Sender: TObject);
+
+function FindDeclarationOfIDEControl(AControl: TControl; out Filename: string;
+                                     out X, Y: integer): boolean;
 
 implementation
 
@@ -128,6 +135,56 @@ begin
   end;
 end;
 
+function FindDeclarationOfIDEControl(AControl: TControl; out Filename: string;
+  out X, Y: integer): boolean;
+var
+  UnitControl: TControl;
+  FormFilename: String;
+  Code: TCodeBuffer;
+  TopLine: integer;
+  NewCode: TCodeBuffer;
+  Path: String;
+begin
+  Result:=false;
+  Filename:='';
+  Y:=0;
+  X:=0;
+  if AControl=nil then exit;
+  UnitControl:=AControl;
+  while (UnitControl<>nil) do begin
+    if (UnitControl is TFrame) or (UnitControl is TCustomForm) then break;
+    UnitControl:=UnitControl.Parent;
+  end;
+  if UnitControl=nil then begin
+    debugln(['FindDeclarationOfIDEControl control '+DbgSName(AControl)+' is not on a form/frame']);
+    exit;
+  end;
+  //debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName]);
+  FormFilename:=LazarusIDE.FindUnitFile(UnitControl.UnitName,LazarusIDE);
+  //debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
+  if FormFilename='' then begin
+    debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName,': unit source not found']);
+    exit;
+  end;
+  Code:=CodeToolBoss.LoadFile(FormFilename,true,false);
+  if Code=nil then begin
+    debugln(['FindDeclarationOfIDEControl unable to open file: '+FormFilename]);
+    exit;
+  end;
+
+  Path:=UnitControl.ClassName;
+  if UnitControl<>AControl then
+    Path:=Path+'.'+AControl.Name;
+  if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,Path,NewCode,X,Y,TopLine)
+  then begin
+    debugln(['FindDeclarationOfIDEControl path ',Path,' not found in unit ',Code.Filename]);
+    exit;
+  end;
+  Filename:=NewCode.Filename;
+  // success
+  Result:=true;
+end;
+
 { TContextHelpEditorDlg }
 
 procedure TContextHelpEditorDlg.FormClose(Sender: TObject;
@@ -147,6 +204,16 @@ begin
   FillHelpNodesTreeView;
   SelectHelpNode(AControl);
   SelectControlNode(AControl);
+end;
+
+procedure TContextHelpEditorDlg.ControlsTreeViewShowHint(Sender: TObject;
+  HintInfo: PHintInfo);
+var
+  Node: TTreeNode;
+begin
+  Node:=ControlsTreeView.GetNodeAt(HintInfo^.CursorPos.X,HintInfo^.CursorPos.Y);
+  if Node=nil then exit;
+  HintInfo^.HintStr:=GetHintForControl(TControl(Node.Data));
 end;
 
 procedure TContextHelpEditorDlg.FormCreate(Sender: TObject);
@@ -411,6 +478,17 @@ begin
   HelpNode.HasHelp:=NodeHasHelpCheckBox.Checked;
   HelpNode.IsRoot:=NodeIsRootCheckBox.Checked;
   FullPathEdit.Text:=HelpNode.GetFullPath;
+end;
+
+function TContextHelpEditorDlg.GetHintForControl(AControl: TControl): string;
+var
+  X: integer;
+  Y: integer;
+  Filename: string;
+begin
+  if not FindDeclarationOfIDEControl(AControl,Filename,X,Y) then
+    Result:='';
+  Result:=DbgSName(AControl)+': '+Filename+'('+IntToStr(Y)+','+IntToStr(X)+')';
 end;
 
 procedure TContextHelpEditorDlg.SetIDEWindow(const AValue: TCustomForm);

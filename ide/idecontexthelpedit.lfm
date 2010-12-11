@@ -1,8 +1,8 @@
 object ContextHelpEditorDlg: TContextHelpEditorDlg
-  Left = 296
-  Height = 510
-  Top = 215
-  Width = 619
+  Left = 241
+  Height = 515
+  Top = 160
+  Width = 655
   ActiveControl = ControlsTreeView
   Caption = 'ContextHelpEditorDlg'
   ChildSizing.LeftRightSpacing = 6
@@ -10,40 +10,43 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   ChildSizing.HorizontalSpacing = 6
   ChildSizing.VerticalSpacing = 6
   ChildSizing.EnlargeHorizontal = crsScaleChilds
-  ClientHeight = 510
-  ClientWidth = 619
+  ClientHeight = 515
+  ClientWidth = 655
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object WindowControlsGroupBox: TGroupBox
     Left = 6
-    Height = 456
+    Height = 465
     Top = 6
     Width = 305
     Align = alLeft
     BorderSpacing.Around = 6
     Caption = 'WindowControlsGroupBox'
-    ClientHeight = 437
-    ClientWidth = 301
+    ClientHeight = 444
+    ClientWidth = 297
     TabOrder = 0
     object ControlsTreeView: TTreeView
       Left = 6
-      Height = 343
+      Height = 350
       Top = 6
-      Width = 289
+      Width = 285
       Align = alClient
       BorderSpacing.Around = 6
       DefaultItemHeight = 19
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 0
+      OnShowHint = ControlsTreeViewShowHint
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object CreateHelpNodeForControlButton: TButton
       Left = 6
       Height = 35
-      Top = 355
-      Width = 289
+      Top = 362
+      Width = 285
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'CreateHelpNodeForControlButton'
@@ -53,8 +56,8 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object TestButton: TButton
       Left = 6
       Height = 35
-      Top = 396
-      Width = 289
+      Top = 403
+      Width = 285
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'TestButton'
@@ -64,20 +67,20 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   end
   object NodesGroupBox: TGroupBox
     Left = 328
-    Height = 456
+    Height = 465
     Top = 6
-    Width = 285
+    Width = 321
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    ClientHeight = 437
-    ClientWidth = 281
+    ClientHeight = 444
+    ClientWidth = 313
     TabOrder = 1
     object HelpNodesTreeView: TTreeView
       Left = 6
-      Height = 240
+      Height = 247
       Top = 6
-      Width = 269
+      Width = 301
       Align = alClient
       BorderSpacing.Around = 6
       DefaultItemHeight = 19
@@ -89,19 +92,19 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object HelpNodePropertiesGroupBox: TGroupBox
       Left = 6
       Height = 179
-      Top = 252
-      Width = 269
+      Top = 259
+      Width = 301
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'HelpNodePropertiesGroupBox'
-      ClientHeight = 160
-      ClientWidth = 265
+      ClientHeight = 158
+      ClientWidth = 293
       TabOrder = 1
       object NodeNameLabel: TLabel
         Left = 10
         Height = 18
         Top = 10
-        Width = 44
+        Width = 45
         Caption = 'Name:'
         ParentColor = False
       end
@@ -109,16 +112,18 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Left = 10
         Height = 18
         Top = 40
-        Width = 33
+        Width = 36
         Caption = 'Path:'
         ParentColor = False
       end
       object NodeHasHelpCheckBox: TCheckBox
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 22
-        Top = 104
-        Width = 253
-        Align = alBottom
+        Top = 71
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'NodeHasHelpCheckBox'
         OnEditingDone = NodeHasHelpCheckBoxEditingDone
@@ -128,9 +133,9 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         AnchorSideRight.Control = HelpNodePropertiesGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 70
-        Height = 23
+        Height = 27
         Top = 5
-        Width = 189
+        Width = 217
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         OnEditingDone = NodeNameEditEditingDone
@@ -138,12 +143,14 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Text = 'NodeNameEdit'
       end
       object NodePathEdit: TEdit
+        AnchorSideTop.Control = NodeNameEdit
+        AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = HelpNodePropertiesGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 70
-        Height = 23
-        Top = 35
-        Width = 189
+        Height = 27
+        Top = 38
+        Width = 217
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         OnEditingDone = NodePathEditEditingDone
@@ -151,22 +158,28 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Text = 'NodePathEdit'
       end
       object NodeIsRootCheckBox: TCheckBox
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 22
-        Top = 132
-        Width = 253
-        Align = alBottom
+        Top = 100
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'NodeIsRootCheckBox'
         OnEditingDone = NodeIsRootCheckBoxEditingDone
         TabOrder = 3
       end
       object FullPathEdit: TEdit
+        AnchorSideTop.Control = NodeIsRootCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = HelpNodePropertiesGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 75
-        Width = 253
-        Align = alBottom
+        Height = 27
+        Top = 128
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ReadOnly = True
         TabOrder = 4
@@ -176,15 +189,25 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   end
   object Splitter1: TSplitter
     Left = 317
-    Height = 456
+    Height = 465
     Top = 6
     Width = 5
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 468
-    Width = 607
+    Height = 32
+    Top = 477
+    Width = 643
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
