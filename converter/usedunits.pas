@@ -48,8 +48,8 @@ type
 
   TUsedUnits = class
   private
-    fCTLink: TCodeToolLink;
-    fUsesSection: TUsesSection;           // This is a link to codetools.
+    fCTLink: TCodeToolLink;               // Link to codetools.
+    fUsesSection: TUsesSection;           // Enum used by some codetools funcs.
     fUnitsToRemove: TStringList;          // List of units to remove.
     // Units to rename. Map old unit name -> new unit name.
     fUnitsToRename: TStringToStringTree;
@@ -487,7 +487,8 @@ begin
 end;
 
 function TUsedUnitsTool.Prepare: TModalResult;
-// Add, remove, rename and comment out used unit names.
+// Find missing units and mark some of them to be replaced later.
+// More units can be marked for add, remove, rename and comment during conversion.
 var
   UnitUpdater: TStringMapUpdater;
   MapToEdit: TStringToStringTree;
@@ -538,6 +539,7 @@ begin
 end;
 
 function TUsedUnitsTool.Convert: TModalResult;
+// Add, remove, rename and comment out unit names that were marked earlier.
 begin
   Result:=mrCancel;
   if fCTLink.Settings.Target=ctLazarus then begin
