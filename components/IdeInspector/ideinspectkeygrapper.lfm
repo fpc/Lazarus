@@ -1,0 +1,32 @@
+object IdeInspectKeyGrabForm: TIdeInspectKeyGrabForm
+  Left = 1193
+  Height = 240
+  Top = 155
+  Width = 320
+  Caption = 'Key Shortcut'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 200
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = [pbOK, pbCancel]
+  end
+end

@@ -24,12 +24,16 @@
 &quot;Here be dragons&quot; Be careful and save your data first"/>
     <License Value="LGPL, same as LCL"/>
     <Version Minor="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="maininspector.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="MainInspector"/>
       </Item1>
+      <Item2>
+        <Filename Value="ideinspectkeygrapper.pas"/>
+        <UnitName Value="ideinspectkeygrapper"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
   ComCtrls, Menus, StdCtrls, MenuIntf, ObjectInspector, PropEdits, types, typinfo,
-  LazIDEIntf, LCLProc;
+  LazIDEIntf, LazConfigStorage, BaseIDEIntf, LCLProc, IdeInspectKeyGrapper, math;
 
 type
 
@@ -35,11 +35,13 @@ type
     menuFollowForm: TMenuItem;
     menuFollowFrame: TMenuItem;
     Panel1: TPanel;
+    Panel2: TPanel;
     popComponent: TPopupMenu;
     popSubComponent: TPopupMenu;
     popControls: TPopupMenu;
     popFollowType: TPopupMenu;
     btnOpenFile: TSpeedButton;
+    btnSaveHist: TSpeedButton;
     Splitter1: TSplitter;
     TabControl1: TTabControl;
     ToolBar1: TToolBar;
@@ -50,13 +52,23 @@ type
     ToolButton2: TToolButton;
     btnControls: TToolButton;
     ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    btnEndModal: TToolButton;
+    sepModal: TToolButton;
+    btnKeepTop: TToolButton;
+    ToolButtonKey: TToolButton;
     ToolButtonActiveType: TToolButton;
     ToolButtonFollowActive: TToolButton;
     TreeView1: TTreeView;
     procedure btnControlsClick(Sender: TObject);
+    procedure btnEndModalClick(Sender: TObject);
+    procedure btnKeepTopClick(Sender: TObject);
     procedure btnOpenFileClick(Sender: TObject);
+    procedure btnSaveHistClick(Sender: TObject);
     procedure btnSubComponentClick(Sender: TObject);
     procedure ComboHistoryChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormShow(Sender: TObject);
     procedure menuFollowFormClick(Sender: TObject);
     procedure menuFollowFrameClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
@@ -68,6 +80,7 @@ type
     procedure TabControl1Change(Sender: TObject);
     procedure ToolButtonActiveTypeClick(Sender: TObject);
     procedure ToolButtonFollowActiveClick(Sender: TObject);
+    procedure ToolButtonKeyClick(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure TreeView1Click(Sender: TObject);
   private
@@ -77,6 +90,10 @@ type
     FHistoryList: TList;
     FCurEntry: THistoryEntry;
     FIsUpdatingHistory: Boolean;
+    FConf: TConfigStorage;
+    FKeyGrabForm: TIdeInspectKeyGrabForm;
+    FShortCutKey: Word;
+    FShortCutShift: TShiftState;
     procedure DoPropSelChanged(Sender: TObject);
   protected
     FPropertiesGrid: TCustomPropertiesGrid;
@@ -85,7 +102,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoActiveFormChanged(Sender: TObject; Form: TCustomForm);
     procedure DoActiveControChanged(Sender: TObject; LastControl: TControl);
-    procedure UpdateHistory;
+    procedure DoKeyDownBefore(Sender: TObject; var Key: Word; Shift: TShiftState);
+    function  IndexOfCurrent: Integer;
+    procedure UpdateHistory(ForceAdd: Boolean = False);
     procedure UpdateCurrent;
   public
     { public declarations }
@@ -115,6 +134,13 @@ implementation
 
 const
   MAX_HIST_CNT = 25;
+  IDE_INSPECT_CONF_FILE = 'ide_inspector_config.xml';
+  ShiftStateNames: Array [TShiftStateEnum] of string =
+    ('ssShift', 'ssAlt', 'ssCtrl',
+     'ssLeft', 'ssRight', 'ssMiddle', 'ssDouble',
+    // Extra additions
+    'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr', 'ssCaps', 'ssNum',
+    'ssScroll', 'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2');
 
 var
   OriginalBackTraceStrFunc: TBackTraceStrFunc;
@@ -185,6 +211,28 @@ begin
   UpdateCurrent;
 end;
 
+procedure TIdeInspectForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  FConf.SetDeleteValue('IDEInspect/FormPos/Left', Left, 400);
+  FConf.SetDeleteValue('IDEInspect/FormPos/top', Top, 50);
+  FConf.SetDeleteValue('IDEInspect/FormPos/Heigh', Height, 520);
+  FConf.SetDeleteValue('IDEInspect/FormPos/Width', Width, 500);
+  FConf.WriteToDisk;
+end;
+
+procedure TIdeInspectForm.FormShow(Sender: TObject);
+begin
+  Left := FConf.GetValue('IDEInspect/FormPos/Left', 400);
+  Top  := FConf.GetValue('IDEInspect/FormPos/top', 50);
+  Height := Max(220, FConf.GetValue('IDEInspect/FormPos/Heigh', 520));
+  Width  := Max(280, FConf.GetValue('IDEInspect/FormPos/Width', 500));
+
+  //if Screen.MonitorFromPoint(IdeInspectForm.ClientToScreen
+  //                           (Point(IdeInspectForm.Left, IdeInspectForm.Top))) = nil
+  //then
+  MakeFullyVisible;
+end;
+
 procedure TIdeInspectForm.DoPropSelChanged(Sender: TObject);
 var
   i: LongInt;
@@ -209,7 +257,7 @@ begin
 
   s := TObject(Method.Data).MethodName(Method.Code);
   if s = '' then
-    s := IntToHex(PtrUint(Method.Code), 2*SizeOf(Pointer));
+    s := IntToHex(QWord(PtrUint(Method.Code)), 2*SizeOf(Pointer));
 
   s := TObject(Method.Data).ClassName + OName + '.' + s;
 
@@ -227,7 +275,7 @@ begin
   FCurEntry.Display := s;
   FCurEntry.Comp := nil;
   FCurEntry.TheUnitName := TObject(Method.Data).ClassType.UnitName;
-  FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName);
+  FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
 
     //LazarusIDE.DoOpenFileAndJumpToIdentifier(AFile, copy(AName,1,i), -1, -1, [ofOnlyIfExists, ofRegularFile]);
     //LazarusIDE.DoOpenFileAndJumpToPos(AFile, Point(1,i), Max(i-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile]);
@@ -239,6 +287,9 @@ begin
   FFollowFrames := False;
   ToolButtonActiveType.Caption := menuFollowForm.Caption;
   ToolButtonFollowActive.Down := True;
+
+  FConf.SetDeleteValue('IDEInspect/FollowActive/Type', 0, 0);
+  FConf.WriteToDisk;
 end;
 
 procedure TIdeInspectForm.menuFollowFrameClick(Sender: TObject);
@@ -246,6 +297,9 @@ begin
   FFollowFrames := True;
   ToolButtonActiveType.Caption := menuFollowFrame.Caption;
   ToolButtonFollowActive.Down := True;
+
+  FConf.SetDeleteValue('IDEInspect/FollowActive/Type', 1, 0);
+  FConf.WriteToDisk;
 end;
 
 procedure TIdeInspectForm.btnControlsClick(Sender: TObject);
@@ -253,9 +307,29 @@ begin
   btnControls.CheckMenuDropdown;
 end;
 
+procedure TIdeInspectForm.btnEndModalClick(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
+procedure TIdeInspectForm.btnKeepTopClick(Sender: TObject);
+begin
+  if btnKeepTop.Down then
+    FormStyle := fsStayOnTop
+  else
+    FormStyle := fsNormal;
+  FConf.SetDeleteValue('IDEInspect/FormPos/KeepTop', btnKeepTop.Down, False);
+  FConf.WriteToDisk;
+end;
+
 procedure TIdeInspectForm.btnOpenFileClick(Sender: TObject);
 begin
   LazarusIDE.DoOpenEditorFile(EditFile.Text, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+end;
+
+procedure TIdeInspectForm.btnSaveHistClick(Sender: TObject);
+begin
+  UpdateHistory(True);
 end;
 
 procedure TIdeInspectForm.btnComponentClick(Sender: TObject);
@@ -367,6 +441,26 @@ procedure TIdeInspectForm.ToolButtonFollowActiveClick(Sender: TObject);
 begin
   if ToolButtonFollowActive.Down then
     SetSelected(Self);
+  FConf.SetDeleteValue('IDEInspect/FollowActive/Enabled', ToolButtonFollowActive.Down, False);
+  FConf.WriteToDisk;
+end;
+
+procedure TIdeInspectForm.ToolButtonKeyClick(Sender: TObject);
+var
+  i: TShiftStateEnum;
+begin
+  FKeyGrabForm.KeyBox.Key := FShortCutKey;
+  FKeyGrabForm.KeyBox.ShiftState := FShortCutShift;
+  if FKeyGrabForm.ShowModal = mrOK then begin
+    FShortCutKey := FKeyGrabForm.KeyBox.Key;
+    FShortCutShift := FKeyGrabForm.KeyBox.ShiftState;
+
+    FConf.SetDeleteValue('IDEInspect/KeyShortCut/Key', FShortCutKey, 0);
+    for i := low(TShiftStateEnum) to high(TShiftStateEnum) do
+      FConf.SetDeleteValue('IDEInspect/KeyShortCut/' + ShiftStateNames[i],
+                           i in FShortCutShift, False);
+    FConf.WriteToDisk;
+  end;
 end;
 
 procedure TIdeInspectForm.TreeView1Change(Sender: TObject; Node: TTreeNode);
@@ -394,8 +488,14 @@ begin
   if FCurEntry.Comp <> FSelected then begin
     FCurEntry.Comp := FSelected;
     FCurEntry.UpdateDisplayName;
-    FCurEntry.TheUnitName := FSelected.UnitName;
-    FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName);
+    if FSelected <> nil then begin
+      FCurEntry.TheUnitName := FSelected.UnitName;
+      FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+    end
+    else begin
+      FCurEntry.TheUnitName := '';
+      FCurEntry.FileName := '';
+    end;
     UpdateHistory;
   end;
 end;
@@ -483,7 +583,7 @@ end;
 
 procedure TIdeInspectForm.DoActiveFormChanged(Sender: TObject; Form: TCustomForm);
 begin
-  If not ToolButtonFollowActive.Down then
+  If (not ToolButtonFollowActive.Down) or (not Self.Visible) then
     exit;
 
   if Form <> Self then
@@ -492,7 +592,7 @@ end;
 
 procedure TIdeInspectForm.DoActiveControChanged(Sender: TObject; LastControl: TControl);
 begin
-  If (not ToolButtonFollowActive.Down) or (not FFollowFrames) then
+  If (not ToolButtonFollowActive.Down) or (not FFollowFrames) or (not Self.Visible) then
     exit;
   if Screen.ActiveForm = Self then
     exit;
@@ -501,20 +601,62 @@ begin
     SetSelected(Screen.ActiveControl.Owner);
 end;
 
-procedure TIdeInspectForm.UpdateHistory;
+procedure TIdeInspectForm.DoKeyDownBefore(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  CurVisible: Boolean;
+begin
+  if (Screen.ActiveForm = self) or (Screen.ActiveForm = FKeyGrabForm) then exit;
+  if FShortCutKey = 0 then exit;
+
+  if (FShortCutKey <> Key) or (FShortCutShift <> Shift) then
+    exit;
+
+  Key := 0;
+  if Application.ModalLevel = 0  then begin
+    Self.Show;
+    exit;
+  end;
+
+  CurVisible := Visible;
+  Close;
+  DestroyHandle;
+  btnOpenFile.Visible := False;
+  btnSaveHist.Visible := True;
+  btnEndModal.Visible := True;
+  sepModal.Visible := True;
+  sepModal.Left := 1;
+  btnEndModal.Left := 1;
+  btnRemoveSelected.Left := 2;
+  if Self. ShowModal <> mrOK then
+    CurVisible := False;
+  btnSaveHist.Visible := False;
+  btnOpenFile.Visible := True;
+  btnEndModal.Visible := False;
+  sepModal.Visible := False;
+  Visible := CurVisible;
+end;
+
+function TIdeInspectForm.IndexOfCurrent: Integer;
+begin
+  if FCurEntry.Comp = nil then exit(-1);;
+  Result := FHistoryList.Count - 1;
+  while (Result >= 0) and (THistoryEntry(FHistoryList[Result]).Comp <> FCurEntry.Comp) do
+    dec(Result);
+end;
+
+procedure TIdeInspectForm.UpdateHistory(ForceAdd: Boolean = False);
 var
   i: Integer;
   FNewHist: THistoryEntry;
+  CanAdd: Boolean;
 begin
   FIsUpdatingHistory := True;
+  CanAdd := (FCurEntry.Comp is TCustomForm) or (FCurEntry.Comp is TCustomFrame)
+         or ForceAdd;
 
   i := -1;
-  if (FCurEntry.Comp <> nil) and
-     ( (FCurEntry.Comp is TCustomForm) or (FCurEntry.Comp is TCustomFrame) )
-  then begin
-    i := FHistoryList.Count - 1;
-    while (i >= 0) and (THistoryEntry(FHistoryList[i]).Comp <> FCurEntry.Comp) do
-      dec(i);
+  if (FCurEntry.Comp <> nil) and CanAdd then begin
+    i := IndexOfCurrent;
     if i < 0 then begin
       FNewHist := THistoryEntry.Create;
       FNewHist.Assign(FCurEntry);
@@ -554,14 +696,20 @@ begin
     Caption := ideinspIdeInspector;
   btnOpenFile.Enabled := EditFile.Text <> '';
   FIsUpdatingHistory := False;
+
+  btnSaveHist.Enabled := (FCurEntry.Comp <> nil) and (IndexOfCurrent < 0);
 end;
 
 constructor TIdeInspectForm.Create(TheOwner: TComponent);
+var
+  i: TShiftStateEnum;
 begin
+  FKeyGrabForm := TIdeInspectKeyGrabForm.Create(Self);
   FHistoryList := TList.Create;
   FCurEntry := THistoryEntry.Create;
   Screen.AddHandlerActiveFormChanged(@DoActiveFormChanged);
   Screen.AddHandlerActiveControlChanged(@DoActiveControChanged);
+  Application.AddOnKeyDownBeforeHandler(@DoKeyDownBefore);
   inherited Create(TheOwner);
 
   FPropertiesGrid := TCustomPropertiesGrid.Create(Self);
@@ -578,16 +726,32 @@ begin
   btnControls.Caption := ideinspControlsChildren;
   btnRemoveSelected.Hint := ideinspRemoveSelectedItemSFromTree;
 
-  FFollowFrames := True;
-  ToolButtonActiveType.Caption := menuFollowFrame.Caption;
+  FConf := GetIDEConfigStorage(IDE_INSPECT_CONF_FILE, True);
+
+  FFollowFrames := FConf.GetValue('IDEInspect/FollowActive/Type', 0) > 0;
+  if FFollowFrames then
+    ToolButtonActiveType.Caption := menuFollowFrame.Caption
+  else
+    ToolButtonActiveType.Caption := menuFollowForm.Caption;
   TabControl1Change(nil);
   SetSelected(Application);
+
+  FShortCutKey := FConf.GetValue('IDEInspect/KeyShortCut/Key', 0);
+  FShortCutShift := [];
+  for i := low(TShiftStateEnum) to high(TShiftStateEnum) do
+    if FConf.GetValue('IDEInspect/KeyShortCut/' + ShiftStateNames[i], False) then
+      FShortCutShift := FShortCutShift + [i];
+
+  btnKeepTop.Down := FConf.GetValue('IDEInspect/FormPos/KeepTop', False);
+  ToolButtonFollowActive.Down := FConf.GetValue('IDEInspect/FollowActive/Enabled', False);
 end;
 
 destructor TIdeInspectForm.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(fConf);
+  Application.RemoveOnKeyDownBeforeHandler(@DoKeyDownBefore);
   Screen.RemoveHandlerActiveControlChanged(@DoActiveControChanged);
   Screen.RemoveHandlerActiveFormChanged(@DoActiveFormChanged);
   for i := 0 to FHistoryList.Count - 1 do
@@ -595,19 +759,18 @@ begin
   FreeAndNil(FHistoryList);
   FreeAndNil(FCurEntry);
   FreeAndNil(TreeView1);
+  FreeAndNil(FKeyGrabForm);
   inherited Destroy;
 end;
 
 procedure IDEMenuClicked(Sender: TObject);
 begin
-  if not Assigned(IdeInspectForm) then begin
-    IdeInspectForm := TIdeInspectForm.Create(Application);
-  end;
   IdeInspectForm.Show;
 end;
 
 procedure Register;
 begin
+  IdeInspectForm := TIdeInspectForm.Create(Application);
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'mnuIdeInspector', ideinspInspectIDE, nil,
     @IDEMenuClicked);
 end;

@@ -7,7 +7,7 @@ unit IdeInspector;
 interface
 
 uses
-  MainInspector, LazarusPackageIntf;
+  MainInspector, IdeInspectKeyGrapper, LazarusPackageIntf;
 
 implementation
 
