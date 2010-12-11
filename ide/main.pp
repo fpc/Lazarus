@@ -911,7 +911,8 @@ type
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean);
 
     // useful file methods
-    function FindUnitFile(const AFilename: string): string; override;
+    function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
+                          Flags: TFindUnitFileFlags = []): string; override;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
     function FileExistsInIDE(const Filename: string;
@@ -13177,12 +13178,51 @@ begin
   Result:=MainBuildBoss.GetTestBuildDirectory;
 end;
 
-function TMainIDE.FindUnitFile(const AFilename: string): string;
+function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
+  Flags: TFindUnitFileFlags): string;
+
+  function FindInProject(AProject: TProject): string;
+  var
+    AnUnitInfo: TUnitInfo;
+    AnUnitName: String;
+    BaseDir: String;
+    UnitInFilename: String;
+  begin
+    // search in virtual (unsaved) files
+    AnUnitInfo:=AProject.UnitInfoWithFilename(AFilename,
+                                     [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
+    if AnUnitInfo<>nil then begin
+      Result:=AnUnitInfo.Filename;
+      exit;
+    end;
+
+    // search in search path of project
+    AnUnitName:=ExtractFileNameOnly(AFilename);
+    BaseDir:=AProject.ProjectDirectory;
+    UnitInFilename:='';
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                                       BaseDir,AnUnitName,UnitInFilename,true);
+  end;
+
+  function FindInPackage(APackage: TLazPackage): string;
+  var
+    BaseDir: String;
+    AnUnitName: String;
+    UnitInFilename: String;
+  begin
+    Result:='';
+    BaseDir:=APackage.Directory;
+    if not FilenameIsAbsolute(BaseDir) then exit;
+    // search in search path of package
+    AnUnitName:=ExtractFileNameOnly(AFilename);
+    UnitInFilename:='';
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                                       BaseDir,AnUnitName,UnitInFilename,true);
+  end;
+
 var
-  ProjectDir: string;
-  AnUnitInfo: TUnitInfo;
-  AnUnitName: String;
-  UnitInFilename: String;
+  AProject: TProject;
+  i: Integer;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
@@ -13190,21 +13230,52 @@ begin
   end;
   Result:='';
 
-  // search in virtual (unsaved) files
-  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename,
-                                   [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
-  if AnUnitInfo<>nil then begin
-    Result:=AnUnitInfo.Filename;
-    exit;
+  // project
+  AProject:=nil;
+  if TheOwner=nil then begin
+    AProject:=Project1;
+  end else if (TheOwner is TProject) then
+    AProject:=TProject(TheOwner);
+
+  if AProject<>nil then
+  begin
+    Result:=FindInProject(AProject);
+    if Result<>'' then exit;
   end;
-  // search in search path
-  AnUnitName:=ExtractFileNameOnly(AFilename);
-  // use the CodeTools way to find the pascal source
-  ProjectDir:=Project1.ProjectDirectory;
-  UnitInFilename:='';
-  Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                     ProjectDir,AnUnitName,UnitInFilename,true);
-  if Result<>'' then exit;
+
+  // package
+  if TheOwner is TLazPackage then begin
+    Result:=FindInPackage(TLazPackage(TheOwner));
+    if Result<>'' then exit;
+  end;
+
+  if TheOwner=Self then begin
+    // search in IDE
+    // first search in installed packages
+    for i:=0 to PackageGraph.Count-1 do
+      if (PackageGraph[i].Installed<>pitNope)
+      and ((not (fuffIgnoreUninstallPackages in Flags))
+           or (PackageGraph[i].AutoInstall<>pitNope))
+      then begin
+        Result:=FindInPackage(PackageGraph[i]);
+        if Result<>'' then exit;
+      end;
+    // then search in auto install packages
+    for i:=0 to PackageGraph.Count-1 do
+      if (PackageGraph[i].Installed=pitNope)
+      and (PackageGraph[i].AutoInstall<>pitNope) then begin
+        Result:=FindInPackage(PackageGraph[i]);
+        if Result<>'' then exit;
+      end;
+    // then search in all other open packages
+    for i:=0 to PackageGraph.Count-1 do
+      if (PackageGraph[i].Installed=pitNope)
+      and (PackageGraph[i].AutoInstall=pitNope) then begin
+        Result:=FindInPackage(PackageGraph[i]);
+        if Result<>'' then exit;
+      end;
+  end;
+  Result:='';
 end;
 
 {------------------------------------------------------------------------------

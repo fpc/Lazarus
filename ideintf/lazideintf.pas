@@ -105,13 +105,19 @@ type
   
   // new filename flags
   TSearchIDEFileFlag = (
-    siffDoNotCheckAllPackages, // do not search filename in loaded packages
-    siffCheckAllProjects, // do not search filename in loaded projects
+    siffDoNotCheckAllPackages, // do not search filename in unrelated packages (e.g. installed but not used by project)
+    siffCheckAllProjects, // search filename in all loaded projects
     siffCaseSensitive,  // check case sensitive
     siffDoNotCheckOpenFiles,  // do not search in files opened in source editor
     siffIgnoreExtension  // compare only filename, ignore file extension
     );
   TSearchIDEFileFlags = set of TSearchIDEFileFlag;
+
+  // find unit flags
+  TFindUnitFileFlag = (
+    fuffIgnoreUninstallPackages
+    );
+  TFindUnitFileFlags = set of TFindUnitFileFlag;
 
   // find source flags
   TFindSourceFlag = (
@@ -176,7 +182,8 @@ type
     property MainBarSubTitle: string read FMainBarSubTitle write SetMainBarSubTitle;
 
     // find file
-    function FindUnitFile(const AFilename: string): string; virtual; abstract;
+    function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
+                          Flags: TFindUnitFileFlags = []): string; virtual; abstract;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; virtual; abstract;
 
