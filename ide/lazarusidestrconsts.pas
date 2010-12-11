@@ -482,8 +482,8 @@ resourcestring
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
   lisConvertTargetLaz = 'Lazarus';
-  lisConvertTargetLazAndDelphi = 'Lazarus and Delphi';
   lisConvertTargetLazWinOnly = 'Lazarus for Windows only';
+  lisConvertTargetLazAndDelphi = 'Lazarus and Delphi';
   lisConvertTargetLazAndDelphiSameDfm = 'Lazarus and Delphi with same DFM file';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
   lisKeepFileOpen = 'Keep converted files open in editor';
