@@ -47,6 +47,7 @@ object Form1: TForm1
         ParentColor = False
         OnMouseDown = ChartPieMouseDown
         object ChartPiePieSeries1: TPieSeries
+          Marks.Distance = 40
           Marks.Format = '%2:s'
           Marks.Style = smsLabel
           Exploded = True
@@ -60,7 +61,7 @@ object Form1: TForm1
         Width = 558
         Align = alTop
         Alignment = taLeftJustify
-        Caption = 'Click on the slice to explodede/unxeplode it'
+        Caption = 'Click on the slice to explode/unxeplode it'
         ClientHeight = 35
         ClientWidth = 558
         TabOrder = 1
@@ -74,11 +75,30 @@ object Form1: TForm1
           TabOrder = 0
         end
         object lblWords: TLabel
-          Left = 428
+          Left = 424
           Height = 14
-          Top = 6
+          Top = 10
           Width = 58
           Caption = 'Label words'
+          ParentColor = False
+        end
+        object seLabelAngle: TSpinEdit
+          Left = 360
+          Height = 21
+          Top = 6
+          Width = 50
+          Increment = 5
+          MaxValue = 360
+          MinValue = -360
+          OnChange = seLabelAngleChange
+          TabOrder = 1
+        end
+        object lblLabelAngle: TLabel
+          Left = 296
+          Height = 14
+          Top = 10
+          Width = 55
+          Caption = 'Label angle'
           ParentColor = False
         end
       end
@@ -95,7 +115,7 @@ object Form1: TForm1
       '0|1|?|'
       '0|2|?|'
       '0|3|?|'
-      '0|0|?|'
+      '0|5|?|'
     )
     left = 440
     top = 136

@@ -17,14 +17,17 @@ type
     ChartPiePieSeries1: TPieSeries;
     ChartToolset1: TChartToolset;
     lblWords: TLabel;
+    lblLabelAngle: TLabel;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
     seWords: TSpinEdit;
+    seLabelAngle: TSpinEdit;
     tsPie: TTabSheet;
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure seWordsChange(Sender: TObject);
+    procedure seLabelAngleChange(Sender: TObject);
   end;
 
 var
@@ -79,6 +82,11 @@ begin
     r.Free;
   end;
   ChartPie.Invalidate;
+end;
+
+procedure TForm1.seLabelAngleChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.Marks.LabelFont.Orientation := seLabelAngle.Value * 10;
 end;
 
 end.
