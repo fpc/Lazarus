@@ -5403,6 +5403,10 @@ msgstr "右だけ展開"
 msgid "Component"
 msgstr "コンピーネント"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "コンポーネント名 %s%s%s はキーワードです"
@@ -10830,6 +10834,10 @@ msgstr "単語全体についてのみ検索"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "クリップボードから貼り付けたとき"
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"

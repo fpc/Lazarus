@@ -5357,6 +5357,10 @@ msgstr "Rozšířit pouze vpravo"
 msgid "Component"
 msgstr "Komponenta"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "Jméno komponenty je klíčové slovo"
@@ -10729,6 +10733,10 @@ msgstr "Hledat pouze celá slova"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "Při vložení ze schránky"
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"

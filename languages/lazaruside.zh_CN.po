@@ -5407,6 +5407,10 @@ msgstr ""
 msgid "Component"
 msgstr "组件"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "组件名 %s%s%s 是关键字"
@@ -10832,6 +10836,10 @@ msgstr "仅搜索整个单词"
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile

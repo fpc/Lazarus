@@ -5405,6 +5405,10 @@ msgstr ""
 msgid "Component"
 msgstr "Componenti"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "Il nome del componente %s%s%s è una parola chiave"
@@ -10826,6 +10830,10 @@ msgstr "Ricerca solo parole intere"
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile

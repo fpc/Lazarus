@@ -5397,6 +5397,10 @@ msgstr "Estender apenas à direita"
 msgid "Component"
 msgstr "Componente"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "Nome de componente %s%s%s é uma palavra-chave"
@@ -10798,6 +10802,10 @@ msgstr "Somente localizar palavras inteiras"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "Ao colar da Área de Transferência"
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"

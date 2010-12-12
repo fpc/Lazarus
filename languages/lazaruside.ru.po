@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-05 17:01+0300\n"
+"PO-Revision-Date: 2010-12-12 20:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1661,7 +1661,7 @@ msgstr "Перед методами"
 
 #: lazarusidestrconsts.dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
-msgstr "Конструктор должен быть 'init' (деструктор - 'done')"
+msgstr "Конструктор должен называться 'init' (деструктор - 'done')"
 
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
@@ -3225,7 +3225,7 @@ msgstr "Имя файла"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
-msgstr "Файл - не модуль"
+msgstr "Файл не является модулем"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -3253,7 +3253,7 @@ msgstr "Неверное имя модуля"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
-msgstr "%s%s%s - некорректное название модуля"
+msgstr "%s%s%s не является корректным именем модуля."
 
 #: lazarusidestrconsts.lisa2pnewclassname
 msgid "New class name:"
@@ -3301,11 +3301,11 @@ msgstr "Переключить пути"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
-msgstr "Название типа предка %s%s%s совпадает с%sмодулем %s%s%sю"
+msgstr "Название типа предка %s%s%s совпадает с%sмодулем %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
 msgid "The ancestor type %s%s%s is not a valid pascal identifier."
-msgstr "Тип предка %s%s%s - неверный идентификатор Паскаля"
+msgstr "Тип предка %s%s%s не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
 msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
@@ -3313,7 +3313,7 @@ msgstr "Имя класса %s%s%s и его предка %s%s%s совпада�
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
 msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
-msgstr "Имя класса %s%s%s уже есть в%sПакете %s%sФайл: %s%s%s"
+msgstr "Имя класса %s%s%s уже имеется в%sПакете %s%sФайл: %s%s%s"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
 msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
@@ -3321,15 +3321,15 @@ msgstr "Имя класса %s%s%s совпадает с %s именем мод�
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
 msgid "The class name %s%s%s is not a valid pascal identifier."
-msgstr "Имя класса %s%s%s - неверный идентификатор Паскаля"
+msgstr "Имя класса %s%s%s не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
-msgstr "Файл %s%s%s уже в пакете."
+msgstr "Файл %s%s%s уже имеется в пакете."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
 msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
-msgstr "Файл %s%s%s - часть текущего проекта.%sНе лучшая идея - делить файлы между проектами и пакетами."
+msgstr "Файл %s%s%s уже принадлежит текущему проекту.%sИметь общие файлы в проектах и пакетах запрещается."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
@@ -3824,7 +3824,7 @@ msgstr "Создаёт каталог для резервных копий в к
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
-msgstr "Изменение имени пакета или версии нарушит зависимости. Изменить ли эти зависимости?%sВыберите Да для замены всех перечисленных зависимостей.%sПропуск - для разрыва зависимостей и продолжения."
+msgstr "Изменение имени пакета или версии нарушит зависимости. Требуется ли изменить их?%sНажмите Да, чтобы изменить все перечисленные зависимости.%sНажмите Пропуск, чтобы отбросить зависимости и продолжить."
 
 #: lazarusidestrconsts.lisbegins
 msgid "begins"
@@ -4521,7 +4521,7 @@ msgstr "Классы и свойства существуют. Значения 
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
-msgstr "Класс %s%s%s - не зарегистрированный класс компонента.%sНе могу вставить."
+msgstr "Класс %s%s%s не является зарегистрированным классом компонента.%sНевозможно вставить."
 
 #: lazarusidestrconsts.lisclassnotfound
 msgid "Class not found"
@@ -5366,11 +5366,11 @@ msgstr "Подсказка: Вы можете задать путь компил
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
-msgstr "ЗАМЕТКА: файл настроек CodeTools не найден - используем умолчания"
+msgstr "ЗАМЕТКА: файл параметров CodeTools не найден, поэтому используются значения по умолчанию"
 
 #: lazarusidestrconsts.liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
-msgstr "ЗАМЕТКА: грузим старый файл настроек CodeTools: "
+msgstr "ЗАМЕТКА: загружается старый файл параметров CodeTools: "
 
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
@@ -5404,6 +5404,10 @@ msgstr "Удлинять только вправо"
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "Компонент"
+
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr "Имя компонента \"%s\" является ключевым словом Паскаля."
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
@@ -6857,12 +6861,12 @@ msgstr "Заключить выделенное"
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
-msgstr "Кодировка файла %s%s%s%sна диске - %s. Новой кодировкой будет %s."
+msgstr "Файл %s%s%s%sна диске имеет кодировку %s. Новой кодировкой будет %s."
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
-msgstr "Кодировка файла %s%s%s%sна диске - %s. Новой кодировкой будет %s."
+msgstr "Файл %s%s%s%sна диске имеет кодировку %s. Новой кодировкой будет %s."
 
 #: lazarusidestrconsts.lisentertransla
 msgid "Enter translation language"
@@ -6890,7 +6894,7 @@ msgstr "Некорректное имя компилятора"
 
 #: lazarusidestrconsts.lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
-msgstr "Файл компилятора \"%s\" не исполняемый."
+msgstr "Файл компилятора \"%s\" не является исполнимым."
 
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
@@ -6898,7 +6902,7 @@ msgstr "Некорректное имя отладчика"
 
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
-msgstr "Файл отладчика \"%s\" не исполняемый."
+msgstr "Файл отладчика \"%s\" не является исполнимым."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
 #| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
@@ -6915,7 +6919,7 @@ msgstr "Неверное имя файла Make"
 
 #: lazarusidestrconsts.lisenvoptdlginvalidmakefilenamemsg
 msgid "The make file \"%s\" is not an executable."
-msgstr "Файл Make \"%s\" - не исполняемый файл."
+msgstr "Файл Make \"%s\" не является исполнимым."
 
 #: lazarusidestrconsts.lisenvoptdlglazarusdirnotfoundmsg
 msgid "Lazarus directory \"%s\" not found."
@@ -7173,7 +7177,7 @@ msgstr "Допускается максимум %s средств."
 
 #: lazarusidestrconsts.lisexttooltitlecompleted
 msgid "\"%s\" completed"
-msgstr "\"%s\" - действие завершено"
+msgstr "Действие \"%s\" завершено"
 
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -8103,7 +8107,7 @@ msgstr "Некорректный идентификатор Паскаля"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr "Слово \"%s\" - неверный идентификатор языка паскаль."
+msgstr "Имя \"%s\" не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -8127,11 +8131,11 @@ msgstr "%s является группой. Параметр может быть
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
-msgstr "%s - уже часть проекта."
+msgstr "%s уже принадлежит проекту."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr "%s%s%s - некорректное имя проекта.%sВыберите другое (например, project1.lpi)"
+msgstr "%s%s%s не является корректным именем проекта.%sВыберите другое (например, project1.lpi)."
 
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
@@ -9231,7 +9235,7 @@ msgstr "Главный модуль является исходым кодом �
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
-msgstr "Создать исполняемый"
+msgstr "Исполнимый файл Make"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -10612,7 +10616,7 @@ msgstr "Не найдено секции ResourceString"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr "Обычно фильтр - это регулярное выражение. В Простом Синтаксисе . означает обычный символ, * означает любую последовательность, ? означает любой одиночный символ, запятая и точка с запятой являются разделителями. Например: *.pas;*.pp соответствует ^(.*\\.pas|.*\\.pp)$"
+msgstr "Обычно фильтр - это регулярное выражение. В простом синтаксисе . означает обычный символ, * - любую последовательность, ? - любой одиночный символ, а запятая и точка с запятой являются разделителями. Например: *.pas;*.pp соответствует ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
@@ -10814,6 +10818,10 @@ msgstr "Поиск только целых слов"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "При вставке из буфера обмена"
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
+msgstr "Открыть ..."
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -11243,11 +11251,11 @@ msgstr "Сохранить как предпочтительное имя фай
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "Максимальная версия пакета %s%s%s - неверна.%s(верный пример - 1.2.3.4)"
+msgstr "Максимальная версия %s%s%s пакета некорректна.%s(корректный пример - 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
 msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "Минимальная версия пакета %s%s%s - неверна.%s(верный пример - 1.2.3.4)"
+msgstr "Минимальная версия %s%s%s пакета некорректна.%s(корректный пример - 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedituninstall
 msgid "Uninstall"
@@ -11751,7 +11759,7 @@ msgstr "Пакет %s%s%s не имеет правильного каталог�
 
 #: lazarusidestrconsts.lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
-msgstr "Пакет - не пакет разработки"
+msgstr "Пакет не является пакетом времени разработки"
 
 #: lazarusidestrconsts.lispkgmangpackageisrequired
 msgid "Package is required"
@@ -11827,7 +11835,7 @@ msgstr "файл настроек статических пакетов"
 
 #: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
-msgstr "Файл компилятора для пакета %s - недопустимый исполняемый:%s%s"
+msgstr "Файл компилятора для пакета %s не является исполнимым:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -11836,7 +11844,7 @@ msgstr "Файл %s%s%s%sуже в пакете %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
 msgid "The file %s%s%s is not a lazarus package."
-msgstr "Файл %s%s%s - не пакет Lazarus."
+msgstr "Файл %s%s%s не является пакетом Lazarus."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
 msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
@@ -11844,7 +11852,7 @@ msgstr "Имя файла %s%s%s не соответствует имени па
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
 msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
-msgstr "Имя файла %s%s%s - часть текущего проекта.%sПроекты и пакеты не должны бы делить файлы."
+msgstr "Файл с именем %s%s%s имеется в текущем проекте.%sПроекты и пакеты не должны иметь общих файлов."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
 msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
@@ -11876,11 +11884,11 @@ msgstr "Пакет %s%s%s не откомпилировался. %sУдалит�
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
-msgstr "Имя пакета %s%s%s в%s%s%s%s -  неверное имя пакета Lazarus."
+msgstr "Имя пакета %s%s%s в%s%s%s%s не является корректным именем пакета Lazarus."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
-msgstr "Пакет %s - пакет только времени выполнения.%sТакие пакеты не могут встраиваться в IDE."
+msgstr "Пакет %s является пакетом времени выполнения.%sТакие пакеты не могут встраиваться в IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12072,7 +12080,7 @@ msgstr "FCL - библиотека компонентов FreePascal - обес�
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
-msgstr "LCL - Библиотека компонентов Lazarus - содержит все основные компоненты для редактирования форм."
+msgstr "LCL - библиотека компонентов Lazarus - содержит все основные компоненты для редактирования форм."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -12080,11 +12088,11 @@ msgstr "Пакет %s%s%s установлен, но не был найден к
 
 #: lazarusidestrconsts.lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
-msgstr "RTL - Библиотека Времени Выполнения (Run-Time Library) является основой всех программ FreePascal."
+msgstr "RTL - библиотека времени выполнения (Run-Time Library) - является основой всех программ FreePascal."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
 msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Это - пакет по умолчанию. Используется только для компонентов без пакета. Такие компоненты устарели."
+msgstr "Это пакет по умолчанию. Используется только для компонентов без пакета. Такие компоненты устарели."
 
 #: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -12357,15 +12365,15 @@ msgstr "Проект уже зависит от пакета %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
-msgstr "Имя модуля %s%s%s уже есть в проекте%sв файле: %s%s%s."
+msgstr "Имя модуля %s%s%s уже имеется в проекте%sв файле: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
-msgstr "Имя модуля %s%s%s уже есть в выделенном%sв файле: %s%s%s."
+msgstr "Имя модуля %s%s%s уже имеется в выделенном%sв файле: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name %s%s%s is not a valid pascal identifier."
-msgstr "Имя модуля %s%s%s - неверный идентификатор Паскаля."
+msgstr "Имя модуля %s%s%s не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisprojaddtoproject
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
@@ -12834,11 +12842,11 @@ msgstr "%s (идёт исполнение ...)"
 
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
-msgstr "Файл не исполняемый"
+msgstr "Файл не является исполнимым"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
-msgstr "Главное приложение %s%s%s - не исполняемый файл."
+msgstr "Главное приложение %s%s%s не является исполнимым файлом."
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -13337,7 +13345,7 @@ msgstr "Неверное имя переменной"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr "%s%s%s - некорректный идентификатор."
+msgstr "%s%s%s не является корректным идентификатором."
 
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
@@ -13493,7 +13501,7 @@ msgstr "Каталог назначения%s%s%s%s не существует."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Каталог назначения %s%s%s не существует.%sПроверьте имя исполняемого файла в меню Проект -> Параметры проекта."
+msgstr "Каталог назначения %s%s%s не существует.%sПроверьте имя исполнимого файла в меню Проект -> Параметры проекта."
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -13611,7 +13619,7 @@ msgstr "LFM-файл (файл формы Lazarus) содержит некорр
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr "Имя %s%s%s - неверный идентификатор Паскаля."
+msgstr "Имя %s%s%s не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -13783,7 +13791,7 @@ msgstr "Пробный каталог не найден:%s%s%s%s%s(смотри�
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Модуль %s%s%s уже есть. Пропуск приведёт к переименованию,%sОтмена отменить сохранение этого файла, а%sПрервать - отменит сохранение вообще."
+msgstr "Модуль %s%s%s уже существует.%sПропуск - переименовать файл,%sОтмена - не сохранять этот файл,%sПрервать - не сохранять больше ничего."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -14214,7 +14222,7 @@ msgstr "Невозможно загрузить файл:%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr "Невозможно загрузить старый файл ресурсов.%sЭтот файл - первый включаемый файл в%секции initialization.%sНапример, {$I %s.lrs}.%sВозможно, ошибка синтаксиса."
+msgstr "Невозможно загрузить старый файл ресурсов.%sЭтот файл является первым включаемым в%sсекции initialization.%sНапример, {$I %s.lrs}.%sВозможно, синтаксическая ошибка."
 
 #: lazarusidestrconsts.lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
@@ -16320,7 +16328,7 @@ msgstr "Еще не реализовано"
 
 #: lazarusidestrconsts.uenotimplcapagain
 msgid "I told You: Not implemented yet"
-msgstr "Вам сказано - не реализовано"
+msgstr "Вам сказано: не реализовано"
 
 #: lazarusidestrconsts.uenotimpltext
 msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"

@@ -5397,6 +5397,10 @@ msgstr ""
 msgid "Component"
 msgstr "Komponentė"
 
+#: lazarusidestrconsts.liscomponentnameisapascalkeyword
+msgid "Component name \"%s\" is a pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "Komponentės pavadinimas %s%s%s kaip ir bazinio žodžio"
@@ -10814,6 +10818,10 @@ msgstr "Ieškoti tik ištisų žodžių"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "Įterpiant iš iškarpinės"
+
+#: lazarusidestrconsts.lisopen
+msgid "Open ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
