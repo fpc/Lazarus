@@ -111,17 +111,21 @@ type
 
   TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
 
+  TChartMarkAttachment = (maDefault, maEdge, maCenter);
+
   { TGenericChartMarks }
 
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
   private
-    FDistanceToCenter: Boolean;
+    function GetDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
     procedure PutLabelFontTo(ACanvas: TCanvas);
+    procedure SetAttachment(AValue: TChartMarkAttachment);
     procedure SetDistanceToCenter(AValue: Boolean);
   protected
     FAdditionalAngle: Double;
+    FAttachment: TChartMarkAttachment;
     FClipped: Boolean;
     FDistance: TChartDistance;
     FFormat: String;
@@ -132,7 +136,7 @@ type
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FStyle: TSeriesMarksStyle;
 
-    procedure SetClipped(const AValue: Boolean);
+    procedure SetClipped(AValue: Boolean);
     procedure SetDistance(AValue: TChartDistance);
     procedure SetFormat(const AValue: String);
     procedure SetFrame(const AValue: _TFramePen);
@@ -158,6 +162,9 @@ type
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
     procedure SetAdditionalAngle(AAngle: Double);
   public
+    property DistanceToCenter: Boolean
+      read GetDistanceToCenter write SetDistanceToCenter
+      stored false default false;
     property Format: String read FFormat write SetFormat;
     property Frame: _TFramePen read FFrame write SetFrame;
     property LabelBrush: _TLabelBrush read FLabelBrush write SetLabelBrush;
@@ -166,12 +173,12 @@ type
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
   published
+    property Attachment: TChartMarkAttachment
+      read FAttachment write SetAttachment default maDefault;
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between labelled object and label.
     property Distance: TChartDistance read FDistance write SetDistance;
-    property DistanceToCenter: Boolean
-      read FDistanceToCenter write SetDistanceToCenter default false;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
   end;
@@ -521,6 +528,11 @@ begin
     ACanvas.Clipping := true;
 end;
 
+function TGenericChartMarks.GetDistanceToCenter: Boolean;
+begin
+  Result := Attachment = maCenter;
+end;
+
 function TGenericChartMarks.GetLabelPolygon(ASize: TPoint): TPointArray;
 var
   i: Integer;
@@ -582,7 +594,14 @@ begin
   FAdditionalAngle := AAngle;
 end;
 
-procedure TGenericChartMarks.SetClipped(const AValue: Boolean);
+procedure TGenericChartMarks.SetAttachment(AValue: TChartMarkAttachment);
+begin
+  if FAttachment = AValue then exit;
+  FAttachment := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetClipped(AValue: Boolean);
 begin
   if FClipped = AValue then exit;
   FClipped := AValue;
@@ -598,9 +617,10 @@ end;
 
 procedure TGenericChartMarks.SetDistanceToCenter(AValue: Boolean);
 begin
-  if FDistanceToCenter = AValue then exit;
-  FDistanceToCenter := AValue;
-  StyleChanged(Self);
+  if AValue then
+    Attachment := maCenter
+  else
+    Attachment := maDefault;
 end;
 
 procedure TGenericChartMarks.SetFormat(const AValue: String);
