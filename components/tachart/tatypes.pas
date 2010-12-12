@@ -151,7 +151,7 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
-    function GetLabelPolygon(ACenter, ASize: TPoint): TPointArray;
+    function GetLabelPolygon(ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
   public
@@ -484,10 +484,13 @@ var
   wasClipping: Boolean = false;
   labelPoly: TPointArray;
   ptText: TPoint;
+  i: Integer;
 begin
   ACanvas.Font.Assign(LabelFont);
   ptText := ACanvas.TextExtent(AText);
-  labelPoly := GetLabelPolygon(ALabelCenter, ptText);
+  labelPoly := GetLabelPolygon(ptText);
+  for i := 0 to High(labelPoly) do
+    labelPoly[i] += ALabelCenter;
 
   if
     (OverlapPolicy = opHideNeighbour) and
@@ -515,15 +518,13 @@ begin
     ACanvas.Clipping := true;
 end;
 
-function TGenericChartMarks.GetLabelPolygon(
-  ACenter, ASize: TPoint): TPointArray;
+function TGenericChartMarks.GetLabelPolygon(ASize: TPoint): TPointArray;
 var
   i: Integer;
   a: Double;
 begin
   if IsMarginRequired then
     ASize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
-
   SetLength(Result, 4);
   Result[0] := -ASize div 2;
   Result[2] := Result[0] + ASize;
@@ -531,7 +532,7 @@ begin
   Result[3] := Point(Result[0].X, Result[2].Y);
   a := LabelAngle;
   for i := 0 to High(Result) do
-    Result[i] := RotatePoint(Result[i], a) + ACenter;
+    Result[i] := RotatePoint(Result[i], a);
 end;
 
 function TGenericChartMarks.IsMarginRequired: Boolean;
