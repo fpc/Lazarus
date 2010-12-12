@@ -241,6 +241,8 @@ function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
 procedure NormalizeRect(var ARect: TRect); overload;
 procedure NormalizeRect(var ARect: TDoubleRect); overload;
 
+function OrientToRad(AOrient: Integer): Double; inline;
+
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
@@ -249,6 +251,7 @@ function ProjToRect(
   const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
 
 function RadToDeg16(ARad: Double): Integer; inline;
+function RadToOrient(ARad: Double): Integer; inline;
 
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
@@ -286,6 +289,9 @@ var
   DrawData: TDrawDataRegistry;
 
 implementation
+
+const
+  ORIENTATION_UNITS_PER_DEG = 10;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
 
@@ -691,6 +697,11 @@ begin
   end;
 end;
 
+function OrientToRad(AOrient: Integer): Double;
+begin
+  Result := DegToRad(AOrient / ORIENTATION_UNITS_PER_DEG);
+end;
+
 function PointDist(const A, B: TPoint): Integer;
 begin
   Result := Sqr(A.X - B.X) + Sqr(A.Y - B.Y);
@@ -725,6 +736,11 @@ end;
 function RadToDeg16(ARad: Double): Integer;
 begin
   Result := Round(RadToDeg(ARad) * 16);
+end;
+
+function RadToOrient(ARad: Double): Integer;
+begin
+  Result := Round(RadToDeg(ARad)) * ORIENTATION_UNITS_PER_DEG;
 end;
 
 function RectIntersectsRect(

@@ -23,8 +23,8 @@ object Form1: TForm1
       ClientWidth = 558
       object ChartPie: TChart
         Left = 0
-        Height = 372
-        Top = 35
+        Height = 356
+        Top = 51
         Width = 558
         AxisList = <        
           item
@@ -56,13 +56,13 @@ object Form1: TForm1
       end
       object Panel1: TPanel
         Left = 0
-        Height = 35
+        Height = 51
         Top = 0
         Width = 558
         Align = alTop
         Alignment = taLeftJustify
         Caption = 'Click on the slice to explode/unxeplode it'
-        ClientHeight = 35
+        ClientHeight = 51
         ClientWidth = 558
         TabOrder = 1
         object seWords: TSpinEdit
@@ -70,6 +70,7 @@ object Form1: TForm1
           Height = 21
           Top = 6
           Width = 58
+          Anchors = [akTop, akRight]
           MaxValue = 10
           OnChange = seWordsChange
           TabOrder = 0
@@ -79,6 +80,7 @@ object Form1: TForm1
           Height = 14
           Top = 10
           Width = 58
+          Anchors = [akTop, akRight]
           Caption = 'Label words'
           ParentColor = False
         end
@@ -87,6 +89,7 @@ object Form1: TForm1
           Height = 21
           Top = 6
           Width = 50
+          Anchors = [akTop, akRight]
           Increment = 5
           MaxValue = 360
           MinValue = -360
@@ -98,8 +101,19 @@ object Form1: TForm1
           Height = 14
           Top = 10
           Width = 55
+          Anchors = [akTop, akRight]
           Caption = 'Label angle'
           ParentColor = False
+        end
+        object cbRotate: TCheckBox
+          Left = 463
+          Height = 17
+          Top = 30
+          Width = 83
+          Anchors = [akTop, akRight]
+          Caption = 'Rotate labels'
+          OnChange = cbRotateChange
+          TabOrder = 2
         end
       end
     end

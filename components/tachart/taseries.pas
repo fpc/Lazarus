@@ -92,6 +92,7 @@ type
   published
     property Exploded;
     property FixedRadius;
+    property RotateLabels;
     property Source;
   end;
 

@@ -46,10 +46,12 @@ type
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
     FRadius: Integer;
+    FRotateLabels: Boolean;
     FSlices: array of TPieSlice;
     procedure Measure(ACanvas: TCanvas);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
+    procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
     function TryRadius(ACanvas: TCanvas): TRect;
   protected
@@ -64,6 +66,8 @@ type
     property Exploded: Boolean read FExploded write SetExploded default false;
     property FixedRadius: TChartDistance
       read FFixedRadius write SetFixedRadius default 0;
+    property RotateLabels: Boolean
+      read FRotateLabels write SetRotateLabels default false;
     property Source;
   end;
 
@@ -97,6 +101,7 @@ var
 begin
   if IsEmpty then exit;
 
+  Marks.SetAdditionalAngle(0);
   Measure(ACanvas);
 
   ACanvas.Pen.Color := clBlack;
@@ -113,10 +118,16 @@ begin
     end;
   end;
   if not Marks.IsMarkLabelsVisible then exit;
+  prevAngle := 0;
   for i := 0 to Count - 1 do
-    with FSlices[i].FLabel do
-      if FText <> '' then
+    with FSlices[i].FLabel do begin
+      if FText <> '' then begin
+        if RotateLabels then
+          Marks.SetAdditionalAngle(prevAngle + FSlices[i].FAngle / 2);
         Marks.DrawLabel(ACanvas, FAttachment, FCenter, FText, prevLabelPoly);
+      end;
+      prevAngle += FSlices[i].FAngle;
+    end;
 end;
 
 function TCustomPieSeries.FindContainingSlice(const APoint: TPoint): Integer;
@@ -171,7 +182,6 @@ var
   a, b: Integer;
 begin
   FCenter := CenterPoint(ParentChart.ClipRect);
-
   if FixedRadius = 0 then begin
     // Use binary search to find maximum radius fitting into the parent chart.
     a := MIN_RADIUS;
@@ -202,6 +212,13 @@ procedure TCustomPieSeries.SetFixedRadius(AValue: TChartDistance);
 begin
   if FFixedRadius = AValue then exit;
   FFixedRadius := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomPieSeries.SetRotateLabels(AValue: Boolean);
+begin
+  if FRotateLabels = AValue then exit;
+  FRotateLabels := AValue;
   UpdateParentChart;
 end;
 
@@ -258,6 +275,8 @@ function TCustomPieSeries.TryRadius(ACanvas: TCanvas): TRect;
       if not Marks.IsMarkLabelsVisible then exit;
         FText := FormattedMark(AIndex);
       if FText = '' then exit;
+      if RotateLabels then
+        Marks.SetAdditionalAngle(AAngle);
       p := Marks.GetLabelPolygon(ACanvas.TextExtent(FText));
       FCenter += EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
       for i := 0 to High(p) do

@@ -16,6 +16,7 @@ type
     ChartPie: TChart;
     ChartPiePieSeries1: TPieSeries;
     ChartToolset1: TChartToolset;
+    cbRotate: TCheckBox;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
     ListChartSource1: TListChartSource;
@@ -24,6 +25,7 @@ type
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
     tsPie: TTabSheet;
+    procedure cbRotateChange(Sender: TObject);
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure seWordsChange(Sender: TObject);
@@ -38,6 +40,11 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbRotateChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.RotateLabels := cbRotate.Checked;
+end;
 
 procedure TForm1.ChartPieMouseDown(
   Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

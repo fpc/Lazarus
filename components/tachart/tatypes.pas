@@ -118,8 +118,10 @@ type
   private
     FDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
+    procedure PutLabelFontTo(ACanvas: TCanvas);
     procedure SetDistanceToCenter(AValue: Boolean);
   protected
+    FAdditionalAngle: Double;
     FClipped: Boolean;
     FDistance: TChartDistance;
     FFormat: String;
@@ -154,6 +156,7 @@ type
     function GetLabelPolygon(ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
+    procedure SetAdditionalAngle(AAngle: Double);
   public
     property Format: String read FFormat write SetFormat;
     property Frame: _TFramePen read FFrame write SetFrame;
@@ -292,7 +295,7 @@ type
 implementation
 
 uses
-  Math, TASources;
+  TASources;
 
 { TChartPen }
 
@@ -486,7 +489,7 @@ var
   ptText: TPoint;
   i: Integer;
 begin
-  ACanvas.Font.Assign(LabelFont);
+  PutLabelFontTo(ACanvas);
   ptText := ACanvas.TextExtent(AText);
   labelPoly := GetLabelPolygon(ptText);
   for i := 0 to High(labelPoly) do
@@ -550,7 +553,7 @@ end;
 function TGenericChartMarks.LabelAngle: Double;
 begin
   // Negate to take into account top-down Y axis.
-  Result := -DegToRad(LabelFont.Orientation / 10);
+  Result := -OrientToRad(LabelFont.Orientation) - FAdditionalAngle;
 end;
 
 function TGenericChartMarks.MeasureLabel(
@@ -558,11 +561,25 @@ function TGenericChartMarks.MeasureLabel(
 var
   sz: TPoint;
 begin
-  ACanvas.Font.Assign(LabelFont);
+  PutLabelFontTo(ACanvas);
   sz := ACanvas.TextExtent(AText);
   if IsMarginRequired then
     sz += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
   Result := MeasureRotatedRect(sz, LabelAngle);
+end;
+
+procedure TGenericChartMarks.PutLabelFontTo(ACanvas: TCanvas);
+begin
+  with ACanvas.Font do begin
+    Assign(LabelFont);
+    if FAdditionalAngle <> 0 then
+      Orientation := Orientation + RadToOrient(FAdditionalAngle);
+  end;
+end;
+
+procedure TGenericChartMarks.SetAdditionalAngle(AAngle: Double);
+begin
+  FAdditionalAngle := AAngle;
 end;
 
 procedure TGenericChartMarks.SetClipped(const AValue: Boolean);
