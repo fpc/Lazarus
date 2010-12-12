@@ -41,8 +41,8 @@ const
 type
   TCustomChart = class(TCustomControl)
   public
-    procedure ZoomFull; virtual; abstract;
     procedure StyleChanged(Sender: TObject); virtual; abstract;
+    procedure ZoomFull; virtual; abstract;
   end;
 
   { TChartPen }
@@ -147,13 +147,13 @@ type
 
   public
     procedure Assign(Source: TPersistent); override;
+    function CenterOffset(ACanvas: TCanvas; const AText: String): TSize;
     procedure DrawLabel(
       ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
+    function GetLabelPolygon(ACenter, ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
-    function CenterOffset(ACanvas: TCanvas; const AText: String): TSize;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
-
   public
     property Format: String read FFormat write SetFormat;
     property Frame: _TFramePen read FFrame write SetFrame;
@@ -183,7 +183,9 @@ type
     property Color default clYellow;
   end;
 
-  TCustomChartMarks = specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>;
+  TCustomChartMarks =
+    specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>;
+
   { TChartMarks }
 
   TChartMarks = class(TCustomChartMarks)
@@ -481,24 +483,11 @@ procedure TGenericChartMarks.DrawLabel(
 var
   wasClipping: Boolean = false;
   labelPoly: TPointArray;
-  ptSize, ptText: TPoint;
-  a: Double;
-  i: Integer;
+  ptText: TPoint;
 begin
   ACanvas.Font.Assign(LabelFont);
   ptText := ACanvas.TextExtent(AText);
-  ptSize := ptText;
-  if IsMarginRequired then
-    ptSize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
-
-  SetLength(labelPoly, 4);
-  labelPoly[0] := -ptSize div 2;
-  labelPoly[2] := labelPoly[0] + ptSize;
-  labelPoly[1] := Point(labelPoly[2].X, labelPoly[0].Y);
-  labelPoly[3] := Point(labelPoly[0].X, labelPoly[2].Y);
-  a := LabelAngle;
-  for i := 0 to High(labelPoly) do
-    labelPoly[i] := RotatePoint(labelPoly[i], a) + ALabelCenter;
+  labelPoly := GetLabelPolygon(ALabelCenter, ptText);
 
   if
     (OverlapPolicy = opHideNeighbour) and
@@ -520,10 +509,29 @@ begin
     ACanvas.Polygon(labelPoly);
   end;
 
-  ptText := RotatePoint(-ptText div 2, a) + ALabelCenter;
+  ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
   ACanvas.TextOut(ptText.X, ptText.Y, AText);
   if wasClipping then
     ACanvas.Clipping := true;
+end;
+
+function TGenericChartMarks.GetLabelPolygon(
+  ACenter, ASize: TPoint): TPointArray;
+var
+  i: Integer;
+  a: Double;
+begin
+  if IsMarginRequired then
+    ASize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
+
+  SetLength(Result, 4);
+  Result[0] := -ASize div 2;
+  Result[2] := Result[0] + ASize;
+  Result[1] := Point(Result[2].X, Result[0].Y);
+  Result[3] := Point(Result[0].X, Result[2].Y);
+  a := LabelAngle;
+  for i := 0 to High(Result) do
+    Result[i] := RotatePoint(Result[i], a) + ACenter;
 end;
 
 function TGenericChartMarks.IsMarginRequired: Boolean;
