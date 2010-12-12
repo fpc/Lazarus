@@ -2138,9 +2138,6 @@ end;
   Retrieves the origin of the specified context
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
-var
-  Transform: CGAffineTransform;
-  SizeP: TPoint;
 begin
   Result := 0;
   
@@ -2149,13 +2146,26 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'GetWindowOrgEx') then Exit;
-  
-  Transform := CGContextGetCTM(TCarbonContext(DC).CGContext);
-  GetDeviceSize(DC, SizeP);
-  P^.X := Round(Transform.tx);
-  P^.Y := SizeP.Y - Round(Transform.ty);
-  Result := 1;
-  
+
+  Result:=1;
+  if Assigned(P) then P^:=TCarbonDeviceContext(DC).WindowOfs;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetWindowOrgEx ' + DbgS(P^.X) + ', ' + DbgS(P^.Y));
+  {$ENDIF}
+end;
+
+function TCarbonWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  Result := 0;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetViewPortOrgEx DC: ' + DbgS(DC));
+  {$ENDIF}
+
+  if not CheckDC(DC, 'GetViewPortOrgEx') then Exit;
+
+  Result:=1;
+  if Assigned(P) then P^:=TCarbonDeviceContext(DC).ViewPortOfs;
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetWindowOrgEx ' + DbgS(P^.X) + ', ' + DbgS(P^.Y));
   {$ENDIF}
@@ -2541,17 +2551,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
-  Result := False;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX)
-      + ', ' + DbgS(DY));
-  {$ENDIF}
-  
-  if not CheckDC(DC, 'MoveWindowOrgEx') then Exit;
-
-  CGContextTranslateCTM(TCarbonContext(DC).CGContext, DX, DY);
-  Result := True;
+  Result := inherited MoveWindowOrgEx(DC, dX, dY);
 end;
 
 function TCarbonWidgetSet.PeekMessage(var lpMsg: TMsg; Handle: HWND;
@@ -3436,6 +3436,21 @@ begin
   TCarbonDeviceContext(DC).TextColor := Color;
 end;
 
+function TCarbonWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer;
+  OldPoint: PPoint): Boolean;
+begin
+  Result:=False;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetViewPortOrgEx DC: ' + DbgS(DC) +
+      ' NewX: ' + DbgS(NewX) + ' NewY: '+DbgS(NewY));
+  {$ENDIF}
+  if not CheckDC(DC, 'SetViewPortOrgEx') then Exit;
+
+  if Assigned(OldPoint) then OldPoint^:=TCarbonDeviceContext(DC).ViewPortOfs;
+  TCarbonDeviceContext(DC).ViewPortOfs:=Types.Point(NewX, NewY);
+  Result:=True;
+end;
+
 function TCarbonWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: PtrInt): PtrInt;
 begin
@@ -3452,21 +3467,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
-var
-  OldP: TPoint;
 begin
   Result  := False;
-  
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.SetWindowOrgEx DC: ' + DbgS(DC) + ' X: ' + DbgS(NewX) +
 	  ' Y: ' + DbgS(NewY));
   {$ENDIF}
-  
-  GetWindowOrgEx(DC, @OldP);
-  
-  Result := MoveWindowOrgEx(DC, - NewX - OldP.X, - NewY - OldP.Y);
-  if OldPoint <> nil then
-    OldPoint := @OldP;
+
+  if not CheckDC(DC, 'SetWindowOrgEx') then Exit;
+
+  if Assigned(OldPoint) then OldPoint^:=TCarbonDeviceContext(DC).WindowOfs;
+  TCarbonDeviceContext(DC).WindowOfs:=Types.Point(NewX, NewY);
 end;
 
 function TCarbonWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y,

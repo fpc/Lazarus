@@ -131,6 +131,7 @@ function GetSystemMetrics(NIndex: Integer): Integer;  override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
+function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
 function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
@@ -204,6 +205,7 @@ function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
+function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
