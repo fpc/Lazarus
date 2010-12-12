@@ -467,8 +467,8 @@ begin
   ExpandRect(ARect, RotatePoint(p, AAngle1) + ACenter);
   ExpandRect(ARect, RotatePoint(p, AAngle2) + ACenter);
   j := Floor(AAngle1 / Pi * 2);
-  for i := j to j + 3 do
-    if SafeInRange(Pi / 2 * i, AAngle1, AAngle2) then
+  for i := j to j + 4 do
+    if InRange(Pi / 2 * i, AAngle1, AAngle2) then
       ExpandRect(ARect, RotatePoint(p, Pi / 2 * i) + ACenter);
 end;
 

@@ -173,6 +173,7 @@ begin
   FCenter := CenterPoint(ParentChart.ClipRect);
 
   if FixedRadius = 0 then begin
+    // Use binary search to find maximum radius fitting into the parent chart.
     a := MIN_RADIUS;
     with Size(ParentChart.ClipRect) do
       b := Max(cx div 2, cy div 2);
@@ -289,7 +290,7 @@ begin
       prevAngle += FAngle;
     end;
   end;
-  InflateRect(Result, Margin, Margin);
+  InflateRect(Result, MARGIN, MARGIN);
 end;
 
 end.
