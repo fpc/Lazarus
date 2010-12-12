@@ -433,6 +433,8 @@ begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
+  Result:=CallNextEventHandler(ANextHandler, AEvent);
+  Exit;
 
   StartControl := nil;
   if OSError(GetEventParameter(AEvent, kEventParamStartControl, typeControlRef,
