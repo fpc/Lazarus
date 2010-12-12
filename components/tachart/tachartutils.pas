@@ -216,6 +216,10 @@ procedure Exchange(var A, B: String); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline;
+procedure ExpandRect(var ARect: TRect; const APoint: TPoint); inline;
+procedure ExpandRect(
+  var ARect: TRect; const ACenter: TPoint; ARadius: Integer;
+  AAngle1, AAngle2: Double); inline;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
@@ -224,7 +228,9 @@ function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean; inline;
 function IsPointInPolygon(
   const AP: TPoint; const APolygon: array of TPoint): Boolean;
-function IsPointInRect(const AP, A1, A2: TPoint): Boolean; inline;
+function IsPointInRect(const AP, A1, A2: TPoint): Boolean; inline; overload;
+function IsPointInRect(const AP: TPoint; const AR: TRect): Boolean; inline; overload;
+function IsRectInRect(const AInner, AOuter: TRect): Boolean; inline;
 function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
 function IsPolygonIntersectsPolygon(const AP1, AP2: array of TPoint): Boolean;
 function LineIntersectsRect(
@@ -257,7 +263,8 @@ function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
 
-procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
+procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double); overload;
+procedure UpdateMinMax(AValue: Integer; var AMin, AMax: Integer); overload;
 
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
@@ -441,6 +448,30 @@ begin
   UpdateMinMax(APoint.Y, ARect.a.Y, ARect.b.Y);
 end;
 
+procedure ExpandRect(var ARect: TRect; const APoint: TPoint);
+begin
+  NormalizeRect(ARect);
+  UpdateMinMax(APoint.X, ARect.Left, ARect.Right);
+  UpdateMinMax(APoint.Y, ARect.Top, ARect.Bottom);
+end;
+
+procedure ExpandRect(
+  var ARect: TRect; const ACenter: TPoint; ARadius: Integer;
+  AAngle1, AAngle2: Double);
+var
+  p: TPoint;
+  i, j: Integer;
+begin
+  p := Point(ARadius, 0);
+  EnsureOrder(AAngle1, AAngle2);
+  ExpandRect(ARect, RotatePoint(p, AAngle1) + ACenter);
+  ExpandRect(ARect, RotatePoint(p, AAngle2) + ACenter);
+  j := Floor(AAngle1 / Pi * 2);
+  for i := j to j + 3 do
+    if SafeInRange(Pi / 2 * i, AAngle1, AAngle2) then
+      ExpandRect(ARect, RotatePoint(p, Pi / 2 * i) + ACenter);
+end;
+
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
@@ -539,6 +570,20 @@ end;
 function IsPointInRect(const AP, A1, A2: TPoint): Boolean;
 begin
   Result := SafeInRange(AP.X, A1.X, A2.X) and SafeInRange(AP.Y, A1.Y, A2.Y);
+end;
+
+function IsPointInRect(const AP: TPoint; const AR: TRect): Boolean;
+begin
+  Result :=
+    SafeInRange(AP.X, AR.Left, AR.Right) and
+    SafeInRange(AP.Y, AR.Top, AR.Bottom);
+end;
+
+function IsRectInRect(const AInner, AOuter: TRect): Boolean;
+begin
+  Result :=
+    IsPointInRect(AInner.TopLeft, AOuter) and
+    IsPointInRect(AInner.BottomRight, AOuter);
 end;
 
 function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
@@ -742,6 +787,14 @@ end;
 {$HINTS ON}
 
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
+begin
+  if AValue < AMin then
+    AMin := AValue;
+  if AValue > AMax then
+    AMax := AValue;
+end;
+
+procedure UpdateMinMax(AValue: Integer; var AMin, AMax: Integer);
 begin
   if AValue < AMin then
     AMin := AValue;
