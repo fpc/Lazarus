@@ -671,7 +671,7 @@ begin
     for i := 0 to OrderedControls.Count - 1 do
     begin
       CurControl := TControl(OrderedControls[i]);
-      if not CurControl.Visible then
+      if not CurControl.IsControlVisible then
         Continue;
       CalculatePosition;
       //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,'x',CurControl.Height]);
