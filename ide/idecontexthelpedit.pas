@@ -186,7 +186,7 @@ begin
   FormFilename:=LazarusIDE.FindUnitFile(GetClassUnitName(UnitControl.ClassType),LazarusIDE);
   //debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
   if FormFilename='' then begin
-    debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName,': unit source not found']);
+    debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',GetClassUnitName(UnitControl.ClassType),': unit source not found']);
     exit;
   end;
   Code:=CodeToolBoss.LoadFile(FormFilename,true,false);
