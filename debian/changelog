@@ -10,7 +10,7 @@ lazarus (0.9.28.2-12) unstable; urgency=low
     installed to fix dependencies of lazarus-ide and that Qt based IDE is not
     packaged. The lazarus-ide-qt4 now installs the GTK based IDE by depending
     on lazarus-ide-gtk until Qt IDE gets packaged. (Closes: Bug#594611)
-  * Removed lintian warning by addeing lcl-gtk2 as first alternative for
+  * Removed lintian warning by adding lcl-gtk2 as first alternative for
     lcl-units dependency list.
   * Bumped standard version to 3.9.1.
 
