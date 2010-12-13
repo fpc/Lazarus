@@ -208,7 +208,7 @@ msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "שם רכיב"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
@@ -615,7 +615,7 @@ msgstr "הזז למטה"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "הזז שדה למטה"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
@@ -623,7 +623,7 @@ msgstr "הזז למעלה"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "הזז שדה למעלה"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -740,7 +740,7 @@ msgstr "בחר הכל"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "בחר את כל השדות"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1109,7 +1109,7 @@ msgstr "בטל את כל הבחירות"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "בטל את כל הבחירות"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1148,10 +1148,9 @@ msgid "Filter name"
 msgstr "שם מסנן"
 
 #: objinspstrconsts.pirsunit
-#, fuzzy
 #| msgid "Unit"
 msgid "Pascal unit"
-msgstr "יחידה "
+msgstr "יחידת פסקל"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1723,19 +1722,19 @@ msgstr "האם אתה רוצה לפצל את הדמות?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "לחצן חדש"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "לחצן סימון חדש"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "חוצץ חדש"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "מפריד חדש"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"

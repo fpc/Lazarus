@@ -281,7 +281,7 @@ msgstr "שטח עבודה של היישום"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr ""
+msgstr "מימי"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -358,7 +358,7 @@ msgstr "לפקד s% אין חלון הורה"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
-msgstr ""
+msgstr "קרמי"
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -536,7 +536,7 @@ msgstr "קדימה"
 
 #: lclstrconsts.rsfuchsiacolorcaption
 msgid "Fuchsia"
-msgstr ""
+msgstr "פוקסיה"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
@@ -720,13 +720,12 @@ msgstr "הדגשת טקסט"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr ""
+msgstr "לבן חם"
 
 #: lclstrconsts.rsicns
-#, fuzzy
 #| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
-msgstr "משאב צלמיות OSX"
+msgstr "צלמית  של OSX של מקינטוש"
 
 #: lclstrconsts.rsicon
 msgid "Icon"
@@ -825,7 +824,7 @@ msgstr "אחרון"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr ""
+msgstr "לימוני"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
@@ -837,7 +836,7 @@ msgstr "הרשימה חייבת להיות ריקה"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr ""
+msgstr "ערמוני"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -1175,7 +1174,7 @@ msgstr "כחול שמיים"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
-msgstr ""
+msgstr "כחלחל ירקרק"
 
 #: lclstrconsts.rstext
 msgid "Text"
