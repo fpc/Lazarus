@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls,
   LazConfigStorage, FileUtil, UTF8Process,
-  IDEExternToolIntf, IDEImagesIntf,
+  IDEExternToolIntf, IDEImagesIntf, IDEDialogs,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
   InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, ButtonPanel;
 
@@ -79,12 +79,15 @@ type
     function Load(Config: TConfigStorage; const Path: string): TModalResult;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     function Run(ExtTool: TIDEExternalToolOptions;
-                 Macros: TTransferMacroList): TModalResult;
+                 Macros: TTransferMacroList;
+                 ShowAbort: boolean): TModalResult;
     function Run(ExtTool: TIDEExternalToolOptions;
                  Macros: TTransferMacroList;
                  TheOutputFilter: TOutputFilter;
-                 CompilerOptions: TBaseCompilerOptions): TModalResult;
-    function Run(Index: integer; Macros: TTransferMacroList): TModalResult;
+                 CompilerOptions: TBaseCompilerOptions;
+                 ShowAbort: boolean): TModalResult;
+    function Run(Index: integer; Macros: TTransferMacroList;
+                 ShowAbort: boolean): TModalResult;
     function Save(Config: TConfigStorage): TModalResult;
     function Save(Config: TConfigStorage; const Path: string): TModalResult;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
@@ -281,26 +284,27 @@ begin
 end;
 
 function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
-  Macros: TTransferMacroList): TModalResult;
+  Macros: TTransferMacroList; ShowAbort: boolean): TModalResult;
 begin
-  Result:=Run(ExtTool,Macros,nil,nil);
+  Result:=Run(ExtTool,Macros,nil,nil,ShowAbort);
 end;
 
 function TExternalToolList.Run(Index: integer;
-  Macros: TTransferMacroList): TModalResult;
+  Macros: TTransferMacroList; ShowAbort: boolean): TModalResult;
 begin
   Result:=mrCancel;
   if (Index<0) or (Index>=Count) then exit;
-  Result:=Run(Items[Index],Macros);
+  Result:=Run(Items[Index],Macros,ShowAbort);
 end;
 
 function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
   Macros: TTransferMacroList; TheOutputFilter: TOutputFilter;
-  CompilerOptions: TBaseCompilerOptions): TModalResult;
+  CompilerOptions: TBaseCompilerOptions; ShowAbort: boolean): TModalResult;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcessUTF8;
   Abort, ErrorOccurred: boolean;
   NewFilename: String;
+  Btns: TMsgDlgButtons;
 begin
   Result:=mrCancel;
   if ExtTool=nil then exit;
@@ -312,14 +316,17 @@ begin
   if (not Macros.SubstituteStr(Filename)) then exit;
   if (not Macros.SubstituteStr(WorkingDir)) then exit;
   if (not Macros.SubstituteStr(Params)) then exit;
+  if ShowAbort then
+    Btns:=[mbIgnore,mbAbort]
+  else
+    Btns:=[mbCancel];
   if not FilenameIsAbsolute(Filename) then begin
     NewFilename:=FindProgram(Filename,GetCurrentDirUTF8,false);
     if NewFilename='' then begin
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
-          'Program '+Filename+' not found']
-          ),
-        mtError,[mbIgnore,mbAbort],0);
+          'Program '+Filename+' not found']),
+        mtError,Btns,0);
       if Result=mrIgnore then Result:=mrCancel;
 
       CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
@@ -415,16 +422,12 @@ begin
     on e: Exception do begin
       DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
       DumpExceptionBackTrace;
-      DebugLn(['TExternalToolList.Run AAA1']);
-      Result:=MessageDlg(lisExtToolFailedToRunTool,
+      Result:=IDEMessageDialog(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
           ),
-        mtError,[mbIgnore,mbAbort],0);
-      DebugLn(['TExternalToolList.Run AAA2']);
+        mtError,Btns,'');
       if Result=mrIgnore then Result:=mrCancel;
-      DebugLn(['TExternalToolList.Run AAA3']);
       CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]);
-      DebugLn(['TExternalToolList.Run AAA4']);
     end;
   end;
 end;

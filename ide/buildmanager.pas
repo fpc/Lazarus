@@ -1607,7 +1607,7 @@ begin
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,
-                                               nil,CompOptions);
+                                               nil,CompOptions,false);
   if LazarusIDE<>nil then
     LazarusIDE.DoCheckFilesOnDisk;
 end;

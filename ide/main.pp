@@ -871,11 +871,11 @@ type
     // external tools
     function PrepareForCompile: TModalResult; override;
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
-    function DoRunExternalTool(Index: integer): TModalResult;
+    function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
-    function DoBuildFile: TModalResult;
+    function DoBuildFile(ShowAbort: Boolean): TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
     function GetIDEDirectives(AnUnitInfo: TUnitInfo;
@@ -3066,7 +3066,7 @@ begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil)
       and AnUnitInfo.BuildFileIfActive then
-        DoBuildFile
+        DoBuildFile(false)
       else
         DoBuildProject(crCompile,[]);
     end;
@@ -3087,7 +3087,7 @@ begin
     end;
 
   ecBuildFile:
-    DoBuildFile;
+    DoBuildFile(false);
 
   ecRunFile:
     DoRunFile;
@@ -3173,7 +3173,7 @@ begin
     PkgBoss.ShowConfigureCustomComponents;
 
   ecExtToolFirst..ecExtToolLast:
-    DoRunExternalTool(Command-ecExtToolFirst);
+    DoRunExternalTool(Command-ecExtToolFirst,false);
 
   ecSyntaxCheck:
     DoCheckSyntax;
@@ -4086,7 +4086,7 @@ Begin
   GetCurrentUnit(ASrcEdit,AnUnitInfo);
   if (AnUnitInfo<>nil)
   and AnUnitInfo.BuildFileIfActive then
-    DoBuildFile
+    DoBuildFile(false)
   else
     DoBuildProject(crCompile,[]);
 end;
@@ -4165,7 +4165,7 @@ end;
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);
 begin
-  DoBuildFile;
+  DoBuildFile(false);
 end;
 
 procedure TMainIDE.mnuRunFileClicked(Sender: TObject);
@@ -4417,7 +4417,7 @@ begin
   if not (Sender is TIDEMenuItem) then exit;
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
   if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
-  DoRunExternalTool(Index);
+  DoRunExternalTool(Index,false);
 end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
@@ -11476,10 +11476,11 @@ end;
 
 //-----------------------------------------------------------------------------
 
-function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
+function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean
+  ): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Index,GlobalMacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
   DoCheckFilesOnDisk;
 end;
 
@@ -11718,7 +11719,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildFile: TModalResult;
+function TMainIDE.DoBuildFile(ShowAbort: Boolean): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -11786,7 +11787,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,true);
     finally
       // clean up
       ExtTool.Free;
@@ -11833,7 +11834,7 @@ begin
                                        IDEDirectiveNames[idedRunFlags],''));
     AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
     if AlwaysBuildBeforeRun then begin
-      Result:=DoBuildFile;
+      Result:=DoBuildFile(true);
       if Result<>mrOk then exit;
     end;
     RunWorkingDir:=GetIDEStringDirective(DirectiveList,
@@ -11873,7 +11874,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,false);
     finally
       // clean up
       ExtTool.Free;
@@ -12205,7 +12206,7 @@ end;
 function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList,false);
   DoCheckFilesOnDisk;
 end;
 
@@ -12624,7 +12625,7 @@ begin
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
-      Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
+      Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList,false);
       if Result<>mrOk then exit;
     end else begin
       ShowErrorForCommandAfter;

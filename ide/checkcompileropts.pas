@@ -99,7 +99,7 @@ type
     function DoTestAll: TModalResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function RunTool(ExtTool: TExternalToolOptions): TModalResult;
+    function RunTool(ExtTool: TExternalToolOptions; ShowAbort: Boolean): TModalResult;
     procedure Add(const Msg, CurDir: String; ProgressLine: boolean;
                   OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
@@ -402,7 +402,7 @@ begin
     CompileTool.Filename:=CompilerFilename;
     CompileTool.CmdLineParams:=CmdLineParams;
 
-    Result:=RunTool(CompileTool);
+    Result:=RunTool(CompileTool,false);
     FreeThenNil(CompileTool);
   finally
     DeleteFileUTF8(BogusFilename);
@@ -1128,11 +1128,11 @@ begin
   inherited Destroy;
 end;
 
-function TCheckCompilerOptsDlg.RunTool(ExtTool: TExternalToolOptions
-  ): TModalResult;
+function TCheckCompilerOptsDlg.RunTool(ExtTool: TExternalToolOptions;
+  ShowAbort: Boolean): TModalResult;
 begin
   TestMemo.Lines.Text:=ExtTool.Filename+' '+ExtTool.CmdLineParams;
-  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList,ShowAbort);
 end;
 
 procedure TCheckCompilerOptsDlg.Add(const Msg, CurDir: String;

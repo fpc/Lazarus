@@ -23,6 +23,7 @@
   Abstract:
     Editor dialog to edit nodes of Help for IDE windows (controls).
 }
+{%RunCommand bb$MakeExe($(EdFile))}
 unit IDEContextHelpEdit;
 
 {$mode objfpc}{$H+}

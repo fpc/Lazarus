@@ -283,7 +283,7 @@ begin
       // append target CPU
       if Options.TargetCPU<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
-      Result:=ExternalTools.Run(Tool,Macros);
+      Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
     end;
 
@@ -351,7 +351,7 @@ begin
       if Options.TargetCPU<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
       // run
-      Result:=ExternalTools.Run(Tool,Macros);
+      Result:=ExternalTools.Run(Tool,Macros,false);
       if Result<>mrOk then exit;
     end;
     Result:=mrOk;
