@@ -99,15 +99,17 @@ type
     procedure DoPropSelChanged(Sender: TObject);
   protected
     FPropertiesGrid: TCustomPropertiesGrid;
-    procedure SetSelected(AComp: TComponent);
     procedure UpdateTree;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoActiveFormChanged(Sender: TObject; Form: TCustomForm);
     procedure DoActiveControChanged(Sender: TObject; LastControl: TControl);
     procedure DoKeyDownBefore(Sender: TObject; var Key: Word; Shift: TShiftState);
+
     function  IndexOfCurrent: Integer;
+    procedure SetSelected(AComp: TComponent);
+    procedure UpdateCurrent; // set to Fselected
+    procedure DisplayCurrent;
     procedure UpdateHistory(ForceAdd: Boolean = False);
-    procedure UpdateCurrent;
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -212,7 +214,7 @@ begin
   end;
   if FCurEntry.Comp <> nil then
     SetSelected(FCurEntry.Comp);
-  UpdateCurrent;
+  DisplayCurrent;
 end;
 
 procedure TIdeInspectForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -247,11 +249,17 @@ var
 begin
   Row := FPropertiesGrid.GetActiveRow;
   Method.Code := nil;;
-  if (Row <> nil) and (Row.Editor is TMethodPropertyEditor) then
-    Method := TMethodPropertyEditor(Row.Editor).GetMethodValue;
+  if (Row <> nil) then begin
+    if (Row.Editor is TMethodPropertyEditor) then begin
+      Method := TMethodPropertyEditor(Row.Editor).GetMethodValue;
+      FPropertiesGrid.PropertyEditorHook.LookupRoot := nil; // prevent edit
+    end
+    else
+      FPropertiesGrid.PropertyEditorHook.LookupRoot := FSelected;
+  end;
 
   if Method.Code = nil then begin
-    SetSelected(FSelected);
+    UpdateCurrent;
     exit;
   end;
 
@@ -288,7 +296,7 @@ begin
 
   FCurEntry.Display := s;
   FCurEntry.Comp := nil;
-  FCurEntry.TheUnitName := TObject(Method.Data).ClassType.UnitName;
+  FCurEntry.TheUnitName := GetClassUnitName(TObject(Method.Data).ClassType);
   FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
   if MethName <> '' then
     FCurEntry.IdentifierName := TObject(Method.Data).ClassName + '.' + MethName
@@ -340,9 +348,13 @@ end;
 
 procedure TIdeInspectForm.btnOpenFileClick(Sender: TObject);
 begin
-  if FCurEntry.IdentifierName <> '' then
-    LazarusIDE.DoOpenFileAndJumpToIdentifier(EditFile.Text, FCurEntry.IdentifierName, -1, -1, [ofOnlyIfExists, ofRegularFile])
-  else
+  if (FCurEntry.IdentifierName <> '') and
+     (LazarusIDE.DoOpenFileAndJumpToIdentifier
+      (EditFile.Text, FCurEntry.IdentifierName, -1, -1, [ofOnlyIfExists, ofRegularFile])
+      = mrOK)
+  then
+    exit;
+
   if FCurEntry.Line > 0 then
     LazarusIDE.DoOpenFileAndJumpToPos(EditFile.Text, Point(1,FCurEntry.Line), Max(FCurEntry.Line-1,1), -1, -1, [ofOnlyIfExists, ofRegularFile])
   else
@@ -497,35 +509,6 @@ begin
   SetSelected(TComponent(TreeView1.Selected.Data));
 end;
 
-procedure TIdeInspectForm.SetSelected(AComp: TComponent);
-begin
-  FSelected := AComp;
-  FPropertiesGrid.TIObject := FSelected;
-  btnSubComponent.Enabled := (FSelected <> nil) and (FSelected.ComponentCount > 0);
-  btnControls.Enabled := (FSelected <> nil) and
-                         (FSelected is TWinControl) and (TWinControl(FSelected).ControlCount > 0);
-  UpdateTree;
-
-  // keep date, if the component gets destroyed
-  if FCurEntry.Comp <> FSelected then begin
-    FCurEntry.Comp := FSelected;
-    FCurEntry.UpdateDisplayName;
-    if FSelected <> nil then begin
-      FCurEntry.TheUnitName := FSelected.UnitName;
-      FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
-      FCurEntry.IdentifierName := FSelected.ClassName;
-      FCurEntry.Line := -1;
-    end
-    else begin
-      FCurEntry.TheUnitName := '';
-      FCurEntry.FileName := '';
-      FCurEntry.IdentifierName := '';
-      FCurEntry.Line := -1;
-    end;
-    UpdateHistory;
-  end;
-end;
-
 procedure TIdeInspectForm.UpdateTree;
   function FindNode(AComp: TComponent): TTreeNode;
   var
@@ -574,7 +557,7 @@ begin
   if (Operation = opRemove) and (FCurEntry <> nil) and (FCurEntry.Comp = AComponent) then begin
     FCurEntry.Comp := nil;
     FCurEntry.UpdateDisplayName;
-    UpdateCurrent;
+    DisplayCurrent;
   end;
   if (Operation = opRemove) and (FHistoryList <> nil) then begin
     f := False;
@@ -707,10 +690,44 @@ begin
     ComboHistory.Items.Add(THistoryEntry(FHistoryList[i]).Display);
 
   FIsUpdatingHistory := False;
+  DisplayCurrent;
+end;
+
+procedure TIdeInspectForm.SetSelected(AComp: TComponent);
+begin
+  FSelected := AComp;
+  FPropertiesGrid.TIObject := FSelected;
+  btnSubComponent.Enabled := (FSelected <> nil) and (FSelected.ComponentCount > 0);
+  btnControls.Enabled := (FSelected <> nil) and
+                         (FSelected is TWinControl) and (TWinControl(FSelected).ControlCount > 0);
+  UpdateTree;
+
   UpdateCurrent;
 end;
 
 procedure TIdeInspectForm.UpdateCurrent;
+begin
+  // keep date, if the component gets destroyed
+  if FCurEntry.Comp <> FSelected then begin
+    FCurEntry.Comp := FSelected;
+    FCurEntry.UpdateDisplayName;
+    if FSelected <> nil then begin
+      FCurEntry.TheUnitName := GetClassUnitName(FSelected.ClassType);
+      FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+      FCurEntry.IdentifierName := FSelected.ClassName;
+      FCurEntry.Line := -1;
+    end
+    else begin
+      FCurEntry.TheUnitName := '';
+      FCurEntry.FileName := '';
+      FCurEntry.IdentifierName := '';
+      FCurEntry.Line := -1;
+    end;
+    UpdateHistory;
+  end;
+end;
+
+procedure TIdeInspectForm.DisplayCurrent;
 begin
   FIsUpdatingHistory := True;
   ComboHistory.Text :=  FCurEntry.Display;
@@ -744,6 +761,7 @@ begin
     Name := 'FPropertiesGrid';
     Parent := TabControl1;
     Align := alClient;
+    SaveOnChangeTIObject := False;
     OnSelectionChange  := @DoPropSelChanged;
   end;
 
