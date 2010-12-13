@@ -1250,7 +1250,7 @@ end;
 function TLazBuildApplication.OnRunExternalTool(Tool: TIDEExternalToolOptions
   ): TModalResult;
 begin
-  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList);
+  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList,false);
 end;
 
 begin
