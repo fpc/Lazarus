@@ -35,7 +35,7 @@ uses
   // codetools
   CodeToolManager, CodeCache,
   // IDEIntf
-  LazIDEIntf, IDEWindowIntf,
+  PropEdits, LazIDEIntf, IDEWindowIntf,
   // IDE
   IDEWindowHelp, LazarusIDEStrConsts, ExtCtrls;
 
@@ -183,7 +183,7 @@ begin
     exit;
   end;
   //debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName]);
-  FormFilename:=LazarusIDE.FindUnitFile(UnitControl.UnitName,LazarusIDE);
+  FormFilename:=LazarusIDE.FindUnitFile(GetClassUnitName(UnitControl.ClassType),LazarusIDE);
   //debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
   if FormFilename='' then begin
     debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName,': unit source not found']);
