@@ -137,6 +137,8 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     
     class function  CanFocus(const AWinControl: TWinControl): boolean; override;
 
@@ -1826,6 +1828,7 @@ class procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
 var
   Entry: PGtkEntry;
   WidgetInfo: PWidgetInfo;
+  W: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
 
@@ -1837,6 +1840,15 @@ begin
     Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
     Gtk2WidgetSet.SetWidgetFont(PGtkWidget(Entry), AFont);
+  end else
+  begin
+    W := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
+    if W <> nil then
+    begin
+      Gtk2WidgetSet.SetWidgetColor(W, AFont.Color, clNone,
+        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
+      Gtk2WidgetSet.SetWidgetFont(W, AFont);
+    end;
   end;
 end;
 
@@ -1863,6 +1875,16 @@ begin
     SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
   Dec(WidgetInfo^.ChangeLock);
+end;
+
+class procedure TGtk2WSCustomComboBox.ShowHide(const AWinControl: TWinControl);
+begin
+  // gtk2 doesn't set font on readonly combobox properly
+  // so we are doing it one more time before showing.
+  if AWinControl.HandleObjectShouldBeVisible and
+    TCustomComboBox(AWinControl).ReadOnly then
+      SetFont(AWinControl, AWinControl.Font);
+  inherited ShowHide(AWinControl);
 end;
 
 class function TGtk2WSCustomComboBox.CanFocus(const AWinControl: TWinControl
