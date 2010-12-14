@@ -1190,9 +1190,11 @@ type
 
   TGDBMIType = class(TGDBType)
   private
+    FIsAmpersandAddr: Boolean;
   protected
   public
     constructor CreateFromResult(const AResult: TGDBMIExecResult);
+    property IsAmpersandAddr: Boolean read FIsAmpersandAddr; // for dwarf only "&TypeName" indicates a param by ref (var, const, constref)
   end;
 
   { TGDBStringIterator }
@@ -7706,9 +7708,28 @@ end;
 { TGDBMIType }
 
 constructor TGDBMIType.CreateFromResult(const AResult: TGDBMIExecResult);
+var
+  s: String;
+  i: Integer;
 begin
   // TODO: add check ?
-  CreateFromValues(AResult.Values);
+
+  // tfClassIsPointer can be ignored, because the "&" only occurs with dwarf, which always has tfClassIsPointer
+  FIsAmpersandAddr := False;
+  s := AResult.Values;
+  i := pos('type = &', s);
+  if i > 0 then begin
+    FIsAmpersandAddr := True;
+    if (copy(s, i+8, 15) = '__vtbl_ptr_type') or
+       //( (tfClassIsPointer in TargetInfo^.TargetFlags) and
+         (copy(s, i+8, 5) = 'class') //)
+    then
+      s[i+7] := '^'
+    else
+    Delete(s, i + 7, 1);
+  end;
+
+  CreateFromValues(s);
 end;
 
 { TGDBStringIterator }
@@ -9178,15 +9199,15 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     end;
   end;
 
-  procedure FixUpResult(AnExpression: string);
+  procedure FixUpResult(AnExpression: string; ResultInfo: TGDBType = nil);
   var
-    ResultInfo: TGDBType;
     addr: TDbgPtr;
     e: Integer;
     PrintableString: String;
   begin
     // Check for strings
-    ResultInfo := GetGDBTypeInfo(AnExpression);
+    if ResultInfo = nil then
+      ResultInfo := GetGDBTypeInfo(AnExpression);
     if (ResultInfo = nil) then Exit;
 
     case ResultInfo.Kind of
@@ -9199,8 +9220,10 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         end;
 
         AnExpression := Lowercase(ResultInfo.TypeName);
-        case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar', 'pointer']) of
-          0, 1, 2: begin
+        case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type',
+                                       'wchar', 'widechar', 'pointer'])
+        of
+          0, 1, 2: begin // 'char', 'character', 'ansistring'
             if Addr = 0
             then
               FTextValue := ''''''
@@ -9208,7 +9231,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
               FTextValue := MakePrintable(GetText(Addr));
               PrintableString := FTextValue;
           end;
-          3: begin
+          3: begin // '__vtbl_ptr_type'
             if Addr = 0
             then FTextValue := 'nil'
             else begin
@@ -9217,7 +9240,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
               FTextValue := 'class of ' + AnExpression + ' ' + FTextValue;
             end;
           end;
-          4,5: begin
+          4,5: begin // 'wchar', 'widechar'
             // widestring handling
             if Addr = 0
             then FTextValue := ''''''
@@ -9462,7 +9485,19 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         end;
       else // wdfDefault
         begin
-          Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
+          Result := False;
+          FTypeInfo := GetGDBTypeInfo(AnExpression);
+          if FTypeInfo = nil
+          then exit;
+
+          if TGdbMIType(FTypeInfo).IsAmpersandAddr and (FTypeInfo.TypeName <> '')
+          then begin
+            Result := ExecuteCommand('-data-evaluate-expression %s(%s)', [FTypeInfo.TypeName, AnExpression], R);
+            Result := Result and (R.State <> dsError);
+          end;
+
+          if not Result then
+            Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
           Result := Result and (R.State <> dsError);
           if (not Result) and (not StoreError)
           then exit;
@@ -9475,7 +9510,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           ResultList.Free;
 
           if Result
-          then FixUpResult(AnExpression);
+          then FixUpResult(AnExpression, FTypeInfo);
         end;
     end;
     {$IFDEF DBG_WITH_TIMEOUT}
@@ -9521,6 +9556,7 @@ begin
     repeat
       if TryExecute(S, frame = -1)
       then Break;
+      FreeAndNil(FTypeInfo);
 
       // check if there is a parentfp and try to evaluate there
       if frame = -1
