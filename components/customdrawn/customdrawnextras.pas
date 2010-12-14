@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   Math, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
-  LCLProc,
+  LCLProc, PropEdits,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
   {$ifdef CUSTOMDRAWN_USE_FREETYPE}
@@ -394,7 +394,6 @@ type
   TCDTabSheet = class(TCustomControl)
   private
     FCurrentDrawer: TCDTabSheetDrawerGraph;
-    //FCDOwner: TCDPageControl;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -452,7 +451,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
-    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
+    //procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure PrepareCurrentDrawer();
     procedure SetDrawStyle(const AValue: TCDDrawStyle);
     procedure SetCaptionHeight(Value: integer);
@@ -464,6 +463,7 @@ type
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
+    procedure Loaded; override;
   public
     CustomDrawer: TCDPageControlDrawer; // Fill the field to use the dsCustom draw mode
     constructor Create(AOwner: TComponent); override;
@@ -474,6 +474,7 @@ type
     function FindNextPage(CurPage: TCDTabSheet;
       GoForward, CheckTabVisible: boolean): TCDTabSheet;
     procedure SelectNextPage(GoForward: boolean; CheckTabVisible: boolean = True);
+    procedure SetCDPages(Value: TList);
   published
     property ActivePage: TCDTabSheet read FActivePage write SetActivePage;
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
@@ -482,7 +483,7 @@ type
     property Color;
     property Font;
     property Gradient: boolean read FGrad write SetPageGradient;
-    property Pages: TList read FPages write FPages;
+    property Pages: TList read FPages write SetCDPages;
     property ParentColor;
     property ParentFont;
     property ShowTabs: boolean read FShowTabs write SetShowTabs;
@@ -1233,7 +1234,7 @@ begin
   if CDGroupBox.Parent = nil then
     ADest.Brush.FPColor := colLtGray
   else
-    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Brush.Color));
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Color));
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.Height);
@@ -1582,9 +1583,8 @@ end;
 
 constructor TCDTabSheet.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner.Owner); //.GetParentComponent);
-  //FCDOwner := TCDPageControl(AOwner);
-  Parent := TCDPageControl(AOwner);
+  inherited Create(AOwner);
+  //Parent := TCDPageControl(AOwner);
   TabStop := False;
   ParentColor := True;
   parentFont := True;
@@ -1646,21 +1646,25 @@ procedure TCDPageControlEditor.ExecuteVerb(Index: integer);
 var
   NewPage: TCDTabSheet;
   PControl: TCDPageControl;
+  Hook: TPropertyEditorHook;
+  PageComponent: TPersistent;
 begin
   if Component is TCDPageControl then
     PControl := TCDPageControl(Component)
   else
     if Component is TCDTabSheet then
       PControl := TCDPageControl(TCDTabSheet(Component).Parent);
-
+  Hook:=nil;
   case Index of
     0:
     begin  //  New Page
-      NewPage := TCDTabSheet.Create(PControl);
-      //NewPage.Parent := PControl;
+      if not GetHook(Hook) then exit;
+      NewPage := TCDTabSheet.Create(PControl.Owner);
+      NewPage.Parent := PControl;
       with NewPage do
       begin
-        Name := Designer.CreateUniqueComponentName(ClassName); //GetUniqueName(sTABSHEET_DEFAULT_NAME, PControl.Owner);
+        Name := Designer.CreateUniqueComponentName(ClassName);
+        //GetUniqueName(sTABSHEET_DEFAULT_NAME, PControl);
         Caption := Name;
         {Left := 0;
         Top := PControl.CaptionHeight + 1;
@@ -1673,12 +1677,18 @@ begin
         Show;
       end;
       PControl.FPages.Add(NewPage);
+      Hook.PersistentAdded(NewPage,true);
+      Designer.Modified;
     end;
     1:
     begin  //  Delete Page
       with PControl do
       begin
         NewPage := ActivePage;
+        //FPages.Remove(NewPage);
+        if not GetHook(Hook) then exit;
+        PageComponent := TPersistent(NewPage);
+        Hook.DeletePersistent(PageComponent);
         if NewPage <> nil then
           NewPage.Free;
       end;
@@ -1801,6 +1811,7 @@ begin
       Hide;
   end;
   FActivePage := Value;
+  Value.BringToFront;
 end;
 
 procedure TCDPageControl.SetPageIndex(Value: integer);
@@ -1877,33 +1888,48 @@ begin
   aRect.Top := lRect.Top;
   aRect.Bottom := lRect.Bottom;
   aRect.Right := lRect.Right;
-  if FPages.Count = 0 then
+  if Owner.ComponentCount = 0 then
   begin
     ADest.RecTangle(aRect);
     Exit;
   end;
-  for i := 0 to FPages.Count - 1 do
+  for i := 0 to Owner.ComponentCount - 1 do
   begin
-    aText := TCDTabSheet(FPages[i]).Caption;
-    rWidth := 6 + Length(aText) * 9; //TCDTabSheet(FPages[i]).Font.Size;
-    if aRect.Left + rWidth > lRect.Right - 6 then
-      break
-    else
-      aRect.Right := aRect.Left + rWidth;
-    ADest.RecTangle(aRect);
-//    ADest.TextOut(aRect.Left + 3, aRect.Top + 3, aText);
-    aRect.Left := aRect.Right;
+    if Owner.Components[i].GetParentComponent = Self then
+    begin
+      aText := TCDTabSheet(Owner.Components[i]).Caption;
+      rWidth := 6 + Length(aText) * 9; //TCDTabSheet(FPages[i]).Font.Size;
+      if aRect.Left + rWidth > lRect.Right - 6 then
+        break
+      else
+        aRect.Right := aRect.Left + rWidth;
+      ADest.RecTangle(aRect);
+      //ADest.TextOut(aRect.Left + 3, aRect.Top + 3, aText);
+      aRect.Left := aRect.Right;
+    end;
   end;
-  aRect.Left := lRect.Right - 38;
-  aRect.Top := 2;
-  aRect.Bottom := 20;
-  aRect.Right := lRect.Right - 19;
+  aRect.Left := lRect.Right - 51;
+  aRect.Top := 1;
+  aRect.Bottom := 25;
+  aRect.Right := lRect.Right - 26;
   GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-  aRect.Left := lRect.Right - 18;
-  aRect.Top := 2;
-  aRect.Bottom := 20;
+  aRect.Left := lRect.Right - 25;
+  aRect.Top := 1;
+  aRect.Bottom := 25;
   aRect.Right := lRect.Right;
   GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
+  ADest.Line(lRect.Right - 51, 1, lRect.Right, 1);
+  ADest.Line(lRect.Right, 1, lRect.Right, 25);
+  ADest.Line(lRect.Right, 25, lRect.Right - 51, 25);
+  ADest.Line(lRect.Right - 51, 25, lRect.Right - 51, 1);
+  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00FFFFFF));
+  //ADest.Line();
+end;
+
+procedure TCDPageControl.SetCDPages(Value: TList);
+begin
+  FPages.Assign(Value);
 end;
 
 procedure TCDPageControl.DoOnResize;
@@ -1935,7 +1961,7 @@ begin
       TCDTabSheet(FPages[APageIndex]).ControlStyle-[csNoDesignVisible];
 end;
 
-procedure TCDPageControl.CNNotify(var Message: TLMNotify);
+{procedure TCDPageControl.CNNotify(var Message: TLMNotify);
 var
   OldPageIndex: LongInt;
 begin
@@ -1980,7 +2006,7 @@ begin
         {$ENDIF}
       end;
     end;
-end;
+end;       }
 
 procedure TCDPageControl.SetMouseUP;
 begin
@@ -2031,6 +2057,11 @@ begin
   if FMEnterR or FMENterL then
     invalidate;
   inherited MouseMove(Shift, X, Y);
+end;
+
+procedure TCDPageControl.Loaded;
+begin
+  inherited;
 end;
 
 procedure TCDPageControl.MouseEnter;
