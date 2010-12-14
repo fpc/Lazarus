@@ -7263,8 +7263,12 @@ begin
 
       //DebugLn(['TWinControl.CreateWnd Creating handle ... ',DbgSName(WidgetSetClass),' ',DbgSName(Self)]);
       FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
-      if not HandleAllocated then
-        RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
+      if not HandleAllocated then begin
+        if WidgetSet.LCLPlatform=lpNoGUI then
+          RaiseGDBException('TWinControl.CreateWnd: The nogui widgetset does not support visual controls.')
+        else
+          RaiseGDBException('TWinControl.CreateWnd: Handle creation failed creating '+DbgSName(Self));
+      end;
       //debugln('TWinControl.CreateWnd update constraints ... ',DbgSName(Self));
       TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self,
          UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
