@@ -74,7 +74,7 @@ begin
   CmdSVNDiffHead:=RegisterIDECommand(Cat, 'SVNDiffHead', rsShowDiffHead, Key, nil, @ProcSVNDiffHead);
   CmdSVNSettings:=RegisterIDECommand(Cat, 'SVNSettings', rsSVNSettings, Key, nil, @ProcSVNSettings);
 
-  mnuSVNMain := RegisterIDEMenuSection(itmCustomTools, 'SVN');
+  mnuSVNMain := RegisterIDEMenuSection(mnuTools, 'SVN');
   mnuSVNSection:=RegisterIDESubMenu(mnuSVNMain, 'SVN', 'SVN', nil, nil, 'menu_svn');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNLog', rsShowLog, nil, nil,
     CmdSVNLog, 'menu_svn_log');
