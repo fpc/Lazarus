@@ -363,14 +363,14 @@ end;
 
 procedure TExternalToolOptionDlg.OKButtonClick(Sender: TObject);
 begin
-  if (TitleEdit.Text='') or (FilenameEdit.Text='') then begin
+  if (TitleEdit.Text<>'') and (FilenameEdit.Text<>'') then
+    SaveToOptions
+  else begin
     MessageDlg(lisEdtExtToolTitleAndFilenameRequired,
                   lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
                   mtError, [mbCancel], 0);
-    exit;
+    ModalResult:=mrCancel;
   end;
-  SaveToOptions;
-  ModalResult:=mrOk;
 end;
 
 { TExternalToolOptions }
