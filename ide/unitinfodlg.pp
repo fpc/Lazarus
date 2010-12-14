@@ -123,12 +123,15 @@ begin
     OutIncludedBy.Caption:=IncludedBy;
 
     UnitPathMemo.Lines.Delimiter := ';';
+    UnitPathMemo.Lines.StrictDelimiter := true;
     UnitPathMemo.Lines.DelimitedText := MinimizeSearchPath(UnitPath);
 
     IncludePathMemo.Lines.Delimiter := ';';
+    IncludePathMemo.Lines.StrictDelimiter := true;
     IncludePathMemo.Lines.DelimitedText := MinimizeSearchPath(IncludePath);
 
     SrcPathMemo.Lines.Delimiter := ';';
+    SrcPathMemo.Lines.StrictDelimiter := true;
     SrcPathMemo.Lines.DelimitedText := MinimizeSearchPath(SrcPath);
 
     GotoIncludeDirectiveButton.Visible:=IncludedBy<>'';
