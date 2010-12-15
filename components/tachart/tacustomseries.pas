@@ -187,6 +187,7 @@ type
   protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
+    FMinXRange: Double;
     FUpBound: Integer;
     FUseReticule: Boolean;
 
@@ -198,6 +199,7 @@ type
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateGraphPoints(AIndex: Integer);
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    procedure UpdateMinXRange;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
   public
@@ -878,6 +880,25 @@ begin
     with Marks.MeasureLabel(ACanvas, labelText) do
       dist := IfThen(dir in [ldLeft, ldRight], cx, cy) div d;
     m[dir] := Max(m[dir], dist + Marks.Distance + LABEL_TO_BORDER);
+  end;
+end;
+
+procedure TBasicPointSeries.UpdateMinXRange;
+var
+  x, prevX: Double;
+  i: Integer;
+begin
+  if Count < 2 then begin
+    FMinXRange := 1.0;
+    exit;
+  end;
+  x := Source[0]^.X;
+  prevX := Source[1]^.X;
+  FMinXRange := Abs(x - prevX);
+  for i := 2 to Count - 1 do begin
+    x := Source[i]^.X;
+    FMinXRange := Min(Abs(x - prevX), FMinXRange);
+    prevX := x;
   end;
 end;
 

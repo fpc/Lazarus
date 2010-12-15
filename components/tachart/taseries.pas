@@ -38,6 +38,8 @@ const
 type
   EBarError = class(EChartError);
 
+  TBarWidthStyle = (bwPercent, bwPercentMin);
+
   { TBarSeries }
 
   TBarSeries = class(TBasicPointSeries)
@@ -46,15 +48,17 @@ type
     FBarOffsetPercent: Integer;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
+    FBarWidthStyle: TBarWidthStyle;
     FZeroLevel: Double;
 
     procedure BarOffsetWidth(
       AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
     function IsZeroLevelStored: boolean;
     procedure SetBarBrush(Value: TBrush);
-    procedure SetBarOffsetPercent(const AValue: Integer);
+    procedure SetBarOffsetPercent(AValue: Integer);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
+    procedure SetBarWidthStyle(AValue: TBarWidthStyle);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
   protected
@@ -75,6 +79,8 @@ type
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
       read FBarWidthPercent write SetBarWidthPercent default DEF_BAR_WIDTH_PERCENT;
+    property BarWidthStyle: TBarWidthStyle
+      read FBarWidthStyle write SetBarWidthStyle default bwPercent;
     property Depth;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
@@ -654,7 +660,12 @@ procedure TBarSeries.BarOffsetWidth(
 var
   r: Double;
 begin
-  r := GetXRange(AX, AIndex) * PERCENT;
+  case BarWidthStyle of
+    bwPercent: r := GetXRange(AX, AIndex) * PERCENT;
+    bwPercentMin: r := FMinXRange * PERCENT;
+    else
+      raise EBarError.Create('BarWidthStyle not implemented');
+  end;
   AOffset := r * BarOffsetPercent;
   AWidth := r * BarWidthPercent / 2;
 end;
@@ -743,6 +754,8 @@ var
 begin
   if IsEmpty then exit;
 
+  if BarWidthStyle = bwPercentMin then
+    UpdateMinXRange;
   ext2 := ParentChart.CurrentExtent;
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
@@ -775,6 +788,8 @@ var
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
+  if BarWidthStyle = bwPercentMin then
+    UpdateMinXRange;
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   x := GetGraphPointX(0);
@@ -805,7 +820,7 @@ begin
   FBarBrush.Assign(Value);
 end;
 
-procedure TBarSeries.SetBarOffsetPercent(const AValue: Integer);
+procedure TBarSeries.SetBarOffsetPercent(AValue: Integer);
 begin
   if FBarOffsetPercent = AValue then exit;
   FBarOffsetPercent := AValue;
@@ -822,6 +837,13 @@ begin
   if (Value < 1) or (Value > 100) then
     raise EBarError.Create('Wrong BarWidth Percent');
   FBarWidthPercent := Value;
+end;
+
+procedure TBarSeries.SetBarWidthStyle(AValue: TBarWidthStyle);
+begin
+  if FBarWidthStyle = AValue then exit;
+  FBarWidthStyle := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetSeriesColor(AValue: TColor);
