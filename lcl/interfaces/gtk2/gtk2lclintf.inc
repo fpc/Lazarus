@@ -967,12 +967,12 @@ begin
         begin
           BtnID := ButtonResults[ModalResult];
           case BtnID of
-            idButtonOK       : CreateButton('gtk-ok', GTK_RESPONSE_OK);
-            idButtonCancel   : CreateButton('gtk-cancel', GTK_RESPONSE_CANCEL);
-            idButtonHelp     : CreateButton('gtk-help', GTK_RESPONSE_HELP);
-            idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
-            idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
-            idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
+            idButtonOK       : CreateButton(rsMbOK, GTK_RESPONSE_OK);
+            idButtonCancel   : CreateButton(rsMbCancel, GTK_RESPONSE_CANCEL);
+            idButtonHelp     : CreateButton(rsMbHelp, GTK_RESPONSE_HELP);
+            idButtonYes      : CreateButton(rsMbYes, GTK_RESPONSE_YES);
+            idButtonNo       : CreateButton(rsMbNo, GTK_RESPONSE_NO);
+            idButtonClose    : CreateButton(rsMbClose, GTK_RESPONSE_CLOSE);
             idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
             idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_ACCEPT);
             idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_CLOSE);
