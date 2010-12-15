@@ -5089,6 +5089,7 @@ resourcestring
 
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
+  lisApplyConventions = 'Apply conventions';
 
 implementation
 

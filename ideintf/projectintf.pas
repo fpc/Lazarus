@@ -171,6 +171,7 @@ type
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
     procedure SetSyntaxMode(const AValue: string);
+    procedure SetTargetFilenameAppplyConventions(const AValue: boolean);
     procedure SetUncertainOpt(const AValue: Boolean);
     procedure SetUseAnsiStr(const AValue: Boolean);
     procedure SetUseExternalDbgSyms(const AValue: Boolean);
@@ -240,6 +241,7 @@ type
     FExecutableType: TCompilationExecutableType;
     FUseExternalDbgSyms : Boolean;
     fTargetFilename: string;
+    FTargetFilenameAppplyConventions: boolean;
 
     // Messages:
     fShowErrors: Boolean;
@@ -327,6 +329,7 @@ type
 
     // target:
     property TargetFilename: String read fTargetFilename write SetTargetFilename;
+    property TargetFilenameAppplyConventions: boolean read FTargetFilenameAppplyConventions write SetTargetFilenameAppplyConventions;
 
     // parsing:
     property SyntaxMode: string read FSyntaxMode write SetSyntaxMode;
@@ -1751,6 +1754,14 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TLazCompilerOptions.SetTargetFilenameAppplyConventions(
+  const AValue: boolean);
+begin
+  if FTargetFilenameAppplyConventions=AValue then exit;
+  FTargetFilenameAppplyConventions:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TLazCompilerOptions.SetUncertainOpt(const AValue: Boolean);
 begin
   if fUncertainOpt=AValue then exit;
@@ -1833,6 +1844,7 @@ begin
   fOnChanged:=TMethodList.Create;
   FChangeStamp:=InvalidChangeStamp;
   FSavedChangeStamp:=FChangeStamp;
+  FTargetFilenameAppplyConventions:=true;
   FOwner := TheOwner;
 end;
 

@@ -28,6 +28,7 @@ type
     OtherSourcesLabel: TLabel;
     OtherUnitsEdit: TEdit;
     OtherUnitsLabel: TLabel;
+    ProjTargetApplyConventionsCheckBox: TCheckBox;
     ProjTargetFileEdit: TEdit;
     ProjTargetFileLabel: TLabel;
     UnitOutputDirEdit: TEdit;
@@ -558,6 +559,7 @@ var
   s: string;
 begin
   ProjTargetFileEdit.Text:='';
+  ProjTargetApplyConventionsCheckBox.Caption:=lisApplyConventions;
 
   OtherUnitsLabel.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn := TPathEditorButton.Create(Self);
@@ -729,6 +731,7 @@ begin
     ProjTargetFileEdit.Visible:=true;
     ProjTargetFileLabel.Visible:=true;
     ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
+    ProjTargetApplyConventionsCheckBox.Checked:=TProjectCompilerOptions(AOptions).TargetFilenameAppplyConventions;
     UpdateTargetFileLabel;
   end else begin
     ProjTargetFileEdit.Visible:=false;
@@ -757,8 +760,10 @@ procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 var
   i: integer;
 begin
-  if AOptions is TProjectCompilerOptions then
+  if AOptions is TProjectCompilerOptions then begin
     TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
+    TProjectCompilerOptions(AOptions).TargetFilenameAppplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;
+  end;
 
   with AOptions as TBaseCompilerOptions do
   begin

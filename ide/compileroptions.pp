@@ -1359,6 +1359,7 @@ begin
   { Target }
   p:=Path+'Target/';
   TargetFilename := f(aXMLConfig.GetValue(p+'Filename/Value', ''));
+  TargetFilenameAppplyConventions := aXMLConfig.GetValue(p+'Filename/ApplyConventions', true);
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
@@ -1569,6 +1570,7 @@ begin
   { Target }
   p:=Path+'Target/';
   aXMLConfig.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
+  aXMLConfig.SetDeleteValue(p+'Filename/ApplyConventions', TargetFilenameAppplyConventions,true);
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
@@ -1803,8 +1805,10 @@ begin
     Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
   Result:=TrimFilename(Result);
-  AppendDefaultExt;
-  PrependDefaultType;
+  if TargetFilenameAppplyConventions then begin
+    AppendDefaultExt;
+    PrependDefaultType;
+  end;
 end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
@@ -2986,6 +2990,7 @@ begin
 
   // Target
   TargetFilename := CompOpts.TargetFilename;
+  TargetFilenameAppplyConventions := CompOpts.TargetFilenameAppplyConventions;
 
   // Search Paths
   StorePathDelim := CompOpts.StorePathDelim;
@@ -3129,6 +3134,7 @@ begin
 
   // target
   if Done(Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename)) then exit;
+  if Done(Tool.AddDiff('TargetFilenameAppplyConventions',FTargetFilenameAppplyConventions,CompOpts.FTargetFilenameAppplyConventions)) then exit;
 
   // search paths
   if Tool<>nil then Tool.Path:='Paths';

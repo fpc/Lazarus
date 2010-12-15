@@ -12,7 +12,7 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
+    Height = 18
     Top = 0
     Width = 509
     Anchors = [akTop, akLeft, akRight]
@@ -26,8 +26,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 41
+    Height = 18
+    Top = 51
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -41,8 +41,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 205
+    Height = 18
+    Top = 255
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -56,8 +56,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 82
+    Height = 18
+    Top = 102
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -71,8 +71,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 123
+    Height = 18
+    Top = 153
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -86,8 +86,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 246
+    Height = 18
+    Top = 306
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -99,9 +99,9 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideTop.Control = LCLWidgetTypeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 0
-    Height = 14
-    Top = 290
-    Width = 101
+    Height = 18
+    Top = 363
+    Width = 134
     Caption = 'LCLWidgetTypeLabel'
     ParentColor = False
   end
@@ -112,8 +112,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 14
+    Height = 27
+    Top = 18
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -127,8 +127,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 55
+    Height = 27
+    Top = 69
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -142,8 +142,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 219
+    Height = 27
+    Top = 273
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -157,8 +157,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 96
+    Height = 27
+    Top = 120
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -172,8 +172,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 137
+    Height = 27
+    Top = 171
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -187,8 +187,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 260
+    Height = 27
+    Top = 324
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -200,13 +200,13 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = DebugPathEdit
     AnchorSideTop.Side = asrBottom
-    Left = 107
-    Height = 21
-    Top = 287
+    Left = 140
+    Height = 31
+    Top = 357
     Width = 171
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 7
   end
@@ -214,13 +214,10 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UnitOutputDirEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 14
-    Top = 164
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Height = 18
+    Top = 204
+    Width = 124
     Caption = 'ProjTargetFileLabel'
     ParentColor = False
   end
@@ -231,13 +228,27 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 178
+    Height = 27
+    Top = 222
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
     OnChange = ProjTargetFileEditChange
     TabOrder = 4
     Text = 'ProjTargetFileEdit'
+  end
+  object ProjTargetApplyConventionsCheckBox: TCheckBox[16]
+    AnchorSideLeft.Control = ProjTargetFileLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ProjTargetFileLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 130
+    Height = 22
+    Top = 202
+    Width = 272
+    BorderSpacing.Left = 6
+    Caption = 'ProjTargetApplyConventionsCheckBox'
+    TabOrder = 8
   end
 end
