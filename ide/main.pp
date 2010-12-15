@@ -1743,9 +1743,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-type
-  TMoveFlags = set of (mfTop, mfLeft);
-
 procedure TMainIDE.SetupSpeedButtons;
 
   function CreateButton(AToolBar: TToolBar; const AName, APixName: String;     
