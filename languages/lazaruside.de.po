@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-28 18:18+0100\n"
+"PO-Revision-Date: 2010-12-09 23:52+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -2338,7 +2338,7 @@ msgstr "Linker zusätzliche Einstellungen übergeben (Leerzeichen trennt)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight String keyword(s)"
-msgstr ""
+msgstr "Hebe String Schlüsselwort(e) hervor"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
@@ -3508,7 +3508,7 @@ msgstr "Von anderen Packages übernommene zusätzliche Compilereinstellungen"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr ""
+msgstr "Fügt neuen Erstellmodus hinzu, Einstellungen kopiert von \"%s\""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -3967,11 +3967,11 @@ msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr ""
+msgstr "Erstellmakros"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
-msgstr ""
+msgstr "Erstellmakros:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3987,7 +3987,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffmode
 msgid "Mode:"
-msgstr ""
+msgstr "Modus:"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
@@ -5420,10 +5420,6 @@ msgstr ""
 msgid "Component"
 msgstr "Komponente"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-msgid "Component name \"%s\" is a pascal keyword."
-msgstr ""
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
 msgstr "Der Komponentenname %s%s%s ist ein Schlüsselwort"
@@ -5456,7 +5452,7 @@ msgstr "Bedingung"
 
 #: lazarusidestrconsts.lisconditionals
 msgid "Conditionals:"
-msgstr ""
+msgstr "Bedingungen:"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -5555,7 +5551,7 @@ msgstr "Abgebrochen."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
 msgid "All sub-directories will be scanned for unit files"
-msgstr ""
+msgstr "Alle Unterverzeichnisse werden nach Unit-Dateien durchsucht"
 
 #: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
 msgid "At this point there should be no missing units!"
@@ -5684,11 +5680,11 @@ msgstr ""
 #: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
 msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
 msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr ""
+msgstr "Es gibt zwei Units mit dem selben Namen:%s%s%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
-msgstr ""
+msgstr "Es gibt bereits ein Package namens \"%s\"%sBitte schließen sie zuerst dieses Package."
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
@@ -6015,7 +6011,7 @@ msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
-msgstr ""
+msgstr "Maßgeschneiderte Erstellmakros"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -6090,22 +6086,22 @@ msgstr "Löschen"
 #: lazarusidestrconsts.lisdbgitemdisable
 msgctxt "lazarusidestrconsts.lisdbgitemdisable"
 msgid "Disable"
-msgstr ""
+msgstr "Deaktivieren"
 
 #: lazarusidestrconsts.lisdbgitemdisablehint
 msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
 msgid "Disable"
-msgstr ""
+msgstr "Deaktivieren"
 
 #: lazarusidestrconsts.lisdbgitemenable
 msgctxt "lazarusidestrconsts.lisdbgitemenable"
 msgid "Enable"
-msgstr ""
+msgstr "Aktivieren"
 
 #: lazarusidestrconsts.lisdbgitemenablehint
 msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
 msgid "Enable"
-msgstr ""
+msgstr "Aktivieren"
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
@@ -6121,7 +6117,7 @@ msgstr "Es ist kein Debugger angegeben.%sDas Setzen von Haltepunkten ist wirklun
 
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
-msgstr ""
+msgstr "An/Aus"
 
 #: lazarusidestrconsts.lisdbgwinpowerhint
 msgid "Disable/Enable updates for the entire window"
@@ -6286,7 +6282,7 @@ msgstr "Voreinstellung"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
-msgstr ""
+msgstr "Verzögerung für lange Zeilenhinweise in Vervollständigungsbox"
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -6330,7 +6326,7 @@ msgstr "Haltepunkt bei %s»%s«, Zeile %d löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
-msgstr ""
+msgstr "Erstellmakro %s%s%s löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
@@ -6482,7 +6478,7 @@ msgstr "Anweisungen"
 
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
-msgstr ""
+msgstr "Direktiven für neue Unit"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -6524,22 +6520,22 @@ msgstr "Assembler"
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
 msgid "Goto address"
-msgstr ""
+msgstr "Gehe zu Adresse"
 
 #: lazarusidestrconsts.lisdisassgotoaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
 msgid "Goto address"
-msgstr ""
+msgstr "Gehe zu Adresse"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddress
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
 msgid "Goto current address"
-msgstr ""
+msgstr "Gehe zu aktueller Adresse"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
 msgid "Goto current address"
-msgstr ""
+msgstr "Gehe zu aktueller Adresse"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -7720,7 +7716,7 @@ msgstr "Kompilieroptionen der IDE"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
-msgstr ""
+msgstr "Erzeuge Makedatei für Package %s"
 
 #: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
 msgid "Error: running 'compile after' tool failed for package %s"
@@ -7732,7 +7728,7 @@ msgstr "Informationen über die IDE"
 
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
-msgstr ""
+msgstr "WARNUNG: Unit-Name ungültig %s, Package=%s"
 
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
@@ -8062,11 +8058,11 @@ msgstr "Interaktiv"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
-msgstr ""
+msgstr "Ungültiges Erstellmakro %s%s%s. Das Erstellmakro muß ein Pascal-Bezeichner sein."
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
 msgid "Invalid build macro \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Ungültiges Erstellmakro \"%s\". Der Name ist ein Schlüsselwort."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -8110,7 +8106,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
-msgstr ""
+msgstr "Ungültiger Modus %s"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -8823,7 +8819,7 @@ msgstr "Erweiterte Compilereinstellungen"
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
-msgstr ""
+msgstr "Wollen sie dieses Erstellprofil wirklich löschen?"
 
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
@@ -8874,11 +8870,11 @@ msgstr "Säubern und neu erzeugen"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
-msgstr ""
+msgstr "Allgemeine Einstellungen"
 
 #: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
 msgid "Compile selected static packages into Lazarus binary"
-msgstr ""
+msgstr "Kompiliert die gewählten statischen Packages in die Lazarus-Binärdatei"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #, fuzzy
@@ -8892,7 +8888,7 @@ msgstr "Löschung bestätigen"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
-msgstr ""
+msgstr "Definitionen"
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
 msgid "Defines without -d"
@@ -8901,16 +8897,16 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildeditdefines
 msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
-msgstr ""
+msgstr "Bearbeite Definitionen"
 
 #: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
 msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
-msgstr ""
+msgstr "Bearbeite Definitionen"
 
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
-msgstr ""
+msgstr "Bearbeiten der Liste von Definitionen, die von jedem Profil verwendet werden können"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
@@ -8923,15 +8919,15 @@ msgstr "%s%s%s%sLazBuild ist nicht interaktiv, es wird abgebrochen."
 
 #: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
 msgid "Like \"make clean\" on cmd line"
-msgstr ""
+msgstr "Wie \"make clean\" auf Kommandozeile"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
-msgstr ""
+msgstr "Erstellprofile verwalten"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles2
 msgid "Manage profiles"
-msgstr ""
+msgstr "Profile verwalten"
 
 #: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
 msgid "Name of the active profile"
@@ -8961,7 +8957,7 @@ msgstr "Einstellungen:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
-msgstr ""
+msgstr "An den Compiler weitergereichte Einstellungen"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
@@ -9018,7 +9014,7 @@ msgstr "Nach dem Kompilieren neu starten"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
-msgstr ""
+msgstr "Startet Lazarus nach dem Erstellen der IDE automatisch neu (hat keinen Effekt beim Erstellen anderer Teile)"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
@@ -9026,11 +9022,11 @@ msgstr "Einstellungen speichern"
 
 #: lazarusidestrconsts.lislazbuildselectprofilestobuild
 msgid "Select profiles to build"
-msgstr ""
+msgstr "Profile zum Erstellen auswählen"
 
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
 msgid "Show confirmation dialog when building directly from Tools menu"
-msgstr ""
+msgstr "Zeigt einen Bestätigungsdialog beim Erstellen aus dem Werkzeuge-Menü heraus"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9050,7 +9046,7 @@ msgstr "Kann Datei »%s« nicht schreiben: %s"
 
 #: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
 msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "Aktualisiere Revisions-Info im \"About Lazarus\" Dialog"
+msgstr "Aktualisiert die Revisions-Info im \"Über Lazarus\" Dialog"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -10435,11 +10431,11 @@ msgstr "Weiter"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
-msgstr ""
+msgstr "Bewege \"%s\" eine Position nach unten"
 
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
-msgstr ""
+msgstr "Bewege \"%s\" eine Position nach oben"
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
@@ -10585,7 +10581,7 @@ msgstr "Keine Backups"
 
 #: lazarusidestrconsts.lisnobuildprofilesselected
 msgid "No profiles are selected to be built."
-msgstr ""
+msgstr "Es sind keine Profile zum Erstellen ausgewählt."
 
 #: lazarusidestrconsts.lisnochange
 msgid "No change"
@@ -10855,10 +10851,6 @@ msgstr "Suche nur nach ganzen Worten"
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
 msgstr "Beim Einfügen aus der Zwischenablage"
-
-#: lazarusidestrconsts.lisopen
-msgid "Open ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -11654,7 +11646,7 @@ msgstr "Zirkuläre Abhängigkeiten in den Packages"
 
 #: lazarusidestrconsts.lispkgmangcompilingpackage
 msgid "Compiling package %s"
-msgstr ""
+msgstr "Kompiliere Package %s"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -11682,7 +11674,7 @@ msgstr "Fehler beim Lesen des Packages"
 
 #: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
 msgid "Error: updating po files failed for package %s"
-msgstr ""
+msgstr "Fehler: Update der po Dateien für Package %s fehlgeschlagen"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
@@ -13085,7 +13077,7 @@ msgstr "Voreinstellungens setzen"
 
 #: lazarusidestrconsts.lissetmacrovalues
 msgid "Set macro values"
-msgstr ""
+msgstr "Makrowerte setzen"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -13462,7 +13454,7 @@ msgstr "Das Application-Bundle wurde erzeugt für \"%s\""
 
 #: lazarusidestrconsts.listhebuildmacrodoesnotbeginwith
 msgid "The build macro \"%s\" does not begin with \"%s\"."
-msgstr ""
+msgstr "Das Erstellmakro \"%s\" beginnt nicht mit \"%s\"."
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13611,12 +13603,12 @@ msgstr "Die Datei %s%s%s%swurde nicht gefunden.%s »Übergehen« lädt das Proje
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "Der erste Erstellmodus ist der Vorgabemodus und muß im Projekt gespeichert werden, nicht in der Sitzung."
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "Der erste Erstellmodus ist der Vorgabemodus und muß im Projekt gespeichert werden, nicht in der Sitzung."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -13708,11 +13700,11 @@ msgstr "Der Eigentümer heißt"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "Das Package %s fügt den Pfad \"%s\" zum Include-Pfad der IDE hinzu.%sDies ist wahrscheinlich eine Fehlkonfiguration des Packages."
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "Das Package %s fügt den Pfad \"%s\" zum Unit-Pfad der IDE hinzu.%sDies ist wahrscheinlich eine Fehlkonfiguration des Packages."
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
@@ -13740,7 +13732,7 @@ msgstr "Das Projekt bindet die LCL-Unit-Schnittstelllen nicht ein, scheint sie a
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr ""
+msgstr "Das Projekt hat keine Haupt-Quelldatei."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -13772,7 +13764,7 @@ msgstr "Es gibt eine Datei mit dem gleichen Namen und einer ähnlichen Endung au
 
 #: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
 msgid "There is already a build macro with the name %s%s%s."
-msgstr ""
+msgstr "Es gibt bereits ein Erstellmakro mit dem Namen %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
@@ -13784,7 +13776,7 @@ msgstr "Es gibt schon ein Formular mit dem Namen %s%s%s"
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
-msgstr ""
+msgstr "Es gibt bereits ein IDE-Makro mit dem Namen \"%s\""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -13796,7 +13788,7 @@ msgstr "Es gibt schon eine Unit mit dem Namen %s%s%s im Projekt.%sBitte wählen 
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
-msgstr ""
+msgstr "Es muß wenigstens einen Erstellmodus geben."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
@@ -13880,7 +13872,7 @@ msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in K
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
-msgstr ""
+msgstr "Das Projekt hat keine Haupt-Quelldatei"
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
@@ -14720,7 +14712,7 @@ msgstr "XML-Parserfehler in der Datei %s%sFehler: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr ""
+msgstr "Sie können dies deaktivieren für individuelle Formulare über das Kontextmenü im Projektinspektor."
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
