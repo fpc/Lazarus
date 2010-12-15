@@ -96,10 +96,12 @@ function CreateCompilerTestPascalFilename: string;
 
 // returns the standard executable extension (e.g '.exe')
 function GetExecutableExt(TargetOS: string = ''): string;
+function MakeStandardExeFilename(TargetOS, Filename: string): string;
 // returns the standard library extension (e.g '.dll' or '.dylib')
 function GetLibraryExt(TargetOS: string = ''): string;
 // returns the standard library prefix (e.g 'lib')
 function GetLibraryPrefix(TargetOS: string = ''): string;
+function MakeStandardLibFilename(TargetOS, Filename: string): string;
 
 // returns the standard file extension for compiled units (e.g '.ppu')
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
@@ -326,6 +328,18 @@ begin
     Result:='';
 end;
 
+function MakeStandardExeFilename(TargetOS, Filename: string): string;
+var
+  StdExt: String;
+begin
+  Result:=Filename;
+  if TargetOS='' then
+    TargetOS:=GetDefaultTargetOS;
+  StdExt:=GetExecutableExt(TargetOS);
+  if StdExt='' then exit;
+  Result:=ChangeFileExt(Result,StdExt);
+end;
+
 function GetLibraryExt(TargetOS: string): string;
 begin
   if TargetOS='' then
@@ -354,6 +368,31 @@ begin
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   if CompareText(SrcOS, 'unix') = 0 then
     Result:='lib';
+end;
+
+function MakeStandardLibFilename(TargetOS, Filename: string): string;
+var
+  StdExt: String;
+  StdPrefix: String;
+begin
+  Result:=Filename;
+  if TargetOS='' then
+    TargetOS:=GetDefaultTargetOS;
+  // change extension
+  StdExt:=GetLibraryExt(TargetOS);
+  if StdExt<>'' then
+    Result:=ChangeFileExt(Result,StdExt);
+  // change prefix
+  StdPrefix:=GetLibraryPrefix(TargetOS);
+  if StdPrefix<>'' then
+    Result:=ExtractFilePath(Result)+StdPrefix+ExtractFileName(Result);
+  // lowercase
+  if (CompareText(TargetOS,'linux')=0)
+  or (CompareText(TargetOS,'freebsd')=0)
+  or (CompareText(TargetOS,'netbsd')=0)
+  or (CompareText(TargetOS,'openbsd')=0)
+  then
+    Result:=ExtractFilePath(Result)+lowercase(ExtractFileName(Result));
 end;
 
 function GetDefaultTargetOS: string;

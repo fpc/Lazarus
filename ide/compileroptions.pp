@@ -2499,26 +2499,16 @@ begin
   if (HeapSize > 0) then
     switches := switches + ' ' + '-Ch' + IntToStr(HeapSize);
 
-
-  { TODO: Implement the following switches. They need to be added
-          to the dialog. }
-{
-  n = Omit linking stage
-  sxxx = Set stack size to xxx
-}
-
+  { Optimizations }
   OptimizeSwitches:='';
-
   if SmallerCode then
     OptimizeSwitches := OptimizeSwitches + 's';
-
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
   case (OptimizationLevel) of
     1:  OptimizeSwitches := OptimizeSwitches + '1';
     2:  OptimizeSwitches := OptimizeSwitches + '2';
     3:  OptimizeSwitches := OptimizeSwitches + '3';
   end;
-
   if OptimizeSwitches<>'' then
     switches := switches + ' -O'+OptimizeSwitches;
 
@@ -2590,7 +2580,7 @@ begin
     switches := switches + ' -Xs';
 
   { Link Style
-     -XD = Link with dynamic libraries, not implemented by FPC
+     -XD = Link with dynamic libraries
      -XS = Link with static libraries, default on non-win32 platforms
      -XX = Link smart
   }
@@ -2732,14 +2722,6 @@ begin
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
 
-  { TODO: Implement the following switches. They need to be added
-          to the dialog. }
-{
-     exxx = Errors file
-     Lxxx = Use xxx as dynamic linker (LINUX only)
-     oxxx = Object files
-     rxxx = Compiler messages file
-}
   t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
@@ -2785,6 +2767,9 @@ begin
        
 }
   // append -o Option if neccessary
+  {   * -o to define the target file name.
+      * -FE if the target file name is not in the project directory (where the lpi file is)
+      * -FU if the unit output directory is not empty }
   //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags))
     and (not (ccloNoMacroParams in Flags))
@@ -2801,7 +2786,7 @@ begin
       if (NewTargetDirectory <> '')
       and (CompareFilenames(ChompPathDelim(NewTargetDirectory),ChompPathDelim(BaseDirectory))=0)
       then begin
-        // if target file is in base directory, do not use -FE switch
+        // if target file is in the base directory, do not use -FE switch
         // Without -FE and -FU switch the compiler puts .ppu files in the source
         // directories, which is Delphi compatible.
         // See bug http://bugs.freepascal.org/view.php?id=15535

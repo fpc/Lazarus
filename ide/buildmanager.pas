@@ -75,6 +75,8 @@ type
                            var Abort: boolean): string;// make utility
     function MacroFuncMakeExe(const Filename: string; const Data: PtrInt;
                               var Abort: boolean): string;
+    function MacroFuncMakeLib(const Filename: string; const Data: PtrInt;
+                              var Abort: boolean): string;
     function MacroFuncParams(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncProject(const Param: string; const Data: PtrInt;
@@ -302,6 +304,8 @@ begin
                     lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
                       lisMakeExe,@MacroFuncMakeExe,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('MakeLib','',
+                      lisMakeExe,@MacroFuncMakeLib,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Make','',
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
   GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
@@ -1309,16 +1313,15 @@ end;
 
 function TBuildManager.MacroFuncMakeExe(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
-var
-  OldExt: String;
-  ExeExt: String;
 begin
-  Result:=Filename;
-  OldExt:=ExtractFileExt(Filename);
-  ExeExt:=LazConf.GetExecutableExt(GetTargetOS(true));
-  if OldExt<>ExeExt then
-    Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
+  Result:=MakeStandardExeFilename(GetTargetOS(true),Filename);
   //DebugLn('TMainIDE.MacroFuncMakeExe A ',Filename,' ',Result);
+end;
+
+function TBuildManager.MacroFuncMakeLib(const Filename: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=MakeStandardLibFilename(GetTargetOS(true),Filename);
 end;
 
 function TBuildManager.MacroFuncProject(const Param: string; const Data: PtrInt;
