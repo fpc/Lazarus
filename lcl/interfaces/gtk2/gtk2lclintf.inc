@@ -967,17 +967,17 @@ begin
         begin
           BtnID := ButtonResults[ModalResult];
           case BtnID of
-            idButtonOK       : CreateButton(rsMbOK, GTK_RESPONSE_OK);
-            idButtonCancel   : CreateButton(rsMbCancel, GTK_RESPONSE_CANCEL);
-            idButtonHelp     : CreateButton(rsMbHelp, GTK_RESPONSE_HELP);
-            idButtonYes      : CreateButton(rsMbYes, GTK_RESPONSE_YES);
-            idButtonNo       : CreateButton(rsMbNo, GTK_RESPONSE_NO);
-            idButtonClose    : CreateButton(rsMbClose, GTK_RESPONSE_CLOSE);
-            idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
-            idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_ACCEPT);
-            idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_CLOSE);
-            idButtonNoToAll  : CreateButton(rsMBNoToAll, GTK_RESPONSE_REJECT);
-            idButtonYesToAll : CreateButton(rsMBYesToAll, GTK_RESPONSE_APPLY);
+            idButtonOK       : CreateButton(Caption, GTK_RESPONSE_OK);
+            idButtonCancel   : CreateButton(Caption, GTK_RESPONSE_CANCEL);
+            idButtonHelp     : CreateButton(Caption, GTK_RESPONSE_HELP);
+            idButtonYes      : CreateButton(Caption, GTK_RESPONSE_YES);
+            idButtonNo       : CreateButton(Caption, GTK_RESPONSE_NO);
+            idButtonClose    : CreateButton(Caption, GTK_RESPONSE_CLOSE);
+            idButtonAbort    : CreateButton(Caption, GTK_RESPONSE_REJECT);
+            idButtonRetry    : CreateButton(Caption, GTK_RESPONSE_ACCEPT);
+            idButtonIgnore   : CreateButton(Caption, GTK_RESPONSE_CLOSE);
+            idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_REJECT);
+            idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_APPLY);
           end;
         end;
     end;
