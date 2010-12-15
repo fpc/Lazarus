@@ -3731,6 +3731,10 @@ msgstr "Nom de class &Application"
 msgid "apply build flags (-B) to dependencies too"
 msgstr "applique l'option de construction (-B) aussi aux dépendances"
 
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "Une unité du projet  ne peut pas être utilisée par d'autres paquets/projets"

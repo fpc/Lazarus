@@ -3674,6 +3674,10 @@ msgstr "&Jméno třídy aplikace"
 msgid "apply build flags (-B) to dependencies too"
 msgstr "příznaky sestavení (-B) použít také pro závislosti"
 
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "Jednotka projektu nemůže být použita jinými balíčky/projekty"

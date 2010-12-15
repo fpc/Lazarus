@@ -3716,6 +3716,10 @@ msgstr "Meno triedy &Aplikácie"
 msgid "apply build flags (-B) to dependencies too"
 msgstr "použiť príznaky budovania (-B) aj pre závislosti"
 
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr ""

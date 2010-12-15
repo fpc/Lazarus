@@ -3685,6 +3685,10 @@ msgstr "שם המחלקה של היישום"
 msgid "apply build flags (-B) to dependencies too"
 msgstr "השתמש בדגלי בניה (B-) גם לתלויות"
 
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "יחידה של פרוייקט אינה יכולה לשמש לפרוייקט או חבילה אחרים"

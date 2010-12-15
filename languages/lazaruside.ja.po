@@ -3716,6 +3716,10 @@ msgstr "アプリケーションクラス名(&A)"
 msgid "apply build flags (-B) to dependencies too"
 msgstr "ビルドフラグ(-B)を依存するものにも適用"
 
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "あるプロジェクのトユニットを他のパッケージやプロジェクトに用いることはできません。"
@@ -9120,8 +9124,7 @@ msgstr "LFMはOK"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。%s詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA !
- 02111-1307, USA"
+msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。%s詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA "
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
 #, fuzzy
@@ -10402,12 +10405,8 @@ msgid "Search Unit Path"
 msgstr "ユニットパスを検索"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do!
-  not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundation が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、以下の修正の上、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。修正点は次のとおり：%s特別な例外として、このライブラリの著作権保有者は、あなたが選択した許諾バージョンの条項に拘らず、実行ファイルを作るためにこのライブラリに独立したモジュールをリンクし、作成された実行ファイルを複製し、あなたが選択した許諾バージョンで配布することを、あなたもまたリンクされた独立モジュールについてそのモジュールの許諾の条項と条件に従っている限⾡
- ¡において許可します。独立モジュールとは、このライブラリから派生していたり、基づいていないモジュールのことです。もしあなたがこのライブラリを修正した場合、あなたはあなたのバージョンのライブラリに対して、この例外を拡張することができますが、そうしなければならない義務があるわけではありません。もしそうすることを望む場合、この例外規程をあなたのバージョンから削除してください。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはこのライブラリとともに受け取っているはずですが、もしなければ、次の住慡
- ¡に手紙でリクエストすることによっても入手できま
-す：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
+msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"

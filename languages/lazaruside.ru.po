@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-12 20:57+0300\n"
+"PO-Revision-Date: 2010-12-16 01:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3720,6 +3720,10 @@ msgstr "&Название класса приложения"
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
 msgstr "использовать флаг сборки (-B) также для зависимостей"
+
+#: lazarusidestrconsts.lisapplyconventions
+msgid "Apply conventions"
+msgstr "Применять соглашения по именованию"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
