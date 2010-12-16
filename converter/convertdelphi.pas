@@ -609,8 +609,14 @@ begin
   // Fix include file names.
   Result:=FixIncludeFiles;
   if Result<>mrOk then exit;
-  fCTLink.IsConsoleApp:=Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp;
-  fCTLink.Ask:=Assigned(fOwnerConverter);
+  fCTLink.IsConsoleApp:=False;
+  fCTLink.IsMainFile:=False;
+  fCTLink.AskAboutError:=False;
+  if Assigned(fOwnerConverter) then begin
+    fCTLink.IsConsoleApp:= fOwnerConverter.fIsConsoleApp;
+    fCTLink.IsMainFile:=fOwnerConverter.MainName=fLazUnitFilename;
+    fCTLink.AskAboutError:=True;
+  end;
   // Take care of missing units in uses sections.
   fUsedUnitsTool:=Nil;
   try
@@ -1220,16 +1226,11 @@ function TConvertDelphiProject.CreateInstance: TModalResult;
 var
   Desc: TConvertedDelphiProjectDescriptor;
 begin
-  LazProject:=Project1;
+  Result:=mrOk;
   if FileExistsUTF8(fLazPFilename) then begin
     // there is already a lazarus project -> open it, if not already open
-    if (LazProject=nil) or
-       (CompareFilenames(LazProject.ProjectInfoFile,fLazPFilename)<>0) then
-    begin
+    if (Project1=nil) or (CompareFilenames(Project1.ProjectInfoFile,fLazPFilename)<>0) then
       Result:=LazarusIDE.DoOpenProjectFile(fLazPFilename,[]);
-      LazProject:=Project1;
-      if Result<>mrOk then exit;
-    end;
   end else begin
     // create a new lazarus project
     Desc:=TConvertedDelphiProjectDescriptor.Create;
@@ -1238,11 +1239,13 @@ begin
     finally
       Desc.Free;
     end;
-    LazProject:=Project1;
-    if Result<>mrOk then exit;
-    LazProject.ProjectInfoFile:=fLazPFilename;
+    if Assigned(Project1) then
+      Project1.ProjectInfoFile:=fLazPFilename;
   end;
+  LazProject:=Project1;
+  if Result<>mrOk then exit;
   // save to disk (this makes sure, all editor changes are saved too)
+  LazProject.SkipCheckLCLInterfaces:=True; // Don't add Interfaces unit automatically.
   Result:=LazarusIDE.DoSaveProject([]);
 end;
 

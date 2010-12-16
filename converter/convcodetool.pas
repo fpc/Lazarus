@@ -54,8 +54,9 @@ type
     fCodeTool: TCodeTool;
     fCode: TCodeBuffer;
     fSrcCache: TSourceChangeCache;
+    fIsMainFile: Boolean;                 // Main project / package file.
     fIsConsoleApp: Boolean;
-    fAsk: Boolean;
+    fAskAboutError: Boolean;
     fSettings: TConvertSettings;          // Conversion settings.
     procedure InitCodeTool;
     function HandleCodetoolError: TModalResult;
@@ -67,8 +68,9 @@ type
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
     property SrcCache: TSourceChangeCache read fSrcCache;
+    property IsMainFile: Boolean read fIsMainFile write fIsMainFile;
     property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
-    property Ask: Boolean read fAsk write fAsk;
+    property AskAboutError: Boolean read fAskAboutError write fAskAboutError;
     property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
@@ -115,7 +117,7 @@ begin
   inherited Create;
   fCode:=ACode;
   fIsConsoleApp:=False;
-  fAsk:=True;
+  fAskAboutError:=True;
   InitCodeTool;
 end;
 
@@ -152,7 +154,7 @@ var
 begin
   ErrMsg:=CodeToolBoss.ErrorMessage;
   LazarusIDE.DoJumpToCodeToolBossError;
-  if fAsk then begin
+  if fAskAboutError then begin
     Result:=QuestionDlg(lisCCOErrorCaption,
       Format(CodetoolsFoundError, [ExtractFileName(fCode.Filename), #13, ErrMsg, #13]),
       mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
