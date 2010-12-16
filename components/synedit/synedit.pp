@@ -4416,7 +4416,11 @@ var
   NewCaretXY: TPoint;
   MaxY: LongInt;
 begin
-  if (not HandleAllocated) then
+  {$IFDEF SYNDEBUG}
+  if (sfEnsureCursorPos in fStateFlags) then
+    debugln('SynEdit. skip MoveCaretToVisibleArea');
+  {$ENDIF}
+  if (not HandleAllocated) or (sfEnsureCursorPos in fStateFlags) then
     exit;
 
   NewCaretXY:=CaretXY;
