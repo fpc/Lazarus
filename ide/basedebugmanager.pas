@@ -95,6 +95,9 @@ type
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
+    {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+    function GetDebugger: TDebugger; virtual; abstract;
+    {$ENDIF}
   public
     procedure Reset; virtual; abstract;
 
@@ -170,6 +173,9 @@ type
     property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TIDEWatches read FWatches;
+    {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+    property Debugger: TDebugger read GetDebugger;
+    {$ENDIF}
   end;
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);

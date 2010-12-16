@@ -28,6 +28,15 @@
 }
 unit DebugOutputForm;
 
+(* DBG_WITH_DEBUGGER_DEBUG:
+    This enables direct access to the debugger.
+   WARNING:
+    - This bypasses some of the internals of the debugger.
+    - It does intentionally no check or validation
+    - Using this feature without full knowledge of all internals of the debugger,
+      can *HANG* or *CRASH* the debugger or the entire IDE.
+*)
+
 {$mode objfpc}
 {$H+}
 
@@ -35,7 +44,11 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, Clipbrd,
-  Buttons, StdCtrls, Menus, DebuggerDlg;
+  Buttons, StdCtrls, Menus, ExtCtrls, DebuggerDlg
+  {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+  , BaseDebugManager, GDBMIDebugger, CmdLineDebugger
+  {$ENDIF}
+  ;
 
 type
 
@@ -51,9 +64,16 @@ type
     procedure popClearClick(Sender: TObject);
     procedure popCopyAllClick(Sender: TObject);
   private
+    {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+    Edit1: TEdit;
+    procedure Button1Click(Sender: TObject);
+    {$ENDIF}
   protected
     procedure Loaded; override;
   public
+    {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+    constructor Create(TheOwner: TComponent); override;
+    {$ENDIF}
     procedure AddText(const AText: String);
     procedure Clear;
     procedure SetLogText(Lines: TStrings);
@@ -87,11 +107,45 @@ begin
   Lines.Assign(txtOutput.Lines);
 end;
 
+
+{$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+constructor TDbgOutputForm.Create(TheOwner: TComponent);
+var
+  p: TPanel;
+  b: TButton;
+begin
+  inherited;
+  p := TPanel.Create(Self);
+  p.Parent := Self;
+  p.Align := alBottom;
+  p.AutoSize := True;
+  p.Caption := '';
+  Edit1 := TEdit.Create(Self);
+  Edit1.Parent := p;
+  Edit1.Align := alClient;
+  b := TButton.Create(Self);
+  b.Parent := p;
+  b.Align := alRight;
+  b.OnClick := @Button1Click;
+  b.Caption := 'Execute';
+  b.AutoSize := True;
+end;
+{$ENDIF}
+
 procedure TDbgOutputForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   CloseAction := caFree;
 end;
+
+{$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+procedure TDbgOutputForm.Button1Click(Sender: TObject);
+begin
+  if DebugBoss.Debugger is TCmdLineDebugger then begin
+    TCmdLineDebugger(DebugBoss.Debugger).TestCmd(Edit1.Text);
+  end;
+end;
+{$ENDIF}
 
 procedure TDbgOutputForm.FormCreate(Sender: TObject);
 begin

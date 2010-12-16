@@ -137,6 +137,9 @@ type
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
     function GetDebuggerClass: TDebuggerClass;
+    {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+    function GetDebugger: TDebugger; override;
+    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -3033,6 +3036,13 @@ begin
   if Result = nil then
     Result := TProcessDebugger;
 end;
+
+{$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+function TDebugManager.GetDebugger: TDebugger;
+begin
+  Result := FDebugger;
+end;
+{$ENDIF}
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
 begin
