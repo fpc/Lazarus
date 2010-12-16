@@ -152,6 +152,7 @@ function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function GetNextUsedDirectoryInSearchPath(const SearchPath,
                           FilterDir: string; var NextStartPos: integer): string;
+function SearchPathToList(const SearchPath: string): TStringList;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer = 1): integer;
 function SearchDirectoryInSearchPath(SearchPath: TStrings;
@@ -656,6 +657,20 @@ begin
       exit;
   end;
   Result:=''
+end;
+
+function SearchPathToList(const SearchPath: string): TStringList;
+var
+  p: Integer;
+  CurDir: String;
+begin
+  Result:=TStringList.Create;
+  p:=1;
+  repeat
+    CurDir:=GetNextDirectoryInSearchPath(SearchPath,p);
+    if CurDir='' then break;
+    Result.Add(CurDir);
+  until false;
 end;
 
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
@@ -1376,7 +1391,7 @@ begin
       if CurPath='' then CurPath:='.';
       // check if path already exists
       if (not DeleteDoubles)
-        or (SearchDirectoryInSearchPath(SearchPath,CurPath)<1)
+        or (SearchDirectoryInSearchPath(Result,CurPath)<1)
       then begin
         if Result<>'' then
           CurPath:=';'+CurPath;

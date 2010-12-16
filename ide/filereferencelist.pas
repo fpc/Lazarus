@@ -39,7 +39,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AVL_Tree, FileUtil, IDEProcs;
+  Classes, SysUtils, LCLProc, AVL_Tree, FileProcs, IDEProcs;
   
 type
   { TFileReference }
@@ -166,10 +166,7 @@ end;
 
 procedure TFileReferenceList.IncreaseTimeStamp;
 begin
-  if FTimeStamp<$7fffffff then
-    inc(FTimeStamp)
-  else
-    FTimeStamp:=-$7fffffff;
+  CTIncreaseChangeStamp(FTimeStamp);
   //DebugLn('TFileReferenceList.IncreaseTimeStamp ',dbgs(FTimeStamp));
 end;
 
@@ -185,7 +182,7 @@ end;
 
 constructor TFileReferenceList.Create;
 begin
-
+  FTimeStamp:=CTInvalidChangeStamp;
 end;
 
 destructor TFileReferenceList.Destroy;
