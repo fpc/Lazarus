@@ -1006,6 +1006,10 @@ begin
   AreaMarkupEnabled := True;
   SetUndoStart;
 
+  // Reset them, since Selectionchanges are not tracked during spseEditing
+  FLastSelStart := Point(-1,-1);
+  FLastSelEnd := Point(-1,-1);
+
   Pos := SelectionObj.FirstLineBytePos;
   EndPos := SelectionObj.LastLineBytePos;
 
