@@ -47,7 +47,7 @@ procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);
 // global defaults
 function FindUseDefaultsFlagTemplate: TDefineTemplate;
 function CreateUseDefaultsFlagTemplate: TDefineTemplate;
-procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate);
+procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate; Recurse: boolean);
 
 // FPC sources
 function CreateFPCSourceTemplate(Config: TFPCUnitSetCache;
@@ -129,7 +129,7 @@ function CreateFPCSourceTemplate(Config: TFPCUnitSetCache; Owner: TObject
   ): TDefineTemplate;
 begin
   Result:=CreateFPCSrcTemplate(Config,Owner);
-  DisableDefaultsInDirectories(Result);
+  DisableDefaultsInDirectories(Result,true);
 end;
 
 function CreateFPCSourceTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
@@ -140,7 +140,7 @@ begin
                                         UnitSearchPath, PPUExt,
                                         DefaultTargetOS, DefaultProcessorName,
                                         UnitLinkListValid, UnitLinkList, Owner);
-  DisableDefaultsInDirectories(Result);
+  DisableDefaultsInDirectories(Result,true);
 end;
 
 function CreateLazarusSourceTemplate(const LazarusSrcDir, WidgetType,
@@ -148,7 +148,7 @@ function CreateLazarusSourceTemplate(const LazarusSrcDir, WidgetType,
 begin
   Result:=CodeToolBoss.DefinePool.CreateLazarusSrcTemplate(LazarusSrcDir,
                                                WidgetType, ExtraOptions, Owner);
-  DisableDefaultsInDirectories(Result);
+  DisableDefaultsInDirectories(Result,true);
 end;
 
 function FindProjectsTemplate: TDefineTemplate;
@@ -468,13 +468,20 @@ begin
   CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(Result);
 end;
 
-procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate);
+procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate;
+  Recurse: boolean);
 // add to each directory a template to undefine the UseDefaults flag
+var
+  Action: TDefineAction;
 begin
+  if Recurse then
+    Action:=da_UndefineRecurse
+  else
+    Action:=da_Undefine;
   while DefTempl<>nil do begin
     if DefTempl.Action=da_Directory then begin
       DefTempl.AddChild(TDefineTemplate.Create(NotUseDefaultsFlagTemplName,
-        NotUseDefaultsFlagTemplName,UseDefaultsFlagName,'',da_UndefineRecurse));
+        NotUseDefaultsFlagTemplName,UseDefaultsFlagName,'',Action));
       DefTempl:=DefTempl.GetNextSkipChildren;
     end else begin
       DefTempl:=DefTempl.GetNext;
