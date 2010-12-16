@@ -72,7 +72,7 @@ const
   Match_ArgTFoo1 = '<TFoo> = \{.+ValueInt = 31';
   // Todo: Dwarf fails with dereferenced var pointer types
 
-  ExpectBrk1NoneNil: Array [1..49] of TWatchExpectation = (
+  ExpectBrk1NoneNil: Array [1..55] of TWatchExpectation = (
     { records }
 
     (Exp: 'ArgTRec';       Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
@@ -103,6 +103,8 @@ const
     (Exp: 'PVarTNewRec';   Mtch: '^\^TNewRec\('+Match_PasPointer;    Kind: skPointer;     TpNm: '^TNewRec'; Flgs: []),
     (Exp: 'PVarTNewRec^';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
 
+      { Classes }
+
     (Exp: 'ArgTFoo';      Mtch: Match_ArgTFoo;                     Kind: skClass;      TpNm: 'TFoo'; Flgs: []),
     (Exp: 'VArgTFoo';     Mtch: Match_ArgTFoo;                     Kind: skClass;      TpNm: 'TFoo'; Flgs: []),
     (Exp: 'ArgPFoo';      Mtch: 'PFoo\('+Match_PasPointer;          Kind: skPointer;      TpNm: 'PFoo'; Flgs: []),
@@ -110,9 +112,16 @@ const
     (Exp: 'ArgPFoo^';      Mtch: Match_ArgTFoo1;                     Kind: skClass;      TpNm: 'TFoo'; Flgs: []),
     (Exp: 'VArgPFoo^';     Mtch: Match_ArgTFoo1;                     Kind: skClass;      TpNm: 'TFoo'; Flgs: [fnoDwrf]),
 
+    (Exp: 'ArgTFoo=ArgTFoo';      Mtch: 'True';                     Kind: skSimple;      TpNm: 'bool'; Flgs: []),
+    (Exp: 'VArgTFoo=VArgTFoo';    Mtch: 'True';                     Kind: skSimple;      TpNm: 'bool'; Flgs: []),
+    (Exp: 'ArgTFoo=VArgTFoo';     Mtch: 'True';                     Kind: skSimple;      TpNm: 'bool'; Flgs: []),
+    (Exp: 'ArgTFoo=ArgPFoo';      Mtch: 'False';                    Kind: skSimple;      TpNm: 'bool'; Flgs: []),
+    (Exp: 'ArgPFoo=ArgPPFoo^';    Mtch: 'True';                     Kind: skSimple;      TpNm: 'bool'; Flgs: []),
+
+    (Exp: '@ArgTFoo';     Mtch: '(P|\^T)Foo\('+Match_PasPointer;    Kind: skPointer;     TpNm: '(P|\^T)Foo'; Flgs: [fTpMtch]),
+
     (*
 
-      { Classes }
     (Exp: 'ArgPPFoo';      Mtch: '';      Kind: sk;      TpNm: 'PPFoo'; Flgs: []),
     (Exp: 'VArgPPFoo';      Mtch: '';      Kind: sk;      TpNm: 'PPFoo'; Flgs: []),
     (Exp: 'ArgTSamePFoo';      Mtch: '';      Kind: sk;      TpNm: 'TSamePFoo'; Flgs: []),

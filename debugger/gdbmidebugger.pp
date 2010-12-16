@@ -8305,17 +8305,23 @@ function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String): TGDBTy
 var
   WIExprRes, PTypeRes, WITypeRes: TGDBMIExecResult;
   WIExprVal, WIExprValCln, WITypeValS2: String;
+  f: Boolean;
 begin
   Result := nil;
   WIExprValCln := '';
-  if  ExecuteCommand('whatis %s', [AExpression], WIExprRes)
-  and (WIExprRes.State <> dsError)
+  f :=  ExecuteCommand('whatis %s', [AExpression], WIExprRes);
+
+  if (PTypeRes.State = dsError) and (pos('msg="No symbol ', PTypeRes.Values) > 0)
+  then exit;
+
+  if f and (WIExprRes.State <> dsError)
   then begin
     WIExprVal :=  ParseTypeFromGdb(WIExprRes.Values);
     WIExprValCln := WIExprVal;
     while (WIExprValCln<>'') and (WIExprValCln[1] in ['^', '&']) do delete(WIExprValCln, 1, 1);
 
     if (pos(' ', WIExprValCln) > 0) or (WIExprValCln = '') then begin
+      // TODO: if the next ptype fails, (e.g. for "bool"), we may not need to fall-back
       if ExecuteCommand('ptype %s', [AExpression], PTypeRes) // can not ptype with spaces
       and (PTypeRes.State <> dsError)
       then begin
@@ -8324,6 +8330,7 @@ begin
       end;
     end
     else begin
+      // TODO: if the next ptype fails, (e.g. for "bool"), we may not need to fall-back
       if  ExecuteCommand('ptype %s', [WIExprValCln], PTypeRes)
       and (PTypeRes.State <> dsError)
       then begin
@@ -8342,9 +8349,6 @@ begin
       end;
     end;
   end;
-
-  if (PTypeRes.State = dsError) and (pos('msg="No symbol ', PTypeRes.Values) > 0)
-  then exit;
 
   // try ptype on the value
   if not ExecuteCommand('ptype %s', [AExpression], PTypeRes)
