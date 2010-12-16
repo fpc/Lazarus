@@ -176,7 +176,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : ^'+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:='Pointer to '+FDBGInfo.TypeName;

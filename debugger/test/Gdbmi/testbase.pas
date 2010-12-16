@@ -102,38 +102,24 @@ type
   TCompilerSuite = class(TTestSuite)
   private
     FCompilerInfo: TCompilerInfo;
-  public
-    constructor Create(ACompilerInfo: TCompilerInfo; ADebuggerList: TDebuggerList);
-    procedure RegisterDbgTest(ATestClass: TTestCaseClass);
-  public
-    property CompilerInfo: TCompilerInfo read FCompilerInfo;
-  end;
-
-  { TCompilerOptionsSuite }
-
-  TCompilerOptionsSuite = class(TTestSuite)
-  private
-    FParent: TCompilerSuite;
     FSymbolSwitch: String;
     FSymbolType: TSymbolType;
     FFileNameExt: String;
     FCompiledList: TStringList;
     FInRun: Boolean;
-    function GetCompilerInfo: TCompilerInfo;
   protected
     procedure Clear;
   public
-    constructor Create(AParent: TCompilerSuite; ASymbolType: TSymbolType; ADebuggerList: TDebuggerList);
+    constructor Create(ACompilerInfo: TCompilerInfo; ASymbolType: TSymbolType; ADebuggerList: TDebuggerList);
     destructor Destroy; override;
     procedure Run(AResult: TTestResult); override;
     procedure RunTest(ATest: TTest; AResult: TTestResult); override;
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
     Procedure TestCompile(const PrgName: string; out ExeName: string);
   public
-    property Parent: TCompilerSuite read FParent;
     property SymbolType: TSymbolType read FSymbolType;
     property SymbolSwitch: String read FSymbolSwitch;
-    property CompilerInfo: TCompilerInfo read GetCompilerInfo;
+    property CompilerInfo: TCompilerInfo read FCompilerInfo;
   end;
 
   { TDebuggerSuite }
@@ -141,15 +127,15 @@ type
   TDebuggerSuite = class(TTestSuite)
   private
     FDebuggerInfo: TDebuggerInfo;
-    FParent: TCompilerOptionsSuite;
+    FParent: TCompilerSuite;
     function GetCompilerInfo: TCompilerInfo;
     function GetSymbolType: TSymbolType;
   public
-    constructor Create(AParent: TCompilerOptionsSuite; ADebuggerInfo: TDebuggerInfo);
+    constructor Create(AParent: TCompilerSuite; ADebuggerInfo: TDebuggerInfo);
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
     Procedure TestCompile(const PrgName: string; out ExeName: string);
   public
-    property Parent: TCompilerOptionsSuite read FParent;
+    property Parent: TCompilerSuite read FParent;
     property DebuggerInfo: TDebuggerInfo read FDebuggerInfo;
     property SymbolType: TSymbolType read GetSymbolType;
     property CompilerInfo: TCompilerInfo read GetCompilerInfo;
@@ -199,6 +185,7 @@ procedure RegisterDbgTest(ATestClass: TTestCaseClass);
 
 var
   AppDir: String;
+  ConfDir: String;
 
 implementation
 
@@ -226,30 +213,24 @@ end;
 
 
 function GetCompilers: TCompilerList;
-var
-  AppDir: String;
 begin
   if Compilers <> nil then exit(Compilers);
 
-  AppDir := ExtractFilePath(Paramstr(0));
   Result := TCompilerList.Create;
-  if FileExists(AppDir + 'fpclist.txt') then
-    Result.LoadFromFile(AppDir + 'fpclist.txt');
+  if FileExists(ConfDir + 'fpclist.txt') then
+    Result.LoadFromFile(ConfDir + 'fpclist.txt');
   if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then
     Result.Add('fpc from conf', EnvironmentOptions.CompilerFilename);
   Compilers := Result;
 end;
 
 function GetDebuggers: TDebuggerList;
-var
-  AppDir: String;
 begin
   if Debuggers <> nil then exit(Debuggers);
 
-  AppDir := ExtractFilePath(Paramstr(0));
   Result := TDebuggerList.Create;
-  if FileExists(AppDir + 'gdblist.txt') then
-    Result.LoadFromFile(AppDir + 'gdblist.txt');
+  if FileExists(ConfDir + 'gdblist.txt') then
+    Result.LoadFromFile(ConfDir + 'gdblist.txt');
   if (Result.Count = 0) and (EnvironmentOptions.DebuggerFilename <> '') then
     Result.Add('gdb from conf', EnvironmentOptions.DebuggerFilename);
   Debuggers := Result;
@@ -415,40 +396,7 @@ end;
 
 { TCompilerSuite }
 
-constructor TCompilerSuite.Create(ACompilerInfo: TCompilerInfo; ADebuggerList: TDebuggerList);
-var
-  st: TSymbolType;
-  SubSuite: TCompilerOptionsSuite;
-begin
-  inherited Create(ACompilerInfo.Name);
-  FCompilerInfo := ACompilerInfo;
-
-  for st := low(TSymbolType) to high(TSymbolType) do begin
-    if not (st in FCompilerInfo.SymbolTypes) then
-      continue;
-
-    SubSuite := TCompilerOptionsSuite.Create(Self, st, ADebuggerList);
-    Self.AddTest(SubSuite);
-  end;
-end;
-
-procedure TCompilerSuite.RegisterDbgTest(ATestClass: TTestCaseClass);
-var
-  i: Integer;
-begin
-  for i := 0 to Tests.Count - 1 do
-    if Test[i] is TCompilerOptionsSuite then
-      TCompilerOptionsSuite(Test[i]).RegisterDbgTest(ATestClass);
-end;
-
-{ TCompilerOptionsSuite }
-
-function TCompilerOptionsSuite.GetCompilerInfo: TCompilerInfo;
-begin
-  Result := Parent.CompilerInfo;
-end;
-
-procedure TCompilerOptionsSuite.Clear;
+procedure TCompilerSuite.Clear;
 var
   i: Integer;
 begin
@@ -457,14 +405,14 @@ begin
   FCompiledList.Clear;
 end;
 
-constructor TCompilerOptionsSuite.Create(AParent: TCompilerSuite; ASymbolType: TSymbolType;
+constructor TCompilerSuite.Create(ACompilerInfo: TCompilerInfo; ASymbolType: TSymbolType;
   ADebuggerList: TDebuggerList);
 var
   i: Integer;
   SubSuite: TDebuggerSuite;
 begin
-  inherited Create(SymbolTypeNames[ASymbolType]);
-  FParent := AParent;
+  inherited Create(ACompilerInfo.Name + ' / ' + SymbolTypeNames[ASymbolType]);
+  FCompilerInfo := ACompilerInfo;
   FSymbolType := ASymbolType;
 
   FCompiledList := TStringList.Create;
@@ -489,14 +437,14 @@ begin
   end;
 end;
 
-destructor TCompilerOptionsSuite.Destroy;
+destructor TCompilerSuite.Destroy;
 begin
   inherited Destroy;
   Clear;
   FreeAndNil(FCompiledList);
 end;
 
-procedure TCompilerOptionsSuite.Run(AResult: TTestResult);
+procedure TCompilerSuite.Run(AResult: TTestResult);
 begin
   FInRun := True;
   try
@@ -507,7 +455,7 @@ begin
   end;
 end;
 
-procedure TCompilerOptionsSuite.RunTest(ATest: TTest; AResult: TTestResult);
+procedure TCompilerSuite.RunTest(ATest: TTest; AResult: TTestResult);
 begin
   try
     inherited RunTest(ATest, AResult);
@@ -516,7 +464,7 @@ begin
   end;
 end;
 
-procedure TCompilerOptionsSuite.RegisterDbgTest(ATestClass: TTestCaseClass);
+procedure TCompilerSuite.RegisterDbgTest(ATestClass: TTestCaseClass);
 var
   i: Integer;
 begin
@@ -525,7 +473,7 @@ begin
       TDebuggerSuite(Test[i]).RegisterDbgTest(ATestClass);
 end;
 
-procedure TCompilerOptionsSuite.TestCompile(const PrgName: string; out ExeName: string);
+procedure TCompilerSuite.TestCompile(const PrgName: string; out ExeName: string);
 var
   ExePath, ErrMsg: String;
 begin
@@ -561,10 +509,10 @@ begin
   Result := Parent.SymbolType;
 end;
 
-constructor TDebuggerSuite.Create(AParent: TCompilerOptionsSuite;
+constructor TDebuggerSuite.Create(AParent: TCompilerSuite;
   ADebuggerInfo: TDebuggerInfo);
 begin
-  inherited Create(ADebuggerInfo.Name);
+  inherited Create(ADebuggerInfo.Name + '   ('+AParent.TestName+')');
   FParent := AParent;
   FDebuggerInfo := ADebuggerInfo;
 end;
@@ -637,21 +585,28 @@ var
   GdbList: TDebuggerList;
   CompilerSuite: TCompilerSuite;
   i: Integer;
+  st: TSymbolType;
 begin
   FpcList := GetCompilers;
   GdbList := GetDebuggers;
 
   for i := 0 to FpcList.Count - 1 do begin
-    CompilerSuite := TCompilerSuite.Create(FpcList.CompilerInfo[i], GdbList);
-    GetTestRegistry.AddTest(CompilerSuite);
+    for st := low(TSymbolType) to high(TSymbolType) do begin
+      if not (st in FpcList.CompilerInfo[i].SymbolTypes) then
+        continue;
+
+      CompilerSuite := TCompilerSuite.Create(FpcList.CompilerInfo[i], st, GdbList);
+      if CompilerSuite.Tests.Count >0 then
+        GetTestRegistry.AddTest(CompilerSuite)
+      else
+        CompilerSuite.Free;
+    end;
   end;
 end;
 
 function CheckAppDir(var AppDir: string): Boolean;
 begin
   Result := DirectoryExistsUTF8(AppDir + 'TestApps');
-  if Result then
-    AppDir := AppendPathDelim(AppDir + 'TestApps');
 end;
 
 function CheckAppDirLib(var AppDir: string): Boolean;
@@ -664,7 +619,7 @@ begin
     s := copy(AppDir, 1, length(AppDir) - length('lib' + DirectorySeparator));
     Result :=  DirectoryExistsUTF8(s + 'TestApps');
     if Result then
-      AppDir := AppendPathDelim(s + 'TestApps');
+      AppDir := s;
   end;
 end;
 
@@ -694,7 +649,8 @@ initialization
         Free;
       end;
   end;
-
+  ConfDir := AppDir;
+  AppDir := AppendPathDelim(AppDir + 'TestApps');
 
   EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do
@@ -702,6 +658,7 @@ initialization
     SetLazarusDefaultFilename;
     Load(false);
   end;
+
   BuildTestSuites;
 
 finalization

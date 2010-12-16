@@ -460,6 +460,10 @@ type
 
   type
   TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant);
+  TDBGSymbolAttribute = (saRefParam,        // var, const, constref passed by reference
+                         saInternalPointer // PointerToObject
+                        );
+  TDBGSymbolAttributes = set of TDBGSymbolAttribute;
   TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished);
   TDBGFieldFlag = (ffVirtual,ffConstructor,ffDestructor);
   TDBGFieldFlags = set of TDBGFieldFlag;
@@ -528,12 +532,12 @@ type
   { TDBGType }
 
   TDBGType = class(TObject)
-  private
   protected
     FAncestor: String;
     FResult: TDBGType;
     FResultString: String;
     FArguments: TDBGTypes;
+    FAttributes: TDBGSymbolAttributes;
     FFields: TDBGFields;
     FKind: TDBGSymbolKind;
     FMembers: TStrings;
@@ -548,6 +552,7 @@ type
     property Arguments: TDBGTypes read FArguments;
     property Fields: TDBGFields read FFields;
     property Kind: TDBGSymbolKind read FKind;
+    property Attributes: TDBGSymbolAttributes read FAttributes;
     property TypeName: String read FTypeName;
     property Members: TStrings read FMembers;
     property Result: TDBGType read FResult;

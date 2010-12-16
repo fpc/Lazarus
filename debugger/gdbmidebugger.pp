@@ -1189,12 +1189,11 @@ type
   { TGDBMIType }
 
   TGDBMIType = class(TGDBType)
-  private
-    FIsAmpersandAddr: Boolean;
-  protected
   public
-    constructor CreateFromResult(const AResult: TGDBMIExecResult);
-    property IsAmpersandAddr: Boolean read FIsAmpersandAddr; // for dwarf only "&TypeName" indicates a param by ref (var, const, constref)
+    constructor CreateFromResult(const AResult: TGDBMIExecResult;
+                                 const AWhatIsValue: String = '';
+                                 const AWhatIsType: String = '';
+                                 AClassIsPointer: Boolean = False);
   end;
 
   { TGDBStringIterator }
@@ -7707,29 +7706,11 @@ end;
 
 { TGDBMIType }
 
-constructor TGDBMIType.CreateFromResult(const AResult: TGDBMIExecResult);
-var
-  s: String;
-  i: Integer;
+constructor TGDBMIType.CreateFromResult(const AResult: TGDBMIExecResult;
+  const AWhatIsValue: String = ''; const AWhatIsType: String = ''; AClassIsPointer: Boolean = False);
 begin
   // TODO: add check ?
-
-  // tfClassIsPointer can be ignored, because the "&" only occurs with dwarf, which always has tfClassIsPointer
-  FIsAmpersandAddr := False;
-  s := AResult.Values;
-  i := pos('type = &', s);
-  if i > 0 then begin
-    FIsAmpersandAddr := True;
-    if (copy(s, i+8, 15) = '__vtbl_ptr_type') or
-       //( (tfClassIsPointer in TargetInfo^.TargetFlags) and
-         (copy(s, i+8, 5) = 'class') //)
-    then
-      s[i+7] := '^'
-    else
-    Delete(s, i + 7, 1);
-  end;
-
-  CreateFromValues(s);
+  CreateFromValues(AResult.Values, AWhatIsValue, AWhatIsType, AClassIsPointer);
 end;
 
 { TGDBStringIterator }
@@ -8322,15 +8303,57 @@ end;
 
 function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String): TGDBType;
 var
-  R: TGDBMIExecResult;
+  WIExprRes, PTypeRes, WITypeRes: TGDBMIExecResult;
+  WIExprVal, WIExprValCln, WITypeValS2: String;
 begin
-  if not ExecuteCommand('ptype %s', [AExpression], R)
-  or (R.State = dsError)
+  Result := nil;
+  WIExprValCln := '';
+  if  ExecuteCommand('whatis %s', [AExpression], WIExprRes)
+  and (WIExprRes.State <> dsError)
+  then begin
+    WIExprVal :=  ParseTypeFromGdb(WIExprRes.Values);
+    WIExprValCln := WIExprVal;
+    while (WIExprValCln<>'') and (WIExprValCln[1] in ['^', '&']) do delete(WIExprValCln, 1, 1);
+
+    if (pos(' ', WIExprValCln) > 0) or (WIExprValCln = '') then begin
+      if ExecuteCommand('ptype %s', [AExpression], PTypeRes) // can not ptype with spaces
+      and (PTypeRes.State <> dsError)
+      then begin
+        Result := TGdbMIType.CreateFromResult(PTypeRes, WIExprRes.Values, '', tfClassIsPointer in TargetInfo^.TargetFlags);
+        exit;
+      end;
+    end
+    else begin
+      if  ExecuteCommand('ptype %s', [WIExprValCln], PTypeRes)
+      and (PTypeRes.State <> dsError)
+      then begin
+
+        WITypeValS2 := '';
+        if (Pos(' = class ', PTypeRes.Values) > 0)
+        and (tfClassIsPointer in TargetInfo^.TargetFlags)   // ptype will give ^ for pointer-to-class or just class
+        and (pos('type = ^^', PTypeRes.Values) <= 0)        // not known to be a pointer (not sure it ever happens)
+        and (WIExprVal[1] <> '^')                           // not known to be a pointer (not sure it ever happens)
+        and ExecuteCommand('whatis %s', [WIExprValCln], WITypeRes)
+        and (PTypeRes.State <> dsError)
+        then WITypeValS2 := WITypeRes.Values;
+
+        Result := TGdbMIType.CreateFromResult(PTypeRes, WIExprRes.Values, WITypeValS2, tfClassIsPointer in TargetInfo^.TargetFlags);
+        exit;
+      end;
+    end;
+  end;
+
+  if (PTypeRes.State = dsError) and (pos('msg="No symbol ', PTypeRes.Values) > 0)
+  then exit;
+
+  // try ptype on the value
+  if not ExecuteCommand('ptype %s', [AExpression], PTypeRes)
+  or (PTypeRes.State = dsError)
   then begin
     Result := nil;
   end
   else begin
-    Result := TGdbMIType.CreateFromResult(R);
+    Result := TGdbMIType.CreateFromResult(PTypeRes, '', '', tfClassIsPointer in TargetInfo^.TargetFlags);
   end;
 end;
 
@@ -9209,15 +9232,14 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     if ResultInfo = nil then
       ResultInfo := GetGDBTypeInfo(AnExpression);
     if (ResultInfo = nil) then Exit;
+    FTypeInfo := ResultInfo;
 
     case ResultInfo.Kind of
       skPointer: begin
         AnExpression := GetPart([], [' '], FTextValue, False, False);
         Val(AnExpression, addr, e);
-        if e <> 0 then begin
-          FreeAndNil(ResultInfo);
+        if e <> 0 then
           Exit;
-        end;
 
         AnExpression := Lowercase(ResultInfo.TypeName);
         case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type',
@@ -9262,7 +9284,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
               AnExpression[1] := 'T';
               if Length(AnExpression) > 1 then AnExpression[2] := UpperCase(AnExpression[2])[1];
             end;
-            FTextValue := PascalizePointer(FTextValue, '^' + AnExpression);
+            FTextValue := PascalizePointer(FTextValue, AnExpression);
           end;
 
         end;
@@ -9276,14 +9298,19 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
       skClass: begin
         Val(FTextValue, addr, e); //Get the class mem address
-        if e = 0 then begin //No error ?
-          if Addr = 0
-          then FTextValue := 'nil'
-          else begin
-            AnExpression := GetInstanceClassName(Addr);
-            if AnExpression = '' then AnExpression := '???'; //No instanced class found
-            FTextValue := 'class ' + AnExpression + ' ' + FTextValue;
-          end;
+        if (e = 0) and (addr = 0)
+        then FTextValue := 'nil';
+
+        if (FTextValue <> '') and (FTypeInfo <> nil)
+        then begin
+          FTextValue := '<' + FTypeInfo.TypeName + '> = ' + FTextValue;
+        end
+        else
+        if (e = 0) and (addr <> 0)
+        then begin //No error ?
+          AnExpression := GetInstanceClassName(Addr);
+          if AnExpression = '' then AnExpression := '???'; //No instanced class found
+          FTextValue := 'instance of ' + AnExpression + ' ' + FTextValue;
         end;
       end;
 
@@ -9305,7 +9332,6 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       end;
     end;
 
-    FTypeInfo := ResultInfo;
     PutValuesInTree;
     FTextValue := FormatResult(FTextValue);
   end;
@@ -9488,17 +9514,30 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           Result := False;
           FTypeInfo := GetGDBTypeInfo(AnExpression);
           if FTypeInfo = nil
-          then exit;
-
-          if TGdbMIType(FTypeInfo).IsAmpersandAddr and (FTypeInfo.TypeName <> '')
           then begin
-            Result := ExecuteCommand('-data-evaluate-expression %s(%s)', [FTypeInfo.TypeName, AnExpression], R);
+            ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
+            FTextValue := ResultList.Values['msg'];
+            FreeAndNil(ResultList);
+            exit;
+          end;
+
+          if (saInternalPointer in FTypeInfo.Attributes)
+          then begin
+            Result := ExecuteCommand('-data-evaluate-expression %s%s', [AnExpression, '^'], R);
             Result := Result and (R.State <> dsError);
           end;
 
-          if not Result then
-            Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
+          if (not Result)
+          and (saRefParam in FTypeInfo.Attributes) and (FTypeInfo.InternalTypeName <> '')
+          then begin
+            Result := ExecuteCommand('-data-evaluate-expression %s(%s)', [FTypeInfo.InternalTypeName, AnExpression], R);
+            Result := Result and (R.State <> dsError);
+          end;
+
+          if (not Result)
+          then Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
           Result := Result and (R.State <> dsError);
+
           if (not Result) and (not StoreError)
           then exit;
 

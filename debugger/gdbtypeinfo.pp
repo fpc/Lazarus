@@ -61,12 +61,20 @@ type
   { TGDBType }
 
   TGDBType = class(TDBGType)
+  private
+    FInternalTypeName: string;
   public
-    constructor CreateFromValues(const AValues: String);
+    constructor CreateFromValues(const AValues: String;
+                                 AWhatIsValue: String = '';
+                                 const AWhatIsType: String = '';
+                                 AClassIsPointer: Boolean = False);
+    // InternalTypeName: include ^ for TObject, if needed
+    property InternalTypeName: string read FInternalTypeName;
   end;
 
 
 function CreatePTypeValueList(AResultValues: String): TStringList;
+function ParseTypeFromGdb(const ATypeText: string): string;
 
 implementation
 
@@ -248,9 +256,38 @@ begin
   end;
 end;
 
+function ParseTypeFromGdb(const ATypeText: string): string;
+var
+  StartIdx, EndIdx, BracketCnt, ln: Integer;
+  EndPtr: PChar;
+begin
+  Result := '';
+  StartIdx := pos('type = ', ATypeText);
+  if StartIdx <= 0 then exit;
+  inc(StartIdx, 7);
+  EndIdx := StartIdx;
+  EndPtr := @ATypeText[EndIdx];
+  ln := length(ATypeText);
+  BracketCnt := 0;
+  while (EndIdx <= ln) do begin
+    case EndPtr^ of
+      ' ' : if BracketCnt = 0 then break;
+      '[', '{' : inc(BracketCnt);
+      ']', '}' : dec(BracketCnt);
+      '\' : if (EndIdx < ln) and ((EndPtr+1)^ = 'n') then break;
+      #0..#31: break;
+    end;
+    inc(EndPtr);
+    inc(EndIdx);
+  end;
+  Result := copy(ATypeText, StartIdx, EndIdx-StartIdx);
+end;
+
 { TGDBPType }
 
-constructor TGDBType.CreateFromValues(const AValues: String);
+constructor TGDBType.CreateFromValues(const AValues: String;
+  AWhatIsValue: String = ''; const AWhatIsType: String = '';
+  AClassIsPointer: Boolean = False);
 var
   S, Line: String;
   Lines: TStringList;
@@ -440,44 +477,104 @@ var
   end;
 
 var
-  HasClass: Boolean;
+  ParsedWhatIsValue, ParsedWhatIsType: string;
 begin
-  Create(skSimple, '');
-
-  if AValues = '' then Exit;
+  ParsedWhatIsValue := ParseTypeFromGdb(AWhatIsValue);
+  ParsedWhatIsType := ParseTypeFromGdb(AWhatIsType);
 
   Lines := TStringList.Create;
   try
     Lines.Text := AValues;
-    if Lines.Count = 0 then Exit;
 
-    Line := Lines[0];
-    Lines.Delete(0);
+    if Lines.Count > 0 then begin
+      Line := Lines[0];
+      Lines.Delete(0);
+    end
+    else Line := '';
+    S := ParseTypeFromGdb(Line);
 
-    S := GetPart(['type = '], [' '], Line);
-    if S = '' then Exit;
-    HasClass := Pos(' = class ', Line) > 0;
-    if HasClass
-    and (S[2] <> '^') // pointer to class is handled next
-    then begin
-      FKind:=skClass;
-      if S[1] = '^' then begin
-        FKind:=skPointer;
-        FTypeName := GetPart(['^'], [' '], S);
-      end else begin
-        FTypeName := GetPart([], ['{'], S);
-        DoClass;
+    FAttributes := [];
+    if (ParsedWhatIsValue <> '') and (ParsedWhatIsValue[1] = '&') then begin
+      Delete(ParsedWhatIsValue, 1, 1);
+      include(FAttributes, saRefParam);
+    end;
+
+    Create(skSimple, ParsedWhatIsValue);
+    FInternalTypeName := ParsedWhatIsValue;
+
+    if Pos(' = class ', Line) > 0 then begin
+      // Class or pointer to class
+      if AClassIsPointer and (S[1] = '^') then begin
+        // class: dwarf type, always pefixed with ^
+
+        if (length(s) >= 2) and (s[2] = '^')
+        then begin
+          FKind:=skPointer;
+          if FTypeName = ''
+          then FTypeName := copy(s, 3, length(s));
+        end
+        else if (ParsedWhatIsValue <> '') and (ParsedWhatIsValue[1] = '^')
+        and (pos(' = class', AWhatIsValue) <= 0)
+        then begin
+          FKind:=skPointer; // pointer to another named type
+          if FTypeName = ''
+          then FTypeName := copy(ParsedWhatIsValue, 2, length(ParsedWhatIsValue));
+        end
+        else if (ParsedWhatIsType <> '') and (ParsedWhatIsType[1] = '^')
+        and (pos(' = class', AWhatIsType) <= 0)
+        then begin
+          FKind:=skPointer; // pointer to another named type
+          if FTypeName = ''
+          then FTypeName := copy(ParsedWhatIsType, 2, length(ParsedWhatIsType));
+        end
+        else begin
+          include(FAttributes, saInternalPointer);
+          if FTypeName = ''
+          then FTypeName := GetPart([], ['{'], S);
+          DoClass;
+        end;
+
+        if FInternalTypeName = ''
+        then FInternalTypeName := FTypeName;
+
+        if (FInternalTypeName <> '') and (FInternalTypeName[1] <> '^')
+        and (saInternalPointer in FAttributes)
+        then FInternalTypeName := '^' + FInternalTypeName;
+
+      end
+      else begin
+        // class: stabs type, not normaly prefixed
+
+        if (length(s) >= 1) and (s[1] = '^')
+        then begin
+          FKind:=skPointer;
+          if FTypeName = ''
+          then FTypeName := copy(s, 2, length(s));
+        end
+        else begin
+          include(FAttributes, saInternalPointer);
+          if FTypeName = ''
+          then FTypeName := GetPart([], ['{'], S);
+          DoClass;
+        end;
+
+        if FInternalTypeName = ''
+        then FInternalTypeName := FTypeName;
       end;
     end
-    else if S[1] = '^'
+
+    else
+    if (S[1] = '^')
+    or ((ParsedWhatIsValue <> '') and (ParsedWhatIsValue[1] = '^'))
+    or ((ParsedWhatIsType <> '') and (ParsedWhatIsType[1] = '^'))
     then begin
       FKind := skPointer;
-      if HasClass
-      then FTypeName := GetPart(['^^'], [' ='], S)
-      else FTypeName := GetPart(['^'], [' ='], S);
+      if FTypeName = ''
+      then FTypeName := GetPart(['^'], [' ='], S);
       // strip brackets
       FTypeName := GetPart(['(', ''], [')'], FTypeName);
     end
+
     else if S = 'set'
     then DoSet
     else if S = 'procedure'
@@ -488,7 +585,8 @@ begin
     then DoEnum
     else if Pos(' = record', Line) > 0
     then begin
-      FTypeName := S;
+      if FTypeName = ''
+      then FTypeName := S;
       DoRecord
     end
     else if S = 'record'
@@ -498,7 +596,8 @@ begin
     end
     else begin
       FKind := skSimple;
-      FTypeName := S;
+      if FTypeName = ''
+      then FTypeName := S;
     end;
 
   finally
