@@ -11643,23 +11643,20 @@ begin
 end;
 
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
-var
-  Profiles: TBuildLazarusProfiles;
 begin
   Result:=DoBuildLazarusSub(Flags);
-  Profiles:=MiscellaneousOptions.BuildLazProfiles;
-  //debugln(['TMainIDE.DoBuildLazarus Profiles.RestartAfterBuild=',Profiles.RestartAfterBuild,' Profiles.Current.TargetDirectory=',Profiles.Current.TargetDirectory,' ',MainBuildBoss.BuildTargetIDEIsDefault]);
-  if (Result=mrOK) then begin
-    if Profiles.RestartAfterBuild
-    and (Profiles.Current.TargetDirectory='')
-    and MainBuildBoss.BuildTargetIDEIsDefault then
-    begin
-      CompileProgress.Close;
-      mnuRestartClicked(nil);
+  with MiscellaneousOptions do
+    if (Result=mrOK) then begin
+      if BuildLazProfiles.RestartAfterBuild
+      and (BuildLazProfiles.Current.TargetDirectory='')
+      and ((blfWithStaticPackages in Flags) or MainBuildBoss.BuildTargetIDEIsDefault)
+      then begin
+        CompileProgress.Close;
+        mnuRestartClicked(nil);
+      end
     end
-  end
-  else if Result=mrIgnore then
-    Result:=mrOK;
+    else if Result=mrIgnore then
+      Result:=mrOK;
 end;
 
 function TMainIDE.DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
