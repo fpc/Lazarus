@@ -176,7 +176,7 @@ type
     procedure Clear; override;
     procedure Assign(Source: TBuildLazarusProfiles);
     function IndexByName(AName: string): integer;
-    procedure CreateDefaults;
+    function CreateDefaults: integer;
     procedure Load(XMLConfig: TXMLConfig; const Path: string; const FileVersion: integer);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
@@ -614,7 +614,9 @@ begin
     end;
 end;
 
-procedure TBuildLazarusProfiles.CreateDefaults;
+function TBuildLazarusProfiles.CreateDefaults: integer;
+// Create a set of default profiles when none are saved.
+// Returns index for the default selected profile.
 var
   i: Integer;
   Profile: TBuildLazarusProfile;
@@ -676,7 +678,8 @@ begin
       else
         fMakeModes[i]:=mmBuild;
   end;
-  Add(Profile);
+  // Return this one as default. Needed when building packages without saved profiles.
+  Result:=Add(Profile);
 
   // Clean Up + Build all
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOCleanUpBuildAll);
@@ -718,10 +721,8 @@ begin
     // Latest config file version.
     2: begin
       ProfCount:=XMLConfig.GetValue(Path+'Profiles/Count',0);
-      if ProfCount = 0 then begin
-        CreateDefaults;       // No saved profiles were found, use defaults.
-        ProfInd:=0;
-      end
+      if ProfCount = 0 then
+        ProfInd:=CreateDefaults    // No saved profiles were found, use defaults.
       else begin
         // Load list of profiles.
         for i:=0 to ProfCount-1 do begin
@@ -738,11 +739,9 @@ begin
         FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
       end
     end;
-    // A missing (or invalid) config file.
-    else begin
-      CreateDefaults;
-      ProfInd:=0;
-    end;
+    // Invalid config file.
+    else
+      ProfInd:=CreateDefaults;
   end;
   // Load defines, selected profiles and auto install packages.
   LoadStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
