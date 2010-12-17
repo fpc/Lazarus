@@ -51,7 +51,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynHighlighterDiff,
+  SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -74,7 +74,7 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
-    lshDiff);
+    lshDiff, lshBat, lshIni);
 
   TAdditionalHilightAttribute =
     (ahaNone,              ahaTextBlock,          ahaExecutionPoint,
@@ -383,7 +383,9 @@ const
       (Count: 0; Info: nil), // php
       (Count: 0; Info: nil), // sql
       (Count: 0; Info: nil), // jscript
-      (Count: 0; Info: nil)  // Diff
+      (Count: 0; Info: nil), // Diff
+      (Count: 0; Info: nil), // Ini
+      (Count: 0; Info: nil)  // Bat
     );
 
 type
@@ -577,7 +579,9 @@ const
       (Count:  0; Info: nil), // php
       (Count:  0; Info: nil), // sql
       (Count:  0; Info: nil), // jscript
-      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoDiff[0]) // Diff
+      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoDiff[0]), // Diff
+      (Count:  0; Info: nil), // Bat
+      (Count:  0; Info: nil)  // Ini
     );
 
 const
@@ -592,7 +596,8 @@ const
     TCustomSynClass =
     (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn);
+    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn,
+    TSynBatSyn, TSynIniSyn);
 
 
 { Comments }
@@ -613,7 +618,9 @@ const
     comtHTML,  // lshPHP
     comtCPP,   // lshSQL
     comtCPP,   // lshJScript
-    comtNone   // Diff
+    comtNone,  // Diff
+    comtNone,  // Bat
+    comtNone   // Ini
     );
 
 const
@@ -1203,7 +1210,9 @@ const
     'PHP',
     'SQL',
     'JScript',
-    'Diff'
+    'Diff',
+    'Bat',
+    'Ini'
     );
 
 var
@@ -1248,7 +1257,9 @@ const
     lshPHP,
     lshSQL,
     lshJScript,
-    lshDiff
+    lshDiff,
+    lshBat,
+    lshIni
     );
 
 var
@@ -2365,6 +2376,65 @@ begin
     //  Add('Unknown_word=Comment');
     //end;
     CaretXY := Point(1,6);
+  end;
+  Add(NewInfo);
+
+  // create info for Bat
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshBat;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('bat');
+    SampleSource :=
+      'rem MS-DOS batch file'#13#10 +
+      'rem'#13#10 +
+      '@echo off'#13#10 +
+      'cls'#13#10 +
+      'echo The command line is: %1 %2 %3 %4 %5'#13#10 +
+      'rem'#13#10 +
+      'rem now wait for the user ...'#13#10 +
+      'pause'#13#10 +
+      'copy c:\*.pas d:\'#13#10 +
+      'if errorlevel 1 echo Error in copy action!';
+    MappedAttributes := TStringList.Create;
+    //with MappedAttributes do
+    //begin
+    //  Add('Comment=Comment');
+    //  Add('Identifier=Identifier');
+    //  Add('Key=Key');
+    //  Add('Number=Number');
+    //  Add('Space=Space');
+    //end;
+    CaretXY := Point(1,3);
+  end;
+  Add(NewInfo);
+
+  // create info for Diff
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshIni;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('ini');
+    SampleSource :=
+      '; Syntax highlighting'#13#10+
+      '[Section]'#13#10+
+      'Key=value'#13#10+
+      'String="Arial"'#13#10+
+      'Number=123456';
+    MappedAttributes := TStringList.Create;
+    //with MappedAttributes do
+    //begin
+    //  Add('Comment=Comment');
+    //  Add('String=String');
+    //  Add('Key=Key');
+    //  Add('Number=Number');
+    //  Add('Space=Space');
+    //end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 end;
@@ -4718,10 +4788,15 @@ begin
       else
         Def := EmptyDef;
     end;
-    if FormatVersion < 2 then
-      AttributeAtPos[i].LoadFromXmlV1(aXMLConfig, aPath, Def)
-    else
-      AttributeAtPos[i].LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
+
+    //if ColorVersion < 2 then begin
+    if FormatVersion < 2 then begin
+      //if aXMLConfig.HasChildPaths(aPath) or (Defaults <> nil) or (Def <> EmptyDef) then
+        AttributeAtPos[i].LoadFromXmlV1(aXMLConfig, aPath, Def)
+    end else begin
+      //if aXMLConfig.HasPath(TmpPath, False) or (Defaults <> nil) or (Def <> EmptyDef) then
+        AttributeAtPos[i].LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
+    end;
   end;
   FreeAndNil(EmptyDef);
 

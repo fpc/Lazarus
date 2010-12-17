@@ -181,6 +181,20 @@
           <Unknown_word Style="fsItalic"/>
         </SchemeDelphi>
       </LangDiff_File>
+      <LangMS_DOS_batch_language Version="6">
+        <SchemeDelphi>
+          <Key Style="fsBold"/>
+          <Number Foreground="clBlue"/>
+          <Comment Foreground="clNavy" Style="fsItalic"/>
+          <Variable Foreground="clGreen"/>
+        </SchemeDelphi>
+      </LangMS_DOS_batch_language>
+      <LangINI_file Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Section Style="fsBold"/>
+        </SchemeDelphi>
+      </LangINI_file>
     </ColorSchemes>
   </Lazarus>
 </CONFIG>
