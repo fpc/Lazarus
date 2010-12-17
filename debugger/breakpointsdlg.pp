@@ -134,7 +134,9 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
+    procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
+    procedure DisableAllActions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -351,11 +353,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvBreakPoints.Items.Count -1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Selected then
-      TIDEBreakPoint(Item.Data).Enabled := True;
+  try
+    DisableAllActions;
+    for n := 0 to lvBreakPoints.Items.Count -1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Selected then
+        TIDEBreakPoint(Item.Data).Enabled := True;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -364,11 +371,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvBreakPoints.Items.Count -1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Selected then
-      TIDEBreakPoint(Item.Data).Enabled := False;
+  try
+    DisableAllActions;
+    for n := 0 to lvBreakPoints.Items.Count -1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Selected then
+        TIDEBreakPoint(Item.Data).Enabled := False;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -484,19 +496,24 @@ var
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if (CurItem=nil) then exit;
-  Filename:=TIDEBreakpoint(CurItem.Data).Source;
-  if MessageDlg(lisDeleteAllBreakpoints,
-    Format(lisDeleteAllBreakpoints2, ['"', Filename, '"']),
-    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-  then exit;
-  for n := lvBreakPoints.Items.Count - 1 downto 0 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    if CompareFilenames(CurBreakPoint.Source,Filename)=0
-    then CurBreakPoint.Free;
+  try
+    DisableAllActions;
+    CurItem:=lvBreakPoints.Selected;
+    if (CurItem=nil) then exit;
+    Filename:=TIDEBreakpoint(CurItem.Data).Source;
+    if MessageDlg(lisDeleteAllBreakpoints,
+      Format(lisDeleteAllBreakpoints2, ['"', Filename, '"']),
+      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+    then exit;
+    for n := lvBreakPoints.Items.Count - 1 downto 0 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      if CompareFilenames(CurBreakPoint.Source,Filename)=0
+      then CurBreakPoint.Free;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -508,15 +525,20 @@ var
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if (CurItem=nil) then exit;
-  Filename:=TIDEBreakpoint(CurItem.Data).Source;
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    if CompareFilenames(CurBreakPoint.Source,Filename)=0
-    then CurBreakPoint.Enabled := False;
+  try
+    DisableAllActions;
+    CurItem:=lvBreakPoints.Selected;
+    if (CurItem=nil) then exit;
+    Filename:=TIDEBreakpoint(CurItem.Data).Source;
+    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      if CompareFilenames(CurBreakPoint.Source,Filename)=0
+      then CurBreakPoint.Enabled := False;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -528,15 +550,20 @@ var
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if (CurItem=nil) then exit;
-  Filename:=TIDEBreakpoint(CurItem.Data).Source;
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    if CompareFilenames(CurBreakPoint.Source,Filename)=0
-    then CurBreakPoint.Enabled := True;
+  try
+    DisableAllActions;
+    CurItem:=lvBreakPoints.Selected;
+    if (CurItem=nil) then exit;
+    Filename:=TIDEBreakpoint(CurItem.Data).Source;
+    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      if CompareFilenames(CurBreakPoint.Source,Filename)=0
+      then CurBreakPoint.Enabled := True;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -544,16 +571,21 @@ procedure TBreakPointsDlg.popDeleteAllClick(Sender: TObject);
 var
   n: Integer;
 begin                                    
-  if MessageDlg(lisDeleteAllBreakpoints,
-    lisDeleteAllBreakpoints,
-    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-  then exit;
-  lvBreakPoints.BeginUpdate;
   try
-    for n := lvBreakPoints.Items.Count - 1 downto 0 do
-      TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
+    DisableAllActions;
+    if MessageDlg(lisDeleteAllBreakpoints,
+      lisDeleteAllBreakpoints,
+      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+    then exit;
+    lvBreakPoints.BeginUpdate;
+    try
+      for n := lvBreakPoints.Items.Count - 1 downto 0 do
+        TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
+    finally
+      lvBreakPoints.EndUpdate;
+    end;
   finally
-    lvBreakPoints.EndUpdate;
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -564,7 +596,12 @@ end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
 begin
-  DeleteSelectedBreakpoints
+  try
+    DisableAllActions;
+    DeleteSelectedBreakpoints
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
@@ -572,11 +609,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Data <> nil
-    then TIDEBreakPoint(Item.Data).Enabled := False;
+  try
+    DisableAllActions;
+    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Data <> nil
+      then TIDEBreakPoint(Item.Data).Enabled := False;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -585,11 +627,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Data <> nil
-    then TIDEBreakPoint(Item.Data).Enabled := True;
+  try
+    DisableAllActions;
+    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    begin
+      Item := lvBreakPoints.Items[n];
+      if Item.Data <> nil
+      then TIDEBreakPoint(Item.Data).Enabled := True;
+    end;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
@@ -599,34 +646,53 @@ var
   Item: TListItem;
   Enable: Boolean;
 begin
-  Item:=lvBreakPoints.Selected;
-  if (Item=nil) then exit;
+  try
+    DisableAllActions;
+    Item:=lvBreakPoints.Selected;
+    if (Item=nil) then exit;
 
-  Enable := not TIDEBreakPoint(Item.Data).Enabled;
+    Enable := not TIDEBreakPoint(Item.Data).Enabled;
 
-  if lvBreakPoints.SelCount > 1
-  then begin
-    for n := 0 to lvBreakPoints.Items.Count -1 do
-    begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Selected then
-        TIDEBreakPoint(Item.Data).Enabled := Enable;
+    if lvBreakPoints.SelCount > 1
+    then begin
+      for n := 0 to lvBreakPoints.Items.Count -1 do
+      begin
+        Item := lvBreakPoints.Items[n];
+        if Item.Selected then
+          TIDEBreakPoint(Item.Data).Enabled := Enable;
+      end;
+    end
+    else begin
+      TIDEBreakPoint(Item.Data).Enabled:= Enable;
     end;
-  end
-  else begin
-    TIDEBreakPoint(Item.Data).Enabled:= Enable;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
   end;
 end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
 begin
-  ShowProperties;
+  try
+    DisableAllActions;
+    ShowProperties;
+  finally
+    lvBreakPointsSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TBreakPointsDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
   if bpdsItemsNeedUpdate in FStates then UpdateAll;
+  lvBreakPointsSelectItem(nil, nil, False);
+end;
+
+procedure TBreakPointsDlg.DisableAllActions;
+var
+  i: Integer;
+begin
+  for i := 0 to ActionList1.ActionCount - 1 do
+    (ActionList1.Actions[i] as TAction).Enabled := False;
 end;
 
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
@@ -759,6 +825,12 @@ begin
   CurBreakPoint:=TIDEBreakPoint(Item.Data);
 
   DebugBoss.ShowBreakPointProperties(CurBreakPoint);
+end;
+
+procedure TBreakPointsDlg.DoBeginUpdate;
+begin
+  inherited DoBeginUpdate;
+  DisableAllActions;
 end;
 
 end.

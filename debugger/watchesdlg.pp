@@ -111,6 +111,7 @@ type
 
     procedure UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
     procedure UpdateAll;
+    procedure DisableAllActions;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -276,6 +277,8 @@ begin
   actDeleteAll.Enabled := lvWatches.Items.Count > 0;
 
   actProperties.Enabled := ItemSelected;
+
+  actPower.Enabled := True;
 end;
 
 procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
@@ -320,11 +323,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvWatches.Items.Count -1 do
-  begin
-    Item := lvWatches.Items[n];
-    if Item.Selected then
-      TIDEWatch(Item.Data).Enabled := True;
+  try
+    DisableAllActions;
+    for n := 0 to lvWatches.Items.Count -1 do
+    begin
+      Item := lvWatches.Items[n];
+      if Item.Selected then
+        TIDEWatch(Item.Data).Enabled := True;
+    end;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
   end;
 end;
 
@@ -333,11 +341,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvWatches.Items.Count -1 do
-  begin
-    Item := lvWatches.Items[n];
-    if Item.Selected then
-      TIDEWatch(Item.Data).Enabled := False;
+  try
+    DisableAllActions;
+    for n := 0 to lvWatches.Items.Count -1 do
+    begin
+      Item := lvWatches.Items[n];
+      if Item.Selected then
+        TIDEWatch(Item.Data).Enabled := False;
+    end;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
   end;
 end;
 
@@ -357,26 +370,41 @@ end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);
 begin
-  DebugBoss.ShowWatchProperties(nil);
+  try
+    DisableAllActions;
+    DebugBoss.ShowWatchProperties(nil);
+  finally
+    lvWatchesSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
 var
   n: Integer;
 begin                                    
-  for n := lvWatches.Items.Count - 1 downto 0 do
-    TIDEWatch(lvWatches.Items[n].Data).Free;
+  try
+    DisableAllActions;
+    for n := lvWatches.Items.Count - 1 downto 0 do
+      TIDEWatch(lvWatches.Items[n].Data).Free;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
 var
   Item: TIDEWatch;
 begin
-  repeat
-    Item := GetSelected;
-    Item.Free;
-  until Item = nil;
-  //GetSelected.Free;
+  try
+    DisableAllActions;
+    repeat
+      Item := GetSelected;
+      Item.Free;
+    until Item = nil;
+    //GetSelected.Free;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TWatchesDlg.popDisableAllClick(Sender: TObject);
@@ -384,11 +412,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvWatches.Items.Count - 1 do
-  begin
-    Item := lvWatches.Items[n];
-    if Item.Data <> nil
-    then TIDEWatch(Item.Data).Enabled := False;
+  try
+    DisableAllActions;
+    for n := 0 to lvWatches.Items.Count - 1 do
+    begin
+      Item := lvWatches.Items[n];
+      if Item.Data <> nil
+      then TIDEWatch(Item.Data).Enabled := False;
+    end;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
   end;
 end;
 
@@ -397,11 +430,16 @@ var
   n: Integer;
   Item: TListItem;
 begin
-  for n := 0 to lvWatches.Items.Count - 1 do
-  begin
-    Item := lvWatches.Items[n];
-    if Item.Data <> nil
-    then TIDEWatch(Item.Data).Enabled := True;
+  try
+    DisableAllActions;
+    for n := 0 to lvWatches.Items.Count - 1 do
+    begin
+      Item := lvWatches.Items[n];
+      if Item.Data <> nil
+      then TIDEWatch(Item.Data).Enabled := True;
+    end;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
   end;
 end;
 
@@ -409,15 +447,25 @@ procedure TWatchesDlg.popEnabledClick(Sender: TObject);
 var
   Watch: TIDEWatch;
 begin
-  Watch := GetSelected;
-  if Watch = nil then Exit;
-  popEnabled.Checked := not popEnabled.Checked;
-  Watch.Enabled := popEnabled.Checked;
+  try
+    DisableAllActions;
+    Watch := GetSelected;
+    if Watch = nil then Exit;
+    popEnabled.Checked := not popEnabled.Checked;
+    Watch.Enabled := popEnabled.Checked;
+  finally
+    lvWatchesSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TWatchesDlg.popPropertiesClick(Sender: TObject);
 begin
-  DebugBoss.ShowWatchProperties(GetSelected);
+  try
+    DisableAllActions;
+    DebugBoss.ShowWatchProperties(GetSelected);
+  finally
+    lvWatchesSelectItem(nil, nil, False);
+  end;
 end;
 
 procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
@@ -465,6 +513,14 @@ var
 begin
   for i:=0 to FWatches.Count-1 do
     WatchUpdate(FWatches, FWatches.Items[i]);
+end;
+
+procedure TWatchesDlg.DisableAllActions;
+var
+  i: Integer;
+begin
+  for i := 0 to ActionList1.ActionCount - 1 do
+    (ActionList1.Actions[i] as TAction).Enabled := False;
 end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);

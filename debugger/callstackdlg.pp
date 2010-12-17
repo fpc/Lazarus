@@ -126,6 +126,8 @@ type
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
+    procedure DisableAllActions;
+    procedure EnableAllActions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -307,12 +309,30 @@ end;
 
 procedure TCallStackDlg.DoBeginUpdate;
 begin
+  DisableAllActions;
   lvCallStack.BeginUpdate;
 end;
 
 procedure TCallStackDlg.DoEndUpdate;
 begin
   lvCallStack.EndUpdate;
+  EnableAllActions;
+end;
+
+procedure TCallStackDlg.DisableAllActions;
+var
+  i: Integer;
+begin
+  for i := 0 to aclActions.ActionCount - 1 do
+    (aclActions.Actions[i] as TAction).Enabled := False;
+end;
+
+procedure TCallStackDlg.EnableAllActions;
+var
+  i: Integer;
+begin
+  for i := 0 to aclActions.ActionCount - 1 do
+    (aclActions.Actions[i] as TAction).Enabled := True;
 end;
 
 function TCallStackDlg.GetCurrentEntry: TCallStackEntry;
@@ -381,19 +401,24 @@ var
   BreakPoint: TIDEBreakPoint;
   FileName: String;
 begin
-  if (Item <> nil) and (BreakPoints <> nil) then
-  begin
-    idx := FViewStart + Item.Index;
-    if idx >= CallStack.Count then Exit;
-    Entry := CallStack.Entries[idx];
-    FileName := Entry.Source;
-    if (FileName = '') or not DebugBoss.GetFullFilename(FileName, False) then
-      Exit;
-    BreakPoint := BreakPoints.Find(FileName, Entry.Line);
-    if BreakPoint <> nil then
-      DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
-    else
-      DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False);
+  try
+    DisableAllActions;
+    if (Item <> nil) and (BreakPoints <> nil) then
+    begin
+      idx := FViewStart + Item.Index;
+      if idx >= CallStack.Count then Exit;
+      Entry := CallStack.Entries[idx];
+      FileName := Entry.Source;
+      if (FileName = '') or not DebugBoss.GetFullFilename(FileName, False) then
+        Exit;
+      BreakPoint := BreakPoints.Find(FileName, Entry.Line);
+      if BreakPoint <> nil then
+        DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
+      else
+        DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False);
+    end;
+  finally
+    EnableAllActions;
   end;
 end;
 
@@ -439,10 +464,15 @@ procedure TCallStackDlg.actSetAsCurrentClick(Sender : TObject);
 var
   Entry: TCallStackEntry;
 begin
-  Entry := GetCurrentEntry;
-  if Entry = nil then Exit;
+  try
+  DisableAllActions;
+    Entry := GetCurrentEntry;
+    if Entry = nil then Exit;
 
-  CallStack.Current := Entry;
+    CallStack.Current := Entry;
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.actShowClick(Sender: TObject);
@@ -452,9 +482,14 @@ end;
 
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
 begin
-  if CallStack <> nil
-  then SetViewStart(CallStack.Count - FViewLimit)
-  else SetViewStart(0);
+  try
+    DisableAllActions;
+    if CallStack <> nil
+    then SetViewStart(CallStack.Count - FViewLimit)
+    else SetViewStart(0);
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.actToggleBreakPointExecute(Sender: TObject);
@@ -464,21 +499,36 @@ end;
 
 procedure TCallStackDlg.actViewGotoExecute(Sender: TObject);
 begin
-  SetViewStart(StrToIntDef(txtGoto.Text, 0));
+  try
+    DisableAllActions;
+    SetViewStart(StrToIntDef(txtGoto.Text, 0));
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.actViewMoreExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := True;
-  ToolButtonPowerClick(nil);
-  ViewLimit := ViewLimit + FViewCount;
+  try
+    DisableAllActions;
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
+    ViewLimit := ViewLimit + FViewCount;
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := True;
-  ToolButtonPowerClick(nil);
-  SetViewStart(0);
+  try
+    DisableAllActions;
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
+    SetViewStart(0);
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
@@ -571,9 +621,14 @@ end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
 begin
-  ToolButtonPower.Down := True;
-  ToolButtonPowerClick(nil);
-  ViewLimit := FViewCount;
+  try
+    DisableAllActions;
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
+    ViewLimit := FViewCount;
+  finally
+    EnableAllActions;
+  end;
 end;
 
 procedure TCallStackDlg.SetViewStart(AStart: Integer);
