@@ -39,8 +39,6 @@
 #/usr/lib/lazarus/${VERSION}/doceditor
 #/usr/lib/lazarus/${VERSION}/ide
 /usr/lib/lazarus/${VERSION}/ideintf
-/usr/lib/lazarus/${VERSION}/lcl/units/*/*.ppu
-/usr/lib/lazarus/${VERSION}/lcl/units/*/*.o
-/usr/lib/lazarus/${VERSION}/lcl/units/*/*.lfm
+/usr/lib/lazarus/${VERSION}/lcl/units
 /usr/lib/lazarus/${VERSION}/packager
 /usr/lib/lazarus/${VERSION}/units

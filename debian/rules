@@ -147,10 +147,11 @@ install-arch-stamp:
 		$(CURDIR)/tools/svn2revisioninc \
 		$(CURDIR)/tools/updatepofiles
 	# Install the library files
-	find -regex '.*\.\(a\|o\|so\.*\|ppu\)' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/lcl/units/$(FPCTARGET) \
-		$(CURDIR)/lcl/units/$(FPCTARGET)/*.lfm
-     
+	find -name debian -prune -or '(' -name lib -or -name units ')' -print | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
+	# Remove READM.txt files from output directories
+	find $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION} '(' -name '*.or' -or -wholename '*/lib/README.txt' ')' -delete
+	# Mark package as manually compilable and install them
+	find -name '*.lpk' -exec sed -e 's@\(\W*\)<\bAddToProjectUsesSection\b.*@&\n\1<AutoUpdate Value="Manually"/>@' '{}' > '$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/{}' ';'
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
@@ -223,6 +224,8 @@ install-source-stamp:
 	@echo "--- Cleaning the tree and copying the source code"
 	dh_testdir
 	dh_testroot
+	# Remove .lpk packages, they were installed with compiled binray files
+	find -name '*.lpk' -delete
 	${MKDIR} ${SRC_DIR}
 	${CP} -t ${SRC_DIR} \
 		$(CURDIR)/Makefile* \
