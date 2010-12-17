@@ -116,7 +116,6 @@ type
     cfbtUnitSection,
     cfbtProgram,
     cfbtUnit,
-    cfbtRecord,
     cfbtTry,
     cfbtExcept,
     cfbtRepeat,
@@ -139,7 +138,7 @@ const
   cfbtAll: TPascalCodeFoldBlockTypes =
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)];
   PascalWordTrippletRanges: TPascalCodeFoldBlockTypes =
-    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, 
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase
     ];
 
@@ -971,9 +970,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
-      if tfb = cfbtRecord then begin
-        EndPascalCodeFoldBlock;
-      end else if tfb = cfbtUnit then begin
+      if tfb = cfbtUnit then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtExcept then begin
         EndPascalCodeFoldBlock;
@@ -1286,8 +1283,12 @@ begin
     end;
   end
   else if KeyComp('Record') then begin
-    StartPascalCodeFoldBlock(cfbtRecord);
     Result := tkKey;
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    then begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
   end
   else if KeyComp('Array') then Result := tkKey
   else if KeyComp('Try') then
@@ -3697,14 +3698,14 @@ begin
       cfbtVarType:
         if FDividerDrawConfig[pddlVarGlobal].MaxDrawDepth > 0 then
           exit(FDividerDrawConfig[pddlVarGlobal].TopSetting);
-      cfbtClass, cfbtRecord:
+      cfbtClass:
         begin
           if CheckFoldNestLevel(0, i + 1, [cfbtProcedure],
                                 cfbtAll - [cfbtVarType, cfbtLocalVarType], c)
           then t := pddlStructGlobal
           else t := pddlStructLocal;
           if CheckFoldNestLevel(FDividerDrawConfig[t].MaxDrawDepth - 1,
-                                i + 1, [cfbtClass, cfbtRecord],
+                                i + 1, [cfbtClass],
                                 cfbtAll - [cfbtVarType, cfbtLocalVarType], c) then begin
             if c = 0
             then exit(FDividerDrawConfig[t].TopSetting)
@@ -3774,7 +3775,7 @@ begin
   Result.Enabled := TPascalCodeFoldBlockType(Index) in
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtNestedComment,
      cfbtProcedure, cfbtUses, cfbtLocalVarType, cfbtClass,
-     cfbtClassSection, cfbtRecord, cfbtRepeat, cfbtCase,
+     cfbtClassSection, cfbtRepeat, cfbtCase,
      cfbtAsm, cfbtRegion];
   if TPascalCodeFoldBlockType(Index) in
      [cfbtRegion, cfbtNestedComment, cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]

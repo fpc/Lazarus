@@ -1540,12 +1540,11 @@ resourcestring
   dlgFoldPasUses            = 'Uses';
   dlgFoldPasVarType         = 'Var/Type (global)';
   dlgFoldLocalPasVarType    = 'Var/Type (local)';
-  dlgFoldPasClass           = 'Class/Object';
+  dlgFoldPasClass           = 'Class/Object/Record';
   dlgFoldPasClassSection    = 'public/private';
   dlgFoldPasUnitSection     = 'Unit section';
   dlgFoldPasProgram         = 'Program';
   dlgFoldPasUnit            = 'Unit';
-  dlgFoldPasRecord          = 'Record';
   dlgFoldPasTry             = 'Try';
   dlgFoldPasExcept          = 'Except/Finally';
   dlgFoldPasRepeat          = 'Repeat';
