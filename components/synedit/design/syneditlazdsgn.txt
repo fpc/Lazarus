@@ -21,3 +21,5 @@ tsyntexsyn.png
 tsynunixshellscriptsyn.png
 tsynxmlsyn.png
 tsynvbsyn.png
+tsynbatsyn.png
+tsyninisyn.png

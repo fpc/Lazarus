@@ -52,6 +52,7 @@ implicitunits=synbeautifier syncompletion syndesignstringconstants \
   synhighlightermulti synhighlighterpas synhighlighterperl synhighlighterphp \
   synhighlighterposition synhighlighterpython synhighlightersql synhighlightertex \
   synhighlighterunixshellscript synhighlightervb synhighlighterxml synhighlighterdiff \
+  synhighlighterbat synhighlighterini \
   synmacrorecorder synmemo synpluginsyncroedit synpluginsyncronizededitbase \
   synplugintemplateedit synpropertyeditobjectlist synregexpr syntextdrawer
 

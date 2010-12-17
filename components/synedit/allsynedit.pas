@@ -25,7 +25,8 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, 
   SynHighlighterPosition, SynHighlighterPython, SynHighlighterSQL, 
   SynHighlighterTeX, synhighlighterunixshellscript, SynHighlighterVB, 
-  SynHighlighterXML, SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
+  SynHighlighterXML, SynHighlighterBat, SynHighlighterIni,
+  SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, 
   SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, LazarusPackageIntf;
 
