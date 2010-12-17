@@ -3610,6 +3610,7 @@ end;
 
 function TIDEWatches.Add(const AExpression: String): TIDEWatch;
 begin
+  // if this is modified, then also update LoadFromXMLConfig
   Result := TIDEWatch(inherited Add(AExpression));
   NotifyAdd(Result);
 end;
@@ -3659,8 +3660,10 @@ begin
   NewCount := AConfig.GetValue(APath + 'Count', 0);
   for i := 0 to NewCount-1 do
   begin
+    // Call inherited Add, so NotifyAdd can be send, after the Watch was loaded
     Watch := TIDEWatch(inherited Add(''));
     Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+    NotifyAdd(Watch);
   end;
 end;
 
