@@ -544,7 +544,9 @@ type
     procedure SetBlockEnd(Value: TPoint);
     procedure SetBlockIndent(const AValue: integer);
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
-                                   Mode: TSynSelectionMode = smCurrent);
+                                   Mode: TSynSelectionMode = smCurrent;
+                                   MakeSelectionVisible: Boolean = False
+                                   );
     procedure SetCaretX(const Value: Integer);
     procedure SetCaretY(const Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
@@ -1274,7 +1276,7 @@ begin
   Result := Caller is TSynEdit;
   if Result then
     with TSynEdit(Caller) do begin
-      SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode);
+      SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode, True);
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
                                                      FEndPos, FBlockMode));
     end;
@@ -7517,17 +7519,61 @@ begin
 end;
 
 procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore,
-  ptAfter: TPoint; Mode: TSynSelectionMode = smCurrent);
+  ptAfter: TPoint; Mode: TSynSelectionMode = smCurrent; MakeSelectionVisible: Boolean = False);
 // caret is physical (screen)
 // Before, After is logical (byte)
+var
+  L1, L2, LBottomLine, LCaretFirst, LCaretLast: Integer;
 begin
   DoIncPaintLock(Self); // No editing is taking place
+
   CaretXY := ptCaret;
   SetBlockBegin(ptBefore);
   SetBlockEnd(ptAfter);
   if Mode <> smCurrent then
     FBlockSelection.ActiveSelectionMode := Mode;
   AquirePrimarySelection;
+
+  if MakeSelectionVisible then begin
+    //l1 := FBlockSelection.FirstLineBytePos;;
+    LBottomLine := FFoldedLinesView.TextPosAddLines(TopLine, LinesInWindow);
+
+    LCaretFirst := CaretY;
+    LCaretLast := Max(1, FFoldedLinesView.TextPosAddLines(CaretY, 1-LinesInWindow));  // Will have caret on last visible line
+
+    l1 := Min(LCaretFirst, FBlockSelection.FirstLineBytePos.y);
+    l2 := Max(LCaretFirst, FBlockSelection.LastLineBytePos.y);
+
+    if CaretY < TopLine then begin
+      // Scrolling up,  Topline = L1 ; but ensure Caret
+      TopLine := Max(LCaretLast,
+                 Min(LCaretFirst,
+                     L1
+                    ));
+    end
+    else if CaretY > LBottomLine then begin
+      // Scrolling down, LastLine = L2
+      TopLine := Max(LCaretLast,
+                 Min(LCaretFirst,
+                     FFoldedLinesView.TextPosAddLines(L2, 1-LinesInWindow)
+                    ));
+    end
+    else begin
+      // Caret alreayd visible, check block
+      if l1 < TopLine then
+        TopLine := Max(LCaretLast,
+                   Min(LCaretFirst,
+                       L1
+                      ))
+      else
+      if l2 > LBottomLine then
+        TopLine := Max(LCaretLast,
+                   Min(LCaretFirst,
+                       FFoldedLinesView.TextPosAddLines(L2, 1-LinesInWindow)
+                      ));
+    end;
+  end;
+
   DoDecPaintLock(Self);
 end;
 
