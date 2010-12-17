@@ -8311,7 +8311,7 @@ begin
   WIExprValCln := '';
   f :=  ExecuteCommand('whatis %s', [AExpression], WIExprRes);
 
-  if (PTypeRes.State = dsError) and (pos('msg="No symbol ', PTypeRes.Values) > 0)
+  if (WIExprRes.State = dsError) and (pos('msg="No symbol ', WIExprRes.Values) > 0)
   then exit;
 
   if f and (WIExprRes.State <> dsError)
