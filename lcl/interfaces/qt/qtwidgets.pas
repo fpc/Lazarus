@@ -2326,6 +2326,7 @@ var
   FilesList: TStrings;
   Files: Array of String;
   ParentForm: TCustomForm;
+  Url: QUrlH;
 begin
   Result := False;
   GotFiles := False;
@@ -2356,6 +2357,7 @@ begin
       FilesList := TStringList.Create;
       try
         FilesList.Text := UTF16ToUTF8(WStr);
+
         if (FilesList.Count > 0) and
           ( (FilesList[FilesList.Count-1] = #0)
             or
@@ -2365,9 +2367,11 @@ begin
           SetLength(Files, FilesList.Count);
         for i := 0 to High(Files) do
         begin
-          Files[i] := FilesList.Strings[i];
-          if UTF8Pos('file://', Files[i]) <> 0 then
-            UTF8Delete(Files[i], 1, 7);
+          WStr := GetUTF8String(FilesList.Strings[i]);
+          Url := QUrl_create(@WStr);
+          QUrl_toLocalFile(Url, @WStr);
+          Files[i] := UTF16ToUTF8(WStr);
+          QUrl_destroy(Url);
         end;
       finally
         FilesList.Free;
