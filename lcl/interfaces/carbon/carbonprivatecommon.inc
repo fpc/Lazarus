@@ -57,6 +57,9 @@ var
   AStruct : PPaintStruct;
   Win     : WindowRef;
   Content : HIViewRef;
+  Hnd     : RgnHandle;
+  mr      : MacOSAll.Rect;
+  invr    : TRect;
 begin
   if isRepaint then
   begin
@@ -78,6 +81,19 @@ begin
         SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
       'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
 
+
+    if GetEventParameter(AEvent, kEventParamRgnHandle, typeQDRgnHandle, nil,
+      SizeOf(Hnd), nil, @Hnd)=noErr then
+    begin
+      GetRegionBounds(RgnHandle(Hnd), mr);
+      invr.Left:=mr.left;
+      invr.Top:=mr.top;
+      invr.Right:=mr.right;
+      invr.Bottom:=mr.bottom;
+    end
+    else
+      AWidget.GetBounds(invr);
+
     AWidget.Context.Reset;
 
     // let carbon draw/update
@@ -92,6 +108,8 @@ begin
     New(AStruct);
     FillChar(AStruct^, SizeOf(TPaintStruct), 0);
     AStruct^.hdc := HDC(AWidget.Context);
+    AStruct^.fErase := False;
+    AStruct^.rcPaint := invr;
     try
       {$IFDEF VerbosePaint}
         DebugLn('CarbonCommon_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
