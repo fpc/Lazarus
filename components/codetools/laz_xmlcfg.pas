@@ -343,6 +343,7 @@ begin
   if (Node=nil) or (Node.ParentNode=nil) then exit;
   ParentNode:=Node.ParentNode;
   ParentNode.RemoveChild(Node);
+  FModified:=true;
   InvalidatePathCache;
   InternalCleanNode(ParentNode);
 end;
