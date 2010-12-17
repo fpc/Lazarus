@@ -418,7 +418,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..21] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..22] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -454,6 +454,8 @@ const
        Index: ord(cfbtClass);        Enabled: True),
       (Name:  dlgFoldPasClassSection;  Xml:     'ClassSection';
        Index: ord(cfbtClassSection); Enabled: True),
+      (Name:  dlgFoldPasRecord;        Xml:     'Record';
+       Index: ord(cfbtRecord);       Enabled: True),
 
       (Name:  dlgFoldPasIfDef;         Xml:     'IfDef';
        Index: ord(cfbtIfDef);        Enabled: False),
@@ -1505,12 +1507,13 @@ begin
   EditorOptionsFoldInfoPas[13].Name := dlgFoldPasVarType;
   EditorOptionsFoldInfoPas[14].Name := dlgFoldPasClass;
   EditorOptionsFoldInfoPas[15].Name := dlgFoldPasClassSection;
-  EditorOptionsFoldInfoPas[16].Name := dlgFoldPasIfDef;
-  EditorOptionsFoldInfoPas[17].Name := dlgFoldPasUserRegion;
-  EditorOptionsFoldInfoPas[18].Name := dlgFoldPasAnsiComment;
-  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasBorComment;
-  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasSlashComment;
-  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasNestedComment;
+  EditorOptionsFoldInfoPas[16].Name := dlgFoldPasRecord;
+  EditorOptionsFoldInfoPas[17].Name := dlgFoldPasIfDef;
+  EditorOptionsFoldInfoPas[18].Name := dlgFoldPasUserRegion;
+  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasAnsiComment;
+  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasBorComment;
+  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasSlashComment;
+  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasNestedComment;
 
   EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
   EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
