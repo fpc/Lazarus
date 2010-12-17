@@ -98,6 +98,7 @@ type
     procedure ColorElementTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure ColorSchemeButtonClick(Sender: TObject);
     procedure ForegroundColorBoxChange(Sender: TObject);
     procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
     procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
@@ -106,6 +107,7 @@ type
       State: TOwnerDrawState);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
+    procedure LanguageButtonClick(Sender: TObject);
     procedure pnlElementAttributesResize(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
@@ -463,6 +465,11 @@ begin
   end;
 end;
 
+procedure TEditorColorOptionsFrame.ColorSchemeButtonClick(Sender: TObject);
+begin
+  ColorSchemeButton.CheckMenuDropdown;
+end;
+
 procedure TEditorColorOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
 var
   AttrToEdit: TColorSchemeAttribute;
@@ -698,6 +705,11 @@ begin
     end;
     //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(FCurrentHighlighter.LanguageName),'" FCurrentHighlighter.LanguageName=',FCurrentHighlighter.LanguageName]);
   end
+end;
+
+procedure TEditorColorOptionsFrame.LanguageButtonClick(Sender: TObject);
+begin
+  LanguageButton.CheckMenuDropdown;
 end;
 
 procedure TEditorColorOptionsFrame.pnlElementAttributesResize(Sender: TObject);

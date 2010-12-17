@@ -1274,12 +1274,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Left = 28
       Top = 0
       DropdownMenu = LanguageMenu
+      OnClick = LanguageButtonClick
       Style = tbsDropDown
     end
     object ColorSchemeButton: TToolButton
       Left = 63
       Top = 0
       DropdownMenu = ColorSchemeMenu
+      OnClick = ColorSchemeButtonClick
       Style = tbsDropDown
     end
     object FileExtensionsComboBox: TComboBox
