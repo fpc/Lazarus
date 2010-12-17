@@ -1584,6 +1584,8 @@ begin
     AddFile('synhighlighterhashentries.pas', 'SynHighlighterHashEntries', pftUnit,[], cpBase);
     AddFile('synhighlighterjscript.pas', 'SynHighlighterJScript', pftUnit,[], cpBase);
     AddFile('synhighlighterposition.pas', 'TSynPositionHighlighter', pftUnit,[], cpBase);
+    AddFile('synhighlighterini.pas', 'SynHighlighterBat', pftUnit,[], cpBase);
+    AddFile('synhighlighterbat.pas', 'SynHighlighterIni', pftUnit,[], cpBase);
 
     AddFile('syngutter.pas','SynGutter',pftUnit,[],cpBase);
     AddFile('syngutterbase.pp','SynGutterBase',pftUnit,[],cpBase);
