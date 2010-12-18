@@ -262,7 +262,7 @@ type
     FInExecuteCount: Integer;
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
-    FCurrentStackFrame: Integer;
+    FCurrentStackFrame: Integer; // TODO: move to Stack-object
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
 
@@ -849,6 +849,8 @@ type
   TGDBMIWatches = class(TDBGWatches)
   private
   protected
+    FParentFPList: Array of Integer;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Changed;
   public
   end;
@@ -6705,10 +6707,17 @@ end;
 { TGDBMIWatches }
 { =========================================================================== }
 
+procedure TGDBMIWatches.DoStateChange(const AOldState: TDBGState);
+begin
+  SetLength(FParentFPList, 0);
+  inherited DoStateChange(AOldState);
+end;
+
 procedure TGDBMIWatches.Changed;
 var
   n: Integer;
 begin
+  SetLength(FParentFPList, 0);
   for n := 0 to Count - 1 do
     TGDBMIWatch(Items[n]).Invalidate;
   inherited Changed;
@@ -9003,12 +9012,35 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     end;
   end;
 
-  function SelectParentFrame(var aFrame: Integer): Boolean;
+  function SelectParentFrame(var aFrameIdx: Integer): Boolean;
   var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     ParentFp, Fp: String;
+    i, aFrame: Integer;
   begin
+    if aFrameIdx < Length(TGDBMIWatches(FTheDebugger.Watches).FParentFPList) then begin
+      aFrame := TGDBMIWatches(FTheDebugger.Watches).FParentFPList[aFrameIdx];
+      if aFrame = -1
+      then exit(False);
+
+      inc(aFrameIdx);
+      if not ExecuteCommand('-stack-select-frame %u', [aFrame], R)
+      or (R.State = dsError)
+      then
+        Exit(False);
+      Exit(True);
+    end;
+
+    i := length(TGDBMIWatches(FTheDebugger.Watches).FParentFPList);
+    SetLength(TGDBMIWatches(FTheDebugger.Watches).FParentFPList, i + 1);
+    TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i] := -1; // assume failure
+    inc(aFrameIdx);
+
+    if i > 0
+    then aFrame := TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i-1]
+    else aFrame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
+
     if not ExecuteCommand('-data-evaluate-expression parentfp', R)
     or (R.State = dsError)
     then Exit(False);
@@ -9022,6 +9054,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         List.Free;
         Exit(False);
       end;
+
       Inc(AFrame);
 
       if not ExecuteCommand('-data-evaluate-expression $fp', R)
@@ -9030,9 +9063,14 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         List.Free;
         Exit(False);
       end;
+      List.Init(R.Values);
       Fp := List.Values['value'];
+
     until ParentFP = Fp;
     List.Free;
+
+    TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i] := aFrame;
+    Result := True;
   end;
 
   function PascalizePointer(AString: String; const TypeCast: String = ''): String;
@@ -9577,7 +9615,6 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   end;
 
 var
-  R: TGDBMIExecResult;
   S: String;
   ResultList: TGDBMINameValueList;
   Expr: TGDBMIExpression;
@@ -9605,29 +9642,17 @@ begin
 
   ResultList := TGDBMINameValueList.Create('');
   // original
-  frame := -1;
-  frameidx := -1;
+  frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
+  frameidx := 0;
   try
     repeat
       if TryExecute(S, frame = -1)
       then Break;
       FreeAndNil(FTypeInfo);
-
-      // check if there is a parentfp and try to evaluate there
-      if frame = -1
-      then begin
-        // store current
-        ExecuteCommand('-stack-info-frame', R);
-        ResultList.Init(R.Values);
-        ResultList.SetPath('frame');
-        frame := StrToIntDef(ResultList.Values['level'], -1);
-        if frame = -1 then Break;
-        frameidx := frame;
-      end;
     until not SelectParentFrame(frameidx);
 
   finally
-    if frameidx <> frame
+    if frameidx <> 0
     then begin
       // Restore current frame
       ExecuteCommand('-stack-select-frame %u', [frame], []);
