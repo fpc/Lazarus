@@ -7168,7 +7168,10 @@ begin
     else begin
       AChar := Key;
       EditorCanProcessKey(AChar);
-      Key := AChar[1];
+      if AChar='' then
+        Key := #0
+      else
+        Key := AChar[1];
     end;
   end;
   FEditorKey := False;
