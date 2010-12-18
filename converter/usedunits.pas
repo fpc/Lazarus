@@ -68,6 +68,7 @@ type
   protected
     // This is either the Interface or Implementation node.
     function ParentBlockNode: TCodeTreeNode; virtual; abstract;
+    // Uses node in either Main or Implementation section.
     function UsesSectionNode: TCodeTreeNode; virtual; abstract;
   public
     constructor Create(ACTLink: TCodeToolLink);
