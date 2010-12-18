@@ -262,18 +262,23 @@ const
 { TTestWatch }
 
 procedure TTestWatch.DoChanged;
+var
+  v: String;
 begin
   if FMaster = nil then exit;;
-  if FMaster.Valid = vsValid then begin
-    if FHasValue and (FValue <> FMaster.Value) then begin
-      FHasMultiValue := True;
-      FValue := FValue + LineEnding + FMaster.Value;
-    end
-    else
-      FValue := FMaster.Value;
-    FHasValue := True;
+  if (FMaster.Valid = vsValid) then begin
+    v := FMaster.Value;
+    if v <> '<evaluating>' then begin // TODO: need better check
+      if FHasValue and (FValue <> v) then begin
+        FHasMultiValue := True;
+        FValue := FValue + LineEnding + v;
+      end
+      else
+        FValue := v;
+      FHasValue := True;
 
-    FTypeInfo := Master.TypeInfo;
+      FTypeInfo := Master.TypeInfo;
+    end;
   end;
 end;
 
