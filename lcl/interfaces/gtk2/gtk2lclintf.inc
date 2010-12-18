@@ -898,13 +898,44 @@ var
   Title: String;
   ActiveWindow: HWND;
 
-  procedure CreateButton(const ALabel : String; const AResponse: Integer);
+  procedure CreateButton(const ALabel : String; const AResponse: Integer;
+      const AImageHint: Integer = -1);
   var
     NewButton: PGtkWidget;
+    BitmapHandle, MaskHandle: HBitmap;
+    GDIObject: PGDIObject;
+    Pixbuf: PGdkPixbuf;
+    Mask: PGdkBitmap;
+    Img: PGtkWidget;
   begin
     NewButton := gtk_dialog_add_button(PGtkDialog(Dialog),
       PgChar(Ampersands2Underscore(ALabel)), AResponse);
     gtk_button_set_use_underline(PGtkButton(NewButton), True);
+    if AImageHint >= 0 then
+    begin
+      if ThemeServices.GetStockImage(AImageHint, BitmapHandle, MaskHandle) then
+      begin
+        GDIObject := PGDIObject(BitmapHandle);
+        Mask := nil;
+        Pixbuf := nil;
+        if GDIObject^.GDIBitmapType = gbPixbuf then
+          Pixbuf := GDIObject^.GDIPixbufObject
+        else
+          Mask := CreateGdkMaskBitmap(BitmapHandle, MaskHandle);
+
+        Img := gtk_image_new;
+
+        if Pixbuf <> nil then
+          gtk_image_set_from_pixbuf(PGtkImage(Img), Pixbuf)
+        else
+          gtk_image_set_from_pixmap(PGtkImage(Img), GDIObject^.GDIPixmapObject.Image, Mask);
+        gtk_button_set_image(PGtkButton(NewButton), Img);
+        if Mask <> nil then
+          g_object_unref(Mask);
+        DeleteObject(BitmapHandle);
+        DeleteObject(MaskHandle);
+      end;
+    end;
   end;
 
   function ResponseID(const AnID: Integer): Integer;
@@ -967,17 +998,17 @@ begin
         begin
           BtnID := ButtonResults[ModalResult];
           case BtnID of
-            idButtonOK       : CreateButton(Caption, GTK_RESPONSE_OK);
-            idButtonCancel   : CreateButton(Caption, GTK_RESPONSE_CANCEL);
-            idButtonHelp     : CreateButton(Caption, GTK_RESPONSE_HELP);
-            idButtonYes      : CreateButton(Caption, GTK_RESPONSE_YES);
-            idButtonNo       : CreateButton(Caption, GTK_RESPONSE_NO);
-            idButtonClose    : CreateButton(Caption, GTK_RESPONSE_CLOSE);
-            idButtonAbort    : CreateButton(Caption, GTK_RESPONSE_REJECT);
-            idButtonRetry    : CreateButton(Caption, GTK_RESPONSE_ACCEPT);
-            idButtonIgnore   : CreateButton(Caption, GTK_RESPONSE_CLOSE);
-            idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_REJECT);
-            idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_APPLY);
+            idButtonOK       : CreateButton(Caption, GTK_RESPONSE_OK, BtnID);
+            idButtonCancel   : CreateButton(Caption, GTK_RESPONSE_CANCEL, BtnID);
+            idButtonHelp     : CreateButton(Caption, GTK_RESPONSE_HELP, BtnID);
+            idButtonYes      : CreateButton(Caption, GTK_RESPONSE_YES, BtnID);
+            idButtonNo       : CreateButton(Caption, GTK_RESPONSE_NO, BtnID);
+            idButtonClose    : CreateButton(Caption, GTK_RESPONSE_CLOSE, BtnID);
+            idButtonAbort    : CreateButton(Caption, GTK_RESPONSE_REJECT, BtnID);
+            idButtonRetry    : CreateButton(Caption, GTK_RESPONSE_ACCEPT, BtnID);
+            idButtonIgnore   : CreateButton(Caption, GTK_RESPONSE_CLOSE, BtnID);
+            idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_REJECT, BtnID);
+            idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_APPLY, BtnID);
           end;
         end;
     end;
@@ -1042,7 +1073,6 @@ begin
     if ActiveWindow <> 0 then
       gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
   end;
-
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
   Result := ADialogResult;
