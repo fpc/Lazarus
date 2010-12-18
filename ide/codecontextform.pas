@@ -86,6 +86,7 @@ var
 function ShowCodeContext(Code: TCodeBuffer): boolean;
 
 implementation
+uses Themes;
 
 type
   TWinControlAccess = class(TWinControl);
@@ -734,6 +735,7 @@ var
   NewMaxHeight: Integer;
   NewMaxWidth: Integer;
   CurHintRect: TRect;
+  Details: TThemedElementDetails;
 begin
   //DebugLn('TCodeContextFrm.DrawHints DrawWidth=',dbgs(MaxWidth),' DrawHeight=',dbgs(MaxHeight),' Draw=',dbgs(Draw));
   if Draw then begin
@@ -753,6 +755,8 @@ begin
     Canvas.Font.Color:=TextGrayColor;
     Canvas.Font.Style:=TextGrayStyle;
     Canvas.Pen.Color:=PenColor;
+    Details := ThemeServices.GetElementDetails(tttStandardLink);
+    ThemeServices.DrawElement(Canvas.Handle, Details, Canvas.ClipRect);
   end else begin
     Canvas.Font.Style:=[fsBold];
   end;
