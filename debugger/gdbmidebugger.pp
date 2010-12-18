@@ -9231,6 +9231,8 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     addr: TDbgPtr;
     e: Integer;
     PrintableString: String;
+    i: Integer;
+    addrtxt: string;
   begin
     // Check for strings
     if ResultInfo = nil then
@@ -9240,8 +9242,8 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
     case ResultInfo.Kind of
       skPointer: begin
-        AnExpression := GetPart([], [' '], FTextValue, False, False);
-        Val(AnExpression, addr, e);
+        addrtxt := GetPart([], [' '], FTextValue, False, False);
+        Val(addrtxt, addr, e);
         if e <> 0 then
           Exit;
 
@@ -9250,6 +9252,13 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
                                        'wchar', 'widechar', 'pointer'])
         of
           0, 1, 2: begin // 'char', 'character', 'ansistring'
+            // check for addr 'text' / 0x1234 'abc'
+            i := length(addrtxt);
+            if (i+3 <= length(FTextValue)) and (FTextValue[i+2] ='''')
+            and (FTextValue[length(FTextValue)] ='''')
+            then
+              FTextValue := copy(FTextValue, i+2, length(FTextValue) - i - 1)
+            else
             if Addr = 0
             then
               FTextValue := ''''''
