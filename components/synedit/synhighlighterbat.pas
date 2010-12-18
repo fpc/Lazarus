@@ -49,11 +49,11 @@ unit SynHighlighterBat;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF SYN_CLX}
   QControls, QGraphics,
   {$ELSE}
-  Windows, Messages, Controls, Graphics, Registry,
+  Graphics,
   {$ENDIF}
   SynEditTypes, SynEditHighlighter;
 
