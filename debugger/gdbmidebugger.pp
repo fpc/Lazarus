@@ -4983,6 +4983,9 @@ begin
 
   Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfIgnoreError, cfExternal], R)
         and (R.State <> dsError);
+
+  TGDBMILocals(Locals).Changed;
+  TGDBMIWatches(Watches).Changed;
 end;
 
 function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
