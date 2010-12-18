@@ -138,6 +138,9 @@ type
     );
   TGDBMIDebuggerCommandStates = set of TGDBMIDebuggerCommandState;
 
+  TGDBMIDebuggerCommandProperty = (dcpCancelOnRun);
+  TGDBMIDebuggerCommandProperts = set of TGDBMIDebuggerCommandProperty;
+
   TGDBMIExecCommandType =
     ( ectContinue,         // -exec-continue
       ectRun,              // -exec-run
@@ -160,7 +163,10 @@ type
     FKeepFinished: Boolean;
     FFreeLock: Integer;
     FFreeRequested: Boolean;
+    FPriority: Integer;
     FProcessResultTimedOut: Boolean;
+    FProperties: TGDBMIDebuggerCommandProperts;
+    FQueueRunLevel: Integer;
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
@@ -227,6 +233,7 @@ type
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
     property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
     property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;
+    property  QueueRunLevel: Integer read FQueueRunLevel write FQueueRunLevel;  // if queue is nested
   public
     constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
@@ -243,6 +250,8 @@ type
     property  OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property  OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
+    property  Priority: Integer read FPriority write FPriority;
+    property  Properties: TGDBMIDebuggerCommandProperts read FProperties write FProperties;
   end;
 
   { TGDBMIDebugger }
@@ -250,6 +259,7 @@ type
   TGDBMIDebugger = class(TCmdLineDebugger)
   private
     FCommandQueue: TList;
+    FCurrentCommand: TGDBMIDebuggerCommand;
     FCommandQueueExecLock: Integer;
     FCommandProcessingLock: Integer;
 
@@ -314,9 +324,10 @@ type
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure RunQueue;
-    procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+    procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
     procedure CancelAllQueued;
+    procedure CancelBeforeRun;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType; AValues: array of const): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
@@ -466,6 +477,15 @@ type
 
   {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
 
+const
+  // priorities for commands
+  GDCMD_PRIOR_IMMEDIATE = 999; // run immediate (request without callback)
+  GDCMD_PRIOR_LINE_INFO = 100; // Line info should run asap
+  GDCMD_PRIOR_DISASS    = 30;  // Run before watches
+  GDCMD_PRIOR_USER_ACT  = 10;  // set/chnage/remove brkpoint
+  GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers, stack etc)
+
+type
   {%region       *****  TGDBMIDebuggerCommands  *****   }
 
   { TGDBMIDebuggerSimpleCommand }
@@ -511,6 +531,7 @@ type
 
   TGDBMIDebuggerCommandExecute = class(TGDBMIDebuggerCommand)
   private
+    FNextExecQueued: Boolean;
     FResult: TGDBMIExecResult;
     FExecType: TGDBMIExecCommandType;
     FCommand: String;
@@ -528,6 +549,7 @@ type
     constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType; Args: array of const);
     function  DebugText: String; override;
     property  Result: TGDBMIExecResult read FResult;
+    property  NextExecQueued: Boolean read FNextExecQueued;
   end;
 
   {%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
@@ -1782,6 +1804,8 @@ begin
   FDisassembleEvalCmdObj.OnExecuted := @DoDisassembleExecuted;
   FDisassembleEvalCmdObj.OnProgress  := @DoDisassembleProgress;
   FDisassembleEvalCmdObj.OnDestroy  := @DoDisassembleDestroyed;
+  FDisassembleEvalCmdObj.Priority := GDCMD_PRIOR_DISASS;
+  FDisassembleEvalCmdObj.Properties := [dcpCancelOnRun];
   TGDBMIDebugger(Debugger).QueueCommand(FDisassembleEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   Result := FDisassembleEvalCmdObj = nil; // already executed
@@ -3601,6 +3625,7 @@ var
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
 begin
   Result := True;
+  FNextExecQueued := False;
   //ContinueExecution := True;
 
   FTheDebugger.QueueExecuteLock; // prevent other commands from executing
@@ -3625,9 +3650,11 @@ begin
   then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
   if ContinueExecution
   then begin
-    // The "old" behaviour was to queue a new exec-continue
-    // Keep the old behaviour for now:
-    // eventually change this procedure "DoExecute" do run a loop, until no continuation is needed)
+    // - The "old" behaviour was to queue a new exec-continue
+    //   Keep the old behaviour for now: eventually change this procedure "DoExecute" do run a loop, until no continuation is needed)
+    // - Queue is unlockes, so nothing should be queued after the continuation cmd
+    //   But make info available, if anything wants to queue
+    FNextExecQueued := True;
     {$IFDEF DBGMI_QUEUE_DEBUG}
     DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
     {$ENDIF}
@@ -3660,6 +3687,7 @@ constructor TGDBMIDebuggerCommandExecute.Create(AOwner: TGDBMIDebugger;
   const ExecType: TGDBMIExecCommandType; Args: array of const);
 begin
   inherited Create(AOwner);
+  FNextExecQueued := False;
   FExecType := ExecType;
   case FExecType of
     ectContinue: FCommand := '-exec-continue';
@@ -4115,6 +4143,7 @@ begin
   FGetLineSymbolsCmdObj := TGDBMIDebuggerCommandLineSymbolInfo.Create(TGDBMIDebugger(Debugger), ASource);
   FGetLineSymbolsCmdObj.OnExecuted := @DoGetLineSymbolsFinished;
   FGetLineSymbolsCmdObj.OnDestroy   := @DoGetLineSymbolsDestroyed;
+  FGetLineSymbolsCmdObj.Priority := GDCMD_PRIOR_LINE_INFO;
   TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
@@ -4724,7 +4753,7 @@ end;
 procedure TGDBMIDebugger.RunQueue;
 var
   R: Boolean;
-  Cmd: TGDBMIDebuggerCommand;
+  Cmd, NestedCurrentCmd, NestedCurrentCmdTmp: TGDBMIDebuggerCommand;
   SavedInExecuteCount: LongInt;
 begin
   if FCommandQueue.Count = 0
@@ -4736,22 +4765,30 @@ begin
     exit
   end;
 
+  // Safeguard the NestLvl and outer CurrrentCmd
   SavedInExecuteCount := FInExecuteCount;
+  NestedCurrentCmd := FCurrentCommand;
   LockRelease;
   try
     repeat
+      Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
+      if (Cmd.QueueRunLevel >= 0) and (Cmd.QueueRunLevel < FInExecuteCount)
+      then break;
+
       Inc(FInExecuteCount);
 
-      Cmd := TGDBMIDebuggerCommand(FCommandQueue[0]);
       FCommandQueue.Delete(0);
       {$IFDEF DBGMI_QUEUE_DEBUG}
       DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
       // cmd may be canceled while executed => don't loose it while working with it
       Cmd.LockFree;
+      NestedCurrentCmdTmp := FCurrentCommand;
+      FCurrentCommand := Cmd;
       // excute, has it's own try-except block => so we don't have one here
       R := Cmd.Execute;
       Cmd.DoFinished;
+      FCurrentCommand := NestedCurrentCmdTmp;
       Cmd.UnlockFree;
       {$IFDEF DBGMI_QUEUE_DEBUG}
       DebugLnExit('Exec done');
@@ -4791,28 +4828,41 @@ begin
   finally
     UnlockRelease;
     FInExecuteCount := SavedInExecuteCount;
+    FCurrentCommand := NestedCurrentCmd;
   end;
 end;
 
-procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand);
+procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
+var
+  i, p: Integer;
 begin
-  FCommandQueue.Add(ACommand);
-  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
-  then begin
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
-    {$ENDIF}
-    ACommand.DoQueued;
-    Exit;
-  end;
+  p := ACommand.Priority;
+  if p > 0 then begin
+    i := 0;
+    while (i < FCommandQueue.Count)
+    and (TGDBMIDebuggerCommand(FCommandQueue[i]).Priority >= p)
+    do inc(i);
+    FCommandQueue.Insert(i, ACommand);
+  end
+  else
+    FCommandQueue.Add(ACommand);
 
-  // FCommandProcessingLock still must call RunQueue
-  if FCommandProcessingLock > 0
+  // if other commands do run the queue,
+  // make sure this command only runs after the CurrentCommand finished
+  if ForceQueue then
+    ACommand.QueueRunLevel := FInExecuteCount - 1;
+
+  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
+  or (FCommandProcessingLock > 0) or ForceQueue
   then begin
     {$IFDEF DBGMI_QUEUE_DEBUG}
     debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
     {$ENDIF}
     ACommand.DoQueued;
+
+    // FCommandProcessingLock still must call RunQueue
+    if FCommandProcessingLock = 0 then
+      Exit;
   end;
 
   // If we are here we can process the command directly
@@ -4831,6 +4881,20 @@ begin
   i := FCommandQueue.Count - 1;
   while i >= 0 do begin
     TGDBMIDebuggerCommand(FCommandQueue[i]).Cancel;
+    dec(i);
+    if i >= FCommandQueue.Count
+    then i := FCommandQueue.Count - 1;
+  end;
+end;
+
+procedure TGDBMIDebugger.CancelBeforeRun;
+var
+  i: Integer;
+begin
+  i := FCommandQueue.Count - 1;
+  while i >= 0 do begin
+    if dcpCancelOnRun in TGDBMIDebuggerCommand(FCommandQueue[i]).Properties
+    then TGDBMIDebuggerCommand(FCommandQueue[i]).Cancel;
     dec(i);
     if i >= FCommandQueue.Count
     then i := FCommandQueue.Count - 1;
@@ -4910,6 +4974,7 @@ begin
   NewEntryMap := TDBGDisassemblerEntryMap.Create(itu8, SizeOf(TDBGDisassemblerEntryRange));
   CmdObj := TGDBMIDebuggerCommandDisassembe.Create(Self, NewEntryMap, AAddr, AAddr, -1, 2);
   CmdObj.KeepFinished := True;
+  CmdObj.Priority := GDCMD_PRIOR_IMMEDIATE;
   QueueCommand(CmdObj);
   Result := CmdObj.State in [dcsExecuting, dcsFinished];
 
@@ -4965,6 +5030,7 @@ var
 begin
   CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
   CommandObj.KeepFinished := True;
+  CommandObj.Priority := GDCMD_PRIOR_IMMEDIATE; // try run imediately
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuting, dcsFinished];
   AResult := CommandObj.TextValue;
@@ -5019,6 +5085,7 @@ begin
       Result := StartDebugging(ectContinue);
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectContinue));
       Result := True;
     end;
@@ -5037,6 +5104,7 @@ begin
       Result := StartDebugging(ectRunTo, [ASource, ALine]);
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectRunTo, [ASource, ALine]));
       Result := True;
     end;
@@ -5133,6 +5201,7 @@ begin
       Result := StartDebugging;
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepInto));
       Result := True;
     end;
@@ -5150,6 +5219,7 @@ begin
       Result := StartDebugging;
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepOverInstruction));
       Result := True;
     end;
@@ -5167,6 +5237,7 @@ begin
       Result := StartDebugging;
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepIntoInstruction));
       Result := True;
     end;
@@ -5184,6 +5255,7 @@ begin
       Result := StartDebugging;
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepOut));
       Result := True;
     end;
@@ -5201,6 +5273,7 @@ begin
       Result := StartDebugging;
     end;
     dsPause: begin
+      CancelBeforeRun;
       QueueCommand(TGDBMIDebuggerCommandExecute.Create(Self, ectStepOver));
       Result := True;
     end;
@@ -5982,6 +6055,7 @@ begin
   FBreakID := 0; // will be replaced => no longer valid
   FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
   FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  FCurrentCmd.Priority := GDCMD_PRIOR_USER_ACT;
   TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
@@ -6062,6 +6136,7 @@ begin
   FCurrentCmd := TGDBMIDebuggerCommandBreakRemove.Create(TGDBMIDebugger(Debugger), FBreakID);
   FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
   FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  FCurrentCmd.Priority := GDCMD_PRIOR_USER_ACT;
   TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
 
   FBreakID:=0;
@@ -6150,6 +6225,7 @@ begin
   end;
   FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
   FCurrentCmd.OnExecuted  := @DoCommandExecuted;
+  FCurrentCmd.Priority := GDCMD_PRIOR_USER_ACT;
   TGDBMIDebugger(Debugger).QueueCommand(FCurrentCmd);
 
   if Debugger.State = dsRun
@@ -6354,6 +6430,8 @@ begin
   FEvaluationCmdObj := TGDBMIDebuggerCommandLocals.Create(TGDBMIDebugger(Debugger));
   FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
   FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
+  FEvaluationCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+  FEvaluationCmdObj.Properties := [dcpCancelOnRun];
   TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
   FInLocalsNeeded := False;
@@ -6511,6 +6589,8 @@ begin
     FGetRegisterCmdObj := TGDBMIDebuggerCommandRegisterNames.Create(TGDBMIDebugger(Debugger));
     FGetRegisterCmdObj.OnExecuted := @DoGetRegisterNamesFinished;
     FGetRegisterCmdObj.OnDestroy   := @DoGetRegisterNamesDestroyed;
+    FGetRegisterCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+    FGetRegisterCmdObj.Properties := [dcpCancelOnRun];
     TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInRegistersNeeded := False;
@@ -6538,6 +6618,8 @@ begin
     FGetValuesCmdObj := TGDBMIDebuggerCommandRegisterValues.Create(TGDBMIDebugger(Debugger), FRegisters);
     FGetValuesCmdObj.OnExecuted := @DoGetRegValuesFinished;
     FGetValuesCmdObj.OnDestroy   := @DoGetRegValuesDestroyed;
+    FGetValuesCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+    FGetValuesCmdObj.Properties := [dcpCancelOnRun];
     TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInValuesNeeded := False;
@@ -6622,6 +6704,8 @@ begin
 end;
 
 procedure TGDBMIWatch.EvaluationNeeded;
+var
+  ForceQueue: Boolean;
 begin
   if FEvaluatedState in [esValid, esRequested] then Exit;
   if Debugger = nil then Exit;
@@ -6639,7 +6723,12 @@ begin
         (TGDBMIDebugger(Debugger), Expression, DisplayFormat);
       FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
       FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
-      TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
+      FEvaluationCmdObj.Properties := [dcpCancelOnRun];
+      // If a ExecCmd is running, then defer exec until the exec cmd is done
+      ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+                and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+                and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+      TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj, ForceQueue);
       (* DoEvaluationFinished may be called immediately at this point *)
       FInEvaluationNeeded := False;
     finally
@@ -6747,6 +6836,7 @@ begin
   FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger));
   FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
   FDepthEvalCmdObj.OnDestroy   := @DoDepthCommandDestroyed;
+  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_LOCALS;
   TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   FInEvalDepth := False;
@@ -6948,6 +7038,7 @@ begin
   FFramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), AIndex, ACount);
   FFramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
   FFramesEvalCmdObj.OnDestroy  := @DoFramesCommandDestroyed;
+  FFramesEvalCmdObj.Priority := GDCMD_PRIOR_LOCALS;
   TGDBMIDebugger(Debugger).QueueCommand(FFramesEvalCmdObj);
   (* DoFramesCommandExecuted may be called immediately at this point *)
   FInEvalFrames := False;
@@ -8533,12 +8624,15 @@ end;
 
 constructor TGDBMIDebuggerCommand.Create(AOwner: TGDBMIDebugger);
 begin
+  FQueueRunLevel := -1;
   FState := dcsNone;
   FTheDebugger := AOwner;
   FKeepFinished := False;
   FFreeRequested := False;
   FDefaultTimeOut := -1;
   FFreeLock := 0;
+  FPriority := 0;
+  FProperties := [];
 end;
 
 destructor TGDBMIDebuggerCommand.Destroy;
@@ -9575,6 +9669,9 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
             exit;
           end;
 
+          if (dcsCanceled in SeenStates)
+          then exit;
+
           if (saInternalPointer in FTypeInfo.Attributes)
           then begin
             Result := ExecuteCommand('-data-evaluate-expression %s%s', [AnExpression, '^'], R);
@@ -9649,6 +9746,8 @@ begin
       if TryExecute(S, frame = -1)
       then Break;
       FreeAndNil(FTypeInfo);
+      if (dcsCanceled in SeenStates)
+      then break;
     until not SelectParentFrame(frameidx);
 
   finally
