@@ -5166,44 +5166,60 @@ end;
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
   CurFilename, FileName: String;
+  ASrcEdit: TSourceEditor;
 
   procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent);
   begin
     if FileExistsUTF8(ChangeFileExt(CurFilename,ASuffix)) then
       AddContextPopupMenuItem(Format(lisOpenLfm,
-          [ChangeFileExt(FileName,ASuffix)]),true,ANewOnClick);
+          [ChangeFileExt(FileName,ASuffix)]), true, ANewOnClick);
   end;
 
+  {$IFnDEF SingleSrcWindow}
+  function ToWindow(ASection: TIDEMenuSection; const OpName: string;
+                    const OnClickMethod: TNotifyEvent): Boolean;
+  var
+    i, ThisWin, SharedEditor: Integer;
+    nb: TSourceNotebook;
+  begin
+    Result := False;
+    ASection.Clear;
+    ThisWin := Manager.IndexOfSourceWindow(self);
+    for i := 0 to Manager.SourceWindowCount - 1 do begin
+      nb:=Manager.SourceWindows[i];
+      SharedEditor:=nb.IndexOfEditorInShareWith(ASrcEdit);
+      if (i <> ThisWin) and (SharedEditor < 0) then begin
+        Result := True;
+        with RegisterIDEMenuCommand(ASection, OpName+IntToStr(i), nb.Caption,
+                                    OnClickMethod) do
+          Tag := i;
+      end;
+    end;
+  end;
+  {$ENDIF}
+
 var
-  ASrcEdit: TSourceEditor;
+  MarkSrcEdit, se: TSourceEditor;
   BookMarkID, BookMarkX, BookMarkY: integer;
-  MarkSrcEdit: TSourceEditor;
   MarkDesc: String;
   MarkMenuItem: TIDEMenuItem;
   EditorComp: TSynEdit;
   Marks: PSourceMark;
-  MarkCount: integer;
-  i: Integer;
+  i, MarkCount: integer;
   NBAvail: Boolean;
   CurMark: TSourceMark;
   EditorPopupPoint, EditorCaret: TPoint;
-  SelAvail: Boolean;
-  SelAvailAndWritable: Boolean;
+  SelAvail, SelAvailAndWritable: Boolean;
   CurWordAtCursor: String;
   AtIdentifier: Boolean;
 begin
-  //DebugLn(['TSourceNotebook.SrcPopUpMenuPopup ',dbgsName(Sender)]);
-  //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup START ',true);
-  //SourceEditorMenuRoot.ConsistencyCheck;
-
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
   try
     RemoveUserDefinedMenuItems;
     RemoveContextMenuItems;
 
-    ASrcEdit:=
-         FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+    ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
     if ASrcEdit=nil then begin
       ASrcEdit:=GetActiveSE;
       if ASrcEdit=nil then begin
@@ -5220,8 +5236,7 @@ begin
 
     // Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
-    SrcEditMenuShowLineNumbers.Checked :=
-      EditorComp.Gutter.LineNumberPart.Visible;
+    SrcEditMenuShowLineNumbers.Checked := EditorComp.Gutter.LineNumberPart.Visible;
     SrcEditMenuDisableI18NForLFM.Visible:=false;
 
     UpdateHighlightMenuItems;
@@ -5234,11 +5249,10 @@ begin
       MarkSrcEdit := nil;
       i := 0;
       while i < Manager.SourceEditorCount do begin
-        if Manager.SourceEditors[i].EditorComponent.GetBookMark
-          (BookMarkID,BookMarkX,BookMarkY)
-      then begin
-          MarkDesc := MarkDesc+': ' + Manager.SourceEditors[i].PageName
-          +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+        se:=Manager.SourceEditors[i];
+        if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
+        begin
+          MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
           break;
         end;
         inc(i);
@@ -5274,8 +5288,7 @@ begin
       CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
       AtIdentifier:=IsValidIdent(CurWordAtCursor);
       SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
-      SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier
-                                           and (not ASrcEdit.ReadOnly);
+      SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier and (not ASrcEdit.ReadOnly);
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
@@ -5283,12 +5296,9 @@ begin
     begin
       EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
       // user clicked on gutter
-      SourceEditorMarks.GetMarksForLine(ASrcEdit, EditorCaret.y,
-                                        Marks, MarkCount);
-      if Marks <> nil then
-      begin
-        for i := 0 to MarkCount - 1 do
-        begin
+      SourceEditorMarks.GetMarksForLine(ASrcEdit, EditorCaret.y, Marks, MarkCount);
+      if Marks <> nil then begin
+        for i := 0 to MarkCount - 1 do begin
           CurMark := Marks[i];
           CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
         end;
@@ -5318,54 +5328,27 @@ begin
     end;
 
     {$IFnDEF SingleSrcWindow}
-    // Editor locks
-    SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;
+    SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;       // Editor locks
     // Multi win
-    SrcEditMenuMoveToOtherWindowList.Clear;
-    NBAvail := False;
-    for i := 0 to Manager.SourceWindowCount - 1 do
-      if (i <> Manager.IndexOfSourceWindow(self)) and
-         (Manager.SourceWindows[i].IndexOfEditorInShareWith(ASrcEdit) < 0)
-      then begin
-        NBAvail := True;
-        with RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindowList,
-                                    'MoveToWindow'+IntToStr(i),
-                                    Manager.SourceWindows[i].Caption,
-                                    @SrcEditMenuMoveToExistingWindowClicked)
-        do
-          Tag := i;
-      end;
+    NBAvail := ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
+                       @SrcEditMenuMoveToExistingWindowClicked);
     SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
     SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
     SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
     SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
 
-    NBAvail := False;
-    SrcEditMenuCopyToOtherWindowList.Clear;
-    for i := 0 to Manager.SourceWindowCount - 1 do
-      if (Manager.SourceWindows[i].IndexOfEditorInShareWith(ASrcEdit) < 0) and
-         (i <> Manager.IndexOfSourceWindow(self))
-      then begin
-        NBAvail := True;
-        with RegisterIDEMenuCommand(SrcEditMenuCopyToOtherWindowList,
-                                    'CopyToWindow'+IntToStr(i),
-                                    Manager.SourceWindows[i].Caption,
-                                    @SrcEditMenuCopyToExistingWindowClicked)
-        do
-          Tag := i;
-      end;
+    NBAvail := ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
+                       @SrcEditMenuCopyToExistingWindowClicked);
     SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
     SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
     {$ENDIF}
 
-    if Assigned(Manager.OnPopupMenu) then Manager.OnPopupMenu(@AddContextPopupMenuItem);
-
+    if Assigned(Manager.OnPopupMenu) then
+      Manager.OnPopupMenu(@AddContextPopupMenuItem);
     SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
   finally
     SourceEditorMenuRoot.EndUpdate;
   end;
-  //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup END ',true);
-  //SourceEditorMenuRoot.ConsistencyCheck;
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
