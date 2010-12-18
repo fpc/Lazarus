@@ -15577,13 +15577,19 @@ begin
       if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
         DebugEval := '???';
       // deference a pointer - maybe it is a class
-      if Assigned(DBGType) and (DBGType.Kind in [skPointer, skClass]) then
+      if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
+         not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+      then
       begin
         if DBGType.Value.AsPointer <> nil then
         begin
           if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer) then
           begin
-            if Assigned(DBGTypeDerefer) and (DBGTypeDerefer.Kind = skClass) then
+            if Assigned(DBGTypeDerefer) and
+              ( (DBGTypeDerefer.Kind <> skPointer) or
+                (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
+              )
+            then
               DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
           end;
         end;
