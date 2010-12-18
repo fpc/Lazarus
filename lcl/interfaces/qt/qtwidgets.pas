@@ -2110,7 +2110,12 @@ begin
           end;
         end;
       QEventShow: SlotShow(True);
-      QEventHide: SlotShow(False);
+      QEventHide:
+        begin
+          if QWidget_mouseGrabber() = Widget then
+            ReleaseCapture;
+          SlotShow(False);
+        end;
       QEventClose:
         if not SlotClose then
         begin
