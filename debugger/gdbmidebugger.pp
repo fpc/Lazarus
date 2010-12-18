@@ -483,7 +483,8 @@ const
   GDCMD_PRIOR_LINE_INFO = 100; // Line info should run asap
   GDCMD_PRIOR_DISASS    = 30;  // Run before watches
   GDCMD_PRIOR_USER_ACT  = 10;  // set/chnage/remove brkpoint
-  GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers, stack etc)
+  GDCMD_PRIOR_STACK     = 2;   // Run before watches
+  GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers etc)
 
 type
   {%region       *****  TGDBMIDebuggerCommands  *****   }
@@ -1756,6 +1757,8 @@ end;
 
 function TGDBMIDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore,
   ALinesAfter: Integer): Boolean;
+var
+  ForceQueue: Boolean;
 begin
   Result := False;
   if (Debugger = nil) or (Debugger.State <> dsPause)
@@ -1806,7 +1809,10 @@ begin
   FDisassembleEvalCmdObj.OnDestroy  := @DoDisassembleDestroyed;
   FDisassembleEvalCmdObj.Priority := GDCMD_PRIOR_DISASS;
   FDisassembleEvalCmdObj.Properties := [dcpCancelOnRun];
-  TGDBMIDebugger(Debugger).QueueCommand(FDisassembleEvalCmdObj);
+  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+  TGDBMIDebugger(Debugger).QueueCommand(FDisassembleEvalCmdObj, ForceQueue);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   Result := FDisassembleEvalCmdObj = nil; // already executed
 end;
@@ -4779,7 +4785,7 @@ begin
 
       FCommandQueue.Delete(0);
       {$IFDEF DBGMI_QUEUE_DEBUG}
-      DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ': "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
+      DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ' CmdPrior=', Cmd.Priority,' CmdMinRunLvl=', Cmd.QueueRunLevel, ' : "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
       // cmd may be canceled while executed => don't loose it while working with it
       Cmd.LockFree;
@@ -4835,28 +4841,45 @@ end;
 procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
 var
   i, p: Integer;
+  CanRunQueue: Boolean;
 begin
   p := ACommand.Priority;
+  i := 0;
+  CanRunQueue := (FCommandQueue.Count = 0)
+    or ( (FCommandQueue.Count > 0)
+        and (TGDBMIDebuggerCommand(FCommandQueue[0]).QueueRunLevel >= 0)
+        and (TGDBMIDebuggerCommand(FCommandQueue[0]).QueueRunLevel < FInExecuteCount)
+       );
+
   if p > 0 then begin
-    i := 0;
     while (i < FCommandQueue.Count)
     and (TGDBMIDebuggerCommand(FCommandQueue[i]).Priority >= p)
+    and ( (ForceQueue)
+       or (TGDBMIDebuggerCommand(FCommandQueue[i]).QueueRunLevel < 0)
+       or (TGDBMIDebuggerCommand(FCommandQueue[i]).QueueRunLevel >= FInExecuteCount)
+        )
     do inc(i);
     FCommandQueue.Insert(i, ACommand);
   end
-  else
-    FCommandQueue.Add(ACommand);
+  else begin
+    if (not ForceQueue) and (FCommandQueue.Count > 0)
+    and CanRunQueue  // first item is deffered, so new item inserted can run
+    then
+      FCommandQueue.Insert(0, ACommand)
+    else
+      i := FCommandQueue.Add(ACommand);
+  end;
 
   // if other commands do run the queue,
   // make sure this command only runs after the CurrentCommand finished
   if ForceQueue then
     ACommand.QueueRunLevel := FInExecuteCount - 1;
 
-  if (FCommandQueue.Count > 1) or (FCommandQueueExecLock > 0)
+  if (not CanRunQueue) or (FCommandQueueExecLock > 0)
   or (FCommandProcessingLock > 0) or ForceQueue
   then begin
     {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos ', FCommandQueue.Count-1, ': "', ACommand.DebugText,'" State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock ]);
+    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos=', i, ' cnt=',FCommandQueue.Count-1, ' State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock, ' Forced=', dbgs(ForceQueue), ' Prior=',p, ': "', ACommand.DebugText,'"']);
     {$ENDIF}
     ACommand.DoQueued;
 
@@ -6420,6 +6443,8 @@ begin
 end;
 
 procedure TGDBMILocals.LocalsNeeded;
+var
+  ForceQueue: Boolean;
 begin
   if Debugger = nil then Exit;
   if FEvaluatedState in [esRequested, esValid] then Exit;
@@ -6432,7 +6457,10 @@ begin
   FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
   FEvaluationCmdObj.Priority := GDCMD_PRIOR_LOCALS;
   FEvaluationCmdObj.Properties := [dcpCancelOnRun];
-  TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj);
+  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+  TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
   FInLocalsNeeded := False;
 end;
@@ -6576,6 +6604,8 @@ begin
 end;
 
 procedure TGDBMIRegisters.RegistersNeeded;
+var
+  ForceQueue: Boolean;
 begin
   if (Debugger = nil) or (FRegistersReqState in [esRequested, esValid])
   then Exit;
@@ -6591,7 +6621,10 @@ begin
     FGetRegisterCmdObj.OnDestroy   := @DoGetRegisterNamesDestroyed;
     FGetRegisterCmdObj.Priority := GDCMD_PRIOR_LOCALS;
     FGetRegisterCmdObj.Properties := [dcpCancelOnRun];
-    TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj);
+    ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+              and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+    TGDBMIDebugger(Debugger).QueueCommand(FGetRegisterCmdObj, ForceQueue);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInRegistersNeeded := False;
   end;
@@ -6606,6 +6639,8 @@ begin
 end;
 
 procedure TGDBMIRegisters.ValuesNeeded;
+var
+  ForceQueue: Boolean;
 begin
   if (Debugger = nil) or (FValuesReqState in [esRequested, esValid]) or (Count = 0)
   then Exit;
@@ -6620,7 +6655,10 @@ begin
     FGetValuesCmdObj.OnDestroy   := @DoGetRegValuesDestroyed;
     FGetValuesCmdObj.Priority := GDCMD_PRIOR_LOCALS;
     FGetValuesCmdObj.Properties := [dcpCancelOnRun];
-    TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj);
+    ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+              and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+    TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj, ForceQueue);
     (* DoEvaluationFinished may be called immediately at this point *)
     FInValuesNeeded := False;
   end;
@@ -6836,7 +6874,7 @@ begin
   FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger));
   FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
   FDepthEvalCmdObj.OnDestroy   := @DoDepthCommandDestroyed;
-  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
   TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
   FInEvalDepth := False;
@@ -7038,7 +7076,7 @@ begin
   FFramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), AIndex, ACount);
   FFramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
   FFramesEvalCmdObj.OnDestroy  := @DoFramesCommandDestroyed;
-  FFramesEvalCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+  FFramesEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
   TGDBMIDebugger(Debugger).QueueCommand(FFramesEvalCmdObj);
   (* DoFramesCommandExecuted may be called immediately at this point *)
   FInEvalFrames := False;
@@ -8410,6 +8448,68 @@ var
   WIExprVal, WIExprValCln, WITypeValS2: String;
   f: Boolean;
 begin
+  (*   Analyze what type is in AExpression
+     * "whatis AExpr"
+       This return the declared type of the expression (as in the pascal source)
+       - The type may be replaced:
+         - type TAlias = TOriginal; // TAlias may be reported as TOriginal
+           type TAlias = type TOriginal; // Not guranteed, but not likely to be replaced
+                                       // This leaves room for arbitraty names for all types
+         - ^TFoo may be replaced by PFF, if PFF exist and is ^TFoo (seen with stabs, not dwarf)
+       - The type may be prefixed by "&" for var param under dwarf (an fpc workaround)
+         Under dwarf var param are hnadled by gdb, if casted or part of an expression,
+           but not if standalone or dereferred ("^") only
+         Under stabs "var param" have no indications, but are completly and correctly
+           handled by gdb
+
+     * ptype TheWhatisType
+       Should return the base type info
+       Since under dwarf classes are always pointers (again work in expression,
+         but not standalone); a further "whatis" on the declared-type may be needed,
+         to check if the type is a pointer or not.
+         This may be limited, if types are strongly aliased over several levels...
+
+     * tfClassIsPointer in TargetFlags
+       usually true for dwarf, false for stabs. Can be detected with "ptype TObject"
+       Dwarf:
+         "ptype TObject" => ~"type = ^TOBJECT = class \n"
+       Stabs:
+         "ptype TObject" => ~ ~"type = TOBJECT = class \n"
+
+     * Examples
+       * Type-info for objects
+         TFoo = Tobject; PFoo = ^TFoo;
+         ArgTFoo: TFoo;    ArgPFoo: PFoo
+         Dwarf:
+           "whatis ArgTFoo\n" => ~"type = TFOO\n"    (for var-param ~"type = &TFOO\n")
+           "ptype TFoo\n"     => ~"type = ^TFOO = class : public TOBJECT \n"
+
+           whatis ArgPFoo\n"  => ~"type = PFOO\n"
+           "ptype PFoo\n"     => ~"type = ^TFOO = class : public TOBJECT \n"
+
+           // ptype is the same for TFoo and PFoo, so we need to find out if any is a pointer:
+           // they both have "^", but PFoo does not have "= class"
+           // (this may fial if pfoo is an alias for yet another name)
+           "whatis TFoo\n"    => ~"type = ^TFOO = class \n"
+           "whatis PFoo\n"    => ~"type = ^TFOO\n"
+
+         Stabs:
+           "whatis ArgTFoo\n" => ~"type = TFOO\n"    (same vor var param)
+           "ptype TFoo\n"     => ~"type = TFOO = class : public TOBJECT \n"
+
+           "whatis ArgPFoo\n" => ~"type = PFOO\n"
+           ptype PFoo\n"      => ~"type = ^TFOO = class : public TOBJECT \n"
+
+           // ptype gives desired info in stabs (and whatis, does not reveal anything)
+           "whatis TFoo\n"    => ~"type = TFOO\n"
+           "whatis PFoo\n"    => ~"type = PFOO\n"
+
+         Limitations: Under Mac gdb 6.3.50 "whatis" does not work on types.
+                      The info can not be obtained (with Dwarf: PFoo will be treated the same as TFoo)
+       *
+
+  *)
+
   Result := nil;
   WIExprValCln := '';
   f :=  ExecuteCommand('whatis %s', [AExpression], WIExprRes);
