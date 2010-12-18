@@ -221,6 +221,8 @@ begin
   KeepOpen:=false;
   NewParameterIndex:=-1;
   try
+    if not Application.Active then exit;
+
     // check Source Editor
     if SourceEditorManagerIntf=nil then exit;
     SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
