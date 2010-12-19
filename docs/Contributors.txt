@@ -1,4 +1,4 @@
-#The following people contributed to Lazarus:
+﻿#The following people contributed to Lazarus:
 
 A. J. Venter
 Aleksey Lagunov
@@ -161,6 +161,7 @@ Vladimir Zhirov
 Vladimir Serotyukov
 Wanderlan Santos dos Anjos
 Wojciech Malinowski
+Yauheni Nazimau
 Yuriy Yeroshkin
 Yury Sidorov
 Zaenal Mutaqin
