@@ -72,6 +72,8 @@ type
 
   TSynBatSyn = class(TSynCustomHighlighter)
   private
+    fEcho: Boolean;
+    fIgnoreComment: Boolean;
     fLine: PChar;
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
@@ -234,7 +236,7 @@ var
   Temp: PChar;
 begin
   Temp := fToIdent;
-  if Length(aKey) = fStringLen then
+  if not fEcho and (Length(aKey) = fStringLen) then
   begin
     Result := True;
     for i := 1 to fStringLen do
@@ -291,7 +293,11 @@ end;
 
 function TSynBatSyn.Func31: TtkTokenKind;
 begin
-  if KeyComp('echo') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('echo') then begin
+      Result := tkKey;
+      fEcho := True;
+    end
+  else Result := tkIdentifier;
 end;
 
 function TSynBatSyn.Func34: TtkTokenKind;
@@ -413,6 +419,8 @@ procedure TSynBatSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNum
 begin
   fLine := PChar(NewValue);
   Run := 0;
+  fEcho := False;
+  fIgnoreComment := False;
   fLineNumber := LineNumber;
   Next;
 end;
@@ -474,7 +482,7 @@ end;
 
 procedure TSynBatSyn.REMCommentProc;
 begin
-  if (FLine[Run+1] in ['E','e']) and (FLine[Run+2] in ['M','m'])
+  if not fIgnoreComment and (FLine[Run+1] in ['E','e']) and (FLine[Run+2] in ['M','m'])
     and (FLine[Run+3] < #33) then                                               //Fiala
   begin
     fTokenID := tkComment;
@@ -522,6 +530,7 @@ procedure TSynBatSyn.Next;
 begin
   fTokenPos := Run;
   fProcTable[fLine[Run]];
+  if FTokenID <> tkSpace then fIgnoreComment := True;
 end;
 
 function TSynBatSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;

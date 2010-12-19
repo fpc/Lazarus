@@ -174,6 +174,7 @@ begin
   fSectionAttri.Style      := [fsBold];
   AddAttribute(fSectionAttri);
   fKeyAttri                := TSynHighlighterAttributes.Create(SYNS_AttrKey);
+  fKeyAttri.Foreground     := clBlue;
   AddAttribute(fKeyAttri);
   fNumberAttri             := TSynHighlighterAttributes.Create(SYNS_AttrNumber);
   AddAttribute(fNumberAttri);
@@ -182,6 +183,7 @@ begin
   fStringAttri             := TSynHighlighterAttributes.Create(SYNS_AttrString);
   AddAttribute(fStringAttri);
   fSymbolAttri             := TSynHighlighterAttributes.Create(SYNS_AttrSymbol);
+  fSymbolAttri.Foreground := clRed;
   AddAttribute(fSymbolAttri);
   SetAttributesOnChange(@DefHighlightChange);
 
