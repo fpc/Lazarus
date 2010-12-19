@@ -536,6 +536,7 @@ type
     FResult: TGDBMIExecResult;
     FExecType: TGDBMIExecCommandType;
     FCommand: String;
+    FCanKillNow, FDidKillNow: Boolean;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
@@ -551,6 +552,7 @@ type
     function  DebugText: String; override;
     property  Result: TGDBMIExecResult read FResult;
     property  NextExecQueued: Boolean read FNextExecQueued;
+    function  KillNow: Boolean;
   end;
 
   {%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
@@ -3631,6 +3633,8 @@ var
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
 begin
   Result := True;
+  FCanKillNow := False;
+  FDidKillNow := False;
   FNextExecQueued := False;
   //ContinueExecution := True;
 
@@ -3643,13 +3647,20 @@ begin
     then SetDebuggerState(FResult.State);
     // if ContinueExecution will be true, the we ignore dsError..
 
+    // TODO: chack for cancelled
+
     StoppedParams := '';
+    FCanKillNow := True;
     if FResult.State = dsRun
     then Result := ProcessRunning(StoppedParams);
 
   finally
+    FCanKillNow := False;
     FTheDebugger.QueueExecuteUnlock; // allow other commands from executing
   end;
+
+  if FDidKillNow
+  then exit;
 
   ContinueExecution := False;
   if StoppedParams <> ''
@@ -3693,6 +3704,8 @@ constructor TGDBMIDebuggerCommandExecute.Create(AOwner: TGDBMIDebugger;
   const ExecType: TGDBMIExecCommandType; Args: array of const);
 begin
   inherited Create(AOwner);
+  FCanKillNow := False;
+  FDidKillNow := False;;
   FNextExecQueued := False;
   FExecType := ExecType;
   case FExecType of
@@ -3711,6 +3724,32 @@ end;
 function TGDBMIDebuggerCommandExecute.DebugText: String;
 begin
   Result := Format('%s: %s', [ClassName, FCommand]);
+end;
+
+function TGDBMIDebuggerCommandExecute.KillNow: Boolean;
+var
+  StoppedParams: String;
+  R: TGDBMIExecResult;
+begin
+  Result := False;
+  if not FCanKillNow then exit;
+  // only here, if we are in ProcessRunning
+  FDidKillNow := True;
+
+  FTheDebugger.GDBPause(True);
+  FTheDebugger.CancelAllQueued; // before ProcessStopped
+  Result := ProcessRunning(StoppedParams);
+  if StoppedParams <> ''
+  then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+
+  ExecuteCommand('kill');
+  Result := ExecuteCommand('info program', [], R);
+  Result := Result and (Pos('not being run', R.Values) > 0);
+  if Result
+  then SetDebuggerState(dsStop);
+
+  // Now give the ProcessRunning in the current DoExecute something
+  FTheDebugger.SendCmdLn('print 1');
 end;
 
 { TGDBMIDebuggerCommandLineSymbolInfo }
@@ -5318,8 +5357,20 @@ begin
     Exit;
   end;
 
+  if (FCurrentCommand is TGDBMIDebuggerCommandExecute)
+  and TGDBMIDebuggerCommandExecute(FCurrentCommand).KillNow
+  then begin
+    {$IFDEF DBG_VERBOSE}
+    debugln(['KillNow did stop']);
+    {$ENDIF}
+    Result := True;
+    exit;
+  end;
+
   if State = dsRun
   then GDBPause(True);
+
+  CancelAllQueued;
 
   // not supported yet
   // ExecuteCommand('-exec-abort');
