@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 459
     Top = 0
     Width = 529
-    ActivePage = tsStacked
+    ActivePage = tsBubble
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tsBubble: TTabSheet
       Caption = 'Bubble'
@@ -34,7 +34,6 @@ object Form1: TForm1
           item
             Alignment = calBottom
             Marks.Distance = 0
-            Marks.DistanceToCenter = True
             Marks.LabelBrush.Style = bsSolid
             TickLength = 0
           end>
@@ -49,8 +48,8 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object Chart1BubbleSeries1: TBubbleSeries
+          Marks.Attachment = maCenter
           Marks.Distance = 0
-          Marks.DistanceToCenter = True
           Marks.Format = '%0:.9g'
           Marks.Style = smsValue
           BubbleBrush.Color = clRed
