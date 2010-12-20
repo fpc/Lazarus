@@ -1332,6 +1332,7 @@ end;
 procedure TCalculatedChartSource.Changed(ASender: TObject);
 begin
   Unused(ASender);
+  FIndex := -1;
   InvalidateCaches;
   Notify;
 end;
