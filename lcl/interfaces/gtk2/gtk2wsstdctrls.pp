@@ -1884,7 +1884,8 @@ begin
   if AWinControl.HandleObjectShouldBeVisible and
     TCustomComboBox(AWinControl).ReadOnly then
       SetFont(AWinControl, AWinControl.Font);
-  inherited ShowHide(AWinControl);
+  Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
 class function TGtk2WSCustomComboBox.CanFocus(const AWinControl: TWinControl
