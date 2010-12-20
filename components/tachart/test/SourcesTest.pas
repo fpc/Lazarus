@@ -57,8 +57,9 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure Reorder;
+    procedure Accumulate;
     procedure Percentage;
+    procedure Reorder;
   end;
 
 implementation
@@ -67,6 +68,20 @@ uses
   Math, TAChartUtils;
 
 { TCalculatedSourceTest }
+
+procedure TCalculatedSourceTest.Accumulate;
+begin
+  FSource.AccumulationMethod := camSum;
+  FSource.AccumulationRange := 2;
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(102, FSource[0]^.Y);
+  AssertEquals(102 + 202, FSource[1]^.Y);
+  AssertEquals(202 + 302, FSource[2]^.Y);
+  FSource.AccumulationMethod := camAverage;
+  AssertEquals((202 + 302) / 2, FSource[2]^.Y);
+  AssertEquals(102, FSource[0]^.Y);
+  AssertEquals((102 + 202) / 2, FSource[1]^.Y);
+end;
 
 procedure TCalculatedSourceTest.Percentage;
 begin
@@ -107,6 +122,7 @@ begin
   FOrigin.YCount := 3;
   FOrigin.SetYList(FOrigin.Add(1, 102), [103, 104]);
   FOrigin.SetYList(FOrigin.Add(2, 202), [203, 204]);
+  FOrigin.SetYList(FOrigin.Add(3, 302), [303, 304]);
 end;
 
 procedure TCalculatedSourceTest.TearDown;
