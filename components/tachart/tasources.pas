@@ -1312,9 +1312,9 @@ begin
   end;
   FItem.X := FHistory[0].X;
   if AccumulationMethod = camAverage then begin
-    FItem.Y /= AccumulationRange;
+    FItem.Y /= Min(AccumulationRange, AIndex + 1);
     for j := 0 to High(FItem.YList) do
-      FItem.YList[j] /= AccumulationRange;
+      FItem.YList[j] /= Min(AccumulationRange, AIndex + 1);
   end;
 end;
 
@@ -1324,10 +1324,10 @@ var
   i: Integer;
 begin
   if not Percentage then exit;
-  s := FItem.Y + Sum(FItem.YList);
-  FItem.Y /= s * PERCENT;
+  s := (FItem.Y + Sum(FItem.YList)) * PERCENT;
+  FItem.Y /= s;
   for i := 0 to High(FItem.YList) do
-    FItem.YList[i] /= s * PERCENT;
+    FItem.YList[i] /= s;
 end;
 
 procedure TCalculatedChartSource.Changed(ASender: TObject);
@@ -1361,11 +1361,10 @@ var
   i: Integer;
 begin
   AItem := Origin.GetItem(AIndex)^;
-  t := FItem.YList;
-  FItem.YList := nil;
-  SetLength(FItem.YList, Length(FYOrder));
+  SetLength(t, Length(FYOrder));
   for i := 0 to High(FYOrder) do
-    FItem.YList[i] := t[FYOrder[i]];
+    t[i] := AItem.YList[FYOrder[i]];
+  AItem.YList := t;
 end;
 
 function TCalculatedChartSource.GetCount: Integer;
