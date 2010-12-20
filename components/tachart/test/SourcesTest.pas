@@ -16,7 +16,7 @@ Authors: Alexander Klenin
 
 unit SourcesTest;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$R+}
 
 interface
 
@@ -37,6 +37,7 @@ type
     procedure Basic;
     procedure DataPoint;
     procedure Extent;
+    procedure Multi;
   end;
 
   { TRandomSourceTest }
@@ -46,10 +47,64 @@ type
     procedure Extent;
   end;
 
+  { TCalculatedSourceTest }
+
+  TCalculatedSourceTest = class(TTestCase)
+  private
+    FOrigin: TListChartSource;
+    FSource: TCalculatedChartSource;
+  protected
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+    procedure Reorder;
+  end;
+
 implementation
 
 uses
   Math, TAChartUtils;
+
+{ TCalculatedSourceTest }
+
+procedure TCalculatedSourceTest.Reorder;
+var
+  i, j: Integer;
+begin
+  FSource.ReorderYList := '2';
+  AssertEquals(2, FSource.YCount);
+  AssertEquals(104, FSource[0]^.YList[0]);
+  AssertEquals(204, FSource[1]^.YList[0]);
+  FSource.ReorderYList := '0,0,0';
+  AssertEquals(4, FSource.YCount);
+  AssertEquals(103, FSource[0]^.YList[0]);
+  AssertEquals(103, FSource[0]^.YList[1]);
+  AssertEquals(103, FSource[0]^.YList[2]);
+  FSource.ReorderYList := '';
+  for i := 0 to FSource.Count - 1 do begin
+    AssertEquals(FOrigin[i]^.Y, FSource[i]^.Y);
+    for j := 0 to FSource.YCount - 2 do
+      AssertEquals(FOrigin[i]^.YList[j], FSource[i]^.YList[j]);
+  end;
+end;
+
+procedure TCalculatedSourceTest.SetUp;
+begin
+  inherited SetUp;
+  FOrigin := TListChartSource.Create(nil);
+  FSource := TCalculatedChartSource.Create(nil);
+  FSource.Origin := FOrigin;
+  FOrigin.YCount := 3;
+  FOrigin.SetYList(FOrigin.Add(1, 102), [103, 104]);
+  FOrigin.SetYList(FOrigin.Add(2, 202), [203, 204]);
+end;
+
+procedure TCalculatedSourceTest.TearDown;
+begin
+  FreeAndNil(FSource);
+  FreeAndNil(FOrigin);
+  inherited TearDown;
+end;
 
 { TListSourceTest }
 
@@ -119,6 +174,21 @@ begin
   AssertExtent(-2, 4, -1, 4.5);
 end;
 
+procedure TListSourceTest.Multi;
+begin
+  FSource.Clear;
+  AssertEquals(1, FSource.YCount);
+  FSource.Add(1, 2);
+  FSource.YCount := 2;
+  AssertEquals(1, Length(FSource[0]^.YList));
+  AssertEquals(0, FSource[0]^.YList[0]);
+  FSource.SetYList(0, [3, 4]);
+  AssertEquals(3, FSource[0]^.YList[0]);
+  FSource.DataPoints.Add('1|2|3|4|?|t');
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(4, FSource[1]^.YList[1]);
+end;
+
 procedure TListSourceTest.SetUp;
 begin
   inherited SetUp;
@@ -158,7 +228,7 @@ end;
 
 initialization
 
-  RegisterTests([TListSourceTest, TRandomSourceTest]);
+  RegisterTests([TListSourceTest, TRandomSourceTest, TCalculatedSourceTest]);
 
 end.
 
