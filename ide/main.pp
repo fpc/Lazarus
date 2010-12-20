@@ -12189,7 +12189,7 @@ begin
   if ToolStatus=itDebugger then begin
     Result:=IDEQuestionDialog(lisStopDebugging2,
       lisStopCurrentDebuggingAndRebuildProject,
-      mtConfirmation,[mrYes,mrCancel,lisNo,mrAbort],'');
+      mtConfirmation,[mrYes, mrCancel, lisNo],'');
     if Result<>mrYes then exit;
 
     Result:=DebugBoss.DoStopProject;
