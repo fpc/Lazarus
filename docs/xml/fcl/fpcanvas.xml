@@ -528,35 +528,36 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psSolid">
-        <short/>
+        <short>A solid drawn pen</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psDash">
-        <short/>
+        <short>A dashed drawn pen</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psDot">
-        <short/>
+        <short>A dotted drawn pen</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psDashDot">
-        <short/>
+        <short>A pen drawn with alternating dashes and dots</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psDashDotDot">
-        <short/>
+        <short>A pen drawn with alternating dashes and double dots</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psinsideFrame">
-        <short/>
+        <short>A solid pen with offset depending on pen width</short>
+        <descr>A solid pen that is offset so the perimeter of the drawn figure is always the same independent of the line width.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psPattern">
-        <short/>
+        <short>A custom drawn pattern</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFPPenStyle.psClear">
-        <short/>
+        <short>A clear pen (nothing is drawn)</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TFPPenStyleSet">
