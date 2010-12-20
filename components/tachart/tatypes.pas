@@ -81,18 +81,22 @@ type
     property Visible: Boolean read FVisible write SetVisible;
   end;
 
+  { TChartTitle }
+
   TChartTitle = class(TChartElement)
   private
     FAlignment: TAlignment;
     FBrush: TBrush;
     FFont: TFont;
     FFrame: TChartPen;
+    FMargin: TChartDistance;
     FText: TStrings;
 
     procedure SetAlignment(AValue: TAlignment);
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
+    procedure SetMargin(AValue: TChartDistance);
     procedure SetText(AValue: TStrings);
   public
     constructor Create(AOwner: TCustomChart);
@@ -105,6 +109,8 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
+    property Margin: TChartDistance
+      read FMargin write SetMargin default DEF_MARGIN;
     property Text: TStrings read FText write SetText;
     property Visible default false;
   end;
@@ -394,6 +400,7 @@ begin
   InitHelper(FFont, TFont);
   FFont.Color := clBlue;
   InitHelper(FFrame, TChartPen);
+  FMargin := DEF_MARGIN;
   FText := TStringList.Create;
 end;
 
@@ -429,6 +436,13 @@ end;
 procedure TChartTitle.SetFrame(AValue: TChartPen);
 begin
   FFrame.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartTitle.SetMargin(AValue: TChartDistance);
+begin
+  if FMargin = AValue then exit;
+  FMargin := AValue;
   StyleChanged(Self);
 end;
 

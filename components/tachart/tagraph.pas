@@ -612,7 +612,7 @@ begin
           ACanvas.TextOut(sz.cx, FClipRect.Top, Text[i]);
           FClipRect.Top += sz.cy;
         end;
-        FClipRect.Top += 4;
+        FClipRect.Top += Margin;
       end;
     with FFoot do
       if Visible and (Text.Count > 0) then begin
@@ -623,7 +623,7 @@ begin
           FClipRect.Bottom -= sz.cy;
           ACanvas.TextOut(sz.cx, FClipRect.Bottom, Text[i]);
         end;
-        FClipRect.Bottom -= 4;
+        FClipRect.Bottom -= Margin;
       end;
   finally
     pbf.Free;

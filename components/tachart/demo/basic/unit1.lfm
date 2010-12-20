@@ -39,6 +39,7 @@ object Form1: TForm1
     Title.Font.Color = clBlue
     Title.Font.Height = -11
     Title.Font.Name = 'MS Sans Serif'
+    Title.Margin = 8
     Title.Text.Strings = (
       'Centered Chart Title'
     )
@@ -46,17 +47,17 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object Chart1LineHor: TConstantLine
+      Legend.Visible = False
       Pen.Style = psDash
       Position = 0
       SeriesColor = clBlack
-      ShowInLegend = False
     end
     object Chart1LineVert: TConstantLine
+      Legend.Visible = False
       LineStyle = lsVertical
       Pen.Style = psDash
       Position = 0
       SeriesColor = clBlack
-      ShowInLegend = False
     end
   end
   object Panel1: TPanel
