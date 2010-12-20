@@ -58,6 +58,7 @@ type
     procedure TearDown; override;
   published
     procedure Reorder;
+    procedure Percentage;
   end;
 
 implementation
@@ -67,10 +68,19 @@ uses
 
 { TCalculatedSourceTest }
 
+procedure TCalculatedSourceTest.Percentage;
+begin
+  FSource.Percentage := true;
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(102 / (102 + 103 + 104) * 100, FSource[0]^.Y);
+  AssertEquals(103 / (102 + 103 + 104) * 100, FSource[0]^.YList[0]);
+end;
+
 procedure TCalculatedSourceTest.Reorder;
 var
   i, j: Integer;
 begin
+  AssertEquals(3, FSource.YCount);
   FSource.ReorderYList := '2';
   AssertEquals(2, FSource.YCount);
   AssertEquals(104, FSource[0]^.YList[0]);
