@@ -111,7 +111,8 @@ type
     destructor Destroy; override;
   public
     function Add(
-      AX, AY: Double; const ALabel: String; AColor: TChartColor): Integer;
+      AX, AY: Double; const ALabel: String = '';
+      AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
