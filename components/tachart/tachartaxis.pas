@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TASources, TATransformations, TATypes;
+  TAChartUtils, TACustomSource, TATransformations, TATypes;
 
 const
   DEF_TICK_LENGTH = 4;
@@ -42,7 +42,8 @@ type
     property Style default psClear;
   end;
 
-  TCustomChartAxisTitle = specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+  TCustomChartAxisTitle =
+    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
 
   { TChartAxisTitle }
 
@@ -91,7 +92,7 @@ type
   TChartAxisMarks = class(TCustomChartAxisMarks)
   private
     FAtDataOnly: Boolean;
-    FDefaultSource: TIntervalChartSource;
+    FDefaultSource: TCustomChartSource;
     FListener: TListener;
     FSource: TCustomChartSource;
 
@@ -271,7 +272,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TADrawUtils;
+  LResources, Math, PropEdits, TADrawUtils, TASources;
 
 type
   TAxisDataExtent = record

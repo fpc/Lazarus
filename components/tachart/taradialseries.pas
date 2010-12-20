@@ -75,7 +75,7 @@ implementation
 
 uses
   Math,
-  TADrawUtils, TASources;
+  TADrawUtils, TACustomSource;
 
 { TCustomPieSeries }
 

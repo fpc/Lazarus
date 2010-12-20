@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TALegend, TASources, TATypes;
+  TAChartUtils, TACustomSeries, TACustomSource, TALegend, TATypes;
 
 const
   DEF_COLORMAP_STEP = 4;

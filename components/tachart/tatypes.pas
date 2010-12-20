@@ -308,7 +308,7 @@ type
 implementation
 
 uses
-  TASources;
+  TACustomSource;
 
 { TChartPen }
 

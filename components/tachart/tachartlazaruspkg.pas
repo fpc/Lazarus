@@ -10,7 +10,8 @@ uses
     TAChartAxis, TAChartUtils, TACustomSeries, TADbSource, TAGraph, TASeries, 
   TASeriesEditor, TASources, TASubcomponentsEditor, TATools, 
   TATransformations, TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, 
-  TAFuncSeries, TALegendPanel, TARadialSeries, LazarusPackageIntf;
+  TAFuncSeries, TALegendPanel, TARadialSeries, TACustomSource, 
+  LazarusPackageIntf;
 
 implementation
 
