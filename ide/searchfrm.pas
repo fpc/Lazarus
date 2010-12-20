@@ -90,12 +90,12 @@ type
     procedure SearchFile(const aFilename: string);
     procedure SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
     procedure DoSearchAndAddToSearchResults;
+    function DoSearch: integer;
   public
     procedure DoSearchOpenFiles;
     procedure DoSearchDir;
     procedure DoSearchProject(AProject: TProject);
   public
-    procedure DoSearch;
     property SearchDirectory: string read fTheDirectory write fTheDirectory;
     property SearchText: string read fSearchFor write fSearchFor;
     property ReplaceText: string read FReplaceText write FReplaceText;
@@ -688,8 +688,10 @@ begin
   if fSearchFiles then include(Result,fifSearchDirectories);
 end;//GetOptions
 
-procedure TSearchForm.DoSearch;
+function TSearchForm.DoSearch: integer;
+// Search the text and then return the number of found items.
 begin
+  Result:= 0;
   PromptOnReplace:=true;
   fAborting:=false;
   Progress.Abort:=false;
@@ -703,13 +705,14 @@ begin
     end;
     try
       if fSearchFiles then
-      begin
         DoFindInFiles(fTheDirectory);
-      end;//if
       if fSearchProject or fSearchOpen then
         DoFindInSearchList;
-      if Assigned(fResultsList) and (fResultsList.Count = 0) then
-        fResultsList.Add(Format(lisUESearchStringNotFound,[dbgstr(fSearchFor)]));
+      if Assigned(fResultsList) then begin
+        Result:=fResultsList.Count;     // Return the real item count.
+        if fResultsList.Count = 0 then  // Add a note to the list if no items found.
+          fResultsList.Add(Format(lisUESearchStringNotFound,[dbgstr(fSearchFor)]));
+      end;
     finally
       if fResultsListUpdating then begin
         fResultsListUpdating:=false;
@@ -878,32 +881,31 @@ end;
 procedure TSearchForm.DoSearchAndAddToSearchResults;
 var
   ListPage: TTabSheet;
+  Cnt: integer;
 begin
-  ListPage:=SearchResultsView.AddSearch(SearchText,
-                                        SearchText,
-                                        ReplaceText,
-                                        SearchDirectory,
-                                        SearchMask,
-                                        SearchOptions);
-
+  Cnt:= 0;
+  ListPage:=SearchResultsView.AddSearch(SearchText, SearchText,
+                                        ReplaceText,SearchDirectory,
+                                        SearchMask, SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
       other pages can stil be closed or inserted, so PageIndex can change *)
     SearchResultsView.BeginUpdate(ListPage.PageIndex);
-    ResultsList := SearchResultsView.Items[ListPage.PageIndex];
+    ResultsList:= SearchResultsView.Items[ListPage.PageIndex];
     ResultsList.Clear;
     ResultsWindow:= ListPage;
     try
       Show; // floating window, not dockable
       // update Window Menu, the OnIdle event does not occur while searching
       MainIDEInterface.UpdateWindowMenu;
-      DoSearch;
+      Cnt:= DoSearch;
     except
       on E: ERegExpr do
         MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
                    [mbCancel],0);
     end;
   finally
+    ListPage.Caption:= Format('%s (%d)',[SearchResultsView.WorkedSearchText,Cnt]);
     SearchResultsView.EndUpdate(ListPage.PageIndex);
     // bring to front
     IDEWindowCreators.ShowForm(SearchResultsView,true);

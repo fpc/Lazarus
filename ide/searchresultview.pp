@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus,
+  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus, strutils,
   IDEWindowIntf, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts,
   InputHistory, IDEProcs, Project, MainIntf, Clipbrd;
 
@@ -171,10 +171,10 @@ type
     procedure FilterButtonClick (Sender: TObject );
   private
     FMaxItems: integer;
+    FWorkedSearchText: string;
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
     function BeautifyPageName(const APageName: string): string;
-    function PageExists(const APageName: string): boolean;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
     procedure TreeViewClicked(Sender: TObject);
@@ -194,7 +194,6 @@ type
     function GetSourceFileName: string;
     function GetSelectedText: string;
     function GetSelectedMatchPos: TLazSearchMatchPos;
-    procedure BringResultsToFront(const APageName: string);
     procedure AddMatch(const APageIndex: integer;
                        const Filename: string; const StartPos, EndPos: TPoint;
                        const TheText: string;
@@ -203,11 +202,13 @@ type
     procedure EndUpdate(APageIndex: integer);
     procedure Parse_Search_Phrases(var slPhrases: TStrings);
     procedure ClosePage(PageIndex: integer);
+
+    property MaxItems: integer read FMaxItems write SetMaxItems;
+    property WorkedSearchText: string read FWorkedSearchText;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
-    property MaxItems: integer read FMaxItems write SetMaxItems;
-  end; 
+  end;
 
 function SearchResultsView: TSearchResultsView;
 
@@ -564,7 +565,7 @@ end;
 
 function TSearchResultsView.BeautifyPageName(const APageName: string): string;
 const
-  MaxPageName = 25;
+  MaxPageName = 22;
 begin
   Result:=SpecialCharsToHex(APageName);
   if UTF8Length(Result)>MaxPageName then
@@ -694,16 +695,6 @@ begin
     Hide;
 end;
 
-{Brings the results tab named APageName to front.
- If APageName does not exist, does nothing}
-procedure TSearchResultsView.BringResultsToFront(const APageName: string);
-begin
-  if PageExists(APageName) then
-  begin
-    ResultsNoteBook.PageIndex:= GetPageIndex(APageName);
-  end;//if
-end;//BringResultsToFront
-
 {Sets the Items from the treeview on the currently selected page in the
  TNoteBook}
 procedure TSearchResultsView.SetItems(Index: integer; Value: TStrings);
@@ -782,25 +773,6 @@ begin
   end;
 end;
 
-{Searched the notebook control for a page with APageName name, returns true if
- found}
-function TSearchResultsView.PageExists(const APageName: string): boolean;
-var
-  i: integer;
-  CurPagename: String;
-begin
-  Result:= false;
-  CurPagename:=BeautifyPageName(APageName);
-  for i:= 0 to ResultsNoteBook.PageCount - 1 do
-  begin
-    if (ResultsNoteBook.Page[i].Caption = CurPageName) then
-    begin
-      Result:= true;
-      exit;
-    end;//if
-  end;//for
-end;//PageExists
-
 procedure TSearchResultsView.TreeViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -824,20 +796,17 @@ var
   NewPage: LongInt;
   i: integer;
   SearchObj: TLazSearch;
-  NewPageName: String;
 begin
   Result:= nil;
   if Assigned(ResultsNoteBook) then
-  begin
-    NewPageName:=BeautifyPageName(ResultsName);
-    //DebugLn(['TSearchResultsView.AddSearch NewPageName=',dbgstr(NewPageName),' ResultsName="',dbgstr(ResultsName),'"']);
     with ResultsNoteBook do
     begin
-      i:= GetPageIndex(NewPageName);
+      FWorkedSearchText:=BeautifyPageName(ResultsName);
+      i:= GetPageIndex(FWorkedSearchText);
       if i>=0 then
       begin
         NewTreeView:= GetTreeView(i);
-        ResultsNoteBook.PageIndex:= i;
+        PageIndex:= i;
         //Free backup objects and list since its a new search with the same TreeView
         NewTreeView.FreeObjects(NewTreeView.BackUpStrings);
         NewTreeView.BackUpStrings.Clear;
@@ -845,9 +814,9 @@ begin
       end//if
       else
       begin
-        NewPage:= TCustomNotebook(ResultsNoteBook).Pages.Add(NewPageName);
-        ResultsNoteBook.PageIndex:= NewPage;
-        ResultsNoteBook.Page[ResultsNoteBook.PageIndex].OnKeyDown := @TreeViewKeyDown;
+        NewPage:= TCustomNotebook(ResultsNoteBook).Pages.Add(FWorkedSearchText);
+        PageIndex:= NewPage;
+        Page[PageIndex].OnKeyDown := @TreeViewKeyDown;
         if NewPage > -1 then
         begin
           NewTreeView:= TLazSearchResultTV.Create(Page[NewPage]);
@@ -864,26 +833,25 @@ begin
             OnMouseMove:= @LazTVMousemove;
             OnMouseWheel:= @LazTVMouseWheel;
             ShowHint:= true;
-            RowSelect := True;
-            Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw]; // we are using custom draw
+            RowSelect := True;                        // we are using custom draw
+            Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
             PopupMenu := popList;
             NewTreeView.Canvas.Brush.Color:= clWhite;
           end;//with
         end;//if
       end;//else
+      SearchObj:=NewTreeView.SearchObject;
+      if SearchObj<>nil then begin
+        SearchObj.SearchString:= SearchText;
+        SearchObj.ReplaceText := ReplaceText;
+        SearchObj.SearchDirectory:= ADirectory;
+        SearchObj.SearchMask:= AMask;
+        SearchObj.SearchOptions:= TheOptions;
+      end;
+      NewTreeView.Skipped:=0;
+      Result:= Pages[PageIndex];
+      SearchInListEdit.Clear;
     end;//with
-    SearchObj:=NewTreeView.SearchObject;
-    if SearchObj<>nil then begin
-      SearchObj.SearchString:= SearchText;
-      SearchObj.ReplaceText := ReplaceText;
-      SearchObj.SearchDirectory:= ADirectory;
-      SearchObj.SearchMask:= AMask;
-      SearchObj.SearchOptions:= TheOptions;
-    end;
-    NewTreeView.Skipped:=0;
-    Result:= ResultsNoteBook.Pages[ResultsNoteBook.PageIndex];
-    SearchInListEdit.Clear;
-  end;//if
 end;//AddResult
 
 procedure TSearchResultsView.LazTVShowHint(Sender: TObject;
@@ -1066,14 +1034,17 @@ end;
 
 function TSearchResultsView.GetPageIndex(const APageName: string): integer;
 var
-  i: integer;
-  CurPagename: String;
+  Paren, i: integer;
+  PN: String;
 begin
   Result:= -1;
-  CurPagename:=BeautifyPageName(APageName);
   for i:= 0 to ResultsNoteBook.PageCount - 1 do
   begin
-    if (ResultsNoteBook.Page[i].Caption = CurPageName) then
+    PN:= ResultsNoteBook.Page[i].Caption;
+    Paren:= Pos(' (', PN);
+    if (Paren>0) and (PosEx(')', PN, Paren+2)>0) then
+      PN:= LeftStr(PN, Paren-1);
+    if PN = APageName then
     begin
       Result:= i;
       break;
