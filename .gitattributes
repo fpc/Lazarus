@@ -5417,6 +5417,7 @@ packager/globallinks/fpcunitconsolerunner-1.lpl svneol=native#text/plain
 packager/globallinks/fpcunitide-0.1.lpl svneol=native#text/plain
 packager/globallinks/fpcunittestrunner-0.1.lpl svneol=native#text/plain
 packager/globallinks/h2paswizard-0.lpl svneol=native#text/plain
+packager/globallinks/ide.lpl svneol=native#text/plain
 packager/globallinks/idefilebrowser-0.2.lpl svneol=native#text/plain
 packager/globallinks/ideinspector-0.1.lpl svneol=native#text/plain
 packager/globallinks/imagesforlazarus-1.0.1.lpl svneol=native#text/plain
