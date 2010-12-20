@@ -267,13 +267,14 @@ type
   private
     FAccumulationMethod: TChartAccumulationMethod;
     FAccumulationRange: Integer;
+    FHistory: array of TChartDataItem;
     FIndex: Integer;
     FItem: TChartDataItem;
     FListener: TListener;
     FOrigin: TCustomChartSource;
+    FOriginYCount: Cardinal;
     FPercentage: Boolean;
     FReorderYList: String;
-    FHistory: array of TChartDataItem;
     FYOrder: array of Integer;
 
     procedure CalcAccumulation(AIndex: Integer);
@@ -1331,7 +1332,10 @@ end;
 
 procedure TCalculatedChartSource.Changed(ASender: TObject);
 begin
-  Unused(ASender);
+  if (ASender = FOrigin) and (FOrigin.YCount <> FOriginYCount) then begin
+    UpdateYOrder;
+    exit;
+  end;
   FIndex := -1;
   InvalidateCaches;
   Notify;
@@ -1447,6 +1451,7 @@ var
   i: Integer;
 begin
   if FOrigin = nil then begin
+    FOriginYCount := 0;
     FYCount := 0;
     FYOrder := nil;
     FItem.YList := nil;
@@ -1454,6 +1459,7 @@ begin
     exit;
   end;
 
+  FOriginYCount := FOrigin.YCount;
   if ReorderYList = '' then begin
     FYCount := FOrigin.YCount;
     SetLength(FYOrder,  Max(FYCount - 1, 0));
