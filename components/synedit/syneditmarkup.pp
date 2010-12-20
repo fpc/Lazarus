@@ -347,6 +347,8 @@ end;
 
 destructor TSynEditMarkup.Destroy;
 begin
+  // unregister caret handler
+  Caret := nil;
   FreeAndNil(fMarkupInfo);
   inherited Destroy;
 end;
@@ -454,8 +456,11 @@ var
   i: LongInt;
 begin
   i := fMarkUpList.IndexOf(aMarkUp);
-  if i >= 0 then
+  if i >= 0 then begin
+    // unregister the caret handler, no longer controled by this synedit
+    TSynEditMarkup(fMarkUpList[i]).Caret := nil;
     fMarkUpList.Delete(i);
+  end;
 end;
 
 function TSynEditMarkupManager.Count: Integer;
@@ -587,6 +592,7 @@ var
   i : integer;
 begin
   inherited SetCaret(AValue);
+  if fMarkUpList = nil then exit;
   for i := 0 to fMarkUpList.Count-1 do
     TSynEditMarkup(fMarkUpList[i]).SetCaret(AValue);
 end;
