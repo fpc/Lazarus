@@ -564,7 +564,7 @@ begin
     end
 
     else
-    if (S[1] = '^')
+    if ((S <> '') and (S[1] = '^'))
     or ((ParsedWhatIsValue <> '') and (ParsedWhatIsValue[1] = '^'))
     or ((ParsedWhatIsType <> '') and (ParsedWhatIsType[1] = '^'))
     then begin
