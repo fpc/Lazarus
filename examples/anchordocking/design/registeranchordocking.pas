@@ -77,7 +77,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
+    procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
     function GetDefaultLayoutFilename: string;
@@ -225,7 +225,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
+procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm;
+  ASides: TDockSides);
 var
   aManager: TAnchorDockManager;
 begin

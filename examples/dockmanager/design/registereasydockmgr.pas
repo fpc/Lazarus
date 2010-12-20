@@ -32,7 +32,7 @@ unit RegisterEasyDockMgr;
 
 {$mode objfpc}{$H+}
 
-{.$DEFINE DockMaster}  //must match IDE setting
+{$DEFINE DockMaster}  //must match IDE setting
 
 interface
 
@@ -44,7 +44,6 @@ uses
 const
   DefaultConfigFileName = 'easydocklayout.lyt';
 type
-  TDockSides = set of TAlign;
 
   { TIDEEasyDockMaster }
 
