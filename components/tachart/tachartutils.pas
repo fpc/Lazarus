@@ -260,6 +260,7 @@ function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; 
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RoundChecked(A: Double): Integer; inline;
 
+function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 
 // Call this to silence 'parameter is unused' hint
@@ -785,7 +786,14 @@ begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
 end;
 
-{$HINTS OFF}
+function SafeInfinity: Double;
+begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
+  {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
+  {$R-}{$Q-}
+  Result := Infinity;
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+end;
 
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 begin
@@ -793,6 +801,7 @@ begin
   Result := InRange(AValue, ABound1, ABound2);
 end;
 
+{$HINTS OFF}
 procedure Unused(const A1);
 begin
 end;

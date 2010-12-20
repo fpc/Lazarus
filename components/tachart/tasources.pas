@@ -314,9 +314,6 @@ implementation
 uses
   DateUtils, Math, StrUtils;
 
-{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-
 type
 
   { TListChartSourceStrings }
@@ -840,9 +837,7 @@ begin
         FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
     end;
     if oldX = FExtent.a.X then begin
-      {$R-}{$Q-}
-      FExtent.a.X := Infinity;
-      {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
+      FExtent.a.X := SafeInfinity;
       for i := 0 to Count - 1 do
         FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
     end;
@@ -901,9 +896,7 @@ begin
         FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
     end;
     if oldY = FExtent.a.Y then begin
-      {$R-}{$Q-}
-      FExtent.a.Y := Infinity;
-      {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
+      FExtent.a.Y := SafeInfinity;
       for i := 0 to Count - 1 do
         FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
     end;

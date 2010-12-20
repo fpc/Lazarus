@@ -286,9 +286,6 @@ uses
   ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
   TACustomSeries, TADrawUtils, TASubcomponentsEditor;
 
-{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-
 type
   { TToolsComponentEditor }
 
@@ -807,8 +804,7 @@ var
   df: TPointDistFunc;
 begin
   if FChart.ReticuleMode = rmNone then exit;
-  {$R-}{$Q-}
-  minDist := Infinity;
+  minDist := SafeInfinity;
   df := DIST_FUNCS[FChart.ReticuleMode];
   for i := 0 to FChart.SeriesCount - 1 do
     if
@@ -824,12 +820,11 @@ begin
          minDist := d;
        end;
     end;
-  if (minDist < Infinity) and (best.retPos <> FChart.ReticulePos) then begin
+  if not IsInfinite(minDist) and (best.retPos <> FChart.ReticulePos) then begin
     FChart.ReticulePos := best.retPos;
     if Assigned(FChart.OnDrawReticule) then
       FChart.OnDrawReticule(FChart, bestSeries, best.pointIndex, best.value);
   end;
-  {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
 end;
 
 { TZoomClickTool }

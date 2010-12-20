@@ -171,9 +171,6 @@ resourcestring
 
 implementation
 
-{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-
 uses
   ComponentEditors, Forms, Math, PropEdits,
   TASubcomponentsEditor;
@@ -583,12 +580,10 @@ end;
 
 function TLogarithmAxisTransform.AxisToGraph(AX: Double): Double;
 begin
-  {$R-}{$Q-}
   if AX > 0 then
     Result := LogN(Base, AX)
   else
     Result := NegInfinity;
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
 
 constructor TLogarithmAxisTransform.Create(AOwner: TComponent);
@@ -630,13 +625,11 @@ end;
 procedure TAutoScaleAxisTransform.ClearBounds;
 begin
   inherited ClearBounds;
-  {$R-}{$Q-}
   with TAutoScaleTransformData(FDrawData) do begin
-    FMin := Infinity;
+    FMin := SafeInfinity;
     FMax := NegInfinity;
     FScale := 1.0;
   end;
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
 
 constructor TAutoScaleAxisTransform.Create(AOwner: TComponent);
@@ -682,7 +675,6 @@ end;
 
 procedure TAutoScaleAxisTransform.UpdateBounds(var AMin, AMax: Double);
 begin
-  {$R-}{$Q-}
   with TAutoScaleTransformData(FDrawData) do begin
     UpdateMinMax(AMin, FMin, FMax);
     UpdateMinMax(AMax, FMin, FMax);
@@ -692,7 +684,6 @@ begin
       FScale := (MaxValue - MinValue) / (FMax - FMin);
     FOffset := MinValue - FMin * FScale;
   end;
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
   if not IsInfinite(AMin) then
     AMin := MinValue;
   if not IsInfinite(AMax) then

@@ -135,9 +135,6 @@ implementation
 uses
   Math, SysUtils, TAGraph;
 
-{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-
 { TBasicFuncSeries }
 
 procedure TBasicFuncSeries.AfterAdd;
@@ -288,9 +285,7 @@ var
   v1, v2: Double;
 begin
   if ColorSource = nil then exit(clTAColor);
-  {$R-}{$Q-}
-  ColorSource.FindBounds(AValue, Infinity, lb, ub);
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+  ColorSource.FindBounds(AValue, SafeInfinity, lb, ub);
   if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
     with ColorSource[lb - 1]^ do begin
       v1 := X;
@@ -327,8 +322,7 @@ end;
 procedure TColorMapSeries.Draw(ACanvas: TCanvas);
 var
   ext: TDoubleRect;
-  bounds: TDoubleRect =
-    (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
+  bounds: TDoubleRect;
   r: TRect;
   pt, next, offset: TPoint;
   gp: TDoublePoint;
@@ -337,6 +331,7 @@ begin
   if IsEmpty then exit;
 
   ext := ParentChart.CurrentExtent;
+  bounds := EmptyExtent;
   GetBounds(bounds);
   bounds.a := AxisToGraph(bounds.a);
   bounds.b := AxisToGraph(bounds.b);

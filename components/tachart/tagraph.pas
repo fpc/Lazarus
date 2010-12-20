@@ -330,9 +330,6 @@ implementation
 uses
   Clipbrd, GraphMath, LCLProc, Math, Types, TADrawUtils;
 
-{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
   Result :=
@@ -1031,8 +1028,7 @@ function TChart.GetFullExtent: TDoubleRect;
   begin
     if AUseMin then ALo := AMin;
     if AUseMax then AHi := AMax;
-    {$R-}{$Q-}
-    case CASE_OF_TWO[ALo = Infinity, AHi = NegInfinity] of
+    case CASE_OF_TWO[IsInfinite(ALo), IsInfinite(AHi)] of
       cotNone: begin // Both high and low boundary defined
         if ALo = AHi then begin
           ALo -= DEFAULT_WIDTH / 2;
@@ -1051,7 +1047,6 @@ function TChart.GetFullExtent: TDoubleRect;
         AHi := DEFAULT_WIDTH / 2;
       end;
     end;
-    {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
   end;
 
 var
