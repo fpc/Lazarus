@@ -33,6 +33,7 @@ object Form1: TForm1
           end        
           item
             Alignment = calBottom
+            Marks.Attachment = maCenter
             Marks.Distance = 0
             Marks.LabelBrush.Style = bsSolid
             TickLength = 0

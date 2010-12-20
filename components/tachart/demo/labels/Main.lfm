@@ -28,14 +28,12 @@ object Form1: TForm1
         Width = 488
         AxisList = <        
           item
-            Alignment = calLeft
             Marks.LabelBrush.Color = clSkyBlue
             Marks.LabelBrush.Style = bsSolid
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left axis title'
             Title.LabelBrush.Style = bsSolid
-            Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
@@ -58,7 +56,6 @@ object Form1: TForm1
           Marks.Format = '%1:.2f%%'
           Marks.Style = smsPercent
           BarBrush.Color = clRed
-          SeriesColor = clRed
           Source = RandomChartSource1
         end
       end
