@@ -761,6 +761,53 @@ begin
   Result := HandleGtkKeyUpDown(Widget,Event,Data,false,False,'key-release-event');
 end;
 
+
+var
+  NeedShiftUpdateAfternFocus: Boolean;
+
+procedure UpdateShiftState(const KeyStateList: TFPList; const ShiftState: TShiftState);
+
+  procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
+  begin
+    if AVKeyCode = 0 then Exit;
+    if APressed
+    then begin
+      if KeyStateList.IndexOf(Pointer(PtrInt(AVKeyCode))) < 0
+      then KeyStateList.Add(Pointer(PtrInt(AVKeyCode)));
+    end
+    else begin
+      KeyStateList.Remove(Pointer(PtrInt(AVKeyCode)));
+    end;
+  end;
+
+const
+  STATE_MAP: array[0..3] of TShiftStateEnum = (
+    ssShift,
+    ssCtrl,
+    ssAlt,
+    ssSuper
+  );
+  VK_MAP: array[0..3] of array[0..2] of Byte = (
+    // (Main key, alt key 1, alt key 2) to check
+    (VK_SHIFT, VK_LSHIFT, VK_RSHIFT),
+    (VK_CONTROL, VK_LCONTROL, VK_RCONTROL),
+    (VK_MENU, VK_LMENU, VK_RMENU),
+    (VK_LWIN, VK_RWIN, 0)
+  );
+
+var
+  n: Integer;
+  InState: Boolean;
+begin
+  for n := 0 to High(STATE_MAP) do
+  begin
+    InState := STATE_MAP[n] in ShiftState;
+    UpdateList(VK_MAP[n][0], InState);
+    UpdateList(VK_MAP[n][1], InState);
+    UpdateList(VK_MAP[n][2], InState);
+  end;
+end;
+
 function GTKFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -769,12 +816,19 @@ var
 {$IFDEF VerboseFocus}
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
+  Mask: TGdkModifierType;
 begin
   {$IFDEF EventTrace}
   EventTrace('focus', data);
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
+
+  NeedShiftUpdateAfternFocus := False;
+  gdk_window_get_pointer(nil, nil, nil, @Mask);
+  UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, GTKEventStateToShiftState(Word(Mask)));
+
+
   LCLObject:=TObject(data);
   {$IFDEF VerboseFocus}
   write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
@@ -855,6 +909,7 @@ begin
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
+  NeedShiftUpdateAfternFocus := True;
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -905,6 +960,7 @@ begin
   //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
+  NeedShiftUpdateAfternFocus := True;
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -1247,6 +1303,8 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
+const
+  LastModifierKeys: TShiftState = [];
 var
   DesignOnlySignal: boolean;
   ShiftState: TShiftState;
@@ -1270,6 +1328,15 @@ begin
   UpdateMouseCaptureControl;
   
   ShiftState := GTKEventStateToShiftState(Event^.State);
+
+  if (ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys) or NeedShiftUpdateAfternFocus
+  then begin
+    NeedShiftUpdateAfternFocus := False;
+    LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
+    //DebugLn(['Adjust KeyStateList in MouseMove',Integer(LastModifierKeys)]);
+    if (WidgetSet <> nil) and (TGtk2WidgetSet(WidgetSet).KeyStateList <> nil) then
+      UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, LastModifierKeys);
+  end;
 
   if (MouseCaptureWidget = Widget) and (MouseCaptureType = mctGTK) and
     ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then
@@ -1537,6 +1604,7 @@ end;
 procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
   AWinControl: TWinControl);
 const
+  LastModifierKeys: TShiftState = [];
   WHEEL_DELTA : array[Boolean] of Integer = (-120, 120);
 var
   MessI : TLMMouse;
@@ -1661,6 +1729,15 @@ begin
 
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
+
+  if ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys
+  then begin
+    LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
+    //DebugLn(['Adjust KeyStateList in MouseBtnDown',Integer(LastModifierKeys)]);
+    if (WidgetSet <> nil) and (TGtk2WidgetSet(WidgetSet).KeyStateList <> nil) then
+      UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, LastModifierKeys);
+  end;
+
   MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
                                             PGtkWidget(AWinControl.Handle));
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);

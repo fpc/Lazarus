@@ -303,6 +303,7 @@ type
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
+    property KeyStateList: TFPList read FKeyStateList_;
   end;
 
   {$I gtk2listslh.inc}
