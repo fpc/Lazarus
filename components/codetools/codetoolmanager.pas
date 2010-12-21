@@ -572,6 +572,9 @@ type
     function AddUnitToMainUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string;
           AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
+    function AddUnitToImplementationUsesSection(Code: TCodeBuffer;
+          const NewUnitName, NewUnitInFile: string;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
@@ -4056,6 +4059,24 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
+                                    SourceChangeCache,AsLast,CheckSpecialUnits);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddUnitToImplementationUsesSection(Code: TCodeBuffer;
+  const NewUnitName, NewUnitInFile: string; AsLast: boolean;
+  CheckSpecialUnits: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.AddUnitToImplementationUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.AddUnitToImplementationUsesSection(
+                                    NewUnitName, NewUnitInFile,
                                     SourceChangeCache,AsLast,CheckSpecialUnits);
   except
     on e: Exception do Result:=HandleException(e);
