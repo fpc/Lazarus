@@ -1133,6 +1133,10 @@ begin
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
+// mrOk=change selected profiles. Selected profiels will be saved or discarded
+// depending on the calling dialog
+// mrYes=save and compile
+// mrCancel=do nothing
 var
   EditForm: TGenericCheckListForm;
   i, ind: Integer;
@@ -1148,15 +1152,17 @@ begin
         EditForm.CheckListBox1.Checked[ind]:=True;
     end;
     // Show the form.
-    if EditForm.ShowModal=mrOK then begin
+    EditForm.ShowModal;
+    if EditForm.ModalResult in [mrOK, mrYes] then begin
       // Copy checked profile names to Selected.
       fProfiles.Selected.Clear;
       for i:=0 to fProfiles.Count-1 do begin      // fProfiles and CheckListBox1
         if EditForm.CheckListBox1.Checked[i] then // indexes match now.
           fProfiles.Selected.Add(fProfiles[i].Name);
       end;
-      ModalResult:=mrAll;
     end;
+    if EditForm.ModalResult=mrYes then
+      ModalResult:=mrAll;
   finally
     EditForm.Free;
   end;

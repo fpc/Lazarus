@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, CheckLst, LazarusIDEStrConsts;
+  StdCtrls, CheckLst, LazarusIDEStrConsts, Buttons;
 
 type
 
@@ -32,9 +32,19 @@ implementation
 { TGenericCheckListForm }
 
 procedure TGenericCheckListForm.FormCreate(Sender: TObject);
+var
+  BitButtonYes: TBitBtn;
 begin
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
+
+  // save and compile
+  BitButtonYes:=TBitBtn.Create(ButtonPanel1);
+  BitButtonYes.Kind:=bkCustom;
+  BitButtonYes.ModalResult:=mrYes;
+  BitButtonYes.Caption:=lisLazBuildBuild;
+  BitButtonYes.Align:=alRight;
+  BitButtonYes.Parent:=ButtonPanel1;
 end;
 
 end.

@@ -327,6 +327,7 @@ type
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
+    procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
 
@@ -3191,7 +3192,7 @@ begin
     DoConvertDFMtoLFM;
 
   ecBuildLazarus:
-    DoBuildLazarus([]);
+    mnuToolBuildLazarusClicked(Self);
 
   ecConfigBuildLazarus:
     mnuToolConfigBuildLazClicked(Self);
@@ -4369,6 +4370,32 @@ begin
                     mtConfirmation, mbYesNo, 0)<>mrYes then
         exit;
   DoBuildLazarus([]);
+end;
+
+procedure TMainIDE.mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
+var
+  i: Integer;
+  FoundProfToBuild: Boolean;
+  s: String;
+begin
+  with MiscellaneousOptions do begin
+    FoundProfToBuild:=False;
+    s:=sLineBreak+sLineBreak;
+    for i:=0 to BuildLazProfiles.Selected.Count-1 do
+      if BuildLazProfiles.IndexByName(BuildLazProfiles.Selected[i])<>-1 then begin
+        s:=s+BuildLazProfiles.Selected[i]+sLineBreak;
+        FoundProfToBuild:=True;
+      end;
+    if not FoundProfToBuild then begin
+      ShowMessage(lisNoBuildProfilesSelected);
+      exit;
+    end;
+    if BuildLazProfiles.ConfirmBuild then
+      if MessageDlg(Format(lisConfirmBuildAllProfiles, [s+sLineBreak]),
+                    mtConfirmation, mbYesNo, 0)<>mrYes then
+        exit;
+    DoBuildAdvancedLazarus(BuildLazProfiles.Selected);
+  end;
 end;
 
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender: TObject);

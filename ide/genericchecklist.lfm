@@ -3,6 +3,7 @@ object GenericCheckListForm: TGenericCheckListForm
   Height = 301
   Top = 526
   Width = 343
+  ActiveControl = CheckListBox1
   Caption = 'GenericCheckListForm'
   ClientHeight = 301
   ClientWidth = 343
@@ -11,8 +12,8 @@ object GenericCheckListForm: TGenericCheckListForm
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 261
+    Height = 37
+    Top = 258
     Width = 331
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -30,7 +31,7 @@ object GenericCheckListForm: TGenericCheckListForm
   end
   object CheckListBox1: TCheckListBox
     Left = 0
-    Height = 255
+    Height = 252
     Top = 0
     Width = 343
     Align = alClient
