@@ -1,0 +1,71 @@
+object UseProjUnitDialog: TUseProjUnitDialog
+  Left = 287
+  Height = 348
+  Top = 177
+  Width = 318
+  Caption = 'Use a Unit from this Project'
+  ClientHeight = 348
+  ClientWidth = 318
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 39
+    Top = 303
+    Width = 306
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object SectionRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = UnitsListBox
+    AnchorSideTop.Control = UnitsListBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = UnitsListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 49
+    Top = 244
+    Width = 306
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Top = 3
+    Caption = 'Insert into Uses Section'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 29
+    ClientWidth = 300
+    Columns = 2
+    ItemIndex = 1
+    Items.Strings = (
+      'Interface'
+      'Implementation'
+    )
+    TabOrder = 1
+  end
+  object UnitsListBox: TListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 233
+    Top = 8
+    Width = 306
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    TabOrder = 0
+  end
+end
