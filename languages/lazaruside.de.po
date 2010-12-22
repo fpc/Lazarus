@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-09 23:52+0100\n"
+"PO-Revision-Date: 2010-12-16 17:30+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -386,9 +386,8 @@ msgid "Indent method"
 msgstr "Methode einrücken"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
-#, fuzzy
 msgid "Space/tab as prev Line"
-msgstr "Leerz./Tab als vorherige Zeile"
+msgstr "Leerz./Tab wie vorherige Zeile"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
@@ -2228,7 +2227,6 @@ msgid "Naming"
 msgstr "Namensvergabe"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#, fuzzy
 #| msgid "no automatic renaming"
 msgid "No automatic renaming"
 msgstr "Kein automatisches Umbenennen"
@@ -3983,11 +3981,11 @@ msgstr "Modus für Neukompilieren"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
-msgstr ""
+msgstr "Unterschiede zwischen den Erstellmodi"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
 msgid "Differences to other build modes"
-msgstr ""
+msgstr "Unterschiede zu anderen Erstellmodi"
 
 #: lazarusidestrconsts.lisbuildmodediffmode
 msgid "Mode:"
@@ -3995,7 +3993,7 @@ msgstr "Modus:"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
-msgstr ""
+msgstr "Erstellmodi"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -5476,7 +5474,7 @@ msgstr "%sLazarus kompilieren%s einstellen"
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
-msgstr ""
+msgstr "Lazarus wird neu erstellt mit den folgenden Profilen:%sFortsetzen?"
 
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
@@ -5563,7 +5561,7 @@ msgstr "Alle Unterverzeichnisse werden nach Unit-Dateien durchsucht"
 
 #: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
 msgid "At this point there should be no missing units!"
-msgstr ""
+msgstr "Jetzt sollte es keine fehlenden Units mehr geben!"
 
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
@@ -5611,11 +5609,11 @@ msgstr "Fehler=\"%s\""
 
 #: lazarusidestrconsts.lisconvdelphierrorcantfindunit
 msgid "%s(%s,%s) Error: Can't find unit %s"
-msgstr ""
+msgstr "%s(%s,%s) Fehler: Kann Unit %s nicht finden"
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
-msgstr ""
+msgstr "Unitkonvertierung fehlgeschlagen"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
 msgid "Failed to convert unit%s%s%s"
@@ -5731,18 +5729,16 @@ msgid "Converter adds conditional compilation to support different targets"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetlaz
-#, fuzzy
 #| msgid "Lazarus / LCL"
 msgctxt "lazarusidestrconsts.lisconverttargetlaz"
 msgid "Lazarus"
-msgstr "Lazarus/LCLs"
+msgstr "Lazarus"
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphi
-#, fuzzy
 #| msgid "Lazarus / LCL for Windows only"
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
 msgid "Lazarus and Delphi"
-msgstr "Lazarus/LCL (Windows-spezifisch)"
+msgstr "Lazarus und Delphi"
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
@@ -5750,11 +5746,10 @@ msgid "Lazarus and Delphi with same DFM file"
 msgstr "Lazarus und Delphi mit derselben DFM-Datei"
 
 #: lazarusidestrconsts.lisconverttargetlazwinonly
-#, fuzzy
 #| msgid "Both Lazarus / LCL and Delphi"
 msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
 msgid "Lazarus for Windows only"
-msgstr "Für Lazarus/LCL und Delphi"
+msgstr "Lazarus (nur für Windows)"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -6034,7 +6029,6 @@ msgid "Custom Program"
 msgstr "Benutzerdefiniertes Programm"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
 #| msgid "Custom Program%sA freepascal program."
 msgid "Custom Program%sA Free Pascal program."
 msgstr "Benutzerdefiniertes Programm%sEin Free-Pascal-Programm."
@@ -7006,7 +7000,7 @@ msgstr "Fehler beim Dateiladen"
 
 #: lazarusidestrconsts.liserrorloadingfile2
 msgid "Error loading file \"%s\":%s%s"
-msgstr ""
+msgstr "Fehler beim Laden von \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -7447,7 +7441,7 @@ msgstr "FPDoc-Editor"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
 msgid "Error writing \"%s\"%s%s"
-msgstr ""
+msgstr "Fehler beim Schreiben von \"%s\"%s%s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
@@ -8837,7 +8831,7 @@ msgstr "Neukompilieren"
 #: lazarusidestrconsts.lislazbuildbuildadvanced
 msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
 msgid "Build Advanced"
-msgstr ""
+msgstr "Mehrere Profile"
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8900,7 +8894,7 @@ msgstr "Definitionen"
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
 msgid "Defines without -d"
-msgstr ""
+msgstr "Definitionen ohne -d"
 
 #: lazarusidestrconsts.lislazbuildeditdefines
 msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
@@ -9181,9 +9175,8 @@ msgid "Link target"
 msgstr "Link-Ziel"
 
 #: lazarusidestrconsts.lislistofallcasevalues
-#, fuzzy
 msgid "list of all case values"
-msgstr "Liste alle Case-Werte"
+msgstr "Liste aller Case-Werte"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10519,10 +10512,9 @@ msgid "Create a new pascal unit."
 msgstr "Erzeugt eine neue Pascal-Unit"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-#, fuzzy
 #| msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgid "Create a new program.%sThe program source is maintained by Lazarus."
-msgstr "Erzeugt eine neues Programms.%sDie Programmdatei wird von Lazarus gewartet."
+msgstr "Erzeugt eine neues Programm.%sDer Programmquellcode wird von Lazarus gewartet."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -10537,7 +10529,6 @@ msgid "Create a new unit with a datamodule."
 msgstr "Erzeugt eine neue Unit mit einem Datenmodul."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-#, fuzzy
 #| msgid "Create a new unit with a frame"
 msgid "Create a new unit with a frame."
 msgstr "Erzeugt eine neue Unit mit einem Frame"
@@ -10950,7 +10941,7 @@ msgstr "%süberschreibt den voreingestellten Compiler, z.B. ppc386, ppcx64, ppcp
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project build mode."
-msgstr ""
+msgstr "%hebt den Projekt-Erstellmodus auf"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
@@ -12310,10 +12301,9 @@ msgid "Program"
 msgstr "Programm"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#, fuzzy
 #| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Programm%sEin Free-Pascal-Programm. Die Programmdatei wird automatisch von Lazarus gepflegt."
+msgstr "Programm%sEin Free-Pascal-Programm. Der Programmquellcode wird automatisch von Lazarus gepflegt."
 
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
@@ -13113,7 +13103,7 @@ msgstr "Deklarations Hinweise anzeigen"
 
 #: lazarusidestrconsts.lisshowdifferencesbetweenmodes
 msgid "Show differences between modes ..."
-msgstr ""
+msgstr "Zeige Unterschiede zwischen den Modi..."
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
@@ -13375,11 +13365,11 @@ msgstr "Erfolg"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
-msgstr ""
+msgstr "Verdächtiger Include-Pfad"
 
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
-msgstr ""
+msgstr "Verdächtiger Unit-Pfad"
 
 #: lazarusidestrconsts.lissvnrevision
 msgid "SVN Revision: "
@@ -15012,7 +15002,7 @@ msgstr "Alternative Taste (oder 2-Tastenkombination)"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
-msgstr "Hilfemenü-Befehle"
+msgstr "Befehle aus dem Menü 'Hilfe'"
 
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
@@ -15040,7 +15030,7 @@ msgstr "Umgebungsmenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatfilemenu
 msgid "File menu commands"
-msgstr "Dateimenü-Befehle"
+msgstr "Befehle aus dem Menü 'Datei'"
 
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
@@ -15052,15 +15042,15 @@ msgstr "Textmarkierungsbefehle"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
-msgstr "Packagemenü-Befehle"
+msgstr "Befehle aus dem Menü 'Package'"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
 msgid "Project menu commands"
-msgstr "Projektmenü-Befehle"
+msgstr "Befehle aus dem Menü 'Projekt'"
 
 #: lazarusidestrconsts.srkmcatrunmenu
 msgid "Run menu commands"
-msgstr "Ausführungsmenübefehle"
+msgstr "Befehle aus dem Menü 'Start'"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
 msgid "Text search and replace commands"
@@ -15096,11 +15086,11 @@ msgstr "Vorlagenbearbeitung (nicht in Zelle)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
-msgstr "Werkzeugmenü-Befehle"
+msgstr "Befehle aus dem Menü 'Werkzeuge'"
 
 #: lazarusidestrconsts.srkmcatviewmenu
 msgid "View menu commands"
-msgstr "Menübefehle anzeigen"
+msgstr "Befehle aus dem Menü 'Ansicht'"
 
 #: lazarusidestrconsts.srkmcommand
 msgctxt "lazarusidestrconsts.srkmcommand"
@@ -16400,4 +16390,5 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
 
