@@ -151,7 +151,7 @@ begin
     if FCount = Capacity then begin
       RemoveValue(FBuf[FStart]);
       FBuf[FStart] := AItem;
-      FStart += 1;
+      FStart := (FStart + 1) mod Capacity;
     end
     else begin
       FCount += 1;

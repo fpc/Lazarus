@@ -233,7 +233,7 @@ object Form1: TForm1
   end
   object ccsSum: TCalculatedChartSource
     AccumulationMethod = camSum
-    AccumulationRange = 100
+    AccumulationRange = 0
     Origin = RandomChartSource1
     left = 464
     top = 96

@@ -1053,7 +1053,10 @@ end;
 
 procedure TCalculatedChartSource.Changed(ASender: TObject);
 begin
-  if (ASender = FOrigin) and (FOrigin.YCount <> FOriginYCount) then begin
+  if
+    (FOrigin <> nil) and (ASender = FOrigin) and
+    (FOrigin.YCount <> FOriginYCount)
+  then begin
     UpdateYOrder;
     exit;
   end;
