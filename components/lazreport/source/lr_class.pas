@@ -2471,17 +2471,21 @@ end;
 
 procedure TfrMemoView.AssignFont(aCanvas: TCanvas);
 begin
-  with aCanvas do
-  begin
-    {$IFDEF DebugLR}
-    DebugLn('AssignFont(%s)',[self.Font.Name]);
-    {$ENDIF}
-//**    Brush.Style := bsClear;
-    Font.Assign(Self.Font);
-    //Font := Self.Font;
-    if not IsPrinting and (ScaleY<>0) then
-      Font.Height := -Round(Font.Size * 96 / 72 * ScaleY);
-  end;
+  {$IFDEF DebugLR}
+  DebugLnEnter('AssignFont (%s) INIT: Self.Font.Size=%d aCanvas.Font.Size=%d',
+    [self.Font.Name,Self.Font.Size,ACanvas.Font.Size]);
+  {$ENDIF}
+  //**    Brush.Style := bsClear;
+  aCanvas.Font.Assign(Self.Font);
+  if Self.Font.Name='' then
+    aCanvas.Font.Name := 'default';
+  //Font := Self.Font;
+  if not IsPrinting and (ScaleY<>0) then
+    ACanvas.Font.Height := -Round(Self.Font.Size * 96 / 72 * ScaleY);
+  {$IFDEF DebugLR}
+  DebugLnExit('AssignFont (%s) DONE: Self.Font.Size=%d aCanvas.Font.Size=%d',
+    [self.Font.Name,Self.Font.Size,ACanvas.Font.Size]);
+  {$ENDIF}
 end;
 
 type
@@ -2773,7 +2777,6 @@ var
         end;
 
         // handle any alignment with same code
-        AssignFont(Canvas);
         Ts := Canvas.TextStyle;
         Ts.Layout    :=tlTop;
         Ts.Alignment :=self.Alignment;
@@ -2898,6 +2901,10 @@ var
   end;
 
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrMemoView.ShowMemo INIT Font.Size=%d Canvas.Font.Size=%d',
+    [Font.Size, Canvas.Font.Size]);
+  {$ENDIF}
   AssignFont(Canvas);
   SavX:=X;
   SavY:=Y;
@@ -2918,6 +2925,9 @@ begin
   finally
     X:=SavX;
     Y:=SavY;
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrMemoView.ShowMemo DONE Font.Size=%d Canvas.Font.Size=%d',[Font.Size, Canvas.Font.Size]);
+    {$ENDIF}
   end;
   (*
   if (Adjust and $18) <> 0 then
