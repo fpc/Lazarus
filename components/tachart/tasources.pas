@@ -205,7 +205,7 @@ type
   private
     FAccumulationMethod: TChartAccumulationMethod;
     FAccumulationRange: Integer;
-    FHistory: array of TChartDataItem;
+    FHistory: TChartSourceBuffer;
     FIndex: Integer;
     FItem: TChartDataItem;
     FListener: TListener;
@@ -218,7 +218,7 @@ type
     procedure CalcAccumulation(AIndex: Integer);
     procedure CalcPercentage;
     procedure Changed(ASender: TObject); inline;
-    procedure ExtractItem(var AItem: TChartDataItem; AIndex: Integer);
+    procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
     procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
     procedure SetAccumulationRange(AValue: Integer);
     procedure SetOrigin(AValue: TCustomChartSource);
@@ -999,28 +999,25 @@ end;
 
 procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
 var
-  i, j: Integer;
+  i: Integer;
 begin
-  SetLength(FHistory, AccumulationRange);
+  FHistory.Capacity := AccumulationRange;
   if FIndex = AIndex - 1 then begin
-    for i := High(FHistory) downto 1 do
-      FHistory[i] := FHistory[i - 1];
-    ExtractItem(FHistory[0], AIndex);
+    ExtractItem(FItem, AIndex);
+    FHistory.AddLast(FItem);
   end
-  else
-    for i := 0 to Min(High(FHistory), AIndex) do
-      ExtractItem(FHistory[i], AIndex - i);
-  SetDataItemDefaults(FItem);
-  for i := 0 to Min(High(FHistory), AIndex) do begin
-    FItem.Y += FHistory[i].Y;
-    for j := 0 to High(FItem.YList) do
-      FItem.YList[j] += FHistory[i].YList[j];
+  else begin
+    FHistory.Clear;
+    for i := Max(AIndex - AccumulationRange + 1, 0) to AIndex do begin
+      ExtractItem(FItem, i);
+      FHistory.AddLast(FItem);
+    end;
   end;
-  FItem.X := FHistory[0].X;
+  FHistory.GetSum(FItem);
   if AccumulationMethod = camAverage then begin
     FItem.Y /= Min(AccumulationRange, AIndex + 1);
-    for j := 0 to High(FItem.YList) do
-      FItem.YList[j] /= Min(AccumulationRange, AIndex + 1);
+    for i := 0 to High(FItem.YList) do
+      FItem.YList[i] /= Min(AccumulationRange, AIndex + 1);
   end;
 end;
 
@@ -1051,17 +1048,19 @@ constructor TCalculatedChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FIndex := -1;
+  FHistory := TChartSourceBuffer.Create;
   FListener := TListener.Create(@FOrigin, @Changed);
 end;
 
 destructor TCalculatedChartSource.Destroy;
 begin
+  FreeAndNil(FHistory);
   FreeAndNil(FListener);
   inherited Destroy;
 end;
 
 procedure TCalculatedChartSource.ExtractItem(
-  var AItem: TChartDataItem; AIndex: Integer);
+  out AItem: TChartDataItem; AIndex: Integer);
 var
   t: TDoubleDynArray;
   i: Integer;

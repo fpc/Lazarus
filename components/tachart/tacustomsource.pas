@@ -25,6 +25,7 @@ uses
   Classes, Types, TAChartUtils;
 
 type
+  EBufferError = class(EChartError);
   EEditableSourceRequired = class(EChartError);
   EYCountError = class(EChartError);
 
@@ -87,6 +88,26 @@ type
     property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
+  { TChartSourceBuffer }
+
+  TChartSourceBuffer = class
+  private
+    FBuf: array of TChartDataItem;
+    FCount: Cardinal;
+    FStart: Cardinal;
+    FSum: TChartDataItem;
+    function GetCapacity: Cardinal; inline;
+    procedure Put(AIndex: Integer; const AItem: TChartDataItem);
+    procedure Remove(AIndex: Integer);
+    procedure SetCapacity(AValue: Cardinal); inline;
+  public
+    procedure AddFirst(const AItem: TChartDataItem);
+    procedure AddLast(const AItem: TChartDataItem);
+    procedure Clear; inline;
+    procedure GetSum(var AItem: TChartDataItem);
+    property Capacity: Cardinal read GetCapacity write SetCapacity;
+  end;
+
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 
 implementation
@@ -104,6 +125,89 @@ begin
   AItem.Text := '';
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
+end;
+
+{ TChartSourceBuffer }
+
+procedure TChartSourceBuffer.AddFirst(const AItem: TChartDataItem);
+begin
+  if Capacity = 0 then
+    raise EBufferError.Create('');
+  FStart := (FStart + Cardinal(High(FBuf))) mod Capacity;
+  if FCount = Capacity then
+    Remove(FStart)
+  else
+    FCount += 1;
+  Put(FStart, AItem);
+end;
+
+procedure TChartSourceBuffer.AddLast(const AItem: TChartDataItem);
+begin
+  if Capacity = 0 then
+    raise EBufferError.Create('');
+  if FCount = Capacity then begin
+    Remove(FStart);
+    Put(FStart, AItem);
+    FStart += 1;
+  end
+  else begin
+    Put((FStart + FCount) mod Capacity, AItem);
+    FCount += 1;
+  end;
+end;
+
+procedure TChartSourceBuffer.Clear;
+begin
+  FCount := 0;
+  FSum.Y := 0;
+  FSum.YList := nil;
+end;
+
+function TChartSourceBuffer.GetCapacity: Cardinal;
+begin
+  Result := Length(FBuf);
+end;
+
+procedure TChartSourceBuffer.GetSum(var AItem: TChartDataItem);
+begin
+  if FCount = 0 then
+    raise EBufferError.Create('Empty');
+  AItem.Y := FSum.Y;
+  AItem.YList := Copy(FSum.YList);
+end;
+
+procedure TChartSourceBuffer.Put(AIndex: Integer; const AItem: TChartDataItem);
+var
+  i, oldLen: Integer;
+begin
+  FBuf[AIndex] := AItem;
+  with FSum do begin
+    Y += AItem.Y;
+    oldLen := Length(YList);
+    SetLength(YList, Max(Length(AItem.YList), oldLen));
+    for i := oldLen to High(YList) do
+      YList[i] := 0;
+    for i := 0 to Min(High(YList), High(AItem.YList)) do
+      YList[i] += AItem.YList[i];
+  end;
+end;
+
+procedure TChartSourceBuffer.Remove(AIndex: Integer);
+var
+  i: Integer;
+begin
+  with FBuf[AIndex] do begin
+    FSum.Y -= Y;
+    for i := 0 to Min(High(FSum.YList), High(YList)) do
+      FSum.YList[i] -= YList[i];
+  end;
+end;
+
+procedure TChartSourceBuffer.SetCapacity(AValue: Cardinal);
+begin
+  if AValue = Capacity then exit;
+  SetLength(FBuf, AValue);
+  Clear;
 end;
 
 { TCustomChartSource }

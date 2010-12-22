@@ -74,11 +74,14 @@ begin
   FSource.AccumulationMethod := camSum;
   FSource.AccumulationRange := 2;
   AssertEquals(3, FSource.YCount);
+  AssertEquals(1, FSource[0]^.X);
   AssertEquals(102, FSource[0]^.Y);
+  AssertEquals(2, FSource[1]^.X);
   AssertEquals(102 + 202, FSource[1]^.Y);
   AssertEquals(202 + 302, FSource[2]^.Y);
   FSource.AccumulationMethod := camAverage;
-  AssertEquals((202 + 302) / 2, FSource[2]^.Y);
+  AssertEquals((2002 + 2102) / 2, FSource[20]^.Y);
+  AssertEquals(1, FSource[0]^.X);
   AssertEquals(102, FSource[0]^.Y);
   AssertEquals((102 + 202) / 2, FSource[1]^.Y);
 end;
@@ -114,15 +117,16 @@ begin
 end;
 
 procedure TCalculatedSourceTest.SetUp;
+var
+  i: Integer;
 begin
   inherited SetUp;
   FOrigin := TListChartSource.Create(nil);
   FSource := TCalculatedChartSource.Create(nil);
   FSource.Origin := FOrigin;
   FOrigin.YCount := 3;
-  FOrigin.SetYList(FOrigin.Add(1, 102), [103, 104]);
-  FOrigin.SetYList(FOrigin.Add(2, 202), [203, 204]);
-  FOrigin.SetYList(FOrigin.Add(3, 302), [303, 304]);
+  for i := 1 to 100 do
+    FOrigin.SetYList(FOrigin.Add(i, i * 100 + 2), [i * 100 + 3, i * 100 + 4]);
 end;
 
 procedure TCalculatedSourceTest.TearDown;
