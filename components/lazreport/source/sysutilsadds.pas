@@ -57,7 +57,10 @@ uses
 
 implementation
 
-{$IFDEF USECLOCALE}
+// only mess around config files if CLocale unit was not used
+// trying to do anything desktop specific is prone to fail
+// if conditions change on new versions.
+{$IFNDEF USECLOCALE}
 procedure InitInternationalFormats;
 Var i      : Integer;
     St     : string;
