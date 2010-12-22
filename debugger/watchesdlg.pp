@@ -277,7 +277,7 @@ begin
   actDeleteAll.Enabled := lvWatches.Items.Count > 0;
 
   actProperties.Enabled := ItemSelected;
-
+  actAddWatch.Enabled := True;
   actPower.Enabled := True;
 end;
 
