@@ -231,6 +231,7 @@ var
   aManager: TAnchorDockManager;
 begin
   debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockSite ',DbgSName(AForm)]);
+  if ASides=[] then ;
   DockMaster.MakeDockSite(AForm,[akBottom],admrpChild);
   if AForm.DockManager is TAnchorDockManager then begin
     aManager:=TAnchorDockManager(AForm.DockManager);
