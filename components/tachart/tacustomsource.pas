@@ -96,6 +96,7 @@ type
     FCount: Cardinal;
     FStart: Cardinal;
     FSum: TChartDataItem;
+    function EndIndex: Cardinal; inline;
     function GetCapacity: Cardinal; inline;
     procedure Put(AIndex: Integer; const AItem: TChartDataItem);
     procedure Remove(AIndex: Integer);
@@ -104,7 +105,9 @@ type
     procedure AddFirst(const AItem: TChartDataItem);
     procedure AddLast(const AItem: TChartDataItem);
     procedure Clear; inline;
+    function GetPLast: PChartDataItem;
     procedure GetSum(var AItem: TChartDataItem);
+    procedure RemoveLast;
     property Capacity: Cardinal read GetCapacity write SetCapacity;
   end;
 
@@ -151,8 +154,8 @@ begin
     FStart += 1;
   end
   else begin
-    Put((FStart + FCount) mod Capacity, AItem);
     FCount += 1;
+    Put(EndIndex, AItem);
   end;
 end;
 
@@ -163,9 +166,19 @@ begin
   FSum.YList := nil;
 end;
 
+function TChartSourceBuffer.EndIndex: Cardinal;
+begin
+  Result := (FStart + Cardinal(FCount - 1)) mod Capacity;
+end;
+
 function TChartSourceBuffer.GetCapacity: Cardinal;
 begin
   Result := Length(FBuf);
+end;
+
+function TChartSourceBuffer.GetPLast: PChartDataItem;
+begin
+  Result := @FBuf[EndIndex];
 end;
 
 procedure TChartSourceBuffer.GetSum(var AItem: TChartDataItem);
@@ -201,6 +214,14 @@ begin
     for i := 0 to Min(High(FSum.YList), High(YList)) do
       FSum.YList[i] -= YList[i];
   end;
+end;
+
+procedure TChartSourceBuffer.RemoveLast;
+begin
+  if FCount = 0 then
+    raise EBufferError.Create('Empty');
+  Remove(EndIndex);
+  FCount -= 1;
 end;
 
 procedure TChartSourceBuffer.SetCapacity(AValue: Cardinal);

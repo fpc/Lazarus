@@ -1006,6 +1006,16 @@ begin
     ExtractItem(FItem, AIndex);
     FHistory.AddLast(FItem);
   end
+  else if FIndex = AIndex + 1 then begin
+    i := AIndex - AccumulationRange + 1;
+    if i < 0 then
+      FHistory.RemoveLast
+    else begin
+      ExtractItem(FItem, i);
+      FHistory.AddFirst(FItem);
+    end;
+    FItem := FHistory.GetPLast^;
+  end
   else begin
     FHistory.Clear;
     for i := Max(AIndex - AccumulationRange + 1, 0) to AIndex do begin

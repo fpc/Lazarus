@@ -70,6 +70,9 @@ uses
 { TCalculatedSourceTest }
 
 procedure TCalculatedSourceTest.Accumulate;
+var
+  i, j: Integer;
+  rng: TMWCRandomGenerator;
 begin
   FSource.AccumulationMethod := camSum;
   FSource.AccumulationRange := 2;
@@ -84,6 +87,16 @@ begin
   AssertEquals(1, FSource[0]^.X);
   AssertEquals(102, FSource[0]^.Y);
   AssertEquals((102 + 202) / 2, FSource[1]^.Y);
+  AssertEquals(102, FSource[0]^.Y);
+
+  rng := TMWCRandomGenerator.Create;
+  rng.Seed := 89237634;
+  FSource.AccumulationRange := 5;
+  for i := 1 to 100 do begin
+    j := rng.GetInRange(5, FSource.Count - 1);
+    AssertEquals(IntToStr(j), (j - 1) * 100 + 2, FSource[j]^.Y);
+  end;
+  rng.Free;
 end;
 
 procedure TCalculatedSourceTest.Percentage;
