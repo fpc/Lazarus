@@ -225,7 +225,6 @@ var
 
   function MoveToDelphi(AUnitName: string; ARenameForLcl: boolean): boolean;
   var
-    ind: Integer;
     UsesNode: TCodeTreeNode;
   begin
     Result:=True;
