@@ -238,7 +238,7 @@ type
     property AccumulationMethod: TChartAccumulationMethod
       read FAccumulationMethod write SetAccumulationMethod default camNone;
     property AccumulationRange: Integer
-      read FAccumulationRange write SetAccumulationRange default 0;
+      read FAccumulationRange write SetAccumulationRange default 1;
 
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     property Percentage: Boolean
@@ -999,35 +999,43 @@ end;
 
 procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
 var
-  i: Integer;
+  i, ar: Integer;
 begin
   FHistory.Capacity := AccumulationRange;
+  ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
   if FIndex = AIndex - 1 then begin
     ExtractItem(FItem, AIndex);
     FHistory.AddLast(FItem);
   end
   else if FIndex = AIndex + 1 then begin
-    i := AIndex - AccumulationRange + 1;
-    if i < 0 then
-      FHistory.RemoveLast
+    if AccumulationRange = 0 then begin
+      ExtractItem(FItem, FIndex);
+      FHistory.RemoveValue(FItem);
+      ExtractItem(FItem, AIndex);
+    end
     else begin
-      ExtractItem(FItem, i);
-      FHistory.AddFirst(FItem);
+      i := AIndex - AccumulationRange + 1;
+      if i < 0 then
+        FHistory.RemoveLast
+      else begin
+        ExtractItem(FItem, i);
+        FHistory.AddFirst(FItem);
+      end;
+      FItem := FHistory.GetPLast^;
     end;
-    FItem := FHistory.GetPLast^;
   end
   else begin
     FHistory.Clear;
-    for i := Max(AIndex - AccumulationRange + 1, 0) to AIndex do begin
+    for i := Max(AIndex - ar + 1, 0) to AIndex do begin
       ExtractItem(FItem, i);
       FHistory.AddLast(FItem);
     end;
   end;
   FHistory.GetSum(FItem);
   if AccumulationMethod = camAverage then begin
-    FItem.Y /= Min(AccumulationRange, AIndex + 1);
+    FItem.Y /= Min(ar, AIndex + 1);
     for i := 0 to High(FItem.YList) do
-      FItem.YList[i] /= Min(AccumulationRange, AIndex + 1);
+      FItem.YList[i] /= Min(ar, AIndex + 1);
   end;
 end;
 
@@ -1057,6 +1065,7 @@ end;
 constructor TCalculatedChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAccumulationRange := 1;
   FIndex := -1;
   FHistory := TChartSourceBuffer.Create;
   FListener := TListener.Create(@FOrigin, @Changed);
@@ -1095,7 +1104,7 @@ begin
   if Origin = nil then exit(nil);
   Result := @FItem;
   if FIndex = AIndex then exit;
-  if (AccumulationMethod = camNone) or (AccumulationRange = 0) then
+  if (AccumulationMethod = camNone) or (AccumulationRange = 1) then
     ExtractItem(FItem, AIndex)
   else
     CalcAccumulation(AIndex);

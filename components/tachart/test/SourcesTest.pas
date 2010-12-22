@@ -89,14 +89,25 @@ begin
   AssertEquals((102 + 202) / 2, FSource[1]^.Y);
   AssertEquals(102, FSource[0]^.Y);
 
-  rng := TMWCRandomGenerator.Create;
-  rng.Seed := 89237634;
   FSource.AccumulationRange := 5;
-  for i := 1 to 100 do begin
-    j := rng.GetInRange(5, FSource.Count - 1);
-    AssertEquals(IntToStr(j), (j - 1) * 100 + 2, FSource[j]^.Y);
+  rng := TMWCRandomGenerator.Create;
+  try
+    rng.Seed := 89237634;
+    for i := 1 to 100 do begin
+      j := rng.GetInRange(5, FSource.Count - 1);
+      AssertEquals(IntToStr(j), (j - 1) * 100 + 2, FSource[j]^.Y);
+    end;
+    FSource.AccumulationRange := 0;
+    FSource.AccumulationMethod := camSum;
+    rng.Seed := 23784538;
+    for i := 1 to 20 do begin
+      j := rng.GetInRange(0, FSource.Count - 1);
+      AssertEquals(
+        IntToStr(j), (j + 1) * (j + 2) * 50 + (j + 1) * 3, FSource[j]^.YList[0]);
+    end;
+  finally
+    rng.Free;
   end;
-  rng.Free;
 end;
 
 procedure TCalculatedSourceTest.Percentage;
