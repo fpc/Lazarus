@@ -3715,7 +3715,7 @@ msgstr "Aplicar \"flags\" de contrução (-B) também para as dependências"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
-msgstr ""
+msgstr "Aplicar convenções"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
@@ -5403,7 +5403,7 @@ msgstr "Componente"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
-msgstr ""
+msgstr "Nome componente \"%s\" é uma palavra-chave pascal."
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
@@ -6020,32 +6020,32 @@ msgstr "Data"
 #: lazarusidestrconsts.lisdbgallitemdelete
 msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
 msgid "Delete all"
-msgstr ""
+msgstr "Excluir tudo"
 
 #: lazarusidestrconsts.lisdbgallitemdeletehint
 msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
 msgid "Delete all"
-msgstr ""
+msgstr "Excluir tudo"
 
 #: lazarusidestrconsts.lisdbgallitemdisable
 msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
 msgid "Disable all"
-msgstr ""
+msgstr "Desativar tudo"
 
 #: lazarusidestrconsts.lisdbgallitemdisablehint
 msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
 msgid "Disable all"
-msgstr ""
+msgstr "Desativar tudo"
 
 #: lazarusidestrconsts.lisdbgallitemenable
 msgctxt "lazarusidestrconsts.lisdbgallitemenable"
 msgid "Enable all"
-msgstr ""
+msgstr "Ativar tudo"
 
 #: lazarusidestrconsts.lisdbgallitemenablehint
 msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
-msgstr ""
+msgstr "Ativar tudo"
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
@@ -6064,22 +6064,22 @@ msgstr "Excluir"
 #: lazarusidestrconsts.lisdbgitemdisable
 msgctxt "lazarusidestrconsts.lisdbgitemdisable"
 msgid "Disable"
-msgstr ""
+msgstr "Desativar"
 
 #: lazarusidestrconsts.lisdbgitemdisablehint
 msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
 msgid "Disable"
-msgstr ""
+msgstr "Desativar"
 
 #: lazarusidestrconsts.lisdbgitemenable
 msgctxt "lazarusidestrconsts.lisdbgitemenable"
 msgid "Enable"
-msgstr ""
+msgstr "Ativar"
 
 #: lazarusidestrconsts.lisdbgitemenablehint
 msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
 msgid "Enable"
-msgstr ""
+msgstr "Ativar"
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
@@ -6095,11 +6095,11 @@ msgstr "Não há um depurador especificado.%sConfiguração de pontos de parada 
 
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
-msgstr ""
+msgstr "Ligar/Desligar"
 
 #: lazarusidestrconsts.lisdbgwinpowerhint
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Desativar/Ativar atualizações para toda a janela"
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
@@ -6498,22 +6498,22 @@ msgstr "Assembler"
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
 msgid "Goto address"
-msgstr ""
+msgstr "Ir para endereço"
 
 #: lazarusidestrconsts.lisdisassgotoaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
 msgid "Goto address"
-msgstr ""
+msgstr "Ir para endereço"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddress
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
 msgid "Goto current address"
-msgstr ""
+msgstr "Ir para endereço atual"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
 msgid "Goto current address"
-msgstr ""
+msgstr "Ir para endereço atual"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -7416,15 +7416,15 @@ msgstr "Editor FPDoc"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
 msgid "Error writing \"%s\"%s%s"
-msgstr ""
+msgstr "Erro gravando \"%s\"%s%s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
-msgstr ""
+msgstr "Erro sintaxe FPDoc"
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr ""
+msgstr "Há um erro de sintaxe no elemento fpdoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
@@ -10809,7 +10809,7 @@ msgstr "Ao colar da Área de Transferência"
 
 #: lazarusidestrconsts.lisopen
 msgid "Open ..."
-msgstr ""
+msgstr "Abrir ..."
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
