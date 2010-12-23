@@ -15,9 +15,9 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, MaskUtils, Controls, FileUtil, Forms, ComCtrls, Dialogs,
-  Menus, Variants, DB, Graphics, Printers, osPrinters, DOM, XMLRead, XMLConf, LCLType,
-  LCLIntf, TypInfo, LCLProc,{$IFDEF UNIX}SysUtilsAdds,{$ENDIF} LR_View, LR_Pars,
+  SysUtils, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
+  Forms, ComCtrls, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
+  DOM, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
 const

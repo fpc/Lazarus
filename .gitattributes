@@ -1589,7 +1589,6 @@ components/lazreport/source/lr_vbnd.pas svneol=native#text/pascal
 components/lazreport/source/lr_vers.inc svneol=native#text/pascal
 components/lazreport/source/lr_view.lfm svneol=native#text/plain
 components/lazreport/source/lr_view.pas svneol=native#text/pascal
-components/lazreport/source/sysutilsadds.pas svneol=native#text/pascal
 components/lazreport/tools/localize.sh svneol=native#text/plain
 components/lazsvnpkg/Makefile svneol=native#text/plain
 components/lazsvnpkg/Makefile.compiled svneol=native#text/plain
