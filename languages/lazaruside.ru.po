@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-16 01:38+0300\n"
+"PO-Revision-Date: 2010-12-24 00:43+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11430,7 +11430,7 @@ msgstr "Прервать"
 
 #: lazarusidestrconsts.lispdprogress
 msgid "Progress"
-msgstr "Прогресс"
+msgstr "Ход операции"
 
 #: lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
