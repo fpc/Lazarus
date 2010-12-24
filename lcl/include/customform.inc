@@ -819,6 +819,7 @@ begin
     case Application.TaskBarBehavior of
       tbSingleButton: Result := stNever;
       tbMultiButton: Result := stAlways;
+      tbDefault: Result := stDefault;
     end;
 end;
 
