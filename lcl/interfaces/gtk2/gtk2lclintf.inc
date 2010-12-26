@@ -982,7 +982,9 @@ begin
 
 
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
-    PGChar(DialogMessage));
+     nil);
+
+  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
 
   g_signal_connect(PGtkObject(Dialog), 'delete-event',
     TGtkSignalFunc(@PromptUserBoxClosed),
@@ -1140,11 +1142,10 @@ begin
     if X = DefaultIndex then
       DefaultID := Buttons[X];
   end;
-
-
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
-    PGChar(DialogMessage));
+    nil);
 
+  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
   g_signal_connect(PGtkObject(Dialog), 'delete-event',
     TGtkSignalFunc(@PromptUserBoxClosed),
     @ADialogResult);
