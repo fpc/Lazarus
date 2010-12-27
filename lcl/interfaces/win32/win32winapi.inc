@@ -2236,7 +2236,7 @@ var
 
   procedure ExcludeCaption; inline;
   begin
-    if (Info.dwStyle and WS_CAPTION) <> 0 then
+    if (Info.dwStyle and (WS_CHILD or WS_CAPTION)) = WS_CAPTION then
       if (Info.dwExStyle and WS_EX_TOOLWINDOW) <> 0 then
         Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
       else
@@ -2297,14 +2297,14 @@ begin
   // convert top level lcl window coordinaties to win32 coord
   Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
   Info.dwExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE));
-  if (Info.dwStyle and WS_THICKFRAME) <> 0 then
+  if (Info.dwStyle and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
   begin
     // thick, sizing border
     // add twice, top+bottom border
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
     Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
   end else
-  if (Info.dwStyle and WS_BORDER) <> 0 then
+  if (Info.dwStyle and (WS_CHILD or WS_BORDER)) = WS_BORDER then
   begin
     // thin, non-sizing border
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
