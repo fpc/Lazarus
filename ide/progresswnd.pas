@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, LazIDEIntf;
+  ComCtrls, StdCtrls, ExtCtrls, LazIDEIntf, LazarusIDEStrConsts;
 
 type
   TIDEProgressWindow = class;
@@ -271,6 +271,7 @@ constructor TIDEProgressWindow.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FItems:=TFPList.Create;
+  Caption:=lisPDProgress;
 end;
 
 destructor TIDEProgressWindow.Destroy;

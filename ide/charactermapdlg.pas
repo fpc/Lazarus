@@ -99,8 +99,9 @@ end;
 procedure TCharacterMapDialog.FormCreate(Sender: TObject);
 begin
   Caption := lisCharacterMap;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CloseButton.Caption:=lisClose;
 
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   CharInfoLabel.Caption := '-';
   UnicodeCharInfoLabel.Caption := '-';

@@ -1377,7 +1377,9 @@ begin
       begin
         TWin32ThemeServices(ThemeServices).PaintBorder(WindowInfo^.WinControl, True);
         Result := 0;
-      end;
+      end
+      else
+        Result := WindowProc(Window, Msg, WParam, LParam);
     end;
     else
       Result := WindowProc(Window, Msg, WParam, LParam);

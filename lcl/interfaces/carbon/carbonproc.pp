@@ -492,6 +492,13 @@ begin
   //end;
 end;
 
+const
+  lclFontName      = kFontFamilyName;
+  lclFontPlatform  = kFontMacintoshPlatform;
+  lclFontScript    = kFontRomanScript;
+  lclFontLanguage  = kFontEnglishLanguage;
+
+
 {------------------------------------------------------------------------------
   Name:    FindCarbonFontID
   Params:  FontName - The font name, UTF-8 encoded
@@ -511,8 +518,8 @@ begin
   if (fn <> '') then
   begin
     OSError(ATSUFindFontFromName(@fn[1], Length(fn),
-        kFontFullName, kFontMacintoshPlatform, kFontRomanScript,
-        kFontEnglishLanguage, Result),
+        lclFontName, lclFontPlatform, lclFontScript,
+        lclFontLanguage, Result),
       'FindCarbonFontID', 'ATSUFindFontFromName');
   end;
 end;
@@ -533,15 +540,15 @@ begin
   NameLength:=1024;
   
   // retrieve font name length
-  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontNoPlatformCode,
-    kFontNoScriptCode, kFontNoLanguageCode, NameLength, nil,
+  if OSError(ATSUFindFontName(ID, lclFontName, lclFontPlatform,
+      lclFontScript, lclFontLanguage, NameLength, nil,
     @NameLength, nil), SName, 'ATSUFindFontName', 'Length') then Exit;
 
   SetLength(FontName, NameLength);
 
   // retrieve font name
-  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontNoPlatformCode,
-    kFontNoScriptCode, kFontNoLanguageCode, NameLength,
+  if OSError(ATSUFindFontName(ID, lclFontName, lclFontPlatform,
+      lclFontScript, lclFontLanguage, NameLength,
     @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Exit;
     
   Result := FontName;
