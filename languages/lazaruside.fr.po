@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-30 15:59+0100\n"
-"Last-Translator: paul <lesudiste11@gmail.com>\n"
+"PO-Revision-Date: 2010-12-28 03:03+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: français\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5735,14 +5735,13 @@ msgstr ""
 #| msgid "Lazarus / LCL"
 msgctxt "lazarusidestrconsts.lisconverttargetlaz"
 msgid "Lazarus"
-msgstr "Lazarus/LCL"
+msgstr "Lazarus"
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphi
-#, fuzzy
 #| msgid "Lazarus / LCL for Windows only"
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
 msgid "Lazarus and Delphi"
-msgstr "Lazarus/LCL pour Windows seulement"
+msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
@@ -5750,11 +5749,10 @@ msgid "Lazarus and Delphi with same DFM file"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetlazwinonly
-#, fuzzy
 #| msgid "Both Lazarus / LCL and Delphi"
 msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
 msgid "Lazarus for Windows only"
-msgstr "A la fois  Lazarus/LCL et Delphi"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"

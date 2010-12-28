@@ -4,13 +4,14 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2010-05-23 21:16+0300\n"
+"PO-Revision-Date: 2010-12-28 03:10+0300\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"POT-Creation-Date: \n"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -5713,14 +5714,13 @@ msgstr ""
 #| msgid "Lazarus / LCL"
 msgctxt "lazarusidestrconsts.lisconverttargetlaz"
 msgid "Lazarus"
-msgstr "Lazarus/LCL"
+msgstr "Lazarus"
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphi
-#, fuzzy
 #| msgid "Lazarus / LCL for Windows only"
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
 msgid "Lazarus and Delphi"
-msgstr "Lazarus/LCL skirtas tik Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
 msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
@@ -5728,11 +5728,10 @@ msgid "Lazarus and Delphi with same DFM file"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetlazwinonly
-#, fuzzy
 #| msgid "Both Lazarus / LCL and Delphi"
 msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
 msgid "Lazarus for Windows only"
-msgstr "Abu, Lazarus/LCL ir Delphi"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
