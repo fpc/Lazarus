@@ -321,8 +321,10 @@ var
 begin
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
     Result := FTabData[fIndexOfLongestLine];
-    if Result >= NO_TAB_IN_LINE_OFFSET then Result := Result -  NO_TAB_IN_LINE_OFFSET;
-    exit;
+    if Result <> LINE_LEN_UNKNOWN then begin
+      if Result >= NO_TAB_IN_LINE_OFFSET then Result := Result -  NO_TAB_IN_LINE_OFFSET;
+      exit;
+    end;
   end;
 
   try
