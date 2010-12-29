@@ -138,6 +138,7 @@ type
     cmsPointer_2_procedure,                                 
     cmsAutoderef,           
     cmsInitfinal,           
+    cmsAdd_pointer,         
     cmsDefault_ansistring,  
     cmsOut,                 
     cmsDefault_para,        
@@ -520,7 +521,7 @@ const
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
         'Default', 'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
         'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
-        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 
+        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
         'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
         'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
         'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS', 'NONLOCALGOTO',
