@@ -138,7 +138,6 @@ type
     cmsPointer_2_procedure,                                 
     cmsAutoderef,           
     cmsInitfinal,           
-    cmsAdd_pointer,         
     cmsDefault_ansistring,  
     cmsOut,                 
     cmsDefault_para,        
@@ -149,7 +148,9 @@ type
     cmsExcept,              
     cmsObjectiveC1,
     cmsObjectiveC2,
-    cmsNestedProcVars
+    cmsNestedProcVars,
+    cmsNonLocalGoto,
+    cmsAdvancedRecords
     );
 
   TPascalCompiler = (pcFPC, pcDelphi);
@@ -519,10 +520,11 @@ const
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
         'Default', 'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
         'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
-        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
+        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 
         'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
         'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
-        'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS');
+        'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS', 'NONLOCALGOTO',
+        'ADVANCEDRECORDS');
 
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
