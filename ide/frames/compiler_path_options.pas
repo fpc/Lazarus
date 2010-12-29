@@ -615,7 +615,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
-    TabOrder:=8;
+    TabOrder:=9;
   end;
   OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
 
@@ -674,7 +674,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
-    TabOrder:=12;
+    TabOrder:=13;
   end;
   DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
 

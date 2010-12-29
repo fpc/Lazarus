@@ -9,13 +9,11 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   object OtherUnitsLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
+    Height = 14
     Top = 0
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Width = 78
     Caption = 'OtherUnitsLabel'
     ParentColor = False
   end
@@ -23,29 +21,24 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = OtherUnitsEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 51
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Height = 14
+    Top = 41
+    Width = 82
     BorderSpacing.Top = 6
     Caption = 'IncludeFilesLabel'
     ParentColor = False
   end
   object OtherSourcesLabel: TLabel[2]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ProjTargetFileEdit
+    AnchorSideTop.Control = ProjTargetApplyConventionsCheckBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 255
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
+    Height = 14
+    Top = 222
+    Width = 92
     Caption = 'OtherSourcesLabel'
     ParentColor = False
   end
@@ -53,13 +46,11 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = IncludeFilesEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 102
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Height = 14
+    Top = 82
+    Width = 66
     BorderSpacing.Top = 6
     Caption = 'LibrariesLabel'
     ParentColor = False
@@ -68,13 +59,11 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LibrariesEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 153
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Height = 14
+    Top = 123
+    Width = 92
     BorderSpacing.Top = 6
     Caption = 'UnitOutputDirLabel'
     ParentColor = False
@@ -83,13 +72,11 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = OtherSourcesEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 306
-    Width = 509
-    Anchors = [akTop, akLeft, akRight]
+    Height = 14
+    Top = 263
+    Width = 79
     BorderSpacing.Top = 6
     Caption = 'DebugPathLabel'
     ParentColor = False
@@ -99,9 +86,9 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideTop.Control = LCLWidgetTypeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 0
-    Height = 18
-    Top = 363
-    Width = 134
+    Height = 14
+    Top = 307
+    Width = 101
     Caption = 'LCLWidgetTypeLabel'
     ParentColor = False
   end
@@ -112,8 +99,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 18
+    Height = 21
+    Top = 14
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -127,8 +114,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 69
+    Height = 21
+    Top = 55
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -142,12 +129,12 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 273
+    Height = 21
+    Top = 236
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
-    TabOrder = 5
+    TabOrder = 6
     Text = 'OtherSourcesEdit'
   end
   object LibrariesEdit: TEdit[10]
@@ -157,8 +144,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 120
+    Height = 21
+    Top = 96
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -172,8 +159,8 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 171
+    Height = 21
+    Top = 137
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -187,12 +174,12 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 324
+    Height = 21
+    Top = 277
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
-    TabOrder = 6
+    TabOrder = 7
     Text = 'DebugPathEdit'
   end
   object LCLWidgetTypeComboBox: TComboBox[13]
@@ -200,24 +187,24 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = DebugPathEdit
     AnchorSideTop.Side = asrBottom
-    Left = 140
-    Height = 31
-    Top = 357
+    Left = 107
+    Height = 21
+    Top = 304
     Width = 171
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    ItemHeight = 0
+    ItemHeight = 13
     Style = csDropDownList
-    TabOrder = 7
+    TabOrder = 8
   end
   object ProjTargetFileLabel: TLabel[14]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UnitOutputDirEdit
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 204
-    Width = 124
+    Height = 14
+    Top = 164
+    Width = 93
     Caption = 'ProjTargetFileLabel'
     ParentColor = False
   end
@@ -228,27 +215,25 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
-    Top = 222
+    Height = 21
+    Top = 178
     Width = 509
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Bottom = 6
     OnChange = ProjTargetFileEditChange
     TabOrder = 4
     Text = 'ProjTargetFileEdit'
   end
   object ProjTargetApplyConventionsCheckBox: TCheckBox[16]
-    AnchorSideLeft.Control = ProjTargetFileLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ProjTargetFileLabel
-    AnchorSideTop.Side = asrCenter
+    AnchorSideLeft.Control = ProjTargetFileEdit
+    AnchorSideTop.Control = ProjTargetFileEdit
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 130
-    Height = 22
-    Top = 202
-    Width = 272
-    BorderSpacing.Left = 6
+    Left = 0
+    Height = 17
+    Top = 199
+    Width = 203
+    BorderSpacing.Bottom = 6
     Caption = 'ProjTargetApplyConventionsCheckBox'
-    TabOrder = 8
+    TabOrder = 5
   end
 end
