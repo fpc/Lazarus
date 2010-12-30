@@ -41,6 +41,7 @@ begin
   Memo1.Append(format('LCL Major: %d', [lcl_major]));
   Memo1.Append(format('LCL Minor: %d', [lcl_minor]));
   Memo1.Append(format('LCL Release: %d', [lcl_release]));
+  Memo1.Append(format('LCL Full Version: %d', [lcl_fullversion]));
   {$else}
   Memo1.Append('No lcl version information available');
   {$endif}
@@ -55,6 +56,13 @@ begin
   {$else}
   Memo1.Append('This program is compiled with lcl version 0.9.26 or later.');
   // you can use features available in 0.9.26
+  {$endif}
+  {$if (lcl_fullversion) > 93002}
+  Memo1.Append('This program is compiled with lcl version after 0.9.30.2.');
+  // you can use features available in 0.9.30.3 and later (e.g. 0.9.31)
+  {$else}
+  Memo1.Append('This program is compiled with lcl version 0.9.30.2 or before.');
+  // you cannot use features introduced after 0.9.30.2
   {$endif}
 end;
 
