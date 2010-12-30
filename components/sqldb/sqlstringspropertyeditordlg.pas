@@ -168,6 +168,7 @@ begin
   SQLEditor.Font.Name:='-adobe-courier-medium-r-normal-*-8-*-*-*-m-*-iso10646-1';
   {$endif}
 {$endif}
+  SQLEditor.SetFocus;
 end;
 
 procedure TSQLStringsPropertyEditorDlg.MICleanupClick(Sender: TObject);
