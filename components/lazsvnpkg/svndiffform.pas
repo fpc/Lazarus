@@ -101,7 +101,7 @@ end;
 procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
   SaveButton.Enabled := False;
-  SaveButton.Caption:=rsSave;
+  SaveButton.Caption := rsSave;
 end;
 
 procedure TSVNDiffFrm.SaveButtonClick(Sender: TObject);

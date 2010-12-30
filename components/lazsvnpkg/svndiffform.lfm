@@ -12,8 +12,8 @@ object SVNDiffFrm: TSVNDiffFrm
   LCLVersion = '0.9.29'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 426
+    Height = 37
+    Top = 423
     Width = 605
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -30,13 +30,14 @@ object SVNDiffFrm: TSVNDiffFrm
     ShowButtons = [pbOK]
     object SaveButton: TBitBtn
       Left = 6
-      Height = 22
-      Top = 6
-      Width = 101
+      Height = 29
+      Top = 8
+      Width = 109
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'SaveButton'
+      Constraints.MinHeight = 29
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000683B1EFF834B
@@ -81,7 +82,7 @@ object SVNDiffFrm: TSVNDiffFrm
   object SVNDiffMemo: TMemo
     Cursor = crHourGlass
     Left = 6
-    Height = 414
+    Height = 411
     Top = 6
     Width = 605
     Align = alClient
