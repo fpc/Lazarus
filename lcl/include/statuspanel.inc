@@ -133,7 +133,7 @@ begin
   end;
 end;
 
-procedure TStatusPanel.SetText(const Value: string);
+procedure TStatusPanel.SetText(const Value: TCaption);
 begin
   if FText <> Value then
   begin

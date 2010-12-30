@@ -66,7 +66,7 @@ type
   
   TStatusPanel = class(TCollectionItem)
   private
-    FText: string;
+    FText: TCaption;
     FWidth: Integer;
     FAlignment: TAlignment;
     FBevel: TStatusPanelBevel;
@@ -75,7 +75,7 @@ type
     procedure SetAlignment(Value: TAlignment);
     procedure SetBevel(Value: TStatusPanelBevel);
     procedure SetStyle(Value: TStatusPanelStyle);
-    procedure SetText(const Value: string);
+    procedure SetText(const Value: TCaption);
     procedure SetWidth(Value: Integer);
   protected
     // field to use by interface. do not use it in the LCL
@@ -92,7 +92,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Bevel: TStatusPanelBevel read FBevel write SetBevel default pbLowered;
     property Style: TStatusPanelStyle read FStyle write SetStyle default psText;
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property Width: Integer read FWidth write SetWidth;
   end;
 
@@ -130,12 +130,12 @@ type
     FSizeGrip: Boolean;
     FUpdateLock: integer; // set by BeginUpdate/EndUpdate
     FPanels: TStatusPanels;
-    FSimpleText: String;
+    FSimpleText: TCaption;
     FSimplePanel: Boolean;
     FOnDrawPanel: TDrawPanelEvent;
     FOnHint: TNotifyEvent;
     procedure SetPanels(Value: TStatusPanels);
-    procedure SetSimpleText(const Value : String);
+    procedure SetSimpleText(const Value : TCaption);
     procedure SetSimplePanel(Value : Boolean);
     procedure SetSizeGrip(const AValue: Boolean);
   protected
@@ -184,7 +184,7 @@ type
     property Enabled;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property ParentShowHint;
-    property SimpleText: String read FSimpleText write SetSimpleText;
+    property SimpleText: TCaption read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property SizeGrip: Boolean read FSizeGrip write SetSizeGrip default True;
     property ShowHint;
@@ -2844,7 +2844,7 @@ type
     FMinWidth: Integer;
     FMaxWidth: Integer;
     FState: THeaderSectionState;
-    FText: string;
+    FText: TCaption;
     FVisible: Boolean;
     FWidth: Integer;
     FOriginalIndex: Integer;
@@ -2855,7 +2855,7 @@ type
     procedure SetMaxWidth(AValue: Integer);
     procedure SetMinWidth(AValue: Integer);
     procedure SetState(const AValue: THeaderSectionState);
-    procedure SetText(const Value: string);
+    procedure SetText(const Value: TCaption);
     procedure SetVisible(const AValue: Boolean);
     procedure SetWidth(Value: Integer);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -2873,7 +2873,7 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 10000;
     property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property Width: Integer read GetWidth write SetWidth;
     property Visible: Boolean read FVisible write SetVisible;
     //index which doesn't change when the user reorders the sections

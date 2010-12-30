@@ -554,7 +554,7 @@ begin
   end;
 end;
 
-procedure THeaderSection.SetText(const Value: string);
+procedure THeaderSection.SetText(const Value: TCaption);
 begin
   if FText <> Value then
   begin

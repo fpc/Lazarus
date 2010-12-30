@@ -37,7 +37,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TStatusBar SetSimpleText                                                   }
 {------------------------------------------------------------------------------}
-procedure TStatusBar.SetSimpleText(const Value : String);
+procedure TStatusBar.SetSimpleText(const Value : TCaption);
 begin
   if FSimpleText <> value then
   begin
