@@ -26,6 +26,9 @@ FPCTARGET=$(CPU_TARGET)-linux
 DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
 DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
 DEB_UPSTREAM_MAIN_VERSION:=$(shell echo ${DEB_UPSTREAM_VERSION} | sed -e 's/^\([0-9\.]*\).*/\1/')
+ifndef PACKAGESUFFIX
+export PACKAGESUFFIX=-${DEB_UPSTREAM_MAIN_VERSION}
+endif
 # Get directories
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
@@ -77,7 +80,7 @@ clean: patch configure clean-patched unpatch
 	${RM} ide/version.inc
 	# Remove auto-generated make files.
 	find -name Makefile.fpc -execdir 'sh' '-c' '${RM} $$(basename {} .fpc)' ';'
-	dh_clean 
+	dh_clean
 clean-patched:
 	@echo "--- Cleaning"
 	dh_testdir
@@ -291,7 +294,7 @@ binary-arch: arrange-arch
 	dh_testdir
 	dh_testroot
 	dh_link
-	dh_installdocs -a
+	dh_installdocs -a -X.in
 	dh_installchangelogs -a
 	dh_installexamples -a
 	dh_installmenu
