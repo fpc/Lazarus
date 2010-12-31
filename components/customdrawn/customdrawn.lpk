@@ -13,12 +13,16 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="customdrawnextras"/>
       </Item1>
+      <Item2>
+        <Filename Value="customdrawnutils.pas"/>
+        <UnitName Value="customdrawnutils"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
