@@ -5,7 +5,7 @@ set -e
 LAZARUS_DIR=/usr/lib/lazarus/${VERSION}
 
 # Remove alternatives
-update-alternatives --remove lazbuild ${LAZARUS_DIR}/lazbuild
+update-alternatives --remove lazarus ${LAZARUS_DIR}
 
 # Debhelper code
 #DEBHELPER#

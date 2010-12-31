@@ -1,8 +1,8 @@
+/usr/lib/lazarus/${VERSION}/components/chmhelp
 /usr/lib/lazarus/${VERSION}/components/codetools
 #/usr/lib/lazarus/${VERSION}/components/custom
 /usr/lib/lazarus/${VERSION}/components/jcf2
 #/usr/lib/lazarus/${VERSION}/components/rx
-#/usr/lib/lazarus/${VERSION}/components/sqlite
 /usr/lib/lazarus/${VERSION}/components/fpcunit
 /usr/lib/lazarus/${VERSION}/components/memds
 /usr/lib/lazarus/${VERSION}/components/sqldb
@@ -15,9 +15,7 @@
 /usr/lib/lazarus/${VERSION}/components/tachart
 /usr/lib/lazarus/${VERSION}/components/tdbf
 /usr/lib/lazarus/${VERSION}/components/turbopower_ipro
-#/usr/lib/lazarus/${VERSION}/components/lazreport
 /usr/lib/lazarus/${VERSION}/components/lazcontrols
-#/usr/lib/lazarus/${VERSION}/components/chmhelp
 #/usr/lib/lazarus/${VERSION}/components/macfiles
 #/usr/lib/lazarus/${VERSION}/components/mpaslex
 #/usr/lib/lazarus/${VERSION}/components/opengl
@@ -34,6 +32,9 @@
 #/usr/lib/lazarus/${VERSION}/components/prettyformat
 #/usr/lib/lazarus/${VERSION}/components/h2pas
 #/usr/lib/lazarus/${VERSION}/components/images
+/usr/lib/lazarus/${VERSION}/components/lazreport
+/usr/lib/lazarus/${VERSION}/components/sqlite
+/usr/lib/lazarus/${VERSION}/components/todolist
 #/usr/lib/lazarus/${VERSION}/converter
 #/usr/lib/lazarus/${VERSION}/debugger
 #/usr/lib/lazarus/${VERSION}/doceditor

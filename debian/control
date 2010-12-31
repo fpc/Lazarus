@@ -5,7 +5,7 @@ Maintainer: Carlos Laviola <claviola@debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>, Abou Al Montacir <abou.almontacir@sfr.fr>
 DM-Upload-Allowed: yes
 Standards-Version: 3.9.1
-Build-Depends: debhelper (>= 7), quilt, fpc (>= 2.2.4-3), fpc-source (>= 2.2.4-3), fp-utils, imagemagick
+Build-Depends: debhelper (>= 7), quilt, fpc, fpc-source, fp-utils, imagemagick
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
