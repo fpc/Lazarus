@@ -586,6 +586,7 @@ components/compilers/javascript/examples/ReadJSClassesXML.lpr svneol=native#text
 components/compilers/javascript/examples/jsclassxmlread.pas svneol=native#text/plain
 components/custom/README.txt svneol=native#text/plain
 components/customdrawn/customdrawn.lpk svneol=native#text/plain
+components/customdrawn/customdrawn.pas svneol=native#text/pascal
 components/customdrawn/customdrawnextras.pas svneol=native#text/plain
 components/customdrawn/customdrawnutils.pas svneol=native#text/pascal
 components/customform/custforms.pp svneol=native#text/plain
