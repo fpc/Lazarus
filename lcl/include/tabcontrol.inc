@@ -233,7 +233,7 @@ end;
 constructor TTabControlNoteBookStrings.Create(TheTabControl: TCustomTabControl);
 begin
   inherited Create(TheTabControl);
-  FNoteBook := TNoteBook{%H-}.Create(nil);
+  FNoteBook := TCustomNoteBook{%H-}.Create(nil);
   FNoteBook.ControlStyle := FNoteBook.ControlStyle + [csNoDesignSelectable];
   FNoteBook.Parent := TabControl;
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;

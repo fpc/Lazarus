@@ -93,7 +93,6 @@ type
 
   TCustomPageClass = class of TCustomPage;
 
-
   { TNBPages }
 
   TCustomNotebook = class;
@@ -116,7 +115,6 @@ type
     procedure Insert(Index: Integer; const S: String); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
-
 
   { TCustomNotebook }
 
@@ -235,97 +233,13 @@ type
     property TabStop default true;
   end;
 
-
   { TPage }
 
-  TPage = class(TCustomPage)
-  published
-    property Caption;
-    property ChildSizing;
-    property ClientWidth;
-    property ClientHeight;
-    property Font;
-    property ImageIndex;
-    property Left stored False;
-    property Top stored False;
-    property Width stored False;
-    property Height stored False;
-    property OnContextPopup;
-    property OnEnter;
-    property OnExit;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property PageIndex stored False;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property TabOrder stored False;
-    property Visible stored False;
-  end deprecated;
+  TPage = class;
 
+  TBeforeShowPageEvent = procedure (ASender: TObject; ANewPage: TPage; ANewIndex: Integer) of object;
 
-  { TNotebook }
-
-  TNotebook = class(TCustomNotebook)
-  private
-    function GetActiveNotebookPageComponent: TPage;
-    function GetNoteBookPage(Index: Integer): TPage;
-    procedure SetActiveNotebookPageComponent(const AValue: TPage);
-  public
-    constructor Create(TheOwner: TComponent); override;
-    property Page[Index: Integer]: TPage read GetNoteBookPage;
-    property ActivePageComponent: TPage read GetActiveNotebookPageComponent
-                                        write SetActiveNotebookPageComponent;
-    property Pages;
-  published
-    property ActivePage;
-    property Align;
-    property Anchors;
-    property BorderSpacing;
-    property Constraints;
-    property DragCursor;
-    property DragMode;
-    property Enabled;
-    property Font;
-    property Images;
-    property OnChangeBounds;
-    property OnChanging;
-    property OnCloseTabClicked;
-    property OnContextPopup;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnGetImageIndex;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnPageChanged;
-    property OnResize;
-    property OnStartDrag;
-    property Options;
-    property PageIndex;
-    property ParentFont;
-    property PopupMenu;
-    property ShowTabs;
-    property TabOrder;
-    property TabStop;
-  end deprecated;
-
-  TUNBPage = class;
-
-  TBeforeShowPageEvent = procedure (ASender: TObject; ANewPage: TUNBPage; ANewIndex: Integer) of object;
-
-  { TUNBPage }
-
-  TUNBPage = class(TCustomControl)
+  TPage = class(TCustomControl)
   private
     FOnBeforeShow: TBeforeShowPageEvent;
   protected
@@ -363,12 +277,12 @@ type
 
   { TUNBPages }
 
-  TUntabbedNotebook = class;
+  TNotebook = class;
 
   TUNBPages = class(TStrings)
   private
     FPageList: TListWithEvent;
-    FUNotebook: TUntabbedNotebook;
+    FNotebook: TNotebook;
     procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
   protected
     function Get(Index: Integer): String; override;
@@ -377,27 +291,27 @@ type
     procedure Put(Index: Integer; const S: String); override;
   public
     constructor Create(thePageList: TListWithEvent;
-                       theUNotebook: TUntabbedNotebook);
+                       theNotebook: TNotebook);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
 //    procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
-  { TUntabbedNotebook }
+  { TNotebook }
 
-  TUntabbedNotebook = class(TCustomControl)
+  TNotebook = class(TCustomControl)
   private
     FPages: TStrings; // TUNBPages
     FPageIndex: Integer;
     FPageList: TListWithEvent;
 {    function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;}
-    function GetPage(AIndex: Integer): TUNBPage;
+    function GetPage(AIndex: Integer): TPage;
 //    function GetPageCount : integer;
     function GetPageIndex: Integer;
 {    function FindVisiblePage(Index: Integer): Integer;}
-    procedure InsertPage(APage: TUNBPage; Index: Integer);
+    procedure InsertPage(APage: TPage; Index: Integer);
 {    procedure MovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);}
@@ -412,7 +326,7 @@ type
     function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;}
   public
-    property Page[Index: Integer]: TUNBPage read GetPage;
+    property Page[Index: Integer]: TPage read GetPage;
 //    property PageCount: integer read GetPageCount;
 //    property PageList: TList read FPageList;
   published
@@ -1395,17 +1309,15 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,
-    {$ifdef INSTALL_TUNTABBEDNOTEBOOK} TUntabbedNotebook, {$ENDIF}
-    TLabeledEdit, TSplitter, TTrayIcon]);
+    TNotebook, TLabeledEdit, TSplitter, TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
-  RegisterNoIcon([TNotebook{%H-}, TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
+  RegisterNoIcon([TPage]);
 end;
 
 {$I custompage.inc}
-{$I page.inc}
 {$I customnotebook.inc}
+{$I page.inc}
 {$I notebook.inc}
-{$I untabbednotebook.inc}
 {$I timer.inc}
 {$I idletimer.inc}
 {$I shape.inc}

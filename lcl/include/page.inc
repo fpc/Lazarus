@@ -19,39 +19,37 @@
 
 { TPage }
 
-{ TUNBPage }
-
-procedure TUNBPage.SetParent(AParent: TWinControl);
+procedure TPage.SetParent(AParent: TWinControl);
 var
   OldParent: TWinControl;
-  ParentNotebook: TUntabbedNotebook;
+  ParentNotebook: TNotebook;
   i: integer;
 begin
   if (AParent = Parent) {or (pfInserting in FFlags)} then Exit;
 
   OldParent := Parent;
   if (OldParent <> AParent) and (OldParent <> nil) and
-     (OldParent is TUntabbedNotebook) {and (not (pfRemoving in FFlags))} then
+     (OldParent is TNotebook) {and (not (pfRemoving in FFlags))} then
   begin
     // remove from old pagelist
-    ParentNotebook := TUntabbedNotebook(OldParent);
+    ParentNotebook := TNotebook(OldParent);
     i := ParentNotebook.FPageList.IndexOf(Self);
     ParentNotebook.Pages.Delete(i);
   end;
 
   inherited SetParent(AParent);
 
-  if (Parent <> nil) and (Parent is TUntabbedNotebook) then
+  if (Parent <> nil) and (Parent is TNotebook) then
   begin
     // add to new pagelist
-    ParentNotebook := TUntabbedNotebook(Parent);
+    ParentNotebook := TNotebook(Parent);
     i := ParentNotebook.FPageList.IndexOf(Self);
     if i < 0 then
       ParentNotebook.InsertPage(Self, ParentNotebook.Pages.Count);
   end;
 end;
 
-constructor TUNBPage.Create(TheOwner: TComponent);
+constructor TPage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
@@ -64,18 +62,18 @@ begin
   Visible := False;
 end;
 
-destructor TUNBPage.Destroy;
+destructor TPage.Destroy;
 begin
   {$ifdef DEBUG_NEW_NOTEBOOK}
-  DebugLn('[TUNBPage.Destroy]');
+  DebugLn('[TPage.Destroy]');
   {$endif}
 
-  if (Parent <> nil) and (Parent is TUntabbedNotebook) then
+  if (Parent <> nil) and (Parent is TNotebook) then
   begin
     {$ifdef DEBUG_NEW_NOTEBOOK}
-    DebugLn('[TUNBPage.Destroy] FPageList.Remove(Self)');
+    DebugLn('[TPage.Destroy] FPageList.Remove(Self)');
     {$endif}
-    TUntabbedNotebook(Parent).FPageList.Remove(Self);
+    TNotebook(Parent).FPageList.Remove(Self);
   end;
 
   inherited Destroy;

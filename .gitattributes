@@ -4783,7 +4783,6 @@ lcl/include/toolwindow.inc svneol=native#text/pascal
 lcl/include/trackbar.inc svneol=native#text/pascal
 lcl/include/treeview.inc svneol=native#text/pascal
 lcl/include/unixfileutil.inc svneol=native#text/plain
-lcl/include/untabbednotebook.inc svneol=native#text/plain
 lcl/include/winapi.inc svneol=native#text/pascal
 lcl/include/winapih.inc svneol=native#text/pascal
 lcl/include/wincontrol.inc svneol=native#text/pascal

@@ -424,7 +424,7 @@ type
 
   TTabControlNoteBookStrings = class(TTabControlStrings)
   private
-    FNoteBook: TNoteBook{%H-};
+    FNoteBook: TCustomNoteBook{%H-};
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -451,7 +451,7 @@ type
     procedure TabControlBoundsChange; override;
     function IndexOfTabAt(X, Y: Integer): Integer; override;
   public
-    property NoteBook: TNoteBook read FNoteBook;
+    property NoteBook: TCustomNoteBook read FNoteBook;
   end;
 
 

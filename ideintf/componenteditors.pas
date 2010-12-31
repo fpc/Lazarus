@@ -287,15 +287,15 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
-    function Notebook: TUntabbedNotebook; virtual;
+    function Notebook: TNotebook; virtual;
   end;
 
   { TUNBPageComponentEditor
     The default component editor for TUNBPage. }
   TUNBPageComponentEditor = class(TUntabbedNotebookComponentEditor)
   public
-    function Notebook: TUntabbedNotebook; override;
-    function Page: TUNBPage; virtual;
+    function Notebook: TNotebook; override;
+    function Page: TPage; virtual;
   end;
 
 { TTabControlComponentEditor
@@ -932,7 +932,7 @@ procedure TUntabbedNotebookComponentEditor.AddNewPageToDesigner(Index: integer
   );
 var
   Hook: TPropertyEditorHook;
-  NewPage: TUNBPage;
+  NewPage: TPage;
   NewName: string;
 begin
   Hook:=nil;
@@ -1034,25 +1034,25 @@ begin
   end;
 end;
 
-function TUntabbedNotebookComponentEditor.Notebook: TUntabbedNotebook;
+function TUntabbedNotebookComponentEditor.Notebook: TNotebook;
 begin
-  Result:=TUntabbedNotebook(GetComponent);
+  Result:=TNotebook(GetComponent);
 end;
 
 { TUNBPageComponentEditor }
 
-function TUNBPageComponentEditor.Notebook: TUntabbedNotebook;
+function TUNBPageComponentEditor.Notebook: TNotebook;
 var
-  APage: TUNBPage;
+  APage: TPage;
 begin
   APage:=Page;
-  if (APage.Parent<>nil) and (APage.Parent is TUntabbedNotebook) then
-    Result:=TUntabbedNotebook(APage.Parent);
+  if (APage.Parent<>nil) and (APage.Parent is TNotebook) then
+    Result:=TNotebook(APage.Parent);
 end;
 
-function TUNBPageComponentEditor.Page: TUNBPage;
+function TUNBPageComponentEditor.Page: TPage;
 begin
-  Result:=TUNBPage(GetComponent);
+  Result:=TPage(GetComponent);
 end;
 
 { TStringGridComponentEditor }
@@ -1491,8 +1491,8 @@ initialization
   RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook, TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage, TPageComponentEditor);
-  RegisterComponentEditor(TUntabbedNotebook, TUntabbedNotebookComponentEditor);
-  RegisterComponentEditor(TUNBPage, TUNBPageComponentEditor);
+  RegisterComponentEditor(TNotebook, TUntabbedNotebookComponentEditor);
+  RegisterComponentEditor(TPage, TUNBPageComponentEditor);
   RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
   RegisterComponentEditor(TStringGrid, TStringGridComponentEditor);
   RegisterComponentEditor(TCheckListBox, TCheckListBoxComponentEditor);
