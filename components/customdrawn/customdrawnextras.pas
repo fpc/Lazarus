@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   Math, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
-  LCLProc, PropEdits, ExtCtrls, ImgList, Forms,
+  LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
   {$ifdef CUSTOMDRAWN_USE_FREETYPE}
@@ -547,11 +547,17 @@ type
   TCDPageControlDrawer = class;
   TCDPageControlDrawerWinCE = class;
 
+  { TCDPageControlEditor }
+
   TCDPageControlEditor = class(TDefaultComponentEditor)
+    procedure ShowPageMenuItemClick(Sender: TObject);
   public
     procedure ExecuteVerb(Index: integer); override;
     function GetVerb(Index: integer): string; override;
     function GetVerbCount: integer; override;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
+    procedure AddMenuItemsForPages(ParentMenuItem: TMenuItem); virtual;
+    function PControl : TCDPageControl; virtual;
   end;
 
   TCDPageControl = class(TCustomControl)
@@ -570,6 +576,7 @@ type
     FMEnterL, FMEnterR: boolean;
     FPageIndex: integer;  //FPageCount
     MaskHeadBmp: TBitmap;
+    function GetPageCount: integer;
     procedure SetMouseUP;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
@@ -619,6 +626,7 @@ type
     //property PageCount: integer read FPageCount;
     property PageIndex: integer read FPageIndex write SetPageIndex;
     property Pages: TTabItemList read FPages write SetCDPages;
+    property PageCount: integer read GetPageCount;
     property ParentColor;
     property ParentFont;
     property ShowTabs: boolean read FShowTabs write SetShowTabs;
@@ -651,14 +659,15 @@ function CheckTabButton(RWidth: integer; aItem: TTabItemList): Boolean;
 
 implementation
 
+uses
+  ObjInspStrConsts;
+
 const
   INT_BitmappedButton_LineSpacing = 2;
   MaskBaseColor = $00111111;
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
-  sNEW_PAGE = 'Ne&w Page';
-  sDEL_PAGE = '&Delete Page';
   sNEXT_PAGE = 'Ne&xt Page';
   sPREV_PAGE = '&Previouse Page';
 
@@ -669,7 +678,7 @@ begin
   RegisterComponents('Common Controls', [TCDTabControl]);
   RegisterComponents('Common Controls', [TCDPageControl]);
   RegisterComponents('Common Controls', [TCDGroupBox]);
-  RegisterComponents('Common Controls', [TUntabbedNotebook]);
+  //RegisterComponents('Common Controls', [TUntabbedNotebook]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
   RegisterNoIcon([TCDTabSheet]);
@@ -2300,32 +2309,46 @@ end;
 
 { TCDPageControlEditor }
 
+procedure TCDPageControlEditor.ShowPageMenuItemClick(Sender: TObject);
+var
+  AMenuItem: TMenuItem;
+  NewPageIndex: integer;
+begin
+  AMenuItem:=TMenuItem(Sender);
+  if (AMenuItem=nil) or (not (AMenuItem is TMenuItem)) then exit;
+  NewPageIndex:=AMenuItem.MenuIndex;
+  if (NewPageIndex<0) or (NewPageIndex>=PControl.PageCount) then exit;
+  PControl.PageIndex:=NewPageIndex;
+  GetDesigner.SelectOnlyThisComponent(PControl.Pages[PControl.PageIndex].TabPage);
+end;
+
 procedure TCDPageControlEditor.ExecuteVerb(Index: integer);
 var
-  NewPage: TCDTabSheet;
-  PControl: TCDPageControl;
+  NewPage: TCDTabSheet;    
   Hook: TPropertyEditorHook;
   PageComponent: TPersistent;
+  OldPage: LongInt; 
 begin
-  if Component is TCDPageControl then
-    PControl := TCDPageControl(Component)
-  else if Component is TCDTabSheet then
-    PControl := TCDPageControl(TCDTabSheet(Component).Parent);
-
-  Hook := nil;
+  if not GetHook(Hook) then
+        exit;  
+  
   case Index of
     0:
     begin  //  New Page
-      if not GetHook(Hook) then
-        exit;
       PControl.AddPage('');
       NewPage := PControl.ActivePage;
       Hook.PersistentAdded(NewPage, True);
       Designer.Modified;
-      Hook.PersistentAdded(NewPage,true);
-      Designer.Modified;
+      //Hook.PersistentAdded(NewPage,true);
+      //Designer.Modified;
     end;
-    1:
+    1: 
+    begin // Insert Page
+      PControl.InsertPage(PControl.PageIndex, '');
+      Hook.PersistentAdded(PControl.ActivePage, True);
+      Modified;
+    end;
+    2:
     begin  //  Delete Page
       with PControl do
       begin
@@ -2335,15 +2358,16 @@ begin
         RemovePage(NewPage.Index);
       end;
     end;
-    2:
-    begin  //  Next Page
-      PControl.FindNextPage(PControl.ActivePage, True, False);
-    end;
     3:
+    begin  //  Next Page
+      PControl.ActivePage := PControl.FindNextPage(PControl.ActivePage, True, False);
+    end;
+    4:
     begin  //  Previous Page
-      PControl.FindNextPage(PControl.ActivePage, False, False);
+      PControl.ActivePage := PControl.FindNextPage(PControl.ActivePage, False, False);
     end;
   end;
+  Modified;
   if Designer <> nil then
     Designer.Modified;
   PControl.Invalidate;
@@ -2352,16 +2376,57 @@ end;
 function TCDPageControlEditor.GetVerb(Index: integer): string;
 begin
   case Index of
-    0: Result := sNEW_PAGE;
-    1: Result := sDEL_PAGE;
-    2: Result := sNEXT_PAGE;
-    3: Result := sPREV_PAGE;
+    0: Result := nbcesAddPage;
+    1: Result := nbcesInsertPage;
+    2: Result := nbcesDeletePage;
+    3: Result := sNEXT_PAGE;
+    4: Result := sPREV_PAGE;
+    5: Result := nbcesShowPage;
   end;
 end;
 
 function TCDPageControlEditor.GetVerbCount: integer;
 begin
-  Result := 4;
+  Result := 6;
+end;
+
+procedure TCDPageControlEditor.PrepareItem(Index: Integer;  
+  const AnItem: TMenuItem);  
+begin
+  inherited PrepareItem(Index, AnItem);
+  case Index of
+    0: ;
+    1: AnItem.Enabled:=PControl.PageIndex>=0;
+    2: AnItem.Enabled:=PControl.PageIndex>=0;
+    3: AnItem.Enabled:=PControl.PageIndex<PControl.PageCount-1;
+    4: AnItem.Enabled:=PControl.PageIndex>0;
+    5: AddMenuItemsForPages(AnItem);
+  end;
+end;
+
+procedure TCDPageControlEditor.AddMenuItemsForPages(ParentMenuItem: TMenuItem); 
+var
+  i: integer;
+  NewMenuItem: TMenuItem;
+  TabPage: TCDTabSheet;
+begin
+  ParentMenuItem.Enabled:=PControl.PageCount>0;
+  for i:=0 to PControl.PageCount-1 do begin
+    TabPage := PControl.Pages.Items[i].TabPage;
+    NewMenuItem:=TMenuItem.Create(ParentMenuItem);
+    NewMenuItem.Name:='ShowPage'+IntToStr(i);
+    NewMenuItem.Caption := TabPage.Name+' "'+TabPage.Caption+'"';
+    NewMenuItem.OnClick:=@ShowPageMenuItemClick;
+    ParentMenuItem.Add(NewMenuItem);
+  end;
+end;  
+
+function TCDPageControlEditor.PControl: TCDPageControl; 
+begin
+  if Component is TCDPageControl then
+    Result := TCDPageControl(Component)
+  else if Component is TCDTabSheet then
+    Result := TCDPageControl(TCDTabSheet(Component).Parent); 
 end;
 
 { TCDPageControl }
@@ -2552,6 +2617,9 @@ begin
     if FPages[i].TabPage = Value then
     begin
       Value.Show;
+      
+      // Check first, Tab is Visible?
+      StartIndex := i;
       FPageIndex := i;
     end
     else
@@ -2818,6 +2886,11 @@ procedure TCDPageControl.SetMouseUP;
 begin
   FMDownL := False;
   FMDownR := False;
+end;
+
+function TCDPageControl.GetPageCount: integer;
+begin
+  Result := FPages.Count;
 end;
 
 procedure TCDPageControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
