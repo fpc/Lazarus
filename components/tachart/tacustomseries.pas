@@ -772,10 +772,13 @@ begin
   Result := UseReticule and (Count > 0);
   minDist := MaxInt;
   for i := 0 to Count - 1 do begin
+    // Since axis transformation may be non-linear, the distance should be
+    // measured in screen coordinates. With high zoom ratios this may lead to
+    // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := Point(GetXImgValue(i), GetYImgValue(i));
     dist := ADistFunc(APoint, pt);
     if dist >= minDist then
-      Continue;
+      continue;
     minDist := dist;
     AIndex := i;
     AImg := pt;
