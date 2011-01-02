@@ -1248,6 +1248,7 @@ begin
         Pen.Color := clBlack;
         Pen.Style := psSolid;
         Rectangle(0, 0, Width, Height);
+        Rectangle(1, 1, Width - 1, Height - 1); // The border is thicken when focused
       end;
     else
       with TmpB.Canvas do
@@ -1623,15 +1624,9 @@ begin
   else
     ADest.Brush.Color := ColorToRGB(CDGroupBox.Parent.Color);
 
-  // Text background
-  ADest.Pen.Style := psClear;
-  ADest.Brush.Style := bsSolid;
-  ADest.Rectangle(FCaptionMiddle, 0, ADest.GetTextWidth(CDGroupBox.Caption) +
-    FCaptionMiddle, 10);
-
   // paint text
   ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
+  ADest.Brush.Style := bsSolid; // This will fill the text background
   ADest.Font.Size := 10;
   ADest.TextOut(FCaptionMiddle, 0, CDGroupBox.Caption);
   {$endif}
