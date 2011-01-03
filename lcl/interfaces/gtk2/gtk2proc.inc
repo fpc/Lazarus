@@ -912,27 +912,19 @@ end;
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 begin
   case ROP of
-    WHITENESS,
-    BLACKNESS,
-    SRCCOPY :
-      gdk_gc_set_function(TheGC, GDK_Copy);
-    SRCPAINT :
-      gdk_gc_set_function(TheGC, GDK_NOOP);
-    SRCAND :
-      gdk_gc_set_function(TheGC, GDK_Clear);
-    SRCINVERT :
-      gdk_gc_set_function(TheGC, GDK_XOR);
-    SRCERASE :
-      gdk_gc_set_function(TheGC, GDK_AND);
-    NOTSRCCOPY :
-      gdk_gc_set_function(TheGC, GDK_OR_REVERSE);
-    NOTSRCERASE :
-      gdk_gc_set_function(TheGC, GDK_AND);
-    MERGEPAINT :
-      gdk_gc_set_function(TheGC, GDK_Copy_Invert);
-    DSTINVERT :
-      gdk_gc_set_function(TheGC, GDK_INVERT);
-    else begin
+    SRCCOPY : gdk_gc_set_function(TheGC, GDK_COPY);
+    SRCPAINT : gdk_gc_set_function(TheGC, GDK_OR);
+    SRCAND : gdk_gc_set_function(TheGC, GDK_AND);
+    SRCINVERT : gdk_gc_set_function(TheGC, GDK_XOR);
+    SRCERASE : gdk_gc_set_function(TheGC, GDK_AND_REVERSE);
+    NOTSRCCOPY : gdk_gc_set_function(TheGC, GDK_COPY_INVERT);
+    NOTSRCERASE : gdk_gc_set_function(TheGC, GDK_NOR);
+    MERGEPAINT : gdk_gc_set_function(TheGC, GDK_OR_INVERT);
+    DSTINVERT : gdk_gc_set_function(TheGC, GDK_INVERT);
+    BLACKNESS : gdk_gc_set_function(TheGC, GDK_CLEAR);
+    WHITENESS : gdk_gc_set_function(TheGC, GDK_SET);
+    else
+    begin
       gdk_gc_set_function(TheGC, GDK_COPY);
       DebugLn('WARNING: [SetRasterOperation] Got unknown/unsupported CopyMode!!');
     end;

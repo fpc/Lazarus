@@ -12602,6 +12602,9 @@ begin
     end;
 
     case QEvent_type(Event) of
+      QEventHide:
+        if QWidget_mouseGrabber() = QWidgetH(Sender) then
+          ReleaseCapture;
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);

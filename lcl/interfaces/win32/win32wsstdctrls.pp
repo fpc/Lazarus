@@ -1698,6 +1698,7 @@ begin
   begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
+    Flags:= Flags or BS_MULTILINE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

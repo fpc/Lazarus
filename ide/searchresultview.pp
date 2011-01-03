@@ -896,8 +896,15 @@ var
   ARect: TRect;
 begin
   if Stage <> cdPostPaint then Exit;
+
   With Sender as TLazSearchResultTV do
   begin
+    if [cdsSelected,cdsMarked] * State <> [] then
+      Canvas.Font.Color := clHighlightText;
+
+    ARect:=Node.DisplayRect(true);
+    Canvas.FillRect(ARect);
+
     MatchObj := TLazSearchMatchPos(Node.Data);
     if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
       MatchPos:= TLazSearchMatchPos(Node.Data)
@@ -906,8 +913,6 @@ begin
 
     if Assigned(MatchPos) then
     begin
-      ARect:=Node.DisplayRect(true);
-      Canvas.FillRect(ARect);
 
       FirstMatchPos:=MatchPos;
       TheTop:= ARect.Top;
@@ -948,6 +953,11 @@ begin
         end;
         MatchPos:=MatchPos.NextInThisLine;
       end;
+    end
+    else begin
+      // this is usually the filename only
+      // draw it here too, so that the correct colors are used
+      Canvas.TextOut(ARect.Left, ARect.Top, Node.Text);
     end;//if
   end;//with
 end;//TreeViewDrawItem

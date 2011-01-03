@@ -705,17 +705,17 @@ end;
 
 function PointDist(const A, B: TPoint): Integer;
 begin
-  Result := Sqr(A.X - B.X) + Sqr(A.Y - B.Y);
+  Result := Min(Sqr(Int64(A.X) - B.X) + Sqr(Int64(A.Y) - B.Y), MaxInt);
 end;
 
 function PointDistX(const A, B: TPoint): Integer;
 begin
-  Result := Abs(A.X - B.X);
+  Result := Min(Abs(Int64(A.X) - B.X), MaxInt);
 end;
 
 function PointDistY(const A, B: TPoint): Integer; inline;
 begin
-  Result := Abs(A.Y - B.Y);
+  Result := Min(Abs(Int64(A.Y) - B.Y), MaxInt);
 end;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign;

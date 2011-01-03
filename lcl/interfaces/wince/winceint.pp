@@ -106,6 +106,9 @@ const
      
   WM_LCL_SOCK_ASYNC = WM_USER;
 
+  //flag used to avoid propagating LM_CHANGE for TCustomCheckBox
+  SKIP_LMCHANGE = 1000;
+
 type
 
   { Policy for using the "OK" close button in the title instead of
