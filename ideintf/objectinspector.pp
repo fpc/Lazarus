@@ -2069,7 +2069,7 @@ begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fPoint := ClientToScreen(
                                    Point(BorderWidth+GetTreeIconX(Index)+Indent,
-                                   fPropRow.Bottom - TopY-1));
+                                   fPropRow.Top - TopY-1));
             MoveRect(fHintRect,fPoint.x,fPoint.y);
             FHintWindow.ActivateHint(fHintRect,fHint);
           end;
@@ -2083,7 +2083,7 @@ begin
              InitHints then 
           begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fpoint := ClientToScreen(Point(SplitterX, fPropRow.Bottom - TopY - 1));
+            fpoint := ClientToScreen(Point(SplitterX, fPropRow.Top - TopY - 1));
             MoveRect(fHintRect, fPoint.x, fPoint.y);
             FHintWindow.ActivateHint(fHintRect, fHint);
           end;
