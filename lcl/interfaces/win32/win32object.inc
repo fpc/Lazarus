@@ -146,37 +146,40 @@ begin
   end;
 
   // Create parent of all windows, 'button on taskbar'
-  {$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
-    FAppHandle := CreateWindowW(@ClsNameW,
-      PWideChar(UTF8ToUTF16(Application.Title)),
-      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-      0, 0, HWND(nil), HMENU(nil), HInstance, nil)
-  else
-    FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
-      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+  if not IsLibrary then
+  begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      FAppHandle := CreateWindowW(@ClsNameW,
+        PWideChar(UTF8ToUTF16(Application.Title)),
+        WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+        0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+        0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+        0, 0, HWND(nil), HMENU(nil), HInstance, nil)
+    else
+      FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
+        WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+        0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+        0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+        0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+    {$else}
+    FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
+      WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
       0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
       0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
       0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  {$else}
-  FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
-    WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  {$endif}
-  AllocWindowInfo(FAppHandle);
+    {$endif}
+    AllocWindowInfo(FAppHandle);
 
-  // set nice main icon
-  AIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
-  AppSetIcon(AIcon, AIcon);
-  // remove useless menuitems from sysmenu
-  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
-  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
-  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+    // set nice main icon
+    AIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+    AppSetIcon(AIcon, AIcon);
+    // remove useless menuitems from sysmenu
+    SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+    Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+    Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+    Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+  end;
 
   // initialize ScreenInfo
   Handle := GetDesktopWindow;
@@ -201,7 +204,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppMinimize;
 begin
-  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+  if FAppHandle <> 0 then
+    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -213,7 +217,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
 begin
-  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
+  if FAppHandle <> 0 then
+    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;
 
 
@@ -226,7 +231,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppBringToFront;
 begin
-  Windows.SetForegroundWindow(FAppHandle);
+  if FAppHandle <> 0 then
+    Windows.SetForegroundWindow(FAppHandle);
 end;
 
 procedure TWin32WidgetSet.SetDesigning(AComponent: TComponent);
@@ -477,42 +483,53 @@ end;
 
 procedure TWin32WidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
-  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-  SetClassLong(Win32Widgetset.AppHandle, GCL_HICONSM, LONG(Small));
+  if FAppHandle <> 0 then
+  begin
+    Windows.SendMessage(FAppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+    SetClassLong(FAppHandle, GCL_HICONSM, LONG(Small));
 
-  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
-  SetClassLong(Win32Widgetset.AppHandle, GCL_HICON, LONG(Big));
+    Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
+    SetClassLong(FAppHandle, GCL_HICON, LONG(Big));
+  end;
 end;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
-  {$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
+  if FAppHandle <> 0 then
   begin
-    Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)));
-  end else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
-  {$else}
-  Windows.SetWindowText(FAppHandle, PChar(ATitle));
-  {$endif}
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)))
+    else
+      Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
+    {$else}
+    Windows.SetWindowText(FAppHandle, PChar(ATitle));
+    {$endif}
+  end;
 end;
 
 procedure TWin32WidgetSet.AppSetVisible(const AVisible: Boolean);
 begin
-  if AVisible then
-    Windows.ShowWindow(FAppHandle, SW_SHOW)
-  else
-    Windows.ShowWindow(FAppHandle, SW_HIDE);
+  if FAppHandle <> 0 then
+  begin
+    if AVisible then
+      Windows.ShowWindow(FAppHandle, SW_SHOW)
+    else
+      Windows.ShowWindow(FAppHandle, SW_HIDE);
+  end;
 end;
 
 function TWin32WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
-  RemoveStayOnTopFlags(AppHandle, ASystemTopAlso);
+  if not IsLibrary then
+    RemoveStayOnTopFlags(FAppHandle, ASystemTopAlso);
   Result := True;
 end;
 
 function TWin32WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
-  RestoreStayOnTopFlags(AppHandle);
+  if not IsLibrary then
+    RestoreStayOnTopFlags(FAppHandle);
   Result := True;
 end;
 
@@ -592,7 +609,8 @@ end;
 procedure TWin32WidgetSet.HandleWakeMainThread(Sender: TObject);
 begin
   // wake up GUI thread by sending a message to it
-  Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
+  if FAppHandle <> 0 then
+    Windows.PostMessage(FAppHandle, WM_NULL, 0, 0);
 end;
 
 { Private methods (in no significant order) }
