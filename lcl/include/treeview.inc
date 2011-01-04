@@ -4589,9 +4589,9 @@ var
       Details := ThemeServices.GetElementDetails(ttItemNormal);
 
     if (tvoThemedDraw in Options) then
-      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0)
+      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE, 0)
     else
-      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER);
+      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
 
