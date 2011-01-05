@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-27 17:02+0100\n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"PO-Revision-Date: 2011-01-05 16:32+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8968,14 +8968,14 @@ msgstr "Cílový OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nelze zapisovat do souboru \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "Aktualizovat informace o revizi v dialogu \"O Lazarusu\""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "Aktualizovat revision.inc"
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr "Aktualizovat informace o revizi v dialogu \"O Lazarusu\""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

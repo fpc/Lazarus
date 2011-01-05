@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-24 00:43+0300\n"
+"PO-Revision-Date: 2011-01-05 16:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9028,14 +9028,14 @@ msgstr "Целевая ОС:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Невозможно записать файл \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "Обновить информацию о ревизии в диалоге \"О проекте Lazarus\""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "Обновить revision.inc"
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr "Обновить информацию о ревизии в диалоге \"О проекте Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

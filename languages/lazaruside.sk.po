@@ -9029,13 +9029,13 @@ msgstr "Cieľový OS:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Nemožno zapísať súbor \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages

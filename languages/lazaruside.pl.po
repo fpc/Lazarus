@@ -9024,13 +9024,13 @@ msgstr "Docelowy system operacyjny:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Zapis pliku  \"%s\":%s nie powiódł się "
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages

@@ -9049,13 +9049,13 @@ msgstr "OS de destination :"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Impossible d'écrire le fichier \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
