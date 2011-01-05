@@ -593,9 +593,9 @@ begin
     FamilyName := StrPas(LogFont.lfFaceName);
 
     if (CompareText(FamilyName, 'default') <> 0) then
-    begin
-      QtFont.setFamily(FamilyName);
-    end;
+      QtFont.setFamily(FamilyName)
+    else
+      QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
 
     if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
