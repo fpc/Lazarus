@@ -802,7 +802,7 @@ begin
   OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
   CleanAllCheckBox.Hint := lisLazBuildLikeMakeCleanOnCmdLine;
   UpdateRevisionIncCheckBox.Hint :=
-    lisLazBuildUpadateRevisionInfoInAboutLazarusDialog;
+    lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
   WithStaticPackagesCheckBox.Hint :=
     lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary;
   RestartAfterBuildCheckBox.Hint :=

@@ -2845,7 +2845,7 @@ resourcestring
   lisLazBuildDefinesWithoutD = 'Defines without -d';
   lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
   lisLazBuildLikeMakeCleanOnCmdLine = 'Like "make clean" on cmd line';
-  lisLazBuildUpadateRevisionInfoInAboutLazarusDialog = 'Upadate revision info '
+  lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '
     +'in "About Lazarus" dialog';
   lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary = 'Compile '
     +'selected static packages into Lazarus binary';
