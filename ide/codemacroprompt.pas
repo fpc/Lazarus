@@ -32,6 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  BasicCodeTools,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
   MacroIntf, LazIDEIntf, SrcEditorIntf;
 
@@ -64,6 +65,7 @@ type
     FEditCellList: TSynPluginSyncronizedEditList;
     FEnableMacros: Boolean;
     FIndent: String;
+    FKeepSubIndent: Boolean;
     FSrcTemplate: String;
     FDestTemplate: String;
     FSrcPosition: Integer;
@@ -72,6 +74,7 @@ type
     FDestPosY: Integer;
     FLevel: Integer;
     FSrcEdit: TSourceEditorInterface;
+    FSubIndent: integer;
   protected
     // nested macros, get the X pos of the outer macro
     function GetSrcPosition: Integer; override;
@@ -92,7 +95,9 @@ type
     procedure TrimEOTChar(eot: Char);
 
     property EnableMacros: Boolean read FEnableMacros write FEnableMacros;
+    property KeepSubIndent: Boolean read FKeepSubIndent write FKeepSubIndent;
     property Indent: String read FIndent write FIndent;
+    property SubIndent: integer read FSubIndent write FSubIndent;
     property DestCaret: TPoint read FCaret;
 
     property EditCellList: TSynPluginSyncronizedEditList read FEditCellList;
@@ -202,13 +207,21 @@ begin
 end;
 
 function TLazTemplateParser.SubstituteMacros(var Template: String): boolean;
+const
+  TemplateTabWidth = 8;
+var
+  IndentLevel: Integer;
+  LastLineIndent: Integer;
 
   procedure AppentToDest(S: String);
   var
-    i, i2: Integer;
+    i, LastCopy: Integer;
+    CurLineIndent: LongInt;
+    SpaceStart: LongInt;
   begin
     i := 1;
-    i2 := 1;
+    LastCopy := 1;
+    //debugln(['AppentToDest START S="',dbgstr(S),'" Indent="',dbgstr(Indent),'"']);
     while i <= length(S) do begin
       case s[i] of
         #10, #13:
@@ -216,18 +229,39 @@ function TLazTemplateParser.SubstituteMacros(var Template: String): boolean;
             inc(i);
             if (i <= length(S)) and (s[i] in [#10,#13]) and (s[i] <> s[i-1]) then
               inc(i);
-            if (FDestTemplate <> '') and (i > i2) and
-               (FDestTemplate[length(FDestTemplate)] in [#10, #13])
-            then
-              FDestTemplate := FDestTemplate + FIndent;
-            FDestTemplate := FDestTemplate + copy(s, i2, i - i2);
-            i2 := i;
+            FDestTemplate := FDestTemplate + copy(s, LastCopy, i - LastCopy) + FIndent;
+            LastCopy := i;
             FDestPosX := 1 + length(FIndent);
             inc(FDestPosY);
           end;
-        else
+        else // case else
           begin
-            if (s[i] = '|') and (FCaret.y < 0) then begin
+            if (s[i] in [' ',#9])
+              and (not KeepSubIndent)
+              and (FDestTemplate<>'')
+              and ((i=1) or (S[i-1] in [#10,#13]))
+            then begin
+              // space at start of template line (not first line)
+              FDestTemplate:=FDestTemplate+copy(S,LastCopy,i-LastCopy);
+              LastCopy:=i;
+              SpaceStart:=i;
+              while (i<=length(S)) and (S[i] in [' ',#9]) do inc(i);
+              // compare the indentation of the current and the last line of the template
+              CurLineIndent:=GetLineIndentWithTabs(S,SpaceStart,TemplateTabWidth);
+              if CurLineIndent>LastLineIndent then
+                inc(IndentLevel)
+              else if (IndentLevel>0) and (CurLineIndent<LastLineIndent) then
+                dec(IndentLevel);
+              LastLineIndent:=CurLineIndent;
+              // append space
+              CurLineIndent:=IndentLevel*SubIndent;
+              //debugln(['AppentToDest CurLineIndent=',CurLineIndent,' ',IndentLevel,'*',SubIndent]);
+              FDestTemplate:=FDestTemplate+StringOfChar(' ',CurLineIndent);
+              LastCopy:=i;
+              inc(FDestPosX,CurLineIndent);
+            end else if (s[i] = '|') and (FCaret.y < 0) then
+            begin
+              // place cursor
               System.Delete(s, i, 1);
               FCaret.y := FDestPosY;
               FCaret.x := FDestPosX;
@@ -236,15 +270,16 @@ function TLazTemplateParser.SubstituteMacros(var Template: String): boolean;
               inc(i);
               inc(FDestPosX);
             end;
-        end;
+          end;
       end;
     end;
-    if (FDestTemplate <> '') and (i > i2) and
+    if (FDestTemplate <> '') and (i > LastCopy) and
        (FDestTemplate[length(FDestTemplate)] in [#10, #13])
     then
       FDestTemplate := FDestTemplate + FIndent;
-    FDestTemplate := FDestTemplate + copy(s, i2, i - i2);
+    FDestTemplate := FDestTemplate + copy(s, LastCopy, i - LastCopy);
     FDestPosition := length(FDestTemplate);
+    //debugln(['AppentToDest END FDestTemplate=',dbgstr(FDestTemplate)]);
   end;
 
 var
@@ -266,6 +301,8 @@ begin
   p:=1;
   SrcCopiedPos := 1;
   len:=length(Template);
+  IndentLevel:=0;
+  LastLineIndent:=0;
   while p <= len do begin
     case Template[p] of
       '$':
@@ -371,17 +408,16 @@ begin
     System.Delete(FDestTemplate, length(FDestTemplate), 1);
 end;
 
-
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
   EndOfTokenChr: string; Attributes: TStrings;
   IndentToTokenStart: boolean): boolean;
 var
-  AEditor: TCustomSynEdit;
+  AEditor: TSynEdit;
   p: TPoint;
   TokenStartX: LongInt;
   s: string;
-  IndentLen: Integer;
+  BaseIndent: Integer;
   i: Integer;
   j: LongInt;
   Pattern: String;
@@ -390,31 +426,33 @@ var
 begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
-  AEditor:=SrcEdit.EditorControl as TCustomSynEdit;
+  AEditor:=SrcEdit.EditorControl as TSynEdit;
   Pattern:=TemplateValue;
 
   Parser := TLazTemplateParser.Create(Pattern);
   AEditor.BeginUpdate;
   try
+    Parser.SubIndent:=AEditor.BlockIndent;
     p := AEditor.LogicalCaretXY;
     TokenStartX:=p.x;
     if IndentToTokenStart then begin
-      IndentLen := TokenStartX - 1;
+      BaseIndent := TokenStartX - 1;
     end else begin
       // indent the same as the first line
-      IndentLen:=1;
+      BaseIndent:=1;
       if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
         s:=AEditor.Lines[p.y-1];
-        while (IndentLen<p.x)
-        and ((IndentLen>length(s)) or (s[IndentLen] in [#9,' '])) do
-          inc(IndentLen);
+        while (BaseIndent<p.x)
+        and ((BaseIndent>length(s)) or (s[BaseIndent] in [#9,' '])) do
+          inc(BaseIndent);
       end;
-      IndentLen:=AEditor.LogicalToPhysicalCol(s, p.y - 1, IndentLen);// consider tabs
-      dec(IndentLen);
+      BaseIndent:=AEditor.LogicalToPhysicalCol(s, p.y - 1, BaseIndent);// consider tabs
+      dec(BaseIndent);
     end;
 
     Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
-    Parser.Indent := StringOfChar(' ', IndentLen);
+    Parser.KeepSubIndent := Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
+    Parser.Indent := StringOfChar(' ', BaseIndent);
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
 

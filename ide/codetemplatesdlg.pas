@@ -71,6 +71,7 @@ type
     ButtonPanel: TButtonPanel;
     EditTemplateGroupBox: TGroupBox;
     InsertMacroButton: TButton;
+    KeepSubIndentCheckBox: TCheckBox;
     UseMacrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
@@ -217,7 +218,7 @@ begin
 end;
 
 function AddCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
-  var Token,Comment:ansistring):TModalResult;
+  var Token,Comment: string):TModalResult;
 var
   CodeTemplateEditForm:TCodeTemplateEditForm;
 begin
@@ -944,6 +945,8 @@ begin
   FilenameGroupBox.Caption:=lisDebugOptionsFrmModule;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisInsertMacro;
+  KeepSubIndentCheckBox.Caption:=lisKeepSubIndentation;
+  KeepSubIndentCheckBox.Hint:=lisKeepRelativeIndentationOfMultiLineTemplate;
   AutoOnOptionsCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnSpace);
@@ -1190,7 +1193,7 @@ end;
 
 procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
-  EnableMacros: boolean;
+  EnableMacros, KeepSubIndent: boolean;
   LineCount: integer;
 
   procedure AddLine(const s: string);
@@ -1207,6 +1210,7 @@ var
   c: TAutoCompleteOption;
 begin
   EnableMacros:=false;
+  KeepSubIndent:=false;
   for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
     AutoOnCat[c]:=false;
   
@@ -1227,6 +1231,7 @@ begin
                            +' - '+dbgstr(SynAutoComplete.CompletionComments[a]);
     Attributes:=SynAutoComplete.CompletionAttributes[a];
     EnableMacros:=Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
+    KeepSubIndent:=Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
     for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
       AutoOnCat[c]:=Attributes.IndexOfName(AutoCompleteOptionNames[c])>=0;
     LastTemplate := -1;
@@ -1252,6 +1257,7 @@ begin
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
   UseMacrosCheckBox.Checked:=EnableMacros;
+  KeepSubIndentCheckBox.Checked:=KeepSubIndent;
   for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
     AutoOnOptionsCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
 end;
@@ -1298,6 +1304,7 @@ begin
   SynAutoComplete.CompletionValues[a]:=NewValue;
   
   SetBooleanAttribute(CodeTemplateEnableMacros,UseMacrosCheckBox.Checked);
+  SetBooleanAttribute(CodeTemplateKeepSubIndent,KeepSubIndentCheckBox.Checked);
   for c:=low(TAutoCompleteOption) to High(TAutoCompleteOption) do
      SetBooleanAttribute(AutoCompleteOptionNames[c],AutoOnOptionsCheckGroup.Checked[ord(c)]);
 

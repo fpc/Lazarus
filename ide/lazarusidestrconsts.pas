@@ -4473,6 +4473,7 @@ resourcestring
   lisAutomaticallyOnSpace = 'space';
   lisAutomaticallyOnWordEnd = 'word end';
   lisAutomaticallyRemoveCharacter = 'do not add character';
+  lisKeepSubIndentation = 'Keep indentation';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
   lisPLDPackageLinks = 'Package Links';
@@ -5090,6 +5091,8 @@ resourcestring
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
   lisApplyConventions = 'Apply conventions';
+  lisKeepRelativeIndentationOfMultiLineTemplate = 'Keep relative indentation '
+    +'of multi line template';
 
 implementation
 

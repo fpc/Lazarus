@@ -56,6 +56,7 @@ uses
 const
   CodeTemplateMacroMagic = '$(EnableMakros)';
   CodeTemplateEnableMacros = 'EnableMakros';
+  CodeTemplateKeepSubIndent = 'KeepSubIndent';
   CodeTemplateAttributesStartMagic = '$(AttributesStart)';
   CodeTemplateAttributesEndMagic = '$(AttributesEnd)';
 {$ENDIF}

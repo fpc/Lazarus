@@ -1,7 +1,7 @@
 object CodeTemplateDialog: TCodeTemplateDialog
-  Left = 285
+  Left = 332
   Height = 542
-  Top = 122
+  Top = 224
   Width = 497
   ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
@@ -11,7 +11,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object FilenameGroupBox: TGroupBox
     Left = 6
     Height = 51
@@ -20,13 +20,13 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 33
+    ClientHeight = 32
     ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
       AnchorSideRight.Control = FilenameButton
       Left = 9
-      Height = 23
+      Height = 27
       Top = 4
       Width = 435
       Anchors = [akTop, akLeft, akRight]
@@ -41,7 +41,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Side = asrBottom
       Left = 449
       Height = 23
-      Top = 4
+      Top = 8
       Width = 26
       Anchors = [akRight, akBottom]
       BorderSpacing.Right = 6
@@ -58,7 +58,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 149
+    ClientHeight = 148
     ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
@@ -68,7 +68,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 137
+      Height = 136
       Top = 6
       Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -79,6 +79,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ItemHeight = 0
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -129,27 +130,27 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object EditTemplateGroupBox: TGroupBox
     AnchorSideTop.Control = TemplatesGroupBox
-    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 268
+    Height = 262
     Top = 236
     Width = 485
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 250
+    ClientHeight = 243
     ClientWidth = 481
     TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 17
+      Height = 22
       Top = 6
-      Width = 121
+      Width = 161
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
     object InsertMacroButton: TButton
@@ -158,10 +159,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 153
-      Height = 23
+      Left = 193
+      Height = 29
       Top = 3
-      Width = 113
+      Width = 132
       AutoSize = True
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
@@ -169,7 +170,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       OnClick = InsertMacroButtonClick
       TabOrder = 2
     end
-    object TemplateSynEdit: TSynEdit
+    inline TemplateSynEdit: TSynEdit
       AnchorSideTop.Control = AutoOnOptionsCheckGroup
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = EditTemplateGroupBox
@@ -177,8 +178,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 176
-      Top = 68
+      Height = 138
+      Top = 99
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -190,337 +191,508 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ParentFont = False
       TabOrder = 1
       Gutter.Width = 57
+      Gutter.MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = 13
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
+      RightGutter.Width = 0
+      RightGutter.MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = 13
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
       Keystrokes = <      
         item
-          Command = 3
+          Command = ecUp
           ShortCut = 38
         end      
         item
-          Command = 103
+          Command = ecSelUp
           ShortCut = 8230
         end      
         item
-          Command = 211
+          Command = ecScrollUp
           ShortCut = 16422
         end      
         item
-          Command = 4
+          Command = ecDown
           ShortCut = 40
         end      
         item
-          Command = 104
+          Command = ecSelDown
           ShortCut = 8232
         end      
         item
-          Command = 212
+          Command = ecScrollDown
           ShortCut = 16424
         end      
         item
-          Command = 1
+          Command = ecLeft
           ShortCut = 37
         end      
         item
-          Command = 101
+          Command = ecSelLeft
           ShortCut = 8229
         end      
         item
-          Command = 5
+          Command = ecWordLeft
           ShortCut = 16421
         end      
         item
-          Command = 105
+          Command = ecSelWordLeft
           ShortCut = 24613
         end      
         item
-          Command = 2
+          Command = ecRight
           ShortCut = 39
         end      
         item
-          Command = 102
+          Command = ecSelRight
           ShortCut = 8231
         end      
         item
-          Command = 6
+          Command = ecWordRight
           ShortCut = 16423
         end      
         item
-          Command = 106
+          Command = ecSelWordRight
           ShortCut = 24615
         end      
         item
-          Command = 10
+          Command = ecPageDown
           ShortCut = 34
         end      
         item
-          Command = 110
+          Command = ecSelPageDown
           ShortCut = 8226
         end      
         item
-          Command = 14
+          Command = ecPageBottom
           ShortCut = 16418
         end      
         item
-          Command = 114
+          Command = ecSelPageBottom
           ShortCut = 24610
         end      
         item
-          Command = 9
+          Command = ecPageUp
           ShortCut = 33
         end      
         item
-          Command = 109
+          Command = ecSelPageUp
           ShortCut = 8225
         end      
         item
-          Command = 13
+          Command = ecPageTop
           ShortCut = 16417
         end      
         item
-          Command = 113
+          Command = ecSelPageTop
           ShortCut = 24609
         end      
         item
-          Command = 7
+          Command = ecLineStart
           ShortCut = 36
         end      
         item
-          Command = 107
+          Command = ecSelLineStart
           ShortCut = 8228
         end      
         item
-          Command = 15
+          Command = ecEditorTop
           ShortCut = 16420
         end      
         item
-          Command = 115
+          Command = ecSelEditorTop
           ShortCut = 24612
         end      
         item
-          Command = 8
+          Command = ecLineEnd
           ShortCut = 35
         end      
         item
-          Command = 108
+          Command = ecSelLineEnd
           ShortCut = 8227
         end      
         item
-          Command = 16
+          Command = ecEditorBottom
           ShortCut = 16419
         end      
         item
-          Command = 116
+          Command = ecSelEditorBottom
           ShortCut = 24611
         end      
         item
-          Command = 223
+          Command = ecToggleMode
           ShortCut = 45
         end      
         item
-          Command = 201
+          Command = ecCopy
           ShortCut = 16429
         end      
         item
-          Command = 604
+          Command = ecPaste
           ShortCut = 8237
         end      
         item
-          Command = 502
+          Command = ecDeleteChar
           ShortCut = 46
         end      
         item
-          Command = 603
+          Command = ecCut
           ShortCut = 8238
         end      
         item
-          Command = 501
+          Command = ecDeleteLastChar
           ShortCut = 8
         end      
         item
-          Command = 501
+          Command = ecDeleteLastChar
           ShortCut = 8200
         end      
         item
-          Command = 504
+          Command = ecDeleteLastWord
           ShortCut = 16392
         end      
         item
-          Command = 601
+          Command = ecUndo
           ShortCut = 32776
         end      
         item
-          Command = 602
+          Command = ecRedo
           ShortCut = 40968
         end      
         item
-          Command = 509
+          Command = ecLineBreak
           ShortCut = 13
         end      
         item
-          Command = 199
+          Command = ecSelectAll
           ShortCut = 16449
         end      
         item
-          Command = 201
+          Command = ecCopy
           ShortCut = 16451
         end      
         item
-          Command = 610
+          Command = ecBlockIndent
           ShortCut = 24649
         end      
         item
-          Command = 509
+          Command = ecLineBreak
           ShortCut = 16461
         end      
         item
-          Command = 510
+          Command = ecInsertLine
           ShortCut = 16462
         end      
         item
-          Command = 503
+          Command = ecDeleteWord
           ShortCut = 16468
         end      
         item
-          Command = 611
+          Command = ecBlockUnindent
           ShortCut = 24661
         end      
         item
-          Command = 604
+          Command = ecPaste
           ShortCut = 16470
         end      
         item
-          Command = 603
+          Command = ecCut
           ShortCut = 16472
         end      
         item
-          Command = 507
+          Command = ecDeleteLine
           ShortCut = 16473
         end      
         item
-          Command = 506
+          Command = ecDeleteEOL
           ShortCut = 24665
         end      
         item
-          Command = 601
+          Command = ecUndo
           ShortCut = 16474
         end      
         item
-          Command = 602
+          Command = ecRedo
           ShortCut = 24666
         end      
         item
-          Command = 301
+          Command = ecGotoMarker0
           ShortCut = 16432
         end      
         item
-          Command = 302
+          Command = ecGotoMarker1
           ShortCut = 16433
         end      
         item
-          Command = 303
+          Command = ecGotoMarker2
           ShortCut = 16434
         end      
         item
-          Command = 304
+          Command = ecGotoMarker3
           ShortCut = 16435
         end      
         item
-          Command = 305
+          Command = ecGotoMarker4
           ShortCut = 16436
         end      
         item
-          Command = 306
+          Command = ecGotoMarker5
           ShortCut = 16437
         end      
         item
-          Command = 307
+          Command = ecGotoMarker6
           ShortCut = 16438
         end      
         item
-          Command = 308
+          Command = ecGotoMarker7
           ShortCut = 16439
         end      
         item
-          Command = 309
+          Command = ecGotoMarker8
           ShortCut = 16440
         end      
         item
-          Command = 310
+          Command = ecGotoMarker9
           ShortCut = 16441
         end      
         item
-          Command = 351
+          Command = ecSetMarker0
           ShortCut = 24624
         end      
         item
-          Command = 352
+          Command = ecSetMarker1
           ShortCut = 24625
         end      
         item
-          Command = 353
+          Command = ecSetMarker2
           ShortCut = 24626
         end      
         item
-          Command = 354
+          Command = ecSetMarker3
           ShortCut = 24627
         end      
         item
-          Command = 355
+          Command = ecSetMarker4
           ShortCut = 24628
         end      
         item
-          Command = 356
+          Command = ecSetMarker5
           ShortCut = 24629
         end      
         item
-          Command = 357
+          Command = ecSetMarker6
           ShortCut = 24630
         end      
         item
-          Command = 358
+          Command = ecSetMarker7
           ShortCut = 24631
         end      
         item
-          Command = 359
+          Command = ecSetMarker8
           ShortCut = 24632
         end      
         item
-          Command = 360
+          Command = ecSetMarker9
           ShortCut = 24633
         end      
         item
-          Command = 231
+          Command = ecNormalSelect
           ShortCut = 24654
         end      
         item
-          Command = 232
+          Command = ecColumnSelect
           ShortCut = 24643
         end      
         item
-          Command = 233
+          Command = ecLineSelect
           ShortCut = 24652
         end      
         item
-          Command = 612
+          Command = ecTab
           ShortCut = 9
         end      
         item
-          Command = 613
+          Command = ecShiftTab
           ShortCut = 8201
         end      
         item
-          Command = 250
+          Command = ecMatchBracket
           ShortCut = 24642
+        end>
+      MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 1
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssShift]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 1
+          MoveCaret = True
+          Option = 1
+          Priority = 0
+        end      
+        item
+          Shift = [ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 3
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssShift, ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 3
+          MoveCaret = True
+          Option = 1
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccDouble
+          ClickDir = cdDown
+          Command = 6
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccTriple
+          ClickDir = cdDown
+          Command = 7
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccQuad
+          ClickDir = cdDown
+          Command = 8
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbMiddle
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 10
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssCtrl]
+          ShiftMask = [ssShift, ssAlt, ssCtrl]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 11
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
+      MouseSelActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 9
+          MoveCaret = False
+          Option = 0
+          Priority = 0
         end>
       Lines.Strings = (
         'TemplateSynEdit'
       )
       BracketHighlightStyle = sbhsBoth
-      object TSynGutterPartList
+      inline TSynGutterPartList
         object TSynGutterMarks
-          Width = 23
+          Width = 24
         end
         object TSynGutterLineNumber
           Width = 17
+          MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
           DigitCount = 2
@@ -537,20 +709,100 @@ object CodeTemplateDialog: TCodeTemplateDialog
           Width = 2
         end
         object TSynGutterCodeFolding
+          MouseActions = <          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbRight
+              ClickCount = ccSingle
+              ClickDir = cdUp
+              Command = 16
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = [ssShift]
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 1
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 0
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
+          MouseActionsExpanded = <          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end>
+          MouseActionsCollapsed = <          
+            item
+              Shift = [ssCtrl]
+              ShiftMask = [ssCtrl]
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 15
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = [ssCtrl]
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 15
+              MoveCaret = False
+              Option = 1
+              Priority = 0
+            end>
         end
       end
     end
     object AutoOnOptionsCheckGroup: TCheckGroup
       AnchorSideLeft.Control = EditTemplateGroupBox
-      AnchorSideTop.Control = InsertMacroButton
+      AnchorSideTop.Control = KeepSubIndentCheckBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = EditTemplateGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 30
-      Top = 32
+      Top = 63
       Width = 469
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
@@ -569,18 +821,52 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Constraints.MinHeight = 30
       TabOrder = 3
     end
+    object KeepSubIndentCheckBox: TCheckBox
+      AnchorSideLeft.Control = UseMacrosCheckBox
+      AnchorSideTop.Control = UseMacrosCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 35
+      Width = 186
+      BorderSpacing.Top = 6
+      Caption = 'KeepSubIndentCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+    end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 510
+    Height = 32
+    Top = 504
     Width = 485
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False
+    AsmAttri.FrameEdges = sfeAround
+    CommentAttri.FrameEdges = sfeAround
+    IDEDirectiveAttri.FrameEdges = sfeAround
+    IdentifierAttri.FrameEdges = sfeAround
+    KeyAttri.FrameEdges = sfeAround
+    NumberAttri.FrameEdges = sfeAround
+    SpaceAttri.FrameEdges = sfeAround
+    StringAttri.FrameEdges = sfeAround
+    SymbolAttri.FrameEdges = sfeAround
+    CaseLabelAttri.FrameEdges = sfeAround
+    DirectiveAttri.FrameEdges = sfeAround
     CompilerMode = pcmObjFPC
     NestedComments = True
     left = 304
