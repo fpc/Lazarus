@@ -131,6 +131,12 @@ type
     property List: TFPList read FList;
   end;
 
+  TChartAfterDrawEvent = procedure (
+    ASender: TChart; ACanvas: TCanvas; const ARect: TRect) of object;
+  TChartBeforeDrawEvent = procedure (
+    ASender: TChart; ACanvas: TCanvas; const ARect: TRect;
+    var ADoDefaultDrawing: Boolean) of object;
+
   { TChart }
 
   TChart = class(TCustomChart, ICoordTransformer)
@@ -148,6 +154,8 @@ type
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
+    FOnAfterDrawBackWall: TChartAfterDrawEvent;
+    FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
@@ -168,7 +176,7 @@ type
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ACanvas: TCanvas);
-    function GetAxis(AIndex: integer): TChartAxis; inline;
+    function GetAxis(AIndex: Integer): TChartAxis;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
@@ -189,6 +197,9 @@ type
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
+    procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
+    procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
+    procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
@@ -199,7 +210,7 @@ type
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
-    procedure DrawBackground(const ACanvas: TCanvas);
+    procedure DrawBackWall(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -288,8 +299,12 @@ type
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
+    property OnAfterDrawBackWall: TChartAfterDrawEvent
+      read FOnAfterDrawBackWall write SetOnAfterDrawBackWall;
+    property OnBeforeDrawBackWall: TChartBeforeDrawEvent
+      read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
-      read FOnDrawReticule write FOnDrawReticule;
+      read FOnDrawReticule write SetOnDrawReticule;
 
   published
     property Align;
@@ -445,7 +460,7 @@ begin
   Unused(DC);
 end;
 
-function TChart.GetAxis(AIndex: integer): TChartAxis;
+function TChart.GetAxis(AIndex: Integer): TChartAxis;
 begin
   Result := FAxisList.GetAxis(AIndex);
 end;
@@ -487,7 +502,7 @@ begin
     PrepareLegend(ACanvas, legendItems, FClipRect, legendRect);
   try
     PrepareAxis(ACanvas);
-    DrawBackground(ACanvas);
+    DrawBackWall(ACanvas);
     DisplaySeries(ACanvas);
     if Legend.Visible then
       Legend.Draw(ACanvas, legendItems, legendRect);
@@ -519,17 +534,24 @@ begin
   end;
 end;
 
-procedure TChart.DrawBackground(const ACanvas: TCanvas);
+procedure TChart.DrawBackWall(ACanvas: TCanvas);
+var
+  defaultDrawing: Boolean = true;
 begin
-  with ACanvas do begin
-    if FFrame.Visible then
-      Pen.Assign(FFrame)
-    else
-      Pen.Style := psClear;
-    Brush.Color := BackColor;
-    with FClipRect do
-      Rectangle(Left, Top, Right + 1, Bottom + 1);
-  end;
+  if Assigned(OnBeforeDrawBackWall) then
+    OnBeforeDrawBackWall(Self, ACanvas, FClipRect, defaultDrawing);
+  if defaultDrawing then
+    with ACanvas do begin
+      if FFrame.Visible then
+        Pen.Assign(FFrame)
+      else
+        Pen.Style := psClear;
+      Brush.Color := BackColor;
+      with FClipRect do
+        Rectangle(Left, Top, Right + 1, Bottom + 1);
+    end;
+  if Assigned(OnAfterDrawBackWall) then
+    OnAfterDrawBackWall(Self, ACanvas, FClipRect);
 
   // Z axis
   if Depth > 0 then
@@ -941,6 +963,27 @@ end;
 procedure TChart.SetMargins(AValue: TChartMargins);
 begin
   FMargins.Assign(AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
+begin
+  if FOnAfterDrawBackWall = AValue then exit;
+  FOnAfterDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
+begin
+  if FOnBeforeDrawBackWall = AValue then exit;
+  FOnBeforeDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
+begin
+  if FOnDrawReticule = AValue then exit;
+  FOnDrawReticule := AValue;
   Invalidate;
 end;
 
