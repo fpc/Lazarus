@@ -5600,7 +5600,6 @@ tools/chmmaker/unit1.lfm svneol=native#text/plain
 tools/chmmaker/unit1.lrs svneol=native#text/pascal
 tools/chmmaker/unit1.pas svneol=native#text/plain
 tools/compile_all.sh svneol=native#text/plain
-tools/convert_po_file_to_utf-8.sh svneol=native#text/plain
 tools/copy_po_files_to_lazarus_sources.sh -text svneol=native#application/x-sh
 tools/debugserver/README.txt svneol=native#text/plain
 tools/debugserver/debugserver.ico -text
