@@ -3430,26 +3430,26 @@ dmFindTarget: find child control under the mouse
       <!-- property Visibility: public -->
       <element name="TAnchorSide.Owner">
         <short>
-          <var>Owner</var> - the Control that owns the current control that is to be anchored</short>
-        <descr/>
+          <var>Owner</var> - the Control that owns this AnchorSide</short>
+        <descr>TAnchorSide.Owner is the control *to be* anchored. Every control has four AnchorSide. For example AButton1.AnchorSide[akBottom].Owner = AButton1.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TAnchorSide.Kind">
-        <short>The <var>Kind</var> of anchoring to be used</short>
-        <descr/>
+        <short>The <var>Kind</var> is the control side</short>
+        <descr>Every control has four AnchorSide, one for each side. For example AButton1.AnchorSide[akLeft].Kind=akLeft.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TAnchorSide.Control">
-        <short>The control whose anchoring properties are being determined</short>
-        <descr/>
+        <short>The target control of the anchor</short>
+        <descr>For example if the right side of a Button1 is anchored to the left side of Edit1, then Button1.AnchorSide[akRight].Control=Edit1 and Button1.AnchorSide[akRight].Side=asrLeft.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TAnchorSide.Side">
         <short>The side on which anchoring is to be performed</short>
-        <descr/>
+        <descr>For example if the right side of a Button1 is anchored to the left side of Edit1, then Button1.AnchorSide[akRight].Control=Edit1 and Button1.AnchorSide[akRight].Side=asrLeft.</descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
