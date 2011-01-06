@@ -2,12 +2,12 @@
   This source is only used to compile and install the package.
  }
 
-unit macosfiles; 
+unit MacOSFiles; 
 
 interface
 
 uses
-  MacApplicationRes, LazarusPackageIntf;
+   MacApplicationRes, LazarusPackageIntf;
 
 implementation
 
