@@ -12,23 +12,23 @@ uses
   fpclist.txt contains lines of format:
     [Name]
     exe=/path/fpc.exe
-    symbols=gs,gw,gw3
+    symbols=gs,gw,gwset,gw3
 
 
   gdblist.txt contains lines of format:
     [Name]
     exe=/path/fpc.exe
-    symbols=gs,gw,gw3
+    symbols=gs,gw,gwset,gw3
 
 *)
 
 type
-  TSymbolType = (stStabs, stDwarf, stDwarf3);
+  TSymbolType = (stStabs, stDwarf, stDwarfSet, stDwarf3);
   TSymbolTypes = set of TSymbolType;
 
 const
-  SymbolTypeNames: Array [TSymbolType] of String = ('Stabs', 'Dwarf', 'Dwarf3');
-  SymbolTypeSwitches: Array [TSymbolType] of String = ('-gs', '-gw', '-gw3');
+  SymbolTypeNames: Array [TSymbolType] of String = ('Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3');
+  SymbolTypeSwitches: Array [TSymbolType] of String = ('-gs', '-gw', '-gw -godwarfsets', '-gw3');
 
 type
 
@@ -36,6 +36,7 @@ type
         Name: string;
         ExeName: string;
         SymbolTypes: TSymbolTypes;
+        ExtraOpts: string;
       end;
 
   TDebuggerInfo = record
@@ -67,7 +68,7 @@ type
     function  AddName(const AName: string): Integer; override;
     procedure SetAttribute(AIndex: Integer; const AAttr, AValue: string); override;
   public
-    procedure Add(Name, Exe: string);
+    procedure Add(Name, Exe: string; Opts: String = '');
     function Count: Integer;
     property CompilerInfo[Index: Integer]: TCompilerInfo read GetCompilerInfo;
     property Name[Index: Integer]: string read GetName;
@@ -207,6 +208,7 @@ begin
     end;
     if s2 = 'gs' then Result := Result + [stStabs];
     if s2 = 'gw' then Result := Result + [stDwarf];
+    if s2 = 'gwset' then Result := Result + [stDwarfSet];
     if s2 = 'gw3' then Result := Result + [stDwarf3];
   end;
 end;
@@ -219,8 +221,10 @@ begin
   Result := TCompilerList.Create;
   if FileExists(ConfDir + 'fpclist.txt') then
     Result.LoadFromFile(ConfDir + 'fpclist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then
+  if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then begin
     Result.Add('fpc from conf', EnvironmentOptions.CompilerFilename);
+    Result.Add('fpc from conf -Xe', EnvironmentOptions.CompilerFilename, '-Xe');
+  end;
   Compilers := Result;
 end;
 
@@ -280,6 +284,7 @@ begin
     k := pos('=', s);
     SetAttribute(j, copy(s, 1, k-1), copy(s, k + 1, length(s)));
   end;
+  txt.Free;
 end;
 
 { TCompilerList }
@@ -310,27 +315,32 @@ begin
   SetLength(FList, Result + 1);
   FList[Result].Name := AName;
   FList[Result].SymbolTypes := [];
+  FList[Result].ExtraOpts := '';
 end;
 
 procedure TCompilerList.SetAttribute(AIndex: Integer; const AAttr, AValue: string);
 begin
-  case StringCase(AAttr, ['exe', 'symbols'], True, False) of
+  case StringCase(AAttr, ['exe', 'symbols', 'opts'], True, False) of
     0: begin // exe
         FList[AIndex].ExeName := AValue;
       end;
     1: begin // symbols
         FList[AIndex].SymbolTypes := StrToSymbolTypes(AValue);
       end;
+    2: begin //opts
+        FList[AIndex].ExtraOpts := AValue;
+      end;
   end;
 end;
 
-procedure TCompilerList.Add(Name, Exe: string);
+procedure TCompilerList.Add(Name, Exe: string; Opts: String = '');
 var
   i: LongInt;
 begin
   i := AddName(Name);
   FList[i].ExeName := Exe;
-  FList[i].SymbolTypes := [stStabs, stDwarf];
+  FList[i].SymbolTypes := [stStabs, stDwarf, stDwarfSet];
+  FList[i].ExtraOpts := Opts;
 end;
 
 function TCompilerList.Count: Integer;
@@ -386,7 +396,7 @@ var
 begin
   i := AddName(Name);
   FList[i].ExeName := Exe;
-  FList[i].SymbolTypes := [stStabs, stDwarf];
+  FList[i].SymbolTypes := [stStabs, stDwarf, stDwarfSet];
 end;
 
 function TDebuggerList.Count: Integer;
@@ -488,7 +498,7 @@ begin
     if FileExists(ExeName) then
       raise EAssertionFailedError.Create('Found existing file before compiling: ' + ExeName);
     FCompiledList.Add(ExeName);
-    ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch, ExeName, CompilerInfo.ExeName);
+    ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts, ExeName, CompilerInfo.ExeName);
     if ErrMsg <> '' then
       raise EAssertionFailedError.Create('Compilation Failed: ' + ExeName + LineEnding + ErrMsg);
   end;
@@ -664,6 +674,7 @@ initialization
 finalization
   FreeAndNil(Compilers);
   FreeAndNil(Debuggers);
+  FreeAndNil(EnvironmentOptions);
 
 end.
 

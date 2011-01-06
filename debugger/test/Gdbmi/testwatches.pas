@@ -6,7 +6,15 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry,
-  TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr;
+  TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
+
+const
+  BREAK_LINE_FOOFUNC = 113;
+  RUN_TEST_ONLY = -1; // -1 run all
+
+(*  TODO:
+  - procedure of object currently is skRecord
+*)
 
 type
 
@@ -35,6 +43,7 @@ type
   TTestWatches = class(TGDBTestCase)
   private
     FWatches: TBaseWatches;
+    procedure DoDbgOutput(Sender: TObject; const AText: String);
   public
     procedure DebugInteract(dbg: TGDBMIDebugger);
 
@@ -42,15 +51,19 @@ type
     procedure TestWatches;
   end;
 
-
 implementation
+
+var
+  DbgForm: TForm;
+  DbgMemo: TMemo;
+  DbgLog: Boolean;
 
 const
   RNoPreQuote  = '(^|[^''])'; // No open qoute (Either at start, or other char)
   RNoPostQuote = '($|[^''])'; // No close qoute (Either at end, or other char)
 
 type
-  TWatchExpectationFlag = (fnoDwrf, fnoStabs, fTpMtch);
+  TWatchExpectationFlag = (fnoDwrf, fnoDwrfNoSet, fnoDwrfSet, fnoStabs, fTpMtch);
   TWatchExpectationFlags = set of TWatchExpectationFlag;
   TWatchExpectation = record
     Exp:  string;
@@ -72,7 +85,7 @@ const
   Match_ArgTFoo1 = '<TFoo> = \{.+ValueInt = 31';
   // Todo: Dwarf fails with dereferenced var pointer types
 
-  ExpectBrk1NoneNil: Array [1..55] of TWatchExpectation = (
+  ExpectBrk1NoneNil: Array [1..101] of TWatchExpectation = (
     { records }
 
     (Exp: 'ArgTRec';       Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
@@ -102,6 +115,8 @@ const
     (Exp: 'PVarTRec^';      Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
     (Exp: 'PVarTNewRec';   Mtch: '^\^TNewRec\('+Match_PasPointer;    Kind: skPointer;     TpNm: '^TNewRec'; Flgs: []),
     (Exp: 'PVarTNewRec^';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
+
+// @ArgTRec @VArgTRec  @ArgTRec^ @VArgTRec^
 
       { Classes }
 
@@ -150,18 +165,18 @@ const
     *)
 
       { strings }
-    (Exp: 'ArgTMyAnsiString';      Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgTMyAnsiString';     Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
-    (Exp: 'ArgPMyAnsiString';      Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
-    (Exp: 'VArgPMyAnsiString';     Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
-    (Exp: 'ArgPMyAnsiString^';      Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgPMyAnsiString^';     Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch, fnoDwrf]),
-    (Exp: 'ArgPPMyAnsiString';     Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PPMyAnsiString'; Flgs: []),
-    (Exp: 'VArgPPMyAnsiString';    Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PPMyAnsiString'; Flgs: []),
-    (Exp: 'ArgPPMyAnsiString^';     Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
-    (Exp: 'VArgPPMyAnsiString^';    Mtch: Match_Pointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: [fnoDwrf]),
-    (Exp: 'ArgPPMyAnsiString^^';    Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgPPMyAnsiString^^';   Mtch: '''ansi''';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch, fnoDwrf]),
+    (Exp: 'ArgTMyAnsiString';      Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgTMyAnsiString';     Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
+    (Exp: 'ArgPMyAnsiString';      Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
+    (Exp: 'VArgPMyAnsiString';     Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
+    (Exp: 'ArgPMyAnsiString^';      Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgPMyAnsiString^';     Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch, fnoDwrf]),
+    (Exp: 'ArgPPMyAnsiString';     Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PPMyAnsiString'; Flgs: []),
+    (Exp: 'VArgPPMyAnsiString';    Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PPMyAnsiString'; Flgs: []),
+    (Exp: 'ArgPPMyAnsiString^';     Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: []),
+    (Exp: 'VArgPPMyAnsiString^';    Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'PMyAnsiString'; Flgs: [fnoDwrf]),
+    (Exp: 'ArgPPMyAnsiString^^';    Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgPPMyAnsiString^^';   Mtch: '''ansi''$';         Kind: skPointer;      TpNm: '^(TMy)?AnsiString$'; Flgs: [fTpMtch, fnoDwrf]),
 
     (*
     (Exp: 'ArgTNewAnsiString';      Mtch: '';      Kind: sk;      TpNm: 'TNewAnsiString'; Flgs: []),
@@ -170,12 +185,12 @@ const
     (Exp: 'VArgPNewAnsiString';     Mtch: '';      Kind: sk;      TpNm: 'PNewAnsiString'; Flgs: []),
     *)
 
-    (Exp: 'ArgTMyShortString';      Mtch: '''short''';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgTMyShortString';     Mtch: '''short''';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
-    (Exp: 'ArgPMyShortString';      Mtch: Match_Pointer;      Kind: skPointer;     TpNm: 'P(My)?ShortString'; Flgs: [fTpMtch]),
-    (Exp: 'VArgPMyShortString';     Mtch: Match_Pointer;      Kind: skPointer;     TpNm: 'P(My)?ShortString'; Flgs: [fTpMtch]),
-    (Exp: 'ArgPMyShortString^';      Mtch: '''short''';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgPMyShortString^';     Mtch: '''short''';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch, fnoDwrf])//,
+    (Exp: 'ArgTMyShortString';      Mtch: '''short''$';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgTMyShortString';     Mtch: '''short''$';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
+    (Exp: 'ArgPMyShortString';      Mtch: Match_PasPointer;      Kind: skPointer;     TpNm: 'P(My)?ShortString'; Flgs: [fTpMtch]),
+    (Exp: 'VArgPMyShortString';     Mtch: Match_PasPointer;      Kind: skPointer;     TpNm: 'P(My)?ShortString'; Flgs: [fTpMtch]),
+    (Exp: 'ArgPMyShortString^';      Mtch: '''short''$';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgPMyShortString^';     Mtch: '''short''$';        Kind: skSimple;      TpNm: '^(TMy)?ShortString$'; Flgs: [fTpMtch, fnoDwrf]),
 
     (*
     (Exp: 'ArgPPMyShortString';      Mtch: '';      Kind: sk;      TpNm: 'PPMyShortString'; Flgs: []),
@@ -184,9 +199,11 @@ const
     (Exp: 'VArgTNewhortString';      Mtch: '';      Kind: sk;      TpNm: 'TNewhortString'; Flgs: []),
     (Exp: 'ArgPNewhortString';      Mtch: '';      Kind: sk;      TpNm: 'PNewhortString'; Flgs: []),
     (Exp: 'VArgPNewhortString';      Mtch: '';      Kind: sk;      TpNm: 'PNewhortString'; Flgs: []),
+*)
 
-    (Exp: 'ArgTMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'TMyWideString'; Flgs: []),
-    (Exp: 'VArgTMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'TMyWideString'; Flgs: []),
+    (Exp: 'ArgTMyWideString';      Mtch: '''wide''$';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgTMyWideString';     Mtch: '''wide''$';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
+    (*
     (Exp: 'ArgPMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'PMyWideString'; Flgs: []),
     (Exp: 'VArgPMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'PMyWideString'; Flgs: []),
     (Exp: 'ArgPPMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'PPMyWideString'; Flgs: []),
@@ -203,27 +220,29 @@ const
     (Exp: 'VArgPMyString10';      Mtch: '';      Kind: sk;      TpNm: 'PMyString10'; Flgs: []),
     (Exp: 'ArgPPMyString10';      Mtch: '';      Kind: sk;      TpNm: 'PPMyString10'; Flgs: []),
     (Exp: 'VArgPPMyString10';      Mtch: '';      Kind: sk;      TpNm: 'PPMyString10'; Flgs: []),
+*)
 
       { simple }
 
-    (Exp: 'ArgByte';      Mtch: '';      Kind: sk;      TpNm: 'Byte'; Flgs: []),
-    (Exp: 'VArgByte';      Mtch: '';      Kind: sk;      TpNm: 'Byte'; Flgs: []),
-    (Exp: 'ArgWord';      Mtch: '';      Kind: sk;      TpNm: 'Word'; Flgs: []),
-    (Exp: 'VArgWord';      Mtch: '';      Kind: sk;      TpNm: 'Word'; Flgs: []),
-    (Exp: 'ArgLongWord';      Mtch: '';      Kind: sk;      TpNm: 'LongWord'; Flgs: []),
-    (Exp: 'VArgLongWord';      Mtch: '';      Kind: sk;      TpNm: 'LongWord'; Flgs: []),
-    (Exp: 'ArgQWord';      Mtch: '';      Kind: sk;      TpNm: 'QWord'; Flgs: []),
-    (Exp: 'VArgQWord';      Mtch: '';      Kind: sk;      TpNm: 'QWord'; Flgs: []),
+    (Exp: 'ArgByte';      Mtch: '^25$';      Kind: skSimple;      TpNm: 'Byte'; Flgs: []),
+    (Exp: 'VArgByte';     Mtch: '^25$';      Kind: skSimple;      TpNm: 'Byte'; Flgs: []),
+    (Exp: 'ArgWord';      Mtch: '^26$';      Kind: skSimple;      TpNm: 'Word'; Flgs: []),
+    (Exp: 'VArgWord';     Mtch: '^26$';      Kind: skSimple;      TpNm: 'Word'; Flgs: []),
+    (Exp: 'ArgLongWord';  Mtch: '^27$';      Kind: skSimple;      TpNm: 'LongWord'; Flgs: []),
+    (Exp: 'VArgLongWord'; Mtch: '^27$';      Kind: skSimple;      TpNm: 'LongWord'; Flgs: []),
+    (Exp: 'ArgQWord';     Mtch: '^28$';      Kind: skSimple;      TpNm: 'QWord'; Flgs: []),
+    (Exp: 'VArgQWord';    Mtch: '^28$';      Kind: skSimple;      TpNm: 'QWord'; Flgs: []),
 
-    (Exp: 'ArgShortInt';      Mtch: '';      Kind: sk;      TpNm: 'ShortInt'; Flgs: []),
-    (Exp: 'VArgShortInt';      Mtch: '';      Kind: sk;      TpNm: 'ShortInt'; Flgs: []),
-    (Exp: 'ArgSmallInt';      Mtch: '';      Kind: sk;      TpNm: 'SmallInt'; Flgs: []),
-    (Exp: 'VArgSmallInt';      Mtch: '';      Kind: sk;      TpNm: 'SmallInt'; Flgs: []),
-    (Exp: 'ArgInt';      Mtch: '';      Kind: sk;      TpNm: 'Integer'; Flgs: []),
-    (Exp: 'VArgInt';      Mtch: '';      Kind: sk;      TpNm: 'Integer'; Flgs: []),
-    (Exp: 'ArgInt64';      Mtch: '';      Kind: sk;      TpNm: 'Int64'; Flgs: []),
-    (Exp: 'VArgInt64';      Mtch: '';      Kind: sk;      TpNm: 'Int64'; Flgs: []),
+    (Exp: 'ArgShortInt';  Mtch: '^35$';      Kind: skSimple;      TpNm: 'ShortInt'; Flgs: []),
+    (Exp: 'VArgShortInt'; Mtch: '^35$';      Kind: skSimple;      TpNm: 'ShortInt'; Flgs: []),
+    (Exp: 'ArgSmallInt';  Mtch: '^36$';      Kind: skSimple;      TpNm: 'SmallInt'; Flgs: []),
+    (Exp: 'VArgSmallInt'; Mtch: '^36$';      Kind: skSimple;      TpNm: 'SmallInt'; Flgs: []),
+    (Exp: 'ArgInt';       Mtch: '^37$';      Kind: skSimple;      TpNm: 'Integer|LongInt'; Flgs: [fTpMtch]),
+    (Exp: 'VArgInt';      Mtch: '^37$';      Kind: skSimple;      TpNm: 'Integer|LongInt'; Flgs: [fTpMtch]),
+    (Exp: 'ArgInt64';     Mtch: '^38$';      Kind: skSimple;      TpNm: 'Int64'; Flgs: []),
+    (Exp: 'VArgInt64';    Mtch: '^38$';      Kind: skSimple;      TpNm: 'Int64'; Flgs: []),
 
+    (*
     (Exp: 'ArgPByte';      Mtch: '';      Kind: sk;      TpNm: 'PByte'; Flgs: []),
     (Exp: 'VArgPByte';      Mtch: '';      Kind: sk;      TpNm: 'PByte'; Flgs: []),
     (Exp: 'ArgPWord';      Mtch: '';      Kind: sk;      TpNm: 'PWord'; Flgs: []),
@@ -241,17 +260,61 @@ const
     (Exp: 'VArgPInt';      Mtch: '';      Kind: sk;      TpNm: 'PInteger'; Flgs: []),
     (Exp: 'ArgPInt64';      Mtch: '';      Kind: sk;      TpNm: 'PInt64'; Flgs: []),
     (Exp: 'VArgPInt64';      Mtch: '';      Kind: sk;      TpNm: 'PInt64'; Flgs: []),
+*)
 
-    (Exp: 'ArgPointer';      Mtch: '';      Kind: sk;      TpNm: 'Pointer'; Flgs: []),
-    (Exp: 'VArgPointer';      Mtch: '';      Kind: sk;      TpNm: 'Pointer'; Flgs: []),
+    (Exp: 'ArgPointer';      Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'Pointer'; Flgs: []),
+    (Exp: 'VArgPointer';     Mtch: Match_PasPointer;      Kind: skPointer;      TpNm: 'Pointer'; Flgs: []),
+    (*
     (Exp: 'ArgPPointer';      Mtch: '';      Kind: sk;      TpNm: 'PPointer'; Flgs: []),
     (Exp: 'VArgPPointer';      Mtch: '';      Kind: sk;      TpNm: 'PPointer'; Flgs: []),
-
-    (Exp: 'ArgDouble';      Mtch: '';      Kind: sk;      TpNm: 'Double'; Flgs: []),
-    (Exp: 'VArgDouble';      Mtch: '';      Kind: sk;      TpNm: 'Double'; Flgs: []),
-    (Exp: 'ArgExtended';      Mtch: '';      Kind: sk;      TpNm: 'Extended'; Flgs: []),
-    (Exp: 'VArgExtended';      Mtch: '';      Kind: sk;      TpNm: 'Extended'; Flgs: []),
 *)
+
+    (Exp: 'ArgDouble';       Mtch: '1\.123';      Kind: skSimple;      TpNm: 'Double'; Flgs: []),
+    (Exp: 'VArgDouble';      Mtch: '1\.123';      Kind: skSimple;      TpNm: 'Double'; Flgs: []),
+    (Exp: 'ArgExtended';     Mtch: '2\.345';      Kind: skSimple;      TpNm: 'Extended'; Flgs: []),
+    (Exp: 'VArgExtended';    Mtch: '2\.345';      Kind: skSimple;      TpNm: 'Extended'; Flgs: []),
+
+    { enum/set }
+
+    (Exp: 'ArgEnum';       Mtch: '^Two$';                      Kind: skEnum;       TpNm: 'TEnum'; Flgs: []),
+    (Exp: 'ArgEnumSet';    Mtch: '^\[Two(, ?|\.\.)Three\]$';   Kind: skSet;        TpNm: 'TEnumSet'; Flgs: [fnoDwrfNoSet]),
+    (Exp: 'ArgSet';        Mtch: '^\[Alpha(, ?|\.\.)Beta\]$';  Kind: skSet;        TpNm: 'TSet'; Flgs: [fnoDwrfNoSet]),
+
+    (Exp: 'VarEnumA';      Mtch: '^e3$';                       Kind: skEnum;       TpNm: ''; Flgs: []),
+    // maybe typename = "set of TEnum"
+    (Exp: 'VarEnumSetA';   Mtch: '^\[Three\]$';                Kind: skSet;        TpNm: ''; Flgs: [fnoDwrfNoSet]),
+    (Exp: 'VarSetA';       Mtch: '^\[s2\]$';                   Kind: skSet;        TpNm: ''; Flgs: [fnoDwrfNoSet]),
+
+    { variants }
+
+    (Exp: 'ArgVariantInt';       Mtch: '^5$';         Kind: skVariant;       TpNm: 'Variant'; Flgs: []),
+    (Exp: 'ArgVariantString';    Mtch: '^''v''$';     Kind: skVariant;       TpNm: 'Variant'; Flgs: []),
+
+    (Exp: 'VArgVariantInt';       Mtch: '^5$';         Kind: skVariant;       TpNm: 'Variant'; Flgs: []),
+    (Exp: 'VArgVariantString';    Mtch: '^''v''$';     Kind: skVariant;       TpNm: 'Variant'; Flgs: []),
+
+    { procedure/function/method }
+
+    (Exp: 'ArgProcedure';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'TProcedure'; Flgs: []),
+    (Exp: 'ArgFunction';        Mtch: 'function';            Kind: skFunction;        TpNm: 'TFunction';  Flgs: []),
+    (Exp: 'ArgObjProcedure';    Mtch: 'procedure.*of object|record.*procedure.*self =';
+                                                             Kind: skRecord;          TpNm: 'TObjProcedure'; Flgs: []),
+    (Exp: 'ArgObjFunction';     Mtch: 'function.*of object|record.*function.*self =';
+                                                             Kind: skRecord;          TpNm: 'TObjFunction';  Flgs: []),
+
+    (Exp: 'VArgProcedure';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'TProcedure'; Flgs: []),
+    (Exp: 'VArgFunction';        Mtch: 'function';            Kind: skFunction;        TpNm: 'TFunction';  Flgs: []),
+    (Exp: 'VArgObjProcedure';    Mtch: 'procedure.*of object|record.*procedure.*self =';
+                                                              Kind: skRecord;          TpNm: 'TObjProcedure'; Flgs: []),
+    (Exp: 'VArgObjFunction';     Mtch: 'function.*of object|record.*function.*self =';
+                                                              Kind: skRecord;          TpNm: 'TObjFunction';  Flgs: []),
+
+    (Exp: 'VarProcedureA';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'Procedure'; Flgs: []),
+    (Exp: 'VarFunctionA';        Mtch: 'function';            Kind: skFunction;        TpNm: 'Function';  Flgs: []),
+    (Exp: 'VarObjProcedureA';    Mtch: 'procedure.*of object|record.*procedure.*self =';
+                                                              Kind: skRecord;          TpNm: 'Procedure'; Flgs: []),
+    (Exp: 'VarObjFunctionA';     Mtch: 'function.*of object|record.*function.*self =';
+                                                              Kind: skRecord;          TpNm: 'Function';  Flgs: [])//,
 
   );
 
@@ -265,8 +328,9 @@ procedure TTestWatch.DoChanged;
 var
   v: String;
 begin
-  if FMaster = nil then exit;;
+  if FMaster = nil then exit;
   if (FMaster.Valid = vsValid) then begin
+    DbgLog := True;
     v := FMaster.Value;
     if v <> '<evaluating>' then begin // TODO: need better check
       if FHasValue and (FValue <> v) then begin
@@ -298,6 +362,12 @@ end;
 
 { TTestWatches }
 
+procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
+begin
+  if DbgLog then
+    DbgMemo.Lines.Add(AText);
+end;
+
 procedure TTestWatches.DebugInteract(dbg: TGDBMIDebugger);
 var s: string;
 begin
@@ -320,7 +390,9 @@ var FailText: String;
     s: String;
   begin
     rx := nil;
-    if (fnoDwrf in Data.Flgs) and (SymbolType = stDwarf) then exit;
+    if (fnoDwrf in Data.Flgs) and (SymbolType in [stDwarf, stDwarfSet]) then exit;
+    if (fnoDwrfNoSet in Data.Flgs) and (SymbolType in [stDwarf]) then exit;
+    if (fnoDwrfSet   in Data.Flgs) and (SymbolType in [stDwarfSet]) then exit;
     if (fnoStabs in Data.Flgs) and (SymbolType = stStabs) then exit;
 
     Name := Name + Data.Exp;
@@ -373,19 +445,37 @@ begin
     FWatches := TBaseWatches.Create(TBaseWatch);
     dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
 
+    if RUN_TEST_ONLY >= 0 then begin
+      dbg.OnDbgOutput  := @DoDbgOutput;
+      DbgLog := False;
+      if DbgForm = nil then begin
+        DbgForm := TForm.Create(Application);
+        DbgMemo := TMemo.Create(DbgForm);
+        DbgMemo.Parent := DbgForm;
+        DbgMemo.Align := alClient;
+        DbgForm.Show;
+      end;
+      DbgMemo.Lines.Add('');
+      DbgMemo.Lines.Add(' *** ' + Parent.TestSuiteName + ' ' + Parent.TestName + ' ' + TestSuiteName+' '+TestName);
+      DbgMemo.Lines.Add('');
+    end;
+
     (* Add breakpoints *)
     //with dbg.BreakPoints.Add('WatchesPrg.pas', 44) do begin
     //  InitialEnabled := True;
     //  Enabled := True;
     //end;
-    with dbg.BreakPoints.Add('WatchesPrg.pas', 395) do begin
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
       InitialEnabled := True;
       Enabled := True;
     end;
 
     (* Create all watches *)
-    for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do
-      TTestWatch.Create(FWatches, dbg.Watches.Add(ExpectBrk1NoneNil[i].Exp));
+    if RUN_TEST_ONLY >= 0 then
+      TTestWatch.Create(FWatches, dbg.Watches.Add(ExpectBrk1NoneNil[RUN_TEST_ONLY].Exp))
+    else
+      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do
+        TTestWatch.Create(FWatches, dbg.Watches.Add(ExpectBrk1NoneNil[i].Exp));
 
 
     (* Start debugging *)
@@ -401,8 +491,11 @@ begin
     dbg.Run;
 
     (* Hit first breakpoint: Test *)
-    for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do
-    TestWatch('Brk1 ', ExpectBrk1NoneNil[i]);
+    if RUN_TEST_ONLY >= 0 then
+      TestWatch('Brk1 ', ExpectBrk1NoneNil[RUN_TEST_ONLY])
+    else
+      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do
+        TestWatch('Brk1 ', ExpectBrk1NoneNil[i]);
 
     dbg.Run;
 
@@ -413,6 +506,7 @@ begin
     dbg.Free;
     FreeAndNil(FWatches);
 
+    if (DbgMemo <> nil) and (FailText <> '') then DbgMemo.Lines.Add(FailText);
     //debugln(FailText)
     if FailText <> '' then fail(FailText);
   end;

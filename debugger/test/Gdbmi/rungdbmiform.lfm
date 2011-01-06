@@ -1,0 +1,154 @@
+object Form1: TForm1
+  Left = 849
+  Height = 463
+  Top = 298
+  Width = 599
+  Caption = 'Form1'
+  ClientHeight = 463
+  ClientWidth = 599
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object Panel1: TPanel
+    Left = 6
+    Height = 52
+    Top = 6
+    Width = 587
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 52
+    ClientWidth = 587
+    TabOrder = 0
+    object edBreakFile: TEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edPasFile
+      AnchorSideTop.Side = asrBottom
+      Left = 36
+      Height = 23
+      Top = 29
+      Width = 176
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      TabOrder = 0
+    end
+    object edBreakLine: TEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edBreakFile
+      Left = 247
+      Height = 23
+      Top = 29
+      Width = 115
+      BorderSpacing.Left = 6
+      TabOrder = 1
+    end
+    object Button1: TButton
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 479
+      Height = 25
+      Top = 27
+      Width = 108
+      Anchors = [akRight, akBottom]
+      Caption = 'Run'
+      OnClick = Button1Click
+      TabOrder = 2
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = edBreakFile
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 16
+      Top = 32
+      Width = 30
+      Caption = 'Break'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = edBreakFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edBreakFile
+      AnchorSideTop.Side = asrCenter
+      Left = 218
+      Height = 16
+      Top = 32
+      Width = 23
+      BorderSpacing.Left = 6
+      Caption = 'Line'
+      ParentColor = False
+    end
+    object edPasFile: TComboBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 364
+      ItemHeight = 15
+      TabOrder = 3
+    end
+    object BitBtn1: TBitBtn
+      AnchorSideLeft.Control = edPasFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edPasFile
+      AnchorSideTop.Side = asrCenter
+      Left = 370
+      Height = 25
+      Top = -1
+      Width = 35
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = '...'
+      OnClick = BitBtn1Click
+      TabOrder = 4
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 399
+    Top = 64
+    Width = 599
+    Align = alClient
+    ClientHeight = 399
+    ClientWidth = 599
+    TabOrder = 1
+    object Memo1: TMemo
+      Left = 1
+      Height = 125
+      Top = 1
+      Width = 597
+      Align = alTop
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+    object Memo2: TMemo
+      Left = 1
+      Height = 269
+      Top = 129
+      Width = 597
+      Align = alClient
+      ScrollBars = ssAutoBoth
+      TabOrder = 1
+    end
+    object Splitter1: TSplitter
+      Cursor = crVSplit
+      Left = 1
+      Height = 3
+      Top = 126
+      Width = 597
+      Align = alTop
+      ResizeAnchor = akTop
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 136
+    top = 72
+  end
+end
