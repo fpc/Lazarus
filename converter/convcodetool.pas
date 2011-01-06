@@ -553,7 +553,7 @@ var
 
   procedure ReadParams(FuncInfo: TFuncReplacement);
   var
-    ExprStartPos, ExprEndPos: integer;
+    ExprStartPos, ExprEndPos, BracketCount: integer;
   begin
     FuncInfo.InclSemiColon:='';
     FuncInfo.StartPos:=xStart;
@@ -566,14 +566,21 @@ var
         ReadNextAtom;
         if not AtomIsChar(')') then begin
           // read all expressions
+          BracketCount:=0;
           while true do begin
             ExprStartPos:=CurPos.StartPos;
             // read til comma or bracket close
             repeat
               ReadNextAtom;
-              if (CurPos.StartPos>SrcLen)
-              or (CurPos.Flag in [cafRoundBracketClose, cafComma]) then
+              if (CurPos.StartPos>SrcLen) or (CurPos.Flag=cafComma) then
                 break;
+              if (CurPos.Flag=cafRoundBracketOpen) then
+                Inc(BracketCount)
+              else if (CurPos.Flag=cafRoundBracketClose) then begin
+                if BracketCount=0 then
+                  break;
+                Dec(BracketCount);
+              end;
             until false;
             ExprEndPos:=CurPos.StartPos;
             // Add parameter to list
