@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ToDoListLaz 1.0.1
 #
-#   This file was generated on 07/02/2010
+#   This file was generated on 01/06/2011
 
 [package]
 name=todolistlaz
@@ -10,9 +10,9 @@ version=1.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../codetools/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
-includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scghi
+unitdir=../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+includedir=.
+options= -MObjFPC -Scghi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=todolistlaz.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/todolistlaz$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) todolistlaz$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/ToDoListLaz.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) todolistlaz$(PPUEXT) compiled
