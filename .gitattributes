@@ -2028,7 +2028,6 @@ components/sqlite/sqlitelaz.lpk svneol=native#text/plain
 components/sqlite/sqlitelaz.pas svneol=native#text/plain
 components/sqlite/tsqlite3dataset.png -text
 components/sqlite/tsqlitedataset.png -text
-components/synedit/Makefile.compiled svneol=native#text/plain
 components/synedit/allsynedit.pas svneol=native#text/plain
 components/synedit/allsyneditunits.pp svneol=native#text/pascal
 components/synedit/design/README.txt svneol=native#text/plain
