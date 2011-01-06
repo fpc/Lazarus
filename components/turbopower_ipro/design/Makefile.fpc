@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TurboPowerIProDsgn 0.0
 #
-#   This file was generated on 07/02/2010
+#   This file was generated on 01/06/2011
 
 [package]
 name=turbopoweriprodsgn
@@ -10,9 +10,9 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
-includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
+unitdir=../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../units/$(CPU_TARGET)-$(OS_TARGET) ../../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+includedir=.
+options= -MObjFPC -Scgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=turbopoweriprodsgn.pas
@@ -45,9 +45,12 @@ endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIProDsgn.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT) compiled
