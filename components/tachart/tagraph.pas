@@ -28,7 +28,7 @@ unit TAGraph;
 interface
 
 uses
-  LCLIntF, LCLType, LResources,
+  LCLType, LResources,
   SysUtils, Classes, Controls, Graphics, Dialogs,
   TAChartUtils, TATypes, TALegend, TAChartAxis;
 
@@ -154,7 +154,9 @@ type
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
+    FOnAfterDrawBackground: TChartAfterDrawEvent;
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
+    FOnBeforeDrawBackground: TChartBeforeDrawEvent;
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
@@ -197,7 +199,9 @@ type
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
+    procedure SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
+    procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
@@ -208,7 +212,7 @@ type
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
-    procedure Clean(ACanvas: TCanvas; ARect: TRect);
+    procedure Clear(ACanvas: TCanvas; const ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
     procedure DrawBackWall(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
@@ -299,8 +303,11 @@ type
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
+    property OnAfterDrawBackground: TChartAfterDrawEvent
+      read FOnAfterDrawBackground write SetOnAfterDrawBackground;
     property OnAfterDrawBackWall: TChartAfterDrawEvent
       read FOnAfterDrawBackWall write SetOnAfterDrawBackWall;
+    property OnBeforeDrawBackground: TChartBeforeDrawEvent read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
     property OnBeforeDrawBackWall: TChartBeforeDrawEvent
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
@@ -482,7 +489,7 @@ var
   legendItems: TChartLegendItems = nil;
   legendRect: TRect;
 begin
-  Clean(ACanvas, ARect);
+  Clear(ACanvas, ARect);
 
   FClipRect := ARect;
   InflateRect(FClipRect, -2, -2);
@@ -554,9 +561,11 @@ begin
     OnAfterDrawBackWall(Self, ACanvas, FClipRect);
 
   // Z axis
-  if Depth > 0 then
+  if (Depth > 0) and FFrame.Visible then begin
+    ACanvas.Pen.Assign(FFrame);
     with FClipRect do
       ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
+  end;
 end;
 
 procedure TChart.HideReticule;
@@ -589,12 +598,19 @@ begin
   rY.UpdateMinMax(@YImageToGraph);
 end;
 
-procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
+procedure TChart.Clear(ACanvas: TCanvas; const ARect: TRect);
+var
+  defaultDrawing: Boolean = true;
 begin
   PrepareSimplePen(ACanvas, Color);
   ACanvas.Brush.Color := Color;
   ACanvas.Brush.Style := bsSolid;
-  ACanvas.Rectangle(ARect);
+  if Assigned(OnBeforeDrawBackground) then
+    OnBeforeDrawBackground(Self, ACanvas, ARect, defaultDrawing);
+  if defaultDrawing then
+    ACanvas.Rectangle(ARect);
+  if Assigned(OnAfterDrawBackground) then
+    OnAfterDrawBackground(Self, ACanvas, ARect);
 end;
 
 procedure TChart.ClearSeries;
@@ -966,10 +982,24 @@ begin
   Invalidate;
 end;
 
+procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
+begin
+  if FOnAfterDrawBackground = AValue then exit;
+  FOnAfterDrawBackground := AValue;
+  Invalidate;
+end;
+
 procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
 begin
   if FOnAfterDrawBackWall = AValue then exit;
   FOnAfterDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
+begin
+  if FOnBeforeDrawBackground = AValue then exit;
+  FOnBeforeDrawBackground := AValue;
   Invalidate;
 end;
 
