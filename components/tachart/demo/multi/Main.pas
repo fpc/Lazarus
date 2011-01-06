@@ -66,7 +66,6 @@ begin
     end;
     chWhiskersBoxAndWhiskerSeries1.ListSource.SetYList(i - 1, ylist);
   end;
-  rgStackedSeries.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
 end;
 
 procedure TForm1.rgStackedSeriesClick(Sender: TObject);
