@@ -3837,7 +3837,7 @@ begin
             or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
               SaveRaiseException(ctsEndForClassNotFound);
           'O':
-            if CompareSrcIdentifiers(p,'OBJECT') then
+            if CompareSrcIdentifiers(p,'OBJECT') and (not LastUpAtomIs(0,'OF')) then
               inc(Level);
           'R':
             if CompareSrcIdentifiers(p,'RECORD') then
