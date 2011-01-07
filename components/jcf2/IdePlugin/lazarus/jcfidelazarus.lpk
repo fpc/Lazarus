@@ -4,16 +4,17 @@
     <PathDelim Value="\"/>
     <Name Value="jcfidelazarus"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\Include\;C:\programming\lazarus\components\jcf2\Ui\Settings\"/>
-        <OtherUnitFiles Value="..\..\;..\..\Parse\;..\..\Parse\PreProcessor\;..\..\Parse\UI\;..\..\Process\;..\..\Process\Align\;..\..\Process\Capitalisation\;..\..\Process\Indent\;..\..\Process\Info\;..\..\Process\Obfuscate\;..\..\Process\Onceoffs\;..\..\Process\Returns\;..\..\Process\Spacing\;..\..\Process\Transform\;..\..\Process\Warnings\;..\..\ReadWrite\;..\..\Settings\;..\..\Settings\Streams\;..\..\Ui\;..\..\Ui\Settings\;..\..\Utils\;..\..\Utils\DragDrop\"/>
+        <IncludeFiles Value="..\..\Include;C:\programming\lazarus\components\jcf2\Ui\Settings\"/>
+        <OtherUnitFiles Value="..\..;..\..\Parse;..\..\Parse\PreProcessor;..\..\Parse\UI;..\..\Process;..\..\Process\Align;..\..\Process\Capitalisation;..\..\Process\Indent;..\..\Process\Info;..\..\Process\Obfuscate;..\..\Process\Onceoffs;..\..\Process\Returns;..\..\Process\Spacing;..\..\Process\Transform;..\..\Process\Warnings;..\..\ReadWrite;..\..\Settings;..\..\Settings\Streams;..\..\Ui;..\..\Ui\Settings;..\..\Utils;..\..\Utils\DragDrop"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
