@@ -292,8 +292,7 @@ type
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
-                              ShowAbort: boolean;
-                              Globals: TGlobalCompilerOptions = nil): TModalResult; override;
+                              ShowAbort: boolean): TModalResult; override;
     function DoCreatePackageMakefile(APackage: TLazPackage;
                                      ShowAbort: boolean): TModalResult;
 
@@ -648,17 +647,12 @@ function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
   APackage: TLazPackage; CompileClean, CompileRequired: boolean): TModalResult;
 var
   Flags: TPkgCompileFlags;
-  Globals: TGlobalCompilerOptions;
 begin
   Flags:=[];
   if CompileClean then Include(Flags,pcfCleanCompile);
   if CompileRequired then Include(Flags,pcfCompileDependenciesClean);
-  if Project1<>nil then
-    Globals:=Project1.CompilerOptions.Globals
-  else
-    Globals:=nil;
   //debugln('TPkgManager.OnPackageEditorCompilePackage OS=',Globals.TargetOS);
-  Result:=DoCompilePackage(APackage,Flags,false,Globals);
+  Result:=DoCompilePackage(APackage,Flags,false);
 end;
 
 function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;
@@ -2563,7 +2557,6 @@ begin
     if not (pcfDoNotCompileDependencies in Flags) then begin
       Result:=PackageGraph.CompileRequiredPackages(nil,
                                       AProject.FirstRequiredDependency,
-                                      AProject.CompilerOptions.Globals,
                                       [pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
@@ -2575,8 +2568,7 @@ begin
 end;
 
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
-  Flags: TPkgCompileFlags; ShowAbort: boolean; Globals: TGlobalCompilerOptions
-  ): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 begin
   Result:=mrCancel;
   
@@ -2605,14 +2597,14 @@ begin
   Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
 
-  Result:=PackageGraph.CompilePackage(APackage,Flags,false,Globals);
+  Result:=PackageGraph.CompilePackage(APackage,Flags,false);
 end;
 
 function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage;
   ShowAbort: boolean): TModalResult;
 begin
   Result:=DoCompilePackage(APackage,[pcfDoNotCompileDependencies,
-                       pcfDoNotCompilePackage,pcfCreateMakefile],ShowAbort,nil);
+                       pcfDoNotCompilePackage,pcfCreateMakefile],ShowAbort);
 end;
 
 function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string;
@@ -3983,9 +3975,7 @@ begin
     end;
     
     // compile all auto install dependencies
-    MiscellaneousOptions.BuildLazProfiles.UpdateGlobals;
-    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,
-                   MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
+    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally

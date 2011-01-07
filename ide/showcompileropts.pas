@@ -107,7 +107,7 @@ begin
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
-  CurOptions := CompilerOpts.MakeOptionsString(nil,Flags);
+  CurOptions := CompilerOpts.MakeOptionsString(Flags);
   CmdLineMemo.Lines.Text:=CurOptions;
 end;
 

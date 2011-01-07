@@ -390,7 +390,7 @@ begin
   end;
   try
     // create compiler command line options
-    CmdLineParams:=Options.MakeOptionsString(BogusFilename,nil,
+    CmdLineParams:=Options.MakeOptionsString(BogusFilename,
               [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
               +' '+BogusFilename;
 

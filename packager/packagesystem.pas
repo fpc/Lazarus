@@ -284,14 +284,11 @@ type
                      Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
-                                Globals: TGlobalCompilerOptions;
                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
-                            ShowAbort: boolean;
-                            Globals: TGlobalCompilerOptions = nil): TModalResult;
+                            ShowAbort: boolean): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
-    function WriteMakeFile(APackage: TLazPackage;
-                           Globals: TGlobalCompilerOptions): TModalResult;
+    function WriteMakeFile(APackage: TLazPackage): TModalResult;
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
@@ -3154,8 +3151,7 @@ begin
 end;
 
 function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
-  Policies: TPackageUpdatePolicies): TModalResult;
+  FirstDependency: TPkgDependency; Policies: TPackageUpdatePolicies): TModalResult;
 var
   AutoPackages: TFPList;
   i: Integer;
@@ -3172,7 +3168,7 @@ begin
       while i<AutoPackages.Count do begin
         Result:=CompilePackage(TLazPackage(AutoPackages[i]),
                                [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                                pcfDoNotSaveEditorFiles],false,Globals);
+                                pcfDoNotSaveEditorFiles],false);
         if Result<>mrOk then exit;
         inc(i);
       end;
@@ -3187,8 +3183,7 @@ begin
 end;
 
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
-  Flags: TPkgCompileFlags; ShowAbort: boolean; Globals: TGlobalCompilerOptions
-  ): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 
   function GetIgnoreIdentifier: string;
   begin
@@ -3222,8 +3217,7 @@ begin
       CompilePolicies:=[pupAsNeeded];
       if pcfCompileDependenciesClean in Flags then
         Include(CompilePolicies,pupOnRebuildingAll);
-      Result:=CompileRequiredPackages(APackage,nil,Globals,
-                                                   CompilePolicies);
+      Result:=CompileRequiredPackages(APackage,nil,CompilePolicies);
       if Result<>mrOk then begin
         DebugLn(['TLazPackageGraph.CompilePackage CompileRequiredPackages failed: ',APackage.IDAsString]);
         exit;
@@ -3233,7 +3227,7 @@ begin
     SrcFilename:=APackage.GetSrcFilename;
     CompilerFilename:=APackage.GetCompilerFilename;
     // Note: use absolute paths, because some external tools resolve symlinked directories
-    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
+    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
             APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
             +' '+CreateRelativePath(SrcFilename,APackage.Directory);
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'" TargetCPU=',Globals.TargetCPU,' TargetOS=',Globals.TargetOS]);
@@ -3286,7 +3280,7 @@ begin
       // create Makefile
       if ((pcfCreateMakefile in Flags)
       or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
-        Result:=WriteMakeFile(APackage,Globals);
+        Result:=WriteMakeFile(APackage);
         if Result<>mrOk then begin
           DebugLn('TLazPackageGraph.CompilePackage DoWriteMakefile failed: ',APackage.IDAsString);
           exit;
@@ -3459,8 +3453,7 @@ begin
   Result:=mrOK;
 end;
 
-function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage;
-  Globals: TGlobalCompilerOptions): TModalResult;
+function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage): TModalResult;
 var
   PathDelimNeedsReplace: Boolean;
 
@@ -3549,7 +3542,7 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(Globals,
+  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
 
   try

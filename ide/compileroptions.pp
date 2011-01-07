@@ -138,20 +138,6 @@ type
     procedure Assign(Source: TLazBuildMacros);
   end;
 
-  { TGlobalCompilerOptions - compiler options overrides }
-
-  TGlobalCompilerOptions = class
-  private
-    FTargetCPU: string;
-    FTargetOS: string;
-    procedure SetTargetCPU(const AValue: string);
-    procedure SetTargetOS(const AValue: string);
-  public
-    property TargetCPU: string read FTargetCPU write SetTargetCPU;
-    property TargetOS: string read FTargetOS write SetTargetOS;
-  end;
-
-
 type
   TInheritedCompilerOption = (
     icoNone,
@@ -517,10 +503,8 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;// true if differ
 
-    function MakeOptionsString(Globals: TGlobalCompilerOptions;
-                               Flags: TCompilerCmdLineOptions): String;
+    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
     function MakeOptionsString(const MainSourceFileName: string;
-                               Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString: string; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
@@ -2190,10 +2174,10 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions MakeOptionsString
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString(Globals: TGlobalCompilerOptions;
+function TBaseCompilerOptions.MakeOptionsString(
   Flags: TCompilerCmdLineOptions): String;
 begin
-  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Globals,Flags);
+  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
 end;
 
 function GetIgnoredMsgsIndexes(msglist: TCompilerMessagesList; const Separator: string): string;
@@ -2214,13 +2198,12 @@ end;
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.MakeOptionsString(
     const MainSourceFilename: string;
-    Globals: TGlobalCompilerOptions;
     Flags: TCompilerCmdLineOptions): String;
 
   Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
-  const MainSourceFilename: string; Globals: TGlobalCompilerOptions;
+  const MainSourceFilename: string;
   Flags: TCompilerCmdLineOptions): String;
 var
   switches, tempsw, t: String;
@@ -2237,6 +2220,8 @@ var
   CurCustomOptions: String;
   OptimizeSwitches: String;
   LinkerAddition: String;
+  Vars: TCTCfgScriptVariables;
+  v: string;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2537,16 +2522,19 @@ begin
        OS2 = OS/2 (2.x) using the EMX extender.
        WIN32 = Windows 32 bit.
         ... }
-    { Target OS }
-    if (Globals<>nil) and (Globals.TargetOS<>'') then
-      switches := switches + ' -T' + Globals.TargetOS
-    else if (TargetOS<>'') then
-      switches := switches + ' -T' + TargetOS;
-    { Target CPU }
-    if (Globals<>nil) and (Globals.TargetCPU<>'') then
-      switches := switches + ' -P' + Globals.TargetCPU
-    else if (TargetCPU<>'') then
-      switches := switches + ' -P' + TargetCPU;
+    debugln(['TBaseCompilerOptions.MakeOptionsString  ']);
+    Vars:=GetBuildMacroValues(Self,true);
+    if Vars<>nil then
+    begin
+      { Target OS }
+      v:=GetFPCTargetOS(Vars.Values['TargetOS']);
+      if (v<>'') and (v<>GetDefaultTargetOS) then
+        switches := switches + ' -T' + v;
+      { Target CPU }
+      v:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
+      if (v<>'') and (v<>GetDefaultTargetCPU) then
+        switches := switches + ' -P' + v;
+    end;
   end;
 
   { --------------- Linking Tab ------------------- }
@@ -3816,20 +3804,6 @@ procedure TCompilationToolOptions.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp64(FChangeStamp);
   if assigned(OnChanged) then OnChanged(Self);
-end;
-
-{ TGlobalCompilerOptions }
-
-procedure TGlobalCompilerOptions.SetTargetCPU(const AValue: string);
-begin
-  if FTargetCPU=AValue then exit;
-  FTargetCPU:=AValue;
-end;
-
-procedure TGlobalCompilerOptions.SetTargetOS(const AValue: string);
-begin
-  if FTargetOS=AValue then exit;
-  FTargetOS:=AValue;
 end;
 
 { TIDEBuildMacro }

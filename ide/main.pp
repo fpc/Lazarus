@@ -11054,7 +11054,7 @@ begin
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams :=
-      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[ccloAbsolutePaths])
+      Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
              + ' ' + PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 

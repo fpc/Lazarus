@@ -159,7 +159,6 @@ type
 
   TBuildLazarusProfiles = class(TObjectList)
   private
-    fGlobals: TGlobalCompilerOptions;
     fMakeModeDefs: TMakeModeDefs;
     fRestartAfterBuild: boolean;
     fConfirmBuild: boolean;
@@ -180,9 +179,7 @@ type
     procedure Load(XMLConfig: TXMLConfig; const Path: string; const FileVersion: integer);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
-    procedure UpdateGlobals;
   public
-    property Globals: TGlobalCompilerOptions read fGlobals;
     property MakeModeDefs: TMakeModeDefs read fMakeModeDefs;
     property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
     property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
@@ -551,7 +548,6 @@ end;
 constructor TBuildLazarusProfiles.Create;
 begin
   inherited Create;
-  fGlobals:=TGlobalCompilerOptions.Create;
   fMakeModeDefs:=TMakeModeDefs.Create;
   fRestartAfterBuild:=True;
   fConfirmBuild:=True;
@@ -563,7 +559,6 @@ end;
 destructor TBuildLazarusProfiles.Destroy;
 begin
   fMakeModeDefs.Free;
-  fGlobals.Free;
   inherited Destroy;
   // Clear is called by inherited Destroy. Must be freed later.
   fStaticAutoInstallPackages.Free;
@@ -585,8 +580,6 @@ var
   SrcItem, NewItem: TBuildLazarusProfile;
 begin
   Clear;
-  fGlobals.TargetCPU:=Source.fGlobals.TargetCPU;
-  fGlobals.TargetOS:=Source.fGlobals.TargetOS;
   fMakeModeDefs.Assign(Source.MakeModeDefs);
   RestartAfterBuild :=Source.RestartAfterBuild;
   ConfirmBuild:=Source.ConfirmBuild;
@@ -783,12 +776,6 @@ procedure TBuildLazarusProfiles.Move(CurIndex, NewIndex: Integer);
 begin
   inherited Move(CurIndex, NewIndex);
   fCurrentIndex:=NewIndex;
-end;
-
-procedure TBuildLazarusProfiles.UpdateGlobals;
-begin
-  Globals.TargetOS:=Current.FPCTargetOS;
-  Globals.TargetCPU:=Current.FPCTargetCPU;
 end;
 
 function TBuildLazarusProfiles.GetCurrentProfile: TBuildLazarusProfile;

@@ -1874,7 +1874,6 @@ var
   NewLCLWidgetSet: String;
 begin
   with MiscellaneousOptions do begin
-    BuildLazProfiles.UpdateGlobals;
     NewTargetOS:=BuildLazOpts.TargetOS;
     NewTargetCPU:=BuildLazOpts.TargetCPU;
     NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
@@ -1895,7 +1894,6 @@ var
   BuildIDE: Boolean;
 begin
   with MiscellaneousOptions do begin
-    BuildLazProfiles.UpdateGlobals;
     NewTargetOS:=LowerCase(BuildLazOpts.TargetOS);
     NewTargetCPU:=LowerCase(BuildLazOpts.TargetCPU);
     NewLCLWidgetSet:=BuildLazOpts.TargetPlatform;

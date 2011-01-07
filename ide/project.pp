@@ -496,7 +496,6 @@ type
 
   TProjectCompilerOptions = class(TBaseCompilerOptions)
   private
-    FGlobals: TGlobalCompilerOptions;
     FProject: TProject;
     FCompileReasons: TCompileReasons;
   protected
@@ -511,7 +510,6 @@ type
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetConditionals(const AValue: string); override;
-    procedure UpdateGlobals; virtual;
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
@@ -533,7 +531,6 @@ type
     function GetEffectiveLCLWidgetType: string; override;
   public
     property LazProject: TProject read FProject;
-    property Globals: TGlobalCompilerOptions read FGlobals;
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
@@ -5754,15 +5751,11 @@ end;
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   inherited SetTargetCPU(AValue);
-  if IsActive then
-    FGlobals.TargetCPU:=GetFPCTargetCPU(TargetCPU);
 end;
 
 procedure TProjectCompilerOptions.SetTargetOS(const AValue: string);
 begin
   inherited SetTargetOS(AValue);
-  if IsActive then
-    FGlobals.TargetOS:=GetFPCTargetOS(TargetOS);
 end;
 
 procedure TProjectCompilerOptions.SetCustomOptions(const AValue: string);
@@ -5847,7 +5840,6 @@ begin
     FCompileReasons := [crCompile, crBuild, crRun];
     // keep BuildModes
   end;
-  UpdateGlobals;
 end;
 
 function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions
@@ -5886,13 +5878,6 @@ begin
     Result:=LCLPlatformDirNames[lpNoGUI];
 end;
 
-procedure TProjectCompilerOptions.UpdateGlobals;
-begin
-  if not IsActive then exit;
-  FGlobals.TargetCPU:=TargetCPU;
-  FGlobals.TargetOS:=TargetOS;
-end;
-
 class function TProjectCompilerOptions.GetInstance: TAbstractIDEOptions;
 begin
   Result := Project1.CompilerOptions;
@@ -5905,7 +5890,6 @@ end;
 
 constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
-  FGlobals := TGlobalCompilerOptions.Create;
   FCompileReasons := [crCompile, crBuild, crRun];
   inherited Create(AOwner, TProjectCompilationToolOptions);
   with TProjectCompilationToolOptions(ExecuteBefore) do begin
@@ -5916,7 +5900,6 @@ begin
     DefaultCompileReasons:=crAll;
     CompileReasons:=DefaultCompileReasons;
   end;
-  UpdateGlobals;
   if AOwner <> nil
   then FProject := AOwner as TProject;
 end;
@@ -5924,7 +5907,6 @@ end;
 destructor TProjectCompilerOptions.Destroy;
 begin
   inherited Destroy;
-  FreeAndNil(FGlobals);
 end;
 
 function TProjectCompilerOptions.IsActive: boolean;
