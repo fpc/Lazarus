@@ -31,18 +31,23 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, FileProcs, DefineTemplates, CodeToolManager, BaseBuildManager,
-  Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm;
+  StdCtrls, ComCtrls, FileProcs, DefineTemplates, CodeToolManager,
+  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm;
 
 type
 
   { TIDEFPCInfoDialog }
 
   TIDEFPCInfoDialog = class(TForm)
-    Memo1: TMemo;
+    CmdLineOutputMemo: TMemo;
+    ValuesMemo: TMemo;
+    PageControl1: TPageControl;
+    ValuesTabSheet: TTabSheet;
+    OutputTabSheet: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
-    procedure UpdateMemo;
+    procedure UpdateValuesMemo;
+    procedure UpdateCmdLinePage;
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherEnvironmentVars(sl: TStrings);
     procedure GatherGlobalOptions(sl: TStrings);
@@ -76,10 +81,12 @@ procedure TIDEFPCInfoDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisInformationAboutUsedFPC;
 
-  UpdateMemo;
+  UpdateValuesMemo;
+  UpdateCmdLinePage;
+  PageControl1.PageIndex:=0;
 end;
 
-procedure TIDEFPCInfoDialog.UpdateMemo;
+procedure TIDEFPCInfoDialog.UpdateValuesMemo;
 var
   sl: TStringList;
   TargetOS: String;
@@ -104,8 +111,83 @@ begin
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
     GatherFPCExecutable(UnitSetCache,sl);
 
-    Memo1.Lines.Assign(sl);
+    ValuesMemo.Lines.Assign(sl);
   finally
+    sl.Free;
+  end;
+end;
+
+procedure TIDEFPCInfoDialog.UpdateCmdLinePage;
+var
+  TargetOS: String;
+  TargetCPU: String;
+  CompilerFilename: String;
+  CompilerOptions: String;
+  Cfg: TFPCTargetConfigCache;
+  Params: String;
+  ExtraOptions: String;
+  sl, List: TStringList;
+  TestFilename: String;
+  Filename: String;
+  WorkDir: String;
+  fs: TFileStream;
+begin
+  TargetOS:=BuildBoss.GetTargetOS(true);
+  TargetCPU:=BuildBoss.GetTargetCPU(true);
+  CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
+  CompilerOptions:='';
+  Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                      CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
+  sl:=TStringList.Create;
+  List:=nil;
+  try
+    // fpc -i
+    sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
+    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions('');
+    Params:=Trim('-iTOTP '+ExtraOptions);
+    WorkDir:=GetCurrentDirUTF8;
+    sl.Add(CompilerFilename+' '+Params);
+    sl.Add('Working directory: '+WorkDir);
+    List:=RunTool(CompilerFilename,Params);
+    if (List=nil) or (List.Count<1) then begin
+      sl.Add('Error: unable to run compiler.');
+    end else begin
+      sl.Add('Output:');
+      sl.AddStrings(List);
+    end;
+    List.Free;
+    sl.Add('');
+
+    // fpc -va
+    TestFilename:=CodeToolBoss.FPCDefinesCache.TestFilename;
+    Filename:=ExtractFileName(TestFilename);
+    WorkDir:=ExtractFilePath(TestFilename);
+    sl.Add('The IDE asks the compiler with the following command for paths and macros:');
+    ExtraOptions:='';
+    Params:=Trim('-va '+ExtraOptions)+' '+Filename;
+    sl.Add(CompilerFilename+' '+Params);
+    sl.Add('Working directory: '+WorkDir);
+    // create empty file
+    try
+      fs:=TFileStream.Create(UTF8ToSys(TestFilename),fmCreate);
+      fs.Free;
+    except
+      sl.Add('Error: unable to create test file '+TestFilename);
+      exit;
+    end;
+    List:=RunTool(CompilerFilename,Params,WorkDir);
+    if (List=nil) or (List.Count<1) then begin
+      sl.Add('Error: unable to run compiler.');
+    end else begin
+      sl.Add('Output:');
+      sl.AddStrings(List);
+      sl.Add('');
+      sl.Add('Note: The '+Filename+' is empty, so compilation fails. This is what we want.');
+    end;
+
+  finally
+    CmdLineOutputMemo.Lines.Assign(sl);
+    List.free;
     sl.Free;
   end;
 end;

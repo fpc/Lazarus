@@ -694,6 +694,7 @@ type
     procedure LoadFromFile(Filename: string);
     procedure SaveToFile(Filename: string);
     function NeedsUpdate: boolean;
+    function GetFPCInfoCmdLineOptions(ExtraOptions: string): string;
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
     function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
@@ -7590,6 +7591,19 @@ begin
   Result:=false;
 end;
 
+function TFPCTargetConfigCache.GetFPCInfoCmdLineOptions(ExtraOptions: string
+  ): string;
+begin
+  Result:='';
+  if CompilerOptions<>'' then
+    ExtraOptions:=CompilerOptions+' '+ExtraOptions;
+  if TargetOS<>'' then
+    ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
+  if TargetCPU<>'' then
+    ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
+  Result:=Trim(ExtraOptions);
+end;
+
 procedure TFPCTargetConfigCache.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp(FChangeStamp);
@@ -7619,14 +7633,7 @@ begin
     debugln(['TFPCTargetConfigCache.Update ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions,' PATH=',GetEnvironmentVariableUTF8('PATH')]);
     CompilerDate:=FileAgeCached(Compiler);
     if FileExistsCached(Compiler) then begin
-
-      if CompilerOptions<>'' then
-        ExtraOptions:=CompilerOptions+' '+ExtraOptions;
-      if TargetOS<>'' then
-        ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
-      if TargetCPU<>'' then
-        ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
-      ExtraOptions:=Trim(ExtraOptions);
+      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
 
       // get real OS and CPU
       Info:=RunFPCInfo(Compiler,[fpciTargetOS,fpciTargetProcessor],ExtraOptions);
