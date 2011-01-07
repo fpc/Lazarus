@@ -73,7 +73,7 @@ type
     InsertMacroButton: TButton;
     KeepSubIndentCheckBox: TCheckBox;
     UseMacrosCheckBox: TCheckBox;
-    EditButton: TButton;
+    RenameButton: TButton;
     DeleteButton: TButton;
     TemplateListBox: TListBox;
     TemplateSynEdit: TSynEdit;
@@ -84,7 +84,7 @@ type
     MainPopupMenu: TPopupMenu;
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
-    procedure EditButtonClick(Sender: TObject);
+    procedure RenameButtonClick(Sender: TObject);
     procedure FilenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -913,10 +913,7 @@ begin
   else begin
     AText:=Format(lisCodeTemplATokenAlreadyExists, ['"', TokenEdit.Text, '"']);
     ACaption:=lisCodeTemplError;
-
-//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
     MessageDlg(ACaption,AText,mterror,[mbok],0);
-
   end;
 end;
 
@@ -935,7 +932,7 @@ begin
   // init captions
   Caption:=dlgEdCodeTempl;
   AddButton.Caption:=lisCodeTemplAdd;
-  EditButton.Caption:=lisCodeToolsDefsEdit;
+  RenameButton.Caption:=lisLazBuildRename;
   DeleteButton.Caption:=dlgEdDelete;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
 
@@ -1097,7 +1094,7 @@ begin
   end;
 end;
 
-procedure TCodeTemplateDialog.EditButtonClick(Sender: TObject);
+procedure TCodeTemplateDialog.RenameButtonClick(Sender: TObject);
 var
   a, idx: LongInt;
 begin
