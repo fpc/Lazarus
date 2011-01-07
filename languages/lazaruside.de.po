@@ -8190,6 +8190,14 @@ msgstr "In Installationsliste behalten"
 msgid "Keep name"
 msgstr "Name behalten"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "Beibehalten und fortsetzen"

@@ -8177,6 +8177,14 @@ msgstr ""
 msgid "Keep name"
 msgstr "保存名字"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "保留并继续"

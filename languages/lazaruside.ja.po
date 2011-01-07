@@ -8174,6 +8174,14 @@ msgstr "インストールリストに保持"
 msgid "Keep name"
 msgstr "名前を保持"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "それらを保持し、続行"

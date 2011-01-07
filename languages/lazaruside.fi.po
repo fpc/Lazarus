@@ -8151,6 +8151,14 @@ msgstr ""
 msgid "Keep name"
 msgstr "Hyväksy nimi tälläisenään"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "Pidä ne ja jatka"

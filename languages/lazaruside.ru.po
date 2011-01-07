@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-05 16:30+0300\n"
+"PO-Revision-Date: 2011-01-07 17:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8173,6 +8173,14 @@ msgstr "Оставить в списке на установку"
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Сохранить имя"
+
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr "Сохранять относительные отступы в многострочном шаблоне"
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr "Сохранять отступы"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"

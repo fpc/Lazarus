@@ -8140,6 +8140,14 @@ msgstr "שמור ברשימת ההתקנות"
 msgid "Keep name"
 msgstr "שמור שם"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "שמור אותם והמשך"

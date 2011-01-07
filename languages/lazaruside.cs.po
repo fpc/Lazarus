@@ -8119,6 +8119,14 @@ msgstr "Uchovat v seznamu instalovaných"
 msgid "Keep name"
 msgstr "Zachovat jméno"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "Ponechat je a pokračovat"
