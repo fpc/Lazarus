@@ -939,8 +939,9 @@ begin
   DeleteButton.Caption:=dlgEdDelete;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
 
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 
   FilenameGroupBox.Caption:=lisDebugOptionsFrmModule;
   UseMacrosCheckBox.Caption:=lisEnableMacros;

@@ -20,13 +20,13 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 32
+    ClientHeight = 33
     ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
       AnchorSideRight.Control = FilenameButton
       Left = 9
-      Height = 27
+      Height = 21
       Top = 4
       Width = 435
       Anchors = [akTop, akLeft, akRight]
@@ -41,7 +41,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Side = asrBottom
       Left = 449
       Height = 23
-      Top = 8
+      Top = 2
       Width = 26
       Anchors = [akRight, akBottom]
       BorderSpacing.Right = 6
@@ -58,7 +58,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 148
+    ClientHeight = 149
     ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
@@ -68,7 +68,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 136
+      Height = 137
       Top = 6
       Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -79,7 +79,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ItemHeight = 0
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -133,20 +132,20 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 262
+    Height = 268
     Top = 236
     Width = 485
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 243
+    ClientHeight = 250
     ClientWidth = 481
     TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
-      Width = 161
+      Width = 117
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       ParentShowHint = False
@@ -159,10 +158,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 193
-      Height = 29
+      Left = 149
+      Height = 23
       Top = 3
-      Width = 132
+      Width = 116
       AutoSize = True
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
@@ -178,8 +177,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 138
-      Top = 99
+      Height = 155
+      Top = 89
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -802,7 +801,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 30
-      Top = 63
+      Top = 53
       Width = 469
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
@@ -826,9 +825,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 35
-      Width = 186
+      Height = 17
+      Top = 30
+      Width = 139
       BorderSpacing.Top = 6
       Caption = 'KeepSubIndentCheckBox'
       ParentShowHint = False
@@ -838,13 +837,15 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 504
+    Height = 26
+    Top = 510
     Width = 485
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = OkButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
