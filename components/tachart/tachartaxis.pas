@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TACustomSource, TATransformations, TATypes;
+  TAChartUtils, TACustomSource, TAStyles, TATransformations, TATypes;
 
 const
   DEF_TICK_LENGTH = 4;
@@ -85,7 +85,8 @@ type
     property Style default psDot;
   end;
 
-  TCustomChartAxisMarks = specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+  TCustomChartAxisMarks =
+    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
 
   { TChartAxisMarks }
 
@@ -95,10 +96,12 @@ type
     FDefaultSource: TCustomChartSource;
     FListener: TListener;
     FSource: TCustomChartSource;
+    FStripes: TChartStyles;
 
     function IsFormatStored: Boolean;
     procedure SetAtDataOnly(AValue: Boolean);
     procedure SetSource(AValue: TCustomChartSource);
+    procedure SetStripes(AValue: TChartStyles);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -113,9 +116,9 @@ type
     property LabelBrush;
     property OverlapPolicy;
     property Source: TCustomChartSource read FSource write SetSource;
+    property Stripes: TChartStyles read FStripes write SetStripes;
     property Style default smsValue;
   end;
-
 
   TChartAxisGroup = record
     FCount: Integer;
@@ -392,6 +395,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartAxisMarks.SetStripes(AValue: TChartStyles);
+begin
+  if FStripes = AValue then exit;
+  FStripes := AValue;
+  StyleChanged(Self);
+end;
+
 function TChartAxisMarks.SourceDef: TCustomChartSource;
 begin
   Result := FSource;
@@ -442,7 +452,7 @@ procedure TChartAxis.Draw(
 
 var
   prevLabelPoly: TPointArray = nil;
-
+  stripeIndex: Cardinal = 0;
 
   procedure LineZ(AP1, AP2: TPoint);
   begin
@@ -467,6 +477,10 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
+      if Marks.Stripes<> nil then begin
+        Marks.Stripes.Apply(ACanvas, stripeIndex);
+        stripeIndex += 1;
+      end;
       LineZ(
         Point(x, ATransf.YGraphToImage(AExtent.a.Y)),
         Point(x, ATransf.YGraphToImage(AExtent.b.Y)));
@@ -488,6 +502,10 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
+      if Marks.Stripes<> nil then begin
+        Marks.Stripes.Apply(ACanvas, stripeIndex);
+        stripeIndex += 1;
+      end;
       LineZ(
         Point(ATransf.XGraphToImage(AExtent.a.X), y),
         Point(ATransf.XGraphToImage(AExtent.b.X), y));
