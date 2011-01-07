@@ -516,8 +516,7 @@ begin
 
     // compile all auto install dependencies
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                     PackageGraph.FirstAutoInstallDependency,
-                     MiscellaneousOptions.BuildLazProfiles.Globals,[pupAsNeeded]);
+                     PackageGraph.FirstAutoInstallDependency,[pupAsNeeded]);
     if CurResult<>mrOk then exit;
 
   finally
@@ -643,7 +642,6 @@ begin
       // automatically compile required packages
       if PackageGraph.CompileRequiredPackages(nil,
                                       Project1.FirstRequiredDependency,
-                                      Project1.CompilerOptions.Globals,
                                       [pupAsNeeded])<>mrOk
       then
         Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
@@ -689,7 +687,7 @@ begin
   else
     CompilerFilename:=Project1.GetCompilerFilename;
   //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
+  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[])
                   +' '+PrepareCmdLineOption(SrcFilename);
 
   // execute compilation tool 'Before'
