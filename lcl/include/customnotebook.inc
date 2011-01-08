@@ -200,8 +200,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomNotebook.Create(TheOwner: TComponent);
 begin
-  if PageClass=nil then
-    RaiseGDBException('');
+  if PageClass=nil then PageClass := TCustomPage;
+
   inherited Create(TheOwner);
 
   fCompStyle := csNoteBook;
