@@ -123,6 +123,9 @@ const
         {$IFNDEF VER2_4}
         ,'class constructor', 'class destructor'
         {$ENDIF}
+        {$IFDEF VER2_5}
+        ,'operator overload'
+        {$ENDIF}
       );
 
 function ReverseRTTIParamList: boolean;
