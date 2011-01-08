@@ -88,7 +88,7 @@ var
   R: TLResource;
   S: TFileStream;
 begin
-  JCFOptsFile := SetDirSeparators(LazarusIDE.GetPrimaryConfigPath + '/' + DefaultJCFOptsFile);
+  JCFOptsFile := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + DefaultJCFOptsFile;
   LazarusIDE.CopySecondaryConfigFile(DefaultJCFOptsFile);
   if not FileExistsUTF8(JCFOptsFile) then
   begin
