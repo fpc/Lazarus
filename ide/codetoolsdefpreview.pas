@@ -55,7 +55,11 @@ type
     DirectoryBrowseButton: TButton;
     DirectoryCombobox: TComboBox;
     DirectoryGroupbox: TGroupBox;
+    PageControl1: TPageControl;
+    ReportMemo: TMemo;
     Splitter1: TSplitter;
+    ValuesTabSheet: TTabSheet;
+    ReportTabSheet: TTabSheet;
     TemplatesMemo: TMemo;
     TemplatesSplitter: TSplitter;
     TemplatesGroupBox: TGroupBox;
@@ -77,6 +81,7 @@ type
   private
     FDefineTree: TDefineTree;
     FNodeValues: TAvgLvlTree;
+    fReport: TStringList;
     procedure SetDefineTree(const AValue: TDefineTree);
     procedure UpdateValues;
     procedure UpdateValue;
@@ -225,6 +230,37 @@ end;
 
 procedure TCodeToolsDefinesDialog.UpdateValues;
 // let the codetools calculate the defines for the directory
+
+  procedure AddNodeReport(Prefix: string; DefTempl: TDefineTemplate);
+  var
+    AVLNode: TAvgLvlTreeNode;
+    NodeValues: TCodeToolsDefinesNodeValues;
+    s: String;
+  begin
+    while DefTempl<>nil do begin
+      s:=Prefix+'Name="'+DefTempl.Name+'"';
+      s:=s+' Description="'+DefTempl.Description+'"';
+      s:=s+' Action="'+DefineActionNames[DefTempl.Action]+'"';
+      s:=s+' Variable="'+DefTempl.Variable+'"';
+      s:=s+' Value="'+dbgstr(DefTempl.Value)+'"';
+      if FNodeValues<>nil then begin
+        AVLNode:=FNodeValues.FindKey(DefTempl,@CompareNodeAndNodeValues);
+        if AVLNode<>nil then begin
+          NodeValues:=TCodeToolsDefinesNodeValues(AVLNode.Data);
+          if NodeValues.ValueParsed then
+            s:=s+' ParsedValue="'+dbgstr(NodeValues.ParsedValue)+'"';
+          if NodeValues.ExpressionCalculated then
+            s:=s+' ExpressionResult="'+dbgstr(NodeValues.ExpressionResult)+'"';
+          s:=s+' Executed="'+dbgs(NodeValues.Execute)+'"';
+        end;
+      end;
+      fReport.Add(s);
+      if DefTempl.FirstChild<>nil then
+        AddNodeReport(Prefix+'    ',DefTempl.FirstChild);
+      DefTempl:=DefTempl.Next;
+    end;
+  end;
+
 var
   Dir: String;
   Defines: TExpressionEvaluator;
@@ -245,38 +281,54 @@ begin
     FNodeValues.FreeAndClear;
   DefineTree.ClearCache;// make sure the defines are reparsed
 
-  OldOnCalculate:=DefineTree.OnCalculate;
-  DefineTree.OnCalculate:=@DefineTreeCalculate;
+  fReport:=TStringList.Create;
   try
-    Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
-  finally
-    DefineTree.OnCalculate:=OldOnCalculate;
-  end;
+    fReport.Add('Directory: '+Dir);
 
-  // fill the ValuesListview
-  ValuesListview.BeginUpdate;
-  if Defines<>nil then begin
-    for i:=0 to Defines.Count-1 do begin
-      if ValuesListview.Items.Count<=i then
-        ListItem:=ValuesListview.Items.Add
-      else
-        ListItem:=ValuesListview.Items[i];
-      ListItem.Caption:=Defines.Names(i);
-      Value:=Defines.Values(i);
-      if length(Value)>100 then
-        Value:=copy(Value,1,100)+' ...';
-      if ListItem.SubItems.Count<1 then
-        ListItem.SubItems.Add(Value)
-      else
-        ListItem.SubItems[0]:=Value;
+    OldOnCalculate:=DefineTree.OnCalculate;
+    DefineTree.OnCalculate:=@DefineTreeCalculate;
+    try
+      Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
+    finally
+      DefineTree.OnCalculate:=OldOnCalculate;
     end;
-    while ValuesListview.Items.Count>Defines.Count do
-      ValuesListview.Items.Delete(ValuesListview.Items.Count-1);
-  end else begin
-    ValuesListview.Items.Clear;
+
+    // fill the ValuesListview
+    ValuesListview.BeginUpdate;
+    if Defines<>nil then begin
+      fReport.Add('Defines:');
+      for i:=0 to Defines.Count-1 do begin
+        if ValuesListview.Items.Count<=i then
+          ListItem:=ValuesListview.Items.Add
+        else
+          ListItem:=ValuesListview.Items[i];
+        fReport.Add(Defines.Names(i)+'='+dbgstr(Defines.Values(i)));
+        ListItem.Caption:=Defines.Names(i);
+        Value:=Defines.Values(i);
+        if length(Value)>100 then
+          Value:=copy(Value,1,100)+' ...';
+        if ListItem.SubItems.Count<1 then
+          ListItem.SubItems.Add(Value)
+        else
+          ListItem.SubItems[0]:=Value;
+      end;
+      fReport.Add('');
+      while ValuesListview.Items.Count>Defines.Count do
+        ValuesListview.Items.Delete(ValuesListview.Items.Count-1);
+    end else begin
+      ValuesListview.Items.Clear;
+    end;
+    ValuesListview.EndUpdate;
+    UpdateValue;
+
+    // add all nodes to report
+    fReport.Add('Tree:');
+    AddNodeReport('  ',DefineTree.RootTemplate);
+
+    ReportMemo.Lines.Assign(fReport);
+  finally
+    FreeAndNil(fReport);
   end;
-  ValuesListview.EndUpdate;
-  UpdateValue;
 end;
 
 procedure TCodeToolsDefinesDialog.UpdateValue;
@@ -387,7 +439,9 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,485,450);
 
   Caption:=lisCTDefCodeToolsDirectoryValues;
-  
+
+  ValuesTabSheet.Caption:=lisValues;
+
   ListColumn:=ValuesListview.Columns.Add;
   ListColumn.Caption:=lisCTDefVariableName;
   ListColumn.Width:=150;
@@ -413,6 +467,9 @@ begin
 
   EditorOpts.GetSynEditSettings(ValueSynedit);
   ValueSynedit.Gutter.Visible:=false;
+
+  ReportTabSheet.Caption:=dlgReport;
+  PageControl1.PageIndex:=0;
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;
