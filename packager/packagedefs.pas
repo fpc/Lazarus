@@ -523,6 +523,14 @@ const
   pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
   
 type
+  TPkgLastCompileStats = record
+    CompilerFilename: string;
+    CompilerFileDate: integer;
+    Params: string;
+    Complete: boolean;
+    ViaMakefile: boolean;
+  end;
+
   TIterateComponentClassesEvent =
     procedure(PkgComponent: TPkgComponent) of object;
   TPkgChangeNameEvent = procedure(Pkg: TLazPackage;
@@ -556,11 +564,6 @@ type
     FHoldPackageCount: integer;
     FIconFile: string;
     FInstalled: TPackageInstallType;
-    FLastCompileComplete: boolean;
-    FLastCompilerFileDate: integer;
-    FLastCompilerFilename: string;
-    FLastCompilerParams: string;
-    FLastCompilerViaMakefile: boolean;
     FLastStateFileName: string;
     FLazDocPaths: string;
     FLicense: string;
@@ -734,6 +737,8 @@ type
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
+    LastCompile: TPkgLastCompileStats;
+  public
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
     property Author: string read FAuthor write SetAuthor;
@@ -766,16 +771,6 @@ type
     property HoldPackageCount: integer read FHoldPackageCount;
     property IconFile: string read FIconFile write SetIconFile;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
-    property LastCompilerFileDate: integer read FLastCompilerFileDate
-                                          write FLastCompilerFileDate;
-    property LastCompilerFilename: string read FLastCompilerFilename
-                                          write FLastCompilerFilename;
-    property LastCompilerParams: string read FLastCompilerParams
-                                        write FLastCompilerParams;
-    property LastCompileComplete: boolean read FLastCompileComplete
-                                          write FLastCompileComplete;
-    property LastCompilerViaMakefile: boolean read FLastCompilerViaMakefile
-                                              write FLastCompilerViaMakefile;
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
     property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
@@ -3460,8 +3455,8 @@ end;
 
 function TLazPackage.GetLastCompilerParams: string;
 begin
-  Result:=FLastCompilerParams;
-  if LastCompilerViaMakefile then begin
+  Result:=LastCompile.Params;
+  if LastCompile.ViaMakefile then begin
     Result:=StringReplace(Result,'%(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
     Result:=StringReplace(Result,'%(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
     Result:=StringReplace(Result,'%(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);

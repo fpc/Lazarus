@@ -2827,11 +2827,11 @@ begin
   try
     CompilerFileDate:=FileAgeCached(CompilerFilename);
 
-    APackage.LastCompilerFilename:=CompilerFilename;
-    APackage.LastCompilerFileDate:=CompilerFileDate;
-    APackage.LastCompilerParams:=CompilerParams;
-    APackage.LastCompileComplete:=Complete;
-    APackage.LastCompilerViaMakefile:=false;
+    APackage.LastCompile.CompilerFilename:=CompilerFilename;
+    APackage.LastCompile.CompilerFileDate:=CompilerFileDate;
+    APackage.LastCompile.Params:=CompilerParams;
+    APackage.LastCompile.Complete:=Complete;
+    APackage.LastCompile.ViaMakefile:=false;
 
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
@@ -2884,11 +2884,11 @@ begin
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
       try
-        APackage.LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
-        APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
-        APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
-        APackage.LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
-        APackage.LastCompilerViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
+        APackage.LastCompile.CompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompile.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        APackage.LastCompile.Params:=XMLConfig.GetValue('Params/Value','');
+        APackage.LastCompile.Complete:=XMLConfig.GetValue('Complete/Value',true);
+        APackage.LastCompile.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
       finally
         XMLConfig.Free;
       end;
@@ -2973,6 +2973,14 @@ end;
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
   const CompilerFilename, CompilerParams, SrcFilename: string;
   out NeedBuildAllFlag: boolean): TModalResult;
+{ returns: mrYes, mrNo
+
+  First checks normal output directory
+  If that needs update and is read only, changes output directory to secondary
+  and checks that.
+  Checks .compiled file for compiler date and parameters and if some file is
+  newer than the .compiled file.
+}
 var
   StateFilename: String;
   StateFileAge: Integer;
@@ -2995,12 +3003,12 @@ begin
   if APackage.AutoUpdate=pupManually then exit(mrNo);
 
   //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
-  if (APackage.LastCompilerFilename<>CompilerFilename)
-  or (ExtractFPCParamsForBuildAll(APackage.LastCompilerParams)
+  if (APackage.LastCompile.CompilerFilename<>CompilerFilename)
+  or (ExtractFPCParamsForBuildAll(APackage.LastCompile.Params)
       <>ExtractFPCParamsForBuildAll(CompilerParams))
-  or ((APackage.LastCompilerFileDate>0)
+  or ((APackage.LastCompile.CompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate))
+      and (FileAgeCached(CompilerFilename)<>APackage.LastCompile.CompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
@@ -3047,26 +3055,26 @@ begin
   end;
 
   // check compiler and params
-  if (not APackage.LastCompilerViaMakefile)
-  and (CompilerFilename<>APackage.LastCompilerFilename) then begin
+  if (not APackage.LastCompile.ViaMakefile)
+  and (CompilerFilename<>APackage.LastCompile.CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',APackage.LastCompilerFilename,'"');
+    DebugLn('  Old="',APackage.LastCompile.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if not FileExistsUTF8(CompilerFilename) then begin
+  if not FileExistsCached(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if (not APackage.LastCompilerViaMakefile)
-  and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate) then begin
+  if (not APackage.LastCompile.ViaMakefile)
+  and (FileAgeCached(CompilerFilename)<>APackage.LastCompile.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
   LastParams:=APackage.GetLastCompilerParams;
-  if APackage.LastCompilerViaMakefile then begin
+  if APackage.LastCompile.ViaMakefile then begin
     // the package was compiled via Makefile
     CurPaths:=nil;
     LastPaths:=nil;
@@ -3118,7 +3126,7 @@ begin
   // quick compile is possible
   NeedBuildAllFlag:=false;
 
-  if not APackage.LastCompileComplete
+  if not APackage.LastCompile.Complete
   then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compile was incomplete for ',APackage.IDAsString);
     exit(mrYes);
