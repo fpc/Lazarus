@@ -1525,7 +1525,8 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin
         // unit found
-        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then
+        if FixCase
+        and ((NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename)) then
         begin
           // fix case
           FromPos:=UnitNameAtom.StartPos;
