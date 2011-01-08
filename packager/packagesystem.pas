@@ -2821,17 +2821,21 @@ var
   XMLConfig: TXMLConfig;
   StateFile: String;
   CompilerFileDate: Integer;
+  o: TPkgOutputDir;
+  stats: PPkgLastCompileStats;
 begin
   Result:=mrCancel;
   StateFile:=APackage.GetStateFilename;
   try
     CompilerFileDate:=FileAgeCached(CompilerFilename);
 
-    APackage.LastCompile.CompilerFilename:=CompilerFilename;
-    APackage.LastCompile.CompilerFileDate:=CompilerFileDate;
-    APackage.LastCompile.Params:=CompilerParams;
-    APackage.LastCompile.Complete:=Complete;
-    APackage.LastCompile.ViaMakefile:=false;
+    o:=podDefault;
+    stats:=@APackage.LastCompile[o];
+    stats^.CompilerFilename:=CompilerFilename;
+    stats^.CompilerFileDate:=CompilerFileDate;
+    stats^.Params:=CompilerParams;
+    stats^.Complete:=Complete;
+    stats^.ViaMakefile:=false;
 
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
@@ -2844,8 +2848,8 @@ begin
     finally
       XMLConfig.Free;
     end;
-    APackage.LastStateFileName:=StateFile;
-    APackage.LastStateFileDate:=FileAgeUTF8(StateFile);
+    stats^.StateFileName:=StateFile;
+    stats^.StateFileDate:=FileAgeCached(StateFile);
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
@@ -2866,6 +2870,8 @@ var
   XMLConfig: TXMLConfig;
   StateFile: String;
   StateFileAge: Integer;
+  o: TPkgOutputDir;
+  stats: PPkgLastCompileStats;
 begin
   StateFile:=APackage.GetStateFilename;
   if not FileExistsUTF8(StateFile) then begin
@@ -2876,24 +2882,26 @@ begin
   end;
 
   // read the state file
-  StateFileAge:=FileAgeUTF8(StateFile);
+  o:=podDefault;
+  stats:=@APackage.LastCompile[o];
+  StateFileAge:=FileAgeCached(StateFile);
   if (not (lpfStateFileLoaded in APackage.Flags))
-  or (APackage.LastStateFileDate<>StateFileAge)
-  or (APackage.LastStateFileName<>StateFile) then begin
+  or (stats^.StateFileDate<>StateFileAge)
+  or (stats^.StateFileName<>StateFile) then begin
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
       try
-        APackage.LastCompile.CompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
-        APackage.LastCompile.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
-        APackage.LastCompile.Params:=XMLConfig.GetValue('Params/Value','');
-        APackage.LastCompile.Complete:=XMLConfig.GetValue('Complete/Value',true);
-        APackage.LastCompile.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
+        stats^.CompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        stats^.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        stats^.Params:=XMLConfig.GetValue('Params/Value','');
+        stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
+        stats^.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
       finally
         XMLConfig.Free;
       end;
-      APackage.LastStateFileName:=StateFile;
-      APackage.LastStateFileDate:=StateFileAge;
+      stats^.StateFileName:=StateFile;
+      stats^.StateFileDate:=StateFileAge;
     except
       on E: Exception do begin
         if IgnoreErrors then begin
@@ -2944,7 +2952,7 @@ begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
           exit;
         end;
-        if StateFileAge<RequiredPackage.LastStateFileDate then begin
+        if StateFileAge<RequiredPackage.LastCompile[podDefault].StateFileDate then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
             'State file ',GetOwnerID);
@@ -2993,6 +3001,8 @@ var
   CurPaths: TStringList;
   OldValue: string;
   NewValue: string;
+  o: TPkgOutputDir;
+  stats: PPkgLastCompileStats;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -3002,13 +3012,15 @@ begin
   
   if APackage.AutoUpdate=pupManually then exit(mrNo);
 
+  o:=podDefault;
+  stats:=@APackage.LastCompile[o];
   //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
-  if (APackage.LastCompile.CompilerFilename<>CompilerFilename)
-  or (ExtractFPCParamsForBuildAll(APackage.LastCompile.Params)
+  if (stats^.CompilerFilename<>CompilerFilename)
+  or (ExtractFPCParamsForBuildAll(stats^.Params)
       <>ExtractFPCParamsForBuildAll(CompilerParams))
-  or ((APackage.LastCompile.CompilerFileDate>0)
+  or ((stats^.CompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAgeCached(CompilerFilename)<>APackage.LastCompile.CompilerFileDate))
+      and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
@@ -3055,10 +3067,10 @@ begin
   end;
 
   // check compiler and params
-  if (not APackage.LastCompile.ViaMakefile)
-  and (CompilerFilename<>APackage.LastCompile.CompilerFilename) then begin
+  if (not stats^.ViaMakefile)
+  and (CompilerFilename<>stats^.CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',APackage.LastCompile.CompilerFilename,'"');
+    DebugLn('  Old="',stats^.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
     exit(mrYes);
   end;
@@ -3067,14 +3079,14 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if (not APackage.LastCompile.ViaMakefile)
-  and (FileAgeCached(CompilerFilename)<>APackage.LastCompile.CompilerFileDate) then begin
+  if (not stats^.ViaMakefile)
+  and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  LastParams:=APackage.GetLastCompilerParams;
-  if APackage.LastCompile.ViaMakefile then begin
+  LastParams:=APackage.GetLastCompilerParams(o);
+  if stats^.ViaMakefile then begin
     // the package was compiled via Makefile
     CurPaths:=nil;
     LastPaths:=nil;
@@ -3126,8 +3138,7 @@ begin
   // quick compile is possible
   NeedBuildAllFlag:=false;
 
-  if not APackage.LastCompile.Complete
-  then begin
+  if not stats^.Complete then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compile was incomplete for ',APackage.IDAsString);
     exit(mrYes);
   end;
@@ -3138,15 +3149,15 @@ begin
   if Result<>mrNo then exit;
 
   // check package files
-  if StateFileAge<FileAgeUTF8(APackage.Filename) then begin
+  if StateFileAge<FileAgeCached(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExistsUTF8(CurFile.Filename),' ',StateFileAge<FileAgeUTF8(CurFile.Filename));
-    if FileExistsUTF8(CurFile.Filename)
-    and (StateFileAge<FileAgeUTF8(CurFile.Filename)) then begin
+    if FileExistsCached(CurFile.Filename)
+    and (StateFileAge<FileAgeCached(CurFile.Filename)) then begin
       DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
       exit(mrYes);
     end;

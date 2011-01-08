@@ -529,7 +529,14 @@ type
     Params: string;
     Complete: boolean;
     ViaMakefile: boolean;
+    StateFileDate: longint;
+    StateFileName: string;
   end;
+  PPkgLastCompileStats = ^TPkgLastCompileStats;
+  TPkgOutputDir = (
+    podDefault,
+    podFallback // used when podDefault is not writable
+    );
 
   TIterateComponentClassesEvent =
     procedure(PkgComponent: TPkgComponent) of object;
@@ -564,7 +571,6 @@ type
     FHoldPackageCount: integer;
     FIconFile: string;
     FInstalled: TPackageInstallType;
-    FLastStateFileName: string;
     FLazDocPaths: string;
     FLicense: string;
     FLPKSource: TCodeBuffer;
@@ -582,7 +588,6 @@ type
     FRegistered: boolean;
     FRemovedFiles: TFPList; // TFPList of TPkgFile
     FSourceDirectories: TFileReferenceList;
-    FLastStateFileDate: longint;
     FStorePathDelim: TPathDelimSwitch;
     FTopologicalLevel: integer;
     FTranslated: string;
@@ -669,7 +674,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
-    function GetLastCompilerParams: string;
+    function GetLastCompilerParams(o: TPkgOutputDir): string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string;
                                  PlatformIndependent: boolean): string;
@@ -737,7 +742,7 @@ type
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
-    LastCompile: TPkgLastCompileStats;
+    LastCompile: array[TPkgOutputDir] of TPkgLastCompileStats;
   public
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
@@ -789,8 +794,6 @@ type
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
-    property LastStateFileDate: longint read FLastStateFileDate write FLastStateFileDate;
-    property LastStateFileName: string read FLastStateFileName write FLastStateFileName;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property Translated: string read FTranslated write FTranslated;
@@ -3453,10 +3456,10 @@ begin
   Result:=CompilerOptions.GetSrcPath(RelativeToBaseDir);
 end;
 
-function TLazPackage.GetLastCompilerParams: string;
+function TLazPackage.GetLastCompilerParams(o: TPkgOutputDir): string;
 begin
-  Result:=LastCompile.Params;
-  if LastCompile.ViaMakefile then begin
+  Result:=LastCompile[o].Params;
+  if LastCompile[o].ViaMakefile then begin
     Result:=StringReplace(Result,'%(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
     Result:=StringReplace(Result,'%(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
     Result:=StringReplace(Result,'%(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
