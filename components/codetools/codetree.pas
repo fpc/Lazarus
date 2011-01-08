@@ -224,13 +224,13 @@ type
 
   { TCodeTreeNode }
 
-  TCodeTreeNode = class
+  TCodeTreeNode = packed class
   public
+    Parent, NextBrother, PriorBrother, FirstChild, LastChild: TCodeTreeNode;
+    Cache: TObject;
+    StartPos, EndPos: integer;
     Desc: TCodeTreeNodeDesc;
     SubDesc: TCodeTreeNodeSubDesc;
-    Parent, NextBrother, PriorBrother, FirstChild, LastChild: TCodeTreeNode;
-    StartPos, EndPos: integer;
-    Cache: TObject;
     function Next: TCodeTreeNode;
     function NextSkipChilds: TCodeTreeNode;
     function Prior: TCodeTreeNode;
