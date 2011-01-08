@@ -407,7 +407,7 @@ begin
 
   CreateComponent(TControl(PageControl), TNotebook, pProp, alClient);
   {$IFDEF SYN_LAZARUS}
-  PageControl.ShowTabs:=false;
+  //PageControl.ShowTabs:=false;
   {$ENDIF}
 
   {$IFDEF SYN_LAZARUS}
@@ -822,7 +822,7 @@ end;
 procedure TSynUniDesigner.SampleMemoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   ////TL! replaced ActivePage with ActivePageComponent
-  if (key=vk_Return) and (ssCtrl in Shift) and (PageControl.ActivePageComponent=KeyWords) then
+  if (key=vk_Return) and (ssCtrl in Shift) and (PageControl.Page[PageControl.PageIndex] = KeyWords) then
     begin
       memo.lines.add(samplememo.SelText);
       TotalUpdate;
@@ -957,7 +957,7 @@ begin
        SetControlAttributes(Node);
        pNum.visible:=true;
        ////TL! replaced ActivePage with ActivePageComponent
-       PageControl.ActivePageComponent:=Range;
+       PageControl.PageIndex := PageControl.Pages.IndexOf(Range.Name);
      end;
    ntRootRange:begin
        SetControlAttributes(Node);
@@ -965,7 +965,7 @@ begin
        pNum.visible:=true;
        cCaseSensitiveRt.Checked:=TSynRange(Node.data).CaseSensitive;
        ////TL! replaced ActivePage with ActivePageComponent
-       PageControl.ActivePageComponent:=RootRange;
+       PageControl.PageIndex := PageControl.Pages.IndexOf(RootRange.Name);
      end;
    ntKeyWords: begin
        SetControlKWAttributes(node);
@@ -975,7 +975,7 @@ begin
        ////TL added @
        Memo.OnChange:=@KwListChange;
        ////TL! replaced ActivePage with ActivePageComponent
-       PageControl.ActivePageComponent:=KeyWords;
+       PageControl.PageIndex := PageControl.Pages.IndexOf(Keywords.Name);
      end;
  End;
  UpdatingControls:=false;
@@ -1022,7 +1022,7 @@ End;
 Procedure TSynUniDesigner.SampleDblClick(Sender:TObject);
 begin
   ////TL! replaced ActivePage with ActivePageComponent
-  if (PageControl.ActivePageComponent=KeyWords) then
+  if (PageControl.Page[PageControl.PageIndex]=KeyWords) then
       memo.Lines.Add(SampleMemo.SelText);
 end;
 
