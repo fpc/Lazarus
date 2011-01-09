@@ -146,6 +146,12 @@ type
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(const Msg, Directory: string);
+    function OutputDirectoryIsWritable(Directory: string): boolean;
+    function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
+                    const CompilerFilename, CompilerParams, SrcFilename: string;
+                    CheckDependencies: boolean;
+                    out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean): TModalResult;
+    procedure InvalidateStateFile(APackage: TLazPackage);
   public
     constructor Create;
     destructor Destroy; override;
@@ -603,6 +609,21 @@ begin
     IDEMessagesWindow.AddMsg(Msg, Directory,-1)
   else
     DebugLn(['TLazPackageGraph.AddMessage Msg="',Msg,'" Directory="',Directory,'"']);
+end;
+
+function TLazPackageGraph.OutputDirectoryIsWritable(Directory: string
+  ): boolean;
+begin
+  Result:=false;
+  if not FilenameIsAbsolute(Directory) then
+    exit;
+  Directory:=ChompPathDelim(Directory);
+  if not DirPathExistsCached(Directory) then begin
+    // the directory does not exist => try creating it
+    if not ForceDirectoriesUTF8(Directory) then exit;
+    Result:=true;
+  end else
+    Result:=DirectoryIsWritableCached(Directory);
 end;
 
 constructor TLazPackageGraph.Create;
@@ -2829,7 +2850,7 @@ begin
   try
     CompilerFileDate:=FileAgeCached(CompilerFilename);
 
-    o:=podDefault;
+    o:=APackage.GetOutputDirType;
     stats:=@APackage.LastCompile[o];
     stats^.CompilerFilename:=CompilerFilename;
     stats^.CompilerFileDate:=CompilerFileDate;
@@ -2850,7 +2871,7 @@ begin
     end;
     stats^.StateFileName:=StateFile;
     stats^.StateFileDate:=FileAgeCached(StateFile);
-    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+    APackage.LastCompile[o].StateFileLoaded:=true;
   except
     on E: Exception do begin
       Result:=IDEMessageDialogAb(lisPkgMangErrorWritingFile,
@@ -2870,25 +2891,25 @@ var
   XMLConfig: TXMLConfig;
   StateFile: String;
   StateFileAge: Integer;
-  o: TPkgOutputDir;
   stats: PPkgLastCompileStats;
+  o: TPkgOutputDir;
 begin
+  o:=APackage.GetOutputDirType;
+  stats:=@APackage.LastCompile[o];
   StateFile:=APackage.GetStateFilename;
-  if not FileExistsUTF8(StateFile) then begin
+  if not FileExistsCached(StateFile) then begin
     //DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
-    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    stats^.StateFileLoaded:=false;
     Result:=mrOk;
     exit;
   end;
 
   // read the state file
-  o:=podDefault;
-  stats:=@APackage.LastCompile[o];
   StateFileAge:=FileAgeCached(StateFile);
-  if (not (lpfStateFileLoaded in APackage.Flags))
+  if (not stats^.StateFileLoaded)
   or (stats^.StateFileDate<>StateFileAge)
   or (stats^.StateFileName<>StateFile) then begin
-    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    stats^.StateFileLoaded:=false;
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
       try
@@ -2902,6 +2923,7 @@ begin
       end;
       stats^.StateFileName:=StateFile;
       stats^.StateFileDate:=StateFileAge;
+      stats^.StateFileLoaded:=true;
     except
       on E: Exception do begin
         if IgnoreErrors then begin
@@ -2915,7 +2937,6 @@ begin
         exit;
       end;
     end;
-    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   end;
 
   Result:=mrOk;
@@ -2933,6 +2954,7 @@ var
   Dependency: TPkgDependency;
   RequiredPackage: TLazPackage;
   OtherStateFile: String;
+  o: TPkgOutputDir;
 begin
   Dependency:=FirstDependency;
   if Dependency=nil then begin
@@ -2948,11 +2970,12 @@ begin
         Result:=LoadPackageCompiledState(RequiredPackage,false,true);
         if Result<>mrOk then exit;
         Result:=mrYes;
-        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
+        o:=RequiredPackage.GetOutputDirType;
+        if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
           exit;
         end;
-        if StateFileAge<RequiredPackage.LastCompile[podDefault].StateFileDate then begin
+        if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
             'State file ',GetOwnerID);
@@ -2963,8 +2986,11 @@ begin
       if RequiredPackage.OutputStateFile<>'' then begin
         OtherStateFile:=RequiredPackage.OutputStateFile;
         GlobalMacroList.SubstituteStr(OtherStateFile);
-        if FileExistsUTF8(OtherStateFile)
-        and (FileAgeUTF8(OtherStateFile)>StateFileAge) then begin
+        if not FilenameIsAbsolute(OtherStateFile) then
+          OtherStateFile:=AppendPathDelim(RequiredPackage.Directory)+OtherStateFile;
+        if FilenameIsAbsolute(OtherStateFile)
+        and FileExistsCached(OtherStateFile)
+        and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
             ,' is newer than State file ',GetOwnerID);
@@ -2979,23 +3005,94 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams, SrcFilename: string;
-  out NeedBuildAllFlag: boolean): TModalResult;
-{ returns: mrYes, mrNo
+  const CompilerFilename, CompilerParams, SrcFilename: string; out
+  NeedBuildAllFlag: boolean): TModalResult;
+var
+  OutputDir: String;
+  NewOutputDir: String;
+  ConfigChanged: boolean;
+  DependenciesChanged: boolean;
+  DefResult: TModalResult;
+  OldNeedBuildAllFlag: Boolean;
+  OldOverride: String;
+begin
+  Result:=mrYes;
+  {$IFDEF VerbosePkgCompile}
+  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  {$ENDIF}
+  NeedBuildAllFlag:=false;
 
-  First checks normal output directory
-  If that needs update and is read only, changes output directory to secondary
-  and checks that.
-  Checks .compiled file for compiler date and parameters and if some file is
-  newer than the .compiled file.
-}
+  if APackage.AutoUpdate=pupManually then exit(mrNo);
+
+  // check the current output directory
+  Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+             CompilerFilename,CompilerParams,SrcFilename,
+             true,
+             NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+  if Result=mrNo then exit; // the current output is valid
+
+  // the current output directory needs compilation
+  if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='' then
+  begin
+    // the last compile was put to the normal/default output directory
+    OutputDir:=APackage.GetOutputDirectory(false);
+    if OutputDirectoryIsWritable(OutputDir) then
+    begin
+      // the normal output directory is writable => keep using it
+      exit;
+    end;
+    // the normal output directory is not writable
+    // => try the fallback directory
+    if not Assigned(OnGetWritablePkgOutputDirectory) then exit;
+    NewOutputDir:=OutputDir;
+    OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
+    if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
+    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
+    Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+               CompilerFilename,CompilerParams,SrcFilename,true,
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+  end else begin
+    // the last compile was put to the fallback output directory
+    if not ConfigChanged then begin
+      // some source files have changed, not the compiler parameters
+      // => keep using the fallback directory
+      exit;
+    end;
+    if DependenciesChanged then begin
+      // dependencies have changed
+      // => switching to the not writable default output directory is not possible
+      // => keep using the fallback directory
+      exit;
+    end;
+    // maybe the user switched the settings back to default
+    // => try using the default output directory
+    OldOverride:=APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride;
+    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
+    OldNeedBuildAllFlag:=NeedBuildAllFlag;
+    DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+               CompilerFilename,CompilerParams,SrcFilename,true,
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+    if DefResult=mrNo then begin
+      // switching back to the not writable output directory requires no compile
+      exit(mrNo);
+    end;
+    // neither the default nor the fallback is valid
+    // => switch back to the fallback
+    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=OldOverride;
+    NeedBuildAllFlag:=OldNeedBuildAllFlag;
+  end;
+end;
+
+function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
+  APackage: TLazPackage; const CompilerFilename, CompilerParams,
+  SrcFilename: string; CheckDependencies: boolean; out NeedBuildAllFlag,
+  ConfigChanged, DependenciesChanged: boolean): TModalResult;
+// returns: mrYes, mrNo, mrCancel, mrAbort
 var
   StateFilename: String;
   StateFileAge: Integer;
   i: Integer;
   CurFile: TPkgFile;
-  NewOutputDir: String;
-  OutputDir: String;
   LastParams: String;
   LastPaths: TStringList;
   CurPaths: TStringList;
@@ -3006,85 +3103,41 @@ var
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
-  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  debugln('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile A ',APackage.IDAsString);
   {$ENDIF}
   NeedBuildAllFlag:=false;
+  ConfigChanged:=false;
+  DependenciesChanged:=false;
   
   if APackage.AutoUpdate=pupManually then exit(mrNo);
 
-  o:=podDefault;
+  o:=APackage.GetOutputDirType;
   stats:=@APackage.LastCompile[o];
-  //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
+  //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
   if (stats^.CompilerFilename<>CompilerFilename)
   or (ExtractFPCParamsForBuildAll(stats^.Params)
       <>ExtractFPCParamsForBuildAll(CompilerParams))
   or ((stats^.CompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
       and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate))
-  then
+  then begin
     NeedBuildAllFlag:=true;
-
-  if (APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='') then
-  begin
-    OutputDir:=APackage.GetOutputDirectory(false);
-    if not DirectoryIsWritableCached(OutputDir) then
-    begin
-      // the package uses the default output directory, but the default is
-      // not writable.
-      // => check the alternative
-      if Assigned(OnGetWritablePkgOutputDirectory) then begin
-        NewOutputDir:=OutputDir;
-        OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
-        if (NewOutputDir<>OutputDir) and (NewOutputDir<>'') then begin
-          StateFilename:=APackage.GetStateFilename(NewOutputDir);
-          if FileExistsCached(StateFilename) then begin
-            // the alternative output directory contains a state file
-            // this means the user has compiled his own version
-            // => use the alternative output directory
-            APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
-          end;
-        end;
-      end;
-    end;
+    ConfigChanged:=true;
   end;
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
   Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit;
-  if not (lpfStateFileLoaded in APackage.Flags) then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
+  if not stats^.StateFileLoaded then begin
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  No state file for ',APackage.IDAsString);
+    ConfigChanged:=true;
     exit(mrYes);
   end;
 
   StateFileAge:=FileAgeUTF8(StateFilename);
 
-  // check main source file
-  if FileExistsUTF8(SrcFilename) and (StateFileAge<FileAgeUTF8(SrcFilename)) then
-  begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
-    exit(mrYes);
-  end;
-
   // check compiler and params
-  if (not stats^.ViaMakefile)
-  and (CompilerFilename<>stats^.CompilerFilename) then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',stats^.CompilerFilename,'"');
-    DebugLn('  Now="',CompilerFilename,'"');
-    exit(mrYes);
-  end;
-  if not FileExistsCached(CompilerFilename) then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    exit(mrYes);
-  end;
-  if (not stats^.ViaMakefile)
-  and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate) then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    exit(mrYes);
-  end;
   LastParams:=APackage.GetLastCompilerParams(o);
   if stats^.ViaMakefile then begin
     // the package was compiled via Makefile
@@ -3097,27 +3150,30 @@ begin
       OldValue:=LastPaths.Values['Reduced'];
       NewValue:=CurPaths.Values['Reduced'];
       if NewValue<>OldValue then begin
-        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler custom params changed for ',APackage.IDAsString);
+        DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler custom params changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        ConfigChanged:=true;
         exit(mrYes);
       end;
       // compare unit paths
       OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory);
       NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory);
       if NewValue<>OldValue then begin
-        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler unit paths changed for ',APackage.IDAsString);
+        DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler unit paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        ConfigChanged:=true;
         exit(mrYes);
       end;
       // compare include paths
       OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory);
       NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory);
       if NewValue<>OldValue then begin
-        DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler include paths changed for ',APackage.IDAsString);
+        DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler include paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        ConfigChanged:=true;
         exit(mrYes);
       end;
     finally
@@ -3126,31 +3182,63 @@ begin
     end;
   end else if CompilerParams<>LastParams then begin
     // package was compiled by Lazarus
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',LastParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
+    ConfigChanged:=true;
+    exit(mrYes);
+  end;
+  if (not stats^.ViaMakefile)
+  and (CompilerFilename<>stats^.CompilerFilename) then begin
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename changed for ',APackage.IDAsString);
+    DebugLn('  Old="',stats^.CompilerFilename,'"');
+    DebugLn('  Now="',CompilerFilename,'"');
+    exit(mrYes);
+  end;
+  if not FileExistsCached(CompilerFilename) then begin
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename not found for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
+    exit(mrYes);
+  end;
+  if (not stats^.ViaMakefile)
+  and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate) then begin
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler file changed for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
 
-  //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
+  // check main source file
+  if (SrcFilename<>'') and FileExistsCached(SrcFilename)
+  and (StateFileAge<FileAgeUTF8(SrcFilename)) then
+  begin
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated ',APackage.IDAsString);
+    exit(mrYes);
+  end;
+
+  //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
 
   // compiler and parameters are the same
   // quick compile is possible
   NeedBuildAllFlag:=false;
 
   if not stats^.Complete then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compile was incomplete for ',APackage.IDAsString);
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compile was incomplete for ',APackage.IDAsString);
     exit(mrYes);
   end;
 
-  // check all required packages
-  Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
-                                            StateFileAge);
-  if Result<>mrNo then exit;
+  if CheckDependencies then begin
+    // check all required packages
+    Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
+                                              StateFileAge);
+    if Result<>mrNo then begin
+      DependenciesChanged:=true;
+      exit;
+    end;
+  end;
 
   // check package files
   if StateFileAge<FileAgeCached(APackage.Filename) then begin
-    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  StateFile older than lpk ',APackage.IDAsString);
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3158,15 +3246,20 @@ begin
     //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExistsUTF8(CurFile.Filename),' ',StateFileAge<FileAgeUTF8(CurFile.Filename));
     if FileExistsCached(CurFile.Filename)
     and (StateFileAge<FileAgeCached(CurFile.Filename)) then begin
-      DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
       exit(mrYes);
     end;
   end;
   
   {$IFDEF VerbosePkgCompile}
-  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  debugln('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile END ',APackage.IDAsString);
   {$ENDIF}
   Result:=mrNo;
+end;
+
+procedure TLazPackageGraph.InvalidateStateFile(APackage: TLazPackage);
+begin
+  APackage.LastCompile[APackage.GetOutputDirType].StateFileLoaded:=false
 end;
 
 function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
@@ -3754,26 +3847,26 @@ var
   OutputFileName: String;
   NewOutputDir: String;
 begin
-  // get default output directory
-  OutputDir:=APackage.GetOutputDirectory(false);
-  if Assigned(OnGetWritablePkgOutputDirectory) then begin
-    // check if default output directory is writable
+  // get output directory
+  OutputDir:=APackage.GetOutputDirectory(true);
+
+  if not OutputDirectoryIsWritable(OutputDir) then
+  begin
+    // the normal output directory is not writable
+    // => use the fallback directory
+    if not Assigned(OnGetWritablePkgOutputDirectory) then exit(mrCancel);
     NewOutputDir:=OutputDir;
     OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
-    if NewOutputDir<>OutputDir then begin
-      // default output directory is not writable => redirect to another place
-      OutputDir:=NewOutputDir;
-      APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=OutputDir;
-    end else begin
-      // default output directory is writable => no redirect
-      APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
-    end;
+    if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit(mrCancel);
+    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
   end;
+
   StateFile:=APackage.GetStateFilename;
   PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
 
   // create the output directory
-  if not ForceDirectory(OutputDir) then begin
+  if (not DirPathExistsCached(OutputDir))
+  and (not ForceDirectoriesUTF8(OutputDir)) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
         OutputDir, '"', #13, APackage.IDAsString]),
@@ -3789,10 +3882,11 @@ begin
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
-  APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+  FileStateCache.IncreaseTimeStamp(StateFile);
+  InvalidateStateFile(APackage);
 
   // create the package src directory
-  if not ForceDirectory(PkgSrcDir) then begin
+  if not ForceDirectoriesUTF8(PkgSrcDir) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
         PkgSrcDir, '"', #13, APackage.IDAsString]),

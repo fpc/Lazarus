@@ -2515,14 +2515,6 @@ begin
 
   if not (ccloNoMacroParams in Flags) then
   begin
-    { Target OS
-       GO32V1 = DOS and version 1 of the DJ DELORIE extender (no longer maintained).
-       GO32V2 = DOS and version 2 of the DJ DELORIE extender.
-       LINUX = LINUX.
-       OS2 = OS/2 (2.x) using the EMX extender.
-       WIN32 = Windows 32 bit.
-        ... }
-    debugln(['TBaseCompilerOptions.MakeOptionsString  ']);
     Vars:=GetBuildMacroValues(Self,true);
     if Vars<>nil then
     begin

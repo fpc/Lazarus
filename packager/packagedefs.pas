@@ -501,8 +501,7 @@ type
     lpfDestroying,     // set during destruction
     lpfLoading,        // set during loading
     lpfSkipSaving,     // Used by PkgBoss to skip saving
-    lpfCircle,         // Used by the PackageGraph to mark circles
-    lpfStateFileLoaded // state file data valid
+    lpfCircle          // Used by the PackageGraph to mark circles
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
@@ -523,14 +522,21 @@ const
   pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
   
 type
+  TPkgOutputDirWritable = (
+    podwUnknown,
+    podwWritable,
+    podwNotWritable
+    );
   TPkgLastCompileStats = record
-    CompilerFilename: string;
-    CompilerFileDate: integer;
-    Params: string;
-    Complete: boolean;
-    ViaMakefile: boolean;
+    StateFileLoaded: boolean;
+    StateFileName: string; // the .compiled file
     StateFileDate: longint;
-    StateFileName: string;
+    CompilerFilename: string; // path to used compiler
+    CompilerFileDate: integer;
+    Params: string;        // compiler parameters
+    Complete: boolean;     // compilation was successful
+    ViaMakefile: boolean;  // compiled via make
+    DirectoryWritable: TPkgOutputDirWritable;
   end;
   PPkgLastCompileStats = ^TPkgLastCompileStats;
   TPkgOutputDir = (
@@ -666,7 +672,7 @@ type
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetOutputDirectory(UseOverride: boolean = true): string; // this can change before building, when default dir is readonly
-    function GetStateFilename(OutputDir: string = ''): string;
+    function GetStateFilename(UseOverride: boolean = true): string;
     function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
     function GetCompilerFilename: string;
@@ -743,6 +749,7 @@ type
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
     LastCompile: array[TPkgOutputDir] of TPkgLastCompileStats;
+    function GetOutputDirType: TPkgOutputDir;
   public
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
@@ -839,7 +846,7 @@ const
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
     'lpfAutoIncrementVersionOnBuild', 'lpfModified',
     'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfLoading', 'lpfSkipSaving',
-    'lpfCircle', 'lpfStateFileLoaded');
+    'lpfCircle');
   PackageUpdatePolicies: array[TPackageUpdatePolicy] of string = (
     'pupManually', 'pupOnRebuildingAll', 'pupAsNeeded'
     );
@@ -3372,6 +3379,16 @@ begin
   Name:=NewName;
 end;
 
+function TLazPackage.GetOutputDirType: TPkgOutputDir;
+begin
+  if (CompilerOptions<>nil)
+  and (CompilerOptions.ParsedOpts<>nil)
+  and (CompilerOptions.ParsedOpts.OutputDirectoryOverride<>'') then
+    Result:=podFallback
+  else
+    Result:=podDefault;
+end;
+
 procedure TLazPackage.GetAllRequiredPackages(var List: TFPList;
   WithSelf: boolean);
 begin
@@ -3413,11 +3430,9 @@ begin
     Result:='';
 end;
 
-function TLazPackage.GetStateFilename(OutputDir: string = ''): string;
+function TLazPackage.GetStateFilename(UseOverride: boolean): string;
 begin
-  if OutputDir='' then
-    OutputDir:=GetOutputDirectory;
-  Result:=OutputDir+Name+'.compiled';
+  Result:=AppendPathDelim(GetOutputDirectory(UseOverride))+Name+'.compiled';
 end;
 
 function TLazPackage.GetSrcFilename: string;

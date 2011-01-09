@@ -37,8 +37,8 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
-  Laz_XMLCfg,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
+  FileUtil, Laz_XMLCfg,
   {$IFDEF NewXMLCfg}
   Laz2_XMLWrite,
   {$ELSE}
@@ -547,6 +547,7 @@ begin
       mtError,ErrorButtons+[mbCancel],'');
     if Result<>mrRetry then exit;
   end;
+  FileStateCache.IncreaseTimeStamp('');
   Result:=mrOk;
   {$ELSE}
   Result:=mrIgnore;
@@ -571,6 +572,7 @@ begin
             mtError,ErrorButtons+[mbCancel]);
           if Result<>mrRetry then exit;
         end;
+        FileStateCache.IncreaseTimeStamp('');
       end;
     end;
     inc(i);
