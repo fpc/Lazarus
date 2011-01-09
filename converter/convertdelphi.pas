@@ -145,6 +145,8 @@ type
     fAllCommentedUnits: TStringList;
     // Units that are found and will be added to project and converted.
     fUnitsToAddToProject: TStringList;
+    // Work around a bug caused by caching the wrongly cased unit name.
+    fRenamedMissingUnits: TStringToStringTree;
     fSettings: TConvertSettings;
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
@@ -622,6 +624,8 @@ begin
   try
     if fSettings.UnitsReplaceMode<>rlDisabled then begin
       fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
+      if Assigned(fOwnerConverter) then
+        fCTLink.RenamedMissingUnits:=fOwnerConverter.fRenamedMissingUnits;
       // Find and prepare the missing units. Don't replace yet.
       Result:=fUsedUnitsTool.Prepare;
       if Result<>mrOk then exit;
@@ -789,11 +793,13 @@ begin
   fAllCommentedUnits:=TStringList.Create;
   fAllCommentedUnits.Sorted:=true;
   fUnitsToAddToProject:=TStringList.Create;
+  fRenamedMissingUnits:=TStringToStringTree.Create(true);
   fPrevSelectedPath:=fSettings.MainPath;
 end;
 
 destructor TConvertDelphiPBase.Destroy;
 begin
+  fRenamedMissingUnits.Free;
   fUnitsToAddToProject.Free;
   fAllCommentedUnits.Free;
   fSettings.Free;

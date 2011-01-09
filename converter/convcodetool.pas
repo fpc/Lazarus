@@ -58,6 +58,8 @@ type
     fIsConsoleApp: Boolean;
     fAskAboutError: Boolean;
     fSettings: TConvertSettings;          // Conversion settings.
+    // Work around a bug caused by caching the wrongly cased unit name.
+    fRenamedMissingUnits: TStringToStringTree;
     procedure InitCodeTool;
     function HandleCodetoolError: TModalResult;
   public
@@ -72,6 +74,8 @@ type
     property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property AskAboutError: Boolean read fAskAboutError write fAskAboutError;
     property Settings: TConvertSettings read fSettings write fSettings;
+    property RenamedMissingUnits: TStringToStringTree read fRenamedMissingUnits
+                                                     write fRenamedMissingUnits;
   end;
 
   { TConvDelphiCodeTool }

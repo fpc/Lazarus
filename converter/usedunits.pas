@@ -36,7 +36,7 @@ uses
   LazarusIDEStrConsts, IDEMsgIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeCache, CodeToolsStructs, AVL_Tree,
-  KeywordFuncLists, SourceChanger,
+  KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts,
   // Converter
   ConverterTypes, ConvCodeTool, ConvertSettings, ReplaceNamesUnit;
 
@@ -57,6 +57,7 @@ type
     fUnitsToRename: TStringToStringTree;
     fUnitsToComment: TStringList;     // List of units to be commented.
     fMissingUnits: TStringList;       // Units not found in search path.
+    function FindMissingUnits: boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
     procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
                               AMapToEdit: TStringToStringTree);
@@ -112,11 +113,10 @@ type
   TUsedUnitsTool = class
   private
     fCTLink: TCodeToolLink;
+    fFilename: string;
     fMainUsedUnits: TUsedUnits;
     fImplUsedUnits: TUsedUnits;
-    fFilename: string;
     function GetMissingUnitCount: integer;
-    function GetMissingUnits: TModalResult;
   public
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
     destructor Destroy; override;
@@ -156,7 +156,7 @@ begin
   fCTLink:=ACTLink;
   fUnitsToAddForLCL:=TStringList.Create;
   fUnitsToRemove:=TStringList.Create;
-  fUnitsToRename:=TStringToStringTree.Create(false);
+  fUnitsToRename:=TStringToStringTree.Create(true);
   fUnitsToComment:=TStringList.Create;
   fMissingUnits:=TStringList.Create;
   // Get existing unit names from uses section
@@ -180,7 +180,66 @@ begin
   inherited Destroy;
 end;
 
-// function TUsedUnits.GetMissingUnits: TModalResult;  was here.
+function TUsedUnits.FindMissingUnits: boolean;
+var
+  UsesNode: TCodeTreeNode;
+  InAtom, UnitNameAtom: TAtomPosition;
+  OldUnitName, OldInFilename: String;
+  NewUnitName, NewInFilename: String;
+  AFilename, s, slo: String;
+begin
+  UsesNode:=UsesSectionNode;
+  if UsesNode=nil then exit(true);
+  with fCTLink do begin
+    CodeTool.MoveCursorToUsesStart(UsesNode);
+    repeat
+      // read next unit name
+      CodeTool.ReadNextUsedUnit(UnitNameAtom, InAtom);
+      OldUnitName:=CodeTool.GetAtom(UnitNameAtom);
+      if InAtom.StartPos>0 then
+        OldInFilename:=copy(CodeTool.Src,InAtom.StartPos+1,
+                               InAtom.EndPos-InAtom.StartPos-2)
+      else
+        OldInFilename:='';
+      // find unit file
+      NewUnitName:=OldUnitName;
+      NewInFilename:=OldInFilename;
+      AFilename:=CodeTool.FindUnitCaseInsensitive(NewUnitName,NewInFilename);
+      s:=NewUnitName;
+      if NewInFilename<>'' then
+        s:=s+' in '''+NewInFilename+'''';
+      if AFilename<>'' then begin              // unit found
+        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then begin
+          ToBeRenamedOrRemoved(OldUnitName, NewUnitName);    // fix case
+          // FindUnitCaseInsensitive reports only the 1. instance of a missing unit
+          // with different casing. This workaround can be removed when it is fixed.
+          if Assigned(RenamedMissingUnits) then
+            RenamedMissingUnits[OldUnitName]:=NewUnitName;
+        end
+        else if Assigned(RenamedMissingUnits) then begin
+          if RenamedMissingUnits.Contains(OldUnitName) then
+            ToBeRenamedOrRemoved(OldUnitName, RenamedMissingUnits[OldUnitName]);
+        end;
+      end
+      else begin
+        // Omit Windows specific units from the list if target is "Windows only",
+        //  needed if work-platform is different from Windows (kind of a hack).
+        slo:=LowerCase(NewUnitName);
+        if (Settings.Target<>ctLazarusWin) or
+           ((slo<>'windows') and (slo<>'variants') and (slo<>'shellapi')) then
+          fMissingUnits.Add(s);                       // unit not found
+      end;
+      if CodeTool.CurPos.Flag=cafComma then begin
+        // read next unit name
+        CodeTool.ReadNextAtom;
+      end else if CodeTool.CurPos.Flag=cafSemicolon then begin
+        break;
+      end else
+        CodeTool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',CodeTool.GetAtom]);
+    until false;
+  end;
+  Result:=true;
+end;
 
 procedure TUsedUnits.ToBeRenamedOrRemoved(AOldName, ANewName: string);
 // Replace a unit name with a new name or remove it if there is no new name.
@@ -449,46 +508,6 @@ begin
   inherited Destroy;
 end;
 
-function TUsedUnitsTool.GetMissingUnits: TModalResult;
-// Get missing unit by codetools.
-// This can be moved to TUsedUnits if codetools is refactored.
-var
-  i: Integer;
-  s: String;
-  AllMissUnits: TStrings;
-begin
-  Result:=mrOk;
-  AllMissUnits:=nil;    // Will be created by FindMissingUnits.
-  try
-    if not fCTLink.CodeTool.FindMissingUnits(AllMissUnits,False,True,fCTLink.SrcCache)
-    then begin
-      Result:=mrCancel;
-      exit;
-    end;
-    if Assigned(AllMissUnits) then begin
-      // Remove Windows specific units from the list if target is "Windows only",
-      //  needed if work-platform is different from Windows (kind of a hack).
-      if fCTLink.Settings.Target=ctLazarusWin then begin
-        for i:=AllMissUnits.Count-1 downto 0 do begin
-          s:=LowerCase(AllMissUnits[i]);
-          if (s='windows') or (s='variants') or (s='shellapi') then
-            AllMissUnits.Delete(i);
-        end;
-      end;
-      // Split AllMissUnits into Main and Implementation
-      for i:=0 to AllMissUnits.Count-1 do begin
-        s:=AllMissUnits[i];
-        if fMainUsedUnits.ExistingUnits.IndexOf(s)<>-1 then
-          fMainUsedUnits.MissingUnits.Add(s);
-        if fImplUsedUnits.ExistingUnits.IndexOf(s)<>-1 then
-          fImplUsedUnits.MissingUnits.Add(s);
-      end;
-    end;
-  finally
-    AllMissUnits.Free;
-  end;
-end;
-
 function TUsedUnitsTool.Prepare: TModalResult;
 // Find missing units and mark some of them to be replaced later.
 // More units can be marked for add, remove, rename and comment during conversion.
@@ -514,7 +533,12 @@ begin
     MapToEdit:=Nil;
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then
       MapToEdit:=TStringToStringTree.Create(false);
-    Result:=GetMissingUnits;
+    fCTLink.CodeTool.BuildTree(false);
+    if not (fMainUsedUnits.FindMissingUnits and
+            fImplUsedUnits.FindMissingUnits) then begin
+      Result:=mrCancel;
+      exit;
+    end;
     if Result<>mrOK then exit;
     // Find replacements for missing units from settings.
     fMainUsedUnits.FindReplacement(UnitUpdater, MapToEdit);
