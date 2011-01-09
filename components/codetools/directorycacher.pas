@@ -1030,15 +1030,15 @@ begin
         end;
         {$ENDIF}
       end;
-      if Result<>'' then begin
-        // improve unit name
-        NewUnitName:=ExtractFileNameOnly(Result);
-        if (NewUnitName<>lowercase(NewUnitName))
-        and (AUnitName<>NewUnitName) then
-          AUnitName:=NewUnitName;
-      end;
 
       AddToCache(UnitSrc,AUnitName,Result);
+    end;
+    if Result<>'' then begin
+      // improve unit name
+      NewUnitName:=ExtractFileNameOnly(Result);
+      if (NewUnitName<>lowercase(NewUnitName))
+      and (AUnitName<>NewUnitName) then
+        AUnitName:=NewUnitName;
     end;
   end;
   //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath RESULT AUnitName="',AUnitName,'" InFilename="',InFilename,'" Result=',Result);
