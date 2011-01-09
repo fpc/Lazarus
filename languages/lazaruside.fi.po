@@ -2192,7 +2192,7 @@ msgstr "Välilehdet ja ikkunat"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
 msgid "Notebook Tabs:"
-msgstr ""
+msgstr "Lähdekoodieditorin välilehdet:"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2210,27 +2210,27 @@ msgstr "Ei korostusta"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
-msgstr ""
+msgstr "Lähdekoodieditorin välilehtien paikka"
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
 msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
 msgid "Bottom"
-msgstr ""
+msgstr "Alhaalla"
 
 #: lazarusidestrconsts.dlgnotebooktabposleft
 msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
 msgid "Left"
-msgstr "Vasen"
+msgstr "Vasemmalla"
 
 #: lazarusidestrconsts.dlgnotebooktabposright
 msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
 msgid "Right"
-msgstr "Oikea"
+msgstr "Oikealla"
 
 #: lazarusidestrconsts.dlgnotebooktabpostop
 msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
 msgid "Top"
-msgstr ""
+msgstr "Ylhäällä"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -2285,7 +2285,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpackagegraph
 msgid "Package Graph"
-msgstr ""
+msgstr "Komponenttipakettikaavio"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -2437,7 +2437,7 @@ msgstr "Ominaisuuden nimi"
 
 #: lazarusidestrconsts.dlgqautoclosecompiledialog
 msgid "Auto close compile dialog"
-msgstr ""
+msgstr "Suljetaan käännösikkuna kääntämisen jälkeen"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
@@ -3758,7 +3758,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
-msgstr ""
+msgstr "Tuo koodin (kuten esim. olion) täydennysmahdollisuudet automaattisesti esiin pisteen jälkeen"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -4930,7 +4930,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
-msgstr ""
+msgstr "Kuvaus:"
 
 #: lazarusidestrconsts.liscodetoolsdefsdirectory
 msgid "%s directory"
@@ -5782,11 +5782,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
 msgid "Copy all shown and hidden messages to clipboard"
-msgstr ""
+msgstr " Kopioi kaikki viestit leikepöydälle"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy all shown messages to clipboard"
-msgstr ""
+msgstr "Kopioi kaikki näytetyt viestit leikepöydälle"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7715,7 +7715,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "Näytä projektin tiedostopolku Lazaruksen päävalikon otsikossa"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
@@ -8145,19 +8145,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeepininstalllist
 msgid "Keep in install list"
-msgstr ""
+msgstr "Pidetään asennuksessa"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Hyväksy nimi tälläisenään"
-
-#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
-msgstr ""
-
-#: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
-msgstr ""
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
@@ -9009,13 +9001,13 @@ msgstr ""
 msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
+msgid "Upadate revision info in \"About Lazarus\" dialog"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
-msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
@@ -11257,7 +11249,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
-msgstr ""
+msgstr "Asennettu"
 
 #: lazarusidestrconsts.lispckexplinstallonnextstart
 msgid "Install on next start"
@@ -11265,7 +11257,7 @@ msgstr "Asennetaan seuraavan käynnistyksen yhteydessä"
 
 #: lazarusidestrconsts.lispckexplisrequiredby
 msgid "Selected package is required by:"
-msgstr ""
+msgstr "Valittu komponenttipaketti käyttää:"
 
 #: lazarusidestrconsts.lispckexplloadedpackages
 msgid "Loaded Packages:"
@@ -11277,7 +11269,7 @@ msgstr "Komponenttipakettia %s ei löydetty"
 
 #: lazarusidestrconsts.lispckexplstate
 msgid "%sState: "
-msgstr ""
+msgstr "%sTila:"
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
 msgid "Uninstall on next start"
@@ -12440,7 +12432,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
 msgid "Project %s%s%s successfully built"
-msgstr ""
+msgstr "Projekti %s%s%s on onnistuneesti käännetty (built)"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
@@ -12660,7 +12652,7 @@ msgstr "Poista kaikki käännösyksiköt"
 
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
-msgstr ""
+msgstr "Poistetaan asennuksesta"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
@@ -12937,7 +12929,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
-msgstr ""
+msgstr "Tallenna projekti %s (*%s)"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -14331,7 +14323,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefile
 msgid "Unable to write file"
-msgstr ""
+msgstr "Ei pystytä tallentamaan tiedostoa"
 
 #: lazarusidestrconsts.lisunabletowritefileerror
 msgid "Unable to write file %s%s%s%sError: %s"
@@ -15094,7 +15086,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
-msgstr ""
+msgstr "Sisennä valittu lohko"
 
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
@@ -15118,7 +15110,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
-msgstr ""
+msgstr "Poista lohkon sisennys"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
