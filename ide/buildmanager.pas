@@ -109,6 +109,10 @@ type
                                var Abort: boolean): string;
     function MacroFuncIDEBuildOptions(const Param: string; const Data: PtrInt;
                                var Abort: boolean): string;
+    function MacroFuncPrimaryConfigPath(const Param: string; const Data: PtrInt;
+                                        var Abort: boolean): string;
+    function MacroFuncSecondaryConfigPath(const Param: string; const Data: PtrInt;
+                                          var Abort: boolean): string;
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -310,6 +314,10 @@ begin
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
   GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
                     lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
+  GlobalMacroList.Add(TTransferMacro.Create('PrimaryConfiPath','',
+                    lisPrimaryConfigPath, @MacroFuncPrimaryConfigPath, []));
+  GlobalMacroList.Add(TTransferMacro.Create('SecondaryConfigPath','',
+                    lisSecondaryConfigPath, @MacroFuncSecondaryConfigPath, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1383,6 +1391,18 @@ begin
     Result:=MiscellaneousOptions.BuildLazOpts.ExtraOptions
   else
     Result:='';
+end;
+
+function TBuildManager.MacroFuncPrimaryConfigPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetPrimaryConfigPath;
+end;
+
+function TBuildManager.MacroFuncSecondaryConfigPath(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=GetSecondaryConfigPath;
 end;
 
 function TBuildManager.MacroFuncSrcOS(const Param: string; const Data: PtrInt;
