@@ -133,6 +133,15 @@ end;
 {******************************************************************************
                                TNotebook
  ******************************************************************************}
+function TNotebook.GetActivePage: String;
+begin
+  Result := Page[GetPageIndex].Caption;
+end;
+
+function TNotebook.GetActivePageComponent: TPage;
+begin
+  Result := Page[GetPageIndex];
+end;
 
 function TNotebook.GetPage(AIndex: Integer): TPage;
 begin

@@ -305,8 +305,8 @@ type
     FPages: TStrings; // TUNBPages
     FPageIndex: Integer;
     FPageList: TListWithEvent;
-{    function GetActivePage: String;
-    function GetActivePageComponent: TCustomPage;}
+    function GetActivePage: String;
+    function GetActivePageComponent: TPage;
     function GetPage(AIndex: Integer): TPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
@@ -316,7 +316,6 @@ type
     procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);}
     procedure SetPageIndex(AValue: Integer);
-{    procedure ShowCurrentPage;}
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -330,10 +329,11 @@ type
     property PageCount: integer read GetPageCount;
 //    property PageList: TList read FPageList;
   published
-    // TUntabbedNotebook specific properties
+    // LCL TNotebook specific properties
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property Pages: TStrings read FPages;
-//    property ActivePage: String read GetActivePage write SetActivePage;
+    property ActivePage: String read GetActivePage;// write SetActivePage;
+    property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage;
     // Generic properties
     property Align;
     property Anchors;
