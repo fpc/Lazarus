@@ -6,7 +6,7 @@ interface
 
 uses
   ComCtrls, ExtCtrls, Forms, StdCtrls, TACustomSource, TAFuncSeries, TAGraph,
-  TASeries, TASources, TATools, TATransformations;
+  TASeries, TASources, TAStyles, TATools, TATransformations;
 
 type
 
@@ -17,6 +17,7 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
     cbAuto: TCheckBox;
+    csStripes: TChartStyles;
     ChartSubmarks: TChart;
     ChartDateTime: TChart;
     ChartAxisGroup: TChart;
