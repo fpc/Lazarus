@@ -468,11 +468,11 @@ object Form1: TForm1
     Styles = <    
       item
         Brush.Color = 16631498
-        Pen.Style = psDash
+        UsePen = False
       end    
       item
         Brush.Color = 12319483
-        Pen.Style = psDash
+        UsePen = False
       end>
     left = 352
     top = 176

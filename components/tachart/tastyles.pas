@@ -31,9 +31,13 @@ type
     FBrush: TBrush;
     FPen: TPen;
     FRepeatCount: Cardinal;
+    FUseBrush: Boolean;
+    FUsePen: Boolean;
     procedure SetBrush(const AValue: TBrush);
     procedure SetPen(const AValue: TPen);
     procedure SetRepeatCount(AValue: Cardinal);
+    procedure SetUseBrush(AValue: Boolean);
+    procedure SetUsePen(AValue: Boolean);
     procedure StyleChanged(ASender: TObject);
   protected
     function GetDisplayName: string; override;
@@ -41,13 +45,15 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
   public
-    procedure Assign(Source: TPersistent); override;
     procedure Apply(ACanvas: TCanvas);
+    procedure Assign(Source: TPersistent); override;
   published
     property Brush: TBrush read FBrush write SetBrush;
     property Pen: TPen read FPen write SetPen;
     property RepeatCount: Cardinal
       read FRepeatCount write SetRepeatCount default 1;
+    property UseBrush: Boolean read FUseBrush write SetUseBrush default true;
+    property UsePen: Boolean read FUsePen write SetUsePen default true;
   end;
 
   TChartStyles = class;
@@ -59,8 +65,8 @@ type
     FOwner: TChartStyles;
     function GetStyle(AIndex: Integer): TChartStyle;
   protected
-    function GetOwner: TPersistent; override;
     procedure Changed;
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TChartStyles);
     property Style[AIndex: Integer]: TChartStyle read GetStyle; default;
@@ -96,8 +102,10 @@ end;
 
 procedure TChartStyle.Apply(ACanvas: TCanvas);
 begin
-  ACanvas.Brush := Brush;
-  ACanvas.Pen := Pen;
+  if UseBrush then
+    ACanvas.Brush := Brush;
+  if UsePen then
+    ACanvas.Pen := Pen;
 end;
 
 procedure TChartStyle.Assign(Source: TPersistent);
@@ -118,6 +126,8 @@ begin
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
   FRepeatCount := 1;
+  FUseBrush := true;
+  FUsePen := true;
 end;
 
 destructor TChartStyle.Destroy;
@@ -148,6 +158,20 @@ procedure TChartStyle.SetRepeatCount(AValue: Cardinal);
 begin
   if FRepeatCount = AValue then exit;
   FRepeatCount := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartStyle.SetUseBrush(AValue: Boolean);
+begin
+  if FUseBrush = AValue then exit;
+  FUseBrush := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartStyle.SetUsePen(AValue: Boolean);
+begin
+  if FUsePen = AValue then exit;
+  FUsePen := AValue;
   StyleChanged(Self);
 end;
 
