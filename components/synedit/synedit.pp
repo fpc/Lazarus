@@ -3400,8 +3400,10 @@ var
       end;
       // Paint the chars
       rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
-      if rcToken.Right > AClip.Right then
+      if rcToken.Right > AClip.Right then begin
         rcToken.Right := AClip.Right;
+        fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
+      end;
       with TokenAccu do PaintToken(p, Len, PhysicalStartPos);
     end;
 
@@ -3511,7 +3513,10 @@ var
             FTextDrawer.FrameStyle[side] := FoldedCodeInfo.FrameStyle;
           end;
         end;
-        rcToken.Right := Min(rcToken.Right, rcLine.Right);
+        if rcToken.Right > rcLine.Right then begin
+          rcToken.Right := rcLine.Right;
+          fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
+        end;
         if rcToken.Right > rcToken.Left then begin
           if ForceEto then fTextDrawer.ForceNextTokenWithEto;
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
