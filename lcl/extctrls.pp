@@ -308,7 +308,7 @@ type
 {    function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;}
     function GetPage(AIndex: Integer): TPage;
-//    function GetPageCount : integer;
+    function GetPageCount : integer;
     function GetPageIndex: Integer;
 {    function FindVisiblePage(Index: Integer): Integer;}
     procedure InsertPage(APage: TPage; Index: Integer);
@@ -327,7 +327,7 @@ type
     function CustomPage(Index: integer): TCustomPage;}
   public
     property Page[Index: Integer]: TPage read GetPage;
-//    property PageCount: integer read GetPageCount;
+    property PageCount: integer read GetPageCount;
 //    property PageList: TList read FPageList;
   published
     // TUntabbedNotebook specific properties

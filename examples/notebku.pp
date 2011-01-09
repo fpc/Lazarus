@@ -49,9 +49,7 @@ type
      procedure Button1Click(Sender: TObject);
      procedure Button2Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
-     procedure Button4Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
-     procedure Button6Click(Sender: TObject);
    end;
 
 var
@@ -234,7 +232,7 @@ begin
    end;
 
    // Create Show/Hide Tabs Button on first page of TabbedNotebook
-   fButton4 := TButton.Create(fNotebook.Page[0]);
+{   fButton4 := TButton.Create(fNotebook.Page[0]);
    with fButton4 do
    begin
       Parent := fNotebook.Page[0];
@@ -245,7 +243,7 @@ begin
       top := 150;
       Caption := 'Hide Tabs';
       Show; 
-   end;
+   end;}
  
    // Create Delete Page Button on third page of TabbedNotebook
    fButton5 := TButton.Create(fNotebook.Page[2]);
@@ -258,20 +256,6 @@ begin
       left := (250 {Parent.Widht} - Width) div 2;
       top := 100;
       Caption := 'Delete Page';
-      Show; 
-   end;
- 
-   // Create Set Tabs Position Button on first page of TabbedNotebook
-   fButton6 := TButton.Create(fNotebook.Page[0]);
-   with fButton6 do
-   begin
-      Parent := fNotebook.Page[0];
-      OnClick := @Button6Click;
-      Width := 150;
-      Height := 23;
-      left := (250 {Parent.Widht} - Width) div 2;
-      top := 190;
-      Caption := 'Set Tab Position';
       Show; 
    end;
 
@@ -297,17 +281,6 @@ begin
   Close;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
-begin
-  //writeln('Show/Hide Tabs Button Clicked');
-
-  fNotebook.ShowTabs := not fNotebook.ShowTabs;
-  if (fNotebook.ShowTabs) then
-    fButton4.Caption := 'Hide Tabs'
-  else
-    fButton4.Caption := 'Show Tabs';
-end;
-
 procedure TForm1.Button5Click(Sender: TObject);
 begin
   //writeln('Delete Page Button Clicked');
@@ -320,21 +293,6 @@ begin
     else
       fNotebook.Pages.Delete(fNotebook.Pages.Count - 1);
   end;
-
-end;
-
-procedure TForm1.Button6Click(Sender: TObject);
-begin
-  //writeln('Set Tab Position Button Clicked');
-
-  if fNotebook.TabPosition = tpTop then
-     fNotebook.TabPosition := tpRight
-  else if fNotebook.TabPosition = tpRight then
-     fNotebook.TabPosition := tpBottom
-  else if fNotebook.TabPosition = tpBottom then
-     fNotebook.TabPosition := tpLeft
-  else if fNotebook.TabPosition = tpLeft then
-     fNotebook.TabPosition := tpTop;
 end;
 
 end.

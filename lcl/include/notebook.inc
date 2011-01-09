@@ -141,6 +141,11 @@ begin
   Result := TPage(FPageList.Items[AIndex]);
 end;
 
+function TNotebook.GetPageCount: Integer;
+begin
+  Result := FPages.Count;
+end;
+
 function TNotebook.GetPageIndex: Integer;
 begin
   Result := FPageIndex;
