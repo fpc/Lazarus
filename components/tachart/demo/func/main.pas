@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph,
-  TALegendPanel, TASeries, TASources, TATools;
+  TALegendPanel, TASeries, TACustomSource, TASources, TATools;
 
 type
 
