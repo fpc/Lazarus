@@ -169,6 +169,7 @@ type
     procedure SetZPosition(const AValue: TChartDistance);
 
     procedure StyleChanged(ASender: TObject);
+    function TryApplyStripes(ACanvas: TCanvas; var AIndex: Cardinal): Boolean;
   protected
     function GetDisplayName: string; override;
   public
@@ -177,7 +178,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
-      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      ACanvas: TCanvas; const AClipRect: TRect;
       const ATransf: ICoordTransformer; const AZOffset: TPoint);
     procedure DrawTitle(
       ACanvas: TCanvas; const ACenter, AZOffset: TPoint; ASize: Integer);
@@ -232,7 +233,7 @@ type
   public
     function Add: TChartAxis; inline;
     procedure Draw(
-      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      ACanvas: TCanvas; const AClipRect: TRect;
       const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
       var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
@@ -447,12 +448,30 @@ begin
 end;
 
 procedure TChartAxis.Draw(
-  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  ACanvas: TCanvas; const AClipRect: TRect;
   const ATransf: ICoordTransformer; const AZOffset: TPoint);
 
 var
   prevLabelPoly: TPointArray = nil;
   stripeIndex: Cardinal = 0;
+  prevCoord: Integer;
+
+  procedure BarZ(AX1, AY1, AX2, AY2: Integer);
+  var
+    oldPenStyle: TPenStyle;
+    r: TRect;
+  begin
+    if ACanvas.Brush.Style = bsClear then exit;
+    with AZOffset do
+      r := Rect(AX1 + X + 1, AY1 + Y + 1, AX2 + X + 1, AY2 + Y + 1);
+    oldPenStyle := ACanvas.Pen.Style;
+    ACanvas.Pen.Style := psClear;
+    try
+      ACanvas.Rectangle(r);
+    finally
+      ACanvas.Pen.Style := oldPenStyle;
+    end;
+  end;
 
   procedure LineZ(AP1, AP2: TPoint);
   begin
@@ -477,13 +496,10 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
-      if Marks.Stripes<> nil then begin
-        Marks.Stripes.Apply(ACanvas, stripeIndex);
-        stripeIndex += 1;
-      end;
-      LineZ(
-        Point(x, ATransf.YGraphToImage(AExtent.a.Y)),
-        Point(x, ATransf.YGraphToImage(AExtent.b.Y)));
+      TryApplyStripes(ACanvas, stripeIndex);
+      BarZ(prevCoord, AClipRect.Top, x, AClipRect.Bottom);
+      LineZ(Point(x, AClipRect.Top), Point(x, AClipRect.Bottom));
+      prevCoord := x;
     end;
 
     d := TickLength + Marks.CenterOffset(ACanvas, AText).cy;
@@ -502,13 +518,10 @@ var
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
       ACanvas.Brush.Style := bsClear;
-      if Marks.Stripes<> nil then begin
-        Marks.Stripes.Apply(ACanvas, stripeIndex);
-        stripeIndex += 1;
-      end;
-      LineZ(
-        Point(ATransf.XGraphToImage(AExtent.a.X), y),
-        Point(ATransf.XGraphToImage(AExtent.b.X), y));
+      TryApplyStripes(ACanvas, stripeIndex);
+      BarZ(AClipRect.Left, prevCoord, AClipRect.Right, y);
+      LineZ(Point(AClipRect.Left, y), Point(AClipRect.Right, y));
+      prevCoord := y;
     end;
 
     d := TickLength + Marks.CenterOffset(ACanvas, AText).cx;
@@ -525,6 +538,7 @@ begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
   coord := TChartAxisMargins(FAxisRect)[Alignment];
+  prevCoord := IfThen(IsVertical, AClipRect.Bottom, AClipRect.Left);
   for i := 0 to High(FMarkValues) do begin
     v := GetTransform.AxisToGraph(FMarkValues[i]);
     if IsVertical then
@@ -532,6 +546,11 @@ begin
     else
       DrawXMark(coord, v, FMarkTexts[i]);
   end;
+  if Grid.Visible and TryApplyStripes(ACanvas, stripeIndex) then
+    if IsVertical then
+      BarZ(AClipRect.Left, AClipRect.Top, AClipRect.Right, prevCoord)
+    else
+      BarZ(prevCoord, AClipRect.Top, AClipRect.Right, AClipRect.Bottom);
 end;
 
 procedure TChartAxis.DrawTitle(
@@ -766,6 +785,15 @@ begin
   end;
 end;
 
+function TChartAxis.TryApplyStripes(
+  ACanvas: TCanvas; var AIndex: Cardinal): Boolean;
+begin
+  Result := Marks.Stripes <> nil;
+  if not Result then exit;
+  Marks.Stripes.Apply(ACanvas, AIndex);
+  AIndex += 1;
+end;
+
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
   lmin, lmax: Double;
@@ -812,7 +840,7 @@ begin
 end;
 
 procedure TChartAxisList.Draw(
-  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  ACanvas: TCanvas; const AClipRect: TRect;
   const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
   var AIndex: Integer);
 var
@@ -823,7 +851,7 @@ begin
       if ACurrentZ < ZPosition then break;
       zoffset.Y := Min(ZPosition, AMaxZ);
       zoffset.X := - zoffset.Y;
-      Draw(ACanvas, AExtent, ATransf, zoffset);
+      Draw(ACanvas, AClipRect, ATransf, zoffset);
       DrawTitle(ACanvas, FCenterPoint, zoffset, FGroups[FGroupIndex].FTitleSize);
       AIndex += 1;
     end;

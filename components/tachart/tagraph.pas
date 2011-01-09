@@ -908,7 +908,7 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, d, axisIndex);
+          AxisList.Draw(ACanvas, FClipRect, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
           ACanvas.ClipRect := FClipRect;
           ACanvas.Clipping := true;
@@ -928,7 +928,7 @@ begin
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, d, axisIndex);
+  AxisList.Draw(ACanvas, FClipRect, Self, MaxInt, d, axisIndex);
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
