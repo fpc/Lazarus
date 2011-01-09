@@ -5573,8 +5573,8 @@ msgstr ""
 msgid "Convert Delphi unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -12254,6 +12254,10 @@ msgstr ""
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "direktori konfigurasi utama, dimana Lazarus menyimpan file konfigurasinya. Default adalah"
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "Cetak"
@@ -12999,6 +13003,10 @@ msgstr ""
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "direktori konfig kedua, dimana Lazarus mencari file template konfig. Default adalah"
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

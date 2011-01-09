@@ -3867,7 +3867,7 @@ msgstr ""
 #: lazarusidestrconsts.lisbottom
 msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
-msgstr ""
+msgstr "Alhaalla"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
@@ -5554,8 +5554,8 @@ msgstr ""
 msgid "Convert Delphi unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -8151,6 +8151,14 @@ msgstr "Pidetään asennuksessa"
 msgid "Keep name"
 msgstr "Hyväksy nimi tälläisenään"
 
+#: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
+msgid "Keep relative indentation of multi line template"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepsubindentation
+msgid "Keep indentation"
+msgstr ""
+
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
 msgstr "Pidä ne ja jatka"
@@ -9001,13 +9009,13 @@ msgstr ""
 msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
@@ -12213,6 +12221,10 @@ msgstr ""
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr ""
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "Tulosta"
@@ -12953,6 +12965,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+msgstr ""
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
@@ -13887,7 +13903,7 @@ msgstr ""
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
-msgstr ""
+msgstr "Ylhäällä"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"

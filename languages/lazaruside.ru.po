@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-07 17:05+0300\n"
+"PO-Revision-Date: 2011-01-09 19:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -456,11 +456,11 @@ msgstr "Тест: проверка компилятора ..."
 
 #: lazarusidestrconsts.dlgccotestcheckingcompilerconfig
 msgid "Test: Checking compiler configuration ..."
-msgstr "Тест: проверка конфигурации компилятора ..."
+msgstr "Тест: проверка параметров компилятора ..."
 
 #: lazarusidestrconsts.dlgccotestcheckingfpcconfigs
 msgid "Test: Checking fpc configs ..."
-msgstr "Тест: проверка конфигурационных файлов компилятора ..."
+msgstr "Тест: проверка файлов настройки компилятора ..."
 
 #: lazarusidestrconsts.dlgccotestcompilerdate
 msgid "Test: Checking compiler date ..."
@@ -751,7 +751,7 @@ msgstr "Завершать свойства"
 
 #: lazarusidestrconsts.dlgconfigfiles
 msgid "Config Files:"
-msgstr "Конфигурационные файлы:"
+msgstr "Файлы настройки:"
 
 #: lazarusidestrconsts.dlgconormal
 msgid "Normal Code"
@@ -2949,7 +2949,7 @@ msgstr "Сворачивание кода"
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional Compiler Config File"
-msgstr "Использовать дополнительный конфигурационный файл компилятора"
+msgstr "Использовать дополнительный файл настройки компилятора"
 
 #: lazarusidestrconsts.dlgusedividerdraw
 msgid "Divider drawing"
@@ -2957,7 +2957,7 @@ msgstr "Отображение разделителя"
 
 #: lazarusidestrconsts.dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
-msgstr "Использовать стандартный конфигурационный файл компилятора (fpc.cfg)"
+msgstr "Использовать стандартный файл настройки компилятора (fpc.cfg)"
 
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
@@ -4113,7 +4113,7 @@ msgstr "откомпилированный модуль FPC не найден: %
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
-msgstr "найдено несколько конфигурационных файлов компилятора: "
+msgstr "найдено несколько файлов настройки компилятора: "
 
 #: lazarusidestrconsts.liscconocfgfound
 msgid "no fpc.cfg found"
@@ -4630,7 +4630,7 @@ msgstr "Палитра"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
-msgstr "Дублирующийся файл параметров компилятора"
+msgstr "Дублирующийся файл настройки компилятора"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
@@ -5370,7 +5370,7 @@ msgstr "Подсказка: Вы можете задать путь компил
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
-msgstr "ЗАМЕТКА: файл параметров CodeTools не найден, поэтому используются значения по умолчанию"
+msgstr "ЗАМЕТКА: файл настройки CodeTools не найден, поэтому используются значения по умолчанию"
 
 #: lazarusidestrconsts.liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
@@ -5449,7 +5449,7 @@ msgstr "Условные определения"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
-msgstr "Каталог конфигурации Lazarus"
+msgstr "Каталог настройки Lazarus"
 
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
@@ -5579,9 +5579,9 @@ msgstr "Преобразование проекта Delphi"
 msgid "Convert Delphi unit"
 msgstr "Преобразование модуля Delphi"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
-msgstr "Преобразование файла модуля %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
+msgstr "Преобразование файла %s"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -5895,7 +5895,7 @@ msgstr "%s (другое)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Внимание: дополнительный файл настроек компилятора имеет то же имя, что один из стандартных файлов настроек компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
+msgstr "Внимание: дополнительный файл настройки компилятора имеет то же имя, что и один из стандартных файлов настройки компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
 
 #: lazarusidestrconsts.liscpopenpackage
 msgid "Open Package %s"
@@ -11843,7 +11843,7 @@ msgstr "Пропустить это сообщение"
 
 #: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
-msgstr "файл настроек статических пакетов"
+msgstr "файл настройки статических пакетов"
 
 #: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
@@ -12226,7 +12226,7 @@ msgstr "Указатель"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in IDE config directory"
-msgstr "Сохранять в каталоге настроек IDE"
+msgstr "Сохранять в каталоге настройки IDE"
 
 #: lazarusidestrconsts.lisposaveinlpifil
 msgid "Save in .lpi file"
@@ -12246,7 +12246,11 @@ msgstr "Предыдущее слово"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr "первичный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию - "
+msgstr "первичный каталог настройки, где Lazarus хранит свои файлы настройки. По умолчанию - "
+
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr "Первичный путь к каталогу настройки"
 
 #: lazarusidestrconsts.lisprint
 msgid "Print"
@@ -12990,7 +12994,11 @@ msgstr "Поиск модуля"
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "вторичный каталог настроек, где Lazarus ищет шаблоны файлов настроек. По умолчанию - "
+msgstr "вторичный каталог настройки, где Lazarus ищет шаблоны файлов настройки. По умолчанию - "
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr "Вторичный путь к каталогу настройки"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -13679,11 +13687,11 @@ msgstr "Это имя уже имеет владелец"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr "Пакет %s добавляет путь \"%s\" к списку путей к включаемым файлам IDE.%sВероятно, это ошибка конфигурации пакета."
+msgstr "Пакет %s добавляет путь \"%s\" к списку путей к включаемым файлам IDE.%sВероятно, это ошибка настройки пакета."
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr "Пакет %s добавляет путь \"%s\" к списку путей к модулям IDE.%sВероятно, это ошибка конфигурации пакета."
+msgstr "Пакет %s добавляет путь \"%s\" к списку путей к модулям IDE.%sВероятно, это ошибка настройки пакета."
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
@@ -15259,7 +15267,7 @@ msgstr "Завершить код"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
-msgstr "файл настроек сборки"
+msgstr "файл параметров сборки"
 
 #: lazarusidestrconsts.srkmeccopy
 msgid "Copy selection to clipboard"

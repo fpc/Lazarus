@@ -5528,9 +5528,9 @@ msgstr "Převod projektu Delphi"
 msgid "Convert Delphi unit"
 msgstr "Převod jednotky Delphi"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
-msgstr "Převod souboru jednotky %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -12163,6 +12163,10 @@ msgstr "Předcházející slovo"
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "hlavní konfigurační složka, kde Lazarus uchovává své konfigurační soubory. Implicitní je "
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "Tisknout"
@@ -12900,6 +12904,10 @@ msgstr "Hledat jednotku"
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "druhotná konfigurační složka, kde Lazarus hledá šablony konfiguračních souborů. Implicitní je "
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

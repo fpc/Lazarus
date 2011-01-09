@@ -5591,8 +5591,8 @@ msgstr "Delphi-Projekt konvertieren"
 msgid "Convert Delphi unit"
 msgstr "Delphi-Unit konvertieren"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -12276,6 +12276,10 @@ msgstr "Vorheriges Wort"
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist"
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "Drucken"
@@ -13023,6 +13027,10 @@ msgstr "Unit suchen"
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist"
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

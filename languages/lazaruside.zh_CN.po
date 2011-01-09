@@ -5582,8 +5582,8 @@ msgstr ""
 msgid "Convert Delphi unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -12267,6 +12267,10 @@ msgstr ""
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "主要配置目录, Lazrus 将默认在此保存配置文件.默认"
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "打印"
@@ -13012,6 +13016,10 @@ msgstr ""
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "副配置文件目录,Lazarus 搜索的配置模板目录.默认"
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

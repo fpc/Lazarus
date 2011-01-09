@@ -5543,9 +5543,9 @@ msgstr "המר פרוייקט דלפי"
 msgid "Convert Delphi unit"
 msgstr "המר יחידת דלפי"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfile
-msgid "Converting unit file %s"
-msgstr "ממיר קובץ יחידה %s"
+#: lazarusidestrconsts.lisconvdelphiconvertingfile
+msgid "Converting file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -12211,6 +12211,10 @@ msgstr "מלה קודמת"
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "הספרייה הראשית בה לזרוס שומר את קבצי ההגדורת שלו. ברירת המחדל היא "
 
+#: lazarusidestrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
 #: lazarusidestrconsts.lisprint
 msgid "Print"
 msgstr "הדפס"
@@ -12956,6 +12960,10 @@ msgstr "חפש יחידה"
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "תיקיית הגדרות משנית, המיקום בו לזרוס יחפש את תבנית קבצי ההגדרות . ברירת המחדל היא "
+
+#: lazarusidestrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
