@@ -596,7 +596,7 @@ var
   DfmFilename: string;     // Delphi .DFM file name.
   ConvTool: TConvDelphiCodeTool;
 begin
-  IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingUnitFile,
+  IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingFile,
                                   [fOrigUnitFilename]), '', -1);
   Application.ProcessMessages;
   // Get DFM file name and close it in editor.
