@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  ComCtrls, ExtCtrls, Forms, StdCtrls, TAFuncSeries, TAGraph, TASeries,
-  TASources, TATools, TATransformations;
+  ComCtrls, ExtCtrls, Forms, StdCtrls, TACustomSource, TAFuncSeries, TAGraph,
+  TASeries, TASources, TATools, TATransformations;
 
 type
 
