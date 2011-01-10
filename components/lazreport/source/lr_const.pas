@@ -273,6 +273,7 @@ resourcestring
   SFilterParam = 'Average font height:';
   sFrom = 'from';
   sDefaultPrinter = 'Default printer';
+  sExportFilterIndexError = 'Export filter index out range';
 
 //--- PrintForm resources ---------------------------------------------------
   sPrintFormPrint = 'Print';

@@ -613,6 +613,10 @@ msgstr "&Zmienna"
 msgid "Va&riables..."
 msgstr "Zmie&nne..."
 
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out range"
+msgstr ""
+
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "&Dostępne bazy danych"

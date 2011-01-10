@@ -610,6 +610,10 @@ msgstr "&Переменная"
 msgid "Va&riables..."
 msgstr "Пере&менные..."
 
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out range"
+msgstr ""
+
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "&Доступные БД"

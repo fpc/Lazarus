@@ -612,6 +612,10 @@ msgstr "&Kintamasis"
 msgid "Va&riables..."
 msgstr "&Kintamieji..."
 
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out range"
+msgstr ""
+
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "Esamos duomenų b&azės"

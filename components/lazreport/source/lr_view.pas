@@ -64,9 +64,10 @@ type
     procedure Last;
     procedure SaveToFile;
     procedure LoadFromFile;
-    procedure Print;
+    function Print: boolean;
     procedure Edit;
     procedure Find;
+    function ExportTo(AFileName: string): boolean;
     property AllPages: Integer read GetAllPages;
     property Page: Integer read GetPage write SetPage;
     property Zoom: Double read GetZoom write SetZoom;
@@ -189,6 +190,8 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    function ExportToWithFilterIndex(AFilterIndex:Integer; AFileName: string): boolean;
+    function Print: boolean;
   public
     { Public declarations }
     procedure Show_Modal(ADoc: Pointer);
@@ -333,9 +336,9 @@ begin
   FWindow.LoadBtnClick(nil);
 end;
 
-procedure TfrPreview.Print;
+function TfrPreview.Print: boolean;
 begin
-  FWindow.PrintBtnClick(nil);
+  result := FWindow.Print;
 end;
 
 procedure TfrPreview.Edit;
@@ -346,6 +349,21 @@ end;
 procedure TfrPreview.Find;
 begin
   FWindow.FindBtnClick(nil);
+end;
+
+function TfrPreview.ExportTo(AFileName: string): boolean;
+var
+  i: Integer;
+  AExt: string;
+begin
+  result := false;
+  AExt := ExtractFileExt(AFileName);
+  for i:=0 to frFiltersCount-1 do
+    if SameText(AExt, ExtractFileExt(frFilters[i].FilterExt)) then begin
+      FWindow.ExportToWithFilterIndex(i, AFileName);
+      result := true;
+      break;
+    end;
 end;
 
 {----------------------------------------------------------------------------}
@@ -612,6 +630,63 @@ begin
     ShowModal;
   end
   else Show;
+end;
+
+function TfrPreviewForm.Print: boolean;
+var
+  Pages: String;
+  ind: Integer;
+begin
+  result := false;
+  if (EMFPages = nil) or (Printer.Printers.Count = 0) then Exit;
+  ind := Printer.PrinterIndex;
+  frPrintForm := TfrPrintForm.Create(nil);
+  with frPrintForm do
+  begin
+    if ShowModal = mrOk then
+    begin
+      if Printer.PrinterIndex <> ind then
+      begin
+        if TfrReport(Doc).CanRebuild then
+        begin
+          if TfrReport(Doc).ChangePrinter(ind, Printer.PrinterIndex) then
+          begin
+            TfrEMFPages(EMFPages).Free;
+            EMFPages := nil;
+            TfrReport(Doc).PrepareReport;
+            Connect(Doc);
+          end
+          else Exit;
+        end;
+      end;
+
+      if RB1.Checked then
+        Pages := ''
+      else
+        if RB2.Checked then
+           Pages := IntToStr(CurPage)
+        else
+           Pages := E2.Text;
+
+      ConnectBack;
+      TfrReport(Doc).PrintPreparedReport(Pages, StrToInt(E1.Text));
+      Connect(Doc);
+      RedrawAll;
+      result := true;
+    end;
+    Free;
+  end;
+end;
+
+function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
+  AFileName: string):boolean;
+begin
+  if (AFilterIndex<0) or (AFilterIndex>=frFiltersCount) then
+    raise exception.Create(sExportFilterIndexError);
+
+  ConnectBack;
+  TfrReport(Doc).ExportTo(frFilters[AFilterIndex].ClassRef, AFileName);
+  Connect(Doc);
 end;
 
 procedure TfrPreviewForm.Connect(ADoc: Pointer);
@@ -1012,56 +1087,15 @@ begin
         SaveToFile(FileName)
       else
       begin
-        ConnectBack;
-        TfrReport(Doc).ExportTo(frFilters[FilterIndex - 2].ClassRef,
+        ExportToWithFilterIndex(FilterIndex-2,
           ChangeFileExt(FileName, Copy(frFilters[FilterIndex - 2].FilterExt, 2, 255)));
-        Connect(Doc);
       end;
   end;
 end;
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
-var
-  Pages: String;
-  ind: Integer;
 begin
-  if (EMFPages = nil) or (Printer.Printers.Count = 0) then Exit;
-  ind := Printer.PrinterIndex;
-  frPrintForm := TfrPrintForm.Create(nil);
-  with frPrintForm do
-  begin
-    if ShowModal = mrOk then
-    begin
-      if Printer.PrinterIndex <> ind then
-      begin
-        if TfrReport(Doc).CanRebuild then
-        begin
-          if TfrReport(Doc).ChangePrinter(ind, Printer.PrinterIndex) then
-          begin
-            TfrEMFPages(EMFPages).Free;
-            EMFPages := nil;
-            TfrReport(Doc).PrepareReport;
-            Connect(Doc);
-          end
-          else Exit;
-        end;
-      end;
-      
-      if RB1.Checked then
-        Pages := ''
-      else
-        if RB2.Checked then
-           Pages := IntToStr(CurPage)
-        else
-           Pages := E2.Text;
-           
-      ConnectBack;
-      TfrReport(Doc).PrintPreparedReport(Pages, StrToInt(E1.Text));
-      Connect(Doc);
-      RedrawAll;
-    end;
-    Free;
-  end;
+  Print;
 end;
 
 procedure TfrPreviewForm.ExitBtnClick(Sender: TObject);

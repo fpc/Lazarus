@@ -610,6 +610,10 @@ msgstr "&Variabel"
 msgid "Va&riables..."
 msgstr "Va&riabel..."
 
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out range"
+msgstr ""
+
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr "DB Tersedi&a"
