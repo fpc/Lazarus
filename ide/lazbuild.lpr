@@ -67,8 +67,6 @@ type
                                             out Description: string);
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
-    procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
-                                            var AnOutDirectory: string);
     // package graph
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
     
@@ -215,28 +213,6 @@ procedure TLazBuildApplication.GetDependencyOwnerDirectory(
   Dependency: TPkgDependency; out Directory: string);
 begin
   GetDirectoryOfDependencyOwner(Dependency,Directory);
-end;
-
-procedure TLazBuildApplication.GetWritablePkgOutputDirectory(
-  APackage: TLazPackage; var AnOutDirectory: string);
-var
-  NewOutDir: String;
-begin
-  if DirectoryIsWritableCached(AnOutDirectory) then exit;
-
-  ForceDirectory(AnOutDirectory);
-  InvalidateFileStateCache;
-  if DirectoryIsWritableCached(AnOutDirectory) then exit;
-  //debugln('TPkgManager.GetWritablePkgOutputDirectory AnOutDirectory=',AnOutDirectory,' ',dbgs(DirectoryIsWritable(AnOutDirectory)));
-
-  // output directory is not writable
-  // -> redirect to config directory
-  NewOutDir:=SetDirSeparators('/$(TargetCPU)-$(TargetOS)');
-  IDEMacros.SubstituteMacros(NewOutDir);
-  NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
-                          +APackage.Name+NewOutDir);
-  AnOutDirectory:=NewOutDir;
-  //debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
 end;
 
 procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
@@ -850,7 +826,6 @@ procedure TLazBuildApplication.SetupPackageSystem;
 begin
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
-  OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
 
   // package links
   PkgLinks:=TPackageLinks.Create;

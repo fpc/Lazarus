@@ -259,7 +259,7 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   RegisterIDEMsgQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
   RegisterIDEMsgQuickFix(TQuickFixHint_Hide.Create);
-  //RegisterIDEMsgQuickFix(TQuickFixRecompilingChecksumChanged.Create);
+  RegisterIDEMsgQuickFix(TQuickFixRecompilingChecksumChanged.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
