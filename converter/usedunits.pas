@@ -209,17 +209,8 @@ begin
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin              // unit found
-        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then begin
+        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then
           ToBeRenamedOrRemoved(OldUnitName, NewUnitName);    // fix case
-          // FindUnitCaseInsensitive reports only the 1. instance of a missing unit
-          // with different casing. This workaround can be removed when it is fixed.
-          if Assigned(RenamedMissingUnits) then
-            RenamedMissingUnits[OldUnitName]:=NewUnitName;
-        end
-        else if Assigned(RenamedMissingUnits) then begin
-          if RenamedMissingUnits.Contains(OldUnitName) then
-            ToBeRenamedOrRemoved(OldUnitName, RenamedMissingUnits[OldUnitName]);
-        end;
       end
       else begin
         // Omit Windows specific units from the list if target is "Windows only",
