@@ -2581,6 +2581,7 @@ debugger/test/Gdbmi/rungdbmiform.lfm svneol=native#text/plain
 debugger/test/Gdbmi/rungdbmiform.pas svneol=native#text/pascal
 debugger/test/Gdbmi/testbase.pas svneol=native#text/pascal
 debugger/test/Gdbmi/testexception.pas svneol=native#text/pascal
+debugger/test/Gdbmi/testgdbtype.pas svneol=native#text/pascal
 debugger/test/Gdbmi/testwatches.pas svneol=native#text/pascal
 debugger/test/debugtest.lpi svneol=native#text/plain
 debugger/test/debugtest.pp svneol=native#text/pascal
