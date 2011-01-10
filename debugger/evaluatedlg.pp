@@ -241,6 +241,7 @@ begin
     Watch := DebugBoss.Watches.Add(S);
     Watch.Enabled := True;
   end;
+  DebugBoss.ViewDebugDialog(ddtWatches);
 end;
 
 end.
