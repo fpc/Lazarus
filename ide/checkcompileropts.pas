@@ -630,7 +630,7 @@ begin
 
   p:=1;
   while p<=length(FPCCfgUnitPath) do begin
-    Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+    Directory:=TrimAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
     if Directory<>'' then begin
       if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
       then begin
@@ -846,7 +846,7 @@ begin
   while p<=length(FPCCfgUnitPath) do begin
     Directory:=TrimFilename(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
     if (Directory<>'') then begin
-      Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+      Directory:=TrimAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
       if (Directory<>'') and (FilenameIsAbsolute(Directory))
       and (WarnedDirectories.IndexOf(Directory)<0) then begin
         //DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);

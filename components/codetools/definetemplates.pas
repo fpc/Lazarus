@@ -1070,7 +1070,8 @@ begin
   Abort:=false;
   try
     FileCount:=0;
-    Directory:=CleanAndExpandDirectory(Directory);
+    Directory:=TrimAndExpandDirectory(Directory);
+    if Directory='' then exit;
     Search('',0);
   finally
     if not Abort then
@@ -1541,7 +1542,8 @@ begin
   FileCount:=0;
   Abort:=false;
   for i:=SearchPaths.Count-1 downto 0 do begin
-    Directory:=CleanAndExpandDirectory(SearchPaths[i]);
+    Directory:=TrimAndExpandDirectory(SearchPaths[i]);
+    if (Directory='') then continue;
     if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         inc(FileCount);
@@ -8572,7 +8574,7 @@ procedure TFPCUnitSetCache.SetCompilerFilename(const AValue: string);
 var
   NewFilename: String;
 begin
-  NewFilename:=CleanAndExpandFilename(AValue);
+  NewFilename:=TrimAndExpandFilename(AValue);
   if FCompilerFilename=NewFilename then exit;
   FCompilerFilename:=NewFilename;
   ClearConfigCache;
@@ -8589,7 +8591,7 @@ procedure TFPCUnitSetCache.SetFPCSourceDirectory(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=CleanAndExpandDirectory(AValue);
+  NewValue:=TrimAndExpandDirectory(AValue);
   if FFPCSourceDirectory=NewValue then exit;
   FFPCSourceDirectory:=NewValue;
   ClearSourceCache;

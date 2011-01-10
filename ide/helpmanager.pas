@@ -35,7 +35,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, FileUtil, Graphics,
+  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -854,7 +854,7 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
   var
     NewDir: String;
   begin
-    NewDir:=CleanAndExpandDirectory(Directory);
+    NewDir:=TrimAndExpandDirectory(Directory);
     if not IsFPCDocsHTMDirectory(NewDir) then exit(false);
     HelpOpts.FPCDocsHTMLDirectory:=NewDir;
     DebugLn(['TryDirectory Changing FPCDocsHTMLDirectory to "',HelpOpts.FPCDocsHTMLDirectory,'"']);

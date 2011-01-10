@@ -2336,8 +2336,8 @@ var
   
 begin
   Result:=true;
-  SrcDir:=AppendPathDelim(CleanAndExpandDirectory(SrcDirectory));
-  DestDir:=AppendPathDelim(CleanAndExpandDirectory(DestDirectory));
+  SrcDir:=AppendPathDelim(TrimAndExpandDirectory(SrcDirectory));
+  DestDir:=AppendPathDelim(TrimAndExpandDirectory(DestDirectory));
   if CompareFilenames(SrcDir,DestDir)=0 then exit;
 
   if (not DirPathExists(SrcDir))

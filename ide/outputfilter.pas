@@ -1395,7 +1395,6 @@ begin
       Result:=FullDir+ShortIncFilename;
       if FileExistsUTF8(Result) then begin
         // file found in search dir
-        Result:=CleanAndExpandFilename(Result);
         exit;
       end;
       AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);

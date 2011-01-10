@@ -90,8 +90,10 @@ function FileIsText(const AFilename: string; out FileReadable: boolean): boolean
 function FilenameIsTrimmed(const TheFilename: string): boolean;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
-function CleanAndExpandFilename(const Filename: string): string;
-function CleanAndExpandDirectory(const Filename: string): string;
+function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
+function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
+function TrimAndExpandFilename(const Filename: string): string; // empty string returns empty string
+function TrimAndExpandDirectory(const Filename: string): string; // empty string returns empty string
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
 function FileIsInPath(const Filename, Path: string): boolean;
@@ -1374,6 +1376,20 @@ end;
 function CleanAndExpandDirectory(const Filename: string): string;
 begin
   Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
+end;
+
+function TrimAndExpandFilename(const Filename: string): string;
+begin
+  Result:=ChompPathDelim(TrimFilename(Filename));
+  if Result='' then exit;
+  Result:=TrimFilename(ExpandFileNameUTF8(Result));
+end;
+
+function TrimAndExpandDirectory(const Filename: string): string;
+begin
+  Result:=TrimFilename(Filename);
+  if Result='' then exit;
+  Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result)));
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;

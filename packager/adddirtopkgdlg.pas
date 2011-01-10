@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, ButtonPanel,
-  SynRegExpr, FileUtil,
+  SynRegExpr, FileProcs,
   // IDE
   IDEWindowIntf, InputHistory, IDEProcs,
   LazarusIDEStrConsts, PackageDefs;
@@ -206,13 +206,13 @@ function TAddDirToPkgDialog.GatherFiles(Directory: string;
     CurFilename: String;
   begin
     Result:=false;
-    CurDir:=CleanAndExpandDirectory(CurDir);
+    CurDir:=TrimAndExpandDirectory(CurDir);
     if not DirPathExists(CurDir) then begin
       MessageDlg(lisEnvOptDlgDirectoryNotFound,
         Format(lisTheDirectoryWasNotFound, [CurDir]), mtError, [mbCancel], 0);
       exit;
     end;
-    if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then

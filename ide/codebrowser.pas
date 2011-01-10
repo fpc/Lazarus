@@ -2783,7 +2783,8 @@ function TCodeBrowserView.ExportTreeAsText(Filename: String): TModalResult;
 var
   List: TStrings;
 begin
-  Filename:=CleanAndExpandFilename(Filename);
+  Filename:=TrimAndExpandFilename(Filename);
+  if Filename='' then exit(mrCancel);
   Result:=CheckCreatingFile(Filename,true,true,true);
   if Result<>mrOk then exit;
   List:=TStringList.Create;

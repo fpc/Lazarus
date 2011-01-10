@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes, MacroIntf,
+  ExtCtrls, FileProcs, LazarusIDEStrConsts, Dialogs, SynEditTypes, MacroIntf,
   IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel,
   SrcEditorIntf, EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
 
@@ -415,8 +415,7 @@ function TLazFindInFilesDialog.GetResolvedDirectory: string;
 begin
   Result:=DirectoryComboBox.Text;
   IDEMacros.SubstituteMacros(Result);
-  if Result<>'' then
-    Result:=CleanAndExpandDirectory(Result);
+  Result:=TrimAndExpandDirectory(Result);
 end;
 
 end.

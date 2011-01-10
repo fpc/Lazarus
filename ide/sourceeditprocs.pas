@@ -799,7 +799,8 @@ var
   CodeBuf: TCodeBuffer;
   TargetCodeBuffer: TCodeBuffer;
 begin
-  TheFilename:=CleanAndExpandFilename(AFilename);
+  TheFilename:=TrimAndExpandFilename(AFilename);
+  if TheFilename='' then exit(false);
   CodeBuf:=CodeToolBoss.FindFile(TheFilename);
   if CodeBuf=nil then begin
     // it is not in cache

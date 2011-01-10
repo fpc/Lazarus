@@ -1126,7 +1126,7 @@ begin
   // check if visible
   if not IsVisible then exit;
   
-  NewSrcFilename:=CleanAndExpandFilename(SrcFilename);
+  NewSrcFilename:=TrimAndExpandFilename(SrcFilename);
   if (NewSrcFilename=SourceFilename) and (CompareCaret(Caret,CaretXY)=0)
   and (fChain<>nil) and fChain.IsValid
   and (not LazarusIDE.NeedSaveSourceEditorChangesToCodeCache(nil)) then

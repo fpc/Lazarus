@@ -5044,8 +5044,8 @@ begin
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
   if AnUnitInfo = nil then
   begin
-    AFilename:=CleanAndExpandFilename(UnitFilename);
-    if not FileExistsInIDE(AFilename,[]) then begin
+    AFilename:=TrimAndExpandFilename(UnitFilename);
+    if (AFilename='') or (not FileExistsInIDE(AFilename,[])) then begin
       DebugLn(['TMainIDE.DoOpenComponent file not found ',AFilename]);
       exit(mrCancel);
     end;
@@ -12546,8 +12546,8 @@ begin
   Result:=mrCancel;
 
   // do not delete project files
-  DestDir:=TrimFilename(AppendPathDelim(DestDirectory));
-  SrcDir:=TrimFilename(AppendPathDelim(SrcDirectory));
+  DestDir:=TrimAndExpandDirectory(DestDirectory);
+  SrcDir:=TrimAndExpandDirectory(SrcDirectory);
   if (DestDir='') then begin
     MessageDlg('Invalid publishing Directory',
       'Destination directory for publishing is empty.',mtError,
@@ -12556,8 +12556,7 @@ begin
     exit;
   end;
   //DebugLn('TMainIDE.DoPublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
-  if CompareFilenames(CleanAndExpandDirectory(SrcDir),
-                      CleanAndExpandDirectory(DestDir))=0
+  if CompareFilenames(SrcDir,DestDir)=0
   then begin
     MessageDlg(lisInvalidPublishingDirectory,
       Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, ['"',
@@ -14339,7 +14338,7 @@ var
   CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
-  CodeBuffer:=CodeToolBoss.LoadFile(CleanAndExpandFilename(Filename),true,false);
+  CodeBuffer:=CodeToolBoss.LoadFile(TrimAndExpandFilename(Filename),true,false);
   if CodeBuffer=nil then exit;
   Result:=DoJumpToCodePos(nil,nil,CodeBuffer,NewX,NewY,NewTopLine,AddJumpPoint, True, MarkLine);
 end;
