@@ -384,11 +384,9 @@ type
 implementation
 
 type
-  TPCharWithLen = record
-    Ptr: PChar;
-    Len: Integer;
-  end;
+  THackDBGType = class(TGDBType) end;
 
+type
   TGDBMICpuRegister = record
     Name: String;
     Value: String;
@@ -1213,16 +1211,6 @@ type
 
   {%endregion    *^^^*  TGDBMIExpression  *^^^*   }
 
-  { TGDBMIType }
-
-  TGDBMIType = class(TGDBType)
-  public
-    constructor CreateFromResult(const AResult: TGDBMIExecResult;
-                                 const AWhatIsValue: String = '';
-                                 const AWhatIsType: String = '';
-                                 AClassIsPointer: Boolean = False);
-  end;
-
   { TGDBStringIterator }
 
   TGDBStringIterator=class
@@ -1293,47 +1281,6 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
-end;
-
-function PCLenPartToString(const AVal: TPCharWithLen; AStartOffs, ALen: Integer): String;
-begin
-  if AStartOffs + ALen > AVal.Len
-  then ALen := AVal.Len - AStartOffs;
-  if ALen <= 0
-  then exit('');
-
-  SetLength(Result, ALen);
-  Move((AVal.Ptr+AStartOffs)^, Result[1], aLen)
-end;
-
-function PCLenToString(const AVal: TPCharWithLen; UnQuote: Boolean = False): String;
-begin
-  if UnQuote and (AVal.Len >= 2) and (AVal.Ptr[0] = '"') and (AVal.Ptr[AVal.Len-1] = '"')
-  then begin
-    SetLength(Result, AVal.Len - 2);
-    if AVal.Len > 2
-    then Move((AVal.Ptr+1)^, Result[1], AVal.Len - 2)
-  end
-  else begin
-    SetLength(Result, AVal.Len);
-    if AVal.Len > 0
-    then Move(AVal.Ptr^, Result[1], AVal.Len)
-  end;
-end;
-
-function PCLenToInt(const AVal: TPCharWithLen; Def: Integer = 0): Integer;
-begin
-  Result := StrToIntDef(PCLenToString(AVal, True), Def);
-end;
-
-function PCLenToQWord(const AVal: TPCharWithLen; Def: QWord = 0): QWord;
-begin
-  Result := StrToQWordDef(PCLenToString(AVal, True), Def);
-end;
-
-function DbgsPCLen(const AVal: TPCharWithLen): String;
-begin
-  Result := PCLenToString(AVal);
 end;
 
 { TGDBMINameValueBasedList }
@@ -7603,7 +7550,7 @@ begin
   if AText = '""'
   then begin
     AResult := '0x0';
-    AResultInfo := TGDBType.CreateFromValues('type = ^character');
+    AResultInfo := TGDBType.Create(skPointer, '^character');
     Exit(True);
   end;
 
@@ -7894,15 +7841,6 @@ begin
   end;
 
   Result := Evaluate(ADebuggerCommand, Eval, AValue, AInfo);
-end;
-
-{ TGDBMIType }
-
-constructor TGDBMIType.CreateFromResult(const AResult: TGDBMIExecResult;
-  const AWhatIsValue: String = ''; const AWhatIsType: String = ''; AClassIsPointer: Boolean = False);
-begin
-  // TODO: add check ?
-  CreateFromValues(AResult.Values, AWhatIsValue, AWhatIsType, AClassIsPointer);
 end;
 
 { TGDBStringIterator }
@@ -8495,9 +8433,9 @@ end;
 
 function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String): TGDBType;
 var
-  WIExprRes, PTypeRes, WITypeRes: TGDBMIExecResult;
-  WIExprVal, WIExprValCln, WITypeValS2: String;
+  R: TGDBMIExecResult;
   f: Boolean;
+  AReq: PGDBPTypeRequest;
 begin
   (*   Analyze what type is in AExpression
      * "whatis AExpr"
@@ -8561,6 +8499,26 @@ begin
 
   *)
 
+  Result := TGdbType.CreateForExpression(AExpression, tfClassIsPointer in TargetInfo^.TargetFlags);
+  while not Result.ProcessExpression do begin
+    if Result.EvalError
+    then break;
+    AReq := Result.EvalRequest;
+    while AReq <> nil do begin;
+      f :=  ExecuteCommand(AReq^.Request, R);
+      if f and (R.State <> dsError) then
+        AReq^.Result := ParseTypeFromGdb(R.Values)
+      else
+        AReq^.Error := R.Values;
+      AReq := AReq^.Next;
+    end;
+  end;
+
+  if Result.EvalError then begin
+    FreeAndNil(Result);
+  end;
+
+(*
   Result := nil;
   WIExprValCln := '';
   f :=  ExecuteCommand('whatis %s', [AExpression], WIExprRes);
@@ -8570,7 +8528,7 @@ begin
 
   if f and (WIExprRes.State <> dsError)
   then begin
-    WIExprVal :=  ParseTypeFromGdb(WIExprRes.Values);
+    WIExprVal :=  PCLenToString(ParseTypeFromGdb(WIExprRes.Values).Name);
     WIExprValCln := WIExprVal;
     while (WIExprValCln<>'') and (WIExprValCln[1] in ['^', '&']) do delete(WIExprValCln, 1, 1);
 
@@ -8579,7 +8537,7 @@ begin
       if ExecuteCommand('ptype %s', [AExpression], PTypeRes) // can not ptype with spaces
       and (PTypeRes.State <> dsError)
       then begin
-        Result := TGdbMIType.CreateFromResult(PTypeRes, WIExprRes.Values, '', tfClassIsPointer in TargetInfo^.TargetFlags);
+        Result := TGdbType.CreateFromValues(PTypeRes.Values, WIExprRes.Values, '', tfClassIsPointer in TargetInfo^.TargetFlags);
         exit;
       end;
     end
@@ -8598,7 +8556,7 @@ begin
         and (PTypeRes.State <> dsError)
         then WITypeValS2 := WITypeRes.Values;
 
-        Result := TGdbMIType.CreateFromResult(PTypeRes, WIExprRes.Values, WITypeValS2, tfClassIsPointer in TargetInfo^.TargetFlags);
+        Result := TGdbType.CreateFromValues(PTypeRes.Values, WIExprRes.Values, WITypeValS2, tfClassIsPointer in TargetInfo^.TargetFlags);
         exit;
       end;
     end;
@@ -8611,8 +8569,9 @@ begin
     Result := nil;
   end
   else begin
-    Result := TGdbMIType.CreateFromResult(PTypeRes, '', '', tfClassIsPointer in TargetInfo^.TargetFlags);
+    Result := TGdbType.CreateFromValues(PTypeRes.Values, '', '', tfClassIsPointer in TargetInfo^.TargetFlags);
   end;
+*)
 end;
 
 function TGDBMIDebuggerCommand.GetClassName(const AClass: TDBGPtr): String;
@@ -9149,7 +9108,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       end;
 
       if Composite
-      then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
+      then THackDBGType(AType.Fields[j].DBGType).FKind := skRecord;
 
       AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
     end;
@@ -9219,7 +9178,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           end;
 
           if Composite
-          then TGDBMIType(AType.Fields[j].DBGType).FKind := skRecord;
+          then THackDBGType(AType.Fields[j].DBGType).FKind := skRecord;
           AType.Fields[j].DBGType.Value.AsString := HexCToHexPascal(Payload);
           Break;
         end;
@@ -9319,24 +9278,27 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   end;
 
   function PascalizePointer(AString: String; const TypeCast: String = ''): String;
+  var
+    s: String;
   begin
-    if IsHexC(AString)
+    // there may be data after the pointer
+    s := GetPart([], [' '], AString, False, True);
+    if IsHexC(s)
     then begin
-      if GetPart([], [' '], AString, False, False) = '0x0'
+      if s = '0x0'
       then begin
-        Result := AString;
-        Result[1] := 'n';
-        Result[2] := 'i';
-        Result[3] := 'l';
+        Result := 'nil';
       end
       else begin
         // 0xabc0 => $0000ABC0
-        Result := UpperCase(HexCToHexPascal(AString, FTheDebugger.TargetWidth div 4));
+        Result := UpperCase(HexCToHexPascal(s, FTheDebugger.TargetWidth div 4));
       end;
     end
-    else Result := AString;
+    else Result := s;
     if TypeCast <> '' then
       Result := TypeCast + '(' + Result + ')';
+    if AString <> '' then
+      Result := Result + ' ' + AString;
   end;
 
   function FormatCurrency(const AString: String): String;

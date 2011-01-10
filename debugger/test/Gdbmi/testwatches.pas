@@ -14,6 +14,12 @@ const
 
 (*  TODO:
   - procedure of object currently is skRecord
+  - proc/func under stabs => just happen too match because the function they point too..
+
+  - TREC vs TNewRec ("type TnewRec = type TRec;")
+    for quick eval TRec is fine, but in other modes TNewRec may be needed (requires an extra "whatis" under dwarf)
+
+  - widestring in gdb 6.7.5
 *)
 
 type
@@ -79,13 +85,14 @@ const
   Match_ArgTRec  = 'record TREC .+ valint = -1.+valfoo'; // record TREC {  VALINT = -1,  VALFOO = $0}
   Match_ArgTRec1 = 'record TREC .+ valint = 1.+valfoo'; // record TREC {  VALINT = 1,  VALFOO = $xxx}
   Match_ArgTRec2 = 'record TREC .+ valint = 2.+valfoo'; // record TREC {  VALINT = 2,  VALFOO = $xxx}
-  Match_ArgTNewRec  = 'record TNEWREC .+ valint = 3.+valfoo'; // record TREC {  VALINT = 3,  VALFOO = $0}
+  // TODO: TNewRec
+  Match_ArgTNewRec  = 'record T(NEW)?REC .+ valint = 3.+valfoo'; // record TREC {  VALINT = 3,  VALFOO = $0}
 
   Match_ArgTFoo = '<TFoo> = \{.+ValueInt = -1';
   Match_ArgTFoo1 = '<TFoo> = \{.+ValueInt = 31';
   // Todo: Dwarf fails with dereferenced var pointer types
 
-  ExpectBrk1NoneNil: Array [1..101] of TWatchExpectation = (
+  ExpectBrk1NoneNil: Array [1..93] of TWatchExpectation = (
     { records }
 
     (Exp: 'ArgTRec';       Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
@@ -100,8 +107,8 @@ const
     (Exp: 'VArgPPRec^';     Mtch: '^PRec\('+Match_PasPointer;     Kind: skPointer;      TpNm: 'PRec'; Flgs: [fnoDwrf]),
     (Exp: 'ArgPPRec^^';     Mtch: Match_ArgTRec1;                  Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
     (Exp: 'VArgPPRec^^';    Mtch: Match_ArgTRec1;                  Kind: skRecord;      TpNm: 'TRec'; Flgs: [fnoDwrf]),
-    (Exp: 'ArgTNewRec';    Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
-    (Exp: 'VArgTNewRec';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
+    (Exp: 'ArgTNewRec';    Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'T(New)?Rec'; Flgs: [fTpMtch]),
+    (Exp: 'VArgTNewRec';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'T(New)?Rec'; Flgs: [fTpMtch]),
 
     (Exp: 'VarTRec';       Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
     (Exp: 'VarPRec';       Mtch: '^PRec\('+Match_PasPointer;      Kind: skPointer;     TpNm: 'PRec'; Flgs: []),
@@ -109,12 +116,12 @@ const
     (Exp: 'VarPPRec';      Mtch: '^PPRec\('+Match_PasPointer;     Kind: skPointer;     TpNm: 'PPRec'; Flgs: []),
     (Exp: 'VarPPRec^';      Mtch: '^PRec\('+Match_PasPointer;     Kind: skPointer;      TpNm: 'PRec'; Flgs: []),
     (Exp: 'VarPPRec^^';     Mtch: Match_ArgTRec1;                  Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
-    (Exp: 'VarTNewRec';    Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
+    (Exp: 'VarTNewRec';    Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'T(New)?Rec'; Flgs: [fTpMtch]),
 
     (Exp: 'PVarTRec';      Mtch: '^(\^T|P)Rec\('+Match_PasPointer;     Kind: skPointer;     TpNm: '^(\^T|P)Rec$'; Flgs: [fTpMtch]), // TODO: stabs returns PRec
     (Exp: 'PVarTRec^';      Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
-    (Exp: 'PVarTNewRec';   Mtch: '^\^TNewRec\('+Match_PasPointer;    Kind: skPointer;     TpNm: '^TNewRec'; Flgs: []),
-    (Exp: 'PVarTNewRec^';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'TNewRec'; Flgs: []),
+    (Exp: 'PVarTNewRec';   Mtch: '^\^TNewRec\('+Match_PasPointer;    Kind: skPointer;     TpNm: '\^T(New)?Rec'; Flgs: [fTpMtch]),
+    (Exp: 'PVarTNewRec^';   Mtch: Match_ArgTNewRec;                Kind: skRecord;      TpNm: 'T(New)?Rec'; Flgs: [fTpMtch]),
 
 // @ArgTRec @VArgTRec  @ArgTRec^ @VArgTRec^
 
@@ -201,8 +208,9 @@ const
     (Exp: 'VArgPNewhortString';      Mtch: '';      Kind: sk;      TpNm: 'PNewhortString'; Flgs: []),
 *)
 
-    (Exp: 'ArgTMyWideString';      Mtch: '''wide''$';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
-    (Exp: 'VArgTMyWideString';     Mtch: '''wide''$';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
+    // gdb 6.7.5 does not show the text
+    (Exp: 'ArgTMyWideString';      Mtch: '(''wide''$)|(widestring\(\$.*\))';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
+    (Exp: 'VArgTMyWideString';     Mtch: '(''wide''$)|(widestring\(\$.*\))';      Kind: skPointer;      TpNm: '^(TMy)?WideString$'; Flgs: [fTpMtch]),
     (*
     (Exp: 'ArgPMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'PMyWideString'; Flgs: []),
     (Exp: 'VArgPMyWideString';      Mtch: '';      Kind: sk;      TpNm: 'PMyWideString'; Flgs: []),
@@ -297,24 +305,32 @@ const
 
     (Exp: 'ArgProcedure';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'TProcedure'; Flgs: []),
     (Exp: 'ArgFunction';        Mtch: 'function';            Kind: skFunction;        TpNm: 'TFunction';  Flgs: []),
+(*
+// normal procedure on stabs / recodr on dwarf => maybe the data itself may reveal some ?
     (Exp: 'ArgObjProcedure';    Mtch: 'procedure.*of object|record.*procedure.*self =';
                                                              Kind: skRecord;          TpNm: 'TObjProcedure'; Flgs: []),
     (Exp: 'ArgObjFunction';     Mtch: 'function.*of object|record.*function.*self =';
                                                              Kind: skRecord;          TpNm: 'TObjFunction';  Flgs: []),
 
-    (Exp: 'VArgProcedure';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'TProcedure'; Flgs: []),
-    (Exp: 'VArgFunction';        Mtch: 'function';            Kind: skFunction;        TpNm: 'TFunction';  Flgs: []),
+*)
+// doesn't work, ptype returns empty in dwarf => maybe via whatis
+//    (Exp: 'VArgProcedure';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'TProcedure'; Flgs: []),
+//    (Exp: 'VArgFunction';        Mtch: 'function';            Kind: skFunction;        TpNm: 'TFunction';  Flgs: []),
+(*
     (Exp: 'VArgObjProcedure';    Mtch: 'procedure.*of object|record.*procedure.*self =';
                                                               Kind: skRecord;          TpNm: 'TObjProcedure'; Flgs: []),
     (Exp: 'VArgObjFunction';     Mtch: 'function.*of object|record.*function.*self =';
                                                               Kind: skRecord;          TpNm: 'TObjFunction';  Flgs: []),
+*)
 
     (Exp: 'VarProcedureA';       Mtch: 'procedure';           Kind: skProcedure;       TpNm: 'Procedure'; Flgs: []),
-    (Exp: 'VarFunctionA';        Mtch: 'function';            Kind: skFunction;        TpNm: 'Function';  Flgs: []),
+    (Exp: 'VarFunctionA';        Mtch: 'function';            Kind: skFunction;        TpNm: 'Function';  Flgs: [])//,
+(*
     (Exp: 'VarObjProcedureA';    Mtch: 'procedure.*of object|record.*procedure.*self =';
                                                               Kind: skRecord;          TpNm: 'Procedure'; Flgs: []),
     (Exp: 'VarObjFunctionA';     Mtch: 'function.*of object|record.*function.*self =';
                                                               Kind: skRecord;          TpNm: 'Function';  Flgs: [])//,
+*)
 
   );
 
@@ -494,8 +510,9 @@ begin
     if RUN_TEST_ONLY >= 0 then
       TestWatch('Brk1 ', ExpectBrk1NoneNil[RUN_TEST_ONLY])
     else
-      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do
-        TestWatch('Brk1 ', ExpectBrk1NoneNil[i]);
+      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
+        TestWatch('Brk1 '+IntToStr(i)+' ', ExpectBrk1NoneNil[i]);
+      end;
 
     dbg.Run;
 

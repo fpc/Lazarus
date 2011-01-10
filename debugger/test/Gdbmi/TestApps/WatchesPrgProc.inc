@@ -28,7 +28,7 @@
 {%region GLOBAL}
   {$IFDEF Global_Implementation}
     procedure ProcProcedure(a1: Integer; var a2: String); begin end;
-    function  FuncFuntion(a1: Integer; var a2: String): Integer; begin end;
+    function  FuncFunction(a1: Integer; var a2: String): Integer; begin end;
     type
       TMethodHolderClass = class
       public
@@ -60,7 +60,7 @@
   //begin
     MethodHolderClass := TMethodHolderClass.Create;
     GlobProcedure := @ProcProcedure;
-    GlobFunction := @FuncFuntion;
+    GlobFunction := @FuncFunction;
     GlobObjProcedure := @MethodHolderClass.ProcObjProcedure;
     GlobObjFunction := @MethodHolderClass.FuncObjFuntion;
   {$ENDIF}

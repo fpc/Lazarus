@@ -56,7 +56,13 @@ type
     procedure EndUpdate;
     function IsUpdating: Boolean;
   end;
-  
+
+
+  TPCharWithLen = record
+    Ptr: PChar;
+    Len: Integer;
+  end;
+
 function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
 function ConvertPathDelims(const AFileName: String): String;
@@ -65,8 +71,13 @@ function UnEscapeOctal(const AValue: String): String;
 function UnQuote(const AValue: String): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 
-
 procedure SmartWriteln(const s: string);
+
+function PCLenPartToString(const AVal: TPCharWithLen; AStartOffs, ALen: Integer): String;
+function PCLenToString(const AVal: TPCharWithLen; UnQuote: Boolean = False): String;
+function PCLenToInt(const AVal: TPCharWithLen; Def: Integer = 0): Integer;
+function PCLenToQWord(const AVal: TPCharWithLen; Def: QWord = 0): QWord;
+function DbgsPCLen(const AVal: TPCharWithLen): String;
 
 implementation
 
@@ -275,6 +286,49 @@ begin
   end;
 
   SetLength(Result, len); // adjust to actual length
+end;
+
+{ TPCharWithLen }
+
+function PCLenPartToString(const AVal: TPCharWithLen; AStartOffs, ALen: Integer): String;
+begin
+  if AStartOffs + ALen > AVal.Len
+  then ALen := AVal.Len - AStartOffs;
+  if ALen <= 0
+  then exit('');
+
+  SetLength(Result, ALen);
+  Move((AVal.Ptr+AStartOffs)^, Result[1], aLen)
+end;
+
+function PCLenToString(const AVal: TPCharWithLen; UnQuote: Boolean = False): String;
+begin
+  if UnQuote and (AVal.Len >= 2) and (AVal.Ptr[0] = '"') and (AVal.Ptr[AVal.Len-1] = '"')
+  then begin
+    SetLength(Result, AVal.Len - 2);
+    if AVal.Len > 2
+    then Move((AVal.Ptr+1)^, Result[1], AVal.Len - 2)
+  end
+  else begin
+    SetLength(Result, AVal.Len);
+    if AVal.Len > 0
+    then Move(AVal.Ptr^, Result[1], AVal.Len)
+  end;
+end;
+
+function PCLenToInt(const AVal: TPCharWithLen; Def: Integer = 0): Integer;
+begin
+  Result := StrToIntDef(PCLenToString(AVal, True), Def);
+end;
+
+function PCLenToQWord(const AVal: TPCharWithLen; Def: QWord = 0): QWord;
+begin
+  Result := StrToQWordDef(PCLenToString(AVal, True), Def);
+end;
+
+function DbgsPCLen(const AVal: TPCharWithLen): String;
+begin
+  Result := PCLenToString(AVal);
 end;
 
 

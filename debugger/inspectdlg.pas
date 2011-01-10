@@ -179,7 +179,9 @@ begin
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
-  FGridData.Cells[1,1]:='Pointer to '+FDBGInfo.TypeName;
+  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
+  then FGridData.Cells[1,1]:='Pointer to '+copy(FDBGInfo.TypeName, 2, length(FDBGInfo.TypeName))
+  else FGridData.Cells[1,1]:=FDBGInfo.TypeName;
   FGridData.Cells[2,1]:=format('$%x',[PtrUInt(FDBGInfo.Value.AsPointer)]);
   FGridData.AutoSizeColumn(2);
 end;

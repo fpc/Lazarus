@@ -38,6 +38,8 @@
     PVarTRec: ^TRec;
     PVarTNewRec: ^TNewRec;
 
+    VarRecA: record val: Integer; end;
+
     { Classes }
     VarTFoo: TFoo;
     VarPFoo: PFoo;
@@ -62,6 +64,9 @@
     VarPNewFooClass: PNewFooClass;
 
     PVarTFooClass: ^TFooClass;
+
+    { OBJECT }
+    VarOldObject: TOldObject;
   {$ENDIF}
 
   {$IFDEF FooFunc_Body}
@@ -74,6 +79,8 @@
 
     PVarTRec := @ArgTRec;
     PVarTNewRec := @ArgTNewRec;
+
+    VarRecA.val := 1;
 
     { Classes }
     VarTFoo := ArgTFoo;
@@ -99,6 +106,9 @@
     VarPNewFooClass := ArgPNewFooClass;
 
     PVarTFooClass := @ArgTFooClass;
+
+    { OBJECT }
+    VarOldObject.OldVal := 1;
   {$ENDIF}
 {%endregion FooFunc}
 
@@ -147,6 +157,11 @@
 
     TNewFooClass = class of TNewFoo;
     PNewFooClass = ^TNewFooClass;
+
+    { OBJECT }
+    TOldObject = object
+      OldVal: Integer;
+    end;
   {$ENDIF}
 
   {$IFDEF Global_Var}
