@@ -264,6 +264,7 @@ var
   CfgCache: TFPCTargetConfigCache;
   i: Integer;
   CfgFileItem: TFPCConfigFileState;
+  HasCfgs: Boolean;
 begin
   sl.Add('FPC executable:');
   if UnitSetCache<>nil then begin
@@ -277,13 +278,19 @@ begin
       sl.Add('RealTargetOS='+CfgCache.RealTargetOS);
       sl.Add('RealTargetCPU='+CfgCache.RealTargetCPU);
       sl.Add('RealCompilerInPath='+CfgCache.RealCompilerInPath);
+      HasCfgs:=false;
       if CfgCache.ConfigFiles<>nil then begin
         for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
           CfgFileItem:=CfgCache.ConfigFiles[i];
-          if CfgFileItem.FileExists then
+          if CfgFileItem.FileExists then begin
             sl.Add('CfgFilename='+CfgFileItem.Filename);
+            HasCfgs:=true;
+          end;
         end;
       end;
+      if not HasCfgs then
+      sl.Add('WARNING: fpc has no config file');
+      sl.Add('');
       sl.Add('Defines:');
       if CfgCache.Defines<>nil then begin
         sl.Add(CfgCache.Defines.AsText);

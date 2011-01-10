@@ -51,8 +51,6 @@ uses
 type
   TInspectChksumChgDialog = class;
 
-  { TQuickFixMissingUnit }
-
   { TICCAction }
 
   TICCAction = class
