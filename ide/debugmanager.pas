@@ -1955,7 +1955,9 @@ begin
     CurDialog.EnableAutoSizing;
   if Show then
   begin
+    CurDialog.BeginUpdate;
     IDEWindowCreators.ShowForm(CurDialog,BringToFront);
+    CurDialog.EndUpdate;
   end;
 end;
 
