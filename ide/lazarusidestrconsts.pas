@@ -5095,6 +5095,9 @@ resourcestring
   lisApplyConventions = 'Apply conventions';
   lisKeepRelativeIndentationOfMultiLineTemplate = 'Keep relative indentation '
     +'of multi line template';
+  lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome = 'The current FPC '
+    +'has no config file. It will probably miss some units. Check your '
+    +'installation of fpc.';
 
 implementation
 

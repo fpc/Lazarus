@@ -712,6 +712,12 @@ begin
       Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
         TargetOS, TargetCPU, #13, #13]),
       mtError,[mbOk]);
+  end else if (UnitSetCache<>nil) then begin
+    if UnitSetCache.GetFirstFPCCfg='' then begin
+      IDEMessageDialog(lisCCOWarningCaption,
+        lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome,
+        mtWarning,[mbOk]);
+    end;
   end;
 end;
 

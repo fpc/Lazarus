@@ -840,6 +840,7 @@ type
     class function GetInvalidChangeStamp: integer;
     procedure IncreaseChangeStamp;
     function GetUnitSetID: string;
+    function GetFirstFPCCfg: string;
   end;
 
   { TFPCDefinesCache }
@@ -8821,6 +8822,23 @@ function TFPCUnitSetCache.GetUnitSetID: string;
 begin
   Result:=Caches.GetUnitSetID(CompilerFilename,TargetOS,TargetCPU,
                               CompilerOptions,FPCSourceDirectory,ChangeStamp);
+end;
+
+function TFPCUnitSetCache.GetFirstFPCCfg: string;
+var
+  Cfg: TFPCTargetConfigCache;
+  i: Integer;
+begin
+  Result:='';
+  Cfg:=GetConfigCache(false);
+  if Cfg=nil then exit;
+  if Cfg.ConfigFiles=nil then exit;
+  for i:=0 to Cfg.ConfigFiles.Count-1 do begin
+    if Cfg.ConfigFiles[i].FileExists then begin
+      Result:=Cfg.ConfigFiles[i].Filename;
+      exit;
+    end;
+  end;
 end;
 
 initialization
