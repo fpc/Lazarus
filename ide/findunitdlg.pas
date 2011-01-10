@@ -530,7 +530,7 @@ begin
   try
     InfoTreeView.Items.Add(nil,'Message: '+dbgstr(Line));
     InfoTreeView.Items.Add(nil,'File: '+dbgstr(aCode.Filename));
-    InfoTreeView.Items.Add(nil,'Missingg unit: '+dbgstr(aMissingUnitName));
+    InfoTreeView.Items.Add(nil,'Missing unit: '+dbgstr(aMissingUnitName));
     Directory:=ExtractFilePath(aCode.Filename);
     DirNode:=InfoTreeView.Items.Add(nil,'Directory: '+dbgstr(Directory));
 

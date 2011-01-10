@@ -56,7 +56,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="75">
+    <Units Count="76">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -569,6 +569,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEInfoDlg"/>
       </Unit74>
+      <Unit75>
+        <Filename Value="inspectchksumchangeddlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="InspectChksumChgDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="InspectChksumChangedDlg"/>
+      </Unit75>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

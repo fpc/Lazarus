@@ -133,9 +133,10 @@ uses
 
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg, EditDefineTree,
-  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
-  IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
+  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
+  IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
+  KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
+  OutputFilter, JumpHistoryView,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs, NewDialog,
@@ -2058,6 +2059,7 @@ begin
   InitStandardIDEQuickFixItems;
   InitCodeBrowserQuickFixItems;
   InitFindUnitQuickFixItems;
+  InitInspectChecksumChangedQuickFixItems;
 end;
 
 procedure TMainIDE.SetupStartProject;
