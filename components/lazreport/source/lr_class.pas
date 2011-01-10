@@ -8061,7 +8061,7 @@ begin
           aValue:= frParser.Calc(s);
           SubValue := '';
         end
-        else raise(EParserError.Create('Undefined symbol ";"' + SubValue + ';'));
+        else raise(EParserError.Create('Undefined symbol: ' + SubValue));
       end;
     end;
   end;
