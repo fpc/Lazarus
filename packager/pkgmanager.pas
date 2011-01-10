@@ -154,8 +154,6 @@ type
                                             out Description: string);
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
-    procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
-                                            var AnOutDirectory: string);
     procedure PackageFileLoaded(Sender: TObject);
     procedure OnCheckInstallPackageList(PkgIDList: TFPList; out Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
@@ -213,7 +211,7 @@ type
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
-    function GetPackageOfCurrentSourceEditor: TPkgFile;
+    function GetPackageOfCurrentSourceEditor(out APackage: TLazPackage): TPkgFile;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
@@ -469,28 +467,6 @@ begin
   GetDirectoryOfDependencyOwner(Dependency,Directory);
 end;
 
-procedure TPkgManager.GetWritablePkgOutputDirectory(APackage: TLazPackage;
-  var AnOutDirectory: string);
-var
-  NewOutDir: String;
-begin
-  if DirectoryIsWritableCached(AnOutDirectory) then exit;
-
-  ForceDirectory(AnOutDirectory);
-  InvalidateFileStateCache;
-  if DirectoryIsWritableCached(AnOutDirectory) then exit;
-  //debugln('TPkgManager.GetWritablePkgOutputDirectory AnOutDirectory=',AnOutDirectory,' ',dbgs(DirectoryIsWritable(AnOutDirectory)));
-  
-  // output directory is not writable
-  // -> redirect to config directory
-  NewOutDir:=SetDirSeparators('/$(TargetCPU)-$(TargetOS)');
-  IDEMacros.SubstituteMacros(NewOutDir);
-  NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
-                          +APackage.Name+NewOutDir);
-  AnOutDirectory:=NewOutDir;
-  debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
-end;
-
 procedure TPkgManager.PackageFileLoaded(Sender: TObject);
 begin
   DoCallNotifyHandler(pihtPackageFileLoaded,Sender);
@@ -574,11 +550,11 @@ end;
 
 procedure TPkgManager.OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
 var
-  PkgFile: TPkgFile;
+  APackage: TLazPackage;
 begin
-  PkgFile:=GetPackageOfCurrentSourceEditor;
-  if PkgFile<>nil then
-    DoOpenPackage(PkgFile.LazPackage,[],false);
+  GetPackageOfCurrentSourceEditor(APackage);
+  if APackage<>nil then
+    DoOpenPackage(APackage,[],false);
 end;
 
 procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
@@ -1508,7 +1484,6 @@ begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
-  OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
   OnPackageFileLoaded:=@PackageFileLoaded;
 
   // componentpalette
@@ -1720,11 +1695,11 @@ end;
 procedure TPkgManager.OnSourceEditorPopupMenu(
   const AddMenuItemProc: TAddMenuItemProc);
 var
-  PkgFile: TPkgFile;
+  APackage: TLazPackage;
 begin
-  PkgFile:=GetPackageOfCurrentSourceEditor;
-  if PkgFile<>nil then
-    AddMenuItemProc(Format(lisOpenPackage2, [PkgFile.LazPackage.Name]), true,
+  GetPackageOfCurrentSourceEditor(APackage);
+  if APackage<>nil then
+    AddMenuItemProc(Format(lisOpenPackage2, [APackage.Name]), true,
                     @OnOpenPackageForCurrentSrcEditFile);
 end;
 
@@ -3138,15 +3113,29 @@ begin
     FreeThenNil(Result);
 end;
 
-function TPkgManager.GetPackageOfCurrentSourceEditor: TPkgFile;
+function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TLazPackage
+  ): TPkgFile;
 var
   SrcEdit: TSourceEditor;
+  Filename: String;
+  i: Integer;
 begin
+  Result:=nil;
+  APackage:=nil;
   SrcEdit:=SourceEditorManager.GetActiveSE;
-  if SrcEdit<>nil then begin
-    Result:=SearchFile(SrcEdit.Filename,[],nil);
-  end else
-    SrcEdit:=nil;
+  if SrcEdit=nil then exit;
+  Filename:=SrcEdit.FileName;
+  Result:=SearchFile(Filename,[],nil);
+  if Result<>nil then begin
+    APackage:=Result.LazPackage;
+    exit;
+  end;
+  for i:=0 to PackageGraph.Count-1 do begin
+    APackage:=PackageGraph[i];
+    if CompareFilenames(APackage.GetSrcFilename,SrcEdit.FileName)=0 then
+      exit;
+  end;
+  APackage:=nil;
 end;
 
 function TPkgManager.AddDependencyToOwners(OwnerList: TFPList;

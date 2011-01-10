@@ -861,7 +861,6 @@ var
   OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent = nil;
   OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription = nil;
   OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory = nil;
-  OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory = nil;
   OnPackageFileLoaded: TNotifyEvent = nil;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;

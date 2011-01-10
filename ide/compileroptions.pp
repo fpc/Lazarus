@@ -246,8 +246,7 @@ const
 type
   TLocalSubstitutionEvent = function(const s: string;
                                 PlatformIndependent: boolean): string of object;
-  TGetWritableOutputDirectory = procedure(var s: string) of object;
-  
+
   TCompilerOptionsParseType = (
     coptUnparsed,  // no macros resolved
     coptParsed,    // all macros resolved

@@ -285,6 +285,7 @@ type
                     out NeedBuildAllFlag: boolean): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
+    function GetFallbackOutputDir(APackage: TLazPackage): string;
     function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
     function SavePackageMainSource(APackage: TLazPackage;
                      Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
@@ -3043,9 +3044,7 @@ begin
     end;
     // the normal output directory is not writable
     // => try the fallback directory
-    if not Assigned(OnGetWritablePkgOutputDirectory) then exit;
-    NewOutputDir:=OutputDir;
-    OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
+    NewOutputDir:=GetFallbackOutputDir(APackage);
     if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
@@ -3854,9 +3853,7 @@ begin
   begin
     // the normal output directory is not writable
     // => use the fallback directory
-    if not Assigned(OnGetWritablePkgOutputDirectory) then exit(mrCancel);
-    NewOutputDir:=OutputDir;
-    OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
+    NewOutputDir:=GetFallbackOutputDir(APackage);
     if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit(mrCancel);
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
   end;
@@ -3906,6 +3903,25 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TLazPackageGraph.GetFallbackOutputDir(APackage: TLazPackage): string;
+var
+  Dir: String;
+begin
+  // use the default output directory, if it is relative
+  // (this way the fallback creates the same amount of target directories)
+  Dir:=APackage.CompilerOptions.ParsedOpts.UnparsedValues[pcosOutputDir];
+  Dir:=APackage.SubstitutePkgMacros(Dir,false);
+  GlobalMacroList.SubstituteStr(Dir);
+  if FilenameIsAbsolute(Dir) then begin
+    // it is not relative => create a default one
+    Dir:='$(TargetOS)-$(TargetCPU)';
+  end;
+  Dir:='$(FallbackOutputRoot)'+PathDelim+APackage.Name+PathDelim+Dir;
+  GlobalMacroList.SubstituteStr(Dir);
+  debugln(['TLazPackageGraph.GetFallbackOutputDir  ',APackage.Name,': ',Dir]);
+  Result:=Dir;
 end;
 
 function TLazPackageGraph.CheckAmbiguousPackageUnits(APackage: TLazPackage

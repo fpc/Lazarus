@@ -5175,7 +5175,7 @@ var
 
   procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent);
   begin
-    if FileExistsUTF8(ChangeFileExt(CurFilename,ASuffix)) then
+    if FileExistsCached(ChangeFileExt(CurFilename,ASuffix)) then
       AddContextPopupMenuItem(Format(lisOpenLfm,
           [ChangeFileExt(FileName,ASuffix)]), true, ANewOnClick);
   end;

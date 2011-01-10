@@ -113,6 +113,9 @@ type
                                         var Abort: boolean): string;
     function MacroFuncSecondaryConfigPath(const Param: string; const Data: PtrInt;
                                           var Abort: boolean): string;
+    function MacroFuncFallbackOutputRoot(const Param: string; const Data: PtrInt;
+                                         var Abort: boolean): string;
+
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -318,6 +321,8 @@ begin
                     lisPrimaryConfigPath, @MacroFuncPrimaryConfigPath, []));
   GlobalMacroList.Add(TTransferMacro.Create('SecondaryConfigPath','',
                     lisSecondaryConfigPath, @MacroFuncSecondaryConfigPath, []));
+  GlobalMacroList.Add(TTransferMacro.Create('FallbackOutputRoot','',
+                    lisSecondaryConfigPath, @MacroFuncFallbackOutputRoot, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1403,6 +1408,12 @@ function TBuildManager.MacroFuncSecondaryConfigPath(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:=GetSecondaryConfigPath;
+end;
+
+function TBuildManager.MacroFuncFallbackOutputRoot(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'lib';
 end;
 
 function TBuildManager.MacroFuncSrcOS(const Param: string; const Data: PtrInt;

@@ -109,6 +109,15 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
+  { TQuickFixRecompilingChecksumChanged }
+
+  TQuickFixRecompilingChecksumChanged = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
 procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
                                    Msg: TIDEMessageLine);
 procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
@@ -250,11 +259,41 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   RegisterIDEMsgQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
   RegisterIDEMsgQuickFix(TQuickFixHint_Hide.Create);
+  //RegisterIDEMsgQuickFix(TQuickFixRecompilingChecksumChanged.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
 begin
   FreeThenNil(IDEMsgQuickFixes);
+end;
+
+{ TQuickFixRecompilingChecksumChanged }
+
+constructor TQuickFixRecompilingChecksumChanged.Create;
+begin
+  Name:='Show dialog for message Recompiling Unit1, checksum changed for Unit1';
+  Caption:='Explore message "checksum changed"';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixRecompilingChecksumChanged.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+begin
+  Result:=false;
+  if not REMatches(Line.Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i')
+  then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixRecompilingChecksumChanged.Execute(
+  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
+begin
+  if Step=imqfoMenuItem then begin
+    debugln(['TQuickFixRecompilingChecksumChanged.Execute  ']);
+    if not REMatches(Msg.Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i')
+    then exit;
+    debugln(['TQuickFixRecompilingChecksumChanged.Execute Unit1=',REVar(1),', checksum changed for Unit2=',REVar(2)]);
+  end;
 end;
 
 { TQuickFixUnitNotFoundPosition }

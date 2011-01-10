@@ -50,7 +50,7 @@ var
             of REMatches.
     The ModifierStr sets the default values of r.e.syntax modifiers. Modifiers
     in r.e. (?ismx-ismx) will replace this default values.
-    If you try to set unsupported modifier, Error will be called
+    If you try to set unsupported modifier, an exception is raised
 
      Modifier /i - caseinsensitive, initialized from RegExprModifierI
      Modifier /s - '.' works as any char (else as [^\n]),
@@ -63,7 +63,7 @@ var
     Examples:
       if REMatches('Lazarus','aza') then ...
 
-      if REMatches('Lazarus','a(.)a') then
+      if REMatches('Lazarus','a(.)a','i') then
         s:=REVar(1); // this will be the 'z'
   }
   
