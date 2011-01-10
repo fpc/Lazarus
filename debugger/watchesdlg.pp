@@ -88,6 +88,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
     procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -103,6 +104,8 @@ type
     FWatches: TIDEWatches;
     FWatchesNotification: TIDEWatchesNotification;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
+    FUpdateAllNeeded: Boolean;
+    procedure DoEndUpdate; override;
     function GetSelected: TIDEWatch;
     procedure SetWatches(const AValue: TIDEWatches);
     procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -294,6 +297,15 @@ begin
   //DebugLn('TWatchesDlg.FormDestroy ',DbgSName(Self));
 end;
 
+procedure TWatchesDlg.FormShow(Sender: TObject);
+begin
+  if UpdateCount > 0 then begin
+    FUpdateAllNeeded := True;
+    exit;
+  end;
+  UpdateAll;
+end;
+
 procedure TWatchesDlg.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   //DebugLn('TWatchesDlg.FormCloseQuery ',dbgs(CanClose));
@@ -388,6 +400,15 @@ begin
       TIDEWatch(lvWatches.Items[n].Data).Free;
   finally
     lvWatchesSelectItem(nil, nil, False);
+  end;
+end;
+
+procedure TWatchesDlg.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if FUpdateAllNeeded then begin
+    FUpdateAllNeeded := False;
+    UpdateAll;
   end;
 end;
 
@@ -503,7 +524,7 @@ begin
 // Expression
 // Result
   AItem.Caption := AWatch.Expression;
-  if not ToolButtonPower.Down then exit;
+  if (not ToolButtonPower.Down) or (not Visible) then exit;
   AItem.SubItems[0] := ClearMultiline(AWatch.Value);
 end;
 
