@@ -134,6 +134,11 @@ begin
   Result := inherited IsEmpty and (Count = 0);
 end;
 
+function TSharedIcon.GetImage(const AIndex: Integer): TIconImage;
+begin
+  Result := TIconImage(FImages[AIndex]);
+end;
+
 class function TSharedIcon.GetImagesClass: TIconImageClass;
 begin
   Result := TIconImage;
@@ -150,11 +155,11 @@ begin
   FImages := TFPList.Create;
 end;
 
-procedure TSharedIcon.Delete(Aindex: Integer);
+procedure TSharedIcon.Delete(AIndex: Integer);
 var
   Image: TIconImage;
 begin
-  Image := TIconImage(FImages[Aindex]);
+  Image := TIconImage(FImages[AIndex]);
   FImages.Delete(AIndex);
   Image.Free;
 end;

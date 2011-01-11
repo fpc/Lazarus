@@ -1524,15 +1524,17 @@ type
     procedure FreeHandle; override;
     procedure UpdateFromHandle(NewHandle: THandle); virtual;
     function IsEmpty: boolean; override;
+    function GetImage(const AIndex: Integer): TIconImage;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear;
-    procedure Delete(Aindex: Integer);
+    procedure Delete(AIndex: Integer);
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     class function GetImagesClass: TIconImageClass; virtual;
     procedure Add(AIconImage: TIconImage);
     function Count: Integer;
+    property Images[AIndex: Integer]: TIconImage read GetImage;
   end;
 
   { TIconImage }
