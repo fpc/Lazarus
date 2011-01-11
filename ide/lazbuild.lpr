@@ -605,9 +605,7 @@ begin
   if (WidgetSetOverride<>'') then
     Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
   // apply options
-  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
-    bmsfsSkip);
+  MainBuildBoss.SetBuildTargetProject1(true,bmsfsSkip);
 
   if not SkipDependencies then begin
     // compile required packages
@@ -645,7 +643,7 @@ begin
 
   // create application bundle
   if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-  and (MainBuildBoss.GetLCLWidgetType(true)=LCLPlatformDirNames[lpCarbon])
+  and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
   then begin
     if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
       Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
@@ -776,7 +774,7 @@ begin
   // load static base packages
   PackageGraph.LoadStaticBasePackages;
 
-  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,bmsfsSkip);
+  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,bmsfsSkip,true);
 
   fInitResult:=true;
 end;
