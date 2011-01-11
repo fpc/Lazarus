@@ -437,6 +437,7 @@ begin
   ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveUnusedUnits: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecUseProjectUnit: SetResult(VK_F11,[ssAlt],VK_UNKNOWN,[]);
   ecFindOverloads: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
@@ -2113,6 +2114,7 @@ begin
     ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
     ecRemoveEmptyMethods      : Result:= srkmecRemoveEmptyMethods;
     ecRemoveUnusedUnits       : Result:= srkmecRemoveUnusedUnits;
+    ecUseProjectUnit          : Result:= srkmecUseProjectUnit;
     ecFindOverloads           : Result:= srkmecFindOverloads;
 
     // project (menu string resource)
@@ -2661,6 +2663,8 @@ begin
     ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits,
     ecRemoveUnusedUnits);
+  AddDefault(C, 'Add unit to uses section', srkmecUseProjectUnit,
+    ecUseProjectUnit);
   AddDefault(C, 'Find overloads', srkmecFindOverloads,
     ecFindOverloads);
 

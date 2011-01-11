@@ -2598,6 +2598,7 @@ resourcestring
   srkmecShowAbstractMethods       = 'Show abstract methods';
   srkmecRemoveEmptyMethods        = 'Remove empty methods';
   srkmecRemoveUnusedUnits         = 'Remove unused units';
+  srkmecUseProjectUnit            = 'Add unit to uses section';
   srkmecFindOverloads             = 'Find overloads';
 
   //Plugin template Edit

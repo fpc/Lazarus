@@ -142,7 +142,7 @@ uses
   IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs, NewDialog,
   MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer,
   BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
-  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, FindOverloadsDlg,
+  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseProjUnitDlg, FindOverloadsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, CodeExplOpts,
   // main ide
@@ -980,6 +980,7 @@ type
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
+    function DoUseProjectUnit: TModalResult;
     function DoFindOverloads: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
@@ -3122,6 +3123,9 @@ begin
 
   ecRemoveUnusedUnits:
     DoRemoveUnusedUnits;
+
+  ecUseProjectUnit:
+    DoUseProjectUnit;
 
   ecFindOverloads:
     DoFindOverloads;
@@ -14839,6 +14843,11 @@ end;
 function TMainIDE.DoRemoveUnusedUnits: TModalResult;
 begin
   Result:=ShowUnusedUnitsDialog;
+end;
+
+function TMainIDE.DoUseProjectUnit: TModalResult;
+begin
+  Result:=ShowUseProjUnitDialog;
 end;
 
 function TMainIDE.DoFindOverloads: TModalResult;
