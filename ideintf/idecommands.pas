@@ -252,6 +252,7 @@ const
   ecStepOverInstr           = ecFirstLazarus + 421;
   ecStepIntoContext         = ecFirstLazarus + 422;
   ecStepOverContext         = ecFirstLazarus + 423;
+  ecBuildAdvancedLazarus    = ecFirstLazarus + 424;
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;

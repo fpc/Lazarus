@@ -3200,6 +3200,9 @@ begin
   ecBuildLazarus:
     mnuToolBuildLazarusClicked(Self);
 
+  ecBuildAdvancedLazarus:
+    mnuToolBuildAdvancedLazarusClicked(Self);
+
   ecConfigBuildLazarus:
     mnuToolConfigBuildLazClicked(Self);
 
