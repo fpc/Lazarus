@@ -28,6 +28,7 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
+  CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils;
 
@@ -627,7 +628,7 @@ end;
 function LCLWindowExtension.lclClientFrame:TRect;
 var
   wr  : NSRect;
-  b   : NSRect;
+  b   : CGGeometry.CGRect;
 begin
   wr:=frame;
   b:=contentView.frame;

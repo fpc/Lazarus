@@ -10,14 +10,6 @@ uses
   Types, LCLType;
 
 type
-  { NSObjectExtensionExternal }
-
-  NSObjectExtensionExternal = objccategory(NSObject)
-    //the method is available at NSObject, but not declared in NSObject,
-    // for some reason
-    function className: NSString; message 'className';
-  end; external;
-
   { NSLCLDebugExtension }
 
   NSLCLDebugExtension = objccategory(NSObject)

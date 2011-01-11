@@ -411,13 +411,6 @@ begin
   CritSection:=0;
 end;
 
-type
-  //workaround for CocoaInt bug
-  NSLockExtension = objccategory(NSRecursiveLock)
-    procedure lock; message 'lock';
-    procedure unlock; message 'unlock';
-  end; external;
-
 procedure TCocoaWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
   if CritSection=0 then Exit;
