@@ -551,6 +551,8 @@ var
   ADefTempl: TDefineTemplate;
   FPCSrcCache: TFPCSourceCache;
   NeedUpdateFPCSrcCache: Boolean;
+  IgnorePath: String;
+  MsgResult: TModalResult;
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
     const ErrorMsg: string);
@@ -695,9 +697,15 @@ begin
         mtError,[mbOk]);
     end else if (UnitSetCache<>nil) then begin
       if UnitSetCache.GetFirstFPCCfg='' then begin
-        IDEMessageDialog(lisCCOWarningCaption,
-          lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome,
-          mtWarning,[mbOk]);
+        IgnorePath:='MissingFPCCfg_'+TargetOS+'-'+TargetCPU;
+        if (InputHistories<>nil) and (InputHistories.Ignores.Find(IgnorePath)=nil)
+        then begin
+          MsgResult:=IDEMessageDialog(lisCCOWarningCaption,
+            lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome,
+            mtWarning,[mbOk,mbIgnore]);
+          if MsgResult=mrIgnore then
+            InputHistories.Ignores.Add(IgnorePath,iiidIDERestart);
+        end;
       end;
     end;
   end;
