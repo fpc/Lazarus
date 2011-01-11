@@ -1492,7 +1492,7 @@ begin
     fs:=TFileStream.Create(UTF8ToSys(TestFilename),fmCreate);
     fs.Free;
   except
-    debugln(['RunFPCVerbose unable to create test file '+TestFilename]);
+    debugln(['RunFPCVerbose unable to create test file "'+TestFilename+'"']);
     exit;
   end;
 

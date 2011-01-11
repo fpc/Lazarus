@@ -766,6 +766,8 @@ begin
   InteractiveSetup:=false;
   SetupMacros;
   SetupCompilerFilename(InteractiveSetup);
+  // create a test unit needed to get from the compiler all macros and search paths
+  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
   SetupLazarusDirectory(InteractiveSetup);
   SetupPackageSystem;
   SetupOutputFilter;
