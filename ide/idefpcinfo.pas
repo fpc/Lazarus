@@ -103,8 +103,8 @@ begin
     GatherProjectOptions(sl);
     GatherActiveOptions(sl);
 
-    TargetOS:=BuildBoss.GetTargetOS(true);
-    TargetCPU:=BuildBoss.GetTargetCPU(true);
+    TargetOS:=BuildBoss.GetTargetOS;
+    TargetCPU:=BuildBoss.GetTargetCPU;
     CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
@@ -132,8 +132,8 @@ var
   WorkDir: String;
   fs: TFileStream;
 begin
-  TargetOS:=BuildBoss.GetTargetOS(true);
-  TargetCPU:=BuildBoss.GetTargetCPU(true);
+  TargetOS:=BuildBoss.GetTargetOS;
+  TargetCPU:=BuildBoss.GetTargetCPU;
   CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
   CompilerOptions:='';
   Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
@@ -253,8 +253,8 @@ end;
 procedure TIDEFPCInfoDialog.GatherActiveOptions(sl: TStrings);
 begin
   sl.Add('Active target:');
-  sl.Add('TargetOS='+BuildBoss.GetTargetOS(true));
-  sl.Add('TargetCPU='+BuildBoss.GetTargetCPU(true));
+  sl.Add('TargetOS='+BuildBoss.GetTargetOS);
+  sl.Add('TargetCPU='+BuildBoss.GetTargetCPU);
   sl.Add('');
 end;
 

@@ -50,9 +50,9 @@ type
 
     function GetBuildMacroOverride(const MacroName: string): string; virtual; abstract;
     function GetBuildMacroOverrides: TStrings; virtual; abstract;
-    function GetTargetOS(UseCache: boolean): string; virtual; abstract;
-    function GetTargetCPU(UseCache: boolean): string; virtual; abstract;
-    function GetLCLWidgetType(UseCache: boolean): string; virtual; abstract;
+    function GetTargetOS: string; virtual; abstract;
+    function GetTargetCPU: string; virtual; abstract;
+    function GetLCLWidgetType: string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
     function GetProjectPublishDir: string; virtual; abstract;
@@ -65,7 +65,7 @@ type
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
 
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
-                                    WaitTillDone: boolean); virtual; abstract;
+                                    WaitTillDone, Quiet: boolean); virtual; abstract;
 
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; virtual; abstract;

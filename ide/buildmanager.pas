@@ -124,6 +124,9 @@ type
                            CompOptions: TBaseCompilerOptions): TModalResult;
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
+    fTargetOS: string;
+    fTargetCPU: string;
+    fLCLWidgetType: string;
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
@@ -145,9 +148,9 @@ type
 
     function GetBuildMacroOverride(const MacroName: string): string; override;
     function GetBuildMacroOverrides: TStrings; override;
-    function GetTargetOS(UseCache: boolean): string; override;
-    function GetTargetCPU(UseCache: boolean): string; override;
-    function GetLCLWidgetType(UseCache: boolean): string; override;
+    function GetTargetOS: string; override;
+    function GetTargetCPU: string; override;
+    function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
 
     function GetProjectPublishDir: string; override;
@@ -161,7 +164,7 @@ type
 
     procedure UpdateEnglishErrorMsgFilename;
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
-                                    WaitTillDone: boolean); override;
+                                    WaitTillDone, Quiet: boolean); override;
     procedure LoadFPCDefinesCaches;
     procedure SaveFPCDefinesCaches;
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
@@ -185,7 +188,9 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
-                             ScanFPCSrc: TBMScanFPCSources);
+                             ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
+    procedure SetBuildTargetProject1(Quiet: boolean;
+                               ScanFPCSrc: TBMScanFPCSources = bmsfsBackground);
     procedure SetBuildTargetIDE;
     function BuildTargetIDEIsDefault: boolean;
 
@@ -242,6 +247,9 @@ begin
   FFPCVerChangeStamp:=InvalidParseStamp;
   MainBuildBoss:=Self;
   inherited Create(AOwner);
+  fTargetOS:=GetDefaultTargetOS;
+  fTargetCPU:=GetDefaultTargetCPU;
+  fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFile;
@@ -374,47 +382,20 @@ begin
     Result.Values['LCLWidgetType']:=OverrideLCLWidgetType;
 end;
 
-function TBuildManager.GetTargetOS(UseCache: boolean): string;
+function TBuildManager.GetTargetOS: string;
 begin
-  if OverrideTargetOS<>'' then
-    Result:=OverrideTargetOS
-  else if (Project1<>nil) and (not UseCache) then
-    Result:=Project1.CompilerOptions.TargetOS
-  else
-    Result:='';
-  if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
-    Result:=GetDefaultTargetOS;
-  Result:=GetFPCTargetOS(Result);
+  Result:=fTargetOS;
 end;
 
-function TBuildManager.GetTargetCPU(UseCache: boolean): string;
+function TBuildManager.GetTargetCPU: string;
 begin
-  if OverrideTargetCPU<>'' then
-    Result:=OverrideTargetCPU
-  else if (Project1<>nil) and (not UseCache) then
-    Result:=Project1.CompilerOptions.TargetCPU
-  else
-    Result:='';
-  if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
-    Result:=GetDefaultTargetCPU;
-  Result:=GetFPCTargetCPU(Result);
+  Result:=fTargetCPU;
   //debugln(['TBuildManager.GetTargetCPU ',Result]);
 end;
 
-function TBuildManager.GetLCLWidgetType(UseCache: boolean): string;
+function TBuildManager.GetLCLWidgetType: string;
 begin
-  if UseCache and (CodeToolBoss<>nil) then begin
-    Result:=CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
-  end else begin
-    if OverrideLCLWidgetType<>'' then
-      Result:=OverrideLCLWidgetType
-    else if Project1<>nil then
-      Result:=lowercase(Project1.CompilerOptions.LCLWidgetType)
-    else
-      Result:='';
-  end;
-  if (Result='') or (Result='default') then
-    Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+  Result:=fLCLWidgetType;
 end;
 
 function TBuildManager.GetRunCommandLine: string;
@@ -492,7 +473,7 @@ end;
 function TBuildManager.GetProjectUsesAppBundle: Boolean;
 begin
   Result := (Project1.RunParameterOptions.HostApplicationFilename = '') and
-    (GetTargetOS(False) = 'darwin') and Project1.UseAppBundle;
+    (GetTargetOS = 'darwin') and Project1.UseAppBundle;
 end;
 
 function TBuildManager.GetTestProjectFilename(aProject: TProject): string;
@@ -562,7 +543,7 @@ begin
 end;
 
 procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
-  ClearCaches, WaitTillDone: boolean);
+  ClearCaches, WaitTillDone, Quiet: boolean);
 var
   TargetOS, TargetCPU: string;
   CompilerFilename: String;
@@ -610,15 +591,15 @@ begin
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','',bmsfsSkip);
+    SetBuildTarget('','','',bmsfsSkip,true);
   
   // start the compiler and ask for his settings
   // provide an english message file
   UpdateEnglishErrorMsgFilename;
 
   // use current TargetOS, TargetCPU, compilerfilename and FPC source dir
-  TargetOS:=GetTargetOS(true);
-  TargetCPU:=GetTargetCPU(true);
+  TargetOS:=GetTargetOS;
+  TargetCPU:=GetTargetCPU;
   CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
   FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory; // needs FPCVer macro
 
@@ -630,6 +611,7 @@ begin
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
     ' WaitTillDone=',WaitTillDone,
+    ' Quiet=',Quiet,
     '']);
   {$ENDIF}
 
@@ -661,12 +643,13 @@ begin
   // scan compiler, fpc sources and create indices for quick lookup
   UnitSetCache.Init;
 
-  if (FUnitSetChangeStamp<>TFPCUnitSetCache.GetInvalidChangeStamp)
-  and (FUnitSetChangeStamp=UnitSetCache.ChangeStamp) then begin
+  if (FUnitSetChangeStamp=TFPCUnitSetCache.GetInvalidChangeStamp)
+  or (FUnitSetChangeStamp<>UnitSetCache.ChangeStamp) then begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines nothing changed']);
     {$ENDIF}
-    exit;
+    // save caches
+    SaveFPCDefinesCaches;
   end;
   FUnitSetChangeStamp:=UnitSetCache.ChangeStamp;
 
@@ -680,9 +663,6 @@ begin
     ' FPCSrcDir=',FPCSrcDir,
     '']);
   {$ENDIF}
-
-  // save caches
-  SaveFPCDefinesCaches;
 
   // rebuild the define templates
   // create template for FPC settings
@@ -707,16 +687,18 @@ begin
 
   CodeToolBoss.DefineTree.ClearCache;
 
-  if not FoundSystemPPU then begin
-    IDEMessageDialog(lisCCOErrorCaption,
-      Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
-        TargetOS, TargetCPU, #13, #13]),
-      mtError,[mbOk]);
-  end else if (UnitSetCache<>nil) then begin
-    if UnitSetCache.GetFirstFPCCfg='' then begin
-      IDEMessageDialog(lisCCOWarningCaption,
-        lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome,
-        mtWarning,[mbOk]);
+  if not Quiet then begin
+    if not FoundSystemPPU then begin
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
+          TargetOS, TargetCPU, #13, #13]),
+        mtError,[mbOk]);
+    end else if (UnitSetCache<>nil) then begin
+      if UnitSetCache.GetFirstFPCCfg='' then begin
+        IDEMessageDialog(lisCCOWarningCaption,
+          lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome,
+          mtWarning,[mbOk]);
+      end;
     end;
   end;
 end;
@@ -1333,14 +1315,14 @@ end;
 function TBuildManager.MacroFuncMakeExe(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=MakeStandardExeFilename(GetTargetOS(true),Filename);
+  Result:=MakeStandardExeFilename(GetTargetOS,Filename);
   //DebugLn('TMainIDE.MacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
 function TBuildManager.MacroFuncMakeLib(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  Result:=MakeStandardLibFilename(GetTargetOS(true),Filename);
+  Result:=MakeStandardLibFilename(GetTargetOS,Filename);
 end;
 
 function TBuildManager.MacroFuncProject(const Param: string; const Data: PtrInt;
@@ -1372,7 +1354,7 @@ begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(LCL_PLATFORM)'
   else
-    Result:=GetLCLWidgetType(true);
+    Result:=GetLCLWidgetType;
 end;
 
 function TBuildManager.MacroFuncTargetCPU(const Param: string;
@@ -1381,7 +1363,7 @@ begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(CPU_TARGET)'
   else
-    Result:=GetTargetCPU(true);
+    Result:=GetTargetCPU;
 end;
 
 function TBuildManager.MacroFuncTargetOS(const Param: string;
@@ -1390,7 +1372,7 @@ begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(OS_TARGET)'
   else
-    Result:=GetTargetOS(true);
+    Result:=GetTargetOS;
 end;
 
 function TBuildManager.MacroFuncIDEBuildOptions(const Param: string;
@@ -1428,7 +1410,7 @@ begin
   if Data=CompilerOptionMacroPlatformIndependent then
     Result:='%(OS_TARGET)'
   else
-    Result:=GetDefaultSrcOSForTargetOS(GetTargetOS(true));
+    Result:=GetDefaultSrcOSForTargetOS(GetTargetOS);
 end;
 
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
@@ -1448,8 +1430,8 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       // Not from the fpc.exe, but from the real compiler
       CompilerFilename:=EnvironmentOptions.GetCompilerFilename;
       if CompilerFilename='' then exit;
-      TargetOS:=GetTargetOS(true);
-      TargetCPU:=GetTargetCPU(true);
+      TargetOS:=GetTargetOS;
+      TargetCPU:=GetTargetCPU;
       ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                                    CompilerFilename,'',TargetOS,TargetCPU,true);
       if ConfigCache=nil then exit;
@@ -1867,41 +1849,76 @@ begin
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string; ScanFPCSrc: TBMScanFPCSources);
+  LCLWidgetType: string; ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
 var
   OldTargetOS: String;
   OldTargetCPU: String;
   OldLCLWidgetType: String;
-  NewTargetOS: String;
-  NewTargetCPU: String;
-  NewLCLWidgetType: String;
   FPCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
 begin
-  OldTargetOS:=GetTargetOS(true);
-  OldTargetCPU:=GetTargetCPU(true);
-  OldLCLWidgetType:=GetLCLWidgetType(true);
+  OldTargetOS:=fTargetOS;
+  OldTargetCPU:=fTargetCPU;
+  OldLCLWidgetType:=fLCLWidgetType;
   OverrideTargetOS:=GetFPCTargetOS(TargetOS);
   OverrideTargetCPU:=GetFPCTargetCPU(TargetCPU);
   OverrideLCLWidgetType:=lowercase(LCLWidgetType);
-  NewTargetOS:=GetTargetOS(false);
-  NewTargetCPU:=GetTargetCPU(false);
-  NewLCLWidgetType:=GetLCLWidgetType(false);
 
-  FPCTargetChanged:=(OldTargetOS<>NewTargetOS)
-                    or (OldTargetCPU<>NewTargetCPU);
-  LCLTargetChanged:=(OldLCLWidgetType<>NewLCLWidgetType);
+  // compute new TargetOS
+  if OverrideTargetOS<>'' then
+    fTargetOS:=OverrideTargetOS
+  else if Project1<>nil then
+    fTargetOS:=Project1.CompilerOptions.TargetOS
+  else
+    fTargetOS:='';
+  if (fTargetOS='') or (SysUtils.CompareText(fTargetOS,'default')=0) then
+    fTargetOS:=GetDefaultTargetOS;
+  fTargetOS:=GetFPCTargetOS(fTargetOS);
+
+  // compute new TargetCPU
+  if OverrideTargetCPU<>'' then
+    fTargetCPU:=OverrideTargetCPU
+  else if Project1<>nil then
+    fTargetCPU:=Project1.CompilerOptions.TargetCPU
+  else
+    fTargetCPU:='';
+  if (fTargetCPU='') or (SysUtils.CompareText(fTargetCPU,'default')=0) then
+    fTargetCPU:=GetDefaultTargetCPU;
+  fTargetCPU:=GetFPCTargetCPU(fTargetCPU);
+
+  // compute new LCLWidgetType
+  if OverrideLCLWidgetType<>'' then
+    fLCLWidgetType:=OverrideLCLWidgetType
+  else if Project1<>nil then
+    fLCLWidgetType:=Project1.CompilerOptions.LCLWidgetType
+  else
+    fLCLWidgetType:='';
+  if (fLCLWidgetType='') or (SysUtils.CompareText(fLCLWidgetType,'default')=0) then
+    fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+  fLCLWidgetType:=lowercase(fLCLWidgetType);
+
+  FPCTargetChanged:=(OldTargetOS<>fTargetOS)
+                    or (OldTargetCPU<>fTargetCPU)
+                    or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
+                         StdDefTemplLazarusSrcDir,true)=nil);
+  LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
   if FPCTargetChanged or LCLTargetChanged then begin
     //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-    //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
+    //  ' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
     IncreaseBuildMacroChangeStamp;
   end;
   if LCLTargetChanged then
-    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
   if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
-    RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone);
+    RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone,Quiet);
   //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
+end;
+
+procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
+  ScanFPCSrc: TBMScanFPCSources);
+begin
+  SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
 
 procedure TBuildManager.SetBuildTargetIDE;
@@ -1920,7 +1937,7 @@ begin
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
   debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground,false);
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;

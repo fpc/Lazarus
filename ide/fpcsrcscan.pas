@@ -101,7 +101,7 @@ begin
 
     //debugln(['TFPCSrcScan.OnFilesGathered BuildBoss.RescanCompilerDefines ...']);
     if BuildBoss<>nil then
-      BuildBoss.RescanCompilerDefines(false,false,false);
+      BuildBoss.RescanCompilerDefines(false,false,false,true);
   end;
   FreeAndNil(Files);
   // delete item in progress window

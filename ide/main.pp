@@ -3472,11 +3472,14 @@ begin
   if (Index<0) or (Index>=Project1.BuildModes.Count) then exit;
   NewMode:=Project1.BuildModes[Index];
   if NewMode=Project1.ActiveBuildMode then exit;
+  if not (ToolStatus in [itNone,itDebugger]) then begin
+    IDEMessageDialog('Error','You can not change the build mode while compiling.',
+      mtError,[mbOk]);
+    exit;
+  end;
 
   Project1.ActiveBuildMode:=NewMode;
-  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
-    bmsfsBackground);
+  MainBuildBoss.SetBuildTargetProject1(false);
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -4648,7 +4651,7 @@ begin
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
   //debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
   if FPCCompilerChanged or FPCSrcDirChanged then
-    MainBuildBoss.RescanCompilerDefines(true,false,false);
+    MainBuildBoss.SetBuildTargetProject1(false);
 
   // update environment
   UpdateDesigners;
@@ -4813,9 +4816,7 @@ begin
   if Restore then
     AProject.RestoreBuildModes;
   IncreaseCompilerParseStamp;
-  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
-    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType,
-    bmsfsBackground);
+  MainBuildBoss.SetBuildTargetProject1(false);
   if (not Restore) and AProject.CompilerOptions.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
@@ -4845,7 +4846,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  MainBuildBoss.RescanCompilerDefines(false,true,false);
+  MainBuildBoss.RescanCompilerDefines(false,true,false,false);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -7854,7 +7855,7 @@ begin
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
 
-  MainBuildBoss.RescanCompilerDefines(true,false,false);
+  MainBuildBoss.SetBuildTargetProject1(false);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -9961,7 +9962,7 @@ begin
       PkgBoss.AddDefaultDependencies(Project1);
 
       // rebuild codetools defines
-      MainBuildBoss.RescanCompilerDefines(true,false,false);
+      MainBuildBoss.SetBuildTargetProject1(false);
 
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
@@ -11134,7 +11135,7 @@ begin
 
     // create application bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-    and (MainBuildBoss.GetLCLWidgetType(true)=LCLPlatformDirNames[lpCarbon])
+    and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
     then begin
       Result:=CreateApplicationBundle(TargetExeName, Project1.Title);
       if not (Result in [mrOk,mrIgnore]) then exit;
@@ -11666,7 +11667,7 @@ begin
     if Result<>mrOk then exit;
 
   finally
-    MainBuildBoss.SetBuildTarget('','','',bmsfsBackground);
+    MainBuildBoss.SetBuildTargetProject1(true);
 
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
@@ -13894,7 +13895,7 @@ begin
   // create defines for the lazarus sources
   SetupLazarusDirectory(InteractiveSetup);
 
-  MainBuildBoss.RescanCompilerDefines(true,false,false);
+  MainBuildBoss.SetBuildTargetProject1(false);
 
   // load include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
