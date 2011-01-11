@@ -64,21 +64,23 @@ end;
 
 function TReplaceDialog.CreateForm: TForm;
 begin
-  Result:=TReplaceDialogForm.Create(nil);
-  with TReplaceDialogForm(Result) do begin
-    FindMoreButton.Caption:=rsFindMore;
-    ReplaceButton.Caption:=rsReplace;
-    ReplaceAllButton.Caption:=rsReplaceAll;
-    CancelButton.Caption:=rsMbCancel;
-    HelpButton.Caption:=ifsVK_HELP;
-    WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
-    CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
-    EntireScopeCheckBox.Caption:=rsEntireScope;
-    TextLabel.Caption:=rsText;
-    ReplaceLabel.Caption:=rsReplace;
-    DirectionRadioGroup.Caption:=rsDirection;
-    DirectionRadioGroup.Items[0]:=rsForward;
-    DirectionRadioGroup.Items[1]:=rsBackward;
+  // do not use Self as Owner, otherwise as desgntime this will not work
+  Result := TReplaceDialogForm.Create(nil);
+  with TReplaceDialogForm(Result) do
+  begin
+    FindMoreButton.Caption := rsFindMore;
+    ReplaceButton.Caption := rsReplace;
+    ReplaceAllButton.Caption := rsReplaceAll;
+    CancelButton.Caption := rsMbCancel;
+    HelpButton.Caption := ifsVK_HELP;
+    WholeWordsOnlyCheckBox.Caption := rsWholeWordsOnly;
+    CaseSensitiveCheckBox.Caption := rsCaseSensitive;
+    EntireScopeCheckBox.Caption := rsEntireScope;
+    TextLabel.Caption := rsText;
+    ReplaceLabel.Caption := rsReplace;
+    DirectionRadioGroup.Caption := rsDirection;
+    DirectionRadioGroup.Items[0] := rsForward;
+    DirectionRadioGroup.Items[1] := rsBackward;
 
     //Setting up button eventhandlers
     FindMoreButton.OnClick := @FindClick;
@@ -86,10 +88,7 @@ begin
     ReplaceAllButton.OnClick := @ReplaceAllClick;
     CancelButton.OnClick := @CancelClick;
     HelpButton.OnClick := @HelpClick;
-    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can implement this
-    //so that the form should stay on top of the application (not on top of everything)
-    //See bug #8471 in Mantis
-    //FormStyle := fsStayOnTop;
+    PopupMode := pmAuto;
   end;
 end;
 

@@ -166,27 +166,25 @@ end;
 
 function TFindDialog.CreateForm: TForm;
 begin
-  Result:=TFindDialogForm.Create(nil);// do not use Self as Owner, otherwise as desgntime this will not work
-  //DebugLn(['TFindDialog.CreateForm ',DbgSName(Result),' ',Result.ControlCount]);
-  with TFindDialogForm(Result) do begin
-    FindButton.Caption:=rsFind;
-    CancelButton.Caption:=rsMbCancel;
-    HelpButton.Caption:=ifsVK_HELP;
-    WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
-    CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
-    EntireScopeCheckBox.Caption:=rsEntireScope;
-    FindLabel.Caption:=rsText;
-    DirectionRadioGroup.Caption:=rsDirection;
-    DirectionRadioGroup.Items[0]:=rsForward;
-    DirectionRadioGroup.Items[1]:=rsBackward;
+  // do not use Self as Owner, otherwise as desgntime this will not work
+  Result := TFindDialogForm.Create(nil);
+  with TFindDialogForm(Result) do
+  begin
+    FindButton.Caption := rsFind;
+    CancelButton.Caption := rsMbCancel;
+    HelpButton.Caption := ifsVK_HELP;
+    WholeWordsOnlyCheckBox.Caption := rsWholeWordsOnly;
+    CaseSensitiveCheckBox.Caption := rsCaseSensitive;
+    EntireScopeCheckBox.Caption := rsEntireScope;
+    FindLabel.Caption := rsText;
+    DirectionRadioGroup.Caption := rsDirection;
+    DirectionRadioGroup.Items[0] := rsForward;
+    DirectionRadioGroup.Items[1] := rsBackward;
     //Setting up button eventhandlers
     FindButton.OnClick := @FindClick;
     HelpButton.OnClick := @HelpClick;
     CancelButton.OnClick := @CancelClick;
-    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can implement this
-    //so that the form should stay on top of the application (not on top of everything)
-    //See bug #8471 in Mantis
-    //FormStyle := fsStayOnTop;
+    PopupMode := pmAuto;
   end;
 end;
 
@@ -268,9 +266,7 @@ begin
     FFindForm.OnShow := Self.OnShow;
     FFindForm.HelpContext:=HelpContext;
     FFindForm.Caption:=Title;
-    //Once the issues concerning FormStyle = fsStayOnTop are resolved we can
-    //make this a non-Modal window using FFindForm.Show;
-    FFindForm.ShowModal;
+    FFindForm.Show;
     Result := true;
   end;
 end;
