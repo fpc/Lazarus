@@ -20,7 +20,7 @@ type
     SectionRadioGroup: TRadioGroup;
   private
     procedure AddItems(AItems: TStrings);
-    function SelectFirst: string;
+    procedure SelectFirst;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
   public
@@ -42,7 +42,7 @@ var
   MainUsedUnits, ImplUsedUnits: TStrings;
   AvailUnits: TStringList;
   s: String;
-  IsIntf, CTRes: Boolean;
+  CTRes: Boolean;
 begin
   Result:=mrOk;
   if not LazarusIDE.BeginCodeTools then exit;
@@ -79,10 +79,8 @@ begin
       UseProjUnitDlg.SelectFirst;
       if UseProjUnitDlg.ShowModal=mrOk then begin
         s:=UseProjUnitDlg.SelectedUnit;
-        IsIntf:=UseProjUnitDlg.InterfaceSelected;
         if s<>'' then begin
-          CTRes:=True;
-          if IsIntf then
+          if UseProjUnitDlg.InterfaceSelected then
             CTRes:=CodeToolBoss.AddUnitToMainUsesSection(Code, s, '')
           else
             CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(Code, s, '');
@@ -111,10 +109,9 @@ begin
   UnitsListBox.Items.Assign(AItems);
 end;
 
-function TUseProjUnitDialog.SelectFirst: string;
+procedure TUseProjUnitDialog.SelectFirst;
 begin
   UnitsListBox.Selected[0]:=True;
-  Result:=UnitsListBox.Items[0];
 end;
 
 function TUseProjUnitDialog.SelectedUnit: string;
