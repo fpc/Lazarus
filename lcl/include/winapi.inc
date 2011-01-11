@@ -550,7 +550,7 @@ end;
   of the Handle object and Right and Bottom will be the screen coordinate of
   the BottomRight pixel.
 ------------------------------------------------------------------------------}
-function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+function GetWindowRect(Handle: hwnd; var Rect: TRect): Integer;
 begin
   Result := WidgetSet.GetWindowRect(Handle, Rect);
 end;
@@ -560,7 +560,7 @@ end;
 
   Returns the Width and Height
 ------------------------------------------------------------------------------}
-function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+function GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 begin
   Result := WidgetSet.GetWindowSize(Handle, Width, Height);
 end;
