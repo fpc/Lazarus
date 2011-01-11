@@ -128,7 +128,8 @@ type
     function  GetReference: TWSCustomImageListReference;
 
     procedure InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
-      AWidth, AHeight: Integer);
+      AWidth, AHeight: Integer); overload;
+    procedure InternalInsert(AIndex: Integer; ARawImage: TRawImage); overload;
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
     procedure InternalReplace(AIndex: Integer; AImage, AMask: HBitmap);
     function  InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;

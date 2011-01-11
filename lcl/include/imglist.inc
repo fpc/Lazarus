@@ -233,6 +233,43 @@ begin
   Change;
 end;
 
+procedure TCustomImageList.InternalInsert(AIndex: Integer; ARawImage: TRawImage);
+var
+  RawImg: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+  i, ACount: Integer;
+begin
+  CheckIndex(AIndex, True);
+  if (AIndex < 0) then
+    AIndex := 0;
+
+  ACount := ARawImage.Description.Width div Width;
+  if ACount = 0 then
+    ACount := 1;
+  Inc(FCount, ACount);
+  AllocData(FCount);
+  if AIndex < FCount - ACount then
+  begin
+    for i := 0 to ACount - 1 do
+      InternalMove(FCount - i - 1, AIndex + i, True);
+  end;
+
+  R := Rect(0, 0, FWidth, FHeight);
+  for i := 0 to ACount - 1 do
+  begin
+    ARawImage.ExtractRect(R, RawImg);
+    ImgData := InternalSetImage(AIndex + i, RawImg);
+    if HandleAllocated
+    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
+    inc(R.Left, FWidth);
+    inc(R.Right, FWidth);
+  end;
+
+  FChanged := true;
+  Change;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Assign
   Params:  Source: Source data
@@ -704,7 +741,10 @@ begin
   IconIndex := AIcon.GetBestIndexForSize(Size(Width, Height));
   if IconIndex = -1 then Exit;
   Image := TSharedIcon(TCustomIconAccess(AIcon).FSharedImage).Images[IconIndex];
-  InternalInsert(AIndex, Image.Handle, Image.MaskHandle, Image.Width, Image.Height);
+  if Image.Handle = 0 then
+    InternalInsert(AIndex, Image.RawImage)
+  else
+    InternalInsert(AIndex, Image.Handle, Image.MaskHandle, Image.Width, Image.Height);
 end;
 
 {------------------------------------------------------------------------------

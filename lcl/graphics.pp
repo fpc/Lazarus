@@ -1569,6 +1569,7 @@ type
     property Handle: HBITMAP read FHandle;
     property MaskHandle: HBITMAP read FMaskHandle;
     property Palette: HPALETTE read GetPalette;
+    property RawImage: TRawImage read FImage;
   end;
 
 
