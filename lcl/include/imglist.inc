@@ -20,6 +20,7 @@
 
 type
   TImageListSignature = array[0..1] of char;
+  TCustomIconAccess = class(TCustomIcon);
 
 const
   SIG_LAZ1 = #1#0;
@@ -73,13 +74,10 @@ end;
 
   Adds an icon to the list.
  ------------------------------------------------------------------------------}
-function TCustomImageList.AddIcon(Image: TIcon): Integer;
-begin 
-  //!!! check one or more
-
-  //No Icon Support yet
-
-  Result := -1;
+function TCustomImageList.AddIcon(Image: TCustomIcon): Integer;
+begin
+  Result := Count;
+  InsertIcon(Result, Image);
 end;
 
 {------------------------------------------------------------------------------
@@ -695,6 +693,18 @@ begin
   else msk := AMask.Handle;
   
   InternalInsert(AIndex, AImage.Handle, msk, AImage.Width, AImage.Height);
+end;
+
+procedure TCustomImageList.InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
+var
+  IconIndex: Integer;
+  Image: TIconImage;
+begin
+  if AIcon = nil then Exit;
+  IconIndex := AIcon.GetBestIndexForSize(Size(Width, Height));
+  if IconIndex = -1 then Exit;
+  Image := TSharedIcon(TCustomIconAccess(AIcon).FSharedImage).Images[IconIndex];
+  InternalInsert(AIndex, Image.Handle, Image.MaskHandle, Image.Width, Image.Height);
 end;
 
 {------------------------------------------------------------------------------

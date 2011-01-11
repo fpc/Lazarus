@@ -50,7 +50,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
+  Types, SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
   LCLProc, Graphics, GraphType, LCLClasses, IntfGraphics, FPReadBMP,
   WSReferences;
 
@@ -163,7 +163,7 @@ type
     procedure EndUpdate;
 
     function Add(Image, Mask: TCustomBitmap): Integer;
-    function AddIcon(Image: TIcon): Integer;
+    function AddIcon(Image: TCustomIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     function AddLazarusResource(const ResourceName: string; MaskColor: TColor = clNone): integer;
@@ -181,6 +181,7 @@ type
     function GetHotSpot: TPoint; virtual;
 
     procedure Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
+    procedure InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
     procedure InsertMasked(Index: Integer; AImage: TCustomBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
