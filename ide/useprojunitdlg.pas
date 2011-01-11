@@ -114,6 +114,7 @@ end;
 function TUseProjUnitDialog.SelectFirst: string;
 begin
   UnitsListBox.Selected[0]:=True;
+  Result:=UnitsListBox.Items[0];
 end;
 
 function TUseProjUnitDialog.SelectedUnit: string;
