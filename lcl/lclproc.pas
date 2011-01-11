@@ -4520,6 +4520,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
       end;
     finally
       CFRelease(LangArray);
+      CFRelease(Locals);
     end;
   end;
   {$ENDIF}
