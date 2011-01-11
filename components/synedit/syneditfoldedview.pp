@@ -1278,6 +1278,7 @@ begin
           exit(Invalidate);
 
         FReadLastY := FReadY;
+        FReadSumLen := 0; // was len of current fold, no len remaining => prepare for counting consecutive folds
         Result := FReadType;
 
         if FExportStream.EOF then
@@ -1357,6 +1358,7 @@ begin
           end;
         end;
         dec(FReadCount);
+        inc(FReadSumLen, aLen);
         Result := FReadType;
       end;
 
