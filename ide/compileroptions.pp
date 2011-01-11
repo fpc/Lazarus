@@ -383,6 +383,8 @@ type
   private
     fItems      : TFPList;
     fHash       : array of array of TCompilerMessageConfig;
+    FChangeStamp: int64;
+    FOnChanged  : TNotifyEvent;
   protected
     fUsedMsgFile  : string; 
     fUpdating     : Integer; 
@@ -402,6 +404,10 @@ type
 
     function GetCount: Integer; 
     function GetErrorNames(errtype: TFPCErrorType): string;
+
+    property ChangeStamp: int64 read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   public
     constructor Create; 
     destructor Destroy; override;
@@ -418,6 +424,7 @@ type
 
     procedure SetDefault(KeepIgnored: Boolean=true); virtual;
     function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer; virtual;
+    function Equals(Obj: TObject): boolean; override;
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
@@ -1015,6 +1022,7 @@ begin
   fExecuteAfter.OnChanged:=@OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
   FCompilerMessages:=TCompilerMessagesList.Create;
+  FCompilerMessages.OnChanged:=@OnItemChanged;
   Clear;
 end;
 
@@ -4157,10 +4165,17 @@ begin
   Result := FErrorNames[errtype];
 end;
 
+procedure TCompilerMessagesList.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp64(FChangeStamp);
+  if assigned(OnChanged) then OnChanged(Self);
+end;
+
 constructor TCompilerMessagesList.Create; 
 begin
   inherited Create; 
-  fItems := TFPList.Create; 
+  FChangeStamp:=CTInvalidChangeStamp;
+  fItems := TFPList.Create;
 end;
 
 destructor TCompilerMessagesList.Destroy;
@@ -4189,6 +4204,8 @@ var
   m   : TCompilerMessageConfig; 
   err : TFPCErrorType;
 begin
+  if Equals(Src) then
+    Exit;
   BeginUpdate;
   try
     Clear;
@@ -4207,7 +4224,8 @@ begin
     for err := Low(err) to High(err) do  FErrorNames[err] := Src.FErrorNames[err];
   finally
     EndUpdate; 
-  end;   
+  end;
+  IncreaseChangeStamp;
 end; 
 
 procedure TCompilerMessagesList.BeginUpdate; 
@@ -4641,6 +4659,25 @@ begin
     Result := 0;
   end;
 
+end;
+
+function TCompilerMessagesList.Equals(Obj: TObject): boolean;
+var
+  ObjList: TCompilerMessagesList absolute Obj;
+  i: integer;
+begin
+  Result := inherited Equals(Obj);
+  if not Result and (Obj is TCompilerMessagesList) then
+  begin
+    Result := ObjList.Count = Count;
+    if Result then
+      for i := 0 to Count - 1 do
+        if Msg[i].Ignored <> ObjList.Msg[i].Ignored then
+        begin
+          Result := False;
+          Exit;
+        end;
+  end;
 end;
 
 { TCompilerMessageConfig }
