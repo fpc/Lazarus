@@ -6966,6 +6966,7 @@ begin
     SrcRule:=Rules[i];
     Rule:=Add(SrcRule.Filename);
     Rule.Assign(SrcRule);
+    //debugln(['TFPCSourceRules.Assign ',i,' ',Rule.Targets,' ',Rule.Filename]);
   end;
   IncreaseChangeStamp;
 end;
@@ -7573,11 +7574,11 @@ begin
     // fpc searches via PATH for the real compiler, resolves any symlink
     // and that is the RealCompiler
     // check if PATH
-    AFilename:=FindRealCompilerInPath(TargetCPU,true);
-    if RealCompilerInPath<>AFilename then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
-      exit;
-    end;
+  end;
+  AFilename:=FindRealCompilerInPath(TargetCPU,true);
+  if RealCompilerInPath<>AFilename then begin
+    debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
+    exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
     Cfg:=ConfigFiles[i];
@@ -7661,8 +7662,10 @@ begin
         for i:=0 to UnitPaths.Count-1 do
           UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
       // store the real compiler file and date
-      if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
+      if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
+      end else
+        debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: '+Compiler+' '+ExtraOptions]);
       // store the list of tried and read cfg files
       if CfgFiles<>nil then begin
         for i:=0 to CfgFiles.Count-1 do begin

@@ -584,6 +584,33 @@ var
     Result:=true;
   end;
 
+  function PPUFilesAndCompilerMatch: boolean;
+  // check if compiler is in another directory than the ppu files
+  // for example: a 'make install' installs to /usr/local/lib/fpc
+  // while the rpm/deb packages install to /usr/lib
+  var
+    Cfg: TFPCTargetConfigCache;
+    Filename: String;
+  begin
+    Cfg:=UnitSetCache.GetConfigCache(false);
+    if Cfg=nil then exit(true);
+    if Cfg.RealCompiler='' then begin
+      debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
+      IDEMessageDialog(lisCCOErrorCaption, Format(
+        lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetOS, Cfg.
+        TargetCPU]),
+        mtError,[mbOk]);
+      exit(false);
+    end;
+    Filename:=ReadAllLinks(Cfg.RealCompiler,false);
+    if (Filename='') then begin
+      IDEMessageDialog('Error','Compiler executable is missing: '+Cfg.RealCompiler,
+        mtError,[mbOk]);
+      exit(false);
+    end;
+    Result:=true;
+  end;
+
 begin
   if ClearCaches then begin
     { $IFDEF VerboseFPCSrcScan}
@@ -690,12 +717,10 @@ begin
   CodeToolBoss.DefineTree.ClearCache;
 
   if not Quiet then begin
-    if not FoundSystemPPU then begin
-      IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
-          TargetOS, TargetCPU, #13, #13]),
-        mtError,[mbOk]);
-    end else if (UnitSetCache<>nil) then begin
+    // check for common installation mistakes
+    if not PPUFilesAndCompilerMatch then exit;
+    if (UnitSetCache<>nil) then begin
+      // check if at least one fpc config is there
       if UnitSetCache.GetFirstFPCCfg='' then begin
         IgnorePath:='MissingFPCCfg_'+TargetOS+'-'+TargetCPU;
         if (InputHistories<>nil) and (InputHistories.Ignores.Find(IgnorePath)=nil)
@@ -707,6 +732,12 @@ begin
             InputHistories.Ignores.Add(IgnorePath,iiidIDERestart);
         end;
       end;
+    end else if not FoundSystemPPU then begin
+      // system.ppu is missing
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
+          TargetOS, TargetCPU, #13, #13]),
+        mtError,[mbOk]);
     end;
   end;
 end;

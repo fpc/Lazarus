@@ -41,9 +41,12 @@ type
 
   TFPCSrcScan = class(TThread)
   protected
+    fLogMsg: string;
     Files: TStringList;
     procedure Execute; override;
     procedure OnFilesGathered; // main thread, called after thread has collected Files
+    procedure MainThreadLog;
+    procedure Log(Msg: string);
   public
     Directory: string;
     Scans: TFPCSrcScans;
@@ -76,39 +79,59 @@ implementation
 procedure TFPCSrcScan.Execute;
 begin
   try
+    Log('TFPCSrcScan.Execute AAA1');
     // scan fpc source directory, check for terminated
     Files:=GatherFilesInFPCSources(Directory,nil);
-    //debugln(['TFPCSrcScan.Execute ',Files<>nil]);
-    // let main thread update the codetools fpc source cache
-    Synchronize(@OnFilesGathered);
+    Log('TFPCSrcScan.Execute '+dbgs(Files<>nil));
   except
     on E: Exception do begin
-      debugln(['TFPCSrcScan.Execute error: ',E.Message]);
+      Log('TFPCSrcScan.Execute error: '+E.Message);
     end;
   end;
+  if Files=nil then
+    Files:=TStringList.Create;
+  // let main thread update the codetools fpc source cache
+  Synchronize(@OnFilesGathered);
 end;
 
 procedure TFPCSrcScan.OnFilesGathered;
 var
   SrcCache: TFPCSourceCache;
 begin
-  //debugln(['TFPCSrcScan.OnFilesGathered ',Directory,' FileCount=',Files.Count]);
-  // copy Files to codetools cache
-  if CodeToolBoss<>nil then
-  begin
-    SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(Directory,true);
-    SrcCache.Update(Files);
+  try
+    debugln(['TFPCSrcScan.OnFilesGathered ',Directory,' FileCount=',Files.Count]);
+    // copy Files to codetools cache
+    if CodeToolBoss<>nil then
+    begin
+      SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(Directory,true);
+      debugln(['TFPCSrcScan.OnFilesGathered SrcCache.Update ...']);
+      SrcCache.Update(Files);
 
-    //debugln(['TFPCSrcScan.OnFilesGathered BuildBoss.RescanCompilerDefines ...']);
-    if BuildBoss<>nil then
-      BuildBoss.RescanCompilerDefines(false,false,false,true);
+      debugln(['TFPCSrcScan.OnFilesGathered BuildBoss.RescanCompilerDefines ...']);
+      if BuildBoss<>nil then
+        BuildBoss.RescanCompilerDefines(false,false,false,true);
+    end;
+    FreeAndNil(Files);
+    // delete item in progress window
+    debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
+    FreeAndNil(ProgressItem);
+    Scans.Remove(Self);
+    debugln(['TFPCSrcScan.OnFilesGathered END']);
+  except
+    on E: Exception do
+      debugln(['TFPCSrcScan.OnFilesGathered ERROR: ',E.Message]);
   end;
-  FreeAndNil(Files);
-  // delete item in progress window
-  //debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
-  FreeAndNil(ProgressItem);
-  Scans.Remove(Self);
-  //debugln(['TFPCSrcScan.OnFilesGathered END']);
+end;
+
+procedure TFPCSrcScan.MainThreadLog;
+begin
+  debugln(fLogMsg);
+end;
+
+procedure TFPCSrcScan.Log(Msg: string);
+begin
+  fLogMsg:=Msg;
+  Synchronize(@MainThreadLog);
 end;
 
 { TFPCSrcScans }

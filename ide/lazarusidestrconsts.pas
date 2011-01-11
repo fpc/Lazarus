@@ -1926,6 +1926,8 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %'
+    +'s-%s';
   lisInvalidMode = 'Invalid mode %s';
   lisTheProjectCompilerOptionsAndTheDirectivesInTheMain = 'The project '
     +'compiler options and the directives in the main source differ. For the '

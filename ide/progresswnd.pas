@@ -259,6 +259,7 @@ begin
           FreeAndNil(Items[i].fPanel);
           FItems.Delete(i);
         end;
+      debugln(['TIDEProgressWindow.Notification ',Count]);
       if Count=0 then
         Hide;
     finally
