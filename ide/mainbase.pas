@@ -93,7 +93,8 @@ type
                              const MenuItemName, MenuItemCaption: String;
                              const bmpName: String = '';
                              mnuEnabled: Boolean = true;
-                             mnuChecked: Boolean = false);
+                             mnuChecked: Boolean = false;
+                             mnuVisible: Boolean = true);
     procedure CreateMenuSeparatorSection(ParentSection: TIDEMenuSection;
                              var Section: TIDEMenuSection; const AName: String);
     procedure CreateMenuSubSection(ParentSection: TIDEMenuSection;
@@ -303,11 +304,13 @@ end;
 
 procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
   var MenuCommand: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
-  const bmpName: String; mnuEnabled: Boolean; mnuChecked: Boolean);
+  const bmpName: String; mnuEnabled: Boolean; mnuChecked: Boolean;
+  mnuVisible: Boolean);
 begin
   MenuCommand:=RegisterIDEMenuCommand(Section,MenuItemName,MenuItemCaption);
   MenuCommand.Enabled:=mnuEnabled;
   MenuCommand.Checked:=mnuChecked;
+  MenuCommand.Visible:=mnuVisible;
   if bmpName<>'' then
     MenuCommand.ImageIndex := IDEImages.LoadImage(16, bmpName);
 end;
