@@ -511,7 +511,10 @@ begin
   
   Stream := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
   try
-    LoadFromStreamWithFileExt(Stream, ext);
+    if Ext <> '' then
+      LoadFromStreamWithFileExt(Stream, Ext)
+    else
+      LoadFromStream(Stream);
   finally
     Stream.Free;
   end;
