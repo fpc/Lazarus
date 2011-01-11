@@ -1196,8 +1196,9 @@ procedure TCustomForm.MoveToDefaultPosition;
   end;
 
 var
-  X, Y : integer;
+  X, Y: integer;
   p: TPosition;
+  AForm: TCustomForm;
 begin
   if (Parent = nil) and (ParentWindow = 0) then
   begin
@@ -1209,33 +1210,35 @@ begin
     if (Position = poMainFormCenter) and (Application.Mainform=nil) then
       p := poScreenCenter;
     case P of
-      poDesktopCenter :
+      poDesktopCenter:
         begin
           X := (Screen.DesktopWidth - Width) div 2;
           Y := (Screen.DesktopHeight - Height) div 2;
         end;
-      poScreenCenter :
+      poScreenCenter:
         begin
           X := (Screen.Width - Width) div 2;
           Y := (Screen.Height - Height) div 2;
         end;
-      poMainFormCenter :
-        if (Self <> Application.MainForm) then
+      poMainFormCenter,
+      poOwnerFormCenter:
         begin
-          if FormStyle = fsMDIChild then
+          if (P = poOwnerFormCenter) and (Owner is TCustomForm) then
+            AForm := TCustomForm(Owner)
+          else
+            AForm := Application.MainForm;
+          if (Self <> AForm) then
           begin
-            X := (Application.Mainform.ClientWidth - Width) div 2;
-            Y := (Application.Mainform.ClientHeight - Height) div 2;
-          end else begin
-            X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
-            Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+            if FormStyle = fsMDIChild then
+            begin
+              X := (AForm.ClientWidth - Width) div 2;
+              Y := (AForm.ClientHeight - Height) div 2;
+            end else
+            begin
+              X := ((AForm.Width - Width) div 2) + AForm.Left;
+              Y := ((AForm.Height - Height) div 2) + AForm.Top;
+            end;
           end;
-        end;
-      poOwnerFormCenter :
-        if (Owner is TCustomForm) then
-        begin
-          X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-          Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
         end;
     end;
     // get current widgetset position
