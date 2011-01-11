@@ -390,6 +390,8 @@ type
     FReplaceText: string;
     FFindText: string;
 
+    function DefaultTitle: string; override;
+
     procedure FindClick(Sender: TObject);
     procedure HelpClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
@@ -426,6 +428,7 @@ type
 
   TReplaceDialog = class(TFindDialog)
   protected
+    function DefaultTitle: string; override;
     procedure ReplaceClick(Sender: TObject);
     procedure ReplaceAllClick(Sender: TObject);
     function CreateForm: TForm; override;

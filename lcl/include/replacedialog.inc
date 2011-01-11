@@ -150,4 +150,8 @@ begin
   Options:=Options + [frReplace, frReplaceAll];
 end;
 
+function TReplaceDialog.DefaultTitle: string; 
+begin
+  Result := rsReplace;
+end;
 

@@ -275,4 +275,8 @@ begin
   end;
 end;
 
+function TFindDialog.DefaultTitle: string;
+begin
+  Result := rsFind;
+end;
 
