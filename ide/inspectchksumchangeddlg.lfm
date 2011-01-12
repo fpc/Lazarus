@@ -1,11 +1,11 @@
 object InspectChksumChgDialog: TInspectChksumChgDialog
   Left = 275
-  Height = 471
+  Height = 473
   Top = 250
-  Width = 494
+  Width = 614
   Caption = 'InspectChksumChgDialog'
-  ClientHeight = 471
-  ClientWidth = 494
+  ClientHeight = 473
+  ClientWidth = 614
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
@@ -15,19 +15,19 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
     Left = 6
     Height = 324
     Top = 6
-    Width = 482
+    Width = 602
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
     ClientHeight = 305
-    ClientWidth = 478
+    ClientWidth = 598
     TabOrder = 0
     object InfoTreeView: TTreeView
       Left = 0
       Height = 285
       Top = 0
-      Width = 478
+      Width = 598
       Align = alClient
       DefaultItemHeight = 19
       TabOrder = 0
@@ -36,7 +36,7 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
       Left = 0
       Height = 20
       Top = 285
-      Width = 478
+      Width = 598
       Align = alBottom
       TabOrder = 1
     end
@@ -49,7 +49,7 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
     Left = 0
     Height = 5
     Top = 336
-    Width = 494
+    Width = 614
     Align = alNone
     Anchors = [akTop, akLeft, akRight]
     ResizeAnchor = akBottom
@@ -58,9 +58,9 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
     AnchorSideTop.Control = Splitter1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 72
+    Height = 74
     Top = 347
-    Width = 482
+    Width = 602
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
@@ -79,8 +79,8 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 40
-    Top = 425
-    Width = 482
+    Top = 427
+    Width = 602
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
