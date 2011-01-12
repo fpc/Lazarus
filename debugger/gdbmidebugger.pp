@@ -9650,8 +9650,8 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     var
       ResultInfo: TGDBType;
     begin
-      ResultInfo := GetGDBTypeInfo(expr);
-      Result := ResultInfo <> nil;
+      FTypeInfo := GetGDBTypeInfo(expr);
+      Result := FTypeInfo <> nil;
       if (not Result) and StoreError
       then FTextValue := '<error>';
       if not Result
@@ -9659,8 +9659,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
       if NoAddressOp
       then expr := QuoteExpr(expr)
-      else expr := QuoteExpr(AddAddressOfToExpression(expr, ResultInfo));
-      FreeAndNil(ResultInfo);
+      else expr := QuoteExpr(AddAddressOfToExpression(expr, FTypeInfo));
     end;
 
   var
@@ -9754,7 +9753,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           Result := PrepareExpr(AnExpression, True);
           if not Result
           then exit;
-          FTextValue := IntToHex(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2);
+          FTextValue := PascalizePointer('0x' + IntToHex(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2));
           if LastExecResult.State = dsError
           then FTextValue := '<error>';
         end;
@@ -9764,8 +9763,19 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           if not Result
           then exit;
 
+          Result := False;
           Size := 256;
-          ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
+          if (FTypeInfo <> nil) and (saInternalPointer in FTypeInfo.Attributes) then begin
+            Result := ExecuteCommand('-data-read-memory %s^ x 1 1 %u', [AnExpression, Size], R);
+            Result := Result and (R.State <> dsError);
+            // nil ?
+            if (R.State = dsError) and (pos('Unable to read memory', R.Values) > 0) then
+              Size := TargetInfo^.TargetPtrSize;
+          end;
+          if (not Result) then begin
+            Result := ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
+            Result := Result and (R.State <> dsError);
+          end;
           MemDump := TGDBMIMemoryDumpResultList.Create(R);
           FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
           MemDump.Free;
