@@ -5055,7 +5055,7 @@ resourcestring
   lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';
   lisConvDelphiReady = 'Ready.';
   lisConvDelphiAborted = 'Aborted.';
-  lisConvDelphiConvertingFile = 'Converting file %s';
+  lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiRepairingFormFile = 'Repairing form file %s';
   lisConvDelphiErrorCanTFindUnit = '%s(%s,%s) Error: Can''t find unit %s';
   lisConvDelphiAllSubDirectoriesWillBeScannedForUnitFiles = 'All sub-directorie'
