@@ -8517,61 +8517,6 @@ begin
   if Result.EvalError then begin
     FreeAndNil(Result);
   end;
-
-(*
-  Result := nil;
-  WIExprValCln := '';
-  f :=  ExecuteCommand('whatis %s', [AExpression], WIExprRes);
-
-  if (WIExprRes.State = dsError) and (pos('msg="No symbol ', WIExprRes.Values) > 0)
-  then exit;
-
-  if f and (WIExprRes.State <> dsError)
-  then begin
-    WIExprVal :=  PCLenToString(ParseTypeFromGdb(WIExprRes.Values).Name);
-    WIExprValCln := WIExprVal;
-    while (WIExprValCln<>'') and (WIExprValCln[1] in ['^', '&']) do delete(WIExprValCln, 1, 1);
-
-    if (pos(' ', WIExprValCln) > 0) or (WIExprValCln = '') then begin
-      // TODO: if the next ptype fails, (e.g. for "bool"), we may not need to fall-back
-      if ExecuteCommand('ptype %s', [AExpression], PTypeRes) // can not ptype with spaces
-      and (PTypeRes.State <> dsError)
-      then begin
-        Result := TGdbType.CreateFromValues(PTypeRes.Values, WIExprRes.Values, '', tfClassIsPointer in TargetInfo^.TargetFlags);
-        exit;
-      end;
-    end
-    else begin
-      // TODO: if the next ptype fails, (e.g. for "bool"), we may not need to fall-back
-      if  ExecuteCommand('ptype %s', [WIExprValCln], PTypeRes)
-      and (PTypeRes.State <> dsError)
-      then begin
-
-        WITypeValS2 := '';
-        if (Pos(' = class ', PTypeRes.Values) > 0)
-        and (tfClassIsPointer in TargetInfo^.TargetFlags)   // ptype will give ^ for pointer-to-class or just class
-        and (pos('type = ^^', PTypeRes.Values) <= 0)        // not known to be a pointer (not sure it ever happens)
-        and (WIExprVal[1] <> '^')                           // not known to be a pointer (not sure it ever happens)
-        and ExecuteCommand('whatis %s', [WIExprValCln], WITypeRes)
-        and (PTypeRes.State <> dsError)
-        then WITypeValS2 := WITypeRes.Values;
-
-        Result := TGdbType.CreateFromValues(PTypeRes.Values, WIExprRes.Values, WITypeValS2, tfClassIsPointer in TargetInfo^.TargetFlags);
-        exit;
-      end;
-    end;
-  end;
-
-  // try ptype on the value
-  if not ExecuteCommand('ptype %s', [AExpression], PTypeRes)
-  or (PTypeRes.State = dsError)
-  then begin
-    Result := nil;
-  end
-  else begin
-    Result := TGdbType.CreateFromValues(PTypeRes.Values, '', '', tfClassIsPointer in TargetInfo^.TargetFlags);
-  end;
-*)
 end;
 
 function TGDBMIDebuggerCommand.GetClassName(const AClass: TDBGPtr): String;
