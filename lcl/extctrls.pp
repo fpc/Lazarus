@@ -325,6 +325,8 @@ type
     function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;}
   public
+    property ActivePage: String read GetActivePage;// write SetActivePage; // should not be published because the read can raise an exception
+    property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage; // should not be published because the read can raise an exception
     property Page[Index: Integer]: TPage read GetPage;
     property PageCount: integer read GetPageCount;
 //    property PageList: TList read FPageList;
@@ -332,8 +334,6 @@ type
     // LCL TNotebook specific properties
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property Pages: TStrings read FPages;
-    property ActivePage: String read GetActivePage;// write SetActivePage;
-    property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage;
     // Generic properties
     property Align;
     property Anchors;
