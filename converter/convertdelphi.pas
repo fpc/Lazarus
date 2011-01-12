@@ -635,6 +635,7 @@ begin
     try
       ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
       ConvTool.HasFormFile:=DfmFilename<>'';
+      ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
       Result:=ConvTool.Convert;
       if Result<>mrOk then exit;
     finally

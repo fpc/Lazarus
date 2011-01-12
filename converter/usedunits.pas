@@ -123,6 +123,7 @@ type
     function Prepare: TModalResult;
     function Convert: TModalResult;
     procedure MoveMissingToComment(AAllCommentedUnits: TStrings);
+    procedure AddUnitIfNeeded(AUnitName: string);
   public
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
     property ImplUsedUnits: TUsedUnits read fImplUsedUnits;
@@ -596,6 +597,18 @@ begin
   fMainUsedUnits.MissingUnits.Clear;
   fImplUsedUnits.UnitsToComment.AddStrings(fImplUsedUnits.MissingUnits);
   fImplUsedUnits.MissingUnits.Clear;
+end;
+
+procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
+var
+  i: Integer;
+begin
+  if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, i) or
+           fImplUsedUnits.fExistingUnits.Find(AUnitName, i) or
+           fMainUsedUnits.fUnitsToAddForLCL.Find(AUnitName, i) ) then begin
+    fMainUsedUnits.fUnitsToAddForLCL.Add(AUnitName);
+    IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
+  end;
 end;
 
 function TUsedUnitsTool.GetMissingUnitCount: integer;

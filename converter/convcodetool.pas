@@ -81,6 +81,7 @@ type
     fCTLink: TCodeToolLink;
     fHasFormFile: boolean;
     fLowerCaseRes: boolean;
+    fAddUnitEvent: TAddUnitEvent;
     fDfmDirectiveStart: integer;
     fDfmDirectiveEnd: integer;
     // Delphi Function names to replace with FCL/LCL functions.
@@ -105,6 +106,7 @@ type
   public
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
+    property AddUnitEvent: TAddUnitEvent read fAddUnitEvent write fAddUnitEvent;
   end;
 
 
@@ -510,6 +512,9 @@ begin
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
         IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
         IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
+        // Add the required unit name to uses section if needed.
+        if Assigned(AddUnitEvent) and (FuncInfo.UnitName<>'') then
+          AddUnitEvent(FuncInfo.UnitName);
       end;
     end;
   finally

@@ -9,6 +9,8 @@ uses
 
 type
 
+  TAddUnitEvent = procedure(AUnitName: string) of object;
+
   { TopOffset }
 
   // Used when fixing top coordinates of controls inside a visual container.
