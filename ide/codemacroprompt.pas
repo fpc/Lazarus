@@ -212,6 +212,7 @@ const
 var
   IndentLevel: Integer;
   LastLineIndent: Integer;
+  IsLineStart: boolean;
 
   procedure AppentToDest(S: String);
   var
@@ -232,14 +233,14 @@ var
             FDestTemplate := FDestTemplate + copy(s, LastCopy, i - LastCopy) + FIndent;
             LastCopy := i;
             FDestPosX := 1 + length(FIndent);
+            IsLineStart:=true;
             inc(FDestPosY);
           end;
         else // case else
           begin
             if (s[i] in [' ',#9])
               and (not KeepSubIndent)
-              and (FDestTemplate<>'')
-              and ((i=1) or (S[i-1] in [#10,#13]))
+              and ((FDestTemplate<>'') and IsLineStart)
             then begin
               // space at start of template line (not first line)
               FDestTemplate:=FDestTemplate+copy(S,LastCopy,i-LastCopy);
@@ -270,6 +271,7 @@ var
               inc(i);
               inc(FDestPosX);
             end;
+            IsLineStart:=false;
           end;
       end;
     end;
@@ -303,6 +305,7 @@ begin
   len:=length(Template);
   IndentLevel:=0;
   LastLineIndent:=0;
+  IsLineStart:=false;
   while p <= len do begin
     case Template[p] of
       '$':

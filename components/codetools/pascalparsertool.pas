@@ -296,6 +296,7 @@ const
     );
 
 function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
+function dbgs(Attr: TProcHeadAttributes): string; overload;
 
 
 implementation
@@ -316,6 +317,11 @@ begin
       Result:=Result+ProcHeadAttributeNames[a];
     end;
   end;
+end;
+
+function dbgs(Attr: TProcHeadAttributes): string;
+begin
+  Result:=ProcHeadAttributesToStr(Attr);
 end;
 
 { TPascalParserTool }

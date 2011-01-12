@@ -363,7 +363,7 @@ begin
     end;
   end;
 
-  //debugln('CodeMacroProcedureHead B ');
+  //debugln('CodeMacroProcedureHead B ',dbgs(Attributes));
   if not CodeToolBoss.ExtractProcedureHeader(
     SrcEdit.CodeToolsBuffer as TCodeBuffer,
     SrcEdit.CursorTextXY.X,SrcEdit.CursorTextXY.Y,Attributes,Value) then
