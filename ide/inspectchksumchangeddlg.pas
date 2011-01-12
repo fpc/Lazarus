@@ -40,10 +40,10 @@ unit InspectChksumChangedDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  contnrs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
   // codetools
-  CodeCache,
+  CodeCache, CodeToolManager, FileProcs, DirectoryCacher,
   // IDEIntf
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
   LazarusIDEStrConsts;
@@ -58,6 +58,25 @@ type
     Dlg: TInspectChksumChgDialog;
     Caption: string;
     constructor Create(aDlg: TInspectChksumChgDialog; aCaption: string);
+  end;
+
+  { TICCFile }
+
+  TICCFile = class(TComponent)
+  public
+    Filename: string;
+    Age: integer;
+    OwnerName: string;
+  end;
+
+  { TICCFiles }
+
+  TICCFiles = class(TComponentList)
+  private
+    function GetFiles(Index: integer): TICCFile;
+    procedure SetFiles(Index: integer; const AValue: TICCFile);
+  public
+    property Files[Index: integer]: TICCFile read GetFiles write SetFiles; default;
   end;
 
   { TInspectChksumChgDialog }
@@ -76,12 +95,17 @@ type
   private
     FMsg: string;
     FUnit1: string;
+    FUnit1Files: TICCFiles;
     FUnit2: string;
+    FUnit2Files: TICCFiles;
+    function SearchUnit(anUnitName, SearchPath: string): TICCFiles;
   public
     procedure InitWithMsg(aMsg: TIDEMessageLine);
     property Msg: string read FMsg;
     property Unit1: string read FUnit1;
     property Unit2: string read FUnit2;
+    property Unit1Files: TICCFiles read FUnit1Files;
+    property Unit2Files: TICCFiles read FUnit2Files;
   end;
 
   { TQuickFixRecompilingChecksumChanged }
@@ -100,6 +124,18 @@ implementation
 procedure InitInspectChecksumChangedQuickFixItems;
 begin
   RegisterIDEMsgQuickFix(TQuickFixRecompilingChecksumChanged.Create);
+end;
+
+{ TICCFiles }
+
+function TICCFiles.GetFiles(Index: integer): TICCFile;
+begin
+  Result:=TICCFile(Items[Index]);
+end;
+
+procedure TICCFiles.SetFiles(Index: integer; const AValue: TICCFile);
+begin
+  Items[Index]:=AValue;
 end;
 
 { TICCAction }
@@ -136,15 +172,69 @@ end;
 
 procedure TInspectChksumChgDialog.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(FUnit1Files);
+  FreeAndNil(FUnit2Files);
+end;
 
+function TInspectChksumChgDialog.SearchUnit(anUnitName, SearchPath: string
+  ): TICCFiles;
+var
+  StartPos: Integer;
+  l: Integer;
+  p: LongInt;
+  CurDir: String;
+  DirCache: TCTDirectoryCache;
+  i: Integer;
+  Filename: String;
+  Ext: String;
+  aFile: TICCFile;
+begin
+  Result:=TICCFiles.create(true);
+  if (anUnitName='') then exit;
+  // search in search path
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (SearchPath[p]<>';') do inc(p);
+    CurDir:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
+    if (CurDir<>'') and FilenameIsAbsolute(CurDir) then begin
+      // search in directory for all files that could be sources or ppu files of this unit
+      DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(CurDir,true,false);
+      if (DirCache<>nil) and (DirCache.Listing<>nil) then begin
+        for i:=0 to DirCache.Listing.NameCount-1 do begin
+          Filename:=PChar(@DirCache.Listing.Names[DirCache.Listing.NameStarts[i]]);
+          Ext:=lowercase(ExtractFileExt(Filename));
+          if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu')
+          and (SysUtils.CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
+          then begin
+            aFile:=TICCFile.Create(nil);
+            aFile.Filename:=AppendPathDelim(CurDir)+Filename;
+            aFile.Age:=FileAgeCached(aFile.Filename);
+            Result.Add(aFile);
+          end;
+        end;
+      end;
+    end;
+    StartPos:=p+1;
+  end;
 end;
 
 procedure TInspectChksumChgDialog.InitWithMsg(aMsg: TIDEMessageLine);
+var
+  SearchPath: String;
 begin
   FMsg:=aMsg.Msg;
   REMatches(Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i');
   FUnit1:=REVar(1);
   FUnit2:=REVar(2);
+  FreeAndNil(FUnit1Files);
+  FreeAndNil(FUnit2Files);
+
+  SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
+  debugln(['TInspectChksumChgDialog.InitWithMsg SearchPath=',SearchPath]);
+  FUnit1Files:=SearchUnit(Unit1,SearchPath);
+  FUnit2Files:=SearchUnit(Unit2,SearchPath);
 
   InfoTreeView.BeginUpdate;
   InfoTreeView.Items.Clear;

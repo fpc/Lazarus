@@ -163,6 +163,7 @@ type
     property RefCount: integer read FRefCount;
     property Pool: TCTDirectoryCachePool read FPool;
     property Strings[const AStringType: TCTDirCacheString]: string read GetStrings write SetStrings;
+    property Listing: TCTDirectoryListing read FListing;
   end;
   
   { TCTDirectoryCachePool }
