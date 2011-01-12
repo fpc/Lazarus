@@ -135,6 +135,7 @@
       ValueInt: Integer;
       ValueFoo: TFoo;
       ValueRec: TRec;
+      FooText: string[20];
       property PropInt: Integer read ValueInt write ValueInt;
     end;
 
@@ -224,6 +225,7 @@
     { Classes }
     GlobTFoo := TFoo.Create;
     GlobTFoo.ValueInt := -11;
+    GlobTFoo.FooText := 'mem of TFoo';
     GlobTFoo1 := TFoo.Create;
     GlobTFoo1.ValueInt := 31;
     GlobTFoo2 := TFoo.Create;
