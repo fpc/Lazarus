@@ -1858,6 +1858,29 @@ begin
     end else
       // round bracket open
       inc(Src);
+  #192..#255:
+    begin
+      // read UTF8 character
+      inc(Src);
+      if ((ord(c1) and %11100000) = %11000000) then begin
+        // could be 2 byte character
+        if (ord(Src[0]) and %11000000) = %10000000 then
+          inc(Src);
+      end
+      else if ((ord(c1) and %11110000) = %11100000) then begin
+        // could be 3 byte character
+        if ((ord(Src[0]) and %11000000) = %10000000)
+        and ((ord(Src[1]) and %11000000) = %10000000) then
+          inc(Src,2);
+      end
+      else if ((ord(c1) and %11111000) = %11110000) then begin
+        // could be 4 byte character
+        if ((ord(Src[0]) and %11000000) = %10000000)
+        and ((ord(Src[1]) and %11000000) = %10000000)
+        and ((ord(Src[2]) and %11000000) = %10000000) then
+          inc(Src,3);
+      end;
+    end;
   else
     inc(Src);
     c2:=Src^;
