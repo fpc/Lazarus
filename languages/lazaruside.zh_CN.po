@@ -5354,6 +5354,10 @@ msgstr "编译IDE(不连接)"
 msgid "Compiler"
 msgstr "编译器"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "编译器错误"
@@ -13508,6 +13512,10 @@ msgstr "当前编译器文件 %s%s%s%s不是一个有效得可执行文件.%s点
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "当前编译器名 %s%s%s%s不是一个有效得可执行文件.%s请检查 环境 -> 环境选项 -> 文件"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "当前 Free Pascal 源代码目 %s%s%s%s好像不正确.%s点击 确定 设为默认的 %s%s%s.%s否则请检查 环境 -> 环境选项 -> 文件"
@@ -16056,6 +16064,10 @@ msgstr "从光标处展开"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "未知编辑器命令"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

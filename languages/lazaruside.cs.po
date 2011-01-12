@@ -5304,6 +5304,10 @@ msgstr "Přeložit IDE (bez vazeb)"
 msgid "Compiler"
 msgstr "Překladač"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "Chyba překladače"
@@ -13399,6 +13403,10 @@ msgstr "Aktuální soubor překladače %s%s%s%snení platný spustitelný soubor
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Aktuální jméno souboru překladače %s%s%s%snení platný spustitelný soubor.%sProsím, zkontrolujte Prostředí -> Volby prostředí -> Soubory"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Aktuální adresář zdrojových kódů Free Pascalu %s%s%s%snevypadá správně.%sZvolte OK pro nastavení předvoleného %s%s%s.%sJinak zkontrolujte Prostředí -> Volby prostředí -> Soubory"
@@ -15935,6 +15943,10 @@ msgstr "Rozevřít na pozici ukazatele"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "neznámý příkaz editoru"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

@@ -5317,6 +5317,10 @@ msgstr "הדר IDE (ללא קישור)"
 msgid "Compiler"
 msgstr "מהדר"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "שגיאת מהדר"
@@ -13455,6 +13459,10 @@ msgstr "השם הנוכחי של המהדר %s%s%s%s אינו קובץ ריצה 
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "השם הנוכחי של המהדר %s%s%s%s אינו קובץ ריצה חוקי.  בדוק  Environment -> Environment Options -> Files"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "תיקיית הקוד הנוכחית של Free Pascal אינה נראית תקינה. בחר  OK כדי לבחור את ברירת המחדל %s%s%s. אחרת בדוק  Environment -> Environment Options -> Files"
@@ -15994,6 +16002,10 @@ msgstr "פתח את הקיפולים במיקום הסמן"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "פקודת עורך לא ידועה"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

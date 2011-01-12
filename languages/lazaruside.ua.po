@@ -5336,6 +5336,10 @@ msgstr "Компіляція IDE (без побудови)"
 msgid "Compiler"
 msgstr "Компілятор"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "Помилка компілятора"
@@ -13480,6 +13484,10 @@ msgstr "%s%s%s.%sІнакше перевірте Оточення->Параме�
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Поточна назва компілятора %s%s%s%s не є виконуваним файлом.%sПеревірте Environment -> Environment Options -> Files"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Поточна тека кодів FPC %s%s%s%sвиглядає неправильною.%sВиберіть Гаразд щоб повернути використаний за замовчуванням %s%s%s,%s або перевірте Оточення -> Параметри Оточення -> Файли"
@@ -16024,6 +16032,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "невідома команда редактора"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

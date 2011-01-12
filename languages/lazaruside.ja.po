@@ -5350,6 +5350,10 @@ msgstr "リンクしないでIDEをコンパイル"
 msgid "Compiler"
 msgstr "コンパイラ"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "コンパイラエラー"
@@ -13505,6 +13509,10 @@ msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファ�
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "現在のFree Pascalソースディレクトリ%s%s%s%sは正しくないようです。%sOKを選び、既定の%s%s%sを選んでください。%sさもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
@@ -16051,6 +16059,10 @@ msgstr "カーソルで展開"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "不明なエディタコマンド"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-09 19:20+0300\n"
+"PO-Revision-Date: 2011-01-12 03:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5351,6 +5351,10 @@ msgstr "Компиляция IDE (без компоновки)"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Компилятор"
+
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "Компилятор \"%s\" не поддерживает цель %s-%s"
 
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
@@ -13491,6 +13495,10 @@ msgstr "Текущий компилятор %s%s%s.%sне является ис�
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Текущий компилятор %s%s%s%s не является исполнимым файлом.%sПроверьте Окружение -> Параметры окружения -> Файлы"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr "Для используемого компилятора FPC отсутствует файл настройки. Вероятно, компилятор не сможет найти ряд модулей. Проверьте, что FPC установлен правильно."
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sВыберите ОК чтобы вернуть используемый по умолчанию %s%s%s,%s или же проверьте Окружение -> Параметры окружения -> Файлы"
@@ -16036,6 +16044,10 @@ msgstr "Развернуть текст под курсором"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "неизвестная команда редактора"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr "Добавить модуль в выражение Uses"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

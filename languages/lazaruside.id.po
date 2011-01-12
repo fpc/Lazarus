@@ -5345,6 +5345,10 @@ msgstr "Kompilasi IDE (tanpa penggabungan)"
 msgid "Compiler"
 msgstr "Kompilator"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "Kompilator salah"
@@ -13495,6 +13499,10 @@ msgstr "Nama file kompilator saat ini %s%s%sbukan eksekutabel yang benar.%sPilih
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Nama file kompilator saat ini %s%s%s%sbukan eksekutable yang benar.%sSilahkan periksa Lingkungan -> Opsi Lingkungan -> File"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Direktori sumber Free Pascal saat ini %s%s%stidak benar.%sPilih Ok untuk memilih default %s%s%s.%sSebaliknya periksa Lingkungan -> Opsi Lingkungan -> File"
@@ -16039,6 +16047,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "perintah editor tidak dikenal"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

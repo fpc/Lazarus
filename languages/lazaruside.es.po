@@ -5324,6 +5324,10 @@ msgstr "Compilar IDE (sin enlazar)"
 msgid "Compiler"
 msgstr "Compilador"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "Error del compilador"
@@ -13447,6 +13451,10 @@ msgstr "El nombre de archivo actual del compilador %s%s%s%sno es un ejecutable v
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "El nombre de archivo actual del compilador %s%s%s%sno es un ejecutable válido.%sPor favor, compruebe Entorno -> Opciones del entorno -> Archivos"
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "El directorio actual de las fuentes de Free Pascal%s%s%s%sno parece el correcto.%sPulse Aceptar para usar %s%s%s.%sEn otro caso compruebe Entorno -> Opciones del entorno -> Archivos"
@@ -15988,6 +15996,10 @@ msgstr "Desplegar en Cursor"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "comando de editor desconocido"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

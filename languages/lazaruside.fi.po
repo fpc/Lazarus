@@ -5328,6 +5328,10 @@ msgstr ""
 msgid "Compiler"
 msgstr ""
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr ""
@@ -13458,6 +13462,10 @@ msgstr "Tällä hetkellä käytössä oleva kääntäjän tiedostonimi %s%s%s%se
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr ""
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Käytössä oleva FreePascalin lähdekoodikansio %s%s%s%sei näytä oikealta. %sValitse Ok käyttääksesi oletuksena olevaa asetusta %s%s%s.%sMuussa tapauksessa tarkista asetukset: Käyttöliittymä -> Asetukset-> Käyttöympäristö -> Tiedostot "
@@ -16001,6 +16009,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst

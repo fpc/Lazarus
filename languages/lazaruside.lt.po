@@ -5345,6 +5345,10 @@ msgstr "Kompiliuoti IKA (nesaistant)"
 msgid "Compiler"
 msgstr "Kompiliatorius"
 
+#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
 msgstr "Kompiliatoriaus klaida"
@@ -13494,6 +13498,10 @@ msgstr "Dabartinis kompiliatorius, pavadinimu %s%s%s%s, nėra vykdomasis failas.
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Dabartinis kompiliatorius, pavadinimu %s%s%s%s, nėra vykdomasis failas.%sPatikrinkite „Aplinka -> Aplinkos parinktys -> Failai“."
 
+#: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
+msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
+msgstr ""
+
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Dabartinis Free Pascal pirminių kodų aplankas %s%s%s%s nėra geras.%sPaspaudus „Tinka“ bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti „Aplinka -> Aplinkos parinktys -> Failai“."
@@ -16041,6 +16049,10 @@ msgstr "Išskleisti nuo žymeklio"
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
 msgstr "nežinoma rengyklės komanda"
+
+#: lazarusidestrconsts.srkmecuseprojectunit
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

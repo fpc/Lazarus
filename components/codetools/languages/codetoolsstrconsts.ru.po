@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-10-05 02:10+0300\n"
+"PO-Revision-Date: 2011-01-12 03:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -59,7 +59,7 @@ msgstr "ожидается открывающая скобка, но найде�
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr "символьная константа вне диапазона"
+msgstr "символьная константа имеет недопустимое значение"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"

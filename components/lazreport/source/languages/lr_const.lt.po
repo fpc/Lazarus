@@ -613,7 +613,7 @@ msgid "Va&riables..."
 msgstr "&Kintamieji..."
 
 #: lr_const.sexportfilterindexerror
-msgid "Export filter index out range"
+msgid "Export filter index out of range"
 msgstr ""
 
 #: lr_const.sfieldsformaviabledb
