@@ -45,9 +45,13 @@ uses
   // codetools
   CodeCache, CodeToolManager, FileProcs, DirectoryCacher, DefineTemplates,
   // IDEIntf
-  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
+  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, ProjectIntf,
+  // IDE
   LazarusIDEStrConsts;
 
+const
+  ICC_FPC = '#FPC unit search path';
+  ICC_Project = '#Project';
 type
   TInspectChksumChgDialog = class;
 
@@ -66,7 +70,9 @@ type
   public
     Filename: string;
     Age: integer;
-    OwnerName: string;
+    OwnerNames: TStringList;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
   { TICCFiles }
@@ -98,6 +104,11 @@ type
     FUnit1Files: TICCFiles;
     FUnit2: string;
     FUnit2Files: TICCFiles;
+    procedure FindUnitOwnerNames(aFile: TICCFile);
+    procedure SearchDirectory(anUnitName: string; Dir: string;
+                              IsFPCPath: boolean; Files: TICCFiles);
+    procedure SearchInFPCFiles(anUnitName, SearchPath: string; Files: TICCFiles);
+    procedure SearchInSearchPath(anUnitName, SearchPath: string; Files: TICCFiles);
     function SearchUnit(anUnitName, SearchPath: string): TICCFiles;
     procedure AddNodesForUnit(anUnitName: string; Files: TICCFiles);
   public
@@ -125,6 +136,20 @@ implementation
 procedure InitInspectChecksumChangedQuickFixItems;
 begin
   RegisterIDEMsgQuickFix(TQuickFixRecompilingChecksumChanged.Create);
+end;
+
+{ TICCFile }
+
+constructor TICCFile.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OwnerNames:=TStringList.Create;
+end;
+
+destructor TICCFile.Destroy;
+begin
+  FreeAndNil(OwnerNames);
+  inherited Destroy;
 end;
 
 { TICCFiles }
@@ -178,84 +203,114 @@ begin
   FreeAndNil(FUnit2Files);
 end;
 
-function TInspectChksumChgDialog.SearchUnit(anUnitName, SearchPath: string
-  ): TICCFiles;
+procedure TInspectChksumChgDialog.FindUnitOwnerNames(aFile: TICCFile);
+var
+  Owners: TFPList;
+  i: Integer;
+begin
+  Owners:=PackageEditingInterface.GetPossibleOwnersOfUnit(aFile.Filename,
+                                               [piosfIncludeSourceDirectories]);
+  //debugln(['TInspectChksumChgDialog.FindUnitOwnerNames ',aFile.Filename,' ',DbgSName(Owners)]);
+  if Owners<>nil then begin
+    for i:=0 to Owners.Count-1 do begin
+      if TObject(Owners[i]) is TIDEPackage then
+        aFile.OwnerNames.Add(TIDEPackage(Owners[i]).Name)
+      else if TObject(Owners[i]) is TLazProject then
+        aFile.OwnerNames.Add(ICC_Project);
+    end;
+    Owners.Free;
+  end;
+end;
 
-  procedure SeachDirectory(Dir: string);
-  var
-    DirCache: TCTDirectoryCache;
-    i: Integer;
-    Filename: PChar;
-    Ext: String;
-    aFile: TICCFile;
-  begin
-    if (Dir='') or (not FilenameIsAbsolute(Dir)) then exit;
-    // search in directory for all files that could be sources or ppu files of this unit
-    DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
-    if (DirCache=nil) or (DirCache.Listing=nil) then exit;
-    for i:=0 to DirCache.Listing.NameCount-1 do begin
-      Filename:=PChar(@DirCache.Listing.Names[DirCache.Listing.NameStarts[i]]);
-      Ext:=lowercase(ExtractFileExt(Filename));
-      if ((Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu'))
-      and (SysUtils.CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
-      then begin
+procedure TInspectChksumChgDialog.SearchDirectory(anUnitName: string;
+  Dir: string; IsFPCPath: boolean; Files: TICCFiles);
+var
+  DirCache: TCTDirectoryCache;
+  i: Integer;
+  Filename: PChar;
+  Ext: String;
+  aFile: TICCFile;
+  j: Integer;
+begin
+  if (Dir='') or (not FilenameIsAbsolute(Dir)) then exit;
+  // search in directory for all files that could be sources or ppu files of this unit
+  DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
+  if (DirCache=nil) or (DirCache.Listing=nil) then exit;
+  for i:=0 to DirCache.Listing.NameCount-1 do begin
+    Filename:=PChar(@DirCache.Listing.Names[DirCache.Listing.NameStarts[i]]);
+    Ext:=lowercase(ExtractFileExt(Filename));
+    if ((Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu'))
+    and (SysUtils.CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
+    then begin
+      j:=Files.Count-1;
+      while (j>=0) and (CompareFilenames(Files[j].Filename,Filename)<>0) do
+        dec(j);
+      if j<0 then begin
         //debugln(['TInspectChksumChgDialog.SearchUnit Unit="',anUnitName,'" Filename="',Filename,'"']);
         aFile:=TICCFile.Create(nil);
         aFile.Filename:=AppendPathDelim(Dir)+Filename;
         aFile.Age:=FileAgeCached(aFile.Filename);
-        Result.Add(aFile);
+        FindUnitOwnerNames(aFile);
+        if IsFPCPath then
+          aFile.OwnerNames.Add(ICC_FPC);
+        Files.Add(aFile);
       end;
     end;
   end;
+end;
 
-  procedure SearchInSearchPath;
-  var
-    CurDir: String;
-    p: LongInt;
-    l: Integer;
-    StartPos: Integer;
-  begin
-    // search in search path
-    StartPos:=1;
-    l:=length(SearchPath);
-    while StartPos<=l do begin
-      p:=StartPos;
-      while (p<=l) and (SearchPath[p]<>';') do inc(p);
-      CurDir:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
-      SeachDirectory(CurDir);
-      StartPos:=p+1;
-    end;
+procedure TInspectChksumChgDialog.SearchInSearchPath(anUnitName,
+  SearchPath: string; Files: TICCFiles);
+var
+  CurDir: String;
+  p: LongInt;
+  l: Integer;
+  StartPos: Integer;
+begin
+  // search in search path
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (SearchPath[p]<>';') do inc(p);
+    CurDir:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
+    SearchDirectory(anUnitName,CurDir,false,Files);
+    StartPos:=p+1;
   end;
+end;
 
-  procedure SearchInFPCFiles;
-  var
-    UnitSetID: String;
-    UnitSet: TFPCUnitSetCache;
-    CfgCache: TFPCTargetConfigCache;
-    i: Integer;
-    HasChanged: boolean;
-    CurDir: String;
-  begin
-    // search in fpc unit paths
-    UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory('');
-    if UnitSetID='' then exit;
-    UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
-    if UnitSet=nil then exit;
-    CfgCache:=UnitSet.GetConfigCache(false);
-    if CfgCache=nil then exit;
-    if CfgCache.UnitPaths=nil then exit;
-    for i:=0 to CfgCache.UnitPaths.Count-1 do begin
-      CurDir:=TrimFilename(CfgCache.UnitPaths[i]);
-      SeachDirectory(CurDir);
-    end;
+procedure TInspectChksumChgDialog.SearchInFPCFiles(
+  anUnitName, SearchPath: string; Files: TICCFiles);
+var
+  UnitSetID: String;
+  UnitSet: TFPCUnitSetCache;
+  CfgCache: TFPCTargetConfigCache;
+  i: Integer;
+  HasChanged: boolean;
+  CurDir: String;
+begin
+  // search in fpc unit paths
+  UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory('');
+  if UnitSetID='' then exit;
+  UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
+  if UnitSet=nil then exit;
+  CfgCache:=UnitSet.GetConfigCache(false);
+  if CfgCache=nil then exit;
+  if CfgCache.UnitPaths=nil then exit;
+  for i:=0 to CfgCache.UnitPaths.Count-1 do begin
+    CurDir:=TrimFilename(CfgCache.UnitPaths[i]);
+    SearchDirectory(anUnitName,CurDir,false,Files);
   end;
+end;
 
+function TInspectChksumChgDialog.SearchUnit(anUnitName, SearchPath: string
+  ): TICCFiles;
 begin
   Result:=TICCFiles.create(true);
   if (anUnitName='') then exit;
 
-  SearchInSearchPath;
-  SearchInFPCFiles;
+  SearchInSearchPath(anUnitName,SearchPath,Result);
+  SearchInFPCFiles(anUnitName,SearchPath,Result);
 end;
 
 procedure TInspectChksumChgDialog.AddNodesForUnit(anUnitName: string;
@@ -264,15 +319,57 @@ var
   UnitNode: TTreeNode;
   i: Integer;
   aFile: TICCFile;
+  FileNode: TTreeNode;
+  OwnerName: string;
+  j: Integer;
+  s: String;
+  APackage: TIDEPackage;
+  PPUCount: Integer;
+  SrcCount: Integer;
 begin
   UnitNode:=InfoTreeView.Items.Add(nil,'Unit '+anUnitName);
   if Files<>nil then begin
+    PPUCount:=0;
+    SrcCount:=0;
     for i:=0 to Files.Count-1 do begin
       aFile:=Files[i];
-      InfoTreeView.Items.AddChildObject(UnitNode,aFile.Filename,aFile);
+      if CompareFileExt(aFile.Filename,'.ppu',false)=0 then
+        inc(PPUCount)
+      else
+        inc(SrcCount);
+      FileNode:=InfoTreeView.Items.AddChildObject(UnitNode,aFile.Filename,aFile);
+      for j:=0 to aFile.OwnerNames.Count-1 do begin
+        OwnerName:=aFile.OwnerNames[j];
+        if OwnerName=ICC_FPC then begin
+          s:=lisInFPCUnitSearchPathProbablyInstalledByTheFPCPackag;
+        end else if OwnerName=ICC_Project then begin
+          s:=lisInASourceDirectoryOfTheProjectCheckForDuplicates;
+        end else begin
+          s:=Format(lisInASourceDirectoryOfThePackage, [OwnerName]);
+          APackage:=PackageEditingInterface.FindPackageWithName(OwnerName);
+          if APackage<>nil then begin
+            if APackage.IsVirtual then begin
+              s:=Format(lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco, [
+                s]);
+            end else begin
+              s:=Format(lisMaybeYouHaveToRecompileThePackage, [s]);
+            end;
+          end;
+        end;
+        if s<>'' then
+          InfoTreeView.Items.AddChild(FileNode,s);
+      end;
+    end;
+    if PPUCount>1 then begin
+      InfoTreeView.Items.AddChild(FileNode,
+        lisDuplicatePpuFilesDeleteOneOrMakeSureAllSearchPaths);
+    end;
+    if SrcCount>1 then begin
+      InfoTreeView.Items.AddChild(FileNode,
+        lisDuplicateSourcesDeleteOneOrMakeSureAllSearchPathsH);
     end;
   end;
-  UnitNode.Expanded:=true;
+  UnitNode.Expand(true);
 end;
 
 procedure TInspectChksumChgDialog.InitWithMsg(aMsg: TIDEMessageLine);
@@ -287,7 +384,7 @@ begin
   FreeAndNil(FUnit2Files);
 
   SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
-  debugln(['TInspectChksumChgDialog.InitWithMsg SearchPath=',SearchPath]);
+  //debugln(['TInspectChksumChgDialog.InitWithMsg SearchPath=',SearchPath]);
   FUnit1Files:=SearchUnit(Unit1,SearchPath);
   FUnit2Files:=SearchUnit(Unit2,SearchPath);
 

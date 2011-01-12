@@ -2503,7 +2503,7 @@ begin
   ID:=TLazPackageID.Create;
   try
     ID.Name:=PkgName;
-    Result:=PackageGraph.FindPackageWithID(ID);
+    Result:=PackageGraph.FindPackageWithIDMask(ID);
   finally
     ID.Free;
   end;

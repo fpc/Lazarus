@@ -5101,6 +5101,24 @@ resourcestring
   lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome = 'The current FPC '
     +'has no config file. It will probably miss some units. Check your '
     +'installation of fpc.';
+  lisInFPCUnitSearchPathProbablyInstalledByTheFPCPackag = 'In FPC unit search '
+    +'path. Probably installed by the FPC package. Check if the compiler and '
+    +'the ppu file are from the same installation.';
+  lisInASourceDirectoryOfTheProjectCheckForDuplicates = 'In a source '
+    +'directory of the project. Check for duplicates.';
+  lisInASourceDirectoryOfThePackage = 'In a source directory of the package "%'
+    +'s".';
+  lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco = '%s Check the '
+    +'target (OS, CPU, LCL widget type). Maybe you have to recompile the '
+    +'package for this target or set another target for the project.';
+  lisMaybeYouHaveToRecompileThePackage = '%s Maybe you have to recompile the '
+    +'package.';
+  lisDuplicatePpuFilesDeleteOneOrMakeSureAllSearchPaths = 'Duplicate ppu '
+    +'files. Delete one or make sure all search paths have correct order ('
+    +'Hint: FPC uses last path first).';
+  lisDuplicateSourcesDeleteOneOrMakeSureAllSearchPathsH = 'Duplicate sources. '
+    +'Delete one or make sure all search paths have correct order (Hint: FPC '
+    +'uses last path first).';
 
 implementation
 

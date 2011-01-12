@@ -1151,11 +1151,13 @@ begin
   SrcDir:=ExtractFilePath(TheFilename);
   for i:=0 to Cnt-1 do begin
     APackage:=Packages[i];
-    if APackage.IsVirtual then continue;
-    // source directories + unit path + base directory
+    if APackage.IsVirtual and (not APackage.AutoCreated) then continue;
+    // source directories + unit path without inherited paths + base directory + output directory
     PkgDirs:=APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false);
     PkgDirs:=MergeSearchPaths(PkgDirs,APackage.SourceDirectories.CreateSearchPathFromAllFiles);
+    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.GetOutputDirectory);
     PkgDirs:=MergeSearchPaths(PkgDirs,APackage.Directory);
+    //debugln(['TLazPackageGraph.FindPossibleOwnersOfUnit ',APackage.Name,' ',PkgDirs]);
     if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
       PChar(PkgDirs),length(PkgDirs))<>nil
     then
