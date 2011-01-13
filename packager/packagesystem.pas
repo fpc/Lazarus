@@ -146,7 +146,8 @@ type
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(const Msg, Directory: string);
-    function OutputDirectoryIsWritable(Directory: string): boolean;
+    function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
+                                       Verbose: boolean): boolean;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
                     CheckDependencies: boolean;
@@ -612,17 +613,23 @@ begin
     DebugLn(['TLazPackageGraph.AddMessage Msg="',Msg,'" Directory="',Directory,'"']);
 end;
 
-function TLazPackageGraph.OutputDirectoryIsWritable(Directory: string
-  ): boolean;
+function TLazPackageGraph.OutputDirectoryIsWritable(APackage: TLazPackage;
+  Directory: string; Verbose: boolean): boolean;
 begin
   Result:=false;
-  debugln(['TLazPackageGraph.OutputDirectoryIsWritable ',Directory]);
+  //debugln(['TLazPackageGraph.OutputDirectoryIsWritable ',Directory]);
   if not FilenameIsAbsolute(Directory) then
     exit;
   Directory:=ChompPathDelim(Directory);
   if not DirPathExistsCached(Directory) then begin
     // the directory does not exist => try creating it
     if not ForceDirectoriesUTF8(Directory) then begin
+      if Verbose then begin
+        IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+          Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
+            Directory, '"', #13, APackage.IDAsString]),
+          mtError,[mbCancel]);
+      end;
       debugln(['TLazPackageGraph.OutputDirectoryIsWritable unable to create directory "',Directory,'"']);
       exit;
     end;
@@ -3043,7 +3050,7 @@ begin
   begin
     // the last compile was put to the normal/default output directory
     OutputDir:=APackage.GetOutputDirectory(false);
-    if OutputDirectoryIsWritable(OutputDir) then
+    if OutputDirectoryIsWritable(APackage,OutputDir,false) then
     begin
       // the normal output directory is writable => keep using it
       exit;
@@ -3863,17 +3870,20 @@ var
 begin
   // get output directory
   OutputDir:=APackage.GetOutputDirectory;
-  debugln(['TLazPackageGraph.PreparePackageOutputDirectory OutputDir="',OutputDir,'"']);
+  //debugln(['TLazPackageGraph.PreparePackageOutputDirectory OutputDir="',OutputDir,'"']);
 
-  if not OutputDirectoryIsWritable(OutputDir) then
+  if not OutputDirectoryIsWritable(APackage,OutputDir,false) then
   begin
     // the normal output directory is not writable
     // => use the fallback directory
     NewOutputDir:=GetFallbackOutputDir(APackage);
-    if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit(mrCancel);
+    if (NewOutputDir=OutputDir) or (NewOutputDir='') then begin
+      debugln(['TLazPackageGraph.PreparePackageOutputDirectory failed to create writable directory: ',OutputDir]);
+      exit(mrCancel);
+    end;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     OutputDir:=APackage.GetOutputDirectory;
-    if not OutputDirectoryIsWritable(OutputDir) then
+    if not OutputDirectoryIsWritable(APackage,OutputDir,true) then
     begin
       debugln(['TLazPackageGraph.PreparePackageOutputDirectory failed to create writable directory: ',OutputDir]);
       Result:=mrCancel;
@@ -3882,16 +3892,6 @@ begin
 
   StateFile:=APackage.GetStateFilename;
   PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
-
-  // create the output directory
-  if (not DirPathExistsCached(OutputDir))
-  and (not ForceDirectoriesUTF8(OutputDir)) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-      Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
-        OutputDir, '"', #13, APackage.IDAsString]),
-      mtError,[mbCancel,mbAbort]);
-    exit;
-  end;
 
   // delete old Compile State file
   if FileExistsUTF8(StateFile) and not DeleteFileUTF8(StateFile) then begin
