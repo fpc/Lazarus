@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TurboPowerIPro 1.0
 #
-#   This file was generated on 26.10.2010
+#   This file was generated on 01/13/2011
 
 [package]
 name=turbopoweripro
@@ -11,7 +11,6 @@ version=1.0
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-includedir=.
 options= -MObjFPC -Scgi -O1 -gl -vewni -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
