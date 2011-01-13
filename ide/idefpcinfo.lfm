@@ -20,13 +20,13 @@ object IDEFPCInfoDialog: TIDEFPCInfoDialog
     TabOrder = 0
     object ValuesTabSheet: TTabSheet
       Caption = 'FPC values used by the IDE'
-      ClientHeight = 423
-      ClientWidth = 702
+      ClientHeight = 422
+      ClientWidth = 696
       object ValuesMemo: TMemo
         Left = 0
-        Height = 423
+        Height = 422
         Top = 0
-        Width = 702
+        Width = 696
         Align = alClient
         Lines.Strings = (
           'ValuesMemo'
@@ -38,17 +38,18 @@ object IDEFPCInfoDialog: TIDEFPCInfoDialog
     end
     object OutputTabSheet: TTabSheet
       Caption = 'FPC output'
-      ClientHeight = 423
-      ClientWidth = 702
+      ClientHeight = 422
+      ClientWidth = 696
       object CmdLineOutputMemo: TMemo
         Left = 0
-        Height = 423
+        Height = 422
         Top = 0
-        Width = 702
+        Width = 696
         Align = alClient
         Lines.Strings = (
           'CmdLineOutputMemo'
         )
+        ScrollBars = ssAutoBoth
         TabOrder = 0
       end
     end

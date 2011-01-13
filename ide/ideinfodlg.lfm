@@ -7,7 +7,7 @@ object IDEInfoDialog: TIDEInfoDialog
   ClientHeight = 330
   ClientWidth = 644
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Memo1: TMemo
     Left = 0
     Height = 330
@@ -17,6 +17,7 @@ object IDEInfoDialog: TIDEInfoDialog
     Lines.Strings = (
       'Memo1'
     )
+    ScrollBars = ssAutoBoth
     TabOrder = 0
   end
 end
