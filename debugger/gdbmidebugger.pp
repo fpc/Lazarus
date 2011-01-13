@@ -45,7 +45,7 @@ uses
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
-   Unix,BaseUnix,
+   Unix,BaseUnix,termio,
 {$ENDIF}
   BaseDebugManager;
 
@@ -115,6 +115,9 @@ type
 
   TGDBMIDebuggerProperties = class(TDebuggerProperties)
   private
+    {$IFDEF UNIX}
+    FConsoleTty: String;
+    {$ENDIF}
     FGDBOptions: String;
     FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
   public
@@ -123,6 +126,9 @@ type
   published
     property OverrideRTLCallingConvention: TGDBMIRTLCallingConvention read FOverrideRTLCallingConvention write FOverrideRTLCallingConvention;
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
+    {$IFDEF UNIX}
+    property ConsoleTty: String read FConsoleTty write FConsoleTty;
+    {$ENDIF}
   end;
 
   TGDBMIDebugger = class;
@@ -2926,11 +2932,15 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
 var
   R: TGDBMIExecResult;
+  s: String;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   TargetPIDPart: String;
   TempInstalled, CanContinue: Boolean;
   CommandObj: TGDBMIDebuggerCommandExecute;
+  {$IFDEF UNIX}
+  h: THandle;
+  {$ENDIF}
 begin
   Result := True;
   FSuccess := False;
@@ -2965,6 +2975,17 @@ begin
     // set the output width to a great value to avoid unexpected
     // new lines like in large functions or procedures
     ExecuteCommand('set width 50000', []);
+    {$IFDEF UNIX}
+    // Make sure consule output will ot be mixed with gbd output
+    s := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).ConsoleTty;
+    if s = '' then s := '/dev/null';
+    h := fileopen(S, fmOpenWrite);
+    if (IsATTY(h) <> 1)
+    or (not ExecuteCommand('set inferior-tty %s', [s], R)) or (r.State = dsError)
+    then
+      ExecuteCommand('set inferior-tty /dev/null', []);
+    FileClose(h);
+    {$ENDIF}
 
     if tfHasSymbols in TargetInfo^.TargetFlags
     then begin
@@ -4459,6 +4480,9 @@ end;
 constructor TGDBMIDebuggerProperties.Create;
 begin
   FOverrideRTLCallingConvention := ccDefault;
+    {$IFDEF UNIX}
+    FConsoleTty := '/dev/null';
+    {$ENDIF}
   inherited;
 end;
 
@@ -4467,6 +4491,9 @@ begin
   inherited Assign(Source);
   FGDBOptions := TGDBMIDebuggerProperties(Source).FGDBOptions;
   FOverrideRTLCallingConvention := TGDBMIDebuggerProperties(Source).FOverrideRTLCallingConvention;
+  {$IFDEF UNIX}
+  FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
+  {$ENDIF}
 end;
 
 
