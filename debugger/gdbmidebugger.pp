@@ -8544,6 +8544,7 @@ begin
     OK :=  ExecuteCommand('-data-evaluate-expression ^^shortstring(%s+%d)^^',
           [S, TargetInfo^.TargetPtrSize * 3], R);
     if (not OK) or (LastExecResult.State = dsError)
+    or (pos('value="#0', LastExecResult.Values) > 0)
     then OK :=  ExecuteCommand('-data-evaluate-expression ^char(^pointer(%s+%d)^+1)',
           [S, TargetInfo^.TargetPtrSize * 3], R);
   end
