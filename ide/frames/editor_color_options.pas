@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil, ColorBox,
-  ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus,
+  ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Laz_XMLCfg,
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, DividerBevel,
   EditorOptions, IDEOptionsIntf, editor_general_options, IDEImagesIntf,

@@ -3,7 +3,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Width = 519
   ClientHeight = 427
   ClientWidth = 519
-  TabOrder = 0
   Visible = False
   DesignLeft = 812
   DesignTop = 438
@@ -13,13 +12,13 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 78
+    Height = 82
     Top = 0
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'Debugger type and path'
-    ClientHeight = 60
+    ClientHeight = 64
     ClientWidth = 515
     TabOrder = 0
     object cmdOpenDebuggerPath: TSpeedButton
@@ -29,13 +28,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideBottom.Control = cmbDebuggerPath
       AnchorSideBottom.Side = asrBottom
       Left = 486
-      Height = 21
-      Top = 33
+      Height = 23
+      Top = 35
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = cmdOpenDebuggerPathClick
     end
@@ -45,12 +43,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideRight.Control = gbDebuggerType
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
       Width = 503
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 15
       OnEditingDone = cmbDebuggerTypeEditingDone
       OnSelect = cmbDebuggerTypeEditingDone
       Style = csDropDownList
@@ -62,14 +60,14 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = cmdOpenDebuggerPath
       Left = 6
-      Height = 21
-      Top = 33
+      Height = 23
+      Top = 35
       Width = 480
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
+      ItemHeight = 15
       TabOrder = 1
     end
   end
@@ -81,7 +79,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 53
-    Top = 84
+    Top = 88
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -97,13 +95,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideBottom.Control = txtAdditionalPath
       AnchorSideBottom.Side = asrBottom
       Left = 486
-      Height = 21
+      Height = 23
       Top = 6
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = cmdOpenAdditionalPathClick
     end
@@ -112,7 +109,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideTop.Control = gbAdditionalSearchPath
       AnchorSideRight.Control = cmdOpenAdditionalPath
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
       Width = 480
       Anchors = [akTop, akLeft, akRight]
@@ -130,7 +127,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 56
-    Top = 143
+    Top = 147
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -155,8 +152,8 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 222
-    Top = 205
+    Height = 218
+    Top = 209
     Width = 519
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6

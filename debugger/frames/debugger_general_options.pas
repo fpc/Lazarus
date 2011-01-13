@@ -53,11 +53,13 @@ type
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
     FPropertyEditorHook: TPropertyEditorHook;
     FOldDebuggerPathAndParams: string;
+    FCurrentDebPropertiesList: TStringList; // temporarilly modified
     procedure FetchDebuggerClass;
     procedure FetchDebuggerGeneralOptions;
     procedure FetchDebuggerSpecificOptions;
     function  GetDebuggerClass: TDebuggerClass;
     procedure SetDebuggerClass(const AClass: TDebuggerClass);
+    procedure ClearDbgProperties;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,6 +163,7 @@ var
   i: Integer;
   Filename: string;
   NewFilename: string;
+  Prop: TDebuggerProperties;
 begin
   with cmbDebuggerPath.Items do begin
     BeginUpdate;
@@ -195,9 +198,18 @@ begin
   end;
   SetComboBoxText(cmbDebuggerPath,Filename,20);
 
+  // get ptoperties
   PropertyGrid.Selection.Clear;
   if FCurDebuggerClass<>nil then begin
-    PropertyGrid.Selection.Add(FCurDebuggerClass.GetProperties);
+    i := FCurrentDebPropertiesList.IndexOf(FCurDebuggerClass.ClassName);
+    if i < 0 then begin
+      Prop := TDebuggerPropertiesClass(FCurDebuggerClass.GetProperties.ClassType).Create;
+      EnvironmentOptions.LoadDebuggerProperties(FCurDebuggerClass.ClassName, Prop);
+      FCurrentDebPropertiesList.AddObject(FCurDebuggerClass.ClassName, Prop);
+    end
+    else
+      Prop := TDebuggerProperties(FCurrentDebPropertiesList.Objects[i]);
+    PropertyGrid.Selection.Add(Prop);
   end;
   PropertyGrid.BuildPropertyList;
 end;
@@ -224,11 +236,22 @@ begin
   FetchDebuggerSpecificOptions;
 end;
 
+procedure TDebuggerGeneralOptionsFrame.ClearDbgProperties;
+var
+  i: Integer;
+begin
+  PropertyGrid.Selection.Clear;
+  for i := 0 to FCurrentDebPropertiesList.Count - 1 do
+    FCurrentDebPropertiesList.Objects[i].Free;
+  FCurrentDebPropertiesList.Clear;
+end;
+
 constructor TDebuggerGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // create the PropertyEditorHook (the interface to the properties)
   FPropertyEditorHook:=TPropertyEditorHook.Create;
+  FCurrentDebPropertiesList := TStringList.Create;
   // create the PropertyGrid
   PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,FPropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
@@ -251,7 +274,10 @@ end;
 
 destructor TDebuggerGeneralOptionsFrame.Destroy;
 begin
+  ClearDbgProperties;
+  PropertyGrid.Selection.Clear;
   FreeAndNil(FPropertyEditorHook);
+  FreeAndNil(FCurrentDebPropertiesList);
   inherited Destroy;
 end;
 
@@ -285,6 +311,7 @@ end;
 
 procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  ClearDbgProperties;
   with AOptions as TEnvironmentOptions do
   begin
     TEnvironmentOptions(AOptions).ObjectInspectorOptions.AssignTo(PropertyGrid);
@@ -296,6 +323,8 @@ begin
 end;
 
 procedure TDebuggerGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  i: Integer;
 begin
   with AOptions as TEnvironmentOptions do
   begin
@@ -304,6 +333,10 @@ begin
     DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
     // IMPORTANT if more items are added the indexes must be updated here!
     DebuggerShowStopMessage := gcbDebuggerGeneralOptions.Checked[0];
+
+    for i := 0 to FCurrentDebPropertiesList.Count - 1 do
+      SaveDebuggerProperties(FCurrentDebPropertiesList[i],
+                             TDebuggerProperties(FCurrentDebPropertiesList.Objects[i]));
 
     if FCurDebuggerClass = nil
     then DebuggerClass := ''

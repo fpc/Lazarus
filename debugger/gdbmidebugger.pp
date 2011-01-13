@@ -118,7 +118,8 @@ type
     FGDBOptions: String;
     FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
   public
-    constructor Create;
+    constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property OverrideRTLCallingConvention: TGDBMIRTLCallingConvention read FOverrideRTLCallingConvention write FOverrideRTLCallingConvention;
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
@@ -4459,6 +4460,13 @@ constructor TGDBMIDebuggerProperties.Create;
 begin
   FOverrideRTLCallingConvention := ccDefault;
   inherited;
+end;
+
+procedure TGDBMIDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  FGDBOptions := TGDBMIDebuggerProperties(Source).FGDBOptions;
+  FOverrideRTLCallingConvention := TGDBMIDebuggerProperties(Source).FOverrideRTLCallingConvention;
 end;
 
 

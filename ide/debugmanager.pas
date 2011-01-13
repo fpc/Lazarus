@@ -2562,6 +2562,8 @@ begin
       Exit;
     end;
 
+    EnvironmentOptions.LoadDebuggerProperties(DebuggerClass.ClassName, FDebugger.GetProperties);
+
     ClearDebugOutputLog;
     if EnvironmentOptions.DebuggerEventLogClearOnRun then
       ClearDebugEventsLog;

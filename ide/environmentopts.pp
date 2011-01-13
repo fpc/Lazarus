@@ -41,7 +41,7 @@ uses
   Laz_XMLCfg, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
-  IDEOptionsIntf;
+  IDEOptionsIntf, Debugger;
 
 const
   EnvOptsVersion: integer = 106;
@@ -150,7 +150,7 @@ type
     FIDEProjectDirectoryInIdeTitle: boolean;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
-    FXMLCfg: TXMLConfig;
+    FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
     // auto save
@@ -228,6 +228,7 @@ type
     FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
+    FDebuggerProperties: TStringList; // per debugger class
     FDebuggerShowStopMessage: Boolean;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
@@ -325,6 +326,11 @@ type
                               var Abort: boolean): string;
     function MacroFuncConfDir(const s:string; const Data: PtrInt;
                               var Abort: boolean): string;
+
+    // debugger
+    procedure SaveDebuggerPropertiesList;
+    procedure SaveDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
+    procedure LoadDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
 
     // auto save
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
@@ -738,6 +744,7 @@ begin
   FMakeFileHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
+  FDebuggerProperties := TStringList.Create;
   FDebuggerSearchPath:='';
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
@@ -781,6 +788,8 @@ begin
 end;
 
 destructor TEnvironmentOptions.Destroy;
+var
+  i: Integer;
 begin
   FreeAndNil(fExternalTools);
   FreeAndNil(FRecentOpenFiles);
@@ -792,6 +801,9 @@ begin
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
   FreeAndNil(FDebuggerFileHistory);
+  for i := 0 to FDebuggerProperties.Count - 1 do
+    FDebuggerProperties.Objects[i].Free;
+  FreeAndNil(FDebuggerProperties);
   FreeAndNil(FTestBuildDirHistory);
   FreeAndNil(FCompilerMessagesFileHistory);
   if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
@@ -1361,6 +1373,7 @@ begin
         // debugger
         XMLConfig.SetDeleteValue(Path+'Debugger/Class',
             FDebuggerClass,'');
+        SaveDebuggerPropertiesList;
         XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
             FDebuggerFilename,'');
         XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
@@ -1619,6 +1632,54 @@ begin
   Result:=GetPrimaryConfigPath;
 end;
 
+procedure TEnvironmentOptions.SaveDebuggerPropertiesList;
+var
+  DProp, DDef: TDebuggerProperties;
+  i: Integer;
+begin
+  for i := 0 to FDebuggerProperties.Count - 1 do begin
+    DProp := TDebuggerProperties(FDebuggerProperties.Objects[i]);
+    DDef := TDebuggerPropertiesClass(DProp.ClassType).Create;
+    FXMLCfg.WriteObject(
+      'EnvironmentOptions/Debugger/Class' + FDebuggerProperties[i] + '/Properties/',
+      DProp, DDef);
+    DDef.Free;
+  end;
+end;
+
+procedure TEnvironmentOptions.SaveDebuggerProperties(DebuggerClass: String;
+  Properties: TDebuggerProperties);
+var
+  i: Integer;
+  Prop: TDebuggerProperties;
+begin
+  i := FDebuggerProperties.IndexOf(DebuggerClass);
+  if i < 0 then begin
+    Prop := TDebuggerPropertiesClass(Properties.ClassType).Create;
+    Prop.Assign(Properties);
+    FDebuggerProperties.AddObject(DebuggerClass, Prop);
+  end
+  else
+    TDebuggerProperties(FDebuggerProperties.Objects[i]).Assign(Properties);
+end;
+
+procedure TEnvironmentOptions.LoadDebuggerProperties(DebuggerClass: String;
+  Properties: TDebuggerProperties);
+var
+  i: Integer;
+  DDef: TDebuggerProperties;
+begin
+  i := FDebuggerProperties.IndexOf(DebuggerClass);
+  if i < 0 then begin
+    DDef := TDebuggerPropertiesClass(Properties.ClassType).Create;
+    FXMLCfg.ReadObject('EnvironmentOptions/Debugger/Class' + DebuggerClass + '/Properties/',
+      Properties, DDef);
+    DDef.Free;
+  end
+  else
+    Properties.Assign(TDebuggerProperties(FDebuggerProperties.Objects[i]));
+end;
+
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
 begin
   Result:=FFileHasChangedOnDisk
@@ -1633,9 +1694,9 @@ begin
     FreeAndNil(FXMLCfg);
     InvalidateFileStateCache;
     if CleanConfig then
-      FXMLCfg:=TXMLConfig.CreateClean(Filename)
+      FXMLCfg:=TRttiXMLConfig.CreateClean(Filename)
     else
-      FXMLCfg:=TXMLConfig.Create(Filename);
+      FXMLCfg:=TRttiXMLConfig.Create(Filename);
     FConfigStore:=TXMLOptionsStorage.Create(FXMLCfg);
     ObjectInspectorOptions.ConfigStore:=FConfigStore;
   end;

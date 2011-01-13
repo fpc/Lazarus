@@ -1478,11 +1478,16 @@ type
 
   TDebuggerNotifyReason = (dnrDestroy);
 
+  { TDebuggerProperties }
+
   TDebuggerProperties = class(TPersistent)
   private
   public
+    constructor Create; virtual;
+    procedure Assign(Source: TPersistent); override;
   published
   end;
+  TDebuggerPropertiesClass= class of TDebuggerProperties;
 
   TDebugger = class(TObject)
   private
@@ -1734,6 +1739,18 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
+end;
+
+{ TDebuggerProperties }
+
+constructor TDebuggerProperties.Create;
+begin
+  //
+end;
+
+procedure TDebuggerProperties.Assign(Source: TPersistent);
+begin
+  //
 end;
 
 { =========================================================================== }
