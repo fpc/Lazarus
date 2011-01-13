@@ -75,7 +75,14 @@ var
 begin
   FTesting := False;
   Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName);
-  TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+
+  try
+    TestCompile(Form1.edPasFile.Text, TestExeName);
+  except
+    on e: Exception do
+      Form1.Memo2.Lines.Add('Compile error: ' + e.Message);
+  end;
+
 
   try
     dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);

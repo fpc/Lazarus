@@ -12,23 +12,23 @@ uses
   fpclist.txt contains lines of format:
     [Name]
     exe=/path/fpc.exe
-    symbols=gs,gw,gwset,gw3
+    symbols=none,gs,gw,gwset,gw3
 
 
   gdblist.txt contains lines of format:
     [Name]
     exe=/path/fpc.exe
-    symbols=gs,gw,gwset,gw3
+    symbols=none,gs,gw,gwset,gw3
 
 *)
 
 type
-  TSymbolType = (stStabs, stDwarf, stDwarfSet, stDwarf3);
+  TSymbolType = (stNone, stStabs, stDwarf, stDwarfSet, stDwarf3);
   TSymbolTypes = set of TSymbolType;
 
 const
-  SymbolTypeNames: Array [TSymbolType] of String = ('Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3');
-  SymbolTypeSwitches: Array [TSymbolType] of String = ('-gs', '-gw', '-gw -godwarfsets', '-gw3');
+  SymbolTypeNames: Array [TSymbolType] of String = ('No_Dbg', 'Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3');
+  SymbolTypeSwitches: Array [TSymbolType] of String = ('', '-gs', '-gw', '-gw -godwarfsets', '-gw3');
 
 type
 
@@ -206,6 +206,7 @@ begin
       s2 := s2 + s[1];
       delete(s,1, 1);
     end;
+    if s2 = 'none' then Result := Result + [stNone];
     if s2 = 'gs' then Result := Result + [stStabs];
     if s2 = 'gw' then Result := Result + [stDwarf];
     if s2 = 'gwset' then Result := Result + [stDwarfSet];
@@ -499,8 +500,10 @@ begin
       raise EAssertionFailedError.Create('Found existing file before compiling: ' + ExeName);
     FCompiledList.Add(ExeName);
     ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts, ExeName, CompilerInfo.ExeName);
-    if ErrMsg <> '' then
+    if ErrMsg <> '' then begin
+      debugln(ErrMsg);
       raise EAssertionFailedError.Create('Compilation Failed: ' + ExeName + LineEnding + ErrMsg);
+    end;
   end;
 
   if not FileExists(ExeName) then

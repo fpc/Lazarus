@@ -547,7 +547,11 @@ var
   i: Integer;
   WList: Array of TTestWatch;
 begin
-  TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+  try
+    TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+  except
+    on e: Exception do Fail('Compile error: ' + e.Message);
+  end;
 
   try
     FWatches := TBaseWatches.Create(TBaseWatch);
