@@ -40,5 +40,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('synedit', @Register); 
+  RegisterPackage('SynEdit', @Register); 
 end.

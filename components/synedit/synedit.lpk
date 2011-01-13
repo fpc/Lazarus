@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <Name Value="synedit"/>
+    <Name Value="SynEdit"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
