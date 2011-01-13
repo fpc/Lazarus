@@ -4393,7 +4393,6 @@ begin
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
   RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
-  if Assigned(OnTranslatePackage) then OnTranslatePackage(SynEditPackage);
 
   // register custom IDE components
   RegistrationPackage:=DefaultPackage;
