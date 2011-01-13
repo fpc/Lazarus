@@ -166,8 +166,6 @@ type
       write fVarAttri;
   end;
 
-procedure Register;
-
 implementation
 
 uses
@@ -799,11 +797,6 @@ function TSynUNIXShellScriptSyn.GetLanguageName: string;
 /////TL  LangName = 'UNIX Shell Script';
 begin
   Result := LangName;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('SynEdit', [TSynUNIXShellScriptSyn]);
 end;
 
 initialization

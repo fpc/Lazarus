@@ -25,20 +25,20 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, 
   SynHighlighterPosition, SynHighlighterPython, SynHighlighterSQL, 
   SynHighlighterTeX, synhighlighterunixshellscript, SynHighlighterVB, 
-  SynHighlighterXML, SynHighlighterBat, SynHighlighterIni,
-  SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
+  SynHighlighterXML, SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, 
-  SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, LazarusPackageIntf;
+  SynPropertyEditObjectList, SynRegExpr, SynTextDrawer, 
+  SynEditMarkupGutterMark, SynHighlighterBat, SynHighlighterIni, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('SynEdit', @SynEdit.Register); 
-  RegisterUnit('synhighlighterunixshellscript', @synhighlighterunixshellscript.
-    Register); 
+  RegisterUnit('SynEditLazDsgn', @SynEditLazDsgn.Register); 
 end; 
 
 initialization
-  RegisterPackage('synedit1', @Register); 
+  RegisterPackage('synedit', @Register); 
 end.

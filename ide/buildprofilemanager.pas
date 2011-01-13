@@ -82,7 +82,6 @@ type
     fItemLCL: TMakeModeDef;
     fItemPkgReg: TMakeModeDef;
     fItemIDEIntf: TMakeModeDef;
-    fItemSynEdit: TMakeModeDef;
     fItemIDE: TMakeModeDef;
     fItemExamples: TMakeModeDef;
     fItemIDEIndex: integer;
@@ -98,7 +97,6 @@ type
     property ItemLCL: TMakeModeDef read fItemLCL;
     property ItemPkgReg: TMakeModeDef read fItemPkgReg;
     property ItemIDEIntf: TMakeModeDef read fItemIDEIntf;
-    property ItemSynEdit: TMakeModeDef read fItemSynEdit;
     property ItemIDE: TMakeModeDef read fItemIDE;
     property ItemExamples: TMakeModeDef read fItemExamples;
     property Items[Index: integer]: TMakeModeDef read GetItems; default;
@@ -328,10 +326,6 @@ begin
   // IDE Interface
   FItemIDEIntf:=TMakeModeDef.Create('IDEIntf',lisIDEIntf,'ideintf',mmBuild);
   Add(FItemIDEIntf);
-  // SynEdit
-  FItemSynEdit:=TMakeModeDef.Create(
-    'SynEdit',lisSynEdit,'components/synedit',mmBuild);
-  Add(FItemSynEdit);
   // IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
@@ -351,7 +345,6 @@ end;
 procedure TMakeModeDefs.Clear;
 begin
   FItemLCL:=nil;
-  FItemSynEdit:=nil;
   FItemPkgReg:=nil;
   FItemIDEIntf:=nil;
   FItemIDE:=nil;
@@ -374,7 +367,6 @@ begin
   fItemLCL     :=FindName('LCL');
   fItemPkgReg  :=FindName('PkgReg');
   fItemIDEIntf :=FindName('IDEIntf');
-  fItemSynEdit :=FindName('SynEdit');
   fItemIDE     :=FindName('IDE');
   fItemExamples:=FindName('Examples');
   fItemIDEIndex:=Source.fItemIDEIndex;

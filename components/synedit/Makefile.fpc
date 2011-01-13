@@ -1,20 +1,37 @@
-#   $Id$
+#   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for Lazarus for Free Pascal
+#   Makefile.fpc for synedit 1.0
 #
+#   This file was generated on 01/13/2011
 
 [package]
 name=synedit
-version=1.0.3
+version=1.0
 
+[compiler]
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
+
+[target]
+units=allsynedit.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 [prerules]
 # LCL Platform
 ifndef LCL_PLATFORM
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
+ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
 else
-ifeq ($(OS_TARGET),wince)
-LCL_PLATFORM=wince
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
 else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=carbon
@@ -26,58 +43,13 @@ endif
 endif
 export LCL_PLATFORM
 
-[compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
-        .
-options=-gl -dlcl$(LCL_PLATFORM)
-
-[target]
-units=allsyneditunits
-implicitunits=synbeautifier syncompletion syndesignstringconstants \
-  synedit syneditautocomplete syneditexport syneditfoldedview synedithighlighter \
-  synedithighlighterfoldbase synedithighlighterxmlbase syneditkeycmds \
-  syneditlazdsgn syneditlines syneditmarks \
-  syneditmarkup syneditmarkupbracket syneditmarkupctrlmouselink \
-  syneditmarkuphighall syneditmarkupguttermark\
-  syneditmarkupselection syneditmarkupspecialline syneditmarkupwordgroup \
-  syneditmiscclasses syneditmiscprocs syneditmousecmds syneditplugins \
-  syneditpointclasses syneditregexsearch syneditsearch syneditstrconst synedittextbase \
-  synedittextbuffer synedittextdoublewidthchars synedittexttabexpander \
-  synedittexttrimmer synedittypes synexporthtml syngutter syngutterbase \
-  syngutterchanges synguttercodefolding syngutterlinenumber synguttermarks \
-  synhighlighterany synhighlightercpp synhighlightercss synhighlighterhashentries \
-  synhighlighterhtml synhighlighterjava synhighlighterjscript synhighlighterlfm \
-  synhighlightermulti synhighlighterpas synhighlighterperl synhighlighterphp \
-  synhighlighterposition synhighlighterpython synhighlightersql synhighlightertex \
-  synhighlighterunixshellscript synhighlightervb synhighlighterxml synhighlighterdiff \
-  synhighlighterbat synhighlighterini \
-  synmacrorecorder synmemo synpluginsyncroedit synpluginsyncronizededitbase \
-  synplugintemplateedit synpropertyeditobjectlist synregexpr syntextdrawer
-
-[require]
-# Adding lcl does not work, because it adds the source path.
-#packages=lcl
-packages=regexpr
-
-[default]
-#lcldir=../../lcl
-
-[clean]
-files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
-      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allsynedit$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditunits$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/synedit.compiled
 
+all: cleartarget $(COMPILER_UNITTARGETDIR) allsynedit$(PPUEXT) compiled

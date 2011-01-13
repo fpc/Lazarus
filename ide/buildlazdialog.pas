@@ -479,7 +479,7 @@ begin
     if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
     if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
     CrossCompiling:=(CompareText(NewTargetOS,DefaultTargetOS)<>0) or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0);
-    DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
+    //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
     if (Options.TargetDirectory<>'') then begin
       // Case 1. the user has set a target directory
       NewTargetDirectory:=Options.TargetDirectory;

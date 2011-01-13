@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <Name Value="synedit1"/>
+    <Name Value="synedit"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
@@ -15,6 +15,7 @@
           <ShowHints Value="False"/>
           <ShowGenInfo Value="False"/>
         </Verbosity>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -23,7 +24,7 @@
     <License Value="LGPL-2
 "/>
     <Version Major="1"/>
-    <Files Count="75">
+    <Files Count="77">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -75,6 +76,7 @@
       </Item12>
       <Item13>
         <Filename Value="syneditlazdsgn.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="SynEditLazDsgn"/>
       </Item13>
       <Item14>
@@ -271,7 +273,6 @@
       </Item61>
       <Item62>
         <Filename Value="synhighlighterunixshellscript.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="synhighlighterunixshellscript"/>
       </Item62>
       <Item63>
@@ -319,15 +320,22 @@
         <UnitName Value="SynTextDrawer"/>
       </Item73>
       <Item74>
-        <Filename Value="allsyneditunits.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllSynEditUnits"/>
-      </Item74>
-      <Item75>
         <Filename Value="allsynedit.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="allsynedit"/>
+      </Item74>
+      <Item75>
+        <Filename Value="syneditmarkupguttermark.pp"/>
+        <UnitName Value="SynEditMarkupGutterMark"/>
       </Item75>
+      <Item76>
+        <Filename Value="synhighlighterbat.pas"/>
+        <UnitName Value="SynHighlighterBat"/>
+      </Item76>
+      <Item77>
+        <Filename Value="synhighlighterini.pas"/>
+        <UnitName Value="SynHighlighterIni"/>
+      </Item77>
     </Files>
     <LazDoc Paths="docs/xml"/>
     <i18n>

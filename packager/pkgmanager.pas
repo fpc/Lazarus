@@ -1398,7 +1398,7 @@ begin
   Quiet:=false;
   for i:=0 to StaticPackages.Count-1 do begin
     StaticPackage:=PRegisteredPackage(StaticPackages[i]);
-    
+
     // check package name
     if (StaticPackage^.Name='') or (not IsValidIdent(StaticPackage^.Name))
     then begin
