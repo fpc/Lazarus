@@ -4627,6 +4627,7 @@ var
 begin
   try
     Dlg:=TForm.Create(nil);
+    Dlg.BorderStyle:=bsToolWindow;
     Dlg.Caption:=oisSelectShortCut;
     Dlg.Position:=poScreenCenter;
     Dlg.Constraints.MinWidth:=350;
@@ -4635,6 +4636,7 @@ begin
     Dlg.Height:=120;
 
     Box:=TShortCutGrabBox.Create(Dlg);
+    Box.BorderSpacing.Around:=6;
     Box.Parent:=Dlg;
     Box.Align:=alClient;
     OldValue := TShortCut(GetOrdValue);
@@ -6350,6 +6352,7 @@ end;
 procedure TCustomShortCutGrabBox.OnGrabButtonClick(Sender: TObject);
 begin
   FGrabForm:=TForm.Create(Self);
+  FGrabForm.BorderStyle:=bsToolWindow;
   FGrabForm.KeyPreview:=true;
   FGrabForm.Position:=poScreenCenter;
   FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
