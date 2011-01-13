@@ -12,10 +12,13 @@ type
 
   { TTestFileUtil }
 
+  { TTestFileProc }
+
   TTestFileProc= class(TTestCase)
   published
     procedure TestFileIsExecutable;
     procedure TestTrimFileName;
+    procedure TestCreateRelativePath;
   end;
 
 implementation
@@ -45,6 +48,40 @@ begin
   DoTest('c:\LazarusDir\..\dir\','c:\dir\');
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
+end;
+
+procedure TTestFileProc.TestCreateRelativePath;
+
+  procedure DoTest(Filename, BaseDirectory, Expected: string;
+    UsePointDirectory: boolean = false);
+  begin
+    DoDirSeparators(Filename);
+    DoDirSeparators(BaseDirectory);
+    DoDirSeparators(Expected);
+    AssertEquals('CreateRelativePath(File='+Filename+',Base='+BaseDirectory+')',
+      Expected,
+      CreateRelativePath(Filename,BaseDirectory,UsePointDirectory));
+  end;
+
+begin
+  DoTest('/a','/a','');
+  DoTest('/a','/a/','');
+  DoTest('/a/b','/a/b','');
+  DoTest('/a/b','/a/b/','');
+  DoTest('/a','/a/','');
+  DoTest('/a','','/a');
+  DoTest('/a/b','/a','b');
+  DoTest('/a/b','/a/','b');
+  DoTest('/a/b','/a//','b');
+  DoTest('/a','/a/b','../');
+  DoTest('/a','/a/b/','../');
+  DoTest('/a','/a/b//','../');
+  DoTest('/a/','/a/b','../');
+  DoTest('/a','/a/b/c','../../');
+  DoTest('/a','/a/b//c','../../');
+  DoTest('/a','/a//b/c','../../');
+  DoTest('/a','/a//b/c/','../../');
+  DoTest('/a','/b','/a');
 end;
 
 initialization

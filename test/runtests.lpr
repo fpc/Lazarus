@@ -69,7 +69,7 @@ end;
 procedure TLazTestRunner.WriteCustomHelp;
 begin
   writeln('  --compiler=<ppcxxx>           use ppcxxx to build test projects');
-  writeln('  --pcp=<primarty-config-path>  pass primarty-config-path to lazbuild');
+  writeln('  --pcp=<primary-config-path>   pass primary-config-path to lazbuild');
   writeln('  --submitter=SubmitterName     name of sumbitter of the test results');
   writeln('  --machine=MachineName         name of the machine the test runs on');
 end;
