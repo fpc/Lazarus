@@ -459,7 +459,7 @@ begin
           Path:=copy(Reduced,StartPos+3,EndPos-StartPos-3);
           if (Path<>'') and (Path[1] in ['''','"']) then
             Path:=AnsiDequotedStr(Path,Path[1]);
-          case CompParams[StartPos+2] of
+          case Reduced[StartPos+2] of
           'u': AddSearchPath('UnitPath');
           'U': AllPaths.Values['UnitOutputDir']:=Path;
           'i': AddSearchPath('IncPath');
@@ -3160,6 +3160,7 @@ begin
     try
       CurPaths:=ExtractSearchPathsFromFPCParams(CompilerParams,true);
       LastPaths:=ExtractSearchPathsFromFPCParams(LastParams,true);
+      //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile CompilerParams="',CompilerParams,'" UnitPaths="',CurPaths.Values['UnitPath'],'"']);
       // compare custom options
       OldValue:=LastPaths.Values['Reduced'];
       NewValue:=CurPaths.Values['Reduced'];
@@ -3171,8 +3172,8 @@ begin
         exit(mrYes);
       end;
       // compare unit paths
-      OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory);
-      NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory);
+      OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory,true);
+      NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory,true);
       if NewValue<>OldValue then begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler unit paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
@@ -3181,8 +3182,8 @@ begin
         exit(mrYes);
       end;
       // compare include paths
-      OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory);
-      NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory);
+      OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory,true);
+      NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory,true);
       if NewValue<>OldValue then begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler include paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
@@ -3361,7 +3362,7 @@ begin
     CompilerFilename:=APackage.GetCompilerFilename;
     // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams:=GetCompilerParams;
-    //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'" TargetCPU=',Globals.TargetCPU,' TargetOS=',Globals.TargetOS]);
+    //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
 
     // check if compilation is needed and if a clean build is needed
     Result:=CheckIfPackageNeedsCompilation(APackage,
@@ -3670,7 +3671,7 @@ begin
   UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
                                                  coptParsedPlatformIndependent);
   IncPath:=APackage.CompilerOptions.GetIncludePath(true,
-                                                 coptParsedPlatformIndependent);
+                                                 coptParsedPlatformIndependent,false);
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(

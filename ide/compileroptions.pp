@@ -2695,9 +2695,6 @@ begin
     // unit path
     CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
     //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
-    // always add the current directory to the unit path, so that the compiler
-    // checks for changed files in the directory
-    CurUnitPath:=MergeSearchPaths(CurUnitPath,'.');
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
 
     { CompilerPath - Nothing needs to be done with this one }
