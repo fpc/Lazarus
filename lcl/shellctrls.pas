@@ -49,9 +49,11 @@ type
   TCustomShellTreeView = class(TCustomTreeView)
   private
     FObjectTypes: TObjectTypes;
+    FRoot: string;
     FShellListView: TCustomShellListView;
     FFileSortType: TFileSortType;
     { Setters and getters }
+    procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
   protected
     { Other methods specific to Lazarus }
@@ -77,6 +79,7 @@ type
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
     property FileSortType: TFileSortType read FFileSortType write FFileSortType;
+    property Root: string read FRoot write SetRoot;
 
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
@@ -110,6 +113,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property RightClickSelect;
+    property Root;
     property RowSelect;
     property ScrollBars;
     property SelectionColor;
@@ -312,6 +316,17 @@ begin
   // Updates only if necessary to avoid circular calls of the setters
   if Value.ShellTreeView <> Self then
     Value.ShellTreeView := Self;
+end;
+
+procedure TCustomShellTreeView.SetRoot(const AValue: string);
+begin
+  if FRoot=AValue then exit;
+  FRoot:=AValue;
+  Items.Clear;
+  if FRoot = '' then
+    PopulateWithBaseFiles()
+  else
+    PopulateTreeNodeWithFiles(nil, AValue);
 end;
 
 function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
@@ -524,6 +539,9 @@ var
   Files: TStringList;
   NewNode: TTreeNode;
 begin
+  // avoids crashes in the IDE by not populating during design
+  if (csDesigning in ComponentState) then Exit;
+
   Files := TStringList.Create;
   try
     GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files, FFileSortType);
@@ -608,9 +626,11 @@ begin
     else
       rootDir := PChar(ANode.Text) + rootDir;
   end;
-  // Check, maybe the base path won't be necessary in the future
-  // if the base directory is added to the items list
-  Result := GetBasePath + rootDir;
+  // Check if the base directory should be taken into account
+  if FRoot = '' then
+    Result := GetBasePath + rootDir
+  else
+    Result := IncludeTrailingPathDelimiter(FRoot) + rootDir;
 end;
 
 function TCustomShellTreeView.GetSelectedNodePath(): string;
