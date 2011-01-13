@@ -3044,6 +3044,7 @@ begin
       // the normal output directory is writable => keep using it
       exit;
     end;
+    debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation normal output dir is not writable: ',OutputDir]);
     // the normal output directory is not writable
     // => try the fallback directory
     NewOutputDir:=GetFallbackOutputDir(APackage);
@@ -3075,6 +3076,7 @@ begin
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
     if DefResult=mrNo then begin
       // switching back to the not writable output directory requires no compile
+      debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation switching back to the normal output directory: ',APackage.GetOutputDirectory]);
       exit(mrNo);
     end;
     // neither the default nor the fallback is valid
@@ -4010,7 +4012,6 @@ var
   CurUnitName: String;
   RegistrationCode: String;
   HeaderSrc: String;
-  OutputDir: String;
   OldShortenSrc: String;
   NeedsRegisterProcCall: boolean;
   CurSrcUnitName: String;
@@ -4020,16 +4021,6 @@ begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.SavePackageMainSource A');
   {$ENDIF}
-  // check if package is ready for saving
-  OutputDir:=APackage.GetOutputDirectory;
-  if not DirPathExists(OutputDir) then begin
-    Result:=IDEMessageDialogAb(lisEnvOptDlgDirectoryNotFound,
-      Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
-        APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
-      mtError,[mbCancel],ShowAbort);
-    exit;
-  end;
-
   SrcFilename:=APackage.GetSrcFilename;
 
   // delete ambiguous files
