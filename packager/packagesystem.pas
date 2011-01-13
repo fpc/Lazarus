@@ -616,12 +616,16 @@ function TLazPackageGraph.OutputDirectoryIsWritable(Directory: string
   ): boolean;
 begin
   Result:=false;
+  debugln(['TLazPackageGraph.OutputDirectoryIsWritable ',Directory]);
   if not FilenameIsAbsolute(Directory) then
     exit;
   Directory:=ChompPathDelim(Directory);
   if not DirPathExistsCached(Directory) then begin
     // the directory does not exist => try creating it
-    if not ForceDirectoriesUTF8(Directory) then exit;
+    if not ForceDirectoriesUTF8(Directory) then begin
+      debugln(['TLazPackageGraph.OutputDirectoryIsWritable unable to create directory "',Directory,'"']);
+      exit;
+    end;
     Result:=true;
   end else
     Result:=DirectoryIsWritableCached(Directory);
@@ -3305,12 +3309,19 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     Result:='install_package_compile_failed:'+APackage.Filename;
   end;
 
+  function GetCompilerParams: string;
+  begin
+    Result:=APackage.CompilerOptions.MakeOptionsString(
+            APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
+            +' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
+  end;
+
 var
   PkgCompileTool: TIDEExternalToolOptions;
   CompilerFilename: String;
   CompilerParams: String;
-  EffectiveCompilerParams: String;
   SrcFilename: String;
+  EffectiveCompilerParams: String;
   CompilePolicies: TPackageUpdatePolicies;
   BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
@@ -3342,9 +3353,7 @@ begin
     SrcFilename:=APackage.GetSrcFilename;
     CompilerFilename:=APackage.GetCompilerFilename;
     // Note: use absolute paths, because some external tools resolve symlinked directories
-    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
-            APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
-            +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+    CompilerParams:=GetCompilerParams;
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'" TargetCPU=',Globals.TargetCPU,' TargetOS=',Globals.TargetOS]);
 
     // check if compilation is needed and if a clean build is needed
@@ -3377,6 +3386,8 @@ begin
         DebugLn('TLazPackageGraph.CompilePackage PreparePackageOutputDirectory failed: ',APackage.IDAsString);
         exit;
       end;
+      // maybe output directory changed: update parameters
+      CompilerParams:=GetCompilerParams;
 
       // create package main source file
       Result:=SavePackageMainSource(APackage,Flags,ShowAbort);
@@ -3851,7 +3862,8 @@ var
   NewOutputDir: String;
 begin
   // get output directory
-  OutputDir:=APackage.GetOutputDirectory(true);
+  OutputDir:=APackage.GetOutputDirectory;
+  debugln(['TLazPackageGraph.PreparePackageOutputDirectory OutputDir="',OutputDir,'"']);
 
   if not OutputDirectoryIsWritable(OutputDir) then
   begin
@@ -3860,6 +3872,12 @@ begin
     NewOutputDir:=GetFallbackOutputDir(APackage);
     if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit(mrCancel);
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
+    OutputDir:=APackage.GetOutputDirectory;
+    if not OutputDirectoryIsWritable(OutputDir) then
+    begin
+      debugln(['TLazPackageGraph.PreparePackageOutputDirectory failed to create writable directory: ',OutputDir]);
+      Result:=mrCancel;
+    end;
   end;
 
   StateFile:=APackage.GetStateFilename;
