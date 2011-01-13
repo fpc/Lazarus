@@ -3670,6 +3670,7 @@ begin
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
   UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
                                                  coptParsedPlatformIndependent);
+  debugln(['TLazPackageGraph.WriteMakeFile UnitPath="',UnitPath,'" ']);
   IncPath:=APackage.CompilerOptions.GetIncludePath(true,
                                                  coptParsedPlatformIndependent,false);
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,

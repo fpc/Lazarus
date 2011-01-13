@@ -2027,33 +2027,33 @@ var
 begin
   // current path
   CurrentPath:=ParsedOpts.GetParsedPIValue(Option);
-  {$IFDEF VerbosePkgUnitPath}
+  { $IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPIPath GetParsedPIValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'" BaseDirectory="',BaseDirectory,'"');
-  {$ENDIF}
+  { $ENDIF}
 
   if RelativeToBaseDir then
     CurrentPath:=CreateRelativeSearchPath(CurrentPath,BaseDirectory)
   else
     CurrentPath:=CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
-  {$IFDEF VerbosePkgUnitPath}
+  { $IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPIPath Abs/Rel ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
-  {$ENDIF}
+  { $ENDIF}
 
   // inherited path
   InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,
                                     coptParsedPlatformIndependent);
-  {$IFDEF VerbosePkgUnitPath}
+  { $IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPIPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
-  {$ENDIF}
+  { $ENDIF}
 
   Result:=MergeSearchPaths(CurrentPath,InheritedPath);
-  {$IFDEF VerbosePkgUnitPath}
+  { $IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPIPath Total ',dbgsName(Self),' Result="',Result,'"');
-  {$ENDIF}
+  { $ENDIF}
 end;
 
 function TBaseCompilerOptions.GetUnparsedPath(Option: TParsedCompilerOptString;

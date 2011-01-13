@@ -1464,10 +1464,12 @@ begin
   if ((BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]=PathDelim))
   and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
   begin
+    // for example File=/a BaseDir=/a/b
     inc(DirCount);
-    inc(BaseDirPos);
-  end else
+  end else begin
+    // for example File=/aa BaseDir=/ab
     inc(UpDirCount);
+  end;
   if DirCount=0 then exit;
   if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
 
