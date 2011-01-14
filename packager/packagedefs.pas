@@ -707,9 +707,9 @@ type
     function AddRemovedFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
-    procedure RemoveFile(PkgFile: TPkgFile);
-    procedure UnremovePkgFile(PkgFile: TPkgFile);
-    procedure RemoveNonExistingFiles;
+    procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
+    procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
+    function RemoveNonExistingFiles: boolean; // true if something changed
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
@@ -3117,15 +3117,21 @@ begin
   PkgFile.Removed:=false;
 end;
 
-procedure TLazPackage.RemoveNonExistingFiles;
+function TLazPackage.RemoveNonExistingFiles: boolean;
 var
   i: Integer;
+  AFilename: String;
 begin
+  Result:=false;
   i:=FileCount-1;
   while i>=0 do begin
     if i>=FileCount then continue;
-    if not FileExistsCached(Files[i].Filename) then
+    AFilename:=Files[i].GetResolvedFilename;
+    if (AFilename='') or (not FileExistsCached(Files[i].Filename)) then
+    begin
       RemoveFile(Files[i]);
+      Result:=true;
+    end;
     dec(i);
   end;
 end;

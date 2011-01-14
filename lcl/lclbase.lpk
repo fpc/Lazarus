@@ -14,6 +14,12 @@
       <Conditionals Value="if SrcOS<>'win' then
   UnitPath := 'nonwin32';"/>
       <Other>
+        <Verbosity>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+          <ShowGenInfo Value="False"/>
+        </Verbosity>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -22,7 +28,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="31"/>
-    <Files Count="284">
+    <Files Count="283">
       <Item1>
         <Filename Value="chart.pp"/>
         <HasRegisterProc Value="True"/>
@@ -1081,118 +1087,114 @@
         <Type Value="Include"/>
       </Item256>
       <Item257>
-        <Filename Value="include/untabbednotebook.inc"/>
+        <Filename Value="include/winapi.inc"/>
         <Type Value="Include"/>
       </Item257>
       <Item258>
-        <Filename Value="include/winapi.inc"/>
+        <Filename Value="include/winapih.inc"/>
         <Type Value="Include"/>
       </Item258>
       <Item259>
-        <Filename Value="include/winapih.inc"/>
+        <Filename Value="include/wincontrol.inc"/>
         <Type Value="Include"/>
       </Item259>
       <Item260>
-        <Filename Value="include/wincontrol.inc"/>
+        <Filename Value="include/winfileutil.inc"/>
         <Type Value="Include"/>
       </Item260>
       <Item261>
-        <Filename Value="include/winfileutil.inc"/>
-        <Type Value="Include"/>
-      </Item261>
-      <Item262>
         <Filename Value="nonwin32/messages.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Messages"/>
-      </Item262>
-      <Item263>
+      </Item261>
+      <Item262>
         <Filename Value="widgetset/wsarrow.pp"/>
         <UnitName Value="WSArrow"/>
-      </Item263>
-      <Item264>
+      </Item262>
+      <Item263>
         <Filename Value="widgetset/wsbuttons.pp"/>
         <UnitName Value="WSButtons"/>
-      </Item264>
-      <Item265>
+      </Item263>
+      <Item264>
         <Filename Value="widgetset/wscalendar.pp"/>
         <UnitName Value="WSCalendar"/>
-      </Item265>
-      <Item266>
+      </Item264>
+      <Item265>
         <Filename Value="widgetset/wschecklst.pp"/>
         <UnitName Value="WSCheckLst"/>
-      </Item266>
-      <Item267>
+      </Item265>
+      <Item266>
         <Filename Value="widgetset/wscomctrls.pp"/>
         <UnitName Value="WSComCtrls"/>
-      </Item267>
-      <Item268>
+      </Item266>
+      <Item267>
         <Filename Value="widgetset/wscontrols.pp"/>
         <UnitName Value="WSControls"/>
-      </Item268>
-      <Item269>
+      </Item267>
+      <Item268>
         <Filename Value="widgetset/wsdesigner.pp"/>
         <UnitName Value="WSDesigner"/>
-      </Item269>
-      <Item270>
+      </Item268>
+      <Item269>
         <Filename Value="widgetset/wsdialogs.pp"/>
         <UnitName Value="WSDialogs"/>
-      </Item270>
-      <Item271>
+      </Item269>
+      <Item270>
         <Filename Value="widgetset/wsextctrls.pp"/>
         <UnitName Value="WSExtCtrls"/>
-      </Item271>
-      <Item272>
+      </Item270>
+      <Item271>
         <Filename Value="widgetset/wsextdlgs.pp"/>
         <UnitName Value="WSExtDlgs"/>
-      </Item272>
-      <Item273>
+      </Item271>
+      <Item272>
         <Filename Value="widgetset/wsfactory.pas"/>
         <UnitName Value="WSFactory"/>
-      </Item273>
-      <Item274>
+      </Item272>
+      <Item273>
         <Filename Value="widgetset/wsforms.pp"/>
         <UnitName Value="WSForms"/>
-      </Item274>
-      <Item275>
+      </Item273>
+      <Item274>
         <Filename Value="widgetset/wsgrids.pp"/>
         <UnitName Value="WSGrids"/>
-      </Item275>
-      <Item276>
+      </Item274>
+      <Item275>
         <Filename Value="widgetset/wsimglist.pp"/>
         <UnitName Value="WSImgList"/>
-      </Item276>
-      <Item277>
+      </Item275>
+      <Item276>
         <Filename Value="widgetset/wslclclasses.pp"/>
         <UnitName Value="WSLCLClasses"/>
-      </Item277>
-      <Item278>
+      </Item276>
+      <Item277>
         <Filename Value="widgetset/wsmenus.pp"/>
         <UnitName Value="WSMenus"/>
-      </Item278>
-      <Item279>
+      </Item277>
+      <Item278>
         <Filename Value="widgetset/wspairsplitter.pp"/>
         <UnitName Value="WSPairSplitter"/>
-      </Item279>
-      <Item280>
+      </Item278>
+      <Item279>
         <Filename Value="widgetset/wsproc.pp"/>
         <UnitName Value="WSProc"/>
-      </Item280>
-      <Item281>
+      </Item279>
+      <Item280>
         <Filename Value="widgetset/wsreferences.pp"/>
         <UnitName Value="WSReferences"/>
-      </Item281>
-      <Item282>
+      </Item280>
+      <Item281>
         <Filename Value="widgetset/wsspin.pp"/>
         <UnitName Value="WSSpin"/>
-      </Item282>
-      <Item283>
+      </Item281>
+      <Item282>
         <Filename Value="widgetset/wsstdctrls.pp"/>
         <UnitName Value="WSStdCtrls"/>
-      </Item283>
-      <Item284>
+      </Item282>
+      <Item283>
         <Filename Value="widgetset/wstoolwin.pp"/>
         <UnitName Value="WSToolwin"/>
-      </Item284>
+      </Item283>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

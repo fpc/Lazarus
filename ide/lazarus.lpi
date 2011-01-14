@@ -7,7 +7,6 @@
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
-        <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
@@ -56,7 +55,7 @@
         <PackageName Value="SynEdit"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="76">
+    <Units Count="77">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -576,6 +575,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="InspectChksumChangedDlg"/>
       </Unit75>
+      <Unit76>
+        <Filename Value="../packager/missingpkgfilesdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MissingPkgFilesDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="MissingPkgFilesDlg"/>
+      </Unit76>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

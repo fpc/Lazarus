@@ -3900,6 +3900,7 @@ resourcestring
   lisPckEditReAddFile = 'Re-Add file';
   lisPESortFiles = 'Sort files';
   lisPEFixFilesCase = 'Fix Files Case';
+  lisPEShowMissingFiles = 'Show missing files';
   lisPckEditRemoveDependency = 'Remove dependency';
   lisPckEditMoveDependencyUp = 'Move dependency up';
   lisPckEditMoveDependencyDown = 'Move dependency down';
@@ -5117,6 +5118,9 @@ resourcestring
   lisDuplicateSourcesDeleteOneOrMakeSureAllSearchPathsH = 'Duplicate sources. '
     +'Delete one or make sure all search paths have correct order (Hint: FPC '
     +'uses last path first).';
+  lisPEMissingFilesOfPackage = 'Missing files of package %s';
+  lisPENoFilesMissingAllFilesExists = 'No files missing. All files exists.';
+  lisPERemoveSelectedFiles = 'Remove selected files';
 
 implementation
 

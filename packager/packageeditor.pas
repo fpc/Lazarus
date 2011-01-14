@@ -47,7 +47,7 @@ uses
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
   PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
-  PackageSystem;
+  MissingPkgFilesDlg, PackageSystem;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -72,6 +72,7 @@ var
 
   PkgEditMenuSortFiles: TIDEMenuCommand;
   PkgEditMenuFixFilesCase: TIDEMenuCommand;
+  PkgEditMenuShowMissingFiles: TIDEMenuCommand;
 
   PkgEditMenuAddToProject: TIDEMenuCommand;
   PkgEditMenuInstall: TIDEMenuCommand;
@@ -185,6 +186,7 @@ type
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
+    procedure ShowMissingFilesMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
@@ -248,6 +250,7 @@ type
     destructor Destroy; override;
     procedure DoCompile(CompileClean, CompileRequired: boolean);
     procedure DoFixFilesCase;
+    procedure DoShowMissingFiles;
     procedure DoMoveCurrentFile(Offset: integer);
     procedure DoPublishProject;
     procedure DoEditVirtualUnit;
@@ -413,6 +416,7 @@ begin
   AParent:=PkgEditMenuSectionFiles;
   PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files',lisPESortFiles);
   PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase);
+  PkgEditMenuShowMissingFiles:=RegisterIDEMenuCommand(AParent, 'Show Missing Files', lisPEShowMissingFiles);
 
   // register the section for using the package
   PkgEditMenuSectionUse:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Use');
@@ -577,6 +581,7 @@ begin
     end;
     SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
+    SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
 
     if CurDependency<>nil then begin
       PkgEditMenuSectionDependency.Visible:=true;
@@ -952,6 +957,11 @@ end;
 procedure TPackageEditorForm.FixFilesCaseMenuItemClick(Sender: TObject);
 begin
   DoFixFilesCase;
+end;
+
+procedure TPackageEditorForm.ShowMissingFilesMenuItemClick(Sender: TObject);
+begin
+  DoShowMissingFiles;
 end;
 
 procedure TPackageEditorForm.UninstallClick(Sender: TObject);
@@ -2162,6 +2172,11 @@ begin
     LazPackage.Modified:=true;
   UpdateFiles;
   UpdateButtons;
+end;
+
+procedure TPackageEditorForm.DoShowMissingFiles;
+begin
+  ShowMissingPkgFilesDialog(LazPackage);
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
