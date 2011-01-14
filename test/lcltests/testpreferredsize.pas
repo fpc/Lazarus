@@ -36,6 +36,7 @@ begin
   GroupBox1:=TGroupBox.Create(Form1);
   GroupBox1.SetBounds(10,10,100,100);
   GroupBox1.Parent:=Form1;
+  GroupBox1.Caption:='GroupBox1';
   Form1.Show;
   Application.ProcessMessages;
 
@@ -43,14 +44,14 @@ begin
   w1:=0;
   h1:=0;
   GroupBox1.GetPreferredSize(w1,h1,true,false);
-  writeln('TTestPreferredSize.TestGroupBox1 ',w1,',',h1);
+  //writeln('TTestPreferredSize.TestGroupBox1 ',w1,',',h1);
 
   // get the preferredsize of the groupbox with a size of 10x100
-  GroupBox1.SetBounds(10,10,10,100);
+  GroupBox1.Width:=10;
   w2:=0;
   h2:=0;
   GroupBox1.GetPreferredSize(w2,h2,true,false);
-  writeln('TTestPreferredSize.TestGroupBox1 ',w2,',',h2);
+  //writeln('TTestPreferredSize.TestGroupBox1 ',w2,',',h2);
 
   // the preferredsize must be independent of the the current width,height
   AssertEquals('TGroupBox.PreferredSize changed after SetBounds: ',true,(w1=w2) and (h1=h2));
