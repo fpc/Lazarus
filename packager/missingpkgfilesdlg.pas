@@ -121,7 +121,7 @@ begin
     FilesTreeView.Items.TopLvlItems[FilesTreeView.Items.TopLvlCount-1].Free;
   FilesTreeView.EndUpdate;
   if i>0 then begin
-    ButtonPanel1.OKButton.Caption:=lisPERemoveSelectedFiles;
+    ButtonPanel1.OKButton.Caption:=lisPERemoveFiles;
   end else begin
     ButtonPanel1.OKButton.Caption:=lisLazBuildOk;
   end;

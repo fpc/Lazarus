@@ -2812,6 +2812,7 @@ resourcestring
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before build';
   lisLazBuildOk = 'Ok';
+  lisPERemoveFiles = 'Remove files';
   lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';
   lisLazBuildNewProfInfo = 'Current build options will be associated with:';
