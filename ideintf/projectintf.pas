@@ -805,7 +805,6 @@ const
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
                          pfRunnable,
-                         pfAlwaysBuild,
                          pfLRSFilesInOutputDirectory];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles',
