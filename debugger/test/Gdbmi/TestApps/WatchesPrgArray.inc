@@ -8,6 +8,8 @@
   //var
     VarDynIntArray: TDynIntArray;
     VarStatIntArray: TStatIntArray;
+    VarPDynIntArray: PDynIntArray;
+    VarPStatIntArray: PStatIntArray;
     VarDynIntArrayA: Array of Integer;
     VarStatIntArrayA: Array [5..9] of Integer;
   {$ENDIF}
@@ -18,6 +20,8 @@
     SetLength(VarDynIntArrayA,2);
     VarStatIntArray[5] := 1;
     VarStatIntArrayA[5] := 1;
+    VarPDynIntArray := @VarDynIntArray;
+    VarPStatIntArray := @VarStatIntArray;
   {$ENDIF}
 {%endregion FooFunc}
 
@@ -25,7 +29,9 @@
   {$IFDEF Global_Types}
   //type
     TDynIntArray = Array of Integer;
+    PDynIntArray = ^TDynIntArray;
     TStatIntArray = Array [5..9] of Integer;
+    PStatIntArray = ^TStatIntArray;
   {$ENDIF}
 
   {$IFDEF Global_Var}
