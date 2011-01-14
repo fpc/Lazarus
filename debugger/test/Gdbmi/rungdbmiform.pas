@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, EditBtn, StdCtrls,
-  Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, Debugger, LCLIntf, CmdLineDebugger;
+  Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, Debugger, LCLIntf,
+  CheckLst, CmdLineDebugger;
 
 type
 
@@ -15,6 +16,8 @@ type
   TForm1 = class(TForm)
     BitBtn1: TBitBtn;
     Button1: TButton;
+    CheckListBox1: TCheckListBox;
+    CheckListBox2: TCheckListBox;
     edPasFile: TComboBox;
     edBreakFile: TEdit;
     edBreakLine: TEdit;
@@ -25,7 +28,10 @@ type
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
     Panel2: TPanel;
+    Panel3: TPanel;
     Splitter1: TSplitter;
+    Splitter2: TSplitter;
+    Splitter3: TSplitter;
     procedure BitBtn1Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -73,6 +79,11 @@ var
   //t: LongWord;
   //S: String;
 begin
+  i := Form1.CheckListBox1.Items.IndexOf(CompilerInfo.Name);
+  if not Form1.CheckListBox1.Checked[i] then exit;
+  i := Form1.CheckListBox2.Items.IndexOf(DebuggerInfo.Name);
+  if not Form1.CheckListBox2.Checked[i] then exit;
+
   FTesting := False;
   Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName);
 
@@ -168,6 +179,10 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  l: TCompilerList;
+  i, j: Integer;
+  l2: TDebuggerList;
 begin
   RegisterDbgTest(TRunner);
   if FileExistsUTF8(AppendPathDelim(ExtractFilePath(Paramstr(0))) + 'run_gdbmi_cmds.txt') then
@@ -176,6 +191,17 @@ begin
     edPasFile.ItemIndex := 0;
   edBreakFile.Text := ExtractFileName(edPasFile.Text);
   edBreakLine.Text := '1';
+
+  l := GetCompilers;
+  for i := 0 to l.Count-1 do begin
+    j := CheckListBox1.Items.Add(l.Name[i]);
+    CheckListBox1.Checked[j] := True;
+  end;
+  l2 := GetDebuggers;
+  for i := 0 to l2.Count-1 do begin
+    j := CheckListBox2.Items.Add(l2.Name[i]);
+    CheckListBox2.Checked[j] := True;
+  end;
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
