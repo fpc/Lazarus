@@ -703,8 +703,7 @@ begin
         UnitDirDialog:=TSelectDirectoryDialog.Create(nil);
         try
           UnitDirDialog.InitialDir:=fOwnerConverter.fPrevSelectedPath;
-          UnitDirDialog.Title:=
-            lisConvDelphiAllSubDirectoriesWillBeScannedForUnitFiles;
+          UnitDirDialog.Title:=lisConvDelphiAllSubDirsScanned;
           if UnitDirDialog.Execute then begin
             if Assigned(fOwnerConverter) then begin
               fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);

@@ -5058,14 +5058,12 @@ resourcestring
   lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiRepairingFormFile = 'Repairing form file %s';
   lisConvDelphiErrorCanTFindUnit = '%s(%s,%s) Error: Can''t find unit %s';
-  lisConvDelphiAllSubDirectoriesWillBeScannedForUnitFiles = 'All sub-directorie'
-    +'s will be scanned for unit files';
+  lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
   lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
   lisConvDelphiError = 'Error="%s"';
-  lisConvDelphiReplacedUnitSWithSInUsesSection = 'Replaced unit "%s" with "%'
-    +'s" in uses section.';
-  lisConvDelphiRemovedUsedUnitSInUsesSection = 'Removed used unit "%s" in '
-    +'uses section.';
+  lisConvDelphiFixedUnitCase = 'Fixed character case of unit "%s" to "%s".';
+  lisConvDelphiReplacedUnitInUsesSection = 'Replaced unit "%s" with "%s" in uses section.';
+  lisConvDelphiRemovedUnitInUsesSection = 'Removed unit "%s" in uses section.';
   lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
   lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
   lisConvDelphiFailedToConvertUnit = 'Failed to convert unit%s%s%s';

@@ -51,10 +51,12 @@ type
     fCTLink: TCodeToolLink;           // Link to codetools.
     fUsesSection: TUsesSection;       // Enum used by some codetools funcs.
     fExistingUnits: TStringList;      // List of units before conversion.
+    fUnitsToAdd: TStringList;         // List of new units to add.
     fUnitsToAddForLCL: TStringList;   // List of new units for LCL (not for Delphi).
     fUnitsToRemove: TStringList;      // List of units to remove.
     // Units to rename. Map old unit name -> new unit name.
     fUnitsToRename: TStringToStringTree;
+    fUnitsToFixCase: TStringToStringTree; // Like rename but done for every target.
     fUnitsToComment: TStringList;     // List of units to be commented.
     fMissingUnits: TStringList;       // Units not found in search path.
     function FindMissingUnits: boolean;
@@ -63,9 +65,6 @@ type
                               AMapToEdit: TStringToStringTree);
     function AddDelphiAndLCLSections: Boolean;
     function RemoveUnits: boolean;
-    function RenameUnits: boolean;
-    function AddUnits: boolean;
-    function CommentOutUnits: boolean;
   protected
     // This is either the Interface or Implementation node.
     function ParentBlockNode: TCodeTreeNode; virtual; abstract;
@@ -77,10 +76,13 @@ type
     procedure CommentAutomatic(ACommentedUnits: TStringList);
   public
     property ExistingUnits: TStringList read fExistingUnits;
+    property UnitsToAdd: TStringList read fUnitsToAdd;
     property UnitsToAddForLCL: TStringList read fUnitsToAddForLCL;
     property MissingUnits: TStringList read fMissingUnits;
     property UnitsToRemove: TStringList read fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename;
+    property UnitsToFixCase: TStringToStringTree read fUnitsToFixCase;
+
     property UnitsToComment: TStringList read fUnitsToComment;
   end;
 
@@ -155,9 +157,11 @@ var
 begin
   inherited Create;
   fCTLink:=ACTLink;
+  fUnitsToAdd:=TStringList.Create;
   fUnitsToAddForLCL:=TStringList.Create;
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(true);
+  fUnitsToFixCase:=TStringToStringTree.Create(true);
   fUnitsToComment:=TStringList.Create;
   fMissingUnits:=TStringList.Create;
   // Get existing unit names from uses section
@@ -175,9 +179,11 @@ begin
   fExistingUnits.Free;
   fMissingUnits.Free;
   fUnitsToComment.Free;
+  fUnitsToFixCase.Free;
   fUnitsToRename.Free;
   fUnitsToRemove.Free;
   fUnitsToAddForLCL.Free;
+  fUnitsToAdd.Free;
   inherited Destroy;
 end;
 
@@ -209,9 +215,12 @@ begin
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
-      if AFilename<>'' then begin              // unit found
-        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then
-          ToBeRenamedOrRemoved(OldUnitName, NewUnitName);    // fix case
+      if AFilename<>'' then begin                         // unit found
+        if NewUnitName<>OldUnitName then begin
+          fUnitsToFixCase[OldUnitName]:=NewUnitName;      // fix case
+          IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
+                                          [OldUnitName, NewUnitName]), '', -1);
+        end;
       end
       else begin
         // Omit Windows specific units from the list if target is "Windows only",
@@ -219,7 +228,7 @@ begin
         slo:=LowerCase(NewUnitName);
         if (Settings.Target<>ctLazarusWin) or
            ((slo<>'windows') and (slo<>'variants') and (slo<>'shellapi')) then
-          fMissingUnits.Add(s);                       // unit not found
+          fMissingUnits.Add(s);                           // unit not found
       end;
       if CodeTool.CurPos.Flag=cafComma then begin
         // read next unit name
@@ -238,13 +247,13 @@ procedure TUsedUnits.ToBeRenamedOrRemoved(AOldName, ANewName: string);
 begin
   if ANewName<>'' then begin
     fUnitsToRename[AOldName]:=ANewName;
-    IDEMessagesWindow.AddMsg(Format(
-      lisConvDelphiReplacedUnitSWithSInUsesSection, [AOldName, ANewName]), '', -1);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiReplacedUnitInUsesSection,
+                                    [AOldName, ANewName]), '', -1);
   end
   else begin
     fUnitsToRemove.Add(AOldName);
-    IDEMessagesWindow.AddMsg(Format(
-        lisConvDelphiRemovedUsedUnitSInUsesSection, [AOldName]), '', -1);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiRemovedUnitInUsesSection,
+                                    [AOldName]), '', -1);
   end;
 end;
 
@@ -279,25 +288,24 @@ var
     UsesNode: TCodeTreeNode;
   begin
     Result:=True;
-//    if fExistingUnits.Find(AUnitName, ind) then begin
-      fCTLink.ResetMainScanner;
-      fCTLink.CodeTool.BuildTree(fUsesSection=usMain);
+    with fCTLink do begin
+      ResetMainScanner;
+      CodeTool.BuildTree(fUsesSection=usMain);
       // Calls either FindMainUsesSection; or FindImplementationUsesSection;
       UsesNode:=UsesSectionNode;
       Assert(Assigned(UsesNode),
             'UsesNode should be assigned in AddDelphiAndLCLSections->MoveToDelphi');
-      Result:=fCTLink.CodeTool.RemoveUnitFromUsesSection(UsesNode,
-                                      UpperCaseStr(AUnitName), fCTLink.SrcCache);
-      DelphiOnlyUnits.Add(AUnitName);
-      if ARenameForLcl then
-        LCLOnlyUnits.Add(fUnitsToRename[AUnitName]);
-//    end;
+      Result:=CodeTool.RemoveUnitFromUsesSection(UsesNode,UpperCaseStr(AUnitName),SrcCache);
+    end;
+    DelphiOnlyUnits.Add(AUnitName);
+    if ARenameForLcl then
+      LCLOnlyUnits.Add(fUnitsToRename[AUnitName]);
   end;
 
 var
   i, InsPos: Integer;
   s: string;
-  EndChar: char;
+  EndChar, BlockEndChar: char;
   RenameList: TStringList;
   UsesNode: TCodeTreeNode;
   ParentBlock: TCodeTreeNode;
@@ -324,15 +332,17 @@ begin
     fCTLink.ResetMainScanner;
     fCTLink.CodeTool.BuildTree(fUsesSection=usMain);
     UsesNode:=UsesSectionNode;
-    if Assigned(UsesNode) then begin //uses section exists
+    BlockEndChar:=',';
+    if Assigned(UsesNode) then begin      //uses section exists
       EndChar:=',';
       s:='';
-      //TODO: check for special units
       fCTLink.CodeTool.MoveCursorToUsesStart(UsesNode);
       InsPos:=fCTLink.CodeTool.CurPos.StartPos;
     end
-    else begin                        //uses section does not exist
+    else begin                            //uses section does not exist
       EndChar:=';';
+      if fUnitsToAdd.Count=0 then
+        BlockEndChar:=';';
       s:=LineEnding;
       // ParentBlock should never be Nil. UsesNode=Nil only for implementation section.
       ParentBlock:=ParentBlockNode;
@@ -350,15 +360,17 @@ begin
     if DelphiOnlyUnits.Count>0 then begin
       if UsesNode=Nil then
         s:=s+'uses'+LineEnding;
-      s:=s+'  '+Join(DelphiOnlyUnits)+EndChar+LineEnding;
+      s:=s+'  '+Join(DelphiOnlyUnits)+BlockEndChar+LineEnding;
     end;
     s:=s+'{$ELSE}'+LineEnding;
     if LclOnlyUnits.Count>0 then begin
       if UsesNode=Nil then
         s:=s+'uses'+LineEnding;
-      s:=s+'  '+Join(LclOnlyUnits)+EndChar+LineEnding;
+      s:=s+'  '+Join(LclOnlyUnits)+BlockEndChar+LineEnding;
     end;
     s:=s+'{$ENDIF}';
+    if fUnitsToAdd.Count>0 then
+      s:=s+LineEnding+'  '+Join(fUnitsToAdd)+EndChar;
     if Assigned(UsesNode) then
       s:=s+LineEnding+'  ';
     // Now add the generated lines.
@@ -399,38 +411,6 @@ begin
     if not fCTLink.SrcCache.Apply then exit;
   end;
   //fUnitsToRemove.Clear;
-  Result:=true;
-end;
-
-function TUsedUnits.RenameUnits: boolean;
-// Rename units
-begin
-  Result:=false;
-  if not fCTLink.CodeTool.ReplaceUsedUnits(fUnitsToRename, fCTLink.SrcCache) then
-    exit;
-  //fUnitsToRename.Clear;
-  Result:=true;
-end;
-
-function TUsedUnits.AddUnits: boolean;
-var
-  i: Integer;
-begin
-  Result:=false;
-  for i:=0 to fUnitsToAddForLCL.Count-1 do
-    if not fCTLink.CodeTool.AddUnitToSpecificUsesSection(
-                    fUsesSection, fUnitsToAddForLCL[i], '', fCTLink.SrcCache) then exit;
-  Result:=true;
-end;
-
-function TUsedUnits.CommentOutUnits: boolean;
-// Comment out missing units
-begin
-  Result:=false;
-  if fUnitsToComment.Count>0 then
-    if not fCTLink.CodeTool.CommentUnitsInUsesSections(fUnitsToComment,
-                                                       fCTLink.SrcCache) then
-      exit;
   Result:=true;
 end;
 
@@ -562,25 +542,55 @@ end;
 
 function TUsedUnitsTool.Convert: TModalResult;
 // Add, remove, rename and comment out unit names that were marked earlier.
+var
+  i: Integer;
 begin
   Result:=mrCancel;
-  if fCTLink.Settings.Target=ctLazarus then begin
-    // One way conversion -> remove and rename units.
-    if not fMainUsedUnits.RemoveUnits then exit;    // Remove
-    if not fImplUsedUnits.RemoveUnits then exit;
-    if not fMainUsedUnits.RenameUnits then exit;    // Rename
-    if not fImplUsedUnits.RenameUnits then exit;
-  end;
-  if fCTLink.Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
-    // Support Delphi. Add IFDEF blocks for units.
-    if not fMainUsedUnits.AddDelphiAndLCLSections then exit;
-    if not fImplUsedUnits.AddDelphiAndLCLSections then exit;
-  end
-  else begin // [ctLazarus, ctLazarusWin] -> comment out units if needed.
-    if not fMainUsedUnits.CommentOutUnits then exit;
-    if not fImplUsedUnits.CommentOutUnits then exit;
-    if not fMainUsedUnits.AddUnits then exit;       // Add the extra units.
-    if not fImplUsedUnits.AddUnits then exit;
+  with fCTLink do begin
+    // Fix case
+    if not CodeTool.ReplaceUsedUnits(fMainUsedUnits.fUnitsToFixCase, SrcCache) then exit;
+    if not CodeTool.ReplaceUsedUnits(fImplUsedUnits.fUnitsToFixCase, SrcCache) then exit;
+    // Add more units.
+    with fMainUsedUnits do begin
+      for i:=0 to fUnitsToAdd.Count-1 do
+        if not CodeTool.AddUnitToSpecificUsesSection(
+                          fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
+    end;
+    with fImplUsedUnits do begin
+      for i:=0 to fUnitsToAdd.Count-1 do
+        if not CodeTool.AddUnitToSpecificUsesSection(
+                          fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
+    end;
+    if Settings.Target=ctLazarus then begin
+      // One way conversion -> remove and rename units.
+      if not fMainUsedUnits.RemoveUnits then exit;    // Remove
+      if not fImplUsedUnits.RemoveUnits then exit;
+      // Rename
+      if not CodeTool.ReplaceUsedUnits(fMainUsedUnits.fUnitsToRename, SrcCache) then exit;
+      if not CodeTool.ReplaceUsedUnits(fImplUsedUnits.fUnitsToRename, SrcCache) then exit;
+    end;
+    if Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
+      // Support Delphi. Add IFDEF blocks for units.
+      if not fMainUsedUnits.AddDelphiAndLCLSections then exit;
+      if not fImplUsedUnits.AddDelphiAndLCLSections then exit;
+    end
+    else begin // [ctLazarus, ctLazarusWin] -> comment out units if needed.
+      if not CodeTool.CommentUnitsInUsesSections(fMainUsedUnits.fUnitsToComment,
+                                                 SrcCache) then exit;
+      if not CodeTool.CommentUnitsInUsesSections(fImplUsedUnits.fUnitsToComment,
+                                                 SrcCache) then exit;
+      // Add more units for only LCL.
+      with fMainUsedUnits do begin
+        for i:=0 to fUnitsToAddForLCL.Count-1 do
+          if not CodeTool.AddUnitToSpecificUsesSection(
+                            fUsesSection, fUnitsToAddForLCL[i], '', SrcCache) then exit;
+      end;
+      with fImplUsedUnits do begin
+        for i:=0 to fUnitsToAddForLCL.Count-1 do
+          if not CodeTool.AddUnitToSpecificUsesSection(
+                            fUsesSection, fUnitsToAddForLCL[i], '', SrcCache) then exit;
+      end;
+    end;
   end;
   Result:=mrOK;
 end;
@@ -605,8 +615,8 @@ var
 begin
   if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, i) or
            fImplUsedUnits.fExistingUnits.Find(AUnitName, i) or
-           fMainUsedUnits.fUnitsToAddForLCL.Find(AUnitName, i) ) then begin
-    fMainUsedUnits.fUnitsToAddForLCL.Add(AUnitName);
+           fMainUsedUnits.fUnitsToAdd.Find(AUnitName, i) ) then begin
+    fMainUsedUnits.fUnitsToAdd.Add(AUnitName);
     IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
   end;
 end;
