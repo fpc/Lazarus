@@ -1,69 +1,36 @@
-#   $Id$
+#   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for Lazarus for Free Pascal
+#   Makefile.fpc for IDEIntf 1.0
 #
+#   This file was generated on 01/14/2011
 
 [package]
 name=ideintf
-version=0.9b
+version=1.0
 
 [compiler]
-unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../components/codetools/$(CPU_TARGET)-$(OS_TARGET) \
-        ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-options=-gl -dlcl$(LCL_PLATFORM)
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -gl -vewnhi -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
-units=allideintf
-implicitunits=a \
-  ActionsEditor \
-  ColumnDlg \
-  ComponentEditors \
-  ComponentReg \
-  ComponentTreeView \
-  ConfigStorage \
-  DBPropEdits \
-  FieldsEditor \
-  FormEditingIntf \
-  FrmSelectProps \
-  GraphPropEdits \
-  HelpFPDoc \
-  HelpHTML \
-  HelpIntf \
-  IDECommands \
-  IDEWindowIntf \
-  ImageListEditor \
-  LazIDEIntf \
-  ListViewPropEdit \
-  MacroIntf \
-  MaskPropEdit \
-  MenuIntf \
-  NewItemIntf \
-  ObjectInspector \
-  ObjInspStrConsts \
-  PackageIntf \
-  ProjectIntf \
-  PropEdits \
-  SrcEditorIntf \
-  TextTools
+units=ideintf.pas
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
-
-[require]
-packages=
-
-[default]
-lcldir=../lcl
-
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 [prerules]
 # LCL Platform
 ifndef LCL_PLATFORM
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
 LCL_PLATFORM=win32
 else
 ifeq ($(OS_TARGET),darwin)
@@ -73,15 +40,16 @@ LCL_PLATFORM=gtk2
 endif
 endif
 endif
+endif
 export LCL_PLATFORM
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allideintf$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/ideintf$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) allideintf$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/IDEIntf.compiled
 
-# end.
-
+all: cleartarget $(COMPILER_UNITTARGETDIR) ideintf$(PPUEXT) compiled

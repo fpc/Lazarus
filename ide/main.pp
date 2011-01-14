@@ -71,7 +71,7 @@ uses
   // synedit
   SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
-  AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
+  BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,

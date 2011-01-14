@@ -20,7 +20,6 @@
    display and control properties, thus the object inspector is merely an
    object viewer than an editor. The property editors do the real work.
 
-
   ToDo:
    - backgroundcolor=clNone
    - Define Init values

@@ -59,7 +59,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  RegisterFCL, RegisterLCL, RegisterIDEIntf, allsynedit;
+  RegisterFCL, RegisterLCL, allsynedit;
   
 type
   TFindPackageFlag = (
@@ -4392,7 +4392,6 @@ begin
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
-  RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
 
   // register custom IDE components
   RegistrationPackage:=DefaultPackage;

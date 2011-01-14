@@ -81,7 +81,6 @@ type
   private
     fItemLCL: TMakeModeDef;
     fItemPkgReg: TMakeModeDef;
-    fItemIDEIntf: TMakeModeDef;
     fItemIDE: TMakeModeDef;
     fItemExamples: TMakeModeDef;
     fItemIDEIndex: integer;
@@ -96,7 +95,6 @@ type
   public
     property ItemLCL: TMakeModeDef read fItemLCL;
     property ItemPkgReg: TMakeModeDef read fItemPkgReg;
-    property ItemIDEIntf: TMakeModeDef read fItemIDEIntf;
     property ItemIDE: TMakeModeDef read fItemIDE;
     property ItemExamples: TMakeModeDef read fItemExamples;
     property Items[Index: integer]: TMakeModeDef read GetItems; default;
@@ -323,9 +321,6 @@ begin
   FItemPkgReg:=TMakeModeDef.Create(
     'PackageRegistration',lisPkgReg,'packager/registration', mmBuild);
   Add(FItemPkgReg);
-  // IDE Interface
-  FItemIDEIntf:=TMakeModeDef.Create('IDEIntf',lisIDEIntf,'ideintf',mmBuild);
-  Add(FItemIDEIntf);
   // IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
@@ -346,7 +341,6 @@ procedure TMakeModeDefs.Clear;
 begin
   FItemLCL:=nil;
   FItemPkgReg:=nil;
-  FItemIDEIntf:=nil;
   FItemIDE:=nil;
   FItemExamples:=nil;
   inherited Clear;          // Items are freed here, too.
@@ -366,7 +360,6 @@ begin
   end;
   fItemLCL     :=FindName('LCL');
   fItemPkgReg  :=FindName('PkgReg');
-  fItemIDEIntf :=FindName('IDEIntf');
   fItemIDE     :=FindName('IDE');
   fItemExamples:=FindName('Examples');
   fItemIDEIndex:=Source.fItemIDEIndex;
