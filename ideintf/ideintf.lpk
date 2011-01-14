@@ -7,9 +7,14 @@
     <CompilerOptions>
       <Version Value="9"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <Verbosity>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+          <ShowGenInfo Value="False"/>
+        </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -308,6 +313,5 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
-    <Provides Count="1"/>
   </Package>
 </CONFIG>

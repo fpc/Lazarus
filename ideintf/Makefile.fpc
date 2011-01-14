@@ -11,7 +11,7 @@ version=1.0
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -gl -vewnhi -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter -dLCL -dLCL$(LCL_PLATFORM)
+options= -MObjFPC -Scghi -O1 -gl -vew -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=ideintf.pas
