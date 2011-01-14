@@ -5576,6 +5576,7 @@ test/bugtestcase.pas svneol=native#text/plain
 test/codetoolstests/testcompleteblock.pas svneol=native#text/plain
 test/hello.ahk svneol=native#text/plain
 test/lcltests/testpen.pas svneol=native#text/plain
+test/lcltests/testpreferredsize.pas svneol=native#text/plain
 test/lcltests/testunicode.pas svneol=native#text/plain
 test/readme.txt svneol=native#text/plain
 test/runtests.lpi svneol=native#text/plain

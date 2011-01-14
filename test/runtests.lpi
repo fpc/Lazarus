@@ -22,7 +22,7 @@
       <local>
         <FormatVersion Value="1"/>
         <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="8">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -75,6 +75,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPen"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="lcltests\testpreferredsize.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testpreferredsize"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -86,7 +91,6 @@
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
-        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Linking>
