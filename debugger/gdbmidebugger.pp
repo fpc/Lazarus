@@ -2932,7 +2932,6 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
 var
   R: TGDBMIExecResult;
-  s: String;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   TargetPIDPart: String;
@@ -9628,8 +9627,6 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   function TryExecute(AnExpression: string; StoreError: Boolean): Boolean;
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
-    var
-      ResultInfo: TGDBType;
     begin
       FTypeInfo := GetGDBTypeInfo(expr);
       Result := FTypeInfo <> nil;
