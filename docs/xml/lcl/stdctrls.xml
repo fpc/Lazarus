@@ -9585,12 +9585,10 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>
             <var>WordWrap</var>
-
-
-
- - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</p>
+ - whether a word is to be wrapped to the next line if the text is about to become too long for the width available. WordWrap=true and AutoSize=true requires that the Width is fixed. For example by anchoring the left and right side.</p>
           <p>Boolean property, default False</p>
         </descr>
+        <short>Enable automatic line breaks if the Width of the Label is too small for the Caption</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnClick" link="#LCL.Controls.TControl.OnClick">
