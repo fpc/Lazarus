@@ -123,7 +123,7 @@ const
         {$IFNDEF VER2_4}
         ,'class constructor', 'class destructor'
         {$ENDIF}
-        {$IF high(TMethodKind) <>  mkClassDestructor}
+        {$IFDEF VER2_5}
         ,'operator overload'
         {$ENDIF}
       );
