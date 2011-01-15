@@ -49,6 +49,7 @@ type
   TUsedUnits = class
   private
     fCTLink: TCodeToolLink;           // Link to codetools.
+    fOwnerTool: TUsedUnitsTool;
     fUsesSection: TUsesSection;       // Enum used by some codetools funcs.
     fExistingUnits: TStringList;      // List of units before conversion.
     fUnitsToAdd: TStringList;         // List of new units to add.
@@ -71,7 +72,7 @@ type
     // Uses node in either Main or Implementation section.
     function UsesSectionNode: TCodeTreeNode; virtual; abstract;
   public
-    constructor Create(ACTLink: TCodeToolLink);
+    constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
     procedure CommentAutomatic(ACommentedUnits: TStringList);
   public
@@ -94,7 +95,7 @@ type
     function ParentBlockNode: TCodeTreeNode; override;
     function UsesSectionNode: TCodeTreeNode; override;
   public
-    constructor Create(ACTLink: TCodeToolLink);
+    constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
   end;
 
@@ -106,7 +107,7 @@ type
     function ParentBlockNode: TCodeTreeNode; override;
     function UsesSectionNode: TCodeTreeNode; override;
   public
-    constructor Create(ACTLink: TCodeToolLink);
+    constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
   end;
 
@@ -118,6 +119,7 @@ type
     fFilename: string;
     fMainUsedUnits: TUsedUnits;
     fImplUsedUnits: TUsedUnits;
+    fCheckPackageDependencyEvent: TCheckUnitEvent;
     function GetMissingUnitCount: integer;
   public
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
@@ -130,6 +132,8 @@ type
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
     property ImplUsedUnits: TUsedUnits read fImplUsedUnits;
     property MissingUnitCount: integer read GetMissingUnitCount;
+    property CheckPackDepEvent: TCheckUnitEvent read fCheckPackageDependencyEvent
+                                               write fCheckPackageDependencyEvent;
   end;
 
 
@@ -151,12 +155,13 @@ end;
 
 { TUsedUnits }
 
-constructor TUsedUnits.Create(ACTLink: TCodeToolLink);
+constructor TUsedUnits.Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
 var
   UsesNode: TCodeTreeNode;
 begin
   inherited Create;
   fCTLink:=ACTLink;
+  fOwnerTool:=aOwnerTool;
   fUnitsToAdd:=TStringList.Create;
   fUnitsToAddForLCL:=TStringList.Create;
   fUnitsToRemove:=TStringList.Create;
@@ -244,11 +249,19 @@ end;
 
 procedure TUsedUnits.ToBeRenamedOrRemoved(AOldName, ANewName: string);
 // Replace a unit name with a new name or remove it if there is no new name.
+var
+  UnitInFileName: string;
 begin
   if ANewName<>'' then begin
     fUnitsToRename[AOldName]:=ANewName;
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiReplacedUnitInUsesSection,
                                     [AOldName, ANewName]), '', -1);
+    // If the unit is not found, open the package containing it.
+    UnitInFileName:='';
+    if fCTLink.CodeTool.FindUnitCaseInsensitive(ANewName,UnitInFileName) = '' then
+      if Assigned(fOwnerTool.CheckPackDepEvent) then
+        if not fOwnerTool.CheckPackDepEvent(ANewName) then
+          ;
   end
   else begin
     fUnitsToRemove.Add(AOldName);
@@ -416,9 +429,9 @@ end;
 
 { TMainUsedUnits }
 
-constructor TMainUsedUnits.Create(ACTLink: TCodeToolLink);
+constructor TMainUsedUnits.Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
 begin
-  inherited Create(ACTLink);
+  inherited Create(ACTLink, aOwnerTool);
   fUsesSection:=usMain;
 end;
 
@@ -439,9 +452,9 @@ end;
 
 { TImplUsedUnits }
 
-constructor TImplUsedUnits.Create(ACTLink: TCodeToolLink);
+constructor TImplUsedUnits.Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
 begin
-  inherited Create(ACTLink);
+  inherited Create(ACTLink, aOwnerTool);
   fUsesSection:=usImplementation;
 end;
 
@@ -469,8 +482,8 @@ begin
   fFilename:=AFilename;
   fCTLink.CodeTool.BuildTree(False);
   // These will read uses sections while creating.
-  fMainUsedUnits:=TMainUsedUnits.Create(ACTLink);
-  fImplUsedUnits:=TImplUsedUnits.Create(ACTLink);
+  fMainUsedUnits:=TMainUsedUnits.Create(ACTLink, Self);
+  fImplUsedUnits:=TImplUsedUnits.Create(ACTLink, Self);
 end;
 
 destructor TUsedUnitsTool.Destroy;
@@ -612,12 +625,19 @@ end;
 procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
 var
   i: Integer;
+  UnitInFileName: String;
 begin
   if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, i) or
            fImplUsedUnits.fExistingUnits.Find(AUnitName, i) or
            fMainUsedUnits.fUnitsToAdd.Find(AUnitName, i) ) then begin
     fMainUsedUnits.fUnitsToAdd.Add(AUnitName);
     IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
+    // If the unit is not found, open the package containing it.
+    UnitInFileName:='';
+    if fCTLink.CodeTool.FindUnitCaseInsensitive(AUnitName,UnitInFileName) = '' then
+      if Assigned(fCheckPackageDependencyEvent) then
+        if not fCheckPackageDependencyEvent(AUnitName) then
+          ;
   end;
 end;
 

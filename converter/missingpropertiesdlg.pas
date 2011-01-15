@@ -44,7 +44,7 @@ uses
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
   EditorOptions, CheckLFMDlg, IDEMsgIntf,
   // Converter
-  ConverterTypes, ConvertSettings, ReplaceNamesUnit, ConvCodeTool;
+  ConverterTypes, ConvertSettings, ReplaceNamesUnit, ConvCodeTool, UsedUnits;
 
 type
 
@@ -69,6 +69,7 @@ type
   private
     fCTLink: TCodeToolLink;
     fSettings: TConvertSettings;
+    fUsedUnitsTool: TUsedUnitsTool;
     // List of property values which need to be adjusted.
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
@@ -89,6 +90,7 @@ type
     function Repair: TModalResult;
   public
     property Settings: TConvertSettings read fSettings write fSettings;
+    property UsedUnitsTool: TUsedUnitsTool read fUsedUnitsTool write fUsedUnitsTool;
   end;
 
 
@@ -298,6 +300,11 @@ begin
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             IDEMessagesWindow.AddMsg(Format(
                       'Replaced type "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
+            if Assigned(fUsedUnitsTool) then begin
+              // ToDo: This is a test and will be replaced by configurable unit names.
+              if NewIdent='TRichMemo' then
+                fUsedUnitsTool.AddUnitIfNeeded('RichMemo');
+            end;
             Result:=mrRetry;
           end;
         end

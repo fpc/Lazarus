@@ -180,6 +180,7 @@ type
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
     function Convert: TModalResult;
+    function CheckPackageDependency(AUnitName: string): Boolean;
   public
     property CompOpts: TBaseCompilerOptions read GetCompOpts;
     property CustomDefines: TDefineTemplate read GetCustomDefines;
@@ -619,33 +620,28 @@ begin
   end;
   // Take care of missing units in uses sections.
   fUsedUnitsTool:=Nil;
+  if fSettings.UnitsReplaceMode<>rlDisabled then begin
+    fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
+    if Assigned(fOwnerConverter) then
+      fUsedUnitsTool.CheckPackDepEvent:=@fOwnerConverter.CheckPackageDependency;
+    // Find and prepare the missing units. Don't replace yet.
+    Result:=fUsedUnitsTool.Prepare;
+    if Result<>mrOk then exit;
+    if fUsedUnitsTool.MissingUnitCount>0 then begin
+      Result:=ReduceMissingUnits;
+      if Result<>mrOk then exit;
+    end;
+  end;
+  // Do the actual code conversion.
+  ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
   try
-    if fSettings.UnitsReplaceMode<>rlDisabled then begin
-      fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
-      // Find and prepare the missing units. Don't replace yet.
-      Result:=fUsedUnitsTool.Prepare;
-      if Result<>mrOk then exit;
-      if fUsedUnitsTool.MissingUnitCount>0 then begin
-        Result:=ReduceMissingUnits;
-        if Result<>mrOk then exit;
-      end;
-    end;
-    // Do the actual code conversion.
-    ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
-    try
-      ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
-      ConvTool.HasFormFile:=DfmFilename<>'';
+    ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
+    ConvTool.HasFormFile:=DfmFilename<>'';
+    if Assigned(fUsedUnitsTool) then
       ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
-      Result:=ConvTool.Convert;
-      if Result<>mrOk then exit;
-    finally
-      ConvTool.Free;
-    end;
-    // Fix or comment missing units, show error messages.
-    if fSettings.UnitsReplaceMode<>rlDisabled then
-      Result:=fUsedUnitsTool.Convert;
+    Result:=ConvTool.Convert;
   finally
-    FreeAndNil(fUsedUnitsTool);
+    ConvTool.Free;
   end;
 end;
 
@@ -661,6 +657,7 @@ begin
     LfmFixer:=TLFMFixer.Create(fCTLink,fLFMBuffer,@IDEMessagesWindow.AddMsg);
     try
       LfmFixer.Settings:=fSettings;
+      LfmFixer.UsedUnitsTool:=fUsedUnitsTool;
       LfmFixer.RootMustBeClassInUnit:=true;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExists:=true;
@@ -674,6 +671,12 @@ begin
     // save LFM file
     Result:=SaveCodeBufferToFile(fLFMBuffer,fLFMBuffer.Filename);
     if Result<>mrOk then exit;
+  end;
+  // After other changes: add, remove, fix and comment out units in uses sections.
+  if Assigned(fUsedUnitsTool) then begin
+    Result:=fUsedUnitsTool.Convert;
+    if Result<>mrOk then exit;
+    FreeAndNil(fUsedUnitsTool);
   end;
   Result:=mrOk;
 end;
@@ -1097,14 +1100,31 @@ begin
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
 end;
 
+function TConvertDelphiPBase.CheckPackageDependency(AUnitName: string): Boolean;
+var
+  Pack: TPkgFile;
+  Dep: TPkgDependency;
+begin
+  Result:=False;
+  Pack:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
+  if Assigned(Pack) then begin
+    // Found from package: add package to project dependencies and open it.
+    AddPackageDependency(Pack.LazPackage.Name);
+    Dep:=FindDependencyByName(Pack.LazPackage.Name);
+    if Assigned(Dep) then
+      PackageGraph.OpenDependency(Dep,false);
+    Result:=True;
+  end else begin;
+    // ToDo: Install the required package automatically from a repository...
+  end;
+end;
+
 function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
 // Locate unit names from earlier cached list or from packages.
 // Return the number of units still missing.
 
   procedure DoMissingSub(AUsedUnits: TUsedUnits);
   var
-    Pack: TPkgFile;
-    Dep: TPkgDependency;
     mUnit, sUnitPath, RealFileName, RealUnitName: string;
     i: Integer;
   begin
@@ -1124,17 +1144,8 @@ function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): int
         fUnitsToAddToProject.Add(sUnitPath+RealFileName);
         AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
       end
-      else begin
-        Pack:=PackageGraph.FindUnitInAllPackages(mUnit, True);
-        if Assigned(Pack) then begin
-          // Found from package: add package to project dependencies and open it.
-          AddPackageDependency(Pack.LazPackage.Name);
-          Dep:=FindDependencyByName(Pack.LazPackage.Name);
-          if Assigned(Dep) then
-            PackageGraph.OpenDependency(Dep,false);
-          AUsedUnits.MissingUnits.Delete(i);
-        end;
-      end;
+      else if CheckPackageDependency(mUnit) then
+        AUsedUnits.MissingUnits.Delete(i);
     end;
   end;
 
