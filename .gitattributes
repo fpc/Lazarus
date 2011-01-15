@@ -4516,6 +4516,7 @@ lazarus.app/Contents/Resources/startlazarus.app/Contents/Info.plist svneol=nativ
 lazarus.app/Contents/Resources/startlazarus.app/Contents/MacOS/startlazarus -text svneol=unset#application/octet-stream
 lazarus.app/Contents/Resources/startlazarus.app/Contents/PkgInfo svneol=native#text/plain
 lcl/LAYOUT.txt svneol=native#text/plain
+lcl/Makefile.compiled svneol=native#text/plain
 lcl/actnlist.pas svneol=native#text/pascal
 lcl/alllclunits.pp svneol=native#text/pascal
 lcl/arrow.pp svneol=native#text/pascal

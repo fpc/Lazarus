@@ -32,6 +32,8 @@ else if LCLWidgetType1='carbon' then begin
              +base+'pascocoa/appkit;'
              +base+'pascocoa/foundation';
   IncPath := UnitPath;
+end else if LCLWidgetType1='wince' then begin
+  CustomOptions := '-dDisableChecks';
 end else if LCLWidgetType1='fpgui' then begin
   if undefined(fpGUIPlatform) then begin
     if SrcOS='win32' then

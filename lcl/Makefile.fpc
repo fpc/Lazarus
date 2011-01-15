@@ -101,21 +101,26 @@ includedir=include
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) \
       $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))\
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
 
 [default]
 lcldir=.
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all cleanlaz
 
 cleartarget:
-	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS) compiled
 
 cleanlaz: clean
         $(MAKE) -C interfaces clean
