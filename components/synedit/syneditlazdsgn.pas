@@ -54,6 +54,11 @@ begin
   RegisterComponents('SynEdit',[TSynAutoComplete]);
 end;
 
+procedure RegisterSynEdit;
+begin
+  RegisterComponents('SynEdit',[TSynEdit]);
+end;
+
 procedure RegisterSynExportHTML;
 begin
   RegisterComponents('SynEdit',[TSynExporterHTML]);
@@ -222,6 +227,7 @@ begin
   RegisterUnit('SynGutterLineNumber',@RegisterSynGutterLineNumber);
   RegisterUnit('SynGutterChanges',@RegisterSynGutterChanges);
   RegisterUnit('SynGutterMarks',@RegisterSynGutterMarks);
+  RegisterUnit('SynEdit',@RegisterSynEdit);
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
