@@ -318,7 +318,7 @@ var
 var
   i, InsPos: Integer;
   s: string;
-  EndChar, BlockEndChar: char;
+  EndChar: char;
   RenameList: TStringList;
   UsesNode: TCodeTreeNode;
   ParentBlock: TCodeTreeNode;
@@ -345,7 +345,6 @@ begin
     fCTLink.ResetMainScanner;
     fCTLink.CodeTool.BuildTree(fUsesSection=usMain);
     UsesNode:=UsesSectionNode;
-    BlockEndChar:=',';
     if Assigned(UsesNode) then begin      //uses section exists
       EndChar:=',';
       s:='';
@@ -354,8 +353,6 @@ begin
     end
     else begin                            //uses section does not exist
       EndChar:=';';
-      if fUnitsToAdd.Count=0 then
-        BlockEndChar:=';';
       s:=LineEnding;
       // ParentBlock should never be Nil. UsesNode=Nil only for implementation section.
       ParentBlock:=ParentBlockNode;
@@ -373,17 +370,15 @@ begin
     if DelphiOnlyUnits.Count>0 then begin
       if UsesNode=Nil then
         s:=s+'uses'+LineEnding;
-      s:=s+'  '+Join(DelphiOnlyUnits)+BlockEndChar+LineEnding;
+      s:=s+'  '+Join(DelphiOnlyUnits)+EndChar+LineEnding;
     end;
     s:=s+'{$ELSE}'+LineEnding;
     if LclOnlyUnits.Count>0 then begin
       if UsesNode=Nil then
         s:=s+'uses'+LineEnding;
-      s:=s+'  '+Join(LclOnlyUnits)+BlockEndChar+LineEnding;
+      s:=s+'  '+Join(LclOnlyUnits)+EndChar+LineEnding;
     end;
     s:=s+'{$ENDIF}';
-    if fUnitsToAdd.Count>0 then
-      s:=s+LineEnding+'  '+Join(fUnitsToAdd)+EndChar;
     if Assigned(UsesNode) then
       s:=s+LineEnding+'  ';
     // Now add the generated lines.
