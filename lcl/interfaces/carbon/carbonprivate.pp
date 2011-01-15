@@ -1245,10 +1245,23 @@ begin
 end;
 
 function TCarbonGroupBox.GetPreferredSize:TPoint;
+const
+  DefaultWidth = 8;
+  DefaultHeight = 22;
 var
   ContentRect: TRect;
+  BoundsRect: TRect;
 begin
-  Result:=inherited;
+  Result := inherited;
+  if GetBounds(BoundsRect) and
+     ((BoundsRect.Right - BoundsRect.Left) = Result.X) and
+     ((BoundsRect.Bottom - BoundsRect.Top) = Result.Y) then
+  begin
+    // OSX does not know the preferred size and returned us the bounds rect size
+    Result.X := DefaultWidth;
+    Result.Y := DefaultHeight;
+  end
+  else
   if GetClientRect(ContentRect) then
   begin
     Dec(Result.X, ContentRect.Right - ContentRect.Left);
