@@ -242,6 +242,7 @@ function FileIsReadableCached(const AFilename: string): boolean;
 function FileIsWritableCached(const AFilename: string): boolean;
 function FileIsTextCached(const AFilename: string): boolean;
 function FileAgeCached(const AFileName: string): Longint;
+function FileAgeToStr(aFileAge: longint): string;
 
 procedure InvalidateFileStateCache(const Filename: string = '');
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
@@ -3054,6 +3055,11 @@ end;
 function FileAgeCached(const AFileName: string): Longint;
 begin
   Result:=FileStateCache.FileAgeCached(AFilename);
+end;
+
+function FileAgeToStr(aFileAge: longint): string;
+begin
+  Result:=DateTimeToStr(FileDateToDateTime(aFileAge));
 end;
 
 procedure InvalidateFileStateCache(const Filename: string);

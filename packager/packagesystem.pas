@@ -3006,8 +3006,9 @@ begin
         and FileExistsCached(OtherStateFile)
         and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
-            ,' is newer than State file ',GetOwnerID);
+            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'" (',
+              FileAgeToStr(FileAgeCached(OtherStateFile)),')'
+            ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
           Result:=mrYes;
           exit;
         end;
