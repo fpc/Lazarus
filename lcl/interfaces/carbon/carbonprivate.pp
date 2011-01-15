@@ -161,6 +161,7 @@ type
     function GetForceEmbedInScrollView: Boolean; override;
   public
     function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
+    function GetPreferredSize: TPoint; override;
   end;
 
   { TCarbonWindow }
@@ -1122,6 +1123,12 @@ begin
   GetInfo(sz, sz, sz, org);
   dec(Result.X, Trunc(org.x));
   dec(Result.Y, Trunc(org.y));
+end;
+
+function TCarbonScrollingWinControl.GetPreferredSize: TPoint;
+begin
+  Result.X:=0;
+  Result.Y:=0;
 end;
 
 { TCarbonGroupBox }
