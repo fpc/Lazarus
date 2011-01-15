@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, StdCtrls, ExtCtrls, fpcunit,
-  testglobals;
+  WSControls, testglobals;
 
 type
 
@@ -89,6 +89,8 @@ var
   Form1: TForm;
   ScrollBox1: TScrollBox;
   Panel1: TPanel;
+  IntfPreferredWidth: integer;
+  IntfPreferredHeight: integer;
 begin
   // create a scrollbox on a form and put a small panel into the box
   Form1:=TForm.Create(nil);
@@ -105,6 +107,13 @@ begin
   Panel1.Parent:=ScrollBox1;
   Form1.Show;
   Application.ProcessMessages;
+
+  IntfPreferredWidth:=0;
+  IntfPreferredHeight:=0;
+  TWSWinControlClass(ScrollBox1.WidgetSetClass).GetPreferredSize(ScrollBox1,
+                             IntfPreferredWidth, IntfPreferredHeight, false);
+  AssertEquals('ScrollBox must not have interface preferred width',0,IntfPreferredWidth);
+  AssertEquals('ScrollBox must not have interface preferred height',0,IntfPreferredHeight);
 
   //writeln('TTestPreferredSize.TestScrollBoxOneChildPanel Range=',ScrollBox1.HorzScrollBar.Range,' ',ScrollBox1.HorzScrollBar.Page,' ',ScrollBox1.HorzScrollBar.Visible);
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs 60',60,ScrollBox1.HorzScrollBar.Range);
