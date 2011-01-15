@@ -118,8 +118,8 @@ begin
   //writeln('TTestPreferredSize.TestScrollBoxOneChildPanel Range=',ScrollBox1.HorzScrollBar.Range,' ',ScrollBox1.HorzScrollBar.Page,' ',ScrollBox1.HorzScrollBar.Visible);
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs 60',60,ScrollBox1.HorzScrollBar.Range);
   AssertEquals('ScrollBox1.VertScrollBar.Range should be the needed Bottom of all childs 50',50,ScrollBox1.VertScrollBar.Range);
-  AssertEquals('ScrollBox shows HorzScrollBar without need',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
-  AssertEquals('ScrollBox shows VertScrollBar without need',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox shows HorzScrollBar for empty box',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox shows VertScrollBar for empty box',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
 
   // now enlarge the panel, so that a HorzScrollBar is needed
   Panel1.Width:=150;
@@ -127,8 +127,8 @@ begin
 
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs 150',150,ScrollBox1.HorzScrollBar.Range);
   AssertEquals('ScrollBox1.VertScrollBar.Range should be the needed Bottom of all childs 50',50,ScrollBox1.VertScrollBar.Range);
-  AssertEquals('ScrollBox should show HorzScrollBar',true,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
-  AssertEquals('ScrollBox shows VertScrollBar without need',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox must show HorzScrollBar for oversized panel',true,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox shows VertScrollBar for small panel',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
 
   // now Align the panel, so that the panel fills the whole client area
   // no scrollbars should be visible
@@ -140,8 +140,8 @@ begin
   AssertEquals('Panel1.Align=alClient, Panel1.Top should be 0',0,Panel1.Top);
   AssertEquals('Panel1.Align=alClient, Panel1.Right should be ScrollBox1.ClientWidth',ScrollBox1.ClientWidth,Panel1.Left+Panel1.Width);
   AssertEquals('Panel1.Align=alClient, Panel1.Bottom should be ScrollBox1.ClientHeight',ScrollBox1.ClientHeight,Panel1.Top+Panel1.Height);
-  AssertEquals('ScrollBox shows HorzScrollBar without need',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
-  AssertEquals('ScrollBox shows VertScrollBar without need',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox shows HorzScrollBar for fitting panel',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
+  AssertEquals('ScrollBox shows VertScrollBar for fitting panel',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs',Panel1.Constraints.MinWidth,ScrollBox1.HorzScrollBar.Range);
   AssertEquals('ScrollBox1.VertScrollBar.Range should be the needed Bottom of all childs',Panel1.Constraints.MinHeight,ScrollBox1.VertScrollBar.Range);
 
