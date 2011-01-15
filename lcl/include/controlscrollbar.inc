@@ -231,12 +231,13 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredWidth:=0;
     PreferredHeight:=0;
     FControl.GetPreferredSize(PreferredWidth,PreferredHeight,true,false);
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
     CurClientRect := FControl.ClientRect;
     if PreferredWidth>0 then
       PreferredWidth:=Max(0,PreferredWidth-(FControl.Width-CurClientRect.Right));
     if PreferredHeight>0 then
       PreferredHeight:=Max(0,PreferredHeight-(FControl.Height-CurClientRect.Bottom));
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight]);
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
   end;
 
   procedure AutoCalcVRange;

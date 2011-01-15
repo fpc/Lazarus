@@ -7916,7 +7916,8 @@ begin
       ' Cur=',Width,'x',Height,
       ' Client=',CurClientRect.Right,'x',CurClientRect.Bottom,
       ' NewWidth=',NewWidth,' NewHeight=',NewHeight,
-      ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight]);
+      ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight,
+      ' IntfPref+AdjustClientRect=',PreferredWidth,'x',PreferredHeight]);
     {$ENDIF}
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
