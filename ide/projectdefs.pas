@@ -1429,6 +1429,7 @@ begin
       +'end.'+le
       +le;
     AProject.MainFile.SetSourceText(NewSource);
+    AProject.LazCompilerOptions.Win32GraphicApp:=false;
   end;
 end;
 
@@ -1500,6 +1501,7 @@ begin
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
+  AProject.LazCompilerOptions.Win32GraphicApp:=false;
 end;
 
 function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
@@ -1564,6 +1566,7 @@ begin
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
+  AProject.LazCompilerOptions.Win32GraphicApp:=false;
 
   // create program source
   NewSource:=TStringList.Create;
