@@ -2938,6 +2938,7 @@ var
   TempInstalled, CanContinue: Boolean;
   CommandObj: TGDBMIDebuggerCommandExecute;
   {$IFDEF UNIX}
+  s: String;
   h: THandle;
   {$ENDIF}
 begin
