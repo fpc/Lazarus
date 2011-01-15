@@ -471,6 +471,7 @@ components/codetools/examples/scanexamples/indentation.pas svneol=native#text/pl
 components/codetools/examples/scanexamples/methodjump1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/missingh2pasdirectives.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/modemacpas.pas svneol=native#text/plain
+components/codetools/examples/scanexamples/nestedclasses.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/overloadedfunction.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/publishedvars.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/resourcetest1.pas svneol=native#text/plain
