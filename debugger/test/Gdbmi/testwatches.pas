@@ -10,7 +10,7 @@ uses
 
 const
   BREAK_LINE_FOOFUNC = 113;
-  RUN_GDB_TEST_ONLY = 1; // -1 run all
+  RUN_GDB_TEST_ONLY = -1; // -1 run all
   RUN_TEST_ONLY = -1; // -1 run all
 
 (*  TODO:
@@ -479,7 +479,7 @@ procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
   if FDbgOutPutEnable then
     FDbgOutPut := FDbgOutPut + AText;
-  if DbgLog then
+  if DbgLog and (DbgMemo <> nil) then
     DbgMemo.Lines.Add(AText);
 end;
 
@@ -576,8 +576,8 @@ begin
     FWatches := TBaseWatches.Create(TBaseWatch);
     dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
 
-    if RUN_TEST_ONLY >= 0 then begin
-      dbg.OnDbgOutput  := @DoDbgOutput;
+    dbg.OnDbgOutput  := @DoDbgOutput;
+    if (RUN_TEST_ONLY >= 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
       DbgLog := False;
       if DbgForm = nil then begin
         DbgForm := TForm.Create(Application);
