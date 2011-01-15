@@ -10,6 +10,7 @@ uses
 
 const
   BREAK_LINE_FOOFUNC = 113;
+  RUN_GDB_TEST_ONLY = 1; // -1 run all
   RUN_TEST_ONLY = -1; // -1 run all
 
 (*  TODO:
@@ -51,6 +52,8 @@ type
   TTestWatches = class(TGDBTestCase)
   private
     FWatches: TBaseWatches;
+    FDbgOutPut: String;
+    FDbgOutPutEnable: Boolean;
     procedure DoDbgOutput(Sender: TObject; const AText: String);
   public
     procedure DebugInteract(dbg: TGDBMIDebugger);
@@ -104,6 +107,16 @@ const
   Match_ArgTFoo1 = '<TFoo> = \{.*(<|vptr\$)TObject>?.+ValueInt = 31';
   {%ebdregion    * Classes * }
   // Todo: Dwarf fails with dereferenced var pointer types
+
+  // direct commands to gdb, to check assumptions
+  // only Exp and Mtch
+  ExpectGdbBrk1NoneNil: Array [1..4] of TWatchExpectation = (
+    (Exp: 'ptype ArgTFoo'; Fmt: wdfDefault; Mtch: 'type = \^TFoo = class : PUBLIC TObject';  Kind: skClass; TpNm: '';  Flgs: []),
+    (Exp: 'ptype ArgTFoo^'; Fmt: wdfDefault; Mtch: 'type = TFoo = class : PUBLIC TObject';  Kind: skClass; TpNm: '';  Flgs: []),
+
+    (Exp: '-data-evaluate-expression sizeof(ArgTFoo)'; Fmt: wdfDefault; Mtch: 'value="(4|8)"';  Kind: skClass; TpNm: '';  Flgs: []),
+    (Exp: '-data-evaluate-expression sizeof(ArgTFoo^)'; Fmt: wdfDefault; Mtch: 'value="\d\d+"';  Kind: skClass; TpNm: '';  Flgs: [])//,
+  );
 
   ExpectBrk1NoneNil: Array [1..121] of TWatchExpectation = (
     {%region    * records * }
@@ -464,6 +477,8 @@ end;
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
+  if FDbgOutPutEnable then
+    FDbgOutPut := FDbgOutPut + AText;
   if DbgLog then
     DbgMemo.Lines.Add(AText);
 end;
@@ -494,7 +509,7 @@ var FailText: String;
     Result := False;
   end;
 
-  procedure TestWatch(Name: String; AWatch: TTestWatch; Data: TWatchExpectation);
+  procedure TestWatch(Name: String; AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
   const KindName: array [TDBGSymbolKind] of string =
      ('skClass', 'skRecord', 'skEnum', 'skSet', 'skProcedure', 'skFunction', 'skSimple', 'skPointer', 'skVariant');
   var
@@ -505,11 +520,15 @@ var FailText: String;
 
     Name := Name + ' ' + Data.Exp + ' (' + TWatchDisplayFormatNames[Data.Fmt] + ')';
     try
-      AWatch.Master.Value; // trigger read
-      AssertTrue  (Name+ ' (HasValue)',   AWatch.HasValue);
-      AssertFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
+      if AWatch <> nil then begin;
+        AWatch.Master.Value; // trigger read
+        AssertTrue  (Name+ ' (HasValue)',   AWatch.HasValue);
+        AssertFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
+        s := AWatch.Value;
+      end
+      else
+        s := WatchValue;
 
-      s := AWatch.Value;
       rx := TRegExpr.Create;
       rx.ModifierI := true;
       rx.Expression := Data.Mtch;
@@ -520,7 +539,7 @@ var FailText: String;
         FailText := FailText + LineEnding + e.Message;
     end;
     try
-      if Data.TpNm <> '' then begin;
+      if (AWatch <> nil) and (Data.TpNm <> '') then begin
         AssertTrue(Name + ' has typeinfo',  AWatch.TypeInfo <> nil);
         AssertEquals(Name + ' kind',  KindName[Data.Kind], KindName[AWatch.TypeInfo.Kind]);
         if fTpMtch  in Data.Flgs
@@ -611,15 +630,36 @@ begin
     dbg.Run;
 
     (* Hit first breakpoint: Test *)
-    if RUN_TEST_ONLY >= 0 then begin
-      i := RUN_TEST_ONLY;
-      TestWatch('Brk1 ', WList[i], ExpectBrk1NoneNil[i]);
-    end
-    else
-      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
-        if not SkipTest(ExpectBrk1NoneNil[i]) then
-          TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBrk1NoneNil[i]);
-      end;
+    FDbgOutPutEnable := True;
+    if (RUN_TEST_ONLY < 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
+      if RUN_GDB_TEST_ONLY >= 0 then begin
+        i := RUN_GDB_TEST_ONLY;
+        FDbgOutPut := '';
+        dbg.TestCmd(ExpectGdbBrk1NoneNil[i].Exp);
+        TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectGdbBrk1NoneNil[i], FDbgOutPut);
+      end
+      else
+        for i := low(ExpectGdbBrk1NoneNil) to high(ExpectGdbBrk1NoneNil) do begin
+          if not SkipTest(ExpectGdbBrk1NoneNil[i]) then begin
+            FDbgOutPut := '';
+            dbg.TestCmd(ExpectGdbBrk1NoneNil[i].Exp);
+            TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectGdbBrk1NoneNil[i], FDbgOutPut);
+          end;
+        end;
+    end;
+    FDbgOutPutEnable := False;
+
+    if (RUN_GDB_TEST_ONLY < 0) or (RUN_TEST_ONLY >= 0) then begin
+      if RUN_TEST_ONLY >= 0 then begin
+        i := RUN_TEST_ONLY;
+        TestWatch('Brk1 ', WList[i], ExpectBrk1NoneNil[i]);
+      end
+      else
+        for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
+          if not SkipTest(ExpectBrk1NoneNil[i]) then
+            TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBrk1NoneNil[i]);
+        end;
+    end;
 
     dbg.Run;
 
