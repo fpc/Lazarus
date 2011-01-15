@@ -170,11 +170,14 @@ type
 
   TGDBTypeProcessState =
     (gtpsInitial,
-     gtpsInitialPType,
-     gtpsInitialPType2, gtpsInitialPType3, // with "whaties Expr" // with "whaties Expr" and "ptype <whaties Expr>"
      gtpsSimplePointer,
-     gtpsClassWhatIs, gtpsClassNameWhatIs, gtpsClassNamePType
+     gtpsClass, gtpsClassPointer
     );
+  TGDBTypeProcessRequest =
+    (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
+     gptrPTypeExprDeRef, gptrPTypeExprDeDeRef  // "Foo^", "Foo^^"  for Foo=Object, or &Object
+    );
+  TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
   TGDBType = class(TDBGType)
   private
@@ -184,10 +187,14 @@ type
     FEvalRequest: PGDBPTypeRequest;
     FExpression: string;
     FClassIsPointer: Boolean;
+
     FProcessState: TGDBTypeProcessState;
-    FPTypeExprReq, FWhatIsExprReq: TGDBPTypeRequest;
-    FExtraReq: TGDBPTypeRequest;
+    FProccesReuestsMade: TGDBTypeProcessRequests;
+    FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
+
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
+    function RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
+    function IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
   public
     constructor CreateForExpression(const AnExpression: string;
                                     const AClassIsPointer: Boolean = False);
@@ -670,6 +677,59 @@ begin
   FEvalRequest := @AReq;
 end;
 
+function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
+
+  function ApplyBrackets(e: string): string;
+  var
+    i: Integer;
+    f: Boolean;
+  begin
+    Result := e;
+    if (e='') or ( (e[1] = '(') and (e[length(e)] = ')') ) then exit;
+    f := False;
+    for i := 1 to length(e) do
+      f := f or not(e[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
+    if f then
+      Result := '(' + Result + ')';
+  end;
+
+var
+  NeededReq: TGDBTypeProcessRequests;
+begin
+  NeededReq := ARequired - FProccesReuestsMade;
+  Result := NeededReq = [];
+  if Result then exit;
+
+  if (gptrPTypeOfWhatis in NeededReq) and not (gptrWhatisExpr in FProccesReuestsMade)
+  then begin
+    Exclude(NeededReq, gptrPTypeOfWhatis);
+    Include(NeededReq, gptrWhatisExpr);
+  end;
+
+  FProccesReuestsMade := FProccesReuestsMade + NeededReq;
+
+  if gptrPTypeExpr in NeededReq then
+    AddTypeReq(FReqResults[gptrPTypeExpr], 'ptype ' + FExpression);
+
+  if gptrWhatisExpr in NeededReq then
+    AddTypeReq(FReqResults[gptrWhatisExpr], 'whatis ' + FExpression);
+
+  if gptrPTypeExprDeRef in NeededReq then
+    AddTypeReq(FReqResults[gptrPTypeExprDeRef], 'ptype ' + ApplyBrackets(FExpression) + '^');
+
+  if gptrPTypeExprDeDeRef in NeededReq then
+    AddTypeReq(FReqResults[gptrPTypeExprDeDeRef], 'ptype ' + ApplyBrackets(FExpression) + '^^');
+
+  if gptrPTypeOfWhatis in NeededReq then
+    AddTypeReq(FReqResults[gptrPTypeOfWhatis], 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName));
+end;
+
+function TGDBType.IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
+begin
+  Result := (FReqResults[AReqType].Error <> '')
+         or (CheckResKind and (FReqResults[AReqType].Result.Kind = ptprkError));
+end;
+
 constructor TGDBType.CreateForExpression(const AnExpression: string;
   const AClassIsPointer: Boolean);
 begin
@@ -707,7 +767,7 @@ var
   begin
     FKind := skEnum;
 
-    S := PCLenToString(FPTypeExprReq.Result.Declaration);
+    S := PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration);
     S := GetPart(['('], [')'], S);
     if (S = '') or (S = '...') then
       exit;
@@ -722,7 +782,7 @@ var
   begin
     FKind := skProcedure;
 
-    S := PCLenToString(FPTypeExprReq.Result.Declaration);
+    S := PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration);
     S := GetPart(['('], [')'], S);
     if (S = '') then
       exit;
@@ -736,14 +796,14 @@ var
   begin
     FKind := skFunction;
 
-    S := PCLenToString(FPTypeExprReq.Result.Declaration);
+    S := PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration);
     S := GetPart(['('], [')'], S);
     if (S = '') then
       exit;
 
     FArguments := TGDBTypes.CreateFromCSV(S);
 
-    S := PCLenToString(FPTypeExprReq.Result.Declaration);
+    S := PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration);
     FResult := TGDBType.Create(skSimple, GetPart([' : '], [], S));
   end;
 
@@ -753,7 +813,7 @@ var
   begin
     FKind := skSet;
 
-    S := PCLenToString(FPTypeExprReq.Result.Declaration);
+    S := PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration);
     S := GetPart(['('], [')'], S);
     if (S = '') or (S = '...') then
       exit;
@@ -781,7 +841,7 @@ var
       FKind := skRecord;
 
     FFields := TDBGFields.Create;
-    InitLinesFrom(FPTypeExprReq);
+    InitLinesFrom(FReqResults[gptrPTypeExpr]);
 
     //concatenate all lines and skip last end
     for n := 1 to Lines.Count - 2 do begin
@@ -811,7 +871,7 @@ var
   begin
     include(FAttributes, saInternalPointer);
     FKind := skClass;
-    InitLinesFrom(FPTypeExprReq);
+    InitLinesFrom(FReqResults[gptrPTypeExpr]);
     FFields := TDBGFields.Create;
     if Lines.Count < 1 then exit;
     s := Lines[0];
@@ -882,103 +942,48 @@ var
     end;
   end;
 
-  procedure ProcessClassNamePType;
+  procedure ProcessClassPointer;
   begin
-    // Stabs
-      FTypeName := ClearAmpersand(PCLenToString(FWhatIsExprReq.Result.Name));
+    FProcessState := gtpsClassPointer;
+    if not RequireRequests([gptrWhatisExpr]) then
+      exit;
+
+      FKind := skPointer;
+      FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
       FInternalTypeName := FTypeName;
-
-    if (FExtraReq.Error <> '') or (FExtraReq.Result.Kind = ptprkError)
-    or (FExtraReq.Result.BaseName.Len = 0)
-    then begin
-      // FExtraReq failed;
-      debugln('Failed "PTYPE" request for class type name');
-      DoClass
-    end
-    else
-    if (not (ptprfPointer in FExtraReq.Result.Flags))
-    then begin
-      // Actual Class, Not a pointer
-      DoClass
-    end
-    else begin
-      // Pointer
-      FKind := skPointer;
-    end;
-    Result := True;
-    // ====> DONE
+      Result := True;
+      // ====> DONE
   end;
 
-  procedure ProcessClassNameWhatIs;
+  procedure ProcessClass;
+  var
+    t: TGDBTypeProcessRequest;
   begin
-    // Dwarf, Classes are always pointer
-    FTypeName := ClearAmpersand(PCLenToString(FWhatIsExprReq.Result.Name));
-    FInternalTypeName := FTypeName;
+    FProcessState := gtpsClass;
 
-    if (FExtraReq.Error <> '') or (FExtraReq.Result.Kind = ptprkError)
-    or (FExtraReq.Result.BaseName.Len = 0)
+    if saRefParam in FAttributes
+    then t := gptrPTypeExprDeDeRef  // &Class (var param; dwarf)
+    else t := gptrPTypeExprDeRef;   // Class
+
+    if not RequireRequests([gptrPTypeExpr, t])
+    then exit;
+
+    if IsReqError(t)
+    then debugln('Failed "ptype expr^[^]" request for class expression');
+
+    if (not IsReqError(t)) and (ptprfPointer in FReqResults[t].Result.Flags)
     then begin
-      // FExtraReq failed;
-      debugln('Failed "WHATIS" request for class type name');
-      DoClass
-    end
-    else
-    // dwarf, expect always pointer, but may have " = class"
-    if (not (ptprfPointer in FExtraReq.Result.Flags))
-    or (FExtraReq.Result.Kind = ptprkClass)
-    then begin
-      // Actual Class, Not a pointer
-      DoClass
+      ProcessClassPointer;
+      exit;
     end
     else begin
-      // Pointer
-      FKind := skPointer;
-    end;
-    Result := True;
-    // ====> DONE
-  end;
-
-  procedure ProcessClassWhatIs;
-  begin
-    if (FWhatIsExprReq.Error <> '') or (FWhatIsExprReq.Result.Kind = ptprkError)
-    or (FWhatIsExprReq.Result.BaseName.Len = 0)
-    then begin
-      // failed to get a classname => assume class
-      debugln('Failed "WHATIS" request for class expression');
-      FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
+      // Handle Error in ptype^ as normal class
+      // May need a whatis, if aliased names are needed "type TFooAlias = type TFoo"
+      FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
       FInternalTypeName := FTypeName;
       DoClass;
       Result := True;
       // ====> DONE
-      exit;
-    end;
-
-    if (ptprfParamByRef in FWhatIsExprReq.Result.Flags) then
-      include(FAttributes, saRefParam);
-
-    if (ptprfPointer in FWhatIsExprReq.Result.Flags)
-    and (FWhatIsExprReq.Result.Kind = ptprkSimple) // Typename alias, must be simple
-    then begin
-      // pointer to class
-      FKind := skPointer;
-      FTypeName := ClearAmpersand(PCLenToString(FWhatIsExprReq.Result.Name));
-      FInternalTypeName := FTypeName;
-      Result := True;
-      // ====> DONE
-      exit;
-    end;
-
-    if FClassIsPointer then begin
-      // Dwarf, Classes are always pointer      // need Whatis <type>
-      AddTypeReq(FExtraReq, 'whatis ' + PCLenToString(FWhatIsExprReq.Result.BaseName));
-      FProcessState := gtpsClassNameWhatIs;
-      // ====> state = ClassNameWhats
-    end
-    else begin
-      // Stabs        // need PType <type>
-      AddTypeReq(FExtraReq, 'ptype ' + PCLenToString(FWhatIsExprReq.Result.BaseName));
-        FProcessState := gtpsClassNamePType;
-        // ====> state = ClassNamePType
     end;
   end;
   {%endregion    * Class * }
@@ -986,16 +991,22 @@ var
   {%region    * Simple * }
   procedure ProcessSimplePointer;
   begin
+    FProcessState := gtpsSimplePointer;
+    // there may be multiply levels of pointer, get the name of this pointer
+    if not RequireRequests([gptrPTypeExpr, gptrWhatisExpr])
+    then exit;
+
     FKind := skPointer;
-    if (FWhatIsExprReq.Error = '') and (FWhatIsExprReq.Result.Kind = ptprkSimple) then begin
+    if not IsReqError(gptrWhatisExpr) and (FReqResults[gptrWhatisExpr].Result.Kind = ptprkSimple)
+    then begin
       // Whatis result is ok
-      if (ptprfParamByRef in FWhatIsExprReq.Result.Flags) then
+      if (ptprfParamByRef in FReqResults[gptrWhatisExpr].Result.Flags) then
         include(FAttributes, saRefParam);
-      FTypeName := ClearAmpersand(PCLenToString(FWhatIsExprReq.Result.Name));
+      FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
     end
     else begin
       // Whatis result failed
-      FTypeName := ClearAmpersand((PCLenToString(FPTypeExprReq.Result.Name)));
+      FTypeName := ClearAmpersand((PCLenToString(FReqResults[gptrPTypeExpr].Result.Name)));
     end;
     FInternalTypeName := FTypeName;
     Result := True;
@@ -1003,219 +1014,197 @@ var
   end;
   {%endregion    * Simple * }
 
-  procedure ProcessInitialPType;
+  procedure ProcessInitial;
   begin
-    if FPTypeExprReq.Error <> '' then begin
+    if FReqResults[gptrPTypeExpr].Error <> '' then begin
       FEvalError := True;
       exit;
     end;
 
-    if (ptprfParamByRef in FPTypeExprReq.Result.Flags) then
+    if (ptprfParamByRef in FReqResults[gptrPTypeExpr].Result.Flags) then
       include(FAttributes, saRefParam);
 
+    case FReqResults[gptrPTypeExpr].Result.Kind of
+      //ptprkError: ;
+      //ptprkSimple: ;
+      ptprkClass: begin
+          ProcessClass;
+          exit;
+        end;
+      //ptprkRecord: ;
+      //ptprkEnum: ;
+      //ptprkSet: ;
+      //ptprkArray: ;
+      //ptprkProcedure: ;
+      //ptprkFunction: ;
+    end;
 
-    if (ptprfPointer in FPTypeExprReq.Result.Flags)
-    and ( (FPTypeExprReq.Result.Kind in
+
+    if (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
+    and ( (FReqResults[gptrPTypeExpr].Result.Kind in
            [ptprkSimple, ptprkRecord, ptprkEnum, ptprkSet])
-         or (FClassIsPointer and (FPTypeExprReq.Result.Kind in
+         or (FClassIsPointer and (FReqResults[gptrPTypeExpr].Result.Kind in
                                   [ptprkProcedure, ptprkFunction])  )
         )
     then begin
-      // there may be multiply levels of pointer, get the name of this pointer
-      AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-      FProcessState := gtpsSimplePointer;
-      // ====> state = SimplePointer
+      ProcessSimplePointer;
       exit;
     end;
 
-    if (ptprfParamByRef in FPTypeExprReq.Result.Flags)
-    and not (FPTypeExprReq.Result.Kind in [ptprkError, ptprkClass])
+    if (ptprfParamByRef in FReqResults[gptrPTypeExpr].Result.Flags)
+    and not (FReqResults[gptrPTypeExpr].Result.Kind in [ptprkError])
     then begin
       // could be a pointer // need ptype of whatis
-      if FProcessState = gtpsInitialPType then begin
-        AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-        FProcessState := gtpsInitialPType2;
-        // ====> state = gtpsInitialPType2
-        exit;
-      end
-      else if (FProcessState = gtpsInitialPType2) and (FWhatIsExprReq.Result.BaseName.Len > 0)
+      if not RequireRequests([gptrWhatisExpr])
+      then exit;
+
+      if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0)
       then begin
-        AddTypeReq(FExtraReq, 'ptype ' + PCLenToString(FWhatIsExprReq.Result.BaseName));
-        FProcessState := gtpsInitialPType3;
-        // ====> state = gtpsInitialPType2
-        exit;
-      end
-      else // must be gtpsInitialPType3
-      if (FExtraReq.Error = '')  and (ptprfPointer in FExtraReq.Result.Flags) then begin
-        // pointer
-        FKind := skPointer;
-        FTypeName := ClearAmpersand(PCLenToString(FWhatIsExprReq.Result.Name));
-        FInternalTypeName := FTypeName;
-        Result := True;
-        // ====> DONE
-        exit;
+        if not RequireRequests([gptrPTypeOfWhatis])
+        then exit;
+
+        if (not IsReqError(gptrPTypeOfWhatis, False))
+        and (ptprfPointer in FReqResults[gptrPTypeOfWhatis].Result.Flags) then begin
+          // pointer
+          FKind := skPointer;
+          FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
+          FInternalTypeName := FTypeName;
+          Result := True;
+          // ====> DONE
+          exit;
+        end;
       end;
     end;
 
-    case FPTypeExprReq.Result.Kind of
+    case FReqResults[gptrPTypeExpr].Result.Kind of
       ptprkError: begin
           // could be empty pointer @ArgProcedure
           Result := True; // nothing to be done, keep simple type, no name
         end;
       ptprkSimple: begin
           // may only need whatis, if current name isn't usable?
-          if FProcessState = gtpsInitialPType then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsInitialPType2;
-            // ====> state = gtpsInitialPType2
-          end
-          else begin
-            if (FWhatIsExprReq.Result.BaseName.Len > 0) then
-              FTypeName := PCLenToString(FWhatIsExprReq.Result.BaseName)
-            else
-              FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
-            FInternalTypeName := FTypeName; // There may be an alias?
-            FKind := skSimple;
-            Result := True;
-            // ====> DONE
-          end;
-        end;
-      ptprkClass: begin
-          AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-          FProcessState := gtpsClassWhatIs; // ====> state = ClassWhatis
+          if not RequireRequests([gptrWhatisExpr])
+          then exit;
+
+          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
+            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
+          else
+            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+          FInternalTypeName := FTypeName; // There may be an alias?
+          FKind := skSimple;
+          Result := True;
+          // ====> DONE
         end;
       ptprkRecord: begin
-          FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
+          FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
           FInternalTypeName := FTypeName; // There may be an alias?
           DoRecord;
           Result := True;
           // ====> DONE
         end;
       ptprkEnum: begin
-          FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
+          FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
           FInternalTypeName := FTypeName; //s There may be an alias?
           DoEnum;
           Result := True;
           // ====> DONE
         end;
       ptprkSet: begin
-          if FProcessState = gtpsInitialPType then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsInitialPType2;
-            // ====> state = gtpsInitialPType2
-          end
-          else begin
-            if (FWhatIsExprReq.Result.BaseName.Len > 0) then
-              FTypeName := PCLenToString(FWhatIsExprReq.Result.BaseName)
-            else
-              FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
-            FInternalTypeName := FTypeName;
-            DoSet;
-            Result := True;
-            // ====> DONE
-          end;
+          if not RequireRequests([gptrWhatisExpr])
+          then exit;
+
+          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
+            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
+          else
+            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+          FInternalTypeName := FTypeName;
+          DoSet;
+          Result := True;
+          // ====> DONE
         end;
       ptprkArray: begin
-          if FProcessState = gtpsInitialPType then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsInitialPType2;
-            // ====> state = gtpsInitialPType2
-          end
-          else begin
-            FKind := skSimple;
-            if (FWhatIsExprReq.Result.BaseName.Len > 0) then
-              FTypeName := PCLenToString(FWhatIsExprReq.Result.BaseName)
-            else
-              FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
-            FInternalTypeName := FTypeName;
-            Result := True;
-            // ====> DONE
-          end;
+          if not RequireRequests([gptrWhatisExpr])
+          then exit;
+
+          FKind := skSimple;
+          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
+            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
+          else
+            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+          FInternalTypeName := FTypeName;
+          Result := True;
+          // ====> DONE
         end;
       ptprkProcedure: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if FClassIsPointer // Dwarf
-          and (ptprfPointer in FPTypeExprReq.Result.Flags)
+          and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
           then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsSimplePointer;
-            // ====> state = SimplePointer
-          end
-          else
-          if FProcessState = gtpsInitialPType then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsInitialPType2;
-            // ====> state = gtpsInitialPType2
-          end
-          else begin
-            if (FWhatIsExprReq.Result.BaseName.Len > 0) then
-              FTypeName := PCLenToString(FWhatIsExprReq.Result.BaseName)
-            else
-              FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
-            if FTypeName = '' then FTypeName := 'procedure';
-            FInternalTypeName := FTypeName;
-            DoProcedure;
-            Result := True;
-            // ====> DONE
+            ProcessSimplePointer;
+            exit;
           end;
+
+          if not RequireRequests([gptrWhatisExpr])
+          then exit;
+
+          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
+            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
+          else
+            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+          if FTypeName = '' then FTypeName := 'procedure';
+          FInternalTypeName := FTypeName;
+          DoProcedure;
+          Result := True;
+          // ====> DONE
         end;
       ptprkFunction: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if FClassIsPointer // Dwarf
-          and (ptprfPointer in FPTypeExprReq.Result.Flags)
+          and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
           then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsSimplePointer;
-            // ====> state = SimplePointer
-          end
+            ProcessSimplePointer;
+            exit;
+          end;
+
+          if not RequireRequests([gptrWhatisExpr])
+          then exit;
+
+          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
+            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
           else
-          if FProcessState = gtpsInitialPType then begin
-            AddTypeReq(FWhatIsExprReq, 'whatis ' + FExpression);
-            FProcessState := gtpsInitialPType2;
-            // ====> state = gtpsInitialPType2
-          end
-          else begin
-            if (FWhatIsExprReq.Result.BaseName.Len > 0) then
-              FTypeName := PCLenToString(FWhatIsExprReq.Result.BaseName)
-            else
-              FTypeName := PCLenToString(FPTypeExprReq.Result.BaseName);
-            if FTypeName = '' then FTypeName := 'function';
-            FInternalTypeName := FTypeName;
-            DoFunction;
-            Result := True;
-            // ====> DONE
-        end;
+            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
+          if FTypeName = '' then FTypeName := 'function';
+          FInternalTypeName := FTypeName;
+          DoFunction;
+          Result := True;
+          // ====> DONE
       end;
     end;
   end;
 
-  procedure InitializeProcessing;
-  begin
-    AddTypeReq(FPTypeExprReq, 'ptype ' + FExpression);
-    FProcessState := gtpsInitialPType;
-  end;
-
 var
   OldProcessState: TGDBTypeProcessState;
+  OldReqMade: TGDBTypeProcessRequests;
 begin
   Result := False;
   FEvalRequest := nil;
   Lines := nil;
   OldProcessState := FProcessState;
+  OldReqMade := FProccesReuestsMade;
+
+  if not RequireRequests([gptrPTypeExpr])
+  then exit;
 
   case FProcessState of
-    gtpsInitial:         InitializeProcessing;
-    gtpsInitialPType,
-    gtpsInitialPType2,
-    gtpsInitialPType3:   ProcessInitialPType;
+    gtpsInitial:         ProcessInitial;
     gtpsSimplePointer:   ProcessSimplePointer;
-    gtpsClassWhatIs:     ProcessClassWhatIs;
-    gtpsClassNameWhatIs: ProcessClassNameWhatIs;
-    gtpsClassNamePType:  ProcessClassNamePType;
+    gtpsClass:           ProcessClass;
+    gtpsClassPointer:    ProcessClassPointer;
   end;
 
   FreeAndNil(Lines);
-  if (FProcessState = OldProcessState) and (not Result) and (FEvalRequest = nil)
+  if (FProcessState = OldProcessState) and (FProccesReuestsMade = OldReqMade)
+  and (not Result) and (FEvalRequest = nil)
   then begin
     debugln('ERROR: detected state loop in ProcessExpression');
     Result := True;
