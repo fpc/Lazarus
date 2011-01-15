@@ -114,8 +114,8 @@ const
     (Exp: 'ptype ArgTFoo'; Fmt: wdfDefault; Mtch: 'type = \^TFoo = class : PUBLIC TObject';  Kind: skClass; TpNm: '';  Flgs: []),
     (Exp: 'ptype ArgTFoo^'; Fmt: wdfDefault; Mtch: 'type = TFoo = class : PUBLIC TObject';  Kind: skClass; TpNm: '';  Flgs: []),
 
-    (Exp: '-data-evaluate-expression sizeof(ArgTFoo)'; Fmt: wdfDefault; Mtch: 'value="(4|8)"';  Kind: skClass; TpNm: '';  Flgs: []),
-    (Exp: '-data-evaluate-expression sizeof(ArgTFoo^)'; Fmt: wdfDefault; Mtch: 'value="\d\d+"';  Kind: skClass; TpNm: '';  Flgs: [])//,
+    (Exp: '-data-evaluate-expression sizeof(ArgTFoo)'; Fmt: wdfDefault; Mtch: 'value="(4|8)"|(parse|syntax) error in expression';  Kind: skClass; TpNm: '';  Flgs: []),
+    (Exp: '-data-evaluate-expression sizeof(ArgTFoo^)'; Fmt: wdfDefault; Mtch: 'value="\d\d+"|(parse|syntax) error in expression';  Kind: skClass; TpNm: '';  Flgs: [])//,
   );
 
   ExpectBrk1NoneNil: Array [1..121] of TWatchExpectation = (
