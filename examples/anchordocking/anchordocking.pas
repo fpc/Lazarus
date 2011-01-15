@@ -3875,6 +3875,7 @@ begin
       // there are multiple splitters behind
       exit;
   end;
+  if RotateSplitter=nil then exit;
   // check that all siblings at RotateSplitter are large enough to shrink
   for i:=0 to RotateSplitter.AnchoredControlCount-1 do begin
     Sibling:=RotateSplitter.AnchoredControls[i];
