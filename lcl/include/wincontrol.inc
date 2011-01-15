@@ -7899,11 +7899,17 @@ begin
     finally
       Layout.Free;
     end;
-    
+
+    NewWidth:=0;
+    NewHeight:=0;
     // add the control border around the client area
     CurClientRect := GetClientRect;
-    NewWidth:=Width-CurClientRect.Right+NewClientWidth;
-    NewHeight:=Height-CurClientRect.Bottom+NewClientHeight;
+    if (NewClientWidth>0)
+    or ((NewClientWidth=0) and (csAutoSize0x0 in ControlStyle)) then
+      NewWidth:=Width-CurClientRect.Right+NewClientWidth;
+    if (NewClientHeight>0)
+    or ((NewClientHeight=0) and (csAutoSize0x0 in ControlStyle)) then
+      NewHeight:=Height-CurClientRect.Bottom+NewClientHeight;
     {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
@@ -7915,9 +7921,11 @@ begin
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
   end;
-  if (PreferredWidth>0) then
+  if (PreferredWidth>0)
+  or ((PreferredWidth=0) and (csAutoSize0x0 in ControlStyle)) then
     inc(PreferredWidth,BorderSpacing.InnerBorder*2);
-  if PreferredHeight>0 then
+  if (PreferredHeight>0)
+  or ((PreferredHeight=0) and (csAutoSize0x0 in ControlStyle)) then
     inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),

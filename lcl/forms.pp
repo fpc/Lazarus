@@ -86,7 +86,7 @@ type
 
   TControlScrollBar = class(TPersistent)
   private
-    FAutoRange : Longint;
+    FAutoRange : Longint; // = FRange - ClientSize, >=0
     FIncrement: TScrollBarInc;
     FKind: TScrollBarKind;
     FPage: TScrollBarInc;
@@ -107,7 +107,6 @@ type
     function GetRange: Integer; virtual;
     function GetSize: integer; virtual;
     function GetSmooth: Boolean; virtual;
-    function GetVisible: Boolean; virtual;
     function HandleAllocated: boolean; virtual;
     function IsRangeStored: boolean; virtual;
     procedure AutoCalcRange; virtual;
@@ -130,10 +129,12 @@ type
   {$endif}
     function GetHorzScrollBar: TControlScrollBar; virtual;
     function GetVertScrollBar: TControlScrollBar; virtual;
+  protected
+    function ScrollBarShouldBeVisible: Boolean; virtual; // should the widget be made visible?
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
-    function IsScrollBarVisible: Boolean; virtual;
+    function IsScrollBarVisible: Boolean; virtual; // returns current widget state
     function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
@@ -148,7 +149,7 @@ type
     property Position: Integer read GetPosition write SetPosition default 0; // 0..Range-Page
     property Range: Integer read GetRange write SetRange stored IsRangeStored default 0; // >=Page
     property Tracking: Boolean read FTracking write SetTracking default False;
-    property Visible: Boolean read GetVisible write SetVisible default True;
+    property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
   { TScrollingWinControl }
@@ -182,7 +183,6 @@ type
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
     procedure UpdateScrollbars;
-    function HasVisibleScrollbars: boolean; virtual;
     class function GetControlClassDefaultSize: TSize; override;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
   published
@@ -1590,6 +1590,7 @@ function WindowStateToStr(const State: TWindowState): string;
 function StrToWindowState(const Name: string): TWindowState;
 function dbgs(const State: TWindowState): string; overload;
 function dbgs(const Action: TCloseAction): string; overload;
+function dbgs(const Kind: TScrollBarKind): string; overload;
 
 type
   TFocusState = Pointer;
@@ -1770,6 +1771,14 @@ end;
 function dbgs(const Action: TCloseAction): string; overload;
 begin
   Result:=GetEnumName(TypeInfo(TCloseAction),ord(Action));
+end;
+
+function dbgs(const Kind: TScrollBarKind): string;
+begin
+  if Kind=sbVertical then
+    Result:='sbVertical'
+  else
+    Result:='sbHorizontal';
 end;
 
 //------------------------------------------------------------------------------

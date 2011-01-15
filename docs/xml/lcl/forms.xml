@@ -809,8 +809,10 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Visible">
-        <short>Is the scroll bar visible?</short>
-        <descr>Reads or writes flag to determine visibility, and sets a flag if the property is stored</descr>
+        <short>Can the scroll bar be made visible?</short>
+        <descr>Reads or writes flag to determine visibility, and sets a flag if the property is stored.
+The Handle object (widget) is made visible if (Visible=true) and (Range&gt;Page).
+To get the current visible state of the widget use the method IsScrollBarVisible.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
