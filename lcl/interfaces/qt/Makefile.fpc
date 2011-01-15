@@ -1,8 +1,3 @@
-#   $Id$
-#
-#   Makefile.fpc for Lazarus for Free Pascal
-#   
-
 [package]
 main=lcl
 
@@ -24,11 +19,14 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT) compiled
 

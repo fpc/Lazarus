@@ -1,9 +1,3 @@
-#
-#   $Id$
-#
-#   Makefile.fpc for Lazarus for Free Pascal
-#
-
 [package]
 main=lcl
 
