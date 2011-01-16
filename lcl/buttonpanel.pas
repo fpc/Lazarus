@@ -82,6 +82,7 @@ type
     procedure UpdateButtonOrder;
     procedure UpdateSizes;
     procedure UpdateButtonLayout;
+    function IsLastButton(AControl: TControl): boolean;
   protected
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
@@ -329,6 +330,21 @@ begin
   end;
 end;
 
+function TCustomButtonPanel.IsLastButton(AControl: TControl): boolean;
+// returns true if AControl is the right/bottommost of the TPanelBitBtn
+// Note: pbHelp could be the only button, then it is the last button
+var
+  i: TPanelButton;
+begin
+  if not AControl.IsControlVisible then exit(false);
+  if not (AControl is TPanelBitBtn) then exit(false);
+  for i:=low(FButtons) to pred(high(FButtons)) do
+    if (FButtons[i]<>nil) and FButtons[i].IsControlVisible
+    and (FButtons[i].Tag>AControl.Tag) then
+      exit(false); // there is a higher one
+  Result:=true;
+end;
+
 procedure TCustomButtonPanel.UpdateButtonOrder;
 const
   TabOrders: array[TButtonOrder, 0..3] of TPanelButton = (
@@ -529,25 +545,19 @@ end;
 
 function TCustomButtonPanel.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
 begin
+  // bevel is always the very first
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
-
-  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
-  if not (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
-  begin
-    if AControl2 = FButtons[pbHelp] then
-      Exit(False)
-    else
-      Exit(True);
-  end
-  else
-  if (AControl1 is TPanelBitBtn) and not (AControl2 is TPanelBitBtn) then
-  begin
-    if AControl1 = FButtons[pbHelp] then
-      Exit(True)
-    else
-      Exit(False);
-  end;
+  // the help button is the second
+  if AControl1 = FButtons[pbHelp] then Exit(True);
+  if AControl2 = FButtons[pbHelp] then Exit(False);
+  // user defined controls comes before the normal buttons
+  if (not (AControl1 is TPanelBitBtn)) and (AControl2 is TPanelBitBtn) then
+    Exit(True)
+  else if (AControl1 is TPanelBitBtn) and (not (AControl2 is TPanelBitBtn)) then
+    Exit(False);
+  // sort for tag
+  Result := TWinControl(AControl2).TabOrder > TWinControl(AControl1).TabOrder;
 end;
 
 procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl;
@@ -565,46 +575,40 @@ begin
   else
     BevelSpacing := 0;
 
-  if AControl=FButtons[pbHelp] then
+  if Align in [alLeft,alRight] then
   begin
-    if Align in [alLeft,alRight] then
+    // put top or bottom
+    ANewLeft:=AlignRect.Left;
+    ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-BevelSpacing);
+    if Align=alRight then
+      inc(ANewLeft,BevelSpacing);
+    if AControl=FButtons[pbHelp] then
     begin
-      // put at top
-      ANewLeft:=AlignRect.Left;
-      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-BevelSpacing);
-      if Align=alRight then
-        inc(ANewLeft,BevelSpacing);
-      ANewTop:=AlignRect.Top+Spacing;
+      ANewTop:=AlignRect.Top; // no Spacing in front of the first button
       AlignRect.Top:=Min(AlignRect.Bottom,ANewTop+ANewHeight);
-    end else
-    begin
-      // put at left
-      ANewTop:=AlignRect.Top;
-      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-BevelSpacing);
-      if Align=alBottom then
-        inc(ANewTop,BevelSpacing);
-      ANewLeft:=AlignRect.Left+Spacing;
-      AlignRect.Left:=Min(AlignRect.Right,ANewLeft+ANewWidth);
+    end else begin
+      ANewTop:=AlignRect.Bottom-ANewHeight;
+      if not IsLastButton(AControl) then
+        dec(ANewTop,Spacing);
+      AlignRect.Bottom:=Max(AlignRect.Top,ANewTop);
     end;
   end else
   begin
-    if Align in [alLeft,alRight] then
+    // put left or right
+    ANewTop:=AlignRect.Top;
+    ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-BevelSpacing);
+    if Align=alBottom then
+      inc(ANewTop,BevelSpacing);
+    if AControl=FButtons[pbHelp] then
     begin
-      // put at bottom
-      ANewLeft:=AlignRect.Left;
-      ANewWidth:=AControl.Constraints.MinMaxWidth(AlignRect.Right-ANewLeft-BevelSpacing);
-      if Align=alRight then
-        inc(ANewLeft,BevelSpacing);
-      ANewTop:=AlignRect.Bottom-ANewHeight-Spacing;
-      AlignRect.Bottom:=Max(AlignRect.Top,ANewTop);
-    end else
-    begin
-      // put at right
-      ANewTop:=AlignRect.Top;
-      ANewHeight:=AControl.Constraints.MinMaxHeight(AlignRect.Bottom-ANewTop-BevelSpacing);
-      if Align=alBottom then
-        inc(ANewTop,BevelSpacing);
-      ANewLeft:=AlignRect.Right-ANewWidth-Spacing;
+      // put left
+      ANewLeft:=AlignRect.Left; // no Spacing in front of the first button
+      AlignRect.Left:=Min(AlignRect.Right,ANewLeft+ANewWidth);
+    end else begin
+      // put right
+      ANewLeft:=AlignRect.Right-ANewWidth;
+      if not IsLastButton(AControl) then
+        dec(ANewLeft,Spacing);
       AlignRect.Right:=Max(AlignRect.Left,ANewLeft);
     end;
   end;
@@ -622,11 +626,6 @@ var
 begin
   MinWidth:=0;
   MinHeight:=0;
-  // add on the left/top of the buttons
-  if Align in [alLeft,alRight] then
-    inc(MinHeight,Spacing)
-  else
-    inc(MinWidth,Spacing);
   // add buttons
   for i:=0 to ControlCount-1 do
   begin
@@ -638,11 +637,15 @@ begin
     AControl.GetPreferredSize(CtrlPrefWidth,CtrlPrefHeight);
     if Align in [alLeft,alRight] then
     begin
-      inc(MinHeight,CtrlPrefHeight+Spacing);
+      inc(MinHeight,CtrlPrefHeight);
+      if not IsLastButton(AControl) then
+        inc(MinHeight,Spacing);
       MinWidth:=Max(MinWidth,CtrlPrefWidth);
     end
     else begin
-      inc(MinWidth,CtrlPrefWidth+Spacing);
+      inc(MinWidth,CtrlPrefWidth);
+      if not IsLastButton(AControl) then
+        inc(MinWidth,Spacing);
       MinHeight:=Max(MinHeight,CtrlPrefHeight);
     end;
   end;
