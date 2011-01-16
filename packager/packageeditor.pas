@@ -38,11 +38,11 @@ interface
 
 uses
   // LCL FCL
-  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
-  Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
+  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ComCtrls, Buttons,
+  LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
-  MenuIntf, HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg,
-  PackageIntf, IDEDialogs,
+  IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
+  FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
@@ -136,6 +136,7 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
+    Splitter1: TSplitter;
     // toolbar
     ToolBar: TToolBar;
     // buttons
@@ -365,7 +366,7 @@ procedure RegisterStandardPackageEditorMenuItems;
 
 implementation
 
-uses Math, IDEImagesIntf;
+{$R *.lfm}
 
 var
   ImageIndexFiles: integer;
@@ -1406,14 +1407,7 @@ begin
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
   
-  ToolBar := TToolBar.Create(Self);
-  ToolBar.Name := 'ToolBar';
   ToolBar.Images := IDEImages.Images_16;
-  ToolBar.ShowCaptions := True;
-  ToolBar.ButtonHeight := 46;
-  ToolBar.Height := 48;
-  ToolBar.AutoSize := True;
-  ToolBar.Parent := Self;
 
   SaveBitBtn := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
@@ -1428,146 +1422,32 @@ begin
   HelpBitBtn := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
   MoreBitBtn := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
 
-  FilesPopupMenu := TPopupMenu.Create(Self);
-  with FilesPopupMenu do
-  begin
-    Name := 'FilesPopupMenu';
-    OnPopup := @FilesPopupMenuPopup;
-  end;
-  UsePopupMenu := TPopupMenu.Create(Self);
-  with UsePopupMenu do
-  begin
-    Name := 'UsePopupMenu';
-    OnPopup := @UsePopupMenuPopup;
-  end;
-
   MoreBitBtn.DropdownMenu := FilesPopupMenu;
 
-  FilesTreeView:=TTreeView.Create(Self);
-  with FilesTreeView do begin
-    Name:='FilesTreeView';
-    Parent:=Self;
-    BeginUpdate;
-    Images := IDEImages.Images_16;
-    FilesNode:=Items.Add(nil, dlgEnvFiles);
-    FilesNode.ImageIndex:=ImageIndexFiles;
-    FilesNode.SelectedIndex:=FilesNode.ImageIndex;
-    RequiredPackagesNode:=Items.Add(nil, lisPckEditRequiredPackages);
-    RequiredPackagesNode.ImageIndex:=ImageIndexRequired;
-    RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
-    EndUpdate;
-    PopupMenu:=FilesPopupMenu;
-    OnSelectionChanged:=@FilesTreeViewSelectionChanged;
-    Options:=Options+[tvoRightClickSelect];
-    ReadOnly := True;
-    OnDblClick:=@FilesTreeViewDblClick;
-    OnKeyPress:=@FilesTreeViewKeyPress;
-    Anchors:=[akLeft,akRight,akTop,akBottom];
-  end;
+  FilesTreeView.BeginUpdate;
+  FilesNode:=FilesTreeView.Items.Add(nil, dlgEnvFiles);
+  FilesNode.ImageIndex:=ImageIndexFiles;
+  FilesNode.SelectedIndex:=FilesNode.ImageIndex;
+  RequiredPackagesNode:=FilesTreeView.Items.Add(nil, lisPckEditRequiredPackages);
+  RequiredPackagesNode.ImageIndex:=ImageIndexRequired;
+  RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
+  FilesTreeView.EndUpdate;
+  FilesTreeView.Images := IDEImages.Images_16;
+  // ToDo: Options:=Options+[tvoRightClickSelect]
 
-  FilePropsGroupBox:=TGroupBox.Create(Self);
-  with FilePropsGroupBox do begin
-    Name:='FilePropsGroupBox';
-    Parent:=Self;
-    Caption:=lisPckEditFileProperties;
-    OnResize:=@FilePropsGroupBoxResize;
-    Anchors:=[akLeft,akRight,akBottom];
-  end;
+  FilePropsGroupBox.Caption:=lisPckEditFileProperties;
 
-  CallRegisterProcCheckBox:=TCheckBox.Create(Self);
-  with CallRegisterProcCheckBox do begin
-    Name:='CallRegisterProcCheckBox';
-    Parent:=FilePropsGroupBox;
-    Caption:=lisPckEditRegisterUnit;
-    OnChange:=@CallRegisterProcCheckBoxChange;
-    Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
-    ShowHint:=true;
-  end;
+  CallRegisterProcCheckBox.Caption:=lisPckEditRegisterUnit;
+  CallRegisterProcCheckBox.Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
 
-  AddToUsesPkgSectionCheckBox:=TCheckBox.Create(Self);
-  with AddToUsesPkgSectionCheckBox do begin
-    Name:='AddToUsesPkgSectionCheckBox';
-    Caption:=lisPkgMangUseUnit;
-    OnChange:=@AddToUsesPkgSectionCheckBoxChange;
-    Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
-    ShowHint:=true;
-    Parent:=FilePropsGroupBox;
-  end;
+  AddToUsesPkgSectionCheckBox.Caption:=lisPkgMangUseUnit;
+  AddToUsesPkgSectionCheckBox.Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
 
-  RegisteredPluginsGroupBox:=TGroupBox.Create(Self);
-  with RegisteredPluginsGroupBox do begin
-    Name:='RegisteredPluginsGroupBox';
-    Caption:=lisPckEditRegisteredPlugins;
-    Parent:=FilePropsGroupBox;
-  end;
-
-  RegisteredListBox:=TListBox.Create(Self);
-  with RegisteredListBox do begin
-    Name:='RegisteredListBox';
-    Align:=alClient;
-    ItemHeight:=ComponentPaletteImageHeight;
-    OnDrawItem:=@RegisteredListBoxDrawItem;
-    Style:= lbOwnerDrawFixed;
-    Parent:=RegisteredPluginsGroupBox;
-    //DebugLn('TPackageEditorForm.SetupComponents ');
-  end;
-  
-  UseMinVersionCheckBox:=TCheckBox.Create(Self);
-  with UseMinVersionCheckBox do begin
-    Name:='UseMinVersionCheckBox';
-    Caption:=lisPckEditMinimumVersion;
-    OnChange:=@UseMinVersionCheckBoxChange;
-    Parent:=FilePropsGroupBox;
-  end;
-  
-  MinVersionEdit:=TEdit.Create(Self);
-  with MinVersionEdit do begin
-    Name:='MinVersionEdit';
-    Text:='';
-    OnChange:=@MinVersionEditChange;
-    Parent:=FilePropsGroupBox;
-  end;
-
-  UseMaxVersionCheckBox:=TCheckBox.Create(Self);
-  with UseMaxVersionCheckBox do begin
-    Name:='UseMaxVersionCheckBox';
-    Caption:=lisPckEditMaximumVersion;
-    OnChange:=@UseMaxVersionCheckBoxChange;
-    Parent:=FilePropsGroupBox;
-  end;
-
-  MaxVersionEdit:=TEdit.Create(Self);
-  with MaxVersionEdit do begin
-    Name:='MaxVersionEdit';
-    Parent:=FilePropsGroupBox;
-    Text:='';
-    OnChange:=@MaxVersionEditChange;
-  end;
-  
-  ApplyDependencyButton:=TButton.Create(Self);
-  with ApplyDependencyButton do begin
-    Name:='ApplyDependencyButton';
-    Parent:=FilePropsGroupBox;
-    Caption:=lisPckEditApplyChanges;
-    OnClick:=@ApplyDependencyButtonClick;
-  end;
-
-  StatusBar:=TStatusBar.Create(Self);
-  with StatusBar do begin
-    Name:='StatusBar';
-    Parent:=Self;
-    Align:=alBottom;
-  end;
-  
-  FilePropsGroupBox.AnchorParallel(akLeft,0,Self);
-  FilePropsGroupBox.AnchorParallel(akRight,0,Self);
-  FilePropsGroupBox.AnchorToNeighbour(akBottom,0,StatusBar);
-  FilePropsGroupBox.Height:=120;
-  
-  FilesTreeView.AnchorToNeighbour(akTop,0,ToolBar);
-  FilesTreeView.AnchorParallel(akLeft,0,Self);
-  FilesTreeView.AnchorParallel(akRight,0,Self);
-  FilesTreeView.AnchorToNeighbour(akBottom,0,FilePropsGroupBox);
+  UseMinVersionCheckBox.Caption:=lisPckEditMinimumVersion;
+  UseMaxVersionCheckBox.Caption:=lisPckEditMaximumVersion;
+  ApplyDependencyButton.Caption:=lisPckEditApplyChanges;
+  RegisteredPluginsGroupBox.Caption:=lisPckEditRegisteredPlugins;
+  RegisteredListBox.ItemHeight:=ComponentPaletteImageHeight;
 end;
 
 procedure TPackageEditorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -2182,12 +2062,8 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Width := 550;
-  Height := 450;
   FPlugins:=TStringList.Create;
   SetupComponents;
-  OnCloseQuery:=@PackageEditorFormCloseQuery;
-  OnClose:=@PackageEditorFormClose;
 end;
 
 destructor TPackageEditorForm.Destroy;

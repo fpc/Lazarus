@@ -26,6 +26,11 @@
       know, that a widestring is assigned
     - what to do with DefineProperties?
     - the 'with' can conflict
+    - circle dependencies:
+       Edit1:=TEdit.Create(Form1);
+       Edit1.AnchorSide[akLeft].Control:=Label1;
+       Label1:=TLabel.Create(Form1);
+       Label1.AnchorSide[akTop].Control:=Edit1;
     - a reader
 }
 

@@ -5509,6 +5509,7 @@ packager/missingpkgfilesdlg.pas svneol=native#text/plain
 packager/openinstalledpkgdlg.lfm svneol=native#text/plain
 packager/openinstalledpkgdlg.pas svneol=native#text/pascal
 packager/packagedefs.pas svneol=native#text/pascal
+packager/packageeditor.lfm svneol=native#text/plain
 packager/packageeditor.pas svneol=native#text/pascal
 packager/packagelinks.pas svneol=native#text/pascal
 packager/packagesystem.pas svneol=native#text/pascal
