@@ -105,7 +105,6 @@ type
     FWatchesNotification: TIDEWatchesNotification;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded: Boolean;
-    procedure DoEndUpdate; override;
     function GetSelected: TIDEWatch;
     procedure SetWatches(const AValue: TIDEWatches);
     procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -116,6 +115,7 @@ type
     procedure UpdateAll;
     procedure DisableAllActions;
   protected
+    procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
