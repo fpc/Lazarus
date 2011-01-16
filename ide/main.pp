@@ -69,9 +69,9 @@ uses
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   KeywordFuncLists,
   // synedit
-  SynEditKeyCmds, SynBeautifier, SynEditMarks,
+  AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
-  BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
+  IDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
