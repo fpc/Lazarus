@@ -429,9 +429,9 @@ begin
   // register the section for saving the package
   PkgEditMenuSectionSave:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Save');
   AParent:=PkgEditMenuSectionSave;
-  PkgEditMenuSave:=RegisterIDEMenuCommand(AParent,'Save',lisMenuSave);
-  PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent,'Save As',lisMenuSaveAs);
-  PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent,'Revert',lisMenuRevert);
+  PkgEditMenuSave:=RegisterIDEMenuCommand(AParent, 'Save', lisPckEditSavePackage);
+  PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent, 'Save As', lisPESavePackageAs);
+  PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent, 'Revert', lisPERevertPackage);
   PkgEditMenuPublish:=RegisterIDEMenuCommand(AParent,'Publish',lisPkgEditPublishPackage);
 
   // register the section for compiling the package

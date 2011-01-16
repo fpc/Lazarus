@@ -160,7 +160,9 @@ resourcestring
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';
   lisMenuRevert = 'Revert';
+  lisPESavePackageAs = 'Save package as';
   lisPkgEditPublishPackage = 'Publish Package';
+  lisPERevertPackage = 'Revert package';
   lisMenuOpenRecent = 'Open &Recent ...';
   lisMenuSave = '&Save';
   lisKMSaveAs = 'SaveAs';
