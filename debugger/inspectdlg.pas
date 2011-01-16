@@ -71,16 +71,20 @@ type
     procedure InspectRecord;
     procedure InspectVariant;
     procedure InspectSimple;
+    procedure InspectEnum;
+    procedure InspectSet;
     procedure InspectPointer;
     procedure GridDataSetup;
     procedure GridMethodsSetup;
     procedure ShowDataFields;
     procedure ShowMethodsFields;
+    procedure Clear;
   protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(const AExpression: ansistring);
+    procedure UpdateData;
   end;
 
 implementation
@@ -166,6 +170,40 @@ begin
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:=FDBGInfo.TypeName;
+  FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
+  FGridData.AutoSizeColumn(2);
+end;
+
+procedure TIDEInspectDlg.InspectEnum;
+begin
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  if not Assigned(FDBGInfo) then exit;
+  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  GridDataSetup;
+  FGridData.Cells[0,1]:=FExpression;
+  FGridData.Cells[1,1]:=FDBGInfo.TypeName;
+  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeDeclaration <> '')
+  then FGridData.Cells[1,1] := FGridData.Cells[1,1] + ' = ';
+  FGridData.Cells[1,1] := FGridData.Cells[1,1] + FDBGInfo.TypeDeclaration;
+  FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
+  FGridData.AutoSizeColumn(2);
+end;
+
+procedure TIDEInspectDlg.InspectSet;
+begin
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  if not Assigned(FDBGInfo) then exit;
+  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  GridDataSetup;
+  FGridData.Cells[0,1]:=FExpression;
+  FGridData.Cells[1,1]:=FDBGInfo.TypeName;
+  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeDeclaration <> '')
+  then FGridData.Cells[1,1] := FGridData.Cells[1,1] + ' = ';
+  FGridData.Cells[1,1] := FGridData.Cells[1,1] + FDBGInfo.TypeDeclaration;
   FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
   FGridData.AutoSizeColumn(2);
 end;
@@ -347,6 +385,16 @@ begin
   end;
 end;
 
+procedure TIDEInspectDlg.Clear;
+begin
+  DataPage.TabVisible:=false;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  FGridData.Clear;
+  FreeAndNil(FDBGInfo);
+  EditInspected.Text:='';
+end;
+
 constructor TIDEInspectDlg.Create(AOwner: TComponent);
 
   function NewGrid(AName: String; AParent: TWinControl; AHook: TPropertyEditorHook): TOIDBGGrid;
@@ -393,22 +441,32 @@ end;
 
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
 begin
-  FExpression:='';
+  FExpression:=AExpression;
+  UpdateData;
+end;
+
+procedure TIDEInspectDlg.UpdateData;
+begin
   FreeAndNil(FDBGInfo);
-  if not DebugBoss.Evaluate(AExpression,FHumanReadable,FDBGInfo) or not assigned(FDBGInfo) then
+  if FExpression = ''
+  then exit;
+
+  if not DebugBoss.Evaluate(FExpression, FHumanReadable, FDBGInfo, [defFullTypeInfo])
+  or not assigned(FDBGInfo) then
   begin
     FreeAndNil(FDBGInfo);
+    Clear;
+    EditInspected.Text:=FExpression + ' : unavailable';
     Exit;
   end;
-  FExpression:=AExpression;
   case FDBGInfo.Kind of
     skClass: InspectClass();
     skRecord: InspectRecord();
     skVariant: InspectVariant();
-  //  skEnum: ;
-  //  skSet: ;
-  //  skProcedure: ;
-  //  skFunction: ;
+    skEnum: InspectEnum;
+    skSet: InspectSet;
+    skProcedure: InspectSimple;
+    skFunction: InspectSimple;
     skSimple: InspectSimple();
     skPointer: InspectPointer();
   //  skDecomposable: ;

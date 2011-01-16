@@ -224,7 +224,7 @@ type
     function  GetChar(const AExpression: String; const AValues: array of const): String; overload;
     function  GetFloat(const AExpression: String; const AValues: array of const): String;
     function  GetWideText(const ALocation: TDBGPtr): String;
-    function  GetGDBTypeInfo(const AExpression: String): TGDBType;
+    function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
@@ -294,7 +294,8 @@ type
 
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
-    function  GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
+    function  GDBEvaluate(const AExpression: String; var AResult: String;
+      out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
@@ -828,6 +829,7 @@ type
 
   TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
   private
+    FEvalFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
     FTextValue: String;
@@ -839,6 +841,7 @@ type
       const ADisplayFormat: TWatchDisplayFormat);
     function DebugText: String; override;
     property Expression: String read FExpression;
+    property EvalFlags: TDBGEvaluateFlags read FEvalFlags write FEvalFlags;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     property TextValue: String read FTextValue;
     property TypeInfo: TGDBType read FTypeInfo;
@@ -5068,17 +5071,21 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
+function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String;
+  out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
   CommandObj: TGDBMIDebuggerCommandEvaluate;
 begin
   CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
+  CommandObj.EvalFlags := EvalFlags;
   CommandObj.KeepFinished := True;
   CommandObj.Priority := GDCMD_PRIOR_IMMEDIATE; // try run imediately
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuting, dcsFinished];
   AResult := CommandObj.TextValue;
   ATypeInfo := CommandObj.TypeInfo;
+  if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
+  then FreeAndNil(ATypeInfo);
   CommandObj.KeepFinished := False;
 end;
 
@@ -5582,6 +5589,8 @@ begin
 end;
 
 function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+var
+  EvalFlags: TDBGEvaluateFlags;
 begin
   LockRelease;
   try
@@ -5594,7 +5603,14 @@ begin
       dcStepOut:     Result := GDBStepOut;
       dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
-      dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^),TGDBType(AParams[2].VPointer^));
+      dcEvaluate:    begin
+                       EvalFlags := [];
+                       if high(AParams) >= 3 then
+                         EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+                       Result := GDBEvaluate(String(AParams[0].VAnsiString),
+                         String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
+                         EvalFlags);
+                     end;
       dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
       dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
       dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
@@ -8466,10 +8482,11 @@ begin
   Result := UTF8Encode(WStr);
 end;
 
-function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String): TGDBType;
+function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False): TGDBType;
 var
   R: TGDBMIExecResult;
   f: Boolean;
+  flags: TGDBTypeCreationFlags;
   AReq: PGDBPTypeRequest;
 begin
   (*   Analyze what type is in AExpression
@@ -8534,7 +8551,12 @@ begin
 
   *)
 
-  Result := TGdbType.CreateForExpression(AExpression, tfClassIsPointer in TargetInfo^.TargetFlags);
+  flags := [];
+  if tfClassIsPointer in TargetInfo^.TargetFlags
+  then flags := [gtcfClassIsPointer];
+  if FullTypeInfo
+  then flags := [gtcfFullTypeInfo];
+  Result := TGdbType.CreateForExpression(AExpression, flags);
   while not Result.ProcessExpression do begin
     if Result.EvalError
     then break;
@@ -9099,12 +9121,149 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
   procedure PutValuesInClass(const AType: TGDBType; ATextInfo: String);
   var
-    GDBParser: TGDBStringIterator;
-    Payload: String;
-    Composite: Boolean;
-    StopChar: Char;
-    j: Integer;
+    //GDBParser: TGDBStringIterator;
+    //Payload: String;
+    //Composite: Boolean;
+    //StopChar: Char;
+    //j: Integer;
+    AWarnText: string;
+    StartPtr, EndPtr: PChar;
+
+    Procedure SkipSpaces;
+    begin
+      while (StartPtr <= EndPtr) and (StartPtr^ = ' ') do inc(StartPtr);
+    end;
+
+    Procedure SkipToEndOfField(EndAtComma: Boolean = False);
+    var
+      i: Integer;
+    begin
+      // skip forward, past the next ",", but do NOT skip the closing "}"
+      i := 1;
+      while (StartPtr <= EndPtr) and (i > 0) do begin
+        case StartPtr^ of
+          '{': inc(i);
+          '}': if i = 1
+               then break  // do not skip }
+               else dec(i);
+          '''': begin
+              inc(StartPtr);
+              while (StartPtr <= EndPtr) and (StartPtr^ <> '''') do inc(StartPtr);
+            end;
+          ',': if (i = 1) then begin
+              if EndAtComma then break;
+              i := 0;
+            end;
+        end;
+        inc(StartPtr);
+      end;
+      SkipSpaces;
+    end;
+
+    procedure ProcessAncestor(ATypeName: String);
+    var
+      HelpPtr, HelpPtr2: PChar;
+      NewName, NewVal: String;
+      i: Integer;
+    begin
+      inc(StartPtr); // skip '{'
+      SkipSpaces;
+      if StartPtr^ = '<' Then begin
+        inc(StartPtr);
+        HelpPtr := StartPtr;
+        while (HelpPtr <= EndPtr) and (HelpPtr^ <> '>') do inc(HelpPtr);
+        NewName := copy(StartPtr, 1, HelpPtr - StartPtr);
+        StartPtr := HelpPtr + 1;
+        SkipSpaces;
+        if StartPtr^ <> '=' then begin
+          debugln('WARNING: PutValuesInClass: Expected "=" for ancestor "' + NewName + '" in: ' + AWarnText);
+          AWarnText := '';
+          SkipToEndOfField;
+          // continue fields, or end
+        end
+        else begin
+          inc(StartPtr);
+          SkipSpaces;
+          if StartPtr^ <> '{'
+          then begin
+            //It is not a class
+            debugln('WARNING: PutValuesInClass: Expected "{" for ancestor "' + NewName + '" in: ' + AWarnText);
+            AWarnText := '';
+            SkipToEndOfField;
+          end
+          else
+            ProcessAncestor(NewName);
+            if StartPtr^ = ',' then inc(StartPtr);
+            SkipSpaces;
+        end;
+      end;
+
+      // process fields in this ancestor
+      while (StartPtr <= EndPtr) and (StartPtr^ <> '}') do begin
+        HelpPtr := StartPtr;
+        while (HelpPtr < EndPtr) and not (HelpPtr^ in [' ', '=', ',']) do inc(HelpPtr);
+        NewName := uppercase(copy(StartPtr, 1, HelpPtr - StartPtr));  // name of field
+
+        StartPtr := HelpPtr;
+        SkipSpaces;
+        if StartPtr^ <> '=' then begin
+          debugln('WARNING: PutValuesInClass: Expected "=" for field"' + NewName + '" in: ' + AWarnText);
+          AWarnText := '';
+          SkipToEndOfField;
+          continue;
+        end;
+
+        inc(StartPtr);
+        SkipSpaces;
+        HelpPtr := StartPtr;
+        SkipToEndOfField(True);
+        HelpPtr2 := StartPtr; // "," or "}"
+        dec(HelpPtr2);
+        while HelpPtr2^ = ' ' do dec(HelpPtr2);
+        NewVal := copy(HelpPtr, 1, HelpPtr2 + 1 - HelpPtr);  // name of field
+
+        i := AType.Fields.Count - 1;
+        while (i >= 0)
+        and ( (uppercase(AType.Fields[i].Name) <> NewName)
+           or (uppercase(AType.Fields[i].ClassName) <> ATypeName) )
+        do dec(i);
+
+        if i < 0 then begin
+          if (uppercase(ATypeName) <> 'TOBJECT') or (pos('vptr', NewName) < 1)
+          then debugln('WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
+        end
+        else
+          AType.Fields[i].DBGType.Value.AsString := HexCToHexPascal(NewVal);
+
+        if (StartPtr^ <> '}') then inc(StartPtr);
+        SkipSpaces;
+      end;
+
+      inc(StartPtr); // skip the }
+    end;
+
   begin
+    if ATextInfo = '' then exit;
+    AWarnText := ATextInfo;
+    StartPtr := @ATextInfo[1];
+    EndPtr := @ATextInfo[length(ATextInfo)];
+
+    while EndPtr^ = ' ' do dec(EndPtr);
+
+    SkipSpaces;
+    if StartPtr^ <> '{'
+    then begin
+      //It is not a class
+      debugln('ERROR: PutValuesInClass: Expected class, but found: "', ATextInfo, '"');
+      exit;
+    end;
+
+    ProcessAncestor(AType.TypeName);
+
+////
+(*
+
+
     GDBParser := TGDBStringIterator.Create(ATextInfo);
     GDBParser.ParseNext(Composite, Payload, StopChar);
     GDBParser.Free;
@@ -9167,6 +9326,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     finally
       GDBParser.Free;
     end;
+*)
   end;
 
   procedure PutValuesInTree();
@@ -9188,8 +9348,12 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       skVariant: begin
         FTypeInfo.Value.AsString:=ValData;
       end;
-//      skEnum: ;
-//      skSet: ;
+      skEnum: begin
+        FTypeInfo.Value.AsString:=ValData;
+      end;
+      skSet: begin
+        FTypeInfo.Value.AsString:=ValData;
+      end;
       skSimple: begin
         FTypeInfo.Value.AsString:=ValData;
       end;
@@ -9465,7 +9629,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   begin
     // Check for strings
     if ResultInfo = nil then
-      ResultInfo := GetGDBTypeInfo(AnExpression);
+      ResultInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags);
     if (ResultInfo = nil) then Exit;
     FTypeInfo := ResultInfo;
 
@@ -9629,7 +9793,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
     begin
-      FTypeInfo := GetGDBTypeInfo(expr);
+      FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags);
       Result := FTypeInfo <> nil;
       if (not Result) and StoreError
       then FTextValue := '<error>';
@@ -9762,7 +9926,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       else // wdfDefault
         begin
           Result := False;
-          FTypeInfo := GetGDBTypeInfo(AnExpression);
+          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags);
           if FTypeInfo = nil
           then begin
             ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
@@ -9871,6 +10035,7 @@ begin
   FDisplayFormat := ADisplayFormat;
   FTextValue := '';
   FTypeInfo:=nil;
+  FEvalFlags := [];
 end;
 
 function TGDBMIDebuggerCommandEvaluate.DebugText: String;

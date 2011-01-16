@@ -183,7 +183,8 @@ type
     function RunDebugger: TModalResult; override; // waits till program ends
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String; var AResult: String;
-                     var ATypeInfo: TDBGType): Boolean; override;
+                      var ATypeInfo: TDBGType;
+                      EvalFlags: TDBGEvaluateFlags = []): Boolean; override;
     function Modify(const AExpression, ANewValue: String): Boolean; override;
 
     procedure Inspect(const AExpression: String); override;
@@ -1726,6 +1727,11 @@ begin
       FBreakPoints[i].SetLocation(FBreakPoints[i].Source, FBreakPoints[i].Line);
   end;
 
+  // update inspect
+  if (FDebugger.State in [dsPause]) and (OldState = dsRun)
+  and (FDialogs[ddtInspect] <> nil)
+  then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
+
   case FDebugger.State of
     dsError: begin
     {$ifdef VerboseDebugger}
@@ -2889,13 +2895,13 @@ begin
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
-  var AResult: String; var ATypeInfo: TDBGType): Boolean;
+  var AResult: String; var ATypeInfo: TDBGType;EvalFlags: TDBGEvaluateFlags = []): Boolean;
 begin
   Result := (not Destroying)
         and (MainIDE.ToolStatus = itDebugger)
         and (FDebugger <> nil)
         and (dcEvaluate in FDebugger.Commands)
-        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo)
+        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo, EvalFlags)
 end;
 
 function TDebugManager.Modify(const AExpression, ANewValue: String): Boolean;

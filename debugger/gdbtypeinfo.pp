@@ -168,10 +168,14 @@ type
 
   { TGDBType }
 
+  TGDBTypeCreationFlag = (gtcfClassIsPointer, gtcfFullTypeInfo, gtcfExprIsType);
+  TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
+
   TGDBTypeProcessState =
     (gtpsInitial,
      gtpsSimplePointer,
-     gtpsClass, gtpsClassPointer
+     gtpsClass, gtpsClassPointer, gtpsClassAncestor,
+     gtpsFinished
     );
   TGDBTypeProcessRequest =
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
@@ -186,7 +190,8 @@ type
     FEvalError: boolean;
     FEvalRequest: PGDBPTypeRequest;
     FExpression: string;
-    FClassIsPointer: Boolean;
+    FCreationFlags: TGDBTypeCreationFlags;
+    FTypeInfoAncestor: TGDBType;
 
     FProcessState: TGDBTypeProcessState;
     FProccesReuestsMade: TGDBTypeProcessRequests;
@@ -195,9 +200,12 @@ type
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
     function RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
     function IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
+  protected
+    procedure Init; override;
   public
     constructor CreateForExpression(const AnExpression: string;
-                                    const AClassIsPointer: Boolean = False);
+                                    const AFlags: TGDBTypeCreationFlags);
+    destructor Destroy; override;
     function ProcessExpression: Boolean;
     property EvalRequest: PGDBPTypeRequest read FEvalRequest;
     property EvalError: boolean read FEvalError;
@@ -726,20 +734,33 @@ end;
 
 function TGDBType.IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
 begin
-  Result := (FReqResults[AReqType].Error <> '')
+  Result := (not (AReqType in FProccesReuestsMade))
+         or (FReqResults[AReqType].Error <> '')
          or (CheckResKind and (FReqResults[AReqType].Result.Kind = ptprkError));
 end;
 
+procedure TGDBType.Init;
+begin
+  inherited Init;
+  FProcessState := gtpsFinished;
+end;
+
 constructor TGDBType.CreateForExpression(const AnExpression: string;
-  const AClassIsPointer: Boolean);
+  const AFlags: TGDBTypeCreationFlags);
 begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
   FEvalError := False;
   FExpression := AnExpression;
-  FClassIsPointer := AClassIsPointer;
+  FCreationFlags := AFlags;
   FEvalRequest := nil;
   FProcessState := gtpsInitial;
+end;
+
+destructor TGDBType.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTypeInfoAncestor);
 end;
 
 function TGDBType.ProcessExpression: Boolean;
@@ -752,6 +773,21 @@ var
     Result := s;
     i := pos('&', Result);
     if i > 0 then delete(Result, i, 1);
+  end;
+
+  procedure SetTypNameFromReq(AReqType: TGDBTypeProcessRequest;
+    AnUseBaseName: Boolean = False; ADefaultName: String = '');
+  begin
+    if IsReqError(AReqType) or (FReqResults[AReqType].Result.BaseName.Len = 0)
+    then AReqType := gptrPTypeExpr;
+
+    if AnUseBaseName
+    then FTypeName := PCLenToString(FReqResults[AReqType].Result.BaseName)
+    else FTypeName := ClearAmpersand(PCLenToString(FReqResults[AReqType].Result.Name));
+
+    if FTypeName = ''
+    then FTypeName := ADefaultName;
+    FInternalTypeName := FTypeName;
   end;
 
   Procedure InitLinesFrom(AReq: TGDBPTypeRequest);
@@ -861,8 +897,8 @@ var
   {%region    * Class * }
   procedure DoClass;
   var
-    n: Integer;
-    S: String;
+    n, i: Integer;
+    S, S2: String;
 
     Name: String;
     DBGType: TDBGType;
@@ -878,17 +914,20 @@ var
     FAncestor := GetPart([': public '], [' '], s);
 
     Location := flPublished;
-    for n := 1 to Lines.Count - 2 do
+    n := 0;
+    while n <  Lines.Count - 2 do
     begin
+      inc(n);
       S := Lines[n];
       if S = '' then Continue;
+      if S = 'end' then break;
       if S = '  private' then Location := flPrivate
       else if S = '  protected' then Location := flProtected
       else if S = '  public' then Location := flPublic
       else if S = '  published' then Location := flPublished
       else begin
         Flags := [];
-        if Pos(' procedure ', S) > 0
+        if Pos('  procedure ', S) > 0
         then begin
           Name := GetPart(['procedure '], [' ', ';'], S);
           DBGType := TGDBType.Create(
@@ -898,7 +937,7 @@ var
           if GetPart(['; '], [';'], S) = 'virtual'
           then Flags := [ffVirtual];
         end
-        else if Pos(' destructor  ~', S) > 0
+        else if Pos('  destructor  ~', S) > 0
         then begin
           Name := GetPart(['destructor  ~'], [' ', ';'], S);
           DBGType := TGDBType.Create(
@@ -909,7 +948,7 @@ var
           then Flags := [ffVirtual];
           Include(Flags, ffDestructor);
         end
-        else if Pos(' constructor ', S) > 0
+        else if Pos('  constructor ', S) > 0
         then begin
           Name := GetPart(['constructor '], [' ', ';'], S);
           DBGType := TGDBType.Create(
@@ -921,7 +960,7 @@ var
           then Flags := [ffVirtual];
           Include(Flags, ffConstructor);
         end
-        else if Pos(' function ', S) > 0
+        else if Pos('  function ', S) > 0
         then begin
           Name := GetPart(['function  '], [' ', ';'], S);
           DBGType := TGDBType.Create(
@@ -934,10 +973,22 @@ var
         end
         else begin
           Name := GetPart(['    '], [' '], S);
-          DBGType := TGDBType.Create(skSimple, GetPart([' : '], [';'], S));
+          S2 := GetPart([' : '], [';'], S);
+          if (lowercase(copy(S2, 1, 7)) = 'record ') then begin
+            i := 1;
+            while (n <  Lines.Count - 2) and (i > 0) do
+            begin
+              inc(n);
+              S := Lines[n];
+              if S = '' then Continue;
+              if pos(': record ', S) > 0 then inc(i);
+              if pos(' end;', S) > 0 then dec(i);
+              S2 := S2 + ' ' + Trim(S);
+            end;
+          end;
+          DBGType := TGDBType.Create(skSimple, S2);
         end;
-
-        FFields.Add(TDBGField.Create(Name, DBGType, Location, Flags));
+        FFields.Add(TDBGField.Create(Name, DBGType, Location, Flags, FTypeName));
       end;
     end;
   end;
@@ -949,10 +1000,43 @@ var
       exit;
 
       FKind := skPointer;
-      FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
-      FInternalTypeName := FTypeName;
+      SetTypNameFromReq(gptrWhatisExpr);
       Result := True;
       // ====> DONE
+  end;
+
+  procedure ProcessClassAncestor;
+  var
+    r: PGDBPTypeRequest;
+    i: Integer;
+  begin
+    FProcessState := gtpsClassAncestor;
+
+    If FTypeInfoAncestor = nil then begin
+      FTypeInfoAncestor := TGDBType.CreateForExpression(FAncestor, FCreationFlags + [gtcfExprIsType]);
+    end;
+
+    if FTypeInfoAncestor.ProcessExpression then begin
+      // add ancestor
+      if FTypeInfoAncestor.FFields <> nil then
+        for i := 0 to FTypeInfoAncestor.FFields.Count - 1 do
+          FFields.Add(FTypeInfoAncestor.FFields[i]);
+      Result := True;
+    end
+    else begin
+      if FTypeInfoAncestor.EvalError then begin
+        debugln('TGDBType: EvaleError in ancestor');
+        Result := True; // unable to get ancestor
+        exit;
+      end;
+      if (EvalRequest =  nil) then
+        FEvalRequest := FTypeInfoAncestor.EvalRequest
+      else begin
+        r := FEvalRequest;
+        while r^.Next <> nil do r := r^.Next;
+        r^.Next := FTypeInfoAncestor.EvalRequest;
+      end;
+    end;
   end;
 
   procedure ProcessClass;
@@ -960,6 +1044,15 @@ var
     t: TGDBTypeProcessRequest;
   begin
     FProcessState := gtpsClass;
+
+    if (gtcfExprIsType in FCreationFlags) then begin
+      SetTypNameFromReq(gptrPTypeExpr, True);
+      DoClass;
+      if (gtcfFullTypeInfo in FCreationFlags) and (FAncestor <> '')
+      then ProcessClassAncestor
+      else Result := True; // ====> DONE
+      exit;
+    end;
 
     if saRefParam in FAttributes
     then t := gptrPTypeExprDeDeRef  // &Class (var param; dwarf)
@@ -979,11 +1072,11 @@ var
     else begin
       // Handle Error in ptype^ as normal class
       // May need a whatis, if aliased names are needed "type TFooAlias = type TFoo"
-      FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-      FInternalTypeName := FTypeName;
+      SetTypNameFromReq(gptrWhatisExpr, True);
       DoClass;
-      Result := True;
-      // ====> DONE
+      if (gtcfFullTypeInfo in FCreationFlags) and (FAncestor <> '')
+      then ProcessClassAncestor
+      else Result := True; // ====> DONE
     end;
   end;
   {%endregion    * Class * }
@@ -1002,19 +1095,20 @@ var
       // Whatis result is ok
       if (ptprfParamByRef in FReqResults[gptrWhatisExpr].Result.Flags) then
         include(FAttributes, saRefParam);
-      FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
+      SetTypNameFromReq(gptrWhatisExpr);
     end
     else begin
       // Whatis result failed
-      FTypeName := ClearAmpersand((PCLenToString(FReqResults[gptrPTypeExpr].Result.Name)));
+      SetTypNameFromReq(gptrPTypeExpr);
     end;
-    FInternalTypeName := FTypeName;
     Result := True;
     // ====> DONE
   end;
   {%endregion    * Simple * }
 
   procedure ProcessInitial;
+  var
+    i: Integer;
   begin
     if FReqResults[gptrPTypeExpr].Error <> '' then begin
       FEvalError := True;
@@ -1043,8 +1137,8 @@ var
     if (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
     and ( (FReqResults[gptrPTypeExpr].Result.Kind in
            [ptprkSimple, ptprkRecord, ptprkEnum, ptprkSet])
-         or (FClassIsPointer and (FReqResults[gptrPTypeExpr].Result.Kind in
-                                  [ptprkProcedure, ptprkFunction])  )
+         or ( (gtcfClassIsPointer in FCreationFlags)
+              and (FReqResults[gptrPTypeExpr].Result.Kind in [ptprkProcedure, ptprkFunction])  )
         )
     then begin
       ProcessSimplePointer;
@@ -1067,8 +1161,7 @@ var
         and (ptprfPointer in FReqResults[gptrPTypeOfWhatis].Result.Flags) then begin
           // pointer
           FKind := skPointer;
-          FTypeName := ClearAmpersand(PCLenToString(FReqResults[gptrWhatisExpr].Result.Name));
-          FInternalTypeName := FTypeName;
+          SetTypNameFromReq(gptrWhatisExpr);
           Result := True;
           // ====> DONE
           exit;
@@ -1086,25 +1179,20 @@ var
           if not RequireRequests([gptrWhatisExpr])
           then exit;
 
-          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
-            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
-          else
-            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          FInternalTypeName := FTypeName; // There may be an alias?
+          SetTypNameFromReq(gptrWhatisExpr, True);
           FKind := skSimple;
           Result := True;
           // ====> DONE
         end;
       ptprkRecord: begin
-          FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          FInternalTypeName := FTypeName; // There may be an alias?
+          SetTypNameFromReq(gptrWhatisExpr, True);
           DoRecord;
           Result := True;
           // ====> DONE
         end;
       ptprkEnum: begin
-          FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          FInternalTypeName := FTypeName; //s There may be an alias?
+          SetTypNameFromReq(gptrWhatisExpr, True);
+          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
           DoEnum;
           Result := True;
           // ====> DONE
@@ -1113,11 +1201,11 @@ var
           if not RequireRequests([gptrWhatisExpr])
           then exit;
 
-          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
-            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
-          else
-            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          FInternalTypeName := FTypeName;
+          SetTypNameFromReq(gptrWhatisExpr, True);
+          // TODO: resolve enum-name (set of SomeEnum) if mode-full ?
+          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
+          i := pos('set of  = ', FTypeDeclaration);
+          if  i > 0 then delete(FTypeDeclaration, i+7, 3);
           DoSet;
           Result := True;
           // ====> DONE
@@ -1127,17 +1215,14 @@ var
           then exit;
 
           FKind := skSimple;
-          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
-            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
-          else
-            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          FInternalTypeName := FTypeName;
+          SetTypNameFromReq(gptrWhatisExpr, True);
+          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
           Result := True;
           // ====> DONE
         end;
       ptprkProcedure: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
-          if FClassIsPointer // Dwarf
+          if (gtcfClassIsPointer in FCreationFlags) // Dwarf
           and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
           then begin
             ProcessSimplePointer;
@@ -1147,19 +1232,14 @@ var
           if not RequireRequests([gptrWhatisExpr])
           then exit;
 
-          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
-            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
-          else
-            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          if FTypeName = '' then FTypeName := 'procedure';
-          FInternalTypeName := FTypeName;
+          SetTypNameFromReq(gptrWhatisExpr, True, 'procedure');
           DoProcedure;
           Result := True;
           // ====> DONE
         end;
       ptprkFunction: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
-          if FClassIsPointer // Dwarf
+          if (gtcfClassIsPointer in FCreationFlags) // Dwarf
           and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
           then begin
             ProcessSimplePointer;
@@ -1169,12 +1249,7 @@ var
           if not RequireRequests([gptrWhatisExpr])
           then exit;
 
-          if (FReqResults[gptrWhatisExpr].Result.BaseName.Len > 0) then
-            FTypeName := PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName)
-          else
-            FTypeName := PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName);
-          if FTypeName = '' then FTypeName := 'function';
-          FInternalTypeName := FTypeName;
+          SetTypNameFromReq(gptrWhatisExpr, True, 'function');
           DoFunction;
           Result := True;
           // ====> DONE
@@ -1185,6 +1260,7 @@ var
 var
   OldProcessState: TGDBTypeProcessState;
   OldReqMade: TGDBTypeProcessRequests;
+  wi: TGDBTypeProcessRequests;
 begin
   Result := False;
   FEvalRequest := nil;
@@ -1192,7 +1268,12 @@ begin
   OldProcessState := FProcessState;
   OldReqMade := FProccesReuestsMade;
 
-  if not RequireRequests([gptrPTypeExpr])
+  if (gtcfFullTypeInfo in FCreationFlags)
+  and not (gtcfExprIsType in FCreationFlags)
+  then wi := [gptrWhatisExpr]
+  else wi := [];
+
+  if not RequireRequests([gptrPTypeExpr]+wi)
   then exit;
 
   case FProcessState of
@@ -1200,9 +1281,13 @@ begin
     gtpsSimplePointer:   ProcessSimplePointer;
     gtpsClass:           ProcessClass;
     gtpsClassPointer:    ProcessClassPointer;
+    gtpsClassAncestor:   ProcessClassAncestor;
   end;
 
   FreeAndNil(Lines);
+  if Result
+  then FProcessState := gtpsFinished;
+
   if (FProcessState = OldProcessState) and (FProccesReuestsMade = OldReqMade)
   and (not Result) and (FEvalRequest = nil)
   then begin

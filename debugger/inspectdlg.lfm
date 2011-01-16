@@ -21,8 +21,8 @@ inherited IDEInspectDlg: TIDEInspectDlg
   end
   object PageControl: TPageControl[1]
     Left = 0
-    Height = 363
-    Top = 21
+    Height = 361
+    Top = 23
     Width = 295
     ActivePage = DataPage
     Align = alClient
@@ -40,7 +40,7 @@ inherited IDEInspectDlg: TIDEInspectDlg
   end
   object EditInspected: TEdit[2]
     Left = 0
-    Height = 21
+    Height = 23
     Top = 0
     Width = 295
     Align = alTop

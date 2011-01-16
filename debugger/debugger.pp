@@ -131,6 +131,12 @@ type
 
   TValidState = (vsUnknown, vsValid, vsInvalid);
 
+  TDBGEvaluateFlag =
+    (defNoTypeInfo,        // No Typeinfo object will be returned
+     defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
+     defFullTypeInfo       // Get all typeinfo, resolve all anchestors
+    );
+  TDBGEvaluateFlags = set of TDBGEvaluateFlag;
 
 const
 //  dcRunCommands = [dcRun,dcStepInto,dcStepOver,dcRunTo];
@@ -486,18 +492,26 @@ type
 
   TDBGField = class(TObject)
   private
+    FRefCount: Integer;
   protected
     FName: String;
     FFlags: TDBGFieldFlags;
     FLocation: TDBGFieldLocation;
     FDBGType: TDBGType;
+    FClassName: String;
+    procedure IncRefCount;
+    procedure DecRefCount;
+    property RefCount: Integer read FRefCount;
   public
-    constructor Create(const AName: String; ADBGType: TDBGType; ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags = []);
+    constructor Create(const AName: String; ADBGType: TDBGType;
+                       ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags = [];
+                       AClassName: String = '');
     destructor Destroy; override;
     property Name: String read FName;
     property DBGType: TDBGType read FDBGType;
     property Location: TDBGFieldLocation read FLocation;
     property Flags: TDBGFieldFlags read FFlags;
+    property ClassName: String read FClassName; // the class in which the field was declared
   end;
 
   { TDBGFields }
@@ -542,7 +556,9 @@ type
     FKind: TDBGSymbolKind;
     FMembers: TStrings;
     FTypeName: String;
+    FTypeDeclaration: String;
     FDBGValue: TDBGValue;
+    procedure Init; virtual;
   public
     Value: TDBGValue;
     constructor Create(AKind: TDBGSymbolKind; const ATypeName: String);
@@ -553,7 +569,8 @@ type
     property Fields: TDBGFields read FFields;
     property Kind: TDBGSymbolKind read FKind;
     property Attributes: TDBGSymbolAttributes read FAttributes;
-    property TypeName: String read FTypeName;
+    property TypeName: String read FTypeName;               // Name/Alias as in type section. One pascal token, or empty
+    property TypeDeclaration: String read FTypeDeclaration; // Declaration (for array, set, enum, ..)
     property Members: TStrings read FMembers;
     property Result: TDBGType read FResult;
   end;
@@ -1583,7 +1600,8 @@ type
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
     function  Evaluate(const AExpression: String; var AResult: String;
-                          var ATypeInfo: TDBGType): Boolean;                     // Evaluates the given expression, returns true if valid
+                       var ATypeInfo: TDBGType;
+                       EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
@@ -2059,10 +2077,10 @@ begin
 end;
 
 function TDebugger.Evaluate(const AExpression: String; var AResult: String;
-  var ATypeInfo: TDBGType): Boolean;
+  var ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags = []): Boolean;
 begin
   FreeAndNIL(ATypeInfo);
-  Result := ReqCmd(dcEvaluate, [AExpression, @AResult, @ATypeInfo]);
+  Result := ReqCmd(dcEvaluate, [AExpression, @AResult, @ATypeInfo, Integer(EvalFlags)]);
 end;
 
 class function TDebugger.ExePaths: String;
@@ -3281,13 +3299,28 @@ end;
 
 { TDBGField }
 
-constructor TDBGField.Create(const AName: String; ADBGType: TDBGType; ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags);
+procedure TDBGField.IncRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TDBGField.DecRefCount;
+begin
+  dec(FRefCount);
+  if FRefCount <= 0
+  then Self.Free;
+end;
+
+constructor TDBGField.Create(const AName: String; ADBGType: TDBGType;
+  ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags; AClassName: String = '');
 begin
   inherited Create;
   FName := AName;
   FLocation := ALocation;
   FDBGType := ADBGType;
   FFlags := AFlags;
+  FRefCount := 0;
+  FClassName := AClassName;
 end;
 
 destructor TDBGField.Destroy;
@@ -3309,7 +3342,7 @@ var
   n: Integer;
 begin
   for n := 0 to Count - 1 do
-    Items[n].Free;
+    Items[n].DecRefCount;
 
   FreeAndNil(FList);
   inherited;
@@ -3317,6 +3350,7 @@ end;
 
 procedure TDBGFields.Add(const AField: TDBGField);
 begin
+  AField.IncRefCount;
   FList.Add(AField);
 end;
 
@@ -3332,10 +3366,16 @@ end;
 
 { TDBGPType }
 
+procedure TDBGType.Init;
+begin
+  //
+end;
+
 constructor TDBGType.Create(AKind: TDBGSymbolKind; const ATypeName: String);
 begin
   FKind := AKind;
   FTypeName := ATypeName;
+  Init;
   inherited Create;
 end;
 
@@ -3344,6 +3384,7 @@ begin
   FKind := AKind;
   FArguments := AArguments;
   FResult := AResult;
+  Init;
   inherited Create;
 end;
 
