@@ -136,6 +136,10 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
+    DirectoryHierachySpeedButton: TSpeedButton;
+    FilterEdit: TEdit;
+    ItemsPanel: TPanel;
+    SortAlphabeticallySpeedButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
     ToolBar: TToolBar;
@@ -1406,6 +1410,10 @@ begin
   ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
+
+  FilterEdit.Visible:=false;
+  SortAlphabeticallySpeedButton.Visible:=false;
+  DirectoryHierachySpeedButton.Visible:=false;
   
   ToolBar.Images := IDEImages.Images_16;
 

@@ -20,22 +20,7 @@ inherited PackageEditorForm: TPackageEditorForm
     ShowCaptions = True
     TabOrder = 0
   end
-  object FilesTreeView: TTreeView[1]
-    Left = 0
-    Height = 257
-    Top = 48
-    Width = 577
-    Align = alClient
-    DefaultItemHeight = 19
-    PopupMenu = FilesPopupMenu
-    ReadOnly = True
-    TabOrder = 1
-    OnDblClick = FilesTreeViewDblClick
-    OnKeyPress = FilesTreeViewKeyPress
-    OnSelectionChanged = FilesTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-  end
-  object FilePropsGroupBox: TGroupBox[2]
+  object FilePropsGroupBox: TGroupBox[1]
     Left = 0
     Height = 118
     Top = 310
@@ -44,7 +29,7 @@ inherited PackageEditorForm: TPackageEditorForm
     Caption = 'FilePropsGroupBox'
     ClientHeight = 97
     ClientWidth = 569
-    TabOrder = 2
+    TabOrder = 1
     OnResize = FilePropsGroupBoxResize
     object CallRegisterProcCheckBox: TCheckBox
       Left = 0
@@ -163,14 +148,14 @@ inherited PackageEditorForm: TPackageEditorForm
       end
     end
   end
-  object StatusBar: TStatusBar[3]
+  object StatusBar: TStatusBar[2]
     Left = 0
     Height = 22
     Top = 428
     Width = 577
     Panels = <>
   end
-  object Splitter1: TSplitter[4]
+  object Splitter1: TSplitter[3]
     Cursor = crVSplit
     Left = 0
     Height = 5
@@ -178,6 +163,67 @@ inherited PackageEditorForm: TPackageEditorForm
     Width = 577
     Align = alBottom
     ResizeAnchor = akBottom
+  end
+  object ItemsPanel: TPanel[4]
+    Left = 0
+    Height = 257
+    Top = 48
+    Width = 577
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 257
+    ClientWidth = 577
+    TabOrder = 4
+    object FilesTreeView: TTreeView
+      AnchorSideTop.Control = FilterEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 230
+      Top = 27
+      Width = 577
+      Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      DefaultItemHeight = 19
+      PopupMenu = FilesPopupMenu
+      ReadOnly = True
+      TabOrder = 0
+      OnDblClick = FilesTreeViewDblClick
+      OnKeyPress = FilesTreeViewKeyPress
+      OnSelectionChanged = FilesTreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object FilterEdit: TEdit
+      AnchorSideLeft.Control = SortAlphabeticallySpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ItemsPanel
+      Left = 46
+      Height = 27
+      Top = 0
+      Width = 225
+      TabOrder = 1
+      Text = 'FilterEdit'
+    end
+    object DirectoryHierachySpeedButton: TSpeedButton
+      AnchorSideLeft.Control = ItemsPanel
+      AnchorSideTop.Control = FilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 22
+      Top = 2
+      Width = 23
+      NumGlyphs = 0
+    end
+    object SortAlphabeticallySpeedButton: TSpeedButton
+      AnchorSideLeft.Control = DirectoryHierachySpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FilterEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 23
+      Height = 22
+      Top = 2
+      Width = 23
+      NumGlyphs = 0
+    end
   end
   object FilesPopupMenu: TPopupMenu[5]
     OnPopup = FilesPopupMenuPopup
