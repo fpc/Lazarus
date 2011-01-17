@@ -318,20 +318,25 @@ var
   LineLen: Integer;
   CharWidths: PPhysicalCharWidth;
   i, j, m: Integer;
+  Line1, Line2: Integer;
 begin
+  Line1 := 0;
+  Line2 := Count - 1;
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
     Result := FTabData[fIndexOfLongestLine];
     if Result <> LINE_LEN_UNKNOWN then begin
       if Result >= NO_TAB_IN_LINE_OFFSET then Result := Result -  NO_TAB_IN_LINE_OFFSET;
       exit;
     end;
+    Line1 := fIndexOfLongestLine;
+    Line2 := fIndexOfLongestLine;
   end;
 
   try
     Result := 0;
     m := 0;
     CharWidths := nil;
-    for i := 0 to Count - 1 do begin
+    for i := Line1 to Line2 do begin
       j := FTabData[i];
       if j = LINE_LEN_UNKNOWN then begin
         // embedd a copy of ExpandedStringLength
