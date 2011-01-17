@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="101">
+    <Files Count="165">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -557,8 +557,297 @@ end;"/>
       </Item100>
       <Item101>
         <Filename Value="fpgui/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="interfaces"/>
       </Item101>
+      <Item102>
+        <Filename Value="gtk/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item102>
+      <Item103>
+        <Filename Value="gtk/dragicons.inc"/>
+        <Type Value="Include"/>
+      </Item103>
+      <Item104>
+        <Filename Value="gtk/gtk1def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1Def"/>
+      </Item104>
+      <Item105>
+        <Filename Value="gtk/gtk1devicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item105>
+      <Item106>
+        <Filename Value="gtk/gtk1extra.inc"/>
+        <Type Value="Include"/>
+      </Item106>
+      <Item107>
+        <Filename Value="gtk/gtk1extrah.inc"/>
+        <Type Value="Include"/>
+      </Item107>
+      <Item108>
+        <Filename Value="gtk/gtk1int.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1Int"/>
+      </Item108>
+      <Item109>
+        <Filename Value="gtk/gtk1memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item109>
+      <Item110>
+        <Filename Value="gtk/gtk1memostringsh.inc"/>
+        <Type Value="Include"/>
+      </Item110>
+      <Item111>
+        <Filename Value="gtk/gtk1privatelist.inc"/>
+        <Type Value="Include"/>
+      </Item111>
+      <Item112>
+        <Filename Value="gtk/gtk1trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item112>
+      <Item113>
+        <Filename Value="gtk/gtk1widgetset.inc"/>
+        <Type Value="Include"/>
+      </Item113>
+      <Item114>
+        <Filename Value="gtk/gtk1wsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1WSPrivate"/>
+      </Item114>
+      <Item115>
+        <Filename Value="gtk/gtkcallback.inc"/>
+        <Type Value="Include"/>
+      </Item115>
+      <Item116>
+        <Filename Value="gtk/gtkcomboboxcallback.inc"/>
+        <Type Value="Include"/>
+      </Item116>
+      <Item117>
+        <Filename Value="gtk/gtkdebug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkDebug"/>
+      </Item117>
+      <Item118>
+        <Filename Value="gtk/gtkdef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkDef"/>
+      </Item118>
+      <Item119>
+        <Filename Value="gtk/gtkdefines.inc"/>
+        <Type Value="Include"/>
+      </Item119>
+      <Item120>
+        <Filename Value="gtk/gtkdevicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item120>
+      <Item121>
+        <Filename Value="gtk/gtkdragcallback.inc"/>
+        <Type Value="Include"/>
+      </Item121>
+      <Item122>
+        <Filename Value="gtk/gtkextra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkExtra"/>
+      </Item122>
+      <Item123>
+        <Filename Value="gtk/gtkfiledialogutils.inc"/>
+        <Type Value="Include"/>
+      </Item123>
+      <Item124>
+        <Filename Value="gtk/gtkfiledialogutilsh.inc"/>
+        <Type Value="Include"/>
+      </Item124>
+      <Item125>
+        <Filename Value="gtk/gtkfontcache.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkFontCache"/>
+      </Item125>
+      <Item126>
+        <Filename Value="gtk/gtkglobals.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKGlobals"/>
+      </Item126>
+      <Item127>
+        <Filename Value="gtk/gtkimages.lrs"/>
+        <Type Value="LRS"/>
+      </Item127>
+      <Item128>
+        <Filename Value="gtk/gtkint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkInt"/>
+      </Item128>
+      <Item129>
+        <Filename Value="gtk/gtkkeysyms.inc"/>
+        <Type Value="Include"/>
+      </Item129>
+      <Item130>
+        <Filename Value="gtk/gtklclintf.inc"/>
+        <Type Value="Include"/>
+      </Item130>
+      <Item131>
+        <Filename Value="gtk/gtklclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item131>
+      <Item132>
+        <Filename Value="gtk/gtklistsl.inc"/>
+        <Type Value="Include"/>
+      </Item132>
+      <Item133>
+        <Filename Value="gtk/gtklistslh.inc"/>
+        <Type Value="Include"/>
+      </Item133>
+      <Item134>
+        <Filename Value="gtk/gtkmsgqueue.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkMsgQueue"/>
+      </Item134>
+      <Item135>
+        <Filename Value="gtk/gtkpagecallback.inc"/>
+        <Type Value="Include"/>
+      </Item135>
+      <Item136>
+        <Filename Value="gtk/gtkprivatelist.inc"/>
+        <Type Value="Include"/>
+      </Item136>
+      <Item137>
+        <Filename Value="gtk/gtkprivatewidget.inc"/>
+        <Type Value="Include"/>
+      </Item137>
+      <Item138>
+        <Filename Value="gtk/gtkproc.inc"/>
+        <Type Value="Include"/>
+      </Item138>
+      <Item139>
+        <Filename Value="gtk/gtkproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKProc"/>
+      </Item139>
+      <Item140>
+        <Filename Value="gtk/gtkstdpixmaps.inc"/>
+        <Type Value="Include"/>
+      </Item140>
+      <Item141>
+        <Filename Value="gtk/gtkthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkThemes"/>
+      </Item141>
+      <Item142>
+        <Filename Value="gtk/gtkwidgetset.inc"/>
+        <Type Value="Include"/>
+      </Item142>
+      <Item143>
+        <Filename Value="gtk/gtkwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item143>
+      <Item144>
+        <Filename Value="gtk/gtkwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item144>
+      <Item145>
+        <Filename Value="gtk/gtkwinapiwindow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKWinapiWindow"/>
+      </Item145>
+      <Item146>
+        <Filename Value="gtk/gtkwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSArrow"/>
+      </Item146>
+      <Item147>
+        <Filename Value="gtk/gtkwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSButtons"/>
+      </Item147>
+      <Item148>
+        <Filename Value="gtk/gtkwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSCalendar"/>
+      </Item148>
+      <Item149>
+        <Filename Value="gtk/gtkwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSCheckLst"/>
+      </Item149>
+      <Item150>
+        <Filename Value="gtk/gtkwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSComCtrls"/>
+      </Item150>
+      <Item151>
+        <Filename Value="gtk/gtkwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSControls"/>
+      </Item151>
+      <Item152>
+        <Filename Value="gtk/gtkwscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item152>
+      <Item153>
+        <Filename Value="gtk/gtkwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSDialogs"/>
+      </Item153>
+      <Item154>
+        <Filename Value="gtk/gtkwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSExtCtrls"/>
+      </Item154>
+      <Item155>
+        <Filename Value="gtk/gtkwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSExtDlgs"/>
+      </Item155>
+      <Item156>
+        <Filename Value="gtk/gtkwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSFactory"/>
+      </Item156>
+      <Item157>
+        <Filename Value="gtk/gtkwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSForms"/>
+      </Item157>
+      <Item158>
+        <Filename Value="gtk/gtkwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSGrids"/>
+      </Item158>
+      <Item159>
+        <Filename Value="gtk/gtkwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSImgList"/>
+      </Item159>
+      <Item160>
+        <Filename Value="gtk/gtkwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSMenus"/>
+      </Item160>
+      <Item161>
+        <Filename Value="gtk/gtkwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSPairSplitter"/>
+      </Item161>
+      <Item162>
+        <Filename Value="gtk/gtkwsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSPrivate"/>
+      </Item162>
+      <Item163>
+        <Filename Value="gtk/gtkwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSSpin"/>
+      </Item163>
+      <Item164>
+        <Filename Value="gtk/gtkwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSStdCtrls"/>
+      </Item164>
+      <Item165>
+        <Filename Value="gtk/interfaces.pp"/>
+        <UnitName Value="Interfaces"/>
+      </Item165>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
