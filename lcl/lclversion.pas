@@ -32,6 +32,7 @@ const
   lcl_release = 29;
   lcl_patch = 0;
   lcl_version = '0.9.29';
+  lcl_fullversion = ((lcl_major *  100 + lcl_minor) * 100 + lcl_release) * 100 + lcl_patch;
 
 implementation
 
