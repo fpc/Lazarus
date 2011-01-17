@@ -144,7 +144,7 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
-    DirectoryHierachySpeedButton: TSpeedButton;
+    DirectoryHierarchySpeedButton: TSpeedButton;
     FilterEdit: TEdit;
     ItemsPanel: TPanel;
     SortAlphabeticallySpeedButton: TSpeedButton;
@@ -192,7 +192,7 @@ type
     procedure CompileCleanClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
-    procedure DirectoryHierachySpeedButtonClick(Sender: TObject);
+    procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
@@ -247,12 +247,12 @@ type
     FPlugins: TStringList;
     FNeedUpdateAll: boolean;
     FNeedUpdateFiles: boolean;
-    FShowDirectoryHierachy: boolean;
+    FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
-    procedure SetShowDirectoryHierachy(const AValue: boolean);
+    procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     procedure UpdateTitle;
@@ -293,7 +293,7 @@ type
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property Filter: string read FFilter write SetFilter;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
-    property ShowDirectoryHierachy: boolean read FShowDirectoryHierachy write SetShowDirectoryHierachy;
+    property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
   
@@ -1395,9 +1395,9 @@ begin
   PackageEditors.CreateMakefile(LazPackage);
 end;
 
-procedure TPackageEditorForm.DirectoryHierachySpeedButtonClick(Sender: TObject);
+procedure TPackageEditorForm.DirectoryHierarchySpeedButtonClick(Sender: TObject);
 begin
-  ShowDirectoryHierachy:=DirectoryHierachySpeedButton.Down;
+  ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
@@ -1459,7 +1459,9 @@ begin
 
   FilterEdit.Text:=lisCEFilter;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  DirectoryHierachySpeedButton.Hint:=lisPEShowDirectoryHierachy;
+  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
+  DirectoryHierarchySpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 
   ToolBar.Images := IDEImages.Images_16;
 
@@ -1553,12 +1555,12 @@ begin
     Application.RemoveOnIdleHandler(@IdleHandler);
 end;
 
-procedure TPackageEditorForm.SetShowDirectoryHierachy(const AValue: boolean);
+procedure TPackageEditorForm.SetShowDirectoryHierarchy(const AValue: boolean);
 begin
-  //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierachy,' New=',AValue]);
-  if FShowDirectoryHierachy=AValue then exit;
-  FShowDirectoryHierachy:=AValue;
-  DirectoryHierachySpeedButton.Down:=ShowDirectoryHierachy;
+  //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
+  if FShowDirectoryHierarchy=AValue then exit;
+  FShowDirectoryHierarchy:=AValue;
+  DirectoryHierarchySpeedButton.Down:=ShowDirectoryHierarchy;
   UpdateFiles(false);
 end;
 
@@ -1680,7 +1682,7 @@ procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
     p:=0;
     while Filename<>'' do begin
       // get the next file name part
-      if ShowDirectoryHierachy then
+      if ShowDirectoryHierarchy then
         DelimPos:=System.Pos(PathDelim,Filename)
       else
         DelimPos:=0;
@@ -1777,7 +1779,7 @@ begin
       Files.Insert(j+1,Filename);
       Files.Objects[j+1]:=CurFile;
     end;
-    //debugln(['TPackageEditorForm.UpdateFiles filtered=',Files.Count,' of ',LazPackage.FileCount,' Filter="',Filter,'" Hierachy=',ShowDirectoryHierachy,' SortAlpha=',SortAlphabetically]);
+    //debugln(['TPackageEditorForm.UpdateFiles filtered=',Files.Count,' of ',LazPackage.FileCount,' Filter="',Filter,'" Hierachy=',ShowDirectoryHierarchy,' SortAlpha=',SortAlphabetically]);
 
     // update treeview nodes
     FreeTVNodeData(FFilesNode);
@@ -2223,7 +2225,7 @@ function TPackageEditorForm.ComparePkgFilenames(AFilename1, AFilename2: string
 begin
   if SortAlphabetically then
     Result:=CompareFilenames(AFilename1, AFilename2)
-  else if ShowDirectoryHierachy then
+  else if ShowDirectoryHierarchy then
     Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
   else
     Result:=0;

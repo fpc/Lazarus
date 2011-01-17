@@ -206,7 +206,7 @@ inherited PackageEditorForm: TPackageEditorForm
       TabOrder = 1
       Text = 'FilterEdit'
     end
-    object DirectoryHierachySpeedButton: TSpeedButton
+    object DirectoryHierarchySpeedButton: TSpeedButton
       AnchorSideLeft.Control = ItemsPanel
       AnchorSideTop.Control = FilterEdit
       AnchorSideTop.Side = asrCenter
@@ -217,12 +217,12 @@ inherited PackageEditorForm: TPackageEditorForm
       AllowAllUp = True
       GroupIndex = 1
       NumGlyphs = 0
-      OnClick = DirectoryHierachySpeedButtonClick
+      OnClick = DirectoryHierarchySpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
     object SortAlphabeticallySpeedButton: TSpeedButton
-      AnchorSideLeft.Control = DirectoryHierachySpeedButton
+      AnchorSideLeft.Control = DirectoryHierarchySpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilterEdit
       AnchorSideTop.Side = asrCenter

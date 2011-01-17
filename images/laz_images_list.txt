@@ -219,6 +219,8 @@ packages/pkg_removedfiles.png
 packages/pkg_removedrequired.png
 packages/pkg_text.png
 packages/pkg_unit.png
+packages/pkg_hierarchical.png
+packages/pkg_sortalphabetically.png
 propertygrid/issue_fpgui.png
 propertygrid/issue_carbon.png
 propertygrid/issue_gtk.png

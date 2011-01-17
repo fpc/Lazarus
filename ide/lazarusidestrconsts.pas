@@ -2110,7 +2110,7 @@ resourcestring
     +'the Run File command instead';
   lisCEFilter = '(Filter)';
   lisPESortFilesAlphabetically = 'Sort files alphabetically';
-  lisPEShowDirectoryHierachy = 'Show directory hierachy';
+  lisPEShowDirectoryHierarchy = 'Show directory hierarchy';
   dlgCaseSensitive = '&Case Sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
     +'letters e.g. A and a';
