@@ -97,11 +97,231 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="1">
+    <Files Count="56">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
       </Item1>
+      <Item2>
+        <Filename Value="carbon/agl.pp"/>
+        <UnitName Value="agl"/>
+      </Item2>
+      <Item3>
+        <Filename Value="carbon/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item3>
+      <Item4>
+        <Filename Value="carbon/carbonbars.pp"/>
+        <UnitName Value="CarbonBars"/>
+      </Item4>
+      <Item5>
+        <Filename Value="carbon/carbonbuttons.pp"/>
+        <UnitName Value="CarbonButtons"/>
+      </Item5>
+      <Item6>
+        <Filename Value="carbon/carboncalendar.pas"/>
+        <UnitName Value="CarbonCalendar"/>
+      </Item6>
+      <Item7>
+        <Filename Value="carbon/carboncalendarview.pas"/>
+        <UnitName Value="CarbonCalendarView"/>
+      </Item7>
+      <Item8>
+        <Filename Value="carbon/carboncanvas.pp"/>
+        <UnitName Value="CarbonCanvas"/>
+      </Item8>
+      <Item9>
+        <Filename Value="carbon/carboncaret.pas"/>
+        <UnitName Value="CarbonCaret"/>
+      </Item9>
+      <Item10>
+        <Filename Value="carbon/carbonclipboard.pp"/>
+        <UnitName Value="CarbonClipboard"/>
+      </Item10>
+      <Item11>
+        <Filename Value="carbon/carbondbgconsts.pp"/>
+        <UnitName Value="CarbonDbgConsts"/>
+      </Item11>
+      <Item12>
+        <Filename Value="carbon/carbondebug.pp"/>
+        <UnitName Value="CarbonDebug"/>
+      </Item12>
+      <Item13>
+        <Filename Value="carbon/carbondef.pp"/>
+        <UnitName Value="CarbonDef"/>
+      </Item13>
+      <Item14>
+        <Filename Value="carbon/carbondefines.inc"/>
+        <Type Value="Include"/>
+      </Item14>
+      <Item15>
+        <Filename Value="carbon/carbonedits.pp"/>
+        <UnitName Value="CarbonEdits"/>
+      </Item15>
+      <Item16>
+        <Filename Value="carbon/carbongdiobjects.pp"/>
+        <UnitName Value="CarbonGDIObjects"/>
+      </Item16>
+      <Item17>
+        <Filename Value="carbon/carbonint.pas"/>
+        <UnitName Value="CarbonInt"/>
+      </Item17>
+      <Item18>
+        <Filename Value="carbon/carbonlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item18>
+      <Item19>
+        <Filename Value="carbon/carbonlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item19>
+      <Item20>
+        <Filename Value="carbon/carbonlistviews.pp"/>
+        <UnitName Value="CarbonListViews"/>
+      </Item20>
+      <Item21>
+        <Filename Value="carbon/carbonmenus.pp"/>
+        <UnitName Value="CarbonMenus"/>
+      </Item21>
+      <Item22>
+        <Filename Value="carbon/carbonobject.inc"/>
+        <Type Value="Include"/>
+      </Item22>
+      <Item23>
+        <Filename Value="carbon/carbonprivate.pp"/>
+        <UnitName Value="CarbonPrivate"/>
+      </Item23>
+      <Item24>
+        <Filename Value="carbon/carbonprivatecommon.inc"/>
+        <Type Value="Include"/>
+      </Item24>
+      <Item25>
+        <Filename Value="carbon/carbonprivatecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item25>
+      <Item26>
+        <Filename Value="carbon/carbonprivatewindow.inc"/>
+        <Type Value="Include"/>
+      </Item26>
+      <Item27>
+        <Filename Value="carbon/carbonproc.pp"/>
+        <UnitName Value="CarbonProc"/>
+      </Item27>
+      <Item28>
+        <Filename Value="carbon/carbonstrings.pp"/>
+        <UnitName Value="CarbonStrings"/>
+      </Item28>
+      <Item29>
+        <Filename Value="carbon/carbontabs.pp"/>
+        <UnitName Value="CarbonTabs"/>
+      </Item29>
+      <Item30>
+        <Filename Value="carbon/carbonthemes.pas"/>
+        <UnitName Value="CarbonThemes"/>
+      </Item30>
+      <Item31>
+        <Filename Value="carbon/carbontrayicon.inc"/>
+        <Type Value="Include"/>
+      </Item31>
+      <Item32>
+        <Filename Value="carbon/carbonutils.pas"/>
+        <UnitName Value="CarbonUtils"/>
+      </Item32>
+      <Item33>
+        <Filename Value="carbon/carbonwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item33>
+      <Item34>
+        <Filename Value="carbon/carbonwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item34>
+      <Item35>
+        <Filename Value="carbon/carbonwsarrow.pp"/>
+        <UnitName Value="CarbonWSArrow"/>
+      </Item35>
+      <Item36>
+        <Filename Value="carbon/carbonwsbuttons.pp"/>
+        <UnitName Value="CarbonWSButtons"/>
+      </Item36>
+      <Item37>
+        <Filename Value="carbon/carbonwscalendar.pp"/>
+        <UnitName Value="CarbonWSCalendar"/>
+      </Item37>
+      <Item38>
+        <Filename Value="carbon/carbonwschecklst.pp"/>
+        <UnitName Value="CarbonWSCheckLst"/>
+      </Item38>
+      <Item39>
+        <Filename Value="carbon/carbonwscomctrls.pp"/>
+        <UnitName Value="CarbonWSComCtrls"/>
+      </Item39>
+      <Item40>
+        <Filename Value="carbon/carbonwscontrols.pp"/>
+        <UnitName Value="CarbonWSControls"/>
+      </Item40>
+      <Item41>
+        <Filename Value="carbon/carbonwsdialogs.pp"/>
+        <UnitName Value="CarbonWSDialogs"/>
+      </Item41>
+      <Item42>
+        <Filename Value="carbon/carbonwsextctrls.pp"/>
+        <UnitName Value="CarbonWSExtCtrls"/>
+      </Item42>
+      <Item43>
+        <Filename Value="carbon/carbonwsextdlgs.pp"/>
+        <UnitName Value="CarbonWSExtDlgs"/>
+      </Item43>
+      <Item44>
+        <Filename Value="carbon/carbonwsfactory.pas"/>
+        <UnitName Value="CarbonWSFactory"/>
+      </Item44>
+      <Item45>
+        <Filename Value="carbon/carbonwsfilectrl.pp"/>
+        <UnitName Value="CarbonWSFileCtrl"/>
+      </Item45>
+      <Item46>
+        <Filename Value="carbon/carbonwsforms.pp"/>
+        <UnitName Value="CarbonWSForms"/>
+      </Item46>
+      <Item47>
+        <Filename Value="carbon/carbonwsgrids.pp"/>
+        <UnitName Value="CarbonWSGrids"/>
+      </Item47>
+      <Item48>
+        <Filename Value="carbon/carbonwsimglist.pp"/>
+        <UnitName Value="CarbonWSImgList"/>
+      </Item48>
+      <Item49>
+        <Filename Value="carbon/carbonwsmenus.pp"/>
+        <UnitName Value="CarbonWSMenus"/>
+      </Item49>
+      <Item50>
+        <Filename Value="carbon/carbonwspairsplitter.pp"/>
+        <UnitName Value="CarbonWSPairSplitter"/>
+      </Item50>
+      <Item51>
+        <Filename Value="carbon/carbonwsspin.pp"/>
+        <UnitName Value="CarbonWSSpin"/>
+      </Item51>
+      <Item52>
+        <Filename Value="carbon/carbonwsstdctrls.pp"/>
+        <UnitName Value="CarbonWSStdCtrls"/>
+      </Item52>
+      <Item53>
+        <Filename Value="carbon/glgrab.pas"/>
+        <UnitName Value="glgrab"/>
+      </Item53>
+      <Item54>
+        <Filename Value="carbon/interfaces.pas"/>
+        <UnitName Value="Interfaces"/>
+      </Item54>
+      <Item55>
+        <Filename Value="carbon/mackeycodes.inc"/>
+        <Type Value="Include"/>
+      </Item55>
+      <Item56>
+        <Filename Value="carbon/opengl.pas"/>
+        <UnitName Value="opengl"/>
+      </Item56>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
