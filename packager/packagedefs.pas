@@ -668,7 +668,8 @@ type
     function IsVirtual: boolean; override;
     function HasDirectory: boolean;
     function HasStaticDirectory: boolean;
-    function GetResolvedFilename(ResolveMacros: boolean): string;
+    function GetFullFilename(ResolveMacros: boolean): string;
+    function GetResolvedFilename(ResolveMacros: boolean): string; // GetFullFilename + ReadAllLinks
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetOutputDirectory(UseOverride: boolean = true): string; // this can change before building, when default dir is readonly
@@ -2805,6 +2806,13 @@ begin
   Result:=FHasStaticDirectory;
 end;
 
+function TLazPackage.GetFullFilename(ResolveMacros: boolean): string;
+begin
+  Result:=FFilename;
+  if ResolveMacros then
+    GlobalMacroList.SubstituteStr(Result);
+end;
+
 procedure TLazPackage.CheckInnerDependencies;
 begin
   // ToDo: make some checks like deactivating double requirements
@@ -2847,9 +2855,7 @@ function TLazPackage.GetResolvedFilename(ResolveMacros: boolean): string;
 var
   s: String;
 begin
-  Result:=FFilename;
-  if ResolveMacros then
-    GlobalMacroList.SubstituteStr(Result);
+  Result:=GetFullFilename(ResolveMacros);
   s:=ReadAllLinks(Result,false);
   if s<>'' then Result:=s;
 end;

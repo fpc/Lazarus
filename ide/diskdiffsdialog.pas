@@ -300,7 +300,7 @@ begin
       if APackage.LPKSource<>nil then
         Filename:=APackage.LPKSource.Filename
       else
-        Filename:=APackage.GetResolvedFilename(true);
+        Filename:=APackage.GetFullFilename(true);
       APackage.SaveToString(Source);
     end else begin
       Filename:='';
