@@ -42,7 +42,7 @@ uses
   LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
-  FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
+  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
@@ -267,7 +267,7 @@ type
     function StoreCurrentTreeSelection: TStringList;
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
-      AnIncludeFile: string);
+      AnIncludeFile: string; var IgnoreUnitPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
     function FitsFilter(aFilename: string): boolean;
@@ -1064,6 +1064,8 @@ begin
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+var
+  IgnoreUnitPaths: TFilenameToStringTree;
 
   procedure AddUnit(AddParams: TAddToPkgResult);
   var
@@ -1090,7 +1092,8 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
       else
         NewLRSFilename:='';
     end;
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename,
+                                IgnoreUnitPaths);
     // add unit file
     with AddParams do
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
@@ -1110,7 +1113,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   
   procedure AddNewComponent(AddParams: TAddToPkgResult);
   begin
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
     // add file
     with AddParams do
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
@@ -1199,36 +1202,41 @@ begin
     exit;
 
   PackageGraph.BeginUpdate(false);
-  while AddParams<>nil do begin
-    case AddParams.AddType of
+  IgnoreUnitPaths:=nil;
+  try
+    while AddParams<>nil do begin
+      case AddParams.AddType of
 
-    d2ptUnit:
-      AddUnit(AddParams);
+      d2ptUnit:
+        AddUnit(AddParams);
 
-    d2ptVirtualUnit:
-      AddVirtualUnit(AddParams);
+      d2ptVirtualUnit:
+        AddVirtualUnit(AddParams);
 
-    d2ptNewComponent:
-      AddNewComponent(AddParams);
+      d2ptNewComponent:
+        AddNewComponent(AddParams);
 
-    d2ptRequiredPkg:
-      AddRequiredPkg(AddParams);
+      d2ptRequiredPkg:
+        AddRequiredPkg(AddParams);
 
-    d2ptFile:
-      AddFile(AddParams);
-      
-    d2ptNewFile:
-      AddNewFile(AddParams);
+      d2ptFile:
+        AddFile(AddParams);
 
+      d2ptNewFile:
+        AddNewFile(AddParams);
+
+      end;
+      OldParams:=AddParams;
+      AddParams:=AddParams.Next;
+      OldParams.Next:=nil;
+      OldParams.Free;
     end;
-    OldParams:=AddParams;
-    AddParams:=AddParams.Next;
-    OldParams.Next:=nil;
-    OldParams.Free;
+    AddParams.Free;
+    LazPackage.Modified:=true;
+  finally
+    IgnoreQuestions.Free;
+    PackageGraph.EndUpdate;
   end;
-  AddParams.Free;
-  LazPackage.Modified:=true;
-  PackageGraph.EndUpdate;
 end;
 
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
@@ -2132,7 +2140,8 @@ begin
 end;
 
 procedure TPackageEditorForm.ExtendUnitIncPathForNewUnit(const AnUnitFilename,
-  AnIncludeFile: string);
+  AnIncludeFile: string;
+  var IgnoreUnitPaths: TFilenameToStringTree);
 var
   NewDirectory: String;
   UnitPath: String;
@@ -2150,12 +2159,13 @@ begin
   LazPackage.ShortenFilename(ShortDirectory,false);
   if ShortDirectory='' then exit;
   LazPackage.LongenFilename(NewDirectory);
+  NewDirectory:=ChompPathDelim(NewDirectory);
   
   UnitPath:=LazPackage.GetUnitPath(false);
   UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
   IncPathPos:=1;
   if AnIncludeFile<>'' then begin
-    NewIncDirectory:=ExtractFilePath(AnIncludeFile);
+    NewIncDirectory:=ChompPathDelim(ExtractFilePath(AnIncludeFile));
     ShortIncDirectory:=NewIncDirectory;
     LazPackage.ShortenFilename(ShortIncDirectory,false);
     if ShortIncDirectory<>'' then begin
@@ -2166,11 +2176,18 @@ begin
   end;
   if UnitPathPos<1 then begin
     // ask user to add the unit path
+    if (IgnoreUnitPaths<>nil) and (IgnoreUnitPaths.Contains(ShortDirectory))
+    then exit;
     if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
         Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
           AnUnitFilename, '"', #13, #13, #13, '"', ShortDirectory, '"']),
         mtConfirmation,[mbYes,mbNo],0)<>mrYes
-    then exit;
+    then begin
+      if IgnoreUnitPaths=nil then
+        IgnoreUnitPaths:=TFilenameToStringTree.Create(false);
+      IgnoreUnitPaths.Add(ShortDirectory,'');
+      exit;
+    end;
     // add path
     with LazPackage.CompilerOptions do
       OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDirectory);
