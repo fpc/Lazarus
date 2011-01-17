@@ -111,7 +111,7 @@ begin
     end;
   end;
   if i=0 then begin
-    s:=lisPENoFilesMissingAllFilesExists;
+    s:=lisPENoFilesMissingAllFilesExist;
     if FilesTreeView.Items.TopLvlCount>i then
       FilesTreeView.Items.TopLvlItems[i].Text:=s
     else
