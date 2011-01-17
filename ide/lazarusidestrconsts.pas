@@ -2109,6 +2109,8 @@ resourcestring
   lisBFOnRunProjectExecuteTheRunFileCommandInstead = 'On run project execute '
     +'the Run File command instead';
   lisCEFilter = '(Filter)';
+  lisPESortFilesAlphabetically = 'Sort files alphabetically';
+  lisPEShowDirectoryHierachy = 'Show directory hierachy';
   dlgCaseSensitive = '&Case Sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
     +'letters e.g. A and a';
