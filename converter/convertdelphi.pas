@@ -146,6 +146,7 @@ type
     // Units that are found and will be added to project and converted.
     fUnitsToAddToProject: TStringList;
     fSettings: TConvertSettings;
+    fUseThreads: boolean;              // The project/package uses TThread.
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
     procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
@@ -464,6 +465,7 @@ end;
 
 destructor TConvertDelphiUnit.Destroy;
 begin
+  fUsedUnitsTool.Free;
   fCTLink.Free;
   if fOwnerConverter=nil then
     fSettings.Free;
@@ -676,7 +678,6 @@ begin
   if Assigned(fUsedUnitsTool) then begin
     Result:=fUsedUnitsTool.Convert;
     if Result<>mrOk then exit;
-    FreeAndNil(fUsedUnitsTool);
   end;
   Result:=mrOk;
 end;
@@ -782,6 +783,7 @@ constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
   fIsConsoleApp:=False;                      // Default = GUI app.
+  fUseThreads:=True;     // For testing.
   fUnitSearchPaths:=TStringList.Create;
   fUnitSearchPaths.Delimiter:=';';
   fUnitSearchPaths.StrictDelimiter:=True;
@@ -1463,8 +1465,13 @@ begin
       Result:=ConvertOne(CurUnitInfo);
       if Result<>mrOK then Break;
     end;
-    if Result=mrOK then
+    if Result=mrOK then begin
+      if fUseThreads then begin
+        Result:=fMainUnitConverter.fUsedUnitsTool.AddThreadSupport;
+        if Result<>mrOK then exit;
+      end;
       Result:=ConvertAllFormFiles(ConvUnits);
+    end;
   finally
     ConvUnits.Free;  // Owns and frees converter objects.
   end;

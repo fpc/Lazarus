@@ -121,6 +121,7 @@ type
     function Convert: TModalResult;
     procedure MoveMissingToComment(AAllCommentedUnits: TStrings);
     procedure AddUnitIfNeeded(AUnitName: string);
+    function AddThreadSupport: TModalResult;
   public
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
     property ImplUsedUnits: TUsedUnits read fImplUsedUnits;
@@ -627,6 +628,25 @@ begin
         if not fCheckPackageDependencyEvent(AUnitName) then
           ;
   end;
+end;
+
+function TUsedUnitsTool.AddThreadSupport: TModalResult;
+// AddUnitToSpecificUsesSection would insert cthreads in the beginning automatically
+// It doesn't work with {$IFDEF UNIX} directive -> use UsesInsertPolicy.
+var
+  OldPolicy: TUsesInsertPolicy;
+begin
+  Result:=mrCancel;
+  with fCTLink do
+  try
+    OldPolicy:=SrcCache.BeautifyCodeOptions.UsesInsertPolicy;
+    SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=uipFirst;
+    if not CodeTool.AddUnitToSpecificUsesSection(fMainUsedUnits.fUsesSection,
+                         '{$IFDEF UNIX}cthreads{$ENDIF}', '', SrcCache) then exit;
+  finally
+    SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=OldPolicy;
+  end;
+  Result:=mrOK;
 end;
 
 function TUsedUnitsTool.GetMissingUnitCount: integer;
