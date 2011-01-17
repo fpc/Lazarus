@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="56">
+    <Files Count="73">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -366,6 +366,87 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="opengl"/>
       </Item56>
+      <Item57>
+        <Filename Value="cocoa/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item57>
+      <Item58>
+        <Filename Value="cocoa/cocoagdiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaGDIObjects"/>
+      </Item58>
+      <Item59>
+        <Filename Value="cocoa/cocoaint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaInt"/>
+      </Item59>
+      <Item60>
+        <Filename Value="cocoa/cocoaobject.inc"/>
+        <Type Value="Include"/>
+      </Item60>
+      <Item61>
+        <Filename Value="cocoa/cocoaprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaPrivate"/>
+      </Item61>
+      <Item62>
+        <Filename Value="cocoa/cocoatextlayout.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaTextLayout"/>
+      </Item62>
+      <Item63>
+        <Filename Value="cocoa/cocoatrayicon.inc"/>
+        <Type Value="Include"/>
+      </Item63>
+      <Item64>
+        <Filename Value="cocoa/cocoautils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaUtils"/>
+      </Item64>
+      <Item65>
+        <Filename Value="cocoa/cocoawinapi.inc"/>
+        <Type Value="Include"/>
+      </Item65>
+      <Item66>
+        <Filename Value="cocoa/cocoawinapih.inc"/>
+        <Type Value="Include"/>
+      </Item66>
+      <Item67>
+        <Filename Value="cocoa/cocoawscommon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSCommon"/>
+      </Item67>
+      <Item68>
+        <Filename Value="cocoa/cocoawsextctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSExtCtrls"/>
+      </Item68>
+      <Item69>
+        <Filename Value="cocoa/cocoawsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSFactory"/>
+      </Item69>
+      <Item70>
+        <Filename Value="cocoa/cocoawsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSForms"/>
+      </Item70>
+      <Item71>
+        <Filename Value="cocoa/cocoawsmenus.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSMenus"/>
+      </Item71>
+      <Item72>
+        <Filename Value="cocoa/cocoawsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSStdCtrls"/>
+      </Item72>
+      <Item73>
+        <Filename Value="cocoa/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item73>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
