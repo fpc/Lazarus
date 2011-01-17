@@ -1139,7 +1139,7 @@ function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): int
         RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
         RealUnitName:=ExtractFileNameOnly(RealFileName);
         if (RealUnitName<>'') and (RealUnitName<>mUnit) then
-          AUsedUnits.UnitsToRename[mUnit]:=RealUnitName;
+          AUsedUnits.UnitsToFixCase[mUnit]:=RealUnitName;
         // Will be added later to project.
         fUnitsToAddToProject.Add(sUnitPath+RealFileName);
         AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
