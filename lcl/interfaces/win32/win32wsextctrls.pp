@@ -474,7 +474,8 @@ begin
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
     // send it ourselves
-    LCLControlSizeNeedsUpdate(ANotebook, True);
+    if LCLControlSizeNeedsUpdate(ANotebook, True) then
+      AdjustSizeNotebookPages(ANotebook);
   end;
 end;
 
@@ -489,6 +490,8 @@ class procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebo
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+  if LCLControlSizeNeedsUpdate(ANotebook, True) then
+    AdjustSizeNotebookPages(ANotebook);
 end;
 
 { -----------------------------------------------------------------------------
@@ -726,7 +729,8 @@ begin
   begin
     SetWindowLong(ANotebook.Handle, GWL_STYLE, NewStyle);
     SetWindowPos(ANoteBook.Handle, 0, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_DRAWFRAME);
-    LCLControlSizeNeedsUpdate(ANotebook, True);
+    if LCLControlSizeNeedsUpdate(ANotebook, True) then
+      AdjustSizeNotebookPages(ANotebook);
   end;
 end;
 

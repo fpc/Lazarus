@@ -449,9 +449,9 @@ procedure TCustomNotebook.SetOptions(const AValue: TNoteBookOptions);
 var
   ChangedOptions: TNoteBookOptions;
 begin
-  if FOptions=AValue then exit;
-  ChangedOptions:=(FOptions-AValue)+(AValue-FOptions);
-  FOptions:=AValue;
+  if FOptions = AValue then Exit;
+  ChangedOptions := (FOptions - AValue) + (AValue - FOptions);
+  FOptions := AValue;
   if nboShowCloseButtons in ChangedOptions then
     UpdateTabProperties;
   if HandleAllocated then
