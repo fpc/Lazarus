@@ -3984,8 +3984,12 @@ resourcestring
   lisPckEditModified = 'Modified: %s';
   lisPkgEditNewUnitNotInUnitpath = 'New unit not in unitpath';
   lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage = 'The file %s%s%s%'
-    +'sis currently not in the unitpath of the package.%s%sAdd %s%s%s to '
-    +'UnitPath?';
+    +'sis currently not in the unit path of the package.%s%sAdd %s%s%s to '
+    +'unit path?';
+  lisPENewFileNotInIncludePath = 'New file not in include path';
+  lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA = 'The file "%s" is '
+    +'currently not in the include path of the package.%sAdd "%s" to the '
+    +'include path?';
   lisPkgEditRevertPackage = 'Revert package?';
   lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd = 'Do you really '
     +'want to forget all changes to package %s and reload it from file?';

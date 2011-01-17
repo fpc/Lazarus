@@ -268,6 +268,8 @@ type
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
       AnIncludeFile: string; var IgnoreUnitPaths: TFilenameToStringTree);
+    procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
+      var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
     function FitsFilter(aFilename: string): boolean;
@@ -1065,7 +1067,7 @@ end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 var
-  IgnoreUnitPaths: TFilenameToStringTree;
+  IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
 
   procedure AddUnit(AddParams: TAddToPkgResult);
   var
@@ -1139,9 +1141,12 @@ var
   procedure AddFile(AddParams: TAddToPkgResult);
   begin
     // add file
-    with AddParams do
+    with AddParams do begin
+      if CompareFileExt(UnitFilename,'.inc',false)=0 then
+        ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
+    end;
     UpdateAll(false);
   end;
   
@@ -1203,6 +1208,7 @@ begin
 
   PackageGraph.BeginUpdate(false);
   IgnoreUnitPaths:=nil;
+  IgnoreIncPaths:=nil;
   try
     while AddParams<>nil do begin
       case AddParams.AddType of
@@ -1234,7 +1240,8 @@ begin
     AddParams.Free;
     LazPackage.Modified:=true;
   finally
-    IgnoreQuestions.Free;
+    IgnoreUnitPaths.Free;
+    IgnoreIncPaths.Free;
     PackageGraph.EndUpdate;
   end;
 end;
@@ -2170,6 +2177,7 @@ begin
     LazPackage.ShortenFilename(ShortIncDirectory,false);
     if ShortIncDirectory<>'' then begin
       LazPackage.LongenFilename(NewIncDirectory);
+      NewIncDirectory:=ChompPathDelim(NewIncDirectory);
       IncPath:=LazPackage.GetIncludePath(false);
       IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory,1);
     end;
@@ -2198,6 +2206,43 @@ begin
     with LazPackage.CompilerOptions do
       IncludePath:=MergeSearchPaths(IncludePath,ShortIncDirectory);
   end;
+end;
+
+procedure TPackageEditorForm.ExtendIncPathForNewIncludeFile(
+  const AnIncludeFile: string; var IgnoreIncPaths: TFilenameToStringTree);
+var
+  NewDirectory: String;
+  ShortDirectory: String;
+  IncPath: String;
+  IncPathPos: LongInt;
+begin
+  if LazPackage=nil then exit;
+  // check if directory is already in the unit path of the package
+  NewDirectory:=ExtractFilePath(AnIncludeFile);
+  ShortDirectory:=NewDirectory;
+  LazPackage.ShortenFilename(ShortDirectory,false);
+  if ShortDirectory='' then exit;
+  LazPackage.LongenFilename(NewDirectory);
+  NewDirectory:=ChompPathDelim(NewDirectory);
+  IncPath:=LazPackage.GetIncludePath(false);
+  IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewDirectory,1);
+  if IncPathPos>0 then exit;
+  // ask user to add the unit path
+  if (IgnoreIncPaths<>nil) and (IgnoreIncPaths.Contains(ShortDirectory))
+  then exit;
+  if MessageDlg(lisPENewFileNotInIncludePath,
+     Format(lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA, [
+       AnIncludeFile, #13, ShortDirectory]),
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+  then begin
+    if IgnoreIncPaths=nil then
+      IgnoreIncPaths:=TFilenameToStringTree.Create(false);
+    IgnoreIncPaths.Add(ShortDirectory,'');
+    exit;
+  end;
+  // add path
+  with LazPackage.CompilerOptions do
+    IncludePath:=MergeSearchPaths(IncludePath,ShortDirectory);
 end;
 
 function TPackageEditorForm.CanBeAddedToProject: boolean;
