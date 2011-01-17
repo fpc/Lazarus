@@ -30,7 +30,7 @@ uses
   // FCL
   Classes, sysutils,
   // Bindings
-  fpguiwsprivate,
+  fpguiwsprivate, fpguiobjects,
   // LCL
   Controls, LCLType,  Graphics,
   // Widgetset
@@ -72,6 +72,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                             var PreferredWidth, PreferredHeight: integer;
                             WithThemeSpace: Boolean); override;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
@@ -186,6 +187,14 @@ begin
   //fpgui widgets does not have a default size (maybe later).
   PreferredHeight:=0;
   PreferredWidth:=0;
+end;
+
+class procedure TFpGuiWSWinControl.PaintTo(const AWinControl: TWinControl;
+  ADC: HDC; X, Y: Integer);
+//var
+//  AADC: TFPGUIDeviceContext absolute ADC;
+begin
+//  TFPGUIPrivateWidget(AWinControl.Handle).PaintTo(AADC.fpgCanvas,X,Y);
 end;
 
 {------------------------------------------------------------------------------

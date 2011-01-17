@@ -159,7 +159,7 @@ begin
     COLOR_clActiveForeground..COLOR_clActiveHighlightedText
                                   : Result:=GetColor(QPaletteActive,   nIndex - COLOR_clActiveForeground);}
   else
-    Result:=0;
+    Result:=clRed;
   end;
 end;
 

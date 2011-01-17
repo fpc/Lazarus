@@ -89,6 +89,7 @@ type
     procedure ClickHandler(Sender: TObject);
     procedure EnterHandler(Sender: TObject);
     procedure ExitHandler(Sender: TObject);
+    procedure ResizeHandler(Sender: TObject);
     procedure   MsgDeactivate(var fpgmsg: TfpgMessageRec); message FPGM_DEACTIVATE;
     procedure   MsgPaint(var fpgmsg: TfpgMessageRec); message FPGM_PAINT;
     procedure   MsgResize(var fpgmsg: TfpgMessageRec); message FPGM_RESIZE;
@@ -128,6 +129,8 @@ type
     procedure SetSize(AWidth, AHeight: LongInt);
     procedure SetPosition(AX, AY: Integer);
     procedure SetFocus;
+    procedure Paint; virtual;
+    procedure Clear; virtual;
   public
     { Properties }
     property LCLObject: TWinControl read FLCLObject;
@@ -193,6 +196,7 @@ type
     MenuBar: TfpgMenuBar;
     { Other methods }
     function Form: TfpgForm;
+    procedure PaintHandler(Sender: TObject);
     procedure SetFormBorderStyle(const AFormBorderStyle: TFormBorderStyle);
   end;
 
@@ -529,6 +533,11 @@ begin
   end;
 end;
 
+procedure TFPGUIPrivateWidget.ResizeHandler(Sender: TObject);
+begin
+  LCLSendSizeMsg(FLCLObject,Widget.Width,Widget.Height,SIZENORMAL,true);
+end;
+
 procedure TFPGUIPrivateWidget.MsgDeactivate(var fpgmsg: TfpgMessageRec);
 begin
   //Empty stub. To be implemented.
@@ -579,7 +588,7 @@ end;
 
 procedure TFPGUIPrivateWidget.MsgMove(var fpgmsg: TfpgMessageRec);
 begin
-  LCLSendMoveMsg(LCLObject, fpgmsg.Params.rect.Left, fpgmsg.Params.rect.Top,Move_Default,false);
+  LCLSendMoveMsg(LCLObject, fpgmsg.Params.rect.Left, fpgmsg.Params.rect.Top,Move_Default,true);
 end;
 
 procedure TFPGUIPrivateWidget.MsgKeyChar(var fpgmsg: TfpgMessageRec);
@@ -725,12 +734,13 @@ end;
 procedure TFPGUIPrivateWidget.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := TfpgWidget.Create(nil);
+  Widget.Visible:=false; //By default fpGUI creates visible objects ?
 end;
 
 procedure TFPGUIPrivateWidget.SetEvents;
 begin
   WidgetProtected.OnClick       := ClickHandler;
-//  WidgetProtected.OnResize      := ResizeHandler;
+  WidgetProtected.OnResize      := ResizeHandler;
   WidgetProtected.OnEnter       := EnterHandler;
   WidgetProtected.OnExit        := ExitHandler;
 //  WidgetProtected.OnKeyPress    := KeyHandler;
@@ -780,9 +790,12 @@ end;
 
 procedure TFPGUIPrivateWidget.SetWidgetPosition(AWidget: TfpgWidget; AX,
   AY: Integer);
+var
+  CLRect: TfpgRect;
 begin
   if AWidget=nil then exit;
-  AWidget.SetPosition(AX,AY,AWidget.Width,AWidget.Height);
+  CLRect:=Widget.GetClientRect;
+  AWidget.SetPosition(CLRect.Left+AX,CLRect.Top+AY,AWidget.Width,AWidget.Height);
 end;
 
 function TFPGUIPrivateWidget.HasStaticText: Boolean;
@@ -803,8 +816,8 @@ end;
 procedure TFPGUIPrivateWidget.GetPreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  PreferredWidth:=FWidget.Width;
-  PreferredHeight:=FWidget.Height;
+  PreferredWidth:=0;
+  PreferredHeight:=0;
 end;
 
 procedure TFPGUIPrivateWidget.GetClientRect(var ARect: TRect);
@@ -815,13 +828,20 @@ begin
   CLRect:=FWidget.GetClientRect;
   ARect.Left:=0;
   ARect.Top:=0;
-  ARect.Right:=CLRect.Width-CLRect.Left;
-  ARect.Bottom:=CLRect.Height-CLRect.Top;
+  ARect.Right:=CLRect.Width;
+  ARect.Bottom:=CLRect.Height;
 end;
 
 procedure TFPGUIPrivateWidget.GetDefaultClientRect(var ARect: TRect);
+var
+  CLRect: TfpgRect;
 begin
-  TfpgRectToRect(FWidget.GetClientRect,ARect);
+  //ClientRect must have Left and Top = (0,0)
+  CLRect:=FWidget.GetClientRect;
+  ARect.Left:=0;
+  ARect.Top:=0;
+  ARect.Right:=CLRect.Width;
+  ARect.Bottom:=CLRect.Height;
 end;
 
 procedure TFPGUIPrivateWidget.AdjustRectXY(var AfpgRect: TfpgRect);
@@ -838,6 +858,21 @@ procedure TFPGUIPrivateWidget.SetFocus;
 begin
   if (not Widget.Focused) and Widget.Focusable then
     Widget.SetFocus;
+end;
+
+procedure TFPGUIPrivateWidget.Paint;
+begin
+  PaintHandler(Self);
+end;
+
+procedure TFPGUIPrivateWidget.Clear;
+begin
+  //Do nothing by now, introduces flickering
+  (*
+  Widget.Canvas.BeginDraw(false);
+  Widget.Canvas.FillRectangle(Widget.GetClientRect);
+  Widget.Canvas.EndDraw;
+  *)
 end;
 
 { TFPGUIPrivateContainer }
@@ -937,6 +972,7 @@ begin
   {$ENDIF}
 
   Widget := TfpgForm.Create(nil);
+  Widget.Visible:=false; //By default fpGUI creates visible objects ?
 
   MenuBar := TfpgMenuBar.Create(Widget);
   MenuBar.Visible := false;
@@ -1025,6 +1061,20 @@ begin
   if MenuBar.Visible then begin
     ARect.Top:=ARect.Top-MenuBar.Height;
   end;
+end;
+
+procedure TFPGUIPrivateWindow.PaintHandler(Sender: TObject);
+var
+  AStruct: TPaintStruct;
+  DC: HDC;
+begin
+  DC:=GetDC(THandle(Self));
+  FillByte(AStruct,sizeof(AStruct),0);
+  AStruct.fErase:=true;
+  AStruct.hdc:=DC;
+  GetClientRect(AStruct.rcPaint);
+  LCLSendPaintMsg(Self.LCLObject,DC,@AStruct);
+  ReleaseDC(THandle(Self),DC);
 end;
 
 procedure TFPGUIPrivateWindow.SetFormBorderStyle(
@@ -1368,7 +1418,6 @@ constructor TFPGUIPrivateCommonDialog.Create(ALCLDialog: TCommonDialog);
 begin
   FLCLDialog := ALCLDialog;
   CreateDialog;
-  WriteLn('Created ', ClassNAme, ':', Dialog.ClassName);
 end;
 
 destructor TFPGUIPrivateCommonDialog.Destroy;

@@ -49,10 +49,11 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
 }
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
-{function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;}
+
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
-{function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
-function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;}
+{function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;}
+function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 {function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;}
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
@@ -60,6 +61,7 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 {function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;}
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
+{function DCClipRegionValid(DC: HDC): boolean; override;}
 {
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;}
@@ -81,8 +83,8 @@ function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;}
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
-{function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
+function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
+{function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
 function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
@@ -120,10 +122,10 @@ function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 {function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
-{function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
-function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
+function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
+{function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;}
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
-function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+{function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
@@ -150,12 +152,12 @@ function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 {function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function ReleaseCapture : Boolean; override;}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
-{function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
-function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;
+function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
+{function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;}
 
 function SaveDC(DC: HDC): Integer; override;
-function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
-function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;}
+{function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;}
+function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 {function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;
@@ -178,12 +180,12 @@ function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Bool
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 }
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
-{function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
-function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
+{function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;}

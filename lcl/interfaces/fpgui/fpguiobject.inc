@@ -84,6 +84,59 @@ begin
   inherited Destroy;
 end;
 
+function TFpGuiWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
+  uState: Cardinal): Boolean;
+var
+  ADC: TFPGUIDeviceContext absolute DC;
+  ControlType: Cardinal;
+  ControlStyle: Cardinal;
+  fpgRect: TfpgRect;
+  Style: TFButtonFlags;
+  (*
+  DFC_CAPTION = $01;
+  DFC_MENU = $02;
+  DFC_SCROLL = $03;
+  DFC_BUTTON =  $04;
+  DFCS_BUTTONCHECK = 0;
+  DFCS_BUTTONRADIOIMAGE = 1;
+  DFCS_BUTTONRADIOMASK = 2;
+  DFCS_BUTTONRADIO = 4;
+  DFCS_BUTTON3STATE = 8;
+  DFCS_BUTTONPUSH = 16;
+  *)
+const
+  DFCS_ALLSTATES=DFCS_BUTTONCHECK or DFCS_BUTTONRADIOIMAGE or DFCS_BUTTONRADIOMASK
+                or DFCS_BUTTONRADIO or DFCS_BUTTON3STATE or DFCS_BUTTONPUSH;
+begin
+  Result:=false;
+  if Assigned(ADC.fpgCanvas) then begin
+    ControlType:=uType;
+    ControlStyle:=uState and DFCS_ALLSTATES;
+    TRectTofpgRect(Rect,fpgRect);
+    AdjustRectToOrg(fpgRect,ADC.FOrg);
+    Case ControlType of
+      DFC_BUTTON:
+        begin
+          if (ControlStyle and DFCS_BUTTONPUSH)=DFCS_BUTTONPUSH then begin
+            Style:=[];
+            if (uState and DFCS_INACTIVE) <> 0 then
+              Style:=Style+[btfIsEmbedded] //Disabled ?
+            else
+            if (uState and DFCS_PUSHED) <> 0 then
+              Style:=Style+[btfIsPressed]
+            else
+            if (uState and DFCS_HOT) <> 0 then
+              Style:=Style+[btfHover];
+            ADC.fpgCanvas.DrawButtonFace(fpgRect,Style);
+            Result:=true;
+          end;
+        end;
+      else
+        Result:=false;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFpGuiWidgetSet.CreateTimer
   Params:  None
@@ -243,6 +296,69 @@ end;
 procedure TFpGuiWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 //  Include(AComponent.ComponentState, csDesigning);
+end;
+
+function TFpGuiWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out
+  ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+var
+  OutBitmap: TFPGUIWinAPIBitmap;
+  fpgBitmap: TfpgImage;
+  ImgData: Pointer absolute ARawImage.Data;
+  ImgMask: Pointer absolute ARawImage.Mask;
+  ImgWidth: Cardinal absolute ARawImage.Description.Width;
+  ImgHeight: Cardinal absolute ARawImage.Description.Height;
+  ImgDepth: Byte absolute ARawImage.Description.Depth;
+  ImgDataSize: PtrUInt absolute ARawImage.DataSize;
+  function min(const a,b: SizeInt): SizeInt;
+  begin
+    if a>b then Result:=b else Result:=a;
+  end;
+begin
+  ABitmap:=0;
+  AMask:=0;
+  Result:=false;
+  OutBitmap:=TFPGUIWinAPIBitmap.Create(ARawImage.Description.BitsPerPixel,ARawImage.Description.Width,ARawImage.Description.Height);
+  fpgBitmap:=OutBitmap.Image;
+  ABitmap:=HBITMAP(OutBitmap);
+  move(ARawImage.Data^,pbyte(fpgBitmap.ImageData)^,min(ARawImage.DataSize,fpgBitmap.ImageDataSize));
+  fpgBitmap.UpdateImage;
+  Result:=true;
+end;
+
+function TFpGuiWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out
+  ADesc: TRawImageDescription): Boolean;
+var
+  DC: TFPGUIDeviceContext;
+  r: TfpgRect;
+begin
+  DC:=TFPGUIDeviceContext(ADC);
+  ADesc.Init;
+  with ADesc do begin
+    Format:=      ricfRGBA;
+    if Assigned(DC) and Assigned(DC.fpgCanvas) then begin
+      dc.fpgCanvas.GetWinRect(r);
+      Width:=     r.Width;
+      Height:=    r.Height;
+    end else begin
+      Width:=     0;
+      Height:=    0;
+    end;
+    Depth:=       24; // used bits per pixel
+    BitOrder:=    riboBitsInOrder;
+    ByteOrder:=   riboMSBFirst;
+    LineOrder:=   riloTopToBottom;
+    LineEnd:=     rileByteBoundary;
+    BitsPerPixel:=32; // bits per pixel. can be greater than Depth.
+    RedPrec:=     8;      // red or gray precision. bits for red
+    RedShift:=    8;     // bitshift. Direction: from least to most significant
+    GreenPrec:=   8;
+    GreenShift:=  16;
+    BluePrec:=    8;
+    BlueShift:=   24;
+    AlphaPrec:=   0;
+    AlphaShift:=  0;
+  end;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

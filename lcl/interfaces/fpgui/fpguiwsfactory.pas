@@ -133,7 +133,7 @@ end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
 begin
-  Result := false;
+  Result := False;
 end;
 
 function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';

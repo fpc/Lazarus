@@ -110,10 +110,32 @@ begin
   end;
 end;
 
+function TFpGuiWidgetSet.CreateBitmap(Width, Height: Integer; Planes,
+  BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+var
+  img: TFPGUIWinAPIBitmap;
+begin
+  if BitCount>0 then begin
+    img:=TFPGUIWinAPIBitmap.Create(BitCount,Width,Height);
+    Result:=HBITMAP(img);
+  end else begin
+    Result:=0;
+  end;
+end;
+
 function TFpGuiWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush
   ): HBRUSH;
 begin
   Result:=HBRUSH(TFPGUIWinAPIBrush.Create(LogBrush));
+end;
+
+function TFpGuiWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer
+  ): HBITMAP;
+var
+  img: TFPGUIWinAPIBitmap;
+begin
+  img:=TFPGUIWinAPIBitmap.Create(32,Width,Height);
+  Result:=HBITMAP(img);
 end;
 
 function TFpGuiWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
@@ -132,12 +154,11 @@ begin
     end;
   {$endif}
   if DC=0 then begin
-    //Create DC desktop compatible
-    Result:=HDC(TFpGuiDeviceContext.Create(nil));
+    //Create DC desktop compatible, or retrieve the destop one to avoid memory leask.
+    Result:=HDC(FPGUIGetDesktopDC());
   end else begin
     //Create DC widget compatible
     Result:=HDC(TFpGuiDeviceContext.Create(ADC.FPrivateWidget));
-    { TODO : Copy context data from PrivateWidget DC to the newly one }
   end;
 end;
 
@@ -178,6 +199,7 @@ end;
 function TFpGuiWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
   ADC: TFpGuiDeviceContext absolute DC;
+  r: TfpgRect;
 begin
   ADC.fpgCanvas.DrawFocusRect(ADC.PrepareRectOffsets(Rect));
   Result:=true;
@@ -246,6 +268,23 @@ begin
   Result:=true;
 end;
 
+function TFpGuiWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
+  ): Boolean;
+var
+  ADC: TFpGuiDeviceContext absolute DC;
+  NewBrush: TFPGUIWinAPIBrush absolute Brush;
+  OldColor: TfpgColor;
+  TheRect: TfpgRect;
+begin
+  OldColor:=ADC.fpgCanvas.Color;
+  ADC.fpgCanvas.Color:=NewBrush.Color;
+  TRectTofpgRect(Rect,TheRect);
+  AdjustRectToOrg(TheRect,ADC.FOrg);
+  ADC.fpgCanvas.FillRectangle(TheRect);
+  ADC.fpgCanvas.Color:=OldColor;
+  Result:=true;
+end;
+
 function TFpGuiWidgetSet.GetClientRect(handle: HWND; var ARect: TRect
   ): Boolean;
 var
@@ -297,7 +336,13 @@ var
   PrivateWidget: TFPGUIPrivateWidget absolute hWnd;
 begin
   //Create a new DC
-  Result:=HDC(TFpGuiDeviceContext.Create(PrivateWidget));
+  if Assigned(PrivateWidget) then begin
+    if PrivateWidget.DC<>0 then begin
+      Result:=PrivateWidget.DC;
+    end else begin
+      Result:=HDC(TFpGuiDeviceContext.Create(PrivateWidget));
+    end;
+  end else Result:=HDC(FPGUIGetDesktopDC());
 end;
 
 function TFpGuiWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
@@ -311,16 +356,16 @@ begin
       LOGPIXELSX: Result:=96; //Hardcoded by now
       BITSPIXEL : Result:=32; //Hardcoded by now
       else begin
-//        {$ifdef VerboseFPGUIWinAPI}
+        {$ifdef VerboseFPGUIWinAPI}
           WriteLn(Self.ClassName,'.GetDeviceCaps Index ',Index,' Desktop');
-//        {$endif}
+        {$endif}
       end;
     end;
   end else begin
     //other
-//    {$ifdef VerboseFPGUIWinAPI}
+    {$ifdef VerboseFPGUIWinAPI}
       WriteLn(Self.ClassName,'.GetDeviceCaps Index ',Index,ADC.FPrivateWidget.LCLObject.Name);
-//    {$endif}
+    {$endif}
   end;
 end;
 
@@ -345,7 +390,7 @@ begin
     {$ifdef VerboseFPGUIWinAPI}
       WriteLn('Trace:Unknown lcl system color: [TFpGuiWidgetSet.GetSysColor]');
     {$endif}
-    Result:=0;
+    Result:=clRed;
     exit;
   end;
   Result:=GetSysColorRGB(nIndex);
@@ -378,11 +423,11 @@ var
   ADC: TFpGuiDeviceContext absolute DC;
 begin
   FillByte(TM,sizeof(TM),0);
-  TM.tmAscent:=ADC.fpgCanvas.Font.Ascent;
-  TM.tmDescent:=ADC.fpgCanvas.Font.Descent;
+  TM.tmAscent:=ADC.FFont.fpguiFont.Ascent;
+  TM.tmDescent:=ADC.FFont.fpguiFont.Descent;
   //Defined usually in MSDN as the average of 'x' char.
-  TM.tmAveCharWidth:=ADC.fpgCanvas.Font.TextWidth('x');
-  TM.tmHeight:=ADC.fpgCanvas.Font.Height;
+  TM.tmAveCharWidth:=ADC.FFont.fpguiFont.TextWidth('x');
+  TM.tmHeight:=ADC.FFont.Height;
   Result:=true;
 end;
 
@@ -394,10 +439,33 @@ begin
   Result:=1;
 end;
 
+function TFpGuiWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect
+  ): Integer;
+var
+  PrivateWidget: TFPGUIPrivateBin absolute Handle;
+begin
+  ARect:=fpgRectToRect(PrivateWidget.Widget.GetBoundsRect);
+  Result:=1;
+end;
+
+function TFpGuiWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
+  ): boolean;
+var
+  PrivateWidget: TFPGUIPrivateBin absolute Handle;
+begin
+  Width:=PrivateWidget.Widget.Width;
+  Height:=PrivateWidget.Widget.Height;
+  Result:=true;
+end;
+
 function TFpGuiWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect;
   bErase: Boolean): Boolean;
+var
+  PrivateWidget: TFPGUIPrivateWidget absolute aHandle;
 begin
-  { TODO -cOS : Add proper InvalidateRect }
+  PrivateWidget.Widget.Canvas.BeginDraw(false);
+  PrivateWidget.Paint;
+  PrivateWidget.Widget.Canvas.EndDraw;
   Result:=true;
 end;
 
@@ -406,8 +474,8 @@ var
   ADC: TFpGuiDeviceContext absolute DC;
   r: TfpgRect;
 begin
-  r:=ADC.PrepareRectOffsets(classes.Rect(X1,Y1,X2-X1,Y2-Y1));
-  ADC.fpgCanvas.BeginDraw(false);
+  r:=ADC.PrepareRectOffsets(Rect(X1,Y1,X2,Y2));
+  ADC.fpgCanvas.BeginDraw(true);
   ADC.ClearRectangle(r);
   ADC.fpgCanvas.DrawRectangle(r);
   ADC.fpgCanvas.EndDraw;
@@ -418,8 +486,37 @@ function TFpGuiWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   MyDC: TFpGuiDeviceContext absolute DC;
 begin
-  MyDC.Free;
+  if MyDC<>FPGUIGetDesktopDC then begin //DesktopDC can not be freed
+    MyDC.Free;
+  end;
   Result:=1;
+end;
+
+function TFpGuiWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+var
+  ADC: TFPGUIDeviceContext absolute DC;
+begin
+  Result:=ADC.RestoreDC(SavedDC);
+end;
+
+function TFpGuiWidgetSet.SaveDC(DC: HDC): Integer;
+var
+  ADC: TFPGUIDeviceContext absolute DC;
+begin
+  Result:=ADC.SaveDC;
+end;
+
+function TFpGuiWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
+var
+  ADC: TFPGUIDeviceContext absolute DC;
+  Reg: TFPGUIBasicRegion absolute RGN;
+begin
+  if Reg.RegionType=eRegionSimple then begin
+    ADC.SelectObject(HGDIObj(Reg));
+    Result:=SimpleRegion;
+  end else begin
+    Result:=NullRegion;
+  end;
 end;
 
 function TFpGuiWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
@@ -468,6 +565,39 @@ var
 begin
   Result:=Widget.Visible;
   Widget.Visible:=true;{ TODO -oJose Mejuto : Process showwindow mode }
+end;
+
+function TFpGuiWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal
+  ): Boolean;
+var
+  SDC: TFPGUIDeviceContext absolute SrcDC;
+  TDC: TFPGUIDeviceContext absolute DestDC;
+begin
+  Result:=false;
+end;
+
+function TFpGuiWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
+  Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+var
+  SDC: TFPGUIDeviceContext;
+  TDC: TFPGUIDeviceContext;
+  R: TRect;
+  ClientRect: TfpgRect;
+  P: TPoint;
+begin
+  SDC:=TFPGUIDeviceContext(SrcDC);
+  TDC:=TFPGUIDeviceContext(DestDC);
+  r.Left:=X; r.Right:=Width; R.Top:=Y; r.Bottom:=Height;
+  AdjustRectToOrg(r,TDC.FOrg);
+  ClientRect:=TDC.FPrivateWidget.Widget.GetClientRect;
+  P.x:=-ClientRect.Left;
+  P.y:=-ClientRect.Top;
+  AdjustRectToOrg(r,P);
+  TDC.ClearDC;
+  TDC.fpgCanvas.DrawImage(r.Left,r.Top,SDC.FBitmap.Image);
+  Result:=true;
 end;
 
 function TFpGuiWidgetSet.WindowFromPoint(Point: TPoint): HWND;

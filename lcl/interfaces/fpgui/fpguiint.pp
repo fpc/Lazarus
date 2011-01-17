@@ -67,10 +67,28 @@ type
     constructor Create; override;
     destructor Destroy; override;
 
+    //Graphic procedures
+    function DrawFrameControl(DC: HDC; const Rect: TRect; uType, uState: Cardinal
+      ): Boolean; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-    procedure SetDesigning(AComponent: TComponent); override;  
+
+    procedure SetDesigning(AComponent: TComponent); override;
+
+    //Raw image support
+    function  RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap,
+      AMask: HBitmap; ASkipMask: Boolean=False): Boolean; override;
+    function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription
+      ): Boolean; override;
+
+    //Critical sections... Are really needed ?
+    {*
+    procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
+    procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
+    procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
+    procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
+    *}
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;

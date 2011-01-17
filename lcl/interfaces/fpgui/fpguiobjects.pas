@@ -72,7 +72,7 @@ type
 
   TFPGUIWinAPIPen = class (TFPGUIWinAPIObject)
   private
-    FPen: TPen;
+    FPen: tagTFPGUIPen;
     function GetColor: TfpgColor;
     procedure SetColor(const AValue: TfpgColor);
   public
@@ -86,15 +86,39 @@ type
 
   TFPGUIWinAPIFont = class (TFPGUIWinAPIObject)
   private
-    FFont: TFont;
-    fpgFont: TfpgFont;
+    fpgFont: TfpgFontBase;
+    FFontHeight: integer;
+    function GetFontHeight: integer;
+    function GetFontSize: integer;
+    procedure SetFontHeight(const AValue: integer);
+    procedure SetFontSize(const AValue: integer);
   public
+    FontFace: String;
     Constructor Create;
+    Constructor Create(const AFontData: TFontData);
+    Constructor Create(const AfpgCanvas: TfpgCanvas);
     Constructor Create(const AFontData: TLogFont);
     Constructor Create(const AFontData: TLogFont; const ALongFontName: string);
     Destructor Destroy; override;
-    property fpguiFont: TfpgFont read fpgFont;
+    property fpguiFont: TfpgFontBase read fpgFont write fpgFont;
+    property Size: integer read GetFontSize write SetFontSize;
+    property Height: integer read GetFontHeight write SetFontHeight;
   end;
+
+  { TFPGUIWinAPIBitmap }
+
+  TFPGUIWinAPIBitmap = class(TFPGUIWinAPIObject)
+  private
+    fpgImage: TfpgImage;
+  protected
+    SelectedInDC: HDC;
+  public
+    Constructor Create(const ABitsPerPixel,Width,Height: integer);
+    Destructor Destroy; override;
+    property Image: TfpgImage read fpgImage;
+  end;
+
+  TFPGUIBasicRegion = class;
 
   { TFpGuiDeviceContext }
 
@@ -102,10 +126,10 @@ type
   private
     FDCStack: array of TFPGUIDeviceContext;
     procedure CopyDCToInstance(const ATarget: TFPGUIDeviceContext);
-    procedure FreeSelfObjects;
     procedure SetupFont;
     procedure SetupBrush;
-    procedure SetupPen;
+    procedure SetupBitmap;
+    procedure SetupClipping;
   public
     fpgCanvas: TfpgCanvas;
     FPrivateWidget: TFPGUIPrivateWidget;
@@ -114,16 +138,20 @@ type
     FPen: TFPGUIWinAPIPen;
     FFont: TFPGUIWinAPIFont;
     FTextColor: TfpgColor;
+    FBitmap: TFPGUIWinAPIBitmap;
+    FClipping: TFPGUIBasicRegion;
   public
     constructor Create(AFPGUIPrivate: TFPGUIPrivateWidget);
     destructor Destroy; override;
     procedure SetOrigin(const AX,AY: integer);
-    function SaveDC: Boolean;
+    function SaveDC: integer;
     function RestoreDC(const Index: SizeInt): Boolean;
     function SelectObject(const AGDIOBJ: HGDIOBJ): HGDIOBJ;
     function SetTextColor(const AColor: TColorRef): TColorRef;
     function PrepareRectOffsets(const ARect: TRect): TfpgRect;
     procedure ClearRectangle(const AfpgRect: TfpgRect);
+    procedure ClearDC;
+    procedure SetupPen;
   end;
 
   { TFPGUIPrivateMenuItem }
@@ -142,6 +170,7 @@ type
   TFPGUIBasicRegion=class(TFPGUIWinAPIObject)
   private
     FRegionType: TFPGUIRegionType;
+    function GetfpgRectRegion: TfpgRect;
     function GetRegionType: TFPGUIRegionType;
   protected
     FRectRegion: TRect;
@@ -152,10 +181,44 @@ type
     procedure CreateRectRegion(const ARect: TRect);
     function CombineWithRegion(const ARegion: TFPGUIBasicRegion; const ACombineMode: TFPGUIRegionCombine): TFPGUIBasicRegion;
     property RegionType: TFPGUIRegionType read GetRegionType;
+    property fpgRectRegion: TfpgRect read GetfpgRectRegion;
   end;
 
+  function FPGUIGetDesktopDC(): TFPGUIDeviceContext;
 
 implementation
+
+var
+  FPGUIDesktopDC: TFPGUIDeviceContext=nil;
+
+function FPGUIGetDesktopDC(): TFPGUIDeviceContext;
+begin
+  if not Assigned(FPGUIDesktopDC) then
+   FPGUIDesktopDC:=TFPGUIDeviceContext.Create(nil);
+  Result:=FPGUIDesktopDC;
+end;
+
+{ TFPGUIWinAPIBitmap }
+
+constructor TFPGUIWinAPIBitmap.Create(const ABitsPerPixel, Width,
+  Height: integer);
+begin
+  fpgImage:=TfpgImage.Create;
+  fpgImage.AllocateImage(ABitsPerPixel,Width,Height);
+  fpgImage.UpdateImage;
+end;
+
+destructor TFPGUIWinAPIBitmap.Destroy;
+var
+  Context: TFPGUIDeviceContext;
+begin
+  Context:=TFPGUIDeviceContext(SelectedInDC);
+  if Assigned(Context) then begin
+    Context.FBitmap:=nil;
+  end;
+  fpgImage.Free;
+  inherited Destroy;
+end;
 
 { TFpGuiDeviceContext }
 
@@ -165,55 +228,84 @@ begin
   ATarget.fpgCanvas:=fpgCanvas;
   ATarget.FPrivateWidget:=FPrivateWidget;
   ATarget.FBrush:=FBrush;
-  ATarget.FPen.FPen.Assign(FPen.FPen);
-  ATarget.FFont.FFont.Assign(FFont.FFont);
+  ATarget.FPen:=FPen;
+  ATarget.FFont:=FFont;
   ATarget.FOrg:=FOrg;
   ATarget.FTextColor:=FTextColor;
-end;
-
-procedure TFPGUIDeviceContext.FreeSelfObjects;
-begin
-  FreeAndNIL(FBrush);
-  FreeAndNIL(FPen);
-  FreeAndNIL(FFont);
+  ATarget.FClipping:=FClipping;
 end;
 
 procedure TFPGUIDeviceContext.SetupFont;
 begin
-  fpgCanvas.Font:=FFont.fpguiFont;
+  if Assigned(fpgCanvas) then
+   if Assigned(FFont) then
+    fpgCanvas.Font:=FFont.fpguiFont;
 end;
 
 procedure TFPGUIDeviceContext.SetupBrush;
 begin
-
+  if Assigned(fpgCanvas) then
+   if Assigned(FBrush) then
+    fpgCanvas.Color:=FBrush.Color;
 end;
 
 procedure TFPGUIDeviceContext.SetupPen;
 begin
-  fpgCanvas.Color:=FPen.Color;
+  if Assigned(fpgCanvas) then
+   if Assigned(FPen) then
+    fpgCanvas.Color:=FPen.Color;
+end;
+
+procedure TFPGUIDeviceContext.SetupBitmap;
+begin
+  if Assigned(fpgCanvas) then
+    fpgCanvas.DrawImage(0,0,FBitmap.fpgImage);
+end;
+
+procedure TFPGUIDeviceContext.SetupClipping;
+var
+  r: TfpgRect;
+begin
+  if Assigned(fpgCanvas) then
+    if Assigned(FClipping) then begin
+      r:=FClipping.fpgRectRegion;
+      AdjustRectToOrg(r,FOrg);
+      fpgCanvas.SetClipRect(r);
+    end else begin
+      fpgCanvas.ClearClipRect;
+    end;
 end;
 
 constructor TFpGuiDeviceContext.Create(AFPGUIPrivate: TFPGUIPrivateWidget);
 begin
   if Assigned(AFPGUIPrivate) then begin
     fpgCanvas := AFPGUIPrivate.Widget.Canvas;
+    fpgCanvas.BeginDraw(false);
     AFPGUIPrivate.DC:=HDC(Self);
     FPrivateWidget := AFPGUIPrivate;
-    with FOrg do begin
-      X:=0;
-      Y:=0;
-    end;
-    FBrush:=TFPGUIWinAPIBrush.Create;
-    FPen:=TFPGUIWinAPIPen.Create;
-    FFont:=TFPGUIWinAPIFont.Create;
-    FBrush.Color:=TColorToTfpgColor(clBtnFace);
-    FPen.FPen.Color:=clWindowText;
+  end else begin
+    fpgCanvas := nil;
+    FPrivateWidget := nil;
   end;
+  with FOrg do begin
+    X:=0;
+    Y:=0;
+  end;
+  FBrush:=nil;
+  FPen:=nil;
+  FFont:=nil;
 end;
 
 destructor TFpGuiDeviceContext.Destroy;
+var
+  j: integer;
 begin
-  FreeSelfObjects;
+  if Assigned(fpgCanvas) then fpgCanvas.EndDraw;
+  for j := 0 to High(FDCStack) do begin
+    FDCStack[j].Free;
+  end;
+  if Assigned(FPrivateWidget) then
+    FPrivateWidget.DC:=0;
 end;
 
 procedure TFpGuiDeviceContext.SetOrigin(const AX, AY: integer);
@@ -224,16 +316,15 @@ begin
   end;
 end;
 
-function TFPGUIDeviceContext.SaveDC: Boolean;
+function TFPGUIDeviceContext.SaveDC: Integer;
 var
   Tmp: TFPGUIDeviceContext;
 begin
-  Beep;
   SetLength(FDCStack,Length(FDCStack)+1);
   Tmp:=TFPGUIDeviceContext.Create(FPrivateWidget);
   FDCStack[High(FDCStack)]:=Tmp;
   Self.CopyDCToInstance(Tmp);
-  Result:=true;
+  Result:=High(FDCStack);
 end;
 
 function TFPGUIDeviceContext.RestoreDC(const Index: SizeInt): Boolean;
@@ -242,7 +333,6 @@ var
   TargetIndex: SizeInt;
   j: SizeInt;
 begin
-  Beep;
   Result:=false;
   if Index>=0 then begin
     TargetIndex:=Index;
@@ -252,15 +342,16 @@ begin
     If TargetIndex<0 then Exit;
   end;
   Tmp:=FDCStack[TargetIndex];
-  FreeSelfObjects;
   Tmp.CopyDCToInstance(Self);
+  FPrivateWidget.DC:=HDC(Self);
+  SetupFont;
+  SetupBrush;
+  SetupPen;
+  SetupClipping;
   for j := TargetIndex to High(FDCStack) do begin
     FDCStack[j].Free;
   end;
   SetLength(FDCStack,TargetIndex);
-  SetupFont;
-  SetupBrush;
-  SetupPen;
   Result:=true;
 end;
 
@@ -270,18 +361,57 @@ var
 begin
   Result:=0;
   gObject:=TObject(AGDIOBJ);
+  if AGDIOBJ<5 then begin
+    case AGDIOBJ of
+      1:  begin
+            Result:=HGDIOBJ(FFont);
+            FFont:=nil;
+          end;
+      2:  begin
+            Result:=HGDIOBJ(FBrush);
+            FBrush:=nil;
+          end;
+      3:  begin
+            Result:=HGDIOBJ(FPen);
+            FPen:=nil;
+          end;
+      4:  begin
+            Result:=HGDIOBJ(FBitmap);
+            FBitmap:=nil;
+          end;
+      5:  begin
+            Result:=HGDIOBJ(FClipping);
+            FClipping:=nil;
+          end;
+    end;
+    Exit;
+  end;
   if gObject is TFPGUIWinAPIFont then begin
     Result:=HGDIOBJ(FFont);
     FFont:=TFPGUIWinAPIFont(gObject);
     SetupFont;
+    if Result=0 then Result:=1;
   end else if gObject is TFPGUIWinAPIBrush then begin
     Result:=HGDIOBJ(FBrush);
     FBrush:=TFPGUIWinAPIBrush(gObject);
     SetupBrush;
+    if Result=0 then Result:=2;
   end else if gObject is TFPGUIWinAPIPen then begin
     Result:=HGDIOBJ(FPen);
     FPen:=TFPGUIWinAPIPen(gObject);
     SetupPen;
+    if Result=0 then Result:=3;
+  end else if gObject is TFPGUIWinAPIBitmap then begin
+    Result:=HGDIOBJ(FBitmap);
+    FBitmap:=TFPGUIWinAPIBitmap(gObject);
+    FBitmap.SelectedInDC:=HDC(Self);
+    SetupBitmap;
+    if Result=0 then Result:=4;
+  end else if gObject is TFPGUIBasicRegion then begin
+    Result:=HGDIOBJ(FClipping);
+    FClipping:=TFPGUIBasicRegion(gObject);
+    SetupClipping;
+    if Result=0 then Result:=5;
   end;
 end;
 
@@ -304,9 +434,15 @@ var
   OldColor: TfpgColor;
 begin
   OldColor:=fpgCanvas.Color;
-  fpgCanvas.Color:=FBrush.Color;
+  fpgCanvas.Color:= FPrivateWidget.Widget.BackgroundColor;
   fpgCanvas.FillRectangle(AfpgRect);
+  if fpgCanvas.Color=0 then writeln(FPrivateWidget.LCLObject.Name);
   fpgCanvas.Color:=OldColor;
+end;
+
+procedure TFPGUIDeviceContext.ClearDC;
+begin
+  ClearRectangle(fpgCanvas.GetClipRect);
 end;
 
 { TFPGUIPrivateMenuItem }
@@ -319,32 +455,70 @@ end;
 
 { TFPGUIWinAPIFont }
 
+function TFPGUIWinAPIFont.GetFontHeight: integer;
+begin
+  Result:=FFontHeight;
+end;
+
+function TFPGUIWinAPIFont.GetFontSize: integer;
+begin
+  Result:=(-FFontHeight * 72) div 96;
+end;
+
+procedure TFPGUIWinAPIFont.SetFontHeight(const AValue: integer);
+begin
+  FFontHeight:=AValue;
+end;
+
+procedure TFPGUIWinAPIFont.SetFontSize(const AValue: integer);
+begin
+  FFontHeight:=(-96 * AValue) div 72;
+end;
+
 constructor TFPGUIWinAPIFont.Create;
 begin
-  FFont:=TFont.Create;
+  FontFace:='';
+  Size:=8;
+end;
+
+constructor TFPGUIWinAPIFont.Create(const AFontData: TFontData);
+begin
+  FontFace:=AFontData.Name;
+  Height:=AFontData.Height;
+  fpgFont:=fpgGetFont(format('%s-%d',[AFontData.Name,Size]));
+end;
+
+constructor TFPGUIWinAPIFont.Create(const AfpgCanvas: TfpgCanvas);
+begin
+  fpgFont:=AfpgCanvas.Font;
 end;
 
 constructor TFPGUIWinAPIFont.Create(const AFontData: TLogFont);
 begin
-  Create;
-  FFont.Name:=AFontData.lfFaceName;
-  FFont.Height:=AFontData.lfHeight;
-  fpgFont:=fpgGetFont(format('%s-%d',[FFont.Name,FFont.Size]));
+  FontFace:=AFontData.lfFaceName;
+  Height:=AFontData.lfHeight;
+  if FontFace='' then begin
+    fpgFont:=fpgGetFont(''); //Default
+  end else begin
+    fpgFont:=fpgGetFont(format('%s-%d',[FontFace,Size]));
+  end;
 end;
 
 constructor TFPGUIWinAPIFont.Create(const AFontData: TLogFont;
   const ALongFontName: string);
 begin
-  Create;
-  FFont.Name:=ALongFontName;
-  FFont.Height:=AFontData.lfHeight;
-  fpgFont:=fpgGetFont(format('%s-%d',[FFont.Name,FFont.Size]));
+  FontFace:=ALongFontName;
+  Height:=AFontData.lfHeight;
+  if FontFace='' then begin
+    fpgFont:=fpgGetFont(''); //Default
+  end else begin
+    fpgFont:=fpgGetFont(format('%s-%d',[FontFace,Size]));
+  end;
 end;
 
 destructor TFPGUIWinAPIFont.Destroy;
 begin
-  fpgFont.Free;
-  FFont.Free;
+  FreeAndNIL(fpgFont);
   inherited Destroy;
 end;
 
@@ -362,7 +536,6 @@ end;
 
 constructor TFPGUIWinAPIPen.Create;
 begin
-  FPen:=TPen.Create;
 end;
 
 constructor TFPGUIWinAPIPen.Create(const APenData: TLogPen);
@@ -373,7 +546,7 @@ end;
 
 destructor TFPGUIWinAPIPen.Destroy;
 begin
-  FPen.Free;
+  FreeAndNil(FPen);
   inherited Destroy;
 end;
 
@@ -381,7 +554,10 @@ end;
 
 function TFPGUIWinAPIBrush.GetColor: TfpgColor;
 begin
-  Result:=FBrush.Color;
+  if Assigned(Self) then
+    Result:=FBrush.Color
+  else
+    Result:=0;
 end;
 
 procedure TFPGUIWinAPIBrush.SetColor(const AValue: TfpgColor);
@@ -396,7 +572,6 @@ end;
 
 constructor TFPGUIWinAPIBrush.Create(const ABrushData: TLogBrush);
 begin
-  Create;
   FBrush.Color:=TColorToTfpgColor(ABrushData.lbColor);
 end;
 
@@ -410,6 +585,11 @@ end;
 function TFPGUIBasicRegion.GetRegionType: TFPGUIRegionType;
 begin
   Result:=FRegionType;
+end;
+
+function TFPGUIBasicRegion.GetfpgRectRegion: TfpgRect;
+begin
+  TRectTofpgRect(FRectRegion,Result);
 end;
 
 constructor TFPGUIBasicRegion.Create;
@@ -481,13 +661,20 @@ begin
   Case ACombineMode of
     eRegionCombineAnd:  CombineAnd(Result,ARegion.FRectRegion,Self.FRectRegion);
     eRegionCombineCopy,
-    eRegionCombineDiff,
+    eRegionCombineDiff:
+      begin
+        Result.CreateRectRegion(rect(0,0,0,0));
+      end;
     eRegionCombineOr,
-    eRegionCombineXor:  begin
-                          Raise Exception.CreateFmt('Region mode %d not supported',[integer(ACombineMode)]);
-                        end;
+    eRegionCombineXor:
+      begin
+        Raise Exception.CreateFmt('Region mode %d not supported',[integer(ACombineMode)]);
+      end;
   end;
 end;
+
+finalization
+  FreeAndNil(FPGUIDesktopDC);
 
 end.
 
