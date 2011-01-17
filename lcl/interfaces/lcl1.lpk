@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="73">
+    <Files Count="101">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -447,6 +447,118 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item73>
+      <Item74>
+        <Filename Value="fpgui/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item74>
+      <Item75>
+        <Filename Value="fpgui/fpguiint.pp"/>
+        <UnitName Value="fpguiint"/>
+      </Item75>
+      <Item76>
+        <Filename Value="fpgui/fpguilclintf.inc"/>
+        <Type Value="Include"/>
+      </Item76>
+      <Item77>
+        <Filename Value="fpgui/fpguilclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item77>
+      <Item78>
+        <Filename Value="fpgui/fpguiobject.inc"/>
+        <Type Value="Include"/>
+      </Item78>
+      <Item79>
+        <Filename Value="fpgui/fpguiobjects.pas"/>
+        <UnitName Value="fpguiobjects"/>
+      </Item79>
+      <Item80>
+        <Filename Value="fpgui/fpguiproc.pas"/>
+        <UnitName Value="fpguiproc"/>
+      </Item80>
+      <Item81>
+        <Filename Value="fpgui/fpguiwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item81>
+      <Item82>
+        <Filename Value="fpgui/fpguiwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item82>
+      <Item83>
+        <Filename Value="fpgui/fpguiwsarrow.pp"/>
+        <UnitName Value="FpGuiWSArrow"/>
+      </Item83>
+      <Item84>
+        <Filename Value="fpgui/fpguiwsbuttons.pp"/>
+        <UnitName Value="FpGuiWSButtons"/>
+      </Item84>
+      <Item85>
+        <Filename Value="fpgui/fpguiwscalendar.pp"/>
+        <UnitName Value="FpGuiWSCalendar"/>
+      </Item85>
+      <Item86>
+        <Filename Value="fpgui/fpguiwschecklst.pp"/>
+        <UnitName Value="FpGuiWSCheckLst"/>
+      </Item86>
+      <Item87>
+        <Filename Value="fpgui/fpguiwscomctrls.pp"/>
+        <UnitName Value="FpGuiWSComCtrls"/>
+      </Item87>
+      <Item88>
+        <Filename Value="fpgui/fpguiwscontrols.pp"/>
+        <UnitName Value="FpGuiWSControls"/>
+      </Item88>
+      <Item89>
+        <Filename Value="fpgui/fpguiwsdialogs.pp"/>
+        <UnitName Value="FpGuiWSDialogs"/>
+      </Item89>
+      <Item90>
+        <Filename Value="fpgui/fpguiwsextctrls.pp"/>
+        <UnitName Value="FpGuiWSExtCtrls"/>
+      </Item90>
+      <Item91>
+        <Filename Value="fpgui/fpguiwsextdlgs.pp"/>
+        <UnitName Value="FpGuiWSExtDlgs"/>
+      </Item91>
+      <Item92>
+        <Filename Value="fpgui/fpguiwsfactory.pas"/>
+        <UnitName Value="FpGuiWSFactory"/>
+      </Item92>
+      <Item93>
+        <Filename Value="fpgui/fpguiwsforms.pp"/>
+        <UnitName Value="FpGuiWSForms"/>
+      </Item93>
+      <Item94>
+        <Filename Value="fpgui/fpguiwsgrids.pp"/>
+        <UnitName Value="FpGuiWSGrids"/>
+      </Item94>
+      <Item95>
+        <Filename Value="fpgui/fpguiwsimglist.pp"/>
+        <UnitName Value="FpGuiWSImgList"/>
+      </Item95>
+      <Item96>
+        <Filename Value="fpgui/fpguiwsmenus.pp"/>
+        <UnitName Value="FpGuiWSMenus"/>
+      </Item96>
+      <Item97>
+        <Filename Value="fpgui/fpguiwspairsplitter.pp"/>
+        <UnitName Value="FpGuiWSPairSplitter"/>
+      </Item97>
+      <Item98>
+        <Filename Value="fpgui/fpguiwsprivate.pp"/>
+        <UnitName Value="fpguiwsprivate"/>
+      </Item98>
+      <Item99>
+        <Filename Value="fpgui/fpguiwsspin.pp"/>
+        <UnitName Value="FpGuiWSSpin"/>
+      </Item99>
+      <Item100>
+        <Filename Value="fpgui/fpguiwsstdctrls.pp"/>
+        <UnitName Value="FpGuiWSStdCtrls"/>
+      </Item100>
+      <Item101>
+        <Filename Value="fpgui/interfaces.pp"/>
+        <UnitName Value="interfaces"/>
+      </Item101>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
