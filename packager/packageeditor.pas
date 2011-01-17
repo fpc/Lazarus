@@ -137,8 +137,7 @@ type
   TPkgEditFileItem = class
   public
     Filename: string;
-    IsDirectory: boolean;
-    constructor Create(AFilename: string; IsDir: boolean);
+    constructor Create(AFilename: string);
   end;
 
   { TPackageEditorForm }
@@ -249,6 +248,7 @@ type
     FNeedUpdateFiles: boolean;
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
+    FDirSummaryLabel: TLabel;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
@@ -264,6 +264,9 @@ type
     procedure UpdateStatusBar;
     function GetCurrentDependency(out Removed: boolean): TPkgDependency;
     function GetCurrentFile(out Removed: boolean): TPkgFile;
+    function IsDirectoryNode(Node: TTreeNode): boolean;
+    procedure GetDirectorySummary(DirNode: TTreeNode;
+        out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
     function StoreCurrentTreeSelection: TStringList;
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
@@ -494,10 +497,9 @@ end;
 
 { TPkgEditFileItem }
 
-constructor TPkgEditFileItem.Create(AFilename: string; IsDir: boolean);
+constructor TPkgEditFileItem.Create(AFilename: string);
 begin
   Filename:=AFilename;
-  IsDirectory:=IsDir;
 end;
 
 { TPackageEditorForm }
@@ -1523,6 +1525,13 @@ begin
   ApplyDependencyButton.Caption:=lisPckEditApplyChanges;
   RegisteredPluginsGroupBox.Caption:=lisPckEditRegisteredPlugins;
   RegisteredListBox.ItemHeight:=ComponentPaletteImageHeight;
+
+  FDirSummaryLabel:=TLabel.Create(Self);
+  with FDirSummaryLabel do
+  begin
+    Name:='DirSummaryLabel';
+    Parent:=FilePropsGroupBox;
+  end;
 end;
 
 procedure TPackageEditorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -1813,7 +1822,7 @@ begin
         CurNode:=TTreeNode(TVNodeStack[TVNodeStack.Count-1]);
         if FNextSelectedPart<>nil then
           CurNode.Selected:=FNextSelectedPart=CurFile;
-        CurNode.Data:=TPkgEditFileItem.Create(CurFile.Filename,false);
+        CurNode.Data:=TPkgEditFileItem.Create(CurFile.Filename);
         SetImageIndex(CurNode,CurFile);
         CurNode.DeleteChildren;
       end;
@@ -1947,6 +1956,11 @@ var
   RegCompCnt: Integer;
   Dependency: TPkgDependency;
   Removed: boolean;
+  CurNode: TTreeNode;
+  IsDir: Boolean;
+  FileCount: integer;
+  HasRegisterProcCount: integer;
+  AddToUsesPkgSectionCount: integer;
 begin
   if LazPackage=nil then exit;
   FPlugins.Clear;
@@ -1954,6 +1968,8 @@ begin
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then
     Dependency:=GetCurrentDependency(Removed);
+  CurNode:=FilesTreeView.Selected;
+  IsDir:=IsDirectoryNode(CurNode);
 
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
@@ -1965,6 +1981,8 @@ begin
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
   AddToUsesPkgSectionCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
+
+  FDirSummaryLabel.Visible:=IsDir;
 
   if CurFile<>nil then begin
     FilePropsGroupBox.Enabled:=true;
@@ -1998,6 +2016,12 @@ begin
     MaxVersionEdit.Text:=Dependency.MaxVersion.AsString;
     MaxVersionEdit.Enabled:=pdfMaxVersion in Dependency.Flags;
     UpdateApplyDependencyButton;
+  end else if IsDir then begin
+    FilePropsGroupBox.Enabled:=true;
+    GetDirectorySummary(CurNode,FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
+    FDirSummaryLabel.Caption:='Files:'+IntToStr(FileCount)
+             +' Register:'+IntToStr(HasRegisterProcCount)
+             +' Used:'+IntToStr(AddToUsesPkgSectionCount);
   end else begin
     FilePropsGroupBox.Enabled:=false;
   end;
@@ -2107,7 +2131,6 @@ begin
   begin
     Item:=TPkgEditFileItem(CurNode.Data);
     //debugln(['TPackageEditorForm.GetCurrentFile Item=',Item.Filename,' ',Item.IsDirectory]);
-    if Item.IsDirectory then exit;
     for i:=0 to LazPackage.FileCount-1 do
     begin
       //if ExtractFIlename(LazPackage.Files[i].Filename)=ExtractFIlename(Item.Filename) then
@@ -2120,6 +2143,42 @@ begin
       end;
     end;
   end;
+end;
+
+function TPackageEditorForm.IsDirectoryNode(Node: TTreeNode): boolean;
+begin
+  Result:=(Node<>nil) and (Node.Data=nil) and Node.HasAsParent(FFilesNode);
+end;
+
+procedure TPackageEditorForm.GetDirectorySummary(DirNode: TTreeNode; out
+  FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
+
+  procedure Traverse(Node: TTreeNode);
+  var
+    Item: TPkgEditFileItem;
+    CurFile: TPkgFile;
+  begin
+    if TObject(Node.Data) is TPkgEditFileItem then begin
+      Item:=TPkgEditFileItem(Node.Data);
+      CurFile:=LazPackage.FindPkgFile(Item.Filename,true,true);
+      if CurFile<>nil then begin
+        inc(FileCount);
+        if CurFile.HasRegisterProc then inc(HasRegisterProcCount);
+        if CurFile.AddToUsesPkgSection then inc(AddToUsesPkgSectionCount);
+      end;
+    end;
+    Node:=Node.GetFirstChild;
+    while Node<>nil do begin
+      Traverse(Node);
+      Node:=Node.GetNextSibling;
+    end;
+  end;
+
+begin
+  FileCount:=0;
+  HasRegisterProcCount:=0;
+  AddToUsesPkgSectionCount:=0;
+  Traverse(DirNode);
 end;
 
 function TPackageEditorForm.StoreCurrentTreeSelection: TStringList;

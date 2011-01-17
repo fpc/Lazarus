@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="165">
+    <Files Count="222">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -849,6 +849,254 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item165>
+      <Item166>
+        <Filename Value="gtk2/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item166>
+      <Item167>
+        <Filename Value="gtk2/dragicons.inc"/>
+        <Type Value="Include"/>
+      </Item167>
+      <Item168>
+        <Filename Value="gtk2/gtk2callback.inc"/>
+        <Type Value="Include"/>
+      </Item168>
+      <Item169>
+        <Filename Value="gtk2/gtk2cellrenderer.pas"/>
+        <UnitName Value="Gtk2CellRenderer"/>
+      </Item169>
+      <Item170>
+        <Filename Value="gtk2/gtk2comboboxcallback.inc"/>
+        <Type Value="Include"/>
+      </Item170>
+      <Item171>
+        <Filename Value="gtk2/gtk2debug.pp"/>
+        <UnitName Value="Gtk2Debug"/>
+      </Item171>
+      <Item172>
+        <Filename Value="gtk2/gtk2def.pp"/>
+        <UnitName Value="Gtk2Def"/>
+      </Item172>
+      <Item173>
+        <Filename Value="gtk2/gtk2defines.inc"/>
+        <Type Value="Include"/>
+      </Item173>
+      <Item174>
+        <Filename Value="gtk2/gtk2devicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item174>
+      <Item175>
+        <Filename Value="gtk2/gtk2dragcallback.inc"/>
+        <Type Value="Include"/>
+      </Item175>
+      <Item176>
+        <Filename Value="gtk2/gtk2extra.inc"/>
+        <Type Value="Include"/>
+      </Item176>
+      <Item177>
+        <Filename Value="gtk2/gtk2extra.pp"/>
+        <UnitName Value="Gtk2Extra"/>
+      </Item177>
+      <Item178>
+        <Filename Value="gtk2/gtk2extrah.inc"/>
+        <Type Value="Include"/>
+      </Item178>
+      <Item179>
+        <Filename Value="gtk2/gtk2fontcache.pas"/>
+        <UnitName Value="Gtk2FontCache"/>
+      </Item179>
+      <Item180>
+        <Filename Value="gtk2/gtk2globals.pp"/>
+        <UnitName Value="Gtk2Globals"/>
+      </Item180>
+      <Item181>
+        <Filename Value="gtk2/gtk2int.pas"/>
+        <UnitName Value="Gtk2Int"/>
+      </Item181>
+      <Item182>
+        <Filename Value="gtk2/gtk2lclintf.inc"/>
+        <Type Value="Include"/>
+      </Item182>
+      <Item183>
+        <Filename Value="gtk2/gtk2lclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item183>
+      <Item184>
+        <Filename Value="gtk2/gtk2listsl.inc"/>
+        <Type Value="Include"/>
+      </Item184>
+      <Item185>
+        <Filename Value="gtk2/gtk2listslh.inc"/>
+        <Type Value="Include"/>
+      </Item185>
+      <Item186>
+        <Filename Value="gtk2/gtk2listviewtreemodel.pas"/>
+        <UnitName Value="Gtk2ListViewTreeModel"/>
+      </Item186>
+      <Item187>
+        <Filename Value="gtk2/gtk2memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item187>
+      <Item188>
+        <Filename Value="gtk2/gtk2msgqueue.pp"/>
+        <UnitName Value="Gtk2MsgQueue"/>
+      </Item188>
+      <Item189>
+        <Filename Value="gtk2/gtk2pagecallback.inc"/>
+        <Type Value="Include"/>
+      </Item189>
+      <Item190>
+        <Filename Value="gtk2/gtk2privatelist.inc"/>
+        <Type Value="Include"/>
+      </Item190>
+      <Item191>
+        <Filename Value="gtk2/gtk2privatewidget.inc"/>
+        <Type Value="Include"/>
+      </Item191>
+      <Item192>
+        <Filename Value="gtk2/gtk2proc.inc"/>
+        <Type Value="Include"/>
+      </Item192>
+      <Item193>
+        <Filename Value="gtk2/gtk2proc.pp"/>
+        <UnitName Value="Gtk2Proc"/>
+      </Item193>
+      <Item194>
+        <Filename Value="gtk2/gtk2stdpixmaps.inc"/>
+        <Type Value="Include"/>
+      </Item194>
+      <Item195>
+        <Filename Value="gtk2/gtk2themes.pas"/>
+        <UnitName Value="Gtk2Themes"/>
+      </Item195>
+      <Item196>
+        <Filename Value="gtk2/gtk2trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item196>
+      <Item197>
+        <Filename Value="gtk2/gtk2widgetset.inc"/>
+        <Type Value="Include"/>
+      </Item197>
+      <Item198>
+        <Filename Value="gtk2/gtk2winapi.inc"/>
+        <Type Value="Include"/>
+      </Item198>
+      <Item199>
+        <Filename Value="gtk2/gtk2winapih.inc"/>
+        <Type Value="Include"/>
+      </Item199>
+      <Item200>
+        <Filename Value="gtk2/gtk2winapiwindow.pp"/>
+        <UnitName Value="Gtk2WinapiWindow"/>
+      </Item200>
+      <Item201>
+        <Filename Value="gtk2/gtk2windows.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2windows"/>
+      </Item201>
+      <Item202>
+        <Filename Value="gtk2/gtk2wsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSArrow"/>
+      </Item202>
+      <Item203>
+        <Filename Value="gtk2/gtk2wsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSButtons"/>
+      </Item203>
+      <Item204>
+        <Filename Value="gtk2/gtk2wscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSCalendar"/>
+      </Item204>
+      <Item205>
+        <Filename Value="gtk2/gtk2wschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSCheckLst"/>
+      </Item205>
+      <Item206>
+        <Filename Value="gtk2/gtk2wscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSComCtrls"/>
+      </Item206>
+      <Item207>
+        <Filename Value="gtk2/gtk2wscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSControls"/>
+      </Item207>
+      <Item208>
+        <Filename Value="gtk2/gtk2wscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item208>
+      <Item209>
+        <Filename Value="gtk2/gtk2wscustommemo.inc"/>
+        <Type Value="Include"/>
+      </Item209>
+      <Item210>
+        <Filename Value="gtk2/gtk2wsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSDialogs"/>
+      </Item210>
+      <Item211>
+        <Filename Value="gtk2/gtk2wsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSExtCtrls"/>
+      </Item211>
+      <Item212>
+        <Filename Value="gtk2/gtk2wsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSExtDlgs"/>
+      </Item212>
+      <Item213>
+        <Filename Value="gtk2/gtk2wsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSFactory"/>
+      </Item213>
+      <Item214>
+        <Filename Value="gtk2/gtk2wsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSForms"/>
+      </Item214>
+      <Item215>
+        <Filename Value="gtk2/gtk2wsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSGrids"/>
+      </Item215>
+      <Item216>
+        <Filename Value="gtk2/gtk2wsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSImgList"/>
+      </Item216>
+      <Item217>
+        <Filename Value="gtk2/gtk2wsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSMenus"/>
+      </Item217>
+      <Item218>
+        <Filename Value="gtk2/gtk2wspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSPairSplitter"/>
+      </Item218>
+      <Item219>
+        <Filename Value="gtk2/gtk2wsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSPrivate"/>
+      </Item219>
+      <Item220>
+        <Filename Value="gtk2/gtk2wsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSSpin"/>
+      </Item220>
+      <Item221>
+        <Filename Value="gtk2/gtk2wsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSStdCtrls"/>
+      </Item221>
+      <Item222>
+        <Filename Value="gtk2/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item222>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
