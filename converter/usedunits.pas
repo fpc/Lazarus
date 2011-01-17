@@ -75,15 +75,9 @@ type
     destructor Destroy; override;
     procedure CommentAutomatic(ACommentedUnits: TStringList);
   public
-    property ExistingUnits: TStringList read fExistingUnits;
-    property UnitsToAdd: TStringList read fUnitsToAdd;
-    property UnitsToAddForLCL: TStringList read fUnitsToAddForLCL;
     property MissingUnits: TStringList read fMissingUnits;
-    property UnitsToRemove: TStringList read fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename;
     property UnitsToFixCase: TStringToStringTree read fUnitsToFixCase;
-
-    property UnitsToComment: TStringList read fUnitsToComment;
   end;
 
   { TMainUsedUnits }
@@ -606,14 +600,14 @@ procedure TUsedUnitsTool.MoveMissingToComment(AAllCommentedUnits: TStrings);
 begin
   // These units will be commented automatically in one project/package.
   if Assigned(AAllCommentedUnits) then begin
-    AAllCommentedUnits.AddStrings(fMainUsedUnits.MissingUnits);
-    AAllCommentedUnits.AddStrings(fImplUsedUnits.MissingUnits);
+    AAllCommentedUnits.AddStrings(fMainUsedUnits.fMissingUnits);
+    AAllCommentedUnits.AddStrings(fImplUsedUnits.fMissingUnits);
   end;
   // Move all to be commented.
-  fMainUsedUnits.UnitsToComment.AddStrings(fMainUsedUnits.MissingUnits);
-  fMainUsedUnits.MissingUnits.Clear;
-  fImplUsedUnits.UnitsToComment.AddStrings(fImplUsedUnits.MissingUnits);
-  fImplUsedUnits.MissingUnits.Clear;
+  fMainUsedUnits.fUnitsToComment.AddStrings(fMainUsedUnits.fMissingUnits);
+  fMainUsedUnits.fMissingUnits.Clear;
+  fImplUsedUnits.fUnitsToComment.AddStrings(fImplUsedUnits.fMissingUnits);
+  fImplUsedUnits.fMissingUnits.Clear;
 end;
 
 procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
@@ -637,7 +631,7 @@ end;
 
 function TUsedUnitsTool.GetMissingUnitCount: integer;
 begin
-  Result:=fMainUsedUnits.MissingUnits.Count+fImplUsedUnits.MissingUnits.Count;
+  Result:=fMainUsedUnits.fMissingUnits.Count+fImplUsedUnits.fMissingUnits.Count;
 end;
 
 end.
