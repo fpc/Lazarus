@@ -2776,7 +2776,10 @@ begin
       end;
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
-      SetNoMousePropagation(QWidgetH(Sender), True);
+      // Check if our objects exists since LCL can destroy object during
+      // mouse events...
+      if CanSendLCLMessage and (Sender <> nil) then
+        SetNoMousePropagation(QWidgetH(Sender), True);
     end;
     QEventMouseButtonRelease:
     begin
@@ -2791,7 +2794,11 @@ begin
 
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
-      SetNoMousePropagation(QWidgetH(Sender), True);
+
+      // Check if our objects exists since LCL can destroy object during
+      // mouse events...
+      if CanSendLCLMessage and (Sender <> nil) then
+        SetNoMousePropagation(QWidgetH(Sender), True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
