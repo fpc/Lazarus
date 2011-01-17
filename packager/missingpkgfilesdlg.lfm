@@ -11,11 +11,12 @@ object MissingPkgFilesDialog: TMissingPkgFilesDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 334
+    Height = 34
+    Top = 342
     Width = 465
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = ButtonPanel1Click
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
     HelpButton.Enabled = False
@@ -29,12 +30,12 @@ object MissingPkgFilesDialog: TMissingPkgFilesDialog
   end
   object FilesTreeView: TTreeView
     Left = 6
-    Height = 322
+    Height = 330
     Top = 6
     Width = 465
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     TabOrder = 1
   end
 end

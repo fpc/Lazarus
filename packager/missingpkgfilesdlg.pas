@@ -69,7 +69,7 @@ end;
 
 procedure TMissingPkgFilesDialog.FormCreate(Sender: TObject);
 begin
-  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1Click;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TMissingPkgFilesDialog.ButtonPanel1Click(Sender: TObject);
