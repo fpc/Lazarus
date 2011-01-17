@@ -4409,6 +4409,10 @@ msgstr ""
 msgid "Check options"
 msgstr ""
 
+#: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
+msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Pilih nama yang berbeda"
@@ -5541,7 +5545,8 @@ msgstr ""
 msgid "Aborted."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
+#: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
+msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
 msgstr ""
 
@@ -5578,7 +5583,7 @@ msgid "Convert Delphi unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "Converting file %s"
+msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -5609,6 +5614,10 @@ msgstr ""
 msgid "*** Find all unit files... ***"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixedunitcase
+msgid "Fixed character case of unit \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr ""
@@ -5633,8 +5642,8 @@ msgstr ""
 msgid "Ready."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiremovedusedunitsinusessection
-msgid "Removed used unit \"%s\" in uses section."
+#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
+msgid "Removed unit \"%s\" in uses section."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
@@ -5653,7 +5662,8 @@ msgstr ""
 msgid "*** Repairing form files... ***"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphireplacedunitswithsinusessection
+#: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
+msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr ""
 
@@ -6639,8 +6649,16 @@ msgstr ""
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Duplikasi nama: Komponen bernama %s%s%ssudah ada dalam komponen inherited %s"
 
+#: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
+msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
+msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
 msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
@@ -7837,6 +7855,14 @@ msgstr "Daftar impor"
 msgid "Impossible"
 msgstr ""
 
+#: lazarusidestrconsts.lisinasourcedirectoryofthepackage
+msgid "In a source directory of the package \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
+msgid "In a source directory of the project. Check for duplicates."
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Filter Include"
@@ -7921,6 +7947,10 @@ msgstr "Informasi tentang %s"
 
 #: lazarusidestrconsts.lisinformationaboutusedfpc
 msgid "Information about used FPC"
+msgstr ""
+
+#: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
+msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfrontofrelated
@@ -9321,6 +9351,10 @@ msgstr "String dengan nilai sama:"
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
+msgstr ""
+
+#: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
+msgid "%s Maybe you have to recompile the package."
 msgstr ""
 
 #: lazarusidestrconsts.lismemorydump
@@ -11479,6 +11513,10 @@ msgstr "Nama file unit tidak benar"
 msgid "Invalid unitname"
 msgstr "Nama unit tidak benar"
 
+#: lazarusidestrconsts.lispemissingfilesofpackage
+msgid "Missing files of package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
 msgstr ""
@@ -11487,8 +11525,49 @@ msgstr ""
 msgid "Move file up"
 msgstr ""
 
+#: lazarusidestrconsts.lispenewfilenotinincludepath
+msgid "New file not in include path"
+msgstr ""
+
+#: lazarusidestrconsts.lispenofilesmissingallfilesexist
+msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
+msgid "No files missing. All files exist."
+msgstr ""
+
+#: lazarusidestrconsts.lisperemovefiles
+msgid "Remove files"
+msgstr ""
+
+#: lazarusidestrconsts.lisperemoveselectedfiles
+msgid "Remove selected files"
+msgstr ""
+
+#: lazarusidestrconsts.lisperevertpackage
+msgid "Revert package"
+msgstr ""
+
+#: lazarusidestrconsts.lispesavepackageas
+msgid "Save package as"
+msgstr ""
+
+#: lazarusidestrconsts.lispeshowdirectoryhierarchy
+msgid "Show directory hierarchy"
+msgstr ""
+
+#: lazarusidestrconsts.lispeshowmissingfiles
+msgid "Show missing files"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
+msgstr ""
+
+#: lazarusidestrconsts.lispesortfilesalphabetically
+msgid "Sort files alphabetically"
+msgstr ""
+
+#: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
+msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
 msgstr ""
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
@@ -11548,7 +11627,9 @@ msgid "Revert package?"
 msgstr "Kembalikan paket?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
+#, fuzzy
+#| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
+msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "File %s%s%s%ssaat ini tidak dalam unitpath dari paket.%s%sTambah %s%s%s ke UnitPath?"
 
 #: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented

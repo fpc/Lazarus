@@ -4381,6 +4381,10 @@ msgstr "בדוק אם הסימן הבא בקוד הוא הוא :סוף\" ואם 
 msgid "Check options"
 msgstr "בדוק אפשרויות"
 
+#: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
+msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "בחר בשם אחר"
@@ -5511,7 +5515,8 @@ msgstr "אופסט לקואורדינטות"
 msgid "Aborted."
 msgstr "נפסק"
 
-#: lazarusidestrconsts.lisconvdelphiallsubdirectorieswillbescannedforunitfiles
+#: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
+msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
 msgstr "כל תתי התיקיות ייסרקו למציאת קבצי יחידות"
 
@@ -5548,7 +5553,7 @@ msgid "Convert Delphi unit"
 msgstr "המר יחידת דלפי"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "Converting file %s"
+msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
@@ -5579,6 +5584,10 @@ msgstr "לא הצליח להמיר יחידה %s%s%s"
 msgid "*** Find all unit files... ***"
 msgstr "*** מצא את כל קבצי היחידה... ***"
 
+#: lazarusidestrconsts.lisconvdelphifixedunitcase
+msgid "Fixed character case of unit \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "פונקציית דלפי"
@@ -5603,9 +5612,9 @@ msgstr "שם החבילה קיים"
 msgid "Ready."
 msgstr "מוכן."
 
-#: lazarusidestrconsts.lisconvdelphiremovedusedunitsinusessection
-msgid "Removed used unit \"%s\" in uses section."
-msgstr "הסר יחידה שנמצאת בסעיף \"משתמש ב\""
+#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
+msgid "Removed unit \"%s\" in uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
@@ -5623,7 +5632,8 @@ msgstr "מתקן מקובץ %s"
 msgid "*** Repairing form files... ***"
 msgstr "*** מתקן מקבצים... ***"
 
-#: lazarusidestrconsts.lisconvdelphireplacedunitswithsinusessection
+#: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
+msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "הוחלפה יחידה \"%s\" ביחידה \"%s\" שנמצאת בסעיף \"משתמש ב\""
 
@@ -6611,9 +6621,17 @@ msgstr "נמצאה כפילות בערך s%s%s%."
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "כפילות בשם: רכיב בשם s%s%s% כבר קיים ברכיב המורש s%"
 
+#: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
+msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
 msgstr "מסלול חיפוש כפול"
+
+#: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
+msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -7805,6 +7823,14 @@ msgstr "ייבא רשימה"
 msgid "Impossible"
 msgstr "בלתי אפשרי"
 
+#: lazarusidestrconsts.lisinasourcedirectoryofthepackage
+msgid "In a source directory of the package \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
+msgid "In a source directory of the project. Check for duplicates."
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "כלול מסנן"
@@ -7890,6 +7916,10 @@ msgstr "מידע עבור %s"
 #: lazarusidestrconsts.lisinformationaboutusedfpc
 msgid "Information about used FPC"
 msgstr "מידע על  FPC"
+
+#: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
+msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
+msgstr ""
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -9295,6 +9325,10 @@ msgstr "מחרוזת בעלת אותו ערך"
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "מקסימום d%"
+
+#: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
+msgid "%s Maybe you have to recompile the package."
+msgstr ""
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11436,6 +11470,10 @@ msgstr "שם קובץ יחידה לא חוקי"
 msgid "Invalid unitname"
 msgstr "שם יחידה לא חוקי"
 
+#: lazarusidestrconsts.lispemissingfilesofpackage
+msgid "Missing files of package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
 msgstr "הזז קובץ למטה"
@@ -11444,9 +11482,50 @@ msgstr "הזז קובץ למטה"
 msgid "Move file up"
 msgstr "הזז קובץ למעלה"
 
+#: lazarusidestrconsts.lispenewfilenotinincludepath
+msgid "New file not in include path"
+msgstr ""
+
+#: lazarusidestrconsts.lispenofilesmissingallfilesexist
+msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
+msgid "No files missing. All files exist."
+msgstr ""
+
+#: lazarusidestrconsts.lisperemovefiles
+msgid "Remove files"
+msgstr ""
+
+#: lazarusidestrconsts.lisperemoveselectedfiles
+msgid "Remove selected files"
+msgstr ""
+
+#: lazarusidestrconsts.lisperevertpackage
+msgid "Revert package"
+msgstr ""
+
+#: lazarusidestrconsts.lispesavepackageas
+msgid "Save package as"
+msgstr ""
+
+#: lazarusidestrconsts.lispeshowdirectoryhierarchy
+msgid "Show directory hierarchy"
+msgstr ""
+
+#: lazarusidestrconsts.lispeshowmissingfiles
+msgid "Show missing files"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
 msgstr "סדר קבצים"
+
+#: lazarusidestrconsts.lispesortfilesalphabetically
+msgid "Sort files alphabetically"
+msgstr ""
+
+#: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
+msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
+msgstr ""
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
 msgctxt "lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile"
@@ -11505,7 +11584,9 @@ msgid "Revert package?"
 msgstr "לשחזר חבילה?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
+#, fuzzy
+#| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
+msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "הקובץ  %s%s%s%s אינו בנתיב החבילה כרגע. להוסיף אותו לנתיב החבילה?"
 
 #: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
