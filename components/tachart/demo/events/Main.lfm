@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 240
   ClientWidth = 320
+  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
@@ -27,8 +28,6 @@ object Form1: TForm1
     Title.Text.Strings = (
       'TAChart'
     )
-    OnBeforeDrawBackground = Chart1BeforeDrawBackground
-    OnBeforeDrawBackWall = Chart1BeforeDrawBackWall
     Align = alClient
     ParentColor = False
     object Chart1BarSeries1: TBarSeries
