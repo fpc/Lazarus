@@ -48,18 +48,17 @@ type
 
   TUsedUnits = class
   private
-    fCTLink: TCodeToolLink;           // Link to codetools.
+    fCTLink: TCodeToolLink;              // Link to codetools.
     fOwnerTool: TUsedUnitsTool;
-    fUsesSection: TUsesSection;       // Enum used by some codetools funcs.
-    fExistingUnits: TStringList;      // List of units before conversion.
-    fUnitsToAdd: TStringList;         // List of new units to add.
-    fUnitsToAddForLCL: TStringList;   // List of new units for LCL (not for Delphi).
-    fUnitsToRemove: TStringList;      // List of units to remove.
-    // Units to rename. Map old unit name -> new unit name.
-    fUnitsToRename: TStringToStringTree;
-    fUnitsToFixCase: TStringToStringTree; // Like rename but done for every target.
-    fUnitsToComment: TStringList;     // List of units to be commented.
-    fMissingUnits: TStringList;       // Units not found in search path.
+    fUsesSection: TUsesSection;          // Enum used by some codetools funcs.
+    fExistingUnits: TStringList;         // List of units before conversion.
+    fUnitsToAdd: TStringList;            // List of new units to add.
+    fUnitsToAddForLCL: TStringList;      // List of new units for LCL (not for Delphi).
+    fUnitsToRemove: TStringList;         // List of units to remove.
+    fUnitsToRename: TStringToStringTree; // Units to rename. Map old name -> new name.
+    fUnitsToFixCase: TStringToStringTree;// Like rename but done for every target.
+    fUnitsToComment: TStringList;        // List of units to be commented.
+    fMissingUnits: TStringList;          // Units not found in search path.
     function FindMissingUnits: boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
     procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
