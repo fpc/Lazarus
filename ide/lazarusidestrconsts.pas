@@ -5128,7 +5128,7 @@ resourcestring
     +'Delete one or make sure all search paths have correct order (Hint: FPC '
     +'uses last path first).';
   lisPEMissingFilesOfPackage = 'Missing files of package %s';
-  lisPENoFilesMissingAllFilesExists = 'No files missing. All files exists.';
+  lisPENoFilesMissingAllFilesExists = 'No files missing. All files exist.';
   lisPERemoveSelectedFiles = 'Remove selected files';
 
 implementation
