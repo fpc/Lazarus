@@ -40,6 +40,13 @@ type
 
   TBarWidthStyle = (bwPercent, bwPercentMin);
 
+  TBarSeries = class;
+
+  TBeforeDrawBarEvent = procedure (
+    ASender: TBarSeries; ACanvas: TCanvas; const ARect: TRect;
+    APointIndex, AStackIndex: Integer; var ADoDefaultDrawing: Boolean
+  ) of object;
+
   { TBarSeries }
 
   TBarSeries = class(TBasicPointSeries)
@@ -49,6 +56,7 @@ type
     FBarPen: TPen;
     FBarWidthPercent: Integer;
     FBarWidthStyle: TBarWidthStyle;
+    FOnBeforeDrawBar: TBeforeDrawBarEvent;
     FZeroLevel: Double;
 
     procedure BarOffsetWidth(
@@ -59,6 +67,7 @@ type
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarWidthStyle(AValue: TBarWidthStyle);
+    procedure SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
   protected
@@ -89,6 +98,9 @@ type
     property UseReticule;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
+  published
+    property OnBeforeDrawBar: TBeforeDrawBarEvent
+      read FOnBeforeDrawBar write SetOnBeforeDrawBar;
   end;
 
 
@@ -692,21 +704,28 @@ begin
 end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
+var
+  pointIndex, stackIndex: Integer;
 
-  procedure DrawBar(const AR: TRect; AIndex: Integer);
+  procedure DrawBar(const AR: TRect);
   var
     sz: TSize;
+    defaultDrawing: Boolean = true;
   begin
-    sz := Size(AR);
+    ACanvas.Brush.Assign(BarBrush);
+    ACanvas.Pen.Assign(BarPen);
     if Styles <> nil then
-      Styles.Apply(ACanvas, AIndex)
-    else
-      ACanvas.Pen.Assign(BarPen);
+      Styles.Apply(ACanvas, stackIndex);
+    sz := Size(AR);
     if (sz.cx <= 2) or (sz.cy <= 2) then begin
-      // Bars are too small to distinguish border from interior.
+      // Bars are too small to distinguish the border from the interior.
       ACanvas.Pen.Color := ACanvas.Brush.Color;
       ACanvas.Pen.Style := psSolid;
     end;
+
+    if Assigned(OnBeforeDrawBar) then
+      OnBeforeDrawBar(Self, ACanvas, AR, pointIndex, stackIndex, defaultDrawing);
+    if not defaultDrawing then exit;
 
     ACanvas.Rectangle(AR);
 
@@ -721,7 +740,7 @@ var
   w, cumulHeight: Double;
   p: TDoublePoint;
 
-  procedure BuildBar(AY: Double; AIndex: Integer);
+  procedure BuildBar(AY: Double);
   var
     graphBar: TDoubleRect;
     imageBar: TRect;
@@ -745,11 +764,10 @@ var
       if Bottom = Top then Dec(Top);
       if Left = Right then Inc(Right);
     end;
-    DrawBar(imageBar, AIndex);
+    DrawBar(imageBar);
   end;
 
 var
-  i, j: Integer;
   z, ofs: Double;
 begin
   if IsEmpty then exit;
@@ -761,22 +779,22 @@ begin
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
   PrepareGraphPoints(ext2, true);
-  ACanvas.Brush.Assign(BarBrush);
   if IsRotated then
     z := AxisToGraphX(ZeroLevel)
   else
     z := AxisToGraphY(ZeroLevel);
-  for i := FLoBound to FUpBound do begin
-    BarOffsetWidth(GetGraphPointX(i), i, ofs, w);
-    p := FGraphPoints[i - FLoBound];
+  for pointIndex := FLoBound to FUpBound do begin
+    BarOffsetWidth(GetGraphPointX(pointIndex), pointIndex, ofs, w);
+    p := FGraphPoints[pointIndex - FLoBound];
     if IsRotated then
       Exchange(p.X, p.Y);
     p.X += ofs;
     cumulHeight := z;
-    ACanvas.Brush.Color := GetColor(i);
-    BuildBar(p.Y - z, 0);
-    for j := 0 to Source.YCount - 2 do
-      BuildBar(Source[i]^.YList[j], j + 1);
+    ACanvas.Brush.Color := GetColor(pointIndex);
+    stackIndex := 0;
+    BuildBar(p.Y - z);
+    for stackIndex := 1 to Source.YCount - 1 do
+      BuildBar(Source[pointIndex]^.YList[stackIndex - 1]);
   end;
 
   DrawLabels(ACanvas);
@@ -843,6 +861,13 @@ procedure TBarSeries.SetBarWidthStyle(AValue: TBarWidthStyle);
 begin
   if FBarWidthStyle = AValue then exit;
   FBarWidthStyle := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBarSeries.SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
+begin
+  if FOnBeforeDrawBar = AValue then exit;
+  FOnBeforeDrawBar := AValue;
   UpdateParentChart;
 end;
 
