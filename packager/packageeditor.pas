@@ -853,13 +853,15 @@ var
   NodeIndex: Integer;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
+  Removed: boolean;
 begin
   CurNode:=FilesTreeView.Selected;
   if CurNode=nil then exit;
   NodeIndex:=CurNode.Index;
   if CurNode.Parent<>nil then begin
-    if CurNode.Parent=FFilesNode then begin
-      CurFile:=LazPackage.Files[NodeIndex];
+    if TObject(CurNode.Data) is TPkgEditFileItem then begin
+      CurFile:=GetCurrentFile(Removed);
+      if CurFile=nil then exit;
       DoOpenPkgFile(CurFile);
     end else if CurNode.Parent=FRequiredPackagesNode then begin
       CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);

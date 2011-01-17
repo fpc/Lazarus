@@ -846,6 +846,7 @@ end;"/>
       </Item164>
       <Item165>
         <Filename Value="gtk/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item165>
     </Files>
