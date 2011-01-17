@@ -34,6 +34,7 @@ type
   TOptionsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     CBNewVisible: TCheckBox;
+    CBCleanLogOnNewProcess: TCheckBox;
     CBShowOnStartUp: TCheckBox;
     CBShowOnMessage: TCheckBox;
     CBNewAtBottom: TCheckBox;
@@ -50,6 +51,7 @@ type
     Property ShowOnMessage : Boolean Index 1 Read GetB Write SetB;
     Property NewMessageAtBottom : Boolean Index 2 Read GetB Write SetB;
     Property NewMessageVisible: Boolean Index 3 Read GetB Write SetB;
+    Property CleanLogOnNewProcess: Boolean Index 4 Read GetB Write SetB;
   end;
 
 var
@@ -69,6 +71,7 @@ begin
     1 : Result:=CBShowOnMessage;
     2 : Result:=CBNewAtBottom;
     3 : Result:=CBNewVisible;
+    4 : Result:=CBCleanLogOnNewProcess;
   end;
 end;
 

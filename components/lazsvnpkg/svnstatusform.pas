@@ -25,13 +25,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc, Process,
-  SVNClasses, Menus, LazIDEIntf;
+  SVNClasses, Menus, LazIDEIntf, BaseIDEIntf, LazConfigStorage;
 
 type
   { TSVNStatusFrm }
 
   TSVNStatusFrm = class(TForm)
     ButtonPanel: TButtonPanel;
+    SVNCommitMsgHistoryComboBox: TComboBox;
     ImageList: TImageList;
     mnuOpen: TMenuItem;
     mnuRemove: TMenuItem;
@@ -42,6 +43,7 @@ type
     Splitter: TSplitter;
     SVNCommitMsgMemo: TMemo;
     SVNFileListView: TListView;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -53,6 +55,7 @@ type
     procedure OKButtonClick(Sender: TObject);
     procedure PatchButtonClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure SVNCommitMsgHistoryComboBoxChange(Sender: TObject);
     procedure SVNFileListViewColumnClick(Sender: TObject; Column: TListColumn);
   private
     FRepositoryPath: string;
@@ -177,6 +180,7 @@ begin
 end;
 
 procedure TSVNStatusFrm.mnuShowDiffClick(Sender: TObject);
+
 begin
   {$note implement opening file in source editor}
   if Assigned(SVNFileListView.Selected) then
@@ -273,6 +277,12 @@ begin
   end;
 end;
 
+procedure TSVNStatusFrm.SVNCommitMsgHistoryComboBoxChange(Sender: TObject);
+begin
+  with SVNCommitMsgHistoryComboBox do
+    SVNCommitMsgMemo.Text := Items[ItemIndex];
+end;
+
 procedure TSVNStatusFrm.SVNFileListViewColumnClick(Sender: TObject;
   Column: TListColumn);
 begin
@@ -367,6 +377,11 @@ begin
 end;
 
 procedure TSVNStatusFrm.FormCreate(Sender: TObject);
+var
+  Config: TConfigStorage;
+  count: integer;
+  i: integer;
+  s: string;
 begin
   mnuShowDiff.Caption := rsShowDiff;
   mnuOpen.Caption := rsOpenFileInEditor;
@@ -391,6 +406,45 @@ begin
 
   ImageList.AddLazarusResource('menu_svn_diff');
   ImageList.AddLazarusResource('menu_svn_revert');
+
+  try
+    Config := GetIDEConfigStorage('lazsvnpkg.xml', true);
+
+    count := Config.GetValue('HistoryCount', 0);
+    //limit to 100 entries
+    if count > 100 then count := 100;
+
+    for i := count downto 0 do
+    begin
+      s := Config.GetValue('Msg' + IntToStr(i), '');
+      if s <> '' then
+        SVNCommitMsgHistoryComboBox.Items.Add(s);
+    end;
+  finally
+    Config.Free;
+  end;
+end;
+
+procedure TSVNStatusFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+var
+  Config: TConfigStorage;
+  count: integer;
+  i: integer;
+  s: string;
+begin
+  if SVNCommitMsgMemo.Text <> '' then
+  begin
+    try
+      Config := GetIDEConfigStorage('lazsvnpkg.xml', true);
+
+      count := Config.GetValue('HistoryCount', 0);
+      Config.SetValue('HistoryCount', count + 1);
+
+      Config.SetValue('Msg' + IntToStr(count + 1), SVNCommitMsgMemo.Text);
+    finally
+      Config.Free;
+    end;
+  end;
 end;
 
 procedure TSVNStatusFrm.FormDestroy(Sender: TObject);

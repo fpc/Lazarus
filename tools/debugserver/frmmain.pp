@@ -105,6 +105,7 @@ type
     FShowOnStartUp,
     FShowOnmessage,
     FKeepVisible : Boolean;
+    FCleanLog : Boolean;
     FAtBottom : Boolean;
     FQuitting : Boolean;
     FDiscarded : Int64;
@@ -375,6 +376,9 @@ Var
   LI : TListItem;
 
 begin
+  if (Msg.MsgType = lctIdentify) and FCleanLog then
+    ClearMessages;
+
   LVmessages.Items.BeginUpdate;
   try
     if FAtBottom then
@@ -458,6 +462,8 @@ begin
     ShowOnMessage:=FShowOnmessage;
     NewMessageAtBottom:=FAtBottom;
     NewMessageVisible:=FKeepVisible;
+    CleanLogOnNewProcess := FCleanLog;
+
     If (ShowModal=mrOk) then
       begin
       FShowOnStartUp:=ShowOnStartUp;
@@ -503,6 +509,7 @@ Const
   KeyShowOnMessage = 'ShowOnMessage';
   KeyAtBottom      = 'NewAtBottom';
   KeyNewVisible    = 'NewVisible';
+  KeyCleanLog      = 'CleanLog';
   KeyStayOnTop     = 'StayOnTop';
   KeyToolBar       = 'ShowToolBar';
 
@@ -519,6 +526,7 @@ begin
       FShowOnMessage:=ReadBool(SSettings,KeyShowOnMessage,True);
       FAtBottom:=ReadBool(SSettings,KeyAtBottom,False);
       FKeepVisible:=ReadBool(SSettings,KeyNewVisible,True);
+      FCleanLog:=ReadBool(SSettings,KeyCleanLog,False);
       StayOnTop:=ReadBool(SSettings,KeyStayOnTop,False);
       ShowToolBar:=ReadBool(SSettings,KeyToolBar,True);
     finally
@@ -532,6 +540,10 @@ Var
   Ini : TMemIniFile;
 
 begin
+  if not(DirectoryExists(GetAppConfigDir(False))) then
+    if not(CreateDir (GetAppConfigDir(False))) Then
+      ShowMessage('I can''t create config dir');
+
   Ini:=TMeminiFile.Create(GetAppConfigFile(False));
   With Ini do
     try
@@ -539,6 +551,7 @@ begin
       WriteBool(SSettings,KeyShowOnMessage,FShowOnMessage);
       WriteBool(SSettings,KeyAtBottom,FAtBottom);
       WriteBool(SSettings,KeyNewVisible,FKeepVisible);
+      WriteBool(SSettings,KeyCleanLog,FCleanLog);
       WriteBool(SSettings,KeyStayOnTop,StayOnTop);
       WriteBool(SSettings,KeyToolBar,ShowToolBar);
     finally

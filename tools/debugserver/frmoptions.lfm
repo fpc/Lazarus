@@ -1,18 +1,17 @@
 object OptionsForm: TOptionsForm
   Left = 390
-  Height = 230
+  Height = 275
   Top = 239
   Width = 390
-  ActiveControl = CBShowOnStartUp
   Caption = 'Options'
-  ClientHeight = 230
+  ClientHeight = 275
   ClientWidth = 390
   Position = poMainFormCenter
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 190
+    Height = 35
+    Top = 234
     Width = 378
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -33,14 +32,14 @@ object OptionsForm: TOptionsForm
     Top = 16
     Width = 300
     Caption = 'Show message window'
-    ClientHeight = 65
+    ClientHeight = 59
     ClientWidth = 296
     TabOrder = 1
     object CBShowOnStartUp: TCheckBox
       Left = 14
       Height = 21
       Top = 9
-      Width = 117
+      Width = 126
       Caption = 'Show on startup'
       TabOrder = 0
     end
@@ -48,25 +47,25 @@ object OptionsForm: TOptionsForm
       Left = 13
       Height = 21
       Top = 37
-      Width = 156
+      Width = 164
       Caption = 'Show on new message'
       TabOrder = 1
     end
   end
   object GBMessages: TGroupBox
     Left = 16
-    Height = 75
+    Height = 115
     Top = 109
     Width = 300
     Caption = 'Messages'
-    ClientHeight = 59
+    ClientHeight = 93
     ClientWidth = 296
     TabOrder = 2
     object CBNewAtBottom: TCheckBox
       Left = 13
       Height = 21
       Top = 5
-      Width = 204
+      Width = 216
       Caption = 'Show new messages at bottom'
       TabOrder = 0
     end
@@ -74,9 +73,17 @@ object OptionsForm: TOptionsForm
       Left = 14
       Height = 21
       Top = 29
-      Width = 200
+      Width = 206
       Caption = 'Scroll new messages into view'
       TabOrder = 1
+    end
+    object CBCleanLogOnNewProcess: TCheckBox
+      Left = 14
+      Height = 21
+      Top = 55
+      Width = 179
+      Caption = 'Clean log on new process'
+      TabOrder = 2
     end
   end
 end
