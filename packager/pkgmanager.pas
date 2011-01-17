@@ -3357,7 +3357,8 @@ begin
     end;
   end;
   
-  Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc);
+  Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc,
+                                   @MainIDE.GetIDEFileState);
 end;
 
 function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage
@@ -3371,7 +3372,7 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     AFile:=APackage.Files[i];
     if AFile.FileType=pftVirtualUnit then continue;
-    AFilename:=AFile.Filename;
+    AFilename:=AFile.GetFullFilename;
     if System.Pos('$(',AFilename)>0 then begin
       // filename contains macros -> skip
     end;

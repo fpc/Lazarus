@@ -1060,47 +1060,7 @@ begin
 end;
 
 procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
-var
-  y: Integer;
-  x: Integer;
-  w: Integer;
 begin
-  // components for files
-  w:=(ClientWidth-15) div 2;
-  with CallRegisterProcCheckBox do
-    SetBounds(3,0,w,Height);
-  x:=3+w+9;
-    
-  with AddToUsesPkgSectionCheckBox do
-    SetBounds(x,0,w,Height);
-
-  y:=CallRegisterProcCheckBox.Top+CallRegisterProcCheckBox.Height+3;
-  with RegisteredPluginsGroupBox do
-    SetBounds(0,y,Parent.ClientWidth,Parent.ClientHeight-y);
-    
-  // components for dependencies
-  x:=5;
-  y:=3;
-  with UseMinVersionCheckBox do
-    SetBounds(x,y,150,MinVersionEdit.Height);
-  inc(x,UseMinVersionCheckBox.Width+5);
-
-  with MinVersionEdit do
-    SetBounds(x,y,120,Height);
-    
-  x:=5;
-  inc(y,MinVersionEdit.Height+5);
-  with UseMaxVersionCheckBox do
-    SetBounds(x,y,UseMinVersionCheckBox.Width,MaxVersionEdit.Height);
-  inc(x,UseMaxVersionCheckBox.Width+5);
-
-  with MaxVersionEdit do
-    SetBounds(x,y,MinVersionEdit.Width,Height);
-  inc(y,MaxVersionEdit.Height+10);
-
-  x:=5;
-  with ApplyDependencyButton do
-    SetBounds(x,y,150,Height);
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
@@ -1136,7 +1096,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
                                           FileType,PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(true);
+    UpdateAll(false);
   end;
   
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
@@ -1145,7 +1105,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(true);
+    UpdateAll(false);
   end;
   
   procedure AddNewComponent(AddParams: TAddToPkgResult);
@@ -1159,9 +1119,10 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     if AddParams.Dependency<>nil then begin
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
     end;
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);
-    UpdateAll(true);
+    UpdateAll(false);
   end;
   
   procedure AddRequiredPkg(AddParams: TAddToPkgResult);
@@ -1169,6 +1130,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     // add dependency
     PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
     FNextSelectedPart := AddParams.Dependency;
+    UpdateAll(false);
   end;
   
   procedure AddFile(AddParams: TAddToPkgResult);
@@ -1177,7 +1139,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     with AddParams do
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
-    UpdateAll(true);
+    UpdateAll(false);
   end;
   
   procedure AddNewFile(AddParams: TAddToPkgResult);
@@ -1273,13 +1235,26 @@ procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
   Removed: boolean;
+  i: Integer;
+  OtherFile: TPkgFile;
 begin
   if LazPackage=nil then exit;
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) then exit;
   if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then exit;
   CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
-  LazPackage.Modified:=not Removed;
+  if not Removed then begin
+    if CurFile.AddToUsesPkgSection then begin
+      // mark all other units with the same name as unused
+      for i:=0 to LazPackage.FileCount-1 do begin
+        OtherFile:=LazPackage.Files[i];
+        if (OtherFile<>CurFile)
+        and (SysUtils.CompareText(OtherFile.Unit_Name,CurFile.Unit_Name)=0) then
+          OtherFile.AddToUsesPkgSection:=false;
+      end;
+    end;
+    LazPackage.Modified:=true;
+  end;
   UpdateAll(true);
 end;
 
@@ -1346,7 +1321,9 @@ begin
   if (CurFile=nil) then exit;
   if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
   CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-  LazPackage.Modified:=not Removed;
+  if not Removed then begin
+    LazPackage.Modified:=true;
+  end;
   UpdateAll(true);
 end;
 

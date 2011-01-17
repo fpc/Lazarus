@@ -49,7 +49,7 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
-  NonPascalCodeTools, SourceChanger, CodeToolManager,
+  CodeToolsStructs, NonPascalCodeTools, SourceChanger, CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   LazIDEIntf,
@@ -4037,6 +4037,7 @@ var
   CurSrcUnitName: String;
   NewShortenSrc: String;
   BeautifyCodeOptions: TBeautifyCodeOptions;
+  AddedUnitNames: TStringToStringTree;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.SavePackageMainSource A');
@@ -4054,41 +4055,52 @@ begin
   e:=LineEnding;
   UsedUnits:='';
   RegistrationCode:='';
-  for i:=0 to APackage.FileCount-1 do begin
-    CurFile:=APackage.Files[i];
-    if CurFile.FileType=pftMainUnit then continue;
-    // update unitname
-    if FilenameIsPascalUnit(CurFile.Filename)
-    and (CurFile.FileType in PkgFileUnitTypes) then begin
-      NeedsRegisterProcCall:=CurFile.HasRegisterProc
-        and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
-      if not (NeedsRegisterProcCall or CurFile.AddToUsesPkgSection) then
-        continue;
+  AddedUnitNames:=TStringToStringTree.Create(false);
+  try
+    for i:=0 to APackage.FileCount-1 do begin
+      CurFile:=APackage.Files[i];
+      if CurFile.FileType=pftMainUnit then continue;
+      // update unitname
+      if FilenameIsPascalUnit(CurFile.Filename)
+      and (CurFile.FileType in PkgFileUnitTypes) then begin
+        NeedsRegisterProcCall:=CurFile.HasRegisterProc
+          and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
 
-      CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
+        CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
 
-      if CurUnitName=lowercase(CurUnitName) then begin
-        // the filename is all lowercase, so we can use the nicer unitname from
-        // the source.
+        if not (NeedsRegisterProcCall or CurFile.AddToUsesPkgSection) then
+          continue;
 
-        CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
-        if CodeBuffer<>nil then begin
-          // if the unit is edited, the unitname is probably already cached
-          CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
-          // if not then parse it
-          if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
-            CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-          // if it makes sense, update unitname
-          if SysUtils.CompareText(CurSrcUnitName,CurFile.Unit_Name)=0 then
-            CurFile.Unit_Name:=CurSrcUnitName;
+        if CurUnitName=lowercase(CurUnitName) then begin
+          // the filename is all lowercase, so we can use the nicer unitname from
+          // the source.
+
+          CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
+          if CodeBuffer<>nil then begin
+            // if the unit is edited, the unitname is probably already cached
+            CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
+            // if not then parse it
+            if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
+              CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+            // if it makes sense, update unitname
+            if SysUtils.CompareText(CurSrcUnitName,CurFile.Unit_Name)=0 then
+              CurFile.Unit_Name:=CurSrcUnitName;
+          end;
+          if SysUtils.CompareText(CurUnitName,CurFile.Unit_Name)=0 then
+            CurUnitName:=CurFile.Unit_Name
+          else
+            CurFile.Unit_Name:=CurUnitName;
         end;
-        if SysUtils.CompareText(CurUnitName,CurFile.Unit_Name)=0 then
-          CurUnitName:=CurFile.Unit_Name
-        else
-          CurFile.Unit_Name:=CurUnitName;
-      end;
 
-      if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
+        if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then begin
+          AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.
+            Filename, APackage.IDAsString]),
+             APackage.Directory);
+          continue;
+        end;
+
+        if AddedUnitNames.Contains(CurUnitName) then continue;
+        AddedUnitNames.Add(CurUnitName,'');
         if UsedUnits<>'' then
           UsedUnits:=UsedUnits+', ';
         UsedUnits:=UsedUnits+CurUnitName;
@@ -4096,12 +4108,11 @@ begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
         end;
-      end else begin
-        AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.
-          Filename, APackage.IDAsString]),
-           APackage.Directory);
       end;
     end;
+
+  finally
+    AddedUnitNames.Free;
   end;
   // append registration code only for design time packages
   if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
@@ -4136,8 +4147,9 @@ begin
   Src:=HeaderSrc+Src;
   if UsedUnits<>'' then
     Src:=Src
-      +BreakString('uses'+e+GetIndentStr(BeautifyCodeOptions.Indent)+UsedUnits+';',
-      BeautifyCodeOptions.LineLength,BeautifyCodeOptions.Indent)+e
+      +'uses'+e
+      +BreakString(GetIndentStr(BeautifyCodeOptions.Indent)+UsedUnits+';',
+                   BeautifyCodeOptions.LineLength,BeautifyCodeOptions.Indent)+e
       +e;
   Src:=Src+BeautifyCodeOptions.BeautifyStatement(
        'implementation'+e

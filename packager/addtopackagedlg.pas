@@ -246,6 +246,14 @@ var
 begin
   Result:=false;
 
+  // check if package is readonly
+  if LazPackage.ReadOnly then begin
+    MessageDlg(lisAF2PPackageIsReadOnly,
+      Format(lisAF2PThePackageIsReadOnly, [LazPackage.IDAsString]),
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
   // normalize filename
   AFilename:=TrimFilename(AFilename);
   if (AddFileType<>d2ptVirtualUnit) and (not FilenameIsAbsolute(AFilename)) then
@@ -271,56 +279,6 @@ begin
         exit;
       end;
     end;
-  end;
-
-  // check file extension
-  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
-    if not FilenameIsPascalUnit(AFilename) then begin
-      MessageDlg(lisA2PFileNotUnit,
-        lisA2PPascalUnitsMustHaveTheExtensionPPOrPas,
-        mtWarning,[mbCancel],0);
-      exit;
-    end;
-  end;
-
-  // check unitname
-  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    if not IsValidIdent(AnUnitName) then begin
-      MessageDlg(lisA2PFileNotUnit,
-        Format(lisA2PisNotAValidUnitName, ['"', AnUnitName, '"']),
-        mtWarning,[mbCancel],0);
-      exit;
-    end;
-
-    // check if unitname already exists in package
-    PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
-    if PkgFile<>nil then begin
-      if PkgFile.LazPackage=LazPackage then begin
-        MessageDlg(lisA2PUnitnameAlreadyExists,
-          Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"', AnUnitName,
-            '"']),
-          mtError,[mbCancel],0);
-        exit;
-      end else begin
-        if MessageDlg(lisA2PUnitnameAlreadyExists,
-          Format(lisA2PTheUnitnameAlreadyExistsInThePackage, ['"', AnUnitName,
-            '"', #13, PkgFile.LazPackage.IDAsString]),
-          mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
-      end;
-    end;
-
-    // check if unitname is a componentclass
-    if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
-      if MessageDlg(lisA2PAmbiguousUnitName,
-        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent, ['"',
-          AnUnitName, '"', #13]),
-        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
-      then
-        exit;
-    end;
-  end else begin
-    AnUnitName:='';
   end;
 
   // check if file already exists in package
@@ -349,6 +307,60 @@ begin
         exit;
       end;
     end;
+  end;
+
+  // check file extension
+  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
+    if not FilenameIsPascalUnit(AFilename) then begin
+      MessageDlg(lisA2PFileNotUnit,
+        lisA2PPascalUnitsMustHaveTheExtensionPPOrPas,
+        mtWarning,[mbCancel],0);
+      exit;
+    end;
+  end;
+
+  // check unitname
+  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
+    AnUnitName:=ExtractFileNameOnly(AFilename);
+    if not IsValidIdent(AnUnitName) then begin
+      MessageDlg(lisA2PFileNotUnit,
+        Format(lisA2PisNotAValidUnitName, ['"', AnUnitName, '"']),
+        mtWarning,[mbCancel],0);
+      exit;
+    end;
+
+    // check if unitname already exists in package
+    PkgFile:=LazPackage.FindUnit(AnUnitName,true,PkgFile);
+    if PkgFile<>nil then begin
+      // a unit with this name already exists in the package
+      // => warn
+      if MessageDlg(lisA2PUnitnameAlreadyExists,
+        Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"', AnUnitName,
+          '"']),
+        mtError,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+    end else begin
+      PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
+      if (PkgFile<>nil) and (PkgFile.LazPackage<>LazPackage) then begin
+        // there is already a unit with this name in another package
+        // => warn
+        if MessageDlg(lisA2PUnitnameAlreadyExists,
+          Format(lisA2PTheUnitnameAlreadyExistsInThePackage, ['"', AnUnitName,
+            '"', #13, PkgFile.LazPackage.IDAsString]),
+          mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+      end;
+    end;
+
+    // check if unitname is a componentclass
+    if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
+      if MessageDlg(lisA2PAmbiguousUnitName,
+        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent, ['"',
+          AnUnitName, '"', #13]),
+        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+      then
+        exit;
+    end;
+  end else begin
+    AnUnitName:='';
   end;
 
   // ok

@@ -42,8 +42,8 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   Dialogs, AVL_Tree, FileUtil, ButtonPanel,
   IDEWindowIntf, PackageIntf,
-  LazarusIDEStrConsts, IDEProcs,
-  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
+  IDEDefs, LazarusIDEStrConsts, IDEProcs,
+  AddToPackageDlg, ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
 
 type
 
@@ -67,6 +67,7 @@ type
     procedure PackagesGroupBoxResize(Sender: TObject);
     procedure ShowAllCheckBoxClick(Sender: TObject);
   private
+    FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     fPackages: TAVLTree;// tree of TLazPackage
     function GetFileType: TPkgFileType;
     function GetFilename: string;
@@ -85,11 +86,12 @@ type
     property Unit_Name: string read GetUnitName write SetUnitName;
     property FileType: TPkgFileType read GetFileType write SetFileType;
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
+    property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo write FOnGetIDEFileInfo;
   end;
 
 
 function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
-  HasRegisterProc: boolean): TModalResult;
+  HasRegisterProc: boolean; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 
 
 implementation
@@ -97,7 +99,7 @@ implementation
 {$R *.lfm}
 
 function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
-  HasRegisterProc: boolean): TModalResult;
+  HasRegisterProc: boolean; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 var
   AddFileToAPackageDialog: TAddFileToAPackageDialog;
 begin
@@ -105,6 +107,7 @@ begin
   AddFileToAPackageDialog.Filename:=Filename;
   AddFileToAPackageDialog.Unit_Name:=AUnitName;
   AddFileToAPackageDialog.HasRegisterProc:=HasRegisterProc;
+  AddFileToAPackageDialog.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddFileToAPackageDialog.UpdateAvailablePackages;
   Result:=AddFileToAPackageDialog.ShowModal;
   AddFileToAPackageDialog.Free;
@@ -129,7 +132,10 @@ var
   APackage: TLazPackage;
   PkgFile: TPkgFile;
   FileFlags: TPkgFileFlags;
+  AddType: TAddToPkgType;
+  aFilename: String;
 begin
+  aFilename:=Filename;
   PkgID:=TLazPackageID.Create;
   try
     // check package ID
@@ -157,14 +163,22 @@ begin
     end;
 
     // check if file is already in the package
-    PkgFile:=APackage.FindPkgFile(Filename,true,false);
+    PkgFile:=APackage.FindPkgFile(aFilename,true,false);
     if PkgFile<>nil then begin
       MessageDlg(lisPkgMangFileIsAlreadyInPackage,
-        Format(lisAF2PTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
+        Format(lisAF2PTheFileIsAlreadyInThePackage, ['"', aFilename, '"', #13,
           APackage.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;
+
+    // check filename
+    if FilenameIsPascalSource(aFilename) then
+      AddType:=d2ptUnit
+    else
+      AddType:=d2ptFile;
+    if not CheckAddingUnitFilename(APackage,AddType,
+      OnGetIDEFileInfo,aFilename) then exit;
 
     // ok -> add file to package
     APackage.BeginUpdate;
@@ -173,7 +187,7 @@ begin
       Include(FileFlags,pffAddToPkgUsesSection);
     if HasRegisterProc then
       Include(FileFlags,pffHasRegisterProc);
-    APackage.AddFile(Filename,Unit_Name,FileType,FileFlags,cpNormal);
+    APackage.AddFile(aFilename,Unit_Name,FileType,FileFlags,cpNormal);
     if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
     APackage.EndUpdate;
 
