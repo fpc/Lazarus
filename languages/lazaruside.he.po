@@ -3,10 +3,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
-"Last-Translator: shulamy <shulamy@regba.org.il>\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-12-13 18:31+0200\n"
+"PO-Revision-Date: 2011-01-05 16:36+0300\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "X-Generator: Lokalize 1.0\n"
@@ -8995,14 +8995,14 @@ msgstr "מערכת ההפעלה המיועדת"
 msgid "Unable to write file \"%s\":%s"
 msgstr "לא יכול לכתוב את הקובץ s%:%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "עדכן את מידע התיקון בדיאלוג \"About Lazarus\""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "עדכן את revision.inc"
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr "עדכן את מידע התיקון בדיאלוג \"About Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

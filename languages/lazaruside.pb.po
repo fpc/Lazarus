@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -9016,14 +9016,14 @@ msgstr "SO Alvo:"
 msgid "Unable to write file \"%s\":%s"
 msgstr "Impossível escrever arquivo \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "Atualizar \"revision.inc\""
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

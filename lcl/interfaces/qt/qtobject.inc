@@ -216,7 +216,8 @@ begin
   // initialize clipboard
   ClipBoard;
   {$ENDIF}
-  
+  // initialize default app font name
+  SetDefaultAppFontName;
 end;
 
 {------------------------------------------------------------------------------
@@ -473,6 +474,16 @@ begin
   StayOnTopList := nil;
 end;
 
+procedure TQtWidgetSet.SetDefaultAppFontName;
+var
+  AppFont: QFontH;
+begin
+  AppFont := QFont_create();
+  QApplication_font(AppFont);
+  QFont_family(AppFont, @FDefaultAppFontName);
+  QFont_destroy(AppFont);
+end;
+
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
 begin
   Result := TQtThemeServices.Create;
@@ -487,6 +498,7 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+    QEventApplicationFontChange: SetDefaultAppFontName;
     QEventApplicationActivate:
       if Assigned(Application) and not FEatNextDeactivate then
       begin
@@ -856,6 +868,11 @@ begin
   QtFont.FShared := True;
   QApplication_font(QtFont.Widget);
   Result := HFONT(QtFont);
+end;
+
+function TQtWidgetSet.GetDefaultAppFontName: WideString;
+begin
+  Result := FDefaultAppFontName;
 end;
 
 procedure TQtWidgetSet.DeleteDefaultDC;

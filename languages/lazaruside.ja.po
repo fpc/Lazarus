@@ -9028,14 +9028,14 @@ msgstr "対象OS*"
 msgid "Unable to write file \"%s\":%s"
 msgstr "ファイル\"%s\":%sに書き込めません。"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "「Lazarusについて」ダイアログで改訂情報を更新"
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "revision.incをアップデート"
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

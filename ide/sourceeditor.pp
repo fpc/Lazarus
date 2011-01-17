@@ -169,13 +169,13 @@ type
               read GetOtherSharedEditors;
   private
     FExecutionMark: TSourceMark;
-    FExecutionLine: integer;
     FMarksRequested: Boolean;
     FMarklingsValid: boolean;
+    function GetExecutionLine: Integer;
   public
     UpdatingExecutionMark: Integer;
     procedure CreateExecutionMark;
-    property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
+    property ExecutionLine: Integer read GetExecutionLine;// write FExecutionLine;
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
     procedure SetExecutionLine(NewLine: integer);
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
@@ -2281,6 +2281,14 @@ begin
   Result := FSharedEditorList.Count - 1;
 end;
 
+function TSourceEditorSharedValues.GetExecutionLine: Integer;
+begin
+  if (FExecutionMark = nil) or (not FExecutionMark.Visible) then
+    Result := -1
+  else
+    Result := FExecutionMark.Line;
+end;
+
 procedure TSourceEditorSharedValues.CreateExecutionMark;
 begin
   FExecutionMark := TSourceMark.Create(SharedEditors[0], nil);
@@ -2292,29 +2300,27 @@ end;
 procedure TSourceEditorSharedValues.SetExecutionLine(NewLine: integer);
 var
   BrkMark: TSourceMark;
+  CurELine: Integer;
 begin
-  if FExecutionLine = NewLine then
+  CurELine := ExecutionLine;
+  if CurELine = NewLine then
     exit;
 
   inc(UpdatingExecutionMark);
   try
-    if FExecutionLine >= 0 then begin
-      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], FExecutionLine);
+    if CurELine >= 0 then begin
+      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], CurELine);
       if BrkMark <> nil then
         BrkMark.Visible := True;
     end;
 
-    if (FExecutionMark = nil) then begin
-      if NewLine = -1 then
-        exit;
+    if (FExecutionMark = nil) then
       CreateExecutionMark;
-    end;
 
-    FExecutionLine := NewLine;
     FExecutionMark.Visible := NewLine <> -1;
 
-    if FExecutionLine >= 0 then begin
-      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], FExecutionLine);
+    if NewLine >= 0 then begin
+      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], NewLine);
       if BrkMark <> nil then
         BrkMark.Visible := False;
     end;
@@ -2366,7 +2372,6 @@ end;
 constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
-  FExecutionLine:=-1;
   FExecutionMark := nil;
   FMarksRequested := False;
   FInGlobalUpdate := 0;

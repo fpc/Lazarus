@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: A. Klein\n"
-"PO-Revision-Date: 2010-11-28 10:05+0100\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"PO-Revision-Date: 2011-01-05 16:34+0300\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8995,14 +8995,14 @@ msgstr "OS objetivo"
 msgid "Unable to write file \"%s\":%s"
 msgstr "No se ha podido escribir el archivo \"%s\":%s"
 
-#: lazarusidestrconsts.lislazbuildupadaterevisioninfoinaboutlazarusdialog
-msgid "Upadate revision info in \"About Lazarus\" dialog"
-msgstr "Actualizar la información de la revisión en el dialogo \"Acerca de Lazarus\""
-
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
 msgstr "Actualizar revision.inc"
+
+#: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
+msgid "Update revision info in \"About Lazarus\" dialog"
+msgstr "Actualizar la información de la revisión en el dialogo \"Acerca de Lazarus\""
 
 #: lazarusidestrconsts.lislazbuildwithstaticpackages
 msgid "With packages"

@@ -73,6 +73,9 @@ type
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
 
+    // default application font name (FamilyName for "default" font)
+    FDefaultAppFontName: WideString;
+
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
@@ -83,6 +86,7 @@ type
     procedure SetOverrideCursor(const AValue: TObject);
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
+    procedure SetDefaultAppFontName;
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -157,6 +161,7 @@ type
     FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
     {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
+    function GetDefaultAppFontName: WideString;
     function GetQtDefaultDC: HDC; virtual;
     procedure DeleteDefaultDC; virtual;
     procedure SetQtDefaultDC(Handle: HDC); virtual;
