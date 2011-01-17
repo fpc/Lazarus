@@ -104,50 +104,62 @@ end;"/>
       </Item1>
       <Item2>
         <Filename Value="carbon/agl.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agl"/>
       </Item2>
       <Item3>
         <Filename Value="carbon/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item3>
       <Item4>
         <Filename Value="carbon/carbonbars.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonBars"/>
       </Item4>
       <Item5>
         <Filename Value="carbon/carbonbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonButtons"/>
       </Item5>
       <Item6>
         <Filename Value="carbon/carboncalendar.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonCalendar"/>
       </Item6>
       <Item7>
         <Filename Value="carbon/carboncalendarview.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonCalendarView"/>
       </Item7>
       <Item8>
         <Filename Value="carbon/carboncanvas.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonCanvas"/>
       </Item8>
       <Item9>
         <Filename Value="carbon/carboncaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonCaret"/>
       </Item9>
       <Item10>
         <Filename Value="carbon/carbonclipboard.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonClipboard"/>
       </Item10>
       <Item11>
         <Filename Value="carbon/carbondbgconsts.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonDbgConsts"/>
       </Item11>
       <Item12>
         <Filename Value="carbon/carbondebug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonDebug"/>
       </Item12>
       <Item13>
         <Filename Value="carbon/carbondef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonDef"/>
       </Item13>
       <Item14>
@@ -156,14 +168,17 @@ end;"/>
       </Item14>
       <Item15>
         <Filename Value="carbon/carbonedits.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonEdits"/>
       </Item15>
       <Item16>
         <Filename Value="carbon/carbongdiobjects.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonGDIObjects"/>
       </Item16>
       <Item17>
         <Filename Value="carbon/carbonint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonInt"/>
       </Item17>
       <Item18>
@@ -176,10 +191,12 @@ end;"/>
       </Item19>
       <Item20>
         <Filename Value="carbon/carbonlistviews.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonListViews"/>
       </Item20>
       <Item21>
         <Filename Value="carbon/carbonmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonMenus"/>
       </Item21>
       <Item22>
@@ -188,6 +205,7 @@ end;"/>
       </Item22>
       <Item23>
         <Filename Value="carbon/carbonprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonPrivate"/>
       </Item23>
       <Item24>
@@ -204,18 +222,22 @@ end;"/>
       </Item26>
       <Item27>
         <Filename Value="carbon/carbonproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonProc"/>
       </Item27>
       <Item28>
         <Filename Value="carbon/carbonstrings.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonStrings"/>
       </Item28>
       <Item29>
         <Filename Value="carbon/carbontabs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonTabs"/>
       </Item29>
       <Item30>
         <Filename Value="carbon/carbonthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonThemes"/>
       </Item30>
       <Item31>
@@ -224,6 +246,7 @@ end;"/>
       </Item31>
       <Item32>
         <Filename Value="carbon/carbonutils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonUtils"/>
       </Item32>
       <Item33>
@@ -236,82 +259,102 @@ end;"/>
       </Item34>
       <Item35>
         <Filename Value="carbon/carbonwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSArrow"/>
       </Item35>
       <Item36>
         <Filename Value="carbon/carbonwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSButtons"/>
       </Item36>
       <Item37>
         <Filename Value="carbon/carbonwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSCalendar"/>
       </Item37>
       <Item38>
         <Filename Value="carbon/carbonwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSCheckLst"/>
       </Item38>
       <Item39>
         <Filename Value="carbon/carbonwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSComCtrls"/>
       </Item39>
       <Item40>
         <Filename Value="carbon/carbonwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSControls"/>
       </Item40>
       <Item41>
         <Filename Value="carbon/carbonwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSDialogs"/>
       </Item41>
       <Item42>
         <Filename Value="carbon/carbonwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSExtCtrls"/>
       </Item42>
       <Item43>
         <Filename Value="carbon/carbonwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSExtDlgs"/>
       </Item43>
       <Item44>
         <Filename Value="carbon/carbonwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSFactory"/>
       </Item44>
       <Item45>
         <Filename Value="carbon/carbonwsfilectrl.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSFileCtrl"/>
       </Item45>
       <Item46>
         <Filename Value="carbon/carbonwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSForms"/>
       </Item46>
       <Item47>
         <Filename Value="carbon/carbonwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSGrids"/>
       </Item47>
       <Item48>
         <Filename Value="carbon/carbonwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSImgList"/>
       </Item48>
       <Item49>
         <Filename Value="carbon/carbonwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSMenus"/>
       </Item49>
       <Item50>
         <Filename Value="carbon/carbonwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSPairSplitter"/>
       </Item50>
       <Item51>
         <Filename Value="carbon/carbonwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSSpin"/>
       </Item51>
       <Item52>
         <Filename Value="carbon/carbonwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonWSStdCtrls"/>
       </Item52>
       <Item53>
         <Filename Value="carbon/glgrab.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="glgrab"/>
       </Item53>
       <Item54>
         <Filename Value="carbon/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item54>
       <Item55>
@@ -320,6 +363,7 @@ end;"/>
       </Item55>
       <Item56>
         <Filename Value="carbon/opengl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="opengl"/>
       </Item56>
     </Files>
