@@ -352,6 +352,8 @@ type
   { TQtScrollBar }
 
   TQtScrollBar = class(TQtAbstractSlider)
+  private
+    FTrackPos: Integer;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -359,6 +361,7 @@ type
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
+    property TrackPos: Integer read FTrackPos write FTrackPos;
   end;
 
   { TQtFrame }
@@ -5900,10 +5903,13 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
+  if not InUpdate then
+    DeliverMessage(LMScroll);
+
   b := p1 = getMax;
+
   if not InUpdate or (getVisible and ((p1=getMin) or b)) then
   begin
-    DeliverMessage(LMScroll);
     if b and (FChildOfComplexWidget = ccwAbstractScrollArea) then
     begin
       LCLObject.DoAdjustClientRectChange;
@@ -6012,6 +6018,7 @@ begin
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
     Parent := nil;
+  FTrackPos := 0;
   Result := QScrollBar_create(Parent);
   QWidget_setFocusPolicy(Result, QtNoFocus);
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
@@ -11479,6 +11486,12 @@ begin
   begin
     FHScrollBar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+
+    if FHScrollBar.getTracking then
+      FHScrollBar.TrackPos := SB_POLICY_CONTINUOUS
+    else
+      FHScrollBar.TrackPos := SB_POLICY_DISCONTINUOUS;
+
     FHScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
@@ -11501,6 +11514,10 @@ begin
   begin
     FVScrollbar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    if FVScrollBar.getTracking then
+      FVScrollBar.TrackPos := SB_POLICY_CONTINUOUS
+    else
+      FVScrollBar.TrackPos := SB_POLICY_DISCONTINUOUS;
     FVScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
