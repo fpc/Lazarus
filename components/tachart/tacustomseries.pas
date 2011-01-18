@@ -130,6 +130,7 @@ type
     function GetGraphPointY(AIndex: Integer): Double; inline;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Integer;
+    procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
   protected
@@ -495,7 +496,7 @@ const
 begin
   inherited Create(AOwner);
 
-  FListener := TListener.Create(@FSource,  @StyleChanged);
+  FListener := TListener.Create(@FSource,  @SourceChanged);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
@@ -695,6 +696,11 @@ end;
 procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
 begin
   ListSource.SetYValue(AIndex, AValue);
+end;
+
+procedure TChartSeries.SourceChanged(ASender: TObject);
+begin
+  StyleChanged(ASender);
 end;
 
 procedure TChartSeries.VisitSources(

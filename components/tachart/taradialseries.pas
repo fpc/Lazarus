@@ -68,6 +68,40 @@ type
       read FFixedRadius write SetFixedRadius default 0;
     property RotateLabels: Boolean
       read FRotateLabels write SetRotateLabels default false;
+  end;
+
+  TSinCos = record
+    FSin, FCos: Double;
+  end;
+
+  { TPolarSeries }
+
+  TPolarSeries = class(TChartSeries)
+  private
+    FLinePen: TPen;
+    FOriginX: Double;
+    FOriginY: Double;
+    function IsOriginXStored: Boolean;
+    function IsOriginYStored: Boolean;
+    procedure SetLinePen(AValue: TPen);
+    procedure SetOriginX(AValue: Double);
+    procedure SetOriginY(AValue: Double);
+  private
+    FAngleCache: array of TSinCos;
+    function GraphPoint(AIndex: Integer): TDoublePoint;
+    procedure PrepareAngleCache;
+  protected
+    procedure SourceChanged(ASender: TObject); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    procedure Draw(ACanvas: TCanvas); override;
+    function Extent: TDoubleRect; override;
+  published
+    property LinePen: TPen read FLinePen write SetLinePen;
+    property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
+    property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Source;
   end;
 
@@ -75,7 +109,7 @@ implementation
 
 uses
   Math,
-  TADrawUtils, TACustomSource;
+  TACustomSource, TADrawUtils, TAGraph;
 
 { TCustomPieSeries }
 
@@ -311,6 +345,106 @@ begin
   end;
   InflateRect(Result, MARGIN, MARGIN);
 end;
+
+{ TPolarSeries }
+
+constructor TPolarSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FLinePen := TPen.Create;
+  FLinePen.OnChange := @StyleChanged;
+end;
+
+destructor TPolarSeries.Destroy;
+begin
+  FreeAndNil(FLinePen);
+  inherited;
+end;
+
+procedure TPolarSeries.Draw(ACanvas: TCanvas);
+var
+  i: Integer;
+  pts: TPointArray;
+begin
+  PrepareAngleCache;
+  SetLength(pts, Count);
+  for i := 0 to Count - 1 do
+    pts[i] := FChart.GraphToImage(GraphPoint(i));
+  ACanvas.Pen := LinePen;
+  ACanvas.Brush.Style := bsClear;
+  ACanvas.Polygon(pts);
+end;
+
+function TPolarSeries.Extent: TDoubleRect;
+var
+  i: Integer;
+begin
+  PrepareAngleCache;
+  Result := EmptyExtent;
+  for i := 0 to Count - 1 do
+    ExpandRect(Result, GraphPoint(i));
+end;
+
+function TPolarSeries.GraphPoint(AIndex: Integer): TDoublePoint;
+begin
+  with Source[AIndex]^, FAngleCache[AIndex] do
+    Result := DoublePoint(Y * FCos + OriginX, Y * FSin + OriginY);
+end;
+
+function TPolarSeries.IsOriginXStored: Boolean;
+begin
+  Result := OriginX <> 0;
+end;
+
+function TPolarSeries.IsOriginYStored: Boolean;
+begin
+  Result := OriginY <> 0;
+end;
+
+procedure TPolarSeries.PrepareAngleCache;
+var
+  i: Integer;
+  s, c: Extended;
+begin
+  if Length(FAngleCache) = Count then exit;
+  SetLength(FAngleCache, Count);
+  for i := 0 to Count - 1 do begin
+    SinCos(Source[i]^.X, s, c);
+    FAngleCache[i].FSin := s;
+    FAngleCache[i].FCos := c;
+  end;
+end;
+
+procedure TPolarSeries.SetLinePen(AValue: TPen);
+begin
+  if FLinePen = AValue then exit;
+  FLinePen := AValue;
+end;
+
+procedure TPolarSeries.SetOriginX(AValue: Double);
+begin
+  if FOriginX = AValue then exit;
+  FOriginX := AValue;
+  UpdateParentChart;
+end;
+
+procedure TPolarSeries.SetOriginY(AValue: Double);
+begin
+  if FOriginY = AValue then exit;
+  FOriginY := AValue;
+  UpdateParentChart;
+end;
+
+procedure TPolarSeries.SourceChanged(ASender: TObject);
+begin
+  FAngleCache := nil;
+  inherited;
+end;
+
+initialization
+
+  RegisterSeriesClass(TPolarSeries, 'Polar series');
 
 end.
 
