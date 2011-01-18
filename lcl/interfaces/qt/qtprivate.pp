@@ -264,9 +264,7 @@ begin
   if FTextChanged then InternalUpdate;
   FStringList[Index] := S;
   W := GetUTF8String(S);
-  TQtTextEdit(FOwner.Handle).BeginUpdate;
   TQtTextEdit(FOwner.Handle).setLineText(Index, W);
-  TQtTextEdit(FOwner.Handle).EndUpdate;
 end;
 
 procedure TQtMemoStrings.SetTextStr(const Value: string);
@@ -385,9 +383,7 @@ begin
     writeln('TQtMemoStrings.Delete');
     {$endif}
     FStringList.Delete(Index);
-    TQtTextEdit(FOwner.Handle).BeginUpdate;
     TQtTextEdit(FOwner.Handle).RemoveLine(Index);
-    TQtTextEdit(FOwner.Handle).EndUpdate;
   end;
 end;
 
@@ -418,22 +414,18 @@ begin
       begin
         // workaround for qt richtext parser bug
         W := GetUTF8String(S);
-        TQtTextEdit(FOwner.Handle).BeginUpdate;
         TQtTextEdit(FOwner.Handle).insertLine(Index, W);
-        TQtTextEdit(FOwner.Handle).EndUpdate;
       end else
       begin
         // append is much faster in case when we add strings
         W := S;
-        ExternalUpdate(W, False, True);
+        ExternalUpdate(W, False, False);
         FTextChanged := False;
       end;
     end else
     begin
       W := GetUTF8String(S);
-      TQtTextEdit(FOwner.Handle).BeginUpdate;
       TQtTextEdit(FOwner.Handle).insertLine(Index, W);
-      TQtTextEdit(FOwner.Handle).EndUpdate;
     end;
   end;
 end;
