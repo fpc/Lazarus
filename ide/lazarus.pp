@@ -48,10 +48,8 @@ uses
   {$IF defined(Unix) and not defined(VER2_2_0) and not defined(VER2_2_2)}
   clocale,
   {$ENDIF}
-  SysUtils,
   Interfaces,
   Forms, LCLProc,
-  LazConf,
   Splash,
   Main,
   AboutFrm,
@@ -90,7 +88,6 @@ begin
   
   LazarusRevisionStr:=RevisionStr;
   Application.Title:='Lazarus';
-  OnGetApplicationName:=@GetLazarusApplicationName;
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
   if Application.Terminated then exit;

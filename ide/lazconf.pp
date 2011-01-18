@@ -124,10 +124,6 @@ function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string
 // returrns the default browser
 procedure GetDefaultBrowser(var Browser, Params: string);
 
-// Replace OnGetApplicationName, so that Application.Title
-// doesn't interfere with GetAppConfigDir and related.
-function GetLazarusApplicationName: string;
-
 type
   TLazConfMacroFunc = procedure(var s: string);
 var
@@ -169,11 +165,6 @@ begin
   for i:=0 to List.Count-1 do
     if CompareFilenames(List[i],Filename)=0 then exit;
   List.Add(Filename);
-end;
-
-function GetLazarusApplicationName: string;
-begin
-  Result := 'lazarus';
 end;
 
 procedure LazConfSubstituteMacros(var s: string);
