@@ -282,6 +282,7 @@ operator *(const A, B: TPoint): TPoint; inline;
 operator *(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator /(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
+operator <= (const A, B: TDoublePoint): Boolean; overload; inline;
 
 operator :=(const APoint: TPoint): TSize; inline;
 operator :=(const ASize: TSize): TPoint; inline;
@@ -896,6 +897,11 @@ end;
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
+operator <= (const A, B: TDoublePoint): Boolean;
+begin
+  Result := (A.X <= B.X) and (A.Y <= B.Y);
 end;
 
 operator := (const APoint: TPoint): TSize;

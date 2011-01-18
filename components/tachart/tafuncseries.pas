@@ -211,7 +211,6 @@ begin
 end;
 
 procedure TFuncSeries.Draw(ACanvas: TCanvas);
-
 type
   TTransform = function (A: Double): Double of object;
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
@@ -221,27 +220,35 @@ var
   makeDP: TMakeDoublePoint;
   r: TDoubleRect = (coords:(NegInfinity, NegInfinity, Infinity, Infinity));
   prev: TDoublePoint;
+  prevInExtent: Boolean;
 
-  function CalcAt(AXg, AXa: Double): TDoublePoint;
+  procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
   begin
-    Result := makeDP(AXg, axisToGraphYr(calc(AXa)));
+    APt := makeDP(AXg, axisToGraphYr(calc(AXa)));
+    AIn := (r.a <= APt) and (APt <= r.b);
   end;
 
   procedure MoveTo(AXg, AXa: Double);
   begin
-    prev := CalcAt(AXg, AXa);
+    CalcAt(AXg, AXa, prev, prevInExtent);
+    if prevInExtent then
+      ACanvas.MoveTo(FChart.GraphToImage(prev));
   end;
 
   procedure LineTo(AXg, AXa: Double);
   var
     p, t: TDoublePoint;
+    inExtent: Boolean;
   begin
-    t := CalcAt(AXg, AXa);
-    p := t;
-    if LineIntersectsRect(prev, t, r) then begin
+    CalcAt(AXg, AXa, p, inExtent);
+    t := p;
+    if inExtent and prevInExtent then
+      ACanvas.LineTo(FChart.GraphToImage(p))
+    else if LineIntersectsRect(prev, t, r) then begin
       ACanvas.MoveTo(FChart.GraphToImage(prev));
       ACanvas.LineTo(FChart.GraphToImage(t));
     end;
+    prevInExtent := inExtent;
     prev := p;
   end;
 
