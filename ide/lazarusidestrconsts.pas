@@ -3770,6 +3770,8 @@ resourcestring
   lisAF2PHasRegisterProcedure = 'Has Register procedure';
   lisAF2PIsVirtualUnit = 'Virtual unit (source is not in package)';
   lisAF2PFileType = 'File Type';
+  lisPEExpandDirectory = 'Expand directory';
+  lisPECollapseDirectory = 'Collapse directory';
   lisAF2PDestinationPackage = 'Destination Package';
   lisAF2PShowAll = 'Show All';
   lisAF2PAddFileToAPackage = 'Add file to a package';

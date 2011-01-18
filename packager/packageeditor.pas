@@ -61,6 +61,9 @@ var
   PkgEditMenuEditVirtualUnit: TIDEMenuCommand;
   PkgEditMenuSectionFileType: TIDEMenuSection;
 
+  PkgEditMenuExpandDirectory: TIDEMenuCommand;
+  PkgEditMenuCollapseDirectory: TIDEMenuCommand;
+
   PkgEditMenuOpenPackage: TIDEMenuCommand;
   PkgEditMenuRemoveDependency: TIDEMenuCommand;
   PkgEditMenuReAddDependency: TIDEMenuCommand;
@@ -181,29 +184,30 @@ type
     UsePopupMenu: TPopupMenu;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
-    procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
+    procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxChange(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
+    procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
+    procedure CollapseDirectoryMenuItemClick(Sender: TObject);
     procedure CompileAllCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
     procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
+    procedure EditVirtualUnitMenuItemClick(Sender: TObject);
+    procedure ExpandDirectoryMenuItemClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
-    procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
-    procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
-    procedure UsePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure FilterEditChange(Sender: TObject);
+    procedure FilterEditEnter(Sender: TObject);
+    procedure FilterEditExit(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
-    procedure ShowMissingFilesMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
@@ -212,9 +216,6 @@ type
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveFileDownMenuItemClick(Sender: TObject);
     procedure MoveFileUpMenuItemClick(Sender: TObject);
-    procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
-    procedure SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
-    procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -224,14 +225,18 @@ type
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
                                         ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
-    procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure RevertClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
+    procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
+    procedure SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
+    procedure ShowMissingFilesMenuItemClick(Sender: TObject);
+    procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxChange(Sender: TObject);
     procedure UseMinVersionCheckBoxChange(Sender: TObject);
+    procedure UsePopupMenuPopup(Sender: TObject);
     procedure ViewPkgSourceClick(Sender: TObject);
     procedure ViewPkgTodosClick(Sender: TObject);
   private
@@ -289,6 +294,8 @@ type
     procedure DoMoveCurrentFile(Offset: integer);
     procedure DoPublishProject;
     procedure DoEditVirtualUnit;
+    procedure DoExpandDirectory;
+    procedure DoCollapseDirectory;
     procedure DoRevert;
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
@@ -439,6 +446,12 @@ begin
   PkgEditMenuEditVirtualUnit:=RegisterIDEMenuCommand(AParent,'Edit Virtual File',lisPEEditVirtualUnit);
   PkgEditMenuSectionFileType:=RegisterIDESubMenu(AParent,'File Type',lisAF2PFileType);
 
+  // register the section for operations on directories
+  PkgEditMenuSectionDirectory:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Directory');
+  AParent:=PkgEditMenuSectionDirectory;
+  PkgEditMenuExpandDirectory:=RegisterIDEMenuCommand(AParent,'Expand directory',lisPEExpandDirectory);
+  PkgEditMenuCollapseDirectory:=RegisterIDEMenuCommand(AParent, 'Collapse directory', lisPECollapseDirectory);
+
   // register the section for operations on single dependencies
   PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Dependency');
   AParent:=PkgEditMenuSectionDependency;
@@ -553,6 +566,8 @@ var
   CurFile: TPkgFile;
   Writable: Boolean;
   FileIndex: Integer;
+  CurNode: TTreeNode;
+  IsDir: Boolean;
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
                     aShow: boolean = true; AEnable: boolean = true);
@@ -602,17 +617,20 @@ begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
-
+    CurNode:=FilesTreeView.Selected;
     CurDependency:=GetCurrentDependency(Removed);
     Writable:=(not LazPackage.ReadOnly);
     if (CurDependency=nil) then
       CurFile:=GetCurrentFile(Removed)
     else
       CurFile:=nil;
+    IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
 
     PkgEditMenuSectionFileType.Clear;
+
+    // items for single files
+    PkgEditMenuSectionFile.Visible:=CurFile<>nil;
     if (CurFile<>nil) then begin
-      PkgEditMenuSectionFile.Visible:=true;
       FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
       SetItem(PkgEditMenuOpenFile,@OpenFileMenuItemClick);
       SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,Removed);
@@ -626,9 +644,16 @@ begin
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
         (CurFile.FileType=pftVirtualUnit) and not Removed,Writable);
-    end else begin
-      PkgEditMenuSectionFile.Visible:=false;
     end;
+
+    // items for directories
+    PkgEditMenuSectionDirectory.Visible:=IsDir and ShowDirectoryHierarchy;
+    if IsDir and ShowDirectoryHierarchy then begin
+      SetItem(PkgEditMenuExpandDirectory,@ExpandDirectoryMenuItemClick);
+      SetItem(PkgEditMenuCollapseDirectory,@CollapseDirectoryMenuItemClick);
+    end;
+
+    // items for all files
     SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
@@ -844,6 +869,11 @@ begin
   UpdateButtons;
 end;
 
+procedure TPackageEditorForm.CollapseDirectoryMenuItemClick(Sender: TObject);
+begin
+  DoCollapseDirectory;
+end;
+
 procedure TPackageEditorForm.MoveFileDownMenuItemClick(Sender: TObject);
 begin
   DoMoveCurrentFile(1);
@@ -1010,6 +1040,11 @@ begin
   DoEditVirtualUnit;
 end;
 
+procedure TPackageEditorForm.ExpandDirectoryMenuItemClick(Sender: TObject);
+begin
+  DoExpandDirectory;
+end;
+
 procedure TPackageEditorForm.RevertClick(Sender: TObject);
 begin
   DoRevert;
@@ -1148,7 +1183,8 @@ var
   begin
     // add file
     with AddParams do begin
-      if CompareFileExt(UnitFilename,'.inc',false)=0 then
+      if (CompareFileExt(UnitFilename,'.inc',false)=0)
+      or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
         ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
@@ -2404,6 +2440,35 @@ begin
   if (CurFile=nil) or Removed then exit;
   if ShowEditVirtualPackageDialog(CurFile)=mrOk then
     UpdateAll(true);
+end;
+
+procedure TPackageEditorForm.DoExpandDirectory;
+var
+  CurNode: TTreeNode;
+begin
+  if not ShowDirectoryHierarchy then exit;
+  CurNode:=FilesTreeView.Selected;
+  if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
+  FilesTreeView.BeginUpdate;
+  CurNode.Expand(true);
+  FilesTreeView.EndUpdate;
+end;
+
+procedure TPackageEditorForm.DoCollapseDirectory;
+var
+  CurNode: TTreeNode;
+  Node: TTreeNode;
+begin
+  if not ShowDirectoryHierarchy then exit;
+  CurNode:=FilesTreeView.Selected;
+  if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
+  FilesTreeView.BeginUpdate;
+  Node:=CurNode.GetFirstChild;
+  while Node<>nil do begin
+    Node.Collapse(true);
+    Node:=Node.GetNextSibling;
+  end;
+  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
