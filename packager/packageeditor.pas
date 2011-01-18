@@ -1801,7 +1801,7 @@ begin
       if not FitsFilter(Filename) then continue;
       j:=Files.Count-1;
       while j>=0 do begin
-        if ComparePkgFilenames(Filename,Files[j])<=0 then break;
+        if ComparePkgFilenames(Filename,Files[j])>=0 then break;
         dec(j);
       end;
       Files.Insert(j+1,Filename);
@@ -1969,7 +1969,7 @@ begin
   if CurFile=nil then
     Dependency:=GetCurrentDependency(Removed);
   CurNode:=FilesTreeView.Selected;
-  IsDir:=IsDirectoryNode(CurNode);
+  IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
 
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
@@ -2019,9 +2019,9 @@ begin
   end else if IsDir then begin
     FilePropsGroupBox.Enabled:=true;
     GetDirectorySummary(CurNode,FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
-    FDirSummaryLabel.Caption:='Files:'+IntToStr(FileCount)
-             +' Register:'+IntToStr(HasRegisterProcCount)
-             +' Used:'+IntToStr(AddToUsesPkgSectionCount);
+    FDirSummaryLabel.Caption:='Files: '+IntToStr(FileCount)
+             +', has Register procedure: '+IntToStr(HasRegisterProcCount)
+             +', in package uses section: '+IntToStr(AddToUsesPkgSectionCount);
   end else begin
     FilePropsGroupBox.Enabled:=false;
   end;
