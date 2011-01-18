@@ -1795,8 +1795,6 @@ procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
           else
             Node:=FilesTreeView.Items.Add(Node,FilePart);
           TVNodeStack[p]:=Node;
-          if Filename<>'' then
-            Node.ImageIndex:=ImageIndexDirectory;
         end;
       end else begin
         // new sub node
@@ -1810,9 +1808,11 @@ procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
         end
         else
           Node:=FilesTreeView.Items.AddChild(Node,FilePart);
-        if Filename<>'' then
-          Node.ImageIndex:=ImageIndexDirectory;
         TVNodeStack.Add(Node);
+      end;
+      if (Filename<>'') then begin
+        Node.ImageIndex:=ImageIndexDirectory;
+        Node.SelectedIndex:=Node.ImageIndex;
       end;
       inc(p);
     end;
@@ -1829,6 +1829,7 @@ var
   j: Integer;
   Filename: String;
   TVNodeStack: TFPList;
+  ExpandedState: TTreeNodeExpandedState;
 begin
   if LazPackage=nil then exit;
   //debugln(['TPackageEditorForm.UpdateFiles Immediately=',Immediately]);
@@ -1849,6 +1850,7 @@ begin
   // files
   Files:=TStringList.Create;
   TVNodeStack:=TFPList.Create;
+  ExpandedState:=TTreeNodeExpandedState.Create(FilesTreeView);
   try
     // collect and sort files
     for i:=0 to LazPackage.FileCount-1 do begin
@@ -1886,41 +1888,41 @@ begin
       DeleteUnneededNodes(TVNodeStack,0);
     end;
 
-    FFilesNode.Expand(true);
+    // removed files
+    if LazPackage.RemovedFilesCount>0 then begin
+      if FRemovedFilesNode=nil then begin
+        FRemovedFilesNode:=
+          FilesTreeView.Items.Add(FRequiredPackagesNode,
+                  lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
+        FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
+        FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
+      end;
+      CurNode:=FRemovedFilesNode.GetFirstChild;
+      Cnt:=LazPackage.RemovedFilesCount;
+      for i:=0 to Cnt-1 do begin
+        if CurNode=nil then
+          CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
+        CurFile:=LazPackage.RemovedFiles[i];
+        CurNode.Text:=CurFile.GetShortFilename(true);
+        SetImageIndex(CurNode,CurFile);
+        CurNode:=CurNode.GetNextSibling;
+      end;
+      while CurNode<>nil do begin
+        NextNode:=CurNode.GetNextSibling;
+        CurNode.Free;
+        CurNode:=NextNode;
+      end;
+      FRemovedFilesNode.Expanded:=true;
+    end else begin
+      FreeAndNil(FRemovedFilesNode);
+    end;
+
+    ExpandedState.Apply(FilesTreeView);
   finally
+    ExpandedState.Free;
     TVNodeStack.Free;
     Files.Free;
   end;
-
-  // removed files
-  if LazPackage.RemovedFilesCount>0 then begin
-    if FRemovedFilesNode=nil then begin
-      FRemovedFilesNode:=
-        FilesTreeView.Items.Add(FRequiredPackagesNode,
-                lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
-      FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
-      FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
-    end;
-    CurNode:=FRemovedFilesNode.GetFirstChild;
-    Cnt:=LazPackage.RemovedFilesCount;
-    for i:=0 to Cnt-1 do begin
-      if CurNode=nil then
-        CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
-      CurFile:=LazPackage.RemovedFiles[i];
-      CurNode.Text:=CurFile.GetShortFilename(true);
-      SetImageIndex(CurNode,CurFile);
-      CurNode:=CurNode.GetNextSibling;
-    end;
-    while CurNode<>nil do begin
-      NextNode:=CurNode.GetNextSibling;
-      CurNode.Free;
-      CurNode:=NextNode;
-    end;
-    FRemovedFilesNode.Expanded:=true;
-  end else begin
-    FreeAndNil(FRemovedFilesNode);
-  end;
-
   if OldSelection<>nil then
     ApplyTreeSelection(OldSelection,true);
 

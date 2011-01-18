@@ -449,10 +449,12 @@ end;"/>
       </Item73>
       <Item74>
         <Filename Value="fpgui/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item74>
       <Item75>
         <Filename Value="fpgui/fpguiint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpguiint"/>
       </Item75>
       <Item76>
@@ -469,10 +471,12 @@ end;"/>
       </Item78>
       <Item79>
         <Filename Value="fpgui/fpguiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpguiobjects"/>
       </Item79>
       <Item80>
         <Filename Value="fpgui/fpguiproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpguiproc"/>
       </Item80>
       <Item81>
@@ -485,74 +489,92 @@ end;"/>
       </Item82>
       <Item83>
         <Filename Value="fpgui/fpguiwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSArrow"/>
       </Item83>
       <Item84>
         <Filename Value="fpgui/fpguiwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSButtons"/>
       </Item84>
       <Item85>
         <Filename Value="fpgui/fpguiwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSCalendar"/>
       </Item85>
       <Item86>
         <Filename Value="fpgui/fpguiwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSCheckLst"/>
       </Item86>
       <Item87>
         <Filename Value="fpgui/fpguiwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSComCtrls"/>
       </Item87>
       <Item88>
         <Filename Value="fpgui/fpguiwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSControls"/>
       </Item88>
       <Item89>
         <Filename Value="fpgui/fpguiwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSDialogs"/>
       </Item89>
       <Item90>
         <Filename Value="fpgui/fpguiwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSExtCtrls"/>
       </Item90>
       <Item91>
         <Filename Value="fpgui/fpguiwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSExtDlgs"/>
       </Item91>
       <Item92>
         <Filename Value="fpgui/fpguiwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSFactory"/>
       </Item92>
       <Item93>
         <Filename Value="fpgui/fpguiwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSForms"/>
       </Item93>
       <Item94>
         <Filename Value="fpgui/fpguiwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSGrids"/>
       </Item94>
       <Item95>
         <Filename Value="fpgui/fpguiwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSImgList"/>
       </Item95>
       <Item96>
         <Filename Value="fpgui/fpguiwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSMenus"/>
       </Item96>
       <Item97>
         <Filename Value="fpgui/fpguiwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSPairSplitter"/>
       </Item97>
       <Item98>
         <Filename Value="fpgui/fpguiwsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpguiwsprivate"/>
       </Item98>
       <Item99>
         <Filename Value="fpgui/fpguiwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSSpin"/>
       </Item99>
       <Item100>
         <Filename Value="fpgui/fpguiwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpGuiWSStdCtrls"/>
       </Item100>
       <Item101>
@@ -851,6 +873,7 @@ end;"/>
       </Item165>
       <Item166>
         <Filename Value="gtk2/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item166>
       <Item167>
@@ -863,6 +886,7 @@ end;"/>
       </Item168>
       <Item169>
         <Filename Value="gtk2/gtk2cellrenderer.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2CellRenderer"/>
       </Item169>
       <Item170>
@@ -871,10 +895,12 @@ end;"/>
       </Item170>
       <Item171>
         <Filename Value="gtk2/gtk2debug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Debug"/>
       </Item171>
       <Item172>
         <Filename Value="gtk2/gtk2def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Def"/>
       </Item172>
       <Item173>
@@ -895,6 +921,7 @@ end;"/>
       </Item176>
       <Item177>
         <Filename Value="gtk2/gtk2extra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Extra"/>
       </Item177>
       <Item178>
@@ -903,14 +930,17 @@ end;"/>
       </Item178>
       <Item179>
         <Filename Value="gtk2/gtk2fontcache.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2FontCache"/>
       </Item179>
       <Item180>
         <Filename Value="gtk2/gtk2globals.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Globals"/>
       </Item180>
       <Item181>
         <Filename Value="gtk2/gtk2int.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Int"/>
       </Item181>
       <Item182>
@@ -931,6 +961,7 @@ end;"/>
       </Item185>
       <Item186>
         <Filename Value="gtk2/gtk2listviewtreemodel.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2ListViewTreeModel"/>
       </Item186>
       <Item187>
@@ -939,6 +970,7 @@ end;"/>
       </Item187>
       <Item188>
         <Filename Value="gtk2/gtk2msgqueue.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2MsgQueue"/>
       </Item188>
       <Item189>
@@ -959,6 +991,7 @@ end;"/>
       </Item192>
       <Item193>
         <Filename Value="gtk2/gtk2proc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Proc"/>
       </Item193>
       <Item194>
@@ -967,6 +1000,7 @@ end;"/>
       </Item194>
       <Item195>
         <Filename Value="gtk2/gtk2themes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2Themes"/>
       </Item195>
       <Item196>
@@ -987,6 +1021,7 @@ end;"/>
       </Item199>
       <Item200>
         <Filename Value="gtk2/gtk2winapiwindow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk2WinapiWindow"/>
       </Item200>
       <Item201>
@@ -1099,10 +1134,12 @@ end;"/>
       </Item222>
       <Item223>
         <Filename Value="win32/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item223>
       <Item224>
         <Filename Value="win32/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item224>
       <Item225>
@@ -1111,10 +1148,12 @@ end;"/>
       </Item225>
       <Item226>
         <Filename Value="win32/win32debug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32Debug"/>
       </Item226>
       <Item227>
         <Filename Value="win32/win32def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32Def"/>
       </Item227>
       <Item228>
@@ -1123,10 +1162,12 @@ end;"/>
       </Item228>
       <Item229>
         <Filename Value="win32/win32extra.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32Extra"/>
       </Item229>
       <Item230>
         <Filename Value="win32/win32int.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32Int"/>
       </Item230>
       <Item231>
@@ -1155,10 +1196,12 @@ end;"/>
       </Item236>
       <Item237>
         <Filename Value="win32/win32proc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="win32proc"/>
       </Item237>
       <Item238>
         <Filename Value="win32/win32themes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32Themes"/>
       </Item238>
       <Item239>
@@ -1167,6 +1210,7 @@ end;"/>
       </Item239>
       <Item240>
         <Filename Value="win32/win32uxtheme.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32UxTheme"/>
       </Item240>
       <Item241>
@@ -1179,30 +1223,37 @@ end;"/>
       </Item242>
       <Item243>
         <Filename Value="win32/win32wsactnlist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSActnList"/>
       </Item243>
       <Item244>
         <Filename Value="win32/win32wsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSArrow"/>
       </Item244>
       <Item245>
         <Filename Value="win32/win32wsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSButtons"/>
       </Item245>
       <Item246>
         <Filename Value="win32/win32wscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSCalendar"/>
       </Item246>
       <Item247>
         <Filename Value="win32/win32wschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSCheckLst"/>
       </Item247>
       <Item248>
         <Filename Value="win32/win32wscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSComCtrls"/>
       </Item248>
       <Item249>
         <Filename Value="win32/win32wscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSControls"/>
       </Item249>
       <Item250>
@@ -1211,78 +1262,97 @@ end;"/>
       </Item250>
       <Item251>
         <Filename Value="win32/win32wsdbctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSDbCtrls"/>
       </Item251>
       <Item252>
         <Filename Value="win32/win32wsdbgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSDBGrids"/>
       </Item252>
       <Item253>
         <Filename Value="win32/win32wsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSDialogs"/>
       </Item253>
       <Item254>
         <Filename Value="win32/win32wseditbtn.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSEditBtn"/>
       </Item254>
       <Item255>
         <Filename Value="win32/win32wsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSExtCtrls"/>
       </Item255>
       <Item256>
         <Filename Value="win32/win32wsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSExtDlgs"/>
       </Item256>
       <Item257>
         <Filename Value="win32/win32wsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSFactory"/>
       </Item257>
       <Item258>
         <Filename Value="win32/win32wsfilectrl.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSFileCtrl"/>
       </Item258>
       <Item259>
         <Filename Value="win32/win32wsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSForms"/>
       </Item259>
       <Item260>
         <Filename Value="win32/win32wsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSGrids"/>
       </Item260>
       <Item261>
         <Filename Value="win32/win32wsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSImgList"/>
       </Item261>
       <Item262>
         <Filename Value="win32/win32wsmaskedit.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSMaskEdit"/>
       </Item262>
       <Item263>
         <Filename Value="win32/win32wsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSMenus"/>
       </Item263>
       <Item264>
         <Filename Value="win32/win32wspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSPairSplitter"/>
       </Item264>
       <Item265>
         <Filename Value="win32/win32wsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSSpin"/>
       </Item265>
       <Item266>
         <Filename Value="win32/win32wsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSStdCtrls"/>
       </Item266>
       <Item267>
         <Filename Value="win32/win32wstoolwin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Win32WSToolwin"/>
       </Item267>
       <Item268>
         <Filename Value="wince/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item268>
       <Item269>
         <Filename Value="wince/win32compat.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="win32compat"/>
       </Item269>
       <Item270>
@@ -1291,6 +1361,7 @@ end;"/>
       </Item270>
       <Item271>
         <Filename Value="wince/wincedef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEDef"/>
       </Item271>
       <Item272>
@@ -1299,10 +1370,12 @@ end;"/>
       </Item272>
       <Item273>
         <Filename Value="wince/winceextra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEExtra"/>
       </Item273>
       <Item274>
         <Filename Value="wince/winceint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEInt"/>
       </Item274>
       <Item275>
@@ -1331,6 +1404,7 @@ end;"/>
       </Item280>
       <Item281>
         <Filename Value="wince/winceproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="winceproc"/>
       </Item281>
       <Item282>
@@ -1343,26 +1417,32 @@ end;"/>
       </Item283>
       <Item284>
         <Filename Value="wince/wincewsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSArrow"/>
       </Item284>
       <Item285>
         <Filename Value="wince/wincewsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSButtons"/>
       </Item285>
       <Item286>
         <Filename Value="wince/wincewscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSCalendar"/>
       </Item286>
       <Item287>
         <Filename Value="wince/wincewschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSCheckLst"/>
       </Item287>
       <Item288>
         <Filename Value="wince/wincewscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSComCtrls"/>
       </Item288>
       <Item289>
         <Filename Value="wince/wincewscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSControls"/>
       </Item289>
       <Item290>
@@ -1371,42 +1451,52 @@ end;"/>
       </Item290>
       <Item291>
         <Filename Value="wince/wincewsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSDialogs"/>
       </Item291>
       <Item292>
         <Filename Value="wince/wincewsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSExtCtrls"/>
       </Item292>
       <Item293>
         <Filename Value="wince/wincewsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSFactory"/>
       </Item293>
       <Item294>
         <Filename Value="wince/wincewsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSForms"/>
       </Item294>
       <Item295>
         <Filename Value="wince/wincewsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSGrids"/>
       </Item295>
       <Item296>
         <Filename Value="wince/wincewsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="wincewsimglist"/>
       </Item296>
       <Item297>
         <Filename Value="wince/wincewsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSMenus"/>
       </Item297>
       <Item298>
         <Filename Value="wince/wincewsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSSpin"/>
       </Item298>
       <Item299>
         <Filename Value="wince/wincewsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinCEWSStdCtrls"/>
       </Item299>
       <Item300>
         <Filename Value="wince/winext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinExt"/>
       </Item300>
     </Files>
