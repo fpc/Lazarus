@@ -63,6 +63,8 @@ type
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
+    function DoCalcIdentity(AX: Double): Double;
+    function DoCalculate(AX: Double): Double;
     procedure SetOnCalculate(const AValue: TFuncCalculateEvent);
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
@@ -78,6 +80,7 @@ type
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
   published
+    property AxisIndexX;
     property AxisIndexY;
     property OnCalculate: TFuncCalculateEvent
       read FOnCalculate write SetOnCalculate;
@@ -135,6 +138,12 @@ implementation
 uses
   Math, SysUtils, TAGraph;
 
+function DoublePointRotated(AX, AY: Double): TDoublePoint;
+begin
+  Result.X := AY;
+  Result.Y := AX;
+end;
+
 { TBasicFuncSeries }
 
 procedure TBasicFuncSeries.AfterAdd;
@@ -191,57 +200,103 @@ begin
   inherited;
 end;
 
-procedure TFuncSeries.Draw(ACanvas: TCanvas);
-var
-  ygMin, ygMax: Double;
+function TFuncSeries.DoCalcIdentity(AX: Double): Double;
+begin
+  Result := AX;
+end;
 
-  function CalcY(AXg: Double): Integer;
-  var
-    yg: Double;
+function TFuncSeries.DoCalculate(AX: Double): Double;
+begin
+  OnCalculate(AX, Result)
+end;
+
+procedure TFuncSeries.Draw(ACanvas: TCanvas);
+
+type
+  TTransform = function (A: Double): Double of object;
+  TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
+
+var
+  axisToGraphXr, axisToGraphYr, graphToAxisXr, calc: TTransform;
+  makeDP: TMakeDoublePoint;
+  r: TDoubleRect = (coords:(NegInfinity, NegInfinity, Infinity, Infinity));
+  prev: TDoublePoint;
+
+  function CalcAt(AXg, AXa: Double): TDoublePoint;
   begin
-    OnCalculate(AXg, yg);
-    Result := FChart.YGraphToImage(EnsureRange(AxisToGraphY(yg), ygMin, ygMax));
+    Result := makeDP(AXg, axisToGraphYr(calc(AXa)));
+  end;
+
+  procedure MoveTo(AXg, AXa: Double);
+  begin
+    prev := CalcAt(AXg, AXa);
+  end;
+
+  procedure LineTo(AXg, AXa: Double);
+  var
+    p, t: TDoublePoint;
+  begin
+    t := CalcAt(AXg, AXa);
+    p := t;
+    if LineIntersectsRect(prev, t, r) then begin
+      ACanvas.MoveTo(FChart.GraphToImage(prev));
+      ACanvas.LineTo(FChart.GraphToImage(t));
+    end;
+    prev := p;
   end;
 
 var
-  x, xmax, hint: Integer;
-  xg, xg1: Double;
+  hint: Integer;
+  xg, xa, xg1, xa1, xmax, graphStep: Double;
 begin
-  if not Assigned(OnCalculate) then exit;
+  if Assigned(OnCalculate) then
+    calc := @DoCalculate
+  else if csDesigning in ComponentState then
+    calc := @DoCalcIdentity
+  else
+    exit;
+  GetGraphBounds(r);
+  RectIntersectsRect(r, FChart.CurrentExtent);
 
-  x := FChart.ClipRect.Left;
-  if Extent.UseXMin then
-    x := Max(FChart.XGraphToImage(Extent.XMin), x);
-  xmax := FChart.ClipRect.Right;
-  if Extent.UseXMax then
-    xmax := Min(FChart.XGraphToImage(Extent.XMax), xmax);
-
-  ygMin := FChart.CurrentExtent.a.Y;
-  if Extent.UseYMin and (ygMin < Extent.YMin) then
-    ygMin := Extent.YMin;
-  ygMax := FChart.CurrentExtent.b.Y;
-  if Extent.UseYMax and (ygMax > Extent.YMax) then
-    ygMax := Extent.YMax;
-  ExpandRange(ygMin, ygMax, 1);
+  if IsRotated then begin
+    axisToGraphXr := @AxisToGraphY;
+    axisToGraphYr := @AxisToGraphX;
+    graphToAxisXr := @GraphToAxisY;
+    makeDP := @DoublePointRotated;
+    graphStep := FChart.YImageToGraph(-Step) - FChart.YImageToGraph(0);
+    xg := r.a.Y;
+    xmax := r.b.Y;
+  end
+  else begin
+    axisToGraphXr := @AxisToGraphX;
+    axisToGraphYr := @AxisToGraphY;
+    graphToAxisXr := @GraphToAxisX;
+    makeDP := @DoublePoint;
+    graphStep := FChart.XImageToGraph(Step) - FChart.XImageToGraph(0);
+    xg := r.a.X;
+    xmax := r.b.X;
+  end;
 
   hint := 0;
-  xg := FChart.XImageToGraph(x);
-  if DomainExclusions.Intersect(xg, xg, hint) then
-    x := FChart.XGraphToImage(xg);
-  ACanvas.MoveTo(x, CalcY(xg));
+  xa := graphToAxisXr(xg);
+  if DomainExclusions.Intersect(xa, xa, hint) then
+    xg := axisToGraphXr(xa);
+
+  MoveTo(xg, xa);
 
   ACanvas.Pen.Assign(Pen);
-  while x < xmax do begin
-    Inc(x, FStep);
-    xg1 := FChart.XImageToGraph(x);
-    if DomainExclusions.Intersect(xg, xg1, hint) then begin
-      ACanvas.LineTo(FChart.XGraphToImage(xg), CalcY(xg));
-      x := FChart.XGraphToImage(xg1);
-      ACanvas.MoveTo(x, CalcY(xg1));
+  while xg < xmax do begin
+    xg1 := xg + graphStep;
+    xa1 := graphToAxisXr(xg1);
+    if DomainExclusions.Intersect(xa, xa1, hint) then begin
+      LineTo(axisToGraphXr(xa), xa);
+      xg1 := axisToGraphXr(xa1);
+      MoveTo(xg1, xa1);
     end
     else
-      ACanvas.LineTo(x, CalcY(xg1));
+      LineTo(xg1, xa1);
     xg := xg1;
+    xa := xa1;
   end;
 end;
 
