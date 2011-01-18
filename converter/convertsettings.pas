@@ -372,6 +372,7 @@ begin
   TheMap:=fReplaceUnits;
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
+  MapReplacement('OpenGL',              'GL, GLu');
   MapReplacement('ShellApi',            '');
   MapReplacement('pngImage',            '');
   MapReplacement('Jpeg',                '');
@@ -457,6 +458,13 @@ begin
     AddFunc(Categ, 'ShellExecute',
                    'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
     AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL',''); // In Windows MMSystems unit.
+    // OpenGL
+    Categ:='OpenGL';
+    AddFunc(Categ, 'glIsEnabled', 'Boolean(glIsEnabled($1))', '', 'GL');
+    AddFunc(Categ, 'glIsList',    'Boolean(glIsList($1))',    '', 'GL');
+    AddFunc(Categ, 'glIsTexture', 'Boolean(glIsTexture($1))', '', 'GL');
+    // In glColorMask, glDepthMask and gluQuadricTexture :
+    //  the parameter types should be typecasted, too. Not supported yet.
     // Others
     Categ:='Other';
     AddDefaultCategory(Categ);

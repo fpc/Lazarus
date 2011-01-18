@@ -5353,10 +5353,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
            AccessParam);
       end else begin
         // 'read' keyword does not exist -> insert behind index and type
-        if Parts[ppIndexWord].StartPos>0 then
-          InsertPos:=Parts[ppIndexWord].EndPos
-        else if Parts[ppIndex].StartPos>0 then
+        if Parts[ppIndex].StartPos>0 then
           InsertPos:=Parts[ppIndex].EndPos
+        else if Parts[ppIndexWord].StartPos>0 then
+          InsertPos:=Parts[ppIndexWord].EndPos
         else
           InsertPos:=Parts[ppType].EndPos;
         ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
@@ -5378,7 +5378,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+');';
       end else begin
         // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
+        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
                         +CleanParamList+');';
       end;
     end else begin
@@ -5387,7 +5387,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
       end else begin
         // index, no param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER);';
+        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER);';
       end;
     end;
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
@@ -5484,10 +5484,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
           InsertPos:=Parts[ppRead].EndPos
         else if Parts[ppReadWord].StartPos>0 then
           InsertPos:=Parts[ppReadWord].EndPos
-        else if Parts[ppIndexWord].StartPos>0 then
-          InsertPos:=Parts[ppIndexWord].EndPos
         else if Parts[ppIndex].StartPos>0 then
           InsertPos:=Parts[ppIndex].EndPos
+        else if Parts[ppIndexWord].StartPos>0 then
+          InsertPos:=Parts[ppIndexWord].EndPos
         else
           InsertPos:=Parts[ppType].EndPos;
         ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
