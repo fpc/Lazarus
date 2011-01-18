@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries;
+  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries, TAFuncSeries;
 
 type
 

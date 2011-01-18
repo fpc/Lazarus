@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, Types, TAGraph, TASeries, TASources, TATools;
+  Graphics, Dialogs, Types, TAFuncSeries, TAGraph, TASeries, TASources, TATools;
 
 type
 

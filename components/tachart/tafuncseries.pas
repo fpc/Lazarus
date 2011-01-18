@@ -220,7 +220,7 @@ begin
   if Extent.UseYMin and (ygMin < Extent.YMin) then
     ygMin := Extent.YMin;
   ygMax := FChart.CurrentExtent.b.Y;
-  if Extent.UseYMax and (ygMax < Extent.YMax) then
+  if Extent.UseYMax and (ygMax > Extent.YMax) then
     ygMax := Extent.YMax;
   ExpandRange(ygMin, ygMax, 1);
 
