@@ -63,6 +63,8 @@ var
 
   PkgEditMenuExpandDirectory: TIDEMenuCommand;
   PkgEditMenuCollapseDirectory: TIDEMenuCommand;
+  PkgEditMenuUseAllUnitsInDirectory: TIDEMenuCommand;
+  PkgEditMenuUseNoUnitsInDirectory: TIDEMenuCommand;
 
   PkgEditMenuOpenPackage: TIDEMenuCommand;
   PkgEditMenuRemoveDependency: TIDEMenuCommand;
@@ -234,8 +236,10 @@ type
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
+    procedure UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxChange(Sender: TObject);
     procedure UseMinVersionCheckBoxChange(Sender: TObject);
+    procedure UseNoUnitsInDirectoryMenuItemClick(Sender: TObject);
     procedure UsePopupMenuPopup(Sender: TObject);
     procedure ViewPkgSourceClick(Sender: TObject);
     procedure ViewPkgTodosClick(Sender: TObject);
@@ -296,6 +300,7 @@ type
     procedure DoEditVirtualUnit;
     procedure DoExpandDirectory;
     procedure DoCollapseDirectory;
+    procedure DoUseUnitsInDirectory(Use: boolean);
     procedure DoRevert;
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
@@ -451,6 +456,8 @@ begin
   AParent:=PkgEditMenuSectionDirectory;
   PkgEditMenuExpandDirectory:=RegisterIDEMenuCommand(AParent,'Expand directory',lisPEExpandDirectory);
   PkgEditMenuCollapseDirectory:=RegisterIDEMenuCommand(AParent, 'Collapse directory', lisPECollapseDirectory);
+  PkgEditMenuUseAllUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use all units in directory', lisPEUseAllUnitsInDirectory);
+  PkgEditMenuUseNoUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use no units in directory', lisPEUseNoUnitsInDirectory);
 
   // register the section for operations on single dependencies
   PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Dependency');
@@ -651,6 +658,8 @@ begin
     if IsDir and ShowDirectoryHierarchy then begin
       SetItem(PkgEditMenuExpandDirectory,@ExpandDirectoryMenuItemClick);
       SetItem(PkgEditMenuCollapseDirectory,@CollapseDirectoryMenuItemClick);
+      SetItem(PkgEditMenuUseAllUnitsInDirectory,@UseAllUnitsInDirectoryMenuItemClick);
+      SetItem(PkgEditMenuUseNoUnitsInDirectory,@UseNoUnitsInDirectoryMenuItemClick);
     end;
 
     // items for all files
@@ -1080,6 +1089,12 @@ begin
   PackageEditors.UninstallPackage(LazPackage);
 end;
 
+procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject
+  );
+begin
+  DoUseUnitsInDirectory(true);
+end;
+
 procedure TPackageEditorForm.ViewPkgSourceClick(Sender: TObject);
 begin
   PackageEditors.ViewPkgSource(LazPackage);
@@ -1100,6 +1115,12 @@ procedure TPackageEditorForm.UseMinVersionCheckBoxChange(Sender: TObject);
 begin
   MinVersionEdit.Enabled:=UseMinVersionCheckBox.Checked;
   UpdateApplyDependencyButton;
+end;
+
+procedure TPackageEditorForm.UseNoUnitsInDirectoryMenuItemClick(Sender: TObject
+  );
+begin
+  DoUseUnitsInDirectory(false);
 end;
 
 procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
@@ -2464,11 +2485,48 @@ begin
   if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
   FilesTreeView.BeginUpdate;
   Node:=CurNode.GetFirstChild;
-  while Node<>nil do begin
+  while Node<>nil do
+  begin
     Node.Collapse(true);
     Node:=Node.GetNextSibling;
   end;
   FilesTreeView.EndUpdate;
+end;
+
+procedure TPackageEditorForm.DoUseUnitsInDirectory(Use: boolean);
+
+  procedure Traverse(Node: TTreeNode);
+  var
+    PkgFile: TPkgFile;
+  begin
+    if TObject(Node.Data) is TPkgEditFileItem then
+    begin
+      PkgFile:=LazPackage.FindPkgFile(TPkgEditFileItem(Node.Data).Filename,true,true);
+      if (PkgFile<>nil) and (PkgFile.FileType in [pftUnit,pftVirtualUnit]) then
+      begin
+        if PkgFile.AddToUsesPkgSection<>Use then
+        begin
+          PkgFile.AddToUsesPkgSection:=Use;
+          LazPackage.Modified:=true;
+        end;
+      end;
+    end;
+    Node:=Node.GetFirstChild;
+    while Node<>nil do
+    begin
+      Traverse(Node);
+      Node:=Node.GetNextSibling;
+    end;
+  end;
+
+var
+  CurNode: TTreeNode;
+begin
+  if not ShowDirectoryHierarchy then exit;
+  CurNode:=FilesTreeView.Selected;
+  if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
+  Traverse(CurNode);
+  UpdateSelectedFile;
 end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);

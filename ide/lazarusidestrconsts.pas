@@ -3772,6 +3772,8 @@ resourcestring
   lisAF2PFileType = 'File Type';
   lisPEExpandDirectory = 'Expand directory';
   lisPECollapseDirectory = 'Collapse directory';
+  lisPEUseAllUnitsInDirectory = 'Use all units in directory';
+  lisPEUseNoUnitsInDirectory = 'Use no units in directory';
   lisAF2PDestinationPackage = 'Destination Package';
   lisAF2PShowAll = 'Show All';
   lisAF2PAddFileToAPackage = 'Add file to a package';
