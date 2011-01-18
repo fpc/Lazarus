@@ -1,4 +1,27 @@
 {%MainUnit qtint.pp}
+
+function IsOldKDEInstallation: Boolean;
+var
+  Display: PDisplay;
+  i: longint;
+begin
+  //if we are under KDE4, it's already recent one.
+  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4')
+    or QX11Info_isCompositingManagerRunning);
+  if Result then
+    exit;
+
+  //if we are under other WM KDE_SESSION_VERSION does not exist
+  //so we must check for XOrg version.
+  Display := QX11Info_display();
+  i := XVendorRelease(Display);
+
+  //X, XOrg between 5.0 - 7.04 are old ones and contains KDE-3.5
+  //Fedora marks XOrg 7.XX as 1.XX, so we have to check that too.
+  Result := ((i >= 50000000) and (i <= 70040000)) or
+    ((i > 0) and (i <= 10400000));
+end;
+
 function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
 var
   Display: PDisplay;

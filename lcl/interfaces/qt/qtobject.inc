@@ -97,7 +97,8 @@ begin
   FEatNextDeactivate := False;
   {$IFDEF HASX11}
   FLastMinimizeEvent := 0;
-  QtX11InitializePalettes;
+  if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
+    QtX11InitializePalettes;
   {$ENDIF}
 end;
 

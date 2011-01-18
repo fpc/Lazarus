@@ -197,6 +197,8 @@ type
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
   function GetWindowManager: String;
   procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
+  {check if we are running under kde3 installation}
+  function IsOldKDEInstallation: Boolean;
   {$ENDIF}
 
 const
