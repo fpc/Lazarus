@@ -13,9 +13,9 @@ object Form1: TForm1
     Height = 362
     Top = 0
     Width = 461
-    ActivePage = tsColorMap
+    ActivePage = tsDomain
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tsDomain: TTabSheet
       Caption = 'Domain'
@@ -50,8 +50,11 @@ object Form1: TForm1
         ParentColor = False
         object Chart1FuncSeries1: TFuncSeries
           Extent.XMin = -6.28
+          Extent.YMin = -2
           Extent.XMax = 6.28
+          Extent.YMax = 2
           Extent.UseXMin = True
+          Extent.UseYMin = True
           Extent.UseXMax = True
           Title = '1 / Sin(x)'
           OnCalculate = Chart1FuncSeries1Calculate
@@ -88,6 +91,16 @@ object Form1: TForm1
         Caption = 'Domain'
         OnChange = cbDomainChange
         TabOrder = 1
+      end
+      object cbRotate: TCheckBox
+        Left = 388
+        Height = 17
+        Top = 274
+        Width = 53
+        Anchors = [akRight, akBottom]
+        Caption = 'Rotate'
+        OnChange = cbRotateChange
+        TabOrder = 2
       end
     end
     object tsColorMap: TTabSheet

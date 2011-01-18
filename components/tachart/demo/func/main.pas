@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     cbDomain: TCheckBox;
+    cbRotate: TCheckBox;
     cbInterpolate: TCheckBox;
     cbMultLegend: TCheckBox;
     Chart1: TChart;
@@ -38,6 +39,7 @@ type
     procedure cbDomainChange(Sender: TObject);
     procedure cbInterpolateChange(Sender: TObject);
     procedure cbMultLegendChange(Sender: TObject);
+    procedure cbRotateChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
@@ -84,6 +86,19 @@ begin
       Multiplicity := lmPoint
     else
       Multiplicity := lmSingle;
+end;
+
+procedure TForm1.cbRotateChange(Sender: TObject);
+begin
+  with Chart1FuncSeries1 do
+    if cbRotate.Checked then begin
+      AxisIndexX := 0;
+      AxisIndexY := 1;
+    end
+    else begin
+      AxisIndexX := 1;
+      AxisIndexY := 0;
+    end;
 end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
