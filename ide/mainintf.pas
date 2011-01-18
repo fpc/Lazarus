@@ -574,12 +574,12 @@ end;
 
 function TFileDescInheritedComponent.GetLocalizedName: string;
 begin
-  Result:=lisInheritedComponent;
+  Result:=lisInheritedProjectComponent;
 end;
 
 function TFileDescInheritedComponent.GetLocalizedDescription: string;
 begin
-  Result:=lisNewDlgInheritAnExistingComponent;
+  Result:=lisNewDlgInheritFromAProjectFormComponent;
 end;
 
 { TFileDescInheritedItem }

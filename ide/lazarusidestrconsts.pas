@@ -3262,7 +3262,6 @@ resourcestring
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
-  lisNewDlgInheritAnExistingComponent = 'Inherit from an existing component.';
   lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
     +'Program file.%sThis can be used for quick and dirty testing.%sBetter '
     +'create a new project.';
@@ -4877,7 +4876,9 @@ resourcestring
     + LineEnding + '"default",Sync, to Sync with a previous cell of equal default';
   lisPrecedingWord = 'Preceding word';
   lisForm = 'Form';
-  lisInheritedComponent = 'Inherited Component';
+  lisInheritedProjectComponent = 'Inherited project component';
+  lisNewDlgInheritFromAProjectFormComponent = 'Inherit from a project form or '
+    +'component';
   lisFrame = 'Frame';
   lisDataModule = 'Data Module';
   lisNoLFMFile = 'No LFM file';
