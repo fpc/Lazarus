@@ -456,7 +456,7 @@ var
   Pos2: Integer;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CheckWholeUnitParsed ',EndOfSourceFound,' LastErrorMessage="',LastErrorMessage,'" LastErrorCurPos=',dbgs(LastErrorCurPos)]);
-  if EndOfSourceFound then exit;
+  if EndOfSourceFound and (not LastErrorValid) then exit;
   Pos1:=0;
   Pos2:=0;
   if Node1<>nil then Pos1:=Node1.StartPos;
@@ -6169,6 +6169,10 @@ begin
   ANode:=FCompletingStartNode;
   while (ANode<>nil) do begin
     if ANode.Desc=ctnProcedure then begin
+      if ANode.FirstChild=nil then begin
+        debugln(['TCodeCompletionCodeTool.InsertMissingClassSemicolons warning: broken proc node: ',CleanPosToStr(ANode.StartPos)]);
+        exit;
+      end;
       ProcCode:=ExtractProcHead(ANode,[phpWithStart,
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,

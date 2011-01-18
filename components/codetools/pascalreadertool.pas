@@ -787,6 +787,7 @@ begin
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;
+  if ProcNode.FirstChild=nil then exit;
   MoveCursorToNodeStart(ProcNode.FirstChild);
   ReadNextAtom;
   if AtomIsIdentifier(false) then begin
