@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="301">
+    <Files Count="300">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -1218,201 +1218,197 @@ end;"/>
         <UnitName Value="Win32WSDBGrids"/>
       </Item252>
       <Item253>
-        <Filename Value="win32/win32wsdesigner.pp"/>
-        <UnitName Value="Win32WSDesigner"/>
-      </Item253>
-      <Item254>
         <Filename Value="win32/win32wsdialogs.pp"/>
         <UnitName Value="Win32WSDialogs"/>
-      </Item254>
-      <Item255>
+      </Item253>
+      <Item254>
         <Filename Value="win32/win32wseditbtn.pp"/>
         <UnitName Value="Win32WSEditBtn"/>
-      </Item255>
-      <Item256>
+      </Item254>
+      <Item255>
         <Filename Value="win32/win32wsextctrls.pp"/>
         <UnitName Value="Win32WSExtCtrls"/>
-      </Item256>
-      <Item257>
+      </Item255>
+      <Item256>
         <Filename Value="win32/win32wsextdlgs.pp"/>
         <UnitName Value="Win32WSExtDlgs"/>
-      </Item257>
-      <Item258>
+      </Item256>
+      <Item257>
         <Filename Value="win32/win32wsfactory.pas"/>
         <UnitName Value="Win32WSFactory"/>
-      </Item258>
-      <Item259>
+      </Item257>
+      <Item258>
         <Filename Value="win32/win32wsfilectrl.pp"/>
         <UnitName Value="Win32WSFileCtrl"/>
-      </Item259>
-      <Item260>
+      </Item258>
+      <Item259>
         <Filename Value="win32/win32wsforms.pp"/>
         <UnitName Value="Win32WSForms"/>
-      </Item260>
-      <Item261>
+      </Item259>
+      <Item260>
         <Filename Value="win32/win32wsgrids.pp"/>
         <UnitName Value="Win32WSGrids"/>
-      </Item261>
-      <Item262>
+      </Item260>
+      <Item261>
         <Filename Value="win32/win32wsimglist.pp"/>
         <UnitName Value="Win32WSImgList"/>
-      </Item262>
-      <Item263>
+      </Item261>
+      <Item262>
         <Filename Value="win32/win32wsmaskedit.pp"/>
         <UnitName Value="Win32WSMaskEdit"/>
-      </Item263>
-      <Item264>
+      </Item262>
+      <Item263>
         <Filename Value="win32/win32wsmenus.pp"/>
         <UnitName Value="Win32WSMenus"/>
-      </Item264>
-      <Item265>
+      </Item263>
+      <Item264>
         <Filename Value="win32/win32wspairsplitter.pp"/>
         <UnitName Value="Win32WSPairSplitter"/>
-      </Item265>
-      <Item266>
+      </Item264>
+      <Item265>
         <Filename Value="win32/win32wsspin.pp"/>
         <UnitName Value="Win32WSSpin"/>
-      </Item266>
-      <Item267>
+      </Item265>
+      <Item266>
         <Filename Value="win32/win32wsstdctrls.pp"/>
         <UnitName Value="Win32WSStdCtrls"/>
-      </Item267>
-      <Item268>
+      </Item266>
+      <Item267>
         <Filename Value="win32/win32wstoolwin.pp"/>
         <UnitName Value="Win32WSToolwin"/>
-      </Item268>
-      <Item269>
+      </Item267>
+      <Item268>
         <Filename Value="wince/interfaces.pp"/>
         <UnitName Value="Interfaces"/>
-      </Item269>
-      <Item270>
+      </Item268>
+      <Item269>
         <Filename Value="wince/win32compat.pas"/>
         <UnitName Value="win32compat"/>
-      </Item270>
-      <Item271>
+      </Item269>
+      <Item270>
         <Filename Value="wince/wincecallback.inc"/>
         <Type Value="Include"/>
-      </Item271>
-      <Item272>
+      </Item270>
+      <Item271>
         <Filename Value="wince/wincedef.pp"/>
         <UnitName Value="WinCEDef"/>
-      </Item272>
-      <Item273>
+      </Item271>
+      <Item272>
         <Filename Value="wince/wincedialogs.lrs"/>
         <Type Value="LRS"/>
-      </Item273>
-      <Item274>
+      </Item272>
+      <Item273>
         <Filename Value="wince/winceextra.pp"/>
         <UnitName Value="WinCEExtra"/>
-      </Item274>
-      <Item275>
+      </Item273>
+      <Item274>
         <Filename Value="wince/winceint.pp"/>
         <UnitName Value="WinCEInt"/>
+      </Item274>
+      <Item275>
+        <Filename Value="wince/wincelclintf.inc"/>
+        <Type Value="Include"/>
       </Item275>
       <Item276>
-        <Filename Value="wince/wincelclintf.inc"/>
+        <Filename Value="wince/wincelclintfh.inc"/>
         <Type Value="Include"/>
       </Item276>
       <Item277>
-        <Filename Value="wince/wincelclintfh.inc"/>
+        <Filename Value="wince/wincelistsl.inc"/>
         <Type Value="Include"/>
       </Item277>
       <Item278>
-        <Filename Value="wince/wincelistsl.inc"/>
+        <Filename Value="wince/wincelistslh.inc"/>
         <Type Value="Include"/>
       </Item278>
       <Item279>
-        <Filename Value="wince/wincelistslh.inc"/>
+        <Filename Value="wince/wincememostrings.inc"/>
         <Type Value="Include"/>
       </Item279>
       <Item280>
-        <Filename Value="wince/wincememostrings.inc"/>
+        <Filename Value="wince/winceobject.inc"/>
         <Type Value="Include"/>
       </Item280>
       <Item281>
-        <Filename Value="wince/winceobject.inc"/>
-        <Type Value="Include"/>
-      </Item281>
-      <Item282>
         <Filename Value="wince/winceproc.pp"/>
         <UnitName Value="winceproc"/>
+      </Item281>
+      <Item282>
+        <Filename Value="wince/wincewinapi.inc"/>
+        <Type Value="Include"/>
       </Item282>
       <Item283>
-        <Filename Value="wince/wincewinapi.inc"/>
+        <Filename Value="wince/wincewinapih.inc"/>
         <Type Value="Include"/>
       </Item283>
       <Item284>
-        <Filename Value="wince/wincewinapih.inc"/>
-        <Type Value="Include"/>
-      </Item284>
-      <Item285>
         <Filename Value="wince/wincewsarrow.pp"/>
         <UnitName Value="WinCEWSArrow"/>
-      </Item285>
-      <Item286>
+      </Item284>
+      <Item285>
         <Filename Value="wince/wincewsbuttons.pp"/>
         <UnitName Value="WinCEWSButtons"/>
-      </Item286>
-      <Item287>
+      </Item285>
+      <Item286>
         <Filename Value="wince/wincewscalendar.pp"/>
         <UnitName Value="WinCEWSCalendar"/>
-      </Item287>
-      <Item288>
+      </Item286>
+      <Item287>
         <Filename Value="wince/wincewschecklst.pp"/>
         <UnitName Value="WinCEWSCheckLst"/>
-      </Item288>
-      <Item289>
+      </Item287>
+      <Item288>
         <Filename Value="wince/wincewscomctrls.pp"/>
         <UnitName Value="WinCEWSComCtrls"/>
-      </Item289>
-      <Item290>
+      </Item288>
+      <Item289>
         <Filename Value="wince/wincewscontrols.pp"/>
         <UnitName Value="WinCEWSControls"/>
-      </Item290>
-      <Item291>
+      </Item289>
+      <Item290>
         <Filename Value="wince/wincewscustomlistview.inc"/>
         <Type Value="Include"/>
-      </Item291>
-      <Item292>
+      </Item290>
+      <Item291>
         <Filename Value="wince/wincewsdialogs.pp"/>
         <UnitName Value="WinCEWSDialogs"/>
-      </Item292>
-      <Item293>
+      </Item291>
+      <Item292>
         <Filename Value="wince/wincewsextctrls.pp"/>
         <UnitName Value="WinCEWSExtCtrls"/>
-      </Item293>
-      <Item294>
+      </Item292>
+      <Item293>
         <Filename Value="wince/wincewsfactory.pas"/>
         <UnitName Value="WinCEWSFactory"/>
-      </Item294>
-      <Item295>
+      </Item293>
+      <Item294>
         <Filename Value="wince/wincewsforms.pp"/>
         <UnitName Value="WinCEWSForms"/>
-      </Item295>
-      <Item296>
+      </Item294>
+      <Item295>
         <Filename Value="wince/wincewsgrids.pp"/>
         <UnitName Value="WinCEWSGrids"/>
-      </Item296>
-      <Item297>
+      </Item295>
+      <Item296>
         <Filename Value="wince/wincewsimglist.pp"/>
         <UnitName Value="wincewsimglist"/>
-      </Item297>
-      <Item298>
+      </Item296>
+      <Item297>
         <Filename Value="wince/wincewsmenus.pp"/>
         <UnitName Value="WinCEWSMenus"/>
-      </Item298>
-      <Item299>
+      </Item297>
+      <Item298>
         <Filename Value="wince/wincewsspin.pp"/>
         <UnitName Value="WinCEWSSpin"/>
-      </Item299>
-      <Item300>
+      </Item298>
+      <Item299>
         <Filename Value="wince/wincewsstdctrls.pp"/>
         <UnitName Value="WinCEWSStdCtrls"/>
-      </Item300>
-      <Item301>
+      </Item299>
+      <Item300>
         <Filename Value="wince/winext.pas"/>
         <UnitName Value="WinExt"/>
-      </Item301>
+      </Item300>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
