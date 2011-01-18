@@ -6,13 +6,17 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
+  Controls, Graphics, Dialogs, TAGraph, TARadialSeries, TASeries, TASources,
+  TATools;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    ChartPolar: TChart;
+    ChartPolarSeries1: TPolarSeries;
+    ChartPolarSeries2: TPolarSeries;
     ChartPie: TChart;
     ChartPiePieSeries1: TPieSeries;
     ChartToolset1: TChartToolset;
@@ -22,8 +26,10 @@ type
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    RandomChartSource1: TRandomChartSource;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
+    tsPolar: TTabSheet;
     tsPie: TTabSheet;
     procedure cbRotateChange(Sender: TObject);
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
