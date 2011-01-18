@@ -1069,8 +1069,6 @@ type
     property HideSingleTabInWindow: Boolean
       read FHideSingleTabInWindow write FHideSingleTabInWindow;
     property ShowTabNumbers: Boolean read fShowTabNumbers write fShowTabNumbers;
-    property TabPosition: TTabPosition
-      read fTabPosition write fTabPosition default tpTop;
     property UndoAfterSave: Boolean read fUndoAfterSave
       write fUndoAfterSave default True;
     property FindTextAtCursor: Boolean
@@ -1164,10 +1162,12 @@ type
       write FAutoRemoveEmptyMethods default False;
     property CompletionLongLineHintInMSec: Integer
              read FCompletionLongLineHintInMSec write FCompletionLongLineHintInMSec;
+  published
     property CompletionLongLineHintType: TSynCompletionLongHintType
              read FCompletionLongLineHintType write FCompletionLongLineHintType
              default sclpExtendRightOnly;
 
+  public
     // Code Folding
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
@@ -1177,6 +1177,8 @@ type
         read FMultiWinEditAccessOrder write FMultiWinEditAccessOrder;
 
   published { use RTTIConf}
+    property TabPosition: TTabPosition
+      read fTabPosition write fTabPosition default tpTop;
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
@@ -3437,8 +3439,6 @@ begin
       'EditorOptions/General/Editor/HideSingleTabInWindow', False);
     fShowTabNumbers :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
-    fTabPosition := tpTop;
-    XMLConfig.ReadObject('EditorOptions/General/Editor/', self, self, 'TabPosition');
     FCopyWordAtCursorOnCopyNone :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone', True);
@@ -3639,7 +3639,6 @@ begin
       , FHideSingleTabInWindow, False);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabNumbers'
       , fShowTabNumbers, False);
-    XMLConfig.WriteObject('EditorOptions/General/Editor/', self, nil, 'TabPosition');
     XMLConfig.SetDeleteValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',
       FCopyWordAtCursorOnCopyNone, True);
