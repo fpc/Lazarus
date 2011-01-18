@@ -349,6 +349,7 @@ begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
   end;
+  NormalizeRect(ext);
   if LineType = ltFromOrigin then
     ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
   // Do not draw anything if the series extent does not intersect CurrentExtent.

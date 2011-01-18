@@ -451,14 +451,12 @@ end;
 
 procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint);
 begin
-  NormalizeRect(ARect);
   UpdateMinMax(APoint.X, ARect.a.X, ARect.b.X);
   UpdateMinMax(APoint.Y, ARect.a.Y, ARect.b.Y);
 end;
 
 procedure ExpandRect(var ARect: TRect; const APoint: TPoint);
 begin
-  NormalizeRect(ARect);
   UpdateMinMax(APoint.X, ARect.Left, ARect.Right);
   UpdateMinMax(APoint.Y, ARect.Top, ARect.Bottom);
 end;
