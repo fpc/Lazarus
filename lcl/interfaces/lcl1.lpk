@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="222">
+    <Files Count="268">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -1097,6 +1097,190 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item222>
+      <Item223>
+        <Filename Value="win32/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item223>
+      <Item224>
+        <Filename Value="win32/interfaces.pp"/>
+        <UnitName Value="Interfaces"/>
+      </Item224>
+      <Item225>
+        <Filename Value="win32/win32callback.inc"/>
+        <Type Value="Include"/>
+      </Item225>
+      <Item226>
+        <Filename Value="win32/win32debug.pp"/>
+        <UnitName Value="Win32Debug"/>
+      </Item226>
+      <Item227>
+        <Filename Value="win32/win32def.pp"/>
+        <UnitName Value="Win32Def"/>
+      </Item227>
+      <Item228>
+        <Filename Value="win32/win32defines.inc"/>
+        <Type Value="Include"/>
+      </Item228>
+      <Item229>
+        <Filename Value="win32/win32extra.pas"/>
+        <UnitName Value="Win32Extra"/>
+      </Item229>
+      <Item230>
+        <Filename Value="win32/win32int.pp"/>
+        <UnitName Value="Win32Int"/>
+      </Item230>
+      <Item231>
+        <Filename Value="win32/win32lclintf.inc"/>
+        <Type Value="Include"/>
+      </Item231>
+      <Item232>
+        <Filename Value="win32/win32lclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item232>
+      <Item233>
+        <Filename Value="win32/win32listsl.inc"/>
+        <Type Value="Include"/>
+      </Item233>
+      <Item234>
+        <Filename Value="win32/win32listslh.inc"/>
+        <Type Value="Include"/>
+      </Item234>
+      <Item235>
+        <Filename Value="win32/win32memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item235>
+      <Item236>
+        <Filename Value="win32/win32object.inc"/>
+        <Type Value="Include"/>
+      </Item236>
+      <Item237>
+        <Filename Value="win32/win32proc.pp"/>
+        <UnitName Value="win32proc"/>
+      </Item237>
+      <Item238>
+        <Filename Value="win32/win32themes.pas"/>
+        <UnitName Value="Win32Themes"/>
+      </Item238>
+      <Item239>
+        <Filename Value="win32/win32trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item239>
+      <Item240>
+        <Filename Value="win32/win32uxtheme.pas"/>
+        <UnitName Value="Win32UxTheme"/>
+      </Item240>
+      <Item241>
+        <Filename Value="win32/win32winapi.inc"/>
+        <Type Value="Include"/>
+      </Item241>
+      <Item242>
+        <Filename Value="win32/win32winapih.inc"/>
+        <Type Value="Include"/>
+      </Item242>
+      <Item243>
+        <Filename Value="win32/win32wsactnlist.pp"/>
+        <UnitName Value="Win32WSActnList"/>
+      </Item243>
+      <Item244>
+        <Filename Value="win32/win32wsarrow.pp"/>
+        <UnitName Value="Win32WSArrow"/>
+      </Item244>
+      <Item245>
+        <Filename Value="win32/win32wsbuttons.pp"/>
+        <UnitName Value="Win32WSButtons"/>
+      </Item245>
+      <Item246>
+        <Filename Value="win32/win32wscalendar.pp"/>
+        <UnitName Value="Win32WSCalendar"/>
+      </Item246>
+      <Item247>
+        <Filename Value="win32/win32wschecklst.pp"/>
+        <UnitName Value="Win32WSCheckLst"/>
+      </Item247>
+      <Item248>
+        <Filename Value="win32/win32wscomctrls.pp"/>
+        <UnitName Value="Win32WSComCtrls"/>
+      </Item248>
+      <Item249>
+        <Filename Value="win32/win32wscontrols.pp"/>
+        <UnitName Value="Win32WSControls"/>
+      </Item249>
+      <Item250>
+        <Filename Value="win32/win32wscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item250>
+      <Item251>
+        <Filename Value="win32/win32wsdbctrls.pp"/>
+        <UnitName Value="Win32WSDbCtrls"/>
+      </Item251>
+      <Item252>
+        <Filename Value="win32/win32wsdbgrids.pp"/>
+        <UnitName Value="Win32WSDBGrids"/>
+      </Item252>
+      <Item253>
+        <Filename Value="win32/win32wsdesigner.pp"/>
+        <UnitName Value="Win32WSDesigner"/>
+      </Item253>
+      <Item254>
+        <Filename Value="win32/win32wsdialogs.pp"/>
+        <UnitName Value="Win32WSDialogs"/>
+      </Item254>
+      <Item255>
+        <Filename Value="win32/win32wseditbtn.pp"/>
+        <UnitName Value="Win32WSEditBtn"/>
+      </Item255>
+      <Item256>
+        <Filename Value="win32/win32wsextctrls.pp"/>
+        <UnitName Value="Win32WSExtCtrls"/>
+      </Item256>
+      <Item257>
+        <Filename Value="win32/win32wsextdlgs.pp"/>
+        <UnitName Value="Win32WSExtDlgs"/>
+      </Item257>
+      <Item258>
+        <Filename Value="win32/win32wsfactory.pas"/>
+        <UnitName Value="Win32WSFactory"/>
+      </Item258>
+      <Item259>
+        <Filename Value="win32/win32wsfilectrl.pp"/>
+        <UnitName Value="Win32WSFileCtrl"/>
+      </Item259>
+      <Item260>
+        <Filename Value="win32/win32wsforms.pp"/>
+        <UnitName Value="Win32WSForms"/>
+      </Item260>
+      <Item261>
+        <Filename Value="win32/win32wsgrids.pp"/>
+        <UnitName Value="Win32WSGrids"/>
+      </Item261>
+      <Item262>
+        <Filename Value="win32/win32wsimglist.pp"/>
+        <UnitName Value="Win32WSImgList"/>
+      </Item262>
+      <Item263>
+        <Filename Value="win32/win32wsmaskedit.pp"/>
+        <UnitName Value="Win32WSMaskEdit"/>
+      </Item263>
+      <Item264>
+        <Filename Value="win32/win32wsmenus.pp"/>
+        <UnitName Value="Win32WSMenus"/>
+      </Item264>
+      <Item265>
+        <Filename Value="win32/win32wspairsplitter.pp"/>
+        <UnitName Value="Win32WSPairSplitter"/>
+      </Item265>
+      <Item266>
+        <Filename Value="win32/win32wsspin.pp"/>
+        <UnitName Value="Win32WSSpin"/>
+      </Item266>
+      <Item267>
+        <Filename Value="win32/win32wsstdctrls.pp"/>
+        <UnitName Value="Win32WSStdCtrls"/>
+      </Item267>
+      <Item268>
+        <Filename Value="win32/win32wstoolwin.pp"/>
+        <UnitName Value="Win32WSToolwin"/>
+      </Item268>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
