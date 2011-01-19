@@ -587,6 +587,7 @@ begin
     S:= Spacing
   else
     S:= 0;
+  M:=Margin;
   if not Draw then
   begin
     if M<0 then M:=2;
@@ -594,7 +595,7 @@ begin
   end;
 
   // Calculate caption and glyph layout
-  if Margin = -1 then begin
+  if M = -1 then begin
     // auto compute margin to center content
     if S = -1 then begin
       // use the same value for Spacing and Margin
@@ -616,7 +617,6 @@ begin
     end;
   end else begin
     // fixed Margin
-    M:= Margin;
     if S = -1 then begin
       // use the rest for Spacing between Glyph and Caption
       TotalSize.cx:= ClientSize.cx - (Margin + GlyphWidth);
