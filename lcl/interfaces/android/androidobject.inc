@@ -239,7 +239,7 @@ end;
 
 function TAndroidWidgetSet.LCLPlatform: TLCLPlatform;
 begin
-  Result:= lpQT;
+  Result:= lpAndroid;
 end;
 
 function TAndroidWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;

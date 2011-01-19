@@ -27,16 +27,15 @@ interface
 {.$I androiddefines.inc}
 
 uses
-{  // Android Bindings
+  // Android Bindings
   // FPC
   Classes, SysUtils, Math, Types, maps,
   // LCL}
-  InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts;
+  InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
+  GraphType;
 {  Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, GraphUtil, Themes,
-  Arrow, CheckLst,
-  // WS
-  qtproc;}
+  Dialogs, StdCtrls, Comctrls, LCLIntf, GraphUtil, Themes,
+  Arrow, CheckLst;}
 
 type
   { TAndroidWidgetSet }
