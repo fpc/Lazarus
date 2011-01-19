@@ -146,7 +146,7 @@ end;
 function TNotebook.GetPage(AIndex: Integer): TPage;
 begin
   if (AIndex < 0) or (AIndex >= FPageList.Count) then
-    RaiseGDBException('TUntabbedNotebook.GetCustomPage Index out of bounds');
+    RaiseGDBException(Format('TNotebook.GetCustomPage Index out of bounds. AIndex=%d', [AIndex]));
   Result := TPage(FPageList.Items[AIndex]);
 end;
 

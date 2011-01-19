@@ -3,7 +3,7 @@
 {******************************************************************************
                                 TCustomTrayIcon
  ******************************************************************************
-
+                          Felipe Monteiro de Carvalho
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -337,6 +337,7 @@ begin
   if FIcons=AValue then Exit;
   FIcons.Assign(AValue);
   if Visible then InternalUpdate();
+  FCurAnimationStep := 0; // Avoids index out-of-bounds errors when changing to a new imagelist
 end;
 
 procedure TCustomTrayIcon.SetPopUpMenu(const AValue: TPopupMenu);
