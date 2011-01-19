@@ -1913,7 +1913,7 @@ begin
       //ADest.RecTangle(10 + i * pWidth, aStart - 5 - i, 10 + i * pWidth +
       //  pWidth - 3 + pDelta, aStart - 1);
       ADest.RecTangle(dRect);
-      if i = CDTrackBar.Position - 1 then
+      if i = CDTrackBar.Position - CDTrackBar.Min then
       begin
         ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
         ADest.Brush.Style := bsSolid;
