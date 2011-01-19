@@ -12,7 +12,7 @@ that runs on more than 20 platforms (linux, windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
 The LCL currently supports linux (gtk, gtk2 and qt4), all flavours of windows,
-even wince, Mac OS X (gtk, qt4 and carbon), FreeBSD (gtk, gtk2).
+even wince, Mac OS X (carbon, gtk, qt4), FreeBSD (gtk, gtk2).
 There is experimental support for Solaris and the native pascal backend fpgui
 which runs on windows, wince and linux.
 
