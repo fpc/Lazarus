@@ -189,7 +189,8 @@ const
       'qt',
       'fpgui',
       'nogui',
-      'cocoa'
+      'cocoa',
+      'android'
     );
     
   { Constants for the routine TWidgetSet.GetLCLCapability }
