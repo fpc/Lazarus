@@ -59,7 +59,8 @@ const
       'qt',
       'fpGUI (alpha)',
       'NoGUI',
-      'cocoa (alpha)'
+      'cocoa (alpha)',
+      'android (pre-alpha)'
     );
 
 

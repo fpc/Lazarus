@@ -680,10 +680,11 @@ const
     '', // fpGUI
     '', // noGUI
 {$IFDEF DARWIN}
-    ' -k-framework -kCocoa' // Cocoa
+    ' -k-framework -kCocoa', // Cocoa
 {$ELSE}
-    '' // Cocoa
+    '', // Cocoa
 {$ENDIF}
+    '' // android
   );
 
 type
