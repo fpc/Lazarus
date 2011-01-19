@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="300">
+    <Files Count="302">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -1499,6 +1499,15 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinExt"/>
       </Item300>
+      <Item301>
+        <Filename Value="android/androidint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidint"/>
+      </Item301>
+      <Item302>
+        <Filename Value="android/androidobject.inc"/>
+        <Type Value="Include"/>
+      </Item302>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -8,7 +8,7 @@ packages=rtl
 units=interfaces
 
 [compiler]
-options=-gl -dqt
+options=-gl -dandroid
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/android
 
