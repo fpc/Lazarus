@@ -203,6 +203,7 @@ class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   win : TCocoaWindow;
   cnt : TCocoaCustomControl;
+  ns  : NSString;
 const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
@@ -217,7 +218,9 @@ begin
   TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
   TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
-  win.setTitle(NSStringUtf8(AWinControl.Caption));
+  ns:=NSStringUtf8(AWinControl.Caption);
+  win.setTitle(ns);
+  ns.release;
   win.setAcceptsMouseMovedEvents(True);
 
   cnt:=TCocoaCustomControl.alloc.init;
@@ -263,11 +266,14 @@ end;
 
 class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
 var
-  win   : TCocoaWindow;
+  win : TCocoaWindow;
+  ns  : NSString;
 begin
   win:=TCocoaWindow(AWinControl.Handle);
   if not Assigned(win) then Exit;
-  win.setTitle(NSStringUtf8(AText));
+  ns:=NSStringUtf8(AText);
+  win.setTitle(ns);
+  ns.release;
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;

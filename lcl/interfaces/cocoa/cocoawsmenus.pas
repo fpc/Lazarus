@@ -166,15 +166,18 @@ end;
 class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   item    : NSMenuItem;
+  ns      : NSString;
 begin
   if not Assigned(AMenuItem) then Exit;
 
   if AMenuItem.Caption='-' then
     item:=NSMenuItem.separatorItem
   else begin
+    ns := NSStringUtf8(AMenuItem.Caption);
     item:=TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(
       NSStringUtf8(AMenuItem.Caption),
       objcselector('lclItemSelected:'), NSString.alloc.init);
+    ns.release;
     item.setTarget(item);
     item.setEnabled(AMenuItem.Enabled);
   end;
@@ -201,9 +204,13 @@ end;
   Sets the caption of menu item in Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+var
+  ns : NSString;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
-  NSMenuItem(AMenuItem.Handle).setTitle( NSStringUtf8(ACaption) );
+  ns:=NSStringUtf8(ACaption);
+  NSMenuItem(AMenuItem.Handle).setTitle(ns);
+  ns.release;
 end;
 
 {------------------------------------------------------------------------------

@@ -290,11 +290,16 @@ end;
   Changes the application title
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppSetTitle(const ATitle: string);
+var
+  ns: NSString;
 begin
   if not Assigned(NSApp.dockTile) then Exit;
   //todo: setBadgeLabel is for 10.5 only, should be removed
-  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
+  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then begin
+    ns := NSStringUtf8(ATitle);
     NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
+    ns.release;
+  end;
 end;
 
 function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;

@@ -208,9 +208,15 @@ begin
 end;
 
 procedure SetNSText(text: NSText; const s: String); inline;
+var
+  ns : NSString;
 begin
   if Assigned(text) then
-    text.setString(NSStringUTF8(s));
+  begin
+    ns:=NSStringUTF8(s);
+    text.setString(ns);
+    ns.release;
+  end;
 end;
 
 function GetNSText(text: NSText): string; inline;
@@ -222,9 +228,15 @@ begin
 end;
 
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
+var
+  ns : NSString;
 begin
   if Assigned(c) then
-    c.setStringValue(NSStringUtf8(S));
+  begin
+    ns:=NSStringUtf8(S);
+    c.setStringValue(ns);
+    ns.release;
+  end;
 end;
 
 function GetNSControlValue(c: NSControl): String; inline;

@@ -707,7 +707,7 @@ begin
     list.Free;
     list:=nil;
   end;
-  inherited release;
+  inherited dealloc;
 end;
 
 { TCocoaMenu }
