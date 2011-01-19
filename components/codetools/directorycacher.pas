@@ -42,7 +42,7 @@ uses
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedUnits}
 
-{$ifdef MSWindows}
+{$ifdef Windows}
 {$define CaseInsensitiveFilenames}
 {$endif}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}

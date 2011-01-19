@@ -32,7 +32,14 @@
 }
 unit LinkScanner;
 
-{$ifdef FPC} {$mode objfpc} {$endif}{$H+}
+{$ifdef FPC}
+  {$mode objfpc}
+{$else}
+  // delphi? if so then Windows is not defined but instead MSWindows is defined => define Windows in this case
+  {$ifdef MSWindows}
+    {$define Windows}
+  {$endif}
+{$endif}{$H+}
 
 {$I codetools.inc}
 
@@ -2985,7 +2992,7 @@ begin
     PathEnd:=PathStart;
     while PathEnd<=length(IncludePath) do begin
       if ((Pos(IncludePath[PathEnd],PathDivider))>0)
-      {$IFDEF MSWindows}
+      {$IFDEF Windows}
       and (not ((PathEnd-PathStart=1) // ignore colon in drive
             and (IncludePath[PathEnd]=':')
             and (IsWordChar[IncludePath[PathEnd-1]])))

@@ -27,7 +27,14 @@
 }
 unit BasicCodeTools;
 
-{$ifdef FPC}{$mode objfpc}{$endif}{$H+}
+{$ifdef FPC}
+  {$mode objfpc}
+{$else}
+  // delphi? if so then Windows is not defined but instead MSWindows is defined => define Windows in this case
+  {$ifdef MSWindows}
+    {$define Windows}
+  {$endif}
+{$endif}{$H+}
 {$inline on}
 
 interface
@@ -4757,7 +4764,7 @@ var
     p: Integer;
   begin
     CompareCaseInsensitive:=CaseInsensitive;
-    {$IFDEF MSWindows}
+    {$IFDEF Windows}
     CompareCaseInsensitive:=true;
     {$ENDIF}
 

@@ -25,7 +25,14 @@
 }
 unit FileProcs;
 
-{$ifdef FPC}{$mode objfpc}{$endif}{$H+}
+{$ifdef FPC}
+  {$mode objfpc}
+{$else}
+  // delphi? if so then Windows is not defined but instead MSWindows is defined => define Windows in this case
+  {$ifdef MSWindows}
+    {$define Windows}
+  {$endif}
+{$endif}{$H+}
 
 interface
 
@@ -54,7 +61,7 @@ const
   FilenamesLiteral = {$IFDEF NotLiteralFilenames}false{$ELSE}true{$ENDIF};// file names can be compared using = string operator
 
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   FileMask = '*.*';
   ExeExt = '.exe';
   {$ELSE}
@@ -417,7 +424,7 @@ implementation
 
 // to get more detailed error messages consider the os
 uses
-{$IFDEF MSWindows}
+{$IFDEF Windows}
   Windows;
 {$ELSE}
   {$IFDEF darwin}
@@ -715,7 +722,7 @@ begin
   Result:=Filename;
   // check every directory and filename
   StartPos:=1;
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   // uppercase Drive letter and skip it
   if ((length(Result)>=2) and (Result[1] in ['A'..'Z','a'..'z'])
   and (Result[2]=':')) then begin
@@ -966,7 +973,7 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF MSWindows}
+{$IFNDEF Windows}
 var AText: string;
 {$ENDIF}
 begin
@@ -975,7 +982,7 @@ begin
   if not FileExistsUTF8(AFilename) then begin
     raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
-  {$IFNDEF MSWindows}
+  {$IFNDEF Windows}
   if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
   begin
     AText:='"'+AFilename+'"';
@@ -1012,7 +1019,7 @@ end;
 
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   // windows
   Result:=FilenameIsWinAbsolute(TheFilename);
   {$ELSE}
@@ -1094,7 +1101,7 @@ end;
 
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   Result:=true;
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
@@ -1103,7 +1110,7 @@ end;
 
 function FileIsWritable(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
@@ -1255,7 +1262,7 @@ begin
     // check for double path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
-      {$IFDEF MSWindows}
+      {$IFDEF Windows}
       if (DestPos>2)
       {$ELSE}
       if (DestPos>1)
@@ -1295,7 +1302,7 @@ begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
             continue;
-          {$IFDEF MSWindows}
+          {$IFDEF Windows}
           end else if (DestPos=3) and (Result[2]=':')
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
             //  3. C:..    -> copy
@@ -1412,7 +1419,7 @@ begin
   Result:=Filename;
   if (BaseDirectory='') or (Filename='') then exit;
 
-  {$IFDEF MSWindows}
+  {$IFDEF Windows}
   // check for different windows file drives
   if (CompareText(ExtractFileDrive(Filename),
                   ExtractFileDrive(BaseDirectory))<>0)
