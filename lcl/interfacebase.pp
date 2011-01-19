@@ -63,7 +63,8 @@ type
     lpQT,
     lpfpGUI,
     lpNoGUI,
-    lpCocoa
+    lpCocoa,
+    lpAndroid
     );
     
   TLCLPlatforms = set of TLCLPlatform;
