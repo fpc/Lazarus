@@ -5135,6 +5135,7 @@ resourcestring
   lisPEMissingFilesOfPackage = 'Missing files of package %s';
   lisPENoFilesMissingAllFilesExist = 'No files missing. All files exist.';
   lisPERemoveSelectedFiles = 'Remove selected files';
+  lisPEDirectories = 'Directories';
 
 implementation
 

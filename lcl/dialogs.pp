@@ -271,7 +271,7 @@ type
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
     function GetDisabledPattern: TBitmap; virtual;
-    function GetGlyphSize(PaintRect: TRect): TSize; override;
+    function GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure ShowColorDialog; virtual;
   public

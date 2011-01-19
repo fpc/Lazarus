@@ -492,15 +492,9 @@ begin
     Result := inherited DialogChar(Message);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomSpeedButton.Paint
-  Params: none
-  Returns:  nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.Paint;
+procedure TCustomSpeedButton.MeasureDraw(Draw: boolean;
+  PaintRect: TRect; out PreferredWidth, PreferredHeight: integer);
 var
-  PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize, GlyphSize: TSize;
@@ -508,25 +502,76 @@ var
   SIndex : Longint;
   TMP : String;
   TextFlags: Integer;
+  DrawDetails: TThemedElementDetails;
+  FixedWidth: Boolean;
+  FixedHeight: Boolean;
+  TextRect: TRect;
+  HasGlyph: Boolean;
+  HasText: Boolean;
+  CurLayout: TButtonLayout;
 begin
-  UpdateState(false);
   if FGlyph = nil then exit;
 
-  PaintRect:=ClientRect;
-  FLastDrawDetails := GetDrawDetails;
-  
-  PaintBackground(PaintRect);
+  DrawDetails := GetDrawDetails;
 
-  GlyphSize := GetGlyphSize(PaintRect);
+  ClientSize.cx:= PaintRect.Right - PaintRect.Left;
+  ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
+  PreferredWidth:=0;
+  PreferredHeight:=0;
+
+  if Draw then begin
+    FLastDrawDetails:=DrawDetails;
+    PaintBackground(PaintRect);
+    FixedWidth:=true;
+    FixedHeight:=true;
+  end else begin
+    FixedWidth:=WidthIsAnchored;
+    FixedHeight:=HeightIsAnchored;
+  end;
+
+  // compute size of glyph
+  GlyphSize := GetGlyphSize(Draw,PaintRect);
   GlyphWidth := GlyphSize.CX;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
     GlyphWidth:=GlyphWidth div NumGlyphs;
   GlyphHeight := GlyphSize.CY;
+  HasGlyph:=(GlyphWidth<>0) and (GlyphHeight<>0);
 
-  ClientSize.cx:= PaintRect.Right - PaintRect.Left;
-  ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
-
-  TextSize := GetTextSize(PaintRect);
+  // compute size of text
+  CurLayout:=BidiAdjustButtonLayout(UseRightToLeftReading, Layout);
+  if Caption<>'' then begin
+    TextRect:=PaintRect;
+    // for wordbreak compute the maximum size for the text
+    if Margin>0 then
+      InflateRect(TextRect,-Margin,-Margin);
+    if HasGlyph then
+    begin
+      if (Spacing>=0) then
+        if CurLayout in [blGlyphLeft,blGlyphRight] then
+          dec(TextRect.Right,Spacing)
+        else
+          dec(TextRect.Bottom,Spacing);
+      if CurLayout in [blGlyphLeft,blGlyphRight] then
+        dec(TextRect.Right,GlyphWidth)
+      else
+        dec(TextRect.Bottom,GlyphHeight);
+    end;
+    if not FixedWidth then
+    begin
+      TextRect.Left:=0;
+      TextRect.Right:=High(TextRect.Right) div 2;
+    end;
+    if not FixedHeight then
+    begin
+      TextRect.Top:=0;
+      TextRect.Bottom:=High(TextRect.Bottom) div 2;
+    end;
+    TextSize := GetTextSize(Draw,TextRect);
+  end else begin
+    TextSize.cx:=0;
+    TextSize.cy:=0;
+  end;
+  HasText:=(TextSize.cx <> 0) or (TextSize.cy <> 0);
 
   if Caption <> '' then
   begin
@@ -538,17 +583,21 @@ begin
       end;
   end;
 
-  if (GlyphWidth = 0) or (GlyphHeight = 0)
-  or (TextSize.cx = 0) or (TextSize.cy = 0)
-  then
-    S:= 0
+  if HasGlyph or HasText then
+    S:= Spacing
   else
-    S:= Spacing;
+    S:= 0;
+  if not Draw then
+  begin
+    if M<0 then M:=2;
+    if S<0 then S:=M;
+  end;
 
   // Calculate caption and glyph layout
-
   if Margin = -1 then begin
+    // auto compute margin to center content
     if S = -1 then begin
+      // use the same value for Spacing and Margin
       TotalSize.cx:= TextSize.cx + GlyphWidth;
       TotalSize.cy:= TextSize.cy + GlyphHeight;
       if Layout in [blGlyphLeft, blGlyphRight] then
@@ -557,6 +606,7 @@ begin
         M:= (ClientSize.cy - TotalSize.cy) div 3;
       S:= M;
     end else begin
+      // fixed Spacing and center content
       TotalSize.cx:= GlyphWidth + S + TextSize.cx;
       TotalSize.cy:= GlyphHeight + S + TextSize.cy;
       if Layout in [blGlyphLeft, blGlyphRight] then
@@ -565,7 +615,10 @@ begin
         M:= (ClientSize.cy - TotalSize.cy) div 2;
     end;
   end else begin
+    // fixed Margin
+    M:= Margin;
     if S = -1 then begin
+      // use the rest for Spacing between Glyph and Caption
       TotalSize.cx:= ClientSize.cx - (Margin + GlyphWidth);
       TotalSize.cy:= ClientSize.cy - (Margin + GlyphHeight);
       if Layout in [blGlyphLeft, blGlyphRight] then
@@ -573,52 +626,89 @@ begin
       else
         S:= (TotalSize.cy - TextSize.cy) div 2;
     end;
-    M:= Margin;
   end;
 
-  case BidiAdjustButtonLayout(UseRightToLeftReading, Layout) of
-    blGlyphLeft : begin
-      Offset.X:= M;
-      Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
-      OffsetCap.X:= Offset.X + GlyphWidth + S;
-      OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
-    end;
-    blGlyphRight : begin
-      Offset.X:= ClientSize.cx - M - GlyphWidth;
-      Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
-      OffsetCap.X:= Offset.X - S - TextSize.cx;
-      OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
-    end;
-    blGlyphTop : begin
-      Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
-      Offset.Y:= M;
-      OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
-      OffsetCap.Y:= Offset.Y + GlyphHeight + S;
-    end;
-    blGlyphBottom : begin
-      Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
-      Offset.Y:= ClientSize.cy - M - GlyphHeight;
-      OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
-      OffsetCap.Y:= Offset.Y - S - TextSize.cy;
-    end;
-  end;
-
-  DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
-  if FShowCaption and (Caption <> '') then
+  if Draw then
   begin
-    with PaintRect, OffsetCap do
-    begin
-      Left := Left + X;
-      Top := Top + Y;
+    case CurLayout of
+      blGlyphLeft : begin
+        Offset.X:= M;
+        Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
+        OffsetCap.X:= Offset.X + GlyphWidth + S;
+        OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
+      end;
+      blGlyphRight : begin
+        Offset.X:= ClientSize.cx - M - GlyphWidth;
+        Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
+        OffsetCap.X:= Offset.X - S - TextSize.cx;
+        OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
+      end;
+      blGlyphTop : begin
+        Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
+        Offset.Y:= M;
+        OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
+        OffsetCap.Y:= Offset.Y + GlyphHeight + S;
+      end;
+      blGlyphBottom : begin
+        Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
+        Offset.Y:= ClientSize.cy - M - GlyphHeight;
+        OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
+        OffsetCap.Y:= Offset.Y - S - TextSize.cy;
+      end;
     end;
 
-    TextFlags := DT_LEFT or DT_TOP;
-    if UseRightToLeftReading then
-      TextFlags := TextFlags or DT_RTLREADING;
+    DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
 
-    ThemeServices.DrawText(Canvas, FLastDrawDetails, Caption, PaintRect,
-      TextFlags, 0);
+    if FShowCaption and (Caption <> '') then
+    begin
+      with PaintRect, OffsetCap do
+      begin
+        Left := Left + X;
+        Top := Top + Y;
+      end;
+
+      TextFlags := DT_LEFT or DT_TOP;
+      if UseRightToLeftReading then
+        TextFlags := TextFlags or DT_RTLREADING;
+
+      if Draw then
+        ThemeServices.DrawText(Canvas, DrawDetails, Caption, PaintRect,
+          TextFlags, 0);
+    end;
+  end else begin
+    // measuring, not drawing
+    case CurLayout of
+      blGlyphLeft, blGlyphRight :
+        begin
+          PreferredWidth:=2*M+S+GlyphWidth+TextSize.cx;
+          PreferredHeight:=2*M+Max(GlyphHeight,TextSize.cy);
+        end;
+      blGlyphTop, blGlyphBottom :
+        begin
+          PreferredWidth:=2*M+Max(GlyphWidth,TextSize.cx);
+          PreferredHeight:=2*M+S+GlyphHeight+TextSize.cy;
+        end;
+    end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomSpeedButton.Paint
+  Params: none
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomSpeedButton.Paint;
+var
+  PaintRect: TRect;
+  PreferredWidth: integer;
+  PreferredHeight: integer;
+begin
+  UpdateState(false);
+  if FGlyph = nil then exit;
+
+  PaintRect:=ClientRect;
+  MeasureDraw(true,PaintRect,PreferredWidth,PreferredHeight);
 
   inherited Paint;
 end;
@@ -881,13 +971,13 @@ begin
   Buttons.LoadGlyphFromLazarusResource(FGlyph, AName);
 end;
 
-function TCustomSpeedButton.GetGlyphSize(PaintRect: TRect): TSize;
+function TCustomSpeedButton.GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize;
 begin
   Result.CX := FGlyph.Glyph.Width;
   Result.CY := FGlyph.Glyph.Height;
 end;
 
-function TCustomSpeedButton.GetTextSize(PaintRect: TRect): TSize;
+function TCustomSpeedButton.GetTextSize(Drawing: boolean; PaintRect: TRect): TSize;
 var
   TMP: String;
   TXTStyle: TTextStyle;

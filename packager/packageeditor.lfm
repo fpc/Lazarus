@@ -23,19 +23,19 @@ inherited PackageEditorForm: TPackageEditorForm
   object FilePropsGroupBox: TGroupBox[1]
     Left = 0
     Height = 118
-    Top = 310
+    Top = 311
     Width = 577
     Align = alBottom
     Caption = 'FilePropsGroupBox'
-    ClientHeight = 97
-    ClientWidth = 569
+    ClientHeight = 99
+    ClientWidth = 573
     TabOrder = 1
     OnResize = FilePropsGroupBoxResize
     object CallRegisterProcCheckBox: TCheckBox
       Left = 0
       Height = 22
       Top = 0
-      Width = 209
+      Width = 195
       Caption = 'CallRegisterProcCheckBox'
       OnChange = CallRegisterProcCheckBoxChange
       ParentShowHint = False
@@ -45,10 +45,10 @@ inherited PackageEditorForm: TPackageEditorForm
     object AddToUsesPkgSectionCheckBox: TCheckBox
       AnchorSideLeft.Control = CallRegisterProcCheckBox
       AnchorSideLeft.Side = asrBottom
-      Left = 219
+      Left = 205
       Height = 22
       Top = 0
-      Width = 248
+      Width = 232
       BorderSpacing.Left = 10
       Caption = 'AddToUsesPkgSectionCheckBox'
       OnChange = AddToUsesPkgSectionCheckBoxChange
@@ -63,7 +63,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Left = 0
       Height = 22
       Top = 2
-      Width = 197
+      Width = 186
       Caption = 'UseMinVersionCheckBox'
       OnChange = UseMinVersionCheckBoxChange
       TabOrder = 2
@@ -72,10 +72,10 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = UseMinVersionCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilePropsGroupBox
-      Left = 207
+      Left = 196
       Height = 27
       Top = 0
-      Width = 0
+      Width = 1
       BorderSpacing.Left = 10
       OnChange = MinVersionEditChange
       TabOrder = 3
@@ -88,7 +88,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Left = 0
       Height = 22
       Top = 31
-      Width = 201
+      Width = 190
       Caption = 'UseMaxVersionCheckBox'
       OnChange = UseMaxVersionCheckBoxChange
       TabOrder = 4
@@ -98,10 +98,10 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MinVersionEdit
       AnchorSideTop.Side = asrBottom
-      Left = 211
+      Left = 200
       Height = 27
       Top = 29
-      Width = 0
+      Width = 1
       BorderSpacing.Left = 10
       BorderSpacing.Top = 2
       OnChange = MaxVersionEditChange
@@ -113,9 +113,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MaxVersionEdit
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 27
+      Height = 29
       Top = 62
-      Width = 188
+      Width = 173
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'ApplyDependencyButton'
@@ -127,31 +127,32 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 0
       Height = 60
-      Top = 37
-      Width = 569
+      Top = 39
+      Width = 573
       Align = alBottom
       BorderSpacing.Top = 6
       Caption = 'RegisteredPluginsGroupBox'
-      ClientHeight = 39
-      ClientWidth = 561
+      ClientHeight = 41
+      ClientWidth = 569
       TabOrder = 7
       object RegisteredListBox: TListBox
         Left = 0
-        Height = 39
+        Height = 41
         Top = 0
-        Width = 561
+        Width = 569
         Align = alClient
         ItemHeight = 0
         OnDrawItem = RegisteredListBoxDrawItem
         Style = lbOwnerDrawFixed
         TabOrder = 0
+        TopIndex = -1
       end
     end
   end
   object StatusBar: TStatusBar[2]
     Left = 0
-    Height = 22
-    Top = 428
+    Height = 21
+    Top = 429
     Width = 577
     Panels = <>
   end
@@ -159,26 +160,26 @@ inherited PackageEditorForm: TPackageEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 305
+    Top = 306
     Width = 577
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object ItemsPanel: TPanel[4]
     Left = 0
-    Height = 257
+    Height = 258
     Top = 48
     Width = 577
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 257
+    ClientHeight = 258
     ClientWidth = 577
     TabOrder = 4
     object FilesTreeView: TTreeView
       AnchorSideTop.Control = FilterEdit
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 230
+      Height = 231
       Top = 27
       Width = 577
       Align = alBottom
@@ -196,10 +197,13 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = SortAlphabeticallySpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ItemsPanel
+      AnchorSideRight.Control = ItemsPanel
+      AnchorSideRight.Side = asrBottom
       Left = 46
       Height = 27
       Top = 0
-      Width = 225
+      Width = 531
+      Anchors = [akTop, akLeft, akRight]
       OnChange = FilterEditChange
       OnEnter = FilterEditEnter
       OnExit = FilterEditExit
@@ -209,12 +213,15 @@ inherited PackageEditorForm: TPackageEditorForm
     object DirectoryHierarchySpeedButton: TSpeedButton
       AnchorSideLeft.Control = ItemsPanel
       AnchorSideTop.Control = FilterEdit
-      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Control = FilterEdit
+      AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 22
-      Top = 2
+      Height = 27
+      Top = 0
       Width = 23
       AllowAllUp = True
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
       GroupIndex = 1
       NumGlyphs = 0
       OnClick = DirectoryHierarchySpeedButtonClick
@@ -225,12 +232,15 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = DirectoryHierarchySpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilterEdit
-      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Control = FilterEdit
+      AnchorSideBottom.Side = asrBottom
       Left = 23
-      Height = 22
-      Top = 2
+      Height = 27
+      Top = 0
       Width = 23
       AllowAllUp = True
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
       GroupIndex = 2
       NumGlyphs = 0
       OnClick = SortAlphabeticallySpeedButtonClick

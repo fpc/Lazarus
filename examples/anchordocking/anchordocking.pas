@@ -100,7 +100,7 @@ type
   protected
     procedure GetCloseGlyph; // increase reference count
     procedure ReleaseCloseGlyph; // decrease reference count
-    function GetGlyphSize(PaintRect: TRect): TSize; override;
+    function GetGlyphSize({%H-}Drawing: boolean; PaintRect: TRect): TSize; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
             const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
             BiDiFlags: Longint): TRect; override;
@@ -4602,7 +4602,8 @@ begin
     DockMaster.FreeCloseButtonBitmap;
 end;
 
-function TAnchorDockCloseButton.GetGlyphSize(PaintRect: TRect): TSize;
+function TAnchorDockCloseButton.GetGlyphSize(Drawing: boolean; PaintRect: TRect
+  ): TSize;
 begin
   if PaintRect.Left=0 then ;
   Result.cx:=DockMaster.fCloseBtnBitmap.Width;

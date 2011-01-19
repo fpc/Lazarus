@@ -1536,8 +1536,10 @@ begin
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
 
   FilterEdit.Text:=lisCEFilter;
+  //SortAlphabeticallySpeedButton.Caption:=dlgAlphabetically;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  //DirectoryHierarchySpeedButton.Caption:=lisPEDirectories;
   DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
   DirectoryHierarchySpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 

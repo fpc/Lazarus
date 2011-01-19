@@ -88,17 +88,17 @@ begin
   ButtonColor := NewColor;
 end;
 
-function TColorButton.GetGlyphSize(PaintRect: TRect): TSize;
+function TColorButton.GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize;
 var
   T: TSize;
   S: Integer;
 begin
-  if ButtonColorAutoSize then
+  if ButtonColorAutoSize and Drawing then
   begin
-    T := GetTextSize(PaintRect);
+    T := GetTextSize(Drawing, PaintRect); // ToDo: wordbreak, margins, layout
     if Caption = '' then S := 0
     else S := Spacing;
-    
+
     if Layout in [blGlyphLeft, blGlyphRight] then
     begin
       Result.CX := PaintRect.Right - PaintRect.Left - 2 * BorderWidth - S - T.CX;
@@ -134,7 +134,7 @@ begin
     Canvas.Brush.Bitmap := nil;
     Canvas.Brush.Color := ButtonColor;
   end;
-  Size := GetGlyphSize(AClient);
+  Size := GetGlyphSize(true,AClient);
   
   Result := Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
     Size.CX - 1, Size.CY - 1);

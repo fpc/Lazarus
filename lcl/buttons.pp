@@ -295,6 +295,8 @@ type
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject);
     function  DialogChar(var Message: TLMKey): boolean; override;
+    procedure MeasureDraw(Draw: boolean; PaintRect: TRect;
+                          out PreferredWidth, PreferredHeight: integer);
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -319,8 +321,8 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure Loaded; override;
   protected
-    function GetGlyphSize(PaintRect: TRect): TSize; virtual;
-    function GetTextSize(PaintRect: TRect): TSize; virtual;
+    function GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize; virtual;
+    function GetTextSize(Drawing: boolean; PaintRect: TRect): TSize; virtual;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; virtual;
   public

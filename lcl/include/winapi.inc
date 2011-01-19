@@ -1281,7 +1281,7 @@ function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
 begin
   // make sure, that after deflating holds: Left<=Right
   if (dx<0) and (ARect.Right-ARect.Left+2*dx<0) then begin
-    ARect.Left:=(ARect.Left+ARect.Right) shr 1;
+    ARect.Left:=(ARect.Left+ARect.Right) div 2;
     ARect.Right:=ARect.Left;
   end else begin
     dec(ARect.Left,dx);
@@ -1290,7 +1290,7 @@ begin
 
   // make sure, that after deflating holds: Top<=Bottom
   if (dy<0) and (ARect.Bottom-ARect.Top+2*dy<0) then begin
-    ARect.Top:=(ARect.Top+ARect.Bottom) shr 1;
+    ARect.Top:=(ARect.Top+ARect.Bottom) div 2;
     ARect.Bottom:=ARect.Top;
   end else begin
     dec(ARect.Top,dy);
