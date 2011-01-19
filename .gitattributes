@@ -4820,6 +4820,7 @@ lcl/interfaces/android/Makefile.compiled svneol=native#text/pascal
 lcl/interfaces/android/Makefile.fpc svneol=native#text/text
 lcl/interfaces/android/androidint.pas svneol=native#text/pascal
 lcl/interfaces/android/androidobject.inc svneol=native#text/pascal
+lcl/interfaces/android/interfaces.pp svneol=native#text/plain
 lcl/interfaces/carbon/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/carbon/README.txt svneol=native#text/plain
 lcl/interfaces/carbon/agl.pp svneol=native#text/plain

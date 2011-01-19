@@ -124,7 +124,7 @@ const
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..64] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..65] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -173,6 +173,7 @@ const
     'arm-linux-gtk',
     'arm-linux-gtk2',
     'arm-linux-qt',
+    'arm-linux-android',
     'arm-linux-nogui',
     'arm-darwin-carbon',
     'arm-darwin-nogui',

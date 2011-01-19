@@ -97,7 +97,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="302">
+    <Files Count="303">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
@@ -1508,6 +1508,10 @@ end;"/>
         <Filename Value="android/androidobject.inc"/>
         <Type Value="Include"/>
       </Item302>
+      <Item303>
+        <Filename Value="android/interfaces.pp"/>
+        <UnitName Value="interfaces"/>
+      </Item303>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
