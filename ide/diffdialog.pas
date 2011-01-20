@@ -341,7 +341,7 @@ end;
 constructor TDiffDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Caption := lisMenuDiff;
+  Caption := lisCaptionDiff;
   IDEDialogLayoutList.ApplyLayout(Self,600,500);
   SetupComponents;
 end;

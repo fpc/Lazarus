@@ -409,7 +409,8 @@ resourcestring
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
   lisMenuMakeResourceString = 'Make Resource String ...';
-  lisMenuDiff = 'Diff';
+  lisCaptionDiff = 'Diff';
+  lisMenuDiff = 'Diff ...';
   lisMenuConvertDFMtoLFM = 'Convert binary DFM file to text LFM and check syntax ...';
   lisMenuCheckLFM = 'Check LFM file in editor';
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit ...';
