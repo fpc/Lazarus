@@ -173,6 +173,7 @@ type
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
+    function DoDesignHitTest(AControl: TControl; Keys: PtrInt; Pos: TPoint): LRESULT;
     function DoDeleteSelectedPersistents: boolean;
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
@@ -1686,6 +1687,14 @@ begin
   end;
 end;
 
+function TDesigner.DoDesignHitTest(AControl: TControl; Keys: PtrInt; Pos: TPoint): LRESULT;
+var
+  RelativePos: TPoint;
+begin
+  RelativePos := AControl.ScreenToClient(Form.ClientToScreen(Pos));
+  Result := AControl.Perform(CM_DESIGNHITTEST, Keys, Longint(SmallPoint(RelativePos.X, RelativePos.Y)));
+end;
+
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
   Result := True;
@@ -1777,7 +1786,7 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(MouseDownPos.X, MouseDownPos.Y))) > 0 then
+    if DoDesignHitTest(TControl(MouseDownComponent), TheMessage.Keys, MouseDownPos) > 0 then
     begin
       TControlAccess(MouseDownComponent).MouseDown(Button, Shift, MouseDownPos.X, MouseDownPos.Y);
       Exit;
@@ -2124,7 +2133,7 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(MouseUpPos.X, MouseUpPos.Y))) > 0 then
+    if DoDesignHitTest(TControl(MouseDownComponent), TheMessage.Keys, MouseUpPos) > 0 then
     begin
       TControlAccess(MouseDownComponent).MouseUp(Button, Shift, MouseUpPos.X, MouseUpPos.Y);
       Exit;
@@ -2207,6 +2216,7 @@ var
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
   DesignSender: TControl;
   Handled: Boolean;
+  MouseMoveComponent: TComponent;
 begin
   GetMouseMsgShift(TheMessage, Shift, Button);
 
@@ -2229,11 +2239,14 @@ begin
   if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
     Exit;
 
-  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  MouseMoveComponent := MouseDownComponent;
+  if MouseMoveComponent = nil then
+    MouseMoveComponent := ComponentAtPos(LastMouseMovePos.X, LastMouseMovePos.Y, True, True);
+  if (MouseMoveComponent <> nil) and (MouseMoveComponent is TControl) then
   begin
-    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(LastMouseMovePos.X, LastMouseMovePos.Y))) > 0 then
+    if DoDesignHitTest(TControl(MouseMoveComponent), TheMessage.Keys, LastMouseMovePos) > 0 then
     begin
-      TControlAccess(MouseDownComponent).MouseMove(Shift, LastMouseMovePos.X, LastMouseMovePos.Y);
+      TControlAccess(MouseMoveComponent).MouseMove(Shift, LastMouseMovePos.X, LastMouseMovePos.Y);
       Exit;
     end;
   end;
