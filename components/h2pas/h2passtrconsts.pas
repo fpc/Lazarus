@@ -27,7 +27,7 @@ uses
 resourcestring
   bla = '';
   h2pCHeaderFileConverter = 'C header file converter';
-  h2pH2Pas = 'H2Pas';
+  h2pH2Pas = 'H2Pas ...';
   h2pCreateUnitsFromCHeaderFiles = 'Create units from C header files';
   h2pH2PasTool = 'H2PasTool';
 
