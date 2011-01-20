@@ -3954,7 +3954,7 @@ resourcestring
   lisPckEditAddAnItem = 'Add an item';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
-  lisUse = 'Use>>';
+  lisUse = 'Use >>';
   lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
   lisPckEditCompOpts = 'Compiler Options';
