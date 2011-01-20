@@ -1151,7 +1151,11 @@ begin
   if KeyComp('Alias') then
     Result := tkKey
   else
-  if KeyComp('Final') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
+  if KeyComp('Final') and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers]) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
+  then
     Result := tkKey
   else
     Result := tkIdentifier;
