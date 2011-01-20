@@ -32,6 +32,8 @@
 program CheckBox;
 
 {$mode objfpc}{$H+}
+// program uses WriteLn
+{$apptype console}
 
 uses
   Interfaces, Classes, Stdctrls, Forms, Buttons, Menus, Comctrls,
@@ -166,7 +168,8 @@ End;
 
 {------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;
-
+var
+  BtnGlyph: TPortableNetworkGraphic;
 begin
  OnDestroy := @FormKill;
 
@@ -234,7 +237,14 @@ begin
    Button11.Width:= 45;
    Button11.Height:= 55;
    Button11.Flat:= true;
-   Button11.Glyph.LoadFromFile('../images/btn_newform.xpm');
+   BtnGlyph := TPortableNetworkGraphic.Create;
+   try
+     BtnGlyph.LoadFromFile('../images/items/item_form.png');
+     Button11.Glyph.Assign(BtnGlyph);
+   finally
+     BtnGlyph.Free;
+   end;
+
 //   Button11.Spacing:= -1;
 //   Button11.Margin:= 4;
    Button11.Visible:= true;
