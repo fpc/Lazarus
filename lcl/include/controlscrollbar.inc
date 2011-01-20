@@ -476,7 +476,7 @@ end;
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
   Result:=FVisible;
-  if Result and HandleAllocated then
+  if HandleAllocated then
     Result := GetScrollbarVisible(ControlHandle, IntfBarKind[Kind]);
 end;
 
