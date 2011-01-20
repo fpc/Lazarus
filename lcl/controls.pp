@@ -96,6 +96,7 @@ type
   end;
 
   TCMHitTest = TLMNCHitTest;
+  TCMDesignHitTest = TLMMouse;
 
   TCMControlChange = record
     Msg: Cardinal;
