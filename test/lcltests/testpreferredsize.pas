@@ -1,3 +1,12 @@
+{
+  Test that empty ScrollBox with AutoScroll shows no scrollbars:
+     ./runtests --format=plain --suite=TestScrollBoxEmpty
+
+  Test that ScrollBox with AutoScroll shows/hides scrollbars:
+        ./runtests --format=plain --suite=TestScrollBoxAutoShowHideScrollbars
+
+
+}
 unit testpreferredsize;
 
 {$mode objfpc}{$H+}
@@ -16,7 +25,7 @@ type
   published
     procedure TestGroupBoxPreferredSize1;
     procedure TestScrollBoxEmpty;
-    procedure TestScrollBoxOneChildPanel;
+    procedure TestScrollBoxAutoShowHideScrollbars;
   end;
 
 implementation
@@ -84,7 +93,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TTestPreferredSize.TestScrollBoxOneChildPanel;
+procedure TTestPreferredSize.TestScrollBoxAutoShowHideScrollbars;
 var
   Form1: TForm;
   ScrollBox1: TScrollBox;
@@ -112,8 +121,8 @@ begin
   IntfPreferredHeight:=0;
   TWSWinControlClass(ScrollBox1.WidgetSetClass).GetPreferredSize(ScrollBox1,
                              IntfPreferredWidth, IntfPreferredHeight, false);
-  AssertEquals('ScrollBox must not have interface preferred width',0,IntfPreferredWidth);
-  AssertEquals('ScrollBox must not have interface preferred height',0,IntfPreferredHeight);
+  AssertEquals('ScrollBox must have small interface preferred width',true,IntfPreferredWidth<8);
+  AssertEquals('ScrollBox must have small interface preferred height',true,IntfPreferredHeight<8);
 
   //writeln('TTestPreferredSize.TestScrollBoxOneChildPanel Range=',ScrollBox1.HorzScrollBar.Range,' ',ScrollBox1.HorzScrollBar.Page,' ',ScrollBox1.HorzScrollBar.Visible);
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs 60',60,ScrollBox1.HorzScrollBar.Range);
