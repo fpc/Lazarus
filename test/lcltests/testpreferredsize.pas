@@ -89,8 +89,6 @@ begin
   Form1.Show;
   Application.ProcessMessages;
 
-  AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.Visible is true',false,ScrollBox1.HorzScrollBar.Visible);
-  AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.Visible is true',false,ScrollBox1.VertScrollBar.Visible);
   AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.IsScrollBarVisible is true',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
   AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.IsScrollBarVisible is true',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
 
@@ -186,8 +184,6 @@ begin
       ' ClientWidth=',ScrollBox1.ClientWidth);
   end;
 
-  AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.Visible is true',false,ScrollBox1.HorzScrollBar.Visible);
-  AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.Visible is true',false,ScrollBox1.VertScrollBar.Visible);
   // ToDo: check range
 
   Form1.Free;
