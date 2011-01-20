@@ -1280,7 +1280,7 @@ var
           dec(CurPos.StartPos);
           repeat
             dec(CurPos.StartPos);
-          until (CurPos.StartPos<1) or (Src[CurPos.StartPos]='''');
+          until (CurPos.StartPos<1) or (Src[CurPos.StartPos] in [#0,#10,#13,'''']);
         end;
       '0'..'9','A'..'Z','a'..'z':
         begin
@@ -1363,14 +1363,13 @@ var
         begin
           // a string constant -> skip it
           OldPrePos:=PrePos;
-          repeat
+          while (PrePos<CurPos.StartPos) do begin
             inc(PrePos);
             case Src[PrePos] of
-
             '''':
               break;
 
-            #10,#13:
+            #0,#10,#13:
               begin
                 // string constant right border is the line end
                 // -> last atom of line found
@@ -1379,7 +1378,7 @@ var
               end;
 
             end;
-          until false;
+          end;
           if IsStringConstant then break;
         end;
 
