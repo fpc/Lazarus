@@ -72,7 +72,7 @@ Const
   
 Resourcestring
   STemplateCategory = 'Template projects';
-  SProjectTemplateSettings = 'Project templates options';
+  SProjectTemplateSettings = 'Project templates options ...';
   SNewFromTemplate = 'New project from template';
 
 { ---------------------------------------------------------------------
