@@ -279,7 +279,7 @@ begin
 
   // we must trigger TCustomTreeView.OnDeletion event before
   // unbinding.See issue #17832.
-  if (Owner <> nil) and (Owner.Owner <> nil) then
+  if Assigned(Owner) and Assigned(Owner.Owner) then
     Owner.Owner.Delete(Self);
 
   // delete childs
@@ -287,14 +287,15 @@ begin
   // unbind all references
   Unbind;
 
-  if Owner<>nil then
+  if Assigned(Owner) then
     dec(Owner.FCount);
 
   Data := nil;
   // free data
-  if FItems<>nil then begin
+  if Assigned(FItems) then
+  begin
     FreeMem(FItems);
-    FItems:=nil;
+    FItems := nil;
   end;
   inherited Destroy;
 end;
@@ -1422,7 +1423,7 @@ end;
 
 procedure TTreeNode.MakeVisible;
 begin
-  if TreeView<>nil then
+  if Assigned(TreeView) then
     TreeView.EnsureNodeIsVisible(Self)
   else
     ExpandParents;
@@ -1435,7 +1436,8 @@ var
 begin
   Result := 0;
   ANode := Parent;
-  while ANode <> nil do begin
+  while Assigned(ANode) do
+  begin
     Inc(Result);
     ANode := ANode.Parent;
   end;
@@ -1448,26 +1450,26 @@ end;
 
 function TTreeNode.IsNodeVisible: Boolean;
 begin
-  if TreeView<>nil then
-    Result:=TreeView.IsNodeVisible(Self)
+  if Assigned(TreeView) then
+    Result := TreeView.IsNodeVisible(Self)
   else
-    Result:=AreParentsExpanded;
+    Result := AreParentsExpanded;
 end;
 
 function TTreeNode.IsNodeHeightFullVisible: Boolean;
 begin
-  if TreeView<>nil then
-    Result:=TreeView.IsNodeHeightFullVisible(Self)
+  if Assigned(TreeView) then
+    Result := TreeView.IsNodeHeightFullVisible(Self)
   else
-    Result:=AreParentsExpanded;
+    Result := AreParentsExpanded;
 end;
 
 procedure TTreeNode.Update;
 var
   TV: TCustomTreeView;
 begin
-  TV:=TreeView;
-  if (TV<>nil) and (Owner.FUpdateCount=0) and (not (csLoading in TV.ComponentState)) then
+  TV := TreeView;
+  if Assigned(TV) and (Owner.FUpdateCount = 0) and (not (csLoading in TV.ComponentState)) then
     TV.Invalidate;
 end;
 
@@ -1475,8 +1477,8 @@ function TTreeNode.EditText: Boolean;
 var
   TV: TCustomTreeView;
 begin
-  TV:=TreeView;
-  Result:=(TV<>nil) and (tvsIsEditing in TreeView.FStates);
+  TV := TreeView;
+  Result := Assigned(TV) and (tvsIsEditing in TreeView.FStates);
   TV.BeginEditing(Self);
 end;
 
@@ -1870,13 +1872,20 @@ begin
 end;
 
 procedure TTreeNodes.Clear;
+var
+  Node: TTreeNode;
 begin
   BeginUpdate;
   ClearCache;
-  if GetLastNode<>nil then begin
-    while GetLastNode<>nil do
-      GetLastNode.Delete;
-    if (FUpdateCount=0) and (Owner<>nil) then
+  Node := GetLastNode;
+  if Assigned(Node) then
+  begin
+    while Assigned(Node) do
+    begin
+      Node.Delete;
+      Node := GetLastNode;
+    end;
+    if (FUpdateCount = 0) and Assigned(Owner) then
       Owner.Invalidate;
   end;
   FSelection.Clear;
@@ -2083,7 +2092,7 @@ end;
 
 function TTreeNodes.GetFirstNode: TTreeNode;
 begin
-  if FTopLvlItems<>nil then
+  if Assigned(FTopLvlItems) then
     Result := FTopLvlItems[0]
   else
     Result := nil;
@@ -2092,32 +2101,36 @@ end;
 
 function TTreeNodes.GetLastNode: TTreeNode;
 begin
-  if FTopLvlItems<>nil then
-    Result := FTopLvlItems[FTopLvlCount-1]
+  if Assigned(FTopLvlItems) then
+    Result := FTopLvlItems[FTopLvlCount - 1]
   else
     Result := nil;
 end;
 
 function TTreeNodes.GetLastSubNode: TTreeNode;
 // absolute last node
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
-  Result:=GetLastNode;
-  if Result<>nil then begin
-    Node:=Result.GetLastSubChild;
-    if Node<>nil then Result:=Node;
+  Result := GetLastNode;
+  if Assigned(Result) then
+  begin
+    Node := Result.GetLastSubChild;
+    if Assigned(Node) then Result := Node;
   end;
 end;
 
 function TTreeNodes.GetLastExpandedSubNode: TTreeNode;
 // absolute last expanded node
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
-  Result:=GetLastNode;
-  while (Result<>nil) and (Result.Expanded) do begin
-    Node:=Result.GetLastChild;
-    if Node<>nil then
-      Result:=Node
+  Result := GetLastNode;
+  while Assigned(Result) and (Result.Expanded) do
+  begin
+    Node := Result.GetLastChild;
+    if Assigned(Node) then
+      Result := Node
     else
       exit;
   end;
@@ -2125,23 +2138,23 @@ end;
 
 function TTreeNodes.FindTopLvlNode(const NodeText: string): TTreeNode;
 begin
-  Result:=GetFirstNode;
-  while (Result<>nil) and (Result.Text<>NodeText) do
-    Result:=Result.GetNextSibling;
+  Result := GetFirstNode;
+  while Assigned(Result) and (Result.Text <> NodeText) do
+    Result := Result.GetNextSibling;
 end;
 
 function TTreeNodes.FindNodeWithText(const NodeText: string): TTreeNode;
 begin
-  Result:=GetFirstNode;
-  while (Result<>nil) and (Result.Text<>NodeText) do
-    Result:=Result.GetNext;
+  Result := GetFirstNode;
+  while Assigned(Result) and (Result.Text <> NodeText) do
+    Result := Result.GetNext;
 end;
 
 function TTreeNodes.FindNodeWithData(const NodeData: Pointer): TTreeNode;
 begin
-  Result:=GetFirstNode;
-  while (Result<>nil) and (Result.Data<>NodeData) do
-    Result:=Result.GetNext;
+  Result := GetFirstNode;
+  while Assigned(Result) and (Result.Data <> NodeData) do
+    Result := Result.GetNext;
 end;
 
 function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
