@@ -17,7 +17,9 @@ msgid "New project from template"
 msgstr "通过模板新建工程"
 
 #: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
+#, fuzzy
+#| msgid "Project templates options"
+msgid "Project templates options ..."
 msgstr "工程模板选项"
 
 #: idetemplateproject.stemplatecategory

@@ -21,7 +21,7 @@ msgid "Create units from C header files"
 msgstr "通过C头文件建立单元文件"
 
 #: h2passtrconsts.h2ph2pas
-msgid "H2Pas"
+msgid "H2Pas ..."
 msgstr ""
 
 #: h2passtrconsts.h2ph2pastool

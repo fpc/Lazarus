@@ -14,7 +14,9 @@ msgid "New project from template"
 msgstr "Nuevo proyecto desde plantilla"
 
 #: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
+#, fuzzy
+#| msgid "Project templates options"
+msgid "Project templates options ..."
 msgstr "Opciones de las plantillas del proyecto"
 
 #: idetemplateproject.stemplatecategory

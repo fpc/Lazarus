@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-25 17:08+0300\n"
+"PO-Revision-Date: 2011-01-20 23:38+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,9 @@ msgid "New project from template"
 msgstr "Новый проект из шаблона"
 
 #: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
-msgstr "Параметры шаблонов проекта"
+#| msgid "Project templates options"
+msgid "Project templates options ..."
+msgstr "Параметры шаблонов проекта ..."
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"

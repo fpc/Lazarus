@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-02 04:11+0300\n"
+"PO-Revision-Date: 2011-01-20 23:49+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,9 @@ msgid "Create units from C header files"
 msgstr "Создать модули из файлов заголовков C"
 
 #: h2passtrconsts.h2ph2pas
-msgid "H2Pas"
-msgstr "H2Pas"
+#| msgid "H2Pas"
+msgid "H2Pas ..."
+msgstr "H2Pas ..."
 
 #: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"

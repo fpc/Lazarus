@@ -4015,6 +4015,11 @@ msgstr "Не можу знайти пускач lazarus:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "Можу змінити тільки клас TComponetns"
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Порівнянти"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr ""
@@ -7944,12 +7949,12 @@ msgstr ""
 msgid "In front of related"
 msgstr ""
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr ""
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
@@ -9522,8 +9527,10 @@ msgid "Debug windows"
 msgstr "Вікно налагоджувача..."
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "Порівнянти"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9849,16 +9856,21 @@ msgstr "Відкрити проект ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 #, fuzzy
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "Відкрити нещодавні ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Відкрити попередній пакунок ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Відкрити останній проект ..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10544,8 +10556,8 @@ msgstr ""
 msgid "Create a new unit with a LCL form."
 msgstr "Створити новий модуль з формою LCL."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
@@ -11175,7 +11187,9 @@ msgid "Modified: %s"
 msgstr "Змінено: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "Докладніше ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11474,12 +11488,24 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr ""
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Знайдений конфлікт"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
+msgstr ""
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispefilename
@@ -11577,6 +11603,14 @@ msgstr "Назва Модуля"
 #: lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
@@ -14567,7 +14601,7 @@ msgid "Usage message (-h option)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

@@ -3985,6 +3985,11 @@ msgstr "Nelze nalézt spouštěč lazarusu:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "Změnit lze pouze třídu dědící TComponent."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Rozdíl"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "Změnit třídu %s"
@@ -7906,13 +7911,13 @@ msgstr ""
 msgid "In front of related"
 msgstr "Před související"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "Zděděná komponenta"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Zděděná položka"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9477,8 +9482,10 @@ msgid "Debug windows"
 msgstr "Ladící okna"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "Rozdíl"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9800,15 +9807,22 @@ msgid "Open Project ..."
 msgstr "Otevřít projekt..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open &Recent ..."
+#, fuzzy
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "Otevřít &nedávné"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Otevřít nedávný balíček..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Otevřít nedávný projekt..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10472,9 +10486,9 @@ msgstr "Vytvořit novou jednotku s rámcem."
 msgid "Create a new unit with a LCL form."
 msgstr "Vytvořit novou jednotku s formulářem LCL."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "Zdědit z existující komponenty."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11099,7 +11113,9 @@ msgid "Modified: %s"
 msgstr "Změněný: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "Více..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11398,13 +11414,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Pascalovská jednotka musí mít příponu .pp nebo .pas"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Nalezen konflikt"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "Upravit virtuální jednotku"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11502,6 +11530,14 @@ msgstr "Jméno jednotky:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Jméno jednotky a souboru si neodpovídají.%sPříklad: unit1.pas a Unit1"
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14478,7 +14514,9 @@ msgid "Usage message (-h option)"
 msgstr "Zpráva o použití (volba -h)"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+#, fuzzy
+#| msgid "Use>>"
+msgid "Use >>"
 msgstr "Použít..."
 
 #: lazarusidestrconsts.lisuseansistrings

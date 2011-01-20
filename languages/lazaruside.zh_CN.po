@@ -4033,6 +4033,11 @@ msgstr "找不到 Lazarus 启动程序:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "只能更改 TComponents 的类."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "比较"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "改变类 %s"
@@ -7964,13 +7969,13 @@ msgstr ""
 msgid "In front of related"
 msgstr ""
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr ""
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "继承自对象"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9548,8 +9553,10 @@ msgid "Debug windows"
 msgstr "调试窗口"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "比较"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9875,16 +9882,21 @@ msgstr "打开工程..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 #, fuzzy
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "打开最近的文件..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "打开最近的包..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "打开最近的工程..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10572,9 +10584,9 @@ msgstr "创建一个新的单元和Frame"
 msgid "Create a new unit with a LCL form."
 msgstr "使用 LCL 创建一个包含窗体的单元."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "从一个存在的组件继承."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11203,7 +11215,9 @@ msgid "Modified: %s"
 msgstr "已更改: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "更多..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11502,13 +11516,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "一个Pascal单元必须具有.pp或.pas扩展名"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "发现冲突"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "编辑虚拟单元"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11606,6 +11632,14 @@ msgstr "单元名:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "单元名和文件名不匹配.%s例如: unit1.pas和Unit1"
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14595,7 +14629,7 @@ msgid "Usage message (-h option)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

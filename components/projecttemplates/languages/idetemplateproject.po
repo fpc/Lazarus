@@ -9,7 +9,7 @@ msgid "New project from template"
 msgstr ""
 
 #: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
+msgid "Project templates options ..."
 msgstr ""
 
 #: idetemplateproject.stemplatecategory

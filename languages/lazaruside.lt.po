@@ -4025,6 +4025,11 @@ msgstr "Nepavyko rasti Lazarus startuotojo:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "Galima keisti tik TComponent-ų klasę."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Diff"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "Pakeisti %s klasę"
@@ -7957,13 +7962,13 @@ msgstr ""
 msgid "In front of related"
 msgstr "Priešais susijusį"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "Paveldėta komponentė"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Paveldėtas elementas"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9542,8 +9547,10 @@ msgid "Debug windows"
 msgstr "Derinimo langai"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "Diff"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9867,16 +9874,22 @@ msgid "Open Project ..."
 msgstr "Atverti projektą…"
 
 #: lazarusidestrconsts.lismenuopenrecent
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#, fuzzy
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "Atverti paskutinį &naudotą…"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Atverti paskutinį naudotą paketą…"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Atverti paskutinį naudotą projektą…"
 
 #: lazarusidestrconsts.lismenupackage
@@ -10553,9 +10566,9 @@ msgstr "Kurti naują modulį su kadru."
 msgid "Create a new unit with a LCL form."
 msgstr "Kurti naują modulį su LCL forma."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "Paveldėti iš esamos komponentės."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11183,7 +11196,9 @@ msgid "Modified: %s"
 msgstr "Pakeista: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "Daugiau…"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11482,13 +11497,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Paskalio modulio failo plėtinys turi būti .pp arba .pas"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Aptiktas konfliktas"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "Keisti virtualų modulį"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11586,6 +11613,14 @@ msgstr "Modulio pavadinimas:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Modulio ir failo pavadinimai nesutampa.%sPavyzdžiui: jei modulis yra „Unit1“, tada failas - „unit1.pas“."
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14581,7 +14616,7 @@ msgid "Usage message (-h option)"
 msgstr "Pranešimas apie naudojimą (-h parinktis)"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

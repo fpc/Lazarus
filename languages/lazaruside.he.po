@@ -3998,6 +3998,11 @@ msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
 msgid "Can only change the class of TComponents."
 msgstr "יכול רק לשנות את המחלקה של TCcomponent.."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "השווה"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "שנה את המחלקה של %s"
@@ -7925,13 +7930,13 @@ msgstr ""
 msgid "In front of related"
 msgstr "לפני הקשורים"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "רכיב מורש"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "פריט מורש"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9507,8 +9512,10 @@ msgid "Debug windows"
 msgstr "חלון ניפוי שגיאות"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "השווה"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9832,16 +9839,21 @@ msgstr "פתח פרויקט ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 #, fuzzy
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "פתח אחרונים ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "פתח חבילות אחרונות ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "פתח פרויקטים אחרונים ..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10517,9 +10529,9 @@ msgstr "צור יחידה חדשה עם מסגרת."
 msgid "Create a new unit with a LCL form."
 msgstr "צור יחידה חדשה עם טופס LCL."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "ירש מרכיב קיים"
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11147,7 +11159,9 @@ msgid "Modified: %s"
 msgstr "השתנה: s%"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "עוד ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11446,13 +11460,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "יחידה בפסקל חייבת להיות עם סיומת pp. או pas."
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "נמצאה התנגשות"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "ערוך יחידה וירטואלית"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11550,6 +11576,14 @@ msgstr "שם יחידה:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "שם היחידה ושם הקובץ לא מתאימים. לדוגמה: unit1.pas ו  Unit1 "
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14534,7 +14568,9 @@ msgid "Usage message (-h option)"
 msgstr "הודעת \"איך להשתמש\" (אפשרות h-)"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+#, fuzzy
+#| msgid "Use>>"
+msgid "Use >>"
 msgstr "השתמש ב ..."
 
 #: lazarusidestrconsts.lisuseansistrings

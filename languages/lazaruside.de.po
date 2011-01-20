@@ -4044,6 +4044,11 @@ msgstr "Kann Lazarus-Starter %s%s nicht finden"
 msgid "Can only change the class of TComponents."
 msgstr "Kann nur die Klasse von TComponents ändern."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Dateivergleich"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "Klasse von %s ändern"
@@ -7977,13 +7982,13 @@ msgstr ""
 msgid "In front of related"
 msgstr "vor ähnlichen"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "Abgeleitete Komponente"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Abgeleiteter Punkt"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9561,8 +9566,10 @@ msgid "Debug windows"
 msgstr "Debuggerfenster"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "Dateivergleich"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9886,16 +9893,22 @@ msgid "Open Project ..."
 msgstr "Projekt öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#, fuzzy
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "Wieder öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Letztes Package wieder öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Letzte Projekte ..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10583,9 +10596,9 @@ msgstr "Erzeugt eine neue Unit mit einem Frame"
 msgid "Create a new unit with a LCL form."
 msgstr "Erzeugt eine neue Unit mit einem LCL-Formular."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "Von einer vorhandenen Komponente ableiten."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11212,7 +11225,9 @@ msgid "Modified: %s"
 msgstr "Geändert: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "Mehr ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11511,13 +11526,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Eine Pascal-Unit muß die Endung .pp oder .pas haben"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Konflikt aufgetreten"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "Virtuelle Unit bearbeiten"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11615,6 +11642,14 @@ msgstr "Unit-Name:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Unitname und Dateiname passen nicht zusammen.%sBeispiel: unit1.pas und Unit1"
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14606,7 +14641,7 @@ msgid "Usage message (-h option)"
 msgstr "Ausgabe für den Aufruf (Parameter -h)"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-18 02:41+0300\n"
+"PO-Revision-Date: 2011-01-21 00:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4034,6 +4034,11 @@ msgstr "Невозможно найти пускатель Lazarus:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "Возможно только изменить класс TComponents."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Разница Diff"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "Изменить класс %s"
@@ -7961,13 +7966,13 @@ msgstr "В списке путей поиска модулей FPC. Возмож
 msgid "In front of related"
 msgstr "Перед связанными"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "Унаследованный компонент"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Унаследованный объект"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr "Унаследованный от компонента проекта"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9542,9 +9547,10 @@ msgid "Debug windows"
 msgstr "Окна отладки"
 
 #: lazarusidestrconsts.lismenudiff
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
-msgstr "Разница Diff"
+msgid "Diff ..."
+msgstr "Разница Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -9866,16 +9872,19 @@ msgid "Open Project ..."
 msgstr "Открыть проект ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
-msgstr "Открыть &недавнее"
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
+msgstr "Открыть &недавний"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Открыть недавний пакет"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
 
 #: lazarusidestrconsts.lismenupackage
@@ -10556,9 +10565,9 @@ msgstr "Создать новый модуль с фреймом."
 msgid "Create a new unit with a LCL form."
 msgstr "Создать модуль с формой LCL."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "Унаследовать от существующего компонента."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr "Унаследовать от формы или компонента проекта"
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11185,8 +11194,9 @@ msgid "Modified: %s"
 msgstr "Изменён: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
-msgstr "Прочие..."
+#| msgid "More ..."
+msgid "More >>"
+msgstr "Прочие >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -11484,13 +11494,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "Модуль Паскаля должен иметь расширение .pp или .pas"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr "Свернуть каталог"
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Найден конфликт"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr "Каталоги"
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "Редактировать виртуальный модуль"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr "Развернуть каталог"
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11588,6 +11610,14 @@ msgstr "Имя модуля:"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Имена модуля и файла не совпадают.%sПример: unit1.pas и Unit1"
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr "Использовать все модули в каталоге"
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr "Не использовать модули из каталога"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14575,8 +14605,9 @@ msgid "Usage message (-h option)"
 msgstr "Сообщение со справкой (параметр -h)"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
-msgstr "Использовать..."
+#| msgid "Use>>"
+msgid "Use >>"
+msgstr "Использовать >>"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"

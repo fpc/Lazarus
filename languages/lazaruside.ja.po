@@ -4029,6 +4029,11 @@ msgstr "Lazarusのスターターが見つかりません"
 msgid "Can only change the class of TComponents."
 msgstr "TComponentのクラスしか変更できません。"
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "差分"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "%sのクラスを変更"
@@ -7961,13 +7966,13 @@ msgstr ""
 msgid "In front of related"
 msgstr "関連するものの前に"
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr "継承されたコンポーネント"
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "継承された項目"
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9545,8 +9550,10 @@ msgid "Debug windows"
 msgstr "デバッグウィンドウ"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "差分"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9872,16 +9879,21 @@ msgstr "プロジェクトを開く ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 #, fuzzy
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "最近扱ったファイルを開く ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "最近扱ったプロジェクトを開く ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "最近扱ったプロジェクト ..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10571,9 +10583,9 @@ msgstr "フレーム付きユニットを作成"
 msgid "Create a new unit with a LCL form."
 msgstr "新規にLCLフォームを有するユニットを作成"
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
-msgstr "既存のコンポーネントから継承"
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11200,7 +11212,9 @@ msgid "Modified: %s"
 msgstr "修正済: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "その他 ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11499,13 +11513,25 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr "pascalユニットの拡張子は.ppか.pasでなければなりません"
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "矛盾を見つけました"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
 msgstr "仮想ユニットを編集"
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11603,6 +11629,14 @@ msgstr "ユニット名"
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "ユニット名とファイル名が一致してません。%s例：unit1.pasとUnit1"
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -14592,7 +14626,9 @@ msgid "Usage message (-h option)"
 msgstr "使用メッセージ（-hオプション）"
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+#, fuzzy
+#| msgid "Use>>"
+msgid "Use >>"
 msgstr "使用..."
 
 #: lazarusidestrconsts.lisuseansistrings

@@ -4020,6 +4020,11 @@ msgstr "Kan Lazarus Starter niet vinden:%s%s"
 msgid "Can only change the class of TComponents."
 msgstr "Alleen the class van TComponents kan gewijzigd worden."
 
+#: lazarusidestrconsts.liscaptiondiff
+msgctxt "lazarusidestrconsts.liscaptiondiff"
+msgid "Diff"
+msgstr "Verschil"
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr ""
@@ -7947,12 +7952,12 @@ msgstr ""
 msgid "In front of related"
 msgstr ""
 
-#: lazarusidestrconsts.lisinheritedcomponent
-msgid "Inherited Component"
-msgstr ""
-
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedprojectcomponent
+msgid "Inherited project component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
@@ -9527,8 +9532,10 @@ msgid "Debug windows"
 msgstr "Debug schermen"
 
 #: lazarusidestrconsts.lismenudiff
+#, fuzzy
+#| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff"
+msgid "Diff ..."
 msgstr "Verschil"
 
 #: lazarusidestrconsts.lismenuedit
@@ -9854,16 +9861,21 @@ msgstr "Open Project ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 #, fuzzy
-#| msgid "Open Recent ..."
-msgid "Open &Recent ..."
+#| msgid "Open &Recent ..."
+msgid "Open &Recent"
 msgstr "Open Recent ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-msgid "Open recent package ..."
+#, fuzzy
+#| msgid "Open recent package ..."
+msgid "Open recent package"
 msgstr "Open recent pakket ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-msgid "Open Recent Project ..."
+#, fuzzy
+#| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
+msgid "Open Recent Project"
 msgstr "Open Recent Project ..."
 
 #: lazarusidestrconsts.lismenupackage
@@ -10549,8 +10561,8 @@ msgstr ""
 msgid "Create a new unit with a LCL form."
 msgstr "Maak een nieuwe unit met een LCL-formulier."
 
-#: lazarusidestrconsts.lisnewdlginheritanexistingcomponent
-msgid "Inherit from an existing component."
+#: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
+msgid "Inherit from a project form or component"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
@@ -11180,7 +11192,9 @@ msgid "Modified: %s"
 msgstr "Gewijzigd: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-msgid "More ..."
+#, fuzzy
+#| msgid "More ..."
+msgid "More >>"
 msgstr "Meer ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -11479,12 +11493,24 @@ msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
 msgstr ""
 
+#: lazarusidestrconsts.lispecollapsedirectory
+msgid "Collapse directory"
+msgstr ""
+
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
 msgstr "Conflict gevonden"
 
+#: lazarusidestrconsts.lispedirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
+msgstr ""
+
+#: lazarusidestrconsts.lispeexpanddirectory
+msgid "Expand directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispefilename
@@ -11582,6 +11608,14 @@ msgstr "Unitnaam:"
 #: lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
+msgstr ""
+
+#: lazarusidestrconsts.lispeuseallunitsindirectory
+msgid "Use all units in directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispeusenounitsindirectory
+msgid "Use no units in directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
@@ -14572,7 +14606,7 @@ msgid "Usage message (-h option)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuse
-msgid "Use..."
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
