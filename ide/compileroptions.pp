@@ -424,7 +424,7 @@ type
 
     procedure SetDefault(KeepIgnored: Boolean=true); virtual;
     function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer; virtual;
-    function Equals(Obj: TObject): boolean; override;
+    function Equals(Obj: TObject): boolean; {$ifndef ver2_4_0}override;{$endif}
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
@@ -4664,7 +4664,7 @@ var
   ObjList: TCompilerMessagesList absolute Obj;
   i: integer;
 begin
-  Result := inherited Equals(Obj);
+  Result := {$ifdef ver2_4_0}false{$else}inherited Equals(Obj){$endif};
   if not Result and (Obj is TCompilerMessagesList) then
   begin
     Result := ObjList.Count = Count;
