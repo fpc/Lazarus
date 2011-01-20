@@ -158,7 +158,9 @@ find $BUILDDIR -type d -exec chmod a+x {} \;
 
 # create etc
 mkdir -p $ROOTDIR/etc/lazarus
-cp $TEMPLATEDIR/environmentoptions.xml $ROOTDIR/etc/lazarus/
+cat $TEMPLATEDIR/environmentoptions.xml | sed \
+  -e "s|_PPCARCH_|$PPCARCH|g" \
+  > $ROOTDIR/etc/lazarus/environmentoptions.xml
 
 # fill in packproj template.
 if [ -n "$EditMode" ]; then

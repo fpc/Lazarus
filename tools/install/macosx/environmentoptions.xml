@@ -7,11 +7,11 @@
         <Item1 Value="/Developer/lazarus/"/>
       </History>
     </LazarusDirectory>
-    <CompilerFilename Value="/usr/local/bin/ppc386">
+    <CompilerFilename Value="/usr/local/bin/_PPCARCH_">
       <History Count="3">
-        <Item1 Value="/usr/local/bin/ppc386"/>
-        <Item2 Value="/usr/bin/ppc386"/>
-        <Item3 Value="/opt/fpc/ppc386"/>
+        <Item1 Value="/usr/local/bin/_PPCARCH_"/>
+        <Item2 Value="/usr/bin/_PPCARCH_"/>
+        <Item3 Value="/opt/fpc/_PPCARCH_"/>
       </History>
     </CompilerFilename>
     <FPCSourceDirectory Value="/usr/local/share/fpcsrc/">
