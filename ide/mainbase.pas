@@ -737,7 +737,7 @@ begin
     ParentMI:=itmSecondaryTools;
 
     CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString, 'menu_tool_make_resourcestring');
-    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
+    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff+' ...', 'menu_tool_diff');
 
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;

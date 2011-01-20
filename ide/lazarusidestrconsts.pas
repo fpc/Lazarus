@@ -163,7 +163,7 @@ resourcestring
   lisPESavePackageAs = 'Save package as';
   lisPkgEditPublishPackage = 'Publish Package';
   lisPERevertPackage = 'Revert package';
-  lisMenuOpenRecent = 'Open &Recent ...';
+  lisMenuOpenRecent = 'Open &Recent';
   lisMenuSave = '&Save';
   lisKMSaveAs = 'SaveAs';
   lisKMSaveAll = 'SaveAll';
@@ -315,7 +315,7 @@ resourcestring
   lisMenuNewProjectFromFile = 'New Project from file ...';
   lisMenuOpenProject = 'Open Project ...';
   lisMenuCloseProject = 'Close Project';
-  lisMenuOpenRecentProject = 'Open Recent Project ...';
+  lisMenuOpenRecentProject = 'Open Recent Project';
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As ...';
   lisMenuPublishProject = 'Publish Project ...';
@@ -392,7 +392,7 @@ resourcestring
 
   lisMenuNewPackage = 'New package ...';
   lisMenuOpenPackage = 'Open loaded package ...';
-  lisMenuOpenRecentPkg = 'Open recent package ...';
+  lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
@@ -3953,14 +3953,14 @@ resourcestring
   lisPckEditAddAnItem = 'Add an item';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
-  lisUse = 'Use...';
+  lisUse = 'Use>>';
   lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
   lisPckEditCompOpts = 'Compiler Options';
   lisPckEditHelp = 'Help';
   lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in '
     +'the popupmenu';
-  lisPckEditMore = 'More ...';
+  lisPckEditMore = 'More >>';
   lisPckEditEditOptionsToCompilePackage = 'Edit Options to compile package';
   lisPckEditRequiredPackages = 'Required Packages';
   lisPckEditFileProperties = 'File Properties';
