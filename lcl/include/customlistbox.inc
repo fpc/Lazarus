@@ -32,7 +32,7 @@ type
 procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer;
   const AData: Pointer);
 begin
-  if PCustomListBoxItemRecord(AData)^.Selected or (FItemIndex = AIndex) then
+  if PCustomListBoxItemRecord(AData)^.Selected or (not MultiSelect and (FItemIndex = AIndex)) then
   begin
     LockSelectionChange;
     SendItemSelected(AIndex, True);
@@ -103,7 +103,8 @@ begin
   FItems := NewStrings;
   FCacheValid := False;
 
-  SendItemIndex;
+  if FItemIndex <> TWSCustomListBoxClass(WidgetSetClass).GetItemIndex(Self) then
+    SendItemIndex;
 
   // copy items attributes
   cnt := OldItems.Count;
@@ -332,7 +333,7 @@ procedure TCustomListBox.SetMultiSelect(Val: Boolean);
 begin
   if Val <> FMultiSelect then
   begin
-    FMultiSelect:= Val;
+    FMultiSelect := Val;
     UpdateSelectionMode;
   end;
 end;
