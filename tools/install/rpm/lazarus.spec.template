@@ -6,16 +6,19 @@ Summary:        Lazarus Component Library and IDE
 Group:          Development/Languages
 License:        GPL and modified LGPL
 URL:            http://www.lazarus.freepascal.org/
-Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{release}.tar.gz
+Source0:        http://sourceforge.net/projects/%{name}/files/Lazarus%20Zip%20_%20GZip/Lazarus%20%{version}/%{name}-%{version}-src.tar.bz2/download 
 Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
-Requires:       fpc-src = FPCSRCVERSION, fpc = FPCVERSION, gdk-pixbuf, gtk+, glibc, gtk2-devel, glibc-devel, binutils, gdb
-# NOTE: without the symlink trick for gtk1, it requires the devel packages.
+Requires:       fpc-src = FPCSRCVERSION, fpc = FPCVERSION, gtk2-devel, glibc-devel, binutils, gdb
+
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
+
+%_source_filedigest_algorithm 0
+%_binary_filedigest_algorithm 0
 
 %description
 Lazarus is a free and open source Rapid Application Development tool for
