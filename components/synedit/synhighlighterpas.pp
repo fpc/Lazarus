@@ -1005,6 +1005,9 @@ begin
         else
         if TopPascalCodeFoldBlockType = cfbtRecord then
           EndPascalCodeFoldBlock;
+      // After type declaration, allow "deprecated"?
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        fRange := fRange + [rsVarTypeInSpecification];
       end;
       {$ENDIF}
     end else begin
