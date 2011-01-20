@@ -92,6 +92,7 @@ type
     FLeft: integer;
     FShowGutter: boolean;
     FShowInfoBox: boolean;
+    FInfoBoxHeight: integer;
     FShowStatusBar: boolean;
     FTop: integer;
     FWidth: integer;
@@ -159,6 +160,7 @@ type
     property ShowGutter: boolean read FShowGutter write FShowGutter;
     property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
     property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
+    property InfoBoxHeight: integer read FInfoBoxHeight write FInfoBoxHeight;
   end;
 
   { TOIPropertyGridRow }
@@ -611,7 +613,6 @@ type
     procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
-    procedure ObjectInspectorResize(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridDblClick(Sender: TObject);
@@ -690,6 +691,8 @@ type
   private
     FInSelection: Boolean;
     FOnAutoShow: TNotifyEvent;
+    function GetComponentTreeHeight: integer;
+    function GetInfoBoxHeight: integer;
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -755,9 +758,9 @@ type
                                         write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
-    property ComponentTreeHeight: integer read FComponentTreeHeight
+    property ComponentTreeHeight: integer read GetComponentTreeHeight
                                           write SetComponentTreeHeight;
-    property InfoBoxHeight: integer read FInfoBoxHeight write SetInfoBoxHeight;
+    property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
     property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
@@ -3520,6 +3523,7 @@ begin
   FDefaultItemHeight:=20;
   FShowComponentTree:=true;
   FComponentTreeHeight:=100;
+  FInfoBoxHeight:=80;
 
   FGridBackgroundColor := DefBackgroundColor;
   FDefaultValueColor := DefDefaultValueColor;
@@ -3619,6 +3623,8 @@ begin
          Path+'ShowStatusBar',true);
     FShowInfoBox := ConfigStore.GetValue(
          Path+'ShowInfoBox',false);
+    FInfoBoxHeight := ConfigStore.GetValue(
+       Path+'InfoBoxHeight',80);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3691,6 +3697,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
     ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
     ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, False);
+    ConfigStore.SetDeleteValue(Path+'InfoBoxHeight',FInfoBoxHeight,80);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3734,6 +3741,7 @@ begin
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
   FShowStatusBar := AnObjInspector.ShowStatusBar;
   FShowInfoBox := AnObjInspector.ShowInfoBox;
+  FInfoBoxHeight := AnObjInspector.InfoBoxHeight;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3755,10 +3763,11 @@ begin
     Grid.SplitterX := FGridSplitterX[Page];
     AssignTo(Grid);
   end;
-  AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
-  AnObjInspector.ShowComponentTree := FShowComponentTree;
-  AnObjInspector.ShowInfoBox := FShowInfoBox;
-  AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
+  AnObjInspector.DefaultItemHeight := DefaultItemHeight;
+  AnObjInspector.ShowComponentTree := ShowComponentTree;
+  AnObjInspector.ShowInfoBox := ShowInfoBox;
+  AnObjInspector.ComponentTreeHeight := ComponentTreeHeight;
+  AnObjInspector.InfoBoxHeight := InfoBoxHeight;
   AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.ShowStatusBar := ShowStatusBar;
 end;
@@ -3996,8 +4005,12 @@ end;
 
 procedure TObjectInspectorDlg.SetComponentTreeHeight(const AValue: integer);
 begin
-  if FComponentTreeHeight=AValue then exit;
-  FComponentTreeHeight:=AValue;
+  if FComponentTreeHeight <> AValue then
+  begin
+    FComponentTreeHeight := AValue;
+    if Assigned(ComponentTree) then
+      ComponentTree.Height := AValue;
+  end;
 end;
 
 procedure TObjectInspectorDlg.SetDefaultItemHeight(const AValue: integer);
@@ -4023,8 +4036,12 @@ end;
 
 procedure TObjectInspectorDlg.SetInfoBoxHeight(const AValue: integer);
 begin
-  if FInfoBoxHeight=AValue then exit;
-  FInfoBoxHeight:=AValue;
+  if FInfoBoxHeight <> AValue then
+  begin
+    FInfoBoxHeight := AValue;
+    if Assigned(InfoPanel) then
+      InfoPanel.Height := AValue;
+  end;
 end;
 
 procedure TObjectInspectorDlg.SetRestricted(const AValue: TOIRestrictedProperties);
@@ -4342,13 +4359,6 @@ begin
   RefreshSelection;
   if Assigned(FOnSelectPersistentsInOI) then
     FOnSelectPersistentsInOI(Self);
-end;
-
-procedure TObjectInspectorDlg.ObjectInspectorResize(Sender: TObject);
-begin
-  if (ComponentTree<>nil) and (ComponentTree.Visible)
-  and (ComponentTree.Parent=Self) then
-    ComponentTree.Height:=ClientHeight div 4;
 end;
 
 procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
@@ -5187,6 +5197,22 @@ begin
     3: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) - 1);
   end;
   DoModified(Self);
+end;
+
+function TObjectInspectorDlg.GetComponentTreeHeight: integer;
+begin
+  if Assigned(ComponentTree) then
+    Result := ComponentTree.Height
+  else
+    Result := FComponentTreeHeight;
+end;
+
+function TObjectInspectorDlg.GetInfoBoxHeight: integer;
+begin
+  if Assigned(InfoPanel) then
+    Result := InfoPanel.Height
+  else
+    Result := FInfoBoxHeight;
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;

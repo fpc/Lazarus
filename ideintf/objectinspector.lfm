@@ -8,8 +8,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   ClientHeight = 669
   ClientWidth = 275
   KeyPreview = True
-  OnResize = ObjectInspectorResize
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
@@ -26,11 +25,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 21
+    Height = 23
     Top = 0
     Width = 275
     Align = alTop
-    ItemHeight = 13
+    ItemHeight = 15
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0
