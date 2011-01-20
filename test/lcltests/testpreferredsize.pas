@@ -3,9 +3,11 @@
      ./runtests --format=plain --suite=TestScrollBoxEmpty
 
   Test that ScrollBox with AutoScroll shows/hides scrollbars:
-        ./runtests --format=plain --suite=TestScrollBoxAutoShowHideScrollbars
+     ./runtests --format=plain --suite=TestScrollBoxAutoShowHideScrollbars
 
 
+  Test that ScrollBox with AutoScroll computes correct Visible and Range.
+     ./runtests --format=plain --suite=TestScrollBoxRange
 }
 unit testpreferredsize;
 
@@ -26,6 +28,7 @@ type
     procedure TestGroupBoxPreferredSize1;
     procedure TestScrollBoxEmpty;
     procedure TestScrollBoxAutoShowHideScrollbars;
+    procedure TestScrollBoxRange;
   end;
 
 implementation
@@ -76,7 +79,7 @@ var
   Form1: TForm;
   ScrollBox1: TScrollBox;
 begin
-  // create an empty scrollbox on a form
+  // create an empty scrollbox with AutoScroll=true on a form
   Form1:=TForm.Create(nil);
   Form1.SetBounds(100,100,300,300);
   ScrollBox1:=TScrollBox.Create(Form1);
@@ -86,6 +89,8 @@ begin
   Form1.Show;
   Application.ProcessMessages;
 
+  AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.Visible is true',false,ScrollBox1.HorzScrollBar.Visible);
+  AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.Visible is true',false,ScrollBox1.VertScrollBar.Visible);
   AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.IsScrollBarVisible is true',false,ScrollBox1.HorzScrollBar.IsScrollBarVisible);
   AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.IsScrollBarVisible is true',false,ScrollBox1.VertScrollBar.IsScrollBarVisible);
 
@@ -101,7 +106,7 @@ var
   IntfPreferredWidth: integer;
   IntfPreferredHeight: integer;
 begin
-  // create a scrollbox on a form and put a small panel into the box
+  // create a scrollbox with AutoScroll=true on a form and put a small panel into the box
   Form1:=TForm.Create(nil);
   Form1.SetBounds(100,100,300,300);
   ScrollBox1:=TScrollBox.Create(Form1);
@@ -154,6 +159,36 @@ begin
   AssertEquals('ScrollBox1.HorzScrollBar.Range should be the needed Right of all childs',Panel1.Constraints.MinWidth,ScrollBox1.HorzScrollBar.Range);
   AssertEquals('ScrollBox1.VertScrollBar.Range should be the needed Bottom of all childs',Panel1.Constraints.MinHeight,ScrollBox1.VertScrollBar.Range);
 
+
+  Form1.Free;
+  Application.ProcessMessages;
+end;
+
+procedure TTestPreferredSize.TestScrollBoxRange;
+var
+  Form1: TForm;
+  ScrollBox1: TScrollBox;
+begin
+  // create an empty scrollbox on a form
+  Form1:=TForm.Create(nil);
+  Form1.SetBounds(100,100,300,300);
+  ScrollBox1:=TScrollBox.Create(Form1);
+  ScrollBox1.SetBounds(10,10,100,100);
+  ScrollBox1.AutoScroll:=true;
+  ScrollBox1.Parent:=Form1;
+  Form1.Show;
+  Application.ProcessMessages;
+
+  with ScrollBox1.HorzScrollBar do begin
+    writeln('TTestPreferredSize.TestScrollBoxRange Horz: Visible=',Visible,
+      ' HandleVisible=',IsScrollBarVisible,
+      ' Range=',Range,' Position=',Position,' Page=',Page,
+      ' ClientWidth=',ScrollBox1.ClientWidth);
+  end;
+
+  AssertEquals('TScrollBox: Empty, AutoScroll=true, but HorzScrollBar.Visible is true',false,ScrollBox1.HorzScrollBar.Visible);
+  AssertEquals('TScrollBox: Empty, AutoScroll=true, but VertScrollBar.Visible is true',false,ScrollBox1.VertScrollBar.Visible);
+  // ToDo: check range
 
   Form1.Free;
   Application.ProcessMessages;
