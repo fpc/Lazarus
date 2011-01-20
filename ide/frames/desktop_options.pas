@@ -170,7 +170,7 @@ begin
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
     AutoSaveProjectCheckBox.Checked:=AutoSaveProject;
     SetComboBoxText(AutoSaveIntervalInSecsComboBox
-       ,IntToStr(AutoSaveIntervalInSecs));
+       ,IntToStr(AutoSaveIntervalInSecs),cstCaseInsensitive);
 
     // hints
     CheckDiskChangesWithLoadingCheckBox.Checked:=

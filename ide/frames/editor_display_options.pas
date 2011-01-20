@@ -95,8 +95,8 @@ begin
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].Font.Assign(TFontDialog(Sender).Font);
 
-  SetComboBoxText(EditorFontComboBox, DisplayPreview.Font.Name);
-  SetComboBoxText(EditorFontHeightComboBox, IntToStr(DisplayPreview.Font.Height));
+  SetComboBoxText(EditorFontComboBox, DisplayPreview.Font.Name,cstCaseInsensitive);
+  SetComboBoxText(EditorFontHeightComboBox, IntToStr(DisplayPreview.Font.Height),cstCaseInsensitive);
 end;
 
 function TEditorDisplayOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
@@ -146,7 +146,7 @@ begin
   begin
     NewVal := StrToIntDef(EditorFontHeightComboBox.Text, DisplayPreview.Font.Height);
     RepairEditorFontHeight(NewVal);
-    SetComboBoxText(EditorFontHeightComboBox, IntToStr(NewVal));
+    SetComboBoxText(EditorFontHeightComboBox, IntToStr(NewVal),cstCaseInsensitive);
     with GeneralPage do
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> nil then
@@ -156,7 +156,7 @@ begin
   if Sender = ExtraCharSpacingComboBox then
   begin
     NewVal := StrToIntDef(ExtraCharSpacingComboBox.Text, DisplayPreview.ExtraCharSpacing);
-    SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(NewVal));
+    SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(NewVal),cstCaseInsensitive);
     with GeneralPage do
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> Nil then
@@ -166,7 +166,7 @@ begin
   if Sender = ExtraLineSpacingComboBox then
   begin
     NewVal := StrToIntDef(ExtraLineSpacingComboBox.Text, DisplayPreview.ExtraLineSpacing);
-    SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(NewVal));
+    SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(NewVal),cstCaseInsensitive);
     with GeneralPage do
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> Nil then
@@ -176,7 +176,7 @@ begin
   if Sender = RightMarginComboBox then
   begin
     NewVal := StrToIntDef(RightMarginComboBox.Text, DisplayPreview.RightEdge);
-    SetComboBoxText(RightMarginComboBox, IntToStr(NewVal));
+    SetComboBoxText(RightMarginComboBox, IntToStr(NewVal),cstCaseInsensitive);
     with GeneralPage do
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> nil then
@@ -318,11 +318,11 @@ begin
     VisibleGutterCheckBox.Checked := VisibleGutter;
     ShowLineNumbersCheckBox.Checked := ShowLineNumbers;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
-    SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin));
-    SetComboBoxText(EditorFontComboBox, EditorFont);
-    SetComboBoxText(EditorFontHeightComboBox, IntToStr(EditorFontHeight));
-    SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing));
-    SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing));
+    SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin),cstCaseInsensitive);
+    SetComboBoxText(EditorFontComboBox, EditorFont,cstCaseInsensitive);
+    SetComboBoxText(EditorFontHeightComboBox, IntToStr(EditorFontHeight),cstCaseInsensitive);
+    SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing),cstCaseInsensitive);
+    SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing),cstCaseInsensitive);
     DisableAntialiasingCheckBox.Checked := DisableAntialiasing;
   end;
 

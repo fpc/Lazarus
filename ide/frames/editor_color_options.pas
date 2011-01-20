@@ -701,7 +701,7 @@ begin
     if Box.Text <> GetCurFileExtensions(FCurrentHighlighter.LanguageName) then
     begin
       SetCurFileExtensions(FCurrentHighlighter.LanguageName, Box.Text);
-      SetComboBoxText(Box, Box.Text);
+      SetComboBoxText(Box, Box.Text,cstCaseInsensitive);
     end;
     //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(FCurrentHighlighter.LanguageName),'" FCurrentHighlighter.LanguageName=',FCurrentHighlighter.LanguageName]);
   end
@@ -1234,7 +1234,8 @@ begin
                         GetColorSchemeForLang(EditorOpts.HighlighterList
                                      [CurLanguageID].SynClass.GetLanguageName));
         SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
-        SetComboBoxText(FileExtensionsComboBox, GetCurFileExtensions(FCurrentHighlighter.LanguageName));
+        SetComboBoxText(FileExtensionsComboBox,
+          GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename);
       end;
     end;
     LanguageButton.Caption := Language;
@@ -1403,7 +1404,7 @@ begin
     with FileExtensionsComboBox, GeneralPage do
       if CurLanguageID >= 0 then
         SetComboBoxText(FileExtensionsComboBox,
-          HighlighterList[CurLanguageID].FileExtensions);
+          HighlighterList[CurLanguageID].FileExtensions,cstFilename);
 
     SetCurrentScheme(TPreviewPasSyn, GetColorSchemeForLang(TPreviewPasSyn.GetLanguageName));
     CurLanguageID := HighlighterList.FindByClass(TCustomSynClass(FCurrentHighlighter.ClassType));

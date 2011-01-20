@@ -188,14 +188,14 @@ var
 begin
   with AOptions as TEditorOptions do
   begin
-    SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent));
-    SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth));
+    SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent), cstCaseInsensitive);
+    SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth), cstCaseInsensitive);
     BlockIndentTypeComboBox.ItemIndex := ord(BlockIndentType);
 
     // undo
     UndoAfterSaveCheckBox.Checked := UndoAfterSave;
     GroupUndoCheckBox.Checked := eoGroupUndo in SynEditOptions;
-    SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
+    SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit), cstCaseInsensitive);
 
     // scroll
     HalfPageScrollCheckBox.Checked := eoHalfPageScroll in SynEditOptions;
@@ -405,7 +405,7 @@ begin
   if Sender = BlockIndentComboBox then
   begin
     NewVal := StrToIntDef(BlockIndentComboBox.Text, PreviewEdits[1].BlockIndent);
-    SetComboBoxText(BlockIndentComboBox, IntToStr(NewVal));
+    SetComboBoxText(BlockIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].BlockIndent := NewVal;
@@ -414,7 +414,7 @@ begin
   if Sender = TabWidthsComboBox then
   begin
     NewVal := StrToIntDef(TabWidthsComboBox.Text, PreviewEdits[1].TabWidth);
-    SetComboBoxText(TabWidthsComboBox, IntToStr(NewVal));
+    SetComboBoxText(TabWidthsComboBox, IntToStr(NewVal), cstCaseInsensitive);
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].TabWidth := NewVal;

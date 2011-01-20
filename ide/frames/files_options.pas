@@ -110,13 +110,13 @@ begin
 
       if Sender=CompilerPathButton then begin
         // check compiler filename
-        SetComboBoxText(CompilerPathComboBox,AFilename);
+        SetComboBoxText(CompilerPathComboBox,AFilename,cstFilename);
         CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
           lisEnvOptDlgInvalidCompilerFilename,
           lisEnvOptDlgInvalidCompilerFilenameMsg);
       end else if Sender=MakePathButton then begin
         // check make filename
-        SetComboBoxText(MakePathComboBox,AFilename);
+        SetComboBoxText(MakePathComboBox,AFilename,cstFilename);
         CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
           lisEnvOptDlgInvalidMakeFilename,
           lisEnvOptDlgInvalidMakeFilenameMsg);
@@ -141,7 +141,7 @@ begin
     OpenDialog.Filter:='FPC message file (*.msg)|*.msg|Any file|'+AllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      SetComboBoxText(CompilerMessagesComboBox,AFilename);
+      SetComboBoxText(CompilerMessagesComboBox,AFilename,cstFilename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -173,15 +173,15 @@ begin
 
       if Sender=LazarusDirButton then begin
         // check lazarus directory
-        SetComboBoxText(LazarusDirComboBox,ADirectoryName);
+        SetComboBoxText(LazarusDirComboBox,ADirectoryName,cstFilename);
         CheckLazarusDir;
       end else if Sender=FPCSourceDirButton then begin
         // check fpc source directory
-        SetComboBoxText(FPCSourceDirComboBox,ADirectoryName);
+        SetComboBoxText(FPCSourceDirComboBox,ADirectoryName,cstFilename);
         IsFPCSourceDir;
       end else if Sender=TestBuildDirButton then begin
         // check test directory
-        SetComboBoxText(TestBuildDirComboBox,ADirectoryName);
+        SetComboBoxText(TestBuildDirComboBox,ADirectoryName,cstFilename);
         CheckTestDir;
       end;
 
@@ -274,7 +274,7 @@ begin
   begin
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
     FOldLazarusDir:=LazarusDirectory;
-    SetComboBoxText(LazarusDirComboBox,LazarusDirectory,MaxComboBoxCount);
+    SetComboBoxText(LazarusDirComboBox,LazarusDirectory,cstFilename,MaxComboBoxCount);
     with CompilerPathComboBox do
     begin
       Items.BeginUpdate;
@@ -285,22 +285,22 @@ begin
     end;
 
     FOldCompilerFilename:=CompilerFilename;
-    SetComboBoxText(CompilerPathComboBox,CompilerFilename,MaxComboBoxCount);
+    SetComboBoxText(CompilerPathComboBox,CompilerFilename,cstFilename,MaxComboBoxCount);
     FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
     FOldFPCSourceDir:=FPCSourceDirectory;
-    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
+    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,cstFilename,MaxComboBoxCount);
     MakePathComboBox.Items.Assign(MakeFileHistory);
     FOldMakeFilename:=MakeFilename;
-    SetComboBoxText(MakePathComboBox,MakeFilename,MaxComboBoxCount);
+    SetComboBoxText(MakePathComboBox,MakeFilename,cstFilename,MaxComboBoxCount);
     TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
     FOldTestDir:=TestBuildDirectory;
-    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
+    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,cstFilename,MaxComboBoxCount);
     CompilerMessagesComboBox.Items.Assign(CompilerMessagesFileHistory);
-    SetComboBoxText(CompilerMessagesComboBox,CompilerMessagesFilename,MaxComboBoxCount);
+    SetComboBoxText(CompilerMessagesComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
 
     // recent files and directories
-    SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
-    SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
+    SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles),cstCaseInsensitive);
+    SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles),cstCaseInsensitive);
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
     ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
     AutoCloseCompileDialogCheckBox.Checked:=AutoCloseCompileDialog;

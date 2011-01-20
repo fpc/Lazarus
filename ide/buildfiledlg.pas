@@ -586,7 +586,7 @@ begin
         ComboBox:=BuildWorkDirCombobox
       else if Sender=RunBrowseWorkDirButton then
         ComboBox:=RunWorkDirCombobox;
-      SetComboBoxText(ComboBox,NewFilename);
+      SetComboBoxText(ComboBox,NewFilename,cstFilename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally

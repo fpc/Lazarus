@@ -110,7 +110,7 @@ begin
 
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      SetComboBoxText(cmbDebuggerPath,AFilename);
+      SetComboBoxText(cmbDebuggerPath,AFilename,cstFilename);
       CheckExecutable(FOldDebuggerPathAndParams,cmbDebuggerPath.Text,
         lisEnvOptDlgInvalidDebuggerFilename,
         lisEnvOptDlgInvalidDebuggerFilenameMsg);
@@ -145,8 +145,8 @@ begin
 
   SetDebuggerClass(CurClass);
   if FCurDebuggerClass = nil
-  then SetComboBoxText(cmbDebuggerType, '(none)')
-  else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption);
+  then SetComboBoxText(cmbDebuggerType, '(none)',cstCaseInsensitive)
+  else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption,cstCaseInsensitive);
 
   txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
 end;
@@ -196,7 +196,7 @@ begin
       end;
     end;
   end;
-  SetComboBoxText(cmbDebuggerPath,Filename,20);
+  SetComboBoxText(cmbDebuggerPath,Filename,cstFilename,20);
 
   // get ptoperties
   PropertyGrid.Selection.Clear;

@@ -216,15 +216,15 @@ begin
        bakUserDefinedAddExt: BakProjTypeRadioGroup.ItemIndex:=4;
        bakSameName:      BakProjTypeRadioGroup.ItemIndex:=5;
       end;
-      SetComboBoxText(BakProjAddExtComboBox,AdditionalExtension);
+      SetComboBoxText(BakProjAddExtComboBox,AdditionalExtension,cstFilename);
       if MaxCounter<=0 then
-        SetComboBoxText(BakProjMaxCounterComboBox,BakMaxCounterInfiniteTxt)
+        SetComboBoxText(BakProjMaxCounterComboBox,BakMaxCounterInfiniteTxt,cstCaseInsensitive)
       else
-        SetComboBoxText(BakProjMaxCounterComboBox,IntToStr(MaxCounter));
+        SetComboBoxText(BakProjMaxCounterComboBox,IntToStr(MaxCounter),cstCaseInsensitive);
       if SubDirectory<>'' then
-        SetComboBoxText(BakProjSubDirComboBox,SubDirectory)
+        SetComboBoxText(BakProjSubDirComboBox,SubDirectory,cstFilename)
       else
-        SetComboBoxText(BakProjSubDirComboBox,dlgBakNoSubDirectory);
+        SetComboBoxText(BakProjSubDirComboBox,dlgBakNoSubDirectory,cstFilename);
     end;
     BakTypeRadioGroupClick(BakProjTypeRadioGroup);
     with BackupInfoOtherFiles do
@@ -237,15 +237,15 @@ begin
        bakUserDefinedAddExt: BakOtherTypeRadioGroup.ItemIndex:=4;
        bakSameName:      BakOtherTypeRadioGroup.ItemIndex:=5;
       end;
-      SetComboBoxText(BakOtherAddExtComboBox,AdditionalExtension);
+      SetComboBoxText(BakOtherAddExtComboBox,AdditionalExtension,cstFilename);
       if MaxCounter<=0 then
-        SetComboBoxText(BakOtherMaxCounterComboBox,BakMaxCounterInfiniteTxt)
+        SetComboBoxText(BakOtherMaxCounterComboBox,BakMaxCounterInfiniteTxt,cstCaseInsensitive)
       else
-        SetComboBoxText(BakOtherMaxCounterComboBox,IntToStr(MaxCounter));
+        SetComboBoxText(BakOtherMaxCounterComboBox,IntToStr(MaxCounter),cstCaseInsensitive);
       if SubDirectory<>'' then
-        SetComboBoxText(BakOtherSubDirComboBox,SubDirectory)
+        SetComboBoxText(BakOtherSubDirComboBox,SubDirectory,cstFilename)
       else
-        SetComboBoxText(BakOtherSubDirComboBox,dlgBakNoSubDirectory);
+        SetComboBoxText(BakOtherSubDirComboBox,dlgBakNoSubDirectory,cstFilename);
     end;
     BakTypeRadioGroupClick(BakOtherTypeRadioGroup);
   end;
