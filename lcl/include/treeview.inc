@@ -1057,18 +1057,20 @@ end;
 
 function TTreeNode.IndexOf(AValue: TTreeNode): Integer;
 begin
-  if (AValue=nil) or (AValue.FParent<>Self) then begin
+  if (AValue = nil) or (AValue.FParent <> Self) then
+  begin
     Result:=-1;
     exit;
   end;
-  Result:=AValue.GetIndex;
+  Result := AValue.GetIndex;
 end;
 
 function TTreeNode.IndexOfText(const NodeText: string): Integer;
 begin
-  Result:=Count-1;
-  while Result>=0 do begin
-    if FItems[Result].Text=NodeText then exit;
+  Result := Count - 1;
+  while Result >= 0 do
+  begin
+    if FItems[Result].Text = NodeText then exit;
     dec(Result);
   end;
 end;
@@ -1084,19 +1086,20 @@ function TTreeNode.GetTextPath: string;
 var
   Node: TTreeNode;
 begin
-  Result:='';
-  Node:=Self;
-  while Node<>nil do begin
-    if Result<>'' then
-      Result:='/'+Result;
-    Result:=Node.Text+Result;
-    Node:=Node.Parent;
+  Result := '';
+  Node := Self;
+  while Assigned(Node) do
+  begin
+    if Result <> '' then
+      Result := '/' + Result;
+    Result := Node.Text + Result;
+    Node := Node.Parent;
   end;
 end;
 
 function TTreeNode.GetCount: Integer;
 begin
-  Result:=FCount;
+  Result := FCount;
 end;
 
 procedure TTreeNode.EndEdit(Cancel: Boolean);
@@ -4921,7 +4924,7 @@ begin
   if Button=mbLeft then
     MouseCapture := False;
   if (Button=mbLeft)
-  and (fStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [])
+  and (FStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [])
   then begin
     //AquirePrimarySelection;
     if (tvsEditOnMouseUp in FStates) and (not ReadOnly)
@@ -4929,7 +4932,7 @@ begin
     and (GetNodeAt(fMouseDownPos.X,fMouseDownPos.Y)=GetNodeAt(X,Y)) then
       BeginEditing(Selected);
   end;
-  fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
+  FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
 end;
 
 procedure TCustomTreeView.Notification(AComponent: TComponent;
@@ -5125,13 +5128,14 @@ end;
 
 procedure TCustomTreeView.InternalSelectionChanged;
 begin
-  if fSelectionChangeEventLock>0 then begin
-    Include(fStates,tvsSelectionChanged);
-  end else begin
-    Exclude(fStates,tvsSelectionChanged);
+  if FSelectionChangeEventLock > 0 then
+    Include(FStates, tvsSelectionChanged)
+  else
+  begin
+    Exclude(FStates, tvsSelectionChanged);
     DoSelectionChanged;
-    FChangeTimer.Enabled := false;
-    FChangeTimer.Enabled := true;
+    FChangeTimer.Enabled := False;
+    FChangeTimer.Enabled := True;
     //debugln('TCustomTreeView.InternalSelectionChanged');
   end;
 end;
@@ -5306,16 +5310,16 @@ end;
 
 procedure TCustomTreeView.LockSelectionChangeEvent;
 begin
-  inc(fSelectionChangeEventLock);
+  inc(FSelectionChangeEventLock);
 end;
 
 procedure TCustomTreeView.UnlockSelectionChangeEvent;
 begin
-  dec(fSelectionChangeEventLock);
-  if fSelectionChangeEventLock<0 then
+  dec(FSelectionChangeEventLock);
+  if FSelectionChangeEventLock<0 then
     RaiseGDBException('TCustomTreeView.UnlockSelectionChangeEvent');
-  if (fSelectionChangeEventLock=0)
-  and (tvsSelectionChanged in fStates) then
+  if (FSelectionChangeEventLock=0)
+  and (tvsSelectionChanged in FStates) then
     InternalSelectionChanged;
 end;
 

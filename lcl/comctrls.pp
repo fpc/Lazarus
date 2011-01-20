@@ -2437,7 +2437,7 @@ type
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FSelectedColor: TColor;
     FSelectedNode: TTreeNode;
-    fSelectionChangeEventLock: integer;
+    FSelectionChangeEventLock: integer;
     fSeparatorColor: TColor;
     FSortType: TSortType;
     FStateChangeLink: TChangeLink;
