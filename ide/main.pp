@@ -13894,6 +13894,8 @@ begin
 
   // create defines for the lazarus sources
   SetupLazarusDirectory(InteractiveSetup);
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LazarusDir']:=
+    EnvironmentOptions.LazarusDirectory;
 
   MainBuildBoss.SetBuildTargetProject1(false);
 
