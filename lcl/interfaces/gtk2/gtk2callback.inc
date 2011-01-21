@@ -454,7 +454,9 @@ function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl
 begin
   Result := CallBackDefaultReturn;
   if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
-  if GTK_IS_SPIN_BUTTON(Widget) then
+  // prior to gtk2-2.12 there's bug with signalling of spin button
+  // which leads to crash.See issue #18554
+  if GTK_IS_SPIN_BUTTON(Widget) and (gtk_minor_version >= 12) then
     gtk_spin_button_update(PGtkSpinButton(Widget));
 end;
 
