@@ -96,6 +96,7 @@ begin
   if ButtonColorAutoSize and Drawing then
   begin
     T := GetTextSize(Drawing, PaintRect); // ToDo: wordbreak, margins, layout
+    //debugln(['TColorButton.GetGlyphSize ',DbgSName(Self),' Caption=',dbgstr(Caption),' T=',dbgs(T),' BorderWidth=',BorderWidth]);
     if Caption = '' then S := 0
     else S := Spacing;
 
@@ -115,6 +116,7 @@ begin
     Result.CX := ButtonColorSize;
     Result.CY := ButtonColorSize;
   end;
+  //debugln(['TColorButton.GetGlyphSize ',DbgSName(Self),' Drawing=',Drawing,' PaintRect=',dbgs(PaintRect),' Result=',dbgs(Result),' BoundsRect=',dbgs(BoundsRect),' Spacing=',Spacing,' Margin=',Margin]);
 end;
 
 function TColorButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
@@ -123,6 +125,7 @@ function TColorButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
 var
   Size: TSize;
 begin
+  //debugln(['TColorButton.DrawGlyph ',DbgSName(Self),' AClient=',dbgs(AClient),' Offset=',dbgs(AOffset),' ']);
   Canvas.Pen.Color := clBlack;
   if AState = bsDisabled then
   begin
@@ -137,7 +140,7 @@ begin
   Size := GetGlyphSize(true,AClient);
   
   Result := Bounds(AClient.Left + AOffset.X, AClient.Top + AOffset.Y,
-    Size.CX - 1, Size.CY - 1);
+                   Size.CX - 1, Size.CY - 1);
   Canvas.Rectangle(Result);
 end;
 

@@ -583,7 +583,7 @@ begin
       end;
   end;
 
-  if HasGlyph or HasText then
+  if HasGlyph and HasText then
     S:= Spacing
   else
     S:= 0;
