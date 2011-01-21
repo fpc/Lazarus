@@ -92,23 +92,27 @@ function TColorButton.GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize;
 var
   T: TSize;
   S: Integer;
+  M: LongInt;
 begin
   if ButtonColorAutoSize and Drawing then
   begin
-    T := GetTextSize(Drawing, PaintRect); // ToDo: wordbreak, margins, layout
+    T := GetTextSize(Drawing, PaintRect); // ToDo: wordbreak
     //debugln(['TColorButton.GetGlyphSize ',DbgSName(Self),' Caption=',dbgstr(Caption),' T=',dbgs(T),' BorderWidth=',BorderWidth]);
-    if Caption = '' then S := 0
+    if (T.cx = 0) or (T.cy=0) then S := 0
     else S := Spacing;
+    M:=BorderWidth;
+    if Margin>=0 then
+      M:=Margin;
 
     if Layout in [blGlyphLeft, blGlyphRight] then
     begin
-      Result.CX := PaintRect.Right - PaintRect.Left - 2 * BorderWidth - S - T.CX;
-      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * BorderWidth;
+      Result.CX := PaintRect.Right - PaintRect.Left - 2 * M - S - T.CX;
+      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * M;
     end
     else
     begin
-      Result.CX := PaintRect.Right - PaintRect.Left - 2 * BorderWidth;
-      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * BorderWidth - S - T.CY;
+      Result.CX := PaintRect.Right - PaintRect.Left - 2 * M;
+      Result.CY := PaintRect.Bottom - PaintRect.Top - 2 * M - S - T.CY;
     end;
   end
   else
