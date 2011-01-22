@@ -11,6 +11,21 @@ uses
 
 type
 
+  { TReplacementParam }
+
+  TReplacementParam = class
+  private
+    fParamNum: Integer;    // Sequence number of the parameter.
+    fParamLen: Integer;    // Parameter's length in the replacement string ($+num).
+    fStrPosition: Integer; // Character index in replacement string.
+  public
+    constructor Create(aParamNum, aParamLen, aStrPosition: Integer);
+    destructor Destroy; override;
+    property ParamNum: Integer read fParamNum;
+    property ParamLen: Integer read fParamLen;
+    property StrPosition: Integer read fStrPosition;
+  end;
+
   { TFuncReplacement }
 
   TFuncReplacement = class
@@ -125,6 +140,21 @@ begin
   finally
     RFForm.Free;
   end;
+end;
+
+{ TReplacementParam }
+
+constructor TReplacementParam.Create(aParamNum, aParamLen, aStrPosition: Integer);
+begin
+  inherited Create;
+  fParamNum:=aParamNum;
+  fParamLen:=aParamLen;
+  fStrPosition:=aStrPosition;
+end;
+
+destructor TReplacementParam.Destroy;
+begin
+  inherited Destroy;
 end;
 
 

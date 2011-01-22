@@ -359,96 +359,56 @@ begin
   Result:=true;
 end;
 
-procedure SplitParam(const aStr: string; aDelimiter: Char; ResultList: TStringList);
-// A modified split function. Removes '$' in front of every token.
-
-  procedure SetItem(Start, Len: integer); // Add the item.
-  begin
-    while (aStr[Start]=' ') do begin      // Trim leading space.
-      Inc(Start);
-      Dec(Len);
-    end;
-    while (aStr[Start+Len-1]=' ') do      // Trim trailing space.
-      Dec(Len);
-    if (aStr[Start]='$') then begin       // Parameters must begin with '$'.
-      Inc(Start);
-      Dec(Len);
-    end
-    else
-      raise EDelphiConverterError.Create('Replacement function parameter should start with "$".');
-    ResultList.Add(Copy(aStr, Start, Len));
-  end;
-
-var
-  i, Start, EndPlus1: Integer;
-begin
-  ResultList.Clear;
-  Start:=1;
-  repeat
-    i:=Start;
-    while (i<Length(aStr)) and (aStr[i]<>aDelimiter) do
-      Inc(i);                             // Next delimiter.
-    EndPlus1:=i;
-    if i<Length(aStr) then
-    begin
-      SetItem(Start, EndPlus1-Start);
-      Start:=i+1;                         // Start of next item.
-    end
-    else begin
-      EndPlus1:=i+1;
-      if EndPlus1>=Start then
-        SetItem(Start, EndPlus1-Start);   // Copy the rest to last item.
-      Break;                              // Out of the loop.
-    end;
-  until False;
-end;
-
 function TConvDelphiCodeTool.ReplaceFuncsInSource: boolean;
 // Replace the function names and parameters in source.
 var
-  // Replacement parameter positions, will be converted to integers.
-  ParamList: TStringList;
-  BodyEnd: Integer;                     // End of function body.
+  ReplacementParams: TObjectList;           // Replacement parameters.
 
   function ParseReplacementParams(const aStr: string): integer;
   // Parse replacement params. They show which original params are copied where.
   // Returns the first position where comments can be searched from.
   var
-    ParamBeg, ParamEnd: Integer;        // Start and end of parameters.
-    s: String;
+    i, xNum, xStart, xLen: Integer;
   begin
-    Result:=1;
-    ParamBeg:=Pos('(', aStr);
-    if ParamBeg>0 then begin
-      ParamEnd:=PosEx(')', aStr, ParamBeg+1);
-      if ParamEnd=0 then
-        raise EDelphiConverterError.Create('")" is missing from replacement function.');
-      s:=Copy(aStr, ParamBeg+1, ParamEnd-ParamBeg-1);
-      SplitParam(s, ',', ParamList);    // The actual parameter list.
-      BodyEnd:=ParamBeg-1;
-      Result:=ParamEnd+1;
+    i:=0;
+    while i<Length(aStr) do begin
+      Inc(i);
+      if aStr[i]='$' then begin
+        xStart:=i;
+        Inc(i);                           // Skip '$'
+        while (i<Length(aStr)) and (aStr[i] in ['0'..'9']) do
+          Inc(i);                         // Get the number after '$'
+        xLen:=i-xStart;
+        if xLen<2 then
+          raise EDelphiConverterError.Create('"$" should be followed by a number.');
+        xNum:=StrToInt(copy(aStr, xStart+1, xLen-1)); // Leave out '$', convert number.
+        if xNum < 1 then
+          raise EDelphiConverterError.Create(
+                           'Replacement function parameter number should be >= 1.');
+        ReplacementParams.Add(TReplacementParam.Create(xNum, xLen, xStart));
+      end;
     end;
+    if aStr[i]<>')' then
+      raise EDelphiConverterError.Create('")" is missing from replacement function.');
+    Result:=i+1;
   end;
 
-  function CollectParams(aParams: TStringList): string;
-  // Collect parameters from original call. Construct and return a new parameter list.
-  //  aParams - parameters from the original function call.
+  function InsertParams2Replacement(FuncInfo: TFuncReplacement): string;
+  // Construct a new funcion call, inserting original parameters to replacement str.
+  //  FuncInfo - Replacement string + parameters from the original function call.
   var
-    Param: String;
-    ParamPos: Integer;             // Position of parameter in the original call.
-    i: Integer;
+    RP: TReplacementParam;
+    ss, se: String;
+    i: integer;
   begin
-    Result:='';
-    for i:=0 to ParamList.Count-1 do begin
-      ParamPos:=StrToInt(ParamList[i]);
-      if ParamPos < 1 then
-        raise EDelphiConverterError.Create('Replacement function parameter number should be >= 1.');
-      Param:='nil';                // Default value if not found from original code.
-      if ParamPos<=aParams.Count then
-        Param:=aParams[ParamPos-1];
-      if Result<>'' then
-        Result:=Result+', ';
-      Result:=Result+Param;
+    Result:=FuncInfo.ReplFunc;
+    for i:=ReplacementParams.Count-1 downto 0 do begin
+      RP:=TReplacementParam(ReplacementParams[i]);
+      if RP.ParamNum<=FuncInfo.Params.Count then begin
+        ss:=copy(Result, 1, RP.StrPosition-1);        // String before the param
+        se:=copy(Result, RP.StrPosition+RP.ParamLen, MaxInt); // and after it.
+        Result:=ss+FuncInfo.Params[RP.ParamNum-1]+se;
+      end;
     end;
   end;
 
@@ -465,44 +425,38 @@ var
     else begin
       CommChBeg:=PosEx('{', aStr, aPossibleStartPos);
       if CommChBeg<>0 then begin
-      CommBeg:=CommChBeg+1;
+        CommBeg:=CommChBeg+1;
         i:=PosEx('}', aStr, CommBeg);
         if i<>0 then
           CommEnd:=i-1;
       end;
     end;
-    if CommChBeg<>0 then begin
-      if BodyEnd=-1 then
-        BodyEnd:=CommChBeg-1;
+    if CommChBeg<>0 then
       Result:=Trim(Copy(aStr, CommBeg, CommEnd-CommBeg+1));
-    end;
   end;
 
 var
   FuncInfo: TFuncReplacement;
   PossibleCommentPos: Integer;               // Start looking for comments here.
   i: Integer;
-  s, NewFunc, NewParamStr, Comment: String;
+  s, NewFunc, Comment: String;
 begin
   Result:=false;
-  ParamList:=TStringList.Create;
+  ReplacementParams:=TObjectList.Create;
   try
     // Replace from bottom to top.
     for i:=fFuncsToReplace.Count-1 downto 0 do begin
       FuncInfo:=TFuncReplacement(fFuncsToReplace[i]);
-      BodyEnd:=-1;
-      // Update ParamList.
+      // Update ReplacementParams.
+      ReplacementParams.Clear;
       PossibleCommentPos:=ParseReplacementParams(FuncInfo.ReplFunc);
       // Replace only if the params match somehow, so eg. a variable is not replaced.
-      if (FuncInfo.Params.Count>0) or (ParamList.Count=0) then begin
-        NewParamStr:=CollectParams(FuncInfo.Params);
+      if (FuncInfo.Params.Count>0) or (ReplacementParams.Count=0) then begin
+        NewFunc:=InsertParams2Replacement(FuncInfo);
         Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
         // Separate function body
-        if BodyEnd=-1 then
-          BodyEnd:=Length(FuncInfo.ReplFunc);
-        NewFunc:=Trim(Copy(FuncInfo.ReplFunc, 1, BodyEnd));
-        NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
-          [NewFunc, NewParamStr, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
+        NewFunc:=Format('%s%s { *Converted from %s* %s }',
+          [NewFunc, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
         // Old function call with params for IDE message output.
         s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
         s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
@@ -518,7 +472,7 @@ begin
       end;
     end;
   finally
-    ParamList.Free;
+    ReplacementParams.Free;
   end;
   Result:=true;
 end;
@@ -579,9 +533,9 @@ var
               ReadNextAtom;
               if (CurPos.StartPos>SrcLen) or (CurPos.Flag=cafComma) then
                 break;
-              if (CurPos.Flag=cafRoundBracketOpen) then
+              if CurPos.Flag=cafRoundBracketOpen then
                 Inc(BracketCount)
-              else if (CurPos.Flag=cafRoundBracketClose) then begin
+              else if CurPos.Flag=cafRoundBracketClose then begin
                 if BracketCount=0 then
                   break;
                 Dec(BracketCount);
