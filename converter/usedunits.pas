@@ -634,18 +634,21 @@ function TUsedUnitsTool.AddThreadSupport: TModalResult;
 // AddUnitToSpecificUsesSection would insert cthreads in the beginning automatically
 // It doesn't work with {$IFDEF UNIX} directive -> use UsesInsertPolicy.
 var
+  i: Integer;
   OldPolicy: TUsesInsertPolicy;
 begin
   Result:=mrCancel;
-  with fCTLink do
-  try
-    OldPolicy:=SrcCache.BeautifyCodeOptions.UsesInsertPolicy;
-    SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=uipFirst;
-    if not CodeTool.AddUnitToSpecificUsesSection(fMainUsedUnits.fUsesSection,
-                         '{$IFDEF UNIX}cthreads{$ENDIF}', '', SrcCache) then exit;
-  finally
-    SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=OldPolicy;
-  end;
+  if not ( fMainUsedUnits.fExistingUnits.Find('cthreads', i) or
+           fImplUsedUnits.fExistingUnits.Find('cthreads', i) ) then
+    with fCTLink do
+    try
+      OldPolicy:=SrcCache.BeautifyCodeOptions.UsesInsertPolicy;
+      SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=uipFirst;
+      if not CodeTool.AddUnitToSpecificUsesSection(fMainUsedUnits.fUsesSection,
+                           '{$IFDEF UNIX}cthreads{$ENDIF}', '', SrcCache) then exit;
+    finally
+      SrcCache.BeautifyCodeOptions.UsesInsertPolicy:=OldPolicy;
+    end;
   Result:=mrOK;
 end;
 
