@@ -455,16 +455,19 @@ begin
     AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
     // WindowsAPI
     Categ:='WindowsAPI';
+    AddDefaultCategory(Categ);
     AddFunc(Categ, 'ShellExecute',
                    'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
     AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL',''); // In Windows MMSystems unit.
     // OpenGL
     Categ:='OpenGL';
+    AddDefaultCategory(Categ);
     AddFunc(Categ, 'glIsEnabled', 'Boolean(glIsEnabled($1))', '', 'GL');
     AddFunc(Categ, 'glIsList',    'Boolean(glIsList($1))',    '', 'GL');
     AddFunc(Categ, 'glIsTexture', 'Boolean(glIsTexture($1))', '', 'GL');
-    // In glColorMask, glDepthMask and gluQuadricTexture :
-    //  the parameter types should be typecasted, too. Not supported yet.
+    AddFunc(Categ, 'glColorMask', 'glColorMask(GLboolean($1),GLboolean($2),GLboolean($3),GLboolean($4))', '', 'GL');
+    AddFunc(Categ, 'glDepthMask', 'glDepthMask(GLboolean($1))', '', 'GL');
+    AddFunc(Categ, 'gluQuadricTexture', 'gluQuadricTexture($1,GLboolean($2))', '', 'GL');
     // Others
     Categ:='Other';
     AddDefaultCategory(Categ);
