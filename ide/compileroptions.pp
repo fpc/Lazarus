@@ -2582,15 +2582,20 @@ begin
 
 
   // additional Linker options
-  if PassLinkerOptions and (not (ccloNoLinkerOpts in Flags))
-  and (not (ccloNoMacroParams in Flags)) then begin
-    CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
-    if (CurLinkerOptions<>'') then
-      switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
+  if (not (ccloNoLinkerOpts in Flags))
+  and (not (ccloNoMacroParams in Flags)) then
+  begin
+    if PassLinkerOptions then
+    begin
+      CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
+      if (CurLinkerOptions<>'') then
+        switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
+    end;
 
     // inherited Linker options
     InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,
-      not (ccloAbsolutePaths in Flags),coptParsed);
+                                   not (ccloAbsolutePaths in Flags),coptParsed);
+    //debugln(['TBaseCompilerOptions.MakeOptionsString InhLinkerOpts="',InhLinkerOpts,'"']);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
 
