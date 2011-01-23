@@ -441,7 +441,7 @@ begin
   {$IFnDEF DBG_VERBOSE_FULL_DATA} if length(Result) < 300 then  {$ENDIF}
   debugln('<< TCmdLineDebugger.ReadLn "',Result,'"')
   {$IFnDEF DBG_VERBOSE_FULL_DATA}
-  else  debugln(['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-100, 100),'"'])
+  else  debugln(['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-99, 100),'"'])
   {$ENDIF}
   ;
   {$ENDIF}
