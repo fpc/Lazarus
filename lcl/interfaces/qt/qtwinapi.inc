@@ -2917,7 +2917,7 @@ begin
     if (ScrollInfo.fMask and SIF_RANGE) <> 0
     then begin
       ScrollInfo.nMin:= QtScrollBar.getMin;
-      ScrollInfo.nMax:= QtScrollBar.getMax;
+      ScrollInfo.nMax:= QtScrollBar.getMax + QtScrollBar.getPageStep;
     end;
     // PAGE
     if (ScrollInfo.fMask and SIF_PAGE) <> 0 then
@@ -5355,6 +5355,7 @@ var
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
     begin
+      ScrollBar.TrackPos := ScrollInfo.nTrackPos;
       // from MSDN: the SetScrollInfo function ignores this member
       // ScrollBar.setSliderPosition(ScrollInfo.nTrackPos);
     end;
