@@ -514,8 +514,6 @@ begin
 
   DrawDetails := GetDrawDetails;
 
-  ClientSize.cx:= PaintRect.Right - PaintRect.Left;
-  ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
   PreferredWidth:=0;
   PreferredHeight:=0;
 
@@ -528,7 +526,9 @@ begin
     FixedWidth:=WidthIsAnchored;
     FixedHeight:=HeightIsAnchored;
   end;
-
+  ClientSize.cx:= PaintRect.Right - PaintRect.Left;
+  ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
+  //debugln(['TCustomSpeedButton.MeasureDraw AAA1 ',DbgSName(Self),' PaintRect=',dbgs(PaintRect)]);
   // compute size of glyph
   GlyphSize := GetGlyphSize(Draw,PaintRect);
   GlyphWidth := GlyphSize.CX;
@@ -536,10 +536,11 @@ begin
     GlyphWidth:=GlyphWidth div NumGlyphs;
   GlyphHeight := GlyphSize.CY;
   HasGlyph:=(GlyphWidth<>0) and (GlyphHeight<>0);
+  //debugln(['TCustomSpeedButton.MeasureDraw AAA2 ',DbgSName(Self),' PaintRect=',dbgs(PaintRect),' GlyphSize=',GlyphWidth,'x',GlyphHeight]);
 
   // compute size of text
   CurLayout:=BidiAdjustButtonLayout(UseRightToLeftReading, Layout);
-  if Caption<>'' then begin
+  if ShowCaption and (Caption<>'') then begin
     TextRect:=PaintRect;
     // for wordbreak compute the maximum size for the text
     if Margin>0 then
@@ -627,6 +628,8 @@ begin
         S:= (TotalSize.cy - TextSize.cy) div 2;
     end;
   end;
+
+  //debugln(['TCustomSpeedButton.MeasureDraw AAA3 ',DbgSName(Self),' PaintRect=',dbgs(PaintRect),' GlyphSize=',GlyphWidth,'x',GlyphHeight,' TextSize=',TextSize.cx,'x',TextSize.cy,' S=',S,' M=',M]);
 
   if Draw then
   begin
