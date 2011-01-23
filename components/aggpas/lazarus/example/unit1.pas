@@ -46,7 +46,7 @@ begin
     Brush.Color:=clWhite;
     FillRect(0,0,Width,Height);
 
-    {// a star with 5 corners, solid blue outline, filled solid yellow
+    // a star with 5 corners, solid blue outline, filled solid yellow
     Brush.Color:=clYellow;
     Pen.Color:=clBlue;
     Pen.Width:=8;
@@ -63,7 +63,7 @@ begin
     Font.LoadFromFile(FontFilename);
     Font.Size:=18;
     Font.Color:=clRed;
-    TextOut(10,30,'LCL and AggPas');}
+    TextOut(10,30,'LCL and AggPas');
   end;
 
   // convert to LCL native pixel format
