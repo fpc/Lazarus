@@ -41,7 +41,6 @@ uses
   carbonthemes,
   carbonmenus,
   carbonwsgrids,
-  carbonwsfilectrl,
   carbonwsimglist,
   carboncanvas,
   carbonwscalendar;

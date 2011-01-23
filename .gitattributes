@@ -4866,7 +4866,6 @@ lcl/interfaces/carbon/carbonwsdialogs.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsextctrls.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsextdlgs.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsfactory.pas svneol=native#text/pascal
-lcl/interfaces/carbon/carbonwsfilectrl.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsforms.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsgrids.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsimglist.pp svneol=native#text/pascal
@@ -5237,7 +5236,6 @@ lcl/interfaces/win32/win32wsextdlgs.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextdlgs.rc svneol=CRLF#text/plain eol=crlf
 lcl/interfaces/win32/win32wsextdlgs.res -text
 lcl/interfaces/win32/win32wsfactory.pas svneol=native#text/pascal
-lcl/interfaces/win32/win32wsfilectrl.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsforms.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsgrids.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsimglist.pp svneol=native#text/pascal

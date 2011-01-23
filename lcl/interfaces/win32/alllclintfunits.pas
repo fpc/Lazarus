@@ -7,7 +7,6 @@ uses
   win32wsmaskedit,
   win32wsextdlgs,
   win32wsarrow,
-  win32wsfilectrl,
   win32wschecklst,
   win32wsstdctrls,
   win32wsdbgrids,
