@@ -221,7 +221,8 @@ end;
 
 destructor TNotebook.Destroy;
 begin
-  FPageList.Free;
+  FreeAndNil(FPageList);
+  FreeAndNil(FPages);
 
   inherited Destroy;
 end;
