@@ -1511,6 +1511,7 @@ end;"/>
       </Item302>
       <Item303>
         <Filename Value="android/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="interfaces"/>
       </Item303>
     </Files>
