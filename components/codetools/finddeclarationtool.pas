@@ -5831,6 +5831,7 @@ begin
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
   BuildTree(true);
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
+  if Tree.Root=nil then exit;
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
