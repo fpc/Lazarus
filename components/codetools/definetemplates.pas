@@ -1811,13 +1811,13 @@ begin
   end;
 
   if Config.Undefines<>nil then begin
-    Node:=Config.Defines.Tree.FindLowest;
+    Node:=Config.Undefines.Tree.FindLowest;
     while Node<>nil do begin
       StrItem:=PStringToStringTreeItem(Node.Data);
       NewDefTempl:=TDefineTemplate.Create('Undefine '+StrItem^.Name,
            'Macro',StrItem^.Name,'',da_UndefineRecurse);
       Result.AddChild(NewDefTempl);
-      Node:=Config.Defines.Tree.FindSuccessor(Node);
+      Node:=Config.Undefines.Tree.FindSuccessor(Node);
     end;
   end;
 

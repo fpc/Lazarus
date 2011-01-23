@@ -305,7 +305,7 @@ begin
   UpDownWidth := R.Right - R.Left;
 
   DWP := BeginDeferWindowPos(2);
-  DeferWindowPos(DWP, WinHandle, 0, Left, Top, Width - UpDownWidth + 2, Height, SWP_NOZORDER or SWP_NOACTIVATE);
+  DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width - UpDownWidth + 2, Height, SWP_NOACTIVATE);
   DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth, Top, UpDownWidth, Height, SWP_NOZORDER or SWP_NOACTIVATE);
   EndDeferWindowPos(DWP);
 
