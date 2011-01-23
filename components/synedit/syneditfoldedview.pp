@@ -27,6 +27,14 @@ unit SynEditFoldedView;
 {$coperators on}
 {$IFDEF CPUPOWERPC} {$INLINE OFF} {$ENDIF} (* Workaround for bug 12576 (fpc) see bugs.freepascal.org/view.php?id=12576 *)
 
+{$IFDEF SynFoldDebug}
+  {$DEFINE SynDebug}
+  {$DEFINE SynFoldSaveDebug}
+{$ENDIF}
+{$IFDEF SynFoldSaveDebug}
+  {$DEFINE SynDebug}
+{$ENDIF}
+
 interface
 
 uses
@@ -229,6 +237,12 @@ type
   );
   TSynEditFoldLineCapabilities = set of TSynEditFoldLineCapability;
   TSynEditFoldType = (scftOpen, scftFold, scftHide, scftAll, scftInvalid);
+  {$IFDEF SynFoldSaveDebug}
+const
+  SynEditFoldTypeNames: Array [TSynEditFoldType] of string =
+    ('scftOpen', 'scftFold', 'scftHide', 'scftAll', 'scftInvalid');
+type
+  {$ENDIF}
 
   { TSynEditFoldProvider }
 
@@ -474,6 +488,12 @@ type
   end;
   TSynEditFoldExportCoderStates =
     (sfecAtBegin, sfecAtPoint, sfecInRepeatCount, sfecInvalid, sfecAtEOF);
+  {$IFDEF SynFoldSaveDebug}
+const
+  SynEditFoldExportCoderStates: Array [TSynEditFoldExportCoderStates] of String =
+    ('sfecAtBegin', 'sfecAtPoint', 'sfecInRepeatCount', 'sfecInvalid', 'sfecAtEOF');
+type
+  {$ENDIF}
 
   { TSynEditFoldExportCoder }
 
@@ -857,6 +877,9 @@ end;
 
 procedure TSynEditFoldExportStream.AppendMem(AMem: Pointer; ALen: Integer);
 begin
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.AppendMem len=', ALen]);
+  {$ENDIF}
   FMem := nil;
   if ALen > 0 then
     System.Move(AMem^, GrowData(ALen)^, ALen);
@@ -866,6 +889,9 @@ procedure TSynEditFoldExportStream.AppendString(ATxt: String);
 var
   l: Integer;
 begin
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.AppendString ', ATxt]);
+  {$ENDIF}
   FMem := nil;
   l := length(ATxt);
   if l > 0 then
@@ -874,12 +900,18 @@ end;
 
 procedure TSynEditFoldExportStream.AppendNum(ANum: Integer);
 begin
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.AppendNum ', ANum]);
+  {$ENDIF}
   FMem := nil;
   AppendString(EncodeIntEx(ANum));
 end;
 
 procedure TSynEditFoldExportStream.AppendNumEx(ANum: Integer);
 begin
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.AppendNumEx ', ANum]);
+  {$ENDIF}
   FMem := nil;
   AppendString(EncodeIntEx2(ANum));
 end;
@@ -939,11 +971,17 @@ end;
 function TSynEditFoldExportStream.ReadNum: Integer;
 begin
   Result := InternalReadNum(FPos);
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.ReadNum ', Result]);
+  {$ENDIF}
 end;
 
 function TSynEditFoldExportStream.ReadNumEx: Integer;
 begin
   Result := InternalReadNumEx(FPos);
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportStream.ReadNumEx ', Result]);
+  {$ENDIF}
 end;
 
 function TSynEditFoldExportStream.EOF: Boolean;
@@ -990,6 +1028,9 @@ begin
       break;
     FExportStream.AppendString(AStream.ReadString(2));
   end;
+  {$IFDEF SynFoldSaveDebug}
+  DebugLn(['TSynEditFoldExportCoder.Create(<from input-stream> FType=', dbgs(FFoldType), '  txtLen=', FExportStream.Len, ' Txt="', FExportStream.Text, '"']);
+  {$ENDIF}
   Reset;
 end;
 
@@ -1065,6 +1106,9 @@ procedure TSynEditFoldExportCoder.AddNode(aX, aY, aLen: Integer; aFoldType: TSyn
         In the first <ConsecutiveFoldedCount> after <NodePos> the bit is unused, since nodepos is continued.
 *)
 begin
+  {$IFDEF SynFoldSaveDebug}
+  debugln(['TSynEditFoldExportCoder.AddNode FType=', dbgs(FFoldType),'   X=', aX, ' Y=', aY, 'Len=', aLen, 'FType=', SynEditFoldTypeNames[aFoldType], ' WCacheLen=', FWriteCacheLen]);
+  {$ENDIF}
   if (FWriteCacheLen = 0) and (aFoldType = scftOpen) then
     exit;
   if FWriteCacheLen >= length(FWriteCache) then
@@ -1172,6 +1216,9 @@ begin
     FExportStream.Clear;
     exit;
   end;
+  {$IFDEF SynFoldSaveDebug}
+  DebugLnEnter(['TSynEditFoldExportCoder.Finish FType=', dbgs(FFoldType)]);
+  {$ENDIF}
 
   FirstLine := 0;
   if (FWriteCacheTypes * [scftFold, scftHide] = [scftFold, scftHide]) then begin
@@ -1214,6 +1261,9 @@ begin
     FExportStream.AppendNum  (FWriteCache[i2-1].aY - FirstLine);  // Last folded Coords
     FExportStream.AppendNumEx(FWriteCache[i2-1].aX);
   end;
+  {$IFDEF SynFoldSaveDebug}
+  DebugLnExit(['TSynEditFoldExportCoder.Finish FType=', dbgs(FFoldType), '  txtLen=', FExportStream.Len, ' Txt="', FExportStream.Text, '"']);
+  {$ENDIF}
 end;
 
 function TSynEditFoldExportCoder.ReadNode(aX, aY: Integer; aLen: Integer): TSynEditFoldType;
@@ -1229,12 +1279,23 @@ function TSynEditFoldExportCoder.ReadNode(aX, aY: Integer; aLen: Integer): TSynE
   end;
   function Invalidate: TSynEditFoldType;
   begin
+    {$IFDEF SynFoldSaveDebug}
+    DebugLn(['Invalidate']);
+    {$ENDIF}
     FReadState := sfecInvalid;
     Result := scftInvalid;
   end;
 var
   i: Integer;
 begin
+  {$IFDEF SynFoldSaveDebug}
+  DebugLnEnter(['TSynEditFoldExportCoder.Readnode  X=', aX, ' Y=', aY, ' Len=',aLen,
+                '   ReadState=',SynEditFoldExportCoderStates[FReadState],
+                ' FReadCount=', FReadCount, ' FReadY=', FReadY, ' FReadX=', FReadX,
+                ' FReadSumLen=', FReadSumLen, ' FReadType=', SynEditFoldTypeNames[FReadType]
+                 ]);
+  try
+  {$ENDIF}
   case FReadState of
     sfecAtBegin, sfecAtPoint:
       begin
@@ -1278,6 +1339,7 @@ begin
           exit(Invalidate);
 
         FReadLastY := FReadY;
+        FReadSumLen := 0; // was len of current fold, no len remaining => prepare for counting consecutive folds
         Result := FReadType;
 
         if FExportStream.EOF then
@@ -1357,6 +1419,7 @@ begin
           end;
         end;
         dec(FReadCount);
+        inc(FReadSumLen, aLen);
         Result := FReadType;
       end;
 
@@ -1364,7 +1427,16 @@ begin
       begin
         exit(scftOpen);
       end;
-sfecInvalid: begin exit(scftInvalid); end;  end;
+    sfecInvalid:
+      begin
+        exit(scftInvalid);
+      end;
+  end;
+  {$IFDEF SynFoldSaveDebug}
+  finally
+    DebugLnExit(['TSynEditFoldExportCoder.Readnode << ']);
+  end;
+  {$ENDIF}
 end;
 
 function TSynEditFoldExportCoder.EOF: Boolean;
@@ -2088,7 +2160,7 @@ function TSynTextFoldAVLTree.InsertNewFold(ALine, AColumn, ACount, AVisibleLines
 var
   r : TSynTextFoldAVLNodeData;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- InsertNewFold ALine:=', ALine, '  AColumn=', AColumn]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- InsertNewFold ALine:=', ALine, '  AColumn=', AColumn]);{$ENDIF}
   r := NewNode;
   r.LineOffset := ALine; // 1-based
   r.FoldIndex := AColumn;
@@ -2107,7 +2179,7 @@ var
   OldFold : TSynTextFoldAVLNode;
   lcount: Integer;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForLine ALine:=', ALine, '  OnlyCol=',OnlyCol]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- RemoveFoldForLine ALine:=', ALine, '  OnlyCol=',OnlyCol]);{$ENDIF}
   Result := ALine; // - 1; // Return index
   OldFold := FindFoldForLine(ALine, False);
   if OldFold.StartLine < Result then
@@ -2141,7 +2213,7 @@ var
   OnlyNested: Boolean;
   Nested: TSynTextFoldAVLNode;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForNodeAtLine: ALine:=', ALine, ' ANode.StartLine=', ANode.StartLine]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- RemoveFoldForNodeAtLine: ALine:=', ALine, ' ANode.StartLine=', ANode.StartLine]);{$ENDIF}
   OnlyNested := ALine >= ANode.StartLine + ANode.FullCount;
   // The cfCollapsed line is one line before the fold
   Result := ANode.StartLine-1;  // Return the cfcollapsed that was unfolded
@@ -2723,7 +2795,7 @@ begin
     node := tmpnode;
     tpos := tpos - node.MergedLineCount;
   end;
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- CalculateMaps fTopLine:=', fTopLine, '  tpos=',tpos]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- CalculateMaps fTopLine:=', fTopLine, '  tpos=',tpos]);{$ENDIF}
   cnt := fLines.Count;
   for i := 0 to fLinesInWindow + 2 do begin
     if (tpos > cnt) or (tpos < 0) then begin
@@ -2990,6 +3062,9 @@ begin
     *)
     if AsText then
     begin           (* *** Encode as Text for XML *** *)
+      {$IFDEF SynFoldSaveDebug}
+      DebugLnEnter(['TSynEditFoldedView.GetFoldDescription as Text']);
+      {$ENDIF}
       NdInfo := NdiHelper1.GotoNodeOpenPos(Node);
       while Node.IsInFold and (Node.StartLine-2 <= AEndIndex) do
       begin
@@ -3021,6 +3096,9 @@ begin
       end;
       FoldHelper.AddChecksum;
       FoldHelper.Compress;
+      {$IFDEF SynFoldSaveDebug}
+      DebugLnExit(['TSynEditFoldedView.GetFoldDescription as Text']);
+      {$ENDIF}
     end             (* *** END: Encode as Text for XML *** *)
     else
     begin           (* *** Encode as Binary *** *)
@@ -3426,7 +3504,7 @@ var
       FldIndex := FldLine - 1;
       FldLen := node.FullCount;
       if (FldLen <= 0) then begin
-        {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Remove node with len<0 FldLine=', FldLine]);{$ENDIF}
+        {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Remove node with len<0 FldLine=', FldLine]);{$ENDIF}
         DoRemoveNode(node);
         continue;
       end;
@@ -3456,7 +3534,7 @@ var
         CurLen := -1;
 
       if CurLen <> FldLen then begin
-        {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Remove node with len<>len FldLine=', FldLine, ' curlen=',CurLen, ' FldLen=',FldLen]);{$ENDIF}
+        {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Remove node with len<>len FldLine=', FldLine, ' curlen=',CurLen, ' FldLen=',FldLen]);{$ENDIF}
         DoRemoveNode(node);
         continue;
       end;
@@ -3487,7 +3565,7 @@ var
 var
   node, tmpnode: TSynTextFoldAVLNode;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
   Result := false;
   if fLockCount > 0 then begin
     fNeedCaretCheck := true; // We may be here as a result of lines deleted/inserted
@@ -3524,7 +3602,7 @@ begin
   CalculateMaps;
   if Assigned(fOnFoldChanged) and (FirstchangedLine >= 0) then
     fOnFoldChanged(FirstchangedLine);
-  {$IFDEF SYNFOLDDEBUG}debugln(['<<FOLD-- FixFolding: DONE=', Result]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['<<FOLD-- FixFolding: DONE=', Result]);{$ENDIF}
 end;
 
 procedure TSynEditFoldedView.DoCaretChanged(Sender : TObject);
@@ -3536,14 +3614,14 @@ begin
     exit;
   end;
   i := TSynEditCaret(Sender).LinePos-1;
-  {$IFDEF SYNFOLDDEBUG}if FoldedAtTextIndex[i] then debugln(['FOLD-- DoCaretChanged  about to unfold at Index=', i]);{$ENDIF}
+  {$IFDEF SynFoldDebug}if FoldedAtTextIndex[i] then debugln(['FOLD-- DoCaretChanged  about to unfold at Index=', i]);{$ENDIF}
   if FoldedAtTextIndex[i] then
     UnFoldAtTextIndexCollapsed(i);
 end;
 
 procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged AIndex=', AIndex, '  Acount=',ACount]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- LineCountChanged AIndex=', AIndex, '  Acount=',ACount]);{$ENDIF}
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
   if (fLockCount > 0) and (AIndex < max(fNeedFixFrom, fNeedFixMinEnd)) then begin

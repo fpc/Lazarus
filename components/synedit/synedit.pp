@@ -3400,8 +3400,10 @@ var
       end;
       // Paint the chars
       rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
-      if rcToken.Right > AClip.Right then
+      if rcToken.Right > AClip.Right then begin
         rcToken.Right := AClip.Right;
+        fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
+      end;
       with TokenAccu do PaintToken(p, Len, PhysicalStartPos);
     end;
 
@@ -3511,7 +3513,10 @@ var
             FTextDrawer.FrameStyle[side] := FoldedCodeInfo.FrameStyle;
           end;
         end;
-        rcToken.Right := Min(rcToken.Right, rcLine.Right);
+        if rcToken.Right > rcLine.Right then begin
+          rcToken.Right := rcLine.Right;
+          fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
+        end;
         if rcToken.Right > rcToken.Left then begin
           if ForceEto then fTextDrawer.ForceNextTokenWithEto;
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
@@ -4823,7 +4828,7 @@ end;
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if ACount > 0 then begin
@@ -4856,7 +4861,7 @@ end;
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
@@ -4904,7 +4909,7 @@ procedure TCustomSynEdit.FoldChanged(Index : integer);
 var
   i: Integer;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- FoldChanged; Index=', Index, ' topline=', TopLine, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', Index, ' topline=', TopLine, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
   TopLine := TopLine;
   i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
   if i > 0 then begin
