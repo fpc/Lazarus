@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources;
+  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TAChartAxis;
 
 type
 
@@ -16,6 +16,8 @@ type
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     cbHideOverlapping: TCheckBox;
+    ChartMulti: TChart;
+    ChartMultiLineSeries1: TLineSeries;
     gbAngles: TGroupBox;
     lblAxisAngle: TLabel;
     lblSeriesAngle: TLabel;
@@ -26,8 +28,10 @@ type
     seAxisAngle: TSpinEdit;
     seSeriesAngle: TSpinEdit;
     seTitleAngle: TSpinEdit;
+    Multiline: TTabSheet;
     tsBar: TTabSheet;
     procedure cbHideOverlappingChange(Sender: TObject);
+    procedure ChartMultiAxisList1MarkToText(var AText: String; AMark: Double);
     procedure seAxisAngleChange(Sender: TObject);
     procedure seSeriesAngleChange(Sender: TObject);
     procedure seTitleAngleChange(Sender: TObject);
@@ -55,13 +59,23 @@ begin
     op := opIgnore;
   Chart1.LeftAxis.Marks.OverlapPolicy := op;
   Chart1.BottomAxis.Marks.OverlapPolicy := op;
+  ChartMulti.LeftAxis.Marks.OverlapPolicy := op;
+  ChartMulti.BottomAxis.Marks.OverlapPolicy := op;
   Chart1BarSeries1.Marks.OverlapPolicy := op;
+end;
+
+procedure TForm1.ChartMultiAxisList1MarkToText(
+  var AText: String; AMark: Double);
+begin
+  AText += Format(#13#10'%.9g', [AMark * 2]);
 end;
 
 procedure TForm1.seAxisAngleChange(Sender: TObject);
 begin
   Chart1.LeftAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
   Chart1.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
+  ChartMulti.LeftAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
+  ChartMulti.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
 end;
 
 procedure TForm1.seSeriesAngleChange(Sender: TObject);

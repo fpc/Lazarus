@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 386
   ClientWidth = 496
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object pcMain: TPageControl
     Left = 0
     Height = 336
@@ -56,6 +56,43 @@ object Form1: TForm1
           Marks.Format = '%1:.2f%%'
           Marks.Style = smsPercent
           BarBrush.Color = clRed
+          Source = RandomChartSource1
+        end
+      end
+    end
+    object Multiline: TTabSheet
+      Caption = 'Multiline'
+      ClientHeight = 310
+      ClientWidth = 488
+      object ChartMulti: TChart
+        Left = 0
+        Height = 310
+        Top = 0
+        Width = 488
+        AxisList = <        
+          item
+            Marks.LabelFont.Orientation = 900
+            Marks.Frame.Style = psSolid
+            Title.LabelFont.Orientation = 900
+            OnMarkToText = ChartMultiAxisList1MarkToText
+          end        
+          item
+            Alignment = calBottom
+            Marks.Frame.Style = psSolid
+            Title.Visible = True
+            Title.Caption = 'test'
+            OnMarkToText = ChartMultiAxisList1MarkToText
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartMultiLineSeries1: TLineSeries
           Source = RandomChartSource1
         end
       end
