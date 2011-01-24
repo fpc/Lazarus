@@ -8627,7 +8627,8 @@ begin
       // before closing the syendit was focused. Focus the current synedit.
       SrcEdit := SourceEditorManager.ActiveEditor;
       if (SrcEdit<>nil)
-      and (SrcEdit.EditorControl<>nil) then
+      and (SrcEdit.EditorControl<>nil)
+      and (SrcEdit.EditorControl.CanFocus) then
         SrcEdit.EditorControl.SetFocus;
       //debugln(['TMainIDE.DoCloseEditorFile Focus=',SrcEdit.FileName,' Editor=',DbgSName(SrcEdit.EditorControl),' Focused=',(SrcEdit.EditorControl<>nil) and (SrcEdit.EditorControl.Focused)]);
     end;
