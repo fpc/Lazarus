@@ -99,1387 +99,1407 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="29"/>
-    <Files Count="296">
+    <Files Count="301">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
         <UnitName Value="LCLIntfCompile"/>
       </Item1>
       <Item2>
-        <Filename Value="carbon/agl.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="agl"/>
-      </Item2>
-      <Item3>
-        <Filename Value="carbon/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item3>
-      <Item4>
-        <Filename Value="carbon/carbonbars.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonBars"/>
-      </Item4>
-      <Item5>
-        <Filename Value="carbon/carbonbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonButtons"/>
-      </Item5>
-      <Item6>
-        <Filename Value="carbon/carboncalendar.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonCalendar"/>
-      </Item6>
-      <Item7>
-        <Filename Value="carbon/carboncalendarview.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonCalendarView"/>
-      </Item7>
-      <Item8>
-        <Filename Value="carbon/carboncanvas.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonCanvas"/>
-      </Item8>
-      <Item9>
-        <Filename Value="carbon/carboncaret.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonCaret"/>
-      </Item9>
-      <Item10>
-        <Filename Value="carbon/carbonclipboard.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonClipboard"/>
-      </Item10>
-      <Item11>
-        <Filename Value="carbon/carbondbgconsts.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonDbgConsts"/>
-      </Item11>
-      <Item12>
-        <Filename Value="carbon/carbondebug.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonDebug"/>
-      </Item12>
-      <Item13>
-        <Filename Value="carbon/carbondef.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonDef"/>
-      </Item13>
-      <Item14>
-        <Filename Value="carbon/carbondefines.inc"/>
-        <Type Value="Include"/>
-      </Item14>
-      <Item15>
-        <Filename Value="carbon/carbonedits.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonEdits"/>
-      </Item15>
-      <Item16>
-        <Filename Value="carbon/carbongdiobjects.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonGDIObjects"/>
-      </Item16>
-      <Item17>
-        <Filename Value="carbon/carbonint.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonInt"/>
-      </Item17>
-      <Item18>
-        <Filename Value="carbon/carbonlclintf.inc"/>
-        <Type Value="Include"/>
-      </Item18>
-      <Item19>
-        <Filename Value="carbon/carbonlclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item19>
-      <Item20>
-        <Filename Value="carbon/carbonlistviews.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonListViews"/>
-      </Item20>
-      <Item21>
-        <Filename Value="carbon/carbonmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonMenus"/>
-      </Item21>
-      <Item22>
-        <Filename Value="carbon/carbonobject.inc"/>
-        <Type Value="Include"/>
-      </Item22>
-      <Item23>
-        <Filename Value="carbon/carbonprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonPrivate"/>
-      </Item23>
-      <Item24>
-        <Filename Value="carbon/carbonprivatecommon.inc"/>
-        <Type Value="Include"/>
-      </Item24>
-      <Item25>
-        <Filename Value="carbon/carbonprivatecontrol.inc"/>
-        <Type Value="Include"/>
-      </Item25>
-      <Item26>
-        <Filename Value="carbon/carbonprivatewindow.inc"/>
-        <Type Value="Include"/>
-      </Item26>
-      <Item27>
-        <Filename Value="carbon/carbonproc.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonProc"/>
-      </Item27>
-      <Item28>
-        <Filename Value="carbon/carbonstrings.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonStrings"/>
-      </Item28>
-      <Item29>
-        <Filename Value="carbon/carbontabs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonTabs"/>
-      </Item29>
-      <Item30>
-        <Filename Value="carbon/carbonthemes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonThemes"/>
-      </Item30>
-      <Item31>
-        <Filename Value="carbon/carbontrayicon.inc"/>
-        <Type Value="Include"/>
-      </Item31>
-      <Item32>
-        <Filename Value="carbon/carbonutils.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonUtils"/>
-      </Item32>
-      <Item33>
-        <Filename Value="carbon/carbonwinapi.inc"/>
-        <Type Value="Include"/>
-      </Item33>
-      <Item34>
-        <Filename Value="carbon/carbonwinapih.inc"/>
-        <Type Value="Include"/>
-      </Item34>
-      <Item35>
-        <Filename Value="carbon/carbonwsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSArrow"/>
-      </Item35>
-      <Item36>
-        <Filename Value="carbon/carbonwsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSButtons"/>
-      </Item36>
-      <Item37>
-        <Filename Value="carbon/carbonwscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSCalendar"/>
-      </Item37>
-      <Item38>
-        <Filename Value="carbon/carbonwschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSCheckLst"/>
-      </Item38>
-      <Item39>
-        <Filename Value="carbon/carbonwscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSComCtrls"/>
-      </Item39>
-      <Item40>
-        <Filename Value="carbon/carbonwscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSControls"/>
-      </Item40>
-      <Item41>
-        <Filename Value="carbon/carbonwsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSDialogs"/>
-      </Item41>
-      <Item42>
-        <Filename Value="carbon/carbonwsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSExtCtrls"/>
-      </Item42>
-      <Item43>
-        <Filename Value="carbon/carbonwsextdlgs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSExtDlgs"/>
-      </Item43>
-      <Item44>
-        <Filename Value="carbon/carbonwsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSFactory"/>
-      </Item44>
-      <Item45>
-        <Filename Value="carbon/carbonwsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSForms"/>
-      </Item45>
-      <Item46>
-        <Filename Value="carbon/carbonwsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSGrids"/>
-      </Item46>
-      <Item47>
-        <Filename Value="carbon/carbonwsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSImgList"/>
-      </Item47>
-      <Item48>
-        <Filename Value="carbon/carbonwsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSMenus"/>
-      </Item48>
-      <Item49>
-        <Filename Value="carbon/carbonwspairsplitter.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSPairSplitter"/>
-      </Item49>
-      <Item50>
-        <Filename Value="carbon/carbonwsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSSpin"/>
-      </Item50>
-      <Item51>
-        <Filename Value="carbon/carbonwsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CarbonWSStdCtrls"/>
-      </Item51>
-      <Item52>
-        <Filename Value="carbon/glgrab.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="glgrab"/>
-      </Item52>
-      <Item53>
-        <Filename Value="carbon/interfaces.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item53>
-      <Item54>
-        <Filename Value="carbon/mackeycodes.inc"/>
-        <Type Value="Include"/>
-      </Item54>
-      <Item55>
-        <Filename Value="carbon/opengl.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="opengl"/>
-      </Item55>
-      <Item56>
-        <Filename Value="cocoa/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item56>
-      <Item57>
-        <Filename Value="cocoa/cocoagdiobjects.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaGDIObjects"/>
-      </Item57>
-      <Item58>
-        <Filename Value="cocoa/cocoaint.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaInt"/>
-      </Item58>
-      <Item59>
-        <Filename Value="cocoa/cocoaobject.inc"/>
-        <Type Value="Include"/>
-      </Item59>
-      <Item60>
-        <Filename Value="cocoa/cocoaprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaPrivate"/>
-      </Item60>
-      <Item61>
-        <Filename Value="cocoa/cocoatextlayout.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaTextLayout"/>
-      </Item61>
-      <Item62>
-        <Filename Value="cocoa/cocoatrayicon.inc"/>
-        <Type Value="Include"/>
-      </Item62>
-      <Item63>
-        <Filename Value="cocoa/cocoautils.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaUtils"/>
-      </Item63>
-      <Item64>
-        <Filename Value="cocoa/cocoawinapi.inc"/>
-        <Type Value="Include"/>
-      </Item64>
-      <Item65>
-        <Filename Value="cocoa/cocoawinapih.inc"/>
-        <Type Value="Include"/>
-      </Item65>
-      <Item66>
-        <Filename Value="cocoa/cocoawscommon.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSCommon"/>
-      </Item66>
-      <Item67>
-        <Filename Value="cocoa/cocoawsextctrls.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSExtCtrls"/>
-      </Item67>
-      <Item68>
-        <Filename Value="cocoa/cocoawsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSFactory"/>
-      </Item68>
-      <Item69>
-        <Filename Value="cocoa/cocoawsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSForms"/>
-      </Item69>
-      <Item70>
-        <Filename Value="cocoa/cocoawsmenus.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSMenus"/>
-      </Item70>
-      <Item71>
-        <Filename Value="cocoa/cocoawsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSStdCtrls"/>
-      </Item71>
-      <Item72>
-        <Filename Value="cocoa/interfaces.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item72>
-      <Item73>
-        <Filename Value="fpgui/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item73>
-      <Item74>
-        <Filename Value="fpgui/fpguiint.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="fpguiint"/>
-      </Item74>
-      <Item75>
-        <Filename Value="fpgui/fpguilclintf.inc"/>
-        <Type Value="Include"/>
-      </Item75>
-      <Item76>
-        <Filename Value="fpgui/fpguilclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item76>
-      <Item77>
-        <Filename Value="fpgui/fpguiobject.inc"/>
-        <Type Value="Include"/>
-      </Item77>
-      <Item78>
-        <Filename Value="fpgui/fpguiobjects.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="fpguiobjects"/>
-      </Item78>
-      <Item79>
-        <Filename Value="fpgui/fpguiproc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="fpguiproc"/>
-      </Item79>
-      <Item80>
-        <Filename Value="fpgui/fpguiwinapi.inc"/>
-        <Type Value="Include"/>
-      </Item80>
-      <Item81>
-        <Filename Value="fpgui/fpguiwinapih.inc"/>
-        <Type Value="Include"/>
-      </Item81>
-      <Item82>
-        <Filename Value="fpgui/fpguiwsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSArrow"/>
-      </Item82>
-      <Item83>
-        <Filename Value="fpgui/fpguiwsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSButtons"/>
-      </Item83>
-      <Item84>
-        <Filename Value="fpgui/fpguiwscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSCalendar"/>
-      </Item84>
-      <Item85>
-        <Filename Value="fpgui/fpguiwschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSCheckLst"/>
-      </Item85>
-      <Item86>
-        <Filename Value="fpgui/fpguiwscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSComCtrls"/>
-      </Item86>
-      <Item87>
-        <Filename Value="fpgui/fpguiwscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSControls"/>
-      </Item87>
-      <Item88>
-        <Filename Value="fpgui/fpguiwsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSDialogs"/>
-      </Item88>
-      <Item89>
-        <Filename Value="fpgui/fpguiwsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSExtCtrls"/>
-      </Item89>
-      <Item90>
-        <Filename Value="fpgui/fpguiwsextdlgs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSExtDlgs"/>
-      </Item90>
-      <Item91>
-        <Filename Value="fpgui/fpguiwsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSFactory"/>
-      </Item91>
-      <Item92>
-        <Filename Value="fpgui/fpguiwsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSForms"/>
-      </Item92>
-      <Item93>
-        <Filename Value="fpgui/fpguiwsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSGrids"/>
-      </Item93>
-      <Item94>
-        <Filename Value="fpgui/fpguiwsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSImgList"/>
-      </Item94>
-      <Item95>
-        <Filename Value="fpgui/fpguiwsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSMenus"/>
-      </Item95>
-      <Item96>
-        <Filename Value="fpgui/fpguiwspairsplitter.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSPairSplitter"/>
-      </Item96>
-      <Item97>
-        <Filename Value="fpgui/fpguiwsprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="fpguiwsprivate"/>
-      </Item97>
-      <Item98>
-        <Filename Value="fpgui/fpguiwsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSSpin"/>
-      </Item98>
-      <Item99>
-        <Filename Value="fpgui/fpguiwsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="FpGuiWSStdCtrls"/>
-      </Item99>
-      <Item100>
-        <Filename Value="fpgui/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="interfaces"/>
-      </Item100>
-      <Item101>
-        <Filename Value="gtk/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item101>
-      <Item102>
-        <Filename Value="gtk/dragicons.inc"/>
-        <Type Value="Include"/>
-      </Item102>
-      <Item103>
-        <Filename Value="gtk/gtk1def.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk1Def"/>
-      </Item103>
-      <Item104>
-        <Filename Value="gtk/gtk1devicecontext.inc"/>
-        <Type Value="Include"/>
-      </Item104>
-      <Item105>
-        <Filename Value="gtk/gtk1extra.inc"/>
-        <Type Value="Include"/>
-      </Item105>
-      <Item106>
-        <Filename Value="gtk/gtk1extrah.inc"/>
-        <Type Value="Include"/>
-      </Item106>
-      <Item107>
-        <Filename Value="gtk/gtk1int.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk1Int"/>
-      </Item107>
-      <Item108>
-        <Filename Value="gtk/gtk1memostrings.inc"/>
-        <Type Value="Include"/>
-      </Item108>
-      <Item109>
-        <Filename Value="gtk/gtk1memostringsh.inc"/>
-        <Type Value="Include"/>
-      </Item109>
-      <Item110>
-        <Filename Value="gtk/gtk1privatelist.inc"/>
-        <Type Value="Include"/>
-      </Item110>
-      <Item111>
-        <Filename Value="gtk/gtk1trayicon.inc"/>
-        <Type Value="Include"/>
-      </Item111>
-      <Item112>
-        <Filename Value="gtk/gtk1widgetset.inc"/>
-        <Type Value="Include"/>
-      </Item112>
-      <Item113>
-        <Filename Value="gtk/gtk1wsprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk1WSPrivate"/>
-      </Item113>
-      <Item114>
-        <Filename Value="gtk/gtkcallback.inc"/>
-        <Type Value="Include"/>
-      </Item114>
-      <Item115>
-        <Filename Value="gtk/gtkcomboboxcallback.inc"/>
-        <Type Value="Include"/>
-      </Item115>
-      <Item116>
-        <Filename Value="gtk/gtkdebug.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkDebug"/>
-      </Item116>
-      <Item117>
-        <Filename Value="gtk/gtkdef.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkDef"/>
-      </Item117>
-      <Item118>
-        <Filename Value="gtk/gtkdefines.inc"/>
-        <Type Value="Include"/>
-      </Item118>
-      <Item119>
-        <Filename Value="gtk/gtkdevicecontext.inc"/>
-        <Type Value="Include"/>
-      </Item119>
-      <Item120>
-        <Filename Value="gtk/gtkdragcallback.inc"/>
-        <Type Value="Include"/>
-      </Item120>
-      <Item121>
-        <Filename Value="gtk/gtkextra.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkExtra"/>
-      </Item121>
-      <Item122>
-        <Filename Value="gtk/gtkfiledialogutils.inc"/>
-        <Type Value="Include"/>
-      </Item122>
-      <Item123>
-        <Filename Value="gtk/gtkfiledialogutilsh.inc"/>
-        <Type Value="Include"/>
-      </Item123>
-      <Item124>
-        <Filename Value="gtk/gtkfontcache.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkFontCache"/>
-      </Item124>
-      <Item125>
-        <Filename Value="gtk/gtkglobals.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GTKGlobals"/>
-      </Item125>
-      <Item126>
-        <Filename Value="gtk/gtkimages.lrs"/>
-        <Type Value="LRS"/>
-      </Item126>
-      <Item127>
-        <Filename Value="gtk/gtkint.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkInt"/>
-      </Item127>
-      <Item128>
-        <Filename Value="gtk/gtkkeysyms.inc"/>
-        <Type Value="Include"/>
-      </Item128>
-      <Item129>
-        <Filename Value="gtk/gtklclintf.inc"/>
-        <Type Value="Include"/>
-      </Item129>
-      <Item130>
-        <Filename Value="gtk/gtklclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item130>
-      <Item131>
-        <Filename Value="gtk/gtklistsl.inc"/>
-        <Type Value="Include"/>
-      </Item131>
-      <Item132>
-        <Filename Value="gtk/gtklistslh.inc"/>
-        <Type Value="Include"/>
-      </Item132>
-      <Item133>
-        <Filename Value="gtk/gtkmsgqueue.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkMsgQueue"/>
-      </Item133>
-      <Item134>
-        <Filename Value="gtk/gtkpagecallback.inc"/>
-        <Type Value="Include"/>
-      </Item134>
-      <Item135>
-        <Filename Value="gtk/gtkprivatelist.inc"/>
-        <Type Value="Include"/>
-      </Item135>
-      <Item136>
-        <Filename Value="gtk/gtkprivatewidget.inc"/>
-        <Type Value="Include"/>
-      </Item136>
-      <Item137>
-        <Filename Value="gtk/gtkproc.inc"/>
-        <Type Value="Include"/>
-      </Item137>
-      <Item138>
-        <Filename Value="gtk/gtkproc.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GTKProc"/>
-      </Item138>
-      <Item139>
-        <Filename Value="gtk/gtkstdpixmaps.inc"/>
-        <Type Value="Include"/>
-      </Item139>
-      <Item140>
-        <Filename Value="gtk/gtkthemes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkThemes"/>
-      </Item140>
-      <Item141>
-        <Filename Value="gtk/gtkwidgetset.inc"/>
-        <Type Value="Include"/>
-      </Item141>
-      <Item142>
-        <Filename Value="gtk/gtkwinapi.inc"/>
-        <Type Value="Include"/>
-      </Item142>
-      <Item143>
-        <Filename Value="gtk/gtkwinapih.inc"/>
-        <Type Value="Include"/>
-      </Item143>
-      <Item144>
-        <Filename Value="gtk/gtkwinapiwindow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GTKWinapiWindow"/>
-      </Item144>
-      <Item145>
-        <Filename Value="gtk/gtkwsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSArrow"/>
-      </Item145>
-      <Item146>
-        <Filename Value="gtk/gtkwsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSButtons"/>
-      </Item146>
-      <Item147>
-        <Filename Value="gtk/gtkwscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSCalendar"/>
-      </Item147>
-      <Item148>
-        <Filename Value="gtk/gtkwschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSCheckLst"/>
-      </Item148>
-      <Item149>
-        <Filename Value="gtk/gtkwscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSComCtrls"/>
-      </Item149>
-      <Item150>
-        <Filename Value="gtk/gtkwscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSControls"/>
-      </Item150>
-      <Item151>
-        <Filename Value="gtk/gtkwscustomlistview.inc"/>
-        <Type Value="Include"/>
-      </Item151>
-      <Item152>
-        <Filename Value="gtk/gtkwsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSDialogs"/>
-      </Item152>
-      <Item153>
-        <Filename Value="gtk/gtkwsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSExtCtrls"/>
-      </Item153>
-      <Item154>
-        <Filename Value="gtk/gtkwsextdlgs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSExtDlgs"/>
-      </Item154>
-      <Item155>
-        <Filename Value="gtk/gtkwsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSFactory"/>
-      </Item155>
-      <Item156>
-        <Filename Value="gtk/gtkwsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSForms"/>
-      </Item156>
-      <Item157>
-        <Filename Value="gtk/gtkwsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSGrids"/>
-      </Item157>
-      <Item158>
-        <Filename Value="gtk/gtkwsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSImgList"/>
-      </Item158>
-      <Item159>
-        <Filename Value="gtk/gtkwsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSMenus"/>
-      </Item159>
-      <Item160>
-        <Filename Value="gtk/gtkwspairsplitter.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSPairSplitter"/>
-      </Item160>
-      <Item161>
-        <Filename Value="gtk/gtkwsprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSPrivate"/>
-      </Item161>
-      <Item162>
-        <Filename Value="gtk/gtkwsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSSpin"/>
-      </Item162>
-      <Item163>
-        <Filename Value="gtk/gtkwsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="GtkWSStdCtrls"/>
-      </Item163>
-      <Item164>
-        <Filename Value="gtk/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item164>
-      <Item165>
-        <Filename Value="gtk2/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item165>
-      <Item166>
-        <Filename Value="gtk2/dragicons.inc"/>
-        <Type Value="Include"/>
-      </Item166>
-      <Item167>
-        <Filename Value="gtk2/gtk2callback.inc"/>
-        <Type Value="Include"/>
-      </Item167>
-      <Item168>
-        <Filename Value="gtk2/gtk2cellrenderer.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2CellRenderer"/>
-      </Item168>
-      <Item169>
-        <Filename Value="gtk2/gtk2comboboxcallback.inc"/>
-        <Type Value="Include"/>
-      </Item169>
-      <Item170>
-        <Filename Value="gtk2/gtk2debug.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Debug"/>
-      </Item170>
-      <Item171>
-        <Filename Value="gtk2/gtk2def.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Def"/>
-      </Item171>
-      <Item172>
-        <Filename Value="gtk2/gtk2defines.inc"/>
-        <Type Value="Include"/>
-      </Item172>
-      <Item173>
-        <Filename Value="gtk2/gtk2devicecontext.inc"/>
-        <Type Value="Include"/>
-      </Item173>
-      <Item174>
-        <Filename Value="gtk2/gtk2dragcallback.inc"/>
-        <Type Value="Include"/>
-      </Item174>
-      <Item175>
-        <Filename Value="gtk2/gtk2extra.inc"/>
-        <Type Value="Include"/>
-      </Item175>
-      <Item176>
-        <Filename Value="gtk2/gtk2extra.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Extra"/>
-      </Item176>
-      <Item177>
-        <Filename Value="gtk2/gtk2extrah.inc"/>
-        <Type Value="Include"/>
-      </Item177>
-      <Item178>
-        <Filename Value="gtk2/gtk2fontcache.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2FontCache"/>
-      </Item178>
-      <Item179>
-        <Filename Value="gtk2/gtk2globals.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Globals"/>
-      </Item179>
-      <Item180>
-        <Filename Value="gtk2/gtk2int.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Int"/>
-      </Item180>
-      <Item181>
-        <Filename Value="gtk2/gtk2lclintf.inc"/>
-        <Type Value="Include"/>
-      </Item181>
-      <Item182>
-        <Filename Value="gtk2/gtk2lclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item182>
-      <Item183>
-        <Filename Value="gtk2/gtk2listsl.inc"/>
-        <Type Value="Include"/>
-      </Item183>
-      <Item184>
-        <Filename Value="gtk2/gtk2listslh.inc"/>
-        <Type Value="Include"/>
-      </Item184>
-      <Item185>
-        <Filename Value="gtk2/gtk2listviewtreemodel.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2ListViewTreeModel"/>
-      </Item185>
-      <Item186>
-        <Filename Value="gtk2/gtk2memostrings.inc"/>
-        <Type Value="Include"/>
-      </Item186>
-      <Item187>
-        <Filename Value="gtk2/gtk2msgqueue.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2MsgQueue"/>
-      </Item187>
-      <Item188>
-        <Filename Value="gtk2/gtk2pagecallback.inc"/>
-        <Type Value="Include"/>
-      </Item188>
-      <Item189>
-        <Filename Value="gtk2/gtk2privatelist.inc"/>
-        <Type Value="Include"/>
-      </Item189>
-      <Item190>
-        <Filename Value="gtk2/gtk2privatewidget.inc"/>
-        <Type Value="Include"/>
-      </Item190>
-      <Item191>
-        <Filename Value="gtk2/gtk2proc.inc"/>
-        <Type Value="Include"/>
-      </Item191>
-      <Item192>
-        <Filename Value="gtk2/gtk2proc.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Proc"/>
-      </Item192>
-      <Item193>
-        <Filename Value="gtk2/gtk2stdpixmaps.inc"/>
-        <Type Value="Include"/>
-      </Item193>
-      <Item194>
-        <Filename Value="gtk2/gtk2themes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2Themes"/>
-      </Item194>
-      <Item195>
-        <Filename Value="gtk2/gtk2trayicon.inc"/>
-        <Type Value="Include"/>
-      </Item195>
-      <Item196>
-        <Filename Value="gtk2/gtk2widgetset.inc"/>
-        <Type Value="Include"/>
-      </Item196>
-      <Item197>
-        <Filename Value="gtk2/gtk2winapi.inc"/>
-        <Type Value="Include"/>
-      </Item197>
-      <Item198>
-        <Filename Value="gtk2/gtk2winapih.inc"/>
-        <Type Value="Include"/>
-      </Item198>
-      <Item199>
-        <Filename Value="gtk2/gtk2winapiwindow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WinapiWindow"/>
-      </Item199>
-      <Item200>
-        <Filename Value="gtk2/gtk2windows.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="gtk2windows"/>
-      </Item200>
-      <Item201>
-        <Filename Value="gtk2/gtk2wsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSArrow"/>
-      </Item201>
-      <Item202>
-        <Filename Value="gtk2/gtk2wsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSButtons"/>
-      </Item202>
-      <Item203>
-        <Filename Value="gtk2/gtk2wscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSCalendar"/>
-      </Item203>
-      <Item204>
-        <Filename Value="gtk2/gtk2wschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSCheckLst"/>
-      </Item204>
-      <Item205>
-        <Filename Value="gtk2/gtk2wscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSComCtrls"/>
-      </Item205>
-      <Item206>
-        <Filename Value="gtk2/gtk2wscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSControls"/>
-      </Item206>
-      <Item207>
-        <Filename Value="gtk2/gtk2wscustomlistview.inc"/>
-        <Type Value="Include"/>
-      </Item207>
-      <Item208>
-        <Filename Value="gtk2/gtk2wscustommemo.inc"/>
-        <Type Value="Include"/>
-      </Item208>
-      <Item209>
-        <Filename Value="gtk2/gtk2wsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSDialogs"/>
-      </Item209>
-      <Item210>
-        <Filename Value="gtk2/gtk2wsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSExtCtrls"/>
-      </Item210>
-      <Item211>
-        <Filename Value="gtk2/gtk2wsextdlgs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSExtDlgs"/>
-      </Item211>
-      <Item212>
-        <Filename Value="gtk2/gtk2wsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSFactory"/>
-      </Item212>
-      <Item213>
-        <Filename Value="gtk2/gtk2wsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSForms"/>
-      </Item213>
-      <Item214>
-        <Filename Value="gtk2/gtk2wsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSGrids"/>
-      </Item214>
-      <Item215>
-        <Filename Value="gtk2/gtk2wsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSImgList"/>
-      </Item215>
-      <Item216>
-        <Filename Value="gtk2/gtk2wsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSMenus"/>
-      </Item216>
-      <Item217>
-        <Filename Value="gtk2/gtk2wspairsplitter.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSPairSplitter"/>
-      </Item217>
-      <Item218>
-        <Filename Value="gtk2/gtk2wsprivate.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSPrivate"/>
-      </Item218>
-      <Item219>
-        <Filename Value="gtk2/gtk2wsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSSpin"/>
-      </Item219>
-      <Item220>
-        <Filename Value="gtk2/gtk2wsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Gtk2WSStdCtrls"/>
-      </Item220>
-      <Item221>
-        <Filename Value="gtk2/interfaces.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item221>
-      <Item222>
-        <Filename Value="win32/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="AllLCLIntfUnits"/>
-      </Item222>
-      <Item223>
-        <Filename Value="win32/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item223>
-      <Item224>
-        <Filename Value="win32/win32callback.inc"/>
-        <Type Value="Include"/>
-      </Item224>
-      <Item225>
-        <Filename Value="win32/win32debug.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32Debug"/>
-      </Item225>
-      <Item226>
-        <Filename Value="win32/win32def.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32Def"/>
-      </Item226>
-      <Item227>
-        <Filename Value="win32/win32defines.inc"/>
-        <Type Value="Include"/>
-      </Item227>
-      <Item228>
-        <Filename Value="win32/win32extra.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32Extra"/>
-      </Item228>
-      <Item229>
-        <Filename Value="win32/win32int.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32Int"/>
-      </Item229>
-      <Item230>
-        <Filename Value="win32/win32lclintf.inc"/>
-        <Type Value="Include"/>
-      </Item230>
-      <Item231>
-        <Filename Value="win32/win32lclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item231>
-      <Item232>
-        <Filename Value="win32/win32listsl.inc"/>
-        <Type Value="Include"/>
-      </Item232>
-      <Item233>
-        <Filename Value="win32/win32listslh.inc"/>
-        <Type Value="Include"/>
-      </Item233>
-      <Item234>
-        <Filename Value="win32/win32memostrings.inc"/>
-        <Type Value="Include"/>
-      </Item234>
-      <Item235>
-        <Filename Value="win32/win32object.inc"/>
-        <Type Value="Include"/>
-      </Item235>
-      <Item236>
-        <Filename Value="win32/win32proc.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="win32proc"/>
-      </Item236>
-      <Item237>
-        <Filename Value="win32/win32themes.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32Themes"/>
-      </Item237>
-      <Item238>
-        <Filename Value="win32/win32trayicon.inc"/>
-        <Type Value="Include"/>
-      </Item238>
-      <Item239>
-        <Filename Value="win32/win32uxtheme.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32UxTheme"/>
-      </Item239>
-      <Item240>
-        <Filename Value="win32/win32winapi.inc"/>
-        <Type Value="Include"/>
-      </Item240>
-      <Item241>
-        <Filename Value="win32/win32winapih.inc"/>
-        <Type Value="Include"/>
-      </Item241>
-      <Item242>
-        <Filename Value="win32/win32wsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSArrow"/>
-      </Item242>
-      <Item243>
-        <Filename Value="win32/win32wsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSButtons"/>
-      </Item243>
-      <Item244>
-        <Filename Value="win32/win32wscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSCalendar"/>
-      </Item244>
-      <Item245>
-        <Filename Value="win32/win32wschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSCheckLst"/>
-      </Item245>
-      <Item246>
-        <Filename Value="win32/win32wscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSComCtrls"/>
-      </Item246>
-      <Item247>
-        <Filename Value="win32/win32wscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSControls"/>
-      </Item247>
-      <Item248>
-        <Filename Value="win32/win32wscustomlistview.inc"/>
-        <Type Value="Include"/>
-      </Item248>
-      <Item249>
-        <Filename Value="win32/win32wsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSDialogs"/>
-      </Item249>
-      <Item250>
-        <Filename Value="win32/win32wsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSExtCtrls"/>
-      </Item250>
-      <Item251>
-        <Filename Value="win32/win32wsextdlgs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSExtDlgs"/>
-      </Item251>
-      <Item252>
-        <Filename Value="win32/win32wsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSFactory"/>
-      </Item252>
-      <Item253>
-        <Filename Value="win32/win32wsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSForms"/>
-      </Item253>
-      <Item254>
-        <Filename Value="win32/win32wsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSGrids"/>
-      </Item254>
-      <Item255>
-        <Filename Value="win32/win32wsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSImgList"/>
-      </Item255>
-      <Item256>
-        <Filename Value="win32/win32wsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSMenus"/>
-      </Item256>
-      <Item257>
-        <Filename Value="win32/win32wspairsplitter.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSPairSplitter"/>
-      </Item257>
-      <Item258>
-        <Filename Value="win32/win32wsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSSpin"/>
-      </Item258>
-      <Item259>
-        <Filename Value="win32/win32wsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSStdCtrls"/>
-      </Item259>
-      <Item260>
-        <Filename Value="win32/win32wstoolwin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Win32WSToolwin"/>
-      </Item260>
-      <Item261>
-        <Filename Value="wince/interfaces.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Interfaces"/>
-      </Item261>
-      <Item262>
-        <Filename Value="wince/win32compat.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="win32compat"/>
-      </Item262>
-      <Item263>
-        <Filename Value="wince/wincecallback.inc"/>
-        <Type Value="Include"/>
-      </Item263>
-      <Item264>
-        <Filename Value="wince/wincedef.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEDef"/>
-      </Item264>
-      <Item265>
-        <Filename Value="wince/wincedialogs.lrs"/>
-        <Type Value="LRS"/>
-      </Item265>
-      <Item266>
-        <Filename Value="wince/winceextra.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEExtra"/>
-      </Item266>
-      <Item267>
-        <Filename Value="wince/winceint.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEInt"/>
-      </Item267>
-      <Item268>
-        <Filename Value="wince/wincelclintf.inc"/>
-        <Type Value="Include"/>
-      </Item268>
-      <Item269>
-        <Filename Value="wince/wincelclintfh.inc"/>
-        <Type Value="Include"/>
-      </Item269>
-      <Item270>
-        <Filename Value="wince/wincelistsl.inc"/>
-        <Type Value="Include"/>
-      </Item270>
-      <Item271>
-        <Filename Value="wince/wincelistslh.inc"/>
-        <Type Value="Include"/>
-      </Item271>
-      <Item272>
-        <Filename Value="wince/wincememostrings.inc"/>
-        <Type Value="Include"/>
-      </Item272>
-      <Item273>
-        <Filename Value="wince/winceobject.inc"/>
-        <Type Value="Include"/>
-      </Item273>
-      <Item274>
-        <Filename Value="wince/winceproc.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="winceproc"/>
-      </Item274>
-      <Item275>
-        <Filename Value="wince/wincewinapi.inc"/>
-        <Type Value="Include"/>
-      </Item275>
-      <Item276>
-        <Filename Value="wince/wincewinapih.inc"/>
-        <Type Value="Include"/>
-      </Item276>
-      <Item277>
-        <Filename Value="wince/wincewsarrow.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSArrow"/>
-      </Item277>
-      <Item278>
-        <Filename Value="wince/wincewsbuttons.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSButtons"/>
-      </Item278>
-      <Item279>
-        <Filename Value="wince/wincewscalendar.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSCalendar"/>
-      </Item279>
-      <Item280>
-        <Filename Value="wince/wincewschecklst.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSCheckLst"/>
-      </Item280>
-      <Item281>
-        <Filename Value="wince/wincewscomctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSComCtrls"/>
-      </Item281>
-      <Item282>
-        <Filename Value="wince/wincewscontrols.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSControls"/>
-      </Item282>
-      <Item283>
-        <Filename Value="wince/wincewscustomlistview.inc"/>
-        <Type Value="Include"/>
-      </Item283>
-      <Item284>
-        <Filename Value="wince/wincewsdialogs.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSDialogs"/>
-      </Item284>
-      <Item285>
-        <Filename Value="wince/wincewsextctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSExtCtrls"/>
-      </Item285>
-      <Item286>
-        <Filename Value="wince/wincewsfactory.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSFactory"/>
-      </Item286>
-      <Item287>
-        <Filename Value="wince/wincewsforms.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSForms"/>
-      </Item287>
-      <Item288>
-        <Filename Value="wince/wincewsgrids.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSGrids"/>
-      </Item288>
-      <Item289>
-        <Filename Value="wince/wincewsimglist.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="wincewsimglist"/>
-      </Item289>
-      <Item290>
-        <Filename Value="wince/wincewsmenus.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSMenus"/>
-      </Item290>
-      <Item291>
-        <Filename Value="wince/wincewsspin.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSSpin"/>
-      </Item291>
-      <Item292>
-        <Filename Value="wince/wincewsstdctrls.pp"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinCEWSStdCtrls"/>
-      </Item292>
-      <Item293>
-        <Filename Value="wince/winext.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinExt"/>
-      </Item293>
-      <Item294>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="androidint"/>
-      </Item294>
-      <Item295>
+      </Item2>
+      <Item3>
         <Filename Value="android/androidobject.inc"/>
         <Type Value="Include"/>
-      </Item295>
-      <Item296>
+      </Item3>
+      <Item4>
         <Filename Value="android/interfaces.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="interfaces"/>
+      </Item4>
+      <Item5>
+        <Filename Value="carbon/agl.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="agl"/>
+      </Item5>
+      <Item6>
+        <Filename Value="carbon/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item6>
+      <Item7>
+        <Filename Value="carbon/carbonbars.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonBars"/>
+      </Item7>
+      <Item8>
+        <Filename Value="carbon/carbonbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonButtons"/>
+      </Item8>
+      <Item9>
+        <Filename Value="carbon/carboncalendar.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonCalendar"/>
+      </Item9>
+      <Item10>
+        <Filename Value="carbon/carboncalendarview.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonCalendarView"/>
+      </Item10>
+      <Item11>
+        <Filename Value="carbon/carboncanvas.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonCanvas"/>
+      </Item11>
+      <Item12>
+        <Filename Value="carbon/carboncaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonCaret"/>
+      </Item12>
+      <Item13>
+        <Filename Value="carbon/carbonclipboard.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonClipboard"/>
+      </Item13>
+      <Item14>
+        <Filename Value="carbon/carbondbgconsts.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonDbgConsts"/>
+      </Item14>
+      <Item15>
+        <Filename Value="carbon/carbondebug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonDebug"/>
+      </Item15>
+      <Item16>
+        <Filename Value="carbon/carbondef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonDef"/>
+      </Item16>
+      <Item17>
+        <Filename Value="carbon/carbondefines.inc"/>
+        <Type Value="Include"/>
+      </Item17>
+      <Item18>
+        <Filename Value="carbon/carbonedits.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonEdits"/>
+      </Item18>
+      <Item19>
+        <Filename Value="carbon/carbongdiobjects.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonGDIObjects"/>
+      </Item19>
+      <Item20>
+        <Filename Value="carbon/carbonint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonInt"/>
+      </Item20>
+      <Item21>
+        <Filename Value="carbon/carbonlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item21>
+      <Item22>
+        <Filename Value="carbon/carbonlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item22>
+      <Item23>
+        <Filename Value="carbon/carbonlistviews.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonListViews"/>
+      </Item23>
+      <Item24>
+        <Filename Value="carbon/carbonmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonMenus"/>
+      </Item24>
+      <Item25>
+        <Filename Value="carbon/carbonobject.inc"/>
+        <Type Value="Include"/>
+      </Item25>
+      <Item26>
+        <Filename Value="carbon/carbonprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonPrivate"/>
+      </Item26>
+      <Item27>
+        <Filename Value="carbon/carbonprivatecommon.inc"/>
+        <Type Value="Include"/>
+      </Item27>
+      <Item28>
+        <Filename Value="carbon/carbonprivatecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item28>
+      <Item29>
+        <Filename Value="carbon/carbonprivatewindow.inc"/>
+        <Type Value="Include"/>
+      </Item29>
+      <Item30>
+        <Filename Value="carbon/carbonproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonProc"/>
+      </Item30>
+      <Item31>
+        <Filename Value="carbon/carbonstrings.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonStrings"/>
+      </Item31>
+      <Item32>
+        <Filename Value="carbon/carbontabs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonTabs"/>
+      </Item32>
+      <Item33>
+        <Filename Value="carbon/carbonthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonThemes"/>
+      </Item33>
+      <Item34>
+        <Filename Value="carbon/carbontrayicon.inc"/>
+        <Type Value="Include"/>
+      </Item34>
+      <Item35>
+        <Filename Value="carbon/carbonutils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonUtils"/>
+      </Item35>
+      <Item36>
+        <Filename Value="carbon/carbonwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item36>
+      <Item37>
+        <Filename Value="carbon/carbonwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item37>
+      <Item38>
+        <Filename Value="carbon/carbonwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSArrow"/>
+      </Item38>
+      <Item39>
+        <Filename Value="carbon/carbonwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSButtons"/>
+      </Item39>
+      <Item40>
+        <Filename Value="carbon/carbonwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSCalendar"/>
+      </Item40>
+      <Item41>
+        <Filename Value="carbon/carbonwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSCheckLst"/>
+      </Item41>
+      <Item42>
+        <Filename Value="carbon/carbonwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSComCtrls"/>
+      </Item42>
+      <Item43>
+        <Filename Value="carbon/carbonwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSControls"/>
+      </Item43>
+      <Item44>
+        <Filename Value="carbon/carbonwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSDialogs"/>
+      </Item44>
+      <Item45>
+        <Filename Value="carbon/carbonwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSExtCtrls"/>
+      </Item45>
+      <Item46>
+        <Filename Value="carbon/carbonwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSExtDlgs"/>
+      </Item46>
+      <Item47>
+        <Filename Value="carbon/carbonwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSFactory"/>
+      </Item47>
+      <Item48>
+        <Filename Value="carbon/carbonwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSForms"/>
+      </Item48>
+      <Item49>
+        <Filename Value="carbon/carbonwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSGrids"/>
+      </Item49>
+      <Item50>
+        <Filename Value="carbon/carbonwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSImgList"/>
+      </Item50>
+      <Item51>
+        <Filename Value="carbon/carbonwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSMenus"/>
+      </Item51>
+      <Item52>
+        <Filename Value="carbon/carbonwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSPairSplitter"/>
+      </Item52>
+      <Item53>
+        <Filename Value="carbon/carbonwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSSpin"/>
+      </Item53>
+      <Item54>
+        <Filename Value="carbon/carbonwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonWSStdCtrls"/>
+      </Item54>
+      <Item55>
+        <Filename Value="carbon/glgrab.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="glgrab"/>
+      </Item55>
+      <Item56>
+        <Filename Value="carbon/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item56>
+      <Item57>
+        <Filename Value="carbon/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item57>
+      <Item58>
+        <Filename Value="carbon/mackeycodes.inc"/>
+        <Type Value="Include"/>
+      </Item58>
+      <Item59>
+        <Filename Value="carbon/opengl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="opengl"/>
+      </Item59>
+      <Item60>
+        <Filename Value="cocoa/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item60>
+      <Item61>
+        <Filename Value="cocoa/cocoagdiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaGDIObjects"/>
+      </Item61>
+      <Item62>
+        <Filename Value="cocoa/cocoaint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaInt"/>
+      </Item62>
+      <Item63>
+        <Filename Value="cocoa/cocoaobject.inc"/>
+        <Type Value="Include"/>
+      </Item63>
+      <Item64>
+        <Filename Value="cocoa/cocoaprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaPrivate"/>
+      </Item64>
+      <Item65>
+        <Filename Value="cocoa/cocoatextlayout.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaTextLayout"/>
+      </Item65>
+      <Item66>
+        <Filename Value="cocoa/cocoatrayicon.inc"/>
+        <Type Value="Include"/>
+      </Item66>
+      <Item67>
+        <Filename Value="cocoa/cocoautils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaUtils"/>
+      </Item67>
+      <Item68>
+        <Filename Value="cocoa/cocoawinapi.inc"/>
+        <Type Value="Include"/>
+      </Item68>
+      <Item69>
+        <Filename Value="cocoa/cocoawinapih.inc"/>
+        <Type Value="Include"/>
+      </Item69>
+      <Item70>
+        <Filename Value="cocoa/cocoawscommon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSCommon"/>
+      </Item70>
+      <Item71>
+        <Filename Value="cocoa/cocoawsextctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSExtCtrls"/>
+      </Item71>
+      <Item72>
+        <Filename Value="cocoa/cocoawsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSFactory"/>
+      </Item72>
+      <Item73>
+        <Filename Value="cocoa/cocoawsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSForms"/>
+      </Item73>
+      <Item74>
+        <Filename Value="cocoa/cocoawsmenus.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSMenus"/>
+      </Item74>
+      <Item75>
+        <Filename Value="cocoa/cocoawsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSStdCtrls"/>
+      </Item75>
+      <Item76>
+        <Filename Value="cocoa/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item76>
+      <Item77>
+        <Filename Value="fpgui/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item77>
+      <Item78>
+        <Filename Value="fpgui/fpguiint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpguiint"/>
+      </Item78>
+      <Item79>
+        <Filename Value="fpgui/fpguilclintf.inc"/>
+        <Type Value="Include"/>
+      </Item79>
+      <Item80>
+        <Filename Value="fpgui/fpguilclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item80>
+      <Item81>
+        <Filename Value="fpgui/fpguiobject.inc"/>
+        <Type Value="Include"/>
+      </Item81>
+      <Item82>
+        <Filename Value="fpgui/fpguiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpguiobjects"/>
+      </Item82>
+      <Item83>
+        <Filename Value="fpgui/fpguiproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpguiproc"/>
+      </Item83>
+      <Item84>
+        <Filename Value="fpgui/fpguiwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item84>
+      <Item85>
+        <Filename Value="fpgui/fpguiwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item85>
+      <Item86>
+        <Filename Value="fpgui/fpguiwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSArrow"/>
+      </Item86>
+      <Item87>
+        <Filename Value="fpgui/fpguiwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSButtons"/>
+      </Item87>
+      <Item88>
+        <Filename Value="fpgui/fpguiwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSCalendar"/>
+      </Item88>
+      <Item89>
+        <Filename Value="fpgui/fpguiwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSCheckLst"/>
+      </Item89>
+      <Item90>
+        <Filename Value="fpgui/fpguiwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSComCtrls"/>
+      </Item90>
+      <Item91>
+        <Filename Value="fpgui/fpguiwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSControls"/>
+      </Item91>
+      <Item92>
+        <Filename Value="fpgui/fpguiwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSDialogs"/>
+      </Item92>
+      <Item93>
+        <Filename Value="fpgui/fpguiwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSExtCtrls"/>
+      </Item93>
+      <Item94>
+        <Filename Value="fpgui/fpguiwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSExtDlgs"/>
+      </Item94>
+      <Item95>
+        <Filename Value="fpgui/fpguiwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSFactory"/>
+      </Item95>
+      <Item96>
+        <Filename Value="fpgui/fpguiwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSForms"/>
+      </Item96>
+      <Item97>
+        <Filename Value="fpgui/fpguiwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSGrids"/>
+      </Item97>
+      <Item98>
+        <Filename Value="fpgui/fpguiwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSImgList"/>
+      </Item98>
+      <Item99>
+        <Filename Value="fpgui/fpguiwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSMenus"/>
+      </Item99>
+      <Item100>
+        <Filename Value="fpgui/fpguiwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSPairSplitter"/>
+      </Item100>
+      <Item101>
+        <Filename Value="fpgui/fpguiwsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpguiwsprivate"/>
+      </Item101>
+      <Item102>
+        <Filename Value="fpgui/fpguiwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSSpin"/>
+      </Item102>
+      <Item103>
+        <Filename Value="fpgui/fpguiwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpGuiWSStdCtrls"/>
+      </Item103>
+      <Item104>
+        <Filename Value="fpgui/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="interfaces"/>
+      </Item104>
+      <Item105>
+        <Filename Value="gtk/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item105>
+      <Item106>
+        <Filename Value="gtk/dragicons.inc"/>
+        <Type Value="Include"/>
+      </Item106>
+      <Item107>
+        <Filename Value="gtk/gtk1def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1Def"/>
+      </Item107>
+      <Item108>
+        <Filename Value="gtk/gtk1devicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item108>
+      <Item109>
+        <Filename Value="gtk/gtk1extra.inc"/>
+        <Type Value="Include"/>
+      </Item109>
+      <Item110>
+        <Filename Value="gtk/gtk1extrah.inc"/>
+        <Type Value="Include"/>
+      </Item110>
+      <Item111>
+        <Filename Value="gtk/gtk1int.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1Int"/>
+      </Item111>
+      <Item112>
+        <Filename Value="gtk/gtk1memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item112>
+      <Item113>
+        <Filename Value="gtk/gtk1memostringsh.inc"/>
+        <Type Value="Include"/>
+      </Item113>
+      <Item114>
+        <Filename Value="gtk/gtk1privatelist.inc"/>
+        <Type Value="Include"/>
+      </Item114>
+      <Item115>
+        <Filename Value="gtk/gtk1trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item115>
+      <Item116>
+        <Filename Value="gtk/gtk1widgetset.inc"/>
+        <Type Value="Include"/>
+      </Item116>
+      <Item117>
+        <Filename Value="gtk/gtk1wsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk1WSPrivate"/>
+      </Item117>
+      <Item118>
+        <Filename Value="gtk/gtkcallback.inc"/>
+        <Type Value="Include"/>
+      </Item118>
+      <Item119>
+        <Filename Value="gtk/gtkcomboboxcallback.inc"/>
+        <Type Value="Include"/>
+      </Item119>
+      <Item120>
+        <Filename Value="gtk/gtkdebug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkDebug"/>
+      </Item120>
+      <Item121>
+        <Filename Value="gtk/gtkdef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkDef"/>
+      </Item121>
+      <Item122>
+        <Filename Value="gtk/gtkdefines.inc"/>
+        <Type Value="Include"/>
+      </Item122>
+      <Item123>
+        <Filename Value="gtk/gtkdevicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item123>
+      <Item124>
+        <Filename Value="gtk/gtkdragcallback.inc"/>
+        <Type Value="Include"/>
+      </Item124>
+      <Item125>
+        <Filename Value="gtk/gtkextra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkExtra"/>
+      </Item125>
+      <Item126>
+        <Filename Value="gtk/gtkfiledialogutils.inc"/>
+        <Type Value="Include"/>
+      </Item126>
+      <Item127>
+        <Filename Value="gtk/gtkfiledialogutilsh.inc"/>
+        <Type Value="Include"/>
+      </Item127>
+      <Item128>
+        <Filename Value="gtk/gtkfontcache.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkFontCache"/>
+      </Item128>
+      <Item129>
+        <Filename Value="gtk/gtkglobals.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKGlobals"/>
+      </Item129>
+      <Item130>
+        <Filename Value="gtk/gtkimages.lrs"/>
+        <Type Value="LRS"/>
+      </Item130>
+      <Item131>
+        <Filename Value="gtk/gtkint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkInt"/>
+      </Item131>
+      <Item132>
+        <Filename Value="gtk/gtkkeysyms.inc"/>
+        <Type Value="Include"/>
+      </Item132>
+      <Item133>
+        <Filename Value="gtk/gtklclintf.inc"/>
+        <Type Value="Include"/>
+      </Item133>
+      <Item134>
+        <Filename Value="gtk/gtklclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item134>
+      <Item135>
+        <Filename Value="gtk/gtklistsl.inc"/>
+        <Type Value="Include"/>
+      </Item135>
+      <Item136>
+        <Filename Value="gtk/gtklistslh.inc"/>
+        <Type Value="Include"/>
+      </Item136>
+      <Item137>
+        <Filename Value="gtk/gtkmsgqueue.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkMsgQueue"/>
+      </Item137>
+      <Item138>
+        <Filename Value="gtk/gtkpagecallback.inc"/>
+        <Type Value="Include"/>
+      </Item138>
+      <Item139>
+        <Filename Value="gtk/gtkprivatelist.inc"/>
+        <Type Value="Include"/>
+      </Item139>
+      <Item140>
+        <Filename Value="gtk/gtkprivatewidget.inc"/>
+        <Type Value="Include"/>
+      </Item140>
+      <Item141>
+        <Filename Value="gtk/gtkproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKProc"/>
+      </Item141>
+      <Item142>
+        <Filename Value="gtk/gtkproc.inc"/>
+        <Type Value="Include"/>
+      </Item142>
+      <Item143>
+        <Filename Value="gtk/gtkstdpixmaps.inc"/>
+        <Type Value="Include"/>
+      </Item143>
+      <Item144>
+        <Filename Value="gtk/gtkthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkThemes"/>
+      </Item144>
+      <Item145>
+        <Filename Value="gtk/gtkwidgetset.inc"/>
+        <Type Value="Include"/>
+      </Item145>
+      <Item146>
+        <Filename Value="gtk/gtkwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item146>
+      <Item147>
+        <Filename Value="gtk/gtkwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item147>
+      <Item148>
+        <Filename Value="gtk/gtkwinapiwindow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GTKWinapiWindow"/>
+      </Item148>
+      <Item149>
+        <Filename Value="gtk/gtkwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSArrow"/>
+      </Item149>
+      <Item150>
+        <Filename Value="gtk/gtkwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSButtons"/>
+      </Item150>
+      <Item151>
+        <Filename Value="gtk/gtkwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSCalendar"/>
+      </Item151>
+      <Item152>
+        <Filename Value="gtk/gtkwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSCheckLst"/>
+      </Item152>
+      <Item153>
+        <Filename Value="gtk/gtkwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSComCtrls"/>
+      </Item153>
+      <Item154>
+        <Filename Value="gtk/gtkwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSControls"/>
+      </Item154>
+      <Item155>
+        <Filename Value="gtk/gtkwscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item155>
+      <Item156>
+        <Filename Value="gtk/gtkwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSDialogs"/>
+      </Item156>
+      <Item157>
+        <Filename Value="gtk/gtkwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSExtCtrls"/>
+      </Item157>
+      <Item158>
+        <Filename Value="gtk/gtkwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSExtDlgs"/>
+      </Item158>
+      <Item159>
+        <Filename Value="gtk/gtkwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSFactory"/>
+      </Item159>
+      <Item160>
+        <Filename Value="gtk/gtkwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSForms"/>
+      </Item160>
+      <Item161>
+        <Filename Value="gtk/gtkwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSGrids"/>
+      </Item161>
+      <Item162>
+        <Filename Value="gtk/gtkwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSImgList"/>
+      </Item162>
+      <Item163>
+        <Filename Value="gtk/gtkwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSMenus"/>
+      </Item163>
+      <Item164>
+        <Filename Value="gtk/gtkwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSPairSplitter"/>
+      </Item164>
+      <Item165>
+        <Filename Value="gtk/gtkwsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSPrivate"/>
+      </Item165>
+      <Item166>
+        <Filename Value="gtk/gtkwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSSpin"/>
+      </Item166>
+      <Item167>
+        <Filename Value="gtk/gtkwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GtkWSStdCtrls"/>
+      </Item167>
+      <Item168>
+        <Filename Value="gtk/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item168>
+      <Item169>
+        <Filename Value="gtk/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item169>
+      <Item170>
+        <Filename Value="gtk2/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item170>
+      <Item171>
+        <Filename Value="gtk2/dragicons.inc"/>
+        <Type Value="Include"/>
+      </Item171>
+      <Item172>
+        <Filename Value="gtk2/gtk2callback.inc"/>
+        <Type Value="Include"/>
+      </Item172>
+      <Item173>
+        <Filename Value="gtk2/gtk2cellrenderer.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2CellRenderer"/>
+      </Item173>
+      <Item174>
+        <Filename Value="gtk2/gtk2comboboxcallback.inc"/>
+        <Type Value="Include"/>
+      </Item174>
+      <Item175>
+        <Filename Value="gtk2/gtk2debug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Debug"/>
+      </Item175>
+      <Item176>
+        <Filename Value="gtk2/gtk2def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Def"/>
+      </Item176>
+      <Item177>
+        <Filename Value="gtk2/gtk2defines.inc"/>
+        <Type Value="Include"/>
+      </Item177>
+      <Item178>
+        <Filename Value="gtk2/gtk2devicecontext.inc"/>
+        <Type Value="Include"/>
+      </Item178>
+      <Item179>
+        <Filename Value="gtk2/gtk2dragcallback.inc"/>
+        <Type Value="Include"/>
+      </Item179>
+      <Item180>
+        <Filename Value="gtk2/gtk2extra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Extra"/>
+      </Item180>
+      <Item181>
+        <Filename Value="gtk2/gtk2extra.inc"/>
+        <Type Value="Include"/>
+      </Item181>
+      <Item182>
+        <Filename Value="gtk2/gtk2extrah.inc"/>
+        <Type Value="Include"/>
+      </Item182>
+      <Item183>
+        <Filename Value="gtk2/gtk2fontcache.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2FontCache"/>
+      </Item183>
+      <Item184>
+        <Filename Value="gtk2/gtk2globals.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Globals"/>
+      </Item184>
+      <Item185>
+        <Filename Value="gtk2/gtk2int.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Int"/>
+      </Item185>
+      <Item186>
+        <Filename Value="gtk2/gtk2lclintf.inc"/>
+        <Type Value="Include"/>
+      </Item186>
+      <Item187>
+        <Filename Value="gtk2/gtk2lclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item187>
+      <Item188>
+        <Filename Value="gtk2/gtk2listsl.inc"/>
+        <Type Value="Include"/>
+      </Item188>
+      <Item189>
+        <Filename Value="gtk2/gtk2listslh.inc"/>
+        <Type Value="Include"/>
+      </Item189>
+      <Item190>
+        <Filename Value="gtk2/gtk2listviewtreemodel.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2ListViewTreeModel"/>
+      </Item190>
+      <Item191>
+        <Filename Value="gtk2/gtk2memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item191>
+      <Item192>
+        <Filename Value="gtk2/gtk2msgqueue.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2MsgQueue"/>
+      </Item192>
+      <Item193>
+        <Filename Value="gtk2/gtk2pagecallback.inc"/>
+        <Type Value="Include"/>
+      </Item193>
+      <Item194>
+        <Filename Value="gtk2/gtk2privatelist.inc"/>
+        <Type Value="Include"/>
+      </Item194>
+      <Item195>
+        <Filename Value="gtk2/gtk2privatewidget.inc"/>
+        <Type Value="Include"/>
+      </Item195>
+      <Item196>
+        <Filename Value="gtk2/gtk2proc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Proc"/>
+      </Item196>
+      <Item197>
+        <Filename Value="gtk2/gtk2proc.inc"/>
+        <Type Value="Include"/>
+      </Item197>
+      <Item198>
+        <Filename Value="gtk2/gtk2stdpixmaps.inc"/>
+        <Type Value="Include"/>
+      </Item198>
+      <Item199>
+        <Filename Value="gtk2/gtk2themes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2Themes"/>
+      </Item199>
+      <Item200>
+        <Filename Value="gtk2/gtk2trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item200>
+      <Item201>
+        <Filename Value="gtk2/gtk2widgetset.inc"/>
+        <Type Value="Include"/>
+      </Item201>
+      <Item202>
+        <Filename Value="gtk2/gtk2winapi.inc"/>
+        <Type Value="Include"/>
+      </Item202>
+      <Item203>
+        <Filename Value="gtk2/gtk2winapih.inc"/>
+        <Type Value="Include"/>
+      </Item203>
+      <Item204>
+        <Filename Value="gtk2/gtk2winapiwindow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WinapiWindow"/>
+      </Item204>
+      <Item205>
+        <Filename Value="gtk2/gtk2windows.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2windows"/>
+      </Item205>
+      <Item206>
+        <Filename Value="gtk2/gtk2wsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSArrow"/>
+      </Item206>
+      <Item207>
+        <Filename Value="gtk2/gtk2wsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSButtons"/>
+      </Item207>
+      <Item208>
+        <Filename Value="gtk2/gtk2wscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSCalendar"/>
+      </Item208>
+      <Item209>
+        <Filename Value="gtk2/gtk2wschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSCheckLst"/>
+      </Item209>
+      <Item210>
+        <Filename Value="gtk2/gtk2wscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSComCtrls"/>
+      </Item210>
+      <Item211>
+        <Filename Value="gtk2/gtk2wscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSControls"/>
+      </Item211>
+      <Item212>
+        <Filename Value="gtk2/gtk2wscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item212>
+      <Item213>
+        <Filename Value="gtk2/gtk2wscustommemo.inc"/>
+        <Type Value="Include"/>
+      </Item213>
+      <Item214>
+        <Filename Value="gtk2/gtk2wsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSDialogs"/>
+      </Item214>
+      <Item215>
+        <Filename Value="gtk2/gtk2wsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSExtCtrls"/>
+      </Item215>
+      <Item216>
+        <Filename Value="gtk2/gtk2wsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSExtDlgs"/>
+      </Item216>
+      <Item217>
+        <Filename Value="gtk2/gtk2wsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSFactory"/>
+      </Item217>
+      <Item218>
+        <Filename Value="gtk2/gtk2wsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSForms"/>
+      </Item218>
+      <Item219>
+        <Filename Value="gtk2/gtk2wsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSGrids"/>
+      </Item219>
+      <Item220>
+        <Filename Value="gtk2/gtk2wsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSImgList"/>
+      </Item220>
+      <Item221>
+        <Filename Value="gtk2/gtk2wsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSMenus"/>
+      </Item221>
+      <Item222>
+        <Filename Value="gtk2/gtk2wspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSPairSplitter"/>
+      </Item222>
+      <Item223>
+        <Filename Value="gtk2/gtk2wsprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSPrivate"/>
+      </Item223>
+      <Item224>
+        <Filename Value="gtk2/gtk2wsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSSpin"/>
+      </Item224>
+      <Item225>
+        <Filename Value="gtk2/gtk2wsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk2WSStdCtrls"/>
+      </Item225>
+      <Item226>
+        <Filename Value="gtk2/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item226>
+      <Item227>
+        <Filename Value="gtk2/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item227>
+      <Item228>
+        <Filename Value="qt/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item228>
+      <Item229>
+        <Filename Value="win32/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item229>
+      <Item230>
+        <Filename Value="win32/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item230>
+      <Item231>
+        <Filename Value="win32/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item231>
+      <Item232>
+        <Filename Value="win32/win32callback.inc"/>
+        <Type Value="Include"/>
+      </Item232>
+      <Item233>
+        <Filename Value="win32/win32debug.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32Debug"/>
+      </Item233>
+      <Item234>
+        <Filename Value="win32/win32def.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32Def"/>
+      </Item234>
+      <Item235>
+        <Filename Value="win32/win32defines.inc"/>
+        <Type Value="Include"/>
+      </Item235>
+      <Item236>
+        <Filename Value="win32/win32extra.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32Extra"/>
+      </Item236>
+      <Item237>
+        <Filename Value="win32/win32int.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32Int"/>
+      </Item237>
+      <Item238>
+        <Filename Value="win32/win32lclintf.inc"/>
+        <Type Value="Include"/>
+      </Item238>
+      <Item239>
+        <Filename Value="win32/win32lclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item239>
+      <Item240>
+        <Filename Value="win32/win32listsl.inc"/>
+        <Type Value="Include"/>
+      </Item240>
+      <Item241>
+        <Filename Value="win32/win32listslh.inc"/>
+        <Type Value="Include"/>
+      </Item241>
+      <Item242>
+        <Filename Value="win32/win32memostrings.inc"/>
+        <Type Value="Include"/>
+      </Item242>
+      <Item243>
+        <Filename Value="win32/win32object.inc"/>
+        <Type Value="Include"/>
+      </Item243>
+      <Item244>
+        <Filename Value="win32/win32proc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="win32proc"/>
+      </Item244>
+      <Item245>
+        <Filename Value="win32/win32themes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32Themes"/>
+      </Item245>
+      <Item246>
+        <Filename Value="win32/win32trayicon.inc"/>
+        <Type Value="Include"/>
+      </Item246>
+      <Item247>
+        <Filename Value="win32/win32uxtheme.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32UxTheme"/>
+      </Item247>
+      <Item248>
+        <Filename Value="win32/win32winapi.inc"/>
+        <Type Value="Include"/>
+      </Item248>
+      <Item249>
+        <Filename Value="win32/win32winapih.inc"/>
+        <Type Value="Include"/>
+      </Item249>
+      <Item250>
+        <Filename Value="win32/win32wsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSArrow"/>
+      </Item250>
+      <Item251>
+        <Filename Value="win32/win32wsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSButtons"/>
+      </Item251>
+      <Item252>
+        <Filename Value="win32/win32wscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSCalendar"/>
+      </Item252>
+      <Item253>
+        <Filename Value="win32/win32wschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSCheckLst"/>
+      </Item253>
+      <Item254>
+        <Filename Value="win32/win32wscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSComCtrls"/>
+      </Item254>
+      <Item255>
+        <Filename Value="win32/win32wscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSControls"/>
+      </Item255>
+      <Item256>
+        <Filename Value="win32/win32wscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item256>
+      <Item257>
+        <Filename Value="win32/win32wsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSDialogs"/>
+      </Item257>
+      <Item258>
+        <Filename Value="win32/win32wsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSExtCtrls"/>
+      </Item258>
+      <Item259>
+        <Filename Value="win32/win32wsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSExtDlgs"/>
+      </Item259>
+      <Item260>
+        <Filename Value="win32/win32wsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSFactory"/>
+      </Item260>
+      <Item261>
+        <Filename Value="win32/win32wsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSForms"/>
+      </Item261>
+      <Item262>
+        <Filename Value="win32/win32wsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSGrids"/>
+      </Item262>
+      <Item263>
+        <Filename Value="win32/win32wsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSImgList"/>
+      </Item263>
+      <Item264>
+        <Filename Value="win32/win32wsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSMenus"/>
+      </Item264>
+      <Item265>
+        <Filename Value="win32/win32wspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSPairSplitter"/>
+      </Item265>
+      <Item266>
+        <Filename Value="win32/win32wsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSSpin"/>
+      </Item266>
+      <Item267>
+        <Filename Value="win32/win32wsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSStdCtrls"/>
+      </Item267>
+      <Item268>
+        <Filename Value="win32/win32wstoolwin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSToolwin"/>
+      </Item268>
+      <Item269>
+        <Filename Value="wince/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item269>
+      <Item270>
+        <Filename Value="wince/win32compat.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="win32compat"/>
+      </Item270>
+      <Item271>
+        <Filename Value="wince/wincecallback.inc"/>
+        <Type Value="Include"/>
+      </Item271>
+      <Item272>
+        <Filename Value="wince/wincedef.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEDef"/>
+      </Item272>
+      <Item273>
+        <Filename Value="wince/wincedialogs.lrs"/>
+        <Type Value="LRS"/>
+      </Item273>
+      <Item274>
+        <Filename Value="wince/winceextra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEExtra"/>
+      </Item274>
+      <Item275>
+        <Filename Value="wince/winceint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEInt"/>
+      </Item275>
+      <Item276>
+        <Filename Value="wince/wincelclintf.inc"/>
+        <Type Value="Include"/>
+      </Item276>
+      <Item277>
+        <Filename Value="wince/wincelclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item277>
+      <Item278>
+        <Filename Value="wince/wincelistsl.inc"/>
+        <Type Value="Include"/>
+      </Item278>
+      <Item279>
+        <Filename Value="wince/wincelistslh.inc"/>
+        <Type Value="Include"/>
+      </Item279>
+      <Item280>
+        <Filename Value="wince/wincememostrings.inc"/>
+        <Type Value="Include"/>
+      </Item280>
+      <Item281>
+        <Filename Value="wince/winceobject.inc"/>
+        <Type Value="Include"/>
+      </Item281>
+      <Item282>
+        <Filename Value="wince/winceproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="winceproc"/>
+      </Item282>
+      <Item283>
+        <Filename Value="wince/wincewinapi.inc"/>
+        <Type Value="Include"/>
+      </Item283>
+      <Item284>
+        <Filename Value="wince/wincewinapih.inc"/>
+        <Type Value="Include"/>
+      </Item284>
+      <Item285>
+        <Filename Value="wince/wincewsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSArrow"/>
+      </Item285>
+      <Item286>
+        <Filename Value="wince/wincewsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSButtons"/>
+      </Item286>
+      <Item287>
+        <Filename Value="wince/wincewscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSCalendar"/>
+      </Item287>
+      <Item288>
+        <Filename Value="wince/wincewschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSCheckLst"/>
+      </Item288>
+      <Item289>
+        <Filename Value="wince/wincewscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSComCtrls"/>
+      </Item289>
+      <Item290>
+        <Filename Value="wince/wincewscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSControls"/>
+      </Item290>
+      <Item291>
+        <Filename Value="wince/wincewscustomlistview.inc"/>
+        <Type Value="Include"/>
+      </Item291>
+      <Item292>
+        <Filename Value="wince/wincewsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSDialogs"/>
+      </Item292>
+      <Item293>
+        <Filename Value="wince/wincewsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSExtCtrls"/>
+      </Item293>
+      <Item294>
+        <Filename Value="wince/wincewsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSFactory"/>
+      </Item294>
+      <Item295>
+        <Filename Value="wince/wincewsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSForms"/>
+      </Item295>
+      <Item296>
+        <Filename Value="wince/wincewsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSGrids"/>
       </Item296>
+      <Item297>
+        <Filename Value="wince/wincewsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="wincewsimglist"/>
+      </Item297>
+      <Item298>
+        <Filename Value="wince/wincewsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSMenus"/>
+      </Item298>
+      <Item299>
+        <Filename Value="wince/wincewsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSSpin"/>
+      </Item299>
+      <Item300>
+        <Filename Value="wince/wincewsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSStdCtrls"/>
+      </Item300>
+      <Item301>
+        <Filename Value="wince/winext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinExt"/>
+      </Item301>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
