@@ -119,8 +119,6 @@ function GetDefaultTargetOS: string;
 
 function GetDefaultLCLWidgetType: TLCLPlatform;
 function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-procedure GetDefaultLCLLibPaths(List: TStrings);
-function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
 
 // returrns the default browser
 procedure GetDefaultBrowser(var Browser, Params: string);
@@ -234,21 +232,6 @@ begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
     if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
   Result:=lpGtk2;
-end;
-
-function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
-var
-  List: TStringList;
-  i: Integer;
-begin
-  List:=TStringList.Create;
-  GetDefaultLCLLibPaths(List);
-  Result:='';
-  for i:=0 to List.Count-1 do begin
-    if Result<>'' then Result:=Result+Separator;
-    Result:=Result+Prefix+List[i]+PostFix;
-  end;
-  List.Free;
 end;
 
 {---------------------------------------------------------------------------

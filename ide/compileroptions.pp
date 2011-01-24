@@ -658,34 +658,6 @@ const
     'Build',
     'Run'
     );
-  LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
-{$IFDEF DARWIN}
-    ' -Fl/usr/X11R6/lib -Fl/sw/lib', // gtk
-{$ELSE}
-    '', // gtk
-{$ENDIF}
-{$IFDEF DARWIN}
-    ' -Fl/usr/X11R6/lib -Fl/sw/lib -Fl/sw/lib/pango-ft219/lib', // gtk2
-{$ELSE}
-    '', // gtk2
-{$ENDIF}
-    '', // win32
-    '', // wince
-{$IFDEF DARWIN}
-    ' -k-framework -kCarbon -k-framework -kOpenGL -k''-dylib_file'' -k''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''', // carbon
-{$ELSE}
-    '', //carbon
-{$ENDIF}
-    '', // qt
-    '', // fpGUI
-    '', // noGUI
-{$IFDEF DARWIN}
-    ' -k-framework -kCocoa', // Cocoa
-{$ELSE}
-    '', // Cocoa
-{$ENDIF}
-    '' // android
-  );
 
 type
   TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
@@ -2598,11 +2570,6 @@ begin
     //debugln(['TBaseCompilerOptions.MakeOptionsString InhLinkerOpts="',InhLinkerOpts,'"']);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
-
-    // add Linker options for widgetset
-    LinkerAddition := LCLWidgetLinkerAddition[DirNameToLCLPlatform(GetEffectiveLCLWidgetType)];
-    if LinkerAddition <> '' then
-      switches := switches + ' ' + LinkerAddition;
   end;
   
   if Win32GraphicApp then

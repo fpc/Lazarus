@@ -1451,19 +1451,6 @@ begin
 end;
 
 function TLazPackageGraph.CreateLCLPackage: TLazPackage;
-
-  procedure AddLCLLinkPaths(UsageOptions: TAdditionalCompilerOptions);
-  var
-    NewPath: string;
-    OldLibPath: String;
-  begin
-    NewPath:=GetDefaultLCLLibPaths('','',';');
-    OldLibPath:=UsageOptions.LibraryPath;
-    if OldLibPath<>'' then OldLibPath:=OldLibPath+';';
-    OldLibPath:=OldLibPath+NewPath;
-    UsageOptions.LibraryPath:=NewPath;
-  end;
-
 var
   i: Integer;
 begin
@@ -1514,8 +1501,62 @@ begin
     // add include path
     CompilerOptions.IncludePath:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
-    AddLCLLinkPaths(UsageOptions);
     CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+    CompilerOptions.Conditionals:=
+       '// LCLWidgetType'+LineEnding
+      +'if undefined(LCLWidgetType) then begin'+LineEnding
+      +'  if (TargetOS=''win32'') or (TargetOS=''win64'') then'+LineEnding
+      +'    LCLWidgetType := ''win32'''+LineEnding
+      +'  else if TargetOS=''wince'' then'+LineEnding
+      +'    LCLWidgetType := ''wince'''+LineEnding
+      +'  else if TargetOS=''darwin'' then'+LineEnding
+      +'    LCLWidgetType := ''carbon'''+LineEnding
+      +'  else'+LineEnding
+      +'    LCLWidgetType := ''gtk2'';'+LineEnding
+      +'end;'+LineEnding
+      +''+LineEnding
+      +'// widget set specific options'+LineEnding
+      +'base := ''interfaces/''+LCLWidgetType+''/'';'+LineEnding
+      +'if LCLWidgetType=''gtk'' then'+LineEnding
+      +'  CustomOptions := ''-dgtk1'''+LineEnding
+      +'else if LCLWidgetType=''carbon'' then begin'+LineEnding
+      +'  CustomOptions := ''-dcarbon'';'+LineEnding
+      +'  UnitPath := base+''objc;'''+LineEnding
+      +'             +base+''pascocoa/appkit;'''+LineEnding
+      +'             +base+''pascocoa/foundation'';'+LineEnding
+      +'  IncPath := UnitPath;'+LineEnding
+      +'end else if LCLWidgetType=''wince'' then begin'+LineEnding
+      +'  CustomOptions := ''-dDisableChecks'';'+LineEnding
+      +'end else if LCLWidgetType=''fpgui'' then begin'+LineEnding
+      +'  if undefined(fpGUIPlatform) then begin'+LineEnding
+      +'    if SrcOS=''win32'' then'+LineEnding
+      +'      fpGUIPlatform := ''gdi'''+LineEnding
+      +'    else'+LineEnding
+      +'      fpGUIPlatform := ''x11'';'+LineEnding
+      +'  end;'+LineEnding
+      +'  CustomOptions := '' -dfpgui''+fpGUIPlatform;'+LineEnding
+      +'  UnitPath := base+''gui;'''+LineEnding
+      +'             +base+''corelib;'''+LineEnding
+      +'             +base+''corelib/''+fpGUIPlatform;'+LineEnding
+      +'  IncPath := UnitPath;'+LineEnding
+      +'end;'+LineEnding
+      +''+LineEnding
+      +'// linker options'+LineEnding
+      +'if TargetOS=''darwin'' then begin'+LineEnding
+      +'  if LCLWidgetType=''gtk'' then'+LineEnding
+      +'    UsageLibraryPath := ''/usr/X11R6/lib;/sw/lib'''+LineEnding
+      +'  else if LCLWidgetType=''gtk2'' then'+LineEnding
+      +'    UsageLibraryPath := ''/usr/X11R6/lib;/sw/lib;/sw/lib/pango-ft219/lib'''+LineEnding
+      +'  else if LCLWidgetType=''carbon'' then begin'+LineEnding
+      +'    UsageLinkerOptions := ''-framework Carbon'''+LineEnding
+      +'      +'' -framework OpenGL'''+LineEnding
+      +'      +'' -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib'';'+LineEnding
+      +'  end else if LCLWidgetType=''cocoa'' then'+LineEnding
+      +'    UsageLinkerOptions := ''-framework Cocoa'';'+LineEnding
+      +'end else if TargetOS=''solaris'' then begin'+LineEnding
+      +'  UsageLibraryPath:=''/usr/X11R6/lib'';'+LineEnding
+      +'end;'+LineEnding
+      +'';
 
     // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
     // file as indicator, if LCL has been recompiled

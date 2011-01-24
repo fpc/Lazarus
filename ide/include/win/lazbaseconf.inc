@@ -40,10 +40,6 @@ var
   DefaultFPCTarget,
   DefaultFPCVersion : string;
 
-procedure GetDefaultLCLLibPaths(List: TStrings);
-begin
-end;
-
 type
   TGetFileListProc = procedure (List: TStrings);
 

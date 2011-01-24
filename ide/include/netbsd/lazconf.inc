@@ -32,10 +32,6 @@
 uses
   baseunix, unix;
 
-procedure GetDefaultLCLLibPaths(List: TStrings);
-begin
-end;
-
 {$I ../unix/lazbaseconf.inc}
 
 

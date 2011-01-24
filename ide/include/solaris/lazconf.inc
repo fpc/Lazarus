@@ -31,16 +31,6 @@
 uses
   BaseUnix, Unix;
 
-procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
-begin
-  if DirPathExists(Directory) then List.Add(Directory);
-end;
-
-procedure GetDefaultLCLLibPaths(List: TStrings);
-begin
-  IfDirectoryExistsAdd('/usr/X11R6/lib',List);
-end;
-
 {$I ../unix/lazbaseconf.inc}
 
 

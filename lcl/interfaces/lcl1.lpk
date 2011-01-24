@@ -61,6 +61,8 @@ if TargetOS='darwin' then begin
       +' ''-dylib_file'' ''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''';
   end else if LCLWidgetType1='cocoa' then
     UsageLinkerOptions := '-framework Cocoa';
+end else if TargetOS='solaris' then begin
+  UsageLibraryPath:='/usr/X11R6/lib';
 end;"/>
       <BuildMacros>
         <Count Value="2"/>

@@ -228,7 +228,7 @@ var
   Options: TBuildLazarusProfile;
   i: Integer;
   MMDef: TMakeModeDef;
-  ExOptions, LinkerAddition: String;
+  ExOptions: String;
   CurMakeMode: TMakeMode;
   WorkingDirectory: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
@@ -328,16 +328,6 @@ begin
       and (not CheckDirectoryWritable(WorkingDirectory)) then
         exit(mrCancel);
 
-      // add Linker options for wigdet set
-      LinkerAddition := LCLWidgetLinkerAddition[Options.TargetPlatform];
-      if LinkerAddition <> '' then
-      begin
-        if ExOptions <> '' then
-          ExOptions := ExOptions + ' ' + LinkerAddition
-        else
-          ExOptions := LinkerAddition;
-      end;
-      
       if ExOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
       if not UpdateRevisionInc then

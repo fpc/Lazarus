@@ -37,13 +37,6 @@ begin
   if DirPathExists(Directory) then List.Add(Directory);
 end;
 
-procedure GetDefaultLCLLibPaths(List: TStrings);
-begin
-  // needed for gtk, but carbon is now default widgetset:
-  //IfDirectoryExistsAdd('/usr/X11R6/lib',List);
-  //IfDirectoryExistsAdd('/sw/lib',List);
-end;
-
 {$I ../unix/lazbaseconf.inc}
 
 
