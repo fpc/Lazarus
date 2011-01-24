@@ -21,7 +21,7 @@ unit TADrawUtils;
 interface
 
 uses
-  Classes, Graphics, SysUtils;
+  Classes, Graphics, SysUtils, Types;
 
 const
   Colors: array [1..15] of TColor = (
@@ -48,6 +48,9 @@ type
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
 
+function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
+procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
+
 procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
 procedure PrepareXorPen(ACanvas: TCanvas);
 
@@ -56,7 +59,7 @@ function TypicalTextHeight(ACanvas: TCanvas): Integer;
 implementation
 
 uses
-  Types, TAChartUtils;
+  Math, TAChartUtils;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 begin
@@ -70,6 +73,54 @@ var
 begin
   d := Size(ADepth, -ADepth);
   ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
+end;
+
+const
+  LINE_INTERVAL = 2;
+
+function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
+var
+  sl: TStrings;
+  i: Integer;
+begin
+  if Pos(LineEnding, AText) = 0 then
+    exit(ACanvas.TextExtent(AText));
+  sl := TStringList.Create;
+  try
+    sl.Text := AText;
+    Result := Size(0, -LINE_INTERVAL);
+    for i := 0 to sl.Count - 1 do
+      with ACanvas.TextExtent(sl[i]) do begin
+        Result.X := Max(Result.X, cx);
+        Result.Y += cy + LINE_INTERVAL;
+      end;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
+var
+  sl: TStrings;
+  i, h: Integer;
+  a: Double;
+begin
+  if Pos(LineEnding, AText) = 0 then begin
+    ACanvas.TextOut(APos.X, APos.Y, AText);
+    exit;
+  end;
+  a := -OrientToRad(ACanvas.Font.Orientation);
+  sl := TStringList.Create;
+  try
+    sl.Text := AText;
+    for i := 0 to sl.Count - 1 do begin
+      ACanvas.TextOut(APos.X, APos.Y, sl[i]);
+      h := ACanvas.TextHeight(sl[i]) + LINE_INTERVAL;
+      APos += RotatePoint(Point(0, h), a);
+    end;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);

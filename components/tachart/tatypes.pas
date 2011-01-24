@@ -308,7 +308,7 @@ type
 implementation
 
 uses
-  TACustomSource;
+  TACustomSource, TADrawUtils;
 
 { TChartPen }
 
@@ -511,7 +511,7 @@ var
   i: Integer;
 begin
   PutLabelFontTo(ACanvas);
-  ptText := ACanvas.TextExtent(AText);
+  ptText := MultiLineTextExtent(ACanvas, AText);
   labelPoly := GetLabelPolygon(ptText);
   for i := 0 to High(labelPoly) do
     labelPoly[i] += ALabelCenter;
@@ -537,7 +537,7 @@ begin
   end;
 
   ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
-  ACanvas.TextOut(ptText.X, ptText.Y, AText);
+  MultiLineTextOut(ACanvas, ptText, AText);
   if wasClipping then
     ACanvas.Clipping := true;
 end;
@@ -588,7 +588,7 @@ var
   sz: TPoint;
 begin
   PutLabelFontTo(ACanvas);
-  sz := ACanvas.TextExtent(AText);
+  sz := MultiLineTextExtent(ACanvas, AText);
   if IsMarginRequired then
     sz += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
   Result := MeasureRotatedRect(sz, LabelAngle);
