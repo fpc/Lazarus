@@ -1804,7 +1804,7 @@ begin
         s:=GetDefaultTargetCPU;
       Result.Values['TargetCPU']:=s;
     end;
-    if not Result.IsDefined('LCLWidgetType') then begin
+    if Result.Values['LCLWidgetType']='' then begin
       Result.Values['LCLWidgetType']:=
                              Project1.CompilerOptions.GetEffectiveLCLWidgetType;
     end;

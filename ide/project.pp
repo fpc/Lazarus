@@ -5896,6 +5896,8 @@ begin
     Result:=inherited GetEffectiveLCLWidgetType
   else
     Result:=LCLPlatformDirNames[lpNoGUI];
+  if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
+    Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
 class function TProjectCompilerOptions.GetInstance: TAbstractIDEOptions;
