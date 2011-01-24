@@ -1805,10 +1805,8 @@ begin
       Result.Values['TargetCPU']:=s;
     end;
     if not Result.IsDefined('LCLWidgetType') then begin
-      s:=Project1.CompilerOptions.LCLWidgetType;
-      if s='' then
-        s:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-      Result.Values['LCLWidgetType']:=s;
+      Result.Values['LCLWidgetType']:=
+                             Project1.CompilerOptions.GetEffectiveLCLWidgetType;
     end;
 
     //Result.WriteDebugReport('OnGetBuildMacroValues project values');
@@ -1929,7 +1927,7 @@ begin
   if OverrideLCLWidgetType<>'' then
     fLCLWidgetType:=OverrideLCLWidgetType
   else if Project1<>nil then
-    fLCLWidgetType:=Project1.CompilerOptions.LCLWidgetType
+    fLCLWidgetType:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
   else
     fLCLWidgetType:='';
   if (fLCLWidgetType='') or (SysUtils.CompareText(fLCLWidgetType,'default')=0) then

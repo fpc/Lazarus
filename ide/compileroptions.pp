@@ -709,7 +709,7 @@ var
 implementation
 
 const
-  CompilerOptionsVersion = 9;
+  CompilerOptionsVersion = 10;
 
 function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;
@@ -1274,6 +1274,7 @@ var
   PathDelimChange: boolean;
   FileVersion: Integer;
   i: LongInt;
+  s: String;
   
   function f(const Filename: string): string;
   begin
@@ -1338,8 +1339,13 @@ begin
   FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value','');
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
-  // ToDo: replace this with conditional compiler options
-  LCLWidgetType := aXMLConfig.GetValue(p+'LCLWidgetType/Value', '');
+  if FileVersion<10 then
+  begin
+    // LCLWidgetType was not a macro but a property of its own
+    s := aXMLConfig.GetValue(p+'LCLWidgetType/Value', '');
+    if s<>'' then
+      LCLWidgetType:=s;
+  end;
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1549,7 +1555,7 @@ begin
   aXMLConfig.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
   TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(aXMLConfig,
                                               Path+'BuildMacros/',UsePathDelim);
-  // ToDo: remove
+  // write the LCLWidgetType value to let older IDEs read the value
   aXMLConfig.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
   { Parsing }
@@ -2199,7 +2205,6 @@ var
   CurMainSrcFile: String;
   CurCustomOptions: String;
   OptimizeSwitches: String;
-  LinkerAddition: String;
   Vars: TCTCfgScriptVariables;
   v: string;
 begin

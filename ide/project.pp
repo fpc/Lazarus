@@ -510,6 +510,7 @@ type
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetConditionals(const AValue: string); override;
+    procedure SetLCLWidgetType(const AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
@@ -624,6 +625,7 @@ type
     function ValueFromIndex(Index: integer): string;
     property Values[const Name: string]: string read GetValues write SetValues;
     function IsDefined(const Name: string): boolean;
+    procedure Undefine(const Name: string);
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -5828,6 +5830,22 @@ begin
   inherited SetConditionals(NewValue);
 end;
 
+procedure TProjectCompilerOptions.SetLCLWidgetType(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=AValue;
+  if NewValue='default' then NewValue:='';
+  //debugln(['TProjectCompilerOptions.SetLCLWidgetType OldMacro=',LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],' Prop=',LCLWidgetType,' New=',NewValue]);
+  if LazProject.ActiveBuildMode<>nil then begin
+    LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=NewValue;
+    inherited SetLCLWidgetType('');
+  end
+  else
+    inherited SetLCLWidgetType(AValue);
+  //debugln(['TProjectCompilerOptions.SetLCLWidgetType END Macro=',LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],' Prop=',LCLWidgetType]);
+end;
+
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
 var
   ProjCompOptions: TProjectCompilerOptions;
@@ -5872,7 +5890,9 @@ end;
 
 function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
 begin
-  if LazProject.Requires(PackageGraph.LCLPackage,true) then
+  if (LazProject.ActiveBuildMode<>nil) then
+    Result:=LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']
+  else if LazProject.Requires(PackageGraph.LCLPackage,true) then
     Result:=inherited GetEffectiveLCLWidgetType
   else
     Result:=LCLPlatformDirNames[lpNoGUI];
@@ -6649,6 +6669,17 @@ function TProjectBuildMacros.IsDefined(const Name: string): boolean;
 begin
   if (Name='') or not IsValidIdent(Name) then exit(false);
   Result:=FItems.IndexOfName(Name)>=0;
+end;
+
+procedure TProjectBuildMacros.Undefine(const Name: string);
+var
+  i: LongInt;
+begin
+  if (Name='') or not IsValidIdent(Name) then exit;
+  i:=FItems.IndexOfName(Name);
+  if i<0 then exit;
+  FItems.Delete(i);
+  IncreaseChangeStamp;
 end;
 
 procedure TProjectBuildMacros.IncreaseChangeStamp;

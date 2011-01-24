@@ -5,7 +5,7 @@ unit compiler_path_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs,
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs, Graphics,
   Buttons, StdCtrls, LCLType, InterfaceBase,
   IDEOptionsIntf, MacroIntf,
   Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf,
@@ -20,7 +20,6 @@ type
     DebugPathLabel: TLabel;
     IncludeFilesEdit: TEdit;
     IncludeFilesLabel: TLabel;
-    LCLWidgetTypeComboBox: TComboBox;
     LCLWidgetTypeLabel: TLabel;
     LibrariesEdit: TEdit;
     LibrariesLabel: TLabel;
@@ -33,8 +32,12 @@ type
     ProjTargetFileLabel: TLabel;
     UnitOutputDirEdit: TEdit;
     UnitOutputDirLabel: TLabel;
+    procedure LCLWidgetTypeLabelClick(Sender: TObject);
+    procedure LCLWidgetTypeLabelMouseEnter(Sender: TObject);
+    procedure LCLWidgetTypeLabelMouseLeave(Sender: TObject);
     procedure ProjTargetFileEditChange(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     FCompilerOpts: TBaseCompilerOptions;
     OtherUnitsPathEditBtn: TPathEditorButton;
     IncludeFilesPathEditBtn: TPathEditorButton;
@@ -256,6 +259,25 @@ end;
 procedure TCompilerPathOptionsFrame.ProjTargetFileEditChange(Sender: TObject);
 begin
   UpdateTargetFileLabel;
+end;
+
+procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelClick(Sender: TObject);
+begin
+  FDialog.OpenEditor(GroupCompiler,CompilerOptionsBuildModes);
+end;
+
+procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject
+  );
+begin
+  (Sender as TLabel).Font.Underline := True;
+  (Sender as TLabel).Font.Color := clRed;
+end;
+
+procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseLeave(Sender: TObject
+  );
+begin
+  (Sender as TLabel).Font.Underline := False;
+  (Sender as TLabel).Font.Color := clBlue;
 end;
 
 function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
@@ -554,10 +576,8 @@ procedure TCompilerPathOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog)
     Result.Caption := ACaption;
   end;
 
-var
-  LCLInterface: TLCLPlatform;
-  s: string;
 begin
+  FDialog:=ADialog;
   ProjTargetFileEdit.Text:='';
   ProjTargetApplyConventionsCheckBox.Caption:=lisApplyConventions;
 
@@ -680,23 +700,7 @@ begin
 
   {------------------------------------------------------------}
 
-  LCLWidgetTypeLabel.Caption := Format(lisCOVarious, [lisLCLWidgetType]);
-  with LCLWidgetTypeComboBox do
-  begin
-    with Items do
-    begin
-      BeginUpdate;
-      s := LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
-      Add(Format(lisCOdefault, [s]));
-      for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
-      begin
-        Items.Add(LCLPlatformDisplayNames[LCLInterface]);
-      end;
-      EndUpdate;
-    end;
-    ItemIndex := 1;
-    Constraints.MinWidth := 150;
-  end;
+  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
 
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
@@ -720,8 +724,6 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  LCLPlatform: TLCLPlatform;
 begin
   if not (AOptions is TBaseCompilerOptions) then exit;
   FCompilerOpts := TBaseCompilerOptions(AOptions);
@@ -747,18 +749,11 @@ begin
     UnitOutputDirEdit.Text := UnitOutputDirectory;
     DebugPathEdit.Text := DebugPath;
 
-    LCLPlatform := DirNameToLCLPlatform(LCLWidgetType);
-    if CompareText(LCLWidgetType, LCLPlatformDirNames[LCLPlatform]) = 0 then
-      LCLWidgetTypeComboBox.ItemIndex := Ord(LCLPlatform) + 1
-    else
-      LCLWidgetTypeComboBox.ItemIndex := 0;
     chkUseAsDefault.Visible := CanBeDefaulForProject;
   end;
 end;
 
 procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  i: integer;
 begin
   if AOptions is TProjectCompilerOptions then begin
     TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
@@ -773,12 +768,6 @@ begin
     SrcPath := OtherSourcesEdit.Text;
     UnitOutputDirectory := UnitOutputDirEdit.Text;
     DebugPath := DebugPathEdit.Text;
-    // ToDo: will be replaced by buildmodes
-    i := LCLWidgetTypeComboBox.ItemIndex;
-    if i <= 0 then
-      LCLWidgetType := ''
-    else
-      LCLWidgetType := LCLPlatformDirNames[TLCLPlatform(i - 1)];
     UseAsDefault := chkUseAsDefault.Checked;
   end;
 end;

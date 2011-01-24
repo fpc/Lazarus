@@ -5137,6 +5137,8 @@ resourcestring
   lisPENoFilesMissingAllFilesExist = 'No files missing. All files exist.';
   lisPERemoveSelectedFiles = 'Remove selected files';
   lisPEDirectories = 'Directories';
+  lisSelectAnotherLCLWidgetSetMacroLCLWidgetType = 'Select another LCL widget '
+    +'set (macro LCLWidgetType)';
 
 implementation
 

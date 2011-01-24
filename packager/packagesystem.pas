@@ -47,6 +47,7 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
+  InterfaceBase,
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
   CodeToolsStructs, NonPascalCodeTools, SourceChanger, CodeToolManager,
@@ -1453,6 +1454,8 @@ end;
 function TLazPackageGraph.CreateLCLPackage: TLazPackage;
 var
   i: Integer;
+  Macro: TLazBuildMacro;
+  lp: TLCLPlatform;
 begin
   Result:=TLazPackage.Create;
   with Result do begin
@@ -1502,6 +1505,15 @@ begin
     CompilerOptions.IncludePath:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+    // build macro: LCLWidgetType
+    Macro:=CompilerOptions.BuildMacros.Add('LCLWidgetType');
+    for lp:=low(TLCLPlatform) to high(TLCLPlatform) do
+      Macro.Values.Add(LCLPlatformDirNames[lp]);
+    // build macro: fpGUIPlatform
+    Macro:=CompilerOptions.BuildMacros.Add('fpGUIPlatform');
+    Macro.Values.Add('gdi');
+    Macro.Values.Add('x11');
+    // conditionals
     CompilerOptions.Conditionals:=
        '// LCLWidgetType'+LineEnding
       +'if undefined(LCLWidgetType) then begin'+LineEnding
