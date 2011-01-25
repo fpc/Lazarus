@@ -81,17 +81,26 @@ implementation
 { TCompilerPathOptionsFrame }
 
 function TCompilerPathOptionsFrame.Check: boolean;
+var
+  NewParsedOutputDir: string;
 
   function CheckPutSearchPath(
-  const Context, OldExpandedPath, NewExpandedPath: string): boolean;
+    const Context, OldExpandedPath, NewExpandedPath: string): boolean;
   var
     Level: TCheckCompileOptionsMsgLvl;
+    p: String;
   begin
     if OldExpandedPath <> NewExpandedPath then
       Level := ccomlHints
     else
       Level := ccomlErrors;
-    Result := CheckSearchPath(Context, NewExpandedPath, Level);
+
+    // do not complain about missing output directory
+    p:=NewExpandedPath;
+    if NewParsedOutputDir<>'' then
+      p:=RemoveSearchPaths(p,NewParsedOutputDir);
+
+    Result := CheckSearchPath(Context, p, Level);
   end;
 
 var
@@ -114,6 +123,7 @@ var
 
   procedure GetParsedPaths;
   begin
+    NewParsedOutputDir:=FCompilerOpts.GetUnitOutPath(False,coptParsed);
     NewParsedIncludePath:=FCompilerOpts.GetIncludePath(False,coptParsed,false);
     NewParsedLibraries:=FCompilerOpts.GetLibraryPath(False,coptParsed,false);
     NewParsedUnitPath:=FCompilerOpts.GetUnitPath(False,coptParsed,false);
@@ -123,6 +133,8 @@ var
 
 begin
   GetParsedPaths;
+
+
   OldParsedIncludePath := NewParsedIncludePath;
   OldUnparsedIncludePath := FCompilerOpts.IncludePath;
   OldParsedLibraryPath := NewParsedLibraries;
