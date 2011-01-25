@@ -3119,7 +3119,7 @@ begin
     RNew.Right := FlipX(RNew.Right);
 
     Xinc := 0;
-    if RNew.Right <= FGCache.FixedWidth then
+    if RNew.Right <= FGCache.FixedWidth+GetBorderWidth then
       Xinc := -1              // hidden at the left of fixedwidth line
     else
     if RNew.Left >= CWidth then
@@ -3132,7 +3132,7 @@ begin
     end;
 
     Yinc := 0;
-    if RNew.Bottom <= FGCache.FixedHeight then
+    if RNew.Bottom <= FGCache.FixedHeight+GetBorderWidth then
       Yinc := -1              // hidden at the top of fixedheight line
     else
     if (RNew.Top >= CHeight) then
