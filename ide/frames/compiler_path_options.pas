@@ -295,9 +295,8 @@ begin
   begin
     if System.Pos('*', ExpandedPath) > 0 then
     begin
-      if MessageDlg('Hint', 'The ' + Context +
-        ' contains a star * character.'#13 +
-        'Lazarus uses this as normal character and does not expand this as file mask.',
+      if MessageDlg(lisHint, Format(
+        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, #13]),
         mtWarning, [mbOK, mbCancel], 0) <> mrOk then
         exit;
     end;
@@ -315,8 +314,8 @@ begin
       begin
         if not DirPathExistsCached(CurPath) then
         begin
-          if MessageDlg('Warning', 'The ' + Context +
-            ' contains a not existing directory:'#13 + CurPath,
+          if MessageDlg(lisCCOWarningCaption, Format(
+            lisTheContainsANotExistingDirectory, [Context, #13, CurPath]),
             mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
             Exit;
         end;
@@ -336,7 +335,7 @@ begin
         ErrorMsg := SpecialCharsToStr(HasChars);
       if ErrorMsg <> '' then
       begin
-        if MessageDlg('Warning', Context + #13 + ErrorMsg, mtWarning,
+        if MessageDlg(lisCCOWarningCaption, Context + #13 + ErrorMsg, mtWarning,
           [mbOK, mbCancel], 0) <> mrOk then
           exit;
       end;

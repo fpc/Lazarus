@@ -1970,6 +1970,8 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisTheContainsANotExistingDirectory = 'The %s contains a not existing '
+    +'directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
     +'not use the LCL unit interfaces, but it seems it needs it.%sYou will '
     +'get strange linker errors if you use the LCL forms without interfaces.';
@@ -2048,6 +2050,10 @@ resourcestring
   dlgPOTargetFileName = 'Target file name:';
   lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
     +'use unit output directory)';
+  lisHint = 'Hint';
+  lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh = 'The %s contains a '
+    +'star * character.%sLazarus uses this as normal character and does not '
+    +'expand this as file mask.';
   lisDuplicateSearchPath = 'Duplicate search path';
   lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other '
     +'sources" contains a directory which is already in the "Other unit '
