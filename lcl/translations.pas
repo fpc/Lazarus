@@ -810,18 +810,20 @@ procedure TPOFile.UpdateStrings(InputLines: TStrings; SType: TStringsType);
 var
   i,j,n: integer;
   p: LongInt;
-  Identifier, Value,Line,UStr: string;
+  Identifier, Value,Line: string;
   Ch: Char;
   MultiLinedValue: boolean;
 
   procedure NextLine;
   begin
-    inc(i);
-    if i<InputLines.Count then begin
-      Line := InputLines[i];
-      n := Length(Line);
-      p := 1;
-    end;
+    if i<InputLines.Count then
+      inc(i);
+    if i<InputLines.Count then
+      Line := InputLines[i]
+    else
+      Line := '';
+    n := Length(Line);
+    p := 1;
   end;
 
 begin
@@ -847,78 +849,82 @@ begin
       Identifier:=copy(Line,1,p-1);
       UpdateItem(Identifier, Value);
 
-    end else
-    if Line[1]='#' then begin
-
-      Value := '';
-      Identifier := '';
-      MultilinedValue := false;
-
     end else begin
+      // rst file
+      if Line[1]='#' then begin
+        // rst file: comment
 
-      p:=Pos('=',Line);
-      if P>0 then begin
+        Value := '';
+        Identifier := '';
+        MultilinedValue := false;
 
-        Identifier := copy(Line,1,p-1);
-        inc(p); // points to ' after =
+      end else begin
 
-        while p<=n do begin
+        p:=Pos('=',Line);
+        if P>0 then begin
 
-          if Line[p]='''' then begin
-            inc(p);
-            j:=p;
-            while (p<=n)and(Line[p]<>'''') do
-              inc(p);
-            Value := Value + copy(Line, j, P-j);
-            inc(p);
-            continue;
-          end else
-          if Line[p] = '#' then begin
-            // collect all valid UTF-8 segments in string
-            UStr:='';
-            repeat
+          Identifier := copy(Line,1,p-1);
+          inc(p); // points to ' after =
+
+          Value := '';
+          while p<=n do begin
+
+            if Line[p]='''' then begin
               inc(p);
               j:=p;
-              while (p<=n)and(Line[p] in ['0'..'9']) do
+              while (p<=n)and(Line[p]<>'''') do
                 inc(p);
+              Value := Value + copy(Line, j, P-j);
+              inc(p);
+              continue;
+            end else
+            if Line[p] = '#' then begin
+              // a #decimal
+              repeat
+                inc(p);
+                j:=p;
+                while (p<=n)and(Line[p] in ['0'..'9']) do
+                  inc(p);
 
-              Ch := Chr(StrToInt(copy(Line, j, p-j)));
-              UStr := UStr + Ch;
-              if Ch in [#13,#10] then
-                MultilinedValue := True;
+                Ch := Chr(StrToInt(copy(Line, j, p-j)));
+                Value := Value + Ch;
+                if Ch in [#13,#10] then
+                  MultilinedValue := True;
 
-              if (p=n) and (Line[p]='+') then
-                NextLine;
+                if (p=n) and (Line[p]='+') then
+                  NextLine;
 
-            until (p>n) or (Line[p]<>'#');
-            while Ustr<>'' do begin
-              j := UTF8CharacterLength(pchar(Ustr));
-              if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
-                Value := Value + '#'+IntToStr(ord(Ustr[1]))
-              else
-                Value := Value + copy(Ustr, 1, j);
-              Delete(UStr, 1, j);
-            end;
-          end else
-          if Line[p]='+' then
-            NextLine
-          else
-            inc(p); // this is an unexpected string
-        end;
-
-        if Value<>'' then begin
-          if MultiLinedValue then begin
-            // check that we end on lineending, multilined
-            // resource strings from rst usually do not end
-            // in lineending, fix here.
-            if not (Value[Length(Value)] in [#13,#10]) then
-              Value := Value + LineEnding;
+              until (p>n) or (Line[p]<>'#');
+            end else
+            if Line[p]='+' then
+              NextLine
+            else
+              inc(p); // this is an unexpected string
           end;
-          UpdateItem(Identifier, Value);
-        end;
 
-      end; // if p>0 then begin
+          if Value<>'' then begin
+            if MultiLinedValue then begin
+              // check that we end on lineending, multilined
+              // resource strings from rst usually do not end
+              // in lineending, fix here.
+              if not (Value[Length(Value)] in [#13,#10]) then
+                Value := Value + LineEnding;
+            end;
+            // po requires special characters as #number
+            p:=1;
+            while p<=length(Value) do begin
+              j := UTF8CharacterLength(pchar(@Value[p]));
+              if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
+                Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
+              else
+                inc(p,j);
+            end;
 
+            UpdateItem(Identifier, Value);
+          end;
+
+        end; // if p>0 then begin
+      end;
     end;
 
     inc(i);
