@@ -4054,15 +4054,15 @@ begin
         and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
           Files.Add(LRTFilename);
         // check .rst file
-        RSTFilename:=ExtractFileName(ChangeFileExt(CurFilename,'.rst'));
+        RSTFilename:=ChangeFileExt(CurFilename,'.rst');
 
-        // the compiler puts the .rst in the unit output directory
-        UnitOutputDir:=AProject.GetOutputDirectory;
-        if UnitOutputDir='' then
-          UnitOutputDir:=AProject.ProjectDirectory;
-
-        RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+RSTFilename);
-
+        // the compiler puts the .rst in the unit output directory if -FU is given
+        if AProject.CompilerOptions.UnitOutputDirectory<>'' then
+        begin
+          UnitOutputDir:=AProject.GetOutputDirectory;
+          if UnitOutputDir<>'' then
+            RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+ExtractFilename(RSTFilename));
+        end;
         //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
 
         if FileExistsCached(RSTFilename)
