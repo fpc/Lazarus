@@ -4489,6 +4489,10 @@ msgstr "Elija estructura para encerrar la selección"
 msgid "Choose the directory for tests"
 msgstr "Seleccione el directorio para pruebas"
 
+#: lazarusidestrconsts.liscircleinmacros
+msgid "Circle in macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Completado de Clases"
@@ -6976,6 +6980,46 @@ msgstr "Error en %s"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Error inicializando programa%s%s%s%s%s Error: %s"
 
+#: lazarusidestrconsts.liserrorinthecompilerfilename
+msgid "Error in the compiler file name:"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
+msgid "Error in the custom compiler options (Other):"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
+msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthedebuggerpathaddition
+msgid "Error in the \"Debugger path addition\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
+msgid "Error in the search path for \"Include files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforlibraries
+msgid "Error in the search path for \"Libraries\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
+msgid "Error in the search path for \"Object files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforothersources
+msgid "Error in the search path for \"Other sources\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
+msgid "Error in the search path for \"Other unit files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorintheunitoutputdirectory
+msgid "Error in the \"unit output directory\":"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Error cargando archivo"
@@ -7588,6 +7632,10 @@ msgstr "Ayuda para mensaje del compilador de FreePascal"
 msgid "Hide message via directive"
 msgstr "Ocultar mensaje via directiva"
 
+#: lazarusidestrconsts.lishint
+msgid "Hint"
+msgstr ""
+
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
 msgstr "Sugerencia: Un valor predeterminado puede ser definido en los condicionales."
@@ -8154,6 +8202,14 @@ msgstr "%s%s%s es un nombre de proyecto no válido.%sPor favor escoja otro (e.j.
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s es un %s.%sEsta dependencia circular no es permitida."
+
+#: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
+msgid "I wonder how you did that. Error in the %s:"
+msgstr ""
+
+#: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
+msgid "I wonder how you did that: Error in the base directory:"
+msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
@@ -13093,6 +13149,10 @@ msgstr "Seleccionar un elemento de ayuda:"
 msgid "Select a node"
 msgstr "Seleccionar un nodo"
 
+#: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
+msgid "Select another LCL widget set (macro LCLWidgetType)"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Seleccionar desde archivos Delphi (*.dfm)"
@@ -13558,6 +13618,14 @@ msgstr "El componente %s es heredado de %s.%sPara renombrar un componente hereda
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "El nombre del componente debe ser unico entre todos los componentes del formulario/módulo de datos. El nombre es cotejado sin diferenciar entre minúsculas o mayúsculas como un identificador pascal normal. "
+
+#: lazarusidestrconsts.listhecontainsanotexistingdirectory
+msgid "The %s contains a not existing directory:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
+msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
+msgstr ""
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -14629,6 +14697,10 @@ msgstr "Valor:"
 #: lazarusidestrconsts.lisvalue2
 msgid "Value%s"
 msgstr "Valor%s"
+
+#: lazarusidestrconsts.lisvalue3
+msgid "Value: "
+msgstr ""
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"

@@ -4515,6 +4515,10 @@ msgstr "選択部分を囲う構造を選択してください。"
 msgid "Choose the directory for tests"
 msgstr "テスト用ディレクトリを選択してください"
 
+#: lazarusidestrconsts.liscircleinmacros
+msgid "Circle in macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "クラス補完"
@@ -7005,6 +7009,46 @@ msgstr "%sにエラー"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "プログラム%s%s%s%s%sの初期化エラー: %s"
 
+#: lazarusidestrconsts.liserrorinthecompilerfilename
+msgid "Error in the compiler file name:"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
+msgid "Error in the custom compiler options (Other):"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
+msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthedebuggerpathaddition
+msgid "Error in the \"Debugger path addition\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
+msgid "Error in the search path for \"Include files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforlibraries
+msgid "Error in the search path for \"Libraries\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
+msgid "Error in the search path for \"Object files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforothersources
+msgid "Error in the search path for \"Other sources\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
+msgid "Error in the search path for \"Other unit files\":"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorintheunitoutputdirectory
+msgid "Error in the \"unit output directory\":"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "ファイル読み込み中にエラー"
@@ -7618,6 +7662,10 @@ msgstr "FreePascalコンパイラメッセージのヘルプ"
 msgid "Hide message via directive"
 msgstr "指令経由のメッセージを隠す"
 
+#: lazarusidestrconsts.lishint
+msgid "Hint"
+msgstr ""
+
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
 msgstr "ヒント： 既定の値を条件文で設定することができます。"
@@ -8184,6 +8232,14 @@ msgstr "%s%s%s は無効なプロジェクト名です. 別の(例 project1.lpi)
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%sは%sです、%s循環参照は許されません。"
+
+#: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
+msgid "I wonder how you did that. Error in the %s:"
+msgstr ""
+
+#: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
+msgid "I wonder how you did that: Error in the base directory:"
+msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
@@ -13153,6 +13209,10 @@ msgstr "ヘルプ項目を選択"
 msgid "Select a node"
 msgstr "ノードを選択"
 
+#: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
+msgid "Select another LCL widget set (macro LCLWidgetType)"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphiフォームファイル (*.dfm)を選択"
@@ -13615,6 +13675,14 @@ msgstr "コンポーネント%sは%sを継承しています。%s継承された
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "すべてのフォーム、データモジュールにおいてコンポーネント名は、重複してはしけません。通常のパスカル識別子のように大小文字の区別なしに比較されます。"
+
+#: lazarusidestrconsts.listhecontainsanotexistingdirectory
+msgid "The %s contains a not existing directory:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
+msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
+msgstr ""
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -14690,6 +14758,10 @@ msgstr "値："
 #: lazarusidestrconsts.lisvalue2
 msgid "Value%s"
 msgstr "値%s"
+
+#: lazarusidestrconsts.lisvalue3
+msgid "Value: "
+msgstr ""
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
