@@ -1748,6 +1748,28 @@ resourcestring
     +'on the items tree to get the popupmenu with all available package '
     +'functions.';
   dlgSearchPaths = 'Paths';
+  lisIWonderHowYouDidThatErrorInTheBaseDirectory = 'I wonder how you did '
+    +'that: Error in the base directory:';
+  lisErrorInTheSearchPathForOtherUnitFiles = 'Error in the search path for "'
+    +'Other unit files":';
+  lisErrorInTheSearchPathForIncludeFiles = 'Error in the search path for "'
+    +'Include files":';
+  lisErrorInTheSearchPathForObjectFiles = 'Error in the search path for "'
+    +'Object files":';
+  lisErrorInTheSearchPathForLibraries = 'Error in the search path for "'
+    +'Libraries":';
+  lisErrorInTheSearchPathForOtherSources = 'Error in the search path for "'
+    +'Other sources":';
+  lisErrorInTheCustomLinkerOptionsLinkingPassOptionsToL = 'Error in the '
+    +'custom linker options (Linking / Pass options to linker):';
+  lisErrorInTheCustomCompilerOptionsOther = 'Error in the custom compiler '
+    +'options (Other):';
+  lisErrorInTheUnitOutputDirectory = 'Error in the "unit output directory":';
+  lisErrorInTheCompilerFileName = 'Error in the compiler file name:';
+  lisErrorInTheDebuggerPathAddition = 'Error in the "Debugger path addition":';
+  lisIWonderHowYouDidThatErrorInThe = 'I wonder how you did that. Error in '
+    +'the %s:';
+  lisValue3 = 'Value: ';
   dlgCOParsing = 'Parsing';
   dlgCodeGeneration = 'Code generation';
   dlgCOLinking = 'Linking';
@@ -5145,6 +5167,7 @@ resourcestring
   lisPEDirectories = 'Directories';
   lisSelectAnotherLCLWidgetSetMacroLCLWidgetType = 'Select another LCL widget '
     +'set (macro LCLWidgetType)';
+  lisCircleInMacros = 'Circle in macros';
 
 implementation
 

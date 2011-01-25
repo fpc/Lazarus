@@ -162,33 +162,34 @@ begin
       o:=FCompilerOpts.ParsedOpts.ParsedErrorOption;
       case o of
       pcosBaseDir:
-        Msg:='I wonder how you did that: Error in the base directory:';
+        Msg:=lisIWonderHowYouDidThatErrorInTheBaseDirectory;
       pcosUnitPath:
-        Msg:='Error in the search path for "Other unit files":';
+        Msg:=lisErrorInTheSearchPathForOtherUnitFiles;
       pcosIncludePath:
-        Msg:='Error in the search path for "Include files":';
+        Msg:=lisErrorInTheSearchPathForIncludeFiles;
       pcosObjectPath:
-        Msg:='Error in the search path for "Object files":';
+        Msg:=lisErrorInTheSearchPathForObjectFiles;
       pcosLibraryPath:
-        Msg:='Error in the search path for "Libraries":';
+        Msg:=lisErrorInTheSearchPathForLibraries;
       pcosSrcPath:
-        Msg:='Error in the search path for "Other sources":';
+        Msg:=lisErrorInTheSearchPathForOtherSources;
       pcosLinkerOptions:
-        Msg:='Error in the custom linker options (Linking / Pass options to linker):';
+        Msg:=lisErrorInTheCustomLinkerOptionsLinkingPassOptionsToL;
       pcosCustomOptions:
-        Msg:='Error in the custom compiler options (Other):';
+        Msg:=lisErrorInTheCustomCompilerOptionsOther;
       pcosOutputDir:
-        Msg:='Error in the "unit output directory":';
+        Msg:=lisErrorInTheUnitOutputDirectory;
       pcosCompilerPath:
-        Msg:='Error in the compiler file name:';
+        Msg:=lisErrorInTheCompilerFileName;
       pcosDebugPath:
-        Msg:='Error in the "Debugger path addition":';
+        Msg:=lisErrorInTheDebuggerPathAddition;
       else
-        Msg:='I wonder how you did that. Error in the '+ParsedCompilerOptStringNames[o]+':';
+        Msg:=Format(lisIWonderHowYouDidThatErrorInThe, [
+          ParsedCompilerOptStringNames[o]]);
       end;
       Msg:=Msg+#13+FCompilerOpts.ParsedOpts.ParsedErrorMsg+#13
-        +'Value: '+dbgstr(FCompilerOpts.ParsedOpts.UnparsedValues[o]);
-      IDEMessageDialog('Error',Msg,mtError,[mbCancel]);
+        +lisValue3+dbgstr(FCompilerOpts.ParsedOpts.UnparsedValues[o]);
+      IDEMessageDialog(lisCCOErrorCaption, Msg, mtError, [mbCancel]);
       exit;
     end;
 

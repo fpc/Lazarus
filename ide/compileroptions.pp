@@ -72,7 +72,7 @@ uses
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, IDEOptionsIntf,
   // IDE
-  IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
+  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
 
 type
 
@@ -3489,7 +3489,7 @@ begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
       DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option],' Unparsed="',UnparsedValues[Option],'"');
-      ParsedError(Option,'Circle in macros');
+      ParsedError(Option, lisCircleInMacros);
       exit('');
     end;
     Parsing[Option]:=true;
