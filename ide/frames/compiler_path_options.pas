@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs, Graphics,
   Buttons, StdCtrls, LCLType, InterfaceBase,
-  IDEOptionsIntf, MacroIntf,
+  IDEOptionsIntf, MacroIntf, IDEDialogs,
   Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf,
   IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf;
 
@@ -131,9 +131,13 @@ var
     NewParsedDebugPath:=FCompilerOpts.GetDebugPath(False,coptParsed,false);
   end;
 
+var
+  o: TParsedCompilerOptString;
+  Msg: String;
 begin
-  GetParsedPaths;
+  Result:=false;
 
+  GetParsedPaths;
 
   OldParsedIncludePath := NewParsedIncludePath;
   OldUnparsedIncludePath := FCompilerOpts.IncludePath;
@@ -146,7 +150,6 @@ begin
   OldParsedDebugPath := NewParsedDebugPath;
   OldUnparsedDebugPath := FCompilerOpts.DebugPath;
 
-  Result:=false;
   try
     FCompilerOpts.IncludePath := IncludeFilesEdit.Text;
     FCompilerOpts.Libraries := LibrariesEdit.Text;
@@ -154,6 +157,40 @@ begin
     FCompilerOpts.SrcPath := OtherSourcesEdit.Text;
     FCompilerOpts.DebugPath := DebugPathEdit.Text;
     GetParsedPaths;
+
+    if FCompilerOpts.ParsedOpts.HasParsedError then begin
+      o:=FCompilerOpts.ParsedOpts.ParsedErrorOption;
+      case o of
+      pcosBaseDir:
+        Msg:='I wonder how you did that: Error in the base directory:';
+      pcosUnitPath:
+        Msg:='Error in the search path for "Other unit files":';
+      pcosIncludePath:
+        Msg:='Error in the search path for "Include files":';
+      pcosObjectPath:
+        Msg:='Error in the search path for "Object files":';
+      pcosLibraryPath:
+        Msg:='Error in the search path for "Libraries":';
+      pcosSrcPath:
+        Msg:='Error in the search path for "Other sources":';
+      pcosLinkerOptions:
+        Msg:='Error in the custom linker options (Linking / Pass options to linker):';
+      pcosCustomOptions:
+        Msg:='Error in the custom compiler options (Other):';
+      pcosOutputDir:
+        Msg:='Error in the "unit output directory":';
+      pcosCompilerPath:
+        Msg:='Error in the compiler file name:';
+      pcosDebugPath:
+        Msg:='Error in the "Debugger path addition":';
+      else
+        Msg:='I wonder how you did that. Error in the '+ParsedCompilerOptStringNames[o]+':';
+      end;
+      Msg:=Msg+#13+FCompilerOpts.ParsedOpts.ParsedErrorMsg+#13
+        +'Value: '+dbgstr(FCompilerOpts.ParsedOpts.UnparsedValues[o]);
+      IDEMessageDialog('Error',Msg,mtError,[mbCancel]);
+      exit;
+    end;
 
     if not CheckPutSearchPath('include search path', OldParsedIncludePath, NewParsedIncludePath) then
       Exit;
