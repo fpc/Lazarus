@@ -112,7 +112,24 @@ type
 
 
 var LRSTranslator: TAbstractTranslator;
+
 type
+  TLRSItemType = (
+    lrsitCollection,
+    lrsitComponent,
+    lrsitList,
+    lrsitProperty
+  );
+
+  TLRSORStackItem = record
+    Name: string;
+    ItemType: TLRSItemType;
+    Root: TComponent;
+    PushCount: integer; // waiting for this number of Pop
+    ItemNr: integer; // nr in a collection or list
+  end;
+  PLRSORStackItem = ^TLRSORStackItem;
+
   { TLRSObjectReader }
 
   TLRSObjectReader = class(TAbstractObjectReader)
@@ -122,8 +139,18 @@ type
     FBufSize: Integer;
     FBufPos: Integer;
     FBufEnd: Integer;
+    FStack: PLRSORStackItem;
+    FStackPointer: integer;
+    FStackCapacity: integer;
+    FReader: TReader;
     procedure SkipProperty;
     procedure SkipSetBody;
+    procedure Push(ItemType: TLRSItemType; const AName: string = '';
+                   Root: TComponent = nil; PushCount: integer = 1);
+    procedure Pop;
+    procedure ClearStack;
+    function InternalReadValue: TValueType;
+    procedure EndPropertyIfOpen;
   protected
     function ReadIntegerContent: integer;
   public
@@ -136,6 +163,7 @@ type
     procedure BeginComponent(var Flags: TFilerFlags; var AChildPos: Integer;
       var CompClassName, CompName: String); override;
     function BeginProperty: String; override;
+    function GetStackPath: string;
 
     procedure Read(var Buf; Count: LongInt); override;
     procedure ReadBinary(const DestData: TMemoryStream); override;
@@ -159,6 +187,7 @@ type
     procedure SkipValue; override;
   public
     property Stream: TStream read FStream;
+    property Reader: TReader read FReader write FReader;
   end;
   TLRSObjectReaderClass = class of TLRSObjectReader;
 
@@ -188,8 +217,10 @@ type
 
   TLRSOWStackItem = record
     Name: string;
-    Instance: TPersistent;
+    ItemType: TLRSItemType;
+    Root: TComponent;
     PushCount: integer; // waiting for this number of Pop
+    ItemNr: integer; // nr in a collection or list
     SkipIfEmpty: boolean;
     State: TLRSOWStackItemState;
     Buffer: Pointer;
@@ -211,9 +242,10 @@ type
     FStackPointer: integer;
     FStackCapacity: integer;
     FWriteEmptyInheritedChilds: boolean;
-    function GetInstanceStack(Index: integer): TPersistent;
-    procedure Push(const AName: string = ''; Instance: TPersistent = nil;
-                   PushCount: integer = 1; SkipIfEmpty: boolean = false);
+    FWriter: TWriter;
+    procedure Push(ItemType: TLRSItemType; const AName: string = '';
+                   Root: TComponent = nil; PushCount: integer = 1;
+                   SkipIfEmpty: boolean = false);
     procedure EndHeader;
     procedure Pop(WriteNull: boolean);
     procedure ClearStack;
@@ -248,7 +280,7 @@ type
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
     procedure EndProperty; override;
-    function GetStackPath(Root: TComponent): string;
+    function GetStackPath: string;
 
     procedure Write(const Buffer; Count: Longint); override;
     procedure WriteBinary(const Buffer; Count: LongInt); override;
@@ -267,12 +299,11 @@ type
     procedure WriteUnicodeString(const Value: UnicodeString); override;
     {$endif}
 
-    property InstanceStackPointer: integer read FStackPointer;
-    property InstanceStack[Index: integer]: TPersistent read GetInstanceStack;
     property WriteEmptyInheritedChilds: boolean read FWriteEmptyInheritedChilds write FWriteEmptyInheritedChilds;
+    property Writer: TWriter read FWriter write FWriter;
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
-  
+
   TLRPositionLink = record
     LFMPosition: int64;
     LRSPosition: int64;
@@ -3105,13 +3136,18 @@ begin
   Result.OnPropertyNotFound := @(PropertiesToSkip.DoPropertyNotFound);
 
   DestroyDriver:=false;
-  if Result.Driver.ClassType=LRSObjectReaderClass then exit;
+  if Result.Driver.ClassType=LRSObjectReaderClass then
+  begin
+    TLRSObjectReader(Result.Driver).Reader:=Result;
+    exit;
+  end;
   // hack to set a write protected variable.
   // DestroyDriver:=true; TReader will free it
   Driver:=LRSObjectReaderClass.Create(s,4096);
   p:=@Result.Driver;
   Result.Driver.Free;
   TAbstractObjectReader(p^):=Driver;
+  TLRSObjectReader(Driver).Reader:=Result;
 end;
 
 function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
@@ -3121,6 +3157,7 @@ begin
   Driver:=LRSObjectWriterClass.Create(s,4096);
   DestroyDriver:=true;
   Result:=TWriter.Create(Driver);
+  TLRSObjectWriter(Driver).Writer:=Result;
 end;
 
 { LRS format converter functions }
@@ -3770,6 +3807,61 @@ begin
   while Length(ReadStr) > 0 do;
 end;
 
+procedure TLRSObjectReader.Push(ItemType: TLRSItemType; const AName: string;
+                                Root: TComponent; PushCount: integer);
+begin
+  if FStackPointer=FStackCapacity then begin
+    FStackCapacity:=FStackCapacity*2+10;
+    ReAllocMem(FStack,SizeOf(TLRSORStackItem)*FStackCapacity);
+    FillByte(FStack[FStackPointer],SizeOf(TLRSORStackItem)*(FStackCapacity-FStackPointer),0);
+  end;
+  //DebugLn(['TLRSObjectReader.Push AName=',AName,' Type=', GetEnumName(TypeInfo(TLRSItemType), Integer(ItemType)),' PushCount=',PushCount]);
+  FStack[FStackPointer].Name:=AName;
+  FStack[FStackPointer].ItemType:=ItemType;
+  FStack[FStackPointer].Root:=Root;
+  FStack[FStackPointer].PushCount:=PushCount;
+  FStack[FStackPointer].ItemNr:=-1;
+  inc(FStackPointer);
+end;
+
+procedure TLRSObjectReader.Pop;
+var
+  Item: PLRSORStackItem;
+begin
+  if FStackPointer=0 then
+    raise Exception.Create('Error: TLRSObjectReader.Pop stack is empty');
+  Item:=@FStack[FStackPointer-1];
+  //DebugLn(['TLRSObjectReader.Pop AName=',Item^.Name,
+  //        ' Type=',GetEnumName(TypeInfo(TLRSItemType), Integer(item^.ItemType)),
+  //        ' PushCount=',item^.PushCount,' StackPtr=', FStackPointer]);
+  if Item^.PushCount>1 then begin
+    // stack item still needs more EndList
+    dec(Item^.PushCount);
+  end else begin
+    // stack item is complete
+    dec(FStackPointer);
+  end;
+end;
+
+procedure TLRSObjectReader.ClearStack;
+var
+  i: Integer;
+begin
+  for i:=0 to FStackCapacity-1 do begin
+    FStack[i].Name:='';
+  end;
+  ReAllocMem(FStack,0);
+end;
+
+function TLRSObjectReader.InternalReadValue: TValueType;
+var
+  b: byte;
+begin
+  Result := vaNull; { Necessary in FPC as TValueType is larger than 1 byte! }
+  Read(b,1);
+  Result:=TValueType(b);
+end;
+
 function TLRSObjectReader.ReadIntegerContent: integer;
 begin
   Result:=0;
@@ -3796,21 +3888,39 @@ begin
   if Assigned(FBuffer) then
     FreeMem(FBuffer, FBufSize);
 
+  ClearStack;
+
   inherited Destroy;
 end;
 
 function TLRSObjectReader.ReadValue: TValueType;
-var
-  b: byte;
 begin
-  Result := vaNull; { Necessary in FPC as TValueType is larger than 1 byte! }
-  Read(b,1);
-  Result:=TValueType(b);
+  Result := InternalReadValue;
+  case Result of
+    vaNull:
+      begin
+        EndPropertyIfOpen;
+        // End previous element collection, list or component.
+        if FStackPointer > 0 then
+          Pop;
+      end;
+    vaCollection:
+      begin
+        Push(lrsitCollection);
+      end;
+    vaList:
+      begin
+        // Increase counter for next collection item.
+        if (FStackPointer > 0) and (FStack[FStackPointer-1].ItemType = lrsitCollection) then
+          Inc(FStack[FStackPointer-1].ItemNr);
+        Push(lrsitList);
+      end;
+  end;
 end;
 
 function TLRSObjectReader.NextValue: TValueType;
 begin
-  Result := ReadValue;
+  Result := InternalReadValue;
   { We only 'peek' at the next value, so seek back to unget the read value: }
   Dec(FBufPos);
 end;
@@ -3831,6 +3941,8 @@ procedure TLRSObjectReader.BeginComponent(var Flags: TFilerFlags;
 var
   Prefix: Byte;
   ValueType: TValueType;
+  ItemName: String;
+  ItemRoot: TComponent;
 begin
   { Every component can start with a special prefix: }
   Flags := [];
@@ -3860,11 +3972,71 @@ begin
 
   CompClassName := ReadStr;
   CompName := ReadStr;
+
+  // Top component is addressed by ClassName.
+  if FStackPointer = 0 then
+  begin
+    ItemName := CompClassName;
+    ItemRoot := nil;
+  end
+  else
+  begin
+    ItemName := CompName;
+    if Assigned(Reader) then
+      // Reader.LookupRoot is the current Root component.
+      ItemRoot := Reader.LookupRoot
+    else
+      ItemRoot := nil;
+  end;
+
+  // A component has two lists: properties and childs, hence PopCount=2.
+  Push(lrsitComponent, ItemName, ItemRoot, 2);
 end;
 
 function TLRSObjectReader.BeginProperty: String;
 begin
+  EndPropertyIfOpen;
   Result := ReadStr;
+  Push(lrsitProperty, Result);
+end;
+
+procedure TLRSObjectReader.EndPropertyIfOpen;
+begin
+  // End previous property.
+  if (FStackPointer > 0) and (FStack[FStackPointer-1].ItemType = lrsitProperty) then
+    Pop;
+end;
+
+function TLRSObjectReader.GetStackPath: string;
+var
+  i: Integer;
+  CurName: string;
+  Item: PLRSORStackItem;
+begin
+  Result:='';
+
+  for i:=0 to FStackPointer-1 do
+  begin
+    Item := @FStack[i];
+
+    // Reader.Root is the top component in the module.
+    if Assigned(Reader) and
+       (Item^.ItemType = lrsitComponent) and
+       (Item^.Root = Reader.Root) and
+       (Item^.Root <> nil) then
+    begin
+      // Restart path from top component.
+      Result := Item^.Root.ClassName;
+    end;
+
+    CurName:=Item^.Name;
+    if CurName<>'' then begin
+      if Result<>'' then Result:=Result+'.';
+      Result:=Result+CurName;
+    end;
+    if Item^.ItemNr >= 0 then
+      Result := Result + '[' + IntToStr(Item^.ItemNr) + ']';
+  end;
 end;
 
 procedure TLRSObjectReader.ReadBinary(const DestData: TMemoryStream);
@@ -4160,23 +4332,21 @@ end;
 
 { TLRSObjectWriter }
 
-function TLRSObjectWriter.GetInstanceStack(Index: integer): TPersistent;
-begin
-  Result:=FStack[Index].Instance;
-end;
-
-procedure TLRSObjectWriter.Push(const AName: string; Instance: TPersistent;
-  PushCount: integer; SkipIfEmpty: boolean);
+procedure TLRSObjectWriter.Push(ItemType: TLRSItemType; const AName: string;
+                                Root: TComponent; PushCount: integer;
+                                SkipIfEmpty: boolean);
 begin
   if FStackPointer=FStackCapacity then begin
     FStackCapacity:=FStackCapacity*2+10;
     ReAllocMem(FStack,SizeOf(TLRSOWStackItem)*FStackCapacity);
     FillByte(FStack[FStackPointer],SizeOf(TLRSOWStackItem)*(FStackCapacity-FStackPointer),0);
   end;
-  //if AName<>'' then DebugLn(['TLRSObjectWriter.Push AName=',AName,' Instance=',DbgsName(Instance),' PushCount=',PushCount,' SkipIfEmpty=',SkipIfEmpty]);
+  //if AName<>'' then DebugLn(['TLRSObjectWriter.Push AName=',AName, ' Type=', GetEnumName(TypeInfo(TLRSItemType), Integer(ItemType)),' PushCount=',PushCount,' SkipIfEmpty=',SkipIfEmpty]);
   FStack[FStackPointer].Name:=AName;
-  FStack[FStackPointer].Instance:=Instance;
+  FStack[FStackPointer].ItemType:=ItemType;
+  FStack[FStackPointer].Root:=Root;
   FStack[FStackPointer].PushCount:=PushCount;
+  FStack[FStackPointer].ItemNr:=-1;
   FStack[FStackPointer].SkipIfEmpty:=SkipIfEmpty;
   FStack[FStackPointer].BufCount:=0;
   if SkipIfEmpty then
@@ -4472,7 +4642,7 @@ end;
 procedure TLRSObjectWriter.BeginCollection;
 begin
   //DebugLn(['TLRSObjectWriter.BeginCollection ',FStackPointer]);
-  Push;
+  Push(lrsitCollection);
   WriteValue(vaCollection);
 end;
 
@@ -4481,14 +4651,33 @@ procedure TLRSObjectWriter.BeginComponent(Component: TComponent;
 var
   Prefix: Byte;
   CanBeOmitted: boolean;
+  ItemName: String;
+  ItemRoot: TComponent;
 begin
   //DebugLn(['TLRSObjectWriter.BeginComponent ',FStackPointer]);
   // an inherited child component can be omitted if empty
   CanBeOmitted:=(not WriteEmptyInheritedChilds)
             and (FStackPointer>0) and (ffInherited in Flags)
             and (not (ffChildPos in Flags));
-  // a component has two lists: properties and childs
-  Push(Component.Name,Component,2,CanBeOmitted);
+
+  // Top component is addressed by ClassName.
+  if FStackPointer = 0 then
+  begin
+    ItemName := Component.ClassName;
+    ItemRoot := nil;
+  end
+  else
+  begin
+    ItemName := Component.Name;
+    if Assigned(Writer) then
+      // Writer.Root is the current Root component.
+      ItemRoot := Writer.Root
+    else
+      ItemRoot := nil;
+  end;
+
+  // A component has two lists: properties and childs, hence PopCount=2.
+  Push(lrsitComponent, ItemName, ItemRoot, 2, CanBeOmitted);
 
   if not FSignatureWritten then
   begin
@@ -4519,8 +4708,11 @@ end;
 
 procedure TLRSObjectWriter.BeginList;
 begin
+  // Increase counter for next collection item.
+  if (FStackPointer > 0) and (FStack[FStackPointer-1].ItemType = lrsitCollection) then
+    Inc(FStack[FStackPointer-1].ItemNr);
   //DebugLn(['TLRSObjectWriter.BeginList ',FStackPointer]);
-  Push;
+  Push(lrsitList);
   WriteValue(vaList);
 end;
 
@@ -4528,13 +4720,12 @@ procedure TLRSObjectWriter.EndList;
 begin
   //DebugLn(['TLRSObjectWriter.EndList ',FStackPointer]);
   Pop(true);
-  //WriteValue(vaNull);
 end;
 
 procedure TLRSObjectWriter.BeginProperty(const PropName: String);
 begin
   //DebugLn(['TLRSObjectWriter.BeginProperty ',FStackPointer,' ',PropName]);
-  Push(PropName);
+  Push(lrsitProperty, PropName);
   WriteStr(PropName);
 end;
 
@@ -4544,32 +4735,35 @@ begin
   Pop(false);
 end;
 
-function TLRSObjectWriter.GetStackPath(Root: TComponent): string;
+function TLRSObjectWriter.GetStackPath: string;
 var
   i: Integer;
-  CurInstance: TPersistent;
-  CurComponent: TComponent;
   CurName: string;
+  Item: PLRSOWStackItem;
 begin
   Result:='';
-  for i:=0 to FStackPointer-1 do begin
-    CurInstance:=FStack[i].Instance;
-    if (CurInstance is TComponent) and (Root<>nil) then begin
-      CurComponent:=TComponent(CurInstance);
-      if CurComponent=Root then begin
-        Result:=CurComponent.ClassName;
-        continue;
-      end;
-      if CurComponent.Owner=Root then begin
-        Result:=CurComponent.Owner.ClassName+'.'+CurComponent.Name;
-        continue;
-      end;
+
+  for i:=0 to FStackPointer-1 do
+  begin
+    Item := @FStack[i];
+
+    // Writer.LookupRoot is the top component in the module.
+    if Assigned(Writer) and
+       (Item^.ItemType = lrsitComponent) and
+       (Item^.Root = Writer.LookupRoot) and
+       (Item^.Root <> nil) then
+    begin
+      // Restart path from top component.
+      Result := Item^.Root.ClassName;
     end;
-    CurName:=FStack[i].Name;
+
+    CurName:=Item^.Name;
     if CurName<>'' then begin
       if Result<>'' then Result:=Result+'.';
       Result:=Result+CurName;
     end;
+    if Item^.ItemNr >= 0 then
+      Result := Result + '[' + IntToStr(Item^.ItemNr) + ']';
   end;
 end;
 

@@ -5314,16 +5314,14 @@ procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
   PropInfo: PPropInfo; var Content: string);
 var
   LRSWriter: TLRSObjectWriter;
-  Path, WriterRootPath: String;
+  Path: String;
 begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
   if SysUtils.CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
-  Path:='';
   if Writer.Driver is TLRSObjectWriter then begin
     LRSWriter:=TLRSObjectWriter(Writer.Driver);
-    WriterRootPath:=LRSWriter.GetStackPath(Writer.Root);
-    Path:=Copy(WriterRootPath, 1, Pos('.',WriterRootPath))+Instance.GetNamePath+'.'+PropInfo^.Name;
+    Path:=LRSWriter.GetStackPath;
   end else begin
     Path:=Instance.ClassName+'.'+PropInfo^.Name;
   end;
@@ -5435,7 +5433,7 @@ begin
           on E: Exception do begin
             PropPath:='';
             if Writer.Driver is TLRSObjectWriter then
-              PropPath:=TLRSObjectWriter(Writer.Driver).GetStackPath(AnUnitInfo.Component);
+              PropPath:=TLRSObjectWriter(Writer.Driver).GetStackPath;
             DumpExceptionBackTrace;
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,

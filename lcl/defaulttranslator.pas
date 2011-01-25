@@ -201,6 +201,40 @@ begin
   Result := '';
 end;
 
+function GetIdentifierPath(Sender: TObject;
+                           const Instance: TPersistent;
+                           PropInfo: PPropInfo): string;
+var
+  Tmp: TPersistent;
+  Component: TComponent;
+  Reader: TReader;
+begin
+  Result := '';
+  if (PropInfo = nil) or
+     (SysUtils.CompareText(PropInfo^.PropType^.Name, 'TTRANSLATESTRING') <> 0) then
+    exit;
+
+  // do not translate at design time
+  // get the component
+  Tmp := Instance;
+  while Assigned(Tmp) and not (Tmp is TComponent) do
+    Tmp := TPersistentAccess(Tmp).GetOwner;
+  if not Assigned(Tmp) then
+    exit;
+  Component := Tmp as TComponent;
+  if (csDesigning in Component.ComponentState) then
+    exit;
+
+  if not (Sender is TReader) then
+    exit;
+  Reader := TReader(Sender);
+  if Reader.Driver is TLRSObjectReader then
+    Result := TLRSObjectReader(Reader.Driver).GetStackPath
+  else
+    Result := Instance.ClassName + '.' + PropInfo^.Name;
+  Result := UpperCase(Result);
+end;
+
 var
   lcfn: string;
 
@@ -225,44 +259,21 @@ procedure TDefaultTranslator.TranslateStringProperty(Sender: TObject;
   const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
 var
   s: string;
-  Section: string;
-  Tmp: TPersistent;
-  Component: TComponent;
 begin
-  if not Assigned(FMOFile) then
-    exit;
-  if not Assigned(PropInfo) then
-    exit;
-  if (UpperCase(PropInfo^.PropType^.Name) <> 'TTRANSLATESTRING') then
-    exit;
-  // do not translate at design time
-  // get the component
-  Tmp := Instance;
-  while Assigned(Tmp) and not (Tmp is TComponent) do
-    Tmp := TPersistentAccess(Tmp).GetOwner;
-  if not Assigned(Tmp) then
-    exit;
-  Component := Tmp as TComponent;
-  if (csDesigning in Component.ComponentState) then
-    exit;
+  if Assigned(FMOFile) then
+  begin
+    s := GetIdentifierPath(Sender, Instance, PropInfo);
+    if s <> '' then
+    begin
+      s := FMoFile.Translate(s + #4 + Content);
 
-  if not (Sender is TReader) then
-    exit;
-  if Component = TReader(Sender).Root then
-    Section := Component.ClassName
-  else
-    if Component.Owner = TReader(Sender).Root then
-      Section := Component.Owner.ClassName
-    else
-      exit;
-  Section := UpperCase(Section + '.' + Instance.GetNamePath + '.' + PropInfo^.Name);
-  s := FMoFile.Translate(Section + #4 + Content);
+      if s = '' then
+        s := FMOFile.Translate(Content);
 
-  if s = '' then
-    s := FMOFile.Translate(Content);
-
-  if s <> '' then
-    Content := s;
+      if s <> '' then
+        Content := s;
+    end;
+  end;
 end;
 
 { TPOTranslator }
@@ -286,41 +297,18 @@ procedure TPOTranslator.TranslateStringProperty(Sender: TObject;
   const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
 var
   s: string;
-  Section: string;
-  Tmp: TPersistent;
-  Component: TComponent;
 begin
-  if not Assigned(FPOFile) then
-    exit;
-  if not Assigned(PropInfo) then
-    exit;
-  if (UpperCase(PropInfo^.PropType^.Name) <> 'TTRANSLATESTRING') then
-    exit;
-  // do not translate at design time
-  // get the component
-  Tmp := Instance;
-  while Assigned(Tmp) and not (Tmp is TComponent) do
-    Tmp := TPersistentAccess(Tmp).GetOwner;
-  if not Assigned(Tmp) then
-    exit;
-  Component := Tmp as TComponent;
-  if (csDesigning in Component.ComponentState) then
-    exit;
+  if Assigned(FPOFile) then
+  begin
+    s := GetIdentifierPath(Sender, Instance, PropInfo);
+    if s <> '' then
+    begin
+      s := FPOFile.Translate(s, Content);
 
-  if not (Sender is TReader) then
-    exit;
-  if Component = TReader(Sender).Root then
-    Section := Component.ClassName
-    else
-      if Component.Owner = TReader(Sender).Root then
-        Section := Component.Owner.ClassName
-      else
-        exit;
-  Section := UpperCase(Section + '.' + Instance.GetNamePath + '.' + PropInfo^.Name);
-  s := FPOFile.Translate(Section, Content);
-
-  if s <> '' then
-    Content := s;
+      if s <> '' then
+        Content := s;
+    end;
+  end;
 end;
 
 var
