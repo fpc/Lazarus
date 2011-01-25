@@ -222,8 +222,8 @@ type
     function DisableMask(const NewText: String): Boolean;
     function RestoreMask(const NewText: String): Boolean;
 
-    Function  GetText : String;
-    Procedure SetText(Value : String);
+    Function  GetText : TCaption;
+    Procedure SetText(Value : TCaption);
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
     procedure TextChanged; override;
@@ -260,7 +260,7 @@ type
     procedure Clear;
     procedure ValidateEdit; virtual;
     property EditMask: string read FRealMask write SetMask;
-    property Text: string read GetText write SetText;
+    property Text: TCaption read GetText write SetText;
   end;
 
   { TMaskEdit }
@@ -1151,7 +1151,7 @@ end;
 
 
 // Get the actual Text
-Function TCustomMaskEdit.GetText : String;
+Function TCustomMaskEdit.GetText : TCaption;
 {
   Replace al FSPaceChars with #32
   If FMaskSave = False the do trimming of spaces and remove all maskliterals
@@ -1194,7 +1194,7 @@ End;
 
 
 // Set the actual Text
-Procedure TCustomMaskEdit.SetText(Value : String);
+Procedure TCustomMaskEdit.SetText(Value : TCaption);
 { This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks,
     LTR or RTL depending on FTrimType
