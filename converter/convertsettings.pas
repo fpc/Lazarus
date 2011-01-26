@@ -402,7 +402,7 @@ begin
   MapReplacement('TCoolBar',          'TToolBar');
   MapReplacement('TComboBoxEx',       'TComboBox');
   MapReplacement('TValueListEditor',  'TStringGrid');
-  MapReplacement('TRichEdit',         'TRichMemo'); // Must be installed from CRC.
+  MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
   MapReplacement('TDBRichEdit',       'TDBMemo');
   MapReplacement('TApplicationEvents','TApplicationProperties');
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
