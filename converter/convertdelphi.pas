@@ -783,7 +783,7 @@ constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
   fIsConsoleApp:=False;                      // Default = GUI app.
-  fUseThreads:=True;     // For testing.
+  fUseThreads:=False;
   fUnitSearchPaths:=TStringList.Create;
   fUnitSearchPaths.Delimiter:=';';
   fUnitSearchPaths.StrictDelimiter:=True;
