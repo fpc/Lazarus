@@ -5098,7 +5098,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeBounds">
-        <short>Sets the bounds (top. left, height, width) of the control.</short>
+        <short>Sets the bounds (left, top, height, width) optionally the BaseBounds of the control.</short>
+        <descr>ChangeBounds is called whenever the position or size of the control is set, either via the properties or by the layouter of the LCL. SetBounds calls internally ChangeBounds with KeepBase=false, while the LCL layouter calls it with KeepBase=true. Override this for code that might change the preferred size or resizes other controls. Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied. You can call this function in your custom controls. </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ChangeBounds.ALeft">
@@ -5119,6 +5120,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoSetBounds">
         <short>Perform the actual setting of the boundary rectangle.</short>
+        <descr>DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight. Do not call this function, only the LCL calls it. It also updates FClientWidth and FClientHeight accordingly. Override this to update the content layout of the control, for example scroll bars. As always: do not paint here, but call Invalidate and paint in OnPaint or override Paint. </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoSetBounds.ALeft">
@@ -7083,9 +7085,9 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
-        <short>Sets the bounds (top. left, height, width) of the control.</short>
-        <descr>[What's the difference between BoundsRect and ClientRect?]
-Does nothing but call ChangeBounds.</descr>
+        <short>Sets the bounds ( left, top, height, width) of the control.</short>
+        <descr>SetBounds can be used to change the left, top, width, height all at once, reducing some overhead. Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
+SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is set or the user calls it directly. SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance. For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo. When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo. If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize. Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied. Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false. </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetBounds.aLeft">
