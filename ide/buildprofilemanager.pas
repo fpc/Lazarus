@@ -314,13 +314,13 @@ constructor TMakeModeDefs.Create;
 begin
   inherited Create;
   // Hard-coded build values.
-  // LCL
-  FItemLCL:=TMakeModeDef.Create('LCL',lisLCL,'lcl',mmCleanBuild);
-  Add(FItemLCL);
   // package registration units
   FItemPkgReg:=TMakeModeDef.Create(
     'PackageRegistration',lisPkgReg,'packager/registration', mmBuild);
   Add(FItemPkgReg);
+  // LCL
+  FItemLCL:=TMakeModeDef.Create('LCL',lisLCL,'lcl',mmCleanBuild);
+  Add(FItemLCL);
   // IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';

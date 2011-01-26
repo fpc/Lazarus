@@ -11604,7 +11604,7 @@ begin
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Building standard components (LCL, SynEdit, CodeTools) failed.');
+      DebugLn('TMainIDE.DoBuildLazarus: Building standard components (package interface, LCL) failed.');
       Result:=mrIgnore;
       exit;
     end;

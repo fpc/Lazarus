@@ -5525,7 +5525,6 @@ packager/pkgoptionsdlg.pas svneol=native#text/pascal
 packager/pkgvirtualuniteditor.lfm svneol=native#text/plain
 packager/pkgvirtualuniteditor.pas svneol=native#text/pascal
 packager/registerfcl.pas svneol=native#text/pascal
-packager/registerlcl.pas svneol=native#text/pascal
 packager/registration/README.txt svneol=native#text/plain
 packager/registration/lazaruspackageintf.pas svneol=native#text/pascal
 packager/ucomponentmanmain.lfm svneol=native#text/plain

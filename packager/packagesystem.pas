@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  RegisterFCL, RegisterLCL, allsynedit;
+  RegisterFCL, AllLCLUnits, allsynedit, LCLVersion;
   
 type
   TFindPackageFlag = (
@@ -4456,7 +4456,6 @@ begin
   
   // register IDE built-in packages (Note: codetools do not need this)
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
-  RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
 
   // register custom IDE components

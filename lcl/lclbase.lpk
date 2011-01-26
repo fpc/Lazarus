@@ -5,7 +5,7 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
         <IncludeFiles Value="include"/>
         <OtherUnitFiles Value="forms;widgetset"/>
@@ -28,7 +28,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="31"/>
-    <Files Count="283">
+    <Files Count="291">
       <Item1>
         <Filename Value="chart.pp"/>
         <HasRegisterProc Value="True"/>
@@ -1195,6 +1195,45 @@
         <Filename Value="widgetset/wstoolwin.pp"/>
         <UnitName Value="WSToolwin"/>
       </Item283>
+      <Item284>
+        <Filename Value="alllclunits.pp"/>
+        <Type Value="Main Unit"/>
+        <UnitName Value="AllLCLUnits"/>
+      </Item284>
+      <Item285>
+        <Filename Value="actnlist.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ActnList"/>
+      </Item285>
+      <Item286>
+        <Filename Value="arrow.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Arrow"/>
+      </Item286>
+      <Item287>
+        <Filename Value="asyncprocess.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="AsyncProcess"/>
+      </Item287>
+      <Item288>
+        <Filename Value="avglvltree.pas"/>
+        <UnitName Value="AvgLvlTree"/>
+      </Item288>
+      <Item289>
+        <Filename Value="buttonpanel.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ButtonPanel"/>
+      </Item289>
+      <Item290>
+        <Filename Value="buttons.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Buttons"/>
+      </Item290>
+      <Item291>
+        <Filename Value="calendar.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Calendar"/>
+      </Item291>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
