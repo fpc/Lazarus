@@ -173,7 +173,6 @@ type
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
-    function DoDesignHitTest(AControl: TControl; Keys: PtrInt; Pos: TPoint): LRESULT;
     function DoDeleteSelectedPersistents: boolean;
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
@@ -1687,14 +1686,6 @@ begin
   end;
 end;
 
-function TDesigner.DoDesignHitTest(AControl: TControl; Keys: PtrInt; Pos: TPoint): LRESULT;
-var
-  RelativePos: TPoint;
-begin
-  RelativePos := AControl.ScreenToClient(Form.ClientToScreen(Pos));
-  Result := AControl.Perform(CM_DESIGNHITTEST, Keys, Longint(SmallPoint(RelativePos.X, RelativePos.Y)));
-end;
-
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
   Result := True;
@@ -1786,11 +1777,12 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    if DoDesignHitTest(TControl(MouseDownComponent), TheMessage.Keys, MouseDownPos) > 0 then
-    begin
-      TControlAccess(MouseDownComponent).MouseDown(Button, Shift, MouseDownPos.X, MouseDownPos.Y);
-      Exit;
-    end;
+    with TControl(MouseDownComponent).ScreenToClient(Form.ClientToScreen(MouseDownPos)) do
+      if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+      begin
+        TControlAccess(MouseDownComponent).MouseDown(Button, Shift, X, Y);
+        Exit;
+      end;
   end;
 
   if Mediator<>nil then begin
@@ -2133,11 +2125,12 @@ begin
 
   if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
   begin
-    if DoDesignHitTest(TControl(MouseDownComponent), TheMessage.Keys, MouseUpPos) > 0 then
-    begin
-      TControlAccess(MouseDownComponent).MouseUp(Button, Shift, MouseUpPos.X, MouseUpPos.Y);
-      Exit;
-    end;
+    with TControl(MouseDownComponent).ScreenToClient(Form.ClientToScreen(MouseUpPos)) do
+      if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+      begin
+        TControlAccess(MouseDownComponent).MouseUp(Button, Shift, X, Y);
+        Exit;
+      end;
   end;
 
   if Mediator<>nil then
@@ -2244,11 +2237,12 @@ begin
     MouseMoveComponent := ComponentAtPos(LastMouseMovePos.X, LastMouseMovePos.Y, True, True);
   if (MouseMoveComponent <> nil) and (MouseMoveComponent is TControl) then
   begin
-    if DoDesignHitTest(TControl(MouseMoveComponent), TheMessage.Keys, LastMouseMovePos) > 0 then
-    begin
-      TControlAccess(MouseMoveComponent).MouseMove(Shift, LastMouseMovePos.X, LastMouseMovePos.Y);
-      Exit;
-    end;
+    with TControl(MouseMoveComponent).ScreenToClient(Form.ClientToScreen(LastMouseMovePos)) do
+      if TControl(MouseMoveComponent).Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(X, Y))) > 0 then
+      begin
+        TControlAccess(MouseMoveComponent).MouseMove(Shift, X, Y);
+        Exit;
+      end;
   end;
 
   if Mediator <> nil then
