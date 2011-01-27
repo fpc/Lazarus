@@ -79,7 +79,6 @@ type
 
   TMakeModeDefs = class(TObjectList)
   private
-    fItemLCL: TMakeModeDef;
     fItemPkgReg: TMakeModeDef;
     fItemIDE: TMakeModeDef;
     fItemExamples: TMakeModeDef;
@@ -93,7 +92,6 @@ type
     // Show the permanant description part in ListBox.
     function FindName(const Name: string): TMakeModeDef;
   public
-    property ItemLCL: TMakeModeDef read fItemLCL;
     property ItemPkgReg: TMakeModeDef read fItemPkgReg;
     property ItemIDE: TMakeModeDef read fItemIDE;
     property ItemExamples: TMakeModeDef read fItemExamples;
@@ -318,9 +316,6 @@ begin
   FItemPkgReg:=TMakeModeDef.Create(
     'PackageRegistration',lisPkgReg,'packager/registration', mmBuild);
   Add(FItemPkgReg);
-  // LCL
-  FItemLCL:=TMakeModeDef.Create('LCL',lisLCL,'lcl',mmCleanBuild);
-  Add(FItemLCL);
   // IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
@@ -339,7 +334,6 @@ end;
 
 procedure TMakeModeDefs.Clear;
 begin
-  FItemLCL:=nil;
   FItemPkgReg:=nil;
   FItemIDE:=nil;
   FItemExamples:=nil;
@@ -358,7 +352,6 @@ begin
     NewItem.Assign(SrcItem);
     Add(NewItem);
   end;
-  fItemLCL     :=FindName('LCL');
   fItemPkgReg  :=FindName('PkgReg');
   fItemIDE     :=FindName('IDE');
   fItemExamples:=FindName('Examples');

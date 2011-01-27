@@ -739,6 +739,7 @@ type
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
     procedure IterateComponentClasses(Event: TIterateComponentClassesEvent;
                                       WithUsedPackages: boolean);
+    procedure SetAllComponentPriorities(const p: TComponentPriority);
     // used by dependencies
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
@@ -2892,6 +2893,15 @@ begin
   end;
 end;
 
+procedure TLazPackage.SetAllComponentPriorities(const p: TComponentPriority);
+var
+  i: Integer;
+begin
+  //debugln(['TLazPackage.SetAllComponentPriorities ',Name,' ',dbgs(p), ' FileCount=',FileCount]);
+  for i:=0 to FileCount-1 do
+    Files[i].ComponentPriority:=p;
+end;
+
 procedure TLazPackage.ConsistencyCheck;
 begin
   CheckList(FRemovedFiles,true,true,true);
@@ -2975,20 +2985,19 @@ var
   Cnt: Integer;
   i: Integer;
 begin
-  if TheUnitName<>'' then begin
-    Cnt:=FileCount;
+  if TheUnitName='' then exit(nil);
+  Cnt:=FileCount;
+  for i:=0 to Cnt-1 do begin
+    Result:=Files[i];
+    if IgnorePkgFile=Result then continue;
+    if CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
+  end;
+  if not IgnoreRemoved then begin
+    Cnt:=RemovedFilesCount;
     for i:=0 to Cnt-1 do begin
-      Result:=Files[i];
+      Result:=RemovedFiles[i];
       if IgnorePkgFile=Result then continue;
       if CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
-    end;
-    if not IgnoreRemoved then begin
-      Cnt:=RemovedFilesCount;
-      for i:=0 to Cnt-1 do begin
-        Result:=RemovedFiles[i];
-        if IgnorePkgFile=Result then continue;
-        if CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
-      end;
     end;
   end;
   Result:=nil;

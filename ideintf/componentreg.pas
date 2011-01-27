@@ -29,7 +29,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, Controls, LazarusPackageIntf, LCLProc;
+  Classes, SysUtils, typinfo, Controls, LazarusPackageIntf, LCLProc;
 
 type
   TComponentPriorityCategory = (
@@ -117,6 +117,7 @@ type
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function FindButton(Button: TComponent): TRegisteredComponent;
     procedure UpdateVisible;
+    function GetMaxComponentPriority: TComponentPriority;
   public
     property Items[Index: integer]: TRegisteredComponent read GetItems; default;
     property PageName: string read FPageName;
@@ -228,9 +229,11 @@ type
 var
   IDEComponentPalette: TBaseComponentPalette;
 
+function ComponentPriority(Category: TComponentPriorityCategory; Level: integer): TComponentPriority;
 function ComparePriority(const p1,p2: TComponentPriority): integer;
 function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
-
+function dbgs(const c: TComponentPriorityCategory): string; overload;
+function dbgs(const p: TComponentPriority): string; overload;
 
 implementation
 
@@ -239,10 +242,19 @@ begin
   raise Exception.Create(Msg);
 end;
 
+function ComponentPriority(Category: TComponentPriorityCategory; Level: integer
+  ): TComponentPriority;
+begin
+  Result.Category:=Category;
+  Result.Level:=Level;
+end;
+
 function ComparePriority(const p1, p2: TComponentPriority): integer;
 begin
+  // lower category is better
   Result:=ord(p2.Category)-ord(p1.Category);
   if Result<>0 then exit;
+  // higher level is better
   Result:=p1.Level-p2.Level;
 end;
 
@@ -255,6 +267,16 @@ begin
   Comp2:=TRegisteredComponent(Data2);
   Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
                           Comp2.ComponentClass.Classname);
+end;
+
+function dbgs(const c: TComponentPriorityCategory): string;
+begin
+  Result:=GetEnumName(TypeInfo(TComponentPriorityCategory),ord(c));
+end;
+
+function dbgs(const p: TComponentPriority): string;
+begin
+  Result:='Cat='+dbgs(p.Category)+',Lvl='+IntToStr(p.Level);
 end;
 
 { TRegisteredComponent }
@@ -450,6 +472,20 @@ begin
       if Items[i].Visible then HasVisibleComponents:=true;
     end;
     Visible:=HasVisibleComponents and (PageName<>'');
+  end;
+end;
+
+function TBaseComponentPage.GetMaxComponentPriority: TComponentPriority;
+var
+  i: Integer;
+begin
+  if Count=0 then
+    Result:=ComponentPriorityNormal
+  else begin
+    Result:=Items[0].GetPriority;
+    for i:=1 to Count-1 do
+      if ComparePriority(Items[i].GetPriority,Result)>0 then
+        Result:=Items[i].GetPriority;
   end;
 end;
 

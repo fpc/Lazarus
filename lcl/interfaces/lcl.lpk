@@ -1,41 +1,41 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <Name Value="LCL1"/>
+    <Name Value="LCL"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
-        <IncludeFiles Value="$(LCLWidgetType1)"/>
-        <OtherUnitFiles Value="$(LCLWidgetType1)"/>
-        <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType1)"/>
+        <IncludeFiles Value="$(LCLWidgetType)"/>
+        <OtherUnitFiles Value="$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <Conditionals Value="// LCLWidgetType1
-if undefined(LCLWidgetType1) then begin
+      <Conditionals Value="// LCLWidgetType
+if undefined(LCLWidgetType) then begin
   if (TargetOS='win32') or (TargetOS='win64') then
-    LCLWidgetType1 := 'win32'
+    LCLWidgetType := 'win32'
   else if TargetOS='wince' then
-    LCLWidgetType1 := 'wince'
+    LCLWidgetType := 'wince'
   else if TargetOS='darwin' then
-    LCLWidgetType1 := 'carbon'
+    LCLWidgetType := 'carbon'
   else
-    LCLWidgetType1 := 'gtk2';
+    LCLWidgetType := 'gtk2';
 end;
 
 // widget set specific options
-base := LCLWidgetType1+'/';
-if LCLWidgetType1='gtk' then
+base := LCLWidgetType+'/';
+if LCLWidgetType='gtk' then
   CustomOptions := '-dgtk1'
-else if LCLWidgetType1='carbon' then begin
+else if LCLWidgetType='carbon' then begin
   CustomOptions := '-dcarbon';
   UnitPath := base+'objc;'
              +base+'pascocoa/appkit;'
              +base+'pascocoa/foundation';
   IncPath := UnitPath;
-end else if LCLWidgetType1='wince' then begin
+end else if LCLWidgetType='wince' then begin
   CustomOptions := '-dDisableChecks';
-end else if LCLWidgetType1='fpgui' then begin
+end else if LCLWidgetType='fpgui' then begin
   if undefined(fpGUIPlatform) then begin
     if SrcOS='win32' then
       fpGUIPlatform := 'gdi'
@@ -51,15 +51,15 @@ end;
 
 // linker options
 if TargetOS='darwin' then begin
-  if LCLWidgetType1='gtk' then
+  if LCLWidgetType='gtk' then
     UsageLibraryPath := '/usr/X11R6/lib;/sw/lib'
-  else if LCLWidgetType1='gtk2' then
+  else if LCLWidgetType='gtk2' then
     UsageLibraryPath := '/usr/X11R6/lib;/sw/lib;/sw/lib/pango-ft219/lib'
-  else if LCLWidgetType1='carbon' then begin
+  else if LCLWidgetType='carbon' then begin
     UsageLinkerOptions := '-framework Carbon'
       +' -framework OpenGL'
       +' ''-dylib_file'' ''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''';
-  end else if LCLWidgetType1='cocoa' then
+  end else if LCLWidgetType='cocoa' then
     UsageLinkerOptions := '-framework Cocoa';
 end else if TargetOS='solaris' then begin
   UsageLibraryPath:='/usr/X11R6/lib';
@@ -67,7 +67,7 @@ end;"/>
       <BuildMacros>
         <Count Value="2"/>
         <Item1>
-          <Identifier Value="LCLWidgetType1"/>
+          <Identifier Value="LCLWidgetType"/>
           <Values Count="10">
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
@@ -100,11 +100,12 @@ end;"/>
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Minor="9" Release="29"/>
+    <Version Minor="9" Release="31"/>
     <Files Count="301">
       <Item1>
         <Filename Value="lclintfcompile.pas"/>
-        <UnitName Value="LCLIntfCompile"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lclintfcompile"/>
       </Item1>
       <Item2>
         <Filename Value="android/androidint.pas"/>
@@ -1163,7 +1164,6 @@ end;"/>
       </Item228>
       <Item229>
         <Filename Value="win32/alllclintfunits.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item229>
       <Item230>
@@ -1514,11 +1514,10 @@ end;"/>
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType1)
+      <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType)
 "/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>

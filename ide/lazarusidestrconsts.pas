@@ -3755,7 +3755,7 @@ resourcestring
     +'called, but no package is registering.';
   lisPkgSysUnitName = '%s%sUnit Name: %s%s%s';
   lisPkgSysFileName = '%s%sFile Name: %s%s%s';
-  lisPkgSysRegistrationError = 'Registration Error';
+  lisPkgSysPackageRegistrationError = 'Package registration Error';
   lisPkgSysTheRTLFreePascalComponentLibraryProvidesTheBase =
       'The RTL - '
     +'The Run-Time Library is the basis of all Free Pascal programs.';

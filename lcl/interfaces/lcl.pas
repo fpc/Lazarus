@@ -2,19 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit LCL1; 
+unit LCL; 
 
 interface
 
 uses
-  LCLIntfCompile, LazarusPackageIntf;
+  LCLIntfCompile, AllLCLIntfUnits, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
+  RegisterUnit('LCLIntfCompile', @LCLIntfCompile.Register); 
 end; 
 
 initialization
-  RegisterPackage('LCL1', @Register); 
+  RegisterPackage('LCL', @Register); 
 end.

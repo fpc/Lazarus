@@ -543,6 +543,9 @@ var
   j: Integer;
   OldActivePage: TTabSheet;
   BtnIndex: Integer;
+  SortedCompList: TFPList;
+  k: Integer;
+  SortedPageList: TFPList;
 begin
   if fUpdatingPageControl then exit;
   if IsUpdateLocked then begin
@@ -557,12 +560,16 @@ begin
   // lock
   fUpdatingPageControl:=true;
   FPageControl.DisableAlign;
+  SortedPageList:=TFPList.Create;
+  SortedCompList:=TFPList.Create;
   try
     OldActivePage:=FPageControl.ActivePage;
+
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do begin
       PageIndex:=IndexOfPageComponent(FPageControl.Pages[i]);
       if (PageIndex<0) or (not Pages[PageIndex].Visible) then begin
+        // page is not needed anymore => delete
         if PageIndex>=0 then begin
           CurPage:=Pages[PageIndex];
           CurBtn:=TSpeedButton(CurPage.SelectButton);
@@ -570,25 +577,43 @@ begin
           CurBtn.Free;
           Pages[PageIndex].PageComponent:=nil;
         end;
+        if FPageControl.Pages[i]=OldActivePage then
+          OldActivePage:=nil;
         FPageControl.Pages[i].Free;
       end;
     end;
+
+    // sort pages
+    for i:=0 to Count-1 do begin
+      CurPage:=Pages[i];
+      j:=SortedPageList.Count-1;
+      //debugln(['TComponentPalette.UpdateNoteBookButtons Page ',CurPage.PageName,' Prio=',dbgs(CurPage.GetMaxComponentPriority)]);
+      while (j>=0)
+      and (ComparePriority(CurPage.GetMaxComponentPriority,
+               TBaseComponentPage(SortedPageList[j]).GetMaxComponentPriority)>0)
+      do
+        dec(j);
+      SortedPageList.Insert(j+1,CurPage);
+    end;
+
     // insert a PageControl page for every visible palette page
     PageIndex:=0;
-    for i:=0 to Count-1 do begin
-      if not Pages[i].Visible then continue;
-      if Pages[i].PageComponent=nil then begin
+    for i:=0 to SortedPageList.Count-1 do begin
+      CurPage:=TBaseComponentPage(SortedPageList[i]);
+      if not CurPage.Visible then continue;
+      if CurPage.PageComponent=nil then begin
         // insert a new PageControl page
-        TCustomNotebook(FPageControl).Pages.Insert(PageIndex,Pages[i].PageName);
-        Pages[i].PageComponent:=FPageControl.Page[PageIndex];
+        TCustomNotebook(FPageControl).Pages.Insert(PageIndex,CurPage.PageName);
+        CurPage.PageComponent:=FPageControl.Page[PageIndex];
       end else begin
         // move to the right position
-        CurPageIndex:=TTabSheet(Pages[i].PageComponent).PageIndex;
+        CurPageIndex:=TTabSheet(CurPage.PageComponent).PageIndex;
         if CurPageIndex<>PageIndex then
           TCustomNotebook(FPageControl).Pages.Move(CurPageIndex,PageIndex);
       end;
       inc(PageIndex);
     end;
+
     // create a speedbutton for every visible component
     for i:=0 to Count-1 do begin
       CurPage:=Pages[i];
@@ -617,13 +642,25 @@ begin
         end;
       end;
 
-      // create component buttons
-      BtnIndex:=0;
+      // sort components for priority
+      SortedCompList.Clear;
       for j:=0 to CurPage.Count-1 do begin
         CurComponent:=TPkgComponent(CurPage[j]);
+        k:=SortedCompList.Count-1;
+        while (k>=0)
+        and (ComparePriority(CurComponent.GetPriority,TPkgComponent(SortedCompList[k]).GetPriority)>0)
+        do
+          dec(k);
+        SortedCompList.Insert(k+1,CurComponent);
+      end;
+
+      // create component buttons and delete unneeded
+      BtnIndex:=0;
+      for j:=0 to SortedCompList.Count-1 do begin
+        CurComponent:=TPkgComponent(SortedCompList[j]);
         if CurComponent.Visible then begin
           inc(BtnIndex);
-          //DebugLn(['TComponentPalette.UpdateNoteBookButtons ',DbgSName(CurComponent.ComponentClass),' ',CurComponent.Visible]);
+          //DebugLn(['TComponentPalette.UpdateNoteBookButtons Component ',DbgSName(CurComponent.ComponentClass),' ',CurComponent.Visible,' Prio=',dbgs(CurComponent.GetPriority)]);
           if CurComponent.Button=nil then begin
             CurBtn:=TSpeedButton.Create(nil);
             CurComponent.Button:=CurBtn;
@@ -673,6 +710,8 @@ begin
     fUpdatingPageControl:=false;
     fNoteBookNeedsUpdate:=false;
     FPageControl.EnableAlign;
+    SortedCompList.Free;
+    SortedPageList.Free;
   end;
   //writeln('TComponentPalette.UpdateNoteBookButtons END');
 end;

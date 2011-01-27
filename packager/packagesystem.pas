@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  RegisterFCL, AllLCLUnits, allsynedit, LCLVersion;
+  RegisterFCL, AllLCLUnits, allsynedit;
   
 type
   TFindPackageFlag = (
@@ -79,6 +79,10 @@ const
     [fpfSearchInInstalledPckgs,fpfSearchInAutoInstallPckgs,
      fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks,fpfSearchInLoadedPkgs];
   fpfSearchAllExisting = fpfSearchEverywhere+[fpfPkgLinkMustExist];
+
+  LCLCompPriority: TComponentPriority = (Category: cpBase; Level: 10);
+  FCLCompPriority: TComponentPriority = (Category: cpBase; Level: 9);
+  IDEIntfCompPriority: TComponentPriority = (Category: cpBase; Level: 8);
 
 type
   TPkgUninstallFlag = (
@@ -112,6 +116,7 @@ type
     FIDEIntfPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
+    FLCLBasePackage: TLazPackage;
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
     FOnBeginUpdate: TNotifyEvent;
@@ -122,6 +127,7 @@ type
     FOnEndUpdate: TEndUpdateEvent;
     FOnTranslatePackage: TPkgTranslate;
     FOnUninstallPackage: TPkgUninstall;
+    FQuietRegistration: boolean;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -130,6 +136,7 @@ type
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     function CreateFCLPackage: TLazPackage;
+    function CreateLCLBasePackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
     function CreateSynEditPackage: TLazPackage;
     function CreateLazControlsPackage: TLazPackage;
@@ -140,7 +147,6 @@ type
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
-    procedure SetAbortRegistration(const AValue: boolean);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
@@ -340,10 +346,13 @@ type
   public
     // properties
     property AbortRegistration: boolean read FAbortRegistration
-                                        write SetAbortRegistration;
+                                        write FAbortRegistration;
+    property QuietRegistration: boolean read FQuietRegistration
+                                        write FQuietRegistration;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
 
     property FCLPackage: TLazPackage read FFCLPackage;
+    property LCLBasePackage: TLazPackage read FLCLBasePackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
     property LazControlsPackage: TLazPackage read FLazControlsPackage;
@@ -499,12 +508,6 @@ end;
 function TLazPackageGraph.GetPackages(Index: integer): TLazPackage;
 begin
   Result:=TLazPackage(FItems[Index]);
-end;
-
-procedure TLazPackageGraph.SetAbortRegistration(const AValue: boolean);
-begin
-  if FAbortRegistration=AValue then exit;
-  FAbortRegistration:=AValue;
 end;
 
 procedure TLazPackageGraph.SetRegistrationPackage(const AValue: TLazPackage);
@@ -699,6 +702,8 @@ begin
 
   if CurPkg=FCLPackage then
     FFCLPackage:=nil
+  else if CurPkg=LCLBasePackage then
+    FLCLBasePackage:=nil
   else if CurPkg=LCLPackage then
     FLCLPackage:=nil
   else if CurPkg=IDEIntfPackage then
@@ -1290,7 +1295,7 @@ begin
       exit;
     end;
     // check unit file
-    FRegistrationFile:=FRegistrationPackage.FindUnit(FRegistrationUnitName,true);
+    FRegistrationFile:=FindUnit(FRegistrationPackage,FRegistrationUnitName,true,true);
     if FRegistrationFile=nil then begin
       if not (FRegistrationPackage.Missing) then begin
         // lpk exists, but file is missing => warn
@@ -1372,8 +1377,10 @@ begin
           CurComponent.ClassName, '"']));
     end;
     if AbortRegistration then exit;
+    // add the component to the package owning the file
+    // (e.g. a designtime package can register units of a runtime packages)
     NewPkgComponent:=
-      FRegistrationPackage.AddComponent(FRegistrationFile,Page,CurComponent);
+      FRegistrationFile.LazPackage.AddComponent(FRegistrationFile,Page,CurComponent);
     //debugln('TLazPackageGraph.RegisterComponentsHandler Page="',Page,'" CurComponent=',CurComponent.ClassName,' FRegistrationFile=',FRegistrationFile.Filename);
     if IDEComponentPalette<>nil then
       IDEComponentPalette.AddComponent(NewPkgComponent);
@@ -1383,6 +1390,7 @@ end;
 procedure TLazPackageGraph.RegistrationError(const Msg: string);
 var
   DlgResult: Integer;
+  IgnoreAll: Integer;
 begin
   // create nice and useful error message
 
@@ -1403,9 +1411,16 @@ begin
   // append message
   if Msg<>'' then
     ErrorMsg:=ErrorMsg+#13#13+Msg;
+  debugln(['TLazPackageGraph.RegistrationError ',dbgstr(ErrorMsg)]);
+
+  if AbortRegistration or QuietRegistration then exit;
+
   // tell user
-  DlgResult:=MessageDlg(lisPkgSysRegistrationError,
-                        ErrorMsg,mtError,[mbIgnore,mbAbort],0);
+  IgnoreAll:=mrLast+1;
+  DlgResult:=IDEQuestionDialog(lisPkgSysPackageRegistrationError,
+               ErrorMsg, mtError, [mrIgnore, IgnoreAll, lisIgnoreAll, mrAbort]);
+  if DlgResult=IgnoreAll then
+    QuietRegistration:=true;
   if DlgResult=mrAbort then
     AbortRegistration:=true;
 end;
@@ -1442,6 +1457,8 @@ begin
     AddFile(SetDirSeparators('packages/fcl-xml/src/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('packages/fcl-base/src/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
 
+    SetAllComponentPriorities(FCLCompPriority);
+
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
     OutputStateFile:=SetDirSeparators(
@@ -1451,17 +1468,13 @@ begin
   end;
 end;
 
-function TLazPackageGraph.CreateLCLPackage: TLazPackage;
-var
-  i: Integer;
-  Macro: TLazBuildMacro;
-  lp: TLCLPlatform;
+function TLazPackageGraph.CreateLCLBasePackage: TLazPackage;
 begin
   Result:=TLazPackage.Create;
   with Result do begin
     AutoCreated:=true;
-    Name:='LCL';
-    Filename:=SetDirSeparators('$(LazarusDir)/lcl/');
+    Name:='LCLBase';
+    Filename:=SetDirSeparators('$(LazarusDir)/lcl');
     Version.SetValues(1,0,0,0);
     Author:='Lazarus';
     License:='modified LGPL-2';
@@ -1470,8 +1483,7 @@ begin
     Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
-    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/';
-    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/widgetset/';
+    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl;$(LazarusDir)/lcl/widgetset/';
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
@@ -1483,7 +1495,55 @@ begin
 
     // register files
     {$I pkgfileslcl.inc}
-    
+
+    SetAllComponentPriorities(LCLCompPriority);
+
+    // add unit paths
+    UsageOptions.UnitPath:=SetDirSeparators(
+       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)');
+    // add include path
+    CompilerOptions.IncludePath:=SetDirSeparators(
+      '$(LazarusDir)/lcl/include');
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+
+    // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
+    // file as indicator, if LCL has been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o');
+
+    Modified:=false;
+  end;
+end;
+
+function TLazPackageGraph.CreateLCLPackage: TLazPackage;
+var
+  Macro: TLazBuildMacro;
+  lp: TLCLPlatform;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='LCL';
+    Filename:=SetDirSeparators('$(LazarusDir)/lcl/interfaces');
+    Version.SetValues(1,0,0,0);
+    Author:='Lazarus';
+    License:='modified LGPL-2';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=pupManually;
+    Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
+    PackageType:=lptRunAndDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/interfaces'
+                             +';$(LazarusDir)/lcl/interfaces/($LCLWidgetType);';
+    CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgeType)';
+    POOutputDirectory:='languages';
+    Translated:=SystemLanguageID1;
+    LazDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
+    AddToProjectUsesSection:=false;
+
+    // add requirements
+    AddRequiredDependency(LCLBasePackage.CreateDependencyWithOwner(Result));
+
     // add issues files
     AddFile('interfaces/carbon/issues.xml','carbon-issues.xml',pftIssues,[],cpBase);
     AddFile('interfaces/win32/issues.xml','win32-issues.xml',pftIssues,[],cpBase);
@@ -1491,19 +1551,15 @@ begin
     AddFile('interfaces/gtk2/issues.xml','gtk2-issues.xml',pftIssues,[],cpBase);
     AddFile('interfaces/qt/issues.xml','qt-issues.xml',pftIssues,[],cpBase);
 
-    // increase priority by one, so that the LCL components are inserted to the
-    // left in the palette
-    for i:=0 to FileCount-1 do
-      inc(Files[i].ComponentPriority.Level);
+    SetAllComponentPriorities(LCLCompPriority);
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);'
-      +'$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
+       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
     UsageOptions.CustomOptions:='-dLCL -dLCL$(LCLWidgetType)';
     // add include path
     CompilerOptions.IncludePath:=SetDirSeparators(
-      '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
+      '$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
     // build macro: LCLWidgetType
     Macro:=CompilerOptions.BuildMacros.Add('LCLWidgetType');
@@ -1528,7 +1584,7 @@ begin
       +'end;'+LineEnding
       +''+LineEnding
       +'// widget set specific options'+LineEnding
-      +'base := ''interfaces/''+LCLWidgetType+''/'';'+LineEnding
+      +'base := LCLWidgetType+''/'';'+LineEnding
       +'if LCLWidgetType=''gtk'' then'+LineEnding
       +'  CustomOptions := ''-dgtk1'''+LineEnding
       +'else if LCLWidgetType=''carbon'' then begin'+LineEnding
@@ -1880,6 +1936,8 @@ begin
     AddFile('srceditorintf.pas','SrcEditorIntf',pftUnit,[],cpBase);
     AddFile('texttools.pas','TextTools',pftUnit,[],cpBase);
 
+    SetAllComponentPriorities(IDEIntfCompPriority);
+
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
       '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)');
@@ -1928,6 +1986,7 @@ function TLazPackageGraph.CreateLazarusBasePackage(PkgName: string
 begin
   PkgName:=lowercase(PkgName);
   if PkgName='fcl' then Result:=CreateFCLPackage
+  else if PkgName='lclbase' then Result:=CreateLCLBasePackage
   else if PkgName='lcl' then Result:=CreateLCLPackage
   else if PkgName='ideintf' then Result:=CreateIDEIntfPackage
   else if PkgName='synedit' then Result:=CreateSynEditPackage
@@ -1961,12 +2020,22 @@ begin
   if IsStaticBasePackage(APackage.Name) then begin
     APackage.Installed:=pitStatic;
     APackage.AutoInstall:=pitStatic;
-    if SysUtils.CompareText(APackage.Name,'FCL')=0 then
-      SetBasePackage(FFCLPackage)
-    else if SysUtils.CompareText(APackage.Name,'LCL')=0 then
-      SetBasePackage(FLCLPackage)
-    else if SysUtils.CompareText(APackage.Name,'IDEIntf')=0 then
-      SetBasePackage(FIDEIntfPackage)
+    if SysUtils.CompareText(APackage.Name,'FCL')=0 then begin
+      SetBasePackage(FFCLPackage);
+      APackage.SetAllComponentPriorities(FCLCompPriority);
+    end
+    else if SysUtils.CompareText(APackage.Name,'LCLBase')=0 then begin
+      SetBasePackage(FLCLBasePackage);
+      APackage.SetAllComponentPriorities(LCLCompPriority);
+    end
+    else if SysUtils.CompareText(APackage.Name,'LCL')=0 then begin
+      SetBasePackage(FLCLPackage);
+      APackage.SetAllComponentPriorities(LCLCompPriority);
+    end
+    else if SysUtils.CompareText(APackage.Name,'IDEIntf')=0 then begin
+      SetBasePackage(FIDEIntfPackage);
+      APackage.SetAllComponentPriorities(IDEIntfCompPriority);
+    end
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -2071,6 +2140,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
 
 begin
   LoadLazarusBasePackage('FCL');
+  LoadLazarusBasePackage('LCLBase');
   LoadLazarusBasePackage('LCL');
   LoadLazarusBasePackage('IDEIntf');
   LoadLazarusBasePackage('SynEdit');
@@ -2197,6 +2267,7 @@ function TLazPackageGraph.IsStaticBasePackage(PackageName: string
 begin
   PackageName:=lowercase(PackageName);
   Result:=(PackageName='fcl')
+       or (PackageName='lclbase')
        or (PackageName='lcl')
        or (PackageName='synedit')
        or (PackageName='ideintf')
@@ -2683,7 +2754,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
   begin
     Result:=false;
     if (Pkg1=nil) or (lpfVisited in Pkg1.Flags)
-    or (Pkg1=FFCLPackage) or (Pkg1=FLCLPackage) then exit;
+    or (Pkg1=FFCLPackage) or (Pkg1=FLCLBasePackage) or (Pkg1=FLCLPackage) then exit;
     Pkg1.Flags:=Pkg1.Flags+[lpfVisited];
     Result:=CheckUnitName(Pkg1.Name);
     if Result then begin
