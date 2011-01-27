@@ -38,7 +38,7 @@ unit MsgQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil,
+  Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil, KeywordFuncLists,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
   AbstractsMethodsDlg, LazarusIDEStrConsts;
@@ -604,6 +604,9 @@ var
   Caret: TPoint;
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  CodeXY: TCodeXYPosition;
 begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Dir=',Msg.Directory,' Msg=',Msg.Msg]);
@@ -618,6 +621,19 @@ begin
       exit;
     end;
 
+    if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
+    CodeBuf:=CodeToolBoss.LoadFile(Filename,true,false);
+    if CodeBuf=nil then exit;
+    if not CodeToolBoss.Explore(CodeBuf,Tool,false) then exit;
+    if Tool.CaretToCleanPos(CodeXYPosition(Caret.X,Caret.Y,CodeBuf),CleanPos)<>0 then exit;
+    if CleanPos>Tool.SrcLen then CleanPos:=Tool.SrcLen;
+    if (CleanPos>1) and (not IsIdentChar[Tool.Src[CleanPos]]) then dec(CleanPos);
+    Tool.MoveCursorToCleanPos(CleanPos);
+    Tool.ReadPriorAtom;
+    CleanPos:=Tool.CurPos.StartPos;
+    if CleanPos<1 then exit;
+    if not Tool.CleanPosToCaret(CleanPos,CodeXY) then exit;
+
     // get identifier
     if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
       DebugLn('TQuickFixIdentifierNotFoundAddLocal invalid message ',Msg.Msg);
@@ -625,15 +641,15 @@ begin
       exit;
     end;
     Identifier:=REVar(1);
-    //DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier]);
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier,' ',DbgsCXY(CodeXY)]);
 
-    if not IsIdentifierInCode(CodeBuf,Caret.X,Caret.Y,Identifier,
+    if not IsIdentifierInCode(CodeXY.Code,CodeXY.X,CodeXY.Y,Identifier,
       Identifier+' not found in '+CodeBuf.Filename
          +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'#13
          +'Maybe the message is outdated.')
     then exit;
 
-    if not CodeToolBoss.CreateVariableForIdentifier(CodeBuf,Caret.X,Caret.Y,-1,
+    if not CodeToolBoss.CreateVariableForIdentifier(CodeXY.Code,CodeXY.X,CodeXY.Y,-1,
                NewCode,NewX,NewY,NewTopLine)
     then begin
       LazarusIDE.DoJumpToCodeToolBossError;
