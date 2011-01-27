@@ -108,19 +108,6 @@ object frmCompilerOptions: TfrmCompilerOptions
         Caption = 'lblDebugPath'
         ParentColor = False
       end
-      object LCLWidgetTypeLabel: TLabel
-        AnchorSideLeft.Control = PathPage
-        AnchorSideTop.Control = edtDebugPath
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 14
-        Top = 258
-        Width = 101
-        BorderSpacing.Top = 6
-        BorderSpacing.Around = 6
-        Caption = 'LCLWidgetTypeLabel'
-        ParentColor = False
-      end
       object edtOtherUnits: TEdit
         AnchorSideLeft.Control = PathPage
         AnchorSideTop.Control = lblOtherUnits
@@ -222,20 +209,6 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Bottom = 6
         TabOrder = 5
         Text = 'edtDebugPath'
-      end
-      object LCLWidgetTypeComboBox: TComboBox
-        AnchorSideLeft.Control = LCLWidgetTypeLabel
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = LCLWidgetTypeLabel
-        AnchorSideTop.Side = asrCenter
-        Left = 113
-        Height = 21
-        Top = 255
-        Width = 171
-        BorderSpacing.Left = 6
-        ItemHeight = 0
-        Style = csDropDownList
-        TabOrder = 6
       end
     end
     object BuildModesPage: TTabSheet

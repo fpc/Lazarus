@@ -84,9 +84,6 @@ type
     edtDebugPath: TEdit;
     DebugPathEditBtn: TPathEditorButton;
 
-    LCLWidgetTypeLabel: TLabel;
-    LCLWidgetTypeComboBox: TComboBox;
-
     { Build modes }
     BuildModesPage: TTabSheet;
 
@@ -604,11 +601,10 @@ end;
 procedure TfrmCompilerOptions.LoadOptionsToForm(
   SrcCompilerOptions: TBaseCompilerOptions);
 var
-  i: integer;
-  LCLPlatform: TLCLPlatform;
   EnabledLinkerOpts: Boolean;
   Options: TBaseCompilerOptions;
   HasBuildModes: boolean;
+  i: LongInt;
 begin
   if SrcCompilerOptions<>nil then
     Options:=SrcCompilerOptions
@@ -634,12 +630,6 @@ begin
     edtOtherSources.Text := Options.SrcPath;
     edtUnitOutputDir.Text := Options.UnitOutputDirectory;
     edtDebugPath.Text := Options.DebugPath;
-
-    LCLPlatform := DirNameToLCLPlatform(Options.LCLWidgetType);
-    if CompareText(Options.LCLWidgetType,LCLPlatformDirNames[LCLPlatform])=0 then
-      LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
-    else
-      LCLWidgetTypeComboBox.ItemIndex := 0;
 
     // build modes
     HasBuildModes:=(Options is TProjectCompilerOptions);
@@ -896,7 +886,6 @@ function TfrmCompilerOptions.SaveFormToOptions(
 var
   code: LongInt;
   hs: LongInt;
-  i: integer;
   NewTargetOS,
   NewTargetCPU: String;
   Options: TBaseCompilerOptions;
@@ -969,13 +958,6 @@ begin
     Options.DebugPath := edtDebugPath.Text;
     if not CheckPutSearchPath('debugger search path',OldPath,Options.GetDebugPath(false)) then
       exit(false);
-
-    // ToDo: will be replaced by build macro
-    i:=LCLWidgetTypeComboBox.Itemindex;
-    if i<=0 then
-      Options.LCLWidgetType:=''
-    else
-      Options.LCLWidgetType:= LCLPlatformDirNames[TLCLPlatform(i-1)];
 
     // parsing
     Options.AssemblerStyle := grpAsmStyle.ItemIndex;
@@ -1592,9 +1574,6 @@ end;
   TfrmCompilerOptions SetupSearchPathsTab
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupSearchPathsTab(Page: integer);
-var
-  LCLInterface: TLCLPlatform;
-  s: String;
 begin
   // Setup the Search Paths Tab
   MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
@@ -1704,23 +1683,6 @@ begin
     Parent:=PathPage;
   end;
   edtDebugPath.AnchorToNeighbour(akRight,0,DebugPathEditBtn);
-
-  {------------------------------------------------------------}
-
-  LCLWidgetTypeLabel.Caption:=Format(lisCOVarious, [lisLCLWidgetType]);
-  with LCLWidgetTypeComboBox do begin
-    with Items do begin
-      BeginUpdate;
-      s:=LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
-      Add(Format(lisCOdefault,[s]));
-      for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
-        Items.Add(LCLPlatformDisplayNames[LCLInterface]);
-      end;
-      EndUpdate;
-    end;
-    ItemIndex:=1;
-    Constraints.MinWidth:=150;
-  end;
 end;
 
 procedure TfrmCompilerOptions.SetupBuildModesTab(Page: integer);
