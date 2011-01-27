@@ -6057,6 +6057,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl;'
+       +LazarusSrcDir+'/lcl/interfaces;'
        +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';'
        +SrcPath)
     ,da_DefineRecurse));
@@ -6077,6 +6078,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl']),
     SrcPathMacroName,
       d('../lcl'
+       +';../lcl/interfaces'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath
     ,da_Define));
@@ -6101,24 +6103,7 @@ begin
     ExternalMacroStart+'IncPath',
     d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
-  // <LazarusSrcDir>/designer/jitform
-  SubDirTempl:=TDefineTemplate.Create('JITForm',ctsJITFormDirectory,
-    '','jitform',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
-    SrcPathMacroName,
-      d('../../lcl'
-      +';../../lcl/interfaces/'+WidgetType)
-      +';'+SrcPath
-    ,da_Define));
-  DirTempl.AddChild(SubDirTempl);
   // <LazarusSrcDir>/designer/units
-  SubDirTempl:=TDefineTemplate.Create('Designer Units',
-    ctsDesignerUnitsDirectory,'','units',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
-    ctsCompiledSrcPath,CompiledSrcPathMacroName,d('../jitform/'),
-    da_Define));
-  DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
 
@@ -6137,6 +6122,7 @@ begin
        +';'+LazarusSrcDir+'/ideintf'
        +';'+LazarusSrcDir+'/components/codetools'
        +';'+LazarusSrcDir+'/lcl'
+       +';'+LazarusSrcDir+'/lcl/interfaces'
        +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType)
        +';'+SrcPath
     ,da_DefineRecurse));
@@ -6158,6 +6144,7 @@ begin
        +';../debugger'
        +';../designer'
        +';../lcl'
+       +';../lcl/interfaces'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath
     ,da_Define));
@@ -6171,6 +6158,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl synedit codetools lazcontrols ideintf']),
     SrcPathMacroName,
       d(LazarusSrcDir+'/lcl'
+      +';'+LazarusSrcDir+'/lcl/interfaces'
       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
       +';'+LazarusSrcDir+'/ide'
       +';'+LazarusSrcDir+'/ideintf'
@@ -6210,24 +6198,6 @@ begin
   MainDir.AddChild(DirTempl);
 
 
-  // <LazarusSrcDir>/ideintf
-  IDEIntfDir:=TDefineTemplate.Create('IDEIntf',ctsIDEIntfDirectory,
-    '','ideintf',da_Directory);
-  IDEIntfDir.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
-    SrcPathMacroName,
-      d('../components/codetools'
-       +';../packager/registration'
-       +';../lcl'
-       +';../lcl/interfaces/'+WidgetType)
-       +';'+SrcPath
-    ,da_Define));
-  IDEIntfDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
-    ctsCompiledSrcPath,CompiledSrcPathMacroName,
-    LazarusSrcDir+d('/ideintf'),
-    da_DefineRecurse));
-  MainDir.AddChild(IDEIntfDir);
-
   // <LazarusSrcDir>/examples
   DirTempl:=TDefineTemplate.Create('Examples',
     Format(ctsNamedDirectory,['Examples']),
@@ -6239,7 +6209,26 @@ begin
       +';../lcl/interfaces/'+WidgetType+';'+SrcPath)
     ,da_Define));
   MainDir.AddChild(DirTempl);
-  
+
+  // <LazarusSrcDir>/ideintf
+  IDEIntfDir:=TDefineTemplate.Create('IDEIntf',ctsIDEIntfDirectory,
+    '','ideintf',da_Directory);
+  IDEIntfDir.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    SrcPathMacroName,
+      d('../components/codetools'
+       +';../packager/registration'
+       +';../lcl'
+       +';../lcl/interfaces'
+       +';../lcl/interfaces/'+WidgetType)
+       +';'+SrcPath
+    ,da_Define));
+  IDEIntfDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+    ctsCompiledSrcPath,CompiledSrcPathMacroName,
+    LazarusSrcDir+d('/ideintf'),
+    da_DefineRecurse));
+  MainDir.AddChild(IDEIntfDir);
+
   // <LazarusSrcDir>/lcl
   DirTempl:=TDefineTemplate.Create('LCL',Format(ctsNamedDirectory,['LCL']),
     '','lcl',da_Directory);

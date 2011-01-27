@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  RegisterFCL, AllLCLUnits, allsynedit;
+  RegisterFCL, AllLCLUnits, LCLIntfCompile, allsynedit;
   
 type
   TFindPackageFlag = (
