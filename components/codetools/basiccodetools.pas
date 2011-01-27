@@ -2537,7 +2537,7 @@ var SrcStart: integer;
   var OldP: integer;
     IsDirective: Boolean;
   begin
-    debugln(['ReadComment ',dbgstr(copy(Source,p-5,5))+'|'+Source[P]+dbgstr(copy(Source,p+1,5))]);
+    //debugln(['ReadComment ',dbgstr(copy(Source,p-5,5))+'|'+Source[P]+dbgstr(copy(Source,p+1,5))]);
     OldP:=P;
     IsDirective:=false;
     case Source[P] of
@@ -2572,6 +2572,7 @@ var SrcStart: integer;
             // => position behind code
             inc(p);
             Result:=false;
+            exit;
           end;
         end;
     else
