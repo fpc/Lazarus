@@ -87,7 +87,7 @@ begin
     writeln('TARGET=',Options.TargetOS);
     writeln('TARGETCPU=',Options.TargetProcessor);
     if (ParamCount>=3) then begin
-      Options.TestPascalFile:=ExpandFileName(ParamStr(1));
+      Options.TestPascalFile:=ExpandFileNameUTF8(ParamStr(1));
       X:=StrToInt(ParamStr(2));
       Y:=StrToInt(ParamStr(3));
     end;

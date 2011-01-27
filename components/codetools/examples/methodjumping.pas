@@ -36,12 +36,28 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
+  X: Integer;
+  Y: Integer;
 begin
+  if (ParamCount>=1) and (Paramcount<3) then begin
+    writeln('Usage:');
+    writeln('  ',ParamStr(0));
+    writeln('  ',ParamStr(0),' <filename> <X> <Y>');
+  end;
+
   ExpandedFilename:=ExpandFileNameUTF8('scanexamples/methodjump1.pas');
+  X:=14;
+  Y:=10;
+  if (ParamCount>=3) then begin
+    ExpandedFilename:=ExpandFileNameUTF8(ParamStr(1));
+    X:=StrToInt(ParamStr(2));
+    Y:=StrToInt(ParamStr(3));
+  end;
+
   CodeBuf:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if CodeBuf=nil then
     raise Exception.Create('failed loading '+ExpandedFilename);
-  if CodeToolBoss.JumpToMethod(CodeBuf,14,10,NewCode,NewX,NewY,NewTopLine,
+  if CodeToolBoss.JumpToMethod(CodeBuf,X,Y,NewCode,NewX,NewY,NewTopLine,
                                RevertableJump)
   then
     writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,
