@@ -116,22 +116,6 @@ type
   public
   end;
 
-  { TFpGuiWSToolButton }
-
-  TFpGuiWSToolButton = class(TWSToolButton)
-  private
-  protected
-  public
-  end;
-
-  { TFpGuiWSToolBar }
-
-  TFpGuiWSToolBar = class(TWSToolBar)
-  private
-  protected
-  public
-  end;
-
   { TFpGuiWSTrackBar }
 
   TFpGuiWSTrackBar = class(TWSTrackBar)

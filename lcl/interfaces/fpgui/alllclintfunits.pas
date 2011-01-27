@@ -12,8 +12,6 @@ uses
   fpguiwsforms,
   fpguiwsbuttons,
   fpguiobjects,
-  fpguiwschecklst,
-  fpguiwsspin,
   fpguiwsfactory,
   fpguiproc,
   fpguiwsextctrls,
@@ -22,7 +20,7 @@ uses
   fpguiwsgrids,
   fpguiwsimglist,
   fpguiwsarrow,
-  fpguiwsmenus,
-  fpguiwscalendar;
+  //fpguiwscalendar,
+  fpguiwsmenus;
 implementation
 end.

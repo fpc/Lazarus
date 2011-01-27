@@ -684,7 +684,7 @@ begin
     Result := CreateBitmapFromLazarusResource(DialogResName[idDiag]);
 end;
 
-{$I colordialog.inc}
+{$I lclcolordialog.inc}
 {$I commondialog.inc}
 {$I filedialog.inc}
 {$I finddialog.inc}
