@@ -12264,6 +12264,10 @@ msgstr "无效的单元名: %s"
 msgid "Package file not found"
 msgstr "包文件未找到"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "注册程序是空的"
@@ -12271,10 +12275,6 @@ msgstr "注册程序是空的"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "注册单元已经调用,但是没有包被注册."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "注册错误"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

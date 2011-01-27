@@ -12233,6 +12233,10 @@ msgstr "El nom de la unitat no és vàlid: %s"
 msgid "Package file not found"
 msgstr "No s'ha trobat el fitxer del paquet"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "El procediment del registre és NIL"
@@ -12240,10 +12244,6 @@ msgstr "El procediment del registre és NIL"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "S'ha cridat RegisterUnit, però no hi ha cap paquet registrant."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "S'ha produït un error de registre"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

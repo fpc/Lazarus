@@ -12135,16 +12135,16 @@ msgstr ""
 msgid "Package file not found"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
-msgstr ""
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus

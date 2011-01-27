@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-26 02:18+0300\n"
+"PO-Revision-Date: 2011-01-28 01:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -12241,6 +12241,10 @@ msgstr "Неверное имя модуля: %s"
 msgid "Package file not found"
 msgstr "Файл пакета не найден"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr "Ошибка регистрации пакета"
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "Процедура регистрации пуста"
@@ -12248,10 +12252,6 @@ msgstr "Процедура регистрации пуста"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "Был вызван RegisterUnit, но пакетов не зарегистрировано."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "Ошибка регистрации"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

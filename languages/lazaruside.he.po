@@ -12208,6 +12208,10 @@ msgstr "שם יחידה לא חוקי: s%"
 msgid "Package file not found"
 msgstr "הקובץ של החבילה לא נמצא"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "פרוצדורת הרישום ריקה"
@@ -12215,10 +12219,6 @@ msgstr "פרוצדורת הרישום ריקה"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "יחידת הרישום נקראה, אבל אף חבילה לא נרשמת."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "שגיאת רישום"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

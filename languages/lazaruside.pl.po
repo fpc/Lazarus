@@ -12250,6 +12250,10 @@ msgstr "Błędna nazwa modułu: %s"
 msgid "Package file not found"
 msgstr "Nie znalazłem pliku pakietu"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "procedura rejestracji jest pusta"
@@ -12257,10 +12261,6 @@ msgstr "procedura rejestracji jest pusta"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "RejestrujModuł było wzywane, ale żaden pakiet nie jest rejestrowany."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "Błąd rejestracji"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

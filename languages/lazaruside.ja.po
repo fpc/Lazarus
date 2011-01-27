@@ -12261,6 +12261,10 @@ msgstr "無効なユニット名"
 msgid "Package file not found"
 msgstr "パッケージファイルが見つかりません"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "Register手続きが空です"
@@ -12268,10 +12272,6 @@ msgstr "Register手続きが空です"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "ユニット登録が呼び出されましたが、どのパッケージも登録中ではありません。"
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "登録エラー"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

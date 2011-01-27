@@ -12262,6 +12262,10 @@ msgstr "Neplatné meno jednotky: %s"
 msgid "Package file not found"
 msgstr "Súbor balíčka nenájdený"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "Procedúra Register je prázdna"
@@ -12269,10 +12273,6 @@ msgstr "Procedúra Register je prázdna"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "Bolo volané RegisterUnit, ale neregistruje sa žiadny balíček."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "Chyba registrácie"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

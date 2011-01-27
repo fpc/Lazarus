@@ -12245,6 +12245,10 @@ msgstr "Klaidingas modulio pavadinimas: %s"
 msgid "Package file not found"
 msgstr "Nerastas paketo failas"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "Procedūra Register yra nil"
@@ -12252,10 +12256,6 @@ msgstr "Procedūra Register yra nil"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "Paleistas RegisterUnit, tačiau paketas nėra registruojamas."
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "Klaida registruojant"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"

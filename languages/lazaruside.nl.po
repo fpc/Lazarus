@@ -12241,6 +12241,10 @@ msgstr "Ongeldige unit naam: %s"
 msgid "Package file not found"
 msgstr "Pakketbestand niet gevonden"
 
+#: lazarusidestrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
 msgstr "Register proceure is nill"
@@ -12248,10 +12252,6 @@ msgstr "Register proceure is nill"
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called, but no package is registering."
 msgstr "RegisterUnit is aangeroepen, maar er is geen pakket geregistreerd"
-
-#: lazarusidestrconsts.lispkgsysregistrationerror
-msgid "Registration Error"
-msgstr "Regastratie error"
 
 #: lazarusidestrconsts.lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
