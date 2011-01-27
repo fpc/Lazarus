@@ -2531,23 +2531,26 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
 }
 var SrcStart: integer;
 
-  function ReadComment(var P: integer): boolean;
-  // false if compiler directive
+  function ReadComment(var P: integer; SubComment: boolean): boolean;
+  // true if comment was skipped
+  // false if not skipped, because comment is compiler directive
   var OldP: integer;
+    IsDirective: Boolean;
   begin
+    debugln(['ReadComment ',dbgstr(copy(Source,p-5,5))+'|'+Source[P]+dbgstr(copy(Source,p+1,5))]);
     OldP:=P;
+    IsDirective:=false;
     case Source[P] of
       '}':
         begin
           dec(P);
           while (P>=SrcStart) and (Source[P]<>'{') do begin
             if NestedComments and (Source[P]='}') then
-              ReadComment(P)
+              ReadComment(P,true)
             else
               dec(P);
           end;
-          Result:=not (StopAtDirectives
-                       and (P>=SrcStart) and (Source[P+1]='$'));
+          IsDirective:=(P>=SrcStart) and (Source[P+1]='$');
           dec(P);
         end;
       ')':
@@ -2558,12 +2561,11 @@ var SrcStart: integer;
             while (P>SrcStart)
             and ((Source[P-1]<>'(') or (Source[P]<>'*')) do begin
               if NestedComments and ((Source[P]=')') and (Source[P-1]='*')) then
-                ReadComment(P)
+                ReadComment(P,true)
               else
                 dec(P);
             end;
-            Result:=not (StopAtDirectives
-                         and (P>=SrcStart) and (Source[P+1]='$'));
+            IsDirective:=(P>=SrcStart) and (Source[P+1]='$');
             dec(P,2);
           end else begin
             // normal bracket
@@ -2573,8 +2575,9 @@ var SrcStart: integer;
           end;
         end;
     else
-      Result:=true;
+      exit(true);
     end;
+    Result:=(not IsDirective) or (not StopAtDirectives) or SubComment;
     if not Result then P:=OldP+1;
   end;
 
@@ -2597,7 +2600,7 @@ begin
   while (Result>=SrcStart) do begin
     case Source[Result] of
       '}',')':
-        if not ReadComment(Result) then exit;
+        if not ReadComment(Result,false) then exit;
 
       #10,#13:
         begin
