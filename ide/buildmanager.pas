@@ -1823,7 +1823,7 @@ begin
       // compute macro values
 
       if ParseOpts.MacroValuesParsing then begin
-        debugln(['TPkgManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
+        debugln(['TBuildManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
         exit;
       end;
 

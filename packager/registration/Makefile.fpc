@@ -1,39 +1,55 @@
-#   $Id$
+#   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for Lazarus for Free Pascal
+#   Makefile.fpc for FCL 1.0
 #
+#   This file was generated on 01/27/2011
 
 [package]
-name=lazpkgreg
-version=0.9b
+name=fcl
+version=1.0
 
 [compiler]
-unitdir=.
 unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
-options=-gl
+unitdir=.
+options= -MObjFPC -Scghi -O1 -gl -vewnhi -l
 
 [target]
-units=lazaruspackageintf
+units=fcllaz.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
-[require]
-packages=
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
 
 [rules]
-cleanlaz: clean
-
-[rules]
-.PHONY: cleartarget all
+.PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazaruspackageintf$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/fcllaz$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) lazaruspackageintf$(PPUEXT)
+compiled:
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/FCL.compiled
 
-# end.
-
+all: cleartarget $(COMPILER_UNITTARGETDIR) fcllaz$(PPUEXT) compiled

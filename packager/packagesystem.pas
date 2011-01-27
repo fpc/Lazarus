@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  RegisterFCL, AllLCLUnits, RegisterLCL, allsynedit;
+  FCLLaz, AllLCLUnits, allsynedit;
   
 type
   TFindPackageFlag = (
@@ -4162,6 +4162,16 @@ var
   NewShortenSrc: String;
   BeautifyCodeOptions: TBeautifyCodeOptions;
   AddedUnitNames: TStringToStringTree;
+
+  procedure UseUnit(AnUnitName: string);
+  begin
+    if AddedUnitNames.Contains(AnUnitName) then exit;
+    AddedUnitNames.Add(AnUnitName,'');
+    if UsedUnits<>'' then
+      UsedUnits:=UsedUnits+', ';
+    UsedUnits:=UsedUnits+AnUnitName;
+  end;
+
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.SavePackageMainSource A');
@@ -4223,11 +4233,7 @@ begin
           continue;
         end;
 
-        if AddedUnitNames.Contains(CurUnitName) then continue;
-        AddedUnitNames.Add(CurUnitName,'');
-        if UsedUnits<>'' then
-          UsedUnits:=UsedUnits+', ';
-        UsedUnits:=UsedUnits+CurUnitName;
+        UseUnit(CurUnitName);
         if NeedsRegisterProcCall then begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
@@ -4235,24 +4241,23 @@ begin
       end;
     end;
 
+    // append registration code only for design time packages
+    if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
+      RegistrationCode:=
+        'procedure Register;'+e
+        +'begin'+e
+        +RegistrationCode
+        +'end;'+e
+        +e
+        +'initialization'+e
+        +'  RegisterPackage('''+APackage.Name+''',@Register);'
+        +e;
+      UseUnit('LazarusPackageIntf');
+    end;
+
   finally
     AddedUnitNames.Free;
   end;
-  // append registration code only for design time packages
-  if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
-    RegistrationCode:=
-      'procedure Register;'+e
-      +'begin'+e
-      +RegistrationCode
-      +'end;'+e
-      +e
-      +'initialization'+e
-      +'  RegisterPackage('''+APackage.Name+''',@Register);'
-      +e;
-    if UsedUnits<>'' then UsedUnits:=UsedUnits+', ';
-    UsedUnits:=UsedUnits+'LazarusPackageIntf';
-  end;
-
   // create source
   BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
   // keep in english to avoid svn updates
@@ -4526,7 +4531,6 @@ begin
   BeginUpdate(true);
   
   // register IDE built-in packages (Note: codetools do not need this)
-  RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
 
   // register custom IDE components

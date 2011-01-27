@@ -79,7 +79,6 @@ type
 
   TMakeModeDefs = class(TObjectList)
   private
-    fItemPkgReg: TMakeModeDef;
     fItemIDE: TMakeModeDef;
     fItemExamples: TMakeModeDef;
     fItemIDEIndex: integer;
@@ -89,10 +88,9 @@ type
     destructor Destroy; override;
     procedure Clear; override;
     procedure Assign(Source: TMakeModeDefs);
-    // Show the permanant description part in ListBox.
+    // Show the permanent description part in ListBox
     function FindName(const Name: string): TMakeModeDef;
   public
-    property ItemPkgReg: TMakeModeDef read fItemPkgReg;
     property ItemIDE: TMakeModeDef read fItemIDE;
     property ItemExamples: TMakeModeDef read fItemExamples;
     property Items[Index: integer]: TMakeModeDef read GetItems; default;
@@ -312,10 +310,6 @@ constructor TMakeModeDefs.Create;
 begin
   inherited Create;
   // Hard-coded build values.
-  // package registration units
-  FItemPkgReg:=TMakeModeDef.Create(
-    'PackageRegistration',lisPkgReg,'packager/registration', mmBuild);
-  Add(FItemPkgReg);
   // IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
@@ -334,7 +328,6 @@ end;
 
 procedure TMakeModeDefs.Clear;
 begin
-  FItemPkgReg:=nil;
   FItemIDE:=nil;
   FItemExamples:=nil;
   inherited Clear;          // Items are freed here, too.
@@ -352,7 +345,6 @@ begin
     NewItem.Assign(SrcItem);
     Add(NewItem);
   end;
-  fItemPkgReg  :=FindName('PkgReg');
   fItemIDE     :=FindName('IDE');
   fItemExamples:=FindName('Examples');
   fItemIDEIndex:=Source.fItemIDEIndex;
