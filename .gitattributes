@@ -5342,6 +5342,7 @@ lcl/postscriptprinter.pas svneol=native#text/pascal
 lcl/postscriptunicode.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/propertystorage.pas svneol=native#text/pascal
+lcl/registerlcl.pas svneol=native#text/plain
 lcl/rubberband.pas svneol=native#text/pascal
 lcl/shellctrls.pas svneol=native#text/pascal
 lcl/spin.pp svneol=native#text/pascal

@@ -2,6 +2,7 @@
 unit AllLCLIntfUnits;
 interface
 uses
+  lclintfcompile,
   qtproc,
   qtwscontrols,
   qtwsgrids,

@@ -28,7 +28,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Minor="9" Release="31"/>
-    <Files Count="291">
+    <Files Count="292">
       <Item1>
         <Filename Value="chart.pp"/>
         <UnitName Value="Chart"/>
@@ -1197,6 +1197,11 @@
         <Filename Value="calendar.pp"/>
         <UnitName Value="Calendar"/>
       </Item291>
+      <Item292>
+        <Filename Value="registerlcl.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="registerlcl"/>
+      </Item292>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

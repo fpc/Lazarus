@@ -7,13 +7,12 @@ unit LCL;
 interface
 
 uses
-  LCLIntfCompile, AllLCLIntfUnits, LazarusPackageIntf;
+  AllLCLIntfUnits, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('LCLIntfCompile', @LCLIntfCompile.Register); 
 end; 
 
 initialization
