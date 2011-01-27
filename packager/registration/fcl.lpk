@@ -16,7 +16,7 @@
     </CompilerOptions>
     <Description Value="The FCL - FreePascal Component Library provides the base classes for object pascal."/>
     <License Value="modified LGPL-2"/>
-    <Version Major="1"/>
+    <Version Major="1" Release="1"/>
     <Files Count="8">
       <Item1>
         <Filename Value="lazaruspackageintf.pas"/>
@@ -66,5 +66,6 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <Provides Count="1"/>
   </Package>
 </CONFIG>
