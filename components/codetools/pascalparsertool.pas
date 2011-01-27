@@ -3531,6 +3531,7 @@ function TPascalParserTool.KeyWordFuncExports: boolean;
   examples:
   
   exports i, j index 3+4, k name 'StrConst', l index 0 name 's';
+  exports unit1.blob;
 }
 
   procedure RaiseExportsOnlyAllowedInLibraries;
@@ -3547,6 +3548,11 @@ begin
     ReadNextAtom;
     AtomIsIdentifier(true);
     ReadNextAtom;
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end;
     if UpAtomIs('INDEX') then begin
       ReadNextAtom;
       ReadConstant(true,false,[]);
