@@ -600,8 +600,8 @@ begin
     icvCompleteProcDeclaration:
       // create complete procedure declaration
       if (AddChar='')
-      and (not (IdentList.StartAtomBehind.Flag
-               in [cafEdgedBracketOpen,cafRoundBracketOpen]))
+      and (IdentList.StartAtomBehind.Flag in [cafEnd,cafWord,cafSemicolon])
+      and (ilcfEndOfLine in IdentList.ContextFlags)
       and (IdentItem.Node<>nil) then begin
         ProcHeadFlags:=[phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithCallingSpecs,
