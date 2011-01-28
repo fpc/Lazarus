@@ -101,7 +101,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="298">
+    <Files Count="299">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1487,6 +1487,10 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinExt"/>
       </Item298>
+      <Item299>
+        <Filename Value="wince/alllclintfunits.pas"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item299>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
