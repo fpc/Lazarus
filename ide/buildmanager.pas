@@ -1417,7 +1417,9 @@ end;
 function TBuildManager.MacroFuncIDEBuildOptions(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if (MiscellaneousOptions<>nil)
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:=''
+  else if (MiscellaneousOptions<>nil)
   and (MiscellaneousOptions.BuildLazOpts<>nil)
   then
     Result:=MiscellaneousOptions.BuildLazOpts.ExtraOptions
