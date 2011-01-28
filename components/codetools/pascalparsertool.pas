@@ -3794,6 +3794,10 @@ begin
       IsForward:=false;
       while UpAtomIs('ABSTRACT') do
         ReadNextAtom;
+    end else if UpAtomIs('EXTERNAL') then begin
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseCharExpectedButAtomFound(';');
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
