@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IDEIntf 1.0
 #
-#   This file was generated on 01/14/2011
+#   This file was generated on 01/28/2011
 
 [package]
 name=ideintf
@@ -10,8 +10,8 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -gl -vew -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter -dLCL -dLCL$(LCL_PLATFORM)
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=ideintf.pas
