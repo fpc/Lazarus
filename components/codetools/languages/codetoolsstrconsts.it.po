@@ -260,6 +260,10 @@ msgstr "non è stato trovato il comando \"end\" per la classe/oggetto"
 msgid "end for record not found"
 msgstr "fine record non trovata"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "era previsto end. invece è stato trovato %s"

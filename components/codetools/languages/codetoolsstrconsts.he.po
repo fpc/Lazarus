@@ -261,6 +261,10 @@ msgstr "לא נמצא end למחלקה/לאובייקט"
 msgid "end for record not found"
 msgstr "סוף הרשומה לא נמצא"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "צפוי .end אבל s% נמצא"

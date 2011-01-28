@@ -263,6 +263,10 @@ msgstr "Nerastas klasės/objekto „end“"
 msgid "end for record not found"
 msgstr "nerasta įrašo pabaiga"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "tikėtasi „end.“, tačiau aptikta %s"

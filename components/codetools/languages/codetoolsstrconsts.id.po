@@ -262,6 +262,10 @@ msgstr "\"end\" untuk class/object tidak ditemukan"
 msgid "end for record not found"
 msgstr "akhir untuk record tidak ditemukan"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "diharapkan end, tapi %s ditemukan"

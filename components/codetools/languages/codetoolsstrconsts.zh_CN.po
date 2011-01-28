@@ -264,6 +264,10 @@ msgstr "未找到类/对象的 \"end\" "
 msgid "end for record not found"
 msgstr "未找到记录结尾"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "本应该出现 end., 但是找到 %s "

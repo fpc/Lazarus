@@ -265,6 +265,10 @@ msgstr "brakuje \"end\" dla klasy/obiektu"
 msgid "end for record not found"
 msgstr "nie znaleziono końca (end) rekordu"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "zamiast końca programu \"end.\" znaleziono %s"

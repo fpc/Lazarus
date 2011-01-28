@@ -256,6 +256,10 @@ msgstr "не знайдений \"end\" для класу/об'єкту"
 msgid "end for record not found"
 msgstr "не знайдений кінець запису"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "очікується end., а знайдено %s"

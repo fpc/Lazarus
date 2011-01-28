@@ -262,6 +262,10 @@ msgstr "\"end\" pro třídu/objekt nenalezen"
 msgid "end for record not found"
 msgstr "end pro record nenalezen"
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "očekáván end., ale nalezeno %s"

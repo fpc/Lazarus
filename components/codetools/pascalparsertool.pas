@@ -4498,8 +4498,12 @@ begin
 end;
 
 procedure TPascalParserTool.RaiseStringExpectedButAtomFound(const s: string);
+var
+  a: String;
 begin
-  SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[s,GetAtom]);
+  a:=GetAtom;
+  if a='' then a:=ctsEndOfFile;
+  SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[s,a]);
 end;
 
 procedure TPascalParserTool.RaiseUnexpectedKeyWord;

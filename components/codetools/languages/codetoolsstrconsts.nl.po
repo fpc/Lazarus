@@ -261,6 +261,10 @@ msgstr ""
 msgid "end for record not found"
 msgstr ""
 
+#: codetoolsstrconsts.ctsendoffile
+msgid "end of file"
+msgstr ""
+
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr ""
