@@ -45,7 +45,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
+.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
 
 #-----------------------------------------------------------------------------
 ide: 
@@ -91,10 +91,13 @@ examples: lcl components
 all: packager/registration lcl ideintf packager components ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
+cleannogui:
+	$(MAKE) -C lcl/interfaces/nogui clean LCL_PLATFORM=nogui
+
 cleanide:
 	$(MAKE) -C ide cleanide
 
-cleanlaz: cleanide
+cleanlaz: cleanide cleannogui
 	$(MAKE) -C lcl clean
 	$(MAKE) -C components clean
 	$(MAKE) -C packager clean
@@ -102,7 +105,6 @@ cleanlaz: cleanide
 
 purge: cleanlaz
 	$(MAKE) -C examples clean
-	$(MAKE) -C tools clean
 #	$(MAKE) -C doceditor clean
 	$(MAKE) -C tools clean
 

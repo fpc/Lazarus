@@ -3607,7 +3607,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
+.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
 ide: 
 	$(MAKE) -C ide ide
 idepkg:
@@ -3629,16 +3629,17 @@ tools: lcl
 	$(MAKE) -C tools
 examples: lcl components
 all: packager/registration lcl ideintf packager components ide starter lazbuilder
+cleannogui:
+	$(MAKE) -C lcl/interfaces/nogui clean LCL_PLATFORM=nogui
 cleanide:
 	$(MAKE) -C ide cleanide
-cleanlaz: cleanide
+cleanlaz: cleanide cleannogui
 	$(MAKE) -C lcl clean
 	$(MAKE) -C components clean
 	$(MAKE) -C packager clean
 	$(MAKE) -C ideintf clean
 purge: cleanlaz
 	$(MAKE) -C examples clean
-	$(MAKE) -C tools clean
 	$(MAKE) -C tools clean
 clean: cleanlaz
 cleanall: purge
