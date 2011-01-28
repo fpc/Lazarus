@@ -2832,7 +2832,7 @@ begin
     Result:=p.ClassName;
 end;
 
-function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
+function dbgMemRange(P: System.PByte; Count: integer; Width: integer = 0): string;
 const
   HexChars: array[0..15] of char = '0123456789ABCDEF';
   LineEnd: shortstring = LineEnding;
