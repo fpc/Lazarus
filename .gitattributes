@@ -5241,6 +5241,7 @@ lcl/interfaces/win32/win32wstoolwin.pp svneol=native#text/pascal
 lcl/interfaces/wince/Makefile svneol=native#text/plain
 lcl/interfaces/wince/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/wince/Makefile.fpc svneol=native#text/plain
+lcl/interfaces/wince/alllclintfunits.pas svneol=native#text/pascal
 lcl/interfaces/wince/interfaces.pp svneol=native#text/plain
 lcl/interfaces/wince/win32compat.pas svneol=native#text/plain
 lcl/interfaces/wince/wincecallback.inc svneol=native#text/plain
