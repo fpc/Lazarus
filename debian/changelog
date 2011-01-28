@@ -4,6 +4,11 @@ lazarus (0.9.31-0) unstable; urgency=low
   * Added support for multiple version coexistence in the same system. This will
     allow installing multiple versions of Lazarus in the same system and choose
     a default using update-alternatives.
+  * Included *.lfm files into the binary packages as these are used by the
+    compiler at the link stage.
+  * Factorized code in code tools FindXXXXNode functions.
+  * Included *.lpk files in the binary packages and mark them as manually
+    compiled to avoid recompiling them when used.
 
  -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 30 Dec 2010 10:36:00 +0100
 
