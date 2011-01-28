@@ -366,6 +366,7 @@ begin
     end;
   finally
     pbf.Free;
+    ACanvas.Clipping := false;
   end;
 end;
 
