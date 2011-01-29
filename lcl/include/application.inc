@@ -116,6 +116,8 @@ begin
     FBidiMode := bdLeftToRight;
   {$endif}
 
+  FMainFormOnTaskBar := False;
+
   inherited Create(AOwner);
   CaptureExceptions:=true;
 
@@ -241,6 +243,20 @@ end;
 function TApplication.GetExeName: String;
 Begin
   Result := ParamStrUTF8(0);
+end;
+
+function TApplication.GetMainFormHandle: HWND;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if Assigned(OnGetMainFormHandle) then
+    OnGetMainFormHandle(Result);
+  i := FApplicationHandlers[ahtGetMainFormHandle].Count;
+  while (Result = 0) and FApplicationHandlers[ahtGetMainFormHandle].NextDownIndex(i) do
+    TGetHandleEvent(FApplicationHandlers[ahtGetMainFormHandle][i])(Result);
+  if (Result = 0) and Assigned(MainForm) then
+    Result := MainForm.Handle;
 end;
 
 {------------------------------------------------------------------------------
@@ -523,6 +539,13 @@ procedure TApplication.SetFlags(const AValue: TApplicationFlags);
 begin
   { Only allow AppNoExceptionMessages to be changed }
   FFlags := Flags - [AppNoExceptionMessages] + AValue*[AppNoExceptionMessages];
+end;
+
+procedure TApplication.SetMainFormOnTaskBar(const AValue: Boolean);
+begin
+  if FMainFormOnTaskBar = AValue then exit;
+  FMainFormOnTaskBar := AValue;
+  // TODO:
 end;
 
 procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions);
@@ -1848,6 +1871,17 @@ end;
 procedure TApplication.RemoveOnShowHintHandler(Handler: TShowHintEvent);
 begin
   RemoveHandler(ahtShowHint,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnGetMainFormHandleHandler(Handler: TGetHandleEvent;
+  AsFirst: Boolean);
+begin
+  AddHandler(ahtGetMainFormHandle,TMethod(Handler),AsFirst);
+end;
+
+procedure TApplication.RemoveOnGetMainFormHandleHandler(Handler: TGetHandleEvent);
+begin
+  RemoveHandler(ahtGetMainFormHandle,TMethod(Handler));
 end;
 
 procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);

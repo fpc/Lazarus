@@ -39,6 +39,17 @@ begin
     Application.AddOnModalEndHandler(FOnModalEnd);
 end;
 
+procedure TApplicationProperties.SetOnGetMainFormHandle(const AValue: TGetHandleEvent);
+begin
+  if (TMethod(FOnGetMainFormHandle).Data = TMethod(AValue).Data) and
+     (TMethod(FOnGetMainFormHandle).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnGetMainFormHandle) then
+    Application.RemoveOnGetMainFormHandleHandler(FOnGetMainFormHandle);
+  FOnGetMainFormHandle := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnGetMainFormHandle) then
+    Application.AddOnGetMainFormHandleHandler(FOnGetMainFormHandle);
+end;
+
 procedure TApplicationProperties.SetCaptureExceptions(const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
@@ -311,6 +322,7 @@ begin
   FShowMainForm := True;
 
   FOnException := nil;
+  FOnGetMainFormHandle := nil;
   FOnIdle := nil;
   FOnIdleEnd := nil;
   FOnHelp := nil;
@@ -331,6 +343,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     Application.RemoveOnExceptionHandler(FOnException);
+    Application.RemoveOnGetMainFormHandleHandler(FOnGetMainFormHandle);
     Application.RemoveOnIdleHandler(FOnIdle);
     Application.RemoveOnIdleEndHandler(FOnIdleEnd);
     Application.RemoveOnEndSessionHandler(FOnEndSession);

@@ -1064,6 +1064,7 @@ type
 
   TQueryEndSessionEvent = procedure (var Cancel : Boolean) of object;
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
+  TGetHandleEvent = procedure(var Handle: HWND) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
@@ -1133,7 +1134,8 @@ type
     ahtDropFiles,
     ahtHelp,
     ahtHint,
-    ahtShowHint
+    ahtShowHint,
+    ahtGetMainFormHandle
     );
 
   PAsyncCallQueueItem = ^TAsyncCallQueueItem;
@@ -1195,7 +1197,9 @@ type
     FHintWindow: THintWindow;
     FIcon: TIcon;
     FBigIconHandle: HICON;
+    FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
+    FOnGetMainFormHandle: TGetHandleEvent;
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
@@ -1240,11 +1244,13 @@ type
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
     function GetExename: String;
+    function GetMainFormHandle: HWND;
     function GetTitle: string;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
     procedure SetBidiMode(const AValue: TBiDiMode);
     procedure SetFlags(const AValue: TApplicationFlags);
+    procedure SetMainFormOnTaskBar(const AValue: Boolean);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
     procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
@@ -1376,6 +1382,8 @@ type
     procedure RemoveOnHintHandler(Handler: TNotifyEvent);
     procedure AddOnShowHintHandler(Handler: TShowHintEvent; AsFirst: Boolean=true);
     procedure RemoveOnShowHintHandler(Handler: TShowHintEvent);
+    procedure AddOnGetMainFormHandleHandler(Handler: TGetHandleEvent; AsFirst: Boolean = True);
+    procedure RemoveOnGetMainFormHandleHandler(Handler: TGetHandleEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
@@ -1419,6 +1427,8 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
+    property MainFormHandle: HWND read GetMainFormHandle;
+    property MainFormOnTaskBar: Boolean read FMainFormOnTaskBar write SetMainFormOnTaskBar; platform;
     property ModalLevel: Integer read FModalLevel;
     property MouseControl: TControl read FMouseControl;
     property TaskBarBehavior: TTaskBarBehavior read FTaskBarBehavior write SetTaskBarBehavior;
@@ -1426,6 +1436,7 @@ type
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
+    property OnGetMainFormHandle: TGetHandleEvent read FOnGetMainFormHandle write FOnGetMainFormHandle;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
@@ -1469,6 +1480,7 @@ type
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FOnDropFiles: TDropFilesEvent;
+    FOnGetMainFormHandle: TGetHandleEvent;
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
@@ -1504,6 +1516,7 @@ type
     procedure SetTitle(const AValue : String);
 
     procedure SetOnException(const AValue : TExceptionEvent);
+    procedure SetOnGetMainFormHandle(const AValue: TGetHandleEvent);
     procedure SetOnIdle(const AValue : TIdleEvent);
     procedure SetOnIdleEnd(const AValue : TNotifyEvent);
     procedure SetOnEndSession(const AValue : TNotifyEvent);
@@ -1537,6 +1550,7 @@ type
     property Title: String read FTitle write SetTitle;
 
     property OnException: TExceptionEvent read FOnException write SetOnException;
+    property OnGetMainFormHandle: TGetHandleEvent read FOnGetMainFormHandle write SetOnGetMainFormHandle;
     property OnIdle: TIdleEvent read FOnIdle write SetOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write SetOnIdleEnd;
     property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
