@@ -1,0 +1,253 @@
+object Form1: TForm1
+  Left = 343
+  Height = 333
+  Top = 184
+  Width = 533
+  Caption = 'TAChart axis transformation demo'
+  ClientHeight = 333
+  ClientWidth = 533
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 333
+    Top = 0
+    Width = 533
+    ActivePage = lsLinear
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object lsLinear: TTabSheet
+      Caption = 'Linear'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartT: TChart
+        Left = 0
+        Height = 278
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Marks.LabelFont.Color = clRed
+            Marks.AtDataOnly = True
+            TickColor = clRed
+            Title.LabelFont.Color = clRed
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Summer temperature, °C'
+            Transformations = catTAuto
+          end        
+          item
+            Alignment = calBottom
+            Title.Visible = True
+            Title.Caption = 'Year'
+          end        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Marks.Distance = 4
+            Marks.LabelFont.Color = clBlue
+            Marks.AtDataOnly = True
+            TickColor = clBlue
+            Title.LabelFont.Color = clBlue
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Winter temperature, °F'
+            Transformations = catT
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartTSummer: TLineSeries
+          AxisIndexY = 0
+          LinePen.Color = clRed
+          LinePen.Width = 2
+          Source = rcsTSummer
+        end
+        object ChartTWinterLine: TLineSeries
+          AxisIndexY = 2
+          LinePen.Color = clBlue
+          LinePen.Width = 2
+          Source = rcsTWinter
+        end
+        object ChartTWinterBar: TBarSeries
+          AxisIndexY = 2
+          BarBrush.Color = clBlue
+          BarBrush.Style = bsDiagCross
+          Source = rcsTWinter
+        end
+      end
+      object pnlAutoControls: TPanel
+        Left = 0
+        Height = 29
+        Top = 278
+        Width = 525
+        Align = alBottom
+        ClientHeight = 29
+        ClientWidth = 525
+        TabOrder = 1
+        object cbAuto: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 5
+          Width = 70
+          Caption = 'Auto scale'
+          OnChange = cbAutoChange
+          TabOrder = 0
+        end
+      end
+    end
+    object tsLog: TTabSheet
+      Caption = 'Logarithm'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartLog: TChart
+        Left = 0
+        Height = 278
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Marks.Stripes = csStripes
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Left'
+            Transformations = catLog
+          end        
+          item
+            Alignment = calBottom
+            Title.Distance = 0
+            Title.Visible = True
+            Title.Caption = 'Bottom'
+          end        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Right 1'
+          end        
+          item
+            Alignment = calTop
+            Inverted = True
+            Title.Caption = 'Top'
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object clsLogPoints: TLineSeries
+          AxisIndexY = 0
+          LineType = ltNone
+          Pointer.Brush.Color = clMaroon
+          ShowPoints = True
+        end
+        object cfsLog: TFuncSeries
+          Active = False
+          Extent.XMin = -1
+          Extent.XMax = 3
+          Extent.UseXMin = True
+          Extent.UseXMax = True
+          AxisIndexY = 0
+          OnCalculate = ChartLogFuncSeries1Calculate
+        end
+      end
+      object pnlLogControls: TPanel
+        Left = 0
+        Height = 29
+        Top = 278
+        Width = 525
+        Align = alBottom
+        ClientHeight = 29
+        ClientWidth = 525
+        TabOrder = 1
+        object cbLog: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 5
+          Width = 64
+          Caption = 'Log scale'
+          Checked = True
+          OnChange = cbLogChange
+          State = cbChecked
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object catLog: TChartAxisTransformations
+    left = 216
+    top = 60
+    object ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform
+      Scale = 2
+    end
+    object ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform
+      Base = 10
+    end
+  end
+  object catT: TChartAxisTransformations
+    left = 352
+    top = 60
+    object catTFahrToCel: TLinearAxisTransform
+      Offset = -17.777777777
+      Scale = 0.5555555555
+    end
+    object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+  object rcsTSummer: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 114536250
+    XMax = 2009
+    XMin = 1990
+    YMax = 25
+    YMin = 0
+    left = 87
+    top = 106
+  end
+  object rcsTWinter: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 23453245
+    XMax = 2009
+    XMin = 1990
+    YMax = 20
+    YMin = -15
+    left = 87
+    top = 156
+  end
+  object catTAuto: TChartAxisTransformations
+    left = 352
+    top = 112
+    object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+  object csStripes: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = 16631498
+        UsePen = False
+      end    
+      item
+        Brush.Color = 12319483
+        UsePen = False
+      end>
+    left = 352
+    top = 176
+  end
+end

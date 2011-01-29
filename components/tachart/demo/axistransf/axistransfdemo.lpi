@@ -42,9 +42,9 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="axisdemo.lpr"/>
+        <Filename Value="axistransfdemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="axisdemo"/>
+        <UnitName Value="axistransfdemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
