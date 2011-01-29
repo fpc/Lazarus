@@ -2775,34 +2775,34 @@ resourcestring
   lisKeyCatCustom       = 'Custom commands';
 
   // Languages
-  rsLanguageAutomatic   = 'Automatic (or english)';
-  rsLanguageEnglish     = 'English';
-  rsLanguageGerman      = 'German';
-  rsLanguageSpanish     = 'Spanish';
-  rsLanguageFrench      = 'French';
-  rsLanguageRussian     = 'Russian';
-  rsLanguagePolish      = 'Polish';
-  rsLanguageItalian     = 'Italian';
-  rsLanguageCatalan     = 'Catalan';
-  rsLanguageFinnish     = 'Finnish';
-  rsLanguageHebrew      = 'Hebrew';
-  rsLanguageArabic      = 'Arabic';
-  rsLanguagePortugues   = 'Portuguese';
-  rsLanguageUkrainian   = 'Ukrainian';
-  rsLanguageDutch       = 'Dutch';
-  rsLanguageJapanese    = 'Japanese';
-  rsLanguageChinese     = 'Chinese';
-  rsLanguageIndonesian  = 'Indonesian';
-  rsLanguageAfrikaans   = 'Afrikaans';
-  rsLanguageLithuanian  = 'Lithuanian';
-  rsLanguageSlovak      = 'Slovak';
-  rsLanguageTurkish     = 'Turkish';
-  rsLanguageCzech       = 'Czech';
+  rsLanguageAutomatic    = 'Automatic (or english)';
+  rsLanguageEnglish      = 'English';
+  rsLanguageGerman       = 'German';
+  rsLanguageSpanish      = 'Spanish';
+  rsLanguageFrench       = 'French';
+  rsLanguageRussian      = 'Russian';
+  rsLanguagePolish       = 'Polish';
+  rsLanguageItalian      = 'Italian';
+  rsLanguageCatalan      = 'Catalan';
+  rsLanguageFinnish      = 'Finnish';
+  rsLanguageHebrew       = 'Hebrew';
+  rsLanguageArabic       = 'Arabic';
+  rsLanguagePortugueseBr = 'Brazilian Portuguese';
+  rsLanguageUkrainian    = 'Ukrainian';
+  rsLanguageDutch        = 'Dutch';
+  rsLanguageJapanese     = 'Japanese';
+  rsLanguageChinese      = 'Chinese';
+  rsLanguageIndonesian   = 'Indonesian';
+  rsLanguageAfrikaans    = 'Afrikaans';
+  rsLanguageLithuanian   = 'Lithuanian';
+  rsLanguageSlovak       = 'Slovak';
+  rsLanguageTurkish      = 'Turkish';
+  rsLanguageCzech        = 'Czech';
 
   // Unit dependencies
-  dlgUnitDepCaption     = 'Unit dependencies';
-  dlgUnitDepBrowse      = 'Open';
-  dlgUnitDepRefresh     = 'Refresh';
+  dlgUnitDepCaption      = 'Unit dependencies';
+  dlgUnitDepBrowse       = 'Open';
+  dlgUnitDepRefresh      = 'Refresh';
   lisPrint = 'Print';
 
   // Doc Editor

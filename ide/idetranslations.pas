@@ -108,7 +108,7 @@ begin
   else if CompareText(ID,'ar')=0 then
     Result:=rsLanguageArabic
   else if CompareText(ID,'pt_BR')=0 then
-    Result:=rsLanguagePortugues
+    Result:=rsLanguagePortugueseBr
   else if CompareText(ID,'ua')=0 then
     Result:=rsLanguageUkrainian
   else if CompareText(ID,'nl')=0 then
