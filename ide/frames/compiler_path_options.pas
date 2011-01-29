@@ -234,7 +234,7 @@ begin
   try
     DoSaveSettings(Options);
     Options.TargetFilename:=GetTargetFilename;
-    ShowCompilerOptionsDialog(Self, Options);
+    ShowCompilerOptionsDialog(FDialog, Options);
   finally
     Options.Free;
   end;
