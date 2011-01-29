@@ -2208,7 +2208,7 @@ begin
     begin
       if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
           Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
-        exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
+        Exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
   else
     // pass along user defined messages

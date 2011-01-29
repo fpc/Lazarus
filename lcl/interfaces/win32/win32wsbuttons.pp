@@ -83,19 +83,6 @@ type
 { TWin32WSBitBtn }
 
 const
-  BUTTON_IMAGELIST_ALIGN_LEFT   = 0;
-  BUTTON_IMAGELIST_ALIGN_RIGHT  = 1;
-  BUTTON_IMAGELIST_ALIGN_TOP    = 2;
-  BUTTON_IMAGELIST_ALIGN_BOTTOM = 3;
-  BUTTON_IMAGELIST_ALIGN_CENTER = 4;
-
-  BCM_FIRST = $1600;
-  BCM_GETIDEALSIZE  = BCM_FIRST + 1;
-  BCM_SETIMAGELIST  = BCM_FIRST + 2;
-  BCM_GETIMAGELIST  = BCM_FIRST + 3;
-  BCM_SETTEXTMARGIN = BCM_FIRST + 4;
-  BCM_GETTEXTMARGIN = BCM_FIRST + 5;
-
   { - you do need to destroy the imagelist yourself.
     - you'll need 5 images to support all themed xp button states...
 
@@ -111,13 +98,6 @@ const
     (bsUp, bsHot, bsDown, bsDisabled, bsUp, bsHot);
   BitBtnEnabledToButtonState: array[boolean] of TButtonState =
     (bsDisabled, bsUp);
-
-type
-  BUTTON_IMAGELIST = record
-    himl: Windows.HIMAGELIST;
-    margin: Windows.RECT;
-    uAlign: UINT;
-  end;
 
 function Create32BitHBitmap(ADC: HDC; AWidth, AHeight: Integer; out BitsPtr: Pointer): HBitmap;
 var

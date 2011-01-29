@@ -91,12 +91,6 @@ const
   SKIP_LMCHANGE = 1000;
 
 type
-  PInitCommonControlsEx = ^TInitCommonControlsEx;
-  TInitCommonControlsEx = record
-    dwSize: dword;
-    dwICC: dword;
-  end;
-
   PPPipeEventInfo = ^PPipeEventInfo;
   PPipeEventInfo = ^TPipeEventInfo;
   TPipeEventInfo = record
@@ -249,7 +243,6 @@ uses
   Win32WSButtons,
   Win32WSExtCtrls,
   Win32WSMenus,
-  Win32WSSpin,
   Win32WSStdCtrls,
   Win32WSDialogs,
   Win32Themes,

@@ -320,7 +320,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.Minimize;
 begin
-  //debugln('TApplication.Minimize');
   WidgetSet.AppMinimize;
 end;
 
@@ -355,7 +354,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.Restore;
 begin
-  //debugln('TApplication.Restore');
   WidgetSet.AppRestore;
 end;
 
