@@ -15046,9 +15046,9 @@ msgstr "Opciones del lenguaje"
 msgid "Polish"
 msgstr "Polaco"
 
-#: lazarusidestrconsts.rslanguageportugues
-msgid "Portuguese"
-msgstr "Portugués"
+#: lazarusidestrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"

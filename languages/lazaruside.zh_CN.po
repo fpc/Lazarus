@@ -15109,9 +15109,9 @@ msgstr "语言选项"
 msgid "Polish"
 msgstr "波兰语"
 
-#: lazarusidestrconsts.rslanguageportugues
-msgid "Portuguese"
-msgstr "葡萄牙语"
+#: lazarusidestrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"

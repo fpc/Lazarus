@@ -14962,8 +14962,8 @@ msgstr ""
 msgid "Polish"
 msgstr ""
 
-#: lazarusidestrconsts.rslanguageportugues
-msgid "Portuguese"
+#: lazarusidestrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
 msgstr ""
 
 #: lazarusidestrconsts.rslanguagerussian
