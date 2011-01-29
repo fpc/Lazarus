@@ -7,7 +7,7 @@ unit CodeTools;
 interface
 
 uses
-    BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier, 
+  BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier,
   CodeCache, CodeCompletionTool, CodeGraph, CodeIndex, CodeTemplatesTool, 
   CodeToolManager, CodeToolMemManager, CodeToolsConfig, CodeToolsStrConsts, 
   CodeToolsStructs, CodeTree, CustomCodeTool, DefineTemplates, DirectivesTree, 
