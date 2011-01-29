@@ -1202,6 +1202,8 @@ var
   Pt: TPoint;
   ClipRect: TRect;
   B: Boolean;
+  S: String;
+  i: Integer;
 
 
   procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
@@ -1332,6 +1334,33 @@ begin
   begin
     Flags := Flags and not DT_WORDBREAK;
     F := DTFlagsToQtFlags(Flags);
+  end;
+
+  {$warning HARDCODED WORKAROUND for qt-4.7.1 QPainter bug.}
+  { Bug triggers when we try to paint multiline text which contains 1
+   space. eg "Save project\nCtrl+S". In this case QPainter draws
+   Save
+   project (in two lines, so Ctrl+S is invisible. See issue #18631.
+   But does not trigger with qt-4.6.XX and maybe with 4.7.0.
+   Opened nokia issue: http://bugreports.qt.nokia.com/browse/QTBUG-17020}
+  if (QtVersionMajor = 4) and (QtVersionMinor = 7) and (QtVersionMicro = 1) and
+   (Flags and DT_WORDBREAK = DT_WORDBREAK) and
+   ((Flags and DT_VCENTER = DT_VCENTER) or (Flags and DT_CENTER = DT_CENTER))
+    and not (Flags and DT_NOCLIP = DT_NOCLIP) and
+    not (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
+    not (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) then
+  begin
+    S := StrPas(Str);
+    if length(S) > 0 then
+    begin
+      i := Pos(' ', S);
+      if (AnsiPos(LineEnding, S) > i) and
+        (S[length(S)] <> LineEnding) then
+      begin
+        Flags := Flags and not DT_WORDBREAK;
+        F := DTFlagsToQtFlags(Flags);
+      end;
+    end;
   end;
 
   if (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
