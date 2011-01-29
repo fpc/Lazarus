@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Tomasz Więckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2010-06-06 22:04+0100\n"
+"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
+"PO-Revision-Date: 2011-01-29 22:15+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2382,7 +2382,7 @@ msgstr "Utwórz Zestaw Aplikacji"
 
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Dpi Aware application (for Vista+)"
-msgstr ""
+msgstr "Aplikacja obsługuje większe DPI (dla Vista+)"
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
@@ -3436,7 +3436,7 @@ msgstr "Dokumentacja:"
 
 #: lazarusidestrconsts.lisaboutide
 msgid "About IDE"
-msgstr ""
+msgstr "O IDE"
 
 #: lazarusidestrconsts.lisaboutlazarus
 msgid "About Lazarus"
@@ -3496,7 +3496,7 @@ msgstr "Dodatkowe opcje kompilatora dziedziczone z pakietów"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr ""
+msgstr "Dodaj nowy tryb budowania, kopia ustawień z \"%s\""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -3769,7 +3769,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
-msgstr ""
+msgstr "Zaznaczenie i dopasowania"
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
@@ -3957,11 +3957,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr ""
+msgstr "Buduj makra"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
-msgstr ""
+msgstr "Buduj makra:"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3981,7 +3981,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
-msgstr ""
+msgstr "Buduj tryby"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -4677,7 +4677,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Przeglądarka kodu"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -5464,7 +5464,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconditionals
 msgid "Conditionals:"
-msgstr ""
+msgstr "Warunki:"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -6359,7 +6359,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeletemode
 msgid "Delete mode \"%s\""
-msgstr ""
+msgstr "Usuń tryb \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
@@ -9305,7 +9305,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismacroname
 msgid "Macro name"
-msgstr ""
+msgstr "Nazwa makra"
 
 #: lazarusidestrconsts.lismacropromptenterdata
 msgid "Enter data"
@@ -9317,7 +9317,7 @@ msgstr "Wprowadź pwarametry uruchomieniowe"
 
 #: lazarusidestrconsts.lismacrovalue
 msgid "Macro value"
-msgstr ""
+msgstr "Wartość makra"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -9430,7 +9430,7 @@ msgstr "Przerwij budowanie"
 
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
-msgstr ""
+msgstr "O FPC"
 
 #: lazarusidestrconsts.lismenuaddbpsource
 msgid "Source breakpoint"
@@ -9600,11 +9600,10 @@ msgid "Debug windows"
 msgstr "Okno odpluskwiacza"
 
 #: lazarusidestrconsts.lismenudiff
-#, fuzzy
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
-msgstr "Diff"
+msgstr "Porównaj ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -9639,7 +9638,7 @@ msgstr "Utwórz podmenu"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
 msgid "Delete From Template..."
-msgstr "Skasuj z szablonu"
+msgstr "Skasuj z szablonu..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "Delete Item"
@@ -9651,7 +9650,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
-msgstr "Wstaw z szablonu"
+msgstr "Wstaw z szablonu..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
@@ -9703,7 +9702,7 @@ msgstr "Śro&dowisko"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
-msgstr ""
+msgstr "Sprawdź/Modyfikuj ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -9781,7 +9780,7 @@ msgstr "Pomo&c"
 
 #: lazarusidestrconsts.lismenuideinternals
 msgid "IDE internals"
-msgstr ""
+msgstr "Środowisko wewnętrzne"
 
 #: lazarusidestrconsts.lismenuincrementalfind
 msgid "Incremental Find"
@@ -9834,7 +9833,7 @@ msgstr "Nazwa użytkownika"
 
 #: lazarusidestrconsts.lismenuinspect
 msgid "Inspect ..."
-msgstr ""
+msgstr "Badaj ..."
 
 #: lazarusidestrconsts.lismenujumpback
 msgid "Jump back"
@@ -10032,7 +10031,7 @@ msgstr "Zamień"
 
 #: lazarusidestrconsts.lismenureplace2
 msgid "&Replace ..."
-msgstr ""
+msgstr "Z&amień ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 msgid "Reporting a bug..."
@@ -10129,7 +10128,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgid "Set a free bookmark"
-msgstr ""
+msgstr "Ustaw wolną zakładkę"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "Show execution point"
@@ -10296,7 +10295,7 @@ msgstr "Cofnij"
 
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle comment"
-msgstr ""
+msgstr "Ustaw komentarz wiersza"
 
 #: lazarusidestrconsts.lismenutools
 msgid "&Tools"
@@ -10325,7 +10324,7 @@ msgstr "&Widok"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
-msgstr ""
+msgstr "Edytor zakotwiczeń"
 
 #: lazarusidestrconsts.lismenuviewassembler
 msgctxt "lazarusidestrconsts.lismenuviewassembler"
@@ -10342,7 +10341,7 @@ msgstr "Stos wywołań"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Przeglądarka kodu"
 
 #: lazarusidestrconsts.lismenuviewcodeexplorer
 msgctxt "lazarusidestrconsts.lismenuviewcodeexplorer"
@@ -10375,7 +10374,7 @@ msgstr "Lista formularzy"
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
 msgid "IDE speed buttons"
-msgstr ""
+msgstr "Przyciski szybkiego uruchamiania"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
@@ -10521,11 +10520,11 @@ msgstr "Więcej"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
-msgstr ""
+msgstr "Przesuń \"%s\" w dół"
 
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
-msgstr ""
+msgstr "Przesuń \"%s\" w górę"
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
@@ -10702,7 +10701,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnomacroselected
 msgid "No macro selected"
-msgstr ""
+msgstr "Brak wybranego makra"
 
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
@@ -11530,7 +11529,7 @@ msgstr "Tylko uruchomieniowy"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
-msgstr "Pakiet %s%s%s ma znacznik auto instalacji.%sTo oznacza, że będzie ona automatycznie instalowany przez IDE. Instalowane pakiety%smuszą być pakietami projektowymi."
+msgstr "Pakiet %s%s%s ma flagę auto instalacji.%sTo oznacza, że będzie ona automatycznie instalowany przez IDE. Instalowane pakiety%smuszą być pakietami projektowymi."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
@@ -13245,7 +13244,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissetmacrovalues
 msgid "Set macro values"
-msgstr ""
+msgstr "Ustaw wartości makra"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
@@ -13269,7 +13268,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowdifferencesbetweenmodes
 msgid "Show differences between modes ..."
-msgstr ""
+msgstr "Pokaż różnicę między trybami"
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
@@ -16007,7 +16006,7 @@ msgstr "Wybierz słowo po prawej"
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr ""
+msgstr "Ustaw wolną zakładkę"
 
 #: lazarusidestrconsts.srkmecsetmarker
 msgid "Set Marker %d"

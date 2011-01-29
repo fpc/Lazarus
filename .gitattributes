@@ -2373,6 +2373,7 @@ components/todolist/Makefile.fpc svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.cs.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.de.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.fi.po svneol=native#text/plain
+components/todolist/languages/todoliststrconsts.pl.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.pt_BR.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.ru.po svneol=native#text/plain
