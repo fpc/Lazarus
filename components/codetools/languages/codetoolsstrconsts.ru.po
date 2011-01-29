@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-12 03:30+0300\n"
+"PO-Revision-Date: 2011-01-29 03:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -263,7 +263,7 @@ msgstr "конец записи не найден"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "конец файла"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
