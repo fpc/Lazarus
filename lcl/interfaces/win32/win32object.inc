@@ -116,7 +116,6 @@ const
     ICC_PAGESCROLLER_CLASS);
 var
   ICC: TINITCOMMONCONTROLSEX;
-  SysMenu: HMENU;
   Handle: HWND;
   DC: HDC;
   AIcon: HICON;
@@ -148,37 +147,10 @@ begin
   // Create parent of all windows, 'button on taskbar'
   if not IsLibrary then
   begin
-    {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      FAppHandle := CreateWindowW(@ClsNameW,
-        PWideChar(UTF8ToUTF16(Application.Title)),
-        WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-        0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-        0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-        0, 0, HWND(nil), HMENU(nil), HInstance, nil)
-    else
-      FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
-        WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-        0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-        0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-        0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-    {$else}
-    FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
-      WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
-      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-      0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-    {$endif}
-    AllocWindowInfo(FAppHandle);
-
+    CreateAppHandle;
     // set nice main icon
     AIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
     AppSetIcon(AIcon, AIcon);
-    // remove useless menuitems from sysmenu
-    SysMenu := Windows.GetSystemMenu(FAppHandle, False);
-    Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-    Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
-    Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
   end;
 
   // initialize ScreenInfo
@@ -692,6 +664,39 @@ begin
     end;
   end;
   Assert(False, 'Trace:WinRegister - Exit');
+end;
+
+procedure TWin32WidgetSet.CreateAppHandle;
+var
+  SysMenu: HMENU;
+begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    FAppHandle := CreateWindowW(@ClsNameW,
+      PWideChar(UTF8ToUTF16(Application.Title)),
+      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+      0, 0, HWND(nil), HMENU(nil), HInstance, nil)
+  else
+    FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
+      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+      0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  {$else}
+  FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
+    WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  {$endif}
+  AllocWindowInfo(FAppHandle);
+  // remove useless menuitems from sysmenu
+  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
 end;
 
 function TWin32WidgetSet.CreateThemeServices: TThemeServices;

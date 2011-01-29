@@ -151,6 +151,8 @@ type
     procedure CheckPipeEvents;
 
     function WinRegister: Boolean;
+
+    procedure CreateAppHandle;
   protected
     function CreateThemeServices: TThemeServices; override;
   public
