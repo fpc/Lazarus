@@ -183,7 +183,7 @@ type
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouseMove(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
+    function SlotMouseWheel(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaintBg(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
@@ -2155,10 +2155,7 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
       QEventMouseMove: Result := SlotMouseMove(Sender, Event);
-      QEventWheel:
-        begin
-          SlotMouseWheel(Sender, Event);
-        end;
+      QEventWheel: Result := SlotMouseWheel(Sender, Event);
       QEventMove: SlotMove(Event);
       QEventResize: SlotResize(Event);
       QEventContentsRectChange: LCLObject.DoAdjustClientRectChange(False);
@@ -2991,13 +2988,14 @@ end;
  
   Msg.WheelData: -1 for up, 1 for down
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
+function TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMMouseEvent;
   MousePos: TQtPoint;
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
 begin
+  Result := False;
   if not CanSendLCLMessage then
     exit;
 
@@ -3031,14 +3029,14 @@ begin
   Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event));
 
   NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
+  Result := DeliverMessage(Msg) <> 0;
 
   {propagate mousewheel to parent if our sender is TPanel,
    fixes problem with mousewheel scroll with lazreport}
   if not (csDesigning in LCLObject.ComponentState) and
     (LCLObject is TPanel) and
     Assigned(LCLObject.Parent) then
-      TQtWidget(LCLObject.Parent.Handle).DeliverMessage(Msg);
+      Result := TQtWidget(LCLObject.Parent.Handle).DeliverMessage(Msg) <> 0;
 end;
 
 procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
@@ -6059,7 +6057,14 @@ begin
     QEventWheel,
     QEventPaint,
     QEventKeyPress,
-    QEventKeyRelease: Result := False;
+    QEventKeyRelease:
+    begin
+      if (QEvent_type(Event) = QEventWheel) and Assigned(FOwner) and
+        (FOwner is TQtCustomControl) then
+        Result := inherited EventFilter(Sender, Event)
+      else
+        Result := False;
+    end;
   else
     if FOwnWidget then
       Result := inherited EventFilter(Sender, Event);
@@ -11374,13 +11379,8 @@ begin
       end else
         LCLObject.DoAdjustClientRectChange;
     end;
+    QEventWheel,
     QEventLayoutRequest: ; // nothing to do here
-    QEventWheel:
-    begin
-      inherited EventFilter(Sender, Event);
-      Result := True;
-      QEvent_ignore(Event);
-    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -11735,10 +11735,11 @@ begin
   else
   if QEvent_type(Event) = QEventWheel then
   begin
-    if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
+    if not horizontalScrollBar.getVisible and
+      not verticalScrollBar.getVisible then
       Result := inherited EventFilter(Sender, Event)
     else
-      Result := False;  
+      Result := False;
   end else
   {$IFDEF MSWINDOWS}
   {sometimes our IDE completely freezes, after screensaver activated
