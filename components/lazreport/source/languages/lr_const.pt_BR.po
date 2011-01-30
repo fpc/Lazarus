@@ -612,7 +612,7 @@ msgstr "Va&riáveis..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "Índice fora de faixa no filtro exportação"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"

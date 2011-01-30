@@ -63,7 +63,7 @@ msgstr "Inclua sub diretórios"
 
 #: externhelpfrm.ehrsmacrofy
 msgid "Macrofy"
-msgstr ""
+msgstr "\"Macrofy\""
 
 #: externhelpfrm.ehrsmysettings
 msgid "My settings (default)"

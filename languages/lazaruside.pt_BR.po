@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4415,7 +4415,7 @@ msgstr "Opções verificação"
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr ""
+msgstr "%s Verificar o alvo (OS, CPU, Tipo \"widget\" LCL). Talvez você tenha que recompilar o pacote para este alvo ou definir outro alvo para o projeto."
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -4511,7 +4511,7 @@ msgstr "Escolha o diretório para testes"
 
 #: lazarusidestrconsts.liscircleinmacros
 msgid "Circle in macros"
-msgstr ""
+msgstr "Referência circular nas macros"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5359,7 +5359,7 @@ msgstr "Compilador"
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr ""
+msgstr "Compilador \"%s\" não suporta o alvo %s-%s"
 
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
@@ -5590,7 +5590,7 @@ msgstr "Converter unidade Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfile
 msgid "* Converting file %s *"
-msgstr ""
+msgstr "* Convertendo arquivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -5622,7 +5622,7 @@ msgstr "*** Localizar todos arquivos unidade ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Corrigido maiúsculas/minúsculas da unidade \"%s\" para \"%s\"."
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -5650,7 +5650,7 @@ msgstr "Pronto."
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr ""
+msgstr "Unidade \"%s\" removida na seção \"uses\"."
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
@@ -6656,7 +6656,7 @@ msgstr "Nome duplicado: Um componente chamado %s%s%s já existe no componente he
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
 msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Arquivos ppu duplicados. Exclua um ou certifique-se de que todos os caminhos de busca tenham a ordem correta (Dica: FPC usa o último caminho primeiro)."
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
@@ -6664,7 +6664,7 @@ msgstr "Caminho busca duplicado"
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Fontes duplicados. Exclua um ou certifique-se de que todos os caminhos de busca tenham a ordem correta (Dica: FPC usa o último caminho primeiro)."
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -7002,43 +7002,43 @@ msgstr "Erro inicializando o programa%s%s%s%s%sErro: %s"
 
 #: lazarusidestrconsts.liserrorinthecompilerfilename
 msgid "Error in the compiler file name:"
-msgstr ""
+msgstr "Erro no nome do arquivo do compilador:"
 
 #: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
 msgid "Error in the custom compiler options (Other):"
-msgstr ""
+msgstr "Erro nas opções customizadas do compilador (Outro):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
 msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr ""
+msgstr "Erro nas opções customizadas do vinculador (Vinculando / Passar opções ao vinculador):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
-msgstr ""
+msgstr "Erro no \"caminho adicional Depurador\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
-msgstr ""
+msgstr "Erro no caminho de busca para \"Arquivos de inclusão\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr ""
+msgstr "Erro no caminho de busca para \"Bibliotecas\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
-msgstr ""
+msgstr "Erro no caminho de busca para \"Arquivos objeto\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr ""
+msgstr "Erro no caminho de busca para \"Outros fontes\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
-msgstr ""
+msgstr "Erro no caminho de busca para \"Outros arquivos de unidade\":"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr ""
+msgstr "Erro no \"diretório de saída de unidades\":"
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -7654,7 +7654,7 @@ msgstr "Ocultar mensagem via diretiva"
 
 #: lazarusidestrconsts.lishint
 msgid "Hint"
-msgstr ""
+msgstr "Dica"
 
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
@@ -7904,11 +7904,11 @@ msgstr "Impossível"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
 msgid "In a source directory of the package \"%s\"."
-msgstr ""
+msgstr "No diretório fonte do pacote \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr ""
+msgstr "No diretório fonte do projeto. Verificar duplicidades."
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
@@ -7998,7 +7998,7 @@ msgstr "Informação sobre FPC usado"
 
 #: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
 msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
-msgstr ""
+msgstr "No caminho de busca de unidades FPC. Provavelmente instalado pelo pacote FPC. Verificar se o compilador e o arquivo ppu são da mesma instalação."
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -8010,7 +8010,7 @@ msgstr "Item herdado"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
-msgstr ""
+msgstr "Componente projeto herdado"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -8225,11 +8225,11 @@ msgstr "%s é um %s.%sEsta dependência circular não é permitida."
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
-msgstr ""
+msgstr "Quero saber como você fez isso. Erro na %s:"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
 msgid "I wonder how you did that: Error in the base directory:"
-msgstr ""
+msgstr "Quero saber como você fez isso: Erro no diretório base:"
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
@@ -8261,11 +8261,11 @@ msgstr "Manter nome"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
-msgstr ""
+msgstr "Manter identação relativa do modelo múltiplas linhas"
 
 #: lazarusidestrconsts.liskeepsubindentation
 msgid "Keep indentation"
-msgstr ""
+msgstr "Manter identação"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
@@ -9411,7 +9411,7 @@ msgstr "Máximo %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
-msgstr ""
+msgstr "%s Talvez você tenha que recompilar o pacote."
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -9590,11 +9590,10 @@ msgid "Debug windows"
 msgstr "Janelas de Depuração"
 
 #: lazarusidestrconsts.lismenudiff
-#, fuzzy
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
-msgstr "Comparar (Diff)"
+msgstr "Comparar (Diff)..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -9916,23 +9915,20 @@ msgid "Open Project ..."
 msgstr "Abrir Projeto ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#, fuzzy
 #| msgid "Open &Recent ..."
 msgid "Open &Recent"
-msgstr "Abrir &Recente ..."
+msgstr "Abrir &Recente"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-#, fuzzy
 #| msgid "Open recent package ..."
 msgid "Open recent package"
-msgstr "Abrir pacote recente ..."
+msgstr "Abrir pacote recente"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-#, fuzzy
 #| msgid "Open Recent Project ..."
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
-msgstr "Abrir Projeto Recente ..."
+msgstr "Abrir Projeto Recente"
 
 #: lazarusidestrconsts.lismenupackage
 msgid "&Package"
@@ -10610,7 +10606,7 @@ msgstr "Criar uma nova unidade com um formulário LCL."
 
 #: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
 msgid "Inherit from a project form or component"
-msgstr ""
+msgstr "Herdar de um formulário ou componente do projeto"
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11237,10 +11233,9 @@ msgid "Modified: %s"
 msgstr "Modificado: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-#, fuzzy
 #| msgid "More ..."
 msgid "More >>"
-msgstr "Mais ..."
+msgstr "Mais >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -11540,7 +11535,7 @@ msgstr "Uma unidade pascal deve ter extensão .pp ou .pas"
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
-msgstr ""
+msgstr "Retrair diretório"
 
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
@@ -11548,7 +11543,7 @@ msgstr "Conflito encontrado"
 
 #: lazarusidestrconsts.lispedirectories
 msgid "Directories"
-msgstr ""
+msgstr "Diretórios"
 
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
@@ -11556,7 +11551,7 @@ msgstr "Editar Unidade Virtual"
 
 #: lazarusidestrconsts.lispeexpanddirectory
 msgid "Expand directory"
-msgstr ""
+msgstr "Expandir diretório"
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11576,7 +11571,7 @@ msgstr "Nome de unidade inválido"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
-msgstr ""
+msgstr "Arquivos faltando no pacote %s"
 
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
@@ -11588,36 +11583,36 @@ msgstr "Mover arquivo acima"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
-msgstr ""
+msgstr "Novo arquivo não está no caminho de inclusões"
 
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
-msgstr ""
+msgstr "Nenhum arquivo faltando. Todos existem."
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"
-msgstr ""
+msgstr "Remover arquivos"
 
 #: lazarusidestrconsts.lisperemoveselectedfiles
 msgid "Remove selected files"
-msgstr ""
+msgstr "Remover arquivos selecionados"
 
 #: lazarusidestrconsts.lisperevertpackage
 msgid "Revert package"
-msgstr ""
+msgstr "Reverter pacote"
 
 #: lazarusidestrconsts.lispesavepackageas
 msgid "Save package as"
-msgstr ""
+msgstr "Salvar pacote como"
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
 msgid "Show directory hierarchy"
-msgstr ""
+msgstr "Exibir hierarquia diretório"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
 msgid "Show missing files"
-msgstr ""
+msgstr "Exibir arquivos faltando"
 
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
@@ -11625,11 +11620,11 @@ msgstr "Ordenar arquivos"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr ""
+msgstr "Ordenar arquivos alfabeticamente"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
-msgstr ""
+msgstr "O arquivo \"%s\" não está atualmente no caminho de inclusões do pacote.%sAdicioná-lo?"
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
 msgctxt "lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile"
@@ -11657,11 +11652,11 @@ msgstr "Nome de unidade e nome de arquivo não coincidem.%sEx: unit1.pas e Unit1
 
 #: lazarusidestrconsts.lispeuseallunitsindirectory
 msgid "Use all units in directory"
-msgstr ""
+msgstr "Usar todas as unidades no diretório"
 
 #: lazarusidestrconsts.lispeusenounitsindirectory
 msgid "Use no units in directory"
-msgstr ""
+msgstr "Não usar nenhuma unidade no diretório"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -11696,7 +11691,6 @@ msgid "Revert package?"
 msgstr "Reverter pacote?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "O arquivo %s%s%s%snão está atualmente no caminho de unidades do pacote.%s%sAdicionar %s%s%s ao caminho de unidades?"
@@ -12232,7 +12226,7 @@ msgstr "Arquivo de pacote não encontrado"
 
 #: lazarusidestrconsts.lispkgsyspackageregistrationerror
 msgid "Package registration error"
-msgstr ""
+msgstr "Erro registro pacote"
 
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
@@ -12410,7 +12404,7 @@ msgstr "diretório primário de configuração, onde Lazarus armazena seus arqui
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
-msgstr ""
+msgstr "Caminho primário configuração"
 
 #: lazarusidestrconsts.lisprint
 msgid "Print"
@@ -13158,7 +13152,7 @@ msgstr "diretório de configuração secundário, onde Lazarus procura por arqui
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
-msgstr ""
+msgstr "Caminho secundário configuração"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -13178,7 +13172,7 @@ msgstr "Selecione um nó"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr ""
+msgstr "Selecionar outro conjunto \"LCL widget\" (macro LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -13649,11 +13643,11 @@ msgstr "O nome do componente deve ser único entre todos os componentes no formu
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
-msgstr ""
+msgstr "O %s contém um diretório inexistente:%s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
-msgstr ""
+msgstr "O %s contém um asterisco (*).%sLazarus usa este como um caractere normal e não o expande como uma máscara de arquivo."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -13665,7 +13659,7 @@ msgstr "O nome de arquivo atual do compilador %s%s%s%snão é um executável vá
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
-msgstr ""
+msgstr "O FPC atual não tem um arquivo de configuração. Ele irá provavelmente perder algumas unidades. Verificar sua inslatação do FPC."
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -14661,10 +14655,9 @@ msgid "Usage message (-h option)"
 msgstr "Mensagem forma de uso (opção -h)"
 
 #: lazarusidestrconsts.lisuse
-#, fuzzy
 #| msgid "Use>>"
 msgid "Use >>"
-msgstr "Usar..."
+msgstr "Usar >>"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
@@ -14728,7 +14721,7 @@ msgstr "Valor%s"
 
 #: lazarusidestrconsts.lisvalue3
 msgid "Value: "
-msgstr ""
+msgstr "Valor:"
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
@@ -15076,7 +15069,7 @@ msgstr "Polonês"
 
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Português do Brasil"
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"
@@ -16217,7 +16210,7 @@ msgstr "comando do editor desconhecido"
 
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
-msgstr ""
+msgstr "Adicionar unidade à seção \"uses\""
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

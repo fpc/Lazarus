@@ -116,12 +116,12 @@ msgstr "Miniaturas"
 
 #: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
 msgid "frmCustomPreview"
-msgstr ""
+msgstr "frmCustomPreview"
 
 #: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
-msgstr ""
+msgstr "frPreview1"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
@@ -134,7 +134,7 @@ msgstr "Composto"
 
 #: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
 msgid "Custom Preview"
-msgstr ""
+msgstr "Visualizar customizado"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
@@ -184,7 +184,7 @@ msgstr "Miniaturas"
 
 #: TFRMMAIN.BTNMASTERDETAIL.CAPTION
 msgid "Master-Detail Test"
-msgstr ""
+msgstr "Teste Mestre-Detalhe"
 
 #: TFRMMAIN.FRMMAIN.CAPTION
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"

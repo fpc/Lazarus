@@ -169,7 +169,7 @@ msgstr "&Ocultar métodos protegidos"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
-msgstr ""
+msgstr "Editar vínculo elemento"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
@@ -307,7 +307,7 @@ msgstr "Editor Documentação Lazarus"
 
 #: lazdemsg.slinksto
 msgid " links to "
-msgstr ""
+msgstr " vinculado à"
 
 #: lazdemsg.sload
 msgid "&Load"
