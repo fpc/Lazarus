@@ -3587,19 +3587,16 @@ DEB_BUILDPKG_OPT=-sa
 else
 DEB_BUILDPKG_OPT=
 endif
-ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
 ifeq (${DEBBUILD},0)
 DEBUSESVN=1
 endif
 ifeq (${DEBBUILD},1)
 DEBUSESVN=1
 endif
-ifeq (${DEBBUILD},)
-DEBUSESVN=1
-endif
 ifdef SNAPSHOT
 DEBUSESVN=1
 endif
+ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
 ifndef DEBUSESVN
 $(error Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = "${DEBBUILD}" > 1)
 endif
@@ -3634,7 +3631,7 @@ ifdef DEBUSESVN
 		lcl \
 		packager \
 		test \
-		tools \
+		tools
 	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
 else
 	tar -C ${BUILDDIR} -zxf ${DEBSRC_ORIG}.tar.gz ${DEBSRC}
