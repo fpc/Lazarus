@@ -124,7 +124,7 @@ type
 
 implementation
 
-uses {$IFDEF HASX11}qtint,{$ENDIF} QtWSControls, LCLIntf;
+uses qtint, QtWSControls, LCLIntf;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle
