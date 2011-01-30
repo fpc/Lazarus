@@ -8,8 +8,8 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
  
  [target]
  programs=lazarus startlazarus
--dirs=lcl packager/registration ideintf packager components
-+dirs=lcl packager/registration ideintf packager components ide tools
+-dirs=lcl packager/registration ideintf components
++dirs=lcl packager/registration ideintf components ide tools
  exampledirs=examples
  
  [compiler]
@@ -17,8 +17,8 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
  
  #-----------------------------------------------------------------------------
  [rules]
--.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
-+.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
+-.PHONY: lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
++.PHONY: lcl components packager/registration ideintf bigidecomponents idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
  
  #-----------------------------------------------------------------------------
 -ide: 
