@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+
+#: synmacrorecorder.scannotpause
+msgid "Can only pause when recording"
+msgstr "Só se pode pausar, quando gravando"
+
+#: synmacrorecorder.scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Não se pode tocar macro quando gravando"
+
+#: synmacrorecorder.scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Não se pode gravar macro quando gravando"
+
+#: synmacrorecorder.scannotresume
+msgid "Can only resume when paused"
+msgstr "Só se pode reiniciar quando pausado"
+

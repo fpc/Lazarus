@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr "Formatando"
+
+#: ideprinting.sdescrpfselection
+#| msgid "Print..."
+msgid "Print ..."
+msgstr "Imprimir..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr "Imprimir"
+
+#: ideprinting.sprintfile
+msgid "Complete file"
+msgstr "Arquivo completo"
+
+#: ideprinting.sprintselection
+msgid "Selected text"
+msgstr "Texto selecionado"
+
+#: ideprinting.sprintsources
+msgid "Print sources"
+msgstr "Fontes impressão"
+
+#: ideprinting.sprintwhat
+msgid "What would you like to print ?"
+msgstr "O que você deseja imprimir ?"
+

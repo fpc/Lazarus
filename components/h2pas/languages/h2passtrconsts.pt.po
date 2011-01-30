@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: h2passtrconsts.h2pcheaderfileconverter
+msgid "C header file converter"
+msgstr "Conversor arquivo de cabeçalho \"C\""
+
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
+msgid "Create units from C header files"
+msgstr "Criar unidades de arquivos de cabeçalho \"C\""
+
+#: h2passtrconsts.h2ph2pas
+#, fuzzy
+#| msgid "H2Pas"
+msgid "H2Pas ..."
+msgstr "H2Pas"
+
+#: h2passtrconsts.h2ph2pastool
+msgid "H2PasTool"
+msgstr "Ferramenta \"H2Pas\""
+

@@ -2788,6 +2788,7 @@ resourcestring
   rsLanguageHebrew       = 'Hebrew';
   rsLanguageArabic       = 'Arabic';
   rsLanguagePortugueseBr = 'Brazilian Portuguese';
+  rsLanguagePortuguese   = 'Portuguese';
   rsLanguageUkrainian    = 'Ukrainian';
   rsLanguageDutch        = 'Dutch';
   rsLanguageJapanese     = 'Japanese';

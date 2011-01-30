@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installerstrconsts.wiseditform
+msgid "&Edit form"
+msgstr "&Editar formulário"
+
+#: installerstrconsts.wiseditsource
+msgid "&Edit source"
+msgstr "&Editar fontes"
+
+#: installerstrconsts.wisopenpackage
+msgid "&Open package"
+msgstr "&Abrir pacote"
+
+#: installerstrconsts.wisopenproject
+msgid "&Open project"
+msgstr "&Abrir projeto"
+

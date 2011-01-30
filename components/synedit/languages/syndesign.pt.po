@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Alterar Marca"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Retração Código"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Números de Linha"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Resumo Linha"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Separador"
+

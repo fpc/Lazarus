@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sqlstringspropertyeditordlg.sqlsyntaxok
+msgid "No syntax errors in SQL statement."
+msgstr "Nenhum erro de sintaxe na declaração SQL."
+
+#: sqlstringspropertyeditordlg.sresulttabcaption
+msgid "Results"
+msgstr "Resultados"
+
+#: sqlstringspropertyeditordlg.ssqlerror
+msgid "SQL Error"
+msgstr "Erro SQL"
+
+#: sqlstringspropertyeditordlg.ssqlok
+msgid "SQL OK"
+msgstr "SQL OK"
+
+#: sqlstringspropertyeditordlg.ssqlsyntaxerror
+msgid ""
+"Syntax error in SQL statement:\n"
+"%s\n"
+msgstr ""
+"Erro de sintaxe na declaração SQL:\n"
+"%s\n"
+
+#: sqlstringspropertyeditordlg.ssqltabcaption
+msgid "SQL Code"
+msgstr "Código \"SQL\""
+

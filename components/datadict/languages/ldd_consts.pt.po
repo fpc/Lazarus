@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Geradores de código disponíveis"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "&Fechar"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Configurar Dicionário Dados"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Configurar código gerado"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Aplicação banco de dados desktop"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "&Arquivo dicionário dados:"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Diretório padrão dicionário dados"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Campos"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Campos à gerar código"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Aplicações|*.exe|Todos arquivos|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Dicionário dados|*.fdd|Todos arquivos|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Código gerado"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Dicionário dados conhecido"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&OK"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Abrir arquivo existente"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Opções"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Propriedades campos selecionados"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "&Salvar"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Salvar para"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Arquivos Pascal|*.pp;*.pas;*.inc|Todos arquivos|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Salvar arquivo como"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Selecione código a ser gerado"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Configurar Dicionário Dados do projeto"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Exibir código gerado"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "&Usar dicionário dados para este projeto"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Aplicações|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr "Aplicando dicionário de dados ao \"dataset\" %s"
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr "Aplicando dicionário dados ao campo %s"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+"Não pode localizar a aplicação banco de dados desktop.\n"
+"Deseja selecioná-la ?\n"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+"Nenhum dicionário dados ativo.\n"
+"Favor configurar um para o projeto\n"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Favor selecionar um dicionário dados conhecido"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Favor selecionar um diretório existente"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Favor selecionar uma aplicação banco dados desktop existente"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Favor selecionar um arquivo dicionário dados existente"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "do arquivo:"
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Carregando dicionário dados"
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Configuração"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set..."
+msgstr "Ajustar..."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Banco Dados Desktop"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Dicionário dados"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Aplicar"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Criar código do \"dataset\""
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "Projetar SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Abrir"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Não implementado ainda"
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Aviso: Nenhuma definição no dicionário dados para campo %s"
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr "Contagem seleção errada: %d"
+

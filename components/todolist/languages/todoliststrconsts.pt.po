@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Opções"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Atualizar"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Inserir Macro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Texto"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Imprimir"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Inserir \"ToDo\""
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Exportar"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Ir para"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Descrição"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Feito"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Módulo"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo list"
+msgstr "Lista \"ToDo\" (à fazer)"
+
+#: todoliststrconsts.listodolistcaption
+msgid "ToDo List"
+msgstr "Lista \"ToDo\" (à fazer)"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Ir para linha do fonte selecionada"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options..."
+msgstr "Opções \"ToDo\"..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Imprimir itens \"à fazer\""
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Atualizar itens \"à fazer\""
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Linha"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Proprietário"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Prioridade"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Categoria"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo list"
+msgstr "Exibir lista \"ToDo\" (à fazer)"
+

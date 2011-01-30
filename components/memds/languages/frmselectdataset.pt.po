@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr "Selecione um \"dataset\" de onde copiar"
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr "Copiar apenas \"metadata\" "
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr "&Dataset de onde copiar:"
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Erro: Componente \"%s\" não encontrado"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Favor selecionar um \"dataset\" primeiro"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Copiar dados do \"Dataset\""
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "Criar \"dataset\""
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr "OK"
+

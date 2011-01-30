@@ -1,0 +1,67 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: weblazideintf.rsapachemodule
+msgid "Apache Module"
+msgstr "Módulo Apache"
+
+#: weblazideintf.rsapachemodule2
+msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Módulo Apache%sUm módulo Apache carregável no Free Pascal usando módulos web. O arquivo biblioteca principal é mantido automaticamente pelo Lazarus."
+
+#: weblazideintf.rscgiapplicati
+msgid "CGI Application"
+msgstr "Aplicação CGI"
+
+#: weblazideintf.rscgiapplicati2
+msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr "Aplicação CGI%sUm programa CGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: weblazideintf.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr "Aplicação CGI personalizada"
+
+#: weblazideintf.rscustomcgiapp2
+msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr "Aplicação CGI personalizada%sUm programa CGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: weblazideintf.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr "Aplicação FastCGI personalizada"
+
+#: weblazideintf.rscustomfastcg2
+msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr "Aplicação FastCGI personalizada%sUm programa FastCGI (Common Gateway Interface) em Free Pascal. O fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: weblazideintf.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr "Aplicação FastCGI"
+
+#: weblazideintf.rsfastcgiappli2
+msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr "Aplicação FastCGI%sUm programa FastCGI (Common Gateway Interface) em Free Pascal usando módulos web. O fonte do programa é mantido automaticamente pelo Lazarus."
+
+#: weblazideintf.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr "Módulo Web HTML"
+
+#: weblazideintf.rshtmlwebmodul2
+msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgstr "Módulo Web HTML%sUm módulo de dados Web para geração HTML."
+
+#: weblazideintf.rswebmodule
+msgid "Web Module"
+msgstr "Módulo Web"
+
+#: weblazideintf.rswebmoduleada
+msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgstr "Módulo Web%sUm módulo de dados para aplicações Web (HTTP)."
+
