@@ -7885,6 +7885,20 @@ begin
       end;
       Result := inherited EventFilter(Sender, Event);
     end;
+
+    QEventMouseButtonDblClick:
+    begin
+      // avoid crash on unfocused combobox raised from
+      // eg. TStringGrid as picklist.
+      // crash happens when combo is hidden in cell, and then we
+      // dbl click on position of combo button. Control raises combo
+      // and propagate dbl click to combobox which must grab focus in
+      // that case.
+      if CanSendLCLMessage and getEnabled and not hasFocus then
+        setFocus;
+      Result := inherited EventFilter(Sender, Event);
+    end;
+
     QEventKeyPress:
     begin
       if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_F4) or
