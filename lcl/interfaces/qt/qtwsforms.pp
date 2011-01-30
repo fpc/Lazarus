@@ -559,7 +559,18 @@ begin
       or QtWindowCloseButtonHint;
 
   if not (csDesigning in AWidget.LCLObject.ComponentState) then
+  begin
     AWidget.setWindowFlags(Flags);
+    if ABorderStyle in [bsDialog, bsNone, bsSingle] then
+      AWidget.Resize(AWidget.LCLObject.Width, AWidget.LCLObject.Height)
+    else
+    begin
+      // Reset constraints.
+      AWidget.setMinimumSize(QtMinimumWidgetSize, QtMinimumWidgetSize);
+      AWidget.setMaximumSize(QtMaximumWidgetSize, QtMaximumWidgetSize);
+    end;
+  end;
+
   AWidget.setVisible(AVisible);
   AWidget.EndUpdate;
 end;

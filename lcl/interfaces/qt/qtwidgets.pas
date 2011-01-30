@@ -241,7 +241,7 @@ type
     procedure raiseWidget; virtual;
     procedure stackUnder(AWidget: QWidgetH); virtual;
     procedure frame_resize(ANewWidth, ANewHeight: Integer);
-    procedure resize(ANewWidth, ANewHeight: Integer); virtual;
+    procedure Resize(ANewWidth, ANewHeight: Integer); virtual;
     procedure releaseMouse;
     procedure scroll(dx, dy: integer; ARect: PRect = nil); virtual;
     procedure setAutoFillBackground(const AValue: Boolean);
@@ -532,6 +532,7 @@ type
     function getAcceptDropFiles: Boolean; override;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+    procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1594,7 +1595,7 @@ type
 
     // QRubberBand have it's own move,resize and setGeometry
     procedure move(ANewLeft, ANewTop: Integer); override;
-    procedure resize(ANewWidth, ANewHeight: Integer); override;
+    procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setGeometry(ARect: TRect); override;
 
     function getShape: QRubberBandShape;
@@ -1738,7 +1739,7 @@ begin
   move(FParams.X, FParams.Y);
   if GetContainerWidget <> Widget then
     QWidget_resize(GetContainerWidget, FParams.Width, FParams.Height);
-  resize(FParams.Width, FParams.Height);
+  Resize(FParams.Width, FParams.Height);
 
   FScrollX := 0;
   FScrollY := 0;
@@ -3688,13 +3689,8 @@ begin
   QWidget_resize(Widget, ANewWidth - dw, ANewHeight - dh);
 end;
 
-procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
+procedure TQtWidget.Resize(ANewWidth, ANewHeight: Integer);
 begin
-{
-  WriteLn('Resize: ', dbgsName(LCLObject),
-    ' AOldWidth = ', LCLObject.Width, ' AOldHeight = ', LCLObject.Height,
-    ' ANewWidth = ', ANewWidth, ' ANewHeight = ', ANewHeight);
-}
   QWidget_resize(Widget, ANewWidth, ANewHeight);
 end;
 
@@ -4877,6 +4873,15 @@ end;
 function TQtMainWindow.getTextStatic: Boolean;
 begin
   Result := False;
+end;
+
+procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
+begin
+  if (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
+     not (csDesigning in LCLObject.ComponentState) then
+    QWidget_setFixedSize(Widget, ANewWidth, ANewHeight)
+  else
+    inherited Resize(ANewWidth, ANewHeight);
 end;
 
 procedure TQtMainWindow.setText(const W: WideString);
@@ -12789,7 +12794,7 @@ begin
   QRubberBand_move(QRubberBandH(Widget), ANewLeft, ANewTop);
 end;
 
-procedure TQtRubberBand.resize(ANewWidth, ANewHeight: Integer);
+procedure TQtRubberBand.Resize(ANewWidth, ANewHeight: Integer);
 begin
   QRubberBand_resize(QRubberBandH(Widget), ANewWidth, ANewHeight);
 end;

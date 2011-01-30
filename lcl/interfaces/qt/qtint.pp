@@ -205,6 +205,9 @@ const
    QtVersionMajor: Integer = 0;
    QtVersionMinor: Integer = 0;
    QtVersionMicro: Integer = 0;
+   QtMinimumWidgetSize = 0;
+   QtMaximumWidgetSize = 16777215;
+
    TargetEntrys = 3;
    QEventLCLMessage = QEventUser;
    LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
