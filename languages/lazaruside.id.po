@@ -15094,6 +15094,10 @@ msgstr ""
 msgid "Polish"
 msgstr "Polandia"
 
+#: lazarusidestrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
 msgstr ""

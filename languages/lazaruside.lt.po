@@ -15096,6 +15096,10 @@ msgstr "Kalbos parinktys"
 msgid "Polish"
 msgstr "Lenkų"
 
+#: lazarusidestrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
 msgstr ""

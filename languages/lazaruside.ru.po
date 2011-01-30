@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-29 15:30+0300\n"
+"PO-Revision-Date: 2011-01-30 20:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -15087,9 +15087,13 @@ msgstr "Параметры языка"
 msgid "Polish"
 msgstr "Польский"
 
+#: lazarusidestrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr "Португальский"
+
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
-msgstr "Бразильский Португальский"
+msgstr "Бразильский португальский"
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"
