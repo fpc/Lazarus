@@ -1870,25 +1870,17 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm Constructor
 ------------------------------------------------------------------------------}
-constructor TCustomForm.Create(AOwner : TComponent);
+constructor TCustomForm.Create(AOwner: TComponent);
 begin
-  //DebugLn('[TCustomForm.Create] A Class=',Classname);
   GlobalNameSpace.BeginWrite;
   try
     CreateNew(AOwner, 1); // this calls BeginFormUpdate, which is ended in AfterConstruction
-    //DebugLn('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
       try
-        //DebugLn('[TCustomForm.Create] C Class=',Classname);
-        if not InitResourceComponent(Self, TForm) then begin
-          //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
-          //DebugLn('This is for information purposes only.   This is not critical at this time.');
-          // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
-        end;
-        //DebugLn('[TCustomForm.Create] D Class=',Classname);
-        //DebugLn('[TCustomForm.Create] E Class=',Classname);
+        if not InitResourceComponent(Self, TForm) then
+          raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -1896,7 +1888,6 @@ begin
   finally
     GlobalNameSpace.EndWrite;
   end;
-  //DebugLn('[TCustomForm.Create] END Class=',Classname);
 end;
 
 {------------------------------------------------------------------------------
