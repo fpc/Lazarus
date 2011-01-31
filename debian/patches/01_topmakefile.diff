@@ -13,12 +13,8 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
  exampledirs=examples
  
  [compiler]
-@@ -45,13 +45,9 @@
- 
- #-----------------------------------------------------------------------------
- [rules]
--.PHONY: lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
-+.PHONY: lcl components packager/registration ideintf bigidecomponents idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
+@@ -48,10 +48,6 @@
+ .PHONY: lcl components packager/registration ideintf bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide cleannogui purge examples install lazbuild
  
  #-----------------------------------------------------------------------------
 -ide: 
@@ -38,3 +34,12 @@ diff -urNad lazarus-0.9.26.1-0~/Makefile.fpc lazarus-0.9.26.1-0/Makefile.fpc
  #-----------------------------------------------------------------------------
  examples: lcl components
  
+@@ -88,7 +84,7 @@ tools: lcl
+ examples: lcl components
+ 
+ #-----------------------------------------------------------------------------
+-all: packager/registration lcl ideintf components ide starter lazbuilder
++all: packager/registration lcl ideintf components bigidecomponents bigide starter lazbuilder tools examples
+ 
+ #-----------------------------------------------------------------------------
+ cleannogui:
