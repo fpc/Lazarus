@@ -1637,7 +1637,7 @@ var
   Screen: TScreen = nil;
   ExceptionObject: TExceptObject;
   HintWindowClass: THintWindowClass = THintWindow;
-  RaiseEResNotFoundInTCustomFormCreate: Boolean = True;
+  RequireDerivedFormResource: Boolean = True;
 
 type
   TMessageBoxFunction =

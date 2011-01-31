@@ -1880,7 +1880,7 @@ begin
       Include(FFormState, fsCreating);
       try
         if not InitResourceComponent(Self, TForm) then
-          if RaiseEResNotFoundInTCustomFormCreate then
+          if RequireDerivedFormResource then
             raise EResNotFound.CreateFmt(
               rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName])
           else
