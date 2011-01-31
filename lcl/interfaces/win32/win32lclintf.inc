@@ -347,7 +347,7 @@ begin
       TaskConfig.hwndParent := Screen.ActiveCustomForm.Handle
     else
     if Assigned(Application.MainForm) then
-      TaskConfig.hwndParent := Application.MainForm.Handle
+      TaskConfig.hwndParent := Application.MainFormHandle
     else
       TaskConfig.hwndParent := AppHandle;
     TaskConfig.hInstance := HInstance;
@@ -694,7 +694,7 @@ begin
       TaskConfig.hwndParent := Screen.ActiveCustomForm.Handle
     else
     if Assigned(Application.MainForm) then
-      TaskConfig.hwndParent := Application.MainForm.Handle
+      TaskConfig.hwndParent := Application.MainFormHandle
     else
       TaskConfig.hwndParent := AppHandle;
     TaskConfig.hInstance := HInstance;

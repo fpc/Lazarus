@@ -935,7 +935,7 @@ begin
     Result := Screen.ActiveCustomForm.Handle
   else
   if Assigned(Application.MainForm) then
-    Result := Application.MainForm.Handle
+    Result := Application.MainFormHandle
   else
     Result := WidgetSet.AppHandle;
 end;
