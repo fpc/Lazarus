@@ -1880,8 +1880,11 @@ begin
       Include(FFormState, fsCreating);
       try
         if not InitResourceComponent(Self, TForm) then
-          raise EResNotFound.CreateFmt(
-            rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName]);
+          if RaiseEResNotFoundInTCustomFormCreate then
+            raise EResNotFound.CreateFmt(
+              rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName])
+          else
+            DebugLn(Format(rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName]));
       finally
         Exclude(FFormState, fsCreating);
       end;
