@@ -535,6 +535,7 @@ type
     CompilerFileDate: integer;
     Params: string;        // compiler parameters
     Complete: boolean;     // compilation was successful
+    MainPPUExists: boolean; // main ppu file was there after compile
     ViaMakefile: boolean;  // compiled via make
     DirectoryWritable: TPkgOutputDirWritable;
   end;
@@ -676,6 +677,7 @@ type
     function GetStateFilename(UseOverride: boolean = true): string;
     function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
+    function GetSrcPPUFilename: string;
     function GetCompilerFilename: string;
     function GetPOOutDirectory: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
@@ -3461,6 +3463,12 @@ begin
     Result:=MainUnit.GetFullFilename
   else
     Result:=FDirectory+GetCompileSourceFilename;
+end;
+
+function TLazPackage.GetSrcPPUFilename: string;
+begin
+  Result:=AppendPathDelim(GetOutputDirectory)
+          +ChangeFileExt(GetCompileSourceFilename,'.ppu');
 end;
 
 function TLazPackage.GetCompilerFilename: string;

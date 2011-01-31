@@ -283,7 +283,7 @@ type
                               RenameDependencies, RenameMacros: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string;
-                  Complete, ShowAbort: boolean): TModalResult;
+                  Complete, MainPPUExists, ShowAbort: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
@@ -2974,8 +2974,8 @@ begin
 end;
 
 function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams: string; Complete, ShowAbort: boolean
-  ): TModalResult;
+  const CompilerFilename, CompilerParams: string; Complete, MainPPUExists,
+  ShowAbort: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
@@ -3002,6 +3002,7 @@ begin
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
       XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
+      XMLConfig.SetDeleteValue('Complete/MainPPUExists',MainPPUExists,true);
       InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
@@ -3055,6 +3056,7 @@ begin
         stats^.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
         stats^.Params:=XMLConfig.GetValue('Params/Value','');
         stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
+        stats^.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
         stats^.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
       finally
         XMLConfig.Free;
@@ -3239,6 +3241,7 @@ var
   NewValue: string;
   o: TPkgOutputDir;
   stats: PPkgLastCompileStats;
+  SrcPPUFile: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -3348,12 +3351,23 @@ begin
   end;
 
   // check main source file
-  if (SrcFilename<>'') and FileExistsCached(SrcFilename)
-  and (StateFileAge<FileAgeUTF8(SrcFilename)) then
+  if (SrcFilename<>'') then
   begin
-    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated ',APackage.IDAsString);
-    exit(mrYes);
+    if (not FileExistsCached(SrcFilename)) or (StateFileAge<FileAgeUTF8(SrcFilename))
+    then begin
+      DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated of ',APackage.IDAsString,': ',SrcFilename);
+      exit(mrYes);
+    end;
+    // check main source ppu file
+    if stats^.MainPPUExists then begin
+      SrcPPUFile:=APackage.GetSrcPPUFilename;
+      if not FileExistsCached(SrcPPUFile) then begin
+        DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
+        exit(mrYes);
+      end;
+    end;
   end;
+
 
   //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
 
@@ -3459,6 +3473,8 @@ var
   BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
   CompileResult, MsgResult: TModalResult;
+  SrcPPUFile: String;
+  SrcPPUFileExists: Boolean;
 begin
   Result:=mrCancel;
 
@@ -3601,10 +3617,13 @@ begin
 
           // compile package
           CompileResult:=RunCompilerWithOptions(PkgCompileTool,APackage.CompilerOptions);
+          // check if main ppu file was created
+          SrcPPUFile:=APackage.GetSrcPPUFilename;
+          SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
           // write state file
           Result:=SavePackageCompiledState(APackage,
-                                           CompilerFilename,CompilerParams,
-                                           CompileResult=mrOk,true);
+                                      CompilerFilename,CompilerParams,
+                                      CompileResult=mrOk,SrcPPUFileExists,true);
           if Result<>mrOk then begin
             DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
             exit;
