@@ -134,7 +134,6 @@ procedure UpdateWindowsVersion;
 type 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
   TStayOnTopWindowsInfo = record
-    AppWindow: HWND;
     SystemTopAlso: Boolean;
     StayOnTopList: TList;
   end;
@@ -1009,7 +1008,6 @@ begin
   if InRemoveStayOnTopFlags = 0 then
   begin
     New(StayOnTopWindowsInfo);
-    StayOnTopWindowsInfo^.AppWindow := Window;
     StayOnTopWindowsInfo^.SystemTopAlso := ASystemTopAlso;
     StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
     WindowInfo := GetWin32WindowInfo(Window);
