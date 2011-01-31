@@ -493,7 +493,8 @@ begin
   FHintLock := 0;
   BeginFormUpdate;
   KeyPreview:= True;
-  inherited Create(AOwner);
+  // we have no resource => must be constructed using CreateNew
+  inherited CreateNew(AOwner, 1);
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
   FormStyle := fsSystemStayOnTop;

@@ -428,7 +428,8 @@ end;
 
 constructor TMainIDEBar.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  // This form has no resource => must be constructed using CreateNew
+  inherited CreateNew(TheOwner, 1);
 end;
 
 procedure TMainIDEBar.HideIDE;

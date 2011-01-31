@@ -29,7 +29,8 @@ constructor THintWindow.Create(AOwner: TComponent);
 var
   TheTimer: TCustomTimer;
 begin
-  inherited Create(AOwner);
+  // THintWindow has no resource => must be constructed using CreateNew
+  inherited CreateNew(AOwner, 1);
   fCompStyle := csHintWindow;
   Parent := nil;
   Color := clInfoBk;
