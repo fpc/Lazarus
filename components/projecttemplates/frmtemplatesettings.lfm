@@ -5,12 +5,13 @@ object TemplateSettingsForm: TTemplateSettingsForm
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 126
+  BorderStyle = bsDialog
   Caption = 'Project templates settings'
   ClientHeight = 127
   ClientWidth = 400
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
     Height = 24
@@ -22,36 +23,35 @@ object TemplateSettingsForm: TTemplateSettingsForm
     Layout = tlCenter
     ParentColor = False
   end
-  object BOK: TButton
-    Left = 296
-    Height = 25
-    Top = 96
-    Width = 91
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    OnClick = BOKClick
-    TabOrder = 0
-  end
-  object BCancel: TButton
-    Left = 192
-    Height = 25
-    Top = 96
-    Width = 96
-    Cancel = True
-    Caption = '&Cancel'
-    ModalResult = 2
-    TabOrder = 1
-  end
   object DETemplates: TDirectoryEdit
     Left = 8
-    Height = 25
+    Height = 23
     Top = 41
     Width = 360
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
     MaxLength = 0
-    TabOrder = 2
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 87
+    Width = 388
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

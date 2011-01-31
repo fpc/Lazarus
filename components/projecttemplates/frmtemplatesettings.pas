@@ -6,19 +6,18 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, EditBtn, ProjectTemplates;
+  Buttons, EditBtn, ButtonPanel, ProjectTemplates;
 
 type
 
   { TTemplateSettingsForm }
 
   TTemplateSettingsForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     DETemplates: TDirectoryEdit;
     Label1: TLabel;
-    procedure BOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
   private
     { private declarations }
     FTemplates : TProjectTemplates;
@@ -36,26 +35,21 @@ implementation
 resourcestring
   STitle = 'Project templates settings';
   SDirect= '&Directory with templates:';
-  SbtnCancel = 'Cancel';
-  SbtnOk = 'OK';
 
 {$R *.lfm}
 
 { TTemplateSettingsForm }
 
-procedure TTemplateSettingsForm.BOKClick(Sender: TObject);
-
-begin
-  If (Templates.TemplateDir<>DETemplates.Directory) then
-    FTemplates.Initialize(DETemplates.Directory);
-end;
-
 procedure TTemplateSettingsForm.FormCreate(Sender: TObject);
 begin
   Caption := STitle;
   Label1.Caption := SDirect;
-  BCancel.Caption:= SbtnCancel;
-  BOK.Caption:= SbtnOk;
+end;
+
+procedure TTemplateSettingsForm.OKButtonClick(Sender: TObject);
+begin
+  if (Templates.TemplateDir<>DETemplates.Directory) then
+    FTemplates.Initialize(DETemplates.Directory);
 end;
 
 procedure TTemplateSettingsForm.SetTemplates(const AValue: TProjectTemplates);
