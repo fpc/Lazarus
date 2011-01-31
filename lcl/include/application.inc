@@ -543,7 +543,7 @@ procedure TApplication.SetMainFormOnTaskBar(const AValue: Boolean);
 begin
   if FMainFormOnTaskBar = AValue then exit;
   FMainFormOnTaskBar := AValue;
-  // TODO:
+  WidgetSet.AppSetMainFormOnTaskBar(FMainFormOnTaskBar);
 end;
 
 procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions);

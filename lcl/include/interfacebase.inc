@@ -71,6 +71,10 @@ begin
   Result := False;
 end;
 
+procedure TWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
+begin
+end;
+
 function TWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
