@@ -1950,19 +1950,22 @@ begin
     if (Parent = nil) and (ParentWindow = 0) then
     begin
       // define Parent according to PopupMode and PopupParent
-      if not (csDesigning in ComponentState) and (Application.MainForm <> Self) then
+      if not (csDesigning in ComponentState) then
       begin
-        case PopupMode of
-          pmNone:;
-          pmAuto:
-            if (Screen.ActiveForm <> nil) then
-              WndParent := Screen.ActiveForm.Handle;
-          pmExplicit:
-            if (PopupParent <> nil) then
-              WndParent := PopupParent.Handle;
+        if (Application.MainForm <> Self) then
+        begin
+          case PopupMode of
+            pmNone:;
+            pmAuto:
+              if (Screen.ActiveForm <> nil) then
+                WndParent := Screen.ActiveForm.Handle;
+            pmExplicit:
+              if (PopupParent <> nil) then
+                WndParent := PopupParent.Handle;
+          end;
         end;
-
-        if (WndParent = 0) and (GetEffectiveShowInTaskBar = stAlways) then
+        if (WndParent = 0) and
+           (((Self = Application.MainForm) and Application.MainFormOnTaskBar) or (GetEffectiveShowInTaskBar = stAlways)) then
           ExStyle := ExStyle or WS_EX_APPWINDOW;
       end;
       Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP or WS_CHILD);

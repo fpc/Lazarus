@@ -160,8 +160,6 @@ begin
     Flags := CreateParams.Style;
     FlagsEx := CreateParams.ExStyle;
     Parent := CreateParams.WndParent;
-    if (Parent = 0) then
-      Parent := Win32WidgetSet.AppHandle;
     StrCaption := CreateParams.Caption;
 
     Left := CreateParams.X;

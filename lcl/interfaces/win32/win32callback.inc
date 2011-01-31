@@ -784,12 +784,12 @@ var
             and (Application.MainForm <> ParentForm)
             and Application.MainForm.HandleAllocated then
           begin
-            targetWindow := Application.MainForm.Handle;
-            if IsWindowEnabled(targetWindow) and IsWindowVisible(targetWindow) then
+            TargetWindow := Application.MainFormHandle;
+            if IsWindowEnabled(TargetWindow) and IsWindowVisible(TargetWindow) then
             begin
               prevFocus := Windows.GetFocus;
               Windows.SetFocus(targetWindow);
-              PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
+              PLMsg^.Result := Windows.SendMessage(TargetWindow, WM_SYSCOMMAND, WParam, LParam);
               Windows.SetFocus(prevFocus);
               WinProcess := False;
             end;
@@ -798,44 +798,56 @@ var
 
       SC_MINIMIZE:
         begin
-
-          if (Application <> nil) and (lWinControl <> nil) and
-             (Application.MainForm <> nil) and
-             (Application.MainForm = lWinControl) then
-            Window := TWin32WidgetSet(WidgetSet).AppHandle;//redirection
-
-          if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
-             (Application <> nil) then
+          if Assigned(Application) then
           begin
-            if (Application.MainForm <> nil) then
-            begin
-              Windows.SetWindowPos(Window, HWND_TOP,
-                Application.MainForm.Left, Application.MainForm.Top,
-                Application.MainForm.Width, 0, SWP_NOACTIVATE);
-              if Application.MainForm.HandleAllocated then
-                Windows.ShowWindow(Application.MainForm.Handle, SW_HIDE);
-            end;
+            if Assigned(lWinControl) and (Application.MainForm = lWinControl) and not Application.MainFormOnTaskBar then
+              Window := Win32WidgetSet.AppHandle;//redirection
 
-            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            WinProcess := False;
-            Application.IntfAppMinimize;
+            if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
+            begin
+              if Assigned(Application.MainForm) then
+              begin
+                Windows.SetWindowPos(Window, HWND_TOP,
+                  Application.MainForm.Left, Application.MainForm.Top,
+                  Application.MainForm.Width, 0, SWP_NOACTIVATE);
+                if Application.MainForm.HandleAllocated then
+                  Windows.ShowWindow(Application.MainFormHandle, SW_HIDE);
+              end;
+
+              PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+              WinProcess := False;
+              Application.IntfAppMinimize;
+            end
+            else
+            if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
+            begin
+              PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+              WinProcess := False;
+              Application.IntfAppMinimize;
+            end;
           end;
         end;
 
       SC_RESTORE:
         begin
-
-         if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
-            (Application <> nil) then
+          if Assigned(Application) then
           begin
-            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            WinProcess := False;
-            if (Application.MainForm <> nil) and Application.MainForm.HandleAllocated then
+            if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and not Application.MainFormOnTaskBar then
             begin
-              if Application.MainForm.HandleObjectShouldBeVisible then
-                Windows.ShowWindow(Application.MainForm.Handle, SW_SHOWNA);
+              PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+              WinProcess := False;
+              if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+              begin
+                if Application.MainForm.HandleObjectShouldBeVisible then
+                  Windows.ShowWindow(Application.MainFormHandle, SW_SHOWNA);
+              end;
+              Application.IntfAppRestore;
+            end
+            else
+            if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
+            begin
+              Application.IntfAppRestore;
             end;
-            Application.IntfAppRestore;
           end;
         end;
     end;
@@ -1177,9 +1189,9 @@ begin
     WM_CLOSE:
     begin
       if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
-        (Application.MainForm <> nil) then
+         Assigned(Application.MainForm) then
       begin
-        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
+        Windows.SendMessage(Application.MainFormHandle, WM_CLOSE, 0, 0);
       end
       else begin
         LMessage.Msg := LM_CLOSEQUERY;
@@ -2075,15 +2087,15 @@ begin
         Status := LParam;
       end;
       //DebugLn(GetStackTrace(false));
-      if assigned(lWinControl) and ((WParam<>0) or not lWinControl.Visible)
-        and ((WParam=0) or lWinControl.Visible)
-        and (Application<>nil) and (lWinControl=Application.MainForm) then
+      if Assigned(lWinControl) and ((WParam <> 0) or not lWinControl.Visible) and
+          ((WParam = 0) or lWinControl.Visible) and Assigned(Application) and
+          (lWinControl = Application.MainForm) and not Application.MainFormOnTaskBar then
       begin
         if WParam=0 then
           Flags := SW_HIDE
         else
           Flags := SW_SHOWNOACTIVATE;
-        Windows.ShowWindow(TWin32WidgetSet(WidgetSet).FAppHandle, Flags);
+        Windows.ShowWindow(TWin32WidgetSet(WidgetSet).AppHandle, Flags);
       end;
     end;
     WM_SYSCHAR:
@@ -2306,7 +2318,7 @@ begin
           if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
           begin
             lWinControl := Application.MainForm;
-            Window := Application.MainForm.Handle;
+            Window := Application.MainFormHandle;
           end;
         end;
         if IsIconic(Window) then

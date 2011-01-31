@@ -176,8 +176,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppMinimize;
 begin
-  if FAppHandle <> 0 then
-    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+  if Assigned(Application) and Application.MainFormOnTaskBar then
+    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
+  else
+    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 end;
 
 {------------------------------------------------------------------------------
@@ -189,7 +191,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
 begin
-  if FAppHandle <> 0 then
+  if Assigned(Application) and Application.MainFormOnTaskBar then
+    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
+  else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;
 
@@ -203,7 +207,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppBringToFront;
 begin
-  if FAppHandle <> 0 then
+  if (FAppHandle <> 0) and not (Assigned(Application) and Application.MainFormOnTaskBar) then
     Windows.SetForegroundWindow(FAppHandle);
 end;
 
@@ -482,7 +486,7 @@ end;
 
 procedure TWin32WidgetSet.AppSetVisible(const AVisible: Boolean);
 begin
-  if FAppHandle <> 0 then
+  if (FAppHandle <> 0) and not (Assigned(Application) and Application.MainFormOnTaskBar) then
   begin
     if AVisible then
       Windows.ShowWindow(FAppHandle, SW_SHOW)
@@ -505,6 +509,18 @@ begin
   Result := True;
 end;
 
+procedure TWin32WidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
+begin
+  // 1. Update the visibility of the TaskBar window
+  if DoSet then
+    ShowWindow(AppHandle, SW_HIDE)
+  else
+    ShowWindow(AppHandle, SW_SHOW);
+  // 2. Recreate the main form - so it will (not) have an own taskbar item and WndParent = 0 (AppHandle)
+  if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+    RecreateWnd(Application.MainForm);
+end;
+
 function TWin32WidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpWin32;
@@ -518,6 +534,7 @@ begin
     lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
     lcApplicationWindow: Result := LCL_CAPABILITY_YES;
     lcLMHelpSupport: Result := LCL_CAPABILITY_YES;
+    lcNeedMininimizeAppWithMainForm: Result := LCL_CAPABILITY_NO;
   else
     Result := inherited;
   end;

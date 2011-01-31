@@ -370,6 +370,19 @@ begin
   // customization of Params
   with Params do
   begin
+    if (Parent = 0) then
+    begin
+      if not Application.MainFormOnTaskBar then
+        Parent := Win32WidgetSet.AppHandle
+      else
+      if (AWinControl <> Application.MainForm) then
+      begin
+        if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+          Parent := Application.MainFormHandle
+        else
+          Parent := Win32WidgetSet.AppHandle;
+      end;
+    end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
