@@ -529,6 +529,10 @@ msgstr "\"FixedRows\" não pode ser >= \"RowCount\""
 msgid "Form"
 msgstr "Formulário"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Fluxo formulário \"%s\" com erro: %s"

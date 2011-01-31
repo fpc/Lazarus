@@ -530,6 +530,10 @@ msgstr "FixedRows (files fixades) no poden ser >= RowCount (recompte de files)"
 msgid "Form"
 msgstr ""
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Formació del corrent \"%s\" amb  error: %s"

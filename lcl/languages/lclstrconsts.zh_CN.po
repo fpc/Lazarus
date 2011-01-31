@@ -533,6 +533,10 @@ msgstr "FixedRows 不能 >= RowCount"
 msgid "Form"
 msgstr "窗体"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "窗体流 \"%s\" 错误: %s"

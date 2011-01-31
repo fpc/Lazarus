@@ -1880,7 +1880,8 @@ begin
       Include(FFormState, fsCreating);
       try
         if not InitResourceComponent(Self, TForm) then
-          raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);
+          raise EResNotFound.CreateFmt(
+            rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName]);
       finally
         Exclude(FFormState, fsCreating);
       end;

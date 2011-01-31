@@ -533,6 +533,10 @@ msgstr "FixedRows kann nicht größer/gleich RowCount sein"
 msgid "Form"
 msgstr "Form"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Form-Streaming \"%s\" Fehler: %s"

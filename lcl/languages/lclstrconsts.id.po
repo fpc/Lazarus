@@ -531,6 +531,10 @@ msgstr "FixedRows tidak bisa >= RowCount"
 msgid "Form"
 msgstr ""
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Pengaliran form \"%s\" salah: %s"

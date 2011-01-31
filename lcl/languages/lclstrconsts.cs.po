@@ -528,6 +528,10 @@ msgstr "FixedRows nemůže být >= RowCount"
 msgid "Form"
 msgstr "Formulář"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Chyba zřetězení \"%s\" chyba: %s"

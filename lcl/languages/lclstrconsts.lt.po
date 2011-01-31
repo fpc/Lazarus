@@ -532,6 +532,10 @@ msgstr "„FixedRows“ reikšmė negali būti lygi ar didesnė nei „RowCount�
 msgid "Form"
 msgstr "Forma"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "Formą siunčiant srautu „%s“ įvyko klaida: %s"

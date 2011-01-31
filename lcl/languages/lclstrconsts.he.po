@@ -526,6 +526,10 @@ msgstr "FixedRows can't be >= RowCount"
 msgid "Form"
 msgstr "טופס"
 
+#: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgstr ""
+
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
 msgstr "זרימת טופס  \"%s\" שגיאה: %s"
