@@ -285,7 +285,7 @@ type
     procedure CreateBoundSplitter;
     procedure PositionBoundSplitter;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
     destructor Destroy; override;
     function CloseQuery: boolean; override;
     function CloseSite: boolean; virtual;
@@ -2525,7 +2525,7 @@ var
 begin
   Result:=TAnchorDockHostSite(SiteClass.NewInstance);
   Result.DisableAutoSizing;
-  Result.Create(Self);
+  Result.CreateNew(Self,1);
   i:=0;
   repeat
     inc(i);
@@ -4284,9 +4284,9 @@ begin
   end;
 end;
 
-constructor TAnchorDockHostSite.Create(AOwner: TComponent);
+constructor TAnchorDockHostSite.CreateNew(AOwner: TComponent; Num: Integer);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner,Num);
   Visible:=false;
   FHeaderSide:=akTop;
   FHeader:=DockMaster.HeaderClass.Create(Self);
