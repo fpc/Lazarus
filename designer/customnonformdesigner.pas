@@ -47,6 +47,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation);
          override;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure DoLoadBounds; virtual;
     procedure DoSaveBounds; virtual;
   public
@@ -83,6 +84,11 @@ begin
 end;
 
 { TCustomNonFormDesignerForm }
+
+constructor TCustomNonFormDesignerForm.Create(AOwner: TComponent);
+begin
+  inherited CreateNew(AOwner, 1);
+end;
 
 procedure TCustomNonFormDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
