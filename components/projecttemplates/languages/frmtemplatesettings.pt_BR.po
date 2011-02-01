@@ -9,14 +9,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmtemplatesettings.sbtncancel
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: frmtemplatesettings.sbtnok
-msgid "OK"
-msgstr "OK"
-
 #: frmtemplatesettings.sdirect
 msgid "&Directory with templates:"
 msgstr "&Diretório com modelos:"
