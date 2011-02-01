@@ -35,6 +35,17 @@ begin
   inherited BeforeDestruction;
 end;
 
+function TWidgetSet.GetAppHandle: THandle;
+begin
+  DebugLn('Warning: AppHandle is not implemented for this widgetset yet');
+  Result := 0;
+end;
+
+procedure TWidgetSet.SetAppHandle(const AValue: THandle);
+begin
+  DebugLn('Warning: AppHandle is not implemented for this widgetset yet');
+end;
+
 procedure TWidgetSet.PassCmdLineOptions;
 begin
 end;

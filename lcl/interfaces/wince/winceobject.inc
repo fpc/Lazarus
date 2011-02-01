@@ -184,6 +184,19 @@ begin
   WakeMainThread := @HandleWakeMainThread;
 end;
 
+function TWinCEWidgetSet.GetAppHandle: THandle;
+begin
+  Result:= FAppHandle;
+end;
+
+procedure TWinCEWidgetSet.SetAppHandle(const AValue: THandle);
+begin
+  // Do it only if handle is not yet created (for example for DLL initialization)
+  // if handle is already created we can't reassign it
+  if AppHandle = 0 then
+    FAppHandle := AValue;
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppMinimize
   Params:  None

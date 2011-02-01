@@ -188,11 +188,6 @@ begin
     SetWindowPos(ARubberBand, 0, Left, Top, Right - Left, Bottom - Top, SWP_NOZORDER or SWP_NOACTIVATE);
 end;
 
-function TWin32WidgetSet.AppHandle: THandle;
-begin
-  Result:= FAppHandle;
-end;
-
 {------------------------------------------------------------------------------
   Function:
   Params:

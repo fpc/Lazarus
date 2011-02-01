@@ -135,6 +135,8 @@ type
     FThemeServices: TThemeServices;
     procedure PassCmdLineOptions; virtual;
     function CreateThemeServices: TThemeServices; virtual;
+    function GetAppHandle: THandle; virtual;
+    procedure SetAppHandle(const AValue: THandle); virtual;
   public
     constructor Create; virtual;
     procedure BeforeDestruction;override;
@@ -169,7 +171,7 @@ type
     // create and destroy
     function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): THandle; virtual; abstract;
     function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
-    function AppHandle: Thandle; virtual;
+    property AppHandle: THandle read GetAppHandle write SetAppHandle;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}

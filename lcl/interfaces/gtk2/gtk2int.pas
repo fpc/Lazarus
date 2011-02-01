@@ -267,6 +267,8 @@ type
     procedure Gtk1Create;
     procedure Gtk1Destroy;
 
+  protected
+    function GetAppHandle: THandle; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -277,7 +279,6 @@ type
     procedure AppBringToFront; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
-    function AppHandle: THandle; override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     procedure AppProcessMessages; override;

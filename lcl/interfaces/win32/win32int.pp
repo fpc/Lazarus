@@ -149,6 +149,8 @@ type
     procedure CreateAppHandle;
   protected
     function CreateThemeServices: TThemeServices; override;
+    function GetAppHandle: THandle; override;
+    procedure SetAppHandle(const AValue: THandle); override;
   public
     { Creates a callback of Lazarus message Msg for Sender }
     procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -191,7 +193,6 @@ type
 
     // thread synchronize support
     procedure HandleWakeMainThread(Sender: TObject);
-    function AppHandle: THandle; override;
     property DefaultFont: HFONT read FDefaultFont;
 
     {$I win32winapih.inc}

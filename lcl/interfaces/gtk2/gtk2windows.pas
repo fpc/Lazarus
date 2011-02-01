@@ -7,7 +7,7 @@ interface
 uses
   Windows;
   
-  function GetAppHandle: Thandle;
+  function GetWin32AppHandle: THandle;
 
 implementation
 
@@ -15,7 +15,7 @@ const
   ClsName: array[0..6] of char = 'Window'#0;
   PrivateAppHandle: THandle = 0;
 
-function GetAppHandle: Thandle;
+function GetWin32AppHandle: THandle;
 var
   WindowClass: WndClass;
 begin

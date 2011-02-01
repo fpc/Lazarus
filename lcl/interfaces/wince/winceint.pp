@@ -172,7 +172,9 @@ type
 
 
     function WinRegister: Boolean;
-
+  protected
+    function GetAppHandle: THandle; override;
+    procedure SetAppHandle(const AValue: THandle); override;
   public
     { Creates a callback of Lazarus message Msg for Sender }
     procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -214,7 +216,6 @@ type
     {$I wincewinapih.inc}
     {$I wincelclintfh.inc}
 
-    property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
 

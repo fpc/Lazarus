@@ -721,6 +721,19 @@ begin
   Result := TWin32ThemeServices.Create;
 end;
 
+function TWin32WidgetSet.GetAppHandle: THandle;
+begin
+  Result:= FAppHandle;
+end;
+
+procedure TWin32WidgetSet.SetAppHandle(const AValue: THandle);
+begin
+  // Do it only if handle is not yet created (for example for DLL initialization)
+  // if handle is already created we can't reassign it
+  if AppHandle = 0 then
+    FAppHandle := AValue;
+end;
+
  {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AssignSelf
   Params: Window - The window to assign

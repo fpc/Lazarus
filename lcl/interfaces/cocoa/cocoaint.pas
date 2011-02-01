@@ -67,7 +67,8 @@ type
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
     delegate  : TCocoaAppDelegate;
-
+  protected
+    function GetAppHandle: THandle; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -86,7 +87,6 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
-    function AppHandle: THandle; override;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -342,10 +342,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.AppHandle
+  Method:  TCocoaWidgetSet.GetAppHandle
   Returns: Returns NSApp object, created via NSApplication.sharedApplication
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.AppHandle: THandle;
+function TCocoaWidgetSet.GetAppHandle: THandle;
 begin
   Result:=THandle(NSApp);
 end;

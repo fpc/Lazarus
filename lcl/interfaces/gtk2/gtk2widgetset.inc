@@ -1198,12 +1198,12 @@ begin
   end;
 end;
 
-function TGtk2WidgetSet.AppHandle: Thandle;
+function TGtk2WidgetSet.GetAppHandle: Thandle;
 begin
   {$ifdef windows}
-  Result := GetAppHandle;
+  Result := GetWin32AppHandle;
   {$else}
-  Result := inherited AppHandle;
+  Result := inherited GetAppHandle;
   {$endif}
 end;
 
