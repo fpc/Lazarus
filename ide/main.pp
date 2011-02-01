@@ -11238,6 +11238,7 @@ begin
       end;
     end;
 
+    Project1.Resources.DoAfterBuild(AReason, Project1.IsVirtual);
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);

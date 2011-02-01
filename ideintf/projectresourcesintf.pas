@@ -31,6 +31,7 @@ type
   public
     constructor Create; virtual;
 
+    procedure DoAfterBuild(AResources: TAbstractProjectResources; AReason: TCompileReason; SaveToTestDir: boolean); virtual;
     procedure DoBeforeBuild(AResources: TAbstractProjectResources; AReason: TCompileReason; SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
@@ -95,8 +96,14 @@ begin
   FModified := False;
 end;
 
-procedure TAbstractProjectResource.DoBeforeBuild(
-  AResources: TAbstractProjectResources; AReason: TCompileReason; SaveToTestDir: boolean);
+procedure TAbstractProjectResource.DoAfterBuild(AResources: TAbstractProjectResources; 
+  AReason: TCompileReason; SaveToTestDir: boolean);
+begin
+  // nothing
+end;
+
+procedure TAbstractProjectResource.DoBeforeBuild(AResources: TAbstractProjectResources; 
+  AReason: TCompileReason; SaveToTestDir: boolean);
 begin
   // nothing
 end;
