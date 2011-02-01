@@ -786,7 +786,7 @@ end;
 
 constructor TCodeTemplateEditForm.Create(TheOwner:TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
     Height:=150;
