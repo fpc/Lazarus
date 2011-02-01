@@ -1005,6 +1005,9 @@ begin
         else
         if TopPascalCodeFoldBlockType = cfbtRecord then
           EndPascalCodeFoldBlock;
+      // After type declaration, allow "deprecated"?
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        fRange := fRange + [rsVarTypeInSpecification];
       end;
       {$ENDIF}
     end else begin
@@ -1148,7 +1151,11 @@ begin
   if KeyComp('Alias') then
     Result := tkKey
   else
-  if KeyComp('Final') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
+  if KeyComp('Final') and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers]) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
+  then
     Result := tkKey
   else
     Result := tkIdentifier;

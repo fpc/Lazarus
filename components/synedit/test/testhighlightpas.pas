@@ -716,6 +716,19 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
       tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
 
 
+
+    // after class declaration
+    SetLines
+      ([  'Unit A; interface',
+          'type',
+          'TFoo=class',
+            'foo: Integer;',
+          'end '+s+';',
+          ''
+      ]);
+    CheckTokensForLine('after class declaration', 4,
+      [tkKey, tkSpace, tkKey, tkSymbol]);
+
     PopBaseName;
   end;
 begin
