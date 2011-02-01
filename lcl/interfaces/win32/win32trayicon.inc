@@ -413,23 +413,15 @@ end;
 *                  the icon
 *
 *******************************************************************}
-function EnumChildProc(handle : HWND; lp : LParam): LongBool; stdcall;
-var
-  s : string;
-  l : integer;
+function EnumChildProc(handle: HWND; lp: LParam): LongBool; stdcall;
 begin
-  SetLength(s, 255);
-  l := GetClassName(handle, PChar(s), Length(s));
-  if l = 0 then Exit(False)
+  if Pos('ToolbarWindow32', WndClassName(handle)) > 0 then
+  begin
+    LParam(Pointer(lp)^) := handle;
+    Result := False;
+  end
   else
-  SetLength(s, l);
-  if Pos('ToolbarWindow32', s) > 0 then
-    begin
-      lp := handle;
-      result := false;
-    end
-  else
-    result := true;
+    Result := True;
 end;
 
 class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
@@ -450,7 +442,7 @@ begin
   hWndTray := ATrayIcon.Handle;
 
   { Then we locate inside the Tray area, which is just a Toolbar control }
-  EnumChildWindows(hWndTaskbar, @EnumChildProc,LParam(hWndTray));
+  EnumChildWindows(hWndTaskbar, @EnumChildProc, LParam(@hWndTray));
 
   if hWndTray = 0 then Exit;
 
