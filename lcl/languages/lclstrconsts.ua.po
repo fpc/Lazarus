@@ -524,7 +524,7 @@ msgid "Form"
 msgstr ""
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
-msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
+msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
 msgstr ""
 
 #: lclstrconsts.rsformstreamingerror
