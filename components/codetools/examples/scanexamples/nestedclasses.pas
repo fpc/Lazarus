@@ -1,4 +1,4 @@
-program Project1;
+program NestedClasses;
 
 {$mode objfpc}{$H+}
 {$modeswitch advancedrecords} // {$mode delphi} has it automatically
@@ -26,6 +26,20 @@ end;
 // 2. advanced records
 type
   TRec1 = record
+    hWnd : HWND;
+  private
+    F1: Integer;
+    F2: Byte;
+  public
+    type
+      TBar = Integer;
+    const
+      C: TBar = 1;
+    var
+      F3: TBar;
+      F4: Byte;
+    class var
+      F5: TBar;
   private
     type
       Int = Integer;
