@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-01 04:34+0300\n"
+"PO-Revision-Date: 2011-02-02 02:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -529,10 +529,9 @@ msgid "Form"
 msgstr "Форма"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
-#, fuzzy
 #| msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used."
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr "Ресурс формы %s не найден. Для форм без ресурсов следует использовать конструктор CreateNew."
+msgstr "Ресурс формы %s не найден. Для форм без ресурсов следует использовать конструктор CreateNew. Обратите внимание на глобальную переменную RequireDerivedFormResource."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
