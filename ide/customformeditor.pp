@@ -732,9 +732,9 @@ begin
   if LookupRoot is TComponent then
   begin
     if LookupRoot is TCustomFrame then
-      Result := TFrameDesignerForm.CreateNew(nil)
+      Result := TFrameDesignerForm.Create(nil)
     else
-      Result := TNonControlDesignerForm.CreateNew(nil);
+      Result := TNonControlDesignerForm.Create(nil);
     Result.Name:='_Designer_'+LookupRoot.Name;
     Result.LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
