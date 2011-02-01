@@ -96,6 +96,13 @@ copy %COMPILER% %INSTALL_BINDIR%
 %FPCSVNDIR%\fpcsrc\compiler\utils\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
+gmkdir -p %BUILDDIR%\packager
+%SVN% export %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
+cd %BUILDDIR%\packager\registration
+%MAKEEXE% FPC=%compiler%
+IF ERRORLEVEL 1 GOTO CLEANUP
+gmkdir -p %BUILDDIR%\image\packager\units
+cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
 %SVN% export %LAZSVNDIR%\lcl %BUILDDIR%\lcl
 %BUILDDRIVE%
@@ -104,14 +111,6 @@ cd %BUILDDIR%\lcl
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lcl\units
 cp -pr %BUILDDIR%\lcl\units\%FPCFULLTARGET% %BUILDDIR%\image\lcl\units\%FPCFULLTARGET%
-
-gmkdir -p %BUILDDIR%\packager
-%SVN% export %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
-cd %BUILDDIR%\packager\registration
-%MAKEEXE% FPC=%compiler%
-IF ERRORLEVEL 1 GOTO CLEANUP
-gmkdir -p %BUILDDIR%\image\packager\units
-cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
 %SVN% export %LAZSVNDIR%\ideintf %BUILDDIR%\ideintf
 :: export images dir, the ideintf includes them
