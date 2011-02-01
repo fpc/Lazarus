@@ -49,9 +49,9 @@
         <UnitName Value="eventlog"/>
       </Item6>
       <Item7>
-        <Filename Value="xmlcfg.pas"/>
+        <Filename Value="XMLConf.pas"/>
         <Type Value="Virtual Unit"/>
-        <UnitName Value="xmlcfg"/>
+        <UnitName Value="XMLConf"/>
       </Item7>
       <Item8>
         <Filename Value="fcllaz.pas"/>

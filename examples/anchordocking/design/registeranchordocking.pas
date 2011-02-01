@@ -44,7 +44,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  LazConfigStorage, XMLCfg, XMLPropStorage, StdCtrls, LCLIntf,
+  LazConfigStorage, XMLConf, XMLPropStorage, StdCtrls, LCLIntf,
   BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
   IDEWindowIntf, IDEOptionsIntf,
   AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;

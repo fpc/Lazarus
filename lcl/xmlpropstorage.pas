@@ -21,7 +21,7 @@ interface
 
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLCfg, DOM,
+  Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLConf, DOM,
   LazConfigStorage;
 
 type

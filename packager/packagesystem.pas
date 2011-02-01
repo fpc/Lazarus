@@ -1454,7 +1454,7 @@ begin
     AddFile(SetDirSeparators('packages/fcl-db/src/base/db.pas'),'DB',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('packages/fcl-process/src/process.pp'),'Process',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('packages/fcl-process/src/simpleipc.pp'),'SimpleIPC',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('packages/fcl-xml/src/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-xml/src/xmlconf.pp'),'XMLConf',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('packages/fcl-base/src/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
 
     SetAllComponentPriorities(FCLCompPriority);
