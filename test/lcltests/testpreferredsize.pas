@@ -9,7 +9,7 @@
   Test that ScrollBox with AutoScroll computes correct Visible and Range.
      ./runtests --format=plain --suite=TestScrollBoxRange
 }
-unit testpreferredsize;
+unit TestPreferredSize;
 
 {$mode objfpc}{$H+}
 

@@ -29,8 +29,10 @@ interface
 uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
+  // codetools
+  TestBasicCodetools,
   // lcltests
-  testunicode, testpen
+  testunicode, testpen, TestPreferredSize
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , semiautotest, idesemiautotests, lclsemiautotests

@@ -30,12 +30,14 @@ var
   Compiler: string;
   PrimaryConfigPath: string;
   BugsTestSuite: TTestSuite;
+  CodetoolsTestSuite: TTestSuite;
   LCLTestSuite: TTestSuite;
   SemiAutoTestSuite: TTestSuite;
 
 // reads the output from a process and puts it in a memory stream
 function ReadOutput(AProcess:TProcess): TStringList;
 procedure AddToBugsTestSuite(ATest: TTest);
+procedure AddToCodetoolsTestSuite(ATestClass: TClass);
 procedure AddToLCLTestSuite(ATestClass: TClass);
 procedure AddToSemiAutoTestSuite(ATestClass: TClass);
 
@@ -95,6 +97,11 @@ begin
   BugsTestSuite.AddTest(ATest);
 end;
 
+procedure AddToCodetoolsTestSuite(ATestClass: TClass);
+begin
+  CodetoolsTestSuite.AddTestSuiteFromClass(ATestClass);
+end;
+
 procedure AddToLCLTestSuite(ATestClass: TClass);
 begin
   LCLTestSuite.AddTestSuiteFromClass(ATestClass);
@@ -109,6 +116,8 @@ initialization
   GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
+  CodetoolsTestSuite := TTestSuite.Create('Codetools tests');
+  GetTestRegistry.AddTest(CodetoolsTestSuite);
   LCLTestSuite := TTestSuite.Create('LCL tests');
   GetTestRegistry.AddTest(LCLTestSuite);
   SemiAutoTestSuite := TTestSuite.Create('Semi Automatic tests');
