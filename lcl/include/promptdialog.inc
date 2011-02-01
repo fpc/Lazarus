@@ -120,7 +120,7 @@ end;
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
   DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
 begin
-  inherited Create(nil);
+  inherited CreateNew(nil, 1);
 
   IsSmallDevice := (Screen.Width <= 300);
 
@@ -684,7 +684,7 @@ var
   NewKind: TBitBtnKind;
   NewCaption: String;
 begin
-  inherited Create(nil);
+  inherited CreateNew(nil, 1);
   PopupMode := pmAuto;
   BorderStyle := bsDialog;
   Position := poScreenCenter;
