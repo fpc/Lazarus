@@ -49,9 +49,18 @@ procedure TTestBasicCodeTools.TestFindLineEndOrCodeInFrontOfPosition;
     AssertEquals('['+dbgstr(OrigSrc)+']',Expected,Actual);
   end;
 
+var
+  e: String;
 begin
   writeln('TTestBasicCodeTools.TestFindLineEndOrCodeInFrontOfPosition ');
-  t(' $'#10'|a:=1;');
+  e:=#13#10; // use windows line endings, they are more complicated
+  t(' $'+e+'|a:=1;');
+  t('a$'+e+'// comment'+e+' { comment } '+e+'|');
+  t('$'+e+' (* *)'+e+' |a:=1');
+  t('a:=1;(* comment of first line'+e+' *)$ |b:=1');
+  t('a:=1; // comment$'+e+'|b:=1');
+  t('a:=1; (* comment'+e+' *) $'+e+'|b:=1');
+  t('a:=1; (* comment'+e+' *) { comment'+e+' } $'+e+'|b:=1');
 end;
 
 initialization
