@@ -411,10 +411,8 @@ procedure TCustomForm.AllAutoSized;
 begin
   inherited AllAutoSized;
   { If the the form is about to show, calculate its metrics }
-  if (not Showing) and Visible and (not (csDestroying in ComponentState)) then
-  begin
+  if (not Showing) and Visible and ([csDestroying, csDesigning] * ComponentState = []) then
     MoveToDefaultPosition;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1834,20 +1832,20 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetPosition
 ------------------------------------------------------------------------------}
-procedure TCustomForm.SetPosition(Value : TPosition);
+procedure TCustomForm.SetPosition(Value: TPosition);
 begin
   if Value <> FPosition then
   begin
     FPosition := Value;
-    if Value=poDefaultPosOnly then AutoSize:=false;
+    if Value = poDefaultPosOnly then AutoSize := False;
     UpdateControlState;
 
     // we must update form TPosition if it's changed during runtime.
-    if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+    if [csLoading, csDestroying, csDesigning] * ComponentState <> [] then Exit;
 
-    if HandleAllocated and Showing
-    and not (fsShowing in FFormState)
-    and not (fsFirstShow in FFormState) then
+    if HandleAllocated and Showing and
+       not (fsShowing in FFormState) and
+       not (fsFirstShow in FFormState) then
       MoveToDefaultPosition;
   end;
 end;
@@ -2551,7 +2549,8 @@ begin
   { If the the form is about to show, calculate its metrics }
   if Visible and (not (csDestroying in ComponentState)) then
   begin
-    MoveToDefaultPosition;
+    if not (csDesigning in ComponentState) then
+      MoveToDefaultPosition;
     if (fsFirstShow in FFormState) then
     begin
       Exclude(FFormState, fsFirstShow);

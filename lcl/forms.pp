@@ -479,7 +479,7 @@ type
     procedure SetMenu(Value: TMainMenu);
     procedure SetPopupMode(const AValue: TPopupMode);
     procedure SetPopupParent(const AValue: TCustomForm);
-    procedure SetPosition(Value : TPosition);
+    procedure SetPosition(Value: TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
     procedure SetLastFocusedControl(AControl: TWinControl);
     procedure SetWindowFocus;
