@@ -744,7 +744,7 @@ begin
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
     // parse
-    //   - sealed, abstract
+    //   - sealed, abstract, external
     //   - inheritage
     //   - class sections (GUID, type, var, public, published, private, protected)
     //   - methods (procedures, functions, constructors, destructors)
@@ -776,6 +776,18 @@ begin
           EndChildNode;
           ReadNextAtom;
         end;
+      end
+      else if UpAtomIs('EXTERNAL') and (ClassNode.Desc in [ctnObjCClass]) then
+      begin
+        CreateChildNode;
+        CurNode.Desc:=ctnClassExternal;
+        ReadNextAtom;
+        if UpAtomIs('NAME') then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
+        CurNode.EndPos:=CurPos.StartPos;
+        EndChildNode;
       end;
     end;
     // parse the inheritage
@@ -3794,10 +3806,12 @@ begin
       IsForward:=false;
       while UpAtomIs('ABSTRACT') do
         ReadNextAtom;
-    end else if UpAtomIs('EXTERNAL') then begin
+    end else if (ClassDesc in [ctnObjCClass]) and UpAtomIs('EXTERNAL') then begin
       ReadNextAtom;
-      if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+      if UpAtomIs('NAME') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end;
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets

@@ -93,18 +93,19 @@ const
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
-  ctnClassInheritance   = 42;
-  ctnClassGUID          = 43;
-  ctnClassConst         = 44;
-  ctnClassType          = 45;
-  ctnClassVar           = 46;
-  ctnClassClassVar      = 47;
-  ctnClassPrivate       = 48;
-  ctnClassProtected     = 49;
-  ctnClassPublic        = 50;
-  ctnClassPublished     = 51;
-  ctnProperty           = 52;
-  ctnMethodMap          = 53;
+  ctnClassExternal      = 42;
+  ctnClassInheritance   = 43;
+  ctnClassGUID          = 44;
+  ctnClassConst         = 45;
+  ctnClassType          = 46;
+  ctnClassVar           = 47;
+  ctnClassClassVar      = 48;
+  ctnClassPrivate       = 49;
+  ctnClassProtected     = 50;
+  ctnClassPublic        = 51;
+  ctnClassPublished     = 52;
+  ctnProperty           = 53;
+  ctnMethodMap          = 54;
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
@@ -163,7 +164,7 @@ const
       ctnCPPClass];
   AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
   AllClassObjects = [ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnCPPClass];
-  AllClassModifiers = [ctnClassAbstract, ctnClassSealed];
+  AllClassModifiers = [ctnClassAbstract, ctnClassSealed, ctnClassExternal];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];
@@ -382,6 +383,7 @@ begin
   ctnClassClassVar: Result:='Class Var';
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';
+  ctnClassExternal: Result:='external';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';
