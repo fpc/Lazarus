@@ -93,7 +93,7 @@ begin
     ScrollInfo.fMask := SIF_POS;
     ScrollInfo.nPos := FPosition;
 
-    FPosition := SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
+    FPosition := SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, ScrollBarShouldBeVisible);
   end;
 end;
 
@@ -110,8 +110,11 @@ begin
   begin
     ScrollInfo.fMask := SIF_PAGE;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScrollInfo;
-    FPage := ScrollInfo.nPage;
+    if FPage<>ScrollInfo.nPage then
+    begin
+      FPage := ScrollInfo.nPage;
+      InvalidateScrollInfo;
+    end;
   end;
   Result := FPage;
 end;
@@ -124,8 +127,11 @@ begin
   begin
     ScrollInfo.fMask := SIF_POS;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScrollInfo;
-    FPosition := ScrollInfo.nPos;
+    if FPosition<>ScrollInfo.nPos then
+    begin
+      FPosition := ScrollInfo.nPos;
+      InvalidateScrollInfo;
+    end;
   end;
   Result := FPosition;
 end;
@@ -133,13 +139,18 @@ end;
 function TControlScrollBar.GetRange: Integer;
 var
   ScrollInfo: TScrollInfo;
+  NewRange: Integer;
 begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then
   begin
     ScrollInfo.fMask := SIF_Range + SIF_Page;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScrollInfo;
-    FRange := ScrollInfo.nMax - ScrollInfo.nMin;
+    NewRange := ScrollInfo.nMax - ScrollInfo.nMin;
+    if NewRange<>FRange then
+    begin
+      FRange:=NewRange;
+      InvalidateScrollInfo;
+    end;
   end;
   Result := FRange;
 end;
@@ -147,16 +158,6 @@ end;
 function TControlScrollBar.GetSmooth: Boolean;
 begin
   Result := FSmooth;
-end;
-
-function TControlScrollBar.GetVisible: Boolean;
-begin
-  if HandleAllocated and (not (FControl is TScrollingWinControl)) then
-  begin
-    InvalidateScrollInfo;
-    FVisible := GetScrollbarVisible(Controlhandle, IntfBarKind[Kind]);
-  end;
-  Result := FVisible;
 end;
 
 procedure TControlScrollBar.SetIncrement(const AValue: TScrollBarInc);
@@ -181,10 +182,8 @@ begin
   else
     KindID := SM_CXVSCROLL;
   if HandleAllocated then
-  begin
-    Result := LCLIntf.GetScrollBarSize(ControlHandle,KindID);
-    InvalidateScrollInfo;
-  end else
+    Result := LCLIntf.GetScrollBarSize(ControlHandle,KindID)
+  else
     Result := GetSystemMetrics(KindID);
 end;
 
@@ -226,13 +225,19 @@ procedure TControlScrollBar.AutoCalcRange;
   end;
 
   procedure GetPreferredClientRect(out PreferredWidth, PreferredHeight: integer);
+  var
+    CurClientRect: TRect;
   begin
     PreferredWidth:=0;
     PreferredHeight:=0;
-    FControl.GetPreferredSize(PreferredWidth,PreferredHeight,true);
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' Pref=',PreferredWidth,'x',PreferredHeight]);
-    if PreferredWidth<0 then PreferredWidth:=0;
-    if PreferredHeight<0 then PreferredHeight:=0;
+    FControl.GetPreferredSize(PreferredWidth,PreferredHeight,true,false);
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
+    CurClientRect := FControl.ClientRect;
+    if PreferredWidth>0 then
+      PreferredWidth:=Max(0,PreferredWidth-(FControl.Width-CurClientRect.Right));
+    if PreferredHeight>0 then
+      PreferredHeight:=Max(0,PreferredHeight-(FControl.Height-CurClientRect.Bottom));
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
   end;
 
   procedure AutoCalcVRange;
@@ -252,7 +257,7 @@ procedure TControlScrollBar.AutoCalcRange;
   begin
     GetPreferredClientRect(PreferredWidth,PreferredHeight);
     //if FControl.ClassName='TEditorCodetoolsOptionsFrame' then
-    //  DebugLn(['AutoCalcHRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
+      //DebugLn(['AutoCalcHRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
     InternalSetRange(PreferredWidth);
   end;
 
@@ -282,21 +287,21 @@ begin
     ScrollInfo.nPos := FPosition;
     ScrollInfo.nPage := FPage;
     ScrollInfo.nTrackPos := FPosition;
+    NewVisible := ScrollBarShouldBeVisible;
     if (not FOldScrollInfoValid) or (not CompareMem(@ScrollInfo, @FOldScrollInfo, SizeOf(TScrollInfo))) then
     begin
       FOldScrollInfo := ScrollInfo;
       FOldScrollInfoValid := True;
-      SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
+      SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, NewVisible);
       // update policy too
       ScrollInfo.fMask := SIF_UPDATEPOLICY;
       ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
-      SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
+      SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, NewVisible);
     end;
-    NewVisible := Visible and (ScrollInfo.nMax > ScrollInfo.nPage);
     ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
-      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange]);
+      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible]);
     {$ENDIF}
   end;
 
@@ -399,8 +404,8 @@ begin
     Exit;
   FRange := AValue;
   {$IFDEF VerboseScrollingWinControl}
-  if DebugCondition then
-    DebugLn(['TControlScrollBar.SetRange ',Self,' fRange=',FRange]);
+  //if DebugCondition then
+    DebugLn(['TControlScrollBar.SetRange ',dbgs(Kind),' ',Self,' fRange=',FRange]);
   {$ENDIF}
   ControlUpdateScrollBars;
 end;
@@ -427,7 +432,7 @@ begin
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.fMask := SIF_UPDATEPOLICY;
   ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
-  SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
+  SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, ScrollBarShouldBeVisible);
 end;
 
 function TControlScrollBar.ControlHandle: HWnd;
@@ -470,8 +475,9 @@ end;
 
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
-  Result := (FControl <> nil) and FControl.HandleAllocated and
-            FControl.IsControlVisible and Visible;
+  Result:=FVisible;
+  if HandleAllocated then
+    Result := GetScrollbarVisible(ControlHandle, IntfBarKind[Kind]);
 end;
 
 function TControlScrollBar.ScrollPos: Integer;
@@ -501,14 +507,14 @@ end;
 function TControlScrollBar.ClientSizeWithBar: integer;
 begin
   Result:=ClientSize;
-  if not Visible then
+  if not IsScrollBarVisible then
     dec(Result,GetSize);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
-  if Visible then
+  if IsScrollBarVisible then
     inc(Result,GetSize);
 end;
 
@@ -526,6 +532,11 @@ begin
     Result := TScrollingWinControl(FControl).VertScrollBar
   else
     Result:=nil;
+end;
+
+function TControlScrollBar.ScrollBarShouldBeVisible: Boolean;
+begin
+  Result:=FVisible and (FRange>FPage);
 end;
 
 // included by forms.pp

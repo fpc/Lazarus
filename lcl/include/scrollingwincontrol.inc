@@ -110,14 +110,15 @@ end;
 
 function TScrollingWinControl.ComputeScrollbars: Boolean;
 // true if something changed
-// update Page, AutoRange, Visible
+// update Page, AutoRange, IsScrollBarVisible
 
-  procedure UpdateRange(p_Bar: TControlScrollBar);
+  function UpdateRange(p_Bar: TControlScrollBar): Boolean;
   var
     SBSize: Longint;
     OtherScrollbar: TControlScrollBar;
     OldAutoRange: LongInt;
   begin
+    Result:=false;
     OldAutoRange := p_Bar.FAutoRange;
     p_Bar.FAutoRange := 0;
     OtherScrollbar := p_Bar.GetOtherScrollBar;
@@ -139,7 +140,7 @@ var
 begin
   Result := False;
 
-  // page (must be smaller than Range and at least 1)
+  // page (must be smaller than Range but at least 1)
   NewPage := Max(1,Min(VertScrollbar.ClientSize, High(HorzScrollbar.FPage)));
   if NewPage <> HorzScrollbar.FPage then
   begin
@@ -153,8 +154,8 @@ begin
     Result := True;
   end;
   // range
-  UpdateRange(HorzScrollbar);
-  UpdateRange(VertScrollbar);
+  if UpdateRange(HorzScrollbar) then Result:=true;
+  if UpdateRange(VertScrollbar) then Result:=true;
 end;
 
 procedure TScrollingWinControl.UpdateScrollbars;
@@ -168,18 +169,12 @@ begin
   FIsUpdating := True;
   try
     if AutoScroll then
-      ComputeScrollbars; // page, autorange, visible
+      ComputeScrollbars; // page, autorange, IsScrollBarVisible
     FVertScrollbar.UpdateScrollbar;
     FHorzScrollbar.UpdateScrollbar;
   finally
     FIsUpdating := False;
   end;
-end;
-
-function TScrollingWinControl.HasVisibleScrollbars: boolean;
-begin
-  Result := (VertScrollBar <> nil) and VertScrollBar.Visible and
-            (HorzScrollBar <> nil) and HorzScrollBar.Visible;
 end;
 
 function TScrollingWinControl.StoreScrollBars : Boolean;

@@ -161,6 +161,7 @@ type
     function GetForceEmbedInScrollView: Boolean; override;
   public
     function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
+    function GetPreferredSize: TPoint; override;
   end;
 
   { TCarbonWindow }
@@ -1124,6 +1125,12 @@ begin
   dec(Result.Y, Trunc(org.y));
 end;
 
+function TCarbonScrollingWinControl.GetPreferredSize: TPoint;
+begin
+  Result.X:=0;
+  Result.Y:=0;
+end;
+
 { TCarbonGroupBox }
 
 
@@ -1245,10 +1252,23 @@ begin
 end;
 
 function TCarbonGroupBox.GetPreferredSize:TPoint;
+const
+  DefaultWidth = 8;
+  DefaultHeight = 22;
 var
   ContentRect: TRect;
+  BoundsRect: TRect;
 begin
-  Result:=inherited;
+  Result := inherited;
+  if GetBounds(BoundsRect) and
+     ((BoundsRect.Right - BoundsRect.Left) = Result.X) and
+     ((BoundsRect.Bottom - BoundsRect.Top) = Result.Y) then
+  begin
+    // OSX does not know the preferred size and returned us the bounds rect size
+    Result.X := DefaultWidth;
+    Result.Y := DefaultHeight;
+  end
+  else
   if GetClientRect(ContentRect) then
   begin
     Dec(Result.X, ContentRect.Right - ContentRect.Left);
