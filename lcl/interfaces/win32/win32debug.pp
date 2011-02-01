@@ -31,7 +31,7 @@ unit Win32Debug;
 interface 
 
 uses
-  windows, ctypes, sysutils, win32Extra;
+  Windows, SysUtils, Win32Extra;
 
 procedure DbgDumpBitmap(ABitmap: HBITMAP; ATitle: String = ''; AUseBitBlt: Boolean = False; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpDC(ADC: HDC; ATitle: String = ''; AUseBitBlt: Boolean = False; AWidth: Integer = -1; AHeight: Integer = -1);
