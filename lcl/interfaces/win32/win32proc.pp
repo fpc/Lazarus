@@ -87,8 +87,8 @@ procedure CallEvent(const Target: TObject; Event: TNotifyEvent;
 function ObjectToHWND(const AObject: TObject): HWND;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
-function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
-function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
+function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
+function GetLCLClientBoundsOffset(Handle: HWnd; out Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
@@ -782,7 +782,7 @@ end;
     height.
   It is used in GetClientBounds to define LCL bounds from win32 bounds.
 -------------------------------------------------------------------------------}
-function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
+function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
 var
   TM: TextMetricA;
   DC: HDC;
@@ -846,7 +846,7 @@ begin
   Result := True;
 end;
 
-function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
+function GetLCLClientBoundsOffset(Handle: HWnd; out Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin

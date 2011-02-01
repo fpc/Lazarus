@@ -283,7 +283,7 @@ begin
   FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
-procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
+procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
 var
   BorderStyle: TFormBorderStyle;
 begin

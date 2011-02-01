@@ -143,7 +143,7 @@ procedure SetStdBiDiModeParams(const AWinControl: TWinControl; var Params:TCreat
 implementation
 
 uses
-  Win32Int, Win32WSButtons;
+  Win32Int;
 
 { Global helper routines }
 
