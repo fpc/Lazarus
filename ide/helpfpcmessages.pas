@@ -77,9 +77,6 @@ type
                                         write SetFPCTranslationFile;
   end;
 
-var
-  FPCMessagesHelpDB: THelpDatabase;
-  
 procedure CreateFPCMessagesHelpDB;
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
                                ): THelpDBIRegExprMessage;

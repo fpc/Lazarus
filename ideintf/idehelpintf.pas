@@ -76,6 +76,7 @@ type
 
 var
   LazarusHelp: TBaseHelpManager; // initialized by the IDE
+  FPCMessagesHelpDB: THelpDatabase; // initialized by the IDE
 
 type
   { TIDEHTMLControlIntf }
