@@ -620,49 +620,15 @@ begin
 end;
 
 procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
-
-  function AlignedTextPos(AAlign: TAlignment; const AText: String): TSize;
-  begin
-    Result := ACanvas.TextExtent(AText);
-    case AAlign of
-      taLeftJustify:
-        Result.cx := FClipRect.Left;
-      taCenter:
-        Result.cx := (FClipRect.Left + FClipRect.Right - Result.cx) div 2;
-      taRightJustify:
-        Result.cx := FClipRect.Right - Result.cx;
-    end;
-  end;
-
 var
-  sz: TSize;
-  i: Integer;
+  c: Integer;
   pbf: TPenBrushFontRecall;
 begin
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfBrush, pbfFont]);
   try
-    with FTitle do
-      if Visible and (Text.Count > 0) then begin
-        ACanvas.Brush.Assign(Brush);
-        ACanvas.Font.Assign(Font);
-        for i := 0 to Text.Count - 1 do begin
-          sz := AlignedTextPos(Alignment, Text[i]);
-          ACanvas.TextOut(sz.cx, FClipRect.Top, Text[i]);
-          FClipRect.Top += sz.cy;
-        end;
-        FClipRect.Top += Margin;
-      end;
-    with FFoot do
-      if Visible and (Text.Count > 0) then begin
-        ACanvas.Brush.Assign(Brush);
-        ACanvas.Font.Assign(Font);
-        for i := Text.Count - 1 downto 0 do begin
-          sz := AlignedTextPos(Alignment, Text[i]);
-          FClipRect.Bottom -= sz.cy;
-          ACanvas.TextOut(sz.cx, FClipRect.Bottom, Text[i]);
-        end;
-        FClipRect.Bottom -= Margin;
-      end;
+    c := (FClipRect.Left + FClipRect.Right) div 2;
+    FTitle.Draw(ACanvas, 1, c, FClipRect.Top);
+    FFoot.Draw(ACanvas, -1, c, FClipRect.Bottom);
   finally
     pbf.Free;
   end;

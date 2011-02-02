@@ -49,7 +49,11 @@ procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
 
 function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
+function MultiLineTextExtent(ACanvas: TCanvas; AText: TStrings): TPoint;
 procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
+procedure MultiLineTextOut(
+  ACanvas: TCanvas; APos: TPoint; AText: TStrings; AAlignment: TAlignment;
+  AWidth: Integer);
 
 procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
 procedure PrepareXorPen(ACanvas: TCanvas);
@@ -81,45 +85,65 @@ const
 function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
 var
   sl: TStrings;
-  i: Integer;
 begin
   if Pos(LineEnding, AText) = 0 then
     exit(ACanvas.TextExtent(AText));
   sl := TStringList.Create;
   try
     sl.Text := AText;
-    Result := Size(0, -LINE_INTERVAL);
-    for i := 0 to sl.Count - 1 do
-      with ACanvas.TextExtent(sl[i]) do begin
-        Result.X := Max(Result.X, cx);
-        Result.Y += cy + LINE_INTERVAL;
-      end;
+    MultiLineTextExtent(ACanvas, sl);
   finally
     sl.Free;
   end;
 end;
 
+function MultiLineTextExtent(ACanvas: TCanvas; AText: TStrings): TPoint;
+var
+  i: Integer;
+begin
+  Result := Size(0, -LINE_INTERVAL);
+  for i := 0 to AText.Count - 1 do
+    with ACanvas.TextExtent(AText[i]) do begin
+      Result.X := Max(Result.X, cx);
+      Result.Y += cy + LINE_INTERVAL;
+    end;
+end;
+
 procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
 var
   sl: TStrings;
-  i, h: Integer;
-  a: Double;
 begin
   if Pos(LineEnding, AText) = 0 then begin
     ACanvas.TextOut(APos.X, APos.Y, AText);
     exit;
   end;
-  a := -OrientToRad(ACanvas.Font.Orientation);
   sl := TStringList.Create;
   try
     sl.Text := AText;
-    for i := 0 to sl.Count - 1 do begin
-      ACanvas.TextOut(APos.X, APos.Y, sl[i]);
-      h := ACanvas.TextHeight(sl[i]) + LINE_INTERVAL;
-      APos += RotatePoint(Point(0, h), a);
-    end;
+    MultiLineTextOut(ACanvas, APos, sl, taLeftJustify, 0);
   finally
     sl.Free;
+  end;
+end;
+
+procedure MultiLineTextOut(
+  ACanvas: TCanvas; APos: TPoint; AText: TStrings; AAlignment: TAlignment;
+  AWidth: Integer);
+var
+  i: Integer;
+  a: Double;
+  lineExtent, p: TPoint;
+begin
+  a := -OrientToRad(ACanvas.Font.Orientation);
+  for i := 0 to AText.Count - 1 do begin
+    lineExtent := ACanvas.TextExtent(AText[i]);
+    p := APos;
+    case AAlignment of
+      taCenter: p += RotatePoint(Point((AWidth - lineExtent.X) div 2, 0), a);
+      taRightJustify: p += RotatePoint(Point(AWidth - lineExtent.X, 0), a);
+    end;
+    ACanvas.TextOut(p.X, p.Y, AText[i]);
+    APos += RotatePoint(Point(0, lineExtent.Y + LINE_INTERVAL), a);
   end;
 end;
 
