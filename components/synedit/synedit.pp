@@ -4700,6 +4700,7 @@ function GetScrollHint: THintWindow;
 begin
   if ScrollHintWnd = nil then begin
     ScrollHintWnd := HintWindowClass.Create(Application);
+    ScrollHintWnd.Name:='SynEditScrollHintWnd';
     ScrollHintWnd.Visible := FALSE;
   end;
   Result := ScrollHintWnd;
