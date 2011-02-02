@@ -26,8 +26,6 @@
 const HintBorderWidth=2;
 
 constructor THintWindow.Create(AOwner: TComponent);
-var
-  TheTimer: TCustomTimer;
 begin
   // THintWindow has no resource => must be constructed using CreateNew
   inherited CreateNew(AOwner, 1);
@@ -42,17 +40,15 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FHideInterval := 3000;
-  TheTimer := TCustomTimer.Create(self);
-  FAutoHideTimer := TheTimer;
-  TheTimer.Interval := HideInterval;
-  TheTimer.Enabled := False;
-  TheTimer.OnTimer := @AutoHideHint;
+  FAutoHideTimer := TCustomTimer.Create(self);
+  FAutoHideTimer.Interval := HideInterval;
+  FAutoHideTimer.Enabled := False;
+  FAutoHideTimer.OnTimer := @AutoHideHint;
 end;
 
 destructor THintWindow.Destroy;
 begin
-  fAutoHideTimer.Free;
-  fAutoHideTimer:=nil;
+  FreeAndNil(FAutoHideTimer);
   inherited Destroy;
 end;
 
@@ -60,7 +56,7 @@ procedure THintWindow.SetHideInterval(Value : Integer);
 Begin
   FHideInterval := Value;
   if FAutoHideTimer<>nil then
-    TCustomTimer(FAutoHideTimer).Interval := FHideInterval;
+    FAutoHideTimer.Interval := FHideInterval;
 end;
 
 class procedure THintWindow.WSRegisterClass;
@@ -110,14 +106,14 @@ procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
   if not (value) and (FAutoHideTimer<>nil) then
-    TCustomTimer(FAutoHideTimer).Enabled := False;
+    FAutoHideTimer.Enabled := False;
 end;
 
 
 procedure THintWindow.AutoHideHint(Sender : TObject);
 begin
   if FAutoHideTimer <> nil then
-    TCustomTimer(FAutoHideTimer).Enabled := False;
+    FAutoHideTimer.Enabled := False;
   if Visible then
     Visible := False;
 end;
@@ -192,8 +188,8 @@ begin
     SetBounds(ARect.Left, ARect.Top,
               ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
     Visible := True;
-    TCustomTimer(FAutoHideTimer).Enabled := False;
-    TCustomTimer(FAutoHideTimer).Enabled := FAutoHide;
+    FAutoHideTimer.Enabled := False;
+    FAutoHideTimer.Enabled := FAutoHide;
     if InvalidateNeeded then Invalidate;
   finally
     FActivating := False;

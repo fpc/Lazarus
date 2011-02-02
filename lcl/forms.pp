@@ -815,7 +815,7 @@ type
     FActivating: Boolean;
     FAlignment: TAlignment;
     FAutoHide: Boolean;
-    FAutoHideTimer: TComponent;
+    FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
     function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
