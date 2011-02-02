@@ -20,7 +20,7 @@ object CompileInfoDlg: TCompileInfoDlg
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object PnlTitle: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -41,10 +41,10 @@ object CompileInfoDlg: TCompileInfoDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = PnlTitle
       AnchorSideBottom.Side = asrBottom
-      Left = 80
-      Height = 22
-      Top = 2
-      Width = 288
+      Left = 82
+      Height = 18
+      Top = 4
+      Width = 284
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = False
       BorderSpacing.Left = 80
@@ -59,10 +59,10 @@ object CompileInfoDlg: TCompileInfoDlg
       AnchorSideTop.Control = PnlTitle
       AnchorSideBottom.Control = PnlTitle
       AnchorSideBottom.Side = asrBottom
-      Left = 4
-      Height = 22
-      Top = 2
-      Width = 49
+      Left = 6
+      Height = 18
+      Top = 4
+      Width = 54
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 4
       BorderSpacing.Top = 2
@@ -96,10 +96,10 @@ object CompileInfoDlg: TCompileInfoDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 80
-      Height = 22
-      Top = 2
-      Width = 288
+      Left = 82
+      Height = 18
+      Top = 4
+      Width = 284
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = False
       BorderSpacing.Left = 80
@@ -116,10 +116,10 @@ object CompileInfoDlg: TCompileInfoDlg
       AnchorSideTop.Control = Panel1
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 4
-      Height = 22
-      Top = 2
-      Width = 68
+      Left = 6
+      Height = 18
+      Top = 4
+      Width = 74
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 4
       BorderSpacing.Top = 2
@@ -136,21 +136,21 @@ object CompileInfoDlg: TCompileInfoDlg
     AnchorSideRight.Control = PnlTitle
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 32
-    Top = 144
+    Height = 29
+    Top = 150
     Width = 372
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     BevelOuter = bvNone
-    ClientHeight = 32
+    ClientHeight = 29
     ClientWidth = 372
     TabOrder = 2
     object BClose: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 149
-      Height = 32
+      Height = 29
       Top = 0
       Width = 75
       Anchors = [akTop]
@@ -174,23 +174,24 @@ object CompileInfoDlg: TCompileInfoDlg
     AnchorSideRight.Control = PnlTitle
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 40
+    Height = 44
     Top = 70
     Width = 372
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BevelOuter = bvNone
     ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
     ChildSizing.EnlargeVertical = crsHomogenousChildResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 40
+    ClientHeight = 44
     ClientWidth = 372
     TabOrder = 3
     object pnlLines: TPanel
       Left = 0
       Height = 44
       Top = 0
-      Width = 109
+      Width = 107
       AutoSize = True
       BorderSpacing.Right = 4
       BevelInner = bvRaised
@@ -198,13 +199,13 @@ object CompileInfoDlg: TCompileInfoDlg
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
       ChildSizing.EnlargeVertical = crsHomogenousChildResize
       ClientHeight = 44
-      ClientWidth = 109
+      ClientWidth = 107
       TabOrder = 0
       object LNLines: TLabel
-        Left = 44
+        Left = 46
         Height = 40
         Top = 2
-        Width = 59
+        Width = 55
         Align = alClient
         Alignment = taRightJustify
         AutoSize = False
@@ -217,7 +218,7 @@ object CompileInfoDlg: TCompileInfoDlg
         Left = 6
         Height = 40
         Top = 2
-        Width = 38
+        Width = 40
         Align = alLeft
         BorderSpacing.Left = 4
         Caption = 'Lines:'
@@ -226,10 +227,10 @@ object CompileInfoDlg: TCompileInfoDlg
       end
     end
     object Panel3: TPanel
-      Left = 113
+      Left = 111
       Height = 44
       Top = 0
-      Width = 137
+      Width = 140
       AutoSize = True
       BorderSpacing.Left = 4
       BorderSpacing.Right = 4
@@ -240,26 +241,26 @@ object CompileInfoDlg: TCompileInfoDlg
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       ClientHeight = 44
-      ClientWidth = 137
+      ClientWidth = 140
       TabOrder = 1
       object pnlHints: TPanel
         Left = 2
         Height = 19
         Top = 4
-        Width = 133
+        Width = 136
         AutoSize = True
         BorderSpacing.Left = 2
         BorderSpacing.Top = 4
         BorderSpacing.Right = 2
         BevelOuter = bvNone
         ClientHeight = 19
-        ClientWidth = 133
+        ClientWidth = 136
         TabOrder = 0
         object LNHint: TLabel
-          Left = 44
+          Left = 46
           Height = 19
           Top = 0
-          Width = 85
+          Width = 86
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -273,7 +274,7 @@ object CompileInfoDlg: TCompileInfoDlg
           Left = 4
           Height = 19
           Top = 0
-          Width = 38
+          Width = 40
           Align = alLeft
           BorderSpacing.Left = 4
           Caption = 'Hints:'
@@ -284,30 +285,30 @@ object CompileInfoDlg: TCompileInfoDlg
         Left = 2
         Height = 19
         Top = 23
-        Width = 133
+        Width = 136
         BorderSpacing.Left = 2
         BorderSpacing.Top = 2
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 2
         BevelOuter = bvNone
         ClientHeight = 19
-        ClientWidth = 133
+        ClientWidth = 136
         TabOrder = 1
         object LInfoWarning: TLabel
           Left = 4
           Height = 19
           Top = 0
-          Width = 62
+          Width = 69
           Align = alLeft
           BorderSpacing.Left = 4
           Caption = 'Warnings:'
           ParentColor = False
         end
         object LNWarning: TLabel
-          Left = 68
+          Left = 75
           Height = 19
           Top = 0
-          Width = 61
+          Width = 57
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -320,10 +321,10 @@ object CompileInfoDlg: TCompileInfoDlg
       end
     end
     object pnlNotesErrors: TPanel
-      Left = 254
+      Left = 255
       Height = 44
       Top = 0
-      Width = 118
+      Width = 117
       AutoSize = True
       BorderSpacing.Left = 4
       BevelInner = bvRaised
@@ -333,36 +334,36 @@ object CompileInfoDlg: TCompileInfoDlg
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 2
       ClientHeight = 44
-      ClientWidth = 118
+      ClientWidth = 117
       TabOrder = 2
       object pnlNotes: TPanel
         Left = 2
         Height = 19
         Top = 4
-        Width = 114
+        Width = 113
         AutoSize = True
         BorderSpacing.Left = 2
         BorderSpacing.Top = 4
         BorderSpacing.Right = 2
         BevelOuter = bvNone
         ClientHeight = 19
-        ClientWidth = 114
+        ClientWidth = 113
         TabOrder = 0
         object LInfoNote: TLabel
           Left = 4
           Height = 19
           Top = 0
-          Width = 43
+          Width = 46
           Align = alLeft
           BorderSpacing.Left = 4
           Caption = 'Notes:'
           ParentColor = False
         end
         object LNNote: TLabel
-          Left = 49
+          Left = 52
           Height = 19
           Top = 0
-          Width = 61
+          Width = 57
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -377,7 +378,7 @@ object CompileInfoDlg: TCompileInfoDlg
         Left = 2
         Height = 19
         Top = 23
-        Width = 114
+        Width = 113
         AutoSize = True
         BorderSpacing.Left = 2
         BorderSpacing.Top = 2
@@ -385,23 +386,23 @@ object CompileInfoDlg: TCompileInfoDlg
         BorderSpacing.Bottom = 2
         BevelOuter = bvNone
         ClientHeight = 19
-        ClientWidth = 114
+        ClientWidth = 113
         TabOrder = 1
         object LInfoError: TLabel
           Left = 4
           Height = 19
           Top = 0
-          Width = 43
+          Width = 47
           Align = alLeft
           BorderSpacing.Left = 4
           Caption = 'Errors:'
           ParentColor = False
         end
         object LNError: TLabel
-          Left = 49
+          Left = 53
           Height = 19
           Top = 0
-          Width = 61
+          Width = 56
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -421,8 +422,8 @@ object CompileInfoDlg: TCompileInfoDlg
     AnchorSideRight.Control = PnlTitle
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 116
+    Height = 24
+    Top = 120
     Width = 372
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
