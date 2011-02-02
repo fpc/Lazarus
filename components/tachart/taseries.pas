@@ -870,6 +870,7 @@ begin
   if (Value < 1) or (Value > 100) then
     raise EBarError.Create('Wrong BarWidth Percent');
   FBarWidthPercent := Value;
+  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetBarWidthStyle(AValue: TBarWidthStyle);
