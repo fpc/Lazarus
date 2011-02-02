@@ -44,6 +44,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
@@ -77,6 +78,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
@@ -103,6 +105,16 @@ uses
   Math, SysUtils, TAGraph;
 
 { TBubbleSeries }
+
+procedure TBubbleSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TBubbleSeries then
+    with TBubbleSeries(ASource) do begin
+      Self.BubbleBrush := FBubbleBrush;
+      Self.BubblePen := FBubblePen;
+    end;
+  inherited Assign(ASource);
+end;
 
 constructor TBubbleSeries.Create(AOwner: TComponent);
 begin
@@ -186,6 +198,20 @@ begin
 end;
 
 { TBoxAndWhiskerSeries }
+
+procedure TBoxAndWhiskerSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TBoxAndWhiskerSeries then
+    with TBoxAndWhiskerSeries(ASource) do begin
+      Self.BoxBrush := FBoxBrush;
+      Self.BoxPen := FBoxPen;
+      Self.FBoxWidth := FBoxWidth;
+      Self.MedianPen := FMedianPen;
+      Self.WhiskersPen := FWhiskersPen;
+      Self.FWhiskersWidth := FWhiskersWidth;
+    end;
+  inherited Assign(ASource);
+end;
 
 constructor TBoxAndWhiskerSeries.Create(AOwner: TComponent);
 begin
