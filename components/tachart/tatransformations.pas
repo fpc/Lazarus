@@ -164,6 +164,26 @@ type
     property Base: Double read FBase write SetBase;
   end;
 
+  TTransformEvent = procedure (AX: Double; out AT: Double) of object;
+
+  { TUserDefinedAxisTransform }
+
+  TUserDefinedAxisTransform = class(TAxisTransform)
+  private
+    FOnAxisToGraph: TTransformEvent;
+    FOnGraphToAxis: TTransformEvent;
+    procedure SetOnAxisToGraph(AValue: TTransformEvent);
+    procedure SetOnGraphToAxis(AValue: TTransformEvent);
+  public
+    procedure Assign(Source: TPersistent); override;
+
+    function AxisToGraph(AX: Double): Double; override;
+    function GraphToAxis(AX: Double): Double; override;
+  published
+    property OnAxisToGraph: TTransformEvent read FOnAxisToGraph write SetOnAxisToGraph;
+    property OnGraphToAxis: TTransformEvent read FOnGraphToAxis write SetOnGraphToAxis;
+  end;
+
   procedure Register;
 
 resourcestring
@@ -690,12 +710,55 @@ begin
     AMax := MaxValue;
 end;
 
+{ TUserDefinedAxisTransform }
+
+procedure TUserDefinedAxisTransform.Assign(Source: TPersistent);
+begin
+  if Source is TUserDefinedAxisTransform then
+    with TUserDefinedAxisTransform(Source) do begin
+      Self.FOnAxisToGraph := FOnAxisToGraph;
+      Self.FOnGraphToAxis := FOnGraphToAxis;
+    end;
+  inherited Assign(Source);
+end;
+
+function TUserDefinedAxisTransform.AxisToGraph(AX: Double): Double;
+begin
+  if Assigned(OnAxisToGraph) then
+    OnAxisToGraph(AX, Result)
+  else
+    Result := AX;
+end;
+
+function TUserDefinedAxisTransform.GraphToAxis(AX: Double): Double;
+begin
+  if Assigned(OnGraphToAxis) then
+    OnGraphToAxis(AX, Result)
+  else
+    Result := AX;
+end;
+
+procedure TUserDefinedAxisTransform.SetOnAxisToGraph(AValue: TTransformEvent);
+begin
+  if FOnAxisToGraph = AValue then exit;
+  FOnAxisToGraph := AValue;
+  Changed;
+end;
+
+procedure TUserDefinedAxisTransform.SetOnGraphToAxis(AValue: TTransformEvent);
+begin
+  if FOnGraphToAxis = AValue then exit;
+  FOnGraphToAxis := AValue;
+  Changed;
+end;
+
 initialization
 
   AxisTransformsClassRegistry := TStringList.Create;
   RegisterAxisTransformClass(TAutoScaleAxisTransform, 'Auto scale');
   RegisterAxisTransformClass(TLinearAxisTransform, 'Linear');
   RegisterAxisTransformClass(TLogarithmAxisTransform, 'Logarithmic');
+  RegisterAxisTransformClass(TUserDefinedAxisTransform, 'User defined');
 
 finalization
 
