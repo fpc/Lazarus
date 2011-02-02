@@ -321,8 +321,12 @@ end;
 procedure TChartAxisTitle.Assign(Source: TPersistent);
 begin
   if Source is TChartAxisTitle then
-    with TChartAxisTitle(Source) do
-      FCaption := Caption;
+    with TChartAxisTitle(Source) do begin
+      Self.FLabelBrush.Assign(FLabelBrush);
+      Self.FLabelFont.Assign(FLabelFont);
+      Self.FLinkPen.Assign(FLinkPen);
+      Self.FCaption := FCaption;
+    end;
   inherited Assign(Source);
 end;
 

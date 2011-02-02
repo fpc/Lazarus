@@ -77,6 +77,7 @@ type
     function IsRotated: Boolean;
 
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetNearestPoint(
@@ -136,6 +137,7 @@ type
   protected
     property Styles: TChartStyles read FStyles write SetStyles;
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -222,6 +224,17 @@ uses
 procedure TCustomChartSeries.AfterAdd;
 begin
   Legend.SetOwner(FChart);
+end;
+
+procedure TCustomChartSeries.Assign(Source: TPersistent);
+begin
+  if Source is TCustomChartSeries then
+    with TCustomChartSeries(Source) do begin
+      Self.FAxisIndexX := FAxisIndexX;
+      Self.FAxisIndexY := FAxisIndexY;
+      Self.Legend := FLegend;
+    end;
+  inherited Assign(Source);
 end;
 
 function TCustomChartSeries.AxisToGraph(
@@ -396,7 +409,7 @@ end;
 procedure TCustomChartSeries.SetLegend(AValue: TChartSeriesLegend);
 begin
   if FLegend = AValue then exit;
-  FLegend := AValue;
+  FLegend.Assign(AValue);
   UpdateParentChart;
 end;
 
@@ -463,6 +476,18 @@ procedure TChartSeries.AfterDraw;
 begin
   inherited AfterDraw;
   Source.AfterDraw;
+end;
+
+procedure TChartSeries.Assign(Source: TPersistent);
+begin
+  if Source is TChartSeries then
+    with TChartSeries(Source) do begin
+      Self.Marks := FMarks;
+      Self.FOnGetMark := FOnGetMark;
+      Self.Source := FSource;
+      Self.Styles := FStyles;
+    end;
+  inherited Assign(Source);
 end;
 
 procedure TChartSeries.BeforeDraw;

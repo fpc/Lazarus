@@ -490,7 +490,7 @@ begin
     with TChartSeriesLegend(Source) do begin
       Self.FMultiplicity := FMultiplicity;
       Self.FOnDraw := FOnDraw;
-      Self.FVisible := FVisible;
+      Self.FUserItemsCount := FUserItemsCount;
     end;
 
   inherited Assign(Source);

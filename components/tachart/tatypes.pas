@@ -207,6 +207,7 @@ type
 
   TChartMarks = class(TCustomChartMarks)
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TCustomChart);
   published
     property Distance default DEF_MARKS_DISTANCE;
@@ -342,7 +343,6 @@ begin
       Self.FVisible := FVisible;
       Self.FOwner := FOwner;
     end;
-  inherited Assign(Source);
 end;
 
 constructor TChartElement.Create(AOwner: TCustomChart);
@@ -483,9 +483,11 @@ begin
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
       Self.FFrame.Assign(FFrame);
-      Self.FLabelBrush.Assign(FLabelBrush);
-      Self.FLabelFont.Assign(FLabelFont);
-      Self.FLinkPen.Assign(FLinkPen);
+      // FPC miscompiles virtual calls to generic type arguments,
+      // so as a workaround these assignments are moved to the specializations.
+      // Self.FLabelBrush.Assign(FLabelBrush);
+      // Self.FLabelFont.Assign(FLabelFont);
+      // Self.FLinkPen.Assign(FLinkPen);
       Self.FOverlapPolicy := FOverlapPolicy;
       Self.FStyle := FStyle;
     end;
@@ -704,6 +706,17 @@ begin
 end;
 
 { TChartMarks }
+
+procedure TChartMarks.Assign(Source: TPersistent);
+begin
+  if Source is TChartMarks then
+    with TChartMarks(Source) do begin
+      Self.FLabelBrush.Assign(FLabelBrush);
+      Self.FLabelFont.Assign(FLabelFont);
+      Self.FLinkPen.Assign(FLinkPen);
+    end;
+  inherited Assign(Source);
+end;
 
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin

@@ -195,6 +195,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
@@ -315,6 +316,19 @@ procedure TLineSeries.AfterAdd;
 begin
   inherited AfterAdd;
   FPointer.SetOwner(FChart);
+end;
+
+procedure TLineSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TLineSeries then
+    with TLineSeries(ASource) do begin
+      Self.LinePen := FLinePen;
+      Self.FLineType := FLineType;
+      Self.FOnDrawPointer := FOnDrawPointer;
+      Self.Pointer :=  FPointer;
+      Self.FShowPoints := FShowPoints;
+    end;
+  inherited Assign(ASource);
 end;
 
 procedure TLineSeries.BeginUpdate;

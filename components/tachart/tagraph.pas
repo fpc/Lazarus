@@ -75,6 +75,7 @@ type
     function GraphToAxisY(AY: Double): Double; virtual;
 
   public
+    procedure Assign(Source: TPersistent); override;
     destructor Destroy; override;
 
   public
@@ -1160,6 +1161,17 @@ end;
 procedure TBasicChartSeries.AfterDraw;
 begin
   // empty
+end;
+
+procedure TBasicChartSeries.Assign(Source: TPersistent);
+begin
+  if Source is TBasicChartSeries then
+    with TBasicChartSeries(Source) do begin
+      Self.FActive := FActive;
+      Self.FDepth := FDepth;
+      Self.FTitle := FTitle;
+      Self.FZPosition := FZPosition;
+    end;
 end;
 
 function TBasicChartSeries.AxisToGraphX(AX: Double): Double;
