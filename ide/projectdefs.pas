@@ -1356,6 +1356,7 @@ begin
     +'  { you can add units after this };'+le
     +le
     +'begin'+le
+    +'  RequireDerivedFormResource := True;'+le
     +'  Application.Initialize;'+le
     +'  Application.Run;'+le
     +'end.'+le

@@ -1637,7 +1637,7 @@ var
   Screen: TScreen = nil;
   ExceptionObject: TExceptObject;
   HintWindowClass: THintWindowClass = THintWindow;
-  RequireDerivedFormResource: Boolean = True;
+  RequireDerivedFormResource: Boolean = False;
 
 type
   TMessageBoxFunction =
