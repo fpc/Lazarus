@@ -17,6 +17,13 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
     cbAuto: TCheckBox;
+    catUser: TChartAxisTransformations;
+    catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform;
+    ChartToolset1: TChartToolset;
+    ChartToolset1DataPointDragTool1: TDataPointDragTool;
+    ChartUser: TChart;
+    ChartUserConstantLine1: TConstantLine;
+    ChartUserLineSeries1: TLineSeries;
     csStripes: TChartStyles;
     ChartLog: TChart;
     cfsLog: TFuncSeries;
@@ -34,12 +41,16 @@ type
     PageControl1: TPageControl;
     pnlLogControls: TPanel;
     pnlAutoControls: TPanel;
+    rcsUser: TRandomChartSource;
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
+    tsUser: TTabSheet;
     tsLog: TTabSheet;
     procedure cbAutoChange(Sender: TObject);
     procedure cbLogChange(Sender: TObject);
+    procedure catUserUserDefinedAxisTransform1AxisToGraph(
+      AX: Double; out AT: Double);
     procedure ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
   end;
@@ -72,6 +83,22 @@ begin
   ChartAxisTransformations1LogarithmAxisTransform1.Enabled := cbLog.Checked;
 end;
 
+procedure TForm1.catUserUserDefinedAxisTransform1AxisToGraph(
+  AX: Double; out AT: Double);
+const
+  R1 = 8.0;
+  C = 2.5;
+  R2 = R1 * 0.5 / C;
+var
+  zx: Double;
+begin
+  zx := ChartUserConstantLine1.Position;
+  if Abs(AX - zx) > R1 then AT := AX
+  else if AX < zx - R2 then AT := zx - R1
+  else if AX > zx + R2 then AT := zx + R1
+  else AT := (AX - zx + R2) * C + zx - R1;
+end;
+
 procedure TForm1.ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
 begin
   AY := MyFunc(AX);
@@ -87,6 +114,8 @@ begin
       x := i / 50 * (XMax - XMin) + XMin;
     clsLogPoints.AddXY(x + Random - 0.5, MyFunc(x) + Random - 0.5);
   end;
+  catUserUserDefinedAxisTransform1.OnAxisToGraph :=
+    @catUserUserDefinedAxisTransform1AxisToGraph;
 end;
 
 end.
