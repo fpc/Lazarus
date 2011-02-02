@@ -33,7 +33,7 @@ interface
 uses
   // LCL
   Classes, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil, ComCtrls,
+  Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileProcs, FileUtil, ComCtrls,
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
@@ -43,9 +43,9 @@ uses
 
 type
 
-  { TSearchForm }
+  { TSearchProgressForm }
 
-  TSearchForm = class(TForm)
+  TSearchProgressForm = class(TForm)
     btnCancel: TBitBtn;
     MatchesLabel: TLABEL;
     SearchingLabel: TLABEL;
@@ -112,7 +112,7 @@ type
   end;
 
 var
-  SearchForm: TSearchForm;
+  SearchProgressForm: TSearchProgressForm;
   
 function SearchInText(const TheFileName: string;
   var TheText: string;// if TheFileName='' then use TheText
@@ -604,14 +604,14 @@ begin
 end;//SearchFile
 
 
-{ TSearchForm }
+{ TSearchProgressForm }
 
-procedure TSearchForm.btnAbortCLICK(Sender: TObject);
+procedure TSearchProgressForm.btnAbortCLICK(Sender: TObject);
 begin
   Progress.Abort:= true;
 end;
 
-procedure TSearchForm.SearchFormCREATE(Sender: TObject);
+procedure TSearchProgressForm.SearchFormCREATE(Sender: TObject);
 begin
   //Set Defaults
   MatchesLabel.Caption:=lissMatches;
@@ -634,7 +634,7 @@ begin
   fSearchFiles:= false;
 end;
 
-procedure TSearchForm.OnAddMatch(const Filename: string; const StartPos,
+procedure TSearchProgressForm.OnAddMatch(const Filename: string; const StartPos,
   EndPos: TPoint; const Lines: string);
 var
   MatchLen: Integer;
@@ -654,12 +654,12 @@ begin
   UpdateMatches;
 end;
 
-procedure TSearchForm.SearchFormDESTROY(Sender: TObject);
+procedure TSearchProgressForm.SearchFormDESTROY(Sender: TObject);
 begin
   FreeAndNil(fProgress);
 end;
 
-procedure TSearchForm.SetOptions(TheOptions: TLazFindInFileSearchOptions);
+procedure TSearchProgressForm.SetOptions(TheOptions: TLazFindInFileSearchOptions);
 begin
   SetFlag(sesoWholeWord,fifWholeWord in TheOptions);
   SetFlag(sesoReplace,fifReplace in TheOptions);
@@ -673,7 +673,7 @@ begin
   fSearchFiles:= (fifSearchDirectories in TheOptions);
 end;//SetOptions
 
-function TSearchForm.GetOptions: TLazFindInFileSearchOptions;
+function TSearchProgressForm.GetOptions: TLazFindInFileSearchOptions;
 begin
   Result:=[];
   if sesoWholeWord in fFlags then include(Result,fifWholeWord);
@@ -688,7 +688,7 @@ begin
   if fSearchFiles then include(Result,fifSearchDirectories);
 end;//GetOptions
 
-function TSearchForm.DoSearch: integer;
+function TSearchProgressForm.DoSearch: integer;
 // Search the text and then return the number of found items.
 begin
   Result:= 0;
@@ -729,14 +729,15 @@ type
 
   TLazFileSearcher = class(TFileSearcher)
   private
-    FParent: TSearchForm;
+    FParent: TSearchProgressForm;
     procedure CheckAbort;
   protected
     procedure DoDirectoryEnter; override;
     procedure DoDirectoryFound; override;
     procedure DoFileFound; override;
   public
-    constructor Create(AParent: TSearchForm);
+    constructor Create(AParent: TSearchProgressForm);
+    destructor Destroy; override;
   end;
 
 { TLazFileSearcher }
@@ -771,7 +772,7 @@ var
 begin
   F := FileName;
   //DebugLn(['TLazFileSearcher.DoFileFound ',Filename]);
-  if FileIsReadable(F) and FileIsText(F) then
+  if FileProcs.FileIsTextCached(F) then
   begin
     //DebugLn('TLazFileSearcher.DoFileFound text file: ' + F);
     FParent.UpdateProgress(F);
@@ -781,16 +782,22 @@ begin
   CheckAbort;
 end;
 
-constructor TLazFileSearcher.Create(AParent: TSearchForm);
+constructor TLazFileSearcher.Create(AParent: TSearchProgressForm);
 begin
   inherited Create;
   
   FParent := AParent;
 end;
 
-{ TSearchForm }
+destructor TLazFileSearcher.Destroy;
+begin
+  FParent:=nil;
+  inherited Destroy;
+end;
 
-procedure TSearchForm.DoFindInFiles(TheFileName: string);
+{ TSearchProgressForm }
+
+procedure TSearchProgressForm.DoFindInFiles(TheFileName: string);
 var
   Searcher: TLazFileSearcher;
 begin
@@ -803,10 +810,10 @@ begin
     finally
       Searcher.Free;
     end;
-  end;//if
-end;//DoFindInFiles
+  end;
+end;
 
-procedure TSearchForm.DoFindInSearchList;
+procedure TSearchProgressForm.DoFindInSearchList;
 var
   i: integer;
 begin
@@ -820,7 +827,7 @@ begin
   end;
 end;
 
-procedure TSearchForm.SetResultsList(const AValue: TStrings);
+procedure TSearchProgressForm.SetResultsList(const AValue: TStrings);
 begin
   if fResultsList=AValue then exit;
   if fResultsListUpdating then
@@ -831,14 +838,14 @@ begin
   fResultsList:=AValue;
 end;
 
-procedure TSearchForm.UpdateMatches;
+procedure TSearchProgressForm.UpdateMatches;
 begin
   inc(fMatches);
   //DebugLn(['TSearchForm.UpdateMatches ',lblMatches.Caption]);
   lblMatches.Caption:=IntToStr(fMatches);
 end;
 
-procedure TSearchForm.UpdateProgress(FileName: string);
+procedure TSearchProgressForm.UpdateProgress(FileName: string);
 var
   DisplayFileName: string;
   ShorterFileName: String;
@@ -853,10 +860,10 @@ begin
     DisplayFileName:=ShorterFileName;
     //DebugLn(['TSearchForm.UpdateProgress Padded DisplayFileName="',dbgstr(DisplayFileName),'"']);
     lblProgress.Caption := DisplayFileName;
-  end;//while
-end;//UpdateProgress
+  end;
+end;
 
-procedure TSearchForm.SearchFile(const aFilename: string);
+procedure TSearchProgressForm.SearchFile(const aFilename: string);
 var
   Src: String;
 begin
@@ -870,7 +877,7 @@ begin
   end;
 end;
 
-procedure TSearchForm.SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
+procedure TSearchProgressForm.SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
 begin
   if AValue then
     Include(fFlags,Flag)
@@ -878,7 +885,7 @@ begin
     Exclude(fFlags,Flag);
 end;
 
-procedure TSearchForm.DoSearchAndAddToSearchResults;
+procedure TSearchProgressForm.DoSearchAndAddToSearchResults;
 var
   ListPage: TTabSheet;
   Cnt: integer;
@@ -912,7 +919,7 @@ begin
   end;
 end;
 
-procedure TSearchForm.DoSearchOpenFiles;
+procedure TSearchProgressForm.DoSearchOpenFiles;
 var
   i: integer;
   TheFileList: TStringList;
@@ -925,7 +932,7 @@ begin
       //only if file exists on disk
       SrcEdit := SourceEditorManagerIntf.UniqueSourceEditors[i];
       if FilenameIsAbsolute(SrcEdit.FileName) and
-         FileExistsUTF8(SrcEdit.FileName) then
+         FileExistsCached(SrcEdit.FileName) then
       begin
          TheFileList.Add(SrcEdit.FileName);
       end;
@@ -937,13 +944,13 @@ begin
   end;
 end;
 
-procedure TSearchForm.DoSearchDir;
+procedure TSearchProgressForm.DoSearchDir;
 begin
   SearchFileList:= Nil;
   DoSearchAndAddToSearchResults;
 end;
 
-procedure TSearchForm.DoSearchProject(AProject: TProject);
+procedure TSearchProgressForm.DoSearchProject(AProject: TProject);
 var
   AnUnitInfo:  TUnitInfo;
   TheFileList: TStringList;
@@ -954,7 +961,7 @@ begin
     while AnUnitInfo<>nil do begin
       //Only if file exists on disk.
       if FilenameIsAbsolute(AnUnitInfo.FileName)
-      and FileExistsUTF8(AnUnitInfo.FileName) then
+      and FileExistsCached(AnUnitInfo.FileName) then
         TheFileList.Add(AnUnitInfo.FileName);
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
@@ -965,7 +972,7 @@ begin
   end;
 end;
 
-function TSearchForm.PadAndShorten(FileName: string): string;
+function TSearchProgressForm.PadAndShorten(FileName: string): string;
 var
   FoundAt: integer;
 begin

@@ -371,7 +371,7 @@ end;
 procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject;
   const AFindText: string);
 var
-  SearchForm:  TSearchForm;
+  SearchForm:  TSearchProgressForm;
 begin
   LoadHistory;
 
@@ -387,7 +387,7 @@ begin
   begin
     SaveHistory;
 
-  SearchForm:= TSearchForm.Create(SearchResultsView);
+  SearchForm:= TSearchProgressForm.Create(SearchResultsView);
   with SearchForm do begin
     SearchOptions   := self.Options;
     SearchText      := self.FindText;
