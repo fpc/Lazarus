@@ -42,23 +42,25 @@ type
 
   TCustomPieSeries = class(TChartSeries)
   private
-    FCenter: TPoint;
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
-    FRadius: Integer;
     FRotateLabels: Boolean;
-    FSlices: array of TPieSlice;
     procedure Measure(ACanvas: TCanvas);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
     function TryRadius(ACanvas: TCanvas): TRect;
+  private
+    FCenter: TPoint;
+    FRadius: Integer;
+    FSlices: array of TPieSlice;
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
-    function AddPie(Value: Double; Text: String; Color: TColor): Longint;
+    function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
+    procedure Assign(ASource: TPersistent); override;
     procedure Draw(ACanvas: TCanvas); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
 
@@ -93,6 +95,7 @@ type
   protected
     procedure SourceChanged(ASender: TObject); override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
@@ -114,9 +117,9 @@ uses
 { TCustomPieSeries }
 
 function TCustomPieSeries.AddPie(
-  Value: Double; Text: String; Color: TColor): Longint;
+  AValue: Double; AText: String; AColor: TColor): Integer;
 begin
-  Result := AddXY(GetXMaxVal + 1, Value, Text, Color);
+  Result := AddXY(GetXMaxVal + 1, AValue, AText, AColor);
 end;
 
 procedure TCustomPieSeries.AfterAdd;
@@ -125,6 +128,17 @@ begin
   // disable axis when we have TPie series
   ParentChart.LeftAxis.Visible := false;
   ParentChart.BottomAxis.Visible := false;
+end;
+
+procedure TCustomPieSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TCustomPieSeries then
+    with TCustomPieSeries(ASource) do begin
+      Self.FExploded := FExploded;
+      Self.FFixedRadius := FFixedRadius;
+      Self.FRotateLabels := FRotateLabels;
+    end;
+  inherited Assign(ASource);
 end;
 
 procedure TCustomPieSeries.Draw(ACanvas: TCanvas);
@@ -347,6 +361,17 @@ begin
 end;
 
 { TPolarSeries }
+
+procedure TPolarSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TPolarSeries then
+    with TPolarSeries(ASource) do begin
+      Self.LinePen := FLinePen;
+      Self.FOriginX := FOriginX;
+      Self.FOriginY := FOriginY;
+    end;
+  inherited Assign(ASource);
+end;
 
 constructor TPolarSeries.Create(AOwner: TComponent);
 begin
