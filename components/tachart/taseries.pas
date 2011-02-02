@@ -266,7 +266,7 @@ type
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
+      read GetSeriesColor write SetSeriesColor stored false default clTAColor;
     property ShowInLegend;
     property Title;
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
