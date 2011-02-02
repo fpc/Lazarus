@@ -4491,7 +4491,7 @@ begin
     if not AddNeededPointerTypesToSource then exit;
   finally
     if Definitions<>nil then begin
-      NodeExtMemManager.DisposeAVLTree(Definitions);
+      DisposeAVLTree(Definitions);
       Definitions:=nil;
     end;
     if NeededPointerTypes<>nil then begin
