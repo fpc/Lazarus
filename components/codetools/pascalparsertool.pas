@@ -3735,12 +3735,9 @@ function TPascalParserTool.KeyWordFuncClass: boolean;
 //   the nodes for the methods and properties are created in a second
 //   parsing phase (in KeyWordFuncClassMethod)
 var
-  BracketLvl: Integer;
   ClassAtomPos: TAtomPosition;
-  Level: integer;
   ContextDesc: Word;
   IsForward: Boolean;
-  p: PChar;
   ClassDesc: TCodeTreeNodeDesc;
 begin
   ContextDesc:=CurNode.Desc;
@@ -3893,7 +3890,6 @@ end;
 function TPascalParserTool.KeyWordFuncClassInterface: boolean;
 // class interface, dispinterface
 var
-  ChildCreated: boolean;
   IntfAtomPos: TAtomPosition;
   IntfDesc: TCodeTreeNodeDesc;
 begin
@@ -3903,46 +3899,50 @@ begin
     SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,['interface']);
   IntfAtomPos:=CurPos;
   // class interface start found
-  ChildCreated:=true; // maybe change this in future to jit parsing
   if UpAtomIs('INTERFACE') then
     IntfDesc:=ctnClassInterface
-  else
-  if UpAtomIs('DISPINTERFACE') then
+  else if UpAtomIs('DISPINTERFACE') then
     IntfDesc:=ctnDispinterface
   else
     IntfDesc:=ctnObjCProtocol;
-  if ChildCreated then begin
-    CreateChildNode;
-    CurNode.Desc:=IntfDesc;
-    CurNode.StartPos:=IntfAtomPos.StartPos;
-  end;
+  CreateChildNode;
+  CurNode.Desc:=IntfDesc;
+  CurNode.StartPos:=IntfAtomPos.StartPos;
   // find end of interface
   ReadNextAtom;
   if (CurPos.Flag<>cafSemicolon) then begin
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
-      ReadClassInheritance(ChildCreated);
-      ReadNextAtom;
-    end;
+      ReadClassInheritance(true);
+    end else
+      UndoReadNextAtom;
+    // start the first class section (always published)
+    CreateChildNode;
+    CurNode.Desc:=ctnClassPublished;
+    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
+    ReadNextAtom;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
     // parse till "end" of interface
     repeat
-      if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
-      if not SkipInnerClassInterface(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-      then
+      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      begin
+        if CurPos.Flag<>cafEnd then
+          RaiseStringExpectedButAtomFound('end');
         break;
+      end;
       ReadNextAtom;
     until false;
+    // end last class section (public, private, ...)
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
   end else begin
     // forward definition
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
   end;
-  if ChildCreated then begin
-    // close class interface
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
+  // close class interface
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
     if CurPos.Flag=cafSemicolon then
