@@ -39,7 +39,7 @@ for vertical axises.</descr>
           <p>If the source is set, marks are determined by <var>X</var> or <var>Y</var> coordinates
 of <var>Source</var> items for horizontal and vertical axises correspondingly.
 </p>
-Otherwise, marks are created automatically.</descr>
+<p>Otherwise, marks are created automatically.</p></descr>
       </element>
     </module>
   </package>
