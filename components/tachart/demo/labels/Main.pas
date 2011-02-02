@@ -87,6 +87,7 @@ procedure TForm1.seTitleAngleChange(Sender: TObject);
 begin
   Chart1.LeftAxis.Title.LabelFont.Orientation := 900 + seTitleAngle.Value * 10;
   Chart1.BottomAxis.Title.LabelFont.Orientation := seTitleAngle.Value * 10;
+  ChartMulti.Title.Font.Orientation := seTitleAngle.Value * 10;
 end;
 
 end.

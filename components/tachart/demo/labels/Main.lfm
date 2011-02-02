@@ -1,16 +1,16 @@
 object Form1: TForm1
   Left = 1326
-  Height = 386
+  Height = 414
   Top = 177
   Width = 496
   Caption = 'Form1'
-  ClientHeight = 386
+  ClientHeight = 414
   ClientWidth = 496
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object pcMain: TPageControl
     Left = 0
-    Height = 336
+    Height = 364
     Top = 0
     Width = 496
     ActivePage = tsBar
@@ -19,11 +19,11 @@ object Form1: TForm1
     TabOrder = 0
     object tsBar: TTabSheet
       Caption = 'Bar'
-      ClientHeight = 310
+      ClientHeight = 338
       ClientWidth = 488
       object Chart1: TChart
         Left = 0
-        Height = 310
+        Height = 338
         Top = 0
         Width = 488
         AxisList = <        
@@ -62,11 +62,11 @@ object Form1: TForm1
     end
     object Multiline: TTabSheet
       Caption = 'Multiline'
-      ClientHeight = 310
+      ClientHeight = 338
       ClientWidth = 488
       object ChartMulti: TChart
         Left = 0
-        Height = 310
+        Height = 338
         Top = 0
         Width = 488
         AxisList = <        
@@ -85,11 +85,16 @@ object Form1: TForm1
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Foot.Text.Strings = (
+          'TAChart'
+        )
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
-          'TAChart'
+          'Chart'
+          'title'
         )
+        Title.Visible = True
         Align = alClient
         ParentColor = False
         object ChartMultiLineSeries1: TLineSeries
@@ -101,7 +106,7 @@ object Form1: TForm1
   object pnlControls: TPanel
     Left = 0
     Height = 50
-    Top = 336
+    Top = 364
     Width = 496
     Align = alBottom
     BevelOuter = bvNone
