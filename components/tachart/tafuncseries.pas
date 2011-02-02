@@ -99,6 +99,7 @@ type
   private
     FBrush: TBrush;
     FColorSource: TCustomChartSource;
+    FColorSourceListener: TListener;
     FInterpolate: Boolean;
     FOnCalculate: TFuncCalculate3DEvent;
     FStepX: TFuncSeriesStep;
@@ -406,6 +407,7 @@ end;
 constructor TColorMapSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FColorSourceListener := TListener.Create(@FColorSource, @StyleChanged);
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
   FStepX := DEF_COLORMAP_STEP;
@@ -414,6 +416,7 @@ end;
 
 destructor TColorMapSeries.Destroy;
 begin
+  FreeAndNil(FColorSourceListener);
   FreeAndNil(FBrush);
   inherited Destroy;
 end;
@@ -524,7 +527,10 @@ end;
 procedure TColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 begin
   if FColorSource = AValue then exit;
+  if FColorSourceListener.IsListening then
+    ColorSource.Broadcaster.Unsubscribe(FColorSourceListener);
   FColorSource := AValue;
+  ColorSource.Broadcaster.Subscribe(FColorSourceListener);
   UpdateParentChart;
 end;
 
