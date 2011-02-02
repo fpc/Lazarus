@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  ComCtrls, ExtCtrls, Forms, StdCtrls, TAFuncSeries, TAGraph,
-  TASeries, TASources, TAStyles, TATools, TATransformations;
+  ComCtrls, ExtCtrls, Forms, Spin, StdCtrls, TAFuncSeries, TAGraph,
+  TASeries, TASources, TAStyles, TATools, TATransformations, Classes;
 
 type
 
@@ -16,6 +16,7 @@ type
     catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
+    catTZoom: TLinearAxisTransform;
     cbAuto: TCheckBox;
     catUser: TChartAxisTransformations;
     catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform;
@@ -38,6 +39,8 @@ type
     catTFahrToCel: TLinearAxisTransform;
     ChartTSummer: TLineSeries;
     ChartTWinterLine: TLineSeries;
+    fseSummerZoom: TFloatSpinEdit;
+    lblSummerZoom: TLabel;
     PageControl1: TPageControl;
     pnlLogControls: TPanel;
     pnlAutoControls: TPanel;
@@ -53,6 +56,7 @@ type
       AX: Double; out AT: Double);
     procedure ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
+    procedure fseSummerZoomChange(Sender: TObject);
   end;
 
 var
@@ -116,6 +120,11 @@ begin
   end;
   catUserUserDefinedAxisTransform1.OnAxisToGraph :=
     @catUserUserDefinedAxisTransform1AxisToGraph;
+end;
+
+procedure TForm1.fseSummerZoomChange(Sender: TObject);
+begin
+  catTZoom.Scale := 1 / fseSummerZoom.Value;
 end;
 
 end.

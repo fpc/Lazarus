@@ -104,6 +104,26 @@ object Form1: TForm1
           OnChange = cbAutoChange
           TabOrder = 0
         end
+        object fseSummerZoom: TFloatSpinEdit
+          Left = 236
+          Height = 21
+          Top = 4
+          Width = 50
+          Increment = 0.5
+          MaxValue = 10
+          MinValue = 0.5
+          OnChange = fseSummerZoomChange
+          TabOrder = 1
+          Value = 1
+        end
+        object lblSummerZoom: TLabel
+          Left = 112
+          Height = 14
+          Top = 5
+          Width = 117
+          Caption = 'Additional left axis zoom'
+          ParentColor = False
+        end
       end
     end
     object tsLog: TTabSheet
@@ -249,6 +269,8 @@ object Form1: TForm1
     end
     object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
       Enabled = False
+    end
+    object catTZoom: TLinearAxisTransform
     end
   end
   object rcsTSummer: TRandomChartSource
