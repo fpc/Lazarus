@@ -70,15 +70,17 @@ type
 
   TAxisTransformClass = class of TAxisTransform;
 
-  TAxisTransformList = class(TFPList)
+  TAxisTransformList = class(TIndexedComponentList)
   end;
 
   { TChartAxisTransformations }
 
-  TChartAxisTransformations = class (TComponent)
+  TChartAxisTransformations = class(TComponent)
   private
     FBroadcaster: TBroadcaster;
     FList: TAxisTransformList;
+  protected
+    procedure SetName(const AValue: TComponentName); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -522,6 +524,17 @@ begin
   i := List.IndexOf(Child);
   if i >= 0 then
     List.Move(i, Order);
+end;
+
+procedure TChartAxisTransformations.SetName(const AValue: TComponentName);
+var
+  oldName: String;
+begin
+  if Name = AValue then exit;
+  oldName := Name;
+  inherited SetName(AValue);
+  if csDesigning in ComponentState then
+    List.ChangeNamePrefix(oldName, AValue);
 end;
 
 procedure TChartAxisTransformations.UpdateBounds(var AMin, AMax: Double);

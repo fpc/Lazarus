@@ -29,7 +29,7 @@ interface
 
 uses
   LCLType, LResources,
-  SysUtils, Classes, Controls, Graphics, Dialogs,
+  SysUtils, Classes, Controls, Graphics,
   TAChartUtils, TATypes, TALegend, TAChartAxis;
 
 type
@@ -119,7 +119,7 @@ type
 
   TChartSeriesList = class(TPersistent)
   private
-    FList: TFPList;
+    FList: TIndexedComponentList;
     function GetItem(AIndex: Integer): TBasicChartSeries;
   public
     constructor Create;
@@ -129,7 +129,7 @@ type
     function Count: Integer;
   public
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
-    property List: TFPList read FList;
+    property List: TIndexedComponentList read FList;
   end;
 
   TChartAfterDrawEvent = procedure (
@@ -229,6 +229,7 @@ type
     procedure PrepareLegend(
       ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
       var AClipRect: TRect; out ALegendRect: TRect);
+    procedure SetName(const AValue: TComponentName); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -351,7 +352,7 @@ var
 implementation
 
 uses
-  Clipbrd, GraphMath, LCLProc, Math, Types, TADrawUtils;
+  Clipbrd, Dialogs, GraphMath, LCLProc, Math, Types, TADrawUtils;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -949,6 +950,17 @@ begin
   Invalidate;
 end;
 
+procedure TChart.SetName(const AValue: TComponentName);
+var
+  oldName: String;
+begin
+  if Name = AValue then exit;
+  oldName := Name;
+  inherited SetName(AValue);
+  if csDesigning in ComponentState then
+    Series.List.ChangeNamePrefix(oldName, AValue);
+end;
+
 procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
 begin
   if FOnAfterDrawBackground = AValue then exit;
@@ -1245,7 +1257,7 @@ end;
 
 constructor TChartSeriesList.Create;
 begin
-  FList := TFPList.Create;
+  FList := TIndexedComponentList.Create;
 end;
 
 destructor TChartSeriesList.Destroy;
@@ -1299,6 +1311,7 @@ initialization
   {$I tagraph.lrs}
   SkipObsoleteChartProperties;
   SeriesClassRegistry := TStringList.Create;
+  ShowMessageProc := @ShowMessage;
 
 finalization
   FreeAndNil(SeriesClassRegistry);

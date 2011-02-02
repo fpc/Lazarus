@@ -113,12 +113,23 @@ type
 
   { TIndexedComponent }
 
-  TIndexedComponent = class (TComponent)
+  TIndexedComponent = class(TComponent)
   protected
     function GetIndex: Integer; virtual; abstract;
     procedure SetIndex(AValue: Integer); virtual; abstract;
   public
+    procedure ChangeNamePrefix(const AOld, ANew: String; var AFailed: String);
+
     property Index: Integer read GetIndex write SetIndex;
+  end;
+
+  TShowMessageProc = procedure (const AMsg: String);
+
+  { TIndexedComponentList }
+
+  TIndexedComponentList = class(TFPList)
+  public
+    procedure ChangeNamePrefix(const AOld, ANew: String);
   end;
 
   TBroadcaster = class;
@@ -291,8 +302,15 @@ operator :=(const ASize: TSize): TPoint; inline;
 
 var
   DrawData: TDrawDataRegistry;
+  ShowMessageProc: TShowMessageProc;
+
+resourcestring
+  tasFailedSubcomponentRename = 'Failed to rename components: %s';
 
 implementation
+
+uses
+  StrUtils;
 
 const
   ORIENTATION_UNITS_PER_DEG = 10;
@@ -927,6 +945,34 @@ operator := (const ASize: TSize): TPoint;
 begin
   Result.X := ASize.cx;
   Result.Y := ASize.cy;
+end;
+
+{ TIndexedComponentList }
+
+procedure TIndexedComponentList.ChangeNamePrefix(
+  const AOld, ANew: String);
+var
+  failed: String;
+  i: Integer;
+begin
+  failed := '';
+  for i := 0 to Count - 1 do
+    TIndexedComponent(Items[i]).ChangeNamePrefix(AOld, ANew, failed);
+  if (failed <> '') and Assigned(ShowMessageProc) then
+    ShowMessageProc(Format(tasFailedSubcomponentRename, [failed]));
+end;
+
+{ TIndexedComponent }
+
+procedure TIndexedComponent.ChangeNamePrefix(
+  const AOld, ANew: String; var AFailed: String);
+begin
+  if AnsiStartsStr(AOld, Name) then
+    try
+      Name := ANew + Copy(Name, Length(AOld) + 1, Length(Name));
+    except on EComponentError do
+      AFailed += IfThen(AFailed = '', '', ', ') + Name;
+    end;
 end;
 
 { TIntervalList }
