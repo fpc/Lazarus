@@ -94,6 +94,7 @@ type
     procedure SetEpsilon(AValue: Double);
     procedure SetOnChange(AValue: TNotifyEvent);
   public
+    procedure Assign(ASource: TIntervalList);
     constructor Create;
   public
     procedure AddPoint(APoint: Double); inline;
@@ -963,6 +964,12 @@ begin
   end;
   FIntervals[i] := DoubleInterval(AStart, AEnd);
   Changed;
+end;
+
+procedure TIntervalList.Assign(ASource: TIntervalList);
+begin
+  FEpsilon := ASource.FEpsilon;
+  FIntervals := Copy(ASource.FIntervals);
 end;
 
 procedure TIntervalList.Changed;

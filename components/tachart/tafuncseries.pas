@@ -44,6 +44,7 @@ type
     procedure AfterAdd; override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -72,6 +73,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -111,6 +113,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -152,6 +155,14 @@ begin
   FExtent.SetOwner(FChart);
 end;
 
+procedure TBasicFuncSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TBasicFuncSeries then
+    with TBasicFuncSeries(ASource) do
+      Self.Extent := FExtent;
+  inherited Assign(ASource);
+end;
+
 constructor TBasicFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -182,6 +193,18 @@ begin
 end;
 
 { TFuncSeries }
+
+procedure TFuncSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TFuncSeries then
+    with TFuncSeries(ASource) do begin
+      Self.FDomainExclusions.Assign(FDomainExclusions);
+      Self.FOnCalculate := FOnCalculate;
+      Self.Pen := FPen;
+      Self.FStep := FStep;
+    end;
+  inherited Assign(ASource);
+end;
 
 constructor TFuncSeries.Create(AOwner: TComponent);
 begin
@@ -339,6 +362,20 @@ begin
 end;
 
 { TColorMapSeries }
+
+procedure TColorMapSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TColorMapSeries then
+    with TColorMapSeries(ASource) do begin
+      Self.Brush := FBrush;
+      Self.ColorSource := FColorSource;
+      Self.FInterpolate := FInterpolate;
+      Self.FOnCalculate := FOnCalculate;
+      Self.FStepX := FStepX;
+      Self.FStepY := FStepY;
+    end;
+  inherited Assign(ASource);
+end;
 
 function TColorMapSeries.ColorByValue(AValue: Double): TColor;
 var
