@@ -65,13 +65,11 @@ object Form1: TForm1
         object Chart1XAxis: TConstantLine
           Legend.Visible = False
           Position = 0
-          SeriesColor = clBlack
         end
         object Chart1YAxis: TConstantLine
           Legend.Visible = False
           LineStyle = lsVertical
           Position = 0
-          SeriesColor = clBlack
         end
         object Chart1BarSeries1: TBarSeries
           Title = 'Cos(x)'

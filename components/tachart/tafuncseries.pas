@@ -427,7 +427,7 @@ var
   gp: TDoublePoint;
   v: Double;
 begin
-  if IsEmpty then exit;
+  if not (csDesigning in ComponentState) and IsEmpty then exit;
 
   ext := ParentChart.CurrentExtent;
   bounds := EmptyExtent;
@@ -458,7 +458,8 @@ begin
         continue;
       end;
       gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
-      OnCalculate(gp.X, gp.Y, v);
+      if not (csDesigning in ComponentState) then
+        OnCalculate(gp.X, gp.Y, v);
       if ColorSource <> nil then
         ACanvas.Brush.Color := ColorByValue(v);
       ACanvas.Rectangle(
