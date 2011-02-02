@@ -446,7 +446,7 @@ begin
       p := FGraphPoints[i - FLoBound];
       if not ParentChart.IsPointInViewPort(p) then continue;
       ai := ParentChart.GraphToImage(p);
-      FPointer.Draw(ACanvas, ai, GetColor(i));
+      FPointer.Draw(ACanvas, ai, Source[i]^.Color);
       if Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ACanvas, i, ai);
     end;
@@ -837,6 +837,7 @@ begin
   if (Value < 1) or (Value > 100) then
     raise EBarError.Create('Wrong BarWidth Percent');
   FBarWidthPercent := Value;
+  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetBarWidthStyle(AValue: TBarWidthStyle);
