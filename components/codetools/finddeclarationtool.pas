@@ -1290,7 +1290,6 @@ var CleanCursorPos: integer;
       // cursor is in class/object/class interface definition
       if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
         // parse class and build CodeTreeNodes for all properties/methods
-        BuildSubTreeForClass(ClassNode);
         CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
         if CursorNode.GetNodeOfType(ctnClassInheritance)<>nil then begin
           // identifier is an ancestor/interface identifier
@@ -2664,10 +2663,6 @@ var
   
   procedure MoveContextNodeToChilds;
   begin
-    if ContextNode.Desc in AllClasses then begin
-      // just-in-time parsing for class node
-      BuildSubTreeForClass(ContextNode);
-    end;
     if (ContextNode.LastChild<>nil) then begin
       if not (fdfSearchForward in Params.Flags) then begin
         RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.EndPos);
@@ -3226,8 +3221,6 @@ begin
   Result:=false;
   if Params.ContextNode=nil then exit;
   CurContextNode:=Params.ContextNode;
-  if CurContextNode.Desc in AllClasses then
-    BuildSubTreeForClass(CurContextNode);
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
     if (CurContextNode.Desc=ctnEnumIdentifier) then begin
@@ -4862,11 +4855,9 @@ begin
       end;
       // class of method found
       Params.SetResult(ClassContext);
-      // parse class and return class node
 
       // ToDo: do no JIT parsing for PPU, DCU files
 
-      ClassContext.Tool.BuildSubTreeForClass(ClassContext.Node);
     end;
     Result:=true;
     Params.Load(OldInput,true);
@@ -4894,7 +4885,6 @@ begin
   // ToDo: ppu, dcu
 
   // search the ancestor name
-  BuildSubTreeForClass(ClassNode);
   InheritanceNode:=FindInheritanceNode(ClassNode);
   if (InheritanceNode<>nil)
   and (InheritanceNode.FirstChild<>nil) then begin

@@ -661,7 +661,6 @@ begin
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
     if StartNode=nil then exit;
-    BuildSubTreeForClass(StartNode);
     if (StartNode<>nil) and (StartNode.Desc in AllClasses)
     then begin
       StartNode:=StartNode.FirstChild;
@@ -1582,7 +1581,6 @@ function TPascalReaderTool.FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode
 begin
   Result:=nil;
   if (ClassNode=nil) then exit;
-  BuildSubTreeForClass(ClassNode);
   Result:=ClassNode.FirstChild;
   while (Result<>nil) and (Result.FirstChild=nil) do
     Result:=Result.NextBrother;

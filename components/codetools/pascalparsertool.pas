@@ -226,7 +226,7 @@ type
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
-    procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
+    procedure BuildSubTreeForClassOld(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
@@ -710,7 +710,7 @@ begin
   CurrentPhase:=CodeToolPhaseTool;
 end;
 
-procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
+procedure TPascalParserTool.BuildSubTreeForClassOld(ClassNode: TCodeTreeNode);
 // reparse a quick parsed class and build the child nodes
 
   procedure RaiseClassDescInvalid;
@@ -3736,7 +3736,6 @@ function TPascalParserTool.KeyWordFuncClass: boolean;
 //   parsing phase (in KeyWordFuncClassMethod)
 var
   BracketLvl: Integer;
-  ChildCreated: boolean;
   ClassAtomPos: TAtomPosition;
   Level: integer;
   ContextDesc: Word;
@@ -3768,31 +3767,21 @@ begin
   else if UpAtomIs('CPPCLASS') then
     ClassDesc:=ctnCPPClass
   else
-    ClassDesc:=ctnNone;
-  ChildCreated:=ClassDesc<>ctnNone;
-  if ChildCreated then begin
-    CreateChildNode;
-    CurNode.Desc:=ClassDesc;
-    CurNode.StartPos:=ClassAtomPos.StartPos;
-    CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
-  end;
-  // find end of class
+    RaiseStringExpectedButAtomFound('class');
+  CreateChildNode;
+  CurNode.Desc:=ClassDesc;
+  CurNode.StartPos:=ClassAtomPos.StartPos;
   IsForward:=true;
   ReadNextAtom;
   if UpAtomIs('OF') then begin
     IsForward:=false;
-    if ChildCreated then begin
-      CurNode.Desc:=ctnClassOfType;
-      CurNode.SubDesc:=CurNode.SubDesc-ctnsNeedJITParsing;
-    end;
+    CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
     AtomIsIdentifier(true);
-    if ChildCreated then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-    end;
+    CreateChildNode;
+    CurNode.Desc:=ctnIdentifier;
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
@@ -3800,102 +3789,74 @@ begin
     MoveCursorToNodeStart(CurNode);
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   end else begin
-    if UpAtomIs('SEALED') then begin
-      while UpAtomIs('SEALED') do
+    if CurPos.Flag=cafWord then begin
+      if UpAtomIs('SEALED') then begin
+        while UpAtomIs('SEALED') do begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassSealed;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          ReadNextAtom;
+        end;
+      end else if UpAtomIs('ABSTRACT') then begin
+        while UpAtomIs('ABSTRACT') do begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassAbstract;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          ReadNextAtom;
+        end;
+      end
+      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass]) then
+      begin
+        CreateChildNode;
+        CurNode.Desc:=ctnClassExternal;
         ReadNextAtom;
-    end else if UpAtomIs('ABSTRACT') then begin
-      IsForward:=false;
-      while UpAtomIs('ABSTRACT') do
-        ReadNextAtom;
-    end else if (ClassDesc in [ctnObjCClass]) and UpAtomIs('EXTERNAL') then begin
-      ReadNextAtom;
-      if UpAtomIs('NAME') then begin
-        ReadNextAtom;
-        ReadConstant(true,false,[]);
+        if UpAtomIs('NAME') then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
+        CurNode.EndPos:=CurPos.StartPos;
+        EndChildNode;
       end;
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
       IsForward:=false;
-      ReadTilBracketCloseOrUnexpected(true,[sbcStopOnSemicolon,sbcStopOnRecord]);
+      ReadClassInheritance(true);
       ReadNextAtom;
     end;
   end;
   if CurPos.Flag=cafSemicolon then begin
-    if ChildCreated and (ClassDesc in AllClassObjects) then
+    if (ClassDesc in AllClassObjects) then
     begin
       if IsForward then begin
         // forward class definition found
-        CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration-ctnsNeedJITParsing;
       end else begin
         // very short class found e.g. = class(TAncestor);
       end;
     end;
   end else begin
-    // read til end or any suspicious keyword
-    Level:=1;
-    BracketLvl:=0;
-    while (CurPos.StartPos<=SrcLen) do begin
-      case CurPos.Flag of
-      cafEND:
-        begin
-          dec(Level);
-          if Level=0 then break;
-        end;
-      cafRoundBracketOpen,cafEdgedBracketOpen:
-        inc(BracketLvl);
-      cafRoundBracketClose,cafEdgedBracketClose:
-        dec(BracketLvl);
-      cafEqual:
-        ; // Note: this is allowed: function a=b;
-      cafWord:
-        begin
-          p:=@Src[CurPos.StartPos];
-          case UpChars[p^] of
-          'B':
-            if CompareSrcIdentifiers(p,'BEGIN') then
-              SaveRaiseException(ctsEndForClassNotFound);
-          'C':
-            if CompareSrcIdentifiers(p,'CONST') then begin
-              if BracketLvl>0 then begin
-                if (not (LastAtomIs(0,';') or LastAtomIs(0,'(')
-                or LastAtomIs(0,'[')  or LastUpAtomIs(0,'OF'))) then
-                  SaveRaiseException(ctsEndForClassNotFound);
-              end;
-            end;
-          'I':
-            if CompareSrcIdentifiers(p,'INTERFACE')
-            or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
-              SaveRaiseException(ctsEndForClassNotFound);
-          'O':
-            if CompareSrcIdentifiers(p,'OBJECT') and (not LastUpAtomIs(0,'OF')) then
-              inc(Level);
-          'R':
-            if CompareSrcIdentifiers(p,'RECORD') then
-              inc(Level)
-            else if CompareSrcIdentifiers(p,'RESOURCESTRING') then
-              SaveRaiseException(ctsEndForClassNotFound);
-          'T':
-            if CompareSrcIdentifiers(p,'THREADVAR') then
-              SaveRaiseException(ctsEndForClassNotFound)
-            else if CompareSrcIdentifiers(p,'TYPE')
-            and (BracketLvl>0) then
-              SaveRaiseException(ctsEndForClassNotFound);
-          'V':
-            if CompareSrcIdentifiers(p,'VAR') then begin
-              if BracketLvl>0 then begin
-                if (not (LastAtomIs(0,';') or LastAtomIs(0,'(')
-                or LastAtomIs(0,'[')  or LastUpAtomIs(0,'OF'))) then
-                  SaveRaiseException(ctsEndForClassNotFound);
-              end;
-            end;
-          end;
-        end;
+    // start the first class section (always published)
+    CreateChildNode;
+    CurNode.Desc:=ctnClassPublished;
+    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
+    if CurPos.Flag=cafEdgedBracketOpen then
+      ReadGUID;
+    // parse till "end" of class/object
+    repeat
+      //DebugLn(['TPascalParserTool.BuildSubTreeForClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
+      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      begin
+        if CurPos.Flag<>cafEnd then
+          RaiseStringExpectedButAtomFound('end');
+        break;
       end;
       ReadNextAtom;
-    end;
-    if (CurPos.StartPos>SrcLen) then
-      SaveRaiseException(ctsEndForClassNotFound);
+    until false;
+    // end last class section (public, private, ...)
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
   end;
   if CurPos.Flag=cafEND then begin
     // read extra flags
@@ -3923,11 +3884,9 @@ begin
   end;
   if CurPos.Flag<>cafSemicolon then
     UndoReadNextAtom;
-  if ChildCreated then begin
-    // close class
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
+  // close class
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
   Result:=true;
 end;
 
@@ -5078,9 +5037,6 @@ procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
-  ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
-    BuildSubTreeForClass(ANode);
   ctnProcedure,ctnProcedureHead:
     BuildSubTreeForProcHead(ANode);
   ctnBeginBlock:

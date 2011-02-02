@@ -292,7 +292,6 @@ begin
   ActivateGlobalWriteLock;
   FreeAndNil(SearchedExprList);
   try
-    BuildSubTreeForClass(ClassNode);
     fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
 
     {$IFDEF CTDEBUG}
@@ -1081,7 +1080,6 @@ function TEventsCodeTool.FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
 var
   VisibilityNode: TCodeTreeNode;
 begin
-  BuildSubTreeForClass(ClassNode);
   VisibilityNode:=ClassNode.FirstChild;
   while (VisibilityNode<>nil) do begin
     if VisibilityNode.Desc in AllClassBaseSections then begin

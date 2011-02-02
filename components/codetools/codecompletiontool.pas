@@ -391,7 +391,6 @@ begin
     exit;
   end;
   ClearIgnoreErrorAfter;
-  BuildSubTreeForClass(CodeCompleteClassNode);
   // find first variable/method/GUID
   FCompletingStartNode:=CodeCompleteClassNode.FirstChild;
   while FCompletingStartNode<>nil do begin

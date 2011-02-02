@@ -362,7 +362,6 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint E ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
-    BuildSubTreeForClass(ClassNode);
     TypeSectionNode:=ClassNode.GetNodeOfType(ctnTypeSection);
     // search the method node under the cursor
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true).
@@ -537,7 +536,6 @@ begin
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4C ',dbgs(ClassNode<>nil));
         {$ENDIF}
         if ClassNode=nil then exit;
-        BuildSubTreeForClass(ClassNode);
         // search first class grand child node
         StartNode:=ClassNode.FirstChild;
         while (StartNode<>nil) and (StartNode.FirstChild=nil) do

@@ -4381,7 +4381,6 @@ begin
     else
       exit;
   end;
-  BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;
   while (SectionNode<>nil) do begin
     if SectionNode.Desc=ctnClassPublished then begin
@@ -4421,7 +4420,6 @@ begin
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   if ClassNode=nil then
     RaiseException(Format(ctsclassNotFound, ['"', UpperClassName, '"']));
-  BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;
   if (SectionNode.NextBrother<>nil)
   and (SectionNode.NextBrother.Desc=ctnClassPublished) then
@@ -4546,7 +4544,6 @@ function TStandardCodeTool.GatherPublishedClassElements(
     if (ClassNode=nil)
     or (not (ClassNode.Desc in AllClasses)) then exit;
     CurTool:=AFindContext^.Tool;
-    CurTool.BuildSubTreeForClass(ClassNode);
     SectionNode:=ClassNode.FirstChild;
     while (SectionNode<>nil) do begin
       if SectionNode.Desc=ctnClassPublished then begin
@@ -4650,7 +4647,6 @@ begin
   if (ListOfTypes=nil) or (ListOfTypes.Tree.Count=0) then exit(true);
 
   HasChanged:=false;
-  BuildSubTreeForClass(ClassNode);
   Node:=ClassNode.FirstChild;
   while (Node<>nil) and (Node.HasAsParent(ClassNode)) do begin
     if (Node.Desc=ctnVarDefinition) and (Node.FirstChild<>nil) then begin
@@ -6745,9 +6741,6 @@ begin
   Node:=Tree.Root;
   while Node<>nil do begin
     case Node.Desc of
-    ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
-    ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
-      BuildSubTreeForClass(Node);
     ctnProcedure,ctnProcedureHead:
       BuildSubTreeForProcHead(Node);
     ctnBeginBlock:

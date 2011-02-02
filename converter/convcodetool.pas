@@ -333,7 +333,6 @@ begin
     // Find the class name that the main class inherits from.
     ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
     if ANode=nil then exit;
-    BuildSubTreeForClass(ANode);
     InheritanceNode:=FindInheritanceNode(ANode);
     if InheritanceNode=nil then exit;
     ANode:=InheritanceNode.FirstChild;
