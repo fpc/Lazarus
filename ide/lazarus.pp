@@ -82,6 +82,8 @@ uses
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}
 
+  RequireDerivedFormResource := True;
+
   // When quick rebuilding the IDE, FPC rebuilds only the lazarus.pp, so any
   // flag that should work with quick build must be set here.
   KeepInstalledPackages:={$IFDEF BigIDE}True{$ELSE}False{$ENDIF};
