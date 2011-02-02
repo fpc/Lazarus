@@ -36,7 +36,7 @@ interface
 
 {$I codetools.inc}
 
-{off $DEFINE DisableCTNodeExtMemManager}
+{$IMPLICITEXCEPTIONS OFF} // no automatic try..finally (exceptions in all functions are fatal)
 
 uses
   {$IFDEF MEM_CHECK}
