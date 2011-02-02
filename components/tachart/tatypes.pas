@@ -103,6 +103,7 @@ type
     destructor Destroy; override;
   public
     procedure Assign(Source: TPersistent); override;
+    procedure Draw(ACanvas: TCanvas; ADir, AX: Integer; var AY: Integer);
   published
     property Alignment: TAlignment
       read FAlignment write SetAlignment default taCenter;
@@ -412,6 +413,26 @@ begin
   FreeAndNil(FText);
 
   inherited;
+end;
+
+procedure TChartTitle.Draw(
+  ACanvas: TCanvas; ADir, AX: Integer; var AY: Integer);
+var
+  ptSize, textOrigin: TPoint;
+  a: Double;
+  w: Integer;
+begin
+  if not Visible or (Text.Count = 0) then exit;
+  ACanvas.Brush.Assign(Brush);
+  ACanvas.Font.Assign(Font);
+  a := -OrientToRad(Font.Orientation);
+  ptSize := MultiLineTextExtent(ACanvas, Text);
+  textOrigin := RotatePoint(-ptSize div 2, a);
+  w := ptSize.X;
+  ptSize := MeasureRotatedRect(ptSize, a);
+  textOrigin += Point(AX, AY + ptSize.Y div 2 * ADir);
+  MultiLineTextOut(ACanvas, textOrigin, Text, Alignment, w);
+  AY += ADir * (ptSize.Y + Margin);
 end;
 
 procedure TChartTitle.SetAlignment(AValue: TAlignment);
