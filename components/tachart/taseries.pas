@@ -238,14 +238,14 @@ type
   private
     FLineStyle: TLineStyle;
     FPen: TPen;
-    FPosGraph: Double; // Graph coordinate of line
+    FPosition: Double; // Graph coordinate of line
     FUseBounds: Boolean;
 
     function GetSeriesColor: TColor;
     procedure SavePosToCoord(var APoint: TDoublePoint);
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
-    procedure SetPos(AValue: Double);
+    procedure SetPosition(AValue: Double);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
@@ -268,7 +268,7 @@ type
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
-    property Position: Double read FPosGraph write SetPos;
+    property Position: Double read FPosition write SetPosition;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clTAColor;
     property ShowInLegend;
@@ -574,7 +574,7 @@ begin
     with TConstantLine(ASource) do begin
       Self.FLineStyle := FLineStyle;
       Self.Pen := FPen;
-      Self.FPosGraph := FPosGraph;
+      Self.FPosition := FPosition;
       Self.FUseBounds := FUseBounds;
     end;
   inherited Assign(ASource);
@@ -604,9 +604,9 @@ begin
   with ParentChart do
     case LineStyle of
       lsHorizontal:
-        DrawLineHoriz(ACanvas, YGraphToImage(FPosGraph));
+        DrawLineHoriz(ACanvas, YGraphToImage(FPosition));
       lsVertical:
-        DrawLineVert(ACanvas, XGraphToImage(FPosGraph));
+        DrawLineVert(ACanvas, XGraphToImage(FPosition));
     end;
 end;
 
@@ -676,10 +676,10 @@ begin
   FPen.Assign(AValue);
 end;
 
-procedure TConstantLine.SetPos(AValue: Double);
+procedure TConstantLine.SetPosition(AValue: Double);
 begin
-  if FPosGraph = AValue then exit;
-  FPosGraph := AValue;
+  if FPosition = AValue then exit;
+  FPosition := AValue;
   UpdateParentChart;
 end;
 
