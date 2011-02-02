@@ -55,7 +55,6 @@ object Form1: TForm1
       Pen.Style = psDash
       Pen.Width = 2
       Position = -1.5
-      SeriesColor = clLime
     end
     object ChartLine2: TConstantLine
       LineStyle = lsVertical
@@ -63,7 +62,6 @@ object Form1: TForm1
       Pen.Style = psDash
       Pen.Width = 2
       Position = 1.5
-      SeriesColor = clFuchsia
     end
   end
   object Panel1: TPanel

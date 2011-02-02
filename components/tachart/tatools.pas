@@ -95,7 +95,7 @@ type
 
   TChartToolClass = class of TChartTool;
 
-  TChartTools = class(TFPList)
+  TChartTools = class(TIndexedComponentList)
   end;
 
   { TChartToolset }
@@ -105,6 +105,8 @@ type
     FIsHandled: Boolean;
     FTools: TChartTools;
     function GetItem(AIndex: Integer): TChartTool;
+  protected
+    procedure SetName(const AValue: TComponentName); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -657,6 +659,17 @@ begin
   i := Tools.IndexOf(Child);
   if i >= 0 then
     Tools.Move(i, Order);
+end;
+
+procedure TChartToolset.SetName(const AValue: TComponentName);
+var
+  oldName: String;
+begin
+  if Name = AValue then exit;
+  oldName := Name;
+  inherited SetName(AValue);
+  if csDesigning in ComponentState then
+    Tools.ChangeNamePrefix(oldName, AValue);
 end;
 
 { TBasicZoomTool }
