@@ -72,9 +72,9 @@ end;
 
 procedure TForm1.seAxisAngleChange(Sender: TObject);
 begin
-  Chart1.LeftAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
+  Chart1.LeftAxis.Marks.LabelFont.Orientation := 900 + seAxisAngle.Value * 10;
   Chart1.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
-  ChartMulti.LeftAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
+  ChartMulti.LeftAxis.Marks.LabelFont.Orientation := 900 + seAxisAngle.Value * 10;
   ChartMulti.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
 end;
 

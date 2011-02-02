@@ -91,7 +91,7 @@ begin
   sl := TStringList.Create;
   try
     sl.Text := AText;
-    MultiLineTextExtent(ACanvas, sl);
+    Result := MultiLineTextExtent(ACanvas, sl);
   finally
     sl.Free;
   end;
