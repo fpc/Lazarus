@@ -295,21 +295,6 @@ type
   end;
 
 
-  { TCodeTreeNodeExtMemManager - memory system for TCodeTreeNodeExtension(s) }
-
-  TCodeTreeNodeExtMemManager = class(TCodeToolMemManager)
-  protected
-    procedure FreeFirstItem; override;
-  public
-    procedure DisposeNode(ANode: TCodeTreeNodeExtension);
-    procedure DisposeAVLTree(TheTree: TAVLTree);
-    function NewNode: TCodeTreeNodeExtension;
-  end;
-
-
-var
-  NodeExtMemManager: TCodeTreeNodeExtMemManager;
-
 //-----------------------------------------------------------------------------
 // useful functions
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
@@ -322,6 +307,7 @@ function FindCodeTreeNodeExtWithIdentifier(Tree: TAVLTree; Identifier: PChar
                              ): TCodeTreeNodeExtension;
 function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
                                                Identifier: PChar): TAVLTreeNode;
+procedure DisposeAVLTree(var Tree: TAVLTree);
 function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer;
@@ -503,6 +489,14 @@ function FindCodeTreeNodeExtAVLNodeWithIdentifier(Tree: TAVLTree;
   Identifier: PChar): TAVLTreeNode;
 begin
   Result:=Tree.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt);
+end;
+
+procedure DisposeAVLTree(var Tree: TAVLTree);
+begin
+  if Tree=nil then exit;
+  Tree.FreeAndClear;
+  Tree.Free;
+  Tree:=nil;
 end;
 
 function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
@@ -996,87 +990,6 @@ begin
     +MemSizeString(ExtTxt2)
     +MemSizeString(ExtTxt3);
 end;
-
-{ TCodeTreeNodeExtMemManager }
-
-function TCodeTreeNodeExtMemManager.NewNode: TCodeTreeNodeExtension;
-begin
-  if FFirstFree<>nil then begin
-    // take from free list
-    Result:=TCodeTreeNodeExtension(FFirstFree);
-    TCodeTreeNodeExtension(FFirstFree):=Result.Next;
-    Result.Next:=nil;
-  end else begin
-    // free list empty -> create new node
-    Result:=TCodeTreeNodeExtension.Create;
-  end;
-  inc(FCount);
-end;
-
-procedure TCodeTreeNodeExtMemManager.DisposeNode(ANode: TCodeTreeNodeExtension);
-begin
-  {$IFNDEF DisableCTNodeExtMemManager}
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
-    // add ANode to Free list
-    ANode.Clear;
-    ANode.Next:=TCodeTreeNodeExtension(FFirstFree);
-    TCodeTreeNodeExtension(FFirstFree):=ANode;
-    inc(FFreeCount);
-  end else begin
-  {$ENDIF}
-    // free list full -> free the ANode
-    ANode.Free;
-  {$IFNDEF DisableCTNodeExtMemManager}
-  end;
-  {$ENDIF}
-  dec(FCount);
-end;
-
-procedure TCodeTreeNodeExtMemManager.DisposeAVLTree(TheTree: TAVLTree);
-var ANode: TAVLTreeNode;
-begin
-  if TheTree=nil then exit;
-  ANode:=TheTree.FindLowest;
-  while ANode<>nil do begin
-    DisposeNode(TCodeTreeNodeExtension(ANode.Data));
-    ANode:=TheTree.FindSuccessor(ANode);
-  end;
-  TheTree.Free;
-end;
-
-procedure TCodeTreeNodeExtMemManager.FreeFirstItem;
-var ANode: TCodeTreeNodeExtension;
-begin
-  ANode:=TCodeTreeNodeExtension(FFirstFree);
-  TCodeTreeNodeExtension(FFirstFree):=ANode.Next;
-  ANode.Free;
-end;
-
-//-----------------------------------------------------------------------------
-
-procedure InternalInit;
-begin
-  NodeExtMemManager:=TCodeTreeNodeExtMemManager.Create;
-end;
-
-procedure InternalFinal;
-begin
-  FreeAndNil(NodeExtMemManager);
-end;
-
-
-initialization
-  InternalInit;
-
-finalization
-{$IFDEF CTDEBUG}
-DebugLn('codetree.pp - finalization');
-{$ENDIF}
-{$IFDEF MEM_CHECK}
-CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
-{$ENDIF}
-  InternalFinal;
 
 end.
 

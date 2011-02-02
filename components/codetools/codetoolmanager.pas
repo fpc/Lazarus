@@ -3501,10 +3501,7 @@ begin
       on e: Exception do Result:=HandleException(e);
     end;
   finally
-    if TreeOfCodeTreeNodeExt<>nil then begin
-      TreeOfCodeTreeNodeExt.FreeAndClear;
-      TreeOfCodeTreeNodeExt.Free;
-    end;
+    DisposeAVLTree(TreeOfCodeTreeNodeExt);
   end;
 end;
 
@@ -3562,10 +3559,7 @@ begin
       on e: Exception do Result:=HandleException(e);
     end;
   finally
-    if TreeOfCodeTreeNodeExt<>nil then begin
-      TreeOfCodeTreeNodeExt.FreeAndClear;
-      TreeOfCodeTreeNodeExt.Free;
-    end;
+    DisposeAVLTree(TreeOfCodeTreeNodeExt);
   end;
 end;
 
@@ -3621,10 +3615,7 @@ begin
         Result:=FCurCodeTool.ReplaceConstFunctions(TreeOfCodeTreeNodeExt,
                                                    SourceChangeCache);
       finally
-        if TreeOfCodeTreeNodeExt<>nil then begin
-          TreeOfCodeTreeNodeExt.FreeAndClear;
-          TreeOfCodeTreeNodeExt.Free;
-        end;
+        DisposeAVLTree(TreeOfCodeTreeNodeExt);
       end;
     until not Result;
   except
@@ -3685,10 +3676,7 @@ begin
         Result:=FCurCodeTool.ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt,
                                                       SourceChangeCache);
       finally
-        if TreeOfCodeTreeNodeExt<>nil then begin
-          TreeOfCodeTreeNodeExt.FreeAndClear;
-          TreeOfCodeTreeNodeExt.Free;
-        end;
+        DisposeAVLTree(TreeOfCodeTreeNodeExt);
       end;
     until not Result;
   except

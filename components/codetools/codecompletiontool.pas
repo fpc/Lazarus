@@ -518,7 +518,7 @@ begin
       raise Exception.Create('TCodeCompletionCodeTool.AddClassInsertion can not add variables to a class interface');
   end;
   
-  NewInsert:=NodeExtMemManager.NewNode;
+  NewInsert:=TCodeTreeNodeExtension.Create;
   with NewInsert do begin
     Node:=PosNode;
     Txt:=CleanDef;
@@ -575,7 +575,7 @@ begin
   while FirstInsert<>nil do begin
     ANodeExt:=FirstInsert;
     FirstInsert:=FirstInsert.Next;
-    NodeExtMemManager.DisposeNode(ANodeExt);
+    ANodeExt.Free;
   end;
   if fNewMainUsesSectionUnits<>nil then begin
     AVLNode:=fNewMainUsesSectionUnits.FindLowest;
@@ -633,7 +633,7 @@ procedure TCodeCompletionCodeTool.FindInsertPositionForForwardProc(
 var
   NearestProcNode, StartSearchProc: TCodeTreeNode;
   IsInInterface: boolean;
-  ProcBodyNodes, ForwardProcNodes: TAVLTree;
+  ProcBodyNodes, ForwardProcNodes: TAVLTree; // tree of TCodeTreeNodeExtension
   ProcAVLNode, NearestAVLNode: TAVLTreeNode;
   ProcNodeExt, NearestNodeExt: TCodeTreeNodeExtension;
   InsertBehind: boolean;
@@ -764,14 +764,8 @@ begin
     finally
       // clean up
       ProcNodeExt.Free;
-      if ProcBodyNodes<>nil then begin
-        ProcBodyNodes.FreeAndClear;
-        ProcBodyNodes.Free;
-      end;
-      if ForwardProcNodes<>nil then begin
-        ForwardProcNodes.FreeAndClear;
-        ForwardProcNodes.Free;
-      end;
+      DisposeAVLTree(ProcBodyNodes);
+      DisposeAVLTree(ForwardProcNodes);
     end;
   end;
   
@@ -1315,10 +1309,7 @@ begin
     // reparse code and find jump point into new proc
     Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
   finally
-    if ProcBodyNodes<>nil then begin
-      ProcBodyNodes.FreeAndClear;
-      ProcBodyNodes.Free;
-    end;
+    DisposeAVLTree(ProcBodyNodes);
   end;
 end;
 
@@ -2414,7 +2405,7 @@ var
   begin
     DebugLn(['AddRedefinition ',NodeText,' Redefined=',CleanPosToStr(Redefinition.StartPos),' Definition=',CleanPosToStr(Definition.StartPos)]);
     //DebugLn(['AddRedefinition as source: Definition="',ExtractNode(Definition,[]),'" Redefinition="',ExtractNode(Redefinition,[]),'"']);
-    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Redefinition;
     NodeExt.Data:=Definition;
     NodeExt.Txt:=NodeText;
@@ -2427,7 +2418,7 @@ var
   var
     NodeExt: TCodeTreeNodeExtension;
   begin
-    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Node;
     NodeExt.Txt:=NodeText;
     AllNodes.Add(NodeExt);
@@ -2474,7 +2465,7 @@ begin
       end;
     end;
   finally
-    NodeExtMemManager.DisposeAVLTree(AllNodes);
+    DisposeAVLTree(AllNodes);
   end;
   Result:=true;
 end;
@@ -2677,7 +2668,7 @@ var
     end;
     if TreeOfCodeTreeNodeExt=nil then
       TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Node;
     NodeExt.Txt:=GetRedefinitionNodeText(Node);
     NodeExt.Data:=ReferingNode;
@@ -2693,7 +2684,7 @@ var
     AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
     if AVLNode=nil then begin
       // add new node
-      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt:=TCodeTreeNodeExtension.Create;
       NodeExt.Node:=Node;
       NodeExt.Txt:=NodeText;
       AllNodes.Add(NodeExt);
@@ -2832,8 +2823,7 @@ var
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
       NeededType:=TCodeTreeNodeDesc(NodeExt.Flags);
       if NodeExt.Node.Desc=NeededType then begin
-        TreeOfCodeTreeNodeExt.RemovePointer(NodeExt);
-        NodeExtMemManager.DisposeNode(NodeExt);
+        TreeOfCodeTreeNodeExt.FreeAndDelete(AVLNode);
       end;
       AVLNode:=NextAVLNode;
     end;
@@ -2854,7 +2844,7 @@ begin
       RemoveGoodAliases;
     end;
   finally
-    NodeExtMemManager.DisposeAVLTree(AllNodes);
+    DisposeAVLTree(AllNodes);
   end;
   Result:=true;
 end;
@@ -2921,8 +2911,7 @@ begin
     end;
     if (not (ReferingType in [ctnTypeDefinition,ctnConstDefinition,ctnProcedure]))
     or (DefNode.Desc=ReferingType) then begin
-      TreeOfCodeTreeNodeExt.Delete(AVLNode);
-      NodeExtMemManager.DisposeNode(NodeExt);
+      TreeOfCodeTreeNodeExt.FreeAndDelete(AVLNode);
     end;
     AVLNode:=NextAVLNode;
   end;
@@ -3179,7 +3168,7 @@ var
     //DebugLn(['CheckProcNode FOUND']);
     
     // save values
-    ResultNodeExt:=NodeExtMemManager.NewNode;
+    ResultNodeExt:=TCodeTreeNodeExtension.Create;
     ResultNodeExt.Txt:=NodeText;
     ResultNodeExt.Node:=NodeExt.Node;
     ResultNodeExt.Data:=ProcNode;
@@ -3220,7 +3209,7 @@ begin
     end;
     
   finally
-    NodeExtMemManager.DisposeAVLTree(Definitions);
+    DisposeAVLTree(Definitions);
   end;
   Result:=true;
 end;
@@ -3430,7 +3419,7 @@ var
     //DebugLn(['CheckProcNode FOUND']);
 
     // save values
-    ResultNodeExt:=NodeExtMemManager.NewNode;
+    ResultNodeExt:=TCodeTreeNodeExtension.Create;
     ResultNodeExt.Txt:=NodeText;
     ResultNodeExt.Node:=NodeExt.Node;
     ResultNodeExt.Data:=ProcNode;
@@ -3469,7 +3458,7 @@ begin
     end;
 
   finally
-    NodeExtMemManager.DisposeAVLTree(Definitions);
+    DisposeAVLTree(Definitions);
   end;
   Result:=true;
 end;
@@ -3775,7 +3764,7 @@ begin
     end;
     Result:=ApplyNodeMoves(false);
   finally
-    NodeExtMemManager.DisposeAVLTree(Definitions);
+    DisposeAVLTree(Definitions);
     Graph.Free;
     ClearNodeMoves;
   end;
@@ -3788,8 +3777,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     Rebuild: boolean): boolean;
   begin
     if Definitions<>nil then begin
-      NodeExtMemManager.DisposeAVLTree(Definitions);
-      Definitions:=nil;
+      DisposeAVLTree(Definitions);
     end;
     if Graph<>nil then begin
       Graph.Free;
@@ -4429,8 +4417,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       
       Result:=MoveNodes(NodeMoveEdges);
     finally
-      NodeMoveEdges.FreeAndClear;
-      NodeMoveEdges.Free;
+      DisposeAVLTree(NodeMoveEdges);
       ListOfGraphNodes.Free;
     end;
   end;
@@ -4505,7 +4492,7 @@ function TCodeCompletionCodeTool.GatherUnitDefinitions(out
       if ExceptionOnRedefinition then
         RaiseRedefinition(NodeExt.Node,Node);
     end;
-    NodeExt:=NodeExtMemManager.NewNode;
+    NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Txt:=NodeText;
     TreeOfCodeTreeNodeExt.Add(NodeExt);
     NodeExt.Node:=Node;
@@ -4769,8 +4756,7 @@ begin
       end;
     end;
   finally
-    ProcBodyNodes.FreeAndClear;
-    ProcBodyNodes.Free;
+    DisposeAVLTree(ProcBodyNodes);
   end;
 end;
 
@@ -4873,14 +4859,8 @@ begin
     AllEmpty:=ProcBodyNodes.Count=0;
     Result:=true;
   finally
-    if ClassProcs<>nil then begin
-      ClassProcs.FreeAndClear;
-      ClassProcs.Free;
-    end;
-    if ProcBodyNodes<>nil then begin
-      ProcBodyNodes.FreeAndClear;
-      ProcBodyNodes.Free;
-    end;
+    DisposeAVLTree(ClassProcs);
+    DisposeAVLTree(ProcBodyNodes);
   end;
 end;
 
@@ -4999,14 +4979,8 @@ begin
     end;
     Result:=SourceChangeCache.Apply;
   finally
-    if ProcBodyNodes<>nil then begin
-      ProcBodyNodes.FreeAndClear;
-      ProcBodyNodes.Free;
-    end;
-    if ProcDefNodes<>nil then begin
-      ProcDefNodes.FreeAndClear;
-      ProcDefNodes.Free;
-    end;
+    DisposeAVLTree(ProcBodyNodes);
+    DisposeAVLTree(ProcDefNodes);
   end;
 end;
 
@@ -6927,12 +6901,8 @@ begin
     end;
     Result:=true;
   finally
-    if ClassProcs<>nil then begin
-      ClassProcs.FreeAndClear;
-      ClassProcs.Free;
-    end;
-    ProcBodyNodes.FreeAndClear;
-    ProcBodyNodes.Free;
+    DisposeAVLTree(ClassProcs);
+    DisposeAVLTree(ProcBodyNodes);
   end;
 end;
 
@@ -7233,7 +7203,7 @@ begin
                     +'end;';
 
         // add method data
-        NodeExt:=NodeExtMemManager.NewNode;
+        NodeExt:=TCodeTreeNodeExtension.Create;
         NodeExt.Txt:=CleanProcCode;
         NodeExt.ExtTxt1:=FullProcCode;
         NodeExt.ExtTxt2:=ProcName;
@@ -7307,7 +7277,7 @@ begin
     Result:=true;
   finally
     FreeClassInsertionList;
-    NodeExtMemManager.DisposeAVLTree(NewMethods);
+    DisposeAVLTree(NewMethods);
   end;
 end;
 

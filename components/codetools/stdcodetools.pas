@@ -4557,7 +4557,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
             {$IFDEF VerboseDanglingComponentEvents}
             debugln('TStandardCodeTool.GatherPublishedClassElements CurProcName="',CurProcName,'"');
             {$ENDIF}
-            NewNodeExt:=NodeExtMemManager.NewNode;
+            NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
               Txt:=CurProcName;
@@ -4566,7 +4566,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
           end
           else if (ANode.Desc=ctnVarDefinition) and WithVariables then begin
             CurVarName:=CurTool.ExtractDefinitionName(ANode);
-            NewNodeExt:=NodeExtMemManager.NewNode;
+            NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
               Txt:=CurVarName;
@@ -4575,7 +4575,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
           end
           else if (ANode.Desc=ctnProperty) and WithProperties then begin
             CurPropName:=CurTool.ExtractPropName(ANode,false);
-            NewNodeExt:=NodeExtMemManager.NewNode;
+            NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
               Txt:=CurPropName;
@@ -4819,7 +4819,7 @@ begin
       CheckMethodsInPersistent(TComponent(AllComponents[i]));
   finally
     Collector.Free;
-    NodeExtMemManager.DisposeAVLTree(PublishedMethods);
+    PublishedMethods.Free;
   end;
 end;
 

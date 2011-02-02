@@ -1882,8 +1882,7 @@ end;
 procedure TIdentCompletionTool.ClearFoundMethods;
 begin
   if FIDTFoundMethods=nil then exit;
-  NodeExtMemManager.DisposeAVLTree(FIDTFoundMethods);
-  FIDTFoundMethods:=nil;
+  FreeAndNil(FIDTFoundMethods);
 end;
 
 function TIdentCompletionTool.CollectMethods(
@@ -1911,7 +1910,7 @@ begin
       // method is overriden => ignore
     end else begin
       // new method
-      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt:=TCodeTreeNodeExtension.Create;
       NodeExt.Node:=FoundContext.Node;
       NodeExt.Data:=FoundContext.Tool;
       NodeExt.Txt:=ProcText;

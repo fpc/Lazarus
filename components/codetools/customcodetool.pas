@@ -2728,10 +2728,7 @@ begin
     IncreaseTreeChangeStep(true);
     // then change
     Tree.Clear;
-    if FNodeParseErrors<>nil then begin
-      FNodeParseErrors.FreeAndClear;
-      FreeAndNil(FNodeParseErrors);
-    end;
+    DisposeAVLTree(FNodeParseErrors);
   end;
 end;
 

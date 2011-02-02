@@ -115,13 +115,11 @@ begin
       OldAVLNode1:=AVLNode1;
       AVLNode1:=Tree1.FindSuccessor(AVLNode1);
       if not KeepTree1 then begin
-        NodeExtMemManager.DisposeNode(TCodeTreeNodeExtension(OldAVLNode1.Data));
-        Tree1.Delete(OldAVLNode1);
+        Tree1.FreeAndDelete(OldAVLNode1);
       end;
       OldAVLNode2:=AVLNode2;
       AVLNode2:=Tree2.FindSuccessor(AVLNode2);
-      NodeExtMemManager.DisposeNode(TCodeTreeNodeExtension(OldAVLNode2.Data));
-      Tree2.Delete(OldAVLNode2);
+      Tree2.FreeAndDelete(OldAVLNode2);
     end;
   end;
 end;
@@ -428,8 +426,8 @@ begin
         Result:=JumpToProc(CursorNode,JumpToProcAttr,
                            ProcNode,JumpToProcAttr);
       finally
-        NodeExtMemManager.DisposeAVLTree(SearchForNodes);
-        NodeExtMemManager.DisposeAVLTree(SearchInNodes);
+        DisposeAVLTree(SearchForNodes);
+        DisposeAVLTree(SearchInNodes);
       end;
     end;
     exit;
@@ -517,8 +515,8 @@ begin
         end;
         
       finally
-        NodeExtMemManager.DisposeAVLTree(SearchForNodes);
-        NodeExtMemManager.DisposeAVLTree(SearchInNodes);
+        DisposeAVLTree(SearchForNodes);
+        DisposeAVLTree(SearchInNodes);
       end;
     end else begin
       // procedure is not forward, search on same proc level
@@ -586,8 +584,8 @@ begin
           end;
           Result:=JumpToProc(CursorNode,JumpToProcAttr,ProcNode,JumpToProcAttr);
         finally
-          NodeExtMemManager.DisposeAVLTree(SearchForNodes);
-          NodeExtMemManager.DisposeAVLTree(SearchInNodes);
+          DisposeAVLTree(SearchForNodes);
+          DisposeAVLTree(SearchInNodes);
         end;
         exit;
       end else begin
@@ -664,8 +662,8 @@ begin
           end;
 
         finally
-          NodeExtMemManager.DisposeAVLTree(SearchForNodes);
-          NodeExtMemManager.DisposeAVLTree(SearchInNodes);
+          DisposeAVLTree(SearchForNodes);
+          DisposeAVLTree(SearchInNodes);
         end;
       end;
     end;
@@ -807,7 +805,7 @@ begin
           CurProcName:=ExtractProcHead(ANode,Attr);
           //DebugLn(['[TMethodJumpingCodeTool.GatherProcNodes] D "',CurProcName,'" ',phpInUpperCase in Attr]);
           if (CurProcName<>'') then begin
-            NewNodeExt:=NodeExtMemManager.NewNode;
+            NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
               Txt:=CurProcName;
