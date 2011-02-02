@@ -258,6 +258,7 @@ function RectIntersectsRect(
 
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
+function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
 function RoundChecked(A: Double): Integer; inline;
 
 function SafeInfinity: Double; inline;
@@ -778,6 +779,19 @@ begin
   SinCos(AAngle, sa, ca);
   Result.X := Round(ca * APoint.X - sa * APoint.Y);
   Result.Y := Round(sa * APoint.X + ca * APoint.Y);
+end;
+
+function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, 4);
+  Result[0] := -ASize div 2;
+  Result[2] := Result[0] + ASize;
+  Result[1] := Point(Result[2].X, Result[0].Y);
+  Result[3] := Point(Result[0].X, Result[2].Y);
+  for i := 0 to High(Result) do
+    Result[i] := RotatePoint(Result[i], AAngle);
 end;
 
 function RoundChecked(A: Double): Integer;

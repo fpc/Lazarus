@@ -548,20 +548,10 @@ begin
 end;
 
 function TGenericChartMarks.GetLabelPolygon(ASize: TPoint): TPointArray;
-var
-  i: Integer;
-  a: Double;
 begin
   if IsMarginRequired then
     ASize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
-  SetLength(Result, 4);
-  Result[0] := -ASize div 2;
-  Result[2] := Result[0] + ASize;
-  Result[1] := Point(Result[2].X, Result[0].Y);
-  Result[3] := Point(Result[0].X, Result[2].Y);
-  a := LabelAngle;
-  for i := 0 to High(Result) do
-    Result[i] := RotatePoint(Result[i], a);
+  Result := RotateRect(ASize, LabelAngle);
 end;
 
 function TGenericChartMarks.IsMarginRequired: Boolean;
