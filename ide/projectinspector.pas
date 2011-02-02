@@ -30,6 +30,31 @@
 
   Abstract:
     TProjectInspectorForm is the form of the project inspector.
+
+  ToDo:
+    - hierachical view
+    - alpha sort
+    - filter
+    - show lfm/lrs files as sub items
+    - dnd move
+    - project groups:
+      - activate
+   popup menu:
+      - add
+      - remove
+      - copy file name
+      - save
+      - options
+      - activate
+      - compile
+      - build
+      - view source
+      - close
+      - remove project
+      - build sooner Ctrl+Up
+      - build later Ctrl+Down
+      - compile all from here
+      - build all from here
 }
 unit ProjectInspector;
 
