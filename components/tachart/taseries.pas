@@ -74,6 +74,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
@@ -140,6 +141,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -250,6 +252,7 @@ type
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
@@ -293,6 +296,7 @@ type
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
+    procedure Assign(ASource: TPersistent); override;
     procedure Draw(ACanvas: TCanvas); override;
     function IsEmpty: Boolean; override;
   published
@@ -564,6 +568,18 @@ end;
 
 { TConstantLine }
 
+procedure TConstantLine.Assign(ASource: TPersistent);
+begin
+  if ASource is TConstantLine then
+    with TConstantLine(ASource) do begin
+      Self.FLineStyle := FLineStyle;
+      Self.Pen := FPen;
+      Self.FPosGraph := FPosGraph;
+      Self.FUseBounds := FUseBounds;
+    end;
+  inherited Assign(ASource);
+end;
+
 constructor TConstantLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -681,6 +697,21 @@ begin
 end;
 
 { TBarSeries }
+
+procedure TBarSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TBarSeries then
+    with TBarSeries(ASource) do begin
+      Self.BarBrush := FBarBrush;
+      Self.FBarOffsetPercent := FBarOffsetPercent;
+      Self.BarPen := FBarPen;
+      Self.FBarWidthPercent := FBarWidthPercent;
+      Self.FBarWidthStyle := FBarWidthStyle;
+      Self.FOnBeforeDrawBar := FOnBeforeDrawBar;
+      Self.FZeroLevel := FZeroLevel;
+    end;
+  inherited Assign(ASource);
+end;
 
 procedure TBarSeries.BarOffsetWidth(
   AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
@@ -901,6 +932,20 @@ end;
 
 { TAreaSeries }
 
+procedure TAreaSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TAreaSeries then
+    with TAreaSeries(ASource) do begin
+      Self.AreaBrush := FAreaBrush;
+      Self.AreaContourPen := FAreaContourPen;
+      Self.AreaLinesPen := FAreaLinesPen;
+      Self.FConnectType := FConnectType;
+      Self.FUseZeroLevel := FUseZeroLevel;
+      Self.FZeroLevel := FZeroLevel;
+    end;
+  inherited Assign(ASource);
+end;
+
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1116,6 +1161,16 @@ begin
 end;
 
 { TUserDrawnSeries }
+
+procedure TUserDrawnSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TUserDrawnSeries then
+    with TUserDrawnSeries(ASource) do begin
+      Self.FOnDraw := FOnDraw;
+      Self.FOnGetBounds := FOnGetBounds;
+    end;
+  inherited Assign(ASource);
+end;
 
 procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
 begin
