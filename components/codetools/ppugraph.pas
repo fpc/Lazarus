@@ -181,7 +181,7 @@ end;
 
 constructor TPPUMember.Create;
 begin
-  KeyNode:=NodeMemManager.NewNode;
+  KeyNode:=TCodeTreeNode.Create;
   MainUses:=TStringList.Create;
   ImplementationUses:=TStringList.Create;
 end;
@@ -191,9 +191,7 @@ begin
   FreeAndNil(PPU);
   FreeAndNil(MainUses);
   FreeAndNil(ImplementationUses);
-  if KeyNode<>nil then
-    NodeMemManager.DisposeNode(KeyNode);
-  KeyNode:=nil;
+  FreeAndNil(KeyNode);
   if Group<>nil then
     Group.InternalRemoveMember(Self);
   inherited Destroy;
@@ -282,7 +280,7 @@ end;
 constructor TPPUGroup.Create;
 begin
   FMembers:=TAVLTree.Create(@ComparePPUMembersByUnitName);
-  KeyNode:=NodeMemManager.NewNode;
+  KeyNode:=TCodeTreeNode.Create;
   FUnitGraph:=TCodeGraph.Create;
 end;
 
@@ -291,9 +289,7 @@ begin
   Clear;
   FreeAndNil(FUnitGraph);
   FreeAndNil(FMembers);
-  if KeyNode<>nil then
-    NodeMemManager.DisposeNode(KeyNode);
-  KeyNode:=nil;
+  FreeAndNil(KeyNode);
   if Groups<>nil then
     Groups.InternalRemoveGroup(Self);
   inherited Destroy;

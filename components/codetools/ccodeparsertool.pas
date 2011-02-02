@@ -875,7 +875,7 @@ procedure TCCodeParserTool.CreateChildNode(Desc: TCCodeNodeDesc);
 var
   NewNode: TCodeTreeNode;
 begin
-  NewNode:=NodeMemManager.NewNode;
+  NewNode:=TCodeTreeNode.Create;
   Tree.AddNodeAsLastChild(CurNode,NewNode);
   NewNode.Desc:=Desc;
   CurNode:=NewNode;

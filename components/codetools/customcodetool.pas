@@ -2119,7 +2119,7 @@ end;
 procedure TCustomCodeTool.CreateChildNode;
 var NewNode: TCodeTreeNode;
 begin
-  NewNode:=NodeMemManager.NewNode;
+  NewNode:=TCodeTreeNode.Create;
   Tree.AddNodeAsLastChild(CurNode,NewNode);
   CurNode:=NewNode;
   CurNode.StartPos:=CurPos.StartPos;

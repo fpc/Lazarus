@@ -295,17 +295,6 @@ type
   end;
 
 
-  { TCodeTreeNodeMemManager - memory system for TCodeTreeNode(s) }
-
-  TCodeTreeNodeMemManager = class(TCodeToolMemManager)
-  protected
-    procedure FreeFirstItem; override;
-  public
-    procedure DisposeNode(ANode: TCodeTreeNode);
-    function NewNode: TCodeTreeNode;
-  end;
-
-
   { TCodeTreeNodeExtMemManager - memory system for TCodeTreeNodeExtension(s) }
 
   TCodeTreeNodeExtMemManager = class(TCodeToolMemManager)
@@ -320,7 +309,6 @@ type
 
 var
   NodeExtMemManager: TCodeTreeNodeExtMemManager;
-  NodeMemManager: TCodeTreeNodeMemManager;
 
 //-----------------------------------------------------------------------------
 // useful functions
@@ -855,7 +843,8 @@ begin
   end;
   if ANode=Root then Root:=nil;
   dec(FNodeCount);
-  NodeMemManager.DisposeNode(ANode);
+  ANode.Clear; // clear to spot dangling pointers early
+  ANode.Free;
 end;
 
 procedure TCodeTree.AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
@@ -1008,54 +997,6 @@ begin
     +MemSizeString(ExtTxt3);
 end;
 
-{ TCodeTreeNodeMemManager }
-
-function TCodeTreeNodeMemManager.NewNode: TCodeTreeNode;
-begin
-  if FFirstFree<>nil then begin
-    // take from free list
-    Result:=TCodeTreeNode(FFirstFree);
-    TCodeTreeNode(FFirstFree):=Result.NextBrother;
-    Result.NextBrother:=nil;
-    dec(FFreeCount);
-  end else begin
-    // free list empty -> create new node
-    Result:=TCodeTreeNode.Create;
-    {$IFDEF DebugCTMemManager}
-    inc(FAllocatedCount);
-    {$ENDIF}
-  end;
-  inc(FCount);
-end;
-
-procedure TCodeTreeNodeMemManager.DisposeNode(ANode: TCodeTreeNode);
-begin
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
-    // add ANode to Free list
-    ANode.Clear;
-    ANode.NextBrother:=TCodeTreeNode(FFirstFree);
-    TCodeTreeNode(FFirstFree):=ANode;
-    inc(FFreeCount);
-  end else begin
-    // free list full -> free the ANode
-    ANode.Clear;// clear the node, so that dangling pointers can be spotted early
-    ANode.Free;
-    {$IFDEF DebugCTMemManager}
-    inc(FFreedCount);
-    {$ENDIF}
-  end;
-  dec(FCount);
-end;
-
-procedure TCodeTreeNodeMemManager.FreeFirstItem;
-var ANode: TCodeTreeNode;
-begin
-  ANode:=TCodeTreeNode(FFirstFree);
-  TCodeTreeNode(FFirstFree):=ANode.NextBrother;
-  ANode.Free;
-end;
-
 { TCodeTreeNodeExtMemManager }
 
 function TCodeTreeNodeExtMemManager.NewNode: TCodeTreeNodeExtension;
@@ -1116,14 +1057,12 @@ end;
 
 procedure InternalInit;
 begin
-  NodeMemManager:=TCodeTreeNodeMemManager.Create;
   NodeExtMemManager:=TCodeTreeNodeExtMemManager.Create;
 end;
 
 procedure InternalFinal;
 begin
   FreeAndNil(NodeExtMemManager);
-  FreeAndNil(NodeMemManager);
 end;
 
 

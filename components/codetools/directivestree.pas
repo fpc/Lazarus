@@ -650,7 +650,7 @@ procedure TCompilerDirectivesTree.CreateChildNode(
   SubDesc: TCompilerDirectiveNodeDesc);
 var NewNode: TCodeTreeNode;
 begin
-  NewNode:=NodeMemManager.NewNode;
+  NewNode:=TCodeTreeNode.Create;
   Tree.AddNodeAsLastChild(CurNode,NewNode);
   NewNode.Desc:=Desc;
   NewNode.SubDesc:=SubDesc;
@@ -1653,7 +1653,7 @@ begin
     ParentNode:=Tree.Root;
   while (ParentNode<>Tree.Root) and (ParentNode.EndPos=Position) do
     ParentNode:=ParentNode.Parent;
-  Result:=NodeMemManager.NewNode;
+  Result:=TCodeTreeNode.Create;
   Result.Desc:=cdnDefine;
   Result.SubDesc:=SubDesc;
   Result.StartPos:=FindNextCompilerDirective(Src,Position,NestedComments);
