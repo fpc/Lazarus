@@ -1095,6 +1095,7 @@ var
   MainList,ChildList: PGList;
   Title: String;
   ActiveWindow: HWND;
+  QuotedMessage: Pgchar;
 
   procedure CreateButton(const ALabel : String; const AResponse: Integer);
   var
@@ -1145,7 +1146,11 @@ begin
   Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
     nil);
 
-  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
+  // Can't pass message string to gtk_message_dialog_new, as % chars are interpreted
+  // gtk_message_dialog_set_markup interpets HTML, so we need to quote that
+  QuotedMessage := g_markup_escape_text(PGChar(DialogMessage), Length(DialogMessage));
+  gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), QuotedMessage);
+  g_free(QuotedMessage);
   g_signal_connect(PGtkObject(Dialog), 'delete-event',
     TGtkSignalFunc(@PromptUserBoxClosed),
     @ADialogResult);
