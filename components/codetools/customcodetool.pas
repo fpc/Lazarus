@@ -582,7 +582,7 @@ begin
     begin
       if (SubDesc and ctnsNeedJITParsing)>0 then Result:=ctsUnparsed;
     end;
-  ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
+  ctnClass,ctnObject,ctnRecordType,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
   ctnCPPClass,ctnClassInterface,ctnDispinterface:
     begin
       Result:='';

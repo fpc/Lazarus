@@ -350,7 +350,8 @@ begin
   {$ENDIF}
   // first test if in a class
   ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface,
-      ctnDispinterface,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
+      ctnDispinterface,ctnObject,ctnRecordType,
+      ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
       ctnCPPClass]);
   if ClassNode<>nil then begin
     // cursor is in class/object/interface definition
@@ -792,7 +793,7 @@ begin
             cmp:=false;
         end;
         if cmp and (phpIgnoreMethods in Attr) then begin
-          if (ANode.GetNodeOfTypes([ctnClass,ctnObject,
+          if (ANode.GetNodeOfTypes([ctnClass,ctnObject,ctnRecordType,
                                 ctnObjCClass,ctnObjCCategory,ctnCPPClass])<>nil)
           or (ExtractClassNameOfProcNode(ANode)<>'')
           then

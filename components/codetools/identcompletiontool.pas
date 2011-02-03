@@ -1598,8 +1598,9 @@ var
 begin
   Node:=Context.Node;
   //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+
   case Node.Desc of
-  ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
+  ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
   ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
     begin
       Add('public');
@@ -1609,8 +1610,13 @@ begin
       Add('procedure');
       Add('function');
       Add('property');
-      Add('constructor');
-      Add('destructor');
+      if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
+        Add('constructor');
+        Add('destructor');
+      end;
+      if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
+        Add('case');
+      end;
       if (Node.LastChild<>nil) and (CleanPos>Node.LastChild.StartPos)
       and (Node.LastChild.EndPos>Node.LastChild.StartPos)
       and (Node.LastChild.EndPos<Srclen) then begin
@@ -1656,7 +1662,7 @@ begin
     end;
 
   ctnVarDefinition:
-    if Node.Parent.Desc in [ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass]
+    if Node.Parent.Desc in [ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass]
       +AllClassBaseSections
     then begin
       Add('public');
@@ -1666,8 +1672,13 @@ begin
       Add('procedure');
       Add('function');
       Add('property');
-      Add('constructor');
-      Add('destructor');
+      if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
+        Add('constructor');
+        Add('destructor');
+      end;
+      if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
+        Add('case');
+      end;
     end;
 
   ctnProperty:
@@ -2789,7 +2800,7 @@ var
   ANode: TCodeTreeNode;
 begin
   Result:=false;
-  if GetDesc in (AllClasses+[ctnRecordType]) then begin
+  if GetDesc in AllClasses then begin
     Result:=true;
     exit;
   end;
@@ -2798,7 +2809,7 @@ begin
   UpdateBaseContext;
   if (BaseExprType.Desc=xtContext)
     and (BaseExprType.Context.Node<>nil)
-    and (BaseExprType.Context.Node.Desc in (AllClasses+[ctnRecordType]))
+    and (BaseExprType.Context.Node.Desc in AllClasses)
   then
     Include(Flags,iliHasChilds);
   Result:=true;

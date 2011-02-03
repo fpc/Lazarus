@@ -141,8 +141,8 @@ type
     procedure ReadConst;
     // types
     procedure ReadEqualsType;
-    function KeyWordFuncClass: boolean;
-    function KeyWordFuncClassInterface: boolean;
+    function KeyWordFuncTypeClass: boolean;
+    function KeyWordFuncTypeClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
     function KeyWordFuncTypeBitPacked: boolean;
     function KeyWordFuncSpecialize: boolean;
@@ -153,7 +153,7 @@ type
     function KeyWordFuncTypeType: boolean;
     function KeyWordFuncTypeFile: boolean;
     function KeyWordFuncTypePointer: boolean;
-    function KeyWordFuncTypeRecord: boolean;
+    function KeyWordFuncTypeRecordOld: boolean;
     function KeyWordFuncTypeRecordCase: boolean;
     function KeyWordFuncTypeDefault: boolean;
     // procedures/functions/methods
@@ -399,34 +399,34 @@ begin
     if CompareSrcIdentifiers('BITPACKED',p) then exit(KeyWordFuncTypeBitPacked);
   'C':
     case UpChars[p[1]] of
-    'L': if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClass);
-    'P': if CompareSrcIdentifiers('CPPCLASS',p) then exit(KeyWordFuncClass);
+    'L': if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncTypeClass);
+    'P': if CompareSrcIdentifiers('CPPCLASS',p) then exit(KeyWordFuncTypeClass);
     end;
   'D':
-    if CompareSrcIdentifiers('DISPINTERFACE',p) then exit(KeyWordFuncClassInterface);
+    if CompareSrcIdentifiers('DISPINTERFACE',p) then exit(KeyWordFuncTypeClassInterface);
   'F':
     case UpChars[p[1]] of
     'I': if CompareSrcIdentifiers('FILE',p) then exit(KeyWordFuncTypeFile);
     'U': if CompareSrcIdentifiers('FUNCTION',p) then exit(KeyWordFuncTypeProc);
     end;
   'I':
-    if CompareSrcIdentifiers('INTERFACE',p) then exit(KeyWordFuncClassInterface);
+    if CompareSrcIdentifiers('INTERFACE',p) then exit(KeyWordFuncTypeClassInterface);
   'L':
     if CompareSrcIdentifiers('LABEL',p) then exit(KeyWordFuncTypeLabel);
   'O':
     if CompareSrcIdentifiers('OBJECT',p)
     or CompareSrcIdentifiers('OBJCCLASS',p)
     or CompareSrcIdentifiers('OBJCCATEGORY',p) then
-      exit(KeyWordFuncClass)
+      exit(KeyWordFuncTypeClass)
     else if CompareSrcIdentifiers('OBJCPROTOCOL',p) then
-      exit(KeyWordFuncClassInterface);
+      exit(KeyWordFuncTypeClassInterface);
   'P':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
     'R': if CompareSrcIdentifiers('PROCEDURE',p) then exit(KeyWordFuncTypeProc);
     end;
   'R':
-    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncTypeRecord);
+    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncTypeClass);
   'S':
     case UpChars[p[1]] of
     'E': if CompareSrcIdentifiers('SET',p) then exit(KeyWordFuncTypeSet);
@@ -441,7 +441,7 @@ end;
 
 function TPascalParserTool.ParseInnerClass(StartPos, WordLen: integer
   ): boolean;
-// KeyWordFunctions for parsing in a class/object
+// KeyWordFunctions for parsing in a class/object/record
 var
   p: PChar;
 begin
@@ -450,6 +450,7 @@ begin
   case UpChars[p^] of
   'C':
     case UpChars[p[1]] of
+    'A': if CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
     'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod)
          else if CompareSrcIdentifiers(p,'CONST') then exit(KeyWordFuncClassConstSection);
@@ -3614,11 +3615,8 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncClass: boolean;
-// class, object
-//   this is a quick parser, which will only create one node for each class
-//   the nodes for the methods and properties are created in a second
-//   parsing phase (in KeyWordFuncClassMethod)
+function TPascalParserTool.KeyWordFuncTypeClass: boolean;
+// class, object, record
 var
   ClassAtomPos: TAtomPosition;
   ContextDesc: Word;
@@ -3626,23 +3624,13 @@ var
   ClassDesc: TCodeTreeNodeDesc;
   ClassNode: TCodeTreeNode;
 begin
-  ContextDesc:=CurNode.Desc;
-  if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
-    ctnVarDefinition,ctnConstDefinition])
-  then
-    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
-  if CurNode.Parent.Desc<>ctnTypeSection then
-    SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,['class']);
-  if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
-    ClassAtomPos:=LastAtoms.GetValueAt(0);
-  end else begin
-    ClassAtomPos:=CurPos;
-  end;
   // class or 'class of' start found
   if UpAtomIs('CLASS') then
     ClassDesc:=ctnClass
   else if UpAtomIs('OBJECT') then
     ClassDesc:=ctnObject
+  else if UpAtomIs('RECORD') then
+    ClassDesc:=ctnRecordType
   else if UpAtomIs('OBJCCLASS') then
     ClassDesc:=ctnObjCClass
   else if UpAtomIs('OBJCCATEGORY') then
@@ -3651,13 +3639,26 @@ begin
     ClassDesc:=ctnCPPClass
   else
     RaiseStringExpectedButAtomFound('class');
+  ContextDesc:=CurNode.Desc;
+  if ClassDesc<>ctnRecordType then begin
+    if not (ContextDesc in [ctnTypeDefinition,ctnGenericType])
+    then
+      SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
+    if CurNode.Parent.Desc<>ctnTypeSection then
+      SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,[GetAtom]);
+  end;
+  if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
+    ClassAtomPos:=LastAtoms.GetValueAt(0);
+  end else begin
+    ClassAtomPos:=CurPos;
+  end;
   CreateChildNode;
   ClassNode:=CurNode;
   CurNode.Desc:=ClassDesc;
   CurNode.StartPos:=ClassAtomPos.StartPos;
   IsForward:=true;
   ReadNextAtom;
-  if UpAtomIs('OF') then begin
+  if (ClassDesc=ctnClass) and UpAtomIs('OF') then begin
     IsForward:=false;
     CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
@@ -3691,7 +3692,7 @@ begin
           ReadNextAtom;
         end;
       end
-      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass]) then
+      else if UpAtomIs('EXTERNAL') and (ClassDesc=ctnObjCClass) then
       begin
         CreateChildNode;
         CurNode.Desc:=ctnClassExternal;
@@ -3775,7 +3776,7 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncClassInterface: boolean;
+function TPascalParserTool.KeyWordFuncTypeClassInterface: boolean;
 // class interface, dispinterface
 var
   IntfAtomPos: TAtomPosition;
@@ -4187,7 +4188,7 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
+function TPascalParserTool.KeyWordFuncTypeRecordOld: boolean;
 { read variable type 'record'
 
   examples:
@@ -4256,10 +4257,45 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
+{ after parsing CurPos is on the atom behind the case
+
+  record
+    i: packed record
+         j: integer;
+         k: record end;
+         case y: integer of
+           0: (a: integer);
+           1,2,3: (b: array[char] of char; c: char);
+           3: ( d: record
+                     case byte of
+                       10: (i: integer; );
+                       11: (y: byte);
+                   end; );
+           4: (e: integer;
+                 case z of
+                 8: (f: integer)
+               );
+       end;
+  end;
+}
+
+  procedure RaiseCaseOnlyAllowedInRecords;
+  begin
+    SaveRaiseException('Case only allowed in records');
+  end;
+
 begin
   if not UpAtomIs('CASE') then
     SaveRaiseException('[TPascalParserTool.KeyWordFuncTypeRecordCase] '
       +'internal error');
+  if (CurNode.Parent.Desc=ctnRecordVariant)
+  or ((CurNode.Parent.Desc in AllClassSections)
+      and (CurNode.Parent.Parent.Desc=ctnRecordType))
+  then begin
+    // ok
+  end else begin
+    RaiseCaseOnlyAllowedInRecords;
+  end;
   CreateChildNode;
   CurNode.Desc:=ctnRecordCase;
   ReadNextAtom; // read ordinal type
@@ -4335,7 +4371,7 @@ begin
       ReadNextAtom;
     until false;
     ReadNextAtom;
-    if (CurPos.Flag in [cafEnd,cafRoundBracketClose]) then begin
+    if (CurPos.Flag in [cafEnd,cafRoundBracketClose,cafEdgedBracketClose]) then begin
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode; // close variant
       break;

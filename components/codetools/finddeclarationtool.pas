@@ -1681,8 +1681,7 @@ begin
         exit;
       end;
 
-      if (not (Context.Node.Desc in (AllClasses+[ctnRecordType])))
-      then begin
+      if (not (Context.Node.Desc in AllClasses)) then begin
         debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath failed Context=',Context.Node.DescAsString]);
         exit;
       end;
@@ -2189,7 +2188,8 @@ begin
         TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
         if TypeNode<>nil then begin
           case TypeNode.Desc of
-          ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+          ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface,
+          ctnObject, ctnRecordType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             begin
               NewTool.MoveCursorToNodeStart(TypeNode);
@@ -2309,7 +2309,7 @@ begin
     Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
     FindContext:=FindBaseTypeOfNode(Params,ANode);
     if (FindContext.Node<>nil)
-    and ((FindContext.Node.Desc in ([ctnRecordType,ctnEnumerationType]+AllClasses)))
+    and ((FindContext.Node.Desc in ([ctnEnumerationType]+AllClasses)))
     and (FindContext.Node.FirstChild<>nil)
     then
       Result:=true;
@@ -4568,10 +4568,6 @@ begin
       Result:=InNodeIdentifier(CurPos.StartPos);
     end;
 
-  ctnBeginBlock,ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnCPPClass:
-    if (Node.SubDesc and ctnsForwardDeclaration)>0 then
-      RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
-    
   end;
 end;
 
@@ -5199,7 +5195,7 @@ begin
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
   or (not (WithVarExpr.Context.Node.Desc
-           in (AllClasses+[ctnRecordType,ctnEnumerationType])))
+           in (AllClasses+[ctnEnumerationType])))
   then begin
     MoveCursorToCleanPos(WithVarNode.StartPos);
     RaiseException(ctsExprTypeMustBeClassOrRecord);
@@ -6839,7 +6835,7 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+    ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
     ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
     ctnProperty, ctnGlobalProperty:
       begin
@@ -8384,7 +8380,7 @@ begin
           // same context type
           case ExprNode.Desc of
           
-          ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+          ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             // check, if ExpressionType.Context is descend of TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
@@ -9530,7 +9526,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator ClassContext=',FindContextToString(ClassContext)]);
     {$ENDIF}
     case ClassContext.Node.Desc of
-    ctnClass,ctnObject,ctnClassInterface: ;
+    ctnClass,ctnObject,ctnRecordType,ctnClassInterface: ;
     else
       OperatorTool.MoveCursorToNodeStart(OperatorNode);
       OperatorTool.RaiseException('operator enumerator result type is not object');
@@ -9940,7 +9936,7 @@ begin
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
 
-        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
           if (FindContext.Node.Parent<>nil)
           and (FindContext.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])

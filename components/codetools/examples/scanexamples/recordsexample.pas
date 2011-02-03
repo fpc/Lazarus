@@ -3,15 +3,18 @@ program RecordsExample;
 {$mode objfpc}{$H+}
 {$modeswitch advancedrecords} // {$mode delphi} has it automatically
 
+uses
+  Classes, SysUtils;
+
 // advanced records
 type
   TRec1 = record
-    hWnd : HWND;
+    hWnd : integer;
   private
     F1: Integer;
     F2: Byte;
   public
-    type
+   { type
       TBar = Integer;
     const
       C: TBar = 1;
@@ -26,29 +29,41 @@ type
     var
       F: Int;
     const
-      DefaultF: Int = 1;
+      DefaultF: Int = 1;}
   public
-    function GetF: Int;
-    procedure SetF(const Value: Int);
+    function GetF: integer;
+    procedure SetF(const Value: integer);
     // full list of operators see in tests/test/terecs6.pp
     class operator Inc(Rec: TRec1): TRec1;
+  public
+    case y: integer of
+      0: (a: integer);
+      1,2,3: (b: array[char] of char; c: char);
+      3: ( d: record
+                case byte of
+                  10: (i: integer; );
+                  11: (y: byte);
+              end; );
+      4: (e: integer;
+            case byte of
+            8: (f: integer)
+          );
   end;
 
-function TRec1.GetF: Int;
+function TRec1.GetF: integer;
 begin
-  Result := F;
+  Result := F1;
 end;
 
-procedure TRec1.SetF(const Value: Int);
+procedure TRec1.SetF(const Value: integer);
 begin
-  F := Value;
+  F1 := Value;
 end;
 
 class operator TRec1.Inc(Rec: TRec1): TRec1;
 begin
-  Result.F := Rec.F + 1;
+  Result.F1 := Rec.F1 + 1;
 end;
-
 
 begin
 end.

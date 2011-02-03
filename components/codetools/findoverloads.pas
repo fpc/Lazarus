@@ -161,7 +161,7 @@ begin
   while ParentCodeNode<>nil do begin
     //DebugLn(['TDeclarationOverloadsGraph.AddContext ',ParentCodeNode.DescAsString]);
     if ParentCodeNode.Desc in
-      AllSourceTypes+AllClasses+[ctnRecordType]
+      AllSourceTypes+AllClasses
     then begin
       //DebugLn(['TDeclarationOverloadsGraph.AddContext ADD parent']);
       ParentGraphNode:=AddContext(Tool,ParentCodeNode);

@@ -158,12 +158,10 @@ const
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
   AllClassSections =
     AllClassBaseSections+[ctnClassConst, ctnClassType, ctnClassVar, ctnClassClassVar];
-  AllClasses =
-     [ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
-      ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
-      ctnCPPClass];
   AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
-  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnCPPClass];
+  AllClassObjects = [ctnClass,ctnObject,ctnRecordType,
+                     ctnObjCClass,ctnObjCCategory,ctnCPPClass];
+  AllClasses = AllClassObjects+AllClassObjects;
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed, ctnClassExternal];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
@@ -175,7 +173,7 @@ const
   AllPascalTypes =
      AllClasses+
      [ctnGenericType,ctnSpecialize,
-      ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,ctnRecordType,
+      ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,
       ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
@@ -184,8 +182,7 @@ const
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement];
   AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections + AllClasses +
      [ctnProcedure];
-  AllPointContexts = AllClasses+AllSourceTypes+[ctnRecordType,
-                                               ctnEnumerationType,ctnInterface];
+  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface];
 
 
   // CodeTreeNodeSubDescriptors
