@@ -5859,6 +5859,7 @@ begin
           end;
         end else begin
           // insert as first variable/proc
+          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts ',ClassSectionNode.DescAsString,' ',dbgstr(copy(Src,ClassSectionNode.StartPos,ClassSectionNode.EndPos-ClassSectionNode.StartPos))]);
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
           InsertPos:=ClassSectionNode.StartPos;
@@ -5867,7 +5868,10 @@ begin
           then begin
             // the first published section has no keyword
             if ClassSectionNode.NextBrother<>nil then
-              Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
+              Indent:=GetLineIndent(Src,ClassSectionNode.NextBrother.StartPos)
+                      +ASourceChangeCache.BeautifyCodeOptions.Indent
+            else
+              Indent:=GetLineIndent(Src,ClassSectionNode.Parent.StartPos)
                       +ASourceChangeCache.BeautifyCodeOptions.Indent;
           end else if (ClassSectionNode.Desc in (AllClassBaseSections+[ctnClassType]))
           then begin

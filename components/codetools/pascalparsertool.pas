@@ -3727,7 +3727,6 @@ begin
     // start the first class section (always published)
     CreateChildNode;
     CurNode.Desc:=ctnClassPublished;
-    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
     // parse till "end" of class/object
