@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TASeries, TATools;
+  Graphics, Dialogs, TAGraph, TASeries, TATools, Types;
 
 type
 
@@ -16,12 +16,15 @@ type
     Chart1: TChart;
     Chart1LineSeries1: TLineSeries;
     ChartToolset1: TChartToolset;
+    ChartToolset1DataPointClickTool1: TDataPointClickTool;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
     cbSorted: TCheckBox;
     Panel1: TPanel;
     procedure cbSortedChange(Sender: TObject);
     procedure Chart1LineSeries1GetMark(out AFormattedMark: String;
       AIndex: Integer);
+    procedure ChartToolset1DataPointClickTool1PointClick(ATool: TChartTool;
+      APoint: TPoint);
     procedure FormCreate(Sender: TObject);
   end;
 
@@ -50,6 +53,12 @@ begin
       AFormattedMark := Source.FormatItem(Marks.Format, AIndex)
   else
     AFormattedMark := '';
+end;
+
+procedure TForm1.ChartToolset1DataPointClickTool1PointClick(
+  ATool: TChartTool; APoint: TPoint);
+begin
+  Chart1LineSeries1.SetColor(ChartToolset1DataPointClickTool1.PointIndex, clRed);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
