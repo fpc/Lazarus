@@ -14,7 +14,7 @@ type
     F1: Integer;
     F2: Byte;
   public
-   { type
+    type
       TBar = Integer;
     const
       C: TBar = 1;
@@ -29,7 +29,7 @@ type
     var
       F: Int;
     const
-      DefaultF: Int = 1;}
+      DefaultF: Int = 1;
   public
     function GetF: integer;
     procedure SetF(const Value: integer);
@@ -70,17 +70,17 @@ type
 
 function TRec1.GetF: integer;
 begin
-  Result := F1;
+  Result := F;
 end;
 
 procedure TRec1.SetF(const Value: integer);
 begin
-  F1 := Value;
+  F := Value;
 end;
 
 class operator TRec1.Inc(Rec: TRec1): TRec1;
 begin
-  Result.F1 := Rec.F1 + 1;
+  Result.F := Rec.F + 1;
 end;
 
 begin
