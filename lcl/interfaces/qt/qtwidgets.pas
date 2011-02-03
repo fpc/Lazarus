@@ -3082,8 +3082,9 @@ begin
     not (TCustomForm(LCLObject).FormStyle in [fsMDIChild,fsSplash]) then
   begin
     ACurrPos := getPos;
+    // do not send garbage to LCL. This window isn't decorated yet by WM.
     if (ACurrPos.X = WindowRect.Left) and (ACurrPos.Y = WindowRect.Top) then
-      OffsetRect(FrameRect,-WindowRect.Left,-WindowRect.Top);
+      exit;
   end;
   {$ENDIF}
 
