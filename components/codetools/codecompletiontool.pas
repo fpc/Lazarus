@@ -4820,7 +4820,7 @@ begin
   ClassProcs:=nil;
   try
     // gather body nodes
-    TypeSectionNode:=CodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
+    TypeSectionNode:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
                          ExtractClassName(CodeCompleteClassNode,true));
@@ -6415,7 +6415,7 @@ var
   
   procedure GatherExistingClassProcBodies;
   begin
-    TypeSectionNode:=CodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
+    TypeSectionNode:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
@@ -6616,10 +6616,7 @@ var
       StartSearchProc:=ImplementationNode.FirstChild;
     end else begin
       // class is not in interface section
-      StartSearchProc:=CodeCompleteClassNode;
-      while (StartSearchProc.Parent<>nil)
-      and (StartSearchProc.Desc<>ctnTypeSection) do
-        StartSearchProc:=StartSearchProc.Parent;
+      StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
     end;
     case ASourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy of
     fpipInFrontOfMethods:
@@ -6913,7 +6910,6 @@ var
   OldCodePos: TCodePosition;
   CursorNode: TCodeTreeNode;
   CurClassName: String;
-  ANode: TCodeTreeNode;
   ProcNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -6941,22 +6937,12 @@ begin
     CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
     // due to insertions in front of the class, the cursor position could
     // have changed
-    while (CursorNode<>nil) do begin
-      if (CursorNode.Desc=ctnTypeSection)
-      or ((CursorNode.Parent<>nil) and (CursorNode.Parent.Desc=ctnTypeSection))
-      then break;
-      CursorNode:=CursorNode.Parent;
-    end;
+    if CursorNode<>nil then
+      CursorNode:=CursorNode.GetTopMostNodeOfType(ctnTypeSection);
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    ANode:=CodeCompleteClassNode.GetNodeOfTypes(
-                                            [ctnTypeDefinition,ctnGenericType]);
-    if ANode=nil then
-      RaiseException(ctsClassNodeWithoutParentNode);
-    if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
-      ANode:=ANode.Parent;
-    ProcNode:=FindProcNode(ANode,FJumpToProcName,
+    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,
                            [phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then
       RaiseException(ctsNewProcBodyNotFound);

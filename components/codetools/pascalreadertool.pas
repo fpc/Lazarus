@@ -654,7 +654,7 @@ begin
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
-    StartNode:=ClassNode.GetNodeOfType(ctnTypeSection)
+    StartNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection)
   end else if NodeIsMethodBody(ProcNode) then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Method ',ExtractClassNameOfProcNode(ProcNode));
     // in a method body -> search in class
@@ -1863,6 +1863,7 @@ end;
 
 function TPascalReaderTool.NodeIsIdentifierInInterface(Node: TCodeTreeNode
   ): boolean;
+// true if identifier is visible from other units (without prefixing)
 begin
   case Node.Desc of
   ctnEnumIdentifier:

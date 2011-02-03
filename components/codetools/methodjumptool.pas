@@ -563,10 +563,7 @@ begin
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4F ');
         {$ENDIF}
         // gather method bodies
-        TypeSectionNode:=ClassNode.Parent;
-        if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
-        and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
-          TypeSectionNode:=TypeSectionNode.Parent;
+        TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
         SearchForNodes:=GatherProcNodes(TypeSectionNode,
            [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
            ExtractClassName(ClassNode,true));
