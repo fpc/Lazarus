@@ -241,6 +241,7 @@ type
     function HasAsRoot(RootNode: TCodeTreeNode): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetTopMostNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
     function DescAsString: string;
@@ -741,6 +742,20 @@ begin
     for i:=Low(Descriptors) to High(Descriptors) do
       if Result.Desc=Descriptors[i] then exit;
     Result:=Result.Parent;
+  end;
+end;
+
+function TCodeTreeNode.GetTopMostNodeOfType(ADesc: TCodeTreeNodeDesc
+  ): TCodeTreeNode;
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=nil;
+  Node:=Self;
+  while Node<>nil do begin
+    if Node.Desc=ADesc then
+      Result:=Node;
+    Node:=Node.Parent;
   end;
 end;
 

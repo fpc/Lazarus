@@ -3797,10 +3797,6 @@ begin
       ReadClassInheritance(true);
     end else
       UndoReadNextAtom;
-    // start the first class section (always published)
-    CreateChildNode;
-    CurNode.Desc:=ctnClassPublished;
-    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
     ReadNextAtom;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
@@ -3814,9 +3810,6 @@ begin
       end;
       ReadNextAtom;
     until false;
-    // end last class section (public, private, ...)
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
   end else begin
     // forward definition
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;

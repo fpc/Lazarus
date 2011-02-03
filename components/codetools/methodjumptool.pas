@@ -349,11 +349,14 @@ begin
   DebugLn('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
   {$ENDIF}
   // first test if in a class
-  ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnObject,
-                                     ctnObjCClass,ctnObjCCategory,ctnCPPClass]);
+  ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface,
+      ctnDispinterface,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
+      ctnCPPClass]);
   if ClassNode<>nil then begin
-    // cursor is in class/object definition
-    // search in all implemented class procedures for the body 
+    // cursor is in class/object/interface definition
+    // Interfaces have no method bodies, but if the class was refactored it has
+    // and then jumping is a nide feature
+    // => search in all implemented class procedures for the body
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint D ',NodeDescriptionAsString(ClassNode.Desc));
     {$ENDIF}
@@ -362,7 +365,7 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint E ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
-    TypeSectionNode:=ClassNode.GetNodeOfType(ctnTypeSection);
+    TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
     // search the method node under the cursor
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true).
                                                     GetNodeOfType(ctnProcedure);

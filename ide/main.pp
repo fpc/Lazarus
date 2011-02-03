@@ -970,7 +970,7 @@ type
         deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     procedure ApplyCodeToolChanges;
-    procedure DoJumpToProcedureSection;
+    procedure DoJumpToOtherProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
@@ -3104,7 +3104,7 @@ begin
 
   ecFindProcedureDefinition,
   ecFindProcedureMethod:
-    DoJumpToProcedureSection;
+    DoJumpToOtherProcedureSection;
 
   ecFindDeclaration:
     DoFindDeclarationAtCursor;
@@ -14522,7 +14522,7 @@ begin
   CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
 end;
 
-procedure TMainIDE.DoJumpToProcedureSection;
+procedure TMainIDE.DoJumpToOtherProcedureSection;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
@@ -14542,8 +14542,9 @@ begin
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, not RevertableJump);
-  end else
+  end else begin
     DoJumpToCodeToolBossError;
+  end;
 end;
 
 procedure TMainIDE.DoJumpToCodeToolBossError;
