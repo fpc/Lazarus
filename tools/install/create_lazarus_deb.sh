@@ -97,10 +97,10 @@ if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
 # build for default platform
-make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
+make packager/registration lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 # build gtk1 .ppu
 export LCL_PLATFORM=gtk
-make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
+make packager/registration lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 # build IDE
 export LCL_PLATFORM=$LCLWidgetset
