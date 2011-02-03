@@ -226,7 +226,6 @@ type
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
-    procedure BuildSubTreeForClassOld(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
@@ -708,127 +707,6 @@ begin
   CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   CurrentPhase:=CodeToolPhaseTool;
-end;
-
-procedure TPascalParserTool.BuildSubTreeForClassOld(ClassNode: TCodeTreeNode);
-// reparse a quick parsed class and build the child nodes
-
-  procedure RaiseClassDescInvalid;
-  begin
-    MoveCursorToNodeStart(ClassNode);
-    RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
-                   +ClassNode.DescAsString,true);
-  end;
-
-  procedure RaiseClassKeyWordExpected;
-  begin
-    RaiseException(
-        'TPascalParserTool.BuildSubTreeForClass:'
-       +' class/object keyword expected, but '+GetAtom+' found',true);
-  end;
-  
-var OldPhase: integer;
-begin
-  if not (ClassNode.Desc in AllClasses) then
-    RaiseClassDescInvalid;
-  if (ClassNode.SubDesc and ctnsNeedJITParsing)=0 then begin
-    // class already parsed
-    if (ctnsHasParseError and ClassNode.SubDesc)>0 then
-      RaiseNodeParserError(ClassNode);
-    exit;
-  end;
-  // avoid endless loop
-  OldPhase:=CurrentPhase;
-  CurrentPhase:=CodeToolPhaseParse;
-  try
-    ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
-    // set CursorPos after class head
-    MoveCursorToNodeStart(ClassNode);
-    // parse
-    //   - sealed, abstract, external
-    //   - inheritage
-    //   - class sections (GUID, type, var, public, published, private, protected)
-    //   - methods (procedures, functions, constructors, destructors)
-
-    // read the "class"/"object" keyword
-    ReadNextAtom;
-    if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
-    if not (UpAtomIs('CLASS') or UpAtomIs('OBJECT') or UpAtomIs('OBJCCLASS')
-           or UpAtomIs('OBJCCATEGORY') or UpAtomIs('CPPCLASS')
-           or UpAtomIs('INTERFACE') or UpAtomIs('OBJCPROTOCOL'))
-    then
-      RaiseClassKeyWordExpected;
-    ReadNextAtom;
-    // parse modifiers
-    if CurPos.Flag=cafWord then begin
-      if UpAtomIs('SEALED') then begin
-        while UpAtomIs('SEALED') do begin
-          CreateChildNode;
-          CurNode.Desc:=ctnClassSealed;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          ReadNextAtom;
-        end;
-      end else if UpAtomIs('ABSTRACT') then begin
-        while UpAtomIs('ABSTRACT') do begin
-          CreateChildNode;
-          CurNode.Desc:=ctnClassAbstract;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          ReadNextAtom;
-        end;
-      end
-      else if UpAtomIs('EXTERNAL') and (ClassNode.Desc in [ctnObjCClass]) then
-      begin
-        CreateChildNode;
-        CurNode.Desc:=ctnClassExternal;
-        ReadNextAtom;
-        if UpAtomIs('NAME') then begin
-          ReadNextAtom;
-          ReadConstant(true,false,[]);
-        end;
-        CurNode.EndPos:=CurPos.StartPos;
-        EndChildNode;
-      end;
-    end;
-    // parse the inheritage
-    if CurPos.Flag=cafRoundBracketOpen then
-      ReadClassInheritance(true)
-    else
-      UndoReadNextAtom;
-    // clear the last atoms
-    LastAtoms.Clear;
-    // start the first class section (always published)
-    CreateChildNode;
-    CurNode.Desc:=ctnClassPublished;
-    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
-    ReadNextAtom;
-    if CurPos.Flag=cafEdgedBracketOpen then
-      ReadGUID;
-    // parse till "end" of class/object
-    repeat
-      //DebugLn(['TPascalParserTool.BuildSubTreeForClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
-      if CurPos.StartPos>=ClassNode.EndPos then break;
-      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-        break;
-      ReadNextAtom;
-    until false;
-    // end last class section (public, private, ...)
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
-    CurrentPhase:=OldPhase;
-  except
-    CurrentPhase:=OldPhase;
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForClass ',MainFilename,' ERROR: ',LastErrorMessage);
-    {$ENDIF}
-    if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
-      raise;
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForClass',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
-    {$ENDIF}
-  end;
 end;
 
 procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
