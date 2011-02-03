@@ -16950,7 +16950,7 @@ begin
   if CodeToolBoss.ErrorMessage <> '' then
   begin
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage);
+    raise Exception.Create(lisUnableToFindMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
 end;
 
@@ -17036,7 +17036,7 @@ begin
     end else begin
       DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method to source']);
       DoJumpToCodeToolBossError;
-      raise Exception.Create(lisUnableToCreateNewMethodPleaseFixTheErrorShownIn);
+      raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
   finally
     OpenEditorsOnCodeToolChange:=OldChange;
@@ -17088,7 +17088,7 @@ begin
   end else begin
     DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToShowMethodPleaseFixTheErrorShownInTheMessage
+    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow
       );
   end;
 end;

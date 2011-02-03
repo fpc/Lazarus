@@ -759,12 +759,11 @@ resourcestring
     +'is inherited from %s.%sTo rename an inherited component open the '
     +'ancestor and rename it there.';
   lisSorryNotImplementedYet = 'Sorry, not implemented yet';
-  lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage = 'Unable to find '
-    +'method. Please fix the error shown in the message window.';
-  lisUnableToCreateNewMethodPleaseFixTheErrorShownIn = 'Unable to create new '
-    +'method. Please fix the error shown in the message window.';
-  lisUnableToShowMethodPleaseFixTheErrorShownInTheMessage = 'Unable to show '
-    +'method. Please fix the error shown in the message window.';
+  lisUnableToFindMethod = 'Unable to find method.';
+  lisUnableToCreateNewMethod = 'Unable to create new method.';
+  lisUnableToShowMethod = 'Unable to show method.';
+  lisPleaseFixTheErrorInTheMessageWindow = 'Please fix the error shown in the'
+    +' message window, which is normally below the source editor.';
   lisMethodClassNotFound = 'Method class not found';
   lisClassOfMethodNotFound = 'Class %s%s%s of method %s%s%s not found.';
   lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag = 'Unable to rename '
