@@ -50,6 +50,24 @@ type
           );
   end;
 
+  tvardata = packed record
+     vtype : tvartype;
+     case integer of
+        0:(res1 : word;
+           case integer of
+              0:
+                (res2,res3 : word;
+                 case word of
+                    varstring : (vstring : pointer);
+                    varany :  (vany : pointer);
+               );
+              1:
+                (vlongs : array[0..2] of longint);
+          );
+        1:(vwords : array[0..6] of word);
+        2:(vbytes : array[0..13] of byte);
+     end;
+
 function TRec1.GetF: integer;
 begin
   Result := F1;

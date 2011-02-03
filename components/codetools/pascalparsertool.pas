@@ -153,7 +153,6 @@ type
     function KeyWordFuncTypeType: boolean;
     function KeyWordFuncTypeFile: boolean;
     function KeyWordFuncTypePointer: boolean;
-    function KeyWordFuncTypeRecordOld: boolean;
     function KeyWordFuncTypeRecordCase: boolean;
     function KeyWordFuncTypeDefault: boolean;
     // procedures/functions/methods
@@ -3670,9 +3669,6 @@ begin
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
-  end else if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then begin
-    MoveCursorToNodeStart(CurNode);
-    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   end else begin
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('SEALED') then begin
@@ -4188,76 +4184,8 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncTypeRecordOld: boolean;
-{ read variable type 'record'
-
-  examples:
-    record
-      i: packed record
-           j: integer;
-           k: record end;
-           case y: integer of
-             0: (a: integer);
-             1,2,3: (b: array[char] of char; c: char);
-             3: ( d: record
-                       case byte of
-                         10: (i: integer; );
-                         11: (y: byte);
-                     end; );
-             4: (e: integer;
-                   case z of
-                   8: (f: integer)
-                 );
-         end;
-    end;
-}
-// function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
-begin
-  CreateChildNode;
-  CurNode.Desc:=ctnRecordType;
-  if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then
-    CurNode.StartPos:=LastAtoms.GetValueAt(0).StartPos;
-  // read all variables
-  repeat
-    ReadNextAtom;
-    if CurPos.Flag=cafEND then break;
-    if UpAtomIs('CASE') then begin
-      KeyWordFuncTypeRecordCase;
-      break;
-    end else begin
-      // read variable names
-      repeat
-        AtomIsIdentifier(true);
-        CreateChildNode;
-        CurNode.Desc:=ctnVarDefinition;
-        CurNode.EndPos:=CurPos.EndPos;
-        ReadNextAtom;
-        if (CurPos.Flag=cafColon) then break;
-        if (CurPos.Flag<>cafComma) then
-          RaiseCharExpectedButAtomFound(':');
-        EndChildNode; // close variable
-        ReadNextAtom; // read next variable name
-      until false;
-      ReadNextAtom;
-      Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-      if not Result then exit;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode; // close variable
-      if CurPos.Flag=cafEND then break;
-    end;
-  until false;
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode; // close record
-  ReadNextAtom;
-  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED') or
-     UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
-  then
-    ReadNextAtom;
-  Result:=true;
-end;
-
 function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
-{ after parsing CurPos is on the atom behind the case
+{ after parsing CurPos is on the 'end' or the ')'
 
   record
     i: packed record
@@ -4281,6 +4209,7 @@ function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
 
   procedure RaiseCaseOnlyAllowedInRecords;
   begin
+    //debugln(['RaiseCaseOnlyAllowedInRecords ',CurNode.DescAsString]);
     SaveRaiseException('Case only allowed in records');
   end;
 
@@ -4288,9 +4217,9 @@ begin
   if not UpAtomIs('CASE') then
     SaveRaiseException('[TPascalParserTool.KeyWordFuncTypeRecordCase] '
       +'internal error');
-  if (CurNode.Parent.Desc=ctnRecordVariant)
-  or ((CurNode.Parent.Desc in AllClassSections)
-      and (CurNode.Parent.Parent.Desc=ctnRecordType))
+  if (CurNode.Desc=ctnRecordVariant)
+  or ((CurNode.Desc in AllClassSections)
+      and (CurNode.Parent.Desc=ctnRecordType))
   then begin
     // ok
   end else begin
@@ -4304,6 +4233,7 @@ begin
     case a:b.c of
   }
   AtomIsIdentifier(true);
+  //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase START ',GetAtom]);
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
     ReadNextAtom;
@@ -4320,6 +4250,7 @@ begin
   // read all variants
   repeat
     ReadNextAtom;  // read constant (variant identifier)
+    //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variant start=',GetAtom]);
     if (CurPos.Flag in [cafRoundBracketClose,cafEnd]) then break;
     CreateChildNode;
     CurNode.Desc:=ctnRecordVariant;
@@ -4336,15 +4267,14 @@ begin
     // read all variables
     ReadNextAtom; // read first variable name
     repeat
+      //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variable=',GetAtom]);
       if (CurPos.Flag=cafRoundBracketClose) then begin
         // end of variant record
-        break;
       end else if UpAtomIs('CASE') then begin
         // sub record variant
         KeyWordFuncTypeRecordCase();
         if (CurPos.Flag<>cafRoundBracketClose) then
           RaiseCharExpectedButAtomFound(')');
-        break;
       end else begin
         // sub identifier
         repeat
@@ -4361,27 +4291,35 @@ begin
         until false;
         ReadNextAtom; // read type
         Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-        if not Result then exit;
+        if not Result then begin
+          debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase ParseType failed']);
+          exit;
+        end;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
       end;
-      if (CurPos.Flag=cafRoundBracketClose) then break;
+      //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variable end=',GetAtom]);
+      if (CurPos.Flag=cafRoundBracketClose) then begin
+        // end of variant record
+        ReadNextAtom;
+        break;
+      end;
       if CurPos.Flag<>cafSemicolon then
         RaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     until false;
-    ReadNextAtom;
-    if (CurPos.Flag in [cafEnd,cafRoundBracketClose,cafEdgedBracketClose]) then begin
-      CurNode.EndPos:=CurPos.StartPos;
-      EndChildNode; // close variant
+    CurNode.EndPos:=CurPos.StartPos;
+    //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variant end=',GetAtom,' ',CurNode.DescAsString,' ',dbgstr(copy(Src,CurNode.StartPos,CurNode.EndPos-CurNode.StartPos))]);
+    EndChildNode; // close variant
+    if (CurPos.Flag in [cafEnd,cafRoundBracketClose]) then
       break;
-    end;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode; // close variant
     // read next variant
   until false;
+  //debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase CLOSE ',GetAtom]);
+  if CurPos.Flag=cafEND then
+    UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close case
   Result:=true;
