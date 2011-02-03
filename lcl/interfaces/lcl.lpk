@@ -101,7 +101,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="299">
+    <Files Count="335">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1491,6 +1491,179 @@ end;"/>
         <Filename Value="wince/alllclintfunits.pas"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item299>
+      <Item300>
+        <Filename Value="qt/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item300>
+      <Item301>
+        <Filename Value="qt/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="interfaces"/>
+      </Item301>
+      <Item302>
+        <Filename Value="qt/qt4.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qt4"/>
+      </Item302>
+      <Item303>
+        <Filename Value="qt/qt45.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qt45"/>
+      </Item303>
+      <Item304>
+        <Filename Value="qt/qtcaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtCaret"/>
+      </Item304>
+      <Item305>
+        <Filename Value="qt/qtdefines.inc"/>
+        <Type Value="Include"/>
+      </Item305>
+      <Item306>
+        <Filename Value="qt/qtint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtint"/>
+      </Item306>
+      <Item307>
+        <Filename Value="qt/qtlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item307>
+      <Item308>
+        <Filename Value="qt/qtlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item308>
+      <Item309>
+        <Filename Value="qt/qtobject.inc"/>
+        <Type Value="Include"/>
+      </Item309>
+      <Item310>
+        <Filename Value="qt/qtobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtobjects"/>
+      </Item310>
+      <Item311>
+        <Filename Value="qt/qtprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtprivate"/>
+      </Item311>
+      <Item312>
+        <Filename Value="qt/qtproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtproc"/>
+      </Item312>
+      <Item313>
+        <Filename Value="qt/qtthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtThemes"/>
+      </Item313>
+      <Item314>
+        <Filename Value="qt/qtwidgets.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtwidgets"/>
+      </Item314>
+      <Item315>
+        <Filename Value="qt/qtwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item315>
+      <Item316>
+        <Filename Value="qt/qtwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item316>
+      <Item317>
+        <Filename Value="qt/qtwsarrow.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSArrow"/>
+      </Item317>
+      <Item318>
+        <Filename Value="qt/qtwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSButtons"/>
+      </Item318>
+      <Item319>
+        <Filename Value="qt/qtwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSCalendar"/>
+      </Item319>
+      <Item320>
+        <Filename Value="qt/qtwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSCheckLst"/>
+      </Item320>
+      <Item321>
+        <Filename Value="qt/qtwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSComCtrls"/>
+      </Item321>
+      <Item322>
+        <Filename Value="qt/qtwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSControls"/>
+      </Item322>
+      <Item323>
+        <Filename Value="qt/qtwsdesigner.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSDesigner"/>
+      </Item323>
+      <Item324>
+        <Filename Value="qt/qtwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSDialogs"/>
+      </Item324>
+      <Item325>
+        <Filename Value="qt/qtwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSExtCtrls"/>
+      </Item325>
+      <Item326>
+        <Filename Value="qt/qtwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSExtDlgs"/>
+      </Item326>
+      <Item327>
+        <Filename Value="qt/qtwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSFactory"/>
+      </Item327>
+      <Item328>
+        <Filename Value="qt/qtwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSForms"/>
+      </Item328>
+      <Item329>
+        <Filename Value="qt/qtwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSGrids"/>
+      </Item329>
+      <Item330>
+        <Filename Value="qt/qtwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSImgList"/>
+      </Item330>
+      <Item331>
+        <Filename Value="qt/qtwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSMenus"/>
+      </Item331>
+      <Item332>
+        <Filename Value="qt/qtwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSPairSplitter"/>
+      </Item332>
+      <Item333>
+        <Filename Value="qt/qtwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSSpin"/>
+      </Item333>
+      <Item334>
+        <Filename Value="qt/qtwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSStdCtrls"/>
+      </Item334>
+      <Item335>
+        <Filename Value="qt/qtx11.inc"/>
+        <Type Value="Include"/>
+      </Item335>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
