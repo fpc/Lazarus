@@ -1056,11 +1056,13 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
     class property
     class constructor
     class destructor
+    class operator
     class var
 }
 begin
   ReadNextAtom;
-  if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR') then begin
+  if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR')
+  or UpAtomIs('DESTRUCTOR') or UpAtomIs('OPERATOR') then begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassMethod;
   end else if UpAtomIs('PROPERTY') then begin
@@ -1084,6 +1086,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    class function X: integer;
    static function X: integer;
    function Intf.Method = ImplementingMethodName;
+   class operator Inc(Rec: TRec1): TRec1;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
@@ -1107,12 +1110,15 @@ begin
   // read method keyword
   if UpAtomIs('CLASS') or (UpAtomIs('STATIC')) then begin
     ReadNextAtom;
-    if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) and (not UpAtomIs('CONSTRUCTOR')) and (not UpAtomIs('DESTRUCTOR')) then begin
+    if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION'))
+    and (not UpAtomIs('CONSTRUCTOR')) and (not UpAtomIs('DESTRUCTOR'))
+    and (not UpAtomIs('OPERATOR'))
+    then begin
       RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
     end;
   end;
-  IsFunction:=UpAtomIs('FUNCTION');
   // read procedure head
+  IsFunction:=UpAtomIs('FUNCTION') or UpAtomIs('OPERATOR');
   // read name
   ReadNextAtom;
   AtomIsIdentifier(true);
@@ -1460,7 +1466,8 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
    operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
-   
+   class operator Inc(Rec: TRec1): TRec1;
+
    Delphi mode:
    Function TPOSControler.Logout; // missing function type
 
@@ -2421,7 +2428,8 @@ begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
       RaiseStringExpectedButAtomFound(ctsIdentifier);
     ReadNextAtom;
-    if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR') then
+    if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR')
+    or UpAtomIs('DESTRUCTOR') or UpAtomIs('OPERATOR') then
       IsClassProc:=true
     else
       RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
@@ -2449,8 +2457,7 @@ begin
     CurNode.SubDesc:=ctnsNeedJITParsing;
   end;
   ReadNextAtom;
-  if (CurSection<>ctnInterface) and (CurPos.Flag=cafPoint) and (not IsOperator)
-  then begin
+  if (CurSection<>ctnInterface) and (CurPos.Flag=cafPoint) then begin
     // read procedure name of a class method (the name after the . )
     ReadNextAtom;
     AtomIsIdentifier(true);
