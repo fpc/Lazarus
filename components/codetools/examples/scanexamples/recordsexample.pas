@@ -8,6 +8,23 @@ uses
 
 // advanced records
 type
+   LDT_ENTRY = record
+           LimitLow : WORD;
+           BaseLow : WORD;
+           HighWord : record
+               case longint of
+                  0 : ( Bytes : record
+                       BaseMid : BYTE;
+                       Flags1 : BYTE;
+                       Flags2 : BYTE;
+                       BaseHi : BYTE;
+                    end );
+                  1 : ( Bits : record
+                       flag0 : longint;
+                    end );
+               end;
+        end;
+
   TRec1 = record
     hWnd : integer;
   private

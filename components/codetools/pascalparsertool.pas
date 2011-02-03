@@ -3773,6 +3773,9 @@ begin
   // close class
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
+  // place cursor on atom behind
+  if CurPos.Flag<>cafSemicolon then
+    ReadNextAtom;
   Result:=true;
 end;
 
