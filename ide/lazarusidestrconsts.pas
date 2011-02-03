@@ -5170,6 +5170,13 @@ resourcestring
     +'set (macro LCLWidgetType)';
   lisCircleInMacros = 'Circle in macros';
 
+  // Uses Unit dialog
+  dlgNoUnusedItem = 'No unused items are available in this project.';
+  dlgUseUnitCaption = 'Use a unit from this project';
+  dlgInsertSection = 'Insert into Uses section of';
+  dlgInsertInterface = 'Interface';
+  dlgInsertImplementation = 'Implementation';
+
 implementation
 
 end.

@@ -8,6 +8,7 @@ object UseProjUnitDialog: TUseProjUnitDialog
   ClientWidth = 318
   Constraints.MinHeight = 150
   Constraints.MinWidth = 200
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel

@@ -1,3 +1,26 @@
+{ Copyright (C) 2011,
+
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+  Last change: 02.02.2010 by Marcelo B Paula
+}
 unit UseProjUnitDlg;
 
 {$mode objfpc}{$H+}
@@ -18,6 +41,7 @@ type
     ButtonPanel1: TButtonPanel;
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
+    procedure FormCreate(Sender: TObject);
   private
     procedure AddItems(AItems: TStrings);
     procedure SelectFirst;
@@ -92,7 +116,7 @@ begin
       end;
     end
     else
-      ShowMessage('No unused items are available in this project.');
+      ShowMessage(dlgNoUnusedItem);
   finally
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     UseProjUnitDlg.Free;
@@ -103,6 +127,19 @@ begin
 end;
 
 { TUseProjUnitDialog }
+
+procedure TUseProjUnitDialog.FormCreate(Sender: TObject);
+begin
+  // Internationalization
+  Caption := dlgUseUnitCaption;
+  SectionRadioGroup.Caption := dlgInsertSection;
+  SectionRadioGroup.Items.Clear;
+  SectionRadioGroup.Items.Add(dlgInsertInterface);
+  SectionRadioGroup.Items.Add(dlgInsertImplementation);
+  SectionRadioGroup.ItemIndex:=1;
+  ButtonPanel1.OKButton.Caption:=lisOk;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+end;
 
 procedure TUseProjUnitDialog.AddItems(AItems: TStrings);
 begin
