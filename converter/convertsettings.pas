@@ -467,7 +467,7 @@ begin
     AddFunc(Categ, 'glIsTexture', 'Boolean(glIsTexture($1))', '', 'GL');
     AddFunc(Categ, 'glColorMask', 'glColorMask(GLboolean($1),GLboolean($2),GLboolean($3),GLboolean($4))', '', 'GL');
     AddFunc(Categ, 'glDepthMask', 'glDepthMask(GLboolean($1))', '', 'GL');
-    AddFunc(Categ, 'gluQuadricTexture', 'gluQuadricTexture($1,GLboolean($2))', '', 'GL');
+    AddFunc(Categ, 'gluQuadricTexture', 'gluQuadricTexture($1,GLboolean($2))', '', 'GLu');
     // Others
     Categ:='Other';
     AddDefaultCategory(Categ);
