@@ -1641,6 +1641,18 @@ msgstr "Před metodami"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Jméno konstruktoru musí být 'init' (destruktor musí být 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Vložit mezeru po"
@@ -2241,6 +2253,10 @@ msgstr "Nerozdělovat řádek po:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Nerozdělovat řádek před:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2950,6 +2966,10 @@ msgstr "Použít zvýraznění syntaxe"
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
 msgstr "Použít historii záložek při zavření záložky"
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"

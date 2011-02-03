@@ -1640,6 +1640,18 @@ msgstr "Voor methoden"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Constructor naam moet zijn 'init' (destructor moet zijn 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Spatie achter invoegen"
@@ -2246,6 +2258,10 @@ msgstr "Splits een regel niet na :"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Splits een regel niet voor :"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2962,6 +2978,10 @@ msgstr "Gebruik syntax highlighting"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor

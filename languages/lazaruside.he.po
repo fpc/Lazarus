@@ -1642,6 +1642,18 @@ msgstr "לפני המתודות"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "שם הבונה חייב להיות init (שם ההורס חייב להיות 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "הכנס רווח אחרי"
@@ -2244,6 +2256,10 @@ msgstr "אל תחצה את השורה אחרי:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "אל תחצה את השורה לפני:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2958,6 +2974,10 @@ msgstr "השתמש בהדגשת תחביר"
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
 msgstr "השתמש בהסטוריית לשוניות בזמן סגירת לשוניות"
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"

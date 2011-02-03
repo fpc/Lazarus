@@ -1640,6 +1640,18 @@ msgstr "Davant dels mètodes"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "El nom del constructor ha de ser 'init' (el del destructor ha de ser 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Insereix espai després de"
@@ -2246,6 +2258,10 @@ msgstr "No separis la línia després de:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "No separis la línia abans de:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2962,6 +2978,10 @@ msgstr "Utilitza el ressaltat de sintaxi"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-30 20:46+0300\n"
+"PO-Revision-Date: 2011-02-04 00:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1663,6 +1663,18 @@ msgstr "Перед методами"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Конструктор должен называться 'init' (деструктор - 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr "Implementation"
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr "Interface"
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr "Вставить в выражение Uses секции"
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Вставлять пробелы после"
@@ -2273,6 +2285,10 @@ msgstr "Не разрывать строку после:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Не разрывать строку перед:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr "Не использовавшиеся модули в текущем проекте отсутствуют."
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2987,6 +3003,10 @@ msgstr "Подсветка синтаксиса"
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
 msgstr "Учитывать историю вкладок при их закрытии"
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
+msgstr "Использовать модуль из текущего проекта"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"

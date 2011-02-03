@@ -1663,6 +1663,18 @@ msgstr "Przed metodami"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Konstruktor musi nazywać się 'init' (destruktor - 'done')"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Wstaw odstęp po"
@@ -2270,6 +2282,10 @@ msgstr "Nie dziel wiersza po:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Nie dziel wiersza przed:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2988,6 +3004,10 @@ msgstr "Podświetlaj składnię"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor

@@ -1647,6 +1647,18 @@ msgstr "メソッドの前"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "コンストラクタの名前は'init'（デストラクタは'done'）でなければならない"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertsection
+msgid "Insert into Uses section of"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "空白を以下の後ろに挿入"
@@ -2251,6 +2263,10 @@ msgstr "後の行を分割しない"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "前の行を分割しない"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2970,6 +2986,10 @@ msgstr "表記法強調表示を使用"
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
 msgstr "タブを閉じるときにタブ履歴を使用"
+
+#: lazarusidestrconsts.dlguseunitcaption
+msgid "Use a unit from this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"

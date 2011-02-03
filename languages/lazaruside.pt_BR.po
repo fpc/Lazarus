@@ -1658,6 +1658,20 @@ msgstr "Na frente de métodos"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Nome do construtor precisa ser \"init\" (e o destrutor precisa ser \"done\")"
 
+#: lazarusidestrconsts.dlginsertimplementation
+msgid "Implementation"
+msgstr "Implementation"
+
+#: lazarusidestrconsts.dlginsertinterface
+msgid "Interface"
+msgstr "Interface"
+
+#: lazarusidestrconsts.dlginsertsection
+#, fuzzy
+#| msgid "Insert into Uses Section"
+msgid "Insert into Uses section of"
+msgstr "Inserir na Seção \"Uses\""
+
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "Inserir espaço após"
@@ -2263,6 +2277,10 @@ msgstr "Não dividir a linha após:"
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Não dividir linha na frente de:"
+
+#: lazarusidestrconsts.dlgnounuseditem
+msgid "No unused items are available in this project."
+msgstr "Nenhum item não usado disponível neste projeto."
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2978,6 +2996,12 @@ msgstr "Usar realce de sintaxe"
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
 msgstr "Usar aba histórico quando fechando abas"
+
+#: lazarusidestrconsts.dlguseunitcaption
+#, fuzzy
+#| msgid "Use a Unit from this Project"
+msgid "Use a unit from this project"
+msgstr "Usar uma Unidade deste Projeto"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -10887,6 +10911,7 @@ msgstr "%sEste pacote foi criado automaticamente"
 
 #: lazarusidestrconsts.lisok
 #| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lisok"
 msgid "&OK"
 msgstr "&OK"
 
@@ -15069,7 +15094,7 @@ msgstr "Polonês"
 
 #: lazarusidestrconsts.rslanguageportuguese
 msgid "Portuguese"
-msgstr ""
+msgstr "Português"
 
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
