@@ -243,29 +243,55 @@ const
   DEF_GRAB_RADIUS = 4;
 
 type
-  { TDataPointDragTool }
+  { TDataPointTool }
 
-  TDataPointDragTool = class(TChartTool)
+  TDataPointTool = class(TChartTool)
   private
     FAffectedSeries: String;
     FGrabRadius: Integer;
     FPointIndex: Integer;
     FSeries: TBasicChartSeries;
     function ParseAffectedSeries: TBooleanDynArray;
+  protected
+    procedure FindNearestPoint(APoint: TPoint);
+  public
+    constructor Create(AOwner: TComponent); override;
+  public
+    property PointIndex: Integer read FPointIndex;
+    property Series: TBasicChartSeries read FSeries;
+  published
+    property AffectedSeries: String
+      read FAffectedSeries write FAffectedSeries;
+    property GrabRadius: Integer
+      read FGrabRadius write FGrabRadius default DEF_GRAB_RADIUS;
+  end;
+
+  { TDataPointDragTool }
+
+  TDataPointDragTool = class(TDataPointTool)
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
-  public
-    property PointIndex: Integer read FPointIndex;
-    property Series: TBasicChartSeries read FSeries;
   published
     property ActiveCursor default crSizeAll;
-    property AffectedSeries: String
-      read FAffectedSeries write FAffectedSeries;
-    property GrabRadius: Integer
-      read FGrabRadius write FGrabRadius default DEF_GRAB_RADIUS;
+  end;
+
+  { TDataPointClickTool }
+
+  TDataPointClickTool = class(TDataPointTool)
+  private
+    FMouseDownPoint: TPoint;
+    FOnPointClick: TChartToolMouseEvent;
+    procedure SetOnPointClick(AValue: TChartToolMouseEvent);
+  public
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  published
+    property ActiveCursor;
+    property OnPointClick: TChartToolMouseEvent
+      read FOnPointClick write SetOnPointClick;
   end;
 
   { TReticuleTool }
@@ -1011,17 +1037,16 @@ begin
     PanBy(FOffset);
 end;
 
-{ TDataPointDragTool }
+{ TDataPointTool }
 
-constructor TDataPointDragTool.Create(AOwner: TComponent);
+constructor TDataPointTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActiveCursor := crSizeAll;
   FGrabRadius := DEF_GRAB_RADIUS;
   FPointIndex := -1;
 end;
 
-procedure TDataPointDragTool.MouseDown(APoint: TPoint);
+procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
   i, d, bestd, idx: Integer;
   bests: TBasicChartSeries;
@@ -1048,25 +1073,9 @@ begin
   end;
   if (bests = nil) or (bestd > Sqr(GrabRadius)) then exit;
   FSeries := bests;
-  Activate;
-  Handled;
 end;
 
-procedure TDataPointDragTool.MouseMove(APoint: TPoint);
-begin
-  if FSeries <> nil then
-    FSeries.MovePoint(FPointIndex, APoint);
-end;
-
-procedure TDataPointDragTool.MouseUp(APoint: TPoint);
-begin
-  Unused(APoint);
-  FSeries := nil;
-  Deactivate;
-  Handled;
-end;
-
-function TDataPointDragTool.ParseAffectedSeries: TBooleanDynArray;
+function TDataPointTool.ParseAffectedSeries: TBooleanDynArray;
 var
   s: TStringList;
   i, p: Integer;
@@ -1090,6 +1099,65 @@ begin
   end;
 end;
 
+{ TDataPointDragTool }
+
+constructor TDataPointDragTool.Create(AOwner: TComponent);
+begin
+  FActiveCursor := crSizeAll;
+  inherited Create(AOwner);
+end;
+
+procedure TDataPointDragTool.MouseDown(APoint: TPoint);
+begin
+  FindNearestPoint(APoint);
+  if FSeries = nil then exit;
+  Activate;
+  Handled;
+end;
+
+procedure TDataPointDragTool.MouseMove(APoint: TPoint);
+begin
+  if FSeries <> nil then
+    FSeries.MovePoint(FPointIndex, APoint);
+end;
+
+procedure TDataPointDragTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  FSeries := nil;
+  Deactivate;
+  Handled;
+end;
+
+{ TDataPointClickTool }
+
+procedure TDataPointClickTool.MouseDown(APoint: TPoint);
+begin
+  FindNearestPoint(APoint);
+  if FSeries = nil then exit;
+  FMouseDownPoint := APoint;
+  Activate;
+  Handled;
+end;
+
+procedure TDataPointClickTool.MouseUp(APoint: TPoint);
+begin
+  if
+    Assigned(OnPointClick) and (FSeries <> nil) and
+    (PointDist(APoint, FMouseDownPoint) <= Sqr(GrabRadius))
+  then
+    OnPointClick(Self, FMouseDownPoint);
+  FSeries := nil;
+  Deactivate;
+  Handled;
+end;
+
+procedure TDataPointClickTool.SetOnPointClick(AValue: TChartToolMouseEvent);
+begin
+  if FOnPointClick = AValue then exit;
+  FOnPointClick := AValue;
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
@@ -1099,6 +1167,7 @@ initialization
   RegisterChartToolClass(TPanDragTool, 'Panning drag');
   RegisterChartToolClass(TPanClickTool, 'Panning click');
   RegisterChartToolClass(TReticuleTool, 'Reticule');
+  RegisterChartToolClass(TDataPointClickTool, 'Data point click');
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
 
 finalization
