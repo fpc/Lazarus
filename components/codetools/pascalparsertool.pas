@@ -3739,6 +3739,7 @@ var
   ContextDesc: Word;
   IsForward: Boolean;
   ClassDesc: TCodeTreeNodeDesc;
+  ClassNode: TCodeTreeNode;
 begin
   ContextDesc:=CurNode.Desc;
   if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
@@ -3766,6 +3767,7 @@ begin
   else
     RaiseStringExpectedButAtomFound('class');
   CreateChildNode;
+  ClassNode:=CurNode;
   CurNode.Desc:=ClassDesc;
   CurNode.StartPos:=ClassAtomPos.StartPos;
   IsForward:=true;
@@ -3829,6 +3831,7 @@ begin
     begin
       if IsForward then begin
         // forward class definition found
+        ClassNode.SubDesc:=ClassNode.SubDesc or ctnsForwardDeclaration;
       end else begin
         // very short class found e.g. = class(TAncestor);
       end;

@@ -79,7 +79,7 @@ type
     fSearchProject: boolean;
     fTheDirectory: string;
     fAborting: boolean;
-    procedure DoFindInFiles(TheFileName: string);
+    procedure DoFindInFiles(ADirectory: string);
     procedure DoFindInSearchList;
     procedure SetResultsList(const AValue: TStrings);
     procedure UpdateMatches;
@@ -797,16 +797,16 @@ end;
 
 { TSearchProgressForm }
 
-procedure TSearchProgressForm.DoFindInFiles(TheFileName: string);
+procedure TSearchProgressForm.DoFindInFiles(ADirectory: string);
 var
   Searcher: TLazFileSearcher;
 begin
   //if we have a list and a valid directory
-  if (DirPathExists(TheFileName)) then
+  if (DirPathExists(ADirectory)) then
   begin
     Searcher := TLazFileSearcher.Create(Self);
     try
-      Searcher.Search(TheFileName, FMask, FRecursive,';');
+      Searcher.Search(ADirectory, FMask, FRecursive,';');
     finally
       Searcher.Free;
     end;
