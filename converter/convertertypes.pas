@@ -12,7 +12,7 @@ type
   TAddUnitEvent = procedure(AUnitName: string) of object;
   TCheckUnitEvent = function (AUnitName: string): Boolean of object;
 
-  { TopOffset }
+  { TSrcPropOffset }
 
   // Used when fixing top coordinates of controls inside a visual container.
   TSrcPropOffset = class
@@ -32,7 +32,7 @@ type
 
   { TVisualOffset }
 
-  // User defined settings.
+  // User defined settings of visual offsets.
   TVisualOffset = class
   private
     fParentType: string;
@@ -50,6 +50,7 @@ type
 
   { TVisualOffsets }
 
+  // Collection of TVisualOffset items.
   TVisualOffsets = class(TObjectList)
   private
     function GetVisualOffset(Index: Integer): TVisualOffset;
@@ -63,7 +64,23 @@ type
                                                  write SetVisualOffset; default;
   end;
 
-  // types for errors
+  { TAddPropEntry }
+
+  // A new property to be added to lfm form file.
+  TAddPropEntry = class
+  private
+    fStartPos: integer;
+    fEndPos: integer;
+    fNewText: string;
+    fParentType: string;
+  public
+    constructor Create(aStartPos, aEndPos: Integer; const aNewText, aParentType: string);
+    destructor Destroy; override;
+    property StartPos: integer read fStartPos;
+    property EndPos: integer read fEndPos;
+    property NewText: string read fNewText;
+    property ParentType: string read fParentType;
+  end;
 
   { EConverterError }
 
@@ -74,15 +91,7 @@ type
 
 implementation
 
-{ EConverterError }
-
-constructor EDelphiConverterError.Create(const AMessage: string);
-begin
-  inherited Create('Converter: '+AMessage);
-end;
-
-
-{ TopOffset }
+{ TSrcPropOffset }
 
 constructor TSrcPropOffset.Create(aParentType, aChildType, aPropName: string; aStartPos: integer);
 begin
@@ -96,7 +105,6 @@ destructor TSrcPropOffset.Destroy;
 begin
   inherited Destroy;
 end;
-
 
 { TVisualOffset }
 
@@ -121,7 +129,6 @@ begin
   else
     Result:=0
 end;
-
 
 { TVisualOffsets }
 
@@ -172,6 +179,28 @@ begin
   Inherited Items[Index]:=AValue;
 end;
 
+{ TAddPropEntry }
+
+constructor TAddPropEntry.Create(aStartPos, aEndPos: Integer; const aNewText, aParentType: string);
+begin
+  inherited Create;
+  fStartPos:=aStartPos;
+  fEndPos:=aEndPos;
+  fNewText:=aNewText;
+  fParentType:=aParentType;
+end;
+
+destructor TAddPropEntry.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{ EConverterError }
+
+constructor EDelphiConverterError.Create(const AMessage: string);
+begin
+  inherited Create('Converter: '+AMessage);
+end;
 
 end.
 

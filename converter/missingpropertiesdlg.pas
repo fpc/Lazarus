@@ -78,6 +78,7 @@ type
     fTypeReplaceGrid: TStringGrid;
     function ReplaceAndRemoveAll: TModalResult;
     function ReplaceTopOffsets(aSrcOffsets: TList): TModalResult;
+    function AddNewProps(aNewProps: TList): TModalResult;
     // Fill StringGrids with missing properties and types from fLFMTree.
     procedure FillReplaceGrids;
   protected
@@ -133,6 +134,8 @@ function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
 implementation
 
 {$R *.lfm}
+
+uses FormFileConv;
 
 function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
 var
@@ -347,15 +350,14 @@ end;
 
 function TLFMFixer.ReplaceTopOffsets(aSrcOffsets: TList): TModalResult;
 // Replace top coordinates of controls in visual containers.
-// Returns mrOK if no types were changed, and mrCancel if there was an error.
 var
   TopOffs: TSrcPropOffset;
   VisOffs: TVisualOffset;
-  OldNum, Ofs, NewNum, Len, ind, i: integer;
+  OldNum, NewNum, Len, ind, i: integer;
 begin
   Result:=mrOK;
   // Add offset to top coordinates.
-  for i := aSrcOffsets.Count-1 downto 0 do begin
+  for i:=aSrcOffsets.Count-1 downto 0 do begin
     TopOffs:=TSrcPropOffset(aSrcOffsets[i]);
     if fSettings.CoordOffsets.Find(TopOffs.ParentType, ind) then begin
       VisOffs:=fSettings.CoordOffsets[ind];
@@ -367,14 +369,28 @@ begin
       except on EConvertError do
         OldNum:=0;
       end;
-      Ofs:=VisOffs.ByProperty(TopOffs.PropName);
-      NewNum:=OldNum-Ofs;
+      NewNum:=OldNum-VisOffs.ByProperty(TopOffs.PropName);
       if NewNum<0 then
         NewNum:=0;
       fLFMBuffer.Replace(TopOffs.StartPos, Len, IntToStr(NewNum));
       IDEMessagesWindow.AddMsg(Format('Changed %s coord of %s from "%d" to "%d" inside %s.',
         [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]),'',-1);
     end;
+  end;
+end;
+
+function TLFMFixer.AddNewProps(aNewProps: TList): TModalResult;
+// Add new property to the lfm file.
+var
+  Entry: TAddPropEntry;
+  i: integer;
+begin
+  Result:=mrOK;
+  for i:=aNewProps.Count-1 downto 0 do begin
+    Entry:=TAddPropEntry(aNewProps[i]);
+    fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,Entry.NewText);
+    IDEMessagesWindow.AddMsg(Format('Added property "%s" for %s.',
+                                   [Entry.NewText, Entry.ParentType]),'',-1);
   end;
 end;
 
@@ -454,7 +470,9 @@ end;
 function TLFMFixer.Repair: TModalResult;
 var
   ConvTool: TConvDelphiCodeTool;
-  ValueTreeNodes: TObjectList;
+  FormFileTool: TFormFileConverter;
+  SrcCoordOffs: TObjectList;
+  SrcNewProps: TObjectList;
   LoopCount: integer;
 begin
   Result:=mrCancel;
@@ -462,32 +480,43 @@ begin
   if not fLFMTree.ParseIfNeeded then exit;
   // Change a type that main form inherits from to a fall-back type if needed.
   ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
-  ValueTreeNodes:=TObjectList.Create;
   try
     if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,
                                          fSettings.ReplaceTypes) then exit;
-    LoopCount:=0;
-    repeat
-      if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-          fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists) then
-        Result:=mrOk
-      else                     // Rename/remove properties and types interactively.
-        Result:=ShowRepairLFMWizard;  // Can return mrRetry.
-      Inc(LoopCount);
-    until (Result in [mrOK, mrCancel]) or (LoopCount=10);
-    // Show remaining errors to user.
-    WriteLFMErrors;
-    if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
-      // Fix top offsets of some components in visual containers
-      if ConvTool.CheckTopOffsets(fLFMBuffer, fLFMTree,
-                                  fSettings.CoordOffsets, ValueTreeNodes) then
-        Result:=ReplaceTopOffsets(ValueTreeNodes)
-      else
-        Result:=mrCancel;
-    end;
   finally
-    ValueTreeNodes.Free;
     ConvTool.Free;
+  end;
+  LoopCount:=0;
+  repeat
+    if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+        fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExists) then
+      Result:=mrOk
+    else                     // Rename/remove properties and types interactively.
+      Result:=ShowRepairLFMWizard;  // Can return mrRetry.
+    Inc(LoopCount);
+  until (Result in [mrOK, mrCancel]) or (LoopCount=10);
+  // Show remaining errors to user.
+  WriteLFMErrors;
+  if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
+    // Fix top offsets of some components in visual containers
+    FormFileTool:=TFormFileConverter.Create(fCTLink, fLFMBuffer);
+    SrcCoordOffs:=TObjectList.Create;
+    SrcNewProps:=TObjectList.Create;
+    try
+      FormFileTool.VisOffsets:=fSettings.CoordOffsets;
+      FormFileTool.SrcCoordOffs:=SrcCoordOffs;
+      FormFileTool.SrcNewProps:=SrcNewProps;
+      Result:=FormFileTool.Convert;
+      if Result=mrOK then begin
+        Result:=ReplaceTopOffsets(SrcCoordOffs);
+        if Result=mrOK then
+          Result:=AddNewProps(SrcNewProps);
+      end;
+    finally
+      SrcNewProps.Free;
+      SrcCoordOffs.Free;
+      FormFileTool.Free;
+    end;
   end;
 end;
 
