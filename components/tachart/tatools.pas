@@ -122,6 +122,9 @@ type
     property Tools: TChartTools read FTools;
   end;
 
+  TUserDefinedTool = class(TChartTool)
+  end;
+
   { TBasicZoomTool }
 
   TBasicZoomTool = class(TChartTool)
@@ -1169,6 +1172,7 @@ initialization
   RegisterChartToolClass(TReticuleTool, 'Reticule');
   RegisterChartToolClass(TDataPointClickTool, 'Data point click');
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
+  RegisterChartToolClass(TUserDefinedTool, 'User-defined');
 
 finalization
 
