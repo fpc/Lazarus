@@ -3035,55 +3035,60 @@ begin
   end;
   if UpAtomIs('DEPRECATED') then
     ReadNextAtom;
-  // read ;
-  if CurPos.Flag<>cafSemicolon then
-    RaiseCharExpectedButAtomFound(';');
-  ReadNextAtom;
-  if UpAtomIs('CVAR') then begin
-    // for example: 'var a: char; cvar;'
+  if CurPos.Flag=cafSemicolon then begin
+    // read ;
     ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
-    ReadNextAtom;
-  end;
-  if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
-  and (CurNode.Parent.Desc in AllClassSections) then begin
-    // 'static' is allowed for class variables
-    // for example: 'a: char; static;'
-    ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
-    ReadNextAtom;
-  end;
-  if (CurNode.Parent.Desc=ctnVarSection)
-  and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')) then
-  begin
-    // examples:
-    //   a: b; public;
-    //   a: b; external;
-    //   a: b; external c;
-    //   a: b; external name 'c';
-    //   a: b; external 'library' name 'c';
-    if UpAtomIs('EXTERNAL') then begin
-      // read external identifier
+    if UpAtomIs('CVAR') then begin
+      // for example: 'var a: char; cvar;'
       ReadNextAtom;
-      if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
-        ReadConstant(true,false,[]); // library name
-    end else
+      if CurPos.Flag<>cafSemicolon then
+        RaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
-    if UpAtomIs('NAME') then begin
-      // for example 'var a: char; public name 'b' ;'
-      // for example 'var a: char; public name test;'
-      ReadNextAtom;
-      if (not AtomIsStringConstant)
-      and (not AtomIsIdentifier(false)) then
-        RaiseStringExpectedButAtomFound(ctsStringConstant);
-      ReadConstant(true,false,[]);
     end;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
-  end else
+    if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
+    and (CurNode.Parent.Desc in AllClassSections) then begin
+      // 'static' is allowed for class variables
+      // for example: 'a: char; static;'
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseCharExpectedButAtomFound(';');
+      ReadNextAtom;
+    end;
+    if (CurNode.Parent.Desc=ctnVarSection)
+    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')) then
+    begin
+      // examples:
+      //   a: b; public;
+      //   a: b; external;
+      //   a: b; external c;
+      //   a: b; external name 'c';
+      //   a: b; external 'library' name 'c';
+      if UpAtomIs('EXTERNAL') then begin
+        // read external identifier
+        ReadNextAtom;
+        if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
+          ReadConstant(true,false,[]); // library name
+      end else
+        ReadNextAtom;
+      if UpAtomIs('NAME') then begin
+        // for example 'var a: char; public name 'b' ;'
+        // for example 'var a: char; public name test;'
+        ReadNextAtom;
+        if (not AtomIsStringConstant)
+        and (not AtomIsIdentifier(false)) then
+          RaiseStringExpectedButAtomFound(ctsStringConstant);
+        ReadConstant(true,false,[]);
+      end;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseCharExpectedButAtomFound(';');
+    end else
+      UndoReadNextAtom;
+
+  end else if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
+  end else begin
+    RaiseCharExpectedButAtomFound(';');
+  end;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
