@@ -161,7 +161,7 @@ const
   AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
   AllClassObjects = [ctnClass,ctnObject,ctnRecordType,
                      ctnObjCClass,ctnObjCCategory,ctnCPPClass];
-  AllClasses = AllClassObjects+AllClassObjects;
+  AllClasses = AllClassObjects+AllClassInterfaces;
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed, ctnClassExternal];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
