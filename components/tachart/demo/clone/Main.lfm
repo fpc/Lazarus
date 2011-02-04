@@ -3,6 +3,7 @@ object Form1: TForm1
   Height = 510
   Top = 263
   Width = 739
+  AutoScroll = True
   Caption = 'Form1'
   ClientHeight = 510
   ClientWidth = 739
@@ -83,6 +84,66 @@ object Form1: TForm1
           Caption = 'Bar'
           OnClick = btnBarClick
           TabOrder = 1
+        end
+      end
+    end
+    object tsCharts: TTabSheet
+      Caption = 'Charts'
+      ClientHeight = 484
+      ClientWidth = 731
+      object Chart1: TChart
+        Left = 0
+        Height = 128
+        Top = 0
+        Width = 731
+        AxisList = <        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Inverted = True
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alTop
+        ParentColor = False
+        object Chart1AreaSeries1: TAreaSeries
+          Marks.Clipped = False
+          Marks.Format = '%0:.1g'
+          Marks.Style = smsCustom
+          AreaBrush.Color = clOlive
+          AreaBrush.Style = bsDiagCross
+          AreaContourPen.Color = clMaroon
+          AreaContourPen.Width = 2
+          AreaLinesPen.Style = psClear
+          Source = RandomChartSource1
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 40
+        Top = 444
+        Width = 731
+        Align = alBottom
+        ClientHeight = 40
+        ClientWidth = 731
+        TabOrder = 1
+        object btnClone: TButton
+          Left = 4
+          Height = 25
+          Top = 6
+          Width = 75
+          Caption = 'Clone'
+          OnClick = btnCloneClick
+          TabOrder = 0
         end
       end
     end

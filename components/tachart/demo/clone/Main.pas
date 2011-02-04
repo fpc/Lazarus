@@ -15,20 +15,22 @@ type
   TForm1 = class(TForm)
     btnLine: TButton;
     btnBar: TButton;
+    btnClone: TButton;
+    Chart1: TChart;
+    Chart1AreaSeries1: TAreaSeries;
     ChartSeries: TChart;
     ChartSeriesBarSeries1: TBarSeries;
     ChartSeriesLineSeries1: TLineSeries;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     RandomChartSource1: TRandomChartSource;
+    tsCharts: TTabSheet;
     tsSeries: TTabSheet;
     procedure btnBarClick(Sender: TObject);
+    procedure btnCloneClick(Sender: TObject);
     procedure btnLineClick(Sender: TObject);
-  private
-    { private declarations }
-  public
-    { public declarations }
-  end; 
+  end;
 
 var
   Form1: TForm1; 
@@ -52,6 +54,11 @@ begin
       ChartSeries.AddSeries(bs);
       break;
     end;
+end;
+
+procedure TForm1.btnCloneClick(Sender: TObject);
+begin
+  Chart1.Clone;
 end;
 
 procedure TForm1.btnLineClick(Sender: TObject);
