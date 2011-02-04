@@ -28,9 +28,8 @@ unit TAGraph;
 interface
 
 uses
-  LCLType, LResources,
-  SysUtils, Classes, Controls, Graphics,
-  TAChartUtils, TATypes, TALegend, TAChartAxis;
+  Graphics, Classes, Controls, LCLType, SysUtils,
+  TAChartAxis, TAChartUtils, TALegend, TATypes;
 
 type
   TChart = class;
@@ -186,6 +185,8 @@ type
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
     procedure HideReticule;
+    procedure FindComponentClass(
+      AReader: TReader; const AClassName: String; var AClass: TComponentClass);
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -247,6 +248,7 @@ type
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
     procedure ClearSeries;
+    function Clone: TChart;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
@@ -352,7 +354,7 @@ var
 implementation
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, Math, Types, TADrawUtils;
+  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawUtils, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -379,7 +381,39 @@ begin
     SeriesClassRegistry.AddObject(ACaption, TObject(ASeriesClass));
 end;
 
+procedure WriteComponentToStream(AStream: TStream; AComponent: TComponent);
+var
+  writer: TWriter;
+  destroyDriver: Boolean = false;
+begin
+  writer := CreateLRSWriter(AStream, destroyDriver);
+  try
+    writer.Root := AComponent.Owner;
+    writer.WriteComponent(AComponent);
+  finally
+    if destroyDriver then
+      writer.Driver.Free;
+    writer.Free;
+  end;
+end;
+
 { TChart }
+
+function TChart.Clone: TChart;
+var
+  ms: TMemoryStream;
+begin
+  Result := nil;
+  ms := TMemoryStream.Create;
+  try
+    WriteComponentToStream(ms, Self);
+    ms.Seek(0, soBeginning);
+    ReadComponentFromBinaryStream(
+      ms, Result, @FindComponentClass, Owner, Parent, Owner);
+  finally
+    ms.Free;
+  end;
+end;
 
 constructor TChart.Create(AOwner: TComponent);
 const
@@ -467,6 +501,23 @@ procedure TChart.EraseBackground(DC: HDC);
 begin
   // do not erase, since we will paint over it anyway
   Unused(DC);
+end;
+
+procedure TChart.FindComponentClass(
+  AReader: TReader; const AClassName: String; var AClass: TComponentClass);
+var
+  i: Integer;
+begin
+  Unused(AReader);
+  if AClassName = ClassName then begin
+    AClass := TChart;
+    exit;
+  end;
+  for i := 0 to SeriesClassRegistry.Count - 1 do begin
+    AClass := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    if AClass.ClassNameIs(AClassName) then exit;
+  end;
+  AClass := nil;
 end;
 
 function TChart.GetAxis(AIndex: Integer): TChartAxis;
