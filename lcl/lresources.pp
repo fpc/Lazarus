@@ -487,7 +487,8 @@ procedure ReadComponentFromBinaryStream(AStream: TStream;
                            var RootComponent: TComponent;
                            OnFindComponentClass: TFindComponentClassEvent;
                            TheOwner: TComponent = nil;
-                           Parent: TComponent = nil);
+                           Parent: TComponent = nil;
+                           ReaderRoot: TComponent = nil);
 procedure WriteComponentAsTextToStream(AStream: TStream;
                                        AComponent: TComponent);
 procedure ReadComponentFromTextStream(AStream: TStream;
@@ -913,7 +914,7 @@ end;
 procedure ReadComponentFromBinaryStream(AStream: TStream;
   var RootComponent: TComponent;
   OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent;
-  Parent: TComponent);
+  Parent: TComponent; ReaderRoot: TComponent);
 var
   DestroyDriver: Boolean;
   Reader: TReader;
@@ -956,7 +957,10 @@ begin
   try
     UniqueNamer:=TReaderUniqueNamer.Create;
     Reader:=CreateLRSReader(AStream,DestroyDriver);
-    Reader.Root:=RootComponent;
+    if ReaderRoot = nil then
+      Reader.Root:=RootComponent
+    else
+      Reader.Root:=ReaderRoot;
     Reader.Owner:=TheOwner;
     Reader.Parent:=Parent;
     Reader.OnFindComponentClass:=OnFindComponentClass;
