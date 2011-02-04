@@ -69,6 +69,7 @@ type
     procedure SetVisible(const AValue: Boolean);
   protected
     FOwner: TCustomChart;
+    function GetOwner: TPersistent; override;
     procedure InitHelper(var AResult; AClass: TFPCanvasHelperClass);
     procedure StyleChanged(Sender: TObject);
   public
@@ -350,6 +351,11 @@ begin
   FOwner := AOwner;
 end;
 
+function TChartElement.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
 procedure TChartElement.InitHelper(var AResult; AClass: TFPCanvasHelperClass);
 begin
   TFPCanvasHelper(AResult) := AClass.Create;
@@ -402,6 +408,7 @@ begin
   InitHelper(FFrame, TChartPen);
   FMargin := DEF_MARGIN;
   FText := TStringList.Create;
+  TStringList(FText).OnChange := @StyleChanged;
 end;
 
 destructor TChartTitle.Destroy;

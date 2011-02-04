@@ -651,7 +651,11 @@ end;
 
 procedure TChartSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
-  Source[AIndex]^.Color := AColor;
+  with Source[AIndex]^ do begin
+    if Color = AColor then exit;
+    Color := AColor;
+    UpdateParentChart;
+  end;
 end;
 
 procedure TChartSeries.SetMarks(const AValue: TChartMarks);
