@@ -19,7 +19,8 @@
  *                                                                         *
  ***************************************************************************
 
-  Last change: 02.02.2010 by Marcelo B Paula
+  Original version by Juha Manninen
+  Icons added by Marcelo B Paula
 }
 unit UseProjUnitDlg;
 
@@ -42,7 +43,10 @@ type
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure FormCreate(Sender: TObject);
+    procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
   private
+    UnitImgInd: Integer;
     procedure AddItems(AItems: TStrings);
     procedure SelectFirst;
     function SelectedUnit: string;
@@ -139,6 +143,17 @@ begin
   SectionRadioGroup.ItemIndex:=1;
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
+end;
+
+procedure TUseProjUnitDialog.UnitsListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+begin
+  if Index < 0 then Exit;
+  UnitsListBox.Canvas.FillRect(ARect);
+  IDEImages.Images_16.Draw(UnitsListBox.Canvas,1,ARect.Top,UnitImgInd);
+  UnitsListBox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
+                                UnitsListBox.Items[Index]);
 end;
 
 procedure TUseProjUnitDialog.AddItems(AItems: TStrings);
