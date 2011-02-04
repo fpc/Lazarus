@@ -260,7 +260,7 @@ procedure TAssemblerDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShif
 var
   i: LongInt;
 begin
-  if Shift - [ssShift] <> [] then begin
+  if (Shift - [ssShift] <> []) then begin
     inherited;
     Exit;
   end;
@@ -294,16 +294,22 @@ begin
       Key := 0;
     end;
     VK_LEFT: begin
-      sbHorizontal.Position := sbHorizontal.Position - sbHorizontal.SmallChange;
-      Key := 0;
+      if not EditGotoAddr.Focused then begin
+        sbHorizontal.Position := sbHorizontal.Position - sbHorizontal.SmallChange;
+        Key := 0;
+      end;
     end;
     VK_RIGHT: begin
-      sbHorizontal.Position := sbHorizontal.Position + sbHorizontal.SmallChange;
-      Key := 0;
+      if not EditGotoAddr.Focused then begin
+        sbHorizontal.Position := sbHorizontal.Position + sbHorizontal.SmallChange;
+        Key := 0;
+      end;
     end;
     VK_HOME: begin
-      sbHorizontal.Position := 0;
-      Key := 0;
+      if not EditGotoAddr.Focused then begin
+        sbHorizontal.Position := 0;
+        Key := 0;
+      end;
     end;
     else
       inherited;

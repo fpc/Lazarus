@@ -5545,7 +5545,8 @@ function TDBGDisassembler.HandleRangeWithInvalidAddr(ARange: TDBGDisassemblerEnt
   AnAddr: TDbgPtr; var ALinesBefore, ALinesAfter: Integer): boolean;
 begin
   Result := False;
-  FEntryRanges.Delete(FCurrentRange.RangeStartAddr);
+  if ARange <> nil then
+    FEntryRanges.Delete(ARange.RangeStartAddr);
 end;
 
 constructor TDBGDisassembler.Create(const ADebugger: TDebugger);
