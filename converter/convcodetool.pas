@@ -193,11 +193,9 @@ begin
       if not RenameResourceDirectives then exit;
       if fCTLink.Settings.FuncReplaceMode=rsEnabled then
         if not ReplaceFuncCalls(fCTLink.IsConsoleApp) then exit;
-//      if not fSrcCache.Apply then exit;
     finally
       fCTLink.SrcCache.EndUpdate;
     end;
-//    if not fCTLink.SrcCache.Apply then exit;
     Result:=mrOK;
   except
     on e: Exception do begin
