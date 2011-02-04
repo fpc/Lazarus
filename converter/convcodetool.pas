@@ -238,7 +238,7 @@ begin
       ReadNextAtom; // name
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
-      if fCTLink.Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
+      if fCTLink.Settings.SupportDelphi then
         s:='{$IFDEF FPC}'+LineEnding+'  {$MODE Delphi}'+LineEnding+'{$ENDIF}'
       else
         s:='{$MODE Delphi}';
@@ -278,9 +278,9 @@ begin
         LowKey:=LowerCase(Key);
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          if fCTLink.Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
+          if fCTLink.Settings.SupportDelphi then begin
             // Use the same dfm file. Lowercase existing key.
-            if (fCTLink.Settings.Target=ctLazarusDelphiSameDfm) and (Key<>LowKey) then
+            if fCTLink.Settings.SameDfmFile and (Key<>LowKey) then
               NewKey:=LowKey;
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
@@ -302,7 +302,7 @@ begin
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if (fCTLink.Settings.Target=ctLazarusDelphi) and (fDfmDirectiveStart<>-1)
+  if fCTLink.Settings.SupportDelphi and (fDfmDirectiveStart<>-1)
   and not AlreadyIsLfm then begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     s:='{$IFNDEF FPC}'+LineEnding+

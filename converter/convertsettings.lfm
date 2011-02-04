@@ -1,24 +1,26 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 267
-  Height = 580
-  Top = 113
-  Width = 528
+  Left = 315
+  Height = 341
+  Top = 127
+  Width = 561
   ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
-  ClientHeight = 580
-  ClientWidth = 528
-  Constraints.MinHeight = 400
+  ClientHeight = 341
+  ClientWidth = 561
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ProjectPathEdit: TLabeledEdit
-    Left = 112
-    Height = 21
+    AnchorSideLeft.Control = Owner
+    Left = 9
+    Height = 17
     Hint = 'Directory where project''s main file must be'
-    Top = 15
-    Width = 372
-    Anchors = [akTop, akLeft, akRight]
+    Top = 32
+    Width = 287
+    BorderSpacing.Left = 9
     BorderStyle = bsNone
     Color = clBtnFace
     EditLabel.AnchorSideLeft.Control = ProjectPathEdit
@@ -26,13 +28,12 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = ProjectPathEdit
     EditLabel.AnchorSideBottom.Control = ProjectPathEdit
-    EditLabel.Left = 27
+    EditLabel.Left = 9
     EditLabel.Height = 16
-    EditLabel.Top = 17
+    EditLabel.Top = 9
     EditLabel.Width = 78
     EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
-    LabelPosition = lpLeft
     LabelSpacing = 7
     ParentShowHint = False
     ReadOnly = True
@@ -40,14 +41,15 @@ object ConvertSettingsForm: TConvertSettingsForm
     TabOrder = 0
   end
   object BackupCheckBox: TCheckBox
-    AnchorSideLeft.Control = ProjectPathEdit
-    AnchorSideTop.Control = ProjectPathEdit
+    AnchorSideLeft.Control = TargetGroupBox
+    AnchorSideTop.Control = TargetGroupBox
     AnchorSideTop.Side = asrBottom
-    Left = 112
-    Height = 21
+    Left = 12
+    Height = 20
     Hint = 'Creates a Backup directory under project directory'
-    Top = 45
+    Top = 165
     Width = 208
+    BorderSpacing.Left = 3
     BorderSpacing.Top = 9
     Caption = 'Make backup of changed files'
     Checked = True
@@ -58,9 +60,9 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 535
-    Width = 516
+    Height = 40
+    Top = 295
+    Width = 549
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
@@ -73,297 +75,304 @@ object ConvertSettingsForm: TConvertSettingsForm
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object TargetRadioGroup: TRadioGroup
-    Left = 12
-    Height = 80
-    Hint = 'Converter adds conditional compilation to support different targets'
-    Top = 96
-    Width = 507
-    Anchors = [akTop, akLeft, akRight]
-    AutoFill = True
-    Caption = 'Target'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 2
-    ClientHeight = 61
-    ClientWidth = 503
-    Columns = 2
-    ItemIndex = 0
-    Items.Strings = (
-      'Lazarus'
-      'Lazarus and Delphi'
-      'Lazarus for Windows only'
-      'Lazarus and Delphi with same DFM file'
-    )
-    OnClick = TargetRadioGroupClick
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-  end
   object KeepFileOpenCheckBox: TCheckBox
     AnchorSideLeft.Control = BackupCheckBox
     AnchorSideTop.Control = BackupCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 112
-    Height = 21
+    Left = 12
+    Height = 20
     Hint = 'Separate form files allow different properties'
-    Top = 69
+    Top = 190
     Width = 241
-    BorderSpacing.Top = 3
+    BorderSpacing.Top = 5
     Caption = 'Keep converted files open in editor'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
   end
   object UnitReplaceDivider: TDividerBevel
-    AnchorSideTop.Control = TargetRadioGroup
-    AnchorSideTop.Side = asrBottom
-    Left = 0
+    AnchorSideTop.Control = Owner
+    Left = 296
     Height = 17
-    Top = 189
-    Width = 523
+    Top = 9
+    Width = 239
     Caption = 'Unit Replacements'
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 13
+    BorderSpacing.Top = 9
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    LeftIndent = 30
   end
   object UnknownPropsDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = UnitReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 296
     Height = 17
-    Top = 256
-    Width = 523
+    Top = 65
+    Width = 239
     Caption = 'Unknown properties'
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 50
+    BorderSpacing.Top = 39
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    LeftIndent = 30
   end
   object UnitReplaceButton: TBitBtn
+    AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = UnitReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 30
+    Left = 297
+    Height = 25
     Hint = 'Unit names in uses section of a source unit'
-    Top = 213
-    Width = 92
-    BorderSpacing.Top = 7
+    Top = 27
+    Width = 75
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
     Caption = 'Edit'
     OnClick = UnitReplaceButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 4
   end
   object TypeReplaceDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = UnknownPropsDivider
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 296
     Height = 17
-    Top = 323
-    Width = 523
+    Top = 121
+    Width = 239
     Caption = 'Type Replacements'
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 50
+    BorderSpacing.Top = 39
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    LeftIndent = 30
   end
   object TypeReplaceButton: TBitBtn
+    AnchorSideLeft.Control = TypeReplaceDivider
     AnchorSideTop.Control = TypeReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 30
+    Left = 297
+    Height = 25
     Hint = 'Unknown types in form file (DFM/LFM)'
-    Top = 347
-    Width = 92
-    BorderSpacing.Top = 7
+    Top = 139
+    Width = 75
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
     Caption = 'Edit'
     OnClick = TypeReplaceButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 5
   end
   object TypeReplaceInfoLabel: TLabel
+    AnchorSideLeft.Control = TypeReplaceButton
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TypeReplaceButton
     AnchorSideTop.Side = asrCenter
-    Left = 144
+    Left = 395
     Height = 16
-    Top = 354
+    Top = 143
     Width = 67
+    BorderSpacing.Left = 23
     Caption = 'Interactive'
     ParentColor = False
   end
   object FuncReplaceDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = TypeReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 296
     Height = 17
-    Top = 390
-    Width = 523
+    Top = 177
+    Width = 239
     Caption = 'Function Replacements'
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 50
+    BorderSpacing.Top = 39
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    LeftIndent = 30
   end
   object CoordOffsDivider: TDividerBevel
+    AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = FuncReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    AnchorSideRight.Control = UnitReplaceDivider
+    AnchorSideRight.Side = asrBottom
+    Left = 296
     Height = 17
-    Top = 457
-    Width = 523
+    Top = 233
+    Width = 239
     Caption = 'Coordinate Offsets'
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 50
+    BorderSpacing.Top = 39
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    LeftIndent = 30
   end
   object FuncReplaceButton: TBitBtn
+    AnchorSideLeft.Control = FuncReplaceDivider
     AnchorSideTop.Control = FuncReplaceDivider
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 30
+    Left = 297
+    Height = 25
     Hint = 'Some Delphi functions can be replaced with a LCL function'
-    Top = 414
-    Width = 92
-    BorderSpacing.Top = 7
+    Top = 195
+    Width = 75
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
     Caption = 'Edit'
     OnClick = FuncReplaceButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 6
   end
   object CoordOffsButton: TBitBtn
+    AnchorSideLeft.Control = CoordOffsDivider
     AnchorSideTop.Control = CoordOffsDivider
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 30
+    Left = 297
+    Height = 25
     Hint = 'Some Delphi functions can be replaced with a LCL function'
-    Top = 481
-    Width = 92
-    BorderSpacing.Top = 7
+    Top = 251
+    Width = 75
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 1
     Caption = 'Edit'
     OnClick = CoordOffsButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 7
   end
-  object UnitReplaceRadioGroup: TRadioGroup
-    AnchorSideTop.Control = UnitReplaceDivider
+  object TargetGroupBox: TGroupBox
+    AnchorSideLeft.Control = ProjectPathEdit
+    AnchorSideTop.Control = ProjectPathEdit
     AnchorSideTop.Side = asrBottom
-    Left = 144
-    Height = 36
-    Top = 207
-    Width = 340
-    AutoFill = True
-    BorderSpacing.Top = 1
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 3
-    ClientHeight = 17
-    ClientWidth = 336
-    Columns = 3
-    ItemIndex = 0
-    Items.Strings = (
-      'Disabled'
-      'Interactive'
-      'Automatic'
-    )
+    Left = 9
+    Height = 96
+    Hint = 'xxx'
+    Top = 60
+    Width = 228
+    BorderSpacing.Top = 11
+    Caption = 'Target'
+    ClientHeight = 77
+    ClientWidth = 224
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    object SupportDelphiCheckBox: TCheckBox
+      AnchorSideLeft.Control = MultiPlatformCheckBox
+      AnchorSideTop.Control = MultiPlatformCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 20
+      Top = 29
+      Width = 115
+      BorderSpacing.Top = 5
+      Caption = 'Support Delphi'
+      OnChange = SupportDelphiCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object SameDfmCheckBox: TCheckBox
+      AnchorSideLeft.Control = SupportDelphiCheckBox
+      AnchorSideTop.Control = SupportDelphiCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 20
+      Top = 54
+      Width = 194
+      BorderSpacing.Top = 5
+      Caption = 'Use the same DFM form file'
+      OnChange = SameDfmCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object MultiPlatformCheckBox: TCheckBox
+      AnchorSideTop.Control = TargetGroupBox
+      Left = 10
+      Height = 20
+      Top = 4
+      Width = 108
+      BorderSpacing.Top = 4
+      Caption = 'Multi-Platform'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+  object UnitReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = UnitReplaceButton
+    AnchorSideTop.Side = asrCenter
+    Left = 395
+    Height = 21
+    Top = 29
+    Width = 136
+    BorderSpacing.Left = 23
+    ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 9
   end
-  object UnknownPropsRadioGroup: TRadioGroup
+  object UnknownPropsComboBox: TComboBox
+    AnchorSideLeft.Control = UnitReplaceComboBox
     AnchorSideTop.Control = UnknownPropsDivider
     AnchorSideTop.Side = asrBottom
-    Left = 144
-    Height = 36
-    Top = 274
-    Width = 340
-    AutoFill = True
-    BorderSpacing.Top = 1
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 3
-    ClientHeight = 17
-    ClientWidth = 336
-    Columns = 3
-    ItemIndex = 0
-    Items.Strings = (
-      'Disabled'
-      'Interactive'
-      'Automatic'
-    )
+    Left = 395
+    Height = 21
+    Top = 84
+    Width = 136
+    BorderSpacing.Top = 2
+    ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 10
   end
-  object FuncReplaceRadioGroup: TRadioGroup
-    AnchorSideTop.Control = FuncReplaceDivider
-    AnchorSideTop.Side = asrBottom
-    Left = 144
-    Height = 36
-    Top = 408
-    Width = 340
-    AutoFill = True
-    BorderSpacing.Top = 1
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 2
-    ClientHeight = 17
-    ClientWidth = 336
-    Columns = 2
-    ItemIndex = 0
-    Items.Strings = (
-      'Disabled'
-      'Enabled'
-    )
+  object FuncReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = FuncReplaceButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FuncReplaceButton
+    AnchorSideTop.Side = asrCenter
+    Left = 395
+    Height = 21
+    Top = 197
+    Width = 136
+    BorderSpacing.Left = 23
+    ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 11
   end
-  object CoordOffsRadioGroup: TRadioGroup
-    AnchorSideTop.Control = CoordOffsDivider
-    AnchorSideTop.Side = asrBottom
-    Left = 144
-    Height = 36
-    Top = 475
-    Width = 340
-    AutoFill = True
-    BorderSpacing.Top = 1
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 2
-    ClientHeight = 17
-    ClientWidth = 336
-    Columns = 2
-    ItemIndex = 0
-    Items.Strings = (
-      'Disabled'
-      'Enabled'
-    )
+  object CoordOffsComboBox: TComboBox
+    AnchorSideLeft.Control = CoordOffsButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CoordOffsButton
+    AnchorSideTop.Side = asrCenter
+    Left = 395
+    Height = 21
+    Top = 253
+    Width = 136
+    BorderSpacing.Left = 23
+    ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 12
   end
 end

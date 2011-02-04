@@ -477,18 +477,19 @@ resourcestring
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
   lisNotADelphiProject = 'Not a Delphi project';
-  lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi '
-    +'project (.dpr)';
+  lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi project (.dpr)';
   lisProjectPath = 'Project Path:';
   lisProjectPathHint = 'Directory where project''s main file must be';
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
-  lisConvertTargetLaz = 'Lazarus';
-  lisConvertTargetLazWinOnly = 'Lazarus for Windows only';
-  lisConvertTargetLazAndDelphi = 'Lazarus and Delphi';
-  lisConvertTargetLazAndDelphiSameDfm = 'Lazarus and Delphi with same DFM file';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
+  lisConvertTargetMultiPlatform = 'Multi-Platform';
+  lisConvertTargetMultiPlatformHint = 'Multi-Platform versus Windows-only';
+  lisConvertTargetSupportDelphi = 'Support Delphi';
+  lisConvertTargetSupportDelphiHint = 'Use conditional compilation to support Delphi';
+  lisConvertTargetSameDfmFile = 'Use the same DFM form file';
+  lisConvertTargetSameDfmFileHint = 'Same DFM file for Lazarus and Delphi instead of copying it to LFM';
   lisKeepFileOpen = 'Keep converted files open in editor';
   lisKeepFileOpenHint = 'All project files will be open in editor after conversion';
   lisConvUnknownProps = 'Unknown properties';

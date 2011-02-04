@@ -225,7 +225,7 @@ begin
         // Omit Windows specific units from the list if target is "Windows only",
         //  needed if work-platform is different from Windows (kind of a hack).
         slo:=LowerCase(NewUnitName);
-        if (Settings.Target<>ctLazarusWin) or
+        if Settings.MultiPlatform or
            ((slo<>'windows') and (slo<>'variants') and (slo<>'shellapi')) then
           fMissingUnits.Add(s);                           // unit not found
       end;
@@ -563,7 +563,7 @@ begin
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
     end;
-    if Settings.Target=ctLazarus then begin
+    if Settings.MultiPlatform and not Settings.SupportDelphi then begin
       // One way conversion -> remove and rename units.
       if not fMainUsedUnits.RemoveUnits then exit;    // Remove
       if not fImplUsedUnits.RemoveUnits then exit;
@@ -571,12 +571,12 @@ begin
       if not CodeTool.ReplaceUsedUnits(fMainUsedUnits.fUnitsToRename, SrcCache) then exit;
       if not CodeTool.ReplaceUsedUnits(fImplUsedUnits.fUnitsToRename, SrcCache) then exit;
     end;
-    if Settings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
+    if Settings.SupportDelphi then begin
       // Support Delphi. Add IFDEF blocks for units.
       if not fMainUsedUnits.AddDelphiAndLCLSections then exit;
       if not fImplUsedUnits.AddDelphiAndLCLSections then exit;
     end
-    else begin // [ctLazarus, ctLazarusWin] -> comment out units if needed.
+    else begin // Lazarus only -> comment out units if needed.
       if not CodeTool.CommentUnitsInUsesSections(fMainUsedUnits.fUnitsToComment,
                                                  SrcCache) then exit;
       if not CodeTool.CommentUnitsInUsesSections(fImplUsedUnits.fUnitsToComment,

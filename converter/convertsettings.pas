@@ -37,7 +37,6 @@ uses
 
 type
 
-  TConvertTarget = (ctLazarus, ctLazarusDelphi, ctLazarusWin, ctLazarusDelphiSameDfm);
   TReplaceModeLong = (rlDisabled, rlInteractive, rlAutomatic);
   TReplaceModeShort = (rsDisabled, rsEnabled);
 
@@ -58,7 +57,9 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fKeepFileOpen: boolean;
-    fTarget: TConvertTarget;
+    fMultiPlatform: boolean;
+    fSupportDelphi: boolean;
+    fSameDfmFile: boolean;
     // Modes for replacements:
     fUnitsReplaceMode: TReplaceModeLong;
     fUnknownPropsMode: TReplaceModeLong;
@@ -104,7 +105,9 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property KeepFileOpen: boolean read fKeepFileOpen;
-    property Target: TConvertTarget read fTarget;
+    property MultiPlatform: boolean read fMultiPlatform;
+    property SupportDelphi: boolean read fSupportDelphi;
+    property SameDfmFile: boolean read fSameDfmFile;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
     property UnknownPropsMode: TReplaceModeLong read fUnknownPropsMode;
     property FuncReplaceMode: TReplaceModeShort read fFuncReplaceMode;
@@ -119,9 +122,14 @@ type
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
-    CoordOffsRadioGroup: TRadioGroup;
-    UnitReplaceRadioGroup: TRadioGroup;
-    UnknownPropsRadioGroup: TRadioGroup;
+    CoordOffsComboBox: TComboBox;
+    UnitReplaceComboBox: TComboBox;
+    MultiPlatformCheckBox: TCheckBox;
+    SameDfmCheckBox: TCheckBox;
+    SupportDelphiCheckBox: TCheckBox;
+    TargetGroupBox: TGroupBox;
+    FuncReplaceComboBox: TComboBox;
+    UnknownPropsComboBox: TComboBox;
     UnknownPropsDivider: TDividerBevel;
     UnitReplaceDivider: TDividerBevel;
     TypeReplaceDivider: TDividerBevel;
@@ -129,7 +137,6 @@ type
     CoordOffsDivider: TDividerBevel;
     FuncReplaceButton: TBitBtn;
     KeepFileOpenCheckBox: TCheckBox;
-    TargetRadioGroup: TRadioGroup;
     BackupCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
     TypeReplaceButton: TBitBtn;
@@ -137,14 +144,14 @@ type
     UnitReplaceButton: TBitBtn;
     ProjectPathEdit: TLabeledEdit;
     CoordOffsButton: TBitBtn;
-    FuncReplaceRadioGroup: TRadioGroup;
+    procedure SameDfmCheckBoxChange(Sender: TObject);
+    procedure SupportDelphiCheckBoxChange(Sender: TObject);
     procedure TypeReplaceButtonClick(Sender: TObject);
     procedure FuncReplaceButtonClick(Sender: TObject);
     procedure CoordOffsButtonClick(Sender: TObject);
     procedure UnitReplaceButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure TargetRadioGroupClick(Sender: TObject);
   private
     fSettings: TConvertSettings;
   public
@@ -356,7 +363,9 @@ begin
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
   fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
-  fTarget            :=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
+  fMultiPlatform                    :=fConfigStorage.GetValue('MultiPlatform', true);
+  fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
+  fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
   fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
   fUnknownPropsMode:=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
   fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
@@ -480,7 +489,9 @@ begin
   // Save possibly modified settings to ConfigStorage.
   fConfigStorage.SetDeleteValue('BackupFiles',      fBackupFiles, true);
   fConfigStorage.SetDeleteValue('KeepFileOpen',     fKeepFileOpen, false);
-  fConfigStorage.SetDeleteValue('ConvertTarget',    integer(fTarget), 0);
+  fConfigStorage.SetDeleteValue('MultiPlatform',    fMultiPlatform, true);
+  fConfigStorage.SetDeleteValue('SupportDelphi',    fSupportDelphi, false);
+  fConfigStorage.SetDeleteValue('SameDfmFile',      fSameDfmFile, false);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
   fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fUnknownPropsMode), 2);
   fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
@@ -509,22 +520,27 @@ begin
       // Settings --> UI. Loaded from ConfigSettings earlier.
       BackupCheckBox.Checked          :=fBackupFiles;
       KeepFileOpenCheckBox.Checked    :=fKeepFileOpen;
-      TargetRadioGroup.ItemIndex      :=integer(fTarget);
-      UnitReplaceRadioGroup.ItemIndex :=integer(fUnitsReplaceMode);
-      UnknownPropsRadioGroup.ItemIndex:=integer(fUnknownPropsMode);
-      FuncReplaceRadioGroup.ItemIndex :=integer(fFuncReplaceMode);
-      CoordOffsRadioGroup.ItemIndex   :=integer(fCoordOffsMode);
-      TargetRadioGroupClick(TargetRadioGroup);
+      MultiPlatformCheckBox.Checked   :=fMultiPlatform;
+      SupportDelphiCheckBox.Checked   :=fSupportDelphi;
+      SameDfmCheckBox.Checked         :=fSameDfmFile;
+      UnitReplaceComboBox.ItemIndex   :=integer(fUnitsReplaceMode);
+      UnknownPropsComboBox.ItemIndex  :=integer(fUnknownPropsMode);
+      FuncReplaceComboBox.ItemIndex   :=integer(fFuncReplaceMode);
+      CoordOffsComboBox.ItemIndex     :=integer(fCoordOffsMode);
+      SupportDelphiCheckBoxChange(SupportDelphiCheckBox);
+      SameDfmCheckBoxChange(SameDfmCheckBox);
       Result:=ShowModal;         // Let the user change settings in a form.
       if Result=mrOK then begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fBackupFiles     :=BackupCheckBox.Checked;
         fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
-        fTarget          :=TConvertTarget(TargetRadioGroup.ItemIndex);
-        fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceRadioGroup.ItemIndex);
-        fUnknownPropsMode:=TReplaceModeLong(UnknownPropsRadioGroup.ItemIndex);
-        fFuncReplaceMode :=TReplaceModeShort(FuncReplaceRadioGroup.ItemIndex);
-        fCoordOffsMode   :=TReplaceModeShort(CoordOffsRadioGroup.ItemIndex);
+        fMultiPlatform   :=MultiPlatformCheckBox.Checked;
+        fSupportDelphi   :=SupportDelphiCheckBox.Checked;
+        fSameDfmFile     :=SameDfmCheckBox.Checked;
+        fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
+        fUnknownPropsMode:=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
+        fFuncReplaceMode :=TReplaceModeShort(FuncReplaceComboBox.ItemIndex);
+        fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);
       end;
     end;
   finally
@@ -645,57 +661,51 @@ begin
   ProjectPathEdit.Text:='';
   ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
   ProjectPathEdit.Hint:=lisProjectPathHint;
-
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   BackupCheckBox.Hint:=lisBackupHint;
-
   KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
   KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
-
-  TargetRadioGroup.Items.Clear;
-  TargetRadioGroup.Items.Add(lisConvertTargetLaz);
-  TargetRadioGroup.Items.Add(lisConvertTargetLazAndDelphi);
-  TargetRadioGroup.Items.Add(lisConvertTargetLazWinOnly);
-  TargetRadioGroup.Items.Add(lisConvertTargetLazAndDelphiSameDfm);
-  TargetRadioGroup.ItemIndex:=0;
-  TargetRadioGroup.Hint:=lisConvertTargetHint;
-
+  // Target
+  MultiPlatformCheckBox.Caption:=lisConvertTargetMultiPlatform;
+  MultiPlatformCheckBox.Hint:=lisConvertTargetMultiPlatformHint;
+  SupportDelphiCheckBox.Caption:=lisConvertTargetSupportDelphi;
+  SupportDelphiCheckBox.Hint:=lisConvertTargetSupportDelphiHint;
+  SameDfmCheckBox.Caption:=lisConvertTargetSameDfmFile;
+  SameDfmCheckBox.Hint:=lisConvertTargetSameDfmFileHint;
+  TargetGroupBox.Hint:=lisConvertTargetHint;
+  // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisCodeToolsDefsEdit;    // Recycled string.
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
-  UnitReplaceRadioGroup.Items.Clear;
-  UnitReplaceRadioGroup.Items.Add(lisDisabled);    // 'Disabled'
-  UnitReplaceRadioGroup.Items.Add(lisInteractive); // 'Interactive'
-  UnitReplaceRadioGroup.Items.Add(lisAutomatic);   // 'Automatic'
-
+  UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
+  UnitReplaceComboBox.Items.Add(lisInteractive); // 'Interactive'
+  UnitReplaceComboBox.Items.Add(lisAutomatic);   // 'Automatic'
+  // Unknown Properties
   UnknownPropsDivider.Caption:=lisConvUnknownProps;
-  UnknownPropsRadioGroup.Items.Clear;
-  UnknownPropsRadioGroup.Items.Add(lisDisabled);
-  UnknownPropsRadioGroup.Items.Add(lisInteractive);
-  UnknownPropsRadioGroup.Items.Add(lisAutomatic);
-
+  UnknownPropsComboBox.Items.Add(lisDisabled);
+  UnknownPropsComboBox.Items.Add(lisInteractive);
+  UnknownPropsComboBox.Items.Add(lisAutomatic);
+  // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
   TypeReplaceButton.Caption:=lisCodeToolsDefsEdit;
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceInfoLabel.Caption:=lisInteractive;
-
+  // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisCodeToolsDefsEdit;
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
-  FuncReplaceRadioGroup.Items.Clear;
-  FuncReplaceRadioGroup.Items.Add(lisDisabled);    // 'Disabled'
-  FuncReplaceRadioGroup.Items.Add(lisEnabled);     // 'Enabled'
-
+  FuncReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
+  FuncReplaceComboBox.Items.Add(lisEnabled);     // 'Enabled'
+  // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisCodeToolsDefsEdit;
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
-  CoordOffsRadioGroup.Items.Clear;
-  CoordOffsRadioGroup.Items.Add(lisDisabled);
-  CoordOffsRadioGroup.Items.Add(lisEnabled);
+  CoordOffsComboBox.Items.Add(lisDisabled);
+  CoordOffsComboBox.Items.Add(lisEnabled);
 
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
@@ -707,20 +717,24 @@ begin
   ;
 end;
 
-procedure TConvertSettingsForm.TargetRadioGroupClick(Sender: TObject);
-// Delphi compatibility doesn't allow renaming the form file.
+procedure TConvertSettingsForm.SupportDelphiCheckBoxChange(Sender: TObject);
 var
-  Trg: TConvertTarget;
+  Chk: boolean;
 begin
-  Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
-  // Function names are not replaced for Windows only target.
-  if Trg=ctLazarusWin then
-    FuncReplaceRadioGroup.ItemIndex:=integer(rsDisabled);
-  FuncReplaceRadioGroup.Enabled:=Trg<>ctLazarusWin;
-  // Coordinates are not adjusted when the same DFM form file is used.
-  if Trg=ctLazarusDelphiSameDfm then
-    CoordOffsRadioGroup.ItemIndex:=integer(rsDisabled);
-  CoordOffsRadioGroup.Enabled:=Trg<>ctLazarusDelphiSameDfm;
+  Chk:=(Sender as TCheckBox).Checked;
+  SameDfmCheckBox.Enabled:=Chk;
+  if not Chk then
+    SameDfmCheckBox.Checked:=Chk;
+end;
+
+procedure TConvertSettingsForm.SameDfmCheckBoxChange(Sender: TObject);
+var
+  Chk: boolean;
+begin
+  Chk:=(Sender as TCheckBox).Checked;
+  if Chk then
+    CoordOffsComboBox.ItemIndex:=integer(rsDisabled);
+  CoordOffsComboBox.Enabled:=not Chk;
 end;
 
 // Edit replacements in grids

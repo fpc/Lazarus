@@ -543,7 +543,7 @@ begin
     Result:=LazarusIDE.DoCloseEditorFile(ADfmFilename,[cfSaveFirst]);
     if Result<>mrOk then exit;
   end;
-  if fSettings.Target=ctLazarusDelphiSameDfm then
+  if fSettings.SameDfmFile then
     LfmFilename:=ADfmFilename
   else begin
     // Create a form file name based on the unit file name.
@@ -555,7 +555,7 @@ begin
           DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
       if not FileExistsUTF8(LfmFilename) then begin
         // TODO: update project
-        if fSettings.Target=ctLazarusDelphi then
+        if fSettings.SupportDelphi and not fSettings.SameDfmFile then
           Result:=CopyFileWithErrorDialogs(ADfmFilename,LfmFilename,[mbAbort])
         else
           Result:=fSettings.RenameFile(ADfmFilename,LfmFilename);
@@ -568,7 +568,7 @@ begin
     Result:=ConvertDfmToLfm(LfmFilename);
     if Result<>mrOk then exit;
     // Read form file code in.
-    if fSettings.Target<>ctLazarusDelphiSameDfm then begin
+    if not fSettings.SameDfmFile then begin
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
     end;
@@ -692,8 +692,7 @@ begin
   repeat
     TryAgain:=False;
     Result:=AskMissingUnits(MainUsedUnits.MissingUnits, ImplUsedUnits.MissingUnits,
-                            ExtractFileName(fLazUnitFilename),
-                    fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm]);
+                            ExtractFileName(fLazUnitFilename), fSettings.SupportDelphi);
     case Result of
       // mrOK means: comment out.
       mrOK: begin
@@ -1270,7 +1269,7 @@ var
 begin
   // Converter for main LPR file.
   fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
-  if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
+  if fSettings.SupportDelphi then
     fMainUnitConverter.LazFileExt:=ExtractFileExt(fOrigPFilename)
   else
     fMainUnitConverter.LazFileExt:='.lpr';
