@@ -12271,6 +12271,10 @@ msgstr "Ukázat uživatelské odkazy"
 msgid "User"
 msgstr "Uživatel"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Prosím otevřete jednotku před spuštěním."
@@ -14299,9 +14303,9 @@ msgstr "Nelze vytvořit soubor %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Nelze vytvořit odkaz %s%s%s s cílem %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Nelze vytvořit novou metodu. Prosím opravte chyby zobrazené v okně zpráv."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14335,9 +14339,9 @@ msgstr "Nelze najít soubor %s%s%s.%sPokud patří do Vašeho projektu, zkontrol
 msgid "Unable to find %s in LFM Stream."
 msgstr "Nelze najít %s v proudu LFM."
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Nelze najít metodu. Prosím, opravte chyby zobrazené v okně zpráv."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14453,9 +14457,9 @@ msgstr "Soubor %s%s%s nelze uložit"
 msgid "Unable to set AnchorSide Control"
 msgstr "Nelze nastavit AnchorSide Control"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Nelze zobrazit metodu. Prosím opravte chybu zobrazenou v okně zpráv."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

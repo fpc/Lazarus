@@ -12373,6 +12373,10 @@ msgstr "显示用户链接"
 msgid "User"
 msgstr "用户"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "在运行前请打开一个单元"
@@ -14408,9 +14412,9 @@ msgstr "无法创建文件 %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "无法创建新的 method. 请先修复消息窗口中显示的错误."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14444,9 +14448,9 @@ msgstr ""
 msgid "Unable to find %s in LFM Stream."
 msgstr "无法在 LFM 流中找到 %s ."
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "无法找到 method. 请先修复消息窗口中显示的错误."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14562,9 +14566,9 @@ msgstr "无法保存文件 %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "无法设置锚边"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "无法显示 method. 请修复消息窗口中显示的错误."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

@@ -12383,6 +12383,10 @@ msgstr "Zeige benutzerdefinierte Verknüpfungen"
 msgid "User"
 msgstr "Benutzer"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Btte öffnen Sie eine Unit vor dem Starten."
@@ -14422,9 +14426,9 @@ msgstr "Kann Datei %s%s%s nicht erzeugen."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Kann den Link %s%s%s zum Ziel %s%s%s nicht anlegen"
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Kann die neue Methode nicht anlegen. Bitte beheben Sie den im Meldungsfenster gezeigten Fehler."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14458,9 +14462,9 @@ msgstr "Kann die Datei %s%s%s nicht finden.%sFalls sie zum Projekt gehört, prü
 msgid "Unable to find %s in LFM Stream."
 msgstr "Kann %s nicht im lfm-Stream finden."
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Kann die Methode nicht finden. Bitte beheben Sie den im Meldungsfenster gezeigten Fehler."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14576,9 +14580,9 @@ msgstr "Kann die Datei %s%s%s nicht speichern"
 msgid "Unable to set AnchorSide Control"
 msgstr "Kann Ankerseiten-Kontrollelement nicht setzen"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Kann Methode nicht anzeigen. Bitte beheben Sie den im Meldungsfenster gezeigten Fehler."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

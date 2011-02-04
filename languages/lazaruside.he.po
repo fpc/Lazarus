@@ -12317,6 +12317,10 @@ msgstr "הראה קישורי משתמש"
 msgid "User"
 msgstr "משתמש"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
@@ -14353,9 +14357,9 @@ msgstr "לא ניתן ליצור את הקובץ %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "לא ניתן ליצור מתודה חדשה. יש לתקן את השגיאה שמוצגת בחלון ההודעות."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14389,9 +14393,9 @@ msgstr "לא ניתן למצוא את הקובץ s%s%s.%s אם הקובץ שיי
 msgid "Unable to find %s in LFM Stream."
 msgstr "לא ניתן למצוא את %s בזרם של LFM."
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "לא ניתן למצוא מתודה. יש לתקן את השגיאה המוצגת בחלון ההודעות."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14507,9 +14511,9 @@ msgstr "לא ניתן לשמור את הקובץ %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "לא ניתן לקבוע את צד העיגון בפקד"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "לא ניתן להציג מתודה. יש לתקן את השגיאה המוצגת בחלון ההודעות."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

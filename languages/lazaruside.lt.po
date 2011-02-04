@@ -12354,6 +12354,10 @@ msgstr "Rodyti vartotojo saitus"
 msgid "User"
 msgstr "Naudotojas"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Prieš startuojant atverkite modulį."
@@ -14398,9 +14402,9 @@ msgstr "Nepavyko sukurti failą %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Nepavyko sukurti saito %s%s%s, kurio paskirtis %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Nepavyko sukurti naująjį metodą. Ištaisykite klaidą, rodomą pranešimų lange."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14434,9 +14438,9 @@ msgstr "Neina rasti failo %s%s%s.%sJei jis priklauso jūsų projektui, patikrink
 msgid "Unable to find %s in LFM Stream."
 msgstr "LFM sraute nepavyko rasti %s."
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Nepavyko rasti metodo. Ištaisykite klaidą, rodomą pranešimų lange."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14552,9 +14556,9 @@ msgstr "Nepavyko įrašyti failą %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "Kraštą pririšti prie komponentės neįmanoma"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Nepavyko parodyti metodą. Ištaisykite klaidą, rodomą pranešimų lange."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-04 00:29+0300\n"
+"PO-Revision-Date: 2011-02-04 03:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -12350,6 +12350,10 @@ msgstr "Показывать пользовательские ссылки"
 msgid "User"
 msgstr "Пользовательские"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr "Исправьте ошибку, указанную в окне сообщений, которое обычно находится под редактором исходного кода."
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Откройте модуль перед запуском."
@@ -14386,9 +14390,9 @@ msgstr "Невозможно создать файл %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Невозможно создать ссылку %s%s%s с объектом %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Невозможно создать новый метод. Исправьте ошибки, указанные в окне сообщений."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr "Не удалось создать новый метод."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14422,9 +14426,9 @@ msgstr "Невозможно найти файл %s%s%s.%sЕсли он прин
 msgid "Unable to find %s in LFM Stream."
 msgstr "Невозможно найти %s в потоке LFM"
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Невозможно найти метод. Исправьте ошибки в окне сообщений."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr "Невозможно найти метод."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14541,9 +14545,9 @@ msgstr "Невозможно сохранить файл %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "Невозможно установить привязку к компоненту"
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Невозможно показать метод. Исправьте ошибку в окне сообщений."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr "Невозможно отобразить метод."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

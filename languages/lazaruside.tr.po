@@ -12302,6 +12302,10 @@ msgstr "Kullanıcı bağlantılarını göster"
 msgid "User"
 msgstr ""
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr ""
@@ -14329,9 +14333,9 @@ msgstr ""
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Yeni yöntem oluşturulamıyor. Lütfen ileti penceresinde görüntülenen hatayı düzeltin."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14365,9 +14369,9 @@ msgstr ""
 msgid "Unable to find %s in LFM Stream."
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Yöntem bulunamadı. Lütfen ileti penceresinde görüntülenen hatayı düzeltin."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14483,9 +14487,9 @@ msgstr "%s%s%s adlı dosya kaydedilemez"
 msgid "Unable to set AnchorSide Control"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Yöntem görüntülenemiyor. Lütfen ileti penceresinde görüntülenen hatayı düzeltin."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"

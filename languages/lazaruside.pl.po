@@ -12358,6 +12358,10 @@ msgstr "Pokaż odnośniki użytkownika"
 msgid "User"
 msgstr "Użytkownika"
 
+#: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
+msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Proszę otworzyć moduł przed uruchomieniem."
@@ -14389,9 +14393,9 @@ msgstr "Nie można utworzyć pliku %s%s%s"
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletocreatenewmethodpleasefixtheerrorshownin
-msgid "Unable to create new method. Please fix the error shown in the message window."
-msgstr "Nie można utworzyć nowej metody. Popraw błąd wypisany w oknie komunikatów."
+#: lazarusidestrconsts.lisunabletocreatenewmethod
+msgid "Unable to create new method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14425,9 +14429,9 @@ msgstr ""
 msgid "Unable to find %s in LFM Stream."
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to find method. Please fix the error shown in the message window."
-msgstr "Nie można znaleźć metody. Popraw błąd wypisany w oknie komunikatów."
+#: lazarusidestrconsts.lisunabletofindmethod
+msgid "Unable to find method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14543,9 +14547,9 @@ msgstr "Nie można zapisać pliku %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
-msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Nie można pokazać metody. Popraw błąd wypisany w oknie komunikatów."
+#: lazarusidestrconsts.lisunabletoshowmethod
+msgid "Unable to show method."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
