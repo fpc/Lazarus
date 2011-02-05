@@ -44,7 +44,8 @@ uses
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
   EditorOptions, CheckLFMDlg, IDEMsgIntf,
   // Converter
-  ConverterTypes, ConvertSettings, ReplaceNamesUnit, ConvCodeTool, UsedUnits;
+  ConverterTypes, ConvertSettings, ReplaceNamesUnit,
+  ConvCodeTool, FormFileConv, UsedUnits;
 
 type
 
@@ -134,8 +135,6 @@ function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
 implementation
 
 {$R *.lfm}
-
-uses FormFileConv;
 
 function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
 var
