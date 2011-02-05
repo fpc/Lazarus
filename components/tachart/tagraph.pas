@@ -402,14 +402,15 @@ end;
 function TChart.Clone: TChart;
 var
   ms: TMemoryStream;
+  cloned: TComponent = nil;
 begin
-  Result := nil;
   ms := TMemoryStream.Create;
   try
     WriteComponentToStream(ms, Self);
     ms.Seek(0, soBeginning);
     ReadComponentFromBinaryStream(
-      ms, Result, @FindComponentClass, Owner, Parent, Owner);
+      ms, cloned, @FindComponentClass, Owner, Parent, Owner);
+    Result := cloned as TChart;
   finally
     ms.Free;
   end;
