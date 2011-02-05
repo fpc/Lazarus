@@ -10416,6 +10416,8 @@ var
   AParent: QTreeWidgetItemH;
   ASubIndex: Integer;
   AIndex: Integer;
+  ListItem: TListItem;
+  B: Boolean;
 begin
   FCurrentItem := Current;
   FPreviousItem := Previous;
@@ -10454,6 +10456,14 @@ begin
   try
     if Current <> nil then
     begin
+      ListItem := nil;
+      B := False;
+      if ViewStyle = Ord(vsReport) then
+      begin
+        ListItem := TListView(LCLObject).Selected;
+        if ListItem <> nil then
+          B := ListItem.Index = AIndex;
+      end;
       FillChar(Msg, SizeOf(Msg), #0);
       FillChar(NMLV, SizeOf(NMLV), #0);
       Msg.Msg := CN_NOTIFY;
@@ -10467,17 +10477,28 @@ begin
         NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
-      DeliverMessage(Msg);
+      if not B then
+        DeliverMessage(Msg);
     end;
 
     if Previous <> nil then
     begin
+      AIndex := getRow(Previous);
+      ListItem := nil;
+      B := False;
+      if ViewStyle = Ord(vsReport) then
+      begin
+        ListItem := TListView(LCLObject).Selected;
+        if ListItem <> nil then
+          B := ListItem.Index = AIndex;
+      end;
+
       FillChar(Msg, SizeOf(Msg), #0);
       FillChar(NMLV, SizeOf(NMLV), #0);
       Msg.Msg := CN_NOTIFY;
       NMLV.hdr.hwndfrom := LCLObject.Handle;
       NMLV.hdr.code := LVN_ITEMCHANGED;
-      NMLV.iItem := getRow(Previous);
+      NMLV.iItem := AIndex;
       AParent := QTreeWidgetItem_parent(Previous);
       if AParent <> nil then
         ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
@@ -10490,7 +10511,8 @@ begin
         NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
-      DeliverMessage(Msg);
+      if not B then
+        DeliverMessage(Msg);
     end;
   finally
     FSyncingItems := False;
