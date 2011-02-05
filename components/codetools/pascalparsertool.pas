@@ -140,7 +140,8 @@ type
     function KeyWordFuncProperty: boolean;
     procedure ReadConst;
     // types
-    procedure ReadEqualsType;
+    procedure ReadTypeNameAndDefinition;
+    procedure ReadTypeReference;
     function KeyWordFuncTypeClass: boolean;
     function KeyWordFuncTypeClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
@@ -376,6 +377,7 @@ end;
 
 function TPascalParserTool.ParseType(StartPos, WordLen: integer): boolean;
 // KeyWordFunctions for parsing types
+// after parsing CurPos is on atom behind type
 var
   p: PChar;
 begin
@@ -739,12 +741,8 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
 begin
   if CurNode.Desc = ctnTypeSection then begin
     // create type definition node
-    CreateChildNode;
-    CurNode.Desc:=ctnTypeDefinition;
-    ReadEqualsType;
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end else 
+    ReadTypeNameAndDefinition;
+  end else
   if CurNode.Desc = ctnConstSection then begin
     // create const definition node
     CreateChildNode;
@@ -2989,19 +2987,6 @@ function TPascalParserTool.KeyWordFuncType: boolean;
     procedure c;
     type d=e;
 }
-
-  function IsTypeName: boolean;
-  begin
-    Result:=false;
-    if not AtomIsIdentifier(false) then exit;
-    if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) then begin
-      if UpAtomIs('PROPERTY') or UpAtomIs('OPERATOR') then
-        exit;
-    end;
-    //debugln(['IsTypeName ',GetAtom,' ',CompilerModeNames[Scanner.CompilerMode]]);
-    Result:=true;
-  end;
-
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
@@ -3011,64 +2996,8 @@ begin
   // read all type definitions  Name = Type; or generic Name<List> = Type;
   repeat
     ReadNextAtom;  // name
-    if UpAtomIs('GENERIC') then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnGenericType;
-      // read name
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-      CreateChildNode;
-      CurNode.Desc:=ctnGenericName;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-      // read <
-      ReadNextAtom;
-      if not AtomIsChar('<') then
-        RaiseCharExpectedButAtomFound('<');
-      CreateChildNode;
-      CurNode.Desc:=ctnGenericParams;
-      // read parameter list
-      ReadNextAtom;
-      if AtomIsIdentifier(false) then begin
-        repeat
-          CreateChildNode;
-          CurNode.Desc:=ctnGenericParameter;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          // read name
-          ReadNextAtom;
-          if CurPos.Flag=cafComma then begin
-            ReadNextAtom;
-            AtomIsIdentifier(true);
-          end else if AtomIsChar('>') then begin
-            break;
-          end else if AtomIs('>=') then begin
-            // this is the rare case where >= are two separate atoms
-            dec(CurPos.EndPos);
-            break;
-          end else
-            RaiseCharExpectedButAtomFound('>');
-        until false;
-      end else begin
-        if AtomIs('>=') then
-          // this is the rare case where >= are two separate atoms
-          dec(CurPos.EndPos);
-        if not AtomIsChar('>') then
-          RaiseCharExpectedButAtomFound('>');
-      end;
-      // close ctnGenericParams
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-      ReadEqualsType;
-      // close ctnGenericType
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-    end else if IsTypeName then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnTypeDefinition;
-      ReadEqualsType;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
+    if UpAtomIs('GENERIC') or AtomIsIdentifier(false) then begin
+      ReadTypeNameAndDefinition;
     end else begin
       UndoReadNextAtom;
       break;
@@ -3391,11 +3320,79 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadEqualsType;
-// read   = type;
+procedure TPascalParserTool.ReadTypeNameAndDefinition;
+{ after parsing CurPos is on semicolon
+
+  examples:
+    name = type;
+    generic name<> = type;  // fpc style
+    generic name<name>=type;  // this is the only case where >= are two operators
+    name<name,name> = type;  // delphi style
+}
+var
+  TypeNode: TCodeTreeNode;
+  NamePos: TAtomPosition;
 begin
-  // read =
+  CreateChildNode;
+  TypeNode:=CurNode;
+  if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) and UpAtomIs('GENERIC') then begin
+    CurNode.Desc:=ctnGenericType;
+    ReadNextAtom;
+  end
+  else
+    CurNode.Desc:=ctnTypeDefinition;
+  // read name
+  AtomIsIdentifier(true);
   ReadNextAtom;
+  if (TypeNode.Desc=ctnGenericType) and (not AtomIsChar('<')) then
+    RaiseCharExpectedButAtomFound('<');
+  if AtomIsChar('<') then begin
+    TypeNode.Desc:=ctnGenericType;
+    // name
+    CreateChildNode;
+    NamePos:=LastAtoms.GetValueAt(0);
+    CurNode.StartPos:=NamePos.StartPos;
+    CurNode.Desc:=ctnGenericName;
+    CurNode.EndPos:=NamePos.EndPos;
+    //debugln(['TPascalParserTool.ReadTypeNameAndDefinition Name="',copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos),'"']);
+    EndChildNode;
+    // read parameter list
+    CreateChildNode;
+    CurNode.Desc:=ctnGenericParams;
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      repeat
+        CreateChildNode;
+        CurNode.Desc:=ctnGenericParameter;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        // read name
+        ReadNextAtom;
+        if CurPos.Flag=cafComma then begin
+          ReadNextAtom;
+          AtomIsIdentifier(true);
+        end else if AtomIsChar('>') then begin
+          break;
+        end else if AtomIs('>=') then begin
+          // this is the rare case where >= are two separate atoms
+          dec(CurPos.EndPos);
+          break;
+        end else
+          RaiseCharExpectedButAtomFound('>');
+      until false;
+    end else begin
+      if AtomIs('>=') then
+        // this is the rare case where >= are two separate atoms
+        dec(CurPos.EndPos);
+      if not AtomIsChar('>') then
+        RaiseCharExpectedButAtomFound('>');
+    end;
+    // close ctnGenericParams
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+    ReadNextAtom;
+  end;
+  // read =
   if (CurPos.Flag<>cafEqual) then
     RaiseCharExpectedButAtomFound('=');
   // read type
@@ -3404,6 +3401,45 @@ begin
   // read ;
   if CurPos.Flag<>cafSemicolon then
     RaiseCharExpectedButAtomFound(';');
+  // close ctnTypeDefinition, ctnGenericType
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+end;
+
+procedure TPascalParserTool.ReadTypeReference;
+{ after reading CurPos is on atom behind the identifier
+
+  examples:
+    TButton
+    controls.TButton
+    TGenericClass<TypeReference,TypeReference>
+}
+begin
+  ReadNextAtom;
+  while CurPos.Flag=cafPoint do begin
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  if not AtomIsChar('<') then exit;
+  // read specialization parameters
+  repeat
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      ReadTypeReference;
+      if CurPos.Flag=cafComma then begin
+        // read another parameter
+        continue;
+      end;
+    end;
+    if AtomIs('>=') then
+      // this is the only case where >= are two atoms
+      dec(CurPos.EndPos);
+    if not AtomIsChar('>') then
+      RaiseCharExpectedButAtomFound('>');
+    ReadNextAtom;
+    break;
+  until false;
 end;
 
 function TPascalParserTool.KeyWordFuncTypePacked: boolean;
@@ -3912,13 +3948,7 @@ begin
   SubRangeOperatorFound:=false;
   if CurPos.Flag in AllCommonAtomWords then begin
     AtomIsIdentifier(true);
-    ReadNextAtom;
-    if (CurPos.Flag=cafPoint) then begin
-      // first word was unit name
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-      ReadNextAtom;
-    end;
+    ReadTypeReference;
     while (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) do begin
       ReadTilBracketClose(true);
       ReadNextAtom;
@@ -4488,12 +4518,7 @@ begin
           CreateChildNode;
           CurNode.Desc:=ctnIdentifier;
         end;
-        ReadNextAtom;
-        if CurPos.Flag=cafPoint then begin
-          ReadNextAtom;
-          AtomIsIdentifier(true);
-          ReadNextAtom;
-        end;
+        ReadTypeReference;
         if CreateChildNodes then begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;

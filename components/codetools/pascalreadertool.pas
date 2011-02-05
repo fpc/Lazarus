@@ -1376,6 +1376,7 @@ begin
   p:=PChar(AClassName);
   while (ANode<>nil) do begin
     if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+      //debugln(['TPascalReaderTool.FindClassNode ',GetIdentifier(@Src[ANode.StartPos])]);
       CurClassNode:=FindTypeNodeOfDefinition(ANode);
       if (CurClassNode<>nil)
       and (CurClassNode.Desc in AllClassObjects) then begin
@@ -1385,8 +1386,9 @@ begin
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
         then begin
           NameNode:=ANode;
-          if ANode.Desc=ctnGenericType then
+          if (ANode.Desc=ctnGenericType) and (ANode.FirstChild<>nil) then
             NameNode:=ANode.FirstChild;
+          //debugln(['TPascalReaderTool.FindClassNode class name = "',GetIdentifier(@Src[NameNode.StartPos]),'"']);
           if CompareIdentifiers(p,@Src[NameNode.StartPos])=0 then begin
             Result:=FindNestedClass(CurClassNode,p,true);
             exit;

@@ -25,6 +25,11 @@ var
   ArraySpecialize: TGenericArray<Integer>;
   ClassSpecialize: TGenericClass<Integer,String>;
 
+function TGenericClass.DoSomething(Arg: T1): T2;
+begin
+
+end;
+
 begin
   FooInt := TGenericClass<Integer,String>.Create;
 end.
