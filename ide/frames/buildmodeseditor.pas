@@ -575,7 +575,7 @@ begin
       Value:=Grid.Cells[1,aRow];
       Values.Values[MacroName]:=Value;
     end;
-    //debugln(['TBuildModesEditorFrame.Save changed=',not MacroValues.Equals(Values),' ',Values.Text]);
+    //debugln(['TBuildModesEditorFrame.Save changed=',not MacroValues.Equals(Values),' New="',Values.Text,'"']);
     if not MacroValues.Equals(Values) then begin
       // has changed
       MacroValues.Assign(Values);

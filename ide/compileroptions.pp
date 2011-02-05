@@ -286,6 +286,9 @@ type
     ParsedValues: array[TParsedCompilerOptString] of string;
     ParsedStamp: array[TParsedCompilerOptString] of integer; // see CompilerParseStamp
     Parsing: array[TParsedCompilerOptString] of boolean;
+    ParsedErrorOption: TParsedCompilerOptString;
+    ParsedErrorMsg: string;
+    ParsedErrorStamp: integer; // see CompilerParseStamp
     // parsed except for platform macros
     ParsedPIValues: array[TParsedCompilerOptString] of string;
     ParsedPIStamp: array[TParsedCompilerOptString] of integer; // see CompilerParseStamp
@@ -299,6 +302,8 @@ type
     MacroValuesParsing: boolean;
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
+    function HasParsedError: boolean;
+    procedure ParsedError(Option: TParsedCompilerOptString; Msg: string);
     function GetUnparsedWithConditionals(Option: TParsedCompilerOptString): string;
     function GetParsedValue(Option: TParsedCompilerOptString;
                             WithOverrides: boolean = true): string;
@@ -3456,6 +3461,21 @@ begin
   inherited Destroy;
 end;
 
+function TParsedCompilerOptions.HasParsedError: boolean;
+begin
+  Result:=(ParsedErrorStamp<>InvalidParseStamp)
+      and (ParsedErrorStamp=CompilerParseStamp);
+end;
+
+procedure TParsedCompilerOptions.ParsedError(Option: TParsedCompilerOptString;
+  Msg: string);
+begin
+  if HasParsedError then exit;
+  ParsedErrorMsg:=Msg;
+  ParsedErrorOption:=Option;
+  ParsedErrorStamp:=CompilerParseStamp;
+end;
+
 function TParsedCompilerOptions.GetUnparsedWithConditionals(
   Option: TParsedCompilerOptString): string;
 var
@@ -3507,7 +3527,7 @@ begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
       DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option],' Unparsed="',UnparsedValues[Option],'"');
-      RaiseException('');
+      ParsedError(Option,'Circle in macros');
       exit('');
     end;
     Parsing[Option]:=true;
@@ -3652,6 +3672,7 @@ begin
   end;
   InheritedMacroValuesStamp:=InvalidParseStamp;
   MacroValuesStamp:=InvalidParseStamp;
+  ParsedErrorStamp:=InvalidParseStamp;
 end;
 
 procedure TParsedCompilerOptions.InvalidateFiles;
