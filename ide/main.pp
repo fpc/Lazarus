@@ -8512,6 +8512,8 @@ var
   ACaption, AText: string;
   i: integer;
   AnEditorInfo: TUnitEditorInfo;
+  SrcEditWasFocused: Boolean;
+  SrcEdit: TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(AnUnitInfo.PageIndex));
@@ -8529,82 +8531,98 @@ begin
   end;
   AnUnitInfo := AnEditorInfo.UnitInfo;
   AnUnitInfo.SessionModified:=true;
-  //debugln(['TMainIDE.DoCloseEditorFile File=',AnUnitInfo.Filename,' UnitSession=',AnUnitInfo.SessionModified,' ProjSession=',project1.SessionModified]);
-  if AnUnitInfo.OpenEditorInfoCount > 1 then begin
-    SourceEditorManager.CloseFile(AEditor);
-    Result:=mrOk;
-    exit;
-  end;
-
-  if (AnUnitInfo.Component<>nil)
-  and (FLastFormActivated<>nil)
-  and (TDesigner(FLastFormActivated.Designer).LookupRoot=AnUnitInfo.Component)
-  then
-    FLastFormActivated:=nil;
-
-  // save some meta data of the source
-  SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
-
-  // if SaveFirst then save the source
-  if (cfSaveFirst in Flags) and (not AnUnitInfo.ReadOnly)
-  and ((AEditor.Modified) or (AnUnitInfo.Modified)) then begin
-    if not (cfQuiet in Flags) then begin
-      // ask user
-      if AnUnitInfo.Filename<>'' then
-        AText:=Format(lisFileHasChangedSave, ['"', AnUnitInfo.Filename, '"'])
-      else if AnUnitInfo.Unit_Name<>'' then
-        AText:=Format(lisUnitHasChangedSave, ['"', AnUnitInfo.Unit_name, '"'])
-      else
-        AText:=Format(lisSourceOfPageHasChangedSave, ['"',
-          TSourceEditor(AEditor).PageName, '"']);
-      ACaption:=lisSourceModified;
-      Result:=QuestionDlg(ACaption, AText,
-          mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
-            ], 0);
-    end else
-      Result:=mrYes;
-    if Result=mrYes then begin
-      Result:=DoSaveEditorFile(AnEditorInfo.EditorComponent,[sfCheckAmbiguousFiles]);
+  SrcEditWasFocused:=(AnEditorInfo.EditorComponent<>nil)
+     and (AnEditorInfo.EditorComponent.EditorControl<>nil)
+     and AnEditorInfo.EditorComponent.EditorControl.Focused;
+  //debugln(['TMainIDE.DoCloseEditorFile File=',AnUnitInfo.Filename,' WasFocused=',SrcEditWasFocused]);
+  try
+    //debugln(['TMainIDE.DoCloseEditorFile File=',AnUnitInfo.Filename,' UnitSession=',AnUnitInfo.SessionModified,' ProjSession=',project1.SessionModified]);
+    if AnUnitInfo.OpenEditorInfoCount > 1 then begin
+      SourceEditorManager.CloseFile(AEditor);
+      Result:=mrOk;
+      exit;
     end;
-    if Result=mrAbort then exit;
-    Result:=mrOk;
+
+    if (AnUnitInfo.Component<>nil)
+    and (FLastFormActivated<>nil)
+    and (TDesigner(FLastFormActivated.Designer).LookupRoot=AnUnitInfo.Component)
+    then
+      FLastFormActivated:=nil;
+
+    // save some meta data of the source
+    SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
+
+    // if SaveFirst then save the source
+    if (cfSaveFirst in Flags) and (not AnUnitInfo.ReadOnly)
+    and ((AEditor.Modified) or (AnUnitInfo.Modified)) then begin
+      if not (cfQuiet in Flags) then begin
+        // ask user
+        if AnUnitInfo.Filename<>'' then
+          AText:=Format(lisFileHasChangedSave, ['"', AnUnitInfo.Filename, '"'])
+        else if AnUnitInfo.Unit_Name<>'' then
+          AText:=Format(lisUnitHasChangedSave, ['"', AnUnitInfo.Unit_name, '"'])
+        else
+          AText:=Format(lisSourceOfPageHasChangedSave, ['"',
+            TSourceEditor(AEditor).PageName, '"']);
+        ACaption:=lisSourceModified;
+        Result:=QuestionDlg(ACaption, AText,
+            mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
+              ], 0);
+      end else
+        Result:=mrYes;
+      if Result=mrYes then begin
+        Result:=DoSaveEditorFile(AnEditorInfo.EditorComponent,[sfCheckAmbiguousFiles]);
+      end;
+      if Result=mrAbort then exit;
+      Result:=mrOk;
+    end;
+
+    // add to recent file list
+    if (not AnUnitInfo.IsVirtual)
+    and (not (cfProjectClosing in Flags)) then
+    begin
+      EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
+      SetRecentFilesMenu;
+    end;
+
+    // close form soft (keep it if used by another component)
+    CloseUnitComponent(AnUnitInfo,[]);
+
+    // close source editor
+    SourceEditorManager.CloseFile(AnEditorInfo.EditorComponent);
+    MainIDEBar.itmFileClose.Enabled:=SourceEditorManager.SourceEditorCount > 0;
+    MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
+
+    // free sources
+    if (AnUnitInfo.Source<>nil) then begin
+      if (Project1.MainUnitInfo=AnUnitInfo)
+      and (not (cfProjectClosing in Flags)) then begin
+        // lpr file closed in editor, but project kept open -> revert lpr file
+        Project1.MainUnitInfo.Source.Revert;
+      end else
+        AnUnitInfo.Source.IsDeleted:=true;
+    end;
+
+    // close file in project
+    AnUnitInfo.Loaded:=false;
+    if AnUnitInfo<>Project1.MainUnitInfo then
+      AnUnitInfo.Source:=nil;
+    i:=Project1.IndexOf(AnUnitInfo);
+    if (i<>Project1.MainUnitID) and (AnUnitInfo.IsVirtual) then begin
+      Project1.RemoveUnit(i);
+    end;
+
+  finally
+    if SrcEditWasFocused then begin
+      // before closing the syendit was focused. Focus the current synedit.
+      SrcEdit := SourceEditorManager.ActiveEditor;
+      if (SrcEdit<>nil)
+      and (SrcEdit.EditorControl<>nil)
+      and (SrcEdit.EditorControl.CanFocus) then
+        SrcEdit.EditorControl.SetFocus;
+      //debugln(['TMainIDE.DoCloseEditorFile Focus=',SrcEdit.FileName,' Editor=',DbgSName(SrcEdit.EditorControl),' Focused=',(SrcEdit.EditorControl<>nil) and (SrcEdit.EditorControl.Focused)]);
+    end;
   end;
-
-  // add to recent file list
-  if (not AnUnitInfo.IsVirtual)
-  and (not (cfProjectClosing in Flags)) then
-  begin
-    EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
-    SetRecentFilesMenu;
-  end;
-
-  // close form soft (keep it if used by another component)
-  CloseUnitComponent(AnUnitInfo,[]);
-
-  // close source editor
-  SourceEditorManager.CloseFile(AnEditorInfo.EditorComponent);
-  MainIDEBar.itmFileClose.Enabled:=SourceEditorManager.SourceEditorCount > 0;
-  MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
-
-  // free sources
-  if (AnUnitInfo.Source<>nil) then begin
-    if (Project1.MainUnitInfo=AnUnitInfo)
-    and (not (cfProjectClosing in Flags)) then begin
-      // lpr file closed in editor, but project kept open -> revert lpr file
-      Project1.MainUnitInfo.Source.Revert;
-    end else
-      AnUnitInfo.Source.IsDeleted:=true;
-  end;
-
-  // close file in project
-  AnUnitInfo.Loaded:=false;
-  if AnUnitInfo<>Project1.MainUnitInfo then
-    AnUnitInfo.Source:=nil;
-  i:=Project1.IndexOf(AnUnitInfo);
-  if (i<>Project1.MainUnitID) and (AnUnitInfo.IsVirtual) then begin
-    Project1.RemoveUnit(i);
-  end;
-
   {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoCloseEditorFile end');
   {$ENDIF}
