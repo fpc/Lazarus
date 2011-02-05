@@ -2841,7 +2841,7 @@ end;
 
 { TFormPropertyStorage }
 
-procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
+procedure TFormPropertyStorage.FormCreate(Sender: TObject);
 begin
   Restore;
 end;
@@ -2856,7 +2856,7 @@ begin
   inherited Create(TheOwner);
   if Owner is TCustomForm then
   begin
-    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow, True);
+    TCustomForm(Owner).AddHandlerCreate(@FormCreate, True);
     TCustomForm(Owner).AddHandlerClose(@FormClose, True);
   end;
 end;

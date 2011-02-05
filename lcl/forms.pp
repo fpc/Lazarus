@@ -611,9 +611,9 @@ type
                           var Message : TLMessage): Boolean; virtual;
 
     // handlers
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
                                   AsFirst: Boolean=true);
-    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
     procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsFirst: Boolean=true);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
@@ -1575,7 +1575,7 @@ type
 
   TFormPropertyStorage = class(TControlPropertyStorage)
   private
-    procedure FormFirstShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   public
     constructor Create(TheOwner: TComponent); override;
