@@ -4815,7 +4815,7 @@ begin
       CheckMethodsInPersistent(TComponent(AllComponents[i]));
   finally
     Collector.Free;
-    PublishedMethods.Free;
+    DisposeAVLTree(PublishedMethods);
   end;
 end;
 
