@@ -101,7 +101,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
 
-    procedure DoBeforeBuild(AResources: TAbstractProjectResources;
+    procedure DoAfterBuild(AResources: TAbstractProjectResources;
       AReason: TCompileReason; SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
       const MainFilename: string): boolean; override;
@@ -587,7 +587,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TProjectVersionInfo.DoBeforeBuild(AResources: TAbstractProjectResources;
+procedure TProjectVersionInfo.DoAfterBuild(AResources: TAbstractProjectResources;
   AReason: TCompileReason; SaveToTestDir: boolean);
 begin
   if (AReason = crBuild) and AutoIncrementBuild then // project indicate to use autoincrementbuild
