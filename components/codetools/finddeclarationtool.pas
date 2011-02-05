@@ -2180,7 +2180,7 @@ begin
         end;
 
         // add class name
-        ClassStr := NewTool.ExtractClassName(NewNode, False);
+        ClassStr := NewTool.ExtractClassName(NewNode, False, true);
         if ClassStr <> '' then Result := Result + ClassStr + '.';
 
         Result:=Result+NewTool.ExtractDefinitionName(NewNode);
@@ -2240,7 +2240,7 @@ begin
 
         if NewNode.Desc = ctnProperty then
         begin // add class name
-          ClassStr := NewTool.ExtractClassName(NewNode, False);
+          ClassStr := NewTool.ExtractClassName(NewNode, False, True);
           if ClassStr <> '' then Result := Result + ClassStr + '.';
         end;
 
@@ -2967,7 +2967,7 @@ var
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
-        ctnClassConst,ctnClassType,ctnClassVar,ctnClassClassVar,
+        ctnClassClassVar,
         ctnRecordVariant,
         ctnProcedureHead, ctnParameterList,
         ctnClassInheritance:
@@ -3086,7 +3086,7 @@ begin
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
-        ctnClassConst, ctnClassType, ctnClassVar, ctnClassClassVar,
+        ctnClassClassVar,
         ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordVariant,

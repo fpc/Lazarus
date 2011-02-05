@@ -402,7 +402,7 @@ begin
       // gather the method bodies
       SearchInNodes:=GatherProcNodes(TypeSectionNode,
          [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-         ExtractClassName(ClassNode,true));
+         ExtractClassName(ClassNode,true,true));
       try
         // remove all corresponding methods
         RemoveCorrespondingProcNodes(SearchInNodes,SearchForNodes,false);
@@ -524,20 +524,19 @@ begin
     end else begin
       // procedure is not forward, search on same proc level
       {$IFDEF CTDEBUG}
-      DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4A');
+      DebugLn('TMethodJumpingCodeTool.FindJumpPoint proc body');
       {$ENDIF}
-      SearchedClassname:=ExtractClassNameOfProcNode(ProcNode);
+      SearchedClassname:=ExtractClassNameOfProcNode(ProcNode,true);
       StartNode:=FindFirstNodeOnSameLvl(ProcNode);
       {$IFDEF CTDEBUG}
-      DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4B ',dbgs(StartNode<>nil),' ',SearchedClassName);
+      DebugLn('TMethodJumpingCodeTool.FindJumpPoint body to decl: ',dbgs(StartNode<>nil),' Class="',SearchedClassName,'"');
       {$ENDIF}
       if StartNode=nil then exit;
       if SearchedClassname<>'' then begin
         // search class node
-        ClassNode:=FindClassNode(StartNode,UpperCaseStr(SearchedClassName),
-                     true,false);
+        ClassNode:=FindClassNode(StartNode,SearchedClassName,true,false);
         {$IFDEF CTDEBUG}
-        DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4C ',dbgs(ClassNode<>nil));
+        DebugLn('TMethodJumpingCodeTool.FindJumpPoint class found: ',dbgs(ClassNode<>nil));
         {$ENDIF}
         if ClassNode=nil then exit;
         // search first class grand child node
@@ -567,7 +566,7 @@ begin
         TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
         SearchForNodes:=GatherProcNodes(TypeSectionNode,
            [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-           ExtractClassName(ClassNode,true));
+           ExtractClassName(ClassNode,true,true));
         try
           // remove corresponding methods
           RemoveCorrespondingProcNodes(SearchForNodes,SearchInNodes,false);
@@ -786,7 +785,7 @@ begin
         //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B');
         cmp:=true;
         if (phpOnlyWithClassname in Attr) then begin
-          CurClassName:=ExtractClassNameOfProcNode(ANode);
+          CurClassName:=ExtractClassNameOfProcNode(ANode,true);
           //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurClassName,'" =? ',UpperClassName);
 
           if CompareIdentifiers(PChar(UpperClassName),PChar(CurClassName))<>0 then
@@ -795,7 +794,7 @@ begin
         if cmp and (phpIgnoreMethods in Attr) then begin
           if (ANode.GetNodeOfTypes([ctnClass,ctnObject,ctnRecordType,
                                 ctnObjCClass,ctnObjCCategory,ctnCPPClass])<>nil)
-          or (ExtractClassNameOfProcNode(ANode)<>'')
+          or (ExtractClassNameOfProcNode(ANode,true)<>'')
           then
             cmp:=false;
         end;

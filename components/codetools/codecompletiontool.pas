@@ -1530,7 +1530,7 @@ var
     ProcNode:=CursorNode;
     while (ProcNode<>nil) do begin
       if (ProcNode.Desc=ctnProcedure) then begin
-        SearchedClassname:=ExtractClassNameOfProcNode(ProcNode);
+        SearchedClassname:=ExtractClassNameOfProcNode(ProcNode,true);
         if SearchedClassName<>'' then break;
       end;
       ProcNode:=ProcNode.Parent;
@@ -1591,7 +1591,7 @@ var
     end;
     MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                    AddClassAndNameToProc(MethodDefinition,
-                     ExtractClassName(AClassNode,false), AnEventName);
+                     ExtractClassName(AClassNode,false,true), AnEventName);
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
 
@@ -5873,7 +5873,7 @@ begin
             else
               Indent:=GetLineIndent(Src,ClassSectionNode.Parent.StartPos)
                       +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          end else if (ClassSectionNode.Desc in (AllClassBaseSections+[ctnClassType]))
+          end else if (ClassSectionNode.Desc in AllClassBaseSections)
           then begin
             // skip keyword
             MoveCursorToCleanPos(InsertPos);

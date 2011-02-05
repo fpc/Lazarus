@@ -2321,12 +2321,12 @@ var
       if (IdentContext.Node<>nil) and IdentifierNotPublished then begin
         LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
                          'identifier '+IdentName+' is not published in class '
-                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false)+'"',
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
                          DefaultErrorPosition);
       end else begin
         LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
                          'identifier '+IdentName+' not found in class '
-                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false)+'"',
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
                          DefaultErrorPosition);
       end;
     end;

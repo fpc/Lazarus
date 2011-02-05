@@ -96,16 +96,13 @@ const
   ctnClassExternal      = 42;
   ctnClassInheritance   = 43;
   ctnClassGUID          = 44;
-  ctnClassConst         = 45;
-  ctnClassType          = 46;
-  ctnClassVar           = 47;
-  ctnClassClassVar      = 48;
-  ctnClassPrivate       = 49;
-  ctnClassProtected     = 50;
-  ctnClassPublic        = 51;
-  ctnClassPublished     = 52;
-  ctnProperty           = 53;
-  ctnMethodMap          = 54;
+  ctnClassClassVar      = 45; // child of visibility section
+  ctnClassPrivate       = 46; // child of AllClassObjects
+  ctnClassProtected     = 47;
+  ctnClassPublic        = 48;
+  ctnClassPublished     = 49;
+  ctnProperty           = 50; // child of visibility section or AllClassInterfaces
+  ctnMethodMap          = 51; // child of visibility section or AllClassInterfaces
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
@@ -156,8 +153,10 @@ const
      + [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
   AllClassBaseSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
+  AllClassSubSections =
+     [ctnConstSection, ctnTypeSection, ctnVarSection, ctnClassClassVar];
   AllClassSections =
-    AllClassBaseSections+[ctnClassConst, ctnClassType, ctnClassVar, ctnClassClassVar];
+    AllClassBaseSections+AllClassSubSections;
   AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
   AllClassObjects = [ctnClass,ctnObject,ctnRecordType,
                      ctnObjCClass,ctnObjCCategory,ctnCPPClass];
@@ -350,9 +349,6 @@ begin
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
-  ctnClassConst: Result:='Const';
-  ctnClassType: Result:='Type';
-  ctnClassVar: Result:='Var';
   ctnClassClassVar: Result:='Class Var';
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';

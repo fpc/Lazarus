@@ -1105,7 +1105,7 @@ begin
           end;
         end;
 
-      ctnClassConst..ctnClassPublished:
+      ctnClassClassVar..ctnClassPublished:
         begin
           if (cefcUnsortedClassVisibility in ObserverCats)
           and (CodeNode.PriorBrother<>nil)
@@ -2212,24 +2212,25 @@ const
     ctnTypeSection,
     ctnTypeDefinition,ctnGenericType:
       Result:=1;
-    ctnVarSection,ctnConstSection,ctnResStrSection,ctnLabelSection,
-    ctnVarDefinition,ctnConstDefinition,ctnProperty:
+    ctnConstSection,ctnConstDefinition:
       Result:=2;
+    ctnVarSection,ctnClassClassVar,ctnResStrSection,ctnLabelSection,
+    ctnVarDefinition:
+      Result:=3;
     ctnInterface,ctnImplementation,ctnProgram,ctnPackage,ctnLibrary,
     ctnProcedure:
-      Result:=3;
-    ctnUsesSection:
       Result:=4;
+    ctnProperty:
+      Result:=5;
+    ctnUsesSection:
+      Result:=6;
 
     // class sections
-    ctnClassConst,
-    ctnClassType,
-    ctnClassVar,
-    ctnClassClassVar,
+    ctnClassGUID,
     ctnClassPrivate,
     ctnClassProtected,
     ctnClassPublic,
-    ctnClassPublished   : Result:=Desc-ctnClassConst;
+    ctnClassPublished   : Result:=Desc-ctnClassGUID;
     
     else Result:=10000;
     end;

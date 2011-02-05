@@ -167,20 +167,10 @@ type
     function KeyWordFuncClassMethod: boolean;
     function KeyWordFuncClassProperty: boolean;
     function KeyWordFuncClassIdentifier: boolean;
-    function KeyWordFuncClassVarTypeClass: boolean;
-    function KeyWordFuncClassVarTypePacked: boolean;
-    function KeyWordFuncClassVarTypeBitPacked: boolean;
-    function KeyWordFuncClassVarTypeRecord: boolean;
-    function KeyWordFuncClassVarTypeArray: boolean;
-    function KeyWordFuncClassVarTypeSet: boolean;
-    function KeyWordFuncClassVarTypeProc: boolean;
-    function KeyWordFuncClassVarTypeIdent: boolean;
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
     function ParseType(StartPos, WordLen: integer): boolean;
     function ParseInnerClass(StartPos, WordLen: integer): boolean;
-    function ParseClassVarType(StartPos, WordLen: integer): boolean;
-    function SkipInnerClassInterface(StartPos, WordLen: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -496,65 +486,6 @@ begin
   Result:=KeyWordFuncClassIdentifier;
 end;
 
-function TPascalParserTool.ParseClassVarType(StartPos, WordLen: integer
-  ): boolean;
-// KeywordFunctions for parsing the type of a variable in a class/object
-var
-  p: PChar;
-begin
-  if StartPos>SrcLen then exit(false);
-  p:=@Src[StartPos];
-  case UpChars[p^] of
-  'A':
-    if CompareSrcIdentifiers('ARRAY',p) then exit(KeyWordFuncClassVarTypeArray);
-  'B':
-    if CompareSrcIdentifiers('BITPACKED',p) then exit(KeyWordFuncClassVarTypeBitPacked);
-  'C':
-    if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClassVarTypeClass);
-  'F':
-    if CompareSrcIdentifiers('FUNCTION',p) then exit(KeyWordFuncClassVarTypeProc);
-  'O':
-    if CompareSrcIdentifiers('OBJECT',p) then exit(KeyWordFuncClassVarTypeClass);
-  'P':
-    case UpChars[p[1]] of
-    'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncClassVarTypePacked);
-    'R': if CompareSrcIdentifiers('PROCEDURE',p) then exit(KeyWordFuncClassVarTypeProc);
-    end;
-  'R':
-    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncClassVarTypeRecord);
-  'S':
-    if CompareSrcIdentifiers('SET',p) then exit(KeyWordFuncClassVarTypeSet);
-  end;
-  Result:=KeyWordFuncClassVarTypeIdent;
-end;
-
-function TPascalParserTool.SkipInnerClassInterface(StartPos, WordLen: integer
-  ): boolean;
-// KeyWordFunctions for skipping in a class interface, dispinterface
-var
-  p: PChar;
-begin
-  if StartPos>SrcLen then exit(false);
-  p:=@Src[StartPos];
-  case UpChars[p^] of
-  'E': if CompareSrcIdentifiers(p,'END') then exit(false);
-  'F': if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
-  'P':
-    if (UpChars[p[1]]='R') and (UpChars[p[2]]='O') then
-      case UpChars[p[3]] of
-      'C': if CompareSrcIdentifiers(p,'PROCEDURE') then exit(KeyWordFuncClassMethod);
-      'P': if CompareSrcIdentifiers(p,'PROPERTY') then exit(KeyWordFuncClassProperty);
-      end;
-  '(','[':
-    begin
-      ReadTilBracketClose(true);
-      exit(true);
-    end;
-  ';': exit(true);
-  end;
-  Result:=false;
-end;
-
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
@@ -804,7 +735,7 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
     TCompareFunc = function(const Item1, Item2: T): Integer;
 }
 begin
-  if CurNode.Desc = ctnClassType then begin
+  if CurNode.Desc = ctnTypeSection then begin
     // create type definition node
     CreateChildNode;
     CurNode.Desc:=ctnTypeDefinition;
@@ -812,7 +743,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end else 
-  if CurNode.Desc = ctnClassConst then begin
+  if CurNode.Desc = ctnConstSection then begin
     // create const definition node
     CreateChildNode;
     CurNode.Desc:=ctnConstDefinition;
@@ -844,151 +775,15 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncClassVarTypeClass: boolean;
-// class and object as type are not allowed, because they would have no name
-begin
-  SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
-  Result:=false;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypePacked: boolean;
-// 'packed' record
-begin
-  ReadNextAtom;
-  if UpAtomIs('RECORD') then
-    Result:=KeyWordFuncClassVarTypeRecord
-  else begin
-    RaiseStringExpectedButAtomFound('"record"');
-    Result:=true;
-  end;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeBitPacked: boolean;
-// 'bitpacked' array
-begin
-  ReadNextAtom;
-  if UpAtomIs('ARRAY') then
-    Result:=KeyWordFuncClassVarTypeArray
-  else begin
-    RaiseStringExpectedButAtomFound('"array"');
-    Result:=true;
-  end;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeRecord: boolean;
-{ read variable type 'record'
-
-  examples:
-    record
-      i: packed record
-           j: integer;
-           k: record end;
-           case integer of
-             0: (a: integer);
-             1,2,3: (b: array[char] of char; c: char);
-             3: ( d: record
-                       case byte of
-                         10: (i: integer; );
-                         11: (y: byte);
-                     end;
-         end;
-    end;
-}
-var Level: integer;
-begin
-  Level:=1;
-  while (CurPos.StartPos<=SrcLen) and (Level>0) do begin
-    ReadNextAtom;
-    if UpAtomIs('RECORD') then inc(Level)
-    else if (CurPos.Flag=cafEND) then dec(Level);
-  end;
-  if CurPos.StartPos>SrcLen then
-    SaveRaiseException(ctsEndForRecordNotFound);
-  Result:=true;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeArray: boolean;
-{ read variable type 'array'
-
-  examples:
-    array of array[EnumType] of array [Range] of TypeName;
-}
-begin
-  ReadNextAtom;
-  if CurPos.Flag=cafEdgedBracketOpen then begin
-    // array[Range]
-    ReadTilBracketClose(true);
-    ReadNextAtom;
-  end;
-  if not UpAtomIs('OF') then
-    RaiseCharExpectedButAtomFound('[');
-  ReadNextAtom;
-  Result:=ParseClassVarType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeSet: boolean;
-{ read variable type 'set of'
-
-  examples:
-    set of Name
-    set of (MyEnummy4 := 4 , MyEnummy5);
-}
-begin
-  CreateChildNode;
-  CurNode.Desc:=ctnSetType;
-  ReadNextAtom;
-  if not UpAtomIs('OF') then
-    RaiseStringExpectedButAtomFound('"of"');
-  ReadNextAtom;
-  if CurPos.StartPos>SrcLen then
-    SaveRaiseException(ctsMissingEnumList);
-  if IsIdentStartChar[Src[CurPos.StartPos]] then
-    // set of identifier
-  else if CurPos.Flag=cafRoundBracketOpen then
-    // set of ()
-    ReadTilBracketClose(true);
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
-  Result:=true;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeProc: boolean;
-{ read variable type 'procedure ...' or 'function ... : ...'
-
-  examples:
-    procedure
-    function : integer;
-    procedure (a: char) of object;
-}
-var IsFunction, HasForwardModifier: boolean;
-  ParseAttr: TParseProcHeadAttributes;
-begin
-//DebugLn('[TPascalParserTool.KeyWordFuncClassVarTypeProc]');
-  IsFunction:=UpAtomIs('FUNCTION');
-  ReadNextAtom;
-  HasForwardModifier:=false;
-  ParseAttr:=[pphIsMethod,pphIsType];
-  if IsFunction then Include(ParseAttr,pphIsFunction);
-  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-  Result:=true;
-end;
-
-function TPascalParserTool.KeyWordFuncClassVarTypeIdent: boolean;
-// read variable type <identifier>
-begin
-  if CurPos.StartPos>SrcLen then
-    SaveRaiseException(ctsMissingTypeIdentifier);
-  if IsIdentStartChar[Src[CurPos.StartPos]] then
-    // identifier
-  else
-    SaveRaiseException(ctsMissingTypeIdentifier);
-  Result:=true;
-end;
-
 function TPascalParserTool.KeyWordFuncClassSection: boolean;
 // change section in a class (public, private, protected, published)
 begin
-  // end last section
+  if CurNode.Desc in AllClassSubSections then begin
+    // end sub section
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
+  // end last visibility section
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   // start new section
@@ -1009,23 +804,27 @@ end;
 
 function TPascalParserTool.KeyWordFuncClassConstSection: boolean;
 begin
-  // end last section
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
+  if CurNode.Desc in AllClassSubSections then begin
+    // end last sub section
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
   // start new section
   CreateChildNode;
-  CurNode.Desc:=ctnClassConst;
+  CurNode.Desc:=ctnConstSection;
   Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncClassTypeSection: boolean;
 begin
-  // end last section
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
+  if CurNode.Desc in AllClassSubSections then begin
+    // end last sub section
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
   // start new section
   CreateChildNode;
-  CurNode.Desc:=ctnClassType;
+  CurNode.Desc:=ctnTypeSection;
   Result:=true;
 end;
 
@@ -1035,9 +834,11 @@ function TPascalParserTool.KeyWordFuncClassVarSection: boolean;
   class var
 }
 begin
-  // end last section
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
+  if CurNode.Desc in AllClassSubSections then begin
+    // end last sub section
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
   // start new section
   CreateChildNode;
   if UpAtomIs('CLASS') then 
@@ -1046,7 +847,7 @@ begin
     ReadNextAtom;
   end
   else
-    CurNode.Desc:=ctnClassVar; 
+    CurNode.Desc:=ctnVarSection;
   Result:=true;
 end;
 
@@ -1100,7 +901,11 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
-  if not (CurNode.Desc in (AllClassSections+AllClassInterfaces)) then
+  if (CurNode.Desc in AllClassSubSections)
+  and (CurNode.Parent.Desc in AllClassBaseSections) then begin
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
     RaiseIdentExpectedButAtomFound;
 
   HasForwardModifier:=false;
@@ -2210,7 +2015,11 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
   end;
 
 begin
-  if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
+  if (CurNode.Desc in AllClassSubSections)
+  and (CurNode.Parent.Desc in AllClassBaseSections) then begin
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
     RaiseIdentExpectedButAtomFound;
   // create class method node
   CreateChildNode;
@@ -2457,11 +2266,13 @@ begin
     CurNode.SubDesc:=ctnsNeedJITParsing;
   end;
   ReadNextAtom;
-  if (CurSection<>ctnInterface) and (CurPos.Flag=cafPoint) then begin
-    // read procedure name of a class method (the name after the . )
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    ReadNextAtom;
+  if (CurSection<>ctnInterface) then begin
+    while (CurPos.Flag=cafPoint) do begin
+      // read procedure name of a class method (the name after the . )
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end;
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
@@ -3628,6 +3439,7 @@ var
   ClassDesc: TCodeTreeNodeDesc;
   ClassNode: TCodeTreeNode;
 begin
+  //debugln(['TPascalParserTool.KeyWordFuncTypeClass ',GetAtom,' ',CleanPosToStr(CurPos.StartPos)]);
   // class or 'class of' start found
   if UpAtomIs('CLASS') then
     ClassDesc:=ctnClass
@@ -3740,6 +3552,11 @@ begin
       end;
       ReadNextAtom;
     until false;
+    // end last sub section
+    if CurNode.Desc in AllClassSubSections then begin
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode;
+    end;
     // end last class section (public, private, ...)
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
@@ -3776,6 +3593,7 @@ begin
   // place cursor on atom behind
   if CurPos.Flag<>cafSemicolon then
     ReadNextAtom;
+  //debugln(['TPascalParserTool.KeyWordFuncTypeClass END ',GetAtom,' ',CleanPosToStr(CurPos.StartPos)]);
   Result:=true;
 end;
 
