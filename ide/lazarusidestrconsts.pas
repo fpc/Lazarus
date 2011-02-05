@@ -5128,6 +5128,7 @@ resourcestring
     +'should be no missing units!';
   lisConvDelphiConvertingUnitFiles = '*** Converting unit files... ***';
   lisConvDelphiPackageNameExists = 'Package name exists';
+  lisConvDelphiAddedPackageRequirement = 'Added Package %s as a requirement.';
   lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
     +'already a package with the name "%s"%sPlease close this package first.';
   lisConvDelphiUnitsNotFound = 'Units not found';

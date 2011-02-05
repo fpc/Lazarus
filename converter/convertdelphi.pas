@@ -958,8 +958,11 @@ var
   begin
     if DelphiPkgName='' then exit;
     if System.Pos(';'+lowercase(DelphiPkgName)+';',
-                  ';'+lowercase(DelphiPkgNames)+';')>0 then
+                  ';'+lowercase(DelphiPkgNames)+';')>0 then begin
       AddPackageDependency(LazarusPkgName);
+      IDEMessagesWindow.AddMsg(
+          Format(lisConvDelphiAddedPackageRequirement, [LazarusPkgName]), '', -1);
+    end;
   end;
 
   procedure ReadDelphiPackages;
@@ -1105,13 +1108,18 @@ function TConvertDelphiPBase.CheckPackageDependency(AUnitName: string): Boolean;
 var
   Pack: TPkgFile;
   Dep: TPkgDependency;
+  s: String;
 begin
   Result:=False;
   Pack:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
   if Assigned(Pack) then begin
     // Found from package: add package to project dependencies and open it.
-    AddPackageDependency(Pack.LazPackage.Name);
-    Dep:=FindDependencyByName(Pack.LazPackage.Name);
+    s:=Pack.LazPackage.Name;
+    if s='LCLBase' then
+      s:='LCL';
+    AddPackageDependency(s);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageRequirement, [s]), '', -1);
+    Dep:=FindDependencyByName(s);
     if Assigned(Dep) then
       PackageGraph.OpenDependency(Dep,false);
     Result:=True;
