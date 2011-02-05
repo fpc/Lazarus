@@ -472,10 +472,10 @@ end;
 
 procedure TIDEAnchorDockMaster.LoadLayoutFromFileClicked(Sender: TObject);
 var
-  Dlg: TSaveDialog;
+  Dlg: TOpenDialog;
   Filename: String;
 begin
-  Dlg:=TSaveDialog.Create(nil);
+  Dlg:=TOpenDialog.Create(nil);
   try
     InitIDEFileDialog(Dlg);
     Dlg.Title:=adrsLoadWindowLayoutFromFileXml;
