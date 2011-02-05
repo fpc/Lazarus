@@ -320,8 +320,8 @@ begin
     LCLPath:=LCLPath+'$(TargetCPU)-$(TargetOS)';
     Result:=QuestionDlg(lisLCLUnitPathMissing,
       Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits,
-            [sLineBreak,'"',Filename,'"',sLineBreak,'"',UnitPath,'"',sLineBreak,
-             sLineBreak,'"',LCLPath,'"',sLineBreak,sLineBreak,sLineBreak]),
+            [LineEnding,'"',Filename,'"',LineEnding,'"',UnitPath,'"',LineEnding,
+             LineEnding,'"',LCLPath,'"',LineEnding,LineEnding,LineEnding]),
       mtError, [mrOK, lisContinue, mrAbort, lisInfoBuildMakeAbort], 0);
     exit;
   end;

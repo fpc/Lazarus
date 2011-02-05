@@ -454,7 +454,7 @@ begin
           [NewFunc, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
         // Old function call with params for IDE message output.
         s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
-        s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
+        s:=StringReplace(s, LineEnding, '', [rfReplaceAll]);
         // Now replace it.
         fCTLink.ResetMainScanner;
         if not fCTLink.SrcCache.Replace(gtNone, gtNone,
@@ -574,7 +574,7 @@ var
       for i:=0 to ReplaceFuncs.Funcs.Count-1 do begin
         FuncName:=ReplaceFuncs.Funcs[i];
         if (IdentEndPos-xStart=length(FuncName))
-        and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
+        and (CompareIdentifiers(PChar(FuncName),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
           FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
