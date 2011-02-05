@@ -184,23 +184,9 @@ begin
 end;
 
 function TCustomFloatSpinEdit.StrToValue(const S: String): Double;
-
-  // this is a workaround for the fpc rtl bug in StrToFloatDef function
-  // which happens when  DecimalSeparator = ThousandSeparator
-  // (look at issue 0013293)
-  function MyStrToFloatDef(S: String; Def: Double): Double;
-  var
-    V: Extended;
-  begin
-    if TextToFloat(PChar(S), V) then
-      Result := V
-    else
-      Result := Def;
-  end;
-
 begin
   try
-    Result := GetLimitedValue(MyStrToFloatDef(S, FValue));
+    Result := GetLimitedValue(StrToFloatDef(S, FValue));
   except
     Result := FValue;
   end;
