@@ -551,6 +551,8 @@ begin
   CurrentPhase:=CodeToolPhaseParse;
   if Scanner.CompilerMode=cmDELPHI then
     WordIsKeyWordFuncList:=WordIsDelphiKeyWord
+  else if Scanner.CompilerMode=cmMacPas then
+    WordIsKeyWordFuncList:=WordIsMacPasKeyWord
   else
     WordIsKeyWordFuncList:=WordIsKeyWord;
   
