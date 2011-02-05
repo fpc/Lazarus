@@ -709,6 +709,10 @@ begin
   FCreateComponentFocusNameProperty:=false;
   FSwitchToFavoritesOITab:=false;
 
+  FCompletionWindowWidth := 320;
+  FCompletionWindowHeight := 6;
+
+
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
   

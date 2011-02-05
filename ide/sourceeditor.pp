@@ -2031,8 +2031,8 @@ begin
   OnPositionChanged:=@OnSynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
-  TheForm.Width := EnvironmentOptions.CompletionWindowWidth;
-  TheForm.NbLinesInWindow := EnvironmentOptions.CompletionWindowHeight;
+  TheForm.Width := Max(50, EnvironmentOptions.CompletionWindowWidth);
+  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.CompletionWindowHeight);
   TheForm.OnDragResized  := @CompletionFormResized;
 end;
 
