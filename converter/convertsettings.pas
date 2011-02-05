@@ -466,8 +466,8 @@ begin
     Categ:='WindowsAPI';
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'ShellExecute',
-                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', '');
-    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL',''); // In Windows MMSystems unit.
+                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', 'LCLIntf');
+    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL','LCLIntf'); // In Windows MMSystems unit.
     // OpenGL
     Categ:='OpenGL';
     AddDefaultCategory(Categ);
