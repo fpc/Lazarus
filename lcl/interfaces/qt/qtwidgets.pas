@@ -1152,7 +1152,7 @@ type
 
   TQtHeaderView = class (TQtAbstractItemView)
   private
-    FSelectionClicked: QHeaderView_hookH;
+    FSectionClicked: QHeaderView_hookH;
     function getClickable: Boolean;
     function getMinSectionSize: Integer;
     procedure setClickable(const AValue: Boolean);
@@ -1163,7 +1163,8 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SignalSectionClicked(logicalIndex: Integer); cdecl;
     function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
     procedure setResizeMode(AResizeMode: QHeaderViewResizeMode); overload;
     procedure setResizeMode(AIndex: Integer; AResizeMode: QHeaderViewResizeMode); overload;
@@ -1206,7 +1207,6 @@ type
   private
     FSorting: Boolean;
     FHeader: TQtHeaderView;
-    FSectionClicked: QHeaderView_hookH;
     FSortChanged: QHeaderView_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
@@ -9441,13 +9441,13 @@ end;
 procedure TQtHeaderView.AttachEvents;
 begin
   inherited AttachEvents;
-  FSelectionClicked := QHeaderView_hook_create(Widget);
-  QHeaderView_hook_hook_sectionClicked(FSelectionClicked, @SignalSectionClicked);
+  FSectionClicked := QHeaderView_hook_create(Widget);
+  QHeaderView_hook_hook_sectionClicked(FSectionClicked, @SignalSectionClicked);
 end;
 
 procedure TQtHeaderView.DetachEvents;
 begin
-  QHeaderView_hook_destroy(FSelectionClicked);
+  QHeaderView_hook_destroy(FSectionClicked);
   inherited DetachEvents;
 end;
 
@@ -9465,6 +9465,20 @@ begin
       QEvent_ignore(Event);
       QWidget_setFocus(FOwner.Widget);
     end;
+  end;
+end;
+
+function TQtHeaderView.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: ; {do nothing here - signal is fired}
+    else
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
   end;
 end;
 
@@ -9834,9 +9848,6 @@ begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
     FHeader.FChildOfComplexWidget := ccwTreeWidget;
-    FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
-    QHeaderView_hook_hook_sectionClicked(FSectionClicked,
-      @FHeader.SignalSectionClicked);
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
       @SignalSortIndicatorChanged);
@@ -10210,8 +10221,6 @@ begin
   QTreeWidget_hook_destroy(FItemEnteredHook);
   QTreeWidget_hook_destroy(FSelectionChangedHook);
 
-  if FSectionClicked <> nil then
-    QHeaderView_hook_destroy(FSectionClicked);
   if FSortChanged <> nil then
     QHeaderView_hook_destroy(FSortChanged);
 
