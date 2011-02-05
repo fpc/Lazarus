@@ -580,6 +580,7 @@ var
           FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
           if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
+          and (fCTLink.Settings.MultiPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
           then begin
             // Create a new replacement object for params, position and other info.
             FuncCallInfo:=TFuncReplacement.Create(FuncDefInfo);
