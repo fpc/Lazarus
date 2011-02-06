@@ -1779,7 +1779,11 @@ begin
     ctsFreePascalCompilerInitialMacros,'','',da_Block);
 
   // define #TargetOS
-  TargetOS:=Config.TargetOS;
+  TargetOS:=Config.RealTargetOS;
+  if TargetOS='' then
+    TargetOS:=Config.TargetOS;
+  if TargetOS='' then
+    TargetOS:=GetCompiledTargetOS;
   NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
     ctsDefaultFPCTargetOperatingSystem,
     ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
@@ -1799,7 +1803,11 @@ begin
     ExternalMacroStart+'SrcOS2',SrcOS2,da_DefineRecurse);
   Result.AddChild(NewDefTempl);
   // define #TargetProcessor
-  TargetCPU:=Config.TargetCPU;
+  TargetCPU:=Config.RealTargetCPU;
+  if TargetCPU='' then
+    TargetCPU:=Config.TargetCPU;
+  if TargetCPU='' then
+    TargetCPU:=GetCompiledTargetCPU;
   NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
     ctsDefaultFPCTargetProcessor,
     ExternalMacroStart+'TargetProcessor',TargetCPU,

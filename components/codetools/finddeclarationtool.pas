@@ -31,7 +31,6 @@
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
     - multi pass find declaration (i.e. searching with timeout)
-    - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
     - ppu, dcu files
@@ -131,7 +130,7 @@ type
     function(Sender: TObject; const Filename: string): string of object;
 
   //----------------------------------------------------------------------------
-  TOnGetMethodname = function(const AMethod: TMethod;
+  TOnGetMethodName = function(const AMethod: TMethod;
                               CheckOwner: TObject): string of object;
 
   //----------------------------------------------------------------------------
@@ -275,7 +274,7 @@ type
     xtVariant,     // variant
     xtNil          // nil  = pointer, class, procedure, method, ...
     );
-  // Do not use this: TExpressionTypeDescs = set of TExpressionTypeDesc;
+  // Do not define: TExpressionTypeDescs = set of TExpressionTypeDesc;
   // There are too many enums, so the set would be big and slow
   
 const
@@ -608,6 +607,8 @@ type
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInRecordCase(RecordCaseNode: TCodeTreeNode;
+      Params: TFindDeclarationParams): boolean;
+    function FindIdentifierInTypeOfConstant(VarConstNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
   protected
     WordIsPredefinedIdentifier: TKeyWordFunctionList;
@@ -2739,6 +2740,15 @@ var
     end;
   end;
 
+  function SearchInConstant: boolean;
+  // returns: true if ok to exit
+  //          false if search should continue
+  begin
+    Result:=false;
+    if (ContextNode.Parent.Desc in [ctnVarDefinition,ctnConstDefinition]) then
+      Result:=FindIdentifierInTypeOfConstant(ContextNode.Parent,Params);
+  end;
+
   function SearchInEnumDefinition: boolean;
   // returns: true if ok to exit
   //          false if search should continue
@@ -3100,6 +3110,9 @@ begin
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
         ctnGlobalProperty, ctnGenericType:
           if SearchInTypeVarConstPropDefinition then exit;
+
+        ctnConstant:
+          if SearchInConstant then exit;
 
         ctnEnumIdentifier:
           if SearchInEnumDefinition then exit;
@@ -5976,6 +5989,19 @@ begin
     Result:=true;
   end else begin
     // proceed the search normally ...
+  end;
+end;
+
+function TFindDeclarationTool.FindIdentifierInTypeOfConstant(
+  VarConstNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
+{ const a: atype = context;
+  for example:  const p: TPoint = (x:0; y:0);
+}
+begin
+  Result:=false;
+  if VarConstNode.FirstChild=nil then exit;
+  if VarConstNode.Desc=ctnIdentifier then begin
+    debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
   end;
 end;
 

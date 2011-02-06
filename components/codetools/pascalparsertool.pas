@@ -3096,10 +3096,7 @@ begin
     ReadNextAtom;  // name
     if CurPos.Flag=cafSemicolon then begin
       // ignore empty semicolons
-    end else if AtomIsIdentifier(false)
-    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
-         or (not UpAtomIs('PROPERTY')))
-    then begin
+    end else if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       ReadConst;

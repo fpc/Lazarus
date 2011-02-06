@@ -1939,18 +1939,24 @@ end;
 
 function TExpressionEvaluator.AsString: string;
 var TxtLen, i, p: integer;
+  s: String;
 begin
-  TxtLen:=FCount*3;
-  for i:=0 to FCount-1 do
-    inc(TxtLen,length(FNames[i])+length(FValues[i]));
+  TxtLen:=0;
+  for i:=0 to FCount-1 do begin
+    inc(TxtLen,length(FNames[i])+2);
+    s:=FValues[i];
+    if s<>'' then
+      inc(TxtLen,length(s)+1);
+  end;
   Setlength(Result,TxtLen);
   p:=1;
   for i:=0 to FCount-1 do begin
     Move(FNames[i][1],Result[p],length(FNames[i]));
     inc(p,length(FNames[i]));
-    Result[p]:=' ';
-    inc(p);
-    if length(FValues[i])>0 then begin
+    s:=FValues[i];
+    if length(s)>0 then begin
+      Result[p]:='=';
+      inc(p);
       Move(FValues[i][1],Result[p],length(FValues[i]));
       inc(p,length(FValues[i]));
     end;

@@ -919,6 +919,7 @@ var
   LazarusSrcDefines: TDefineTemplate;
   CurFPCOptions: String;
   UnitSetCache: TFPCUnitSetCache;
+  //CfgCache: TFPCTargetConfigCache;
 
   procedure AddFPCOption(s: string);
   begin
@@ -948,6 +949,11 @@ begin
     true);
   // parse compiler settings, fpc sources
   UnitSetCache.Init;
+  //CfgCache:=UnitSetCache.GetConfigCache(false);
+  //if CfgCache.TargetOS<>CfgCache.RealTargetOS then
+  //  debugln(['TCodeToolManager.Init TargetOS=',CfgCache.TargetOS,' RealTargetOS=',CfgCache.RealTargetOS]);
+  //if CfgCache.TargetCPU<>CfgCache.RealTargetCPU then
+  //  debugln(['TCodeToolManager.Init TargetCPU=',CfgCache.TargetCPU,' RealTargetCPU=',CfgCache.RealTargetCPU]);
 
   // create template for FPC settings
   FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
@@ -965,6 +971,9 @@ begin
   // create template for LCL project
   DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
                  '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
+
+  //debugln(['TCodeToolManager.Init defines: ',DefineTree.GetDefinesForVirtualDirectory.AsString]);
+  //debugln(['TCodeToolManager.Init inc path rtl/system: ',GetIncludePathForDirectory(UnitSetCache.FPCSourceDirectory+'/rtl/bsd')]);
 
   // save
   Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
