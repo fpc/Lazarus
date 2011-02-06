@@ -10486,7 +10486,12 @@ begin
       AIndex := getRow(Previous);
       ListItem := nil;
       B := False;
-      if ViewStyle = Ord(vsReport) then
+      // From Qt docs:
+      // This signal is emitted when the current item changes.
+      // The current item is specified by current, and this replaces
+      // the previous current item.
+      // So, if Current = nil, do not ask TListView anything ! issue #18701
+      if (ViewStyle = Ord(vsReport)) and (Current <> nil) then
       begin
         ListItem := TListView(LCLObject).Selected;
         if ListItem <> nil then
