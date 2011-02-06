@@ -29,7 +29,7 @@ program FindDeclaration;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
+  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   CodeToolsConfig, SimpleUnit1;
 
 const
@@ -84,10 +84,10 @@ begin
     writeln('FPCDIR=',Options.FPCSrcDir);
     writeln('PP=',Options.FPCPath);
     writeln('LAZARUSDIR=',Options.LazarusSrcDir);
-    writeln('TARGET=',Options.TargetOS);
-    writeln('TARGETCPU=',Options.TargetProcessor);
+    writeln('FPCTARGET=',Options.TargetOS);
+    writeln('FPCTARGETCPU=',Options.TargetProcessor);
     if (ParamCount>=3) then begin
-      Options.TestPascalFile:=ExpandFileNameUTF8(ParamStr(1));
+      Options.TestPascalFile:=CleanAndExpandFilename(ParamStr(1));
       X:=StrToInt(ParamStr(2));
       Y:=StrToInt(ParamStr(3));
     end;
@@ -102,7 +102,7 @@ begin
     begin
       writeln('Declaration found: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
     end else begin
-      writeln('Declaration not found: ',CodeToolBoss.ErrorMessage);
+      writeln('Parse error: ',CodeToolBoss.ErrorMessage);
     end;
   except
     on E: Exception do begin

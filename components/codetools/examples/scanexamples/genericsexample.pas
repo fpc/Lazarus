@@ -20,6 +20,8 @@ type
     function DoSomething(Arg: T1): T2;
     function Test(Arg: Intf): Intf;
   end;
+const
+  RecLongInt: TRecG<longint> = (F:0);
 
 var
   ArraySpecialize: TGenericArray<Integer>;
