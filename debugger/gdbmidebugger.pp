@@ -3281,14 +3281,22 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   function GetLocation: TDBGLocationRec;
   var
     R: TGDBMIExecResult;
+    List: TGDBMINameValueList;
     S: String;
+    FP: TDBGPtr;
+    i, cnt: longint;
   begin
     Result.SrcLine := -1;
     Result.SrcFile := '';
     Result.FuncName := '';
     if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-    then Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], [])
-    else Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
+    then begin
+      Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], []);
+      FP := GetPtrValue(TargetInfo^.TargetRegisters[2], []);
+    end else begin
+      Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
+      FP := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 4]);
+    end;
 
     Str(Result.Address, S);
     if ExecuteCommand('info line * POINTER(%s)', [S], R)
@@ -3296,6 +3304,33 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
       Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
     end;
+
+    // try finding the stackframe
+    ExecuteCommand('-stack-info-depth', R);
+    List := TGDBMINameValueList.Create(R);
+    cnt := StrToIntDef(List.Values['depth'], -1);
+    FreeAndNil(List);
+    i := 0;
+    List := TGDBMINameValueList.Create(R);
+    repeat
+      if not ExecuteCommand('-stack-select-frame %u', [i], R)
+      or (R.State = dsError)
+      then break;
+
+      if not ExecuteCommand('-data-evaluate-expression $fp', R)
+      or (R.State = dsError)
+      then break;
+      List.Init(R.Values);
+      if Fp = StrToQWordDef(List.Values['value'], 0) then begin
+        FTheDebugger.FCurrentStackFrame := i;
+        break;
+      end;
+
+      inc(i);
+    until i >= cnt;
+    List.Free;
+	if FTheDebugger.FCurrentStackFrame <> i
+    then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
   end;
 
   function GetExceptionInfo: TGDBMIExceptionInfo;
