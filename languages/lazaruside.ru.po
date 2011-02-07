@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-04 03:38+0300\n"
+"PO-Revision-Date: 2011-02-08 02:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -292,7 +292,7 @@ msgstr "Добавлять точку с запятой"
 
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
-msgstr "Выровнять верхнюю строку по комментарию"
+msgstr "Устанавливать верхнюю строку на комментарии"
 
 #: lazarusidestrconsts.dlgallfiles
 msgid "All files"
@@ -520,7 +520,7 @@ msgstr "Префикс WRITE"
 
 #: lazarusidestrconsts.dlgcentercursorline
 msgid "Center Cursor Line"
-msgstr "Курсор в центре"
+msgstr "Устанавливать курсор по центру"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
@@ -842,7 +842,7 @@ msgstr "По Ctrl-средней кнопке мыши на вкладке за�
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
-msgstr "Курсор вне конца строки"
+msgstr "Допускать установку курсора вне конца строки"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
 msgid "Cursor:"
@@ -2768,9 +2768,9 @@ msgstr "Показывать предупреждения"
 msgid "Show single button in TaskBar"
 msgstr "Показывать одну кнопку в панели задач"
 
-#: lazarusidestrconsts.dlgskipforwarddeclarations
-msgid "Skip forward declarations"
-msgstr "Пропускать предваряющие объявления"
+#: lazarusidestrconsts.dlgskipforwardclassdeclarations
+msgid "Skip forward class declarations"
+msgstr "Пропускать предваряющие объявления классов"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -5579,6 +5579,10 @@ msgstr "Смещения координат"
 msgid "Aborted."
 msgstr "Прервано."
 
+#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
+msgid "Added Package %s as a requirement."
+msgstr "Пакет %s добавлен в качестве зависимости."
+
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
@@ -5760,25 +5764,29 @@ msgstr "Преобразование проекта либо пакета"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Добавление директив условной компиляции для поддержки различных целей"
 
-#: lazarusidestrconsts.lisconverttargetlaz
-msgctxt "lazarusidestrconsts.lisconverttargetlaz"
-msgid "Lazarus"
-msgstr "Lazarus"
+#: lazarusidestrconsts.lisconverttargetmultiplatform
+msgid "Multi-Platform"
+msgstr "Кроссплатформенное приложение"
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphi
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
-msgid "Lazarus and Delphi"
-msgstr "Lazarus и Delphi"
+#: lazarusidestrconsts.lisconverttargetmultiplatformhint
+msgid "Multi-Platform versus Windows-only"
+msgstr "Приложение кроссплатформенно или только для Windows"
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "Lazarus и Delphi с общим файлом DFM"
+#: lazarusidestrconsts.lisconverttargetsamedfmfile
+msgid "Use the same DFM form file"
+msgstr "Использовать файл формы DFM совместно"
 
-#: lazarusidestrconsts.lisconverttargetlazwinonly
-msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
-msgid "Lazarus for Windows only"
-msgstr "Только Lazarus для Windows"
+#: lazarusidestrconsts.lisconverttargetsamedfmfilehint
+msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
+msgstr "Использовать файл DFM совместно для Lazarus и Delphi, не копируя его содержимое в файл LFM"
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphi
+msgid "Support Delphi"
+msgstr "Поддерживать Delphi"
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphihint
+msgid "Use conditional compilation to support Delphi"
+msgstr "Использовать условную компиляцию для обеспечения поддержки Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -8144,6 +8152,10 @@ msgstr "Установить выбранное"
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr "Установка/удаление пакетов"
+
+#: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
+msgid "Instead of compile package create a simple Makefile."
+msgstr "Вместо компиляции пакета создавать простой Makefile."
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"

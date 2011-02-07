@@ -2752,9 +2752,9 @@ msgstr "警告を表示"
 msgid "Show single button in TaskBar"
 msgstr "タスクバーにシングルボタンを表示"
 
-#: lazarusidestrconsts.dlgskipforwarddeclarations
-msgid "Skip forward declarations"
-msgstr "前方宣言をスキップ"
+#: lazarusidestrconsts.dlgskipforwardclassdeclarations
+msgid "Skip forward class declarations"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -5579,6 +5579,10 @@ msgstr "座標オフセット"
 msgid "Aborted."
 msgstr "中止しました"
 
+#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
+msgid "Added Package %s as a requirement."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
@@ -5757,25 +5761,29 @@ msgstr "プロジェクトもしくはパッケージを変換"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "コンバータは異なるターゲットをサポートするために条件コンパイルを追加します"
 
-#: lazarusidestrconsts.lisconverttargetlaz
-msgctxt "lazarusidestrconsts.lisconverttargetlaz"
-msgid "Lazarus"
-msgstr "Lazarus"
+#: lazarusidestrconsts.lisconverttargetmultiplatform
+msgid "Multi-Platform"
+msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphi
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
-msgid "Lazarus and Delphi"
-msgstr "LazarusとDelphi"
+#: lazarusidestrconsts.lisconverttargetmultiplatformhint
+msgid "Multi-Platform versus Windows-only"
+msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
-msgid "Lazarus and Delphi with same DFM file"
-msgstr "同じDFMファイルをもつLazarusとDelphi"
+#: lazarusidestrconsts.lisconverttargetsamedfmfile
+msgid "Use the same DFM form file"
+msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazwinonly
-msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
-msgid "Lazarus for Windows only"
-msgstr "Windows版Lazarusのみ"
+#: lazarusidestrconsts.lisconverttargetsamedfmfilehint
+msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphi
+msgid "Support Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphihint
+msgid "Use conditional compilation to support Delphi"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -8144,6 +8152,10 @@ msgstr "選択対象をインストール"
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr "パッケージをインストールもしくはアンインストール"
+
+#: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
+msgid "Instead of compile package create a simple Makefile."
+msgstr ""
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"

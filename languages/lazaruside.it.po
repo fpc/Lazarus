@@ -2755,8 +2755,8 @@ msgstr "Mostra gli avvertimenti (warning)"
 msgid "Show single button in TaskBar"
 msgstr ""
 
-#: lazarusidestrconsts.dlgskipforwarddeclarations
-msgid "Skip forward declarations"
+#: lazarusidestrconsts.dlgskipforwardclassdeclarations
+msgid "Skip forward class declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
@@ -5581,6 +5581,10 @@ msgstr ""
 msgid "Aborted."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
+msgid "Added Package %s as a requirement."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
@@ -5760,24 +5764,28 @@ msgstr "Converti progetto o pacchetto"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlaz
-msgctxt "lazarusidestrconsts.lisconverttargetlaz"
-msgid "Lazarus"
+#: lazarusidestrconsts.lisconverttargetmultiplatform
+msgid "Multi-Platform"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphi
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphi"
-msgid "Lazarus and Delphi"
+#: lazarusidestrconsts.lisconverttargetmultiplatformhint
+msgid "Multi-Platform versus Windows-only"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazanddelphisamedfm
-msgctxt "lazarusidestrconsts.lisconverttargetlazanddelphisamedfm"
-msgid "Lazarus and Delphi with same DFM file"
+#: lazarusidestrconsts.lisconverttargetsamedfmfile
+msgid "Use the same DFM form file"
 msgstr ""
 
-#: lazarusidestrconsts.lisconverttargetlazwinonly
-msgctxt "lazarusidestrconsts.lisconverttargetlazwinonly"
-msgid "Lazarus for Windows only"
+#: lazarusidestrconsts.lisconverttargetsamedfmfilehint
+msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphi
+msgid "Support Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetsupportdelphihint
+msgid "Use conditional compilation to support Delphi"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvfuncreplacements
@@ -8146,6 +8154,10 @@ msgstr "Installa selezione"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
+msgid "Instead of compile package create a simple Makefile."
 msgstr ""
 
 #: lazarusidestrconsts.lisinteractive
