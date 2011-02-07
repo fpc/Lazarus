@@ -1691,7 +1691,7 @@ resourcestring
   dlgAdjustTopLine = 'Adjust top line due to comment in front';
   dlgCenterCursorLine = 'Center Cursor Line';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
-  dlgSkipForwardDeclarations = 'Skip forward declarations';
+  dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
   dlgClassInsertPolicy = 'Class part insert policy';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';

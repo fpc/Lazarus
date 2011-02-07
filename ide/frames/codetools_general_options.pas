@@ -162,7 +162,7 @@ begin
   AdjustTopLineDueToCommentCheckBox.Caption:=dlgAdjustTopLine;
   JumpCenteredCheckBox.Caption:=dlgcentercursorline;
   CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
-  SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
+  SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardClassDeclarations;
 
   IndentationGroupBox.Caption:=lisIndentationForPascalSources;
   GeneralAutoIndent.Caption:=lisSetupDefaultIndentation;
