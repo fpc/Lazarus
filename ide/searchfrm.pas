@@ -771,17 +771,11 @@ var
   F: String;
 begin
   F := FileName;
-  // ToDo: Remove the IFDEF when a problem with FileProcs.FileIsTextCached is solved.
-  {$IFDEF NoCacheForSearchInFiles}
-  if FileIsReadable(F) and FileIsText(F) then
-  {$ELSE}
   if FileProcs.FileIsTextCached(F) then
-  {$ENDIF}
   begin
     FParent.UpdateProgress(F);
     FParent.SearchFile(F);
   end;
-    
   CheckAbort;
 end;
 
