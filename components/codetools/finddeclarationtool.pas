@@ -2713,6 +2713,7 @@ var
       NameNode:=ContextNode.FirstChild;
       if NameNode=nil then exit;
     end;
+
     if (fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(NameNode.StartPos,Params.Identifier)
     then begin
@@ -2740,13 +2741,18 @@ var
     end;
   end;
 
-  function SearchInConstant: boolean;
+  function SearchInTypeOfVarConst: boolean;
   // returns: true if ok to exit
   //          false if search should continue
   begin
     Result:=false;
-    if (ContextNode.Parent.Desc in [ctnVarDefinition,ctnConstDefinition]) then
-      Result:=FindIdentifierInTypeOfConstant(ContextNode.Parent,Params);
+    //debugln(['SearchInTypeOfVarConst ',ContextNode.Parent.DescAsString]);
+    if ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition] then
+    begin
+      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then begin
+        Result:=CheckResult(true,false);
+      end;
+    end;
   end;
 
   function SearchInEnumDefinition: boolean;
@@ -3089,7 +3095,7 @@ begin
         end;
         if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
         LastSearchedNode:=ContextNode;
-        
+
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
@@ -3111,8 +3117,10 @@ begin
         ctnGlobalProperty, ctnGenericType:
           if SearchInTypeVarConstPropDefinition then exit;
 
-        ctnConstant:
-          if SearchInConstant then exit;
+        ctnIdentifier:
+          if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
+          and (ContextNode=ContextNode.Parent.FirstChild)
+          and SearchInTypeOfVarConst then exit;
 
         ctnEnumIdentifier:
           if SearchInEnumDefinition then exit;
@@ -5997,11 +6005,17 @@ function TFindDeclarationTool.FindIdentifierInTypeOfConstant(
 { const a: atype = context;
   for example:  const p: TPoint = (x:0; y:0);
 }
+var
+  TypeNode: TCodeTreeNode;
 begin
   Result:=false;
-  if VarConstNode.FirstChild=nil then exit;
-  if VarConstNode.Desc=ctnIdentifier then begin
+  //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
+  TypeNode:=VarConstNode.FirstChild;
+  if TypeNode=nil then exit;
+  if TypeNode.Desc=ctnIdentifier then begin
     debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
+    //ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,Params);
+
   end;
 end;
 

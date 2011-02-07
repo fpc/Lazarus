@@ -42,6 +42,7 @@ var
   X: Integer;
   Y: Integer;
   Filename: String;
+  Line: String;
 begin
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
@@ -87,22 +88,29 @@ begin
     writeln('FPCTARGET=',Options.TargetOS);
     writeln('FPCTARGETCPU=',Options.TargetProcessor);
     if (ParamCount>=3) then begin
-      Options.TestPascalFile:=CleanAndExpandFilename(ParamStr(1));
+      Filename:=CleanAndExpandFilename(ParamStr(1));
       X:=StrToInt(ParamStr(2));
       Y:=StrToInt(ParamStr(3));
     end;
+    writeln('File: ',Filename,' Line=',Y,' Column=',X);
 
     // Step 1: load the file
     Code:=CodeToolBoss.LoadFile(Filename,false,false);
     if Code=nil then
       raise Exception.Create('loading failed '+Filename);
 
+    Line:=Code.GetLine(Y-1);
+    writeln('Line ',Y,': ',copy(Line,1,X-1),'|',copy(Line,X,length(Line)));
+
     // Step 2: find declaration
     if CodeToolBoss.FindDeclaration(Code,X,Y,NewCode,NewX,NewY,NewTopLine) then
     begin
       writeln('Declaration found: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
     end else begin
-      writeln('Parse error: ',CodeToolBoss.ErrorMessage);
+      if CodeToolBoss.ErrorMessage<>'' then
+        writeln('Parse error: ',CodeToolBoss.ErrorMessage)
+      else
+        writeln('Declaration not found');
     end;
   except
     on E: Exception do begin
