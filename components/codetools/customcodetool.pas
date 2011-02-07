@@ -48,11 +48,13 @@ uses
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree;
 
-const
-  CodeToolPhaseNone  = 0;
-  CodeToolPhaseScan  = 1;
-  CodeToolPhaseParse = 2;
-  CodeToolPhaseTool  = 3; // or higher
+type
+  TCodeToolPhase = (
+    ctpNone,
+    ctpScan,
+    ctpParse,
+    ctpTool
+    );
 
 type
   TCustomCodeTool = class;
@@ -160,12 +162,12 @@ type
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
-    LastErrorPhase: integer;
+    LastErrorPhase: TCodeToolPhase;
     LastErrorValid: boolean;
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     LastErrorNicePosition: TCodeXYPosition;
-    CurrentPhase: integer;
+    CurrentPhase: TCodeToolPhase;
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoProgress; inline;
@@ -470,7 +472,7 @@ end;
 
 procedure TCustomCodeTool.ClearLastError;
 begin
-  LastErrorPhase:=CodeToolPhaseNone;
+  LastErrorPhase:=ctpNone;
   LastErrorValid:=false;
   LastErrorCheckedForIgnored:=false;
   LastErrorNicePosition.Code:=nil;
@@ -1804,7 +1806,7 @@ var
 begin
   // scan
   FLastProgressPos:=0;
-  CurrentPhase:=CodeToolPhaseScan;
+  CurrentPhase:=ctpScan;
   try
     if OnlyInterfaceNeeded then
       LinkScanRange:=lsrImplementationStart
@@ -1825,7 +1827,7 @@ begin
       DirtySrc.Free;
       DirtySrc:=nil;
     end else begin
-      if LastErrorPhase=CodeToolPhaseScan then
+      if LastErrorPhase=ctpScan then
         RaiseLastError;
     end;
     
@@ -1838,7 +1840,7 @@ begin
     NextPos.StartPos:=-1;
     CurNode:=nil;
   finally
-    CurrentPhase:=CodeToolPhaseNone;
+    CurrentPhase:=ctpNone;
   end;
 end;
 
@@ -2217,7 +2219,7 @@ begin
     ErrorPosition.Y:=-1;
   end;
   // raise the exception
-  CurrentPhase:=CodeToolPhaseNone;
+  CurrentPhase:=ctpNone;
   if not RaiseUnhandableExceptions then
     raise TheException
   else

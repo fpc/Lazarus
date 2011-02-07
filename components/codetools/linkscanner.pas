@@ -120,7 +120,7 @@ type
     lsrInterfaceStart, // read till keyword interface
     lsrMainUsesSectionStart, // uses section of interface/program
     lsrMainUsesSectionEnd, // uses section of interface/program
-    lsrImplementationStart, // scan only interface
+    lsrImplementationStart, // scan at least to interface end (e.g. till implementation keyword)
     lsrImplementationUsesSectionStart, // uses section of implementation
     lsrImplementationUsesSectionEnd, // uses section of implementation
     lsrInitializationStart,

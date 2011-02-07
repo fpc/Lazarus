@@ -514,7 +514,7 @@ begin
     // input is the same as last time -> output is the same
     // => if there was an error, raise it again
     //debugln(['TPascalParserTool.BuildTree ',ord(LastErrorPhase),' ',IgnoreErrorAfterValid]);
-    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse]) then begin
+    if (LastErrorPhase in [ctpScan,ctpParse]) then begin
       // last time a parsing error occurred
       if IgnoreErrorAfterValid
       and IgnoreErrorAfterPositionIsInFrontOfLastErrMessage
@@ -550,7 +550,7 @@ begin
   FForceUpdateNeeded:=false;
   
   // parse code and build codetree
-  CurrentPhase:=CodeToolPhaseParse;
+  CurrentPhase:=ctpParse;
   if Scanner.CompilerMode=cmDELPHI then
     WordIsKeyWordFuncList:=WordIsDelphiKeyWord
   else if Scanner.CompilerMode=cmMacPas then
@@ -641,7 +641,7 @@ begin
   {$IFDEF MEM_CHECK}
   CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
-  CurrentPhase:=CodeToolPhaseTool;
+  CurrentPhase:=ctpTool;
 end;
 
 procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
@@ -655,7 +655,9 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
        +GetAtom+' found',true);
   end;
 
-var MaxPos, OldPhase: integer;
+var
+  MaxPos: integer;
+  OldPhase: TCodeToolPhase;
 begin
   if BeginNode=nil then
     RaiseException(
@@ -672,7 +674,7 @@ begin
   end;
 
   OldPhase:=CurrentPhase;
-  CurrentPhase:=CodeToolPhaseParse;
+  CurrentPhase:=ctpParse;
   try
     BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
     // set CursorPos on 'begin'
@@ -4407,7 +4409,7 @@ begin
   if (RealTreeRange=trTillCursor) and (not UpdateNeeded(false)) then begin
     // tree is valid
     // -> if there was an error, raise it again
-    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
+    if (LastErrorPhase in [ctpScan,ctpParse])
     and ((not IgnoreErrorAfterValid)
       or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
     then begin
@@ -4636,7 +4638,7 @@ end;
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
 var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
-  OldPhase: integer;
+  OldPhase: TCodeToolPhase;
   IsProcType: Boolean;
   ProcHeadNode: TCodeTreeNode;
 begin
@@ -4666,7 +4668,7 @@ begin
     exit;
   end;
   OldPhase:=CurrentPhase;
-  CurrentPhase:=CodeToolPhaseParse;
+  CurrentPhase:=ctpParse;
   try
     IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
