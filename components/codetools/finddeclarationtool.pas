@@ -6007,15 +6007,39 @@ function TFindDeclarationTool.FindIdentifierInTypeOfConstant(
 }
 var
   TypeNode: TCodeTreeNode;
+  ExprType: TExpressionType;
+  TypeParams: TFindDeclarationParams;
+  OldInput: TFindDeclarationInput;
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
   TypeNode:=VarConstNode.FirstChild;
   if TypeNode=nil then exit;
   if TypeNode.Desc=ctnIdentifier then begin
-    debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
-    //ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,Params);
-
+    // resolve type
+    //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
+    TypeParams:=TFindDeclarationParams.Create;
+    try
+      TypeParams.ContextNode:=TypeNode;
+      TypeParams.SetIdentifier(Self,nil,nil);
+      TypeParams.Flags:=fdfDefaultForExpressions+[fdfIgnoreCurContextNode];
+      ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,TypeParams,false);
+      //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ExprType=',ExprTypeToString(ExprType)]);
+    finally
+      TypeParams.Free;
+    end;
+    if ExprType.Desc=xtContext then begin
+      if ExprType.Context.Node.Parent=nil then exit;
+      if not (ExprType.Context.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
+      then
+        exit;
+      // search identifier in type
+      Params.Save(OldInput);
+      Params.ContextNode:=ExprType.Context.Node;
+      Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
+      Result:=ExprType.Context.Tool.FindIdentifierInContext(Params);
+      Params.Load(OldInput,true);
+    end;
   end;
 end;
 

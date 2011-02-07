@@ -1357,7 +1357,7 @@ begin
         Result:=nil;
       exit;
     end;
-    if Result.Desc=ctnConstDefinition then exit(nil);
+    if Result.Desc<>ctnVarDefinition then exit(nil);
     Result:=Result.NextBrother;
   end;
 end;
@@ -1506,6 +1506,7 @@ end;
 
 function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode
   ): TCodeTreeNode;
+// find class node of a node in a procedure (declaration or body)
 begin
   while CursorNode<>nil do begin
     if CursorNode.Desc in AllClassObjects then begin
