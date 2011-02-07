@@ -4008,7 +4008,7 @@ var
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
     GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
     with ScrollInfo do
-      if message.Pos>=(nMax-nMin-nPage) then
+      if not (goSmoothScroll in Options) and (message.Pos>=(nMax-nMin-nPage)) then
         result := TL
       else
         result := message.Pos;
@@ -4117,7 +4117,7 @@ var
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
     GetScrollInfo(Handle, SB_VERT, ScrollInfo);
     with ScrollInfo do
-      if message.Pos>=(nMax-nMin-nPage) then
+      if not (goSmoothScroll in Options) and (message.Pos>=(nMax-nMin-nPage)) then
         result := TL
       else
         result := message.Pos;
