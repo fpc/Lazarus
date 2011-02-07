@@ -1795,7 +1795,7 @@ begin
   GatherContext:=CreateFindContext(Self,CursorNode);
 
   IgnoreCurContext:=false;
-  //DebugLn(['TIdentCompletionTool.FindCollectionContext IdentStartPos=',dbgstr(copy(Src,IdentStartPos,20))]);
+  //DebugLn(['TIdentCompletionTool.FindCollectionContext IdentStartPos=',dbgstr(copy(Src,IdentStartPos,20)),' ',CursorNode.DescAsString]);
   ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
   if GatherContext.Node.Desc=ctnWithVariable then begin
     if GatherContext.Node.PriorBrother<>nil then
@@ -1809,10 +1809,12 @@ begin
       GatherContext.Node:=GatherContext.Node.Parent;
     GatherContext.Node:=GatherContext.Node.Parent;
     IgnoreCurContext:=true;
+  end else if GatherContext.Node.Desc=ctnIdentifier then begin
+    IgnoreCurContext:=true;
   end;
 
   StartInSubContext:=false;
-  //DebugLn(['TIdentCompletionTool.FindCollectionContext ContextExprStartPos=',ContextExprStartPos,' "',dbgstr(copy(Src,ContextExprStartPos,20)),'" IdentStartPos="',dbgstr(copy(Src,IdentStartPos,20)),'"']);
+  //DebugLn(['TIdentCompletionTool.FindCollectionContext ContextExprStartPos=',ContextExprStartPos,' "',dbgstr(copy(Src,ContextExprStartPos,20)),'" IdentStartPos="',dbgstr(copy(Src,IdentStartPos,20)),'" Gather=',FindContextToString(GatherContext)]);
   if ContextExprStartPos<IdentStartPos then begin
     MoveCursorToCleanPos(IdentStartPos);
     Params.ContextNode:=CursorNode;
@@ -1821,6 +1823,7 @@ begin
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     if IgnoreCurContext then
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
+    debugln(['TIdentCompletionTool.FindCollectionContext ',fdfIgnoreCurContextNode in Params.Flags]);
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
     //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
@@ -2048,6 +2051,8 @@ begin
         DebugLn('TIdentCompletionTool.GatherIdentifiers F');
         {$ENDIF}
         CurrentIdentifierList.Context:=GatherContext;
+        if GatherContext.Node.Desc=ctnIdentifier then
+          Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
         GatherContext.Tool.FindIdentifierInContext(Params);
       end;
 

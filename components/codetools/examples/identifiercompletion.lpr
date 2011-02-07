@@ -40,6 +40,7 @@ var
   Y: Integer;
   Cnt: longint;
   i: Integer;
+  Line: String;
 begin
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
@@ -59,6 +60,7 @@ begin
     Filename:=ExpandFileName(ParamStr(1));
     X:=StrToInt(ParamStr(2));
     Y:=StrToInt(ParamStr(3));
+    writeln('File: ',Filename,' Line=',Y,' Column=',X);
   end;
 
   // load the file
@@ -71,6 +73,8 @@ begin
 
   // gather identifiers:
   writeln('GatherIdentifiers ',Code.Filename,'(X=',X,',Y=',Y,')');
+  Line:=Code.GetLine(Y-1);
+  writeln('Line ',Y,': ',copy(Line,1,X-1),'|',copy(Line,X,length(Line)));
   if CodeToolBoss.GatherIdentifiers(Code,X,Y) then
   begin
     writeln('Identifiers found: Count=',CodeToolBoss.IdentifierList.Count,' FilteredCount=',CodeToolBoss.IdentifierList.GetFilteredCount);
@@ -79,7 +83,10 @@ begin
     for i:=0 to Cnt-1 do
       writeln(i,'/',CodeToolBoss.IdentifierList.GetFilteredCount,': ',CodeToolBoss.IdentifierList.FilteredItems[i].AsString);
   end else begin
-    raise Exception.Create('GatherIdentifiers failed');
+    if CodeToolBoss.ErrorMessage<>'' then
+      writeln('Parse error: ',CodeToolBoss.ErrorMessage)
+    else
+      writeln('Error: no context');
   end;
 end.
 

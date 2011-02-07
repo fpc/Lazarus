@@ -91,8 +91,8 @@ begin
       Filename:=CleanAndExpandFilename(ParamStr(1));
       X:=StrToInt(ParamStr(2));
       Y:=StrToInt(ParamStr(3));
+      writeln('File: ',Filename,' Line=',Y,' Column=',X);
     end;
-    writeln('File: ',Filename,' Line=',Y,' Column=',X);
 
     // Step 1: load the file
     Code:=CodeToolBoss.LoadFile(Filename,false,false);

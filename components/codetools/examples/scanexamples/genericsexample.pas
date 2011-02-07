@@ -14,7 +14,7 @@ type
     function DoSomething(Arg: T): T;
   end;
   TGenericClass<T1,T2> = class(TInterfacedObject, IGenericInterface<T1>)
-    F: T2;
+    F: T21;
     type
       Intf = IGenericInterface<Integer>;
     function DoSomething(Arg: T1): T2;

@@ -1509,6 +1509,7 @@ begin
           // ToDo: DirtySrc
           Result:=FindDeclarationOfIdentAtParam(Params);
         end else begin
+            debugln(['TFindDeclarationTool.FindDeclaration AAA1']);
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
             Include(Params.Flags,fdfSearchForward);
@@ -6012,7 +6013,7 @@ var
   OldInput: TFindDeclarationInput;
 begin
   Result:=false;
-  //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
+  debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
   TypeNode:=VarConstNode.FirstChild;
   if TypeNode=nil then exit;
   if TypeNode.Desc=ctnIdentifier then begin
