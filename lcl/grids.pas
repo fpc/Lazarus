@@ -3125,7 +3125,7 @@ begin
     if RNew.Left >= CWidth then
       Xinc := 1               // hidden at the right of clientwidth line
     else
-    if (RNew.Left > FGCache.FixedWidth) and
+    if (RNew.Left > FGCache.FixedWidth+GetBorderWidth) and
        (RNew.Left < CWidth) and (CWidth < RNew.Right) then begin
       Xinc := 1;              // partially visible at the right
       FGCache.TLColOff := 0;  // cancel col-offset for next calcs
@@ -3138,7 +3138,7 @@ begin
     if (RNew.Top >= CHeight) then
       YInc := 1               // hidden at the bottom of clientheight line
     else
-    if (RNew.Top > FGCache.FixedHeight) and
+    if (RNew.Top > FGCache.FixedHeight+GetBorderWidth) and
        (RNew.Top < CHeight) and (CHeight < RNew.Bottom) then begin
       Yinc := 1;              // partially visible at bottom
       FGCache.TLRowOff := 0;  // cancel row-offset for next calcs
