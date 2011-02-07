@@ -49,8 +49,9 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   InterfaceBase,
   // codetools
-  AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
-  CodeToolsStructs, NonPascalCodeTools, SourceChanger, CodeToolManager,
+  AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache,
+  BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
+  CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   LazIDEIntf,
@@ -3824,7 +3825,7 @@ begin
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
 
   try
-    XMLConfig:=TXMLConfig.CreateClean(MakefileCompiledFilename);
+    XMLConfig:=TXMLConfig.Create(MakefileCompiledFilename);
     try
       XMLConfig.SetValue('Makefile/Value',True);
       s:=OtherOptions;
@@ -3837,8 +3838,10 @@ begin
       s:=s+' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
       //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
       XMLConfig.SetValue('Params/Value',s);
-      InvalidateFileStateCache;
-      XMLConfig.Flush;
+      if XMLConfig.Modified then begin
+        InvalidateFileStateCache;
+        XMLConfig.Flush;
+      end;
     finally
       XMLConfig.Free;
     end;
