@@ -9,6 +9,9 @@
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
     </General>
+    <MacroValues Count="1">
+      <Macro1 Name="LCLWidgetType" Value="nogui"/>
+    </MacroValues>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>
@@ -57,17 +60,19 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <Target>
       <Filename Value="../lazbuild"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS)"/>
-      <OtherUnitFiles Value="../designer;../packager"/>
+      <OtherUnitFiles Value="../designer;../packager;../debugger"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
-      <LCLWidgetType Value="nogui"/>
     </SearchPaths>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

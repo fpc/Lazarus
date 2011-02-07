@@ -5177,6 +5177,8 @@ resourcestring
   dlgInsertSection = 'Insert into Uses section of';
   dlgInsertInterface = 'Interface';
   dlgInsertImplementation = 'Implementation';
+  lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
+    +'package create a simple Makefile.';
 
 implementation
 

@@ -49,6 +49,7 @@ type
     FBuildModeOverride: String;
     FBuildRecursive: boolean;
     fCompilerOverride: String;
+    FCreateMakefile: boolean;
     fLazarusDirOverride : String;
     fCPUOverride: String;
     fOSOverride: String;
@@ -89,6 +90,7 @@ type
     function BuildPackage(const AFilename: string): boolean;
     function LoadPackage(const AFilename: string): TLazPackage;
     procedure CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags);
+    procedure DoCreateMakefile(APackage: TLazPackage);
     procedure CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency);
 
@@ -128,6 +130,7 @@ type
                                             write FSkipDependencies;
     property BuildIDE: boolean read FBuildIDE write FBuildIDE;
     property BuildIDEOptions: string read FBuildIDEOptions write FBuildIDEOptions;
+    property CreateMakefile: boolean read FCreateMakefile write FCreateMakefile;
     property WidgetSetOverride: String read fWidgetsetOverride
                                             write fWidgetsetOverride;
     property OSOverride: String read fOSOverride write fOSOverride;
@@ -309,7 +312,10 @@ begin
   if (Length(WidgetSetOverride) <> 0) then
     APackage.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
-  CompilePackage(APackage,Flags);
+  if CreateMakefile then
+    DoCreateMakefile(APackage)
+  else
+    CompilePackage(APackage,Flags);
   
   Result:=true;
 end;
@@ -514,6 +520,11 @@ begin
 
   if PackageGraph.CompilePackage(APackage,Flags,false)<>mrOk then
     Error(ErrorBuildFailed,APackage.IDAsString+' compilation failed');
+end;
+
+procedure TLazBuildApplication.DoCreateMakefile(APackage: TLazPackage);
+begin
+  PackageGraph.WriteMakeFile(APackage);
 end;
 
 procedure TLazBuildApplication.CheckPackageGraphForCompilation(
@@ -1073,6 +1084,7 @@ begin
     LongOptions.Add('build-mode:');
     LongOptions.Add('compiler:');
     LongOptions.Add('lazarusdir:');
+    LongOptions.Add('create-makefile');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1144,6 +1156,8 @@ begin
     if HasOption('lazarusdir') then
       LazarusDirOverride := GetOptionValue('lazarusdir');
 
+    if HasOption('create-makefile') then
+      CreateMakefile := true;
   finally
     Options.Free;
     NonOptions.Free;
@@ -1212,6 +1226,11 @@ begin
   writeln('');
   writeln(LanguageOpt);
   writeln(UTF8ToConsole(BreakString(space+lisOverrideLanguage,75, 22)));
+
+  writeln('');
+  writeln('--create-makefile');
+  writeln(UTF8ToConsole(BreakString(space+
+    lisInsteadOfCompilePackageCreateASimpleMakefile, 75, 22)));
 end;
 
 procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
