@@ -3830,12 +3830,13 @@ begin
       XMLConfig.SetValue('Makefile/Value',True);
       s:=OtherOptions;
       if UnitPath<>'' then
-        s:=s+' -Fu'+UnitPath;
+        s:=s+' -Fu'+SwitchPathDelims(UnitPath,pdsUnix);
       if IncPath<>'' then
-        s:=s+' -Fi'+IncPath;
+        s:=s+' -Fi'+SwitchPathDelims(IncPath,pdsUnix);
       if CustomOptions<>'' then
         s:=s+' '+CustomOptions;
-      s:=s+' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
+      s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
+
       //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
       XMLConfig.SetValue('Params/Value',s);
       if XMLConfig.Modified then begin
