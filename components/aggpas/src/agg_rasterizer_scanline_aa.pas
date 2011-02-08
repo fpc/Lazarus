@@ -498,25 +498,25 @@ const
  qsort_threshold = 9;
 
 begin
- limit:=cell_aa_ptr_ptr(ptrcomp(start ) + num * 4 );
+ limit:=cell_aa_ptr_ptr(ptrcomp(start ) + num * SizeOf(Pointer) );
  base :=start;
  top  :=@stack[0 ];
 
  repeat
-  len:=(ptrcomp(limit ) - ptrcomp(base ) ) div 4;
+  len:=(ptrcomp(limit ) - ptrcomp(base ) ) div SizeOf(Pointer);
 
   if len > qsort_threshold then
    begin
    // we use base + len/2 as the pivot
-    pivot:=cell_aa_ptr_ptr(ptrcomp(base ) + (len div 2 ) * 4 );
+    pivot:=cell_aa_ptr_ptr(ptrcomp(base ) + (len div 2 ) * SizeOf(Pointer) );
 
     temp:=p32_ptr(base ).ptr;
 
     p32_ptr(base ).ptr :=p32_ptr(pivot ).ptr;
     p32_ptr(pivot ).ptr:=temp;
 
-    i:=cell_aa_ptr_ptr(ptrcomp(base ) + 4 );
-    j:=cell_aa_ptr_ptr(ptrcomp(limit ) - 4 );
+    i:=cell_aa_ptr_ptr(ptrcomp(base ) + SizeOf(Pointer) );
+    j:=cell_aa_ptr_ptr(ptrcomp(limit ) - SizeOf(Pointer) );
 
    // now ensure that *i <= *base <= *j
     if j^.x < i^.x then
@@ -575,7 +575,7 @@ begin
     p32_ptr(j ).ptr   :=temp;
 
    // now, push the largest sub-array
-    if (ptrcomp(j ) - ptrcomp(base ) ) div 4 > (ptrcomp(limit ) - ptrcomp(i ) ) div 4 then
+    if (ptrcomp(j ) - ptrcomp(base ) ) div SizeOf(Pointer) > (ptrcomp(limit ) - ptrcomp(i ) ) div SizeOf(Pointer) then
      begin
       top^:=base;
 
@@ -603,17 +603,17 @@ begin
    begin
    // the sub-array is small, perform insertion sort
     j:=base;
-    i:=cell_aa_ptr_ptr(ptrcomp(j ) + 1 * 4 );
+    i:=cell_aa_ptr_ptr(ptrcomp(j ) + 1 * SizeOf(Pointer) );
 
     while ptrcomp(i ) < ptrcomp(limit ) do
      begin
       try
-       while cell_aa_ptr_ptr(ptrcomp(j ) + 1 * 4 )^^.x < j^.x do
+       while cell_aa_ptr_ptr(ptrcomp(j ) + 1 * SizeOf(Pointer) )^^.x < j^.x do
         begin
-         //swap_ptrs(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * 4 ) ,j );
-          temp:=p32_ptr(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * 4 ) ).ptr;
+         //swap_ptrs(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * SizeOf(Pointer) ) ,j );
+          temp:=p32_ptr(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * SizeOf(Pointer) ) ).ptr;
 
-          p32_ptr(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * 4 ) ).ptr:=p32_ptr(j ).ptr;
+          p32_ptr(cell_aa_ptr_ptr(ptrcomp(j ) + 1 * SizeOf(Pointer) ) ).ptr:=p32_ptr(j ).ptr;
           p32_ptr(j ).ptr:=temp;
 
          if j = base then
