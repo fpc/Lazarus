@@ -444,7 +444,7 @@ end;
 
 constructor TSortSelectionDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   FIgnoreSpace:=true;
   FDirection:=MiscellaneousOptions.SortSelDirection;
   FDomain:=MiscellaneousOptions.SortSelDomain;
