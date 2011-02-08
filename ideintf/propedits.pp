@@ -4967,7 +4967,7 @@ constructor TFileFilterPropertyEditorForm.Create(AOwner: TComponent);
 var
   BtnPanel: TPanel;
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Caption:=peFilterEditor;
   Height:=295;
   Width:=417;
