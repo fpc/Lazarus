@@ -1151,7 +1151,7 @@ type
 
   TQtHeaderView = class (TQtAbstractItemView)
   private
-    FSelectionClicked: QHeaderView_hookH;
+    FSectionClicked: QHeaderView_hookH;
     function getClickable: Boolean;
     function getMinSectionSize: Integer;
     procedure setClickable(const AValue: Boolean);
@@ -1162,7 +1162,8 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SignalSectionClicked(logicalIndex: Integer); cdecl;
     function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
     procedure setResizeMode(AResizeMode: QHeaderViewResizeMode); overload;
     procedure setResizeMode(AIndex: Integer; AResizeMode: QHeaderViewResizeMode); overload;
@@ -1205,7 +1206,6 @@ type
   private
     FSorting: Boolean;
     FHeader: TQtHeaderView;
-    FSectionClicked: QHeaderView_hookH;
     FSortChanged: QHeaderView_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
@@ -9417,13 +9417,13 @@ end;
 procedure TQtHeaderView.AttachEvents;
 begin
   inherited AttachEvents;
-  FSelectionClicked := QHeaderView_hook_create(Widget);
-  QHeaderView_hook_hook_sectionClicked(FSelectionClicked, @SignalSectionClicked);
+  FSectionClicked := QHeaderView_hook_create(Widget);
+  QHeaderView_hook_hook_sectionClicked(FSectionClicked, @SignalSectionClicked);
 end;
 
 procedure TQtHeaderView.DetachEvents;
 begin
-  QHeaderView_hook_destroy(FSelectionClicked);
+  QHeaderView_hook_destroy(FSectionClicked);
   inherited DetachEvents;
 end;
 
@@ -9441,6 +9441,20 @@ begin
       QEvent_ignore(Event);
       QWidget_setFocus(FOwner.Widget);
     end;
+  end;
+end;
+
+function TQtHeaderView.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: ; {do nothing here - signal is fired}
+    else
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
   end;
 end;
 
@@ -9810,9 +9824,6 @@ begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
     FHeader.FChildOfComplexWidget := ccwTreeWidget;
-    FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
-    QHeaderView_hook_hook_sectionClicked(FSectionClicked,
-      @FHeader.SignalSectionClicked);
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
       @SignalSortIndicatorChanged);
@@ -10186,8 +10197,6 @@ begin
   QTreeWidget_hook_destroy(FItemEnteredHook);
   QTreeWidget_hook_destroy(FSelectionChangedHook);
 
-  if FSectionClicked <> nil then
-    QHeaderView_hook_destroy(FSectionClicked);
   if FSortChanged <> nil then
     QHeaderView_hook_destroy(FSortChanged);
 
@@ -10383,6 +10392,8 @@ var
   AParent: QTreeWidgetItemH;
   ASubIndex: Integer;
   AIndex: Integer;
+  ListItem: TListItem;
+  B: Boolean;
 begin
   FCurrentItem := Current;
   FPreviousItem := Previous;
@@ -10421,6 +10432,14 @@ begin
   try
     if Current <> nil then
     begin
+      ListItem := nil;
+      B := False;
+      if ViewStyle = Ord(vsReport) then
+      begin
+        ListItem := TListView(LCLObject).Selected;
+        if ListItem <> nil then
+          B := ListItem.Index = AIndex;
+      end;
       FillChar(Msg, SizeOf(Msg), #0);
       FillChar(NMLV, SizeOf(NMLV), #0);
       Msg.Msg := CN_NOTIFY;
@@ -10434,17 +10453,33 @@ begin
         NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
-      DeliverMessage(Msg);
+      if not B then
+        DeliverMessage(Msg);
     end;
 
     if Previous <> nil then
     begin
+      AIndex := getRow(Previous);
+      ListItem := nil;
+      B := False;
+      // From Qt docs:
+      // This signal is emitted when the current item changes.
+      // The current item is specified by current, and this replaces
+      // the previous current item.
+      // So, if Current = nil, do not ask TListView anything ! issue #18701
+      if (ViewStyle = Ord(vsReport)) and (Current <> nil) then
+      begin
+        ListItem := TListView(LCLObject).Selected;
+        if ListItem <> nil then
+          B := ListItem.Index = AIndex;
+      end;
+
       FillChar(Msg, SizeOf(Msg), #0);
       FillChar(NMLV, SizeOf(NMLV), #0);
       Msg.Msg := CN_NOTIFY;
       NMLV.hdr.hwndfrom := LCLObject.Handle;
       NMLV.hdr.code := LVN_ITEMCHANGED;
-      NMLV.iItem := getRow(Previous);
+      NMLV.iItem := AIndex;
       AParent := QTreeWidgetItem_parent(Previous);
       if AParent <> nil then
         ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
@@ -10457,7 +10492,8 @@ begin
         NMLV.uOldState := LVIS_SELECTED;
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
-      DeliverMessage(Msg);
+      if not B then
+        DeliverMessage(Msg);
     end;
   finally
     FSyncingItems := False;
