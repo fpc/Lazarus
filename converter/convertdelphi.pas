@@ -1383,7 +1383,7 @@ begin
         if p>0 then
           CurFilename:=copy(CurFilename,p+4,length(CurFilename));
         if CurFilename='' then continue;
-        Result:=AddUnit(CurFilename, ui);
+        Result:=AddUnit(SwitchPathDelims(CurFilename, True), ui);
         if Result=mrAbort then exit;
       end;
     finally
