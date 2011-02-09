@@ -1,0 +1,69 @@
+object PPUListDialog: TPPUListDialog
+  Left = 275
+  Height = 406
+  Top = 250
+  Width = 533
+  Caption = 'PPUListDialog'
+  ClientHeight = 406
+  ClientWidth = 533
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 360
+    Width = 521
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.Enabled = False
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object UnitsStringGrid: TStringGrid
+    Left = 6
+    Height = 324
+    Top = 30
+    Width = 521
+    Align = alClient
+    AutoFillColumns = True
+    BorderSpacing.Around = 6
+    ColCount = 3
+    Columns = <    
+      item
+        Title.Caption = 'Size of .ppu file'
+        Width = 227
+      end    
+      item
+        Title.Caption = 'Size of .o file'
+        Width = 228
+      end>
+    FixedRows = 2
+    TabOrder = 1
+    ColWidths = (
+      64
+      227
+      228
+    )
+  end
+  object ScopeLabel: TLabel
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 521
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'ScopeLabel'
+    ParentColor = False
+  end
+end
