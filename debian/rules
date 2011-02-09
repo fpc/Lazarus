@@ -157,7 +157,7 @@ install-arch-stamp:
 	for package in `find -name '*.lpk'` ; \
 	do \
 		${MKDIR} `dirname "$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/$${package}"` ; \
-		sed -e 's@\(\W*\)<\bAddToProjectUsesSection\b.*@&\n\1<AutoUpdate Value="Manually"/>@' "$${package}" > "$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/$${package}" ; \
+		sed -e 's@\(\W*\)<CompilerOptions>.*@\1<AutoUpdate Value="Manually"/>\n&@' "$${package}" > "$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/$${package}" ; \
 	done
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
