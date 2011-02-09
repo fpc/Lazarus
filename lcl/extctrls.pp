@@ -252,10 +252,11 @@ type
     // OnBeforeShow occurs before a page is displayed, so that
     // preparations can be executed in it's user interface, for example
     property OnBeforeShow: TBeforeShowPageEvent read FOnBeforeShow write FOnBeforeShow;
-    // Other events
+    // Other events and properties
     property ChildSizing;
     property ClientWidth;
     property ClientHeight;
+    property Color;
     property Left stored False;
     property Top stored False;
     property Width stored False;
@@ -338,6 +339,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragMode;
