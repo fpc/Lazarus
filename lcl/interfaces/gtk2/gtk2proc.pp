@@ -34,9 +34,9 @@ uses
     Windows, // needed for keyboard handling
   {$endif}
   {$IFDEF Unix}
-    baseunix, unix,
+    unix,
   {$ENDIF}
-  SysUtils, Classes, FPCAdds,
+  SysUtils, Classes,
   {$IFDEF HasX}
     XAtom, X, XLib, XUtil, //Font retrieval and Keyboard handling
   {$ENDIF}
@@ -48,8 +48,8 @@ uses
     {$endif}
   // Other units
   Math, // Math after gtk to get the correct Float type
-  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
-  GraphType, GraphMath, Graphics, LResources, Controls, Forms,
+  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, Masks,
+  GraphType, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
   FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, Gtk2Debug,
   LCLMessageGlue;
@@ -811,7 +811,6 @@ const
 
 
 type
-  PKeyCodeInfo = ^TKeyCodeInfo;
   TKeyCodeInfo = record
     VKey1: Byte;
     VKey2: Byte; // second code to be used depending on the type of MULTI_VK flag
