@@ -266,6 +266,7 @@ type
     function FindFirstPosition: integer;
     function FindLastPosition: integer;
     function ContainsNode(ANode: TCodeTreeNode): boolean;
+    function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -919,6 +920,13 @@ begin
   while ANode.Parent<>nil do ANode:=ANode.Parent;
   while ANode.PriorBrother<>nil do ANode:=ANode.PriorBrother;
   Result:=ANode=Root;
+end;
+
+function TCodeTree.FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
+begin
+  Result:=Root;
+  while (Result<>nil) and (Result.Desc<>Desc) do
+    Result:=Result.NextBrother;
 end;
 
 procedure TCodeTree.ConsistencyCheck;

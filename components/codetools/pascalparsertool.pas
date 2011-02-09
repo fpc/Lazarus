@@ -246,6 +246,7 @@ type
     function FindPrevNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
 
     // sections
+    function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
@@ -4631,6 +4632,12 @@ begin
   end;
 end;
 
+function TPascalParserTool.FindRootNode(Desc: TCodeTreeNodeDesc
+  ): TCodeTreeNode;
+begin
+  Result:=Tree.FindRootNode(Desc);
+end;
+
 function TPascalParserTool.NodeHasParentOfType(ANode: TCodeTreeNode;
   NodeDesc: TCodeTreeNodeDesc): boolean;
 begin
@@ -5085,30 +5092,22 @@ end;
 
 function TPascalParserTool.FindInterfaceNode: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnInterface) do
-    Result:=Result.NextBrother;
+  Result:=FindRootNode(ctnInterface);
 end;
 
 function TPascalParserTool.FindImplementationNode: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
-    Result:=Result.NextBrother;
+  Result:=FindRootNode(ctnImplementation);
 end;
 
 function TPascalParserTool.FindInitializationNode: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnInitialization) do
-    Result:=Result.NextBrother;
+  Result:=FindRootNode(ctnInitialization);
 end;
 
 function TPascalParserTool.FindFinalizationNode: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnFinalization) do
-    Result:=Result.NextBrother;
+  Result:=FindRootNode(ctnFinalization);
 end;
 
 function TPascalParserTool.FindMainBeginEndNode: TCodeTreeNode;

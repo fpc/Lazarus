@@ -2481,71 +2481,102 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     2: a:=1;
 
     1:  b:=1; |
-    2:  // comment
-    3:  // comment
+    2:  // comment for below
+    3:  // comment for below
     4:  a:=1;
 
     1:  |
-    2: /* */
+    2: (* comment belongs to the following line *)
     3:  a:=1;
 
-    1: end;| /*
-    2: */ a:=1;
+    1: end; (* comment belongs to the first line
+    2: *)| a:=1;
 
     1: b:=1; // comment |
     2: a:=1;
 
-    1: b:=1; /*
-    2: comment */   |
+    1: b:=1; (*
+    2: comment *)   |
     3: a:=1;
 }
 var SrcStart: integer;
 
-  function ReadComment(var P: integer): boolean;
-  // false if compiler directive
-  var OldP: integer;
+  function IsSpace(c: char): boolean;
   begin
-    OldP:=P;
-    case Source[P] of
-      '}':
-        begin
-          dec(P);
-          while (P>=SrcStart) and (Source[P]<>'{') do begin
-            if NestedComments and (Source[P]='}') then
-              ReadComment(P)
-            else
-              dec(P);
-          end;
-          Result:=not (StopAtDirectives
-                       and (P>=SrcStart) and (Source[P+1]='$'));
-          dec(P);
-        end;
-      ')':
-        begin
-          dec(P);
-          if (P>=SrcStart) and (Source[P]='*') then begin
-            dec(P);
-            while (P>SrcStart)
-            and ((Source[P-1]<>'(') or (Source[P]<>'*')) do begin
-              if NestedComments and ((Source[P]=')') and (Source[P-1]='*')) then
-                ReadComment(P)
-              else
-                dec(P);
-            end;
-            Result:=not (StopAtDirectives
-                         and (P>=SrcStart) and (Source[P+1]='$'));
-            dec(P,2);
-          end else begin
-            // normal bracket
-            // => position behind code
-            inc(p);
-            Result:=false;
-          end;
-        end;
+    if SkipSemicolonComma then
+      Result:=c in [' ',#9,';',',']
     else
-      Result:=true;
-    end;
-    if not Result then P:=OldP+1;
+      Result:=c in [' ',#9];
+  end;
+
+  function ReadComment(var p: integer; SubComment: boolean): boolean;
+  // true if comment was skipped
+  // false if not skipped, because comment is compiler directive or simple bracket
+  var OldP: integer;
+    IsDirective: Boolean;
+  begin
+    //debugln(['ReadComment ',dbgstr(copy(Source,p-5,5))+'|'+Source[p]+dbgstr(copy(Source,p+1,5))]);
+    OldP:=p+1;
+    repeat
+      IsDirective:=false;
+      case Source[p] of
+        '}':
+          begin
+            dec(p);
+            while (p>SrcStart) and (Source[p]<>'{') do begin
+              if NestedComments and (Source[p]='}') then
+                ReadComment(p,true)
+              else
+                dec(p);
+            end;
+            IsDirective:=(p>=SrcStart) and (Source[p+1]='$');
+            dec(p);
+          end;
+        ')':
+          begin
+            dec(p);
+            if (p>SrcStart) and (Source[p]='*') then begin
+              dec(p);
+              while (p>SrcStart)
+              and ((Source[p-1]<>'(') or (Source[p]<>'*')) do begin
+                if NestedComments and ((Source[p]=')') and (Source[p-1]='*')) then
+                  ReadComment(p,true)
+                else
+                  dec(p);
+              end;
+              IsDirective:=(p>=SrcStart) and (Source[p+1]='$');
+              dec(p,2);
+            end else begin
+              // normal bracket
+              // => position behind code
+              p:=OldP;
+              exit(false);
+            end;
+          end;
+      else
+        exit(true);
+      end;
+      if SubComment then exit(true); // always skip nested comments
+      if IsDirective and StopAtDirectives then begin
+        // directive can not be skipped
+        p:=OldP;
+        exit(false);
+      end;
+      // it is a normal comment
+      // check if it belongs to the code in front
+      while (p>=SrcStart) and IsSpace(Source[p]) do
+        dec(p);
+      if (p<SrcStart) or (Source[p] in [#10,#13]) then begin
+        // empty line in front of comment => comment can be skipped
+        exit(true);
+      end;
+      if not (Source[p] in [')','}']) then begin
+        // code => comment belongs to code in front
+        p:=OldP;
+        exit(false);
+      end;
+      // read next comment
+    until false;
   end;
 
 var
@@ -2553,46 +2584,47 @@ var
   LineStartPos: LongInt;
   IsEmpty: Boolean;
   LineEndPos: Integer;
+  p: LongInt;
 begin
   SrcStart:=MinPosition;
   if SrcStart<1 then SrcStart:=1;
-  if Position<=SrcStart then begin
+  if (Position<=SrcStart) then begin
     Result:=SrcStart;
     exit;
   end;
   // simple heuristic
-  // will fail on lines:  // }
-  Result:=Position-1;
-  if Result>length(Source) then Result:=length(Source);
-  while (Result>=SrcStart) do begin
-    case Source[Result] of
-      '}',')':
-        if not ReadComment(Result) then exit;
-
+  // will fail on lines: // }
+  Result:=-1;
+  p:=Position-1;
+  if p>length(Source) then p:=length(Source);
+  while (p>=SrcStart) do begin
+    case Source[p] of
       #10,#13:
         begin
-          // line end in code found
-          if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
-          and (Source[Result]<>Source[Result-1]) then
-            dec(Result);
-          LineEndPos:=Result; // start of line end
+          // line end found (outside comments)
+          if (p>SrcStart) and (Source[p-1] in [#10,#13])
+          and (Source[p]<>Source[p-1]) then
+            dec(p);
+          LineEndPos:=p; // start of line end
+          Result:=LineEndPos;
           // test if in a // comment
-          LineStartPos:=Result;
+          LineStartPos:=p;
           IsEmpty:=true;
           while (LineStartPos>SrcStart) do begin
             case Source[LineStartPos-1] of
               #10,#13: break;
               ' ',#9: ;
+              ';',',': if not SkipSemicolonComma then IsEmpty:=false;
             else IsEmpty:=false;
             end;
             dec(LineStartPos);
           end;
           if IsEmpty then begin
             // the line is empty => return start of line end
-            Result:=LineEndPos;
+            p:=LineEndPos;
             if SkipEmptyLines then begin
               // skip all empty lines
-              LineStartPos:=Result;
+              LineStartPos:=p;
               while (LineStartPos>SrcStart) do begin
                 case Source[LineStartPos-1] of
                   #10,#13:
@@ -2602,7 +2634,7 @@ begin
                       if (LineEndPos>SrcStart) and (Source[LineEndPos-1] in [#10,#13])
                       and (Source[LineEndPos]<>Source[LineEndPos-1]) then
                         dec(LineEndPos);
-                      Result:=LineEndPos;
+                      p:=LineEndPos;
                     end;
                   ' ',#9: ;
                 else
@@ -2612,37 +2644,41 @@ begin
                 dec(LineStartPos);
               end;
             end;
-            exit;
+            break;
           end;
+          // line is not empty
           TestPos:=LineStartPos;
           while (Source[TestPos] in [' ',#9]) do inc(TestPos);
           if (Source[TestPos]='/') and (Source[TestPos+1]='/') then begin
             // the whole line is a // comment
-            // this comment belongs to the code
+            // this comment belongs to the code behind
             // => continue on next line
-            Result:=LineStartPos-1;
+            p:=LineStartPos-1;
             continue;
           end;
-          dec(Result);
+          dec(p);
         end;
 
+      '}',')':
+        if not ReadComment(p,false) then break;
       ' ',#9:
-        dec(Result);
+        dec(p);
       ';',',':
         begin
-          if StopAtDirectives then begin
+          if not SkipSemicolonComma then begin
             // code found
-            inc(Result);
-            exit;
+            inc(p);
+            break;
           end;
-          dec(Result);
+          dec(p);
         end;
     else
       // code found
-      inc(Result);
-      exit;
+      inc(p);
+      break;
     end;
   end;
+  if Result<1 then Result:=p;
   if Result<SrcStart then Result:=SrcStart;
 end;
 
