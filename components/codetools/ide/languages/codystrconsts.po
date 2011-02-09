@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr ""
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr ""
+
