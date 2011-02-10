@@ -5547,10 +5547,6 @@ msgstr "Un desplazamiento es añadido a la coordenada superior de los controles 
 msgid "Coordinate offsets"
 msgstr "Coordinar desplazamientos"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "Abortado."
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5628,6 +5624,10 @@ msgstr "*** Encontrar todos los archivos de unidad... ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Función Delphi"
@@ -5648,9 +5648,9 @@ msgstr "Nombre Delphi"
 msgid "Package name exists"
 msgstr "El nombre del paquete existe"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "Preparado."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5665,7 +5665,9 @@ msgid "Remove second"
 msgstr "Eliminar el segundo"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+#, fuzzy
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr "Reparando archivo de formulario %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -14677,6 +14679,10 @@ msgstr "Usar..."
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
 msgstr "Usar Ansistrings"
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

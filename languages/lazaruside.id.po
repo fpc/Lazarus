@@ -5570,10 +5570,6 @@ msgstr ""
 msgid "Coordinate offsets"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5651,6 +5647,10 @@ msgstr ""
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr ""
@@ -5671,8 +5671,8 @@ msgstr ""
 msgid "Package name exists"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
@@ -5688,7 +5688,7 @@ msgid "Remove second"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -14725,6 +14725,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
+msgstr ""
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter

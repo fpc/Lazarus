@@ -5575,10 +5575,6 @@ msgstr "ビジュアルコンテナの内側のコントロールの上端座標
 msgid "Coordinate offsets"
 msgstr "座標オフセット"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "中止しました"
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5656,6 +5652,10 @@ msgstr "*** すべてのユニットファイルを検索... ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Delphiの関数"
@@ -5676,9 +5676,9 @@ msgstr "Delphiでの名前"
 msgid "Package name exists"
 msgstr "パッケージ名が存在します"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "準備完了."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5693,7 +5693,9 @@ msgid "Remove second"
 msgstr "二番目に削除してください"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+#, fuzzy
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr "フォームファイル %sを修復中"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -14738,6 +14740,10 @@ msgstr "使用..."
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
 msgstr "Ansistringsを使用"
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

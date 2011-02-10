@@ -5571,10 +5571,6 @@ msgstr "Um deslocamento é adicionado à coordenada \"Topo\" dos controles dentr
 msgid "Coordinate offsets"
 msgstr "Deslocamentos coordenadas"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "Abortado."
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5652,6 +5648,10 @@ msgstr "*** Localizar todos arquivos unidade ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Corrigido maiúsculas/minúsculas da unidade \"%s\" para \"%s\"."
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Função Delphi"
@@ -5672,9 +5672,9 @@ msgstr "Nome Delphi"
 msgid "Package name exists"
 msgstr "Nome do pacote já existe"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "Pronto."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5689,7 +5689,9 @@ msgid "Remove second"
 msgstr "Remover segundo"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+#, fuzzy
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr "Reparando arquivo formulário %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -7190,7 +7192,9 @@ msgid "Execution paused"
 msgstr "Execução pausada"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+#, fuzzy
+#| msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "Execução pausada%s  Endereço: $%s%s Procedimento: %s%s Arquivo %s%s (Algum dia uma janela assembler poderá aparecer aqui :)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped
@@ -14703,6 +14707,10 @@ msgstr "Usar >>"
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
 msgstr "Usar \"Ansistrings\""
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

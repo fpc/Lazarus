@@ -11,11 +11,11 @@ msgstr ""
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
-msgstr ""
+msgstr "Главный файл исходного кода: %s"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
-msgstr ""
+msgstr "отсутствует ..."
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -27,33 +27,33 @@ msgstr "Сначала необходимо открыть проект."
 
 #: codystrconsts.crsppufilesofproject
 msgid "PPU files of project \"%s\""
-msgstr ""
+msgstr "Файлы PPU проекта \"%s\""
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
-msgstr ""
+msgstr "В проекте отсутствует главный файл исходного кода."
 
 #: codystrconsts.crssearching
 msgid "searching ..."
-msgstr ""
+msgstr "поиск ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
-msgstr ""
+msgstr "Размер файла .o"
 
 #: codystrconsts.crssizeofppufile
 msgid "Size of .ppu file"
-msgstr ""
+msgstr "Размер файла .ppu"
 
 #: codystrconsts.crstotal
 msgid "Total"
-msgstr ""
+msgstr "Всего"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
-msgstr ""
+msgstr "Используется"
 
 #: codystrconsts.crsuses
 msgid "Uses"
-msgstr ""
+msgstr "Использует"
 

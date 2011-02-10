@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-08 02:00+0300\n"
+"PO-Revision-Date: 2011-02-11 02:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5575,10 +5575,6 @@ msgstr "Добавление смещения к координатам видж
 msgid "Coordinate offsets"
 msgstr "Смещения координат"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "Прервано."
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr "Пакет %s добавлен в качестве зависимости."
@@ -5658,6 +5654,10 @@ msgstr "*** Поиск всех файлов модулей... ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Регистр имени модуля \"%s\" изменён. Новое имя: \"%s\"."
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr "* Исправление списка используемых модулей в файле %s *"
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Функция Delphi"
@@ -5678,9 +5678,9 @@ msgstr "Имя Delphi"
 msgid "Package name exists"
 msgstr "Имя пакета уже существует"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "Готово."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr "Модуль %s не включён в проект"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5695,8 +5695,9 @@ msgid "Remove second"
 msgstr "Удалить второй"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
-msgstr "Исправление файла формы %s"
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
+msgstr "* Исправление файла формы %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
@@ -14716,6 +14717,10 @@ msgstr "Использовать >>"
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
 msgstr "Использовать строки Ansistring"
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
+msgstr "Использовать пакеты времени разработки"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

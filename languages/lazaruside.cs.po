@@ -5525,10 +5525,6 @@ msgstr "Přidá posunutí k hornímu okraji prvků uvnitř vizuálních kontejne
 msgid "Coordinate offsets"
 msgstr "Posunutí okrajů"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "Zrušeno."
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5606,6 +5602,10 @@ msgstr "*** Najít všechny soubory jednotek... ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "Funkce Delphi"
@@ -5626,9 +5626,9 @@ msgstr "Jméno Delphi"
 msgid "Package name exists"
 msgstr "Jméno balíčku existuje"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "Připraven."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5643,7 +5643,9 @@ msgid "Remove second"
 msgstr "Odstranit druhou"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+#, fuzzy
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr "Oprava formulářového souboru %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -14626,6 +14628,10 @@ msgstr "Použít..."
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
 msgstr "Použít Ansi řetězce"
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

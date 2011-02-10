@@ -5540,10 +5540,6 @@ msgstr "התווסף אופסט לקואורדינטה העליונה של פק�
 msgid "Coordinate offsets"
 msgstr "אופסט לקואורדינטות"
 
-#: lazarusidestrconsts.lisconvdelphiaborted
-msgid "Aborted."
-msgstr "נפסק"
-
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
 msgstr ""
@@ -5621,6 +5617,10 @@ msgstr "*** מצא את כל קבצי היחידה... ***"
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphifixingusedunits
+msgid "* Fixing used units for file %s *"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
 msgstr "פונקציית דלפי"
@@ -5641,9 +5641,9 @@ msgstr "שם של דלפי"
 msgid "Package name exists"
 msgstr "שם החבילה קיים"
 
-#: lazarusidestrconsts.lisconvdelphiready
-msgid "Ready."
-msgstr "מוכן."
+#: lazarusidestrconsts.lisconvdelphiprojomittedunit
+msgid "Omitted unit %s from project"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5658,7 +5658,9 @@ msgid "Remove second"
 msgstr "הסר שני"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "Repairing form file %s"
+#, fuzzy
+#| msgid "Repairing form file %s"
+msgid "* Repairing form file %s *"
 msgstr "מתקן מקובץ %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -14677,6 +14679,10 @@ msgstr "השתמש ב ..."
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
+msgstr ""
+
+#: lazarusidestrconsts.lisusedesigntimepackages
+msgid "Use design time packages"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
