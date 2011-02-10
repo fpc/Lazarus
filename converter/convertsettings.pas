@@ -39,6 +39,7 @@ type
 
   TReplaceModeLong = (rlDisabled, rlInteractive, rlAutomatic);
   TReplaceModeShort = (rsDisabled, rsEnabled);
+  TReplaceModeAllow = (raEnabled, raAutomatic);
 
   TConvertSettingsForm = class;
 
@@ -62,9 +63,12 @@ type
     fSameDfmFile: boolean;
     // Modes for replacements:
     fUnitsReplaceMode: TReplaceModeLong;
-    fUnknownPropsMode: TReplaceModeLong;
+    fPropReplaceMode: TReplaceModeLong;
+    fTypeReplaceMode: TReplaceModeAllow;
     fFuncReplaceMode: TReplaceModeShort;
     fCoordOffsMode: TReplaceModeShort;
+    // Unit names to leave out of a project. Currently not user editable.
+    fOmitProjUnits: TStringList;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
@@ -109,9 +113,11 @@ type
     property SupportDelphi: boolean read fSupportDelphi;
     property SameDfmFile: boolean read fSameDfmFile;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
-    property UnknownPropsMode: TReplaceModeLong read fUnknownPropsMode;
+    property PropReplaceMode: TReplaceModeLong read fPropReplaceMode;
+    property TypeReplaceMode: TReplaceModeAllow read fTypeReplaceMode;
     property FuncReplaceMode: TReplaceModeShort read fFuncReplaceMode;
     property CoordOffsMode:   TReplaceModeShort read fCoordOffsMode;
+    property OmitProjUnits: TStringList read fOmitProjUnits;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
     property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs;
@@ -129,6 +135,7 @@ type
     SupportDelphiCheckBox: TCheckBox;
     TargetGroupBox: TGroupBox;
     FuncReplaceComboBox: TComboBox;
+    TypeReplaceComboBox: TComboBox;
     UnknownPropsComboBox: TComboBox;
     UnknownPropsDivider: TDividerBevel;
     UnitReplaceDivider: TDividerBevel;
@@ -140,7 +147,6 @@ type
     BackupCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
     TypeReplaceButton: TBitBtn;
-    TypeReplaceInfoLabel: TLabel;
     UnitReplaceButton: TBitBtn;
     ProjectPathEdit: TLabeledEdit;
     CoordOffsButton: TBitBtn;
@@ -355,6 +361,7 @@ begin
   fMainPath:='';
   fEnabled:=True;
   fSettingsForm:=Nil;
+  fOmitProjUnits:=TStringList.Create;
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
@@ -367,7 +374,8 @@ begin
   fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
   fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
   fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
-  fUnknownPropsMode:=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fPropReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
   fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
   fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
   LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
@@ -375,7 +383,15 @@ begin
   LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
   LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
 
-  // Add default values for configuration if ConfigStorage doesn't have them.
+  // * Add default values for configuration if ConfigStorage doesn't have them *
+
+  // Units left out of project. Not saved in configuration.
+  with fOmitProjUnits do begin
+    Add('FastMM4');
+    Add('FastMM4Messages');
+    Add('OpenGL');
+    Sorted:=True;
+  end;
 
   // Map Delphi units to Lazarus units.
   TheMap:=fReplaceUnits;
@@ -493,7 +509,8 @@ begin
   fConfigStorage.SetDeleteValue('SupportDelphi',    fSupportDelphi, false);
   fConfigStorage.SetDeleteValue('SameDfmFile',      fSameDfmFile, false);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
-  fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fUnknownPropsMode), 2);
+  fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
+  fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
   fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
   fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
   SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
@@ -502,11 +519,12 @@ begin
   SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
   // Free stuff
   fConfigStorage.Free;
+  fCoordOffsets.Free;
   fReplaceFuncs.Clear;
   fReplaceFuncs.Free;
   fReplaceTypes.Free;
   fReplaceUnits.Free;
-  fCoordOffsets.Free;
+  fOmitProjUnits.Free;
   inherited Destroy;
 end;
 
@@ -524,7 +542,8 @@ begin
       SupportDelphiCheckBox.Checked   :=fSupportDelphi;
       SameDfmCheckBox.Checked         :=fSameDfmFile;
       UnitReplaceComboBox.ItemIndex   :=integer(fUnitsReplaceMode);
-      UnknownPropsComboBox.ItemIndex  :=integer(fUnknownPropsMode);
+      UnknownPropsComboBox.ItemIndex  :=integer(fPropReplaceMode);
+      TypeReplaceComboBox.ItemIndex   :=integer(fTypeReplaceMode);
       FuncReplaceComboBox.ItemIndex   :=integer(fFuncReplaceMode);
       CoordOffsComboBox.ItemIndex     :=integer(fCoordOffsMode);
       SupportDelphiCheckBoxChange(SupportDelphiCheckBox);
@@ -538,7 +557,8 @@ begin
         fSupportDelphi   :=SupportDelphiCheckBox.Checked;
         fSameDfmFile     :=SameDfmCheckBox.Checked;
         fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
-        fUnknownPropsMode:=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
+        fPropReplaceMode:=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
+        fTypeReplaceMode :=TReplaceModeAllow(TypeReplaceComboBox.ItemIndex);
         fFuncReplaceMode :=TReplaceModeShort(FuncReplaceComboBox.ItemIndex);
         fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);
       end;
@@ -691,7 +711,8 @@ begin
   TypeReplaceButton.Caption:=lisCodeToolsDefsEdit;
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
-  TypeReplaceInfoLabel.Caption:=lisInteractive;
+  TypeReplaceComboBox.Items.Add(lisInteractive);
+  TypeReplaceComboBox.Items.Add(lisAutomatic);
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisCodeToolsDefsEdit;

@@ -176,19 +176,6 @@ object ConvertSettingsForm: TConvertSettingsForm
     ShowHint = True
     TabOrder = 5
   end
-  object TypeReplaceInfoLabel: TLabel
-    AnchorSideLeft.Control = TypeReplaceButton
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = TypeReplaceButton
-    AnchorSideTop.Side = asrCenter
-    Left = 395
-    Height = 16
-    Top = 143
-    Width = 67
-    BorderSpacing.Left = 23
-    Caption = 'Interactive'
-    ParentColor = False
-  end
   object FuncReplaceDivider: TDividerBevel
     AnchorSideLeft.Control = UnitReplaceDivider
     AnchorSideTop.Control = TypeReplaceDivider
@@ -374,5 +361,19 @@ object ConvertSettingsForm: TConvertSettingsForm
     ItemHeight = 0
     Style = csDropDownList
     TabOrder = 12
+  end
+  object TypeReplaceComboBox: TComboBox
+    AnchorSideLeft.Control = TypeReplaceButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TypeReplaceButton
+    AnchorSideTop.Side = asrCenter
+    Left = 395
+    Height = 21
+    Top = 141
+    Width = 136
+    BorderSpacing.Left = 23
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 13
   end
 end

@@ -196,7 +196,7 @@ type
   private
     // Resource code
     fMainUnitConverter: TConvertDelphiUnit;
-    function AddUnit(AUnitName: string; out OutUnitInfo: TUnitInfo): TModalResult;
+    function AddUnit(AFileName: string; out OutUnitInfo: TUnitInfo): TModalResult;
     function GetLazProject: TProject;
     procedure SetLazProject(const AValue: TProject);
   protected
@@ -461,6 +461,7 @@ begin
   if not LazarusIDE.BeginCodeTools then
     IDEMessagesWindow.AddMsg(lisConvDelphiBeginCodeToolsFailed, '', -1);
   fCTLink:=Nil;                     // Will be created later.
+  fUsedUnitsTool:=Nil;
 end;
 
 destructor TConvertDelphiUnit.Destroy;
@@ -493,9 +494,9 @@ begin
     end;
   end;
   if Result=mrOk then
-    IDEMessagesWindow.AddMsg(lisConvDelphiReady, '', -1)
+    IDEMessagesWindow.AddMsg(lisConvDelphiConversionReady, '', -1)
   else
-    IDEMessagesWindow.AddMsg(lisConvDelphiAborted, '', -1)
+    IDEMessagesWindow.AddMsg(lisConvDelphiConversionAborted, '', -1)
 end;
 
 function TConvertDelphiUnit.GetDfmFileName: string;
@@ -531,6 +532,14 @@ begin
   Assert(fCTLink=Nil, 'fCTLink should be Nil in CopyAndLoadFile');
   fCTLink:=TCodeToolLink.Create(fPascalBuffer);
   fCTLink.Settings:=fSettings;
+  fCTLink.AskAboutError:=Assigned(fOwnerConverter);
+  // Create a toold for missing units.
+  fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
+  if Assigned(fOwnerConverter) then begin
+    fUsedUnitsTool.CheckPackDepEvent:=@fOwnerConverter.CheckPackageDependency;
+    fUsedUnitsTool.IsMainFile:=fOwnerConverter.MainName=fLazUnitFilename;
+    fUsedUnitsTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
+  end;
 end;
 
 function TConvertDelphiUnit.FixLfmFilename(ADfmFilename: string): TModalResult;
@@ -612,20 +621,7 @@ begin
   // Fix include file names.
   Result:=FixIncludeFiles;
   if Result<>mrOk then exit;
-  fCTLink.IsConsoleApp:=False;
-  fCTLink.IsMainFile:=False;
-  fCTLink.AskAboutError:=False;
-  if Assigned(fOwnerConverter) then begin
-    fCTLink.IsConsoleApp:= fOwnerConverter.fIsConsoleApp;
-    fCTLink.IsMainFile:=fOwnerConverter.MainName=fLazUnitFilename;
-    fCTLink.AskAboutError:=True;
-  end;
-  // Take care of missing units in uses sections.
-  fUsedUnitsTool:=Nil;
   if fSettings.UnitsReplaceMode<>rlDisabled then begin
-    fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
-    if Assigned(fOwnerConverter) then
-      fUsedUnitsTool.CheckPackDepEvent:=@fOwnerConverter.CheckPackageDependency;
     // Find and prepare the missing units. Don't replace yet.
     Result:=fUsedUnitsTool.Prepare;
     if Result<>mrOk then exit;
@@ -637,10 +633,11 @@ begin
   // Do the actual code conversion.
   ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
   try
+    if Assigned(fOwnerConverter) then
+      ConvTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
-    if Assigned(fUsedUnitsTool) then
-      ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
+    ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
     Result:=ConvTool.Convert;
   finally
     ConvTool.Free;
@@ -675,10 +672,10 @@ begin
     if Result<>mrOk then exit;
   end;
   // After other changes: add, remove, fix and comment out units in uses sections.
-  if Assigned(fUsedUnitsTool) then begin
-    Result:=fUsedUnitsTool.Convert;
-    if Result<>mrOk then exit;
-  end;
+  IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixingUsedUnits,
+                                  [fOrigUnitFilename]), '', -1);
+  Result:=fUsedUnitsTool.Convert;
+  if Result<>mrOk then exit;
   Result:=mrOk;
 end;
 
@@ -877,13 +874,13 @@ begin
 
   SetCompilerModeForDefineTempl(CustomDefines);
   try
-    Result:=ConvertMainSourceFile;     // Convert project's LPR file.
     if Result<>mrOK then exit;
     // get all options from the .dpr or .dpk file
     Result:=ExtractOptionsFromDelphiSource;
     if Result<>mrOK then exit;
     Result:=FindAllUnits;              // find all files and save the project.
     if Result<>mrOK then exit;
+    Result:=ConvertMainSourceFile;     // Convert project's LPR file.
     Result:=ConvertAllUnits;           // convert all files.
   finally
     UnsetCompilerModeForDefineTempl(CustomDefines);
@@ -1323,51 +1320,59 @@ begin
   Result:=fMainUnitConverter.ConvertFormFile;
 end;
 
-function TConvertDelphiProject.AddUnit(AUnitName: string;
+function TConvertDelphiProject.AddUnit(AFileName: string;
                                        out OutUnitInfo: TUnitInfo): TModalResult;
 // add new unit to project
 var
   CurUnitInfo: TUnitInfo;
-  RP: String;
+  RP, PureUnitName: String;
+  x: Integer;
 begin
   Result:=mrOK;
   OutUnitInfo:=nil;
-  if not FilenameIsAbsolute(AUnitName) then
-    AUnitName:=AppendPathDelim(LazProject.ProjectDirectory)+AUnitName;
-  AUnitName:=TrimFilename(AUnitName);
-  if not FileExistsUTF8(AUnitName) then
+  if not FilenameIsAbsolute(AFileName) then
+    AFileName:=AppendPathDelim(LazProject.ProjectDirectory)+AFileName;
+  AFileName:=TrimFilename(AFileName);
+  if not FileExistsUTF8(AFileName) then
     exit(mrNo);
   // Create relative search path for project settings.
-  RP:=ExtractFilePath(CreateRelativePath(AUnitName, LazProject.ProjectDirectory));
+  RP:=ExtractFilePath(CreateRelativePath(AFileName, LazProject.ProjectDirectory));
   if (RP<>'') and (fUnitSearchPaths.IndexOf(RP)<0) then
     fUnitSearchPaths.Add(RP);
-  // Check unitname and create UnitInfo.
-  CurUnitInfo:=LazProject.UnitInfoWithFilename(AUnitName);
-  if CurUnitInfo=nil then begin
-    if FilenameIsPascalUnit(AUnitName) then begin
-      CurUnitInfo:=LazProject.UnitWithUnitname(ExtractFileNameOnly(AUnitName));
-      if CurUnitInfo<>nil then begin
-        Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
-          Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
-                 [#13, CurUnitInfo.Filename, #13, AUnitName, #13]),
-          mtWarning, [mrYes, lisConvDelphiRemoveFirst, mrNo,
-            lisConvDelphiRemoveSecond,
-                     mrIgnore, lisConvDelphiKeepBoth, mrAbort], 0);
-        case Result of
-          mrYes: CurUnitInfo.IsPartOfProject:=false;
-          mrNo:  exit(mrNo);
-          mrIgnore: ;
-        else
-          exit(mrAbort);
+  PureUnitName:=ExtractFileNameOnly(AFileName);
+  if not fSettings.OmitProjUnits.Find(PureUnitName, x) then begin
+    // Check unitname and create UnitInfo.
+    CurUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
+    if CurUnitInfo=nil then begin
+      if FilenameIsPascalUnit(AFileName) then begin
+        CurUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
+        if CurUnitInfo<>nil then begin
+          Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
+            Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
+                   [#13, CurUnitInfo.Filename, #13, AFileName, #13]),
+            mtWarning, [mrYes, lisConvDelphiRemoveFirst, mrNo,
+              lisConvDelphiRemoveSecond,
+                       mrIgnore, lisConvDelphiKeepBoth, mrAbort], 0);
+          case Result of
+            mrYes: CurUnitInfo.IsPartOfProject:=false;
+            mrNo:  exit(mrNo);
+            mrIgnore: ;
+          else
+            exit(mrAbort);
+          end;
         end;
       end;
+      CurUnitInfo:=TUnitInfo.Create(nil);
+      CurUnitInfo.Filename:=AFileName;
+      LazProject.AddFile(CurUnitInfo,false);
     end;
-    CurUnitInfo:=TUnitInfo.Create(nil);
-    CurUnitInfo.Filename:=AUnitName;
-    LazProject.AddFile(CurUnitInfo,false);
+    CurUnitInfo.IsPartOfProject:=true;
+    OutUnitInfo:=CurUnitInfo;
+  end
+  else begin
+    fMainUnitConverter.fUsedUnitsTool.Remove(PureUnitName);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiProjOmittedUnit,[PureUnitName]), '', -1);
   end;
-  CurUnitInfo.IsPartOfProject:=true;
-  OutUnitInfo:=CurUnitInfo;
 end;
 
 function TConvertDelphiProject.FindAllUnits: TModalResult;

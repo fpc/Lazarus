@@ -54,8 +54,6 @@ type
     fCodeTool: TCodeTool;
     fCode: TCodeBuffer;
     fSrcCache: TSourceChangeCache;
-    fIsMainFile: Boolean;                 // Main project / package file.
-    fIsConsoleApp: Boolean;
     fAskAboutError: Boolean;
     fSettings: TConvertSettings;          // Conversion settings.
     procedure InitCodeTool;
@@ -68,8 +66,6 @@ type
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
     property SrcCache: TSourceChangeCache read fSrcCache;
-    property IsMainFile: Boolean read fIsMainFile write fIsMainFile;
-    property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property AskAboutError: Boolean read fAskAboutError write fAskAboutError;
     property Settings: TConvertSettings read fSettings write fSettings;
   end;
@@ -79,6 +75,7 @@ type
   TConvDelphiCodeTool = class
   private
     fCTLink: TCodeToolLink;
+    fIsConsoleApp: Boolean;
     fHasFormFile: boolean;
     fLowerCaseRes: boolean;
     fAddUnitEvent: TAddUnitEvent;
@@ -102,6 +99,7 @@ type
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
   public
+    property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
     property AddUnitEvent: TAddUnitEvent read fAddUnitEvent write fAddUnitEvent;
@@ -116,7 +114,6 @@ constructor TCodeToolLink.Create(ACode: TCodeBuffer);
 begin
   inherited Create;
   fCode:=ACode;
-  fIsConsoleApp:=False;
   fAskAboutError:=True;
   InitCodeTool;
 end;
@@ -170,7 +167,8 @@ constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
 begin
   inherited Create;
   fCTLink:=ACTLink;
-  fLowerCaseRes:=false;
+  fLowerCaseRes:=False;
+  fIsConsoleApp:=False;
 end;
 
 destructor TConvDelphiCodeTool.Destroy;
@@ -192,7 +190,7 @@ begin
       if not AddModeDelphiDirective then exit;
       if not RenameResourceDirectives then exit;
       if fCTLink.Settings.FuncReplaceMode=rsEnabled then
-        if not ReplaceFuncCalls(fCTLink.IsConsoleApp) then exit;
+        if not ReplaceFuncCalls(fIsConsoleApp) then exit;
     finally
       fCTLink.SrcCache.EndUpdate;
     end;

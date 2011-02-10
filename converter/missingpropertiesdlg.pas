@@ -415,7 +415,7 @@ begin
           if NewIdent<>'' then
             fHasMissingObjectTypes:=true;
         end
-        else if fSettings.UnknownPropsMode<>rlDisabled then begin
+        else if fSettings.PropReplaceMode<>rlDisabled then begin
           OldIdent:=CurError.Node.GetIdentifier;
           PropUpdater.AddUnique(OldIdent);           // Add each property only once.
           fHasMissingProperties:=true;
@@ -448,8 +448,8 @@ begin
     fPropReplaceGrid:=FixLFMDialog.PropReplaceGrid;
     fTypeReplaceGrid:=FixLFMDialog.TypeReplaceGrid;
     LoadLFM;
-    if ((fSettings.UnknownPropsMode=rlAutomatic) or not fHasMissingProperties)
-    and not fHasMissingObjectTypes then
+    if ((fSettings.PropReplaceMode=rlAutomatic) or not fHasMissingProperties)
+    and ((fSettings.TypeReplaceMode=raAutomatic) or not fHasMissingObjectTypes) then
       Result:=ReplaceAndRemoveAll  // Can return mrRetry.
     else begin
       // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.

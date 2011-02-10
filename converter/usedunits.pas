@@ -76,6 +76,7 @@ type
     procedure CommentAutomatic(ACommentedUnits: TStringList);
   public
     property MissingUnits: TStringList read fMissingUnits;
+    property UnitsToRemove: TStringList read fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename;
     property UnitsToFixCase: TStringToStringTree read fUnitsToFixCase;
   end;
@@ -110,6 +111,8 @@ type
   private
     fCTLink: TCodeToolLink;
     fFilename: string;
+    fIsMainFile: Boolean;                 // Main project / package file.
+    fIsConsoleApp: Boolean;
     fMainUsedUnits: TUsedUnits;
     fImplUsedUnits: TUsedUnits;
     fCheckPackageDependencyEvent: TCheckUnitEvent;
@@ -119,10 +122,13 @@ type
     destructor Destroy; override;
     function Prepare: TModalResult;
     function Convert: TModalResult;
+    function Remove(AUnit: string): TModalResult;
     procedure MoveMissingToComment(AAllCommentedUnits: TStrings);
     procedure AddUnitIfNeeded(AUnitName: string);
     function AddThreadSupport: TModalResult;
   public
+    property IsMainFile: Boolean read fIsMainFile write fIsMainFile;
+    property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
     property ImplUsedUnits: TUsedUnits read fImplUsedUnits;
     property MissingUnitCount: integer read GetMissingUnitCount;
@@ -278,7 +284,7 @@ begin
     UnitN:=fMissingUnits[i];
     if AUnitUpdater.FindReplacement(UnitN, s) then begin
       // Don't replace Windows unit with LCL units in a console application.
-      if (LowerCase(UnitN)='windows') and fCTLink.IsConsoleApp then
+      if (LowerCase(UnitN)='windows') and fOwnerTool.IsConsoleApp then
         s:='';
       if Assigned(AMapToEdit) then
         AMapToEdit[UnitN]:=s                      // Add for interactive editing.
@@ -416,7 +422,7 @@ begin
       exit;
     if not fCTLink.SrcCache.Apply then exit;
   end;
-  //fUnitsToRemove.Clear;
+  fUnitsToRemove.Clear;
   Result:=true;
 end;
 
@@ -473,6 +479,8 @@ begin
   inherited Create;
   fCTLink:=ACTLink;
   fFilename:=AFilename;
+  fIsMainFile:=False;
+  fIsConsoleApp:=False;
   fCTLink.CodeTool.BuildTree(False);
   // These will read uses sections while creating.
   fMainUsedUnits:=TMainUsedUnits.Create(ACTLink, Self);
@@ -499,7 +507,7 @@ var
 begin
   Result:=mrOK;
   // Add unit 'Interfaces' if project uses 'Forms' and doesn't have 'Interfaces' yet.
-  if fCTLink.IsMainFile then begin
+  if fIsMainFile then begin
     if ( fMainUsedUnits.fExistingUnits.Find('forms', i)
       or fImplUsedUnits.fExistingUnits.Find('forms', i) )
     and (not fMainUsedUnits.fExistingUnits.Find('interfaces', i) )
@@ -567,8 +575,8 @@ begin
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
     end;
-    if Settings.MultiPlatform and not Settings.SupportDelphi then begin
-      // One way conversion -> remove and rename units.
+    if fIsMainFile or (Settings.MultiPlatform and not Settings.SupportDelphi) then begin
+      // One way conversion (or main file) -> remove and rename units.
       if not fMainUsedUnits.RemoveUnits then exit;    // Remove
       if not fImplUsedUnits.RemoveUnits then exit;
       // Rename
@@ -580,12 +588,12 @@ begin
       if not fMainUsedUnits.AddDelphiAndLCLSections then exit;
       if not fImplUsedUnits.AddDelphiAndLCLSections then exit;
     end
-    else begin // Lazarus only -> comment out units if needed.
+    else begin // Lazarus only multi- or single-platform -> comment out units if needed.
       if not CodeTool.CommentUnitsInUsesSections(fMainUsedUnits.fUnitsToComment,
                                                  SrcCache) then exit;
       if not CodeTool.CommentUnitsInUsesSections(fImplUsedUnits.fUnitsToComment,
                                                  SrcCache) then exit;
-      // Add more units for only LCL.
+      // Add more units meant for only LCL.
       with fMainUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
           if not CodeTool.AddUnitToSpecificUsesSection(
@@ -599,6 +607,21 @@ begin
     end;
   end;
   Result:=mrOK;
+end;
+
+function TUsedUnitsTool.Remove(AUnit: string): TModalResult;
+var
+  x: Integer;
+begin
+  Result:=mrIgnore;
+  if fMainUsedUnits.fExistingUnits.Find(AUnit, x) then begin
+    fMainUsedUnits.UnitsToRemove.Add(AUnit);
+    Result:=mrOK;
+  end
+  else if fImplUsedUnits.fExistingUnits.Find(AUnit, x) then begin
+    fImplUsedUnits.UnitsToRemove.Add(AUnit);
+    Result:=mrOK;
+  end;
 end;
 
 procedure TUsedUnitsTool.MoveMissingToComment(AAllCommentedUnits: TStrings);
