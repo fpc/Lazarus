@@ -96,6 +96,8 @@ procedure Register;
 
 implementation
 
+{$R *.lfm}
+
 procedure ShowPPUList(Sender: TObject);
 var
   Dlg: TPPUListDialog;
@@ -466,9 +468,6 @@ begin
   else
     Result:=TPPUListItem(Node.Data);
 end;
-
-initialization
-  {$I ppulistdlg.lrs}
 
 end.
 
