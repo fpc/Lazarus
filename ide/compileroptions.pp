@@ -1768,17 +1768,16 @@ begin
     // fully specified target filename
   end else if Result<>'' then begin
     //debugln(['TBaseCompilerOptions.CreateTargetFilename ParsedOpts.OutputDirectoryOverride=',ParsedOpts.OutputDirectoryOverride]);
-    if (UnitOutputDirectory='') and (ParsedOpts.OutputDirectoryOverride='') then
+    if ParsedOpts.OutputDirectoryOverride<>'' then
     begin
-      // the unit is put into the same directory as the source
-      // TargetFilename is relative to BaseDirectory
-      Result:=CreateAbsolutePath(Result,BaseDirectory);
-    end else begin
-      // the unit is put into the output directory
+      // the program is put into the output directory
       UnitOutDir:=GetUnitOutPath(false);
       if UnitOutDir='' then
         UnitOutDir:=BaseDirectory;
       Result:=AppendPathDelim(UnitOutDir)+ExtractFileName(Result);
+    end else begin
+      // the program is put relative to the base directory
+      Result:=CreateAbsolutePath(Result,BaseDirectory);
     end;
   end else begin
     // no target given => put into unit output directory
@@ -2758,9 +2757,7 @@ begin
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
     NewTargetFilename := CreateTargetFilename(CurMainSrcFile);
-    if (NewTargetFilename<>'') and
-       ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0) or
-       (CurOutputDir<>'')) then
+    if (NewTargetFilename<>'') or (CurOutputDir<>'') then
     begin
       if not (ccloAbsolutePaths in Flags) then
         NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
@@ -2867,9 +2864,9 @@ begin
   if FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if (UnitOutputDirectory='')
-  and (ParsedOpts.OutputDirectoryOverride='') then begin
-    // the unit is put into the same directory as the source
-    // target file name is relative to BaseDirectory
+  and (ParsedOpts.OutputDirectoryOverride='')
+  and (ExtractFilePath(TargetFilename)='') then begin
+    // the unit is put into the same directory as its source
     Result:=CreateAbsolutePath(Result,BaseDirectory);
   end else begin
     // the unit is put into the output directory
