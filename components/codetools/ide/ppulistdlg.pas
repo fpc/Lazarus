@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, math, LCLProc, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree, ExtCtrls,
+  ComCtrls,
   // IDEIntf
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
@@ -66,10 +67,19 @@ type
   TPPUListDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
     ScopeLabel: TLabel;
+    Splitter1: TSplitter;
+    UnitUsedByStringGrid: TStringGrid;
+    UnitUsesStringGrid: TStringGrid;
+    UnitUsesTabSheet: TTabSheet;
+    UnitUsedByTabSheet: TTabSheet;
+    UnitGroupBox: TGroupBox;
+    UnitPageControl: TPageControl;
     UnitsStringGrid: TStringGrid;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
+      var {%H-}CanSelect: Boolean);
   private
     FProject: TLazProject;
     FIdleConnected: boolean;
@@ -86,6 +96,7 @@ type
     function BytesToStr(b: int64): string;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
     function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    procedure FillUnitsInfo(AnUnitName: string);
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -165,6 +176,9 @@ begin
   IdleConnected:=false;
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
+  UnitUsesTabSheet.Caption:=crsUses;
+  UnitUsedByTabSheet.Caption:=crsUsedBy;
+  UnitPageControl.PageIndex:=0;
 
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -174,6 +188,18 @@ begin
   FreeAndNil(FSearchingItems);
   FItems.FreeAndClear;
   FreeAndNil(FItems);
+end;
+
+procedure TPPUListDialog.UnitsStringGridSelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+var
+  AnUnitName: String;
+begin
+  if (aRow<2) or (aRow>=UnitsStringGrid.RowCount) then
+    AnUnitName:=''
+  else
+    AnUnitName:=UnitsStringGrid.Cells[0,aRow];
+  FillUnitsInfo(AnUnitName);
 end;
 
 procedure TPPUListDialog.FormClose(Sender: TObject;
@@ -380,6 +406,43 @@ begin
   else if Size1<Size2 then exit(1);
   // compare unit name
   Result:=-SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
+end;
+
+procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
+var
+  Item: TPPUListItem;
+  i: Integer;
+  UsesUnitName: string;
+  UsedByUnitName: string;
+begin
+  Item:=FindUnit(AnUnitName);
+  if Item=nil then begin
+    UnitGroupBox.Caption:='No unit selected';
+    UnitGroupBox.Enabled:=false;
+  end else begin
+    UnitGroupBox.Caption:='Unit: '+AnUnitName;
+    UnitGroupBox.Enabled:=true;
+    // uses
+    if Item.UsesUnits<>nil then begin
+      UnitUsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
+      for i:=0 to Item.UsesUnits.Count-1 do begin
+        UsesUnitName:=Item.UsesUnits[i];
+        UnitUsesStringGrid.Cells[0,i+1]:=UsesUnitName;
+      end;
+    end else begin
+      UnitUsesStringGrid.RowCount:=1;
+    end;
+    // used by
+    if Item.UsedByUnits<>nil then begin
+      UnitUsedByStringGrid.RowCount:=1+Item.UsedByUnits.Count;
+      for i:=0 to Item.UsedByUnits.Count-1 do begin
+        UsedByUnitName:=Item.UsedByUnits[i];
+        UnitUsedByStringGrid.Cells[0,i+1]:=UsedByUnitName;
+      end;
+    end else begin
+      UnitUsedByStringGrid.RowCount:=1;
+    end;
+  end;
 end;
 
 procedure TPPUListDialog.OnIdle(Sender: TObject; var Done: Boolean);

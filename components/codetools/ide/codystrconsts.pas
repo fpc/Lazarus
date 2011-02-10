@@ -33,6 +33,8 @@ resourcestring
   crsNoProject = 'No project';
   crsPleaseOpenAProjectFirst = 'Please open a project first.';
   crsPPUFilesOfProject = 'PPU files of project "%s"';
+  crsUses = 'Uses';
+  crsUsedBy = 'Used by';
   crsProjectHasNoMainSourceFile = 'Project has no main source file.';
   crsMainSourceFile = 'Main source file: %s';
   crsSizeOfPpuFile = 'Size of .ppu file';

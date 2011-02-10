@@ -41,3 +41,11 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr ""
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr ""
+
