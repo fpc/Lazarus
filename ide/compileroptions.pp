@@ -2757,7 +2757,7 @@ begin
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
     NewTargetFilename := CreateTargetFilename(CurMainSrcFile);
-    if (NewTargetFilename<>'') or (CurOutputDir<>'') then
+    if (NewTargetFilename<>'') then
     begin
       if not (ccloAbsolutePaths in Flags) then
         NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
@@ -2774,7 +2774,12 @@ begin
       if NewTargetDirectory <> '' then
         switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
       NewTargetFileName := ExtractFileName(NewTargetFilename);
-      switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
+      if (NewTargetFilename<>'')
+      and (NewTargetFilename<>ChangeFileExt(ExtractFileName(CurMainSrcFile),GetTargetFileExt))
+      then begin
+        // custom target => pass -o
+        switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
+      end;
     end;
   end;
 
