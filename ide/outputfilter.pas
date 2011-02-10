@@ -889,7 +889,7 @@ var i, j, FilenameEndPos: integer;
   Size of initialized data: 519168 bytes
   Size of uninitialized data: 83968 bytes
   Stack space reserved: 262144 bytes
-  Stack space commited: 4096 bytes
+  Stack space committed: 4096 bytes
   }
   function CheckForExecutableInfo(p: integer): boolean;
   var
@@ -901,7 +901,7 @@ var i, j, FilenameEndPos: integer;
             CheckForString(s,p,'Size of initialized data: ') or
             CheckForString(s,p,'Size of uninitialized data: ') or
             CheckForString(s,p,'Stack space reserved: ') or
-            CheckForString(s,p,'Stack space commited: ') or // message contains typo
+            CheckForString(s,p,'Stack space committed: ') or // message contains typo
             CheckForString(s,p,'Stack space committed: ')) then exit;
     if not CheckForNumber(s,p) then exit;
     if not CheckForString(s,p,' bytes') then exit;
