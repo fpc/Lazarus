@@ -23,7 +23,7 @@
           Marc Weustink
 
   Abstract:
-    Missing and usefull windows api are defined and emulated here.
+    Missing and useful windows api are defined and emulated here.
     Not all functionalities are present,but only those neccessary for lcl to function.
 }
 unit WinCEExtra;

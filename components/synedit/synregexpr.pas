@@ -552,7 +552,7 @@ type
 
     property CompilerErrorPos : integer read GetCompilerErrorPos;
     // Returns pos in r.e. there compiler stopped.
-    // Usefull for error diagnostics
+    // Useful for error diagnostics
 
     property SpaceChars : RegExprString read fSpaceChars write fSpaceChars; //###0.927
     // Contains chars, treated as /s (initially filled with RegExprSpaceChars
@@ -578,7 +578,7 @@ type
     // Create set it to RegExprInvertCaseFunction (InvertCaseFunction by default)
 
     procedure Compile; //###0.941
-    // [Re]compile r.e. Usefull for example for GUI r.e. editors (to check
+    // [Re]compile r.e. Useful for example for GUI r.e. editors (to check
     // all properties validity).
 
     {$IFDEF RegExpPCodeDump}
@@ -620,7 +620,7 @@ function ReplaceRegExpr (const ARegExpr, AInputStr, AReplaceStr : RegExprString;
 function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
 // Replace all metachars with its safe representation,
 // for example 'abc$cd.(' converts into 'abc\$cd\.\('
-// This function usefull for r.e. autogeneration from
+// This function useful for r.e. autogeneration from
 // user input
 
 function RegExprSubExpressions (const ARegExpr : string;
@@ -635,7 +635,7 @@ function RegExprSubExpressions (const ARegExpr : string;
 //   if exist!
 // AExtendedSyntax - must be True if modifier /m will be On while
 // using the r.e.
-// Usefull for GUI editors of r.e. etc (You can find example of using
+// Useful for GUI editors of r.e. etc (You can find example of using
 // in TestRExp.dpr project)
 // Returns
 //  0      Success. No unbalanced brackets was found;
@@ -833,7 +833,7 @@ function RegExprSubExpressions (const ARegExpr : string;
   Result := 0; // no unbalanced brackets found at this very moment
 
   ASubExprs.Clear; // I don't think that adding to non empty list
-  // can be usefull, so I simplified algorithm to work only with empty list
+  // can be useful, so I simplified algorithm to work only with empty list
 
   Len := length (ARegExpr); // some optimization tricks
 

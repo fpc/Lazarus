@@ -140,7 +140,7 @@ end;
 
 function IsAWholeLine(ALine: String): Boolean;
 begin
-  // This function is usefull for when the text is put back
+  // This function is useful for when the text is put back
   // in the synedit, things like this don't happen:
   // begin
   //   if CallSomeFunction > 0
