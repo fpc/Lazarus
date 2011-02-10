@@ -1,11 +1,43 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr ""
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
+msgstr ""
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr ""
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr ""
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr ""
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr ""
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr ""
+
+#: codystrconsts.crstotal
+msgid "Total"
 msgstr ""
 

@@ -9,6 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr ""
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr ""
+
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Проект отсутствует"
@@ -16,4 +24,28 @@ msgstr "Проект отсутствует"
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
 msgstr "Сначала необходимо открыть проект."
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr ""
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr ""
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr ""
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr ""
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr ""
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr ""
 

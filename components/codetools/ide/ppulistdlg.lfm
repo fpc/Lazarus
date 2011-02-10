@@ -41,21 +41,26 @@ object PPUListDialog: TPPUListDialog
     ColCount = 3
     Columns = <    
       item
+        Title.Caption = 'Unit'
+        Width = 173
+      end    
+      item
         Title.Caption = 'Size of .ppu file'
-        Width = 227
+        Width = 173
       end    
       item
         Title.Caption = 'Size of .o file'
-        Width = 228
+        Width = 173
       end>
     DefaultColWidth = 150
+    FixedCols = 0
     FixedRows = 2
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goColSpanning, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 1
     ColWidths = (
-      64
-      227
-      228
+      173
+      173
+      173
     )
   end
   object ScopeLabel: TLabel

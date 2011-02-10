@@ -32,6 +32,14 @@ interface
 resourcestring
   crsNoProject = 'No project';
   crsPleaseOpenAProjectFirst = 'Please open a project first.';
+  crsPPUFilesOfProject = 'PPU files of project "%s"';
+  crsProjectHasNoMainSourceFile = 'Project has no main source file.';
+  crsMainSourceFile = 'Main source file: %s';
+  crsSizeOfPpuFile = 'Size of .ppu file';
+  crsSizeOfOFile = 'Size of .o file';
+  crsTotal = 'Total';
+  crsSearching = 'searching ...';
+  crsMissing = 'missing ...';
 
 implementation
 

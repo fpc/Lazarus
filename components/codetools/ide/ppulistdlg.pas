@@ -30,8 +30,8 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  Classes, SysUtils, math, LCLProc, FileUtil, LResources, Forms, Controls,
+  Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
   // IDEIntf
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
@@ -71,11 +71,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FAProject: TLazProject;
+    FProject: TLazProject;
     FIdleConnected: boolean;
     FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
-    procedure SetAProject(const AValue: TLazProject);
+    procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
@@ -83,9 +83,11 @@ type
     procedure UpdateAll;
     procedure UpdateUnitsGrid;
     function DoubleAsPercentage(const d: double): string;
+    function BytesToStr(b: int64): string;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
+    function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
   public
-    property AProject: TLazProject read FAProject write SetAProject;
+    property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
@@ -164,7 +166,6 @@ begin
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
 
-  Caption:='Used ppu files of project';
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
@@ -181,10 +182,10 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TPPUListDialog.SetAProject(const AValue: TLazProject);
+procedure TPPUListDialog.SetProject(const AValue: TLazProject);
 begin
-  if FAProject=AValue then exit;
-  FAProject:=AValue;
+  if FProject=AValue then exit;
+  FProject:=AValue;
   UpdateAll;
 end;
 
@@ -215,14 +216,14 @@ begin
     s:=AProject.Title
   else
     s:=ExtractFileNameOnly(AProject.ProjectInfoFile);
-  Caption:='PPU files of project "'+dbgstr(s)+'"';
+  Caption:=Format(crsPPUFilesOfProject, [dbgstr(s)]);
 
   // ScopeLabel
   MainUnit:=AProject.MainFile;
   if MainUnit=nil then begin
-    ScopeLabel.Caption:='Project has no main source file.';
+    ScopeLabel.Caption:=crsProjectHasNoMainSourceFile;
   end else begin
-    ScopeLabel.Caption:='Main source file: '+MainUnit.Filename;
+    ScopeLabel.Caption:=Format(crsMainSourceFile, [MainUnit.Filename]);
     Item:=TPPUListItem.Create;
     Item.TheUnitName:=ExtractFileName(MainUnit.Filename);
     Item.SrcFile:=MainUnit.Filename;
@@ -248,30 +249,28 @@ procedure TPPUListDialog.UpdateUnitsGrid;
 
   function SizeToStr(TheBytes: int64; ThePercent: double): string;
   begin
-    Result:=IntToStr(TheBytes)+' bytes / '+DoubleAsPercentage(ThePercent);
+    Result:=BytesToStr(TheBytes)+' / '+DoubleAsPercentage(ThePercent);
   end;
 
 var
   Grid: TStringGrid;
-  SortedItems: TFPList;
   Node: TAvgLvlTreeNode;
   Item: TPPUListItem;
-  i: Integer;
   Row: Integer;
   s: String;
   TotalPPUBytes, TotalOBytes: int64;
+  SortedItems: TAvgLvlTree;
 begin
   Grid:=UnitsStringGrid;
   Grid.BeginUpdate;
-  Grid.RowCount:=2+FItems.Count;
 
   // header
   Grid.Cells[0,0]:='Unit';
-  Grid.Cells[1,0]:='Size of .ppu file';
-  Grid.Cells[2,0]:='Size of .o file';
+  Grid.Cells[1, 0]:=crsSizeOfPpuFile;
+  Grid.Cells[2, 0]:=crsSizeOfOFile;
 
 
-  SortedItems:=TFPList.Create;
+  SortedItems:=TAvgLvlTree.CreateObjectCompare(@CompareUnits);
   try
     Node:=FItems.FindLowest;
     TotalPPUBytes:=0;
@@ -286,41 +285,42 @@ begin
       Node:=FItems.FindSuccessor(Node);
     end;
 
+    Grid.RowCount:=2+SortedItems.Count;
+
     // total
-    Grid.Cells[0,1]:='Total';
+    Grid.Cells[0,1]:=crsTotal;
     Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
     Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
 
-    // ToDo: sort
-
+    // fill grid
     Row:=2;
-    for i:=0 to SortedItems.Count-1 do begin
-      Item:=TPPUListItem(SortedItems[i]);
+    Node:=SortedItems.FindLowest;
+    while Node<>nil do begin
+      Item:=TPPUListItem(Node.Data);
       Grid.Cells[0,Row]:=Item.TheUnitName;
 
       // .ppu size
       s:='';
       if Item.PPUFile='' then
-        s:='searching ...'
+        s:=crsSearching
       else if Item.PPUFile=PPUFileNotFound then
-        s:='missing ...'
+        s:=crsMissing
       else
-        s:=IntToStr(Item.PPUFileSize)+' bytes / '
-          +DoubleAsPercentage(double(Item.PPUFileSize)/TotalPPUBytes);
+        s:=SizeToStr(Item.PPUFileSize,double(Item.PPUFileSize)/TotalPPUBytes);
       Grid.Cells[1,Row]:=s;
 
       // .o size
       s:='';
       if Item.OFile='' then
-        s:='searching ...'
+        s:=crsSearching
       else if Item.OFile=PPUFileNotFound then
-        s:='missing ...'
+        s:=crsMissing
       else
-        s:=IntToStr(Item.OFileSize)+' bytes / '
-          +DoubleAsPercentage(double(Item.OFileSize)/TotalOBytes);
+        s:=SizeToStr(Item.OFileSize,double(Item.OFileSize)/TotalOBytes);
       Grid.Cells[2,Row]:=s;
 
       inc(Row);
+      Node:=SortedItems.FindSuccessor(Node);
     end;
 
   finally
@@ -338,6 +338,24 @@ begin
           +DefaultFormatSettings.ThousandSeparator+RightStr(Result,2)+'%';
 end;
 
+function TPPUListDialog.BytesToStr(b: int64): string;
+begin
+  Result:='';
+  if b>80000 then begin
+    Result:='k';
+    b:=b div 1000;
+  end;
+  if b>80000 then begin
+    Result:='m';
+    b:=b div 1000;
+  end;
+  if b>80000 then begin
+    Result:='g';
+    b:=b div 1000;
+  end;
+  Result:=IntToStr(b)+' '+Result+'bytes';
+end;
+
 function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
   ): integer;
 begin
@@ -345,6 +363,23 @@ begin
   Result:=List.Count-1;
   while (Result>=0) and (SysUtils.CompareText(AnUnitName,List[Result])<>0) do
     dec(Result);
+end;
+
+function TPPUListDialog.CompareUnits(Tree: TAvgLvlTree; Data1, Data2: Pointer
+  ): integer;
+var
+  Item1: TPPUListItem absolute Data1;
+  Item2: TPPUListItem absolute Data2;
+  Size1: Int64;
+  Size2: Int64;
+begin
+  // compare size of .o file
+  Size1:=Max(0,Item1.OFileSize);
+  Size2:=Max(0,Item2.OFileSize);
+  if Size1>Size2 then exit(-1)
+  else if Size1<Size2 then exit(1);
+  // compare unit name
+  Result:=-SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
 end;
 
 procedure TPPUListDialog.OnIdle(Sender: TObject; var Done: Boolean);
