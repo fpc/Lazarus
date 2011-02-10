@@ -232,6 +232,7 @@ var
 begin
   Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
   try
+    Options.BaseDirectory:=FCompilerOpts.BaseDirectory;
     DoSaveSettings(Options);
     Options.TargetFilename:=GetTargetFilename;
     ShowCompilerOptionsDialog(FDialog, Options);
@@ -246,6 +247,7 @@ var
 begin
   Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
   try
+    Options.BaseDirectory:=FCompilerOpts.BaseDirectory;
     DoSaveSettings(Options);
     if Assigned(TestCompilerOptions) then
     begin

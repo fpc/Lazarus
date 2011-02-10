@@ -1767,6 +1767,7 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
+    debugln(['TBaseCompilerOptions.CreateTargetFilename ParsedOpts.OutputDirectoryOverride=',ParsedOpts.OutputDirectoryOverride]);
     if (UnitOutputDirectory='') and (ParsedOpts.OutputDirectoryOverride='') then
     begin
       // the unit is put into the same directory as the source
@@ -1786,7 +1787,7 @@ begin
     if UnitOutDir='' then
       UnitOutDir:=BaseDirectory;
     OutFilename:=ExtractFileNameOnly(MainSourceFileName);
-    //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
+    //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename,' UnitOutDir=',UnitOutDir);
     Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
   Result:=TrimFilename(Result);
@@ -1794,6 +1795,7 @@ begin
     AppendDefaultExt;
     PrependDefaultType;
   end;
+  debugln(['TBaseCompilerOptions.CreateTargetFilename ',Result]);
 end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
@@ -1925,7 +1927,7 @@ begin
               Result:=ParsedOpts.GetParsedPIValue(pcosOutputDir);
   end;
   if (not RelativeToBaseDir) then
-    CreateAbsoluteSearchPath(Result,BaseDirectory);
+    CreateAbsolutePath(Result,BaseDirectory);
 end;
 
 function TBaseCompilerOptions.GetObjectPath(RelativeToBaseDir: boolean;
@@ -3619,7 +3621,7 @@ begin
   //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
   // improve
   if Option=pcosBaseDir then
-    // base directory (append path)
+    // base directory
     s:=AppendPathDelim(TrimFilename(s))
   else if Option in ParsedCompilerFilenames then begin
     // make filename absolute
