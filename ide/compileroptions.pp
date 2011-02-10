@@ -546,6 +546,7 @@ type
     function GetLibraryPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
                             WithBaseDir: boolean = true): string;
+    function GetUnitOutputDirectory(RelativeToBaseDir: boolean): string; override;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetObjectPath(RelativeToBaseDir: boolean;
@@ -1913,6 +1914,12 @@ function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;
 begin
   Result:=GetPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir,Parsed,
                   WithBaseDir);
+end;
+
+function TBaseCompilerOptions.GetUnitOutputDirectory(RelativeToBaseDir: boolean
+  ): string;
+begin
+  Result:=GetUnitOutPath(RelativeToBaseDir);
 end;
 
 function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;

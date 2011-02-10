@@ -71,16 +71,20 @@ type
     ctdusInFilenameNormal, // unit 'in' filename -> filename
     ctdusInFilenameCaseInsensitive, // unit 'in' filename case insensitive -> filename
     ctdusUnitFileNormal, // AUnitName.ext (case depends on OS) -> filename
-    ctdusUnitFileCaseInsensitive // AUnitName.ext case insensitive -> filename
+    ctdusUnitFileCaseInsensitive, // AUnitName.ext case insensitive -> filename
+    ctdusPPUNormal, // UnitName (case depends on OS) => filename
+    ctdusPPUCaseInsensitive // UnitName case insensitive => filename
     );
 
 const
   ctdusCaseNormal      = [ctdusUnitNormal,
                           ctdusInFilenameNormal,
-                          ctdusUnitFileNormal];
+                          ctdusUnitFileNormal,
+                          ctdusPPUNormal];
   ctdusCaseInsensitive = [ctdusUnitCaseInsensitive,
                           ctdusInFilenameCaseInsensitive,
-                          ctdusUnitFileCaseInsensitive];
+                          ctdusUnitFileCaseInsensitive,
+                          ctdusPPUCaseInsensitive];
 
 type
 
@@ -155,7 +159,7 @@ type
                                   SearchPath: string; AnyCase: boolean): string;
     function FindUnitSourceInCompletePath(var AUnitName, InFilename: string;
                                           AnyCase: boolean): string;
-    function FindCompiledUnitInCompletePath(var ShortFilename: string;
+    function FindCompiledUnitInCompletePath(const AnUnitname: string;
                                             AnyCase: boolean): string;
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
     procedure WriteListing;
@@ -215,7 +219,7 @@ type
                                           var AUnitName, InFilename: string;
                                           AnyCase: boolean = false): string;
     function FindCompiledUnitInCompletePath(const Directory: string;
-                                            var ShortFilename: string;
+                                            var AnUnitname: string;
                                             AnyCase: boolean = false): string;
     property FileTimeStamp: cardinal read FFileTimeStamp;
     property ConfigTimeStamp: cardinal read FConfigTimeStamp;
@@ -596,17 +600,15 @@ procedure TCTDirectoryCache.AddToCache(const UnitSrc: TCTDirectoryUnitSources;
   const Search, Filename: string);
 var
   Files: TStringToStringTree;
+  CaseSensitive: Boolean;
 begin
   Files:=FUnitSources[UnitSrc].Files;
   if Files=nil then begin
-    case UnitSrc of
-    ctdusUnitNormal:               Files:=TStringToStringTree.Create(FilenamesCaseSensitive);
-    ctdusUnitCaseInsensitive:      Files:=TStringToStringTree.Create(false);
-    ctdusInFilenameNormal:         Files:=TFilenameToStringTree.Create(false);
-    ctdusInFilenameCaseInsensitive:Files:=TFilenameToStringTree.Create(true);
-    ctdusUnitFileNormal:           Files:=TFilenameToStringTree.Create(false);
-    ctdusUnitFileCaseInsensitive:  Files:=TFilenameToStringTree.Create(true);
-    end;
+    if UnitSrc in [ctdusUnitNormal,ctdusPPUNormal] then
+      CaseSensitive:=FilenamesCaseSensitive
+    else
+      CaseSensitive:=UnitSrc in ctdusCaseNormal;
+    Files:=TFilenameToStringTree.Create(CaseSensitive);
     FUnitSources[UnitSrc].Files:=Files;
   end;
   Files[Search]:=Filename;
@@ -1063,20 +1065,19 @@ begin
 end;
 
 function TCTDirectoryCache.FindCompiledUnitInCompletePath(
-  var ShortFilename: string; AnyCase: boolean): string;
+  const AnUnitname: string; AnyCase: boolean): string;
 var
   UnitPath: string;
-  NewShortFilename: String;
   UnitSrc: TCTDirectoryUnitSources;
   CurDir: String;
   SearchCase: TCTSearchFileCase;
 begin
   Result:='';
   if AnyCase then
-    UnitSrc:=ctdusUnitFileCaseInsensitive
+    UnitSrc:=ctdusPPUCaseInsensitive
   else
-    UnitSrc:=ctdusUnitFileNormal;
-  if GetUnitSourceCacheValue(UnitSrc,ShortFilename,Result) then begin
+    UnitSrc:=ctdusPPUNormal;
+  if GetUnitSourceCacheValue(UnitSrc,AnUnitname,Result) then begin
     // found in cache
     if Result<>'' then begin
       // unit found
@@ -1095,19 +1096,13 @@ begin
 
     // search in unit path
     UnitPath:=Strings[ctdcsUnitPath];
-    Result:=SearchPascalFileInPath(ShortFilename,CurDir,UnitPath,';',SearchCase);
+    Result:=SearchPascalFileInPath(AnUnitname+'.ppu',CurDir,UnitPath,';',SearchCase);
     if Result='' then begin
       // search in unit set
-      Result:=FindCompiledUnitInUnitSet(ShortFilename);
-    end;
-    if Result<>'' then begin
-      NewShortFilename:=ExtractFileName(Result);
-      if (NewShortFilename<>lowercase(NewShortFilename))
-      and (ShortFilename<>NewShortFilename) then
-        ShortFilename:=NewShortFilename;
+      Result:=FindCompiledUnitInUnitSet(AnUnitname);
     end;
 
-    AddToCache(UnitSrc,ShortFilename,Result);
+    AddToCache(UnitSrc,AnUnitname,Result);
   end;
 end;
 
@@ -1382,13 +1377,13 @@ begin
 end;
 
 function TCTDirectoryCachePool.FindCompiledUnitInCompletePath(
-  const Directory: string; var ShortFilename: string; AnyCase: boolean
+  const Directory: string; var AnUnitname: string; AnyCase: boolean
     ): string;
 var
   Cache: TCTDirectoryCache;
 begin
   Cache:=GetCache(Directory,true,false);
-  Result:=Cache.FindCompiledUnitInCompletePath(ShortFilename,AnyCase);
+  Result:=Cache.FindCompiledUnitInCompletePath(AnUnitname,AnyCase);
 end;
 
 { TCTDirectoryListing }

@@ -43,7 +43,8 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts, TypInfo,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
-  FindDeclarationCache, DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree,
+  FindDeclarationCache, DirectoryCacher, AVL_Tree,
+  PPUCodeTools, LFMTrees, DirectivesTree,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
   CodeTemplatesTool, ExtractProcTool;
@@ -167,6 +168,7 @@ type
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
     SourceCache: TCodeCache; // cache for source (units, include files, ...)
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
+    PPUCache: TPPUTools;
     GlobalValues: TExpressionEvaluator;
     DirectoryCachePool: TCTDirectoryCachePool;
     FPCDefinesCache: TFPCDefinesCache;
@@ -849,6 +851,7 @@ begin
   DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FPCDefinesCache:=TFPCDefinesCache.Create(nil);
+  PPUCache:=TPPUTools.Create(SourceCache);
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
@@ -884,6 +887,7 @@ begin
   FreeAndNil(FPascalTools);
   FDirectivesTools.FreeAndClear;
   FreeAndNil(FDirectivesTools);
+  FreeAndNil(PPUCache);
   FreeAndNil(FResourceTool);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] C');

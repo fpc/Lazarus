@@ -35,7 +35,8 @@ uses
   // IDEIntf
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
-  BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache;
+  BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
+  PPUCodeTools;
 
 const
   PPUFileNotFound = ' ';
@@ -358,10 +359,16 @@ var
   Code: TCodeBuffer;
   MainUsesSection: TStrings;
   ImplementationUsesSection: TStrings;
-  ProjectDir: String;
+  BaseDir: String;
+  Scanned: Boolean;
+  PPUTool: TPPUTool;
+  OutputDir: String;
 begin
   StartTime:=Now;
-  ProjectDir:=ExtractFilePath(AProject.ProjectInfoFile);
+
+  BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+  OutputDir:=AProject.LazCompilerOptions.GetUnitOutputDirectory(false);
+
   while FSearchingItems.Count>0 do begin
     Node:=FSearchingItems.Root;
     Item:=TPPUListItem(Node.Data);
@@ -370,17 +377,22 @@ begin
 
     if Item.SrcFile='' then begin
       // search source
-      debugln(['TPPUListDialog.OnIdle search source of ',AnUnitName]);
+      //debugln(['TPPUListDialog.OnIdle search source of ',AnUnitName]);
       InFilename:='';
       Item.SrcFile:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-        '',AnUnitName,InFilename);
+        BaseDir,AnUnitName,InFilename);
     end;
 
     if Item.PPUFile='' then begin
       // search ppu file
-      debugln(['TPPUListDialog.OnIdle search ppu of ',AnUnitName]);
+      //debugln(['TPPUListDialog.OnIdle search ppu of ',AnUnitName]);
       Item.PPUFile:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
-                                                         ProjectDir,AnUnitName);
+                                                         BaseDir,AnUnitName);
+      if (Item.PPUFile='') and (OutputDir<>'') then begin
+        // fallback: search in output directory
+        Item.PPUFile:=SearchPascalFileInDir(AnUnitName+'.ppu',OutputDir,
+                                            ctsfcLoUpCase);
+      end;
       Item.OFile:=ChangeFileExt(Item.PPUFile,'.o');
       if not FileExistsCached(Item.PPUFile) then
         Item.PPUFile:=PPUFileNotFound
@@ -394,14 +406,32 @@ begin
 
     if Item.UsesUnits=nil then begin
       Item.UsesUnits:=TStringList.Create;
-      Item.UsedByUnits:=TStringList.Create;
-      debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
+      if Item.UsedByUnits=nil then
+        Item.UsedByUnits:=TStringList.Create;
+      //debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
       // scan for used units
+      Scanned:=false;
       if Item.PPUFile<>PPUFileNotFound then begin
-        debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'"']);
-
-      end else if Item.SrcFile<>'' then begin
-        debugln(['TPPUListDialog.OnIdle search used units of source "',Item.SrcFile,'"']);
+        //debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'" ...']);
+        PPUTool:=CodeToolBoss.PPUCache.LoadFile(Item.PPUFile,true,false);
+        if (PPUTool<>nil) and (PPUTool.ErrorMsg='') then begin
+          //debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
+          MainUsesSection:=nil;
+          ImplementationUsesSection:=nil;
+          try
+            PPUTool.PPU.GetMainUsesSectionNames(MainUsesSection);
+            AddUses(Item,MainUsesSection);
+            PPUTool.PPU.GetImplementationUsesSectionNames(ImplementationUsesSection);
+            AddUses(Item,ImplementationUsesSection);
+            Scanned:=true;
+          finally
+            MainUsesSection.Free;
+            ImplementationUsesSection.Free;
+          end;
+        end;
+      end;
+      if (not Scanned) and (Item.SrcFile<>'') then begin
+        //debugln(['TPPUListDialog.OnIdle search used units of source "',Item.SrcFile,'"']);
         Code:=CodeToolBoss.LoadFile(Item.SrcFile,true,false);
         if Code<>nil then begin
           MainUsesSection:=nil;
@@ -436,10 +466,10 @@ var
   UsedUnit: TPPUListItem;
 begin
   if UsedUnits=nil then exit;
-  debugln(['TPPUListDialog.AddUses Src=',SrcItem.TheUnitName,' UsedUnits="',UsedUnits.DelimitedText,'"']);
+  //debugln(['TPPUListDialog.AddUses Src=',SrcItem.TheUnitName,' UsedUnits="',UsedUnits.DelimitedText,'"']);
   for i:=0 to UsedUnits.Count-1 do begin
     AnUnitName:=UsedUnits[i];
-    debugln(['TPPUListDialog.AddUses ',SrcItem.TheUnitName,' uses ',AnUnitName]);
+    //debugln(['TPPUListDialog.AddUses ',SrcItem.TheUnitName,' uses ',AnUnitName]);
     UsedUnit:=FindUnit(AnUnitName);
     if UsedUnit=nil then begin
       // new unit
