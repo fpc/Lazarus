@@ -16,8 +16,11 @@ LazarusResources.Add('TPPUListDialog','FORMDATA',[
   +#5'Width'#3#9#2#5'Align'#7#8'alClient'#15'AutoFillColumns'#9#20'BorderSpacin'
   +'g.Around'#2#6#8'ColCount'#2#3#7'Columns'#14#1#13'Title.Caption'#6#17'Size o'
   +'f .ppu file'#5'Width'#3#227#0#0#1#13'Title.Caption'#6#15'Size of .o file'#5
-  +'Width'#3#228#0#0#0#9'FixedRows'#2#2#8'TabOrder'#2#1#9'ColWidths'#1#2'@'#3
-  +#227#0#3#228#0#0#0#0#6'TLabel'#10'ScopeLabel'#4'Left'#2#6#6'Height'#2#18#3'T'
-  +'op'#2#6#5'Width'#3#9#2#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'C'
-  +'aption'#6#10'ScopeLabel'#11'ParentColor'#8#0#0#0
+  +'Width'#3#228#0#0#0#15'DefaultColWidth'#3#150#0#9'FixedRows'#2#2#7'Options'
+  +#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13
+  +'goRangeSelect'#11'goColSizing'#13'goColSpanning'#18'goDblClickAutoSize'#14
+  +'goSmoothScroll'#0#8'TabOrder'#2#1#9'ColWidths'#1#2'@'#3#227#0#3#228#0#0#0#0
+  +#6'TLabel'#10'ScopeLabel'#4'Left'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#3#9
+  +#2#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#10'ScopeLab'
+  +'el'#11'ParentColor'#8#0#0#0
 ]);

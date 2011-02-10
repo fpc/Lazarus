@@ -30,12 +30,12 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
   // IDEIntf
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
-  BasicCodeTools, FileProcs, CodyStrConsts;
+  BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache;
 
 const
   PPUFileNotFound = ' ';
@@ -55,9 +55,9 @@ type
     OFile: string;
     PPUFileSize: int64;
     OFileSize: int64;
-    First, Last, Next, Prev: array[TPPUListType] of TPPUListItem;
-    procedure AppendToList(var aFirst, aLast: TPPUListItem; ListType: TPPUListType);
-    procedure RemoveFromList(var aFirst, aLast: TPPUListItem; ListType: TPPUListType);
+    UsesUnits: TStrings; // =nil means uses section not yet scanned
+    UsedByUnits: TStrings;
+    destructor Destroy; override;
   end;
 
   { TPPUListDialog }
@@ -77,8 +77,12 @@ type
     procedure SetAProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
+    function FindUnit(AnUnitName: string): TPPUListItem;
     procedure UpdateAll;
     procedure UpdateUnitsGrid;
+    function PercentageToStr(const d: double): string;
+    function FindUnitInList(AnUnitName: string; List: TStrings): integer;
   public
     property AProject: TLazProject read FAProject write SetAProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -142,33 +146,18 @@ end;
 
 { TPPUListItem }
 
-procedure TPPUListItem.AppendToList(var aFirst, aLast: TPPUListItem;
-  ListType: TPPUListType);
+destructor TPPUListItem.Destroy;
 begin
-  if (Next[ListType]<>nil) or (Prev[ListType]<>nil) then
-    RaiseCatchableException('TPPUListItem.AppendToList');
-  if aFirst=nil then
-    aFirst:=Self;
-  Prev[ListType]:=aLast;
-  if Prev[ListType]<>nil then Prev[ListType].Next[ListType]:=Self;
-  aLast:=Self;
-end;
-
-procedure TPPUListItem.RemoveFromList(var aFirst, aLast: TPPUListItem;
-  ListType: TPPUListType);
-begin
-  if aFirst=Self then aFirst:=Next[ListType];
-  if aLast=Self then aLast:=Prev[ListType];
-  if Prev[ListType]<>nil then Prev[ListType].Next[ListType]:=Next[ListType];
-  if Next[ListType]<>nil then Next[ListType].Prev[ListType]:=Prev[ListType];
-  Prev[ListType]:=nil;
-  Next[ListType]:=nil;
+  FreeAndNil(UsesUnits);
+  FreeAndNil(UsedByUnits);
+  inherited Destroy;
 end;
 
 { TPPUListDialog }
 
 procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
+  IdleConnected:=false;
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
 
@@ -210,6 +199,7 @@ procedure TPPUListDialog.UpdateAll;
 var
   s: String;
   MainUnit: TLazProjectFile;
+  Item: TPPUListItem;
 begin
   if AProject=nil then exit;
 
@@ -230,18 +220,43 @@ begin
     ScopeLabel.Caption:='Project has no main source file.';
   end else begin
     ScopeLabel.Caption:='Main source file: '+MainUnit.Filename;
+    Item:=TPPUListItem.Create;
+    Item.TheUnitName:=ExtractFileName(MainUnit.Filename);
+    Item.SrcFile:=MainUnit.Filename;
+    Item.PPUFile:=AProject.LazCompilerOptions.CreatePPUFilename(Item.SrcFile);
+    //debugln(['TPPUListDialog.UpdateAll Item.SrcFile=',Item.SrcFile,' Item.PPUFile=',Item.PPUFile,' ',FileExistsCached(Item.PPUFile)]);
+    Item.OFile:=ChangeFileExt(Item.PPUFile,'.o');
+    if not FileExistsCached(Item.PPUFile) then
+      Item.PPUFile:=PPUFileNotFound
+    else
+      Item.PPUFileSize:=FileSize(Item.PPUFile);
+    if not FileExistsCached(Item.OFile) then
+      Item.OFile:=PPUFileNotFound
+    else
+      Item.OFileSize:=FileSize(Item.OFile);
+    FItems.Add(Item);
+    FSearchingItems.Add(Item);
   end;
 
   IdleConnected:=true;
 end;
 
 procedure TPPUListDialog.UpdateUnitsGrid;
+
+  function SizeToStr(TheBytes: int64; ThePercent: double): string;
+  begin
+    Result:=IntToStr(TheBytes)+' bytes / '+PercentageToStr(ThePercent);
+  end;
+
 var
   Grid: TStringGrid;
   SortedItems: TFPList;
   Node: TAvgLvlTreeNode;
   Item: TPPUListItem;
   i: Integer;
+  Row: Integer;
+  s: String;
+  TotalPPUBytes, TotalOBytes: int64;
 begin
   Grid:=UnitsStringGrid;
   Grid.BeginUpdate;
@@ -252,24 +267,57 @@ begin
   Grid.Cells[1,0]:='Size of .ppu file';
   Grid.Cells[2,0]:='Size of .o file';
 
-  // total
-  Grid.Cells[0,0]:='Unit';
-  Grid.Cells[1,0]:='0 bytes / 100%';
-  Grid.Cells[2,0]:='0 bytes / 100%';
 
   SortedItems:=TFPList.Create;
   try
     Node:=FItems.FindLowest;
+    TotalPPUBytes:=0;
+    TotalOBytes:=0;
     while Node<>nil do begin
-      SortedItems.Add(TPPUListItem(Node.Data));
+      Item:=TPPUListItem(Node.Data);
+      if Item.PPUFileSize>0 then
+        inc(TotalPPUBytes,Item.PPUFileSize);
+      if Item.OFileSize>0 then
+        inc(TotalOBytes,Item.OFileSize);
+      SortedItems.Add(Item);
       Node:=FItems.FindSuccessor(Node);
     end;
 
+    // total
+    Grid.Cells[0,1]:='Total';
+    Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,100);
+    Grid.Cells[2,1]:=SizeToStr(TotalOBytes,100);
+
     // ToDo: sort
 
+    Row:=2;
     for i:=0 to SortedItems.Count-1 do begin
       Item:=TPPUListItem(SortedItems[i]);
+      Grid.Cells[0,Row]:=Item.TheUnitName;
 
+      // .ppu size
+      s:='';
+      if Item.PPUFile='' then
+        s:='searching ...'
+      else if Item.PPUFile=PPUFileNotFound then
+        s:='missing ...'
+      else
+        s:=IntToStr(Item.PPUFileSize)+' bytes / '
+          +PercentageToStr(double(Item.PPUFileSize)/TotalPPUBytes);
+      Grid.Cells[1,Row]:=s;
+
+      // .o size
+      s:='';
+      if Item.OFile='' then
+        s:='searching ...'
+      else if Item.OFile=PPUFileNotFound then
+        s:='missing ...'
+      else
+        s:=IntToStr(Item.OFileSize)+' bytes / '
+          +PercentageToStr(double(Item.OFileSize)/TotalOBytes);
+      Grid.Cells[2,Row]:=s;
+
+      inc(Row);
     end;
 
   finally
@@ -279,10 +327,144 @@ begin
   Grid.EndUpdate;
 end;
 
-procedure TPPUListDialog.OnIdle(Sender: TObject; var Done: Boolean);
+function TPPUListDialog.PercentageToStr(const d: double): string;
 begin
+  Result:=IntToStr(round(d*100));
+  while length(Result)<3 do Result:='0'+Result;
+  Result:=copy(Result,1,length(Result)-2)
+          +DefaultFormatSettings.ThousandSeparator+RightStr(Result,2)+'%';
+end;
+
+function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
+  ): integer;
+begin
+  if List=nil then exit(-1);
+  Result:=List.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(AnUnitName,List[Result])<>0) do
+    dec(Result);
+end;
+
+procedure TPPUListDialog.OnIdle(Sender: TObject; var Done: Boolean);
+const
+  MaxNonIdleTime = (1/86400)/2;
+var
+  StartTime: TDateTime;
+  Node: TAvgLvlTreeNode;
+  Item: TPPUListItem;
+  AnUnitName: String;
+  InFilename: String;
+  Code: TCodeBuffer;
+  MainUsesSection: TStrings;
+  ImplementationUsesSection: TStrings;
+  ProjectDir: String;
+begin
+  StartTime:=Now;
+  ProjectDir:=ExtractFilePath(AProject.ProjectInfoFile);
+  while FSearchingItems.Count>0 do begin
+    Node:=FSearchingItems.Root;
+    Item:=TPPUListItem(Node.Data);
+    FSearchingItems.Delete(Node);
+    AnUnitName:=Item.TheUnitName;
+
+    if Item.SrcFile='' then begin
+      // search source
+      debugln(['TPPUListDialog.OnIdle search source of ',AnUnitName]);
+      InFilename:='';
+      Item.SrcFile:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+        '',AnUnitName,InFilename);
+    end;
+
+    if Item.PPUFile='' then begin
+      // search ppu file
+      debugln(['TPPUListDialog.OnIdle search ppu of ',AnUnitName]);
+      Item.PPUFile:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+                                                         ProjectDir,AnUnitName);
+      debugln(['TPPUListDialog.OnIdle AAA1 ',Item.PPUFile]);
+      Item.OFile:=ChangeFileExt(Item.PPUFile,'.o');
+      if not FileExistsCached(Item.PPUFile) then
+        Item.PPUFile:=PPUFileNotFound
+      else
+        Item.PPUFileSize:=FileSize(Item.PPUFile);
+      if not FileExistsCached(Item.OFile) then
+        Item.OFile:=PPUFileNotFound
+      else
+        Item.OFileSize:=FileSize(Item.OFile);
+    end;
+
+    if Item.UsesUnits=nil then begin
+      Item.UsesUnits:=TStringList.Create;
+      Item.UsedByUnits:=TStringList.Create;
+      debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
+      // scan for used units
+      if Item.PPUFile<>PPUFileNotFound then begin
+        debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'"']);
+
+      end else if Item.SrcFile<>'' then begin
+        debugln(['TPPUListDialog.OnIdle search used units of source "',Item.SrcFile,'"']);
+        Code:=CodeToolBoss.LoadFile(Item.SrcFile,true,false);
+        if Code<>nil then begin
+          MainUsesSection:=nil;
+          ImplementationUsesSection:=nil;
+          try
+            if CodeToolBoss.FindUsedUnitNames(Code,MainUsesSection,ImplementationUsesSection)
+            then begin
+              AddUses(Item,MainUsesSection);
+              AddUses(Item,ImplementationUsesSection);
+            end;
+          finally
+            MainUsesSection.Free;
+            ImplementationUsesSection.Free;
+          end;
+        end;
+      end;
+    end;
+
+    if Now-StartTime>MaxNonIdleTime then break;
+  end;
+
   UpdateUnitsGrid;
-  IdleConnected:=false;
+
+  if FSearchingItems.Count=0 then
+    IdleConnected:=false;
+end;
+
+procedure TPPUListDialog.AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
+var
+  i: Integer;
+  AnUnitName: string;
+  UsedUnit: TPPUListItem;
+begin
+  if UsedUnits=nil then exit;
+  debugln(['TPPUListDialog.AddUses Src=',SrcItem.TheUnitName,' UsedUnits="',UsedUnits.DelimitedText,'"']);
+  for i:=0 to UsedUnits.Count-1 do begin
+    AnUnitName:=UsedUnits[i];
+    debugln(['TPPUListDialog.AddUses ',SrcItem.TheUnitName,' uses ',AnUnitName]);
+    UsedUnit:=FindUnit(AnUnitName);
+    if UsedUnit=nil then begin
+      // new unit
+      UsedUnit:=TPPUListItem.Create;
+      UsedUnit.TheUnitName:=AnUnitName;
+      FItems.Add(UsedUnit);
+      FSearchingItems.Add(UsedUnit);
+      UsedUnit.UsedByUnits:=TStringList.Create;
+    end;
+
+    if FindUnitInList(AnUnitName,SrcItem.UsesUnits)<0 then
+      SrcItem.UsesUnits.Add(AnUnitName);
+    if FindUnitInList(SrcItem.TheUnitName,UsedUnit.UsedByUnits)<0 then
+      UsedUnit.UsedByUnits.Add(SrcItem.TheUnitName);
+  end;
+end;
+
+function TPPUListDialog.FindUnit(AnUnitName: string): TPPUListItem;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FItems.FindKey(Pointer(AnUnitName),@CompareUnitNameWithPPUListItem);
+  if Node=nil then
+    Result:=nil
+  else
+    Result:=TPPUListItem(Node.Data);
 end;
 
 initialization

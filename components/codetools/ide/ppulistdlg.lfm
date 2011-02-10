@@ -48,7 +48,9 @@ object PPUListDialog: TPPUListDialog
         Title.Caption = 'Size of .o file'
         Width = 228
       end>
+    DefaultColWidth = 150
     FixedRows = 2
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goColSpanning, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 1
     ColWidths = (
       64

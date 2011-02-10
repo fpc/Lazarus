@@ -518,6 +518,7 @@ type
     function MakeOptionsString(const MainSourceFileName: string;
                                Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString: string; virtual;
+    function CreatePPUFilename(const SourceFileName: string): string; override;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
@@ -1766,8 +1767,18 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
-    // TargetFilename is relative to BaseDirectory
-    Result:=CreateAbsolutePath(Result,BaseDirectory);
+    if (UnitOutputDirectory='') and (ParsedOpts.OutputDirectoryOverride='') then
+    begin
+      // the unit is put into the same directory as the source
+      // TargetFilename is relative to BaseDirectory
+      Result:=CreateAbsolutePath(Result,BaseDirectory);
+    end else begin
+      // the unit is put into the output directory
+      UnitOutDir:=GetUnitOutPath(false);
+      if UnitOutDir='' then
+        UnitOutDir:=BaseDirectory;
+      Result:=AppendPathDelim(UnitOutDir)+ExtractFileName(Result);
+    end;
   end else begin
     // no target given => put into unit output directory
     // calculate output directory
@@ -1776,7 +1787,6 @@ begin
       UnitOutDir:=BaseDirectory;
     OutFilename:=ExtractFileNameOnly(MainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
-
     Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
   Result:=TrimFilename(Result);
@@ -2843,6 +2853,31 @@ begin
       Result:=Result+' ';
     Result := Result+'-S' + tempsw;
   end;
+end;
+
+function TBaseCompilerOptions.CreatePPUFilename(const SourceFileName: string
+  ): string;
+var
+  UnitOutDir: String;
+begin
+  Result:=SourceFileName;
+  IDEMacros.SubstituteMacros(Result);
+  if Result='' then exit;
+  if FilenameIsAbsolute(Result) then begin
+    // fully specified target filename
+  end else if (UnitOutputDirectory='')
+  and (ParsedOpts.OutputDirectoryOverride='') then begin
+    // the unit is put into the same directory as the source
+    // target file name is relative to BaseDirectory
+    Result:=CreateAbsolutePath(Result,BaseDirectory);
+  end else begin
+    // the unit is put into the output directory
+    UnitOutDir:=GetUnitOutPath(false);
+    if UnitOutDir='' then
+      UnitOutDir:=BaseDirectory;
+    Result:=AppendPathDelim(UnitOutDir)+ExtractFileName(Result);
+  end;
+  Result:=ChangeFileExt(Result,'.ppu');
 end;
 
 {------------------------------------------------------------------------------
