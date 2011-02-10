@@ -498,7 +498,7 @@ begin
 
     // compile all auto install dependencies
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                     PackageGraph.FirstAutoInstallDependency,[pupAsNeeded]);
+                   PackageGraph.FirstAutoInstallDependency,false,[pupAsNeeded]);
     if CurResult<>mrOk then exit;
 
   finally
@@ -626,8 +626,9 @@ begin
     try
       // automatically compile required packages
       if PackageGraph.CompileRequiredPackages(nil,
-                                      Project1.FirstRequiredDependency,
-                                      [pupAsNeeded])<>mrOk
+                                Project1.FirstRequiredDependency,
+                                not (pfUseDesignTimePackages in Project1.Flags),
+                                [pupAsNeeded])<>mrOk
       then
         Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
     finally
