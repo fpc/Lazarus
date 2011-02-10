@@ -333,6 +333,7 @@ begin
   ImgIDFatal := IDEImages.LoadImage(12, 'state12x12_fatal');
   ImgIDHasQuickFix := IDEImages.LoadImage(12, 'quickfix12x12');
   MessageTreeView.Images:=IDEImages.Images_12;
+  MessageTreeView.StateImages:=IDEImages.Images_12;
 
   Caption := lisMenuViewMessages;
   MessageTreeView.OnAdvancedCustomDrawItem := @MessageViewDrawItem;
@@ -1184,8 +1185,8 @@ begin
             if (imqfoMenuItem in QuickFixItem.Steps)
             and QuickFixItem.IsApplicable(Msg) then begin
               Msg.Flags:=Msg.Flags+[lmlfHasQuickFix];
-              TVNode.ImageIndex:=ImgIDHasQuickFix;
-              TVNode.SelectedIndex:=ImgIDHasQuickFix;
+              TVNode.StateIndex:=ImgIDHasQuickFix;
+              TVNode.SelectedIndex:=TVNode.ImageIndex;
             end;
           end;
         finally
