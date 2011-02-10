@@ -2108,6 +2108,7 @@ resourcestring
   lisProjectIsRunnable = 'Project is runnable';
   lisProjOptsAlwaysBuildEvenIfNothingChanged = 'Always build (even if nothing '
     +'changed)';
+  lisUseDesignTimePackages = 'Use design time packages';
   dlgRunParameters = 'Run parameters';
   dlgRunOLocal = 'Local';
   dlgRunOEnvironment = 'Environment';

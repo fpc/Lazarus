@@ -161,6 +161,7 @@ type
     pcfDoNotCompileDependencies,
     pcfDoNotCompilePackage,
     pcfCompileDependenciesClean,
+    pcfSkipDesignTimePackages,
     pcfOnlyIfNeeded,
     pcfDoNotSaveEditorFiles,
     pcfCreateMakefile
@@ -173,6 +174,7 @@ const
     'pcfDoNotCompileDependencies',
     'pcfDoNotCompilePackage',
     'pcfCompileDependenciesClean',
+    'pcfSkipDesignTimePackages',
     'pcfOnlyIfNeeded',
     'pcfDoNotSaveEditorFiles',
     'pcfCreateMakefile'

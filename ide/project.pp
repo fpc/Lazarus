@@ -5967,9 +5967,17 @@ procedure TProjectCompilerOptions.GetInheritedCompilerOptions(
   var OptionsList: TFPList);
 var
   PkgList: TFPList;
+  i: Integer;
 begin
   PkgList:=nil;
   LazProject.GetAllRequiredPackages(PkgList);
+  if (PkgList<>nil)
+  and (not (pfUseDesignTimePackages in LazProject.Flags)) then begin
+    // remove design time only packages
+    for i:=PkgList.Count-1 downto 0 do
+      if TLazPackage(PkgList[i]).PackageType=lptDesignTime then
+        PkgList.Delete(i);
+  end;
   OptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
 end;

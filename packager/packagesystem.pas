@@ -158,7 +158,7 @@ type
                                        Verbose: boolean): boolean;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
-                    CheckDependencies: boolean;
+                    CheckDependencies, SkipDesignTimePackages: boolean;
                     out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
   public
@@ -251,6 +251,7 @@ type
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency;
+                                     SkipDesignTimePackages: boolean;
                                      Policies: TPackageUpdatePolicies): TFPList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
@@ -288,9 +289,11 @@ type
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
-                                           StateFileAge: longint): TModalResult;
+                          SkipDesignTimePackages: boolean; StateFileAge: longint
+                          ): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
+                    SkipDesignTimePackages: boolean;
                     out NeedBuildAllFlag: boolean): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
@@ -300,6 +303,7 @@ type
                      Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
+                                SkipDesignTimePackages: boolean;
                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             ShowAbort: boolean): TModalResult;
@@ -2801,7 +2805,8 @@ begin
 end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; Policies: TPackageUpdatePolicies): TFPList;
+  FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
+  Policies: TPackageUpdatePolicies): TFPList;
 // Returns all required auto update packages, including indirect requirements.
 // The packages will be in topological order, with the package that should be
 // compiled first at the end.
@@ -2819,8 +2824,11 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
             // add first all needed packages
             GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
             // then add this package
-            if Result=nil then Result:=TFPList.Create;
-            Result.Add(RequiredPackage);
+            if (not SkipDesignTimePackages)
+            or (RequiredPackage.PackageType<>lptDesignTime) then begin
+              if Result=nil then Result:=TFPList.Create;
+              Result.Add(RequiredPackage);
+            end;
           end;
         end;
       end;
@@ -3084,7 +3092,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckCompileNeedDueToDependencies(
-  FirstDependency: TPkgDependency; StateFileAge: longint): TModalResult;
+  FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
+  StateFileAge: longint): TModalResult;
 
   function GetOwnerID: string;
   begin
@@ -3106,38 +3115,43 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess) then begin
       RequiredPackage:=Dependency.RequiredPackage;
-      // check compile state file of required package
-      if not RequiredPackage.AutoCreated then begin
-        Result:=LoadPackageCompiledState(RequiredPackage,false,true);
-        if Result<>mrOk then exit;
-        Result:=mrYes;
-        o:=RequiredPackage.GetOutputDirType;
-        if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
-          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
-          exit;
-        end;
-        if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
-          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-            RequiredPackage.IDAsString,' State file is newer than ',
-            'State file ',GetOwnerID);
-          exit;
-        end;
-      end;
-      // check output state file of required package
-      if RequiredPackage.OutputStateFile<>'' then begin
-        OtherStateFile:=RequiredPackage.OutputStateFile;
-        GlobalMacroList.SubstituteStr(OtherStateFile);
-        if not FilenameIsAbsolute(OtherStateFile) then
-          OtherStateFile:=AppendPathDelim(RequiredPackage.Directory)+OtherStateFile;
-        if FilenameIsAbsolute(OtherStateFile)
-        and FileExistsCached(OtherStateFile)
-        and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
-          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'" (',
-              FileAgeToStr(FileAgeCached(OtherStateFile)),')'
-            ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+      if SkipDesignTimePackages and (RequiredPackage.PackageType=lptDesignTime)
+      then begin
+        // skip
+      end else begin
+        // check compile state file of required package
+        if not RequiredPackage.AutoCreated then begin
+          Result:=LoadPackageCompiledState(RequiredPackage,false,true);
+          if Result<>mrOk then exit;
           Result:=mrYes;
-          exit;
+          o:=RequiredPackage.GetOutputDirType;
+          if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
+            exit;
+          end;
+          if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
+              RequiredPackage.IDAsString,' State file is newer than ',
+              'State file ',GetOwnerID);
+            exit;
+          end;
+        end;
+        // check output state file of required package
+        if RequiredPackage.OutputStateFile<>'' then begin
+          OtherStateFile:=RequiredPackage.OutputStateFile;
+          GlobalMacroList.SubstituteStr(OtherStateFile);
+          if not FilenameIsAbsolute(OtherStateFile) then
+            OtherStateFile:=AppendPathDelim(RequiredPackage.Directory)+OtherStateFile;
+          if FilenameIsAbsolute(OtherStateFile)
+          and FileExistsCached(OtherStateFile)
+          and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
+              RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'" (',
+                FileAgeToStr(FileAgeCached(OtherStateFile)),')'
+              ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+            Result:=mrYes;
+            exit;
+          end;
         end;
       end;
     end;
@@ -3147,8 +3161,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams, SrcFilename: string; out
-  NeedBuildAllFlag: boolean): TModalResult;
+  const CompilerFilename, CompilerParams, SrcFilename: string;
+  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean): TModalResult;
 var
   OutputDir: String;
   NewOutputDir: String;
@@ -3169,7 +3183,7 @@ begin
   // check the current output directory
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
              CompilerFilename,CompilerParams,SrcFilename,
-             true,
+             true,SkipDesignTimePackages,
              NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
   if Result=mrNo then exit; // the current output is valid
 
@@ -3190,7 +3204,8 @@ begin
     if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               CompilerFilename,CompilerParams,SrcFilename,true,
+               CompilerFilename,CompilerParams,SrcFilename,
+               true,SkipDesignTimePackages,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
   end else begin
     // the last compile was put to the fallback output directory
@@ -3211,7 +3226,8 @@ begin
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               CompilerFilename,CompilerParams,SrcFilename,true,
+               CompilerFilename,CompilerParams,SrcFilename,
+               true,SkipDesignTimePackages,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
     if DefResult=mrNo then begin
       // switching back to the not writable output directory requires no compile
@@ -3227,7 +3243,9 @@ end;
 
 function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
   APackage: TLazPackage; const CompilerFilename, CompilerParams,
-  SrcFilename: string; CheckDependencies: boolean; out NeedBuildAllFlag,
+  SrcFilename: string;
+  CheckDependencies, SkipDesignTimePackages: boolean;
+  out NeedBuildAllFlag,
   ConfigChanged, DependenciesChanged: boolean): TModalResult;
 // returns: mrYes, mrNo, mrCancel, mrAbort
 var
@@ -3384,7 +3402,7 @@ begin
   if CheckDependencies then begin
     // check all required packages
     Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
-                                              StateFileAge);
+                                           SkipDesignTimePackages,StateFileAge);
     if Result<>mrNo then begin
       DependenciesChanged:=true;
       exit;
@@ -3418,7 +3436,8 @@ begin
 end;
 
 function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; Policies: TPackageUpdatePolicies): TModalResult;
+  FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
+  Policies: TPackageUpdatePolicies): TModalResult;
 var
   AutoPackages: TFPList;
   i: Integer;
@@ -3426,8 +3445,8 @@ begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A ');
   {$ENDIF}
-  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
-                                                     Policies);
+  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,
+                               FirstDependency,SkipDesignTimePackages,Policies);
   if AutoPackages<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
     try
@@ -3493,7 +3512,8 @@ begin
       CompilePolicies:=[pupAsNeeded];
       if pcfCompileDependenciesClean in Flags then
         Include(CompilePolicies,pupOnRebuildingAll);
-      Result:=CompileRequiredPackages(APackage,nil,CompilePolicies);
+      Result:=CompileRequiredPackages(APackage,nil,
+                            pcfSkipDesignTimePackages in Flags,CompilePolicies);
       if Result<>mrOk then begin
         DebugLn(['TLazPackageGraph.CompilePackage CompileRequiredPackages failed: ',APackage.IDAsString]);
         exit;
@@ -3508,8 +3528,9 @@ begin
 
     // check if compilation is needed and if a clean build is needed
     Result:=CheckIfPackageNeedsCompilation(APackage,
-                                           CompilerFilename,CompilerParams,
-                                           SrcFilename,NeedBuildAllFlag);
+                          CompilerFilename,CompilerParams,
+                          SrcFilename,pcfSkipDesignTimePackages in Flags,
+                          NeedBuildAllFlag);
     if (pcfOnlyIfNeeded in Flags) then begin
       if Result=mrNo then begin
         //DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);

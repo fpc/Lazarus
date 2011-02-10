@@ -1944,6 +1944,8 @@ begin
   if (ADependency.RequiredPackage<>nil)
   and (not ADependency.RequiredPackage.AutoCreated)
   and ADependency.RequiredPackage.AddToProjectUsesSection
+  and ((ADependency.RequiredPackage.PackageType<>lptDesignTime)
+       or (pfUseDesignTimePackages in AProject.Flags))
   then begin
     AddUnitToProjectMainUsesSection(AProject,
       ExtractFileNameOnly(ADependency.RequiredPackage.GetCompileSourceFilename),'');
@@ -2531,8 +2533,9 @@ begin
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
       Result:=PackageGraph.CompileRequiredPackages(nil,
-                                      AProject.FirstRequiredDependency,
-                                      [pupAsNeeded]);
+                                AProject.FirstRequiredDependency,
+                                not (pfUseDesignTimePackages in AProject.Flags),
+                                [pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
   finally
@@ -3965,7 +3968,8 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,[pupAsNeeded]);
+    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,false,
+                                                 [pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally

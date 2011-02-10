@@ -22,6 +22,7 @@ type
     MainUnitIsPascalSourceCheckBox: TCheckBox;
     ResourceGroupBox: TGroupBox;
     RunnableCheckBox: TCheckBox;
+    UseDesignTimePkgsCheckBox: TCheckBox;
     UseFPCResourcesRadioButton: TRadioButton;
     UseLRSFilesRadioButton: TRadioButton;
   private
@@ -52,6 +53,7 @@ begin
   MainUnitHasCreateFormStatementsCheckBox.Caption := lisMainUnitHasApplicationCreateFormStatements;
   MainUnitHasTitleStatementCheckBox.Caption := lisMainUnitHasApplicationTitleStatements;
   RunnableCheckBox.Caption := lisProjectIsRunnable;
+  UseDesignTimePkgsCheckBox.Caption := lisUseDesignTimePackages;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
   LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
   ResourceGroupBox.Caption := lisResourceTypeOfNewFiles;
@@ -70,6 +72,7 @@ begin
     MainUnitHasCreateFormStatementsCheckBox.Checked := (pfMainUnitHasCreateFormStatements in Flags);
     MainUnitHasTitleStatementCheckBox.Checked := (pfMainUnitHasTitleStatement in Flags);
     RunnableCheckBox.Checked := (pfRunnable in Flags);
+    UseDesignTimePkgsCheckBox.Checked := (pfUseDesignTimePackages in Flags);
     AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in Flags);
     LRSInOutputDirCheckBox.Checked := (pfLRSFilesInOutputDirectory in Flags);
     case Resources.ResourceType of
@@ -103,6 +106,7 @@ begin
   SetProjectFlag(pfMainUnitHasTitleStatement,
                  MainUnitHasTitleStatementCheckBox.Checked);
   SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
+  SetProjectFlag(pfUseDesignTimePackages, UseDesignTimePkgsCheckBox.Checked);
   SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
   SetProjectFlag(pfLRSFilesInOutputDirectory, LRSInOutputDirCheckBox.Checked);
   Project.Flags := NewFlags;

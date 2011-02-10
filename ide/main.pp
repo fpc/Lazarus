@@ -10855,7 +10855,9 @@ begin
 
   // check all required packages
   Result:=PackageGraph.CheckCompileNeedDueToDependencies(
-                                 AProject.FirstRequiredDependency,StateFileAge);
+                                AProject.FirstRequiredDependency,
+                                not (pfUseDesignTimePackages in AProject.Flags),
+                                StateFileAge);
   if Result<>mrNo then exit;
 
   // check project files
