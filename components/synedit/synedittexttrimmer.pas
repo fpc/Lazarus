@@ -844,7 +844,7 @@ begin
   if (LenNS < LogX - 1) and not IsSpaces then
     LenNs := LogX - 1;
 
-  // Trim any existing (commited/real) spaces // skip if we append none-spaces
+  // Trim any existing (committed/real) spaces // skip if we append none-spaces
   if (LenNS < Len) and (IsSpaces or (LogX <= len)) then
   begin
     EditMoveToTrim(LogY, Len - LenNS);
@@ -913,7 +913,7 @@ begin
   end;
   UpdateLineText(LogY);
 
-  // Trim any existing (commited/real) spaces
+  // Trim any existing (committed/real) spaces
   t := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(t) - LastNoneSpacePos(t));
 
@@ -947,7 +947,7 @@ begin
   end;
   UpdateLineText(LogY + 1);
   EditInsertTrim(1, LogY + 1, s);
-  // Trim any existing (commited/real) spaces
+  // Trim any existing (committed/real) spaces
   s := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(s) - LastNoneSpacePos(s));
   s := fSynStrings[LogY];
@@ -976,7 +976,7 @@ begin
   UpdateLineText(LogY);
   EditInsertTrim(1, LogY, s);
 
-  // Trim any existing (commited/real) spaces
+  // Trim any existing (committed/real) spaces
   s := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(s) - LastNoneSpacePos(s));
 end;

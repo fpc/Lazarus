@@ -1242,7 +1242,7 @@ begin
     while (e<=length(PropPath)) and (PropPath[e]<>'.') do inc(e);
     CurName:=uppercase(copy(PropPath,s,e-s));
     s:=e+1;
-    // search name in childs
+    // search name in children
     if CurParentRow=nil then
       Result:=Rows[0]
     else
@@ -1768,7 +1768,7 @@ begin
   CurRow := Rows[Index];
   if (not CurRow.Expanded) then
     Exit;
-  // calculate all childs (between StartIndex..EndIndex)
+  // calculate all children (between StartIndex..EndIndex)
   StartIndex := CurRow.Index + 1;
   EndIndex := FRows.Count - 1;
   ARow := CurRow;
@@ -3424,7 +3424,7 @@ begin
   if IsSorted(Compare) then exit(false);
   List:=TFPList.Create;
   try
-    // create a TFPList of the childs
+    // create a TFPList of the children
     List.Capacity:=ChildCount;
     Item:=FirstChild;
     while Item<>nil do begin
@@ -4271,7 +4271,7 @@ begin
   if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
     exit;
   if not (FPropertyEditorHook.LookupRoot is TComponent) then begin
-    // not a TComponent => no childs => select always only the root
+    // not a TComponent => no children => select always only the root
     SetSelectedPersistent(FPropertyEditorHook.LookupRoot);
     exit;
   end;

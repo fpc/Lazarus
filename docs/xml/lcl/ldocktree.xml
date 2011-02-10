@@ -924,7 +924,7 @@
 
   3. No TLazDockSplitter. Control is the only child of a TLazDockPage
      In this case the page will be deleted.
-     If the TLazDockPages has no childs left, it is recursively undocked.
+     If the TLazDockPages has no children left, it is recursively undocked.
 
   4. No TLazDockSplitter, Control is the only child of a TLazDockForm.
      The TLazDockForm is deleted and the Control is floated.

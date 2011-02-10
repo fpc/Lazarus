@@ -282,7 +282,7 @@ begin
   if (Owner <> nil) and (Owner.Owner <> nil) then
     Owner.Owner.Delete(Self);
 
-  // delete childs
+  // delete children
   HasChildren := false;
   // unbind all references
   Unbind;
@@ -931,7 +931,7 @@ function TTreeNode.GetNext: TTreeNode;
 begin
   Result:=GetFirstChild;
   if Result=nil then begin
-    // no childs, search next
+    // no children, search next
     Result:=Self;
     while (Result<>nil) and (Result.FNextBrother=nil) do
       Result:=Result.Parent;
@@ -957,7 +957,7 @@ end;
 function TTreeNode.GetAbsoluteIndex: Integer;
 // - first node has index 0
 // - the first child of a node has an index one bigger than its parent
-// - a node without childs has an index one bigger than its previous brother
+// - a node without children has an index one bigger than its previous brother
 var
   ANode: TTreeNode;
 begin
@@ -1774,7 +1774,7 @@ begin
   and (not MultiSelected) then
     RaiseGDBException('');// selected, but not multiselected
 
-  // check childs
+  // check children
   RealSubTreeCount:=1;
   for i:=0 to FCount-1 do begin
     if (Items[i]=nil) then RaiseGDBException('');

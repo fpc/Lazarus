@@ -281,7 +281,7 @@ begin
         Item.SubItems[0] := IntToStr(Entry.Index);
         Source := Entry.Source;
         if Source = '' then // we do not have a source file => just show an adress
-          Source := ':' + IntToHex(Entry.Adress, 8);
+          Source := ':' + IntToHex(Entry.Address, 8);
         Item.SubItems[1] := Source;
         Item.SubItems[2] := IntToStr(Entry.Line);
         Item.SubItems[3] := GetFunction(Entry);

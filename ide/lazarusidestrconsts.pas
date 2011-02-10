@@ -3360,7 +3360,7 @@ resourcestring
     +'Stop, and hope the best, we''re pulling the plug.';
   lisExecutionStopped = 'Execution stopped';
   lisExecutionPaused = 'Execution paused';
-  lisExecutionPausedAdress = 'Execution paused%s  Adress: $%s%s  Procedure: %'
+  lisExecutionPausedAdress = 'Execution paused%s  Address: $%s%s  Procedure: %'
     +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
   lisFileNotFound = 'File not found';
   lisCleanUpUnitPath = 'Clean up unit path?';

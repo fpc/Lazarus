@@ -235,7 +235,7 @@ begin
   begin
     if lsOut = '' then
     begin
-      SendStatusMessage(psInputFileName, 'No output/backup file specifed',
+      SendStatusMessage(psInputFileName, 'No output/backup file specified',
        mtInputError, -1, -1);
       exit;
     end;

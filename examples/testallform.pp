@@ -1909,7 +1909,7 @@ Memo1 := TMemo.Create(Self);
     Lines.Text     := #13#10+'                                     WELCOME'+#13#10+
                       'You will find the component you want to test in the MainMenu'+
                       ' "Components". 60 components are mentioned, but all do not exist yet.'+
-                      ' I hope this application will be usefull...'+#13#10+'Chris';
+                      ' I hope this application will be useful...'+#13#10+'Chris';
   //MaxLength	   := 0;
     Name	   := 'Memo1';
   //OEMConvert	   := False;

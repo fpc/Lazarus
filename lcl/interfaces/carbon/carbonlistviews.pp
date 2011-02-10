@@ -1810,7 +1810,7 @@ var
   x, y: Integer;
   scrolltop, scrollleft : UInt32;
 
-// for some unkown reason, HIViewConvertPoint does return inaccurate x,y position for ListView
+// for some unknown reason, HIViewConvertPoint does return inaccurate x,y position for ListView
 // (because of focus ring?)
 const
   OfsY = -2;

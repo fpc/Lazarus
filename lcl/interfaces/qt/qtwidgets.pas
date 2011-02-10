@@ -3720,7 +3720,7 @@ procedure TQtWidget.releaseMouse;
 var
   AGrabWidget: QWidgetH;
 begin
-  // capture widget can be one of childs of Widget if Widget is complex control
+  // capture widget can be one of children of Widget if Widget is complex control
   // so better to look for current Capture widget to release it
   // instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();

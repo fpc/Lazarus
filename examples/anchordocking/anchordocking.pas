@@ -3485,7 +3485,7 @@ begin
 end;
 
 procedure TAnchorDockHostSite.MoveAllControls(dx, dy: integer);
-// move all childs, except the sides that are anchored to parent left,top
+// move all children, except the sides that are anchored to parent left,top
 var
   i: Integer;
   Child: TControl;

@@ -6305,7 +6305,7 @@ begin
     raise Exception.Create('invalid instance for this property editor');
   Notebook:=TCustomNotebook(AComponent);
   if Notebook.PageList.IndexOf(APersistent)<0 then
-    raise Exception.Create('only childs are allowed for this property');
+    raise Exception.Create('only children are allowed for this property');
 end;
 
 function TNoteBookActiveControlPropertyEditor.GetAttributes: TPropertyAttributes;

@@ -2978,7 +2978,7 @@ var
         ctnClassInheritance:
           // these codetreenodes build a parent-child-relationship, but
           // for pascal it is only a range, hence after searching in the
-          // childs of the last node, search must continue in the childs
+          // children of the last node, search must continue in the children
           // of the prior node
           ;
 
@@ -3099,7 +3099,7 @@ begin
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
           // they just define a range and not a context.
-          // -> search in all childs
+          // -> search in all children
           MoveContextNodeToChilds;
 
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,

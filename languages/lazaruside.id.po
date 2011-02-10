@@ -7092,7 +7092,7 @@ msgid "Execution paused"
 msgstr "Eksekusi diistirahatkan"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "Eksekusi diistirahatkan%s  Alamat: $%s%s  Prosedur: %s%s  File: %s%s(Suatu hari jendela assembler mungkin muncul disini :)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped

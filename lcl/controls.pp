@@ -1442,8 +1442,8 @@ type
   { TControlChildSizing }
 
   { LeftRightSpacing, TopBottomSpacing: integer;
-        minimum space between left client border and left most childs.
-        For example: ClientLeftRight=5 means childs Left position is at least 5.
+        minimum space between left client border and left most children.
+        For example: ClientLeftRight=5 means children Left position is at least 5.
 
     HorizontalSpacing, VerticalSpacing: integer;
         minimum space between each child horizontally
@@ -1471,28 +1471,28 @@ type
         Same for alRight, alTop, alBottom. (Always expand 3 sides).
 
         Align=alClient. The control will fill the whole remaining space.
-        Setting two childs to Align=alClient does only make sense, if you set
+        Setting two children to Align=alClient does only make sense, if you set
         maximum Constraints.
 
-        Order: First all alTop childs are resized, then alBottom, then alLeft,
+        Order: First all alTop children are resized, then alBottom, then alLeft,
         then alRight and finally alClient.
 
       cesScaleChilds, cssScaleChilds
-        Scale childs, keep space between them fixed.
+        Scale children, keep space between them fixed.
         Childs are resized to their normal/adviced size. If there is some space
-        left in the client area of the parent, then the childs are scaled to
-        fill the space. You can set maximum Constraints. Then the other childs
+        left in the client area of the parent, then the children are scaled to
+        fill the space. You can set maximum Constraints. Then the other children
         are scaled more.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
         C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
-        120, then the childs are scaled with Factor 2.
-        If B has a maximum constraint width of 30, then first the childs will be
+        120, then the children are scaled with Factor 2.
+        If B has a maximum constraint width of 30, then first the children will be
         scaled with 1.5 (A.Width=15, B.Width=30, C.Width=45). Then A and C
         (15+45=60 and 30 pixel space left) will be scaled by 1.5 again, to a
         final result of: A.Width=23, B.Width=30, C.Width=67 (23+30+67=120).
 
       cesHomogenousChildGrowth, cssHomogenousChildDecrease
-        Enlarge childs equally.
+        Enlarge children equally.
         Childs are resized to their normal/adviced size. If there is some space
         left in the client area of the parent, then the remaining space is
         distributed equally to each child.
@@ -1500,14 +1500,14 @@ type
         C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
         120, then 60/3=20 is added to each Child.
         If B has a maximum constraint width of 30, then first 10 is added to
-        all childs (A.Width=20, B.Width=30, C.Width=40). Then A and C
+        all children (A.Width=20, B.Width=30, C.Width=40). Then A and C
         (20+40=60 and 30 pixel space left) will get 30/2=15 additional,
         resulting in: A.Width=35, B.Width=30, C.Width=55 (35+30+55=120).
 
       cesHomogenousSpaceGrowth
-        Enlarge space between childs equally.
+        Enlarge space between children equally.
         Childs are resized to their normal/adviced size. If there is some space
-        left in the client area of the parent, then the space between the childs
+        left in the client area of the parent, then the space between the children
         is expanded.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
         C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
@@ -1517,9 +1517,9 @@ type
 
   TChildControlResizeStyle = (
       crsAnchorAligning, // (like Delphi)
-      crsScaleChilds, // scale childs, keep space between childs fixed
-      crsHomogenousChildResize, // enlarge childs equally (i.e. by the same amount of pixel)
-      crsHomogenousSpaceResize  // enlarge space between childs equally
+      crsScaleChilds, // scale children, keep space between children fixed
+      crsHomogenousChildResize, // enlarge children equally (i.e. by the same amount of pixel)
+      crsHomogenousSpaceResize  // enlarge space between children equally
     );
 
   TControlChildrenLayout = (
@@ -1601,7 +1601,7 @@ type
     wcfEraseBackground,
     wcfCreatingHandle,       // Set while constructing the handle of this control
     wcfInitializing,         // Set while initializing during handle creation
-    wcfCreatingChildHandles, // Set while constructing the handles of the childs
+    wcfCreatingChildHandles, // Set while constructing the handles of the children
     wcfRealizingBounds,      // Set inside RealizeBoundsRecursive
     wcfBoundsRealized,       // bounds were sent to the interface
     wcfUpdateShowing,
@@ -1849,7 +1849,7 @@ type
     procedure FormEndUpdated; override;
     procedure MainWndProc(var Msg: TLMessage);
     procedure ParentFormHandleInitialized; override;
-    procedure ChildHandlesCreated; virtual;// called after childs handles are created
+    procedure ChildHandlesCreated; virtual;// called after children handles are created
     procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
@@ -1924,7 +1924,7 @@ type
     function  GetChildsRect(Scrolled: boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
-    procedure ReAlign; // realign all childs
+    procedure ReAlign; // realign all children
     procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;
@@ -2131,7 +2131,7 @@ type
       Result: A new docktree will be created. Height of "A" will be resized to
               the height of "B".
               A splitter will be inserted between "A" and "B".
-              And all three are childs of the newly created TLazDockForm of the
+              And all three are children of the newly created TLazDockForm of the
               newly created TDockTree.
 
        +------------+
@@ -2176,7 +2176,7 @@ type
        |+-----+|
        +-------+
 
-    Every DockZone has siblings and childs. Siblings can either be
+    Every DockZone has siblings and children. Siblings can either be
     - horizontally (left to right, splitter),
     - vertically (top to bottom, splitter)
     - or upon each other (as pages, left to right).

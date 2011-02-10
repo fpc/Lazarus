@@ -972,7 +972,7 @@ begin
   if (FChildNodeTree=nil) then begin
     // there is no childnodetree yet
     // Most xml trees contains nodes with only a few child nodes. It would be
-    // overhead to create a tree for only a few childs.
+    // overhead to create a tree for only a few children.
     ChildCount := 0;
     ANode := FirstChild;
     while Assigned(ANode) do begin
@@ -981,7 +981,7 @@ begin
     end;
     if ChildCount>5 then begin
       FChildNodeTree:=TAVLTree.Create(@CompareDOMNodeWithDOMNode);
-      // add all existing childs
+      // add all existing children
       ANode := FirstChild;
       NewNodeAdded:=false;
       while Assigned(ANode) do begin
@@ -1407,7 +1407,7 @@ destructor TDOMElement.Destroy;
 var
   i: Integer;
 begin
-  {As the attributes are _not_ childs of the element node, we have to free
+  {As the attributes are _not_ children of the element node, we have to free
    them manually here:}
   if FAttributes<>nil then begin
     for i := 0 to FAttributes.Count - 1 do

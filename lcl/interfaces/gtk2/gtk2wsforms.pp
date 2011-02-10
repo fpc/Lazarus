@@ -716,8 +716,8 @@ begin
   if Adjustment <> nil then
     gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
 
-  // create a gtk_layout for the client area, so childs can be added at
-  // free x,y positions and the scrollbars automatically scrolls the childs
+  // create a gtk_layout for the client area, so children can be added at
+  // free x,y positions and the scrollbars automatically scrolls the children
 
   Layout := gtk_layout_new(nil, nil);
   gtk_container_add(PGTKContainer(Scrolled), Layout);

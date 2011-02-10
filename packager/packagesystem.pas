@@ -4715,7 +4715,7 @@ procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
   
   procedure AddConnections(StartDependency: TPkgDependency);
   // add every connection between owner and required package
-  // and between two childs
+  // and between two children
   var
     OwnerPackage: TLazPackage;
     Dependency1: TPkgDependency;

@@ -8332,7 +8332,7 @@ Reads message from flag area, or stores a message
         C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
         120, then 60/3=20 is added to each Child.
         If B has a maximum constraint width of 30, then first 10 is added to
-        all childs (A.Width=20, B.Width=30, C.Width=40). Then A and C
+        all children (A.Width=20, B.Width=30, C.Width=40). Then A and C
         (20+40=60 and 30 pixel space left) will get 30/2=15 additional,
         resulting in: A.Width=35, B.Width=30, C.Width=55 (35+30+55=120).
 
@@ -10854,7 +10854,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ParentFormHandleInitialized">
-        <short>Called after all childs handles of the ParentForm are created. Tells all wincontrols about the final end of the handle creation phase</short>
+        <short>Called after all children handles of the ParentForm are created. Tells all wincontrols about the final end of the handle creation phase</short>
         <descr/>
         <errors/>
         <seealso>

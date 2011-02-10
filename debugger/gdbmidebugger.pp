@@ -480,7 +480,7 @@ const
   GDCMD_PRIOR_IMMEDIATE = 999; // run immediate (request without callback)
   GDCMD_PRIOR_LINE_INFO = 100; // Line info should run asap
   GDCMD_PRIOR_DISASS    = 30;  // Run before watches
-  GDCMD_PRIOR_USER_ACT  = 10;  // set/chnage/remove brkpoint
+  GDCMD_PRIOR_USER_ACT  = 10;  // set/change/remove brkpoint
   GDCMD_PRIOR_STACK     = 2;   // Run before watches
   GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers etc)
 
@@ -3631,7 +3631,7 @@ begin
   end;
 
   if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
+    debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
     //SetDebuggerState(dsError); // we cannot be running anymore
   end;
   if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
@@ -8448,7 +8448,7 @@ begin
        - The type may be prefixed by "&" for var param under dwarf (an fpc workaround)
          Under dwarf var param are hnadled by gdb, if casted or part of an expression,
            but not if standalone or dereferred ("^") only
-         Under stabs "var param" have no indications, but are completly and correctly
+         Under stabs "var param" have no indications, but are completely and correctly
            handled by gdb
 
      * ptype TheWhatisType

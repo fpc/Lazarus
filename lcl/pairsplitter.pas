@@ -24,8 +24,8 @@
   Author: Mattias Gaertner
   
   Abstract:
-    TPairSplitter component. A component with two TPairSplitterSide childs.
-    Both child components can contain other components and the childs are
+    TPairSplitter component. A component with two TPairSplitterSide children.
+    Both child components can contain other components and the children are
     divided by a splitter which can be dragged by the user.
 }
 unit PairSplitter;

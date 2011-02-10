@@ -120,9 +120,9 @@ type
   
   
   { TIDEMenuSection
-    An TIDEMenuItem with childs, either in a sub menu or separated with
+    An TIDEMenuItem with children, either in a sub menu or separated with
     separators.
-    If no childs are visible, the section will not be visible.
+    If no children are visible, the section will not be visible.
     }
     
   { TIDEMenuSection }
@@ -216,7 +216,7 @@ type
 
 
   { TIDEMenuCommand
-    A leaf menu item. No childs.
+    A leaf menu item. No children.
     Hint: The shortcut is defined via the Command property.
   }
   TIDEMenuCommand = class(TIDEMenuItem)
@@ -949,7 +949,7 @@ var
   // a separator at top is needed, if
   // - this section is embedded (not ChildsAsSubMenu)
   // - and this section is visible
-  // - and this section has visible childs
+  // - and this section has visible children
   // - and there is a visible menu item in front
   var
     i: Integer;
@@ -1015,7 +1015,7 @@ var
   // a separator at bottom is needed, if
   // - this section is imbedded (not ChildsAsSubMenu)
   // - and this section is visible
-  // - and this section has visible childs
+  // - and this section has visible children
   // - and there is a visible menu item behind and it has no top separator
   var
     ItemBehind: TIDEMenuItem;
@@ -1118,7 +1118,7 @@ begin
     if FTopSeparator<>nil then
       inc(ContainerMenuIndex);
 
-    // update childs
+    // update children
     if Visible then
       for i:=0 to FInvalidChildStartIndex-1 do
         inc(ContainerMenuIndex,Items[i].Size);
@@ -1145,7 +1145,7 @@ begin
             ContainerMenuItem.Insert(ContainerMenuIndex,Item.MenuItem);
           end;
         end;
-        // update grand childs
+        // update grand children
         if CurSection<>nil then begin
           CurSection:=TIDEMenuSection(Item);
           CurSection.FInvalidChildStartIndex:=0;

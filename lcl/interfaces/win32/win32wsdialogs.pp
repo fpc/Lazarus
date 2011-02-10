@@ -458,7 +458,7 @@ end;
 
  The OpenFile API call returns false, if an error has occurred or the user has
  pressed cancel. If there was an error CommDlgExtendedError returns
- FNERR_BUFFERTOOSMALL. But enlarging the buffer at that time is not usefull
+ FNERR_BUFFERTOOSMALL. But enlarging the buffer at that time is not useful
  anymore, unless you show the dialog again with a bigger buffer (Sorry, the
  buffer was too small, please select the files again). This is not acceptable.
 

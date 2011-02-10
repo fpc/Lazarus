@@ -18,7 +18,7 @@
 No override needed.</descr>
       </element>
       <element name="TDesignerMediator.CollectChildren">
-        <short>Used by GetChilds to add collected childs to add to FCollectedChilds.</short>
+        <short>Used by GetChilds to add collected children to add to FCollectedChilds.</short>
         <descr>
           <printshort id="TDesignerMediator.CollectChildren"/>
 No override needed.</descr>
@@ -88,7 +88,7 @@ The default implementation uses GetBounds. No override needed.
         <descr>
           <printshort id="TDesignerMediator.GetClientArea"/>
 The default implementation uses GetBounds and assumes that a child component placed at 0,0 and the Width/Height of the component will completely overlap the component.
-Override this if some of your components place childs with an offset like a TGroupBox.
+Override this if some of your components place children with an offset like a TGroupBox.
 </descr>
       </element>
       <element name="TDesignerMediator.GetComponentOriginOnForm">

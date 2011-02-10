@@ -2053,7 +2053,7 @@ type
   private
     FOwner: TTreeNodes;   // the object, which contains all nodes of the tree
     FCapacity: integer;   // size of FItems
-    FCount: integer;      // # of first level childs in FItems
+    FCount: integer;      // # of first level children in FItems
     FData: Pointer;       // custom data
     FHeight: integer;     // height in pixels
     FImageIndex: TImageIndex;

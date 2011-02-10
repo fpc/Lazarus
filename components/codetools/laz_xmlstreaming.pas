@@ -14,7 +14,7 @@
  **********************************************************************}
 {
   Extended by Mattias Gaertner:
-    Reading/Writing childs, all kinds of properties,
+    Reading/Writing children, all kinds of properties,
     custom properties (via DefineProperties).
 }
 unit Laz_XMLStreaming;
@@ -656,7 +656,7 @@ begin
         //writeln('TXMLObjectReader.ReadNextValue list: vaList');
         Result:=vaList;
         if (FElement.FirstChild is TDOMElement) then begin
-          // the list has childs
+          // the list has children
           if not Stay then begin
             FElement:=TDOMElement(FElement.FirstChild);
             FElementPosition:=0;
@@ -673,11 +673,11 @@ begin
         Result:=vaNull;
         if not Stay then begin
           if (FElement.NextSibling is TDOMElement) then begin
-            //writeln('TXMLObjectReader.ReadNextValue list: end of childs, next list');
+            //writeln('TXMLObjectReader.ReadNextValue list: end of children, next list');
             FElement:=TDOMElement(FElement.NextSibling);
             FElementPosition:=0;
           end else begin
-            //writeln('TXMLObjectReader.ReadNextValue list: end of childs, end of collection');
+            //writeln('TXMLObjectReader.ReadNextValue list: end of children, end of collection');
             FElement:=FElement.ParentNode as TDOMElement;
             FElementPosition:=0;
           end;

@@ -5204,7 +5204,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     //if AWinControl is TListView then DebugLn('ConnectChilds A ',DbgS(TheWidget));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
       //if AWinControl is TListView then DebugLn('ConnectChilds B ');
-      // this is a container widget -> connect all childs
+      // this is a container widget -> connect all children
       {$IFDEF Gtk2}
       ChildEntry2:=gtk_container_get_children(PGtkContainer(TheWidget));
       while ChildEntry2<>nil do begin
@@ -7328,7 +7328,7 @@ end;
   Because the gtk puts all size requests into a queue, it will process the
   requests not immediately, but _after_ all requests. This results in changing
   the widget size four times and everytime the LCL gets a message. If the
-  control has childs, this will resize the childs four times.
+  control has children, this will resize the children four times.
   Therefore LCL size requests for a widget are cached and only the final one is
   sent in: TGtkWidgetSet.SendCachedLCLMessages.
  ------------------------------------------------------------------------------}

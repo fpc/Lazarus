@@ -7043,7 +7043,7 @@ msgid "Execution paused"
 msgstr "Vykonání pozastaveno"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "Vykonávání pozastaveno%s  Adresa: $%s%s  Procedura: %s%s Soubor: %s%s(Někdy tu může být okno assembleru:)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped

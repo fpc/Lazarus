@@ -4387,7 +4387,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
         <short>Clear all cells from the grid.</short>
         <descr>
           <p>Reset Column and Row counts to 0. Grid is completely emptied.</p>
-          <p>Compatibility: This property applies to Lazarus grids only , under Delphi/Kylix a grid can't be completly emptied.</p>
+          <p>Compatibility: This property applies to Lazarus grids only , under Delphi/Kylix a grid can't be completely emptied.</p>
         </descr>
       </element>
       <!-- procedure Visibility: public -->

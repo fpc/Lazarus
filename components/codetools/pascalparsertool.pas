@@ -2610,7 +2610,7 @@ var BlockType: TEndBlockType;
   procedure RaiseUnknownBlockType;
   begin
     SaveRaiseException('internal codetool error in '
-      +'TPascalParserTool.ReadTilBlockEnd: unkown block type: '+GetAtom);
+      +'TPascalParserTool.ReadTilBlockEnd: unknown block type: '+GetAtom);
   end;
   
   procedure RaiseStrExpectedWithBlockStartHint(const Msg: string);
@@ -2772,7 +2772,7 @@ var BlockType: TEndBlockType;
   procedure RaiseUnknownBlockType;
   begin
     SaveRaiseException('internal codetool error in '
-      +'TPascalParserTool.ReadBackTilBlockEnd: unkown block type: '+GetAtom);
+      +'TPascalParserTool.ReadBackTilBlockEnd: unknown block type: '+GetAtom);
   end;
 
 var OldAtom: TAtomPosition;

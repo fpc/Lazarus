@@ -7062,7 +7062,7 @@ msgid "Execution paused"
 msgstr "הריצה הושעתה"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "הריצה הושעתה s% כתובת: s%s%s% פרוצדורה: s%s% קובץ: s%s% (באחד הימים יופיע פה חלון של מהדר אסמבלי)"
 
 #: lazarusidestrconsts.lisexecutionstopped

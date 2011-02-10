@@ -7084,7 +7084,7 @@ msgid "Execution paused"
 msgstr "Uitvoering gepauzeerd"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "uitvoering gepauzeerd%s  Adres: $%s%s  Procedure: %s%s  Bestand: %s%s(Hier komt t.z.t. een assembler window)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped

@@ -2515,7 +2515,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomForm.BeginFormUpdate;
 
-  Called after all childs handles are created.
+  Called after all children handles are created.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.ChildHandlesCreated;
 begin

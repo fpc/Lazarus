@@ -414,7 +414,7 @@ begin
   if FUpdateCount > 0 then Exit;
   if [csLoading, csDestroying] * ComponentState <> [] then Exit;
 
-  // set all childs to ButtonWidth ButtonHeight
+  // set all children to ButtonWidth ButtonHeight
   BeginUpdate;
   try
     for i:=ControlCount-1 downto 0 do
@@ -459,7 +459,7 @@ end;
 
 procedure TToolBar.DoAutoSize;
 begin
-  // childs are moved in ControlsAligned independent of AutoSize=true
+  // children are moved in ControlsAligned independent of AutoSize=true
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,

@@ -187,7 +187,7 @@ procedure TMyWidgetMediator.Paint;
       end;
       // caption
       TextOut(5,2,AWidget.Caption);
-      // childs
+      // children
       if AWidget.ChildCount>0 then begin
         SaveHandleState;
         // clip client area

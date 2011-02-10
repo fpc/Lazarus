@@ -7080,7 +7080,7 @@ msgid "Execution paused"
 msgstr "S'ha pausat l'execució"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "S'ha pausat l'execució%s Adreça: $%s%s  Procediment: %s%s  Fitxer: %s%s(Algun dia una finestra d'assemblador emergirà aquí :)"
 
 #: lazarusidestrconsts.lisexecutionstopped

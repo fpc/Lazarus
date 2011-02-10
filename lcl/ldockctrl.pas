@@ -1855,7 +1855,7 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
 
     // Childs
     if (AControl is TWinControl) then begin
-      // check if childs need nodes
+      // check if children need nodes
       NeedChildNodes:=(AControl is TLazDockPages)
                    or (AControl is TLazDockPage);
       if not NeedChildNodes then begin
@@ -2721,7 +2721,7 @@ var
       Child:=PageNode.Childs[i];
       // changes parent of child
       Child.Parent:=ParentNode;
-      // move childs to place where PagesNode was
+      // move children to place where PagesNode was
       ChildBounds:=Child.Bounds;
       OffsetRect(ChildBounds,OffsetX,OffsetY);
       Child.Bounds:=ChildBounds;
@@ -2775,7 +2775,7 @@ var
 
   procedure RemoveEmptyNodes(var Node: TLazDockConfigNode);
   // remove unneeded child nodes
-  // if no childs left and Node itself is unneeded, it s freed and set to nil
+  // if no children left and Node itself is unneeded, it s freed and set to nil
   var
     i: Integer;
     Docker: TCustomLazControlDocker;
@@ -2786,7 +2786,7 @@ var
     DebugLn(['RemoveEmptyNodes ',Node.Name,' Node.ChildCount=',Node.ChildCount]);
     {$ENDIF}
     
-    // remove unneeded childs
+    // remove unneeded children
     i:=Node.ChildCount-1;
     while i>=0 do begin
       Child:=Node.Childs[i];
@@ -2815,19 +2815,19 @@ var
         end;
       end;
     ldcntPage:
-      // these are auto created parent node. If they have no childs: delete
+      // these are auto created parent node. If they have no children: delete
       if Node.ChildCount=0 then begin
         {$IFDEF VerboseAnchorDockCreateLayout}
-        DebugLn(['RemoveEmptyNodes delete node without childs: ',dbgs(Node)]);
+        DebugLn(['RemoveEmptyNodes delete node without children: ',dbgs(Node)]);
         {$ENDIF}
         DeleteNode(Node);
       end;
     ldcntForm:
-      // these are auto created parent node. If they have no childs: delete
-      // if they have only one child: delete node and move childs up
+      // these are auto created parent node. If they have no children: delete
+      // if they have only one child: delete node and move children up
       if Node.ChildCount=0 then begin
         {$IFDEF VerboseAnchorDockCreateLayout}
-        DebugLn(['RemoveEmptyNodes delete node without childs: ',dbgs(Node)]);
+        DebugLn(['RemoveEmptyNodes delete node without children: ',dbgs(Node)]);
         {$ENDIF}
         DeleteNode(Node);
       end else if Node.ChildCount=1 then begin
@@ -2835,11 +2835,11 @@ var
         SimplifyOneChildForm(Node);
       end;
     ldcntPages:
-      // these are auto created parent node. If they have no childs: delete
+      // these are auto created parent node. If they have no children: delete
       // if they have only one child: delete node and move child up
       if Node.ChildCount=0 then begin
         {$IFDEF VerboseAnchorDockCreateLayout}
-        DebugLn(['RemoveEmptyNodes delete node without childs: ',dbgs(Node)]);
+        DebugLn(['RemoveEmptyNodes delete node without children: ',dbgs(Node)]);
         {$ENDIF}
         DeleteNode(Node);
       end else if Node.ChildCount=1 then begin
@@ -2871,7 +2871,7 @@ var
           end;
         end;
       end;
-      // check childs
+      // check children
       for i:=0 to Node.ChildCount-1 do
         if not Check(Node.Childs[i]) then exit(false);
       Result:=true;
@@ -3213,7 +3213,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
       end;
     ldcntPages:
       begin
-        // a pages node has only page nodes as childs
+        // a pages node has only page nodes as children
         if not CheckHasParent then exit;
         if not CheckHasChilds then exit;
         for i:=0 to Node.ChildCount-1 do
@@ -3249,7 +3249,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
         // a horizontal splitter can be moved up/down
         // it is anchored left and right, and not top/bottom
         // it is not a root node
-        // it has no childs
+        // it has no children
         if not CheckHasParent then exit;
         if not CheckHasNoChilds then exit;
         if not CheckSideNotAnchored(akTop) then exit;
@@ -3267,7 +3267,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
     if not CheckUniqueCorner(akRight,akTop) then exit;
     if not CheckUniqueCorner(akRight,akBottom) then exit;
 
-    // check childs
+    // check children
     for i:=0 to Node.ChildCount-1 do
       if not CheckNode(Node.Childs[i]) then exit;
 
@@ -3519,7 +3519,7 @@ begin
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     Config.SetDeleteValue(Path+'Sides/'+AnchorNames[a]+'/Name',Sides[a],'');
 
-  // childs
+  // children
   Config.SetDeleteValue(Path+'Childs/Count',ChildCount,0);
   for i:=0 to ChildCount-1 do begin
     Child:=Childs[i];
@@ -3551,7 +3551,7 @@ begin
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     Sides[a]:=Config.GetValue(Path+'Sides/'+AnchorNames[a]+'/Name','');
 
-  // childs
+  // children
   NewChildCount:=Config.GetValue(Path+'Childs/Count',0);
   for i:=0 to NewChildCount-1 do begin
     SubPath:=Path+'Child'+IntToStr(i+1)+'/';

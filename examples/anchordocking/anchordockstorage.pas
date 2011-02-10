@@ -1343,7 +1343,7 @@ var
   i: Integer;
   ChildNode: TAnchorDockLayoutTreeNode;
 begin
-  // simplify childs
+  // simplify children
   i:=Count-1;
   while i>=0 do begin
     ChildNode:=Nodes[i];

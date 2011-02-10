@@ -7093,7 +7093,7 @@ msgid "Execution paused"
 msgstr "Veika pristabdyta"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "Veika pristabdyta%s  Adresas: $%s%s  Procedūra: %s%s  Failas: %s%s(Tarp kitko, kada nors čia turėtų pasirodyti asemblerio langas :)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped
