@@ -1767,7 +1767,7 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
-    debugln(['TBaseCompilerOptions.CreateTargetFilename ParsedOpts.OutputDirectoryOverride=',ParsedOpts.OutputDirectoryOverride]);
+    //debugln(['TBaseCompilerOptions.CreateTargetFilename ParsedOpts.OutputDirectoryOverride=',ParsedOpts.OutputDirectoryOverride]);
     if (UnitOutputDirectory='') and (ParsedOpts.OutputDirectoryOverride='') then
     begin
       // the unit is put into the same directory as the source
@@ -1795,7 +1795,6 @@ begin
     AppendDefaultExt;
     PrependDefaultType;
   end;
-  debugln(['TBaseCompilerOptions.CreateTargetFilename ',Result]);
 end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
