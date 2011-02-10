@@ -1169,7 +1169,7 @@ begin
     end;
   end;
   
-  // update ParserRoot item (childs will be updated on next Idle)
+  // update ParserRoot item (children will be updated on next Idle)
   if FParserRoot=nil then begin
     FParserRoot:=TCodeBrowserUnitList.Create(FWorkingParserRoot.Owner,nil);
     inc(FScannedPackages);
@@ -2063,7 +2063,7 @@ var
         CTNode:=CTNode.Next;
       ctnImplementation, ctnBeginBlock, ctnAsmBlock: break;
       else
-        // skip childs and go to next sibling or parent
+        // skip children and go to next sibling or parent
         CTNode:=CTNode.NextSkipChilds;
       end;
     end;

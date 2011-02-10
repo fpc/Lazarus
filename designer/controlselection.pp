@@ -2584,7 +2584,7 @@ var
         if not ControlIsInDesignerVisible(AControl) then exit;
         // check if control
         if (MaxParentComponent is TWinControl) then begin
-          // select only controls, that are childs of MaxParentComponent
+          // select only controls, that are children of MaxParentComponent
           if (not TWinControl(MaxParentComponent).IsParentOf(AControl)) then exit;
           // check if control is a grand child
           if (not EnvironmentOptions.RubberbandSelectsGrandChilds)

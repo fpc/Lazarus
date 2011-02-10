@@ -903,7 +903,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TMenuItem.Clear;
   
-  Deletes all childs
+  Deletes all children
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Clear;
 var
@@ -1422,7 +1422,7 @@ end;
   procedure TMenuItem.SubItemChanged(Sender: TObject; Source: TMenuItem;
     Rebuild: Boolean);
 
-  Is Called whenever one of the childs has changed.
+  Is Called whenever one of the children has changed.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SubItemChanged(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);

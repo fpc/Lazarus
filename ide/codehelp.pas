@@ -625,7 +625,7 @@ begin
   Result:='';
   MemStream:=TMemoryStream.Create;
   try
-    // write node with childs
+    // write node with children
     WriteXML(Node,MemStream);
     MemStream.Position:=0;
     SetLength(Result,MemStream.Size);

@@ -965,7 +965,7 @@ begin
   begin
     // a zone of pages -> needs a TLazDockPages
     if Zone.FirstChild = nil then
-      RaiseGDBException('TLazDockTree.CreateDockLayoutHelperControls Inconsistency: doPages without childs');
+      RaiseGDBException('TLazDockTree.CreateDockLayoutHelperControls Inconsistency: doPages without children');
     if (Zone.Pages = nil) then
       Zone.Pages:=TLazDockPages.Create(nil);
   end
@@ -998,7 +998,7 @@ begin
     Zone.Page := nil;
   end;
 
-  // create controls for childs and siblings
+  // create controls for children and siblings
   CreateDockLayoutHelperControls(Zone.FirstChild as TLazDockZone);
   CreateDockLayoutHelperControls(Zone.NextSibling as TLazDockZone);
 end;
@@ -1142,7 +1142,7 @@ begin
     end;
   end;
 
-  // anchor controls for childs and siblings
+  // anchor controls for children and siblings
   AnchorDockLayout(Zone.FirstChild as TLazDockZone);
   AnchorDockLayout(Zone.NextSibling as TLazDockZone);
 end;
@@ -1279,7 +1279,7 @@ begin
       DockSite.Visible := True;
   end else
   begin
-    // there are already other childs
+    // there are already other children
 
     // optimize DropZone
     if (DropZone.ChildCount>0) and
@@ -2415,7 +2415,7 @@ procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boo
 
   3. No TLazDockSplitter. Control is the only child of a TLazDockPage
      In this case the page will be deleted.
-     If the TLazDockPages has no childs left, it is recursively undocked.
+     If the TLazDockPages has no children left, it is recursively undocked.
 
   4. No TLazDockSplitter, Control is the only child of a TLazDockForm.
      The TLazDockForm is deleted and the Control is floated.
@@ -3076,12 +3076,12 @@ function TLazDockForm.CloseQuery: boolean;
       AControl:=ParentControl.Controls[i];
       if (AControl is TWinControl) then begin
         if (AControl is TCustomForm) then begin
-          // a top level form: query and do not ask childs
+          // a top level form: query and do not ask children
           if (not TCustomForm(AControl).CloseQuery) then
             exit(false);
         end
         else if not QueryForms(TWinControl(AControl)) then
-          // search childs for forms
+          // search children for forms
           exit(false);
       end;
     end;

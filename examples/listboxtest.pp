@@ -52,7 +52,7 @@ begin
   Left := 200;
   Top := 200;
 
-  // create childs
+  // create children
   Button1 := TButton.Create(Self);
   Button1.OnClick := @Button1Click;
   Button1.Parent := Self;

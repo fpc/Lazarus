@@ -1345,7 +1345,7 @@ begin
     // add in DefineTree
     DefineTree.Add(NewTemplate);
   end;
-  // add childs to TreeView
+  // add children to TreeView
   AddChilds(NewTreeNode);
   // show and select
   SetNodeImages(NewTreeNode,true);

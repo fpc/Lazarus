@@ -104,9 +104,9 @@ const
   ctnProperty           = 50; // child of visibility section or AllClassInterfaces
   ctnMethodMap          = 51; // child of visibility section or AllClassInterfaces
   
-  ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
-  ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
-  ctnParameterList      = 62;  // childs: ctnVarDefinition
+  ctnProcedure          = 60;  // children: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
+  ctnProcedureHead      = 61;  // children: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
+  ctnParameterList      = 62;  // children: ctnVarDefinition
 
   ctnIdentifier         = 70;
   ctnRangedArrayType    = 71;

@@ -413,7 +413,7 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
-  // no childs
+  // no children
   Result := False;
 end;
 

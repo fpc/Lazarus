@@ -215,7 +215,7 @@ end;
   Params:  AWindow : PGDkWindow, ACursor: HCursor, ARecursive: Boolean
   Returns: Nothing
 
-  Sets the cursor for a window (or recursively for window with childs)
+  Sets the cursor for a window (or recursively for window with children)
  ------------------------------------------------------------------------------}
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor; ARecursive: Boolean);
 var

@@ -131,7 +131,7 @@ type
   
   { TAutoSizeCtrlData
     This class is used by the auto size algorithm, to compute the preferred
-      size of a control given the preferred sizes of its childs.
+      size of a control given the preferred sizes of its children.
     Hints about the algorithm:
       First it builds a graph of dependencies. That means, for every side
       (Left,Top,Right,Bottom) of each child control the anchor control and
@@ -908,7 +908,7 @@ begin
     if not MoveNonAlignedChildrenTop then MoveDiff:=0;
     DoMoveNonAlignedChildren(akTop,MoveDiff,false);
   end else begin
-    // there is an automatic layout for non aligned childs
+    // there is an automatic layout for non aligned children
     // use the layout engine, but with static values
     ChildSizing:=nil;
     Box:=nil;
@@ -966,7 +966,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
   MoveNonAlignedChildrenLeft, MoveNonAlignedChildrenTop: boolean; out
   MoveNonAlignedToLeft, MoveNonAlignedToTop, PreferredClientWidth,
   PreferredClientHeight: integer);
-{ if MoveNonAlignedChilds=true then all non-aligned childs will be moved in
+{ if MoveNonAlignedChilds=true then all non-aligned children will be moved in
   parallel, so that at least one child is positioned left most and one child
   is positioned top most.
 
@@ -1104,7 +1104,7 @@ begin
   if ChildCount=0 then exit;
 
   // fix control properties
-  // check if there are visible childs
+  // check if there are visible children
   VisibleCount:=0;
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
@@ -1156,7 +1156,7 @@ begin
     WriteDebugReport('Space completed','');
     {$ENDIF}
 
-    // calculate the needed positions for all childs
+    // calculate the needed positions for all children
   until ComputePositions;
   
   {$IFDEF VerboseAutoSizeCtrlData}
@@ -1731,7 +1731,7 @@ var
   CurSize: LongInt;
 
   function GetChildTotalSize: integer;
-  // computes the total preferred size of all childs of this Orientation
+  // computes the total preferred size of all children of this Orientation
   var
     i: Integer;
     Child: TAutoSizeBox;
@@ -1750,8 +1750,8 @@ var
   
   procedure GetChildMaxResize(out Factor: TResizeFactor;
     out ResizeableCount: integer);
-  // returns the number of childs/gaps, that can grow (ResizeableCount)
-  // and the maximum factor, by which the childs/gaps can grow (TResizeFactor)
+  // returns the number of children/gaps, that can grow (ResizeableCount)
+  // and the maximum factor, by which the children/gaps can grow (TResizeFactor)
   var
     i: Integer;
     CurScale: Double;
@@ -1881,8 +1881,8 @@ var
 
   procedure GetChildMinResize(out Factor: TResizeFactor;
     out ResizeableCount: integer);
-  // returns the number of childs/gaps, that can shrink (ResizeableCount)
-  // and the maximum factor, by which the childs/gaps can shrink (TResizeFactor)
+  // returns the number of children/gaps, that can shrink (ResizeableCount)
+  // and the maximum factor, by which the children/gaps can shrink (TResizeFactor)
   var
     i: Integer;
     CurScale: Double;
@@ -2050,7 +2050,7 @@ begin
     else
       EnlargeStyle:=ChildSizing.EnlargeVertical;
     while TargetSize>CurSize do begin
-      // shrink childs
+      // shrink children
       GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount);
       if (ResizeableCount=0) or (MaxResizeFactorPerItem.Offset=0) then break;
       
@@ -2110,7 +2110,7 @@ end;
 procedure TAutoSizeBox.AlignToRight(TargetWidth: integer);
 
   function GetChildTotalSize(Orientation: TAutoSizeBoxOrientation): integer;
-  // computes the total preferred size of all childs of this Orientation
+  // computes the total preferred size of all children of this Orientation
   var
     i: Integer;
     Child: TAutoSizeBox;
@@ -2333,11 +2333,11 @@ var
   o: TAutoSizeBoxOrientation;
   i: Integer;
 begin
-  // free all childs
+  // free all children
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     for i:=0 to ChildCount[o]-1 do
       Childs[o][i].Free;
-  // free childs arrays
+  // free children arrays
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     ReallocMem(Childs[o],0);
 end;
@@ -3233,7 +3233,7 @@ end;
 {-------------------------------------------------------------------------------
   procedure TWinControl.DoAutoSize;
 
-  Shrink or enlarge to fit childs.
+  Shrink or enlarge to fit children.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAutoSize;
 var
@@ -3241,11 +3241,11 @@ var
 
   procedure GetMoveDiffForNonAlignedChilds(const CurClientRect: TRect;
     out dx, dy: integer);
-  // how much can non-aligned-childs be moved up and left
-  // non-aligned-childs: no fixed anchoring or autosizing,
+  // how much can non-aligned-children be moved up and left
+  // non-aligned-children: no fixed anchoring or autosizing,
   //      (Align=alNone, visible, AnchorSide[].Control=nil)
   // borderspacing is used
-  // e.g. dx=10 means all non-align-childs should be moved 10 pixels to the left
+  // e.g. dx=10 means all non-align-children should be moved 10 pixels to the left
   var
     NewClientWidth, NewClientHeight: integer;
     Layout: TAutoSizeCtrlData;
@@ -3313,16 +3313,16 @@ begin
     WidthIsFixed:=WidthIsAnchored;
     HeightIsFixed:=HeightIsAnchored;
 
-    // move free childs as much as possible to left and top (all free childs the same)
+    // move free children as much as possible to left and top (all free children the same)
     if HasVisibleChilds then begin
       CurClientRect:=GetLogicalClientRect;
       AdjustClientRect(CurClientRect);
-      // get minimum left, top of non aligned childs
+      // get minimum left, top of non aligned children
       GetMoveDiffForNonAlignedChilds(CurClientRect,dx,dy);
       //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' CurClientRect=',dbgs(CurClientRect)]);
 
       if (dx<>0) or (dy<>0) then begin
-        // move all free childs to left and top of client area
+        // move all free children to left and top of client area
         //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' dx=',dbgs(dx),' dy=',dbgs(dy),' CurClientRect=',dbgs(CurClientRect),' CurAnchors=',dbgs(CurAnchors),' IsFixed: w=',WidthIsFixed,' h=',HeightIsFixed]);
         for I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
@@ -3432,7 +3432,7 @@ procedure TWinControl.DoAllAutoSize;
   var
     i: Integer;
   begin
-    // first make the childs visible
+    // first make the children visible
     if AWinControl.FControls<>nil then
       for i:=0 to AWinControl.FControls.Count-1 do
         if TObject(AWinControl.FControls[i]) is TWinControl then
@@ -3720,7 +3720,7 @@ end;
   Normally the clientwidth/clientheight is adjusted automatically by the
   interface. But it is up to interface when this will be done. The gtk for
   example just puts resize requests into a queue. The LCL would resize the
-  childs just after this procedure due to the clientrect. On complex forms with
+  children just after this procedure due to the clientrect. On complex forms with
   lots of nested controls, this would result in thousands of resizes.
   Changing the clientrect in the LCL to the most probable size reduces
   unneccessary resizes.
@@ -4094,7 +4094,7 @@ begin
   begin
     if HandleAllocated and TWinControl(AChild).HandleAllocated then
     begin
-      // ignore childs without handle
+      // ignore children without handle
       WinControls:=TFPList.Create;
       try
         for i:=FControls.Count-1 downto 0 do
@@ -4556,13 +4556,13 @@ begin
   end
   else
   begin
-    // do query wincontrol childs, in case they overlap
+    // do query wincontrol children, in case they overlap
     Control := ControlAtPos(SmallPointToPoint(MouseMessage.Pos),
                             [capfAllowWinControls]);
     if Control is TWinControl then
     begin
       // there is a TWinControl child at this position
-      // TWinControl childs get their own messages
+      // TWinControl children get their own messages
       // => ignore here
       Control := nil;
     end;
@@ -5071,7 +5071,7 @@ begin
   end;
   Result := LControl;
   
-  // check recursive sub childs
+  // check recursive sub children
   if (capfRecursive in Flags) and (Result is TWinControl) and
      (TWinControl(Result).ControlCount > 0) then
   begin
@@ -5990,7 +5990,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl ReAlign
 
-  Realign all childs
+  Realign all children
 ------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
@@ -6067,13 +6067,13 @@ end;
 
 function TWinControl.IsClientHeightStored: boolean;
 begin
-  // The ClientHeight is needed to restore childs anchored akBottom
+  // The ClientHeight is needed to restore children anchored akBottom
   Result:=ControlCount>0;
 end;
 
 function TWinControl.IsClientWidthStored: boolean;
 begin
-  // The ClientWidth is needed to restore childs anchored akRight
+  // The ClientWidth is needed to restore children anchored akRight
   Result:=ControlCount>0;
 end;
 
@@ -7417,7 +7417,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.ParentFormHandleInitialized;
 
-  Called after all childs handles of the ParentForm are created.
+  Called after all children handles of the ParentForm are created.
  ------------------------------------------------------------------------------}
 procedure TWinControl.ParentFormHandleInitialized;
 var
@@ -7435,7 +7435,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.ChildHandlesCreated;
   
-  Called after all childs handles are created.
+  Called after all children handles are created.
  ------------------------------------------------------------------------------}
 procedure TWinControl.ChildHandlesCreated;
 begin
@@ -7843,8 +7843,8 @@ end;
   are valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead (exception: csAutoSize0x0).
   TWinControl overrides this:
-  If there are childs, their total preferred size is calculated.
-  If this value can not be computed (e.g. the childs depend too much on their
+  If there are children, their total preferred size is calculated.
+  If this value can not be computed (e.g. the children depend too much on their
   parent clientrect), then the interface is asked for the preferred size.
   For example the preferred size of a TButton is the size, where the label fits
   exactly. This depends heavily on the current theme and widgetset.
@@ -7887,7 +7887,7 @@ begin
           AdjustedClientRect.Top+CurClientRect.Bottom-AdjustedClientRect.Bottom);
 
   if ControlCount>0 then begin
-    // Beware: ControlCount>0 does not mean that there are visible childs
+    // Beware: ControlCount>0 does not mean that there are visible children
 
     // get the size requirements for the child controls
     Layout:=nil;

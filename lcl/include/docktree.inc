@@ -34,7 +34,7 @@ procedure TDockTree.DeleteZone(Zone: TDockZone);
   end;
   
 begin
-  Traverse(Zone.FirstChild); // destroy all childs
+  Traverse(Zone.FirstChild); // destroy all children
   Zone.Free; // destroy zone itself
 end;
 

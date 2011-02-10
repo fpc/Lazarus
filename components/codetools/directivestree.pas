@@ -2541,7 +2541,7 @@ begin
     or  ((Result.EndPos=p) and (Result.NextBrother<>nil)
           and (Result.NextBrother.StartPos>p))
     then begin
-      // p is in range of Result => check childs
+      // p is in range of Result => check children
       if (Result.FirstChild=nil)
       or (Result.FirstChild.StartPos>p) then
         exit;

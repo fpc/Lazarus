@@ -4054,7 +4054,7 @@ begin
 
   {$ifdef Gtk1}
   //Gtk2 uses a different combobox widget class
-  // childs
+  // children
   if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.Entry));
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.List));

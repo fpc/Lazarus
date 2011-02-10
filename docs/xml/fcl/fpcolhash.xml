@@ -59,7 +59,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="TColHashMainNode.childs">
+      <element name="TColHashMainNode.children">
         <short/>
         <descr/>
         <seealso/>

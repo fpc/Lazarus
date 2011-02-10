@@ -919,7 +919,7 @@ begin
         //DebugLn(['TCustomNotebook.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
         ReAlign;
         // TCustomPage.IsControlVisible is overriden
-        // therefore AutoSizing of childs was skipped => do it now
+        // therefore AutoSizing of children was skipped => do it now
         CurPage.ReAlign;
       end;
     end else

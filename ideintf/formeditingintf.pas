@@ -460,7 +460,7 @@ begin
     Childs:=TFPList.Create;
     try
       GetChilds(Result,Childs);
-      //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',childs.Count,' ClientArea=',dbgs(ClientArea)]);
+      //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',children.Count,' ClientArea=',dbgs(ClientArea)]);
       Found:=false;
       // iterate backwards (z-order)
       for i:=Childs.Count-1 downto 0 do begin

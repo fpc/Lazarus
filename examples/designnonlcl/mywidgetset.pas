@@ -120,7 +120,7 @@ type
   end;
 
   { TMyButton
-    A widget that does not allow childs at design time }
+    A widget that does not allow children at design time }
 
   TMyButton = class(TMyWidget)
   public
@@ -128,7 +128,7 @@ type
   end;
 
   { TMyGroupBox
-    A widget that does allow childs at design time }
+    A widget that does allow children at design time }
 
   TMyGroupBox = class(TMyWidget)
   end;

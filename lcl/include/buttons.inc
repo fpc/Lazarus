@@ -251,7 +251,7 @@ end;
 
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
-  // no childs
+  // no children
   Result:=false;
 end;
 

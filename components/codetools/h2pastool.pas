@@ -1409,7 +1409,7 @@ begin
       PascalCode:=ChildNode.PascalName+': record';
       W(PascalCode);
       IncIndent;
-      // write childs
+      // write children
       W('case longint of');
       IncIndent;
       NoNameCount:=0;
@@ -1852,7 +1852,7 @@ var
   EndIfNode: TH2PDirectiveNode;
 begin
   if (Node.H2PNode<>nil) and (Node.H2PNode.FirstChild<>nil) then begin
-    raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: a directive can not have H2P childs');
+    raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: a directive can not have H2P children');
   end;
   DebugLn(['TH2PasTool.DeleteDirectiveNode ',Node.DescAsString(CTool)]);
 
@@ -1891,19 +1891,19 @@ begin
     end;
   end;
   
-  // delete or move childs
+  // delete or move children
   if Node.FirstChild<>nil then begin
     if DeleteChilds then begin
-      // delete directive childs
+      // delete directive children
       while Node.FirstChild<>nil do begin
         DeleteDirectiveNode(TH2PDirectiveNode(Node.FirstChild),true,false);
       end;
     end else begin
-      // keep childs
-      // => move directive childs one level up (in front of Node)
+      // keep children
+      // => move directive children one level up (in front of Node)
       if (Node.Desc<>h2pdnIf) and (Node.Desc<>h2pdnIfDef) and (Node.Desc<>h2pdnIfNDef)
       then
-        raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: can not move childs in front');
+        raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: can not move children in front');
       DirectivesTree.MoveChildsInFront(Node);
     end;
   end;
@@ -1935,7 +1935,7 @@ begin
     FPascalNames.Remove(Node);
   if Node.CName<>'' then
     FCNames.Remove(Node);
-  // delete childs
+  // delete children
   while Node.FirstChild<>nil do
     DeleteH2PNode(TH2PNode(Node.FirstChild));
   // delete directives

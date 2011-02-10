@@ -2001,7 +2001,7 @@ begin
   if GTK_WIDGET_REALIZED(Widget) then begin
     { The gtk sends the size messages after the resizing. Therefore the parent
       widget is already resized, but the parent resize message will be emitted
-      after all its childs. So, the gtk resizes in top-bottom order, just like the
+      after all its children. So, the gtk resizes in top-bottom order, just like the
       LCL. But it sends size messages in bottom-top order, which can result in
       many resizes in the LCL.
     }

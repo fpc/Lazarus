@@ -3027,7 +3027,7 @@ begin
       else
         Result:=NewNode;
       LastNewNode:=NewNode;
-      // copy childs
+      // copy children
       if WithChilds and (ANode.FirstChild<>nil) then begin
         NewNode:=ANode.FirstChild.CreateCopy(OnlyMarked,true,true);
         if NewNode<>nil then
@@ -3087,7 +3087,7 @@ begin
     end;
     IndexedPath:=Path+'Node'+IntToStr(i)+'/';
     DefTempl.LoadValuesFromXMLConfig(XMLConfig,IndexedPath,WithMergeInfo);
-    // load childs
+    // load children
     if XMLConfig.GetValue(IndexedPath+'Count/Value',0)>0 then begin
       NewChild:=TDefineTemplate.Create;
       DefTempl.AddChild(NewChild);
@@ -3178,7 +3178,7 @@ begin
       inc(Index);
       IndexedPath:=Path+'Node'+IntToStr(Index)+'/';
       DefTempl.SaveValuesToXMLConfig(XMLConfig,IndexedPath,WithMergeInfo);
-      // save childs
+      // save children
       if DefTempl.FFirstChild<>nil then
         DefTempl.FirstChild.SaveToXMLConfig(XMLConfig,IndexedPath,
                                    true,OnlyMarked,
@@ -3207,7 +3207,7 @@ begin
         DefTempl.MergeNameBehind:=DefTempl.Next.Name
       else
         DefTempl.MergeNameBehind:='';
-      // update childs
+      // update children
       if DefTempl.FFirstChild<>nil then
         DefTempl.FirstChild.CreateMergeInfo(true,OnlyMarked);
     end;
@@ -3315,7 +3315,7 @@ begin
       FirstSibling:=FirstSibling.Prior;
     while LastSibling.Next<>nil do
       LastSibling:=LastSibling.Next;
-    // merge childs
+    // merge children
     MergeTemplates(NewNode,NewNode.FFirstChild,NewNode.FLastChild,
                    SrcNode.FirstChild,true,NewNamePrefix);
     if not WithSiblings then break;
@@ -4245,7 +4245,7 @@ var
   
     procedure CalculateIfChilds;
     begin
-      // execute childs
+      // execute children
       CalculateTemplate(DefTempl.FirstChild,CurPath);
       // jump to end of else templates
       while (DefTempl.Next<>nil)
@@ -4366,7 +4366,7 @@ var
         end;
 
       da_Else:
-        // execute childs
+        // execute children
         begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',true);

@@ -2039,7 +2039,7 @@ var
     // update non visual components
     MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
-    // childs of the control, where the mouse started
+    // children of the control, where the mouse started
     if (ssCtrl in shift) then begin
       if MouseDownComponent=Form then
         MaxParentComponent:=FLookupRoot

@@ -34,7 +34,7 @@ resourcestring
   ersShowExtended = 'Show Extended';
   ersShowMinimal = 'Show Minimal';
   ersVisibleComponents = 'Visible components';
-  ersShowAllChilds = 'Show all childs';
+  ersShowAllChilds = 'Show all children';
   ersIDEMenuItems = 'IDE menu items';
   ersNewSingleFileProgram = 'New single file program';
   ersNewSingleFileEducationProgram = 'New single file education program';
