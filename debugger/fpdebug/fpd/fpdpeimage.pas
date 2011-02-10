@@ -247,7 +247,7 @@ begin
   WriteLN('  DataDirectory:');
   for n := 0 to IMAGE_NUMBEROF_DIRECTORY_ENTRIES-1 do
   begin
-    WriteLN('   [', DIR_NAMES[n]+']':14, ' Adress: $', IntToHex(OH^.DataDirectory[n].VirtualAddress, 8), ' Size: ', OH^.DataDirectory[n]. Size);
+    WriteLN('   [', DIR_NAMES[n]+']':14, ' Address: $', IntToHex(OH^.DataDirectory[n].VirtualAddress, 8), ' Size: ', OH^.DataDirectory[n]. Size);
   end;
 
   WriteLN('Sections: ');

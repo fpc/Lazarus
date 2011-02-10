@@ -988,7 +988,7 @@ type
                        const ALine: Integer; AState: TCallStackEntryState = cseValid);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
-    property Adress: TDbgPtr read FAdress;
+    property Address: TDbgPtr read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
     property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
@@ -5478,7 +5478,7 @@ begin
     else if FCurrentRange.ContainsAddr(BaseAddr)
     then begin
       {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: TDBGDisassembler.OnMerge: Adress at odd offset ',BaseAddr, ' before=',CountBefore, ' after=', CountAfter]);
+      debugln(['WARNING: TDBGDisassembler.OnMerge: Address at odd offset ',BaseAddr, ' before=',CountBefore, ' after=', CountAfter]);
       {$ENDIF}
       lb := CountBefore;
       la := CountAfter;
@@ -5517,7 +5517,7 @@ begin
     if NewRange = nil
     then begin
       {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: TDBGDisassembler.FindRange: Adress not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count ]);
+      debugln(['INFO: TDBGDisassembler.FindRange: Address not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count ]);
       {$ENDIF}
       exit;
     end;
@@ -5528,7 +5528,7 @@ begin
       // address at incorrect offset
       Result := HandleRangeWithInvalidAddr(NewRange, AnAddr, ALinesBefore, ALinesAfter);
       {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: TDBGDisassembler.FindRange: Adress at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
+      debugln(['WARNING: TDBGDisassembler.FindRange: Address at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
       {$ENDIF}
       if Result
       then begin
@@ -5546,7 +5546,7 @@ begin
     SetCountAfter(NewRange.Count - 1 - i);
     Result := (i >= ALinesBefore) and (CountAfter >= ALinesAfter);
     {$IFDEF DBG_VERBOSE}
-    debugln(['INFO: TDBGDisassembler.FindRange: Adress found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
+    debugln(['INFO: TDBGDisassembler.FindRange: Address found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
     {$ENDIF}
   finally
     UnlockChanged;
