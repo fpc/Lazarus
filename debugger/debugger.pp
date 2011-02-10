@@ -5058,7 +5058,7 @@ end;
 
 procedure TBaseDisassembler.InternalIncreaseCountBefore(ACount: Integer);
 begin
-  // increase count withou chnage notification
+  // increase count withou change notification
   if ACount < FCountBefore
   then begin
     {$IFDEF DBG_VERBOSE}
@@ -5071,7 +5071,7 @@ end;
 
 procedure TBaseDisassembler.InternalIncreaseCountAfter(ACount: Integer);
 begin
-  // increase count withou chnage notification
+  // increase count withou change notification
   if ACount < FCountAfter
   then begin
     {$IFDEF DBG_VERBOSE}

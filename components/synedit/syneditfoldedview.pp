@@ -2623,7 +2623,7 @@ procedure TSynEditFoldedView.LinesDeletedAtTextIndex(AStartIndex, ALineCount : I
 var top : Integer;
 begin
   top := TopTextIndex;
-  // topline may get out of sync => synedit is always going to chnage it back
+  // topline may get out of sync => synedit is always going to change it back
   fFoldTree.AdjustForLinesDeleted(AStartIndex+1, ALineCount);
   if not(SkipFixFolding) then
     FixFoldingAtTextIndex(AStartIndex, AStartIndex+ALineCount+1)

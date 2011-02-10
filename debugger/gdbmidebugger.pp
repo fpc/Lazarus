@@ -488,7 +488,7 @@ const
   GDCMD_PRIOR_IMMEDIATE = 999; // run immediate (request without callback)
   GDCMD_PRIOR_LINE_INFO = 100; // Line info should run asap
   GDCMD_PRIOR_DISASS    = 30;  // Run before watches
-  GDCMD_PRIOR_USER_ACT  = 10;  // set/chnage/remove brkpoint
+  GDCMD_PRIOR_USER_ACT  = 10;  // set/change/remove brkpoint
   GDCMD_PRIOR_STACK     = 2;   // Run before watches
   GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers etc)
 
@@ -3691,7 +3691,7 @@ begin
   end;
 
   if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got stop params, but did not chnage FTheDebugger.state: ', StoppedParams]);
+    debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
     //SetDebuggerState(dsError); // we cannot be running anymore
   end;
   if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
