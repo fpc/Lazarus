@@ -8535,7 +8535,7 @@ begin
        - The type may be prefixed by "&" for var param under dwarf (an fpc workaround)
          Under dwarf var param are hnadled by gdb, if casted or part of an expression,
            but not if standalone or dereferred ("^") only
-         Under stabs "var param" have no indications, but are completly and correctly
+         Under stabs "var param" have no indications, but are completely and correctly
            handled by gdb
 
      * ptype TheWhatisType

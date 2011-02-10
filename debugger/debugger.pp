@@ -5417,7 +5417,7 @@ begin
     // merge to start ( ARange.RangeEndAddr is in MergeRng )
     if MergeRng.ContainsAddr(ARange.RangeStartAddr)
     then begin
-      debugln(['ERROR: New Range is completly inside existing ', dbgs(MergeRng)]);
+      debugln(['ERROR: New Range is completely inside existing ', dbgs(MergeRng)]);
       exit;
     end;
     // MergeRng changes ID

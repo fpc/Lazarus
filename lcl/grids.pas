@@ -1972,7 +1972,7 @@ begin
 
     if Count=0 then begin
       //it's an autofillcolumns grid, so at least one
-      // of the columns must fill completly the grid's
+      // of the columns must fill completely the grid's
       // available width, let it be that column the last
       ForcedIndex := ColCount-1;
       if ForcedIndex>=FixedCols then
