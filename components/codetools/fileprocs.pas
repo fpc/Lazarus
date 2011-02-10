@@ -1791,6 +1791,7 @@ end;
 
 function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
   Delimiter: string; SearchCase: TCTSearchFileCase): string;
+// search in each directory, first normal case, then lower case, then upper case
 var
   p, StartPos, l: integer;
   CurPath, Base: string;

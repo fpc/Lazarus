@@ -158,6 +158,8 @@ type
     function DirectoryCachePoolFindVirtualFile(const Filename: string): string;
     function DirectoryCachePoolGetUnitFromSet(const UnitSet, AnUnitName: string
                                               ): string;
+    function DirectoryCachePoolGetCompiledUnitFromSet(
+                                     const UnitSet, AnUnitName: string): string;
     procedure DirectoryCachePoolIterateFPCUnitsFromSet(const UnitSet: string;
                                               const Iterate: TCTOnIterateFile);
   public
@@ -843,6 +845,7 @@ begin
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
   DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
   DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
+  DirectoryCachePool.OnGetCompiledUnitFromSet:=@DirectoryCachePoolGetCompiledUnitFromSet;
   DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FPCDefinesCache:=TFPCDefinesCache.Create(nil);
@@ -5260,18 +5263,36 @@ var
   Changed: boolean;
   UnitSetCache: TFPCUnitSetCache;
 begin
+  Result:='';
   UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
-    Result:='';
     exit;
   end;
   if Changed then begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
-    Result:='';
     exit;
   end;
   Result:=UnitSetCache.GetUnitSrcFile(AnUnitName);
+end;
+
+function TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet(
+  const UnitSet, AnUnitName: string): string;
+var
+  Changed: boolean;
+  UnitSetCache: TFPCUnitSetCache;
+begin
+  Result:='';
+  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
+  if UnitSetCache=nil then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
+    exit;
+  end;
+  if Changed then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
+    exit;
+  end;
+  Result:=UnitSetCache.GetCompiledUnitFile(AnUnitName);
 end;
 
 procedure TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet(

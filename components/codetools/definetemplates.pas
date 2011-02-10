@@ -839,6 +839,7 @@ type
     function GetUnitSrcFile(const AUnitName: string;
                             MustHavePPU: boolean = true;
                             SkipPPUCheckIfNoneExists: boolean = true): string;
+    function GetCompiledUnitFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
     class function GetInvalidChangeStamp: integer;
     procedure IncreaseChangeStamp;
@@ -8809,6 +8810,19 @@ begin
     if Result<>'' then
       Result:=FPCSourceDirectory+Result;
   end;
+end;
+
+function TFPCUnitSetCache.GetCompiledUnitFile(const AUnitName: string): string;
+var
+  ConfigCache: TFPCTargetConfigCache;
+begin
+  Result:='';
+  ConfigCache:=GetConfigCache(false);
+  if ConfigCache.Units=nil then exit;
+  Result:=ConfigCache.Units[AUnitName];
+  if Result='' then exit;
+  if CompareFileExt(Result,'.ppu',false)<>0 then
+    Result:='';
 end;
 
 class function TFPCUnitSetCache.GetInvalidChangeStamp: integer;

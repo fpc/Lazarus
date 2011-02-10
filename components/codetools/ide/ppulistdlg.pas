@@ -66,7 +66,7 @@ type
     ButtonPanel1: TButtonPanel;
     ScopeLabel: TLabel;
     UnitsStringGrid: TStringGrid;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -76,12 +76,12 @@ type
     FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     procedure SetAProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
     function FindUnit(AnUnitName: string): TPPUListItem;
     procedure UpdateAll;
     procedure UpdateUnitsGrid;
-    function PercentageToStr(const d: double): string;
+    function DoubleAsPercentage(const d: double): string;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
   public
     property AProject: TLazProject read FAProject write SetAProject;
@@ -247,7 +247,7 @@ procedure TPPUListDialog.UpdateUnitsGrid;
 
   function SizeToStr(TheBytes: int64; ThePercent: double): string;
   begin
-    Result:=IntToStr(TheBytes)+' bytes / '+PercentageToStr(ThePercent);
+    Result:=IntToStr(TheBytes)+' bytes / '+DoubleAsPercentage(ThePercent);
   end;
 
 var
@@ -287,8 +287,8 @@ begin
 
     // total
     Grid.Cells[0,1]:='Total';
-    Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,100);
-    Grid.Cells[2,1]:=SizeToStr(TotalOBytes,100);
+    Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
+    Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
 
     // ToDo: sort
 
@@ -305,7 +305,7 @@ begin
         s:='missing ...'
       else
         s:=IntToStr(Item.PPUFileSize)+' bytes / '
-          +PercentageToStr(double(Item.PPUFileSize)/TotalPPUBytes);
+          +DoubleAsPercentage(double(Item.PPUFileSize)/TotalPPUBytes);
       Grid.Cells[1,Row]:=s;
 
       // .o size
@@ -316,7 +316,7 @@ begin
         s:='missing ...'
       else
         s:=IntToStr(Item.OFileSize)+' bytes / '
-          +PercentageToStr(double(Item.OFileSize)/TotalOBytes);
+          +DoubleAsPercentage(double(Item.OFileSize)/TotalOBytes);
       Grid.Cells[2,Row]:=s;
 
       inc(Row);
@@ -329,9 +329,9 @@ begin
   Grid.EndUpdate;
 end;
 
-function TPPUListDialog.PercentageToStr(const d: double): string;
+function TPPUListDialog.DoubleAsPercentage(const d: double): string;
 begin
-  Result:=IntToStr(round(d*100));
+  Result:=IntToStr(round(d*10000));
   while length(Result)<3 do Result:='0'+Result;
   Result:=copy(Result,1,length(Result)-2)
           +DefaultFormatSettings.ThousandSeparator+RightStr(Result,2)+'%';
@@ -381,7 +381,6 @@ begin
       debugln(['TPPUListDialog.OnIdle search ppu of ',AnUnitName]);
       Item.PPUFile:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                                                          ProjectDir,AnUnitName);
-      debugln(['TPPUListDialog.OnIdle AAA1 ',Item.PPUFile]);
       Item.OFile:=ChangeFileExt(Item.PPUFile,'.o');
       if not FileExistsCached(Item.PPUFile) then
         Item.PPUFile:=PPUFileNotFound
