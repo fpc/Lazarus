@@ -1662,8 +1662,23 @@ end;
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 var
   i: Integer;
+  p: LongInt;
 begin
   Result:=s;
+  // convert line breaks to single spaces
+  i:=length(Result);
+  while (i>=1) do begin
+    if Result[i] in [#10,#13] then begin
+      Result[i]:=' ';
+      p:=i;
+      while (i>1) and (Result[i-1] in [#10,#13]) do dec(i);
+      if p>i then
+        System.Delete(Result,i,p-i);
+    end;
+    dec(i);
+  end;
+
+  // convert special characters to spaces
   for i:=1 to length(Result) do
     if Result[i] in [#0..#31,#127] then Result[i]:=' ';
   if Result='' then exit;
