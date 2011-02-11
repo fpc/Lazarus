@@ -813,6 +813,8 @@ type
       var ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
+    function FindDefaultAncestorOfClass(ClassNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
     function FindAncestorOfClassInheritance(IdentifierNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
@@ -1509,7 +1511,6 @@ begin
           // ToDo: DirtySrc
           Result:=FindDeclarationOfIdentAtParam(Params);
         end else begin
-            debugln(['TFindDeclarationTool.FindDeclaration AAA1']);
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
             Include(Params.Flags,fdfSearchForward);
@@ -3988,6 +3989,105 @@ begin
   Result:=true;
 end;
 
+function TFindDeclarationTool.FindDefaultAncestorOfClass(
+  ClassNode: TCodeTreeNode; Params: TFindDeclarationParams;
+  FindClassContext: boolean): boolean;
+var
+  OldInput: TFindDeclarationInput;
+  AncestorNode, ClassIdentNode: TCodeTreeNode;
+  SearchBaseClass: boolean;
+  AncestorContext: TFindContext;
+begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
+  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
+  then
+    RaiseException('[TFindDeclarationTool.FindDefaultAncestorOfClass] '
+      +' invalid classnode');
+  Result:=false;
+
+  // ToDo: ppu, dcu
+
+  // no ancestor class specified
+  ClassIdentNode:=ClassNode.Parent;
+  // check class name
+  if (ClassIdentNode=nil)
+  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
+  begin
+    MoveCursorToNodeStart(ClassNode);
+    RaiseException('class without name');
+  end;
+  if ClassNode.Desc=ctnClass then begin
+    // if this class is not TObject, TObject is class ancestor
+    SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
+  end else if ClassNode.Desc in AllClassInterfaces then begin
+    // Delphi has as default interface IInterface
+    // FPC has as default interface IUnknown and an alias IInterface = IUnknown
+    SearchBaseClass:=
+              (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
+          and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown'));
+  end else
+    exit;
+  if not SearchBaseClass then exit;
+
+  {$IFDEF ShowTriedContexts}
+  DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
+  ' search default ancestor class');
+  {$ENDIF}
+
+  // search ancestor
+  Params.Save(OldInput);
+  Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
+                 fdfExceptionOnNotFound]
+                +(fdfGlobals*Params.Flags)
+                -[fdfTopLvlResolving];
+  if ClassNode.Desc=ctnClass then
+    Params.SetIdentifier(Self,'TObject',nil)
+  else if ClassNode.Desc=ctnClassInterface then
+    Params.SetIdentifier(Self,'IInterface',nil)
+  else
+    exit;
+  Params.ContextNode:=ClassNode;
+  if not FindIdentifierInContext(Params) then begin
+    MoveCursorToNodeStart(ClassNode);
+    if ClassNode.Desc=ctnClass then
+      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+    else
+      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+    exit;
+  end;
+
+  // check result
+  if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+  begin
+    MoveCursorToNodeStart(ClassNode);
+    if ClassNode.Desc=ctnClass then
+      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+    else
+      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+  end;
+
+  // search ancestor class context
+  if FindClassContext then begin
+    AncestorNode:=Params.NewNode;
+    Params.Flags:=Params.Flags+[fdfFindChilds];
+    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                           AncestorNode);
+    Params.SetResult(AncestorContext);
+
+    // check result
+    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface])
+    then begin
+      MoveCursorToNodeStart(ClassNode);
+      if ClassNode.Desc=ctnClass then
+        RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+      else
+        RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+    end;
+  end;
+  Result:=true;
+  Params.Load(OldInput,true);
+end;
+
 {-------------------------------------------------------------------------------
   function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
     SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
@@ -4887,10 +4987,6 @@ end;
 function TFindDeclarationTool.FindAncestorOfClass(ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
 var
-  OldInput: TFindDeclarationInput;
-  AncestorNode, ClassIdentNode: TCodeTreeNode;
-  SearchBaseClass: boolean;
-  AncestorContext: TFindContext;
   InheritanceNode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
@@ -4902,94 +4998,14 @@ begin
   
   // ToDo: ppu, dcu
 
-  // search the ancestor name
   InheritanceNode:=FindInheritanceNode(ClassNode);
   if (InheritanceNode<>nil)
   and (InheritanceNode.FirstChild<>nil) then begin
     Result:=FindAncestorOfClassInheritance(InheritanceNode.FirstChild,
                                            Params,FindClassContext);
-    exit;
+  end else begin
+    Result:=FindDefaultAncestorOfClass(ClassNode,Params,FindClassContext);
   end;
-
-  // no ancestor class specified
-  ClassIdentNode:=ClassNode.Parent;
-  // check class name
-  if (ClassIdentNode=nil)
-  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
-  begin
-    MoveCursorToNodeStart(ClassNode);
-    RaiseException('class without name');
-  end;
-  if ClassNode.Desc=ctnClass then begin
-    // if this class is not TObject, TObject is class ancestor
-    SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
-  end else if ClassNode.Desc in AllClassInterfaces then begin
-    // Delphi has as default interface IInterface
-    // FPC has as default interface IUnknown and an alias IInterface = IUnknown
-    SearchBaseClass:=
-              (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
-          and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown'));
-  end else
-    exit;
-  if not SearchBaseClass then exit;
-
-  {$IFDEF ShowTriedContexts}
-  DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-  ' search default ancestor class');
-  {$ENDIF}
-
-  // search ancestor
-  Params.Save(OldInput);
-  Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                 fdfExceptionOnNotFound]
-                +(fdfGlobals*Params.Flags)
-                -[fdfTopLvlResolving];
-  if ClassNode.Desc=ctnClass then
-    Params.SetIdentifier(Self,'TObject',nil)
-  else if ClassNode.Desc=ctnClassInterface then
-    Params.SetIdentifier(Self,'IInterface',nil)
-  else
-    exit;
-  Params.ContextNode:=ClassNode;
-  if not FindIdentifierInContext(Params) then begin
-    MoveCursorToNodeStart(ClassNode);
-    if ClassNode.Desc=ctnClass then
-      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-    else
-      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-    exit;
-  end;
-
-  // check result
-  if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
-  begin
-    MoveCursorToNodeStart(ClassNode);
-    if ClassNode.Desc=ctnClass then
-      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-    else
-      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-  end;
-
-  // search ancestor class context
-  if FindClassContext then begin
-    AncestorNode:=Params.NewNode;
-    Params.Flags:=Params.Flags+[fdfFindChilds];
-    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                           AncestorNode);
-    Params.SetResult(AncestorContext);
-
-    // check result
-    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface])
-    then begin
-      MoveCursorToNodeStart(ClassNode);
-      if ClassNode.Desc=ctnClass then
-        RaiseException(ctsDefaultClassAncestorTObjectNotFound)
-      else
-        RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
-    end;
-  end;
-  Result:=true;
-  Params.Load(OldInput,true);
 end;
 
 function TFindDeclarationTool.FindAncestorOfClassInheritance(
@@ -5236,20 +5252,38 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
 { this function is internally used by FindIdentifierInContext
   and FindBaseTypeOfNode
 }
+
+  function Search(AncestorTool: TFindDeclarationTool;
+    AncestorClassNode: TCodeTreeNode): boolean;
+  var
+    OldInput: TFindDeclarationInput;
+  begin
+    Params.Save(OldInput);
+    Params.ContextNode:=AncestorClassNode;
+    Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
+    Result:=AncestorTool.FindIdentifierInContext(Params);
+    Params.Load(OldInput,true);
+  end;
+
 var
-  OldInput: TFindDeclarationInput;
+  InheritanceNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
 
   if not (fdfSearchInAncestors in Params.Flags) then exit;
-  Result:=FindAncestorOfClass(ClassNode,Params,true);
-  if not Result then exit;
 
-  Params.Save(OldInput);
-  Params.ContextNode:=Params.NewNode;
-  Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
-  Result:=Params.NewCodeTool.FindIdentifierInContext(Params);
-  Params.Load(OldInput,true);
+  InheritanceNode:=FindInheritanceNode(ClassNode);
+  if (InheritanceNode<>nil) then begin
+    Node:=InheritanceNode.FirstChild;
+    while Node<>nil do begin
+      if not FindAncestorOfClassInheritance(Node,Params,true) then exit;
+      if Search(Params.NewCodeTool,Params.NewNode) then exit(true);
+      Node:=Node.NextBrother;
+    end;
+  end;
+  if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
+  Result:=Search(Params.NewCodeTool,Params.NewNode);
 end;
 
 {$IFDEF DebugPrefix}
