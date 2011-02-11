@@ -37,11 +37,24 @@ uses
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // codetools
   BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
-  PPUCodeTools;
+  PPUParser, PPUCodeTools;
 
 const
   PPUFileNotFound = ' ';
 type
+  TPPUListSort = (
+    plsName,
+    plsNameReverse,
+    plsOSizeDescending,
+    plsOSizeAscending,
+    plsPPUSizeDescending,
+    plsPPUSizeAscending,
+    plsUsesCountDescending,
+    plsUsesCountAscending,
+    plsUsedByCountDescending,
+    plsUsedByCountAscending
+    );
+
   TPPUListType = (
     pltUsedBy,
     pltUses
@@ -60,6 +73,8 @@ type
     UsesUnits: TStrings; // =nil means uses section not yet scanned
     UsedByUnits: TStrings;
     destructor Destroy; override;
+    function UsesCount: integer;
+    function UsedByCount: integer;
   end;
 
   { TPPUListDialog }
@@ -78,6 +93,13 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure UnitsStringGridDblClick(Sender: TObject);
+    procedure UnitsStringGridHeaderClick(Sender: TObject; IsColumn: Boolean;
+      Index: Integer);
+    procedure UnitsStringGridMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure UnitsStringGridMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
   private
@@ -85,6 +107,7 @@ type
     FIdleConnected: boolean;
     FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
+    FSort: array[1..3] of TPPUListSort;
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -169,13 +192,32 @@ begin
   inherited Destroy;
 end;
 
+function TPPUListItem.UsesCount: integer;
+begin
+  if UsesUnits=nil then
+    Result:=0
+  else
+    Result:=UsesUnits.Count;
+end;
+
+function TPPUListItem.UsedByCount: integer;
+begin
+  if UsedByUnits=nil then
+    Result:=0
+  else
+    Result:=UsedByUnits.Count;
+end;
+
 { TPPUListDialog }
 
 procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
-  IdleConnected:=false;
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
+  FSort[1]:=plsOSizeDescending;
+  FSort[2]:=plsName;
+  FSort[3]:=plsPPUSizeDescending;
+
   UnitUsesTabSheet.Caption:=crsUses;
   UnitUsedByTabSheet.Caption:=crsUsedBy;
   UnitPageControl.PageIndex:=0;
@@ -188,6 +230,36 @@ begin
   FreeAndNil(FSearchingItems);
   FItems.FreeAndClear;
   FreeAndNil(FItems);
+end;
+
+procedure TPPUListDialog.UnitsStringGridDblClick(Sender: TObject);
+begin
+
+end;
+
+procedure TPPUListDialog.UnitsStringGridHeaderClick(Sender: TObject;
+  IsColumn: Boolean; Index: Integer);
+begin
+
+end;
+
+procedure TPPUListDialog.UnitsStringGridMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Col: Longint;
+  Row: Longint;
+begin
+  UnitsStringGrid.MouseToCell(X,Y,Col,Row);
+  if (Row<=1) and (Shift=[ssLeft,ssDouble]) then begin
+    // double left click => sort
+
+  end;
+end;
+
+procedure TPPUListDialog.UnitsStringGridMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+
 end;
 
 procedure TPPUListDialog.UnitsStringGridSelectCell(Sender: TObject; aCol,
@@ -294,6 +366,8 @@ begin
   Grid.Cells[0,0]:='Unit';
   Grid.Cells[1, 0]:=crsSizeOfPpuFile;
   Grid.Cells[2, 0]:=crsSizeOfOFile;
+  Grid.Cells[3, 0]:=crsUses;
+  Grid.Cells[4, 0]:=crsUsedBy;
 
 
   SortedItems:=TAvgLvlTree.CreateObjectCompare(@CompareUnits);
@@ -317,6 +391,8 @@ begin
     Grid.Cells[0,1]:=crsTotal;
     Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
     Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
+    Grid.Cells[3,1]:='';
+    Grid.Cells[4,1]:='';
 
     // fill grid
     Row:=2;
@@ -344,6 +420,12 @@ begin
       else
         s:=SizeToStr(Item.OFileSize,double(Item.OFileSize)/TotalOBytes);
       Grid.Cells[2,Row]:=s;
+
+      // uses
+      Grid.Cells[3,Row]:=IntToStr(Item.UsesCount);
+
+      // used by
+      Grid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
 
       inc(Row);
       Node:=SortedItems.FindSuccessor(Node);
@@ -393,19 +475,57 @@ end;
 
 function TPPUListDialog.CompareUnits(Tree: TAvgLvlTree; Data1, Data2: Pointer
   ): integer;
+
+  function CompareInt(const a,b: int64; Reverse: boolean): integer;
+  begin
+    if a=b then exit(0);
+    if (a>b) xor Reverse then
+      Result:=-1
+    else
+      Result:=1;
+  end;
+
 var
   Item1: TPPUListItem absolute Data1;
   Item2: TPPUListItem absolute Data2;
-  Size1: Int64;
-  Size2: Int64;
+  i: Integer;
 begin
-  // compare size of .o file
-  Size1:=Max(0,Item1.OFileSize);
-  Size2:=Max(0,Item2.OFileSize);
-  if Size1>Size2 then exit(-1)
-  else if Size1<Size2 then exit(1);
-  // compare unit name
-  Result:=-SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
+  Result:=0;
+  for i:=low(FSort) to High(FSort) do begin
+    case FSort[i] of
+    plsName,plsNameReverse:
+      begin
+        Result:=SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
+        if FSort[i]=plsName then
+          Result:=-Result;
+        if Result<>0 then exit;
+      end;
+    plsOSizeAscending,plsOSizeDescending:
+      begin
+        Result:=CompareInt(Max(0,Item1.OFileSize),Max(0,Item2.OFileSize),
+                           FSort[i]=plsOSizeAscending);
+        if Result<>0 then exit;
+      end;
+    plsPPUSizeAscending,plsPPUSizeDescending:
+      begin
+        Result:=CompareInt(Max(0,Item1.PPUFileSize),Max(0,Item2.PPUFileSize),
+                           FSort[i]=plsPPUSizeAscending);
+        if Result<>0 then exit;
+      end;
+    plsUsesCountAscending,plsUsesCountDescending:
+      begin
+        Result:=CompareInt(Item1.UsesCount,Item2.UsesCount,
+                           FSort[i]=plsUsesCountDescending);
+        if Result<>0 then exit;
+      end;
+    plsUsedByCountAscending,plsUsedByCountDescending:
+      begin
+        Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,
+                           FSort[i]=plsUsedByCountDescending);
+        if Result<>0 then exit;
+      end;
+    end;
+  end;
 end;
 
 procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
@@ -506,14 +626,15 @@ begin
       Item.UsesUnits:=TStringList.Create;
       if Item.UsedByUnits=nil then
         Item.UsedByUnits:=TStringList.Create;
-      //debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
+      debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
       // scan for used units
       Scanned:=false;
       if Item.PPUFile<>PPUFileNotFound then begin
-        //debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'" ...']);
-        PPUTool:=CodeToolBoss.PPUCache.LoadFile(Item.PPUFile,true,false);
+        debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'" ...']);
+        PPUTool:=CodeToolBoss.PPUCache.LoadFile(Item.PPUFile,
+                                    [ppInterfaceHeader,ppImplementationHeader]);
         if (PPUTool<>nil) and (PPUTool.ErrorMsg='') then begin
-          //debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
+          debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
           MainUsesSection:=nil;
           ImplementationUsesSection:=nil;
           try
@@ -526,6 +647,8 @@ begin
             MainUsesSection.Free;
             ImplementationUsesSection.Free;
           end;
+        end else begin
+          debugln(['TPPUListDialog.OnIdle failed loading ',Item.PPUFile]);
         end;
       end;
       if (not Scanned) and (Item.SrcFile<>'') then begin

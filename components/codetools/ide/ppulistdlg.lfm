@@ -38,30 +38,48 @@ object PPUListDialog: TPPUListDialog
     Align = alTop
     AutoFillColumns = True
     BorderSpacing.Around = 6
-    ColCount = 3
     Columns = <    
       item
+        SizePriority = 10
         Title.Caption = 'Unit'
-        Width = 199
+        Width = 119
       end    
       item
+        SizePriority = 10
         Title.Caption = 'Size of .ppu file'
-        Width = 199
+        Width = 119
       end    
       item
+        SizePriority = 10
         Title.Caption = 'Size of .o file'
-        Width = 201
+        Width = 119
+      end    
+      item
+        SizePriority = 5
+        Title.Caption = 'Uses'
+        Width = 119
+      end    
+      item
+        SizePriority = 5
+        Title.Caption = 'Used by'
+        Width = 123
       end>
     DefaultColWidth = 150
     FixedCols = 0
     FixedRows = 2
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 1
+    OnDblClick = UnitsStringGridDblClick
+    OnHeaderClick = UnitsStringGridHeaderClick
+    OnMouseDown = UnitsStringGridMouseDown
+    OnMouseUp = UnitsStringGridMouseUp
     OnSelectCell = UnitsStringGridSelectCell
     ColWidths = (
-      199
-      199
-      201
+      119
+      119
+      119
+      119
+      123
     )
   end
   object ScopeLabel: TLabel
@@ -99,9 +117,9 @@ object PPUListDialog: TPPUListDialog
       Height = 162
       Top = 0
       Width = 593
-      ActivePage = UnitUsedByTabSheet
+      ActivePage = UnitUsesTabSheet
       Align = alClient
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 0
       object UnitUsesTabSheet: TTabSheet
         Caption = 'UnitUsesTabSheet'
@@ -121,6 +139,7 @@ object PPUListDialog: TPPUListDialog
               Width = 587
             end>
           FixedCols = 0
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           ColWidths = (
             587
@@ -142,12 +161,13 @@ object PPUListDialog: TPPUListDialog
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 587
+              Width = 589
             end>
           FixedCols = 0
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           ColWidths = (
-            587
+            589
           )
         end
       end

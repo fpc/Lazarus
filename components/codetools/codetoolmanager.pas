@@ -851,7 +851,7 @@ begin
   DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FPCDefinesCache:=TFPCDefinesCache.Create(nil);
-  PPUCache:=TPPUTools.Create(SourceCache);
+  PPUCache:=TPPUTools.Create;
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
