@@ -34,6 +34,7 @@ uses
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
+  ExtToolDialog,
   MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
   BuildLazDialog, BuildProfileManager, BuildManager, BaseBuildManager;
   
@@ -807,8 +808,8 @@ begin
     end;
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
-    ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
-    ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
+    TExternalToolList(ExternalTools).OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
+    TExternalToolList(ExternalTools).OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     if CompilerOverride<>'' then
       CompilerFilename:=CompilerOverride;
     if LazarusDirOverride<>'' then

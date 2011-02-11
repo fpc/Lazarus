@@ -153,7 +153,7 @@ type
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
 function BuildLazarus(Profiles: TBuildLazarusProfiles;
-  ExternalTools: TExternalToolList; Macros: TTransferMacroList;
+  ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags): TModalResult;
 
@@ -212,7 +212,7 @@ begin
 end;
 
 function BuildLazarus(Profiles: TBuildLazarusProfiles;
-  ExternalTools: TExternalToolList; Macros: TTransferMacroList;
+  ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags): TModalResult;
 
