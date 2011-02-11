@@ -43,6 +43,7 @@ uses
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
+  IDEHelpIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
@@ -795,7 +796,7 @@ end;
 
 procedure TPackageEditorForm.HelpBitBtnClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(HelpBitBtn);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TPackageEditorForm.InstallClick(Sender: TObject);

@@ -6,9 +6,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls,
-  Dialogs, Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs,
-  InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
-  IDEContextHelpEdit, ButtonPanel;
+  Dialogs, Buttons, ExtCtrls, StdCtrls, FileUtil, ButtonPanel,
+  BasicCodeTools,
+  IDEHelpIntf,
+  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
 
 type
   TIDEDirective = (
@@ -496,7 +497,7 @@ end;
 
 procedure TBuildFileDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TBuildFileDialog.OkButtonClick(Sender: TObject);

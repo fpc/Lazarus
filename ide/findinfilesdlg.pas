@@ -24,9 +24,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, FileProcs, LazarusIDEStrConsts, Dialogs, SynEditTypes, MacroIntf,
-  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel,
-  SrcEditorIntf, EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
+  ExtCtrls, FileProcs, LazarusIDEStrConsts, Dialogs, SynEditTypes,
+  ButtonPanel,
+  MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf,
+  InputHistory,
+  IDEDialogs,
+  EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
 
 type
   { TLazFindInFilesDialog }
@@ -184,7 +187,7 @@ end;
 
 procedure TLazFindInFilesDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);

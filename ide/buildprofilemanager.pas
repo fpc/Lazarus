@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs, ButtonPanel,
   Laz_XMLCfg, DefineTemplates,
-  IDEImagesIntf, IDEMsgIntf,
+  IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
   LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
   IDEContextHelpEdit, CompilerOptions;
 
@@ -934,7 +934,7 @@ end;
 
 procedure TBuildProfileManagerForm.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 end.

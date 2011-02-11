@@ -41,9 +41,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   Dialogs, AVL_Tree, FileUtil, ButtonPanel,
-  IDEWindowIntf, PackageIntf,
+  IDEWindowIntf, PackageIntf, IDEHelpIntf,
   IDEDefs, LazarusIDEStrConsts, IDEProcs,
-  AddToPackageDlg, ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
+  AddToPackageDlg, ComponentReg, PackageDefs, PackageSystem;
 
 type
 
@@ -123,7 +123,7 @@ end;
 
 procedure TAddFileToAPackageDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TAddFileToAPackageDialog.OkButtonClick(Sender: TObject);

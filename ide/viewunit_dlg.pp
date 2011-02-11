@@ -40,8 +40,9 @@ interface
 
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
-  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit,
-  ExtCtrls, ButtonPanel, Menus, StrUtils;
+  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages,
+  ExtCtrls, ButtonPanel, Menus, StrUtils,
+  IDEWindowIntf, IDEHelpIntf;
 
 type
   TViewUnitsEntry = class
@@ -167,7 +168,7 @@ End;
 
 procedure TViewUnitDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TViewUnitDialog.mniSortClick(Sender: TObject);

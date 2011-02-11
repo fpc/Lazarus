@@ -32,7 +32,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel;
+  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel,
+  IDEHelpIntf;
 
 type
 
@@ -97,7 +98,7 @@ end;
 
 procedure TChooseKeySchemeDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function TChooseKeySchemeDlg.GetKeymapScheme: string;

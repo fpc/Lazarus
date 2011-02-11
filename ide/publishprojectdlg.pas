@@ -39,9 +39,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Buttons,
   StdCtrls, Dialogs, LCLType,
-  IDEWindowIntf,
+  IDEWindowIntf, IDEHelpIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, ExtCtrls, IDEContextHelpEdit, ButtonPanel;
+  LazarusIDEStrConsts, ExtCtrls, ButtonPanel;
 
 type
   { TPublishProjectDialog }
@@ -183,7 +183,7 @@ end;
 
 procedure TPublishProjectDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);

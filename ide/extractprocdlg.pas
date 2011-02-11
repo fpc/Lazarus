@@ -36,7 +36,8 @@ uses
   Dialogs, ExtCtrls, Buttons, StdCtrls,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   ExtractProcTool,
-  LazarusIDEStrConsts, IDEProcs, MiscOptions, IDEContextHelpEdit;
+  IDEHelpIntf,
+  LazarusIDEStrConsts, IDEProcs, MiscOptions;
 
 type
 
@@ -185,7 +186,7 @@ end;
 
 procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExtractProcDialog.CreateFunctionCheckBoxChange(Sender: TObject);

@@ -31,9 +31,9 @@ unit NewProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, Controls, Project, Buttons,
-  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts, IDEContextHelpEdit,
-  ButtonPanel;
+  Classes, SysUtils, Forms, Graphics, Controls, Project, Buttons, ButtonPanel,
+  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts,
+  IDEHelpIntf;
 
 type
 
@@ -134,7 +134,7 @@ end;
 
 procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);

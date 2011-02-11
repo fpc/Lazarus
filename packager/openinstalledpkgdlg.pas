@@ -40,8 +40,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  FileCtrl, Dialogs, LCLProc, IDEContextHelpEdit,
-  PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem, ExtCtrls;
+  FileCtrl, Dialogs, LCLProc, ExtCtrls,
+  IDEHelpIntf, IDEWindowIntf,
+  PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
 type
 
@@ -162,7 +163,7 @@ end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage

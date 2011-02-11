@@ -32,8 +32,9 @@ interface
 uses
   Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
   Buttons, ButtonPanel, ExtCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
-  EditorOptions, IDECommands;
+  IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
+  EnvironmentOpts, LazarusIDEStrConsts,
+  EditorOptions;
 
 type
   TIDEOptsDlgAction = (
@@ -124,9 +125,9 @@ end;
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   if PrevEditor<>nil then
-    ShowContextHelpForIDE(PrevEditor)
+    LazarusHelp.ShowHelpForIDEControl(PrevEditor)
   else
-    ShowContextHelpForIDE(Self);
+    LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject;
@@ -192,7 +193,7 @@ begin
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
   if (Command=ecContextHelp) and (PrevEditor <> nil) then begin
     Key:=VK_UNKNOWN;
-    ShowContextHelpForIDE(PrevEditor);
+    LazarusHelp.ShowHelpForIDEControl(PrevEditor);
   end;
 end;
 

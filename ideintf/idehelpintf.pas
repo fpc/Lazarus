@@ -62,6 +62,7 @@ type
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
     procedure ShowHelpForMessage(Line: integer); virtual; abstract;
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
+    procedure ShowHelpForIDEControl(Sender: TControl); virtual; abstract;
     function GetHintForSourcePosition(const ExpandedFilename: string;
                       const CodePos: TPoint;
                       out BaseURL, HTMLHint: string): TShowHelpResult; virtual; abstract;

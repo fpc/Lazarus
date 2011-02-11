@@ -351,6 +351,7 @@ type
     procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
   private
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
+    function ExternalTools: TExternalToolList;
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -1235,11 +1236,11 @@ begin
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
 
-    ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
-    ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+  ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
+  ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
   IDEWindowCreators.OnShowForm:=@IDEWindowCreators.SimpleLayoutStorage.ApplyAndShow;
   UpdateDefaultPascalFileExtensions;
 
@@ -1250,7 +1251,7 @@ begin
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
 
-  EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
+  ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
   MiscellaneousOptions := TMiscellaneousOptions.Create;
   MiscellaneousOptions.Load;
@@ -4198,13 +4199,13 @@ end;
 
 procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
 begin
-  if ShowExtToolDialog(EnvironmentOptions.ExternalTools,GlobalMacroList)=mrOk then
+  if ShowExtToolDialog(ExternalTools,GlobalMacroList)=mrOk then
   begin
     // save to environment options
     SaveDesktopSettings(EnvironmentOptions);
     EnvironmentOptions.Save(false);
     // save shortcuts to editor options
-    EnvironmentOptions.ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
+    ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
     UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
@@ -4452,7 +4453,7 @@ var
 begin
   if not (Sender is TIDEMenuItem) then exit;
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
-  if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
+  if (Index<0) or (Index>=ExternalTools.Count) then exit;
   DoRunExternalTool(Index,false);
 end;
 
@@ -11533,7 +11534,7 @@ function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean
   ): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
+  Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
   DoCheckFilesOnDisk;
 end;
 
@@ -11602,7 +11603,7 @@ begin
     SourceEditorManager.ClearErrorLines;
     CompileProgress.CreateDialog(OwningComponent, 'Lazarus...', '');
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
-                         EnvironmentOptions.ExternalTools,GlobalMacroList,
+                         ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.GetCompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
@@ -11678,7 +11679,7 @@ begin
     // make ide
     SourceEditorManager.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
-                         EnvironmentOptions.ExternalTools,GlobalMacroList,
+                         ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetCompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          IDEBuildFlags+[blfUseMakeIDECfg]
@@ -11696,6 +11697,11 @@ begin
     else
       CompileProgress.Ready(lisInfoBuildError);
   end;
+end;
+
+function TMainIDE.ExternalTools: TExternalToolList;
+begin
+  Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
 end;
 
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
@@ -11837,7 +11843,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,true);
+      Result:=ExternalTools.Run(ExtTool,GlobalMacroList,true);
     finally
       // clean up
       ExtTool.Free;
@@ -11924,7 +11930,7 @@ begin
       ExtTool.CmdLineParams:=Params;
 
       // run
-      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,false);
+      Result:=ExternalTools.Run(ExtTool,GlobalMacroList,false);
     finally
       // clean up
       ExtTool.Free;
@@ -12222,7 +12228,7 @@ var
     Index:=0;
     while (i<itmCustomTools.Count) do begin
       CurMenuItem:=itmCustomTools[i];
-      ExtTool:=EnvironmentOptions.ExternalTools[Index];
+      ExtTool:=ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
       if CurMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(CurMenuItem).Command:=
@@ -12234,7 +12240,7 @@ var
   end;
 
 begin
-  ToolCount:=EnvironmentOptions.ExternalTools.Count;
+  ToolCount:=ExternalTools.Count;
   CreateToolMenuItems;
   SetToolMenuItems;
 end;
@@ -12256,7 +12262,7 @@ end;
 function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList,false);
+  Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
   DoCheckFilesOnDisk;
 end;
 
@@ -12674,7 +12680,7 @@ begin
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
-      Result:=EnvironmentOptions.ExternalTools.Run(Tool,GlobalMacroList,false);
+      Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
       if Result<>mrOk then exit;
     end else begin
       ShowErrorForCommandAfter;
@@ -16356,7 +16362,7 @@ begin
   if FNeedUpdateHighlighters then
     UpdateHighlighters(true);
   GetDefaultProcessList.FreeStoppedProcesses;
-  EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
+  ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
   if FUserInputSinceLastIdle then
@@ -16420,9 +16426,9 @@ begin
   if Command=ecEditContextHelp then begin
     Key:=VK_UNKNOWN;
     ShowContextHelpEditor(Sender);
-  end else if Command=ecContextHelp then begin
+  end else if (Command=ecContextHelp) and (Sender is TControl) then begin
     Key:=VK_UNKNOWN;
-    ShowContextHelpForIDE(Sender);
+    LazarusHelp.ShowHelpForIDEControl(TControl(Sender));
   end;
 end;
 

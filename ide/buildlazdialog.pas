@@ -46,10 +46,13 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  InterfaceBase, Themes, ComCtrls, CheckLst, Menus,
-  DefineTemplates, Laz_XMLCfg, DividerBevel,
-  LazarusIDEStrConsts, TransferMacros, LazIDEIntf, LazConf, IDEProcs, DialogProcs,
-  IDEMsgIntf, IDEContextHelpEdit, IDEImagesIntf, IDEWindowIntf, MainBar,
+  InterfaceBase, Themes, ComCtrls, CheckLst, Menus, DividerBevel,
+  DefineTemplates, Laz_XMLCfg,
+  // IDEIntf
+  LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  // IDE
+  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
+  IDEContextHelpEdit, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
   {$IFDEF win32}
   CodeToolManager, // added for windres workaround
@@ -870,7 +873,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TConfigureBuildLazarusDlg.MakeModeListHeaderResize(Sender: TObject);

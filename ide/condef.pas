@@ -53,10 +53,11 @@ interface
 *)
 
 uses
-  Classes, SysUtils, Messages, Graphics, Controls, Forms, LCLProc, Dialogs,
-  StdCtrls, Buttons, FileUtil,
+  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, Dialogs,
+  StdCtrls, Buttons, FileUtil, ButtonPanel,
   Laz_XMLCfg,
-  LazarusIDEStrConsts, IDEContextHelpEdit, IDEProcs, ButtonPanel;
+  IDEHelpIntf,
+  LazarusIDEStrConsts, IDEProcs;
 
 type
 
@@ -132,7 +133,7 @@ end;
 
 procedure TCondForm.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCondForm.CondFormCLOSE(Sender: TObject; var CloseAction: TCloseAction);

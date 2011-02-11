@@ -40,7 +40,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls,
-  AVL_Tree, Laz_XMLCfg, PackageIntf, IDEImagesIntf,
+  AVL_Tree, Laz_XMLCfg,
+  PackageIntf, IDEImagesIntf, IDEHelpIntf,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 
@@ -234,7 +235,7 @@ end;
 
 procedure TInstallPkgSetDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TInstallPkgSetDialog.ImportButtonClick(Sender: TObject);

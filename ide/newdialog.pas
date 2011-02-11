@@ -43,8 +43,8 @@ uses
   Buttons, SysUtils, Classes, LCLProc, ComCtrls, Controls, Dialogs,
   Forms, StdCtrls, ExtCtrls, FileProcs,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
-  LazIDEIntf,
-  LazarusIDEStrConsts, IDEContextHelpEdit, Project, MainIntf, ButtonPanel;
+  LazIDEIntf, IDEHelpIntf,
+  LazarusIDEStrConsts, Project, MainIntf, ButtonPanel;
 
 type
   { TNewLazIDEItemCategory }
@@ -318,7 +318,7 @@ end;
 
 procedure TNewOtherDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TNewOtherDialog.SetupComponents;

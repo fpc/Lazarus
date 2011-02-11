@@ -41,9 +41,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  Dialogs, LazarusIDEStrConsts, IDEWindowIntf, CodeToolManager,
-  CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
-  EditorOptions, InputHistory, MiscOptions, ExtCtrls, IDEContextHelpEdit;
+  Dialogs, ExtCtrls, IDEWindowIntf,
+  SynHighlighterPas, SynEdit,
+  CodeToolManager, CodeAtom, CodeToolsStructs, CodeCache,
+  IDEHelpIntf,
+  LazarusIDEStrConsts,
+  EditorOptions, InputHistory, MiscOptions;
 
 type
 
@@ -210,7 +213,7 @@ end;
 
 procedure TMakeResStrDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TMakeResStrDialog.IdentLengthComboBoxChange(Sender: TObject);

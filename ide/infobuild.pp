@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, LCLType,
-  LCLProc, ExtCtrls, StdCtrls, LazIDEIntf, LazarusIDEStrConsts, FileCtrl;
+  LCLProc, ExtCtrls, StdCtrls, LazIDEIntf, LazarusIDEStrConsts, FileCtrl,
+  EnvironmentOpts;
 
 type
 
@@ -107,9 +108,6 @@ var
 implementation
 
 {$R *.lfm}
-
-uses
-  EnvironmentOpts;
 
 var
   MCompileInfoDlg: TCompileInfoDlg;

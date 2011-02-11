@@ -32,12 +32,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileProcs, Forms, Controls, Graphics,
-  Dialogs, LConvEncoding, ExtCtrls, StdCtrls, ComCtrls,
-  IDEWindowIntf, SynRegExpr, SrcEditorIntf,
+  Dialogs, LConvEncoding, ExtCtrls, StdCtrls, ComCtrls, Buttons,
+  IDEWindowIntf, SynRegExpr, SrcEditorIntf, IDEHelpIntf,
   CodeCache, CodeToolsStructs, CodeToolManager, AVL_Tree,
   // IDE
   IDEProcs, CodeBrowser, PackageDefs, PackageSystem, Project,
-  LazarusIDEStrConsts, Buttons, IDEContextHelpEdit;
+  LazarusIDEStrConsts;
 
 type
 
@@ -227,7 +227,7 @@ end;
 
 procedure TChgEncodingDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TChgEncodingDialog.PreviewButtonClick(Sender: TObject);

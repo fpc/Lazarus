@@ -31,10 +31,11 @@ interface
 
 uses
   Classes, SysUtils, Math,
-  LCLProc, Forms, Controls, Graphics, Dialogs,
+  LCLProc, Forms, Controls, Graphics, Dialogs, ButtonPanel,
   StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
-  SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, EditorOptions,
-  LazarusIDEStrConsts, InputHistory, CodeToolsOptions, ButtonPanel,
+  SynEdit, DefineTemplates, ExprEval,
+  IDEWindowIntf, IDEHelpIntf,
+  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions,
   IDEContextHelpEdit;
 
 type
@@ -205,7 +206,7 @@ end;
 
 procedure TCodeToolsDefinesDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCodeToolsDefinesDialog.ParsedTemplatesTreeViewSelectionChanged(

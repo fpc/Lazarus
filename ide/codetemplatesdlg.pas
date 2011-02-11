@@ -32,17 +32,18 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil,
+  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil, ButtonPanel,
   // synedit
-  SynEdit, SynHighlighterPas, SynEditAutoComplete,
+  SynEdit, SynHighlighterPas, SynEditAutoComplete, SynRegExpr,
   // codetools
   CodeToolManager, CodeAtom, CodeCache, KeywordFuncLists, BasicCodeTools,
   PascalParserTool,
   // IDEIntf
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
+  IDEHelpIntf,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
-  IDEContextHelpEdit, ButtonPanel, SynRegExpr, CodeMacroPrompt;
+  CodeMacroPrompt;
 
 type
   TAutoCompleteOption = (
@@ -990,7 +991,7 @@ end;
 
 procedure TCodeTemplateDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCodeTemplateDialog.InsertMacroButtonClick(Sender: TObject);

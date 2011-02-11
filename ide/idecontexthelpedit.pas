@@ -125,7 +125,6 @@ var
   ContextHelpEditorDlg: TContextHelpEditorDlg = nil;
 
 function ShowContextHelpEditor(Sender: TObject): TModalResult;
-procedure ShowContextHelpForIDE(Sender: TObject);
 
 function FindDeclarationOfIDEControl(AControl: TControl; out Filename: string;
                                      out X, Y: integer): boolean;
@@ -146,16 +145,6 @@ begin
   finally
     ContextHelpEditorDlg.Free;
     ContextHelpEditorDlg:=nil;
-  end;
-end;
-
-procedure ShowContextHelpForIDE(Sender: TObject);
-begin
-  if Sender is TControl then begin
-    LoadIDEWindowHelp;
-    IDEWindowHelpNodes.InvokeHelp(TControl(Sender));
-  end else begin
-    DebugLn('ShowContextHelpForIDE Sender=',dbgsName(Sender));
   end;
 end;
 

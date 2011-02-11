@@ -38,10 +38,13 @@ uses
   ShlObj,
 {$endif}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
-  Laz_XMLCfg, ProjectIntf,
+  Laz_XMLCfg, LazConfigStorage,
+  // IDEIntf
+  ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
+  IDEExternToolIntf,
+  // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
-  IDEOptionsIntf, Debugger;
+  IDEOptionDefs, TransferMacros, Debugger;
 
 const
   EnvOptsVersion: integer = 106;
@@ -136,6 +139,20 @@ const
       'Ask',
       'Never'
     );
+
+type
+  TBaseExternalToolList = class(TList)
+  public
+    function Load(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
+    function Save(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
+    function Run(ExtTool: TIDEExternalToolOptions;
+                 Macros: TTransferMacroList;
+                 ShowAbort: boolean;
+                 CompilerOptions: TLazCompilerOptions = nil): TModalResult; virtual; abstract;
+  end;
+  TExternalToolListClass = class of TBaseExternalToolList;
+var
+  ExternalToolListClass: TExternalToolListClass; // set by ExtToolDialog
 
 type
   { TEnvironmentOptions - class for storing environment options }
@@ -259,7 +276,7 @@ type
     FBackupInfoOtherFiles: TBackupInfo;
     
     // external tools
-    fExternalTools: TExternalToolList;
+    fExternalTools: TBaseExternalToolList;
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
@@ -493,8 +510,8 @@ type
                                                write FBackupInfoOtherFiles;
        
     // external tools
-    property ExternalTools: TExternalToolList read fExternalTools
-                                              write fExternalTools;
+    property ExternalTools: TBaseExternalToolList read fExternalTools
+                                                  write fExternalTools;
 
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
@@ -779,7 +796,7 @@ begin
   end;
   
   // external tools
-  fExternalTools:=TExternalToolList.Create;
+  fExternalTools:=ExternalToolListClass.Create;
   
   // naming
   fPascalFileExtension:=petPAS;

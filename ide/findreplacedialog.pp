@@ -41,8 +41,8 @@ uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, Dialogs, Graphics,
   SynEditTypes, SynRegExpr, SynEdit,
-  IDEImagesIntf, IDEWindowIntf, LazarusIdeStrConsts, IDEContextHelpEdit,
-  InputHistory;
+  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  LazarusIdeStrConsts, InputHistory;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -298,7 +298,7 @@ end;
 
 procedure TLazFindReplaceDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TLazFindReplaceDialog.OptionsGroupBoxResize(Sender: TObject);

@@ -1,3 +1,4 @@
+{ ToDo: move to lazcontrols }
 unit GenericCheckList;
 
 {$mode objfpc}{$H+}

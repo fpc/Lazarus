@@ -38,8 +38,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LCLType, LCLProc, LCLUnicodeData, GraphType, LazarusIDEStrConsts, EditorOptions,
-  EnvironmentOpts, Grids, IDEContextHelpEdit, ButtonPanel, ComCtrls;
+  StdCtrls, LCLType, LCLProc, LCLUnicodeData, GraphType, Grids, ButtonPanel,
+  ComCtrls,
+  IDEHelpIntf,
+  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
 
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
@@ -110,7 +112,7 @@ end;
 
 procedure TCharacterMapDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function RoundUp(Value, Divi:integer):integer;

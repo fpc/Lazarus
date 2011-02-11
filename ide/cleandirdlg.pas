@@ -31,9 +31,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, IDEContextHelpEdit,
+  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, ButtonPanel,
+  IDEHelpIntf,
   LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory,
-  ButtonPanel, ShowDeletingFilesDlg;
+  ShowDeletingFilesDlg;
 
 type
 
@@ -136,7 +137,7 @@ end;
 
 procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCleanDirectoryDialog.DirBrowseButtonClick(Sender: TObject);

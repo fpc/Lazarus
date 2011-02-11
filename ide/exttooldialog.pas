@@ -40,11 +40,13 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
-  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls,
+  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel,
   LazConfigStorage, FileUtil, UTF8Process,
-  IDEExternToolIntf, IDEImagesIntf, IDEDialogs,
-  ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
-  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, ButtonPanel;
+  IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
+  ProjectIntf,
+  EnvironmentOpts,
+  ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs,
+  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -58,7 +60,7 @@ type
   { TExternalToolList -
     the storage object for all external tools }
 
-  TExternalToolList = class(TList)
+  TExternalToolList = class(TBaseExternalToolList)
   private
     fOnFreeOutputFilter: TOnFreeOutputFilter;
     fOnNeedsOutputFilter: TOnNeedsOutputFilter;
@@ -76,20 +78,16 @@ type
     procedure FreeStoppedProcesses;
     procedure Insert(Index: integer; NewTool: TExternalToolOptions);
     function Load(Config: TConfigStorage): TModalResult;
-    function Load(Config: TConfigStorage; const Path: string): TModalResult;
+    function Load(Config: TConfigStorage; const Path: string): TModalResult; override;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     function Run(ExtTool: TIDEExternalToolOptions;
                  Macros: TTransferMacroList;
-                 ShowAbort: boolean): TModalResult;
-    function Run(ExtTool: TIDEExternalToolOptions;
-                 Macros: TTransferMacroList;
-                 TheOutputFilter: TOutputFilter;
-                 CompilerOptions: TBaseCompilerOptions;
-                 ShowAbort: boolean): TModalResult;
+                 ShowAbort: boolean;
+                 CompilerOptions: TLazCompilerOptions = nil): TModalResult; override;
     function Run(Index: integer; Macros: TTransferMacroList;
                  ShowAbort: boolean): TModalResult;
     function Save(Config: TConfigStorage): TModalResult;
-    function Save(Config: TConfigStorage; const Path: string): TModalResult;
+    function Save(Config: TConfigStorage; const Path: string): TModalResult; override;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     
     property Items[Index: integer]: TExternalToolOptions
@@ -143,9 +141,6 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
 implementation
 
 {$R *.lfm}
-
-uses
-  IDEContextHelpEdit;
 
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
@@ -283,12 +278,6 @@ begin
   end;
 end;
 
-function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
-  Macros: TTransferMacroList; ShowAbort: boolean): TModalResult;
-begin
-  Result:=Run(ExtTool,Macros,nil,nil,ShowAbort);
-end;
-
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList; ShowAbort: boolean): TModalResult;
 begin
@@ -298,16 +287,19 @@ begin
 end;
 
 function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
-  Macros: TTransferMacroList; TheOutputFilter: TOutputFilter;
-  CompilerOptions: TBaseCompilerOptions; ShowAbort: boolean): TModalResult;
-var WorkingDir, Filename, Params, CmdLine, Title: string;
+  Macros: TTransferMacroList; ShowAbort: boolean;
+  CompilerOptions: TLazCompilerOptions): TModalResult;
+var
+  WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcessUTF8;
   Abort, ErrorOccurred: boolean;
   NewFilename: String;
   Btns: TMsgDlgButtons;
+  TheOutputFilter: TOutputFilter;
 begin
   Result:=mrCancel;
   if ExtTool=nil then exit;
+  TheOutputFilter:=nil;
   Filename:=ExtTool.Filename;
   WorkingDir:=ExtTool.WorkingDirectory;
   Params:=ExtTool.CmdLineParams;
@@ -368,7 +360,7 @@ begin
       if TheOutputFilter<>nil then begin
         ErrorOccurred:=false;
         try
-          TheOutputFilter.CompilerOptions:=CompilerOptions;
+          TheOutputFilter.CompilerOptions:=CompilerOptions as TBaseCompilerOptions;
           TheOutputFilter.Options:=[ofoExceptionOnError,
                                     ofoMakeFilenamesAbsolute];
           if ExtTool.ScanOutputForFPCMessages then
@@ -602,7 +594,7 @@ end;
 
 procedure TExternalToolDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);
@@ -663,5 +655,8 @@ procedure TExternalToolDialog.ListboxClick(Sender: TObject);
 begin
   EnableButtons;
 end;
+
+initialization
+  ExternalToolListClass:=TExternalToolList;
 
 end.

@@ -44,8 +44,9 @@ uses
   Dialogs, Controls, GraphType, LCLType,
   LinkScanner,
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit, MainIntf,
+  IDEHelpIntf, IDEImagesIntf, IDEMsgIntf,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
-  IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs, IDEMsgIntf,
+  IDEProcs, ShowCompilerOpts, Project, PackageDefs,
   CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
   Compiler_BuildMacro_Options, CheckLst;
 
@@ -565,7 +566,7 @@ end;
 
 procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);

@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, Laz_XMLCfg,
-  BaseIDEIntf, IDEContextHelpEdit,
+  BaseIDEIntf, IDEContextHelpEdit, IDEHelpIntf,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
   ButtonPanel;
 
@@ -512,7 +512,7 @@ end;
 
 procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);

@@ -1669,8 +1669,8 @@ function TBuildManager.OnRunCompilerWithOptions(
 begin
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,
-                                               nil,CompOptions,false);
+  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,false,
+                                               CompOptions);
   if LazarusIDE<>nil then
     LazarusIDE.DoCheckFilesOnDisk;
 end;

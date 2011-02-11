@@ -45,7 +45,7 @@ uses
   Classes, SysUtils, FileUtil,
   LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, LCLProc, ButtonPanel,
-  IDEMsgIntf, IDEExternToolIntf,
+  IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf,
   PropEdits, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
 
@@ -123,9 +123,6 @@ function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
 implementation
 
 {$R *.lfm}
-
-uses
-  IDEContextHelpEdit;
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   ExternalToolOptions: TExternalToolOptions):TModalResult;
@@ -287,7 +284,7 @@ end;
 
 procedure TExternalToolOptionDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExternalToolOptionDlg.SetOptions(TheOptions: TExternalToolOptions);

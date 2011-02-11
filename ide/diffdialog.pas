@@ -41,8 +41,9 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, SynHighlighterDiff, IDEContextHelpEdit,
+  LazarusIDEStrConsts, EditorOptions, LCLType,
+  IDEWindowIntf, IDEHelpIntf,
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, SynHighlighterDiff,
   SourceEditor;
 
 type
@@ -217,7 +218,7 @@ end;
 
 procedure TDiffDlg.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);

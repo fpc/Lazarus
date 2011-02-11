@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  ExtCtrls, StdCtrls, Buttons, DebuggerDlg, Debugger, ButtonPanel, EditBtn,
-  BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts, InputHistory;
+  ExtCtrls, StdCtrls, Buttons, ButtonPanel, EditBtn,
+  IDEHelpIntf,
+  DebuggerDlg, Debugger, BaseDebugManager, LazarusIDEStrConsts, InputHistory;
 
 type
 
@@ -69,7 +70,7 @@ end;
 
 procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TBreakPropertyDlg.BreakPointRemove(

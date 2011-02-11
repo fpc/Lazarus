@@ -40,8 +40,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Extctrls, Menus,
-  IDEContextHelpEdit, Debugger, BaseDebugManager, ButtonPanel;
+  Buttons, Extctrls, Menus, ButtonPanel,
+  IDEHelpIntf,
+  IDEContextHelpEdit, Debugger, BaseDebugManager;
 
 type
 
@@ -102,7 +103,7 @@ end;
 
 procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch;

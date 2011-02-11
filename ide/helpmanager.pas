@@ -35,7 +35,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics,
+  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -47,7 +47,7 @@ uses
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
-  IDEContextHelpEdit, ButtonPanel;
+  IDEContextHelpEdit, IDEWindowHelp;
 
 type
 
@@ -163,6 +163,8 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
+    procedure ShowHelpForIDEControl(Sender: TControl); override;
+
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
                     const BaseURL: string; var TheHint: string;
                     out HintWinRect: TRect): boolean; override;
@@ -1248,9 +1250,15 @@ begin
       end;
     end else begin
       DebugLn('TIDEHelpManager.ShowHelpForObjectInspector show default help for OI');
-      ShowContextHelpForIDE(AnInspector);
+      ShowHelpForIDEControl(AnInspector);
     end;
   end;
+end;
+
+procedure TIDEHelpManager.ShowHelpForIDEControl(Sender: TControl);
+begin
+  LoadIDEWindowHelp;
+  IDEWindowHelpNodes.InvokeHelp(Sender);
 end;
 
 function TIDEHelpManager.CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
