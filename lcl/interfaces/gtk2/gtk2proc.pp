@@ -51,7 +51,7 @@ uses
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, Masks,
   GraphType, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, Gtk2Debug,
+  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, Gtk2Debug{%H-},
   LCLMessageGlue;
 
 const
@@ -796,7 +796,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  dynlibs, Gtk2WSPrivate, URIParser, Gtk2Int, Gtk2WinApiWindow;
+  dynlibs{%H-}, Gtk2WSPrivate, URIParser, Gtk2Int, Gtk2WinApiWindow;
 
 const
   KCINFO_FLAG_SHIFT         = $01;
