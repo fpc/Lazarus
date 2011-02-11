@@ -2247,20 +2247,31 @@ var
   ConfigDir: String;
   StaticPackagesInc: String;
   StaticPckIncludeFile: String;
-  Dependency: TPkgDependency;
+  PkgList: TFPList;
+  APackage: TLazPackage;
+  i: Integer;
 begin
   ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
 
   // create auto install package list for the Lazarus uses section
-  StaticPackagesInc:='';
-  Dependency:=FirstAutoInstallDependency;
-  while Dependency<>nil do begin
-    if (Dependency.RequiredPackage<>nil)
-    and (not Dependency.RequiredPackage.AutoCreated) then
-      StaticPackagesInc:=StaticPackagesInc
-        +ExtractFileNameOnly(Dependency.RequiredPackage.GetCompileSourceFilename)
-        +','+LineEnding;
-    Dependency:=Dependency.NextRequiresDependency;
+  PkgList:=nil;
+  try
+    GetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+    StaticPackagesInc:='';
+    if PkgList<>nil then begin
+      for i:=0 to PkgList.Count-1 do begin
+        APackage:=TLazPackage(PkgList[i]);
+        if (APackage=nil) or APackage.AutoCreated
+        or IsStaticBasePackage(APackage.Name)
+        or (APackage.PackageType=lptRunTime)
+        then continue;
+        StaticPackagesInc:=StaticPackagesInc
+            +ExtractFileNameOnly(APackage.GetCompileSourceFilename)
+            +','+LineEnding;
+      end;
+    end;
+  finally
+    PkgList.Free;
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
   Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],

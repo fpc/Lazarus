@@ -1369,7 +1369,9 @@ begin
     if (Dependency.LoadPackageResult=lprSuccess)
     and (not Dependency.RequiredPackage.AutoCreated)
     and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
-    and (not Dependency.RequiredPackage.Missing) then begin
+    and (not Dependency.RequiredPackage.Missing)
+    and (Dependency.RequiredPackage.PackageType<>lptRunTime)
+    then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
         DebugLn('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
@@ -1659,7 +1661,7 @@ procedure TPkgManager.UnloadInstalledPackages;
 var
   Dependency: TPkgDependency;
 begin
-  // break and free auto installed packages
+  // unbind and free auto installed packages
   while PackageGraph.FirstAutoInstallDependency<>nil do begin
     Dependency:=PackageGraph.FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
