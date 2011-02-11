@@ -479,7 +479,8 @@ var
   PkgList: TFPList;
   i: Integer;
   APackage: TLazPackage;
-  CurResult: TModalResult;
+  ADependency: TPkgDependency;
+  NextDependency: TPkgDependency;
 begin
   Ok:=false;
   PkgList:=nil;
@@ -488,27 +489,23 @@ begin
     ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
                               pdlRequires,Self,true);
 
+    // remove all top level runtime packages from the list
+    // Note: it's ok if a designtime package uses a runtime package
+    ADependency:=NewFirstAutoInstallDependency;
+    while ADependency<>nil do begin
+      NextDependency:=ADependency.NextRequiresDependency;
+      if (ADependency.RequiredPackage<>nil)
+      and (ADependency.RequiredPackage.PackageType=lptRunTime) then begin
+        // top level dependency on runtime package => delete
+        DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+      end;
+      ADependency:=NextDependency;
+    end;
+
     // get all required packages
     if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
-    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
 
-    // check if any package is a runtime package, that is not needed
-    for i:=0 to PkgList.Count-1 do begin
-      APackage:=TLazPackage(PkgList[i]);
-      if (APackage.PackageType=lptRunTime)
-      and (APackage.FirstUsedByDependency=nil) then begin
-        // this is a runtime only package, not needed by any other package
-        CurResult:=IDEQuestionDialog(lisPkgMangPackageIsNoDesigntimePackage,
-          Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
-            APackage.IDAsString, #13]),
-          mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrCancel]);
-        case CurResult of
-        mrIgnore: ;
-        mrYesToAll: break;
-        else exit;
-        end;
-      end;
-    end;
+    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
 
     // try save all modified packages
     for i:=0 to PkgList.Count-1 do begin

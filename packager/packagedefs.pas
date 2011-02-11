@@ -896,6 +896,8 @@ procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
+procedure DeleteDependencyInList(ADependency: TPkgDependency;
+  var First: TPkgDependency; ListType: TPkgDependencyList);
 procedure FreeDependencyList(var First: TPkgDependency;
   ListType: TPkgDependencyList);
 function DependencyListAsString(First: TPkgDependency;
@@ -1062,6 +1064,17 @@ begin
     NewDependency.HoldPackage:=HoldPackages;
     NewDependency.AddToList(First,ListType);
   end;
+end;
+
+procedure DeleteDependencyInList(ADependency: TPkgDependency;
+  var First: TPkgDependency; ListType: TPkgDependencyList);
+var
+  NextDependency: TPkgDependency;
+begin
+  NextDependency:=ADependency.NextDependency[ListType];
+  ADependency.Free;
+  if First=ADependency then
+    First:=NextDependency;
 end;
 
 procedure FreeDependencyList(var First: TPkgDependency;
