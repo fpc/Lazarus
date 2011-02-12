@@ -98,12 +98,26 @@ begin
   SignalConnect(AWidgetInfo^.CoreWidget, 'paste-clipboard', @Gtk2WS_MemoPasteFromClip, AWidgetInfo);
 end;
 
+function Gtk2TranslateScrollStyle(SS:TScrollStyle):TPoint;
+begin
+  case SS of
+    ssAutoBoth: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    ssAutoHorizontal: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+    ssAutoVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    ssBoth: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+    ssHorizontal: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+    ssNone: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+    ssVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  end;
+end;
+
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Widget,
   TempWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
+  SS:TPoint;
 begin
   Widget := gtk_scrolled_window_new(nil, nil);
   Result := TLCLIntfHandle(PtrUInt(Widget));
@@ -119,9 +133,10 @@ begin
 
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(Widget)^.hscrollbar, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(Widget)^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
+
+  SS:=Gtk2TranslateScrollStyle(TCustomMemo(AWinControl).ScrollBars);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget),SS.X, SS.Y);
+
   // add border for memo
   gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget),
     BorderStyleShadowMap[TCustomEdit(AWinControl).BorderStyle]);
@@ -264,6 +279,17 @@ class procedure TGtk2WSCustomMemo.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
   // TODO: implement me!
+end;
+
+class procedure TGtk2WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
+  const NewScrollbars: TScrollStyle);
+var SS:TPoint;
+    ScrollWidget: PGtkScrolledWindow;
+begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollBars') then Exit;
+  SS:=Gtk2TranslateScrollStyle(NewScrollBars);
+  ScrollWidget:=PGtkScrolledWindow(ACustomMemo.Handle);
+  gtk_scrolled_window_set_policy(ScrollWidget ,SS.X, SS.Y);
 end;
 
 class procedure TGtk2WSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit;
