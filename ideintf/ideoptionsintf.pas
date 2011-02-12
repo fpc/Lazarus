@@ -271,6 +271,12 @@ const
     CompilerOptionsCompilation    = 1100;
 
   GroupPackage      = 200100;
+    PackageOptionsUsage        = 100;
+    PackageOptionsDescription  = 200;
+    PackageOptionsIntegration  = 300;
+    PackageOptionsProvides     = 400;
+    PackageOptionsI18N         = 500;
+
   GroupPkgCompiler  = 200200;
 
 implementation

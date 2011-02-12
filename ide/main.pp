@@ -130,6 +130,8 @@ uses
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   BuildModesEditor,
+  // package option frames
+  package_usage_options,
 
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
