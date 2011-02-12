@@ -301,8 +301,9 @@ function TUsedUnits.AddDelphiAndLCLSections: Boolean;
 var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
+//  TempRemoveUnits: TStringList;  // To be removed.
 
-  function MoveToDelphi(AUnitName: string; ARenameForLcl: boolean): boolean;
+  function MoveToDelphi(AUnitName: string): boolean;
   var
     UsesNode: TCodeTreeNode;
   begin
@@ -310,17 +311,30 @@ var
     with fCTLink do begin
       ResetMainScanner;
       CodeTool.BuildTree(fUsesSection=usMain);
-      // Calls either FindMainUsesSection; or FindImplementationUsesSection;
+      // Calls either FindMainUsesSection or FindImplementationUsesSection
       UsesNode:=UsesSectionNode;
       Assert(Assigned(UsesNode),
             'UsesNode should be assigned in AddDelphiAndLCLSections->MoveToDelphi');
       Result:=CodeTool.RemoveUnitFromUsesSection(UsesNode,UpperCaseStr(AUnitName),SrcCache);
     end;
     DelphiOnlyUnits.Add(AUnitName);
-    if ARenameForLcl then
-      LCLOnlyUnits.Add(fUnitsToRename[AUnitName]);
   end;
-
+{
+  function RemoveOrigUnits: boolean;
+  var
+    i: Integer;
+  begin
+    for i := 0 to TempRemoveUnits.Count-1 do begin
+      Result:=True;
+      with fCTLink do begin
+        ResetMainScanner;
+        CodeTool.BuildTree(fUsesSection=usMain);
+        Result:=CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
+                                       UpperCaseStr(TempRemoveUnits[i]),SrcCache);
+      end;
+    end;
+  end;
+}
 var
   i, InsPos: Integer;
   s: string;
@@ -333,17 +347,20 @@ begin
   DelphiOnlyUnits:=TStringList.Create;
   LclOnlyUnits:=TStringList.Create;
   RenameList:=TStringList.Create;
+//  TempRemoveUnits:=TStringList.Create;
   try
     // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do
-      if not MoveToDelphi(fUnitsToRemove[i], False) then Exit;
+      if not MoveToDelphi(fUnitsToRemove[i]) then Exit; //TempRemoveUnits.Add(fUnitsToRemove[i]);
     // ... and don't comment the unit names either.
     for i:=0 to fUnitsToComment.Count-1 do
-      if not MoveToDelphi(fUnitsToComment[i], False) then Exit;
+      if not MoveToDelphi(fUnitsToComment[i]) then Exit; //TempRemoveUnits.Add(fUnitsToComment[i]);
     // Add replacement units to LCL block.
     fUnitsToRename.GetNames(RenameList);
-    for i:=0 to RenameList.Count-1 do
-      if not MoveToDelphi(RenameList[i], True) then Exit;
+    for i:=0 to RenameList.Count-1 do begin
+      if not MoveToDelphi(RenameList[i]) then Exit; //TempRemoveUnits.Add(RenameList[i]);
+      LCLOnlyUnits.Add(fUnitsToRename[RenameList[i]]);
+    end;
     // Additional units for LCL (like Interfaces).
     LCLOnlyUnits.AddStrings(fUnitsToAddForLCL);
     // Add LCL and Delphi sections for output.
@@ -390,7 +407,9 @@ begin
     // Now add the generated lines.
     if not fCTLink.SrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
     Result:=fCTLink.SrcCache.Apply;
+//    RemoveOrigUnits;
   finally
+//    TempRemoveUnits.Free;
     RenameList.Free;
     LclOnlyUnits.Free;
     DelphiOnlyUnits.Free;
@@ -549,7 +568,6 @@ begin
         Node:=MapToEdit.Tree.FindSuccessor(Node);
       end;
     end;
-//  if not fCodeTool.FixUsedUnitCase(fSrcCache) then exit;
   finally
     MapToEdit.Free;      // May be Nil but who cares.
     UnitUpdater.Free;
@@ -577,6 +595,8 @@ begin
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
     end;
+//if Pos('SynEditKey', fFilename) > 0 then // Debug
+// i:=0;
     if fIsMainFile or (Settings.MultiPlatform and not Settings.SupportDelphi) then begin
       // One way conversion (or main file) -> remove and rename units.
       if not fMainUsedUnits.RemoveUnits then exit;    // Remove
