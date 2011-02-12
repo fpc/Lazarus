@@ -48,7 +48,7 @@ type
 
   TPkgLinkInfo = class(TPackageLink)
   public
-    procedure Assign(Source: TLazPackageID);
+    procedure Assign(Source: TPersistent); override;
     property Origin;
   end;
 
@@ -202,22 +202,25 @@ end;
 
 { TPkgLinkInfo }
 
-procedure TPkgLinkInfo.Assign(Source: TLazPackageID);
+procedure TPkgLinkInfo.Assign(Source: TPersistent);
 var
   Link: TPackageLink;
 begin
-  AssignID(Source);
-  if Source is TPackageLink then begin
-    Link:=TPackageLink(Source);
-    Origin:=Link.Origin;
-    Filename:=Link.Filename;
-    AutoCheckExists:=Link.AutoCheckExists;
-    NotFoundCount:=Link.NotFoundCount;
-    LastCheckValid:=Link.LastCheckValid;
-    LastCheck:=Link.LastCheck;
-    FileDateValid:=Link.FileDateValid;
-    FileDate:=Link.FileDate;
-  end;
+  if Source is TLazPackageID then begin
+    AssignID(TLazPackageID(Source));
+    if Source is TPackageLink then begin
+      Link:=TPackageLink(Source);
+      Origin:=Link.Origin;
+      Filename:=Link.Filename;
+      AutoCheckExists:=Link.AutoCheckExists;
+      NotFoundCount:=Link.NotFoundCount;
+      LastCheckValid:=Link.LastCheckValid;
+      LastCheck:=Link.LastCheck;
+      FileDateValid:=Link.FileDateValid;
+      FileDate:=Link.FileDate;
+    end;
+  end else
+    inherited Assign(Source);
 end;
 
 end.
