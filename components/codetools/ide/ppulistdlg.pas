@@ -402,7 +402,7 @@ begin
     Grid.Cells[0,1]:=crsTotal;
     Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
     Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
-    Grid.Cells[3,1]:='';
+    Grid.Cells[3,1]:=IntToStr(SortedItems.Count);
     Grid.Cells[4,1]:='';
 
     // fill grid

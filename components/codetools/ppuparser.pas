@@ -32,7 +32,7 @@ unit PPUParser;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerbosePPUParser}
+{$DEFINE VerbosePPUParser}
 
 interface
 
@@ -54,7 +54,7 @@ const
   ibendsyms           = 251;
   ibendinterface      = 252;
   ibendimplementation = 253;
-//  ibendbrowser        = 254;
+  ibendbrowser        = 254;
   ibend               = 255;
   {general}
   ibmodulename           = 1;
@@ -70,8 +70,8 @@ const
   ibImportSymbols        = 11;
   ibsymref               = 12;
   ibdefref               = 13;
-//  ibendsymtablebrowser   = 14;
-//  ibbeginsymtablebrowser = 15;
+  ibendsymtablebrowser   = 14;
+  ibbeginsymtablebrowser = 15;
   ibusedmacros           = 16;
   ibderefdata            = 17;
   ibexportedmacros       = 18;
@@ -82,14 +82,14 @@ const
   ibstaticvarsym   = 22;
   ibconstsym       = 23;
   ibenumsym        = 24;
-//  ibtypedconstsym  = 25;
+  ibtypedconstsym  = 25;
   ibabsolutevarsym = 26;
   ibpropertysym    = 27;
   ibfieldvarsym    = 28;
   ibunitsym        = 29;
   iblabelsym       = 30;
   ibsyssym         = 31;
-//  ibrttisym        = 32;
+  ibrttisym        = 32;
   iblocalvarsym    = 33;
   ibparavarsym     = 34;
   ibmacrosym       = 35;
@@ -113,14 +113,18 @@ const
   ibwidestringdef  = 56;
   ibvariantdef     = 57;
   ibundefineddef   = 58;
+  ibunicodestringdef = 59; // svn rev 9382
   {implementation/ObjData}
   ibnodetree       = 80;
   ibasmsymbols     = 81;
-  ibresources      = 82;
+  ibresources      = 82;  // svn rev 7515   ppu version 80
+  ibcreatedobjtypes = 83; // svn rev 12341  ppu version 95
+  ibwpofile         = 84; // svn rev 12341  ppu version 95
+  ibmoduleoptions   = 85; // svn rev 14767  ppu version 114
 
-  ibmainname       = 90;
+  ibmainname       = 90;  // svn rev 10406
   { target-specific things }
-  iblinkotherframeworks = 100;
+  iblinkotherframeworks = 100; // svn rev 8344
 
 { unit flags }
   uf_init          = $1;
@@ -436,7 +440,7 @@ type
     interface_checksum : cardinal;
     deflistsize,
     symlistsize : longint;
-    future   : array[0..0] of longint;
+    indirect_checksum: cardinal; // svn rev 14503
   end;
 
   TPPUEntry = packed record
@@ -492,6 +496,7 @@ type
     procedure ReadEntrySmallSet(var s);
     procedure ReadEntryNormalSet(var s);
     procedure ReadUsedUnits;
+    procedure ReadModuleOptions;
     procedure ReadLinkContainer(Nr: byte);
     procedure ReadImportSymbols;
     procedure ReadDerefData;
@@ -547,55 +552,81 @@ type
        { taken from systems.pas }
        ttarget =
        (
-             target_none,               { 0 }
-             target_i386_GO32V1,        { 1 }
-             target_i386_GO32V2,        { 2 }
-             target_i386_linux,         { 3 }
-             target_i386_OS2,           { 4 }
-             target_i386_Win32,         { 5 }
-             target_i386_freebsd,       { 6 }
-             target_m68k_Amiga,         { 7 }
-             target_m68k_Atari,         { 8 }
-             target_m68k_Mac,           { 9 }
-             target_m68k_linux,         { 10 }
-             target_m68k_PalmOS,        { 11 }
-             target_alpha_linux,        { 12 }
-             target_powerpc_linux,      { 13 }
-             target_powerpc_macos,      { 14 }
-             target_i386_sunos,         { 15 }
-             target_i386_beos,          { 16 }
-             target_i386_netbsd,        { 17 }
-             target_m68k_netbsd,        { 18 }
-             target_i386_Netware,       { 19 }
-             target_i386_qnx,           { 20 }
-             target_i386_wdosx,         { 21 }
-             target_sparc_sunos,        { 22 }
-             target_sparc_linux,        { 23 }
-             target_i386_openbsd,       { 24 }
-             target_m68k_openbsd,       { 25 }
-             system_x86_64_linux,       { 26 }
-             system_powerpc_macosx,     { 27 }
-             target_i386_emx,           { 28 }
-             target_powerpc_netbsd,     { 29 }
-             target_powerpc_openbsd,    { 30 }
-             target_arm_linux,          { 31 }
-             target_i386_watcom,        { 32 }
-             target_powerpc_MorphOS,    { 33 }
-             target_x86_64_freebsd,     { 34 }
-             target_i386_netwlibc,      { 35 }
-             system_powerpc_Amiga,      { 36 }
-             system_x86_64_win64,       { 37 }
-             system_arm_wince,          { 38 }
-             system_ia64_win64,         { 39 }
-             system_i386_wince,         { 40 }
-             system_x86_6432_linux,     { 41 }
-             system_arm_gba,            { 42 }
-             system_arm_nds             { 43 }
+        target_none,               { 0 }
+        obsolete_target_i386_GO32V1,{ 1 }
+        target_i386_GO32V2,        { 2 }
+        target_i386_linux,         { 3 }
+        target_i386_OS2,           { 4 }
+        target_i386_Win32,         { 5 }
+        target_i386_freebsd,       { 6 }
+        target_m68k_Amiga,         { 7 }
+        target_m68k_Atari,         { 8 }
+        target_m68k_Mac,           { 9 }
+        target_m68k_linux,         { 10 }
+        target_m68k_PalmOS,        { 11 }
+        target_alpha_linux,        { 12 }
+        target_powerpc_linux,      { 13 }
+        target_powerpc_macos,      { 14 }
+        target_i386_solaris,       { 15 }
+        target_i386_beos,          { 16 }
+        target_i386_netbsd,        { 17 }
+        target_m68k_netbsd,        { 18 }
+        target_i386_Netware,       { 19 }
+        target_i386_qnx,           { 20 }
+        target_i386_wdosx,         { 21 }
+        target_sparc_solaris,      { 22 }
+        target_sparc_linux,        { 23 }
+        target_i386_openbsd,       { 24 }
+        target_m68k_openbsd,       { 25 }
+        target_x86_64_linux,       { 26 }
+        target_powerpc_darwin,     { 27 }
+        target_i386_emx,           { 28 }
+        target_powerpc_netbsd,     { 29 }
+        target_powerpc_openbsd,    { 30 }
+        target_arm_linux,          { 31 }
+        target_i386_watcom,        { 32 }
+        target_powerpc_MorphOS,    { 33 }
+        target_x86_64_freebsd,     { 34 }
+        target_i386_netwlibc,      { 35 }
+        target_powerpc_Amiga,      { 36 }
+        target_x86_64_win64,       { 37 }
+        target_arm_wince,          { 38 }
+        target_ia64_win64,         { 39 }
+        target_i386_wince,         { 40 }
+        target_x86_6432_linux,     { 41 }
+        target_arm_gba,            { 42 }
+        target_powerpc64_linux,    { 43 }
+        target_i386_darwin,        { 44 }
+        target_arm_palmos,         { 45 }
+        target_powerpc64_darwin,   { 46 }
+        target_arm_nds,            { 47 }
+        target_i386_embedded,      { 48 }
+        target_m68k_embedded,      { 49 }
+        target_alpha_embedded,     { 50 }
+        target_powerpc_embedded,   { 51 }
+        target_sparc_embedded,     { 52 }
+        target_vm_embedded,        { 53 }
+        target_iA64_embedded,      { 54 }
+        target_x86_64_embedded,    { 55 }
+        target_mips_embedded,      { 56 }
+        target_arm_embedded,       { 57 }
+        target_powerpc64_embedded, { 58 }
+        target_i386_symbian,       { 59 }
+        target_arm_symbian,        { 60 }
+        target_x86_64_darwin,      { 61 }
+        target_avr_embedded,       { 62 }
+        target_i386_haiku,         { 63 }
+        target_arm_darwin,         { 64 }
+        target_x86_64_solaris,     { 65 }
+        target_mips_linux,         { 66 }
+        target_mipsel_linux,       { 67 }
+        target_i386_nativent,      { 68 }
+        target_i386_iphonesim      { 69 }
        );
 const
-  Targets : array[ttarget] of string[17]=(
+  Targets : array[ttarget] of string[18]=(
   { 0 }   'none',
-  { 1 }   'GO32V1',
+  { 1 }   'GO32V1 (obsolete)',
   { 2 }   'GO32V2',
   { 3 }   'Linux-i386',
   { 4 }   'OS/2',
@@ -637,7 +668,33 @@ const
   { 40 }  'WinCE-i386',
   { 41 }  'Linux-x64',
   { 42 }  'GBA-arm',
-  { 43 }  'NDS-arm'
+  { 43 }  'Linux-powerpc64',
+  { 44 }  'Darwin-i386',
+  { 45 }  'PalmOS-arm',
+  { 46 }  'MacOSX-powerpc64',
+  { 47 }  'NDS-arm',
+  { 48 }  'Embedded-i386',
+  { 49 }  'Embedded-m68k',
+  { 50 }  'Embedded-alpha',
+  { 51 }  'Embedded-powerpc',
+  { 52 }  'Embedded-sparc',
+  { 53 }  'Embedded-vm',
+  { 54 }  'Embedded-iA64',
+  { 55 }  'Embedded-x64',
+  { 56 }  'Embedded-mips',
+  { 57 }  'Embedded-arm',
+  { 58 }  'Embedded-powerpc64',
+  { 59 }  'Symbian-i386',
+  { 60 }  'Symbian-arm',
+  { 61 }  'MacOSX-x64',
+  { 62 }  'Embedded-avr',
+  { 63 }  'Haiku-i386',
+  { 64 }  'Darwin-ARM',
+  { 65 }  'Solaris-x86-64',
+  { 66 }  'Linux-MIPS',
+  { 67 }  'Linux-MIPSel',
+  { 68 }  'NativeNT-i386',
+  { 69 }  'iPhoneSim-i386'
   );
 begin
   if w<=ord(high(ttarget)) then
@@ -651,21 +708,24 @@ type
   { Copied from systems.pas }
        tsystemcpu=
        (
-             cpu_no,                       { 0 }
-             cpu_i386,                     { 1 }
-             cpu_m68k,                     { 2 }
-             cpu_alpha,                    { 3 }
-             cpu_powerpc,                  { 4 }
-             cpu_sparc,                    { 5 }
-             cpu_vm,                       { 6 }
-             cpu_iA64,                     { 7 }
-             cpu_x86_64,                   { 8 }
-             cpu_mips,                     { 9 }
-             cpu_arm                       { 10 }
+        cpu_no,                       { 0 }
+        cpu_i386,                     { 1 }
+        cpu_m68k,                     { 2 }
+        cpu_alpha,                    { 3 }
+        cpu_powerpc,                  { 4 }
+        cpu_sparc,                    { 5 }
+        cpu_vm,                       { 6 }
+        cpu_iA64,                     { 7 }
+        cpu_x86_64,                   { 8 }
+        cpu_mips,                     { 9 }
+        cpu_arm,                      { 10 }
+        cpu_powerpc64,                { 11 }
+        cpu_avr                       { 12 }
        );
 const
-  CpuTxt : array[tsystemcpu] of string[8]=
-    ('none','i386','m68k','alpha','powerpc','sparc','vis','ia64','x86_64','mips','arm');
+  CpuTxt : array[tsystemcpu] of string[9]=
+    ('none','i386','m68k','alpha','powerpc','sparc','vis','ia64',
+     'x86_64','mips','arm','powerpc64','avr');
 begin
   if w<=ord(high(tsystemcpu)) then
     Result:=CpuTxt[tsystemcpu(w)]
@@ -871,6 +931,9 @@ begin
         DebugLn(['TPPU.ReadInterfaceHeader ModuleName=',ModuleName]);
         {$ENDIF}
       end;
+
+    ibmoduleoptions:
+      ReadModuleOptions;
     
     ibsourcefiles:
       begin
@@ -1485,7 +1548,6 @@ var
       Entry^.Size:=SwapEndian(Entry^.Size);
     if Entry^.Size<0 then
       Error('entry has negative size');
-    debugln(['ReadEntryBlock ']);
     Read(Entry^.Size);
   end;
   
@@ -1501,6 +1563,7 @@ var
 var
   p: Pointer;
 begin
+  fChangeEndian:=PPUIsEndianBig;
   Entry:=nil;
   
   // read header
@@ -1661,6 +1724,63 @@ begin
     {$IFDEF VerbosePPUParser}
     DebugLn(['TPPU.ReadUsedUnits Unit=',AUnitName,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
     {$ENDIF}
+  end;
+end;
+
+procedure TPPU.ReadModuleOptions;
+type
+  tmoduleoption = (
+    mo_none,
+    mo_hint_deprecated,
+    mo_hint_platform,
+    mo_hint_library,
+    mo_hint_unimplemented,
+    mo_hint_experimental,
+    mo_has_deprecated_msg
+  );
+  tmoduleoptions = set of tmoduleoption;
+  tmoduleopt=record
+    mask : tmoduleoption;
+    str  : string[30];
+  end;
+{$IFDEF VerbosePPUParser}
+const
+  moduleopts=6;
+  moduleopt : array[1..moduleopts] of tmoduleopt=(
+     (mask:mo_hint_deprecated;    str:'Hint Deprecated'),
+     (mask:mo_hint_platform;      str:'Hint Platform'),
+     (mask:mo_hint_library;       str:'Hint Library'),
+     (mask:mo_hint_unimplemented; str:'Hint Unimplemented'),
+     (mask:mo_hint_experimental;  str:'Hint Experimental'),
+     (mask:mo_has_deprecated_msg; str:'Has Deprecated Message')
+  );
+{$ENDIF}
+var
+  moduleoptions : tmoduleoptions;
+  {$IFDEF VerbosePPUParser}
+  i      : longint;
+  first  : boolean;
+  {$ENDIF}
+begin
+  ReadEntrySmallSet(moduleoptions);
+  {$IFDEF VerbosePPUParser}
+  if moduleoptions<>[] then
+  begin
+    first:=true;
+    for i:=1 to moduleopts do
+      if (moduleopt[i].mask in moduleoptions) then
+      begin
+        if first then
+          first:=false
+        else
+          dbgout(', ');
+        dbgout(moduleopt[i].str);
+      end;
+    debugln;
+  end;
+  {$ENDIF}
+  if mo_has_deprecated_msg in moduleoptions then begin
+    ReadEntryShortstring{$IFDEF VerbosePPUParser}('Deprecated : '){$ENDIF};
   end;
 end;
 
@@ -1904,6 +2024,7 @@ begin
   DebugLn([Prefix,'  Interface CheckSum=',HexStr(cardinal(FHeader.interface_checksum),8)]);
   DebugLn([Prefix,'  Number of Definitions=',FHeader.deflistsize]);
   DebugLn([Prefix,'  Number of Symbols=',FHeader.symlistsize]);
+  DebugLn([Prefix,'  Indirect Checksum=',HexStr(cardinal(FHeader.indirect_checksum),8)]);
 end;
 
 procedure TPPU.GetMainUsesSectionNames(var List: TStrings);
