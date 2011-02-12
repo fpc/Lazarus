@@ -59,7 +59,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="78">
+    <Units Count="79">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -593,6 +593,13 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="package_usage_options"/>
       </Unit77>
+      <Unit78>
+        <Filename Value="../packager/frames/package_description_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PackageDescriptionOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="package_description_options"/>
+      </Unit78>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

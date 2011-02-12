@@ -1,0 +1,193 @@
+inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
+  Height = 384
+  Width = 552
+  ClientHeight = 384
+  ClientWidth = 552
+  TabOrder = 0
+  DesignLeft = 335
+  DesignTop = 177
+  object DescriptionGroupBox: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 96
+    Top = 0
+    Width = 552
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Description/Abstract'
+    ClientHeight = 78
+    ClientWidth = 548
+    TabOrder = 0
+    object DescriptionMemo: TMemo
+      AnchorSideLeft.Control = DescriptionGroupBox
+      AnchorSideTop.Control = DescriptionGroupBox
+      AnchorSideRight.Control = DescriptionGroupBox
+      AnchorSideBottom.Control = DescriptionGroupBox
+      Left = 6
+      Height = 66
+      Top = 6
+      Width = 536
+      Align = alClient
+      BorderSpacing.Around = 6
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object AuthorGroupBox: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DescriptionGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 53
+    Top = 102
+    Width = 552
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Author:'
+    ClientHeight = 35
+    ClientWidth = 548
+    TabOrder = 1
+    object AuthorEdit: TEdit
+      AnchorSideBottom.Control = AuthorGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 536
+      Align = alTop
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+  end
+  object LicenseGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AuthorGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 111
+    Top = 161
+    Width = 552
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    Caption = 'License:'
+    ClientHeight = 93
+    ClientWidth = 548
+    TabOrder = 2
+    object LicenseMemo: TMemo
+      AnchorSideLeft.Control = LicenseGroupBox
+      AnchorSideTop.Control = LicenseGroupBox
+      AnchorSideRight.Control = LicenseGroupBox
+      AnchorSideBottom.Control = LicenseGroupBox
+      Left = 6
+      Height = 81
+      Top = 6
+      Width = 536
+      Align = alClient
+      BorderSpacing.Around = 6
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object VersionGroupBox: TGroupBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LicenseGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 65
+    Top = 278
+    Width = 552
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Version'
+    ClientHeight = 47
+    ClientWidth = 548
+    TabOrder = 3
+    object VersionMajorLabel: TLabel
+      Left = 0
+      Height = 16
+      Top = 0
+      Width = 32
+      Caption = 'Major'
+      ParentColor = False
+    end
+    object VersionMinorLabel: TLabel
+      Left = 104
+      Height = 16
+      Top = 0
+      Width = 33
+      Caption = 'Minor'
+      ParentColor = False
+    end
+    object VersionReleaseLabel: TLabel
+      Left = 208
+      Height = 16
+      Top = 0
+      Width = 40
+      Caption = 'Release'
+      ParentColor = False
+    end
+    object VersionBuildLabel: TLabel
+      Left = 312
+      Height = 16
+      Top = 0
+      Width = 75
+      Caption = 'Build Number'
+      ParentColor = False
+    end
+    object VersionMajorSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = VersionGroupBox
+      Left = 6
+      Height = 23
+      Top = 17
+      Width = 68
+      BorderSpacing.Left = 6
+      MaxValue = 9999
+      TabOrder = 0
+    end
+    object VersionMinorSpinEdit: TSpinEdit
+      Left = 104
+      Height = 23
+      Top = 17
+      Width = 68
+      MaxValue = 9999
+      TabOrder = 1
+    end
+    object VersionReleaseSpinEdit: TSpinEdit
+      Left = 208
+      Height = 23
+      Top = 17
+      Width = 68
+      MaxValue = 9999
+      TabOrder = 2
+    end
+    object VersionBuildSpinEdit: TSpinEdit
+      Left = 312
+      Height = 23
+      Top = 17
+      Width = 68
+      MaxValue = 9999
+      TabOrder = 3
+    end
+    object dummyForSizing: TLabel
+      AnchorSideTop.Control = VersionBuildSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 415
+      Height = 1
+      Top = 46
+      Width = 1
+      BorderSpacing.Top = 6
+      ParentColor = False
+    end
+  end
+end
