@@ -1896,6 +1896,7 @@ resourcestring
   lisAdditionalCompilerOptionsInheritedFromPackages = 'Additional compiler '
     +'options inherited from packages';
   lisCOCommand = 'Command:';
+  lisCOScanForMessages = 'Scan for messages:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
   lisCOShowAllMessages = 'Show all messages';

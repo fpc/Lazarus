@@ -29,12 +29,14 @@ type
     ExecuteAfterCommandLabel: TLabel;
     ExecuteAfterGroupBox: TGroupBox;
     ExecuteAfterScanFPCCheckBox: TCheckBox;
+    ExecuteAfterScanLabel: TLabel;
     ExecuteAfterScanMakeCheckBox: TCheckBox;
     ExecuteAfterShowAllCheckBox: TCheckBox;
     ExecuteBeforeCommandEdit: TEdit;
     ExecuteBeforeCommandLabel: TLabel;
     ExecuteBeforeGroupBox: TGroupBox;
     ExecuteBeforeScanFPCCheckBox: TCheckBox;
+    ExecuteBeforeScanLabel: TLabel;
     ExecuteBeforeScanMakeCheckBox: TCheckBox;
     ExecuteBeforeShowAllCheckBox: TCheckBox;
     grpCompiler: TGroupBox;
@@ -74,9 +76,10 @@ begin
   chkExecBeforeRun.Caption := lisCOCallOnRun;
   ExecuteBeforeCommandEdit.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
-  ExecuteBeforeScanFPCCheckBox.Caption := lisCOScanForFPCMessages;
-  ExecuteBeforeScanMakeCheckBox.Caption := lisCOScanForMakeMessages;
-  ExecuteBeforeShowAllCheckBox.Caption := lisCOShowAllMessages;
+  ExecuteBeforeScanLabel.Caption := lisCOScanForMessages;
+  ExecuteBeforeScanFPCCheckBox.Caption := 'FPC'; // do not translate name
+  ExecuteBeforeScanMakeCheckBox.Caption := 'make'; // do not translate name
+  ExecuteBeforeShowAllCheckBox.Caption := lisA2PShowAll;
   lblRunIfExecBefore.Caption := lisCOCallOn;
 
   grpCompiler.Caption := lisCompiler;
@@ -96,9 +99,10 @@ begin
   chkExecAfterRun.Caption := lisCOCallOnRun;
   ExecuteAfterCommandEdit.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
-  ExecuteAfterScanFPCCheckBox.Caption := lisCOScanForFPCMessages;
-  ExecuteAfterScanMakeCheckBox.Caption := lisCOScanForMakeMessages;
-  ExecuteAfterShowAllCheckBox.Caption := lisCOShowAllMessages;
+  ExecuteAfterScanLabel.Caption := lisCOScanForMessages;
+  ExecuteAfterScanFPCCheckBox.Caption := 'FPC'; // do not translate name
+  ExecuteAfterScanMakeCheckBox.Caption := 'make'; // do not translate name
+  ExecuteAfterShowAllCheckBox.Caption := lisA2PShowAll;
   lblRunIfExecAfter.Caption := lisCOCallOn;
 end;
 
