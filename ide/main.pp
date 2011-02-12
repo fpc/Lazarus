@@ -8616,9 +8616,11 @@ begin
     AnUnitInfo.Loaded:=false;
     if AnUnitInfo<>Project1.MainUnitInfo then
       AnUnitInfo.Source:=nil;
-    i:=Project1.IndexOf(AnUnitInfo);
-    if (i<>Project1.MainUnitID) and (AnUnitInfo.IsVirtual) then begin
-      Project1.RemoveUnit(i);
+    if not (cfProjectClosing in Flags) then begin
+      i:=Project1.IndexOf(AnUnitInfo);
+      if (i<>Project1.MainUnitID) and AnUnitInfo.IsVirtual then begin
+        Project1.RemoveUnit(i);
+      end;
     end;
 
   finally
