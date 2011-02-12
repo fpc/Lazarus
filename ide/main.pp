@@ -79,7 +79,7 @@ uses
   // protocol
   IDEProtocol,
   // compile
-  Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
+  Compiler, CompilerOptions, CheckCompilerOpts,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
@@ -10445,29 +10445,19 @@ end;
 
 function TMainIDE.DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult;
 var
-  CompOptsDialog: TfrmCompilerOptions;
   Options: TCompilerOptions;
   Filename: string;
 begin
   Result := mrOk;
-  if Sender is TfrmCompilerOptions then
-  begin
-    CompOptsDialog := TfrmCompilerOptions(Sender);
-    Options := CompOptsDialog.CompilerOpts;
-  end
-  else
   if Sender is TCompilerOptions then
-  begin
-    Options := TCompilerOptions(Sender);
-    CompOptsDialog := nil;
-  end
+    Options := TCompilerOptions(Sender)
   else
     RaiseException('TMainIDE.OnCompilerOptionsImExport');
   ImportExportResult := ShowImExportCompilerOptionsDialog(Options, Filename);
   if Filename='' then Exit(mrCancel);
   case ImportExportResult of
-    ieorImport: Result := DoImportCompilerOptions(CompOptsDialog, Options, Filename);
-    ieorExport: Result := DoExportCompilerOptions(CompOptsDialog, Options, Filename);
+    ieorImport: Result := DoImportCompilerOptions(Options, Filename);
+    ieorExport: Result := DoExportCompilerOptions(Options, Filename);
   end;
 end;
 
@@ -10999,6 +10989,34 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.QuitIDE 2');
   {$ENDIF}
+end;
+
+function CheckCompileReasons(Reason: TCompileReason;
+  Options: TProjectCompilerOptions; Quiet: boolean): TModalResult;
+var
+  ProjToolOpts: TProjectCompilationToolOptions;
+begin
+  if (Reason in Options.CompileReasons)
+  and (Options.CompilerPath<>'') then
+    exit(mrOk);
+  if Options.ExecuteBefore is TProjectCompilationToolOptions then begin
+    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteBefore);
+    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
+      exit(mrOk);
+  end;
+  if Options.ExecuteAfter is TProjectCompilationToolOptions then begin
+    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteAfter);
+    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
+      exit(mrOk);
+  end;
+  // reason is not handled
+  if Quiet then exit(mrCancel);
+  Result:=MessageDlg('Nothing to do',
+    'The project''s compiler options has no compile command.'#13
+    +'See Project / Compiler Options ... / Compilation',mtInformation,
+    [mbCancel,mbIgnore],0);
+  if Result=mrIgnore then
+    Result:=mrOk;
 end;
 
 function TMainIDE.DoBuildProject(const AReason: TCompileReason;

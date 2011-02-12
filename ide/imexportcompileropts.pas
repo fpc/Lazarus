@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, IDEProcs, FileUtil, Laz_XMLCfg, LCLType, MainIntf,
-  LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
+  LazarusIDEStrConsts, InputHistory, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
@@ -75,10 +75,8 @@ type
 function ShowImExportCompilerOptionsDialog(
   CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
 
-function DoImportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
-  CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
-function DoExportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
-  CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoImportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoExportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 function ReadIntFromXMLConfig(const Filename, Path: string;
   DefaultValue, ValueForReadError: integer): integer;
@@ -102,11 +100,9 @@ begin
   ImExportCompOptsDlg.Free;
 end;
 
-function DoImportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
-  CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoImportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
-  FreeCompilerOpts: Boolean;
   Path: String;
 begin
   Result := mrOk;
@@ -120,60 +116,37 @@ begin
           ), mtError, [mbCancel], 0);
     end;
   end;
-  FreeCompilerOpts:=false;
   try
-    if (CompOptsDialog<>nil) then begin
-      CompilerOpts:=TBaseCompilerOptions.Create(nil);
-      FreeCompilerOpts:=true;
-    end;
     Path:=GetXMLPathForCompilerOptions(XMLConfig);
     CompilerOpts.LoadFromXMLConfig(XMLConfig,Path);
-    if CompOptsDialog<>nil then
-      CompOptsDialog.LoadOptionsToForm(CompilerOpts);
   finally
-    if FreeCompilerOpts then
-      CompilerOpts.Free;
     XMLConfig.Free;
   end;
 end;
 
-function DoExportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
-  CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoExportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
-  FreeCompilerOpts: Boolean;
   Path: String;
 begin
-  FreeCompilerOpts:=false;
-  if (CompOptsDialog<>nil) then
-  begin
-    CompilerOpts:=TBaseCompilerOptions.Create(nil);
-    FreeCompilerOpts:=true;
-    CompOptsDialog.SaveFormToOptions(ccomlNone,CompilerOpts);
-  end;
+  Result:=mrOk;
   try
-    Result:=mrOk;
+    InvalidateFileStateCache;
+    XMLConfig:=TXMLConfig.Create(Filename);
     try
-      InvalidateFileStateCache;
-      XMLConfig:=TXMLConfig.Create(Filename);
-      try
-        Path:=GetXMLPathForCompilerOptions(XMLConfig);
-        CompilerOpts.SaveToXMLConfig(XMLConfig,Path);
-        XMLConfig.Flush;
-      finally
-        XMLConfig.Free;
-      end;
-    except
-      on E: Exception do
-      begin
-        Result:=MessageDlg(lisIECOErrorAccessingXml,
-          Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', #13,
-            E.Message]), mtError, [mbCancel], 0);
-      end;
+      Path:=GetXMLPathForCompilerOptions(XMLConfig);
+      CompilerOpts.SaveToXMLConfig(XMLConfig,Path);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
     end;
-  finally
-    if FreeCompilerOpts then
-      CompilerOpts.Free;
+  except
+    on E: Exception do
+    begin
+      Result:=MessageDlg(lisIECOErrorAccessingXml,
+        Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', #13,
+          E.Message]), mtError, [mbCancel], 0);
+    end;
   end;
 end;
 

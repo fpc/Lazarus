@@ -46,7 +46,7 @@ uses
   IDEHelpIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
-  IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
+  IDEContextHelpEdit, CompilerOptions, ComponentReg,
   PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem;
   
