@@ -5877,6 +5877,10 @@ msgstr "Escanear mensajes FPC"
 msgid "Scan for Make messages"
 msgstr "Escanear mensajes de Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Mostrar todos los mensajes"

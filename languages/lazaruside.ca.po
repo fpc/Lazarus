@@ -5888,6 +5888,10 @@ msgstr "Explora els missatges del FPC"
 msgid "Scan for Make messages"
 msgstr "Explora els missatges de Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Mostra tots els missatges"

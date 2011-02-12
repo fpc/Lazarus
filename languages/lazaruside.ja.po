@@ -5904,6 +5904,10 @@ msgstr "FPCメッセージをスキャン"
 msgid "Scan for Make messages"
 msgstr "Makeメッセージをスキャン"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "すべてのメッセージを表示"

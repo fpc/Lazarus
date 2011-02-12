@@ -5846,6 +5846,10 @@ msgstr ""
 msgid "Scan for Make messages"
 msgstr ""
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr ""

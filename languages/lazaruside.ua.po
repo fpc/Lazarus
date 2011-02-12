@@ -5889,6 +5889,10 @@ msgstr "Пошук повідомлень FPC"
 msgid "Scan for Make messages"
 msgstr "Пошук повідомлень Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Показувати всі повідомлення"

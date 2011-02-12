@@ -5905,6 +5905,10 @@ msgstr "Scansiona per i messaggi FPC"
 msgid "Scan for Make messages"
 msgstr "Scansiona per i messaggi Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Mostra tutti i messaggi"

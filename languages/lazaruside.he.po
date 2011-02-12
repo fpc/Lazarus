@@ -5870,6 +5870,10 @@ msgstr "סרוק הודעות של FPC"
 msgid "Scan for Make messages"
 msgstr "סרוק הודעות של Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "הצג את כל ההודעות"

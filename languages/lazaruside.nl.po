@@ -5892,6 +5892,10 @@ msgstr "Zoek naar FPC meldingen"
 msgid "Scan for Make messages"
 msgstr "Zoek naar Make meldingen"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Toon alle berichten"

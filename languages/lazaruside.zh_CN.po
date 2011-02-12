@@ -5907,6 +5907,10 @@ msgstr "扫描 FPC 消息"
 msgid "Scan for Make messages"
 msgstr "扫描 Make 消息"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "显示所有信息"

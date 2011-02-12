@@ -5903,6 +5903,10 @@ msgstr "Hľadať správy FPC"
 msgid "Scan for Make messages"
 msgstr "Hľadať správy Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Zobraziť všetky správy"

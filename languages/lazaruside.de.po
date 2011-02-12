@@ -5918,6 +5918,10 @@ msgstr "Nach FPC-Meldungen durchsuchen"
 msgid "Scan for Make messages"
 msgstr "Nach Make-Meldungen durchsuchen"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Alle Meldungen anzeigen"

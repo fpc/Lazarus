@@ -5855,6 +5855,10 @@ msgstr "Snímat pro zprávy FPC"
 msgid "Scan for Make messages"
 msgstr "Snímat pro zprávy Make"
 
+#: lazarusidestrconsts.liscoscanformessages
+msgid "Scan for messages:"
+msgstr ""
+
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
 msgstr "Ukázat všechna hlášení"
