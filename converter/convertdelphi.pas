@@ -162,13 +162,12 @@ type
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual;
-    function ScanMainSourceFile: TModalResult; virtual;
     function ConvertMainSourceFile: TModalResult; virtual;
     function FindAllUnits: TModalResult; virtual; abstract;
     function ConvertAllUnits: TModalResult; virtual; abstract;
     function ExtractOptionsFromDelphiSource: TModalResult; virtual; abstract;
-    // The following protected funcs are needed only because Project and LazPackage
-    //  don't inherit from the same class.
+    // The following protected funcs are needed only because
+    //  Project and LazPackage don't inherit from the same class.
     function GetCompOpts: TBaseCompilerOptions; virtual; abstract;
     function GetCustomDefines: TDefineTemplate; virtual; abstract;
     procedure CustomDefinesChanged; virtual; abstract;
@@ -202,7 +201,6 @@ type
   protected
     function CreateInstance: TModalResult; override;
     function CreateMainSourceFile: TModalResult; override;
-    function ScanMainSourceFile: TModalResult; override;
     function ConvertMainSourceFile: TModalResult; override;
     function FindAllUnits: TModalResult; override;
     function ConvertAllUnits: TModalResult; override;
@@ -535,11 +533,8 @@ begin
   fCTLink.AskAboutError:=Assigned(fOwnerConverter);
   // Create a toold for missing units.
   fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
-  if Assigned(fOwnerConverter) then begin
+  if Assigned(fOwnerConverter) then
     fUsedUnitsTool.CheckPackDepEvent:=@fOwnerConverter.CheckPackageDependency;
-    fUsedUnitsTool.IsMainFile:=fOwnerConverter.MainName=fLazUnitFilename;
-    fUsedUnitsTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
-  end;
 end;
 
 function TConvertDelphiUnit.FixLfmFilename(ADfmFilename: string): TModalResult;
@@ -862,9 +857,6 @@ begin
 
   RemoveNonExistingFiles(false);
   CleanUpCompilerOptionsSearchPaths(CompOpts);
-  // Scan LPR file for directives. Sets fIsConsoleApp flag.
-  Result:=ScanMainSourceFile;
-  if Result<>mrOK then exit;
   // LCL dependency is added automatically later for GUI applications.
 //  AddPackageDependency('LCL');
   // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
@@ -1205,11 +1197,6 @@ begin
   Result:=mrOK; // Do nothing. Overridden in project.
 end;
 
-function TConvertDelphiPBase.ScanMainSourceFile: TModalResult;
-begin
-  Result:=mrOK; // Do nothing. Overridden in project.
-end;
-
 function TConvertDelphiPBase.ConvertMainSourceFile: TModalResult;
 begin
   Result:=mrOK; // Do nothing. Overridden in project.
@@ -1271,6 +1258,7 @@ function TConvertDelphiProject.CreateMainSourceFile: TModalResult;
 // adds the .lpr as main unit to the project, if not already done
 var
   MainUnitInfo: TUnitInfo;
+  ConvTool: TConvDelphiCodeTool;
 begin
   // Converter for main LPR file.
   fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
@@ -1291,25 +1279,20 @@ begin
     // replace main unit in project
     LazProject.MainUnitInfo.Source:=fMainUnitConverter.fPascalBuffer;
   end;
-  Result:=LazarusIDE.DoOpenEditorFile(fMainUnitConverter.fLazUnitFilename,0,0,[ofQuiet]);
-  if Result<>mrOK then exit;
-  Result:=mrOk;
-end;
-
-function TConvertDelphiProject.ScanMainSourceFile: TModalResult;
-var
-  CTLink: TCodeToolLink;
-  ConvTool: TConvDelphiCodeTool;
-begin
-  Result:=mrOK;
-  CTLink:=TCodeToolLink.Create(fMainUnitConverter.fPascalBuffer);
-  ConvTool:=TConvDelphiCodeTool.Create(CTLink);
+  // Scan LPR file for directives. Sets fIsConsoleApp flag.
+  ConvTool:=TConvDelphiCodeTool.Create(fMainUnitConverter.fCTLink);
   try
     fIsConsoleApp:=ConvTool.FindApptypeConsole;
   finally
     ConvTool.Free;
-    CTLink.Free;
   end;
+  with fMainUnitConverter do begin
+    fUsedUnitsTool.IsMainFile:=MainName=fLazUnitFilename;
+    fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
+    Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,[ofQuiet]);
+    if Result<>mrOK then exit;
+  end;
+  Result:=mrOk;
 end;
 
 function TConvertDelphiProject.ConvertMainSourceFile: TModalResult;
