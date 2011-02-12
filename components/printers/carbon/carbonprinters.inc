@@ -163,14 +163,17 @@ procedure TCarbonPrinter.FindDefaultPrinter;
 var
   P: PMPrinter;
   I, C: CFIndex;
+  pa: CFArrayRef;
 begin
-  if OSError(PMServerCreatePrinterList(kPMServerLocal, FPrinterArray),
+  if OSError(PMServerCreatePrinterList(kPMServerLocal, pa),
     Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
 
-  C := CFArrayGetCount(FPrinterArray);
+  if not Assigned(pa) then Exit;
+
+  C := CFArrayGetCount(pa);
   for I := 0 to C - 1 do
   begin
-    P := CFArrayGetValueAtIndex(FPrinterArray, I);
+    P := CFArrayGetValueAtIndex(pa, I);
 
     if PMPrinterIsDefault(P) then
     begin
@@ -178,6 +181,7 @@ begin
       Break;
     end;
   end;
+  CFRelease(pa);
 end;
 
 procedure TCarbonPrinter.BeginEnumPrinters(Lst: TStrings);
