@@ -1442,28 +1442,36 @@ var
   Entry: PPPUEntry;
 
   procedure Grow(Add: integer);
-  const InitialSize = 65536;
+  const InitialSize = 16384;
   var
     NewSize: Integer;
   begin
     NewSize:=FDataPos+Add;
     if NewSize<=FDataSize then exit;
+    // need grow
     if FDataSize<InitialSize then
       FDataSize:=InitialSize
     else
       FDataSize:=FDataSize*2;
-    if FDataSize<NewSize then
-      FDataSize:=NewSize;
+    while FDataSize<NewSize do begin
+      if FDataSize>100000000 then
+        Error('ppu too big');
+      FDataSize:=FDataSize*2;
+    end;
     ReAllocMem(FData,FDataSize);
   end;
   
   function Read(Count: integer): Pointer;
+  var
+    ReadCount: LongInt;
   begin
     //DebugLn(['Read Count=',Count,' Pos=',FDataPos]);
     // read and copy some more data to FData
     Grow(Count);
     Result:=Pointer(FData+FDataPos);
-    s.Read(Result^,Count);
+    ReadCount:=s.Read(Result^,Count);
+    if ReadCount<Count then
+      Error('ppu too short, buggy ppu');
     inc(FDataPos,Count);
   end;
 
@@ -1473,6 +1481,11 @@ var
     if not (Entry^.id in [mainentryid,subentryid]) then
       Error('Invalid entry id '+IntToStr(Entry^.id));
     Result:=Entry^.nr;
+    if fChangeEndian then
+      Entry^.Size:=SwapEndian(Entry^.Size);
+    if Entry^.Size<0 then
+      Error('entry has negative size');
+    debugln(['ReadEntryBlock ']);
     Read(Entry^.Size);
   end;
   

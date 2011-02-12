@@ -104,16 +104,25 @@ type
     FSort: array[1..3] of TPPUListSortRec;
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
+
+    // scan
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
+
     function FindUnit(AnUnitName: string): TPPUListItem;
+    function FindUnitInList(AnUnitName: string; List: TStrings): integer;
+
     procedure UpdateAll;
+
+    // grid
     procedure UpdateUnitsGrid;
+    function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+
+    // units info
+    procedure FillUnitsInfo(AnUnitName: string);
+
     function DoubleAsPercentage(const d: double): string;
     function BytesToStr(b: int64): string;
-    function FindUnitInList(AnUnitName: string; List: TStrings): integer;
-    function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
-    procedure FillUnitsInfo(AnUnitName: string);
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
