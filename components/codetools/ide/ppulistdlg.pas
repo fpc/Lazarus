@@ -44,16 +44,15 @@ const
 type
   TPPUListSort = (
     plsName,
-    plsNameReverse,
-    plsOSizeDescending,
-    plsOSizeAscending,
-    plsPPUSizeDescending,
-    plsPPUSizeAscending,
-    plsUsesCountDescending,
-    plsUsesCountAscending,
-    plsUsedByCountDescending,
-    plsUsedByCountAscending
+    plsOSize,
+    plsPPUSize,
+    plsUsesCount,
+    plsUsedByCount
     );
+  TPPUListSortRec = record
+    Category: TPPUListSort;
+    Reverse: boolean;
+  end;
 
   TPPUListType = (
     pltUsedBy,
@@ -93,12 +92,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure UnitsStringGridDblClick(Sender: TObject);
-    procedure UnitsStringGridHeaderClick(Sender: TObject; IsColumn: Boolean;
-      Index: Integer);
-    procedure UnitsStringGridMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure UnitsStringGridMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure UnitsStringGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
@@ -107,7 +101,7 @@ type
     FIdleConnected: boolean;
     FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
-    FSort: array[1..3] of TPPUListSort;
+    FSort: array[1..3] of TPPUListSortRec;
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -214,9 +208,9 @@ procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
-  FSort[1]:=plsOSizeDescending;
-  FSort[2]:=plsName;
-  FSort[3]:=plsPPUSizeDescending;
+  FSort[1].Category:=plsOSize;
+  FSort[2].Category:=plsName;
+  FSort[3].Category:=plsPPUSize;
 
   UnitUsesTabSheet.Caption:=crsUses;
   UnitUsedByTabSheet.Caption:=crsUsedBy;
@@ -232,34 +226,42 @@ begin
   FreeAndNil(FItems);
 end;
 
-procedure TPPUListDialog.UnitsStringGridDblClick(Sender: TObject);
-begin
-
-end;
-
-procedure TPPUListDialog.UnitsStringGridHeaderClick(Sender: TObject;
-  IsColumn: Boolean; Index: Integer);
-begin
-
-end;
-
 procedure TPPUListDialog.UnitsStringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Col: Longint;
   Row: Longint;
+  s: TPPUListSort;
+  i: Integer;
+  l: Integer;
 begin
+  Col:=-1;
+  Row:=-1;
   UnitsStringGrid.MouseToCell(X,Y,Col,Row);
   if (Row<=1) and (Shift=[ssLeft,ssDouble]) then begin
     // double left click => sort
-
+    case Col of
+    0: s:=plsName;
+    1: s:=plsPPUSize;
+    2: s:=plsOSize;
+    3: s:=plsUsesCount;
+    4: s:=plsUsedByCount;
+    else exit;
+    end;
+    l:=low(FSort);
+    if FSort[l].Category=s then begin
+      // reverse direction
+      FSort[l].Reverse:=not FSort[l].Reverse;
+    end else begin
+      // new primary sort
+      i:=l;
+      while (i<=High(FSort)) and (FSort[i].Category<>s) do inc(i);
+      System.Move(FSort[l],FSort[succ(l)],(i-l)*SizeOf(FSort[l]));
+      FSort[l].Category:=s;
+      FSort[l].Reverse:=false;
+    end;
+    UpdateUnitsGrid;
   end;
-end;
-
-procedure TPPUListDialog.UnitsStringGridMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-
 end;
 
 procedure TPPUListDialog.UnitsStringGridSelectCell(Sender: TObject; aCol,
@@ -492,36 +494,34 @@ var
 begin
   Result:=0;
   for i:=low(FSort) to High(FSort) do begin
-    case FSort[i] of
-    plsName,plsNameReverse:
+    case FSort[i].Category of
+    plsName:
       begin
         Result:=SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
-        if FSort[i]=plsName then
+        if not FSort[i].Reverse then
           Result:=-Result;
         if Result<>0 then exit;
       end;
-    plsOSizeAscending,plsOSizeDescending:
+    plsOSize:
       begin
         Result:=CompareInt(Max(0,Item1.OFileSize),Max(0,Item2.OFileSize),
-                           FSort[i]=plsOSizeAscending);
+                           FSort[i].Reverse);
         if Result<>0 then exit;
       end;
-    plsPPUSizeAscending,plsPPUSizeDescending:
+    plsPPUSize:
       begin
         Result:=CompareInt(Max(0,Item1.PPUFileSize),Max(0,Item2.PPUFileSize),
-                           FSort[i]=plsPPUSizeAscending);
+                           FSort[i].Reverse);
         if Result<>0 then exit;
       end;
-    plsUsesCountAscending,plsUsesCountDescending:
+    plsUsesCount:
       begin
-        Result:=CompareInt(Item1.UsesCount,Item2.UsesCount,
-                           FSort[i]=plsUsesCountDescending);
+        Result:=CompareInt(Item1.UsesCount,Item2.UsesCount,FSort[i].Reverse);
         if Result<>0 then exit;
       end;
-    plsUsedByCountAscending,plsUsedByCountDescending:
+    plsUsedByCount:
       begin
-        Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,
-                           FSort[i]=plsUsedByCountDescending);
+        Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,FSort[i].Reverse);
         if Result<>0 then exit;
       end;
     end;

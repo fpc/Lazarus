@@ -69,10 +69,7 @@ object PPUListDialog: TPPUListDialog
     FixedRows = 2
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 1
-    OnDblClick = UnitsStringGridDblClick
-    OnHeaderClick = UnitsStringGridHeaderClick
     OnMouseDown = UnitsStringGridMouseDown
-    OnMouseUp = UnitsStringGridMouseUp
     OnSelectCell = UnitsStringGridSelectCell
     ColWidths = (
       119
