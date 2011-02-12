@@ -9291,6 +9291,7 @@ begin
             inc(UnitLineCountWithIncludes,SubCode.LineCount);
             Node:=TreeOfSourceCodes.FindSuccessor(Node);
           end;
+          TreeOfSourceCodes.Free;
         end;
       end;
     end;
