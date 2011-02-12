@@ -831,6 +831,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerPathOptionsFrame,
     CompilerOptionsSearchPaths);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerPathOptionsFrame,
+    CompilerOptionsSearchPaths);
 
 end.
 

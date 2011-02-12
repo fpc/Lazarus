@@ -309,6 +309,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerCodegenOptionsFrame,
     CompilerOptionsCodeGeneration);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerCodegenOptionsFrame,
+    CompilerOptionsCodeGeneration);
 
 end.
 

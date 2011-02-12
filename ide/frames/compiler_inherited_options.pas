@@ -286,6 +286,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerInheritedOptionsFrame,
     CompilerOptionsInherited);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerInheritedOptionsFrame,
+    CompilerOptionsInherited);
 
 end.
 

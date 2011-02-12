@@ -84,8 +84,11 @@ type
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
   TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
-  TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
+
+  TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
+  TAbstractIDEPackageOptions = class(TAbstractIDEOptions);
+  TAbstractIDECompilerOptions = class(TAbstractIDEOptions);
 
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
   TOnSaveIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
@@ -266,6 +269,9 @@ const
     CompilerOptionsConditional    = 0900;
     CompilerOptionsInherited      = 1000;
     CompilerOptionsCompilation    = 1100;
+
+  GroupPackage      = 200100;
+  GroupPkgCompiler  = 200200;
 
 implementation
 

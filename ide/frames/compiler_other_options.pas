@@ -132,6 +132,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerOtherOptionsFrame,
     CompilerOptionsOther);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerOtherOptionsFrame,
+    CompilerOptionsOther);
 
 end.
 

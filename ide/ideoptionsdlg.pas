@@ -43,6 +43,8 @@ type
     iodaRestore
     );
 
+  TIDEOptionsEditorFilter = array of TAbstractIDEOptionsClass;
+
   { TIDEOptionsDialog }
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
@@ -61,7 +63,8 @@ type
   private
     FOnLoadOptions: TOnLoadIDEOptions;
     FOnSaveOptions: TOnSaveIDEOptions;
-    FOptionsFilter: TAbstractIDEOptionsClass;
+    FOptionsFilter: TIDEOptionsEditorFilter;
+    FEditorToOpen: TAbstractIDEOptionsEditorClass;
     PrevEditor: TAbstractIDEOptionsEditor;
     FEditorsCreated: Boolean;
     SelectNode: TTreeNode;
@@ -89,7 +92,7 @@ type
     procedure ReadAll;
     procedure WriteAll(Restore: boolean);
 
-    property OptionsFilter: TAbstractIDEOptionsClass read FOptionsFilter write FOptionsFilter;
+    property OptionsFilter: TIDEOptionsEditorFilter read FOptionsFilter write FOptionsFilter;
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   end;
@@ -108,6 +111,7 @@ begin
   inherited Create(AOwner);
   PrevEditor := nil;
   FEditorsCreated := False;
+  FEditorToOpen := nil;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -436,6 +440,7 @@ begin
       for j := 0 to Rec^.Items.Count - 1 do
       begin
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);
+        Instance.Name := ''; // allow multiply use of the same frame in different groups
         Instance.OnLoadIDEOptions := @LoadIDEOptions;
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
         Instance.Setup(Self);
@@ -494,21 +499,28 @@ begin
 end;
 
 function TIDEOptionsDialog.PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
+var
+  i: Integer;
 begin
-  //DebugLn(['TIDEOptionsDialog.PassesFilter ',DbgSName(ARec^.GroupClass),' ',DbgSName(OptionsFilter)]);
-  if (ARec^.GroupClass = nil) and (OptionsFilter <> nil) then
-    Exit(False);
-  if (OptionsFilter<>nil) and (ARec^.GroupClass <> nil)
-  and (not ARec^.GroupClass.InheritsFrom(OptionsFilter)) then
-    Exit(False);
-  Result := True;
+  if (ARec^.GroupClass = nil) then
+    if Length(OptionsFilter) <> 0 then
+      Exit(False)
+    else
+      Exit(True);
+
+  for i := 0 to Length(OptionsFilter) - 1 do
+   if ARec^.GroupClass.InheritsFrom(OptionsFilter[i]) then
+    Exit(True);
+
+  Result := False;
 end;
 
 procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
 var
   Node: TTreeNode;
 begin
-  if EditorToOpen = nil then begin
+  if EditorToOpen = nil then
+  begin
     if SelectNode <> nil then
       Node := SelectNode
     else
@@ -526,7 +538,7 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
   try
     CreateEditors;
-    DoOpenEditor(nil);
+    DoOpenEditor(FEditorToOpen);
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
   end;
@@ -554,12 +566,17 @@ end;
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
 begin
   if IsVisible then
-    DoOpenEditor(AEditor);
+    DoOpenEditor(AEditor)
+  else
+    FEditorToOpen := AEditor;
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(GroupIndex, AIndex: integer);
 begin
-  DoOpenEditor(FindEditorClass(GroupIndex,AIndex));
+  if IsVisible then
+    DoOpenEditor(FindEditorClass(GroupIndex,AIndex))
+  else
+    FEditorToOpen := FindEditorClass(GroupIndex,AIndex);
 end;
 
 function TIDEOptionsDialog.FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor;
@@ -573,20 +590,18 @@ begin
     Result := nil;
 end;
 
-function TIDEOptionsDialog.FindEditor(GroupIndex, AIndex: integer
-  ): TAbstractIDEOptionsEditor;
+function TIDEOptionsDialog.FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor;
 var
   EditorClass: TAbstractIDEOptionsEditorClass;
 begin
-  EditorClass:=FindEditorClass(GroupIndex,AIndex);
-  if EditorClass<>nil then
-    Result:=FindEditor(EditorClass)
+  EditorClass := FindEditorClass(GroupIndex, AIndex);
+  if EditorClass <> nil then
+    Result := FindEditor(EditorClass)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TIDEOptionsDialog.FindEditorClass(GroupIndex, AIndex: integer
-  ): TAbstractIDEOptionsEditorClass;
+function TIDEOptionsDialog.FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass;
 var
   Grp: PIDEOptionsGroupRec;
   i: Integer;

@@ -1074,6 +1074,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompOptBuildMacrosFrame,
     CompilerOptionsConditional);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompOptBuildMacrosFrame,
+    CompilerOptionsConditional);
 
 end.
 

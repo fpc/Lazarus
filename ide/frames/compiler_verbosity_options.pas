@@ -134,6 +134,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerVerbosityOptionsFrame,
     CompilerOptionsVerbosity);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerVerbosityOptionsFrame,
+    CompilerOptionsVerbosity);
 
 end.
 

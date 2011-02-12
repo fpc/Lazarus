@@ -773,6 +773,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TBuildModesEditorFrame,
     CompilerOptionsBuildModes);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TBuildModesEditorFrame,
+    CompilerOptionsBuildModes);
 
 end.
 

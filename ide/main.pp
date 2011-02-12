@@ -373,9 +373,9 @@ type
     // Environment options dialog events
     procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-      ACaption: String = '';
-      AOptionsFilter: TAbstractIDEOptionsClass = nil); override;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+      ACaption: String;
+      AOptionsFilter: array of TAbstractIDEOptionsClass); override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
     procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
@@ -3458,7 +3458,7 @@ end;
 
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(TBuildModesEditorFrame, '', TAbstractIDEProjectOptions);
+  DoOpenIDEOptions(TBuildModesEditorFrame, '', [TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
@@ -4002,7 +4002,7 @@ begin
   NewCaption := Project1.Title;
   if NewCaption = '' then
     NewCaption := ExtractFilenameOnly(Project1.ProjectInfoFile);
-  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), TAbstractIDEProjectOptions);
+  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), [TProject, TProjectCompilerOptions]);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4520,23 +4520,33 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-  ACaption: String = ''; AOptionsFilter: TAbstractIDEOptionsClass = nil);
+procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+  ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
+  OptionsFilter: TIDEOptionsEditorFilter;
+  i: Integer;
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
 
   try
     if ACaption <> '' then
       IDEOptionsDialog.Caption := ACaption;
-    if AOptionsFilter = nil then
+    if Length(AOptionsFilter) = 0 then
+    begin
+      SetLength(OptionsFilter, 1);
       if AEditor <> nil then
-        AOptionsFilter := AEditor.SupportedOptionsClass
+        OptionsFilter[0] := AEditor.SupportedOptionsClass
       else
-        AOptionsFilter := TAbstractIDEEnvironmentOptions;
-    IDEOptionsDialog.OptionsFilter := AOptionsFilter;
-    //DebugLn(['TMainIDE.DoOpenIDEOptions ',DbgSName(IDEOptionsDialog.OptionsFilter)]);
+        OptionsFilter[0] := TAbstractIDEEnvironmentOptions;
+    end
+    else
+    begin
+      SetLength(OptionsFilter, Length(AOptionsFilter));
+      for i := 0 to Length(AOptionsFilter) - 1 do
+        OptionsFilter[i] := AOptionsFilter[i];
+    end;
+    IDEOptionsDialog.OptionsFilter := OptionsFilter;
     IDEOptionsDialog.OpenEditor(AEditor);
 
     with IDEOptionsDialog do

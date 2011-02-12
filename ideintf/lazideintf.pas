@@ -246,8 +246,10 @@ type
     class function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
-      ACaption: String = '';
-      AOptionsFilter: TAbstractIDEOptionsClass = nil); virtual; abstract;
+      ACaption: String = ''); overload;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+      ACaption: String;
+      AOptionsFilter: array of TAbstractIDEOptionsClass); overload; virtual; abstract;
 
     // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -437,6 +439,11 @@ function TLazIDEInterface.DoNewEditorFile(
   const NewSource: string; NewFlags: TNewFlags): TModalResult;
 begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
+end;
+
+procedure TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass; ACaption: String);
+begin
+  DoOpenIDEOptions(AEditor, ACaption, []);
 end;
 
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);

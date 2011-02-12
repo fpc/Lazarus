@@ -168,6 +168,8 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerParsingOptionsFrame,
     CompilerOptionsParsing);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerParsingOptionsFrame,
+    CompilerOptionsParsing);
 
 end.
 

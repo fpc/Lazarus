@@ -48,8 +48,8 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileProcs, FileUtil,
   AVL_Tree, LazConfigStorage,
   CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
-  PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
-  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
+  PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
+  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
 
@@ -371,6 +371,9 @@ type
     procedure SetConditionals(const AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
+    // IDE options
+    class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
     function IsActive: boolean; override;
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
@@ -651,6 +654,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    // IDE options
+    class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
     // modified
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -2494,6 +2500,16 @@ begin
   inherited Destroy;
 end;
 
+class function TLazPackage.GetGroupCaption: string;
+begin
+  Result := lisPckOptsPackageOptions;
+end;
+
+class function TLazPackage.GetInstance: TAbstractIDEOptions;
+begin
+  Result := nil;
+end;
+
 procedure TLazPackage.BeginUpdate;
 begin
   inc(FUpdateLock);
@@ -3800,6 +3816,16 @@ begin
     FLazPackage := AOwner as TLazPackage;
 end;
 
+class function TPkgCompilerOptions.GetGroupCaption: string;
+begin
+  Result := dlgCompilerOptions;
+end;
+
+class function TPkgCompilerOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := nil;
+end;
+
 function TPkgCompilerOptions.IsActive: boolean;
 begin
   Result:=(LazPackage<>nil) and (LazPackage.CompilerOptions=Self);
@@ -4409,6 +4435,8 @@ begin
 end;
 
 initialization
+  RegisterIDEOptionsGroup(GroupPackage, TLazPackage);
+  RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
   PackageDependencies:=TAVLTree.Create(@ComparePkgDependencyNames);
 
 finalization
