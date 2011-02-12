@@ -360,7 +360,7 @@ begin
                   Result.Shadow := GTK_SHADOW_IN
                 else
                 if Details.State in [TS_HOT] then
-                  Result.Shadow := GTK_SHADOW_ETCHED_IN
+                  Result.Shadow := GTK_SHADOW_ETCHED_OUT
                 else
                   Result.Shadow := GTK_SHADOW_NONE;
 
