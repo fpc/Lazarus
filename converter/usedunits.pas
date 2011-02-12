@@ -59,7 +59,7 @@ type
     fUnitsToFixCase: TStringToStringTree;// Like rename but done for every target.
     fUnitsToComment: TStringList;        // List of units to be commented.
     fMissingUnits: TStringList;          // Units not found in search path.
-    function FindMissingUnits: boolean;
+    function FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
     procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
                               AMapToEdit: TStringToStringTree);
@@ -192,7 +192,7 @@ begin
   inherited Destroy;
 end;
 
-function TUsedUnits.FindMissingUnits: boolean;
+function TUsedUnits.FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
 var
   UsesNode: TCodeTreeNode;
   InAtom, UnitNameAtom: TAtomPosition;
@@ -221,7 +221,9 @@ begin
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin                         // unit found
-        if NewUnitName<>OldUnitName then begin
+        if (NewUnitName<>OldUnitName) and
+                     not AUnitUpdater.FindReplacement(NewUnitName, slo) then begin
+          // Character case differs and it will not be replaced.
           fUnitsToFixCase[OldUnitName]:=NewUnitName;      // fix case
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
                                           [OldUnitName, NewUnitName]), '', -1);
@@ -520,8 +522,8 @@ begin
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then
       MapToEdit:=TStringToStringTree.Create(false);
     fCTLink.CodeTool.BuildTree(false);
-    if not (fMainUsedUnits.FindMissingUnits and
-            fImplUsedUnits.FindMissingUnits) then begin
+    if not (fMainUsedUnits.FindMissingUnits(UnitUpdater) and
+            fImplUsedUnits.FindMissingUnits(UnitUpdater)) then begin
       Result:=mrCancel;
       exit;
     end;
