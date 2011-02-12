@@ -936,6 +936,8 @@ procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
 
+var
+  CurPackage: TLazPackage; // don't use it - only for options dialog
 
 implementation
 
@@ -2507,7 +2509,7 @@ end;
 
 class function TLazPackage.GetInstance: TAbstractIDEOptions;
 begin
-  Result := nil;
+  Result := CurPackage;
 end;
 
 procedure TLazPackage.BeginUpdate;
@@ -3823,7 +3825,7 @@ end;
 
 class function TPkgCompilerOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := nil;
+  Result := CurPackage.CompilerOptions;
 end;
 
 function TPkgCompilerOptions.IsActive: boolean;

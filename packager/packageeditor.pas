@@ -1449,21 +1449,10 @@ begin
 end;
 
 procedure TPackageEditorForm.CompilerOptionsBitBtnClick(Sender: TObject);
-var
-  CompilerOptsDlg: TfrmCompilerOptions;
 begin
-  CompilerOptsDlg:=TfrmCompilerOptions.Create(Self);
-  CompilerOptsDlg.CompilerOpts:=LazPackage.CompilerOptions;
-  with CompilerOptsDlg do begin
-    LoadOptionsToForm();
-    Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
-    ReadOnly:=LazPackage.ReadOnly;
-    if ShowModal=mrOk then begin
-      LazPackage.DefineTemplates.AllChanged;
-      MainIDEInterface.UpdateHighlighters;// highlighting depends on compiler mode
-    end;
-    Free;
-  end;
+  CurPackage := LazPackage;
+  // TODO: LazPackage.ReadOnly ?
+  LazarusIDE.DoOpenIDEOptions(nil, Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]), [TLazPackage, TPkgCompilerOptions]);
   UpdateTitle;
   UpdateButtons;
   UpdateStatusBar;
