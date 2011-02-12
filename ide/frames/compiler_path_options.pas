@@ -785,10 +785,14 @@ begin
     ProjTargetFileLabel.Visible:=true;
     ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
     ProjTargetApplyConventionsCheckBox.Checked:=TProjectCompilerOptions(AOptions).TargetFilenameAppplyConventions;
+    ProjTargetApplyConventionsCheckBox.Visible:=true;
+    LCLWidgetTypeLabel.Visible:=true;;
     UpdateTargetFileLabel;
   end else begin
     ProjTargetFileEdit.Visible:=false;
     ProjTargetFileLabel.Visible:=false;
+    ProjTargetApplyConventionsCheckBox.Visible:=false;
+    LCLWidgetTypeLabel.Visible:=false;
   end;
 
   with AOptions as TBaseCompilerOptions do
