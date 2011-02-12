@@ -14,7 +14,6 @@ begin
   // TODO: set and get paper margins, title
 
   if not Assigned(Printer) then Exit;
-  if Printer.Printers.Count <= 0 then Exit;
   
   CarbonPrinter := Printer as TCarbonPrinter;
  

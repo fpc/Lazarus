@@ -297,8 +297,13 @@ begin
 end;
 
 procedure TCarbonPrinter.UpdatePrinter;
+var
+  s: string;
 begin
-  SetPrinter(GetCurrentPrinterName);
+  s := GetCurrentPrinterName;
+  if trim(s) = '' then // Observed if Default printer set to "Use last printer", and no printing done
+    s := '*';     // so select lcl default
+  SetPrinter(s);
   Validate;
 end;
 
