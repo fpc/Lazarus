@@ -533,8 +533,10 @@ begin
   fCTLink.AskAboutError:=Assigned(fOwnerConverter);
   // Create a toold for missing units.
   fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
-  if Assigned(fOwnerConverter) then
+  if Assigned(fOwnerConverter) then begin
     fUsedUnitsTool.CheckPackDepEvent:=@fOwnerConverter.CheckPackageDependency;
+    fUsedUnitsTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
+  end;
 end;
 
 function TConvertDelphiUnit.FixLfmFilename(ADfmFilename: string): TModalResult;
@@ -1423,7 +1425,6 @@ var
     Converter: TConvertDelphiUnit;
   begin
     Converter:=TConvertDelphiUnit.Create(Self, AUnitInfo.Filename,[]);
-    Converter.fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
     Converter.fUnitInfo:=AUnitInfo;
     ConvUnits.Add(Converter);
     Result:=Converter.CopyAndLoadFile;
