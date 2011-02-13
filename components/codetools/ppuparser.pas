@@ -897,15 +897,13 @@ begin
   SkipUntilEntry(ibendsyms);
 
   // Interface Macros
-  if ReadEntry<>ibexportedmacros then
-    Error('missing exported macros');
-  if boolean(ReadEntryByte) then begin
-    // skip the definition section for macros (since they are never used)
-    SkipUntilEntry(ibenddefs);
-    // read the macro symbols
-    SkipUntilEntry(ibendsyms);
-  end else begin
-    // no macros
+  if ReadEntry=ibexportedmacros then begin
+    if boolean(ReadEntryByte) then begin
+      // skip the definition section for macros (since they are never used)
+      SkipUntilEntry(ibenddefs);
+      // read the macro symbols
+      SkipUntilEntry(ibendsyms);
+    end;
   end;
 
   // Implementation Header
@@ -1606,13 +1604,15 @@ var
     Read(Entry^.Size);
   end;
   
-  procedure ReadUntilEntry(EntryNr: byte);
+  function ReadUntilEntry(EntryNr: byte): boolean;
   var
     b: Byte;
   begin
     repeat
       b:=ReadEntryBlock;
-    until (b=ibend) or ((b=EntryNr) and (Entry^.id=mainentryid));
+      if b=ibend then exit(false);
+    until (b=EntryNr) and (Entry^.id=mainentryid);
+    Result:=true;
   end;
 
 var
@@ -1646,19 +1646,27 @@ begin
   fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
 
   // read entries
-  ReadUntilEntry(ibendinterface);
-  ReadUntilEntry(ibenddefs);
-  ReadUntilEntry(ibendsyms);
-  if ReadEntryBlock<>ibexportedmacros then
-    Error('missing exported macros');
-  if boolean(PByte(PByte(Entry)+SizeOf(TPPUEntry))^) then begin
-    ReadUntilEntry(ibenddefs);
-    ReadUntilEntry(ibendsyms);
+  if not ReadUntilEntry(ibendinterface) then
+    Error('missing end of interface');
+  if not ReadUntilEntry(ibenddefs) then
+    Error('missing end of interface definitions');
+  if not ReadUntilEntry(ibendsyms) then
+    Error('missing end of interface symbols');
+  if ReadEntryBlock=ibexportedmacros then begin
+    if boolean(PByte(PByte(Entry)+SizeOf(TPPUEntry))^) then begin
+      if not ReadUntilEntry(ibenddefs) then
+        Error('missing end of macro definitions');
+      if not ReadUntilEntry(ibendsyms) then
+        Error('missing end of macro symbols');
+    end;
   end;
-  ReadUntilEntry(ibendimplementation);
+  if not ReadUntilEntry(ibendimplementation) then
+    Error('missing end of implementation');
   if (FHeader.flags and uf_local_symtable)<>0 then begin
-    ReadUntilEntry(ibenddefs);
-    ReadUntilEntry(ibendsyms);
+    if not ReadUntilEntry(ibenddefs) then
+      Error('missing end of implementation definitions');
+    if not ReadUntilEntry(ibendsyms) then
+      Error('missing end of implementation symbols');
   end;
   
   // shrink FData
