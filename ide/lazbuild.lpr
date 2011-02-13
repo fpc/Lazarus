@@ -30,7 +30,7 @@ uses
   // codetools
   CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
-  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
+  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf, CompOptsIntf,
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
