@@ -264,8 +264,8 @@ type
       Widget: PGtkWidget; const AParams: TCreateParams);
 
   private
-    procedure Gtk1Create;
-    procedure Gtk1Destroy;
+    procedure Gtk2Create;
+    procedure Gtk2Destroy;
 
   protected
     function GetAppHandle: THandle; override;

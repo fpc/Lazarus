@@ -1090,7 +1090,7 @@ end;
 constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
-  Gtk1Create;
+  Gtk2Create;
   {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
   FMainPoll := nil;
   Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
@@ -1112,7 +1112,7 @@ begin
     StayOnTopList.Free;
     StayOnTopList := nil;
   end;
-  Gtk1Destroy;
+  Gtk2Destroy;
   inherited Destroy;
 end;
 
@@ -1421,7 +1421,7 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.Gtk1Create;
+procedure TGtk2WidgetSet.Gtk2Create;
 {$IFDEF EnabledGtkThreading}
 {$IFNDEF Win32}
 var
@@ -1625,9 +1625,9 @@ end;
   Params:  None
   Returns: Nothing
 
-  Gtk1 original Destructor for the class.
+  Gtk2 original Destructor for the class.
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.Gtk1Destroy;
+procedure TGtk2WidgetSet.Gtk2Destroy;
 const
   ProcName = '[TGtk2WidgetSet.Destroy]';
 var
