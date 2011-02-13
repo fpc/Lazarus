@@ -5126,8 +5126,6 @@ resourcestring
   lisConvDelphiRemoveFirst = 'Remove first';
   lisConvDelphiRemoveSecond = 'Remove second';
   lisConvDelphiKeepBoth = 'Keep both';
-  lisConvDelphiAtThisPointThereShouldBeNoMissingUnits = 'At this point there '
-    +'should be no missing units!';
   lisConvDelphiPackageNameExists = 'Package name exists';
   lisConvDelphiProjOmittedUnit = 'Omitted unit %s from project';
   lisConvDelphiAddedPackageRequirement = 'Added Package %s as a requirement.';
