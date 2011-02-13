@@ -204,7 +204,7 @@ begin
   ImplementationUses.Clear;
   InitializationMangledName:='';
   FinalizationMangledName:='';
-  if PPU=nil then PPU:=TPPU.Create;
+  if PPU=nil then PPU:=TPPU.Create(Self);
   PPU.LoadFromFile(PPUFilename);
   debugln('================================================================');
   DebugLn(['TPPUMember.UpdatePPU Group=',Group.Name,' AUnitName=',Unit_Name,' Filename=',PPUFilename]);

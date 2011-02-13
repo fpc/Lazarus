@@ -55,7 +55,12 @@ type
 
   TPPUTools = class
   private
+    FCatchExceptions: boolean;
+    FErrorFilename: string;
+    fErrorMsg: string;
     fItems: TAVLTree; // tree of TPPUTool sorted for Code
+    FWriteExceptions: boolean;
+    procedure WriteError;
   public
     constructor Create;
     destructor Destroy; override;
@@ -64,6 +69,17 @@ type
     function FindFile(const NormalizedFilename: string): TPPUTool;
     function LoadFile(const NormalizedFilename: string;
                       const Parts: TPPUParts = PPUPartsAll): TPPUTool;
+
+    // error handling
+    procedure ClearError;
+    function HandleException(AnException: Exception): boolean;
+    procedure SetError(TheFilename: string; const TheMessage: string);
+    property CatchExceptions: boolean
+                                   read FCatchExceptions write FCatchExceptions;
+    property WriteExceptions: boolean
+                                   read FWriteExceptions write FWriteExceptions;
+    property ErrorFilename: string read FErrorFilename;
+    property ErrorMessage: string read fErrorMsg;
 
     // uses section
     function GetMainUsesSectionNames(NormalizedFilename: string; var List: TStrings): boolean;
@@ -87,9 +103,23 @@ end;
 
 { TPPUTools }
 
+procedure TPPUTools.WriteError;
+begin
+  if FWriteExceptions then begin
+    DbgOut('### TPPUTools.HandleException: "'+ErrorMessage+'"');
+    if ErrorFilename<>'' then DbgOut(' in file="',ErrorFilename,'"');
+    DebugLn('');
+    {$IFDEF CTDEBUG}
+    //WriteDebugReport();
+    {$ENDIF}
+  end;
+end;
+
 constructor TPPUTools.Create;
 begin
   fItems:=TAVLTree.Create(@ComparePPUTools);
+  CatchExceptions:=true;
+  WriteExceptions:=true;
 end;
 
 destructor TPPUTools.Destroy;
@@ -141,16 +171,53 @@ begin
   Result:=Tool;
 end;
 
+procedure TPPUTools.ClearError;
+begin
+  FErrorFilename:='';
+  fErrorMsg:='';
+end;
+
+function TPPUTools.HandleException(AnException: Exception): boolean;
+var
+  PPU: TPPU;
+begin
+  fErrorMsg:=AnException.Message;
+  if (AnException is EPPUParserError) then begin
+    PPU:=EPPUParserError(AnException).Sender;
+    if PPU<>nil then begin
+      if PPU.Owner is TPPUTool then begin
+        FErrorFilename:=TPPUTool(PPU.Owner).Filename;
+      end;
+    end;
+  end;
+  // write error
+  WriteError;
+  // raise or catch
+  if not CatchExceptions then raise AnException;
+  Result:=false;
+end;
+
+procedure TPPUTools.SetError(TheFilename: string; const TheMessage: string);
+begin
+  FErrorFilename:=TheFilename;
+  fErrorMsg:=TheMessage;
+  WriteError;
+end;
+
 function TPPUTools.GetMainUsesSectionNames(NormalizedFilename: string;
   var List: TStrings): boolean;
 var
   Tool: TPPUTool;
 begin
   Result:=false;
-  Tool:=LoadFile(NormalizedFilename,[ppInterfaceHeader]);
-  if Tool=nil then exit;
-  Tool.PPU.GetMainUsesSectionNames(List);
-  Result:=true;
+  try
+    Tool:=LoadFile(NormalizedFilename,[ppInterfaceHeader]);
+    if Tool=nil then exit;
+    Tool.PPU.GetMainUsesSectionNames(List);
+    Result:=true;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
 end;
 
 function TPPUTools.GetImplementationUsesSectionNames(
@@ -193,7 +260,7 @@ begin
   Result:=false;
   ErrorMsg:='';
   if PPU=nil then
-    PPU:=TPPU.Create;
+    PPU:=TPPU.Create(Self);
   try
     LoadDate:=FileDateOnDisk;
     LoadedParts:=Parts;

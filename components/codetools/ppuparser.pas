@@ -32,7 +32,7 @@ unit PPUParser;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerbosePPUParser}
+{off $DEFINE VerbosePPUParser}
 
 interface
 
@@ -486,10 +486,14 @@ type
     nr   : byte;
   end;
   PPPUEntry = ^TPPUEntry;
+
+  TPPU = class;
   
   { EPPUParserError }
 
   EPPUParserError = class(Exception)
+    Sender: TPPU;
+    constructor Create(ASender: TPPU; const AMessage: string);
   end;
 
   { TPPU }
@@ -503,6 +507,7 @@ type
     FEntryPos: integer;
     FEntryBuf: Pointer;
     FEntryBufSize: integer;
+    FOwner: TObject;
     FVersion: integer;
     FDerefData: PByte;
     FDerefDataSize: integer;
@@ -557,7 +562,7 @@ type
     procedure SetDataPos(NewPos: integer);
     function GetProcMangledName(ProcDefPos: integer): string;
   public
-    constructor Create;
+    constructor Create(TheOwner: TObject);
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromStream(s: TStream; const Parts: TPPUParts = PPUPartsAll);
@@ -569,6 +574,7 @@ type
     function GetInitProcName: string;
     function GetFinalProcName: string;
     property Version: integer read FVersion;
+    property Owner: TObject read FOwner;
   end;
 
 function PPUTargetToStr(w: longint): string;
@@ -859,6 +865,14 @@ begin
   DecodeTime(DT,hour,min,sec,hsec);
   DecodeDate(DT,year,month,day);
   Result := L0(Year)+'/'+L0(Month)+'/'+L0(Day)+' '+L0(Hour)+':'+L0(min)+':'+L0(sec);
+end;
+
+{ EPPUParserError }
+
+constructor EPPUParserError.Create(ASender: TPPU; const AMessage: string);
+begin
+  Sender:=ASender;
+  inherited Create(AMessage);
 end;
 
 { TPPU }
@@ -1776,8 +1790,9 @@ begin
     if FVersion>=107 then begin
       // svn rev 14503  ppu ver 107
       {$IFDEF VerbosePPUParser}IndirectCRC:={$ENDIF}ReadEntryDWord;
-    end else
-      IndirectCRC:=0;
+    end else begin
+      {$IFDEF VerbosePPUParser}IndirectCRC:=0;{$ENDIF}
+    end;
     {$IFDEF VerbosePPUParser}
     DebugLn(['TPPU.ReadUsedUnits Unit=',AUnitName,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8),' IndCRC=',HexStr(cardinal(IndirectCRC),8)]);
     {$ENDIF}
@@ -1964,7 +1979,7 @@ begin
   {$IFDEF VerbosePPUParser}
   CTDumpStack;
   {$ENDIF}
-  raise EPPUParserError.Create(Msg);
+  raise EPPUParserError.Create(Self,Msg);
 end;
 
 procedure TPPU.GetUsesSection(StartPos: integer; var List: TStrings);
@@ -1980,8 +1995,9 @@ begin
       List:=TStringList.Create;
     if List.IndexOf(AUnitName)<0 then
       List.Add(AUnitName);
-    ReadEntryLongint; // CRC
-    ReadEntryLongint; // IntfCRC
+    ReadEntryDWord; // CRC
+    ReadEntryDWord; // IntfCRC
+    if FVersion>=107 then ReadEntryDWord;
   end;
 end;
 
@@ -2008,9 +2024,9 @@ begin
     Result:=ReadEntryShortstring;
 end;
 
-constructor TPPU.Create;
+constructor TPPU.Create(TheOwner: TObject);
 begin
-
+  FOwner:=TheOwner;
 end;
 
 destructor TPPU.Destroy;
