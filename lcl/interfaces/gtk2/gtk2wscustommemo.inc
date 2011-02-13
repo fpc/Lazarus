@@ -98,19 +98,6 @@ begin
   SignalConnect(AWidgetInfo^.CoreWidget, 'paste-clipboard', @Gtk2WS_MemoPasteFromClip, AWidgetInfo);
 end;
 
-function Gtk2TranslateScrollStyle(SS:TScrollStyle):TPoint;
-begin
-  case SS of
-    ssAutoBoth: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    ssAutoHorizontal: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-    ssAutoVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    ssBoth: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-    ssHorizontal: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-    ssNone: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    ssVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-  end;
-end;
-
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -283,8 +270,9 @@ end;
 
 class procedure TGtk2WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
   const NewScrollbars: TScrollStyle);
-var SS:TPoint;
-    ScrollWidget: PGtkScrolledWindow;
+var
+  SS:TPoint;
+  ScrollWidget: PGtkScrolledWindow;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollBars') then Exit;
   SS:=Gtk2TranslateScrollStyle(NewScrollBars);

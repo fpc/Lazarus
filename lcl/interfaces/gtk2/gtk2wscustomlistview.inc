@@ -1213,13 +1213,17 @@ begin
         begin
           //gtk2 iter has no focus??
           Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
-
           if GTK_IS_TREE_VIEW(MainView) then
           begin
             if AIsSet then
               gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
             else
-              gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False);
+            begin
+              if (gtk_major_version = 2) and (gtk_minor_version < 20) then
+                gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False)
+              else
+                gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False);
+            end;
           end
         {$IFDEF GTK_2_8}
           else
@@ -1386,6 +1390,7 @@ var
   {$IFDEF USEORIGTREEMODEL}
   PtrType: GType;
   {$ENDIF}
+  SS: TPoint;
 begin
   Result := TGtk2WSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   if Result = 0 then Exit;
@@ -1394,7 +1399,10 @@ begin
 
   gtk_widget_unset_flags(ScrollWidget^.hscrollbar, GTK_CAN_FOCUS);
   gtk_widget_unset_flags(ScrollWidget^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(ScrollWidget, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  SS := Gtk2TranslateScrollStyle(TListView(AWinControl).ScrollBars);
+  gtk_scrolled_window_set_policy(ScrollWidget,SS.X, SS.Y);
+
   gtk_scrolled_window_set_shadow_type(ScrollWidget,
     BorderStyleShadowMap[TCustomListView(AWinControl).BorderStyle]);
 
@@ -1972,29 +1980,15 @@ end;
 class procedure TGtk2WSCustomListView.SetScrollBars(const ALV: TCustomListView;
   const AValue: TScrollStyle);
 var
+  SS:TPoint;
   ScrollWidget: PGtkScrolledWindow;
-  hPolicy, vPolicy: TGtkPolicyType;
 begin
-  if not WSCheckHandleAllocated(ALV, 'SetScrollBars')
-  then Exit;
+  if not WSCheckHandleAllocated(ALV, 'SetScrollBars') then
+    exit;
 
   ScrollWidget := PGtkScrolledWindow(ALV.Handle);
-
-  case AValue of
-    ssHorizontal, ssBoth: hPolicy := GTK_POLICY_ALWAYS;
-    ssAutoHorizontal, ssAutoBoth: hPolicy := GTK_POLICY_AUTOMATIC;
-  else
-    hPolicy := GTK_POLICY_NEVER;
-  end;
-
-  case AValue of
-    ssVertical, ssBoth: vPolicy := GTK_POLICY_ALWAYS;
-    ssAutoVertical, ssAutoBoth: vPolicy := GTK_POLICY_AUTOMATIC;
-  else
-    vPolicy := GTK_POLICY_NEVER;
-  end;
-
-  gtk_scrolled_window_set_policy(ScrollWidget, hPolicy, vPolicy);
+  SS := Gtk2TranslateScrollStyle(AValue);
+  gtk_scrolled_window_set_policy(ScrollWidget ,SS.X, SS.Y);
 end;
 
 class procedure TGtk2WSCustomListView.SetSort(const ALV: TCustomListView;

@@ -275,6 +275,7 @@ function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
 function GdkRectFromRect(R: TRect): TGdkRectangle;
 function AlignToGtkAlign(Align: TAlignment): gfloat;
 function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
+function Gtk2TranslateScrollStyle(const SS:TScrollStyle):TPoint;
 
 // debugging
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
