@@ -54,7 +54,7 @@ uses
   CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
-  LazIDEIntf,
+  CompOptsIntf, LazIDEIntf,
   // package registration
   LazarusPackageIntf,
   // IDE

@@ -54,7 +54,7 @@ uses
   Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
-  ProjectIntf, MacroIntf, LazIDEIntf,
+  CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf,
   LazarusIDEStrConsts, CompilerOptions,

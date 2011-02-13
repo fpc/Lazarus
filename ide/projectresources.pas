@@ -38,10 +38,12 @@ interface
 
 uses
   Classes, SysUtils, Contnrs, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
-  Dialogs, ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts, AvgLvlTree,
-  KeywordFuncLists, BasicCodeTools, IDEProcs, DialogProcs, CodeToolManager,
-  CodeCache, resource, reswriter,
-  W32Manifest,W32VersionInfo,ProjectIcon;
+  Dialogs, AvgLvlTree, resource, reswriter,
+  KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
+  ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
+  LazarusIDEStrConsts,
+  IDEProcs, DialogProcs,
+  W32Manifest, W32VersionInfo, ProjectIcon;
 
 type
   { TProjectResources }

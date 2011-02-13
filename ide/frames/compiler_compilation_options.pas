@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts,
-  ProjectIntf, PackageDefs;
+  ProjectIntf, CompOptsIntf, PackageDefs;
 
 type
 

@@ -35,6 +35,7 @@ uses
   ComCtrls,
   // IDEIntf
   IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
+  PackageIntf,
   // codetools
   BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
   PPUParser, PPUCodeTools;
@@ -71,6 +72,7 @@ type
     OFileSize: int64;
     UsesUnits: TStrings; // =nil means uses section not yet scanned
     UsedByUnits: TStrings;
+    PackageName: string;
     destructor Destroy; override;
     function UsesCount: integer;
     function UsedByCount: integer;
@@ -120,6 +122,7 @@ type
     function FindUnit(AnUnitName: string): TPPUListItem;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
     function FindUnitOfListitem(List: TStrings; Index: integer): TPPUListItem;
+    function FindPackageOfUnit(Item: TPPUListItem): string;
 
     procedure UpdateAll;
 
@@ -258,6 +261,7 @@ var
   i: Integer;
   l: Integer;
 begin
+  if FItems=nil then exit;
   Col:=-1;
   Row:=-1;
   UnitsStringGrid.MouseToCell(X,Y,Col,Row);
@@ -292,6 +296,7 @@ procedure TPPUListDialog.UnitsStringGridSelectCell(Sender: TObject; aCol,
 var
   AnUnitName: String;
 begin
+  if FItems=nil then exit;
   if (aRow<2) or (aRow>=UnitsStringGrid.RowCount) then
     AnUnitName:=''
   else
@@ -307,6 +312,7 @@ var
   Row: Longint;
   AnUnitName: string;
 begin
+  if FItems=nil then exit;
   Grid:=TStringGrid(Sender);
   if Shift=[ssLeft,ssDouble] then begin
     Col:=0;
@@ -352,6 +358,38 @@ begin
   Result:=FindUnit(List[Index]);
   if Result<>nil then
     List.Objects[Index]:=Result;
+end;
+
+function TPPUListDialog.FindPackageOfUnit(Item: TPPUListItem): string;
+var
+  i: Integer;
+  Pkg: TIDEPackage;
+  OutDir: String;
+  PPUDir: String;
+begin
+  if Item.PackageName='' then begin
+    if Item.PPUFile<>'' then begin
+      PPUDir:=ExtractFileName(Item.PPUFile);
+
+      // search in output directories of packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        OutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+        if (OutDir<>'') and FilenameIsAbsolute(OutDir)
+        and (CompareFilenames(AppendPathDelim(OutDir),PPUDir)=0) then begin
+          Item.PackageName:=Pkg.Name;
+          break;
+        end;
+      end;
+
+      // search in FPC unit paths
+      if Item.PackageName='' then begin
+        //CodeToolBoss.GetUnitSetIDForDirectory();
+      end;
+    end;
+
+  end;
+  Result:=Item.PackageName;
 end;
 
 procedure TPPUListDialog.UpdateAll;
@@ -748,15 +786,15 @@ begin
       Item.UsesUnits:=TStringList.Create;
       if Item.UsedByUnits=nil then
         Item.UsedByUnits:=TStringList.Create;
-      debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
+      //debugln(['TPPUListDialog.OnIdle search used units of ',AnUnitName]);
       // scan for used units
       Scanned:=false;
       if Item.PPUFile<>PPUFileNotFound then begin
-        debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'" ...']);
+        //debugln(['TPPUListDialog.OnIdle search used units of ppu "',Item.PPUFile,'" ...']);
         PPUTool:=CodeToolBoss.PPUCache.LoadFile(Item.PPUFile,
                                     [ppInterfaceHeader,ppImplementationHeader]);
         if (PPUTool<>nil) and (PPUTool.ErrorMsg='') then begin
-          debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
+          //debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
           MainUsesSection:=nil;
           ImplementationUsesSection:=nil;
           try
@@ -822,6 +860,7 @@ begin
       FSearchingItems.Add(UsedUnit);
       UsedUnits.Objects[i]:=UsedUnit;
       UsedUnit.UsedByUnits:=TStringList.Create;
+      FindPackageOfUnit(UsedUnit);
     end;
 
     if FindUnitInList(AnUnitName,SrcItem.UsesUnits)<0 then

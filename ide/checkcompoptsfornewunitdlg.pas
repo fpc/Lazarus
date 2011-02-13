@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls,
   CodeToolManager, BasicCodeTools, DefineTemplates,
-  ProjectIntf, IDEDialogs,
+  CompOptsIntf, ProjectIntf, IDEDialogs,
   InputHistory, TransferMacros, Project, LazarusIDEStrConsts;
 
 type

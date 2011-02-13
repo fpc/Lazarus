@@ -17,7 +17,7 @@ unit ProjectResourcesIntf;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf, resource;
+  Classes, SysUtils, CompOptsIntf, ProjectIntf, resource;
 
 type
   TAbstractProjectResources = class;

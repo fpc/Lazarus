@@ -43,7 +43,7 @@ uses
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel,
   LazConfigStorage, FileUtil, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
-  ProjectIntf,
+  CompOptsIntf, ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs,
   InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts;

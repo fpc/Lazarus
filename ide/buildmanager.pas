@@ -41,7 +41,7 @@ uses
   CodeToolsCfgScript, Laz_XMLCfg, CodeToolsStructs,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
-  LazIDEIntf,
+  CompOptsIntf, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,

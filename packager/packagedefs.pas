@@ -2473,6 +2473,7 @@ begin
   FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
+  FLazCompilerOptions:=FCompilerOptions;
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];

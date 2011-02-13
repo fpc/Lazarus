@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls,
-  CodeToolsCfgScript, IDEOptionsIntf, IDEImagesIntf, ProjectIntf,
+  CodeToolsCfgScript, IDEOptionsIntf, IDEImagesIntf, ProjectIntf, CompOptsIntf,
   Project, CompilerOptions, LazarusIDEStrConsts, IDEProcs;
 
 type

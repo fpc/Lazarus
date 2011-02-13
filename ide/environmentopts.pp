@@ -41,7 +41,7 @@ uses
   Laz_XMLCfg, LazConfigStorage,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  IDEExternToolIntf,
+  CompOptsIntf, IDEExternToolIntf,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, Debugger;

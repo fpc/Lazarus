@@ -44,7 +44,7 @@ uses
   {$ELSE}
   Laz_DOM,
   {$ENDIF}
-  IDEProcs, ProjectIntf,
+  IDEProcs, ProjectIntf, CompOptsIntf,
   ProjectResourcesIntf, resource, versionresource, versiontypes;
 
 type

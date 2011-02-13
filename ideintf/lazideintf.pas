@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  IDEExternToolIntf, IDEOptionsIntf, ProjectIntf, SrcEditorIntf, LDockCtrl;
+  IDEExternToolIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags

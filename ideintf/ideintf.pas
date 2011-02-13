@@ -7,7 +7,7 @@ unit IDEIntf;
 interface
 
 uses
-    ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, 
+  ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, 
   CheckListboxEditorDlg, CollectionPropEditForm, ColumnDlg, ComponentEditors, 
   ComponentReg, ComponentTreeView, DBPropEdits, fieldseditor, fieldslist, 
   FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
@@ -18,7 +18,8 @@ uses
   newfield, NewItemIntf, ObjectInspector, ObjInspStrConsts, 
   OIFavouriteProperties, PackageIntf, ProjectIntf, ProjectResourcesIntf, 
   PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
-  StringsPropEditDlg, TextTools, TreeViewPropEdit, LazarusPackageIntf;
+  StringsPropEditDlg, TextTools, TreeViewPropEdit, CompOptsIntf, 
+  LazarusPackageIntf;
 
 implementation
 

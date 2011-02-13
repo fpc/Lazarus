@@ -33,7 +33,7 @@ uses
   Math, Classes, SysUtils, LCLProc, Controls, FileUtil, Forms,
   Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   StdCtrls, GraphMath, ExtCtrls, Buttons,
-  ProjectIntf, IDEImagesIntf, IDEOptionsIntf,
+  ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf,
   PackageDefs, compiler_inherited_options, TransferMacros,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
   IDEProcs, BuildModeDiffDlg;

@@ -50,7 +50,7 @@ uses
   CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
   BasicCodeTools, FileProcs, Laz_XMLCfg,
   // IDE Interface
-  SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf,
+  SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,

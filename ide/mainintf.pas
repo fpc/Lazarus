@@ -65,7 +65,7 @@ uses
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf, MacroIntf,
-  LazIDEIntf,
+  CompOptsIntf, LazIDEIntf,
   LazConf, LazarusIDEStrConsts,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg,

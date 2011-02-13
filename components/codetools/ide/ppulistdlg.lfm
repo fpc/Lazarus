@@ -38,31 +38,36 @@ object PPUListDialog: TPPUListDialog
     Align = alTop
     AutoFillColumns = True
     BorderSpacing.Around = 6
+    ColCount = 6
     Columns = <    
       item
         SizePriority = 10
         Title.Caption = 'Unit'
-        Width = 145
+        Width = 121
       end    
       item
         SizePriority = 10
         Title.Caption = 'Size of .ppu file'
-        Width = 145
+        Width = 121
       end    
       item
         SizePriority = 10
         Title.Caption = 'Size of .o file'
-        Width = 145
+        Width = 121
       end    
       item
         SizePriority = 5
         Title.Caption = 'Uses'
-        Width = 145
+        Width = 121
       end    
       item
         SizePriority = 5
         Title.Caption = 'Used by'
-        Width = 146
+        Width = 121
+      end    
+      item
+        Title.Caption = 'Package'
+        Width = 121
       end>
     DefaultColWidth = 150
     FixedCols = 0
@@ -72,11 +77,12 @@ object PPUListDialog: TPPUListDialog
     OnMouseDown = UnitsStringGridMouseDown
     OnSelectCell = UnitsStringGridSelectCell
     ColWidths = (
-      145
-      145
-      145
-      145
-      146
+      121
+      121
+      121
+      121
+      121
+      121
     )
   end
   object ScopeLabel: TLabel
@@ -183,14 +189,14 @@ object PPUListDialog: TPPUListDialog
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 714
+              Width = 716
             end>
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
-            714
+            716
           )
         end
       end
@@ -209,13 +215,13 @@ object PPUListDialog: TPPUListDialog
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 714
+              Width = 716
             end>
           FixedCols = 0
           TabOrder = 0
           OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
-            714
+            716
           )
         end
       end

@@ -74,7 +74,7 @@ uses
   IDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
-  PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
+  PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf,
   // protocol
   IDEProtocol,

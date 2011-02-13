@@ -5,7 +5,7 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -22,7 +22,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="67">
+    <Files Count="68">
       <Item1>
         <Filename Value="actionseditor.lfm"/>
         <Type Value="LFM"/>
@@ -292,6 +292,10 @@
         <Filename Value="treeviewpropedit.pas"/>
         <UnitName Value="TreeViewPropEdit"/>
       </Item67>
+      <Item68>
+        <Filename Value="compoptsintf.pas"/>
+        <UnitName Value="compoptsintf"/>
+      </Item68>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

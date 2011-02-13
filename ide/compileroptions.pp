@@ -30,17 +30,6 @@
  ***************************************************************************
 
   ToDo:
-  - create Makefile:
-     - create a special .compiled file
-     - an IDE created with make, without extra options should not recompile a
-       package with this special .compiled file
-  - writable package output directory: set it on load package or when output dir changes
-     - use the same macros to get the same diversity
-     - use a readonly directory if package is valid
-  - make synedit a package
-  - make IDEIntf a package
-  - make LCL a package
-  - make FCL a package
   - when adding/removing search path: do it for all build modes
     - add unit to project
     - remove unit from project
@@ -49,8 +38,6 @@
     - license gpl2
     - create package lazbuildsystem with some units
     - move
-  - remove TGlobalCompilerOptions
-    - implement switching active project
   - i18n for descriptions
   - keyword help for a build macro
 
@@ -70,7 +57,8 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
   Controls, Laz_XMLCfg, ExprEval, DefineTemplates, CodeToolsCfgScript,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, IDEOptionsIntf,
+  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
+  IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
 

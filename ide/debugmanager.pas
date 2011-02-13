@@ -47,7 +47,7 @@ uses
   Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  IDEDialogs,
+  CompOptsIntf, IDEDialogs,
   // IDE
   LazConf, CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping,
   SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
