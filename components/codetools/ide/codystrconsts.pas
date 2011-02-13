@@ -34,7 +34,9 @@ resourcestring
   crsPleaseOpenAProjectFirst = 'Please open a project first.';
   crsPPUFilesOfProject = 'PPU files of project "%s"';
   crsUses = 'Uses';
+  lisCOGeneral = 'General';
   crsUsedBy = 'Used by';
+  lisCOUsesPath = 'Uses path';
   crsProjectHasNoMainSourceFile = 'Project has no main source file.';
   crsMainSourceFile = 'Main source file: %s';
   crsSizeOfPpuFile = 'Size of .ppu file';

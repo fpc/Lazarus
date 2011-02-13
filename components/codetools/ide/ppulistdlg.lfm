@@ -1,11 +1,11 @@
 object PPUListDialog: TPPUListDialog
   Left = 275
-  Height = 526
+  Height = 531
   Top = 250
-  Width = 613
+  Width = 740
   Caption = 'PPUListDialog'
-  ClientHeight = 526
-  ClientWidth = 613
+  ClientHeight = 531
+  ClientWidth = 740
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -14,8 +14,8 @@ object PPUListDialog: TPPUListDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 40
-    Top = 480
-    Width = 601
+    Top = 485
+    Width = 728
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     OKButton.Enabled = False
@@ -34,7 +34,7 @@ object PPUListDialog: TPPUListDialog
     Left = 6
     Height = 244
     Top = 30
-    Width = 601
+    Width = 728
     Align = alTop
     AutoFillColumns = True
     BorderSpacing.Around = 6
@@ -42,27 +42,27 @@ object PPUListDialog: TPPUListDialog
       item
         SizePriority = 10
         Title.Caption = 'Unit'
-        Width = 119
+        Width = 145
       end    
       item
         SizePriority = 10
         Title.Caption = 'Size of .ppu file'
-        Width = 119
+        Width = 145
       end    
       item
         SizePriority = 10
         Title.Caption = 'Size of .o file'
-        Width = 119
+        Width = 145
       end    
       item
         SizePriority = 5
         Title.Caption = 'Uses'
-        Width = 119
+        Width = 145
       end    
       item
         SizePriority = 5
         Title.Caption = 'Used by'
-        Width = 123
+        Width = 146
       end>
     DefaultColWidth = 150
     FixedCols = 0
@@ -72,18 +72,18 @@ object PPUListDialog: TPPUListDialog
     OnMouseDown = UnitsStringGridMouseDown
     OnSelectCell = UnitsStringGridSelectCell
     ColWidths = (
-      119
-      119
-      119
-      119
-      123
+      145
+      145
+      145
+      145
+      146
     )
   end
   object ScopeLabel: TLabel
     Left = 6
     Height = 18
     Top = 6
-    Width = 601
+    Width = 728
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'ScopeLabel'
@@ -94,77 +94,121 @@ object PPUListDialog: TPPUListDialog
     Left = 0
     Height = 5
     Top = 280
-    Width = 613
+    Width = 740
     Align = alTop
     ResizeAnchor = akTop
   end
   object UnitGroupBox: TGroupBox
     Left = 6
-    Height = 183
+    Height = 188
     Top = 291
-    Width = 601
+    Width = 728
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'UnitGroupBox'
-    ClientHeight = 162
-    ClientWidth = 593
+    ClientHeight = 167
+    ClientWidth = 720
     TabOrder = 3
     object UnitPageControl: TPageControl
       Left = 0
-      Height = 162
+      Height = 167
       Top = 0
-      Width = 593
-      ActivePage = UnitUsesTabSheet
+      Width = 720
+      ActivePage = UsesPathTabSheet
       Align = alClient
-      TabIndex = 0
+      TabIndex = 3
       TabOrder = 0
-      object UnitUsesTabSheet: TTabSheet
-        Caption = 'UnitUsesTabSheet'
-        ClientHeight = 129
-        ClientWidth = 589
-        object UnitUsesStringGrid: TStringGrid
+      object InfoTabSheet: TTabSheet
+        Caption = 'InfoTabSheet'
+        ClientHeight = 134
+        ClientWidth = 716
+        object SourceFileLabel: TLabel
+          Left = 9
+          Height = 18
+          Top = 14
+          Width = 109
+          Caption = 'SourceFileLabel'
+          ParentColor = False
+        end
+        object PPUFileLabel: TLabel
+          AnchorSideTop.Control = SourceFileLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 9
+          Height = 18
+          Top = 38
+          Width = 91
+          BorderSpacing.Top = 6
+          Caption = 'PPUFileLabel'
+          ParentColor = False
+        end
+      end
+      object UsesTabSheet: TTabSheet
+        Caption = 'UsesTabSheet'
+        ClientHeight = 134
+        ClientWidth = 716
+        object UsesStringGrid: TStringGrid
           Left = 0
-          Height = 129
+          Height = 134
           Top = 0
-          Width = 589
+          Width = 716
           Align = alClient
           AutoFillColumns = True
           ColCount = 1
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 587
+              Width = 714
             end>
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           ColWidths = (
-            587
+            714
           )
         end
       end
-      object UnitUsedByTabSheet: TTabSheet
-        Caption = 'UnitUsedByTabSheet'
-        ClientHeight = 129
-        ClientWidth = 589
-        object UnitUsedByStringGrid: TStringGrid
+      object UsedByTabSheet: TTabSheet
+        Caption = 'UsedByTabSheet'
+        ClientHeight = 134
+        ClientWidth = 716
+        object UsedByStringGrid: TStringGrid
           Left = 0
-          Height = 129
+          Height = 134
           Top = 0
-          Width = 589
+          Width = 716
           Align = alClient
           AutoFillColumns = True
           ColCount = 1
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 589
+              Width = 714
             end>
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           ColWidths = (
-            589
+            714
+          )
+        end
+      end
+      object UsesPathTabSheet: TTabSheet
+        Caption = 'UsesPathTabSheet'
+        ClientHeight = 134
+        ClientWidth = 716
+        object UsesPathStringGrid: TStringGrid
+          Left = 0
+          Height = 134
+          Top = 0
+          Width = 716
+          Align = alClient
+          AutoFillColumns = True
+          ColCount = 1
+          FixedCols = 0
+          FixedRows = 0
+          TabOrder = 0
+          ColWidths = (
+            714
           )
         end
       end

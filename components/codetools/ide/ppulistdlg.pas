@@ -82,10 +82,15 @@ type
     ButtonPanel1: TButtonPanel;
     ScopeLabel: TLabel;
     Splitter1: TSplitter;
-    UnitUsedByStringGrid: TStringGrid;
-    UnitUsesStringGrid: TStringGrid;
-    UnitUsesTabSheet: TTabSheet;
-    UnitUsedByTabSheet: TTabSheet;
+    InfoTabSheet: TTabSheet;
+    PPUFileLabel: TLabel;
+    SourceFileLabel: TLabel;
+    UsesPathStringGrid: TStringGrid;
+    UsesPathTabSheet: TTabSheet;
+    UsedByStringGrid: TStringGrid;
+    UsesStringGrid: TStringGrid;
+    UsesTabSheet: TTabSheet;
+    UsedByTabSheet: TTabSheet;
     UnitGroupBox: TGroupBox;
     UnitPageControl: TPageControl;
     UnitsStringGrid: TStringGrid;
@@ -97,6 +102,7 @@ type
     procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
   private
+    FMainItem: TPPUListItem;
     FProject: TLazProject;
     FIdleConnected: boolean;
     FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
@@ -111,6 +117,7 @@ type
 
     function FindUnit(AnUnitName: string): TPPUListItem;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
+    function FindUnitOfListitem(List: TStrings; Index: integer): TPPUListItem;
 
     procedure UpdateAll;
 
@@ -120,12 +127,14 @@ type
 
     // units info
     procedure FillUnitsInfo(AnUnitName: string);
+    function FindUsesPath(UsingUnit, UsedUnit: TPPUListItem): TFPList;
 
     function DoubleAsPercentage(const d: double): string;
     function BytesToStr(b: int64): string;
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+    property MainItem: TPPUListItem read FMainItem;
   end;
 
 procedure ShowPPUList(Sender: TObject);
@@ -221,9 +230,11 @@ begin
   FSort[2].Category:=plsName;
   FSort[3].Category:=plsPPUSize;
 
-  UnitUsesTabSheet.Caption:=crsUses;
-  UnitUsedByTabSheet.Caption:=crsUsedBy;
+  InfoTabSheet.Caption:=lisCOGeneral;
+  UsesTabSheet.Caption:=crsUses;
+  UsedByTabSheet.Caption:=crsUsedBy;
   UnitPageControl.PageIndex:=0;
+  UsesPathTabSheet.Caption:=lisCOUsesPath;
 
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -295,6 +306,7 @@ procedure TPPUListDialog.SetProject(const AValue: TLazProject);
 begin
   if FProject=AValue then exit;
   FProject:=AValue;
+  FMainItem:=nil;
   UpdateAll;
 end;
 
@@ -306,6 +318,16 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+function TPPUListDialog.FindUnitOfListitem(List: TStrings; Index: integer
+  ): TPPUListItem;
+begin
+  Result:=TPPUListItem(List.Objects[Index]);
+  if Result<>nil then exit;
+  Result:=FindUnit(List[Index]);
+  if Result<>nil then
+    List.Objects[Index]:=Result;
 end;
 
 procedure TPPUListDialog.UpdateAll;
@@ -334,6 +356,7 @@ begin
   end else begin
     ScopeLabel.Caption:=Format(crsMainSourceFile, [MainUnit.Filename]);
     Item:=TPPUListItem.Create;
+    FMainItem:=Item;
     Item.TheUnitName:=ExtractFileName(MainUnit.Filename);
     Item.SrcFile:=MainUnit.Filename;
     Item.PPUFile:=AProject.LazCompilerOptions.CreatePPUFilename(Item.SrcFile);
@@ -543,6 +566,7 @@ var
   i: Integer;
   UsesUnitName: string;
   UsedByUnitName: string;
+  UsesPath: TFPList;
 begin
   Item:=FindUnit(AnUnitName);
   if Item=nil then begin
@@ -551,26 +575,79 @@ begin
   end else begin
     UnitGroupBox.Caption:='Unit: '+AnUnitName;
     UnitGroupBox.Enabled:=true;
+    // info
+    SourceFileLabel.Caption:='Source: '+Item.SrcFile;
+    PPUFileLabel.Caption:='PPU: '+Item.PPUFile;
     // uses
     if Item.UsesUnits<>nil then begin
-      UnitUsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
+      UsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
       for i:=0 to Item.UsesUnits.Count-1 do begin
         UsesUnitName:=Item.UsesUnits[i];
-        UnitUsesStringGrid.Cells[0,i+1]:=UsesUnitName;
+        UsesStringGrid.Cells[0,i+1]:=UsesUnitName;
       end;
     end else begin
-      UnitUsesStringGrid.RowCount:=1;
+      UsesStringGrid.RowCount:=1;
     end;
     // used by
     if Item.UsedByUnits<>nil then begin
-      UnitUsedByStringGrid.RowCount:=1+Item.UsedByUnits.Count;
+      UsedByStringGrid.RowCount:=1+Item.UsedByUnits.Count;
       for i:=0 to Item.UsedByUnits.Count-1 do begin
         UsedByUnitName:=Item.UsedByUnits[i];
-        UnitUsedByStringGrid.Cells[0,i+1]:=UsedByUnitName;
+        UsedByStringGrid.Cells[0,i+1]:=UsedByUnitName;
       end;
     end else begin
-      UnitUsedByStringGrid.RowCount:=1;
+      UsedByStringGrid.RowCount:=1;
     end;
+    // uses path
+    UsesPath:=FindUsesPath(MainItem,Item);
+    try
+      UsesPathStringGrid.RowCount:=UsesPath.Count;
+      for i:=0 to UsesPath.Count-1 do begin
+        UsesPathStringGrid.Cells[0,i]:=TPPUListItem(UsesPath[i]).TheUnitName;
+      end;
+    finally
+      UsesPath.Free;
+    end;
+  end;
+end;
+
+function TPPUListDialog.FindUsesPath(UsingUnit, UsedUnit: TPPUListItem): TFPList;
+{ Search a path from UsingUnit to UsedUnit
+  Result is a list of TPPUListItem
+}
+var
+  Visited: TAvgLvlTree;
+
+  function Search(Item: TPPUListItem; Path: TFPList): boolean;
+  var
+    i: Integer;
+    ParentUnit: TPPUListItem;
+  begin
+    Result:=false;
+    if Visited.Find(Item)<>nil then exit;
+    Visited.Add(Item);
+    if Item.UsedByUnits<>nil then begin
+      for i:=0 to Item.UsedByUnits.Count-1 do begin
+        ParentUnit:=FindUnitOfListitem(Item.UsedByUnits,i);
+        if (ParentUnit=nil) or (Visited.Find(ParentUnit)<>nil) then continue;
+        if (ParentUnit=UsingUnit) or Search(ParentUnit,Path) then begin
+          // path found
+          Path.Add(ParentUnit);
+          exit(true);
+        end;
+      end;
+    end;
+  end;
+
+begin
+  Result:=TFPList.Create;
+  if (UsingUnit=nil) or (UsedUnit=nil) then exit;
+  Visited:=TAvgLvlTree.Create(@ComparePPUListItems);
+  try
+    if Search(UsedUnit,Result) then
+      Result.Add(UsedUnit);
+  finally
+    Visited.Free;
   end;
 end;
 
@@ -700,13 +777,14 @@ begin
   for i:=0 to UsedUnits.Count-1 do begin
     AnUnitName:=UsedUnits[i];
     //debugln(['TPPUListDialog.AddUses ',SrcItem.TheUnitName,' uses ',AnUnitName]);
-    UsedUnit:=FindUnit(AnUnitName);
+    UsedUnit:=FindUnitOfListitem(UsedUnits,i);
     if UsedUnit=nil then begin
       // new unit
       UsedUnit:=TPPUListItem.Create;
       UsedUnit.TheUnitName:=AnUnitName;
       FItems.Add(UsedUnit);
       FSearchingItems.Add(UsedUnit);
+      UsedUnits.Objects[i]:=UsedUnit;
       UsedUnit.UsedByUnits:=TStringList.Create;
     end;
 

@@ -49,3 +49,11 @@ msgstr ""
 msgid "Uses"
 msgstr ""
 
+#: codystrconsts.liscogeneral
+msgid "General"
+msgstr ""
+
+#: codystrconsts.liscousespath
+msgid "Uses path"
+msgstr ""
+
