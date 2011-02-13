@@ -443,7 +443,6 @@ begin
       for j := 0 to Rec^.Items.Count - 1 do
       begin
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);
-        Instance.Name := ''; // allow multiply use of the same frame in different groups
         Instance.OnLoadIDEOptions := @LoadIDEOptions;
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
         Instance.Setup(Self);
