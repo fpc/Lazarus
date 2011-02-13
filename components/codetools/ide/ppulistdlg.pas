@@ -38,7 +38,7 @@ uses
   PackageIntf,
   // codetools
   BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
-  PPUParser, PPUCodeTools;
+  PPUParser, PPUCodeTools, DefineTemplates;
 
 const
   PPUFileNotFound = ' ';
@@ -362,15 +362,54 @@ end;
 
 function TPPUListDialog.FindPackageOfUnit(Item: TPPUListItem): string;
 var
+  BaseDir: String;
+  PPUDir: String;
+
+  procedure CheckIfFPCUnit;
+  var
+    BaseDir: String;
+    UnitSetID: String;
+    Cache: TFPCUnitSetCache;
+    CfgCache: TFPCTargetConfigCache;
+    HasChanged: boolean;
+  begin
+    UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(BaseDir{%H-});
+    if UnitSetID='' then exit;
+    Cache:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
+    if Cache=nil then exit;
+    CfgCache:=Cache.GetConfigCache(false);
+    if CfgCache=nil then exit;
+    if CfgCache.Units.Contains(Item.TheUnitName) then
+      Item.PackageName:='by fpc.cfg';
+  end;
+
+var
   i: Integer;
   Pkg: TIDEPackage;
   OutDir: String;
-  PPUDir: String;
 begin
+  BaseDir:='';
   if Item.PackageName='' then begin
-    if Item.PPUFile<>'' then begin
-      PPUDir:=ExtractFileName(Item.PPUFile);
+    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+    if not FilenameIsAbsolute(BaseDir) then BaseDir:='';
 
+    if Item.PPUFile<>'' then
+      PPUDir:=ExtractFilePath(Item.PPUFile)
+    else
+      PPUDir:='';
+
+    // check if virtual unit
+    if (Item.SrcFile<>'') and (not FilenameIsAbsolute(Item.SrcFile)) then
+      Item.PackageName:='Virtual unit';
+
+    // check if in output directory of project
+    if PPUDir<>'' then begin
+      OutDir:=AppendPathDelim(AProject.LazCompilerOptions.GetUnitOutputDirectory(false));
+      if CompareFilenames(OutDir,PPUDir)=0 then
+        Item.PackageName:='Project output';
+    end;
+
+    if (Item.PackageName='') and (PPUDir<>'') then begin
       // search in output directories of packages
       for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
         Pkg:=PackageEditingInterface.GetPackages(i);
@@ -381,13 +420,14 @@ begin
           break;
         end;
       end;
-
-      // search in FPC unit paths
-      if Item.PackageName='' then begin
-        //CodeToolBoss.GetUnitSetIDForDirectory();
-      end;
     end;
 
+    // search in FPC unit paths
+    if Item.PackageName=''then
+      CheckIfFPCUnit;
+
+    if Item.PackageName='' then
+      Item.PackageName:='?';
   end;
   Result:=Item.PackageName;
 end;
@@ -464,6 +504,7 @@ begin
   Grid.Cells[2, 0]:=crsSizeOfOFile;
   Grid.Cells[3, 0]:=crsUses;
   Grid.Cells[4, 0]:=crsUsedBy;
+  Grid.Cells[5, 0]:='Package';
 
 
   SortedItems:=TAvgLvlTree.CreateObjectCompare(@CompareUnits);
@@ -489,6 +530,7 @@ begin
     Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
     Grid.Cells[3,1]:=IntToStr(SortedItems.Count);
     Grid.Cells[4,1]:='';
+    Grid.Cells[5,1]:='';
 
     // fill grid
     Row:=2;
@@ -522,6 +564,9 @@ begin
 
       // used by
       Grid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
+
+      // used by
+      Grid.Cells[5,Row]:=Item.PackageName;
 
       inc(Row);
       Node:=SortedItems.FindSuccessor(Node);
@@ -831,6 +876,9 @@ begin
       end;
     end;
 
+    Item.PackageName:='';
+    FindPackageOfUnit(Item);
+
     if Now-StartTime>MaxNonIdleTime then break;
   end;
 
@@ -860,7 +908,6 @@ begin
       FSearchingItems.Add(UsedUnit);
       UsedUnits.Objects[i]:=UsedUnit;
       UsedUnit.UsedByUnits:=TStringList.Create;
-      FindPackageOfUnit(UsedUnit);
     end;
 
     if FindUnitInList(AnUnitName,SrcItem.UsesUnits)<0 then
