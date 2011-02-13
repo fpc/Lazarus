@@ -192,7 +192,7 @@ type
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
-    procedure SetBackColor(const AValue: TColor);
+    procedure SetBackColor(AValue: TColor);
     procedure SetDepth(AValue: TChartDistance);
     procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(const AValue: TChartExtent);
@@ -401,6 +401,62 @@ end;
 
 { TChart }
 
+procedure TChart.AddSeries(ASeries: TBasicChartSeries);
+begin
+  if ASeries.FChart = Self then exit;
+  if ASeries.FChart <> nil then
+    ASeries.FChart.DeleteSeries(ASeries);
+  DrawReticule(Canvas);
+  Series.FList.Add(ASeries);
+  ASeries.FChart := Self;
+  ASeries.AfterAdd;
+  Invalidate;
+end;
+
+procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
+var
+  rX, rY: TAxisCoeffHelper;
+begin
+  rX.Init(
+    BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
+    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
+  rY.Init(
+    LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
+    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+  FScale.X := rX.CalcScale(1);
+  FScale.Y := rY.CalcScale(-1);
+  if Proportional then begin
+    if Abs(FScale.X) > Abs(FScale.Y) then
+      FScale.X := Abs(FScale.Y) * Sign(FScale.X)
+    else
+      FScale.Y := Abs(FScale.X) * Sign(FScale.Y);
+  end;
+  FOffset.X := rX.CalcOffset(FScale.X);
+  FOffset.Y := rY.CalcOffset(FScale.Y);
+  rX.UpdateMinMax(@XImageToGraph);
+  rY.UpdateMinMax(@YImageToGraph);
+end;
+
+procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  defaultDrawing: Boolean = true;
+begin
+  ADrawer.PrepareSimplePen(Color);
+  ADrawer.SetBrushParams(bsSolid, Color);
+  if (ADrawer.Canvas <> nil) and Assigned(OnBeforeDrawBackground) then
+    OnBeforeDrawBackground(Self, ADrawer.Canvas, ARect, defaultDrawing);
+  if defaultDrawing then
+    ADrawer.Rectangle(ARect);
+  if (ADrawer.Canvas <> nil) and Assigned(OnAfterDrawBackground) then
+    OnAfterDrawBackground(Self, ADrawer.Canvas, ARect);
+end;
+
+procedure TChart.ClearSeries;
+begin
+  FSeries.Clear;
+  Invalidate;
+end;
+
 function TChart.Clone: TChart;
 var
   ms: TMemoryStream;
@@ -416,6 +472,16 @@ begin
   finally
     ms.Free;
   end;
+end;
+
+procedure TChart.CopyToClipboardBitmap;
+begin
+  with SaveToImage(TBitmap) do
+    try
+      SaveToClipboardFormat(RegisterClipboardFormat(MimeType));
+    finally
+      Free;
+    end;
 end;
 
 constructor TChart.Create(AOwner: TComponent);
@@ -472,6 +538,17 @@ begin
   FActiveToolIndex := -1;
 end;
 
+procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
+var
+  i: Integer;
+begin
+  i := FSeries.FList.IndexOf(ASeries);
+  if i < 0 then exit;
+  FSeries.FList.Delete(i);
+  ASeries.FChart := nil;
+  Invalidate;
+end;
+
 destructor TChart.Destroy;
 begin
   FreeAndNil(FSeries);
@@ -489,386 +566,6 @@ begin
 
   DrawData.DeleteByChart(Self);
   inherited;
-end;
-
-{$IFDEF LCLGtk2}
-procedure TChart.DoOnResize;
-begin
-  inherited;
-  // FIXME: GTK does not invalidate the control on resizing, do it manually
-  Invalidate;
-end;
-{$ENDIF}
-
-procedure TChart.EraseBackground(DC: HDC);
-begin
-  // do not erase, since we will paint over it anyway
-  Unused(DC);
-end;
-
-procedure TChart.FindComponentClass(
-  AReader: TReader; const AClassName: String; var AClass: TComponentClass);
-var
-  i: Integer;
-begin
-  Unused(AReader);
-  if AClassName = ClassName then begin
-    AClass := TChart;
-    exit;
-  end;
-  for i := 0 to SeriesClassRegistry.Count - 1 do begin
-    AClass := TSeriesClass(SeriesClassRegistry.Objects[i]);
-    if AClass.ClassNameIs(AClassName) then exit;
-  end;
-  AClass := nil;
-end;
-
-function TChart.GetAxis(AIndex: Integer): TChartAxis;
-begin
-  Result := FAxisList.GetAxis(AIndex);
-end;
-
-procedure TChart.StyleChanged(Sender: TObject);
-begin
-  Invalidate;
-  Broadcaster.Broadcast(Sender);
-end;
-
-procedure TChart.Paint;
-begin
-  PaintOnCanvas(Canvas, GetClientRect);
-end;
-
-procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-var
-  drawer: IChartDrawer;
-begin
-  drawer := TCanvasDrawer.Create(ACanvas);
-  Draw(drawer, ARect);
-end;
-
-procedure TChart.PrepareLegend(
-  ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
-  var AClipRect: TRect; out ALegendRect: TRect);
-var
-  i: Integer;
-begin
-  ALegendItems := TChartLegendItems.Create;
-  try
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and GetShowInLegend then
-          GetLegendItemsBasic(ALegendItems);
-    ALegendRect := Legend.Prepare(ACanvas, ALegendItems, AClipRect);
-  except
-    FreeAndNil(ALegendItems);
-    raise;
-  end;
-end;
-
-procedure TChart.DrawBackWall(ACanvas: TCanvas);
-var
-  defaultDrawing: Boolean = true;
-begin
-  if Assigned(OnBeforeDrawBackWall) then
-    OnBeforeDrawBackWall(Self, ACanvas, FClipRect, defaultDrawing);
-  if defaultDrawing then
-    with ACanvas do begin
-      if FFrame.Visible then
-        Pen.Assign(FFrame)
-      else
-        Pen.Style := psClear;
-      Brush.Color := BackColor;
-      with FClipRect do
-        Rectangle(Left, Top, Right + 1, Bottom + 1);
-    end;
-  if Assigned(OnAfterDrawBackWall) then
-    OnAfterDrawBackWall(Self, ACanvas, FClipRect);
-
-  // Z axis
-  if (Depth > 0) and FFrame.Visible then begin
-    ACanvas.Pen.Assign(FFrame);
-    with FClipRect do
-      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
-  end;
-end;
-
-procedure TChart.HideReticule;
-begin
-  // Hide reticule - - it will be drawn again in the next MouseMove.
-  FReticulePos := Point( - 1, - 1);
-end;
-
-procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
-var
-  rX, rY: TAxisCoeffHelper;
-begin
-  rX.Init(
-    BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
-    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
-  rY.Init(
-    LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
-    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
-  FScale.X := rX.CalcScale(1);
-  FScale.Y := rY.CalcScale(-1);
-  if Proportional then begin
-    if Abs(FScale.X) > Abs(FScale.Y) then
-      FScale.X := Abs(FScale.Y) * Sign(FScale.X)
-    else
-      FScale.Y := Abs(FScale.X) * Sign(FScale.Y);
-  end;
-  FOffset.X := rX.CalcOffset(FScale.X);
-  FOffset.Y := rY.CalcOffset(FScale.Y);
-  rX.UpdateMinMax(@XImageToGraph);
-  rY.UpdateMinMax(@YImageToGraph);
-end;
-
-procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
-var
-  defaultDrawing: Boolean = true;
-begin
-  ADrawer.PrepareSimplePen(Color);
-  ADrawer.SetBrushParams(bsSolid, Color);
-  if (ADrawer.Canvas <> nil) and Assigned(OnBeforeDrawBackground) then
-    OnBeforeDrawBackground(Self, ADrawer.Canvas, ARect, defaultDrawing);
-  if defaultDrawing then
-    ADrawer.Rectangle(ARect);
-  if (ADrawer.Canvas <> nil) and Assigned(OnAfterDrawBackground) then
-    OnAfterDrawBackground(Self, ADrawer.Canvas, ARect);
-end;
-
-procedure TChart.ClearSeries;
-begin
-  FSeries.Clear;
-  Invalidate;
-end;
-
-procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
-var
-  c: Integer;
-  pbf: TPenBrushFontRecall;
-begin
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfBrush, pbfFont]);
-  try
-    c := (FClipRect.Left + FClipRect.Right) div 2;
-    FTitle.Draw(ACanvas, 1, c, FClipRect.Top);
-    FFoot.Draw(ACanvas, -1, c, FClipRect.Bottom);
-  finally
-    pbf.Free;
-  end;
-end;
-
-procedure TChart.PrepareAxis(ACanvas: TCanvas);
-var
-  axisMargin: TChartAxisMargins = (0, 0, 0, 0);
-  a: TChartAxisAlignment;
-begin
-  if not FAxisVisible or (AxisList.Count = 0) then begin
-    FClipRect.Left += Depth;
-    FClipRect.Bottom -= Depth;
-    exit;
-  end;
-
-  AxisList.PrepareGroups;
-  AxisList.Measure(ACanvas, CurrentExtent, true, axisMargin);
-  axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
-  axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
-  for a := Low(a) to High(a) do
-    SideByAlignment(FClipRect, a, -axisMargin[a]);
-
-  CalculateTransformationCoeffs(GetMargins(ACanvas));
-  AxisList.Measure(ACanvas, CurrentExtent, false, axisMargin);
-  AxisList.Prepare(FClipRect);
-end;
-
-procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
-var
-  legendItems: TChartLegendItems = nil;
-  legendRect: TRect;
-begin
-  try
-    PrepareLegend(ACanvas, legendItems, ARect, legendRect);
-    Legend.Draw(ACanvas, legendItems, legendRect);
-  finally
-    legendItems.Free;
-  end;
-end;
-
-procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-begin
-  if (FClipRect.Top < AY) and (AY < FClipRect.Bottom) then
-    ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
-end;
-
-procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
-begin
-  if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
-    ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
-end;
-
-procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
-begin
-  if FReticuleMode = AValue then exit;
-  FReticuleMode := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetReticulePos(const AValue: TPoint);
-begin
-  if FReticulePos = AValue then exit;
-  DrawReticule(Canvas);
-  FReticulePos := AValue;
-  DrawReticule(Canvas);
-end;
-
-procedure TChart.SetTitle(Value: TChartTitle);
-begin
-  FTitle.Assign(Value);
-  Invalidate;
-end;
-
-procedure TChart.SetToolset(const AValue: TBasicChartToolset);
-begin
-  if FToolset = AValue then exit;
-  FToolset := AValue;
-  FActiveToolIndex := -1;
-end;
-
-procedure TChart.SetFoot(Value: TChartTitle);
-begin
-  FFoot.Assign(Value);
-  Invalidate;
-end;
-
-
-function TChart.GetMargins(ACanvas: TCanvas): TRect;
-var
-  i: Integer;
-begin
-  Result := FMargins.Data;
-  for i := 0 to SeriesCount - 1 do
-    if Series[i].Active then
-      Series[i].UpdateMargins(ACanvas, Result);
-end;
-
-procedure TChart.SetGraphBrush(Value: TBrush);
-begin
-  FGraphBrush.Assign(Value);
-end;
-
-procedure TChart.AddSeries(ASeries: TBasicChartSeries);
-begin
-  if ASeries.FChart = Self then exit;
-  if ASeries.FChart <> nil then
-    ASeries.FChart.DeleteSeries(ASeries);
-  DrawReticule(Canvas);
-  Series.FList.Add(ASeries);
-  ASeries.FChart := Self;
-  ASeries.AfterAdd;
-  Invalidate;
-end;
-
-procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
-var
-  i: Integer;
-begin
-  i := FSeries.FList.IndexOf(ASeries);
-  if i < 0 then exit;
-  FSeries.FList.Delete(i);
-  ASeries.FChart := nil;
-  Invalidate;
-end;
-
-function TChart.XGraphToImage(AX: Double): Integer;
-begin
-  Result := RoundChecked(FScale.X * AX + FOffset.X);
-end;
-
-function TChart.YGraphToImage(AY: Double): Integer;
-begin
-  Result := RoundChecked(FScale.Y * AY + FOffset.Y);
-end;
-
-function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
-begin
-  Result := Point(XGraphToImage(AGraphPoint.X), YGraphToImage(AGraphPoint.Y));
-end;
-
-function TChart.XImageToGraph(AX: Integer): Double;
-begin
-  Result := (AX - FOffset.X) / FScale.X;
-end;
-
-function TChart.YImageToGraph(AY: Integer): Double;
-begin
-  Result := (AY - FOffset.Y) / FScale.Y;
-end;
-
-function TChart.ImageToGraph(const APoint: TPoint): TDoublePoint;
-begin
-  Result.X := XImageToGraph(APoint.X);
-  Result.Y := YImageToGraph(APoint.Y);
-end;
-
-function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
-begin
-  Result :=
-    InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
-end;
-
-procedure TChart.SaveToBitmapFile(const AFileName: String);
-begin
-  SaveToFile(TBitmap, AFileName);
-end;
-
-procedure TChart.SaveToFile(AClass: TRasterImageClass; const AFileName: String);
-begin
-  with SaveToImage(AClass) do
-    try
-      SaveToFile(AFileName);
-    finally
-      Free;
-    end;
-end;
-
-function TChart.SaveToImage(AClass: TRasterImageClass): TRasterImage;
-begin
-  Result := AClass.Create;
-  try
-    Result.Width := Width;
-    Result.Height := Height;
-    PaintOnCanvas(Result.Canvas, Rect(0, 0, Width, Height));
-  except
-    Result.Free;
-    raise;
-  end;
-end;
-
-procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
-begin
-  FAxisList.SetAxis(AIndex, AValue);
-  Invalidate;
-end;
-
-procedure TChart.SetAxisList(AValue: TChartAxisList);
-begin
-  FAxisList.Assign(AValue);
-  Invalidate;
-end;
-
-procedure TChart.CopyToClipboardBitmap;
-begin
-  with SaveToImage(TBitmap) do
-    try
-      SaveToClipboardFormat(RegisterClipboardFormat(MimeType));
-    finally
-      Free;
-    end;
-end;
-
-procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
-begin
-  PaintOnCanvas(ACanvas, Rect);
 end;
 
 procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
@@ -921,6 +618,15 @@ begin
   AxisList.Draw(ADrawer.Canvas, FClipRect, Self, MaxInt, d, axisIndex);
 end;
 
+{$IFDEF LCLGtk2}
+procedure TChart.DoOnResize;
+begin
+  inherited;
+  // FIXME: GTK does not invalidate the control on resizing, do it manually
+  Invalidate;
+end;
+{$ENDIF}
+
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   i: Integer;
@@ -960,6 +666,63 @@ begin
     Series[i].AfterDraw;
 end;
 
+procedure TChart.DrawBackWall(ACanvas: TCanvas);
+var
+  defaultDrawing: Boolean = true;
+begin
+  if Assigned(OnBeforeDrawBackWall) then
+    OnBeforeDrawBackWall(Self, ACanvas, FClipRect, defaultDrawing);
+  if defaultDrawing then
+    with ACanvas do begin
+      if FFrame.Visible then
+        Pen.Assign(FFrame)
+      else
+        Pen.Style := psClear;
+      Brush.Color := BackColor;
+      with FClipRect do
+        Rectangle(Left, Top, Right + 1, Bottom + 1);
+    end;
+  if Assigned(OnAfterDrawBackWall) then
+    OnAfterDrawBackWall(Self, ACanvas, FClipRect);
+
+  // Z axis
+  if (Depth > 0) and FFrame.Visible then begin
+    ACanvas.Pen.Assign(FFrame);
+    with FClipRect do
+      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
+  end;
+end;
+
+procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
+var
+  legendItems: TChartLegendItems = nil;
+  legendRect: TRect;
+begin
+  try
+    PrepareLegend(ACanvas, legendItems, ARect, legendRect);
+    Legend.Draw(ACanvas, legendItems, legendRect);
+  finally
+    legendItems.Free;
+  end;
+end;
+
+procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+begin
+  if (FClipRect.Top < AY) and (AY < FClipRect.Bottom) then
+    ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
+end;
+
+procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
+begin
+  if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
+    ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
+end;
+
+procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
+begin
+  PaintOnCanvas(ACanvas, Rect);
+end;
+
 procedure TChart.DrawReticule(ACanvas: TCanvas);
 begin
   PrepareXorPen(ACanvas);
@@ -969,146 +732,47 @@ begin
     DrawLineHoriz(ACanvas, FReticulePos.Y);
 end;
 
-procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if
-    PtInRect(FClipRect, Point(X, Y)) and
-    GetToolset.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
-  then
-    exit;
-  inherited;
-end;
-
-procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  if GetToolset.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then exit;
-  inherited;
-end;
-
-procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if GetToolset.Dispatch(Self, evidMouseUp, Shift, Point(X, Y)) then exit;
-  inherited;
-end;
-
-procedure TChart.SetLegend(Value: TChartLegend);
-begin
-  FLegend.Assign(Value);
-  Invalidate;
-end;
-
-procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
-begin
-  HideReticule;
-  FLogicalExtent := AValue;
-  FIsZoomed := true;
-  Invalidate;
-end;
-
-procedure TChart.SetMargins(AValue: TChartMargins);
-begin
-  FMargins.Assign(AValue);
-  Invalidate;
-end;
-
-procedure TChart.SetName(const AValue: TComponentName);
+procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
 var
-  oldName: String;
+  c: Integer;
+  pbf: TPenBrushFontRecall;
 begin
-  if Name = AValue then exit;
-  oldName := Name;
-  inherited SetName(AValue);
-  if csDesigning in ComponentState then
-    Series.List.ChangeNamePrefix(oldName, AValue);
+  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfBrush, pbfFont]);
+  try
+    c := (FClipRect.Left + FClipRect.Right) div 2;
+    FTitle.Draw(ACanvas, 1, c, FClipRect.Top);
+    FFoot.Draw(ACanvas, -1, c, FClipRect.Bottom);
+  finally
+    pbf.Free;
+  end;
 end;
 
-procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
+procedure TChart.EraseBackground(DC: HDC);
 begin
-  if FOnAfterDrawBackground = AValue then exit;
-  FOnAfterDrawBackground := AValue;
-  Invalidate;
+  // do not erase, since we will paint over it anyway
+  Unused(DC);
 end;
 
-procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
-begin
-  if FOnAfterDrawBackWall = AValue then exit;
-  FOnAfterDrawBackWall := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
-begin
-  if FOnBeforeDrawBackground = AValue then exit;
-  FOnBeforeDrawBackground := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
-begin
-  if FOnBeforeDrawBackWall = AValue then exit;
-  FOnBeforeDrawBackWall := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
-begin
-  if FOnDrawReticule = AValue then exit;
-  FOnDrawReticule := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetProportional(AValue: Boolean);
-begin
-  if FProportional = AValue then exit;
-  FProportional := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetChildOrder(Child: TComponent; Order: Integer);
+procedure TChart.FindComponentClass(
+  AReader: TReader; const AClassName: String; var AClass: TComponentClass);
 var
   i: Integer;
 begin
-  i := Series.FList.IndexOf(Child);
-  if i >= 0 then
-    Series.FList.Move(i, Order);
+  Unused(AReader);
+  if AClassName = ClassName then begin
+    AClass := TChart;
+    exit;
+  end;
+  for i := 0 to SeriesClassRegistry.Count - 1 do begin
+    AClass := TSeriesClass(SeriesClassRegistry.Objects[i]);
+    if AClass.ClassNameIs(AClassName) then exit;
+  end;
+  AClass := nil;
 end;
 
-procedure TChart.SetDepth(AValue: TChartDistance);
+function TChart.GetAxis(AIndex: Integer): TChartAxis;
 begin
-  if FDepth = AValue then exit;
-  FDepth := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetExpandPercentage(AValue: Integer);
-begin
-  if FExpandPercentage = AValue then exit;
-  FExpandPercentage := AValue;
-  Invalidate;
-end;
-
-procedure TChart.SetExtent(const AValue: TChartExtent);
-begin
-  FExtent.Assign(AValue);
-  Invalidate;
-end;
-
-procedure TChart.SetFrame(Value: TChartPen);
-begin
-  FFrame.Assign(Value);
-  Invalidate;
-end;
-
-procedure TChart.SetAxisVisible(Value: Boolean);
-begin
-  FAxisVisible := Value;
-  Invalidate;
-end; 
-
-procedure TChart.SetBackColor(const AValue: TColor);
-begin
-  FBackColor:= AValue;
-  Invalidate;
+  Result := FAxisList.GetAxis(AIndex);
 end;
 
 function TChart.GetChartHeight: Integer;
@@ -1198,6 +862,16 @@ begin
   end;
 end;
 
+function TChart.GetMargins(ACanvas: TCanvas): TRect;
+var
+  i: Integer;
+begin
+  Result := FMargins.Data;
+  for i := 0 to SeriesCount - 1 do
+    if Series[i].Active then
+      Series[i].UpdateMargins(ACanvas, Result);
+end;
+
 function TChart.GetSeriesCount: Integer;
 begin
   Result := FSeries.FList.Count;
@@ -1210,6 +884,311 @@ begin
     Result := FBuiltinToolset;
 end;
 
+function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
+begin
+  Result := Point(XGraphToImage(AGraphPoint.X), YGraphToImage(AGraphPoint.Y));
+end;
+
+procedure TChart.HideReticule;
+begin
+  // Hide reticule - - it will be drawn again in the next MouseMove.
+  FReticulePos := Point( - 1, - 1);
+end;
+
+function TChart.ImageToGraph(const APoint: TPoint): TDoublePoint;
+begin
+  Result.X := XImageToGraph(APoint.X);
+  Result.Y := YImageToGraph(APoint.Y);
+end;
+
+function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
+begin
+  Result :=
+    InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
+end;
+
+procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if
+    PtInRect(FClipRect, Point(X, Y)) and
+    GetToolset.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
+  then
+    exit;
+  inherited;
+end;
+
+procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if GetToolset.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then exit;
+  inherited;
+end;
+
+procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if GetToolset.Dispatch(Self, evidMouseUp, Shift, Point(X, Y)) then exit;
+  inherited;
+end;
+
+procedure TChart.Paint;
+begin
+  PaintOnCanvas(Canvas, GetClientRect);
+end;
+
+procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
+var
+  drawer: IChartDrawer;
+begin
+  drawer := TCanvasDrawer.Create(ACanvas);
+  Draw(drawer, ARect);
+end;
+
+procedure TChart.PrepareAxis(ACanvas: TCanvas);
+var
+  axisMargin: TChartAxisMargins = (0, 0, 0, 0);
+  a: TChartAxisAlignment;
+begin
+  if not FAxisVisible or (AxisList.Count = 0) then begin
+    FClipRect.Left += Depth;
+    FClipRect.Bottom -= Depth;
+    exit;
+  end;
+
+  AxisList.PrepareGroups;
+  AxisList.Measure(ACanvas, CurrentExtent, true, axisMargin);
+  axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
+  axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
+  for a := Low(a) to High(a) do
+    SideByAlignment(FClipRect, a, -axisMargin[a]);
+
+  CalculateTransformationCoeffs(GetMargins(ACanvas));
+  AxisList.Measure(ACanvas, CurrentExtent, false, axisMargin);
+  AxisList.Prepare(FClipRect);
+end;
+
+procedure TChart.PrepareLegend(
+  ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
+  var AClipRect: TRect; out ALegendRect: TRect);
+var
+  i: Integer;
+begin
+  ALegendItems := TChartLegendItems.Create;
+  try
+    for i := 0 to SeriesCount - 1 do
+      with Series[i] do
+        if Active and GetShowInLegend then
+          GetLegendItemsBasic(ALegendItems);
+    ALegendRect := Legend.Prepare(ACanvas, ALegendItems, AClipRect);
+  except
+    FreeAndNil(ALegendItems);
+    raise;
+  end;
+end;
+
+procedure TChart.SaveToBitmapFile(const AFileName: String);
+begin
+  SaveToFile(TBitmap, AFileName);
+end;
+
+procedure TChart.SaveToFile(AClass: TRasterImageClass; const AFileName: String);
+begin
+  with SaveToImage(AClass) do
+    try
+      SaveToFile(AFileName);
+    finally
+      Free;
+    end;
+end;
+
+function TChart.SaveToImage(AClass: TRasterImageClass): TRasterImage;
+begin
+  Result := AClass.Create;
+  try
+    Result.Width := Width;
+    Result.Height := Height;
+    PaintOnCanvas(Result.Canvas, Rect(0, 0, Width, Height));
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
+begin
+  FAxisList.SetAxis(AIndex, AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetAxisList(AValue: TChartAxisList);
+begin
+  FAxisList.Assign(AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetAxisVisible(Value: Boolean);
+begin
+  FAxisVisible := Value;
+  Invalidate;
+end;
+
+procedure TChart.SetBackColor(AValue: TColor);
+begin
+  FBackColor:= AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetChildOrder(Child: TComponent; Order: Integer);
+var
+  i: Integer;
+begin
+  i := Series.FList.IndexOf(Child);
+  if i >= 0 then
+    Series.FList.Move(i, Order);
+end;
+
+procedure TChart.SetDepth(AValue: TChartDistance);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetExpandPercentage(AValue: Integer);
+begin
+  if FExpandPercentage = AValue then exit;
+  FExpandPercentage := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetExtent(const AValue: TChartExtent);
+begin
+  FExtent.Assign(AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetFoot(Value: TChartTitle);
+begin
+  FFoot.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetFrame(Value: TChartPen);
+begin
+  FFrame.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetGraphBrush(Value: TBrush);
+begin
+  FGraphBrush.Assign(Value);
+end;
+
+procedure TChart.SetLegend(Value: TChartLegend);
+begin
+  FLegend.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
+begin
+  HideReticule;
+  FLogicalExtent := AValue;
+  FIsZoomed := true;
+  Invalidate;
+end;
+
+procedure TChart.SetMargins(AValue: TChartMargins);
+begin
+  FMargins.Assign(AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetName(const AValue: TComponentName);
+var
+  oldName: String;
+begin
+  if Name = AValue then exit;
+  oldName := Name;
+  inherited SetName(AValue);
+  if csDesigning in ComponentState then
+    Series.List.ChangeNamePrefix(oldName, AValue);
+end;
+
+procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
+begin
+  if FOnAfterDrawBackground = AValue then exit;
+  FOnAfterDrawBackground := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
+begin
+  if FOnAfterDrawBackWall = AValue then exit;
+  FOnAfterDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
+begin
+  if FOnBeforeDrawBackground = AValue then exit;
+  FOnBeforeDrawBackground := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
+begin
+  if FOnBeforeDrawBackWall = AValue then exit;
+  FOnBeforeDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
+begin
+  if FOnDrawReticule = AValue then exit;
+  FOnDrawReticule := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetProportional(AValue: Boolean);
+begin
+  if FProportional = AValue then exit;
+  FProportional := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
+begin
+  if FReticuleMode = AValue then exit;
+  FReticuleMode := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetReticulePos(const AValue: TPoint);
+begin
+  if FReticulePos = AValue then exit;
+  DrawReticule(Canvas);
+  FReticulePos := AValue;
+  DrawReticule(Canvas);
+end;
+
+procedure TChart.SetTitle(Value: TChartTitle);
+begin
+  FTitle.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetToolset(const AValue: TBasicChartToolset);
+begin
+  if FToolset = AValue then exit;
+  FToolset := AValue;
+  FActiveToolIndex := -1;
+end;
+
+procedure TChart.StyleChanged(Sender: TObject);
+begin
+  Invalidate;
+  Broadcaster.Broadcast(Sender);
+end;
+
 procedure TChart.VisitSources(
   AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
 var
@@ -1219,6 +1198,26 @@ begin
     with Series[i] do
       if Active then
         VisitSources(AVisitor, AAxis, AData);
+end;
+
+function TChart.XGraphToImage(AX: Double): Integer;
+begin
+  Result := RoundChecked(FScale.X * AX + FOffset.X);
+end;
+
+function TChart.XImageToGraph(AX: Integer): Double;
+begin
+  Result := (AX - FOffset.X) / FScale.X;
+end;
+
+function TChart.YGraphToImage(AY: Double): Integer;
+begin
+  Result := RoundChecked(FScale.Y * AY + FOffset.Y);
+end;
+
+function TChart.YImageToGraph(AY: Integer): Double;
+begin
+  Result := (AY - FOffset.Y) / FScale.Y;
 end;
 
 procedure TChart.ZoomFull;
