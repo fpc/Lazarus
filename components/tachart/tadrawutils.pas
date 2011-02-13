@@ -55,13 +55,16 @@ type
   { IChartDrawer }
 
   IChartDrawer = interface
+    procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart(const AClipRect: TRect);
+    procedure ClippingStart;
     procedure ClippingStop;
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
+    procedure Polygon(const APoints: array of TPoint);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -113,6 +116,8 @@ type
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   public
+    procedure AddToFontOrientation(ADelta: Integer);
+    procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
     constructor Create(ACanvas: TCanvas);
@@ -121,6 +126,7 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
+    procedure Polygon(const APoints: array of TPoint);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -323,9 +329,20 @@ end;
 
 { TCanvasDrawer }
 
+procedure TCanvasDrawer.AddToFontOrientation(ADelta: Integer);
+begin
+  with FCanvas.Font do
+    Orientation := Orientation + ADelta;
+end;
+
 procedure TCanvasDrawer.ClippingStart(const AClipRect: TRect);
 begin
   FCanvas.ClipRect := AClipRect;
+  FCanvas.Clipping := true;
+end;
+
+procedure TCanvasDrawer.ClippingStart;
+begin
   FCanvas.Clipping := true;
 end;
 
@@ -362,6 +379,11 @@ end;
 procedure TCanvasDrawer.Line(const AP1, AP2: TPoint);
 begin
   FCanvas.Line(AP1, AP2);
+end;
+
+procedure TCanvasDrawer.Polygon(const APoints: array of TPoint);
+begin
+  FCanvas.Polygon(APoints);
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);

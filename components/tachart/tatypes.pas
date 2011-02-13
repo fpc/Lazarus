@@ -128,7 +128,7 @@ type
   private
     function GetDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
-    procedure PutLabelFontTo(ACanvas: TCanvas);
+    procedure PutLabelFontTo(ADrawer: IChartDrawer);
     procedure SetAttachment(AValue: TChartMarkAttachment);
     procedure SetDistanceToCenter(AValue: Boolean);
   protected
@@ -160,14 +160,14 @@ type
     destructor Destroy; override;
 
   public
-    procedure Assign(Source: TPersistent); override;
-    function CenterOffset(ACanvas: TCanvas; const AText: String): TSize;
+    procedure Assign(ASource: TPersistent); override;
+    function CenterOffset(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure DrawLabel(
-      ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
+      ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
     function GetLabelPolygon(ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
-    function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
+    function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure SetAdditionalAngle(AAngle: Double);
   public
     property DistanceToCenter: Boolean
@@ -482,10 +482,10 @@ end;
 
 { TGenericChartMarks }
 
-procedure TGenericChartMarks.Assign(Source: TPersistent);
+procedure TGenericChartMarks.Assign(ASource: TPersistent);
 begin
-  if Source is Self.ClassType then
-    with TGenericChartMarks(Source) do begin
+  if ASource is Self.ClassType then
+    with TGenericChartMarks(ASource) do begin
       Self.FClipped := FClipped;
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
@@ -498,15 +498,15 @@ begin
       Self.FOverlapPolicy := FOverlapPolicy;
       Self.FStyle := FStyle;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 function TGenericChartMarks.CenterOffset(
-  ACanvas: TCanvas; const AText: String): TSize;
+  ADrawer: IChartDrawer; const AText: String): TSize;
 begin
   Result := Point(Distance, Distance);
   if not DistanceToCenter then
-    Result += MeasureLabel(ACanvas, AText) div 2;
+    Result += MeasureLabel(ADrawer, AText) div 2;
 end;
 
 constructor TGenericChartMarks.Create(AOwner: TCustomChart);
@@ -532,16 +532,15 @@ begin
 end;
 
 procedure TGenericChartMarks.DrawLabel(
-  ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
+  ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
   const AText: String; var APrevLabelPoly: TPointArray);
 var
-  wasClipping: Boolean = false;
   labelPoly: TPointArray;
   ptText: TPoint;
   i: Integer;
 begin
-  PutLabelFontTo(ACanvas);
-  ptText := MultiLineTextExtent(ACanvas, AText);
+  PutLabelFontTo(ADrawer);
+  ptText := ADrawer.TextExtent(AText);
   labelPoly := GetLabelPolygon(ptText);
   for i := 0 to High(labelPoly) do
     labelPoly[i] += ALabelCenter;
@@ -553,23 +552,21 @@ begin
     exit;
   APrevLabelPoly := labelPoly;
 
-  if not Clipped and ACanvas.Clipping then begin
-    ACanvas.Clipping := false;
-    wasClipping := true;
-  end;
+  if not Clipped then
+    ADrawer.ClippingStop;
 
-  ACanvas.Pen.Assign(LinkPen);
-  ACanvas.Line(ADataPoint, ALabelCenter);
-  ACanvas.Brush.Assign(LabelBrush);
+  ADrawer.Pen := LinkPen;
+  ADrawer.Line(ADataPoint, ALabelCenter);
+  ADrawer.Brush := LabelBrush;
   if IsMarginRequired then begin
-    ACanvas.Pen.Assign(Frame);
-    ACanvas.Polygon(labelPoly);
+    ADrawer.Pen := Frame;
+    ADrawer.Polygon(labelPoly);
   end;
 
   ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
-  MultiLineTextOut(ACanvas, ptText, AText, taLeftJustify, 0);
-  if wasClipping then
-    ACanvas.Clipping := true;
+  ADrawer.TextOut.Pos(ptText).Text(AText).Done;
+  if not Clipped then
+    ADrawer.ClippingStart;
 end;
 
 function TGenericChartMarks.GetDistanceToCenter: Boolean;
@@ -603,24 +600,22 @@ begin
 end;
 
 function TGenericChartMarks.MeasureLabel(
-  ACanvas: TCanvas; const AText: String): TSize;
+  ADrawer: IChartDrawer; const AText: String): TSize;
 var
   sz: TPoint;
 begin
-  PutLabelFontTo(ACanvas);
-  sz := MultiLineTextExtent(ACanvas, AText);
+  PutLabelFontTo(ADrawer);
+  sz := ADrawer.TextExtent(AText);
   if IsMarginRequired then
     sz += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
   Result := MeasureRotatedRect(sz, LabelAngle);
 end;
 
-procedure TGenericChartMarks.PutLabelFontTo(ACanvas: TCanvas);
+procedure TGenericChartMarks.PutLabelFontTo(ADrawer: IChartDrawer);
 begin
-  with ACanvas.Font do begin
-    Assign(LabelFont);
-    if FAdditionalAngle <> 0 then
-      Orientation := Orientation + RadToOrient(FAdditionalAngle);
-  end;
+  ADrawer.Font := LabelFont;
+  if FAdditionalAngle <> 0 then
+    ADrawer.AddToFontOrientation(RadToOrient(FAdditionalAngle));
 end;
 
 procedure TGenericChartMarks.SetAdditionalAngle(AAngle: Double);

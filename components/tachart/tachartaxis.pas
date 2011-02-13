@@ -479,8 +479,7 @@ var
     ADrawer.PrepareSimplePen(TickColor);
     LineZ(ATickRect.TopLeft, ATickRect.BottomRight);
     ALabelCenter += AZOffset;
-    Marks.DrawLabel(
-      ADrawer.Canvas, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
+    Marks.DrawLabel(ADrawer, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
   end;
 
   procedure DrawXMark(AY: Integer; AMark: Double; const AText: String);
@@ -492,13 +491,13 @@ var
     if Grid.Visible then begin
       ADrawer.Pen := Grid;
       ADrawer.SetBrushParams(bsClear, clTAColor);
-      TryApplyStripes(ADrawer, stripeIndex);
-      BarZ(prevCoord + 1, AClipRect.Top + 1, x, AClipRect.Bottom);
+      if TryApplyStripes(ADrawer, stripeIndex) then
+        BarZ(prevCoord + 1, AClipRect.Top + 1, x, AClipRect.Bottom);
       LineZ(Point(x, AClipRect.Top), Point(x, AClipRect.Bottom));
       prevCoord := x;
     end;
 
-    d := TickLength + Marks.CenterOffset(ADrawer.Canvas, AText).cy;
+    d := TickLength + Marks.CenterOffset(ADrawer, AText).cy;
     if Alignment = calTop then
       d := -d;
     DrawLabelAndTick(
@@ -514,13 +513,13 @@ var
     if Grid.Visible then begin
       ADrawer.Pen := Grid;
       ADrawer.SetBrushParams(bsClear, clTAColor);
-      TryApplyStripes(ADrawer, stripeIndex);
-      BarZ(AClipRect.Left + 1, prevCoord, AClipRect.Right, y);
+      if TryApplyStripes(ADrawer, stripeIndex) then
+        BarZ(AClipRect.Left + 1, prevCoord, AClipRect.Right, y);
       LineZ(Point(AClipRect.Left, y), Point(AClipRect.Right, y));
       prevCoord := y;
     end;
 
-    d := TickLength + Marks.CenterOffset(ADrawer.Canvas, AText).cx;
+    d := TickLength + Marks.CenterOffset(ADrawer, AText).cx;
     if Alignment = calLeft then
       d := -d;
     DrawLabelAndTick(
@@ -544,7 +543,7 @@ begin
   end;
   if Grid.Visible and TryApplyStripes(ADrawer, stripeIndex) then
     if IsVertical then
-      BarZ(AClipRect.Left + 1, AClipRect.Top, AClipRect.Right, prevCoord)
+      BarZ(AClipRect.Left + 1, AClipRect.Top + 1, AClipRect.Right, prevCoord)
     else
       BarZ(prevCoord + 1, AClipRect.Top + 1, AClipRect.Right, AClipRect.Bottom);
 end;
@@ -566,7 +565,7 @@ begin
     calBottom: p.Y := FTitleRect.Bottom + d;
   end;
   p += AZOffset;
-  Title.DrawLabel(ADrawer.Canvas, p, p, Title.Caption, dummy);
+  Title.DrawLabel(ADrawer, p, p, Title.Caption, dummy);
 end;
 
 function TChartAxis.GetDisplayName: string;
@@ -650,7 +649,7 @@ procedure TChartAxis.Measure(
       if AFirstPass then
         t += SOME_DIGIT;
       d := IfThen(Marks.DistanceToCenter, 2, 1);
-      with Marks.MeasureLabel(ADrawer.Canvas, t) do begin
+      with Marks.MeasureLabel(ADrawer, t) do begin
         Result.cx := Max(cx div d, Result.cx);
         Result.cy := Max(cy div d, Result.cy);
       end;
@@ -663,7 +662,7 @@ procedure TChartAxis.Measure(
   begin
     if not Title.Visible or (Title.Caption = '') then
       exit(0);
-    sz := Title.MeasureLabel(ADrawer.Canvas, Title.Caption);
+    sz := Title.MeasureLabel(ADrawer, Title.Caption);
 
     Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;

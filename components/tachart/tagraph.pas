@@ -63,7 +63,7 @@ type
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetTitle(const AValue: String); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); virtual;
 
@@ -858,7 +858,7 @@ begin
   Result := FMargins.Data;
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
-      Series[i].UpdateMargins(ADrawer.Canvas, Result);
+      Series[i].UpdateMargins(ADrawer, Result);
 end;
 
 function TChart.GetSeriesCount: Integer;
@@ -1285,9 +1285,9 @@ begin
 end;
 
 procedure TBasicChartSeries.UpdateMargins(
-  ACanvas: TCanvas; var AMargins: TRect);
+  ADrawer: IChartDrawer; var AMargins: TRect);
 begin
-  Unused(ACanvas, AMargins);
+  Unused(ADrawer, AMargins);
 end;
 
 procedure TBasicChartSeries.VisitSources(

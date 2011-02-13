@@ -24,8 +24,8 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartAxis, TAChartUtils, TACustomSource, TAGraph, TALegend, TASources,
-  TAStyles, TATypes;
+  TAChartAxis, TAChartUtils, TACustomSource, TADrawUtils, TAGraph, TALegend,
+  TASources, TAStyles, TATypes;
 
 const
   DEF_AXIS_INDEX = -1;
@@ -202,7 +202,7 @@ type
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateGraphPoints(AIndex: Integer);
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
     procedure UpdateMinXRange;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
@@ -744,6 +744,7 @@ end;
 procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
 var
   prevLabelPoly: TPointArray;
+  drawer: IChartDrawer;
 
   procedure DrawLabel(
     const AText: String; const ADataPoint: TPoint; ADir: TLabelDirection);
@@ -754,14 +755,15 @@ var
     center: TPoint;
   begin
     if AText = '' then exit;
-    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(ACanvas, AText);
-    Marks.DrawLabel(ACanvas, ADataPoint, center, AText, prevLabelPoly);
+    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(drawer, AText);
+    Marks.DrawLabel(drawer, ADataPoint, center, AText, prevLabelPoly);
   end;
 
 var
   g: TDoublePoint;
   i: Integer;
 begin
+  drawer := TCanvasDrawer.Create(ACanvas);
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
     g := GetGraphPoint(i);
@@ -898,7 +900,8 @@ begin
       FGraphPoints[i - FLoBound].Y += AxisToGraphY(Source[i]^.YList[AIndex]);
 end;
 
-procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+procedure TBasicPointSeries.UpdateMargins(
+  ADrawer: IChartDrawer; var AMargins: TRect);
 const
   LABEL_TO_BORDER = 4;
 var
@@ -916,7 +919,7 @@ begin
 
     dir := GetLabelDirection(i);
     d := IfThen(Marks.DistanceToCenter, 2, 1);
-    with Marks.MeasureLabel(ACanvas, labelText) do
+    with Marks.MeasureLabel(ADrawer, labelText) do
       dist := IfThen(dir in [ldLeft, ldRight], cx, cy) div d;
     m[dir] := Max(m[dir], dist + Marks.Distance + LABEL_TO_BORDER);
   end;
