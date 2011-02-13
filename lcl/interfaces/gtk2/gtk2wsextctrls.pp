@@ -34,7 +34,7 @@ uses
   // libs
   Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def, {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
   // LCL
-  LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType, LMessages,
+  LCLProc, ExtCtrls, Classes, Controls, SysUtils, Graphics, LCLType, LMessages,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
   Gtk2WSControls, Gtk2WSPrivate, Gtk2Proc, Gtk2Globals;
@@ -778,7 +778,6 @@ begin
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
   WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
-  Include(WidgetInfo^.Flags, wwiNoEraseBkgnd);
 
   // set allocation
   Allocation.X := AParams.X;
@@ -794,12 +793,13 @@ end;
 class procedure TGtk2WSCustomPanel.SetColor(const AWinControl: TWinControl);
 var
   MainWidget: PGtkWidget;
+  FontColor, BGColor: TColor;
 begin
   if not AWinControl.HandleAllocated then exit;
   MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));
   if MainWidget<>nil then
   Gtk2WidgetSet.SetWidgetColor(MainWidget,
-                              AWinControl.font.color, AWinControl.color,
+                              AWinControl.Font.Color, AWinControl.Color,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 

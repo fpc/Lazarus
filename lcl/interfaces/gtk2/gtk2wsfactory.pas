@@ -441,7 +441,7 @@ end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
-//  RegisterWSComponent(TCustomPanel, TGtk2WSCustomPanel);
+  RegisterWSComponent(TCustomPanel, TGtk2WSCustomPanel);
 //  RegisterWSComponent(TPanel, TGtk2WSPanel);
   Result := False;
 end;

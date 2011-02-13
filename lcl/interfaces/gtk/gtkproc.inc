@@ -7530,7 +7530,7 @@ begin
 
           SysColorMap[COLOR_BTNFACE] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
           SysColorMap[COLOR_BTNSHADOW] := TGDKColorToTColor(dark[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
           SysColorMap[COLOR_BTNHIGHLIGHT] := TGDKColorToTColor(light[GTK_STATE_INSENSITIVE]);
           SysColorMap[COLOR_3DDKSHADOW] := TGDKColorToTColor(black);
           SysColorMap[COLOR_3DLIGHT] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
