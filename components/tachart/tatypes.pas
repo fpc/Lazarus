@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, FPCanvas, Types,
-  TAChartUtils;
+  TAChartUtils, TADrawUtils;
 
 const
   MARKS_MARGIN_X = 4;
@@ -103,8 +103,8 @@ type
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
   public
-    procedure Assign(Source: TPersistent); override;
-    procedure Draw(ACanvas: TCanvas; ADir, AX: Integer; var AY: Integer);
+    procedure Assign(ASource: TPersistent); override;
+    procedure Draw(ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
   published
     property Alignment: TAlignment
       read FAlignment write SetAlignment default taCenter;
@@ -311,7 +311,7 @@ type
 implementation
 
 uses
-  TACustomSource, TADrawUtils;
+  TACustomSource;
 
 { TChartPen }
 
@@ -383,10 +383,10 @@ end;
 
 { TChartTitle }
 
-procedure TChartTitle.Assign(Source: TPersistent);
+procedure TChartTitle.Assign(ASource: TPersistent);
 begin
-  if Source is TChartTitle then
-    with TChartTitle(Source) do begin
+  if ASource is TChartTitle then
+    with TChartTitle(ASource) do begin
       Self.FAlignment := Alignment;
       Self.FBrush.Assign(Brush);
       Self.FFont.Assign(Font);
@@ -394,7 +394,7 @@ begin
       Self.FText.Assign(Text);
    end;
 
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 constructor TChartTitle.Create(AOwner: TCustomChart);
@@ -423,22 +423,22 @@ begin
 end;
 
 procedure TChartTitle.Draw(
-  ACanvas: TCanvas; ADir, AX: Integer; var AY: Integer);
+  ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
 var
   ptSize, textOrigin: TPoint;
   a: Double;
   w: Integer;
 begin
   if not Visible or (Text.Count = 0) then exit;
-  ACanvas.Brush.Assign(Brush);
-  ACanvas.Font.Assign(Font);
+  ADrawer.Brush := Brush;
+  ADrawer.Font := Font;
   a := -OrientToRad(Font.Orientation);
-  ptSize := MultiLineTextExtent(ACanvas, Text);
+  ptSize := ADrawer.TextExtent(Text);
   textOrigin := RotatePoint(-ptSize div 2, a);
   w := ptSize.X;
   ptSize := MeasureRotatedRect(ptSize, a);
   textOrigin += Point(AX, AY + ptSize.Y div 2 * ADir);
-  MultiLineTextOut(ACanvas, textOrigin, Text, Alignment, w);
+  ADrawer.TextOut.Pos(textOrigin).Text(Text).Alignment(Alignment).Width(w).Done;
   AY += ADir * (ptSize.Y + Margin);
 end;
 
@@ -567,7 +567,7 @@ begin
   end;
 
   ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
-  MultiLineTextOut(ACanvas, ptText, AText);
+  MultiLineTextOut(ACanvas, ptText, AText, taLeftJustify, 0);
   if wasClipping then
     ACanvas.Clipping := true;
 end;

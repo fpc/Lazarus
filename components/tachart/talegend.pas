@@ -204,7 +204,8 @@ end;
 
 procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ADrawer.TextOut(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top, FText);
+  ADrawer.TextOut.
+    Pos(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top).Text(FText).Done;
 end;
 
 { TLegendItemUserDrawn }

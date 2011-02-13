@@ -50,6 +50,8 @@ type
     procedure Recall;
   end;
 
+  TChartTextOut = class;
+
   { IChartDrawer }
 
   IChartDrawer = interface
@@ -66,12 +68,34 @@ type
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
     function TextExtent(const AText: String): TPoint;
-    procedure TextOut(AX, AY: Integer; const AText: String);
+    function TextExtent(AText: TStrings): TPoint;
+    function TextOut: TChartTextOut;
 
     property Brush: TFPCustomBrush write SetBrush;
     property Canvas: TCanvas read GetCanvas;
     property Font: TFPCustomFont write SetFont;
     property Pen: TFPCustomPen write SetPen;
+  end;
+
+  { TChartTextOut }
+
+  TChartTextOut = class
+    FAlignment: TAlignment;
+    FDrawer: IChartDrawer;
+    FPos: TPoint;
+    FText1: String;
+    FText2: TStrings;
+    FWidth: Integer;
+  public
+    constructor Create(ADrawer: IChartDrawer);
+  public
+    function Alignment(AAlignment: TAlignment): TChartTextOut;
+    procedure Done;
+    function Pos(AX, AY: Integer): TChartTextOut;
+    function Pos(const APos: TPoint): TChartTextOut;
+    function Text(const AText: String): TChartTextOut;
+    function Text(const AText: TStrings): TChartTextOut;
+    function Width(AWidth: Integer): TChartTextOut;
   end;
 
   { TCanvasDrawer }
@@ -95,7 +119,8 @@ type
     procedure Rectangle(const ARect: TRect);
     procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
     function TextExtent(const AText: String): TPoint;
-    procedure TextOut(AX, AY: Integer; const AText: String);
+    function TextExtent(AText: TStrings): TPoint;
+    function TextOut: TChartTextOut;
   end;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -103,10 +128,12 @@ procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Intege
 
 function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
 function MultiLineTextExtent(ACanvas: TCanvas; AText: TStrings): TPoint;
-procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
 procedure MultiLineTextOut(
-  ACanvas: TCanvas; APos: TPoint; AText: TStrings; AAlignment: TAlignment;
-  AWidth: Integer);
+  ACanvas: TCanvas; APos: TPoint; const AText: String;
+  AAlignment: TAlignment; AWidth: Integer);
+procedure MultiLineTextOut(
+  ACanvas: TCanvas; APos: TPoint; AText: TStrings;
+  AAlignment: TAlignment; AWidth: Integer);
 
 procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
 procedure PrepareXorPen(ACanvas: TCanvas);
@@ -162,7 +189,9 @@ begin
     end;
 end;
 
-procedure MultiLineTextOut(ACanvas: TCanvas; APos: TPoint; const AText: String);
+procedure MultiLineTextOut(
+  ACanvas: TCanvas; APos: TPoint; const AText: String; AAlignment: TAlignment;
+  AWidth: Integer);
 var
   sl: TStrings;
 begin
@@ -173,7 +202,7 @@ begin
   sl := TStringList.Create;
   try
     sl.Text := AText;
-    MultiLineTextOut(ACanvas, APos, sl, taLeftJustify, 0);
+    MultiLineTextOut(ACanvas, APos, sl, AAlignment, AWidth);
   finally
     sl.Free;
   end;
@@ -226,6 +255,59 @@ const
   TYPICAL_TEXT = 'Iy';
 begin
   Result := ACanvas.TextHeight(TYPICAL_TEXT);
+end;
+
+{ TChartTextOut }
+
+function TChartTextOut.Alignment(AAlignment: TAlignment): TChartTextOut;
+begin
+  FAlignment := AAlignment;
+  Result := Self;
+end;
+
+constructor TChartTextOut.Create(ADrawer: IChartDrawer);
+begin
+  FDrawer := ADrawer;
+  FAlignment := taLeftJustify;
+end;
+
+procedure TChartTextOut.Done;
+begin
+  if FText2 = nil then
+    MultiLineTextOut(FDrawer.Canvas, FPos, FText1, FAlignment, FWidth)
+  else
+    MultiLineTextOut(FDrawer.Canvas, FPos, FText2, FAlignment, FWidth);
+  Free;
+end;
+
+function TChartTextOut.Pos(AX, AY: Integer): TChartTextOut;
+begin
+  FPos := Point(AX, AY);
+  Result := Self;
+end;
+
+function TChartTextOut.Pos(const APos: TPoint): TChartTextOut;
+begin
+  FPos := APos;
+  Result := Self;
+end;
+
+function TChartTextOut.Text(const AText: String): TChartTextOut;
+begin
+  FText1 := AText;
+  Result := Self;
+end;
+
+function TChartTextOut.Text(const AText: TStrings): TChartTextOut;
+begin
+  FText2 := AText;
+  Result := Self;
+end;
+
+function TChartTextOut.Width(AWidth: Integer): TChartTextOut;
+begin
+  FWidth := AWidth;
+  Result := Self;
 end;
 
 { TCanvasDrawer }
@@ -292,12 +374,17 @@ end;
 
 function TCanvasDrawer.TextExtent(const AText: String): TPoint;
 begin
-  Result := FCanvas.TextExtent(AText);
+  Result := MultiLineTextExtent(FCanvas, AText);
 end;
 
-procedure TCanvasDrawer.TextOut(AX, AY: Integer; const AText: String);
+function TCanvasDrawer.TextExtent(AText: TStrings): TPoint;
 begin
-  FCanvas.TextOut(AX, AY, AText);
+  Result := MultiLineTextExtent(FCanvas, AText);
+end;
+
+function TCanvasDrawer.TextOut: TChartTextOut;
+begin
+  Result := TChartTextOut.Create(Self);
 end;
 
 { TPenBrushFontRecall }

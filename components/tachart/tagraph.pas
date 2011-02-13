@@ -218,7 +218,6 @@ type
     procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DisplaySeries(ADrawer: IChartDrawer);
     procedure DrawBackWall(ACanvas: TCanvas);
-    procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -629,7 +628,7 @@ end;
 
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
-  i: Integer;
+  i, c: Integer;
   legendItems: TChartLegendItems = nil;
   legendRect: TRect;
 begin
@@ -648,7 +647,11 @@ begin
   if not FIsZoomed then
     FLogicalExtent := GetFullExtent;
   FCurrentExtent := FLogicalExtent;
-  DrawTitleFoot(ADrawer.Canvas);
+
+  c := (FClipRect.Left + FClipRect.Right) div 2;
+  FTitle.Draw(ADrawer, 1, c, FClipRect.Top);
+  FFoot.Draw(ADrawer, -1, c, FClipRect.Bottom);
+
   if Legend.Visible then
     PrepareLegend(ADrawer, legendItems, FClipRect, legendRect);
   try
@@ -732,21 +735,6 @@ begin
     DrawLineVert(ACanvas, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
     DrawLineHoriz(ACanvas, FReticulePos.Y);
-end;
-
-procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
-var
-  c: Integer;
-  pbf: TPenBrushFontRecall;
-begin
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfBrush, pbfFont]);
-  try
-    c := (FClipRect.Left + FClipRect.Right) div 2;
-    FTitle.Draw(ACanvas, 1, c, FClipRect.Top);
-    FFoot.Draw(ACanvas, -1, c, FClipRect.Bottom);
-  finally
-    pbf.Free;
-  end;
 end;
 
 procedure TChart.EraseBackground(DC: HDC);
