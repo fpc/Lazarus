@@ -1287,7 +1287,7 @@ begin
     ConvTool.Free;
   end;
   with fMainUnitConverter do begin
-    fUsedUnitsTool.IsMainFile:=MainName=fLazUnitFilename;
+    fUsedUnitsTool.IsMainFile:=True;
     fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
     Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,[ofQuiet]);
     if Result<>mrOK then exit;
@@ -1423,6 +1423,7 @@ var
     Converter: TConvertDelphiUnit;
   begin
     Converter:=TConvertDelphiUnit.Create(Self, AUnitInfo.Filename,[]);
+    Converter.fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
     Converter.fUnitInfo:=AUnitInfo;
     ConvUnits.Add(Converter);
     Result:=Converter.CopyAndLoadFile;
