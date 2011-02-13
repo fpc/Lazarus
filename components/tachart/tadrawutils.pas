@@ -21,7 +21,10 @@ unit TADrawUtils;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Types;
+  Classes, Graphics, FPCanvas, SysUtils, Types;
+
+type
+  TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
 
 const
   Colors: array [1..15] of TColor = (
@@ -29,6 +32,8 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
+  //TCanvas = TFPCustomCanvas;
+
   TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
 
   { TPenBrushFontRecall }
@@ -43,6 +48,35 @@ type
     constructor Create(ACanvas: TCanvas; AParams: TPenBrushFont);
     destructor Destroy; override;
     procedure Recall;
+  end;
+
+  IChartDrawer = interface
+    function GetCanvas: TCanvas;
+    procedure PrepareSimplePen(AColor: TChartColor);
+    procedure Rectangle(const ARect: TRect);
+    procedure SetBrush(APen: TFPCustomBrush);
+    procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
+    procedure SetPen(APen: TFPCustomPen);
+
+    property Brush: TFPCustomBrush write SetBrush;
+    property Canvas: TCanvas read GetCanvas;
+    property Pen: TFPCustomPen write SetPen;
+  end;
+
+  { TCanvasDrawer }
+
+  TCanvasDrawer = class(TInterfacedObject, IChartDrawer)
+  private
+    FCanvas: TCanvas;
+    procedure SetBrush(ABrush: TFPCustomBrush);
+    procedure SetPen(APen: TFPCustomPen);
+  public
+    constructor Create(ACanvas: TCanvas);
+    function GetCanvas: TCanvas;
+
+    procedure PrepareSimplePen(AColor: TChartColor);
+    procedure Rectangle(const ARect: TRect);
+    procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
   end;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -173,6 +207,45 @@ const
   TYPICAL_TEXT = 'Iy';
 begin
   Result := ACanvas.TextHeight(TYPICAL_TEXT);
+end;
+
+{ TCanvasDrawer }
+
+constructor TCanvasDrawer.Create(ACanvas: TCanvas);
+begin
+  FCanvas := ACanvas;
+end;
+
+function TCanvasDrawer.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
+procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
+begin
+  TADrawUtils.PrepareSimplePen(FCanvas, AColor);
+end;
+
+procedure TCanvasDrawer.Rectangle(const ARect: TRect);
+begin
+  FCanvas.Rectangle(ARect);
+end;
+
+procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
+begin
+  FCanvas.Brush.Assign(ABrush);
+end;
+
+procedure TCanvasDrawer.SetBrushParams(
+  AStyle: TBrushStyle; AColor: TChartColor);
+begin
+  FCanvas.Brush.Style := AStyle;
+  FCanvas.Brush.Color := AColor;
+end;
+
+procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
+begin
+  FCanvas.Pen.Assign(APen);
 end;
 
 { TPenBrushFontRecall }

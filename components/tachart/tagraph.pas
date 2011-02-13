@@ -29,7 +29,7 @@ interface
 
 uses
   Graphics, Classes, Controls, LCLType, SysUtils,
-  TAChartAxis, TAChartUtils, TALegend, TATypes;
+  TAChartAxis, TAChartUtils, TADrawUtils, TALegend, TATypes;
 
 type
   TChart = class;
@@ -78,7 +78,8 @@ type
     destructor Destroy; override;
 
   public
-    procedure Draw(ACanvas: TCanvas); virtual; abstract;
+    procedure Draw(ADrawer: IChartDrawer); virtual;
+    procedure Draw(ACanvas: TCanvas); virtual;
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
 
@@ -214,8 +215,8 @@ type
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
-    procedure Clear(ACanvas: TCanvas; const ARect: TRect);
-    procedure DisplaySeries(ACanvas: TCanvas);
+    procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
+    procedure DisplaySeries(ADrawer: IChartDrawer);
     procedure DrawBackWall(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
@@ -251,6 +252,7 @@ type
     function Clone: TChart;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     function GetFullExtent: TDoubleRect;
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
@@ -354,7 +356,7 @@ var
 implementation
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawUtils, Types;
+  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -539,41 +541,10 @@ end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 var
-  i: Integer;
-  legendItems: TChartLegendItems = nil;
-  legendRect: TRect;
+  drawer: IChartDrawer;
 begin
-  Clear(ACanvas, ARect);
-
-  FClipRect := ARect;
-  InflateRect(FClipRect, -2, -2);
-
-  for i := 0 to AxisList.Count - 1 do
-    with AxisList[i] do
-      if Transformations <> nil then
-        Transformations.SetChart(Self);
-  for i := 0 to SeriesCount - 1 do
-    Series[i].BeforeDraw;
-
-  if not FIsZoomed then
-    FLogicalExtent := GetFullExtent;
-  FCurrentExtent := FLogicalExtent;
-  DrawTitleFoot(ACanvas);
-  if Legend.Visible then
-    PrepareLegend(ACanvas, legendItems, FClipRect, legendRect);
-  try
-    PrepareAxis(ACanvas);
-    DrawBackWall(ACanvas);
-    DisplaySeries(ACanvas);
-    if Legend.Visible then
-      Legend.Draw(ACanvas, legendItems, legendRect);
-  finally
-    legendItems.Free;
-  end;
-  DrawReticule(ACanvas);
-
-  for i := 0 to SeriesCount - 1 do
-    Series[i].AfterDraw;
+  drawer := TCanvasDrawer.Create(ACanvas);
+  Draw(drawer, ARect);
 end;
 
 procedure TChart.PrepareLegend(
@@ -652,19 +623,18 @@ begin
   rY.UpdateMinMax(@YImageToGraph);
 end;
 
-procedure TChart.Clear(ACanvas: TCanvas; const ARect: TRect);
+procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
 var
   defaultDrawing: Boolean = true;
 begin
-  PrepareSimplePen(ACanvas, Color);
-  ACanvas.Brush.Color := Color;
-  ACanvas.Brush.Style := bsSolid;
-  if Assigned(OnBeforeDrawBackground) then
-    OnBeforeDrawBackground(Self, ACanvas, ARect, defaultDrawing);
+  ADrawer.PrepareSimplePen(Color);
+  ADrawer.SetBrushParams(bsSolid, Color);
+  if (ADrawer.Canvas <> nil) and Assigned(OnBeforeDrawBackground) then
+    OnBeforeDrawBackground(Self, ADrawer.Canvas, ARect, defaultDrawing);
   if defaultDrawing then
-    ACanvas.Rectangle(ARect);
-  if Assigned(OnAfterDrawBackground) then
-    OnAfterDrawBackground(Self, ACanvas, ARect);
+    ADrawer.Rectangle(ARect);
+  if (ADrawer.Canvas <> nil) and Assigned(OnAfterDrawBackground) then
+    OnAfterDrawBackground(Self, ADrawer.Canvas, ARect);
 end;
 
 procedure TChart.ClearSeries;
@@ -901,7 +871,7 @@ begin
   PaintOnCanvas(ACanvas, Rect);
 end;
 
-procedure TChart.DisplaySeries(ACanvas: TCanvas);
+procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
 
   procedure OffsetDrawArea(AZPos, ADepth: Integer);
   begin
@@ -928,27 +898,66 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ACanvas, FClipRect, Self, ZPosition, d, axisIndex);
+          AxisList.Draw(ADrawer.Canvas, FClipRect, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-          ACanvas.ClipRect := FClipRect;
-          ACanvas.Clipping := true;
+          ADrawer.Canvas.ClipRect := FClipRect;
+          ADrawer.Canvas.Clipping := true;
           try
             try
-              Draw(ACanvas);
+              Draw(ADrawer);
             except
               Active := false;
               raise;
             end;
           finally
             OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
-            ACanvas.Clipping := false;
+            ADrawer.Canvas.Clipping := false;
           end;
         end;
     finally
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ACanvas, FClipRect, Self, MaxInt, d, axisIndex);
+  AxisList.Draw(ADrawer.Canvas, FClipRect, Self, MaxInt, d, axisIndex);
+end;
+
+procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  i: Integer;
+  legendItems: TChartLegendItems = nil;
+  legendRect: TRect;
+begin
+  Clear(ADrawer, ARect);
+
+  FClipRect := ARect;
+  InflateRect(FClipRect, -2, -2);
+
+  for i := 0 to AxisList.Count - 1 do
+    with AxisList[i] do
+      if Transformations <> nil then
+        Transformations.SetChart(Self);
+  for i := 0 to SeriesCount - 1 do
+    Series[i].BeforeDraw;
+
+  if not FIsZoomed then
+    FLogicalExtent := GetFullExtent;
+  FCurrentExtent := FLogicalExtent;
+  DrawTitleFoot(ADrawer.Canvas);
+  if Legend.Visible then
+    PrepareLegend(ADrawer.Canvas, legendItems, FClipRect, legendRect);
+  try
+    PrepareAxis(ADrawer.Canvas);
+    DrawBackWall(ADrawer.Canvas);
+    DisplaySeries(ADrawer);
+    if Legend.Visible then
+      Legend.Draw(ADrawer.Canvas, legendItems, legendRect);
+  finally
+    legendItems.Free;
+  end;
+  DrawReticule(ADrawer.Canvas);
+
+  for i := 0 to SeriesCount - 1 do
+    Series[i].AfterDraw;
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
@@ -1258,6 +1267,17 @@ begin
   if FChart <> nil then
     FChart.DeleteSeries(Self);
   inherited;
+end;
+
+procedure TBasicChartSeries.Draw(ADrawer: IChartDrawer);
+begin
+  Draw(ADrawer.Canvas);
+end;
+
+procedure TBasicChartSeries.Draw(ACanvas: TCanvas);
+begin
+  Unused(ACanvas);
+  raise EChartError(ClassName + '.Draw not implemented');
 end;
 
 function TBasicChartSeries.GraphToAxisX(AX: Double): Double;
