@@ -63,10 +63,12 @@ type
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
+    procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
     procedure SetBrush(APen: TFPCustomBrush);
-    procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
+    procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -117,7 +119,9 @@ type
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
-    procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
+    procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -345,6 +349,11 @@ begin
     AX1, AY1, AX2, AY2, AStartAngle16Deg, AAngleLength16Deg);
 end;
 
+procedure TCanvasDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
+begin
+  FCanvas.Rectangle(AX1, AY1, AX2, AY2);
+end;
+
 procedure TCanvasDrawer.Rectangle(const ARect: TRect);
 begin
   FCanvas.Rectangle(ARect);
@@ -356,7 +365,7 @@ begin
 end;
 
 procedure TCanvasDrawer.SetBrushParams(
-  AStyle: TBrushStyle; AColor: TChartColor);
+  AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
   FCanvas.Brush.Style := AStyle;
   FCanvas.Brush.Color := AColor;
@@ -370,6 +379,12 @@ end;
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
   FCanvas.Pen.Assign(APen);
+end;
+
+procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+begin
+  FCanvas.Pen.Style := AStyle;
+  FCanvas.Pen.Color := AColor;
 end;
 
 function TCanvasDrawer.TextExtent(const AText: String): TPoint;

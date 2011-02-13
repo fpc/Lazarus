@@ -217,7 +217,7 @@ type
   protected
     procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DisplaySeries(ADrawer: IChartDrawer);
-    procedure DrawBackWall(ACanvas: TCanvas);
+    procedure DrawBackWall(ADrawer: IChartDrawer);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -656,7 +656,7 @@ begin
     PrepareLegend(ADrawer, legendItems, FClipRect, legendRect);
   try
     PrepareAxis(ADrawer.Canvas);
-    DrawBackWall(ADrawer.Canvas);
+    DrawBackWall(ADrawer);
     DisplaySeries(ADrawer);
     if Legend.Visible then
       Legend.Draw(ADrawer, legendItems, legendRect);
@@ -669,30 +669,30 @@ begin
     Series[i].AfterDraw;
 end;
 
-procedure TChart.DrawBackWall(ACanvas: TCanvas);
+procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
 var
   defaultDrawing: Boolean = true;
 begin
-  if Assigned(OnBeforeDrawBackWall) then
-    OnBeforeDrawBackWall(Self, ACanvas, FClipRect, defaultDrawing);
+  if ADrawer.HasCanvas and Assigned(OnBeforeDrawBackWall) then
+    OnBeforeDrawBackWall(Self, ADrawer.Canvas, FClipRect, defaultDrawing);
   if defaultDrawing then
-    with ACanvas do begin
+    with ADrawer do begin
       if FFrame.Visible then
-        Pen.Assign(FFrame)
+        Pen := FFrame
       else
-        Pen.Style := psClear;
-      Brush.Color := BackColor;
+        SetPenParams(psClear, clTAColor);
+      SetBrushParams(bsSolid, BackColor);
       with FClipRect do
         Rectangle(Left, Top, Right + 1, Bottom + 1);
     end;
-  if Assigned(OnAfterDrawBackWall) then
-    OnAfterDrawBackWall(Self, ACanvas, FClipRect);
+  if ADrawer.HasCanvas and Assigned(OnAfterDrawBackWall) then
+    OnAfterDrawBackWall(Self, ADrawer.Canvas, FClipRect);
 
   // Z axis
   if (Depth > 0) and FFrame.Visible then begin
-    ACanvas.Pen.Assign(FFrame);
+    ADrawer.Pen := FFrame;
     with FClipRect do
-      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
+      ADrawer.Line(Left, Bottom, Left - Depth, Bottom + Depth);
   end;
 end;
 
