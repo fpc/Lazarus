@@ -572,7 +572,9 @@ begin
   ' AfterGap=',dbgs(ord(AfterGap)),' CleanPos=',dbgs(FromPos),'-',dbgs(ToPos),
   ' Text="',Text,'"');
   if DirectCode<>nil then
-    DebugLn('DirectCode=',DirectCode.Filename,' DirectPos=',dbgs(FromDirectPos),'-',dbgs(ToDirectPos));
+    DebugLn('  DirectCode=',DirectCode.Filename,' DirectPos=',dbgs(FromDirectPos),'-',dbgs(ToDirectPos),' Src=(~',dbgstr(copy(DirectCode.Source,FromDirectPos,ToDirectPos-FromDirectPos)),'~)')
+  else if ToPos>FromPos then
+    debugln(['  DeleteCode=(~',dbgstr(copy(MainScanner.Src,FromPos,ToPos-FromPos)),'~)']);
   {$ENDIF}
   Result:=false;
   IsDirectChange:=DirectCode<>nil;
