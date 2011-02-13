@@ -390,6 +390,7 @@ begin
     Add('FastMM4');
     Add('FastMM4Messages');
     Add('OpenGL');
+    CaseSensitive:=False;
     Sorted:=True;
   end;
 

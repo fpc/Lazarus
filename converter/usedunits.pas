@@ -199,6 +199,8 @@ var
   OldUnitName, OldInFilename: String;
   NewUnitName, NewInFilename: String;
   AFilename, s, slo: String;
+  x: Integer;
+  OmitUnit: Boolean;
 begin
   UsesNode:=UsesSectionNode;
   if UsesNode=nil then exit(true);
@@ -221,8 +223,8 @@ begin
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin                         // unit found
-        if (NewUnitName<>OldUnitName) and
-                     not AUnitUpdater.FindReplacement(NewUnitName, slo) then begin
+        OmitUnit:=Settings.OmitProjUnits.Find(NewUnitName, x);
+        if (NewUnitName<>OldUnitName) and not OmitUnit then begin
           // Character case differs and it will not be replaced.
           fUnitsToFixCase[OldUnitName]:=NewUnitName;      // fix case
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
@@ -231,7 +233,7 @@ begin
         // Report Windows specific units as missing if target is MultiPlatform,
         //  needed if work-platform is Windows (kind of a hack).
         slo:=LowerCase(NewUnitName);                        // 'variants' ?
-        if Settings.MultiPlatform and ((slo='windows') or (slo='shellapi')) then
+        if (Settings.MultiPlatform and ((slo='windows') or (slo='shellapi'))) or OmitUnit then
           fMissingUnits.Add(s);
       end
       else begin
