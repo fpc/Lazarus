@@ -131,7 +131,7 @@ uses
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   BuildModesEditor,
   // package option frames
-  package_usage_options, package_description_options,
+  package_usage_options, package_description_options, package_integration_options,
 
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,

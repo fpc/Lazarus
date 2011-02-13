@@ -1,0 +1,101 @@
+inherited PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
+  Height = 352
+  Width = 461
+  ClientHeight = 352
+  ClientWidth = 461
+  TabOrder = 0
+  DesignLeft = 517
+  DesignTop = 273
+  object PkgTypeRadioGroup: TRadioGroup[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 116
+    Top = 0
+    Width = 461
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    Caption = 'PackageType'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 98
+    ClientWidth = 457
+    ItemIndex = 2
+    Items.Strings = (
+      'Designtime only'
+      'Runtime only'
+      'Designtime and Runtime'
+    )
+    OnClick = PkgTypeRadioGroupClick
+    TabOrder = 0
+  end
+  object UpdateRadioGroup: TRadioGroup[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PkgTypeRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 116
+    Top = 122
+    Width = 461
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Top = 6
+    Caption = 'Update/Rebuild'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 98
+    ClientWidth = 457
+    ItemIndex = 0
+    Items.Strings = (
+      'Automatically rebuild as needed'
+      'Auto rebuild when rebuilding all'
+      'Manual compilation (never automatically)'
+    )
+    TabOrder = 1
+  end
+  object LazDocGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UpdateRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 53
+    Top = 244
+    Width = 461
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'LazDoc - Lazarus documentation'
+    ClientHeight = 35
+    ClientWidth = 457
+    TabOrder = 2
+    object LazDocPathEdit: TEdit
+      AnchorSideLeft.Control = LazDocGroupBox
+      AnchorSideTop.Control = LazDocGroupBox
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 365
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+  end
+end
