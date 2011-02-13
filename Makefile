@@ -3676,18 +3676,17 @@ endif
 ifdef SNAPSHOT
 DEBUSESVN=1
 endif
-ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
-ifndef DEBUSESVN
-$(error Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = "${DEBBUILD}" > 1)
-endif
-endif
 ifndef SIGN
 DEB_BUILDPKG_OPT+= -us -uc
 endif
 debcheck:
 ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
-	@$(ECHO) "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
-	@exit 1
+	! ${ECHO} "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+endif
+ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
+ifndef DEBUSESVN
+	! ${ECHO} 'Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = "${DEBBUILD}" > 1'
+endif
 endif
 debcopy: distclean
 	${DELTREE} ${BUILDDIR}
