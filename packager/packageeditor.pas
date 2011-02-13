@@ -47,7 +47,7 @@ uses
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, ComponentReg,
-  PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
+  PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem;
   
 const
@@ -98,7 +98,6 @@ var
   PkgEditMenuRemove: TIDEMenuCommand;
 
   PkgEditMenuGeneralOptions: TIDEMenuCommand;
-  PkgEditMenuCompilerOptions: TIDEMenuCommand;
   PkgEditMenuViewPackageSource: TIDEMenuCommand;
 
 type
@@ -163,7 +162,6 @@ type
     RemoveBitBtn: TToolButton;
     UseBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
-    CompilerOptionsBitBtn: TToolButton;
     MoreBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
     // items
@@ -197,12 +195,10 @@ type
     procedure CompileAllCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
-    procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
     procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
-    procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
@@ -512,7 +508,6 @@ begin
   PkgEditMenuSectionMisc:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Misc');
   AParent:=PkgEditMenuSectionMisc;
   PkgEditMenuGeneralOptions:=RegisterIDEMenuCommand(AParent,'General Options',lisPckEditGeneralOptions);
-  PkgEditMenuCompilerOptions:=RegisterIDEMenuCommand(AParent,'Compiler Options',dlgCompilerOptions);
   PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
@@ -711,8 +706,6 @@ begin
     SetItem(PkgEditMenuRemove,@RemoveBitBtnClick,true,RemoveBitBtn.Enabled);
 
     SetItem(PkgEditMenuGeneralOptions,@OptionsBitBtnClick,true,OptionsBitBtn.Enabled);
-    SetItem(PkgEditMenuCompilerOptions,@CompilerOptionsBitBtnClick,true,
-            CompilerOptionsBitBtn.Enabled);
     SetItem(PkgEditMenuViewPackageSource,@ViewPkgSourceClick);
   finally
     PackageEditorMenuRoot.EndUpdate;
@@ -920,7 +913,9 @@ end;
 
 procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
 begin
-  ShowPackageOptionsDlg(LazPackage);
+  CurPackage := LazPackage;
+  // TODO: LazPackage.ReadOnly ?
+  LazarusIDE.DoOpenIDEOptions(nil, Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]), [TLazPackage, TPkgCompilerOptions]);
   UpdateButtons;
   UpdateTitle;
   UpdateStatusBar;
@@ -1122,10 +1117,6 @@ procedure TPackageEditorForm.UseNoUnitsInDirectoryMenuItemClick(Sender: TObject
   );
 begin
   DoUseUnitsInDirectory(false);
-end;
-
-procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
-begin
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
@@ -1448,16 +1439,6 @@ begin
   DoCompile(false,false);
 end;
 
-procedure TPackageEditorForm.CompilerOptionsBitBtnClick(Sender: TObject);
-begin
-  CurPackage := LazPackage;
-  // TODO: LazPackage.ReadOnly ?
-  LazarusIDE.DoOpenIDEOptions(nil, Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]), [TLazPackage, TPkgCompilerOptions]);
-  UpdateTitle;
-  UpdateButtons;
-  UpdateStatusBar;
-end;
-
 procedure TPackageEditorForm.CreateMakefileClick(Sender: TObject);
 begin
   PackageEditors.CreateMakefile(LazPackage);
@@ -1543,8 +1524,6 @@ begin
   RemoveBitBtn := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
-  CompilerOptionsBitBtn := CreateToolButton('CompilerOptionsBitBtn', lisPckEditCompOpts, lisPckEditEditOptionsToCompilePackage, 'menu_compiler_options', @CompilerOptionsBitBtnClick);
-  CreateDivider;
   HelpBitBtn := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
   MoreBitBtn := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
 
@@ -1709,7 +1688,6 @@ begin
     UseBitBtn.DropdownMenu:=nil;
   end;
   OptionsBitBtn.Enabled:=true;
-  CompilerOptionsBitBtn.Enabled:=true;
 end;
 
 procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
