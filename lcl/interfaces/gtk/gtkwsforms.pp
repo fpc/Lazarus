@@ -75,7 +75,8 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
+
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
@@ -443,6 +444,15 @@ begin
   Result := TLCLIntfHandle(PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
+end;
+
+class function TGtkWSCustomForm.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  if ADefaultColorType = dctFont then
+    Result := clWindowText
+  else
+    Result := clForm;
 end;
 
 class procedure TGtkWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;

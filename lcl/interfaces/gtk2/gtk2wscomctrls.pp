@@ -205,6 +205,7 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TGtk2WSTrackBar }
@@ -625,6 +626,15 @@ begin
 
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
+end;
+
+class function TGtk2WSToolBar.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  if ADefaultColorType = dctFont then
+    Result := clWindowText
+  else
+    Result := clDefault;
 end;
 
 end.
