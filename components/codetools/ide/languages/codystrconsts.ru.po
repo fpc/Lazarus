@@ -59,9 +59,9 @@ msgstr "Использует"
 
 #: codystrconsts.liscogeneral
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 #: codystrconsts.liscousespath
 msgid "Uses path"
-msgstr ""
+msgstr "Цепочка Uses"
 

@@ -5549,10 +5549,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
 msgstr "כל תתי התיקיות ייסרקו למציאת קבצי יחידות"
 
-#: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
-msgid "At this point there should be no missing units!"
-msgstr "בשלב זה לא אמורות להיות יחידות חסרות"
-
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
 msgstr "נכשל BeginCodeTools"

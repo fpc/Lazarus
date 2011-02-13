@@ -5534,10 +5534,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
 msgstr "Všechny podadresáře budou prohledány pna soubory jednotek"
 
-#: lazarusidestrconsts.lisconvdelphiatthispointthereshouldbenomissingunits
-msgid "At this point there should be no missing units!"
-msgstr "V tomto okamžiku by neměly být žádné chybějící jednotky!"
-
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
 msgstr "BeginCodeTools selhalo!"
