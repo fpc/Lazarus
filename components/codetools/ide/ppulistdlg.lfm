@@ -114,9 +114,9 @@ object PPUListDialog: TPPUListDialog
       Height = 167
       Top = 0
       Width = 720
-      ActivePage = UsesPathTabSheet
+      ActivePage = UsesTabSheet
       Align = alClient
-      TabIndex = 3
+      TabIndex = 1
       TabOrder = 0
       object InfoTabSheet: TTabSheet
         Caption = 'InfoTabSheet'
@@ -162,6 +162,7 @@ object PPUListDialog: TPPUListDialog
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
+          OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
             714
           )
@@ -187,6 +188,7 @@ object PPUListDialog: TPPUListDialog
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
+          OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
             714
           )
@@ -204,9 +206,14 @@ object PPUListDialog: TPPUListDialog
           Align = alClient
           AutoFillColumns = True
           ColCount = 1
+          Columns = <          
+            item
+              Title.Caption = 'Unit'
+              Width = 714
+            end>
           FixedCols = 0
-          FixedRows = 0
           TabOrder = 0
+          OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
             714
           )

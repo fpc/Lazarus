@@ -101,6 +101,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
+    procedure UnitStringGridMouseDown(Sender: TObject;
+      {%H-}Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     FMainItem: TPPUListItem;
     FProject: TLazProject;
@@ -124,6 +126,7 @@ type
     // grid
     procedure UpdateUnitsGrid;
     function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    procedure JumpToUnit(TheUnitName: string);
 
     // units info
     procedure FillUnitsInfo(AnUnitName: string);
@@ -294,6 +297,27 @@ begin
   else
     AnUnitName:=UnitsStringGrid.Cells[0,aRow];
   FillUnitsInfo(AnUnitName);
+end;
+
+procedure TPPUListDialog.UnitStringGridMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Grid: TStringGrid;
+  Col: Longint;
+  Row: Longint;
+  AnUnitName: string;
+begin
+  Grid:=TStringGrid(Sender);
+  if Shift=[ssLeft,ssDouble] then begin
+    Col:=0;
+    Row:=0;
+    Grid.MouseToCell(X,Y,Col,Row);
+    if (Row<1) or (Row>=Grid.RowCount) then exit;
+    if (Col=0) then begin
+      AnUnitName:=Grid.Cells[0,Row];
+      JumpToUnit(AnUnitName);
+    end;
+  end;
 end;
 
 procedure TPPUListDialog.FormClose(Sender: TObject;
@@ -560,6 +584,18 @@ begin
   end;
 end;
 
+procedure TPPUListDialog.JumpToUnit(TheUnitName: string);
+var
+  i: Integer;
+begin
+  for i:=2 to UnitsStringGrid.RowCount-1 do begin
+    if SysUtils.CompareText(UnitsStringGrid.Cells[0,i],TheUnitName)<>0 then
+      continue;
+    UnitsStringGrid.Row:=i;
+    exit;
+  end;
+end;
+
 procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
 var
   Item: TPPUListItem;
@@ -601,9 +637,9 @@ begin
     // uses path
     UsesPath:=FindUsesPath(MainItem,Item);
     try
-      UsesPathStringGrid.RowCount:=UsesPath.Count;
+      UsesPathStringGrid.RowCount:=UsesPath.Count+1;
       for i:=0 to UsesPath.Count-1 do begin
-        UsesPathStringGrid.Cells[0,i]:=TPPUListItem(UsesPath[i]).TheUnitName;
+        UsesPathStringGrid.Cells[0,i+1]:=TPPUListItem(UsesPath[i]).TheUnitName;
       end;
     finally
       UsesPath.Free;
