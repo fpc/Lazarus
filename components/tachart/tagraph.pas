@@ -729,6 +729,7 @@ end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
 begin
+  if ReticuleMode = rmNone then exit;
   PrepareXorPen(ACanvas);
   if ReticuleMode in [rmVertical, rmCross] then
     DrawLineVert(ACanvas, FReticulePos.X);

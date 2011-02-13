@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TACustomSeries, TALegend;
+  TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
 
 type
   TLabelParams = record
@@ -45,12 +45,12 @@ type
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
     FRotateLabels: Boolean;
-    procedure Measure(ACanvas: TCanvas);
+    procedure Measure(ADrawer: IChartDrawer);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
-    function TryRadius(ACanvas: TCanvas): TRect;
+    function TryRadius(ADrawer: IChartDrawer): TRect;
   private
     FCenter: TPoint;
     FRadius: Integer;
@@ -61,7 +61,7 @@ type
   public
     function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
     procedure Assign(ASource: TPersistent); override;
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
 
     // Offset slices away from center based on X value.
@@ -99,7 +99,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
     property LinePen: TPen read FLinePen write SetLinePen;
@@ -112,7 +112,7 @@ implementation
 
 uses
   Math,
-  TACustomSource, TADrawUtils, TAGraph;
+  TACustomSource, TAGraph;
 
 { TCustomPieSeries }
 
@@ -141,25 +141,22 @@ begin
   inherited Assign(ASource);
 end;
 
-procedure TCustomPieSeries.Draw(ACanvas: TCanvas);
+procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
   prevAngle: Double = 0;
   prevLabelPoly: TPointArray = nil;
-  drawer: IChartDrawer;
 begin
   if IsEmpty then exit;
 
   Marks.SetAdditionalAngle(0);
-  Measure(ACanvas);
+  Measure(ADrawer);
 
-  ACanvas.Pen.Color := clBlack;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Brush.Style := bsSolid;
+  ADrawer.SetPenParams(psSolid, clBlack);
   for i := 0 to Count - 1 do begin
-    ACanvas.Brush.Color := SliceColor(i);
+    ADrawer.SetBrushParams(bsSolid, SliceColor(i));
     with FSlices[i] do begin
-      ACanvas.RadialPie(
+      ADrawer.RadialPie(
         FBase.X - FRadius, FBase.Y - FRadius,
         FBase.X + FRadius, FBase.Y + FRadius,
         RadToDeg16(prevAngle), RadToDeg16(FAngle));
@@ -168,13 +165,12 @@ begin
   end;
   if not Marks.IsMarkLabelsVisible then exit;
   prevAngle := 0;
-  drawer := TCanvasDrawer.Create(ACanvas);
   for i := 0 to Count - 1 do
     with FSlices[i].FLabel do begin
       if FText <> '' then begin
         if RotateLabels then
           Marks.SetAdditionalAngle(prevAngle + FSlices[i].FAngle / 2);
-        Marks.DrawLabel(drawer, FAttachment, FCenter, FText, prevLabelPoly);
+        Marks.DrawLabel(ADrawer, FAttachment, FCenter, FText, prevLabelPoly);
       end;
       prevAngle += FSlices[i].FAngle;
     end;
@@ -225,7 +221,7 @@ begin
   end;
 end;
 
-procedure TCustomPieSeries.Measure(ACanvas: TCanvas);
+procedure TCustomPieSeries.Measure(ADrawer: IChartDrawer);
 const
   MIN_RADIUS = 5;
 var
@@ -239,7 +235,7 @@ begin
       b := Max(cx div 2, cy div 2);
     while a < b - 1 do begin
       FRadius := (a + b) div 2;
-      if IsRectInRect(TryRadius(ACanvas), ParentChart.ClipRect) then
+      if IsRectInRect(TryRadius(ADrawer), ParentChart.ClipRect) then
         a := FRadius
       else
         b := FRadius - 1;
@@ -247,7 +243,7 @@ begin
   end
   else begin
     FRadius := FixedRadius;
-    TryRadius(ACanvas);
+    TryRadius(ADrawer);
   end;
 end;
 
@@ -278,7 +274,7 @@ begin
     ColorOrDefault(Source[AIndex]^.Color, Colors[AIndex mod High(Colors) + 1]);
 end;
 
-function TCustomPieSeries.TryRadius(ACanvas: TCanvas): TRect;
+function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
 
   function EndPoint(AAngle, ARadius: Double): TPoint;
   begin
@@ -327,7 +323,7 @@ function TCustomPieSeries.TryRadius(ACanvas: TCanvas): TRect;
       if FText = '' then exit;
       if RotateLabels then
         Marks.SetAdditionalAngle(AAngle);
-      p := Marks.GetLabelPolygon(ACanvas.TextExtent(FText));
+      p := Marks.GetLabelPolygon(ADrawer.TextExtent(FText));
       FCenter += EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
       for i := 0 to High(p) do
         ExpandRect(Result, p[i] + FCenter);
@@ -389,7 +385,7 @@ begin
   inherited;
 end;
 
-procedure TPolarSeries.Draw(ACanvas: TCanvas);
+procedure TPolarSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
   pts: TPointArray;
@@ -398,9 +394,9 @@ begin
   SetLength(pts, Count);
   for i := 0 to Count - 1 do
     pts[i] := FChart.GraphToImage(GraphPoint(i));
-  ACanvas.Pen := LinePen;
-  ACanvas.Brush.Style := bsClear;
-  ACanvas.Polygon(pts);
+  ADrawer.Pen := LinePen;
+  ADrawer.SetBrushParams(bsClear, clTAColor);
+  ADrawer.Polygon(pts);
 end;
 
 function TPolarSeries.Extent: TDoubleRect;
