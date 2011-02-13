@@ -750,6 +750,7 @@ procedure TGtk2ThemeServices.Gtk1DrawElement(DC: HDC;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   Area: TGdkRectangle;
+  ClipArea: TGdkRectangle;
   StyleParams: TGtkStyleParams;
   i: integer;
   RDest: TRect;
@@ -768,12 +769,10 @@ begin
         DevCtx.TransfNormalize(RDest.Left, RDest.Right);
         DevCtx.TransfNormalize(RDest.Top, RDest.Bottom);
         Area := GdkRectFromRect(RDest);
-      end
-      else if ClipRect <> nil then
-        Area := GdkRectFromRect(ClipRect^)
-      else
+      end else
         Area := GdkRectFromRect(R);
 
+      ClipArea := DevCtx.ClipRect;
 
       // move to origin
       inc(Area.x, StyleParams.Origin.x);
@@ -814,93 +813,93 @@ begin
             gtk_paint_box(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptBoxGap:
             gtk_paint_box_gap(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height,
               GapSide, GapX, GapWidth);
           gptHLine  : gtk_paint_hline(
               Style, Window,
-              State, @Area,
+              State, @ClipArea,
               Widget, PChar(Detail),
               Area.x, Area.x + Area.Width, Area.y);
           gptVLine  : gtk_paint_vline(
               Style, Window,
-              State, @Area,
+              State, @ClipArea,
               Widget, PChar(Detail),
               Area.y, Area.y + Area.Height, Area.x);
           gptShadow : gtk_paint_shadow(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptFlatBox: gtk_paint_flat_box(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptCheck  : gtk_paint_check(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptOption : gtk_paint_option(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptTab    : gtk_paint_tab(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptSlider : gtk_paint_slider(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height,
               Orientation);
           gptHandle : gtk_paint_handle(
               Style, Window,
               State, Shadow,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height,
               Orientation);
 
           gptExpander: gtk_paint_expander(
               Style, Window, State,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x + Area.width shr 1, Area.y + Area.height shr 1,
               Expander);
           gptResizeGrip: gtk_paint_resize_grip(
               Style, Window, State,
-              @Area, Widget,
+              @ClipArea, Widget,
               PChar(Detail), Edge,
               Area.x, Area.y,
               Area.Width, Area.Height);
 
           gptFocus : gtk_paint_focus(
               Style, Window, State,
-              @Area, Widget, PChar(Detail),
+              @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptArrow: gtk_paint_arrow(
              Style, Window,
              State, Shadow,
-             @Area, Widget, PChar(Detail),
+             @ClipArea, Widget, PChar(Detail),
              ArrowType, Fill,
              Area.x, Area.y, Area.width, Area.height
            );

@@ -43,6 +43,24 @@ begin
   end;
 end;
 
+function TGtkDeviceContext.GetClipRectangle: TGdkRectangle;
+var
+  X,Y: gint;
+begin
+  if FClipRegion = nil then
+  begin
+    if (PaintRectangle.Left<>0) or (PaintRectangle.Top<>0) or
+      (PaintRectangle.Right<>0) or (PaintRectangle.Bottom<>0) then
+      Result := GdkRectFromRect(PaintRectangle)
+    else
+    begin
+      gdk_window_get_size(Drawable, @X, @Y);
+      Result := GdkRectFromRect(Rect(0,0, X, Y));
+    end;
+  end else
+    gdk_region_get_clipbox(FClipRegion^.GDIRegionObject, @Result);
+end;
+
 {------------------------------------------------------------------------------
   function GetOffset
 
@@ -707,6 +725,7 @@ var
   OldCurrentBrush: PGdiObject;
   DCOrigin: TPoint;
   BrushChanged: Boolean;
+  ClipArea: TGdkRectangle;
 begin
   BrushChanged := False;
   if not IsNullBrush then
@@ -735,12 +754,13 @@ begin
       gdk_gc_set_function(GC, GDK_COPY);
 
     DCOrigin := Offset;
+    ClipArea := ClipRect;
     if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
        (IsBackgroundColor(CurrentBrush^.GDIBrushColor.ColorRef)) then
       StyleFillRectangle(Drawable, GC,
                          CurrentBrush^.GDIBrushColor.ColorRef,
                          ARect.Left + DCOrigin.X, ARect.Top + DCOrigin.Y,
-                         Width, Height)
+                         Width, Height, @ClipArea)
     else
       gdk_draw_rectangle(Drawable, GC, 1,
                          ARect.Left + DCOrigin.X, ARect.Top + DCOrigin.Y,

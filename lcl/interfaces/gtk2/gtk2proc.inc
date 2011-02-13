@@ -8525,7 +8525,8 @@ begin
 end;
 
 procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC;
-  Color : TColorRef; x, y, width, height : gint);
+  Color : TColorRef; x, y, width, height : gint;
+  AClipArea: PGdkRectangle);
 var
   style: PGTKStyle;
   widget: PGTKWidget;
@@ -8583,7 +8584,7 @@ begin
   end;
 
   if Assigned(Style) then
-    gtk_paint_flat_box(style, drawable, state, shadow, nil, widget,
+    gtk_paint_flat_box(style, drawable, state, shadow, AClipArea, widget,
                        detail, x, y, width, height)
   else
     gdk_draw_rectangle(drawable, GC, 1, x, y, width, height);

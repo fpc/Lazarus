@@ -293,6 +293,7 @@ type
     FViewPortOrg: TPoint; // current viewport origin
     FWindowExt: TPoint; // current window extent
 
+    function GetClipRectangle: TGdkRectangle;
     function GetGDIObjects(ID: TGDIType): PGdiObject;
     function GetOffset: TPoint;
     function GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
@@ -395,6 +396,7 @@ type
     property CurrentPen: PGdiObject read FCurrentPen write SetCurrentPen;
     property CurrentBrush: PGdiObject read FCurrentBrush write SetCurrentBrush;
     property CurrentPalette: PGdiObject read FCurrentPalette write SetCurrentPalette;
+    property ClipRect: TGdkRectangle read GetClipRectangle;
     property ClipRegion: PGdiObject read FClipRegion write SetClipRegion;
     property GCValues: TGdkGCValues read FGCValues;
     property GDIObjects[ID: TGDIType]: PGdiObject read GetGDIObjects write SetGDIObjects;

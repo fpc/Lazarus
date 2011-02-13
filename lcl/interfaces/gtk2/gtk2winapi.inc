@@ -1904,6 +1904,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   Widget: PGtkWidget;
   R: TRect;
+  ClipArea: TGdkRectangle;
 
   procedure DrawButtonPush;
   var
@@ -1955,18 +1956,19 @@ var
       aStyle := gtk_widget_get_style(Widget)
     else
       aStyle := GetStyle(lgsButton);
-    If aStyle = nil then
+    if aStyle = nil then
       aStyle := GetStyle(lgsGTK_Default);
 
       // MG: You can't assign a style to any window. Why it is needed anyway?
       //aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
 
-    if aStyle<>nil then begin
-      If (Shadow=GTK_SHADOW_NONE) then
+    if aStyle<>nil then
+    begin
+      if (Shadow=GTK_SHADOW_NONE) then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
            Shadow,
-           nil,
+           @ClipArea,
            GetStyleWidget(lgsButton),
            'button',
            R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
@@ -1975,7 +1977,7 @@ var
         gtk_paint_box(aStyle,aDC.Drawable,
            State,
            Shadow,
-           nil,
+           @ClipArea,
            GetStyleWidget(lgsButton),
            'button',
            R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
@@ -2017,28 +2019,30 @@ var
 
     Style := GetStyle(LazGtkStyleMap[IsRadioButton]);
 
-    If Style = nil then begin
+    if Style = nil then
+    begin
       Style := GetStyle(lgsGTK_Default);
-      If Style <> nil then
+      if Style <> nil then
         Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
     end;
 
     Widget := GetStyleWidget(LazGtkStyleMap[IsRadioButton]);
 
-    If Widget = nil then
+    if Widget = nil then
       Widget := GetStyleWidget(lgsDefault);
-    If Widget <> nil then
+    if Widget <> nil then
       Widget^.Window := aDC.Drawable;
     Result := Style <> nil;
-    If Result then begin
+    if Result then
+    begin
       if IsRadioButton then
         gtk_paint_option(Style,aDC.Drawable, State,
-          Shadow, nil, Widget, 'radiobutton',
+          Shadow, @ClipArea, Widget, 'radiobutton',
           R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
           R.Right-R.Left, R.Bottom-R.Top)
       else
         gtk_paint_check(Style,aDC.Drawable, State,
-          Shadow, nil, Widget, 'checkbutton',
+          Shadow, @ClipArea, Widget, 'checkbutton',
           R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
           R.Right-R.Left, R.Bottom-R.Top);
     end;
@@ -2069,6 +2073,7 @@ begin
   end else
     Widget:=nil;
 
+  ClipArea := DevCtx.ClipRect;
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -6923,6 +6928,7 @@ var
   Left, Top, Width, Height: Integer;
   DCOrigin: TPoint;
   Brush: PGdiObject;
+  ClipArea: TGdkRectangle;
 begin
   Assert(False, Format('trace:> [TGtk2WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   if not IsValidDC(DC) then Exit(False);
@@ -6942,14 +6948,15 @@ begin
 
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     
-  if not DevCtx.IsNullBrush
-  then begin
+  if not DevCtx.IsNullBrush then
+  begin
+    ClipArea := DevCtx.ClipRect;
     Brush := DevCtx.GetBrush;
-    if  (Brush^.GDIBrushFill = GDK_SOLID)
-    and (IsBackgroundColor(TColor(Brush^.GDIBrushColor.ColorRef)))
+    if  (Brush^.GDIBrushFill = GDK_SOLID) and
+      (IsBackgroundColor(TColor(Brush^.GDIBrushColor.ColorRef)))
     then
       StyleFillRectangle(DevCtx.Drawable, DevCtx.GC, Brush^.GDIBrushColor.ColorRef,
-                         Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
+                         Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, @ClipArea)
     else
       gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 1,
                          Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);

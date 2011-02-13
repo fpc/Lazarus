@@ -713,7 +713,8 @@ function GetStyleNotebookFrameBorders: TRect;
 function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
 
 procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
-                             Color: TColorRef; x, y, width, height: gint);
+                             Color: TColorRef; x, y, width, height: gint;
+                             AClipArea: PGdkRectangle);
 function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;
 procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
