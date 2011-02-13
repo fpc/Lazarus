@@ -229,7 +229,7 @@ type
     {$ENDIF}
     procedure PrepareAxis(ACanvas: TCanvas);
     procedure PrepareLegend(
-      ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
+      ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
       var AClipRect: TRect; out ALegendRect: TRect);
     procedure SetName(const AValue: TComponentName); override;
   public
@@ -443,11 +443,11 @@ var
 begin
   ADrawer.PrepareSimplePen(Color);
   ADrawer.SetBrushParams(bsSolid, Color);
-  if (ADrawer.Canvas <> nil) and Assigned(OnBeforeDrawBackground) then
+  if ADrawer.HasCanvas and Assigned(OnBeforeDrawBackground) then
     OnBeforeDrawBackground(Self, ADrawer.Canvas, ARect, defaultDrawing);
   if defaultDrawing then
     ADrawer.Rectangle(ARect);
-  if (ADrawer.Canvas <> nil) and Assigned(OnAfterDrawBackground) then
+  if ADrawer.HasCanvas and Assigned(OnAfterDrawBackground) then
     OnAfterDrawBackground(Self, ADrawer.Canvas, ARect);
 end;
 
@@ -650,13 +650,13 @@ begin
   FCurrentExtent := FLogicalExtent;
   DrawTitleFoot(ADrawer.Canvas);
   if Legend.Visible then
-    PrepareLegend(ADrawer.Canvas, legendItems, FClipRect, legendRect);
+    PrepareLegend(ADrawer, legendItems, FClipRect, legendRect);
   try
     PrepareAxis(ADrawer.Canvas);
     DrawBackWall(ADrawer.Canvas);
     DisplaySeries(ADrawer);
     if Legend.Visible then
-      Legend.Draw(ADrawer.Canvas, legendItems, legendRect);
+      Legend.Draw(ADrawer, legendItems, legendRect);
   finally
     legendItems.Free;
   end;
@@ -697,10 +697,12 @@ procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
 var
   legendItems: TChartLegendItems = nil;
   legendRect: TRect;
+  drawer: IChartDrawer;
 begin
+  drawer := TCanvasDrawer.Create(ACanvas);
   try
-    PrepareLegend(ACanvas, legendItems, ARect, legendRect);
-    Legend.Draw(ACanvas, legendItems, legendRect);
+    PrepareLegend(drawer, legendItems, ARect, legendRect);
+    Legend.Draw(drawer, legendItems, legendRect);
   finally
     legendItems.Free;
   end;
@@ -966,7 +968,7 @@ begin
 end;
 
 procedure TChart.PrepareLegend(
-  ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
+  ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
   var AClipRect: TRect; out ALegendRect: TRect);
 var
   i: Integer;
@@ -977,7 +979,7 @@ begin
       with Series[i] do
         if Active and GetShowInLegend then
           GetLegendItemsBasic(ALegendItems);
-    ALegendRect := Legend.Prepare(ACanvas, ALegendItems, AClipRect);
+    ALegendRect := Legend.Prepare(ADrawer, ALegendItems, AClipRect);
   except
     FreeAndNil(ALegendItems);
     raise;

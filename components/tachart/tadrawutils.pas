@@ -50,16 +50,27 @@ type
     procedure Recall;
   end;
 
+  { IChartDrawer }
+
   IChartDrawer = interface
     function GetCanvas: TCanvas;
+    function HasCanvas: Boolean;
+    procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure RadialPie(
+      AX1, AY1, AX2, AY2: Integer;
+      AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure SetBrush(APen: TFPCustomBrush);
     procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
+    procedure SetFont(AValue: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
+    function TextExtent(const AText: String): TPoint;
+    procedure TextOut(AX, AY: Integer; const AText: String);
 
     property Brush: TFPCustomBrush write SetBrush;
     property Canvas: TCanvas read GetCanvas;
+    property Font: TFPCustomFont write SetFont;
     property Pen: TFPCustomPen write SetPen;
   end;
 
@@ -69,14 +80,22 @@ type
   private
     FCanvas: TCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
+    procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   public
     constructor Create(ACanvas: TCanvas);
     function GetCanvas: TCanvas;
+    function HasCanvas: Boolean;
 
+    procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure RadialPie(
+      AX1, AY1, AX2, AY2: Integer;
+      AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure SetBrushParams(AStyle: TBrushStyle; AColor: TChartColor);
+    function TextExtent(const AText: String): TPoint;
+    procedure TextOut(AX, AY: Integer; const AText: String);
   end;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -221,9 +240,27 @@ begin
   Result := FCanvas;
 end;
 
+function TCanvasDrawer.HasCanvas: Boolean;
+begin
+  Result := true;
+end;
+
+procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
+begin
+  FCanvas.Line(AX1, AY1, AX2, AY2);
+end;
+
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   TADrawUtils.PrepareSimplePen(FCanvas, AColor);
+end;
+
+procedure TCanvasDrawer.RadialPie(
+  AX1, AY1, AX2, AY2: Integer;
+  AStartAngle16Deg, AAngleLength16Deg: Integer);
+begin
+  FCanvas.RadialPie(
+    AX1, AY1, AX2, AY2, AStartAngle16Deg, AAngleLength16Deg);
 end;
 
 procedure TCanvasDrawer.Rectangle(const ARect: TRect);
@@ -243,9 +280,24 @@ begin
   FCanvas.Brush.Color := AColor;
 end;
 
+procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);
+begin
+  FCanvas.Font.Assign(AFont);
+end;
+
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
   FCanvas.Pen.Assign(APen);
+end;
+
+function TCanvasDrawer.TextExtent(const AText: String): TPoint;
+begin
+  Result := FCanvas.TextExtent(AText);
+end;
+
+procedure TCanvasDrawer.TextOut(AX, AY: Integer; const AText: String);
+begin
+  FCanvas.TextOut(AX, AY, AText);
 end;
 
 { TPenBrushFontRecall }

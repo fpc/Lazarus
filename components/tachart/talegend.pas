@@ -20,7 +20,8 @@ unit TALegend;
 interface
 
 uses
-  Classes, Contnrs, SysUtils, Graphics, TAChartUtils, TATypes;
+  Classes, Contnrs, FPCanvas, Graphics, SysUtils,
+  TAChartUtils, TADrawUtils, TATypes;
 
 const
   DEF_LEGEND_SPACING = 4;
@@ -36,7 +37,7 @@ type
     FText: String;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); virtual;
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); virtual;
   public
     property Color: TColor read FColor write FColor;
   end;
@@ -54,7 +55,7 @@ type
   public
     constructor Create(
       AIndex: Integer; AOnDraw: TLegendItemDrawEvent; const AText: String);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
     property OnDraw: TLegendItemDrawEvent read FOnDraw;
   end;
 
@@ -62,11 +63,10 @@ type
 
   TLegendItemLine = class(TLegendItem)
   private
-    FPen: TPen;
+    FPen: TFPCustomPen;
   public
-    constructor Create(APen: TPen; const AText: String);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
-    property Pen: TPen read FPen;
+    constructor Create(APen: TFPCustomPen; const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
   { TLegendItemLinePointer }
@@ -77,24 +77,24 @@ type
   public
     constructor Create(
       APen: TPen; APointer: TSeriesPointer; const AText: String);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
   { TLegendItemBrushRect }
 
   TLegendItemBrushRect = class(TLegendItem)
   private
-    FBrush: TBrush;
+    FBrush: TFPCustomBrush;
   public
-    constructor Create(ABrush: TBrush; const AText: String);
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    constructor Create(ABrush: TFPCustomBrush; const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
   { TLegendItemPieSlice }
 
   TLegendItemPieSlice = class(TLegendItem)
   public
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
   TChartLegendItems = TObjectList;
@@ -137,9 +137,9 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
-      ACanvas: TCanvas; AItems: TObjectList; const ABounds: TRect);
+      ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
     function Prepare(
-      ACanvas: TCanvas; AItems: TObjectList; var AClipRect: TRect): TRect;
+      ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -189,7 +189,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, Types, TADrawUtils;
+  Math, PropEdits, Types;
 
 const
   SYMBOL_TEXT_SPACING = 4;
@@ -202,9 +202,9 @@ begin
   FText := AText;
 end;
 
-procedure TLegendItem.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ACanvas.TextOut(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top, FText);
+  ADrawer.TextOut(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top, FText);
 end;
 
 { TLegendItemUserDrawn }
@@ -217,30 +217,30 @@ begin
   FOnDraw := AOnDraw;
 end;
 
-procedure TLegendItemUserDrawn.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItemUserDrawn.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  if Assigned(FOnDraw) then
-    FOnDraw(ACanvas, ARect, FIndex, FText);
-  inherited Draw(ACanvas, ARect);
+  if ADrawer.HasCanvas and Assigned(FOnDraw) then
+    FOnDraw(ADrawer.Canvas, ARect, FIndex, FText);
+  inherited Draw(ADrawer, ARect);
 end;
 
 { TLegendItemLine }
 
-constructor TLegendItemLine.Create(APen: TPen; const AText: String);
+constructor TLegendItemLine.Create(APen: TFPCustomPen; const AText: String);
 begin
   inherited Create(AText);
   FPen := APen;
 end;
 
-procedure TLegendItemLine.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItemLine.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   y: Integer;
 begin
-  inherited Draw(ACanvas, ARect);
+  inherited Draw(ADrawer, ARect);
   if FPen = nil then exit;
-  ACanvas.Pen.Assign(FPen);
+  ADrawer.Pen := FPen;
   y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.Line(ARect.Left, y, ARect.Right, y);
+  ADrawer.Line(ARect.Left, y, ARect.Right, y);
 end;
 
 { TLegendItemLinePointer }
@@ -252,50 +252,55 @@ begin
   FPointer := APointer;
 end;
 
-procedure TLegendItemLinePointer.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItemLinePointer.Draw(
+  ADrawer: IChartDrawer; const ARect: TRect);
 var
   c, sz: TPoint;
 begin
-  inherited Draw(ACanvas, ARect);
+  inherited Draw(ADrawer, ARect);
   if FPointer = nil then exit;
   c := CenterPoint(ARect);
   // Max width slightly narrower then ARect to leave place for the line.
   sz.X := Min(FPointer.HorizSize, (ARect.Right - ARect.Left) div 3);
   sz.Y := Min(FPointer.VertSize, (ARect.Bottom - ARect.Top) div 2);
-  FPointer.DrawSize(ACanvas, c, sz, Color);
+  FPointer.DrawSize(ADrawer.Canvas, c, sz, Color);
 end;
 
 { TLegendItemBrushRect }
 
-constructor TLegendItemBrushRect.Create(ABrush: TBrush; const AText: String);
+constructor TLegendItemBrushRect.Create(
+  ABrush: TFPCustomBrush; const AText: String);
 begin
   inherited Create(AText);
   FBrush := ABrush;
 end;
 
-procedure TLegendItemBrushRect.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItemBrushRect.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  inherited Draw(ACanvas, ARect);
+  inherited Draw(ADrawer, ARect);
   if FBrush = nil then
-    ACanvas.Brush.Style := bsSolid
-  else
-    ACanvas.Brush.Assign(FBrush);
-  if Color <> clTAColor then
-    ACanvas.Brush.Color := Color;
-  ACanvas.Rectangle(ARect);
+    ADrawer.SetBrushParams(bsSolid, IfThen(Color = clTAColor, clRed, Color))
+  else begin
+    ADrawer.Brush := FBrush;
+    if Color <> clTAColor then
+      ADrawer.SetBrushParams(FBrush.Style, Color);
+  end;
+  ADrawer.Rectangle(ARect);
 end;
 
 { TLegendItemPieSlice }
 
-procedure TLegendItemPieSlice.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TLegendItemPieSlice.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 const
   ANGLE = 30 * 16;
+var
+  bc: TChartColor = clRed;
 begin
-  inherited Draw(ACanvas, ARect);
-  ACanvas.Brush.Style := bsSolid;
+  inherited Draw(ADrawer, ARect);
   if Color <> clTAColor then
-    ACanvas.Brush.Color := Color;
-  ACanvas.RadialPie(
+    bc := Color;
+  ADrawer.SetBrushParams(bsSolid, bc);
+  ADrawer.RadialPie(
     2 * ARect.Left - ARect.Right, ARect.Top, ARect.Right, ARect.Bottom,
     -ANGLE, 2 * ANGLE);
 end;
@@ -337,83 +342,79 @@ begin
 end;
 
 procedure TChartLegend.Draw(
-  ACanvas: TCanvas; AItems: TObjectList; const ABounds: TRect);
+  ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
 var
-  i, h: Integer;
-  pbf: TPenBrushFontRecall;
+  i, itemHeight: Integer;
   r: TRect;
 begin
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
   try
     // Draw the background and the border.
-    ACanvas.Font.Assign(Font);
-    ACanvas.Brush.Assign(BackgroundBrush);
-    ACanvas.Pen.Assign(Frame);
-    ACanvas.Rectangle(ABounds);
+    ADrawer.Font := Font;
+    ADrawer.Brush := BackgroundBrush;
+    ADrawer.Pen := Frame;
+    ADrawer.Rectangle(ABounds);
 
     r := ABounds;
     r.Right -= 1;
-    ACanvas.ClipRect :=  r;
-    ACanvas.Clipping := true;
-    // Draw items.
-    h := TypicalTextHeight(ACanvas);
-    r := Bounds(ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, h);
+    ADrawer.Canvas.ClipRect :=  r;
+    ADrawer.Canvas.Clipping := true;
+
+    itemHeight :=
+      (ABounds.Bottom - ABounds.Top - Spacing) div AItems.Count - Spacing;
+    r := Bounds(
+      ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, itemHeight);
     for i := 0 to AItems.Count - 1 do begin
-      ACanvas.Brush.Assign(BackgroundBrush);
-      ACanvas.Pen.Assign(Frame);
-      (AItems[i] as TLegendItem).Draw(ACanvas, r);
-      OffsetRect(r, 0, h + Spacing);
+      ADrawer.Font := Font;
+      ADrawer.Brush := BackgroundBrush;
+      ADrawer.Pen := Frame;
+      (AItems[i] as TLegendItem).Draw(ADrawer, r);
+      OffsetRect(r, 0, itemHeight + Spacing);
     end;
   finally
-    pbf.Free;
-    ACanvas.Clipping := false;
+    ADrawer.Canvas.Clipping := false;
   end;
 end;
 
 function TChartLegend.Prepare(
-  ACanvas: TCanvas; AItems: TObjectList; var AClipRect: TRect): TRect;
+  ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
 var
   w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
-  f: TPenBrushFontRecall;
 begin
-  f := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
-  try
-    ACanvas.Font.Assign(Font);
+  ADrawer.Font := Font;
 
-    // Measure the legend.
-    legendWidth := 0;
-    for i := 0 to AItems.Count - 1 do
-      with AItems[i] as TLegendItem do
-        legendWidth := Max(ACanvas.TextWidth(FText), legendWidth);
-    legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
-    w := 2 * MarginX;
-    with AClipRect do
-      legendWidth := EnsureRange(legendWidth, 0, Right - Left - w);
-    w += legendWidth;
-
-    textHeight := TypicalTextHeight(ACanvas);
-    legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
-
-    // Determine position according to the alignment.
-    if Alignment in [laTopLeft, laBottomLeft] then begin
-      x := AClipRect.Left + MarginX;
-      if UseSidebar then
-        AClipRect.Left += w;
-    end
-    else begin
-      x := AClipRect.Right - legendWidth - MarginX;
-      if UseSidebar then
-        AClipRect.Right -= w;
+  // Measure the legend.
+  legendWidth := 0;
+  textHeight := 0;
+  for i := 0 to AItems.Count - 1 do
+    with ADrawer.TextExtent((AItems[i] as TLegendItem).FText) do begin
+      legendWidth := Max(X, legendWidth);
+      textHeight := Max(Y, textHeight);
     end;
-    if Alignment in [laTopLeft, laTopRight] then
-      y := AClipRect.Top + MarginY
-    else
-      y := AClipRect.Bottom - MarginY - legendHeight;
+  legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
+  w := 2 * MarginX;
+  with AClipRect do
+    legendWidth := EnsureRange(legendWidth, 0, Right - Left - w);
+  w += legendWidth;
 
-    Result := Bounds(x, y, legendWidth, legendHeight);
-  finally
-    f.Free;
+  legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
+
+  // Determine position according to the alignment.
+  if Alignment in [laTopLeft, laBottomLeft] then begin
+    x := AClipRect.Left + MarginX;
+    if UseSidebar then
+      AClipRect.Left += w;
+  end
+  else begin
+    x := AClipRect.Right - legendWidth - MarginX;
+    if UseSidebar then
+      AClipRect.Right -= w;
   end;
+  if Alignment in [laTopLeft, laTopRight] then
+    y := AClipRect.Top + MarginY
+  else
+    y := AClipRect.Bottom - MarginY - legendHeight;
+
+  Result := Bounds(x, y, legendWidth, legendHeight);
 end;
 
 procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);
