@@ -48,7 +48,8 @@ type
     plsOSize,
     plsPPUSize,
     plsUsesCount,
-    plsUsedByCount
+    plsUsedByCount,
+    plsPackage
     );
   TPPUListSortRec = record
     Category: TPPUListSort;
@@ -273,6 +274,7 @@ begin
     2: s:=plsOSize;
     3: s:=plsUsesCount;
     4: s:=plsUsedByCount;
+    5: s:=plsPackage;
     else exit;
     end;
     l:=low(FSort);
@@ -637,7 +639,7 @@ begin
     plsName:
       begin
         Result:=SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
-        if not FSort[i].Reverse then
+        if FSort[i].Reverse then
           Result:=-Result;
         if Result<>0 then exit;
       end;
@@ -661,6 +663,13 @@ begin
     plsUsedByCount:
       begin
         Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,FSort[i].Reverse);
+        if Result<>0 then exit;
+      end;
+    plsPackage:
+      begin
+        Result:=SysUtils.CompareText(Item1.PackageName,Item2.PackageName);
+        if FSort[i].Reverse then
+          Result:=-Result;
         if Result<>0 then exit;
       end;
     end;
