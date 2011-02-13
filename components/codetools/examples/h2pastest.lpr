@@ -75,7 +75,7 @@ begin
     if Filenames.Count=0 then
       Filenames.Add(CleanAndExpandFilename(GetCurrentDir+'/scanexamples/test.h'));
 
-    // Step 1: load all input filenames
+    // Step 1: load all input files
     Src:='';
     for i:=0 to Filenames.Count-1 do begin
       Filename:=Filenames[i];

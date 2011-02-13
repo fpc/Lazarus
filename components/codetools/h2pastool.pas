@@ -37,13 +37,13 @@
                     -> $define macroname
     #define macroname constant
                     -> const macroname = constant
+    simplifies conditional directives (e.g. deletes #ifdef nonexisting)
 
   ToDos:
     add comments for skipped items
     insert auto generated types in front of current node
     c comments
     const char a; -> const a: char;
-    simplify conditional directives (e.g. #ifdef)
     #define name value  ->  alias  (const, var, type, proc)
     more complex expressions and statements
 }
