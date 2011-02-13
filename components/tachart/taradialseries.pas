@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TACustomSeries, TALegend, TAChartUtils;
+  TAChartUtils, TACustomSeries, TALegend;
 
 type
   TLabelParams = record
@@ -146,6 +146,7 @@ var
   i: Integer;
   prevAngle: Double = 0;
   prevLabelPoly: TPointArray = nil;
+  drawer: IChartDrawer;
 begin
   if IsEmpty then exit;
 
@@ -167,12 +168,13 @@ begin
   end;
   if not Marks.IsMarkLabelsVisible then exit;
   prevAngle := 0;
+  drawer := TCanvasDrawer.Create(ACanvas);
   for i := 0 to Count - 1 do
     with FSlices[i].FLabel do begin
       if FText <> '' then begin
         if RotateLabels then
           Marks.SetAdditionalAngle(prevAngle + FSlices[i].FAngle / 2);
-        Marks.DrawLabel(ACanvas, FAttachment, FCenter, FText, prevLabelPoly);
+        Marks.DrawLabel(drawer, FAttachment, FCenter, FText, prevLabelPoly);
       end;
       prevAngle += FSlices[i].FAngle;
     end;

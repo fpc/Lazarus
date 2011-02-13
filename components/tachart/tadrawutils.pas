@@ -89,12 +89,16 @@ type
   { TChartTextOut }
 
   TChartTextOut = class
+  strict private
     FAlignment: TAlignment;
     FDrawer: IChartDrawer;
     FPos: TPoint;
     FText1: String;
     FText2: TStrings;
     FWidth: Integer;
+
+    procedure DoTextOutString;
+    procedure DoTextOutList;
   public
     constructor Create(ADrawer: IChartDrawer);
   public
@@ -143,24 +147,15 @@ type
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
 
-function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
-function MultiLineTextExtent(ACanvas: TCanvas; AText: TStrings): TPoint;
-procedure MultiLineTextOut(
-  ACanvas: TCanvas; APos: TPoint; const AText: String;
-  AAlignment: TAlignment; AWidth: Integer);
-procedure MultiLineTextOut(
-  ACanvas: TCanvas; APos: TPoint; AText: TStrings;
-  AAlignment: TAlignment; AWidth: Integer);
-
-procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
 procedure PrepareXorPen(ACanvas: TCanvas);
-
-function TypicalTextHeight(ACanvas: TCanvas): Integer;
 
 implementation
 
 uses
   Math, TAChartUtils;
+
+const
+  LINE_INTERVAL = 2;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 begin
@@ -176,86 +171,6 @@ begin
   ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
-const
-  LINE_INTERVAL = 2;
-
-function MultiLineTextExtent(ACanvas: TCanvas; const AText: String): TPoint;
-var
-  sl: TStrings;
-begin
-  if Pos(LineEnding, AText) = 0 then
-    exit(ACanvas.TextExtent(AText));
-  sl := TStringList.Create;
-  try
-    sl.Text := AText;
-    Result := MultiLineTextExtent(ACanvas, sl);
-  finally
-    sl.Free;
-  end;
-end;
-
-function MultiLineTextExtent(ACanvas: TCanvas; AText: TStrings): TPoint;
-var
-  i: Integer;
-begin
-  Result := Size(0, -LINE_INTERVAL);
-  for i := 0 to AText.Count - 1 do
-    with ACanvas.TextExtent(AText[i]) do begin
-      Result.X := Max(Result.X, cx);
-      Result.Y += cy + LINE_INTERVAL;
-    end;
-end;
-
-procedure MultiLineTextOut(
-  ACanvas: TCanvas; APos: TPoint; const AText: String; AAlignment: TAlignment;
-  AWidth: Integer);
-var
-  sl: TStrings;
-begin
-  if Pos(LineEnding, AText) = 0 then begin
-    ACanvas.TextOut(APos.X, APos.Y, AText);
-    exit;
-  end;
-  sl := TStringList.Create;
-  try
-    sl.Text := AText;
-    MultiLineTextOut(ACanvas, APos, sl, AAlignment, AWidth);
-  finally
-    sl.Free;
-  end;
-end;
-
-procedure MultiLineTextOut(
-  ACanvas: TCanvas; APos: TPoint; AText: TStrings; AAlignment: TAlignment;
-  AWidth: Integer);
-var
-  i: Integer;
-  a: Double;
-  lineExtent, p: TPoint;
-begin
-  a := -OrientToRad(ACanvas.Font.Orientation);
-  for i := 0 to AText.Count - 1 do begin
-    lineExtent := ACanvas.TextExtent(AText[i]);
-    p := APos;
-    case AAlignment of
-      taCenter: p += RotatePoint(Point((AWidth - lineExtent.X) div 2, 0), a);
-      taRightJustify: p += RotatePoint(Point(AWidth - lineExtent.X, 0), a);
-    end;
-    ACanvas.TextOut(p.X, p.Y, AText[i]);
-    APos += RotatePoint(Point(0, lineExtent.Y + LINE_INTERVAL), a);
-  end;
-end;
-
-procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
-begin
-  with ACanvas.Pen do begin
-    Color := AColor;
-    Style := psSolid;
-    Mode := pmCopy;
-    Width := 1;
-  end;
-end;
-
 procedure PrepareXorPen(ACanvas: TCanvas);
 begin
   with ACanvas do begin
@@ -265,13 +180,6 @@ begin
     Pen.Color := clWhite;
     Pen.Width := 1;
   end;
-end;
-
-function TypicalTextHeight(ACanvas: TCanvas): Integer;
-const
-  TYPICAL_TEXT = 'Iy';
-begin
-  Result := ACanvas.TextHeight(TYPICAL_TEXT);
 end;
 
 { TChartTextOut }
@@ -291,10 +199,44 @@ end;
 procedure TChartTextOut.Done;
 begin
   if FText2 = nil then
-    MultiLineTextOut(FDrawer.Canvas, FPos, FText1, FAlignment, FWidth)
+    DoTextOutString
   else
-    MultiLineTextOut(FDrawer.Canvas, FPos, FText2, FAlignment, FWidth);
+    DoTextOutList;
   Free;
+end;
+
+procedure TChartTextOut.DoTextOutList;
+var
+  i: Integer;
+  a: Double;
+  lineExtent, p: TPoint;
+begin
+  a := -OrientToRad(FDrawer.Canvas.Font.Orientation);
+  for i := 0 to FText2.Count - 1 do begin
+    lineExtent := FDrawer.Canvas.TextExtent(FText2[i]);
+    p := FPos;
+    case FAlignment of
+      taCenter: p += RotatePoint(Point((FWidth - lineExtent.X) div 2, 0), a);
+      taRightJustify: p += RotatePoint(Point(FWidth - lineExtent.X, 0), a);
+    end;
+    FDrawer.Canvas.TextOut(p.X, p.Y, FText2[i]);
+    FPos += RotatePoint(Point(0, lineExtent.Y + LINE_INTERVAL), a);
+  end;
+end;
+
+procedure TChartTextOut.DoTextOutString;
+begin
+  if System.Pos(LineEnding, FText1) = 0 then begin
+    FDrawer.Canvas.TextOut(FPos.X, FPos.Y, FText1);
+    exit;
+  end;
+  FText2 := TStringList.Create;
+  try
+    FText2.Text := FText1;
+    DoTextOutList;
+  finally
+    FText2.Free;
+  end;
 end;
 
 function TChartTextOut.Pos(AX, AY: Integer): TChartTextOut;
@@ -388,7 +330,12 @@ end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  TADrawUtils.PrepareSimplePen(FCanvas, AColor);
+  with FCanvas.Pen do begin
+    Color := AColor;
+    Style := psSolid;
+    Mode := pmCopy;
+    Width := 1;
+  end;
 end;
 
 procedure TCanvasDrawer.RadialPie(
@@ -438,13 +385,30 @@ begin
 end;
 
 function TCanvasDrawer.TextExtent(const AText: String): TPoint;
+var
+  sl: TStrings;
 begin
-  Result := MultiLineTextExtent(FCanvas, AText);
+  if Pos(LineEnding, AText) = 0 then
+    exit(FCanvas.TextExtent(AText));
+  sl := TStringList.Create;
+  try
+    sl.Text := AText;
+    Result := TextExtent(sl);
+  finally
+    sl.Free;
+  end;
 end;
 
 function TCanvasDrawer.TextExtent(AText: TStrings): TPoint;
+var
+  i: Integer;
 begin
-  Result := MultiLineTextExtent(FCanvas, AText);
+  Result := Size(0, -LINE_INTERVAL);
+  for i := 0 to AText.Count - 1 do
+    with FCanvas.TextExtent(AText[i]) do begin
+      Result.X := Max(Result.X, cx);
+      Result.Y += cy + LINE_INTERVAL;
+    end;
 end;
 
 function TCanvasDrawer.TextOut: TChartTextOut;
