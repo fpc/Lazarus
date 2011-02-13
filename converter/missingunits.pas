@@ -114,6 +114,9 @@ var
   i: Integer;
   ImplRemoved: Boolean;
 begin
+  {$IFDEF CommentUnitsAutomatic}
+  Result:=mrOK;
+  {$ELSE}
   Result:=mrCancel;
   // A title text containing filename.
   if (AMainMissingUnits.Count + AImplMissingUnits.Count) = 1 then
@@ -141,6 +144,7 @@ begin
     AddUnitsToListBox(AMainMissingUnits);
     AddUnitsToListBox(AImplMissingUnits);
     // Show dialog and delete the entries that user has unchecked.
+    // Missing units will be searched again later.
     Result:=ShowModal;
     if Result=mrOK then begin
       for i:=0 to MissingUnitsCheckListBox.Count-1 do begin
@@ -155,6 +159,7 @@ begin
     end;
     Free;
   end;
+  {$ENDIF}
 end;
 
 { TMissingUnitsDialog }
