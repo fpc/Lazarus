@@ -378,7 +378,8 @@ type
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String;
-      AOptionsFilter: array of TAbstractIDEOptionsClass); override;
+      AOptionsFilter: array of TAbstractIDEOptionsClass;
+      ASettings: TIDEOptionsEditorSettings); override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
     procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
@@ -3461,7 +3462,7 @@ end;
 
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(TBuildModesEditorFrame, '', [TProjectCompilerOptions]);
+  DoOpenIDEOptions(TBuildModesEditorFrame, '', [TProjectCompilerOptions], []);
 end;
 
 procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);
@@ -4005,7 +4006,7 @@ begin
   NewCaption := Project1.Title;
   if NewCaption = '' then
     NewCaption := ExtractFilenameOnly(Project1.ProjectInfoFile);
-  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), [TProject, TProjectCompilerOptions]);
+  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), [TProject, TProjectCompilerOptions], []);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4524,7 +4525,8 @@ begin
 end;
 
 procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
-  ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass);
+  ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
+  ASettings: TIDEOptionsEditorSettings);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   OptionsFilter: TIDEOptionsEditorFilter;
@@ -4550,6 +4552,7 @@ begin
         OptionsFilter[i] := AOptionsFilter[i];
     end;
     IDEOptionsDialog.OptionsFilter := OptionsFilter;
+    IDEOptionsDialog.Settings := ASettings;
     IDEOptionsDialog.OpenEditor(AEditor);
 
     with IDEOptionsDialog do

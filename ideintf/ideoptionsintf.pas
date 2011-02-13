@@ -44,6 +44,11 @@ type
     );
   TIDEOptionsHandlers = set of TIDEOptionsHandler;
 
+  TIDEOptionsEditorSetting = (
+    ioesReadOnly      // open options editor read only
+  );
+  TIDEOptionsEditorSettings = set of TIDEOptionsEditorSetting;
+
   TIDEOptionsWriteEvent = procedure(Sender: TObject; Restore: boolean) of object;
 
   { TAbstractIDEOptions }

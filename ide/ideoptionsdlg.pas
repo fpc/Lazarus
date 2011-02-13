@@ -65,6 +65,7 @@ type
     FOnSaveOptions: TOnSaveIDEOptions;
     FOptionsFilter: TIDEOptionsEditorFilter;
     FEditorToOpen: TAbstractIDEOptionsEditorClass;
+    FSettings: TIDEOptionsEditorSettings;
     PrevEditor: TAbstractIDEOptionsEditor;
     FEditorsCreated: Boolean;
     SelectNode: TTreeNode;
@@ -77,6 +78,7 @@ type
     procedure CreateEditors;
     function SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
     function PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
+    procedure SetSettings(const AValue: TIDEOptionsEditorSettings);
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -93,6 +95,7 @@ type
     procedure WriteAll(Restore: boolean);
 
     property OptionsFilter: TIDEOptionsEditorFilter read FOptionsFilter write FOptionsFilter;
+    property Settings: TIDEOptionsEditorSettings read FSettings write SetSettings;
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   end;
@@ -513,6 +516,18 @@ begin
     Exit(True);
 
   Result := False;
+end;
+
+procedure TIDEOptionsDialog.SetSettings(const AValue: TIDEOptionsEditorSettings);
+begin
+  if FSettings <> AValue then
+  begin
+    FSettings := AValue;
+    if ioesReadOnly in Settings then
+      ButtonPanel.ShowButtons := ButtonPanel.ShowButtons - [pbOK, pbCancel] + [pbClose]
+    else
+      ButtonPanel.ShowButtons := ButtonPanel.ShowButtons + [pbOK, pbCancel] - [pbClose];
+  end;
 end;
 
 procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);

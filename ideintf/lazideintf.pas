@@ -249,7 +249,8 @@ type
       ACaption: String = ''); overload;
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String;
-      AOptionsFilter: array of TAbstractIDEOptionsClass); overload; virtual; abstract;
+      AOptionsFilter: array of TAbstractIDEOptionsClass;
+      ASettings: TIDEOptionsEditorSettings); overload; virtual; abstract;
 
     // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -443,7 +444,7 @@ end;
 
 procedure TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass; ACaption: String);
 begin
-  DoOpenIDEOptions(AEditor, ACaption, []);
+  DoOpenIDEOptions(AEditor, ACaption, [], []);
 end;
 
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);

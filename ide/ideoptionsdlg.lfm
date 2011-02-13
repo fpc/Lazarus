@@ -1,4 +1,4 @@
-inherited IDEOptionsDialog: TIDEOptionsDialog
+object IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
@@ -11,14 +11,15 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 700
   OnShow = FormShow
   Position = poScreenCenter
-  object ButtonPanel: TButtonPanel[0]
+  LCLVersion = '0.9.31'
+  object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 42
-    Top = 452
+    Height = 34
+    Top = 460
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -36,19 +37,19 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CategoryTree: TTreeView[1]
+  object CategoryTree: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 446
+    Height = 454
     Top = 6
     Width = 206
     Align = alLeft
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Constraints.MinWidth = 206
-    DefaultItemHeight = 19
+    DefaultItemHeight = 17
     ReadOnly = True
     TabOrder = 0
     OnChange = CategoryTreeChange
@@ -57,9 +58,9 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     OnKeyDown = CategoryTreeKeyDown
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
-  object CatTVSplitter: TSplitter[2]
+  object CatTVSplitter: TSplitter
     Left = 212
-    Height = 452
+    Height = 460
     Top = 0
     Width = 5
   end

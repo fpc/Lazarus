@@ -43,7 +43,7 @@ uses
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
-  IDEHelpIntf,
+  IDEHelpIntf, IDEOptionsIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, ComponentReg,
@@ -912,10 +912,16 @@ begin
 end;
 
 procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
+const
+  Settings: array[Boolean] of TIDEOptionsEditorSettings = (
+    [],
+    [ioesReadOnly]
+  );
 begin
   CurPackage := LazPackage;
-  // TODO: LazPackage.ReadOnly ?
-  LazarusIDE.DoOpenIDEOptions(nil, Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]), [TLazPackage, TPkgCompilerOptions]);
+  LazarusIDE.DoOpenIDEOptions(nil,
+    Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]),
+    [TLazPackage, TPkgCompilerOptions], Settings[LazPackage.ReadOnly]);
   UpdateButtons;
   UpdateTitle;
   UpdateStatusBar;
