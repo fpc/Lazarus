@@ -132,6 +132,7 @@ uses
   BuildModesEditor,
   // package option frames
   package_usage_options, package_description_options, package_integration_options,
+  package_provides_options, package_i18n_options,
 
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
