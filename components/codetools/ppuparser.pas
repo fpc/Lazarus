@@ -194,7 +194,9 @@ type
     potype_destructor,   { Procedure is a destructor }
     potype_operator,     { Procedure defines an operator }
     potype_procedure,
-    potype_function
+    potype_function,
+    potype_class_constructor, { class constructor }
+    potype_class_destructor   { class destructor  }
   );
   tproctypeoptions = set of tproctypeoption;
   
@@ -203,6 +205,7 @@ type
     po_classmethod,       { class method }
     po_virtualmethod,     { Procedure is a virtual method }
     po_abstractmethod,    { Procedure is an abstract method }
+    po_finalmethod,       { Procedure is a final method }
     po_staticmethod,      { static method }
     po_overridingmethod,  { method with override directive }
     po_methodpointer,     { method pointer, only in procvardef, also used for 'with object do' }
@@ -240,7 +243,6 @@ type
     po_syscall_basesysv,
     po_syscall_sysvbase,
     po_syscall_r12base,
-    po_local,
     { Procedure can be inlined }
     po_inline,
     { Procedure is used for internal compiler calls }
@@ -248,13 +250,29 @@ type
     { importing }
     po_has_importdll,
     po_has_importname,
-    po_kylixlocal
+    po_kylixlocal,
+    po_dispid,
+    { weakly linked (i.e., may or may not exist at run time) }
+    po_weakexternal,
+    { Objective-C method }
+    po_objc,
+    { enumerator support }
+    po_enumerator_movenext,
+    { optional Objective-C protocol method }
+    po_optional,
+    { nested procedure that uses Delphi-style calling convention for passing
+      the frame pointer (pushed on the stack, always the last parameter,
+      removed by the caller). Required for nested procvar compatibility,
+      because such procvars can hold both regular and nested procedures
+      (when calling a regular procedure using the above convention, it will
+       simply not see the frame pointer parameter, and since the caller cleans
+       up the stack will also remain balanced) }
+    po_delphi_nested_cc
   );
   tprocoptions = set of tprocoption;
 
 const
-  proccalloptionNames : array[tproccalloption] of string[14]=(
-     '',
+  proccalloptionNames : array[tproccalloption] of string[14]=('',
      'CDecl',
      'CPPDecl',
      'Far16',
@@ -268,22 +286,25 @@ const
      'SoftFloat',
      'MWPascal'
    );
-  proctypeoptionNames : array[tproctypeoption] of string[14]=(
-    'none',
-    'proginit',     { Program initialization }
-    'unitinit',     { unit initialization }
-    'unitfinalize', { unit finalization }
-    'constructor',  { Procedure is a constructor }
-    'destructor',   { Procedure is a destructor }
-    'operator',     { Procedure defines an operator }
-    'procedure',
-    'function'
+  proctypeoptionNames : array[tproctypeoption] of string[20]=(
+     'none',
+     'ProgInit',
+     'UnitInit',
+     'UnitFinalize',
+     'Constructor',
+     'Destructor',
+     'Operator',
+     'Procedure',
+     'Function',
+     'Class Constructor',
+     'Class Destructor'
   );
   procoptionNames : array[tprocoption] of string[20]=(
     'none',
     'classmethod',       { class method }
     'virtualmethod',     { Procedure is a virtual method }
     'abstractmethod',    { Procedure is an abstract method }
+    'finalmethod',       { Procedure is a final method }
     'staticmethod',      { static method }
     'overridingmethod',  { method with override directive }
     'methodpointer',     { method pointer, only in procvardef, also used for 'with object do' }
@@ -321,7 +342,6 @@ const
     'syscall_basesysv',
     'syscall_sysvbase',
     'syscall_r12base',
-    'local',
     { Procedure can be inlined }
     'inline',
     { Procedure is used for internal compiler calls }
@@ -329,7 +349,24 @@ const
     { importing }
     'has_importdll',
     'has_importname',
-    'kylixlocal'
+    'kylixlocal',
+    'dispid',
+    { weakly linked (i.e., may or may not exist at run time) }
+    'weakexternal',
+    { Objective-C method }
+    'objc',
+    { enumerator support }
+    'enumerator_movenext',
+    { optional Objective-C protocol method }
+    'optional',
+    { nested procedure that uses Delphi-style calling convention for passing
+      the frame pointer (pushed on the stack, always the last parameter,
+      removed by the caller). Required for nested procvar compatibility,
+      because such procvars can hold both regular and nested procedures
+      (when calling a regular procedure using the above convention, it will
+       simply not see the frame pointer parameter, and since the caller cleans
+       up the stack will also remain balanced) }
+    'delphi_nested_cc'
   );
 
 type
@@ -491,6 +528,8 @@ type
     function ReadEntryShortstring(const Msg: string): shortstring;
     function ReadEntryLongint: longint;
     function ReadEntryLongint(const Msg: string): longint;
+    function ReadEntryDWord: cardinal;
+    function ReadEntryDWord(const Msg: string): cardinal;
     function ReadEntryWord: word;
     function ReadEntryWord(const Msg: string): word;
     procedure ReadEntrySmallSet(var s);
@@ -529,6 +568,7 @@ type
     procedure GetImplementationUsesSectionNames(var List: TStrings);
     function GetInitProcName: string;
     function GetFinalProcName: string;
+    property Version: integer read FVersion;
   end;
 
 function PPUTargetToStr(w: longint): string;
@@ -898,7 +938,7 @@ begin
     fHeader.symlistsize := swapendian(fHeader.symlistsize);
   end;
   fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
-  
+
   FEntryPos:=0;
   FillByte(FEntry,SizeOf(FEntry),0);
 
@@ -954,7 +994,8 @@ begin
       end;
 
     iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
-    iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs:
+    iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs,
+    ibresources,iblinkotherframeworks:
       ReadLinkContainer(EntryNr);
       
     ibImportSymbols:
@@ -1669,6 +1710,16 @@ begin
   debugln([Msg,Result]);
 end;
 
+function TPPU.ReadEntryDWord: cardinal;
+begin
+  Result:=cardinal(ReadEntryLongint);
+end;
+
+function TPPU.ReadEntryDWord(const Msg: string): cardinal;
+begin
+  Result:=cardinal(ReadEntryLongint(Msg));
+end;
+
 function TPPU.ReadEntryWord: word;
 begin
   if FEntryPos+2>FEntry.size then
@@ -1714,15 +1765,21 @@ procedure TPPU.ReadUsedUnits;
 var
   AUnitName: ShortString;
   CRC: LongInt;
-  IntfCRC: LongInt;
+  IntfCRC: cardinal;
+  IndirectCRC: cardinal;
 {$ENDIF}
 begin
   while not EndOfEntry do begin
     {$IFDEF VerbosePPUParser}AUnitName:={$ENDIF}ReadEntryShortstring;
-    {$IFDEF VerbosePPUParser}CRC:={$ENDIF}ReadEntryLongint;
-    {$IFDEF VerbosePPUParser}IntfCRC:={$ENDIF}ReadEntryLongint;
+    {$IFDEF VerbosePPUParser}CRC:={$ENDIF}ReadEntryDWord;
+    {$IFDEF VerbosePPUParser}IntfCRC:={$ENDIF}ReadEntryDWord;
+    if FVersion>=107 then begin
+      // svn rev 14503  ppu ver 107
+      {$IFDEF VerbosePPUParser}IndirectCRC:={$ENDIF}ReadEntryDWord;
+    end else
+      IndirectCRC:=0;
     {$IFDEF VerbosePPUParser}
-    DebugLn(['TPPU.ReadUsedUnits Unit=',AUnitName,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
+    DebugLn(['TPPU.ReadUsedUnits Unit=',AUnitName,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8),' IndCRC=',HexStr(cardinal(IndirectCRC),8)]);
     {$ENDIF}
   end;
 end;
@@ -1817,6 +1874,10 @@ begin
       Desc:='Link other static lib: ';
     iblinkothersharedlibs :
       Desc:='Link other shared lib: ';
+    ibresources :
+      Desc:='Resource file: ';
+    iblinkotherframeworks:
+      Desc:='Link framework: ';
     end;
     Desc:=Desc+Filename;
     if (Flags and link_always)<>0 then
@@ -1900,6 +1961,9 @@ end;
 
 procedure TPPU.Error(const Msg: string);
 begin
+  {$IFDEF VerbosePPUParser}
+  CTDumpStack;
+  {$ENDIF}
   raise EPPUParserError.Create(Msg);
 end;
 
