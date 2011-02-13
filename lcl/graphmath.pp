@@ -372,7 +372,7 @@ var
   SinA,CosA : Extended;
   A,B : Extended;
   I : Longint;
-  PT : TPoint;
+  PT : TFloatPoint;
   ScaleX, ScaleY : Extended;
 begin
   If ABS(Angle2) > 90*16 then
@@ -404,7 +404,8 @@ begin
   Angle2 := DegToRad(Angle2/16);
   Rotation := -DegToRad(Rotation/16);
   Beta := (4/3)*(1 - Cos(Angle2/2))/(Sin(Angle2/2));
-  PT := CenterPoint(Rect(X, Y, X+Width, Y + Height));
+  PT.X := X + Width / 2;
+  PT.Y := Y + Height / 2;
 
   CosA := cos(Angle1);
   SinA := sin(Angle1);
