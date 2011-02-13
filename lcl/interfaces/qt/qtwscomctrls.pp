@@ -1078,6 +1078,8 @@ var
   LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
+  i: Integer;
+  Arr: TPtrIntArray;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemGetState') then
     Exit;
@@ -1097,10 +1099,24 @@ begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
     if TWI <> nil then
+    begin
       case AState of
         lisFocused: AIsSet := TWI = QtTreeWidget.currentItem;
-        lisSelected: AIsSet := QTreeWidgetItem_isSelected(TWI);
+        lisSelected:
+        begin
+          Arr := QtTreeWidget.selectedItems;
+          for i := 0 to High(Arr) do
+          begin
+            TWI := QTreeWidgetItemH(Arr[i]);
+            if AIndex = QtTreeWidget.getRow(TWI) then
+            begin
+              AIsSet := True;
+              break;
+            end;
+          end;
+        end;
       end;
+    end;
   end;
   Result := True;
 
@@ -1232,12 +1248,18 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
+    QtTreeWidget.BeginUpdate;
     case AState of
       lisFocused: QtTreeWidget.setCurrentItem(TWI);
-      lisSelected: QtTreeWidget.setItemSelected(TWI, AIsSet);
+      lisSelected:
+      begin
+        if ALV.RowSelect and AIsSet then
+          QtTreeWidget.setCurrentItem(TWI);
+        QtTreeWidget.setItemSelected(TWI, AIsSet);
+      end;
     end;
+    QtTreeWidget.EndUpdate;
   end;
-
 end;
 
 {------------------------------------------------------------------------------

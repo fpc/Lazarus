@@ -1204,19 +1204,16 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
+    FSelection: TFPList;
     FSorting: Boolean;
     FHeader: TQtHeaderView;
     FSortChanged: QHeaderView_hookH;
-    FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
     FItemActivatedHook: QTreeWidget_hookH;
     FItemChangedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
     FSelectionChangedHook: QTreeWidget_hookH;
-    FCurrentItem: QTreeWidgetItemH;
-    FPreviousItem: QTreeWidgetItemH;
-    FMousePressed: Boolean;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
     function getItemCount: Integer;
@@ -1235,7 +1232,6 @@ type
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     procedure DeleteItem(const AIndex: integer);
     function currentRow: Integer;
@@ -9609,9 +9605,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
-  FCurrentItem := nil;
-  FPreviousItem := nil;
-  FMousePressed := False;
+  FSelection := TFPList.Create;
 
   FSavedEvent := nil;
   FSavedEventTimer := nil;
@@ -9640,7 +9634,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Destroy');
   {$endif}
-
+  FSelection.Free;
   if Assigned(FHeader) then
     FHeader.Free;
 
@@ -9692,20 +9686,6 @@ begin
     {eat mouse button events -> signalItemClicked is fired}
   else
     Result:=inherited EventFilter(Sender, Event);
-end;
-
-function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
-  Event: QEventH): Boolean; cdecl;
-begin
-  if (QEvent_type(Event) = QEventMouseButtonPress) and
-    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-    FMousePressed := True;
-
-  if (QEvent_type(Event) = QEventMouseButtonRelease) and
-    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-    FMousePressed := False;
-
-  Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
@@ -9799,19 +9779,23 @@ end;
 
 procedure TQtTreeWidget.ClearItems;
 begin
+  FSelection.Clear;
   QTreeWidget_clear(QTreeWidgetH(Widget));
 end;
 
 procedure TQtTreeWidget.DeleteItem(const AIndex: integer);
 var
   Item: QTreeWidgetItemH;
+  Index: Integer;
 begin
-  Item := takeTopLevelItem(AIndex);
-  if (Item = FCurrentItem) then
-    FCurrentItem := nil
+  Item := topLevelItem(AIndex);
+  if Item <> nil then
+    Index := FSelection.IndexOf(Item)
   else
-  if (Item = FPreviousItem) then
-    FPreviousItem := nil;
+    Index := -1;
+  if Index <> -1 then
+    FSelection.Remove(Item);
+  Item := takeTopLevelItem(AIndex);
   if Item <> nil then
     QTreeWidgetItem_destroy(Item);
 end;
@@ -10107,7 +10091,8 @@ var
   AIndex: Integer;
   ASubIndex: Integer;
 begin
-  if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect then
+  if ((FSelection.Count > 0) and (FSelection.IndexOf(AItem) <> -1)) or
+    (QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect) then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -10163,15 +10148,12 @@ procedure TQtTreeWidget.AttachEvents;
 begin
   inherited AttachEvents;
 
-  FCurrentItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemDoubleClickedHook := QTreeWidget_hook_create(Widget);
   FItemClickedHook := QTreeWidget_hook_create(Widget);
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
   FItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   FSelectionChangedHook := QTreeWidget_hook_create(Widget);
-  
-  QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, @SignalCurrentItemChanged);
 
   QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, @SignalItemDoubleClicked);
 
@@ -10189,7 +10171,6 @@ end;
 
 procedure TQtTreeWidget.DetachEvents;
 begin
-  QTreeWidget_hook_destroy(FCurrentItemChangedHook);
   QTreeWidget_hook_destroy(FItemDoubleClickedHook);
   QTreeWidget_hook_destroy(FItemClickedHook);
   QTreeWidget_hook_destroy(FItemActivatedHook);
@@ -10385,7 +10366,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
+procedure TQtTreeWidget.SignalCurrentItemChanged(current: QTreeWidgetItemH;
+  previous: QTreeWidgetItemH); cdecl;
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -10394,11 +10376,19 @@ var
   AIndex: Integer;
   ListItem: TListItem;
   B: Boolean;
+  Item: QTreeWidgetItemH;
 begin
-  FCurrentItem := Current;
-  FPreviousItem := Previous;
+  if Current = nil then
+    Item := Previous
+  else
+    Item := Current;
+  {$IFDEF QT_DEBUGTQTTREEWIDGET}
+  writeln('SignalCurrentItemChangedNG CUR=',dbgHex(PtrUInt(Current)),
+    ' PREV=',dbgHex(PtrUInt(Previous)),
+    ' InUpdate ',InUpdate,' Curr=PREVIOUS ? ',Current = Previous);
+  {$ENDIF}
 
-  if FMousePressed then
+  if (Item <> nil) and (Current = Previous) then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -10409,20 +10399,22 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGING;
 
-  AIndex := getRow(Current);
-
+  AIndex := getRow(Item);
   AParent := nil;
-  if Current <> nil then
-    AParent := QTreeWidgetItem_parent(Current);
+  if Item <> nil then
+    AParent := QTreeWidgetItem_parent(Item);
 
   if AParent <> nil then
-    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Current)
+    ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Item)
   else
     ASubIndex := 0;
 
   NMLV.iItem := AIndex;
   NMLV.iSubItem := ASubIndex;
-  NMLV.uNewState := LVIS_SELECTED;
+  if (Item <> nil) and (Item = Previous) then
+    NMLV.uOldState := LVIS_SELECTED
+  else
+    NMLV.uNewState := LVIS_SELECTED;
   NMLV.uChanged := LVIF_STATE;
 
   Msg.NMHdr := @NMLV.hdr;
@@ -10434,7 +10426,7 @@ begin
     begin
       ListItem := nil;
       B := False;
-      if ViewStyle = Ord(vsReport) then
+      if (ViewStyle = Ord(vsReport)) and (Previous <> nil) then
       begin
         ListItem := TListView(LCLObject).Selected;
         if ListItem <> nil then
@@ -10447,7 +10439,7 @@ begin
       NMLV.hdr.code := LVN_ITEMCHANGED;
       NMLV.iItem := AIndex;
       NMLV.iSubItem := ASubIndex;
-      if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Current) then
+      if (FSelection.Count > 0) and (FSelection.IndexOf(Current) <> -1) then
         NMLV.uNewState := LVIS_SELECTED
       else
         NMLV.uOldState := LVIS_SELECTED;
@@ -10457,7 +10449,7 @@ begin
         DeliverMessage(Msg);
     end;
 
-    if Previous <> nil then
+    if (Previous <> nil) then
     begin
       AIndex := getRow(Previous);
       ListItem := nil;
@@ -10467,7 +10459,8 @@ begin
       // The current item is specified by current, and this replaces
       // the previous current item.
       // So, if Current = nil, do not ask TListView anything ! issue #18701
-      if (ViewStyle = Ord(vsReport)) and (Current <> nil) then
+      if (ViewStyle = Ord(vsReport)) and (Current <> nil) and
+        (Current <> Previous) then
       begin
         ListItem := TListView(LCLObject).Selected;
         if ListItem <> nil then
@@ -10486,10 +10479,12 @@ begin
       else
         ASubIndex := 0;
       NMLV.iSubItem := ASubIndex;
+
       if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), Previous) then
         NMLV.uNewState := LVIS_SELECTED
       else
         NMLV.uOldState := LVIS_SELECTED;
+
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
       if not B then
@@ -10501,12 +10496,75 @@ begin
 end;
 
 procedure TQtTreeWidget.SignalSelectionChanged(); cdecl;
-begin
-  if FMousePressed then
+var
+  Arr: TPtrIntArray;
+  ItemsList: TFPList;
+  i: Integer;
+  j: Integer;
+
+  procedure RemoveUnselectedItems;
+  var
+    x: Integer;
+    Index: Integer;
+    AnItem: QTreeWidgetItemH;
   begin
-    FMousePressed := False;
-    if FCurrentItem <> nil then
-      SignalCurrentItemChanged(FCurrentItem, FPreviousItem);
+    // we are removing only items which are not in selection, to avoid
+    // duplicated triggering of TListView.OnSelectItem
+    for x := ItemsList.Count - 1 downto 0 do
+    begin
+      Index := FSelection.IndexOf(ItemsList.Items[x]);
+      if Index = -1 then
+      begin
+        AnItem := QTreeWidgetItemH(ItemsList.Items[x]);
+        SignalCurrentItemChanged(nil, AnItem);
+        ItemsList.Remove(AnItem);
+      end;
+    end;
+    ItemsList.Clear;
+  end;
+begin
+  ItemsList := TFPList.Create;
+  try
+    if FSelection.Count > 0 then
+      ItemsList.Assign(FSelection);
+    FSelection.Clear;
+    Arr := selectedItems;
+
+    {$IFDEF QT_DEBUGTQTTREEWIDGET}
+    writeln('TQtTreeWidget.SignalSelectionChanged NewSel count ',length(Arr),
+      ' InUpdate ',InUpdate,
+      ' OldSel count ',ItemsList.Count);
+    {$ENDIF}
+
+    for i := 0 to High(Arr) do
+      FSelection.Add(QTreeWidgetItemH(Arr[i]));
+
+    if not InUpdate then
+    begin
+      if FSelection.Count = 0 then
+        RemoveUnSelectedItems
+      else
+      if (getSelectionMode in [QAbstractItemViewMultiSelection,
+                               QAbstractItemViewExtendedSelection]) and
+        (ItemsList.Count > 1) and (FSelection.Count <> ItemsList.Count) then
+      begin
+        RemoveUnSelectedItems;
+        for i := 0 to FSelection.Count - 1 do
+          SignalCurrentItemChanged(QTreeWidgetItemH(FSelection.Items[i]), nil);
+      end else
+      for i := 0 to FSelection.Count - 1 do
+      begin
+        if ItemsList.Count > 0 then
+        begin
+          for j := 0 to ItemsList.Count - 1 do
+            SignalCurrentItemChanged(QTreeWidgetItemH(FSelection.Items[i]),
+              QTreeWidgetItemH(ItemsList.Items[j]));
+        end else
+          SignalCurrentItemChanged(QTreeWidgetItemH(FSelection.Items[i]), nil);
+      end;
+    end;
+  finally
+    ItemsList.Free;
   end;
 end;
 
