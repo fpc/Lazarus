@@ -29,7 +29,7 @@ uses
   FileProcs,
   IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
   ProjectIntf, CodeToolManager, SrcEditorIntf, IDETextConverter,
-  H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
+  H2PasStrConsts, H2PasConvert, IDETextConvListEdit, CompOptsIntf;
 
 type
 
@@ -99,7 +99,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
-    procedure ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
     procedure ConvertAndBuildButtonClick(Sender: TObject);
     procedure ConvertButtonClick(Sender: TObject);
     procedure DeleteCHeadersButtonClick(Sender: TObject);
@@ -354,11 +353,6 @@ end;
 procedure TH2PasDialog.CloseButtonClick(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TH2PasDialog.ConstantsInsteadOfEnumsCheckBoxChange(Sender: TObject);
-begin
-
 end;
 
 procedure TH2PasDialog.ConvertAndBuildButtonClick(Sender: TObject);
