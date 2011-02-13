@@ -357,8 +357,7 @@ begin
 
     r := ABounds;
     r.Right -= 1;
-    ADrawer.Canvas.ClipRect :=  r;
-    ADrawer.Canvas.Clipping := true;
+    ADrawer.ClippingStart(r);
 
     itemHeight :=
       (ABounds.Bottom - ABounds.Top - Spacing) div AItems.Count - Spacing;
@@ -372,7 +371,7 @@ begin
       OffsetRect(r, 0, itemHeight + Spacing);
     end;
   finally
-    ADrawer.Canvas.Clipping := false;
+    ADrawer.ClippingStop;
   end;
 end;
 

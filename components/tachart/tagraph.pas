@@ -182,7 +182,7 @@ type
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
-    function GetMargins(ACanvas: TCanvas): TRect;
+    function GetMargins(ADrawer: IChartDrawer): TRect;
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
     procedure HideReticule;
@@ -226,7 +226,7 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
-    procedure PrepareAxis(ACanvas: TCanvas);
+    procedure PrepareAxis(ADrawer: IChartDrawer);
     procedure PrepareLegend(
       ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
       var AClipRect: TRect; out ALegendRect: TRect);
@@ -594,10 +594,9 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ADrawer.Canvas, FClipRect, Self, ZPosition, d, axisIndex);
+          AxisList.Draw(ADrawer, FClipRect, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-          ADrawer.Canvas.ClipRect := FClipRect;
-          ADrawer.Canvas.Clipping := true;
+          ADrawer.ClippingStart(FClipRect);
           try
             try
               Draw(ADrawer);
@@ -607,14 +606,14 @@ begin
             end;
           finally
             OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
-            ADrawer.Canvas.Clipping := false;
+            ADrawer.ClippingStop;
           end;
         end;
     finally
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ADrawer.Canvas, FClipRect, Self, MaxInt, d, axisIndex);
+  AxisList.Draw(ADrawer, FClipRect, Self, MaxInt, d, axisIndex);
 end;
 
 {$IFDEF LCLGtk2}
@@ -655,7 +654,7 @@ begin
   if Legend.Visible then
     PrepareLegend(ADrawer, legendItems, FClipRect, legendRect);
   try
-    PrepareAxis(ADrawer.Canvas);
+    PrepareAxis(ADrawer);
     DrawBackWall(ADrawer);
     DisplaySeries(ADrawer);
     if Legend.Visible then
@@ -852,14 +851,14 @@ begin
   end;
 end;
 
-function TChart.GetMargins(ACanvas: TCanvas): TRect;
+function TChart.GetMargins(ADrawer: IChartDrawer): TRect;
 var
   i: Integer;
 begin
   Result := FMargins.Data;
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
-      Series[i].UpdateMargins(ACanvas, Result);
+      Series[i].UpdateMargins(ADrawer.Canvas, Result);
 end;
 
 function TChart.GetSeriesCount: Integer;
@@ -932,7 +931,7 @@ begin
   Draw(drawer, ARect);
 end;
 
-procedure TChart.PrepareAxis(ACanvas: TCanvas);
+procedure TChart.PrepareAxis(ADrawer: IChartDrawer);
 var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
@@ -944,14 +943,14 @@ begin
   end;
 
   AxisList.PrepareGroups;
-  AxisList.Measure(ACanvas, CurrentExtent, true, axisMargin);
+  AxisList.Measure(ADrawer, CurrentExtent, true, axisMargin);
   axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
   axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
   for a := Low(a) to High(a) do
     SideByAlignment(FClipRect, a, -axisMargin[a]);
 
-  CalculateTransformationCoeffs(GetMargins(ACanvas));
-  AxisList.Measure(ACanvas, CurrentExtent, false, axisMargin);
+  CalculateTransformationCoeffs(GetMargins(ADrawer));
+  AxisList.Measure(ADrawer, CurrentExtent, false, axisMargin);
   AxisList.Prepare(FClipRect);
 end;
 

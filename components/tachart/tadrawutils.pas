@@ -55,9 +55,13 @@ type
   { IChartDrawer }
 
   IChartDrawer = interface
+    procedure ClippingStart(const AClipRect: TRect);
+    procedure ClippingStop;
+    procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
+    procedure Line(const AP1, AP2: TPoint);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -109,19 +113,22 @@ type
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   public
+    procedure ClippingStart(const AClipRect: TRect);
+    procedure ClippingStop;
     constructor Create(ACanvas: TCanvas);
+    procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
-
     procedure Line(AX1, AY1, AX2, AY2: Integer);
+    procedure Line(const AP1, AP2: TPoint);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
-    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -316,9 +323,25 @@ end;
 
 { TCanvasDrawer }
 
+procedure TCanvasDrawer.ClippingStart(const AClipRect: TRect);
+begin
+  FCanvas.ClipRect := AClipRect;
+  FCanvas.Clipping := true;
+end;
+
+procedure TCanvasDrawer.ClippingStop;
+begin
+  FCanvas.Clipping := false;
+end;
+
 constructor TCanvasDrawer.Create(ACanvas: TCanvas);
 begin
   FCanvas := ACanvas;
+end;
+
+procedure TCanvasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
+begin
+  FCanvas.FillRect(AX1, AY1, AX2, AY2);
 end;
 
 function TCanvasDrawer.GetCanvas: TCanvas;
@@ -334,6 +357,11 @@ end;
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.Line(AX1, AY1, AX2, AY2);
+end;
+
+procedure TCanvasDrawer.Line(const AP1, AP2: TPoint);
+begin
+  FCanvas.Line(AP1, AP2);
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);

@@ -55,7 +55,7 @@ var
 implementation
 
 uses
-  SysUtils, TAChartAxis, TAChartUtils;
+  SysUtils, TAChartUtils;
 
 {$R *.lfm}
 
