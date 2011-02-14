@@ -187,13 +187,13 @@ begin
     a := MIN_RADIUS;
     with Size(ParentChart.ClipRect) do
       b := Max(cx div 2, cy div 2);
-    while a < b - 1 do begin
+    repeat
       FRadius := (a + b) div 2;
       if IsRectInRect(TryRadius(ACanvas), ParentChart.ClipRect) then
         a := FRadius
       else
         b := FRadius - 1;
-    end;
+    until a >= b - 1;
   end
   else begin
     FRadius := FixedRadius;
