@@ -313,16 +313,33 @@ type
 
   { TCHeaderFileMerger }
 
+  TCHFileLink = record
+    MergedPos: integer;
+    Code: TCodeBuffer; // can be nil
+    SrcPos: integer;
+  end;
+  PCHFileLink = ^TCHFileLink;
+
   TCHeaderFileMerger = class
+  private
+    procedure AddLink(aMergedPos: integer; aCode: TCodeBuffer; aSrcPos: integer);
   public
+    CombinedSource: TCodeBuffer;
+    LinkCount: integer;
+    Links: PCHFileLink;
+    LinksCapacity: integer;
     constructor Create;
     destructor Destroy; override;
-    procedure Merge(SourceFiles: TStrings;
-                    CodeCache: TCodeCache; out CombinedSource: string);
-    procedure Merge(SourceBuffers: TFPList; // list of TCodeBuffer
-                    out CombinedSource: string);
+    procedure Clear;
+    procedure Merge(SourceFiles: TStrings; CodeCache: TCodeCache);
+    procedure Merge(SourceBuffers: TFPList { list of TCodeBuffer });
+    function MergedPosToOriginal(MergedPos: integer;
+                          out Code: TCodeBuffer; out CodePos: integer): boolean;
+    function MergedPosToOriginal(MergedX, MergedY: integer;
+                     out Code: TCodeBuffer; out X, Y: integer): boolean;
+    function LinkIndexOfMergedPos(MergedPos: integer): integer;
   end;
-  
+
 function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc = 0): string;
 procedure InitCCodeKeyWordLists;
 
@@ -413,6 +430,24 @@ end;
 
 { TCHeaderFileMerger }
 
+procedure TCHeaderFileMerger.AddLink(aMergedPos: integer; aCode: TCodeBuffer;
+  aSrcPos: integer);
+begin
+  if LinkCount=LinksCapacity then begin
+    if LinksCapacity<4 then
+      LinksCapacity:=4
+    else
+      LinksCapacity:=LinksCapacity*2;
+    ReAllocMem(Links,LinksCapacity*SizeOf(TCHFileLink));
+  end;
+  with Links[LinkCount] do begin
+    MergedPos:=aMergedPos;
+    Code:=aCode;
+    SrcPos:=aSrcPos;
+  end;
+  inc(LinkCount);
+end;
+
 constructor TCHeaderFileMerger.Create;
 begin
 
@@ -420,17 +455,26 @@ end;
 
 destructor TCHeaderFileMerger.Destroy;
 begin
+  Clear;
   inherited Destroy;
 end;
 
+procedure TCHeaderFileMerger.Clear;
+begin
+  FreeAndNil(CombinedSource);
+  ReAllocMem(Links,0);
+  LinkCount:=0;
+  LinksCapacity:=0;
+end;
+
 procedure TCHeaderFileMerger.Merge(SourceFiles: TStrings;
-  CodeCache: TCodeCache; out CombinedSource: string);
+  CodeCache: TCodeCache);
 var
   SourceBuffers: TFPList;
   i: Integer;
   Buf: TCodeBuffer;
 begin
-  CombinedSource:='';
+  Clear;
   SourceBuffers:=TFPList.Create;
   try
     for i:=0 to SourceFiles.Count-1 do begin
@@ -439,22 +483,22 @@ begin
         raise Exception.Create('TCHeaderFileCombine.Combine: ERROR loading file '+SourceFiles[i]);
       SourceBuffers.Add(Buf);
     end;
-    Merge(SourceBuffers,CombinedSource);
+    Merge(SourceBuffers);
   finally
     SourceBuffers.Free;
   end;
 end;
 
-procedure TCHeaderFileMerger.Merge(SourceBuffers: TFPList;
-  out CombinedSource: string);
+procedure TCHeaderFileMerger.Merge(SourceBuffers: TFPList);
 var
   MergedBuffers: TFPList; // list of TCodeBuffer
   StrStream: TStringStream;
 
-  procedure Append(const Source: string; FromPos, EndPos: integer);
+  procedure Append(Code: TCodeBuffer; FromPos, EndPos: integer);
   begin
     if EndPos<FromPos then exit;
-    StrStream.Write(Source[FromPos],EndPos-FromPos);
+    AddLink(StrStream.Position+1,Code,FromPos);
+    StrStream.Write(Code.Source[FromPos],EndPos-FromPos);
   end;
 
   procedure Parse(Code: TCodeBuffer);
@@ -492,29 +536,88 @@ var
             // include file found
             if MergedBuffers.IndexOf(IncCode)<0 then begin
               debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
-              Append(Code.Source,MergePos,Code.GetLineStart(i));
+              StrStream.WriteString('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+              Append(Code,MergePos,Code.GetLineStart(i));
               MergePos:=Code.GetLineStart(i+1);
               Parse(IncCode);
+              StrStream.WriteString('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
             end;
           end;
         end;
       end;
     end;
     if MergePos<Code.SourceLength then
-      Append(Code.Source,MergePos,Code.SourceLength);
+      Append(Code,MergePos,Code.SourceLength);
     StrStream.WriteString(LineEnding);
   end;
 
 begin
-  CombinedSource:='';
+  Clear;
   MergedBuffers:=TFPList.Create;
   StrStream:=TStringStream.Create('');
   try
     Parse(TCodeBuffer(SourceBuffers[0]));
   finally
-    CombinedSource:=StrStream.DataString;
+    CombinedSource:=TCodeBuffer.Create;
+    CombinedSource.Source:=StrStream.DataString;
     StrStream.Free;
     MergedBuffers.Free;
+  end;
+end;
+
+function TCHeaderFileMerger.MergedPosToOriginal(MergedPos: integer;
+  out Code: TCodeBuffer; out CodePos: integer): boolean;
+var
+  Link: PCHFileLink;
+  LinkIndex: LongInt;
+begin
+  Code:=nil;
+  CodePos:=0;
+  LinkIndex:=LinkIndexOfMergedPos(MergedPos);
+  if LinkIndex<0 then exit(false);
+  Link:=@Links[LinkIndex];
+  Code:=Link^.Code;
+  CodePos:=MergedPos-Link^.MergedPos;
+  Result:=true;
+end;
+
+function TCHeaderFileMerger.MergedPosToOriginal(MergedX, MergedY: integer;
+  out Code: TCodeBuffer; out X, Y: integer): boolean;
+var
+  MergedPos: integer;
+  CodePos: integer;
+begin
+  Result:=false;
+  CombinedSource.LineColToPosition(MergedY,MergedX,MergedPos);
+  if not MergedPosToOriginal(MergedPos,Code,CodePos) then exit;
+  Code.AbsoluteToLineCol(CodePos,Y,X);
+  Result:=Y>=1;
+end;
+
+function TCHeaderFileMerger.LinkIndexOfMergedPos(MergedPos: integer): integer;
+var
+  l: Integer;
+  r: Integer;
+begin
+  Result:=-1;
+  if LinkCount=0 then exit;
+  if (MergedPos<1) then exit;
+  if MergedPos>CombinedSource.SourceLength+1 then
+    exit;
+  // MergedPos is in source
+  if MergedPos>=Links[LinkCount-1].MergedPos then
+    exit(LinkCount-1);
+  // MergedPos is in one of the regular links (that have a successor)
+  l:=0;
+  r:=LinkCount-2;
+  while (l<=r) do begin
+    Result:=(l+r) div 2;
+    if MergedPos<Links[Result].MergedPos then
+      r:=Result-1
+    else if MergedPos<Links[Result+1].MergedPos then
+      exit
+    else
+      l:=Result+1;
   end;
 end;
 

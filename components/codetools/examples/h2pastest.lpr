@@ -51,6 +51,7 @@ var
   Merger: TCHeaderFileMerger;
   MergeFiles: Boolean;
 begin
+  Merger:=nil;
   try
     Tool:=TH2PasTool.Create;
     Filenames:=TStringList.Create;
@@ -87,13 +88,12 @@ begin
     // Step 1: load all input files
     if MergeFiles then begin
       Merger:=TCHeaderFileMerger.Create;
-      Merger.Merge(Filenames,CodeToolBoss.SourceCache,Src);
-      writeln;
+      Merger.Merge(Filenames,CodeToolBoss.SourceCache);
+      Src:=Merger.CombinedSource.Source;
+      {writeln;
       writeln('======Combined c header files================');
       writeln(Src);
-      writeln('=============================================');
-      Merger.Free;
-      Halt;
+      writeln('=============================================');}
     end else begin
       Src:='';
       for i:=0 to Filenames.Count-1 do begin
@@ -139,10 +139,15 @@ begin
       writeln('Wrote ',PasCode.Filename)
     else
       writeln('Failed writing ',PasCode.Filename);
+
+    FreeAndNil(Merger);
   except
     on E: ECCodeParserException do begin
       CCodeTool:=ECCodeParserException(E).Sender;
       CCodeTool.CleanPosToCaret(CCodeTool.LastErrorReportPos,Caret);
+      if Merger<>nil then begin
+        Merger.MergedPosToOriginal(Caret.Y,Caret.X,Caret.Code,Caret.X,Caret.Y);
+      end;
       writeln(Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
     end;
     on E: Exception do begin
