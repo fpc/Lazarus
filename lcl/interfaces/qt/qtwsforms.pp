@@ -359,6 +359,12 @@ begin
   begin
     if fsModal in TForm(AWinControl).FormState then
     begin
+      {$ifdef MSWINDOWS}
+      // qt doesn't modal windows as QtTool.see issue #18709
+      if (TForm(AWinControl).BorderStyle in [bsToolWindow, bsSizeToolWin]) then
+        QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      {$endif}
+
       {$ifdef HASX11}
       W := nil;
       ActiveWin := GetActiveWindow;
