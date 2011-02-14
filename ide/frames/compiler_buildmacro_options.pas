@@ -33,7 +33,7 @@ uses
   StdCtrls, Grids, LCLType, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus,
   AvgLvlTree, SynEdit, SynHighlighterPas, SynEditKeyCmds, SynCompletion,
   KeywordFuncLists, CodeToolsCfgScript, IDEImagesIntf, IDECommands, ProjectIntf,
-  PackageIntf, IDEOptionsIntf, MacroIntf, CompilerOptions, EditorOptions,
+  PackageIntf, IDEOptionsIntf, MacroIntf, CompilerOptions, EditorOptions, CompOptsIntf,
   LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
 
 type
