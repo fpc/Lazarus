@@ -63,6 +63,9 @@ if TargetOS='darwin' then begin
     UsageLinkerOptions := '-framework Cocoa';
 end else if TargetOS='solaris' then begin
   UsageLibraryPath:='/usr/X11R6/lib';
+end else if TargetOS='linux' then begin
+  if LCLWidgetType='gtk2' then
+    UsageLibraryPath := '/opt/gnome/lib';
 end;"/>
       <BuildMacros>
         <Count Value="2"/>
