@@ -204,6 +204,10 @@ begin
   BtnSave.Caption := sccsILEdtSave;
   BtnSaveAll.Caption := sccsILEdtSaveAll;
 
+  BtnPanel.HelpButton.Caption := oisHelp;
+  BtnPanel.OKButton.Caption := oisOK;
+  BtnPanel.CancelButton.Caption := oisCancel;
+
   BtnPanel.CloseButton.Caption := sccsILEdtApply;
   BtnPanel.CloseButton.Kind := bkCustom;
   BtnPanel.CloseButton.Glyph := nil;
