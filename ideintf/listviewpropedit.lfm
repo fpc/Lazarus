@@ -16,14 +16,15 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 247
+    Height = 256
     Top = 6
     Width = 295
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Items'
-    ClientHeight = 229
+    ClientHeight = 238
     ClientWidth = 291
     TabOrder = 0
     object TreeView1: TTreeView
@@ -32,7 +33,7 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 219
+      Height = 228
       Top = 5
       Width = 160
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -104,14 +105,15 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
     Left = 307
-    Height = 247
+    Height = 256
     Top = 6
     Width = 212
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Item Properties'
-    ClientHeight = 229
+    ClientHeight = 238
     ClientWidth = 208
     TabOrder = 1
     object LabelCaption: TLabel
@@ -196,8 +198,8 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 260
+    Height = 26
+    Top = 268
     Width = 513
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&ОК'
@@ -209,5 +211,6 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Отмена'
     TabOrder = 2
+    ShowBevel = False
   end
 end
