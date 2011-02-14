@@ -62,6 +62,8 @@ type
     FLastWFPMousePos: TPoint;
     FLastWFPResult: HWND;
 
+    // global actions
+    FGlobalActions: TFPList;
     FEatNextDeactivate: Boolean;
     FOverrideCursor: TObject;
     SavedDCList: TFPList;
@@ -143,6 +145,13 @@ type
     procedure AddHandle(AHandle: TObject);
     procedure RemoveHandle(AHandle: TObject);
     function IsValidHandle(AHandle: HWND): Boolean;
+
+    // application global actions (mainform mainmenu mnemonics Alt+XX)
+    procedure ClearGlobalActions;
+    procedure AddGlobalAction(AnAction: QActionH);
+    function ShortcutInGlobalActions(const AMnemonicText: WideString;
+      out AGlobalActionIndex: Integer): Boolean;
+    procedure TriggerGlobalAction(const ActionIndex: Integer);
 
     // cache for WindowFromPoint to reduce very expensive calls
     // of QApplication_widgetAt() inside WindowFromPoint().

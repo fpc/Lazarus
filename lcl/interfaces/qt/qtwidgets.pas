@@ -1361,6 +1361,7 @@ type
   private
     FVisible: Boolean;
     FHeight: Integer;
+    FIsApplicationMainMenu: Boolean;
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
@@ -2459,6 +2460,8 @@ var
   {$ENDIF}
   AChar: Char;
   AKeyEvent: QKeyEventH;
+  GlobalAction: Integer;
+  ActiveWin: QWidgetH;
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -2479,7 +2482,6 @@ begin
   Modifiers := QKeyEvent_modifiers(QKeyEventH(Event));
   IsSysKey := (QtAltModifier and Modifiers) <> $0;
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
-
   {$ifdef windows}
     ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
     KeyMsg.CharCode := ACharCode;
@@ -2490,6 +2492,17 @@ begin
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
+
+  {we must intercept modifiers for main form menu (if any). issue #18709}
+  if (Modifiers = QtAltModifier) then
+  begin
+    if (QApplication_activeModalWidget() = nil) and
+      QtWidgetSet.ShortcutInGlobalActions('Alt+'+Text, GlobalAction) then
+    begin
+      QtWidgetSet.TriggerGlobalAction(GlobalAction);
+      exit;
+    end;
+  end;
 
   {$note TQtWidget.SlotKey: this is workaround for Qt bug which reports
    wrong keys with Shift+Ctrl pressed. Fixes #13450.
@@ -4718,7 +4731,10 @@ begin
     {$else}
       MenuBar := TQtMenuBar.Create(Result);
     {$endif}
-    
+
+    if not (csDesigning in LCLObject.ComponentState) then
+      MenuBar.FIsApplicationMainMenu := True;
+
     if (Application.MainForm <> nil) and
        (Application.MainForm.FormStyle = fsMDIForm) and
        not (csDesigning in LCLObject.ComponentState) then
@@ -11105,6 +11121,7 @@ begin
   Widget := QMenuBar_create(AParent);
   FHeight := getHeight;
   FVisible := False;
+  FIsApplicationMainMenu := False;
   setVisible(FVisible);
 end;
 
@@ -11121,6 +11138,11 @@ end;
 function TQtMenuBar.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
 var
   actionBefore: QActionH;
+  Actions: TPtrIntArray;
+  Action: QActionH;
+  i: Integer;
+  seq: QKeySequenceH;
+  WStr: WideString;
 begin
   if not FVisible then
   begin
@@ -11132,6 +11154,32 @@ begin
     Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
   else
     Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
+  if FIsApplicationMainMenu then
+  begin
+    QWidget_actions(Widget, @Actions);
+    QtWidgetSet.ClearGlobalActions;
+    for i := 0 to High(Actions) do
+    begin
+      Action := QActionH(Actions[i]);
+      seq := QKeySequence_create();
+      QAction_shortcut(Action, seq);
+      if QKeySequence_isEmpty(seq) then
+      begin
+        WStr := '';
+        QAction_text(Action, @WStr);
+        QKeySequence_destroy(seq);
+        seq := nil;
+        seq := QKeySequence_create();
+        QKeySequence_mnemonic(seq, @WStr);
+        if not QKeySequence_isEmpty(seq) then
+        begin
+          QAction_setShortcutContext(Action, QtApplicationShortcut);
+          QtWidgetSet.AddGlobalAction(Action);
+        end;
+      end;
+      QKeySequence_destroy(seq);
+    end;
+  end;
 end;
 
 function TQtMenuBar.getGeometry: TRect;
