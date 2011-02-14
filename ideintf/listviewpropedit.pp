@@ -33,21 +33,18 @@ unit ListViewPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
+  Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc, ButtonPanel,
   ObjInspStrConsts;
 
 type
   { TListViewItemsEditorForm }
 
   TListViewItemsEditorForm = class(TForm)
-    BtnOK: TBitBtn;
-    BtnCancel: TBitBtn;
-    BtnApply: TBitBtn;
-    BtnHelp: TBitBtn;
     BtnNewItem: TButton;
     BtnNewSubItem: TButton;
     BtnDelete: TButton;
+    ButtonPanel: TButtonPanel;
     edtText: TEdit;
     edtIndexImg: TEdit;
     edtIndexState: TEdit;
@@ -56,7 +53,6 @@ type
     LabelCaption: TLabel;
     LabelImageIndex: TLabel;
     LabelStateIndex: TLabel;
-    BtnPanel: TPanel;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
@@ -152,10 +148,13 @@ begin
   BtnNewSubItem.Caption := sccsLvEdtNewSubItem;
   BtnDelete.Caption := sccsLvEdtDelete;
 
-  BtnHelp.Caption := oisHelp;
-  BtnOK.Caption := oisOK;
-  BtnCancel.Caption := oisCancel;
-  BtnApply.Caption := sccsLvEdtApply;
+  ButtonPanel.HelpButton.Caption := oisHelp;
+  ButtonPanel.OKButton.Caption := oisOK;
+  ButtonPanel.CancelButton.Caption := oisCancel;
+  ButtonPanel.CloseButton.Caption := sccsLvEdtApply;
+  ButtonPanel.CloseButton.Kind := bkCustom;
+  ButtonPanel.CloseButton.Glyph := nil;
+  ButtonPanel.CloseButton.ModalResult := mrNone;
   
   LabelCaption.Caption := sccsLvEdtLabelCaption;
   LabelImageIndex.Caption := sccsLvEdtLabelImageIndex;
