@@ -4698,7 +4698,6 @@ end;
 
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
-  w: QWidgetH;
   p: QPaletteH;
 begin
   // Creates the widget
@@ -4713,14 +4712,11 @@ begin
   FPopupMode := pmNone;
   FPopupParent := nil;
 
-  IsMainForm := False;
+  IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
 
-  w := QApplication_activeWindow;
-  if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible))
-  and (TCustomForm(LCLObject).FormStyle <> fsSplash) then
+  if IsMainForm then
   begin
-  
-    IsMainForm := True;
+
     Result := QMainWindow_create(nil, QtWindow);
 
     {$ifdef darwin}
@@ -11163,17 +11159,20 @@ begin
       Action := QActionH(Actions[i]);
       seq := QKeySequence_create();
       try
-        QAction_shortcut(Action, seq);
-        WStr := '';
-        QAction_text(Action, @WStr);
-        QKeySequence_destroy(seq);
-        seq := nil;
-        seq := QKeySequence_create();
-        QKeySequence_mnemonic(seq, @WStr);
-        if not QKeySequence_isEmpty(seq) then
+        if QKeySequence_isEmpty(seq) then
         begin
-          QAction_setShortcutContext(Action, QtApplicationShortcut);
-          QtWidgetSet.AddGlobalAction(Action);
+          QAction_shortcut(Action, seq);
+          WStr := '';
+          QAction_text(Action, @WStr);
+          QKeySequence_destroy(seq);
+          seq := nil;
+          seq := QKeySequence_create();
+          QKeySequence_mnemonic(seq, @WStr);
+          if not QKeySequence_isEmpty(seq) then
+          begin
+            QAction_setShortcutContext(Action, QtApplicationShortcut);
+            QtWidgetSet.AddGlobalAction(Action);
+          end;
         end;
       finally
         QKeySequence_destroy(seq);
