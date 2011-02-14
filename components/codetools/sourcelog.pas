@@ -133,6 +133,7 @@ type
     function GetLine(Index: integer): string; // 0-based
     function GetLineLength(Index: integer): integer; // 0-based
     procedure GetLineRange(Index: integer; out LineRange: TLineRange);
+    function GetLineStart(Index: integer): integer;
     property Items[Index: integer]: TSourceLogEntry
        read GetItems write SetItems; default;
     function Count: integer; // # Items
@@ -385,6 +386,15 @@ procedure TSourceLog.GetLineRange(Index: integer; out LineRange: TLineRange);
 begin
   BuildLineRanges;
   LineRange:=FLineRanges[Index];
+end;
+
+function TSourceLog.GetLineStart(Index: integer): integer;
+begin
+  BuildLineRanges;
+  if Index<FLineCount then
+    Result:=FLineRanges[Index].StartPos
+  else
+    Result:=FSrcLen;
 end;
 
 procedure TSourceLog.ClearEntries;

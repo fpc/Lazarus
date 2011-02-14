@@ -289,6 +289,7 @@ type
     function ExtractStructName(StructNode: TCodeTreeNode): string;
     function ExtractUnionName(UnionNode: TCodeTreeNode): string;
     function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
+    function IsDirective(DirectiveNode: TCodeTreeNode; const Action: shortstring): boolean;
     function ExtractDirectiveAction(DirectiveNode: TCodeTreeNode): string;
     function ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode): string;
     function ExtractDirectiveParams(DirectiveNode: TCodeTreeNode): string;
@@ -308,6 +309,18 @@ type
     function NodeAsString(Node: TCodeTreeNode): string;
 
     property ChangeStep: integer read FChangeStep;
+  end;
+
+  { TCHeaderFileMerger }
+
+  TCHeaderFileMerger = class
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Merge(SourceFiles: TStrings;
+                    CodeCache: TCodeCache; out CombinedSource: string);
+    procedure Merge(SourceBuffers: TFPList; // list of TCodeBuffer
+                    out CombinedSource: string);
   end;
   
 function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc = 0): string;
@@ -395,6 +408,113 @@ begin
     Add('|='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('=='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('!='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+end;
+
+{ TCHeaderFileMerger }
+
+constructor TCHeaderFileMerger.Create;
+begin
+
+end;
+
+destructor TCHeaderFileMerger.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCHeaderFileMerger.Merge(SourceFiles: TStrings;
+  CodeCache: TCodeCache; out CombinedSource: string);
+var
+  SourceBuffers: TFPList;
+  i: Integer;
+  Buf: TCodeBuffer;
+begin
+  CombinedSource:='';
+  SourceBuffers:=TFPList.Create;
+  try
+    for i:=0 to SourceFiles.Count-1 do begin
+      Buf:=CodeCache.LoadFile(SourceFiles[i]);
+      if Buf=nil then
+        raise Exception.Create('TCHeaderFileCombine.Combine: ERROR loading file '+SourceFiles[i]);
+      SourceBuffers.Add(Buf);
+    end;
+    Merge(SourceBuffers,CombinedSource);
+  finally
+    SourceBuffers.Free;
+  end;
+end;
+
+procedure TCHeaderFileMerger.Merge(SourceBuffers: TFPList;
+  out CombinedSource: string);
+var
+  MergedBuffers: TFPList; // list of TCodeBuffer
+  StrStream: TStringStream;
+
+  procedure Append(const Source: string; FromPos, EndPos: integer);
+  begin
+    if EndPos<FromPos then exit;
+    StrStream.Write(Source[FromPos],EndPos-FromPos);
+  end;
+
+  procedure Parse(Code: TCodeBuffer);
+  var
+    i: Integer;
+    Line: String;
+    IncludeParam: String;
+    j: Integer;
+    IncCode: TCodeBuffer;
+    IncFilename: String;
+    MergePos: Integer;
+  begin
+    MergedBuffers.Add(Code);
+    MergePos:=1;
+    for i:=0 to Code.LineCount-1 do begin
+      Line:=Code.GetLine(i);
+      if length(Line)<length('#include')+2 then continue;
+      if copy(Line,1,length('#include'))<>'#include' then continue;
+      if not (Line[length('#include')+1] in [' ',#9]) then continue;
+      IncludeParam:=Trim(copy(Line,length('#include')+1,length(Line)));
+      if (IncludeParam<>'') and (IncludeParam[1] in ['<','"']) then
+        IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
+      if IncludeParam<>'' then begin
+        // for example: glib/gutils.h
+        //debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
+        // search file in list
+        for j:=1 to SourceBuffers.Count-1 do begin
+          IncCode:=TCodeBuffer(SourceBuffers[j]);
+          IncFilename:=IncCode.Filename;
+          if CompareFilenames(IncludeParam,
+              RightStr(IncFilename,length(IncludeParam)))<>0 then continue;
+          if (length(IncFilename)=length(IncludeParam))
+          or (IncFilename[length(IncFilename)-length(IncludeParam)]=PathDelim)
+          then begin
+            // include file found
+            if MergedBuffers.IndexOf(IncCode)<0 then begin
+              debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
+              Append(Code.Source,MergePos,Code.GetLineStart(i));
+              MergePos:=Code.GetLineStart(i+1);
+              Parse(IncCode);
+            end;
+          end;
+        end;
+      end;
+    end;
+    if MergePos<Code.SourceLength then
+      Append(Code.Source,MergePos,Code.SourceLength);
+    StrStream.WriteString(LineEnding);
+  end;
+
+begin
+  CombinedSource:='';
+  MergedBuffers:=TFPList.Create;
+  StrStream:=TStringStream.Create('');
+  try
+    Parse(TCodeBuffer(SourceBuffers[0]));
+  finally
+    CombinedSource:=StrStream.DataString;
+    StrStream.Free;
+    MergedBuffers.Free;
   end;
 end;
 
@@ -1916,6 +2036,16 @@ begin
       Result:='';
   end else
     Result:=GetIdentifier(@Src[Node.StartPos]);
+end;
+
+function TCCodeParserTool.IsDirective(DirectiveNode: TCodeTreeNode;
+  const Action: shortstring): boolean;
+begin
+  Result:=false;
+  if (DirectiveNode=nil) or (DirectiveNode.Desc<>ccnDirective) then exit;
+  MoveCursorToPos(DirectiveNode.StartPos+1);
+  ReadNextAtom;
+  Result:=AtomIs(Action);
 end;
 
 function TCCodeParserTool.ExtractDirectiveAction(DirectiveNode: TCodeTreeNode

@@ -316,8 +316,7 @@ type
     function MarkMacroAsRead(const MacroName: string;
                              Node: TH2PNode): TH2PMacroStats;// use Undefines instead
   end;
-  
-  
+
 function DefaultPredefinedCTypes: TStringToStringTree;// types in unit ctypes
 
 function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
