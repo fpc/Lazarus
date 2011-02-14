@@ -352,8 +352,9 @@ resourcestring
     +'valid identifier';
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
+  oisCancel = 'Cancel';
+  oisHelp = '&Help';
   oisPEPicture = 'Picture';
-  oisCancel = '&Cancel';
   oisLoadPicture = 'Load picture';
   oisSavePicture = 'Save picture';
   oisClearPicture = 'Clear picture';

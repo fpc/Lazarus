@@ -151,6 +151,10 @@ begin
   BtnNewItem.Caption := sccsLvEdtNewItem;
   BtnNewSubItem.Caption := sccsLvEdtNewSubItem;
   BtnDelete.Caption := sccsLvEdtDelete;
+
+  BtnHelp.Caption := oisHelp;
+  BtnOK.Caption := oisOK;
+  BtnCancel.Caption := oisCancel;
   BtnApply.Caption := sccsLvEdtApply;
   
   LabelCaption.Caption := sccsLvEdtLabelCaption;
