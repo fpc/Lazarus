@@ -11162,9 +11162,8 @@ begin
     begin
       Action := QActionH(Actions[i]);
       seq := QKeySequence_create();
-      QAction_shortcut(Action, seq);
-      if QKeySequence_isEmpty(seq) then
-      begin
+      try
+        QAction_shortcut(Action, seq);
         WStr := '';
         QAction_text(Action, @WStr);
         QKeySequence_destroy(seq);
@@ -11176,8 +11175,9 @@ begin
           QAction_setShortcutContext(Action, QtApplicationShortcut);
           QtWidgetSet.AddGlobalAction(Action);
         end;
+      finally
+        QKeySequence_destroy(seq);
       end;
-      QKeySequence_destroy(seq);
     end;
   end;
 end;

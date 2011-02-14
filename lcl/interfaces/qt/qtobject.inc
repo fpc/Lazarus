@@ -842,8 +842,6 @@ begin
     MainWin := TQtMainWindow(Application.MainForm.Handle);
     MainWin.Activate;
     QMenuBar_setActiveAction(QMenuBarH(MainWin.MenuBar.Widget), Action);
-    // MainWin.MenuBar.;
-    // QMenu_exec(QAction_menu(Action));
   end;
 end;
 
