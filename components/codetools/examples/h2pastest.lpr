@@ -89,6 +89,7 @@ begin
     if MergeFiles then begin
       Merger:=TCHeaderFileMerger.Create;
       Merger.Merge(Filenames,CodeToolBoss.SourceCache);
+      //Merger.WriteDebugReport;
       Src:=Merger.CombinedSource.Source;
       {writeln;
       writeln('======Combined c header files================');
@@ -146,7 +147,7 @@ begin
       CCodeTool:=ECCodeParserException(E).Sender;
       CCodeTool.CleanPosToCaret(CCodeTool.LastErrorReportPos,Caret);
       if Merger<>nil then begin
-        Merger.MergedPosToOriginal(Caret.Y,Caret.X,Caret.Code,Caret.X,Caret.Y);
+        Merger.MergedPosToOriginal(Caret.X,Caret.Y,Caret.Code,Caret.X,Caret.Y);
       end;
       writeln(Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
     end;

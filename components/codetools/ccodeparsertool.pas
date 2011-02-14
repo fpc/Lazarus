@@ -338,6 +338,9 @@ type
     function MergedPosToOriginal(MergedX, MergedY: integer;
                      out Code: TCodeBuffer; out X, Y: integer): boolean;
     function LinkIndexOfMergedPos(MergedPos: integer): integer;
+    function GetLinkLength(Index: integer): integer;
+
+    procedure WriteDebugReport;
   end;
 
 function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc = 0): string;
@@ -501,6 +504,13 @@ var
     StrStream.Write(Code.Source[FromPos],EndPos-FromPos);
   end;
 
+  procedure Append(const s: string);
+  begin
+    if s='' then exit;
+    AddLink(StrStream.Position+1,nil,0);
+    StrStream.Write(s[1],length(s));
+  end;
+
   procedure Parse(Code: TCodeBuffer);
   var
     i: Integer;
@@ -536,11 +546,11 @@ var
             // include file found
             if MergedBuffers.IndexOf(IncCode)<0 then begin
               debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
-              StrStream.WriteString('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+              Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
               Append(Code,MergePos,Code.GetLineStart(i));
               MergePos:=Code.GetLineStart(i+1);
               Parse(IncCode);
-              StrStream.WriteString('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+              Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
             end;
           end;
         end;
@@ -548,7 +558,7 @@ var
     end;
     if MergePos<Code.SourceLength then
       Append(Code,MergePos,Code.SourceLength);
-    StrStream.WriteString(LineEnding);
+    Append(LineEnding);
   end;
 
 begin
@@ -589,6 +599,7 @@ var
 begin
   Result:=false;
   CombinedSource.LineColToPosition(MergedY,MergedX,MergedPos);
+  //debugln(['TCHeaderFileMerger.MergedPosToOriginal MergedX=',MergedX,' MergedY=',MergedY,' MergedPos=',MergedPos,' ',dbgstr(copy(CombinedSource.Source,MergedPos-10,10)),'|',dbgstr(copy(CombinedSource.Source,MergedPos,10))]);
   if not MergedPosToOriginal(MergedPos,Code,CodePos) then exit;
   Code.AbsoluteToLineCol(CodePos,Y,X);
   Result:=Y>=1;
@@ -618,6 +629,44 @@ begin
       exit
     else
       l:=Result+1;
+  end;
+end;
+
+function TCHeaderFileMerger.GetLinkLength(Index: integer): integer;
+begin
+  if (Index<0) or (Index>=LinkCount) then
+    Result:=0
+  else if Index=LinkCount-1 then
+    Result:=CombinedSource.SourceLength-Links[Index].MergedPos
+  else
+    Result:=Links[Index+1].MergedPos-Links[Index].MergedPos;
+end;
+
+procedure TCHeaderFileMerger.WriteDebugReport;
+var
+  i: Integer;
+  Link: PCHFileLink;
+  Line: integer;
+  Column: integer;
+  l: LongInt;
+begin
+  debugln(['TCHeaderFileMerger.WriteDebugReport LinkCount=',LinkCount]);
+  for i:=0 to LinkCount-1 do begin
+    Link:=@Links[i];
+    CombinedSource.AbsoluteToLineCol(Link^.MergedPos,Line,Column);
+    dbgout('  Line=',dbgs(Line));
+    if Link^.Code<>nil then begin
+      Link^.Code.AbsoluteToLineCol(Link^.SrcPos,Line,Column);
+      DbgOut(' ',ExtractFilename(Link^.Code.Filename),' Y=',dbgs(Line),' X=',dbgs(Column));
+    end else begin
+      DbgOut(' no source');
+    end;
+    l:=GetLinkLength(i);
+    if l<45 then
+      debugln(['  [ ',dbgstr(copy(CombinedSource.Source,Link^.MergedPos,l)),' ]'])
+    else
+      debugln(['  [ ',dbgstr(copy(CombinedSource.Source,Link^.MergedPos,20)),' ... ',
+                      dbgstr(copy(CombinedSource.Source,Link^.MergedPos+GetLinkLength(i)-20,20)),' ]']);
   end;
 end;
 
