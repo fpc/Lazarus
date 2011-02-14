@@ -408,8 +408,8 @@ msgstr "&Lisää"
 
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
-msgstr ""
+msgid "Cancel"
+msgstr "Peru"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -544,6 +544,10 @@ msgstr "Hyppää määrittelyyn"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
+msgstr ""
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor

@@ -412,8 +412,10 @@ msgid "&Add"
 msgstr "追加(&A)"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "キャンセル(&C)"
 
 #: objinspstrconsts.oiscategory
@@ -549,6 +551,10 @@ msgstr "宣言にジャンプする"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
+msgstr ""
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor

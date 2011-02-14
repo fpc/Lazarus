@@ -408,8 +408,10 @@ msgid "&Add"
 msgstr "הוסף"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "בטל"
 
 #: objinspstrconsts.oiscategory
@@ -540,6 +542,10 @@ msgstr "קפוץ להצהרה"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "צף"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

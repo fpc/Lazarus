@@ -418,8 +418,10 @@ msgid "&Add"
 msgstr "&Hinzufügen"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "&Abbrechen"
 
 #: objinspstrconsts.oiscategory
@@ -556,6 +558,10 @@ msgstr "Sprung zur Deklaration"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Fließkomma"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

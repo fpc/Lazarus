@@ -406,7 +406,7 @@ msgstr ""
 
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr ""
 
 #: objinspstrconsts.oiscategory
@@ -536,6 +536,10 @@ msgstr ""
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
+msgstr ""
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor

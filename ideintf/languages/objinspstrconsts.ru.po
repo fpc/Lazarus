@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-20 02:49+0300\n"
+"PO-Revision-Date: 2011-02-15 02:09+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -417,9 +417,10 @@ msgid "&Add"
 msgstr "&Добавить"
 
 #: objinspstrconsts.oiscancel
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
-msgstr "От&мена"
+msgid "Cancel"
+msgstr "Отмена"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -552,6 +553,10 @@ msgstr "Перейти к объявлению"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Float"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr "&Справка"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

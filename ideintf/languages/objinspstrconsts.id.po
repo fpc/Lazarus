@@ -415,8 +415,8 @@ msgstr "&Tambah"
 
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
-msgstr ""
+msgid "Cancel"
+msgstr "Batal"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -552,6 +552,10 @@ msgstr "Lompat ke deklarasi"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Float"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

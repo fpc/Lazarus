@@ -419,8 +419,10 @@ msgid "&Add"
 msgstr "添加(&A)"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "取消(&C)"
 
 #: objinspstrconsts.oiscategory
@@ -557,6 +559,10 @@ msgstr "跳转到声明"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Float"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

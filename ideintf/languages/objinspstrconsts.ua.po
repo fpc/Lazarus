@@ -410,8 +410,8 @@ msgstr "&Додати"
 
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
-msgstr ""
+msgid "Cancel"
+msgstr "Скасувати"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -541,6 +541,10 @@ msgstr ""
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Дійсний"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

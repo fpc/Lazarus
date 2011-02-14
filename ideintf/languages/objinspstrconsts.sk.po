@@ -420,8 +420,10 @@ msgid "&Add"
 msgstr "&Pridať"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "&Zrušiť"
 
 #: objinspstrconsts.oiscategory
@@ -558,6 +560,10 @@ msgstr "Skočiť na deklaráciu"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Float"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."

@@ -416,8 +416,10 @@ msgid "&Add"
 msgstr "Pri&dėti"
 
 #: objinspstrconsts.oiscancel
+#, fuzzy
+#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
-msgid "&Cancel"
+msgid "Cancel"
 msgstr "&Atsisakyti"
 
 #: objinspstrconsts.oiscategory
@@ -551,6 +553,10 @@ msgstr "Rodyti kur paskelbta"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Realusis skaičius"
+
+#: objinspstrconsts.oishelp
+msgid "&Help"
+msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
