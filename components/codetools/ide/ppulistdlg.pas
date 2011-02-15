@@ -586,7 +586,7 @@ begin
   Result:=IntToStr(round(d*10000));
   while length(Result)<3 do Result:='0'+Result;
   Result:=copy(Result,1,length(Result)-2)
-          +DefaultFormatSettings.ThousandSeparator+RightStr(Result,2)+'%';
+          +DefaultFormatSettings.DecimalSeparator+RightStr(Result,2)+'%';
 end;
 
 function TPPUListDialog.BytesToStr(b: int64): string;
