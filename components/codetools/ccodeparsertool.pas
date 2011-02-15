@@ -334,6 +334,7 @@ type
     LinkCount: integer;
     Links: PCHFileLink;
     LinksCapacity: integer;
+    Macros: TStringToStringTree;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -461,12 +462,13 @@ end;
 
 constructor TCHeaderFileMerger.Create;
 begin
-
+  Macros:=TStringToStringTree.Create(true);
 end;
 
 destructor TCHeaderFileMerger.Destroy;
 begin
   Clear;
+  FreeAndNil(Macros);
   inherited Destroy;
 end;
 
@@ -507,10 +509,44 @@ var
   StrStream: TStringStream;
 
   procedure Append(Code: TCodeBuffer; FromPos, EndPos: integer);
+  var
+    Identifier: PChar;
+    AtomStart: integer;
+    p: LongInt;
+    MacroName: String;
+    MacroValue: string;
   begin
-    if EndPos<FromPos then exit;
-    AddLink(StrStream.Position+1,Code,FromPos);
-    StrStream.Write(Code.Source[FromPos],EndPos-FromPos);
+    if FromPos<1 then FromPos:=1;
+    if EndPos>Code.SourceLength then EndPos:=Code.SourceLength+1;
+    if (EndPos<=FromPos) or (FromPos>Code.SourceLength) then exit;
+    p:=FromPos;
+    while p<EndPos do begin
+      ReadRawNextCAtom(Code.Source,p,AtomStart);
+      if AtomStart>=EndPos then break;
+      Identifier:=@Code.Source[AtomStart];
+      if IsIdentStartChar[Identifier^]
+      and Macros.ContainsIdentifier(Identifier) then begin
+        // macro found
+        MacroName:=GetIdentifier(Identifier);
+        MacroValue:=Macros[MacroName];
+        debugln(['Append Macro found: ',MacroName]);
+        // write source in front of macro
+        if AtomStart>FromPos then begin
+          AddLink(StrStream.Position+1,Code,FromPos);
+          StrStream.Write(Code.Source[FromPos],AtomStart-FromPos);
+        end;
+        FromPos:=p;
+        if MacroValue<>'' then begin
+          // write macro value
+          AddLink(StrStream.Position+1,nil,0);
+          StrStream.Write(MacroValue[1],length(MacroValue));
+        end;
+      end;
+    end;
+    if FromPos<EndPos then begin
+      AddLink(StrStream.Position+1,Code,FromPos);
+      StrStream.Write(Code.Source[FromPos],EndPos-FromPos);
+    end;
   end;
 
   procedure Append(const s: string);
@@ -560,7 +596,7 @@ var
                 Append(Code,MergePos,Code.GetLineStart(i));
                 MergePos:=Code.GetLineStart(i+1);
                 Parse(IncCode);
-                Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+                Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding+LineEnding);
               end;
             end;
           end;

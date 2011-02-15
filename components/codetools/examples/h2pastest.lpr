@@ -51,19 +51,44 @@ var
   Merger: TCHeaderFileMerger;
   MergeAll: Boolean;
   MergeFlags: TCHFileMergeFlags;
+  MacroName: String;
+  p: LongInt;
+  MacroValue: String;
 begin
   Merger:=nil;
   try
     Tool:=TH2PasTool.Create;
+    Merger:=TCHeaderFileMerger.Create;
     Filenames:=TStringList.Create;
     OutputFilename:=CleanAndExpandFilename(AppendPathDelim(GetCurrentDir)+'h2pasoutput.pas');
     MergeAll:=false;
     for i:=1 to Paramcount do begin
       Param:=ParamStr(i);
-      if copy(Param,1,2)='-d' then
-        Tool.Defines.Add(copy(Param,3,255),'')
-      else if copy(Param,1,2)='-u' then
-        Tool.Undefines.Add(copy(Param,3,255),'')
+      if copy(Param,1,2)='-d' then begin
+        MacroName:=copy(Param,3,length(Param));
+        MacroValue:='';
+        p:=Pos('=',MacroName);
+        if p>0 then begin
+          MacroValue:=copy(MacroName,p+1,length(MacroName));
+          MacroName:=copy(MacroName,1,p-1);
+        end;
+        MacroName:=copy(MacroName,1,255);
+        if not IsValidIdent(MacroName) then begin
+          writeln('invalid macro name "',MacroName,'"');
+          Halt;
+        end;
+        Merger.Macros[MacroName]:=MacroValue;
+        Tool.Defines.Add(MacroName,MacroValue);
+      end
+      else if copy(Param,1,2)='-u' then begin
+        MacroName:=copy(Param,3,255);
+        if not IsValidIdent(MacroName) then begin
+          writeln('invalid macro name "',MacroName,'"');
+          Halt;
+        end;
+        Merger.Macros[MacroName]:='';
+        Tool.Undefines.Add(MacroName,'');
+      end
       else if copy(Param,1,2)='-o' then
         OutputFilename:=CleanAndExpandFilename(Param)
       else if Param='--merge-all' then
@@ -89,16 +114,15 @@ begin
       Filenames.Add(CleanAndExpandFilename(GetCurrentDir+'/scanexamples/test.h'));
 
     // Step 1: load all input files
-    Merger:=TCHeaderFileMerger.Create;
     MergeFlags:=[];
     if MergeAll then Include(MergeFlags,chfmfAll);
     Merger.Merge(Filenames,CodeToolBoss.SourceCache,MergeFlags);
     //Merger.WriteDebugReport;
     Src:=Merger.CombinedSource.Source;
-    {writeln;
+    writeln;
     writeln('======Combined c header files================');
     writeln(Src);
-    writeln('=============================================');}
+    writeln('=============================================');
 
     // ToDo:
     //  Tool.UndefineEnclosingIFNDEF(CCode);
