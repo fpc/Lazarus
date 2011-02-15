@@ -1490,7 +1490,9 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
-  if TQtPushButton(ACustomCheckBox.Handle).isDown then
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then
+    Exit;
+  if TQtToggleBox(ACustomCheckBox.Handle).isChecked then
     Result := cbChecked
   else
     Result := cbUnChecked;
@@ -1504,7 +1506,9 @@ end;
 class procedure TQtWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  TQtPushButton(ACustomCheckBox.Handle).setShortcut(NewShortCut);
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortCut') then
+    Exit;
+  TQtToggleBox(ACustomCheckBox.Handle).setShortcut(NewShortCut);
 end;
 
 {------------------------------------------------------------------------------
@@ -1514,7 +1518,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
-  TQtPushButton(ACustomCheckBox.Handle).setDown(NewState = cbChecked)
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState') then
+    Exit;
+  TQtToggleBox(ACustomCheckBox.Handle).BeginUpdate;
+  TQtToggleBox(ACustomCheckBox.Handle).setChecked(NewState = cbChecked);
+  TQtToggleBox(ACustomCheckBox.Handle).EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -1526,9 +1534,9 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtToggleBox: TQtPushButton;
+  QtToggleBox: TQtToggleBox;
 begin
-  QtToggleBox := TQtPushButton.Create(AWinControl, AParams);
+  QtToggleBox := TQtToggleBox.Create(AWinControl, AParams);
   QtToggleBox.setCheckable(True);
   QtToggleBox.AttachEvents;
   
