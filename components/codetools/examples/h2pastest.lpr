@@ -166,8 +166,8 @@ begin
       CCodeTool.CleanPosToCaret(CCodeTool.LastErrorReportPos,Caret);
       writeln('Combined source: ',
          Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
-         ' ',dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos-20,20)),'|',
-             dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos,20)));
+         ' ',dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos-40,40)),'|',
+             dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos,40)));
       if Merger<>nil then begin
         Merger.MergedPosToOriginal(Caret.X,Caret.Y,Caret.Code,Caret.X,Caret.Y);
       end;

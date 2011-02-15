@@ -30,6 +30,7 @@
     __TIME__  current time "hh:mm:ss"
     __STDC__  1
     
+
 }
 //  Predefined gcc macros:
 //    __attribute__((packed))
@@ -40,6 +41,16 @@
 //        struct __attribute__((packed)) {
 //                typeof(*(ptr)) __v;
 //        } *__p = (void *) (ptr);
+
+//union _GFloatIEEE754
+//{
+//  gfloat v_float;
+//  struct {
+//    guint mantissa : 23;
+//    guint biased_exponent : 8;
+//    guint sign : 1;
+//  } mpn;
+//};
 
 //ToDo:
 
@@ -92,7 +103,7 @@ interface
 
 {$I codetools.inc}
 
-{off $DEFINE VerboseCCodeParser}
+{$DEFINE VerboseCCodeParser}
 {off $DEFINE VerboseCDirectives}
 
 uses
@@ -119,14 +130,15 @@ const
   ccnConstant       =  6+ccnBase;// e.g. 1
   ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;
   ccnStruct         =  8+ccnBase;// e.g. struct{}
-  ccnStructAlias    =  9+ccnBase;// e.g. struct name
+  ccnStructAlias    =  9+ccnBase;// e.g. struct alias name;
   ccnUnion          = 10+ccnBase;// e.g. union{}
-  ccnVariable       = 11+ccnBase;// e.g. int i
-  ccnFunction       = 12+ccnBase;// e.g. int i()
-  ccnName           = 13+ccnBase;// e.g. i
-  ccnFuncParamList  = 14+ccnBase;// e.g. ()
-  ccnFuncParameter  = 15+ccnBase;// e.g. ()
-  ccnStatementBlock = 16+ccnBase;// e.g. {}
+  ccnUnionAlias     = 11+ccnBase;// e.g. union alias name;
+  ccnVariable       = 12+ccnBase;// e.g. int i
+  ccnFunction       = 13+ccnBase;// e.g. int i()
+  ccnName           = 14+ccnBase;// e.g. i
+  ccnFuncParamList  = 15+ccnBase;// e.g. ()
+  ccnFuncParameter  = 16+ccnBase;// e.g. ()
+  ccnStatementBlock = 17+ccnBase;// e.g. {}
 
   // values for Node.SubDesc
   ccnsNone             =  0;
@@ -653,7 +665,11 @@ begin
   if LinkIndex<0 then exit(false);
   Link:=@Links[LinkIndex];
   Code:=Link^.Code;
-  CodePos:=MergedPos-Link^.MergedPos;
+  //dbgout(['TCHeaderFileMerger.MergedPosToOriginal LinkIndex=',LinkIndex,
+  //        ' SearchPos=',MergedPos,' LinkMergePos=',Link^.MergedPos,' LinkSrcPos=',Link^.SrcPos]);
+  //if Code<>nil then dbgout(' File=',ExtractFileName(Code.Filename));
+  CodePos:=MergedPos-Link^.MergedPos+Link^.SrcPos;
+  //debugln([' CodePos=',CodePos]);
   Result:=true;
 end;
 
@@ -664,8 +680,11 @@ var
   CodePos: integer;
 begin
   Result:=false;
+  Code:=nil;
+  X:=0;
+  Y:=0;
   CombinedSource.LineColToPosition(MergedY,MergedX,MergedPos);
-  //debugln(['TCHeaderFileMerger.MergedPosToOriginal MergedX=',MergedX,' MergedY=',MergedY,' MergedPos=',MergedPos,' ',dbgstr(copy(CombinedSource.Source,MergedPos-10,10)),'|',dbgstr(copy(CombinedSource.Source,MergedPos,10))]);
+  //debugln(['TCHeaderFileMerger.MergedPosToOriginal MergedX=',MergedX,' MergedY=',MergedY,' MergedPos=',MergedPos,' ',dbgstr(copy(CombinedSource.Source,MergedPos-20,20)),'|',dbgstr(copy(CombinedSource.Source,MergedPos,20))]);
   if not MergedPosToOriginal(MergedPos,Code,CodePos) then exit;
   Code.AbsoluteToLineCol(CodePos,Y,X);
   Result:=Y>=1;
@@ -717,13 +736,14 @@ var
   l: LongInt;
 begin
   debugln(['TCHeaderFileMerger.WriteDebugReport LinkCount=',LinkCount]);
+  debugln(' # MergePos Line');
   for i:=0 to LinkCount-1 do begin
     Link:=@Links[i];
     CombinedSource.AbsoluteToLineCol(Link^.MergedPos,Line,Column);
-    dbgout('  Line=',dbgs(Line));
+    dbgout(['  ',i,' ',Link^.MergedPos,' y=',Line]);
     if Link^.Code<>nil then begin
       Link^.Code.AbsoluteToLineCol(Link^.SrcPos,Line,Column);
-      DbgOut(' ',ExtractFilename(Link^.Code.Filename),' Y=',dbgs(Line),' X=',dbgs(Column));
+      DbgOut([' ',ExtractFilename(Link^.Code.Filename),' Y=',Line,' X=',Column,' SrcPos=',Link^.SrcPos]);
     end else begin
       DbgOut(' no source');
     end;
@@ -1012,6 +1032,13 @@ end;
 procedure TCCodeParserTool.ReadStruct;
 (*  Examples:
 
+  union sign   /* A definition and a declaration */
+  {
+      int svar;
+      unsigned uvar;
+  } number;
+
+
   As typedef:
     typedef struct {
       uint8_t b[6]; // implicit type
@@ -1099,11 +1126,31 @@ procedure TCCodeParserTool.ReadUnion;
           uint128_t uuid128;
   } value;
 
+  union _GFloatIEEE754
+  {
+    gfloat v_float;
+    struct {
+      guint mantissa : 23;
+      guint biased_exponent : 8;
+      guint sign : 1;
+    } mpn;
+  };
+
+  typedef union  _GDoubleIEEE754	GDoubleIEEE754;
 *)
 begin
   CreateChildNode(ccnUnion);
 
   ReadNextAtom;
+
+  debugln(['TCCodeParserTool.ReadUnion AAA1 ',GetAtom]);
+  if AtomIsIdentifier then begin
+    // read type name
+    CreateChildNode(ccnName);
+    EndChildNode;
+    ReadNextAtom;
+    debugln(['TCCodeParserTool.ReadUnion AAA2 ',GetAtom]);
+  end;
 
   if AtomIsChar('{') then begin
     // read block {}
@@ -1126,8 +1173,14 @@ begin
     until false;
   end else if AtomIsIdentifier then begin
     // using another union
+    // for example: typedef union  _GDoubleIEEE754	GDoubleIEEE754;
+    CreateChildNode(ccnUnionAlias);
+    EndChildNode;
+  end else if AtomIsChar(';') then begin
+    // union without content
   end else
     RaiseExpectedButAtomFound('{');
+  debugln(['TCCodeParserTool.ReadUnion AAA3 ',GetAtom]);
 
   // close node
   EndChildNode;
@@ -1330,50 +1383,53 @@ begin
   MainNode:=CurNode;
   IsFunction:=false;
   if AtomIs('const') then ReadNextAtom;
+
   if AtomIs('struct') then begin
     // for example: struct structname varname
     ReadNextAtom;
-  end else if AtomIs('union') then begin
+  end
+  else if AtomIs('union') then begin
     ReadUnion;
-  end else if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
-  then begin
-    // read function modifiers
-    while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
-    do begin
+  end else begin
+    if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+    then begin
+      // read function modifiers
       if AsParameter then
         RaiseException('function modifier not allowed in parameter');
-      IsFunction:=true;
-      MainNode.Desc:=ccnFunction;
-      ReadNextAtom;
-      if not AtomIsIdentifier then
-        RaiseExpectedButAtomFound('identifier');
+      repeat
+        IsFunction:=true;
+        MainNode.Desc:=ccnFunction;
+        ReadNextAtom;
+        if not AtomIsIdentifier then
+          RaiseExpectedButAtomFound('identifier');
+      until not IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart);
     end;
+    if AtomIs('const') then ReadNextAtom;
+
+    // prefixes: signed, unsigned
+    // prefixes and/or names long, short
+
+    // int, short int, short signed int
+    // char, signed char, unsigned char
+    // singed short, unsigned short, short
+    // long, long long, signed long, signed long long, unsigned long, unsigned long long
+    LastIsName:=false;
+    repeat
+      if AtomIs('signed') or AtomIs('unsigned') then begin
+        LastIsName:=false;
+        ReadNextAtom;
+      end else if AtomIs('short') or AtomIs('long') then begin
+        LastIsName:=true;
+        ReadNextAtom;
+      end else
+        break;
+    until false;
+    if LastIsName then
+      UndoReadNextAtom;
+    // read type name
+    ReadNextAtom;
   end;
-  if AtomIs('const') then ReadNextAtom;
 
-  // prefixes: signed, unsigned
-  // prefixes and/or names long, short
-
-  // int, short int, short signed int
-  // char, signed char, unsigned char
-  // singed short, unsigned short, short
-  // long, long long, signed long, signed long long, unsigned long, unsigned long long
-  LastIsName:=false;
-  repeat
-    if AtomIs('signed') or AtomIs('unsigned') then begin
-      LastIsName:=false;
-      ReadNextAtom;
-    end else if AtomIs('short') or AtomIs('long') then begin
-      LastIsName:=true;
-      ReadNextAtom;
-    end else
-      break;
-  until false;
-  if LastIsName then
-    UndoReadNextAtom;
-
-  // read name
-  ReadNextAtom;
   while AtomIsChar('*') or AtomIs('const') do begin
     // pointer or const
     ReadNextAtom;
@@ -1421,8 +1477,6 @@ begin
       CreateChildNode(ccnName);
       CurNode.StartPos:=AtomStart;
       CurNode.EndPos:=SrcPos;
-    end else if not AsParameter then begin
-      RaiseExpectedButAtomFound('identifier');
     end else begin
       UndoReadNextAtom;
     end;
@@ -1531,6 +1585,9 @@ begin
   if ReportPos>0 then
     LastErrorReportPos:=ReportPos;
   CloseNodes;
+  {$IFDEF VerboseCCodeParser}
+  CTDumpStack;
+  {$ENDIF}
   raise ECCodeParserException.Create(Self,AMessage);
 end;
 

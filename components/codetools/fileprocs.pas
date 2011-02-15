@@ -348,6 +348,7 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 
+procedure DbgOut(Args: array of const);
 procedure DbgOut(const s: string);
 procedure DbgOut(const s1,s2: string);
 procedure DbgOut(const s1,s2,s3: string);
@@ -2615,38 +2616,8 @@ begin
 end;
 
 procedure DebugLn(Args: array of const);
-var
-  i: Integer;
 begin
-  for i:=Low(Args) to High(Args) do begin
-    case Args[i].VType of
-    vtInteger: DbgOut(dbgs(Args[i].vinteger));
-    vtInt64: DbgOut(dbgs(Args[i].VInt64^));
-    vtQWord: DbgOut(dbgs(Args[i].VQWord^));
-    vtBoolean: DbgOut(dbgs(Args[i].vboolean));
-    vtExtended: DbgOut(dbgs(Args[i].VExtended^));
-{$ifdef FPC_CURRENCY_IS_INT64}
-    // MWE:
-    // fpc 2.x has troubles in choosing the right dbgs()
-    // so we convert here
-    vtCurrency: DbgOut(dbgs(int64(Args[i].vCurrency^)/10000 , 4));
-{$else}
-    vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
-{$endif}
-    vtString: DbgOut(Args[i].VString^);
-    vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
-    vtChar: DbgOut(Args[i].VChar);
-    vtPChar: DbgOut(Args[i].VPChar);
-    vtPWideChar: DbgOut(Args[i].VPWideChar);
-    vtWideChar: DbgOut(Args[i].VWideChar);
-    vtWidestring: DbgOut(WideString(Args[i].VWideString));
-    vtObject: DbgOut(DbgSName(Args[i].VObject));
-    vtClass: DbgOut(DbgSName(Args[i].VClass));
-    vtPointer: DbgOut(Dbgs(Args[i].VPointer));
-    else
-      DbgOut('?unknown variant?');
-    end;
-  end;
+  DbgOut(Args);
   DebugLn;
 end;
 
@@ -2720,6 +2691,41 @@ procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
   s12: string);
 begin
   DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
+end;
+
+procedure DbgOut(Args: array of const);
+var
+  i: Integer;
+begin
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+    vtInteger: DbgOut(dbgs(Args[i].vinteger));
+    vtInt64: DbgOut(dbgs(Args[i].VInt64^));
+    vtQWord: DbgOut(dbgs(Args[i].VQWord^));
+    vtBoolean: DbgOut(dbgs(Args[i].vboolean));
+    vtExtended: DbgOut(dbgs(Args[i].VExtended^));
+{$ifdef FPC_CURRENCY_IS_INT64}
+    // MWE:
+    // fpc 2.x has troubles in choosing the right dbgs()
+    // so we convert here
+    vtCurrency: DbgOut(dbgs(int64(Args[i].vCurrency^)/10000 , 4));
+{$else}
+    vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
+{$endif}
+    vtString: DbgOut(Args[i].VString^);
+    vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
+    vtChar: DbgOut(Args[i].VChar);
+    vtPChar: DbgOut(Args[i].VPChar);
+    vtPWideChar: DbgOut(Args[i].VPWideChar);
+    vtWideChar: DbgOut(Args[i].VWideChar);
+    vtWidestring: DbgOut(WideString(Args[i].VWideString));
+    vtObject: DbgOut(DbgSName(Args[i].VObject));
+    vtClass: DbgOut(DbgSName(Args[i].VClass));
+    vtPointer: DbgOut(Dbgs(Args[i].VPointer));
+    else
+      DbgOut('?unknown variant?');
+    end;
+  end;
 end;
 
 procedure DBGOut(const s: string);
