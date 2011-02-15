@@ -64,8 +64,8 @@ if TargetOS='darwin' then begin
 end else if TargetOS='solaris' then begin
   UsageLibraryPath:='/usr/X11R6/lib';
 end else if TargetOS='linux' then begin
-  if LCLWidgetType='gtk2' then
-    UsageLibraryPath := '/opt/gnome/lib';
+  if (LCLWidgetType='gtk') or (LCLWidgetType='gtk2') then
+    UsageLibraryPath := '/opt/gnome/lib'; // for SuSE
 end;"/>
       <BuildMacros>
         <Count Value="2"/>
@@ -95,6 +95,9 @@ end;"/>
         </Item2>
       </BuildMacros>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
