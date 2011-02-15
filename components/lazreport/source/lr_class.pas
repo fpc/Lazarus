@@ -2762,7 +2762,7 @@ var
       ParaEnd: Boolean;
       Ts: TTextStyle;
     begin
-      if not Streaming and (cury < DR.Bottom) then
+      if not Streaming and (cury + th < DR.Bottom) then
       begin
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
@@ -2798,7 +2798,6 @@ var
           {$ENDIF}
         end;
         *)
-        th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
         {$IFDEF DebugLR}
         DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
         Debugln('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
@@ -3138,7 +3137,7 @@ begin
     SMemo.Assign(Memo1);
     while Memo1.Count > CurStrNo do
       Memo1.Delete(CurStrNo);
-    if Pos(#1, Memo1.Text) = 0 then
+    if (Memo1.Count>0) and (Pos(#1, Memo1.Text) = 0) then
       Memo1.Add(#1);
   end;
 
@@ -5228,6 +5227,7 @@ begin
               TfrStretcheable(t).DrawMode := drPart;
               DrawObject(t);
               t.y := oldy; t.dy := olddy;
+              t.Selected := False;
             end;
       end;
       Flag := False;
