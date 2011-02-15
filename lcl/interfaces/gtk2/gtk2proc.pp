@@ -424,7 +424,7 @@ type
 procedure InitKeyboardTables;
 procedure DoneKeyboardTables;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
-function GTKEventStateToShiftState(KeyState: Word): TShiftState;
+function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 function gdk_event_get_type(Event: Pointer): TGdkEventType;

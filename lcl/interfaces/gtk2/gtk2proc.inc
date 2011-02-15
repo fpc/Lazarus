@@ -3299,7 +3299,7 @@ end;
 
   GTKEventStateToShiftState converts a GTK event state to a LCL/Delphi TShiftState
  ------------------------------------------------------------------------------}
-function GTKEventStateToShiftState(KeyState: Word): TShiftState;
+function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
   {$ifdef HasX}
   function GetState: TShiftState;
   var
