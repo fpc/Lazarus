@@ -4137,6 +4137,7 @@ var
   p: Integer;
   NewPageName: String;
 begin
+  if SourceNotebook.FUpdateLock > 0 then exit;
   p:=SourceNotebook.FindPageWithEditor(Self);
   if EditorOpts.ShowTabNumbers and (p < 10) then
     // Number pages 1, ..., 9, 0 -- according to Alt+N hotkeys.
@@ -5887,6 +5888,7 @@ end;
 
 procedure TSourceNotebook.UpdateTabsAndPageTitle;
 begin
+  if FUpdateLock > 0 then exit;
   if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
     Caption := FBaseCaption + ': ' + NotebookPages[0];
     FNotebook.ShowTabs := False;
