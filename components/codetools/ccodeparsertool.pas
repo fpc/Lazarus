@@ -320,6 +320,12 @@ type
   end;
   PCHFileLink = ^TCHFileLink;
 
+  TCHFileMergeFlag = (
+    chfmfIgnoreIncludes, // do not merge at includes, but simply append
+    chfmfAll // merge all files, otherwise merge only the first
+    );
+  TCHFileMergeFlags = set of TCHFileMergeFlag;
+
   TCHeaderFileMerger = class
   private
     procedure AddLink(aMergedPos: integer; aCode: TCodeBuffer; aSrcPos: integer);
@@ -331,8 +337,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Merge(SourceFiles: TStrings; CodeCache: TCodeCache);
-    procedure Merge(SourceBuffers: TFPList { list of TCodeBuffer });
+    procedure Merge(SourceFiles: TStrings; CodeCache: TCodeCache;
+                    const Flags: TCHFileMergeFlags);
+    procedure Merge(SourceBuffers: TFPList { list of TCodeBuffer };
+                    const Flags: TCHFileMergeFlags);
     function MergedPosToOriginal(MergedPos: integer;
                           out Code: TCodeBuffer; out CodePos: integer): boolean;
     function MergedPosToOriginal(MergedX, MergedY: integer;
@@ -471,7 +479,7 @@ begin
 end;
 
 procedure TCHeaderFileMerger.Merge(SourceFiles: TStrings;
-  CodeCache: TCodeCache);
+  CodeCache: TCodeCache; const Flags: TCHFileMergeFlags);
 var
   SourceBuffers: TFPList;
   i: Integer;
@@ -486,13 +494,14 @@ begin
         raise Exception.Create('TCHeaderFileCombine.Combine: ERROR loading file '+SourceFiles[i]);
       SourceBuffers.Add(Buf);
     end;
-    Merge(SourceBuffers);
+    Merge(SourceBuffers,Flags);
   finally
     SourceBuffers.Free;
   end;
 end;
 
-procedure TCHeaderFileMerger.Merge(SourceBuffers: TFPList);
+procedure TCHeaderFileMerger.Merge(SourceBuffers: TFPList;
+  const Flags: TCHFileMergeFlags);
 var
   MergedBuffers: TFPList; // list of TCodeBuffer
   StrStream: TStringStream;
@@ -523,34 +532,36 @@ var
   begin
     MergedBuffers.Add(Code);
     MergePos:=1;
-    for i:=0 to Code.LineCount-1 do begin
-      Line:=Code.GetLine(i);
-      if length(Line)<length('#include')+2 then continue;
-      if copy(Line,1,length('#include'))<>'#include' then continue;
-      if not (Line[length('#include')+1] in [' ',#9]) then continue;
-      IncludeParam:=Trim(copy(Line,length('#include')+1,length(Line)));
-      if (IncludeParam<>'') and (IncludeParam[1] in ['<','"']) then
-        IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
-      if IncludeParam<>'' then begin
-        // for example: glib/gutils.h
-        //debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
-        // search file in list
-        for j:=1 to SourceBuffers.Count-1 do begin
-          IncCode:=TCodeBuffer(SourceBuffers[j]);
-          IncFilename:=IncCode.Filename;
-          if CompareFilenames(IncludeParam,
-              RightStr(IncFilename,length(IncludeParam)))<>0 then continue;
-          if (length(IncFilename)=length(IncludeParam))
-          or (IncFilename[length(IncFilename)-length(IncludeParam)]=PathDelim)
-          then begin
-            // include file found
-            if MergedBuffers.IndexOf(IncCode)<0 then begin
-              debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
-              Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
-              Append(Code,MergePos,Code.GetLineStart(i));
-              MergePos:=Code.GetLineStart(i+1);
-              Parse(IncCode);
-              Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+    if not (chfmfIgnoreIncludes in Flags) then begin
+      for i:=0 to Code.LineCount-1 do begin
+        Line:=Code.GetLine(i);
+        if length(Line)<length('#include')+2 then continue;
+        if copy(Line,1,length('#include'))<>'#include' then continue;
+        if not (Line[length('#include')+1] in [' ',#9]) then continue;
+        IncludeParam:=Trim(copy(Line,length('#include')+1,length(Line)));
+        if (IncludeParam<>'') and (IncludeParam[1] in ['<','"']) then
+          IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
+        if IncludeParam<>'' then begin
+          // for example: glib/gutils.h
+          //debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
+          // search file in list
+          for j:=1 to SourceBuffers.Count-1 do begin
+            IncCode:=TCodeBuffer(SourceBuffers[j]);
+            IncFilename:=IncCode.Filename;
+            if CompareFilenames(IncludeParam,
+                RightStr(IncFilename,length(IncludeParam)))<>0 then continue;
+            if (length(IncFilename)=length(IncludeParam))
+            or (IncFilename[length(IncFilename)-length(IncludeParam)]=PathDelim)
+            then begin
+              // include file found
+              if MergedBuffers.IndexOf(IncCode)<0 then begin
+                debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
+                Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+                Append(Code,MergePos,Code.GetLineStart(i));
+                MergePos:=Code.GetLineStart(i+1);
+                Parse(IncCode);
+                Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
+              end;
             end;
           end;
         end;
@@ -561,12 +572,17 @@ var
     Append(LineEnding);
   end;
 
+var
+  i: Integer;
 begin
   Clear;
   MergedBuffers:=TFPList.Create;
   StrStream:=TStringStream.Create('');
   try
-    Parse(TCodeBuffer(SourceBuffers[0]));
+    for i:=0 to SourceBuffers.Count-1 do begin
+      Parse(TCodeBuffer(SourceBuffers[i]));
+      if not (chfmfAll in Flags) then break;
+    end;
   finally
     CombinedSource:=TCodeBuffer.Create;
     CombinedSource.Source:=StrStream.DataString;

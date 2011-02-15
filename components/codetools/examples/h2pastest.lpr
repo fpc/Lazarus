@@ -49,14 +49,15 @@ var
   Filenames: TStringList;
   Src: String;
   Merger: TCHeaderFileMerger;
-  MergeFiles: Boolean;
+  MergeAll: Boolean;
+  MergeFlags: TCHFileMergeFlags;
 begin
   Merger:=nil;
   try
     Tool:=TH2PasTool.Create;
     Filenames:=TStringList.Create;
     OutputFilename:=CleanAndExpandFilename(AppendPathDelim(GetCurrentDir)+'h2pasoutput.pas');
-    MergeFiles:=false;
+    MergeAll:=false;
     for i:=1 to Paramcount do begin
       Param:=ParamStr(i);
       if copy(Param,1,2)='-d' then
@@ -65,13 +66,15 @@ begin
         Tool.Undefines.Add(copy(Param,3,255),'')
       else if copy(Param,1,2)='-o' then
         OutputFilename:=CleanAndExpandFilename(Param)
-      else if Param='--merge' then
-        MergeFiles:=true
+      else if Param='--merge-all' then
+        MergeAll:=true
       else if copy(Param,1,1)='-' then begin
-        writeln('Usage: ',ParamStr(0),' [--merge] [-d<definesymbol>]... [-u<undefinesymbol>]... <main header filename> <sub header file> ... -o<Outputfilename>');
+        writeln('Usage: ',ParamStr(0),' [--merge-all] [-d<definesymbol>]... [-u<undefinesymbol>]... <main header filename> <sub header file> ... -o<Outputfilename>');
         writeln();
-        writeln('  Note: if --merge is given the sub header files are merged recursively into the main header at the #include directives.');
-        writeln('        Sub header files which are not used by any #include directive are not merged.');
+        writeln('  Scans for include directives and inserts given sub include files.');
+        writeln('');
+        writeln('  --merge-all');
+        writeln('    Merge all given files. Normally only files needed by the main header files are merged.');
         Halt;
       end else begin
         Filename:=CleanAndExpandFilename(Param);
@@ -86,28 +89,19 @@ begin
       Filenames.Add(CleanAndExpandFilename(GetCurrentDir+'/scanexamples/test.h'));
 
     // Step 1: load all input files
-    if MergeFiles then begin
-      Merger:=TCHeaderFileMerger.Create;
-      Merger.Merge(Filenames,CodeToolBoss.SourceCache);
-      //Merger.WriteDebugReport;
-      Src:=Merger.CombinedSource.Source;
-      {writeln;
-      writeln('======Combined c header files================');
-      writeln(Src);
-      writeln('=============================================');}
-    end else begin
-      Src:='';
-      for i:=0 to Filenames.Count-1 do begin
-        Filename:=Filenames[i];
-        CCode:=CodeToolBoss.LoadFile(Filename,false,false);
-        if CCode=nil then
-          raise Exception.Create('loading failed '+Filename);
-        Tool.UndefineEnclosingIFNDEF(CCode);
-        if Src<>'' then
-          Src:=Src+LineEnding;
-        Src:=Src+CCode.Source;
-      end;
-    end;
+    Merger:=TCHeaderFileMerger.Create;
+    MergeFlags:=[];
+    if MergeAll then Include(MergeFlags,chfmfAll);
+    Merger.Merge(Filenames,CodeToolBoss.SourceCache,MergeFlags);
+    //Merger.WriteDebugReport;
+    Src:=Merger.CombinedSource.Source;
+    {writeln;
+    writeln('======Combined c header files================');
+    writeln(Src);
+    writeln('=============================================');}
+
+    // ToDo:
+    //  Tool.UndefineEnclosingIFNDEF(CCode);
 
     // Step 2: create a temporary file
     Filename:='h2pasoutput.pas';
