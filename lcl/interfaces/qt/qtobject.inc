@@ -100,6 +100,7 @@ begin
   if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
     QtX11InitializePalettes;
   {$ENDIF}
+  FGlobalActions := TFPList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -140,6 +141,7 @@ begin
     SavedHandlesList := nil;
   end;
   FSocketEventMap.Free;
+  FGlobalActions.Free;
 
   System.DoneCriticalsection(CriticalSection);
 
@@ -756,6 +758,91 @@ begin
   System.EnterCriticalsection(CriticalSection);
   Result := SavedHandlesList.HasId(TObject(AHandle));
   System.LeaveCriticalsection(CriticalSection);
+end;
+
+procedure TQtWidgetSet.ClearGlobalActions;
+begin
+  {$IFDEF QT_DEBUG_GLOBALACTIONS}
+  writeln('TQtWidgetSet.ClearGlobalActions');
+  {$ENDIF}
+  FGlobalActions.Clear;
+end;
+
+procedure TQtWidgetSet.AddGlobalAction(AnAction: QActionH);
+begin
+  {$IFDEF QT_DEBUG_GLOBALACTIONS}
+  writeln('TQtWidgetSet.AddGlobalAction() AnAction ',dbgHex(PtrUInt(AnAction)));
+  {$ENDIF}
+  FGlobalActions.Add(AnAction);
+end;
+
+function TQtWidgetSet.ShortcutInGlobalActions(const AMnemonicText: WideString;
+  out AGlobalActionIndex: Integer): Boolean;
+var
+  NewKey: QKeySequenceH;
+  NewStr: WideString;
+  CurrentKey: QKeySequenceH;
+  CurrentStr: WideString;
+  Action: QActionH;
+  i: Integer;
+begin
+  {$IFDEF QT_DEBUG_GLOBALACTIONS}
+  writeln('TQtWidgetSet.ShortcutInGlobalActions ',AMnemonicText);
+  {$ENDIF}
+  Result := False;
+  AGlobalActionIndex := -1;
+  NewKey := QKeySequence_create();
+  try
+    QKeySequence_fromString(NewKey, @AMnemonicText);
+    NewStr := '';
+    QKeySequence_toString(NewKey, @NewStr);
+
+    {$IFDEF QT_DEBUG_GLOBALACTIONS}
+    writeln('TQtWidgetSet.ShortcutInGlobalActions new seq=',NewStr);
+    {$ENDIF}
+
+    for i := 0 to FGlobalActions.Count - 1 do
+    begin
+      Action := QActionH(FGlobalActions.Items[i]);
+      CurrentStr := '';
+      QAction_text(Action, @CurrentStr);
+      CurrentKey := QKeySequence_create();
+      try
+        QKeySequence_mnemonic(CurrentKey, @CurrentStr);
+        if not QKeySequence_isEmpty(CurrentKey) then
+        begin
+          QKeySequence_toString(CurrentKey, @CurrentStr);
+          {$IFDEF QT_DEBUG_GLOBALACTIONS}
+          writeln('TQtWidgetSet.ShortcutInGlobalActions CurrentKey ',
+            CurrentStr,' NewKey ',NewStr,' Result ? ',CurrentStr = NewStr);
+          {$ENDIF}
+          Result := CurrentStr = NewStr;
+          AGlobalActionIndex := i;
+          if Result then
+            break;
+        end;
+      finally
+        QKeySequence_destroy(CurrentKey);
+      end;
+    end;
+  finally
+    QKeySequence_destroy(NewKey);
+  end;
+end;
+
+procedure TQtWidgetSet.TriggerGlobalAction(const ActionIndex: Integer);
+var
+  Action: QActionH;
+  MainWin: TQtMainWindow;
+begin
+  Action := QActionH(FGlobalActions[ActionIndex]);
+  if (Action <> nil) and Assigned(Application.MainForm) and
+    (Application.MainForm.HandleAllocated) then
+  begin
+    MainWin := TQtMainWindow(Application.MainForm.Handle);
+    MainWin.Activate;
+    QMenuBar_setActiveAction(QMenuBarH(MainWin.MenuBar.Widget), Action);
+  end;
 end;
 
 {Params: HWND
