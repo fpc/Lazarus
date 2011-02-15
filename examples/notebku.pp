@@ -25,7 +25,7 @@ unit notebku;
 
 interface
 
-uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons, StdCtrls;
+uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons, StdCtrls, ComCtrls;
 
 type
    TForm1 = class(TForm)
@@ -33,7 +33,7 @@ type
    private
    public
      fNotebk: TNotebook;
-     fNotebook: TNotebook;
+     fNotebook: TPageControl;
      fButton1: TButton;
      fButton2: TButton;
      fButton3: TButton;
@@ -49,7 +49,9 @@ type
      procedure Button1Click(Sender: TObject);
      procedure Button2Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
+     procedure Button4Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
+     procedure Button6Click(Sender: TObject);
    end;
 
 var
@@ -64,9 +66,11 @@ begin
 end;
 
 constructor TForm1.Create(AOwner: TComponent);	
+var
+  i: integer;
 begin
    inherited Create(AOwner);
-   Caption := 'Notebook Test';
+   Caption := 'Notebook/PageControl Test';
    Width := 300;
    Height := 400;
    Left := 200;
@@ -82,31 +86,23 @@ begin
       Top :=0;
       Width := Self.Width;
       Height := Self.Height;
-      if PageCount>0 then
-        Pages.Strings[0] := 'Page 1'
-      else
-        Pages.Add('Page 1');
-      Pages.Add('Page 2');
-      Pages.Add('Page 3');
-      Pages.Add('Page 4');
-      Pages.Add('Page 5');
+      for i:=1 to 5 do
+        Pages.Add('Page '+IntToStr(i));
    end;
    
    fNotebk.Page[4].OnResize:=@fNotebkResize;
 
-   // Create the Tabbed Notebook
-   fNotebook := TNotebook.Create(Self);
+   // Create the nested PageControl
+   fNotebook := TPageControl.Create(Self);
    with fNotebook do
    begin
       Parent := fNotebk.Page[4];
-      if PageCount>0 then
-        Pages.Strings[0] := 'Page 1'
-      else
-        Pages.Add('Page 1');
-      Pages.Add('Page 2');
-      Pages.Add('Page 3');
-      Pages.Add('Page 4');
-      Pages.Add('Page 5');
+      for i:=1 to 5 do
+        with TTabSheet.Create(fNotebook) do
+        begin
+          PageControl := fNotebook;
+          Caption := 'Page '+IntToStr(i);
+        end;
    end;
 
    { Create Goto First Page Button on last page of Notebook
@@ -232,18 +228,18 @@ begin
    end;
 
    // Create Show/Hide Tabs Button on first page of TabbedNotebook
-{   fButton4 := TButton.Create(fNotebook.Page[0]);
+   fButton4 := TButton.Create(fNotebook.Page[0]);
    with fButton4 do
    begin
       Parent := fNotebook.Page[0];
       OnClick := @Button4Click;
       Width := 90;
       Height := 23;
-      left := (250 {Parent.Widht} - Width) div 2;
+      left := (250 {Parent.Width} - Width) div 2;
       top := 150;
       Caption := 'Hide Tabs';
       Show; 
-   end;}
+   end;
  
    // Create Delete Page Button on third page of TabbedNotebook
    fButton5 := TButton.Create(fNotebook.Page[2]);
@@ -253,10 +249,24 @@ begin
       OnClick := @Button5Click;
       Width := 120;
       Height := 23;
-      left := (250 {Parent.Widht} - Width) div 2;
+      left := (250 {Parent.Width} - Width) div 2;
       top := 100;
       Caption := 'Delete Page';
       Show; 
+   end;
+
+   // Create Set Tabs Position Button on first page of TabbedNotebook
+   fButton6 := TButton.Create(fNotebook.Page[0]);
+   with fButton6 do
+   begin
+      Parent := fNotebook.Page[0];
+      OnClick := @Button6Click;
+      Width := 150;
+      Height := 23;
+      left := (250 {Parent.Widht} - Width) div 2;
+      top := 190;
+      Caption := 'Set Tab Position';
+      Show;
    end;
 
    // Goto the first page of the Notebook 
@@ -281,18 +291,43 @@ begin
   Close;
 end;
 
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  //writeln('Show/Hide Tabs Button Clicked');
+
+  fNotebook.ShowTabs := not fNotebook.ShowTabs;
+  if (fNotebook.ShowTabs) then
+    fButton4.Caption := 'Hide Tabs'
+  else
+    fButton4.Caption := 'Show Tabs';
+end;
+
 procedure TForm1.Button5Click(Sender: TObject);
 begin
   //writeln('Delete Page Button Clicked');
 
-  if (fNotebook.Pages.Count > 1) then
+  if (fNotebook.PageCount > 1) then
   begin
     // Make sure we don't delete the page with the delete button on it
-    if (fNotebook.PageIndex = fNotebook.Pages.Count - 1) then
-      fNotebook.Pages.Delete(fNotebook.Pages.Count - 2)
+    if (fNotebook.PageIndex = fNotebook.PageCount - 1) then
+      fNotebook.Pages[fNotebook.PageCount - 2].Free
     else
-      fNotebook.Pages.Delete(fNotebook.Pages.Count - 1);
+      fNotebook.Pages[fNotebook.PageCount - 1].Free;
   end;
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+begin
+  //writeln('Set Tab Position Button Clicked');
+
+  if fNotebook.TabPosition = tpTop then
+     fNotebook.TabPosition := tpRight
+  else if fNotebook.TabPosition = tpRight then
+     fNotebook.TabPosition := tpBottom
+  else if fNotebook.TabPosition = tpBottom then
+     fNotebook.TabPosition := tpLeft
+  else if fNotebook.TabPosition = tpLeft then
+     fNotebook.TabPosition := tpTop;
 end;
 
 end.
