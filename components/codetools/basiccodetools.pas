@@ -83,6 +83,10 @@ function GetBlockMinIndent(const Source: string;
 function GetIndentStr(Indent: integer): string;
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
     out NewSource: string);
+function FindFirstNonSpaceCharInLine(const Source: string;
+    Position: integer): integer;
+function IsFirstNonSpaceCharInLine(const Source: string;
+    Position: integer): boolean;
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -113,10 +117,6 @@ function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
     NestedComments: boolean): integer;
 function PositionsInSameLine(const Source: string;
     Pos1, Pos2: integer): boolean;
-function FindFirstNonSpaceCharInLine(const Source: string;
-    Position: integer): integer;
-function IsFirstNonSpaceCharInLine(const Source: string;
-    Position: integer): boolean;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean;
     StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true;

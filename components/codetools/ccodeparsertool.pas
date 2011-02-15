@@ -510,7 +510,7 @@ var
 
   procedure Append(Code: TCodeBuffer; FromPos, EndPos: integer);
   var
-    Identifier: PChar;
+    StartP: PChar;
     AtomStart: integer;
     p: LongInt;
     MacroName: String;
@@ -523,13 +523,27 @@ var
     while p<EndPos do begin
       ReadRawNextCAtom(Code.Source,p,AtomStart);
       if AtomStart>=EndPos then break;
-      Identifier:=@Code.Source[AtomStart];
-      if IsIdentStartChar[Identifier^]
-      and Macros.ContainsIdentifier(Identifier) then begin
+      StartP:=@Code.Source[AtomStart];
+      if (StartP^='#') and IsFirstNonSpaceCharInLine(Code.Source,AtomStart) then
+      begin
+        // directive
+        ReadRawNextCAtom(Code.Source,p,AtomStart);
+        if AtomStart>=EndPos then break;
+        StartP:=@Code.Source[AtomStart];
+        if (CompareIdentifiersCaseSensitive(StartP,'define')=0)
+        or (CompareIdentifiersCaseSensitive(StartP,'undef')=0) then begin
+          // a define/undefine directive
+          // the next identifier should not be replaced as macro
+          ReadRawNextCAtom(Code.Source,p,AtomStart);
+          if AtomStart>=EndPos then break;
+        end;
+      end
+      else if IsIdentStartChar[StartP^] and Macros.ContainsIdentifier(StartP)
+      then begin
         // macro found
-        MacroName:=GetIdentifier(Identifier);
+        MacroName:=GetIdentifier(StartP);
         MacroValue:=Macros[MacroName];
-        debugln(['Append Macro found: ',MacroName]);
+        //debugln(['Append Macro found: ',MacroName]);
         // write source in front of macro
         if AtomStart>FromPos then begin
           AddLink(StrStream.Position+1,Code,FromPos);

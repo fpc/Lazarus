@@ -119,10 +119,10 @@ begin
     Merger.Merge(Filenames,CodeToolBoss.SourceCache,MergeFlags);
     //Merger.WriteDebugReport;
     Src:=Merger.CombinedSource.Source;
-    writeln;
+    {writeln;
     writeln('======Combined c header files================');
     writeln(Src);
-    writeln('=============================================');
+    writeln('=============================================');}
 
     // ToDo:
     //  Tool.UndefineEnclosingIFNDEF(CCode);
@@ -164,10 +164,14 @@ begin
     on E: ECCodeParserException do begin
       CCodeTool:=ECCodeParserException(E).Sender;
       CCodeTool.CleanPosToCaret(CCodeTool.LastErrorReportPos,Caret);
+      writeln('Combined source: ',
+         Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
+         ' ',dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos-20,20)),'|',
+             dbgstr(copy(CCodeTool.Src,CCodeTool.LastErrorReportPos,20)));
       if Merger<>nil then begin
         Merger.MergedPosToOriginal(Caret.X,Caret.Y,Caret.Code,Caret.X,Caret.Y);
       end;
-      writeln(Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
+      writeln('Origin: ',Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
     end;
     on E: Exception do begin
       writeln(E.Message);
