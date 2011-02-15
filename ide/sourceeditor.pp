@@ -5523,6 +5523,7 @@ procedure TSourceNotebook.UpdatePageNames;
 var
   i: Integer;
 begin
+  if FUpdateLock > 0 then exit;
   for i:=0 to PageCount-1 do
     FindSourceEditorWithPageIndex(i).UpdatePageName;
   UpdateTabsAndPageTitle;
@@ -5837,8 +5838,11 @@ end;
 procedure TSourceNotebook.DecUpdateLock;
 begin
   dec(FUpdateLock);
-  if FUpdateLock = 0 then
+  if FUpdateLock = 0 then begin
     PageIndex := FPageIndex;
+    UpdatePageNames;
+    UpdateStatusBar;
+  end;
 end;
 
 procedure TSourceNotebook.NoteBookInsertPage(Index: Integer; const S: string);
@@ -6638,6 +6642,7 @@ var
   PanelFileMode: string;
   CurEditor: TSynEdit;
 begin
+  if FUpdateLock > 0 then exit;
   if (not IsVisible) or (FUpdateLock > 0) then
   begin
     Include(States,snUpdateStatusBarNeeded);
