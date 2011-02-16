@@ -579,6 +579,7 @@ type
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock: Integer;
+    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles);
     FPageIndex: Integer;
     fAutoFocusLock: integer;
     FIncrementalSearchPos: TPoint; // last set position
@@ -619,7 +620,7 @@ type
     procedure SetIncrementalSearchStr(const AValue: string);
     procedure IncrementalSearch(ANext, ABackward: Boolean);
     procedure UpdatePageNames;
-    procedure UpdateProjectFiles;
+    procedure UpdateProjectFiles(ACurrentEditor: TSourceEditor = nil);
 
     property NoteBookPage[Index: Integer]: TTabSheet read GetNoteBookPage;
     procedure NoteBookInsertPage(Index: Integer; const S: string);
@@ -4139,7 +4140,10 @@ var
   p: Integer;
   NewPageName: String;
 begin
-  if SourceNotebook.FUpdateLock > 0 then exit;
+  if SourceNotebook.FUpdateLock > 0 then begin
+    include(SourceNotebook.FUpdateFlags, ufPageNames);
+    exit;
+  end;
   p:=SourceNotebook.FindPageWithEditor(Self);
   if EditorOpts.ShowTabNumbers and (p < 10) then
     // Number pages 1, ..., 9, 0 -- according to Alt+N hotkeys.
@@ -5526,16 +5530,25 @@ procedure TSourceNotebook.UpdatePageNames;
 var
   i: Integer;
 begin
-  if FUpdateLock > 0 then exit;
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufPageNames);
+    exit;
+  end;
   for i:=0 to PageCount-1 do
     FindSourceEditorWithPageIndex(i).UpdatePageName;
   UpdateTabsAndPageTitle;
 end;
 
-procedure TSourceNotebook.UpdateProjectFiles;
+procedure TSourceNotebook.UpdateProjectFiles(ACurrentEditor: TSourceEditor = nil);
 var
   i: Integer;
 begin
+  if FUpdateLock > 0 then begin
+    if ACurrentEditor <> nil then
+      ACurrentEditor.UpdateProjectFile;
+    include(FUpdateFlags, ufProjectFiles);
+    exit;
+  end;
   for i := 0 to EditorCount - 1 do
     Editors[i].UpdateProjectFile;
 end;
@@ -5838,6 +5851,8 @@ end;
 
 procedure TSourceNotebook.IncUpdateLock;
 begin
+  if FUpdateLock = 0 then
+    FUpdateFlags := [];
   inc(FUpdateLock);
 end;
 
@@ -5846,8 +5861,11 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
     PageIndex := FPageIndex;
-    UpdatePageNames;
-    UpdateStatusBar;
+    if (ufPageNames in FUpdateFlags)    then UpdatePageNames;
+    if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
+    if (ufStatusBar in FUpdateFlags)    then UpdateStatusBar;
+    if (ufProjectFiles in FUpdateFlags) then UpdateProjectFiles;
+    FUpdateFlags := [];
   end;
 end;
 
@@ -5893,7 +5911,10 @@ end;
 
 procedure TSourceNotebook.UpdateTabsAndPageTitle;
 begin
-  if FUpdateLock > 0 then exit;
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufTabsAndPage);
+    exit;
+  end;
   if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
     Caption := FBaseCaption + ': ' + NotebookPages[0];
     FNotebook.ShowTabs := False;
@@ -6166,7 +6187,7 @@ begin
   UpdatePageNames;
   UpdateProjectFiles;
   DestWin.UpdatePageNames;
-  DestWin.UpdateProjectFiles;
+  DestWin.UpdateProjectFiles(Edit);
   DestWin.UpdateActiveEditColors(Edit.EditorComponent);
   DestWin.UpdateStatusBar;
 
@@ -6201,7 +6222,7 @@ begin
 
   UpdatePageNames;
   UpdateProjectFiles;
-  DestWin.UpdateProjectFiles;
+  DestWin.UpdateProjectFiles(NewEdit);
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
   if Focus then begin
     Manager.ActiveEditor := NewEdit;
@@ -6458,7 +6479,7 @@ Begin
       //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
       Result.PageName:= s;
       UpdatePageNames;
-      Editors[EditorCount-1].UpdateProjectFile;
+      UpdateProjectFiles(Result);
       UpdateStatusBar;
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
@@ -6494,6 +6515,7 @@ begin
   //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
   NoteBookDeletePage(APageIndex);
   //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+  UpdateProjectFiles;
   UpdatePageNames;
   if WasSelected then
     UpdateStatusBar;
@@ -6651,7 +6673,10 @@ var
   PanelFileMode: string;
   CurEditor: TSynEdit;
 begin
-  if FUpdateLock > 0 then exit;
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufStatusBar);
+    exit;
+  end;
   if (not IsVisible) or (FUpdateLock > 0) then
   begin
     Include(States,snUpdateStatusBarNeeded);
