@@ -42,12 +42,15 @@ uses
 
 type
 
-  TForm1 = class(TFORM)
-    notebook1 : TNotebook;
+  TForm1 = class(TForm)
+    Notebook1 : TNotebook;
     Button1: TButton; 
-    Button2: TButton; 
+    Button2: TButton;
+    Button3: TButton;
+    Label1: TLabel;
     procedure Button1CLick(Sender : TObject);
     procedure Button2CLick(Sender : TObject);
+    procedure Button3CLick(Sender : TObject);
   public
     constructor Create(AOwner: TComponent); override;	
   end;
@@ -56,7 +59,7 @@ type
 constructor TForm1.Create(AOwner: TComponent);	
 begin
   inherited Create(AOwner);
-  Caption := 'Notebook Testing';
+  Caption := 'Notebook testing';
   Left := 0;
   Top := 0;
   Width := 700; 
@@ -67,31 +70,54 @@ begin
   with Button1 do begin
     Top:= 0;
     Left:= 0;
-    Width:= 50;
-    Height:= 20;
+    AutoSize := true;
     Parent:= Self;
-    Caption := 'Button';
+    Caption := 'Create page';
     OnClick := @Button1Click;
   end;
   
   Button2 := TButton.Create(Self);
   with Button2 do begin
-    Top:= 0;
-    Left:= 50;
-    Width:= 50;
-    Height:= 20;
+    AnchorSide[akLeft].Side := asrRight;
+    AnchorSide[akLeft].Control := Button1;
+    AnchorSide[akTop].Side := asrCenter;
+    AnchorSide[akTop].Control := Button1;
+    AutoSize := true;
     Parent:= Self;
-    Caption := 'Button';
+    Caption := 'Back';
     OnClick := @Button2Click;
+  end;
+
+  Button3 := TButton.Create(Self);
+  with Button3 do begin
+    AnchorSide[akLeft].Side := asrRight;
+    AnchorSide[akLeft].Control := Button2;
+    AnchorSide[akTop].Side := asrCenter;
+    AnchorSide[akTop].Control := Button2;
+    AutoSize := true;
+    Parent:= Self;
+    Caption := 'Forward';
+    OnClick := @Button3Click;
+  end;
+
+  Label1 := TLabel.Create(Self);
+  with Label1 do begin
+    AnchorSide[akLeft].Side := asrRight;
+    BorderSpacing.Left := 6;
+    AnchorSide[akLeft].Control := Button3;
+    AnchorSide[akTop].Side := asrCenter;
+    AnchorSide[akTop].Control := Button3;
+    Parent:= Self;
+    Caption := '0 pages total';
   end;
 
   NoteBook1 := TNoteBook.Create(Self);
   with NoteBook1 do
   begin
-    Top:= 25;
-    Left:= 0;
-    Width:= 650;
-    Height:= 250;
+    AnchorSide[akTop].Side := asrBottom;
+    AnchorSide[akTop].Control := Button1;
+    Align := alBottom;
+    Anchors := Anchors + [akTop];
     Parent:= Self;
   end;
 end;
@@ -114,12 +140,19 @@ begin
     Caption := Format('This is page [%d]',[NewPageIndex]);
     Parent := NewPage;
   end;
+  Label1.Caption := IntToStr(Notebook1.PageCount)+ ' pages total';
 end;
 
 procedure TForm1.Button2Click(Sender : TObject);
 begin
-  if Notebook1.PageIndex>=0 then
-    Notebook1.Pages[Notebook1.PageIndex] := 'Test';
+  if Notebook1.PageIndex>0 then
+    Notebook1.PageIndex:=Notebook1.PageIndex-1;
+end;
+
+procedure TForm1.Button3Click(Sender : TObject);
+begin
+  if Notebook1.PageIndex<Notebook1.PageCount-1 then
+    Notebook1.PageIndex:=Notebook1.PageIndex+1;
 end;
 
 var
