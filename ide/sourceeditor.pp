@@ -579,7 +579,7 @@ type
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock: Integer;
-    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles);
+    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles, ufFocusEditor);
     FPageIndex: Integer;
     fAutoFocusLock: integer;
     FIncrementalSearchPos: TPoint; // last set position
@@ -5534,8 +5534,8 @@ begin
     include(FUpdateFlags, ufPageNames);
     exit;
   end;
-  for i:=0 to PageCount-1 do
-    FindSourceEditorWithPageIndex(i).UpdatePageName;
+  for i := 0 to EditorCount - 1 do
+    Editors[i].UpdatePageName;
   UpdateTabsAndPageTitle;
 end;
 
@@ -5865,6 +5865,7 @@ begin
     if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
     if (ufStatusBar in FUpdateFlags)    then UpdateStatusBar;
     if (ufProjectFiles in FUpdateFlags) then UpdateProjectFiles;
+    if (ufFocusEditor in FUpdateFlags)  then FocusEditor;
     FUpdateFlags := [];
   end;
 end;
@@ -6541,6 +6542,10 @@ procedure TSourceNotebook.FocusEditor;
 var
   SrcEdit: TSourceEditor;
 begin
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufFocusEditor);
+    exit;
+  end;
   if (fAutoFocusLock>0) then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
