@@ -3640,7 +3640,7 @@ begin
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
   // is this row within the ClipRect?
   ClipArea := Canvas.ClipRect;
-  if not VerticalIntersect(R, ClipArea) then begin
+  if (R.Top>=R.Bottom) or not VerticalIntersect(R, ClipArea) then begin
     {$IFDEF DbgVisualChange}
     DebugLn('Drawrow: Skipped row: ', IntToStr(aRow));
     {$ENDIF}
@@ -3651,7 +3651,7 @@ begin
   with FGCache.VisibleGrid do begin
     for aCol:=left to Right do begin
       ColRowToOffset(True, True, aCol, R.Left, R.Right);
-      if not HorizontalIntersect(R, ClipArea) then
+      if (R.Left>=R.Right) or not HorizontalIntersect(R, ClipArea) then
         continue;
       gds := [];
       Rs := (goRowSelect in Options);
@@ -3691,7 +3691,7 @@ begin
     gds:=[gdFixed];
     ColRowToOffset(True, True, aCol, R.Left, R.Right);
     // is this column within the ClipRect?
-    if HorizontalIntersect(R, ClipArea) then
+    if (R.Left<R.Right) and HorizontalIntersect(R, ClipArea) then
       DoDrawCell;
   end;
 end;
