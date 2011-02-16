@@ -7,9 +7,9 @@
         <SaveOnlyProjectUnits Value="True"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="None"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -36,6 +36,13 @@
         <Filename Value="notebooktest.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="NotebookTest"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit0>
     </Units>
   </ProjectOptions>
