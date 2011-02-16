@@ -6450,7 +6450,7 @@ Begin
       //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
       Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
       UpdatePageNames;
-      UpdateProjectFiles;
+      Editors[EditorCount-1].UpdateProjectFile;
       UpdateStatusBar;
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
@@ -6486,7 +6486,6 @@ begin
   //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
   NoteBookDeletePage(APageIndex);
   //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-  UpdateProjectFiles;
   UpdatePageNames;
   if WasSelected then
     UpdateStatusBar;
