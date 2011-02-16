@@ -116,7 +116,8 @@ type
                                AFirstLine, ALineCount: Integer;
                                var ACachedLine, ACachedIdx: Integer;
                                var ACachedIsSrc, ACachedValid: Boolean;
-                               ACachedUpdate: Boolean
+                               ACachedUpdate: Boolean;
+                               ANoExtraHeader: Boolean = False
                               );
     procedure SetSelection(ALine: Integer; AMakeVisible: Boolean; AKeepSelEnd: Boolean = False);
     procedure SetLineCount(ALineCount: Integer);
@@ -323,12 +324,10 @@ var
   i, w: Integer;
   s: String;
 begin
-  if FSelectionEndLine = FSelectLine
-  then exit;
   SetLength(ALineMap, abs(FSelectionEndLine - FSelectLine)+1);
   UpdateLineDataEx(ALineMap, Min(FSelectionEndLine, FSelectLine),
-    abs(FSelectionEndLine - FSelectLine),
-    FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, False );
+    abs(FSelectionEndLine - FSelectLine)+1,
+    FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, False, True);
   if FDebugger = nil
   then W := 16
   else W := FDebugger.TargetWidth div 4;
@@ -768,13 +767,14 @@ end;
 
 procedure TAssemblerDlg.UpdateLineData;
 begin
-  UpdateLineDataEx(FLineMap, FTopLine, FLineCount,
+  UpdateLineDataEx(FLineMap, FTopLine, FLineCount + 1,
     FLastTopLine, FLastTopLineIdx, FLastTopLineIsSrc, FLastTopLineValid, True);
 end;
 
 procedure TAssemblerDlg.UpdateLineDataEx(ALineMap: TAsmDlgLineEntries; AFirstLine,
   ALineCount: Integer; var ACachedLine, ACachedIdx: Integer;
-  var ACachedIsSrc, ACachedValid: Boolean; ACachedUpdate: Boolean);
+  var ACachedIsSrc, ACachedValid: Boolean; ACachedUpdate: Boolean;
+  ANoExtraHeader: Boolean = False);
 
   function GetItem(AIdx: Integer): PDisassemblerEntry;
   begin
@@ -910,7 +910,7 @@ begin
     Line := 0;
     PrevItm := GetItem(Idx - 1);
     NextItm := GetItem(Idx);
-    while Line <= ALineCount do begin
+    while Line < ALineCount do begin
       PrevItm := Itm;
       Itm := NextItm;
       NextItm := GetItem(Idx+1);
@@ -943,7 +943,7 @@ begin
         inc(Line);
       end
       else
-      if (Line = 0) // but it's not LineIsSrc
+      if (Line = 0) and (not ANoExtraHeader)  // but it's not LineIsSrc
       and ( ( (Itm^.SrcFileName <> '') and (Itm^.SrcStatementIndex <> Itm^.SrcStatementCount-1) )
          or ( (Itm^.SrcFileName = '') and (Itm^.FuncName <> '') and (NextItm <> nil) and (Itm^.Offset < NextItm^.Offset) )
       )
@@ -976,7 +976,7 @@ begin
       end;
       LineIsSrc := False; // only for topline
 
-      if Line > ALineCount
+      if Line >= ALineCount
       then break;
 
       ALineMap[Line].Addr       := Itm^.Addr;
