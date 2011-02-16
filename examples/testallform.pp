@@ -86,9 +86,9 @@ type
     //MediaPlayer1      : TMediaPlayer;
       Memo1             : TMemo;
     //MessageDialog1    : TMessageDialog;
-      NoteBook1         : TNoteBook;
+    //NoteBook1         : TNoteBook;
       OpenDialog1       : TOpenDialog;
-    //PageControl1      : TPageControl;
+      PageControl1      : TPageControl;
     //TabSheet1, TabSheet2, TabSheet3 : TTabSheet;
       PaintBox1         : TPaintBox;
       Panel1            : TPanel;
@@ -691,7 +691,7 @@ begin
 
   TNot := TMenuItem.Create(Self);
   TNot.Caption := 'TNoteBook';
-  TNot.OnClick := @ShowMessage1;
+  TNot.OnClick := @ShowMessage0;          //++ Do not exist yet ++
 
   TOpe := TMenuItem.Create(Self);
   TOpe.Caption := 'TOpenDialog';
@@ -699,7 +699,7 @@ begin
 
   TPag := TMenuItem.Create(Self);
   TPag.Caption := 'TPageControl';
-  TPag.OnClick := @ShowMessage0;          //++ Do not exist yet ++
+  TPag.OnClick := @ShowMessage1;
 
   TPai := TMenuItem.Create(Self);
   TPai.Caption := 'TPaintBox';
@@ -1934,7 +1934,7 @@ Memo1 := TMemo.Create(Self);
 //++++++++++++++++++++++++++++++++++++ MessageDialog1 +++++++++++++++++++++++++++++++
 //MessageDialog := TMessageDialog.Create(Self);
 //++++++++++++++++++++++++++++++++++++ TNoteBook ++++++++++++++++++++++++++++++++++++
-NoteBook1 := TNoteBook.Create(Self); // TODO : Add all properties
+{NoteBook1 := TNoteBook.Create(Self); // TODO : Add all properties
   With NoteBook1 do
   begin
     OnClick        := @EventOnClick;
@@ -1960,11 +1960,11 @@ NoteBook1 := TNoteBook.Create(Self); // TODO : Add all properties
     Hint := 'NoteBook1';
     ShowHint := True;
     Show;
-  end;
+  end;}
 //++++++++++++++++++++++++++++++++++++ OpenDialog1 ++++++++++++++++++++++++++++++++++
 OpenDialog1 := TOpenDialog.Create(Self);
 //++++++++++++++++++++++++++++++++++++ PageControl ++++++++++++++++++++++++++++++++++
-{PageControl1 := TPageControl.Create(Self);
+PageControl1 := TPageControl.Create(Self);
   with PageControl1 do
   begin
     OnClick        := @EventOnClick;
@@ -1973,7 +1973,6 @@ OpenDialog1 := TOpenDialog.Create(Self);
     OnMouseUp      := @EventOnMouseUp;
     Parent         := BenchForm[31];
 
-    ActivePage     := TabSheet1
     Align          := alNone;
     Cursor         := crDefault;
     DragCursor     := crDrag;
@@ -1989,36 +1988,28 @@ OpenDialog1 := TOpenDialog.Create(Self);
     Height         := 200;
     HelpContext    := 0;
     Hint           := 'PageControl1';
-    HotTrack       := False;
     Left           := 10;
     MultiLine      := False;
     Name           := 'PageControl1';
     ParentFont     := False;
     ParentShowHint := True;
     PopupMenu      := PopupMenu1;
-    ScrollOpposite := False;
     ShowHint       := True;
-    TabHeight      := 0;
     TabOrder       := 0;
     TabPosition    := tpTop;
     TabStop        := True;
-    TabWidth       := 0;
     Tag            := 0;   
     Top            := 10;
     Visible        := True;    
     Width          := 300;
+    for i:=1 to 3 do
+    with TTabSheet.Create(PageControl1) do
+    begin
+      PageControl := PageControl1;
+      Caption := 'TabSheet'+IntToStr(i);
+    end;
   end;
-TabSheet1 := TTabSheet.Create(Self);
-TabSheet1.Caption := 'TabSheet1';
-TabSheet1.PageControl := PageControl1;
 
-TabSheet2 := TTabSheet.Create(Self);
-TabSheet2.Caption := 'TabSheet2';
-TabSheet2.PageControl := PageControl1;
-
-TabSheet3 := TTabSheet.Create(Self);
-TabSheet3.Caption := 'TabSheet3';
-TabSheet3.PageControl := PageControl1;}
 //++++++++++++++++++++++++++++++++++++ PaintBox1 ++++++++++++++++++++++++++++++++++++
 PaintBox1 := TPaintBox.Create(Self); //Gives Access violation !!!
   with PaintBox1 do
