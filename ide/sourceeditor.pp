@@ -639,7 +639,9 @@ type
 
     procedure Activate; override;
     procedure CreateNotebook;
-    function NewSE(Pagenum: Integer; NewPagenum: Integer = -1; ASharedEditor: TSourceEditor = nil): TSourceEditor;
+    function NewSE(Pagenum: Integer; NewPagenum: Integer = -1;
+                   ASharedEditor: TSourceEditor = nil;
+                   ATabCaption: String = ''): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor);
     procedure ReleaseEditor(AnEditor: TSourceEditor);
     procedure EditorChanged(Sender: TObject);
@@ -5715,7 +5717,8 @@ begin
   Result := SourceEditorManager.CompletionPlugins[Index];
 end;
 
-function TSourceNotebook.NewSE(PageNum: Integer; NewPageNum: Integer = -1; ASharedEditor: TSourceEditor = nil): TSourceEditor;
+function TSourceNotebook.NewSE(PageNum: Integer; NewPageNum: Integer = -1;
+  ASharedEditor: TSourceEditor = nil; ATabCaption: String = ''): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
@@ -5727,7 +5730,9 @@ begin
     else
       Pagenum := PageIndex+1;
     Pagenum := Max(0,Min(PageNum, PageCount));
-    NoteBookInsertPage(PageNum, Manager.FindUniquePageName('', nil));
+    if ATabCaption = '' then
+      ATabCaption := Manager.FindUniquePageName('', nil);
+    NoteBookInsertPage(PageNum, ATabCaption);
     NotebookPage[PageNum].ReAlign;
   end;
   {$IFDEF IDE_DEBUG}
@@ -6186,7 +6191,7 @@ begin
     exit;
 
   SrcEdit := FindSourceEditorWithPageIndex(OldPageIndex);
-  NewEdit := DestWin.NewSE(-1, NewPageIndex, SrcEdit);
+  NewEdit := DestWin.NewSE(-1, NewPageIndex, SrcEdit, SrcEdit.PageName);
   NewEdit.IsNewSharedEditor := True;
 
   NewEdit.PageName := SrcEdit.PageName;
@@ -6429,6 +6434,8 @@ end;
 
 function TSourceNotebook.NewFile(const NewShortName: String;
   ASource: TCodeBuffer; FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
+var
+  s: String;
 Begin
   //create a new page
   {$IFDEF IDE_DEBUG}
@@ -6439,7 +6446,8 @@ Begin
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
     try
       IDEWindowCreators.ShowForm(Self,false);
-      Result := NewSE(-1, -1, AShareEditor);
+      s := Manager.FindUniquePageName(NewShortName, AShareEditor);
+      Result := NewSE(-1, -1, AShareEditor, s);
       {$IFDEF IDE_DEBUG}
       writeln('[TSourceNotebook.NewFile] B ');
       {$ENDIF}
@@ -6448,7 +6456,7 @@ Begin
       writeln('[TSourceNotebook.NewFile] D ');
       {$ENDIF}
       //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
-      Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
+      Result.PageName:= s;
       UpdatePageNames;
       Editors[EditorCount-1].UpdateProjectFile;
       UpdateStatusBar;
