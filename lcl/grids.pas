@@ -6799,9 +6799,10 @@ begin
     DebugLn(['InvalidateCell  Col=',aCol,
       ' Row=',aRow,' Redraw=', Redraw]);
   {$Endif}
-  if not HandleAllocated then Exit;
-  R:=CellRect(aCol, aRow);
-  InvalidateRect(Handle, @R, Redraw);
+  if HandleAllocated and IsCellVisible(aCol,aRow) then begin
+    R:=CellRect(aCol, aRow);
+    InvalidateRect(Handle, @R, Redraw);
+  end;
 end;
 
 procedure TCustomGrid.InvalidateRange(const aRange: TRect);
