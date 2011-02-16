@@ -3583,7 +3583,12 @@ end;
 
 procedure TfrMemoView.SetAutoSize(const AValue: Boolean);
 begin
-  Flags:=Flags+flAutoSize;
+  if AutoSize<>AValue then
+  begin
+    BeforeChange;
+    SetBit(Flags, AValue, flAutoSize);
+    AfterChange;
+  end;
 end;
 
 {----------------------------------------------------------------------------}
