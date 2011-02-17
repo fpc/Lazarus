@@ -227,7 +227,7 @@ var
   IdLen: LongInt;
   ItemLen: PtrInt;
 begin
-  Result:=CompareIdentifiersCaseSensitive(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
+  Result:=-CompareIdentifiersCaseSensitive(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
   if Result=0 then begin
     IdLen:=GetIdentLen(Id);
     ItemLen:=length(PStringToStringTreeItem(Data)^.Name);
@@ -252,7 +252,7 @@ var
   IdLen: LongInt;
   ItemLen: PtrInt;
 begin
-  Result:=CompareIdentifiers(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
+  Result:=-CompareIdentifiers(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
   if Result=0 then begin
     IdLen:=GetIdentLen(Id);
     ItemLen:=length(PStringToStringTreeItem(Data)^.Name);

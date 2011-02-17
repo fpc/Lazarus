@@ -2031,7 +2031,7 @@ begin
     //DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)]);
     NextCNode:=CNode.NextSkipChilds;
     case CNode.Desc of
-    ccnRoot, ccnExtern:
+    ccnRoot, ccnExternBlock:
       NextCNode:=CNode.Next;
       
     ccnTypedef:

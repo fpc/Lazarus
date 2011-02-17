@@ -124,21 +124,23 @@ const
   
   ccnRoot           =  1+ccnBase;
   ccnDirective      =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, EndPos at line end
-  ccnExtern         =  3+ccnBase;// e.g. extern "C" {}
+  ccnExternBlock    =  3+ccnBase;// e.g. extern "C" {}
   ccnEnumBlock      =  4+ccnBase;// e.g. enum {};
   ccnEnumID         =  5+ccnBase;// e.g. name = value;
   ccnConstant       =  6+ccnBase;// e.g. 1
   ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;  last child is ccnName
   ccnStruct         =  8+ccnBase;// e.g. struct{}, child is ccnTypeName or ccnTypeName+ccnSubDefs or ccnSubDefs
-  ccnUnion          = 10+ccnBase;// e.g. union{}
-  ccnDefinition     = 12+ccnBase;// e.g. variable: int i, type: struct typename {} or both: union typename {} varname
-  ccnFunction       = 13+ccnBase;// e.g. int i()
-  ccnName           = 14+ccnBase;// e.g. i
-  ccnTypeName       = 15+ccnBase;// e.g. i
-  ccnSubDefs        = 16+ccnBase;// e.g. the {} of a struct
-  ccnFuncParamList  = 17+ccnBase;// e.g. ()
-  ccnFuncParameter  = 18+ccnBase;// e.g. ()
-  ccnStatementBlock = 19+ccnBase;// e.g. {}
+  ccnUnion          =  9+ccnBase;// e.g. union{}
+  ccnDefinition     = 10+ccnBase;// e.g. variable: int i, type: struct typename {} or both: union typename {} varname
+  ccnFunction       = 11+ccnBase;// e.g. int i()
+  ccnName           = 12+ccnBase;// e.g. i
+  ccnTypeName       = 13+ccnBase;// e.g. i
+  ccnSubDefs        = 14+ccnBase;// e.g. the {} of a struct
+  ccnFuncParamList  = 15+ccnBase;// e.g. ()
+  ccnFuncParameter  = 16+ccnBase;// e.g. ()
+  ccnStatementBlock = 17+ccnBase;// e.g. {}
+  ccnBitCount       = 18+ccnBase;// e.g. int i:3
+  ccnExternDef      = 19+ccnBase;// e.g. extern int i;
 
   // values for Node.SubDesc
   ccnsNone             =  0;
@@ -272,6 +274,7 @@ type
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
     function AtomIsStringConstant: boolean;
+    function AtomIsNumber: boolean;
     function GetAtom: string;
     function LastAtomIs(const s: shortstring): boolean;
     function GetLastAtom: string;
@@ -399,7 +402,7 @@ begin
       ccnsDirectivePragma  : Result:=Result+'.Pragma';
       end;
     end;
-  ccnExtern        : Result:='extern-block';
+  ccnExternBlock   : Result:='extern-block';
   ccnEnumBlock     : Result:='enum-block';
   ccnEnumID        : Result:='enum-ID';
   ccnConstant      : Result:='constant';
@@ -410,9 +413,11 @@ begin
   ccnFunction      : Result:='function';
   ccnName          : Result:='name';
   ccnTypeName      : Result:='type-name';
+  ccnSubDefs       : Result:='sub-defs';
   ccnFuncParamList : Result:='function-param-list';
   ccnFuncParameter : Result:='function-parameter';
   ccnStatementBlock: Result:='statement-block';
+  ccnBitCount      : Result:='bit-count';
   else          Result:='?('+IntToStr(Desc)+')';
   end;
 end;
@@ -789,7 +794,7 @@ function TCCodeParserTool.DirectiveToken: boolean;
     repeat
       ReadRawNextAtom;
       {$IFDEF VerboseCCodeParser}
-      debugln(['ReadExpression Atom ',GetAtom]);
+      debugln([GetIndentStr(CurNode.GetLevel*2),'ReadExpression Atom ',GetAtom]);
       {$ENDIF}
       if AtomStart>SrcLen then
         RaiseException('missing expression');
@@ -883,14 +888,14 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('if') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIf;
       IncIfLevel(AtomStart);
       ReadExpression;
     end else if AtomIs('ifdef') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIfDef;
       IncIfLevel(AtomStart);
@@ -899,7 +904,7 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('ifndef') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIfNDef;
       IncIfLevel(AtomStart);
@@ -908,7 +913,7 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('elif') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveElIf;
       if IfLevel=0 then
@@ -916,7 +921,7 @@ begin
       ReadExpression;
     end else if AtomIs('else') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveElse;
       if IfLevel=0 then
@@ -927,7 +932,7 @@ begin
         RaiseException('endif without if');
       dec(IfLevel);
       {$IFDEF VerboseCDirectives}
-      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
     end else if AtomIs('line') then begin
       CurNode.SubDesc:=ccnsDirectiveLine;
@@ -959,13 +964,20 @@ end;
 function TCCodeParserTool.ExternToken: boolean;
 begin
   Result:=true;
-  CreateChildNode(ccnExtern);
+  CreateChildNode(ccnExternBlock);
   ReadNextAtom;
-  if not AtomIsStringConstant then
-    RaiseExpectedButAtomFound('string constant');
-  ReadNextAtom;
-  if not AtomIsChar('{') then
-    RaiseExpectedButAtomFound('{');
+  if AtomIsStringConstant then begin
+    // for example: extern "C" {
+    ReadNextAtom;
+    if not AtomIsChar('{') then
+      RaiseExpectedButAtomFound('{');
+  end else if AtomIsIdentifier then begin
+    // for example: extern void a();
+    CurNode.Desc:=ccnExternDef;
+    ReadVariable(false);
+    EndChildNode;
+  end else
+    RaiseExpectedButAtomFound('definition');
 end;
 
 function TCCodeParserTool.CurlyBracketCloseToken: boolean;
@@ -973,7 +985,7 @@ function TCCodeParserTool.CurlyBracketCloseToken: boolean;
 //  end of 'extern "C" {'
 begin
   Result:=true;
-  if CurNode.Desc=ccnExtern then
+  if CurNode.Desc=ccnExternBlock then
     EndChildNode
   else
     RaiseException('} without {');
@@ -1317,7 +1329,7 @@ var
   MainNode: TCodeTreeNode;
 begin
   {$IFDEF VerboseCCodeParser}
-  DebugLn(['TCCodeParserTool.ReadVariable START ',GetAtom]);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable START ',GetAtom]);
   {$ENDIF}
   if AsParameter then begin
     CreateChildNode(ccnFuncParameter);
@@ -1333,8 +1345,10 @@ begin
 
   if AtomIs('struct') then begin
     ReadUnionStruct(true);
+    ReadNextAtom;
   end else if AtomIs('union') then begin
     ReadUnionStruct(false);
+    ReadNextAtom;
   end else begin
     if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     then begin
@@ -1369,10 +1383,8 @@ begin
       end else
         break;
     until false;
-    if LastIsName then
-      UndoReadNextAtom;
-    // read type name
-    ReadNextAtom;
+    if not LastIsName then
+      ReadNextAtom;
   end;
 
   while AtomIsChar('*') or AtomIs('const') do begin
@@ -1403,7 +1415,7 @@ begin
       ReadNextAtom;
     end;
     {$IFDEF VerboseCCodeParser}
-    DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
     if AtomIsIdentifier then begin
       CreateChildNode(ccnName);
@@ -1416,7 +1428,7 @@ begin
       RaiseExpectedButAtomFound(')');
   end else begin
     {$IFDEF VerboseCCodeParser}
-    DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
     if AtomIsIdentifier then begin
       CreateChildNode(ccnName);
@@ -1470,6 +1482,14 @@ begin
       ReadTilBracketClose(true);
       ReadNextAtom;
     end;
+  end else if AtomIsChar(':') then begin
+    // bits
+    ReadNextAtom;
+    if not AtomIsNumber then
+      RaiseExpectedButAtomFound('bit count number');
+    CreateChildNode(ccnBitCount);
+    EndChildNode;
+    ReadNextAtom;
   end;
   
   // read initial constant
@@ -1740,7 +1760,7 @@ begin
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
   until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
   {$IFDEF VerboseCCodeParser}
-  DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -1758,7 +1778,7 @@ begin
     end;
   until (not (Src[AtomStart] in [#10,#13]));
   {$IFDEF VerboseCCodeParser}
-  DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -1780,7 +1800,7 @@ begin
     SrcPos:=AtomStart;
   end;
   {$IFDEF VerboseCCodeParser}
-  DebugLn(['TCCodeParserTool.UndoReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.UndoReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -1893,6 +1913,11 @@ end;
 function TCCodeParserTool.AtomIsStringConstant: boolean;
 begin
   Result:=(AtomStart<SrcLen) and (Src[AtomStart]='"');
+end;
+
+function TCCodeParserTool.AtomIsNumber: boolean;
+begin
+  Result:=(AtomStart<SrcLen) and (Src[AtomStart] in ['0'..'9']);
 end;
 
 function TCCodeParserTool.LastAtomIs(const s: shortstring): boolean;
@@ -2431,7 +2456,7 @@ begin
   // skip root and extern nodes
   while (IfNDefNode<>nil) do begin
     if (IfNDefNode.Desc<>ccnRoot)
-    and (IfNDefNode.Desc<>ccnExtern) then
+    and (IfNDefNode.Desc<>ccnExternBlock) then
       break;
     IfNDefNode:=IfNDefNode.Next;
   end;
@@ -2453,7 +2478,7 @@ begin
   // check that no code comes after the #EndIf
   Node:=EndIfNode;
   while (Node<>nil) do begin
-    if (Node.Desc=ccnExtern)
+    if (Node.Desc=ccnExternBlock)
     or ((Node.Desc=ccnDirective)
         and (Node.SubDesc in [ccnsDirectiveIf,ccnsDirectiveIfDef,
           ccnsDirectiveIfNDef,ccnsDirectiveElIf,ccnsDirectiveEndIf]))
