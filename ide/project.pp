@@ -3323,11 +3323,14 @@ begin
       end;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
-      MessageDlg(Format(lisUnableToReadTheProjectInfoFile, [#13, '"',
-        ProjectInfoFile, '"'])
-          ,mtError,[mbOk],0);
-      Result:=mrCancel;
-      exit;
+      on E: Exception do begin
+        MessageDlg('Unable to read project',
+             Format(lisUnableToReadTheProjectInfoFile, [#13, '"',ProjectInfoFile, '"'])+#13
+             +E.Message
+            ,mtError,[mbOk],0);
+        Result:=mrCancel;
+        exit;
+      end;
     end;
 
     fLastReadLPIFilename:=ProjectInfoFile;
