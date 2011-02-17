@@ -410,7 +410,7 @@ begin
     FStringList.Insert(Index, S);
     if TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1 then
     begin
-      if (UTF8Pos('<', S) > 0) or (UTF8Pos('>',S) > 0) then
+      if (System.Pos('<', S) > 0) or (System.Pos('>',S) > 0) then
       begin
         // workaround for qt richtext parser bug
         W := GetUTF8String(S);

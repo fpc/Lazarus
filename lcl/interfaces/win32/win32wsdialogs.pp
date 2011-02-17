@@ -596,8 +596,8 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
   function GetDefaultExt: String;
   begin
     Result := AOpenDialog.DefaultExt;
-    if UTF8Pos('.', Result) = 1 then
-      UTF8Delete(Result, 1, 1);
+    if (Result<>'') and (Result[1]='.') then
+      System.Delete(Result, 1, 1);
   end;
 
 const
@@ -788,8 +788,8 @@ FOS_FORCEPREVIEWPANEON}
   function GetDefaultExt: String;
   begin
     Result := AOpenDialog.DefaultExt;
-    if UTF8Pos('.', Result) = 1 then
-      UTF8Delete(Result, 1, 1);
+    if (Result<>'') and (Result[1]='.') then
+      System.Delete(Result, 1, 1);
   end;
 
 var
