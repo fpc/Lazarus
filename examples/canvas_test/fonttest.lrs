@@ -1,0 +1,7 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmFont','FORMDATA',[
+  'TPF0'#8'TfrmFont'#7'frmFont'#4'Left'#3'"'#1#6'Height'#3'X'#2#3'Top'#3#171#0#5
+  +'Width'#3'X'#2#7'Caption'#6#10'Fonts Test'#7'OnPaint'#7#9'FormPaint'#10'LCLV'
+  +'ersion'#6#6'0.9.29'#0#0
+]);

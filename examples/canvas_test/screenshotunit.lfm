@@ -1,0 +1,26 @@
+object frmScreenshot: TfrmScreenshot
+  Left = 291
+  Height = 240
+  Top = 152
+  Width = 320
+  Caption = 'Screenshot Test'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '0.9.29'
+  object imgScreenshot: TImage
+    Left = 0
+    Height = 168
+    Top = 72
+    Width = 320
+    Align = alBottom
+  end
+  object btnScreenshot: TBitBtn
+    Left = 17
+    Height = 30
+    Top = 15
+    Width = 143
+    Caption = 'Take Screenshot'
+    OnClick = btnScreenshotClick
+    TabOrder = 0
+  end
+end

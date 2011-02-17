@@ -1,0 +1,31 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmCanvasTest','FORMDATA',[
+  'TPF0'#14'TfrmCanvasTest'#13'frmCanvasTest'#4'Left'#3'"'#1#6'Height'#3#164#1#3
+  +'Top'#3#171#0#5'Width'#3#233#0#11'BorderIcons'#11#12'biSystemMenu'#10'biMini'
+  +'mize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#19'Canvas Test Program'
+  +#12'ClientHeight'#3#164#1#11'ClientWidth'#3#233#0#10'LCLVersion'#6#6'0.9.29'
+  +#0#7'TButton'#8'btnBrush'#4'Left'#2#19#6'Height'#2#25#3'Top'#2'8'#5'Width'#3
+  +#194#0#7'Caption'#6#19'Show Brushes Dialog'#7'OnClick'#7#13'btnBrushClick'#8
+  +'TabOrder'#2#0#0#0#7'TButton'#6'btnPen'#4'Left'#2#19#6'Height'#2#25#3'Top'#2
+  +'`'#5'Width'#3#194#0#7'Caption'#6#16'Show Pens Dialog'#7'OnClick'#7#11'btnPe'
+  +'nClick'#8'TabOrder'#2#1#0#0#7'TButton'#7'btnFont'#4'Left'#2#19#6'Height'#2
+  +#25#3'Top'#3#136#0#5'Width'#3#194#0#7'Caption'#6#17'Show Fonts Dialog'#7'OnC'
+  +'lick'#7#12'btnFontClick'#8'TabOrder'#2#2#0#0#7'TButton'#8'btnClose'#4'Left'
+  +#2#19#6'Height'#2#25#3'Top'#3#128#1#5'Width'#3#194#0#7'Caption'#6#5'Close'#7
+  +'OnClick'#7#13'btnCloseClick'#8'TabOrder'#2#3#0#0#7'TButton'#13'btnRectangle'
+  +'s'#4'Left'#2#19#6'Height'#2#25#3'Top'#2#16#5'Width'#3#194#0#7'Caption'#6#22
+  +'Show Rectangles Dialog'#7'OnClick'#7#18'btnRectanglesClick'#8'TabOrder'#2#4
+  +#0#0#7'TButton'#15'btnShapedWindow'#4'Left'#2#19#6'Height'#2#25#3'Top'#3#176
+  +#0#5'Width'#3#194#0#7'Caption'#6#18'Show Shaped Window'#7'OnClick'#7#20'btnS'
+  +'hapedWindowClick'#8'TabOrder'#2#5#0#0#7'TButton'#10'btnEllipse'#4'Left'#2#19
+  +#6'Height'#2#25#3'Top'#3#216#0#5'Width'#3#194#0#7'Caption'#6#19'Show Ellipse'
+  +' Dialog'#7'OnClick'#7#15'btnEllipseClick'#8'TabOrder'#2#6#0#0#7'TButton'#13
+  +'btnScreenshot'#4'Left'#2#19#6'Height'#2#25#3'Top'#3#0#1#5'Width'#3#194#0#7
+  +'Caption'#6#22'Show Screenshot Dialog'#7'OnClick'#7#18'btnScreenshotClick'#8
+  +'TabOrder'#2#7#0#0#7'TButton'#7'btnDraw'#4'Left'#2#19#6'Height'#2#25#3'Top'#3
+  +'('#1#5'Width'#3#194#0#7'Caption'#6#16'Show Draw Dialog'#7'OnClick'#7#12'btn'
+  +'DrawClick'#8'TabOrder'#2#8#0#0#7'TButton'#8'btnImage'#4'Left'#2#19#6'Height'
+  +#2#25#3'Top'#3'P'#1#5'Width'#3#194#0#7'Caption'#6#17'Show Image Dialog'#7'On'
+  +'Click'#7#13'btnImageClick'#8'TabOrder'#2#9#0#0#0
+]);

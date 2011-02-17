@@ -1,0 +1,7 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmEllipse','FORMDATA',[
+  'TPF0'#11'TfrmEllipse'#10'frmEllipse'#4'Left'#3'"'#1#6'Height'#3#240#0#3'Top'
+  +#3#197#0#5'Width'#3#177#1#7'Caption'#6#10'frmEllipse'#7'OnPaint'#7#9'FormPai'
+  +'nt'#10'LCLVersion'#6#6'0.9.31'#0#0
+]);

@@ -1,0 +1,6 @@
+LazarusResources.Add('TfrmRectangles','FORMDATA',[
+  'TPF0'#14'TfrmRectangles'#13'frmRectangles'#4'Left'#3'"'#1#6'Height'#3#150#0#3
+  +'Top'#3#171#0#5'Width'#3#144#1#11'BorderIcons'#11#12'biSystemMenu'#10'biMini'
+  +'mize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#15'Rectangles Test'#7'On'
+  +'Paint'#7#9'FormPaint'#10'LCLVersion'#6#6'0.9.27'#0#0
+]);

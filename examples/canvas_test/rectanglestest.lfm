@@ -1,0 +1,11 @@
+object frmRectangles: TfrmRectangles
+  Left = 290
+  Height = 150
+  Top = 171
+  Width = 400
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Rectangles Test'
+  OnPaint = FormPaint
+  LCLVersion = '0.9.27'
+end

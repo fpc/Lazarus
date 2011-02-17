@@ -1,0 +1,8 @@
+LazarusResources.Add('TfrmShapedWindow','FORMDATA',[
+  'TPF0'#16'TfrmShapedWindow'#15'frmShapedWindow'#4'Left'#3'"'#1#6'Height'#3#200
+  +#0#3'Top'#3#171#0#5'Width'#3#200#0#11'BorderIcons'#11#0#11'BorderStyle'#7#6
+  +'bsNone'#7'Caption'#6#15'frmShapedWindow'#12'ClientHeight'#3#200#0#11'Client'
+  +'Width'#3#200#0#5'Color'#7#5'clRed'#6'OnShow'#7#8'FormShow'#10'LCLVersion'#6
+  +#6'0.9.27'#0#7'TButton'#8'btnClose'#4'Left'#2'2'#6'Height'#2' '#3'Top'#2'X'#5
+  +'Width'#2'd'#7'Caption'#6#5'Close'#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#0
+]);

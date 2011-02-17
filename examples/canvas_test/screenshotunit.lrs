@@ -1,0 +1,9 @@
+LazarusResources.Add('TfrmScreenshot','FORMDATA',[
+  'TPF0'#14'TfrmScreenshot'#13'frmScreenshot'#4'Left'#3'#'#1#6'Height'#3#240#0#3
+  +'Top'#3#152#0#5'Width'#3'@'#1#7'Caption'#6#15'Screenshot Test'#12'ClientHeig'
+  +'ht'#3#240#0#11'ClientWidth'#3'@'#1#10'LCLVersion'#6#6'0.9.29'#0#6'TImage'#13
+  +'imgScreenshot'#4'Left'#2#0#6'Height'#3#168#0#3'Top'#2'H'#5'Width'#3'@'#1#5
+  +'Align'#7#8'alBottom'#0#0#7'TBitBtn'#13'btnScreenshot'#4'Left'#2#17#6'Height'
+  +#2#30#3'Top'#2#15#5'Width'#3#143#0#7'Caption'#6#15'Take Screenshot'#7'OnClic'
+  +'k'#7#18'btnScreenshotClick'#8'TabOrder'#2#0#0#0#0
+]);

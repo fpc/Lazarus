@@ -1,0 +1,67 @@
+object frmImage: TfrmImage
+  Left = 290
+  Height = 381
+  Top = 197
+  Width = 434
+  Caption = 'frmImage'
+  ClientHeight = 381
+  ClientWidth = 434
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object btnSaveJPEG: TButton
+    Left = 32
+    Height = 25
+    Top = 64
+    Width = 107
+    Caption = 'Save JPEG File'
+    OnClick = btnSaveJPEGClick
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 13
+    Height = 14
+    Top = 20
+    Width = 66
+    Caption = 'JPEG Quality:'
+    ParentColor = False
+  end
+  object trackJPEG: TTrackBar
+    Left = 104
+    Height = 25
+    Top = 16
+    Width = 312
+    Max = 100
+    Position = 75
+    TabOrder = 1
+  end
+  object MyImage: TImage
+    Left = 32
+    Height = 100
+    Top = 101
+    Width = 200
+  end
+  object btnResize: TButton
+    Left = 32
+    Height = 25
+    Top = 216
+    Width = 107
+    Caption = 'Resize Bitmap'
+    OnClick = btnResizeClick
+    TabOrder = 2
+  end
+  object btnRotate: TButton
+    Left = 158
+    Height = 25
+    Top = 216
+    Width = 106
+    Caption = 'Rotate Image'
+    OnClick = btnRotateClick
+    TabOrder = 3
+  end
+  object imageDepths: TImage
+    Left = 32
+    Height = 90
+    Top = 256
+    Width = 200
+  end
+end
