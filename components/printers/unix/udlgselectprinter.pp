@@ -83,7 +83,7 @@ type
     labLocation: TLABEL;
     labState: TLABEL;
     edTimeTask: TEDIT;
-    NbOpts: TNOTEBOOK;
+    NbOpts: TPageControl;
     pgAdvance: TTabSheet;
     pgCopies: TTabSheet;
     BtnPanel: TPanel;
