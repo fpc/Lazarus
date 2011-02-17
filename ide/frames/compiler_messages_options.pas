@@ -132,7 +132,7 @@ begin
       add:=m.MsgType in [etNote, etHint, etWarning];
       
       if add and (srch<>'') then 
-        add:=UTF8Pos(srch, UTF8UpperCase(m.GetUserText))>0;
+        add:=System.Pos(srch, UTF8UpperCase(m.GetUserText))>0;
         
       if add then
       begin
