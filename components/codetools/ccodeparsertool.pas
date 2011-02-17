@@ -418,6 +418,7 @@ begin
   ccnFuncParameter : Result:='function-parameter';
   ccnStatementBlock: Result:='statement-block';
   ccnBitCount      : Result:='bit-count';
+  ccnExternDef     : Result:='extern-def';
   else          Result:='?('+IntToStr(Desc)+')';
   end;
 end;
@@ -548,8 +549,11 @@ var
         if AtomStart>=EndPos then break;
         StartP:=@Code.Source[AtomStart];
         if (CompareIdentifiersCaseSensitive(StartP,'define')=0)
-        or (CompareIdentifiersCaseSensitive(StartP,'undef')=0) then begin
-          // a define/undefine directive
+        or (CompareIdentifiersCaseSensitive(StartP,'undef')=0)
+        or (CompareIdentifiersCaseSensitive(StartP,'ifdef')=0)
+        or (CompareIdentifiersCaseSensitive(StartP,'ifndef')=0)
+        then begin
+          // a ifdef/ifndef/define/undefine directive
           // the next identifier should not be replaced as macro
           ReadRawNextCAtom(Code.Source,p,AtomStart);
           if AtomStart>=EndPos then break;
@@ -977,7 +981,7 @@ begin
     ReadVariable(false);
     EndChildNode;
   end else
-    RaiseExpectedButAtomFound('definition');
+    RaiseExpectedButAtomFound('extern definition');
 end;
 
 function TCCodeParserTool.CurlyBracketCloseToken: boolean;
@@ -1341,6 +1345,7 @@ begin
     CreateChildNode(ccnDefinition);
   MainNode:=CurNode;
   IsFunction:=false;
+  if AtomIs('volatile') then ReadNextAtom;
   if AtomIs('const') then ReadNextAtom;
 
   if AtomIs('struct') then begin
