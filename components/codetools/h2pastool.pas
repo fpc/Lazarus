@@ -546,7 +546,7 @@ var
 begin
   if (CNode.FirstChild<>nil) and (CNode.FirstChild.Desc=ccnUnion)
   then begin
-    CurName:=CTool.ExtractVariableName(CNode);
+    CurName:=CTool.ExtractDefinitionName(CNode);
     if (ParentNode<>nil) and (ParentNode.PascalDesc=ctnRecordType)
     then begin
       // create a pascal 'record case'
@@ -578,8 +578,8 @@ begin
       DebugLn(['TH2PasTool.ConvertVariable SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
     end;
   end else begin
-    CurName:=CTool.ExtractVariableName(CNode);
-    CurType:=CTool.ExtractVariableType(CNode);
+    CurName:=CTool.ExtractDefinitionName(CNode);
+    CurType:=CTool.ExtractDefinitionType(CNode);
     SimpleType:=GetSimplePascalTypeOfCVar(CNode);
     if SimpleType='' then begin
       // this variable has a complex type
@@ -751,6 +751,8 @@ var
   CurCName: String;
   CurValue: String;
   SubChildNode: TCodeTreeNode;
+  TypeNode: TCodeTreeNode;
+  SubTypeName: String;
 begin
   if CNode.FirstChild=nil then begin
     exit;
@@ -760,10 +762,10 @@ begin
   ChildNode:=CNode.FirstChild;
   case ChildNode.Desc of
   
-  ccnVariable: // typedef variable
+  ccnDefinition: // typedef name
     begin
-      CurName:=CTool.ExtractVariableName(ChildNode);
-      CurType:=CTool.ExtractVariableType(ChildNode);
+      CurName:=CTool.ExtractDefinitionName(ChildNode);
+      CurType:=CTool.ExtractDefinitionType(ChildNode);
       SimpleType:=GetSimplePascalTypeOfCVar(ChildNode);
       if SimpleType='' then begin
         // this variable has a complex type
@@ -783,22 +785,49 @@ begin
 
   ccnStruct: // typedef struct
     begin
-      ChildNode:=CNode.FirstChild.FirstChild;
-      if (ChildNode<>nil)
-      and (ChildNode.Desc=ccnStructAlias) then begin
-        // this is a struct alias
-        CurType:=GetIdentifier(@CTool.Src[ChildNode.StartPos]);
-        CurCName:=CurName;
-        TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,
-                                   ctnTypeDefinition,CurType);
-      end else begin
-        // this is a new struct
-        CurCName:=CurName;
-        TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnRecordType,'');
+      (* typedef struct a b;     =>  alias b = a
+        typedef struct a {} b;  =>  a = record + alias b = a
+        typedef struct {} b;    =>  b = record
+      *)
+      if (ChildNode.FirstChild.Desc=ccnTypeName)
+      and (ChildNode.LastChild.Desc=ccnSubDefs) then begin
+        // for example: typedef struct a {} b;
+        // => create a new record type a and an alias b = a
+        TypeNode:=ChildNode.FirstChild;
+        SubChildNode:=ChildNode.LastChild;
+        // create a new record
+        CurCName:=GetIdentifier(@CTool.Src[TypeNode.StartPos]);
+        SubTypeName:=CurCName;
+        TypeH2PNode:=CreateH2PNode(SubTypeName,CurCName,TypeNode,ctnRecordType,'');
         DebugLn(['TH2PasTool.ConvertTypedef added record: ',TypeH2PNode.DescAsString(CTool)]);
         // build recursively
-        if ChildNode<>nil then
-          BuildH2PTree(TypeH2PNode,ChildNode);
+        BuildH2PTree(TypeH2PNode,SubChildNode.FirstChild);
+        // create an alias  b=a
+        CurCName:=CurName;
+        TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,
+                                   ctnTypeDefinition,SubTypeName);
+        DebugLn(['TH2PasTool.ConvertTypedef added type alias: ',TypeH2PNode.DescAsString(CTool)]);
+      end else if ChildNode.FirstChild.Desc=ccnSubDefs then begin
+        // for example: typedef struct {} b;  => b = record
+        // => create a new record type b
+        SubChildNode:=ChildNode.LastChild;
+        CurCName:=CurName;
+        TypeH2PNode:=CreateH2PNode(CurName,CurCName,ChildNode,ctnRecordType,'');
+        DebugLn(['TH2PasTool.ConvertTypedef added record: ',TypeH2PNode.DescAsString(CTool)]);
+        // build recursively
+        BuildH2PTree(TypeH2PNode,SubChildNode.FirstChild);
+      end else if (ChildNode.FirstChild.Desc=ccnTypeName)
+      and (ChildNode.FirstChild.NextBrother=nil) then begin
+        // for example: typedef struct a b;
+        // => create a type alias b = a
+        TypeNode:=ChildNode.FirstChild;
+        SubTypeName:=GetIdentifier(@CTool.Src[TypeNode.StartPos]);
+        CurCName:=CurName;
+        TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,
+                                   ctnTypeDefinition,SubTypeName);
+        DebugLn(['TH2PasTool.ConvertTypedef added type alias: ',TypeH2PNode.DescAsString(CTool)]);
+      end else begin
+        raise Exception.Create('TH2PasTool.ConvertTypedef inconsistency: unknown format of typedef struct');
       end;
     end;
 
@@ -2008,7 +2037,7 @@ begin
     ccnTypedef:
       ConvertTypedef(CNode,ParentNode);
 
-    ccnVariable:
+    ccnDefinition:
       ConvertVariable(CNode,ParentNode);
 
     ccnFunction:
@@ -2222,7 +2251,7 @@ end;
 
 function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
 begin
-  Result:=CTool.ExtractVariableType(CVarNode);
+  Result:=CTool.ExtractDefinitionType(CVarNode);
   if Result='' then exit;
   Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;
@@ -2379,14 +2408,14 @@ var
   NeedH2PNode: Boolean;
 begin
   Result:=nil;
-  if (CNode.Desc=ccnVariable)
+  if (CNode.Desc=ccnDefinition)
   and (CNode.FirstChild<>nil)
   and (CNode.FirstChild.Desc=ccnUnion) then begin
     // ToDo: union
   end else begin
     SubH2PNode:=nil;
-    if CNode.Desc=ccnVariable then
-      CCode:=CTool.ExtractVariableType(CNode)
+    if CNode.Desc=ccnDefinition then
+      CCode:=CTool.ExtractDefinitionType(CNode)
     else if CNode.Desc=ccnFunction then
       CCode:=CTool.ExtractFunctionResultType(CNode)
     else if CNode.Desc=ccnFuncParameter then

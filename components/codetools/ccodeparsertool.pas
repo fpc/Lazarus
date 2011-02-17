@@ -104,7 +104,7 @@ interface
 {$I codetools.inc}
 
 {$DEFINE VerboseCCodeParser}
-{off $DEFINE VerboseCDirectives}
+{$DEFINE VerboseCDirectives}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -128,17 +128,17 @@ const
   ccnEnumBlock      =  4+ccnBase;// e.g. enum {};
   ccnEnumID         =  5+ccnBase;// e.g. name = value;
   ccnConstant       =  6+ccnBase;// e.g. 1
-  ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;
-  ccnStruct         =  8+ccnBase;// e.g. struct{}
-  ccnStructAlias    =  9+ccnBase;// e.g. struct alias name;
+  ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;  last child is ccnName
+  ccnStruct         =  8+ccnBase;// e.g. struct{}, child is ccnTypeName or ccnTypeName+ccnSubDefs or ccnSubDefs
   ccnUnion          = 10+ccnBase;// e.g. union{}
-  ccnUnionAlias     = 11+ccnBase;// e.g. union alias name;
-  ccnVariable       = 12+ccnBase;// e.g. int i
+  ccnDefinition     = 12+ccnBase;// e.g. variable: int i, type: struct typename {} or both: union typename {} varname
   ccnFunction       = 13+ccnBase;// e.g. int i()
   ccnName           = 14+ccnBase;// e.g. i
-  ccnFuncParamList  = 15+ccnBase;// e.g. ()
-  ccnFuncParameter  = 16+ccnBase;// e.g. ()
-  ccnStatementBlock = 17+ccnBase;// e.g. {}
+  ccnTypeName       = 15+ccnBase;// e.g. i
+  ccnSubDefs        = 16+ccnBase;// e.g. the {} of a struct
+  ccnFuncParamList  = 17+ccnBase;// e.g. ()
+  ccnFuncParameter  = 18+ccnBase;// e.g. ()
+  ccnStatementBlock = 19+ccnBase;// e.g. {}
 
   // values for Node.SubDesc
   ccnsNone             =  0;
@@ -188,6 +188,7 @@ type
     function CurlyBracketCloseToken: boolean;
     function TypedefToken: boolean;
     function StructToken: boolean;
+    function UnionToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -198,8 +199,7 @@ type
     procedure ReadVariable(AsParameter: boolean);
     procedure ReadParameterList;
     procedure ReadEnum;
-    procedure ReadStruct;
-    procedure ReadUnion;
+    procedure ReadUnionStruct(IsStruct: boolean);
     procedure ReadConstant;
     procedure Read__attribute__;
     
@@ -279,9 +279,9 @@ type
                          WithDirectives: boolean = false): string;// extract code without comments
 
     function GetFirstNameNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function ExtractVariableName(VarNode: TCodeTreeNode): string;
-    function ExtractVariableType(VarNode: TCodeTreeNode;
-                                 WithDirectives: boolean = false): string;
+    function ExtractDefinitionName(VarNode: TCodeTreeNode): string;
+    function ExtractDefinitionType(VarNode: TCodeTreeNode;
+                                   WithDirectives: boolean = false): string;
     function ExtractFunctionName(FuncNode: TCodeTreeNode): string;
     function GetFunctionParamListNode(Node: TCodeTreeNode): TCodeTreeNode;
     function ExtractFunctionParamList(FuncNode: TCodeTreeNode): string;
@@ -405,11 +405,11 @@ begin
   ccnConstant      : Result:='constant';
   ccnTypedef       : Result:='typedef';
   ccnStruct        : Result:='struct';
-  ccnStructAlias   : Result:='struct-alias';
   ccnUnion         : Result:='union';
-  ccnVariable      : Result:='variable';
+  ccnDefinition    : Result:='definition(var/type/const)';
   ccnFunction      : Result:='function';
   ccnName          : Result:='name';
+  ccnTypeName      : Result:='type-name';
   ccnFuncParamList : Result:='function-param-list';
   ccnFuncParameter : Result:='function-parameter';
   ccnStatementBlock: Result:='statement-block';
@@ -787,7 +787,10 @@ function TCCodeParserTool.DirectiveToken: boolean;
   begin
     BracketLevel:=0;
     repeat
-      ReadRawNextCAtom(Src,SrcPos,AtomStart);
+      ReadRawNextAtom;
+      {$IFDEF VerboseCCodeParser}
+      debugln(['ReadExpression Atom ',GetAtom]);
+      {$ENDIF}
       if AtomStart>SrcLen then
         RaiseException('missing expression');
       if Src[AtomStart] in [#10,#13] then begin
@@ -811,17 +814,17 @@ function TCCodeParserTool.DirectiveToken: boolean;
         if AtomIs('defined') then begin
           //    read  defined(macro)
           // or read  defined macro
-          ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          ReadRawNextAtom;
           if AtomIsChar('(') then begin
             NeedBracket:=true;
-            ReadRawNextCAtom(Src,SrcPos,AtomStart);
+            ReadRawNextAtom;
           end else begin
             NeedBracket:=false;
           end;
           if not AtomIsIdentifier then
             RaiseExpectedButAtomFound('macro');
           if NeedBracket then begin
-            ReadRawNextCAtom(Src,SrcPos,AtomStart);
+            ReadRawNextAtom;
             if not AtomIsChar(')') then
               RaiseExpectedButAtomFound(')');
           end;
@@ -937,8 +940,8 @@ begin
     end;
   end;
   // read til end of line
-  ReadTilCLineEnd(Src,SrcPos);
-  AtomStart:=SrcPos;
+  ReadTilCLineEnd(Src,AtomStart);
+  SrcPos:=AtomStart;
   //DebugLn(['TCCodeParserTool.DirectiveToken ',copy(Src,CurNode.StartPos,AtomStart-CurNode.Startpos)]);
   EndChildNode;
 end;
@@ -1029,7 +1032,7 @@ begin
   EndChildNode;
 end;
 
-procedure TCCodeParserTool.ReadStruct;
+procedure TCCodeParserTool.ReadUnionStruct(IsStruct: boolean);
 (*  Examples:
 
   union sign   /* A definition and a declaration */
@@ -1061,15 +1064,18 @@ procedure TCCodeParserTool.ReadStruct;
 //            typeof(*(ptr)) __v;
 //    } *__p = (void *) (ptr);
 //
+var
+  InTypeDef: Boolean;
 begin
-  CreateChildNode(ccnStruct);
+  InTypeDef:=CurNode.Desc=ccnTypedef;
+  if IsStruct then
+    CreateChildNode(ccnStruct)
+  else
+    CreateChildNode(ccnUnion);
   
   ReadNextAtom;
-  if CurNode.Parent.Desc<>ccnTypedef then begin
-    // read variable name
-    if not AtomIsIdentifier then
-      RaiseExpectedButAtomFound('identifier');
-    CreateChildNode(ccnName);
+  if AtomIsIdentifier then begin
+    CreateChildNode(ccnTypeName);
     EndChildNode;
     ReadNextAtom;
   end;
@@ -1081,6 +1087,7 @@ begin
   end;
   if AtomIsChar('{') then begin
     // read block {}
+    CreateChildNode(ccnSubDefs);
     repeat
       ReadNextAtom;
       // read variables
@@ -1098,6 +1105,7 @@ begin
       else
         RaiseExpectedButAtomFound('identifier');
     until false;
+    EndChildNode;
     // read after attributes
     ReadNextAtom;
     if AtomIs('__attribute__') then begin
@@ -1105,82 +1113,14 @@ begin
     end else begin
       UndoReadNextAtom;
     end;
-  end else if AtomIsIdentifier then begin
+  end else if InTypeDef and AtomIsIdentifier then begin
     // using another struct
-    CreateChildNode(ccnStructAlias);
-    EndChildNode;
+    UndoReadNextAtom;
   end else if AtomIsChar(';') then begin
     // struct without content
+    UndoReadNextAtom;
   end else
     RaiseExpectedButAtomFound('{');
-
-  // close node
-  EndChildNode;
-end;
-
-procedure TCCodeParserTool.ReadUnion;
-(*  Example
-  union {
-          uint16_t  uuid16;
-          uint32_t  uuid32;
-          uint128_t uuid128;
-  } value;
-
-  union _GFloatIEEE754
-  {
-    gfloat v_float;
-    struct {
-      guint mantissa : 23;
-      guint biased_exponent : 8;
-      guint sign : 1;
-    } mpn;
-  };
-
-  typedef union  _GDoubleIEEE754	GDoubleIEEE754;
-*)
-begin
-  CreateChildNode(ccnUnion);
-
-  ReadNextAtom;
-
-  debugln(['TCCodeParserTool.ReadUnion AAA1 ',GetAtom]);
-  if AtomIsIdentifier then begin
-    // read type name
-    CreateChildNode(ccnName);
-    EndChildNode;
-    ReadNextAtom;
-    debugln(['TCCodeParserTool.ReadUnion AAA2 ',GetAtom]);
-  end;
-
-  if AtomIsChar('{') then begin
-    // read block {}
-    repeat
-      ReadNextAtom;
-      // read variables
-      if AtomIsIdentifier then begin
-        ReadVariable(false);
-        ReadNextAtom;
-        if AtomIsChar('}') then
-          break
-        else if AtomIsChar(';') then begin
-          // next identifier
-        end else
-          RaiseExpectedButAtomFound('}');
-      end else if AtomIsChar('}') then
-        break
-      else
-        RaiseExpectedButAtomFound('identifier');
-    until false;
-  end else if AtomIsIdentifier then begin
-    // using another union
-    // for example: typedef union  _GDoubleIEEE754	GDoubleIEEE754;
-    CreateChildNode(ccnUnionAlias);
-    EndChildNode;
-  end else if AtomIsChar(';') then begin
-    // union without content
-  end else
-    RaiseExpectedButAtomFound('{');
-  debugln(['TCCodeParserTool.ReadUnion AAA3 ',GetAtom]);
 
   // close node
   EndChildNode;
@@ -1197,8 +1137,8 @@ begin
   ReadNextAtom;
   if AtomIs('typedef') then
     RaiseExpectedButAtomFound('declaration')
-  else if AtomIs('struct') then begin
-    ReadStruct;
+  else if AtomIs('struct') or AtomIs('union') then begin
+    ReadUnionStruct(AtomIs('struct'));
     ReadNextAtom;
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
@@ -1225,7 +1165,13 @@ end;
 function TCCodeParserTool.StructToken: boolean;
 begin
   Result:=true;
-  ReadStruct;
+  ReadUnionStruct(true);
+end;
+
+function TCCodeParserTool.UnionToken: boolean;
+begin
+  Result:=true;
+  ReadUnionStruct(false);
 end;
 
 procedure TCCodeParserTool.InitKeyWordList;
@@ -1239,6 +1185,7 @@ begin
       Add('enum',{$ifdef FPC}@{$endif}EnumToken);
       Add('typedef',{$ifdef FPC}@{$endif}TypedefToken);
       Add('struct',{$ifdef FPC}@{$endif}StructToken);
+      Add('union',{$ifdef FPC}@{$endif}UnionToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
@@ -1379,17 +1326,15 @@ begin
       exit;
     end;
   end else
-    CreateChildNode(ccnVariable);
+    CreateChildNode(ccnDefinition);
   MainNode:=CurNode;
   IsFunction:=false;
   if AtomIs('const') then ReadNextAtom;
 
   if AtomIs('struct') then begin
-    // for example: struct structname varname
-    ReadNextAtom;
-  end
-  else if AtomIs('union') then begin
-    ReadUnion;
+    ReadUnionStruct(true);
+  end else if AtomIs('union') then begin
+    ReadUnionStruct(false);
   end else begin
     if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     then begin
@@ -1834,6 +1779,9 @@ begin
   end else begin
     SrcPos:=AtomStart;
   end;
+  {$IFDEF VerboseCCodeParser}
+  DebugLn(['TCCodeParserTool.UndoReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  {$ENDIF}
 end;
 
 function TCCodeParserTool.ReadTilBracketClose(
@@ -2024,7 +1972,7 @@ begin
   while (Result<>nil) and (Result.Desc<>ccnName) do Result:=Result.NextBrother;
 end;
 
-function TCCodeParserTool.ExtractVariableName(VarNode: TCodeTreeNode): string;
+function TCCodeParserTool.ExtractDefinitionName(VarNode: TCodeTreeNode): string;
 var
   NameNode: TCodeTreeNode;
 begin
@@ -2035,7 +1983,7 @@ begin
     Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
 end;
 
-function TCCodeParserTool.ExtractVariableType(VarNode: TCodeTreeNode;
+function TCCodeParserTool.ExtractDefinitionType(VarNode: TCodeTreeNode;
   WithDirectives: boolean): string;
 var
   NameNode: TCodeTreeNode;

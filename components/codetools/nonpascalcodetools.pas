@@ -200,14 +200,14 @@ begin
       begin
         inc(Position);
       end;
-      #$EF:
-        if (Source[Position+1]=#$BB)
-        and (Source[Position+2]=#$BF) then begin
-          // skip UTF BOM
-          inc(Position,3);
-        end else begin
-          break;
-        end;
+     #$EF:
+      if (Source[Position+1]=#$BB)
+      and (Source[Position+2]=#$BF) then begin
+        // skip UTF BOM
+        inc(Position,3);
+      end else begin
+        break;
+      end;
      '\': // backslash
       if (Position<Len) and (Source[Position+1] in [#10,#13]) then begin
         inc(Position,2);
@@ -282,6 +282,13 @@ begin
   if Position<=Len then begin
     c1:=Source[Position];
     case c1 of
+     #10,#13:
+      begin
+        inc(Position);
+        if (Position<=Len) and (Source[Position] in [#10,#13])
+        and (Source[Position]<>c1) then
+          inc(Position);
+      end;
      'A'..'Z','a'..'z','_':
       begin
         // identifier
@@ -352,8 +359,7 @@ begin
       if Position<=Len then begin
         c2:=Source[Position];
         // test for double char operators
-        if ((c1=#13) and (c2=#10))
-        or ((c2='=') and (c1 in ['=','!','<','>','+','-','*','/','&','|']))
+        if ((c2='=') and (c1 in ['=','!','<','>','+','-','*','/','&','|']))
         or ((c1=':') and (c2=':'))
         or ((c1='|') and (c2='|'))
         or ((c1='&') and (c2='&'))
