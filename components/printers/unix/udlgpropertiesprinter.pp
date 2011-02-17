@@ -34,8 +34,8 @@ unit uDlgPropertiesPrinter;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,Buttons,Printers, CupsLCL, OsPrinters in '../osprinters.pas', LCLProc,
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
+  StdCtrls, Buttons, Printers, CupsLCL, OsPrinters in '../osprinters.pas', LCLProc,
   CupsDyn;
 
 type
