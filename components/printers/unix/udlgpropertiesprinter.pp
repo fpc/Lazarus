@@ -62,10 +62,10 @@ type
     labResolution: TLabel;
     labPaperType: TLABEL;
     labPaperSize: TLABEL;
-    pgAdvanced: TPage;
-    Notebook1: TNotebook;
-    pgGeneral: TPAGE;
-    pgMargins: TPage;
+    pgAdvanced: TTabSheet;
+    Notebook1: TPageControl;
+    pgGeneral: TTabSheet;
+    pgMargins: TTabSheet;
     Panel1: TPANEL;
     rbSheet1: TRADIOBUTTON;
     rbSheet2: TRADIOBUTTON;

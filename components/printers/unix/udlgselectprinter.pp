@@ -84,8 +84,8 @@ type
     labState: TLABEL;
     edTimeTask: TEDIT;
     NbOpts: TNOTEBOOK;
-    pgAdvance: TPAGE;
-    pgCopies: TPAGE;
+    pgAdvance: TTabSheet;
+    pgCopies: TTabSheet;
     BtnPanel: TPanel;
     rbSelection: TRadioButton;
     rbRange: TRADIOBUTTON;
