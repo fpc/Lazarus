@@ -2170,6 +2170,7 @@ begin
       end;
     end;
 
+    if NewNode.Desc = ctnGenericName then NewNode := NewNode.Parent;
     case NewNode.Desc of
     ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
     ctnEnumIdentifier, ctnGenericType:
@@ -2183,7 +2184,7 @@ begin
         end;
 
         // add class name
-        ClassStr := NewTool.ExtractClassName(NewNode, False, true);
+        ClassStr := NewTool.ExtractClassName(NewNode.Parent, False, true);
         if ClassStr <> '' then Result := Result + ClassStr + '.';
 
         Result:=Result+NewTool.ExtractDefinitionName(NewNode);
@@ -2191,7 +2192,15 @@ begin
         TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
         if TypeNode<>nil then begin
           case TypeNode.Desc of
-          ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface,
+          ctnIdentifier, ctnSpecialize, ctnSpecializeType:
+            begin
+              if NewNode.Desc = ctnTypeDefinition then
+                Result:=Result+' = '
+              else
+                Result:=Result+': ';
+              Result := Result + NewTool.ExtractNode(TypeNode, []);
+            end;
+          ctnClass, ctnClassInterface, ctnDispinterface,
           ctnObject, ctnRecordType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             begin
