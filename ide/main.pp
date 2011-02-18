@@ -2673,20 +2673,25 @@ var
   AFilename: string;
   I: Integer;
   OpenFlags: TOpenFlags;
+  Filter: String;
+  AllExt: String;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter := lisLazarusFile + ' (*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm;*.dfm)|' +
-                                            '*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm;*.dfm'
-                 + '|' + lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
-                 + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
-                 + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
-                 + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
-                 + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
-                 + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
+      + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
+      + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
+      + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
+      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
+      + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    AllExt:=TFileDialog.ExtractAllFilterMasks(Filter);
+ debugln(['TMainIDE.mnuOpenClicked ',AllExt]);
+    // append an all filter
+    Filter:=  lisLazarusFile + ' ('+AllExt+')|' + AllExt + '|' + Filter;
+    OpenDialog.Filter := Filter;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));

@@ -76,6 +76,76 @@ begin
   end;
 end;
 
+class function TFileDialog.ExtractAllFilterMasks(aFilter: string;
+  SkipAllFilesMask: boolean): string;
+{ The filter is a list of pairs of captions and masks separated by pipe |
+  The masks are separated by semicolon ;
+  For example:
+    Pascal Files|*.pas;*.pp|All files|*.*
+}
+var
+  AllFilesMask: string;
+
+  procedure AddMask(MaskStart: PChar; MaskLen: integer; var Masks: string);
+  var
+    p: PChar;
+    NewMask: string;
+    Start: PChar;
+  begin
+    if (AllFilesMask<>'')
+    and (CompareFilenames(@AllFilesMask[1],length(AllFilesMask),MaskStart,MaskLen,false)=0)
+    then exit; // skip all files mask
+
+    if Masks<>'' then
+    begin
+      p:=PChar(Masks);
+      repeat
+        Start:=p;
+        while not (p^ in [#0,';']) do inc(p);
+        if (CompareFilenames(Start,p-Start,MaskStart,MaskLen,false)=0) then
+          exit;
+        if p^=#0 then break;
+        inc(p);
+      until false;
+    end;
+    if Masks<>'' then
+      Masks:=Masks+';';
+    SetLength(NewMask,MaskLen);
+    System.Move(MaskStart^,NewMask[1],length(NewMask));
+    Masks:=Masks+NewMask;
+  end;
+
+var
+  p: PChar;
+  MaskStart: PChar;
+begin
+  Result:='';
+  if aFilter='' then exit;
+  if SkipAllFilesMask then
+    AllFilesMask:=GetAllFilesMask
+  else
+    AllFilesMask:='';
+  //debugln(['TFileDialog.ExtractAllFilterMasks Filter=',aFilter]);
+  p:=PChar(aFilter);
+  while p^<>#0 do
+  begin
+    // skip caption
+    while not (p^ in ['|',#0]) do inc(p);
+    if p^=#0 then break;
+    // parse masks
+    repeat
+      inc(p);
+      MaskStart:=p;
+      while not (p^ in [';','|',#0]) do inc(p);
+      //debugln(['TFileDialog.ExtractAllFilterMasks Mask=',copy(aFilter,MaskStart-PChar(aFilter)+1,p-MaskStart)]);
+      if p>MaskStart then
+        AddMask(MaskStart,p-MaskStart,Result);
+      if p^='|' then break;
+    until p^=#0;
+    inc(p);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TFileDialog.SetDefaultExt(const AValue: string);
 ------------------------------------------------------------------------------}
@@ -99,9 +169,9 @@ begin
   RegisterFileDialog;
 end;
 
-{------------------------------------------------------------------------------}
-{  TFileDialog DoExecute                                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TFileDialog DoExecute
+------------------------------------------------------------------------------}
 function TFileDialog.DoExecute : boolean;
 begin
   Result:= inherited DoExecute;

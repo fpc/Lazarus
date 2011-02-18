@@ -132,6 +132,8 @@ type
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
     procedure IntfFileTypeChanged(NewFilterIndex: Integer);
+    class function ExtractAllFilterMasks(aFilter: string;
+                                   SkipAllFilesMask: boolean = true): string;
   published
     property Title;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;

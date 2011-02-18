@@ -3125,6 +3125,9 @@ If a valid directory is given, the selected directory in the tree will be set to
       <element name="TColorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TColorButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TFontDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TFileDialog.ExtractAllFilterMasks">
+        <short>Extracts all file masks from a filter</short>
+      </element>
     </module>
     <!-- Dialogs -->
   </package>

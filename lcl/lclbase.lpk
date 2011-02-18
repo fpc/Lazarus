@@ -19,6 +19,9 @@
           <ShowHints Value="False"/>
           <ShowGenInfo Value="False"/>
         </Verbosity>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -1196,13 +1199,14 @@
       <Item291>
         <Filename Value="registerlcl.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="registerlcl"/>
+        <UnitName Value="RegisterLCL"/>
       </Item291>
       <Item292>
         <Filename Value="include/lclcolordialog.inc"/>
         <Type Value="Include"/>
       </Item292>
     </Files>
+    <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
