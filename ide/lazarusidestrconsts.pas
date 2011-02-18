@@ -5180,6 +5180,50 @@ resourcestring
   lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
     +'package create a simple Makefile.';
 
+  // Custom form editor
+  lisCFEAnExceptionOccuredDuringDeletionOf = 'An exception occured during '
+    +'deletion of%s"%s:%s"%s%s';
+  lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN = 'TCustomFormEditor'
+    +'.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s';
+  lisCFEUnableToClearTheFormEditingSelection = 'Unable to clear the form '
+    +'editing selection%s%s';
+  lisCFEDoNotKnowHowToDeleteThisFormEditingSelection = 'Do not know how to '
+    +'delete this form editing selection';
+  lisCFEDoNotKnowHowToCopyThisFormEditingSelection = 'Do not know how to copy '
+    +'this form editing selection';
+  lisCFEDoNotKnowHowToCutThisFormEditingSelection = 'Do not know how to cut '
+    +'this form editing selection';
+  lisCFETCustomFormEditorCreateNonFormFormUnknownType = 'TCustomFormEditor.'
+    +'CreateNonFormForm Unknown type %s';
+  lisCFETCustomFormEditorCreateNonFormFormAlreadyExists = 'TCustomFormEditor.'
+    +'CreateNonFormForm already exists';
+  lisCFETCustomFormEditorRegisterDesignerMediatorAlreadyRe = 'TCustomFormEditor'
+    +'.RegisterDesignerMediator already registered: %s';
+  lisCFEErrorCreatingComponent = 'Error creating component';
+  lisCFEErrorCreatingComponent2 = 'Error creating component: %s%s%s';
+  lisCFEInvalidComponentOwner = 'Invalid component owner';
+  lisCFETheComponentOfTypeFailedToSetItsOwnerTo = 'The component of type %s '
+    +'failed to set its owner to %s:%s';
+  lisCFEErrorDestroyingMediatorOfUnit = 'Error destroying mediator %s of '
+    +'unit %s:%s%s';
+  lisCFEErrorDestroyingMediator = 'Error destroying mediator';
+  lisCFEErrorDestroyingComponentOfTypeOfUnit = 'Error destroying component of '
+    +'type %s of unit %s:%s%s';
+  lisCFEErrorDestroyingComponent = 'Error destroying component';
+  lisCFEContinueLoading = 'Continue loading';
+  lisCFECancelLoadingThisResource = 'Cancel loading this resource';
+  lisCFEStopAllLoading = 'Stop all loading';
+  lisCFEErrorReading = 'Error reading %s';
+  lisCFEComponent = '%s%sComponent: %s:%s';
+  lisCFEComponentClass = '%s%sComponent Class: %s';
+  lisCFEStreamPosition = '%s%sStream position: %s';
+  lisCFEStream = '%sStream=%s';
+  lisCFERoot = '%sRoot=%s:%s';
+  lisCFEClassNotFound = '%s%sClass "%s" not found.';
+  lisCFEInFile = '%sIn file %s%s';
+  lisCFETheComponentEditorOfClassHasCreatedTheError = 'The component editor '
+    +'of class "%s"has created the error:%s"%s"';
+
 implementation
 
 end.

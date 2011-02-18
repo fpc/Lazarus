@@ -40,7 +40,7 @@ uses
 {$ENDIF}
   // LCL+FCL
   Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType, LResources,
-  AVL_Tree, LCLMemManager,
+  AVL_Tree, LCLMemManager, FileUtil,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
@@ -349,10 +349,9 @@ Begin
       DebugLn('TryFreeComponent ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
       DumpExceptionBackTrace;
-      MessageDlg('Error',
-        'An exception occured during deletion of'#13
-        +'"'+OldName+':'+OldClassName+'"'#13
-        +E.Message,
+      MessageDlg(lisCCOErrorCaption,
+        Format(lisCFEAnExceptionOccuredDuringDeletionOf, [#13, OldName,
+          OldClassName, #13, E.Message]),
         mtError,[mbOk],0);
     end;
   end;
@@ -475,7 +474,9 @@ Begin
       // free/unbind a non form component and its designer form
       AForm:=GetDesignerForm(AComponent);
       if (AForm<>nil) and (not (AForm is TCustomNonFormDesignerForm)) then
-        RaiseException('TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? '+AComponent.ClassName);
+        RaiseException(Format(
+          lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN, [AComponent.
+          ClassName]));
 
       if (AForm <> nil) and (AForm is TCustomNonFormDesignerForm) then
       begin
@@ -559,9 +560,9 @@ begin
     Selection:=ASelection;
   except
     on E: Exception do begin
-      MessageDlg('Error',
-        'Unable to clear the form editing selection'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(lisCCOErrorCaption,
+        Format(lisCFEUnableToClearTheFormEditingSelection, [#13, E.Message]),
+          mtError, [mbCancel], 0);
     end;
   end;
   ASelection.Free;
@@ -584,8 +585,8 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg('Error',
-      'Do not know how to delete this form editing selection',
+    MessageDlg(lisCCOErrorCaption,
+      lisCFEDoNotKnowHowToDeleteThisFormEditingSelection,
       mtError,[mbCancel],0);
   end;
 end;
@@ -606,8 +607,8 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg('Error',
-      'Do not know how to copy this form editing selection',
+    MessageDlg(lisCCOErrorCaption,
+      lisCFEDoNotKnowHowToCopyThisFormEditingSelection,
       mtError,[mbCancel],0);
   end;
 end;
@@ -628,8 +629,8 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg('Error',
-      'Do not know how to cut this form editing selection',
+    MessageDlg(lisCCOErrorCaption,
+      lisCFEDoNotKnowHowToCutThisFormEditingSelection,
       mtError,[mbCancel],0);
   end;
 end;
@@ -728,7 +729,7 @@ var
   MediatorClass: TDesignerMediatorClass;
 begin
   if FindNonFormFormNode(LookupRoot) <> nil then
-    RaiseException('TCustomFormEditor.CreateNonFormForm already exists');
+    RaiseException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
   if LookupRoot is TComponent then
   begin
     if LookupRoot is TCustomFrame then
@@ -746,8 +747,8 @@ begin
         TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
     end;
   end else
-    RaiseException('TCustomFormEditor.CreateNonFormForm Unknown type '
-      +LookupRoot.ClassName);
+    RaiseException(Format(lisCFETCustomFormEditorCreateNonFormFormUnknownType, [
+      LookupRoot.ClassName]));
 end;
 
 procedure TCustomFormEditor.RenameJITComponent(AComponent: TComponent;
@@ -1037,7 +1038,9 @@ procedure TCustomFormEditor.RegisterDesignerMediator(
   MediatorClass: TDesignerMediatorClass);
 begin
   if FDesignerMediatorClasses.IndexOf(MediatorClass)>=0 then
-    raise Exception.Create('TCustomFormEditor.RegisterDesignerMediator already registered: '+DbgSName(MediatorClass));
+    raise Exception.Create(Format(
+      lisCFETCustomFormEditorRegisterDesignerMediatorAlreadyRe, [DbgSName(
+      MediatorClass)]));
   FDesignerMediatorClasses.Add(MediatorClass);
   RegisterDesignerBaseClass(MediatorClass.FormClass);
 end;
@@ -1150,18 +1153,18 @@ begin
       except
         on e: Exception do begin
           DumpExceptionBackTrace;
-          MessageDlg('Error creating component',
-            'Error creating component: '+TypeClass.ClassName+#13+E.Message,
+          MessageDlg(lisCFEErrorCreatingComponent,
+            Format(lisCFEErrorCreatingComponent2, [TypeClass.ClassName, #13, E.
+              Message]),
             mtError,[mbCancel],0);
           exit;
         end;
       end;
       // check if Owner was properly set
       if NewComponent.Owner <> OwnerComponent then begin
-        MessageDlg('Invalid component owner',
-          'The component of type '+NewComponent.ClassName
-          +' failed to set its owner to '
-          +OwnerComponent.Name+':'+OwnerComponent.ClassName,
+        MessageDlg(lisCFEInvalidComponentOwner,
+          Format(lisCFETheComponentOfTypeFailedToSetItsOwnerTo, [NewComponent.
+            ClassName, OwnerComponent.Name, OwnerComponent.ClassName]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1335,12 +1338,11 @@ begin
         FreeAndNil(Mediator);
       except
         on E: Exception do begin
-          s:='Error destroying mediator '+Mediator.ClassName
-            +' of unit '+AUnitName+':'#13
-            +E.Message;
-          DebugLn(['TCustomFormEditor.CreateComponent ',s]);
+          s:=Format(lisCFEErrorDestroyingMediatorOfUnit, [Mediator.ClassName,
+            AUnitName, #13, E.Message]);
+          DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
           DumpExceptionBackTrace;
-          MessageDlg('Error destroying mediator',s,mtError,[mbCancel],0);
+          MessageDlg(lisCFEErrorDestroyingMediator, s, mtError, [mbCancel], 0);
         end;
       end;
     end;
@@ -1351,12 +1353,12 @@ begin
           NewComponent:=nil;
         except
           on E: Exception do begin
-            s:='Error destroying component of type '+TypeClass.ClassName
-              +' of unit '+AUnitName+':'#13
-              +E.Message;
-            DebugLn(['TCustomFormEditor.CreateComponent ',s]);
+            s:=Format(lisCFEErrorDestroyingComponentOfTypeOfUnit, [TypeClass.
+              ClassName, AUnitName, #13, E.Message]);
+            DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
             DumpExceptionBackTrace;
-            MessageDlg('Error destroying component',s,mtError,[mbCancel],0);
+            MessageDlg(lisCFEErrorDestroyingComponent, s, mtError, [mbCancel], 0
+              );
           end;
         end;
       end;
@@ -1822,28 +1824,30 @@ begin
     end;
   end;
   if LFMFilename<>'' then
-    aCaption:='Error reading '+ExtractFilename(LFMFilename);
+    aCaption:=Format(lisCFEErrorReading, [ExtractFilename(LFMFilename)]);
   
   with JITComponentList do begin
     if LFMFilename<>'' then
       aMsg:=aMsg+LFMFilename
     else if CurReadStreamClass<>nil then
-      aMsg:=aMsg+'Stream='+CurReadStreamClass.ClassName
+      aMsg:=Format(lisCFEStream, [aMsg, CurReadStreamClass.ClassName])
     else
       aMsg:=aMsg+'JITList='+ClassName;
     aMsg:=aMsg+': ';
     if CurReadJITComponent<>nil then
-      aMsg:=aMsg+'Root='+CurReadJITComponent.Name+':'+CurReadJITComponent.ClassName;
+      aMsg:=Format(lisCFERoot, [aMsg, CurReadJITComponent.Name,
+        CurReadJITComponent.ClassName]);
     if CurReadChild<>nil then
-      aMsg:=aMsg+#13'Component: '
-        +CurReadChild.Name+':'+CurReadChild.ClassName
+      aMsg:=Format(lisCFEComponent, [aMsg, #13, CurReadChild.Name, CurReadChild.
+        ClassName])
     else if CurReadChildClass<>nil then
-      aMsg:=aMsg+#13'Component Class: '+CurReadChildClass.ClassName;
+      aMsg:=Format(lisCFEComponentClass, [aMsg, #13, CurReadChildClass.ClassName
+        ]);
     aMsg:=aMsg+#13+CurReadErrorMsg;
   end;
   if (Reader<>nil) and (Reader.Driver is TLRSObjectReader) then begin
     ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
-    aMsg:=aMsg+#13+'Stream position: '+dbgs(ErrorBinPos);
+    aMsg:=Format(lisCFEStreamPosition, [aMsg, #13, dbgs(ErrorBinPos)]);
   end;
 
   case ErrorType of
@@ -1853,18 +1857,19 @@ begin
       end;
     jfeUnknownComponentClass:
       begin
-        aMsg:=aMsg+#13+'Class "'+JITComponentList.CurUnknownClass+'" not found.';
+        aMsg:=Format(lisCFEClassNotFound, [aMsg, #13, JITComponentList.
+          CurUnknownClass]);
       end;
   end;
   if Buttons=[mbIgnore,mbCancel] then begin
     Action:=QuestionDlg(aCaption,aMsg,DlgType,
-      [mrIgnore,'Continue loading',
-       mrCancel,'Cancel loading this resource',
-       mrAbort,'Stop all loading'],HelpCtx);
+      [mrIgnore, lisCFEContinueLoading,
+       mrCancel, lisCFECancelLoadingThisResource,
+       mrAbort, lisCFEStopAllLoading], HelpCtx);
   end else begin
     Action:=QuestionDlg(aCaption,aMsg,DlgType,
-      [mrCancel,'Cancel loading this resource',
-       mrAbort,'Stop all loading'],HelpCtx);
+      [mrCancel, lisCFECancelLoadingThisResource,
+       mrAbort, lisCFEStopAllLoading], HelpCtx);
   end;
 end;
 
@@ -1903,12 +1908,12 @@ begin
     LFMFilename:=ChangeFileExt(TUnitInfo(List.ContextObject).Filename,'.lfm');
   end;
   if LFMFilename<>'' then
-    Msg:=Msg+'In file '+LFMFilename+#13;
+    Msg:=Format(lisCFEInFile, [Msg, LFMFilename, #13]);
 
   if List.CurReadErrorMsg<>'' then
     Msg:=Msg+List.CurReadErrorMsg+#13;
   if E is EReadError then;
-  MessageDlg('Read error',Msg,mtError,[mbCancel],0);
+  MessageDlg(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel], 0);
 end;
 
 procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
@@ -1927,10 +1932,9 @@ begin
   except
     on E: Exception do begin
       DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR: ',E.Message);
-      MessageDlg('Error in '+CompEditor.ClassName,
-        'The component editor of class "'+CompEditor.ClassName+'"'
-        +'has created the error:'#13
-        +'"'+E.Message+'"',
+      MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
+        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompEditor.
+          ClassName, #13, E.Message]),
         mtError,[mbOk],0);
     end;
   end;
