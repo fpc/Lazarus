@@ -3128,6 +3128,9 @@ If a valid directory is given, the selected directory in the tree will be set to
       <element name="TFileDialog.ExtractAllFilterMasks">
         <short>Extracts all file masks from a filter</short>
       </element>
+      <element name="TFileDialog.FindMaskInFilter">
+        <short>Find position of a mask in the given filter</short>
+      </element>
     </module>
     <!-- Dialogs -->
   </package>

@@ -76,6 +76,40 @@ begin
   end;
 end;
 
+class function TFileDialog.FindMaskInFilter(aFilter, aMask: string): integer;
+{ The filter is a list of pairs of captions and masks separated by pipe |
+  The masks are separated by semicolon ;
+  For example:
+    Pascal Files|*.pas;*.pp|All files|*.*
+}
+var
+  p: PChar;
+  MaskStart: PChar;
+begin
+  Result:=0;
+  if (aFilter='') or (aMask='') then exit;
+  p:=PChar(aFilter);
+  while p^<>#0 do
+  begin
+    // skip caption
+    while not (p^ in ['|',#0]) do inc(p);
+    if p^=#0 then break;
+    // parse masks
+    repeat
+      inc(p);
+      MaskStart:=p;
+      while not (p^ in [';','|',#0]) do inc(p);
+      //debugln(['TFileDialog.ExtractAllFilterMasks Mask=',copy(aFilter,MaskStart-PChar(aFilter)+1,p-MaskStart)]);
+      if (p>MaskStart)
+      and (CompareFilenames(MaskStart,p-MaskStart,PChar(aMask),length(aMask),false)=0)
+      then
+        exit(MaskStart-PChar(aFilter)+1);
+      if p^='|' then break;
+    until p^=#0;
+    inc(p);
+  end;
+end;
+
 class function TFileDialog.ExtractAllFilterMasks(aFilter: string;
   SkipAllFilesMask: boolean): string;
 { The filter is a list of pairs of captions and masks separated by pipe |

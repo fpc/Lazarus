@@ -2674,24 +2674,54 @@ var
   I: Integer;
   OpenFlags: TOpenFlags;
   Filter: String;
-  AllExt: String;
+  AllEditorExt: String;
+  SrcEdit: TSourceEditor;
+  Ext: String;
+  AllFilter: String;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+
+    // create default filter list
     Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
       + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
       + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
       + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
-      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
-      + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
-    AllExt:=TFileDialog.ExtractAllFilterMasks(Filter);
- debugln(['TMainIDE.mnuOpenClicked ',AllExt]);
-    // append an all filter
-    Filter:=  lisLazarusFile + ' ('+AllExt+')|' + AllExt + '|' + Filter;
+      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+    AllFilter:='|'+TFileDialog.ExtractAllFilterMasks(Filter)+';*.inc';
+
+    // append a filter for all file types of the open files in the source editor
+    AllEditorExt:='|';
+    for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
+      SrcEdit:=SourceEditorManager.SourceEditors[i];
+      Ext:=ExtractFileExt(SrcEdit.FileName);
+      if Ext='' then exit;
+      Ext:='*'+Ext;
+      if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
+      or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
+      debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
+      if AllEditorExt<>'|' then
+        AllEditorExt:=AllEditorExt+';';
+      AllEditorExt:=AllEditorExt+Ext;
+    end;
+    if AllEditorExt<>'|' then begin
+      System.Delete(AllEditorExt,1,1);
+      AllFilter:=AllFilter+';'+AllEditorExt;
+      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' +
+        AllEditorExt;
+    end;
+
+    // append an any file filter *.*
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+
+    // prepend an all filter
+    System.Delete(AllFilter,1,1);
+    Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
     OpenDialog.Filter := Filter;
+
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));

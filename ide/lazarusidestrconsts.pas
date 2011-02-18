@@ -814,7 +814,7 @@ resourcestring
   lisIECOOpenRecent = 'Open recent';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
-  lisLazarusFile = 'Lazarus File';
+  lisLazarusFile = 'Lazarus file';
   lisPascalUnit = 'Pascal unit';
   lisPascalSourceFile = 'Pascal source file';
   lisFreePascalSourceFile = 'FreePascal source file';
@@ -1250,6 +1250,7 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisEditorFileTypes = 'Editor file types';
   lisOld = 'old';
   lisNew = 'new';
   lisRemove = 'remove';
