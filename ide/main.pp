@@ -2702,7 +2702,7 @@ begin
       Ext:='*'+Ext;
       if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
       or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
-      debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
+      //debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
       if AllEditorExt<>'|' then
         AllEditorExt:=AllEditorExt+';';
       AllEditorExt:=AllEditorExt+Ext;
