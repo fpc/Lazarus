@@ -96,7 +96,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure DoAfterComponentAdded;
+    procedure DoAfterComponentAdded; override;
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     procedure ClearButtons; override;
@@ -431,6 +431,7 @@ end;
 
 procedure TComponentPalette.DoAfterComponentAdded;
 begin
+  inherited DoAfterComponentAdded;
   if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
     Selected := nil;
 end;

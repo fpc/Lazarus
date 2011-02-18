@@ -187,6 +187,7 @@ type
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
+    procedure DoAfterComponentAdded; virtual;
     procedure ConsistencyCheck;
     function Count: integer;
     function GetPage(const APageName: string;
@@ -653,6 +654,11 @@ end;
 function TBaseComponentPalette.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
+end;
+
+procedure TBaseComponentPalette.DoAfterComponentAdded;
+begin
+
 end;
 
 procedure TBaseComponentPalette.ConsistencyCheck;
