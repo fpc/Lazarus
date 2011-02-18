@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-12 21:16+0300\n"
+"PO-Revision-Date: 2011-02-18 03:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4402,6 +4402,122 @@ msgstr "Переменные"
 #: lazarusidestrconsts.liscewrongindentation
 msgid "Wrong indentation"
 msgstr "Неверные отступы"
+
+#: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
+msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgstr "Произошло исключение во время удаления%s\"%s:%s\"%s%s"
+
+#: lazarusidestrconsts.liscfecancelloadingthisresource
+msgid "Cancel loading this resource"
+msgstr "Отменить загрузку этого ресурса"
+
+#: lazarusidestrconsts.liscfeclassnotfound
+msgid "%s%sClass \"%s\" not found."
+msgstr "%s%sКласс \"%s\" не найден."
+
+#: lazarusidestrconsts.liscfecomponent
+msgid "%s%sComponent: %s:%s"
+msgstr "%s%sКомпонент: %s:%s"
+
+#: lazarusidestrconsts.liscfecomponentclass
+msgid "%s%sComponent Class: %s"
+msgstr "%s%sКласс компонента: %s"
+
+#: lazarusidestrconsts.liscfecontinueloading
+msgid "Continue loading"
+msgstr "Продолжить загрузку"
+
+#: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
+msgid "Do not know how to copy this form editing selection"
+msgstr "Неизвестно, как копировать выделенное при редактировании формы"
+
+#: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
+msgid "Do not know how to cut this form editing selection"
+msgstr "Неизвестно, как вырезать выделенное при редактировании формы"
+
+#: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
+msgid "Do not know how to delete this form editing selection"
+msgstr "Неизвестно, как удалить выделенное при редактировании формы"
+
+#: lazarusidestrconsts.liscfeerrorcreatingcomponent
+msgid "Error creating component"
+msgstr "Ошибка при создании компонента"
+
+#: lazarusidestrconsts.liscfeerrorcreatingcomponent2
+msgid "Error creating component: %s%s%s"
+msgstr "Ошибка при создании компонента: %s%s%s"
+
+#: lazarusidestrconsts.liscfeerrordestroyingcomponent
+msgid "Error destroying component"
+msgstr "Ошибка при уничтожении компонента"
+
+#: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
+msgid "Error destroying component of type %s of unit %s:%s%s"
+msgstr "Ошибка при уничтожении компонента типа %s в модуле %s:%s%s"
+
+#: lazarusidestrconsts.liscfeerrordestroyingmediator
+msgid "Error destroying mediator"
+msgstr "Ошибка при уничтожении посредника"
+
+#: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
+msgid "Error destroying mediator %s of unit %s:%s%s"
+msgstr "Ошибка при уничтожении посредника %s в модуле %s:%s%s"
+
+#: lazarusidestrconsts.liscfeerrorreading
+msgid "Error reading %s"
+msgstr "Ошибка чтения %s"
+
+#: lazarusidestrconsts.liscfeinfile
+msgid "%sIn file %s%s"
+msgstr "%sВ файле %s%s"
+
+#: lazarusidestrconsts.liscfeinvalidcomponentowner
+msgid "Invalid component owner"
+msgstr "Неверный владелец компонента"
+
+#: lazarusidestrconsts.liscferoot
+msgid "%sRoot=%s:%s"
+msgstr "%sКорневой узел=%s:%s"
+
+#: lazarusidestrconsts.liscfestopallloading
+msgid "Stop all loading"
+msgstr "Прервать всю загрузку"
+
+#: lazarusidestrconsts.liscfestream
+msgid "%sStream=%s"
+msgstr "%sПоток=%s"
+
+#: lazarusidestrconsts.liscfestreamposition
+msgid "%s%sStream position: %s"
+msgstr "%s%sПоложение в потоке: %s"
+
+#: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
+msgid "TCustomFormEditor.CreateNonFormForm already exists"
+msgstr "TCustomFormEditor.CreateNonFormForm уже существует"
+
+#: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
+msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
+msgstr "TCustomFormEditor.CreateNonFormForm Неизвестный тип %s"
+
+#: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
+msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
+msgstr "TCustomFormEditor.DeleteComponent  Где TCustomNonFormDesignerForm? %s"
+
+#: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
+msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
+msgstr "TCustomFormEditor.RegisterDesignerMediator уже зарегистрирован: %s"
+
+#: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
+msgstr "Редактор компонента класса \"%s\" создал ошибку:%s\"%s\""
+
+#: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
+msgid "The component of type %s failed to set its owner to %s:%s"
+msgstr "Компоненту типа %s не удалось установить значение владельца в %s:%s"
+
+#: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
+msgid "Unable to clear the form editing selection%s%s"
+msgstr "Невозможно очистить выделенное при редактировании формы%s%s"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"

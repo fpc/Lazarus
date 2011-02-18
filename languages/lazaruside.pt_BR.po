@@ -4396,6 +4396,122 @@ msgstr "Variáveis"
 msgid "Wrong indentation"
 msgstr "Recuo incorreto"
 
+#: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
+msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfecancelloadingthisresource
+msgid "Cancel loading this resource"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeclassnotfound
+msgid "%s%sClass \"%s\" not found."
+msgstr ""
+
+#: lazarusidestrconsts.liscfecomponent
+msgid "%s%sComponent: %s:%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfecomponentclass
+msgid "%s%sComponent Class: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfecontinueloading
+msgid "Continue loading"
+msgstr ""
+
+#: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
+msgid "Do not know how to copy this form editing selection"
+msgstr ""
+
+#: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
+msgid "Do not know how to cut this form editing selection"
+msgstr ""
+
+#: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
+msgid "Do not know how to delete this form editing selection"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrorcreatingcomponent
+msgid "Error creating component"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrorcreatingcomponent2
+msgid "Error creating component: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrordestroyingcomponent
+msgid "Error destroying component"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
+msgid "Error destroying component of type %s of unit %s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrordestroyingmediator
+msgid "Error destroying mediator"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
+msgid "Error destroying mediator %s of unit %s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeerrorreading
+msgid "Error reading %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeinfile
+msgid "%sIn file %s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeinvalidcomponentowner
+msgid "Invalid component owner"
+msgstr ""
+
+#: lazarusidestrconsts.liscferoot
+msgid "%sRoot=%s:%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfestopallloading
+msgid "Stop all loading"
+msgstr ""
+
+#: lazarusidestrconsts.liscfestream
+msgid "%sStream=%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfestreamposition
+msgid "%s%sStream position: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
+msgid "TCustomFormEditor.CreateNonFormForm already exists"
+msgstr ""
+
+#: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
+msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
+msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
+msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
+msgid "The component of type %s failed to set its owner to %s:%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
+msgid "Unable to clear the form editing selection%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
 msgstr "Alterar modo construção"
