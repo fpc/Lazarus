@@ -185,12 +185,8 @@ type
 
     function OtherToken: boolean;
     function DirectiveToken: boolean;
-    function EnumToken: boolean;
     function ExternToken: boolean;
     function CurlyBracketCloseToken: boolean;
-    function TypedefToken: boolean;
-    function StructToken: boolean;
-    function UnionToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -198,7 +194,7 @@ type
     procedure EndChildNode;
     procedure CloseNodes;
     
-    procedure ReadVariable(AsParameter: boolean);
+    procedure ReadDefinition(AsParameter: boolean);
     procedure ReadParameterList;
     procedure ReadEnum;
     procedure ReadUnionStruct(IsStruct: boolean);
@@ -782,7 +778,10 @@ begin
   if AtomIsChar(';') then
     // ignore
   else if AtomIsIdentifier then begin
-    ReadVariable(false);
+    ReadDefinition(false);
+    ReadNextAtom;
+    if not AtomIsChar(';') then
+      RaiseExpectedButAtomFound(';');
   end else
     RaiseException('unexpected token '+GetAtom);
 end;
@@ -955,16 +954,6 @@ begin
   EndChildNode;
 end;
 
-function TCCodeParserTool.EnumToken: boolean;
-begin
-  Result:=true;
-  ReadEnum;
-  // read semicolon
-  ReadNextAtom;
-  if not AtomIsChar(';') then
-    RaiseExpectedButAtomFound(';');
-end;
-
 function TCCodeParserTool.ExternToken: boolean;
 begin
   Result:=true;
@@ -978,7 +967,7 @@ begin
   end else if AtomIsIdentifier then begin
     // for example: extern void a();
     CurNode.Desc:=ccnExternDef;
-    ReadVariable(false);
+    ReadDefinition(false);
     EndChildNode;
   end else
     RaiseExpectedButAtomFound('extern definition');
@@ -1108,7 +1097,7 @@ begin
       ReadNextAtom;
       // read variables
       if AtomIsIdentifier then begin
-        ReadVariable(false);
+        ReadDefinition(false);
         ReadNextAtom;
         if AtomIsChar('}') then
           break
@@ -1142,54 +1131,6 @@ begin
   EndChildNode;
 end;
 
-function TCCodeParserTool.TypedefToken: boolean;
-{ examples:
-   typedef type name;
-}
-begin
-  Result:=true;
-  CreateChildNode(ccnTypedef);
-  // read type
-  ReadNextAtom;
-  if AtomIs('typedef') then
-    RaiseExpectedButAtomFound('declaration')
-  else if AtomIs('struct') or AtomIs('union') then begin
-    ReadUnionStruct(AtomIs('struct'));
-    ReadNextAtom;
-    if not AtomIsIdentifier then
-      RaiseExpectedButAtomFound('identifier');
-    CreateChildNode(ccnName);
-    EndChildNode;
-  end else if AtomIs('enum') then begin
-    ReadEnum;
-    ReadNextAtom;
-    if not AtomIsIdentifier then
-      RaiseExpectedButAtomFound('identifier');
-    CreateChildNode(ccnName);
-    EndChildNode;
-  end else if SrcPos>SrcLen then
-    RaiseException('missing declaration')
-  else
-    ReadVariable(false);
-  // read semicolon
-  ReadNextAtom;
-  if not AtomIsChar(';') then
-    RaiseExpectedButAtomFound(';');
-  EndChildNode;
-end;
-
-function TCCodeParserTool.StructToken: boolean;
-begin
-  Result:=true;
-  ReadUnionStruct(true);
-end;
-
-function TCCodeParserTool.UnionToken: boolean;
-begin
-  Result:=true;
-  ReadUnionStruct(false);
-end;
-
 procedure TCCodeParserTool.InitKeyWordList;
 begin
   if FDefaultTokenList=nil then begin
@@ -1198,10 +1139,6 @@ begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
       Add('}',{$ifdef FPC}@{$endif}CurlyBracketCloseToken);
-      Add('enum',{$ifdef FPC}@{$endif}EnumToken);
-      Add('typedef',{$ifdef FPC}@{$endif}TypedefToken);
-      Add('struct',{$ifdef FPC}@{$endif}StructToken);
-      Add('union',{$ifdef FPC}@{$endif}UnionToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
@@ -1298,7 +1235,7 @@ begin
   FIfStack[IfLevel-1].StartPos:=StartPos;
 end;
 
-procedure TCCodeParserTool.ReadVariable(AsParameter: boolean);
+procedure TCCodeParserTool.ReadDefinition(AsParameter: boolean);
 (* Read  type name [specifiers]
 
   if AsParameter=true then name can be omitted.
@@ -1335,7 +1272,12 @@ begin
   {$IFDEF VerboseCCodeParser}
   DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable START ',GetAtom]);
   {$ENDIF}
-  if AsParameter then begin
+  if AtomIs('typedef') then begin
+    if AsParameter then
+      RaiseException('typedef not allowed as function parameter');
+    CreateChildNode(ccnTypedef);
+    ReadNextAtom;
+  end else if AsParameter then begin
     CreateChildNode(ccnFuncParameter);
     if AtomIs('...') then begin
       EndChildNode;
@@ -1353,6 +1295,9 @@ begin
     ReadNextAtom;
   end else if AtomIs('union') then begin
     ReadUnionStruct(false);
+    ReadNextAtom;
+  end else if AtomIs('enum') then begin
+    ReadEnum;
     ReadNextAtom;
   end else begin
     if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
@@ -1536,7 +1481,7 @@ begin
     if AtomIsChar(',') then
       RaiseExpectedButAtomFound('parameter type');
     // read parameter
-    ReadVariable(true);
+    ReadDefinition(true);
     // read next
     ReadNextAtom;
     if AtomIsChar(')') then break;
