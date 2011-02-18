@@ -779,9 +779,11 @@ begin
     // ignore
   else if AtomIsIdentifier then begin
     ReadDefinition(false);
-    ReadNextAtom;
-    if not AtomIsChar(';') then
-      RaiseExpectedButAtomFound(';');
+    if CurNode.LastChild.Desc<>ccnFunction then begin
+      ReadNextAtom;
+      if not AtomIsChar(';') then
+        RaiseExpectedButAtomFound(';');
+    end;
   end else
     RaiseException('unexpected token '+GetAtom);
 end;
@@ -1069,10 +1071,7 @@ procedure TCCodeParserTool.ReadUnionStruct(IsStruct: boolean);
 //            typeof(*(ptr)) __v;
 //    } *__p = (void *) (ptr);
 //
-var
-  InTypeDef: Boolean;
 begin
-  InTypeDef:=CurNode.Desc=ccnTypedef;
   if IsStruct then
     CreateChildNode(ccnStruct)
   else
@@ -1107,6 +1106,8 @@ begin
           RaiseExpectedButAtomFound('}');
       end else if AtomIsChar('}') then
         break
+      else if AtomIsChar('#') then
+        DirectiveToken
       else
         RaiseExpectedButAtomFound('identifier');
     until false;
@@ -1118,14 +1119,8 @@ begin
     end else begin
       UndoReadNextAtom;
     end;
-  end else if InTypeDef and AtomIsIdentifier then begin
-    // using another struct
-    UndoReadNextAtom;
-  end else if AtomIsChar(';') then begin
-    // struct without content
-    UndoReadNextAtom;
   end else
-    RaiseExpectedButAtomFound('{');
+    UndoReadNextAtom;
 
   // close node
   EndChildNode;
@@ -1443,7 +1438,7 @@ begin
   end;
   
   // read initial constant
-  if AtomIsChar('=') then begin
+  if NeedEnd and AtomIsChar('=') then begin
     if CurNode.HasParentOfType(ccnTypedef) then
       RaiseException('typedef can not have an initial value');
     ReadNextAtom;
