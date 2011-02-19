@@ -5818,14 +5818,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr ""
@@ -6820,6 +6812,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
@@ -8979,7 +8975,7 @@ msgid "Lazarus IDE v%s"
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusform
@@ -10652,6 +10648,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -13847,10 +13847,6 @@ msgstr ""
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr ""
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "Obecna ścieżka do modułów dla pliku %s%s%s%s to%s%s%s%s.%s%sBrakuje ścieżki do modułów LCL %s%s%s.%s%sWskazówka dla początkujących:%sUtwórz aplikację Lazarusa i umieść plik w katalogu projektu."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"

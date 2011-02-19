@@ -5817,14 +5817,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr ""
@@ -6822,6 +6814,10 @@ msgstr ""
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Upraviť kontextovú pomoc"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8984,7 +8980,9 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#, fuzzy
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Súbor Lazarus"
 
 #: lazarusidestrconsts.lislazarusform
@@ -10665,6 +10663,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -13864,10 +13866,6 @@ msgstr "Aktuálny adresár Lazara %s%s%s%snevyzerá správne.%sBez neho nebudete
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "Aktuálny adresár Lazara %s%s%s%snevyzerá správne.%sBez neho nebudete môcť vytvárať LCL aplikácie.%sSkontrolujte Prostredie->Voľby·prostredia->Súbory"
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "Aktuálna cesta jednotiek pre súbor %s%s%s%s je%s%s%s%s.%s%sCesta k jednotkám LCL %s%s%s chýba.%s%sRada pre neskúsených:%sVytvorte aplikáciu Lazarus a vložte súbor do adresára projektu."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"

@@ -5819,14 +5819,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "uses節におけるユニット\"%s\"を\"%s\"で置換しました。"
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr "このファイルをスキップ"
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr "この段階をスキップ"
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr "Delphiパッケージのいくつかのユニットが見つかりません：%s%s"
@@ -6823,6 +6815,10 @@ msgstr ""
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8985,7 +8981,9 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#, fuzzy
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Lazarusファイル"
 
 #: lazarusidestrconsts.lislazarusform
@@ -10667,6 +10665,10 @@ msgstr "3)いま中断し、パッケージをインストールするかパス�
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "ユニットパスを検索"
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -13865,10 +13867,6 @@ msgstr "現在のLazarusディレクトリ%s%s%s%sは正しくないようです
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "現在のLazarusディレクトリ%s%s%s%sは正しくないようです。%sこのままではLCLアプリケーションを作成できません。%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "ファイル %s%s%s%s の現在のユニットパスは%s%s%s%sです。%s%sLCLユニットのパス%s%s%sが見つかりません。%s%s初心者へのヒント:%slazarusアプリケーションを作成し、そのファイルをプロジェクトディレクトリに置いて下さい。"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"

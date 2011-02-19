@@ -5815,14 +5815,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Unidade \"%s\" substituída com \"%s\" na seção \"uses\"."
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr "Saltar este arquivo"
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr "Saltar este passo"
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr "Algumas unidades do pacote Delphi estão faltando:%s%s"
@@ -6819,6 +6811,10 @@ msgstr "Fontes duplicados. Exclua um ou certifique-se de que todos os caminhos d
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Editar ajuda contextual"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8980,7 +8976,9 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#, fuzzy
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Arquivo Lazarus"
 
 #: lazarusidestrconsts.lislazarusform
@@ -10642,6 +10640,10 @@ msgstr "3) Abortar agora, instalar pacotes ou corrigir caminhos e tentar novamen
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Caminho Busca Unidades"
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -13837,10 +13839,6 @@ msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele voc�
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele você não poderá criar aplicações LCL.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "O caminho de unidades atual para o arquivo%s%s%s%s é %s%s%s%s.%sO caminho para unidades LCL %s%s%s está faltando.%s%sDica para novatos:%sCrie uma aplicação Lazarus e coloque o arquivo em um diretório de projeto."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"

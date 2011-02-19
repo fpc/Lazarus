@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-18 03:54+0300\n"
+"PO-Revision-Date: 2011-02-19 19:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3848,7 +3848,7 @@ msgstr "Создаёт каталог для резервных копий в к
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
-msgstr "Изменение имени пакета или версии нарушит зависимости. Требуется ли изменить их?%sНажмите Да, чтобы изменить все перечисленные зависимости.%sНажмите Пропуск, чтобы отбросить зависимости и продолжить."
+msgstr "Изменение имени пакета или версии нарушит зависимости. Требуется ли изменить их?%sНажмите Да, чтобы изменить все перечисленные зависимости.%sНажмите Пропустить, чтобы отбросить зависимости и продолжить."
 
 #: lazarusidestrconsts.lisbegins
 msgid "begins"
@@ -4170,7 +4170,7 @@ msgstr "В ваших путях имеется несколько компил�
 
 #: lazarusidestrconsts.lisccoskip
 msgid "Skip"
-msgstr "Пропуск"
+msgstr "Пропустить"
 
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
@@ -5820,14 +5820,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Модуль \"%s\" в выражении Uses заменён на \"%s\"."
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr "Пропустить этот файл"
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr "Пропустить этот шаг"
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr "Некоторые модули пакета Delphi отсутствуют:%s%s"
@@ -6028,7 +6020,7 @@ msgstr "Показывать все сообщения"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling Compiler"
-msgstr "Пропуск вызова компилятора"
+msgstr "Пропустить вызов компилятора"
 
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
@@ -6824,6 +6816,10 @@ msgstr "Файлы исходного кода дублируются. Удал�
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Редактировать контекстно-зависимую справку"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr "Типы файлов редактора"
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8986,7 +8982,8 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Файл Lazarus"
 
 #: lazarusidestrconsts.lislazarusform
@@ -9508,7 +9505,7 @@ msgstr "Добавить к секции"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
-msgstr "Строка ресурсов %s%s%s уже есть. %sВыберите другое имя. %s Используйте Пропуск, чтобы добавить как есть."
+msgstr "Строка ресурсов %s%s%s уже имеется.%sВыберите другое имя.%sНажмите кнопку Пропустить, чтобы добавить как есть."
 
 #: lazarusidestrconsts.lismakeresstrconversionoptions
 msgid "Conversion Options"
@@ -10652,6 +10649,10 @@ msgstr "3) Прерваться, установить пакеты либо ис
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Найти путь к модулю"
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
+msgstr "Пропустить этот модуль"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -13847,10 +13848,6 @@ msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит ко
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит корректно.%sБез него Вы не сможете создавать приложения LCL.%sПроверьте Окружение -> Параметры окружения -> Файлы"
 
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "Текущий путь файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение Lazarus и поместите файл в каталог проекта."
-
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
 msgstr "Отладчик %s%s%s%s не существует или не является исполнимым файлом.%s%sСмотрите Окружение -> Параметры отладчика"
@@ -14151,7 +14148,7 @@ msgstr "Пробный каталог не найден:%s%s%s%s%s(смотри�
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Модуль %s%s%s уже существует.%sПропуск - переименовать файл,%sОтмена - не сохранять этот файл,%sПрервать - не сохранять больше ничего."
+msgstr "Модуль %s%s%s уже существует.%sПропустить - переименовать файл,%sОтмена - не сохранять этот файл,%sПрервать - не сохранять больше ничего."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

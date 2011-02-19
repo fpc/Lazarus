@@ -5821,14 +5821,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr ""
@@ -6826,6 +6818,10 @@ msgstr ""
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "编辑上下文关联帮助"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8986,7 +8982,9 @@ msgid "Lazarus IDE v%s"
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#, fuzzy
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Lazarus 文件"
 
 #: lazarusidestrconsts.lislazarusform
@@ -10665,6 +10663,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -13866,10 +13868,6 @@ msgstr "当前 Lazarus 目录 %s%s%s%s好像不正确.%s没有它你无法创建
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "当前 Lazarus 目录 %s%s%s%s好像不正确.%s没有它你无法创建 LCL 应用程序.%s检查 环境 -> 环境选项 -> 文件"
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "文件 %s%s%s%s 的当前单元路径%s%s%s%s.%s%s LCL 单元的路径 %s%s%s i已经遗失.%s%s新手提示:%s创建一个 lazarus 应用程序并将文件保存在这个工程目录下."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"

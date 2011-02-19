@@ -5811,14 +5811,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiskipthisfile
-msgid "Skip this file"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphiskipthisstep
-msgid "Skip this step"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
 msgstr ""
@@ -6815,6 +6807,10 @@ msgstr ""
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Keisti kontekstinį žinyną"
+
+#: lazarusidestrconsts.liseditorfiletypes
+msgid "Editor file types"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -8975,7 +8971,9 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IKA v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus File"
+#, fuzzy
+#| msgid "Lazarus File"
+msgid "Lazarus file"
 msgstr "Lazarus failas"
 
 #: lazarusidestrconsts.lislazarusform
@@ -10648,6 +10646,10 @@ msgstr "3) Nutraukti dabar, įdiegti paketus ar taisyti kelius, ir bandyti išna
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Modulių paieškos kelias"
+
+#: lazarusidestrconsts.lismissingunitsskip
+msgid "Skip this Unit"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -13849,10 +13851,6 @@ msgstr "Dabartinis Lazarus aplankas %s%s%s%s nėra geras.%sBe jo neis kurti LCL 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgstr "Dabartinis Lazarus aplankas %s%s%s%s nėra geras.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite „Aplinka -> Aplinkos parinktys -> Failai“."
-
-#: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
-msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "Dabartinis failo%s%s%s%s modulio kelias yra %s%s%s%s.%s%sTrūksta įrašo apie kelią iki LCL modulių %s%s%s.%s%sUžuomina naujokams:%ssukurkite Lazarus programą ir patalpinkite failą projekto aplanke."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
