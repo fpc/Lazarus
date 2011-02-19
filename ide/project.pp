@@ -1338,7 +1338,7 @@ var
 begin
   i := IndexOfEditorComponent(AEditor);
   if i <> 0 then
-  FList.Move(IndexOfEditorComponent(AEditor), 0);
+    FList.Move(i, 0);
 end;
 
 procedure TUnitEditorInfoList.MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
