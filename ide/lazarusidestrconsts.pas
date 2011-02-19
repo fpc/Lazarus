@@ -466,6 +466,7 @@ resourcestring
   lisMissingUnitsComment = 'Comment Out';
   lisMissingUnitsForDelphi = 'For Delphi only';
   lisMissingUnitsSearch = 'Search Unit Path';
+  lisMissingUnitsSkip = 'Skip this Unit';
   lisTheseUnitsWereNotFound = 'These units were not found:';
   lisMissingUnitsChoices = 'Your choices are:';
   lisMissingUnitsInfo1 = '1) Comment out the selected units.';

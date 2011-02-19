@@ -2,19 +2,19 @@ object MissingUnitsDialog: TMissingUnitsDialog
   Left = 280
   Height = 323
   Top = 149
-  Width = 641
+  Width = 711
   HorzScrollBar.Page = 411
   VertScrollBar.Page = 342
   Caption = 'Units not Found'
   ClientHeight = 323
-  ClientWidth = 641
+  ClientWidth = 711
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object MissingUnitsInfoLabel: TLabel
     Left = 16
     Height = 16
     Top = 16
-    Width = 99
+    Width = 107
     Caption = 'Missing Units Info'
     ParentColor = False
   end
@@ -31,7 +31,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 0
   end
   object SearchButton: TBitBtn
-    Left = 249
+    Left = 191
     Height = 30
     Top = 274
     Width = 152
@@ -42,7 +42,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 1
   end
   object AbortButton: TBitBtn
-    Left = 481
+    Left = 548
     Height = 30
     Top = 274
     Width = 152
@@ -57,7 +57,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Left = 224
     Height = 16
     Top = 40
-    Width = 50
+    Width = 53
     BorderSpacing.Top = 23
     Caption = 'Choices:'
     ParentColor = False
@@ -67,7 +67,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Left = 224
     Height = 16
     Top = 63
-    Width = 28
+    Width = 31
     BorderSpacing.Top = 23
     Caption = 'Info1'
     ParentColor = False
@@ -77,7 +77,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Left = 224
     Height = 16
     Top = 86
-    Width = 28
+    Width = 31
     BorderSpacing.Top = 23
     Caption = 'Info2'
     ParentColor = False
@@ -87,7 +87,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Left = 224
     Height = 16
     Top = 109
-    Width = 28
+    Width = 31
     BorderSpacing.Top = 23
     Caption = 'Info3'
     ParentColor = False
@@ -101,6 +101,17 @@ object MissingUnitsDialog: TMissingUnitsDialog
     ItemHeight = 0
     PopupMenu = PopupMenu1
     TabOrder = 3
+  end
+  object SkipButton: TBitBtn
+    Left = 373
+    Height = 30
+    Top = 274
+    Width = 152
+    Anchors = [akBottom]
+    Caption = 'Skip'
+    ModalResult = 5
+    OnClick = SkipButtonClick
+    TabOrder = 4
   end
   object PopupMenu1: TPopupMenu
     left = 240

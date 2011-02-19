@@ -652,7 +652,9 @@ begin
         end;
         Result:=mrOK;        // Caller will check for Result<>mrOK
       end;
-      // User wants to abort.
+      // Skip this unit.
+      mrIgnore: Exit;
+      // Abort the whole conversion.
       mrAbort: Exit;
     end;
   until not TryAgain;
@@ -811,6 +813,7 @@ begin
     Result:=FindAllUnits;              // find all files and save the project.
     if Result<>mrOK then exit;
     Result:=ConvertMainSourceFile;     // Convert project's LPR file.
+    if Result<>mrOK then exit;
     Result:=ConvertAllUnits;           // convert all files.
   finally
     UnsetCompilerModeForDefineTempl(CustomDefines);
@@ -1384,16 +1387,19 @@ begin
       // Main LPR file was converted earlier.
       if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then begin
         Result:=ConvertOne(CurUnitInfo);
-        if Result<>mrOK then Break;
+        if Result=mrIgnore then Continue;
+        if Result=mrAbort then Exit;
+//        if Result<>mrOK then Break;
       end;
     end;
     // During conversion there were more units added to be converted.
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
       Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
-      if Result=mrNo then continue;
-      if Result=mrAbort then Break;
+      if Result=mrNo then Continue;
+      if Result=mrAbort then Exit;
       Result:=ConvertOne(CurUnitInfo);
-      if Result<>mrOK then Break;
+      if Result=mrIgnore then Continue;
+      if Result=mrAbort then Exit;
     end;
     if Result=mrOK then begin
       if fUseThreads then begin

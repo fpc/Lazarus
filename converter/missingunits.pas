@@ -47,6 +47,7 @@ type
   { TMissingUnitsDialog }
 
   TMissingUnitsDialog = class(TForm)
+    SkipButton: TBitBtn;
     UnselectMenuItem: TMenuItem;
     SelectMenuItem: TMenuItem;
     SaveDialog1: TSaveDialog;
@@ -66,6 +67,7 @@ type
     procedure SaveMenuItemClick(Sender: TObject);
     procedure SearchButtonClick(Sender: TObject);
     procedure SelectMenuItemClick(Sender: TObject);
+    procedure SkipButtonClick(Sender: TObject);
     procedure UnselectMenuItemClick(Sender: TObject);
   private
 
@@ -128,6 +130,7 @@ begin
   with UNFDialog do begin
     Caption:=UnitsTitle;
     SearchButton.Caption:=lisMissingUnitsSearch;
+    SkipButton.Caption:=lisMissingUnitsSkip;
     MissingUnitsInfoLabel.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     if ATargetDelphi then begin
@@ -198,6 +201,11 @@ begin
 end;
 
 procedure TMissingUnitsDialog.SearchButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TMissingUnitsDialog.SkipButtonClick(Sender: TObject);
 begin
 
 end;
