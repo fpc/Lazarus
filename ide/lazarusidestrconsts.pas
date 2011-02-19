@@ -2962,10 +2962,6 @@ resourcestring
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
     +'not be uninstalled, because it is needed by the IDE itself.';
-  lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits = 'The current unit '
-    +'path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%'
-    +'s is missing.%s%sHint for newbies:%sCreate a lazarus application and '
-    +'put the file into the project directory.';
   lisLCLUnitPathMissing = 'LCL unit path missing';
   lisNotADelphiUnit = 'Not a Delphi unit';
   lisTheFileIsNotADelphiUnit = 'The file %s%s%s is not a Delphi unit.';
@@ -5097,8 +5093,6 @@ resourcestring
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
 
   //Delphi units and projects converter
-  lisConvDelphiSkipThisFile = 'Skip this file';
-  lisConvDelphiSkipThisStep = 'Skip this step';
   lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
   lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';

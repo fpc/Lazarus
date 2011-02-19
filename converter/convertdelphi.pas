@@ -269,14 +269,6 @@ type
   end;
 }
   // Some global functions from delphiunit2laz are not (yet) converted to class methods.
-
-  function CheckDelphiFileExt(const Filename: string): TModalResult;
-  function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
-
-  // projects
-  function CheckDelphiProjectExt(const Filename: string): TModalResult;
-
-  // file names / search paths
   function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
                                                AProject: TProject): string;
   function ExpandDelphiFilename(const Filename: string; AProject: TProject): string;
@@ -285,57 +277,6 @@ type
 
 
 implementation
-
-function CheckDelphiFileExt(const Filename: string): TModalResult;
-begin
-  Result:=mrOk;
-  if CompareFileExt(Filename,'.pas',false)<>0 then
-    Result:=QuestionDlg(lisNotADelphiUnit,
-        Format(lisTheFileIsNotADelphiUnit, ['"', Filename, '"']),
-        mtError, [mrCancel,lisConvDelphiSkipThisFile,mbAbort,lisInfoBuildMakeAbort], 0);
-end;
-
-function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
-// check if the unitpath of the directory of filename contains the path to the LCL
-var
-  Directory: String;
-  UnitPath: String;
-  LazarusSrcDir: string;
-  LCLPath: String;
-  NextStartPos: Integer;
-begin
-  // get directory of filename
-  Directory:=ExtractFilePath(Filename);
-  // get unitpath definition of directory
-  UnitPath:=CodeToolBoss.GetUnitPathForDirectory(Directory);
-  // get lazarus source directory
-  LazarusSrcDir:=CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LazarusDir'];
-  // create base path to LCL compiled units <LazarusSrcDir>/lcl/units/
-  LCLPath:=TrimFilename(LazarusSrcDir+SetDirSeparators('/lcl/units/'));
-  NextStartPos:=1;
-  if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
-  begin
-    LCLPath:=LCLPath+'$(TargetCPU)-$(TargetOS)';
-    Result:=QuestionDlg(lisLCLUnitPathMissing,
-      Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits,
-            [LineEnding,'"',Filename,'"',LineEnding,'"',UnitPath,'"',LineEnding,
-             LineEnding,'"',LCLPath,'"',LineEnding,LineEnding,LineEnding]),
-      mtError, [mrOK, lisContinue, mrAbort, lisInfoBuildMakeAbort], 0);
-    exit;
-  end;
-  Result:=mrOk;
-end;
-
-function CheckDelphiProjectExt(const Filename: string): TModalResult;
-begin
-  if CompareFileExt(Filename,'.dpr',false)<>0 then begin
-    Result:=QuestionDlg(lisNotADelphiProject,
-      Format(lisTheFileIsNotADelphiProjectDpr, ['"', Filename, '"']),
-      mtError, [mrCancel, lisConvDelphiSkipThisStep, mbAbort], 0);
-    exit;
-  end;
-  Result:=mrOk;
-end;
 
 function ConvertDelphiAbsoluteToRelativeFile(const Filename: string; AProject: TProject): string;
 // often projects use paths near to their project directory. For example:
@@ -610,11 +551,6 @@ begin
   DfmFilename:=GetDfmFileName;
   Result:=FixLfmFilename(DfmFilename);
   if Result<>mrOk then exit;
-  // Check LCL path for single files. They are correct when converting projects.
-{  if not Assigned(fOwnerConverter) then begin
-    Result:=CheckFilenameForLCLPaths(fLazUnitFilename);
-    if Result<>mrOk then exit;
-  end;  }
   // Fix include file names.
   Result:=FixIncludeFiles;
   if Result<>mrOk then exit;
