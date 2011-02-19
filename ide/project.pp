@@ -231,7 +231,6 @@ type
     function Count: Integer;
     function OpenCount: Integer;
     function ClosedCount: Integer;
-    function IndexOf(aUnitInfo: TUnitEditorInfo): Integer;
     function IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
     function NewEditorInfo: TUnitEditorInfo;
     procedure Add(aUnitInfo: TUnitEditorInfo);
@@ -1345,7 +1344,7 @@ procedure TUnitEditorInfoList.MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
 var
   i, j: Integer;
 begin
-  i := IndexOf(AEditorInfo);
+  i := FList.IndexOf(AEditorInfo);
   j := OpenCount;
   if (i > j) and (j < Count) then
     FList.Move(i, j);
@@ -1355,7 +1354,7 @@ procedure TUnitEditorInfoList.MakeUnUsedEditorInfo(AEditorInfo: TUnitEditorInfo)
 var
   i: Integer;
 begin
-  i := IndexOf(AEditorInfo);
+  i := FList.IndexOf(AEditorInfo);
   if i <> FList.Count - 1 then
     FList.Move(i, FList.Count - 1);
 end;
@@ -1410,11 +1409,6 @@ begin
   end;
 end;
 
-function TUnitEditorInfoList.IndexOf(aUnitInfo: TUnitEditorInfo): Integer;
-begin
-  Result := FList.IndexOf(aUnitInfo);
-end;
-
 function TUnitEditorInfoList.IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
 begin
   Result := Count - 1;
@@ -1442,7 +1436,7 @@ procedure TUnitEditorInfoList.Remove(aUnitInfo: TUnitEditorInfo);
 var
   i: LongInt;
 begin
-  i := IndexOf(aUnitInfo);
+  i := FList.IndexOf(aUnitInfo);
   if i >= 0 then
     Delete(i);
 end;
