@@ -54,7 +54,7 @@ type
 
   { TCocoaAppDelegate }
 
-  TCocoaAppDelegate = objcclass(NSObject)
+  TCocoaAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
     function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
   end;
 

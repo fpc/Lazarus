@@ -159,7 +159,7 @@ type
 
   { TCocoaWindow }
 
-  TCocoaWindow = objcclass(NSWindow)
+  TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
   protected
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -208,7 +208,7 @@ type
 
   { TCocoaComboBox }
 
-  TCocoaComboBox = objcclass(NSComboBox)
+  TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol)
     callback  : TCommonCallback;
     list      : TCocoaComboBoxList;
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
@@ -238,7 +238,7 @@ type
 
   { TCocoaListView }
 
-  TCocoaListView = objcclass(NSTableView)
+  TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
     callback  : TCommonCallback;
     list      : TCocoaStringList;
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
