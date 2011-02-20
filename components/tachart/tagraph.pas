@@ -241,8 +241,8 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
   public // Helpers for series drawing
-    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
+    procedure DrawLineHoriz(ADrawer: IChartDrawer; AY: Integer);
+    procedure DrawLineVert(ADrawer: IChartDrawer; AX: Integer);
     procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
@@ -712,16 +712,16 @@ begin
   end;
 end;
 
-procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+procedure TChart.DrawLineHoriz(ADrawer: IChartDrawer; AY: Integer);
 begin
   if (FClipRect.Top < AY) and (AY < FClipRect.Bottom) then
-    ACanvas.Line(FClipRect.Left, AY, FClipRect.Right, AY);
+    ADrawer.Line(FClipRect.Left, AY, FClipRect.Right, AY);
 end;
 
-procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
+procedure TChart.DrawLineVert(ADrawer: IChartDrawer; AX: Integer);
 begin
   if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
-    ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
+    ADrawer.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
 end;
 
 procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
@@ -734,9 +734,9 @@ begin
   if not ADrawer.HasCanvas then exit;
   PrepareXorPen(ADrawer.Canvas);
   if ReticuleMode in [rmVertical, rmCross] then
-    DrawLineVert(ADrawer.Canvas, FReticulePos.X);
+    DrawLineVert(ADrawer, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
-    DrawLineHoriz(ADrawer.Canvas, FReticulePos.Y);
+    DrawLineHoriz(ADrawer, FReticulePos.Y);
 end;
 
 procedure TChart.EraseBackground(DC: HDC);

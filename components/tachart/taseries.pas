@@ -256,7 +256,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc;
       const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
@@ -270,7 +270,7 @@ type
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosition write SetPosition;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor stored false default clTAColor;
+      read GetSeriesColor write SetSeriesColor stored false default clBlack;
     property ShowInLegend;
     property Title;
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
@@ -596,17 +596,17 @@ begin
   inherited;
 end;
 
-procedure TConstantLine.Draw(ACanvas: TCanvas);
+procedure TConstantLine.Draw(ADrawer: IChartDrawer);
 begin
-  ACanvas.Brush.Style := bsClear;
-  ACanvas.Pen.Assign(FPen);
+  ADrawer.SetBrushParams(bsClear, clTAColor);
+  ADrawer.Pen := FPen;
 
   with ParentChart do
     case LineStyle of
       lsHorizontal:
-        DrawLineHoriz(ACanvas, YGraphToImage(FPosition));
+        DrawLineHoriz(ADrawer, YGraphToImage(FPosition));
       lsVertical:
-        DrawLineVert(ACanvas, XGraphToImage(FPosition));
+        DrawLineVert(ADrawer, XGraphToImage(FPosition));
     end;
 end;
 
