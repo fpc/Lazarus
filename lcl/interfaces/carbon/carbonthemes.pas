@@ -153,27 +153,22 @@ end;
 function TCarbonThemeServices.DrawHeaderElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
-  HeaderDrawInfo: HiThemeHeaderDrawInfo;
+  ButtonDrawInfo: HIThemeButtonDrawInfo;
   PaintRect: HIRect;
 begin
-  if (R.Bottom - R.Top = 0) or (R.Right - R.Left = 0) then
-  begin
-    Result := R;
-    Exit;
-  end;
+  ButtonDrawInfo.version := 0;
+  ButtonDrawInfo.State := GetDrawState(Details);
+  ButtonDrawInfo.kind := kThemeBevelButtonSmall;//kThemeListHeaderButton;
+  ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
-  HeaderDrawInfo.version := 0;
-  HeaderDrawInfo.State := GetDrawState(Details);
-  HeaderDrawInfo.kind := kHiThemeHeaderKindList;
   PaintRect := RectToCGRect(R);
 
   OSError(
-    HIThemeDrawHeader(PaintRect, HeaderDrawInfo, DC.CGContext,
-      kHIThemeOrientationNormal),
-    Self, 'DrawHeaderElement', 'HIThemeDrawHeader');
-    
+    HIThemeDrawButton(PaintRect, ButtonDrawInfo, DC.CGContext,
+      kHIThemeOrientationNormal, @PaintRect),
+    Self, 'DrawButtonElement', 'HIThemeDrawButton');
+
   Result := CGRectToRect(PaintRect);
-  InflateRect(Result, -2, -2);
 end;
 
 {------------------------------------------------------------------------------
