@@ -475,10 +475,7 @@ resourcestring
   lisMissingUnitsInfo3 = '3) Abort now, install packages or fix paths and try again.';
   lisUnitNotFound = 'A unit not found in';
   lisUnitsNotFound2 = 'Units not found in';
-  lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
-    +'and write lrs file.';
-  lisNotADelphiProject = 'Not a Delphi project';
-  lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi project (.dpr)';
+  lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs and write lrs file.';
   lisProjectPath = 'Project Path:';
   lisProjectPathHint = 'Directory where project''s main file must be';
   lisBackupChangedFiles = 'Make backup of changed files';
@@ -2963,9 +2960,6 @@ resourcestring
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
     +'not be uninstalled, because it is needed by the IDE itself.';
-  lisLCLUnitPathMissing = 'LCL unit path missing';
-  lisNotADelphiUnit = 'Not a Delphi unit';
-  lisTheFileIsNotADelphiUnit = 'The file %s%s%s is not a Delphi unit.';
   lisCodeToolsDefsErrorReading = 'Error reading %s%s%s%s%s';
   lisCodeToolsDefsErrorReadingProjectInfoFile = 'Error reading project info '
     +'file %s%s%s%s%s';
