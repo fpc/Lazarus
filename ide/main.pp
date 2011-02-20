@@ -7639,8 +7639,8 @@ var
   AnEditorInfo: TUnitEditorInfo;
   i: Integer;
 begin
-  for i := 0 to Project1.EditorInfoCount - 1 do begin
-    AnEditorInfo := Project1.EditorInfo[i];
+  for i := 0 to Project1.AllEditorsInfoCount - 1 do begin
+    AnEditorInfo := Project1.AllEditorsInfo[i];
     if (AnEditorInfo.EditorComponent <> nil) then
       SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
   end;
@@ -10340,9 +10340,9 @@ begin
     IncreaseCompilerParseStamp;
 
     // restore files
-    while EditorInfoIndex < Project1.EditorInfoCount do begin
+    while EditorInfoIndex < Project1.AllEditorsInfoCount do begin
       // TProject.ReadProject sorts alle UnitEditorInfos
-      AnEditorInfo := Project1.EditorInfo[EditorInfoIndex];
+      AnEditorInfo := Project1.AllEditorsInfo[EditorInfoIndex];
       AnUnitInfo := AnEditorInfo.UnitInfo;
       if (not AnUnitInfo.Loaded) or (AnEditorInfo.PageIndex < 0) then begin
         inc(EditorInfoIndex);
@@ -10371,15 +10371,15 @@ begin
           AnUnitInfo.Loaded := False;
       end;
       inc(EditorInfoIndex);
-    end; // while EditorInfoIndex < Project1.EditorInfoCount
+    end; // while EditorInfoIndex < Project1.AllEditorsInfoCount
     Result:=mrCancel;
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.DoOpenProjectFile D');
     {$ENDIF}
 
     // set active editor source editor
-    for i := 0 to Project1.EditorInfoCount - 1 do begin
-      AnEditorInfo := Project1.EditorInfo[i];
+    for i := 0 to Project1.AllEditorsInfoCount - 1 do begin
+      AnEditorInfo := Project1.AllEditorsInfo[i];
       if AnEditorInfo.IsVisibleTab then
       begin
         if AnEditorInfo.WindowIndex >= SourceEditorManager.SourceWindowCount
@@ -10440,8 +10440,8 @@ begin
     SourceEditorManager.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
-      for i := EditorInfoIndex to Project1.EditorInfoCount - 1 do begin
-        AnEditorInfo := Project1.EditorInfo[i];
+      for i := EditorInfoIndex to Project1.AllEditorsInfoCount - 1 do begin
+        AnEditorInfo := Project1.AllEditorsInfo[i];
         AnEditorInfo.PageIndex := -1;
         AnUnitInfo := AnEditorInfo.UnitInfo;
         if AnUnitInfo.Loaded and (AnUnitInfo.OpenEditorInfoCount = 0) then

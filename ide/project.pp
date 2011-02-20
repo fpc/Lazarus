@@ -49,7 +49,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  FileUtil, Controls, Dialogs, InterfaceBase,
+  FileUtil, Controls, Dialogs, InterfaceBase, maps,
   // codetools
   Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   CodeToolsCfgScript, CodeToolManager, CodeCache,
@@ -233,9 +233,9 @@ type
     function ClosedCount: Integer;
     function IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
     function NewEditorInfo: TUnitEditorInfo;
-    procedure Add(aUnitInfo: TUnitEditorInfo);
+    procedure Add(AEditorInfo: TUnitEditorInfo);
     procedure Delete(Index: Integer);
-    procedure Remove(aUnitInfo: TUnitEditorInfo);
+    procedure Remove(AEditorInfo: TUnitEditorInfo);
   end;
 
   { TUnitInfo }
@@ -394,7 +394,6 @@ type
     procedure DeleteBookmark(ID: integer);
     // EditorInfo
     // At any time, any UnitInfo has at least one EditorInfo
-    function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
     function EditorInfoCount: Integer;
     property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
     function OpenEditorInfoCount: Integer; // with EditorComponent assigned
@@ -738,7 +737,8 @@ type
     FActiveWindowIndexAtStart: integer;
     FBuildModes: TProjectBuildModes;
     FBuildModesBackup: TProjectBuildModes;
-    FEditorInfoList: TUnitEditorInfoList;
+    FAllEditorsInfoList: TUnitEditorInfoList;
+    FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
     FMacroValues: TProjectBuildMacros;
@@ -793,7 +793,7 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
-    function GetEditorInfo(Index: Integer): TUnitEditorInfo;
+    function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -847,8 +847,6 @@ type
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
-
-    property EditorInfoList: TUnitEditorInfoList read FEditorInfoList;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -932,9 +930,13 @@ type
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
-    function EditorInfoCount: Integer;
-    property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
+    function AllEditorsInfoCount: Integer;
+    property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
     function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
+    procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
+    procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
+    procedure EditorInfoUpdate(EdInfo: TUnitEditorInfo;
+                               NewSE, OldSE: TSourceEditorInterface);
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -1176,7 +1178,7 @@ end;
 procedure TUnitEditorInfo.SetEditorComponent(const AValue: TSourceEditorInterface);
 begin
   if FEditorComponent = AValue then exit;
-
+  fUnitInfo.Project.EditorInfoUpdate(Self, AValue, FEditorComponent);
   if AValue = nil then begin
     FEditorComponent := AValue;
     UnitInfo.FEditorInfoList.MakeUnUsedEditorInfo(Self);
@@ -1189,7 +1191,6 @@ begin
     UnitInfo.FEditorInfoList.MakeUsedEditorInfo(Self);
     AValue.UpdateProjectFile; // Set EditorIndex / calls UnitInfo.UpdatePageIndex
   end;
-
   FUnitInfo.SessionModified:=true;
 end;
 
@@ -1233,13 +1234,13 @@ begin
   FUnitInfo := aUnitInfo;
   Clear;
   if FUnitInfo.Project <> nil then
-    FUnitInfo.Project.EditorInfoList.Add(Self);
+    FUnitInfo.Project.EditorInfoAdd(Self);
 end;
 
 destructor TUnitEditorInfo.Destroy;
 begin
   if FUnitInfo.Project <> nil then
-    FUnitInfo.Project.EditorInfoList.Remove(Self);
+    FUnitInfo.Project.EditorInfoRemove(Self);
   inherited Destroy;
 end;
 
@@ -1422,9 +1423,9 @@ begin
   FList.Add(Result);
 end;
 
-procedure TUnitEditorInfoList.Add(aUnitInfo: TUnitEditorInfo);
+procedure TUnitEditorInfoList.Add(AEditorInfo: TUnitEditorInfo);
 begin
-  FList.Add(aUnitInfo);
+  FList.Add(AEditorInfo);
 end;
 
 procedure TUnitEditorInfoList.Delete(Index: Integer);
@@ -1432,11 +1433,11 @@ begin
   Flist.Delete(Index);
 end;
 
-procedure TUnitEditorInfoList.Remove(aUnitInfo: TUnitEditorInfo);
+procedure TUnitEditorInfoList.Remove(AEditorInfo: TUnitEditorInfo);
 var
   i: LongInt;
 begin
-  i := FList.IndexOf(aUnitInfo);
+  i := FList.IndexOf(AEditorInfo);
   if i >= 0 then
     Delete(i);
 end;
@@ -2215,19 +2216,6 @@ begin
   Project1.DeleteBookmark(ID);
 end;
 
-function TUnitInfo.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
-var
-  i: Integer;
-begin
-  i:= FEditorInfoList.Count - 1;
-  while (i >= 0) and (FEditorInfoList[i].EditorComponent <> AEditor) do
-    dec(i);
-  if i >= 0 then
-    Result := FEditorInfoList[i]
-  else
-    Result := nil;
-end;
-
 function TUnitInfo.EditorInfoCount: Integer;
 begin
   Result := FEditorInfoList.Count;
@@ -2497,7 +2485,7 @@ begin
     for ListType:=Low(TUnitInfoList) to High(TUnitInfoList) do
       Project.RemoveFromList(Self,ListType);
     for i := 0 to FEditorInfoList.Count - 1 do
-      FProject.EditorInfoList.Remove(FEditorInfoList[i]);
+      FProject.EditorInfoRemove(FEditorInfoList[i]);
   end;
   FProject:=AValue;
   if FProject<>nil then begin
@@ -2507,7 +2495,7 @@ begin
     if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
     if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
     for i := 0 to FEditorInfoList.Count - 1 do
-      FProject.EditorInfoList.Add(FEditorInfoList[i]);
+      FProject.EditorInfoAdd(FEditorInfoList[i]);
   end;
   UpdateSourceDirectoryReference;
 end;
@@ -2540,7 +2528,8 @@ begin
   FActiveWindowIndexAtStart := 0;
   FSkipCheckLCLInterfaces:=false;
   FAutoCreateForms := true;
-  FEditorInfoList := TUnitEditorInfoList.Create(nil);
+  FAllEditorsInfoList := TUnitEditorInfoList.Create(nil);
+  FAllEditorsInfoMap := TMap.Create(ituPtrSize, SizeOf(TObject));
   FBookmarks := TProjectBookmarkList.Create;
 
   FBuildModes:=TProjectBuildModes.Create(nil);
@@ -2581,7 +2570,8 @@ begin
   Clear;
   FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);
-  FreeAndNil(FEditorInfoList);
+  FreeAndNil(FAllEditorsInfoMap);
+  FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
@@ -3235,10 +3225,10 @@ var
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
     if (i >= 0) then begin
       // Load old Config => No WindowIndex
-      j := EditorInfoCount - 1;
+      j := AllEditorsInfoCount - 1;
       while j >= 0 do begin
-        if (EditorInfo[j].PageIndex = i) then
-          EditorInfo[j].IsVisibleTab := True;
+        if (AllEditorsInfo[j].PageIndex = i) then
+          AllEditorsInfo[j].IsVisibleTab := True;
         dec(j);
       end;
     end;
@@ -3475,7 +3465,7 @@ begin
 
   finally
     EndUpdate;
-    FEditorInfoList.SortByPageIndex;
+    FAllEditorsInfoList.SortByPageIndex;
   end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
@@ -3584,9 +3574,9 @@ procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface;
 var
   i: Integer;
 begin
-  for i := 0 to EditorInfoCount - 1 do
-    if EditorInfo[i].WindowIndex = AWindowIndex then
-      EditorInfo[i].IsVisibleTab := EditorInfo[i].EditorComponent = AnEditor;
+  for i := 0 to AllEditorsInfoCount - 1 do
+    if AllEditorsInfo[i].WindowIndex = AWindowIndex then
+      AllEditorsInfo[i].IsVisibleTab := AllEditorsInfo[i].EditorComponent = AnEditor;
 end;
 
 procedure TProject.UpdateAllVisibleUnits;
@@ -3595,8 +3585,8 @@ var
   aWndId: LongInt;
   Info: TUnitEditorInfo;
 begin
-  for i := 0 to EditorInfoCount - 1 do begin
-    Info:=EditorInfo[i];
+  for i := 0 to AllEditorsInfoCount - 1 do begin
+    Info:=AllEditorsInfo[i];
     aWndId:=Info.WindowIndex;
     Info.IsVisibleTab := (aWndId>=0)
       and (aWndId<SourceEditorManagerIntf.SourceWindowCount)
@@ -3609,9 +3599,9 @@ var
   i: Integer;
   AnEditorInfo: TUnitEditorInfo;
 begin
-  i := EditorInfoCount - 1;
+  i := AllEditorsInfoCount - 1;
   while (i >= 0) do begin
-    AnEditorInfo := EditorInfo[i];
+    AnEditorInfo := AllEditorsInfo[i];
 
     if (OldIndex < 0) then begin
       // index inserted
@@ -4212,9 +4202,9 @@ begin
   Result:=fFirst[uilAutoRevertLocked];
 end;
 
-function TProject.GetEditorInfo(Index: Integer): TUnitEditorInfo;
+function TProject.GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
 begin
-  Result := FEditorInfoList[Index];
+  Result := FAllEditorsInfoList[Index];
 end;
 
 function TProject.GetFirstUnitWithComponent: TUnitInfo;
@@ -5402,22 +5392,57 @@ begin
     Result:=nil;
 end;
 
-function TProject.EditorInfoCount: Integer;
+function TProject.AllEditorsInfoCount: Integer;
 begin
-  Result := FEditorInfoList.Count;
+  Result := FAllEditorsInfoList.Count;
 end;
 
 function TProject.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
-var
+{var
   i: Integer;
+  Res: TUnitEditorInfo;  }
 begin
-  i:= FEditorInfoList.Count - 1;
-  while (i >= 0) and (FEditorInfoList[i].EditorComponent <> AEditor) do
+  Result := Nil;
+  FAllEditorsInfoMap.GetData(AEditor, Result);
+{
+  Debug: this was used to verify the Map result is identical with earlier results.
+         To be cleaned...
+  i:= FAllEditorsInfoList.Count - 1;
+  while (i >= 0) and (FAllEditorsInfoList[i].EditorComponent <> AEditor) do
     dec(i);
   if i >= 0 then
-    Result := FEditorInfoList[i]
+    Res := FAllEditorsInfoList[i]
   else
-    Result := nil;
+    Res := nil;
+  if Res <> Result then  //!!!
+    DebugLn(Format('Res (%p) <> Result (%p)',[Pointer(Res), Pointer(Result)]));
+}
+end;
+
+procedure TProject.EditorInfoAdd(EdInfo: TUnitEditorInfo);
+begin
+  FAllEditorsInfoList.Add(EdInfo);
+  if Assigned(EdInfo.EditorComponent) then
+//  FAllEditorsInfoMap.Add(EdInfo.EditorComponent, EdInfo);
+    raise Exception.Create('Should never happen. TUnitEditorInfo.EditorComponent is set later.');
+end;
+
+procedure TProject.EditorInfoRemove(EdInfo: TUnitEditorInfo);
+begin
+  FAllEditorsInfoList.Remove(EdInfo);
+  if Assigned(EdInfo.EditorComponent) then
+    FAllEditorsInfoMap.Delete(EdInfo.EditorComponent);
+end;
+
+procedure TProject.EditorInfoUpdate(EdInfo: TUnitEditorInfo;
+                                    NewSE, OldSE: TSourceEditorInterface);
+begin
+  if Assigned(NewSE) then begin
+    if not FAllEditorsInfoMap.HasId(NewSE) then
+      FAllEditorsInfoMap.Add(NewSE, EdInfo);
+  end
+  else if Assigned(OldSE) then
+    FAllEditorsInfoMap.Delete(OldSE);
 end;
 
 function TProject.SearchFile(const ShortFilename: string;
@@ -5644,11 +5669,9 @@ begin
   if fFirst[ListType]=AnUnitInfo then
     fFirst[ListType]:=AnUnitInfo.fNext[ListType];
   if AnUnitInfo.fNext[ListType]<>nil then
-    AnUnitInfo.fNext[ListType].fPrev[ListType]:=
-      AnUnitInfo.fPrev[ListType];
+    AnUnitInfo.fNext[ListType].fPrev[ListType]:=AnUnitInfo.fPrev[ListType];
   if AnUnitInfo.fPrev[ListType]<>nil then
-    AnUnitInfo.fPrev[ListType].fNext[ListType]:=
-      AnUnitInfo.fNext[ListType];
+    AnUnitInfo.fPrev[ListType].fNext[ListType]:=AnUnitInfo.fNext[ListType];
   AnUnitInfo.fNext[ListType]:=nil;
   AnUnitInfo.fPrev[ListType]:=nil;
 end;
