@@ -9224,10 +9224,6 @@ msgstr ""
 msgid "LCL"
 msgstr ""
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr ""
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr ""
@@ -10797,14 +10793,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
-msgstr ""
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr ""
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotaninstallpackage
@@ -13790,14 +13778,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
-msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi

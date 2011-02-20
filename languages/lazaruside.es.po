@@ -9263,10 +9263,6 @@ msgstr "Con paquetes"
 msgid "LCL"
 msgstr "LCL"
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Falta ruta a la unidad LCL"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Tipo de Widget LCL"
@@ -10851,14 +10847,6 @@ msgstr "Normalmente el filtro es una expresión regular. En Sintaxis Simple un .
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "No se ha encontrado constante de cadena"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "No es un proyecto Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "No es una unidad de Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13854,14 +13842,6 @@ msgstr "El índice de archivos es necesario para funciones como la busqueda de d
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr "El archivo %s%s%s es un enlace simbólico.%s%s ¿Abrir %s%s%s en su lugar?"
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "El archivo %s%s%s no es un proyecto de Delphi (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "El archivo %s%s%s no es una unidad de Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

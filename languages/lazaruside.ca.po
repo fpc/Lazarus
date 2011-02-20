@@ -9270,10 +9270,6 @@ msgstr ""
 msgid "LCL"
 msgstr ""
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Falta la trajectòria a la unitat LCL"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Tipus de giny LCL"
@@ -10876,14 +10872,6 @@ msgstr ""
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "No s'ha trobat la constant de cadena"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "No un projecte Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "No una unitat Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13879,14 +13867,6 @@ msgstr ""
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "El fitxer %s%s%s no és un projecte Delphi (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "El fitxer %s%s%s no és una unitat Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

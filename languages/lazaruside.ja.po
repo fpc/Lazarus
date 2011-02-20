@@ -9296,10 +9296,6 @@ msgstr "パッケージ付き"
 msgid "LCL"
 msgstr "LCL"
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "LCLのユニットパスがありません"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "LCLウィジェットタイプ"
@@ -10908,14 +10904,6 @@ msgstr "ふつう、フィルタは正規表現です。シンプルな表記法
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "文字列定数が見つかりません。"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Delphiプロジェクトではありません"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Delphiユニットではありません"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13911,14 +13899,6 @@ msgstr "そのファイル索引は宣言の検索などの機能に必要です
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr "ファイル%s%s%sはシンボリックリンクです。%s%s　%s%s%sを代わりに開きますか？ "
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "ファイル %s%s%sはDelphiプロジェクト(.dpr)ではありません。"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "ファイル %s%s%sはDelphiユニットではありません。"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

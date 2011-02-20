@@ -9273,10 +9273,6 @@ msgstr ""
 msgid "LCL"
 msgstr ""
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Втрачено шлях до LCL-модуля"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Тип LCL Widget"
@@ -10879,14 +10875,6 @@ msgstr "Як правило фільтр є регулярним виразом.
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Не знайдено рядка з константами"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Це не є проектом Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Це не є модулем Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13884,14 +13872,6 @@ msgstr ""
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "Файл %s%s%s не є проектом Delphi (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "Файл %s%s%s не є модулем Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

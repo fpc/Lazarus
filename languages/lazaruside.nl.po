@@ -9276,10 +9276,6 @@ msgstr ""
 msgid "LCL"
 msgstr ""
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Pad naar LCL unit ontbreekt"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "LCL Widget Type"
@@ -10884,14 +10880,6 @@ msgstr "Het filter is gewoonlijk een regular expressie. In de eenvoudige syntax 
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Geen string constante gevonden"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Geen Dephi project"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Geen Delphi unit"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13889,14 +13877,6 @@ msgstr ""
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "Het bestand %s%s%s is geen Delphi Project (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "Het bestand %s%s%s is geen Delphi unit."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

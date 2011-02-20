@@ -9234,10 +9234,6 @@ msgstr "S balíčky"
 msgid "LCL"
 msgstr "LCL"
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Chybí cesta jednotky LCL"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Typ LCL Widgetu"
@@ -10799,14 +10795,6 @@ msgstr "Obyčejně je filtr regulární výraz. V jednoduché syntaxi je . obyč
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Nenalezeny žádné konstantní řetězce."
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Není projekt Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Není jednotka Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13793,14 +13781,6 @@ msgstr "Indexový soubor je nutný pro funkce jako hledání deklarací. Během 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr "Soubor %s%s%s je symbolický odkaz.%s%sOtevřít místo něj %s%s%s?"
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "Soubor %s%s%s není Delphi projekt."
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "Soubor %s%s%s není Delphi jednotka."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

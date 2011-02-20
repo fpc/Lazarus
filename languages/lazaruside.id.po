@@ -9286,10 +9286,6 @@ msgstr ""
 msgid "LCL"
 msgstr "LCL"
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Path unit LCL tidak ada"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Tipe Widget LCL"
@@ -10894,14 +10890,6 @@ msgstr "Biasanya filter adalah ekspresi reguler. Dalam Sintaks Sederhana sebuah 
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Tidak ada Konstan String Ditemukan"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Bukan proyek Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Bukan unit Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13899,14 +13887,6 @@ msgstr ""
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "File %s%s%s bukan proyek Delphi (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "File %s%s%s bukan unit Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"

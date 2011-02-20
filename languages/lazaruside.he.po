@@ -9261,10 +9261,6 @@ msgstr "עם החבילות"
 msgid "LCL"
 msgstr "LCL"
 
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "הנתיב של יחידת LCL חסר"
-
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "עצם מסוג LCL"
@@ -10852,14 +10848,6 @@ msgstr "בדרך כלל מסנן הוא ביטוי רגולרי. בתחביר ר
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "לא נמצאו מחרוזת קבועות"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "זה אינו פרוייקט דלפי"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "זו אינה יחידת דלפי"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -13859,14 +13847,6 @@ msgstr "אינדקס הקובץ דרוש לפונקציות כמו \"מצא הצ
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s%s במקומו?"
-
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "הקובץ %s%s%s אינו פרוייקט של דלפי (dpr.)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "הקובץ %s%s%s אינו יחידה של דלפי."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
