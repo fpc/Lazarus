@@ -1,0 +1,67 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr "Arquivo fonte principal: %s"
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "faltando ..."
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr "Nenhum projeto"
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "Favor abrir um projeto primeiro."
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr "Arquivos PPU do projeto \"%s\""
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr "Projeto não tem arquivo fonte principal."
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "localizando ..."
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr "Tamanho do arquivo .o"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr "Tamanho do arquivo .ppu"
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr "Total"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr "Usado por"
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr "\"Uses\""
+
+#: codystrconsts.liscogeneral
+msgid "General"
+msgstr "Geral"
+
+#: codystrconsts.liscousespath
+msgid "Uses path"
+msgstr "Caminho \"uses\""
+

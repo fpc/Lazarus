@@ -261,7 +261,6 @@ msgid "3D Light"
 msgstr "Luz 3D"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#, fuzzy
 #| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Um controle não pode ter ele mesmo como pai"
@@ -531,7 +530,7 @@ msgstr "Formulário"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "Recurso formulário %s não encontrado. Para formulários sem recursos o construtor CreateNew deve ser usado. Veja a variável global RequireDerivedFormResource."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"

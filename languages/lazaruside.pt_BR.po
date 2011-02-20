@@ -1667,7 +1667,6 @@ msgid "Interface"
 msgstr "Interface"
 
 #: lazarusidestrconsts.dlginsertsection
-#, fuzzy
 #| msgid "Insert into Uses Section"
 msgid "Insert into Uses section of"
 msgstr "Inserir na Seção \"Uses\""
@@ -2763,7 +2762,7 @@ msgstr "Exibir um único botão na Barra de Tarefas"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
-msgstr ""
+msgstr "Saltar declarações de classe situadas à frente"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2998,7 +2997,6 @@ msgid "Use tab history when closing tabs"
 msgstr "Usar aba histórico quando fechando abas"
 
 #: lazarusidestrconsts.dlguseunitcaption
-#, fuzzy
 #| msgid "Use a Unit from this Project"
 msgid "Use a unit from this project"
 msgstr "Usar uma Unidade deste Projeto"
@@ -4398,119 +4396,119 @@ msgstr "Recuo incorreto"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
 msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
-msgstr ""
+msgstr "Uma exceção ocorreu durante exclusão de %s\"%s%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
 msgid "Cancel loading this resource"
-msgstr ""
+msgstr "Cancelar carregamento deste recurso"
 
 #: lazarusidestrconsts.liscfeclassnotfound
 msgid "%s%sClass \"%s\" not found."
-msgstr ""
+msgstr "%s%sClasse \"%s\" não encontrada."
 
 #: lazarusidestrconsts.liscfecomponent
 msgid "%s%sComponent: %s:%s"
-msgstr ""
+msgstr "%s%sComponente: %s:%s"
 
 #: lazarusidestrconsts.liscfecomponentclass
 msgid "%s%sComponent Class: %s"
-msgstr ""
+msgstr "%s%sClasse Componente: %s"
 
 #: lazarusidestrconsts.liscfecontinueloading
 msgid "Continue loading"
-msgstr ""
+msgstr "Continuar carregando"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
-msgstr ""
+msgstr "Não sei como copiar esta seleção em edição no formulário"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr ""
+msgstr "Não sei como recortar  esta seleção em edição no formulário"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
-msgstr ""
+msgstr "Não sei como excluir esta seleção em edição no formulário"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent
 msgid "Error creating component"
-msgstr ""
+msgstr "Erro ao criar componente"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent2
 msgid "Error creating component: %s%s%s"
-msgstr ""
+msgstr "Erro ao criar componente: %s%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponent
 msgid "Error destroying component"
-msgstr ""
+msgstr "Erro ao destruir componente"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
 msgid "Error destroying component of type %s of unit %s:%s%s"
-msgstr ""
+msgstr "Erro ao destruir componente do tipo %s da unidade %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediator
 msgid "Error destroying mediator"
-msgstr ""
+msgstr "Erro ao destruir mediador"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
 msgid "Error destroying mediator %s of unit %s:%s%s"
-msgstr ""
+msgstr "Erro ao destruir mediador %s da unidade %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrorreading
 msgid "Error reading %s"
-msgstr ""
+msgstr "Erro ao ler %s"
 
 #: lazarusidestrconsts.liscfeinfile
 msgid "%sIn file %s%s"
-msgstr ""
+msgstr "%sNo arquivo %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
-msgstr ""
+msgstr "Proprietário do componente inválido"
 
 #: lazarusidestrconsts.liscferoot
 msgid "%sRoot=%s:%s"
-msgstr ""
+msgstr "%sRaiz=%s:%s"
 
 #: lazarusidestrconsts.liscfestopallloading
 msgid "Stop all loading"
-msgstr ""
+msgstr "Parar todo o carregamento"
 
 #: lazarusidestrconsts.liscfestream
 msgid "%sStream=%s"
-msgstr ""
+msgstr "%sFluxo=%s"
 
 #: lazarusidestrconsts.liscfestreamposition
 msgid "%s%sStream position: %s"
-msgstr ""
+msgstr "%s%sPosição fluxo: %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
 msgid "TCustomFormEditor.CreateNonFormForm already exists"
-msgstr ""
+msgstr "TCustomFormEditor.CreateNonFormForm já existe"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
 msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
-msgstr ""
+msgstr "TCustomFormEditor.CreateNonFormForm Tipo desconhecido %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
 msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
-msgstr ""
+msgstr "TCustomFormEditor.DeleteComponent  Onde está o TCustomNonFormDesignerForm? %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
-msgstr ""
+msgstr "TCustomFormEditor.RegisterDesignerMediator já registrado: %s"
 
 #: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
-msgstr ""
+msgstr "O editor do componente da classe \"%s\" criou o erro:%s\"%s\""
 
 #: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
 msgid "The component of type %s failed to set its owner to %s:%s"
-msgstr ""
+msgstr "O componente do tipo %s falhou ao definir seu proprietário para %s:%s"
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 msgid "Unable to clear the form editing selection%s%s"
-msgstr ""
+msgstr "Incapaz de limpar a seleção em edição no formulário %s%s"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
@@ -5689,7 +5687,7 @@ msgstr "Deslocamentos coordenadas"
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
-msgstr ""
+msgstr "Adicionado Pacote %s como requerido."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -5762,7 +5760,7 @@ msgstr "Corrigido maiúsculas/minúsculas da unidade \"%s\" para \"%s\"."
 
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
-msgstr ""
+msgstr "* Reparando unidades usadas para o arquivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -5786,7 +5784,7 @@ msgstr "Nome do pacote já existe"
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
-msgstr ""
+msgstr "Unidade %s omitida do projeto"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
@@ -5801,10 +5799,9 @@ msgid "Remove second"
 msgstr "Remover segundo"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-#, fuzzy
 #| msgid "Repairing form file %s"
 msgid "* Repairing form file %s *"
-msgstr "Reparando arquivo formulário %s"
+msgstr "* Reparando arquivo formulário %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
@@ -5866,27 +5863,27 @@ msgstr "Conversor adiciona compilação condicional para suportar alvos diferent
 
 #: lazarusidestrconsts.lisconverttargetmultiplatform
 msgid "Multi-Platform"
-msgstr ""
+msgstr "Multi-Plataforma"
 
 #: lazarusidestrconsts.lisconverttargetmultiplatformhint
 msgid "Multi-Platform versus Windows-only"
-msgstr ""
+msgstr "Multi-Plataforma versus somente-Windows"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"
-msgstr ""
+msgstr "Usar o mesmo arquivo de formulário DFM"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfilehint
 msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
-msgstr ""
+msgstr "Mesmo arquivo DFM para Lazarus e Delphi ao invés de copiá-lo para LFM"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphi
 msgid "Support Delphi"
-msgstr ""
+msgstr "Suporte Delphi"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphihint
 msgid "Use conditional compilation to support Delphi"
-msgstr ""
+msgstr "Usar compiliação condicional para suportar Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -6007,7 +6004,7 @@ msgstr "Localizar mensagens Make"
 
 #: lazarusidestrconsts.liscoscanformessages
 msgid "Scan for messages:"
-msgstr ""
+msgstr "Localizar mensagens:"
 
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
@@ -6814,7 +6811,7 @@ msgstr "Editar ajuda contextual"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
-msgstr ""
+msgstr "Tipos Editor arquivos"
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -7304,7 +7301,6 @@ msgid "Execution paused"
 msgstr "Execução pausada"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
-#, fuzzy
 #| msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr "Execução pausada%s  Endereço: $%s%s Procedimento: %s%s Arquivo %s%s (Algum dia uma janela assembler poderá aparecer aqui :)%s"
@@ -8265,7 +8261,7 @@ msgstr "Instalar/Desinstalar pacotes"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
-msgstr ""
+msgstr "Ao invés de compilar o pacote criar um simples Makefile."
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
@@ -8976,7 +8972,6 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-#, fuzzy
 #| msgid "Lazarus File"
 msgid "Lazarus file"
 msgstr "Arquivo Lazarus"
@@ -9289,10 +9284,6 @@ msgstr "Com pacotes"
 #: lazarusidestrconsts.lislcl
 msgid "LCL"
 msgstr "LCL"
-
-#: lazarusidestrconsts.lislclunitpathmissing
-msgid "LCL unit path missing"
-msgstr "Caminho de unidade LCL faltando"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -10643,7 +10634,7 @@ msgstr "Caminho Busca Unidades"
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
-msgstr ""
+msgstr "Saltar esta Unidade"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -10878,14 +10869,6 @@ msgstr "Normalmente o filtro é uma expressão regular. Em sintaxe simples \".\"
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
 msgstr "Nenhuma constante de sequência de caracteres encontrada"
-
-#: lazarusidestrconsts.lisnotadelphiproject
-msgid "Not a Delphi project"
-msgstr "Não é um projeto Delphi"
-
-#: lazarusidestrconsts.lisnotadelphiunit
-msgid "Not a Delphi unit"
-msgstr "Não é uma unidade Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
@@ -12474,7 +12457,7 @@ msgstr "Usuário"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
 msgid "Please fix the error shown in the message window, which is normally below the source editor."
-msgstr ""
+msgstr "Favor corrigir o erro mostrado na janela de mensagens, que se localiza normalmente abaixo do editor de código."
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -13884,14 +13867,6 @@ msgstr "O índice de arquivo é necessário para funcções como a localização
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr "O arquivo %s%s%s é um vínculo simbólico;%s%sAbrir %s%s% ao invés dele?"
 
-#: lazarusidestrconsts.listhefileisnotadelphiprojectdpr
-msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr "O arquivo %s%s%s não é um projeto Delphi (.dpr)"
-
-#: lazarusidestrconsts.listhefileisnotadelphiunit
-msgid "The file %s%s%s is not a Delphi unit."
-msgstr "O arquivo %s%s%s não é uma unidade Delphi."
-
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "O arquivo %s%s%s não é um projeto lazarus.%sCriar um novo projeto para este %s?"
@@ -14510,7 +14485,7 @@ msgstr "Impossível criar vínculo %s%s%s com alvo %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
-msgstr ""
+msgstr "Incapaz de criar novo método."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14546,7 +14521,7 @@ msgstr "Impossível localizar %s no Fluxo LFM"
 
 #: lazarusidestrconsts.lisunabletofindmethod
 msgid "Unable to find method."
-msgstr ""
+msgstr "Incapaz de localizar método."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14664,7 +14639,7 @@ msgstr "Impossível definir lado ancoragem do controle."
 
 #: lazarusidestrconsts.lisunabletoshowmethod
 msgid "Unable to show method."
-msgstr ""
+msgstr "Incapaz de exibir método."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
@@ -14824,7 +14799,7 @@ msgstr "Usar \"Ansistrings\""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
-msgstr ""
+msgstr "Usar pacotes de tempo de desenho"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"

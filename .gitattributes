@@ -536,6 +536,7 @@ components/codetools/ide/cody.lpk svneol=native#text/plain
 components/codetools/ide/cody.pas svneol=native#text/pascal
 components/codetools/ide/codystrconsts.pas svneol=native#text/pascal
 components/codetools/ide/languages/codystrconsts.po svneol=native#text/plain
+components/codetools/ide/languages/codystrconsts.pt_BR.po svneol=native#text/plain
 components/codetools/ide/languages/codystrconsts.ru.po svneol=native#text/plain
 components/codetools/ide/ppulistdlg.lfm svneol=native#text/plain
 components/codetools/ide/ppulistdlg.pas svneol=native#text/pascal
