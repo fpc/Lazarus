@@ -33,6 +33,8 @@ else if LCLWidgetType='carbon' then begin
              +base+'pascocoa/appkit;'
              +base+'pascocoa/foundation';
   IncPath := UnitPath;
+end else if LCLWidgetType='cocoa' then begin
+  CustomOptions := '-dcocoa'
 end else if LCLWidgetType='wince' then begin
   CustomOptions := '-dDisableChecks';
 end else if LCLWidgetType='fpgui' then begin
@@ -1685,8 +1687,7 @@ end;"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType)
-"/>
+      <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType)"/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
