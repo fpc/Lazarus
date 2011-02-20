@@ -170,6 +170,7 @@ type
     FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
+    FDrawer: IChartDrawer;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
     FProportional: Boolean;
@@ -178,7 +179,7 @@ type
     FScale: TDoublePoint;    // Coordinates transformation
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
-    procedure DrawReticule(ACanvas: TCanvas);
+    procedure DrawReticule(ADrawer: IChartDrawer);
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
@@ -405,7 +406,7 @@ begin
   if ASeries.FChart = Self then exit;
   if ASeries.FChart <> nil then
     ASeries.FChart.DeleteSeries(ASeries);
-  DrawReticule(Canvas);
+  HideReticule;
   Series.FList.Add(ASeries);
   ASeries.FChart := Self;
   ASeries.AfterAdd;
@@ -495,6 +496,7 @@ begin
   FBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
   FAxisVisible := true;
+  FDrawer := TCanvasDrawer.Create(Canvas);
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
@@ -662,7 +664,7 @@ begin
   finally
     legendItems.Free;
   end;
-  DrawReticule(ADrawer.Canvas);
+  DrawReticule(ADrawer);
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
@@ -727,14 +729,14 @@ begin
   PaintOnCanvas(ACanvas, Rect);
 end;
 
-procedure TChart.DrawReticule(ACanvas: TCanvas);
+procedure TChart.DrawReticule(ADrawer: IChartDrawer);
 begin
-  if ReticuleMode = rmNone then exit;
-  PrepareXorPen(ACanvas);
+  if not ADrawer.HasCanvas then exit;
+  PrepareXorPen(ADrawer.Canvas);
   if ReticuleMode in [rmVertical, rmCross] then
-    DrawLineVert(ACanvas, FReticulePos.X);
+    DrawLineVert(ADrawer.Canvas, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
-    DrawLineHoriz(ACanvas, FReticulePos.Y);
+    DrawLineHoriz(ADrawer.Canvas, FReticulePos.Y);
 end;
 
 procedure TChart.EraseBackground(DC: HDC);
@@ -1155,9 +1157,9 @@ end;
 procedure TChart.SetReticulePos(const AValue: TPoint);
 begin
   if FReticulePos = AValue then exit;
-  DrawReticule(Canvas);
+  DrawReticule(FDrawer);
   FReticulePos := AValue;
-  DrawReticule(Canvas);
+  DrawReticule(FDrawer);
 end;
 
 procedure TChart.SetTitle(Value: TChartTitle);
