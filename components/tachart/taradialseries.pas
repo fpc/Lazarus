@@ -152,7 +152,7 @@ begin
   Marks.SetAdditionalAngle(0);
   Measure(ADrawer);
 
-  ADrawer.SetPenParams(psSolid, clBlack);
+  ADrawer.PrepareSimplePen(clBlack);
   for i := 0 to Count - 1 do begin
     ADrawer.SetBrushParams(bsSolid, SliceColor(i));
     with FSlices[i] do begin
