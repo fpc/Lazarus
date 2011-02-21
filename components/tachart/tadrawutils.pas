@@ -96,7 +96,9 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
-    procedure Polygon(const APoints: array of TPoint);
+    procedure Polygon(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -130,7 +132,9 @@ type
   public
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
-    procedure Polygon(const APoints: array of TPoint); virtual; abstract;
+    procedure Polygon(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -160,7 +164,9 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
-    procedure Polygon(const APoints: array of TPoint); override;
+    procedure Polygon(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -408,9 +414,10 @@ begin
   FCanvas.Line(AP1, AP2);
 end;
 
-procedure TCanvasDrawer.Polygon(const APoints: array of TPoint);
+procedure TCanvasDrawer.Polygon(
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  FCanvas.Polygon(APoints);
+  FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);

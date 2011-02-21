@@ -145,7 +145,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
     property AxisIndexX;
@@ -966,7 +966,7 @@ begin
   inherited;
 end;
 
-procedure TAreaSeries.Draw(ACanvas: TCanvas);
+procedure TAreaSeries.Draw(ADrawer: IChartDrawer);
 var
   pts: TPointArray;
   numPts: Integer;
@@ -1063,25 +1063,24 @@ begin
       prevPts[i] := pts[i];
     numPrevPts := n2;
 
-    if Styles = nil then begin
-      ACanvas.Brush.Assign(AreaBrush);
-      ACanvas.Pen.Assign(AreaContourPen);
-    end
-    else
-      Styles.Apply(ACanvas, j);
+    ADrawer.Brush := AreaBrush;
+    ADrawer.Pen := AreaContourPen;
+    if Styles <> nil then
+      Styles.Apply(ADrawer, j);
     if Depth > 0 then
       // Rendering is incorrect when values cross zero level.
       for i := 1 to n2 - 2 do
-        DrawLineDepth(ACanvas, pts[i], pts[i + 1], Depth);
-    ACanvas.Polygon(pts, false, 0, numPts);
-    DrawLabels(ACanvas);
+        ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
+    ADrawer.Polygon(pts, 0, numPts);
+    if ADrawer.HasCanvas then
+      DrawLabels(ADrawer.Canvas);
   end;
   if AreaLinesPen.Style <> psClear then begin
-    ACanvas.Pen.Assign(AreaLinesPen);
+    ADrawer.Pen := AreaLinesPen;
     for i := 1 to High(FGraphPoints) - 1 do begin
       a := ProjToRect(FGraphPoints[i], ext2);
       b := ProjToLine(a, z);
-      ACanvas.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
+      ADrawer.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
     end;
   end;
 end;

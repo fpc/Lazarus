@@ -34,7 +34,9 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
-    procedure Polygon(const APoints: array of TPoint); override;
+    procedure Polygon(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -116,9 +118,11 @@ begin
   FCanvas.Line(AP1, AP2);
 end;
 
-procedure TAggPasDrawer.Polygon(const APoints: array of TPoint);
+procedure TAggPasDrawer.Polygon(
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  FCanvas.Polygon(APoints, Length(APoints));
+  FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
+  FCanvas.PolyLine(APoints, AStartIndex, ANumPts);
 end;
 
 procedure TAggPasDrawer.PrepareSimplePen(AColor: TChartColor);
