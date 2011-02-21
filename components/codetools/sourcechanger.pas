@@ -833,13 +833,13 @@ begin
   DebugLn('TSourceChangeCache.Apply EntryCount=',dbgs(FEntries.Count));
   {$ENDIF}
   Result:=false;
-  if MainScannerNeeded and (MainScanner=nil) then
-    RaiseCatchableException('TSourceChangeCache.Apply');
-  if FUpdateLock>0 then begin
+  if FEntries.Count=0 then begin
     Result:=true;
     exit;
   end;
-  if FEntries.Count=0 then begin
+  if MainScannerNeeded and (MainScanner=nil) then
+    RaiseCatchableException('TSourceChangeCache.Apply');
+  if FUpdateLock>0 then begin
     Result:=true;
     exit;
   end;

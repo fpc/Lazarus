@@ -1124,19 +1124,24 @@ begin
   Result:=false;
   if (UpperUnitName='') or (SourceChangeCache=nil) then exit;
   BuildTree(false);
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) do begin
-    if (SectionNode.FirstChild<>nil)
-    and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-      if not RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
-         SourceChangeCache)
-      then begin
-        exit;
+
+  SourceChangeCache.BeginUpdate;
+  try
+    SectionNode:=Tree.Root;
+    while (SectionNode<>nil) do begin
+      if (SectionNode.FirstChild<>nil)
+      and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
+        if not RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
+           SourceChangeCache)
+        then begin
+          exit;
+        end;
       end;
+      SectionNode:=SectionNode.NextBrother;
     end;
-    SectionNode:=SectionNode.NextBrother;
+  finally
+    Result:=SourceChangeCache.EndUpdate;
   end;
-  Result:=true;
 end;
 
 function TStandardCodeTool.FixUsedUnitCase(
