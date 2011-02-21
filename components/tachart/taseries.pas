@@ -472,13 +472,13 @@ begin
   if ADrawer.HasCanvas then
     DrawLabels(ADrawer.Canvas);
 
-  if FShowPoints and ADrawer.HasCanvas then
+  if FShowPoints then
     for i := FLoBound to FUpBound do begin
       p := FGraphPoints[i - FLoBound];
       if not ParentChart.IsPointInViewPort(p) then continue;
       ai := ParentChart.GraphToImage(p);
-      FPointer.Draw(ADrawer.Canvas, ai, Source[i]^.Color);
-      if Assigned(FOnDrawPointer) then
+      FPointer.Draw(ADrawer, ai, Source[i]^.Color);
+      if ADrawer.HasCanvas and Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ADrawer.Canvas, i, ai);
     end;
 end;

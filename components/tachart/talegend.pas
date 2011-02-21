@@ -264,7 +264,7 @@ begin
   // Max width slightly narrower then ARect to leave place for the line.
   sz.X := Min(FPointer.HorizSize, (ARect.Right - ARect.Left) div 3);
   sz.Y := Min(FPointer.VertSize, (ARect.Bottom - ARect.Top) div 2);
-  FPointer.DrawSize(ADrawer.Canvas, c, sz, Color);
+  FPointer.DrawSize(ADrawer, c, sz, Color);
 end;
 
 { TLegendItemBrushRect }

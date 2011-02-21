@@ -28,6 +28,7 @@ type
     procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
+    procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
@@ -38,8 +39,8 @@ type
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
     procedure Polyline(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1);
+      const APoints: array of TPoint; AStartIndex: Integer = 0;
+      ANumPts: Integer = -1; AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -85,6 +86,11 @@ begin
   FCanvas := ACanvas;
 end;
 
+procedure TAggPasDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
+begin
+  FCanvas.Ellipse(AX1, AY1, AX2, AY2);
+end;
+
 procedure TAggPasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.FillRect(AX1, AY1, AX2, AY2);
@@ -126,11 +132,16 @@ procedure TAggPasDrawer.Polygon(
 begin
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+  if ANumPts < 0 then
+    ANumPts := Length(APoints);
+  FCanvas.Line(APoints[ANumPts - 1], APoints[0])
 end;
 
 procedure TAggPasDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+  AEndPoint: Boolean);
 begin
+  Unused(AEndPoint);
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
 end;
 

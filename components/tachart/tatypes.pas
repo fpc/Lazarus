@@ -246,9 +246,9 @@ type
   public
     procedure Assign(Source: TPersistent); override;
 
-    procedure Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
+    procedure Draw(ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
     procedure DrawSize(
-      ACanvas: TCanvas; ACenter, ASize: TPoint; AColor: TColor);
+      ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor);
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
@@ -761,13 +761,14 @@ begin
   inherited;
 end;
 
-procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
+procedure TSeriesPointer.Draw(
+  ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
 begin
-  DrawSize(ACanvas, ACenter, Point(HorizSize, VertSize), AColor);
+  DrawSize(ADrawer, ACenter, Point(HorizSize, VertSize), AColor);
 end;
 
 procedure TSeriesPointer.DrawSize(
-  ACanvas: TCanvas; ACenter, ASize: TPoint; AColor: TColor);
+  ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor);
 
   function PointByIndex(AIndex: Char): TPoint;
   // 7--8--9
@@ -791,13 +792,10 @@ procedure TSeriesPointer.DrawSize(
     SetLength(pts, Length(AStr));
     for i := 1 to Length(AStr) do begin
       if AStr[i] = ' ' then begin
-        if Brush.Style = bsClear then begin
-          ACanvas.Polyline(pts, 0, j);
-          // Polyline does not draw the end point.
-          ACanvas.Pixels[pts[j - 1].X, pts[j - 1].Y] := Pen.Color;
-        end
+        if Brush.Style = bsClear then
+          ADrawer.Polyline(pts, 0, j, true)
         else
-          ACanvas.Polygon(pts, true, 0, j);
+          ADrawer.Polygon(pts, 0, j); // Winding?
         j := 0;
       end
       else begin
@@ -816,13 +814,13 @@ const
     '41236', '47896', '87412', '89632', '84268',
     '183', '842', '862');
 begin
-  ACanvas.Brush.Assign(FBrush);
+  ADrawer.Brush := Brush;
   if AColor <> clTAColor then
-    ACanvas.Brush.Color := AColor;
-  ACanvas.Pen.Assign(FPen);
+    ADrawer.BrushColor := AColor;
+  ADrawer.Pen := Pen;
 
-  if FStyle = psCircle then
-    ACanvas.Ellipse(
+  if Style = psCircle then
+    ADrawer.Ellipse(
       ACenter.X - ASize.X, ACenter.Y - ASize.Y,
       ACenter.X + ASize.X, ACenter.Y + ASize.Y)
   else

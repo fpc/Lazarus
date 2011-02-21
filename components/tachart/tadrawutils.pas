@@ -61,14 +61,14 @@ type
   TChartTextOut = class
   strict private
     FAlignment: TAlignment;
-    FSimpleTextOut: ISimpleTextOut;
     FPos: TPoint;
+    FSimpleTextOut: ISimpleTextOut;
     FText1: String;
     FText2: TStrings;
     FWidth: Integer;
 
-    procedure DoTextOutString;
     procedure DoTextOutList;
+    procedure DoTextOutString;
   public
     constructor Create(ASimpleTextOut: ISimpleTextOut);
   public
@@ -90,6 +90,7 @@ type
     procedure ClippingStop;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+    procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
@@ -100,8 +101,8 @@ type
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1);
     procedure Polyline(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1);
+      const APoints: array of TPoint; AStartIndex: Integer = 0;
+      ANumPts: Integer = -1; AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -130,8 +131,8 @@ type
   TFPCanvasDrawer = class(TInterfacedObject, ISimpleTextOut)
   strict protected
     function GetFontAngle: Double; virtual; abstract;
-    procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
+    procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
   public
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
@@ -153,14 +154,15 @@ type
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     function GetFontAngle: Double; override;
-    procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
     function SimpleTextExtent(const AText: String): TPoint; override;
+    procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
     constructor Create(ACanvas: TCanvas);
+    procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
@@ -171,8 +173,8 @@ type
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
     procedure Polyline(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1);
+      const APoints: array of TPoint; AStartIndex: Integer = 0;
+      ANumPts: Integer = -1; AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -385,6 +387,11 @@ begin
   FCanvas := ACanvas;
 end;
 
+procedure TCanvasDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
+begin
+  FCanvas.Ellipse(AX1, AY1, AX2, AY2);
+end;
+
 procedure TCanvasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.FillRect(AX1, AY1, AX2, AY2);
@@ -427,9 +434,17 @@ begin
 end;
 
 procedure TCanvasDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+  AEndPoint: Boolean);
 begin
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+  if AEndPoint then begin
+    // Polyline does not draw the end point.
+    if ANumPts < 0 then
+      ANumPts := Length(APoints);
+    with APoints[ANumPts - 1] do
+      FCanvas.Pixels[X, Y] := FCanvas.Pen.Color;
+  end;
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
