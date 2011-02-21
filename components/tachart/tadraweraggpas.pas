@@ -29,17 +29,19 @@ type
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
+    function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
-    procedure Polygon(const APoints: array of TPoint);
+    procedure Polygon(const APoints: array of TPoint); override;
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
@@ -81,6 +83,11 @@ end;
 procedure TAggPasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.FillRect(AX1, AY1, AX2, AY2);
+end;
+
+function TAggPasDrawer.GetBrushColor: TChartColor;
+begin
+  Result := FCanvas.Brush.Color;
 end;
 
 function TAggPasDrawer.GetCanvas: TCanvas;
@@ -151,6 +158,11 @@ begin
     if ABrush is TBrush then
       Color := (ABrush as TBrush).Color;
   end;
+end;
+
+procedure TAggPasDrawer.SetBrushColor(AColor: TChartColor);
+begin
+  FCanvas.Brush.Color := AColor;
 end;
 
 procedure TAggPasDrawer.SetBrushParams(

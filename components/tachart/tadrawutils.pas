@@ -88,7 +88,10 @@ type
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStart;
     procedure ClippingStop;
+    procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
+    procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
+    function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
@@ -100,7 +103,8 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
-    procedure SetBrush(APen: TFPCustomBrush);
+    procedure SetBrushColor(AColor: TChartColor);
+    procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -110,6 +114,7 @@ type
     function TextOut: TChartTextOut;
 
     property Brush: TFPCustomBrush write SetBrush;
+    property BrushColor: TChartColor read GetBrushColor write SetBrushColor;
     property Canvas: TCanvas read GetCanvas;
     property Font: TFPCustomFont write SetFont;
     property Pen: TFPCustomPen write SetPen;
@@ -123,6 +128,9 @@ type
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
   public
+    procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
+    procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+    procedure Polygon(const APoints: array of TPoint); virtual; abstract;
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -147,17 +155,19 @@ type
     procedure ClippingStop;
     constructor Create(ACanvas: TCanvas);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
+    function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
-    procedure Polygon(const APoints: array of TPoint);
+    procedure Polygon(const APoints: array of TPoint); override;
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
@@ -289,6 +299,19 @@ end;
 
 { TFPCanvasDrawer }
 
+procedure TFPCanvasDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
+begin
+  DrawLineDepth(Point(AX1, AY1), Point(AX2, AY2), ADepth);
+end;
+
+procedure TFPCanvasDrawer.DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+var
+  d: TPoint;
+begin
+  d := Point(ADepth, -ADepth);
+  Polygon([AP1, AP1 + d, AP2 + d, AP2]);
+end;
+
 function TFPCanvasDrawer.TextExtent(const AText: String): TPoint;
 var
   sl: TStrings;
@@ -355,6 +378,11 @@ begin
   FCanvas.FillRect(AX1, AY1, AX2, AY2);
 end;
 
+function TCanvasDrawer.GetBrushColor: TChartColor;
+begin
+  Result := FCanvas.Brush.Color;
+end;
+
 function TCanvasDrawer.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
@@ -416,6 +444,11 @@ end;
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   FCanvas.Brush.Assign(ABrush);
+end;
+
+procedure TCanvasDrawer.SetBrushColor(AColor: TChartColor);
+begin
+  FCanvas.Brush.Color := AColor;
 end;
 
 procedure TCanvasDrawer.SetBrushParams(
