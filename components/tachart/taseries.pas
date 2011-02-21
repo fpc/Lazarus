@@ -78,7 +78,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
     property AxisIndexX;
@@ -749,7 +749,7 @@ begin
   inherited;
 end;
 
-procedure TBarSeries.Draw(ACanvas: TCanvas);
+procedure TBarSeries.Draw(ADrawer: IChartDrawer);
 var
   pointIndex, stackIndex: Integer;
 
@@ -758,27 +758,27 @@ var
     sz: TSize;
     defaultDrawing: Boolean = true;
   begin
-    ACanvas.Brush.Assign(BarBrush);
-    ACanvas.Pen.Assign(BarPen);
+    ADrawer.Brush := BarBrush;
+    ADrawer.Pen := BarPen;
     if Styles <> nil then
-      Styles.Apply(ACanvas, stackIndex);
+      Styles.Apply(ADrawer, stackIndex);
     sz := Size(AR);
     if (sz.cx <= 2) or (sz.cy <= 2) then begin
       // Bars are too small to distinguish the border from the interior.
-      ACanvas.Pen.Color := ACanvas.Brush.Color;
-      ACanvas.Pen.Style := psSolid;
+      ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
     end;
 
-    if Assigned(OnBeforeDrawBar) then
-      OnBeforeDrawBar(Self, ACanvas, AR, pointIndex, stackIndex, defaultDrawing);
+    if ADrawer.HasCanvas and Assigned(OnBeforeDrawBar) then
+      OnBeforeDrawBar(
+        Self, ADrawer.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
     if not defaultDrawing then exit;
 
-    ACanvas.Rectangle(AR);
+    ADrawer.Rectangle(AR);
 
     if Depth = 0 then exit;
-    DrawLineDepth(ACanvas, AR.Left, AR.Top, AR.Right - 1, AR.Top, Depth);
-    DrawLineDepth(
-      ACanvas, AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, Depth);
+    ADrawer.DrawLineDepth(AR.Left, AR.Top, AR.Right - 1, AR.Top, Depth);
+    ADrawer.DrawLineDepth(
+      AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, Depth);
   end;
 
 var
@@ -836,14 +836,15 @@ begin
       Exchange(p.X, p.Y);
     p.X += ofs;
     cumulHeight := z;
-    ACanvas.Brush.Color := GetColor(pointIndex);
+    ADrawer.BrushColor := GetColor(pointIndex);
     stackIndex := 0;
     BuildBar(p.Y - z);
     for stackIndex := 1 to Source.YCount - 1 do
       BuildBar(Source[pointIndex]^.YList[stackIndex - 1]);
   end;
 
-  DrawLabels(ACanvas);
+  if ADrawer.HasCanvas then
+    DrawLabels(ADrawer.Canvas);
 end;
 
 function TBarSeries.Extent: TDoubleRect;
