@@ -21,7 +21,7 @@ unit TAStyles;
 interface
 
 uses
-  Classes, Graphics, SysUtils, TAChartUtils;
+  Classes, Graphics, SysUtils, TAChartUtils, TADrawUtils;
 
 type
   { TChartStyle }
@@ -46,6 +46,7 @@ type
     destructor Destroy; override;
   public
     procedure Apply(ACanvas: TCanvas);
+    procedure Apply(ADrawer: IChartDrawer);
     procedure Assign(Source: TPersistent); override;
   published
     property Brush: TBrush read FBrush write SetBrush;
@@ -78,18 +79,20 @@ type
   private
     FBroadcaster: TBroadcaster;
     FStyles: TChartStyleList;
-    procedure SetStyles(const AValue: TChartStyleList);
+    procedure SetStyles(AValue: TChartStyleList);
+    function StyleByIndex(AIndex: Cardinal): TChartStyle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure Apply(ACanvas: TCanvas; AIndex: Cardinal);
+    procedure Apply(ACanvas: TCanvas; AIndex: Cardinal); overload;
+    procedure Apply(ADrawer: IChartDrawer; AIndex: Cardinal); overload;
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
     property Styles: TChartStyleList read FStyles write SetStyles;
   end;
 
-  procedure Register;
+procedure Register;
 
 implementation
 
@@ -99,6 +102,14 @@ begin
 end;
 
 { TChartStyle }
+
+procedure TChartStyle.Apply(ADrawer: IChartDrawer);
+begin
+  if UseBrush then
+    ADrawer.Brush := Brush;
+  if UsePen then
+    ADrawer.Pen := Pen;
+end;
 
 procedure TChartStyle.Apply(ACanvas: TCanvas);
 begin
@@ -206,23 +217,22 @@ end;
 
 { TChartStyles }
 
+procedure TChartStyles.Apply(ADrawer: IChartDrawer; AIndex: Cardinal);
+var
+  style: TChartStyle;
+begin
+  style := StyleByIndex(AIndex);
+  if style <> nil then
+    style.Apply(ADrawer);
+end;
+
 procedure TChartStyles.Apply(ACanvas: TCanvas; AIndex: Cardinal);
 var
-  totalRepeatCount: Cardinal = 0;
-  i: Integer;
+  style: TChartStyle;
 begin
-  for i := 0 to Styles.Count - 1 do
-    totalRepeatCount += Styles[i].RepeatCount;
-  if totalRepeatCount = 0 then exit;
-  AIndex := AIndex mod totalRepeatCount;
-  totalRepeatCount := 0;
-  for i := 0 to Styles.Count - 1 do begin
-    totalRepeatCount += Styles[i].RepeatCount;
-    if AIndex < totalRepeatCount then begin
-      Styles[i].Apply(ACanvas);
-      break;
-    end;
-  end;
+  style := StyleByIndex(AIndex);
+  if style <> nil then
+    style.Apply(ACanvas);
 end;
 
 constructor TChartStyles.Create(AOwner: TComponent);
@@ -239,11 +249,30 @@ begin
   inherited Destroy;
 end;
 
-procedure TChartStyles.SetStyles(const AValue: TChartStyleList);
+procedure TChartStyles.SetStyles(AValue: TChartStyleList);
 begin
   if FStyles = AValue then exit;
   FStyles := AValue;
   Broadcaster.Broadcast(Self);
+end;
+
+function TChartStyles.StyleByIndex(AIndex: Cardinal): TChartStyle;
+var
+  totalRepeatCount: Cardinal = 0;
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to Styles.Count - 1 do
+    totalRepeatCount += Styles[i].RepeatCount;
+  if totalRepeatCount = 0 then
+    exit;
+  AIndex := AIndex mod totalRepeatCount;
+  totalRepeatCount := 0;
+  for i := 0 to Styles.Count - 1 do begin
+    Result := Styles[i];
+    totalRepeatCount += Result.RepeatCount;
+    if AIndex < totalRepeatCount then exit;
+  end;
 end;
 
 end.
