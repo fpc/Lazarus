@@ -34,7 +34,7 @@ else if LCLWidgetType='carbon' then begin
              +base+'pascocoa/foundation';
   IncPath := UnitPath;
 end else if LCLWidgetType='cocoa' then begin
-  CustomOptions := '-dcocoa'
+  CustomOptions := '-dcocoa';
 end else if LCLWidgetType='wince' then begin
   CustomOptions := '-dDisableChecks';
 end else if LCLWidgetType='fpgui' then begin
