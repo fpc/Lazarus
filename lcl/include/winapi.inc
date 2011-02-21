@@ -33,9 +33,9 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; Left, Top, Right, Bottom, angle1, angle2: Integer): Boolean;
+function Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 begin
-  Result := WidgetSet.Arc(DC, Left, Top, Right, Bottom, angle1, angle2);
+  Result := WidgetSet.Arc(DC, Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength);
 end;
 
 function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean;

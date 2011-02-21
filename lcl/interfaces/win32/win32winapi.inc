@@ -46,8 +46,8 @@ const
            Top - y-coordinate of bounding rectangle's upper-left corner
            Right - x-coordinate of bounding rectangle's lower-right corner
            Bottom - y-coordinate of bounding rectangle's lower-right corner
-           Angle1 - first angle
-           Angle2 - second angle
+           StartAngle - base angle
+           AngleLength - angle length
   Returns: Whether the call was successful
 
   Use Arc to draw an elliptically curved line with the current Pen.
@@ -56,12 +56,17 @@ const
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle1, Angle2: Integer): Boolean;
+function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
-  SX, SY, EX, EY : Longint;
+  SX, SY, EX, EY, OldArcDirection: Longint;
 begin
-  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle1, Angle2, SX, SY, EX, EY);
+  if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
+  else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
+
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
+  // Revert the arc direction to the previous value
+  Windows.SetArcDirection(DC, OldArcDirection);
 end;
 
 {------------------------------------------------------------------------------

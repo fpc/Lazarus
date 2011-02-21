@@ -28,7 +28,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function TWidgetSet.Arc(DC: HDC;
-  Left, Top, Right, Bottom, angle1, angle2: Integer): Boolean;
+  Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -36,7 +36,7 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(Left, Top, Right-Left, Bottom-Top, Angle1, Angle2, 0,
+  PolyBezierArcPoints(Left, Top, Right-Left, Bottom-Top, Angle16Deg, Angle16DegLength, 0,
                       Points, Count);
   Polyline(DC, Points, Count);
   ReallocMem(Points, 0);

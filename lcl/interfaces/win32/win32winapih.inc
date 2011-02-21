@@ -22,7 +22,7 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; Left,Top, Right, Bottom, Angle1, Angle2: Integer): Boolean; override;
+function Arc(DC: HDC; Left,Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean; override;
 function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
 
 function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; override;
