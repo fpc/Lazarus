@@ -19,8 +19,8 @@ type
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     function GetFontAngle: Double; override;
-    procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
     function SimpleTextExtent(const AText: String): TPoint; override;
+    procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
     constructor Create(ACanvas: TAggLCLCanvas);
   public
@@ -35,6 +35,8 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
+    procedure LineTo(AX, AY: Integer); override;
+    procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
@@ -125,6 +127,16 @@ end;
 procedure TAggPasDrawer.Line(const AP1, AP2: TPoint);
 begin
   FCanvas.Line(AP1, AP2);
+end;
+
+procedure TAggPasDrawer.LineTo(AX, AY: Integer);
+begin
+  FCanvas.LineTo(AX, AY);
+end;
+
+procedure TAggPasDrawer.MoveTo(AX, AY: Integer);
+begin
+  FCanvas.MoveTo(AX, AY);
 end;
 
 procedure TAggPasDrawer.Polygon(

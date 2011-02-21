@@ -80,6 +80,10 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
+    procedure LineTo(AX, AY: Integer);
+    procedure LineTo(const AP: TPoint);
+    procedure MoveTo(AX, AY: Integer);
+    procedure MoveTo(const AP: TPoint);
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1);
@@ -119,6 +123,10 @@ type
   public
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+    procedure LineTo(AX, AY: Integer); virtual; abstract;
+    procedure LineTo(const AP: TPoint);
+    procedure MoveTo(AX, AY: Integer); virtual; abstract;
+    procedure MoveTo(const AP: TPoint);
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
@@ -152,6 +160,8 @@ type
     function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
+    procedure LineTo(AX, AY: Integer); override;
+    procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
@@ -292,6 +302,16 @@ begin
   Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
+procedure TFPCanvasDrawer.LineTo(const AP: TPoint);
+begin
+  LineTo(AP.X, AP.Y)
+end;
+
+procedure TFPCanvasDrawer.MoveTo(const AP: TPoint);
+begin
+  MoveTo(AP.X, AP.Y)
+end;
+
 function TFPCanvasDrawer.TextExtent(const AText: String): TPoint;
 var
   sl: TStrings;
@@ -391,6 +411,16 @@ end;
 procedure TCanvasDrawer.Line(const AP1, AP2: TPoint);
 begin
   FCanvas.Line(AP1, AP2);
+end;
+
+procedure TCanvasDrawer.LineTo(AX, AY: Integer);
+begin
+  FCanvas.LineTo(AX, AY);
+end;
+
+procedure TCanvasDrawer.MoveTo(AX, AY: Integer);
+begin
+  FCanvas.MoveTo(AX, AY);
 end;
 
 procedure TCanvasDrawer.Polygon(

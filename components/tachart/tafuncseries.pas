@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TACustomSource, TALegend, TATypes;
+  TAChartUtils, TACustomSeries, TACustomSource, TADrawUtils, TALegend, TATypes;
 
 const
   DEF_COLORMAP_STEP = 4;
@@ -77,7 +77,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
@@ -120,7 +120,7 @@ type
 
   public
     function ColorByValue(AValue: Double): TColor;
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
     property AxisIndexX;
@@ -234,7 +234,7 @@ begin
   OnCalculate(AX, Result)
 end;
 
-procedure TFuncSeries.Draw(ACanvas: TCanvas);
+procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 type
   TTransform = function (A: Double): Double of object;
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
@@ -256,7 +256,7 @@ var
   begin
     CalcAt(AXg, AXa, prev, prevInExtent);
     if prevInExtent then
-      ACanvas.MoveTo(FChart.GraphToImage(prev));
+      ADrawer.MoveTo(FChart.GraphToImage(prev));
   end;
 
   procedure LineTo(AXg, AXa: Double);
@@ -267,10 +267,10 @@ var
     CalcAt(AXg, AXa, p, inExtent);
     t := p;
     if inExtent and prevInExtent then
-      ACanvas.LineTo(FChart.GraphToImage(p))
+      ADrawer.LineTo(FChart.GraphToImage(p))
     else if LineIntersectsRect(prev, t, r) then begin
-      ACanvas.MoveTo(FChart.GraphToImage(prev));
-      ACanvas.LineTo(FChart.GraphToImage(t));
+      ADrawer.MoveTo(FChart.GraphToImage(prev));
+      ADrawer.LineTo(FChart.GraphToImage(t));
     end;
     prevInExtent := inExtent;
     prev := p;
@@ -315,7 +315,7 @@ begin
 
   MoveTo(xg, xa);
 
-  ACanvas.Pen.Assign(Pen);
+  ADrawer.Pen := Pen;
   while xg < xmax do begin
     xg1 := xg + graphStep;
     xa1 := graphToAxisXr(xg1);
@@ -421,7 +421,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TColorMapSeries.Draw(ACanvas: TCanvas);
+procedure TColorMapSeries.Draw(ADrawer: IChartDrawer);
 var
   ext: TDoubleRect;
   bounds: TDoubleRect;
@@ -444,8 +444,8 @@ begin
   NormalizeRect(r);
   offset := ParentChart.GraphToImage(ZeroDoublePoint);
 
-  ACanvas.Brush := Brush;
-  ACanvas.Pen.Style := psClear;
+  ADrawer.Brush := Brush;
+  ADrawer.SetPenParams(psClear, clTAColor);
   pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
   while pt.Y <= r.Bottom do begin
     next.Y := pt.Y + StepY;
@@ -464,8 +464,8 @@ begin
       if not (csDesigning in ComponentState) then
         OnCalculate(gp.X, gp.Y, v);
       if ColorSource <> nil then
-        ACanvas.Brush.Color := ColorByValue(v);
-      ACanvas.Rectangle(
+        ADrawer.BrushColor := ColorByValue(v);
+      ADrawer.Rectangle(
         Max(pt.X, r.Left), Max(pt.Y, r.Top),
         Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
       pt.X := next.X;
