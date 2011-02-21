@@ -32,23 +32,6 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
-  //TCanvas = TFPCustomCanvas;
-
-  TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
-
-  { TPenBrushFontRecall }
-
-  TPenBrushFontRecall = class
-  private
-    FBrush: TBrush;
-    FCanvas: TCanvas;
-    FFont: TFont;
-    FPen: TPen;
-  public
-    constructor Create(ACanvas: TCanvas; AParams: TPenBrushFont);
-    destructor Destroy; override;
-    procedure Recall;
-  end;
 
   ISimpleTextOut = interface
     procedure SimpleTextOut(AX, AY: Integer; const AText: String);
@@ -186,9 +169,6 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
-procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
-procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
-
 procedure PrepareXorPen(ACanvas: TCanvas);
 
 implementation
@@ -198,20 +178,6 @@ uses
 
 const
   LINE_INTERVAL = 2;
-
-procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
-begin
-  DrawLineDepth(ACanvas, Point(AX1, AY1), Point(AX2, AY2), ADepth);
-end;
-
-procedure DrawLineDepth(
-  ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
-var
-  d: TSize;
-begin
-  d := Size(ADepth, -ADepth);
-  ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
-end;
 
 procedure PrepareXorPen(ACanvas: TCanvas);
 begin
@@ -516,48 +482,6 @@ end;
 procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 begin
   FCanvas.TextOut(AX, AY, AText);
-end;
-
-{ TPenBrushFontRecall }
-
-constructor TPenBrushFontRecall.Create(ACanvas: TCanvas; AParams: TPenBrushFont);
-begin
-  inherited Create;
-  FCanvas := ACanvas;
-  if pbfPen in AParams then begin
-    FPen := TPen.Create;
-    FPen.Assign(FCanvas.Pen);
-  end;
-  if pbfBrush in AParams then begin
-    FBrush := TBrush.Create;
-    FBrush.Assign(FCanvas.Brush);
-  end;
-  if pbfFont in AParams then begin
-    FFont := TFont.Create;
-    FFont.Assign(FCanvas.Font);
-  end;
-end;
-
-destructor TPenBrushFontRecall.Destroy;
-begin
-  Recall;
-  inherited;
-end;
-
-procedure TPenBrushFontRecall.Recall;
-begin
-  if FPen <> nil then begin
-    FCanvas.Pen.Assign(FPen);
-    FreeAndNil(FPen);
-  end;
-  if FBrush <> nil then begin
-    FCanvas.Brush.Assign(FBrush);
-    FreeAndNil(FBrush);
-  end;
-  if FFont <> nil then begin
-    FCanvas.Font.Assign(FFont);
-    FreeAndNil(FFont);
-  end;
 end;
 
 end.

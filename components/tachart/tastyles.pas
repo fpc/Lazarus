@@ -45,7 +45,6 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
   public
-    procedure Apply(ACanvas: TCanvas);
     procedure Apply(ADrawer: IChartDrawer);
     procedure Assign(Source: TPersistent); override;
   published
@@ -85,7 +84,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure Apply(ACanvas: TCanvas; AIndex: Cardinal); overload;
     procedure Apply(ADrawer: IChartDrawer; AIndex: Cardinal); overload;
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
@@ -109,14 +107,6 @@ begin
     ADrawer.Brush := Brush;
   if UsePen then
     ADrawer.Pen := Pen;
-end;
-
-procedure TChartStyle.Apply(ACanvas: TCanvas);
-begin
-  if UseBrush then
-    ACanvas.Brush := Brush;
-  if UsePen then
-    ACanvas.Pen := Pen;
 end;
 
 procedure TChartStyle.Assign(Source: TPersistent);
@@ -224,15 +214,6 @@ begin
   style := StyleByIndex(AIndex);
   if style <> nil then
     style.Apply(ADrawer);
-end;
-
-procedure TChartStyles.Apply(ACanvas: TCanvas; AIndex: Cardinal);
-var
-  style: TChartStyle;
-begin
-  style := StyleByIndex(AIndex);
-  if style <> nil then
-    style.Apply(ACanvas);
 end;
 
 constructor TChartStyles.Create(AOwner: TComponent);

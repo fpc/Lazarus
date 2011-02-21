@@ -785,7 +785,7 @@ function TChartAxis.TryApplyStripes(
 begin
   Result := Marks.Stripes <> nil;
   if not Result then exit;
-  Marks.Stripes.Apply(ADrawer.Canvas, AIndex);
+  Marks.Stripes.Apply(ADrawer, AIndex);
   AIndex += 1;
 end;
 
