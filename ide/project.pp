@@ -825,6 +825,8 @@ type
     procedure UpdateProjectDirectory;
     procedure UpdateSessionFilename;
     procedure UpdateSourceDirectories;
+    procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
+    procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -933,10 +935,6 @@ type
     function AllEditorsInfoCount: Integer;
     property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
     function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
-    procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
-    procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
-    procedure EditorInfoUpdate(EdInfo: TUnitEditorInfo;
-                               NewSE, OldSE: TSourceEditorInterface);
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -1178,8 +1176,8 @@ end;
 procedure TUnitEditorInfo.SetEditorComponent(const AValue: TSourceEditorInterface);
 begin
   if FEditorComponent = AValue then exit;
-  fUnitInfo.Project.EditorInfoUpdate(Self, AValue, FEditorComponent);
   if AValue = nil then begin
+    fUnitInfo.Project.FAllEditorsInfoMap.Delete(FEditorComponent);
     FEditorComponent := AValue;
     UnitInfo.FEditorInfoList.MakeUnUsedEditorInfo(Self);
     PageIndex := -1; // calls UnitInfo.UpdatePageIndex
@@ -1187,6 +1185,9 @@ begin
   end
   else begin
     PageIndex := -1;
+    with fUnitInfo.Project do             // Map for lookup: Editor -> EditorInfo
+      if not FAllEditorsInfoMap.HasId(AValue) then
+        FAllEditorsInfoMap.Add(AValue, Self);
     FEditorComponent := AValue;
     UnitInfo.FEditorInfoList.MakeUsedEditorInfo(Self);
     AValue.UpdateProjectFile; // Set EditorIndex / calls UnitInfo.UpdatePageIndex
@@ -5432,17 +5433,6 @@ begin
   FAllEditorsInfoList.Remove(EdInfo);
   if Assigned(EdInfo.EditorComponent) then
     FAllEditorsInfoMap.Delete(EdInfo.EditorComponent);
-end;
-
-procedure TProject.EditorInfoUpdate(EdInfo: TUnitEditorInfo;
-                                    NewSE, OldSE: TSourceEditorInterface);
-begin
-  if Assigned(NewSE) then begin
-    if not FAllEditorsInfoMap.HasId(NewSE) then
-      FAllEditorsInfoMap.Add(NewSE, EdInfo);
-  end
-  else if Assigned(OldSE) then
-    FAllEditorsInfoMap.Delete(OldSE);
 end;
 
 function TProject.SearchFile(const ShortFilename: string;
