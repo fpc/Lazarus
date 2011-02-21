@@ -297,7 +297,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     procedure Assign(ASource: TPersistent); override;
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
     property Active default true;
@@ -1169,10 +1169,10 @@ begin
   inherited Assign(ASource);
 end;
 
-procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
+procedure TUserDrawnSeries.Draw(ADrawer: IChartDrawer);
 begin
-  if Assigned(FOnDraw) then
-     FOnDraw(ACanvas, FChart.ClipRect);
+  if ADrawer.HasCanvas and Assigned(FOnDraw) then
+     FOnDraw(ADrawer.Canvas, FChart.ClipRect);
 end;
 
 procedure TUserDrawnSeries.GetBounds(var ABounds: TDoubleRect);

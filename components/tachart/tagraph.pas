@@ -78,8 +78,7 @@ type
     destructor Destroy; override;
 
   public
-    procedure Draw(ADrawer: IChartDrawer); virtual;
-    procedure Draw(ACanvas: TCanvas); virtual;
+    procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
 
@@ -1258,17 +1257,6 @@ begin
   if FChart <> nil then
     FChart.DeleteSeries(Self);
   inherited;
-end;
-
-procedure TBasicChartSeries.Draw(ADrawer: IChartDrawer);
-begin
-  Draw(ADrawer.Canvas);
-end;
-
-procedure TBasicChartSeries.Draw(ACanvas: TCanvas);
-begin
-  Unused(ACanvas);
-  raise EChartError(ClassName + '.Draw not implemented');
 end;
 
 function TBasicChartSeries.GraphToAxisX(AX: Double): Double;
