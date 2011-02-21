@@ -184,7 +184,7 @@ type
     FPointer: TSeriesPointer;
     FShowPoints: Boolean;
 
-    procedure DrawSingleLineInStack(ACanvas: TCanvas; AIndex: Integer);
+    procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
@@ -201,7 +201,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -358,7 +358,7 @@ begin
   inherited;
 end;
 
-procedure TLineSeries.Draw(ACanvas: TCanvas);
+procedure TLineSeries.Draw(ADrawer: IChartDrawer);
 var
   ext: TDoubleRect;
   i: Integer;
@@ -374,14 +374,15 @@ begin
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
-  DrawSingleLineInStack(ACanvas, 0);
+  DrawSingleLineInStack(ADrawer, 0);
   for i := 0 to Source.YCount - 2 do begin
     UpdateGraphPoints(i);
-    DrawSingleLineInStack(ACanvas, i + 1);
+    DrawSingleLineInStack(ADrawer, i + 1);
   end;
 end;
 
-procedure TLineSeries.DrawSingleLineInStack(ACanvas: TCanvas; AIndex: Integer);
+procedure TLineSeries.DrawSingleLineInStack(
+  ADrawer: IChartDrawer; AIndex: Integer);
 var
   points: array of TPoint;
   pointCount: Integer = 0;
@@ -445,22 +446,20 @@ var
     SetLength(points, pointCount);
     SetLength(breaks, breakCount);
 
-    if Styles = nil then
-      ACanvas.Pen.Assign(LinePen)
-    else
-      Styles.Apply(ACanvas, AIndex);
+    ADrawer.Pen := LinePen;
+    if Styles <> nil then
+      Styles.Apply(ADrawer, AIndex);
     if Depth = 0 then
       for i := 0 to High(breaks) - 1 do
-        ACanvas.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
+        ADrawer.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
     else begin
       if Styles = nil then begin
-        ACanvas.Brush.Style := bsSolid;
-        ACanvas.Brush.Color := LinePen.Color;
-        ACanvas.Pen.Color := clBlack;
+        ADrawer.SetBrushParams(bsSolid, LinePen.Color);
+        ADrawer.SetPenParams(LinePen.Style, clBlack);
       end;
       for i := 0 to High(breaks) - 1 do
         for j := breaks[i] to breaks[i + 1] - 2 do
-          DrawLineDepth(ACanvas, points[j], points[j + 1], Depth);
+          ADrawer.DrawLineDepth(points[j], points[j + 1], Depth);
     end;
   end;
 
@@ -470,16 +469,17 @@ var
   p: TDoublePoint;
 begin
   DrawLines;
-  DrawLabels(ACanvas);
+  if ADrawer.HasCanvas then
+    DrawLabels(ADrawer.Canvas);
 
-  if FShowPoints then
+  if FShowPoints and ADrawer.HasCanvas then
     for i := FLoBound to FUpBound do begin
       p := FGraphPoints[i - FLoBound];
       if not ParentChart.IsPointInViewPort(p) then continue;
       ai := ParentChart.GraphToImage(p);
-      FPointer.Draw(ACanvas, ai, Source[i]^.Color);
+      FPointer.Draw(ADrawer.Canvas, ai, Source[i]^.Color);
       if Assigned(FOnDrawPointer) then
-        FOnDrawPointer(Self, ACanvas, i, ai);
+        FOnDrawPointer(Self, ADrawer.Canvas, i, ai);
     end;
 end;
 

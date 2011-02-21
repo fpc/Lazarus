@@ -37,6 +37,9 @@ type
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+    procedure Polyline(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -122,7 +125,13 @@ procedure TAggPasDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
-  FCanvas.PolyLine(APoints, AStartIndex, ANumPts);
+  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+end;
+
+procedure TAggPasDrawer.Polyline(
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
+begin
+  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
 end;
 
 procedure TAggPasDrawer.PrepareSimplePen(AColor: TChartColor);

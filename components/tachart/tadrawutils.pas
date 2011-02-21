@@ -99,6 +99,9 @@ type
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1);
+    procedure Polyline(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -167,6 +170,9 @@ type
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+    procedure Polyline(
+      const APoints: array of TPoint;
+      AStartIndex: Integer = 0; ANumPts: Integer = -1);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -418,6 +424,12 @@ procedure TCanvasDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
+end;
+
+procedure TCanvasDrawer.Polyline(
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
+begin
+  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
