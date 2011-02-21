@@ -7636,14 +7636,10 @@ end;
 
 procedure TMainIDE.SaveSourceEditorProjectSpecificSettings;
 var
-  AnEditorInfo: TUnitEditorInfo;
   i: Integer;
 begin
-  for i := 0 to Project1.AllEditorsInfoCount - 1 do begin
-    AnEditorInfo := Project1.AllEditorsInfo[i];
-    if (AnEditorInfo.EditorComponent <> nil) then
-      SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
-  end;
+  for i := 0 to Project1.AllEditorsInfoCount - 1 do
+    SaveSrcEditorProjectSpecificSettings(Project1.AllEditorsInfo[i]);
 end;
 
 function TMainIDE.DoShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
