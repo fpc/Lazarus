@@ -6035,6 +6035,7 @@ begin
        +LazarusSrcDir+'/converter;'
        +LazarusSrcDir+'/packager;'
        +LazarusSrcDir+'/packager/registration;'
+       +LazarusSrcDir+'/packager/frames;'
        +LazarusSrcDir+'/components/custom;'
        +LazarusSrcDir+'/components/mpaslex;')
     ,da_DefineRecurse));
