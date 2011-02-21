@@ -195,7 +195,7 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
 
-    procedure DrawLabels(ACanvas: TCanvas);
+    procedure DrawLabels(ADrawer: IChartDrawer);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
@@ -741,10 +741,9 @@ end;
 
 { TBasicPointSeries }
 
-procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
+procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer);
 var
   prevLabelPoly: TPointArray;
-  drawer: IChartDrawer;
 
   procedure DrawLabel(
     const AText: String; const ADataPoint: TPoint; ADir: TLabelDirection);
@@ -755,15 +754,14 @@ var
     center: TPoint;
   begin
     if AText = '' then exit;
-    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(drawer, AText);
-    Marks.DrawLabel(drawer, ADataPoint, center, AText, prevLabelPoly);
+    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(ADrawer, AText);
+    Marks.DrawLabel(ADrawer, ADataPoint, center, AText, prevLabelPoly);
   end;
 
 var
   g: TDoublePoint;
   i: Integer;
 begin
-  drawer := TCanvasDrawer.Create(ACanvas);
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
     g := GetGraphPoint(i);

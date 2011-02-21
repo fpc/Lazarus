@@ -469,8 +469,7 @@ var
   p: TDoublePoint;
 begin
   DrawLines;
-  if ADrawer.HasCanvas then
-    DrawLabels(ADrawer.Canvas);
+  DrawLabels(ADrawer);
 
   if FShowPoints then
     for i := FLoBound to FUpBound do begin
@@ -843,8 +842,7 @@ begin
       BuildBar(Source[pointIndex]^.YList[stackIndex - 1]);
   end;
 
-  if ADrawer.HasCanvas then
-    DrawLabels(ADrawer.Canvas);
+  DrawLabels(ADrawer);
 end;
 
 function TBarSeries.Extent: TDoubleRect;
@@ -1072,8 +1070,7 @@ begin
       for i := 1 to n2 - 2 do
         ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
     ADrawer.Polygon(pts, 0, numPts);
-    if ADrawer.HasCanvas then
-      DrawLabels(ADrawer.Canvas);
+    DrawLabels(ADrawer);
   end;
   if AreaLinesPen.Style <> psClear then begin
     ADrawer.Pen := AreaLinesPen;

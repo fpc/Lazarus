@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TALegend;
+  TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
 
 const
   DEF_BOX_WIDTH = 50;
@@ -48,7 +48,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
     property AxisIndexX;
@@ -82,7 +82,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
-    procedure Draw(ACanvas: TCanvas); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
     property BoxBrush: TBrush read FBoxBrush write SetBoxBrush;
@@ -132,7 +132,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TBubbleSeries.Draw(ACanvas: TCanvas);
+procedure TBubbleSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
   pt, d: TPoint;
@@ -144,16 +144,16 @@ begin
     r := Max(Source[i]^.YList[0], r);
   with ParentChart.CurrentExtent do
     PrepareGraphPoints(DoubleRect(a.X - r, a.Y - r, b.X + r, b.Y + r), true);
-  ACanvas.Pen.Assign(BubblePen);
-  ACanvas.Brush.Assign(BubbleBrush);
+  ADrawer.Pen := BubblePen;
+  ADrawer.Brush := BubbleBrush;
   for i := 0 to High(FGraphPoints) do begin
     pt := ParentChart.GraphToImage(FGraphPoints[i]);
     r := Source[i + FLoBound]^.YList[0];
     d.X := ParentChart.XGraphToImage(r) - ParentChart.XGraphToImage(0);
     d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
-    ACanvas.EllipseC(pt.X, pt.Y, d.X, d.Y);
+    ADrawer.Ellipse(pt.X - d.X, pt.Y - d.Y, pt.X + d.X, pt.Y + d.Y);
   end;
-  DrawLabels(ACanvas);
+  DrawLabels(ADrawer);
 end;
 
 function TBubbleSeries.Extent: TDoubleRect;
@@ -237,7 +237,7 @@ begin
   FreeAndNil(FWhiskersPen);
 end;
 
-procedure TBoxAndWhiskerSeries.Draw(ACanvas: TCanvas);
+procedure TBoxAndWhiskerSeries.Draw(ADrawer: IChartDrawer);
 
   function MaybeRotate(AX, AY: Double): TPoint;
   begin
@@ -248,7 +248,7 @@ procedure TBoxAndWhiskerSeries.Draw(ACanvas: TCanvas);
 
   procedure DoLine(AX1, AY1, AX2, AY2: Double);
   begin
-    ACanvas.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
+    ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
   end;
 
   procedure DoRect(AX1, AY1, AX2, AY2: Double);
@@ -259,7 +259,7 @@ procedure TBoxAndWhiskerSeries.Draw(ACanvas: TCanvas);
       r.TopLeft := MaybeRotate(AX1, AY1);
       r.BottomRight := MaybeRotate(AX2, AY2);
     end;
-    ACanvas.Rectangle(r);
+    ADrawer.Rectangle(r);
   end;
 
 var
@@ -288,17 +288,17 @@ begin
     wb := w * BoxWidth;
     ww := w * WhiskersWidth;
 
-    ACanvas.Pen := WhiskersPen;
-    ACanvas.Brush.Style := bsClear;
+    ADrawer.Pen := WhiskersPen;
+    ADrawer.SetBrushParams(bsClear, clTAColor);
     DoLine(x - ww, ymin, x + ww, ymin);
     DoLine(x, ymin, x, yqmin);
     DoLine(x - ww, ymax, x + ww, ymax);
     DoLine(x, ymax, x, yqmax);
-    ACanvas.Pen := BoxPen;
-    ACanvas.Brush:= BoxBrush;
+    ADrawer.Pen := BoxPen;
+    ADrawer.Brush:= BoxBrush;
     DoRect(x - wb, yqmin, x + wb, yqmax);
-    ACanvas.Pen := MedianPen;
-    ACanvas.Brush.Style := bsClear;
+    ADrawer.Pen := MedianPen;
+    ADrawer.SetBrushParams(bsClear, clTAColor);
     DoLine(x - wb, ymed, x + wb, ymed);
   end;
 end;
