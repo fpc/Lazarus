@@ -1094,6 +1094,7 @@ type
     procedure InvalidateRange(const aRange: TRect);
     procedure InvalidateRow(ARow: Integer);
     function  IscellVisible(aCol, aRow: Integer): Boolean;
+    function  IsFixedCellVisible(aCol, aRow: Integer): boolean;
     procedure LoadFromFile(FileName: string);
     function  MouseCoord(X,Y: Integer): TGridCoord;
     function  MouseToCell(const Mouse: TPoint): TPoint; overload;
@@ -6379,6 +6380,13 @@ begin
     Result:= (Left<=ACol)and(aCol<=Right)and(Top<=aRow)and(aRow<=Bottom);
 end;
 
+function TCustomGrid.IsFixedCellVisible(aCol, aRow: Integer): boolean;
+begin
+  with FGCache.VisibleGrid do
+    result := ((aCol<FixedCols) and ((aRow<FixedRows) or ((aRow>=Top)and(aRow<=Bottom)))) or
+              ((aRow<FixedRows) and ((aCol<FixedCols) or ((aCol>=Left)and(aCol<=Right))));
+end;
+
 procedure TCustomGrid.InvalidateCol(ACol: Integer);
 var
   R: TRect;
@@ -6799,7 +6807,7 @@ begin
     DebugLn(['InvalidateCell  Col=',aCol,
       ' Row=',aRow,' Redraw=', Redraw]);
   {$Endif}
-  if HandleAllocated and IsCellVisible(aCol,aRow) then begin
+  if HandleAllocated and (IsCellVisible(aCol, aRow) or IsFixedCellVisible(aCol, aRow)) then begin
     R:=CellRect(aCol, aRow);
     InvalidateRect(Handle, @R, Redraw);
   end;
