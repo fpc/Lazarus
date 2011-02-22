@@ -91,7 +91,7 @@
         <UnitName Value="TestCompleteBlock"/>
       </Unit9>
       <Unit10>
-        <Filename Value="testctxmlfixfragments.pas"/>
+        <Filename Value="codetoolstests\testctxmlfixfragments.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCTXMLFixFragments"/>
       </Unit10>

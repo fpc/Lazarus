@@ -65,6 +65,8 @@ end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentOpenTag;
 begin
+  Test('valid short tag','<link/>','<link/>');
+  Test('valid short with empty attribute tag','<link id=""/>','<link id=""/>');
   Test('missing tag name','<>','&lt;&gt;');
   Test('lower case tag name','<A></a>','<a></a>');
   Test('invalid character in tag','<a "></a>','<a >"&gt;</a>');
@@ -95,6 +97,7 @@ begin
                  'operator &lt;(TPoint, TPoint): Boolean');
   Test('16671','<br>',
                '<br/>');
+  Test('18800','<link id="foo"/>','<link id="foo"/>');
 end;
 
 initialization

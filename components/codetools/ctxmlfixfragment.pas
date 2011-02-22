@@ -442,6 +442,7 @@ var
               inc(p);
             end;
           end;
+          inc(p);
           Pop;
           exit;
         end;
