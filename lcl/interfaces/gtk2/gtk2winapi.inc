@@ -8916,6 +8916,7 @@ function TGtk2WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): 
 var
   Widget: PGtkWidget;
   Window: PGdkWindow;
+  ShapeRegion: PGdkRegion;
 begin
   Widget := GetFixedWidget(PGtkWidget(hWnd));
   if Widget = nil then
@@ -8925,9 +8926,13 @@ begin
   Window := GetControlWindow(Widget);
   if Window = nil then
     Exit(0);
-  gdk_window_shape_combine_region(Window, PGDIObject(hRgn)^.GDIRegionObject, 0, 0);
+  if hRgn = 0 then
+    ShapeRegion := nil
+  else
+    ShapeRegion := PGDIObject(hRgn)^.GDIRegionObject;
+  gdk_window_shape_combine_region(Window, ShapeRegion, 0, 0);
   if bRedraw then
-    gdk_window_invalidate_region(Window, PGDIObject(hRgn)^.GDIRegionObject, True);
+    gdk_window_invalidate_region(Window, ShapeRegion, True);
   Result := 1;
 end;
 
