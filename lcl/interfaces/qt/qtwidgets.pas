@@ -9423,11 +9423,12 @@ procedure TQtCheckListBox.signalItemChanged(item: QListWidgetItemH); cdecl;
 var
   Msg: TLMessage;
 begin
+  if InUpdate or not GetVisible then
+    exit;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
-  if not InUpdate then
-    DeliverMessage(Msg);
+  DeliverMessage(Msg);
 end;
 
 { TQtHeaderView }
