@@ -318,6 +318,31 @@ var
   TextRect: TRect;
 begin
   case Details.Element of
+    teToolTip:
+      begin
+        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
+        W := GetUTF8String(S);
+        Context.save;
+        try
+          if Context.Parent <> nil then
+            Palette := QPalette_create(QWidget_palette(Context.Parent))
+          else
+            Palette := nil;
+
+          if Palette = nil then
+          begin
+            inherited;
+            exit;
+          end;
+
+          QStyle_drawItemText(Style, Context.Widget, @R,
+            DTFlagsToQtFlags(Flags), Palette,
+            not IsDisabled(Details), @W, QPaletteToolTipText);
+        finally
+          Context.restore;
+        end;
+
+      end;
     teTreeView:
       begin
         Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
