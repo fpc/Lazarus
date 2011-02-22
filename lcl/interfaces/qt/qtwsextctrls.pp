@@ -318,9 +318,14 @@ begin
   {$endif}
   QtTabWidget := TQtTabWidget(ANotebook.Handle);
   QtTabWidget.setUpdatesEnabled(False);
-  QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
-    GetUtf8String(AChild.Caption));
-  QtTabWidget.setUpdatesEnabled(True);
+  QtTabWidget.BeginUpdate;
+  try
+    QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
+      GetUtf8String(AChild.Caption));
+  finally
+    QtTabWidget.EndUpdate;
+    QtTabWidget.setUpdatesEnabled(True);
+  end;
   TQtPage(AChild.Handle).ChildOfComplexWidget := ccwTabWidget;
   TQtWsCustomPage.UpdateProperties(AChild);
 end;
@@ -358,8 +363,13 @@ begin
   {$endif}
   TabWidget := TQtTabWidget(ANotebook.Handle);
   TabWidget.setUpdatesEnabled(false);
-  TabWidget.removeTab(AIndex);
-  TabWidget.setUpdatesEnabled(true);
+  TabWidget.BeginUpdate;
+  try
+    TabWidget.removeTab(AIndex);
+  finally
+    TabWidget.EndUpdate;
+    TabWidget.setUpdatesEnabled(true);
+  end;
 end;
 
 class function TQtWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
@@ -430,7 +440,9 @@ begin
   if not WSCheckHandleAllocated(ANotebook, 'SetPageIndex') then
     Exit;
   TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget.BeginUpdate;
   TabWidget.setCurrentIndex(AIndex);
+  TabWidget.EndUpdate;
 end;
 
 class procedure TQtWSCustomNotebook.SetTabCaption(

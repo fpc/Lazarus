@@ -6923,6 +6923,9 @@ begin
   if LCLObject = nil then
     Exit;
 
+  if TQtTabWidget(LCLObject.Handle).InUpdate then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
@@ -6955,7 +6958,8 @@ begin
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
   CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
-  if (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
+  if (QtVersionMajor = 4) and (QtVersionMinor < 7) and
+    (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
   begin
     FillChar(Msg, SizeOf(Msg), 0);
     Msg.Msg := LM_NOTIFY;
@@ -7360,7 +7364,7 @@ begin
   if LCLObject = nil then
     Exit;
 
-  if InUpdate then
+  if InUpdate or not GetVisible then
     exit;
 
   FillChar(Msg, SizeOf(Msg), 0);
