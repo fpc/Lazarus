@@ -22,7 +22,7 @@
 
   Abstract:
     function for testing if a xml fragment is correct for fpdoc
-    and if not to automatically repair it
+    and if not to automatically repair it using heuristics.
 }
 unit CTXMLFixFragment;
 
@@ -33,8 +33,12 @@ interface
 uses
   Classes, SysUtils, FileProcs, contnrs, BasicCodeTools;
 
-procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean;
-  out ErrorList: TObjectList; Verbose: boolean = false);
+procedure FixFPDocFragment(var Fragment: string;
+  AllowTags,    // for attribute values set this to false, so that all < are converted
+  Fix: boolean; // fix errors using heuristics creating valid xml
+  out ErrorList: TObjectList;
+  Verbose: boolean = false // write debugln to stdout
+  );
 
 implementation
 

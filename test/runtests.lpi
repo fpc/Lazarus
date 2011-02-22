@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -90,6 +90,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCompleteBlock"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="testctxmlfixfragments.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCTXMLFixFragments"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
