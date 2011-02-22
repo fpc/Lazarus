@@ -834,6 +834,7 @@ type
                           AData: Pointer): TRect; virtual;
     procedure ReleaseHandle;
     procedure Paint; override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     class function GetControlClassDefaultSize: TSize; override;
   public
     property Alignment: TAlignment read FAlignment write FAlignment;

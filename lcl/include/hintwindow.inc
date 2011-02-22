@@ -23,7 +23,8 @@
 
 }
 
-const HintBorderWidth=2;
+const
+  HintBorderWidth = 2;
 
 constructor THintWindow.Create(AOwner: TComponent);
 begin
@@ -127,9 +128,10 @@ begin
   if (Color = clInfoBk) or (Color = clDefault) then
   begin
     // draw using themes
-    Details := ThemeServices.GetElementDetails(tttStandardLink);
+    Details := ThemeServices.GetElementDetails(tttStandardNormal);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
-    InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
+//    ARect := ThemeServices.ContentRect(Canvas.Handle, Details, ARect);
+    InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
     ThemeServices.DrawText(Canvas, Details, Caption, ARect, GetDrawTextFlags, 0);
   end
   else
@@ -138,10 +140,26 @@ begin
     Canvas.Pen.Width := 1;
     Canvas.FillRect(ARect);
     DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
-    InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
+    InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
     DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
       Length(Caption), ARect, GetDrawTextFlags);
   end;
+end;
+
+procedure THintWindow.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  ARect: TRect;
+  Details: TThemedElementDetails;
+  Rgn: HRGN;
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  if (Color = clInfoBk) or (Color = clDefault) then
+  begin
+    Details := ThemeServices.GetElementDetails(tttStandardNormal);
+    ARect := ClientRect;
+    Rgn := ThemeServices.GetDetailRegion(Canvas.Handle, Details, ARect);
+    SetWindowRgn(Handle, Rgn, False);
+  end
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TSize;
