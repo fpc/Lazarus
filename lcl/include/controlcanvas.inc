@@ -77,6 +77,8 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
+var
+  WinControl: TWinControl;
 begin
   //DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',DbgS(FDeviceContext,8),' WinHandle=',DbgS(FWindowHandle,8));
   if FControl = nil then
@@ -85,6 +87,17 @@ begin
   begin
     if ControlIsPainting then
       debugln(['TControlCanvas.CreateHandle WARNING: accessing the canvas of '+DbgSName(FControl)+' is not supported outside of paint message']);
+    if (FDeviceContext = 0) then
+    begin
+      // access to window handle can cause another TControlCanvas.CreateHandle
+      // as result we get a resource leak. To prevent this require handle before
+      // accessing it
+      if FControl is TWinControl then
+        WinControl := TWinControl(FControl)
+      else
+        WinControl := FControl.Parent;
+      WinControl.HandleNeeded;
+    end;
     if FDeviceContext = 0 then
     begin
       // store the handle locally since  we need it to check (and do not
