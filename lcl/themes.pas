@@ -475,6 +475,7 @@ type
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
     
     function GetDetailSize(Details: TThemedElementDetails): TSize; virtual;
+    function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
     function GetOption(AOption: TThemeOption): Integer; virtual;
 
@@ -1881,6 +1882,12 @@ begin
       if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         Result := Size(9, 9);
   end;
+end;
+
+function TThemeServices.GetDetailRegion(DC: HDC;
+  Details: TThemedElementDetails; const R: TRect): HRGN;
+begin
+  Result := 0;
 end;
 
 function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;

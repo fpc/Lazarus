@@ -34,6 +34,7 @@ type
     destructor Destroy; override;
 
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
 
@@ -181,6 +182,13 @@ begin
   end
   else
     Result := inherited GetDetailSize(Details);
+end;
+
+function TWin32ThemeServices.GetDetailRegion(DC: HDC;
+  Details: TThemedElementDetails; const R: TRect): HRGN;
+begin
+  Result := 0;
+  GetThemeBackgroundRegion(GetTheme(Details.Element), DC, Details.Part, Details.State, R, Result);
 end;
 
 function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
