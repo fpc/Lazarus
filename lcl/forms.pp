@@ -824,6 +824,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure DoShowWindow; override;
+    procedure UpdateRegion;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -832,6 +833,7 @@ type
                                AData: pointer); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: Pointer): TRect; virtual;
+    procedure InitializeWnd; override;
     procedure ReleaseHandle;
     procedure Paint; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;

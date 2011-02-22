@@ -78,6 +78,21 @@ begin
   end;
 end;
 
+procedure THintWindow.UpdateRegion;
+var
+  ARect: TRect;
+  Details: TThemedElementDetails;
+  Rgn: HRGN;
+begin
+  if (Color = clInfoBk) or (Color = clDefault) then
+  begin
+    Details := ThemeServices.GetElementDetails(tttStandardNormal);
+    ARect := ClientRect;
+    Rgn := ThemeServices.GetDetailRegion(Canvas.Handle, Details, ARect);
+    SetWindowRgn(Handle, Rgn, False);
+  end;
+end;
+
 function THintWindow.GetDrawTextFlags: Cardinal;
 var
   EffectiveAlignment: TAlignment;
@@ -109,7 +124,6 @@ Begin
   if not (value) and (FAutoHideTimer<>nil) then
     FAutoHideTimer.Enabled := False;
 end;
-
 
 procedure THintWindow.AutoHideHint(Sender : TObject);
 begin
@@ -147,19 +161,10 @@ begin
 end;
 
 procedure THintWindow.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
-var
-  ARect: TRect;
-  Details: TThemedElementDetails;
-  Rgn: HRGN;
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if (Color = clInfoBk) or (Color = clDefault) then
-  begin
-    Details := ThemeServices.GetElementDetails(tttStandardNormal);
-    ARect := ClientRect;
-    Rgn := ThemeServices.GetDetailRegion(Canvas.Handle, Details, ARect);
-    SetWindowRgn(Handle, Rgn, False);
-  end
+  if HandleAllocated then
+    UpdateRegion;
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TSize;
@@ -234,6 +239,12 @@ begin
   inc(Result.Right, 4 * HintBorderWidth);
   inc(Result.Bottom, 4 * HintBorderWidth);
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
+end;
+
+procedure THintWindow.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  UpdateRegion;
 end;
 
 procedure THintWindow.ReleaseHandle;
