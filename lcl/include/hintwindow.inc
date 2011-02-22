@@ -124,10 +124,13 @@ var
   Details: TThemedElementDetails;
 begin
   ARect := ClientRect;
-  if (Color = clInfoBk) or (Color = clDefault) then // draw using themes
+  if (Color = clInfoBk) or (Color = clDefault) then
   begin
+    // draw using themes
     Details := ThemeServices.GetElementDetails(tttStandardLink);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
+    InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
+    ThemeServices.DrawText(Canvas, Details, Caption, ARect, GetDrawTextFlags, 0);
   end
   else
   begin
@@ -135,10 +138,10 @@ begin
     Canvas.Pen.Width := 1;
     Canvas.FillRect(ARect);
     DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
+    InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
+    DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
+      Length(Caption), ARect, GetDrawTextFlags);
   end;
-  InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
-  DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
-    Length(Caption), ARect, GetDrawTextFlags);
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TSize;
