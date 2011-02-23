@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: maincalleditor.ceractivereport
+msgid "Active report: %s"
+msgstr ""
+
+#: maincalleditor.cerappcaption
+msgctxt "maincalleditor.cerappcaption"
+msgid "LazReport Test Suite"
+msgstr ""
+
+#: maincalleditor.cercomposite
+msgctxt "maincalleditor.cercomposite"
+msgid "Composite"
+msgstr "Composito"
+
+#: maincalleditor.cereditreport
+msgctxt "maincalleditor.cereditreport"
+msgid "Edit Report"
+msgstr "Modifica Report"
+
+#: maincalleditor.cerhintcloseapp
+msgid "Close application"
+msgstr "Chiudi l'applicazione"
+
+#: maincalleditor.cerhintcomposite
+msgid "This Action will Load and Preview a composite Report"
+msgstr ""
+
+#: maincalleditor.cerhinteditreport
+msgid "Edit active report"
+msgstr "Modifica il report attivo"
+
+#: maincalleditor.cerhintnewreport
+msgid "Create and edit a empty report"
+msgstr "Crea e modifica un report vuoto"
+
+#: maincalleditor.cerhintopenreport
+msgid "Open an existing report"
+msgstr "Apri un report esistente"
+
+#: maincalleditor.cerhintprevgrid
+msgid "Print preview current DbGrid content"
+msgstr ""
+
+#: maincalleditor.cerhintprevreport
+msgid "Preview active report"
+msgstr "Anteprima del report attivo"
+
+#: maincalleditor.cerhintprnreport
+msgid "Print directly the active report (i.e. without preview)"
+msgstr ""
+
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr ""
+
+#: maincalleditor.cerindex
+msgctxt "maincalleditor.cerindex"
+msgid "Index"
+msgstr "Indice"
+
+#: maincalleditor.cerindexfields
+msgid "Index Fields: %s"
+msgstr ""
+
+#: maincalleditor.cernewreport
+msgid "New report"
+msgstr "Nuovo report"
+
+#: maincalleditor.cernone
+msgid "none"
+msgstr "nessuno"
+
+#: maincalleditor.cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "Questa caratteristica non è ancora stata implementata!"
+
+#: maincalleditor.ceropenreport
+msgid "Open report"
+msgstr "Apri report"
+
+#: maincalleditor.ceropenreportfirst
+msgid "Open report first"
+msgstr ""
+
+#: maincalleditor.cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr ""
+
+#: maincalleditor.cerpreviewreport
+msgid "Preview report"
+msgstr ""
+
+#: maincalleditor.cerprintgrid
+msgid "Print grid"
+msgstr "Stampa la griglia"
+
+#: maincalleditor.cerprintreport
+msgid "Print report"
+msgstr "Stampa il report"
+
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr ""
+
+#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+msgid "frmCustomPreview"
+msgstr ""
+
+#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
+msgid "frPreview1"
+msgstr ""
+
+#: TFRMMAIN.ACCCLOSE.CAPTION
+msgid "Close"
+msgstr "Chiudi"
+
+#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
+msgid "Composite"
+msgstr ""
+
+#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+msgid "Custom Preview"
+msgstr "Anteprima personalizzata"
+
+#: TFRMMAIN.ACCEDITREPORT.CAPTION
+msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
+msgid "Edit Report"
+msgstr "Modifica Report"
+
+#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+msgid "Export to CSV"
+msgstr "Esporta in formato CSV"
+
+#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+msgid "Export Debug"
+msgstr ""
+
+#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+msgid "Export to html"
+msgstr "Esporta in formato html"
+
+#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+msgid "Export to text"
+msgstr "Esporta in formato testo"
+
+#: TFRMMAIN.ACCNEWREPORT.CAPTION
+msgid "New Report"
+msgstr "Nuovo Report"
+
+#: TFRMMAIN.ACCOPENREPORT.CAPTION
+msgid "Open Report"
+msgstr "Apri Report"
+
+#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+msgid "Preview Report"
+msgstr "Anteprima Report"
+
+#: TFRMMAIN.ACCPRINTGRID.CAPTION
+msgid "Print Grid"
+msgstr "Stampa la Griglia"
+
+#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+msgid "Print Report"
+msgstr "Stampa il Report"
+
+#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
+msgid "Thumbnails"
+msgstr ""
+
+#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+msgid "Master-Detail Test"
+msgstr ""
+
+#: TFRMMAIN.FRMMAIN.CAPTION
+msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+msgid "LazReport Test Suite"
+msgstr ""
+
+#: TFRMMAIN.LBLEXPR.CAPTION
+msgid "Expression"
+msgstr ""
+
+#: TFRMMAIN.LBLINDEX.CAPTION
+msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
+msgid "Index"
+msgstr "Indice"
+
+#: TFRMMAIN.MENUITEM1.CAPTION
+msgid "Files"
+msgstr "File"
+
+#: TFRMMAIN.MENUITEM3.CAPTION
+msgid "Tests"
+msgstr "Test"
+
+#: TFRMMAIN.MENUITEM9.CAPTION
+msgid "Export"
+msgstr "Esporta"
+

@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: TLAZCONVERTERFORM.BUTTON1.CAPTION
+msgid "Path"
+msgstr "Percorso"
+
+#: TLAZCONVERTERFORM.BUTTON2.CAPTION
+msgid "Search"
+msgstr "Cercare"
+
+#: TLAZCONVERTERFORM.BUTTON3.CAPTION
+msgid "Convert"
+msgstr "Convertire"
+
+#: TLAZCONVERTERFORM.LABEL1.CAPTION
+msgid "Path to your project:"
+msgstr ""
+
+#: TLAZCONVERTERFORM.LABEL2.CAPTION
+msgid "Convert From:"
+msgstr "Converti da:"
+
+#: TLAZCONVERTERFORM.LABEL3.CAPTION
+msgid "Convert To:"
+msgstr "Converti in:"
+
+#: TLAZCONVERTERFORM.LABEL6.CAPTION
+msgid "Ready..."
+msgstr "Completato..."
+
+#: TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION
+msgctxt "TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr ""
+
+#: TLAZCONVERTERFORM.MENUITEM1.CAPTION
+msgid "Remove from conversion"
+msgstr "Rimuovi dalla conversione"
+
