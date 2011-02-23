@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "Un Servizio (daemon) è una applicazione senza interfaccia che viene eseguita in sottofondo"
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Applicazione tipo Servizio (daemon)"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Applicazioni tipo Servizio (daemon)"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Modulo tipo Servizio per essere insetito in una applicazione tipo Servizio"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr ""
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Modulo tipo Servizio (daemon)"
+

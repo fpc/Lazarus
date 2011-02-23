@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr ""
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr ""
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "Annulla"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr ""
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr ""
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Campi"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Nome file:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr ""
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr ""
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr ""
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr ""
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr ""
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr ""
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr ""
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr ""
+
+#: sdb_consts.sexecute
+msgid "Execute..."
+msgstr ""
+
+#: sdb_consts.snrecordsexported
+msgid "Succesfully exported %d records."
+msgstr ""
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr ""
+

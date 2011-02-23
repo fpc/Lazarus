@@ -1,0 +1,2551 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ipconst.cacheadding
+msgid "Caching item (%s = %s)"
+msgstr ""
+
+#: ipconst.cachecheckfreshness
+msgid "Checking Freshness (%s)"
+msgstr ""
+
+#: ipconst.cachedirnotexist
+msgid "Cache directory %s does not exist."
+msgstr ""
+
+#: ipconst.cacheretrieving
+msgid "Loading from Cache (%s = %s)"
+msgstr ""
+
+#: ipconst.httpcantloadgraphic
+msgid "Unable to load graphic %s"
+msgstr ""
+
+#: ipconst.httpconnect
+msgid "Connected: (%s)"
+msgstr ""
+
+#: ipconst.httpdisconnect
+msgid "Disconnected: (%s), %s Total bytes received"
+msgstr ""
+
+#: ipconst.httpdownload
+msgid "Download: (%s), Error downloading"
+msgstr ""
+
+#: ipconst.httpget
+msgid "GET: (%s)"
+msgstr ""
+
+#: ipconst.httpgeterror
+msgid "GET: (%s) FAILED"
+msgstr ""
+
+#: ipconst.httpgotheader
+msgid "Download: (%s), Got Header Data"
+msgstr ""
+
+#: ipconst.httphead
+msgid "HEAD: (%s)"
+msgstr ""
+
+#: ipconst.httpheaderror
+msgid "HEAD: (%s) FAILED"
+msgstr ""
+
+#: ipconst.httpnoheaderdata
+msgid "No Header Data for Entity"
+msgstr ""
+
+#: ipconst.httppost
+msgid "POST: (%s)"
+msgstr ""
+
+#: ipconst.httpposterror
+msgid "POST: (%s) FAILED"
+msgstr ""
+
+#: ipconst.httpprogress
+msgid "Progress Made: (%s), %s bytes received"
+msgstr ""
+
+#: ipconst.httpsizemismatch
+msgid "Download: (%s), Size Mismatch expecting %s , got %s"
+msgstr ""
+
+#: ipconst.providerunknownformat
+msgid "Don't know how to handle %s"
+msgstr ""
+
+#: ipconst.providerunknownpicture
+msgid "Invalid picture format"
+msgstr ""
+
+#: ipconst.providerunknownrequest
+msgid "Unknown request type \"%s\""
+msgstr ""
+
+#: ipconst.saccessprocerr
+msgid "Win32 error loading '%s' pointer: %s"
+msgstr ""
+
+#: ipconst.sactiveerr
+msgid "Cannot set property on an active socket"
+msgstr ""
+
+#: ipconst.sattemptingtoread
+msgid "Attempting to read "
+msgstr ""
+
+#: ipconst.sattemptingtowrite
+msgid "Attempting to write "
+msgstr ""
+
+#: ipconst.sbadframelistobject
+msgid "Unrecognized object of class %s in GIF Frame List"
+msgstr ""
+
+#: ipconst.sbadimagelibfileformat
+msgid "Unrecognized file format"
+msgstr ""
+
+#: ipconst.sbadimagelibstream
+msgid "ImageLib must use TMemoryStreams"
+msgstr ""
+
+#: ipconst.sbadlinelength
+msgid "Invalid line length"
+msgstr ""
+
+#: ipconst.sbadlineterminator
+msgid "Invalid line terminator"
+msgstr ""
+
+#: ipconst.sbadoffset
+msgid "Invalid stream offset"
+msgstr ""
+
+#: ipconst.sbadpath
+msgid "Path does not exist"
+msgstr ""
+
+#: ipconst.sbadseekorigin
+msgid "Invalid seek origin"
+msgstr ""
+
+#: ipconst.sbibuffernotassigned
+msgid "Buffer not assigned"
+msgstr ""
+
+#: ipconst.sbinhexbadchar
+msgid "Invalid BinHex character"
+msgstr ""
+
+#: ipconst.sbinhexbaddatacrc
+msgctxt "ipconst.sbinhexbaddatacrc"
+msgid "Bad header CRC"
+msgstr ""
+
+#: ipconst.sbinhexbadformat
+msgid "Invalid BinHex format"
+msgstr ""
+
+#: ipconst.sbinhexbadheadercrc
+msgctxt "ipconst.sbinhexbadheadercrc"
+msgid "Bad header CRC"
+msgstr ""
+
+#: ipconst.sbinhexcolonexpected
+msgid "\":\" expected"
+msgstr ""
+
+#: ipconst.sbinhexlengtherr
+msgid "Invalid data length"
+msgstr ""
+
+#: ipconst.sbinhexoddchar
+msgid "One odd character"
+msgstr ""
+
+#: ipconst.sbinhexresourceforkerr
+msgid "Resource fork present"
+msgstr ""
+
+#: ipconst.sbrokerdownloadreq
+msgid "Download %s?"
+msgstr ""
+
+#: ipconst.sbrokerdownloadtitle
+msgid "Download?"
+msgstr ""
+
+#: ipconst.sbytesfromstream
+msgid " bytes from stream"
+msgstr ""
+
+#: ipconst.sbytesreadfromstream
+msgid " bytes read from stream"
+msgstr ""
+
+#: ipconst.sbytestostream
+msgid " bytes to stream"
+msgstr ""
+
+#: ipconst.sbyteswrittentostream
+msgid " bytes written to stream"
+msgstr ""
+
+#: ipconst.scannotwritetostream
+msgid "Cannot write to stream"
+msgstr ""
+
+#: ipconst.scounttoosmall
+msgid "%s: new count too small"
+msgstr ""
+
+#: ipconst.sdestroying
+msgid "Destroying"
+msgstr ""
+
+#: ipconst.seventconnect
+msgid "Connect: Loc: %s Rem: %s"
+msgstr ""
+
+#: ipconst.seventdisconnect
+msgid "Close:   Loc: %s Rem: %s"
+msgstr ""
+
+#: ipconst.sfilename
+msgid " Filename: "
+msgstr ""
+
+#: ipconst.sftpbytestransferred
+msgid " bytes Transferred"
+msgstr ""
+
+#: ipconst.sftpclose
+msgctxt "ipconst.sftpclose"
+msgid "Disconnected"
+msgstr ""
+
+#: ipconst.sftpcomplete
+msgid "Transfer complete. "
+msgstr ""
+
+#: ipconst.sftpdelete
+msgid "Deleting "
+msgstr ""
+
+#: ipconst.sftplogin
+msgid " logged in"
+msgstr ""
+
+#: ipconst.sftplogout
+msgid " logged out"
+msgstr ""
+
+#: ipconst.sftpopen
+msgid "Connected to "
+msgstr ""
+
+#: ipconst.sftprename
+msgid "Renaming "
+msgstr ""
+
+#: ipconst.sftprestart
+msgid "Attempting to re-start transfer of "
+msgstr ""
+
+#: ipconst.sftpretrieve
+msgid "Retrieving "
+msgstr ""
+
+#: ipconst.sftpstore
+msgid "Storing "
+msgstr ""
+
+#: ipconst.sftptimeout
+msgid "Transfer timed out"
+msgstr ""
+
+#: ipconst.sftpuserabort
+msgid "Transfer aborted by user"
+msgstr ""
+
+#: ipconst.shtmlcharstackoverfl
+msgid "Character stack overflow"
+msgstr ""
+
+#: ipconst.shtmldashexp
+msgid "- expected"
+msgstr ""
+
+#: ipconst.shtmldefbrowsecaption
+msgid "Browse..."
+msgstr ""
+
+#: ipconst.shtmldefresetcaption
+msgid "Reset"
+msgstr ""
+
+#: ipconst.shtmldefsubmitcaption
+msgid "Submit"
+msgstr ""
+
+#: ipconst.shtmlencnotsupported
+msgid " encoding not supported"
+msgstr ""
+
+#: ipconst.shtmlexp
+msgid " expected"
+msgstr ""
+
+#: ipconst.shtmlinternal
+msgid "Internal error"
+msgstr ""
+
+#: ipconst.shtmlinvalign
+msgid "Invalid alignment specified"
+msgstr ""
+
+#: ipconst.shtmlinvcolor
+msgid "Invalid color constant:"
+msgstr ""
+
+#: ipconst.shtmlinvdir
+msgid "Invalid dir value specified"
+msgstr ""
+
+#: ipconst.shtmlinvframe
+msgid "Invalid frame specified"
+msgstr ""
+
+#: ipconst.shtmlinvgraphic
+msgid "Invalid graphic returned"
+msgstr ""
+
+#: ipconst.shtmlinvint
+msgid "Invalid integer constant"
+msgstr ""
+
+#: ipconst.shtmlinvmethod
+msgid "Invalid method specified"
+msgstr ""
+
+#: ipconst.shtmlinvpicture
+msgid "Invalid picture returned"
+msgstr ""
+
+#: ipconst.shtmlinvrule
+msgid "Invalid rule specified"
+msgstr ""
+
+#: ipconst.shtmlinvscope
+msgid "Invalid scope specified"
+msgstr ""
+
+#: ipconst.shtmlinvscroll
+msgid "Invalid scrolling specified"
+msgstr ""
+
+#: ipconst.shtmlinvshape
+msgid "Invalid shape specified"
+msgstr ""
+
+#: ipconst.shtmlinvtype
+msgid "Invalid type specified"
+msgstr ""
+
+#: ipconst.shtmlinvvaltype
+msgid "Invalid value type specified"
+msgstr ""
+
+#: ipconst.shtmllineerror
+msgid "Error \"%s\" at line %d, position %d"
+msgstr ""
+
+#: ipconst.shtmlnodataprovider
+msgid "No data provider assigned"
+msgstr ""
+
+#: ipconst.shtmlnogetimage
+msgid "No OnGetImage event handler assigned"
+msgstr ""
+
+#: ipconst.shtmlnographic
+msgid "Picture object contains no graphic object"
+msgstr ""
+
+#: ipconst.shtmlnotcontainer
+msgid "Parent is not a container"
+msgstr ""
+
+#: ipconst.shtmlresunavail
+msgid "Resource unavailable:"
+msgstr ""
+
+#: ipconst.shtmltokenstackoverfl
+msgid "Token stack overflow"
+msgstr ""
+
+#: ipconst.shtmlunknowntok
+msgid "Unknown token"
+msgstr ""
+
+#: ipconst.shtmlunsupprotocol
+msgid "Unsupported protocol in URL:%s"
+msgstr ""
+
+#: ipconst.sicmpecho
+msgid ""
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d\n"
+msgstr ""
+
+#: ipconst.sicmpechostring
+msgid "Echo string: %s"
+msgstr ""
+
+#: ipconst.sicmppingstart
+msgid "Pinging %s with %d bytes data"
+msgstr ""
+
+#: ipconst.sicmpthreadexecute
+msgid "Thread %d executing (Hop number = %d)"
+msgstr ""
+
+#: ipconst.sicmpthreadterminate
+msgid "Thread %d terminating (Hop number = %d)"
+msgstr ""
+
+#: ipconst.sicmptracecomplete
+msgid "Trace complete (%s), %d hops"
+msgstr ""
+
+#: ipconst.sicmptracestart
+msgid "Trace to %s started"
+msgstr ""
+
+#: ipconst.sindexerr
+msgid "Index out of range"
+msgstr ""
+
+#: ipconst.sinvalrespcode
+msgid "Invalid response code"
+msgstr ""
+
+#: ipconst.sinvitemsize
+msgid "TIpTerminalArray.GetItemPtr: invalid item size"
+msgstr ""
+
+#: ipconst.sinvscrollrow
+msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
+msgstr ""
+
+#: ipconst.sipicmp_bad_destination
+msgid "Bad destination"
+msgstr ""
+
+#: ipconst.sipicmp_bad_option
+msgid "Bad option"
+msgstr ""
+
+#: ipconst.sipicmp_bad_req
+msgid "Bad request"
+msgstr ""
+
+#: ipconst.sipicmp_bad_route
+msgid "Bad route"
+msgstr ""
+
+#: ipconst.sipicmp_buf_too_small
+msgid "Buffer too small"
+msgstr ""
+
+#: ipconst.sipicmp_dest_host_unreachable
+msgid "Destination host unreachable"
+msgstr ""
+
+#: ipconst.sipicmp_dest_net_unreachable
+msgid "Destination network unreachable"
+msgstr ""
+
+#: ipconst.sipicmp_dest_port_unreachable
+msgid "Destination port unreachable"
+msgstr ""
+
+#: ipconst.sipicmp_dest_prot_unreachable
+msgid "Destination protocol unreachable"
+msgstr ""
+
+#: ipconst.sipicmp_hw_error
+msgid "Hardware error"
+msgstr ""
+
+#: ipconst.sipicmp_no_resources
+msgid "Destination does not have resources to complete"
+msgstr ""
+
+#: ipconst.sipicmp_option_too_big
+msgid "Option too large"
+msgstr ""
+
+#: ipconst.sipicmp_packet_too_big
+msgid "Packet too large"
+msgstr ""
+
+#: ipconst.sipicmp_param_problem
+msgid "Parameter problem"
+msgstr ""
+
+#: ipconst.sipicmp_req_timed_out
+msgid "Request timed out"
+msgstr ""
+
+#: ipconst.sipicmp_source_quench
+msgid "Destination is busy"
+msgstr ""
+
+#: ipconst.sipicmp_success
+msgid "Successful"
+msgstr ""
+
+#: ipconst.sipicmp_ttl_expired_reassem
+msgid "Time to live expired during reassembly"
+msgstr ""
+
+#: ipconst.sipicmp_ttl_expired_transit
+msgid "Time to live expired during transmit"
+msgstr ""
+
+#: ipconst.sipicmp_unknown
+msgid "Unknown status"
+msgstr ""
+
+#: ipconst.slesszero
+msgid "%s: new col count %d is less than zero"
+msgstr ""
+
+#: ipconst.slinelengtherr
+msgid "Invalid line length for encoded text"
+msgstr ""
+
+#: ipconst.slistnotassigned
+msgid "List not assigned"
+msgstr ""
+
+#: ipconst.slogarticle
+msgid "Generating OnArticle event"
+msgstr ""
+
+#: ipconst.slogauthlogin
+msgid " (ssAuthLogin)"
+msgstr ""
+
+#: ipconst.slogauthpass
+msgid " (ssAuthPass)"
+msgstr ""
+
+#: ipconst.slogauthuser
+msgid " (ssAuthUser)"
+msgstr ""
+
+#: ipconst.slogdata
+msgid " (ssData)"
+msgstr ""
+
+#: ipconst.slogehlo
+msgid " (ssEhlo)"
+msgstr ""
+
+#: ipconst.slogencodeactionstart
+msgid "Generating OnEncodeAction(Start)"
+msgstr ""
+
+#: ipconst.slogencodeactionstop
+msgid "Generating OnEncodeAction(Stop)"
+msgstr ""
+
+#: ipconst.slogexpand
+msgid " (ssExpand)"
+msgstr ""
+
+#: ipconst.sloghelo
+msgid " (ssHelo)"
+msgstr ""
+
+#: ipconst.sloghelp
+msgid " (ssHelp)"
+msgstr ""
+
+#: ipconst.slogicmpclass
+msgid "[ICMP] "
+msgstr ""
+
+#: ipconst.slogmailfrom
+msgid " (ssMailFrom)"
+msgstr ""
+
+#: ipconst.slogmultiline
+msgid "Generating OnMultiLineResponse event"
+msgstr ""
+
+#: ipconst.slognextmessagenotready
+msgid "Next message not ready"
+msgstr ""
+
+#: ipconst.slognextmessageready
+msgid "Next message ready"
+msgstr ""
+
+#: ipconst.slognntpclass
+msgid "[NNTP] "
+msgstr ""
+
+#: ipconst.slognsarticle
+msgid " (nsArticle)"
+msgstr ""
+
+#: ipconst.slognsauthpass
+msgid " (nsAuthPass)"
+msgstr ""
+
+#: ipconst.slognsauthuser
+msgid " (nsAuthUser)"
+msgstr ""
+
+#: ipconst.slognsbody
+msgid " (nsBody)"
+msgstr ""
+
+#: ipconst.slognsconnect
+msgid " (nsConnect)"
+msgstr ""
+
+#: ipconst.slognsdate
+msgid " (nsDate)"
+msgstr ""
+
+#: ipconst.slognsgroup
+msgid " (nsGroup)"
+msgstr ""
+
+#: ipconst.slognshead
+msgid " (nsHead)"
+msgstr ""
+
+#: ipconst.slognshelp
+msgid " (nsHelp)"
+msgstr ""
+
+#: ipconst.slognslast
+msgid " (nsLast)"
+msgstr ""
+
+#: ipconst.slognslist
+msgid " (nsList)"
+msgstr ""
+
+#: ipconst.slognslistactivetimes
+msgid " (nsListActiveTimes)"
+msgstr ""
+
+#: ipconst.slognslistdistribpats
+msgid " (nsListDistribPats)"
+msgstr ""
+
+#: ipconst.slognslistdistributions
+msgid " (nsListDistributions)"
+msgstr ""
+
+#: ipconst.slognslistext
+msgid " (nsListExt)"
+msgstr ""
+
+#: ipconst.slognslistgroup
+msgid " (nsListGroup)"
+msgstr ""
+
+#: ipconst.slognslistnewsgroups
+msgid " (nsListNewsGroups)"
+msgstr ""
+
+#: ipconst.slognslistoverviewfmt
+msgid " (nsListOverviewFmt)"
+msgstr ""
+
+#: ipconst.slognsnewgroups
+msgid " (nsNewGroups)"
+msgstr ""
+
+#: ipconst.slognsnewnews
+msgid " (nsNewNews)"
+msgstr ""
+
+#: ipconst.slognsnext
+msgid " (nsNext)"
+msgstr ""
+
+#: ipconst.slognsnoop
+msgid " (nsNoOp)"
+msgstr ""
+
+#: ipconst.slognsover
+msgid " (nsOver)"
+msgstr ""
+
+#: ipconst.slognspat
+msgid " (nsPat)"
+msgstr ""
+
+#: ipconst.slognspost
+msgid " (nsPost)"
+msgstr ""
+
+#: ipconst.slognsprepost
+msgid " (nsPrePost)"
+msgstr ""
+
+#: ipconst.slognsquit
+msgid " (nsQuit)"
+msgstr ""
+
+#: ipconst.slognsspecial
+msgid " (nsSpecial)"
+msgstr ""
+
+#: ipconst.slognsstat
+msgid " (nsStat)"
+msgstr ""
+
+#: ipconst.slogntauthenticate
+msgid " (ntAuthenticate)"
+msgstr ""
+
+#: ipconst.slogntnewnews
+msgid " (ntNewNews)"
+msgstr ""
+
+#: ipconst.slogntnotask
+msgid " (ntNoTask)"
+msgstr ""
+
+#: ipconst.slogntpostto
+msgid " (ntPostTo)"
+msgstr ""
+
+#: ipconst.slogntselectgroup
+msgid " (ntSelectGroup)"
+msgstr ""
+
+#: ipconst.slogoslist
+msgid " (psList)"
+msgstr ""
+
+#: ipconst.slogpop3class
+msgid "[POP3] "
+msgstr ""
+
+#: ipconst.slogpop3message
+msgid "Generating OnMessage event"
+msgstr ""
+
+#: ipconst.slogpop3top
+msgid "Generating OnTop event"
+msgstr ""
+
+#: ipconst.slogpsapop
+msgid " (psApop)"
+msgstr ""
+
+#: ipconst.slogpsconnect
+msgid " (psConnect)"
+msgstr ""
+
+#: ipconst.slogpsdele
+msgid " (psDele)"
+msgstr ""
+
+#: ipconst.slogpsnoop
+msgid " {psNoOp)"
+msgstr ""
+
+#: ipconst.slogpspass
+msgid " (psPass)"
+msgstr ""
+
+#: ipconst.slogpsquit
+msgid " (psQuit)"
+msgstr ""
+
+#: ipconst.slogpsretr
+msgid " (psRetr)"
+msgstr ""
+
+#: ipconst.slogpsrset
+msgid " (psRSet)"
+msgstr ""
+
+#: ipconst.slogpsspecial
+msgid " (psSpecial)"
+msgstr ""
+
+#: ipconst.slogpsstat
+msgid " (psStat)"
+msgstr ""
+
+#: ipconst.slogpstop
+msgid " (psTop)"
+msgstr ""
+
+#: ipconst.slogpsuidl
+msgid " (psUidl)"
+msgstr ""
+
+#: ipconst.slogpsuser
+msgid " (psUser)"
+msgstr ""
+
+#: ipconst.slogptlist
+msgid " (ptList)"
+msgstr ""
+
+#: ipconst.slogptlogon
+msgid " (ptLogon)"
+msgstr ""
+
+#: ipconst.slogptnone
+msgid " (ptNone)"
+msgstr ""
+
+#: ipconst.slogptuidl
+msgid " (ptUIDL)"
+msgstr ""
+
+#: ipconst.slogquit
+msgid " (ssQuit)"
+msgstr ""
+
+#: ipconst.slogrcptbcc
+msgid " (ssRcptBcc)"
+msgstr ""
+
+#: ipconst.slogrcptcc
+msgid " (ssRcptCc)"
+msgstr ""
+
+#: ipconst.slogrcptto
+msgid " (ssRcptTo)"
+msgstr ""
+
+#: ipconst.slogresponse
+msgid "Generating OnResponse event, Code = "
+msgstr ""
+
+#: ipconst.slogrset
+msgid " (ssRSet)"
+msgstr ""
+
+#: ipconst.slogsaml
+msgid " (ssSaml)"
+msgstr ""
+
+#: ipconst.slogsend
+msgid " (ssSend)"
+msgstr ""
+
+#: ipconst.slogsendenvelope
+msgid " (ssSendEnvelope)"
+msgstr ""
+
+#: ipconst.slogsendmessage
+msgid " (ssSendMessage)"
+msgstr ""
+
+#: ipconst.slogsmtpclass
+msgid "[SMTP] "
+msgstr ""
+
+#: ipconst.slogsmtpnextmessage
+msgid "Generating OnNextMessage event"
+msgstr ""
+
+#: ipconst.slogsoml
+msgid " (ssSoml)"
+msgstr ""
+
+#: ipconst.slogspecial
+msgid " (ssSpecial)"
+msgstr ""
+
+#: ipconst.slogssconnect
+msgid " (ssConnect)"
+msgstr ""
+
+#: ipconst.slogssnoop
+msgid " (ssNoOp)"
+msgstr ""
+
+#: ipconst.slogstate
+msgid "State change: "
+msgstr ""
+
+#: ipconst.slogstlogon
+msgid " (stLogon)"
+msgstr ""
+
+#: ipconst.slogstnotask
+msgid " (stNoTask)"
+msgstr ""
+
+#: ipconst.slogstsendmail
+msgid " (stSendMail)"
+msgstr ""
+
+#: ipconst.slogtaskcomplete
+msgid "Generating OnTaskComplete event "
+msgstr ""
+
+#: ipconst.slogtaskstart
+msgid "Starting task: "
+msgstr ""
+
+#: ipconst.slogturn
+msgid " (ssTurn)"
+msgstr ""
+
+#: ipconst.slogverify
+msgid " (ssVerify)"
+msgstr ""
+
+#: ipconst.smemmapfilenamerequired
+msgid "You must specify a file name for TIpMemMapStream"
+msgstr ""
+
+#: ipconst.smemmapmustbeclosed
+msgid "The %s method requires the TIpMemMapStream instance to be closed"
+msgstr ""
+
+#: ipconst.smemmapmustbeopen
+msgid "The %s method requires the TIpMemMapStream instance to be opened"
+msgstr ""
+
+#: ipconst.snntpcmdarticle
+msgid "ARTICLE"
+msgstr ""
+
+#: ipconst.snntpcmdauthpass
+msgid "AUTHINFO PASS"
+msgstr ""
+
+#: ipconst.snntpcmdauthuser
+msgid "AUTHINFO USER"
+msgstr ""
+
+#: ipconst.snntpcmdbody
+msgid "BODY"
+msgstr ""
+
+#: ipconst.snntpcmddate
+msgid "DATE"
+msgstr ""
+
+#: ipconst.snntpcmdgroup
+msgid "GROUP"
+msgstr ""
+
+#: ipconst.snntpcmdhead
+msgid "HEAD"
+msgstr ""
+
+#: ipconst.snntpcmdhelp
+msgid "HELP"
+msgstr ""
+
+#: ipconst.snntpcmdlast
+msgid "LAST"
+msgstr ""
+
+#: ipconst.snntpcmdlist
+msgctxt "ipconst.snntpcmdlist"
+msgid "LIST"
+msgstr ""
+
+#: ipconst.snntpcmdlistacttimes
+msgid "LIST ACTIVE.TIMES"
+msgstr ""
+
+#: ipconst.snntpcmdlistdistrib
+msgid "LIST DISTRIBUTIONS"
+msgstr ""
+
+#: ipconst.snntpcmdlistdistribpats
+msgid "LIST DISTRIB.PATS"
+msgstr ""
+
+#: ipconst.snntpcmdlistext
+msgid "LIST EXTENSIONS"
+msgstr ""
+
+#: ipconst.snntpcmdlistgroup
+msgid "LISTGROUP"
+msgstr ""
+
+#: ipconst.snntpcmdlistnewsgroups
+msgid "LIST NEWSGROUPS"
+msgstr ""
+
+#: ipconst.snntpcmdlistoverfmt
+msgid "LIST OVERVIEW.FMT"
+msgstr ""
+
+#: ipconst.snntpcmdnewgroups
+msgid "NEWGROUPS"
+msgstr ""
+
+#: ipconst.snntpcmdnewnews
+msgid "NEWNEWS"
+msgstr ""
+
+#: ipconst.snntpcmdnext
+msgid "NEXT"
+msgstr ""
+
+#: ipconst.snntpcmdpat
+msgid "PAT"
+msgstr ""
+
+#: ipconst.snntpcmdpost
+msgid "POST"
+msgstr ""
+
+#: ipconst.snntpcmdquit
+msgctxt "ipconst.snntpcmdquit"
+msgid "QUIT"
+msgstr ""
+
+#: ipconst.snntpcmdstat
+msgctxt "ipconst.snntpcmdstat"
+msgid "STAT"
+msgstr ""
+
+#: ipconst.snntpcmdxover
+msgid "XOVER"
+msgstr ""
+
+#: ipconst.snoboundary
+msgid "No Mime boundary"
+msgstr ""
+
+#: ipconst.snomemorystreamerr
+msgid "No Memory Stream assigned"
+msgstr ""
+
+#: ipconst.snorecipients
+msgid "No recipients specified"
+msgstr ""
+
+#: ipconst.snoseekforread
+msgid "No seek for read"
+msgstr ""
+
+#: ipconst.snoseekforwrite
+msgid "No seek for write"
+msgstr ""
+
+#: ipconst.snosockerr
+msgid "Socket not assigned"
+msgstr ""
+
+#: ipconst.snostreamerr
+msgid "Stream not assigned"
+msgstr ""
+
+#: ipconst.snotenoughdata
+msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
+msgstr ""
+
+#: ipconst.snotimererr
+msgid "Not enough system timers available"
+msgstr ""
+
+#: ipconst.snowinsock2err
+msgid "%s requires WinSock 2, and this system only has WinSock 1"
+msgstr ""
+
+#: ipconst.snsarticle
+msgid "Retrieving article"
+msgstr ""
+
+#: ipconst.snsauthpass
+msgid "Authorizing password"
+msgstr ""
+
+#: ipconst.snsauthuser
+msgid "Authorizing user"
+msgstr ""
+
+#: ipconst.snsbody
+msgid "Retrieving body"
+msgstr ""
+
+#: ipconst.snsconnect
+msgctxt "ipconst.snsconnect"
+msgid "Connecting"
+msgstr ""
+
+#: ipconst.snsdate
+msgid "Retrieving server date"
+msgstr ""
+
+#: ipconst.snsgroup
+msgid "Selecting group"
+msgstr ""
+
+#: ipconst.snshead
+msgid "Retrieving heading"
+msgstr ""
+
+#: ipconst.snshelp
+msgid "Retrieving help"
+msgstr ""
+
+#: ipconst.snslast
+msgid "Selecting previous article"
+msgstr ""
+
+#: ipconst.snslist
+msgid "Retrieving list"
+msgstr ""
+
+#: ipconst.snslistactivetimes
+msgid "Retrieving active times"
+msgstr ""
+
+#: ipconst.snslistdistribpats
+msgid "Retrieving distribution patterns"
+msgstr ""
+
+#: ipconst.snslistdistributions
+msgid "Retrieving list of distributions"
+msgstr ""
+
+#: ipconst.snslistext
+msgid "Retrieving list of extended commands"
+msgstr ""
+
+#: ipconst.snslistgroup
+msgid "Retrieving article numbers"
+msgstr ""
+
+#: ipconst.snslistnewsgroups
+msgid "Retrieving list of available news groups"
+msgstr ""
+
+#: ipconst.snslistoverviewfmt
+msgid "Retrieving overview format"
+msgstr ""
+
+#: ipconst.snsnewgroups
+msgid "Getting new news groups"
+msgstr ""
+
+#: ipconst.snsnewnews
+msgid "Getting new articles"
+msgstr ""
+
+#: ipconst.snsnext
+msgid "Selecting next article"
+msgstr ""
+
+#: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
+msgid "No operation"
+msgstr ""
+
+#: ipconst.snsover
+msgid "Retrieving overview"
+msgstr ""
+
+#: ipconst.snspat
+msgid "Retrieving patterns"
+msgstr ""
+
+#: ipconst.snspost
+msgctxt "ipconst.snspost"
+msgid "Posting article"
+msgstr ""
+
+#: ipconst.snsprepost
+msgid "Preparing to post article"
+msgstr ""
+
+#: ipconst.snsquit
+msgctxt "ipconst.snsquit"
+msgid "Disconnecting"
+msgstr ""
+
+#: ipconst.snsspecial
+msgctxt "ipconst.snsspecial"
+msgid "Sending special command"
+msgstr ""
+
+#: ipconst.snsstat
+msgid "Retrieving status"
+msgstr ""
+
+#: ipconst.sntauthenticate
+msgid "Authenticating"
+msgstr ""
+
+#: ipconst.sntnewnews
+msgid "Retrieving new news"
+msgstr ""
+
+#: ipconst.sntnotask
+msgctxt "ipconst.sntnotask"
+msgid "No task"
+msgstr ""
+
+#: ipconst.sntpostto
+msgctxt "ipconst.sntpostto"
+msgid "Posting article"
+msgstr ""
+
+#: ipconst.sntselectgroup
+msgid "Selecting Group"
+msgstr ""
+
+#: ipconst.soriginfrombegin
+msgid "When origin is soFromBeginning, Offset must be >= 0"
+msgstr ""
+
+#: ipconst.soriginfromend
+msgid "When origin is soFromEnd, Offset must be <= 0"
+msgstr ""
+
+#: ipconst.spngbadbitdepth
+msgid "Unsupported Bit Depth of %d"
+msgstr ""
+
+#: ipconst.spngbadchunktype
+msgid "Unrecognized Chunk Type: %s"
+msgstr ""
+
+#: ipconst.spngbadcolortype
+msgid "Unrecognized color type of %d"
+msgstr ""
+
+#: ipconst.spngbadinterlacemethod
+msgid "Unrecognized Interlace Method"
+msgstr ""
+
+#: ipconst.spngbadmodificationtime
+msgid "Invalid Modification Time"
+msgstr ""
+
+#: ipconst.spngbadpalettelength
+msgid "Invalid Palette Length"
+msgstr ""
+
+#: ipconst.spngbadpixeldepth
+msgid "Unrecognized pixel depth of %d"
+msgstr ""
+
+#: ipconst.spngbadsignature
+msgid "Invalid PNG Signature"
+msgstr ""
+
+#: ipconst.spngbitdepth
+msgid "Bit Depth: %d"
+msgstr ""
+
+#: ipconst.spngbuffertoosmall
+msgid "PNG Buffer too small."
+msgstr ""
+
+#: ipconst.spngcannotsave
+msgid "PNG Saving is not supported"
+msgstr ""
+
+#: ipconst.spngchunkidandlength
+msgid "PNG Chunk: %s  Length: %d"
+msgstr ""
+
+#: ipconst.spngcolortype
+msgid "Color Type: %d"
+msgstr ""
+
+#: ipconst.spngcompressionmethod
+msgid "Compression Method: %d"
+msgstr ""
+
+#: ipconst.spngdefilterpass
+msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
+msgstr ""
+
+#: ipconst.spngeffectivefilter
+msgid "Effective filter is %s"
+msgstr ""
+
+#: ipconst.spngerrorconstant
+msgid "**** ERROR ****"
+msgstr ""
+
+#: ipconst.spngfilterchange
+msgid "Filter changed on Row %d to %x"
+msgstr ""
+
+#: ipconst.spngfiltermethod
+msgid "Filter Method: %d"
+msgstr ""
+
+#: ipconst.spnggamatoolong
+msgid "gAMA chunk is long"
+msgstr ""
+
+#: ipconst.spnggamatooshort
+msgid "gAMA chunk is short"
+msgstr ""
+
+#: ipconst.spnggammacorrection
+msgid "Gamma Correction: %f"
+msgstr ""
+
+#: ipconst.spngihdrtoolong
+msgid "IHDR chunk is long."
+msgstr ""
+
+#: ipconst.spngihdrtooshort
+msgid "IHDR chunk is short."
+msgstr ""
+
+#: ipconst.spngimagesize
+msgid "Image size is %dx%d pixels"
+msgstr ""
+
+#: ipconst.spnginterlacemethod
+msgid "Interlace Method: %d"
+msgstr ""
+
+#: ipconst.spngmemoryrequired
+msgid "Memory required for image: %d bytes"
+msgstr ""
+
+#: ipconst.spngmissingiend
+msgid "End of PNG found with no IEND chunk"
+msgstr ""
+
+#: ipconst.spngmissingihdr
+msgid "IHDR Chunk is missing"
+msgstr ""
+
+#: ipconst.spngmodificationdate
+msgid "Modification Date: %s"
+msgstr ""
+
+#: ipconst.spngnoclipboard
+msgid "PNG Clipboard support is not supported."
+msgstr ""
+
+#: ipconst.spngpaletteentry
+msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
+msgstr ""
+
+#: ipconst.spngpalettetoolong
+msgid "Too many palette entries"
+msgstr ""
+
+#: ipconst.spngpalettetransparency
+msgid "Palette Transparency: %d  Alpha %d"
+msgstr ""
+
+#: ipconst.spngtimetoolong
+msgid "tIME chunk is long."
+msgstr ""
+
+#: ipconst.spngtimetooshort
+msgid "tIME chunk is short."
+msgstr ""
+
+#: ipconst.spngtransparentcolor
+msgid "Transparent Color: %x"
+msgstr ""
+
+#: ipconst.spngtruncatedcrc
+msgid "CRC Code is truncated"
+msgstr ""
+
+#: ipconst.spngtruncateddata
+msgid "Chunk data is truncated"
+msgstr ""
+
+#: ipconst.spngunsupportedfeature
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr ""
+
+#: ipconst.spngwarningconstant
+msgid "**** WARNING ****"
+msgstr ""
+
+#: ipconst.spop3cmdapop
+msgid "APOP"
+msgstr ""
+
+#: ipconst.spop3cmddele
+msgid "DELE"
+msgstr ""
+
+#: ipconst.spop3cmdlist
+msgctxt "ipconst.spop3cmdlist"
+msgid "LIST"
+msgstr ""
+
+#: ipconst.spop3cmdnoop
+msgid "NOOP"
+msgstr ""
+
+#: ipconst.spop3cmdpass
+msgid "PASS"
+msgstr ""
+
+#: ipconst.spop3cmdquit
+msgctxt "ipconst.spop3cmdquit"
+msgid "QUIT"
+msgstr ""
+
+#: ipconst.spop3cmdretr
+msgid "RETR"
+msgstr ""
+
+#: ipconst.spop3cmdrset
+msgid "RSET"
+msgstr ""
+
+#: ipconst.spop3cmdstat
+msgctxt "ipconst.spop3cmdstat"
+msgid "STAT"
+msgstr ""
+
+#: ipconst.spop3cmdtop
+msgid "TOP"
+msgstr ""
+
+#: ipconst.spop3cmduidl
+msgid "UIDL"
+msgstr ""
+
+#: ipconst.spop3cmduser
+msgid "USER"
+msgstr ""
+
+#: ipconst.spop3errresp
+msgid "-ERR"
+msgstr ""
+
+#: ipconst.spop3notauthenticating
+msgid "%s can not be called in transaction state"
+msgstr ""
+
+#: ipconst.spop3nottransacting
+msgid "%s can not be called in authentication state"
+msgstr ""
+
+#: ipconst.spop3okresp
+msgid "+OK"
+msgstr ""
+
+#: ipconst.sposreqd
+msgid "%s: count must be positive"
+msgstr ""
+
+#: ipconst.spsapop
+msgid "Logging on with APOP"
+msgstr ""
+
+#: ipconst.spsconnect
+msgid "Connecting to server"
+msgstr ""
+
+#: ipconst.spsdele
+msgid "Marking message for deletion"
+msgstr ""
+
+#: ipconst.spslist
+msgctxt "ipconst.spslist"
+msgid "Retrieving mailbox list"
+msgstr ""
+
+#: ipconst.spsnoop
+msgctxt "ipconst.spsnoop"
+msgid "No operation"
+msgstr ""
+
+#: ipconst.spspass
+msgid "Logging on with Password"
+msgstr ""
+
+#: ipconst.spsquit
+msgctxt "ipconst.spsquit"
+msgid "Disconnecting"
+msgstr ""
+
+#: ipconst.spsretr
+msgid "Retrieving message"
+msgstr ""
+
+#: ipconst.spsrset
+msgid "Resetting messages"
+msgstr ""
+
+#: ipconst.spsspecial
+msgid "Special command"
+msgstr ""
+
+#: ipconst.spsstat
+msgid "Retrieving mailbox status"
+msgstr ""
+
+#: ipconst.spstop
+msgid "Retrieving top of message"
+msgstr ""
+
+#: ipconst.spsuidl
+msgctxt "ipconst.spsuidl"
+msgid "Retrieving mailbox UID list"
+msgstr ""
+
+#: ipconst.spsunknown
+msgid "Unknown state"
+msgstr ""
+
+#: ipconst.spsuser
+msgid "Logging on with User"
+msgstr ""
+
+#: ipconst.spterror
+msgid "An error occured with the last task."
+msgstr ""
+
+#: ipconst.sptlist
+msgctxt "ipconst.sptlist"
+msgid "Retrieving mailbox list"
+msgstr ""
+
+#: ipconst.sptlogon
+msgctxt "ipconst.sptlogon"
+msgid "Logging on"
+msgstr ""
+
+#: ipconst.sptnone
+msgctxt "ipconst.sptnone"
+msgid "No task"
+msgstr ""
+
+#: ipconst.sptuidl
+msgctxt "ipconst.sptuidl"
+msgid "Retrieving mailbox UID list"
+msgstr ""
+
+#: ipconst.sptunknown
+msgid "Unknown task"
+msgstr ""
+
+#: ipconst.srasalldevicesconnected
+msgid "All devices connected"
+msgstr ""
+
+#: ipconst.srasauthack
+msgid "Authenticate acknowledged"
+msgstr ""
+
+#: ipconst.srasauthcallback
+msgid "Authenticate callback"
+msgstr ""
+
+#: ipconst.srasauthchangepassword
+msgid "Authenticate change password"
+msgstr ""
+
+#: ipconst.srasauthenticate
+msgid "Authenticate"
+msgstr ""
+
+#: ipconst.srasauthenticated
+msgid "Authenticated"
+msgstr ""
+
+#: ipconst.srasauthlinkspeed
+msgid "Authenticate link speed"
+msgstr ""
+
+#: ipconst.srasauthnotify
+msgid "Authenticate notify"
+msgstr ""
+
+#: ipconst.srasauthproject
+msgid "Authenticate project"
+msgstr ""
+
+#: ipconst.srasauthretry
+msgid "Authenticate retry"
+msgstr ""
+
+#: ipconst.srascallbackcomplete
+msgid "Callback complete"
+msgstr ""
+
+#: ipconst.srascallbacksetbycaller
+msgid "Callback set by caller"
+msgstr ""
+
+#: ipconst.srasconnectdevice
+msgid "Connect device"
+msgstr ""
+
+#: ipconst.srasconnected
+msgid "Connected"
+msgstr ""
+
+#: ipconst.srasdeviceconnected
+msgid "Device connected"
+msgstr ""
+
+#: ipconst.srasdisconnected
+msgctxt "ipconst.srasdisconnected"
+msgid "Disconnected"
+msgstr ""
+
+#: ipconst.sraserr
+msgid "Ras Error (%d): on API '%s'"
+msgstr ""
+
+#: ipconst.srasinteractive
+msgid "Interactive"
+msgstr ""
+
+#: ipconst.sraslogonnetwork
+msgid "Logon network"
+msgstr ""
+
+#: ipconst.srasopenport
+msgid "Open port"
+msgstr ""
+
+#: ipconst.sraspasswordexpired
+msgid "Password expired"
+msgstr ""
+
+#: ipconst.sraspaused
+msgid "Paused"
+msgstr ""
+
+#: ipconst.srasportopened
+msgid "Port opened"
+msgstr ""
+
+#: ipconst.srasprepareforcallback
+msgid "Prepare for callback"
+msgstr ""
+
+#: ipconst.srasprojected
+msgid "Projected"
+msgstr ""
+
+#: ipconst.srasreauthenticate
+msgid "Re-authenticate"
+msgstr ""
+
+#: ipconst.srasretryauthentication
+msgid "Retry authentication"
+msgstr ""
+
+#: ipconst.srasstartauthentication
+msgid "Start authentication"
+msgstr ""
+
+#: ipconst.srassubentryconnected
+msgid "Sub-entry connected"
+msgstr ""
+
+#: ipconst.srassubentrydisconnected
+msgid "Sub-entry disconnected"
+msgstr ""
+
+#: ipconst.sraswaitforcallback
+msgid "Wait for callback"
+msgstr ""
+
+#: ipconst.sraswaitformodemreset
+msgid "Wait for modem reset"
+msgstr ""
+
+#: ipconst.sreadlineerr
+msgid "Received line too long, exceeds MaxLineBuf"
+msgstr ""
+
+#: ipconst.srenameddiskfileto
+msgid "Renamed disk file to "
+msgstr ""
+
+#: ipconst.srowcoloor
+msgid "%s: either row %d or col %d is out of range"
+msgstr ""
+
+#: ipconst.srowoor
+msgid "%s: row number is out of range"
+msgstr ""
+
+#: ipconst.srowrowoor
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr ""
+
+#: ipconst.sseekingdiskfileto
+msgid "Seeking disk file to "
+msgstr ""
+
+#: ipconst.sslnopremastersecret
+msgid "No pre-master secret."
+msgstr ""
+
+#: ipconst.ssmtpresponse02
+msgid "Success, "
+msgstr ""
+
+#: ipconst.ssmtpresponse04
+msgid "Transient, "
+msgstr ""
+
+#: ipconst.ssmtpresponse05
+msgid "Persistent, "
+msgstr ""
+
+#: ipconst.ssmtpresponse10
+msgid "Other address status"
+msgstr ""
+
+#: ipconst.ssmtpresponse11
+msgid "Bad destination mailbox address"
+msgstr ""
+
+#: ipconst.ssmtpresponse12
+msgid "Bad destination system address"
+msgstr ""
+
+#: ipconst.ssmtpresponse13
+msgid "Bad destination mailbox address syntax"
+msgstr ""
+
+#: ipconst.ssmtpresponse14
+msgid "Destination mailbox address ambiguous"
+msgstr ""
+
+#: ipconst.ssmtpresponse15
+msgid "Destination mailbox address valid"
+msgstr ""
+
+#: ipconst.ssmtpresponse16
+msgid "Mailbox has moved"
+msgstr ""
+
+#: ipconst.ssmtpresponse17
+msgid "Bad sender's mailbox address syntax"
+msgstr ""
+
+#: ipconst.ssmtpresponse18
+msgid "Bad sender's system address"
+msgstr ""
+
+#: ipconst.ssmtpresponse20
+msgid "Other or undefined mailbox status"
+msgstr ""
+
+#: ipconst.ssmtpresponse21
+msgid "Mailbox disabled, not accepting messages"
+msgstr ""
+
+#: ipconst.ssmtpresponse22
+msgid "Mailbox full"
+msgstr ""
+
+#: ipconst.ssmtpresponse23
+msgid "Message length exceeds administrative limit."
+msgstr ""
+
+#: ipconst.ssmtpresponse24
+msgid "Mailing list expansion problem"
+msgstr ""
+
+#: ipconst.ssmtpresponse30
+msgid "Other or undefined mail system status"
+msgstr ""
+
+#: ipconst.ssmtpresponse31
+msgid "Mail system full"
+msgstr ""
+
+#: ipconst.ssmtpresponse32
+msgid "System not accepting network messages"
+msgstr ""
+
+#: ipconst.ssmtpresponse33
+msgid "System not capable of selected features"
+msgstr ""
+
+#: ipconst.ssmtpresponse34
+msgid "Message too big for system"
+msgstr ""
+
+#: ipconst.ssmtpresponse40
+msgid "Other or undefined network or routing status"
+msgstr ""
+
+#: ipconst.ssmtpresponse41
+msgid "No answer from host"
+msgstr ""
+
+#: ipconst.ssmtpresponse42
+msgid "Bad connection"
+msgstr ""
+
+#: ipconst.ssmtpresponse43
+msgid "Routing server failure"
+msgstr ""
+
+#: ipconst.ssmtpresponse44
+msgid "Unable to route"
+msgstr ""
+
+#: ipconst.ssmtpresponse45
+msgid "Network congestion"
+msgstr ""
+
+#: ipconst.ssmtpresponse46
+msgid "Routing loop detected"
+msgstr ""
+
+#: ipconst.ssmtpresponse47
+msgid "Delivery time expired"
+msgstr ""
+
+#: ipconst.ssmtpresponse50
+msgid "Other or undefined protocol status"
+msgstr ""
+
+#: ipconst.ssmtpresponse51
+msgid "Invalid command"
+msgstr ""
+
+#: ipconst.ssmtpresponse52
+msgid "Syntax error"
+msgstr ""
+
+#: ipconst.ssmtpresponse53
+msgid "Too many recipients"
+msgstr ""
+
+#: ipconst.ssmtpresponse54
+msgid "Invalid command arguments"
+msgstr ""
+
+#: ipconst.ssmtpresponse55
+msgid "Wrong protocol version"
+msgstr ""
+
+#: ipconst.ssmtpresponse60
+msgid "Other or undefined media error"
+msgstr ""
+
+#: ipconst.ssmtpresponse61
+msgid "Media not supported"
+msgstr ""
+
+#: ipconst.ssmtpresponse62
+msgid "Conversion required and prohibited"
+msgstr ""
+
+#: ipconst.ssmtpresponse63
+msgid "Conversion required but not supported"
+msgstr ""
+
+#: ipconst.ssmtpresponse64
+msgid "Conversion with loss performed"
+msgstr ""
+
+#: ipconst.ssmtpresponse65
+msgid "Conversion failed"
+msgstr ""
+
+#: ipconst.ssmtpresponse70
+msgid "Other or undefined security status"
+msgstr ""
+
+#: ipconst.ssmtpresponse71
+msgid "Delivery not authorized, message refused"
+msgstr ""
+
+#: ipconst.ssmtpresponse72
+msgid "Mailing list expansion prohibited"
+msgstr ""
+
+#: ipconst.ssmtpresponse73
+msgid "Security conversion required but not possible"
+msgstr ""
+
+#: ipconst.ssmtpresponse74
+msgid "Security features not supported"
+msgstr ""
+
+#: ipconst.ssmtpresponse75
+msgid "Cryptographic failure"
+msgstr ""
+
+#: ipconst.ssmtpresponse76
+msgid "Cryptographic algorithm not supported"
+msgstr ""
+
+#: ipconst.ssmtpresponse77
+msgid "Message integrity failure"
+msgstr ""
+
+#: ipconst.ssmtpresponsesubunknown
+msgid "Unknown subcode"
+msgstr ""
+
+#: ipconst.ssmtpresponseunknown
+msgid "Unknown response code"
+msgstr ""
+
+#: ipconst.ssockserr
+msgid "SOCKS request refused - %d"
+msgstr ""
+
+#: ipconst.sssauthlogin
+msgid "Requesting authentication"
+msgstr ""
+
+#: ipconst.sssauthpass
+msgid "Authenticating password"
+msgstr ""
+
+#: ipconst.sssauthuser
+msgid "Authenticating username"
+msgstr ""
+
+#: ipconst.sssconnect
+msgctxt "ipconst.sssconnect"
+msgid "Connecting"
+msgstr ""
+
+#: ipconst.sssdata
+msgid "Sending Data"
+msgstr ""
+
+#: ipconst.sssehlo
+msgid "Logging on with EHLO"
+msgstr ""
+
+#: ipconst.sssexpand
+msgid "Expanding"
+msgstr ""
+
+#: ipconst.ssshelo
+msgid "Logging on with HELO"
+msgstr ""
+
+#: ipconst.ssshelp
+msgid "Help"
+msgstr ""
+
+#: ipconst.ssslbadcertificate
+msgid "Bad certificate."
+msgstr ""
+
+#: ipconst.ssslbadcerttype
+msgid "Cert type not found"
+msgstr ""
+
+#: ipconst.ssslbadcompressionvalue
+msgid "Compression value is wrong."
+msgstr ""
+
+#: ipconst.ssslbadkeyexchangetype
+msgid "Key exchange message expected but not received"
+msgstr ""
+
+#: ipconst.ssslbadmac
+msgid "MAC did not match."
+msgstr ""
+
+#: ipconst.ssslbadmd5hash
+msgid "MD5 hash did not match."
+msgstr ""
+
+#: ipconst.ssslbadpublicencoding
+msgid "Bad public encoding type."
+msgstr ""
+
+#: ipconst.ssslbadrecordmac
+msgid "Server received a bad record MAC."
+msgstr ""
+
+#: ipconst.ssslbadsha1hash
+msgid "SHA1 hash did not match."
+msgstr ""
+
+#: ipconst.ssslblocksizeerror
+msgid "Block size error"
+msgstr ""
+
+#: ipconst.ssslbufferoverflow
+msgid "Buffer overflow error."
+msgstr ""
+
+#: ipconst.ssslbuffersizemissmatch
+msgid "Buffer size miss-match."
+msgstr ""
+
+#: ipconst.ssslclosenotify
+msgid "Server sent close notify."
+msgstr ""
+
+#: ipconst.ssslcompressionfailure
+msgid "Compression failure."
+msgstr ""
+
+#: ipconst.ssslconnectchange
+msgid "Can not change SSL status while connected."
+msgstr ""
+
+#: ipconst.ssslencryptbuf2small
+msgid "Encrypt buffer to small."
+msgstr ""
+
+#: ipconst.ssslencryptiontype
+msgid "Encryption type not defined."
+msgstr ""
+
+#: ipconst.ssslexpiredcertificate
+msgid "Expired Certificate."
+msgstr ""
+
+#: ipconst.ssslfailedhelloparse
+msgid "Did not parse server hello correctly."
+msgstr ""
+
+#: ipconst.ssslhandshakefailure
+msgid "Handshake failure."
+msgstr ""
+
+#: ipconst.ssslillegalparameter
+msgid "Illegal Parameter."
+msgstr ""
+
+#: ipconst.ssslinvalidcipher
+msgid "Invalid cipher."
+msgstr ""
+
+#: ipconst.ssslnocertificate
+msgid "Certificate is not available."
+msgstr ""
+
+#: ipconst.ssslnohashtype
+msgid "No hash type selected."
+msgstr ""
+
+#: ipconst.ssslnomessageencslected
+msgid "No message encoding type selected."
+msgstr ""
+
+#: ipconst.ssslnoroom
+msgid "Not enough memory available to read SSL record."
+msgstr ""
+
+#: ipconst.ssslnotenoughkeymaterail
+msgid "Not enough key material."
+msgstr ""
+
+#: ipconst.ssslpaddingerror
+msgid "Padding error."
+msgstr ""
+
+#: ipconst.ssslparsererror
+msgid "Parsing error."
+msgstr ""
+
+#: ipconst.ssslpointernotassigned
+msgid "Pointer not assigned."
+msgstr ""
+
+#: ipconst.ssslreaderror
+msgid "Read error."
+msgstr ""
+
+#: ipconst.ssslreadsizemissmatch
+msgid "Read size miss-match."
+msgstr ""
+
+#: ipconst.ssslrevokedcertificate
+msgid "Revoked Certificate."
+msgstr ""
+
+#: ipconst.ssslservernohandshake
+msgid "Server cid not return a handshake message."
+msgstr ""
+
+#: ipconst.ssslservernoserverhello
+msgid "Server cid not return a server hello message."
+msgstr ""
+
+#: ipconst.ssslsessidtolong
+msgid "Session ID is longer than 32 bytes."
+msgstr ""
+
+#: ipconst.ssslshabuf2small
+msgid "SHA1 buffer to small."
+msgstr ""
+
+#: ipconst.ssslunexpectedmessage
+msgid "Server received an unexpected message."
+msgstr ""
+
+#: ipconst.ssslunknowncertificate
+msgid "Unknown Certificate."
+msgstr ""
+
+#: ipconst.ssslunprocesseddata
+msgid "SSL data processing error."
+msgstr ""
+
+#: ipconst.ssslunsupportedcertificate
+msgid "Unsupported Certificate."
+msgstr ""
+
+#: ipconst.ssslunsupportedchiper
+msgid "Unsupported cipher chosen."
+msgstr ""
+
+#: ipconst.ssslunsupportedencoding
+msgid "Unsupported public encoding."
+msgstr ""
+
+#: ipconst.sssmailfrom
+msgid "Sending sender's info"
+msgstr ""
+
+#: ipconst.sssnoop
+msgctxt "ipconst.sssnoop"
+msgid "No operation"
+msgstr ""
+
+#: ipconst.sssquit
+msgid "Quit"
+msgstr ""
+
+#: ipconst.sssrcptbcc
+msgid "Sending BCC info"
+msgstr ""
+
+#: ipconst.sssrcptcc
+msgid "Sending CC info"
+msgstr ""
+
+#: ipconst.sssrcptto
+msgid "Sending MailTo info"
+msgstr ""
+
+#: ipconst.sssrset
+msgid "Resetting server"
+msgstr ""
+
+#: ipconst.ssssaml
+msgid "ssSaml"
+msgstr ""
+
+#: ipconst.ssssend
+msgid "ssSend"
+msgstr ""
+
+#: ipconst.ssssendenvelope
+msgid "Sending Envelope"
+msgstr ""
+
+#: ipconst.ssssendmessage
+msgid "Sending Message"
+msgstr ""
+
+#: ipconst.ssssoml
+msgid "ssSoml"
+msgstr ""
+
+#: ipconst.sssspecial
+msgctxt "ipconst.sssspecial"
+msgid "Sending special command"
+msgstr ""
+
+#: ipconst.sssturn
+msgid "ssTurn"
+msgstr ""
+
+#: ipconst.sssverify
+msgid "Verifying"
+msgstr ""
+
+#: ipconst.ssterror
+msgid "An error has occured during this task."
+msgstr ""
+
+#: ipconst.sstlogon
+msgctxt "ipconst.sstlogon"
+msgid "Logging on"
+msgstr ""
+
+#: ipconst.sstnotask
+msgid "None"
+msgstr ""
+
+#: ipconst.sstreamcreated
+msgid "Successfully created "
+msgstr ""
+
+#: ipconst.sstreamcreateerror
+msgid "Stream create error "
+msgstr ""
+
+#: ipconst.sstsendmail
+msgid "Sending mail"
+msgstr ""
+
+#: ipconst.sunsupportedencoding
+msgid "Encoding method not supported"
+msgstr ""
+
+#: ipconst.suuencodecounterr
+msgid "Count <> Len or Count > 63"
+msgstr ""
+
+#: ipconst.swebimagecannotload
+msgid "Cannot load %s"
+msgstr ""
+
+#: ipconst.swebimagenotfound
+msgid "%s was not found"
+msgstr ""
+
+#: ipconst.swebimagestreambad
+msgid "Cannot load image from stream"
+msgstr ""
+
+#: ipconst.swinsockerr
+msgid "WinSock Error (%d): %s, on API '%s'"
+msgstr ""
+
+#: ipconst.swriteafterrename
+msgid "***Write after rename"
+msgstr ""
+
+#: ipconst.swrongstateerr
+msgid "Can not comply, wrong state"
+msgstr ""
+
+#: ipconst.swsaeacces
+msgid "Permission denied"
+msgstr ""
+
+#: ipconst.swsaeaddrinuse
+msgid "Address already in use"
+msgstr ""
+
+#: ipconst.swsaeaddrnotavail
+msgid "Cannot assign requested address"
+msgstr ""
+
+#: ipconst.swsaeafnosupport
+msgid "Address family not supported by protocol family"
+msgstr ""
+
+#: ipconst.swsaealready
+msgid "Operation already in progress"
+msgstr ""
+
+#: ipconst.swsaebadf
+msgid "Bad file descriptor"
+msgstr ""
+
+#: ipconst.swsaecancelled
+msgid "Cancelled"
+msgstr ""
+
+#: ipconst.swsaeconnaborted
+msgid "Software caused connection abort"
+msgstr ""
+
+#: ipconst.swsaeconnrefused
+msgid "Connection refused"
+msgstr ""
+
+#: ipconst.swsaeconnreset
+msgid "Connection reset by peer"
+msgstr ""
+
+#: ipconst.swsaedestaddrreq
+msgid "Destination address required"
+msgstr ""
+
+#: ipconst.swsaediscon
+msgid "Graceful shutdown in progress"
+msgstr ""
+
+#: ipconst.swsaedquot
+msgid "Disk quota exceeded"
+msgstr ""
+
+#: ipconst.swsaefault
+msgid "Bad address"
+msgstr ""
+
+#: ipconst.swsaehostdown
+msgid "Host is down"
+msgstr ""
+
+#: ipconst.swsaehostunreach
+msgid "No route to host"
+msgstr ""
+
+#: ipconst.swsaeinprogress
+msgid "Operation now in progress"
+msgstr ""
+
+#: ipconst.swsaeintr
+msgid "Interrupted function call"
+msgstr ""
+
+#: ipconst.swsaeinval
+msgid "Invalid argument"
+msgstr ""
+
+#: ipconst.swsaeinvalidproctable
+msgid "Invalid procedure table from service provider"
+msgstr ""
+
+#: ipconst.swsaeinvalidprovider
+msgid "Invalid service provider version number"
+msgstr ""
+
+#: ipconst.swsaeisconn
+msgid "Socket is already connected"
+msgstr ""
+
+#: ipconst.swsaeloop
+msgid "Too many levels of symbolic links"
+msgstr ""
+
+#: ipconst.swsaemfile
+msgid "Too many open files"
+msgstr ""
+
+#: ipconst.swsaemsgsize
+msgid "Message too long"
+msgstr ""
+
+#: ipconst.swsaenametoolong
+msgid "File name too long"
+msgstr ""
+
+#: ipconst.swsaenetdown
+msgid "Network is down"
+msgstr ""
+
+#: ipconst.swsaenetreset
+msgid "Network dropped connection on reset"
+msgstr ""
+
+#: ipconst.swsaenetunreach
+msgid "Network is unreachable"
+msgstr ""
+
+#: ipconst.swsaenobufs
+msgid "No buffer space available"
+msgstr ""
+
+#: ipconst.swsaenomore
+msgctxt "ipconst.swsaenomore"
+msgid "No more data available"
+msgstr ""
+
+#: ipconst.swsaenoprotoopt
+msgid "Bad protocol option"
+msgstr ""
+
+#: ipconst.swsaenotconn
+msgid "Socket is not connected"
+msgstr ""
+
+#: ipconst.swsaenotempty
+msgid "Directory not empty"
+msgstr ""
+
+#: ipconst.swsaenotsock
+msgid "Socket operation on nonsocket"
+msgstr ""
+
+#: ipconst.swsaeopnotsupp
+msgid "Operation not supported"
+msgstr ""
+
+#: ipconst.swsaepfnosupport
+msgid "Protocol family not supported"
+msgstr ""
+
+#: ipconst.swsaeproclim
+msgid "Too many processes"
+msgstr ""
+
+#: ipconst.swsaeprotonosupport
+msgid "Protocol not supported"
+msgstr ""
+
+#: ipconst.swsaeprototype
+msgid "Protocol wrong type for socket"
+msgstr ""
+
+#: ipconst.swsaeproviderfailedinit
+msgid "Unable to initialize a service provider"
+msgstr ""
+
+#: ipconst.swsaerefused
+msgid "Refused"
+msgstr ""
+
+#: ipconst.swsaeremote
+msgid "Too many levels of remote in path"
+msgstr ""
+
+#: ipconst.swsaeshutdown
+msgid "Cannot send after socket shutdown"
+msgstr ""
+
+#: ipconst.swsaesocktnosupport
+msgid "Socket type not supported"
+msgstr ""
+
+#: ipconst.swsaestale
+msgid "Stale NFS file handle"
+msgstr ""
+
+#: ipconst.swsaetimedout
+msgid "Connection timed out"
+msgstr ""
+
+#: ipconst.swsaetoomanyrefs
+msgid "Too many references; cannot splice"
+msgstr ""
+
+#: ipconst.swsaeusers
+msgid "Too many users"
+msgstr ""
+
+#: ipconst.swsaewouldblock
+msgid "Resource temporarily unavailable"
+msgstr ""
+
+#: ipconst.swsahost_not_found
+msgid "Host not found"
+msgstr ""
+
+#: ipconst.swsanotinitialised
+msgid "Successful WSAStartup not yet performed"
+msgstr ""
+
+#: ipconst.swsano_data
+msgid "Valid name, no data record of requested type"
+msgstr ""
+
+#: ipconst.swsano_recovery
+msgid "This is a nonrecoverable error"
+msgstr ""
+
+#: ipconst.swsaservice_not_found
+msgid "Service not found"
+msgstr ""
+
+#: ipconst.swsasyscallfailure
+msgid "System call failure"
+msgstr ""
+
+#: ipconst.swsasysnotready
+msgid "Network subsystem is unavailable"
+msgstr ""
+
+#: ipconst.swsatry_again
+msgid "Nonauthoritative host not found"
+msgstr ""
+
+#: ipconst.swsatype_not_found
+msgid "Type not found"
+msgstr ""
+
+#: ipconst.swsavernotsupported
+msgid "WinSock DLL version not supported"
+msgstr ""
+
+#: ipconst.swsa_e_cancelled
+msgid "Lookup cancelled"
+msgstr ""
+
+#: ipconst.swsa_e_no_more
+msgctxt "ipconst.swsa_e_no_more"
+msgid "No more data available"
+msgstr ""
+
+#: ipconst.swsa_qos_admission_failure
+msgid "Error due to lack of resources"
+msgstr ""
+
+#: ipconst.swsa_qos_bad_object
+msgid "Problem filterspec or providerspecific buffer"
+msgstr ""
+
+#: ipconst.swsa_qos_bad_style
+msgid "Unknown or conflicting style"
+msgstr ""
+
+#: ipconst.swsa_qos_generic_error
+msgid "General error"
+msgstr ""
+
+#: ipconst.swsa_qos_no_receivers
+msgid "There are no receivers"
+msgstr ""
+
+#: ipconst.swsa_qos_no_senders
+msgid "There are no senders"
+msgstr ""
+
+#: ipconst.swsa_qos_policy_failure
+msgid "Rejected for administrative reasons - bad credentials"
+msgstr ""
+
+#: ipconst.swsa_qos_receivers
+msgid "At least one Reserve has arrived"
+msgstr ""
+
+#: ipconst.swsa_qos_request_confirmed
+msgid "Reserve has been confirmed"
+msgstr ""
+
+#: ipconst.swsa_qos_senders
+msgid "At least one Path has arrived"
+msgstr ""
+
+#: ipconst.swsa_qos_traffic_ctrl_error
+msgid "Problem with some part of the flowspec"
+msgstr ""
+

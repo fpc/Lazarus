@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr ""
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr ""
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr ""
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr ""
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
+

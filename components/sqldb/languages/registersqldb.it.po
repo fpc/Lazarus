@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: registersqldb.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Archivio Firebird"
+
+#: registersqldb.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Archivio Interbase"
+
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
+#: registersqldb.ssqlstringspropertyeditordlgtitle
+msgid "Editing %s"
+msgstr "Modifica in corso di %s"
+

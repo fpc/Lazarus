@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: rxwebtoolsunit.shtmldesign
+msgid "HTML design"
+msgstr "Progetto HTML"
+
+#: rxwebtoolsunit.shtmlfile
+msgid "HTML file"
+msgstr "File HTML"
+
+#: rxwebtoolsunit.shtmlfiledesc
+msgid "Create new HTML file..."
+msgstr "Crea un nuovo file HTML..."
+

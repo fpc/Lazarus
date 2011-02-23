@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "Informazioni"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr ""
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr ""
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr ""
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr ""
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Tutte le finestre aperte"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Tutti i file nel progetto"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "Impostazioni registro"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "Impostazioni formato"
+

@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sqlstringspropertyeditordlg.sqlsyntaxok
+msgid "No syntax errors in SQL statement."
+msgstr ""
+
+#: sqlstringspropertyeditordlg.sresulttabcaption
+msgid "Results"
+msgstr "Risultati"
+
+#: sqlstringspropertyeditordlg.ssqlerror
+msgid "SQL Error"
+msgstr "Errore SQL"
+
+#: sqlstringspropertyeditordlg.ssqlok
+msgid "SQL OK"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqlsyntaxerror
+msgid ""
+"Syntax error in SQL statement:\n"
+"%s\n"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqltabcaption
+msgid "SQL Code"
+msgstr "Codice SQL"
+

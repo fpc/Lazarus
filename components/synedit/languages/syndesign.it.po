@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Segnalibri"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr ""
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr ""
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Numeri di riga"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr ""
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Separatore"
+

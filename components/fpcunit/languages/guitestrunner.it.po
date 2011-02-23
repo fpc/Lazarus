@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Tutti i Test"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr ""
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr ""
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr ""
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr ""
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr ""
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Numero di linea: %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Messaggio: %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr ""
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr ""
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr ""
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr ""
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr ""
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Nome unit: %s"
+
+#: guitestrunner.sactcheckall
+msgid "Check all Tests"
+msgstr "Seleziona tutti i Test"
+
+#: guitestrunner.sactcheckcurrentsuite
+msgid "Check the Current Suite"
+msgstr "Seleziona la Suite corrente"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Esci"
+
+#: guitestrunner.sactcloseformh
+msgid "Quit Testting"
+msgstr ""
+
+#: guitestrunner.sactrunaction
+msgid "&Run"
+msgstr "Esegui"
+
+#: guitestrunner.sactrunactionh
+msgid "Run all checked test(s)"
+msgstr "Esegui tutti i test selezionati"
+
+#: guitestrunner.sactrunhighlightedtest
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run highlighted test"
+msgstr "Esegui il test evidenziato"
+
+#: guitestrunner.sactuncheckall
+msgid "Uncheck all tests"
+msgstr "Deseleziona tutti i test"
+
+#: guitestrunner.sactuncheckcurrentsuite
+msgid "Uncheck the Current Suite"
+msgstr "Deseleziona la Suite corrente"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Chiudi"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Esegui"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Esegui il test evidenziato"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr ""
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Copia"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Copia nella clipboard"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "Taglia"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr ""
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Copia il messaggio nella clipboard"
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr ""
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr ""
+
