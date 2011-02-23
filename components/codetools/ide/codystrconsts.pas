@@ -44,6 +44,21 @@ resourcestring
   crsTotal = 'Total';
   crsSearching = 'searching ...';
   crsMissing = 'missing ...';
+  crsUnit = 'Unit';
+  crsPackage = 'Package';
+  crsKbytes = 'kbytes';
+  crsMbytes = 'Mbytes';
+  crsGbytes = 'Gbytes';
+  crsBytesVolume = '%s %s';
+  crsByFpcCfg = 'by fpc.cfg';
+  crsNoUnitSelected = 'No unit selected';
+  crsUnit2 = 'Unit: %s';
+  crsSource = 'Source: %s';
+  crsPPU = 'PPU: %s';
+  crsShowUsedPpuFiles = 'Show used .ppu files';
+  crsVirtualUnit = 'Virtual unit';
+  crsProjectOutput = 'Project output';
+  crsClose = '&Close';
 
 implementation
 

@@ -196,9 +196,11 @@ begin
   CmdCategory:=IDECommandList.FindCategoryByName('ProjectMenu');
   if CmdCategory=nil then
     raise Exception.Create('cody: PPUListDlg.Register: command category ProjectMenu not found');
-  PPUListCommand:=RegisterIDECommand(CmdCategory,'ShowPPUList','Show used .ppu files',
+  PPUListCommand:=RegisterIDECommand(CmdCategory, 'ShowPPUList',
+    crsShowUsedPpuFiles,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
-  RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList','Show used .ppu files',
+  RegisterIDEMenuCommand(itmProjectWindowSection, 'PPUList', crsShowUsedPpuFiles
+    ,
     nil,nil,PPUListCommand);
 end;
 
@@ -237,11 +239,25 @@ begin
   FSort[2].Category:=plsName;
   FSort[3].Category:=plsPPUSize;
 
+  // UnitsStringGrid header
+  UnitsStringGrid.Columns[0].Title.Caption:=crsUnit;
+  UnitsStringGrid.Columns[1].Title.Caption:=crsSizeOfPpuFile;
+  UnitsStringGrid.Columns[2].Title.Caption:=crsSizeOfOFile;
+  UnitsStringGrid.Columns[3].Title.Caption:=crsUses;
+  UnitsStringGrid.Columns[4].Title.Caption:=crsUsedBy;
+  UnitsStringGrid.Columns[5].Title.Caption:=crsPackage;
+
   InfoTabSheet.Caption:=lisCOGeneral;
   UsesTabSheet.Caption:=crsUses;
   UsedByTabSheet.Caption:=crsUsedBy;
   UnitPageControl.PageIndex:=0;
   UsesPathTabSheet.Caption:=lisCOUsesPath;
+
+  UsesStringGrid.Columns[0].Title.Caption:=crsUnit;
+  UsedByStringGrid.Columns[0].Title.Caption:=crsUnit;
+  UsesPathStringGrid.Columns[0].Title.Caption:=crsUnit;
+
+  ButtonPanel1.CloseButton.Caption:=crsClose;
 
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -382,7 +398,7 @@ var
     CfgCache:=Cache.GetConfigCache(false);
     if CfgCache=nil then exit;
     if CfgCache.Units.Contains(Item.TheUnitName) then
-      Item.PackageName:='by fpc.cfg';
+      Item.PackageName:=crsByFpcCfg;
   end;
 
 var
@@ -402,13 +418,13 @@ begin
 
     // check if virtual unit
     if (Item.SrcFile<>'') and (not FilenameIsAbsolute(Item.SrcFile)) then
-      Item.PackageName:='Virtual unit';
+      Item.PackageName:=crsVirtualUnit;
 
     // check if in output directory of project
     if PPUDir<>'' then begin
       OutDir:=AppendPathDelim(AProject.LazCompilerOptions.GetUnitOutputDirectory(false));
       if CompareFilenames(OutDir,PPUDir)=0 then
-        Item.PackageName:='Project output';
+        Item.PackageName:=crsProjectOutput;
     end;
 
     if (Item.PackageName='') and (PPUDir<>'') then begin
@@ -500,15 +516,6 @@ begin
   Grid:=UnitsStringGrid;
   Grid.BeginUpdate;
 
-  // header
-  Grid.Cells[0,0]:='Unit';
-  Grid.Cells[1, 0]:=crsSizeOfPpuFile;
-  Grid.Cells[2, 0]:=crsSizeOfOFile;
-  Grid.Cells[3, 0]:=crsUses;
-  Grid.Cells[4, 0]:=crsUsedBy;
-  Grid.Cells[5, 0]:='Package';
-
-
   SortedItems:=TAvgLvlTree.CreateObjectCompare(@CompareUnits);
   try
     Node:=FItems.FindLowest;
@@ -593,18 +600,18 @@ function TPPUListDialog.BytesToStr(b: int64): string;
 begin
   Result:='';
   if b>80000 then begin
-    Result:='k';
+    Result:=crsKbytes;
     b:=b div 1000;
   end;
   if b>80000 then begin
-    Result:='m';
+    Result:=crsMbytes;
     b:=b div 1000;
   end;
   if b>80000 then begin
-    Result:='g';
+    Result:=crsGbytes;
     b:=b div 1000;
   end;
-  Result:=IntToStr(b)+' '+Result+'bytes';
+  Result:=Format(crsBytesVolume, [IntToStr(b), Result]);
 end;
 
 function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
@@ -698,14 +705,16 @@ var
 begin
   Item:=FindUnit(AnUnitName);
   if Item=nil then begin
-    UnitGroupBox.Caption:='No unit selected';
+    UnitGroupBox.Caption:=crsNoUnitSelected;
     UnitGroupBox.Enabled:=false;
+    SourceFileLabel.Caption:='';
+    PPUFileLabel.Caption:='';
   end else begin
-    UnitGroupBox.Caption:='Unit: '+AnUnitName;
+    UnitGroupBox.Caption:=Format(crsUnit2, [AnUnitName]);
     UnitGroupBox.Enabled:=true;
     // info
-    SourceFileLabel.Caption:='Source: '+Item.SrcFile;
-    PPUFileLabel.Caption:='PPU: '+Item.PPUFile;
+    SourceFileLabel.Caption:=Format(crsSource, [Item.SrcFile]);
+    PPUFileLabel.Caption:=Format(crsPPU, [Item.PPUFile]);
     // uses
     if Item.UsesUnits<>nil then begin
       UsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
