@@ -1,8 +1,32 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr ""
+
+#: codystrconsts.crsbytesvolume
+msgid "%s %s"
+msgstr ""
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr ""
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr ""
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr ""
+
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
+msgstr ""
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
 msgstr ""
 
 #: codystrconsts.crsmissing
@@ -13,8 +37,20 @@ msgstr ""
 msgid "No project"
 msgstr ""
 
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr ""
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr ""
+
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
+msgstr ""
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
 msgstr ""
 
 #: codystrconsts.crsppufilesofproject
@@ -25,8 +61,16 @@ msgstr ""
 msgid "Project has no main source file."
 msgstr ""
 
+#: codystrconsts.crsprojectoutput
+msgid "Project output"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
+msgstr ""
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show used .ppu files"
 msgstr ""
 
 #: codystrconsts.crssizeofofile
@@ -37,8 +81,20 @@ msgstr ""
 msgid "Size of .ppu file"
 msgstr ""
 
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr ""
+
 #: codystrconsts.crstotal
 msgid "Total"
+msgstr ""
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr ""
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
 msgstr ""
 
 #: codystrconsts.crsusedby
@@ -47,6 +103,10 @@ msgstr ""
 
 #: codystrconsts.crsuses
 msgid "Uses"
+msgstr ""
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual unit"
 msgstr ""
 
 #: codystrconsts.liscogeneral

@@ -9,9 +9,33 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "в fpc.cfg"
+
+#: codystrconsts.crsbytesvolume
+msgid "%s %s"
+msgstr "%s %s"
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr "ГБ"
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr "кБ"
+
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
 msgstr "Главный файл исходного кода: %s"
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "МБ"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -21,9 +45,21 @@ msgstr "отсутствует ..."
 msgid "No project"
 msgstr "Проект отсутствует"
 
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr "Модуль не выбран"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Пакет"
+
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
 msgstr "Сначала необходимо открыть проект."
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
+msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
 msgid "PPU files of project \"%s\""
@@ -33,9 +69,17 @@ msgstr "Файлы PPU проекта \"%s\""
 msgid "Project has no main source file."
 msgstr "В проекте отсутствует главный файл исходного кода."
 
+#: codystrconsts.crsprojectoutput
+msgid "Project output"
+msgstr "Вывод проекта"
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show used .ppu files"
+msgstr "Показать используемые файлы PPU"
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
@@ -45,9 +89,21 @@ msgstr "Размер файла .o"
 msgid "Size of .ppu file"
 msgstr "Размер файла .ppu"
 
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr "Файл исходного кода: %s"
+
 #: codystrconsts.crstotal
 msgid "Total"
 msgstr "Всего"
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Модуль"
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
+msgstr "Модуль: %s"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
@@ -56,6 +112,10 @@ msgstr "Используется"
 #: codystrconsts.crsuses
 msgid "Uses"
 msgstr "Использует"
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual unit"
+msgstr "Виртуальный модуль"
 
 #: codystrconsts.liscogeneral
 msgid "General"

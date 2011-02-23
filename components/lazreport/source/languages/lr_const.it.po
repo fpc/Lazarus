@@ -605,6 +605,10 @@ msgstr ""
 msgid "Va&riables..."
 msgstr ""
 
+#: lr_const.sexportfilterindexerror
+msgid "Export filter index out of range"
+msgstr ""
+
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
 msgstr ""
