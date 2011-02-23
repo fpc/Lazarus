@@ -756,11 +756,15 @@ var
   var
     sz: TSize;
     defaultDrawing: Boolean = true;
+    c: TColor;
   begin
     ADrawer.Brush := BarBrush;
     ADrawer.Pen := BarPen;
     if Styles <> nil then
       Styles.Apply(ADrawer, stackIndex);
+    c := Source[pointIndex]^.Color;
+    if c <> clTAColor then
+      ADrawer.BrushColor := c;
     sz := Size(AR);
     if (sz.cx <= 2) or (sz.cy <= 2) then begin
       // Bars are too small to distinguish the border from the interior.
@@ -835,7 +839,6 @@ begin
       Exchange(p.X, p.Y);
     p.X += ofs;
     cumulHeight := z;
-    ADrawer.BrushColor := GetColor(pointIndex);
     stackIndex := 0;
     BuildBar(p.Y - z);
     for stackIndex := 1 to Source.YCount - 1 do
