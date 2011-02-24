@@ -8677,8 +8677,6 @@ end;
 function TFPCUnitSetCache.GetSourceCache(AutoUpdate: boolean
   ): TFPCSourceCache;
 begin
-  if FPCSourceDirectory='' then
-    raise Exception.Create('TFPCUnitToSrcCache.GetSourceCache missing FPCSourceDirectory');
   if fSourceCache=nil then begin
     fSourceCache:=Caches.SourceCaches.Find(FPCSourceDirectory,true);
     fSourceCache.FreeNotification(Self);
