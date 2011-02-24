@@ -13,10 +13,6 @@ msgstr ""
 msgid "by fpc.cfg"
 msgstr "в fpc.cfg"
 
-#: codystrconsts.crsbytesvolume
-msgid "%s %s"
-msgstr "%s %s"
-
 #: codystrconsts.crsclose
 msgid "&Close"
 msgstr "&Закрыть"

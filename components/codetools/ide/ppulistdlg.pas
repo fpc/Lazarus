@@ -611,7 +611,7 @@ begin
     Result:=crsGbytes;
     b:=b div 1000;
   end;
-  Result:=Format(crsBytesVolume, [IntToStr(b), Result]);
+  Result:=IntToStr(b)+' '+Result;
 end;
 
 function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
