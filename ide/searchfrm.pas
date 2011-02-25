@@ -514,6 +514,7 @@ begin
     end else begin
       OriginalFile:=TSourceLog.Create(TheText);
     end;
+    if OriginalFile.Source='' then exit;
 
     CaseFile:=nil;
 
