@@ -443,6 +443,7 @@ type
     property BandType: TfrBandType read fBandType write fBandType;
 
     property Script;
+    property Stretched;
   end;
 
   { TfrSubReportView }
