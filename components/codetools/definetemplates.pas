@@ -1254,11 +1254,12 @@ begin
   for i:=low(TFPCInfoType) to high(TFPCInfoType) do begin
     if not (i in InfoTypes) then continue;
     StartPos:=p;
-    while (p^<>' ') do inc(p);
-    if p=StartPos then exit(false);
+    while not (p^ in [' ',#0]) do inc(p);
+    if (p=StartPos) then exit(false);
     Infos[i]:=copy(FPCInfo,StartPos-PChar(FPCInfo)+1,p-StartPos);
     // skip space
-    inc(p);
+    if p^<>#0 then
+      inc(p);
   end;
   Result:=true;
 end;
