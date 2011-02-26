@@ -36,15 +36,7 @@ end;
 
 procedure TListItems.SetCount(const ACount: Integer); 
 begin
-  if not FOwner.OwnerData then Exit;
-  FItems.Count := ACount;
-  if WSUpdateAllowed then 
-    WSSetItemsCount(FItems.Count);
-  // reset ownerdata 
-  if (FOwner.FOwnerDataItem.Index >= ACount) then
-    FOwner.FOwnerDataItem.SetDataIndex(-1);
-  // invalidate selection
-  FOwner.InvalidateSelected;
+  //just ignore!
 end;
 
 {------------------------------------------------------------------------------}
@@ -52,31 +44,18 @@ end;
 {------------------------------------------------------------------------------}
 function TListItems.GetItem(const AIndex: Integer): TListItem;
 begin
-  if not FOwner.OwnerData then
-  begin
-    if (FCacheIndex <> -1) and (FCacheIndex = AIndex)
-    then begin
-      Result := FCacheItem;
-      Exit;
-    end;
-    
-    if FItems.Count - 1 < AIndex
-    then Result := nil
-    else begin
-      Result := TListItem(FItems.Items[AIndex]);
-      FCacheItem := Result;
-      FCacheIndex := AIndex;
-    end;
-  end 
-  else 
-  begin
-    if (AIndex >= FItems.Count) then
-    begin
-      Result := nil;
-      Exit;
-    end;
-    FOwner.FOwnerDataItem.SetDataIndex(AIndex);
-    Result := FOwner.FOwnerDataItem;
+  if (FCacheIndex <> -1) and (FCacheIndex = AIndex)
+  then begin
+    Result := FCacheItem;
+    Exit;
+  end;
+
+  if FItems.Count - 1 < AIndex
+  then Result := nil
+  else begin
+    Result := TListItem(FItems.Items[AIndex]);
+    FCacheItem := Result;
+    FCacheIndex := AIndex;
   end;
 end;
 
@@ -92,7 +71,7 @@ procedure TListItems.SetItem(const AIndex: Integer; const AValue: TListItem);
 var
   OldItem: TListItem;
 begin
-  if FItems.Count - 1 < AIndex then Exit;
+  if Count - 1 < AIndex then Exit;
   
   OldItem := GetItem(AIndex);
   if OldItem = AValue then Exit;
@@ -147,20 +126,8 @@ end;
    TListItems Clear
 ------------------------------------------------------------------------------}
 procedure TListItems.Clear;
-var
-  i : Integer;
 begin
-  if not Owner.OwnerData then 
-    while Count > 0 do Delete(Count-1)
-  else 
-  begin
-    for i := 0 to FItems.Count - 1 do
-    begin
-      TListItem(FItems[i]).Free;
-      FItems[i]:=nil;
-    end;
-    Count := 0;
-  end;
+  while Count > 0 do Delete(Count-1)
 end;
 
 {------------------------------------------------------------------------------}
@@ -629,3 +596,47 @@ begin
     end;
   end;
 end;
+
+{ TOwnerDataListItems }
+
+function TOwnerDataListItems.GetCount: Integer;
+begin
+  Result:=fItemsCount;
+end;
+
+procedure TOwnerDataListItems.SetCount(const ACount: Integer);
+begin
+  if (ACount<0) or (ACount=fItemsCount) then Exit;
+  fItemsCount:=ACount;
+  if WSUpdateAllowed then WSSetItemsCount(fItemsCount);
+  // reset ownerdata
+  if (FOwner.FOwnerDataItem.Index >= fItemsCount) then
+    FOwner.FOwnerDataItem.SetDataIndex(-1);
+  // invalidate selection
+  FOwner.InvalidateSelected;
+end;
+
+function TOwnerDataListItems.GetItem(const AIndex: Integer): TListItem;
+begin
+  if (AIndex >= FItemsCount) then
+  begin
+    Result := nil;
+    Exit;
+  end;
+  FOwner.FOwnerDataItem.SetDataIndex(AIndex);
+  Result := FOwner.FOwnerDataItem;
+end;
+
+procedure TOwnerDataListItems.Clear;
+var
+  i : Integer;
+begin
+  for i := 0 to FItems.Count - 1 do
+  begin
+    TListItem(FItems[i]).Free;
+    FItems[i]:=nil;
+  end;
+  Count := 0;
+  fItemsCount := 0;
+end;
+

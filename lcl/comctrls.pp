@@ -829,18 +829,18 @@ type
     procedure WriteLazData(Stream: TStream); // write date in a 64 bits safe way
   protected
     procedure DefineProperties(Filer: TFiler); override;
-    function GetCount: Integer;
-    function GetItem(const AIndex: Integer): TListItem;
+    function GetCount: Integer; virtual;
+    function GetItem(const AIndex: Integer): TListItem; virtual;
     function GetOwner: TPersistent; override;
     procedure WSCreateItems;
     procedure DoFinalizeWnd;
-    procedure SetCount(const ACount: Integer);
+    procedure SetCount(const ACount: Integer); virtual;
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
     function Add: TListItem;
     procedure AddItem(AItem: TListItem);
     procedure BeginUpdate;
-    procedure Clear;
+    procedure Clear; virtual;
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
@@ -857,6 +857,18 @@ type
     property Count: Integer read GetCount write SetCount;
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner: TCustomListView read FOwner;
+  end;
+
+  { TOwnerDataListItems }
+
+  TOwnerDataListItems = class(TListItems)
+  private
+    fItemsCount : Integer;
+  protected
+    function GetCount: Integer; override;
+    procedure SetCount(const ACount: Integer); override;
+    function GetItem(const AIndex: Integer): TListItem; override;
+    procedure Clear; override;
   end;
 
 

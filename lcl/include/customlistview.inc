@@ -1037,7 +1037,14 @@ procedure TCustomListView.SetOwnerData(const AValue: Boolean);
 begin
   if FOwnerData=AValue then exit;
   FOwnerData:=AValue;
-  if AValue then FSelectedIdx:=-1;
+  Items.Free;
+  if AValue then
+  begin
+    FSelectedIdx:=-1;
+    Items:=TOwnerDataListItems.Create(Self);
+  end else
+    Items:=TListItems.Create(Self);
+
   if HandleAllocated then 
     TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);
 end;
