@@ -734,6 +734,14 @@ begin
   then TWSCustomListViewClass(WidgetSetClass).EndUpdate(Self);
 end;
 
+procedure TCustomListView.Repaint;
+begin
+  if OwnerData then
+    // the last cached item might be left updated, because OnData isn't called!
+    FOwnerDataItem.SetDataIndex(-1);
+  inherited Repaint;
+end;
+
 procedure TCustomListView.FinalizeWnd;
 begin
   // store origin

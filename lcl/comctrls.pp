@@ -1165,6 +1165,7 @@ type
     procedure BeginUpdate;
     procedure Clear;
     procedure EndUpdate;
+    procedure Repaint; override;
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
