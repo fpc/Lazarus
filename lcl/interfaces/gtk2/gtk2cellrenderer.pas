@@ -360,18 +360,29 @@ var
 begin
   if G_IS_OBJECT(cell) = false then
     exit;
-  //DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell)]);
+
   APath := gtk_tree_model_get_path(tree_model,iter);
   LCLCellRenderer^.Index := gtk_tree_path_get_indices(APath)^;
   LCLCellRenderer^.ColumnIndex := -1;
   gtk_tree_path_free(APath);
 
-  Value.g_type := G_TYPE_STRING;
-
-
   WidgetInfo := PWidgetInfo(data);
+  // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil]);
+
+  if (WidgetInfo <> nil) and
+    (WidgetInfo^.LCLObject is TCustomComboBox) and
+    (TCustomComboBox(WidgetInfo^.LCLObject).Style = csDropDownList) and
+    not (TCustomComboBox(WidgetInfo^.LCLObject).DroppedDown) then
+  begin
+    Value.g_type := G_TYPE_UINT;
+    Value.data[0].v_uint := 0;
+    g_object_get_property(PgObject(cell),'ypad',@Value);
+    Value.data[0].v_int := 0;
+    g_object_set_property(PGObject(cell), 'ypad', @Value);
+  end else
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
   begin
+    Value.g_type := G_TYPE_STRING;
     gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
     if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
       ListItem := TCustomListView(WidgetInfo^.LCLObject).Items[LCLCellRenderer^.Index];
@@ -393,7 +404,7 @@ begin
     g_object_set_property(PGObject(cell), 'text', @Value);
   end;
 
-  //DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
+  // DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
 end;
 
 end.

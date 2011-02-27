@@ -1344,7 +1344,7 @@ begin
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
   gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
   gtk_cell_layout_set_cell_data_func(PGtkCellLayout(AWidget), renderer,
-    @LCLIntfCellRenderer_CellDataFunc, nil, nil);
+    @LCLIntfCellRenderer_CellDataFunc, AWidgetInfo, nil);
 end;
 
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
