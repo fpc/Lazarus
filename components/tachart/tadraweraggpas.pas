@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  TAChartUtils;
+  Math, TAChartUtils;
 
 { TAggPasDrawer }
 
@@ -209,13 +209,17 @@ begin
 end;
 
 procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);
+const
+  DEFAULT_FONT_SIZE = 10; // Just a random value.
 var
   f: TAggLCLFont;
+  fontSize: Integer;
 begin
   f := FCanvas.Font;
+  fontSize := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
   // This should be: FCanvas.Font.DoCopyProps(AFont);
   f.LoadFromFile(
-    AFont.Name, f.SizeToAggHeight(AFont.Size), AFont.Bold, AFont.Italic);
+    AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
   if AFont is TFont then
     with TFont(AFont) do begin
       f.Color := Color;
