@@ -85,7 +85,7 @@ begin
   begin
     Flush(FLog);
     CloseFile(FLog);
-    fOpen := False;
+    fOpen := false;
   end;
 end;
 
@@ -94,8 +94,9 @@ begin
   inherited Create;
 
   Assert(psFileName <> '');
-  fOpen := False;
+  fOpen := false;
   fsLogFileName := psFileName;
+  OpenLog;
 end;
 
 destructor TJCFLog.Destroy;
@@ -106,8 +107,8 @@ end;
 
 procedure TJCFLog.EmptyLine;
 begin
-  OpenLog;
-  WriteLn(Flog, '');
+  if fOpen = true then
+    WriteLn(Flog, '');
   // no need to flush now - if theprogram dies right here, no new info is lost
 end;
 
@@ -115,30 +116,34 @@ end;
 // this one always gets through
 procedure TJCFLog.Write(const ps: string; const peLogLevel: TLogLevel = llMessage);
 begin
-  if peLogLevel < LogLevel then
-    exit;
-
-  OpenLog;
-  WriteLn(Flog, ps);
-  Flush(FLog);
+  if peLogLevel >= LogLevel then
+    if fOpen = true then
+    begin
+      WriteLn(Flog, ps);
+      Flush(FLog);
+    end;
 end;
 
 procedure TJCFLog.WriteError(const ps: string);
 begin
-  Write(ps, llError);
+  if fOpen = true then
+    Write(ps, llError);
 end;
 
 procedure TJCFLog.OpenLog;
 begin
-  if not fOpen then
+  if fOpen = false then
   begin
-    AssignFile(FLog, fsLogFileName);
-    Rewrite(FLog);
-    fOpen := True;
+    try
+      AssignFile(FLog, fsLogFileName);
+      Rewrite(FLog);
 
-    { do this no matter what the logging level, unless a log = off level is introduced }
-    WriteLn(Flog, 'Logging started at ' + FormatDateTime('dd mmm yyyy hh:mm:ss',
-      Date + Time));
+      { do this no matter what the logging level, unless a log = off level is introduced }
+      WriteLn(Flog, 'Logging started at ' + FormatDateTime('dd mmm yyyy hh:mm:ss',
+        Date + Time));
+      fOpen := true;
+    except
+    end;
   end;
 end;
 
