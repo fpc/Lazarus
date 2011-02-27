@@ -16,7 +16,7 @@ Authors: Alexander Klenin
 
 unit TADrawUtils;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
 
 interface
 
