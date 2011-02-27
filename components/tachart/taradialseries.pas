@@ -323,7 +323,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
       if FText = '' then exit;
       if RotateLabels then
         Marks.SetAdditionalAngle(AAngle);
-      p := Marks.GetLabelPolygon(ADrawer.TextExtent(FText));
+      p := Marks.GetLabelPolygon(ADrawer, ADrawer.TextExtent(FText));
       FCenter += EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
       for i := 0 to High(p) do
         ExpandRect(Result, p[i] + FCenter);

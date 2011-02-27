@@ -126,6 +126,7 @@ type
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
   private
+    procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     function GetDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
     procedure PutLabelFontTo(ADrawer: IChartDrawer);
@@ -165,7 +166,7 @@ type
     procedure DrawLabel(
       ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
-    function GetLabelPolygon(ASize: TPoint): TPointArray;
+    function GetLabelPolygon(ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure SetAdditionalAngle(AAngle: Double);
@@ -484,6 +485,14 @@ end;
 
 { TGenericChartMarks }
 
+procedure TGenericChartMarks.AddMargins(
+  ADrawer: IChartDrawer; var ASize: TPoint);
+begin
+  if not IsMarginRequired then exit;
+  with ADrawer do
+    ASize += Point(Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y)) * 2;
+end;
+
 procedure TGenericChartMarks.Assign(ASource: TPersistent);
 begin
   if ASource is Self.ClassType then
@@ -543,7 +552,7 @@ var
 begin
   PutLabelFontTo(ADrawer);
   ptText := ADrawer.TextExtent(AText);
-  labelPoly := GetLabelPolygon(ptText);
+  labelPoly := GetLabelPolygon(ADrawer, ptText);
   for i := 0 to High(labelPoly) do
     labelPoly[i] += ALabelCenter;
 
@@ -576,10 +585,10 @@ begin
   Result := Attachment = maCenter;
 end;
 
-function TGenericChartMarks.GetLabelPolygon(ASize: TPoint): TPointArray;
+function TGenericChartMarks.GetLabelPolygon(
+  ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
 begin
-  if IsMarginRequired then
-    ASize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
+  AddMargins(ADrawer, ASize);
   Result := RotateRect(ASize, LabelAngle);
 end;
 
@@ -608,8 +617,7 @@ var
 begin
   PutLabelFontTo(ADrawer);
   sz := ADrawer.TextExtent(AText);
-  if IsMarginRequired then
-    sz += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
+  AddMargins(ADrawer, sz);
   Result := MeasureRotatedRect(sz, LabelAngle);
 end;
 
