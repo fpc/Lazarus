@@ -1106,8 +1106,8 @@ end;
 
 constructor TDataPointDragTool.Create(AOwner: TComponent);
 begin
-  FActiveCursor := crSizeAll;
   inherited Create(AOwner);
+  FActiveCursor := crSizeAll;
 end;
 
 procedure TDataPointDragTool.MouseDown(APoint: TPoint);
