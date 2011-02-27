@@ -117,7 +117,7 @@ begin
   BringToFront(FBar);
   FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
-    FBar.AddXY(x, y);
+    FBar.AddXY(x, y, '', clBlue * (i mod 2) + clTAColor * (1 - i mod 2));
     X := X + 1;
     if random(2) >= 0.7 then Y := Y + random(5)
     else if random(2) >= 0.7 then Y := 0

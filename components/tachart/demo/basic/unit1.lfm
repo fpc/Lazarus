@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 494
   ClientWidth = 585
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
     Height = 392
@@ -50,14 +50,12 @@ object Form1: TForm1
       Legend.Visible = False
       Pen.Style = psDash
       Position = 0
-      SeriesColor = clBlack
     end
     object Chart1LineVert: TConstantLine
       Legend.Visible = False
       LineStyle = lsVertical
       Pen.Style = psDash
       Position = 0
-      SeriesColor = clBlack
     end
   end
   object Panel1: TPanel
