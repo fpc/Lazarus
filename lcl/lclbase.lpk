@@ -21,7 +21,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Minor="9" Release="29"/>
+    <Version Minor="9" Release="30"/>
     <Files Count="284">
       <Item1>
         <Filename Value="chart.pp"/>

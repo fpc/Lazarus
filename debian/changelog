@@ -1,11 +1,8 @@
-lazarus (0.9.29-0) unstable; urgency=low
+lazarus (0.9.30-0) unstable; urgency=low
 
-  * Snapshot building.
-  * Added support for multiple version coexistence in the same system. This will
-    allow installing multiple versions of Lazarus in the same system and choose
-    a default using update-alternatives.
+  * New release.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 30 Dec 2010 10:36:00 +0100
+ -- Vincent Snijders <vincents@freepascal.org>  Sat, 26 Feb 10:36:00 +0100
 
 lazarus (0.9.28.2-12) unstable; urgency=low
 
