@@ -1176,6 +1176,8 @@ end;
 
 procedure TChart.StyleChanged(Sender: TObject);
 begin
+  if Sender is TChartExtent then
+    ZoomFull;
   Invalidate;
   Broadcaster.Broadcast(Sender);
 end;
