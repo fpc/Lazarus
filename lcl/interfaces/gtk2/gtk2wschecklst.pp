@@ -95,28 +95,44 @@ procedure Gtk2WS_CheckListBoxToggle(cellrenderertoggle : PGtkCellRendererToggle;
   arg1 : PGChar; WidgetInfo: PWidgetInfo); cdecl;
 var
   Mess: TLMessage;
+  Param: PtrInt;
+  Iter : TGtkTreeIter;
+  TreeView: PGtkTreeView;
+  ListStore: PGtkTreeModel;
+  Path: PGtkTreePath;
 begin
+  gtk_cell_renderer_toggle_set_active(cellrenderertoggle,
+    not gtk_cell_renderer_toggle_get_active(cellrenderertoggle));
+
   {$IFDEF EventTrace}
   EventTrace('Gtk2WS_CheckListBoxToggle', WidgetInfo^.LCLObject);
   {$ENDIF}
-  TCheckListBox(widgetInfo^.lclObject).Toggle(StrToInt(arg1));
-  Mess.Msg := LM_CHANGED;
-  Val(arg1, Mess.WParam);
-  Mess.Result := 0;
-  DeliverMessage(widgetInfo^.lclObject, Mess);
-end;
+  Val(arg1, Param);
 
-procedure Gtk2WS_CheckListBoxRowActivate(treeview : PGtkTreeView;
-  arg1 : PGtkTreePath; arg2 : PGtkTreeViewColumn; WidgetInfo: PWidgetInfo); cdecl;
-var
-  APathStr: Pgchar;
-  AIndex: Integer;
-begin
-  APathStr := gtk_tree_path_to_string(arg1);
-  AIndex := StrToInt(APathStr);
-  g_free(APathStr);
-  if TCheckListBox(widgetInfo^.lclObject).ItemEnabled[AIndex] then
-    TCheckListBox(widgetInfo^.lclObject).Toggle(AIndex);
+  TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
+  ListStore := gtk_tree_view_get_model(TreeView);
+
+  if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, Param) then
+    gtk_list_store_set(ListStore, @Iter, [gtk2CLBState,
+      Byte(gtk_cell_renderer_toggle_get_active(cellrenderertoggle)), -1]);
+
+
+
+  Path := gtk_tree_path_new_from_indices(Param, -1);
+  if Path <> nil then
+  begin
+    if TreeView^.priv^.tree <> nil then
+      gtk_tree_view_set_cursor(TreeView, Path, nil, False);
+    gtk_tree_path_free(Path);
+  end;
+
+  FillChar(Mess, SizeOf(Mess), #0);
+  Mess.Msg := LM_CHANGED;
+
+  Mess.Result := 0;
+  Mess.WParam := Param;
+  DeliverMessage(widgetInfo^.lclObject, Mess);
+
 end;
 
 class procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
@@ -176,11 +192,6 @@ begin
   gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), True);
 
   SignalConnect(PGtkWidget(renderer), 'toggled', @Gtk2WS_CheckListBoxToggle, WidgetInfo);
-  // don't toggle on double-click
-  //SignalConnect(TreeViewWidget, 'row_activated', @Gtk2WS_CheckListBoxRowActivate, WidgetInfo);
-
-  //g_signal_connect (renderer, 'toggled', G_CALLBACK (@gtk_clb_toggle), AWinControl);
-  //g_signal_connect (TreeViewWidget, 'row_activated', G_CALLBACK (@gtk_clb_toggle_row_activated), AWinControl);
 
   // Text Column
   renderer := gtk_cell_renderer_text_new();
