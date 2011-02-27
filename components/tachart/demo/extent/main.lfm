@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 397
   ClientWidth = 396
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
     Height = 307
@@ -15,9 +15,8 @@ object Form1: TForm1
     Width = 396
     AxisList = <    
       item
-        Alignment = calLeft
         Grid.Visible = False
-        Title.Font.Orientation = 900
+        Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
@@ -34,13 +33,13 @@ object Form1: TForm1
     Title.Text.Strings = (
       'TAChart'
     )
+    Toolset = ChartToolset1
     Align = alClient
     ParentColor = False
     object Chart1LineSeries: TLineSeries
       LinePen.Color = clRed
       Pointer.Brush.Color = clRed
       Pointer.Pen.Color = clRed
-      SeriesColor = clRed
       ShowPoints = True
       Source = RandomChartSource1
     end
@@ -49,7 +48,6 @@ object Form1: TForm1
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = 1.7
-      SeriesColor = clGreen
       UseBounds = False
     end
     object clLeft: TConstantLine
@@ -57,21 +55,18 @@ object Form1: TForm1
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = -1.7
-      SeriesColor = clGreen
       UseBounds = False
     end
     object clTop: TConstantLine
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = 1.7
-      SeriesColor = clGreen
       UseBounds = False
     end
     object clBottom: TConstantLine
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = -1.7
-      SeriesColor = clGreen
       UseBounds = False
     end
   end
@@ -142,5 +137,18 @@ object Form1: TForm1
     YMin = -5
     left = 176
     top = 118
+  end
+  object ChartToolset1: TChartToolset
+    left = 328
+    top = 332
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+      LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
+    end
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+      AnimationInterval = 100
+      AnimationSteps = 5
+    end
   end
 end

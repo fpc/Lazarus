@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources;
+  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, TATools;
 
 type
 
@@ -14,6 +14,9 @@ type
   TForm1 = class(TForm)
     cgUseBounds: TCheckGroup;
     Chart1: TChart;
+    ChartToolset1: TChartToolset;
+    ChartToolset1PanDragTool1: TPanDragTool;
+    ChartToolset1ZoomDragTool1: TZoomDragTool;
     clRight: TConstantLine;
     clLeft: TConstantLine;
     clTop: TConstantLine;
