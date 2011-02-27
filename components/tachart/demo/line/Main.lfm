@@ -7,15 +7,15 @@ object Form1: TForm1
   ClientHeight = 479
   ClientWidth = 589
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object PageControl2: TPageControl
     Left = 0
     Height = 479
     Top = 0
     Width = 589
-    ActivePage = tsStats
+    ActivePage = tsFast
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
@@ -54,7 +54,6 @@ object Form1: TForm1
           Pen.Color = clAqua
           Pen.Width = 2
           Position = 0
-          SeriesColor = clAqua
           ZPosition = 1
         end
       end
@@ -219,6 +218,7 @@ object Form1: TForm1
     end
     object ChartToolset1ZoomDragTool1: TZoomDragTool
       Shift = [ssShift, ssLeft]
+      RatioLimit = zrlFixedY
     end
     object ChartToolset1PanDragTool1: TPanDragTool
       Shift = [ssRight]

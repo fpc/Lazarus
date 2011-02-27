@@ -111,7 +111,10 @@ var
 begin
   b := rgZoom.ItemIndex <= 1;
   ChartToolset1ZoomDragTool1.Enabled := b;
-  ChartToolset1ZoomDragTool1.Proportional := rgZoom.ItemIndex = 1;
+  if rgZoom.ItemIndex = 1 then
+    ChartToolset1ZoomDragTool1.RatioLimit := zrlProportional
+  else
+    ChartToolset1ZoomDragTool1.RatioLimit := zrlNone;
   ChartToolset1ZoomIn.Enabled := not b;
   ChartToolset1ZoomOut.Enabled := not b;
 end;
