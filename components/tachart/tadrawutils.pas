@@ -96,6 +96,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    function Scale(ADistance: Integer): Integer;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
@@ -130,6 +131,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
+    function Scale(ADistance: Integer): Integer; virtual;
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -310,6 +312,11 @@ end;
 procedure TFPCanvasDrawer.MoveTo(const AP: TPoint);
 begin
   MoveTo(AP.X, AP.Y)
+end;
+
+function TFPCanvasDrawer.Scale(ADistance: Integer): Integer;
+begin
+  Result := ADistance;
 end;
 
 function TFPCanvasDrawer.TextExtent(const AText: String): TPoint;

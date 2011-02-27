@@ -856,11 +856,14 @@ end;
 function TChart.GetMargins(ADrawer: IChartDrawer): TRect;
 var
   i: Integer;
+  a: TRectArray absolute Result;
 begin
-  Result := FMargins.Data;
+  Result := Margins.Data;
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
       Series[i].UpdateMargins(ADrawer, Result);
+  for i := Low(a) to High(a) do
+    a[i] := ADrawer.Scale(a[i]);
 end;
 
 function TChart.GetSeriesCount: Integer;

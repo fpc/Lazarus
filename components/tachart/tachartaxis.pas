@@ -460,7 +460,7 @@ procedure TChartAxis.Draw(
 var
   prevLabelPoly: TPointArray = nil;
   stripeIndex: Cardinal = 0;
-  prevCoord: Integer;
+  prevCoord, scaledTickLength: Integer;
 
   procedure BarZ(AX1, AY1, AX2, AY2: Integer);
   begin
@@ -497,11 +497,12 @@ var
       prevCoord := x;
     end;
 
-    d := TickLength + Marks.CenterOffset(ADrawer, AText).cy;
+    d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cy;
     if Alignment = calTop then
       d := -d;
     DrawLabelAndTick(
-      Point(x, AY + d), Rect(x, AY - TickLength, x, AY + TickLength), AText);
+      Point(x, AY + d),
+      Rect(x, AY - scaledTickLength, x, AY + scaledTickLength), AText);
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
@@ -519,11 +520,12 @@ var
       prevCoord := y;
     end;
 
-    d := TickLength + Marks.CenterOffset(ADrawer, AText).cx;
+    d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cx;
     if Alignment = calLeft then
       d := -d;
     DrawLabelAndTick(
-      Point(AX + d, y), Rect(AX - TickLength, y, AX + TickLength, y), AText);
+      Point(AX + d, y),
+      Rect(AX - scaledTickLength, y, AX + scaledTickLength, y), AText);
   end;
 
 var
@@ -531,6 +533,7 @@ var
   v: Double;
 begin
   if not Visible then exit;
+  scaledTickLength := ADrawer.Scale(TickLength);
   ADrawer.Font := Marks.LabelFont;
   coord := TChartAxisMargins(FAxisRect)[Alignment];
   prevCoord := IfThen(IsVertical, AClipRect.Bottom, AClipRect.Left);
@@ -676,7 +679,7 @@ begin
   else
     sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
   if sz > 0 then
-    sz += TickLength + Marks.Distance;
+    sz += ADrawer.Scale(TickLength) + Marks.Distance;
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(CalcTitleSize, FTitleSize);

@@ -285,6 +285,8 @@ type
     property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds default false;
   end;
 
+  TRectArray = array [1..4] of Integer;
+
   { TChartMargins }
 
   TChartMargins = class (TChartElement)
@@ -292,7 +294,7 @@ type
     FData: record
       case Integer of
         0: (FRect: TRect;);
-        1: (FCoords: array [1..4] of Integer;);
+        1: (FCoords: TRectArray;);
       end;
     function GetValue(AIndex: Integer): integer;
     procedure SetValue(AIndex: integer; AValue: TChartDistance);
