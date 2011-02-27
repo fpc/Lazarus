@@ -196,12 +196,16 @@ type
   { TBasicPanTool }
 
   TBasicPanTool = class(TChartTool)
+  private
+    FLimitToExtent: TPanDirectionSet;
   protected
     procedure PanBy(AOffset: TPoint);
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ActiveCursor default crSizeAll;
+    property LimitToExtent: TPanDirectionSet
+      read FLimitToExtent write FLimitToExtent default [];
   end;
 
   { TPanDragTool }
@@ -919,10 +923,21 @@ end;
 procedure TBasicPanTool.PanBy(AOffset: TPoint);
 var
   dd: TDoublePoint;
-  ext: TDoubleRect;
+  ext, fullExt: TDoubleRect;
 begin
   dd := FChart.ImageToGraph(AOffset) - FChart.ImageToGraph(Point(0, 0));
   ext := FChart.LogicalExtent;
+  if LimitToExtent <> [] then begin
+    fullExt := FChart.GetFullExtent;
+    if (pdRight in LimitToExtent) and (ext.a.X + dd.X < fullExt.a.X) then
+      dd.X := fullExt.a.X - ext.a.X;
+    if (pdUp in LimitToExtent) and (ext.a.Y + dd.Y < fullExt.a.Y) then
+      dd.Y := fullExt.a.Y - ext.a.Y;
+    if (pdLeft in LimitToExtent) and (ext.b.X + dd.X > fullExt.b.X) then
+      dd.X := fullExt.b.X - ext.b.X;
+    if (pdDown in LimitToExtent) and (ext.b.Y + dd.Y > fullExt.b.Y) then
+      dd.Y := fullExt.b.Y - ext.b.Y;
+  end;
   ext.a += dd;
   ext.b += dd;
   FChart.LogicalExtent := ext;
