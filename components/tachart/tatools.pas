@@ -151,18 +151,26 @@ type
       read FAnimationSteps write FAnimationSteps default 0;
   end;
 
+  TZoomRatioLimit = (zrlNone, zrlProportional, zrlFixedX, zrlFixedY);
+
   { TZoomDragTool }
 
   TZoomDragTool = class(TBasicZoomTool)
   private
-    FProportional: Boolean;
+    FRatioLimit: TZoomRatioLimit;
     FSelectionRect: TRect;
+    function GetProportional: Boolean;
+    procedure SetProportional(AValue: Boolean);
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
-    property Proportional: Boolean read FProportional write FProportional default false;
+    property Proportional: Boolean
+      read GetProportional write SetProportional stored false default false;
+      deprecated;
+    property RatioLimit: TZoomRatioLimit
+      read FRatioLimit write FRatioLimit default zrlNone;
   end;
 
   { TZoomClickTool }
@@ -378,6 +386,8 @@ begin
   RegisterPropertyEditor(
     TypeInfo(TChartTools), TChartToolset, 'Tools', TToolsPropertyEditor);
   RegisterComponentEditor(TChartToolset, TToolsComponentEditor);
+  RegisterPropertyEditor(
+    TypeInfo(Boolean), TZoomDragTool, 'Proportional', THiddenPropertyEditor);
 end;
 
 procedure RegisterChartToolClass(
@@ -773,6 +783,11 @@ end;
 
 { TZoomDragTool }
 
+function TZoomDragTool.GetProportional: Boolean;
+begin
+  Result := RatioLimit = zrlProportional;
+end;
+
 procedure TZoomDragTool.MouseDown(APoint: TPoint);
 begin
   if not FChart.AllowZoom then exit;
@@ -801,17 +816,31 @@ var
     newSize, oldSize: TDoublePoint;
     coeff: Double;
   begin
-    if not Proportional then exit;
-    newSize := ext.b - ext.a;
-    oldSize := FChart.LogicalExtent.b - FChart.LogicalExtent.a;
-    coeff := newSize.Y * oldSize.X;
-    if coeff = 0 then exit;
-    coeff := newSize.X * oldSize.Y / coeff;
-    if coeff = 0 then exit;
-    if coeff > 1 then
-      ExpandRange(ext.a.Y, ext.b.Y, (coeff - 1) / 2)
-    else
-      ExpandRange(ext.a.X, ext.b.X, (1 / coeff  - 1) / 2);
+    case RatioLimit of
+      zrlNone: exit;
+      zrlProportional: begin
+        newSize := ext.b - ext.a;
+        oldSize := FChart.LogicalExtent.b - FChart.LogicalExtent.a;
+        coeff := newSize.Y * oldSize.X;
+        if coeff = 0 then exit;
+        coeff := newSize.X * oldSize.Y / coeff;
+        if coeff = 0 then exit;
+        if coeff > 1 then
+          ExpandRange(ext.a.Y, ext.b.Y, (coeff - 1) / 2)
+        else
+          ExpandRange(ext.a.X, ext.b.X, (1 / coeff - 1) / 2);
+      end;
+      zrlFixedX:
+        with FChart.GetFullExtent do begin
+          ext.a.X := a.X;
+          ext.b.X := b.X;
+        end;
+      zrlFixedY:
+        with FChart.GetFullExtent do begin
+          ext.a.Y := a.Y;
+          ext.b.Y := b.Y;
+        end;
+    end;
   end;
 
 begin
@@ -831,6 +860,14 @@ begin
   CheckProportions;
   DoZoom(ext, false);
   Handled;
+end;
+
+procedure TZoomDragTool.SetProportional(AValue: Boolean);
+begin
+  if AValue then
+    RatioLimit := zrlProportional
+  else
+    RatioLimit := zrlNone;
 end;
 
 { TReticuleTool }
