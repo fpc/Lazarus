@@ -429,7 +429,7 @@ type
     FPickList: TStrings;
     FMinSize, FMaxSize, FSizePriority: ^Integer;
     FValueChecked,FValueUnchecked: PChar;
-
+    FTag: Integer;
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
     function GetColor: TColor;
@@ -515,6 +515,7 @@ type
     property PickList: TStrings read GetPickList write SetPickList;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
     property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored default 1;
+    property Tag: Integer read FTag write FTag default 0;
     property Title: TGridColumnTitle read FTitle write SetTitle;
     property Width: Integer read GetWidth write SetWidth stored IsWidthStored default DEFCOLWIDTH;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
