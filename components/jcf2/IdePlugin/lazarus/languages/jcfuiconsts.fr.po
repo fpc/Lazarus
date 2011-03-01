@@ -35,7 +35,7 @@ msgstr "Alignement"
 
 #: jcfuiconsts.lisalignassign
 msgid "Assign"
-msgstr ""
+msgstr "Affectation"
 
 #: jcfuiconsts.lisalignclassandrecordfields
 msgid "Class and record fields"
@@ -66,9 +66,8 @@ msgid "Max Variance"
 msgstr "Ecart max"
 
 #: jcfuiconsts.lisalignmaxvarianceinterface
-#, fuzzy
 msgid "Max Variance Interface"
-msgstr "Procédure avec interface"
+msgstr "Ecart maximal de l'interface"
 
 #: jcfuiconsts.lisalignmincolumn
 msgid "Min Column"
@@ -91,9 +90,8 @@ msgid "Asm"
 msgstr "Asm"
 
 #: jcfuiconsts.lisasmbreaksafterlabel
-#, fuzzy
 msgid "&Breaks after label"
-msgstr "Label avec begin"
+msgstr "Coupe après label"
 
 #: jcfuiconsts.lisasmcapitalization
 msgid "&Capitalization"
@@ -133,7 +131,7 @@ msgstr "après l'entête de procédure"
 
 #: jcfuiconsts.lisblatstartandendofbeginendblock
 msgid "At start and end of Begin...End block"
-msgstr ""
+msgstr "Au début et à la fin du bloc Begin...End"
 
 #: jcfuiconsts.lisblblanklines
 msgid "Blank Lines"
@@ -153,7 +151,7 @@ msgstr "Nombre maximum de lignes blanches n'importe où"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
 msgid "Max consecutive blank lines before removal"
-msgstr ""
+msgstr "Nombre max de lignes blanches consécutives avant l'enlèvement"
 
 #: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
 msgid "Number of returns after the unit's final End."
@@ -180,9 +178,8 @@ msgid "Block without begin"
 msgstr "Bloc sans begin"
 
 #: jcfuiconsts.lisblockselsebegin
-#, fuzzy
 msgid "Else begin"
-msgstr "Else case avec begin"
+msgstr "Else begin"
 
 #: jcfuiconsts.lisblocksuseanewlineinblocksat
 msgid "Use a new line in blocks at:"
@@ -222,7 +219,7 @@ msgstr "Directives"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
-msgstr "Autoriser le régleage de la mise en majuscule"
+msgstr "Autoriser le réglage de la mise en majuscule"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -233,14 +230,12 @@ msgid "Set capitalisation on these identifiers:"
 msgstr "Fixer la mise en majuscule sur ces identificateurs:"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
-#, fuzzy
 msgid "Non-identifiers"
-msgstr "Identifiants manquant"
+msgstr "qui n'est pas un identificateur"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
-#, fuzzy
 msgid "Set capitalisation on these non-identifiers:"
-msgstr "Fixe la mise en majuscule sur ces noms d'unité:"
+msgstr "Fixe la mise en majuscule sur ces non identificateurs:"
 
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
@@ -303,7 +298,7 @@ msgstr "Laisser tel quel"
 #: jcfuiconsts.liscaseblocksnever
 msgctxt "jcfuiconsts.liscaseblocksnever"
 msgid "Never"
-msgstr "jamais"
+msgstr "Jamais"
 
 #: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
 msgid "Use a new line in Case blocks at:"
@@ -314,13 +309,12 @@ msgid "Compiler Directives"
 msgstr "Directives du compilateur"
 
 #: jcfuiconsts.liscdotherplaces
-#, fuzzy
 msgid "Other places"
-msgstr "Autres fichiers"
+msgstr "Autres endroits"
 
 #: jcfuiconsts.liscdstatements
 msgid "Statements"
-msgstr ""
+msgstr "Instructions"
 
 #: jcfuiconsts.liscduseanewlineaftercompilerdirectives
 msgid "Use a new line after compiler directives:"
@@ -331,9 +325,8 @@ msgid "Use a new line before compiler directives:"
 msgstr "Mettre une nouvelle ligne avant les directives de compilation:"
 
 #: jcfuiconsts.liscdusesclause
-#, fuzzy
 msgid "Uses clause"
-msgstr "clause Uses"
+msgstr "Clause Uses"
 
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
@@ -370,9 +363,8 @@ msgid "Remove empty '//' comments"
 msgstr "Supprime les commentaires vides '//'"
 
 #: jcfuiconsts.lisedatlinecol
-#, fuzzy
 msgid "%sAt line %s col %s"
-msgstr "Centrer sur la ligne du curseur"
+msgstr "%sA la ligne %s colonne %s"
 
 #: jcfuiconsts.lisederror
 msgid "Error"
@@ -392,7 +384,7 @@ msgstr "Erreur d'analyse (grammaticale) de JCF"
 
 #: jcfuiconsts.lisednear
 msgid "%s near %s"
-msgstr ""
+msgstr "%s près de %s"
 
 #: jcfuiconsts.lisedtype
 msgid "Type: %s%s"
@@ -548,7 +540,7 @@ msgstr "Toutes les majuscules"
 
 #: jcfuiconsts.lisobfsalllowercase
 msgid "all lowercase"
-msgstr "toutes les minuscules"
+msgstr "Toutes les minuscules"
 
 #: jcfuiconsts.lisobfsleavealone
 msgid "Leave alone"
@@ -574,7 +566,7 @@ msgstr "Sélectionner mot de gauche"
 
 #: jcfuiconsts.lisobfsrebreaklines
 msgid "Rebreak &lines"
-msgstr "Rebreak &lines"
+msgstr "Recouper les &lignes"
 
 #: jcfuiconsts.lisobfsremovecomments
 msgid "Remove c&omments"
@@ -606,9 +598,8 @@ msgid "Symbols defined for conditional compilation:"
 msgstr "Symboles définis pour la compilation conditionnelle:"
 
 #: jcfuiconsts.lisreturnsafteruses
-#, fuzzy
 msgid "After uses"
-msgstr "clause Uses"
+msgstr "Après Uses"
 
 #: jcfuiconsts.lisreturnsconverttocarriagereturn
 msgid "Convert to Carriage Return (UNIX)"
@@ -624,11 +615,11 @@ msgstr "Dans les expressions"
 
 #: jcfuiconsts.lisreturnsinmiscbadplaces
 msgid "In misc. bad places"
-msgstr ""
+msgstr "En divers mauvais endroits"
 
 #: jcfuiconsts.lisreturnsinmiscgoodplaces
 msgid "In misc. good places"
-msgstr ""
+msgstr "En divers bons endroits"
 
 #: jcfuiconsts.lisreturnsinproceduredefinitions
 msgid "In procedure definitions"
@@ -653,7 +644,7 @@ msgstr "Laisser tel quel"
 
 #: jcfuiconsts.lisreturnsoneusesclauseitemperline
 msgid "One uses clause item per line"
-msgstr ""
+msgstr "Une clause uses par ligne"
 
 #: jcfuiconsts.lisreturnsremovereturns
 msgid "Remove returns"
@@ -669,9 +660,8 @@ msgid "Returns"
 msgstr "Retour chariot"
 
 #: jcfuiconsts.lisspacesafteropen
-#, fuzzy
 msgid "After open"
-msgstr "Ouvrir un paquet"
+msgstr "Après l'ouverture de la parenthèse"
 
 #: jcfuiconsts.lisspacesalways
 msgctxt "jcfuiconsts.lisspacesalways"
@@ -679,9 +669,8 @@ msgid "Always"
 msgstr "Toujours"
 
 #: jcfuiconsts.lisspacesbeforeend
-#, fuzzy
 msgid "Before end"
-msgstr "Fin de mot"
+msgstr "Avant la fermeture de la parenthèse"
 
 #: jcfuiconsts.lisspacesbeforeinexpression
 msgid "Before [ in expression"
@@ -717,9 +706,8 @@ msgid "In function &declaration"
 msgstr "Dans la &déclaration de la fonction"
 
 #: jcfuiconsts.lisspacesingeneric
-#, fuzzy
 msgid "In &generic"
-msgstr "identificateur générique"
+msgstr "Dans généric"
 
 #: jcfuiconsts.lisspacesinsertspacebeforebracket
 msgid "&Insert space before bracket"
@@ -744,7 +732,7 @@ msgstr "Espaces &max dans le code"
 
 #: jcfuiconsts.lisspacesmovespacestobeforecolon
 msgid "Move spaces to before colon"
-msgstr ""
+msgstr "Déplace les espaces avant les deux points"
 
 #: jcfuiconsts.lisspacesnever
 msgctxt "jcfuiconsts.lisspacesnever"
@@ -760,9 +748,8 @@ msgid "&Record fields"
 msgstr "Champs &record"
 
 #: jcfuiconsts.lisspacesspacebeforeclassheritage
-#, fuzzy
 msgid "Space before class &heritage"
-msgstr "&Insère un espace avant la parenthèse"
+msgstr "Espace avant un &héritage de classe"
 
 #: jcfuiconsts.lisspacesspaces
 msgid "Spaces"
@@ -777,9 +764,8 @@ msgid "Spaces &before colon in"
 msgstr "Espaces avant la colonne dans"
 
 #: jcfuiconsts.lisspacesspacesfortab
-#, fuzzy
 msgid "Spaces for tab"
-msgstr "Espaces par tabulation"
+msgstr "Espaces pour la tabulation"
 
 #: jcfuiconsts.lisspacesspacespertab
 msgid "Spaces per tab"
@@ -803,29 +789,27 @@ msgstr "les déclarations &Var"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr ""
+msgstr "Le fichier de paramètres \"%s\" n'existe pas.%sLe formatteur travaillera mieux s'il est configuré pour utiliser un fichier de paramètres valide"
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"
-msgstr ""
+msgstr "Ajoute begin et end à des instructions uniques"
 
 #: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
 msgid "Add or Remove &begin and end from single statements"
-msgstr ""
+msgstr "Ajoute ou enlève &begin et end à des instructions uniques"
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
 msgstr "Alphabetique"
 
 #: jcfuiconsts.listransformbreakoncomment
-#, fuzzy
 msgid "Break on &comment"
-msgstr "Prévenir à la compilation"
+msgstr "Coupe sur un &commentaire"
 
 #: jcfuiconsts.listransformbreakonreturn
-#, fuzzy
 msgid "Break on &return"
-msgstr "Prévenir à la compilation"
+msgstr "Couper sur &return"
 
 #: jcfuiconsts.listransformleavebeginandendasis
 msgid "Leave begin and end as is"
@@ -856,19 +840,16 @@ msgid "Shortest to longest"
 msgstr "Du plus court au plus long"
 
 #: jcfuiconsts.listransformsortimplementationuses
-#, fuzzy
 msgid "Sort i&mplementation uses"
-msgstr "Tri les clauses &uses"
+msgstr "Tri les uses de l'implémentation"
 
 #: jcfuiconsts.listransformsortinterfaceuses
-#, fuzzy
 msgid "Sort i&nterface uses"
-msgstr "Tri les clauses &uses"
+msgstr "Tri les uses de l'interface"
 
 #: jcfuiconsts.listransformsortprogramuses
-#, fuzzy
 msgid "Sort &program uses"
-msgstr "Tri les clauses &uses"
+msgstr "Tri les uses du programme"
 
 #: jcfuiconsts.listransformsortusesclauses
 msgid "Sort &uses clauses"
@@ -879,9 +860,8 @@ msgid "Transform"
 msgstr "Transformation"
 
 #: jcfuiconsts.listransformusessortorder
-#, fuzzy
 msgid "Uses sort &order"
-msgstr "Tri les clauses &uses"
+msgstr "Utilise l'ordre de tri"
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
