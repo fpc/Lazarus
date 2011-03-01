@@ -4019,23 +4019,23 @@ begin
   // no ancestor class specified
   ClassIdentNode:=ClassNode.Parent;
   // check class name
-  if (ClassIdentNode=nil)
-  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
+  if (ClassIdentNode<>nil)
+  and (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
   begin
-    MoveCursorToNodeStart(ClassNode);
-    RaiseException('class without name');
+    ClassIdentNode:=nil;
   end;
   if ClassNode.Desc=ctnClass then begin
     // if this class is not TObject, TObject is class ancestor
-    SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
+    SearchBaseClass:=(ClassIdentNode=nil)
+              or (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject'));
   end else if ClassNode.Desc in AllClassInterfaces then begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
-    SearchBaseClass:=
-              (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
-          and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown'));
+    SearchBaseClass:=(ClassIdentNode=nil)
+         or   ((not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
+           and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown')));
   end else
-    exit;
+    exit; // has no default ancestor (e.g. record)
   if not SearchBaseClass then exit;
 
   {$IFDEF ShowTriedContexts}

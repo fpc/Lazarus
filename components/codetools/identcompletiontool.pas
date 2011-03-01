@@ -1823,7 +1823,7 @@ begin
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     if IgnoreCurContext then
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
-    debugln(['TIdentCompletionTool.FindCollectionContext ',fdfIgnoreCurContextNode in Params.Flags]);
+    //debugln(['TIdentCompletionTool.FindCollectionContext ',fdfIgnoreCurContextNode in Params.Flags]);
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
     //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
