@@ -613,7 +613,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure ScrollTimerHandler(Sender: TObject);
-    procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
 
     procedure FindAndHandleMouseAction(AButton: TMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
@@ -2950,7 +2950,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
+procedure TCustomSynEdit.DoContextPopup(MousePos: TPoint; var Handled: Boolean);
 begin
   Handled := FInMouseClickEvent;
   if not Handled then
