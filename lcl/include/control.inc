@@ -1414,7 +1414,7 @@ end;
   procedure TControl.DoContextPopup(const MousePos: TPoint;
     var Handled: Boolean);
 ------------------------------------------------------------------------------}
-procedure TControl.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
+procedure TControl.DoContextPopup(MousePos: TPoint; var Handled: Boolean);
 begin
   if Assigned(FOnContextPopup) then
     FOnContextPopup(Self, MousePos, Handled);
