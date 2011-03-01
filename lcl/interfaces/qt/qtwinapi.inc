@@ -4256,6 +4256,30 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+var
+  QtRgn: QRegionH;
+begin
+  Result := ERROR;
+
+  if not IsValidGDIObject(RGN) then
+    Exit
+  else
+    QtRgn := TQtRegion(RGN).Widget;
+
+  QRegion_translate(QtRgn, nXOffset, nYOffset);
+
+  if QRegion_isEmpty(QtRgn) then
+    Result := NULLREGION
+  else
+  begin
+    if TQtRegion(RGN).IsPolyRegion or (TQtRegion(RGN).numRects > 0) then
+      Result := COMPLEXREGION
+    else
+      Result := SIMPLEREGION;
+  end;
+end;
+
 function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
   Result := False;

@@ -2554,6 +2554,14 @@ begin
   Result := inherited MoveWindowOrgEx(DC, dX, dY);
 end;
 
+function TCarbonWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  if not (TObject(RGN) is TCarbonRegion) then
+    Exit(ERROR);
+  TCarbonRegion(RGN).Offset(nXOffset, nYOffset);
+  Result := TCarbonRegion(RGN).GetType;
+end;
+
 function TCarbonWidgetSet.PeekMessage(var lpMsg: TMsg; Handle: HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 begin

@@ -6507,6 +6507,18 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+var
+  GdkRGN: PGDKRegion;
+begin
+  if not IsValidGDIObject(RGN) then
+    Exit(Error);
+
+  GdkRGN := PGdiObject(RGN)^.GDIRegionObject;
+  gdk_region_offset(GdkRGN, nXOffset, nYOffset);
+  Result := RegionType(GdkRGN);
+end;
+
 
 {------------------------------------------------------------------------------
   Function: PeekMessage

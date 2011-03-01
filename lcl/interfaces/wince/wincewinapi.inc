@@ -2435,6 +2435,11 @@ begin
   Assert(False, Format('Trace:< [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
+function TWinCEWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  Result := Windows.OffsetRgn(RGN, nXOffset, nYOffset);
+end;
+
 {function TWinCEWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin

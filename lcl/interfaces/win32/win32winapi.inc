@@ -2560,6 +2560,11 @@ begin
   Assert(False, Format('Trace:< [TWin32WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
+function TWin32WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  Result := Windows.OffsetRgn(RGN, nXOffset, nYOffset);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  PeekMessage

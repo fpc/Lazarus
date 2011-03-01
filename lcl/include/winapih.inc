@@ -203,6 +203,7 @@ function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; {$IFDEF IF_BAS
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function OffsetRect --> independent
+function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Pie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

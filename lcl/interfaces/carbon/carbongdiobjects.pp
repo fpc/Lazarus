@@ -74,6 +74,7 @@ type
     function ContainsPoint(const P: TPoint): Boolean;
     procedure SetShape(AShape: HIShapeRef);
     function CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
+    procedure Offset(dx, dy: Integer);
   public
     property Shape: HIShapeRef read FShape write SetShape;
   end;
@@ -838,6 +839,12 @@ begin
     end;
   end;
 end;
+
+procedure TCarbonRegion.Offset(dx, dy: Integer);
+begin
+  HIShapeOffset(FShape, dx, dy);
+end;
+
 
 { TCarbonTextLayout }
 

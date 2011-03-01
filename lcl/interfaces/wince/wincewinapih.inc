@@ -171,6 +171,8 @@ function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; ove
 function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
+function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
+
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 //function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;

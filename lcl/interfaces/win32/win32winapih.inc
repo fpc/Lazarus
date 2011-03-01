@@ -160,6 +160,8 @@ function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; ove
 function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
+function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
+
 function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean; override;
 function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
              StartX,StartY,EndX,EndY: Integer): Boolean; override;

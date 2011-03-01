@@ -702,6 +702,11 @@ begin
   Result := WidgetSet.MoveToEx(DC, X, Y, OldPoint);
 end;
 
+function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  Result := WidgetSet.OffsetRgn(RGN, nXOffset, nYOffset);
+end;
+
 function PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin

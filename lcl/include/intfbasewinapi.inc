@@ -178,7 +178,7 @@ end;
 
 function TWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
-Begin
+begin
   Result := 0;
 end;
 
@@ -334,7 +334,7 @@ begin
 end;
 
 function TWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
-Begin
+begin
   Result := False;
 end;
 
@@ -765,7 +765,7 @@ begin
 end;
 
 function TWidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-Begin
+begin
   Result:=1;
 end;
 
@@ -1297,11 +1297,16 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  Result := Error;
+end;
+
 function TWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
-Begin
+begin
   Result := False;
-End;
+end;
 
 function TWidgetSet.Pie(DC: HDC; x1, y1, x2, y2,
                         sx, sy, ex, ey: Integer): Boolean;
@@ -1317,7 +1322,7 @@ function TWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
 var
   APoints : PPoint;
   ACount : Longint;
-Begin
+begin
   APoints := nil;
   ACount := 0;
   PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
@@ -1402,7 +1407,7 @@ begin
 end;
 
 function TWidgetSet.ReleaseCapture : Boolean;
-Begin
+begin
   Result := True;
 end;
 
@@ -1596,7 +1601,7 @@ end;
 
 function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
-Begin
+begin
   Result := True;
 end;
 
@@ -1657,7 +1662,7 @@ end;
 
 function TWidgetSet.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
-Begin
+begin
   Result := False;
 end;
 
