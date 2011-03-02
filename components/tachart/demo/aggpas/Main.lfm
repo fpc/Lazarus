@@ -1,19 +1,19 @@
 object Form1: TForm1
   Left = 352
-  Height = 295
+  Height = 356
   Top = 169
-  Width = 594
+  Width = 613
   Caption = 'Form1'
-  ClientHeight = 295
-  ClientWidth = 594
+  ClientHeight = 356
+  ClientWidth = 613
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 295
+    Height = 316
     Top = 0
-    Width = 297
+    Width = 316
     AxisList = <    
       item
         Title.LabelFont.Orientation = 900
@@ -76,12 +76,31 @@ object Form1: TForm1
     end
   end
   object PaintBox1: TPaintBox
-    Left = 297
-    Height = 295
+    Left = 316
+    Height = 316
     Top = 0
     Width = 297
     Align = alRight
     OnPaint = PaintBox1Paint
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 316
+    Width = 613
+    Align = alBottom
+    ClientHeight = 40
+    ClientWidth = 613
+    TabOrder = 1
+    object cbAggPas: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 12
+      Width = 181
+      Caption = 'Use AggPas for standard drawing'
+      OnClick = cbAggPasClick
+      TabOrder = 0
+    end
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 10

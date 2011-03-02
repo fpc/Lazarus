@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  Classes, ExtCtrls, SysUtils, FileUtil, Forms, Controls, Graphics, FPCanvas,
-  Dialogs, Agg_LCL, TAGraph, TASeries, TASources, TADrawerAggPas;
+  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls, Graphics,
+  FPCanvas, Dialogs, Agg_LCL, TAGraph, TASeries, TASources, TADrawerAggPas;
 
 type
 
@@ -19,14 +19,19 @@ type
     Chart1ConstantLine1: TConstantLine;
     Chart1LineSeries1: TLineSeries;
     Chart1PieSeries1: TPieSeries;
+    cbAggPas: TCheckBox;
     PaintBox1: TPaintBox;
+    Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
+    procedure cbAggPasClick(Sender: TObject);
+    procedure ChartPaint(
+      ASender: TChart; const ARect: TRect; var ADoDefaultDrawing: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
   private
-    FBmp: TBitmap;
     FAggCanvas: TAggLCLCanvas;
+    FBmp: TBitmap;
   end;
 
 var
@@ -36,10 +41,26 @@ implementation
 
 {$R *.lfm}
 
-uses
-  TADrawUtils;
-
 { TForm1 }
+
+procedure TForm1.cbAggPasClick(Sender: TObject);
+begin
+  if cbAggPas.Checked then
+    Chart1.OnChartPaint := @ChartPaint
+  else
+    Chart1.OnChartPaint := nil;
+end;
+
+procedure TForm1.ChartPaint(ASender: TChart; const ARect: TRect;
+  var ADoDefaultDrawing: Boolean);
+begin
+  FAggCanvas.Width := ARect.Right - ARect.Left;
+  FAggCanvas.Height := ARect.Bottom - ARect.Top;
+  ASender.Draw(TAggPasDrawer.Create(FAggCanvas), ARect);
+  FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
+  ASender.Canvas.Draw(0, 0, FBmp);
+  ADoDefaultDrawing := false;
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -54,14 +75,11 @@ begin
 end;
 
 procedure TForm1.PaintBox1Paint(Sender: TObject);
-var
-  ad: IChartDrawer;
 begin
   FAggCanvas.Width := PaintBox1.Width;
   FAggCanvas.Height := PaintBox1.Height;
-  ad := TAggPasDrawer.Create(FAggCanvas);
   Chart1.Title.Text.Text := 'AggPas';
-  Chart1.Draw(ad, PaintBox1.Canvas.ClipRect);
+  Chart1.Draw(TAggPasDrawer.Create(FAggCanvas), PaintBox1.Canvas.ClipRect);
   Chart1.Title.Text.Text := 'Standard';
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
   PaintBox1.Canvas.Draw(0, 0, FBmp);
