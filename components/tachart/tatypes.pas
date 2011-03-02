@@ -514,8 +514,11 @@ end;
 
 function TGenericChartMarks.CenterOffset(
   ADrawer: IChartDrawer; const AText: String): TSize;
+var
+  d: Integer;
 begin
-  Result := Point(Distance, Distance);
+  d := ADrawer.Scale(Distance);
+  Result := Point(d, d);
   if not DistanceToCenter then
     Result += MeasureLabel(ADrawer, AText) div 2;
 end;

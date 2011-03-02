@@ -14,6 +14,7 @@ object Form1: TForm1
     Width = 398
     AxisList = <    
       item
+        Marks.Distance = 10
         Marks.LabelFont.Height = -13
         Marks.Frame.Style = psSolid
         Title.LabelFont.Orientation = 900

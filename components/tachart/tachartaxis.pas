@@ -679,7 +679,7 @@ begin
   else
     sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
   if sz > 0 then
-    sz += ADrawer.Scale(TickLength) + Marks.Distance;
+    sz += ADrawer.Scale(TickLength) + ADrawer.Scale(Marks.Distance);
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(CalcTitleSize, FTitleSize);
