@@ -1765,7 +1765,6 @@ components/mouseandkeyinput/xkeyinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xmouseinput.pas svneol=native#text/pascal
 components/mpaslex/mpaslex.pp svneol=native#text/pascal
 components/opengl/example/mainunit.lfm svneol=native#text/plain
-components/opengl/example/mainunit.lrs svneol=native#text/pascal
 components/opengl/example/mainunit.pas svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpi svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpr svneol=native#text/plain

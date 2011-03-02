@@ -45,12 +45,12 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if Sender=nil then ;
-
   OpenGLControl1:=TOpenGLControl.Create(Self);
   with OpenGLControl1 do begin
     Name:='OpenGLControl1';
@@ -68,8 +68,6 @@ procedure TForm1.OpenGLControl1Paint(Sender: TObject);
 var
   Speed: Double;
 begin
-  if Sender=nil then ;
-
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -137,8 +135,10 @@ end;
 
 procedure TForm1.OpenGLControl1Resize(Sender: TObject);
 begin
-  if Sender=nil then ;
   if OpenGLControl1.Height <= 0 then exit;
+  // the viewport is automatically resized by the TOpenGLControl
+  // you can disable it (OpenGLControl1.AutoResizeViewport:=false)
+  // and do something yourself here
 end;
 
 procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);
@@ -147,9 +147,6 @@ begin
   //DebugLn(['TForm1.OnAppIdle ']);
   OpenGLControl1.Invalidate;
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 
