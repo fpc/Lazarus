@@ -1063,7 +1063,6 @@ var
   var
     RawImage, SubRawImage: TRawImage;
     ImgHandle, MaskHandle: HBitmap;
-    Img: TBitmap;
     Row: Integer;
     Col: Integer;
     ImgRect: TRect;
@@ -1088,13 +1087,8 @@ var
           if not Res
           then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
           
-          Img := TBitmap.Create;
-          Img.SetHandles(ImgHandle, MaskHandle);
-
-          Add(Img, nil);
-          Img.Free;
+          InternalInsert(Count, ImgHandle, MaskHandle, Width, Height);
           //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
-          Img := nil;
           Dec(NewCount);
         end;
       end;
