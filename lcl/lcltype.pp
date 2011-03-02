@@ -1578,6 +1578,8 @@ type
   TColorRef = COLORREF;
 
 const
+  CLR_NONE = TColorRef($FFFFFFFF);
+  CLR_DEFAULT = TColorRef($FF000000);
   CLR_INVALID = TColorRef($FFFFFFFF);
 
   COLOR_SCROLLBAR = 0;

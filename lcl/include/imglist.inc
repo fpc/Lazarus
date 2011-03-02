@@ -1204,6 +1204,12 @@ begin
       FHeight := ReadLRSWord(AStream);
       //DebugLn('NewHeight=',FHeight);
       FBKColor := TColor(ReadLRSInteger(AStream));
+      // corrent colors - they are stored in windows values
+      if FBKColor = CLR_NONE then
+        FBKColor := clNone
+      else
+      if FBKColor = CLR_DEFAULT then
+        FBKColor := clDefault;
       HasMask := (ReadLRSWord(AStream) and 1) = 1;
       AStream.ReadDWord; //Skip ?
       AStream.ReadDWord; //Skip ?
