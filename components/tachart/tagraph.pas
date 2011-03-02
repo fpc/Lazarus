@@ -136,6 +136,9 @@ type
   TChartBeforeDrawEvent = procedure (
     ASender: TChart; ACanvas: TCanvas; const ARect: TRect;
     var ADoDefaultDrawing: Boolean) of object;
+  TChartPaintEvent = procedure (
+    ASender: TChart; const ARect: TRect;
+    var ADoDefaultDrawing: Boolean) of object;
 
   { TChart }
 
@@ -158,6 +161,7 @@ type
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
+    FOnChartPaint: TChartPaintEvent;
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
@@ -179,6 +183,8 @@ type
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ADrawer: IChartDrawer);
+    procedure FindComponentClass(
+      AReader: TReader; const AClassName: String; var AClass: TComponentClass);
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
@@ -186,8 +192,6 @@ type
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
     procedure HideReticule;
-    procedure FindComponentClass(
-      AReader: TReader; const AClassName: String; var AClass: TComponentClass);
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -206,6 +210,7 @@ type
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
+    procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
@@ -276,6 +281,8 @@ type
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
+    property OnChartPaint: TChartPaintEvent
+      read FOnChartPaint write SetOnChartPaint; experimental;
     property ReticulePos: TPoint read FReticulePos write SetReticulePos;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
@@ -924,8 +931,15 @@ begin
 end;
 
 procedure TChart.Paint;
+var
+  defaultDrawing: Boolean = true;
 begin
-  PaintOnCanvas(Canvas, GetClientRect);
+  {$WARNINGS OFF}
+  if Assigned(OnChartPaint) then
+    OnChartPaint(Self, GetClientRect, defaultDrawing);
+  {$WARNINGS ON}
+  if defaultDrawing then
+    Draw(FDrawer, GetClientRect);
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
@@ -1132,6 +1146,13 @@ procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
 begin
   if FOnBeforeDrawBackWall = AValue then exit;
   FOnBeforeDrawBackWall := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetOnChartPaint(AValue: TChartPaintEvent);
+begin
+  if FOnChartPaint = AValue then exit;
+  FOnChartPaint := AValue;
   Invalidate;
 end;
 
