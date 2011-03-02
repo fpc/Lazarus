@@ -159,8 +159,10 @@ var
     List: TStringList;
   begin
     List:=TStringList.Create;
-    LoadRecentList(XMLConfig,List,Path+'Directories');
+    LoadRecentList(XMLConfig,List,Path);
     AComboBox.Items.Assign(List);
+    if AComboBox.Items.Count > 0 then
+      AComboBox.ItemIndex := 0;
     List.Free;
   end;
   
