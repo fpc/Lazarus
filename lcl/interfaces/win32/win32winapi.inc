@@ -776,7 +776,7 @@ var
   LB: Windows.LogBrush;
 begin
   LB.lbStyle := LogBrush.lbStyle;
-  LB.lbColor := Windows.COLORREF(ColorToRGB(LogBrush.lbColor));
+  LB.lbColor := Windows.COLORREF(ColorToRGB(TColor(LogBrush.lbColor)));
   LB.lbHatch := LogBrush.lbHatch;
   Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
   Result := Windows.CreateBrushIndirect(LB);
