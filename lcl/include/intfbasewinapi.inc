@@ -864,7 +864,7 @@ begin
   //  ' Clip=',DbgS(Clip),8),' RGn=',DbgS(Cardinal(RGN),' Mode=',dbgs(Mode));
   Result := CombineRGN(Clip, OldC, RGN, Mode);
   //DebugLn('TWidgetSet.ExtSelectClipRGN B Result=',Result);
-  If Result <> ERROR then
+  if Result <> ERROR then
     Result := SelectClipRGN(DC, Clip);
   DeleteObject(Clip);
   DeleteObject(OldC);
@@ -1192,7 +1192,7 @@ begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
   //DebugLn('TWidgetSet.IntersectClipRect A RGN=',DbgS(RRGN),
   //  ' ',dbgs(Left),',',dbgs(Top),',',dbgs(Right),',',dbgs(Bottom));
-  If not DCClipRegionValid(DC) then
+  if not DCClipRegionValid(DC) then
     Result := SelectClipRGN(DC, RRGN)
   else
     Result := ExtSelectClipRGN(DC, RRGN, RGN_AND);

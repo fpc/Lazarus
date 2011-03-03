@@ -1774,7 +1774,7 @@ begin
   S2Obj := PGdiObject(Src2);
   Continue := IsValidGDIObject(Dest) and IsValidGDIObject(Src1)
               and IsValidGDIObject(Src2);
-  If Not Continue then begin
+  if not Continue then begin
     DebugLn('WARNING: [TGtk2WidgetSet.CombineRgn] Invalid HRGN');
     Result := Error;
   end
@@ -1782,7 +1782,7 @@ begin
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
     //DebugLn('TGtk2WidgetSet.CombineRgn A fnCombineMode=',Dbgs(fnCombineMode));
-    Case fnCombineMode of
+    case fnCombineMode of
       RGN_AND :
         D := PGDKRegion(gdk_region_intersect(S1, S2));
       RGN_COPY :
@@ -3325,15 +3325,15 @@ var
   DCOrigin: TPoint;
 begin
   Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
+  if not IsValidDC(DC) then
     Result := ERROR
   else with TGtkDeviceContext(DC) do
   begin
     //DebugLn('TGtk2WidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
     //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-    If ClipRegion=nil then begin
+    if ClipRegion=nil then begin
       // there is no clipping region in the DC
-      Case Mode of
+      case Mode of
         RGN_COPY:
           begin
             Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
