@@ -82,7 +82,7 @@ const
 { itMask }  ILD_MASK
   );
 
-function ColorToImagelistColor(AColor: TColor): DWord;
+function ColorToImagelistColor(AColor: TColor): TColorRef;
 begin
   case AColor of
     clNone: Result := CLR_NONE;
