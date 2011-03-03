@@ -39,7 +39,6 @@ uses
   Forms,
   Graphics,
   LResources,
-  StdCtrls,
   SysUtils,
   AboutFrm;
 
