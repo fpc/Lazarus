@@ -1060,19 +1060,19 @@ end;
 
 function TStandardCodeTool.RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
   const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
-var UnitCount, StartPos, EndPos: integer;
+var UnitPos, StartPos, EndPos: integer;
 begin
   Result:=false;
   if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255) then
     exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
-  UnitCount:=0;
+  UnitPos:=0;
   repeat
     EndPos:=CurPos.StartPos;
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
-    inc(UnitCount);
+    inc(UnitPos);
     if UpAtomIs(UpperUnitName) then begin
       // unit found
       SourceChangeCache.MainScanner:=Scanner;
@@ -1082,7 +1082,7 @@ begin
         ReadNextAtom;
         ReadNextAtom;
       end;
-      if UnitCount=1 then begin
+      if UnitPos=1 then begin
         // first unit in uses section
         if AtomIsChar(';') then begin
           // last unit in uses section -> delete whole uses section

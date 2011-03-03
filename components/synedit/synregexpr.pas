@@ -41,6 +41,8 @@ unit SynRegExpr;
 
 interface
 
+{off $DEFINE DebugSynRegExpr}
+
 {$IFDEF FPC}
   {$MODE Delphi}
   {$DEFINE SYN_COMPILER_1_UP}
@@ -130,7 +132,7 @@ type
  {$ENDIF}
  TREOp = REChar; // internal p-code type //###0.933
  PREOp = ^TREOp;
- TRENextOff = integer; // internal Next "pointer" (offset to current p-code) //###0.933
+ TRENextOff = PtrInt; // internal Next "pointer" (offset to current p-code) //###0.933
  PRENextOff = ^TRENextOff; // used for extracting Next "pointers" from compiled r.e. //###0.933
  TREBracesArg = integer; // type of {m,n} arguments
  PREBracesArg = ^TREBracesArg;
@@ -218,7 +220,7 @@ type
     regstart : REChar; // char that must begin a match; '\0' if none obvious
     reganch : REChar; // is the match anchored (at beginning-of-line only)?
     regmust : PRegExprChar; // string (pointer into program) that match must include, or nil
-    regmlen : integer; // length of regmust string
+    regmlen : PtrInt; // length of regmust string
     // Regstart and reganch permit very fast decisions on suitable starting points
     // for a match, cutting down the work a lot.  Regmust permits fast rejection
     // of lines that cannot possibly match.  The regmust tests are costly enough
@@ -238,10 +240,10 @@ type
 
     // work variables for compiler's routines
     regparse : PRegExprChar;  // Input-scan pointer.
-    regnpar : integer; // count.
+    regnpar : PtrInt; // count.
     regdummy : char;
     regcode : PRegExprChar;   // Code-emit pointer; @regdummy = don't.
-    regsize : integer; // Code size.
+    regsize : PtrInt; // Code size.
 
     regexpbeg : PRegExprChar; // only for error handling. Contains
     // pointer to beginning of r.e. while compiling
@@ -341,15 +343,15 @@ type
     function ParseAtom (var flagp : integer) : PRegExprChar;
     // the lowest level
 
-    function GetCompilerErrorPos : integer;
+    function GetCompilerErrorPos : PtrInt;
     // current pos in r.e. - for error hanling
 
     {$IFDEF UseFirstCharSet} //###0.929
     procedure FillFirstCharSet (prog : PRegExprChar);
     {$ENDIF}
 
-    {===================== Mathing section ===================}
-    function regrepeat (p : PRegExprChar; AMax : integer) : integer;
+    {===================== Matching section ===================}
+    function regrepeat (p : PRegExprChar; AMax : PtrInt) : PtrInt;
     // repeatedly match something simple, report how many
 
     function regnext (p : PRegExprChar) : PRegExprChar;
@@ -358,7 +360,7 @@ type
     function MatchPrim (prog : PRegExprChar) : boolean;
     // recursively matching routine
 
-    function ExecPrim (AOffset: integer) : boolean;
+    function ExecPrim (AOffset: PtrInt) : boolean;
     // Exec for stored InputString
 
     {$IFDEF RegExpPCodeDump}
@@ -366,8 +368,8 @@ type
     {$ENDIF}
 
     function GetSubExprMatchCount : integer;
-    function GetMatchPos (Idx : integer) : integer;
-    function GetMatchLen (Idx : integer) : integer;
+    function GetMatchPos (Idx : integer) : PtrInt;
+    function GetMatchLen (Idx : integer) : PtrInt;
     function GetMatch (Idx : integer) : RegExprString;
 
     function GetInputString : RegExprString;
@@ -440,13 +442,13 @@ type
     {$IFNDEF FPC} // I do not know why FreePascal cannot overload methods with empty param list
     function Exec : boolean; overload; //###0.949
     {$ENDIF}
-    function Exec (AOffset: integer) : boolean; overload; //###0.949
+    function Exec (AOffset: PtrInt) : boolean; overload; //###0.949
     {$ENDIF}
     // match a programm against a string AInputString
     // !!! Exec store AInputString into InputString property
     // For Delphi 5 and higher available overloaded versions - first without
     // parameter (uses already assigned to InputString property value)
-    // and second that has integer parameter and is same as ExecPos
+    // and second that has PtrInt parameter and is same as ExecPos
 
     function ExecNext : boolean;
     // find next match:
@@ -459,7 +461,7 @@ type
     // Exec* (Exec, ExecPos, ExecNext). So You always must use something like
     // if Exec (InputString) then repeat { proceed results} until not ExecNext;
 
-    function ExecPos (AOffset: integer {$IFDEF DefParam}= 1{$ENDIF}) : boolean;
+    function ExecPos (AOffset: PtrInt {$IFDEF DefParam}= 1{$ENDIF}) : boolean;
     // find match for InputString starting from AOffset position
     // (AOffset=1 - first char of InputString)
 
@@ -522,14 +524,14 @@ type
     //  Exec ('2'): SubExprMatchCount=0, Match[0]='2'
     //  Exec ('7') - return False: SubExprMatchCount=-1
 
-    property MatchPos [Idx : integer] : integer read GetMatchPos;
+    property MatchPos [Idx : integer] : PtrInt read GetMatchPos;
     // pos of entrance subexpr. #Idx into tested in last Exec*
     // string. First subexpr. have Idx=1, last - MatchCount,
     // whole r.e. have Idx=0.
     // Returns -1 if in r.e. no such subexpr. or this subexpr.
     // not found in input string.
 
-    property MatchLen [Idx : integer] : integer read GetMatchLen;
+    property MatchLen [Idx : integer] : PtrInt read GetMatchLen;
     // len of entrance subexpr. #Idx r.e. into tested in last Exec*
     // string. First subexpr. have Idx=1, last - MatchCount,
     // whole r.e. have Idx=0.
@@ -550,7 +552,7 @@ type
     function ErrorMsg (AErrorID : integer) : RegExprString; virtual;
     // Returns Error message for error with ID = AErrorID.
 
-    property CompilerErrorPos : integer read GetCompilerErrorPos;
+    property CompilerErrorPos : PtrInt read GetCompilerErrorPos;
     // Returns pos in r.e. there compiler stopped.
     // Useful for error diagnostics
 
@@ -590,7 +592,7 @@ type
  ERegExpr = class (Exception)
    public
     ErrorCode : integer;
-    CompilerErrorPos : integer;
+    CompilerErrorPos : PtrInt;
   end;
 
 const
@@ -624,7 +626,7 @@ function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
 // user input
 
 function RegExprSubExpressions (const ARegExpr : string;
- ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF DefParam}= False{$ENDIF}) : integer;
+ ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF DefParam}= False{$ENDIF}) : PtrInt;
 // Makes list of subexpressions found in ARegExpr r.e.
 // In ASubExps every item represent subexpression,
 // from first to last, in format:
@@ -685,7 +687,7 @@ const
 
 function StrPCopy (Dest: PRegExprChar; const Source: RegExprString): PRegExprChar;
  var
-  i, Len : Integer;
+  i, Len : PtrInt;
  begin
   Len := length (Source); //###0.932
   for i := 1 to Len do
@@ -695,8 +697,8 @@ function StrPCopy (Dest: PRegExprChar; const Source: RegExprString): PRegExprCha
  end; { of function StrPCopy
 --------------------------------------------------------------}
 
-function StrLCopy (Dest, Source: PRegExprChar; MaxLen: Cardinal): PRegExprChar;
- var i: Integer;
+function StrLCopy (Dest, Source: PRegExprChar; MaxLen: PtrUInt): PRegExprChar;
+ var i: PtrInt;
  begin
   for i := 0 to MaxLen - 1 do
    Dest [i] := Source [i];
@@ -704,7 +706,7 @@ function StrLCopy (Dest, Source: PRegExprChar; MaxLen: Cardinal): PRegExprChar;
  end; { of function StrLCopy
 --------------------------------------------------------------}
 
-function StrLen (Str: PRegExprChar): Cardinal;
+function StrLen (Str: PRegExprChar): PtrUInt;
  begin
   Result:=0;
   while Str [result] <> #0
@@ -713,7 +715,7 @@ function StrLen (Str: PRegExprChar): Cardinal;
 --------------------------------------------------------------}
 
 function StrPos (Str1, Str2: PRegExprChar): PRegExprChar;
- var n: Integer;
+ var n: PtrInt;
  begin
   Result := nil;
   n := Pos (RegExprString (Str2), RegExprString (Str1));
@@ -723,7 +725,7 @@ function StrPos (Str1, Str2: PRegExprChar): PRegExprChar;
  end; { of function StrPos
 --------------------------------------------------------------}
 
-function StrLComp (Str1, Str2: PRegExprChar; MaxLen: Cardinal): Integer;
+function StrLComp (Str1, Str2: PRegExprChar; MaxLen: PtrUInt): PtrInt;
  var S1, S2: RegExprString;
  begin
   S1 := Str1;
@@ -797,7 +799,7 @@ function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
   // Very similar to META array, but slighly changed.
   // !Any changes in META array must be synchronized with this set.
  var
-  i, i0, Len : integer;
+  i, i0, Len : PtrInt;
  begin
   Result := '';
   Len := length (AStr);
@@ -816,19 +818,19 @@ function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
 --------------------------------------------------------------}
 
 function RegExprSubExpressions (const ARegExpr : string;
- ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF DefParam}= False{$ENDIF}) : integer;
+ ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF DefParam}= False{$ENDIF}) : PtrInt;
  type
   TStackItemRec =  record //###0.945
     SubExprIdx : integer;
-    StartPos : integer;
+    StartPos : PtrInt;
    end;
   TStackArray = packed array [0 .. NSUBEXPMAX - 1] of TStackItemRec;
  var
-  Len, SubExprLen : integer;
-  i, i0 : integer;
+  Len, SubExprLen : PtrInt;
+  i, i0 : PtrInt;
   Modif : integer;
   Stack : ^TStackArray; //###0.945
-  StackIdx, StackSz : integer;
+  StackIdx, StackSz : PtrInt;
  begin
   Result := 0; // no unbalanced brackets found at this very moment
 
@@ -1011,7 +1013,7 @@ const
 // The Next is a offset from the opcode of the node containing it.
 // An operand, if any, simply follows the node. (Note that much of
 // the code generation knows about this implicit relationship!)
-// Using TRENextOff=integer speed up p-code processing.
+// Using TRENextOff=PtrInt speed up p-code processing.
 
 // Opcodes description:
 //
@@ -1070,7 +1072,7 @@ const
  reeMatchPrimCorruptedPointers = 1002;
  reeNoExpression = 1003;
  reeCorruptedProgram = 1004;
- reeNoInpitStringSpecified = 1005;
+ reeNoInputStringSpecified = 1005;
  reeOffsetMustBeGreaterThen0 = 1006;
  reeExecNextWithoutExec = 1007;
  reeGetInputStringWithoutInputString = 1008;
@@ -1114,7 +1116,7 @@ function TRegExpr.ErrorMsg (AErrorID : integer) : RegExprString;
     reeMatchPrimCorruptedPointers: Result := 'TRegExpr(exec): MatchPrim Corrupted Pointers';
     reeNoExpression: Result := 'TRegExpr(exec): Not Assigned Expression Property';
     reeCorruptedProgram: Result := 'TRegExpr(exec): Corrupted Program';
-    reeNoInpitStringSpecified: Result := 'TRegExpr(exec): No Input String Specified';
+    reeNoInputStringSpecified: Result := 'TRegExpr(exec): No Input String Specified';
     reeOffsetMustBeGreaterThen0: Result := 'TRegExpr(exec): Offset Must Be Greater Then 0';
     reeExecNextWithoutExec: Result := 'TRegExpr(exec): ExecNext Without Exec[Pos]';
     reeGetInputStringWithoutInputString: Result := 'TRegExpr(exec): GetInputString Without InputString';
@@ -1179,12 +1181,21 @@ constructor TRegExpr.Create;
 
 destructor TRegExpr.Destroy;
  begin
-  if programm <> nil
-   then FreeMem (programm);
-  if fExpression <> nil
-   then FreeMem (fExpression);
-  if fInputString <> nil
-   then FreeMem (fInputString);
+  if programm <> nil then
+  begin
+    FreeMem (programm);
+    programm:=nil;
+  end;
+  if fExpression <> nil then
+  begin
+    FreeMem (fExpression);
+    fExpression:=nil;
+  end;
+  if fInputString <> nil then
+  begin
+    FreeMem (fInputString);
+    fInputString:=nil;
+  end;
  end; { of destructor TRegExpr.Destroy
 --------------------------------------------------------------}
 
@@ -1213,7 +1224,7 @@ function TRegExpr.GetExpression : RegExprString;
 
 procedure TRegExpr.SetExpression (const s : RegExprString);
  var
-  Len : integer; //###0.950
+  Len : PtrInt; //###0.950
  begin
   if (s <> fExpression) or not fExprIsCompiled then begin
     fExprIsCompiled := false;
@@ -1224,12 +1235,7 @@ procedure TRegExpr.SetExpression (const s : RegExprString);
     if s <> '' then begin
       Len := length (s); //###0.950
       GetMem (fExpression, (Len + 1) * SizeOf (REChar));
-//      StrPCopy (fExpression, s); //###0.950 replaced due to StrPCopy limitation of 255 chars
-      {$IFDEF UniCode}
-      StrPCopy (fExpression, Copy (s, 1, Len)); //###0.950
-      {$ELSE}
-      StrLCopy (fExpression, PRegExprChar (s), Len); //###0.950
-      {$ENDIF UniCode}
+      System.Move(s[1],fExpression^,(Len + 1) * SizeOf (REChar));
 
       InvalidateProgramm; //###0.941
      end;
@@ -1249,7 +1255,7 @@ function TRegExpr.GetSubExprMatchCount : integer;
  end; { of function TRegExpr.GetSubExprMatchCount
 --------------------------------------------------------------}
 
-function TRegExpr.GetMatchPos (Idx : integer) : integer;
+function TRegExpr.GetMatchPos (Idx : integer) : PtrInt;
  begin
   if (Idx >= 0) and (Idx < NSUBEXP) and Assigned (fInputString)
      and Assigned (startp [Idx]) and Assigned (endp [Idx]) then begin
@@ -1259,7 +1265,7 @@ function TRegExpr.GetMatchPos (Idx : integer) : integer;
  end; { of function TRegExpr.GetMatchPos
 --------------------------------------------------------------}
 
-function TRegExpr.GetMatchLen (Idx : integer) : integer;
+function TRegExpr.GetMatchLen (Idx : integer) : PtrInt;
  begin
   if (Idx >= 0) and (Idx < NSUBEXP) and Assigned (fInputString)
      and Assigned (startp [Idx]) and Assigned (endp [Idx]) then begin
@@ -1273,12 +1279,12 @@ function TRegExpr.GetMatch (Idx : integer) : RegExprString;
  begin
   if (Idx >= 0) and (Idx < NSUBEXP) and Assigned (fInputString)
      and Assigned (startp [Idx]) and Assigned (endp [Idx])
+     and (endp [Idx] > startp[Idx])
    //then Result := copy (fInputString, MatchPos [Idx], MatchLen [Idx]) //###0.929
    then begin
-     {$IFDEF SYN_LAZARUS}
-     Result:='';
-     {$ENDIF}
-     SetString (Result, startp [idx], endp [idx] - startp [idx])
+     //SetString (Result, startp [idx], endp [idx] - startp [idx])
+     SetLength(Result,endp [idx] - startp [idx]);
+     System.Move(startp [idx]^,Result[1],length(Result));
    end
    else Result := '';
  end; { of function TRegExpr.GetMatch
@@ -1506,6 +1512,10 @@ function TRegExpr.EmitNode (op : TREOp) : PRegExprChar; //###0.933
      inc (regcode, REOpSz);
      PRENextOff (regcode)^ := 0; // Next "pointer" := nil
      inc (regcode, RENextOffSz);
+     {$IFDEF DebugSynRegExpr}
+     if regcode-programm>regsize then
+       raise Exception.Create('TRegExpr.EmitNode buffer overrun');
+     {$ENDIF}
     end
    else inc (regsize, REOpSz + RENextOffSz); // compute code size without code generation
  end; { of function TRegExpr.EmitNode
@@ -1517,8 +1527,12 @@ procedure TRegExpr.EmitC (b : REChar);
   if regcode <> @regdummy then begin
      regcode^ := b;
      inc (regcode);
+     {$IFDEF DebugSynRegExpr}
+     if regcode-programm>regsize then
+       raise Exception.Create('TRegExpr.EmitC buffer overrun');
+     {$ENDIF}
     end
-   else inc (regsize); // Type of p-code pointer always is ^REChar
+   else inc (regsize, REOpSz); // Type of p-code pointer always is ^REChar
  end; { of procedure TRegExpr.EmitC
 --------------------------------------------------------------}
 
@@ -1533,8 +1547,15 @@ procedure TRegExpr.InsertOperator (op : TREOp; opnd : PRegExprChar; sz : integer
     inc (regsize, sz);
     EXIT;
    end;
+  // move code behind insert position
   src := regcode;
   inc (regcode, sz);
+  {$IFDEF DebugSynRegExpr}
+  if regcode-programm>regsize then
+    raise Exception.Create('TRegExpr.InsertOperator buffer overrun');
+  if (opnd<regcode) or (opnd-regcode>regsize) then
+    raise Exception.Create('TRegExpr.InsertOperator invalid opnd');
+  {$ENDIF}
   dst := regcode;
   while src > opnd do begin
     dec (dst);
@@ -1551,7 +1572,7 @@ procedure TRegExpr.InsertOperator (op : TREOp; opnd : PRegExprChar; sz : integer
  end; { of procedure TRegExpr.InsertOperator
 --------------------------------------------------------------}
 
-function strcspn (s1 : PRegExprChar; s2 : PRegExprChar) : integer;
+function strcspn (s1 : PRegExprChar; s2 : PRegExprChar) : PtrInt;
 // find length of initial segment of s1 consisting
 // entirely of characters not from s2
  var scan1, scan2 : PRegExprChar;
@@ -1618,7 +1639,7 @@ function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
 // of the structure of the compiled regexp.
  var
   scan, longest : PRegExprChar;
-  len : cardinal;
+  len : PtrUInt;
   flags : integer;
  begin
   Result := false; // life too dark
@@ -1649,13 +1670,6 @@ function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
   EmitC (MAGIC);
   if ParseReg (0, flags) = nil
    then EXIT;
-
-  // Small enough for 2-bytes programm pointers ?
-  // ###0.933 no real p-code length limits now :)))
-//  if regsize >= 64 * 1024 then begin
-//    Error (reeCompRegexpTooBig);
-//    EXIT;
-//   end;
 
   // Allocate space.
   GetMem (programm, regsize * SizeOf (REChar));
@@ -1699,7 +1713,7 @@ function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
         len := 0;
         while scan <> nil do begin
           if (PREOp (scan)^ = EXACTLY)
-             and (strlen (scan + REOpSz + RENextOffSz) >= integer(len)) then begin
+             and (strlen (scan + REOpSz + RENextOffSz) >= PtrInt(len)) then begin
               longest := scan + REOpSz + RENextOffSz;
               len := strlen (longest);
            end;
@@ -1875,7 +1889,7 @@ function TRegExpr.ParsePiece (var flagp : integer) : PRegExprChar;
    ANonGreedyOp : boolean); //###0.940
   {$IFDEF ComplexBraces}
   var
-   off : integer;
+   off : TRENextOff;
   {$ENDIF}
    begin
    {$IFNDEF ComplexBraces}
@@ -1895,6 +1909,10 @@ function TRegExpr.ParsePiece (var flagp : integer) : PRegExprChar;
       inc (regcode, REBracesArgSz);
       PRENextOff (regcode)^ := off;
       inc (regcode, RENextOffSz);
+      {$IFDEF DebugSynRegExpr}
+      if regcode-programm>regsize then
+        raise Exception.Create('TRegExpr.ParsePiece.EmitComplexBraces buffer overrun');
+      {$ENDIF}
      end
     else inc (regsize, REBracesArgSz * 2 + RENextOffSz);
    Tail (Result, NextNode); // LOOPENTRY -> LOOP
@@ -2066,16 +2084,16 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
   flags : integer;
   RangeBeg, RangeEnd : REChar;
   CanBeRange : boolean;
-  len : integer;
+  len : PtrInt;
   ender : REChar;
   begmodfs : PRegExprChar;
 
   {$IFDEF UseSetOfChar} //###0.930
   RangePCodeBeg : PRegExprChar;
-  RangePCodeIdx : integer;
+  RangePCodeIdx : PtrInt;
   RangeIsCI : boolean;
   RangeSet : TSetOfREChar;
-  RangeLen : integer;
+  RangeLen : PtrInt;
   RangeChMin, RangeChMax : REChar;
   {$ENDIF}
 
@@ -2090,13 +2108,13 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
   end;
 
  procedure EmitStr (const s : RegExprString);
-  var i : integer;
+  var i : PtrInt;
   begin
    for i := 1 to length (s)
     do EmitC (s [i]);
   end;
 
- function HexDig (ch : REChar) : integer;
+ function HexDig (ch : REChar) : PtrInt;
   begin
    Result := 0;
    if (ch >= 'a') and (ch <= 'f')
@@ -2186,6 +2204,10 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
             regcode^ := RangeChMax;
             inc (regcode);
            end;
+          {$IFDEF DebugSynRegExpr}
+          if regcode-programm>regsize then
+            raise Exception.Create('TRegExpr.ParseAtom.EmitRangeC TinySetLen buffer overrun');
+          {$ENDIF}
          end
         else begin
           if regcode = @regdummy then begin
@@ -2198,6 +2220,10 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
           regcode := RangePCodeBeg;
           Move (RangeSet, regcode^, SizeOf (TSetOfREChar));
           inc (regcode, SizeOf (TSetOfREChar));
+          {$IFDEF DebugSynRegExpr}
+          if regcode-programm>regsize then
+            raise Exception.Create('TRegExpr.ParseAtom.EmitRangeC non TinySetLen buffer overrun');
+          {$ENDIF}
          end;
       end;
    {$ELSE}
@@ -2213,7 +2239,7 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
   end;
 
  procedure EmitRangeStr (const s : RegExprString);
-  var i : integer;
+  var i : PtrInt;
   begin
    for i := 1 to length (s)
     do EmitRangeC (s [i]);
@@ -2564,7 +2590,7 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
  end; { of function TRegExpr.ParseAtom
 --------------------------------------------------------------}
 
-function TRegExpr.GetCompilerErrorPos : integer;
+function TRegExpr.GetCompilerErrorPos : PtrInt;
  begin
   Result := 0;
   if (regexpbeg = nil) or (regparse = nil)
@@ -2590,7 +2616,7 @@ function TRegExpr.StrScanCI (s : PRegExprChar; ch : REChar) : PRegExprChar; //##
 --------------------------------------------------------------}
 {$ENDIF}
 
-function TRegExpr.regrepeat (p : PRegExprChar; AMax : integer) : integer;
+function TRegExpr.regrepeat (p : PRegExprChar; AMax : PtrInt) : PtrInt;
 // repeatedly match something simple, report how many
  var
   scan : PRegExprChar;
@@ -2800,12 +2826,12 @@ function TRegExpr.MatchPrim (prog : PRegExprChar) : boolean;
  var
   scan : PRegExprChar; // Current node.
   next : PRegExprChar; // Next node.
-  len : integer;
+  len : PtrInt;
   opnd : PRegExprChar;
-  no : integer;
+  no : PtrInt;
   save : PRegExprChar;
   nextch : REChar;
-  BracesMin, BracesMax : integer; // we use integer instead of TREBracesArg for better support */+
+  BracesMin, BracesMax : PtrInt; // we use integer instead of TREBracesArg for better support */+
   {$IFDEF ComplexBraces}
   SavedLoopStack : array [1 .. LoopStackMax] of integer; // :(( very bad for recursion
   SavedLoopStackIdx : integer; //###0.925
@@ -3402,20 +3428,20 @@ function TRegExpr.Exec : boolean;
  end; { of function TRegExpr.Exec
 --------------------------------------------------------------}
 {$ENDIF}
-function TRegExpr.Exec (AOffset: integer) : boolean;
+function TRegExpr.Exec (AOffset: PtrInt) : boolean;
  begin
   Result := ExecPrim (AOffset);
  end; { of function TRegExpr.Exec
 --------------------------------------------------------------}
 {$ENDIF}
 
-function TRegExpr.ExecPos (AOffset: integer {$IFDEF DefParam}= 1{$ENDIF}) : boolean;
+function TRegExpr.ExecPos (AOffset: PtrInt {$IFDEF DefParam}= 1{$ENDIF}) : boolean;
  begin
   Result := ExecPrim (AOffset);
  end; { of function TRegExpr.ExecPos
 --------------------------------------------------------------}
 
-function TRegExpr.ExecPrim (AOffset: integer) : boolean;
+function TRegExpr.ExecPrim (AOffset: PtrInt) : boolean;
  procedure ClearMatchs;
   // Clears matchs array
   var i : integer;
@@ -3441,7 +3467,7 @@ function TRegExpr.ExecPrim (AOffset: integer) : boolean;
  var
   s : PRegExprChar;
   StartPtr: PRegExprChar;
-  InputLen : integer;
+  InputLen : PtrInt;
  begin
   Result := false; // Be paranoid...
 
@@ -3455,7 +3481,7 @@ function TRegExpr.ExecPrim (AOffset: integer) : boolean;
 
   // Check InputString presence
   if not Assigned (fInputString) then begin
-    Error (reeNoInpitStringSpecified);
+    Error (reeNoInputStringSpecified);
     EXIT;
    end;
 
@@ -3557,7 +3583,7 @@ function TRegExpr.ExecPrim (AOffset: integer) : boolean;
 --------------------------------------------------------------}
 
 function TRegExpr.ExecNext : boolean;
- var offset : integer;
+ var offset : PtrInt;
  begin
   Result := false;
   if not Assigned (startp[0]) or not Assigned (endp[0]) then begin
@@ -3585,8 +3611,8 @@ function TRegExpr.GetInputString : RegExprString;
 
 procedure TRegExpr.SetInputString (const AInputString : RegExprString);
  var
-  Len : integer;
-  i : integer;
+  Len : PtrInt;
+  i : PtrInt;
  begin
   // clear Match* - before next Exec* call it's undefined
   for i := 0 to NSUBEXP - 1 do begin
@@ -3596,20 +3622,12 @@ procedure TRegExpr.SetInputString (const AInputString : RegExprString);
 
   // need reallocation of input string buffer ?
   Len := length (AInputString);
-  if Assigned (fInputString) and (Length (fInputString) <> Len) then begin
-    FreeMem (fInputString);
-    fInputString := nil;
-   end;
-  // buffer [re]allocation
-  if not Assigned (fInputString)
-   then GetMem (fInputString, (Len + 1) * SizeOf (REChar));
-
+  ReAllocMem(fInputString,(Len + 1) * SizeOf (REChar));
   // copy input string into buffer
-  {$IFDEF UniCode}
-  StrPCopy (fInputString, Copy (AInputString, 1, Len)); //###0.927
-  {$ELSE}
-  StrLCopy (fInputString, PRegExprChar (AInputString), Len);
-  {$ENDIF}
+  if Len>0 then
+    System.Move(AInputString[1],fInputString^,(Len+1)* SizeOf (REChar)) // with #0
+  else
+    fInputString[0]:=#0;
 
   {
   fInputString : string;
@@ -3687,16 +3705,16 @@ type
   TSubstMode = (smodeNormal, smodeOneUpper, smodeOneLower, smodeAllUpper,
                 smodeAllLower);
 var
-  TemplateLen : integer;
+  TemplateLen : PtrInt;
   TemplateBeg, TemplateEnd : PRegExprChar;
   p, p0, p1, ResultPtr : PRegExprChar;
-  ResultLen : integer;
-  n : integer;
+  ResultLen : PtrInt;
+  n : PtrInt;
   Ch : REChar;
   Mode: TSubstMode;
   LineEnd: String = LineEnding;
 
-  function ParseVarName (var APtr : PRegExprChar) : integer;
+  function ParseVarName (var APtr : PRegExprChar) : PtrInt;
   // extract name of variable (digits, may be enclosed with
   // curly braces) from APtr^, uses TemplateEnd !!!
   const
@@ -3737,7 +3755,7 @@ begin
   if not IsProgrammOk
    then EXIT;
   if not Assigned (fInputString) then begin
-    Error (reeNoInpitStringSpecified);
+    Error (reeNoInputStringSpecified);
     EXIT;
    end;
   // Prepare for working
@@ -3780,7 +3798,8 @@ begin
     Result := '';
     EXIT;
    end;
-  SetString (Result, nil, ResultLen);
+  //SetString (Result, nil, ResultLen);
+  SetLength(Result,ResultLen);
   // Fill Result
   ResultPtr := pointer (Result);
   p := TemplateBeg;
@@ -3866,7 +3885,7 @@ end; { of function TRegExpr.Substitute
 --------------------------------------------------------------}
 
 procedure TRegExpr.Split (AInputStr : RegExprString; APieces : TStrings);
- var PrevPos : integer;
+ var PrevPos : PtrInt;
  begin
   PrevPos := 1;
   if Exec (AInputStr) then
@@ -3881,7 +3900,7 @@ procedure TRegExpr.Split (AInputStr : RegExprString; APieces : TStrings);
 function TRegExpr.Replace (AInputStr : RegExprString; const AReplaceStr : RegExprString;
       AUseSubstitution : boolean{$IFDEF DefParam}= False{$ENDIF}) : RegExprString;
  var
-  PrevPos : integer;
+  PrevPos : PtrInt;
  begin
   Result := '';
   PrevPos := 1;
@@ -3902,7 +3921,7 @@ function TRegExpr.ReplaceEx (AInputStr : RegExprString;
       AReplaceFunc : TRegExprReplaceFunction)
      : RegExprString;
  var
-  PrevPos : integer;
+  PrevPos : PtrInt;
  begin
   Result := '';
   PrevPos := 1;
@@ -3996,8 +4015,8 @@ function TRegExpr.Dump : RegExprString;
   s : PRegExprChar;
   op : TREOp; // Arbitrary non-END op.
   next : PRegExprChar;
-  i : integer;
-  Diff : integer;
+  i : PtrInt;
+  Diff : PtrInt;
 {$IFDEF UseSetOfChar} //###0.929
   Ch : REChar;
 {$ENDIF}
