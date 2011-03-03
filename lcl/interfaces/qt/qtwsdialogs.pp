@@ -681,7 +681,7 @@ begin
   QColor_fromRgba(PQColor(AQtColor), ARgb);
   try
     QColor_toRgb(AQtColor, @AQColor);
-    TQColorToColorRef(AQColor, AColor);
+    TQColorToColorRef(AQColor, TColorRef(AColor));
     ColorDialog.Color := AColor;
   finally
     QColor_destroy(AQtColor);

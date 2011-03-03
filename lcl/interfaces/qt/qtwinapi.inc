@@ -465,7 +465,7 @@ begin
 
     // set brush color
     Color := QBrush_Color(QtBrush.Widget)^;
-    ColorRefToTQColor(ColorToRGB(logBrush.lbColor), Color);
+    ColorRefToTQColor(TColorRef(ColorToRGB(TColor(logBrush.lbColor))), Color);
     QBrush_setColor(QtBrush.Widget, @Color);
   except
     {$ifdef VerboseQtWinAPI}
@@ -701,7 +701,7 @@ begin
     end;
 
     QPen_Color(QtPen.Widget, @Color);
-    ColorRefToTQColor(ColorToRGB(lopnColor), Color);
+    ColorRefToTQColor(TColorRef(ColorToRGB(TColor(lopnColor))), Color);
     QPen_setColor(QtPen.Widget, @Color);
   end;
 
@@ -1023,7 +1023,7 @@ var
     begin
 
       APen := TQtPen.Create(True);
-      ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
+      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor);
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.setPen(APen);
 
@@ -1036,7 +1036,7 @@ var
       APen.Free;
       APen := TQtPen.Create(True);
 
-      ColorRefToTQColor(ColorRightBottom, EdgeQtColor);
+      ColorRefToTQColor(TColorRef(ColorRightBottom), EdgeQtColor);
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.SetPen(APen);
 
@@ -1051,7 +1051,7 @@ var
     begin
 
       APen := TQtPen.Create(True);
-      ColorRefToTQColor(ColorLeftTop, EdgeQtColor);
+      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor);
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.setPen(APen);
 
@@ -1111,7 +1111,7 @@ begin
 
     if grfFlags and BF_MIDDLE <> 0 then
     begin
-      Brush := CreateSolidBrush(clBtnFace);
+      Brush := CreateSolidBrush(TColorRef(clBtnFace));
       try
         FillRect(DC, ClientRect, Brush);
       finally
@@ -1652,7 +1652,7 @@ begin
     QtPen.setDashPattern(lpStyle, dwStyleCount);
 
   QPen_Color(QtPen.Widget, @Color);
-  ColorRefToTQColor(ColorToRGB(lplb.lbColor), Color);
+  ColorRefToTQColor(TColorRef(ColorToRGB(TColor(lplb.lbColor))), Color);
   QPen_setColor(QtPen.Widget, @Color);
 
   Result := HPEN(QtPen);
@@ -3143,7 +3143,7 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
     else
       Result := FSysColorBrushes[nIndex];
     Color := QBrush_Color(TQtBrush(Result).Widget)^;
-    ColorRefToTQColor(ColorToRGB(AColor), Color);
+    ColorRefToTQColor(TColorRef(ColorToRGB(AColor)), Color);
     QBrush_setColor(TQtBrush(Result).Widget, @Color);
     TQtBrush(Result).FShared := True;
   end;
@@ -3527,7 +3527,7 @@ begin
   if IsValidDC(DC) then
   begin
     QtDC := TQtDeviceContext(DC);
-    ColorRefToTQColor(QtDC.vTextColor, Color);
+    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
     TQColorToColorRef(Color, Result);
   end;
 end;
@@ -4843,7 +4843,7 @@ begin
     Exit;
   end;
 
-  Result := TQtDeviceContext(DC).SetBkColor(Color);
+  Result := TQtDeviceContext(DC).SetBkColor(TColorRef(Color));
 end;
 
 {------------------------------------------------------------------------------
@@ -5502,7 +5502,7 @@ begin
     exit;
   end;
   result := TQtDeviceContext(DC).vTextColor;
-  TQtDeviceContext(DC).vTextColor := ColorToRGB(Color); // be sure we get TColorRef
+  TQtDeviceContext(DC).vTextColor := ColorToRGB(TColor(Color)); // be sure we get TColorRef
 end;
 
 {------------------------------------------------------------------------------

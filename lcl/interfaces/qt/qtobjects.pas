@@ -2843,7 +2843,7 @@ begin
   Write('TQtDeviceContext.setBKColor() ');
   {$endif}
   Result := GetBkColor;
-  ColorRefToTQColor(ColorToRGB(Color), NColor);
+  ColorRefToTQColor(TColorRef(ColorToRGB(TColor(Color))), NColor);
   BackgroundBrush.setColor(@NColor);
 end;
 
