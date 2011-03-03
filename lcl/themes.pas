@@ -2022,10 +2022,10 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
 
   procedure FillWithDottedBrush(ARect: TRect; Color1, Color2: TColor);
   var
-    OldColor1, OldColor2: TColor;
+    OldColor1, OldColor2: TColorRef;
   begin
-    OldColor1 := SetBkColor(DC, ColorToRGB(Color1));
-    OldColor2 := SetTextColor(DC, ColorToRGB(Color2));
+    OldColor1 := SetBkColor(DC, TColorRef(ColorToRGB(Color1)));
+    OldColor2 := SetTextColor(DC, TColorRef(ColorToRGB(Color2)));
     FillRect(DC, ARect, DottedBrush);
     SetBkColor(DC, OldColor1);
     SetTextColor(DC, OldColor2);

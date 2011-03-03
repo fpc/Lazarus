@@ -385,7 +385,7 @@ begin
     else
       elpWidth := 0;
     elpBrushStyle := BS_SOLID;
-    elpColor := FColor;
+    elpColor := TColorRef(FColor);
   end;
 
   PenResourceCache.Lock;

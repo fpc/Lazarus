@@ -196,7 +196,7 @@ begin
   Include(FState, csBrushValid);
   // do not use color for hatched brushes. windows cannot draw hatches when SetBkColor is called
   if ([Brush.Style] * HatchBrushes) = [] then
-    SetBkColor(FHandle, Brush.GetColor);
+    SetBkColor(FHandle, TColorRef(Brush.GetColor));
   if Brush.Style = bsSolid then
     SetBkMode(FHandle, OPAQUE)
   else
@@ -262,7 +262,7 @@ begin
   if (OldHandle <> HFONT(Font.Reference.Handle)) and (FSavedFontHandle = 0) then
     FSavedFontHandle := OldHandle;
   Include(FState, csFontValid);
-  SetTextColor(FHandle, Font.GetColor);
+  SetTextColor(FHandle, TColorRef(Font.GetColor));
 end;
 
 {------------------------------------------------------------------------------
@@ -1200,7 +1200,7 @@ begin
     SetBkMode(DC, TRANSPARENT);
 
   if Style.SystemFont then
-    SetTextColor(DC, Font.GetColor);
+    SetTextColor(DC, TColorRef(Font.GetColor));
 
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(DC, pChar(Text), Length(Text), fRect, Options);
