@@ -235,7 +235,7 @@ begin
   else
     Canvas.Brush.Color := Gutter.Color;
   dc := Canvas.Handle;
-  LCLIntf.SetBkColor(dc, Canvas.Brush.Color);
+  LCLIntf.SetBkColor(dc, TColorRef(Canvas.Brush.Color));
   FTextDrawer.BeginDrawing(dc);
   try
     if MarkupInfo.Background <> clNone then

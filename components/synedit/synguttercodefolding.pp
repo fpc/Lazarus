@@ -28,7 +28,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
-  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc, ImgList;
+  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc, LCLType, ImgList;
 
 type
 
@@ -610,7 +610,7 @@ begin
   if MarkupInfo.Background <> clNone then
   begin
     Canvas.Brush.Color := MarkupInfo.Background;
-    LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
+    LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
     Canvas.FillRect(AClip);
   end;
 

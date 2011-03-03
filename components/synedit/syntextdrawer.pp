@@ -1051,8 +1051,8 @@ begin
     DoSetCharExtra(FCharExtra);
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
-    LCLIntf.SetTextColor(DC, FColor);
-    LCLIntf.SetBkColor(DC, FBkColor);
+    LCLIntf.SetTextColor(DC, TColorRef(FColor));
+    LCLIntf.SetBkColor(DC, TColorRef(FBkColor));
     {$ENDIF}
   end;
   Inc(FDrawingCount);
@@ -1161,7 +1161,7 @@ begin
     FColor := Value;
     if FDC <> 0 then
       {$IFDEF SYN_LAZARUS}
-      SetTextColor(FDC, Value);
+      SetTextColor(FDC, TColorRef(Value));
       {$ELSE}
       SetTextColor(FDC, ColorToRGB(Value));
       {$ENDIF}
@@ -1175,7 +1175,7 @@ begin
     FBkColor := Value;
     if FDC <> 0 then
       {$IFDEF SYN_LAZARUS}
-      LCLIntf.SetBkColor(FDC, Value);
+      LCLIntf.SetBkColor(FDC, TColorRef(Value));
       {$ELSE}
       Windows.SetBkColor(FDC, ColorToRGB(Value));
       {$ENDIF}

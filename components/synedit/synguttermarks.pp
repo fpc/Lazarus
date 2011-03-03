@@ -180,7 +180,7 @@ begin
     Canvas.Brush.Color := MarkupInfo.Background
   else
     Canvas.Brush.Color := Gutter.Color;
-  LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
+  LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
 
   if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then
     FColumnWidth := FBookMarkOpt.BookmarkImages.Width

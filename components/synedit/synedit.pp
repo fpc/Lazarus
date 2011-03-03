@@ -3045,11 +3045,11 @@ begin
     else
       types.UnionRect(FInvalidateRect, FInvalidateRect, rcClip);
     // Just paint the background
-    SetBkColor(Canvas.Handle, ColorToRGB(Color));
+    SetBkColor(Canvas.Handle, TColorRef(ColorToRGB(Color)));
     InternalFillRect(Canvas.Handle, rcClip);
     if rcClip.Left <= TextLeftPixelOffset(False) then begin
       rcClip.Right := TextLeftPixelOffset(False)+1;
-      SetBkColor(Canvas.Handle, ColorToRGB(FLeftGutter.Color));
+      SetBkColor(Canvas.Handle, TColorRef(ColorToRGB(FLeftGutter.Color)));
       InternalFillRect(Canvas.Handle, rcClip);
     end;
     exit;
@@ -3817,7 +3817,7 @@ var
       CurLogIndex := 0;
       // Delete the whole Line
       fTextDrawer.BackColor := colEditorBG;
-      SetBkColor(dc, ColorToRGB(colEditorBG));
+      SetBkColor(dc, TColorRef(ColorToRGB(colEditorBG)));
       rcLine.Left := EraseLeft;
       InternalFillRect(dc, rcLine);
       rcLine.Left := DrawLeft;
@@ -3922,7 +3922,7 @@ begin
   AClip.Top := (LastLine+1) * fTextHeight;
   if (AClip.Top < AClip.Bottom) then begin
     // Delete the remaining area
-    SetBkColor(dc, ColorToRGB(colEditorBG));
+    SetBkColor(dc, TColorRef(ColorToRGB(colEditorBG)));
     AClip.Left := EraseLeft;
     InternalFillRect(dc, AClip);
     AClip.Left := DrawLeft;
