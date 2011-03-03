@@ -1574,7 +1574,7 @@ const
 //==============================================
 
 type
-  COLORREF = LongInt;
+  COLORREF = Cardinal;
   TColorRef = COLORREF;
 
 const
