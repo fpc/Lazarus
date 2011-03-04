@@ -146,6 +146,7 @@ resourcestring
   lisMenuFile = '&File';
   lisMenuEdit = '&Edit';
   lisMenuSearch = '&Search';
+  lisMenuSource = '&Source';
   lisMenuRefactor = 'Ref&actor';
   lisMenuView = '&View';
   lisMenuProject = '&Project';
@@ -221,9 +222,8 @@ resourcestring
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
   lisMenuInsertCharacter = 'Insert from Character Map';
-  lisMenuInsertText = 'Insert text';
-  lisMenuInsertCVSKeyword = 'CVS keyword';
-  lisMenuInsertGeneral = 'General';
+  lisMenuInsertCVSKeyword = 'Insert CVS keyword';
+  lisMenuInsertGeneral = 'Insert General';
   lisNone2 = 'none';
   lisOr = 'or';
   lisNone = '%snone';

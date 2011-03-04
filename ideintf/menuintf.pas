@@ -299,13 +299,7 @@ var
     mnuEdit: TIDEMenuSection;
       itmEditReUndo: TIDEMenuSection;
       itmEditClipboard: TIDEMenuSection;
-      itmEditBlockIndentation: TIDEMenuSection;
-      itmEditBlockCharConversion: TIDEMenuSection;
       itmEditSelect: TIDEMenuSection;
-      itmEditInsertions: TIDEMenuSection;
-        itmEditInsertText: TIDEMenuSection;
-          itmEditInsertCVSKeyWord: TIDEMenuSection;
-          itmEditInsertGeneral: TIDEMenuSection;
 
     // search menu
     mnuSearch: TIDEMenuSection;
@@ -313,6 +307,14 @@ var
       itmJumpings: TIDEMenuSection;
       itmBookmarks: TIDEMenuSection;
       itmCodeToolSearches: TIDEMenuSection;
+
+    // source menu
+    mnuSource: TIDEMenuSection;
+      itmSourceBlockIndentation: TIDEMenuSection;
+      itmSourceBlockCharConversion: TIDEMenuSection;
+      itmSourceInsertions: TIDEMenuSection;
+        itmSourceInsertCVSKeyWord: TIDEMenuSection;
+        itmSourceInsertGeneral: TIDEMenuSection;
 
     // refactor menu
     mnuRefactor: TIDEMenuSection;

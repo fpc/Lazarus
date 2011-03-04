@@ -107,6 +107,7 @@ type
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
+    procedure SetupSourceMenu; virtual;
     procedure SetupRefactorMenu; virtual;
     procedure SetupViewMenu; virtual;
     procedure SetupProjectMenu; virtual;
@@ -355,6 +356,7 @@ begin
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
     CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);
+    CreateMainMenuItem(mnuSource,'Source',lisMenuSource);
     CreateMainMenuItem(mnuRefactor,'Refactor',lisMenuRefactor);
     CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
@@ -407,9 +409,7 @@ end;
 
 procedure TMainIDEBase.SetupEditMenu;
 var
-  ParentMI: TIDEMenuSection;
-  SubParentMI: TIDEMenuSection;
-  SubSubParentMI: TIDEMenuSection;
+  ParentMI, SubParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuEdit,itmEditReUndo,'itmEditReUndo');
@@ -424,27 +424,7 @@ begin
     CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'laz_copy');
     CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'laz_paste');
 
-    CreateMenuSeparatorSection(mnuEdit,itmEditBlockIndentation,'itmEditBlockIndentation');
-    ParentMI:=itmEditBlockIndentation;
-
-    CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
-    CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
-    CreateMenuItem(ParentMI,itmEditEncloseBlock,'itmEditEncloseBlock',lisMenuEncloseSelection);
-    CreateMenuItem(ParentMI,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection, 'menu_comment');
-    CreateMenuItem(ParentMI,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
-    CreateMenuItem(ParentMI,itmEditToggleComment,'itmEditToggleComment',lisMenuToggleComment, 'menu_comment');
-    CreateMenuItem(ParentMI,itmEditConditionalBlock,'itmEditConditionalBlock',lisMenuConditionalSelection);
-    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
-
-    CreateMenuSeparatorSection(mnuEdit,itmEditBlockCharConversion,'itmEditBlockCharConversion');
-    ParentMI:=itmEditBlockCharConversion;
-
-    CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
-    CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
-    CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
-    CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
-
-    CreateMenuSubSection(mnuEdit,itmEditSelect,'itmEditSelect',lisMenuSelect);
+    CreateMenuSeparatorSection(mnuEdit,itmEditSelect,'itmEditSelect');
     begin
       // select sub menu items
       SubParentMI:=itmEditSelect;
@@ -453,42 +433,6 @@ begin
       CreateMenuItem(SubParentMI,itmEditSelectCodeBlock,'itmEditSelectCodeBlock',lisMenuSelectCodeBlock);
       CreateMenuItem(SubParentMI,itmEditSelectLine,'itmEditSelectLine',lisMenuSelectLine);
       CreateMenuItem(SubParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
-    end;
-
-    CreateMenuSeparatorSection(mnuEdit,itmEditInsertions,'itmEditInsertions');
-    ParentMI:=itmEditInsertions;
-
-    CreateMenuItem(ParentMI,itmEditInsertCharacter,'itmEditInsertCharacter',lisMenuInsertCharacter);
-    CreateMenuSubSection(ParentMI,itmEditInsertText,'itmEditInsertText',lisMenuInsertText);
-     begin
-      // insert text sub menu items
-      SubParentMI:=itmEditInsertText;
-      CreateMenuSubSection(SubParentMI,itmEditInsertCVSKeyWord,'itmEditInsertCVSKeyWord',lisMenuInsertCVSKeyword);
-      begin
-        // insert CVS keyword sub menu items
-        SubSubParentMI:=itmEditInsertCVSKeyWord;
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSAuthor,'itmEditInsertCVSAuthor','Author');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSDate,'itmEditInsertCVSDate','Date');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSHeader,'itmEditInsertCVSHeader','Header');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSID,'itmEditInsertCVSID','ID');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSLog,'itmEditInsertCVSLog','Log');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSName,'itmEditInsertCVSName','Name');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSRevision,'itmEditInsertCVSRevision','Revision');
-        CreateMenuItem(SubSubParentMI,itmEditInsertCVSSource,'itmEditInsertCVSSource','Source');
-      end;
-
-      CreateMenuSubSection(SubParentMI,itmEditInsertGeneral,'itmEditInsertGeneral',lisMenuInsertGeneral);
-      begin
-        // insert general text sub menu items
-        SubSubParentMI:=itmEditInsertGeneral;
-        CreateMenuItem(SubSubParentMI,itmEditInsertGPLNotice,'itmEditInsertGPLNotice',lisMenuInsertGPLNotice);
-        CreateMenuItem(SubSubParentMI,itmEditInsertLGPLNotice,'itmEditInsertLGPLNotice',lisMenuInsertLGPLNotice);
-        CreateMenuItem(SubSubParentMI,itmEditInsertModifiedLGPLNotice,'itmEditInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
-        CreateMenuItem(SubSubParentMI,itmEditInsertUsername,'itmEditInsertUsername',lisMenuInsertUsername);
-        CreateMenuItem(SubSubParentMI,itmEditInsertDateTime,'itmEditInsertDateTime',lisMenuInsertDateTime);
-        CreateMenuItem(SubSubParentMI,itmEditInsertChangeLogEntry,'itmEditInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
-        CreateMenuItem(SubSubParentMI,itmEditInsertGUID,'itmEditInsertGUID',srkmecInsertGUID);
-      end;
     end;
   end;
 end;
@@ -536,6 +480,67 @@ begin
     CreateMenuItem(ParentMI,itmGotoIncludeDirective,'itmGotoIncludeDirective',lisMenuGotoIncludeDirective);
     CreateMenuItem(ParentMI,itmSearchFindIdentifierRefs,'itmSearchFindIdentifierRefs',lisMenuFindIdentifierRefs);
     CreateMenuItem(ParentMI,itmSearchProcedureList,'itmSearchProcedureList',lisMenuProcedureList);
+  end;
+end;
+
+procedure TMainIDEBase.SetupSourceMenu;
+var
+  ParentMI, SubParentMI: TIDEMenuSection;
+begin
+  with MainIDEBar do begin
+    CreateMenuSeparatorSection(mnuSource,itmSourceBlockIndentation,'itmSourceBlockIndentation');
+    ParentMI:=itmSourceBlockIndentation;
+
+    CreateMenuItem(ParentMI,itmSourceIndentBlock,'itmSourceIndentBlock',lisMenuIndentSelection,'menu_indent');
+    CreateMenuItem(ParentMI,itmSourceUnindentBlock,'itmSourceUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
+    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
+    CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
+    CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
+    CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
+    CreateMenuItem(ParentMI,itmSourceConditionalBlock,'itmSourceConditionalBlock',lisMenuConditionalSelection);
+    CreateMenuItem(ParentMI,itmSourceSortBlock,'itmSourceSortBlock',lisMenuSortSelection, 'menu_edit_sort');
+
+    CreateMenuSeparatorSection(mnuSource,itmSourceBlockCharConversion,'itmSourceBlockCharConversion');
+    ParentMI:=itmSourceBlockCharConversion;
+
+    CreateMenuItem(ParentMI,itmSourceUpperCaseBlock,'itmSourceUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
+    CreateMenuItem(ParentMI,itmSourceLowerCaseBlock,'itmSourceLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
+    CreateMenuItem(ParentMI,itmSourceTabsToSpacesBlock,'itmSourceTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
+    CreateMenuItem(ParentMI,itmSourceSelectionBreakLines,'itmSourceSelectionBreakLines',lisMenuBeakLinesInSelection);
+
+    CreateMenuSeparatorSection(mnuSource,itmSourceInsertions,'itmSourceInsertions');
+    ParentMI:=itmSourceInsertions;
+
+    CreateMenuItem(ParentMI,itmSourceInsertCharacter,'itmSourceInsertCharacter',lisMenuInsertCharacter);
+    begin
+      // insert text sub menu items
+      CreateMenuSubSection(ParentMI,itmSourceInsertCVSKeyWord,'itmSourceInsertCVSKeyWord',lisMenuInsertCVSKeyword);
+      begin
+        // insert CVS keyword sub menu items
+        SubParentMI:=itmSourceInsertCVSKeyWord;
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSAuthor,'itmSourceInsertCVSAuthor','Author');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSDate,'itmSourceInsertCVSDate','Date');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSHeader,'itmSourceInsertCVSHeader','Header');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSID,'itmSourceInsertCVSID','ID');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSLog,'itmSourceInsertCVSLog','Log');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSName,'itmSourceInsertCVSName','Name');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSRevision,'itmSourceInsertCVSRevision','Revision');
+        CreateMenuItem(SubParentMI,itmSourceInsertCVSSource,'itmSourceInsertCVSSource','Source');
+      end;
+
+      CreateMenuSubSection(ParentMI,itmSourceInsertGeneral,'itmSourceInsertGeneral',lisMenuInsertGeneral);
+      begin
+        // insert general text sub menu items
+        SubParentMI:=itmSourceInsertGeneral;
+        CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
+        CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
+        CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
+        CreateMenuItem(SubParentMI,itmSourceInsertUsername,'itmSourceInsertUsername',lisMenuInsertUsername);
+        CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
+        CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
+        CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
+      end;
+    end;
   end;
 end;
 
@@ -859,40 +864,12 @@ begin
     itmEditCut.Command:=GetCommand(ecCut);
     itmEditCopy.Command:=GetCommand(ecCopy);
     itmEditPaste.Command:=GetCommand(ecPaste);
-    itmEditIndentBlock.Command:=GetCommand(ecBlockIndent);
-    itmEditUnindentBlock.Command:=GetCommand(ecBlockUnindent);
-    itmEditEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
-    itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
-    itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
-    itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
-    itmEditCommentBlock.Command:=GetCommand(ecSelectionComment);
-    itmEditUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
-    itmEditToggleComment.Command:=GetCommand(ecToggleComment);
-    itmEditConditionalBlock.Command:=GetCommand(ecSelectionConditional);
-    itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
-    itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
+
     itmEditSelectAll.Command:=GetCommand(ecSelectAll);
     itmEditSelectToBrace.Command:=GetCommand(ecSelectToBrace);
     itmEditSelectCodeBlock.Command:=GetCommand(ecSelectCodeBlock);
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
-
-    itmEditInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
-    itmEditInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
-    itmEditInsertCVSHeader.Command:=GetCommand(ecInsertCVSHeader);
-    itmEditInsertCVSID.Command:=GetCommand(ecInsertCVSID);
-    itmEditInsertCVSLog.Command:=GetCommand(ecInsertCVSLog);
-    itmEditInsertCVSName.Command:=GetCommand(ecInsertCVSName);
-    itmEditInsertCVSRevision.Command:=GetCommand(ecInsertCVSRevision);
-    itmEditInsertCVSSource.Command:=GetCommand(ecInsertCVSSource);
-
-    itmEditInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
-    itmEditInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
-    itmEditInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
-    itmEditInsertUsername.Command:=GetCommand(ecInsertUserName);
-    itmEditInsertDateTime.Command:=GetCommand(ecInsertDateTime);
-    itmEditInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
-    itmEditInsertGUID.Command:=GetCommand(ecInsertGUID);
 
     // search menu
     itmSearchFind.Command:=GetCommand(ecFind);
@@ -917,6 +894,37 @@ begin
     itmOpenFileAtCursor.Command:=GetCommand(ecOpenFileAtCursor);
     itmGotoIncludeDirective.Command:=GetCommand(ecGotoIncludeDirective);
     itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
+
+    // source menu
+    itmSourceIndentBlock.Command:=GetCommand(ecBlockIndent);
+    itmSourceUnindentBlock.Command:=GetCommand(ecBlockUnindent);
+    itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
+    itmSourceUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
+    itmSourceLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
+    itmSourceTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
+    itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
+    itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
+    itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
+    itmSourceConditionalBlock.Command:=GetCommand(ecSelectionConditional);
+    itmSourceSortBlock.Command:=GetCommand(ecSelectionSort);
+    itmSourceSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
+
+    itmSourceInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
+    itmSourceInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
+    itmSourceInsertCVSHeader.Command:=GetCommand(ecInsertCVSHeader);
+    itmSourceInsertCVSID.Command:=GetCommand(ecInsertCVSID);
+    itmSourceInsertCVSLog.Command:=GetCommand(ecInsertCVSLog);
+    itmSourceInsertCVSName.Command:=GetCommand(ecInsertCVSName);
+    itmSourceInsertCVSRevision.Command:=GetCommand(ecInsertCVSRevision);
+    itmSourceInsertCVSSource.Command:=GetCommand(ecInsertCVSSource);
+
+    itmSourceInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
+    itmSourceInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
+    itmSourceInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
+    itmSourceInsertUsername.Command:=GetCommand(ecInsertUserName);
+    itmSourceInsertDateTime.Command:=GetCommand(ecInsertDateTime);
+    itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
+    itmSourceInsertGUID.Command:=GetCommand(ecInsertGUID);
 
     // refactor menu
     itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);

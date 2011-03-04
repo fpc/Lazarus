@@ -90,7 +90,7 @@ begin
   RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
   // add a menu item in the Edit / Insert Text section
-  RegisterIDEMenuCommand(itmEditInsertText,'itmEditInsertTodo',lisTDDInsertToDo,
+  RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',lisTDDInsertToDo,
     nil,nil,InsertToDoCmd,'item_todo');
 
   // register shortcut for view todo list

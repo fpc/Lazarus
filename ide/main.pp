@@ -206,43 +206,11 @@ type
     procedure mnuEditCutClicked(Sender: TObject);
     procedure mnuEditCopyClicked(Sender: TObject);
     procedure mnuEditPasteClicked(Sender: TObject);
-    procedure mnuEditIndentBlockClicked(Sender: TObject);
-    procedure mnuEditUnindentBlockClicked(Sender: TObject);
-    procedure mnuEditEncloseBlockClicked(Sender: TObject);
-    procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
-    procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
-    procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
-    procedure mnuEditCommentBlockClicked(Sender: TObject);
-    procedure mnuEditUncommentBlockClicked(Sender: TObject);
-    procedure mnuEditToggleCommentClicked(Sender: TObject);
-    procedure mnuEditConditionalBlockClicked(Sender: TObject);
-    procedure mnuEditSortBlockClicked(Sender: TObject);
-    procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditSelectCodeBlockClick(Sender: TObject);
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
-    procedure mnuEditInsertCharacterClicked(Sender: TObject);
-
-    // edit->insert text->CVS keyword
-    procedure mnuEditInsertCVSAuthorClick(Sender: TObject);
-    procedure mnuEditInsertCVSDateClick(Sender: TObject);
-    procedure mnuEditInsertCVSHeaderClick(Sender: TObject);
-    procedure mnuEditInsertCVSIDClick(Sender: TObject);
-    procedure mnuEditInsertCVSLogClick(Sender: TObject);
-    procedure mnuEditInsertCVSNameClick(Sender: TObject);
-    procedure mnuEditInsertCVSRevisionClick(Sender: TObject);
-    procedure mnuEditInsertCVSSourceClick(Sender: TObject);
-
-    // edit->insert text->general
-    procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
-    procedure mnuEditInsertLGPLNoticeClick(Sender: TObject);
-    procedure mnuEditInsertModifiedLGPLNoticeClick(Sender: TObject);
-    procedure mnuEditInsertUsernameClick(Sender: TObject);
-    procedure mnuEditInsertDateTimeClick(Sender: TObject);
-    procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
-    procedure mnuEditInsertGUID(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
@@ -255,6 +223,41 @@ type
     procedure mnuGotoIncludeDirectiveClicked(Sender: TObject);
     procedure mnuSearchProcedureList(Sender: TObject);
     procedure mnuSetFreeBookmark(Sender: TObject);
+
+    // source menu
+    procedure mnuSourceClicked(Sender: TObject);
+    procedure mnuSourceIndentBlockClicked(Sender: TObject);
+    procedure mnuSourceUnindentBlockClicked(Sender: TObject);
+    procedure mnuSourceEncloseBlockClicked(Sender: TObject);
+    procedure mnuSourceUpperCaseBlockClicked(Sender: TObject);
+    procedure mnuSourceLowerCaseBlockClicked(Sender: TObject);
+    procedure mnuSourceTabsToSpacesBlockClicked(Sender: TObject);
+    procedure mnuSourceCommentBlockClicked(Sender: TObject);
+    procedure mnuSourceUncommentBlockClicked(Sender: TObject);
+    procedure mnuSourceToggleCommentClicked(Sender: TObject);
+    procedure mnuSourceConditionalBlockClicked(Sender: TObject);
+    procedure mnuSourceSortBlockClicked(Sender: TObject);
+    procedure mnuSourceSelectionBreakLinesClicked(Sender: TObject);
+    procedure mnuSourceInsertCharacterClicked(Sender: TObject);
+
+    // edit->insert text->CVS keyword
+    procedure mnuSourceInsertCVSAuthorClick(Sender: TObject);
+    procedure mnuSourceInsertCVSDateClick(Sender: TObject);
+    procedure mnuSourceInsertCVSHeaderClick(Sender: TObject);
+    procedure mnuSourceInsertCVSIDClick(Sender: TObject);
+    procedure mnuSourceInsertCVSLogClick(Sender: TObject);
+    procedure mnuSourceInsertCVSNameClick(Sender: TObject);
+    procedure mnuSourceInsertCVSRevisionClick(Sender: TObject);
+    procedure mnuSourceInsertCVSSourceClick(Sender: TObject);
+
+    // edit->insert text->general
+    procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertUsernameClick(Sender: TObject);
+    procedure mnuSourceInsertDateTimeClick(Sender: TObject);
+    procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
+    procedure mnuSourceInsertGUID(Sender: TObject);
 
     // refactor menu
     procedure mnuRefactorClicked(Sender: TObject);
@@ -636,6 +639,7 @@ type
     procedure SetupFileMenu; override;
     procedure SetupEditMenu; override;
     procedure SetupSearchMenu; override;
+    procedure SetupSourceMenu; override;
     procedure SetupRefactorMenu; override;
     procedure SetupViewMenu; override;
     procedure SetupProjectMenu; override;
@@ -2275,6 +2279,7 @@ begin
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
+  SetupSourceMenu;
   SetupRefactorMenu;
   SetupViewMenu;
   SetupProjectMenu;
@@ -2372,43 +2377,11 @@ begin
     itmEditCut.OnClick:=@mnuEditCutClicked;
     itmEditCopy.OnClick:=@mnuEditCopyClicked;
     itmEditPaste.OnClick:=@mnuEditPasteClicked;
-    itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
-    itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
-    itmEditEncloseBlock.OnClick:=@mnuEditEncloseBlockClicked;
-    itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
-    itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
-    itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
-    itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
-    itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
-    itmEditToggleComment.OnClick:=@mnuEditToggleCommentClicked;
-    itmEditConditionalBlock.OnClick:=@mnuEditConditionalBlockClicked;
-    itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
-    itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
     itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
     itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
-    itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
-
-    // insert text->CVS keyword
-    itmEditInsertCVSAuthor.OnClick:=@mnuEditInsertCVSAuthorClick;
-    itmEditInsertCVSDate.OnClick:=@mnuEditInsertCVSDateClick;
-    itmEditInsertCVSHeader.OnClick:=@mnuEditInsertCVSHeaderClick;
-    itmEditInsertCVSID.OnClick:=@mnuEditInsertCVSIDClick;
-    itmEditInsertCVSLog.OnClick:=@mnuEditInsertCVSLogClick;
-    itmEditInsertCVSName.OnClick:=@mnuEditInsertCVSNameClick;
-    itmEditInsertCVSRevision.OnClick:=@mnuEditInsertCVSRevisionClick;
-    itmEditInsertCVSSource.OnClick:=@mnuEditInsertCVSSourceClick;
-
-    // insert text->general
-    itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
-    itmEditInsertLGPLNotice.OnClick:=@mnuEditInsertLGPLNoticeClick;
-    itmEditInsertModifiedLGPLNotice.OnClick:=@mnuEditInsertModifiedLGPLNoticeClick;
-    itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
-    itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
-    itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
-    itmEditInsertGUID.OnClick:=@mnuEditInsertGUID;
   end;
 end;
 
@@ -2416,10 +2389,51 @@ procedure TMainIDE.SetupSearchMenu;
 begin
   inherited SetupSearchMenu;
   with MainIDEBar do begin
+//    mnuSearch.OnClick:=@mnuSearchClicked;
     itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
     itmSearchProcedureList.OnClick := @mnuSearchProcedureList;
     itmSetFreeBookmark.OnClick := @mnuSetFreeBookmark;
+  end;
+end;
+
+procedure TMainIDE.SetupSourceMenu;
+begin
+  inherited SetupSourceMenu;
+  with MainIDEBar do begin
+    mnuSource.OnClick:=@mnuSourceClicked;
+    itmSourceIndentBlock.OnClick:=@mnuSourceIndentBlockClicked;
+    itmSourceUnindentBlock.OnClick:=@mnuSourceUnindentBlockClicked;
+    itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
+    itmSourceUpperCaseBlock.OnClick:=@mnuSourceUpperCaseBlockClicked;
+    itmSourceLowerCaseBlock.OnClick:=@mnuSourceLowerCaseBlockClicked;
+    itmSourceTabsToSpacesBlock.OnClick:=@mnuSourceTabsToSpacesBlockClicked;
+    itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
+    itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
+    itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
+    itmSourceConditionalBlock.OnClick:=@mnuSourceConditionalBlockClicked;
+    itmSourceSortBlock.OnClick:=@mnuSourceSortBlockClicked;
+    itmSourceSelectionBreakLines.OnClick:=@mnuSourceSelectionBreakLinesClicked;
+    itmSourceInsertCharacter.OnClick:=@mnuSourceInsertCharacterClicked;
+
+    // insert text->CVS keyword
+    itmSourceInsertCVSAuthor.OnClick:=@mnuSourceInsertCVSAuthorClick;
+    itmSourceInsertCVSDate.OnClick:=@mnuSourceInsertCVSDateClick;
+    itmSourceInsertCVSHeader.OnClick:=@mnuSourceInsertCVSHeaderClick;
+    itmSourceInsertCVSID.OnClick:=@mnuSourceInsertCVSIDClick;
+    itmSourceInsertCVSLog.OnClick:=@mnuSourceInsertCVSLogClick;
+    itmSourceInsertCVSName.OnClick:=@mnuSourceInsertCVSNameClick;
+    itmSourceInsertCVSRevision.OnClick:=@mnuSourceInsertCVSRevisionClick;
+    itmSourceInsertCVSSource.OnClick:=@mnuSourceInsertCVSSourceClick;
+
+    // insert text->general
+    itmSourceInsertGPLNotice.OnClick:=@mnuSourceInsertGPLNoticeClick;
+    itmSourceInsertLGPLNotice.OnClick:=@mnuSourceInsertLGPLNoticeClick;
+    itmSourceInsertModifiedLGPLNotice.OnClick:=@mnuSourceInsertModifiedLGPLNoticeClick;
+    itmSourceInsertUsername.OnClick:=@mnuSourceInsertUsernameClick;
+    itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
+    itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
+    itmSourceInsertGUID.OnClick:=@mnuSourceInsertGUID;
   end;
 end;
 
@@ -3281,7 +3295,7 @@ begin
     mnuSearchProcedureList(self);
 
   ecInsertGUID:
-    mnuEditInsertGUID(self);
+    mnuSourceInsertGUID(self);
 
   else
     Handled:=false;
@@ -3721,44 +3735,61 @@ begin
     itmEditCut.Enabled:=SelEditable;
     itmEditCopy.Enabled:=SelAvail;
     itmEditPaste.Enabled:=Editable;
-  //itmEditBlockIndentation: TIDEMenuSection;
-    itmEditIndentBlock.Enabled:=SelEditable;
-    itmEditUnindentBlock.Enabled:=SelEditable;
-    itmEditEncloseBlock.Enabled:=SelEditable;
-    itmEditCommentBlock.Enabled:=SelEditable;
-    itmEditUncommentBlock.Enabled:=SelEditable;
-    itmEditConditionalBlock.Enabled:=SelEditable;
-    itmEditSortBlock.Enabled:=SelEditable;
-  //itmEditBlockCharConversion: TIDEMenuSection;
-    itmEditUpperCaseBlock.Enabled:=SelEditable;
-    itmEditLowerCaseBlock.Enabled:=SelEditable;
-    itmEditTabsToSpacesBlock.Enabled:=SelEditable;
-    itmEditSelectionBreakLines.Enabled:=SelEditable;
   //itmEditSelect: TIDEMenuSection;
     //itmEditSelectAll: TIDEMenuCommand;
     //itmEditSelectToBrace: TIDEMenuCommand;
     //itmEditSelectCodeBlock: TIDEMenuCommand;
     //itmEditSelectLine: TIDEMenuCommand;
     //itmEditSelectParagraph: TIDEMenuCommand;
-  //itmEditInsertions: TIDEMenuSection;
-    itmEditInsertCharacter.Enabled:=Editable;
-    //itmEditInsertText: TIDEMenuSection;
-      //itmEditInsertCVSKeyWord: TIDEMenuSection;
-        itmEditInsertCVSAuthor.Enabled:=Editable;
-        itmEditInsertCVSDate.Enabled:=Editable;
-        itmEditInsertCVSHeader.Enabled:=Editable;
-        itmEditInsertCVSID.Enabled:=Editable;
-        itmEditInsertCVSLog.Enabled:=Editable;
-        itmEditInsertCVSName.Enabled:=Editable;
-        itmEditInsertCVSRevision.Enabled:=Editable;
-        itmEditInsertCVSSource.Enabled:=Editable;
-      //itmEditInsertGeneral: TIDEMenuSection;
-        itmEditInsertGPLNotice.Enabled:=Editable;
-        itmEditInsertLGPLNotice.Enabled:=Editable;
-        itmEditInsertModifiedLGPLNotice.Enabled:=Editable;
-        itmEditInsertUsername.Enabled:=Editable;
-        itmEditInsertDateTime.Enabled:=Editable;
-        itmEditInsertChangeLogEntry.Enabled:=Editable;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TMainIDE.mnuSourceClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  Editable: Boolean;
+  SelAvail: Boolean;
+  SelEditable: Boolean;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
+  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
+  SelEditable:=Editable and SelAvail;
+  with MainIDEBar do begin
+  //itmSourceBlockIndentation: TIDEMenuSection;
+    itmSourceIndentBlock.Enabled:=SelEditable;
+    itmSourceUnindentBlock.Enabled:=SelEditable;
+    itmSourceEncloseBlock.Enabled:=SelEditable;
+    itmSourceCommentBlock.Enabled:=SelEditable;
+    itmSourceUncommentBlock.Enabled:=SelEditable;
+    itmSourceConditionalBlock.Enabled:=SelEditable;
+    itmSourceSortBlock.Enabled:=SelEditable;
+  //itmSourceBlockCharConversion: TIDEMenuSection;
+    itmSourceUpperCaseBlock.Enabled:=SelEditable;
+    itmSourceLowerCaseBlock.Enabled:=SelEditable;
+    itmSourceTabsToSpacesBlock.Enabled:=SelEditable;
+    itmSourceSelectionBreakLines.Enabled:=SelEditable;
+  //itmSourceInsertions: TIDEMenuSection;
+    itmSourceInsertCharacter.Enabled:=Editable;
+    //itmSourceInsertCVSKeyWord: TIDEMenuSection;
+      itmSourceInsertCVSAuthor.Enabled:=Editable;
+      itmSourceInsertCVSDate.Enabled:=Editable;
+      itmSourceInsertCVSHeader.Enabled:=Editable;
+      itmSourceInsertCVSID.Enabled:=Editable;
+      itmSourceInsertCVSLog.Enabled:=Editable;
+      itmSourceInsertCVSName.Enabled:=Editable;
+      itmSourceInsertCVSRevision.Enabled:=Editable;
+      itmSourceInsertCVSSource.Enabled:=Editable;
+    //itmSourceInsertGeneral: TIDEMenuSection;
+      itmSourceInsertGPLNotice.Enabled:=Editable;
+      itmSourceInsertLGPLNotice.Enabled:=Editable;
+      itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
+      itmSourceInsertUsername.Enabled:=Editable;
+      itmSourceInsertDateTime.Enabled:=Editable;
+      itmSourceInsertChangeLogEntry.Enabled:=Editable;
   end;
 end;
 
@@ -17486,62 +17517,62 @@ begin
   DoSourceEditorCommand(ecUndo);
 end;
 
-procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceIndentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecBlockIndent);
 end;
 
-procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUnindentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecBlockUnindent);
 end;
 
-procedure TMainIDE.mnuEditEncloseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceEncloseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionEnclose);
 end;
 
-procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUpperCaseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionUpperCase);
 end;
 
-procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceLowerCaseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionLowerCase);
 end;
 
-procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceTabsToSpacesBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionTabs2Spaces);
 end;
 
-procedure TMainIDE.mnuEditCommentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceCommentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionComment);
 end;
 
-procedure TMainIDE.mnuEditUncommentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUncommentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionUncomment);
 end;
 
-procedure TMainIDE.mnuEditToggleCommentClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceToggleCommentClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecToggleComment);
 end;
 
-procedure TMainIDE.mnuEditConditionalBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceConditionalBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionConditional);
 end;
 
-procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceSortBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionSort);
 end;
 
-procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceSelectionBreakLinesClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionBreakLines);
 end;
@@ -17571,37 +17602,37 @@ begin
   DoSourceEditorCommand(ecSelectParagraph);
 end;
 
-procedure TMainIDE.mnuEditInsertGPLNoticeClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertGPLNotice);
 end;
 
-procedure TMainIDE.mnuEditInsertLGPLNoticeClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertLGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertLGPLNotice);
 end;
 
-procedure TMainIDE.mnuEditInsertModifiedLGPLNoticeClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertModifiedLGPLNotice);
 end;
 
-procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertUsernameClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertUserName);
 end;
 
-procedure TMainIDE.mnuEditInsertDateTimeClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertDateTimeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertDateTime);
 end;
 
-procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertChangeLogEntryClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertChangeLogEntry);
 end;
 
-procedure TMainIDE.mnuEditInsertGUID(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertGUID(Sender: TObject);
 begin
   DoInsertGUID;
 end;
@@ -17616,47 +17647,47 @@ begin
   DoFindRenameIdentifier(false);
 end;
 
-procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCharacterClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCharacter);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSAuthorClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSAuthorClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSAuthor);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSDateClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSDateClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSDate);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSHeaderClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSHeaderClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSHeader);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSIDClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSIDClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSID);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSLogClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSLogClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSLog);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSNameClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSNameClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSName);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSRevisionClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSRevisionClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSRevision);
 end;
 
-procedure TMainIDE.mnuEditInsertCVSSourceClick(Sender: TObject);
+procedure TMainIDE.mnuSourceInsertCVSSourceClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSSource);
 end;

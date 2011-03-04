@@ -885,7 +885,7 @@ begin
                                           Key1, Key2,nil,
                                           @ExecuteMessagesComposer);
 
-  RegisterIDEMenuCommand(itmEditMenuCodeTools, cMessageComposer,
+  RegisterIDEMenuCommand(itmSourceInsertions, cMessageComposer,
                          SMessageComposerMenuCaption,
                          nil, nil, CmdMessageComposer);
 end;
