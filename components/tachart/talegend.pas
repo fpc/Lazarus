@@ -348,13 +348,14 @@ var
   i, itemHeight: Integer;
   r: TRect;
 begin
-  try
-    // Draw the background and the border.
-    ADrawer.Font := Font;
-    ADrawer.Brush := BackgroundBrush;
-    ADrawer.Pen := Frame;
-    ADrawer.Rectangle(ABounds);
+  // Draw the background and the border.
+  ADrawer.Font := Font;
+  ADrawer.Brush := BackgroundBrush;
+  ADrawer.Pen := Frame;
+  ADrawer.Rectangle(ABounds);
+  if AItems.Count = 0 then exit;
 
+  try
     r := ABounds;
     r.Right -= 1;
     ADrawer.ClippingStart(r);
