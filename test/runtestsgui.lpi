@@ -107,7 +107,7 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;lcltests;semiauto"/>
+      <OtherUnitFiles Value="bugs;codetoolstests;lcltests;semiauto"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
