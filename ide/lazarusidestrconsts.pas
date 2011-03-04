@@ -146,12 +146,12 @@ resourcestring
   lisMenuFile = '&File';
   lisMenuEdit = '&Edit';
   lisMenuSearch = '&Search';
-  lisMenuSource = '&Source';
+  lisMenuSource = 'S&ource';
   lisMenuRefactor = 'Ref&actor';
   lisMenuView = '&View';
   lisMenuProject = '&Project';
   lisMenuRun = '&Run';
-  lisMenuPackage = '&Package';
+  lisMenuPackage = 'Pa&ckage';
   lisMenuTools = '&Tools';
   lisMenuEnvironent = 'E&nvironment';
   lisMenuWindow = '&Window';
