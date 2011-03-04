@@ -551,9 +551,10 @@ begin
     CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuCodeTools,'itmRefactorMenuCodeTools');
     ParentMI:=itmRefactorMenuCodeTools;
     CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
-    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
-    CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
+    CreateMenuItem(ParentMI,itmRefactorEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
+    CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
+    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'InvertAssignment',uemInvertAssignment);
   end;
 end;
 
@@ -898,7 +899,6 @@ begin
     // source menu
     itmSourceIndentBlock.Command:=GetCommand(ecBlockIndent);
     itmSourceUnindentBlock.Command:=GetCommand(ecBlockUnindent);
-    itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
     itmSourceLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
     itmSourceTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
@@ -928,8 +928,10 @@ begin
 
     // refactor menu
     itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
-    itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
     itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
+    itmRefactorEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
+    itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
+    itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);
 
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);

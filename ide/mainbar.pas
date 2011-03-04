@@ -189,9 +189,10 @@ type
     //mnuRefactor: TIDEMenuSection;
         //itmEditMenuCodeTools: TIDEMenuSection;
         itmRefactorCompleteCode: TIDEMenuCommand;
-        itmSourceEncloseBlock: TIDEMenuCommand;
-        itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
+        itmRefactorEncloseBlock: TIDEMenuCommand;
+        itmRefactorExtractProc: TIDEMenuCommand;
+        itmRefactorInvertAssignment: TIDEMenuCommand;
 
     // view menu
     //mnuView: TIDEMenuSection;

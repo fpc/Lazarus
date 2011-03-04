@@ -260,10 +260,11 @@ type
 
     // refactor menu
     procedure mnuRefactorClicked(Sender: TObject);
-    procedure mnuRefactorEncloseBlockClicked(Sender: TObject);
     procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
-    procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
+    procedure mnuRefactorEncloseBlockClicked(Sender: TObject);
+    procedure mnuRefactorExtractProcClicked(Sender: TObject);
+    procedure mnuRefactorInvertAssignmentClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -2442,9 +2443,10 @@ begin
   with MainIDEBar do begin
     mnuRefactor.OnClick:=@mnuRefactorClicked;
     itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
-    itmSourceEncloseBlock.OnClick:=@mnuRefactorEncloseBlockClicked;
-    itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
+    itmRefactorEncloseBlock.OnClick:=@mnuRefactorEncloseBlockClicked;
+    itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
+    itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
   end;
 end;
 
@@ -3808,8 +3810,10 @@ begin
   with MainIDEBar do begin
   //itmRefactorMenuCodeTools: TIDEMenuSection;
     itmRefactorCompleteCode.Enabled:=Editable;
-    itmSourceEncloseBlock.Enabled:=SelEditable;
+    itmRefactorRenameIdentifier.Enabled:=Editable;
+    itmRefactorEncloseBlock.Enabled:=SelEditable;
     itmRefactorExtractProc.Enabled:=SelEditable;
+    itmRefactorInvertAssignment.Enabled:=SelEditable;
   end;
 end;
 
@@ -17697,14 +17701,19 @@ begin
   DoCompleteCodeAtCursor;
 end;
 
+procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);
+begin
+  DoFindRenameIdentifier(true);
+end;
+
 procedure TMainIDE.mnuRefactorExtractProcClicked(Sender: TObject);
 begin
   DoExtractProcFromSelection;
 end;
 
-procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);
+procedure TMainIDE.mnuRefactorInvertAssignmentClicked(Sender: TObject);
 begin
-  DoFindRenameIdentifier(true);
+  DoSourceEditorCommand(ecInvertAssignment);
 end;
 
 procedure TMainIDE.DoCommand(ACommand: integer);
