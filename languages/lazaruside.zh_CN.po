@@ -7032,11 +7032,6 @@ msgstr "允许宏"
 msgid "Enclose"
 msgstr "封装"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9951,7 +9946,9 @@ msgid "Insert from Character Map"
 msgstr "从字符表插入"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "CVS 关键字"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9959,8 +9956,10 @@ msgid "Current date and time"
 msgstr "当前时间日期"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "普通"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9974,10 +9973,6 @@ msgstr "LGPL公约"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr "修正的LGPL公约"
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "插入文本"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10098,7 +10093,9 @@ msgid "Open Recent Project"
 msgstr "打开最近的工程..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "包(&P)"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10167,6 +10164,10 @@ msgstr "退出(&Q)"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "重做"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10289,6 +10290,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "排序所选 ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16547,11 +16552,6 @@ msgstr "调试"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "编辑器属性"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "封装所选"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

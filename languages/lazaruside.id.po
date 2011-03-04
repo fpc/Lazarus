@@ -7023,11 +7023,6 @@ msgstr "Hidupkan makro"
 msgid "Enclose"
 msgstr "Sertakan"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9940,7 +9935,9 @@ msgid "Insert from Character Map"
 msgstr "Sisipkan dari Peta Karakter"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "kata kunci CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9948,8 +9945,10 @@ msgid "Current date and time"
 msgstr "Tanggal dan waktu saat ini"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "Umum"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9963,10 +9962,6 @@ msgstr "catatan LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Sisipkan teks"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10087,7 +10082,7 @@ msgid "Open Recent Project"
 msgstr "Buka Proyek Terakhir ..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10156,6 +10151,10 @@ msgstr "Keluar"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Redo"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10278,6 +10277,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Urut pilihan ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16530,11 +16533,6 @@ msgstr "Debug"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Properti Editor"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Tutup Pemilihan"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

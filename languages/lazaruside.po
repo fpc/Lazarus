@@ -6963,11 +6963,6 @@ msgstr ""
 msgid "Enclose"
 msgstr ""
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9860,7 +9855,7 @@ msgid "Insert from Character Map"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9869,7 +9864,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertgeneral
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9882,10 +9877,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
-msgstr ""
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
@@ -9999,7 +9990,7 @@ msgid "Open Recent Project"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10065,6 +10056,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenuredo
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
+msgstr ""
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
@@ -10183,6 +10178,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
@@ -16393,11 +16392,6 @@ msgstr ""
 
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
-msgstr ""
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
 msgstr ""
 
 #: lazarusidestrconsts.uemencoding

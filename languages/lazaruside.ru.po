@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-19 19:27+0300\n"
+"PO-Revision-Date: 2011-03-05 01:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7030,11 +7030,6 @@ msgstr "Включить макросы"
 msgid "Enclose"
 msgstr "Заключить"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr "Заключить выделенное"
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9943,17 +9938,19 @@ msgid "Insert from Character Map"
 msgstr "Вставить из таблицы символов"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
-msgstr "Ключ CVS"
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
+msgstr "Вставить ключ CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
 msgid "Current date and time"
 msgstr "Текущие дата и время"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
-msgstr "Общие"
+msgid "Insert General"
+msgstr "Вставить общие"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
 msgid "GPL notice"
@@ -9966,10 +9963,6 @@ msgstr "Заметка о LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr "Заметка о модифицированной LGPL"
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Вставить текст"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10086,7 +10079,8 @@ msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "П&акет"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10154,6 +10148,10 @@ msgstr "В&ыход"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Вернуть"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr "Переработка &кода"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10274,6 +10272,10 @@ msgstr "Показать точку исполнения"
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Сортировать выделенное ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr "&Исходный код"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16525,11 +16527,6 @@ msgstr "Отладка"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Свойства редактора"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Заключить выделенное"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

@@ -6995,11 +6995,6 @@ msgstr "אפשר מאקרו"
 msgid "Enclose"
 msgstr "צרף "
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr "צרף בחירה"
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9909,7 +9904,9 @@ msgid "Insert from Character Map"
 msgstr "הכנס ממפת התווים"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "מלת מפתח של CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9917,8 +9914,10 @@ msgid "Current date and time"
 msgstr "תאריך ושעה נוכחיים"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "כללי"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9932,10 +9931,6 @@ msgstr "הערת LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr "הערת LGPL מותאמת"
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "הכנס טקסט"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10055,7 +10050,9 @@ msgid "Open Recent Project"
 msgstr "פתח פרויקטים אחרונים ..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "ח&בילה"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10123,6 +10120,10 @@ msgstr "צא"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "בצע שוב"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10243,6 +10244,10 @@ msgstr "הראה נקודת ביצוע"
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "סדר את הבחירה ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16486,11 +16491,6 @@ msgstr "נפה שגיאות"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "תכונות עורך"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "צרף בחירה"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

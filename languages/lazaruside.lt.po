@@ -7021,11 +7021,6 @@ msgstr "Įgalinti makrokomandas"
 msgid "Enclose"
 msgstr "Apgaubti"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr "Apgaubti pažymėtąjį"
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9941,7 +9936,9 @@ msgid "Insert from Character Map"
 msgstr "Įterpti iš simbolių lentelės"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "CVS bazinis žodis"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9949,8 +9946,10 @@ msgid "Current date and time"
 msgstr "Dabartinė data ir laikas"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "Pagrindinis"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9964,10 +9963,6 @@ msgstr "LGPL raštas"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr "Modifikuotas LGPL raštas"
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Įterpti tekstą"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10087,7 +10082,9 @@ msgid "Open Recent Project"
 msgstr "Atverti paskutinį naudotą projektą…"
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "&Paketas"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10155,6 +10152,10 @@ msgstr "&Baigti darbą"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Pakartoti"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10275,6 +10276,10 @@ msgstr "Rodyti vykdymo tašką"
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Rūšiuoti pažymėtą…"
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16528,11 +16533,6 @@ msgstr "Derinimas"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Rengyklės savybės"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Apgaubti pažymėtąjį"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

@@ -7013,11 +7013,6 @@ msgstr "Permet Macroinstruccions"
 msgid "Enclose"
 msgstr "Tanca"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9924,7 +9919,9 @@ msgid "Insert from Character Map"
 msgstr "Insereix desde el mapa de caràcters"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "Paraula clau del CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9932,8 +9929,10 @@ msgid "Current date and time"
 msgstr "Data i hora actuals"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "General"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9947,10 +9946,6 @@ msgstr "Comentari LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Insereix el text"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10071,7 +10066,7 @@ msgid "Open Recent Project"
 msgstr "Obre el projecte recent ..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10140,6 +10135,10 @@ msgstr "Surt"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Torna a fer"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10262,6 +10261,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Ordena la selecció ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16506,11 +16509,6 @@ msgstr "Depuració"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Propietats de l'editor"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Tanca la selecció"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

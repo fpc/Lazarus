@@ -7004,11 +7004,6 @@ msgstr ""
 msgid "Enclose"
 msgstr "Lisää lauserakenne"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9915,7 +9910,7 @@ msgid "Insert from Character Map"
 msgstr "Lisää merkkitaulukosta"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9923,8 +9918,10 @@ msgid "Current date and time"
 msgstr "Päivämäärä ja aika"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "Yleistä"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9938,10 +9935,6 @@ msgstr ""
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Lisää seuraava teksti"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10062,7 +10055,9 @@ msgid "Open Recent Project"
 msgstr "Avaa esillä ollut projekti ..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "Komponenttipaketti"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10131,6 +10126,10 @@ msgstr "Lopeta"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Uudelleen"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10253,6 +10252,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Lajittele lohko ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16493,11 +16496,6 @@ msgstr "Virheenjäljitys"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Editorin asetukset"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Lauserakenteen lisäys"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

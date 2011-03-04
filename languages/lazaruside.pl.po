@@ -7027,11 +7027,6 @@ msgstr "Włącz makra"
 msgid "Enclose"
 msgstr ""
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr ""
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9939,7 +9934,9 @@ msgid "Insert from Character Map"
 msgstr "Wstaw z tablicy znaków..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "Słowo kluczowe CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9947,8 +9944,10 @@ msgid "Current date and time"
 msgstr "Bieżąca data i czas"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "Ogólne"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9962,10 +9961,6 @@ msgstr "Informacja o licencji LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Wstaw tekst"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10086,7 +10081,9 @@ msgid "Open Recent Project"
 msgstr "Otwórz poprzedni projekt..."
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "P&akiet"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10155,6 +10152,10 @@ msgstr "Zakończ"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Przywróć"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10277,6 +10278,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Posortuj zaznaczenie ..."
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16524,11 +16529,6 @@ msgstr "Odpluskwanie"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Właściwości edytora"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr ""
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"

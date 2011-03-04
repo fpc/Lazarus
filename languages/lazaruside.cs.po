@@ -6976,11 +6976,6 @@ msgstr "Povolit makra"
 msgid "Enclose"
 msgstr "Ohraničit"
 
-#: lazarusidestrconsts.lisencloseselection
-msgctxt "lazarusidestrconsts.lisencloseselection"
-msgid "Enclose Selection"
-msgstr "Ohraničit výběr"
-
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -9877,7 +9872,9 @@ msgid "Insert from Character Map"
 msgstr "Vložit z mapy znaků"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-msgid "CVS keyword"
+#, fuzzy
+#| msgid "CVS keyword"
+msgid "Insert CVS keyword"
 msgstr "Klíčové slovo CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
@@ -9885,8 +9882,10 @@ msgid "Current date and time"
 msgstr "Aktuální datum a čas"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+#, fuzzy
+#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
-msgid "General"
+msgid "Insert General"
 msgstr "Obecné"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
@@ -9900,10 +9899,6 @@ msgstr "Poznámka LGPL"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL notice"
 msgstr "Poznámka k upravené LGPL"
-
-#: lazarusidestrconsts.lismenuinserttext
-msgid "Insert text"
-msgstr "Vložit text"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current username"
@@ -10016,7 +10011,9 @@ msgid "Open Recent Project"
 msgstr "Otevřít nedávný projekt"
 
 #: lazarusidestrconsts.lismenupackage
-msgid "&Package"
+#, fuzzy
+#| msgid "&Package"
+msgid "Pa&ckage"
 msgstr "&Balíček"
 
 #: lazarusidestrconsts.lismenupackagegraph
@@ -10083,6 +10080,10 @@ msgstr "U&končit"
 msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Opakovat změnu"
+
+#: lazarusidestrconsts.lismenurefactor
+msgid "Ref&actor"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10201,6 +10202,10 @@ msgstr "Ukázat bod vykonávání"
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Seřadit výběr"
+
+#: lazarusidestrconsts.lismenusource
+msgid "S&ource"
+msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -16414,11 +16419,6 @@ msgstr "Ladění"
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
 msgstr "Vlastnosti editoru"
-
-#: lazarusidestrconsts.uemencloseselection
-msgctxt "lazarusidestrconsts.uemencloseselection"
-msgid "Enclose Selection"
-msgstr "Obklopit výběr"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
