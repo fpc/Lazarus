@@ -2392,17 +2392,14 @@ begin
 end;
 
 procedure TKeyCommandRelationList.CreateDefaultMapping;
+// create default keymapping
 var
   C: TIDECommandCategory;
   o: LongInt;
 begin
   Clear;
-
-  // create default keymapping
-
   // moving
-  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,
-                IDECmdScopeSrcEditOnly)];
+  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,IDECmdScopeSrcEditOnly)];
   //p:=Relations[Add(C,'Name1',12000,IDEShortCut(vk_P,[ssShift,ssAlt],VK_UNKNOWN,[]),CLeanIDEShortCut)];
   //debugln('TKeyCommandRelationList.Add A ',p.Name,' ',KeyAndShiftStateToEditorKeyString(p.ShortcutA),' ',dbgs(p));
   AddDefault(C, 'Move cursor word left', srkmecWordLeft, ecWordLeft);
@@ -2415,20 +2412,16 @@ begin
   AddDefault(C, 'Move cursor left one page', srkmecPageLeft, ecPageLeft);
   AddDefault(C, 'Move cursor right one page', srkmecPageRight, ecPageRight);
   AddDefault(C, 'Move cursor to top of page', srkmecPageTop, ecPageTop);
-  AddDefault(C, 'Move cursor to bottom of page', srkmecPageBottom, ecPageBottom
-    );
-  AddDefault(C, 'Move cursor to absolute beginning', srkmecEditorTop,
-    ecEditorTop);
-  AddDefault(C, 'Move cursor to absolute end', srkmecEditorBottom,
-    ecEditorBottom);
+  AddDefault(C, 'Move cursor to bottom of page', srkmecPageBottom, ecPageBottom);
+  AddDefault(C, 'Move cursor to absolute beginning', srkmecEditorTop, ecEditorTop);
+  AddDefault(C, 'Move cursor to absolute end', srkmecEditorBottom, ecEditorBottom);
   AddDefault(C, 'Scroll up one line', srkmecScrollUp, ecScrollUp);
   AddDefault(C, 'Scroll down one line', srkmecScrollDown, ecScrollDown);
   AddDefault(C, 'Scroll left one char', srkmecScrollLeft, ecScrollLeft);
   AddDefault(C, 'Scroll right one char', srkmecScrollRight, ecScrollRight);
 
   // selection
-  C:=Categories[AddCategory('Selection',srkmCatSelection,
-                IDECmdScopeSrcEditOnly)];
+  C:=Categories[AddCategory('Selection',srkmCatSelection, IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
   AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
   AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
@@ -2437,22 +2430,16 @@ begin
   AddDefault(C, 'Line selection mode', srkmecLineSelect, ecLineSelect);
   AddDefault(C, 'Indent block', srkmecBlockIndent, ecBlockIndent);
   AddDefault(C, 'Unindent block', srkmecBlockUnindent, ecBlockUnindent);
-  AddDefault(C, 'Uppercase selection', lisMenuUpperCaseSelection,
-    ecSelectionUpperCase);
-  AddDefault(C, 'Lowercase selection', lisMenuLowerCaseSelection,
-    ecSelectionLowerCase);
+  AddDefault(C, 'Uppercase selection', lisMenuUpperCaseSelection, ecSelectionUpperCase);
+  AddDefault(C, 'Lowercase selection', lisMenuLowerCaseSelection, ecSelectionLowerCase);
   AddDefault(C, 'Convert tabs to spaces in selection',
     srkmecSelectionTabs2Spaces, ecSelectionTabs2Spaces);
   AddDefault(C, 'Enclose selection', lisKMEncloseSelection, ecSelectionEnclose);
-  AddDefault(C, 'Comment selection', lisMenuCommentSelection, ecSelectionComment
-    );
-  AddDefault(C, 'Uncomment selection', lisMenuUncommentSelection,
-    ecSelectionUncomment);
-  AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment
-    );
+  AddDefault(C, 'Comment selection', lisMenuCommentSelection, ecSelectionComment);
+  AddDefault(C, 'Uncomment selection', lisMenuUncommentSelection, ecSelectionUncomment);
+  AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment);
   AddDefault(C, 'Sort selection', lisSortSelSortSelection, ecSelectionSort);
-  AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection,
-    ecSelectionBreakLines);
+  AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection, ecSelectionBreakLines);
   AddDefault(C, 'Select word left', lisKMSelectWordLeft, ecSelWordLeft);
   AddDefault(C, 'Select word right', lisKMSelectWordRight, ecSelWordRight);
   AddDefault(C, 'Select line start', lisKMSelectLineStart, ecSelLineStart);
@@ -2460,10 +2447,8 @@ begin
   AddDefault(C, 'Select line end', lisKMSelectLineEnd, ecSelLineEnd);
   AddDefault(C, 'Select page top', lisKMSelectPageTop, ecSelPageTop);
   AddDefault(C, 'Select page bottom', lisKMSelectPageBottom, ecSelPageBottom);
-  AddDefault(C, 'Select to absolute beginning', srkmecSelEditorTop,
-    ecSelEditorTop);
-  AddDefault(C, 'Select to absolute end', srkmecSelEditorBottom,
-    ecSelEditorBottom);
+  AddDefault(C, 'Select to absolute beginning', srkmecSelEditorTop, ecSelEditorTop);
+  AddDefault(C, 'Select to absolute end', srkmecSelEditorBottom, ecSelEditorBottom);
   AddDefault(C, 'Select all', lisMenuSelectAll, ecSelectAll);
   AddDefault(C, 'Select to brace', lisMenuSelectToBrace, ecSelectToBrace);
   AddDefault(C, 'Select code block', lisMenuSelectCodeBlock, ecSelectCodeBlock);
@@ -2484,8 +2469,7 @@ begin
   AddDefault(C, 'Goto Block End', srkmecBlockGotoEnd, ecBlockGotoEnd);
 
   // column mode selection
-  C:=Categories[AddCategory('Column Selection',srkmCatColSelection,
-                IDECmdScopeSrcEditOnly)];
+  C:=Categories[AddCategory('Column Selection',srkmCatColSelection,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Column Select Up', srkmecColSelUp, ecColSelUp);
   AddDefault(C, 'Column Select Down', srkmecColSelDown, ecColSelDown);
   AddDefault(C, 'Column Select Left', srkmecColSelLeft, ecColSelLeft);
@@ -2508,8 +2492,7 @@ begin
   AddDefault(C, 'Delete last char', lisKMDeleteLastChar, ecDeleteLastChar);
   AddDefault(C, 'Delete char at cursor', srkmecDeletechar, ecDeleteChar);
   AddDefault(C, 'Delete to end of word', srkmecDeleteWord, ecDeleteWord);
-  AddDefault(C, 'Delete to start of word', srkmecDeleteLastWord,
-    ecDeleteLastWord);
+  AddDefault(C, 'Delete to start of word', srkmecDeleteLastWord, ecDeleteLastWord);
   AddDefault(C, 'Delete to beginning of line', srkmecDeleteBOL, ecDeleteBOL);
   AddDefault(C, 'Delete to end of line', srkmecDeleteEOL, ecDeleteEOL);
   AddDefault(C, 'Delete current line', srkmecDeleteLine, ecDeleteLine);
@@ -2517,32 +2500,21 @@ begin
   AddDefault(C, 'Break line and move cursor', srkmecLineBreak, ecLineBreak);
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
   AddDefault(C, 'Insert $IFDEF', lisKMInsertIFDEF, ecSelectionConditional);
-  AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter,
-    ecInsertCharacter);
+  AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter, ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
-  AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice
-    );
-  AddDefault(C, 'Insert modified LGPL notice', srkmecInsertModifiedLGPLNotice,
-    ecInsertModifiedLGPLNotice);
+  AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
+  AddDefault(C, 'Insert modified LGPL notice', srkmecInsertModifiedLGPLNotice, ecInsertModifiedLGPLNotice);
   AddDefault(C, 'Insert username', lisKMInsertUsername, ecInsertUserName);
-  AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime
-    );
-  AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry,
-    ecInsertChangeLogEntry);
-  AddDefault(C, 'Insert CVS keyword Author', srkmecInsertCVSAuthor,
-    ecInsertCVSAuthor);
-  AddDefault(C, 'Insert CVS keyword Date', srkmecInsertCVSDate, ecInsertCVSDate
-    );
-  AddDefault(C, 'Insert CVS keyword Header', srkmecInsertCVSHeader,
-    ecInsertCVSHeader);
+  AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime);
+  AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry, ecInsertChangeLogEntry);
+  AddDefault(C, 'Insert CVS keyword Author', srkmecInsertCVSAuthor, ecInsertCVSAuthor);
+  AddDefault(C, 'Insert CVS keyword Date', srkmecInsertCVSDate, ecInsertCVSDate);
+  AddDefault(C, 'Insert CVS keyword Header', srkmecInsertCVSHeader, ecInsertCVSHeader);
   AddDefault(C, 'Insert CVS keyword ID', srkmecInsertCVSID, ecInsertCVSID);
   AddDefault(C, 'Insert CVS keyword Log', srkmecInsertCVSLog, ecInsertCVSLog);
-  AddDefault(C, 'Insert CVS keyword Name', srkmecInsertCVSName, ecInsertCVSName
-    );
-  AddDefault(C, 'Insert CVS keyword Revision', srkmecInsertCVSRevision,
-    ecInsertCVSRevision); ;
-  AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource,
-    ecInsertCVSSource);
+  AddDefault(C, 'Insert CVS keyword Name', srkmecInsertCVSName, ecInsertCVSName);
+  AddDefault(C, 'Insert CVS keyword Revision', srkmecInsertCVSRevision, ecInsertCVSRevision);
+  AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource, ecInsertCVSSource);
   AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
 
   // command commands
@@ -2551,8 +2523,7 @@ begin
   AddDefault(C, 'Redo', lisMenuRedo, ecRedo);
 
   // search & replace
-  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,
-                IDECmdScopeSrcEditOnly)];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Go to matching bracket', srkmecMatchBracket, ecMatchBracket);
   AddDefault(C, 'Find text', srkmecFind, ecFind);
   AddDefault(C, 'Find next', srkmecFindNext, ecFindNext);
@@ -2561,20 +2532,15 @@ begin
   AddDefault(C, 'Replace text', srkmecReplace, ecReplace);
   AddDefault(C, 'Find incremental', lisKMFindIncremental, ecIncrementalFind);
   AddDefault(C, 'Go to line number', srkmecGotoLineNumber, ecGotoLineNumber);
-  AddDefault(C, 'Find next word occurrence', srkmecFindNextWordOccurrence,
-    ecFindNextWordOccurrence);
-  AddDefault(C, 'Find previous word occurrence', srkmecFindPrevWordOccurrence,
-    ecFindPrevWordOccurrence);
+  AddDefault(C, 'Find next word occurrence', srkmecFindNextWordOccurrence, ecFindNextWordOccurrence);
+  AddDefault(C, 'Find previous word occurrence', srkmecFindPrevWordOccurrence, ecFindPrevWordOccurrence);
   AddDefault(C, 'Jump back', lisMenuJumpBack, ecJumpBack);
   AddDefault(C, 'Jump forward', lisMenuJumpForward, ecJumpForward);
   AddDefault(C, 'Add jump point', srkmecAddJumpPoint, ecAddJumpPoint);
   AddDefault(C, 'View jump history', lisKMViewJumpHistory, ecViewJumpHistory);
-  AddDefault(C, 'Jump to next error', lisMenuJumpToNextError, ecJumpToNextError
-    );
-  AddDefault(C, 'Jump to previous error', lisMenuJumpToPrevError,
-    ecJumpToPrevError);
-  AddDefault(C, 'Open file at cursor', srkmecOpenFileAtCursor,
-    ecOpenFileAtCursor);
+  AddDefault(C, 'Jump to next error', lisMenuJumpToNextError, ecJumpToNextError);
+  AddDefault(C, 'Jump to previous error', lisMenuJumpToPrevError, ecJumpToPrevError);
+  AddDefault(C, 'Open file at cursor', srkmecOpenFileAtCursor, ecOpenFileAtCursor);
   AddDefault(C,'Procedure List ...',lisPListProcedureList,ecProcedureList);
 
   // folding
@@ -2630,43 +2596,30 @@ begin
 
   // codetools
   C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEditOnly)];
-  AddDefault(C, 'Code template completion', srkmecAutoCompletion,
-    ecAutoCompletion);
+  AddDefault(C, 'Code template completion', srkmecAutoCompletion, ecAutoCompletion);
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);
   AddDefault(C, 'Complete code', srkmecCompletecode, ecCompleteCode);
   AddDefault(C, 'Identifier completion', dlgEdIdComlet, ecIdentCompletion);
   AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier);
-  AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs,
-    ecFindIdentifierRefs);
+  AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs, ecFindIdentifierRefs);
   AddDefault(C, 'Show code context', srkmecShowCodeContext, ecShowCodeContext);
   AddDefault(C, 'Extract proc', srkmecExtractProc, ecExtractProc);
   AddDefault(C, 'Invert assignment', srkmecInvertAssignment, ecInvertAssignment);
   AddDefault(C, 'Syntax check', srkmecSyntaxCheck, ecSyntaxCheck);
-  AddDefault(C, 'Guess unclosed block', lisMenuGuessUnclosedBlock,
-    ecGuessUnclosedBlock);
-  AddDefault(C, 'Guess misplaced $IFDEF', srkmecGuessMisplacedIFDEF,
-    ecGuessMisplacedIFDEF);
+  AddDefault(C, 'Guess unclosed block', lisMenuGuessUnclosedBlock, ecGuessUnclosedBlock);
+  AddDefault(C, 'Guess misplaced $IFDEF', srkmecGuessMisplacedIFDEF, ecGuessMisplacedIFDEF);
   AddDefault(C, 'Check LFM file in editor', lisMenuCheckLFM, ecCheckLFM);
-  AddDefault(C, 'Find procedure definiton', srkmecFindProcedureDefinition,
-    ecFindProcedureDefinition);
-  AddDefault(C, 'Find procedure method', srkmecFindProcedureMethod,
-    ecFindProcedureMethod);
+  AddDefault(C, 'Find procedure definiton', srkmecFindProcedureDefinition, ecFindProcedureDefinition);
+  AddDefault(C, 'Find procedure method', srkmecFindProcedureMethod, ecFindProcedureMethod);
   AddDefault(C, 'Find declaration', srkmecFindDeclaration, ecFindDeclaration);
-  AddDefault(C, 'Find block other end', srkmecFindBlockOtherEnd,
-    ecFindBlockOtherEnd);
+  AddDefault(C, 'Find block other end', srkmecFindBlockOtherEnd, ecFindBlockOtherEnd);
   AddDefault(C, 'Find block start', srkmecFindBlockStart, ecFindBlockStart);
-  AddDefault(C, 'Goto include directive', lisMenuGotoIncludeDirective,
-    ecGotoIncludeDirective);
-  AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods,
-    ecShowAbstractMethods);
-  AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods,
-    ecRemoveEmptyMethods);
-  AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits,
-    ecRemoveUnusedUnits);
-  AddDefault(C, 'Add unit to uses section', srkmecUseProjectUnit,
-    ecUseProjectUnit);
-  AddDefault(C, 'Find overloads', srkmecFindOverloads,
-    ecFindOverloads);
+  AddDefault(C, 'Goto include directive', lisMenuGotoIncludeDirective, ecGotoIncludeDirective);
+  AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods, ecShowAbstractMethods);
+  AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
+  AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);
+  AddDefault(C, 'Add unit to uses section', srkmecUseProjectUnit, ecUseProjectUnit);
+  AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];
@@ -2698,7 +2651,6 @@ begin
   AddDefault(C, 'Edit Template (off) Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
   AddDefault(C, 'Edit Template (off) Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
 
-
   // Syncro editing
   C:=Categories[AddCategory('Syncro Edit', srkmCatSyncroEdit, IDECmdScopeSrcEditOnlySyncroEdit)];
   o := TSynPluginSyncroEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
@@ -2729,13 +2681,11 @@ begin
   AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecSynPSyncroEdStart + o);
 
   // source notebook - without menu items in the IDE bar
-  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,
-                IDECmdScopeSrcEdit)];
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEdit)];
   AddDefault(C, 'Go to next editor', srkmecNextEditor, ecNextEditor);
   AddDefault(C, 'Go to prior editor', srkmecPrevEditor, ecPrevEditor);
   AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
-  AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint
-    );
+  AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint);
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);
   AddDefault(C, 'Move editor leftmost', srkmecMoveEditorLeftmost, ecMoveEditorLeftmost);
@@ -2782,74 +2732,49 @@ begin
 
   // view menu
   C:=Categories[AddCategory(CommandCategoryViewName,srkmCatViewMenu,nil)];
-  AddDefault(C, 'Toggle view Object Inspector', lisKMToggleViewObjectInspector,
-    ecToggleObjectInsp);
-  AddDefault(C, 'Toggle view Source Editor', lisKMToggleViewSourceEditor,
-    ecToggleSourceEditor);
-  AddDefault(C, 'Toggle view Code Explorer', lisKMToggleViewCodeExplorer,
-    ecToggleCodeExpl);
-  AddDefault(C, 'Toggle view Documentation Editor',
-    lisKMToggleViewDocumentationEditor, ecToggleFPDocEditor);
-  AddDefault(C, 'Toggle view Messages', lisKMToggleViewMessages,
-    ecToggleMessages);
-  AddDefault(C, 'Toggle view Search Results', lisKMToggleViewSearchResults,
-    ecToggleSearchResults);
+  AddDefault(C, 'Toggle view Object Inspector', lisKMToggleViewObjectInspector, ecToggleObjectInsp);
+  AddDefault(C, 'Toggle view Source Editor', lisKMToggleViewSourceEditor, ecToggleSourceEditor);
+  AddDefault(C, 'Toggle view Code Explorer', lisKMToggleViewCodeExplorer, ecToggleCodeExpl);
+  AddDefault(C, 'Toggle view Documentation Editor', lisKMToggleViewDocumentationEditor, ecToggleFPDocEditor);
+  AddDefault(C, 'Toggle view Messages', lisKMToggleViewMessages, ecToggleMessages);
+  AddDefault(C, 'Toggle view Search Results', lisKMToggleViewSearchResults, ecToggleSearchResults);
   AddDefault(C, 'Toggle view Watches', lisKMToggleViewWatches, ecToggleWatches);
-  AddDefault(C, 'Toggle view Breakpoints', lisKMToggleViewBreakpoints,
-    ecToggleBreakPoints);
-  AddDefault(C, 'Toggle view Local Variables', lisKMToggleViewLocalVariables,
-    ecToggleLocals);
-  AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack,
-    ecToggleCallStack);
-  AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters,
-    ecToggleRegisters);
-  AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler,
-    ecToggleAssembler);
+  AddDefault(C, 'Toggle view Breakpoints', lisKMToggleViewBreakpoints, ecToggleBreakPoints);
+  AddDefault(C, 'Toggle view Local Variables', lisKMToggleViewLocalVariables, ecToggleLocals);
+  AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack, ecToggleCallStack);
+  AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters, ecToggleRegisters);
+  AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);
   AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
-  AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput,
-    ecToggleDebuggerOut);
+  AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput, ecToggleDebuggerOut);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewUnits);
   AddDefault(C, 'View Forms', lisHintViewForms, ecViewForms);
-  AddDefault(C, 'View Unit Dependencies', lisMenuViewUnitDependencies,
-    ecViewUnitDependencies);
+  AddDefault(C, 'View Unit Dependencies', lisMenuViewUnitDependencies, ecViewUnitDependencies);
   AddDefault(C, 'View Unit Info', lisKMViewUnitInfo, ecViewUnitInfo);
-  AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm,
-    ecToggleFormUnit);
-  AddDefault(C, 'View Anchor Editor', lisMenuViewAnchorEditor,
-    ecViewAnchorEditor);
-  AddDefault(C, 'Toggle view component palette',
-    lisKMToggleViewComponentPalette, ecToggleCompPalette);
-  AddDefault(C, 'Toggle view IDE speed buttons',
-    lisKMToggleViewIDESpeedButtons, ecToggleIDESpeedBtns);
+  AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm, ecToggleFormUnit);
+  AddDefault(C, 'View Anchor Editor', lisMenuViewAnchorEditor, ecViewAnchorEditor);
+  AddDefault(C, 'Toggle view component palette', lisKMToggleViewComponentPalette, ecToggleCompPalette);
+  AddDefault(C, 'Toggle view IDE speed buttons', lisKMToggleViewIDESpeedButtons, ecToggleIDESpeedBtns);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,nil)];
   AddDefault(C, 'New project', lisKMNewProject, ecNewProject);
-  AddDefault(C, 'New project from file', lisKMNewProjectFromFile,
-    ecNewProjectFromFile);
+  AddDefault(C, 'New project from file', lisKMNewProjectFromFile, ecNewProjectFromFile);
   AddDefault(C, 'Open project', lisOpenProject2, ecOpenProject);
   AddDefault(C, 'Close project', lisKMCloseProject, ecCloseProject);
   AddDefault(C, 'Save project', lisKMSaveProject, ecSaveProject);
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
-  AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector
-    );
-  AddDefault(C, 'Add active unit to project', lisKMAddActiveUnitToProject,
-    ecAddCurUnitToProj);
-  AddDefault(C, 'Remove active unit from project',
-    lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
-  AddDefault(C, 'View project source', lisKMViewProjectSource,
-    ecViewProjectSource);
-  AddDefault(C, 'View project options', lisKMViewProjectOptions,
-    ecProjectOptions);
+  AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
+  AddDefault(C, 'Add active unit to project', lisKMAddActiveUnitToProject, ecAddCurUnitToProj);
+  AddDefault(C, 'Remove active unit from project', lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
+  AddDefault(C, 'View project source', lisKMViewProjectSource, ecViewProjectSource);
+  AddDefault(C, 'View project options', lisKMViewProjectOptions, ecProjectOptions);
 
   // run menu
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];
   AddDefault(C, 'Build project/program', lisKMBuildProjectProgram, ecBuild);
-  AddDefault(C, 'Build all files of project/program',
-    lisKMBuildAllFilesOfProjectProgram, ecBuildAll);
-  AddDefault(C, 'Quick compile, no linking', lisKMQuickCompileNoLinking,
-    ecQuickCompile);
+  AddDefault(C, 'Build all files of project/program', lisKMBuildAllFilesOfProjectProgram, ecBuildAll);
+  AddDefault(C, 'Quick compile, no linking', lisKMQuickCompileNoLinking, ecQuickCompile);
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);
   AddDefault(C, 'Pause program', lisKMPauseProgram, ecPause);
@@ -2867,8 +2792,7 @@ begin
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);
   AddDefault(C, 'Build File', lisMenuBuildFile, ecBuildFile);
   AddDefault(C, 'Run File', lisMenuRunFile, ecRunFile);
-  AddDefault(C, 'Config "Build File"', Format(lisKMConfigBuildFile, ['"', '"']
-    ), ecConfigBuildFile);
+  AddDefault(C, 'Config "Build File"', Format(lisKMConfigBuildFile, ['"', '"']), ecConfigBuildFile);
   AddDefault(C, 'Inspect', lisKMInspect, ecInspect);
   AddDefault(C, 'Evaluate/Modify', lisKMEvaluateModify, ecEvaluate);
   AddDefault(C, 'Add watch', lisKMAddWatch, ecAddWatch);
@@ -2878,56 +2802,42 @@ begin
   AddDefault(C, 'New package', lisKMNewPackage, ecNewPackage);
   AddDefault(C, 'Open package', lisCompPalOpenPackage, ecOpenPackage);
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
-  AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit,
-    ecOpenPackageOfCurUnit);
-  AddDefault(C, 'Add active unit to a package', lisMenuAddCurUnitToPkg,
-    ecAddCurUnitToPkg);
+  AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit, ecOpenPackageOfCurUnit);
+  AddDefault(C, 'Add active unit to a package', lisMenuAddCurUnitToPkg, ecAddCurUnitToPkg);
   AddDefault(C, 'Package graph', lisKMPackageGraph, ecPackageGraph);
-  AddDefault(C, 'Configure installed packages',
-    lisKMConfigureInstalledPackages, ecEditInstallPkgs);
-  AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents,
-    ecConfigCustomComps);
+  AddDefault(C, 'Configure installed packages', lisKMConfigureInstalledPackages, ecEditInstallPkgs);
+  AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents, ecConfigCustomComps);
 
   // tools menu
   C:=Categories[AddCategory(CommandCategoryToolMenuName,srkmCatToolMenu,nil)];
-  AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings,
-    ecExtToolSettings);
+  AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
-  AddDefault(C, 'Configure "Build Lazarus"', Format(lisConfigureBuildLazarus, [
-    '"', '"']), ecConfigBuildLazarus);
-  AddDefault(C, 'Make resource string', srkmecMakeResourceString,
-    ecMakeResourceString);
+  AddDefault(C, 'Configure "Build Lazarus"',
+    Format(lisConfigureBuildLazarus, ['"', '"']), ecConfigBuildLazarus);
+  AddDefault(C, 'Make resource string', srkmecMakeResourceString, ecMakeResourceString);
   AddDefault(C, 'Diff editor files', lisKMDiffEditorFiles, ecDiff);
-  AddDefault(C, 'Convert DFM file to LFM', lisKMConvertDFMFileToLFM,
-    ecConvertDFM2LFM);
+  AddDefault(C, 'Convert DFM file to LFM', lisKMConvertDFMFileToLFM, ecConvertDFM2LFM);
   AddDefault(C, 'Convert Delphi unit to Lazarus unit',
     lisKMConvertDelphiUnitToLazarusUnit, ecConvertDelphiUnit);
   AddDefault(C, 'Convert Delphi project to Lazarus project',
     lisKMConvertDelphiProjectToLazarusProject, ecConvertDelphiProject);
   AddDefault(C, 'Convert Delphi package to Lazarus package',
     lisKMConvertDelphiPackageToLazarusPackage, ecConvertDelphiPackage);
-  AddDefault(C, 'Convert encoding',
-    lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
+  AddDefault(C, 'Convert encoding', lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
-  AddDefault(C, 'General environment options', srkmecEnvironmentOptions,
-    ecEnvironmentOptions);
-  AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates,
-    ecEditCodeTemplates);
-  AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor,
-    ecCodeToolsDefinesEd);
-  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory,
-    ecRescanFPCSrcDir);
+  AddDefault(C, 'General environment options', srkmecEnvironmentOptions, ecEnvironmentOptions);
+  AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
+  AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor, ecCodeToolsDefinesEd);
+  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];
   AddDefault(C, 'About Lazarus', lisAboutLazarus, ecAboutLazarus);
   AddDefault(C, 'Online Help', lisMenuOnlineHelp, ecOnlineHelp);
-  AddDefault(C, 'Context sensitive help', lisKMContextSensitiveHelp,
-    ecContextHelp);
-  AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp,
-    ecEditContextHelp);
+  AddDefault(C, 'Context sensitive help', lisKMContextSensitiveHelp, ecContextHelp);
+  AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp, ecEditContextHelp);
   AddDefault(C, 'Reporting a bug', srkmecReportingBug, ecReportingBug);
 
   // designer  - without menu items in the IDE bar (at least not directly)
@@ -2938,20 +2848,14 @@ begin
     lisKMCutSelectedComponentsToClipboard, ecDesignerCut);
   AddDefault(C, 'Paste Components from clipboard',
     lisKMPasteComponentsFromClipboard, ecDesignerPaste);
-  AddDefault(C, 'Select parent component', lisDsgSelectParentComponent,
-    ecDesignerSelectParent);
-  AddDefault(C, 'Move component to front', lisDsgOrderMoveToFront,
-    ecDesignerMoveToFront);
-  AddDefault(C, 'Move component to back', lisDsgOrderMoveToBack,
-    ecDesignerMoveToBack);
-  AddDefault(C, 'Move component one forward', lisDsgOrderForwardOne,
-    ecDesignerForwardOne);
-  AddDefault(C, 'Move component one back', lisDsgOrderBackOne, ecDesignerBackOne
-    );
+  AddDefault(C, 'Select parent component', lisDsgSelectParentComponent, ecDesignerSelectParent);
+  AddDefault(C, 'Move component to front', lisDsgOrderMoveToFront, ecDesignerMoveToFront);
+  AddDefault(C, 'Move component to back', lisDsgOrderMoveToBack, ecDesignerMoveToBack);
+  AddDefault(C, 'Move component one forward', lisDsgOrderForwardOne, ecDesignerForwardOne);
+  AddDefault(C, 'Move component one back', lisDsgOrderBackOne, ecDesignerBackOne);
 
   // object inspector - without menu items in the IDE bar (at least no direct)
-  C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,
-                            IDECmdScopeObjectInspectorOnly)];
+  C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,IDECmdScopeObjectInspectorOnly)];
 
   // custom keys (for experts, task groups, dynamic menu items, etc)
   C:=Categories[AddCategory(CommandCategoryCustomName,lisKeyCatCustom,nil)];
