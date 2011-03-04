@@ -2284,7 +2284,6 @@ resourcestring
   uemMovePageRightmost='Move page rightmost';
   uemRefactor = 'Refactoring';
   uemCompleteCode = 'Complete Code';
-  uemEncloseSelection = 'Enclose Selection';
   uemExtractProc = 'Extract Procedure';
   uemInvertAssignment = 'Invert Assignment';
   uemFindIdentifierReferences = 'Find Identifier References';
@@ -2556,13 +2555,13 @@ resourcestring
 
   // edit menu
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
-  lisKMEncloseSelection = 'Enclose selection';
+  lisKMEncloseSelection          = 'Enclose selection';
   srkmecInsertCharacter          = 'Insert from Charactermap';
   srkmecInsertGPLNotice          = 'Insert GPL notice';
   srkmecInsertLGPLNotice         = 'Insert LGPL notice';
   srkmecInsertModifiedLGPLNotice = 'Insert modified LGPL notice';
-  lisKMInsertUsername = 'Insert username';
-  lisKMInsertDateAndTime = 'Insert date and time';
+  lisKMInsertUsername            = 'Insert username';
+  lisKMInsertDateAndTime         = 'Insert date and time';
   srkmecInsertUserName           = 'Insert current username';
   srkmecInsertDateTime           = 'Insert current date and time';
   srkmecInsertChangeLogEntry     = 'Insert ChangeLog entry';
@@ -4247,10 +4246,8 @@ resourcestring
   lisHlpOptsDatabases = 'Databases';
 
   // enclose selection dialog
-  lisEncloseSelection = 'Enclose Selection';
   lisEnclose = 'Enclose';
-  lisChooseStructureToEncloseSelection =
-    'Choose structure to enclose selection';
+  lisChooseStructureToEncloseSelection = 'Choose structure to enclose selection';
     
   lisErrors = 'Errors';
   lisLFMFile = 'LFM file';

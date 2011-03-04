@@ -402,7 +402,7 @@ procedure TEncloseSelectionDialog.EncloseSelectionDialogCREATE(Sender: TObject);
 var
   t: TEncloseSelectionType;
 begin
-  Caption:=lisEncloseSelection;
+  Caption:=lisKMEncloseSelection;
 
   TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin

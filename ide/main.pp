@@ -228,7 +228,6 @@ type
     procedure mnuSourceClicked(Sender: TObject);
     procedure mnuSourceIndentBlockClicked(Sender: TObject);
     procedure mnuSourceUnindentBlockClicked(Sender: TObject);
-    procedure mnuSourceEncloseBlockClicked(Sender: TObject);
     procedure mnuSourceUpperCaseBlockClicked(Sender: TObject);
     procedure mnuSourceLowerCaseBlockClicked(Sender: TObject);
     procedure mnuSourceTabsToSpacesBlockClicked(Sender: TObject);
@@ -261,6 +260,7 @@ type
 
     // refactor menu
     procedure mnuRefactorClicked(Sender: TObject);
+    procedure mnuRefactorEncloseBlockClicked(Sender: TObject);
     procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
     procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
@@ -2404,7 +2404,6 @@ begin
     mnuSource.OnClick:=@mnuSourceClicked;
     itmSourceIndentBlock.OnClick:=@mnuSourceIndentBlockClicked;
     itmSourceUnindentBlock.OnClick:=@mnuSourceUnindentBlockClicked;
-    itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
     itmSourceUpperCaseBlock.OnClick:=@mnuSourceUpperCaseBlockClicked;
     itmSourceLowerCaseBlock.OnClick:=@mnuSourceLowerCaseBlockClicked;
     itmSourceTabsToSpacesBlock.OnClick:=@mnuSourceTabsToSpacesBlockClicked;
@@ -2443,6 +2442,7 @@ begin
   with MainIDEBar do begin
     mnuRefactor.OnClick:=@mnuRefactorClicked;
     itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
+    itmSourceEncloseBlock.OnClick:=@mnuRefactorEncloseBlockClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
   end;
@@ -3762,7 +3762,6 @@ begin
   //itmSourceBlockIndentation: TIDEMenuSection;
     itmSourceIndentBlock.Enabled:=SelEditable;
     itmSourceUnindentBlock.Enabled:=SelEditable;
-    itmSourceEncloseBlock.Enabled:=SelEditable;
     itmSourceCommentBlock.Enabled:=SelEditable;
     itmSourceUncommentBlock.Enabled:=SelEditable;
     itmSourceConditionalBlock.Enabled:=SelEditable;
@@ -3809,6 +3808,7 @@ begin
   with MainIDEBar do begin
   //itmRefactorMenuCodeTools: TIDEMenuSection;
     itmRefactorCompleteCode.Enabled:=Editable;
+    itmSourceEncloseBlock.Enabled:=SelEditable;
     itmRefactorExtractProc.Enabled:=SelEditable;
   end;
 end;
@@ -17527,7 +17527,7 @@ begin
   DoSourceEditorCommand(ecBlockUnindent);
 end;
 
-procedure TMainIDE.mnuSourceEncloseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuRefactorEncloseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionEnclose);
 end;

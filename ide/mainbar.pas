@@ -154,7 +154,6 @@ type
       //itmSourceBlockIndentation: TIDEMenuSection;
         itmSourceIndentBlock: TIDEMenuCommand;
         itmSourceUnindentBlock: TIDEMenuCommand;
-        itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceCommentBlock: TIDEMenuCommand;
         itmSourceUncommentBlock: TIDEMenuCommand;
         itmSourceToggleComment: TIDEMenuCommand;
@@ -190,6 +189,7 @@ type
     //mnuRefactor: TIDEMenuSection;
         //itmEditMenuCodeTools: TIDEMenuSection;
         itmRefactorCompleteCode: TIDEMenuCommand;
+        itmSourceEncloseBlock: TIDEMenuCommand;
         itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
 

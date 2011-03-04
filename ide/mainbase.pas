@@ -493,7 +493,6 @@ begin
 
     CreateMenuItem(ParentMI,itmSourceIndentBlock,'itmSourceIndentBlock',lisMenuIndentSelection,'menu_indent');
     CreateMenuItem(ParentMI,itmSourceUnindentBlock,'itmSourceUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
-    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
@@ -552,6 +551,7 @@ begin
     CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuCodeTools,'itmRefactorMenuCodeTools');
     ParentMI:=itmRefactorMenuCodeTools;
     CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
   end;

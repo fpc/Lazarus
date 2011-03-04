@@ -1450,7 +1450,7 @@ begin
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', uemCompleteCode, nil, @ExecuteIdeMenuClick);
     SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
-        (AParent, 'EncloseSelection',uemEncloseSelection);
+        (AParent, 'EncloseSelection',lisKMEncloseSelection);
     SrcEditMenuRenameIdentifier := RegisterIDEMenuCommand
         (AParent, 'RenameIdentifier',uemRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
