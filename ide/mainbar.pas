@@ -154,9 +154,6 @@ type
             itmEditInsertChangeLogEntry: TIDEMenuCommand;
             itmEditInsertGUID: TIDEMenuCommand;
             itmEditInsertTodo: TIDEMenuCommand;
-      //itmEditMenuCodeTools: TIDEMenuSection;
-        itmEditCompleteCode: TIDEMenuCommand;
-        itmEditExtractProc: TIDEMenuCommand;
 
     // search menu
     //mnuSearch: TIDEMenuSection;
@@ -185,8 +182,14 @@ type
         itmOpenFileAtCursor: TIDEMenuCommand;
         itmGotoIncludeDirective: TIDEMenuCommand;
         itmSearchFindIdentifierRefs: TIDEMenuCommand;
-        itmSearchRenameIdentifier: TIDEMenuCommand;
         itmSearchProcedureList: TIDEMenuCommand;
+
+    // refactor menu
+    //mnuRefactor: TIDEMenuSection;
+        //itmEditMenuCodeTools: TIDEMenuSection;
+        itmRefactorCompleteCode: TIDEMenuCommand;
+        itmRefactorExtractProc: TIDEMenuCommand;
+        itmRefactorRenameIdentifier: TIDEMenuCommand;
 
     // view menu
     //mnuView: TIDEMenuSection;

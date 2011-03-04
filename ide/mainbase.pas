@@ -107,6 +107,7 @@ type
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
+    procedure SetupRefactorMenu; virtual;
     procedure SetupViewMenu; virtual;
     procedure SetupProjectMenu; virtual;
     procedure SetupRunMenu; virtual;
@@ -354,6 +355,7 @@ begin
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
     CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);
+    CreateMainMenuItem(mnuRefactor,'Refactor',lisMenuRefactor);
     CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
@@ -488,12 +490,6 @@ begin
         CreateMenuItem(SubSubParentMI,itmEditInsertGUID,'itmEditInsertGUID',srkmecInsertGUID);
       end;
     end;
-
-    CreateMenuSeparatorSection(mnuEdit,itmEditMenuCodeTools,'itmEditMenuCodeTools');
-    ParentMI:=itmEditMenuCodeTools;
-
-    CreateMenuItem(ParentMI,itmEditCompleteCode,'itmEditCompleteCode',lisMenuCompleteCode);
-    CreateMenuItem(ParentMI,itmEditExtractProc,'itmEditExtractProc',lisMenuExtractProc);
   end;
 end;
 
@@ -505,7 +501,7 @@ begin
     CreateMenuSeparatorSection(mnuSearch,itmSearchFindReplace,'itmSearchFindReplace');
     ParentMI:=itmSearchFindReplace;
 
-    CreateMenuItem(ParentMI, itmSearchFind, 'itmSearchFind', lisMenuFind2, 'menu_search_find');
+    CreateMenuItem(ParentMI,itmSearchFind, 'itmSearchFind', lisMenuFind2, 'menu_search_find');
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext, 'menu_search_find_next');
     CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious, 'menu_search_find_previous');
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles, 'menu_search_files');
@@ -539,8 +535,20 @@ begin
     CreateMenuItem(ParentMI,itmOpenFileAtCursor,'itmOpenFileAtCursor',lisMenuOpenFilenameAtCursor,'menu_search_openfile_atcursor');
     CreateMenuItem(ParentMI,itmGotoIncludeDirective,'itmGotoIncludeDirective',lisMenuGotoIncludeDirective);
     CreateMenuItem(ParentMI,itmSearchFindIdentifierRefs,'itmSearchFindIdentifierRefs',lisMenuFindIdentifierRefs);
-    CreateMenuItem(ParentMI,itmSearchRenameIdentifier,'itmSearchRenameIdentifier',lisMenuRenameIdentifier);
     CreateMenuItem(ParentMI,itmSearchProcedureList,'itmSearchProcedureList',lisMenuProcedureList);
+  end;
+end;
+
+procedure TMainIDEBase.SetupRefactorMenu;
+var
+  ParentMI: TIDEMenuSection;
+begin
+  with MainIDEBar do begin
+    CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuCodeTools,'itmRefactorMenuCodeTools');
+    ParentMI:=itmRefactorMenuCodeTools;
+    CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
+    CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
   end;
 end;
 
@@ -868,8 +876,6 @@ begin
     itmEditSelectCodeBlock.Command:=GetCommand(ecSelectCodeBlock);
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
-    itmEditCompleteCode.Command:=GetCommand(ecCompleteCode);
-    itmEditExtractProc.Command:=GetCommand(ecExtractProc);
 
     itmEditInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
     itmEditInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
@@ -895,7 +901,6 @@ begin
     itmSearchFindInFiles.Command:=GetCommand(ecFindInFiles);
     itmSearchFindIdentifierRefs.Command:=GetCommand(ecFindIdentifierRefs);
     itmSearchReplace.Command:=GetCommand(ecReplace);
-    itmSearchRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     itmIncrementalFind.Command:=GetCommand(ecIncrementalFind);
     itmGotoLine.Command:=GetCommand(ecGotoLineNumber);
     itmJumpBack.Command:=GetCommand(ecJumpBack);
@@ -912,6 +917,11 @@ begin
     itmOpenFileAtCursor.Command:=GetCommand(ecOpenFileAtCursor);
     itmGotoIncludeDirective.Command:=GetCommand(ecGotoIncludeDirective);
     itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
+
+    // refactor menu
+    itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
+    itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
+    itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
 
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);

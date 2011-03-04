@@ -223,8 +223,6 @@ type
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
-    procedure mnuEditCompleteCodeClicked(Sender: TObject);
-    procedure mnuEditExtractProcClicked(Sender: TObject);
     procedure mnuEditInsertCharacterClicked(Sender: TObject);
 
     // edit->insert text->CVS keyword
@@ -249,7 +247,6 @@ type
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
     procedure mnuSearchFindIdentifierRefsClicked(Sender: TObject);
-    procedure mnuSearchRenameIdentifierClicked(Sender: TObject);
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
@@ -258,6 +255,12 @@ type
     procedure mnuGotoIncludeDirectiveClicked(Sender: TObject);
     procedure mnuSearchProcedureList(Sender: TObject);
     procedure mnuSetFreeBookmark(Sender: TObject);
+
+    // refactor menu
+    procedure mnuRefactorClicked(Sender: TObject);
+    procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
+    procedure mnuRefactorExtractProcClicked(Sender: TObject);
+    procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -633,6 +636,7 @@ type
     procedure SetupFileMenu; override;
     procedure SetupEditMenu; override;
     procedure SetupSearchMenu; override;
+    procedure SetupRefactorMenu; override;
     procedure SetupViewMenu; override;
     procedure SetupProjectMenu; override;
     procedure SetupRunMenu; override;
@@ -2271,6 +2275,7 @@ begin
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
+  SetupRefactorMenu;
   SetupViewMenu;
   SetupProjectMenu;
   SetupRunMenu;
@@ -2384,8 +2389,6 @@ begin
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
-    itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
-    itmEditExtractProc.OnClick:=@mnuEditExtractProcClicked;
     itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
 
     // insert text->CVS keyword
@@ -2414,10 +2417,20 @@ begin
   inherited SetupSearchMenu;
   with MainIDEBar do begin
     itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
-    itmSearchRenameIdentifier.OnClick:=@mnuSearchRenameIdentifierClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
     itmSearchProcedureList.OnClick := @mnuSearchProcedureList;
     itmSetFreeBookmark.OnClick := @mnuSetFreeBookmark;
+  end;
+end;
+
+procedure TMainIDE.SetupRefactorMenu;
+begin
+  inherited SetupRefactorMenu;
+  with MainIDEBar do begin
+    mnuRefactor.OnClick:=@mnuRefactorClicked;
+    itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
+    itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
+    itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
   end;
 end;
 
@@ -3746,9 +3759,26 @@ begin
         itmEditInsertUsername.Enabled:=Editable;
         itmEditInsertDateTime.Enabled:=Editable;
         itmEditInsertChangeLogEntry.Enabled:=Editable;
-  //itmEditMenuCodeTools: TIDEMenuSection;
-    itmEditCompleteCode.Enabled:=Editable;
-    itmEditExtractProc.Enabled:=SelEditable;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+procedure TMainIDE.mnuRefactorClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  Editable: Boolean;
+  SelAvail: Boolean;
+  SelEditable: Boolean;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
+  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
+  SelEditable:=Editable and SelAvail;
+  with MainIDEBar do begin
+  //itmRefactorMenuCodeTools: TIDEMenuSection;
+    itmRefactorCompleteCode.Enabled:=Editable;
+    itmRefactorExtractProc.Enabled:=SelEditable;
   end;
 end;
 
@@ -17586,21 +17616,6 @@ begin
   DoFindRenameIdentifier(false);
 end;
 
-procedure TMainIDE.mnuSearchRenameIdentifierClicked(Sender: TObject);
-begin
-  DoFindRenameIdentifier(true);
-end;
-
-procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
-begin
-  DoCompleteCodeAtCursor;
-end;
-
-procedure TMainIDE.mnuEditExtractProcClicked(Sender: TObject);
-begin
-  DoExtractProcFromSelection;
-end;
-
 procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCharacter);
@@ -17644,6 +17659,21 @@ end;
 procedure TMainIDE.mnuEditInsertCVSSourceClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCVSSource);
+end;
+
+procedure TMainIDE.mnuRefactorCompleteCodeClicked(Sender: TObject);
+begin
+  DoCompleteCodeAtCursor;
+end;
+
+procedure TMainIDE.mnuRefactorExtractProcClicked(Sender: TObject);
+begin
+  DoExtractProcFromSelection;
+end;
+
+procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);
+begin
+  DoFindRenameIdentifier(true);
 end;
 
 procedure TMainIDE.DoCommand(ACommand: integer);

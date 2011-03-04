@@ -306,7 +306,6 @@ var
         itmEditInsertText: TIDEMenuSection;
           itmEditInsertCVSKeyWord: TIDEMenuSection;
           itmEditInsertGeneral: TIDEMenuSection;
-      itmEditMenuCodeTools: TIDEMenuSection;
 
     // search menu
     mnuSearch: TIDEMenuSection;
@@ -314,6 +313,10 @@ var
       itmJumpings: TIDEMenuSection;
       itmBookmarks: TIDEMenuSection;
       itmCodeToolSearches: TIDEMenuSection;
+
+    // refactor menu
+    mnuRefactor: TIDEMenuSection;
+      itmRefactorMenuCodeTools: TIDEMenuSection;
 
     // view menu
     mnuView: TIDEMenuSection;

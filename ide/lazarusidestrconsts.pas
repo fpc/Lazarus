@@ -146,6 +146,7 @@ resourcestring
   lisMenuFile = '&File';
   lisMenuEdit = '&Edit';
   lisMenuSearch = '&Search';
+  lisMenuRefactor = 'Ref&actor';
   lisMenuView = '&View';
   lisMenuProject = '&Project';
   lisMenuRun = '&Run';
