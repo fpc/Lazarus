@@ -1173,6 +1173,8 @@ var
 begin
   copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
+  if (Scanner.CompilerMode=cmMacPas) and UpAtomIs('UNIV') then
+    ReadNextAtom;
   if CurPos.Flag in AllCommonAtomWords then begin
     NeedIdentifier:=true;
     IsArrayType:=UpAtomIs('ARRAY');
