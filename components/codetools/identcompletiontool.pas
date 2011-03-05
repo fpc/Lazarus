@@ -1318,6 +1318,7 @@ begin
   AddBaseType('Single');
   AddBaseType('Double');
   AddBaseType('Extended');
+  AddBaseType('CExtended');
   AddBaseType('Currency');
   AddBaseType('Comp');
   AddBaseType('Int64');

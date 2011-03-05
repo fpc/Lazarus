@@ -240,6 +240,7 @@ type
     xtSingle,      // single
     xtDouble,      // double
     xtExtended,    // extended
+    xtCExtended,   // cextended
     xtCurrency,    // currency
     xtComp,        // comp
     xtInt64,       // int64
@@ -287,6 +288,7 @@ const
     'Single',
     'Double',
     'Extended',
+    'CExtended',
     'Currency',
     'Comp',
     'Int64',
@@ -328,8 +330,8 @@ const
                        xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
                        xtByte];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtWordBool, xtLongBool,xtQWordBool];
-  xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
-                    xtCurrency, xtComp];
+  xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble,
+                    xtExtended, xtCExtended, xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
   xtAllWideStringTypes = [xtConstString, xtWideString, xtUnicodeString];
   xtAllPointerTypes = [xtPointer, xtNil];
@@ -1004,6 +1006,8 @@ begin
     Result:=xtDouble
   else if CompareIdentifiers(Identifier,'EXTENDED')=0 then
     Result:=xtExtended
+  else if CompareIdentifiers(Identifier,'CEXTENDED')=0 then
+    Result:=xtCExtended
   else if CompareIdentifiers(Identifier,'COMP')=0 then
     Result:=xtComp
   else if CompareIdentifiers(Identifier,'FILE')=0 then
@@ -5334,7 +5338,7 @@ function TFindDeclarationTool.FindExpressionResultType(
       int64, cardinal, QWord, boolean, bytebool, wordbool, qwordbool, longbool, char
       
     real:
-      real, single, double, extended, comp, currency
+      real, single, double, extended, cextended, comp, currency
       
 - predefined functions:
     function pred(ordinal type): ordinal constant of same type;
@@ -9443,6 +9447,7 @@ begin
     xtSingle,
     xtDouble,
     xtExtended,
+    xtCExtended,
     xtCurrency,
     xtComp,
     xtInt64,
@@ -10085,6 +10090,7 @@ begin
     xtSingle,
     xtDouble,
     xtExtended,
+    xtCExtended,
     xtCurrency,
     xtComp,
     xtInt64,
@@ -10102,6 +10108,7 @@ begin
         xtSingle,
         xtDouble,
         xtExtended,
+        xtCExtended,
         xtCurrency,
         xtComp,
         xtInt64,
