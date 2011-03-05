@@ -265,6 +265,10 @@ type
     procedure mnuRefactorEncloseBlockClicked(Sender: TObject);
     procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorInvertAssignmentClicked(Sender: TObject);
+    procedure mnuRefactorShowAbstractMethodsClicked(Sender: TObject);
+    procedure mnuRefactorShowEmptyMethodsClicked(Sender: TObject);
+    procedure mnuRefactorShowUnusedUnitsClicked(Sender: TObject);
+    procedure mnuRefactorFindOverloadsClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -2447,6 +2451,13 @@ begin
     itmRefactorEncloseBlock.OnClick:=@mnuRefactorEncloseBlockClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
+    // itmRefactorMenuAdvanced
+    itmRefactorShowAbstractMethods.OnClick:=@mnuRefactorShowAbstractMethodsClicked;
+    itmRefactorShowEmptyMethods.OnClick:=@mnuRefactorShowEmptyMethodsClicked;
+    itmRefactorShowUnusedUnits.OnClick:=@mnuRefactorShowUnusedUnitsClicked;
+    {$IFDEF EnableFindOverloads}
+    itmRefactorFindOverloads.OnClick:=@mnuRefactorFindOverloadsClicked;
+    {$ENDIF}
   end;
 end;
 
@@ -3323,8 +3334,7 @@ begin
   OnProcessIDECommand(Sender,Command,Result);
 end;
 
-function TMainIDE.OnSelectDirectory(const Title, InitialDir: string
-  ): string;
+function TMainIDE.OnSelectDirectory(const Title, InitialDir: string): string;
 var
   Dialog: TSelectDirectoryDialog;
   DummyResult: Boolean;
@@ -3808,12 +3818,14 @@ begin
   SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
   SelEditable:=Editable and SelAvail;
   with MainIDEBar do begin
-  //itmRefactorMenuCodeTools: TIDEMenuSection;
+  //itmRefactorMenuCodeTools
     itmRefactorCompleteCode.Enabled:=Editable;
     itmRefactorRenameIdentifier.Enabled:=Editable;
     itmRefactorEncloseBlock.Enabled:=SelEditable;
     itmRefactorExtractProc.Enabled:=SelEditable;
     itmRefactorInvertAssignment.Enabled:=SelEditable;
+  //itmRefactorMenuAdvanced
+    //...
   end;
 end;
 
@@ -17714,6 +17726,26 @@ end;
 procedure TMainIDE.mnuRefactorInvertAssignmentClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInvertAssignment);
+end;
+
+procedure TMainIDE.mnuRefactorShowAbstractMethodsClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecShowAbstractMethods);
+end;
+
+procedure TMainIDE.mnuRefactorShowEmptyMethodsClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecRemoveEmptyMethods);
+end;
+
+procedure TMainIDE.mnuRefactorShowUnusedUnitsClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecRemoveUnusedUnits);
+end;
+
+procedure TMainIDE.mnuRefactorFindOverloadsClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecFindOverloads);
 end;
 
 procedure TMainIDE.DoCommand(ACommand: integer);

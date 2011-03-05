@@ -1448,26 +1448,26 @@ begin
     AParent:=SrcEditSubMenuRefactor;
 
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
-        (AParent,'CompleteCode', uemCompleteCode, nil, @ExecuteIdeMenuClick);
+        (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
     SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
         (AParent, 'EncloseSelection',lisKMEncloseSelection);
     SrcEditMenuRenameIdentifier := RegisterIDEMenuCommand
-        (AParent, 'RenameIdentifier',uemRenameIdentifier, nil, @ExecuteIdeMenuClick);
+        (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
-        (AParent, 'FindIdentifierReferences',uemFindIdentifierReferences, nil, @ExecuteIdeMenuClick);
+        (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand
-        (AParent, 'ExtractProc',uemExtractProc, nil, @ExecuteIdeMenuClick);
+        (AParent, 'ExtractProc',lisMenuExtractProc, nil, @ExecuteIdeMenuClick);
     SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
         (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowAbstractMethods := RegisterIDEMenuCommand
-        (AParent, 'ShowAbstractMethods',srkmecShowAbstractMethods, nil, @ExecuteIdeMenuClick);
+        (AParent, 'ShowAbstractMethods',srkmecAbstractMethods, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowEmptyMethods := RegisterIDEMenuCommand
-        (AParent, 'ShowEmptyMethods', lisCodeHelpShowEmptyMethods, nil, @ExecuteIdeMenuClick);
+        (AParent, 'ShowEmptyMethods', srkmecEmptyMethods, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnusedUnits := RegisterIDEMenuCommand
-        (AParent, 'ShowUnusedUnits', lisCodeHelpShowUnusedUnits, nil, @ExecuteIdeMenuClick);
+        (AParent, 'ShowUnusedUnits', srkmecUnusedUnits, nil, @ExecuteIdeMenuClick);
     SrcEditMenuFindOverloads := RegisterIDEMenuCommand
-        (AParent, 'FindOverloads', srkmecFindOverloads, nil, @ExecuteIdeMenuClick);
-   {$IFNDEF EnableFindOverloads}
+        (AParent, 'FindOverloads', srkmecFindOverloadsCapt, nil, @ExecuteIdeMenuClick);
+   {$IFnDEF EnableFindOverloads}
    SrcEditMenuFindOverloads.Visible:=false;
    {$ENDIF}
   {%endregion}

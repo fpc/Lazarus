@@ -319,6 +319,7 @@ var
     // refactor menu
     mnuRefactor: TIDEMenuSection;
       itmRefactorMenuCodeTools: TIDEMenuSection;
+      itmRefactorMenuAdvanced: TIDEMenuSection;
 
     // view menu
     mnuView: TIDEMenuSection;

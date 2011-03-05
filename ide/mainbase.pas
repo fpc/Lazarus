@@ -554,7 +554,16 @@ begin
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
     CreateMenuItem(ParentMI,itmRefactorEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
-    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'InvertAssignment',uemInvertAssignment);
+    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
+
+    CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuAdvanced,'itmRefactorMenuAdvanced');
+    ParentMI:=itmRefactorMenuAdvanced;
+    CreateMenuItem(ParentMI,itmRefactorShowAbstractMethods,'itmShowAbstractMethods',srkmecAbstractMethods);
+    CreateMenuItem(ParentMI,itmRefactorShowEmptyMethods,'itmShowEmptyMethods',srkmecEmptyMethods);
+    CreateMenuItem(ParentMI,itmRefactorShowUnusedUnits,'itmShowUnusedUnits',srkmecUnusedUnits);
+    {$IFDEF EnableFindOverloads}
+    CreateMenuItem(ParentMI,itmRefactorFindOverloads,'itmFindOverloads',srkmecFindOverloadsCapt);
+    {$ENDIF}
   end;
 end;
 
@@ -932,6 +941,12 @@ begin
     itmRefactorEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
     itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);
+    itmRefactorShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
+    itmRefactorShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
+    itmRefactorShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
+    {$IFDEF EnableFindOverloads}
+    itmRefactorFindOverloads.Command:=GetCommand(ecFindOverloads);
+    {$ENDIF}
 
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);

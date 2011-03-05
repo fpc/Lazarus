@@ -187,12 +187,17 @@ type
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;
-        //itmEditMenuCodeTools: TIDEMenuSection;
+      //itmRefactorMenuCodeTools: TIDEMenuSection;
         itmRefactorCompleteCode: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
         itmRefactorEncloseBlock: TIDEMenuCommand;
         itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorInvertAssignment: TIDEMenuCommand;
+      //itmRefactorMenuAdvanced: TIDEMenuSection;
+        itmRefactorShowAbstractMethods: TIDEMenuCommand;
+        itmRefactorShowEmptyMethods: TIDEMenuCommand;
+        itmRefactorShowUnusedUnits: TIDEMenuCommand;
+        itmRefactorFindOverloads: TIDEMenuCommand;
 
     // view menu
     //mnuView: TIDEMenuSection;

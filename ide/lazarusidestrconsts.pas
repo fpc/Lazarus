@@ -230,10 +230,6 @@ resourcestring
   lisUnitPaths = 'Unit paths';
   lisIncludePaths = 'Include paths';
   lisSourcePaths = 'Source paths';
-  lisMenuCompleteCode = 'Complete Code';
-  lisMenuExtractProc = 'Extract procedure ...';
-  lisMenuFindIdentifierRefs = 'Find Identifier References ...';
-  lisMenuRenameIdentifier = 'Rename Identifier ...';
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
@@ -2283,11 +2279,6 @@ resourcestring
   uemMovePageLeftmost='Move page leftmost';
   uemMovePageRightmost='Move page rightmost';
   uemRefactor = 'Refactoring';
-  uemCompleteCode = 'Complete Code';
-  uemExtractProc = 'Extract Procedure';
-  uemInvertAssignment = 'Invert Assignment';
-  uemFindIdentifierReferences = 'Find Identifier References';
-  uemRenameIdentifier = 'Rename Identifier';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '
@@ -2306,8 +2297,6 @@ resourcestring
     +'system seems to use it.%sThat means non ASCII characters will probably '
     +'be shown incorrect.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
-  lisCodeHelpShowEmptyMethods = 'Show empty methods';
-  lisCodeHelpShowUnusedUnits = 'Show unused units';
   uemHighlighter = 'Highlighter';
   uemEncoding = 'Encoding';
   uemLineEnding = 'Line ending';
@@ -2581,7 +2570,7 @@ resourcestring
   srkmecFindPrevious              = 'Find previous';
   srkmecFindInFiles               = 'Find in files';
   srkmecReplace                   = 'Replace text';
-  lisKMFindIncremental = 'Find incremental';
+  lisKMFindIncremental            = 'Find incremental';
   srkmecFindProcedureDefinition   = 'Find procedure definiton';
   srkmecFindProcedureMethod       = 'Find procedure method';
   srkmecGotoLineNumber            = 'Go to line number';
@@ -2621,21 +2610,30 @@ resourcestring
   // codetools
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
+  lisMenuCompleteCode             = 'Complete Code';
   srkmecShowCodeContext           = 'Show code context';
   srkmecExtractProc               = 'Extract procedure';
+  lisMenuExtractProc              = 'Extract procedure ...';
   srkmecFindIdentifierRefs        = 'Find identifier references';
+  lisMenuFindIdentifierRefs       = 'Find Identifier References ...';
   srkmecRenameIdentifier          = 'Rename identifier';
+  lisMenuRenameIdentifier         = 'Rename Identifier ...';
   srkmecInvertAssignment          = 'Invert assignment';
+  uemInvertAssignment             = 'Invert Assignment';
   srkmecSyntaxCheck               = 'Syntax check';
   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
   srkmecFindDeclaration           = 'Find declaration';
   srkmecFindBlockOtherEnd         = 'Find block other end';
   srkmecFindBlockStart            = 'Find block start';
+  srkmecAbstractMethods           = 'Abstract methods ...';
   srkmecShowAbstractMethods       = 'Show abstract methods';
+  srkmecEmptyMethods              = 'Empty methods ...';
   srkmecRemoveEmptyMethods        = 'Remove empty methods';
+  srkmecUnusedUnits               = 'Unused units ...';
   srkmecRemoveUnusedUnits         = 'Remove unused units';
   srkmecUseProjectUnit            = 'Add unit to uses section';
   srkmecFindOverloads             = 'Find overloads';
+  srkmecFindOverloadsCapt         = 'Find overloads ...';
 
   //Plugin template Edit
   srkmecSynPTmplEdNextCell           = 'Next Cell';
