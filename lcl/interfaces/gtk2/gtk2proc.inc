@@ -1533,11 +1533,11 @@ end;
 
 procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 var
-  RGBColor : Longint;
+  RGBColor : DWord;
 begin
   if not (cfColorAllocated in GDIColor^.ColorFlags) then
   begin
-    RGBColor := ColorToRGB(GDIColor^.ColorRef);
+    RGBColor := TColor(ColorToRGB(TColor(GDIColor^.ColorRef)));
 
     with GDIColor^.Color do
     begin
@@ -8047,8 +8047,8 @@ var
   Style: PGTKStyle;
   GC: PGDKGC;
   Pixmap: PGDKPixmap;
-  SysColor: TColorRef;
-  BaseColor: TColorRef;
+  SysColor: TColor;
+  BaseColor: TColor;
   Red, Green, Blue: byte;
 begin
   // Set defaults in case something goes wrong
@@ -8057,9 +8057,9 @@ begin
   GC := nil;
   Pixmap := nil;
 
-  SysColor := ColorToRGB(Color);
+  SysColor := ColorToRGB(TColor(Color));
   Result.Fill := GDK_Solid;
-  RedGreenBlue(TColor(SysColor), Red, Green, Blue);
+  RedGreenBlue(SysColor, Red, Green, Blue);
   Result.foreground.Red:=gushort(Red) shl 8 + Red;
   Result.foreground.Green:=gushort(Green) shl 8 + Green;
   Result.foreground.Blue:=gushort(Blue) shl 8 + Blue;
@@ -8067,7 +8067,7 @@ begin
   {$IfDef Disable_GC_SysColors}
   exit;
   {$EndIf}
-  BaseColor := Color and $FF;
+  BaseColor := TColor(Color and $FF);
   case BaseColor of
     {These are WM/X defined, but might be possible to get
 
