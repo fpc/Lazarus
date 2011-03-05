@@ -120,8 +120,8 @@ const
   FPCProcessorNames: array[1..6] of shortstring =(
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
-  FPCSyntaxModes: array[1..5] of shortstring = (
-    'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas'
+  FPCSyntaxModes: array[1..6] of shortstring = (
+    'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
     );
 
   Lazarus_CPU_OS_Widget_Combinations: array[1..65] of shortstring = (
@@ -6819,6 +6819,7 @@ var
   StartPos, EndPos: Integer;
   s: string;
   CompilerMode: String;
+  m: Integer;
 begin
   Result:=nil;
   if AlwaysCreate then
@@ -6870,12 +6871,8 @@ begin
     end;
   end;
   if CompilerMode<>'' then begin
-    AddDefineUndefine('FPC_FPC',SysUtils.CompareText(CompilerMode,'FPC')=0);
-    AddDefineUndefine('FPC_ObjFPC',SysUtils.CompareText(CompilerMode,'ObjFPC')=0);
-    AddDefineUndefine('FPC_Delphi',SysUtils.CompareText(CompilerMode,'Delphi')=0);
-    AddDefineUndefine('FPC_TP',SysUtils.CompareText(CompilerMode,'TP')=0);
-    AddDefineUndefine('FPC_GPC',SysUtils.CompareText(CompilerMode,'GPC')=0);
-    AddDefineUndefine('FPC_MACPAS',SysUtils.CompareText(CompilerMode,'MACPAS')=0);
+    for m:=low(FPCSyntaxModes) to high(FPCSyntaxModes) do
+      AddDefineUndefine('FPC_'+FPCSyntaxModes[m],SysUtils.CompareText(CompilerMode,FPCSyntaxModes[m])=0);
   end;
 
   Result.SetDefineOwner(Owner,true);

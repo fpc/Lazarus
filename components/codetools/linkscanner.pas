@@ -130,7 +130,7 @@ type
 
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
-  TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas);
+  TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas, cmISO);
   TCompilerModeSwitch = (
     cmsDefault,          
     cmsClass,               
@@ -522,7 +522,7 @@ type
 
 const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
-        'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS'
+        'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS', 'ISO'
      );
 
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
