@@ -786,22 +786,23 @@ var
 
 var
   ext2: TDoubleRect;
-  w, cumulHeight: Double;
+  w: Double;
   p: TDoublePoint;
+  heights: TDoubleDynArray;
 
-  procedure BuildBar(AY: Double);
+  procedure BuildBar;
   var
     graphBar: TDoubleRect;
     imageBar: TRect;
   begin
-    graphBar := DoubleRect(p.X - w, cumulHeight, p.X + w, cumulHeight + AY);
+    graphBar :=
+      DoubleRect(p.X - w, heights[stackIndex], p.X + w, heights[stackIndex + 1]);
     if IsRotated then
       with graphBar do begin
         Exchange(a.X, a.Y);
         Exchange(b.X, b.Y);
       end;
 
-    cumulHeight += AY;
     if not RectIntersectsRect(graphBar, ext2) then exit;
 
     with imageBar do begin
@@ -832,17 +833,20 @@ begin
     z := AxisToGraphX(ZeroLevel)
   else
     z := AxisToGraphY(ZeroLevel);
+  SetLength(heights, Source.YCount + 1);
   for pointIndex := FLoBound to FUpBound do begin
     BarOffsetWidth(GetGraphPointX(pointIndex), pointIndex, ofs, w);
     p := FGraphPoints[pointIndex - FLoBound];
     if IsRotated then
       Exchange(p.X, p.Y);
     p.X += ofs;
-    cumulHeight := z;
-    stackIndex := 0;
-    BuildBar(p.Y - z);
+    heights[0] := z;
+    heights[1] := p.Y - z;
     for stackIndex := 1 to Source.YCount - 1 do
-      BuildBar(Source[pointIndex]^.YList[stackIndex - 1]);
+      heights[stackIndex + 1] :=
+        heights[stackIndex] + Source[pointIndex]^.YList[stackIndex - 1];
+    for stackIndex := 0 to Source.YCount - 1 do
+      BuildBar;
   end;
 
   DrawLabels(ADrawer);
