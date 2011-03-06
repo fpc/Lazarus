@@ -1140,7 +1140,7 @@ function CarbonGroupBox_Draw(ANextHandler: EventHandlerCallRef;
 var
   ABox    : TCarbonGroupBox;
   Context : CGContextRef;
-  c : TColor;
+  c : TColorRef;
   b : TRect;
 const
   rgbkoef = 1 / 255;

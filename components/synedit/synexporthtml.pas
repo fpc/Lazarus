@@ -50,7 +50,7 @@ uses
   QGraphics,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, Graphics, ClipBrd,
+  LCLIntf, LCLType, Graphics, ClipBrd,
   {$ELSE}
   Windows,
   Graphics,
@@ -217,7 +217,7 @@ end;
 
 function TSynExporterHTML.ColorToHTML(AColor: TColor): string;
 var
-  RGBColor: longint;
+  RGBColor: TColorRef;
   RGBValue: byte;
 const
   Digits: array[0..15] of char = '0123456789ABCDEF';

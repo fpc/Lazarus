@@ -1097,7 +1097,7 @@ var
   SelectionColor: TGDKColor;
   colorSel: PGtkColorSelection;
 begin
-  Color := ColorToRGB(Color);
+  Color := TColor(ColorToRGB(Color));
   SelectionColor := TColortoTGDKColor(Color);
   colorSel := PGtkColorSelection(ColorSelection^.colorsel);
   gtk_color_selection_set_current_color(colorSel, @SelectionColor);

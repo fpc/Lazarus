@@ -28,7 +28,7 @@ type
     function UseThemes: Boolean; override;
     function ThemedControlsEnabled: Boolean; override;
     
-    function InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): LongInt; override;
+    function InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): COLORREF; override;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
   public
     destructor Destroy; override;
@@ -305,10 +305,10 @@ begin
   Result := FThemeData[Element];
 end;
 
-function TWin32ThemeServices.InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): LongInt;
+function TWin32ThemeServices.InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): COLORREF;
 begin
   if ThemesEnabled then
-    Result := LongInt(GetThemeSysColor(Theme[Details.Element], Integer(Color and not $80000000)))
+    Result := GetThemeSysColor(Theme[Details.Element], Integer(Color and not $80000000))
   else
     Result := inherited;
 end;

@@ -769,7 +769,7 @@ procedure TSynGutterLineOverviewProvider.SetColor(const AValue: TColor);
 begin
   if FColor = AValue then exit;
   FColor := AValue;
-  FRGBColor := ColorToRGB(AValue);
+  FRGBColor := TColor(ColorToRGB(AValue));
   DoChange(Self);
 end;
 
@@ -943,7 +943,7 @@ procedure TSynGutterLOvProviderModifiedLines.SetColorSaved(const AValue: TColor)
 begin
   if FColorSaved = AValue then exit;
   FColorSaved := AValue;
-  FRGBColorSaved := ColorToRGB(AValue);
+  FRGBColorSaved := TColor(ColorToRGB(AValue));
   DoChange(Self);
 end;
 

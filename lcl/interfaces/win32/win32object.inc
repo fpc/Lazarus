@@ -793,7 +793,7 @@ begin
     Result:=Windows.SetPixel(DC,X,Y,cl)
   else
   begin
-    pen := Windows.CreatePen(PS_SOLID, 1, Windows.ColorRef(ColorToRGB(cl)));
+    pen := Windows.CreatePen(PS_SOLID, 1, ColorToRGB(cl));
     oldpen := Windows.SelectObject(DC, pen);
     Windows.MoveToEx(DC, X, Y, @p);
     Windows.LineTo(DC, X, Y + 1);
@@ -806,7 +806,7 @@ end;
 
 procedure TWin32WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
-  IntSetPixel(CanvasHandle, X, Y, Windows.ColorRef(ColorToRGB(AColor)));
+  IntSetPixel(CanvasHandle, X, Y, ColorToRGB(AColor));
 end;
 
 {------------------------------------------------------------------------------

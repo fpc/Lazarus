@@ -447,14 +447,15 @@ end;
 function TButtonGlyph.MapColor(Color: TColor): TColor;
 var
   Index: Byte;
+  ColorRef: TColorRef;
 begin
-  if (Color = FTransparentColor) or (ColorToRGB(Color) =
-    ColorToRGB(clBtnFace)) then Result := Color
+  if (Color = FTransparentColor) or (ColorToRGB(Color) = ColorToRGB(clBtnFace)) then
+    Result := Color
   else begin
-    Color := ColorToRGB(Color);
-    Index := Byte(Longint(Word(GetRValue(Color)) * 77 +
-      Word(GetGValue(Color)) * 150 + Word(GetBValue(Color)) * 29) shr 8);
-    Result := RGB(Index, Index, Index);
+    ColorRef := ColorToRGB(Color);
+    Index := Byte(Longint(Word(GetRValue(ColorRef)) * 77 +
+      Word(GetGValue(ColorRef)) * 150 + Word(GetBValue(ColorRef)) * 29) shr 8);
+    Result := TColor(RGB(Index, Index, Index));
   end;
 end;
 
@@ -502,7 +503,7 @@ begin
             for X := 0 to Width - 1 do
               for Y := 0 to Height - 1 do
                 Canvas.Pixels[X, Y] := MapColor(Canvas.Pixels[X, Y]);
-          FIndexs[State] := FGlyphList.AddMasked(TmpImage, ColorToRGB(clBtnFace));
+          FIndexs[State] := FGlyphList.AddMasked(TmpImage, TColor(ColorToRGB(clBtnFace)));
         end;
       fbsDisabled:
         begin
@@ -544,7 +545,7 @@ begin
                      MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
 
               { Convert transparent color to clBtnFace }
-              DDB.Canvas.Brush.Color := ColorToRGB(FTransparentColor);
+              DDB.Canvas.Brush.Color := TColor(ColorToRGB(FTransparentColor));
               MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
               Brush.Color := clBtnFace;
               DestDC := Handle;

@@ -1880,21 +1880,23 @@ function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorIndex(Color: Longint; var Index: Integer): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
-function ColorToRGB(Color: TColor): TColor;
+function ColorToRGB(Color: TColor): TColorRef;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
-function IsSysColor(AColor: TColor): Boolean;
+function IsSysColor(AColor: TColorRef): Boolean;
 
-function Blue(rgb: TColor): BYTE; // does not work on system color
-function Green(rgb: TColor): BYTE; // does not work on system color
-function Red(rgb: TColor): BYTE; // does not work on system color
+function Blue(rgb: TColorRef): BYTE; // does not work on system color
+function Green(rgb: TColorRef): BYTE; // does not work on system color
+function Red(rgb: TColorRef): BYTE; // does not work on system color
 function RGBToColor(R, G, B: Byte): TColor;
-procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte); // does not work on system color
+procedure RedGreenBlue(rgb: TColorRef; out Red, Green, Blue: Byte); // does not work on system color
+function FPColorToTColorRef(const FPColor: TFPColor): TColorRef;
 function FPColorToTColor(const FPColor: TFPColor): TColor;
-function TColorToFPColor(const c: TColor): TFPColor; // does not work on system color
+function TColorToFPColor(const c: TColorRef): TFPColor; overload;
+function TColorToFPColor(const c: TColor): TFPColor; overload; // does not work on system color
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
@@ -2437,7 +2439,7 @@ begin
   if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0 then begin
     case Color of
     {$warnings off}
-    clHighlightedText..clForeground:
+    clHighlightedText..clForeground:   // Deprecated values!
       Result:=clForeground+COLOR_clForeground-Color;
     clNormalHighlightedText..clNormalForeground:
       Result:=clNormalForeground+COLOR_clNormalForeground-Color;
@@ -2454,11 +2456,15 @@ begin
   end;
 end;
 
-function ColorToRGB(Color: TColor): TColor;
+function ColorToRGB(Color: TColor): TColorRef;
+var
+  i: integer;
 begin
-  if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0
-  then Result := GetSysColor(SysColorToSysColorIndex(Color))
-  else Result := Color;
+  i := SysColorToSysColorIndex(Color);
+  if i <> -1 then
+    Result := GetSysColor(i)
+  else
+    Result := TColorRef(Color);
   Result := Result and $FFFFFF;
 end;
 
@@ -2520,17 +2526,17 @@ begin
   Result := ((B and $ff) shl 16) or ((G and $ff) shl 8) or (R and $ff);
 end;
 
-function Blue(rgb: TColor): BYTE;
+function Blue(rgb: TColorRef): BYTE;
 begin
   Result := (rgb shr 16) and $000000ff;
 end;
 
-function Green(rgb: TColor): BYTE;
+function Green(rgb: TColorRef): BYTE;
 begin
   Result := (rgb shr 8) and $000000ff;
 end;
 
-function Red(rgb: TColor): BYTE;
+function Red(rgb: TColorRef): BYTE;
 begin
   Result := rgb and $000000ff;
 end;
@@ -2540,21 +2546,26 @@ begin
   Result := (B shl 16) or (G shl 8) or R;
 end;
 
-procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColorRef; out Red, Green, Blue: Byte);
 begin
   Red := rgb and $000000ff;
   Green := (rgb shr 8) and $000000ff;
   Blue := (rgb shr 16) and $000000ff;
 end;
 
-function FPColorToTColor(const FPColor: TFPColor): TColor;
+function FPColorToTColorRef(const FPColor: TFPColor): TColorRef;
 begin
   Result:=((FPColor.Red shr 8) and $ff)
        or (FPColor.Green and $ff00)
        or ((FPColor.Blue shl 8) and $ff0000);
 end;
 
-function TColorToFPColor(const c: TColor): TFPColor;
+function FPColorToTColor(const FPColor: TFPColor): TColor;
+begin
+  Result:=TColor(FPColorToTColorRef(FPColor));
+end;
+
+function TColorToFPColor(const c: TColorRef): TFPColor;
 begin
   Result.Red:=(c and $ff);
   Result.Red:=Result.Red+(Result.Red shl 8);
@@ -2563,6 +2574,11 @@ begin
   Result.Blue:=(c and $ff0000) shr 8;
   Result.Blue:=Result.Blue+(Result.Blue shr 8);
   Result.Alpha:=FPImage.alphaOpaque;
+end;
+
+function TColorToFPColor(const c: TColor): TFPColor;
+begin
+  Result:=TColorToFPColor(TColorRef(c));
 end;
 
 // ------------------------------------------------------------------
@@ -2582,9 +2598,9 @@ begin
   Result := RGBToColor(R, G, B);
 end;
 
-function IsSysColor(AColor: TColor): Boolean;
+function IsSysColor(AColor: TColorRef): Boolean;
 begin
-  Result := (Cardinal(AColor) and Cardinal(SYS_COLOR_BASE)) <> 0;
+  Result := (AColor and SYS_COLOR_BASE) <> 0;
 end;
 
 

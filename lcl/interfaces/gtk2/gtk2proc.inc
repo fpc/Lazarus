@@ -1435,7 +1435,7 @@ end;
 
   Allocated a GDKColor from a winapi color
  ------------------------------------------------------------------------------}
-function AllocGDKColor(const AColor: LongInt): TGDKColor;
+function AllocGDKColor(const AColor: TColorRef): TGDKColor;
 begin
   with Result do
   begin
@@ -1537,7 +1537,7 @@ var
 begin
   if not (cfColorAllocated in GDIColor^.ColorFlags) then
   begin
-    RGBColor := TColor(ColorToRGB(TColor(GDIColor^.ColorRef)));
+    RGBColor := ColorToRGB(TColor(GDIColor^.ColorRef));
 
     with GDIColor^.Color do
     begin
@@ -8047,7 +8047,6 @@ var
   Style: PGTKStyle;
   GC: PGDKGC;
   Pixmap: PGDKPixmap;
-  SysColor: TColor;
   BaseColor: TColor;
   Red, Green, Blue: byte;
 begin
@@ -8057,9 +8056,8 @@ begin
   GC := nil;
   Pixmap := nil;
 
-  SysColor := ColorToRGB(TColor(Color));
   Result.Fill := GDK_Solid;
-  RedGreenBlue(SysColor, Red, Green, Blue);
+  RedGreenBlue(ColorToRGB(TColor(Color)), Red, Green, Blue);
   Result.foreground.Red:=gushort(Red) shl 8 + Red;
   Result.foreground.Green:=gushort(Green) shl 8 + Green;
   Result.foreground.Blue:=gushort(Blue) shl 8 + Blue;

@@ -221,7 +221,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
       OldColor := TColorRef(CheckListBox.Font.Color);
       if OldColor = clDefault then
         OldColor := TColorRef(CheckListBox.GetDefaultColor(dctFont));
-      OldColor := Windows.SetTextColor(Data^._HDC, TColorRef(ColorToRGB(TColor(OldColor))));
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(TColor(OldColor)));
     end;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then

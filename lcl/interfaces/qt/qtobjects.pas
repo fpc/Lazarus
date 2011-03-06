@@ -349,7 +349,7 @@ type
     vBackgroundBrush: TQtBrush;
     vClipRect: PRect;         // is the cliprect paint event give to us
     vClipRectDirty: boolean;  // false=paint cliprect is still valid
-    vTextColor: TColor;
+    vTextColor: TColorRef;
     vMapMode: Integer;
   public
     { Our own functions }
@@ -2843,7 +2843,7 @@ begin
   Write('TQtDeviceContext.setBKColor() ');
   {$endif}
   Result := GetBkColor;
-  ColorRefToTQColor(TColorRef(ColorToRGB(TColor(Color))), NColor);
+  ColorRefToTQColor(ColorToRGB(TColor(Color)), NColor);
   BackgroundBrush.setColor(@NColor);
 end;
 

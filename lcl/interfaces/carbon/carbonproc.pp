@@ -1191,7 +1191,7 @@ end;
  ------------------------------------------------------------------------------}
 function ColorToRGBColor(const AColor: TColor): RGBColor;
 var
-  V: TColor;
+  V: TColorRef;
 begin
   V := ColorToRGB(AColor);
   
@@ -1223,7 +1223,7 @@ end;
  ------------------------------------------------------------------------------}
 function CreateCGColor(const AColor: TColor): CGColorRef;
 var
-  V: TColor;
+  V: TColorRef;
   F: Array [0..3] of Single;
 begin
   V := ColorToRGB(AColor);

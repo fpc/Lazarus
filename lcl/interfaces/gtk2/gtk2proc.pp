@@ -383,7 +383,7 @@ procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
 procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush, AsBackground: Boolean);
 procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
-function AllocGDKColor(const AColor: LongInt): TGDKColor;
+function AllocGDKColor(const AColor: TColorRef): TGDKColor;
 function TGDKColorToTColor(const value: TGDKColor): TColor;
 function TColortoTGDKColor(const value: TColor): TGDKColor;
 procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);

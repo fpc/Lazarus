@@ -1305,11 +1305,11 @@ begin
           WindowColor := ChildWinControl.Font.Color;
           if WindowColor = clDefault then
             WindowColor := ChildWinControl.GetDefaultColor(dctFont);
-          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(WindowColor)));
+          Windows.SetTextColor(HDC(WParam), ColorToRGB(WindowColor));
           WindowColor := ChildWinControl.Brush.Color;
           if WindowColor = clDefault then
             WindowColor := ChildWinControl.GetDefaultColor(dctBrush);
-          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(WindowColor)));
+          Windows.SetBkColor(HDC(WParam), ColorToRGB(WindowColor));
           LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling

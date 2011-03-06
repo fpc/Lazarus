@@ -328,7 +328,7 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
   Index:integer; ACanvas:TCanvas;  const ARect:TRect;
   AState: TPropEditDrawState);
 
-  function ColorToBorderColor(AColor: TColor): TColor;
+  function ColorToBorderColor(AColor: TColorRef): TColor;
   type
     TColorQuad = record
       Red,
@@ -347,7 +347,7 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
         if pedsSelected in AState then
           Result := clWindow
         else
-         Result := AColor;
+         Result := TColor(AColor);
       end else
       begin
         if pedsSelected in AState then

@@ -769,23 +769,21 @@ end;
 
   Set the color of the color selection dialog
  ------------------------------------------------------------------------------}
-procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
-  Color: TColor);
+procedure SetColorDialogColor(ColorSelection: PGtkColorSelection; aColor: TColor);
 var
   SelectionColor: TGDKColor;
   colorSel : PGTKCOLORSELECTION;
+  ColorRef: TColorRef;
 begin
+  ColorRef:=ColorToRGB(aColor);
   {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Start Color=',DbgS(Color));
-  {$ENDIF}
-  Color:=ColorToRGB(Color);
-  {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted Color=',DbgS(Color));
+  DebugLn('TGtkWidgetSet.SetColorDialogColor Start aColor=',DbgS(aColor));
+  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted aColor=',DbgS(ColorRef));
   {$ENDIF}
   SelectionColor.Pixel := 0;
-  SelectionColor.Red :=  Red(Color) shl 8;
-  SelectionColor.Green:= Green(Color) shl 8;
-  SelectionColor.Blue:= Blue(Color) shl 8;
+  SelectionColor.Red :=  Red(ColorRef) shl 8;
+  SelectionColor.Green:= Green(ColorRef) shl 8;
+  SelectionColor.Blue:= Blue(ColorRef) shl 8;
   colorSel := PGTKCOLORSELECTION((PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
   gtk_color_selection_set_current_color(colorSel,@SelectionColor);
 end;

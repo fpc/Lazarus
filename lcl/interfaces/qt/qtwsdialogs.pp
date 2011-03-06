@@ -646,7 +646,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  AColor: TColor;
+  AColor: TColorRef;
   AQColor: TQColor;
   AQtColor: QColorH;
   ARgb: QRgb;
@@ -662,7 +662,7 @@ var
     for i := 0 to ColorDialog.CustomColors.Count - 1 do
       if ExtractColorIndexAndColor(ColorDialog.CustomColors, i, AIndex, AColor) then
         if AIndex < CustomColorCount then
-          QColorDialog_setCustomColor(AIndex, AColor);
+          QColorDialog_setCustomColor(AIndex, QRgb(AColor));
   end;
 
 begin
@@ -681,8 +681,8 @@ begin
   QColor_fromRgba(PQColor(AQtColor), ARgb);
   try
     QColor_toRgb(AQtColor, @AQColor);
-    TQColorToColorRef(AQColor, TColorRef(AColor));
-    ColorDialog.Color := AColor;
+    TQColorToColorRef(AQColor, AColor);
+    ColorDialog.Color := TColor(AColor);
   finally
     QColor_destroy(AQtColor);
   end;

@@ -755,7 +755,7 @@ var
   IntfImage: TLazIntfImage;
   x, y, stopx, stopy: Integer;
   ImgHandle, MskHandle: HBitmap;
-  TransColor: TColor;
+  TransColor: TColorRef;
 begin
   //DebugLn(['TRasterImage.CreateMask ',Width,'x',Height,' ',Transparent,' ',dbgs(ord(TransparentMode)),' ',dbgs(TransparentColor)]);
   if (Width = 0)
@@ -792,13 +792,13 @@ begin
     then begin
       if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
       then TransColor := ColorToRGB(FTransparentColor)
-      else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
+      else TransColor := FPColorToTColorRef(IntfImage.Colors[0, stopy]);
     end
     else TransColor := ColorToRGB(AColor);
 
     for y := 0 to stopy do
       for x := 0 to stopx do
-        IntfImage.Masked[x,y] := FPColorToTColor(IntfImage.Colors[x,y]) = TransColor;
+        IntfImage.Masked[x,y] := FPColorToTColorRef(IntfImage.Colors[x,y]) = TransColor;
 
     IntfImage.CreateBitmaps(ImgHandle, MskHandle);
     MaskHandle := MskHandle;

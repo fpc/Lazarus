@@ -37,7 +37,7 @@ interface
 {$I ide.inc}
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, Menus, math, LazarusIDEStrConsts,
+  Classes, SysUtils, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark,
@@ -117,7 +117,7 @@ type
     FPixEndInterfaceLine, FPixEndImplementationLine,
     FPixEndInitializationLine, FPixEndFinalizationLine: Integer;
     FSingleLine: Boolean;
-    FRGBColor2: TColor;
+    FRGBColor2: TColorRef;
     procedure SetColor2(const AValue: TColor);
     procedure SetSingleLine(const AValue: Boolean);
   protected
@@ -140,7 +140,7 @@ type
   // Bookmarsk and breakpoints
   private
     FBreakColor: TColor;
-    FRGBBreakColor: TColor;
+    FRGBBreakColor: TColorRef;
     procedure SetBreakColor(const AValue: TColor);
   protected
     procedure AdjustColorForMark(AMark: TSynEditMark; var AColor: TColor; var APriority: Integer); override;
@@ -536,7 +536,7 @@ procedure TIDESynGutterLOvProviderIDEMarks.AdjustColorForMark(AMark: TSynEditMar
   var AColor: TColor; var APriority: Integer);
 begin
   if not AMark.IsBookmark then begin
-    AColor := FRGBBreakColor;
+    AColor := TColor(FRGBBreakColor);
     inc(APriority);
   end;
   inherited AdjustColorForMark(AMark, AColor, APriority);

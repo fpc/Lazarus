@@ -1536,7 +1536,7 @@ end;
 
   Allocated a GDKColor from a winapi color
  ------------------------------------------------------------------------------}
-function AllocGDKColor(const AColor: LongInt): TGDKColor;
+function AllocGDKColor(const AColor: TColorRef): TGDKColor;
 begin
   with Result do
   begin
@@ -1634,7 +1634,7 @@ end;
 
 Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 var
-  RGBColor : Longint;
+  RGBColor : TColorRef;
 begin
   if DC=0 then ;
   if not (cfColorAllocated in GDIColor^.ColorFlags) then begin

@@ -117,8 +117,8 @@ var
   BGGreen: Integer;
   BGBlue: Integer;
   TokenStart: Integer;
-  BackgroundColor: TColor;
-  ForegroundColor: TColor;
+  BackgroundColor: TColorRef;
+  ForegroundColor: TColorRef;
 
   procedure SetFontColor(NewColor: TColor);
   
@@ -145,7 +145,7 @@ var
     GreenDiff: integer;
     BlueDiff: integer;
   begin
-    NewColor := ColorToRGB(NewColor);
+    NewColor := TColor(ColorToRGB(NewColor));
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
     FGBlue:=NewColor and $ff;
@@ -184,7 +184,7 @@ var
     sToken: PChar;
     nTokenLen: integer;
     Attr: TSynHighlightElement;
-    CurForeground: Integer;
+    CurForeground: TColor;
   begin
     if MeasureOnly then begin
       Inc(Result.X,ACanvas.TextWidth(s));
@@ -200,7 +200,8 @@ var
           System.Move(sToken^,s[1],nTokenLen);
           attr := Highlighter.GetTokenAttribute;
           CurForeground:=Attr.Foreground;
-          if CurForeground=clNone then CurForeground:=ForegroundColor;
+          if CurForeground=clNone then
+            CurForeground:=TColor(ForegroundColor);
           SetFontColor(CurForeground);
           ACanvas.TextOut(x,y,s);
           inc(x,ACanvas.TextWidth(s));

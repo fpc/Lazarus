@@ -257,7 +257,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetBkColor(AValue: TColor);
 begin
-  AValue := ColorToRGB(AValue);
+  AValue := TColor(ColorToRGB(AValue));
   FBkColor := AValue;
   FBkBrush.SetColor(AValue, BkMode = OPAQUE);
 end;
@@ -397,7 +397,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetTextColor(AValue: TColor);
 begin
-  AValue := ColorToRGB(AValue);
+  AValue := TColor(ColorToRGB(AValue));
   FTextColor := AValue;
   TextBrush.SetColor(AValue, True);
 end;

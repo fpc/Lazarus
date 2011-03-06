@@ -47,7 +47,7 @@ implementation
 }
 function TColorToTfpgColor(AColor: TColor): TfpgColor;
 var
-  RGBColor: TColor;
+  RGBColor: TColorRef;
   RGBTriple: fpg_base.TRGBTriple;
 begin
   RGBColor := ColorToRGB(AColor);

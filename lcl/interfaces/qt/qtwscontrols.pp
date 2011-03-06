@@ -493,7 +493,7 @@ end;
 class procedure TQtWSWinControl.SetColor(const AWinControl: TWinControl);
 var
   QColor: TQColor;
-  Color: TColor;
+  ColorRef: TColorRef;
   QtWidget: TQtWidget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
@@ -511,10 +511,10 @@ begin
   end
   else
   begin
-    Color := ColorToRGB(AWinControl.Color);
+    ColorRef := ColorToRGB(AWinControl.Color);
 
     // Fill QColor
-    QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+    QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
 
     // Set color of the widget to QColor
     QtWidget := TQtWidget(AWinControl.Handle);
@@ -552,7 +552,7 @@ class procedure TQtWSWinControl.SetFont(const AWinControl: TWinControl; const AF
 var
   QtWidget: TQtWidget;
   QColor: TQColor;
-  Color: TColor;
+  ColorRef: TColorRef;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
@@ -570,8 +570,8 @@ begin
   end
   else
   begin
-    Color := ColorToRGB(AFont.Color);
-    QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+    ColorRef := ColorToRGB(AFont.Color);
+    QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
     QtWidget.BeginUpdate;
     QtWidget.SetTextColor(@QColor);
     QtWidget.EndUpdate;

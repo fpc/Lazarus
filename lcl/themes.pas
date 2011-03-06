@@ -435,7 +435,7 @@ type
     function UseThemes: Boolean; virtual;
     function ThemedControlsEnabled: Boolean; virtual;
 
-    function InternalColorToRGB(Details: TThemedElementDetails; Color: LongInt): LongInt; virtual;
+    function InternalColorToRGB(Details: TThemedElementDetails; Color: LongInt): COLORREF; virtual;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); virtual;
   public
     constructor Create;
@@ -2024,8 +2024,8 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
   var
     OldColor1, OldColor2: TColorRef;
   begin
-    OldColor1 := SetBkColor(DC, TColorRef(ColorToRGB(Color1)));
-    OldColor2 := SetTextColor(DC, TColorRef(ColorToRGB(Color2)));
+    OldColor1 := SetBkColor(DC, ColorToRGB(Color1));
+    OldColor2 := SetTextColor(DC, ColorToRGB(Color2));
     FillRect(DC, ARect, DottedBrush);
     SetBkColor(DC, OldColor1);
     SetTextColor(DC, OldColor2);
@@ -2318,7 +2318,7 @@ begin
 end;
 
 function TThemeServices.InternalColorToRGB(Details: TThemedElementDetails;
-  Color: LongInt): LongInt;
+  Color: LongInt): COLORREF;
 begin
   Result := Graphics.ColorToRGB(Color);
 end;

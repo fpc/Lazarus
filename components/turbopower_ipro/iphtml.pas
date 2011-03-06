@@ -17889,7 +17889,7 @@ var
   begin
     FlatSB_SetScrollProp(FControl.Handle, Props[Kind, pkStyle], FSB_REGULAR_MODE, Redraw);
     FlatSB_SetScrollProp(FControl.Handle, Props[Kind, pkBkColor],
-      ColorToRGB(clBtnHighlight), False);
+      integer(ColorToRGB(clBtnHighlight)), False);
   end;
 
 begin

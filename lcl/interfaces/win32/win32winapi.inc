@@ -776,7 +776,7 @@ var
   LB: Windows.LogBrush;
 begin
   LB.lbStyle := LogBrush.lbStyle;
-  LB.lbColor := Windows.COLORREF(ColorToRGB(TColor(LogBrush.lbColor)));
+  LB.lbColor := ColorToRGB(TColor(LogBrush.lbColor));
   LB.lbHatch := LogBrush.lbHatch;
   Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
   Result := Windows.CreateBrushIndirect(LB);
@@ -971,7 +971,7 @@ var
   LP: TLogPen;
 begin
   LP := LogPen;
-  Lp.lopnColor := Windows.COLORREF(ColorToRGB(TColor(Lp.lopnColor)));
+  Lp.lopnColor := ColorToRGB(TColor(Lp.lopnColor));
   Assert(False, 'Trace:[TWin32WidgetSet.CreatePenIndirect]');
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 end;
@@ -1351,7 +1351,7 @@ var
   LB: Windows.LogBrush;
 begin
   LB.lbStyle := lplb.lbStyle;
-  LB.lbColor := Windows.COLORREF(ColorToRGB(TColor(lplb.lbColor)));
+  LB.lbColor := ColorToRGB(TColor(lplb.lbColor));
   LB.lbHatch := lplb.lbHatch;
   Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
 end;
@@ -1473,7 +1473,7 @@ var
   OldBrush: HGDIOBJ;
 begin
   OldBrush := Windows.SelectObject(DC, Brush);
-  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, Windows.ColorRef(ColorToRGB(Color)), FillType[FillStyle]));
+  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, ColorToRGB(Color), FillType[FillStyle]));
   Windows.SelectObject(DC, OldBrush);
 end;
 
@@ -2996,7 +2996,7 @@ end;
 function TWin32WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := TColorRef(Windows.SetBkColor(DC, Windows.COLORREF(ColorToRGB(TColor(Color)))));
+  Result := TColorRef(Windows.SetBkColor(DC, ColorToRGB(TColor(Color))));
   Assert(False, Format('Trace:< [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
@@ -3243,7 +3243,7 @@ end;
 function TWin32WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := TColorRef(Windows.SetTextColor(DC, Windows.COLORREF(ColorToRGB(TColor(Color)))));
+  Result := TColorRef(Windows.SetTextColor(DC, ColorToRGB(TColor(Color))));
   Assert(False, Format('Trace:< [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 

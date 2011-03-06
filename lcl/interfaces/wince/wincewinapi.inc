@@ -225,7 +225,7 @@ var
       OldColor := CheckListBox.Font.Color;
       if OldColor = clDefault then
         OldColor := CheckListBox.GetDefaultColor(dctFont);
-      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(OldColor));
+      OldColor := Windows.SetTextColor(Data^._HDC, TColor(ColorToRGB(OldColor)));
     end;
 
     WideBuffer := UTF8Decode(CheckListBox.Items[Data^.ItemID]);
@@ -756,7 +756,7 @@ var
   LB: Windows.LogBrush;
 begin
   LB.lbStyle := LogBrush.lbStyle;
-  LB.lbColor := Windows.COLORREF(ColorToRGB(LogBrush.lbColor));
+  LB.lbColor := ColorToRGB(LogBrush.lbColor);
   LB.lbHatch := LogBrush.lbHatch;
   Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
 
@@ -885,7 +885,7 @@ var
 begin
   Assert(False, 'Trace:[TWinCEWidgetSet.CreatePenIndirect]');
   LP := LogPen;
-  LP.lopnColor := Windows.COLORREF(ColorToRGB(LP.lopnColor));
+  LP.lopnColor := ColorToRGB(LP.lopnColor);
   LP.lopnStyle := LP.lopnStyle and PS_STYLE_MASK;
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 end;
@@ -2827,7 +2827,7 @@ end;
 function TWinCEWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetBkColor(DC, Windows.COLORREF(ColorToRGB(Color)));
+  Result := Windows.SetBkColor(DC, ColorToRGB(Color));
   Assert(False, Format('Trace:< [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
@@ -3137,7 +3137,7 @@ end;}
 function TWinCEWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetTextColor(DC, Windows.COLORREF(ColorToRGB(Color)));
+  Result := Windows.SetTextColor(DC, ColorToRGB(Color));
   Assert(False, Format('Trace:< [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 

@@ -241,7 +241,7 @@ begin
     end else
     begin
       if LogBrush.lbStyle <> BS_PATTERN then
-        if (LogBrush.lbStyle = BS_SOLID) and IsSysColor(TColor(LogBrush.lbColor)) then
+        if (LogBrush.lbStyle = BS_SOLID) and IsSysColor(LogBrush.lbColor) then
           FReference._lclHandle := TLCLHandle(GetSysColorBrush(SysColorToSysColorIndex(TColor(LogBrush.lbColor))))
         else
           FReference._lclHandle := TLCLHandle(CreateBrushIndirect(LogBrush))

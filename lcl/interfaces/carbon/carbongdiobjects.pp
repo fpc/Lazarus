@@ -1374,7 +1374,7 @@ end;
 
 function TCarbonColorObject.GetColorRef: TColorRef;
 begin
-  Result := RGBToColor(FR, FG, FB);
+  Result := TColorRef(RGBToColor(FR, FG, FB));
 end;
 
 {------------------------------------------------------------------------------
@@ -2521,6 +2521,7 @@ var
   i,j   : Integer;
   k     : Integer;
   clpos : TColorPos;
+  FillColorRef: TColorRef;
 const
   LEPos : TColorPos = (ri:1;gi:2;bi:3;ai:0);
 const
@@ -2530,10 +2531,10 @@ var
   GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
   SetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 begin
-  FillColor:=ColorToRGB(FillColor);
-  r:=FillColor and $FF;
-  g:=(FillColor shr 8) and $FF;
-  b:=(FillColor shr 16) and $FF;
+  FillColorRef:=ColorToRGB(FillColor);
+  r:=FillColorRef and $FF;
+  g:=(FillColorRef shr 8) and $FF;
+  b:=(FillColorRef shr 16) and $FF;
   a:=$FF;
   GetRGBA:=nil;
   SetRGBA:=nil;

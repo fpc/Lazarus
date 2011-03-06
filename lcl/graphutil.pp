@@ -76,7 +76,7 @@ implementation
 
 //TODO: Check code on endianess
 
-procedure ExtractRGB(RGB: Cardinal; var R, G, B: Byte); inline;
+procedure ExtractRGB(RGB: TColorRef; var R, G, B: Byte); inline;
 begin
   R := RGB and $FF;
   G := (RGB shr 8) and $FF;
@@ -85,7 +85,7 @@ end;
 
 function ColorToGray(const AColor: TColor): Byte;
 var
-  RGB: LongInt;
+  RGB: TColorRef;
 begin
   if AColor = clNone
   then RGB := 0
@@ -96,7 +96,7 @@ end;
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
 var
   R, G, B: Byte;
-  RGB: Cardinal;
+  RGB: TColorRef;
 begin
   RGB := ColorToRGB(AColor);
   ExtractRGB(RGB, R, G, B);
@@ -451,20 +451,12 @@ var
      (GetComponent(b1, db) shl 16);
  end;
 
- procedure CalcDeltas;
- begin
-   ExtractRGB(TopColor, r1, g1, b1);
-   ExtractRGB(BottomColor, r2, g2, b2);
-   dr := r2 - r1;
-   dg := g2 - g1;
-   db := b2 - b1;
- end;
-
 begin
-  TopColor := ColorToRGB(TopColor);
-  BottomColor := ColorToRGB(BottomColor);
-  CalcDeltas;
-
+  ExtractRGB(ColorToRGB(TopColor), r1, g1, b1);
+  ExtractRGB(ColorToRGB(BottomColor), r2, g2, b2);
+  dr := r2 - r1;
+  dg := g2 - g1;
+  db := b2 - b1;
   h := ARect.Bottom - ARect.Top;
   for y := ARect.Top to ARect.Bottom do
   begin

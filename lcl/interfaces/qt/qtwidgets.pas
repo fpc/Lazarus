@@ -2085,7 +2085,7 @@ end;
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   QColor, OldColor: TQColor;
-  Color: TColor;
+  ColorRef: TColorRef;
   QtEdit: IQtEdit;
   R: TRect;
   Pt: TQtPoint;
@@ -2186,11 +2186,11 @@ begin
           if (FPalette <> nil) and not InUpdate and not Palette.InReload then
           begin
             OldColor := Palette.CurrentColor;
-            // now set our fpalette color from LCL
+            // now set our fpalette ColorRef from LCL
             if LCLObject.Color <> clDefault then
             begin
-              Color := ColorToRGB(LCLObject.Color);
-              QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+              ColorRef := ColorToRGB(LCLObject.Color);
+              QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
             end else
               QColor := Palette.DefaultColor;
             if not EqualTQColor(OldColor, QColor) then

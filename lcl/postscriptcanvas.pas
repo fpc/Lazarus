@@ -795,7 +795,7 @@ end;
 //Init the color of line (pen)
 procedure TPostScriptPrinterCanvas.UpdateLineColor(aColor : TColor = clNone);
 Var R,G,B    : Real;
-    RGBColor : TColor;
+    RGBColor : TColorRef;
 begin
   if aColor=clNone then
     aColor:=Pen.Color;
@@ -834,7 +834,7 @@ end;
 //Init the color for fill
 procedure TPostScriptPrinterCanvas.UpdateFillColor;
 Var R,G,B    : Real;
-    RGBColor : TColor;
+    RGBColor : TColorRef;
 begin
   if (Brush.Style=bsSolid) and (Brush.Color<>fcPenColor) then
   begin
@@ -851,7 +851,7 @@ end;
 //Update current font
 procedure TPostScriptPrinterCanvas.UpdateFont;
 Var R,G,B    : Real;
-    RGBColor : TColor;
+    RGBColor : TColorRef;
 begin
   if Font.Color=clNone then
     Font.Color:=clBlack;

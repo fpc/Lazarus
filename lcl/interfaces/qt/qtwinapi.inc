@@ -465,7 +465,7 @@ begin
 
     // set brush color
     Color := QBrush_Color(QtBrush.Widget)^;
-    ColorRefToTQColor(TColorRef(ColorToRGB(TColor(logBrush.lbColor))), Color);
+    ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
     QBrush_setColor(QtBrush.Widget, @Color);
   except
     {$ifdef VerboseQtWinAPI}
@@ -701,7 +701,7 @@ begin
     end;
 
     QPen_Color(QtPen.Widget, @Color);
-    ColorRefToTQColor(TColorRef(ColorToRGB(TColor(lopnColor))), Color);
+    ColorRefToTQColor(ColorToRGB(TColor(lopnColor)), Color);
     QPen_setColor(QtPen.Widget, @Color);
   end;
 
@@ -973,7 +973,7 @@ end;
 function TQtWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 var
   Brush: HBRUSH;
-  ColorDark, ColorLight: TColor;
+  ColorDark, ColorLight: TColorRef;
   ClientRect: TRect;
   QtDC: TQtDeviceContext;
 
@@ -1086,8 +1086,8 @@ begin
       ColorLight := clSilver;
     if grfFlags and BF_MONO <> 0 then
     begin
-      ColorDark := clBlack;
-      ColorLight := clWhite;
+      ColorDark := TColorRef(clBlack);
+      ColorLight := TColorRef(clWhite);
     end;
     try
       if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
@@ -1652,7 +1652,7 @@ begin
     QtPen.setDashPattern(lpStyle, dwStyleCount);
 
   QPen_Color(QtPen.Widget, @Color);
-  ColorRefToTQColor(TColorRef(ColorToRGB(TColor(lplb.lbColor))), Color);
+  ColorRefToTQColor(ColorToRGB(TColor(lplb.lbColor)), Color);
   QPen_setColor(QtPen.Widget, @Color);
 
   Result := HPEN(QtPen);
@@ -3143,7 +3143,7 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
     else
       Result := FSysColorBrushes[nIndex];
     Color := QBrush_Color(TQtBrush(Result).Widget)^;
-    ColorRefToTQColor(TColorRef(ColorToRGB(AColor)), Color);
+    ColorRefToTQColor(ColorToRGB(AColor), Color);
     QBrush_setColor(TQtBrush(Result).Widget, @Color);
     TQtBrush(Result).FShared := True;
   end;
