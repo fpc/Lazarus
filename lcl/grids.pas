@@ -2279,8 +2279,14 @@ procedure TCustomGrid.SetFixedCols(const AValue: Integer);
 var
   EditorAffected: boolean;
 begin
-  if FFixedCols=AValue then
+  if FFixedCols=AValue then begin
+    if FixedGrid and FGridPropBackup.ValidData then begin
+      // user modified fixed properties in fixed grid
+      // update stored values
+      FGridPropBackup.FixedColCount := AValue;
+    end;
     exit;
+  end;
   CheckFixedCount(ColCount, RowCount, AValue, FFixedRows);
 
   EditorAffected := (AValue>=FCol);
@@ -2315,7 +2321,14 @@ procedure TCustomGrid.SetFixedRows(const AValue: Integer);
 var
   EditorAffected: boolean;
 begin
-  if FFixedRows=AValue then exit;
+  if FFixedRows=AValue then begin
+    if FixedGrid and FGridPropBackup.ValidData then begin
+      // user modified fixed properties in fixed grid
+      // update stored values
+      FGridPropBackup.FixedRowCount := AValue;
+    end;
+    exit;
+  end;
   CheckFixedCount(ColCount, RowCount, FFixedCols, AValue);
 
   EditorAffected := (AValue>=FRow);
