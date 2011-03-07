@@ -4944,14 +4944,6 @@ msgstr ""
 msgid "Short"
 msgstr "Pendek"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15441,6 +15433,10 @@ msgstr "konflik dengan"
 msgid "abort build"
 msgstr "batalkan pembangunan"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Tambahkan titik lompat"
@@ -15674,6 +15670,10 @@ msgstr "Pindahkan kursor ke absolut akhir"
 msgid "Move cursor to absolute beginning"
 msgstr "Pindahkan kursor ke absolut awal"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15728,6 +15728,10 @@ msgstr "Cari keberadaan kata berikutnya"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16376,6 +16380,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr "perintah editor tidak dikenal"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16492,11 +16500,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "&Tutup Halaman"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Kode Lengkap"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16542,18 +16545,9 @@ msgstr ""
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Ekstrak Procedure"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Cari Deklarasi"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Cari Referensi Pengenal"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16641,10 +16635,6 @@ msgstr "Hanya Baca"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Refactoring"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Ganti nama Pengenal"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

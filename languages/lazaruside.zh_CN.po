@@ -4953,14 +4953,6 @@ msgstr "短描述"
 msgid "Short"
 msgstr "Short"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "显示空方法"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "显示未用单元"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15458,6 +15450,10 @@ msgstr "产生冲突于"
 msgid "abort build"
 msgstr "中断编译"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "添加跳转点"
@@ -15691,6 +15687,10 @@ msgstr "移动光标到绝对的结束"
 msgid "Move cursor to absolute beginning"
 msgstr "移动光标到绝对的开始"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 #, fuzzy
 #| msgid "General environment options"
@@ -15747,6 +15747,10 @@ msgstr "查找下一个发现的词"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16395,6 +16399,10 @@ msgstr "从光标处展开"
 msgid "unknown editor command"
 msgstr "未知编辑器命令"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16511,11 +16519,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "关闭页面(&C)"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "自动完成代码"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16561,18 +16564,9 @@ msgstr "编码"
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "解析过程"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "查找声明(&F)"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "查找标识符参考"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16660,10 +16654,6 @@ msgstr "只读"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "重构"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "重命名标识符"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

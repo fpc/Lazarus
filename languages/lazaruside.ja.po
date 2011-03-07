@@ -4949,14 +4949,6 @@ msgstr "手短な説明"
 msgid "Short"
 msgstr "短い"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "空のメソッドを表示"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "使われていないユニットを表示"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15459,6 +15451,10 @@ msgstr " 右と衝突： "
 msgid "abort build"
 msgstr "構築中止"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "移動先を追加"
@@ -15692,6 +15688,10 @@ msgstr "カーソルを末尾に移動"
 msgid "Move cursor to absolute beginning"
 msgstr "カーソルを先頭に移動"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr "IDEオプション"
@@ -15747,6 +15747,10 @@ msgstr "次の単語の位置を検索"
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
 msgstr "オーバーロードを検索"
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16394,6 +16398,10 @@ msgstr "カーソルで展開"
 msgid "unknown editor command"
 msgstr "不明なエディタコマンド"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16510,11 +16518,6 @@ msgstr "すべての他のページを閉じる(&O)"
 msgid "&Close Page"
 msgstr "ページを閉じる(&C)"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "コードを補完"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16560,18 +16563,9 @@ msgstr "エンコード中"
 msgid "&Evaluate/Modify..."
 msgstr "評価/修正(&E)"
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "手続きを展開"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "宣言の検索(&F)"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "識別子参照を検索"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16659,10 +16653,6 @@ msgstr "読み取り専用"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "リファクタリング"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "識別子名を変更"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

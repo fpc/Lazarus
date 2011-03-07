@@ -4944,14 +4944,6 @@ msgstr "Trumpas aprašymas"
 msgid "Short"
 msgstr "Santrumpa"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Rodyti tuščius metodus"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "Rodyti nenaudojamus modulius"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15441,6 +15433,10 @@ msgstr " konfliktuoja su "
 msgid "abort build"
 msgstr "nutraukti darymą"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Pridėti peršokimo tašką"
@@ -15674,6 +15670,10 @@ msgstr "Perkelti žymeklį į absoliučią pabaigą"
 msgid "Move cursor to absolute beginning"
 msgstr "Perkelti žymeklį į absoliučią pradžią"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 #| msgid "General environment options"
 msgid "IDE options"
@@ -15730,6 +15730,10 @@ msgstr "Ieškoti žodžio toliau"
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
 msgstr "Ieškoti daugiareikšmiškumų"
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16377,6 +16381,10 @@ msgstr "Išskleisti nuo žymeklio"
 msgid "unknown editor command"
 msgstr "nežinoma rengyklės komanda"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16493,11 +16501,6 @@ msgstr "Užverti visus &likusius lapus"
 msgid "&Close Page"
 msgstr "&Užverti lapą"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Užbaigti kodą"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16542,18 +16545,9 @@ msgstr "Koduotė"
 msgid "&Evaluate/Modify..."
 msgstr "Į&vertinti/Keisti..."
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Ištraukti procedūrą"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "Ieškoti a&prašo"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Ieškoti identifikatoriaus įrašų"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16641,10 +16635,6 @@ msgstr "Tik skaitymui"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Pertvarkymas"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Pervadinti identifikatorių"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

@@ -4949,14 +4949,6 @@ msgstr "Krátky popis"
 msgid "Short"
 msgstr "Krátky"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Zobraziť prázdne metódy"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15458,6 +15450,10 @@ msgstr " v konflikte s"
 msgid "abort build"
 msgstr "zrušiť budovanie"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Pridať bod skoku"
@@ -15691,6 +15687,10 @@ msgstr "Posunúť kurzor na úplný koniec"
 msgid "Move cursor to absolute beginning"
 msgstr "Posunúť kurzor o na úplný začiatok"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15745,6 +15745,10 @@ msgstr "Nájsť ďalší výskyt slova"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16393,6 +16397,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr "neznámy príkaz editora"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16509,11 +16517,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "&Zatvoriť stránku"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Dokončovanie kódu"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16559,18 +16562,9 @@ msgstr "Kódovanie"
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Oddeliť procedúru"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Nájsť deklaráciu"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Nájsť odkazy na identifikátor"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16658,10 +16652,6 @@ msgstr "Len na čítanie"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Refactoring"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Premenovať identifikátor"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

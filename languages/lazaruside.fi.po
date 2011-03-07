@@ -4927,14 +4927,6 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Näytä tyhjät metodit"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "Näytä käyttämättömät käännösyksiköt (unit)"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15402,6 +15394,10 @@ msgstr ""
 msgid "abort build"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr ""
@@ -15635,6 +15631,10 @@ msgstr ""
 msgid "Move cursor to absolute beginning"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15689,6 +15689,10 @@ msgstr "Etsi sanan seuraava esiintymiskohta"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16337,6 +16341,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16453,11 +16461,6 @@ msgstr "Sulje kaikki muut välilehdet"
 msgid "&Close Page"
 msgstr "Sulje välilehti"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Täydennä koodia"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16505,18 +16508,9 @@ msgstr "Merkistön koodaus"
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Tee valitusta lohkosta aliohjelma"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Etsi määrittely"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Etsi tunnisteiden nimiä"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16604,10 +16598,6 @@ msgstr "Vain luettavissa"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Koodin uudelleen muokkaus"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Vaihda tunnisteen nimeä"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

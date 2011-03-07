@@ -4935,14 +4935,6 @@ msgstr ""
 msgid "Short"
 msgstr "Короткий"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15426,6 +15418,10 @@ msgstr " конфліктує з "
 msgid "abort build"
 msgstr "перервати побудову"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Додати точку переходу"
@@ -15659,6 +15655,10 @@ msgstr "Пересунути курсор на абсолютний кінець
 msgid "Move cursor to absolute beginning"
 msgstr "Пересунути курсор на абсолютний початок"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15713,6 +15713,10 @@ msgstr "Знайти наступне слово"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16361,6 +16365,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr "невідома команда редактора"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16477,11 +16485,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "&Закрити сторінку"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Завершити код"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16527,18 +16530,9 @@ msgstr ""
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Здобути процедуру"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Знайти опис"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Знайти посилання на ідентифікатор"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16626,10 +16620,6 @@ msgstr "Тільки для читання"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Переробка коду"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Перейменувати ID"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

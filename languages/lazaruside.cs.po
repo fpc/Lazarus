@@ -4903,14 +4903,6 @@ msgstr "Krátky popis"
 msgid "Short"
 msgstr "Krátký"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Ukázat prázdné metody"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "Ukázat nepoužité jednotky"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15329,6 +15321,10 @@ msgstr " konflikt s "
 msgid "abort build"
 msgstr "přerušit sestavení"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Přidat bod skoku"
@@ -15562,6 +15558,10 @@ msgstr "Přesunout ukazatel na úplný konec"
 msgid "Move cursor to absolute beginning"
 msgstr "Přesunout ukazatel na úplný začátek"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr "Volby IDE"
@@ -15617,6 +15617,10 @@ msgstr "Najít další výskyt slova"
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
 msgstr "Najít přetížené"
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16264,6 +16268,10 @@ msgstr "Rozevřít na pozici ukazatele"
 msgid "unknown editor command"
 msgstr "neznámý příkaz editoru"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr "Přidat jednotku do sekce použitých jednotek"
@@ -16380,11 +16388,6 @@ msgstr "Zavřít všechny &ostatní stránky"
 msgid "&Close Page"
 msgstr "&Zavřít stránku"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Dokončení kódu"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16428,18 +16431,9 @@ msgstr "Kódování"
 msgid "&Evaluate/Modify..."
 msgstr "&Vyhodnocení/Upravení..."
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Rozbalit proceduru"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Najít deklaraci"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Najít odkazy na identifikátor"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16527,10 +16521,6 @@ msgstr "Pouze pro čtení"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Refactoring"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Přejmenovat identifikátor"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

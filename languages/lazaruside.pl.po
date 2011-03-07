@@ -4952,14 +4952,6 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Pokaż puste metody"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15437,6 +15429,10 @@ msgstr "jest niezgodny z "
 msgid "abort build"
 msgstr "przerwij budowanie"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Dodaj punkt skoku"
@@ -15670,6 +15666,10 @@ msgstr "Przesuń kursor na koniec"
 msgid "Move cursor to absolute beginning"
 msgstr "Przesuń kursor na początek"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr "Opcje IDE"
@@ -15724,6 +15724,10 @@ msgstr "Znajdź następne wystąpienie słowa"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16372,6 +16376,10 @@ msgstr "Cofnij zwinięcia od kursora"
 msgid "unknown editor command"
 msgstr "nieznane polecenie edytora"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16488,11 +16496,6 @@ msgstr "Zamknij wszystkie &inne strony"
 msgid "&Close Page"
 msgstr "&Zamknij zakładkę"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Uzupełnij kod"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16538,18 +16541,9 @@ msgstr "Kodowanie"
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Wyodrębnij procedurę"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Znajdź deklarację"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr ""
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16637,10 +16631,6 @@ msgstr "Tylko do odczytu"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Refaktoryzacja"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Zmień nazwę identyfikatora"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

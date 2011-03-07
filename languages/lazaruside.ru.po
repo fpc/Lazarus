@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-05 01:32+0300\n"
+"PO-Revision-Date: 2011-03-07 20:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4953,14 +4953,6 @@ msgstr "Краткое описание"
 #: lazarusidestrconsts.liscodehelpshorttag
 msgid "Short"
 msgstr "Краткое"
-
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "Показать пустые методы"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "Показать неиспользуемые модули"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgid "Ignore constants in next functions"
@@ -15433,6 +15425,10 @@ msgstr " конфликтует с "
 msgid "abort build"
 msgstr "Прервать сборку"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr "Абстрактные методы ..."
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Добавить точку перехода"
@@ -15666,6 +15662,10 @@ msgstr "Переместить курсор в самый конец"
 msgid "Move cursor to absolute beginning"
 msgstr "Переместить курсор в самое начало"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr "Пустые методы ..."
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 #| msgid "General environment options"
 msgid "IDE options"
@@ -15722,6 +15722,10 @@ msgstr "Найти следующее вхождение слова"
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
 msgstr "Найти перегруженные"
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
+msgstr "Найти перегруженные ..."
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16369,6 +16373,10 @@ msgstr "Развернуть текст под курсором"
 msgid "unknown editor command"
 msgstr "неизвестная команда редактора"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr "Неиспользуемые модули ..."
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr "Добавить модуль в выражение Uses"
@@ -16485,11 +16493,6 @@ msgstr "Закрыть &другие страницы"
 msgid "&Close Page"
 msgstr "&Закрыть страницу"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Завершить код"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16536,18 +16539,9 @@ msgstr "Кодировка"
 msgid "&Evaluate/Modify..."
 msgstr "&Вычислить/Изменить..."
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Выделить процедуру"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Найти объявление"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Найти ссылки на идентификатор"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16635,10 +16629,6 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Переработка кода"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Переименовать идентификатор"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

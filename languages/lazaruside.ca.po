@@ -4934,14 +4934,6 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15419,6 +15411,10 @@ msgstr "conflicte amb"
 msgid "abort build"
 msgstr "avorta el muntatje"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Afegeix un punt de salt"
@@ -15652,6 +15648,10 @@ msgstr "Mou el cursor al final de tot"
 msgid "Move cursor to absolute beginning"
 msgstr "Mou el cursor al principi de tot"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15706,6 +15706,10 @@ msgstr "Cerca següent ocurrència de la paraula"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16354,6 +16358,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr "ordre de l'editor desconeguda"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16470,11 +16478,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "Tan&ca la pàgina"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "Completa el codi"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16518,18 +16521,9 @@ msgstr ""
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "Extrau el procediment"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Cerca la declaració"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "Cerca les referències de l'identificador"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16617,10 +16611,6 @@ msgstr "Només lectura"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Torna a factoritzar"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "Canvia el nom de l'identificador"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

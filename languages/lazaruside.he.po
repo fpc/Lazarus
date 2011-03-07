@@ -4916,14 +4916,6 @@ msgstr "תאור קצר של"
 msgid "Short"
 msgstr "קצר"
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr "הראה מתודות ריקות"
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr "הראה מתודות שלא השתמשת בהן"
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15400,6 +15392,10 @@ msgstr "מתנגש עם"
 msgid "abort build"
 msgstr "בטל בנייה"
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "הוסף נקודת קפיצה"
@@ -15633,6 +15629,10 @@ msgstr "הזז את הסמן לסוף המוחלט"
 msgid "Move cursor to absolute beginning"
 msgstr "הזז את הסמן להתחלה המוחלטת"
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr "אפשרויות IDE"
@@ -15688,6 +15688,10 @@ msgstr "מצא את ההופעה הבאה של המילה"
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
 msgstr "מצא העמסות"
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16335,6 +16339,10 @@ msgstr "פתח את הקיפולים במיקום הסמן"
 msgid "unknown editor command"
 msgstr "פקודת עורך לא ידועה"
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16451,11 +16459,6 @@ msgstr "סגור את כל הדפים האחרים"
 msgid "&Close Page"
 msgstr "ס&גור את הדף"
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr "השלם קוד"
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16500,18 +16503,9 @@ msgstr "קידוד"
 msgid "&Evaluate/Modify..."
 msgstr "הער&ך/שנה"
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr "חלץ פרוצדורה"
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "מצא הצהרה"
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
-msgstr "מצא מקור המזהה"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -16599,10 +16593,6 @@ msgstr "קריאה בלבד"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "סידור מחדש"
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
-msgstr "שנה את שם המזהה"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"

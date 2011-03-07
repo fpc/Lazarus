@@ -4891,14 +4891,6 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: lazarusidestrconsts.liscodehelpshowemptymethods
-msgid "Show empty methods"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpshowunusedunits
-msgid "Show unused units"
-msgstr ""
-
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
@@ -15303,6 +15295,10 @@ msgstr ""
 msgid "abort build"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecabstractmethods
+msgid "Abstract methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr ""
@@ -15536,6 +15532,10 @@ msgstr ""
 msgid "Move cursor to absolute beginning"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecemptymethods
+msgid "Empty methods ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
 msgstr ""
@@ -15590,6 +15590,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloadscapt
+msgid "Find overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
@@ -16238,6 +16242,10 @@ msgstr ""
 msgid "unknown editor command"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecunusedunits
+msgid "Unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
 msgstr ""
@@ -16354,11 +16362,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr ""
 
-#: lazarusidestrconsts.uemcompletecode
-msgctxt "lazarusidestrconsts.uemcompletecode"
-msgid "Complete Code"
-msgstr ""
-
 #: lazarusidestrconsts.uemcopy
 msgctxt "lazarusidestrconsts.uemcopy"
 msgid "Copy"
@@ -16402,17 +16405,8 @@ msgstr ""
 msgid "&Evaluate/Modify..."
 msgstr ""
 
-#: lazarusidestrconsts.uemextractproc
-msgctxt "lazarusidestrconsts.uemextractproc"
-msgid "Extract Procedure"
-msgstr ""
-
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
-msgstr ""
-
-#: lazarusidestrconsts.uemfindidentifierreferences
-msgid "Find Identifier References"
 msgstr ""
 
 #: lazarusidestrconsts.uemgotobookmark
@@ -16500,10 +16494,6 @@ msgstr ""
 
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
-msgstr ""
-
-#: lazarusidestrconsts.uemrenameidentifier
-msgid "Rename Identifier"
 msgstr ""
 
 #: lazarusidestrconsts.uemruntocursor
