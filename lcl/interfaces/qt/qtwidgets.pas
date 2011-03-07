@@ -53,6 +53,7 @@ type
                           ccwComboBox,
                           ccwTreeWidget,
                           ccwAbstractScrollArea,
+                          ccwCustomControl,
                           ccwScrollingWinControl,
                           ccwTabWidget);
 
@@ -11549,7 +11550,7 @@ end;
 function TQtViewPort.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (FChildOfComplexWidget = ccwScrollingWinControl) and
+    (FChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) and
     (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
 end;
 
@@ -11895,6 +11896,8 @@ begin
   else
     Parent := nil;
   Result := QLCLAbstractScrollArea_create(Parent);
+
+  FChildOfComplexWidget := ccwCustomControl;
 
   if (LCLObject is TScrollingWinControl) then
   begin
