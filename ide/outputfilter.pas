@@ -751,6 +751,21 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
   
+  function CheckForPPULoading(p: integer): boolean;
+  begin
+    Result:=false;
+    if CompStr('PPU ',s,p) then begin
+      fLastMessageType:=omtFPC;
+      fLastErrorType:=etNone;
+      if CompStr('PPU Invalid Version',s,p) then
+        fLastErrorType:=etFatal;
+      CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+      DoAddFilteredLine(s);
+      Result:=true;
+    end;
+  end;
+
   function CheckForUrgentMessages(p: integer): boolean;
   const
     UnableToOpen = 'Fatal: Unable to open file ';
@@ -1035,6 +1050,9 @@ begin
   if Result then exit;
   // check for 'Assembling <filename>'
   Result:=CheckForAssemblingState(i);
+  if Result then exit;
+  // check for 'PPU Loading <filename>' and 'PPU Invalid Version <number>'
+  Result:=CheckForPPULoading(i);
   if Result then exit;
   // check for 'Fatal: ', 'Panic: ', 'Error: ', 'Closing script ppas.sh'
   Result:=CheckForUrgentMessages(i);
