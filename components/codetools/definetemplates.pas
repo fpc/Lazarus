@@ -7571,10 +7571,9 @@ begin
       debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler file changed "',RealCompiler,'"']);
       exit;
     end;
-    // fpc searches via PATH for the real compiler, resolves any symlink
-    // and that is the RealCompiler
-    // check if PATH
   end;
+  // fpc searches via PATH for the real compiler, resolves any symlink
+  // and that is the RealCompiler
   AFilename:=FindRealCompilerInPath(TargetCPU,true);
   if RealCompilerInPath<>AFilename then begin
     debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);

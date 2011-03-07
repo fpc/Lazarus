@@ -553,6 +553,7 @@ var
   NeedUpdateFPCSrcCache: Boolean;
   IgnorePath: String;
   MsgResult: TModalResult;
+  AsyncScanFPCSrcDir: String;
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
     const ErrorMsg: string);
@@ -649,6 +650,7 @@ begin
 
   NeedUpdateFPCSrcCache:=false;
   //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
+  AsyncScanFPCSrcDir:='';
   if DirectoryExistsUTF8(FPCSrcDir) and ((not WaitTillDone) or (not HasGUI)) then
   begin
     // FPC sources are not needed
@@ -662,9 +664,7 @@ begin
       begin
         // start background scan of fpc source directory
         //debugln(['TBuildManager.RescanCompilerDefines background scan '+FPCSrcCache.Directory]);
-        if FPCSrcScans=nil then
-          FFPCSrcScans:=TFPCSrcScans.Create(Self);
-        FPCSrcScans.Scan(FPCSrcDir);
+        AsyncScanFPCSrcDir:=FPCSrcDir;
       end;
     end;
   end;
@@ -715,6 +715,13 @@ begin
   end;
 
   CodeToolBoss.DefineTree.ClearCache;
+
+  if AsyncScanFPCSrcDir<>'' then begin
+    // start scanning the fpc source directory in the background
+    if FPCSrcScans=nil then
+      FFPCSrcScans:=TFPCSrcScans.Create(Self);
+    FPCSrcScans.Scan(AsyncScanFPCSrcDir);
+  end;
 
   if not Quiet then begin
     // check for common installation mistakes
