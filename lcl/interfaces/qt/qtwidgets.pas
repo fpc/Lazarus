@@ -11586,7 +11586,10 @@ begin
       end else
         LCLObject.DoAdjustClientRectChange;
     end;
-    QEventWheel,
+    QEventWheel:
+      if (QtVersionMajor = 4) and (QtVersionMinor < 7) then
+        Result := inherited EventFilter(Sender, Event);
+
     QEventLayoutRequest: ; // nothing to do here
   else
     Result := inherited EventFilter(Sender, Event);
@@ -11990,7 +11993,8 @@ begin
         (QEvent_type(Event) = QEventMouseButtonDblClick) or
         (QEvent_type(Event) = QEventWheel);
 
-      if QEvent_type(Event) = QEventWheel then
+      if (QEvent_type(Event) = QEventWheel) and
+        (QtVersionMajor = 4) and (QtVersionMinor > 6) then
         QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 
       retval^ := True;
