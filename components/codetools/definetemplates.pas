@@ -920,12 +920,12 @@ function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
-                         out CompilerFilename: string; // what compiler is used by fpc
+                         out RealCompilerFilename: string; // what compiler is used by fpc
                          out UnitPaths: TStrings; // unit search paths
                          out Defines, Undefines: TStringToStringTree): boolean;
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out ConfigFiles: TStrings;
-                       out TargetCompilerFilename: string;
+                       out RealCompilerFilename: string;
                        out UnitPaths: TStrings;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
@@ -1340,7 +1340,7 @@ begin
 end;
 
 function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
-  out CompilerFilename: string; out UnitPaths: TStrings;
+  out RealCompilerFilename: string; out UnitPaths: TStrings;
   out Defines, Undefines: TStringToStringTree): boolean;
 
   procedure UndefineSymbol(const MacroName: string);
@@ -1435,7 +1435,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
       end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
         // skip keywords
         Inc(CurPos, 10);
-        CompilerFilename:=copy(Line,CurPos,length(Line));
+        RealCompilerFilename:=copy(Line,CurPos,length(Line));
       end;
     'R':
       if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
@@ -1456,7 +1456,7 @@ var
 begin
   Result:=false;
   ConfigFiles:=TStringList.Create;
-  CompilerFilename:='';
+  RealCompilerFilename:='';
   UnitPaths:=TStringList.Create;
   Defines:=TStringToStringTree.Create(false);
   Undefines:=TStringToStringTree.Create(false);
@@ -1475,7 +1475,7 @@ begin
 end;
 
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
-  out ConfigFiles: TStrings; out TargetCompilerFilename: string;
+  out ConfigFiles: TStrings; out RealCompilerFilename: string;
   out UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree;
   const Options: string): boolean;
 var
@@ -1487,7 +1487,7 @@ var
 begin
   Result:=false;
   ConfigFiles:=nil;
-  TargetCompilerFilename:='';
+  RealCompilerFilename:='';
   UnitPaths:=nil;
   Defines:=nil;
   Undefines:=nil;
@@ -1515,7 +1515,7 @@ begin
       debugln(['RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
       exit;
     end;
-    Result:=ParseFPCVerbose(List,ConfigFiles,TargetCompilerFilename,
+    Result:=ParseFPCVerbose(List,ConfigFiles,RealCompilerFilename,
                             UnitPaths,Defines,Undefines);
   finally
     List.Free;

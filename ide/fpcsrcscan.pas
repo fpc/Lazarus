@@ -79,10 +79,10 @@ implementation
 procedure TFPCSrcScan.Execute;
 begin
   try
-    Log('TFPCSrcScan.Execute AAA1');
+    Log('TFPCSrcScan.Execute START '+Directory);
     // scan fpc source directory, check for terminated
     Files:=GatherFilesInFPCSources(Directory,nil);
-    Log('TFPCSrcScan.Execute '+dbgs(Files<>nil));
+    Log('TFPCSrcScan.Execute found some files: '+dbgs((Files<>nil) and (Files.Count>0)));
   except
     on E: Exception do begin
       Log('TFPCSrcScan.Execute error: '+E.Message);

@@ -688,6 +688,7 @@ begin
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
+    ' RealCompiler=',UnitSetCache.GetConfigCache(false).RealCompiler,
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
     '']);
@@ -697,7 +698,7 @@ begin
   // create template for FPC settings
   ADefTempl:=CreateFPCTemplate(UnitSetCache,nil);
   AddTemplate(ADefTempl,false,
-           'NOTE: Could not create Define Template for Free Pascal Compiler');
+             'NOTE: Could not create Define Template for Free Pascal Compiler');
   // create template for FPC source directory
   ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
   AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);

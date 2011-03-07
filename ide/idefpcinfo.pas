@@ -230,7 +230,7 @@ begin
   sl.add('Global IDE options:');
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetCompilerFilename);
+  sl.Add('ResolvedCompilerFilename='+EnvironmentOptions.GetCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('');
 end;
