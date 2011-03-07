@@ -12402,6 +12402,9 @@ begin
     Result:=DebugBoss.DoStopProject;
     if Result<>mrOk then exit;
   end;
+
+  if MainBuildBoss.CompilerOnDiskChanged then
+    MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 end;
 
 function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;

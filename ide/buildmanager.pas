@@ -165,6 +165,7 @@ type
     procedure UpdateEnglishErrorMsgFilename;
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
                                     WaitTillDone, Quiet: boolean); override;
+    function CompilerOnDiskChanged: boolean; override;
     procedure LoadFPCDefinesCaches;
     procedure SaveFPCDefinesCaches;
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
@@ -748,6 +749,17 @@ begin
         mtError,[mbOk]);
     end;
   end;
+end;
+
+function TBuildManager.CompilerOnDiskChanged: boolean;
+var
+  CfgCache: TFPCTargetConfigCache;
+begin
+  Result:=false;
+  if UnitSetCache=nil then exit;
+  CfgCache:=UnitSetCache.GetConfigCache(false);
+  if CfgCache=nil then exit;
+  Result:=CfgCache.NeedsUpdate;
 end;
 
 procedure TBuildManager.LoadFPCDefinesCaches;

@@ -66,6 +66,7 @@ type
 
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
                                     WaitTillDone, Quiet: boolean); virtual; abstract;
+    function CompilerOnDiskChanged: boolean; virtual; abstract;
 
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; virtual; abstract;
