@@ -188,7 +188,10 @@ function TWin32ThemeServices.GetDetailRegion(DC: HDC;
   Details: TThemedElementDetails; const R: TRect): HRGN;
 begin
   Result := 0;
-  GetThemeBackgroundRegion(GetTheme(Details.Element), DC, Details.Part, Details.State, R, Result);
+  if ThemesEnabled then
+    GetThemeBackgroundRegion(GetTheme(Details.Element), DC, Details.Part, Details.State, R, Result)
+  else
+    Result := inherited;
 end;
 
 function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
