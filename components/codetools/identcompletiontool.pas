@@ -2021,12 +2021,12 @@ begin
     end else if CursorNode.Desc in AllSourceTypes then begin
       GatherSourceNames(GatherContext);
     end else begin
-      // find class and ancestors if existing (needed for protected identifiers)
-      FindContextClassAndAncestors(IdentStartXY,FICTClassAndAncestors);
-
       FindCollectionContext(Params,IdentStartPos,CursorNode,
                            GatherContext,ContextExprStartPos,StartInSubContext);
-      if ContextExprStartPos=0 then ;
+
+      // find class and ancestors if existing (needed for protected identifiers)
+      if GatherContext.Tool = Self then
+        FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
 
       CursorContext:=CreateFindContext(Self,CursorNode);
       GatherContextKeywords(CursorContext,IdentStartPos);
