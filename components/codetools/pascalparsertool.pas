@@ -779,9 +779,13 @@ end;
 
 function TPascalParserTool.KeyWordFuncClassSection: boolean;
 // change section in a class (public, private, protected, published)
+var
+  OldSubSection: TCodeTreeNodeDesc;
 begin
+  OldSubSection:=ctnNone;
   if CurNode.Desc in AllClassSubSections then begin
     // end sub section
+    OldSubSection:=CurNode.Desc;
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
   end;
@@ -801,6 +805,13 @@ begin
     CurNode.Desc:=ctnClassPublished
   else
     RaiseStringExpectedButAtomFound('public');
+  if (OldSubSection<>ctnNone)
+  and (Scanner.CompilerMode=cmOBJFPC)
+  and (Scanner.Values.IsDefined('VER2_4')) then begin
+    // fpc 2.4.x did not reset sub section
+    CreateChildNode;
+    CurNode.Desc:=OldSubSection;
+  end;
   Result:=true;
 end;
 
