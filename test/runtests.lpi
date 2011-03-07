@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -95,6 +95,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCTXMLFixFragments"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="codetoolstests\testctrangescan.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCTRangeScan"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -103,6 +108,14 @@
     <SearchPaths>
       <OtherUnitFiles Value="bugs;lcltests;codetoolstests"/>
     </SearchPaths>
+    <Conditionals Value="if defined(EnableCTRange) then
+  CustomOptions += '-dEnableCTRange';"/>
+    <BuildMacros>
+      <Count Value="1"/>
+      <Item1>
+        <Identifier Value="EnableCTRange"/>
+      </Item1>
+    </BuildMacros>
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
