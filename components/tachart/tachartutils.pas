@@ -283,6 +283,8 @@ procedure Unused(const A1, A2);
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double); overload;
 procedure UpdateMinMax(AValue: Integer; var AMin, AMax: Integer); overload;
 
+function WeightedAverage(AX1, AX2, ACoeff: Double): Double; inline;
+
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
 operator +(const A, B: TDoublePoint): TDoublePoint; overload; inline;
@@ -857,6 +859,11 @@ begin
     AMin := AValue;
   if AValue > AMax then
     AMax := AValue;
+end;
+
+function WeightedAverage(AX1, AX2, ACoeff: Double): Double;
+begin
+  Result := AX1 * (1 - ACoeff) + AX2 * ACoeff;
 end;
 
 operator + (const A: TPoint; B: TSize): TPoint;

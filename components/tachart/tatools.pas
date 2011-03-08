@@ -761,7 +761,7 @@ procedure TBasicZoomTool.OnTimer(ASender: TObject);
 var
   ext: TDoubleRect;
   t: Double;
-  r, r1: TDoublePoint;
+  i: Integer;
 begin
   Unused(ASender);
   FCurrentStep += 1;
@@ -770,10 +770,8 @@ begin
     FChart.ZoomFull
   else begin
     t := FCurrentStep / AnimationSteps;
-    r := DoublePoint(t, t);
-    r1 := DoublePoint(1 - t, 1 - t);
-    ext.a := FExtSrc.a * r1 + FExtDst.a * r;
-    ext.b := FExtSrc.b * r1 + FExtDst.b * r;
+    for i := Low(ext.coords) to High(ext.coords) do
+      ext.coords[i] := WeightedAverage(FExtSrc.coords[i], FExtDst.coords[i], t);
     NormalizeRect(ext);
     FChart.LogicalExtent := ext;
   end;
