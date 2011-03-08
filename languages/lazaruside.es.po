@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"PO-Revision-Date: 2011-01-05 16:34+0300\n"
+"Last-Translator: August Klein\n"
+"PO-Revision-Date: 2011-03-08 06:36+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1171,7 +1171,7 @@ msgstr "Preguntar"
 
 #: lazarusidestrconsts.dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Notas: Los Archivos del proyecto son todos los archivos en el directorio del proyecto"
+msgstr "Nota: Los Archivos del proyecto son todos los archivos en el directorio del proyecto"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
@@ -1244,7 +1244,7 @@ msgstr "Extensiones de archivo"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
-msgstr "Buscar texto desde cursor"
+msgstr "Buscar texto desde el cursor"
 
 #: lazarusidestrconsts.dlgfolddiffchunk
 msgid "Chunk"
@@ -1642,15 +1642,15 @@ msgstr "El Nombre del constructor debe de ser 'init' (destructor 'done')"
 
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
-msgstr ""
+msgstr "Implementación"
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
-msgstr ""
+msgstr "Interfaz"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
-msgstr ""
+msgstr "Insertar en la sección Uses"
 
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
@@ -2213,7 +2213,7 @@ msgstr "Pestañas del Editor:"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
-msgstr "Nombrando"
+msgstr "Nombrar"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 #| msgid "no automatic renaming"
@@ -2258,7 +2258,7 @@ msgstr "No dividir la línea delante de:"
 
 #: lazarusidestrconsts.dlgnounuseditem
 msgid "No unused items are available in this project."
-msgstr ""
+msgstr "Ningún elemento sin usar está disponible en este proyecto."
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2695,7 +2695,7 @@ msgstr "Mostrar descripciones en la columna de marcas"
 
 #: lazarusidestrconsts.dlgshowhint
 msgid "Show Hints"
-msgstr "Mostrar sugerencias"
+msgstr "Mostrar Descripciones"
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
@@ -2741,7 +2741,7 @@ msgstr "Mostrar un único boton en la barra de tareas"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
-msgstr ""
+msgstr "Omitir declaraciones de clase forward"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2976,7 +2976,7 @@ msgstr "Usar historial cuando cierre pestañas"
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Use a unit from this project"
-msgstr ""
+msgstr "Usar una unidad de este proyecto"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3714,7 +3714,7 @@ msgstr "Aplicar también las opciones de Construcción (-B) a las dependencias"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
-msgstr ""
+msgstr "Aplicar convenciones"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
@@ -4374,119 +4374,119 @@ msgstr "Sangrado erróneo"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
 msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
-msgstr ""
+msgstr "Se produjo una excepción durante la eliminación de%s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
 msgid "Cancel loading this resource"
-msgstr ""
+msgstr "Cancelar la carga de este recurso"
 
 #: lazarusidestrconsts.liscfeclassnotfound
 msgid "%s%sClass \"%s\" not found."
-msgstr ""
+msgstr "%s%sClase \"%s\" no encontrada."
 
 #: lazarusidestrconsts.liscfecomponent
 msgid "%s%sComponent: %s:%s"
-msgstr ""
+msgstr "%s%sComponente: %s:%s"
 
 #: lazarusidestrconsts.liscfecomponentclass
 msgid "%s%sComponent Class: %s"
-msgstr ""
+msgstr "%s%sComponente de Clase: %s"
 
 #: lazarusidestrconsts.liscfecontinueloading
 msgid "Continue loading"
-msgstr ""
+msgstr "Continuar carga"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
-msgstr ""
+msgstr "No se sabe cómo copiar esta selección de edición del formulario"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr ""
+msgstr "No se sabe cómo cortar esta selección de edición del formulario"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
-msgstr ""
+msgstr "No se sabe cómo borrar esta selección de edición del formulario"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent
 msgid "Error creating component"
-msgstr ""
+msgstr "Error al crear el componente"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent2
 msgid "Error creating component: %s%s%s"
-msgstr ""
+msgstr "Error al crear el componente: %s%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponent
 msgid "Error destroying component"
-msgstr ""
+msgstr "Error al destruir el componente"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
 msgid "Error destroying component of type %s of unit %s:%s%s"
-msgstr ""
+msgstr "Error al destruir el componente de tipo %s de la unidad %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediator
 msgid "Error destroying mediator"
-msgstr ""
+msgstr "Error al destruir el mediador"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
 msgid "Error destroying mediator %s of unit %s:%s%s"
-msgstr ""
+msgstr "Error al destruir el mediador %s de la unidad %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrorreading
 msgid "Error reading %s"
-msgstr ""
+msgstr "Error al leer %s"
 
 #: lazarusidestrconsts.liscfeinfile
 msgid "%sIn file %s%s"
-msgstr ""
+msgstr "%sEn archivo %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
-msgstr ""
+msgstr "Propietario del componente no válido"
 
 #: lazarusidestrconsts.liscferoot
 msgid "%sRoot=%s:%s"
-msgstr ""
+msgstr "%sRaíz=%s:%s"
 
 #: lazarusidestrconsts.liscfestopallloading
 msgid "Stop all loading"
-msgstr ""
+msgstr "Detener todas las cargas"
 
 #: lazarusidestrconsts.liscfestream
 msgid "%sStream=%s"
-msgstr ""
+msgstr "%sStream=%s"
 
 #: lazarusidestrconsts.liscfestreamposition
 msgid "%s%sStream position: %s"
-msgstr ""
+msgstr "%s%sPosición del stream: %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
 msgid "TCustomFormEditor.CreateNonFormForm already exists"
-msgstr ""
+msgstr "TCustomFormEditor.CreateNonFormForm ya existe"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
 msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
-msgstr ""
+msgstr "TCustomFormEditor.CreateNonFormForm Tipo desconocido %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
 msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
-msgstr ""
+msgstr "TCustomFormEditor.DeleteComponent  Donde está el TCustomNonFormDesignerForm? %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
-msgstr ""
+msgstr "TCustomFormEditor.RegisterDesignerMediator ya registrado: %s"
 
 #: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
-msgstr ""
+msgstr "El editor de componentes de la clase \"%s\"ha creado el error:%s\"%s\""
 
 #: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
 msgid "The component of type %s failed to set its owner to %s:%s"
-msgstr ""
+msgstr "El componente de tipo %s no ha podido establecer su propietario a %s:%s"
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 msgid "Unable to clear the form editing selection%s%s"
-msgstr ""
+msgstr "No se puede borrar la selección de edición del formulario%s%s"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
@@ -4531,7 +4531,7 @@ msgstr "Comprobar opciones"
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr ""
+msgstr "%s Comprobar el objetivo (SO, CPU, tipo de widget LCL). Tal vez tenga que recompilar el paquete para este objetivo o establecer otro objetivo para el proyecto."
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -4611,7 +4611,7 @@ msgstr "Elija uno de estos elementos para crear un nuevo Proyecto"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstoinheritfromanexistingone
 msgid "Choose one of these items to inherit from an existing one"
-msgstr "Seleccione uno de esos elementos para heredar de el"
+msgstr "Seleccione uno de esos elementos para heredar de uno existente"
 
 #: lazarusidestrconsts.lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
@@ -4627,7 +4627,7 @@ msgstr "Seleccione el directorio para pruebas"
 
 #: lazarusidestrconsts.liscircleinmacros
 msgid "Circle in macros"
-msgstr ""
+msgstr "Círculo en macros"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5467,7 +5467,7 @@ msgstr "Compilador"
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr ""
+msgstr "El compilador \"%s\" no soporta el objetivo %s-%s"
 
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
@@ -5528,7 +5528,7 @@ msgstr "Componente"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
-msgstr ""
+msgstr "El nombre del componente \"%s\" es una palabra clave pascal"
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
@@ -5657,7 +5657,7 @@ msgstr "Coordinar desplazamientos"
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
-msgstr ""
+msgstr "Añadido Paquete %s como un requisito."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -5694,7 +5694,7 @@ msgstr "Convertir unidad de Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfile
 msgid "* Converting file %s *"
-msgstr ""
+msgstr "* Convirtiendo archivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -5726,11 +5726,11 @@ msgstr "*** Encontrar todos los archivos de unidad... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Arregladas las mayúsculas o minúsculas de la unidad \"%s\" a \"%s\"."
 
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
-msgstr ""
+msgstr "* Arreglando las unidades usadas para el archivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -5754,11 +5754,11 @@ msgstr "El nombre del paquete existe"
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
-msgstr ""
+msgstr "Se omite la unidad %s del proyecto"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr ""
+msgstr "Eliminada unidad \"%s\" de la sección uses."
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
@@ -5769,10 +5769,9 @@ msgid "Remove second"
 msgstr "Eliminar el segundo"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-#, fuzzy
 #| msgid "Repairing form file %s"
 msgid "* Repairing form file %s *"
-msgstr "Reparando archivo de formulario %s"
+msgstr "* Reparando archivo de formulario %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
@@ -5834,27 +5833,27 @@ msgstr "El convertidor añade compilación condicional para soportar diferentes 
 
 #: lazarusidestrconsts.lisconverttargetmultiplatform
 msgid "Multi-Platform"
-msgstr ""
+msgstr "Multi-Plataforma"
 
 #: lazarusidestrconsts.lisconverttargetmultiplatformhint
 msgid "Multi-Platform versus Windows-only"
-msgstr ""
+msgstr "Multi-Plataforma contra Solo-Windows"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"
-msgstr ""
+msgstr "Usar el mismo archivo de formulario DFM"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfilehint
 msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
-msgstr ""
+msgstr "Mismo archivo DMF para Lazarus y Delphi en lugar de copiarlo a LFM"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphi
 msgid "Support Delphi"
-msgstr ""
+msgstr "Soportar Delphi"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphihint
 msgid "Use conditional compilation to support Delphi"
-msgstr ""
+msgstr "Usar compilación condicional para soportar Delphi"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -5959,7 +5958,7 @@ msgstr "Copiar elemento al portapapeles"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy selected items to clipboard"
-msgstr "Copiar los elementos selecionados al portapapeles"
+msgstr "Copiar los elementos seleccionados al portapapeles"
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5975,7 +5974,7 @@ msgstr "Escanear mensajes de Make"
 
 #: lazarusidestrconsts.liscoscanformessages
 msgid "Scan for messages:"
-msgstr ""
+msgstr "Analizar en busca de mensajes:"
 
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
@@ -6631,22 +6630,22 @@ msgstr "Ensamblador"
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
 msgid "Goto address"
-msgstr ""
+msgstr "Ir a la dirección"
 
 #: lazarusidestrconsts.lisdisassgotoaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
 msgid "Goto address"
-msgstr ""
+msgstr "Ir a la dirección"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddress
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
 msgid "Goto current address"
-msgstr ""
+msgstr "Ir a la dirección actual"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
 msgid "Goto current address"
-msgstr ""
+msgstr "Ir a la dirección actual"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6766,7 +6765,7 @@ msgstr "Nombre duplicado: Un componente llamado %s%s%s ya existe en el component
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
 msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Archivos ppu duplicados. Elimine uno o asegúrese de que todas las rutas de búsqueda están en el orden correcto (Indicación: FPC usa primero la última ruta)."
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
@@ -6774,7 +6773,7 @@ msgstr "Ruta de búsqueda duplicada"
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Fuentes duplicadas. Elimine una o asegúrese de que todas las rutas de búsqueda están en el orden correcto (Indicación: FPC usa primero la última ruta)."
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -6782,7 +6781,7 @@ msgstr "Editar ayuda contextual"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
-msgstr ""
+msgstr "Tipos de archivo del editor"
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -7111,43 +7110,43 @@ msgstr "Error inicializando programa%s%s%s%s%s Error: %s"
 
 #: lazarusidestrconsts.liserrorinthecompilerfilename
 msgid "Error in the compiler file name:"
-msgstr ""
+msgstr "Error en el nombre de archivo del compilador:"
 
 #: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
 msgid "Error in the custom compiler options (Other):"
-msgstr ""
+msgstr "Error en las opciones personalizadas del compilador (Otro):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
 msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr ""
+msgstr "Error en las opciones personalizadas del enlazador (Enlazando / Pasando opciones al enlazador):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
-msgstr ""
+msgstr "Error en las \"Adiciones a la ruta del depurador\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
-msgstr ""
+msgstr "Error en la ruta de búsqueda de \"Archivos de inclusión\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr ""
+msgstr "Error en la ruta de búsqueda de \"Librerías\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
-msgstr ""
+msgstr "Error en la ruta de búsqueda de \"Archivos objeto\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr ""
+msgstr "Error en la ruta de búsqueda de \"Otras fuentes\""
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
-msgstr ""
+msgstr "Error en la ruta de búsqueda de \"Otros archivos de unidad\":"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr ""
+msgstr "Error en el \"Directorio de salida de la unidad\":"
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -7596,15 +7595,15 @@ msgstr "Editor FPDoc"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
 msgid "Error writing \"%s\"%s%s"
-msgstr ""
+msgstr "Error escribiendo \"%s\"%s%s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
-msgstr ""
+msgstr "Error de sintaxis de FPDoc"
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr ""
+msgstr "Hay un error de sintaxis en el elemento fpdoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
@@ -7763,7 +7762,7 @@ msgstr "Ocultar mensaje via directiva"
 
 #: lazarusidestrconsts.lishint
 msgid "Hint"
-msgstr ""
+msgstr "Indicación"
 
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
@@ -8013,11 +8012,11 @@ msgstr "Imposible"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
 msgid "In a source directory of the package \"%s\"."
-msgstr ""
+msgstr "En un directorio de fuentes del paquete \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr ""
+msgstr "En un directorio de fuentes del proyecto. Comprobar si hay duplicados."
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
@@ -8107,7 +8106,7 @@ msgstr "Información acerca del FPC en uso"
 
 #: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
 msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
-msgstr ""
+msgstr "En la ruta de búsqueda de unidades de FPC. Probablemente instalado por el paquete FPC. Comprobar si el compilador y el archivo ppu son de la misma instalación."
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -8119,7 +8118,7 @@ msgstr "Elemento heredado"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
-msgstr ""
+msgstr "Componente de proyecto heredado"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -8226,7 +8225,7 @@ msgstr "Instalar/Desinstalar paquetes"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
-msgstr ""
+msgstr "En lugar de compilar el paquete crear un simple Makefile."
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
@@ -8338,11 +8337,11 @@ msgstr "%s es un %s.%sEsta dependencia circular no es permitida."
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
-msgstr ""
+msgstr "Me pregunto como hizo eso. Error en el %s:"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
 msgid "I wonder how you did that: Error in the base directory:"
-msgstr ""
+msgstr "Me pregunto como hizo eso: Error en el directorio base:"
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
@@ -8374,11 +8373,11 @@ msgstr "Mantener nombre"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
-msgstr ""
+msgstr "Mantener sangrado en relación a la plantilla de múltiples líneas"
 
 #: lazarusidestrconsts.liskeepsubindentation
 msgid "Keep indentation"
-msgstr ""
+msgstr "Mantener sangrado"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
@@ -8937,7 +8936,6 @@ msgid "Lazarus IDE v%s"
 msgstr "IDE de Lazarus v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-#, fuzzy
 #| msgid "Lazarus File"
 msgid "Lazarus file"
 msgstr "Fichero de Lazarus"
@@ -9330,7 +9328,7 @@ msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis lib
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
 #| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
 msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Biblioteca%sUna biblioteca Free Pascal (.dll en Windows, .so en Linux, .dylib en MacOSX. El archivo de código es mantenido automáticamente por Lazarus"
+msgstr "Biblioteca%sUna biblioteca Free Pascal (.dll en Windows, .so en Linux, .dylib en MacOSX. El codigo fuente de la biblioteca es mantenido automáticamente por Lazarus"
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -9521,7 +9519,7 @@ msgstr "Máx %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
-msgstr ""
+msgstr "%s Tal vez tenga que recompilar el paquete."
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -9700,11 +9698,10 @@ msgid "Debug windows"
 msgstr "Ventanas de Depuración"
 
 #: lazarusidestrconsts.lismenudiff
-#, fuzzy
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
-msgstr "Diff"
+msgstr "Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -9899,17 +9896,15 @@ msgid "Insert from Character Map"
 msgstr "Insertar desde Mapa de Caracteres"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-#, fuzzy
 #| msgid "CVS keyword"
 msgid "Insert CVS keyword"
-msgstr "Palabra clave de CVS"
+msgstr "Insertar palabra clave de CVS"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
 msgid "Current date and time"
 msgstr "Fecha y hora actual"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
-#, fuzzy
 #| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
@@ -9937,11 +9932,11 @@ msgstr "Inspeccionar"
 
 #: lazarusidestrconsts.lismenujumpback
 msgid "Jump back"
-msgstr "Saltar atrás"
+msgstr "Saltar hacia atrás"
 
 #: lazarusidestrconsts.lismenujumpforward
 msgid "Jump forward"
-msgstr "Saltar adelante"
+msgstr "Saltar hacia adelante"
 
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
@@ -9961,7 +9956,7 @@ msgstr "Saltar al marcador anterior"
 
 #: lazarusidestrconsts.lismenujumptopreverror
 msgid "Jump to previous error"
-msgstr "Saltar a error anterior"
+msgstr "Saltar al error anterior"
 
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase selection"
@@ -10007,7 +10002,7 @@ msgstr "&Abrir ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr "Abrir nombre de archivo a cursor"
+msgstr "Abrir nombre de archivo en cursor"
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open loaded package ..."
@@ -10026,29 +10021,25 @@ msgid "Open Project ..."
 msgstr "Abrir Proyecto ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#, fuzzy
 #| msgid "Open &Recent ..."
 msgid "Open &Recent"
-msgstr "Abrir &Reciente ..."
+msgstr "Abrir &Reciente"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-#, fuzzy
 #| msgid "Open recent package ..."
 msgid "Open recent package"
-msgstr "Abrir paquete reciente ..."
+msgstr "Abrir paquete reciente"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-#, fuzzy
 #| msgid "Open Recent Project ..."
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
-msgstr "Abrir proyecto reciente ..."
+msgstr "Abrir Proyecto Reciente"
 
 #: lazarusidestrconsts.lismenupackage
-#, fuzzy
 #| msgid "&Package"
 msgid "Pa&ckage"
-msgstr "&Paquete"
+msgstr "Pa&quete"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -10118,7 +10109,7 @@ msgstr "Rehacer"
 
 #: lazarusidestrconsts.lismenurefactor
 msgid "Ref&actor"
-msgstr ""
+msgstr "&Refactorización"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10159,7 +10150,7 @@ msgstr "Deshacer"
 
 #: lazarusidestrconsts.lismenurun
 msgid "&Run"
-msgstr "&Ejecutar"
+msgstr "Ejecuta&r"
 
 #: lazarusidestrconsts.lismenurunfile
 msgid "Run File"
@@ -10242,7 +10233,7 @@ msgstr "Ordenar selección ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr ""
+msgstr "&Fuente"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -10549,7 +10540,7 @@ msgstr "Puntos de Observación"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
-msgstr "&Ventana"
+msgstr "Ven&tana"
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -10589,7 +10580,7 @@ msgstr "Solo para Delphi"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the selected units."
-msgstr "1) Descomentar las unidades selecionadas"
+msgstr "1) Descomentar las unidades seleccionadas"
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
 msgid "1) Use the units only for Delphi."
@@ -10609,7 +10600,7 @@ msgstr "Ruta de Busqueda de Unidades"
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
-msgstr ""
+msgstr "Omitir esta Unidad"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -10730,7 +10721,7 @@ msgstr "Crear una unidad nueva con un formulario LCL."
 
 #: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
 msgid "Inherit from a project form or component"
-msgstr ""
+msgstr "Heredar de un formulario o componente de proyecto."
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11036,7 +11027,7 @@ msgstr "Al pegar desde portapapeles"
 
 #: lazarusidestrconsts.lisopen
 msgid "Open ..."
-msgstr ""
+msgstr "Abrir ..."
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -11349,10 +11340,9 @@ msgid "Modified: %s"
 msgstr "Modificado: %s"
 
 #: lazarusidestrconsts.lispckeditmore
-#, fuzzy
 #| msgid "More ..."
 msgid "More >>"
-msgstr "Más ..."
+msgstr "Más >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -11652,7 +11642,7 @@ msgstr "Una Unidad pascal debe tener la extensión .pp o .pas"
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
-msgstr ""
+msgstr "Colapsar directorio"
 
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
@@ -11660,7 +11650,7 @@ msgstr "Conflicto encontrado"
 
 #: lazarusidestrconsts.lispedirectories
 msgid "Directories"
-msgstr ""
+msgstr "Directorios"
 
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
@@ -11668,7 +11658,7 @@ msgstr "Editar Unidad Virtual"
 
 #: lazarusidestrconsts.lispeexpanddirectory
 msgid "Expand directory"
-msgstr ""
+msgstr "Expander directorio"
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11688,7 +11678,7 @@ msgstr "Nombre de unidad no válido"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
-msgstr ""
+msgstr "Archivos perdidos del paquete %s"
 
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
@@ -11700,36 +11690,36 @@ msgstr "Mover archivo arriba"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
-msgstr ""
+msgstr "Nuevo archivo no está en ruta de inclusión"
 
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
-msgstr ""
+msgstr "Ningún archivo perdido. Todos los archivos existen."
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"
-msgstr ""
+msgstr "Eliminar archivos"
 
 #: lazarusidestrconsts.lisperemoveselectedfiles
 msgid "Remove selected files"
-msgstr ""
+msgstr "Eliminar archivos seleccionados"
 
 #: lazarusidestrconsts.lisperevertpackage
 msgid "Revert package"
-msgstr ""
+msgstr "Revertir paquete"
 
 #: lazarusidestrconsts.lispesavepackageas
 msgid "Save package as"
-msgstr ""
+msgstr "Guardar paquete como"
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
 msgid "Show directory hierarchy"
-msgstr ""
+msgstr "Mostrar jerarquía de directorios"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
 msgid "Show missing files"
-msgstr ""
+msgstr "Mostrar archivos perdidos"
 
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
@@ -11737,11 +11727,11 @@ msgstr "Ordenar archivos"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr ""
+msgstr "Ordenar archivos alfabéticamente"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
-msgstr ""
+msgstr "El archivo \"%s\" no está actualmente en la ruta de inclusión del paquete.%s¿Añadir \"%s\" a la ruta de inclusión? "
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
 msgctxt "lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile"
@@ -11769,11 +11759,11 @@ msgstr "El nombre de Unidad y el nombre de archivo no coinciden.%sEjemplo: unit1
 
 #: lazarusidestrconsts.lispeuseallunitsindirectory
 msgid "Use all units in directory"
-msgstr ""
+msgstr "Usar todas las unidades dentro del directorio"
 
 #: lazarusidestrconsts.lispeusenounitsindirectory
 msgid "Use no units in directory"
-msgstr ""
+msgstr "No usar ninguna unidad dentro del directorio"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -11808,7 +11798,6 @@ msgid "Revert package?"
 msgstr "¿Revertir paquete?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "El archivo %s%s%s%sno está actualmente en la ruta de unidades del paquete.%s%s¿Añadir a la ruta de unidades?"
@@ -12344,7 +12333,7 @@ msgstr "Archivo de paquete no encontrado"
 
 #: lazarusidestrconsts.lispkgsyspackageregistrationerror
 msgid "Package registration error"
-msgstr ""
+msgstr "Error de registro del paquete"
 
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
@@ -12433,7 +12422,7 @@ msgstr "Usuario"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
 msgid "Please fix the error shown in the message window, which is normally below the source editor."
-msgstr ""
+msgstr "Por favor solucione el error mostrado en la ventana de mensajes, que normalmente está debajo del editor de código fuente."
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -12526,7 +12515,7 @@ msgstr "directorio de configuración primario, donde Lazarus guarda sus archivos
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
-msgstr ""
+msgstr "Ruta de configuración primaria"
 
 #: lazarusidestrconsts.lisprint
 msgid "Print"
@@ -13272,7 +13261,7 @@ msgstr "directorio secundario de configuración, donde Lazarus busca las plantil
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
-msgstr ""
+msgstr "Ruta de configuración secundaria"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -13292,7 +13281,7 @@ msgstr "Seleccionar un nodo"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr ""
+msgstr "Seleccionar otro widgetset LCL (macro LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -13762,11 +13751,11 @@ msgstr "El nombre del componente debe ser unico entre todos los componentes del 
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
-msgstr ""
+msgstr "El %s contiene un directorio inexistente:%s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
-msgstr ""
+msgstr "El %s contiene un carácter * asterisco.%sLazarus usa este como un carácter normal y no lo desarrolla como máscara de archivo."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -13778,7 +13767,7 @@ msgstr "El nombre de archivo actual del compilador %s%s%s%sno es un ejecutable v
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
-msgstr ""
+msgstr "El FPC actual no tiene archivo de configuración. Ello hará que probablemente no se encuentren algunas unidades. Compruebe su instalación de fpc."
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -14458,7 +14447,7 @@ msgstr "No se puede crear el enlace %s%s%s con destino %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
-msgstr ""
+msgstr "No se puede crear nuevo método."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14494,7 +14483,7 @@ msgstr "No se ha podido encontrar %s en la corriente LFM."
 
 #: lazarusidestrconsts.lisunabletofindmethod
 msgid "Unable to find method."
-msgstr ""
+msgstr "No se puede encontrar método."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14612,7 +14601,7 @@ msgstr "No se puede establecer el control AnchorSide"
 
 #: lazarusidestrconsts.lisunabletoshowmethod
 msgid "Unable to show method."
-msgstr ""
+msgstr "No se puede mostrar método."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
@@ -14762,10 +14751,9 @@ msgid "Usage message (-h option)"
 msgstr "Mensaje de uso (opción -h)"
 
 #: lazarusidestrconsts.lisuse
-#, fuzzy
 #| msgid "Use>>"
 msgid "Use >>"
-msgstr "Usar..."
+msgstr "Usar >>"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgid "Use Ansistrings"
@@ -14773,7 +14761,7 @@ msgstr "Usar Ansistrings"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
-msgstr ""
+msgstr "Usar paquetes en tiempo de diseño"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -14833,7 +14821,7 @@ msgstr "Valor%s"
 
 #: lazarusidestrconsts.lisvalue3
 msgid "Value: "
-msgstr ""
+msgstr "Valor:"
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
@@ -15181,11 +15169,11 @@ msgstr "Polaco"
 
 #: lazarusidestrconsts.rslanguageportuguese
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugués"
 
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Portugués Brasileño"
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"
@@ -15391,7 +15379,7 @@ msgstr "abortar construcción"
 
 #: lazarusidestrconsts.srkmecabstractmethods
 msgid "Abstract methods ..."
-msgstr ""
+msgstr "Métodos abstractos ..."
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
@@ -15511,7 +15499,7 @@ msgstr "Selección de Columna Inicio de Línea"
 
 #: lazarusidestrconsts.srkmeccolsellinetextstart
 msgid "Column Select to text start in line"
-msgstr "Columna Selecionar hasta principio de la linea de texto"
+msgstr "Columna Seleccionar hasta principio de la linea de texto"
 
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
@@ -15628,7 +15616,7 @@ msgstr "Mover cursor al principio absoluto"
 
 #: lazarusidestrconsts.srkmecemptymethods
 msgid "Empty methods ..."
-msgstr ""
+msgstr "Métodos vácios ..."
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
@@ -15688,7 +15676,7 @@ msgstr "Encontrar recargadas"
 
 #: lazarusidestrconsts.srkmecfindoverloadscapt
 msgid "Find overloads ..."
-msgstr ""
+msgstr "Encontrar sobrecargas ..."
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16066,7 +16054,7 @@ msgstr "Seleccionar principio de línea"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
-msgstr "Selecionar hasta principio de la linea de texto"
+msgstr "Seleccionar hasta principio de la linea de texto"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -16338,11 +16326,11 @@ msgstr "comando de editor desconocido"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
+msgstr "Unidades sin usar ..."
 
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgid "Add unit to uses section"
-msgstr ""
+msgstr "Añadir unidad a la sección uses"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
