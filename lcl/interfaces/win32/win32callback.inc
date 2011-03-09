@@ -2266,6 +2266,7 @@ begin
         MoveType := Move_SourceIsInterface;
         if (lWinControl is TCustomForm) and (TCustomForm(lWinControl).Parent = nil) then
         begin
+          WindowPlacement.length := SizeOf(WindowPlacement);
           if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
           begin
             with WindowPlacement.rcNormalPosition do
@@ -2317,6 +2318,7 @@ begin
             Window := Application.MainFormHandle;
           end;
         end;
+        WindowPlacement.length := SizeOf(WindowPlacement);
         if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
         begin
           with WindowPlacement.rcNormalPosition do
@@ -2329,7 +2331,7 @@ begin
           GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        if lWinControl <> nil then
+        if Assigned(lWinControl) then
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);

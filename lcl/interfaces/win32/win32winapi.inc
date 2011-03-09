@@ -2191,6 +2191,7 @@ var
 begin
   Result := False;
 
+  WindowPlacement.length := SizeOf(WindowPlacement);
   if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
     R := WindowPlacement.rcNormalPosition
   else
