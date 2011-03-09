@@ -438,6 +438,7 @@ begin
     CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
     CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
     CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
+    CreateMenuItem(ParentMI,itmEditSwapCaseBlock,'itmEditSwapCaseBlock',lisMenuSwapCaseSelection, 'menu_edit_uppercase');
     CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
     CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
   end;
@@ -863,6 +864,7 @@ begin
     itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
     itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
     itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
+    itmEditSwapCaseBlock.Command:=GetCommand(ecSelectionSwapCase);
     itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
 

@@ -214,6 +214,7 @@ type
     procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
     procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
+    procedure mnuEditSwapCaseBlockClicked(Sender: TObject);
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
 
@@ -2391,6 +2392,7 @@ begin
     itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
     itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
+    itmEditSwapCaseBlock.OnClick:=@mnuEditSwapCaseBlockClicked;
     itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
     itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
   end;
@@ -3759,6 +3761,7 @@ begin
     itmEditSortBlock.Enabled:=SelEditable;
     itmEditUpperCaseBlock.Enabled:=SelEditable;
     itmEditLowerCaseBlock.Enabled:=SelEditable;
+    itmEditSwapCaseBlock.Enabled:=SelEditable;
     itmEditTabsToSpacesBlock.Enabled:=SelEditable;
     itmEditSelectionBreakLines.Enabled:=SelEditable;
   end;
@@ -17561,6 +17564,11 @@ end;
 procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionLowerCase);
+end;
+
+procedure TMainIDE.mnuEditSwapCaseBlockClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecSelectionSwapCase);
 end;
 
 procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);

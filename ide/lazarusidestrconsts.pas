@@ -197,6 +197,7 @@ resourcestring
   lisMenuUnindentSelection = 'Unindent selection';
   lisMenuUpperCaseSelection = 'Uppercase selection';
   lisMenuLowerCaseSelection = 'Lowercase selection';
+  lisMenuSwapCaseSelection = 'Swap case in selection';
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
   lisMenuEncloseSelection = 'Enclose selection ...';
   lisMenuCommentSelection = 'Comment selection';

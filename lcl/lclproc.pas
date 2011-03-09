@@ -293,6 +293,7 @@ function GetPart(const ASkipTo, AnEnd: String; var ASource: String;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
   const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
 function TextToSingleLine(const AText: string): string;
+function SwapCase(Const S: String): String;
 
 // case..of utility functions
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
@@ -3220,6 +3221,25 @@ begin
     Inc(i);
   end;
   Result := str;
+end;
+
+function SwapCase(Const S: String): String;
+// Inverts the character case. Like LowerCase and UpperCase combined.
+var
+  i : Integer;
+  P : PChar;
+begin
+  Result := S;
+  if not assigned(pointer(result)) then exit;
+  UniqueString(Result);
+  P:=Pchar(pointer(Result));
+  for i := 1 to Length(Result) do begin
+    if (P^ in ['a'..'z']) then
+      P^ := char(byte(p^) - 32)
+    else if (P^ in ['A'..'Z']) then
+      P^ := char(byte(p^) + 32);
+    Inc(P);
+  end;
 end;
 
 function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer;

@@ -85,19 +85,20 @@ const
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;
   ecSelectionLowerCase      = ecFirstLazarus + 51;
-  ecSelectionTabs2Spaces    = ecFirstLazarus + 52;
-  ecSelectionEnclose        = ecFirstLazarus + 53;
-  ecSelectionComment        = ecFirstLazarus + 54;
-  ecSelectionUncomment      = ecFirstLazarus + 55;
-  ecSelectionSort           = ecFirstLazarus + 56;
-  ecSelectionBreakLines     = ecFirstLazarus + 57;
-  ecSelectToBrace           = ecFirstLazarus + 58;
-  ecSelectCodeBlock         = ecFirstLazarus + 59;
-  ecSelectWord              = ecFirstLazarus + 60;
-  ecSelectLine              = ecFirstLazarus + 61;
-  ecSelectParagraph         = ecFirstLazarus + 62;
-  ecSelectionConditional    = ecFirstLazarus + 63;
-  ecToggleComment           = ecFirstLazarus + 64;
+  ecSelectionSwapCase       = ecFirstLazarus + 52;
+  ecSelectionTabs2Spaces    = ecFirstLazarus + 53;
+  ecSelectionEnclose        = ecFirstLazarus + 54;
+  ecSelectionComment        = ecFirstLazarus + 55;
+  ecSelectionUncomment      = ecFirstLazarus + 56;
+  ecSelectionSort           = ecFirstLazarus + 57;
+  ecSelectionBreakLines     = ecFirstLazarus + 58;
+  ecSelectToBrace           = ecFirstLazarus + 59;
+  ecSelectCodeBlock         = ecFirstLazarus + 60;
+  ecSelectWord              = ecFirstLazarus + 61;
+  ecSelectLine              = ecFirstLazarus + 62;
+  ecSelectParagraph         = ecFirstLazarus + 63;
+  ecSelectionConditional    = ecFirstLazarus + 64;
+  ecToggleComment           = ecFirstLazarus + 65;
 
   // insert text
   ecInsertCharacter         = ecFirstLazarus + 80;

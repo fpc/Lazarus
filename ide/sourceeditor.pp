@@ -369,6 +369,7 @@ type
     procedure EncloseSelection;
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
+    procedure SwapCaseSelection;
     procedure TabsToSpacesInSelection;
     procedure CommentSelection;
     procedure UncommentSelection;
@@ -3012,6 +3013,9 @@ Begin
   ecSelectionLowerCase:
     LowerCaseSelection;
 
+  ecSelectionSwapCase:
+    SwapCaseSelection;
+
   ecSelectionTabs2Spaces:
     TabsToSpacesInSelection;
 
@@ -3201,6 +3205,26 @@ begin
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   FEditor.SelText:=LowerCase(EditorComponent.SelText);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.SelectionMode := OldMode;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.SwapCaseSelection;
+var
+  OldBlockBegin, OldBlockEnd: TPoint;
+  OldMode: TSynSelectionMode;
+begin
+  if ReadOnly then exit;
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  OldMode:=FEditor.SelectionMode;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  FEditor.SelText:=SwapCase(EditorComponent.SelText);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.SelectionMode := OldMode;

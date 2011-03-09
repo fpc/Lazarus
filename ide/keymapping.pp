@@ -2012,6 +2012,7 @@ begin
     // edit menu
     ecSelectionUpperCase      : Result:= lisMenuUpperCaseSelection;
     ecSelectionLowerCase      : Result:= lisMenuLowerCaseSelection;
+    ecSelectionSwapCase       : Result:= lisMenuSwapCaseSelection;
     ecSelectionTabs2Spaces    : Result:= srkmecSelectionTabs2Spaces;
     ecSelectionEnclose        : Result:= lisMenuEncloseSelection;
     ecSelectionComment        : Result:= lisMenuCommentSelection;
@@ -2432,6 +2433,7 @@ begin
   AddDefault(C, 'Unindent block', srkmecBlockUnindent, ecBlockUnindent);
   AddDefault(C, 'Uppercase selection', lisMenuUpperCaseSelection, ecSelectionUpperCase);
   AddDefault(C, 'Lowercase selection', lisMenuLowerCaseSelection, ecSelectionLowerCase);
+  AddDefault(C, 'Swap case in selection', lisMenuSwapCaseSelection, ecSelectionSwapCase);
   AddDefault(C, 'Convert tabs to spaces in selection',
     srkmecSelectionTabs2Spaces, ecSelectionTabs2Spaces);
   AddDefault(C, 'Enclose selection', lisKMEncloseSelection, ecSelectionEnclose);

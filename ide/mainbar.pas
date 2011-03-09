@@ -123,6 +123,7 @@ type
         itmEditSortBlock: TIDEMenuCommand;
         itmEditUpperCaseBlock: TIDEMenuCommand;
         itmEditLowerCaseBlock: TIDEMenuCommand;
+        itmEditSwapCaseBlock: TIDEMenuCommand;
         itmEditTabsToSpacesBlock: TIDEMenuCommand;
         itmEditSelectionBreakLines: TIDEMenuCommand;
 
