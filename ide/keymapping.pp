@@ -2010,18 +2010,18 @@ begin
     ecQuit                    : Result:= srkmecQuit;
 
     // edit menu
-    ecSelectionUpperCase      : Result:= lismenuuppercaseselection;
-    ecSelectionLowerCase      : Result:= lismenulowercaseselection;
+    ecSelectionUpperCase      : Result:= lisMenuUpperCaseSelection;
+    ecSelectionLowerCase      : Result:= lisMenuLowerCaseSelection;
     ecSelectionTabs2Spaces    : Result:= srkmecSelectionTabs2Spaces;
     ecSelectionEnclose        : Result:= lisMenuEncloseSelection;
-    ecSelectionComment        : Result:= lismenucommentselection;
-    ecSelectionUncomment      : Result:= lismenuuncommentselection;
-    ecToggleComment           : Result:= lismenutogglecomment;
+    ecSelectionComment        : Result:= lisMenuCommentSelection;
+    ecSelectionUncomment      : Result:= lisMenuUncommentSelection;
+    ecToggleComment           : Result:= lisMenuToggleComment;
     ecSelectionConditional    : Result:= lisMenuConditionalSelection;
-    ecSelectionSort           : Result:= lismenusortselection;
+    ecSelectionSort           : Result:= lisMenuSortSelection;
     ecSelectionBreakLines     : Result:= lisMenuBeakLinesInSelection;
-    ecSelectToBrace           : Result:= lismenuselecttobrace;
-    ecSelectCodeBlock         : Result:= lismenuselectcodeblock;
+    ecSelectToBrace           : Result:= lisMenuSelectToBrace;
+    ecSelectCodeBlock         : Result:= lisMenuSelectCodeBlock;
     ecSelectWord              : Result:= lisMenuSelectWord;
     ecSelectLine              : Result:= lisMenuSelectLine;
     ecSelectParagraph         : Result:= lisMenuSelectParagraph;
@@ -2048,16 +2048,16 @@ begin
     ecFindPrevious            : Result:= srkmecFindPrevious;
     ecFindInFiles             : Result:= srkmecFindInFiles;
     ecReplace                 : Result:= srkmecReplace;
-    ecIncrementalFind         : Result:= lismenuincrementalfind;
+    ecIncrementalFind         : Result:= lisMenuIncrementalFind;
     ecFindProcedureDefinition : Result:= srkmecFindProcedureDefinition;
     ecFindProcedureMethod     : Result:= srkmecFindProcedureMethod;
     ecGotoLineNumber          : Result:= srkmecGotoLineNumber;
     ecFindNextWordOccurrence  : Result:= srkmecFindNextWordOccurrence;
     ecFindPrevWordOccurrence  : Result:= srkmecFindPrevWordOccurrence;
-    ecJumpBack                : Result:= lismenujumpback;
-    ecJumpForward             : Result:= lismenujumpforward;
+    ecJumpBack                : Result:= lisMenuJumpBack;
+    ecJumpForward             : Result:= lisMenuJumpForward;
     ecAddJumpPoint            : Result:= srkmecAddJumpPoint;
-    ecViewJumpHistory         : Result:= lismenuviewjumphistory;
+    ecViewJumpHistory         : Result:= lisMenuViewJumpHistory;
     ecJumpToNextError         : Result:= lisMenuJumpToNextError;
     ecJumpToPrevError         : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective    : Result:= srkmecGotoIncludeDirective;
