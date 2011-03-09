@@ -832,7 +832,7 @@ var
         begin
           if Assigned(Application) then
           begin
-            if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and not Application.MainFormOnTaskBar then
+            if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
             begin
               PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
               WinProcess := False;
@@ -1106,7 +1106,7 @@ begin
   Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
   case Msg of
     WM_NULL:
-      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) then
+      if (Window = Win32WidgetSet.AppHandle) then
       begin
         CheckSynchronize;
         TWin32Widgetset(Widgetset).CheckPipeEvents;
@@ -1188,14 +1188,10 @@ begin
 
     WM_CLOSE:
     begin
-      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
-         Assigned(Application.MainForm) then
-      begin
-        Windows.SendMessage(Application.MainFormHandle, WM_CLOSE, 0, 0);
-      end
-      else begin
+      if (Window = Win32WidgetSet.AppHandle) and Assigned(Application.MainForm) then
+        Windows.SendMessage(Application.MainFormHandle, WM_CLOSE, 0, 0)
+      else
         LMessage.Msg := LM_CLOSEQUERY;
-      end;
       // default is to destroy window, inhibit
       WinProcess := false;
     end;
@@ -1495,7 +1491,7 @@ begin
     begin
       if WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
-      if Window = TWin32WidgetSet(WidgetSet).FAppHandle then
+      if Window = Win32WidgetSet.AppHandle then
         if WParam = 0 then
         begin
           RemoveStayOnTopFlags(Window);
@@ -2095,7 +2091,7 @@ begin
           Flags := SW_HIDE
         else
           Flags := SW_SHOWNOACTIVATE;
-        Windows.ShowWindow(TWin32WidgetSet(WidgetSet).AppHandle, Flags);
+        Windows.ShowWindow(Win32WidgetSet.AppHandle, Flags);
       end;
     end;
     WM_SYSCHAR:
@@ -2201,7 +2197,7 @@ begin
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled
-      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+      if Window = Win32WidgetSet.AppHandle then
       begin
         ThemeServices.UpdateThemes;
         Graphics.UpdateHandleObjects;
@@ -2218,9 +2214,9 @@ begin
 
     WM_LCL_SOCK_ASYNC:
     begin
-      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and
-          Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
-        Exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
+      if (Window = Win32WidgetSet.AppHandle) and
+          Assigned(Win32WidgetSet.FOnAsyncSocketMsg) then
+        Exit(Win32WidgetSet.FOnAsyncSocketMsg(WParam, LParam))
     end;
   else
     // pass along user defined messages
@@ -2242,7 +2238,7 @@ begin
   case Msg of
     WM_ACTIVATEAPP:
     begin
-      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+      if Window = Win32WidgetSet.AppHandle then
       begin
         if WParam <> 0 then // activated
         begin
@@ -2313,7 +2309,7 @@ begin
       begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
-        if Window = TWin32WidgetSet(WidgetSet).AppHandle then
+        if Window = Win32WidgetSet.AppHandle then
         begin
           if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
           begin
@@ -2321,9 +2317,8 @@ begin
             Window := Application.MainFormHandle;
           end;
         end;
-        if IsIconic(Window) then
+        if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
         begin
-          GetWindowPlacement(Window, @WindowPlacement);
           with WindowPlacement.rcNormalPosition do
           begin
             NewWidth := Right - Left;
@@ -2386,8 +2381,8 @@ begin
     end;
     WM_ENDSESSION:
     begin
-      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
-         (WParam>0) then
+      if Assigned(Application) and (Win32WidgetSet.AppHandle = Window) and
+         (WParam > 0) then
       begin
         // look at WM_QUERYENDSESSION about LParam
         LMessage.Msg := LM_NULL; // no need to go through delivermessage
@@ -2398,7 +2393,7 @@ begin
 
     WM_QUERYENDSESSION:
     begin
-      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) then
+      if Assigned(Application) and (Win32WidgetSet.AppHandle = Window) then
       begin
         LMessage.Msg := LM_NULL; // no need to go through delivermessage
         CancelEndSession := LMessage.Result=0;
