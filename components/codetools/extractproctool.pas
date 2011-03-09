@@ -194,7 +194,7 @@ begin
   DebugLn('TExtractProcTool.InitExtractProc syntax and cursor check ..');
   {$ENDIF}
   // check syntax
-  BuildTreeAndGetCleanPos(trAll,StartPos,CleanStartPos,[]);
+  BuildTreeAndGetCleanPos(StartPos,CleanStartPos);
   if CaretToCleanPos(EndPos,CleanEndPos)<>0 then exit;
   if CleanStartPos>=CleanEndPos then exit;
   {$IFDEF CTDebug}
@@ -1048,7 +1048,7 @@ var
   begin
     Result:=false;
     // reparse code and find jump point into new proc
-    BuildTree(false);
+    BuildTree(lsrEnd);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
     {$IFDEF CTDebug}
     DebugLn('FindJumpPointToNewProc A found=',dbgs(NewProcNode<>nil));

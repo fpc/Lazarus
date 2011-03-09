@@ -261,7 +261,7 @@ var
 begin
   Result:=false;
   ProcHead:='';
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,[]);
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,True);
   while (ANode<>nil) and (ANode.Desc<>ctnProcedure) do
     ANode:=ANode.Parent;

@@ -96,9 +96,9 @@ type
     sbcStopOnSemicolon
     );
   TSkipBracketChecks = set of TSkipBracketCheck;
-    
-  TTreeRange = (trInterface, trAll, trTillCursor, trTillCursorSection);
-  
+
+  TTreeRange = (trTillRange, trTillCursor, trTillCursorSection);
+
   TBuildTreeFlag = (
     btSetIgnoreErrorPos,
     btKeepIgnoreErrorPos,
@@ -112,10 +112,7 @@ type
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
   protected
-    ExtractMemStream: TMemoryStream;
-    ExtractSearchPos: integer;
-    ExtractFoundPos: integer;
-    ExtractProcHeadPos: TProcHeadExtractPos;
+    // often used errors
     procedure RaiseCharExpectedButAtomFound(c: char);
     procedure RaiseStringExpectedButAtomFound(const s: string);
     procedure RaiseUnexpectedKeyWord;
@@ -123,10 +120,19 @@ type
     procedure RaiseEndOfSourceExpected;
   protected
     // code extraction
+    ExtractMemStream: TMemoryStream;
+    ExtractSearchPos: integer;
+    ExtractFoundPos: integer;
+    ExtractProcHeadPos: TProcHeadExtractPos;
     procedure InitExtraction;
     function GetExtraction(InUpperCase: boolean): string;
     function ExtractStreamEndIsIdentChar: boolean;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
+  protected
+    // parsing
+    FLastCompilerMode: TCompilerMode;
+    FLastCompilerModeSwitch: TCompilerModeSwitch;
+    procedure FetchScannerSource(Range: TLinkScannerRange); override;
     // sections
     function KeyWordFuncSection: boolean;
     function KeyWordFuncEndPoint: boolean;
@@ -207,15 +213,18 @@ type
   public
     CurSection: TCodeTreeNodeDesc;
 
-    InterfaceSectionFound: boolean;
-    ImplementationSectionFound: boolean;
-    EndOfSourceFound: boolean;
+    ScannedRange: TLinkScannerRange;
+    ScanTill: TLinkScannerRange;
 
     procedure ValidateToolDependencies; virtual;
-    procedure BuildTree(OnlyInterfaceNeeded: boolean);
+    procedure BuildTree(Range: TLinkScannerRange);
+    procedure BuildTree(OnlyInterface: boolean); deprecated;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
+        ScanRange: TLinkScannerRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
+    procedure BuildTreeAndGetCleanPos(const CursorPos: TCodeXYPosition;
+        out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags = []);
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
@@ -234,7 +243,7 @@ type
     function FindNextNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     function FindPrevNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
 
-    // sections
+    // sections / scan range
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
@@ -242,6 +251,9 @@ type
     function FindFinalizationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
     function FindFirstSectionChild: TCodeTreeNode;
+    function FindSectionNodeAtPos(P: integer): TCodeTreeNode;
+    function FindScanRangeNode(Range: TLinkScannerRange): TCodeTreeNode;
+    function FindScanRangeNodeAtPos(P: integer): TCodeTreeNode;
 
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
@@ -500,21 +512,20 @@ begin
   RaiseEndOfSourceExpected;
 end;
 
-procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
+procedure TPascalParserTool.BuildTree(Range: TLinkScannerRange);
 var
-  SourceType: TCodeTreeNodeDesc;
   Node: TCodeTreeNode;
 begin
-  {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
+  {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
-  DebugLn('TPascalParserTool.BuildTree A ',MainFilename);
+  DebugLn('TPascalParserTool.BuildTree START ',MainFilename,' Range=',dbgs(Range),' ScannedRange=',dbgs(ScannedRange));
   {$ENDIF}
   ValidateToolDependencies;
-  if not UpdateNeeded(OnlyInterfaceNeeded) then begin
+  if not UpdateNeeded(Range) then begin
     // input is the same as last time -> output is the same
     // => if there was an error, raise it again
-    //debugln(['TPascalParserTool.BuildTree ',ord(LastErrorPhase),' ',IgnoreErrorAfterValid]);
-    if (LastErrorPhase in [ctpScan,ctpParse]) then begin
+    //debugln(['TPascalParserTool.BuildTree ',IgnoreErrorAfterValid]);
+    if LastErrorValid then begin
       // last time a parsing error occurred
       if IgnoreErrorAfterValid
       and IgnoreErrorAfterPositionIsInFrontOfLastErrMessage
@@ -523,106 +534,211 @@ begin
         // => ignore
         exit;
       end;
-      //debugln(['TPascalParserTool.BuildTree ',MainFilename,' OnlyInterfaceNeeded=',OnlyInterfaceNeeded,' ImplementationSectionFound=',ImplementationSectionFound]);
-      if OnlyInterfaceNeeded and ImplementationSectionFound then begin
-        Node:=FindImplementationNode;
-        if (Node<>nil) and not LastErrorIsInFrontOfCleanedPos(Node.StartPos)
-        then begin
-          // last error was after interface section and only interface is needed
-          // => ignore
-          exit;
-        end;
+      Node:=FindScanRangeNode(Range);
+      if (Node<>nil) and not LastErrorIsInFrontOfCleanedPos(Node.StartPos)
+      then begin
+        // last error was after needed range
+        // => ignore
+        exit;
       end;
+      // last error is in needed range => reraise
       RaiseLastError;
     end;
     exit;
   end;
+
+  // an update is needed. The last error was in the area to be update.
   ClearLastError;
-  //DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
-  //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(MemCheck_GetMem_Cnt));
+  //DebugLn('TPascalParserTool.BuildTree LINKSCANNING ... ',MainFilename,' Range=',dbgs(Range));
+  //CheckHeap('TPascalParserTool.BuildTree B '+IntToStr(MemCheck_GetMem_Cnt));
   
   // scan code
-  BeginParsing(true,OnlyInterfaceNeeded);
+  BeginParsing(Range);
   {$IFDEF VerboseUpdateNeeded}
-  if FForceUpdateNeeded=true then
-    DebugLn(['TCustomCodeTool.BuildTree FForceUpdateNeeded:=false ',MainFilename]);
+  DebugLn(['TPascalParserTool.BuildTree PARSING ... Range=',dbgs(Range),' ',MainFilename]);
   {$ENDIF}
-  FForceUpdateNeeded:=false;
-  
+  //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
+
   // parse code and build codetree
-  CurrentPhase:=ctpParse;
   if Scanner.CompilerMode=cmDELPHI then
     WordIsKeyWordFuncList:=WordIsDelphiKeyWord
   else if Scanner.CompilerMode=cmMacPas then
     WordIsKeyWordFuncList:=WordIsMacPasKeyWord
   else
     WordIsKeyWordFuncList:=WordIsKeyWord;
-  
-  InterfaceSectionFound:=false;
-  ImplementationSectionFound:=false;
-  EndOfSourceFound:=false;
-  
+
   try
-    ReadNextAtom;
-    if UpAtomIs('UNIT') then
-      CurSection:=ctnUnit
-    else if UpAtomIs('PROGRAM') then
-      CurSection:=ctnProgram
-    else if UpAtomIs('PACKAGE') then
-      CurSection:=ctnPackage
-    else if UpAtomIs('LIBRARY') then
-      CurSection:=ctnLibrary
-    else
-      SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
-    SourceType:=CurSection;
-    CreateChildNode;
-    CurNode.Desc:=CurSection;
-    ReadNextAtom; // read source name
-    AtomIsIdentifier(true);
-    ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
-    if UpAtomIs('PLATFORM') then
-      ReadNextAtom;
-    if UpAtomIs('UNIMPLEMENTED') then
-      ReadNextAtom;
-    if UpAtomIs('LIBRARY') then
-      ReadNextAtom;
-    if UpAtomIs('EXPERIMENTAL') then
-      ReadNextAtom;
-    if UpAtomIs('DEPRECATED') then
-      ReadNextAtom;
-    if (CurPos.Flag<>cafSemicolon) then
-      RaiseCharExpectedButAtomFound(';');
-    if CurSection=ctnUnit then begin
-      ReadNextAtom;
-      CurNode.EndPos:=CurPos.StartPos;
-      EndChildNode;
-      //DebugLn(['TPascalParserTool.BuildTree ',MainFilename,' ',Scanner.NestedComments]);
-      if not UpAtomIs('INTERFACE') then
-        RaiseStringExpectedButAtomFound('"interface"');
-      CreateChildNode;
-      CurSection:=ctnInterface;
-      CurNode.Desc:=CurSection;
-    end;
-    InterfaceSectionFound:=true;
-    ReadNextAtom;
-    if UpAtomIs('USES') then
-      ReadUsesSection(true);
-    if (SourceType=ctnPackage) then begin
-      if UpAtomIs('REQUIRES') then
-        ReadRequiresSection(true);
-      if UpAtomIs('CONTAINS') then
-        ReadContainsSection(true);
-    end;
-    repeat
-      //DebugLn('[TPascalParserTool.BuildTree] ALL ',GetAtom);
-      if not DoAtom then break;
-      if CurSection=ctnNone then begin
-        EndOfSourceFound:=true;
-        break;
+    try
+      ScanTill:=Range;
+      ScannedRange:=lsrInit;
+      if ord(Range)<=ord(ScannedRange) then exit;
+      // skip existing nodes
+      CurNode:=Tree.Root;
+      if CurNode<>nil then
+        while CurNode.NextBrother<>nil do CurNode:=CurNode.NextBrother;
+      //debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString]);
+      if (CurNode=nil)
+      or ((CurNode.Desc in AllSourceTypes) and (CurNode.FirstChild=nil)) then begin
+        // parse source from the beginning
+        // => read source type and name
+        ReadNextAtom;
+        if UpAtomIs('UNIT') then
+          CurSection:=ctnUnit
+        else if UpAtomIs('PROGRAM') then
+          CurSection:=ctnProgram
+        else if UpAtomIs('PACKAGE') then
+          CurSection:=ctnPackage
+        else if UpAtomIs('LIBRARY') then
+          CurSection:=ctnLibrary
+        else
+          SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
+        if CurNode=nil then
+          CreateChildNode;
+        CurNode.Desc:=CurSection;
+        ScannedRange:=lsrSourceType;
+        if ord(Range)<=ord(ScannedRange) then exit;
+        ReadNextAtom; // read source name
+        AtomIsIdentifier(true);
+        ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
+        ScannedRange:=lsrSourceName;
+        if ord(Range)<=ord(ScannedRange) then exit;
+        if UpAtomIs('PLATFORM') then
+          ReadNextAtom;
+        if UpAtomIs('UNIMPLEMENTED') then
+          ReadNextAtom;
+        if UpAtomIs('LIBRARY') then
+          ReadNextAtom;
+        if UpAtomIs('EXPERIMENTAL') then
+          ReadNextAtom;
+        if UpAtomIs('DEPRECATED') then begin
+          ReadNextAtom;
+          if CurPos.Flag<>cafSemicolon then
+            ReadConstant(true,false,[]);
+        end;
+        if (CurPos.Flag<>cafSemicolon) then
+          RaiseCharExpectedButAtomFound(';');
+        if CurSection=ctnUnit then begin
+          ReadNextAtom;
+          CurNode.EndPos:=CurPos.StartPos;
+          EndChildNode;
+          if not UpAtomIs('INTERFACE') then
+            RaiseStringExpectedButAtomFound('"interface"');
+          CreateChildNode;
+          CurSection:=ctnInterface;
+          CurNode.Desc:=CurSection;
+        end;
+        ScannedRange:=lsrInterfaceStart;
+        if ord(Range)<=ord(ScannedRange) then exit;
+      end else if CurNode.Desc=ctnEndPoint then begin
+        // all parts were already parsed
+        ScannedRange:=lsrEnd;
+        //debugln(['TPascalParserTool.BuildTree ALL nodes were already parsed. Change was behind pascal source.']);
+        exit;
+      end else begin
+        // some parts were already parsed
+        CurSection:=CurNode.Desc;
+        Node:=CurNode;
+        //debugln(['TPascalParserTool.BuildTree SOME parts were already parsed Node=',Node.DescAsString]);
+        Node.EndPos:=-1;
+        if (Node.LastChild=nil) then begin
+          // section was not parsed => reopen it
+          //debugln(['TPascalParserTool.BuildTree scan a section from start ...']);
+          MoveCursorToCleanPos(Node.StartPos);
+          // skip keyword starting the section
+          ReadNextAtom;
+        end else begin
+          // half parsed section
+          //debugln(['TPascalParserTool.BuildTree scan a section from middle ...']);
+          if (Node.LastChild.Desc=ctnUsesSection)
+          and (Node.LastChild.FirstChild=nil) then begin
+            // uses section was not parsed completely => reopen it
+            //debugln(['TPascalParserTool.BuildTree REOPEN uses section']);
+            Node:=CurNode.LastChild;
+            Node.EndPos:=-1;
+            MoveCursorToCleanPos(Node.StartPos);
+          end else begin
+            // place cursor behind last child node
+            while (Node.LastChild<>nil) and (Node.LastChild.EndPos<1) do
+              Node:=Node.LastChild;
+            if Node.LastChild<>nil then
+              MoveCursorToCleanPos(Node.LastChild.EndPos)
+            else if CurNode.EndPos>0 then
+              MoveCursorToCleanPos(Node.EndPos)
+            else begin
+              MoveCursorToCleanPos(Node.StartPos);
+              Node.EndPos:=-1;
+            end;
+          end;
+        end;
+        CurNode:=Node;
+        //debugln(['TPascalParserTool.BuildTree curnode=',CurNode.DescAsString,' cursor="',dbgstr(copy(Src,CurPos.StartPos,40)),'"']);
+        if not (CurNode.Desc in (AllCodeSections+[ctnUsesSection])) then
+          // FetchScannerSource failed
+          RaiseCatchableException('TPascalParserTool.BuildTree inconsistency');
       end;
+
       ReadNextAtom;
-    until (CurPos.StartPos>SrcLen);
-    FForceUpdateNeeded:=false;
+      //debugln(['TPascalParserTool.BuildTree first atom ',GetAtom]);
+
+      if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
+      or ((CurNode.Desc=ctnUsesSection) and (CurNode.Parent.Desc<>ctnImplementation))
+      then begin
+        // read main uses section
+        if UpAtomIs('USES') then
+          ReadUsesSection(true);
+        //debugln(['TPascalParserTool.BuildTree AFTER reading main uses section Atom="',GetAtom,'"']);
+        if ord(Range)<=ord(ScannedRange) then exit;
+      end;
+
+      ScannedRange:=lsrMainUsesSectionEnd;
+      if ord(Range)<=ord(ScannedRange) then exit;
+
+      if (CurNode.Desc=ctnPackage)
+      and ((CurNode.FirstChild=nil) or (CurNode.LastChild.Desc=ctnUsesSection))
+      then begin
+        // read package requires and contains section
+        if UpAtomIs('REQUIRES') then
+          ReadRequiresSection(true);
+        if UpAtomIs('CONTAINS') then
+          ReadContainsSection(true);
+        //debugln(['TPascalParserTool.BuildTree AFTER reading package requires+contains sections Atom="',GetAtom,'"']);
+      end;
+
+      if CurNode.GetNodeOfType(ctnImplementation)<>nil then begin
+        //debugln(['TPascalParserTool.BuildTree CONTINUE implementation ...']);
+        ScannedRange:=lsrImplementationStart;
+        if ord(Range)<=ord(ScannedRange) then exit;
+
+        if (CurNode.Desc=ctnUsesSection)
+        or ((CurNode.Desc=ctnImplementation) and (CurNode.FirstChild=nil)) then
+        begin
+          // read main uses section
+          if UpAtomIs('USES') then
+            ReadUsesSection(true);
+          //debugln(['TPascalParserTool.BuildTree AFTER reading implementation uses section Atom="',GetAtom,'"']);
+          if ord(Range)<=ord(ScannedRange) then exit;
+        end;
+      end;
+
+      repeat
+        //DebugLn('[TPascalParserTool.BuildTree] ALL ',GetAtom);
+        if not DoAtom then break;
+        if CurSection=ctnNone then
+          break;
+        ReadNextAtom;
+      until (CurPos.StartPos>SrcLen);
+
+      if (Range=lsrEnd) and (CurSection<>ctnNone) then
+        SaveRaiseException(ctsEndOfSourceNotFound);
+
+    finally
+      FRangeValidTill:=ScannedRange;
+      {$IFDEF VerboseUpdateNeeded}
+      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill)]);
+      {$ENDIF}
+      ScanTill:=lsrEnd;
+      CloseUnfinishedNodes;
+    end;
   except
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildTree ',MainFilename,' ERROR: ',LastErrorMessage);
@@ -630,7 +746,6 @@ begin
     if (not IgnoreErrorAfterValid)
     or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
-    FForceUpdateNeeded:=false;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
     {$ENDIF}
@@ -639,9 +754,16 @@ begin
   DebugLn('[TPascalParserTool.BuildTree] END');
   {$ENDIF}
   {$IFDEF MEM_CHECK}
-  CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
+  CheckHeap('TPascalParserTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
-  CurrentPhase:=ctpTool;
+end;
+
+procedure TPascalParserTool.BuildTree(OnlyInterface: boolean);
+begin
+  if OnlyInterface then
+    BuildTree(lsrImplementationStart)
+  else
+    BuildTree(lsrEnd);
 end;
 
 procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
@@ -657,7 +779,6 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
 
 var
   MaxPos: integer;
-  OldPhase: TCodeToolPhase;
 begin
   if BeginNode=nil then
     RaiseException(
@@ -673,8 +794,6 @@ begin
     exit;
   end;
 
-  OldPhase:=CurrentPhase;
-  CurrentPhase:=ctpParse;
   try
     BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
     // set CursorPos on 'begin'
@@ -695,9 +814,7 @@ begin
       end else if UpAtomIs('WITH') then
         ReadWithStatement(true,true);
     until (CurPos.StartPos>=MaxPos);
-    CurrentPhase:=OldPhase;
   except
-    CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
@@ -1643,8 +1760,15 @@ function TPascalParserTool.ReadUsesSection(
 
 }
 begin
-  CreateChildNode;
-  CurNode.Desc:=ctnUsesSection;
+  if CurNode.Desc<>ctnUsesSection then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnUsesSection;
+  end;
+  if ord(ScannedRange)<ord(lsrMainUsesSectionStart) then
+    ScannedRange:=lsrMainUsesSectionStart
+  else if ord(ScannedRange)<ord(lsrImplementationUsesSectionStart) then
+    ScannedRange:=lsrImplementationUsesSectionStart;
+  if ord(ScanTill)<=ord(ScannedRange) then exit;
   repeat
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
@@ -2133,34 +2257,50 @@ function TPascalParserTool.KeyWordFuncSection: boolean;
   end;
 
 begin
+  Result:=false;
   if UpAtomIs('IMPLEMENTATION') then begin
     if not (CurSection in [ctnInterface,ctnUnit,ctnLibrary,ctnPackage]) then
       RaiseUnexpectedSectionKeyWord;
     // close section node
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
-    ImplementationSectionFound:=true;
     // start implementation section node
     CreateChildNode;
     CurNode.Desc:=ctnImplementation;
+    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=ctnImplementation;
+
+    ScannedRange:=lsrImplementationStart;
+    if ord(ScanTill)<=ord(ScannedRange) then exit;
+
     ReadNextAtom;
-    if UpAtomIs('USES') then
+
+    if UpAtomIs('USES') then begin
       ReadUsesSection(true);
-    UndoReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        UndoReadNextAtom;
+      if ord(ScanTill)<=ord(ScannedRange) then exit;
+      CurNode.EndPos:=CurPos.EndPos;
+    end else
+      UndoReadNextAtom;
+    ScannedRange:=lsrImplementationUsesSectionEnd;
+    if ord(ScanTill)<=ord(ScannedRange) then exit;
+
     Result:=true;
   end else if (UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')) then
   begin
-    if UpAtomIs('INITIALIZATION')
-    and (not CurSection in [ctnInterface,ctnImplementation,
+    if UpAtomIs('INITIALIZATION') then begin
+      if (not CurSection in [ctnInterface,ctnImplementation,
                             ctnUnit,ctnLibrary,ctnPackage])
-    then
-      RaiseUnexpectedSectionKeyWord;
-    if UpAtomIs('FINALIZATION')
-    and (not CurSection in [ctnInterface,ctnImplementation,ctnInitialization,
+      then
+        RaiseUnexpectedSectionKeyWord;
+    end;
+    if UpAtomIs('FINALIZATION') then begin
+      if (not CurSection in [ctnInterface,ctnImplementation,ctnInitialization,
                             ctnUnit,ctnLibrary,ctnPackage])
-    then
-      RaiseUnexpectedSectionKeyWord;
+      then
+        RaiseUnexpectedSectionKeyWord;
+    end;
     // close section node
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
@@ -2168,9 +2308,15 @@ begin
     CreateChildNode;
     if UpAtomIs('INITIALIZATION') then begin
       CurNode.Desc:=ctnInitialization;
-    end else
+      ScannedRange:=lsrInitializationStart;
+    end else begin
       CurNode.Desc:=ctnFinalization;
+      ScannedRange:=lsrFinalizationStart;
+    end;
+    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=CurNode.Desc;
+    if ord(ScanTill)<=ord(ScannedRange) then exit;
+
     repeat
       ReadNextAtom;
       if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
@@ -2179,7 +2325,10 @@ begin
         EndChildNode;
         CreateChildNode;
         CurNode.Desc:=ctnFinalization;
+        CurNode.EndPos:=CurPos.EndPos;
         CurSection:=CurNode.Desc;
+        ScannedRange:=lsrFinalizationStart;
+        if ord(ScanTill)<=ord(ScannedRange) then exit;
       end else if EndKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then
       begin
@@ -2193,7 +2342,6 @@ begin
   end else begin
     RaiseUnexpectedSectionKeyWord;
   end;
-  Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncEndPoint: boolean;
@@ -2228,6 +2376,7 @@ begin
   else
     CurNode.EndPos:=CurPos.StartPos;
   LastNodeEnd:=CurNode.EndPos;
+  // end section (ctnBeginBlock, ctnInitialization, ...)
   EndChildNode;
   CreateChildNode;
   CurNode.Desc:=ctnEndPoint;
@@ -2238,6 +2387,7 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   CurSection:=ctnNone;
+  ScannedRange:=lsrEnd;
   Result:=true;
 end;
 
@@ -4295,6 +4445,98 @@ begin
   ReadNextAtom;
 end;
 
+procedure TPascalParserTool.FetchScannerSource(Range: TLinkScannerRange);
+var
+  AllChanged: Boolean;
+  NewSrc: String;
+  NewSrcLen: Integer;
+  OldP: PChar;
+  NewP: PChar;
+  DiffPos: PtrInt;
+  Node: TCodeTreeNode;
+  DeleteNode: TCodeTreeNode;
+begin
+  DirtySrc.Free;
+  DirtySrc:=nil;
+  // update scanned code
+  if FLastScannerChangeStep=Scanner.ChangeStep then begin
+    if LastErrorValid then
+      RaiseLastError;
+    // no change => keep all nodes
+    exit;
+  end else begin
+    // code has changed
+    //debugln(['TPascalParserTool.FetchScannerSource link scanner has changed ',MainFilename]);
+    FLastScannerChangeStep:=Scanner.ChangeStep;
+    AllChanged:=(FLastCompilerMode<>Scanner.CompilerMode)
+             or (FLastCompilerModeSwitch<>Scanner.CompilerModeSwitch);
+    FLastCompilerMode:=Scanner.CompilerMode;
+    FLastCompilerModeSwitch:=Scanner.CompilerModeSwitch;
+    NewSrc:=Scanner.CleanedSrc;
+    NewSrcLen:=length(NewSrc);
+    if not AllChanged then begin
+      // find the first difference in source
+      OldP:=PChar(Src);
+      NewP:=PChar(NewSrc);
+      if (OldP=nil) or (NewP=nil) then
+        AllChanged:=true
+      else begin
+        while (NewP^=OldP^) do begin
+          if (NewP^=#0) and (NewP-PChar(NewSrc)>=NewSrcLen) then break;
+          inc(NewP);
+          inc(OldP);
+        end;
+        DiffPos:=NewP-PChar(NewSrc)+1;
+        if DiffPos<=1 then begin
+          AllChanged:=true;
+        end else if DiffPos>NewSrcLen then begin
+          // no chance => keep all nodes
+          //debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
+          exit;
+        end else begin
+          // some parts are the same
+          Node:=FindDeepestNodeAtPos(DiffPos,false);
+          if Node=nil then begin
+            if (Tree.Root=nil) or (DiffPos<=Tree.Root.StartPos) then
+              // difference is in front of first node => all changed
+              AllChanged:=true
+            else begin
+              // difference is behind nodes => keep all nodes
+              //debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes ',MainFilename]);
+              exit;
+            end;
+          end else begin
+            // difference is in a node
+            // delete node and all following
+            // the section node is not deleted, but marked as unfinished
+            DeleteNode:=nil;
+            while Node<>nil do begin
+              if Node.Desc in AllCodeSections then
+                Node.EndPos:=-1 // mark as unfinished
+              else
+                DeleteNode:=Node;
+              Node:=Node.Parent;
+            end;
+            DoDeleteNodes(DeleteNode);
+            if LastErrorIsInFrontOfCleanedPos(DiffPos) then
+              ClearLastError;
+          end;
+        end;
+      end;
+    end;
+    if AllChanged then begin
+      DoDeleteNodes(Tree.Root);
+      ClearLastError;
+    end;
+    Src:=NewSrc;
+    SrcLen:=NewSrcLen;
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TPascalParserTool.FetchScannerSource source changed ',MainFilename]);
+    {$ENDIF}
+    FRangeValidTill:=lsrInit;
+  end;
+end;
+
 function TPascalParserTool.FindFirstNodeOnSameLvl(
   StartNode: TCodeTreeNode): TCodeTreeNode;
 begin
@@ -4366,8 +4608,8 @@ begin
   Result:=(ANode<>nil);
 end;
 
-procedure TPascalParserTool.BuildTreeAndGetCleanPos(
-  TreeRange: TTreeRange; const CursorPos: TCodeXYPosition;
+procedure TPascalParserTool.BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
+  ScanRange: TLinkScannerRange; const CursorPos: TCodeXYPosition;
   out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
 var
   CaretType: integer;
@@ -4393,59 +4635,24 @@ begin
     ClearIgnoreErrorAfter;
 
   if (RealTreeRange in [trTillCursor,trTillCursorSection]) then begin
-    // find out, if interface is enough
+    ScanRange:=lsrEnd;
+    // check if cursor position is in scanned range
     if (Tree<>nil) and (Tree.Root<>nil) then begin
-      Node:=Tree.Root;
-      while (Node<>nil) and (Node.Desc<>ctnImplementation) do
-        Node:=Node.NextBrother;
-      if Node<>nil then begin
-        // start of implementation section found
-        // => whole interface was read
-        CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
-        if (CaretType=0) or (CaretType=-1) then begin
-          if (CleanCursorPos<=Node.StartPos)
-          and (not UpdateNeeded(true)) then begin
-            // interface section is already parsed, is still valid and
-            // cursor is in this section
-            ValidateToolDependencies;
-            exit;
-          end;
+      CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
+      if (CaretType=0) or (CaretType=-1) then begin
+        Node:=FindScanRangeNodeAtPos(CleanCursorPos);
+        if Node<>nil then begin
+          // cursor in scanned range
+          ScanRange:=ScannedRange;
+          if (RealTreeRange=trTillCursorSection) and (ScanRange<>lsrEnd) then
+            inc(ScanRange);
         end;
       end;
     end;
-    if RealTreeRange=trTillCursorSection then begin
-      // interface is no enough => parse whole unit
-      RealTreeRange:=trAll;
-    end;
-  end;
-
-  if (RealTreeRange=trTillCursor) and (not UpdateNeeded(false)) then begin
-    // tree is valid
-    // -> if there was an error, raise it again
-    if (LastErrorPhase in [ctpScan,ctpParse])
-    and ((not IgnoreErrorAfterValid)
-      or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
-    then begin
-      DebugLn('TPascalParserTool.BuildTreeAndGetCleanPos RaiseLastError ',MainFilename);
-      RaiseLastError;
-    end;
-    // check if cursor is in interface
-    CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
-    if (CaretType=0) or (CaretType=-1) then begin
-      BuildSubTree(CleanCursorPos);
-      if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
-        // cursor position is in dead code (skipped code between IFDEF/ENDIF)
-        LoadDirtySource(CursorPos);
-      end;
-      exit;
-    end;
-    // cursor is not in partially parsed code -> parse complete code
   end;
 
   // parse code
-  BuildTree(RealTreeRange=trInterface);
-  if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
-    SaveRaiseException(ctsEndOfSourceNotFound);
+  BuildTree(ScanRange);
   // find the CursorPos in cleaned source
   CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (CaretType=0) or (CaretType=-1) then begin
@@ -4455,11 +4662,19 @@ begin
       LoadDirtySource(CursorPos);
     end;
     exit;
-  end;
-  if (CaretType=-2) or (not (btCursorPosOutAllowed in BuildTreeFlags)) then
+  end
+  else if (CaretType=-2) or (not (btCursorPosOutAllowed in BuildTreeFlags)) then
     RaiseException(ctsCursorPosOutsideOfCode);
   // cursor outside of clean code
   CleanCursorPos:=-1;
+end;
+
+procedure TPascalParserTool.BuildTreeAndGetCleanPos(
+  const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
+  BuildTreeFlags: TBuildTreeFlags);
+begin
+  BuildTreeAndGetCleanPos(trTillRange,lsrEnd,CursorPos,CleanCursorPos,
+                          BuildTreeFlags);
 end;
 
 function TPascalParserTool.ReadTilTypeOfProperty(
@@ -4651,7 +4866,6 @@ end;
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
 var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
-  OldPhase: TCodeToolPhase;
   IsProcType: Boolean;
   ProcHeadNode: TCodeTreeNode;
 begin
@@ -4680,8 +4894,6 @@ begin
       RaiseNodeParserError(ProcHeadNode);
     exit;
   end;
-  OldPhase:=CurrentPhase;
-  CurrentPhase:=ctpParse;
   try
     IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
@@ -4719,9 +4931,7 @@ begin
     if IsOperator then Include(ParseAttr,pphIsOperator);
     if IsProcType then Include(ParseAttr,pphIsType);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-    CurrentPhase:=OldPhase;
   except
-    CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
@@ -4843,6 +5053,167 @@ begin
   Result:=Result.FirstChild;
 end;
 
+function TPascalParserTool.FindSectionNodeAtPos(P: integer): TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  if Result.StartPos>P then exit(nil);
+  while (Result.NextBrother<>nil) and (Result.NextBrother.StartPos<=P) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalParserTool.FindScanRangeNode(Range: TLinkScannerRange
+  ): TCodeTreeNode;
+{ search a node of the Range or higher
+  lsrNone and lsrInit are always nil
+  lsrSourceType is the unit/program/library node if exists
+  Otherwise it is the next node (e.g. in a unit the interface)
+}
+begin
+  Result:=nil;
+  // lsrNone, lsrInit
+  if (ord(Range)<=ord(lsrInit)) then exit;
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  // lsrSourceType;
+  if Range=lsrSourceType then exit;
+  // lsrSourceName;
+  if Range=lsrSourceName then begin
+    // the source name has no node of its own
+    exit;
+  end;
+  if ord(Range)<ord(lsrEnd) then begin
+    if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+      if Result=nil then exit;
+      if Result.Desc<>ctnInterface then
+        RaiseCatchableException('');
+      // lsrInterfaceStart in unit
+      if Range=lsrInterfaceStart then exit;
+      if ord(Range)<ord(lsrImplementationStart) then begin
+        if Result.FirstChild=nil then begin
+          Result:=Result.NextSkipChilds;
+          exit;
+        end;
+        Result:=Result.FirstChild;
+        // lsrMainUsesSectionStart in unit
+        if Range=lsrMainUsesSectionStart then exit;
+        if Result.Desc=ctnUsesSection then begin
+          Result:=Result.NextSkipChilds;
+          if Result=nil then exit;
+        end;
+        // lsrMainUsesSectionEnd in unit
+        exit;
+      end else if ord(Range)<ord(lsrEnd) then begin
+        // search for implementation, initialization or finalization
+        // skip interface
+        if Result.NextBrother=nil then begin
+          Result:=Result.NextSkipChilds;
+          exit;
+        end;
+        Result:=Result.NextBrother;
+        if ord(Range)<ord(lsrInitializationStart) then begin
+          if Result.Desc<>ctnImplementation then exit;
+          // lsrImplementationStart in unit
+          if Range=lsrImplementationStart then exit;
+          if Result.FirstChild=nil then begin
+            Result:=Result.NextSkipChilds;
+            exit;
+          end;
+          Result:=Result.FirstChild;
+          // lsrImplementationUsesSectionStart
+          if Range=lsrImplementationUsesSectionStart then exit;
+          if Result.Desc=ctnUsesSection then begin
+            Result:=Result.NextSkipChilds;
+            if Result=nil then exit;
+          end;
+          // lsrImplementationUsesSectionEnd
+          exit;
+        end;
+        // initialization or finalization
+        // skip implementation
+        if Result.Desc=ctnImplementation then begin
+          if Result.NextBrother=nil then begin
+            Result:=Result.NextSkipChilds;
+            exit;
+          end;
+          Result:=Result.NextBrother;
+        end;
+        // lsrInitializationStart in unit;
+        if Range=lsrInitializationStart then exit;
+        // lsrFinalizationStart
+        if (Result.Desc=ctnInitialization) or (Result.Desc=ctnBeginBlock) then begin
+          if Result.NextBrother=nil then begin
+            Result:=Result.NextSkipChilds;
+            exit;
+          end;
+          Result:=Result.NextBrother;
+        end;
+        exit;
+      end;
+
+    end else begin
+      // not unit, but program, library or package
+      if Range=lsrInterfaceStart then begin
+        Result:=Result.Next;
+        exit;
+      end;
+      if ord(Range)<ord(lsrImplementationStart) then begin
+        // lsrMainUsesSectionStart or lsrMainUsesSectionEnd
+        if Result.FirstChild=nil then begin
+          Result:=Result.Next;
+          exit;
+        end;
+        Result:=Result.FirstChild;
+        if Result.Desc<>ctnUsesSection then exit;
+        // lsrMainUsesSectionStart in program
+        if Range=lsrMainUsesSectionStart then exit;
+        // lsrMainUsesSectionEnd;
+        Result:=Result.NextSkipChilds;
+        exit;
+      end else if ord(Range)<ord(lsrInitializationStart) then begin
+        // lsrImplementationStart, lsrImplementationUsesSectionStart,
+        // lsrImplementationUsesSectionEnd
+        // skip uses section
+        if Result.FirstChild=nil then begin
+          Result:=Result.Next;
+          exit;
+        end;
+        Result:=Result.FirstChild;
+        if Result.Desc=ctnUsesSection then
+          Result:=Result.NextSkipChilds;
+        exit;
+      end else if Range=lsrInitializationStart then begin
+        // lsrInitializationStart in program
+        if (Result.LastChild<>nil)
+        and (Result.LastChild.Desc in [ctnBeginBlock,ctnAsmBlock]) then
+          Result:=Result.LastChild
+        else
+          Result:=Result.NextSkipChilds;
+      end else
+        // lsrFinalizationStart in program
+        Result:=Result.NextSkipChilds;
+    end;
+  end else begin
+    // lsrEnd
+    while (Result<>nil) and (Result.Desc<>ctnEndPoint) do
+      Result:=Result.NextBrother;
+  end;
+end;
+
+function TPascalParserTool.FindScanRangeNodeAtPos(P: integer): TCodeTreeNode;
+var
+  UsesNode: TCodeTreeNode;
+begin
+  Result:=FindSectionNodeAtPos(P);
+  if Result=nil then exit;
+  if (Result.FirstChild<>nil) and (Result.FirstChild.Desc=ctnUsesSection) then
+  begin
+    UsesNode:=Result.FirstChild;
+    if (UsesNode.StartPos<=P) and (UsesNode.EndPos>P) then
+      Result:=UsesNode;
+  end;
+end;
 
 end.
 

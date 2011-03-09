@@ -261,8 +261,7 @@ begin
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] A UpperClassName=',
       UpperClassName);
     {$ENDIF}
-    BuildTree(true);
-    if not InterfaceSectionFound then exit;
+    BuildTree(lsrImplementationStart);
     ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',dbgs(ClassNode<>nil));
@@ -381,7 +380,7 @@ var SectionNode, ANode: TCodeTreeNode;
 begin
   Result:=nil;
   if (UpperMethodName='') or (UpperClassName='') then exit;
-  if BuildTreeBefore then BuildTree(false);
+  if BuildTreeBefore then BuildTree(lsrEnd);
   // find implementation node
   SectionNode:=FindImplementationNode;
   if SectionNode=nil then exit;
@@ -430,7 +429,7 @@ begin
     Tool:=FindCodeToolForUsedUnit(AStartUnitName,'',true);
     if not (Tool is TEventsCodeTool) then
       RaiseTypeNotFound;
-    TEventsCodeTool(Tool).BuildTree(true);
+    TEventsCodeTool(Tool).BuildTree(lsrImplementationStart);
     Result:=TEventsCodeTool(Tool).FindMethodTypeInfo(ATypeInfo,'');
     exit;
   end;
@@ -483,8 +482,7 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
     {$ENDIF}
-    BuildTree(true);
-    if not InterfaceSectionFound then exit;
+    BuildTree(lsrImplementationStart);
     ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.PublishedMethodExists] B ',dbgs(ClassNode<>nil));
@@ -581,7 +579,7 @@ begin
   Result:=false;
   ActivateGlobalWriteLock;
   try
-    BuildTree(false);
+    BuildTree(lsrEnd);
     ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     AFindContext:=FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,true);
     if AFindContext.Node=nil then begin
@@ -612,7 +610,7 @@ function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,
   SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode: TCodeTreeNode;
 begin
-  BuildTree(false);
+  BuildTree(lsrEnd);
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=RenamePublishedMethod(ClassNode,UpperOldMethodName,NewMethodName,
                                 SourceChangeCache);
@@ -692,7 +690,7 @@ function TEventsCodeTool.CreateMethod(const UpperClassName,
 var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
@@ -1037,7 +1035,7 @@ begin
   try
     Result:=false;
     ClearIgnoreErrorAfter;
-    BuildTree(true);
+    BuildTree(lsrImplementationStart);
     UpperClassName:=UpperCaseStr(AComponent.ClassName);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);

@@ -223,7 +223,7 @@ type
                            var NewPos: TCodeXYPosition; var NewTopLine: integer;
                            SourceChangeCache: TSourceChangeCache): boolean;
   protected
-    procedure DoDeleteNodes; override;
+    procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
     property CodeCompleteClassNode: TCodeTreeNode
                      read FCodeCompleteClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
@@ -455,13 +455,13 @@ var
   Pos2: Integer;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CheckWholeUnitParsed ',EndOfSourceFound,' LastErrorMessage="',LastErrorMessage,'" LastErrorCurPos=',dbgs(LastErrorCurPos)]);
-  if EndOfSourceFound and (not LastErrorValid) then exit;
+  if (ScannedRange=lsrEnd) and (not LastErrorValid) then exit;
   Pos1:=0;
   Pos2:=0;
   if Node1<>nil then Pos1:=Node1.StartPos;
   if Node2<>nil then Pos2:=Node2.StartPos;
   ClearIgnoreErrorAfter;
-  BuildTree(false); // parse whole unit
+  BuildTree(lsrEnd); // parse whole unit
   if Node1<>nil then Node1:=FindDeepestNodeAtPos(Pos1,true);
   if Node2<>nil then Node2:=FindDeepestNodeAtPos(Pos2,true);
 end;
@@ -2243,7 +2243,7 @@ const
   begin
     Result:=false;
     // reparse code and find jump point into new proc
-    BuildTree(false);
+    BuildTree(lsrEnd);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
     {$IFDEF CTDebug}
     DebugLn('TCodeCompletionCodeTool.CompleteProcByCall A found=',dbgs(NewProcNode<>nil));
@@ -2347,9 +2347,9 @@ begin
   end;
 end;
 
-procedure TCodeCompletionCodeTool.DoDeleteNodes;
+procedure TCodeCompletionCodeTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
-  inherited DoDeleteNodes;
+  inherited DoDeleteNodes(StartNode);
   FreeClassInsertionList;
 end;
 
@@ -2360,8 +2360,7 @@ begin
   if (UpperClassName='') or (VarName='') or (VarType='')
   or (SourceChangeCache=nil) or (Scanner=nil) then exit;
   // find classnode
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
+  BuildTree(lsrImplementationStart);
   // initialize class for code completion
   CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -2430,7 +2429,7 @@ var
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
 
   AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
@@ -2831,7 +2830,7 @@ var
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
 
   AllNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
@@ -3184,7 +3183,7 @@ begin
   TreeOfCodeTreeNodeExt:=nil;
 
   try
-    BuildTree(false);
+    BuildTree(lsrImplementationStart);
 
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
@@ -3434,7 +3433,7 @@ begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
   try
-    BuildTree(false);
+    BuildTree(lsrImplementationStart);
   
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
@@ -4502,7 +4501,10 @@ var
 begin
   Result:=false;
   TreeOfCodeTreeNodeExt:=nil;
-  BuildTree(OnlyInterface);
+  if OnlyInterface then
+    BuildTree(lsrImplementationStart)
+  else
+    BuildTree(lsrEnd);
 
   // find all unit identifiers (excluding sub types)
   TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
@@ -4804,11 +4806,11 @@ begin
   Result:=false;
   AllEmpty:=false;
   if (AClassName<>'') and (CursorPos.Y<1) then begin
-    BuildTree(false);
+    BuildTree(lsrEnd);
     CursorNode:=FindClassNodeInInterface(AClassName,true,false,true);
     CodeCompleteClassNode:=CursorNode;
   end else begin
-    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+    BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     CodeCompleteClassNode:=FindClassNode(CursorNode);
   end;
@@ -5012,8 +5014,8 @@ var
   ClassNode: TCodeTreeNode;
 begin
   Result:=false;
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
+  BuildTree(lsrEnd);
+  if ScannedRange<>lsrEnd then exit;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
   ClassNode:=FindClassNodeInUnit(UpperClassName,true,false,false,true);
   if (ClassNode=nil) then exit;
@@ -6936,7 +6938,7 @@ begin
     // -> find it and jump to
 
     // reparse code
-    BuildTreeAndGetCleanPos(trAll,OldCodeXYPos,CleanPos,[]);
+    BuildTreeAndGetCleanPos(OldCodeXYPos,CleanPos);
     // find CodeTreeNode at cursor
     CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
     // due to insertions in front of the class, the cursor position could
@@ -6978,7 +6980,7 @@ begin
   Result:=false;
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
   OldCleanCursorPos:=CleanCursorPos;
   NewPos:=CleanCodeXYPosition;
@@ -7079,7 +7081,7 @@ begin
   NewTopLine:=0;
   if (SourceChangeCache=nil) then
     RaiseException('need a SourceChangeCache');
-  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos, CleanCursorPos);
 
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -7150,7 +7152,7 @@ begin
           exit;
         end;
         // parse unit
-        NewCodeTool.BuildTreeAndGetCleanPos(trAll,CodeXYPos,CleanCursorPos,[]);
+        NewCodeTool.BuildTreeAndGetCleanPos(CodeXYPos,CleanCursorPos);
         // find node at position
         ProcNode:=NewCodeTool.BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
         if (ProcNode.Desc<>ctnProcedure)
@@ -7206,7 +7208,7 @@ begin
       DeactivateGlobalWriteLock;
     end;
 
-    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+    BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
 
     // find node at position
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);

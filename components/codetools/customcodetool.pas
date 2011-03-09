@@ -56,7 +56,6 @@ type
     ctpTool
     );
 
-type
   TCustomCodeTool = class;
 
 
@@ -135,7 +134,6 @@ type
   TCustomCodeTool = class(TObject)
   private
     FLastProgressPos: integer;
-    FLastScannerChangeStep: integer;
     FNodesDeletedChangeStep: integer;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnParserProgress: TOnParserProgress;
@@ -145,14 +143,16 @@ type
     FTreeChangeStep: integer;
     FNodeParseErrors: TAVLTree; // tree of TCodeTreeNodeParseError
   protected
+    FLastScannerChangeStep: integer;
     FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
     WordIsKeyWordFuncList: TKeyWordFunctionList;
-    FForceUpdateNeeded: boolean;
+    FRangeValidTill: TLinkScannerRange;
     function DefaultKeyWordFunc: boolean;
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
-    procedure DoDeleteNodes; virtual;
+    procedure DoDeleteNodes(StartNode: TCodeTreeNode); virtual;
+    procedure CloseUnfinishedNodes;
     procedure RaiseIdentExpectedButAtomFound;
     procedure RaiseBracketOpenExpectedButAtomFound;
     procedure RaiseBracketCloseExpectedButAtomFound;
@@ -162,18 +162,17 @@ type
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
-    LastErrorPhase: TCodeToolPhase;
     LastErrorValid: boolean;
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     LastErrorNicePosition: TCodeXYPosition;
-    CurrentPhase: TCodeToolPhase;
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoProgress; inline;
     procedure NotifyAboutProgress;
     // dirty/dead source
     procedure LoadDirtySource(const CursorPos: TCodeXYPosition);
+    procedure FetchScannerSource(Range: TLinkScannerRange); virtual;
   public
     Tree: TCodeTree;
 
@@ -235,9 +234,13 @@ type
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
 
-    function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
-    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
-    procedure BeginParsingAndGetCleanPos(DeleteNodes,
+    function UpdateNeeded(Range: TLinkScannerRange): boolean;
+    function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean; deprecated;
+    procedure BeginParsing(Range: TLinkScannerRange); virtual;
+    procedure BeginParsingAndGetCleanPos(
+        Range: TLinkScannerRange; CursorPos: TCodeXYPosition;
+        out CleanCursorPos: integer);
+    procedure BeginParsingAndGetCleanPosOLD(
         OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer);
     function IsDirtySrcValid: boolean;
@@ -395,7 +398,6 @@ begin
   IndentSize:=2;
   VisibleEditorLines:=20;
   CursorBeyondEOL:=true;
-  FForceUpdateNeeded:=false;
   Clear;
 end;
 
@@ -411,7 +413,7 @@ end;
 
 procedure TCustomCodeTool.Clear;
 begin
-  if Tree<>nil then DoDeleteNodes;
+  if Tree<>nil then DoDeleteNodes(Tree.Root);
   CurPos:=StartAtomPosition;
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
@@ -435,7 +437,6 @@ procedure TCustomCodeTool.SaveRaiseException(const AMessage: string;
 begin
   LastErrorMessage:=AMessage;
   LastErrorCurPos:=CurPos;
-  LastErrorPhase:=CurrentPhase;
   LastErrorValid:=true;
   if ClearNicePos then begin
     LastErrorNicePosition.Code:=nil;
@@ -472,7 +473,6 @@ end;
 
 procedure TCustomCodeTool.ClearLastError;
 begin
-  LastErrorPhase:=ctpNone;
   LastErrorValid:=false;
   LastErrorCheckedForIgnored:=false;
   LastErrorNicePosition.Code:=nil;
@@ -483,7 +483,6 @@ procedure TCustomCodeTool.RaiseLastError;
 begin
   MoveCursorToCleanPos(LastErrorCurPos.StartPos);
   CurPos:=LastErrorCurPos;
-  CurrentPhase:=LastErrorPhase;
   ErrorNicePosition:=LastErrorNicePosition;
   SaveRaiseException(LastErrorMessage,false);
 end;
@@ -501,9 +500,6 @@ begin
 
   if Assigned(OnParserProgress) then begin
     if OnParserProgress(Self) then exit;
-    // abort the parsing process
-    // mark parsing results as invalid
-    FForceUpdateNeeded:=true;
     // raise the abort exception to stop the parsing
     RaiseExceptionClass('Abort',EParserAbort,true);
   end;
@@ -543,6 +539,31 @@ begin
   DirtySrc.SetGap(CursorPos,NewDirtyStartPos,NewDirtyGapStart,NewDirtyGapEnd);
 end;
 
+procedure TCustomCodeTool.FetchScannerSource(Range: TLinkScannerRange);
+begin
+  // update scanned code
+  if FLastScannerChangeStep=Scanner.ChangeStep then begin
+    if LastErrorValid then
+      RaiseLastError;
+  end else begin
+    // code has changed
+    FLastScannerChangeStep:=Scanner.ChangeStep;
+    ClearLastError;
+    Src:=Scanner.CleanedSrc;
+    SrcLen:=length(Src);
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TCustomCodeTool.BeginParsing ',MainFilename]);
+    {$ENDIF}
+    FRangeValidTill:=lsrInit;
+    DirtySrc.Free;
+    DirtySrc:=nil;
+  end;
+
+  // delete nodes
+  if Tree<>nil then
+    DoDeleteNodes(Tree.Root);
+end;
+
 procedure TCustomCodeTool.RaiseUndoImpossible;
 begin
   RaiseException('TCustomCodeTool.UndoReadNextAtom impossible',true);
@@ -559,9 +580,9 @@ begin
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
   end;
   {$IFDEF VerboseUpdateNeeded}
-  DebugLn(['TCustomCodeTool.SetScanner FForceUpdateNeeded:=true ',MainFilename]);
+  DebugLn(['TCustomCodeTool.SetScanner ',MainFilename]);
   {$ENDIF}
-  FForceUpdateNeeded:=true;
+  FRangeValidTill:=lsrNone;
 end;
 
 function TCustomCodeTool.NodeDescToStr(Desc: integer): string;
@@ -1799,64 +1820,45 @@ begin
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
-procedure TCustomCodeTool.BeginParsing(DeleteNodes,
-  OnlyInterfaceNeeded: boolean);
-var
-  LinkScanRange: TLinkScannerRange;
+procedure TCustomCodeTool.BeginParsing(Range: TLinkScannerRange);
 begin
   // scan
   FLastProgressPos:=0;
-  CurrentPhase:=ctpScan;
-  try
-    if OnlyInterfaceNeeded then
-      LinkScanRange:=lsrImplementationStart
-    else
-      LinkScanRange:=lsrEnd;
-    Scanner.Scan(LinkScanRange,CheckFilesOnDisk);
-    // update scanned code
-    if FLastScannerChangeStep<>Scanner.ChangeStep then begin
-      // code has changed
-      ClearLastError;
-      FLastScannerChangeStep:=Scanner.ChangeStep;
-      Src:=Scanner.CleanedSrc;
-      SrcLen:=length(Src);
-      {$IFDEF VerboseUpdateNeeded}
-      DebugLn(['TCustomCodeTool.BeginParsing FForceUpdateNeeded:=true ',MainFilename]);
-      {$ENDIF}
-      FForceUpdateNeeded:=true;
-      DirtySrc.Free;
-      DirtySrc:=nil;
-    end else begin
-      if LastErrorPhase=ctpScan then
-        RaiseLastError;
-    end;
-    
-    // delete nodes
-    if DeleteNodes then DoDeleteNodes;
-
-    // init parsing values
-    CurPos:=StartAtomPosition;
-    LastAtoms.Clear;
-    NextPos.StartPos:=-1;
-    CurNode:=nil;
-  finally
-    CurrentPhase:=ctpNone;
-  end;
+  Scanner.Scan(Range,CheckFilesOnDisk);
+  FetchScannerSource(Range);
+  // init parsing values
+  CurPos:=StartAtomPosition;
+  LastAtoms.Clear;
+  NextPos.StartPos:=-1;
+  CurNode:=nil;
 end;
 
-procedure TCustomCodeTool.BeginParsingAndGetCleanPos(DeleteNodes,
-  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
-  out CleanCursorPos: integer);
-var Dummy: integer;
+procedure TCustomCodeTool.BeginParsingAndGetCleanPos(Range: TLinkScannerRange;
+  CursorPos: TCodeXYPosition; out CleanCursorPos: integer);
+var
+  Dummy: integer;
 begin
-  if UpdateNeeded(OnlyInterfaceNeeded) then
-    BeginParsing(DeleteNodes,OnlyInterfaceNeeded);
+  if UpdateNeeded(Range) then
+    BeginParsing(Range);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then begin
     MoveCursorToCleanPos(1);
     RaiseException(ctsCursorPosOutsideOfCode,true);
   end;
+end;
+
+procedure TCustomCodeTool.BeginParsingAndGetCleanPosOLD(
+  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
+  out CleanCursorPos: integer);
+var
+  Range: TLinkScannerRange;
+begin
+  if OnlyInterfaceNeeded then
+    Range:=lsrImplementationStart
+  else
+    Range:=lsrEnd;
+  BeginParsingAndGetCleanPos(Range,CursorPos,CleanCursorPos);
 end;
 
 function TCustomCodeTool.IsDirtySrcValid: boolean;
@@ -1878,7 +1880,7 @@ begin
       IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
       //DebugLn(['  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,' "',copy(Src,IgnoreErrorAfterCleanPos-6,6),'"',
       //  ' LastErrorCurPos.StartPos=',LastErrorCurPos.StartPos,' "',copy(Src,LastErrorCurPos.StartPos-6,6),'"',
-      //  ' LastErrorPhase>CodeToolPhaseParse=',LastErrorPhase>CodeToolPhaseParse]);
+      //  ' ']);
       if IgnoreErrorAfterCleanPos>0 then begin
         // ignore position in scanned code
         // -> check if last error is behind or equal ignore position
@@ -1929,7 +1931,7 @@ begin
   if (Scanner<>nil) and Scanner.LastErrorIsInFrontOfCleanedPos(ACleanedPos)
   then
     Result:=true
-  else if (LastErrorValid)
+  else if LastErrorValid
   and (LastErrorCurPos.StartPos<ACleanedPos) then
     Result:=true
   else
@@ -1946,7 +1948,7 @@ begin
   DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',dbgs(ACleanedPos));
   {$ENDIF}
   if Scanner<>nil then Scanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos);
-  //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
+  //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorCurPos.EndPos);
   if LastErrorValid
   and (LastErrorCurPos.StartPos<ACleanedPos) then
     RaiseLastError;
@@ -2204,11 +2206,11 @@ begin
     if (ctnsNeedJITParsing and Node.SubDesc)>0 then begin
       SetNodeParserError(Node,TheException.Message,CurPos.StartPos,
                          ErrorNicePosition);
+      break;
     end;
-    if (Node.StartPos>=Node.EndPos) then
-      Node.EndPos:=CursorPos;
     Node:=Node.Parent;
   end;
+  CloseUnfinishedNodes;
   // convert cursor pos to caret pos, which is more human readable
   if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
   if (CleanPosToCaret(CursorPos,CaretXY))
@@ -2219,7 +2221,6 @@ begin
     ErrorPosition.Y:=-1;
   end;
   // raise the exception
-  CurrentPhase:=ctpNone;
   if not RaiseUnhandableExceptions then
     raise TheException
   else
@@ -2633,14 +2634,16 @@ begin
   IgnoreErrorAfter:=CodePosition(0,nil);
 end;
 
-function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
-var
-  LinkScanRange: TLinkScannerRange;
+function TCustomCodeTool.UpdateNeeded(Range: TLinkScannerRange): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded A ',dbgs(Scanner<>nil),' FForceUpdateNeeded=',dbgs(FForceUpdateNeeded));
   {$ENDIF}
-  if FForceUpdateNeeded then begin
+  if Range=lsrNone then exit(false);
+  if ord(FRangeValidTill)<ord(Range) then begin
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TCustomCodeTool.UpdateNeeded because range increased from ',dbgs(FRangeValidTill),' to ',dbgs(Range),' ',MainFilename]);
+    {$ENDIF}
     Result:=true;
     exit;
   end;
@@ -2648,22 +2651,29 @@ begin
     {$IFDEF VerboseUpdateNeeded}
     DebugLn(['TCustomCodeTool.UpdateNeeded because FLastScannerChangeStep<>Scanner.ChangeStep ',MainFilename]);
     {$ENDIF}
+    FRangeValidTill:=lsrNone;
     Result:=true;
   end else begin
-    if OnlyInterfaceNeeded then
-      LinkScanRange:=lsrImplementationStart
-    else
-      LinkScanRange:=lsrEnd;
-    Result:=Scanner.UpdateNeeded(LinkScanRange, CheckFilesOnDisk);
-    {$IFDEF VerboseUpdateNeeded}
-    if Result then
+    Result:=Scanner.UpdateNeeded(Range, CheckFilesOnDisk);
+    if Result then begin
+      {$IFDEF VerboseUpdateNeeded}
       DebugLn(['TCustomCodeTool.UpdateNeeded because Scanner.UpdateNeeded ',MainFilename]);
-    {$ENDIF}
+      {$ENDIF}
+      // decrease valid range
+      FRangeValidTill:=Pred(Range);
+    end;
   end;
-  FForceUpdateNeeded:=Result;
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',dbgs(Result));
   {$ENDIF}
+end;
+
+function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
+begin
+  if OnlyInterfaceNeeded then
+    Result:=UpdateNeeded(lsrImplementationStart)
+  else
+    Result:=UpdateNeeded(lsrEnd);
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar
@@ -2722,15 +2732,61 @@ begin
     Result:='';
 end;
 
-procedure TCustomCodeTool.DoDeleteNodes;
+procedure TCustomCodeTool.DoDeleteNodes(StartNode: TCodeTreeNode);
+// delete Node and all following nodes
+var
+  AVLNode: TAVLTreeNode;
+  NextAVLNode: TAVLTreeNode;
+  Node: TCodeTreeNode;
 begin
-  if Tree.Root<>nil then begin
+  if StartNode<>nil then begin
+    //debugln(['TCustomCodeTool.DoDeleteNodes Node=',StartNode.DescAsString,' ',MainFilename]);
     //DebugLn(['TCustomCodeTool.DoDeleteNodes ',MainFilename]);
     // first notify, so that references could be deleted clean
     IncreaseTreeChangeStep(true);
-    // then change
-    Tree.Clear;
-    DisposeAVLTree(FNodeParseErrors);
+
+    // free errors and nodes
+    if StartNode=Tree.Root then begin
+      DisposeAVLTree(FNodeParseErrors);
+      Tree.Clear;
+    end else begin
+      if (FNodeParseErrors<>nil) then begin
+        AVLNode:=FNodeParseErrors.FindLowest;
+        while AVLNode<>nil do begin
+          NextAVLNode:=FNodeParseErrors.FindSuccessor(AVLNode);
+          if TCodeTreeNodeParseError(AVLNode.Data).Node.StartPos>=StartNode.StartPos
+          then
+            FNodeParseErrors.FreeAndDelete(AVLNode);
+          AVLNode:=NextAVLNode;
+        end;
+      end;
+      Node:=StartNode;
+      repeat
+        while Node.NextBrother<>nil do
+          Tree.DeleteNode(Node.NextBrother);
+        if Node.Parent=nil then break;
+        Node:=Node.Parent;
+      until false;
+      Tree.DeleteNode(StartNode);
+    end;
+  end;
+end;
+
+procedure TCustomCodeTool.CloseUnfinishedNodes;
+begin
+  // close all unfinished nodes
+  while CurNode<>nil do begin
+    if CurNode.EndPos<1 then begin
+      if CurNode.LastChild<>nil then
+        CurNode.EndPos:=CurNode.LastChild.EndPos;
+      if (CurNode.EndPos<1) then begin
+        if CurNode.StartPos<CurPos.StartPos then
+          CurNode.EndPos:=CurPos.StartPos
+        else
+          CurNode.EndPos:=CurPos.EndPos;
+      end;
+    end;
+    CurNode:=CurNode.Parent;
   end;
 end;
 

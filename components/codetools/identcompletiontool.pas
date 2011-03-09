@@ -1719,7 +1719,8 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TIdentCompletionTool.ParseSourceTillCollectionStart A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y),' ',DbgsCXY(IdentStartXYPos));
   {$ENDIF}
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[btSetIgnoreErrorPos]);
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                          [btSetIgnoreErrorPos]);
 
   // find node at position
   CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
@@ -2408,8 +2409,8 @@ begin
   ActivateGlobalWriteLock;
   Params:=nil;
   try
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos]);
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                            [btSetIgnoreErrorPos]);
 
     // find node at position
     CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
@@ -2482,8 +2483,8 @@ begin
   ActivateGlobalWriteLock;
   Params:=nil;
   try
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos]);
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                           [btSetIgnoreErrorPos]);
 
     // find node at position
     CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);

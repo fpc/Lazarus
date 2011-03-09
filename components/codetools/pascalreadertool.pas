@@ -2097,7 +2097,7 @@ var NamePos: TAtomPosition;
 begin
   Result:='';
   if DoBuildTree then
-    BuildTree(true);
+    BuildTree(lsrSourceName);
   if not GetSourceNamePos(NamePos) then exit;
   CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
   Result:=CachedSourceName;
@@ -2300,7 +2300,7 @@ begin
 
   // parse source and find clean positions
   if InvokeBuildTree then
-    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+    BuildTreeAndGetCleanPos(StartPos,CleanCursorPos,[])
   else
     if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
       exit;
@@ -2642,7 +2642,7 @@ begin
 
   // parse source and find clean positions
   if InvokeBuildTree then
-    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+    BuildTreeAndGetCleanPos(StartPos,CleanCursorPos)
   else
     if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
       exit;

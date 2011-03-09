@@ -73,7 +73,7 @@ begin
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
   CurNode:=nil;
-  DoDeleteNodes;
+  DoDeleteNodes(Tree.Root);
 end;
 
 function TResourceCodeTool.FindLazarusResourceHeaderComment(

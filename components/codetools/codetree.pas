@@ -231,6 +231,8 @@ type
     function Next: TCodeTreeNode;
     function NextSkipChilds: TCodeTreeNode;
     function Prior: TCodeTreeNode;
+    function GetRoot: TCodeTreeNode;
+    function ChildCount: integer;
     function HasAsParent(Node: TCodeTreeNode): boolean;
     function HasAsChild(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
@@ -241,8 +243,6 @@ type
     function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
     function DescAsString: string;
-    function GetRoot: TCodeTreeNode;
-    function ChildCount: integer;
     function FindOwner: TObject;
     procedure Clear;
     constructor Create;
@@ -817,18 +817,15 @@ begin
 end;
 
 procedure TCodeTree.Clear;
-var ANode: TCodeTreeNode;
 begin
-  while Root<>nil do begin
-    ANode:=Root;
-    Root:=ANode.NextBrother;
-    DeleteNode(ANode);
-  end;
+  while Root<>nil do
+    DeleteNode(Root);
 end;
 
 procedure TCodeTree.DeleteNode(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
+  if ANode=Root then Root:=ANode.NextBrother;
   while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
   with ANode do begin
     if (Parent<>nil) then begin
@@ -843,7 +840,6 @@ begin
     NextBrother:=nil;
     PriorBrother:=nil;
   end;
-  if ANode=Root then Root:=nil;
   dec(FNodeCount);
   ANode.Clear; // clear to spot dangling pointers early
   ANode.Free;

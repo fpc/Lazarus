@@ -72,8 +72,9 @@ type
     function ReadBackwardTilAnyBracketClose: boolean;
   public
     // explore the code
+    function Explore(WithStatements: boolean; Range: TLinkScannerRange): boolean;
     function Explore(WithStatements: boolean;
-      OnlyInterface: boolean = false): boolean;
+          OnlyInterface: boolean = false): boolean;
   
     // source name  e.g. 'unit UnitName;'
     function GetCachedSourceName: string;
@@ -388,7 +389,7 @@ function TStandardCodeTool.RenameSource(const NewName: string;
 var NamePos: TAtomPosition;
 begin
   Result:=false;
-  BuildTree(true);
+  BuildTree(lsrSourceName);
   if (not GetSourceNamePos(NamePos)) or (NamePos.StartPos<1) or (NewName='')
   or (Length(NewName)>255) then exit;
   SourceChangeCache.MainScanner:=Scanner;
@@ -571,7 +572,7 @@ var
   
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   SourceChangeCache.MainScanner:=Scanner;
   ExistingUnits:=nil;
   try
@@ -930,7 +931,10 @@ var
 begin
   Result:=false;
   if (NewUnitName='') or (length(NewUnitName)>255) then exit;
-  BuildTree(UsesSection=usMain);
+  if UsesSection=usMain then
+    BuildTree(lsrMainUsesSectionEnd)
+  else
+    BuildTree(lsrImplementationUsesSectionEnd);
   SourceChangeCache.MainScanner:=Scanner;
   case UsesSection Of
     usMain: UsesNode:=FindMainUsesSection;
@@ -1019,7 +1023,10 @@ begin
   Result:=false;
   if (UpperUnitName='') or (length(UpperUnitName)>255) then
     exit;
-  BuildTree(UsesSection=usMain);
+  if UsesSection=usMain then
+    BuildTree(lsrMainUsesSectionEnd)
+  else
+    BuildTree(lsrImplementationUsesSectionEnd);
   SourceChangeCache.MainScanner:=Scanner;
   case UsesSection Of
     usMain: UsesNode:=FindMainUsesSection;
@@ -1123,7 +1130,7 @@ var SectionNode: TCodeTreeNode;
 begin
   Result:=false;
   if (UpperUnitName='') or (SourceChangeCache=nil) then exit;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
 
   SourceChangeCache.BeginUpdate;
   try
@@ -1151,7 +1158,7 @@ var
 begin
   debugln('TStandardCodeTool.FixUsedUnitCase ',MainFilename);
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
     if (SectionNode.FirstChild<>nil)
@@ -1257,7 +1264,7 @@ begin
   MainUsesSection:=nil;
   ImplementationUsesSection:=nil;
   // find the uses sections
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   MainUsesNode:=FindMainUsesSection;
   ImplementatioUsesNode:=FindImplementationUsesSection;
   // create lists
@@ -1306,7 +1313,7 @@ function TStandardCodeTool.FindUsedUnitNames(var List: TStringToStringTree
 begin
   // find the uses sections
   List:=TStringToStringTree.Create(false);
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   Collect(FindMainUsesSection,'Main');
   Collect(FindImplementationUsesSection,'Implementation');
   Result:=true;
@@ -1319,7 +1326,7 @@ var
 begin
   MainUsesSection:=nil;
   // find the uses sections
-  BuildTree(true);
+  BuildTree(lsrImplementationUsesSectionEnd);
   MainUsesNode:=FindMainUsesSection;
   // create lists
   try
@@ -1339,7 +1346,7 @@ begin
   MainUsesSection:=nil;
   ImplementationUsesSection:=nil;
   // find the uses sections
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   MainUsesNode:=FindMainUsesSection;
   ImplementatioUsesNode:=FindImplementationUsesSection;
   // create lists
@@ -1382,7 +1389,7 @@ begin
   NormalUnits:=nil;
   DebugLn('TStandardCodeTool.FindDelphiProjectUnits UseContainsSection=',dbgs(UseContainsSection));
   // find the uses sections
-  BuildTree(false);
+  BuildTree(lsrEnd);
   UsesNode:=FindMainUsesSection(UseContainsSection);
   if UsesNode=nil then exit;
   MoveCursorToUsesStart(UsesNode);
@@ -1560,7 +1567,7 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
   
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   if FixCase then
     SourceChangeCache.MainScanner:=Scanner;
   try
@@ -1680,7 +1687,7 @@ begin
     Result:=true;
     exit;
   end;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   SourceChangeCache.MainScanner:=Scanner;
   if not CommentUnitsInUsesSection(FindMainUsesSection) then exit;
   if not CommentUnitsInUsesSection(FindImplementationUsesSection) then exit;
@@ -1827,7 +1834,7 @@ var
     HasCode:=false;
     UseInterface:=false;
     // parse used unit
-    Tool.BuildTree(false);
+    Tool.BuildTree(lsrEnd);
     Node:=Tool.Tree.Root;
     while (Node<>nil) do begin
       case Node.Desc of
@@ -1918,7 +1925,7 @@ var
 begin
   Result:=false;
   DebugLn(['TStandardCodeTool.FindUnusedUnits ']);
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   Identifiers:=nil;
   try
     CheckUsesSection(FindMainUsesSection,false);
@@ -1938,7 +1945,7 @@ var
 begin
   Result:=nil;
   if LinkIndex<0 then begin
-    BuildTree(false);
+    BuildTree(lsrEnd);
     InitializationNode:=FindInitializationNode;
     if InitializationNode=nil then exit;
     LinkIndex:=Scanner.LinkIndexAtCleanPos(InitializationNode.StartPos);
@@ -2030,7 +2037,7 @@ begin
   Result:=false;
   if (ResourceCode=nil) or (ResourceName='') or (length(ResourceName)>255)
   or (ResourceData='') or (SourceChangeCache=nil) then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
@@ -2072,7 +2079,7 @@ begin
   Result:=false;
   if (ResourceCode=nil) or (ResourceName='') or (length(ResourceName)>255)
   or (SourceChangeCache=nil) then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
@@ -2702,7 +2709,7 @@ begin
     if not LFMTree.ParseIfNeeded then exit;
     // parse unit and find LookupRoot
     //DebugLn('TStandardCodeTool.CheckLFM parsing unit ...');
-    BuildTree(true);
+    BuildTree(lsrImplementationUsesSectionEnd);
     // find every identifier
     //DebugLn('TStandardCodeTool.CheckLFM checking identifiers ...');
     CurRootLFMNode:=LFMTree.Root;
@@ -2729,7 +2736,7 @@ begin
   if (UpperClassName='') or (UpperVarName='') or (length(UpperClassName)>255)
   or (length(UpperVarName)>255) then exit;
   if StartPos<1 then begin
-    BuildTree(false);
+    BuildTree(lsrEnd);
     MainBeginNode:=FindMainBeginEndNode;
     if MainBeginNode=nil then exit;
     StartPos:=MainBeginNode.StartPos;
@@ -2769,7 +2776,7 @@ begin
   Result:=false;
   if (AClassName='') or (length(AClassName)>255) or (AVarName='')
   or (length(AVarName)>255) then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   FromPos:=-1;
@@ -2836,7 +2843,7 @@ begin
   or (NewClassName='') or (length(NewClassName)>255)
   or (NewVarName='') or (length(NewVarName)>255)
   then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   FromPos:=-1;
@@ -2868,7 +2875,7 @@ var Position: integer;
   s:string;
   var MainBeginNode: TCodeTreeNode;
 begin
-  BuildTree(false);
+  BuildTree(lsrEnd);
   Result:=TStringList.Create;
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
@@ -2905,7 +2912,7 @@ var Position, InsertPos, i, ColonPos, Indent: integer;
 begin
   Result:= false;
   if (List = nil) or (SourceChangeCache = nil) then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
 
   { first delete all CreateForm Statements }
   SourceChangeCache.MainScanner:= Scanner;
@@ -2981,7 +2988,7 @@ begin
   StartPos:=-1;
   StringConstStartPos:=-1;
   EndPos:=-1;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   Position:=MainBeginNode.StartPos;
@@ -3127,7 +3134,7 @@ begin
   Result:=false;
   AncestorClassName:='';
   if UpperClassName='' then exit;
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
   if (ClassNode=nil) then exit;
   // search the ancestor name
@@ -3235,7 +3242,7 @@ begin
   Result:=false;
   if (IdentList=nil) or (IdentList.Count=0) or (SourceChangeCache=nil)
   or (Odd(IdentList.Count)) then exit;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   if Scanner=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
   SourceList:=TFPList.Create;
@@ -3261,7 +3268,7 @@ var
 begin
   Result:=nil;
   if IdentTree=nil then exit;
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,[]);
   BestDiff:=SrcLen+1;
   MoveCursorToCleanPos(1);
   repeat
@@ -3359,7 +3366,7 @@ begin
   StartPos:=CursorPos;
   EndPos:=CursorPos;
   Result:=true;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   {$IFDEF VerboseGetStringConstBounds}
   DebugLn('TStandardCodeTool.GetStringConstBounds A Start at ',CleanPosToStr(CleanCursorPos),' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   {$ENDIF}
@@ -3684,7 +3691,7 @@ begin
   Result:=false;
   Operand:='';
   if CursorPos.Code.LineColIsSpace(CursorPos.Y,CursorPos.X) then exit;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanPos);
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   StartPos:=FindStartOfTerm(CleanPos,NodeTermInType(Node));
   if StartPos<1 then exit;
@@ -3728,7 +3735,7 @@ function TStandardCodeTool.GatherResourceStringSections(
         MoveCursorToAtomPos(UnitNameAtom);
         RaiseException(Format(ctsSourceOfUnitNotFound, [GetAtom]));
       end;
-      NewCodeTool.BuildTree(true);
+      NewCodeTool.BuildTree(lsrImplementationStart);
       // search all resource string sections in the interface
       ANode:=NewCodeTool.FindInterfaceNode;
       if (ANode<>nil) and (ANode.LastChild<>nil) then begin
@@ -3759,7 +3766,7 @@ var
 begin
   Result:=false;
   //DebugLn('TStandardCodeTool.GatherResourceStringSections A ');
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   PositionList.Clear;
   ANode:=CursorNode;
@@ -3799,7 +3806,7 @@ begin
   Result:=false;
   if ResStrIdentifier='' then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -3830,7 +3837,7 @@ begin
   Result:=false;
   if MaxLen<=0 then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
+  BuildTreeAndGetCleanPos(StartCursorPos,StartPos);
   Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
   if (Dummy<>0) and (Dummy<>-1) then exit;
   ANode:=FindDeepestNodeAtPos(StartPos,True);
@@ -3864,7 +3871,7 @@ var
 begin
   Result:=false;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
+  BuildTreeAndGetCleanPos(StartCursorPos,StartPos);
   Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
   if (Dummy<>0) and (Dummy<>-1) then exit;
   Result:=GetStringConstAsFormatString(StartPos,EndPos,FormatStringConstant,
@@ -3879,7 +3886,7 @@ var
 begin
   Result:=false;
   HasRegisterProc:=false;
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   InterfaceNode:=FindInterfaceNode;
   if InterfaceNode=nil then exit;
   ANode:=InterfaceNode.FirstChild;
@@ -3908,7 +3915,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
     InsertPos: Integer;
   begin
     Result:=false;
-    BuildTree(true);
+    BuildTree(lsrInterfaceStart);
     if not FindModeDirective(false,ModeDirectivePos) then begin
       // add {$MODE Delphi} behind source type
       if Tree.Root=nil then exit;
@@ -3922,7 +3929,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
       if not SourceChangeCache.Apply then exit;
     end;
     // changing mode requires rescan
-    BuildTree(false);
+    BuildTree(lsrImplementationStart);
     Result:=true;
   end;
 
@@ -4066,7 +4073,7 @@ var
 begin
   Result:=false;
   DirectiveList.Clear;
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   EndPos:=1;
   repeat
     StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
@@ -4091,7 +4098,7 @@ begin
   Result:=false;
   if SourceChangeCache=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  BuildTree(false);
+  BuildTree(lsrEnd);
 
   // find first old IDE directive
   InsertPos:=FindNextIDEDirective(Src,1,Scanner.NestedComments);
@@ -4183,7 +4190,7 @@ begin
   Result:=false;
   if PositionList=nil then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -4208,7 +4215,7 @@ begin
   Result:=false;
   IdentTree:=nil;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(SectionPos,CleanCursorPos);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -4282,7 +4289,7 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   // parse source and find clean positions
   //DebugLn('TStandardCodeTool.AddResourcestring B');
-  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[]);
+  BuildTreeAndGetCleanPos(SectionPos,CleanSectionPos);
   //DebugLn('TStandardCodeTool.AddResourcestring C');
   // find resource string section
   SectionNode:=FindDeepestNodeAtPos(CleanSectionPos,true);
@@ -4378,7 +4385,7 @@ begin
   Result:=nil;
   if (UpperClassName='') or (length(UpperClassName)>255) then
     RaiseException(Format(ctsinvalidClassName, ['"', UpperClassName, '"']));
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
   if ClassNode=nil then begin
     if ExceptionOnClassNotFound then
@@ -4495,7 +4502,7 @@ var
   ApplyNeeded: Boolean;
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName,
                                  ExceptionOnClassNotFound);
   if VarNode<>nil then begin
@@ -4604,7 +4611,7 @@ begin
   {$IFDEF VerboseDanglingComponentEvents}
   DebugLn(['TStandardCodeTool.GatherPublishedClassElements BEFORE buildtree']);
   {$ENDIF}
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   {$IFDEF VerboseDanglingComponentEvents}
   DebugLn(['TStandardCodeTool.GatherPublishedClassElements after buildtree']);
   {$ENDIF}
@@ -4641,13 +4648,16 @@ var
   HasChanged: Boolean;
 begin
   Result:=false;
-  BuildTree(not SearchImplementationToo);
-  if SearchImplementationToo then
+  if SearchImplementationToo then begin
+    BuildTree(lsrEnd);
     ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,
                                    ExceptionOnClassNotFound)
-  else
+  end
+  else begin
+    BuildTree(lsrImplementationStart);
     ClassNode:=FindClassNodeInInterface(AClassName,true,false,
                                         ExceptionOnClassNotFound);
+  end;
   if ClassNode=nil then exit;
   if (ListOfTypes=nil) or (ListOfTypes.Tree.Count=0) then exit(true);
 
@@ -4837,7 +4847,7 @@ var
   DeleteFirstTokenOfLine: Boolean;
 begin
   Result:=false;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   Node:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
   if Node.Desc in AllIdentifierDefinitions then begin
     // Examples:
@@ -4935,7 +4945,7 @@ function TStandardCodeTool.FindBlockCounterPart(
 var CleanCursorPos: integer;
 begin
   Result:=false;
-  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
+  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
   if Src[CurPos.StartPos] in ['(','[','{'] then begin
@@ -4978,7 +4988,7 @@ var CleanCursorPos: integer;
 begin
   Result:=false;
   // scan code
-  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
+  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
   while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
@@ -5057,7 +5067,7 @@ function TStandardCodeTool.GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
 var CleanCursorPos: integer;
 begin
   Result:=false;
-  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
+  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
   // start reading at beginning of code
   MoveCursorToCleanPos(1);
   BuildBlockKeyWordFuncList;
@@ -5077,7 +5087,7 @@ begin
   BlockCleanStart:=0;
   BlockCleanEnd:=0;
   // scan code
-  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
+  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
   while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
@@ -6014,8 +6024,8 @@ var
 begin
   Result:=false;
   NewPos:=CursorPos;
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                [btSetIgnoreErrorPos]);
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                          [btSetIgnoreErrorPos]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   InternalCursorAtEmptyLine:=ebNone;
@@ -6055,7 +6065,7 @@ var
 begin
   Result:=false;
   try
-    BeginParsing(true,false);
+    BeginParsing(lsrEnd);
   except
     // ignore scanner and parser errors
     on e: ELinkScannerError do ;
@@ -6086,8 +6096,8 @@ var
 begin
   Result:=false;
   try
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [btSetIgnoreErrorPos]);
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                            [btSetIgnoreErrorPos]);
     LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
     LinkIndex:=Scanner.FindParentLink(LinkIndex);
     if LinkIndex<0 then
@@ -6109,7 +6119,7 @@ var
 begin
   Result:=false;
   ACleanPos:=0;
-  if DoBuildTree then BuildTree(true);
+  if DoBuildTree then BuildTree(lsrMainUsesSectionStart);
   ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'Mode',
                                                Scanner.NestedComments,ParamPos);
   if ParamPos=0 then ;
@@ -6124,7 +6134,7 @@ var
   FilenameEndPos: LongInt;
 begin
   Result:=false;
-  if DoBuildTree then BuildTree(true);
+  if DoBuildTree then BuildTree(lsrEnd);
   ACleanPos:=1;
   repeat
     ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
@@ -6158,7 +6168,7 @@ var
   CleanCursorPos: integer;
 begin
   Result:=false;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   if not FindResourceDirective(false,CleanCursorPos,Filename) then begin
     //DebugLn('TStandardCodeTool.FindResourceDirective resource directive not found');
     exit;
@@ -6175,7 +6185,7 @@ var
   AddSrc: String;
 begin
   Result:=false;
-  BuildTree(true);
+  BuildTree(lsrEnd);
   // find an insert position
   ANode:=FindImplementationNode;
   if ANode<>nil then begin
@@ -6220,7 +6230,7 @@ var
   CommentEnd: integer;
 begin
   Result:=false;
-  if DoBuildTree then BuildTree(true);
+  if DoBuildTree then BuildTree(lsrEnd);
   ACleanPos:=1;
   repeat
     ACleanPos:=FindNextIncludeDirective(Src,ACleanPos,Scanner.NestedComments,
@@ -6249,7 +6259,7 @@ var
   CleanCursorPos: integer;
 begin
   Result:=false;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   if not FindIncludeDirective(false,CleanCursorPos,Filename) then begin
     //DebugLn('TStandardCodeTool.FindIncludeDirective resource directive not found');
     exit;
@@ -6266,7 +6276,7 @@ var
   AddSrc: String;
 begin
   Result:=false;
-  BuildTree(true);
+  BuildTree(lsrEnd);
   // find an insert position
   ANode:=FindInitializationNode;
   if ANode<>nil then begin
@@ -6737,12 +6747,12 @@ begin
 end;
 
 function TStandardCodeTool.Explore(WithStatements: boolean;
-  OnlyInterface: boolean): boolean;
+  Range: TLinkScannerRange): boolean;
 var
   Node: TCodeTreeNode;
 begin
   Result:=true;
-  BuildTree(OnlyInterface);
+  BuildTree(Range);
   Node:=Tree.Root;
   while Node<>nil do begin
     case Node.Desc of
@@ -6752,10 +6762,19 @@ begin
       if WithStatements then
         BuildSubTreeForBeginBlock(Node);
     ctnImplementation:
-      if OnlyInterface then exit;
+      if ord(Range)<ord(lsrImplementationStart) then exit;
     end;
     Node:=Node.Next;
   end;
+end;
+
+function TStandardCodeTool.Explore(WithStatements: boolean;
+  OnlyInterface: boolean): boolean;
+begin
+  if OnlyInterface then
+    Result:=Explore(WithStatements,lsrImplementationStart)
+  else
+    Result:=Explore(WithStatements,lsrEnd);
 end;
 
 finalization

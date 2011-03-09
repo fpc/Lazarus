@@ -36,7 +36,7 @@ uses
   LazarusIDEStrConsts, IDEMsgIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeCache, CodeToolsStructs, AVL_Tree,
-  KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts,
+  LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts,
   // Converter
   ConverterTypes, ConvCodeTool, ConvertSettings, ReplaceNamesUnit;
 
@@ -312,7 +312,10 @@ var
     Result:=True;
     with fCTLink do begin
       ResetMainScanner;
-      CodeTool.BuildTree(fUsesSection=usMain);
+      if fUsesSection=usMain then
+        CodeTool.BuildTree(lsrMainUsesSectionEnd)
+      else
+        CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
       // Calls either FindMainUsesSection or FindImplementationUsesSection
       UsesNode:=UsesSectionNode;
       Assert(Assigned(UsesNode),
@@ -368,7 +371,10 @@ begin
     // Add LCL and Delphi sections for output.
     if (LclOnlyUnits.Count=0) and (DelphiOnlyUnits.Count=0) then Exit(True);
     fCTLink.ResetMainScanner;
-    fCTLink.CodeTool.BuildTree(fUsesSection=usMain);
+    if fUsesSection=usMain then
+      fCTLink.CodeTool.BuildTree(lsrMainUsesSectionEnd)
+    else
+      fCTLink.CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
     UsesNode:=UsesSectionNode;
     if Assigned(UsesNode) then begin      //uses section exists
       EndChar:=',';
@@ -439,7 +445,10 @@ begin
   Result:=false;
   for i:=0 to fUnitsToRemove.Count-1 do begin
     fCTLink.ResetMainScanner;
-    fCTLink.CodeTool.BuildTree(fUsesSection=usMain);
+    if fUsesSection=usMain then
+      fCTLink.CodeTool.BuildTree(lsrMainUsesSectionEnd)
+    else
+      fCTLink.CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
     if not fCTLink.CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
                          UpperCaseStr(fUnitsToRemove[i]), fCTLink.SrcCache) then
       exit;
@@ -504,7 +513,7 @@ begin
   fFilename:=AFilename;
   fIsMainFile:=False;
   fIsConsoleApp:=False;
-  fCTLink.CodeTool.BuildTree(False);
+  fCTLink.CodeTool.BuildTree(lsrEnd);
   // These will read uses sections while creating.
   fMainUsedUnits:=TMainUsedUnits.Create(ACTLink, Self);
   fImplUsedUnits:=TImplUsedUnits.Create(ACTLink, Self);
@@ -542,7 +551,7 @@ begin
     MapToEdit:=Nil;
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then
       MapToEdit:=TStringToStringTree.Create(false);
-    fCTLink.CodeTool.BuildTree(false);
+    fCTLink.CodeTool.BuildTree(lsrEnd);
     if not (fMainUsedUnits.FindMissingUnits(UnitUpdater) and
             fImplUsedUnits.FindMissingUnits(UnitUpdater)) then begin
       Result:=mrCancel;

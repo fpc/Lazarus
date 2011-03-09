@@ -618,7 +618,7 @@ type
     procedure RaiseStrConstExpected;
   protected
     // node caches
-    procedure DoDeleteNodes; override;
+    procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
     function NodeCacheGlobalWriteLockStepDidNotChange: boolean;
     function CheckDependsOnNodeCaches(CheckedTools: TAVLTree = nil): boolean;
     procedure ClearNodeCaches(Force: boolean);
@@ -750,7 +750,7 @@ type
     procedure ConsistencyCheck; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
 
-    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
+    procedure BeginParsing(Range: TLinkScannerRange); override;
     procedure ValidateToolDependencies; override;
     function BuildInterfaceIdentifierCache(ExceptionOnNotUnit: boolean): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
@@ -1223,8 +1223,8 @@ begin
     DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos]);
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                            [btSetIgnoreErrorPos]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier B CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
@@ -1380,7 +1380,7 @@ var CleanCursorPos: integer;
     if Assigned(FOnGetCodeToolForBuffer) then
       NewTool:=FOnGetCodeToolForBuffer(Self,ACode,false);
     if NewTool=nil then exit;
-    NewTool.BuildTree(true);
+    NewTool.BuildTree(lsrSourceName);
     if not NewTool.GetSourceNamePos(NamePos) then exit;
     NewNode:=NewTool.Tree.Root;
     if not NewTool.JumpToCleanPos(NamePos.StartPos,NamePos.StartPos,
@@ -1412,7 +1412,7 @@ begin
     DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                   [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
@@ -1571,7 +1571,7 @@ var
 begin
   Result:=false;
   if Identifier='' then exit;
-  BuildTree(false);
+  BuildTree(lsrMainUsesSectionEnd);
   UsesNode:=FindMainUsesSection;
   if UsesNode=nil then exit;
 
@@ -1628,7 +1628,7 @@ begin
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    BuildTree(false);
+    BuildTree(lsrEnd);
 
     //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Src]);
 
@@ -1766,7 +1766,7 @@ var
 begin
   Result:=nil;
   if Identifier='' then exit;
-  if BuildTheTree then BuildTree(true);
+  if BuildTheTree then BuildTree(lsrImplementationStart);
   if Tree.Root=nil then exit;
   if Tree.Root.Desc=ctnUnit then
     StartNode:=FindInterfaceNode
@@ -1894,7 +1894,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindUnitInAllUsesSections invalid AnUnitName']);
     exit;
   end;
-  BuildTree(false);
+  BuildTree(lsrImplementationUsesSectionEnd);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
     ctnPackage,ctnLibrary,ctnInterface,ctnImplementation])
@@ -3539,7 +3539,7 @@ begin
           Params.NewNode:=nil;
           Params.NewCodeTool:=FindCodeToolForUnitIdentifier(
                                 NameNode,GetIdentifier(Params.Identifier),true);
-          Params.NewCodeTool.BuildTree(true);
+          Params.NewCodeTool.BuildTree(lsrImplementationStart);
           Params.NewNode:=Params.NewCodeTool.Tree.Root;
         end;
         if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
@@ -3854,7 +3854,7 @@ begin
 
   ActivateGlobalWriteLock;
   try
-    BuildTreeAndGetCleanPos(trTillCursorSection,CursorPos,CleanPos,[]);
+    BuildTreeAndGetCleanPos(trTillCursorSection,lsrEnd,CursorPos,CleanPos,[]);
 
     NodeList:=TFPList.Create;
     NewTool:=Self;
@@ -3977,7 +3977,7 @@ begin
 
   ActivateGlobalWriteLock;
   try
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                 [btSetIgnoreErrorPos]);
 
     // find class node
@@ -4374,8 +4374,7 @@ var
       debugln('WARNING: TFindDeclarationTool.FindReferences DeclarationTool=nil');
       exit;
     end;
-    DeclarationTool.BuildTreeAndGetCleanPos(trAll,CursorPos,CleanDeclCursorPos,
-                                            []);
+    DeclarationTool.BuildTreeAndGetCleanPos(CursorPos,CleanDeclCursorPos);
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
                                            CleanDeclCursorPos,true);
     Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
@@ -4515,7 +4514,7 @@ begin
 
   ActivateGlobalWriteLock;
   try
-    BuildTree(false);
+    BuildTree(lsrEnd);
 
     // find declaration nodes and identifier
     if not FindDeclarationNode then exit;
@@ -4622,7 +4621,7 @@ begin
   ListOfPCodeXYPosition:=nil;
   ActivateGlobalWriteLock;
   try
-    BuildTree(false);
+    BuildTree(lsrEnd);
 
     InterfaceUsesNode:=FindMainUsesSection;
     if not CheckUsesSection(InterfaceUsesNode,Found) then exit;
@@ -5884,7 +5883,7 @@ var
 begin
   // build tree for pascal source
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
-  BuildTree(true);
+  BuildTree(lsrImplementationStart);
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
   if Tree.Root=nil then exit;
 
@@ -6101,11 +6100,10 @@ begin
   RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
 end;
 
-procedure TFindDeclarationTool.BeginParsing(DeleteNodes,
-  OnlyInterfaceNeeded: boolean);
+procedure TFindDeclarationTool.BeginParsing(Range: TLinkScannerRange);
 begin
   // scan code and init parser
-  inherited BeginParsing(DeleteNodes,OnlyInterfaceNeeded);
+  inherited BeginParsing(Range);
 
   // now the scanner knows, which compiler mode is needed
   // -> setup compiler dependent tables
@@ -8799,14 +8797,14 @@ begin
   Result:=FDirectoryCache<>nil;
 end;
 
-procedure TFindDeclarationTool.DoDeleteNodes;
+procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
   ClearNodeCaches(true);
   if FInterfaceIdentifierCache<>nil then begin
     FInterfaceIdentifierCache.Clear;
     FInterfaceIdentifierCache.Complete:=false;
   end;
-  inherited DoDeleteNodes;
+  inherited DoDeleteNodes(StartNode);
 end;
 
 function TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange: boolean;
@@ -8868,7 +8866,7 @@ begin
     ANode:=FDependsOnCodeTools.FindLowest;
     while ANode<>nil do begin
       ATool:=TFindDeclarationTool(ANode.Data);
-      Result:=ATool.UpdateNeeded(true)
+      Result:=ATool.UpdateNeeded(lsrImplementationStart)
               or ATool.CheckDependsOnNodeCaches(CheckedTools);
       if Result then exit;
       ANode:=FDependsOnCodeTools.FindSuccessor(ANode);

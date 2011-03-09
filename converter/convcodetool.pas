@@ -211,7 +211,7 @@ begin
   Result:=false;
   ACleanPos:=0;
   with fCTLink.CodeTool do begin
-    BuildTree(true);
+    BuildTree(lsrImplementationStart);
     ACleanPos:=FindNextCompilerDirectiveWithName(Src, 1, 'Apptype',
                                                  Scanner.NestedComments, ParamPos);
     if (ACleanPos>0) and (ACleanPos<=SrcLen) and (ParamPos>0) then
@@ -227,8 +227,7 @@ var
 begin
   Result:=false;
   with fCTLink.CodeTool do begin
-    BuildTree(true);
-    if not FindModeDirective(false,ModeDirectivePos) then begin
+    if not FindModeDirective(true,ModeDirectivePos) then begin
       // add {$MODE Delphi} behind source type
       if Tree.Root=nil then exit;
       MoveCursorToNodeStart(Tree.Root);
@@ -243,7 +242,7 @@ begin
       fCTLink.SrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
     end;
     // changing mode requires rescan
-    BuildTree(false);
+    BuildTree(lsrEnd);
   end;
   Result:=true;
 end;
@@ -323,7 +322,7 @@ var
 begin
   Result:=false;
   with fCTLink.CodeTool do begin
-    BuildTree(true);
+    BuildTree(lsrImplementationStart);
     // Find the class name that the main class inherits from.
     ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
     if ANode=nil then exit;
@@ -697,7 +696,7 @@ begin
     fDefinedProcNames.Duplicates:=dupIgnore;
     ActivateGlobalWriteLock;
     try
-      BuildTree(false);
+      BuildTree(lsrEnd);
       // Only convert identifiers in ctnBeginBlock nodes
       Node:=fCTLink.CodeTool.Tree.Root;
       while Node<>nil do begin

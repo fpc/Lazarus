@@ -333,7 +333,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TMethodJumpingCodeTool.FindJumpPoint A  CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
   {$ENDIF}
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
@@ -1053,7 +1053,7 @@ var
   StartPos, EndPos: integer;
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   DebugLn(['TMethodJumpingCodeTool.FindJumpPointForLinkerPos ']);
 
   BestPos:=0;
@@ -1181,7 +1181,7 @@ var SectionNode, CurProcNode: TCodeTreeNode;
   CurProcHead: string;
 begin
   Result:=false;
-  BuildTree(false);
+  BuildTree(lsrEnd);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
     if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin

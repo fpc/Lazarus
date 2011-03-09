@@ -2,6 +2,7 @@
  Test with:
      ./runtests --format=plain --suite=TestCTScanRange
      ./runtests --format=plain --suite=TestCTScanRangeAscending
+     ./runtests --format=plain --suite=TestCTScanRangeProcModified
 }
 unit TestCTRangeScan;
 
@@ -21,6 +22,7 @@ uses
 type
   TCTRgSrcFlag = (
     crsfWithProc1,
+    crsfWithProc1Modified,
     crsfWithCommentAtEnd,
     crsfWithInitialization,
     crsfWithFinalization
@@ -36,6 +38,7 @@ type
     procedure TestCTScanRange;
     procedure TestCTScanRangeAscending;
     procedure TestCTScanRangeDescending;
+    procedure TestCTScanRangeProcModified;
   end;
 
 implementation
@@ -56,7 +59,13 @@ begin
   +'const c = 3;'+LineEnding;
   if crsfWithProc1 in Flags then
     Result:=Result+'procedure Proc1;'+LineEnding
-      +'begin end;'+LineEnding;
+      +'begin'+LineEnding
+      +'end;'+LineEnding;
+  if crsfWithProc1Modified in Flags then
+    Result:=Result+'procedure Proc1;'+LineEnding
+      +'begin'+LineEnding
+      +'  // comment'+LineEnding
+      +'end;'+LineEnding;
   if crsfWithInitialization in Flags then
     Result:=Result+'initialization'+LineEnding;
   if crsfWithFinalization in Flags then
@@ -116,6 +125,10 @@ begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
   Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
+  // empty tool
+  Code.Source:='';
+  Tool.BuildTree(lsrInit);
+
   // scan source
   Code.Source:=GetSource([crsfWithInitialization,crsfWithFinalization]);
   RootNode:=nil;
@@ -173,11 +186,31 @@ begin
   MinRange:=low(TLinkScannerRange);
   MaxRange:=high(TLinkScannerRange);
   for r:=MaxRange downto MinRange do begin
-    debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Range=',dbgs(r)]);
+    debugln(['TTestCodetoolsRangeScan.TestCTScanRangeDescending Range=',dbgs(r)]);
     Tool.BuildTree(r);
     AssertEquals('RootNode must stay for descending range '+dbgs(r),true,Tool.Tree.Root<>nil);
     //Tool.WriteDebugTreeReport;
   end;
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeProcModified;
+var
+  Code: TCodeBuffer;
+  Tool: TEventsCodeTool;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  // scan source
+  Code.Source:=GetSource([crsfWithProc1]);
+  Tool.BuildTree(lsrEnd);
+  Tool.WriteDebugTreeReport;
+  AssertEquals('step1: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  Code.Source:=GetSource([crsfWithProc1Modified]);
+  Tool.BuildTree(lsrEnd);
+  Tool.WriteDebugTreeReport;
+  AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 end;
 
 initialization

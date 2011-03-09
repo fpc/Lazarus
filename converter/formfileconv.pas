@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, contnrs,
   // codetools
-  LFMTrees, CodeCache, BasicCodeTools, KeywordFuncLists,
+  LFMTrees, CodeCache, LinkScanner, BasicCodeTools, KeywordFuncLists,
   // Converter
   ConverterTypes, ConvCodeTool;
 
@@ -179,7 +179,7 @@ begin
   fCTLink.CodeTool.ActivateGlobalWriteLock;
   try
     if not fLFMTree.ParseIfNeeded then exit;
-    fCTLink.CodeTool.BuildTree(true);
+    fCTLink.CodeTool.BuildTree(lsrImplementationStart);
     // Iterate the root objects
     CurRootNode:=fLFMTree.Root;
     while (CurRootNode<>nil) and (CurRootNode is TLFMObjectNode) do begin
