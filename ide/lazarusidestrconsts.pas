@@ -3129,7 +3129,7 @@ resourcestring
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
   lisSuccess = 'Success';
-  lisAllBlocksLooksOk = 'All blocks looks ok.';
+  lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
     +'Resourcestring" function expects a string constant.%sPlease select the '
