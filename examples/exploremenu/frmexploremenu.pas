@@ -50,12 +50,13 @@ Procedure Register;
 
 implementation
 
+{$R *.lfm}
 
 Const
   SExploreIDEMEnu = 'ExploreIDEMEnu';
   
 Resourcestring
-  SExploreIDEMenUCaption = 'Explore IDE menu...';
+  SExploreIDEMenUCaption = 'Explore IDE menus ...';
   SSelectedPath = 'Path of selected item: ';
   
 Procedure ShowMenu(Sender : TObject);
@@ -73,7 +74,7 @@ end;
 Procedure Register;
 
 begin
-  RegisterIDEMenuCommand(itmSecondaryTools,SExploreIDEMEnu,
+  RegisterIDEMenuCommand(itmViewSecondaryWindows,SExploreIDEMEnu,
                          SExploreIDEMenuCaption,nil,@ShowMenu,nil,'');
 end;
 
@@ -114,8 +115,7 @@ begin
       LPath.Text:=SSelectedPath+GetPath;
 end;
 
-procedure TExploreIDEMenuForm.AddMenuItem(ParentNode : TTreeNode;
-  Item : TIDEMenuItem);
+procedure TExploreIDEMenuForm.AddMenuItem(ParentNode : TTreeNode; Item : TIDEMenuItem);
 
 Var
   N : TTreeNode;
@@ -135,9 +135,6 @@ begin
       AddMenuItem(N,Sec.Items[I]);
     end;
 end;
-
-initialization
-  {$I frmexploremenu.lrs}
 
 end.
 

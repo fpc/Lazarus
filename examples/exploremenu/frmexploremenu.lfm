@@ -1,18 +1,18 @@
 object ExploreIDEMenuForm: TExploreIDEMenuForm
-  Left = 434
+  Left = 468
   Height = 336
-  Top = 427
+  Top = 378
   Width = 468
   ActiveControl = TVIDEMenu
-  Caption = 'Lazarus IDE menu'
+  Caption = 'Lazarus IDE menus'
   ClientHeight = 336
   ClientWidth = 468
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object LTree: TLabel
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
     Width = 456
     Align = alTop
@@ -22,12 +22,12 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
   end
   object TVIDEMenu: TTreeView
     Left = 0
-    Height = 223
-    Top = 30
+    Height = 225
+    Top = 28
     Width = 468
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    DefaultItemHeight = 19
+    DefaultItemHeight = 17
     ReadOnly = True
     TabOrder = 0
     OnChange = TVIDEMenuChange

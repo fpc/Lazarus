@@ -3386,7 +3386,6 @@ examples/exploremenu/README.txt svneol=native#text/plain
 examples/exploremenu/exploreidemenu.lpk svneol=native#text/plain
 examples/exploremenu/exploreidemenu.pas svneol=native#text/plain
 examples/exploremenu/frmexploremenu.lfm svneol=native#text/plain
-examples/exploremenu/frmexploremenu.lrs svneol=native#text/pascal
 examples/exploremenu/frmexploremenu.pas svneol=native#text/plain
 examples/fontenum/fontenumeration.lpi svneol=native#text/plain
 examples/fontenum/fontenumeration.lpr svneol=native#text/pascal
