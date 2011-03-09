@@ -2318,17 +2318,7 @@ begin
             Window := Application.MainFormHandle;
           end;
         end;
-        WindowPlacement.length := SizeOf(WindowPlacement);
-        if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
-        begin
-          with WindowPlacement.rcNormalPosition do
-          begin
-            NewWidth := Right - Left;
-            NewHeight := Bottom - Top;
-          end;
-        end
-        else
-          GetWindowSize(Window, NewWidth, NewHeight);
+        GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
         if Assigned(lWinControl) then
