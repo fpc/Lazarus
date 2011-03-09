@@ -3604,7 +3604,9 @@ msgid "Alignment"
 msgstr "Alineación"
 
 #: lazarusidestrconsts.lisallblockslooksok
-msgid "All blocks looks ok."
+#, fuzzy
+#| msgid "All blocks looks ok."
+msgid "All blocks look ok."
 msgstr "Todos los bloques parecen correctos."
 
 #: lazarusidestrconsts.lisallfiles
@@ -10284,6 +10286,10 @@ msgstr "Saltar una instrucción"
 msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "Detener"
+
+#: lazarusidestrconsts.lismenuswapcaseselection
+msgid "Swap case in selection"
+msgstr ""
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-07 20:31+0300\n"
+"PO-Revision-Date: 2011-03-10 01:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3633,7 +3633,8 @@ msgid "Alignment"
 msgstr "Выравнивание"
 
 #: lazarusidestrconsts.lisallblockslooksok
-msgid "All blocks looks ok."
+#| msgid "All blocks looks ok."
+msgid "All blocks look ok."
 msgstr "Все блоки выглядят нормально."
 
 #: lazarusidestrconsts.lisallfiles
@@ -10318,6 +10319,10 @@ msgstr "Шаг в обход инструкции"
 msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "Остановить"
+
+#: lazarusidestrconsts.lismenuswapcaseselection
+msgid "Swap case in selection"
+msgstr "Переключить регистр выделенного"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"

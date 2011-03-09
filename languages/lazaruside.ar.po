@@ -3580,7 +3580,7 @@ msgid "Alignment"
 msgstr ""
 
 #: lazarusidestrconsts.lisallblockslooksok
-msgid "All blocks looks ok."
+msgid "All blocks look ok."
 msgstr ""
 
 #: lazarusidestrconsts.lisallfiles
@@ -10238,6 +10238,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuswapcaseselection
+msgid "Swap case in selection"
 msgstr ""
 
 #: lazarusidestrconsts.lismenutabstospacesselection

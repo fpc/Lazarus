@@ -3622,7 +3622,9 @@ msgid "Alignment"
 msgstr "Penjajaran"
 
 #: lazarusidestrconsts.lisallblockslooksok
-msgid "All blocks looks ok."
+#, fuzzy
+#| msgid "All blocks looks ok."
+msgid "All blocks look ok."
 msgstr "Seluruh blok terlihat ok."
 
 #: lazarusidestrconsts.lisallfiles
@@ -10323,6 +10325,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "Hentikan"
+
+#: lazarusidestrconsts.lismenuswapcaseselection
+msgid "Swap case in selection"
+msgstr ""
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"

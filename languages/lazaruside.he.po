@@ -3597,7 +3597,9 @@ msgid "Alignment"
 msgstr "יישור"
 
 #: lazarusidestrconsts.lisallblockslooksok
-msgid "All blocks looks ok."
+#, fuzzy
+#| msgid "All blocks looks ok."
+msgid "All blocks look ok."
 msgstr "כל הבלוקים נראים תקינים."
 
 #: lazarusidestrconsts.lisallfiles
@@ -10290,6 +10292,10 @@ msgstr "צעד מעבר להוראה"
 msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "עצור"
+
+#: lazarusidestrconsts.lismenuswapcaseselection
+msgid "Swap case in selection"
+msgstr ""
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
