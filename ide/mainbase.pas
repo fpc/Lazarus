@@ -767,18 +767,14 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuEnvironment,itmOptionsDialogs,'itmOptionsDialogs');
     ParentMI:=itmOptionsDialogs;
-
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environment_options');
-    CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
-                   lisMenuEditCodeTemplates,'');
-    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,
-                   'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,
-                   'menu_codetoolsdefineseditor');
+    CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
+    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',
+                   lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor');
 
     CreateMenuSeparatorSection(mnuEnvironment,itmIDECacheSection,'itmIDECacheSection');
     ParentMI:=itmIDECacheSection;
-
     CreateMenuItem(ParentMI,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',
                    lisMenuRescanFPCSourceDirectory);
   end;
