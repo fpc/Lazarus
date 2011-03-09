@@ -291,27 +291,21 @@ begin
   // -> adjust size according to BorderStyle
   SizeRect := AForm.BoundsRect;
   BorderStyle := GetDesigningBorderStyle(AForm);
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(BorderStyle) or CalcBorderIconsFlags(AForm),
+    False, BorderStyleToWin32FlagsEx(BorderStyle) or CalcBorderIconsFlagsEx(AForm));
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
 
-  procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
+  procedure LCLFormSizeToWin32Size(AForm: TCustomForm; var AWidth, AHeight: Integer);
   var
     SizeRect: Windows.RECT;
     BorderStyle: TFormBorderStyle;
   begin
-    with SizeRect do
-    begin
-      Left := 0;
-      Top := 0;
-      Right := AWidth;
-      Bottom := AHeight;
-    end;
-    BorderStyle := GetDesigningBorderStyle(Form);
-    Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-        BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+    SizeRect := Classes.Rect(0, 0, AWidth, AHeight);
+    BorderStyle := GetDesigningBorderStyle(AForm);
+    Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(BorderStyle) or CalcBorderIconsFlags(AForm),
+      False, BorderStyleToWin32FlagsEx(BorderStyle) or CalcBorderIconsFlagsEx(AForm));
     AWidth := SizeRect.Right - SizeRect.Left;
     AHeight := SizeRect.Bottom - SizeRect.Top;
   end;
@@ -322,15 +316,15 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
       IntfWidth, IntfHeight: integer;
     begin
       // 0 means no constraint
-      if (AWidth=0) and (AHeight=0) then exit;
+      if (AWidth = 0) and (AHeight = 0) then exit;
 
       IntfWidth := AWidth;
       IntfHeight := AHeight;
       LCLFormSizeToWin32Size(TCustomForm(WinControl), IntfWidth, IntfHeight);
 
-      if AWidth>0 then
-        pt.X:= IntfWidth;
-      if AHeight>0 then
+      if AWidth > 0 then
+        pt.X := IntfWidth;
+      if AHeight > 0 then
         pt.Y := IntfHeight;
     end;
   begin
@@ -551,16 +545,12 @@ var
 begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
-  with SizeRect do
-  begin
-    Left := ALeft;
-    Top := ATop;
-    Right := ALeft + AWidth;
-    Bottom := ATop + AHeight;
-  end;
+  SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
+
   BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(BorderStyle) or CalcBorderIconsFlags(AForm),
+    False, BorderStyleToWin32FlagsEx(BorderStyle) or CalcBorderIconsFlagsEx(AForm));
+
 
   L := ALeft;
   T := ATop;
