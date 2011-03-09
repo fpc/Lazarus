@@ -119,6 +119,12 @@ type
         itmEditSelectCodeBlock: TIDEMenuCommand;
         itmEditSelectLine: TIDEMenuCommand;
         itmEditSelectParagraph: TIDEMenuCommand;
+      //itmEditBlockCharConversion: TIDEMenuSection;
+        itmEditSortBlock: TIDEMenuCommand;
+        itmEditUpperCaseBlock: TIDEMenuCommand;
+        itmEditLowerCaseBlock: TIDEMenuCommand;
+        itmEditTabsToSpacesBlock: TIDEMenuCommand;
+        itmEditSelectionBreakLines: TIDEMenuCommand;
 
     // search menu
     //mnuSearch: TIDEMenuSection;
@@ -157,13 +163,12 @@ type
         itmSourceCommentBlock: TIDEMenuCommand;
         itmSourceUncommentBlock: TIDEMenuCommand;
         itmSourceToggleComment: TIDEMenuCommand;
+        itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceConditionalBlock: TIDEMenuCommand;
-        itmSourceSortBlock: TIDEMenuCommand;
-      //itmSourceBlockCharConversion: TIDEMenuSection;
-        itmSourceUpperCaseBlock: TIDEMenuCommand;
-        itmSourceLowerCaseBlock: TIDEMenuCommand;
-        itmSourceTabsToSpacesBlock: TIDEMenuCommand;
-        itmSourceSelectionBreakLines: TIDEMenuCommand;
+      //itmSourceCodeToolChecks: TIDEMenuSection;
+        itmSourceSyntaxCheck: TIDEMenuCommand;
+        itmSourceGuessUnclosedBlock: TIDEMenuCommand;
+        itmSourceGuessMisplacedIFDEF: TIDEMenuCommand;
       //itmSourceInsertions: TIDEMenuSection;
         itmSourceInsertCharacter: TIDEMenuCommand;
         //itmSourceInsertCVSKeyWord: TIDEMenuSection;
@@ -187,17 +192,18 @@ type
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;
-      //itmRefactorMenuCodeTools: TIDEMenuSection;
+      //itmRefactorCodeTools: TIDEMenuSection;
         itmRefactorCompleteCode: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
-        itmRefactorEncloseBlock: TIDEMenuCommand;
         itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorInvertAssignment: TIDEMenuCommand;
-      //itmRefactorMenuAdvanced: TIDEMenuSection;
+      //itmRefactorAdvanced: TIDEMenuSection;
         itmRefactorShowAbstractMethods: TIDEMenuCommand;
         itmRefactorShowEmptyMethods: TIDEMenuCommand;
         itmRefactorShowUnusedUnits: TIDEMenuCommand;
         itmRefactorFindOverloads: TIDEMenuCommand;
+      //itmRefactorTools: TIDEMenuSection;
+        itmRefactorMakeResourceString: TIDEMenuCommand;
 
     // view menu
     //mnuView: TIDEMenuSection;
@@ -308,12 +314,7 @@ type
     //mnuTools: TIDEMenuSection;
       //itmCustomTools: TIDEMenuSection;
         itmToolConfigure: TIDEMenuCommand;
-      //itmCodeToolChecks: TIDEMenuSection;
-        itmToolSyntaxCheck: TIDEMenuCommand;
-        itmToolGuessUnclosedBlock: TIDEMenuCommand;
-        itmToolGuessMisplacedIFDEF: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
-        itmToolMakeResourceString: TIDEMenuCommand;
         itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;

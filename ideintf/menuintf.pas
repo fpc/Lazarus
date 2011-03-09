@@ -300,6 +300,7 @@ var
       itmEditReUndo: TIDEMenuSection;
       itmEditClipboard: TIDEMenuSection;
       itmEditSelect: TIDEMenuSection;
+      itmEditBlockCharConversion: TIDEMenuSection;
 
     // search menu
     mnuSearch: TIDEMenuSection;
@@ -311,15 +312,17 @@ var
     // source menu
     mnuSource: TIDEMenuSection;
       itmSourceBlockIndentation: TIDEMenuSection;
-      itmSourceBlockCharConversion: TIDEMenuSection;
+      itmSourceCodeToolChecks: TIDEMenuSection;
       itmSourceInsertions: TIDEMenuSection;
         itmSourceInsertCVSKeyWord: TIDEMenuSection;
         itmSourceInsertGeneral: TIDEMenuSection;
+      itmSourceTools: TIDEMenuSection;
 
     // refactor menu
     mnuRefactor: TIDEMenuSection;
-      itmRefactorMenuCodeTools: TIDEMenuSection;
-      itmRefactorMenuAdvanced: TIDEMenuSection;
+      itmRefactorCodeTools: TIDEMenuSection;
+      itmRefactorAdvanced: TIDEMenuSection;
+      itmRefactorTools: TIDEMenuSection;
 
     // view menu
     mnuView: TIDEMenuSection;
@@ -357,7 +360,6 @@ var
     // tools menu
     mnuTools: TIDEMenuSection;
       itmCustomTools: TIDEMenuSection;
-      itmCodeToolChecks: TIDEMenuSection;
       itmSecondaryTools: TIDEMenuSection;
       itmDelphiConversion: TIDEMenuSection;
       itmBuildingLazarus: TIDEMenuSection;

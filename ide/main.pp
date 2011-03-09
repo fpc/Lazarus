@@ -211,6 +211,11 @@ type
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
+    procedure mnuEditSortBlockClicked(Sender: TObject);
+    procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
+    procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
+    procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
+    procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
@@ -228,18 +233,18 @@ type
     procedure mnuSourceClicked(Sender: TObject);
     procedure mnuSourceIndentBlockClicked(Sender: TObject);
     procedure mnuSourceUnindentBlockClicked(Sender: TObject);
-    procedure mnuSourceUpperCaseBlockClicked(Sender: TObject);
-    procedure mnuSourceLowerCaseBlockClicked(Sender: TObject);
-    procedure mnuSourceTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuSourceCommentBlockClicked(Sender: TObject);
     procedure mnuSourceUncommentBlockClicked(Sender: TObject);
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
+    procedure mnuSourceEncloseBlockClicked(Sender: TObject);
     procedure mnuSourceConditionalBlockClicked(Sender: TObject);
-    procedure mnuSourceSortBlockClicked(Sender: TObject);
-    procedure mnuSourceSelectionBreakLinesClicked(Sender: TObject);
-    procedure mnuSourceInsertCharacterClicked(Sender: TObject);
 
-    // edit->insert text->CVS keyword
+    procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
+    procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
+    procedure mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
+
+    procedure mnuSourceInsertCharacterClicked(Sender: TObject);
+    // source->insert CVS keyword
     procedure mnuSourceInsertCVSAuthorClick(Sender: TObject);
     procedure mnuSourceInsertCVSDateClick(Sender: TObject);
     procedure mnuSourceInsertCVSHeaderClick(Sender: TObject);
@@ -249,7 +254,7 @@ type
     procedure mnuSourceInsertCVSRevisionClick(Sender: TObject);
     procedure mnuSourceInsertCVSSourceClick(Sender: TObject);
 
-    // edit->insert text->general
+    // source->insert general
     procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
@@ -262,13 +267,13 @@ type
     procedure mnuRefactorClicked(Sender: TObject);
     procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
-    procedure mnuRefactorEncloseBlockClicked(Sender: TObject);
     procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorInvertAssignmentClicked(Sender: TObject);
     procedure mnuRefactorShowAbstractMethodsClicked(Sender: TObject);
     procedure mnuRefactorShowEmptyMethodsClicked(Sender: TObject);
     procedure mnuRefactorShowUnusedUnitsClicked(Sender: TObject);
     procedure mnuRefactorFindOverloadsClicked(Sender: TObject);
+    procedure mnuRefactorMakeResourceStringClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -330,10 +335,6 @@ type
 
     // tools menu
     procedure mnuToolConfigureClicked(Sender: TObject);
-    procedure mnuToolSyntaxCheckClicked(Sender: TObject);
-    procedure mnuToolGuessUnclosedBlockClicked(Sender: TObject);
-    procedure mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
-    procedure mnuToolMakeResourceStringClicked(Sender: TObject);
     procedure mnuToolDiffClicked(Sender: TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
@@ -2387,6 +2388,11 @@ begin
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
+    itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
+    itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
+    itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
+    itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
+    itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
   end;
 end;
 
@@ -2409,18 +2415,18 @@ begin
     mnuSource.OnClick:=@mnuSourceClicked;
     itmSourceIndentBlock.OnClick:=@mnuSourceIndentBlockClicked;
     itmSourceUnindentBlock.OnClick:=@mnuSourceUnindentBlockClicked;
-    itmSourceUpperCaseBlock.OnClick:=@mnuSourceUpperCaseBlockClicked;
-    itmSourceLowerCaseBlock.OnClick:=@mnuSourceLowerCaseBlockClicked;
-    itmSourceTabsToSpacesBlock.OnClick:=@mnuSourceTabsToSpacesBlockClicked;
     itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
+    itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
     itmSourceConditionalBlock.OnClick:=@mnuSourceConditionalBlockClicked;
-    itmSourceSortBlock.OnClick:=@mnuSourceSortBlockClicked;
-    itmSourceSelectionBreakLines.OnClick:=@mnuSourceSelectionBreakLinesClicked;
-    itmSourceInsertCharacter.OnClick:=@mnuSourceInsertCharacterClicked;
+    // CodeTool Checks
+    itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
+    itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
+    itmSourceGuessMisplacedIFDEF.OnClick := @mnuSourceGuessMisplacedIFDEFClicked;
 
-    // insert text->CVS keyword
+    itmSourceInsertCharacter.OnClick:=@mnuSourceInsertCharacterClicked;
+    // insert CVS keyword
     itmSourceInsertCVSAuthor.OnClick:=@mnuSourceInsertCVSAuthorClick;
     itmSourceInsertCVSDate.OnClick:=@mnuSourceInsertCVSDateClick;
     itmSourceInsertCVSHeader.OnClick:=@mnuSourceInsertCVSHeaderClick;
@@ -2429,8 +2435,7 @@ begin
     itmSourceInsertCVSName.OnClick:=@mnuSourceInsertCVSNameClick;
     itmSourceInsertCVSRevision.OnClick:=@mnuSourceInsertCVSRevisionClick;
     itmSourceInsertCVSSource.OnClick:=@mnuSourceInsertCVSSourceClick;
-
-    // insert text->general
+    // insert general
     itmSourceInsertGPLNotice.OnClick:=@mnuSourceInsertGPLNoticeClick;
     itmSourceInsertLGPLNotice.OnClick:=@mnuSourceInsertLGPLNoticeClick;
     itmSourceInsertModifiedLGPLNotice.OnClick:=@mnuSourceInsertModifiedLGPLNoticeClick;
@@ -2448,16 +2453,17 @@ begin
     mnuRefactor.OnClick:=@mnuRefactorClicked;
     itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
-    itmRefactorEncloseBlock.OnClick:=@mnuRefactorEncloseBlockClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
-    // itmRefactorMenuAdvanced
+    // itmRefactorAdvanced
     itmRefactorShowAbstractMethods.OnClick:=@mnuRefactorShowAbstractMethodsClicked;
     itmRefactorShowEmptyMethods.OnClick:=@mnuRefactorShowEmptyMethodsClicked;
     itmRefactorShowUnusedUnits.OnClick:=@mnuRefactorShowUnusedUnitsClicked;
     {$IFDEF EnableFindOverloads}
     itmRefactorFindOverloads.OnClick:=@mnuRefactorFindOverloadsClicked;
     {$ENDIF}
+    // itmRefactorTools
+    itmRefactorMakeResourceString.OnClick := @mnuRefactorMakeResourceStringClicked;
   end;
 end;
 
@@ -2541,10 +2547,6 @@ begin
   inherited SetupToolsMenu;
   with MainIDEBar do begin
     itmToolConfigure.OnClick := @mnuToolConfigureClicked;
-    itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
-    itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
-    itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
-    itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
@@ -3753,6 +3755,12 @@ begin
     //itmEditSelectCodeBlock: TIDEMenuCommand;
     //itmEditSelectLine: TIDEMenuCommand;
     //itmEditSelectParagraph: TIDEMenuCommand;
+  //itmEditBlockCharConversion: TIDEMenuSection;
+    itmEditSortBlock.Enabled:=SelEditable;
+    itmEditUpperCaseBlock.Enabled:=SelEditable;
+    itmEditLowerCaseBlock.Enabled:=SelEditable;
+    itmEditTabsToSpacesBlock.Enabled:=SelEditable;
+    itmEditSelectionBreakLines.Enabled:=SelEditable;
   end;
 end;
 
@@ -3776,13 +3784,8 @@ begin
     itmSourceUnindentBlock.Enabled:=SelEditable;
     itmSourceCommentBlock.Enabled:=SelEditable;
     itmSourceUncommentBlock.Enabled:=SelEditable;
+    itmSourceEncloseBlock.Enabled:=SelEditable;
     itmSourceConditionalBlock.Enabled:=SelEditable;
-    itmSourceSortBlock.Enabled:=SelEditable;
-  //itmSourceBlockCharConversion: TIDEMenuSection;
-    itmSourceUpperCaseBlock.Enabled:=SelEditable;
-    itmSourceLowerCaseBlock.Enabled:=SelEditable;
-    itmSourceTabsToSpacesBlock.Enabled:=SelEditable;
-    itmSourceSelectionBreakLines.Enabled:=SelEditable;
   //itmSourceInsertions: TIDEMenuSection;
     itmSourceInsertCharacter.Enabled:=Editable;
     //itmSourceInsertCVSKeyWord: TIDEMenuSection;
@@ -3818,13 +3821,12 @@ begin
   SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
   SelEditable:=Editable and SelAvail;
   with MainIDEBar do begin
-  //itmRefactorMenuCodeTools
+  //itmRefactorCodeTools
     itmRefactorCompleteCode.Enabled:=Editable;
     itmRefactorRenameIdentifier.Enabled:=Editable;
-    itmRefactorEncloseBlock.Enabled:=SelEditable;
     itmRefactorExtractProc.Enabled:=SelEditable;
     itmRefactorInvertAssignment.Enabled:=SelEditable;
-  //itmRefactorMenuAdvanced
+  //itmRefactorAdvanced
     //...
   end;
 end;
@@ -4329,22 +4331,22 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceSyntaxCheckClicked(Sender: TObject);
 begin
   DoCheckSyntax;
 end;
 
-procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
 begin
   DoJumpToGuessedUnclosedBlock(true);
 end;
 
-procedure TMainIDE.mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
 begin
   DoJumpToGuessedMisplacedIFDEF(true);
 end;
 
-procedure TMainIDE.mnuToolMakeResourceStringClicked(Sender: TObject);
+procedure TMainIDE.mnuRefactorMakeResourceStringClicked(Sender: TObject);
 begin
   DoMakeResourceString;
 end;
@@ -17546,22 +17548,22 @@ begin
   DoSourceEditorCommand(ecBlockUnindent);
 end;
 
-procedure TMainIDE.mnuRefactorEncloseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceEncloseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionEnclose);
 end;
 
-procedure TMainIDE.mnuSourceUpperCaseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionUpperCase);
 end;
 
-procedure TMainIDE.mnuSourceLowerCaseBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionLowerCase);
 end;
 
-procedure TMainIDE.mnuSourceTabsToSpacesBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionTabs2Spaces);
 end;
@@ -17586,12 +17588,12 @@ begin
   DoSourceEditorCommand(ecSelectionConditional);
 end;
 
-procedure TMainIDE.mnuSourceSortBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionSort);
 end;
 
-procedure TMainIDE.mnuSourceSelectionBreakLinesClicked(Sender: TObject);
+procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionBreakLines);
 end;

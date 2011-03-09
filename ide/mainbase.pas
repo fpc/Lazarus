@@ -409,7 +409,7 @@ end;
 
 procedure TMainIDEBase.SetupEditMenu;
 var
-  ParentMI, SubParentMI: TIDEMenuSection;
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuEdit,itmEditReUndo,'itmEditReUndo');
@@ -419,21 +419,27 @@ begin
 
     CreateMenuSeparatorSection(mnuEdit,itmEditClipboard,'itmEditClipboard');
     ParentMI:=itmEditClipboard;
-
     CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'laz_cut');
     CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'laz_copy');
     CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'laz_paste');
 
+    // "Select" menu items
     CreateMenuSeparatorSection(mnuEdit,itmEditSelect,'itmEditSelect');
-    begin
-      // select sub menu items
-      SubParentMI:=itmEditSelect;
-      CreateMenuItem(SubParentMI,itmEditSelectAll,'itmEditSelectAll',lisMenuSelectAll, 'menu_select_all');
-      CreateMenuItem(SubParentMI,itmEditSelectToBrace,'itmEditSelectToBrace',lisMenuSelectToBrace);
-      CreateMenuItem(SubParentMI,itmEditSelectCodeBlock,'itmEditSelectCodeBlock',lisMenuSelectCodeBlock);
-      CreateMenuItem(SubParentMI,itmEditSelectLine,'itmEditSelectLine',lisMenuSelectLine);
-      CreateMenuItem(SubParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
-    end;
+    ParentMI:=itmEditSelect;
+    CreateMenuItem(ParentMI,itmEditSelectAll,'itmEditSelectAll',lisMenuSelectAll, 'menu_select_all');
+    CreateMenuItem(ParentMI,itmEditSelectToBrace,'itmEditSelectToBrace',lisMenuSelectToBrace);
+    CreateMenuItem(ParentMI,itmEditSelectCodeBlock,'itmEditSelectCodeBlock',lisMenuSelectCodeBlock);
+    CreateMenuItem(ParentMI,itmEditSelectLine,'itmEditSelectLine',lisMenuSelectLine);
+    CreateMenuItem(ParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
+
+    // "Char Conversion" menu items
+    CreateMenuSeparatorSection(mnuEdit,itmEditBlockCharConversion,'itmEditBlockCharConversion');
+    ParentMI:=itmEditBlockCharConversion;
+    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
+    CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
+    CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
+    CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
+    CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
   end;
 end;
 
@@ -490,26 +496,22 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuSource,itmSourceBlockIndentation,'itmSourceBlockIndentation');
     ParentMI:=itmSourceBlockIndentation;
-
     CreateMenuItem(ParentMI,itmSourceIndentBlock,'itmSourceIndentBlock',lisMenuIndentSelection,'menu_indent');
     CreateMenuItem(ParentMI,itmSourceUnindentBlock,'itmSourceUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
     CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
+    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceConditionalBlock,'itmSourceConditionalBlock',lisMenuConditionalSelection);
-    CreateMenuItem(ParentMI,itmSourceSortBlock,'itmSourceSortBlock',lisMenuSortSelection, 'menu_edit_sort');
 
-    CreateMenuSeparatorSection(mnuSource,itmSourceBlockCharConversion,'itmSourceBlockCharConversion');
-    ParentMI:=itmSourceBlockCharConversion;
-
-    CreateMenuItem(ParentMI,itmSourceUpperCaseBlock,'itmSourceUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
-    CreateMenuItem(ParentMI,itmSourceLowerCaseBlock,'itmSourceLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
-    CreateMenuItem(ParentMI,itmSourceTabsToSpacesBlock,'itmSourceTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
-    CreateMenuItem(ParentMI,itmSourceSelectionBreakLines,'itmSourceSelectionBreakLines',lisMenuBeakLinesInSelection);
+    CreateMenuSeparatorSection(mnuSource,itmSourceCodeToolChecks,'itmSourceCodeToolChecks');
+    ParentMI:=itmSourceCodeToolChecks;
+    CreateMenuItem(ParentMI,itmSourceSyntaxCheck,'itmSourceSyntaxCheck',lisMenuQuickSyntaxCheck, 'menu_tool_syntax_check');
+    CreateMenuItem(ParentMI,itmSourceGuessUnclosedBlock,'itmSourceGuessUnclosedBlock',lisMenuGuessUnclosedBlock);
+    CreateMenuItem(ParentMI,itmSourceGuessMisplacedIFDEF,'itmSourceGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
 
     CreateMenuSeparatorSection(mnuSource,itmSourceInsertions,'itmSourceInsertions');
     ParentMI:=itmSourceInsertions;
-
     CreateMenuItem(ParentMI,itmSourceInsertCharacter,'itmSourceInsertCharacter',lisMenuInsertCharacter);
     begin
       // insert text sub menu items
@@ -540,6 +542,7 @@ begin
         CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
       end;
     end;
+    CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
   end;
 end;
 
@@ -548,22 +551,26 @@ var
   ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuCodeTools,'itmRefactorMenuCodeTools');
-    ParentMI:=itmRefactorMenuCodeTools;
+    CreateMenuSeparatorSection(mnuRefactor,itmRefactorCodeTools,'itmRefactorCodeTools');
+    ParentMI:=itmRefactorCodeTools;
     CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
-    CreateMenuItem(ParentMI,itmRefactorEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
 
-    CreateMenuSeparatorSection(mnuRefactor,itmRefactorMenuAdvanced,'itmRefactorMenuAdvanced');
-    ParentMI:=itmRefactorMenuAdvanced;
+    CreateMenuSeparatorSection(mnuRefactor,itmRefactorAdvanced,'itmRefactorAdvanced');
+    ParentMI:=itmRefactorAdvanced;
     CreateMenuItem(ParentMI,itmRefactorShowAbstractMethods,'itmShowAbstractMethods',srkmecAbstractMethods);
     CreateMenuItem(ParentMI,itmRefactorShowEmptyMethods,'itmShowEmptyMethods',srkmecEmptyMethods);
     CreateMenuItem(ParentMI,itmRefactorShowUnusedUnits,'itmShowUnusedUnits',srkmecUnusedUnits);
     {$IFDEF EnableFindOverloads}
     CreateMenuItem(ParentMI,itmRefactorFindOverloads,'itmFindOverloads',srkmecFindOverloadsCapt);
     {$ENDIF}
+
+    CreateMenuSeparatorSection(mnuRefactor,itmRefactorTools,'itmRefactorTools');
+    ParentMI:=itmRefactorTools;
+    CreateMenuItem(ParentMI,itmRefactorMakeResourceString,'itmRefactorMakeResourceString',
+                   lisMenuMakeResourceString,'menu_tool_make_resourcestring');
   end;
 end;
 
@@ -574,7 +581,6 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
     ParentMI:=itmViewMainWindows;
-
     CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector, 'menu_view_inspector');
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor, 'menu_view_source_editor');
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
@@ -587,7 +593,6 @@ begin
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
-
     CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
@@ -596,7 +601,6 @@ begin
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
-
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
     CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
@@ -628,37 +632,31 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuProject,itmProjectNewSection,'itmProjectNewSection');
     ParentMI:=itmProjectNewSection;
-
     CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject, 'item_project');
     CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile, 'menu_project_from_file');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectOpenSection,'itmProjectOpenSection');
     ParentMI:=itmProjectOpenSection;
-
     CreateMenuItem(ParentMI,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_project_open');
     CreateMenuSubSection(ParentMI,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject);
     CreateMenuItem(ParentMI,itmProjectClose,'itmProjectClose',lisMenuCloseProject, 'menu_project_close');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectSaveSection,'itmProjectSaveSection');
     ParentMI:=itmProjectSaveSection;
-
     CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject, 'menu_project_save');
     CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs, 'menu_project_saveas');
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
     ParentMI:=itmProjectWindowSection;
-
     CreateMenuItem(ParentMI,itmProjectInspector,'itmProjectInspector',lisMenuProjectInspector,'menu_project_inspector');
     CreateMenuItem(ParentMI,itmProjectOptions,'itmProjectOptions',lisMenuProjectOptions,'menu_project_options');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectAddRemoveSection,'itmProjectAddRemoveSection');
     ParentMI:=itmProjectAddRemoveSection;
-
     CreateMenuItem(ParentMI,itmProjectAddTo,'itmProjectAddTo',lisMenuAddToProject, 'menu_project_add');
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject, 'menu_project_remove');
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewSource, 'menu_project_viewsource');
-
   end;
 end;
 
@@ -669,7 +667,6 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuRun,itmRunBuilding,'itmRunBuilding');
     ParentMI:=itmRunBuilding;
-
     CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuBuildAll,'itmRunMenuBuildAll',lisMenuBuildAll,'menu_build_all');
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
@@ -677,7 +674,6 @@ begin
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
-
     CreateMenuItem(ParentMI,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run');
     CreateMenuItem(ParentMI,itmRunMenuPause,'itmRunMenuPause',lisMenuPause,'menu_pause', False);
     CreateMenuItem(ParentMI,itmRunMenuShowExecutionPoint,'itmRunMenuShowExecutionPoint',
@@ -692,14 +688,12 @@ begin
 
     CreateMenuSeparatorSection(mnuRun,itmRunBuildingFile,'itmRunBuildingFile');
     ParentMI:=itmRunBuildingFile;
-
     CreateMenuItem(ParentMI,itmRunMenuBuildFile,'itmRunMenuBuildFile',lisMenuBuildFile, 'menu_build_file');
     CreateMenuItem(ParentMI,itmRunMenuRunFile,'itmRunMenuRunFile',lisMenuRunFile,'menu_run_file');
     CreateMenuItem(ParentMI,itmRunMenuConfigBuildFile,'itmRunMenuConfigBuildFile',lisMenuConfigBuildFile, 'menu_build_run_file');
 
     CreateMenuSeparatorSection(mnuRun,itmRunDebugging,'itmRunDebugging');
     ParentMI:=itmRunDebugging;
-
     CreateMenuItem(ParentMI,itmRunMenuInspect,'itmRunMenuInspect',lisMenuInspect, 'debugger_inspect', False);
     CreateMenuItem(ParentMI,itmRunMenuEvaluate,'itmRunMenuEvaluate',lisMenuEvaluate, 'debugger_modify', False);
     CreateMenuItem(ParentMI,itmRunMenuAddWatch,'itmRunMenuAddWatch',lisMenuAddWatch, '', False);
@@ -715,7 +709,6 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
-
     CreateMenuItem(ParentMI,itmPkgNewPackage,'itmPkgNewPackage',lisMenuNewPackage);
     CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_open');
@@ -724,12 +717,10 @@ begin
 
     CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
-
     CreateMenuItem(ParentMI,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_add');
 
     CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
-
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_graph');
     CreateMenuItem(ParentMI,itmPkgEditInstallPkgs,'itmPkgEditInstallPkgs',lisMenuEditInstallPkgs,'pkg_properties');
 
@@ -746,25 +737,14 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuTools,itmCustomTools,'itmCustomTools');
     ParentMI:=itmCustomTools;
-
     CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuConfigExternalTools);
-
-    CreateMenuSeparatorSection(mnuTools,itmCodeToolChecks,'itmCodeToolChecks');
-    ParentMI:=itmCodeToolChecks;
-
-    CreateMenuItem(ParentMI,itmToolSyntaxCheck,'itmToolSyntaxCheck',lisMenuQuickSyntaxCheck, 'menu_tool_syntax_check');
-    CreateMenuItem(ParentMI,itmToolGuessUnclosedBlock,'itmToolGuessUnclosedBlock',lisMenuGuessUnclosedBlock);
-    CreateMenuItem(ParentMI,itmToolGuessMisplacedIFDEF,'itmToolGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
 
     CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
     ParentMI:=itmSecondaryTools;
-
-    CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString, 'menu_tool_make_resourcestring');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
 
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;
-
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit,'menu_tool_dfm_to_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject,'menu_tool_dfm_to_lfm');
@@ -774,7 +754,6 @@ begin
 
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
-
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_build_lazarus');
     CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
   end;
@@ -881,6 +860,12 @@ begin
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
 
+    itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
+    itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
+    itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
+    itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
+    itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
+
     // search menu
     itmSearchFind.Command:=GetCommand(ecFind);
     itmSearchFindNext.Command:=GetCommand(ecFindNext);
@@ -908,15 +893,15 @@ begin
     // source menu
     itmSourceIndentBlock.Command:=GetCommand(ecBlockIndent);
     itmSourceUnindentBlock.Command:=GetCommand(ecBlockUnindent);
-    itmSourceUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
-    itmSourceLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
-    itmSourceTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
     itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
+    itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceConditionalBlock.Command:=GetCommand(ecSelectionConditional);
-    itmSourceSortBlock.Command:=GetCommand(ecSelectionSort);
-    itmSourceSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
+
+    itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
+    itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);
+    itmSourceGuessMisplacedIFDEF.Command:=GetCommand(ecGuessMisplacedIFDEF);
 
     itmSourceInsertCVSAuthor.Command:=GetCommand(ecInsertCVSAuthor);
     itmSourceInsertCVSDate.Command:=GetCommand(ecInsertCVSDate);
@@ -938,15 +923,16 @@ begin
     // refactor menu
     itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
     itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
-    itmRefactorEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
     itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);
+
     itmRefactorShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
     itmRefactorShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
     itmRefactorShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
     {$IFDEF EnableFindOverloads}
     itmRefactorFindOverloads.Command:=GetCommand(ecFindOverloads);
     {$ENDIF}
+    itmRefactorMakeResourceString.Command:=GetCommand(ecMakeResourceString);
 
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
@@ -1015,10 +1001,6 @@ begin
 
     // tools menu
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
-    itmToolSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
-    itmToolGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);
-    itmToolGuessMisplacedIFDEF.Command:=GetCommand(ecGuessMisplacedIFDEF);
-    itmToolMakeResourceString.Command:=GetCommand(ecMakeResourceString);
     itmToolDiff.Command:=GetCommand(ecDiff);
     itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
     itmToolCheckLFM.Command:=GetCommand(ecCheckLFM);
