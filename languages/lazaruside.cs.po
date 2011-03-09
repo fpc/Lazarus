@@ -7681,6 +7681,11 @@ msgstr "Kde hledat"
 msgid "Function"
 msgstr "Funkce"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Obecné"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "získat slovo na aktuální pozici"

@@ -7728,6 +7728,11 @@ msgstr "Kur ieškoti"
 msgid "Function"
 msgstr "Funkcija"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Pagrindinis"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "Grąžina žodį, ties kuriuo, šiuo metu yra žymeklis"

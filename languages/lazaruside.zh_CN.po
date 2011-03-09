@@ -7739,6 +7739,11 @@ msgstr "查找范围"
 msgid "Function"
 msgstr "函数"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "普通"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr ""

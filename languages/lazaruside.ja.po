@@ -7738,6 +7738,11 @@ msgstr "検索場所"
 msgid "Function"
 msgstr "関数"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "一般"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "現在のカーソル位置の単語を取得"

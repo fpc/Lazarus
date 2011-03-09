@@ -7742,6 +7742,11 @@ msgstr "Chercher où"
 msgid "Function"
 msgstr "Fonction"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Général"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "obtient le mot à la position du curseur courante"

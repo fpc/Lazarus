@@ -7737,6 +7737,11 @@ msgstr "Искать где"
 msgid "Function"
 msgstr "Функция"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Общие"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "Возвратить слово в текущей позиции курсора"

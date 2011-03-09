@@ -7732,6 +7732,11 @@ msgstr "Cari dimana"
 msgid "Function"
 msgstr ""
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Umum"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr ""

@@ -7713,6 +7713,11 @@ msgstr "Mistä etsitään"
 msgid "Function"
 msgstr "Funktio"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Yleistä"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr ""

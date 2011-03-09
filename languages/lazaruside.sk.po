@@ -7737,6 +7737,11 @@ msgstr "Kde hľadať"
 msgid "Function"
 msgstr "Funkcia"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "Všeobecné"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr ""

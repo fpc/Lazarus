@@ -7700,6 +7700,11 @@ msgstr "חפש היכן ש"
 msgid "Function"
 msgstr "פונקציה"
 
+#: lazarusidestrconsts.lisgeneral
+msgctxt "lazarusidestrconsts.lisgeneral"
+msgid "General"
+msgstr "כללי"
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "קח את המילה שבמקום הנוכחי של הסמן"
