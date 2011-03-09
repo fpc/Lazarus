@@ -134,12 +134,10 @@ type
     procedure mnuHelpReportBugClicked(Sender: TObject);
   private
     FFCLHelpDBPath: THelpBaseURLObject;
-    FLCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FFCLHelpDB: THelpDatabase;
-    FLCLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
     FHTMLProviders: TLIHProviders;
     procedure RegisterIDEHelpDatabases;
@@ -179,8 +177,6 @@ type
   public
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
     property FCLHelpDBPath: THelpBaseURLObject read FFCLHelpDBPath;
-    property LCLHelpDB: THelpDatabase read FLCLHelpDB;
-    property LCLHelpDBPath: THelpBaseURLObject read FLCLHelpDBPath;
     property MainHelpDB: THelpDatabase read FMainHelpDB;
     property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
@@ -750,34 +746,10 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItem(DirItem);
   end;
 
-  procedure CreateLCLHelpDB;
-  var
-    HTMLHelp: TFPDocHTMLHelpDatabase;
-    FPDocNode: THelpNode;
-    DirItem: THelpDBISourceDirectory;
-  begin
-    FLCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLCLUnits,
-                                                 TFPDocHTMLHelpDatabase,true);
-    HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
-    HTMLHelp.DefaultBaseURL:=lihLCLURL;
-    FLCLHelpDBPath:=THelpBaseURLObject.Create;
-    HTMLHelp.BasePathObject:=FLCLHelpDBPath;
-
-    // FPDoc nodes for units in the LCL
-    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
-                   'LCL - Lazarus Component Library Units',
-                   'file://index.html');
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
-    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
-                                  '*.pp;*.pas',false);// and once as normal page
-    HTMLHelp.RegisterItem(DirItem);
-  end;
-
 begin
   CreateMainIDEHelpDB;
   CreateRTLHelpDB;
   CreateFCLHelpDB;
-  CreateLCLHelpDB;
   CreateFPCMessagesHelpDB;
 end;
 
@@ -832,7 +804,6 @@ begin
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
-  FreeThenNil(FLCLHelpDBPath);
   HelpBoss:=nil;
   LazarusHelp:=nil;
   inherited Destroy;
