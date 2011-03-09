@@ -231,6 +231,7 @@ type
     property PageControl: TPageControl read GetPageControl write SetPageControl;
     property TabIndex: Integer read GetTabIndex;
   published
+    property BorderWidth;
     property Caption;
     property ChildSizing;
     property ClientHeight;
