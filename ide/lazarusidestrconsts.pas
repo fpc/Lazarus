@@ -214,8 +214,7 @@ resourcestring
   lisKMSelectPageBottom = 'Select page bottom';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
-  lisSAMAbstractMethodsNotYetOverridden = 'Abstract methods - not yet '
-    +'overridden';
+  lisSAMAbstractMethodsNotYetOverridden = 'Abstract methods - not yet overridden';
   lisMenuSelectToBrace = 'Select to brace';
   lisMenuSelectCodeBlock = 'Select code block';
   lisMenuSelectWord = 'Select word';
@@ -3038,38 +3037,22 @@ resourcestring
   lisCTDefsTools = 'Tools';
   lisCTDefsOpenPreview = 'Open Preview';
   lisCodeToolsDefsInsertTemplate = 'Insert Template';
-  lisCodeToolsDefsInsertFreePascalProjectTe = 'Insert Free Pascal Project '
-    +'Template';
-  lisCodeToolsDefsInsertFreePascalCompilerT = 'Insert Free Pascal Compiler '
-    +'Template';
-  lisCodeToolsDefsInsertFreePascalSVNSource = 'Insert Free Pascal SVN Source '
-    +'Template';
-  lisCodeToolsDefsInsertLazarusDirectoryTem = 'Insert Lazarus Directory '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi5CompilerTemp = 'Insert Delphi 5 Compiler '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi5DirectoryTem = 'Insert Delphi 5 Directory '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi5ProjectTempl =
-    'Insert Delphi 5 Project Template';
-  lisCodeToolsDefsInsertDelphi6CompilerTemp = 'Insert Delphi 6 Compiler '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi6DirectoryTem = 'Insert Delphi 6 Directory '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi6ProjectTempl =
-    'Insert Delphi 6 Project Template';
-  lisCodeToolsDefsInsertDelphi7CompilerTemp = 'Insert Delphi 7 Compiler '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi7DirectoryTem = 'Insert Delphi 7 Directory '
-    +'Template';
-  lisCodeToolsDefsInsertDelphi7ProjectTempl =
-    'Insert Delphi 7 Project Template';
-  lisCodeToolsDefsInsertKylix3CompilerTemp = 'Insert Kylix 3 Compiler '
-    +'Template';
-  lisCodeToolsDefsInsertKylix3DirectoryTem = 'Insert Kylix 3 Directory '
-    +'Template';
-  lisCodeToolsDefsInsertKylix3ProjectTempl =
-    'Insert Kylix 3 Project Template';
+  lisCodeToolsDefsInsertFreePascalProjectTe = 'Insert Free Pascal Project Template';
+  lisCodeToolsDefsInsertFreePascalCompilerT = 'Insert Free Pascal Compiler Template';
+  lisCodeToolsDefsInsertFreePascalSVNSource = 'Insert Free Pascal SVN Source Template';
+  lisCodeToolsDefsInsertLazarusDirectoryTem = 'Insert Lazarus Directory Template';
+  lisCodeToolsDefsInsertDelphi5CompilerTemp = 'Insert Delphi 5 Compiler Template';
+  lisCodeToolsDefsInsertDelphi5DirectoryTem = 'Insert Delphi 5 Directory Template';
+  lisCodeToolsDefsInsertDelphi5ProjectTempl = 'Insert Delphi 5 Project Template';
+  lisCodeToolsDefsInsertDelphi6CompilerTemp = 'Insert Delphi 6 Compiler Template';
+  lisCodeToolsDefsInsertDelphi6DirectoryTem = 'Insert Delphi 6 Directory Template';
+  lisCodeToolsDefsInsertDelphi6ProjectTempl = 'Insert Delphi 6 Project Template';
+  lisCodeToolsDefsInsertDelphi7CompilerTemp = 'Insert Delphi 7 Compiler Template';
+  lisCodeToolsDefsInsertDelphi7DirectoryTem = 'Insert Delphi 7 Directory Template';
+  lisCodeToolsDefsInsertDelphi7ProjectTempl = 'Insert Delphi 7 Project Template';
+  lisCodeToolsDefsInsertKylix3CompilerTemp = 'Insert Kylix 3 Compiler Template';
+  lisCodeToolsDefsInsertKylix3DirectoryTem = 'Insert Kylix 3 Directory Template';
+  lisCodeToolsDefsInsertKylix3ProjectTempl = 'Insert Kylix 3 Project Template';
   lisCodeToolsDefsSelectedNode = 'Selected Node:';
   lisCodeToolsDefsNodeAndItsChildrenAreOnly = 'Node and its children are only '
     +'valid for this project';
@@ -3146,9 +3129,8 @@ resourcestring
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
   lisSuccess = 'Success';
-  lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created '
-    +'for "%s"';
   lisAllBlocksLooksOk = 'All blocks looks ok.';
+  lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
     +'Resourcestring" function expects a string constant.%sPlease select the '
     +'expression and try again.';
@@ -3158,8 +3140,7 @@ resourcestring
   lisDiffDlgOnlySelection = 'Only selection';
   lisDiffDlgText2 = 'Text2';
   lisDiffDlgCaseInsensitive = 'Case Insensitive';
-  lisDiffDlgIgnoreIfEmptyLinesWereAdd = 'Ignore if empty lines were added or '
-    +'removed';
+  lisDiffDlgIgnoreIfEmptyLinesWereAdd = 'Ignore if empty lines were added or removed';
   lisDiffDlgIgnoreSpacesAtStartOfLine = 'Ignore spaces at start of line';
   lisDiffDlgIgnoreSpacesAtEndOfLine = 'Ignore spaces at end of line';
   lisDiffDlgIgnoreIfLineEndCharsDiffe = 'Ignore difference in line ends (e.'
@@ -3216,8 +3197,7 @@ resourcestring
   // Transfer Macros
   lisTMFunctionExtractFileExtension = 'Function: extract file extension';
   lisTMFunctionExtractFilePath = 'Function: extract file path';
-  lisTMFunctionExtractFileNameExtension = 'Function: extract file name+'
-    +'extension';
+  lisTMFunctionExtractFileNameExtension = 'Function: extract file name+extension';
   lisTMFunctionExtractFileNameOnly = 'Function: extract file name only';
   lisTMFunctionAppendPathDelimiter = 'Function: append path delimiter';
   lisTMFunctionChompPathDelimiter = 'Function: chomp path delimiter';
@@ -3268,8 +3248,7 @@ resourcestring
   lisNewDlgPleaseSelectAnItemFirst = 'Please select an item first.';
   lisNewDlgCreateANewEditorFileChooseAType = 'Create a new editor file.%'
     +'sChoose a type.';
-  lisNewDlgCreateANewProjectChooseAType = 'Create a new project.%sChoose a '
-    +'type.';
+  lisNewDlgCreateANewProjectChooseAType = 'Create a new project.%sChoose a type.';
   lisChooseOneOfTheseItemsToCreateANewFile = 'Choose one of these items to '
     +'create a new File';
   lisChooseOneOfTheseItemsToInheritFromAnExistingOne = 'Choose one of these items to '
@@ -3537,8 +3516,7 @@ resourcestring
     +'s%s%s';
   lisPkgMangFilenameIsUsedByProject = 'Filename is used by project';
   lisPkgMangTheFileNameIsPartOfTheCurrentProject = 'The file name %s%s%s is '
-    +'part of the current project.%sProjects and Packages should not share '
-    +'files.';
+    +'part of the current project.%sProjects and Packages should not share files.';
   lisPkgMangFilenameIsUsedByOtherPackage = 'Filename is used by other package';
   lisPkgMangTheFileNameIsUsedByThePackageInFile = 'The file name %s%s%s is '
     +'used by%sthe package %s%s%s%sin file %s%s%s.';
