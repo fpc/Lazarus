@@ -130,7 +130,7 @@ implementation
 
 function TEditorGeneralOptionsFrame.GetTitle: String;
 begin
-  Result := lisMenuInsertGeneral;
+  Result := lisGeneral;
 end;
 
 procedure TEditorGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

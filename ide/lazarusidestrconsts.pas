@@ -224,6 +224,7 @@ resourcestring
   lisMenuInsertCharacter = 'Insert from Character Map';
   lisMenuInsertCVSKeyword = 'Insert CVS keyword';
   lisMenuInsertGeneral = 'Insert General';
+  lisGeneral = 'General';
   lisNone2 = 'none';
   lisOr = 'or';
   lisNone = '%snone';

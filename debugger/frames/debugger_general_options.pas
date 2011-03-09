@@ -296,7 +296,7 @@ end;
 
 function TDebuggerGeneralOptionsFrame.GetTitle: String;
 begin
-  Result := lisMenuInsertGeneral;
+  Result := lisGeneral;
 end;
 
 procedure TDebuggerGeneralOptionsFrame.Setup(
