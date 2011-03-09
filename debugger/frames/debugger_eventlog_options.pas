@@ -80,7 +80,7 @@ var
   Category: TDBGEventCategory;
 begin
   // general
-  gbGeneral.Caption := lisMenuInsertGeneral;
+  gbGeneral.Caption := lisGeneral;
   chkClearLogOnRun.Caption := lisDebugOptionsFrmClearLogOnRun;
   chkLimitLinecount.Caption := lisDebugOptionsFrmLimitLinecountTo;
 

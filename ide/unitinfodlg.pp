@@ -153,7 +153,7 @@ end;
 
 procedure TUnitInfoDialog.FormCreate(Sender: TObject);
 begin
-  Notebook.Page[0].Caption := lisMenuInsertGeneral;
+  Notebook.Page[0].Caption := lisGeneral;
   Notebook.Page[1].Caption := lisUnitPaths;
   Notebook.Page[2].Caption := lisIncludePaths;
   Notebook.Page[3].Caption := lisSourcePaths;
