@@ -469,9 +469,13 @@ class procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl;
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
   suppressMove: boolean;
+  Handle: HWND;
+  WindowPlacement: TWINDOWPLACEMENT;
 begin
-  IntfLeft := ALeft; IntfTop := ATop;
-  IntfWidth := AWidth; IntfHeight := AHeight;
+  IntfLeft := ALeft;
+  IntfTop := ATop;
+  IntfWidth := AWidth;
+  IntfHeight := AHeight;
   LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
   {$IFDEF VerboseSizeMsg}
   DebugLn('TWin32WSWinControl.ResizeWindow A ', dbgsName(AWinControl),
@@ -479,11 +483,20 @@ begin
     ' Win32=',Format('%d, %d, %d, %d', [IntfLeft,IntfTop,IntfWidth,IntfHeight])
     );
   {$ENDIF}
-  suppressMove := false;
+  suppressMove := False;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
   if not suppressMove then
-    Windows.SetWindowPos(AWinControl.Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight,
-      SWP_NOZORDER or SWP_NOACTIVATE);
+  begin
+    Handle := AWinControl.Handle;
+    WindowPlacement.length := SizeOf(WindowPlacement);
+    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    begin
+      WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
+      SetWindowPlacement(Handle, @WindowPlacement);
+    end
+    else
+      Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+  end;
   LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
 
