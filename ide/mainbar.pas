@@ -156,6 +156,43 @@ type
         itmSearchFindIdentifierRefs: TIDEMenuCommand;
         itmSearchProcedureList: TIDEMenuCommand;
 
+    // view menu
+    //mnuView: TIDEMenuSection;
+      //itmViewMainWindows: TIDEMenuSection;
+        itmViewInspector: TIDEMenuCommand;
+        itmViewSourceEditor: TIDEMenuCommand;
+        itmViewCodeExplorer: TIDEMenuCommand;
+        itmViewFPDocEditor: TIDEMenuCommand;
+        itmViewCodeBrowser: TIDEMenuCommand;
+        itmViewRestrictionBrowser: TIDEMenuCommand;
+        itmViewComponents: TIDEMenuCommand;
+        itmJumpHistory: TIDEMenuCommand;
+      //itmViewUnitWindows: TIDEMenuSection;
+        itmViewUnits: TIDEMenuCommand;
+        itmViewForms: TIDEMenuCommand;
+        itmViewUnitDependencies: TIDEMenuCommand;
+        itmViewUnitInfo: TIDEMenuCommand;
+        itmViewToggleFormUnit: TIDEMenuCommand;
+      //itmViewSecondaryWindows: TIDEMenuSection;
+        itmViewAnchorEditor: TIDEMenuCommand;
+        itmViewComponentPalette: TIDEMenuCommand;
+        itmViewIDESpeedButtons: TIDEMenuCommand;
+        itmViewMessage: TIDEMenuCommand;
+        itmViewSearchResults: TIDEMenuCommand;
+        //itmViewDebugWindows: TIDEMenuSection;
+          itmViewWatches: TIDEMenuCommand;
+          itmViewBreakpoints: TIDEMenuCommand;
+          itmViewLocals: TIDEMenuCommand;
+          itmViewRegisters: TIDEMenuCommand;
+          itmViewCallStack: TIDEMenuCommand;
+          itmViewAssembler: TIDEMenuCommand;
+          itmViewDebugOutput: TIDEMenuCommand;
+          itmViewDebugEvents: TIDEMenuCommand;
+        //itmViewIDEInternalsWindows: TIDEMenuSection;
+          itmViewPackageLinks: TIDEMenuCommand;
+          itmViewFPCInfo: TIDEMenuCommand;
+          itmViewIDEInfo: TIDEMenuCommand;
+
     // source menu
     //mnuSource: TIDEMenuSection;
       //itmSourceBlockIndentation: TIDEMenuSection;
@@ -206,43 +243,6 @@ type
         itmRefactorFindOverloads: TIDEMenuCommand;
       //itmRefactorTools: TIDEMenuSection;
         itmRefactorMakeResourceString: TIDEMenuCommand;
-
-    // view menu
-    //mnuView: TIDEMenuSection;
-      //itmViewMainWindows: TIDEMenuSection;
-        itmViewInspector: TIDEMenuCommand;
-        itmViewSourceEditor: TIDEMenuCommand;
-        itmViewCodeExplorer: TIDEMenuCommand;
-        itmViewFPDocEditor: TIDEMenuCommand;
-        itmViewCodeBrowser: TIDEMenuCommand;
-        itmViewRestrictionBrowser: TIDEMenuCommand;
-        itmViewComponents: TIDEMenuCommand;
-        itmJumpHistory: TIDEMenuCommand;
-      //itmViewUnitWindows: TIDEMenuSection;
-        itmViewUnits: TIDEMenuCommand;
-        itmViewForms: TIDEMenuCommand;
-        itmViewUnitDependencies: TIDEMenuCommand;
-        itmViewUnitInfo: TIDEMenuCommand;
-        itmViewToggleFormUnit: TIDEMenuCommand;
-      //itmViewSecondaryWindows: TIDEMenuSection;
-        itmViewAnchorEditor: TIDEMenuCommand;
-        itmViewComponentPalette: TIDEMenuCommand;
-        itmViewIDESpeedButtons: TIDEMenuCommand;
-        itmViewMessage: TIDEMenuCommand;
-        itmViewSearchResults: TIDEMenuCommand;
-        //itmViewDebugWindows: TIDEMenuSection;
-          itmViewWatches: TIDEMenuCommand;
-          itmViewBreakpoints: TIDEMenuCommand;
-          itmViewLocals: TIDEMenuCommand;
-          itmViewRegisters: TIDEMenuCommand;
-          itmViewCallStack: TIDEMenuCommand;
-          itmViewAssembler: TIDEMenuCommand;
-          itmViewDebugOutput: TIDEMenuCommand;
-          itmViewDebugEvents: TIDEMenuCommand;
-        //itmViewIDEInternalsWindows: TIDEMenuSection;
-          itmViewPackageLinks: TIDEMenuCommand;
-          itmViewFPCInfo: TIDEMenuCommand;
-          itmViewIDEInfo: TIDEMenuCommand;
 
     // project menu
     //mnuProject: TIDEMenuSection;

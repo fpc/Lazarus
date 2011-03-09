@@ -647,9 +647,9 @@ type
     procedure SetupFileMenu; override;
     procedure SetupEditMenu; override;
     procedure SetupSearchMenu; override;
+    procedure SetupViewMenu; override;
     procedure SetupSourceMenu; override;
     procedure SetupRefactorMenu; override;
-    procedure SetupViewMenu; override;
     procedure SetupProjectMenu; override;
     procedure SetupRunMenu; override;
     procedure SetupComponentsMenu; override;
@@ -2287,9 +2287,9 @@ begin
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
+  SetupViewMenu;
   SetupSourceMenu;
   SetupRefactorMenu;
-  SetupViewMenu;
   SetupProjectMenu;
   SetupRunMenu;
   SetupComponentsMenu;
@@ -2411,6 +2411,33 @@ begin
   end;
 end;
 
+procedure TMainIDE.SetupViewMenu;
+begin
+  inherited SetupViewMenu;
+  with MainIDEBar do begin
+    itmViewInspector.OnClick := @mnuViewInspectorClicked;
+    itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
+    itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
+    itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
+    itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
+    itmViewComponents.OnClick := @mnuViewComponentsClick;
+    itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
+    itmViewUnits.OnClick := @mnuViewUnitsClicked;
+    itmViewForms.OnClick := @mnuViewFormsClicked;
+    itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
+    itmViewUnitInfo.OnClick := @mnuViewUnitInfoClicked;
+    itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
+    itmViewMessage.OnClick := @mnuViewMessagesClick;
+    itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
+    itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
+    itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
+    itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
+
+    itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
+    itmViewIDEInfo.OnClick:=@mnuViewIDEInfoClicked;
+  end;
+end;
+
 procedure TMainIDE.SetupSourceMenu;
 begin
   inherited SetupSourceMenu;
@@ -2468,33 +2495,6 @@ begin
     {$ENDIF}
     // itmRefactorTools
     itmRefactorMakeResourceString.OnClick := @mnuRefactorMakeResourceStringClicked;
-  end;
-end;
-
-procedure TMainIDE.SetupViewMenu;
-begin
-  inherited SetupViewMenu;
-  with MainIDEBar do begin
-    itmViewInspector.OnClick := @mnuViewInspectorClicked;
-    itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
-    itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
-    itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
-    itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
-    itmViewComponents.OnClick := @mnuViewComponentsClick;
-    itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
-    itmViewUnits.OnClick := @mnuViewUnitsClicked;
-    itmViewForms.OnClick := @mnuViewFormsClicked;
-    itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
-    itmViewUnitInfo.OnClick := @mnuViewUnitInfoClicked;
-    itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
-    itmViewMessage.OnClick := @mnuViewMessagesClick;
-    itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
-    itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
-    itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
-    itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
-
-    itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
-    itmViewIDEInfo.OnClick:=@mnuViewIDEInfoClicked;
   end;
 end;
 

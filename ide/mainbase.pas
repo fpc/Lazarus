@@ -107,9 +107,9 @@ type
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
+    procedure SetupViewMenu; virtual;
     procedure SetupSourceMenu; virtual;
     procedure SetupRefactorMenu; virtual;
-    procedure SetupViewMenu; virtual;
     procedure SetupProjectMenu; virtual;
     procedure SetupRunMenu; virtual;
     procedure SetupComponentsMenu; virtual;
@@ -356,9 +356,9 @@ begin
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
     CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);
+    CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuSource,'Source',lisMenuSource);
     CreateMainMenuItem(mnuRefactor,'Refactor',lisMenuRefactor);
-    CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
     CreateMainMenuItem(mnuPackage,'Package',lisMenuPackage);
@@ -490,6 +490,57 @@ begin
   end;
 end;
 
+procedure TMainIDEBase.SetupViewMenu;
+var
+  ParentMI: TIDEMenuSection;
+begin
+  with MainIDEBar do begin
+    CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
+    ParentMI:=itmViewMainWindows;
+    CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector, 'menu_view_inspector');
+    CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor, 'menu_view_source_editor');
+    CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
+    CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
+    CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
+    CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser, 'menu_view_code_browser');
+    CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
+    CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
+    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
+
+    CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
+    ParentMI:=itmViewUnitWindows;
+    CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits, 'menu_view_units');
+    CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms, 'menu_view_forms');
+    CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
+    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
+    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
+
+    CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
+    ParentMI:=itmViewSecondaryWindows;
+    CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
+    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
+    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
+    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '', true, EnvironmentOptions.IDESpeedButtonsVisible);
+    CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'debugger');
+    begin
+      CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'debugger_watches');
+      CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'debugger_breakpoints');
+      CreateMenuItem(itmViewDebugWindows,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables);
+      CreateMenuItem(itmViewDebugWindows,itmViewRegisters,'itmViewRegisters',lisMenuViewRegisters);
+      CreateMenuItem(itmViewDebugWindows,itmViewCallStack,'itmViewCallStack',lisMenuViewCallStack,'debugger_call_stack');
+      CreateMenuItem(itmViewDebugWindows,itmViewAssembler,'itmViewAssembler',lisMenuViewAssembler);
+      CreateMenuItem(itmViewDebugWindows,itmViewDebugEvents,'itmViewDebugEvents',lisMenuViewDebugEvents,''{'debugger_events'});
+      CreateMenuItem(itmViewDebugWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
+    end;
+    CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
+    begin
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
+    end;
+  end;
+end;
+
 procedure TMainIDEBase.SetupSourceMenu;
 var
   ParentMI, SubParentMI: TIDEMenuSection;
@@ -573,57 +624,6 @@ begin
     ParentMI:=itmRefactorTools;
     CreateMenuItem(ParentMI,itmRefactorMakeResourceString,'itmRefactorMakeResourceString',
                    lisMenuMakeResourceString,'menu_tool_make_resourcestring');
-  end;
-end;
-
-procedure TMainIDEBase.SetupViewMenu;
-var
-  ParentMI: TIDEMenuSection;
-begin
-  with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
-    ParentMI:=itmViewMainWindows;
-    CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector, 'menu_view_inspector');
-    CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor, 'menu_view_source_editor');
-    CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
-    CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
-    CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
-    CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser, 'menu_view_code_browser');
-    CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
-    CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
-    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
-
-    CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
-    ParentMI:=itmViewUnitWindows;
-    CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits, 'menu_view_units');
-    CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms, 'menu_view_forms');
-    CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
-    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
-    CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
-
-    CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
-    ParentMI:=itmViewSecondaryWindows;
-    CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
-    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
-    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
-    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '', true, EnvironmentOptions.IDESpeedButtonsVisible);
-    CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'debugger');
-    begin
-      CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'debugger_watches');
-      CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'debugger_breakpoints');
-      CreateMenuItem(itmViewDebugWindows,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables);
-      CreateMenuItem(itmViewDebugWindows,itmViewRegisters,'itmViewRegisters',lisMenuViewRegisters);
-      CreateMenuItem(itmViewDebugWindows,itmViewCallStack,'itmViewCallStack',lisMenuViewCallStack,'debugger_call_stack');
-      CreateMenuItem(itmViewDebugWindows,itmViewAssembler,'itmViewAssembler',lisMenuViewAssembler);
-      CreateMenuItem(itmViewDebugWindows,itmViewDebugEvents,'itmViewDebugEvents',lisMenuViewDebugEvents,''{'debugger_events'});
-      CreateMenuItem(itmViewDebugWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
-    end;
-    CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
-    begin
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
-    end;
   end;
 end;
 

@@ -309,6 +309,14 @@ var
       itmBookmarks: TIDEMenuSection;
       itmCodeToolSearches: TIDEMenuSection;
 
+    // view menu
+    mnuView: TIDEMenuSection;
+      itmViewMainWindows: TIDEMenuSection;
+      itmViewUnitWindows: TIDEMenuSection;
+      itmViewSecondaryWindows: TIDEMenuSection;
+        itmViewDebugWindows: TIDEMenuSection;
+        itmViewIDEInternalsWindows: TIDEMenuSection;
+
     // source menu
     mnuSource: TIDEMenuSection;
       itmSourceBlockIndentation: TIDEMenuSection;
@@ -323,14 +331,6 @@ var
       itmRefactorCodeTools: TIDEMenuSection;
       itmRefactorAdvanced: TIDEMenuSection;
       itmRefactorTools: TIDEMenuSection;
-
-    // view menu
-    mnuView: TIDEMenuSection;
-      itmViewMainWindows: TIDEMenuSection;
-      itmViewUnitWindows: TIDEMenuSection;
-      itmViewSecondaryWindows: TIDEMenuSection;
-        itmViewDebugWindows: TIDEMenuSection;
-        itmViewIDEInternalsWindows: TIDEMenuSection;
 
     // project menu
     mnuProject: TIDEMenuSection;
