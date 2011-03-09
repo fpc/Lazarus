@@ -1880,7 +1880,7 @@ function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorIndex(Color: Longint; var Index: Integer): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
-function ColorToRGB(Color: TColor): TColorRef;
+function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
@@ -2456,7 +2456,7 @@ begin
   end;
 end;
 
-function ColorToRGB(Color: TColor): TColorRef;
+function ColorToRGB(Color: TColor): Longint;
 var
   i: integer;
 begin
@@ -2464,7 +2464,7 @@ begin
   if i <> -1 then
     Result := GetSysColor(i)
   else
-    Result := TColorRef(Color);
+    Result := Color;
   Result := Result and $FFFFFF;
 end;
 
