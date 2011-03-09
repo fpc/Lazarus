@@ -191,7 +191,7 @@ end;
 procedure Register;
 
 begin
-  RegisterIdeMenuCommand(itmSecondaryTools,STemplateSettings,SProjectTemplateSettings,nil,@ChangeSettings);
+  RegisterIdeMenuCommand(itmOptionsDialogs,STemplateSettings,SProjectTemplateSettings,nil,@ChangeSettings);
   itmFileNewFromTemplate:=RegisterIDESubMenu(itmFileNew,
                                              'itmFileFromtemplate',
                                              SNewFromTemplate);
