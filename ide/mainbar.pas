@@ -195,6 +195,7 @@ type
     //mnuRefactor: TIDEMenuSection;
       //itmRefactorCodeTools: TIDEMenuSection;
         itmRefactorCompleteCode: TIDEMenuCommand;
+        itmRefactorUseUnit: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
         itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorInvertAssignment: TIDEMenuCommand;

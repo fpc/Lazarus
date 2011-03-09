@@ -2612,6 +2612,7 @@ resourcestring
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
   lisMenuCompleteCode             = 'Complete Code';
+  lisMenuUseUnit                  = 'Add unit to uses section';
   srkmecShowCodeContext           = 'Show code context';
   srkmecExtractProc               = 'Extract procedure';
   lisMenuExtractProc              = 'Extract procedure ...';

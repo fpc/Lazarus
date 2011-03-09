@@ -267,6 +267,7 @@ type
     // refactor menu
     procedure mnuRefactorClicked(Sender: TObject);
     procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
+    procedure mnuRefactorUseUnitClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
     procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorInvertAssignmentClicked(Sender: TObject);
@@ -2454,6 +2455,7 @@ begin
   with MainIDEBar do begin
     mnuRefactor.OnClick:=@mnuRefactorClicked;
     itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
+    itmRefactorUseUnit.OnClick:=@mnuRefactorUseUnitClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
@@ -3826,6 +3828,7 @@ begin
   with MainIDEBar do begin
   //itmRefactorCodeTools
     itmRefactorCompleteCode.Enabled:=Editable;
+    itmRefactorUseUnit.Enabled:=Editable;
     itmRefactorRenameIdentifier.Enabled:=Editable;
     itmRefactorExtractProc.Enabled:=SelEditable;
     itmRefactorInvertAssignment.Enabled:=SelEditable;
@@ -17724,6 +17727,11 @@ end;
 procedure TMainIDE.mnuRefactorCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
+end;
+
+procedure TMainIDE.mnuRefactorUseUnitClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecUseProjectUnit);
 end;
 
 procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);

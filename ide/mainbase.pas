@@ -555,6 +555,7 @@ begin
     CreateMenuSeparatorSection(mnuRefactor,itmRefactorCodeTools,'itmRefactorCodeTools');
     ParentMI:=itmRefactorCodeTools;
     CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseUnit);
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
     CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
@@ -920,6 +921,7 @@ begin
 
     // refactor menu
     itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
+    itmRefactorUseUnit.Command:=GetCommand(ecUseProjectUnit);
     itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
     itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);
