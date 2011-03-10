@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-10 01:34+0300\n"
+"PO-Revision-Date: 2011-03-11 00:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10459,6 +10459,11 @@ msgstr "Уменьшить отступ выделенного"
 msgid "Uppercase selection"
 msgstr "Верхний регистр выделенного"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr "Добавить модуль в выражение Uses"
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Вид"
@@ -14432,6 +14437,10 @@ msgstr "Невозможно сохранить резервный файл %s%s
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sНевозможно изменить класс %s на %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr "Невозможно изменить заголовок проекта в исходном коде.%s%s"
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Невозможно очистить каталог назначения"
@@ -14614,6 +14623,10 @@ msgstr "Невозможно прочитать файл информации о
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Невозможно удалить старый резервный файл %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr "Невозможно удалить заголовок проекта из исходного кода.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16388,6 +16401,7 @@ msgid "Unused units ..."
 msgstr "Неиспользуемые модули ..."
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr "Добавить модуль в выражение Uses"
 

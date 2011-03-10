@@ -10455,6 +10455,11 @@ msgstr "Selectie Inspringen ongedaan maken"
 msgid "Uppercase selection"
 msgstr "Wijzig selectie in hoofdletters"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Tonen"
@@ -14433,6 +14438,10 @@ msgstr "Kan het bestand %s%s%s niet backup-en naar %s%s%s"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sKan de klasse van %s niet wijzigen in %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Kan doel directory niet opschonen"
@@ -14614,6 +14623,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Kan het oude backup bestand %s%s%s niet verwijderen!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16386,6 +16399,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

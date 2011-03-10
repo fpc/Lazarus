@@ -265,7 +265,7 @@ msgid "expected end., but %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-msgid "End of source not found"
+msgid "End of source not found."
 msgstr ""
 
 #: codetoolsstrconsts.ctsenumerationtype

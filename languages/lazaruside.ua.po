@@ -10450,6 +10450,11 @@ msgstr "Відмінити зсув блоку вправо"
 msgid "Uppercase selection"
 msgstr "Верхний регістр виділення"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Вигляд"
@@ -14428,6 +14433,10 @@ msgstr "Не можу зберегти резервний файл %s%s%s як %
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sНеможливо змінити клас %s на  %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Не можу очистити теку призначення"
@@ -14609,6 +14618,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Не можу стерти старий резервний файл %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16381,6 +16394,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

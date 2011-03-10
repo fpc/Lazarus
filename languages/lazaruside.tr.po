@@ -10417,6 +10417,11 @@ msgstr "Seçimi beriye al"
 msgid "Uppercase selection"
 msgstr "Seçimi büyük harfe çevir"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "Görünüm"
@@ -14379,6 +14384,10 @@ msgstr "%s%s%s dosyası %s%s%s olarak yedeklenemedi!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%s%s adlı sınıf %s olarak değiştirilemiyor"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Hedef dizin temizlenemiyor"
@@ -14560,6 +14569,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "%s%s%s adlı eski yedek dosyası kaldırılamadı!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16332,6 +16345,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

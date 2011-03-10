@@ -10398,6 +10398,11 @@ msgstr ""
 msgid "Uppercase selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Aansig"
@@ -14346,6 +14351,10 @@ msgstr ""
 msgid "%s%sUnable to change class of %s to %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr ""
@@ -14526,6 +14535,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
@@ -16293,6 +16306,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

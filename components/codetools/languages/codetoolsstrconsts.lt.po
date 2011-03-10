@@ -272,7 +272,9 @@ msgid "expected end., but %s found"
 msgstr "tikėtasi „end.“, tačiau aptikta %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-msgid "End of source not found"
+#, fuzzy
+#| msgid "End of source not found"
+msgid "End of source not found."
 msgstr "Nerasta pirminio kodo pabaiga"
 
 #: codetoolsstrconsts.ctsenumerationtype

@@ -10464,6 +10464,11 @@ msgstr "Naikinti įtrauką pažymėjime"
 msgid "Uppercase selection"
 msgstr "Pažymėjime visas raides didžiosiomis"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Rodymas"
@@ -14444,6 +14449,10 @@ msgstr "Nepavyko padaryti failo %s%s%s atsarginę kopiją į %s%s%s!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sNepavyko %s klasę pakeisti į %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Nepavyko apvalyti tikslo aplanko"
@@ -14625,6 +14634,10 @@ msgstr "Nepavyko skaityti projekto informacinio failo%s%s%s%s."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Nepavyko ištrinti seną atsarginės kopijos failą %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16397,6 +16410,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

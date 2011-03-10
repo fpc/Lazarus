@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-29 03:35+0300\n"
+"PO-Revision-Date: 2011-03-11 00:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -255,7 +255,7 @@ msgstr "иначе"
 
 #: codetoolsstrconsts.ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
-msgstr "не найдено \"end\" для класса/объекта"
+msgstr "не найден \"end\" для класса/объекта"
 
 #: codetoolsstrconsts.ctsendforrecordnotfound
 msgid "end for record not found"
@@ -270,8 +270,9 @@ msgid "expected end., but %s found"
 msgstr "ожидается end., но найдено %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-msgid "End of source not found"
-msgstr "Не найдено конца исходного кода"
+#| msgid "End of source not found"
+msgid "End of source not found."
+msgstr "Не найден конец исходного кода."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"

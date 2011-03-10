@@ -10390,6 +10390,11 @@ msgstr "Zrušit odsazení výběru"
 msgid "Uppercase selection"
 msgstr "Změnit výběr na velká písmena"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr "Přidat jednotku do sekce použitých jednotek"
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Zobrazení"
@@ -14337,6 +14342,10 @@ msgstr "Nelze zálohovat soubor %s%s%s do %s%s%s!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sNelze změnit jméno třídy %s na %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Nelze vyčistit cílový adresář"
@@ -14518,6 +14527,10 @@ msgstr "Nelze číst informační soubor projektu%s%s%s%s."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Nelze odstranit starý záložní soubor %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16284,6 +16297,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr "Přidat jednotku do sekce použitých jednotek"
 

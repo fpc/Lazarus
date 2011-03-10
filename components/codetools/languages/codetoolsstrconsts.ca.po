@@ -270,7 +270,9 @@ msgid "expected end., but %s found"
 msgstr "esperava end., però s'ha trobat %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-msgid "End of source not found"
+#, fuzzy
+#| msgid "End of source not found"
+msgid "End of source not found."
 msgstr "No s'ha trobat el final del codi font"
 
 #: codetoolsstrconsts.ctsenumerationtype

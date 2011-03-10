@@ -10469,6 +10469,11 @@ msgstr "Désindenter la sélection"
 msgid "Uppercase selection"
 msgstr "Mettre la sélection en majuscules"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr "Ajoute une unité à la section uses"
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "&Voir"
@@ -14441,6 +14446,10 @@ msgstr "Impossible de faire une copie de sauvegarde du fichier %s%s%s vers %s%s%
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sImpossible de changer la classe de %s à %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "Impossible de nettoyer le répertoire de destination"
@@ -14622,6 +14631,10 @@ msgstr "Impossible de lire le fichier d'information du projet %s%s%s."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "Impossible de supprimer l'ancienne copie de sauvegarde %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16395,6 +16408,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr "Ajoute une unité à la section uses"
 

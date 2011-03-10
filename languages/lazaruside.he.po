@@ -10432,6 +10432,11 @@ msgstr "בטל את זיהוי הבחירה"
 msgid "Uppercase selection"
 msgstr "בחירה באותיות ראשיות"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "הצגה&"
@@ -14403,6 +14408,10 @@ msgstr "פעולת הגיבוי של הקובץ %s%s%s לקובץ %s%s%s לא ה
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "לא יכול לשנות את המחלקה s% ל s%"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "לא ניתן לנקות את ספריית היעד"
@@ -14584,6 +14593,10 @@ msgstr "לא יכול לקרוא את קובץ מידע הפרוייקט %s%s%s%
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "לא ניתן להסיר את קובץ הגיבויים  %s%s%s הישן!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16355,6 +16368,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 

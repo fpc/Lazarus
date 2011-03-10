@@ -10477,6 +10477,11 @@ msgstr "選択部分のインデントを削除"
 msgid "Uppercase selection"
 msgstr "選択部を大文字化"
 
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
+msgid "Add unit to uses section"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
 msgstr "表示(&V)"
@@ -14457,6 +14462,10 @@ msgstr "%s%s%sを%s%s%sにバックアップできません!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%s %sのクラスを%sへ変更できません"
 
+#: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
+msgid "Unable to change project title in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
 msgstr "対象ディレクトリを削除できません。"
@@ -14638,6 +14647,10 @@ msgstr "プロジェクト情報ファイル%s%s%s%sを読み込みできませ�
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "古いバックアップファイル%s%s%sを削除できません！"
+
+#: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
+msgid "Unable to remove project title from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -16414,6 +16427,7 @@ msgid "Unused units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuseprojectunit
+msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
 msgid "Add unit to uses section"
 msgstr ""
 
