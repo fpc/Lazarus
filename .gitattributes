@@ -423,6 +423,7 @@ components/codetools/examples/completeabstractmethods.lpi svneol=native#text/pla
 components/codetools/examples/completeabstractmethods.lpr svneol=native#text/plain
 components/codetools/examples/completeblock.lpi svneol=native#text/plain
 components/codetools/examples/completeblock.pas svneol=native#text/plain
+components/codetools/examples/convert_glib3.sh svneol=native#text/plain
 components/codetools/examples/finddeclaration.lpi svneol=native#text/plain
 components/codetools/examples/finddeclaration.lpr svneol=native#text/plain
 components/codetools/examples/findunusedunits.lpi svneol=native#text/plain
