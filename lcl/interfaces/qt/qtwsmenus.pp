@@ -473,7 +473,8 @@ begin
   else
     TQtMenu(APopupMenu.Handle).trackButton := QtRightButton;
 
-  TQtMenu(APopupMenu.Handle).PopUp(@Point);
+  // for win32 compatibility do a blocking call
+  TQtMenu(APopupMenu.Handle).Exec(@Point);
 end;
 
 end.

@@ -1353,6 +1353,7 @@ type
     function getText: WideString; override;
     function getVisible: Boolean; override;
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
+    procedure Exec(pos: PQtPoint; at: QActionH = nil);
     procedure removeActionGroup;
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
@@ -10878,7 +10879,12 @@ end;
 
 procedure TQtMenu.PopUp(pos: PQtPoint; at: QActionH);
 begin
-  QMenu_Popup(QMenuH(Widget), pos, at);
+  QMenu_popup(QMenuH(Widget), pos, at);
+end;
+
+procedure TQtMenu.Exec(pos: PQtPoint; at: QActionH);
+begin
+  QMenu_exec(QMenuH(Widget), pos, at);
 end;
 
 function TQtMenu.actionHandle: QActionH;
