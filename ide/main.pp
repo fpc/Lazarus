@@ -4877,8 +4877,8 @@ var
       if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, AProject.Title) then
       begin
         MessageDlg(lisProjOptsError,
-          'Unable to change project title in source.'#13 +
-          CodeToolBoss.ErrorMessage,
+          Format(lisUnableToChangeProjectTitleInSource, [#13, CodeToolBoss.
+            ErrorMessage]),
           mtWarning, [mbOk], 0);
         Result := False;
         Exit;
@@ -4888,8 +4888,8 @@ var
       if not CodeToolBoss.RemoveApplicationTitleStatement(AProject.MainUnitInfo.Source) then
       begin
         MessageDlg(lisProjOptsError,
-          'Unable to remove project title from source.'#13 +
-          CodeToolBoss.ErrorMessage,
+          Format(lisUnableToRemoveProjectTitleFromSource, [#13, CodeToolBoss.
+            ErrorMessage]),
           mtWarning, [mbOk], 0);
         Result := False;
         Exit;

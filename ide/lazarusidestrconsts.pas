@@ -3234,6 +3234,10 @@ resourcestring
   lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '
     +'create form list in the program source.%sPlease fix errors first.';
   lisProjOptsError = 'Error';
+  lisUnableToChangeProjectTitleInSource = 'Unable to change project title in '
+    +'source.%s%s';
+  lisUnableToRemoveProjectTitleFromSource = 'Unable to remove project title '
+    +'from source.%s%s';
   
   // path edit dialog
   lisPathEditSelectDirectory = 'Select directory';

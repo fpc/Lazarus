@@ -162,7 +162,7 @@ ResourceString
   ctsErrorDuringCreationOfNewProcBodies = 'error during creation of new proc bodies';
   ctsErrorDuringInsertingNewUsesSection = 'error during inserting new units to the main uses section';
   ctsUnableToApplyChanges = 'unable to apply changes';
-  ctsEndOfSourceNotFound = 'End of source not found';
+  ctsEndOfSourceNotFound = 'End of source not found.';
   ctsCursorPosOutsideOfCode = 'cursor pos outside of code';
   ctsNewProcBodyNotFound = 'new proc body not found';
   ctsIdentifierAlreadyDefined = 'Identifier %s already defined';
