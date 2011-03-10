@@ -4614,11 +4614,8 @@ procedure TPascalParserTool.BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
 var
   CaretType: integer;
   IgnorePos: TCodePosition;
-  RealTreeRange: TTreeRange;
   Node: TCodeTreeNode;
 begin
-  RealTreeRange:=TreeRange;
-
   //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
     // ignore errors after cursor position
@@ -4634,17 +4631,17 @@ begin
   else if not (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
 
-  if (RealTreeRange in [trTillCursor,trTillCursorSection]) then begin
+  if (TreeRange in [trTillCursor,trTillCursorSection]) then begin
     ScanRange:=lsrEnd;
     // check if cursor position is in scanned range
     if (Tree<>nil) and (Tree.Root<>nil) then begin
       CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
       if (CaretType=0) or (CaretType=-1) then begin
-        Node:=FindScanRangeNodeAtPos(CleanCursorPos);
-        if Node<>nil then begin
+        Node:=FindSectionNodeAtPos(CleanCursorPos);
+        if (Node<>nil) and (Node.EndPos>CleanCursorPos) then begin
           // cursor in scanned range
           ScanRange:=ScannedRange;
-          if (RealTreeRange=trTillCursorSection) and (ScanRange<>lsrEnd) then
+          if (TreeRange=trTillCursorSection) and (ScanRange<>lsrEnd) then
             inc(ScanRange);
         end;
       end;
