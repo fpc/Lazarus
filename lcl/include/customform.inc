@@ -960,9 +960,10 @@ end;
 procedure TCustomForm.EndFormUpdate;
 begin
   dec(FFormUpdateCount);
-  if FFormUpdateCount=0 then begin
+  if FFormUpdateCount = 0 then
+  begin
     FormEndUpdated;
-    Visible:=(fsVisible in FFormState);
+    Visible := (fsVisible in FFormState);
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
   end;
 end;
