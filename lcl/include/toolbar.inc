@@ -277,7 +277,8 @@ procedure TToolBar.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then begin
+  if Operation = opRemove then
+  begin
     if AComponent = FImages then Images := nil;
     if AComponent = FHotImages then HotImages := nil;
     if AComponent = FDisabledImages then DisabledImages := nil;
@@ -766,7 +767,7 @@ begin
   Result := False;
   if Button = nil then
     Exit;
-  if FCurrentMenu <> nil then
+  if Assigned(FCurrentMenu) then
     FCurrentMenu.Close;
   if FCurrentMenuAutoFree then
     FCurrentMenu.Free;
@@ -775,11 +776,11 @@ begin
   FSrcMenuItem := nil;
   FSrcMenu := nil;
   FDropDownButton := Button;
-  if Button.DropdownMenu <> nil then
+  if Assigned(Button.DropdownMenu) then
     // the button has a popupenu
     FCurrentMenu := Button.DropdownMenu
   else
-  if Button.MenuItem <> nil then
+  if Assigned(Button.MenuItem) then
   begin
     // the button has a menuitem
     // -> create a temporary TPopupMenu and move all child menuitems
@@ -788,7 +789,7 @@ begin
     FSrcMenuItem := Button.MenuItem;
     FSrcMenu := FSrcMenuItem.GetParentMenu;
     FCurrentMenu.Items.HelpContext := FSrcMenuItem.HelpContext;
-    if FSrcMenu <> nil then
+    if Assigned(FSrcMenu) then
       FCurrentMenu.Images := FSrcMenu.Images;
     MoveSubMenuItems(FSrcMenuItem, FCurrentMenu.Items);
     FCurrentMenu.OnClose := @OnTemporaryPopupMenuClose;

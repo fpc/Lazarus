@@ -333,10 +333,10 @@ var
     // if the 'PopupMenu' property exists, there is a big probability
     // that the command is from a popup menu
     PopupMenu := WindowInfo^.PopupMenu;
-    if PopupMenu <> nil
-    then begin
+    if Assigned(PopupMenu) then
+    begin
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
-      if Result <> nil then
+      if Assigned(Result) then
         Exit;
     end;
 
@@ -344,9 +344,10 @@ var
     MenuInfo.cbSize := MMenuItemInfoSize;
     MenuInfo.fMask := MIIM_DATA;
 
-    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), ByPosition, @MenuInfo)
-    then Result := TObject(MenuInfo.dwItemData)
-    else Result := nil;
+    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), ByPosition, @MenuInfo) then
+      Result := TObject(MenuInfo.dwItemData)
+    else
+      Result := nil;
   end;
 
   function GetIsNativeControl(AWindow: HWND): Boolean;

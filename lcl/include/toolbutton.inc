@@ -437,7 +437,7 @@ end;
 
 procedure TToolButton.CopyPropertiesFromMenuItem(const Value: TMenuItem);
 begin
-  if Value=nil then exit;
+  if not Assigned(Value) then Exit;
   BeginUpdate;
   Action := Value.Action;
   Caption := Value.Caption;
@@ -594,12 +594,11 @@ end;
 
 procedure TToolButton.SetMenuItem(Value: TMenuItem);
 begin
-  if Value=FMenuItem then exit;
+  if Value = FMenuItem then Exit;
   // copy values from menuitem
   // is menuitem is still loading, skip this
-  if (Value <> nil) and (not (csLoading in Value.ComponentState)) then begin
+  if Assigned(Value) and not (csLoading in Value.ComponentState) then
     CopyPropertiesFromMenuItem(Value);
-  end;
   FMenuItem := Value;
   if FMenuItem <> nil then
     FMenuItem.FreeNotification(Self);
@@ -752,11 +751,10 @@ end;
 function TToolButton.CheckMenuDropdown: Boolean;
 begin
   Result := (not (csDesigning in ComponentState))
-            and (((DropdownMenu<>nil) and (DropdownMenu.AutoPopup))
-                 or (MenuItem<>nil))
-            and (FToolBar <> nil);
+            and ((Assigned(DropdownMenu) and (DropdownMenu.AutoPopup)) or Assigned(MenuItem))
+            and Assigned(FToolBar);
   if Result then
-    Result:=FToolBar.CheckMenuDropdown(Self);
+    Result := FToolBar.CheckMenuDropdown(Self);
 end;
 
 procedure TToolButton.Click;
