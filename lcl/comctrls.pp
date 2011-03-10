@@ -1702,6 +1702,7 @@ type
     FUpdateCount: Integer;
     FWrapable: Boolean;
     procedure ApplyFontForButtons;
+    procedure CloseCurrentMenu;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
     function GetTransparent: Boolean;
@@ -1746,6 +1747,7 @@ type
     function WrapButtons(UseWidth: integer;
                          out NewWidth, NewHeight: Integer;
                          Simulate: boolean): Boolean;
+    procedure CNDropDownClosed(var Message: TLMessage); message CN_DROPDOWNCLOSED;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

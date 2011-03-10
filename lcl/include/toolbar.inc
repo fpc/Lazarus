@@ -171,14 +171,16 @@ begin
   UpdateVisibleBar;
 end;
 
-procedure TToolBar.OnTemporaryPopupMenuClose(Sender: TObject);
+procedure TToolBar.CloseCurrentMenu;
 begin
+  FCurrentMenu.Close;
   // move menu items back
-  if FSrcMenuItem = nil then
-    Exit;
-  MoveSubMenuItems(FCurrentMenu.Items, FSrcMenuItem);
-  if FDropDownButton <> nil then
-    FDropDownButton.Down := False;
+  if Assigned(FSrcMenuItem) then
+  begin
+    MoveSubMenuItems(FCurrentMenu.Items, FSrcMenuItem);
+    if Assigned(FDropDownButton) then
+      FDropDownButton.Down := False;
+  end;
 end;
 
 procedure TToolBar.MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
@@ -340,6 +342,11 @@ begin
   AdjustSize;
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
+end;
+
+procedure TToolBar.OnTemporaryPopupMenuClose(Sender: TObject);
+begin
+  PostMessage(Handle, CN_DROPDOWNCLOSED, 0, 0);
 end;
 
 procedure TToolBar.SetHotImages(const AValue: TCustomImageList);
@@ -728,6 +735,11 @@ begin
   end;
 end;
 
+procedure TToolBar.CNDropDownClosed(var Message: TLMessage);
+begin
+  CloseCurrentMenu;
+end;
+
 procedure TToolBar.AdjustClientRect(var ARect: TRect);
 begin
   inherited AdjustClientRect(ARect);
@@ -768,11 +780,14 @@ begin
   if Button = nil then
     Exit;
   if Assigned(FCurrentMenu) then
-    FCurrentMenu.Close;
-  if FCurrentMenuAutoFree then
-    FCurrentMenu.Free;
-  FCurrentMenu := nil;
-  FCurrentMenuAutoFree := False;
+  begin
+    CloseCurrentMenu;
+    if FCurrentMenuAutoFree then
+    begin
+      FreeAndNil(FCurrentMenu);
+      FCurrentMenuAutoFree := False;
+    end;
+  end;
   FSrcMenuItem := nil;
   FSrcMenu := nil;
   FDropDownButton := Button;
@@ -783,6 +798,9 @@ begin
   if Assigned(Button.MenuItem) then
   begin
     // the button has a menuitem
+
+    // since the button is clicked - menu item must be clicked too
+    Button.MenuItem.Click;
     // -> create a temporary TPopupMenu and move all child menuitems
     FCurrentMenuAutoFree := True;
     FCurrentMenu := TPopupMenu.Create(Self);
@@ -792,10 +810,10 @@ begin
     if Assigned(FSrcMenu) then
       FCurrentMenu.Images := FSrcMenu.Images;
     MoveSubMenuItems(FSrcMenuItem, FCurrentMenu.Items);
-    FCurrentMenu.OnClose := @OnTemporaryPopupMenuClose;
   end
   else
     Exit;
+  FCurrentMenu.OnClose := @OnTemporaryPopupMenuClose;
   FCurrentMenu.PopupComponent := Self;
   APoint := Button.ClientToScreen(Point(0, Button.ClientHeight));
   if FCurrentMenu.IsRightToLeft then Inc(APoint.X, Button.Width);
