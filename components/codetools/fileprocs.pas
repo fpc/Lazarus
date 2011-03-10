@@ -251,7 +251,7 @@ function FileIsTextCached(const AFilename: string): boolean;
 function FileAgeCached(const AFileName: string): Longint;
 function FileAgeToStr(aFileAge: longint): string;
 
-procedure InvalidateFileStateCache(const Filename: string = '');
+procedure InvalidateFileStateCache(const Filename: string = ''); inline;
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
 function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
 
@@ -3139,7 +3139,8 @@ end;
 constructor TFileStateCache.Create;
 begin
   FFiles:=TAVLTree.Create(@CompareFileStateItems);
-  FTimeStamp:=1; // one higher than default for new files
+  FTimeStamp:=CTInvalidChangeStamp64;
+  CTIncreaseChangeStamp64(FTimeStamp); // one higher than default for new files
 end;
 
 destructor TFileStateCache.Destroy;
@@ -3180,10 +3181,7 @@ begin
   if Self=nil then exit;
   if AFilename='' then begin
     // invalidate all
-    if FTimeStamp<high(FTimeStamp) then
-      inc(FTimeStamp)
-    else
-      FTimeStamp:=low(FTimeStamp);
+    CTIncreaseChangeStamp64(FTimeStamp);
     for i:=0 to length(FChangeTimeStampHandler)-1 do
       FChangeTimeStampHandler[i](Self);
   end else begin

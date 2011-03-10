@@ -82,8 +82,8 @@ type
                        out ChangeStep: integer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
-  TOnGetWriteLockInfo = procedure(out WriteLockIsSet: boolean;
-    out WriteLockStep: integer) of object;
+  TLSOnGetGlobalChangeSteps = procedure(out SourcesChangeStep, FilesChangeStep,
+                                       InitValuesChangeStep: int64) of object;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
   PSourceLink = ^TSourceLink;
@@ -226,6 +226,14 @@ type
     constructor Create(ASender: TLinkScanner; const AMessage: string;
       ABuffer: Pointer; ABufferPos: integer);
   end;
+
+  TLinkScannerState = (
+    lssSourcesChanged,    // used source buffers changed
+    lssInitValuesChanged, // used init values changed
+    lssFilesChanged,      // used files on disk changed
+    lssIgnoreMissingIncludeFiles
+    );
+  TLinkScannerStates = set of TLinkScannerState;
   
   { TLinkScanner }
   
@@ -254,13 +262,13 @@ type
     FMainSourceFilename: string;
     FMainCode: pointer;
     FScanTill: TLinkScannerRange;
-    FIgnoreMissingIncludeFiles: boolean;
     FNestedComments: boolean;
-    FForceUpdateNeeded: boolean;
+    FStates: TLinkScannerStates;
     // global write lock
-    FLastGlobalWriteLockStep: integer;
-    FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
+    FGlobalSourcesChangeStep: int64;
+    FGlobalFilesChangeStep: int64;
+    FGlobalInitValuesChangeStep: int64;
     function GetLinks(Index: integer): TSourceLink;
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
@@ -269,6 +277,7 @@ type
     procedure IncreaseChangeStep;
     procedure SetMainCode(const Value: pointer);
     procedure SetScanTill(const Value: TLinkScannerRange);
+    function GetIgnoreMissingIncludeFiles: boolean;
     procedure SetIgnoreMissingIncludeFiles(const Value: boolean);
     function TokenIs(const AToken: shortstring): boolean;
     function UpTokenIs(const AToken: shortstring): boolean;
@@ -314,6 +323,7 @@ type
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
+    FOnGetGlobalChangeSteps: TLSOnGetGlobalChangeSteps;
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
@@ -455,8 +465,8 @@ type
     // global write lock
     procedure ActivateGlobalWriteLock;
     procedure DeactivateGlobalWriteLock;
-    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
-                 read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
+    property OnGetGlobalChangeSteps: TLSOnGetGlobalChangeSteps
+                     read FOnGetGlobalChangeSteps write FOnGetGlobalChangeSteps;
     property OnSetGlobalWriteLock: TOnSetWriteLock
                          read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
 
@@ -477,7 +487,7 @@ type
                                        read FOnIncludeCode write FOnIncludeCode;
     property OnProgress: TLinkScannerProgress
                                              read FOnProgress write FOnProgress;
-    property IgnoreMissingIncludeFiles: boolean read FIgnoreMissingIncludeFiles
+    property IgnoreMissingIncludeFiles: boolean read GetIgnoreMissingIncludeFiles
                                              write SetIgnoreMissingIncludeFiles;
     property InitialValues: TExpressionEvaluator
                                              read FInitValues write FInitValues;
@@ -1216,6 +1226,12 @@ begin
   {$ENDIF}
   ScanTill:=Range;
   Clear;
+
+  if Assigned(OnGetGlobalChangeSteps) then
+    OnGetGlobalChangeSteps(FGlobalSourcesChangeStep,FGlobalFilesChangeStep,
+                           FGlobalInitValuesChangeStep);
+  FStates:=FStates-[lssSourcesChanged,lssFilesChanged,lssInitValuesChanged];
+
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan B ');
   {$ENDIF}
@@ -1236,7 +1252,7 @@ begin
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
   //DebugLn('TLinkScanner.Scan D --------');
-  
+
   // initialize Defines
   if Assigned(FOnGetInitValues) then
     FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
@@ -1312,7 +1328,6 @@ begin
       end;
     end;
     IncreaseChangeStep;
-    FForceUpdateNeeded:=false;
     FLastCleanedSrcLen:=CleanedLen;
   except
     on E: ELinkScannerError do begin
@@ -1612,45 +1627,33 @@ end;
 function TLinkScanner.UpdateNeeded(
   Range: TLinkScannerRange; CheckFilesOnDisk: boolean): boolean;
 { the clean source must be rebuilt if
-   1. scanrange increased
-   2. unit source changed
-   3. one of its include files changed
-   4. init values changed (e.g. initial compiler defines)
-   5. FForceUpdateNeeded is set
-   6. a missing include file can now be found
+   1. a former check says so
+   2. scanrange increased
+   3. unit source changed
+   4. one of its include files changed
+   5. init values changed (e.g. initial compiler defines)
+   7. a missing include file can now be found
 }
 var i: integer;
   SrcLog: TSourceLog;
   NewInitValues: TExpressionEvaluator;
-  GlobalWriteLockIsSet: boolean;
-  GlobalWriteLockStep: integer;
   NewInitValuesChangeStep: integer;
   SrcChange: PSourceChangeStep;
+  CurSourcesChangeStep, CurFilesChangeStep, CurInitValuesChangeStep: int64;
 begin
   Result:=true;
-  if FForceUpdateNeeded then exit;
-  
-  // do a quick test: check the GlobalWriteLockStep
-  if Assigned(OnGetGlobalWriteLockInfo) then begin
-    OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
-    if GlobalWriteLockIsSet then begin
-      // The global write lock is set. That means, input variables and code are
-      // frozen
-      if (FLastGlobalWriteLockStep=GlobalWriteLockStep) then begin
-        // source and values did not change since last UpdateNeeded check
-        // -> check only if ScanTill has increased
-        if ord(Range)>ord(ScannedRange) then exit;
-        Result:=false;
-        exit;
-      end else begin
-        // this is the first check in this GlobalWriteLockStep
-        FLastGlobalWriteLockStep:=GlobalWriteLockStep;
-        // proceed normally ...
-      end;
-    end;
-  end;
-  
-  // check if ScanRange has increased
+
+  if Range=lsrNone then exit(false);
+
+  if not Assigned(FOnCheckFileOnDisk) then CheckFilesOnDisk:=false;
+
+  // use the last check result
+  if [lssSourcesChanged,lssInitValuesChanged]*FStates<>[] then exit;
+  if CheckFilesOnDisk and (lssFilesChanged in FStates) then exit;
+
+  // check if range increased
+  // Note: if there was an error, then a range increase will raise the same error
+  // and no update is needed
   if (ord(Range)>ord(ScannedRange)) and (not LastErrorIsValid) then begin
     {$IFDEF VerboseUpdateNeeded}
     DebugLn(['TLinkScanner.UpdateNeeded because range increased Range=',ord(Range),' ScannedRange=',ord(ScannedRange)]);
@@ -1658,9 +1661,36 @@ begin
     exit;
   end;
 
-  // check if any input has changed ...
-  FForceUpdateNeeded:=true;
-  
+  // do a quick test: check the global change steps for sources and values
+  if Assigned(OnGetGlobalChangeSteps) then begin
+    OnGetGlobalChangeSteps(CurSourcesChangeStep,CurFilesChangeStep,CurInitValuesChangeStep);
+    if (CurSourcesChangeStep=FGlobalSourcesChangeStep)
+    and (CurInitValuesChangeStep=FGlobalInitValuesChangeStep)
+    and ((not CheckFilesOnDisk) or (CurFilesChangeStep=FGlobalSourcesChangeStep))
+    then begin
+      // sources and values did not change since last check
+      Result:=false;
+      exit;
+    end;
+    FGlobalSourcesChangeStep:=CurSourcesChangeStep;
+    FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
+    if CheckFilesOnDisk then FGlobalSourcesChangeStep:=CurFilesChangeStep;
+  end;
+
+  // check initvalues
+  if Assigned(FOnGetInitValues) then begin
+    NewInitValues:=FOnGetInitValues(Code,NewInitValuesChangeStep);
+    if (NewInitValues<>nil)
+    and (NewInitValuesChangeStep<>FInitValuesChangeStep)
+    and (not FInitValues.Equals(NewInitValues)) then begin
+      {$IFDEF VerboseUpdateNeeded}
+      DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
+      {$ENDIF}
+      Include(FStates,lssInitValuesChanged);
+      exit;
+    end;
+  end;
+
   // check all used files
   if Assigned(FOnGetSource) then begin
     for i:=0 to FSourceChangeSteps.Count-1 do begin
@@ -1669,45 +1699,38 @@ begin
       //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
       if SrcChange^.ChangeStep<>SrcLog.ChangeStep then begin
         {$IFDEF VerboseUpdateNeeded}
-        DebugLn(['TLinkScanner.UpdateNeeded because file changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+        DebugLn(['TLinkScanner.UpdateNeeded because source buffer changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
         {$ENDIF}
+        Include(FStates,lssSourcesChanged);
         exit;
       end;
     end;
-    if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
+    if CheckFilesOnDisk then begin
       // if files changed on disk, reload them
       for i:=0 to FSourceChangeSteps.Count-1 do begin
         SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
         SrcLog:=FOnGetSource(Self,SrcChange^.Code);
-        FOnCheckFileOnDisk(SrcLog);
+        if FOnCheckFileOnDisk(SrcLog) then begin
+          {$IFDEF VerboseUpdateNeeded}
+          DebugLn(['TLinkScanner.UpdateNeeded because file on disk changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+          {$ENDIF}
+          Include(FStates,lssFilesChanged);
+          exit;
+        end;
       end;
     end;
   end;
   
-  // check initvalues
-  if Assigned(FOnGetInitValues) then begin
-    if FInitValues=nil then exit;
-    NewInitValues:=FOnGetInitValues(Code,NewInitValuesChangeStep);
-    if (NewInitValues<>nil)
-    and (NewInitValuesChangeStep<>FInitValuesChangeStep)
-    and (not FInitValues.Equals(NewInitValues)) then begin
-      {$IFDEF VerboseUpdateNeeded}
-      DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
-      {$ENDIF}
-      exit;
-    end;
-  end;
-  
   // check missing include files
-  if MissingIncludeFilesNeedsUpdate then begin
+  if CheckFilesOnDisk and MissingIncludeFilesNeedsUpdate then begin
     {$IFDEF VerboseUpdateNeeded}
     DebugLn(['TLinkScanner.UpdateNeeded because MissingIncludeFilesNeedsUpdate']);
     {$ENDIF}
+    Include(FStates,lssFilesChanged);
     exit;
   end;
 
   // no update needed :)
-  FForceUpdateNeeded:=false;
   //DebugLn('TLinkScanner.UpdateNeeded END');
   Result:=false;
 end;
@@ -3084,7 +3107,10 @@ end;
 
 procedure TLinkScanner.SetIgnoreMissingIncludeFiles(const Value: boolean);
 begin
-  FIgnoreMissingIncludeFiles := Value;
+  if Value then
+    Include(FStates,lssIgnoreMissingIncludeFiles)
+  else
+    Exclude(FStates,lssIgnoreMissingIncludeFiles);
 end;
 
 procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer;
@@ -3499,6 +3525,11 @@ begin
   FCompilerModeSwitch:=cmsDefault;
 end;
 
+function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
+begin
+  Result:=lssIgnoreMissingIncludeFiles in FStates;
+end;
+
 procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch
   );
 begin
@@ -3791,8 +3822,6 @@ procedure TLinkScanner.DoCheckAbort;
 begin
   if not Assigned(OnProgress) then exit;
   if OnProgress(Self) then exit;
-  // mark scanning results as invalid
-  FForceUpdateNeeded:=true;
   // raise abort exception
   RaiseExceptionClass('Abort',ELinkScannerAbort);
 end;

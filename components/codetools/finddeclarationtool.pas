@@ -573,13 +573,13 @@ type
     FOnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FFirstNodeCache: TCodeTreeNodeCache;
-    FLastNodeCachesGlobalWriteLockStep: integer;
     FRootNodeCache: TCodeTreeNodeCache;
     FFirstBaseTypeCache: TBaseTypeCache;
     FDependentCodeTools: TAVLTree;// the codetools, that depend on this codetool
     FDependsOnCodeTools: TAVLTree;// the codetools, that this codetool depends on
     FClearingDependentNodeCaches: boolean;
     FCheckingNodeCacheDependencies: boolean;
+    FSourcesChangeStep, FFilesChangeStep, FInitValuesChangeStep: int64;
     {$IFDEF DebugPrefix}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -619,7 +619,6 @@ type
   protected
     // node caches
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
-    function NodeCacheGlobalWriteLockStepDidNotChange: boolean;
     function CheckDependsOnNodeCaches(CheckedTools: TAVLTree = nil): boolean;
     procedure ClearNodeCaches(Force: boolean);
     procedure ClearDependentNodeCaches;
@@ -746,6 +745,7 @@ type
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function CheckDirectoryCache: boolean;
   public
+    constructor Create;
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
@@ -8797,6 +8797,14 @@ begin
   Result:=FDirectoryCache<>nil;
 end;
 
+constructor TFindDeclarationTool.Create;
+begin
+  inherited Create;
+  FSourcesChangeStep:=CTInvalidChangeStamp64;
+  FFilesChangeStep:=CTInvalidChangeStamp64;
+  FInitValuesChangeStep:=CTInvalidChangeStamp64;
+end;
+
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
   ClearNodeCaches(true);
@@ -8807,49 +8815,32 @@ begin
   inherited DoDeleteNodes(StartNode);
 end;
 
-function TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange: boolean;
-// checks if a node cache check is in the same GlobalWriteLockStep
-// returns true if _no_ update is needed
-// returns false, if further checks are needed
-var
-  GlobalWriteLockIsSet: boolean;
-  GlobalWriteLockStep: integer;
-begin
-  Result:=false;
-  if Assigned(OnGetGlobalWriteLockInfo) then begin
-    OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
-    if GlobalWriteLockIsSet then begin
-      // The global write lock is set. That means, input variables and code
-      // are frozen for all codetools and scanners, and therefore also for all
-      // node caches
-      if (FLastNodeCachesGlobalWriteLockStep=GlobalWriteLockStep) then begin
-        // source and values did not change since last NodeCache check
-        Result:=true;
-      end else begin
-        // this is the first check in this GlobalWriteLockStep
-        FLastNodeCachesGlobalWriteLockStep:=GlobalWriteLockStep;
-        // proceed normally ...
-      end;
-    end;
-  end;
-  {$IFDEF ShowCacheDependencies}
-  DebugLn('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',
-          DbgS(Result),' ',MainFilename);
-  {$ENDIF}
-end;
-
-function TFindDeclarationTool.CheckDependsOnNodeCaches
-  (CheckedTools: TAVLTree = nil): boolean;
+function TFindDeclarationTool.CheckDependsOnNodeCaches(
+  CheckedTools: TAVLTree = nil): boolean;
 var
   ANode: TAVLTreeNode;
   ATool: TFindDeclarationTool;
   FreeCheckedTools: Boolean;
+  SourcesChangeStep, FilesChangeStep, InitValuesChangeStep: int64;
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.CheckDependsOnNodeCaches ',MainFilename,' FDependsOnCodeTools=',FDependsOnCodeTools]);
-  if (FDependsOnCodeTools=nil) or FCheckingNodeCacheDependencies
-  or NodeCacheGlobalWriteLockStepDidNotChange
-  then exit;
+  if (FDependsOnCodeTools=nil) or FCheckingNodeCacheDependencies then exit;
+  if Scanner=nil then exit;
+  if Assigned(Scanner.OnGetGlobalChangeSteps) then begin
+    // check if any sources or values have changed
+    Scanner.OnGetGlobalChangeSteps(SourcesChangeStep,FilesChangeStep,
+                                   InitValuesChangeStep);
+    if (SourcesChangeStep=FSourcesChangeStep)
+    and (FilesChangeStep=FFilesChangeStep)
+    and (InitValuesChangeStep=FInitValuesChangeStep) then
+      // all sources and values are the same =>
+      exit;
+    FSourcesChangeStep:=SourcesChangeStep;
+    FFilesChangeStep:=FilesChangeStep;
+    FInitValuesChangeStep:=InitValuesChangeStep;
+  end;
+
   if (CheckedTools<>nil) and (CheckedTools.Find(Self)<>nil) then exit;
 
   {$IFDEF ShowCacheDependencies}
@@ -8914,10 +8905,6 @@ begin
           DbgS(Force),' ',MainFilename);
   {$ENDIF}
     
-  // quick check: check if in the same GlobalWriteLockStep
-  if (not Force) and NodeCacheGlobalWriteLockStepDidNotChange then
-    exit;
-
   // clear node caches
   while FFirstNodeCache<>nil do begin
     NodeCache:=FFirstNodeCache;
@@ -8944,7 +8931,8 @@ var
   ANode: TAVLTreeNode;
   DependentTool: TFindDeclarationTool;
 begin
-  if (FDependentCodeTools=nil) or FClearingDependentNodeCaches then exit;
+  if (FDependentCodeTools=nil) or (FDependentCodeTools.Count=0)
+  or FClearingDependentNodeCaches then exit;
   FClearingDependentNodeCaches:=true;
   {$IFDEF ShowCacheDependencies}
   DebugLn('[TFindDeclarationTool.ClearDependentNodeCaches] ',MainFilename);
@@ -8967,7 +8955,7 @@ var
   ANode: TAVLTreeNode;
   DependOnTool: TFindDeclarationTool;
 begin
-  if FDependsOnCodeTools=nil then exit;
+  if (FDependsOnCodeTools=nil) or (FDependsOnCodeTools.Count=0) then exit;
   {$IFDEF ShowCacheDependencies}
   DebugLn('[TFindDeclarationTool.ClearDependsOnToolRelationships] ',MainFilename);
   {$ENDIF}

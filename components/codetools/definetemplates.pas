@@ -377,7 +377,7 @@ type
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
     FDefineStrings: TStringTree;
-    FChangeStep: integer;
+    FChangeStep: int64;
     FErrorDescription: string;
     FErrorTemplate: TDefineTemplate;
     FMacroFunctions: TKeyWordFunctionList;
@@ -406,7 +406,7 @@ type
   public
     property RootTemplate: TDefineTemplate
                            read FFirstDefineTemplate write FFirstDefineTemplate;
-    property ChangeStep: integer read FChangeStep;
+    property ChangeStep: int64 read FChangeStep;
     property ErrorTemplate: TDefineTemplate read FErrorTemplate;
     property ErrorDescription: string read FErrorDescription;
     property OnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias
@@ -3710,6 +3710,7 @@ end;
 constructor TDefineTree.Create;
 begin
   inherited Create;
+  FChangeStep:=CTInvalidChangeStamp64;
   FFirstDefineTemplate:=nil;
   FCache:=TAVLTree.Create(@CompareDirectoryDefines);
   FDefineStrings:=TStringTree.Create;
@@ -4424,10 +4425,7 @@ end;
 
 procedure TDefineTree.IncreaseChangeStep;
 begin
-  if FChangeStep<>$7fffffff then
-    inc(FChangeStep)
-  else
-    FChangeStep:=-$7fffffff;
+  CTIncreaseChangeStamp64(FChangeStep);
   if DirectoryCachePool<>nil then DirectoryCachePool.IncreaseConfigTimeStamp;
 end;
 

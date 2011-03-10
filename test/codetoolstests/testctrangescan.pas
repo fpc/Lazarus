@@ -3,6 +3,7 @@
      ./runtests --format=plain --suite=TestCTScanRange
      ./runtests --format=plain --suite=TestCTScanRangeAscending
      ./runtests --format=plain --suite=TestCTScanRangeProcModified
+     ./runtests --format=plain --suite=TestCTScanRangeImplementationToEnd
 }
 unit TestCTRangeScan;
 
@@ -39,6 +40,7 @@ type
     procedure TestCTScanRangeAscending;
     procedure TestCTScanRangeDescending;
     procedure TestCTScanRangeProcModified;
+    procedure TestCTScanRangeImplementationToEnd;
   end;
 
 implementation
@@ -93,7 +95,7 @@ begin
   RootNode:=Tool.Tree.Root;
   TreeChangeStep:=Tool.TreeChangeStep;
   AssertEquals('Step1: RootNode<>nil',true,RootNode<>nil);
-  //Tool.WriteDebugTreeReport;
+  Tool.WriteDebugTreeReport;
 
   // append a comment at end and scan again => this should result in no tree change
   Code.Source:=GetSource([crsfWithCommentAtEnd]);
@@ -208,6 +210,28 @@ begin
   AssertEquals('step1: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
   Code.Source:=GetSource([crsfWithProc1Modified]);
+  Tool.BuildTree(lsrEnd);
+  Tool.WriteDebugTreeReport;
+  AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeImplementationToEnd;
+var
+  Code: TCodeBuffer;
+  Tool: TEventsCodeTool;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  Code.Source:='';
+  Tool.BuildTree(lsrInit);
+
+  // scan source
+  Code.Source:=GetSource([crsfWithProc1]);
+  Tool.BuildTree(lsrImplementationStart);
+  Tool.WriteDebugTreeReport;
+  AssertEquals('step1: implementation found',true,Tool.FindImplementationNode<>nil);
+
   Tool.BuildTree(lsrEnd);
   Tool.WriteDebugTreeReport;
   AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);

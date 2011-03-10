@@ -1567,6 +1567,7 @@ Begin
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
       // '');
     end;
+    debugln(['TSourceEditCompletion.ccExecute ',DbgSName(SourceEditorManager.ActiveCompletionPlugin)]);
     if (CurrentCompletionType=ctIdentCompletion) and (SourceEditorManager.ActiveCompletionPlugin=nil)
     then
       StartShowCodeHelp

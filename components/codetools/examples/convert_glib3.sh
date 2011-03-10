@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# do not include error.h - it only contains c macros for debugging
+# do not include gerror.h - it only contains c macros for debugging
+# do not include gslice.h, gmem.h - it only contains c macros for fast mem allocation
 
 dir=~/cpp/gtk3/glib/glib
 ./h2pastest -uG_BEGIN_DECLS -uG_END_DECLS -uG_GNUC_CONST -dG_CONST_RETURN=const \
             -uGLIB_VAR -uG_INLINE_FUNC -uG_GNUC_MAY_ALIAS -uG_GNUC_MALLOC \
+            -uG_GNUC_WARN_UNUSED_RESULT -uG_GNUC_NULL_TERMINATED \
+            -uG_GNUC_PURE \
   $dir/glib.h \
   $dir/galloca.h \
   $dir/garray.h \
@@ -43,7 +46,6 @@ dir=~/cpp/gtk3/glib/glib
   $dir/gmain.h \
   $dir/gmappedfile.h \
   $dir/gmarkup.h \
-  $dir/gmem.h \
   $dir/gmessages.h \
   $dir/gmirroringtable.h \
   $dir/gnode.h \
@@ -63,7 +65,6 @@ dir=~/cpp/gtk3/glib/glib
   $dir/gscripttable.h \
   $dir/gsequence.h \
   $dir/gshell.h \
-  $dir/gslice.h \
   $dir/gslist.h \
   $dir/gspawn.h \
   $dir/gstdio.h \

@@ -283,6 +283,7 @@ begin
   inherited Create;
   FItems:=TAVLTree.Create(@CompareCodeBuffers);
   FIncludeLinks:=TAVLTree.Create(@CompareIncludedByLink);
+  FChangeStamp:=CTInvalidChangeStamp64;
 end;
 
 destructor TCodeCache.Destroy;
@@ -969,10 +970,7 @@ end;
 
 procedure TCodeCache.IncreaseChangeStamp;
 begin
-  if FChangeStamp<high(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-    FChangeStamp:=low(FChangeStamp);
+  CTIncreaseChangeStamp64(FChangeStamp);
 end;
 
 procedure TCodeCache.WriteAllFileNames;

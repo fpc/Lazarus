@@ -135,7 +135,6 @@ type
   private
     FLastProgressPos: integer;
     FNodesDeletedChangeStep: integer;
-    FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnParserProgress: TOnParserProgress;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
     FScanner: TLinkScanner;
@@ -235,7 +234,7 @@ type
         StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
 
     function UpdateNeeded(Range: TLinkScannerRange): boolean;
-    function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean; deprecated;
+    function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean; deprecated; // use UpdateNeeded(lsrImplementationStart) or UpdateNeeded(lsrEnd)
     procedure BeginParsing(Range: TLinkScannerRange); virtual;
     procedure BeginParsingAndGetCleanPos(
         Range: TLinkScannerRange; CursorPos: TCodeXYPosition;
@@ -312,8 +311,6 @@ type
     // write lock
     procedure ActivateGlobalWriteLock; virtual;
     procedure DeactivateGlobalWriteLock; virtual;
-    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
-      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
     property OnSetGlobalWriteLock: TOnSetWriteLock
       read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
       

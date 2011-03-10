@@ -147,8 +147,8 @@ type
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
     procedure OnToolSetWriteLock(Lock: boolean);
-    procedure OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
-      out WriteLockStep: integer);
+    procedure OnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep,
+                                   InitValuesChangeStep: int64);
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
     procedure OnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function OnScannerProgress(Sender: TLinkScanner): boolean;
@@ -1245,7 +1245,7 @@ begin
     Code.Scanner:=TLinkScanner.Create;
     Code.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
     Code.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-    Code.Scanner.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+    Code.Scanner.OnGetGlobalChangeSteps:=@OnToolGetChangeSteps;
     Code.Scanner.OnProgress:=@OnScannerProgress;
   end;
 end;
@@ -5032,7 +5032,6 @@ begin
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
     TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
     Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-    Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
     Result.OnTreeChange:=@OnToolTreeChange;
     TCodeTool(Result).OnParserProgress:=@OnParserProgress;
   end;
@@ -5183,14 +5182,6 @@ begin
   NodesDeletedStep:=FCodeTreeNodesDeletedStep;
 end;
 
-procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
-  out WriteLockStep: integer);
-begin
-  WriteLockIsSet:=FWriteLockCount>0;
-  WriteLockStep:=FWriteLockStep;
-  //DebugLn(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
-end;
-
 function TCodeToolManager.GetResourceTool: TResourceCodeTool;
 begin
   if FResourceTool=nil then FResourceTool:=TResourceCodeTool.Create;
@@ -5330,6 +5321,14 @@ end;
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
 begin
   if Lock then ActivateWriteLock else DeactivateWriteLock;
+end;
+
+procedure TCodeToolManager.OnToolGetChangeSteps(out SourcesChangeStep,
+  FilesChangeStep, InitValuesChangeStep: int64);
+begin
+  SourcesChangeStep:=SourceCache.ChangeStamp;
+  FilesChangeStep:=FileStateCache.TimeStamp;
+  InitValuesChangeStep:=DefineTree.ChangeStep;
 end;
 
 procedure TCodeToolManager.ConsistencyCheck;
