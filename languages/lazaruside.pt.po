@@ -6958,6 +6958,14 @@ msgstr "Métodos Vazios"
 msgid "Found empty methods:"
 msgstr "Métodos vazios encontrados:"
 
+#: lazarusidestrconsts.lisemdnoclass
+msgid "No class"
+msgstr ""
+
+#: lazarusidestrconsts.lisemdnoclassat
+msgid "No class at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
 msgstr "Somente publicados"
@@ -6977,6 +6985,10 @@ msgstr "Remover métodos"
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Localizar nestas seções de classe:"
+
+#: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
+msgid "Unable to show empty methods of the current class, because%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"

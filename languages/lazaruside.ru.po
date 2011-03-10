@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-11 00:52+0300\n"
+"PO-Revision-Date: 2011-03-11 01:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6966,6 +6966,14 @@ msgstr "Пустые методы"
 msgid "Found empty methods:"
 msgstr "Найденные пустые методы:"
 
+#: lazarusidestrconsts.lisemdnoclass
+msgid "No class"
+msgstr "Отсутствует класс"
+
+#: lazarusidestrconsts.lisemdnoclassat
+msgid "No class at %s(%s,%s)"
+msgstr "Отсутствует класс в %s(%s,%s)"
+
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
 msgstr "Только published"
@@ -6985,6 +6993,10 @@ msgstr "Удалить методы"
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Искать в следующих секциях класса"
+
+#: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
+msgid "Unable to show empty methods of the current class, because%s%s"
+msgstr "Невозможно показать пустые методы текущего класса по причине:%s%s"
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"

@@ -6941,6 +6941,14 @@ msgstr "Tyhjät metodit (luokan tyhjät aliohjelmarungot)"
 msgid "Found empty methods:"
 msgstr "Löydetyt tyhjät metodit:"
 
+#: lazarusidestrconsts.lisemdnoclass
+msgid "No class"
+msgstr ""
+
+#: lazarusidestrconsts.lisemdnoclassat
+msgid "No class at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
 msgstr "Vain published"
@@ -6960,6 +6968,10 @@ msgstr "Poista metodit"
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Haetaan näistä luokan (class) osista:"
+
+#: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
+msgid "Unable to show empty methods of the current class, because%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"

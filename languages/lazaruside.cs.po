@@ -6913,6 +6913,14 @@ msgstr "Prázdné metody"
 msgid "Found empty methods:"
 msgstr "Nalezeny prázdné metody:"
 
+#: lazarusidestrconsts.lisemdnoclass
+msgid "No class"
+msgstr ""
+
+#: lazarusidestrconsts.lisemdnoclassat
+msgid "No class at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
 msgstr "Pouze zveřejněné"
@@ -6932,6 +6940,10 @@ msgstr "Odstranit metody"
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Hledat v těchto sekcích tříd:"
+
+#: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
+msgid "Unable to show empty methods of the current class, because%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"

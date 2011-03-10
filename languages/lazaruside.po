@@ -6898,6 +6898,14 @@ msgstr ""
 msgid "Found empty methods:"
 msgstr ""
 
+#: lazarusidestrconsts.lisemdnoclass
+msgid "No class"
+msgstr ""
+
+#: lazarusidestrconsts.lisemdnoclassat
+msgid "No class at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
 msgstr ""
@@ -6916,6 +6924,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
+msgstr ""
+
+#: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
+msgid "Unable to show empty methods of the current class, because%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisempty
