@@ -120,8 +120,9 @@ begin
         ErrMsg:='';
         LazarusIDE.DoJumpToCodeToolBossError;
       end else begin
-        MessageDlg('No class',
-          'No class at '+Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
+        MessageDlg(lisEMDNoClass,
+          Format(lisEMDNoClassAt, [Code.Filename, IntToStr(Caret.Y), IntToStr(
+            Caret.X)]),
           mtError,[mbCancel],0);
       end;
       exit;
@@ -141,8 +142,8 @@ begin
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
       MessageDlg(lisCCOErrorCaption,
-        'Unable to show empty methods of the current class, because'+#13
-        +ErrMsg,mtError,[mbCancel],0);
+        Format(lisEMDUnableToShowEmptyMethodsOfTheCurrentClassBecause, [#13,
+          ErrMsg]), mtError, [mbCancel], 0);
     end;
   end;
 end;

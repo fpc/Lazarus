@@ -2175,6 +2175,10 @@ resourcestring
   lisEMDOnlyPublished = 'Only published';
   lisEMDFoundEmptyMethods = 'Found empty methods:';
   lisEMDRemoveMethods = 'Remove methods';
+  lisEMDNoClass = 'No class';
+  lisEMDNoClassAt = 'No class at %s(%s,%s)';
+  lisEMDUnableToShowEmptyMethodsOfTheCurrentClassBecause = 'Unable to show '
+    +'empty methods of the current class, because%s%s';
   lisRoot = 'Root';
   lisCopyDescription = 'Copy description to clipboard';
   lisUseIdentifierInAt = 'Use identifier %s in %s at %s';
