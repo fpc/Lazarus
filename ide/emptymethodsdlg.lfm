@@ -10,7 +10,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   ClientWidth = 387
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
@@ -18,6 +18,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
     Width = 375
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
     HelpButton.Enabled = False
@@ -32,18 +33,18 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   end
   object MethodsGroupBox: TGroupBox
     Left = 6
-    Height = 253
-    Top = 130
+    Height = 261
+    Top = 122
     Width = 375
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'MethodsGroupBox'
-    ClientHeight = 235
+    ClientHeight = 243
     ClientWidth = 371
     TabOrder = 1
     inline MethodsSynEdit: TSynEdit
       Left = 6
-      Height = 223
+      Height = 231
       Top = 6
       Width = 359
       Align = alClient
@@ -666,7 +667,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   end
   object SectionsGroupBox: TGroupBox
     Left = 6
-    Height = 118
+    Height = 110
     Top = 6
     Width = 375
     Align = alTop
@@ -678,59 +679,59 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
     ChildSizing.HorizontalSpacing = 15
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 4
-    ClientHeight = 100
+    ClientHeight = 92
     ClientWidth = 371
     TabOrder = 2
     object PrivateCheckBox: TCheckBox
       Left = 6
-      Height = 25
+      Height = 23
       Top = 6
-      Width = 124
+      Width = 112
       Caption = 'PrivateCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 0
     end
     object ProtectedCheckBox: TCheckBox
       Left = 6
-      Height = 25
-      Top = 31
-      Width = 124
+      Height = 23
+      Top = 29
+      Width = 112
       Caption = 'ProtectedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 1
     end
     object PublicCheckBox: TCheckBox
       Left = 6
-      Height = 19
-      Top = 56
-      Width = 124
+      Height = 17
+      Top = 52
+      Width = 112
       Caption = 'PublicCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 2
     end
     object PublishedCheckBox: TCheckBox
       Left = 6
-      Height = 19
-      Top = 75
-      Width = 124
+      Height = 17
+      Top = 69
+      Width = 112
       Caption = 'PublishedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 3
     end
     object AllButton: TButton
-      Left = 145
-      Height = 25
+      Left = 133
+      Height = 23
       Top = 6
-      Width = 114
+      Width = 103
       Caption = 'AllButton'
       OnClick = AllButtonClick
       TabOrder = 4
     end
     object PublishedButton: TButton
-      Left = 145
-      Height = 25
-      Top = 31
-      Width = 114
+      Left = 133
+      Height = 23
+      Top = 29
+      Width = 103
       Caption = 'PublishedButton'
       OnClick = PublishedButtonClick
       TabOrder = 5

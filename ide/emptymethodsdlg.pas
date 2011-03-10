@@ -292,8 +292,8 @@ begin
   MethodsGroupBox.Caption:=lisEMDFoundEmptyMethods;
   Sections:=AllPascalClassSections;
   
-  ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
   ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 
   EditorOpts.GetSynEditSettings(MethodsSynEdit);
 end;
