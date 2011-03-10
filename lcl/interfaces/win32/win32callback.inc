@@ -318,9 +318,10 @@ var
     MenuInfo.fMask := MIIM_DATA;
 
     MainMenuHandle := GetMenuParent(HMENU(WParam), GetMenu(Window));
-    if GetMenuItemInfo(MainMenuHandle, LOWORD(LParam), true, @MenuInfo)
-    then Result := TObject(MenuInfo.dwItemData)
-    else Result := nil;
+    if GetMenuItemInfo(MainMenuHandle, LOWORD(LParam), true, @MenuInfo) then
+      Result := TObject(MenuInfo.dwItemData)
+    else
+      Result := nil;
   end;
 
   function GetMenuItemObject(ByPosition: Boolean): TObject;

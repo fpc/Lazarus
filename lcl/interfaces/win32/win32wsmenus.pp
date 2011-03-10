@@ -1450,7 +1450,7 @@ const
   );
 begin
   MenuHandle := APopupMenu.Handle;
-  AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
+  AppHandle := Win32WidgetSet.AppHandle;
   GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlignment[APopupMenu.Alignment, APopupMenu.IsRightToLeft] or lTrackButtons[APopupMenu.TrackButton],
