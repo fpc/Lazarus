@@ -226,7 +226,11 @@ begin
   Item.ProgressItem:=CreateProgressItem('FPCSrcScan',
     Format(lisCreatingFileIndexOfFPCSources, [Directory]),
     lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio);
+  {$IFDEF VER2_4}
   Item.Resume;
+  {$ELSE}
+  Item.Start;
+  {$ENDIF}
 end;
 
 end.
