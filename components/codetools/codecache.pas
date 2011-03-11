@@ -153,7 +153,7 @@ type
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
     function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
-    function OnScannerCheckFileOnDisk(Code: pointer): boolean;
+    function OnScannerCheckFileOnDisk(Code: pointer): boolean; // true if code changed
     function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
     function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string;
@@ -649,6 +649,7 @@ end;
 function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
 var Buf: TCodeBuffer;
 begin
+  Result:=false;
   Buf:=TCodeBuffer(Code);
   //DebugLn(['OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoRevertFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged,' IsDeleted=',Buf.IsDeleted]);
   if Buf.AutoRevertFromDisk or Buf.IsDeleted then begin
@@ -656,17 +657,18 @@ begin
       if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
         Buf.GlobalWriteLockStepOnLastLoad:=GlobalWriteLockStep;
         if Buf.FileNeedsUpdate then
-          Buf.Revert;
+          Result:=true;
       end;
     end else begin
       if Buf.FileNeedsUpdate then
-        Buf.Revert;
+        Result:=true;
     end;
   end else begin
     //DebugLn(['TCodeCache.OnScannerCheckFileOnDisk AutoRevertFromDisk=',Buf.AutoRevertFromDisk,' ',Buf.Filename]);
   end;
+  if Result then
+    Buf.Revert;
   //if buf.IsDeleted then debugln(['TCodeCache.OnScannerCheckFileOnDisk ',Buf.Filename,' still deleted']);
-  Result:=true;
 end;
 
 procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
