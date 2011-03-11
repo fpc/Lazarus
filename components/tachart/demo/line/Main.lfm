@@ -1,18 +1,18 @@
 object Form1: TForm1
-  Left = 703
+  Left = 647
   Height = 479
   Top = 364
-  Width = 589
+  Width = 645
   Caption = 'Form1'
   ClientHeight = 479
-  ClientWidth = 589
+  ClientWidth = 645
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PageControl2: TPageControl
     Left = 0
     Height = 479
     Top = 0
-    Width = 589
+    Width = 645
     ActivePage = tsFast
     Align = alClient
     TabIndex = 0
@@ -20,12 +20,12 @@ object Form1: TForm1
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
       ClientHeight = 453
-      ClientWidth = 581
+      ClientWidth = 637
       object chFast: TChart
         Left = 0
-        Height = 411
-        Top = 42
-        Width = 581
+        Height = 415
+        Top = 38
+        Width = 637
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
@@ -59,18 +59,18 @@ object Form1: TForm1
       end
       object Panel1: TPanel
         Left = 0
-        Height = 42
+        Height = 38
         Top = 0
-        Width = 581
+        Width = 637
         Align = alTop
-        ClientHeight = 42
-        ClientWidth = 581
+        ClientHeight = 38
+        ClientWidth = 637
         TabOrder = 1
         object cbLineType: TComboBox
           Left = 8
           Height = 21
           Top = 8
-          Width = 120
+          Width = 96
           ItemHeight = 13
           ItemIndex = 1
           Items.Strings = (
@@ -86,7 +86,7 @@ object Form1: TForm1
           Text = 'Previous'
         end
         object cb3D: TCheckBox
-          Left = 136
+          Left = 112
           Height = 17
           Top = 12
           Width = 33
@@ -95,7 +95,7 @@ object Form1: TForm1
           TabOrder = 1
         end
         object cbRotated: TCheckBox
-          Left = 176
+          Left = 152
           Height = 17
           Top = 12
           Width = 59
@@ -104,33 +104,33 @@ object Form1: TForm1
           TabOrder = 2
         end
         object btnAddSeries: TButton
-          Left = 296
+          Left = 372
           Height = 25
-          Top = 8
-          Width = 75
-          Caption = 'More series'
+          Top = 6
+          Width = 31
+          Caption = 'Add'
           OnClick = btnAddSeriesClick
           TabOrder = 3
         end
         object edTime: TEdit
-          Left = 468
+          Left = 496
           Height = 21
-          Top = 8
+          Top = 6
           Width = 76
           Alignment = taRightJustify
           TabOrder = 4
         end
         object btnRefresh: TButton
-          Left = 376
+          Left = 404
           Height = 25
-          Top = 8
+          Top = 6
           Width = 88
           Caption = 'Timed refresh:'
           OnClick = btnRefreshClick
           TabOrder = 5
         end
         object cbSorted: TCheckBox
-          Left = 240
+          Left = 216
           Height = 17
           Top = 12
           Width = 52
@@ -138,12 +138,12 @@ object Form1: TForm1
           OnChange = cbSortedChange
           TabOrder = 6
         end
-        object PageControl1: TPageControl
-          Left = 114
-          Height = 200
-          Top = 41
-          Width = 200
-          TabOrder = 7
+        object lblPointsCount: TLabel
+          Left = 282
+          Height = 1
+          Top = 14
+          Width = 1
+          ParentColor = False
         end
       end
     end

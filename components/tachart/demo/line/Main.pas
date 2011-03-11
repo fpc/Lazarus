@@ -15,16 +15,16 @@ type
   TForm1 = class(TForm)
     btnAddSeries: TButton;
     btnRefresh: TButton;
-    ccsAvg: TCalculatedChartSource;
     cb3D: TCheckBox;
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
     cbSorted: TCheckBox;
+    ccsAvg: TCalculatedChartSource;
     ccsSum: TCalculatedChartSource;
     chCalc: TChart;
     chCalcLineSeries1: TLineSeries;
-    chCalcLineSeriesSum: TLineSeries;
     chCalcLineSeriesAvg: TLineSeries;
+    chCalcLineSeriesSum: TLineSeries;
     chFast: TChart;
     chFastConstantLine1: TConstantLine;
     chFastLineSeries1: TLineSeries;
@@ -33,7 +33,7 @@ type
     ChartToolset1PanDragTool1: TPanDragTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     edTime: TEdit;
-    PageControl1: TPageControl;
+    lblPointsCount: TLabel;
     PageControl2: TPageControl;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
@@ -60,6 +60,8 @@ uses
 { TForm1 }
 
 procedure TForm1.btnAddSeriesClick(Sender: TObject);
+const
+  POINTS_PER_SERIE = 50000;
 var
   s: TLineSeries;
   i, j: Integer;
@@ -67,10 +69,12 @@ begin
   for i := 1 to 10 do begin
     s := TLineSeries.Create(chFast);
     s.SeriesColor := clRed;
-    for j := 1 to 50000 do
+    for j := 1 to POINTS_PER_SERIE do
       s.AddXY(j, Random * 5 + chFast.SeriesCount * 10);
     chFast.AddSeries(s);
   end;
+  lblPointsCount.Caption :=
+    Format('Points: %.2e', [chFast.SeriesCount * POINTS_PER_SERIE * 1.0]);
 end;
 
 procedure TForm1.btnRefreshClick(Sender: TObject);

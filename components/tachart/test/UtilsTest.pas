@@ -51,9 +51,9 @@ type
     procedure TestExpandRect;
     procedure TestLineIntersectsLine;
     procedure TestLineIntersectsRect;
+    procedure TestPointInPolygon;
     procedure TestPointOnLine;
     procedure TestPointOperations;
-    procedure TestPointInPolygon;
     procedure TestPolygonIntersectsPolygon;
   end;
 
