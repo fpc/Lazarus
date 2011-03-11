@@ -1656,7 +1656,7 @@ begin
   // and no update is needed
   if (ord(Range)>ord(ScannedRange)) and (not LastErrorIsValid) then begin
     {$IFDEF VerboseUpdateNeeded}
-    DebugLn(['TLinkScanner.UpdateNeeded because range increased Range=',ord(Range),' ScannedRange=',ord(ScannedRange)]);
+    DebugLn(['TLinkScanner.UpdateNeeded because range increased from ',dbgs(ScannedRange),' to ',dbgs(Range)]);
     {$ENDIF}
     exit;
   end;

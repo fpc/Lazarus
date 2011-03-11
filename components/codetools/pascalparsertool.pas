@@ -3133,8 +3133,14 @@ begin
     if (CurPos.Flag<>cafPoint) then
       SaveRaiseException(ctsMissingPointAfterEnd);
     // close program
-    CurNode.EndPos:=CurPos.EndPos;
+    CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
+    // add endpoint node
+    CreateChildNode;
+    CurNode.Desc:=ctnEndPoint;
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+    ScannedRange:=lsrEnd;
     CurSection:=ctnNone;
   end;
   Result:=true;
