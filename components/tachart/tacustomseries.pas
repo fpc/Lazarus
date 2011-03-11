@@ -217,7 +217,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, Types;
+  Math, PropEdits, TAGeometry, Types;
 
 { TCustomChartSeries }
 

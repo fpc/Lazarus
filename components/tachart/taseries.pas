@@ -312,7 +312,7 @@ implementation
 
 uses
   GraphMath, LResources, Math, PropEdits, SysUtils,
-  TAGraph;
+  TAGeometry, TAGraph;
 
 { TLineSeries }
 

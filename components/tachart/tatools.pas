@@ -327,7 +327,7 @@ implementation
 
 uses
   ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
-  TACustomSeries, TADrawUtils, TASubcomponentsEditor;
+  TACustomSeries, TADrawUtils, TAGeometry, TASubcomponentsEditor;
 
 type
   { TToolsComponentEditor }

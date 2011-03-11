@@ -68,6 +68,9 @@ type
 
 implementation
 
+uses
+  TAGeometry;
+
 { TIntervalListTest }
 
 procedure TIntervalListTest.Basic;

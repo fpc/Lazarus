@@ -23,7 +23,7 @@ Authors: Luнs Rodrigues, Philippe Martinole, Alexander Klenin
 }
 unit TATypes;
 
-{$mode objfpc}{$H+}
+{$H+}
 
 interface
 
@@ -314,7 +314,7 @@ type
 implementation
 
 uses
-  TACustomSource;
+  TACustomSource, TAGeometry;
 
 { TChartPen }
 

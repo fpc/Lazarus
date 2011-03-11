@@ -102,7 +102,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGraph;
+  Math, SysUtils, TAGeometry, TAGraph;
 
 { TBubbleSeries }
 

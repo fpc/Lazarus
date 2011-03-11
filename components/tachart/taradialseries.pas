@@ -112,7 +112,7 @@ implementation
 
 uses
   Math,
-  TACustomSource, TAGraph;
+  TACustomSource, TAGeometry, TAGraph;
 
 { TCustomPieSeries }
 

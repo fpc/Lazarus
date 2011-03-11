@@ -28,7 +28,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -117,6 +117,10 @@
         <Filename Value="tacustomsource.pas"/>
         <UnitName Value="TACustomSource"/>
       </Item20>
+      <Item21>
+        <Filename Value="tageometry.pas"/>
+        <UnitName Value="TAGeometry"/>
+      </Item21>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>

@@ -186,7 +186,7 @@ procedure PrepareXorPen(ACanvas: TCanvas);
 implementation
 
 uses
-  Math, TAChartUtils;
+  Math, TAChartUtils, TAGeometry;
 
 const
   LINE_INTERVAL = 2;

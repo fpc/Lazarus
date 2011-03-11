@@ -140,7 +140,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGraph;
+  Math, SysUtils, TAGeometry, TAGraph;
 
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin

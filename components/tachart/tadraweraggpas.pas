@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils;
+  Math, TAChartUtils, TAGeometry;
 
 { TAggPasDrawer }
 
