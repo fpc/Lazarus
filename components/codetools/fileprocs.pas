@@ -189,15 +189,15 @@ type
     FFilename: string;
     FFlags: TFileStateCacheItemFlags;
     FTestedFlags: TFileStateCacheItemFlags;
-    FTimeStamp: integer;
+    FTimeStamp: int64;
   public
-    constructor Create(const TheFilename: string; NewTimeStamp: integer);
+    constructor Create(const TheFilename: string; NewTimeStamp: int64);
     function CalcMemSize: PtrUint;
   public
     property Filename: string read FFilename;
     property Flags: TFileStateCacheItemFlags read FFlags;
     property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
-    property TimeStamp: integer read FTimeStamp;
+    property TimeStamp: int64 read FTimeStamp;
     property Age: longint read FAge;
   end;
 
@@ -3107,7 +3107,7 @@ end;
 { TFileStateCacheItem }
 
 constructor TFileStateCacheItem.Create(const TheFilename: string;
-  NewTimeStamp: integer);
+  NewTimeStamp: int64);
 begin
   FFilename:=TheFilename;
   FTimeStamp:=NewTimeStamp;
