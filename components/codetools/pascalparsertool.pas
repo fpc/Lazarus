@@ -4641,8 +4641,11 @@ begin
         if (Node<>nil) and (Node.EndPos>CleanCursorPos) then begin
           // cursor in scanned range
           ScanRange:=ScannedRange;
-          if (TreeRange=trTillCursorSection) and (ScanRange<>lsrEnd) then
-            inc(ScanRange);
+          if (TreeRange=trTillCursorSection) then
+            if ScanRange<=lsrImplementationStart then
+              ScanRange:=lsrImplementationStart
+            else
+              ScanRange:=lsrEnd;
         end;
       end;
     end;
