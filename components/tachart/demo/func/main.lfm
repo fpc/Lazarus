@@ -130,7 +130,7 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
-        Toolset = ChartToolset1
+        Toolset = chtsColorMap
         Align = alClient
         DoubleBuffered = True
         ParentColor = False
@@ -210,13 +210,13 @@ object Form1: TForm1
     left = 280
     top = 114
   end
-  object ChartToolset1: TChartToolset
+  object chtsColorMap: TChartToolset
     left = 280
     top = 180
-    object ChartToolset1ZoomDragTool1: TZoomDragTool
+    object chtsColorMapZoomDragTool1: TZoomDragTool
       Shift = [ssLeft]
     end
-    object ChartToolset1PanDragTool1: TPanDragTool
+    object chtsColorMapPanDragTool1: TPanDragTool
       Shift = [ssRight]
     end
   end

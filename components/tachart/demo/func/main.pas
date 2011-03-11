@@ -26,9 +26,9 @@ type
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
     ChartLegendPanel1: TChartLegendPanel;
-    ChartToolset1: TChartToolset;
-    ChartToolset1PanDragTool1: TPanDragTool;
-    ChartToolset1ZoomDragTool1: TZoomDragTool;
+    chtsColorMap: TChartToolset;
+    chtsColorMapPanDragTool1: TPanDragTool;
+    chtsColorMapZoomDragTool1: TZoomDragTool;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;

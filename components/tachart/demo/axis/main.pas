@@ -13,34 +13,34 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    catT: TChartAxisTransformations;
     catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
-    csStripes: TChartStyles;
-    ChartSubmarks: TChart;
-    ChartDateTime: TChart;
-    ChartAxisGroup: TChart;
-    ChartDateTimeLineSeries1: TLineSeries;
-    ChartSubmarksLineSeries1: TLineSeries;
-    ChartToolsetDateTime: TChartToolset;
-    ChartToolset1ZoomIn: TZoomClickTool;
-    ChartToolset1ZoomOut: TZoomClickTool;
-    catT: TChartAxisTransformations;
     catTFahrToCel: TLinearAxisTransform;
+    ChartAxisGroup: TChart;
     ChartCustomMarks: TChart;
     ChartCustomMarksBarSeries1: TBarSeries;
+    ChartDateTime: TChart;
+    ChartDateTimeLineSeries1: TLineSeries;
+    ChartSubmarks: TChart;
+    ChartSubmarksLineSeries1: TLineSeries;
+    ChartToolset1ZoomIn: TZoomClickTool;
+    ChartToolset1ZoomOut: TZoomClickTool;
+    ChartToolsetDateTime: TChartToolset;
+    csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     rcsDates: TRandomChartSource;
-    tsSubmarks: TTabSheet;
-    tsDateTime: TTabSheet;
     tsAxisGroup: TTabSheet;
     tsCustomMarks: TTabSheet;
-    udcsMain: TUserDefinedChartSource;
+    tsDateTime: TTabSheet;
+    tsSubmarks: TTabSheet;
     udcsGraph: TUserDefinedChartSource;
+    udcsMain: TUserDefinedChartSource;
     udcsSub: TUserDefinedChartSource;
+    procedure ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
     procedure FormCreate(Sender: TObject);
-    procedure TChartAxisList1MarkToText(var AText: String; AMark: Double);
     procedure udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;
       AIndex: Integer; var AItem: TChartDataItem);
     procedure udcsMainGetChartDataItem(ASource: TUserDefinedChartSource;
@@ -60,6 +60,12 @@ uses
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
+begin
+  if AMark < 15 then
+    AText := '*' + AText + '*';
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 const
@@ -98,12 +104,6 @@ begin
     XMax := Now + 5 * 365;
     PointsNumber := 10 * 365 * 24;
   end;
-end;
-
-procedure TForm1.TChartAxisList1MarkToText(var AText: String; AMark: Double);
-begin
-  if AMark < 15 then
-    AText := '*' + AText + '*';
 end;
 
 procedure TForm1.udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;

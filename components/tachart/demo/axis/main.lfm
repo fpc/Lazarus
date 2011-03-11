@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 333
     Top = 0
     Width = 533
-    ActivePage = tsCustomMarks
+    ActivePage = tsSubmarks
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tsCustomMarks: TTabSheet
       Caption = 'Customized marks'
@@ -47,7 +47,6 @@ object Form1: TForm1
             Marks.Source = lcsMarks
             Marks.Style = smsLabel
             TickLength = 0
-            OnMarkToText = ChartCustomMarksAxisList1MarkToText
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
