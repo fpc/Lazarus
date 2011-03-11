@@ -579,7 +579,8 @@ type
     FDependsOnCodeTools: TAVLTree;// the codetools, that this codetool depends on
     FClearingDependentNodeCaches: boolean;
     FCheckingNodeCacheDependencies: boolean;
-    FSourcesChangeStep, FFilesChangeStep, FInitValuesChangeStep: int64;
+    FSourcesChangeStep, FFilesChangeStep: int64;
+    FInitValuesChangeStep: integer;
     {$IFDEF DebugPrefix}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -8802,7 +8803,7 @@ begin
   inherited Create;
   FSourcesChangeStep:=CTInvalidChangeStamp64;
   FFilesChangeStep:=CTInvalidChangeStamp64;
-  FInitValuesChangeStep:=CTInvalidChangeStamp64;
+  FInitValuesChangeStep:=CTInvalidChangeStamp;
 end;
 
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
@@ -8821,7 +8822,8 @@ var
   ANode: TAVLTreeNode;
   ATool: TFindDeclarationTool;
   FreeCheckedTools: Boolean;
-  SourcesChangeStep, FilesChangeStep, InitValuesChangeStep: int64;
+  SourcesChangeStep, FilesChangeStep: int64;
+  InitValuesChangeStep: integer;
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.CheckDependsOnNodeCaches ',MainFilename,' FDependsOnCodeTools=',FDependsOnCodeTools]);

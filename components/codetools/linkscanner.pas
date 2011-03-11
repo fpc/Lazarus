@@ -82,8 +82,8 @@ type
                        out ChangeStep: integer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
-  TLSOnGetGlobalChangeSteps = procedure(out SourcesChangeStep, FilesChangeStep,
-                                       InitValuesChangeStep: int64) of object;
+  TLSOnGetGlobalChangeSteps = procedure(out SourcesChangeStep, FilesChangeStep: int64;
+                                   out InitValuesChangeStep: integer) of object;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
   PSourceLink = ^TSourceLink;
@@ -268,7 +268,7 @@ type
     FOnSetGlobalWriteLock: TOnSetWriteLock;
     FGlobalSourcesChangeStep: int64;
     FGlobalFilesChangeStep: int64;
-    FGlobalInitValuesChangeStep: int64;
+    FGlobalInitValuesChangeStep: integer;
     function GetLinks(Index: integer): TSourceLink;
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
@@ -1639,7 +1639,8 @@ var i: integer;
   NewInitValues: TExpressionEvaluator;
   NewInitValuesChangeStep: integer;
   SrcChange: PSourceChangeStep;
-  CurSourcesChangeStep, CurFilesChangeStep, CurInitValuesChangeStep: int64;
+  CurSourcesChangeStep, CurFilesChangeStep: int64;
+  CurInitValuesChangeStep: integer;
 begin
   Result:=true;
 

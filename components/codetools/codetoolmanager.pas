@@ -147,8 +147,8 @@ type
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
     procedure OnToolSetWriteLock(Lock: boolean);
-    procedure OnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep,
-                                   InitValuesChangeStep: int64);
+    procedure OnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep: int64;
+                                   out InitValuesChangeStep: integer);
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
     procedure OnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function OnScannerProgress(Sender: TLinkScanner): boolean;
@@ -5324,7 +5324,7 @@ begin
 end;
 
 procedure TCodeToolManager.OnToolGetChangeSteps(out SourcesChangeStep,
-  FilesChangeStep, InitValuesChangeStep: int64);
+  FilesChangeStep: int64; out InitValuesChangeStep: integer);
 begin
   SourcesChangeStep:=SourceCache.ChangeStamp;
   FilesChangeStep:=FileStateCache.TimeStamp;
