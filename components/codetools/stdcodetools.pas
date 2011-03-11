@@ -390,8 +390,10 @@ var NamePos: TAtomPosition;
 begin
   Result:=false;
   BuildTree(lsrSourceName);
+  //debugln(['TStandardCodeTool.RenameSource NewName=',NewName]);
   if (not GetSourceNamePos(NamePos)) or (NamePos.StartPos<1) or (NewName='')
   or (Length(NewName)>255) then exit;
+  //debugln(['TStandardCodeTool.RenameSource OldName="',dbgstr(copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos)),'"']);
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.Replace(gtNone,gtNone,NamePos.StartPos,NamePos.EndPos,
     NewName);

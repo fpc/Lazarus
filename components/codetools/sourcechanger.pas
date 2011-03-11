@@ -952,6 +952,7 @@ begin
   {$ENDIF}
   if InsertText='' then exit;
   ACode.Insert(DirectPos,InsertText);
+  //DebugLn('[TSourceChangeCache.InsertNewText] Code=',ACode.Source);
 end;
 
 procedure TSourceChangeCache.BeginUpdate;

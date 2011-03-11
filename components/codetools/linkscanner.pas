@@ -786,7 +786,7 @@ begin
   if Index<LinkCount-1 then
     Result:=FLinks[Index+1].CleanedPos-FLinks[Index].CleanedPos
   else
-    Result:=CleanedLen-FLinks[Index].CleanedPos;
+    Result:=CleanedLen-FLinks[Index].CleanedPos+1;
 end;
 
 function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
@@ -3746,21 +3746,21 @@ procedure TLinkScanner.DeleteRange(CleanStartPos,CleanEndPos: integer);
 }
 var LinkIndex, StartPos, Len, aLinkSize: integer;
 begin
-  if (CleanStartPos<1) or (CleanStartPos>=CleanEndPos)
-  or (CleanEndPos>CleanedLen+1) or (not Assigned(FOnDeleteSource)) then exit;
+  if CleanStartPos<1 then CleanStartPos:=1;
+  if CleanEndPos>CleanedLen then CleanEndPos:=CleanedLen+1;
+  if (CleanStartPos>=CleanEndPos) or (not Assigned(FOnDeleteSource)) then exit;
   LinkIndex:=LinkIndexAtCleanPos(CleanEndPos-1);
+  //debugln(['TLinkScanner.DeleteRange CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,' LinkIndex=',LinkIndex]);
   while LinkIndex>=0 do begin
     StartPos:=CleanStartPos-FLinks[LinkIndex].CleanedPos;
     if StartPos<0 then StartPos:=0;
     aLinkSize:=LinkSize(LinkIndex);
-    if CleanEndPos<FLinks[LinkIndex].CleanedPos+aLinkSize then
-      Len:=CleanEndPos-FLinks[LinkIndex].CleanedPos-StartPos
-    else
-      Len:=aLinkSize-StartPos;
+    //debugln(['TLinkScanner.DeleteRange LinkIndex=',LinkIndex,' aLinkSize=',aLinkSize,' StartPosInLink=',StartPos]);
+    Len:=CleanEndPos-FLinks[LinkIndex].CleanedPos;
+    if Len>aLinkSize then Len:=aLinkSize;
+    dec(Len,StartPos);
     inc(StartPos,FLinks[LinkIndex].SrcPos);
-    {$IFDEF VerboseBug16168}
-    DebugLn(['[TLinkScanner.DeleteRange] Pos=',StartPos,'-',StartPos+Len,' ',dbgstr(copy(Src,StartPos,Len))]);
-    {$ENDIF}
+    //DebugLn(['[TLinkScanner.DeleteRange] Pos=',StartPos,'-',StartPos+Len,' ',dbgstr(copy(Src,StartPos,Len))]);
     FOnDeleteSource(Self,FLinks[LinkIndex].Code,StartPos,Len);
     if FLinks[LinkIndex].CleanedPos<=CleanStartPos then break;
     dec(LinkIndex);
