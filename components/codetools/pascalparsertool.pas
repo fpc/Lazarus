@@ -4530,8 +4530,8 @@ begin
           debugln(['TPascalParserTool.FetchScannerSource first character changed ',MainFilename]);
           {$ENDIF}
           AllChanged:=true;
-        end else if DiffPos>NewSrcLen then begin
-          // no chance => keep all nodes
+        end else if (DiffPos>NewSrcLen) and (not LastErrorValid) then begin
+          // no change and no error => keep all nodes
           {$IFDEF VerboseUpdateNeeded}
           debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
           {$ENDIF}
@@ -4549,7 +4549,7 @@ begin
               Node:=Node.NextBrother;
             // mark section as unfinished
             Node.EndPos:=-1;
-            if (Node.Desc=ctnEndPoint) and (Node.EndPos<=DiffPos) then begin
+            if (Node.Desc=ctnEndPoint) and (not LastErrorValid) then begin
               // difference is behind nodes => keep all nodes
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes, last node=',Node.DescAsString,' ',MainFilename]);
@@ -4705,12 +4705,21 @@ begin
         Node:=FindSectionNodeAtPos(CleanCursorPos);
         if (Node<>nil) and (Node.EndPos>CleanCursorPos) then begin
           // cursor in scanned range
-          ScanRange:=ScannedRange;
-          if (TreeRange=trTillCursorSection) then
-            if ScanRange<=lsrImplementationStart then
-              ScanRange:=lsrImplementationStart
+          if Node.Desc in (AllSourceTypes+[ctnInterface]) then
+            ScanRange:=lsrImplementationStart
+          else if Node.Desc=ctnUsesSection then begin
+            if Node.Parent.Desc=ctnImplementation then
+              ScanRange:=lsrInitializationStart
             else
-              ScanRange:=lsrEnd;
+              ScanRange:=lsrInterfaceStart;
+          end else if Node.Desc=ctnImplementation then
+            ScanRange:=lsrInitializationStart
+          else if Node.Desc=ctnInitialization then
+            ScanRange:=lsrFinalizationStart
+          else
+            ScanRange:=lsrEnd;
+          if UpdateNeeded(ScanRange) then
+            ScanRange:=lsrEnd;
         end;
       end;
     end;
