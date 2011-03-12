@@ -16,6 +16,7 @@
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
+    <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="9"/>
