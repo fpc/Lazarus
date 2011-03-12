@@ -138,7 +138,7 @@ type
     FPDocFilename: string;
     FPDocFileOwner: TObject;
     FPDocFilenameTimeStamp: integer;
-    FilesTimeStamp: integer;
+    FilesTimeStamp: int64;
   end;
   
   { TCodeHelpElement - mapping between one codetools position and a fpdoc xml node.
