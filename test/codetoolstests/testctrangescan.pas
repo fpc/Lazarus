@@ -2,6 +2,7 @@
  Test with:
      ./runtests --format=plain --suite=TestCTScanRange
      ./runtests --format=plain --suite=TestCTScanRangeAscending
+     ./runtests --format=plain --suite=TestCTScanRangeDescending
      ./runtests --format=plain --suite=TestCTScanRangeProcModified
      ./runtests --format=plain --suite=TestCTScanRangeImplementationToEnd
 }
@@ -9,12 +10,9 @@ unit TestCTRangeScan;
 
 {$mode objfpc}{$H+}
 
-interface
+{$DEFINE VerboseTestCTRangeScan}
 
-{$IFNDEF EnableCTRange}
-implementation
-end.
-{$ENDIF}
+interface
 
 uses
   Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
@@ -90,29 +88,35 @@ begin
 
   // scan source
   Code.Source:=GetSource([]);
+  {$IFDEF VerboseTestCTRangeScan}
   debugln(['TTestCodetoolsRangeScan.TestCTScanRange INITIAL SCAN']);
+  {$ENDIF}
   Tool.BuildTree(lsrEnd);
   RootNode:=Tool.Tree.Root;
   TreeChangeStep:=Tool.TreeChangeStep;
   AssertEquals('Step1: RootNode<>nil',true,RootNode<>nil);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
 
   // append a comment at end and scan again => this should result in no tree change
   Code.Source:=GetSource([crsfWithCommentAtEnd]);
+  {$IFDEF VerboseTestCTRangeScan}
   debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with comment at end']);
+  {$ENDIF}
   Tool.BuildTree(lsrEnd);
   AssertEquals('Step2: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
   AssertEquals('Step2: TreeChangeStep=Tool.TreeChangeStep',true,TreeChangeStep=Tool.TreeChangeStep);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
 
   // insert a procedure in the implementation and scan again
   // => this should result in a tree change, but the root node should be kept
   Code.Source:=GetSource([crsfWithProc1]);
+  {$IFDEF VerboseTestCTRangeScan}
   debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with new proc in implementation']);
+  {$ENDIF}
   Tool.BuildTree(lsrEnd);
   AssertEquals('Step3: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
   AssertEquals('Step3: TreeChangeStep<>Tool.TreeChangeStep',true,TreeChangeStep<>Tool.TreeChangeStep);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeAscending;
@@ -137,13 +141,15 @@ begin
   MinRange:=low(TLinkScannerRange);
   MaxRange:=high(TLinkScannerRange);
   for r:=MinRange to MaxRange do begin
+    {$IFDEF VerboseTestCTRangeScan}
     debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Range=',dbgs(r)]);
+    {$ENDIF}
     Tool.BuildTree(r);
     if RootNode<>nil then begin
       AssertEquals('RootNode must stay for ascending range '+dbgs(r),true,RootNode=Tool.Tree.Root);
     end;
     RootNode:=Tool.Tree.Root;
-    Tool.WriteDebugTreeReport;
+    //Tool.WriteDebugTreeReport;
     case r of
     lsrNone: ;
     lsrInit: ;
@@ -188,7 +194,9 @@ begin
   MinRange:=low(TLinkScannerRange);
   MaxRange:=high(TLinkScannerRange);
   for r:=MaxRange downto MinRange do begin
+    {$IFDEF VerboseTestCTRangeScan}
     debugln(['TTestCodetoolsRangeScan.TestCTScanRangeDescending Range=',dbgs(r)]);
+    {$ENDIF}
     Tool.BuildTree(r);
     AssertEquals('RootNode must stay for descending range '+dbgs(r),true,Tool.Tree.Root<>nil);
     //Tool.WriteDebugTreeReport;
@@ -206,12 +214,12 @@ begin
   // scan source
   Code.Source:=GetSource([crsfWithProc1]);
   Tool.BuildTree(lsrEnd);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
   AssertEquals('step1: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
   Code.Source:=GetSource([crsfWithProc1Modified]);
   Tool.BuildTree(lsrEnd);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
   AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 end;
 
