@@ -574,6 +574,10 @@ begin
       ScanTill:=Range;
       ScannedRange:=lsrInit;
       if ord(Range)<=ord(ScannedRange) then exit;
+
+      //WriteDebugTreeReport;
+      //debugln(['TPascalParserTool.BuildTree Src=',Src]);
+
       // skip existing nodes
       CurNode:=Tree.Root;
       if CurNode<>nil then
@@ -654,7 +658,7 @@ begin
           if (Node.LastChild.Desc=ctnUsesSection)
           and (Node.LastChild.FirstChild=nil) then begin
             // uses section was not parsed completely => reopen it
-            //debugln(['TPascalParserTool.BuildTree REOPEN uses section']);
+            debugln(['TPascalParserTool.BuildTree REOPEN uses section']);
             Node:=CurNode.LastChild;
             Node.EndPos:=-1;
             MoveCursorToCleanPos(Node.StartPos);
@@ -680,7 +684,7 @@ begin
       end;
 
       ReadNextAtom;
-      //debugln(['TPascalParserTool.BuildTree first atom ',GetAtom]);
+      //debugln(['TPascalParserTool.BuildTree first atom=',GetAtom]);
 
       if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
       or ((CurNode.Desc=ctnUsesSection) and (CurNode.Parent.Desc<>ctnImplementation))
@@ -736,7 +740,7 @@ begin
     finally
       FRangeValidTill:=ScannedRange;
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill)]);
+      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' Atom="',dbgstr(GetAtom),'"']);
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;
@@ -4482,12 +4486,23 @@ begin
     FLastCompilerModeSwitch:=Scanner.CompilerModeSwitch;
     NewSrc:=Scanner.CleanedSrc;
     NewSrcLen:=length(NewSrc);
-    if not AllChanged then begin
+    if AllChanged then begin
+      {$IFDEF VerboseUpdateNeeded}
+      debugln(['TPascalParserTool.FetchScannerSource compiler clean all nodes, because compiler mode/values changed ',MainFilename]);
+      {$ENDIF}
+    end else begin
       // find the first difference in source
       OldP:=PChar(Src);
       NewP:=PChar(NewSrc);
-      if (OldP=nil) or (NewP=nil) then
-        AllChanged:=true
+      if (OldP=nil) or (NewP=nil) then begin
+        {$IFDEF VerboseUpdateNeeded}
+        if OldP=nil then
+          debugln(['TPascalParserTool.FetchScannerSource there is now source ',MainFilename])
+        else
+          debugln(['TPascalParserTool.FetchScannerSource there is no source anymore ',MainFilename]);
+        {$ENDIF}
+        AllChanged:=true;
+      end
       else begin
         while (NewP^=OldP^) do begin
           if (NewP^=#0) and (NewP-PChar(NewSrc)>=NewSrcLen) then break;
@@ -4496,38 +4511,65 @@ begin
         end;
         DiffPos:=NewP-PChar(NewSrc)+1;
         if DiffPos<=1 then begin
+          {$IFDEF VerboseUpdateNeeded}
+          debugln(['TPascalParserTool.FetchScannerSource first character changed ',MainFilename]);
+          {$ENDIF}
           AllChanged:=true;
         end else if DiffPos>NewSrcLen then begin
           // no chance => keep all nodes
-          //debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
-          exit;
+          {$IFDEF VerboseUpdateNeeded}
+          debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
+          {$ENDIF}
         end else begin
           // some parts are the same
-          Node:=FindDeepestNodeAtPos(DiffPos,false);
-          if Node=nil then begin
-            if (Tree.Root=nil) or (DiffPos<=Tree.Root.StartPos) then
-              // difference is in front of first node => all changed
-              AllChanged:=true
-            else begin
-              // difference is behind nodes => keep all nodes
-              //debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes ',MainFilename]);
-              exit;
-            end;
+          Node:=Tree.Root;
+          if (Node=nil) or (DiffPos<=Node.StartPos) then begin
+            // difference is in front of first node => all changed
+            {$IFDEF VerboseUpdateNeeded}
+            debugln(['TPascalParserTool.FetchScannerSource difference is in front of first node => all changed ',MainFilename]);
+            {$ENDIF}
+            AllChanged:=true
           end else begin
-            // difference is in a node
-            // delete node and all following
-            // the section node is not deleted, but marked as unfinished
-            DeleteNode:=nil;
-            while Node<>nil do begin
-              if Node.Desc in AllCodeSections then
-                Node.EndPos:=-1 // mark as unfinished
-              else
-                DeleteNode:=Node;
-              Node:=Node.Parent;
+            while (Node.NextBrother<>nil) and (Node.NextBrother.StartPos<DiffPos) do
+              Node:=Node.NextBrother;
+            // mark section as unfinished
+            Node.EndPos:=-1;
+            if (Node.NextBrother=nil) and (Node.EndPos<=DiffPos) then begin
+              // difference is behind nodes => keep all nodes
+              {$IFDEF VerboseUpdateNeeded}
+              debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes ',MainFilename]);
+              {$ENDIF}
+            end else begin
+              // some nodes can be kept
+              // find first node to delete
+              DeleteNode:=Node.LastChild;
+              if DeleteNode<>nil then begin
+                while (DeleteNode.PriorBrother<>nil)
+                and (DeleteNode.StartPos>=DiffPos) do
+                  DeleteNode:=DeleteNode.PriorBrother;
+                if (DeleteNode.Desc=ctnUsesSection)
+                and (DiffPos>=DeleteNode.StartPos+length('uses')) then begin
+                  // keep uses section, just delete the used units nodes
+                  DeleteNode.EndPos:=-1;
+                  DeleteNode:=DeleteNode.Next;
+                end;
+              end else
+                DeleteNode:=Node.NextBrother;
+              if DeleteNode<>nil then begin
+                {$IFDEF VerboseUpdateNeeded}
+                debugln(['TPascalParserTool.FetchScannerSource keep parts, last kept section=',Node.DescAsString,' FirstDeleteNode=',DeleteNode.DescAsString,' ',MainFilename]);
+                {$ENDIF}
+                if LastErrorIsInFrontOfCleanedPos(DeleteNode.StartPos) then
+                  ClearLastError;
+                DoDeleteNodes(DeleteNode);
+              end else begin
+                {$IFDEF VerboseUpdateNeeded}
+                debugln(['TPascalParserTool.FetchScannerSource keep all nodes, open last section=',Node.DescAsString,' ',MainFilename]);
+                {$ENDIF}
+                if LastErrorIsInFrontOfCleanedPos(DiffPos) then
+                  ClearLastError;
+              end;
             end;
-            DoDeleteNodes(DeleteNode);
-            if LastErrorIsInFrontOfCleanedPos(DiffPos) then
-              ClearLastError;
           end;
         end;
       end;
