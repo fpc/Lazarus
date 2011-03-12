@@ -156,7 +156,7 @@ function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
 
 const
   CTInvalidChangeStamp = Low(integer);
-  CTInvalidChangeStamp64 = Low(int64);
+  CTInvalidChangeStamp64 = Low(int64); // using a value outside integer to spot wrong types early
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
 

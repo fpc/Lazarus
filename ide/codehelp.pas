@@ -50,11 +50,13 @@ uses
   {$ENDIF}
   // IDEIntf
   IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs,
-  LazIDEIntf,
+  IDEHelpIntf, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts,
   TransferMacros, PackageSystem, DialogProcs;
 
+const
+  IDEProjectName = 'Lazarus';
 type
   TFPDocItem = (
     fpdiShort,
@@ -251,7 +253,7 @@ type
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean;
                                        out CacheWasUsed: boolean;
-                                       out AnOwner: TObject;// package or project
+                                       out AnOwner: TObject;// a package or a project or LazarusHelp or nil for user defined
                                        CreateIfNotExists: boolean = false): string;
     function GetFPDocFilenameForPkgFile(PkgFile: TPkgFile;
                                     ResolveIncludeFiles: Boolean;
@@ -261,6 +263,8 @@ type
                       ResolveIncludeFiles: boolean;
                       var FPDocFilenames: TStringToStringTree // Names=Filename, Values=ModuleName
                       );
+    function GetIDESrcFPDocPath: string; // $(LazarusDir)/docs/xml/ide/
+    function IsIDESrcFile(const SrcFilename: string): boolean;
     function FindModuleOwner(const Modulename: string): TObject;
     function FindModuleOwner(FPDocFile: TLazFPDocFile): TObject;
     function GetModuleOwnerName(TheOwner: TObject): string;
@@ -1006,6 +1010,10 @@ begin
                                                [piosfIncludeSourceDirectories]);
       CleanUpPkgList(PkgList);
     end;
+    if (PkgList=nil) and IsIDESrcFile(SrcFilename) then begin
+      PkgList:=TFPList.Create;
+      PkgList.Add(LazarusHelp);
+    end;
     if PkgList=nil then begin
       // no package/project found
       MessageDlg(lisProjAddPackageNotFound,
@@ -1029,6 +1037,10 @@ begin
         APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
       LazDocPaths:=APackage.LazDocPaths;
       LazDocPackageName:=GetModuleOwnerName(APackage);
+    end else if NewOwner=LazarusHelp then begin
+      BaseDir:=EnvironmentOptions.LazarusDirectory;
+      LazDocPaths:=GetIDESrcFPDocPath;
+      LazDocPackageName:=IDEProjectName;
     end else begin
       DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
       NewOwner:=nil;
@@ -1322,7 +1334,6 @@ function TCodeHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
 var
   FPDocName: String;
   SearchedPaths: string;
-  OwnerFound: Boolean;
 
   function SearchInPath(Paths: string; const BaseDir: string;
     out Filename: string): boolean;
@@ -1371,19 +1382,17 @@ var
     end;
     // get all packages owning the file
     if PkgList=nil then exit;
-    if PkgList.Count>0 then OwnerFound:=true;
     try
       for i:=0 to PkgList.Count-1 do begin
         if TObject(PkgList[i]) is TLazProject then begin
           AProject:=TLazProject(PkgList[i]);
+          AnOwner:=AProject;
           if AProject.LazDocPaths='' then continue;
           BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
           if BaseDir='' then continue;
           // add lazdoc paths of project
-          if SearchInPath(AProject.LazDocPaths,BaseDir,Filename) then begin
-            AnOwner:=AProject;
+          if SearchInPath(AProject.LazDocPaths,BaseDir,Filename) then
             exit(true);
-          end;
         end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
           if APackage.LazDocPaths='' then continue;
@@ -1393,7 +1402,8 @@ var
           if SearchInPath(APackage.LazDocPaths,BaseDir,Filename) then begin
             AnOwner:=APackage;
             exit(true);
-          end;
+          end else if AnOwner=nil then
+            AnOwner:=APackage;
         end;
       end;
     finally
@@ -1402,23 +1412,18 @@ var
   end;
   
   function CheckIfInLazarus(out Filename: string): boolean;
-  var
-    LazDir: String;
-    LCLPackage: TLazPackage;
   begin
     Result:=false;
     Filename:='';
     if not FilenameIsAbsolute(SrcFilename) then exit;
-    LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
-    // check LCL
-    if FileIsInPath(SrcFilename,LazDir+'lcl') then begin
-      LCLPackage:=PackageGraph.LCLPackage;
-      if SearchInPath(LCLPackage.LazDocPaths,'',Filename) then
-      begin
-        AnOwner:=LCLPackage;
+    // check IDE directories
+    if IsIDESrcFile(SrcFilename) then begin
+      AnOwner:=LazarusHelp;
+      if SearchInPath(GetIDESrcFPDocPath,'',Filename) then
         exit(true);
-      end;
     end;
+
+    // finally: check if in user directories
     if SearchInPath(EnvironmentOptions.LazDocPaths,'',Filename) then
     begin
       AnOwner:=nil;
@@ -1434,7 +1439,6 @@ begin
   Result:='';
   CacheWasUsed:=true;
   AnOwner:=nil;
-  OwnerFound:=false;
 
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
@@ -1480,7 +1484,7 @@ begin
     and (not CheckIfInLazarus(Result))
     then begin
       // not found
-      if not OwnerFound then
+      if AnOwner=nil then
         DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename]);
     end;
 
@@ -1568,17 +1572,51 @@ begin
   end;
 end;
 
+function TCodeHelpManager.GetIDESrcFPDocPath: string;
+var
+  LazDir: String;
+begin
+  Result:='';
+  LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+  if (LazDir='') or not FilenameIsAbsolute(LazDir) then exit;
+  Result:=LazDir+SetDirSeparators('docs/xml/ide/');
+end;
+
+function TCodeHelpManager.IsIDESrcFile(const SrcFilename: string): boolean;
+var
+  LazDir: String;
+begin
+  Result:=false;
+  LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
+  if (LazDir='') or not FilenameIsAbsolute(LazDir) then exit;
+  if not FileIsInPath(SrcFilename,LazDir) then exit;
+  // check if SrcFilename is in one of the IDE directories or sub directories
+  if FileIsInPath(SrcFilename,LazDir+'ide')
+  or FileIsInPath(SrcFilename,LazDir+'debugger')
+  or FileIsInPath(SrcFilename,LazDir+'packager')
+  or FileIsInPath(SrcFilename,LazDir+'converter')
+  then
+    Result:=true;
+end;
+
 function TCodeHelpManager.FindModuleOwner(const Modulename: string): TObject;
 var
   AProject: TLazProject;
 begin
-  Result:=PackageGraph.FindAPackageWithName(Modulename,nil);
-  if Result<>nil then exit;
+  // check project
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil)
   and (SysUtils.CompareText(GetModuleOwnerName(AProject),Modulename)=0)
   then begin
     Result:=AProject;
+    exit;
+  end;
+  // check package
+  Result:=PackageGraph.FindAPackageWithName(Modulename,nil);
+  if Result<>nil then exit;
+  // check IDE as project
+  if SysUtils.CompareText(IDEProjectName,Modulename)=0 then begin
+    Result:=LazarusHelp;
     exit;
   end;
   Result:=nil;
@@ -1623,7 +1661,7 @@ begin
   AProject:=LazarusIDE.ActiveProject;
 
   // virtual files belong to the project
-  if not FilenameIsAbsolute(FPDocFile.Filename) then begin
+  if not FilenameIsAbsolute(Path) then begin
     Result:=AProject;
     exit;
   end;
@@ -1654,6 +1692,14 @@ begin
   // search in all packages
   for i:=0 to PackageGraph.Count-1 do
     if InPackage(PackageGraph.Packages[i]) then exit;
+
+  // check the IDE
+  SearchPath:=GetIDESrcFPDocPath;
+  if (SearchPath<>'') and FileIsInPath(FPDocFile.Filename,SearchPath) then
+  begin
+    Result:=LazarusHelp;
+    exit;
+  end;
 end;
 
 function TCodeHelpManager.GetModuleOwnerName(TheOwner: TObject): string;
@@ -1662,6 +1708,8 @@ begin
     Result:=TLazPackage(TheOwner).Name
   else if TheOwner is TLazProject then
     Result:=ExtractFileNameOnly(TLazProject(TheOwner).ProjectInfoFile)
+  else if TheOwner=LazarusHelp then
+    Result:=IDEProjectName
   else
     Result:='';
 end;
