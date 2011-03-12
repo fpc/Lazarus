@@ -1207,7 +1207,6 @@ var
   NewSrcLen: Integer;
 begin
   if (not UpdateNeeded(Range,CheckFilesOnDisk)) then begin
-    debugln(['TLinkScanner.Scan AAA1 no update needed Range=',dbgs(Range),' ScannedRange=',dbgs(ScannedRange)]);
     // input is the same as last time -> output is the same
     // -> if there was an error and it was in a needed range, raise it again
     if LastErrorIsValid then begin

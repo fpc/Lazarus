@@ -648,17 +648,21 @@ begin
         Node.EndPos:=-1;
         if (Node.LastChild=nil) then begin
           // section was not parsed => reopen it
-          //debugln(['TPascalParserTool.BuildTree scan a section from start ...']);
           MoveCursorToCleanPos(Node.StartPos);
           // skip keyword starting the section
           ReadNextAtom;
+          {$IFDEF VerboseUpdateNeeded}
+          debugln(['TPascalParserTool.BuildTree scan section ',Node.DescAsString,' from start. First atom=',GetAtom]);
+          {$ENDIF}
         end else begin
           // half parsed section
           //debugln(['TPascalParserTool.BuildTree scan a section from middle ...']);
           if (Node.LastChild.Desc=ctnUsesSection)
           and (Node.LastChild.FirstChild=nil) then begin
             // uses section was not parsed completely => reopen it
-            debugln(['TPascalParserTool.BuildTree REOPEN uses section']);
+            {$IFDEF VerboseUpdateNeeded}
+            debugln(['TPascalParserTool.BuildTree REOPEN uses section, section=',Node.DescAsString]);
+            {$ENDIF}
             Node:=CurNode.LastChild;
             Node.EndPos:=-1;
             MoveCursorToCleanPos(Node.StartPos);
@@ -666,18 +670,29 @@ begin
             // place cursor behind last child node
             while (Node.LastChild<>nil) and (Node.LastChild.EndPos<1) do
               Node:=Node.LastChild;
-            if Node.LastChild<>nil then
+            Node.EndPos:=-1;
+            if Node.LastChild<>nil then begin
+              {$IFDEF VerboseUpdateNeeded}
+              debugln(['TPascalParserTool.BuildTree scan at end of ',Node.LastChild.DescAsString]);
+              {$ENDIF}
               MoveCursorToCleanPos(Node.LastChild.EndPos)
-            else if CurNode.EndPos>0 then
+            end else if Node.EndPos>0 then begin
+              {$IFDEF VerboseUpdateNeeded}
+              debugln(['TPascalParserTool.BuildTree scan at end of ',Node.DescAsString]);
+              {$ENDIF}
               MoveCursorToCleanPos(Node.EndPos)
-            else begin
+            end else begin
+              {$IFDEF VerboseUpdateNeeded}
+              debugln(['TPascalParserTool.BuildTree scan at start of ',Node.DescAsString]);
+              {$ENDIF}
               MoveCursorToCleanPos(Node.StartPos);
-              Node.EndPos:=-1;
             end;
           end;
         end;
         CurNode:=Node;
-        //debugln(['TPascalParserTool.BuildTree curnode=',CurNode.DescAsString,' cursor="',dbgstr(copy(Src,CurPos.StartPos,40)),'"']);
+        {$IFDEF VerboseUpdateNeeded}
+        debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString,' cursor="',dbgstr(copy(Src,CurPos.StartPos,40)),'"']);
+        {$ENDIF}
         if not (CurNode.Desc in (AllCodeSections+[ctnUsesSection])) then
           // FetchScannerSource failed
           RaiseCatchableException('TPascalParserTool.BuildTree inconsistency');
@@ -4534,10 +4549,10 @@ begin
               Node:=Node.NextBrother;
             // mark section as unfinished
             Node.EndPos:=-1;
-            if (Node.NextBrother=nil) and (Node.EndPos<=DiffPos) then begin
+            if (Node.Desc=ctnEndPoint) and (Node.EndPos<=DiffPos) then begin
               // difference is behind nodes => keep all nodes
               {$IFDEF VerboseUpdateNeeded}
-              debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes ',MainFilename]);
+              debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes, last node=',Node.DescAsString,' ',MainFilename]);
               {$ENDIF}
             end else begin
               // some nodes can be kept
