@@ -2549,7 +2549,7 @@ begin
   if (Str=nil) or (Str[0]=#0) then Exit(0);
 
   //DebugLn(Format('trace:> [TGtk2WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
-    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  //  [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   if not IsValidDC(DC) then Exit(0);
   if (Count < -1) or (IsRectEmpty(Rect) and ((Flags and DT_CALCRECT) = 0)) then Exit(0);
