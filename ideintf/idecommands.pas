@@ -599,8 +599,6 @@ begin
 end;
 
 function IDEShortCutToMenuShortCut(MenuItem: TMenuItem; const IDEShortCut: TIDEShortCut): TShortCut;
-var
-  s: String;
 begin
   if IDEShortCut.Key2=VK_UNKNOWN then
     Result:=ShortCut(IDEShortCut.Key1,IDEShortCut.Shift1)
@@ -608,12 +606,10 @@ begin
     // This shows combination shortcuts. Normally shortcut string is generated
     // in widgetset code but it supports only one key (modified by Shift state).
     {$IFDEF CombinationShortcuts}
-    if (IDEShortCut.Key1<>VK_UNKNOWN) and (IDEShortCut.Key2<>VK_UNKNOWN) then begin
-      s:=KeyAndShiftStateToKeyString(IDEShortCut.Key1,IDEShortCut.Shift1);
-      if (IDEShortCut.Key2<>VK_UNKNOWN) then
-        s:=s+', '+KeyAndShiftStateToKeyString(IDEShortCut.Key2,IDEShortCut.Shift2);
-      MenuItem.Caption:=MenuItem.Caption+#9+s;
-    end;
+    if (IDEShortCut.Key1<>VK_UNKNOWN) and (IDEShortCut.Key2<>VK_UNKNOWN) then
+      MenuItem.Caption:=MenuItem.Caption+#9+
+          KeyAndShiftStateToKeyString(IDEShortCut.Key1,IDEShortCut.Shift1)+', '+
+          KeyAndShiftStateToKeyString(IDEShortCut.Key2,IDEShortCut.Shift2);
     {$ENDIF}
     Result:=ShortCut(VK_UNKNOWN,[]);
   end;
