@@ -356,7 +356,7 @@ begin
 
   // search & replace
   ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFind: SetResult2(VK_Q,[SSCtrl],VK_F,[],VK_F,[SSCtrl],VK_UNKNOWN,[]);
+  ecFind: SetResult2(VK_F,[SSCtrl],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_F,[]);
   ecFindNext: SetResult2(VK_F3,[],VK_UNKNOWN,[],VK_L,[SSCtrl],VK_UNKNOWN,[]);
   ecFindPrevious: SetResult(VK_F3,[ssShift],VK_UNKNOWN,[]);
   ecFindInFiles: SetResult(VK_F,[ssCtrl,ssShift],VK_UNKNOWN,[]);
@@ -809,7 +809,7 @@ begin
 
   // search & replace
   ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFind: SetResult(VK_Q,[SSCtrl],VK_F,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFind: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_F,[]);
   ecFindNext: SetResult(VK_L,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindPrevious: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindInFiles: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
