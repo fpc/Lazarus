@@ -335,7 +335,7 @@ begin
 
   num := TToolbar(TWinControl(AControl).parent).Buttonlist.IndexOf(TControl(AControl));
   if num < 0 then Num := TToolbar(TWinControl(AControl).parent).Buttonlist.Count+1;
-  Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
+  //DebugLn(Format('Trace:NUM = %d in INSERTBUTTON',[num]));
 
   gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(AControl).parent.Handle),
        pgtkwidget(handle),pstr,pStr2,Num);

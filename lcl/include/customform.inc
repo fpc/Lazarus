@@ -641,7 +641,7 @@ begin
     end;
   end;
 
-  Assert(False, 'Trace:WMSIZE in TCustomForm');
+  //DebugLn('Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then
   begin
     OldState := FWindowState;
@@ -1693,7 +1693,7 @@ procedure TCustomForm.UpdateWindowState;
 Begin
 
   //TODO: Finish UpdateWindowState
-  Assert(False, 'Trace:TODO: [TCustomForm.UpdateWindowState]');
+  //DebugLn('Trace:TODO: [TCustomForm.UpdateWindowState]');
 end;
 
 {------------------------------------------------------------------------------
@@ -2468,7 +2468,7 @@ begin
 
   FPixelsPerInch := 0;
 
-  Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
+  //DebugLn('Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
 
   // update icon

@@ -4665,7 +4665,7 @@ begin
     DebugLn('TWinControl.PaintHandler A ',Name,':',ClassName);
   {$ENDIF}
 
-  Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
+  //DebugLn(Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
   DC := TheMessage.DC;
   if DC = 0 then
     DC := BeginPaint(Handle, PS);
@@ -4711,7 +4711,7 @@ begin
     if TheMessage.DC = 0 then
       EndPaint(Handle, PS);
   end;
-  Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
+  //DebugLn(Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
 //DebugLn('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',DbgS(Message.DC,8));
 end;
 
@@ -5155,11 +5155,11 @@ var
   Form: TCustomForm;
 begin
   //debugln(['TWinControl.WndProc ',DbgSName(Self),' ',Message.Msg]);
-//  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
+  //DebugLn(Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
     LM_SETFOCUS:
       begin
-        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
+        //DebugLn(Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
         {$IFDEF VerboseFocus}
         DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
         {$ENDIF}
@@ -5173,7 +5173,7 @@ begin
 
     LM_KILLFOCUS:
       begin
-        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
+        //DebugLn(Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
         if csFocusing in ControlState then begin
           {$IFDEF VerboseFocus}
           DebugLn('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
@@ -5446,7 +5446,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.MainWndProc(var Msg: TLMessage);
 begin
-  Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Msg.Msg]));
+  //DebugLn(Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Msg.Msg]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6004,7 +6004,7 @@ procedure TWinControl.Remove(AControl : TControl);
 begin
   if AControl <> nil then
   begin
-    Assert(False, Format('trace:[TWinControl.Remove] %s(%S) --> Remove: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
+    //DebugLn(Format('trace:[TWinControl.Remove] %s(%S) --> Remove: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
       ListRemove(FTabList, AControl);
     ListRemove(FControls, AControl);
@@ -6510,7 +6510,7 @@ var
   ParentForm: TCustomForm;
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
-  Assert(False, Format('Trace: %s', [ClassName]));
+  //DebugLn(Format('Trace: %s', [ClassName]));
   if [csLoading,csDestroying,csDesigning]*ComponentState=[] then
   begin
     ParentForm := GetParentForm(Self);
@@ -6549,7 +6549,7 @@ begin
     DebugLn('TWinControl.WMPaint A ',Name,':',ClassName);
   {$ENDIF}
 
-  Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
+  //DebugLn(Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) or not DoubleBuffered then
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
@@ -6607,7 +6607,7 @@ begin
 {$ENDIF}
     end;
   end;
-  Assert(False, Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
+  //DebugLn(Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
 //DebugLn('[TWinControl.WMPaint] END ',Name,':',ClassName);
 end;
 
@@ -6620,7 +6620,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMDestroy(var Message: TLMDestroy);
 begin
-  Assert(False, Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
+  //DebugLn(Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
   //DebugLn('TWinControl.WMDestroy ',Name,':',ClassName);
   // Our widget/window doesn't exist anymore
   Handle := 0;
@@ -7050,7 +7050,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMShowWindow(var Message: TLMShowWindow);
 begin
-  Assert(False, Format('Trace: TODO: [TWinControl.LMShowWindow] %s', [ClassName]));
+  //DebugLn(Format('Trace: TODO: [TWinControl.LMShowWindow] %s', [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7062,7 +7062,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEnter(var Message: TLMEnter);
 begin
-  Assert(False, Format('Trace: TODO: [TWinControl.LMEnter] %s', [ClassName]));
+  //DebugLn(Format('Trace: TODO: [TWinControl.LMEnter] %s', [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7090,7 +7090,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMExit(var Message: TLMExit);
 begin
-  Assert(False, Format('Trace: TODO: [TWinControl.LMExit] %s', [ClassName]));
+  //DebugLn(Format('Trace: TODO: [TWinControl.LMExit] %s', [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7106,7 +7106,7 @@ begin
   //debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if SendDialogChar(Message) then
     Message.Result := 1;
-  Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
+  //DebugLn(Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7348,7 +7348,7 @@ procedure TWinControl.InitializeWnd;
 var
   CachedText: string;
 begin
-  Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
+  //DebugLn(Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
 
   //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
@@ -7597,7 +7597,7 @@ begin
   begin
     if Parent = Self
     then begin
-      Assert(False, Format('Trace:[TWinControl.HandleNeeded] Somebody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
+      //DebugLn(Format('Trace:[TWinControl.HandleNeeded] Somebody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
     end
     else begin
       if (Parent <> nil) then

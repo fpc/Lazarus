@@ -198,11 +198,11 @@ function TGtkWidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WPar
 begin
   Result := 0;
   //TODO: Does anything need to be done here?
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-  Assert(False, 'Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
 end;
 
 {------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ Begin
   Inc(P.X, Position.X);
   Inc(P.Y, Position.Y);
 
-  Assert(False, Format('Trace:  [GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
+  //DebugLn(Format('Trace:  [GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
   Result := True;
 end;
 
@@ -926,7 +926,7 @@ var
   end;
 
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrUInt(BitmapBits)]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrUInt(BitmapBits)]));
 
   if (BitCount < 1) or (Bitcount > 32)
   then begin
@@ -970,7 +970,7 @@ begin
 
   Result := HBITMAP(PtrUInt(GdiObject));
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
 
@@ -993,7 +993,7 @@ var
   GObject: PGdiObject;
   TmpMask: PGdkBitmap;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
@@ -1102,7 +1102,7 @@ begin
     DisposeGDIObject(GObject);
     DebugLn('TGtkWidgetSet.CreateBrushIndirect failed');
   end;
-  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1118,7 +1118,7 @@ var
   GTKObject: PGTKObject;
   BMP: PGDKPixmap;
 begin
-  Assert(False, 'Trace:TODO: [TGtkWidgetSet.CreateCaret] Finish');
+  //DebugLn('Trace:TODO: [TGtkWidgetSet.CreateCaret] Finish');
 
   GTKObject := PGTKObject(Handle);
   Result := GTKObject <> nil;
@@ -1137,7 +1137,7 @@ begin
       Result := False;
     end;
   end
-  else Assert(False, 'Trace:WARNING: [TGtkWidgetSet.CreateCaret] Got null HWND');
+  else //DebugLn('Trace:WARNING: [TGtkWidgetSet.CreateCaret] Got null HWND');
 end;
 
 {------------------------------------------------------------------------------
@@ -1157,7 +1157,7 @@ var
   Depth : Longint;
   Drawable, DefDrawable: PGDkDrawable;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
 
   if IsValidDC(DC) and (DevCtx.Drawable <> nil)
   then begin
@@ -1207,7 +1207,7 @@ begin
 
   Result := HBITMAP(PtrUInt(GdiObject));
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1255,7 +1255,7 @@ begin
 
   Result := HDC(pNewDC);
 
-  Assert(False,Format('trace:  [TGtkWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
+  //DebugLn(Format('trace:  [TGtkWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
 function TGtkWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
@@ -1576,7 +1576,7 @@ begin
 
       if lfFaceName[0] = #0
       then begin
-        Assert(false,'ERROR: [TGtkWidgetSet.CreateFontIndirectEx] No fontname');
+        //DebugLn('ERROR: [TGtkWidgetSet.CreateFontIndirectEx] No fontname');
         Exit;
       end;
 
@@ -1612,7 +1612,7 @@ begin
         end;
       end;
 
-      Assert(False, Format('trace:  [TGtkWidgetSet.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
+      //DebugLn(Format('trace:  [TGtkWidgetSet.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
 
       // calculate weight offset.
       //        API                 XLFD
@@ -1850,7 +1850,7 @@ begin
 
     if Result = 0
     then DebugLn('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <'+LongFontName+'> Fontname="'+LogFont.lfFaceName+'"')
-    else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
+    else //DebugLn(Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
   end;
 end;
 {$EndIf}
@@ -2052,7 +2052,7 @@ function TGtkWidgetSet.CreatePalette(const LogPalette: TLogPalette): HPALETTE;
 var
   GObject: PGdiObject;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.CreatePalette]');
+  //DebugLn('trace:[TGtkWidgetSet.CreatePalette]');
 
   GObject := NewGDIObject(gdiPalette);
   GObject^.SystemPalette := False;
@@ -2096,7 +2096,7 @@ function TGtkWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   GObject: PGdiObject;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.CreatePenIndirect]');
+  //DebugLn('trace:[TGtkWidgetSet.CreatePenIndirect]');
 //write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
   GObject^.UnTransfPenWidth := 0;
@@ -2362,7 +2362,7 @@ begin
       Result := False;
     end;
   end
-  else Assert(False, 'Trace:WARNING: [TGtkWidgetSet.DestroyCaret] Got null HWND');
+  else //DebugLn('Trace:WARNING: [TGtkWidgetSet.DestroyCaret] Got null HWND');
 end;
 
 {------------------------------------------------------------------------------
@@ -2560,30 +2560,30 @@ begin
       end;
     DFC_BUTTON:
       begin
-        Assert(False, Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[R.Left,R.Top,R.Right,R.Bottom]));
+        //DebugLn(Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[R.Left,R.Top,R.Right,R.Bottom]));
         //figure out the style first
         if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
          begin
-           Assert(False, 'Trace:State ButtonCheck');
+           //DebugLn('Trace:State ButtonCheck');
            DrawCheckOrRadioButton(False);
          end
          else if (DFCS_BUTTONRADIO and uState) <> 0 then
          begin
-           Assert(False, 'Trace:State ButtonRadio');
+           //DebugLn('Trace:State ButtonRadio');
            DrawCheckOrRadioButton(True);
          end
          else if (DFCS_BUTTONPUSH and uState) <> 0 then
          begin
-           Assert(False, 'Trace:State ButtonPush');
+           //DebugLn('Trace:State ButtonPush');
            DrawButtonPush;
          end
          else if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
          begin
-           Assert(False, 'Trace:State ButtonRadioImage');
+           //DebugLn('Trace:State ButtonRadioImage');
          end
          else if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
          begin
-           Assert(False, 'Trace:State ButtonRadioMask');
+           //DebugLn('Trace:State ButtonRadioMask');
          end
          else
            DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
@@ -3022,7 +3022,7 @@ var
 begin
   if (Str=nil) or (Str[0]=#0) then Exit(0);
 
-  Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  //DebugLn(Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   if not IsValidDC(DC) then Exit(0);
@@ -3135,7 +3135,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  Assert(False, 'Trace:TODO: [TGtkWidgetSet.EnableScrollBar]');
+  //DebugLn('Trace:TODO: [TGtkWidgetSet.EnableScrollBar]');
   //TODO: Implement this;
   Result := False;
 end;
@@ -3149,7 +3149,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Assert(False, Format('Trace:  [TGtkWidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
+  //DebugLn(Format('Trace:  [TGtkWidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
 
   if hWnd <> 0 then
     gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
@@ -3935,7 +3935,7 @@ var
   end;
 
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 
   if not IsValidDC(DC) then Exit(False);
 
@@ -4054,7 +4054,7 @@ begin
     then LineLen := Count;
   until LineStart >= StrEnd;
 
-  Assert(False, Format('trace:< [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 {$EndIf}
 {------------------------------------------------------------------------------
@@ -4072,7 +4072,7 @@ begin
   if not Result or IsRectEmpty(Rect) then
     exit;
   Result := TGtkDeviceContext(DC).FillRect(Rect, Brush, True);
-  Assert(False, Format('trace:< [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
 
 {------------------------------------------------------------------------------
@@ -4288,7 +4288,7 @@ end;
 function TGtkWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
   Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.GetDIBits]');
+  //DebugLn('trace:[TGtkWidgetSet.GetDIBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -4314,7 +4314,7 @@ function TGtkWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Poi
 var
   BitInfo : tagBitmapInfo;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.GetBitmapBits]');
+  //DebugLn('trace:[TGtkWidgetSet.GetBitmapBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -5217,7 +5217,7 @@ begin
     Result := Result or KEYSTATE[GdkModMask and GDK_BUTTON_MASKS[nVirtKey] <> 0]
   end;
 
-  //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
+  //DebugLn(Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
 
 function TGtkWidgetSet.GetMapMode(DC: HDC): Integer;
@@ -5395,7 +5395,7 @@ var
   AExtLogPen: PExtLogPen absolute Buf;
   i, RequiredSize: Integer;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
+  //DebugLn('trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
   if not IsValidGDIObject(GDIObj) then Exit;
   
@@ -5404,7 +5404,7 @@ begin
       Result := GetObject_Bitmap;
     gdiBrush:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
       end;
     gdiFont:
       begin
@@ -5470,7 +5470,7 @@ begin
       end;
     gdiRegion:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
       end;
   else
     DebugLn('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(GDIObject^.GDIType)]);
@@ -5681,7 +5681,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.GetStockObject] %d', [Value]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.GetStockObject] %d', [Value]));
   Result := 0;
   case Value of
     BLACK_BRUSH:         // Black brush.
@@ -5740,9 +5740,9 @@ begin
       begin
       end;
 *)  else
-    Assert(False, Format('Trace:TODO: [TGtkWidgetSet.GetStockObject] Implement value: %d', [Value]));
+    //DebugLn(Format('Trace:TODO: [TGtkWidgetSet.GetStockObject] Implement value: %d', [Value]));
   end;
-  Assert(False, Format('Trace:< [TGtkWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5801,28 +5801,28 @@ var
  {$endif}
  {$endif}
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   Result := 0;
   case nIndex of
     SM_ARRANGE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
       end;
     SM_CLEANBOOT:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT        ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT        ');
       end;
     SM_CMOUSEBUTTONS:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
       end;
     SM_CXBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
       end;
     SM_CYBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
       end;
     SM_CXCURSOR,
     SM_CYCURSOR:
@@ -5848,11 +5848,11 @@ begin
       end;
     SM_CXDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
       end;
     SM_CYDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
       end;
     SM_CXDRAG:
       begin
@@ -5872,19 +5872,19 @@ begin
       end;
     SM_CXFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
       end;
     SM_CYFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
     SM_CXFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
       end;
     SM_CYFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
     SM_CXHSCROLL:
       begin
@@ -5919,11 +5919,11 @@ begin
       Result := 32;
     SM_CXICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
       end;
     SM_CYICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
       end;
     SM_CXMAXIMIZED:
       begin
@@ -5945,59 +5945,59 @@ begin
       end;
     SM_CXMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
       end;
     SM_CYMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
       end;
     SM_CXMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
       end;
     SM_CYMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
       end;
     SM_CXMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
       end;
     SM_CYMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
       end;
     SM_CXMIN:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
       end;
     SM_CYMIN:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
       end;
     SM_CXMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
       end;
     SM_CYMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
       end;
     SM_CXMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
       end;
     SM_CYMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
       end;
     SM_CXMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
       end;
     SM_CYMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
     SM_CXSCREEN:
       begin
@@ -6039,11 +6039,11 @@ begin
       end;
     SM_CXSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
       end;
     SM_CYSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
     SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
@@ -6055,11 +6055,11 @@ begin
       Result := 16;
     SM_CXSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
       end;
     SM_CYSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
     SM_CXVSCROLL:
       begin
@@ -6075,67 +6075,67 @@ begin
       end;
     SM_CYCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
       end;
     SM_CYKANJIWINDOW:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
       end;
     SM_CYMENU:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
       end;
     SM_CYSMCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
       end;
     SM_DBCSENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
       end;
     SM_DEBUG:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
       end;
     SM_MENUDROPALIGNMENT:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
       end;
     SM_MIDEASTENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
       end;
     SM_MOUSEPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
       end;
     SM_MOUSEWHEELPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
       end;
     SM_NETWORK:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
       end;
     SM_PENWINDOWS:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
       end;
     SM_SECURE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
       end;
     SM_SHOWSOUNDS:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
       end;
     SM_SLOWMACHINE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
       end;
     SM_SWAPBUTTON:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
+        //DebugLn('Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
     SM_SWSCROLLBARSPACING:
       begin
@@ -6153,7 +6153,7 @@ begin
         end;
       end;
   end;
-  Assert(False, Format('Trace:< [TGtkWidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6236,7 +6236,7 @@ begin
     end;
 
   end;
-  Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
+  //DebugLn('trace:< [TGtkWidgetSet.GetTextExtentPoint]');
 
 end;
 {$EndIf}
@@ -6252,7 +6252,7 @@ function TGtkWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, Format('Trace:> TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:> TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
   if Result then
@@ -6261,7 +6261,7 @@ begin
     TM := DevCtx.DCTextMetric.TextMetric;
   end;
 
-  Assert(False, Format('Trace:< TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:< TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 function TGtkWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
@@ -6318,7 +6318,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   //TODO:Started but not finished
-  Assert(False, Format('Trace:> [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
 
   case int of
     GWL_WNDPROC :
@@ -6381,7 +6381,7 @@ begin
     else Result := 0;
   end; //case
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6678,7 +6678,7 @@ var
   WasVisible: boolean;
 begin
 //DebugLn('[TGtkWidgetSet.HideCaret] A');
-  Assert(False, Format('Trace:  [TGtkWidgetSet.HideCaret] HWND: 0x%x', [hWnd]));
+  //DebugLn(Format('Trace:  [TGtkWidgetSet.HideCaret] HWND: 0x%x', [hWnd]));
 //TODO: [TGtkWidgetSet.HideCaret] Finish (in gtkwinapi.inc)
 
   GTKObject := PGTKObject(HWND);
@@ -6916,7 +6916,7 @@ var
   ToX: Integer;
   ToY: Integer;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 
   if not IsValidDC(DC) then Exit(False);
 
@@ -6943,7 +6943,7 @@ begin
 
   Result := True;
   
-  Assert(False, Format('trace:< [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 function TGTKWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -7029,7 +7029,7 @@ begin
   ButtonCount:= 0;
   { Determine which is the default button }
   DefButton:= ((uType and $00000300) shr 8) + 1;
-  Assert(False, 'Trace:Default button is ' + IntToStr(DefButton));
+  //DebugLn('Trace:Default button is ' + IntToStr(DefButton));
 
   ADialogResult:= 0;
   Dialog:= gtk_dialog_new;
@@ -7103,7 +7103,7 @@ function TGtkWidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with TGtkDeviceContext(DC) do
@@ -7115,7 +7115,7 @@ begin
 
     PenPos := Point(X, Y);
   end;
-  Assert(False, Format('trace:< [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7528,7 +7528,7 @@ function TGtkWidgetSet.RealizePalette(DC: HDC): Cardinal;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, 'Trace:FINISH: [TGtkWidgetSet.RealizePalette]');
+  //DebugLn('Trace:FINISH: [TGtkWidgetSet.RealizePalette]');
   Result := 0;
   if IsValidDC(DC)
   then with TGtkDeviceContext(DC) do
@@ -7553,7 +7553,7 @@ var
   DCOrigin: TPoint;
   Brush: PGdiObject;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   if not IsValidDC(DC) then Exit(False);
 
   if DevCtx.HasTransf then
@@ -7593,7 +7593,7 @@ begin
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   
-  Assert(False, Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7755,7 +7755,7 @@ var
   CurGDIObject: PGDIObject;
 begin
   //DebugLn(['[TGtkWidgetSet.ReleaseDC] ',DC,'  ',FDeviceContexts.Count]);
-  Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
   if (DC <> 0)
@@ -7816,7 +7816,7 @@ begin
       Result := 1;
     end;
   end;
-  Assert(False, Format('trace:< [TGtkWidgetSet.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7846,7 +7846,7 @@ var
   SavedDevCtx: TGtkDeviceContext;
   ClipRegionChanged: Boolean;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
 
   if not IsValidDC(DC) then Exit(False);
   if SavedDC <= 0 then Exit(False);
@@ -7871,7 +7871,7 @@ begin
     DeleteDC(HDC(SavedDevCtx));
   until SavedDC <= 0;
   
-  Assert(False, Format('Trace:< [TGtkWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7903,7 +7903,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   aSavedDC: TGtkDeviceContext;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
 
   Result := 0;
   if IsValidDC(DC) then
@@ -7915,7 +7915,7 @@ begin
     Result := 1;
   end;
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8113,7 +8113,7 @@ begin
       ResultObj := DevCtx.SelectObject(GDIObject);
 
     gdiBrush: begin
-      Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
+      //DebugLn(Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
 
       ResultObj := DevCtx.GetBrush;// always create, because a valid GDIObject is needed to restore
       if DevCtx.CurrentBrush = GDIObject then Exit;
@@ -8130,7 +8130,7 @@ begin
     end;
 
     gdiFont: begin
-      Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
+      //DebugLn(Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
         
       ResultObj := DevCtx.GetFont;// always create, because a valid GDIObject is needed to restore
       if (DevCtx.CurrentFont = GDIObject) and not DevCtx.HasTransf then Exit;
@@ -8168,7 +8168,7 @@ function TGtkWidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, 'Trace:TODO: [TGtkWidgetSet.SelectPalette]');
+  //DebugLn('Trace:TODO: [TGtkWidgetSet.SelectPalette]');
   //TODO: Implement this;
   Result := 0;
 end;
@@ -8345,7 +8345,7 @@ function TGtkWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -8356,7 +8356,7 @@ begin
     end;
 
   end;
-  Assert(False, Format('trace:< [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8471,7 +8471,7 @@ function TGtkWidgetSet.SetCapture(AHandle: HWND): HWND;
 var
   Widget: PGtkWidget;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [AHandle]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [AHandle]));
   Widget := PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
   DebugLn('TGtkWidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
@@ -9256,7 +9256,7 @@ begin
     or (Element < 0)
     then Exit;
     SysColorMap[PLongArray(lpaElements)^[n]] := PLongArray(lpaRgbValues)^[n];
-    //Assert(False, Format('Trace:[TGtkWidgetSet.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
+    //DebugLn(Format('Trace:[TGtkWidgetSet.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
   end;
 
   //TODO send WM_SYSCOLORCHANGE
@@ -9291,7 +9291,7 @@ function TGtkWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('trace:> [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -9303,7 +9303,7 @@ begin
         SelectedColors := dcscCustom; // force SelectGDKTextProps to ensure text color
     end;
   end;
-  Assert(False, Format('trace:< [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('trace:< [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 function TGtkWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
@@ -9384,7 +9384,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
   Result:=0;
   Data := Pointer(NewLong);
 
@@ -9424,7 +9424,7 @@ begin
         gtk_object_set_data(pgtkobject(Handle),'ID',Data);
       end;
   end; //case
-  Assert(False, Format('Trace:< [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -9584,7 +9584,7 @@ function TGtkWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
+  //DebugLn(Format('Trace:> [TGtkWidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
 
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
@@ -9601,7 +9601,7 @@ begin
   end
   else DebugLn('WARNING: [TGtkWidgetSet.ShowCaret] Got null HWND');
 
-  Assert(False, Format('Trace:< [TGtkWidgetSet.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
+  //DebugLn(Format('Trace:< [TGtkWidgetSet.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -9618,7 +9618,7 @@ var
   Scroll: PGtkWidget;
   IsScrollWindow: Boolean;
 begin
-  Assert(False, 'trace:[TGtkWidgetSet.ShowScrollBar]');
+  //DebugLn('trace:[TGtkWidgetSet.ShowScrollBar]');
   Result := (Handle <> 0);
   if not Result then exit;
   

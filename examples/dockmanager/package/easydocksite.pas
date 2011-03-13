@@ -1718,7 +1718,8 @@ begin
   case where of
   alLeft, alTop:  LinkAfter := PrevSibling;
   alRight, alBottom: LinkAfter := self;
-  else assert(False, 'unhandled insertion');
+  else
+    DebugLn('unhandled insertion');
     LinkAfter := nil; //must never happen!
   end;
   Parent.InsertAfter(LinkAfter, NewZone);

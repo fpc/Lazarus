@@ -92,7 +92,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGraphicControl.Paint;
 begin
-  Assert(False, Format('Trace:[TGraphicControl.Paint] %s', [ClassName]));
+  //DebugLn(Format('Trace:[TGraphicControl.Paint] %s', [ClassName]));
   if Assigned(FOnPaint) then FOnPaint(Self);
 end;
 

@@ -314,14 +314,14 @@ function TWin32WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): 
 var
   FormatLength: Integer;
 begin
-  Assert(False, 'Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Start');
+  //DebugLn('Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Start');
   SetLength(Result,1000);
   FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
   SetLength(Result,FormatLength);
   {$IFDEF VerboseWin32Clipbrd}
   debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
   {$ENDIF}
-  Assert(False, 'Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Exit');
+  //DebugLn('Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -370,7 +370,7 @@ var
   end;
 
 begin
-  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
+  //DebugLn('TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
   {$IFDEF VerboseWin32Clipbrd}
   debugln('TWin32WidgetSet.ClipboardGetData FormatID=',dbgs(FormatID));
@@ -445,7 +445,7 @@ begin
     finally
       Windows.CloseClipboard;
     end;
-  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Exit');
+  //DebugLn('TWin32WidgetSet.ClipboardGetData - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -756,11 +756,11 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
 
   Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
 
-  Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -778,9 +778,9 @@ begin
   LB.lbStyle := LogBrush.lbStyle;
   LB.lbColor := ColorToRGB(TColor(LogBrush.lbColor));
   LB.lbHatch := LogBrush.lbHatch;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
   Result := Windows.CreateBrushIndirect(LB);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -800,7 +800,7 @@ begin
   DebugLn('[CreateCaret] for window ', IntToHex(Handle, 8));
 {$endif}
   Result := Boolean(Windows.CreateCaret(Handle, Bitmap, Width, Height));
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.CreateCaret] Finish');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.CreateCaret] Finish');
 end;
 
 {------------------------------------------------------------------------------
@@ -814,9 +814,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
   Result := Windows.CreateCompatibleBitmap(DC, Width, Height);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -829,7 +829,7 @@ end;
 function TWin32WidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
   Result := Windows.CreateCompatibleDC(DC);
-  Assert(False, Format('Trace:[TWin32WidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
+  //DebugLn(Format('Trace:[TWin32WidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -972,7 +972,7 @@ var
 begin
   LP := LogPen;
   Lp.lopnColor := ColorToRGB(TColor(Lp.lopnColor));
-  Assert(False, 'Trace:[TWin32WidgetSet.CreatePenIndirect]');
+  //DebugLn('Trace:[TWin32WidgetSet.CreatePenIndirect]');
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 end;
 
@@ -1049,7 +1049,7 @@ begin
 {$ifdef DEBUG_CARET}
   DebugLn('[DestroyCaret] for window ', IntToHex(Handle, 8));
 {$endif}
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.DestroyCaret]');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.DestroyCaret]');
   Result := Boolean(Windows.DestroyCaret);
 end;
 
@@ -1108,9 +1108,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
 begin
-  Assert(False, Format('trace:> [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
+  //DebugLn(Format('trace:> [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
   Result := Boolean(Windows.DrawEdge(DC, @Rect, edge, grfFlags));
-  Assert(False, Format('trace:< [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
+  //DebugLn(Format('trace:< [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1126,7 +1126,7 @@ var
   w: WideString;
 {$endif}
 begin
-  Assert(False, Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  //DebugLn(Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
  {$ifdef WindowsUnicodeSupport}
@@ -1153,7 +1153,7 @@ begin
   Result := Windows.DrawText(DC, Str, Count, @Rect, Flags);
  {$endif}
  
-  Assert(False, Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  //DebugLn(Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
 
@@ -1199,7 +1199,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean;
 begin
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.EnableScrollBar]');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.EnableScrollBar]');
   //TODO: Implement this;
   Result := Boolean(Windows.EnableScrollBar(Wnd, WSBFlags, WArrows));
 end;
@@ -1215,7 +1215,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Assert(False, Format('Trace:[TWin32WidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BOOL_TEXT[BEnable]]));
+  //DebugLn(Format('Trace:[TWin32WidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BOOL_TEXT[BEnable]]));
   Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 end;
 
@@ -1377,7 +1377,7 @@ var
   w: WideString;
 {$ENDIF}
 begin
-  Assert(False, Format('trace:> [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:> [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 
 {$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
@@ -1405,7 +1405,7 @@ begin
   Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
  {$endif}
 
-  Assert(False, Format('trace:< [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:< [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1459,9 +1459,9 @@ var
   R: TRect;
 begin
   R := Rect;
-  Assert(False, Format('trace:> [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  //DebugLn(Format('trace:> [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
   Result := Boolean(Windows.FillRect(DC, Windows.RECT(r), Brush));
-  Assert(False, Format('trace:< [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  //DebugLn(Format('trace:< [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
 end;
 
 function TWin32WidgetSet.FloodFill(DC: HDC; X, Y: Integer;
@@ -1680,11 +1680,11 @@ function TWin32WidgetSet.GetDC(HWnd: HWND): HDC;
 var
   ORect: TRect;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
   if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1910,7 +1910,7 @@ var
   LFW: TLogFontW;
 {$endif}
 begin
-  Assert(False, 'Trace:[TWin32WidgetSet.GetObject]');
+  //DebugLn('Trace:[TWin32WidgetSet.GetObject]');
   {$ifdef WindowsUnicodeSupport}
   if GetObjectType(GDIObj) = OBJ_FONT then
   begin
@@ -1990,7 +1990,7 @@ end;
 function TWin32WidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.GetScrollInfo]');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.GetScrollInfo]');
   Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, @ScrollInfo));
 end;
 
@@ -2003,9 +2003,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetStockObject(Value: Integer): THandle;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GetStockObject] %d ', [Value]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.GetStockObject] %d ', [Value]));
   Result := Windows.GetStockObject(Value);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2038,9 +2038,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
-  Assert(False, Format('Trace:[TWin32WidgetSet.GetSystemMetrics] %s', [IntToStr(NIndex)]));
+  //DebugLn(Format('Trace:[TWin32WidgetSet.GetSystemMetrics] %s', [IntToStr(NIndex)]));
   Result := Windows.GetSystemMetrics(NIndex);
-  Assert(False, Format('Trace:[TWin32WidgetSet.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
+  //DebugLn(Format('Trace:[TWin32WidgetSet.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
 end;
 
 function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;
@@ -2066,7 +2066,7 @@ var
   w: WideString;
 {$ENDIF}
 begin
-  Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Start');
+  //DebugLn('Trace:[TWin32WidgetSet.GetTextExtentPoint] - Start');
 {$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
@@ -2093,7 +2093,7 @@ begin
 {$else}
     Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
 {$endif}
-  Assert(False, 'Trace:[TWin32WidgetSet.GetTextExtentPoint] - Exit');
+  //DebugLn('Trace:[TWin32WidgetSet.GetTextExtentPoint] - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -2106,9 +2106,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
 begin
-  Assert(False, Format('Trace:> TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:> TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
   Result := Boolean(Windows.GetTextMetrics(DC, @TM));
-  Assert(False, Format('Trace:< TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:< TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
@@ -2137,12 +2137,12 @@ end;
 function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 begin
   //TODO:Started but not finished
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
   if UnicodeEnabledOS then
     Result := Windows.GetWindowLongPtrW(Handle, int)
   else
     Result := Windows.GetWindowLongPtr(Handle, int);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2342,7 +2342,7 @@ begin
 {$ifdef DEBUG_CARET}
   DebugLn('[HideCaret] for window ', IntToHex(HWnd, 8));
 {$endif}
-  Assert(False, Format('Trace:  [TWin32WidgetSet.HideCaret] HWND: 0x%x', [HWnd]));
+  //DebugLn(Format('Trace:  [TWin32WidgetSet.HideCaret] HWND: 0x%x', [HWnd]));
   Result := Boolean(Windows.HideCaret(hWnd));
 end;
 
@@ -2458,9 +2458,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.LineTo(DC, X, Y));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 function TWin32WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -2556,9 +2556,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint)));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 function TWin32WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
@@ -2650,7 +2650,7 @@ function TWin32WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Windi
 var
   PFMode : Longint;
 begin
-  Assert(False, Format('Trace:TWin32WidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
+  //DebugLn(Format('Trace:TWin32WidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
   If Winding then
     PFMode := SetPolyFillMode(DC, Windows.WINDING)
   else
@@ -2741,7 +2741,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.RealizePalette]');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.RealizePalette]');
   //TODO: Implement this;
   Result := Windows.RealizePalette(DC);
 end;
@@ -2760,9 +2760,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2, Y2));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 function TWin32WidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
@@ -2819,9 +2819,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(Window, DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2834,9 +2834,9 @@ end;
 -------------------------------------------------------------------------------}
 function TWin32WidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := Boolean(Windows.RestoreDC(DC, SavedDC));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2863,9 +2863,9 @@ end;
 -------------------------------------------------------------------------------}
 function TWin32WidgetSet.SaveDC(DC: HDC): Integer;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SaveDC]  0x%x', [Integer(DC)]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SaveDC]  0x%x', [Integer(DC)]));
   Result := Windows.SaveDC(DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2935,9 +2935,9 @@ end;
 function TWin32WidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SelectObject] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SelectObject] DC: 0x%x', [DC]));
   Result := Windows.SelectObject(DC, GDIObj);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2952,7 +2952,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
 begin
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.SelectPalette]');
+  //DebugLn('Trace:TODO: [TWin32WidgetSet.SelectPalette]');
   //TODO: Implement this;
   Result := Windows.SelectPalette(DC, Palette, ForceBackground);
 end;
@@ -2996,9 +2996,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := TColorRef(Windows.SetBkColor(DC, ColorToRGB(TColor(Color))));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3031,9 +3031,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetCapture(Value: HWND): HWND;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SetCapture] 0x%x', [Value]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SetCapture] 0x%x', [Value]));
   Result := Windows.SetCapture(Value);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SetCapture] 0x%x --> 0x%x', [Value, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SetCapture] 0x%x --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3116,9 +3116,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Start');
+  //DebugLn('Trace:TWin32WidgetSet.SetForegroundWindow - Start');
   Result := Windows.SetForegroundWindow(HWnd);
-  Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Exit');
+  //DebugLn('Trace:TWin32WidgetSet.SetForegroundWindow - Exit');
 end;
 
 function TWin32WidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
@@ -3164,9 +3164,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
 begin
-  Assert(False, 'Trace:TWin32WidgetSet.SetProp - Start');
+  //DebugLn('Trace:TWin32WidgetSet.SetProp - Start');
   Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
-  Assert(False, Format('Trace:TWin32WidgetSet.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
+  //DebugLn(Format('Trace:TWin32WidgetSet.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3193,15 +3193,15 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
 begin
-//  Assert(False, 'Trace:[TWin32WidgetSet.SetScrollInfo]');
+  //DebugLn('Trace:[TWin32WidgetSet.SetScrollInfo]');
   //With ScrollInfo Do
-   // Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
+    //DebugLn(Format('Trace:> [TWin32WidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   with ScrollInfo Do
-    Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
+    //DebugLn(Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3243,9 +3243,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := TColorRef(Windows.SetTextColor(DC, ColorToRGB(TColor(Color))));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 function TWin32WidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
@@ -3275,12 +3275,12 @@ end;
 function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
   if UnicodeEnabledOS then
     Result := Windows.SetWindowLongPtrW(Handle, Idx, NewLong)
   else
      Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3360,9 +3360,9 @@ begin
 {$ifdef DEBUG_CARET}
   DebugLn('[ShowCaret] for window ', IntToHex(HWnd, 8));
 {$endif}
-  Assert(False, Format('Trace:> [TWin32WidgetSet.ShowCaret] HWND: 0x%x', [HWnd]));
+  //DebugLn(Format('Trace:> [TWin32WidgetSet.ShowCaret] HWND: 0x%x', [HWnd]));
   Result := Boolean(Windows.ShowCaret(HWnd));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.ShowCaret] HWND: 0x%x --> %s', [HWnd, BOOL_TEXT[Result]]));
+  //DebugLn(Format('Trace:< [TWin32WidgetSet.ShowCaret] HWND: 0x%x --> %s', [HWnd, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3376,7 +3376,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean;
 begin
-  Assert(False, 'Trace:[TWin32WidgetSet.ShowScrollBar]');
+  //DebugLn('Trace:[TWin32WidgetSet.ShowScrollBar]');
   Result := Boolean(Windows.ShowScrollBar(Handle, WBar, BShow));
   if BShow and Result and ThemeServices.ThemesAvailable then
   begin

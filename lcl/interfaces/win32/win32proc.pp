@@ -535,9 +535,9 @@ end;
 procedure EventTrace(Message: String; Data: TObject);
 begin
   if Data = nil then
-    Assert(False, Format('Trace:Event [%S] fired', [Message]))
+    //DebugLn(Format('Trace:Event [%S] fired', [Message]))
   else
-    Assert(False, Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
+    //DebugLn(Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
 end;
 
 {------------------------------------------------------------------------------
@@ -654,7 +654,7 @@ procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer
 const
   MVK_UNIFY_SIDES = 1;
 begin
-  Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
+  //DebugLn('TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
   KeyCode := Word(Event);
   VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
   SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
@@ -725,11 +725,11 @@ begin
     Handle := TCommonDialog(AObject).Handle
   end
   else
-    Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
+    //DebugLn(Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
 
   Result := Handle;
   if Handle = 0 then
-    Assert(False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
+    //DebugLn('Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 end;
 
 (***********************************************************************

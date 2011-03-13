@@ -1664,39 +1664,39 @@ Begin
   begin
     FBoxStyle := 0;
     lbEvents.Items.Add('MessageBox.[OK]');
-    Assert(False, 'Trace: MessageBox.[OK]');
+    //DebugLn('Trace: MessageBox.[OK]');
   End Else if Sender = rdbOkCancel then
   begin
     FBoxStyle := 1;
     lbEvents.Items.Add('MessageBox.[OK,Cancel]');
-    Assert(False, 'Trace: MessageBox.[OK,Cancel]');
+    //DebugLn('Trace: MessageBox.[OK,Cancel]');
   End Else if Sender = rdbAbortRetryIgnore then
   begin
     FBoxStyle := 2;
     lbEvents.Items.Add('MessageBox.[Abort,Retry,Ignore]');
-    Assert(False, 'Trace: MessageBox.[Abort,Retry,Ignore]');
+    //DebugLn('Trace: MessageBox.[Abort,Retry,Ignore]');
   End Else if Sender = rdbYesNoCancel then
   begin
     FBoxStyle := 3;
     lbEvents.Items.Add('MessageBox.[Yes,No,Cancel]');
-    Assert(False, 'Trace: MessageBox.[Yes,No,Cancel]');
+    //DebugLn('Trace: MessageBox.[Yes,No,Cancel]');
   End Else if Sender = rdbYesNo then
   begin
     FBoxStyle := 4;
     lbEvents.Items.Add('MessageBox.[Yes,No]');
-    Assert(False, 'Trace: MessageBox.[Yes,No]');
+    //DebugLn('Trace: MessageBox.[Yes,No]');
   End Else If Sender = rdbRetryCancel then
   begin
     FBoxStyle := 5;
     lbEvents.Items.Add('MessageBox.[Retry,Cancel]');
-    Assert(False, 'Trace: MessageBox.[Retry,Cancel]');
+    //DebugLn('Trace: MessageBox.[Retry,Cancel]');
   End; 
   EventWatch;
 end;
 procedure TForm1.ShowBox(Sender : TObject);
 begin
-  Assert(False, 'Trace: >>>>>> MessageBoxShow');
-  Assert(False, 'Trace: ^^^^^^^^^^^^^^^^^^^^^');
+  //DebugLn('Trace: >>>>>> MessageBoxShow');
+  //DebugLn('Trace: ^^^^^^^^^^^^^^^^^^^^^');
   Case Application.MessageBox('     User information.............     ','MessageBox',FBoxStyle) of
     1: lbEvents.Items.Add('MessageBoxClick.<OK>');
     2: lbEvents.Items.Add('MessageBoxClick.<Cancel>');
@@ -1860,7 +1860,7 @@ begin
   Else If cbbBrushStyle.Text = 'bsSolid' then
     BenchForm[5].Canvas.Brush.Style := bsSolid;
 
-    Assert(False, 'Trace:CANVAS.BRUSH.STYLE='+cbbBrushStyle.Text);
+    //DebugLn('Trace:CANVAS.BRUSH.STYLE='+cbbBrushStyle.Text);
 end;
 procedure TForm1.ClearCanvas(Sender : TObject);
 begin
@@ -1897,7 +1897,7 @@ begin
   Else If cbbPenStyle.Text = 'psSolid' then
     BenchForm[5].Canvas.Pen.Style := psSolid;
 
-    Assert(False, 'Trace:CANVAS.PEN.STYLE='+cbbPenStyle.Text);
+    //DebugLn('Trace:CANVAS.PEN.STYLE='+cbbPenStyle.Text);
 end;
 //++++++++++++++++++++++++++++++++ TCheckBox ++++++++++++++++++++++++++++++++++++++++
 procedure TForm1.CheckClick(Sender : TObject);
@@ -1910,21 +1910,21 @@ begin
     begin
       lbEvents.Items.Add('CheckBox1['+IntToStr(i)+'].Click');
       EventWatch;
-      Assert(False, 'Trace: CheckBox1['+IntToStr(i)+']Clicked');
+      //DebugLn('Trace: CheckBox1['+IntToStr(i)+']Clicked');
       If i = RandCh then
       begin
         lblPick.Caption := 'That´s the one !!';
         CheckBox1[i].Hint := 'That´s the one !!';
         lbEvents.Items.Add('VICTORY !!');
         EventWatch;
-        Assert(False, 'Trace: VICTORY !!');
+        //DebugLn('Trace: VICTORY !!');
       End Else
       begin
         lblPick.Caption := 'Nop, try again !!';
         CheckBox1[i].Hint := 'Already picked';
         lbEvents.Items.Add('NOP !!');
         EventWatch;
-        Assert(False, 'Trace: NOP !!');
+        //DebugLn('Trace: NOP !!');
       end;
       CHCount := CHCount + 1;
       lblCount.Caption := 'Counter: '+IntToStr(CHCount);
@@ -1958,7 +1958,7 @@ begin
     If Sender=btnPenColor then
     Begin
       BenchForm[5].Canvas.Pen.Color := ColorDialog1.Color;
-      Assert(False, 'Trace: CANVAS.PEN.COLOR='+IntToStr(ColorDialog1.Color));
+      //DebugLn('Trace: CANVAS.PEN.COLOR='+IntToStr(ColorDialog1.Color));
     End Else If Sender=btnBrushColor then
     Begin
       BenchForm[5].Canvas.Brush.Color := ColorDialog1.Color;
@@ -1985,7 +1985,7 @@ begin
     ComboBox1.Items.Add(edtCbbAdd.Text);
     lbEvents.Items.Add('TCOMBOBOX.Items.Add('+edtCbbAdd.Text+')');
     EventWatch;
-    Assert(False, 'Trace: TCOMBOBOX.Item.Add('+edtCbbAdd.Text+')');
+    //DebugLn('Trace: TCOMBOBOX.Item.Add('+edtCbbAdd.Text+')');
     lblRemoved.Caption := edtCbbAdd.Text+' Added';
     edtCbbAdd.Text := '';
   end;
@@ -2304,17 +2304,17 @@ end;
 procedure TForm1.EventFormShow(Sender : TObject);
 begin
   EventForm.Show;
-  Assert(False, 'Trace: EventFormShow');
+  //DebugLn('Trace: EventFormShow');
 end;
 
 procedure TForm1.EventOnMouseDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
 begin
   lbEvents.Items.Add(Sender.ClassName+'.MouseDown '+IntToStr(X)+','+IntToStr(Y));
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnMouseDown');
+  //DebugLn('Trace:'+Sender.ClassName+'.EventOnMouseDown');
   If Sender = BenchForm[5] then
   Begin
-    Assert(False, 'Trace: CANVAS.PaintWhat='+cbbPaintType.Text);
+    //DebugLn('Trace: CANVAS.PaintWhat='+cbbPaintType.Text);
     If cbbPaintType.Text = 'LineTo' then
     Begin
       BenchForm[5].Canvas.MoveTo(X,Y);
@@ -2335,7 +2335,7 @@ procedure TForm1.EventOnMouseUp(Sender : TObject; Button : TMouseButton; Shift :
 begin
   lbEvents.Items.Add(Sender.ClassName+'.MouseUp '+IntToStr(X)+','+IntToStr(Y));
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnMouseUp');
+  //DebugLn('Trace:'+Sender.ClassName+'.EventOnMouseUp');
 //+++++++ TCanvas ++++++++++++++++++++++++
   If Sender = BenchForm[5] then
     FPaint := False;
@@ -2388,7 +2388,7 @@ procedure TForm1.EventOnClick(Sender : TObject);
 begin
   lbEvents.Items.Add(Sender.ClassName+'.Click');
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnClick');
+  //DebugLn('Trace:'+Sender.ClassName+'.EventOnClick');
   If Sender.ClassName='TBUTTON' then
     Button1Click(Sender);
   If Sender.ClassName='TRADIOGROUP' then
@@ -2419,7 +2419,7 @@ procedure TForm1.EventOnDblClick(Sender : TObject);
 begin
   lbEvents.Items.Add(Sender.ClassName+'.DoubleClick');
   EventWatch;
-  Assert(False, 'Trace: EventOnDblClick');
+  //DebugLn('Trace: EventOnDblClick');
 end;
 
 procedure TForm1.EventOnResize(Sender : TObject);
@@ -2427,7 +2427,7 @@ begin
   lbEvents.Items.Add('TFORM.Width: '+IntToStr(BenchForm[19].Width));
   lbEvents.Items.Add('TFORM.Height: '+IntToStr(BenchForm[19].Height));
   EventWatch;
-  Assert(False, 'Trace: EventOnReSize');
+  //DebugLn('Trace: EventOnReSize');
   lblWidth.Caption := 'Width: '+IntToStr(BenchForm[19].Width);
   lblWidth.Caption := 'Height: '+IntToStr(BenchForm[19].Height);
 end;
@@ -2442,7 +2442,7 @@ begin
     begin
       lbEvents.Items.Add('TESTFORM['+IntToStr(i)+'].EventOnShow '+TimeToStr(Now));
       EventWatch;
-      Assert(False, 'Trace:TESTFORM['+IntToStr(i)+'].EventOnShow');
+      //DebugLn('Trace:TESTFORM['+IntToStr(i)+'].EventOnShow');
     end;
   end;
 end;
@@ -2453,13 +2453,13 @@ begin
 
   lbEvents.Items.Add(Sender.ClassName+'.Change');
   EventWatch;
-  Assert(False, 'Trace: EventOnChange');
+  //DebugLn('Trace: EventOnChange');
   If Sender=ComboBox1 then
   begin
     lblIndex.Caption := 'ItemIndex: '+IntToStr(ComboBox1.ItemIndex);
     lbEvents.Items.Add('ComboBox1.ItemIndex='+IntToStr(ComboBox1.ItemIndex));
     EventWatch;
-    Assert(False, 'Trace: ComboBox1.ItemIndex='+IntToStr(ComboBox1.ItemIndex));
+    //DebugLn('Trace: ComboBox1.ItemIndex='+IntToStr(ComboBox1.ItemIndex));
   end;
   If Sender=TrackBar2 then
   begin
@@ -2479,7 +2479,7 @@ begin
 
   lbEvents.Items.Add(Sender.ClassName+'.EventKeyDown');
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventKeyDown '+IntToStr(Key));
+  //DebugLn('Trace:'+Sender.ClassName+'.EventKeyDown '+IntToStr(Key));
 end;
 
 procedure TForm1.EventOnKeyUp(Sender : TObject; var Key : Word; Shift : TShiftState);
@@ -2507,13 +2507,13 @@ procedure TForm1.VirOnEnter(Sender: TObject);
 begin 
   lbEvents.Items.Add(Sender.ClassName+'.MouseEnter');
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnEnter');
+  //DebugLn('Trace:'+Sender.ClassName+'.EventOnEnter');
 end; 
 procedure TForm1.VirOnLeave(Sender: TObject); 
 begin 
   lbEvents.Items.Add(Sender.ClassName+'.MouseLeave');
   EventWatch;
-  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnLeave');
+  //DebugLn('Trace:'+Sender.ClassName+'.EventOnLeave');
 end;
 //++++++++++++++++++++++ Event Watch ++++++++++++++++++++++++++++++++++++++++++++++++
 procedure TForm1.EventWatch;
@@ -2532,7 +2532,7 @@ begin
     begin
       lbEvents.Items.Add('TESTFORM['+IntToStr(i)+'].EventOnClose '+TimeToStr(Now));
       EventWatch;
-      Assert(False, 'Trace:TESTFORM['+IntToStr(i)+'].EventOnClose');
+      //DebugLn('Trace:TESTFORM['+IntToStr(i)+'].EventOnClose');
     End;
   End;
 
@@ -2555,163 +2555,163 @@ begin
   begin
     BenchForm[1].Show;
     EventForm.Caption := EventForm.Caption+' TApplication';
-    Assert(False, 'Trace: >>> TApplication TEST');
+    //DebugLn('Trace: >>> TApplication TEST');
   end;
   If Sender=TBev then
   begin
     BenchForm[2].Show;
     EventForm.Caption := EventForm.Caption+' TBevel';
-    Assert(False, 'Trace: >>> TBevel TEST');
+    //DebugLn('Trace: >>> TBevel TEST');
   end;
   If Sender=TBit then
   Begin
     BenchForm[3].Show;
     EventForm.Caption := EventForm.Caption+' BitBtn1';
-    Assert(False, 'Trace: >>> TBitBtn TEST');
+    //DebugLn('Trace: >>> TBitBtn TEST');
   end;
   If Sender=TBut then
   begin
     BenchForm[4].Show;
     EventForm.Caption := EventForm.Caption+' Button1[0..15]';
-    Assert(False, 'Trace: >>> TButton TEST');
+    //DebugLn('Trace: >>> TButton TEST');
   end;
   If Sender=TCan then
   begin
     BenchForm[5].Show;
     EventForm.Caption := EventForm.Caption+' TCanvas';
-    Assert(False, 'Trace: >>> TCanvas TEST');
+    //DebugLn('Trace: >>> TCanvas TEST');
   end;
   If Sender=TChe then
   begin
     BenchForm[6].Show;
     EventForm.Caption := EventForm.Caption+' CheckBox1[1..35]';
-    Assert(False, 'Trace: >>> TCheckBox TEST');
+    //DebugLn('Trace: >>> TCheckBox TEST');
   end;
   If Sender=TClip then
   begin
     BenchForm[7].Show;
     EventForm.Caption := EventForm.Caption+' ClipBoard1';
-    Assert(False, 'Trace: >>> TClipBoard TEST');
+    //DebugLn('Trace: >>> TClipBoard TEST');
   end;
   If Sender=TCLis then
   begin
     BenchForm[8].Show;
     EventForm.Caption := EventForm.Caption+' CListBox1';
-    Assert(False, 'Trace: >>> TCListBox TEST');
+    //DebugLn('Trace: >>> TCListBox TEST');
   end;
   If Sender=TCol then
   begin
     BenchForm[9].Caption := BenchForm[9].Caption+' ++Move the form to se the Color-Selected <^>';
     BenchForm[9].Show;
     EventForm.Caption := EventForm.Caption+' TColorDialog';
-    Assert(False, 'Trace: >>> TColorDialog TEST');
-    Assert(False, 'Trace: **********************************');
-    Assert(False, 'Trace: ******** MOVE THE FORM TO ********');
-    Assert(False, 'Trace: ******** TO SE THE COLOR  ********');
-    Assert(False, 'Trace: ******** SELECTED !!!     ********');
-    Assert(False, 'Trace: **********************************');
+    //DebugLn('Trace: >>> TColorDialog TEST');
+    //DebugLn('Trace: **********************************');
+    //DebugLn('Trace: ******** MOVE THE FORM TO ********');
+    //DebugLn('Trace: ******** TO SE THE COLOR  ********');
+    //DebugLn('Trace: ******** SELECTED !!!     ********');
+    //DebugLn('Trace: **********************************');
   end;
   If Sender=TCom then
   begin
     BenchForm[10].Show;
     EventForm.Caption := EventForm.Caption+' TComboBox';
-    Assert(False, 'Trace: >>> TComboBox TEST');
+    //DebugLn('Trace: >>> TComboBox TEST');
   end;
   If Sender=TDir then
   begin
     BenchForm[11].Show;
     EventForm.Caption := EventForm.Caption+' TDirectoryListBox';
-    Assert(False, 'Trace: >>> TDirectoryListBox TEST');
+    //DebugLn('Trace: >>> TDirectoryListBox TEST');
   end;
   If Sender=TDra then
   begin
     BenchForm[12].Show;
     EventForm.Caption := EventForm.Caption+' TDrawGrid';
-    Assert(False, 'Trace: >>> TDrawGrid TEST');
+    //DebugLn('Trace: >>> TDrawGrid TEST');
   end;
   If Sender=TDri then
   begin
     BenchForm[13].Show;
     EventForm.Caption := EventForm.Caption+' TDriveComboBox';
-    Assert(False, 'Trace: >>> TDriveComboBox TEST');
+    //DebugLn('Trace: >>> TDriveComboBox TEST');
   end;
   If Sender=TEdi then
   begin
     BenchForm[14].Show;
     EventForm.Caption := EventForm.Caption+' TEdit';
-    Assert(False, 'Trace: >>> TEdit TEST');
+    //DebugLn('Trace: >>> TEdit TEST');
   end;
   If Sender=TFile then
   begin
     BenchForm[15].Show;
     EventForm.Caption := EventForm.Caption+' TFileListBox';
-    Assert(False, 'Trace: >>> TFileListBox TEST');
+    //DebugLn('Trace: >>> TFileListBox TEST');
   end;
   If Sender=TFilt then
   begin
     BenchForm[16].Show;
     EventForm.Caption := EventForm.Caption+' TFilterComboBox';
-    Assert(False, 'Trace: >>> TFilterComboBox TEST');
+    //DebugLn('Trace: >>> TFilterComboBox TEST');
   end;
   If Sender=TFin then
   begin
     BenchForm[17].Show;
     EventForm.Caption := EventForm.Caption+' TFindDialog';
-    Assert(False, 'Trace: >>> TFindDialog TEST');
+    //DebugLn('Trace: >>> TFindDialog TEST');
   end;
   If Sender=TFon then
   begin
     BenchForm[18].Show;
     EventForm.Caption := EventForm.Caption+' TFontDialog';
-    Assert(False, 'Trace: >>> TFontDialog TEST');
+    //DebugLn('Trace: >>> TFontDialog TEST');
   end;
   If Sender=TFor then
   begin
     BenchForm[19].Show;
     EventForm.Caption := EventForm.Caption+' TForm';
-    Assert(False, 'Trace: >>> TForm TEST');
+    //DebugLn('Trace: >>> TForm TEST');
   end;
   If Sender=TGro then
   begin
     BenchForm[20].Show;
     EventForm.Caption := EventForm.Caption+' TGroupBox';
-    Assert(False, 'Trace: >>> TGoup TEST');
+    //DebugLn('Trace: >>> TGoup TEST');
   end;
   If Sender=TIma then
   begin
     BenchForm[21].Show;
     EventForm.Caption := EventForm.Caption+' TImage';
-    Assert(False, 'Trace: >>> TImage TEST');
+    //DebugLn('Trace: >>> TImage TEST');
   end;
   If Sender=TIni then
   begin
     BenchForm[22].Show;
     EventForm.Caption := EventForm.Caption+' TIniFile';
-    Assert(False, 'Trace: >>> TIniFile TEST');
+    //DebugLn('Trace: >>> TIniFile TEST');
   end;
   If Sender=TLab then
   begin
     BenchForm[23].Show;
     EventForm.Caption := EventForm.Caption+' TLabel';
-    Assert(False, 'Trace: >>> TLabel TEST');
+    //DebugLn('Trace: >>> TLabel TEST');
   end;
   If Sender=TLis then
   begin
     BenchForm[24].Show;
     EventForm.Caption := EventForm.Caption+' TListBox';
-    Assert(False, 'Trace: >>> TListBox TEST');
+    //DebugLn('Trace: >>> TListBox TEST');
   end;
   If Sender=TMas then
   begin
     BenchForm[25].Show;
     EventForm.Caption := EventForm.Caption+' TMaskEdit';
-    Assert(False, 'Trace: >>> TMaskEdit TEST');
+    //DebugLn('Trace: >>> TMaskEdit TEST');
   end;
   If Sender=TMed then
   begin
     BenchForm[26].Show;
     EventForm.Caption := EventForm.Caption+' TMediaPlayer';
-    Assert(False, 'Trace: >>> TMediaPlayer TEST');
+    //DebugLn('Trace: >>> TMediaPlayer TEST');
   end;
   If Sender=TMem then
   begin
@@ -2719,127 +2719,127 @@ begin
     Memo1.Lines.Clear;
     BenchForm[27].Show;
     EventForm.Caption := EventForm.Caption+' TMemo';
-    Assert(False, 'Trace: >>> TMemo TEST');
+    //DebugLn('Trace: >>> TMemo TEST');
   end;
   If Sender=TMes then
   begin
     BenchForm[28].Show;
     EventForm.Caption := EventForm.Caption+' TMessageDialog';
-    Assert(False, 'Trace: >>> TMessageDialog TEST');
+    //DebugLn('Trace: >>> TMessageDialog TEST');
   end;
   If Sender=TNot then
   begin
     BenchForm[29].Show;
     EventForm.Caption := EventForm.Caption+' TNoteBook';
-    Assert(False, 'Trace: >>> TNoteBook TEST');
+    //DebugLn('Trace: >>> TNoteBook TEST');
   end;
   If Sender=TOpe then
   begin
     BenchForm[30].Show;
     EventForm.Caption := EventForm.Caption+' TOpenDialog';
-    Assert(False, 'Trace: >>> TOpenDialog TEST');
+    //DebugLn('Trace: >>> TOpenDialog TEST');
   end;
   If Sender=TPag then
   begin
     BenchForm[31].Show;
     EventForm.Caption := EventForm.Caption+' TPageControl';
-    Assert(False, 'Trace: >>> TPageControl TEST');
+    //DebugLn('Trace: >>> TPageControl TEST');
   end;
   If Sender=TPai then
   begin
     BenchForm[32].Show;
     EventForm.Caption := EventForm.Caption+' TPaintBox';
-    Assert(False, 'Trace: >>> TPaintBox TEST');
+    //DebugLn('Trace: >>> TPaintBox TEST');
   end;
   if Sender=TPan then
   begin
     BenchForm[33].Show;
     EventForm.Caption := EventForm.Caption+' TPanel';
-    Assert(False, 'Trace: >>> TPanel TEST');
+    //DebugLn('Trace: >>> TPanel TEST');
   end;
   If Sender=TPop then
   begin
     BenchForm[34].Show;
     EventForm.Caption := EventForm.Caption+' TPopupMenu';
-    Assert(False, 'Trace: >>> TPopupMenu TEST');
+    //DebugLn('Trace: >>> TPopupMenu TEST');
   end;
   If Sender=TPro then
   begin
     BenchForm[37].Show;
     EventForm.Caption := EventForm.Caption+' TProgressBar';
-    Assert(False, 'Trace: >>> TProgressBar TEST');
+    //DebugLn('Trace: >>> TProgressBar TEST');
   end;
   If Sender=TRadB then
   begin
     BenchForm[38].Show;
     EventForm.Caption := EventForm.Caption+' TRadioButton';
-    Assert(False, 'Trace: >>> TRadioButton TEST');
+    //DebugLn('Trace: >>> TRadioButton TEST');
   end;
   If Sender=TRadG then
   begin
     BenchForm[39].Show;
     EventForm.Caption := EventForm.Caption+' TRadioGroup';
-    Assert(False, 'Trace: >>> TRadioGroup TEST');
+    //DebugLn('Trace: >>> TRadioGroup TEST');
   end;
   If Sender=TSav then
   begin
     BenchForm[42].Show;
     EventForm.Caption := EventForm.Caption+' TSaveDialog';
-    Assert(False, 'Trace: >>> TSaveDialog TEST');
+    //DebugLn('Trace: >>> TSaveDialog TEST');
   end;
   If Sender=TScre then
   begin
     BenchForm[43].Show;
     EventForm.Caption := EventForm.Caption+' TScreen';
-    Assert(False, 'Trace: >>> TScreen TEST');
+    //DebugLn('Trace: >>> TScreen TEST');
   end;
   If Sender=TScroBa then
   begin
     BenchForm[44].Show;
     EventForm.Caption := EventForm.Caption+' TScrollBar';
-    Assert(False, 'Trace: >>> TScrollBar TEST');
+    //DebugLn('Trace: >>> TScrollBar TEST');
   end;
   If Sender=TSha then
   begin
     BenchForm[46].Show;
     //AppliCation.MessageBox(Info[3],'Status Information',0);
     EventForm.Caption := EventForm.Caption+' TShape';
-    Assert(False, 'Trace: >>> TShape TEST');
+    //DebugLn('Trace: >>> TShape TEST');
   end;
   If Sender=TSpee then
   begin
     BenchForm[47].Show;
     //AppliCation.MessageBox(Info[3],'Status Information',0);
     EventForm.Caption := EventForm.Caption+' TSpeedButton';
-    Assert(False, 'Trace: >>> TSpeedButton TEST');
+    //DebugLn('Trace: >>> TSpeedButton TEST');
   end;
   If Sender=TSPinE then
   begin
     BenchForm[49].Show;
     //AppliCation.MessageBox(Info[3],'Status Information',0);
     EventForm.Caption := EventForm.Caption+' TSpinEdit';
-    Assert(False, 'Trace: >>> TSpinEdit TEST');
+    //DebugLn('Trace: >>> TSpinEdit TEST');
   end;
   If Sender=TStat then
   begin
     BenchForm[50].Show;
     //AppliCation.MessageBox(Info[3],'Status Information',0);
     EventForm.Caption := EventForm.Caption+' TStatusBar';
-    Assert(False, 'Trace: >>> TStatusBar TEST');
+    //DebugLn('Trace: >>> TStatusBar TEST');
   end;
   If Sender=TThre then
   begin
     BenchForm[54].Show;
     Timer1.Enabled := True;
     EventForm.Caption := EventForm.Caption+' TThread';
-    Assert(False, 'Trace: >>> TThread TEST');
+    //DebugLn('Trace: >>> TThread TEST');
   end;
   If Sender=TTim then
   begin
     BenchForm[55].Show;
     Timer1.Enabled := True;
     EventForm.Caption := EventForm.Caption+' TTimer';
-    Assert(False, 'Trace: >>> TTimer TEST');
+    //DebugLn('Trace: >>> TTimer TEST');
   end;
   If Sender=TTog then
   begin
@@ -2850,13 +2850,13 @@ begin
   begin
     BenchForm[57].Show;
     EventForm.Caption := EventForm.Caption+' TToolBar';
-    Assert(False, 'Trace: >>> TToolBar TEST');
+    //DebugLn('Trace: >>> TToolBar TEST');
   end;
   If Sender=TTrac then
   begin
     BenchForm[58].Show;
     EventForm.Caption := EventForm.Caption+' TTrackBar';
-    Assert(False, 'Trace: >>> TTrackBar TEST');
+    //DebugLn('Trace: >>> TTrackBar TEST');
   end;
   //Comps1.Enabled := False;
   Form1.Visible := False;

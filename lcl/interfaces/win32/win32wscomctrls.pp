@@ -677,9 +677,9 @@ var
   TBB: TBBUTTON;
 begin
   // TODO: check correctness / clean up
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-  Assert(False, 'Trace:Toolbutton being inserted');
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:Toolbutton being inserted');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
   If (AControl is TWinControl) Then
   Begin
     PStr := StrAlloc(Length(TToolButton(AControl).Caption) + 1);
@@ -696,7 +696,7 @@ begin
   Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.IndexOf(TControl(AControl));
   If Num < 0 Then
     Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.Count + 1;
-  Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
+  //DebugLn(Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
 
   With tbb Do
   Begin
@@ -711,7 +711,7 @@ begin
   SendMessage(TWinControl(AControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
   StrDispose(pStr);
   StrDispose(pStr2);
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
 end;
 
 class procedure TWin32WSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);

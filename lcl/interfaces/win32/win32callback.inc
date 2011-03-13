@@ -43,12 +43,12 @@ function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
-  Assert(False, 'Trace:PropEnumProc - Start');
-  Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
+  //DebugLn('Trace:PropEnumProc - Start');
+  //DebugLn(Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
     [String(Str), Data, Window]));
   RemoveProp(Window, Str);
   Result := True;
-  Assert(False, 'Trace:PropEnumProc - Exit');
+  //DebugLn('Trace:PropEnumProc - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -1023,14 +1023,14 @@ var
   end;
   
 begin
-  Assert(False, 'Trace:WindowProc - Start');
+  //DebugLn('Trace:WindowProc - Start');
 
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
   WinProcess := True;
   NotifyUserInput := False;
 
-  Assert(False, 'Trace:WindowProc - Getting Object with Callback Procedure');
+  //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -1102,10 +1102,10 @@ begin
     IgnoreNextCharWindow := 0;
   end;
 
-  Assert(False, 'Trace:WindowProc - Getting Callback Object');
+  //DebugLn('Trace:WindowProc - Getting Callback Object');
 
-  Assert(False, 'Trace:WindowProc - Checking Proc');
-  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
+  //DebugLn('Trace:WindowProc - Checking Proc');
+  //DebugLn(Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
   case Msg of
     WM_NULL:
       if (Window = Win32WidgetSet.AppHandle) then
@@ -1176,7 +1176,7 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
       {$endif}
@@ -1403,7 +1403,7 @@ begin
     end;
     WM_DESTROY:
     begin
-      Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
+      //DebugLn('Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -1608,8 +1608,8 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        Assert(False,'  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
+        //DebugLn(Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn('  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
       end;
       if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=False;
       WinProcess := false;
@@ -1624,7 +1624,7 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
       if Assigned(WindowInfo) and WindowInfo^.IMEComposed then LMKey.Msg:=LM_NULL;
@@ -1893,7 +1893,7 @@ begin
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
       NotifyUserInput := True;
-      Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
+      //DebugLn('Trace:WindowProc - Got WM_NCLBUTTONDOWN');
 
       //Drag&Dock support TCustomForm => Start BeginDrag()
       if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
@@ -2077,7 +2077,7 @@ begin
     end;
     WM_SHOWWINDOW:
     begin
-      Assert(False, 'Trace:WindowProc - Got WM_SHOWWINDOW');
+      //DebugLn('Trace:WindowProc - Got WM_SHOWWINDOW');
       with TLMShowWindow(LMessage) Do
       begin
         Msg := LM_SHOWWINDOW;
@@ -2105,7 +2105,7 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
     end;
@@ -2602,7 +2602,7 @@ begin
   else if PLMsg = @LMMouseEvent then Result := LMMouseEvent.Result
   else                               Result := PLMsg^.Result;
 
-  Assert(False, 'Trace:WindowProc - Exit');
+  //DebugLn('Trace:WindowProc - Exit');
 end;
 
 {$ifdef MSG_DEBUG}

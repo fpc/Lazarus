@@ -1449,7 +1449,7 @@ end;
 constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
-  Assert(False, 'Trace:Project Unit Info Class Created');
+  //DebugLn('Trace:Project Unit Info Class Created');
   FEditorInfoList := TUnitEditorInfoList.Create(Self);
   FEditorInfoList.NewEditorInfo;
   FBookmarks:=TFileBookmarks.Create;

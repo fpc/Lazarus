@@ -292,10 +292,9 @@ var
 {$I wincelclintf.inc}
 
 initialization
-
-  Assert(False, 'Trace:WinCEint.pp - Initialization');
+  //DebugLn('Trace:WinCEint.pp - Initialization');
 
 finalization
-  Assert(False, 'Trace:WinCEint.pp - Finalization');
+  //DebugLn('Trace:WinCEint.pp - Finalization');
 
 end.

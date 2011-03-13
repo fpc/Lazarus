@@ -4890,7 +4890,7 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',DbgS(Message.Width),' Message.Height=',DbgS(Message.Height),' Width=',DbgS(Width),' Height=',DbgS(Height));
   {$ENDIF}
-  //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
+  //DebugLn(Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
   if Parent<>nil then
     SetBoundsKeepBase(Left,Top,Message.Width,Message.Height)

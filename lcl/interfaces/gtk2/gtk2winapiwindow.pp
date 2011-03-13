@@ -650,7 +650,7 @@ begin
     and (WidgetStyle<>nil)
     then begin
       if Pixmap <> nil then
-        Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
+        //DebugLn('Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
       
       if WidgetIsPainting then
       begin
@@ -950,7 +950,7 @@ function GTKAPIWidget_FocusIn(Widget: PGTKWidget;
 var
   TopLevel: PGTKWidget;
 begin
-  Assert(False, 'Trace:[GTKAPIWidget_FocusIn]');
+  //DebugLn('Trace:[GTKAPIWidget_FocusIn]');
 
   if Event=nil then ;
   TopLevel := gtk_widget_get_toplevel(Widget);
@@ -964,7 +964,7 @@ function GTKAPIWidget_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   if (Event=nil) or (Widget=nil) then ;
-  Assert(False, 'Trace:[GTKAPIWidget_FocusOut]');
+  //DebugLn('Trace:[GTKAPIWidget_FocusOut]');
   Result := gtk_True;
 end;
 

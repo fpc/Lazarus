@@ -3245,15 +3245,15 @@ begin
       Result := QDesktopWidget_numScreens(QApplication_desktop());
     SM_CMOUSEBUTTONS:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
       end;
     SM_CXBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
       end;
     SM_CYBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
       end;
     SM_CXCURSOR:
       begin
@@ -3265,11 +3265,11 @@ begin
       end;
     SM_CXDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
       end;
     SM_CYDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
       end;
     SM_CXDRAG:
       begin
@@ -3289,23 +3289,23 @@ begin
       end;
     SM_CXFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
       end;
     SM_CYFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
     SM_CXFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
       end;
     SM_CYFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
     SM_CXHTHUMB:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
       end;
     SM_CXICON,
     SM_CYICON:
@@ -3314,75 +3314,75 @@ begin
       end;
     SM_CXICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
       end;
     SM_CYICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
       end;
     SM_CXMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
       end;
     SM_CYMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
       end;
     SM_CXMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
       end;
     SM_CYMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
       end;
     SM_CXMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
       end;
     SM_CYMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
       end;
     SM_CXMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
       end;
     SM_CYMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
       end;
     SM_CXMIN:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
       end;
     SM_CYMIN:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
       end;
     SM_CXMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
       end;
     SM_CYMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
       end;
     SM_CXMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
       end;
     SM_CYMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
       end;
     SM_CXMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
       end;
     SM_CYMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
     SM_CXSCREEN:
       begin
@@ -3396,11 +3396,11 @@ begin
       end;
     SM_CXSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
       end;
     SM_CYSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
     SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
@@ -3414,11 +3414,11 @@ begin
       end;
     SM_CXSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
       end;
     SM_CYSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
     SM_CXVIRTUALSCREEN:
       begin
@@ -3441,67 +3441,67 @@ begin
       end;
     SM_CYKANJIWINDOW:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
       end;
     SM_CYMENU:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
       end;
     SM_CYSMCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
       end;
     SM_CYVTHUMB:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
       end;
     SM_DBCSENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
       end;
     SM_DEBUG:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
       end;
     SM_MENUDROPALIGNMENT:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
       end;
     SM_MIDEASTENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
       end;
     SM_MOUSEPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
       end;
     SM_MOUSEWHEELPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
       end;
     SM_NETWORK:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
       end;
     SM_PENWINDOWS:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
       end;
     SM_SECURE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
       end;
     SM_SHOWSOUNDS:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
       end;
     SM_SLOWMACHINE:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
       end;
     SM_SWAPBUTTON:
       begin
-        Assert(False, 'Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
+        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
   end;
 end;

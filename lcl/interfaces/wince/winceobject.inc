@@ -66,7 +66,7 @@ var
   n: integer;
   TimerInfo : PWinCETimerInfo;
 begin
-  Assert(False, 'Trace:TWinCEWidgetSet is being destroyed');
+  //DebugLn('Trace:TWinCEWidgetSet is being destroyed');
 
   n := FTimerData.Count;
   if (n > 0) then
@@ -253,9 +253,9 @@ procedure TWinCEWidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
 var
   Window: HWnd;
 begin
-  Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Start');
-  Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
-  Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
+  //DebugLn('Trace:TWinCEWidgetSet.SetCallback - Start');
+  //DebugLn(Format('Trace:TWinCEWidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
+  //DebugLn(Format('Trace:TWinCEWidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
   if Sender Is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
   else if Sender Is TCustomForm then
@@ -264,7 +264,7 @@ begin
     Window := TWinControl(Sender).Handle;
   if Window=0 then exit;
 
-  Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Exit');
+  //DebugLn('Trace:TWinCEWidgetSet.SetCallback - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -394,7 +394,7 @@ var
   pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
-  Assert(False, 'Trace:TWinCEWidgetSet.WaitMessage - Start');
+  //DebugLn('Trace:TWinCEWidgetSet.WaitMessage - Start');
   if FWaitPipeHandlers <> nil then
     timeout := 100
   else
@@ -412,7 +412,7 @@ begin
   if retVal = $FFFFFFFF then
     RaiseGDBException('Failaure on MsgWaitForMultipleObjects');
 
-  Assert(False,'Trace:Leave wait message');
+  //DebugLn('Trace:Leave wait message');
 end;
 
 {------------------------------------------------------------------------------
@@ -425,7 +425,7 @@ end;
 
 procedure TWinCEWidgetSet.AppTerminate;
 begin
-  Assert(False, 'Trace:TWinCEWidgetSet.AppTerminate - Start');
+  //DebugLn('Trace:TWinCEWidgetSet.AppTerminate - Start');
 end;
 
 
@@ -463,7 +463,7 @@ function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc)
 var
   TimerInfo: PWinCETimerInfo;
 begin
-  Assert(False,'Trace:Create Timer: ' + IntToStr(Interval));
+  //DebugLn('Trace:Create Timer: ' + IntToStr(Interval));
   Result := 0;
   if (Interval > 0) and (TimerFunc <> nil) then begin
     New(TimerInfo);
@@ -476,7 +476,7 @@ begin
       Result := TimerInfo^.TimerID;
     end;
   end;
-  Assert(False,'Trace:Result: ' + IntToStr(result));
+  //DebugLn('Trace:Result: ' + IntToStr(result));
 end;
 
 {------------------------------------------------------------------------------
@@ -490,7 +490,7 @@ var
   TimerInfo : PWinCETimerinfo;
 begin
   Result:= false;
-  Assert(False,'Trace:removing timer: '+ IntToStr(TimerHandle));
+  //DebugLn('Trace:removing timer: '+ IntToStr(TimerHandle));
   n := FTimerData.Count;
   while (n>0) do begin
     dec(n);
@@ -502,7 +502,7 @@ begin
       Dispose(TimerInfo);
     end;
   end;
-  Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
+  //DebugLn('Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
 procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);
@@ -565,7 +565,7 @@ begin
 //    Handle := ParentPanel;
   if TControl(Sender).HandleObjectShouldBeVisible then
   begin
-    Assert(False, 'Trace: [TWinCEWidgetSet.ShowHide] Showing the window');
+    //DebugLn('Trace: [TWinCEWidgetSet.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
@@ -599,7 +599,7 @@ begin
   end
   else
   begin
-    Assert(False, 'TRACE: [TWinCEWidgetSet.ShowHide] Hiding the window');
+    //DebugLn('TRACE: [TWinCEWidgetSet.ShowHide] Hiding the window');
     ShowWindow(Handle, SW_HIDE);
   end;
 end;
@@ -614,10 +614,10 @@ end;
 procedure TWinCEWidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
   // TODO: implement me!
-  Assert(False, 'TRACE:[TWinCEWidgetSet.ReDraw] Redrawing...');
-  Assert(False, 'TRACE:Invalidating the window');
-  Assert(False, 'TRACE:Updating the window');
-  Assert(False, 'TRACE:[TWinCEWidgetSet.ReDraw] Finished redrawing');
+  //DebugLn('TRACE:[TWinCEWidgetSet.ReDraw] Redrawing...');
+  //DebugLn('TRACE:Invalidating the window');
+  //DebugLn('TRACE:Updating the window');
+  //DebugLn('TRACE:[TWinCEWidgetSet.ReDraw] Finished redrawing');
 end;
 
 {------------------------------------------------------------------------------

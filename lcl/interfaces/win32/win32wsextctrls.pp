@@ -355,7 +355,7 @@ begin
     Windows.SendMessage(NotebookHandle, TCM_GETITEM, RealIndex, LPARAM(@TCI));
     if PtrUInt(TCI.lParam) = PtrUInt(AWinControl) then
     begin
-      Assert(False, Format('Trace:TWin32WSCustomPage.SetText --> %S', [AText]));
+      //DebugLn(Format('Trace:TWin32WSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
 {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then

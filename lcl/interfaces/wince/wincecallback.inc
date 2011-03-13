@@ -33,12 +33,12 @@ function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
-  Assert(False, 'Trace:PropEnumProc - Start');
-  Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
+  //DebugLn('Trace:PropEnumProc - Start');
+  //DebugLn(Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
     [String(Str), Data, Window]));
   RemoveProp(Window, Str);
   Result := True;
-  Assert(False, 'Trace:PropEnumProc - Exit');
+  //DebugLn('Trace:PropEnumProc - Exit');
 end;
 
 function WndClassName(Wnd: HWND): WideString; inline;
@@ -961,7 +961,7 @@ Var
 
 
 begin
-  Assert(False, 'Trace:WindowProc - Start');
+  //DebugLn('Trace:WindowProc - Start');
 
   LMessage.Result := 0;
   LMessage.Msg := LM_NULL;
@@ -969,7 +969,7 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
-  Assert(False, 'Trace:WindowProc - Getting Object with Callback Procedure');
+  //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
 
 //----------------------------------------
@@ -1080,7 +1080,7 @@ begin
         CharCode := Word(Char(WideChar(WParam)));
         OrgCharCode := CharCode;
         Result := 0;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
     end
@@ -1258,7 +1258,7 @@ begin
 
     WM_CREATE:
     begin
-      Assert(False, 'Trace:WindowProc - Got WM_CREATE');
+      //DebugLn('Trace:WindowProc - Got WM_CREATE');
       LMessage.Msg := LM_CREATE;
     end;
 }
@@ -1331,7 +1331,7 @@ begin
     end;
     WM_DESTROY:
     begin
-      Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
+      //DebugLn('Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCheckListBox then
         TWinCECheckListBoxStrings.DeleteItemRecords(Window);
       if lWinControl is TCustomFloatSpinEdit then
@@ -1485,8 +1485,8 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        Assert(False,'  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
+        //DebugLn(Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn('  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
       end;
       WinProcess := false;
     end;
@@ -1500,7 +1500,7 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
     end;
@@ -1743,7 +1743,7 @@ begin
     WM_NCLBUTTONDOWN:
     begin
       NotifyUserInput := True;
-      Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
+      //DebugLn('Trace:WindowProc - Got WM_NCLBUTTONDOWN');
     end;
     WM_NOTIFY:
     begin
@@ -1873,7 +1873,7 @@ begin
     end;
     WM_SHOWWINDOW:
     begin
-      Assert(False, 'Trace:WindowProc - Got WM_SHOWWINDOW');
+      //DebugLn('Trace:WindowProc - Got WM_SHOWWINDOW');
       with TLMShowWindow(LMessage) Do
       begin
         Msg := LM_SHOWWINDOW;
@@ -1901,7 +1901,7 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
     end;
@@ -2326,7 +2326,7 @@ begin
   else if PLMsg = @LMMouseEvent then Result := 1
   else                               Result := PLMsg^.Result;
 
-  Assert(False, 'Trace:WindowProc - Exit');
+  //DebugLn('Trace:WindowProc - Exit');
 end;
 
 {$ifdef MSG_DEBUG}

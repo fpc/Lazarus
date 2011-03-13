@@ -388,7 +388,7 @@ begin
       sbVertical:
         SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_VERT);
     end;
-    Assert(False, 'Trace:TODO: [TWinCEWSScrollBar.SetParams] Set up step and page increments for csScrollBar');
+    //DebugLn('Trace:TODO: [TWinCEWSScrollBar.SetParams] Set up step and page increments for csScrollBar');
   end;
 end;
 
@@ -487,7 +487,7 @@ begin
     Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
   if Result = LB_ERR then
   begin
-    Assert(false, 'Trace:[TWinCEWSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
+    //DebugLn('Trace:[TWinCEWSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
     Result := -1;
   end;
 end;
@@ -728,7 +728,7 @@ begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
   if Result = LB_ERR Then
   Begin
-    Assert(False, 'Trace:[TWinCEWidgetSet.IntSendMessage3] Could not retrieve item index '+
+    //DebugLn('Trace:[TWinCEWidgetSet.IntSendMessage3] Could not retrieve item index '+
         'via LM_GETITEMINDEX; try selecting an item first');
     Result := -1;
   End;
@@ -801,7 +801,7 @@ var
   Handle: HWND;
   pwAText: widestring;
 begin
-  Assert(False, Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
+  //DebugLn(Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
   pwAText := UTF8Decode(AText);
 

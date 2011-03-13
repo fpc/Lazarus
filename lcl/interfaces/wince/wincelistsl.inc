@@ -57,7 +57,7 @@ begin
   inherited Create;
   if List = HWND(nil) then
     Raise Exception.Create('Unspecified list window');
-    //Assert(False, 'Trace:Unspecified list window');
+    //DebugLn('Trace:Unspecified list window');
   FWinCEList := List;
   FSender := TheOwner;
 

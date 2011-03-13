@@ -769,7 +769,7 @@ begin
 
   if FDragging then
   begin
-    Assert(False,'Trace:FDragging is true');
+    //DebugLn('Trace:FDragging is true');
     if FDown then
       NewState := bsExclusive
     else

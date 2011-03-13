@@ -2468,7 +2468,7 @@ begin
 //ToolButton2 := TToolButton.Create(ToolBar1);
   //with ToolButton2 do
   //begin
-     // Assert(False, 'Trace:SETTING PARENT');
+     // DebugLn('Trace:SETTING PARENT');
    // parent := ToolBar1;
    // OnClick        := @EventOnClick;
     //Show;

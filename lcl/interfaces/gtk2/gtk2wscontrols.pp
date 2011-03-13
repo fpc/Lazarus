@@ -506,7 +506,7 @@ begin
     Assert(true, Format('Trace: [TGtkWSWinControl.AddControl] %s --> Parent is not assigned', [AControl.ClassName]))
   else
   begin
-    Assert(False, Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
+    //DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
     ParentWidget := Pgtkwidget(AParent.Handle);
     pFixed := GetFixedWidget(ParentWidget);
     if pFixed <> ParentWidget then
@@ -583,7 +583,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'Invalidate')
   then Exit;
 
-  Assert(false, 'Trace:Trying to invalidate window... !!!');
+  //DebugLn('Trace:Trying to invalidate window... !!!');
   gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
 end;
 
@@ -794,7 +794,7 @@ begin
 
   P := Pointer(AWinControl.Handle);
   Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
-  Assert(False, 'Trace:Setting Str1 in SetLabel');
+  //DebugLn('Trace:Setting Str1 in SetLabel');
   pLabel := pchar(AText);
 
   case AWinControl.fCompStyle of
@@ -812,11 +812,11 @@ begin
           //Accel := Ampersands2Underscore(aLabel);
           if gtk_bin_get_child(P) = nil then
           begin
-            Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [AWinControl.ClassName]));
+            //DebugLn(Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [AWinControl.ClassName]));
              gtk_container_add(P, gtk_label_new(aLabel));
           end else
           begin
-            Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [AWinControl.ClassName]));
+            //DebugLn(Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [AWinControl.ClassName]));
             gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
           end;
           //If Accel <> -1 then
@@ -886,7 +886,7 @@ begin
       // else
       // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
-  Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
+  //DebugLn(Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
 end;
 
 class procedure TGtk2WSWinControl.SetShape(const AWinControl: TWinControl;

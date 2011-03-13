@@ -383,7 +383,7 @@ begin
     Windows.SendMessageW(NotebookHandle, TCM_GETITEMW, RealIndex, LPARAM(@TCI));
     if PtrUInt(TCI.lParam)=PtrUInt(AWinControl) then
     begin
-      Assert(False, Format('Trace:TWinCEWSCustomPage.SetText --> %S', [AText]));
+      //DebugLn(Format('Trace:TWinCEWSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
       {$ifdef Win32}
       TCI.pszText := PChar(PWideChar(UTF8Decode(AText)));

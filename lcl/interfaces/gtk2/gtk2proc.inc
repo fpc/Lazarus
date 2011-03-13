@@ -3580,7 +3580,7 @@ begin
     handle := TCommonDialog(AnObject).Handle;
   end
   else begin
-    Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AnObject.ClassName]));
+    //DebugLn(Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AnObject.ClassName]));
   end;
   Result := PGTKObject(handle);
   if handle = 0 then

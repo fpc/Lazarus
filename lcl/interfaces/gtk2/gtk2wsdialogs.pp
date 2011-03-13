@@ -530,7 +530,7 @@ begin
   end
   else if theDialog is TFontDialog then
   begin
-    Assert(False, 'Trace:Pressed OK in FontDialog');
+    //DebugLn('Trace:Pressed OK in FontDialog');
     FontName := gtk_font_selection_dialog_get_font_name(
                                              pgtkfontselectiondialog(FPointer));
     //debugln('gtkDialogOKclickedCB FontName=',FontName);
@@ -568,7 +568,7 @@ begin
       pango_font_description_free(FontDesc);
     end;
 
-    Assert(False, 'Trace:-----'+TFontDialog(theDialog).Font.Name+'----');
+    //DebugLn('Trace:-----'+TFontDialog(theDialog).Font.Name+'----');
   end;
 
   StoreCommonDialogSetup(theDialog);

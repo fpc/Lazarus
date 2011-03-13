@@ -392,7 +392,7 @@ var
   end;
 
 begin
-//  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
+  //DebugLn('TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
   if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
     then FormatID := CF_BITMAP;
@@ -447,7 +447,7 @@ begin
     finally
       Windows.CloseClipboard;
     end;
-//  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Exit');
+  //DebugLn('TWin32WidgetSet.ClipboardGetData - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -746,9 +746,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
   Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
 function TWinCEWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
@@ -758,7 +758,7 @@ begin
   LB.lbStyle := LogBrush.lbStyle;
   LB.lbColor := ColorToRGB(LogBrush.lbColor);
   LB.lbHatch := LogBrush.lbHatch;
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
 
   if lb.lbStyle= BS_NULL then
     Result := Windows.GetStockObject(NULL_BRUSH)
@@ -767,7 +767,7 @@ begin
   else { lb.lbStyle = BS_SOLID }
     Result := Windows.CreateSolidBrush(LB.lbColor);
 
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -787,7 +787,7 @@ begin
   DebugLn('[CreateCaret] for window ', IntToHex(Handle, 8));
 {$endif}
   Result := Boolean(Windows.CreateCaret(Handle, Bitmap, Width, Height));
-  Assert(False, 'Trace:TODO: [TWinCEWidgetSet.CreateCaret] Finish');
+  //DebugLn('Trace:TODO: [TWinCEWidgetSet.CreateCaret] Finish');
 end;
 
 {------------------------------------------------------------------------------
@@ -801,9 +801,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
   Result := Windows.CreateCompatibleBitmap(DC, Width, Height);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
 
@@ -817,7 +817,7 @@ end;
 function TWinCEWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
   Result := Windows.CreateCompatibleDC(DC);
-  Assert(False, Format('Trace:[TWinCEWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
+  //DebugLn(Format('Trace:[TWinCEWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -883,7 +883,7 @@ function TWinCEWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   LP: TLogPen;
 begin
-  Assert(False, 'Trace:[TWinCEWidgetSet.CreatePenIndirect]');
+  //DebugLn('Trace:[TWinCEWidgetSet.CreatePenIndirect]');
   LP := LogPen;
   LP.lopnColor := ColorToRGB(LP.lopnColor);
   LP.lopnStyle := LP.lopnStyle and PS_STYLE_MASK;
@@ -1034,9 +1034,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
 begin
-  Assert(False, Format('trace:> [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
+  //DebugLn(Format('trace:> [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
   Result := Boolean(Windows.DrawEdge(DC, @ARect, edge, grfFlags));
-  Assert(False, Format('trace:< [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
+  //DebugLn(Format('trace:< [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1126,7 +1126,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Assert(False, Format('Trace:[TWinCEWidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BoolToStr(BEnable)]));
+  //DebugLn(Format('Trace:[TWinCEWidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BoolToStr(BEnable)]));
   Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 end;
 
@@ -1202,7 +1202,7 @@ var
   s: AnsiString;
   w: WideString;
 begin
-  Assert(False, Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
@@ -1217,7 +1217,7 @@ begin
   // TODO: use the real number of chars (and not the lenght)
   W := Utf8Decode(S);
   Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
-  Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  //DebugLn(Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1272,9 +1272,9 @@ var
   R: TRect;
 begin
   R := Rect;
-  Assert(False, Format('trace:> [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  //DebugLn(Format('trace:> [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
   Result := Boolean(Windows.FillRect(DC, Windows.RECT(r), Brush));
-  Assert(False, Format('trace:< [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  //DebugLn(Format('trace:< [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1497,7 +1497,7 @@ var
   Point: TPoint;
   {$endif}
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.GetDC] HWND: 0x%x', [HWnd]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
   if (Result<>0) and (HWnd<>0) and GetLCLClientBoundsOffset(HWnd, ORect) then
   begin
@@ -1511,7 +1511,7 @@ begin
 
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
   end;
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.GetDC] Got 0x%x', [Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.GetDC] Got 0x%x', [Result]));
 end;
 
 
@@ -1749,7 +1749,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
-  Assert(False, 'Trace:[TWinCEWidgetSet.GetObject]');
+  //DebugLn('Trace:[TWinCEWidgetSet.GetObject]');
   Result := Windows.GetObject(GDIObj, BufSize, Buf);
 end;
 
@@ -1852,7 +1852,7 @@ end;
 function TWinCEWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  Assert(False, 'Trace:TODO: [TWinCEWidgetSet.GetScrollInfo]');
+  //DebugLn('Trace:TODO: [TWinCEWidgetSet.GetScrollInfo]');
   Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, @ScrollInfo));
 end;
 
@@ -1865,9 +1865,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.GetStockObject] %d ', [Value]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.GetStockObject] %d ', [Value]));
   Result := Windows.GetStockObject(Value);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1901,9 +1901,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
-  Assert(False, Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s', [IntToStr(NIndex)]));
+  //DebugLn(Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s', [IntToStr(NIndex)]));
   Result := Windows.GetSystemMetrics(NIndex);
-  Assert(False, Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
+  //DebugLn(Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
 end;
 
 function TWinCEWidgetSet.GetTextColor(DC: HDC): TColorRef;
@@ -1946,7 +1946,7 @@ var
   s: AnsiString;
   w: WideString;
 begin
-  Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
+  //DebugLn('Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
   if count = -1 then
     s := str
   else
@@ -1961,7 +1961,7 @@ begin
   Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W),
    {$ifdef Win32}@Size{$else}Size{$endif});
 //  Result := Boolean(Windows.GetTextExtentExPointW(DC, WideStr, Count, 0,nil,nil,@Size));
-  Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Exit');
+  //DebugLn('Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -1976,7 +1976,7 @@ function TWinCEWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   tmw: TTextMetricW;
 begin
-  Assert(False, Format('Trace:> TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:> TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
   Result := Boolean(Windows.GetTextMetrics(DC, @TMw));
   TM.tmHeight:= TMW.tmHeight;
   TM.tmAscent:= TMW.tmAscent;
@@ -1998,7 +1998,7 @@ begin
   TM.tmStruckOut:= TMW.tmStruckOut;
   TM.tmPitchAndFamily:= TMW.tmPitchAndFamily;
   TM.tmCharSet:= TMW.tmCharSet;
-  Assert(False, Format('Trace:< TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:< TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 function TWinCEWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
@@ -2059,9 +2059,9 @@ end;
 function TWinCEWidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 begin
   //TODO:Started but not finished
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
   Result := Windows.GetWindowLong(Handle, int);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2368,9 +2368,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.LineTo(DC, X, Y));
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2430,9 +2430,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint)));
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 function TWinCEWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
@@ -2488,7 +2488,7 @@ function TWinCEWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Windi
 //var
 //  PFMode : Longint;
 begin
-  Assert(False, Format('Trace:TWinCEWidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
+  //DebugLn(Format('Trace:TWinCEWidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
 //  if Winding then
 //    PFMode := SetPolyFillMode(DC, Windows.WINDING)
 //  else
@@ -2586,9 +2586,9 @@ end;}
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2, Y2));
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 function TWinCEWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
@@ -2631,9 +2631,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(Window, DC);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2665,9 +2665,9 @@ end;
 -------------------------------------------------------------------------------}
 function TWinCEWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := Boolean(Windows.RestoreDC(DC, SavedDC));
-//  Assert(False, Format('Trace:< [TWinCEWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2694,9 +2694,9 @@ end;
 -------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SaveDC(DC: HDC): Integer;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
   Result := Windows.SaveDC(DC);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2766,9 +2766,9 @@ end;
 function TWinCEWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.SelectObject] DC: 0x%x', [DC]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.SelectObject] DC: 0x%x', [DC]));
   Result := Windows.SelectObject(DC, GDIObj);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2826,9 +2826,9 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := Windows.SetBkColor(DC, ColorToRGB(Color));
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3136,9 +3136,9 @@ end;}
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := Windows.SetTextColor(DC, ColorToRGB(Color));
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 { This routine isn't used directly by the LCL }
@@ -3159,9 +3159,9 @@ end;
 function TWinCEWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
+  //DebugLn(Format('Trace:> [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
   Result := Windows.SetWindowLong(Handle, Idx, NewLong);
-  Assert(False, Format('Trace:< [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
+  //DebugLn(Format('Trace:< [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------

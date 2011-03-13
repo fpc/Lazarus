@@ -2328,7 +2328,7 @@ begin
 
   if LblWidget = nil
   then begin
-    Assert(False, Format('trace: [WARNING] Button %s(%s) has no label', [AWinControl.Name, AWinControl.ClassName]));
+    //DebugLn(Format('trace: [WARNING] Button %s(%s) has no label', [AWinControl.Name, AWinControl.ClassName]));
     LblWidget := PGtkLabel(gtk_label_new(''));
     gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
   end;

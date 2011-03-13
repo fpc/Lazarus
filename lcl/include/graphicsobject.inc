@@ -24,13 +24,13 @@ end;
 
 procedure TGraphicsObject.Changing;
 begin
-  Assert(False, Format('Trace:[TgraphicsObject.Changing] %s', [ClassName]));
+  //DebugLn(Format('Trace:[TgraphicsObject.Changing] %s', [ClassName]));
   if Assigned(FOnChanging) then FOnChanging(Self);
 end;
 
 procedure TGraphicsObject.Changed;
 begin
-  Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
+  //DebugLn(Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 

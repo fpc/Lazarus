@@ -111,9 +111,9 @@ end;
 procedure EventTrace(const TheMessage : string; data : pointer);
 begin
   if Data = nil then
-    Assert(False, Format('Trace:Event [%s] fired',[Themessage]))
+    //DebugLn(Format('Trace:Event [%s] fired',[Themessage]))
   else
-    Assert(False, Format('Trace:Event [%s] fired for %s',
+    //DebugLn(Format('Trace:Event [%s] fired for %s',
       [TheMessage, TObject(data).Classname]));
 end;
 
@@ -999,7 +999,7 @@ begin
   // do not release the capture widget here
 
   //TODO: fill in new focus
-  Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
+  //DebugLn(Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   
   DeliverMessage(Data,  Mess);
 
@@ -1186,7 +1186,7 @@ begin
   {$ENDIF}
 //   Mess.msg := LM_RESIZE;
 //   TControl(data).WindowProc(TLMessage(Mess));
-  Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
+  //DebugLn('Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
 //TObject(data).Dispatch(Mess);
 end;
 
@@ -2103,7 +2103,7 @@ begin
 
   EventTrace('size-allocate', data);
 
-  with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
+  with Size^ do //DebugLn(Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
 
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore
@@ -2587,7 +2587,7 @@ var
   ScrollType: TGtkScrollType;
 begin
   Result := CallBackDefaultReturn;
-  Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  //DebugLn(Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_HSCROLL;
@@ -2614,7 +2614,7 @@ begin
   //TODO: implement SB_THUMBPOSITION message after track is finished
 
   Result := CallBackDefaultReturn;
-  Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  //DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
@@ -2643,7 +2643,7 @@ var
 begin
   Result := CallBackDefaultReturn;
 
-  //Assert(False, Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  //DebugLn(Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
   if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
     Msg.Msg := LM_HSCROLL
   else

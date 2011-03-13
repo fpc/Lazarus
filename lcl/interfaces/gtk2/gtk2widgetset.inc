@@ -796,7 +796,7 @@ begin
     end;
 *)
   else
-    Assert(False, Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
+    //DebugLn(Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
   end;
 end;
 
@@ -2723,7 +2723,7 @@ var
   n : integer;
   TimerInfo : PGtkITimerinfo;
 begin
-  Assert(False, 'Trace:removing timer!!!');
+  //DebugLn('Trace:removing timer!!!');
   n := FTimerData.Count;
   while (n > 0) do begin
     dec (n);
@@ -2838,7 +2838,7 @@ var
   end;
 
 begin
-  Assert(False, 'trace:[TGtk2WidgetSet.InternalGetDIBits]');
+  //DebugLn('trace:[TGtk2WidgetSet.InternalGetDIBits]');
 
 
   Result := 0;
@@ -4298,7 +4298,7 @@ var
   LCLControl: TWinControl;
 begin
   //DebugLn('[TGtk2WidgetSet.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
-  Assert(false, (Format('trace:  [TGtk2WidgetSet.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
+  //DebugLn((Format('trace:  [TGtk2WidgetSet.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
   if Sender is TWinControl then begin
     LCLControl:=TWinControl(Sender);
@@ -5029,7 +5029,7 @@ var
   PixMap : pgdkPixMap;
   Child: PGtkWidget;
 begin
-  Assert(False, 'Trace:In AutoRedraw in GTKObject');
+  //DebugLn('Trace:In AutoRedraw in GTKObject');
 
   Child := PgtkWidget(CanvasHandle);
   Widget := GetFixedWidget(Child);
@@ -5161,7 +5161,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.NewDC: TGtkDeviceContext;
 begin
-  Assert(False, Format('Trace:> [TGtk2WidgetSet.NewDC]', []));
+  //DebugLn(Format('Trace:> [TGtk2WidgetSet.NewDC]', []));
 
   if FDCManager = nil
   then begin
@@ -5179,7 +5179,7 @@ begin
   FillStackAddrs(get_caller_frame(get_frame), @Result.StackAddrs);
   {$endif}
   //DebugLn(['[TGtk2WidgetSet.NewDC] ',DbgS(Result),'  ',FDeviceContexts.Count]);
-  //  Assert(False, Format('Trace:< [TGtk2WidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+  //DebugLn(Format('Trace:< [TGtk2WidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
 
 function TGtk2WidgetSet.FindDCWithGDIObject(GDIObject: PGdiObject
@@ -5347,7 +5347,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
-  Assert(False, Format('Trace:> [TGtk2WidgetSet.NewGDIObject]', []));
+  //DebugLn(Format('Trace:> [TGtk2WidgetSet.NewGDIObject]', []));
   Result:=Gtk2Def.InternalNewPGDIObject;
   {$ifdef TraceGdiCalls}
   FillStackAddrs(get_caller_frame(get_frame), @Result^.StackAddrs);
@@ -5357,7 +5357,7 @@ begin
   inc(Result^.RefCount);
   FGDIObjects.Add(Result);
   //DebugLn('[TGtk2WidgetSet.NewGDIObject] ',DbgS(Result),'  ',FGDIObjects.Count);
-  Assert(False, Format('Trace:< [TGtk2WidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
+  //DebugLn(Format('Trace:< [TGtk2WidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5553,7 +5553,7 @@ begin
       else begin
         Result:= false;
         DebugLn('[TGtk2WidgetSet.DeleteObject] TODO : Unimplemented GDI type');
-        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
+        //DebugLn('Trace:TODO : Unimplemented GDI object in delete object');
       end;
     end;
   end;

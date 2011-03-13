@@ -385,9 +385,9 @@ end;
 procedure EventTrace(Message: String; Data: TObject);
 Begin
   If Data = Nil Then
-    Assert(False, Format('Trace:Event [%S] fired', [Message]))
+    //DebugLn(Format('Trace:Event [%S] fired', [Message]))
   Else
-    Assert(False, Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
+    //DebugLn(Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
 End;
 
 {------------------------------------------------------------------------------
@@ -506,7 +506,7 @@ procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer
 Const
   MVK_UNIFY_SIDES = 1;
 Begin
-  Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
+  //DebugLn('TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
   KeyCode := Word(Event);
   VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
   SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
@@ -553,7 +553,7 @@ Begin
 //  End
   Else
   Begin
-    Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
+    //DebugLn(Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
   End;
   Result := Handle;
   If Handle = 0 Then
