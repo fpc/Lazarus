@@ -369,7 +369,7 @@ begin
 //  RegisterIDEMenuCommand(mnuCompDDSection,'ddeditfields',SMenuDatadictApply,@IDEDDC.ApplyDD,Nil,Nil);
     CmdCreateSQL:=RegisterIDEMenuCommand(mnuCompDDSection,'dddesignsql',SMenuDatadictDesignSQL,@DesignSQL,Nil,Nil);
     CmdCreateCode:=RegisterIDEMenuCommand(mnuCompDDSection,'ddcreatecode',SMenuDatadictCreateCode,@CreateDDCode,Nil,Nil);
-    RegisterIDEMenuCommand(mnuTools,'Datadict',SMenuDatadesktop,@OpenEmptyDD,Nil);
+    RegisterIDEMenuCommand(itmSecondaryTools,'Datadict',SMenuDatadesktop,@OpenEmptyDD,Nil);
     end;
 //  RegisterComponentEditor(TDataset, TDataDictComponentEditor);
 end;

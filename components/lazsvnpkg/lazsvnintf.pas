@@ -54,16 +54,14 @@ procedure Register;
 var
   Key: TIDEShortCut;
   Cat: TIDECommandCategory;
-  mnuSVNMain : TIDEMenuSection;
   mnuSVNSection : TIDEMenuSection;
 begin
   Key:=IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   {$ifndef USECustomCategory}
-    Cat:=IDECommandList.CreateCategory(nil, 'SVN', rsSVNTools,
-      IDECmdScopeSrcEditOnly);
+    Cat:=IDECommandList.CreateCategory(nil, 'SVN', rsSVNTools, IDECmdScopeSrcEditOnly);
   {$else}
-    cat:=nil;
+    Cat:=nil;
   {$endif}
 
   CmdSVNLog:=RegisterIDECommand(Cat, 'SVNLog', rsShowLog, Key, nil, @ProcSVNLog);
@@ -74,8 +72,7 @@ begin
   CmdSVNDiffHead:=RegisterIDECommand(Cat, 'SVNDiffHead', rsShowDiffHead, Key, nil, @ProcSVNDiffHead);
   CmdSVNSettings:=RegisterIDECommand(Cat, 'SVNSettings', rsSVNSettings, Key, nil, @ProcSVNSettings);
 
-  mnuSVNMain := RegisterIDEMenuSection(mnuTools, 'SVN');
-  mnuSVNSection:=RegisterIDESubMenu(mnuSVNMain, 'SVN', 'SVN', nil, nil, 'menu_svn');
+  mnuSVNSection:=RegisterIDESubMenu(itmSecondaryTools, 'SVN', 'SVN', nil, nil, 'menu_svn');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNLog', rsShowLog, nil, nil,
     CmdSVNLog, 'menu_svn_log');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNCommit', rsCommit, nil, nil,
