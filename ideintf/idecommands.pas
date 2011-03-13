@@ -36,7 +36,7 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, TextTools;
+  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits, TextTools;
   
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -508,7 +508,7 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 function ExecuteIDECommand(Sender: TObject; Command: word): boolean;
 
-function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
+function IDEShortCutToMenuShortCut(MenuItem: TMenuItem; const IDEShortCut: TIDEShortCut): TShortCut;
 
 var
   // will be set by the IDE
@@ -568,7 +568,6 @@ function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 
 implementation
 
-
 function IDEShortCut(Key1: word; Shift1: TShiftState;
   Key2: word; Shift2: TShiftState): TIDEShortCut;
 begin
@@ -599,12 +598,25 @@ begin
     Result:=false;
 end;
 
-function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
+function IDEShortCutToMenuShortCut(MenuItem: TMenuItem; const IDEShortCut: TIDEShortCut): TShortCut;
+var
+  s: String;
 begin
   if IDEShortCut.Key2=VK_UNKNOWN then
     Result:=ShortCut(IDEShortCut.Key1,IDEShortCut.Shift1)
-  else
+  else begin
+    // This shows combination shortcuts. Normally shortcut string is generated
+    // in widgetset code but it supports only one key (modified by Shift state).
+    {$IFDEF CombinationShortcuts}
+    if (IDEShortCut.Key1<>VK_UNKNOWN) and (IDEShortCut.Key2<>VK_UNKNOWN) then begin
+      s:=KeyAndShiftStateToKeyString(IDEShortCut.Key1,IDEShortCut.Shift1);
+      if (IDEShortCut.Key2<>VK_UNKNOWN) then
+        s:=s+', '+KeyAndShiftStateToKeyString(IDEShortCut.Key2,IDEShortCut.Shift2);
+      MenuItem.Caption:=MenuItem.Caption+#9+s;
+    end;
+    {$ENDIF}
     Result:=ShortCut(VK_UNKNOWN,[]);
+  end;
 end;
 
 procedure CreateStandardIDECommandScopes;

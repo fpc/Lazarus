@@ -1622,7 +1622,7 @@ begin
   //DebugLn('TIDEMenuCommand.CommandChanged ',Name);
   if MenuItem<>nil then
     if FCommand<>nil then
-      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(FCommand.ShortcutA)
+      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(MenuItem, FCommand.ShortcutA)
     else
       MenuItem.ShortCut:=0;
 end;
@@ -1727,7 +1727,7 @@ begin
     MenuItem.RightJustify:=RightJustify;
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
     if Command<>nil then
-      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(Command.ShortcutA)
+      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(MenuItem, Command.ShortcutA)
     else
       MenuItem.ShortCut:=ShortCut(0,[]);
     MenuItem.GroupIndex:=GroupIndex;
