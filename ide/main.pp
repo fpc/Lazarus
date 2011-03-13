@@ -2744,8 +2744,7 @@ begin
     for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
       SrcEdit:=SourceEditorManager.SourceEditors[i];
       Ext:=ExtractFileExt(SrcEdit.FileName);
-      if Ext<>'' then
-      begin
+      if Ext<>'' then begin
         Ext:='*'+Ext;
         if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
         or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
