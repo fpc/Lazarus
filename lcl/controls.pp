@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, types, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
-  UTrace, PropertyStorage, Menus, ActnList, LCLClasses, LResources;
+  PropertyStorage, Menus, ActnList, LCLClasses, LResources;
 
 
 const
