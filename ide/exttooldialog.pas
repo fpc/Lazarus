@@ -223,8 +223,7 @@ begin
   inherited Clear;
 end;
 
-procedure TExternalToolList.Insert(Index: integer;
-  NewTool: TExternalToolOptions);
+procedure TExternalToolList.Insert(Index: integer; NewTool: TExternalToolOptions);
 begin
   inherited Insert(Index,NewTool);
 end;
@@ -261,9 +260,9 @@ begin
   end;
 end;
 
-procedure TExternalToolList.LoadShortCuts(
-  KeyCommandRelationList: TKeyCommandRelationList);
-var i: integer;
+procedure TExternalToolList.LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
+var
+  i: integer;
   KeyCommandRelation: TKeyCommandRelation;
 begin
   for i:=0 to Count-1 do begin

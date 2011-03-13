@@ -217,8 +217,7 @@ begin
     OpenPackageMenuItem.Visible:=false;
     OpenUnitMenuItem.Visible:=false;
   end else begin
-    OpenPackageMenuItem.Caption:=Format(lisCPOpenPackage, [APackage.IDAsString]
-      );
+    OpenPackageMenuItem.Caption:=Format(lisCPOpenPackage, [APackage.IDAsString]);
     OpenPackageMenuItem.Visible:=true;
     ShownFilename:=PkgComponent.PkgFile.Filename;
     UnitFilename:=PkgComponent.PkgFile.GetFullFilename;

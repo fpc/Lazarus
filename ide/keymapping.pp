@@ -1840,8 +1840,7 @@ begin
   Result:=SysUtils.CompareText(Key1.Name,Key2.Name);
 end;
 
-function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer
-  ): integer;
+function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer): integer;
 var
   Name: string;
   LoadedKey: TLoadedKeyCommand absolute Key;
@@ -2875,8 +2874,7 @@ begin
   fCategories.Clear;
 end;
 
-function TKeyCommandRelationList.GetRelation(
-  Index:integer):TKeyCommandRelation;
+function TKeyCommandRelationList.GetRelation(Index:integer):TKeyCommandRelation;
 begin
   if (Index<0) or (Index>=Count) then
   begin
@@ -3249,14 +3247,12 @@ begin
     end;
 end;
 
-function TKeyCommandRelationList.FindIDECommand(ACommand: word
-  ): TIDECommand;
+function TKeyCommandRelationList.FindIDECommand(ACommand: word): TIDECommand;
 begin
   Result:=FindByCommand(ACommand);
 end;
 
-function TKeyCommandRelationList.FindByCommand(
-  ACommand: word):TKeyCommandRelation;
+function TKeyCommandRelationList.FindByCommand(ACommand: word):TKeyCommandRelation;
 var a:integer;
 begin
   Result:=nil;
@@ -3443,8 +3439,7 @@ begin
   end;
 end;
 
-function TKeyCommandRelationList.CreateUniqueCategoryName(const AName: string
-  ): string;
+function TKeyCommandRelationList.CreateUniqueCategoryName(const AName: string): string;
 begin
   Result:=AName;
   if FindCategoryByName(Result)=nil then exit;
@@ -3453,8 +3448,7 @@ begin
     Result:=CreateNextIdentifier(Result);
 end;
 
-function TKeyCommandRelationList.CreateUniqueCommandName(const AName: string
-  ): string;
+function TKeyCommandRelationList.CreateUniqueCommandName(const AName: string): string;
 begin
   Result:=AName;
   if FindCommandByName(Result)=nil then exit;
@@ -3472,8 +3466,7 @@ end;
 function TKeyCommandRelationList.CreateCategory(Parent: TIDECommandCategory;
   const AName, Description: string; Scope: TIDECommandScope): TIDECommandCategory;
 begin
-  Result:=Categories[
-                AddCategory(CreateUniqueCategoryName(AName),Description,Scope)];
+  Result:=Categories[AddCategory(CreateUniqueCategoryName(AName),Description,Scope)];
 end;
 
 function TKeyCommandRelationList.CreateCommand(Category: TIDECommandCategory;
@@ -3598,14 +3591,12 @@ begin
   end;
 end;
 
-function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation
-  ): integer;
+function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation): integer;
 begin
   Result:=fRelations.IndexOf(ARelation);
 end;
 
-function TKeyCommandRelationList.CommandToShortCut(ACommand: word
-  ): TShortCut;
+function TKeyCommandRelationList.CommandToShortCut(ACommand: word): TShortCut;
 var ARelation: TKeyCommandRelation;
 begin
   ARelation:=FindByCommand(ACommand);
