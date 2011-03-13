@@ -5946,20 +5946,6 @@ var
     AddStr(s);
   end;
 
-  procedure AddAttributes;
-  begin
-    if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
-    if ssAlt in ShiftState then AddAttribute(srkm_Alt);
-    if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
-    if ssMeta in ShiftState then
-      {$IFDEF LCLcarbon}
-      AddAttribute(srVK_CMD);
-      {$ELSE}
-      AddAttribute(srVK_META);
-      {$ENDIF}
-    if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
-  end;
-
   // Tricky routine. This only works for western languages
   // TODO: This should be replaces by the winapi VKtoChar functions
   //
@@ -6002,20 +5988,20 @@ var
       VK_LEFT       :AddStr(srVK_LEFT);
       VK_UP         :AddStr(srVK_UP);
       VK_RIGHT      :AddStr(srVK_RIGHT);
-      VK_DOWN       : AddStr(srVK_DOWN);
-      VK_SELECT     : AddStr(srVK_SELECT);
+      VK_DOWN       :AddStr(srVK_DOWN);
+      VK_SELECT     :AddStr(srVK_SELECT);
       VK_PRINT      :AddStr(srVK_PRINT);
       VK_EXECUTE    :AddStr(srVK_EXECUTE);
       VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
       VK_INSERT     :AddStr(srVK_INSERT);
-      VK_DELETE     : AddStr(srVK_DELETE);
+      VK_DELETE     :AddStr(srVK_DELETE);
       VK_HELP       :AddStr(srVK_HELP);
       VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
       VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
       VK_LWIN       :AddStr(srVK_LWIN);
       VK_RWIN       :AddStr(srVK_RWIN);
       VK_APPS       :AddStr(srVK_APPS);
-      VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
+      VK_NUMPAD0..VK_NUMPAD9: AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
       VK_MULTIPLY   :AddStr('*');
       VK_ADD        :AddStr('+');
       VK_SEPARATOR  :AddStr('|');
@@ -6037,7 +6023,6 @@ var
       VK_OEM_6      :AddStr(lisOEM6);
       VK_OEM_7      :AddStr(lisOEM7);
       VK_OEM_8      :AddStr(lisOEM8);
-
 //    VK_EQUAL      :AddStr('=');
 //    VK_COMMA      :AddStr(',');
 //    VK_POINT      :AddStr('.');
@@ -6050,16 +6035,20 @@ var
     end;
   end;
 
-  procedure AddAttributesAndKey;
-  begin
-    AddAttributes;
-    AddKey;
-  end;
-
 begin
   Result := '';
   p := 0;
-  AddAttributesAndKey;
+  if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
+  if ssAlt in ShiftState then AddAttribute(srkm_Alt);
+  if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
+  if ssMeta in ShiftState then
+    {$IFDEF LCLcarbon}
+    AddAttribute(srVK_CMD);
+    {$ELSE}
+    AddAttribute(srVK_META);
+    {$ENDIF}
+  if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
+  AddKey;
 end;
 
 function KeyStringIsIrregular(const s: string): boolean;
