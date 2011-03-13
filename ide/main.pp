@@ -2744,14 +2744,16 @@ begin
     for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
       SrcEdit:=SourceEditorManager.SourceEditors[i];
       Ext:=ExtractFileExt(SrcEdit.FileName);
-      if Ext='' then exit;
-      Ext:='*'+Ext;
-      if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
-      or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
-      //debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
-      if AllEditorExt<>'|' then
-        AllEditorExt:=AllEditorExt+';';
-      AllEditorExt:=AllEditorExt+Ext;
+      if Ext<>'' then
+      begin
+        Ext:='*'+Ext;
+        if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
+        or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
+        //debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
+        if AllEditorExt<>'|' then
+          AllEditorExt:=AllEditorExt+';';
+        AllEditorExt:=AllEditorExt+Ext;
+      end;
     end;
     if AllEditorExt<>'|' then begin
       System.Delete(AllEditorExt,1,1);
