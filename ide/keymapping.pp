@@ -285,6 +285,7 @@ begin
   ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionUpperCase: SetResult2(VK_K,[SSCtrl],VK_N,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionLowerCase: SetResult2(VK_K,[SSCtrl],VK_O,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionSwapCase: SetResult2(VK_K,[SSCtrl],VK_P,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -738,6 +739,7 @@ begin
   ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionUpperCase: SetResult(VK_K,[ssCtrl],VK_N,[], VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionLowerCase: SetResult(VK_K,[ssCtrl],VK_O,[], VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionSwapCase: SetResult(VK_K,[SSCtrl],VK_P,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
@@ -1352,6 +1354,7 @@ begin
   ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionUpperCase: SetResult2(VK_K,[SSCtrl],VK_N,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionLowerCase: SetResult2(VK_K,[SSCtrl],VK_O,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionSwapCase: SetResult2(VK_K,[SSCtrl],VK_P,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
