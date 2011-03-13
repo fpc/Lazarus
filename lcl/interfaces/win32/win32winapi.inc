@@ -1127,7 +1127,7 @@ var
 {$endif}
 begin
   //DebugLn(Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
-    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  //  [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
  {$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
@@ -1154,7 +1154,7 @@ begin
  {$endif}
  
   //DebugLn(Format('trace:> [TWin32WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
-    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  //  [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
 
 {------------------------------------------------------------------------------

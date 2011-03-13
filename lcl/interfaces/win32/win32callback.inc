@@ -45,7 +45,7 @@ begin
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
   //DebugLn('Trace:PropEnumProc - Start');
   //DebugLn(Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
-    [String(Str), Data, Window]));
+  //  [String(Str), Data, Window]));
   RemoveProp(Window, Str);
   Result := True;
   //DebugLn('Trace:PropEnumProc - Exit');
