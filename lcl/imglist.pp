@@ -172,7 +172,7 @@ type
     procedure Clear;
     procedure Delete(AIndex: Integer);
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
-    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload;
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload; virtual;
     procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
