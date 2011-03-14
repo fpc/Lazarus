@@ -1856,7 +1856,6 @@ begin
     else begin
       //DebugLn(Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
     end;
-    end;
   end;
 end;
 {$EndIf}
