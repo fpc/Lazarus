@@ -137,7 +137,6 @@ type
     FOnAsyncSocketMsg: TSocketEvent;
     FDotsPatternBitmap: HBitmap;
 
-    procedure AssignSelf(Window: HWnd; Data: Pointer);
     function GetDotsPatternBitmap: HBitmap;
 
     { event handler helper functions }

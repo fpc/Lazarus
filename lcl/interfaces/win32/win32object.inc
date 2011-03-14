@@ -734,19 +734,6 @@ begin
     FAppHandle := AValue;
 end;
 
- {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AssignSelf
-  Params: Window - The window to assign
-          Data   - The data to assign to the window
-  Returns: Nothing
-
-  Assigns data to a window
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.AssignSelf(Window: HWnd; Data: Pointer);
-begin
-  //DebugLn('Trace:[TWin32WidgetSet.AssignSelf] Trying to code it.  It''s probably wrong.');
-end;
-
 function TWin32WidgetSet.GetDotsPatternBitmap: HBitmap;
 const
   Dots: array[0..3] of Word = ($55, $AA, $55, $AA);

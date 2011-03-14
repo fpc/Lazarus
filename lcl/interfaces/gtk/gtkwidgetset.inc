@@ -4319,15 +4319,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TGtkWidgetSet AssignSelf
-       *Note: Assigns a pointer to self on a widget
-------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AssignSelf(Child,Data : Pointer);
-begin
-  gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
-end;
-
-{------------------------------------------------------------------------------
        TGtkWidgetSet ShowHide
        *Note: Show or hide a widget
 ------------------------------------------------------------------------------}

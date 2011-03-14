@@ -170,7 +170,6 @@ type
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
-    procedure AssignSelf(Child, Data: Pointer);virtual;
 
     // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
