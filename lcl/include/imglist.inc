@@ -28,6 +28,12 @@ const
   SIG_LAZ3 = 'Li';
   SIG_D3   = 'IL';
 
+const
+  EffectMap: array[Boolean] of TGraphicsDrawEffect = (
+    gdeDisabled,
+    gdeNormal
+  );
+
 {------------------------------------------------------------------------------
   Method:  CopyImage
   Params:  Destination, Source: the destination/source canvas
@@ -485,12 +491,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AEnabled: Boolean);
-const
-  EffectMap: array[Boolean] of TGraphicsDrawEffect =
-  (
-    gdeDisabled,
-    gdeNormal
-  );
 begin
   Draw(ACanvas, AX, AY, AIndex, EffectMap[AEnabled]);
 end;
@@ -498,11 +498,24 @@ end;
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   ADrawEffect: TGraphicsDrawEffect);
 begin
+  Draw(ACanvas, AX, AY, AIndex, DrawingStyle, ImageType, ADrawEffect);
+end;
+
+procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  ADrawingStyle: TDrawingStyle; AImageType: TImageType; AEnabled: Boolean);
+begin
+  Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  ADrawEffect: TGraphicsDrawEffect);
+begin
   if (AIndex < 0) or (AIndex >= FCount) then Exit;
 
   ReferenceNeeded;
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
-                          BkColor, BlendColor, ADrawEffect, DrawingStyle, ImageType);
+                          BkColor, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
 end;
 
 {------------------------------------------------------------------------------
