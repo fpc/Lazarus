@@ -1,13 +1,18 @@
 #!/bin/bash
 
 # do not include gerror.h - it only contains c macros for debugging
-# do not include gslice.h, gmem.h - it only contains c macros for fast mem allocation
+# do not include gslice.h, gmem.h - they only contain c macros for optimization
+# do not include gtestutils.h - it only contains the test suite
 
 dir=~/cpp/gtk3/glib/glib
 ./h2pastest -uG_BEGIN_DECLS -uG_END_DECLS -uG_GNUC_CONST -dG_CONST_RETURN=const \
             -uGLIB_VAR -uG_INLINE_FUNC -uG_GNUC_MAY_ALIAS -uG_GNUC_MALLOC \
             -uG_GNUC_WARN_UNUSED_RESULT -uG_GNUC_NULL_TERMINATED \
-            -uG_GNUC_PURE \
+            -uG_GNUC_PURE -dG_GNUC_PRINTF"()" \
+            -uGLIB_SYSDEF_POLLIN -uGLIB_SYSDEF_POLLOUT -uGLIB_SYSDEF_POLLPRI \
+            -uGLIB_SYSDEF_POLLERR -uGLIB_SYSDEF_POLLHUP -uGLIB_SYSDEF_POLLNVAL \
+            -uG_GNUC_INTERNAL -uG_GNUC_NORETURN \
+            -dG_GNUC_ALLOC_SIZE"()" -dG_GNUC_FORMAT"()" \
   $dir/glib.h \
   $dir/galloca.h \
   $dir/garray.h \
@@ -70,7 +75,6 @@ dir=~/cpp/gtk3/glib/glib
   $dir/gstdio.h \
   $dir/gstrfuncs.h \
   $dir/gstring.h \
-  $dir/gtestutils.h \
   $dir/gthread.h \
   $dir/gthreadpool.h \
   $dir/gthreadprivate.h \

@@ -121,6 +121,7 @@ type
     procedure Clear;
     function Contains(const s: string): boolean;
     function ContainsIdentifier(P: PChar): boolean;
+    function FindNodeWithIdentifierAsPrefix(P: PChar): TAVLTreeNode;
     function GetString(const Name: string; out Value: string): boolean;
     procedure Add(const Name, Value: string);
     procedure GetNames(List: TStrings);
@@ -181,11 +182,13 @@ type
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
 function CompareIdentifierAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
+function CompareIdentifierPrefixAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
 
 // case insensitive
 function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
 function CompareIdentifierAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
+function CompareIdentifierPrefixAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
 
 function CompareFilenameToStringItems(Data1, Data2: Pointer): integer;
 function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer;
@@ -224,13 +227,14 @@ function CompareIdentifierAndStringToStringTreeItem(Identifier, Data: Pointer
   ): integer;
 var
   Id: PChar absolute Identifier;
+  Item: PStringToStringTreeItem absolute Data;
   IdLen: LongInt;
   ItemLen: PtrInt;
 begin
-  Result:=-CompareIdentifiersCaseSensitive(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
+  Result:=-CompareIdentifiersCaseSensitive(Id,PChar(Item^.Name));
   if Result=0 then begin
     IdLen:=GetIdentLen(Id);
-    ItemLen:=length(PStringToStringTreeItem(Data)^.Name);
+    ItemLen:=length(Item^.Name);
     if IdLen=Itemlen then
       Result:=0
     else if IdLen>ItemLen then
@@ -238,6 +242,15 @@ begin
     else
       Result:=-1;
   end;
+end;
+
+function CompareIdentifierPrefixAndStringToStringTreeItem(Identifier,
+  Data: Pointer): integer;
+var
+  Id: PChar absolute Identifier;
+  Item: PStringToStringTreeItem absolute Data;
+begin
+  Result:=-CompareIdentifiersCaseSensitive(Id,PChar(Item^.Name));
 end;
 
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
@@ -249,13 +262,14 @@ function CompareIdentifierAndStringToStringTreeItemI(Identifier, Data: Pointer
   ): integer;
 var
   Id: PChar absolute Identifier;
+  Item: PStringToStringTreeItem absolute Data;
   IdLen: LongInt;
   ItemLen: PtrInt;
 begin
-  Result:=-CompareIdentifiers(PChar(Id),PChar(PStringToStringTreeItem(Data)^.Name));
+  Result:=-CompareIdentifiers(Id,PChar(Item^.Name));
   if Result=0 then begin
     IdLen:=GetIdentLen(Id);
-    ItemLen:=length(PStringToStringTreeItem(Data)^.Name);
+    ItemLen:=length(Item^.Name);
     if IdLen=Itemlen then
       Result:=0
     else if IdLen>ItemLen then
@@ -263,6 +277,15 @@ begin
     else
       Result:=-1;
   end;
+end;
+
+function CompareIdentifierPrefixAndStringToStringTreeItemI(Identifier,
+  Data: Pointer): integer;
+var
+  Id: PChar absolute Identifier;
+  Item: PStringToStringTreeItem absolute Data;
+begin
+  Result:=-CompareIdentifiers(Id,PChar(Item^.Name));
 end;
 
 function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer
@@ -533,6 +556,15 @@ begin
     Result:=FTree.FindKey(p,@CompareIdentifierAndStringToStringTreeItem)<>nil
   else
     Result:=FTree.FindKey(p,@CompareIdentifierAndStringToStringTreeItemI)<>nil;
+end;
+
+function TStringToStringTree.FindNodeWithIdentifierAsPrefix(P: PChar
+  ): TAVLTreeNode;
+begin
+  if CaseSensitive then
+    Result:=FTree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItem)
+  else
+    Result:=FTree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItemI);
 end;
 
 function TStringToStringTree.GetString(const Name: string; out Value: string

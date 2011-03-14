@@ -523,60 +523,110 @@ var
   StrStream: TStringStream;
 
   procedure Append(Code: TCodeBuffer; FromPos, EndPos: integer);
+
+    procedure Error(p: integer; const Msg: string);
+    var
+      Line: integer;
+      Column: integer;
+      s: String;
+    begin
+      Code.AbsoluteToLineCol(p,Line,Column);
+      s:=Code.Filename+'('+IntToStr(Line)+','+IntToStr(Column)+') Error: '+Msg;
+      raise Exception.Create(s);
+    end;
+
   var
     StartP: PChar;
     AtomStart: integer;
     p: LongInt;
-    MacroName: String;
     MacroValue: string;
+    MacroNode: TAVLTreeNode;
+    MacroItem: PStringToStringTreeItem;
+    Src: String;
+    BracketLvl: Integer;
   begin
     if FromPos<1 then FromPos:=1;
     if EndPos>Code.SourceLength then EndPos:=Code.SourceLength+1;
     if (EndPos<=FromPos) or (FromPos>Code.SourceLength) then exit;
     p:=FromPos;
+    Src:=Code.Source;
     while p<EndPos do begin
-      ReadRawNextCAtom(Code.Source,p,AtomStart);
+      ReadRawNextCAtom(Src,p,AtomStart);
       if AtomStart>=EndPos then break;
-      StartP:=@Code.Source[AtomStart];
+      StartP:=@Src[AtomStart];
       if (StartP^='#') and IsFirstNonSpaceCharInLine(Code.Source,AtomStart) then
       begin
         // directive
-        ReadRawNextCAtom(Code.Source,p,AtomStart);
+        ReadRawNextCAtom(Src,p,AtomStart);
         if AtomStart>=EndPos then break;
-        StartP:=@Code.Source[AtomStart];
+        StartP:=@Src[AtomStart];
         if (CompareIdentifiersCaseSensitive(StartP,'define')=0)
         or (CompareIdentifiersCaseSensitive(StartP,'undef')=0)
         or (CompareIdentifiersCaseSensitive(StartP,'ifdef')=0)
         or (CompareIdentifiersCaseSensitive(StartP,'ifndef')=0)
         then begin
           // a ifdef/ifndef/define/undefine directive
-          // the next identifier should not be replaced as macro
-          ReadRawNextCAtom(Code.Source,p,AtomStart);
+          // the next identifier must not be replaced as macro
+          ReadRawNextCAtom(Src,p,AtomStart);
           if AtomStart>=EndPos then break;
         end;
       end
-      else if IsIdentStartChar[StartP^] and Macros.ContainsIdentifier(StartP)
-      then begin
-        // macro found
-        MacroName:=GetIdentifier(StartP);
-        MacroValue:=Macros[MacroName];
-        //debugln(['Append Macro found: ',MacroName]);
-        // write source in front of macro
-        if AtomStart>FromPos then begin
-          AddLink(StrStream.Position+1,Code,FromPos);
-          StrStream.Write(Code.Source[FromPos],AtomStart-FromPos);
-        end;
-        FromPos:=p;
-        if MacroValue<>'' then begin
-          // write macro value
-          AddLink(StrStream.Position+1,nil,0);
-          StrStream.Write(MacroValue[1],length(MacroValue));
+      else if IsIdentStartChar[StartP^] then begin
+        MacroNode:=Macros.FindNodeWithIdentifierAsPrefix(StartP);
+        if MacroNode<>nil then begin
+          // macro found
+          MacroItem:=PStringToStringTreeItem(MacroNode.Data);
+          debugln(['Append MacroName=',MacroItem^.Name,' ',GetIdentifier(@Src[AtomStart])]);
+          // write source in front of macro
+          if AtomStart>FromPos then begin
+            AddLink(StrStream.Position+1,Code,FromPos);
+            StrStream.Write(Code.Source[FromPos],AtomStart-FromPos);
+            FromPos:=p;
+          end;
+          if System.Pos('(',MacroItem^.Name)>0
+          then begin
+            // a macro function
+            // => read parameters
+            ReadRawNextCAtom(Src,p,AtomStart);
+            if AtomStart>=EndPos then begin
+              Error(p+GetIdentLen(@Src[FromPos]),
+                 'missing ( after macro function "'+GetIdentifier(@Src[FromPos])+'"');
+            end;
+            if Src[AtomStart]<>'(' then begin
+              Error(AtomStart,'expected ( after macro function "'+GetIdentifier(@Src[FromPos])+'"'
+                +' but found "'+copy(Src,AtomStart,p-AtomStart)+'"');
+            end;
+            BracketLvl:=1;
+            repeat
+              ReadRawNextCAtom(Src,p,AtomStart);
+              if AtomStart>=EndPos then begin
+                Error(p+GetIdentLen(@Src[FromPos]),
+                   'missing ) for macro function "'+GetIdentifier(@Src[FromPos])+'"');
+              end;
+              case Src[AtomStart] of
+              '(': inc(BracketLvl);
+              ')':
+                begin
+                  dec(BracketLvl);
+                  if BracketLvl=0 then break;
+                end;
+              end;
+            until false;
+            FromPos:=p;
+          end;
+          MacroValue:=MacroItem^.Value;
+          //debugln(['Append Macro found: ',MacroItem^.Name]);
+          if MacroValue<>'' then begin
+            // write macro value
+            AddLink(StrStream.Position+1,nil,0);
+            StrStream.Write(MacroValue[1],length(MacroValue));
+          end;
         end;
       end;
     end;
     if FromPos<EndPos then begin
       AddLink(StrStream.Position+1,Code,FromPos);
-      StrStream.Write(Code.Source[FromPos],EndPos-FromPos);
+      StrStream.Write(Src[FromPos],EndPos-FromPos);
     end;
   end;
 
@@ -597,6 +647,7 @@ var
     IncFilename: String;
     MergePos: Integer;
   begin
+    if MergedBuffers.IndexOf(Code)>=0 then exit;
     MergedBuffers.Add(Code);
     MergePos:=1;
     if not (chfmfIgnoreIncludes in Flags) then begin

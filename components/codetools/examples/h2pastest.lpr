@@ -54,6 +54,7 @@ var
   MacroName: String;
   p: LongInt;
   MacroValue: String;
+  MacroFuncName: String;
 begin
   Merger:=nil;
   try
@@ -73,12 +74,32 @@ begin
           MacroName:=copy(MacroName,1,p-1);
         end;
         MacroName:=copy(MacroName,1,255);
-        if not IsValidIdent(MacroName) then begin
-          writeln('invalid macro name "',MacroName,'"');
-          Halt;
-        end;
-        Merger.Macros[MacroName]:=MacroValue;
-        Tool.Defines.Add(MacroName,MacroValue);
+        p:=System.Pos('(',MacroName);
+        if p<1 then begin
+          // macro (not macro function)
+          if not IsValidIdent(MacroName) then begin
+            writeln('invalid macro name "',MacroName,'"');
+            Halt;
+          end;
+          Merger.Macros[MacroName]:=MacroValue;
+          Tool.Defines.Add(MacroName,MacroValue);
+        end else begin
+          // maybe a macro function
+          MacroFuncName:=copy(MacroName,1,p-1);
+          if not IsValidIdent(MacroFuncName) then begin
+            writeln('invalid macro name "',MacroFuncName,'"');
+            Halt;
+          end;
+          if p=length(MacroName) then begin
+            writeln('invalid macro function "',MacroName,'"');
+            Halt;
+          end;
+          if MacroName[p+1]<>')' then begin
+            writeln('macro function "',MacroName,'": parameters are not supported yet');
+            Halt;
+          end;
+          Merger.Macros[MacroName]:=MacroValue;
+        end
       end
       else if copy(Param,1,2)='-u' then begin
         MacroName:=copy(Param,3,255);
@@ -100,6 +121,19 @@ begin
         writeln('');
         writeln('  --merge-all');
         writeln('    Merge all given files. Normally only files needed by the main header files are merged.');
+        writeln('  -u<name>');
+        writeln('    Undefines a macro. "#idfef name" will give false.');
+        writeln('  -d<name>');
+        writeln('    Defines a macro with an empty value. "#idfef name" will give true.');
+        writeln('  -d<name>=<value>');
+        writeln('    Defines a macro with a value. Value is not replaced recursively.');
+        writeln('  -d"<name>()"=<value>');
+        writeln('    Defines a macro function with a value. Value is not replaced recursively.');
+        writeln('    The function fits any number of parameters.');
+        writeln('');
+        writeln('For example:');
+        writeln('  ',ParamStr(0),' -dEnableFlag -dFlag2=Value -uUndefineMacro test.h header2.h');
+        writeln('  ',ParamStr(0),' -d"printf()" test.h');
         Halt;
       end else begin
         Filename:=CleanAndExpandFilename(Param);
