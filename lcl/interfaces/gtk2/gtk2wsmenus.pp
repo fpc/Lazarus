@@ -82,9 +82,6 @@ implementation
 
 {$I gtk2defines.inc}
 
-var
-  MenuWidget: PGtkWidget = nil;
-
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
 var
@@ -254,11 +251,8 @@ end;
 
 class procedure TGtk2WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
-  //AccelKey: Integer;
-  //AccelGroup: PGTKAccelGroup;
   MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
 begin
-  //DebugLn('TGtkWidgetSet.AttachMenu START ',AMenuItem.Name,':',AMenuItem.ClassName,' Parent=',AMenuItem.Parent.Name,':',AMenuItem.Parent.ClassName);
   with AMenuItem do
   begin
     MenuItem := PGtkWidget(Handle);
@@ -304,7 +298,6 @@ begin
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
       TGtk2WidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
   end;
-  //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
 
 class function TGtk2WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
@@ -388,8 +381,6 @@ class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
   
-  //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
-
   // Temporary: At least it writes the names of the shortcuts
   UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), NewShortCut);
 
@@ -622,8 +613,6 @@ end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
 begin
-  if widget = MenuWidget then
-    MenuWidget := nil;
   if data <> nil then
     g_idle_add(@gtkWSPopupDelayedClose, Pointer(PWidgetInfo(data)^.LCLObject));
 end;
@@ -656,6 +645,7 @@ class procedure TGtk2WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
 var
   APoint: TPoint;
   AProc: Pointer;
+  MenuWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
   ReleaseMouseCapture;
@@ -669,22 +659,9 @@ begin
   WidgetInfo^.DataOwner := False;
   // MenuWidget can be either GtkMenu or GtkMenuItem submenu
   if GTK_IS_MENU_ITEM(MenuWidget) then
-    MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
+  MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
   gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
                  WidgetInfo, 0, gtk_get_current_event_time());
-  repeat
-    try
-      WidgetSet.AppProcessMessages; // process all events
-    except
-      if Application.CaptureExceptions then
-        Application.HandleException(APopupMenu)
-      else
-        raise;
-    end;
-    if Application.Terminated or not Assigned(MenuWidget) then
-      break;
-    Application.Idle(true);
-  until False;
 end;
 
 end.
