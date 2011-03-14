@@ -96,9 +96,9 @@
         <UnitName Value="TestCTXMLFixFragments"/>
       </Unit10>
       <Unit11>
-        <Filename Value="codetoolstests\testctrangescan.pas"/>
+        <Filename Value="codetoolstests\testcth2pas.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCTRangeScan"/>
+        <UnitName Value="TestCTH2Pas"/>
       </Unit11>
     </Units>
   </ProjectOptions>

@@ -5759,6 +5759,7 @@ test/bugs/testfileutil.pas svneol=native#text/plain
 test/bugtestcase.pas svneol=native#text/plain
 test/codetoolstests/testbasiccodetools.pas svneol=native#text/plain
 test/codetoolstests/testcompleteblock.pas svneol=native#text/plain
+test/codetoolstests/testcth2pas.pas svneol=native#text/pascal
 test/codetoolstests/testctrangescan.pas svneol=native#text/plain
 test/codetoolstests/testctxmlfixfragments.pas svneol=native#text/pascal
 test/hello.ahk svneol=native#text/plain

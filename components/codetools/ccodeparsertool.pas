@@ -656,9 +656,7 @@ var
         if length(Line)<length('#include')+2 then continue;
         if copy(Line,1,length('#include'))<>'#include' then continue;
         if not (Line[length('#include')+1] in [' ',#9]) then continue;
-        debugln(['Parse AAA0 "',Line,'"']);
         IncludeParam:=Trim(copy(Line,length('#include')+1,length(Line)));
-        debugln(['Parse AAA1 ',IncludeParam]);
         if (IncludeParam<>'') and (IncludeParam[1] in ['<','"']) then
           IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
         if IncludeParam<>'' then begin

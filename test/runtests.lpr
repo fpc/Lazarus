@@ -24,7 +24,7 @@ uses
   Classes, consoletestrunner,
   testglobals, testunits, dom,
   {Unit needed to set the LCL version and widget set name}
-  LCLVersion, InterfaceBase, Interfaces, TestCTXMLFixFragments, TestCTRangeScan;
+  LCLVersion, InterfaceBase, Interfaces, TestCTXMLFixFragments, TestCTH2Pas;
   
 type
 
