@@ -546,7 +546,7 @@ begin
 
   // run menu
   ecCompile: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
-  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_F9,[ssShift],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
@@ -985,7 +985,7 @@ begin
 
   // run menu
   ecCompile: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_F9,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1769,7 +1769,7 @@ begin
 
   // run menu
   ecCompile: SetResult(VK_F9,[ssCtrl],VK_F9,[ssCtrl,ssMeta]);
-  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_F9,[ssShift],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_F9,[ssMeta]);
