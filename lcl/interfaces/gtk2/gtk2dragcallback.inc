@@ -52,10 +52,10 @@ var
 Begin
   Result:=false;
   if (Time=0) or (Context=nil) or (Widget=nil) then ;
-  if (info = TARGET_ROOTWIN) then
+  if (info = TARGET_ROOTWIN) then begin
     //DebugLn('Trace:I WAS DROPPED ON THE ROOTWIN')
-  else
-  Begin
+  end
+  else Begin
     //DebugLn('Trace:*********Setting Data************');
     Texts := TCustomEdit(data).Text;
     //DebugLn('Trace:0');

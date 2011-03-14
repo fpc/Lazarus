@@ -2103,7 +2103,7 @@ begin
 
   EventTrace('size-allocate', data);
 
-  with Size^ do //DebugLn(Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
+  //with Size^ do DebugLn(Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
 
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore

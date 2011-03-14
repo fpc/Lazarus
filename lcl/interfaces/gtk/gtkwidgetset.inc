@@ -1736,7 +1736,6 @@ var
 begin
   //DebugLn('trace:[TGtkWidgetSet.InternalGetDIBits]');
 
-
   Result := 0;
   if (DC=0) or (Usage=0) then ;
 
@@ -2001,7 +2000,7 @@ begin
   end;
 
   {$IFDEF VerboseRawImage}
-  //DebugLn('TGtkWidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  DebugLn('TGtkWidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
   Result := True;
@@ -3830,7 +3829,7 @@ begin
     end;
 *)
   else
-    //DebugLn(Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
+    DebugLn(Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
   end;
 end;
 

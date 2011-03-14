@@ -729,7 +729,7 @@ begin
   if Result = LB_ERR Then
   Begin
     //DebugLn('Trace:[TWinCEWidgetSet.IntSendMessage3] Could not retrieve item index '+
-        'via LM_GETITEMINDEX; try selecting an item first');
+    //    'via LM_GETITEMINDEX; try selecting an item first');
     Result := -1;
   End;
 end;

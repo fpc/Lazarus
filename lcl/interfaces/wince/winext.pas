@@ -387,7 +387,7 @@ Try
   TmpStr := Nil;
 Except
   On E: Exception Do
-    //DebugLn(Format('Trace:Could not deallocate string --> %S', [E.Message]));
+    ; //DebugLn(Format('Trace:Could not deallocate string --> %S', [E.Message]));
 End;
 
 End.

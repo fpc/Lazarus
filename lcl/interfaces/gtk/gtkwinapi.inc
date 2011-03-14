@@ -1137,7 +1137,9 @@ begin
       Result := False;
     end;
   end
-  else //DebugLn('Trace:WARNING: [TGtkWidgetSet.CreateCaret] Got null HWND');
+  else begin
+    //DebugLn('Trace:WARNING: [TGtkWidgetSet.CreateCaret] Got null HWND');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1849,8 +1851,12 @@ begin
     end;
 
     if Result = 0
-    then DebugLn('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <'+LongFontName+'> Fontname="'+LogFont.lfFaceName+'"')
-    else //DebugLn(Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
+    then
+      DebugLn('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <'+LongFontName+'> Fontname="'+LogFont.lfFaceName+'"')
+    else begin
+      //DebugLn(Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
+    end;
+    end;
   end;
 end;
 {$EndIf}
@@ -2362,7 +2368,9 @@ begin
       Result := False;
     end;
   end
-  else //DebugLn('Trace:WARNING: [TGtkWidgetSet.DestroyCaret] Got null HWND');
+  else begin
+    //DebugLn('Trace:WARNING: [TGtkWidgetSet.DestroyCaret] Got null HWND');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3023,7 +3031,7 @@ begin
   if (Str=nil) or (Str[0]=#0) then Exit(0);
 
   //DebugLn(Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
-    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  //  [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   if not IsValidDC(DC) then Exit(0);
   if (Count < -1) or (IsRectEmpty(Rect) and ((Flags and DT_CALCRECT) = 0)) then Exit(0);

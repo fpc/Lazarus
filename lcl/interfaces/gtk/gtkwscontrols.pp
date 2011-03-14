@@ -558,7 +558,7 @@ begin
   //TODO: create classprocedures for this in the corresponding classes
 
   P := Pointer(AWinControl.Handle);
-  Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
+  Assert(p <> nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
   //DebugLn('Trace:Setting Str1 in SetLabel');
   pLabel := pchar(AText);
 

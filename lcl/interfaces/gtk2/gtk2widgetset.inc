@@ -2840,7 +2840,6 @@ var
 begin
   //DebugLn('trace:[TGtk2WidgetSet.InternalGetDIBits]');
 
-
   Result := 0;
   if (DC=0) or (Usage=0) then ;
 
@@ -3101,7 +3100,7 @@ begin
   end;
 
   {$IFDEF VerboseRawImage}
-  //DebugLn('TGtk2WidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  DebugLn('TGtk2WidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
   Result := True;

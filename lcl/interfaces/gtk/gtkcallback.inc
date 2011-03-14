@@ -141,11 +141,10 @@ end;
 
 procedure EventTrace(const TheMessage : string; data : pointer);
 begin
-  if Data = nil then
+//  if Data = nil then
     //DebugLn(Format('Trace:Event [%s] fired',[Themessage]))
-  else
-    //DebugLn(Format('Trace:Event [%s] fired for %s',
-      [TheMessage, TObject(data).Classname]));
+//  else
+    //DebugLn(Format('Trace:Event [%s] fired for %s', [TheMessage, TObject(data).Classname]));
 end;
 
 {*************************************************************}

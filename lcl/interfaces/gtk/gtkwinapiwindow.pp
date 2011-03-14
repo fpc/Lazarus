@@ -851,7 +851,7 @@ begin
     and (Widget^.Window<>nil)
     and (WidgetStyle<>nil)
     then begin
-      if Pixmap <> nil then
+      //if Pixmap <> nil then
         //DebugLn('Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
       
       if WidgetIsPainting then
