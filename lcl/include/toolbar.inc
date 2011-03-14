@@ -344,11 +344,6 @@ begin
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
 end;
 
-procedure TToolBar.OnTemporaryPopupMenuClose(Sender: TObject);
-begin
-  PostMessage(Handle, CN_DROPDOWNCLOSED, 0, 0);
-end;
-
 procedure TToolBar.SetHotImages(const AValue: TCustomImageList);
 begin
   if FHotImages = AValue then Exit;
@@ -813,11 +808,16 @@ begin
   end
   else
     Exit;
-  FCurrentMenu.OnClose := @OnTemporaryPopupMenuClose;
   FCurrentMenu.PopupComponent := Self;
   APoint := Button.ClientToScreen(Point(0, Button.ClientHeight));
   if FCurrentMenu.IsRightToLeft then Inc(APoint.X, Button.Width);
   FCurrentMenu.Popup(APoint.X, APoint.Y);
+  // The next command will be executed after popup menu close because Popup is a
+  // syncronous method. We can't send this message on Menu.Close event because
+  // Click happen after the Close event and if we remove all the menu items there
+  // we will not be able to handle the Click event
+  // we also need to postpone this message to allow after Popup cleanup and click happen
+  PostMessage(Handle, CN_DROPDOWNCLOSED, 0, 0);
   Result := True;
 end;
 

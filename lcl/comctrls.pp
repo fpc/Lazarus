@@ -1722,7 +1722,6 @@ type
     procedure DisabledImageListChange(Sender: TObject);
     procedure HotImageListChange(Sender: TObject);
     procedure UpdateVisibleBar;
-    procedure OnTemporaryPopupMenuClose(Sender: TObject);
     procedure MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
     procedure AddButton(Button: TToolButton);
     procedure RemoveButton(Button: TToolButton);
