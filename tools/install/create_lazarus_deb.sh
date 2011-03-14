@@ -98,10 +98,6 @@ if [ -n "$FPCCfg" ]; then
 fi
 # build for default platform
 make packager/registration lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
-# build gtk1 .ppu
-export LCL_PLATFORM=gtk
-make packager/registration lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
-export LCL_PLATFORM=
 # build IDE
 export LCL_PLATFORM=$LCLWidgetset
 make bigide PP=$ppcbin USESVN2REVISIONINC=0 OPT="$MAKEOPTS"
