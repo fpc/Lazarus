@@ -2,6 +2,8 @@
  Test with:
      ./runtests --format=plain --suite=TTestCodetoolsH2Pas
      ./runtests --format=plain --suite=TestCTH2PMergeHeaderFiles
+     ./runtests --format=plain --suite=TestCTH2PReplaceMacros
+     ./runtests --format=plain --suite=TestCTH2PConvertSimpleTypes
 }
 unit TestCTH2Pas;
 
@@ -23,6 +25,8 @@ type
   protected
   published
     procedure TestCTH2PMergeHeaderFiles;
+    procedure TestCTH2PReplaceMacros;
+    procedure TestCTH2PConvertSimpleTypes;
   end;
 
 implementation
@@ -63,6 +67,66 @@ begin
   finally
     Merger.Free;
     Filenames.Free;
+  end;
+end;
+
+procedure TTestCodetoolsH2Pas.TestCTH2PReplaceMacros;
+var
+  Header1: TCodeBuffer;
+  Buffers: TFPList;
+  Merger: TCHeaderFileMerger;
+
+  procedure Check(Msg, Src, ExpectedSrc: string);
+  var
+    NewSrc: String;
+  begin
+    Header1.Source:=Src;
+    Merger.Merge(Buffers,[]);
+    NewSrc:=Trim(Merger.CombinedSource.Source);
+    AssertEquals(Msg,dbgstr(ExpectedSrc),dbgstr(NewSrc));
+  end;
+
+begin
+  Header1:=CodeToolBoss.CreateFile('header1.h');
+
+  Merger:=TCHeaderFileMerger.Create;
+  Buffers:=TFPList.Create;
+  try
+    Buffers.Add(Header1);
+    // undefine
+    Merger.Macros['remove1']:='';
+    Check('undefine remove1','remove1','');
+    // define
+    Merger.Macros['macro1']:='newvalue';
+    Check('define macro1','macro1','newvalue');
+    // define macro function
+    Merger.Macros['macrofunc1()']:='newvalue';
+    Check('define macrofunc1','macrofunc1(param)','newvalue');
+    // do not replace #define
+    Merger.Macros['macro1']:='newvalue';
+    Check('do not replace macros in #define','#define macro1','#define macro1');
+    Check('do not replace macros in #undef','#undef macro1','#undef macro1');
+    Check('do not replace macros in #ifdef','#ifdef macro1','#ifdef macro1');
+    Check('do not replace macros in #ifndef','#ifndef macro1','#ifndef macro1');
+  finally
+    Buffers.Free;
+    Merger.Free;
+  end;
+end;
+
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleTypes;
+var
+  Tool: TH2PasTool;
+  Header1: TCodeBuffer;
+  PasCode: TCodeBuffer;
+begin
+  Tool:=TH2PasTool.Create;
+  try
+    Header1:=CodeToolBoss.CreateFile('header1.h');
+    PasCode:=CodeToolBoss.CreateFile('header1.pas');
+
+  finally
+    Tool.Free;
   end;
 end;
 

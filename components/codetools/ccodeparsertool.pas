@@ -576,13 +576,15 @@ var
         if MacroNode<>nil then begin
           // macro found
           MacroItem:=PStringToStringTreeItem(MacroNode.Data);
-          debugln(['Append MacroName=',MacroItem^.Name,' ',GetIdentifier(@Src[AtomStart])]);
+          MacroValue:=MacroItem^.Value;
+          //debugln(['Append MacroName=',MacroItem^.Name,' Src=',GetIdentifier(@Src[AtomStart]),' Value=',dbgstr(MacroValue)]);
           // write source in front of macro
           if AtomStart>FromPos then begin
+            //debugln(['Append source in front of macro=',dbgstr(copy(Src,FromPos,AtomStart-FromPos))]);
             AddLink(StrStream.Position+1,Code,FromPos);
-            StrStream.Write(Code.Source[FromPos],AtomStart-FromPos);
-            FromPos:=p;
+            StrStream.Write(Src[FromPos],AtomStart-FromPos);
           end;
+          FromPos:=p;
           if System.Pos('(',MacroItem^.Name)>0
           then begin
             // a macro function
@@ -614,11 +616,11 @@ var
             until false;
             FromPos:=p;
           end;
-          MacroValue:=MacroItem^.Value;
           //debugln(['Append Macro found: ',MacroItem^.Name]);
           if MacroValue<>'' then begin
             // write macro value
             AddLink(StrStream.Position+1,nil,0);
+            //debugln(['Append macrovalue=',dbgstr(MacroValue)]);
             StrStream.Write(MacroValue[1],length(MacroValue));
           end;
         end;
@@ -626,6 +628,7 @@ var
     end;
     if FromPos<EndPos then begin
       AddLink(StrStream.Position+1,Code,FromPos);
+      //debugln(['Append source after macro=',dbgstr(copy(Src,FromPos,EndPos-FromPos))]);
       StrStream.Write(Src[FromPos],EndPos-FromPos);
     end;
   end;
