@@ -656,12 +656,14 @@ var
         if length(Line)<length('#include')+2 then continue;
         if copy(Line,1,length('#include'))<>'#include' then continue;
         if not (Line[length('#include')+1] in [' ',#9]) then continue;
+        debugln(['Parse AAA0 "',Line,'"']);
         IncludeParam:=Trim(copy(Line,length('#include')+1,length(Line)));
+        debugln(['Parse AAA1 ',IncludeParam]);
         if (IncludeParam<>'') and (IncludeParam[1] in ['<','"']) then
           IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
         if IncludeParam<>'' then begin
           // for example: glib/gutils.h
-          //debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
+          debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
           // search file in list
           for j:=1 to SourceBuffers.Count-1 do begin
             IncCode:=TCodeBuffer(SourceBuffers[j]);
@@ -674,9 +676,9 @@ var
               // include file found
               if MergedBuffers.IndexOf(IncCode)<0 then begin
                 debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
-                Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
                 Append(Code,MergePos,Code.GetLineStart(i));
                 MergePos:=Code.GetLineStart(i+1);
+                Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
                 Parse(IncCode);
                 Append('/* h2pas: end of merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding+LineEnding);
               end;
@@ -685,8 +687,8 @@ var
         end;
       end;
     end;
-    if MergePos<Code.SourceLength then
-      Append(Code,MergePos,Code.SourceLength);
+    if MergePos<=Code.SourceLength then
+      Append(Code,MergePos,Code.SourceLength+1);
     Append(LineEnding);
   end;
 

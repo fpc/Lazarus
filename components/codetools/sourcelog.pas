@@ -365,7 +365,7 @@ begin
     if Index<fLineCount-1 then
       LineLen:=fLineRanges[Index+1].StartPos-fLineRanges[Index].StartPos
     else
-      LineLen:=fSrcLen-fLineRanges[Index].StartPos;
+      LineLen:=fSrcLen-fLineRanges[Index].StartPos+1;
     SetLength(Result,LineLen);
     if LineLen>0 then
       System.Move(fSource[fLineRanges[Index].StartPos],Result[1],LineLen);
