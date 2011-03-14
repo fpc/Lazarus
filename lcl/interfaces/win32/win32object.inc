@@ -63,8 +63,6 @@ var
   n: integer;
   TimerInfo : PWin32TimerInfo;
 begin
-  //DebugLn('Trace:TWin32WidgetSet is being destroyed');
-
   n := FTimerData.Count;
   if (n > 0) then
   begin
@@ -121,10 +119,8 @@ var
   AIcon: HICON;
   i: integer;
 begin
-  //DebugLn('Trace:Win32Object.Init - Start');
   if not WinRegister then
   begin
-    //DebugLn('Trace:Win32Object.Init - Register Failed');
     DebugLn('Trace:Win32Object.Init - Register Failed');
     Exit;
   end;
@@ -163,8 +159,6 @@ begin
 
   // Thread.Synchronize support
   WakeMainThread := @HandleWakeMainThread;
-
-  //DebugLn('Trace:Win32Object.Init - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -228,18 +222,12 @@ procedure TWin32WidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
 var
   Window: HWnd;
 begin
-  //DebugLn('Trace:TWin32WidgetSet.SetCallback - Start');
-  //DebugLn(Format('Trace:TWin32WidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
-  //DebugLn(Format('Trace:TWin32WidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
-
   if Sender is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
   else 
     Window := TWinControl(Sender).Handle;
 
   if Window = 0 then Exit;
-
-  //DebugLn('Trace:TWin32WidgetSet.SetCallback - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -428,7 +416,6 @@ var
   pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
-  //DebugLn('Trace:TWin32WidgetSet.WaitMessage - Start');
   if FWaitPipeHandlers <> nil then
     timeout := 100
   else
@@ -441,7 +428,6 @@ begin
     false, timeout, QS_ALLINPUT);
   if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     FPendingWaitHandlerIndex := retVal-WAIT_OBJECT_0;
-  //DebugLn('Trace:Leave wait message');
 end;
 
 {------------------------------------------------------------------------------
@@ -453,7 +439,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppTerminate;
 begin
-  //DebugLn('Trace:TWin32WidgetSet.AppTerminate - Start');
   OleUninitialize;
 end;
 
@@ -553,7 +538,6 @@ function TWin32WidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc)
 var
   TimerInfo: PWin32TimerInfo;
 begin
-  //DebugLn('Trace:Create Timer: ' + IntToStr(Interval));
   Result := 0;
   if (Interval > 0) and (TimerFunc <> nil) then begin
     New(TimerInfo);
@@ -566,7 +550,6 @@ begin
       Result := TimerInfo^.TimerID;
     end;
   end;
-  //DebugLn('Trace:Result: ' + IntToStr(result));
 end;
 
 {------------------------------------------------------------------------------
@@ -580,7 +563,6 @@ var
   TimerInfo : PWin32Timerinfo;
 begin
   Result:= false;
-  //DebugLn('Trace:removing timer: '+ IntToStr(TimerHandle));
   n := FTimerData.Count;
   while (n>0) do begin
     dec(n);
@@ -592,7 +574,6 @@ begin
       Dispose(TimerInfo);
     end;
   end;
-  //DebugLn('Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
 procedure TWin32WidgetSet.HandleWakeMainThread(Sender: TObject);
@@ -616,7 +597,6 @@ var
   WindowClass: WndClass;
   WindowClassW: WndClassW;
 begin
-  //DebugLn('Trace:WinRegister - Start');
   if UnicodeEnabledOS then
   begin
     with WindowClassW do
@@ -680,7 +660,6 @@ begin
       Result := Windows.RegisterClass(@WindowClass) <> 0;
     end;
   end;
-  //DebugLn('Trace:WinRegister - Exit');
 end;
 
 procedure TWin32WidgetSet.CreateAppHandle;
@@ -753,10 +732,6 @@ end;
 procedure TWin32WidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
   // TODO: implement me!
-  //DebugLn('TRACE:[TWin32WidgetSet.ReDraw] Redrawing...');
-  //DebugLn('TRACE:Invalidating the window');
-  //DebugLn('TRACE:Updating the window');
-  //DebugLn('TRACE:[TWin32WidgetSet.ReDraw] Finished redrawing');
 end;
 
 {------------------------------------------------------------------------------

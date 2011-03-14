@@ -43,12 +43,8 @@ function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
-  //DebugLn('Trace:PropEnumProc - Start');
-  //DebugLn(Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
-  //  [String(Str), Data, Window]));
   RemoveProp(Window, Str);
   Result := True;
-  //DebugLn('Trace:PropEnumProc - Exit');
 end;
 
 {------------------------------------------------------------------------------
@@ -1023,14 +1019,11 @@ var
   end;
   
 begin
-  //DebugLn('Trace:WindowProc - Start');
-
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
   WinProcess := True;
   NotifyUserInput := False;
 
-  //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -1102,10 +1095,6 @@ begin
     IgnoreNextCharWindow := 0;
   end;
 
-  //DebugLn('Trace:WindowProc - Getting Callback Object');
-
-  //DebugLn('Trace:WindowProc - Checking Proc');
-  //DebugLn(Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, sizeof(WParam)*4), IntToHex(LParam, sizeof(LParam)*4)]));
   case Msg of
     WM_NULL:
       if (Window = Win32WidgetSet.AppHandle) then
@@ -1176,7 +1165,6 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
       {$endif}
@@ -1383,7 +1371,6 @@ begin
             WindowColor := ChildWinControl.GetDefaultColor(dctBrush);
           Windows.SetBkColor(WindowDC, ColorToRGB(WindowColor));
           LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
-          //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;
         end;
@@ -1403,7 +1390,6 @@ begin
     end;
     WM_DESTROY:
     begin
-      //DebugLn('Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -1608,8 +1594,6 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        //DebugLn(Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        //DebugLn('  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
       end;
       if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=False;
       WinProcess := false;
@@ -1624,7 +1608,6 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        //DebugLn(Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
       if Assigned(WindowInfo) and WindowInfo^.IMEComposed then LMKey.Msg:=LM_NULL;
@@ -1851,7 +1834,6 @@ begin
         else
         if TargetWindow <> Window then
           exit;
-        //DebugLn('get WM_MOUSEWHEEL ', WndClassName(TargetWindow), ' ',WndText(TargetWindow));
         // the mousewheel message is for us
         Msg := LM_MOUSEWHEEL;
         Windows.ScreenToClient(TargetWindow, P);
@@ -1893,7 +1875,6 @@ begin
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
       NotifyUserInput := True;
-      //DebugLn('Trace:WindowProc - Got WM_NCLBUTTONDOWN');
 
       //Drag&Dock support TCustomForm => Start BeginDrag()
       if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
@@ -2077,14 +2058,12 @@ begin
     end;
     WM_SHOWWINDOW:
     begin
-      //DebugLn('Trace:WindowProc - Got WM_SHOWWINDOW');
       with TLMShowWindow(LMessage) Do
       begin
         Msg := LM_SHOWWINDOW;
         Show := WParam <> 0;
         Status := LParam;
       end;
-      //DebugLn(GetStackTrace(false));
       if Assigned(lWinControl) and ((WParam <> 0) or not lWinControl.Visible) and
           ((WParam = 0) or lWinControl.Visible) and Assigned(Application) and
           (lWinControl = Application.MainForm) and not Application.MainFormOnTaskBar then
@@ -2105,7 +2084,6 @@ begin
         KeyData := LParam;
         CharCode := Word(WParam);
         Result := 0;
-        //DebugLn(Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
     end;
@@ -2601,8 +2579,6 @@ begin
   else if PLMsg = @LMNotify     then Result := LMNotify.Result
   else if PLMsg = @LMMouseEvent then Result := LMMouseEvent.Result
   else                               Result := PLMsg^.Result;
-
-  //DebugLn('Trace:WindowProc - Exit');
 end;
 
 {$ifdef MSG_DEBUG}

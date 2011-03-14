@@ -76,7 +76,6 @@ Type
 
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
-procedure EventTrace(Message: String; Data: TObject);
 procedure AssertEx(const Message: String; const PassErr: Boolean;
   const Severity: Byte);
 procedure AssertEx(const PassErr: Boolean; const Message: String);
@@ -525,22 +524,6 @@ end;
 
 
 {------------------------------------------------------------------------------
-  procedure: EventTrace
-  Params: Message - Event name
-          Data    - Object which fired this event
-  Returns: Nothing
-
-  Displays a trace about an event
- ------------------------------------------------------------------------------}
-procedure EventTrace(Message: String; Data: TObject);
-begin
-  if Data = nil then
-    //DebugLn(Format('Trace:Event [%S] fired', [Message]))
-  else
-    //DebugLn(Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
-end;
-
-{------------------------------------------------------------------------------
   function: AssertEx
   Params: Message  - Message sent
           PassErr  - Pass error to a catching procedure (default: False)
@@ -654,7 +637,6 @@ procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer
 const
   MVK_UNIFY_SIDES = 1;
 begin
-  //DebugLn('TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
   KeyCode := Word(Event);
   VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
   SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
@@ -723,13 +705,9 @@ begin
   begin
     {if TCommonDialog(AObject).HandleAllocated then }
     Handle := TCommonDialog(AObject).Handle
-  end
-  else
-    //DebugLn(Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
+  end;
 
   Result := Handle;
-  if Handle = 0 then
-    //DebugLn('Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 end;
 
 (***********************************************************************

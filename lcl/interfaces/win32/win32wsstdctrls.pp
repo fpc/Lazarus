@@ -477,7 +477,6 @@ begin
       sbVertical:
         SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_VERT);
     end;
-    //DebugLn('Trace:TODO: [TWin32WSScrollBar.SetParams] Set up step and page increments for csScrollBar');
   end;
 end;
 
@@ -986,7 +985,6 @@ var
   WideBuffer: widestring;
   {$endif}
 begin
-  //DebugLn(Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then

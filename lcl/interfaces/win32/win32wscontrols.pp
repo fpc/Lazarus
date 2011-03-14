@@ -369,13 +369,10 @@ begin
 
   with TWinControl(AControl) do
   begin
-    //DebugLn(Format('Trace:[TWin32WSWinControl.AddControl] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
     ParentHandle := Parent.Handle;
     ChildHandle := Handle;
   end;
 
-  //DebugLn('Trace:AddControl - Parent Window Handle is $' + IntToHex(LongInt(ParentHandle), 8));
-  //DebugLn('Trace:AddControl - Child Window Handle is $' + IntToHex(LongInt(ChildHandle), 8));
   Windows.SetParent(ChildHandle, ParentHandle);
 end;
 

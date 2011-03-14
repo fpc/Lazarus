@@ -291,8 +291,6 @@ const
   W95_MENUITEMINFO_SIZE = 44;
   
 initialization
-
-  //DebugLn('Trace:win32int.pp - Initialization');
   { initialize mousedownclick to far before double click time }
   MouseDownTime := GetTickCount - 5000;
   {$IFDEF WindowsUnicodeSupport}
@@ -318,6 +316,4 @@ finalization
     Windows.DeleteObject(CurDoubleBuffer.Bitmap);
     CurDoubleBuffer.Bitmap := 0;
   end;
-  //DebugLn('Trace:win32int.pp - Finalization');
-
 end.

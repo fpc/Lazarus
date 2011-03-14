@@ -1126,11 +1126,9 @@ function TWin32WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
 var
   OverlayWindow: HWND;
 begin
-  //DebugLn(Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
   OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
-  if OverlayWindow <> HWND(nil) then
+  if OverlayWindow <> 0 then
     Result := Windows.ReleaseDC(OverlayWindow, DC);
-  //DebugLn(Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 
 procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
