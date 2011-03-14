@@ -649,9 +649,6 @@ begin
     and (Widget^.Window<>nil)
     and (WidgetStyle<>nil)
     then begin
-      if Pixmap <> nil then
-        //DebugLn('Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
-      
       if WidgetIsPainting then
       begin
         //Create backbitmap if needed
@@ -950,9 +947,6 @@ function GTKAPIWidget_FocusIn(Widget: PGTKWidget;
 var
   TopLevel: PGTKWidget;
 begin
-  //DebugLn('Trace:[GTKAPIWidget_FocusIn]');
-
-  if Event=nil then ;
   TopLevel := gtk_widget_get_toplevel(Widget);
   if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type) 
   then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKAPIWidget(Widget)^.Client);
@@ -963,8 +957,6 @@ end;
 function GTKAPIWidget_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
-  if (Event=nil) or (Widget=nil) then ;
-  //DebugLn('Trace:[GTKAPIWidget_FocusOut]');
   Result := gtk_True;
 end;
 

@@ -1134,8 +1134,7 @@ begin
     else begin
       Result := False;
     end;
-  end
-  else //DebugLn('Trace:WARNING: [TGtk2WidgetSet.CreateCaret] Got null HWND');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1890,8 +1889,7 @@ begin
     else begin
       Result := False;
     end;
-  end
-  else //DebugLn('Trace:WARNING: [TGtk2WidgetSet.DestroyCaret] Got null HWND');
+  end;
 end;
 
 function TGtk2WidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect;
@@ -2661,7 +2659,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  //DebugLn('Trace:TODO: [TGtk2WidgetSet.EnableScrollBar]');
   //TODO: Implement this;
   Result := False;
 end;
@@ -2676,7 +2673,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  //DebugLn(Format('Trace:  [TGtk2WidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
   Result := False;
   if hWnd <> 0 then
   begin
@@ -3732,7 +3728,6 @@ end;
 function TGtk2WidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
   Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  //DebugLn('trace:[TGtk2WidgetSet.GetDIBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -3758,7 +3753,6 @@ function TGtk2WidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Po
 var
   BitInfo : tagBitmapInfo;
 begin
-  //DebugLn('trace:[TGtk2WidgetSet.GetBitmapBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -4593,8 +4587,6 @@ begin
       @x, @y, @GdkModMask);
     Result := Result or KEYSTATE[GdkModMask and GDK_BUTTON_MASKS[nVirtKey] <> 0]
   end;
-
-  //DebugLn(Format('Trace:[TGtk2WidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
 
 function TGtk2WidgetSet.GetMapMode(DC: HDC): Integer;
@@ -4778,7 +4770,6 @@ var
   AExtLogPen: PExtLogPen absolute Buf;
   i, RequiredSize: Integer;
 begin
-  //DebugLn('trace:[TGtk2WidgetSet.GetObject]');
   Result := 0;
   if not IsValidGDIObject(GDIObj) then Exit;
   
@@ -5064,7 +5055,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetStockObject(Value: Integer): THandle;
 begin
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.GetStockObject] %d', [Value]));
   Result := 0;
   case Value of
     BLACK_BRUSH:         // Black brush.
@@ -5122,10 +5112,8 @@ begin
     DEFAULT_PALETTE:     // Default palette. This palette consists of the static colors in the system palette.
       begin
       end;
-*)  else
-    //DebugLn(Format('Trace:TODO: [TGtk2WidgetSet.GetStockObject] Implement value: %d', [Value]));
+*)
   end;
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5176,7 +5164,6 @@ var
   ARect: TGdkRectangle;
   AValue: TGValue;
 begin
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.GetSystemMetrics] %d', [nIndex]));
   Result := 0;
   case nIndex of
     SM_ARRANGE:
@@ -5488,7 +5475,6 @@ begin
         end;
       end;
   end;
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5631,16 +5617,12 @@ function TGtk2WidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn(Format('Trace:> TODO FINISH[TGtk2WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
-
   Result := IsValidDC(DC);
   if Result then
   begin
     UpdateDCTextMetric(DevCtx);
     TM := DevCtx.DCTextMetric.TextMetric;
   end;
-
-  //DebugLn(Format('Trace:< TODO FINISH[TGtk2WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 function TGtk2WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
@@ -5697,7 +5679,6 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   //TODO:Started but not finished
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
 
   case int of
     GWL_WNDPROC :
@@ -5759,8 +5740,6 @@ begin
       end;
     else Result := 0;
   end; //case
-
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5796,7 +5775,6 @@ function TGtk2WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   Widget: PGTKWidget;
 begin
-  //DebugLn('GetWindowRect');
   Result := 0; //default
   if Handle <> 0 then
   begin
@@ -6055,10 +6033,6 @@ var
   GTKObject: PGTKObject;
   WasVisible: boolean;
 begin
-//DebugLn('[TGtk2WidgetSet.HideCaret] A');
-  //DebugLn(Format('Trace:  [TGtk2WidgetSet.HideCaret] HWND: 0x%x', [hWnd]));
-//TODO: [TGtk2WidgetSet.HideCaret] Finish (in gtkwinapi.inc)
-
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
 
@@ -6280,8 +6254,6 @@ var
   ToX: Integer;
   ToY: Integer;
 begin
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
-
   if not IsValidDC(DC) then Exit(False);
 
   DevCtx.SelectPenProps;
@@ -6306,8 +6278,6 @@ begin
   DevCtx.PenPos:= Point(X, Y);
 
   Result := True;
-  
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 function TGtk2WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -6467,7 +6437,6 @@ function TGtk2WidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with TGtkDeviceContext(DC) do
@@ -6479,7 +6448,6 @@ begin
 
     PenPos := Point(X, Y);
   end;
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6918,7 +6886,6 @@ function TGtk2WidgetSet.RealizePalette(DC: HDC): Cardinal;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn('Trace:FINISH: [TGtk2WidgetSet.RealizePalette]');
   Result := 0;
   if IsValidDC(DC)
   then with TGtkDeviceContext(DC) do
@@ -6942,7 +6909,6 @@ var
   Brush: PGdiObject;
   ClipArea: TGdkRectangle;
 begin
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   if not IsValidDC(DC) then Exit(False);
 
   if DevCtx.HasTransf then
@@ -6982,8 +6948,6 @@ begin
                           Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
-  
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7113,7 +7077,6 @@ var
   CurGDIObject: PGDIObject;
 begin
   //DebugLn(['[TGtk2WidgetSet.ReleaseDC] ',DC,'  ',FDeviceContexts.Count]);
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
   if (DC <> 0)
@@ -7174,7 +7137,6 @@ begin
       Result := 1;
     end;
   end;
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7204,8 +7166,6 @@ var
   SavedDevCtx: TGtkDeviceContext;
   ClipRegionChanged: Boolean;
 begin
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
-
   if not IsValidDC(DC) then Exit(False);
   if SavedDC <= 0 then Exit(False);
 
@@ -7228,8 +7188,6 @@ begin
     // free saved DC
     DeleteDC(HDC(SavedDevCtx));
   until SavedDC <= 0;
-  
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7261,8 +7219,6 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   aSavedDC: TGtkDeviceContext;
 begin
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.SaveDC]  0x%x', [Integer(DC)]));
-
   Result := 0;
   if IsValidDC(DC) then
   begin
@@ -7272,8 +7228,6 @@ begin
     DevCtx.SavedContext:= aSavedDC;
     Result := 1;
   end;
-
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7523,8 +7477,6 @@ begin
       ResultObj := DevCtx.SelectObject(GDIObject);
 
     gdiBrush: begin
-      //DebugLn(Format('trace:  [TGtk2WidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
-
       ResultObj := DevCtx.GetBrush;// always create, because a valid GDIObject is needed to restore
       if DevCtx.CurrentBrush = GDIObject then Exit;
       
@@ -7540,8 +7492,6 @@ begin
     end;
 
     gdiFont: begin
-      //DebugLn(Format('trace:  [TGtk2WidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
-        
       ResultObj := DevCtx.GetFont;// always create, because a valid GDIObject is needed to restore
       if (DevCtx.CurrentFont = GDIObject) and not DevCtx.HasTransf then Exit;
       
@@ -7574,7 +7524,6 @@ function TGtk2WidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackgroun
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn('Trace:TODO: [TGtk2WidgetSet.SelectPalette]');
   //TODO: Implement this;
   Result := 0;
 end;
@@ -7732,7 +7681,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -7741,9 +7689,7 @@ begin
       Result := CurrentBackColor.ColorRef;
       SetGDIColorRef(CurrentBackColor,Color);
     end;
-
   end;
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7775,7 +7721,6 @@ var
   CaptureWidget: PGtkWidget;
   {$ENDIF}
 begin
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.SetCapture] 0x%x', [AHandle]));
   Widget := PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
   DebugLn('TGtk2WidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
@@ -8597,7 +8542,6 @@ function TGtk2WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn(Format('trace:> [TGtk2WidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -8609,7 +8553,6 @@ begin
         SelectedColors := dcscCustom; // force SelectGDKTextProps to ensure text color
     end;
   end;
-  //DebugLn(Format('trace:< [TGtk2WidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 function TGtk2WidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
@@ -8694,7 +8637,6 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   //TODO: Finish this;
-  //DebugLn(Format('Trace:> [TGtk2WidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
   Result:=0;
   Data := Pointer(NewLong);
 
@@ -8734,7 +8676,6 @@ begin
         gtk_object_set_data(pgtkobject(Handle),'ID',Data);
       end;
   end; //case
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8959,8 +8900,6 @@ function TGtk2WidgetSet.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  //DebugLn(Format('Trace:> [TGtkWidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
-
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
 
@@ -8975,8 +8914,6 @@ begin
     end;
   end
   else DebugLn('WARNING: [TGtk2WidgetSet.ShowCaret] Got null HWND');
-
-  //DebugLn(Format('Trace:< [TGtk2WidgetSet.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8993,7 +8930,6 @@ var
   Scroll: PGtkWidget;
   IsScrollWindow: Boolean;
 begin
-  //DebugLn('trace:[TGtk2WidgetSet.ShowScrollBar]');
   Result := (Handle <> 0);
   if not Result then exit;
   
