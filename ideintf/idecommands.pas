@@ -229,8 +229,8 @@ const
   ecNextBookmark            = ecFirstLazarus + 383;
 
   // compile menu
-  ecBuild                   = ecFirstLazarus + 400;
-  ecBuildAll                = ecFirstLazarus + 401;
+  ecCompile                 = ecFirstLazarus + 400;
+  ecBuild                   = ecFirstLazarus + 401;
   ecQuickCompile            = ecFirstLazarus + 402;
   ecAbortBuild              = ecFirstLazarus + 403;
   ecRun                     = ecFirstLazarus + 404;

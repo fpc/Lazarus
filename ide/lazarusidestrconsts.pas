@@ -326,13 +326,13 @@ resourcestring
   lisMenuViewSource = '&View Source';
   lisMenuProjectOptions = 'Project Options ...';
 
-  lisMenuBuild = 'Build';
+  lisMenuCompile = 'Compile';
   lisBFBuild = 'Build';
   lisBFRun = 'Run';
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
     +'empty for file path)';
   lisBFBuildCommand = 'Build Command';
-  lisMenuBuildAll = 'Build all';
+  lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = 'Run';
@@ -2666,8 +2666,8 @@ resourcestring
   srkmecSynPSyncroEdStart       = 'Start Syncro edit';
 
   // run menu
+  srkmecCompile                   = 'compile program/project';
   srkmecBuild                     = 'build program/project';
-  srkmecBuildAll                  = 'build all files of program/project';
   srkmecQuickCompile              = 'quick compile, no linking';
   srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
@@ -2754,8 +2754,8 @@ resourcestring
   lisKMNewProjectFromFile = 'New project from file';
   lisKMToggleViewIDESpeedButtons = 'Toggle view IDE speed buttons';
   srkmCatRunMenu        = 'Run menu commands';
+  lisKMCompileProjectProgram = 'Compile project/program';
   lisKMBuildProjectProgram = 'Build project/program';
-  lisKMBuildAllFilesOfProjectProgram = 'Build all files of project/program';
   lisKMQuickCompileNoLinking = 'Quick compile, no linking';
   lisKMAbortBuilding = 'Abort building';
   lisKMRunProgram = 'Run program';

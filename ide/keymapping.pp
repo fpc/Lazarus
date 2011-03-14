@@ -545,8 +545,8 @@ begin
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
-  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
-  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompile: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
@@ -984,8 +984,8 @@ begin
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // run menu
-  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompile: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1604,8 +1604,8 @@ begin
   ecProjectOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // run menu
-  ecBuild: SetResult(VK_B,[ssMeta],VK_UNKNOWN,[]);
-  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompile: SetResult(VK_B,[ssMeta],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_R,[ssMeta],VK_UNKNOWN,[]);
@@ -1768,8 +1768,8 @@ begin
   ecRenameIdentifier: SetResult(VK_E, [ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
-  ecBuild: SetResult(VK_F9,[ssCtrl],VK_F9,[ssCtrl,ssMeta]);
-  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompile: SetResult(VK_F9,[ssCtrl],VK_F9,[ssCtrl,ssMeta]);
+  ecBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRun: SetResult(VK_F9,[],VK_F9,[ssMeta]);
@@ -2135,8 +2135,8 @@ begin
     ecProjectOptions          : Result:= lisMenuProjectOptions;
 
     // run menu (menu string resource)
+    ecCompile                 : Result:= srkmecCompile;
     ecBuild                   : Result:= srkmecBuild;
-    ecBuildAll                : Result:= srkmecBuildAll;
     ecQuickCompile            : Result:= srkmecQuickCompile;
     ecAbortBuild              : Result:= srkmecAbortBuild;
     ecRun                     : Result:= srkmecRun;
@@ -2776,8 +2776,8 @@ begin
 
   // run menu
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];
+  AddDefault(C, 'Compile project/program', lisKMCompileProjectProgram, ecCompile);
   AddDefault(C, 'Build project/program', lisKMBuildProjectProgram, ecBuild);
-  AddDefault(C, 'Build all files of project/program', lisKMBuildAllFilesOfProjectProgram, ecBuildAll);
   AddDefault(C, 'Quick compile, no linking', lisKMQuickCompileNoLinking, ecQuickCompile);
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);

@@ -313,8 +313,8 @@ type
     procedure mnuProjectOptionsClicked(Sender: TObject);
 
     // run menu
+    procedure mnuCompileProjectClicked(Sender: TObject);
     procedure mnuBuildProjectClicked(Sender: TObject);
-    procedure mnuBuildAllProjectClicked(Sender: TObject);
     procedure mnuQuickCompileProjectClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
@@ -1438,7 +1438,8 @@ begin
   DebugLn('[TMainIDE.Destroy] A ');
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
-  MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Destroy'){$ENDIF};
+  if Assigned(MainIDEBar) then
+    MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Destroy'){$ENDIF};
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
@@ -2522,8 +2523,8 @@ procedure TMainIDE.SetupRunMenu;
 begin
   inherited SetupRunMenu;
   with MainIDEBar do begin
+    itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
-    itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
@@ -3149,20 +3150,18 @@ begin
   ecQuit:
     mnuQuitClicked(Self);
 
-  ecBuild:
+  ecCompile:
     begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
-      if (AnUnitInfo<>nil)
-      and AnUnitInfo.BuildFileIfActive then
+      if Assigned(AnUnitInfo) and AnUnitInfo.BuildFileIfActive then
         DoBuildFile(false)
       else
-        DoBuildProject(crCompile,[]);
+        DoBuildProject(crCompile, []);
     end;
 
-  ecBuildAll:    DoBuildProject(crBuild,[pbfCleanCompile,
-                                         pbfCompileDependenciesClean]);
-  ecQuickCompile:DoQuickCompile;
-  ecAbortBuild:  DoAbortBuild;
+  ecBuild: DoBuildProject(crBuild, [pbfCleanCompile, pbfCompileDependenciesClean]);
+  ecQuickCompile: DoQuickCompile;
+  ecAbortBuild: DoAbortBuild;
 
   ecRun:
     begin
@@ -4214,7 +4213,7 @@ begin
   end;
 end;
 
-Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
+Procedure TMainIDE.mnuCompileProjectClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -4227,7 +4226,7 @@ Begin
     DoBuildProject(crCompile,[]);
 end;
 
-Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
+Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
   DoBuildProject(crBuild,[pbfCleanCompile,pbfCompileDependenciesClean]);
 end;

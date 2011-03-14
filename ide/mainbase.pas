@@ -669,8 +669,8 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuRun,itmRunBuilding,'itmRunBuilding');
     ParentMI:=itmRunBuilding;
-    CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build');
-    CreateMenuItem(ParentMI,itmRunMenuBuildAll,'itmRunMenuBuildAll',lisMenuBuildAll,'menu_build_all');
+    CreateMenuItem(ParentMI,itmRunMenuCompile,'itmRunMenuCompile',lisMenuCompile,'menu_build');
+    CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build_all');
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
     CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild,'menu_abort_build');
 
@@ -970,8 +970,8 @@ begin
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
 
     // run menu
+    itmRunMenuCompile.Command:=GetCommand(ecCompile);
     itmRunMenuBuild.Command:=GetCommand(ecBuild);
-    itmRunMenuBuildAll.Command:=GetCommand(ecBuildAll);
     itmRunMenuQuickCompile.Command:=GetCommand(ecQuickCompile);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
     itmRunMenuRun.Command:=GetCommand(ecRun);
