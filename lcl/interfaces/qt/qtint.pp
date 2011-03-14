@@ -197,7 +197,6 @@ type
 
   pTRect = ^TRect;
 
-  procedure EventTrace(message : string; data : pointer);
   function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
   function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
   function GetQtVersion: String;
@@ -302,11 +301,6 @@ begin
     Result := Result or QtTextExpandTabs;
 end;
   
-procedure EventTrace(message: string; data: pointer);
-begin
-
-end;
-
 function QtObjectFromWidgetH(const WidgetH: QWidgetH): TQtWidget;
 var
   V: QVariantH;

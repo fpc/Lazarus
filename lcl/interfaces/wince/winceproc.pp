@@ -53,7 +53,6 @@ type
 
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
-procedure EventTrace(Message: String; Data: TObject);
 procedure AssertEx(const Message: String; const PassErr: Boolean;
   const Severity: Byte);
 procedure AssertEx(const PassErr: Boolean; const Message: String);
@@ -372,23 +371,6 @@ begin
     FlagsStr := Copy(FlagsStr, 2, Length(FlagsStr)-1);
   Result := FlagsStr;
 end;
-
-
-{------------------------------------------------------------------------------
-  Procedure: EventTrace
-  Params: Message - Event name
-          Data    - Object which fired this event
-  Returns: Nothing
-
-  Displays a trace about an event
- ------------------------------------------------------------------------------}
-procedure EventTrace(Message: String; Data: TObject);
-Begin
-  If Data = Nil Then
-    //DebugLn(Format('Trace:Event [%S] fired', [Message]))
-  Else
-    //DebugLn(Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
-End;
 
 {------------------------------------------------------------------------------
   Function: AssertEx
