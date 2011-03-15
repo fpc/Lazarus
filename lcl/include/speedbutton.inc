@@ -477,10 +477,9 @@ end;
 function TCustomSpeedButton.DialogChar(var Message: TLMKey): boolean;
 begin
   Result := False;
-  if Message.Msg <> LM_SYSCHAR then
-    DebugLn(Format('*** Warning: Key %d passed to TCustomSpeedButton.DialogChar.'+
-                   ' Should be LM_SYSCHAR (%d) ***', [Message.Msg, LM_SYSCHAR]));
-  if not FShowAccelChar then Exit;
+  // Sometimes LM_CHAR is received instead of LM_SYSCHAR, maybe intentionally
+  // (LCL handles it) or maybe sent by mistake. In either case exit.
+  if (Message.Msg <> LM_SYSCHAR) or not FShowAccelChar then Exit;
   if IsAccel(Message.CharCode, Caption) then
   begin
     Result := True;
