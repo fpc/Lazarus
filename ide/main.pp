@@ -211,12 +211,15 @@ type
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
-    procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
     procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
     procedure mnuEditSwapCaseBlockClicked(Sender: TObject);
+    procedure mnuEditIndentBlockClicked(Sender: TObject);
+    procedure mnuEditUnindentBlockClicked(Sender: TObject);
+    procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
+    procedure mnuEditInsertCharacterClicked(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
@@ -232,8 +235,6 @@ type
 
     // source menu
     procedure mnuSourceClicked(Sender: TObject);
-    procedure mnuSourceIndentBlockClicked(Sender: TObject);
-    procedure mnuSourceUnindentBlockClicked(Sender: TObject);
     procedure mnuSourceCommentBlockClicked(Sender: TObject);
     procedure mnuSourceUncommentBlockClicked(Sender: TObject);
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
@@ -244,7 +245,6 @@ type
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
     procedure mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
 
-    procedure mnuSourceInsertCharacterClicked(Sender: TObject);
     // source->insert CVS keyword
     procedure mnuSourceInsertCVSAuthorClick(Sender: TObject);
     procedure mnuSourceInsertCVSDateClick(Sender: TObject);
@@ -2391,12 +2391,15 @@ begin
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
-    itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
     itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
     itmEditSwapCaseBlock.OnClick:=@mnuEditSwapCaseBlockClicked;
+    itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
+    itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
+    itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
     itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
+    itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
   end;
 end;
 
@@ -2444,8 +2447,6 @@ begin
   inherited SetupSourceMenu;
   with MainIDEBar do begin
     mnuSource.OnClick:=@mnuSourceClicked;
-    itmSourceIndentBlock.OnClick:=@mnuSourceIndentBlockClicked;
-    itmSourceUnindentBlock.OnClick:=@mnuSourceUnindentBlockClicked;
     itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
@@ -2456,7 +2457,6 @@ begin
     itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
     itmSourceGuessMisplacedIFDEF.OnClick := @mnuSourceGuessMisplacedIFDEFClicked;
 
-    itmSourceInsertCharacter.OnClick:=@mnuSourceInsertCharacterClicked;
     // insert CVS keyword
     itmSourceInsertCVSAuthor.OnClick:=@mnuSourceInsertCVSAuthorClick;
     itmSourceInsertCVSDate.OnClick:=@mnuSourceInsertCVSDateClick;
@@ -3753,19 +3753,17 @@ begin
     itmEditCut.Enabled:=SelEditable;
     itmEditCopy.Enabled:=SelAvail;
     itmEditPaste.Enabled:=Editable;
-  //itmEditSelect: TIDEMenuSection;
-    //itmEditSelectAll: TIDEMenuCommand;
-    //itmEditSelectToBrace: TIDEMenuCommand;
-    //itmEditSelectCodeBlock: TIDEMenuCommand;
-    //itmEditSelectLine: TIDEMenuCommand;
-    //itmEditSelectParagraph: TIDEMenuCommand;
-  //itmEditBlockCharConversion: TIDEMenuSection;
-    itmEditSortBlock.Enabled:=SelEditable;
+  //itmEditSelect: TIDEMenuSection; [...]
+  //itmEditBlockActions: TIDEMenuSection;
     itmEditUpperCaseBlock.Enabled:=SelEditable;
     itmEditLowerCaseBlock.Enabled:=SelEditable;
     itmEditSwapCaseBlock.Enabled:=SelEditable;
+    itmEditIndentBlock.Enabled:=SelEditable;
+    itmEditUnindentBlock.Enabled:=SelEditable;
+    itmEditSortBlock.Enabled:=SelEditable;
     itmEditTabsToSpacesBlock.Enabled:=SelEditable;
     itmEditSelectionBreakLines.Enabled:=SelEditable;
+    itmEditInsertCharacter.Enabled:=Editable;
   end;
 end;
 
@@ -3784,15 +3782,12 @@ begin
   SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
   SelEditable:=Editable and SelAvail;
   with MainIDEBar do begin
-  //itmSourceBlockIndentation: TIDEMenuSection;
-    itmSourceIndentBlock.Enabled:=SelEditable;
-    itmSourceUnindentBlock.Enabled:=SelEditable;
+  //itmSourceBlockActions: TIDEMenuSection;
     itmSourceCommentBlock.Enabled:=SelEditable;
     itmSourceUncommentBlock.Enabled:=SelEditable;
     itmSourceEncloseBlock.Enabled:=SelEditable;
     itmSourceConditionalBlock.Enabled:=SelEditable;
   //itmSourceInsertions: TIDEMenuSection;
-    itmSourceInsertCharacter.Enabled:=Editable;
     //itmSourceInsertCVSKeyWord: TIDEMenuSection;
       itmSourceInsertCVSAuthor.Enabled:=Editable;
       itmSourceInsertCVSDate.Enabled:=Editable;
@@ -17544,12 +17539,12 @@ begin
   DoSourceEditorCommand(ecUndo);
 end;
 
-procedure TMainIDE.mnuSourceIndentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecBlockIndent);
 end;
 
-procedure TMainIDE.mnuSourceUnindentBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecBlockUnindent);
 end;
@@ -17679,7 +17674,7 @@ begin
   DoFindRenameIdentifier(false);
 end;
 
-procedure TMainIDE.mnuSourceInsertCharacterClicked(Sender: TObject);
+procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertCharacter);
 end;

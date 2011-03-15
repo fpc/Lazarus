@@ -119,13 +119,17 @@ type
         itmEditSelectCodeBlock: TIDEMenuCommand;
         itmEditSelectLine: TIDEMenuCommand;
         itmEditSelectParagraph: TIDEMenuCommand;
-      //itmEditBlockCharConversion: TIDEMenuSection;
-        itmEditSortBlock: TIDEMenuCommand;
+      //itmEditBlockActions: TIDEMenuSection;
         itmEditUpperCaseBlock: TIDEMenuCommand;
         itmEditLowerCaseBlock: TIDEMenuCommand;
         itmEditSwapCaseBlock: TIDEMenuCommand;
+        itmEditIndentBlock: TIDEMenuCommand;
+        itmEditUnindentBlock: TIDEMenuCommand;
+        itmEditSortBlock: TIDEMenuCommand;
         itmEditTabsToSpacesBlock: TIDEMenuCommand;
         itmEditSelectionBreakLines: TIDEMenuCommand;
+      //itmEditInsertions: TIDEMenuSection;
+        itmEditInsertCharacter: TIDEMenuCommand;
 
     // search menu
     //mnuSearch: TIDEMenuSection;
@@ -195,9 +199,7 @@ type
 
     // source menu
     //mnuSource: TIDEMenuSection;
-      //itmSourceBlockIndentation: TIDEMenuSection;
-        itmSourceIndentBlock: TIDEMenuCommand;
-        itmSourceUnindentBlock: TIDEMenuCommand;
+      //itmSourceBlockActions: TIDEMenuSection;
         itmSourceCommentBlock: TIDEMenuCommand;
         itmSourceUncommentBlock: TIDEMenuCommand;
         itmSourceToggleComment: TIDEMenuCommand;
@@ -208,7 +210,6 @@ type
         itmSourceGuessUnclosedBlock: TIDEMenuCommand;
         itmSourceGuessMisplacedIFDEF: TIDEMenuCommand;
       //itmSourceInsertions: TIDEMenuSection;
-        itmSourceInsertCharacter: TIDEMenuCommand;
         //itmSourceInsertCVSKeyWord: TIDEMenuSection;
           itmSourceInsertCVSAuthor: TIDEMenuCommand;
           itmSourceInsertCVSDate: TIDEMenuCommand;

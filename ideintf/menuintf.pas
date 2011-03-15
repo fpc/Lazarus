@@ -300,7 +300,8 @@ var
       itmEditReUndo: TIDEMenuSection;
       itmEditClipboard: TIDEMenuSection;
       itmEditSelect: TIDEMenuSection;
-      itmEditBlockCharConversion: TIDEMenuSection;
+      itmEditBlockActions: TIDEMenuSection;
+      itmEditInsertions: TIDEMenuSection;
 
     // search menu
     mnuSearch: TIDEMenuSection;
@@ -319,7 +320,7 @@ var
 
     // source menu
     mnuSource: TIDEMenuSection;
-      itmSourceBlockIndentation: TIDEMenuSection;
+      itmSourceBlockActions: TIDEMenuSection;
       itmSourceCodeToolChecks: TIDEMenuSection;
       itmSourceInsertions: TIDEMenuSection;
         itmSourceInsertCVSKeyWord: TIDEMenuSection;

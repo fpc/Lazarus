@@ -377,14 +377,12 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuFile,itmFileNew,'itmFileNew');
     ParentMI:=itmFileNew;
-
     CreateMenuItem(ParentMI,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'item_unit');
     CreateMenuItem(ParentMI,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'item_form');
     CreateMenuItem(ParentMI,itmFileNewOther,'itmFileNewOther',lisMenuNewOther,'menu_new');
 
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
-
     CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'laz_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
@@ -396,12 +394,10 @@ begin
 
     CreateMenuSeparatorSection(mnuFile,itmFileDirectories,'itmFileDirectories');
     ParentMI:=itmFileDirectories;
-
     CreateMenuItem(ParentMI,itmFileCleanDirectory,'itmFileCleanDirectory',lisMenuCleanDirectory, 'menu_clean');
 
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
-
     CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'laz_refresh');
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit, 'menu_exit');
   end;
@@ -433,14 +429,21 @@ begin
     CreateMenuItem(ParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
 
     // "Char Conversion" menu items
-    CreateMenuSeparatorSection(mnuEdit,itmEditBlockCharConversion,'itmEditBlockCharConversion');
-    ParentMI:=itmEditBlockCharConversion;
-    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
+    CreateMenuSeparatorSection(mnuEdit,itmEditBlockActions,'itmEditBlockActions');
+    ParentMI:=itmEditBlockActions;
     CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
     CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
     CreateMenuItem(ParentMI,itmEditSwapCaseBlock,'itmEditSwapCaseBlock',lisMenuSwapCaseSelection, 'menu_edit_uppercase');
+    CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
+    CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
+    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
     CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
     CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
+
+    // *** insert text ***:
+    CreateMenuSeparatorSection(mnuEdit,itmEditInsertions,'itmEditInsertions');
+    ParentMI:=itmEditInsertions;
+    CreateMenuItem(ParentMI,itmEditInsertCharacter,'itmEditInsertCharacter',lisMenuInsertCharacter);
   end;
 end;
 
@@ -546,10 +549,8 @@ var
   ParentMI, SubParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuSource,itmSourceBlockIndentation,'itmSourceBlockIndentation');
-    ParentMI:=itmSourceBlockIndentation;
-    CreateMenuItem(ParentMI,itmSourceIndentBlock,'itmSourceIndentBlock',lisMenuIndentSelection,'menu_indent');
-    CreateMenuItem(ParentMI,itmSourceUnindentBlock,'itmSourceUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
+    CreateMenuSeparatorSection(mnuSource,itmSourceBlockActions,'itmSourceBlockActions');
+    ParentMI:=itmSourceBlockActions;
     CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
@@ -564,35 +565,32 @@ begin
 
     CreateMenuSeparatorSection(mnuSource,itmSourceInsertions,'itmSourceInsertions');
     ParentMI:=itmSourceInsertions;
-    CreateMenuItem(ParentMI,itmSourceInsertCharacter,'itmSourceInsertCharacter',lisMenuInsertCharacter);
+    // *** insert text ***:
+    CreateMenuSubSection(ParentMI,itmSourceInsertCVSKeyWord,'itmSourceInsertCVSKeyWord',lisMenuInsertCVSKeyword);
     begin
-      // insert text sub menu items
-      CreateMenuSubSection(ParentMI,itmSourceInsertCVSKeyWord,'itmSourceInsertCVSKeyWord',lisMenuInsertCVSKeyword);
-      begin
-        // insert CVS keyword sub menu items
-        SubParentMI:=itmSourceInsertCVSKeyWord;
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSAuthor,'itmSourceInsertCVSAuthor','Author');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSDate,'itmSourceInsertCVSDate','Date');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSHeader,'itmSourceInsertCVSHeader','Header');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSID,'itmSourceInsertCVSID','ID');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSLog,'itmSourceInsertCVSLog','Log');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSName,'itmSourceInsertCVSName','Name');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSRevision,'itmSourceInsertCVSRevision','Revision');
-        CreateMenuItem(SubParentMI,itmSourceInsertCVSSource,'itmSourceInsertCVSSource','Source');
-      end;
+      // insert CVS keyword sub menu items
+      SubParentMI:=itmSourceInsertCVSKeyWord;
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSAuthor,'itmSourceInsertCVSAuthor','Author');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSDate,'itmSourceInsertCVSDate','Date');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSHeader,'itmSourceInsertCVSHeader','Header');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSID,'itmSourceInsertCVSID','ID');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSLog,'itmSourceInsertCVSLog','Log');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSName,'itmSourceInsertCVSName','Name');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSRevision,'itmSourceInsertCVSRevision','Revision');
+      CreateMenuItem(SubParentMI,itmSourceInsertCVSSource,'itmSourceInsertCVSSource','Source');
+    end;
 
-      CreateMenuSubSection(ParentMI,itmSourceInsertGeneral,'itmSourceInsertGeneral',lisMenuInsertGeneral);
-      begin
-        // insert general text sub menu items
-        SubParentMI:=itmSourceInsertGeneral;
-        CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
-        CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
-        CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
-        CreateMenuItem(SubParentMI,itmSourceInsertUsername,'itmSourceInsertUsername',lisMenuInsertUsername);
-        CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
-        CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
-        CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
-      end;
+    CreateMenuSubSection(ParentMI,itmSourceInsertGeneral,'itmSourceInsertGeneral',lisMenuInsertGeneral);
+    begin
+      // insert general text sub menu items
+      SubParentMI:=itmSourceInsertGeneral;
+      CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertUsername,'itmSourceInsertUsername',lisMenuInsertUsername);
+      CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
+      CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
+      CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
     end;
     CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
   end;
@@ -858,10 +856,12 @@ begin
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
 
-    itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
     itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
     itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
     itmEditSwapCaseBlock.Command:=GetCommand(ecSelectionSwapCase);
+    itmEditIndentBlock.Command:=GetCommand(ecBlockIndent);
+    itmEditUnindentBlock.Command:=GetCommand(ecBlockUnindent);
+    itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
     itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
 
@@ -890,8 +890,6 @@ begin
     itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
 
     // source menu
-    itmSourceIndentBlock.Command:=GetCommand(ecBlockIndent);
-    itmSourceUnindentBlock.Command:=GetCommand(ecBlockUnindent);
     itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
     itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
