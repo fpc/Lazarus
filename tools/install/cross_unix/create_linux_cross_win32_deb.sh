@@ -84,7 +84,7 @@ if [ $BuildCrossFPC = "yes" ]; then
 fi
 
 if [ "x$Params" != "x" ]; then
-  Params="$Params targets=i386-win32"
+  Params="$Params targets=$Targets"
   echo "calling update_cross_fpc.sh $Params ..."
   ./update_cross_fpc.sh $Params || exit
 fi
@@ -122,7 +122,7 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
   Arch=i386
   PackageName=fpc_crosswin32
   ResourceDir=$CurDir/debian_crosswin32
-  FPCBuildDir=/tmp/fpc_build
+  FPCBuildDir=~/tmp/fpc_build
   FPCDeb=$CurDir/${PackageName}_${FPCVersion}-${FPCRelease}_$Arch.deb
   DebianInstallDir=$FPCBuildDir/usr
   DebianRulezDir=$FPCBuildDir/DEBIAN/

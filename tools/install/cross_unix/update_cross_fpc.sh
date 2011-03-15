@@ -191,8 +191,8 @@ if [ $DownloadFPC = "yes" ]; then
     svn up
     cd -
   else
-    echo "SVN checkout for FPC 2.2 ..."
-    svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_2 fpc
+    echo "SVN checkout for FPC 2.4 ..."
+    svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_4 fpc
   fi
   if [ -d install ]; then
     cd install
@@ -201,8 +201,8 @@ if [ $DownloadFPC = "yes" ]; then
     svn up
     cd -
   else
-    echo "SVN checkout for FPC 2.2 install ..."
-    svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_2/install install
+    echo "SVN checkout for FPC 2.4 install ..."
+    svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_4/install install
   fi
 fi
 
