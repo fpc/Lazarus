@@ -8455,10 +8455,6 @@ msgstr ""
 msgid "Add watch"
 msgstr "Dodaj czujkę"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr ""
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -8485,6 +8481,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
@@ -9611,10 +9611,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Buduj"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Buduj wszystko"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Zbuduj plik"
@@ -9663,6 +9659,11 @@ msgstr ""
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Oznacz jako komentarz"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Kompiluj"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15533,10 +15534,6 @@ msgstr "Zmniejsz wcięcie bloku"
 msgid "build program/project"
 msgstr "buduj program/projekt"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "buduj wszystkie pliki programu/projektu"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "zbuduj plik"
@@ -15624,6 +15621,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Tryb wyboru kolumn"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

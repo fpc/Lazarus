@@ -8407,10 +8407,6 @@ msgstr "Etkin birimi projeye ekle"
 msgid "Add watch"
 msgstr "İzleme ekle"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr ""
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -8437,6 +8433,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
@@ -9561,10 +9561,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Oluştur"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Tümünü oluştur"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Dosyayı Oluştur"
@@ -9613,6 +9609,11 @@ msgstr ".po dosyalarını topla"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Seçimi yoruma dönüştür"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15473,10 +15474,6 @@ msgstr ""
 msgid "build program/project"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr ""
@@ -15563,6 +15560,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions

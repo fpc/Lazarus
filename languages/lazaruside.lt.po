@@ -8451,10 +8451,6 @@ msgstr "Įdėti į projektą aktyvųjį modulį"
 msgid "Add watch"
 msgstr "Pridėti stebimąjį"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Daryti visus projekto/programos failus"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Daryti projektą/programą"
@@ -8482,6 +8478,10 @@ msgstr "CodeTools apibrėžčių rengyklė"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "CodeTools parinktys"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9614,10 +9614,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Daryti"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Daryti visus"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Daryti failą"
@@ -9665,6 +9661,11 @@ msgstr "Surinkti .po failus"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Uždėti komentarą pažymėtajam"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15537,10 +15538,6 @@ msgstr "Naikinti bloko įtrauką"
 msgid "build program/project"
 msgstr "daryti programą/projektą"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "daryti visus programos/projekto failus"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "daryti failą"
@@ -15628,6 +15625,10 @@ msgstr "Stulpelį žymėti žodžiu dešinėn"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Stulpelių žymėjimo veiksena"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

@@ -8445,10 +8445,6 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr ""
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -8475,6 +8471,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
@@ -9601,10 +9601,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Bouw"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Bouw Alles"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Bouw bestand"
@@ -9653,6 +9649,11 @@ msgstr "Verzamel .po-bestanden"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Commentaarselectie"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Compileren"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15527,10 +15528,6 @@ msgstr "Unindent Blok"
 msgid "build program/project"
 msgstr "Bouw programma/project"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "Alle bestanden van een programma/project bouwen"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "Bouw bestand"
@@ -15618,6 +15615,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Kolom selectie methode"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

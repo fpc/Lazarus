@@ -8461,10 +8461,6 @@ msgstr "アクティブなユニットをプロジェクトに追加"
 msgid "Add watch"
 msgstr "監視追加"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "プロジェクト/プログラムの全てのファイルを構築"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "プロジェクト/プログラムを構築"
@@ -8492,6 +8488,10 @@ msgstr "コードツール定義エディタ"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "コードツールオプション"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9621,10 +9621,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "構築"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "すべて構築"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "ファイルを構築"
@@ -9673,6 +9669,11 @@ msgstr ".poファイルを集める"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "選択部分を注釈にする"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "コンパイル"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15555,10 +15556,6 @@ msgstr "ブロックのインデントを戻す"
 msgid "build program/project"
 msgstr "プログラム/プロジェクトを構築"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "すべてのプログラム/プロジェクトファイルを構築"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "ファイルを構築"
@@ -15646,6 +15643,10 @@ msgstr "単語の右に列選択"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "列選択モード"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

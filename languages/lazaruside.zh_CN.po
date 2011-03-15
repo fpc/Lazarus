@@ -8462,10 +8462,6 @@ msgstr "添加活动单元到工程"
 msgid "Add watch"
 msgstr "增加观察点"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "构建工程/程序的所有文件"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "构建工程/程序"
@@ -8493,6 +8489,10 @@ msgstr "代码工具定义编辑器"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "代码工具选项"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9622,10 +9622,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "构建"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "构建所有"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "构建文件"
@@ -9674,6 +9670,11 @@ msgstr "搜集 .po 文件"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "注释所选"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "编译"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15554,10 +15555,6 @@ msgstr "卸载块"
 msgid "build program/project"
 msgstr "构建程序/工程"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "构建程序或单元的所有文件"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "构建文件"
@@ -15645,6 +15642,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "列选择模式"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

@@ -8441,10 +8441,6 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr ""
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -8471,6 +8467,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
@@ -9595,10 +9595,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Munta"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Munta-ho Tot"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Munta el fitxer"
@@ -9647,6 +9643,11 @@ msgstr "Recull els fitxers .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Comenta la selecció"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Compila"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15515,10 +15516,6 @@ msgstr "Dessagna el bloc"
 msgid "build program/project"
 msgstr "munta el programa/projecte"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "munta tots els fitxers del programa/projecte"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "munta el fitxer"
@@ -15606,6 +15603,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Mode de selecció de columna"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

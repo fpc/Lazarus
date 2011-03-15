@@ -8474,10 +8474,6 @@ msgstr "Aktuelle Unit zum Projekt zufügen"
 msgid "Add watch"
 msgstr "Überwachung hinzufügen"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Alle Dateien des Projekts/Programms neu kompilieren"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Projekt/Programm neu kompilieren"
@@ -8505,6 +8501,10 @@ msgstr "Definitioneneditor der Codetools"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "CodeTools-Eigenschaften"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9636,10 +9636,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Neu kompilieren"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Alles neu kompilieren"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Datei neu kompilieren"
@@ -9686,6 +9682,11 @@ msgstr ".PO-Dateien sammeln"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Auswahl kommentieren"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Kompilieren"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15567,10 +15568,6 @@ msgstr "Block ausrücken"
 msgid "build program/project"
 msgstr "Programm/Projekt kompilieren"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "Alle Dateien des Programms/Projekts kompilieren"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "Datei kompilieren"
@@ -15658,6 +15655,10 @@ msgstr "Spalte Wort rechts wählen"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Spaltenauswahlmodus"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

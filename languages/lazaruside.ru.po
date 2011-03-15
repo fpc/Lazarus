@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-11 01:35+0300\n"
+"PO-Revision-Date: 2011-03-15 03:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8460,10 +8460,6 @@ msgstr "Добавить текущий модуль к проекту"
 msgid "Add watch"
 msgstr "Добавить наблюдение"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Собрать все файлы проекта/программы"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Собрать проект/программу"
@@ -8491,6 +8487,10 @@ msgstr "Редактор определений CodeTools"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Параметры CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr "Компилировать проект/программу"
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9618,10 +9618,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Собрать"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Собрать все"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Собрать файл"
@@ -9668,6 +9664,11 @@ msgstr "Собрать файлы .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Закомментировать"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Компилировать"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15528,10 +15529,6 @@ msgstr "Уменьшить отступ выделенного"
 msgid "build program/project"
 msgstr "Собрать программу/проект"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "Собрать все файлы программы/проекта"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "Собрать файл"
@@ -15619,6 +15616,10 @@ msgstr "Добавить в выделение слово справа"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Режим выбора столбца"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr "Компилировать программу/проект"
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

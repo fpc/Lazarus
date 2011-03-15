@@ -8430,10 +8430,6 @@ msgstr "Añadir unidad activa al proyecto"
 msgid "Add watch"
 msgstr "Añadir punto de observación"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Construir todos los archivos del proyecto/programa"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Construir proyecto/programa"
@@ -8461,6 +8457,10 @@ msgstr "Edtor de defines de CodeTools"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Opciones de CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9585,10 +9585,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Construir"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Construir todo"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Construir Archivo"
@@ -9635,6 +9631,11 @@ msgstr "Recoger archivos .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Comentar selección"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Compilar"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15481,10 +15482,6 @@ msgstr "Desangrar Bloque"
 msgid "build program/project"
 msgstr "construir programa/proyecto"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "construir todos los archivos del programa/proyecto"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "construir archivo"
@@ -15572,6 +15569,10 @@ msgstr "Selección de Columna Palabra Derecha"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Modo de selección de columna"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

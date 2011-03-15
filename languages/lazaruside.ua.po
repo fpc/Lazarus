@@ -8442,10 +8442,6 @@ msgstr "Додати активний модуль до проекту"
 msgid "Add watch"
 msgstr "Додати спостереження"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Побудувати всі файли проекту/програми"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Побудувати проект/програму"
@@ -8473,6 +8469,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Опції інструментів коду"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9596,10 +9596,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Побудувати"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Побудувати всі"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Побудувати файл"
@@ -9648,6 +9644,11 @@ msgstr "Зібрати .po файли"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Перевести в коментар"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Компіл."
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15522,10 +15523,6 @@ msgstr "Відмінити зсув блоку вправо"
 msgid "build program/project"
 msgstr "побудувати програму/проект"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "побудувати всі файли програми/проекту"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "побудувати файл"
@@ -15613,6 +15610,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Режим вибирання колонки"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

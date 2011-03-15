@@ -8425,10 +8425,6 @@ msgstr "הוסף את היחידה הפעילה לפרויקט"
 msgid "Add watch"
 msgstr "הוסף משגיח"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "בנה את כל הקבצים של התכנית/פרוייקט"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "בנה את התכנית/פרוייקט"
@@ -8456,6 +8452,10 @@ msgstr "הגדרת עורך ע\"י CodeTools"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "אפשרויות CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9584,10 +9584,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "בנה"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "בנה הכל"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "בנה קובץ"
@@ -9635,6 +9631,11 @@ msgstr "אסוף קבצי po."
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "בחירת הערה"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "הדר"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15496,10 +15497,6 @@ msgstr "בטל זיהוי בלוק"
 msgid "build program/project"
 msgstr "בנה תוכנית/פרוייקט"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "בנה את כל הקבצים של התוכנה/פרויקט"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "בנה קובץ"
@@ -15587,6 +15584,10 @@ msgstr "בחר עמודה למלה בימין"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "אופן בחירת עמודה"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

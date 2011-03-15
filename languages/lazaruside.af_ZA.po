@@ -8405,10 +8405,6 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr ""
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -8435,6 +8431,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
@@ -9555,10 +9555,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Bou"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Bou alles"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Bou Lêer"
@@ -9607,6 +9603,11 @@ msgstr ""
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr ""
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Vertaleer"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15434,10 +15435,6 @@ msgstr ""
 msgid "build program/project"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr ""
@@ -15524,6 +15521,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions

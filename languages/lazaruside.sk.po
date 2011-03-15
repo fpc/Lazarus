@@ -8460,10 +8460,6 @@ msgstr "Pridať aktívnu jednotku do projektu"
 msgid "Add watch"
 msgstr "Pridať pozorovanie"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Vybudovať všetky súbory projektu/programu"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Vybudovať projekt/program"
@@ -8491,6 +8487,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Voľby CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9620,10 +9620,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Vybudovať"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Vybudovať všetko"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Vybudovať súbor"
@@ -9672,6 +9668,11 @@ msgstr "Zhromaždiť súbory .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Zakomentovať výber"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Preložiť"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15554,10 +15555,6 @@ msgstr "Zmenšiť odsadenie bloku"
 msgid "build program/project"
 msgstr "vybudovať program/projekt"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "vybudovať všetky súbory programu/projektu"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "vybudovať súbor"
@@ -15645,6 +15642,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Stĺpcový režim výberu"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

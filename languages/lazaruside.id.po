@@ -8455,10 +8455,6 @@ msgstr "Tambah unit aktif ke proyek"
 msgid "Add watch"
 msgstr "Tambah pengawasan"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Bangun seluruh file proyek/program"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Bangun proyek/program"
@@ -8486,6 +8482,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Opsi CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9611,10 +9611,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Bangun"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Bangun semua"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Bangun File"
@@ -9663,6 +9659,11 @@ msgstr "Kumpulkan file .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Komentari pilihan"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Kompilasi"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15537,10 +15538,6 @@ msgstr "Jangan lekukan blok"
 msgid "build program/project"
 msgstr "bangun program/proyek"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "bangun semua file dari program/proyek"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "bangun file"
@@ -15628,6 +15625,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Mode pemilihan kolom"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

@@ -8462,10 +8462,6 @@ msgstr "Aggiungi la unit attiva al progetto"
 msgid "Add watch"
 msgstr "Aggiungi watch"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Build si tutti i files del progetto/programma"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Build del progetto/programma"
@@ -8493,6 +8489,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Opzioni CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9618,10 +9618,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Esegui build"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Esegui build di tutto"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Esegui build del file"
@@ -9670,6 +9666,11 @@ msgstr "Raccogli i file .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Commenta la selezione"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Compila"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15544,10 +15545,6 @@ msgstr "Deindenta blocco"
 msgid "build program/project"
 msgstr "esegui build del programma/progetto"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "esegui build di tutti i file del programma/progetto"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "esegui build del file"
@@ -15635,6 +15632,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Modalità selezione a colonne"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

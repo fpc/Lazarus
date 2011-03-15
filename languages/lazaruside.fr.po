@@ -8467,10 +8467,6 @@ msgstr "Ajouter l'unité active au projet"
 msgid "Add watch"
 msgstr "Ajouter un suivi"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Créer tous les fichiers du projet/programme"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Créer le programme/projet"
@@ -8498,6 +8494,10 @@ msgstr "Editeur des directives des outils de code ..."
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Options des outils de code"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9623,10 +9623,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Créer"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Créer tout"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Créer le fichier"
@@ -9673,6 +9669,11 @@ msgstr "Collecter les fichiers .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Commenter la sélection"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Compiler"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15535,10 +15536,6 @@ msgstr "Désindenter le bloc"
 msgid "build program/project"
 msgstr "Construire le programme/projet"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "Construire tous les fichiers du programme"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "Construire le fichier"
@@ -15626,6 +15623,10 @@ msgstr "Sélection de colonne un mot à droite"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Mode de sélection en colonne"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"

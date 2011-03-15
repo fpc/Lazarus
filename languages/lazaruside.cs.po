@@ -8404,10 +8404,6 @@ msgstr "Přidat aktivní jednotku do projektu"
 msgid "Add watch"
 msgstr "Přidat sledování"
 
-#: lazarusidestrconsts.liskmbuildallfilesofprojectprogram
-msgid "Build all files of project/program"
-msgstr "Sestavit všechny soubory projektu/programu"
-
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Sestavit projekt/program"
@@ -8435,6 +8431,10 @@ msgstr "Editor definic CodeTools"
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Nastavení CodeTools"
+
+#: lazarusidestrconsts.liskmcompileprojectprogram
+msgid "Compile project/program"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9557,10 +9557,6 @@ msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
 msgstr "Sestavit"
 
-#: lazarusidestrconsts.lismenubuildall
-msgid "Build all"
-msgstr "Sestavit vše"
-
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Sestavit soubor"
@@ -9605,6 +9601,11 @@ msgstr "Sbírat soubory .po"
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
 msgstr "Zakomentovat výběr"
+
+#: lazarusidestrconsts.lismenucompile
+msgctxt "lazarusidestrconsts.lismenucompile"
+msgid "Compile"
+msgstr "Přeložit"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -15425,10 +15426,6 @@ msgstr "Vrátit odsazení bloku"
 msgid "build program/project"
 msgstr "Sestavit program/projekt"
 
-#: lazarusidestrconsts.srkmecbuildall
-msgid "build all files of program/project"
-msgstr "sestavit všechny soubory programu/projektu"
-
 #: lazarusidestrconsts.srkmecbuildfile
 msgid "build file"
 msgstr "sestavit soubor"
@@ -15516,6 +15513,10 @@ msgstr "Sloupec Vybrat slovo vpravo"
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Režim výběru sloupce"
+
+#: lazarusidestrconsts.srkmeccompile
+msgid "compile program/project"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"
