@@ -2280,14 +2280,12 @@ var
   
   function Beautified(const s: string): string;
   begin
-    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
-                  BeautifyStatement(s,0);
+    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(s,0);
   end;
   
 begin
   if fSource=nil then exit;
-  NewSource:=Beautified(
-                  Descriptor.CreateSource(Filename,NewUnitName,fComponentName));
+  NewSource:=Beautified(Descriptor.CreateSource(Filename,NewUnitName,fComponentName));
   fSource.Source:=NewSource;
   Modified:=true;
 end;
@@ -3180,8 +3178,7 @@ var
     FFlags:=FFlags-[pfUseDefaultCompilerOptions];
   end;
   
-  procedure LoadSessionInfo(XMLConfig: TXMLConfig; const Path: string;
-    Merge: boolean);
+  procedure LoadSessionInfo(XMLConfig: TXMLConfig; const Path: string; Merge: boolean);
   var
     NewUnitInfo: TUnitInfo;
     NewUnitCount, i, j: integer;
@@ -3476,8 +3473,7 @@ end;
 {------------------------------------------------------------------------------
   TProject AddFile
  ------------------------------------------------------------------------------}
-procedure TProject.AddFile(ProjectFile: TLazProjectFile;
-  AddToProjectUsesClause: boolean);
+procedure TProject.AddFile(ProjectFile: TLazProjectFile; AddToProjectUsesClause: boolean);
 var
   ShortUnitName:string;
   NewIndex: integer;
@@ -3880,8 +3876,7 @@ begin
   until (not UnitNameExists(Result));
 end;
 
-function TProject.NewUniqueComponentName(const AComponentPrefix: string
-  ): string;
+function TProject.NewUniqueComponentName(const AComponentPrefix: string): string;
 
   function FormComponentExists(const AComponentName: string): boolean;
   var i: integer;
@@ -3935,8 +3930,7 @@ begin
   until ProjectUnitWithShortFilename(Result)=nil;
 end;
 
-function TProject.AddCreateFormToProjectFile(
-  const AClassName, AName: string):boolean;
+function TProject.AddCreateFormToProjectFile(const AClassName, AName: string):boolean;
 begin
   if (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
     Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
@@ -3950,8 +3944,7 @@ begin
   end;
 end;
 
-function TProject.RemoveCreateFormFromProjectFile(
-  const AClassName,AName:string):boolean;
+function TProject.RemoveCreateFormFromProjectFile(const AClassName,AName:string):boolean;
 begin
   Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
               AName);
@@ -3961,8 +3954,7 @@ begin
   end;
 end;
 
-function TProject.FormIsCreatedInProjectFile(
-  const AClassname,AName:string):boolean;
+function TProject.FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
 var p: integer;
 begin
   Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,
@@ -4018,8 +4010,7 @@ begin
   end;
 end;
 
-function TProject.UnitWithEditorComponent(AEditor: TSourceEditorInterface
-  ): TUnitInfo;
+function TProject.UnitWithEditorComponent(AEditor: TSourceEditorInterface): TUnitInfo;
 var
   AnEditorInfo: TUnitEditorInfo;
 begin
@@ -4037,8 +4028,7 @@ begin
   if (NamePos<1) or (InPos<1) then ;
 end;
 
-function TProject.GetResourceFile(AnUnitInfo: TUnitInfo;
-  Index:integer): TCodeBuffer;
+function TProject.GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer): TCodeBuffer;
 var i, LinkIndex: integer;
 begin
   LinkIndex:=-1;
@@ -4050,8 +4040,7 @@ begin
   end;
 end;
 
-function TProject.SearchFile(
-  const Filename,SearchPaths,InitialDir:string):string;
+function TProject.SearchFile(const Filename,SearchPaths,InitialDir:string):string;
 var StartPos,EndPos:integer;
   CurPath: string;
   OldDir: string;
@@ -4341,8 +4330,7 @@ begin
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;
 
-function TProject.RemoveProjectPathFromFilename(
-  const AFilename: string): string;
+function TProject.RemoveProjectPathFromFilename(const AFilename: string): string;
 var ProjectPath:string;
 begin
   ProjectPath:=ProjectDirectory;
@@ -4548,8 +4536,7 @@ begin
   EndUpdate;
 end;
 
-function TProject.Requires(APackage: TLazPackage; SearchRecursively: boolean
-  ): boolean;
+function TProject.Requires(APackage: TLazPackage; SearchRecursively: boolean): boolean;
 begin
   if SearchRecursively then
     Result:=PackageGraph.FindDependencyRecursively(FFirstRequiredDependency,
@@ -4764,8 +4751,7 @@ begin
   Include(FStateFlags,lpsfDesignerChanged);
 end;
 
-procedure TProject.ClearUnitComponentDependencies(
-  ClearTypes: TUnitCompDependencyTypes);
+procedure TProject.ClearUnitComponentDependencies(ClearTypes: TUnitCompDependencyTypes);
 var
   i: Integer;
 begin
@@ -4861,8 +4847,7 @@ begin
                                             SetDirSeparators(SrcPathAddition));
 end;
 
-function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean
-  ): string;
+function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;
 begin
   Result:=SourceDirectories.CreateSearchPathFromAllFiles;
   if WithProjectDir then
@@ -5399,25 +5384,9 @@ begin
 end;
 
 function TProject.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
-{var
-  i: Integer;
-  Res: TUnitEditorInfo;  }
 begin
   Result := Nil;
   FAllEditorsInfoMap.GetData(AEditor, Result);
-{
-  Debug: this was used to verify the Map result is identical with earlier results.
-         To be cleaned...
-  i:= FAllEditorsInfoList.Count - 1;
-  while (i >= 0) and (FAllEditorsInfoList[i].EditorComponent <> AEditor) do
-    dec(i);
-  if i >= 0 then
-    Res := FAllEditorsInfoList[i]
-  else
-    Res := nil;
-  if Res <> Result then  //!!!
-    DebugLn(Format('Res (%p) <> Result (%p)',[Pointer(Res), Pointer(Result)]));
-}
 end;
 
 procedure TProject.EditorInfoAdd(EdInfo: TUnitEditorInfo);
@@ -5652,8 +5621,7 @@ begin
   end;
 end;
 
-procedure TProject.RemoveFromList(AnUnitInfo: TUnitInfo;
-  ListType: TUnitInfoList);
+procedure TProject.RemoveFromList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirst[ListType]=AnUnitInfo then
@@ -5870,8 +5838,7 @@ begin
   end;
 end;
 
-function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions
-  ): boolean;
+function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
 begin
   Result:=inherited IsEqual(CompOpts);
 end;
@@ -6367,8 +6334,7 @@ begin
     AddToList(FRequiresUnit.FFirstUsedByComponent,ucdlUsedBy);
 end;
 
-procedure TUnitComponentDependency.SetTypes(
-  const AValue: TUnitCompDependencyTypes);
+procedure TUnitComponentDependency.SetTypes(const AValue: TUnitCompDependencyTypes);
 begin
   if AValue=FTypes then exit;
   FTypes:=AValue;
@@ -6384,8 +6350,7 @@ begin
     Result:=FCompProps.Count;
 end;
 
-function TUnitComponentDependency.GetCompProps(Index: integer
-  ): TUCDComponentProperty;
+function TUnitComponentDependency.GetCompProps(Index: integer): TUCDComponentProperty;
 begin
   Result:=TUCDComponentProperty(FCompProps[Index]);
 end;
@@ -6553,8 +6518,7 @@ begin
     fLastSavedChangeStamp:=ChangeStamp;
 end;
 
-procedure TProjectBuildMacros.SetValues(const Name: string; const AValue: string
-  );
+procedure TProjectBuildMacros.SetValues(const Name: string; const AValue: string);
 begin
   if (Name='') or not IsValidIdent(Name) then exit;
   if Values[Name]=AValue then exit;
@@ -6761,8 +6725,7 @@ begin
   fOnChanged.Add(TMethod(Handler));
 end;
 
-procedure TProjectBuildMacros.RemoveOnChangedHandler(const Handler: TNotifyEvent
-  );
+procedure TProjectBuildMacros.RemoveOnChangedHandler(const Handler: TNotifyEvent);
 begin
   fOnChanged.Remove(TMethod(Handler));
 end;
@@ -6882,8 +6845,7 @@ begin
   fOnChanged.Add(TMethod(Handler));
 end;
 
-procedure TProjectBuildMode.RemoveOnChangedHandler(const Handler: TNotifyEvent
-  );
+procedure TProjectBuildMode.RemoveOnChangedHandler(const Handler: TNotifyEvent);
 begin
   fOnChanged.Remove(TMethod(Handler));
 end;
@@ -7055,8 +7017,7 @@ begin
   fOnChanged.Add(TMethod(Handler));
 end;
 
-procedure TProjectBuildModes.RemoveOnChangedHandler(const Handler: TNotifyEvent
-  );
+procedure TProjectBuildModes.RemoveOnChangedHandler(const Handler: TNotifyEvent);
 begin
   fOnChanged.Remove(TMethod(Handler));
 end;
