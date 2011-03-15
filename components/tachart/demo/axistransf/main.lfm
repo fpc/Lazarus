@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 1345
   Height = 333
-  Top = 95
+  Top = 166
   Width = 533
   Caption = 'TAChart axis transformation demo'
   ClientHeight = 333
@@ -104,25 +104,109 @@ object Form1: TForm1
           OnChange = cbAutoChange
           TabOrder = 0
         end
-        object fseSummerZoom: TFloatSpinEdit
-          Left = 236
+      end
+    end
+    object tsIndependent: TTabSheet
+      Caption = 'Independent scale'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartIndependent: TChart
+        Left = 0
+        Height = 269
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Title.LabelFont.Orientation = 900
+            Transformations = catIndependent1
+          end        
+          item
+            Alignment = calBottom
+            Grid.Visible = False
+            Marks.Visible = False
+          end        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Transformations = catIndependent2
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object ChartIndependentLineSeries1: TLineSeries
+          AxisIndexY = 0
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+        end
+        object ChartIndependentLineSeries2: TLineSeries
+          AxisIndexY = 2
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+        end
+      end
+      object pnlIndependentControls: TPanel
+        Left = 0
+        Height = 38
+        Top = 269
+        Width = 525
+        Align = alBottom
+        ClientHeight = 38
+        ClientWidth = 525
+        TabOrder = 1
+        object fseIndependent1: TFloatSpinEdit
+          Left = 60
           Height = 21
-          Top = 4
-          Width = 50
-          Increment = 0.5
+          Top = 9
+          Width = 70
+          Increment = 0.1
           MaxValue = 10
-          MinValue = 0.5
-          OnChange = fseSummerZoomChange
+          MinValue = 0.1
+          OnChange = fseIndependent1Change
+          TabOrder = 0
+          Value = 1
+        end
+        object fseIndependent2: TFloatSpinEdit
+          Left = 188
+          Height = 21
+          Top = 9
+          Width = 70
+          Increment = 0.1
+          MaxValue = 10
+          MinValue = 0.1
+          OnChange = fseIndependent2Change
           TabOrder = 1
           Value = 1
         end
-        object lblSummerZoom: TLabel
-          Left = 112
+        object lblIndependentScale1: TLabel
+          Left = 16
           Height = 14
-          Top = 5
-          Width = 117
-          Caption = 'Additional left axis zoom'
+          Top = 13
+          Width = 41
+          Caption = 'Scale 1'
+          Font.Color = clNavy
+          Font.Style = [fsBold]
           ParentColor = False
+          ParentFont = False
+        end
+        object lblIndependentScale2: TLabel
+          Left = 144
+          Height = 14
+          Top = 13
+          Width = 41
+          Caption = 'Scale 2'
+          Font.Color = clGreen
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
         end
       end
     end
@@ -270,8 +354,6 @@ object Form1: TForm1
     object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
       Enabled = False
     end
-    object catTZoom: TLinearAxisTransform
-    end
   end
   object rcsTSummer: TRandomChartSource
     PointsNumber = 20
@@ -324,8 +406,8 @@ object Form1: TForm1
     top = 208
   end
   object catUser: TChartAxisTransformations
-    left = 357
-    top = 234
+    left = 352
+    top = 236
     object catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform
     end
   end
@@ -335,6 +417,18 @@ object Form1: TForm1
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '1'
+    end
+  end
+  object catIndependent1: TChartAxisTransformations
+    left = 220
+    top = 176
+    object catIndependent1Zoom: TLinearAxisTransform
+    end
+  end
+  object catIndependent2: TChartAxisTransformations
+    left = 220
+    top = 236
+    object catIndependent2Zoom: TLinearAxisTransform
     end
   end
 end

@@ -13,13 +13,19 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    catIndependent1Zoom: TLinearAxisTransform;
+    catIndependent2Zoom: TLinearAxisTransform;
+    catIndependent2: TChartAxisTransformations;
     catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
-    catTZoom: TLinearAxisTransform;
     cbAuto: TCheckBox;
     catUser: TChartAxisTransformations;
     catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform;
+    catIndependent1: TChartAxisTransformations;
+    ChartIndependent: TChart;
+    ChartIndependentLineSeries1: TLineSeries;
+    ChartIndependentLineSeries2: TLineSeries;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
     ChartUser: TChart;
@@ -39,15 +45,19 @@ type
     catTFahrToCel: TLinearAxisTransform;
     ChartTSummer: TLineSeries;
     ChartTWinterLine: TLineSeries;
-    fseSummerZoom: TFloatSpinEdit;
-    lblSummerZoom: TLabel;
+    fseIndependent1: TFloatSpinEdit;
+    fseIndependent2: TFloatSpinEdit;
+    lblIndependentScale1: TLabel;
+    lblIndependentScale2: TLabel;
     PageControl1: TPageControl;
+    pnlIndependentControls: TPanel;
     pnlLogControls: TPanel;
     pnlAutoControls: TPanel;
     rcsUser: TRandomChartSource;
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
+    tsIndependent: TTabSheet;
     tsUser: TTabSheet;
     tsLog: TTabSheet;
     procedure cbAutoChange(Sender: TObject);
@@ -56,7 +66,10 @@ type
       AX: Double; out AT: Double);
     procedure ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
-    procedure fseSummerZoomChange(Sender: TObject);
+    procedure fseIndependent1Change(Sender: TObject);
+    procedure fseIndependent2Change(Sender: TObject);
+  private
+    procedure FillIndependentSource;
   end;
 
 var
@@ -108,6 +121,23 @@ begin
   AY := MyFunc(AX);
 end;
 
+procedure TForm1.FillIndependentSource;
+
+var
+  i: Integer;
+  v1, v2: Double;
+begin
+  RandSeed := 923875;
+  v1 := 0;
+  v2 := 0;
+  for i := 1 to 100 do begin
+    v1 += Random - 0.48;
+    v2 += Random - 0.52;
+    ChartIndependentLineSeries1.AddXY(i, v1);
+    ChartIndependentLineSeries2.AddXY(i, v2);
+  end;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 var
   i: Integer;
@@ -120,11 +150,17 @@ begin
   end;
   catUserUserDefinedAxisTransform1.OnAxisToGraph :=
     @catUserUserDefinedAxisTransform1AxisToGraph;
+  FillIndependentSource;
 end;
 
-procedure TForm1.fseSummerZoomChange(Sender: TObject);
+procedure TForm1.fseIndependent1Change(Sender: TObject);
 begin
-  catTZoom.Scale := 1 / fseSummerZoom.Value;
+  catIndependent1Zoom.Scale := fseIndependent1.Value;
+end;
+
+procedure TForm1.fseIndependent2Change(Sender: TObject);
+begin
+  catIndependent2Zoom.Scale := fseIndependent2.Value;
 end;
 
 end.
