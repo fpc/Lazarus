@@ -471,7 +471,7 @@ type
     function getText: WideString; override;
     procedure setIcon(AIcon: QIconH);
     procedure setIconSize(Size: PSize);
-    procedure setShortcut(AShortcut: TShortcut);
+    procedure setShortcut(AShortcut, AShortCutKey2: TShortcut);
     procedure setText(const W: WideString); override;
     procedure Toggle;
     function isChecked: Boolean;
@@ -1361,7 +1361,7 @@ type
     procedure setIcon(AIcon: QIconH);
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
-    procedure setShortcut(AShortcut: TShortcut);
+    procedure setShortcut(AShortcut, AShortCutKey2: TShortcut);
     procedure setText(const W: WideString); override;
     procedure setVisible(AVisible: Boolean); override;
     property trackButton: QtMouseButton read FTrackButton write FTrackButton;
@@ -4497,21 +4497,26 @@ begin
   QAbstractButton_setIconSize(QAbstractButtonH(Widget), Size);
 end;
 
-procedure TQtAbstractButton.setShortcut(AShortcut: TShortcut);
+procedure TQtAbstractButton.setShortcut(AShortcut, AShortCutKey2: TShortcut);
 var
   Key: Word;
   Shift: TShiftState;
-  Modifiers: QtModifier;
+  QtK1, QtK2: integer;
   KeySequence: QKeySequenceH;
 begin
+  QtK1 := 0;
+  QtK2 := 0;
   if AShortCut <> 0 then
   begin
     ShortCutToKey(AShortCut, Key, Shift);
-    Modifiers := ShiftStateToQtModifiers(Shift);
-    KeySequence := QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers);
-  end
-  else
-    KeySequence := QKeySequence_create();
+    QtK1 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
+    if AShortCutKey2 <> 0 then
+    begin
+      ShortCutToKey(AShortCutKey2, Key, Shift);
+      QtK2 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
+    end;
+  end;
+  KeySequence := QKeySequence_create(QtK1, QtK2);
   QAbstractButton_setShortcut(QAbstractButtonH(Widget), KeySequence);
   QKeySequence_destroy(KeySequence);
 end;
@@ -11046,22 +11051,27 @@ begin
   QAction_setSeparator(ActionHandle, AValue);
 end;
 
-procedure TQtMenu.setShortcut(AShortcut: TShortcut);
+procedure TQtMenu.setShortcut(AShortcut, AShortCutKey2: TShortcut);
 var
   Key: Word;
-  KeySequence: QKeySequenceH;
   Shift: TShiftState;
-  Modifiers: QtModifier;
+  QtK1, QtK2: integer;
+  KeySequence: QKeySequenceH;
 begin
+  QtK1 := 0;
+  QtK2 := 0;
   if AShortCut <> 0 then
   begin
     ShortCutToKey(AShortCut, Key, Shift);
-    Modifiers := ShiftStateToQtModifiers(Shift);
-    // there is no need in destroying QKeySequnce
-    KeySequence := QKeySequence_create(LCLKeyToQtKey(Key) or Modifiers);
-  end
-  else
-    KeySequence := QKeySequence_create();
+    QtK1 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
+    if AShortCutKey2 <> 0 then
+    begin
+      ShortCutToKey(AShortCutKey2, Key, Shift);
+      QtK2 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
+    end;
+  end;
+  // there is no need in destroying QKeySequnce
+  KeySequence := QKeySequence_create(QtK1, QtK2);
   QAction_setShortcut(ActionHandle, KeySequence);
   QKeySequence_destroy(KeySequence);
 end;

@@ -4651,7 +4651,7 @@ begin
 
     Dlg.AutoSize:=true;
     if Dlg.ShowModal=mrOk then begin
-      NewValue:=ShortCut(Box.Key,Box.ShiftState);
+      NewValue:=Key2ShortCut(Box.Key,Box.ShiftState);
       if OldValue<>NewValue then
         SetOrdValue(NewValue);
     end;

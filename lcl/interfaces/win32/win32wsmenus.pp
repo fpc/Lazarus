@@ -52,7 +52,7 @@ type
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut); override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
     class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: Graphics.TBitmap); override;
@@ -239,12 +239,20 @@ begin
   Result := CreateFontIndirect(@lf);
 end;
 
+(* Get the menu item shortcut text *)
+function MenuItemShortCut(const AMenuItem: TMenuItem): string;
+begin
+  Result := ShortCutToText(AMenuItem.ShortCut);
+  if AMenuItem.ShortCutKey2 <> scNone then
+    Result := Result + ', ' + ShortCutToText(AMenuItem.ShortCutKey2);
+end;
+
 (* Get the menu item caption including shortcut *)
 function CompleteMenuItemCaption(const AMenuItem: TMenuItem; Spacing: String): string;
 begin
   Result := AMenuItem.Caption;
   if AMenuItem.ShortCut <> scNone then
-    Result := Result + Spacing + ShortCutToText(AMenuItem.ShortCut);
+    Result := Result + Spacing + MenuItemShortCut(AMenuItem);
 end;
 
 (* Get the maximum length of the given string in pixels *)
@@ -364,6 +372,7 @@ var
   Theme: HTHEME;
   TextRect: TRect;
   W: WideString;
+  S: string;
   AFont, OldFont: HFONT;
 begin
   Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
@@ -401,7 +410,7 @@ begin
 
     if AMenuItem.ShortCut <> scNone then
     begin;
-      W := UTF8ToUTF16(ShortCutToText(AMenuItem.ShortCut));
+      W := UTF8ToUTF16(MenuItemShortCut(AMenuItem));
       GetThemeTextExtent(Theme, DC, MENU_POPUPITEM, 0, PWideChar(W), Length(W),
         DT_SINGLELINE or DT_LEFT, nil, TextRect);
       Result.ShortCustSize.cx := TextRect.Right - TextRect.Left;
@@ -762,8 +771,7 @@ begin
         TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
         TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
       end;
-
-      ThemeDrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
+      ThemeDrawText(AHDC, Details, MenuItemShortCut(AMenuItem), TextRect, TextFlags, 0);
     end;
     // exlude menu item rectangle to prevent drawing by windows after us
     if AMenuItem.Count > 0 then
@@ -1008,7 +1016,7 @@ begin
 
   if AMenuItem.ShortCut <> scNone then
   begin
-    shortCutText := ShortCutToText(AMenuItem.ShortCut);
+    shortCutText := MenuItemShortCut(AMenuItem);
     if IsRightToLeft then
     begin
       Inc(ARect.Left, GetSystemMetrics(SM_CXMENUCHECK));
@@ -1369,15 +1377,13 @@ begin
   UpdateCaption(AMenuItem, aCaption);
 end;
 
-class function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem;
-  const Checked: boolean): boolean;
+class function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
 begin
   UpdateCaption(AMenuItem, aMenuItem.Caption);
   Result := Checked;
 end;
 
-class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
-  const OldShortCut, NewShortCut: TShortCut);
+class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut);
 begin
   UpdateCaption(AMenuItem, aMenuItem.Caption);
 end;

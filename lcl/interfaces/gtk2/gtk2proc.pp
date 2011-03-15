@@ -635,10 +635,9 @@ function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
 procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
-procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget);
-procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget);
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget;
+                              NewShortCut, ShortCutKey2: TShortCut);
 
 // statusbar
 function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;

@@ -248,7 +248,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-    class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
+    class procedure SetShortCut(const AButton: TCustomButton; const OldKey: word); override;
   end;
 
   { TWin32WSCustomCheckBox }
@@ -261,8 +261,7 @@ type
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-          const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
       UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
@@ -1594,7 +1593,7 @@ begin
   Windows.SendMessage(AButton.Handle, BM_SETSTYLE, WindowStyle, 1);
 end;
 
-class procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
+class procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey: word);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   // TODO: implement me!
@@ -1655,7 +1654,7 @@ begin
 end;
 
 class procedure TWin32WSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut, NewShortCut: TShortCut);
+  const OldShortCut: TShortCut);
 begin
   // TODO: implement me!
 end;

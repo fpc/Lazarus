@@ -508,8 +508,6 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 function ExecuteIDECommand(Sender: TObject; Command: word): boolean;
 
-function IDEShortCutToMenuShortCut(MenuItem: TMenuItem; const IDEShortCut: TIDEShortCut): TShortCut;
-
 var
   // will be set by the IDE
   IDECommandList: TIDECommands;
@@ -596,23 +594,6 @@ begin
     Result:=OnExecuteIDECommand(Sender,Command)
   else
     Result:=false;
-end;
-
-function IDEShortCutToMenuShortCut(MenuItem: TMenuItem; const IDEShortCut: TIDEShortCut): TShortCut;
-begin
-  if IDEShortCut.Key2=VK_UNKNOWN then
-    Result:=ShortCut(IDEShortCut.Key1,IDEShortCut.Shift1)
-  else begin
-    // This shows combination shortcuts. Normally shortcut string is generated
-    // in widgetset code but it supports only one key (modified by Shift state).
-    {$IFDEF CombinationShortcuts}
-    if (IDEShortCut.Key1<>VK_UNKNOWN) and (IDEShortCut.Key2<>VK_UNKNOWN) then
-      MenuItem.Caption:=MenuItem.Caption+#9+
-          KeyAndShiftStateToKeyString(IDEShortCut.Key1,IDEShortCut.Shift1)+', '+
-          KeyAndShiftStateToKeyString(IDEShortCut.Key2,IDEShortCut.Shift2);
-    {$ENDIF}
-    Result:=ShortCut(VK_UNKNOWN,[]);
-  end;
 end;
 
 procedure CreateStandardIDECommandScopes;

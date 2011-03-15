@@ -135,7 +135,8 @@ begin
 
     if HandleAllocated then
     begin
-      if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
+      if ShortCut <> 0 then
+        ShortCutChanged(0);
     end;
   end;
   //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
@@ -540,7 +541,7 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IsShortCutStored: boolean;
 
-  Checks if 'ShotCut' needs to be saved to stream
+  Checks if 'ShortCut' needs to be saved to stream
  ------------------------------------------------------------------------------}
 function TMenuItem.IsShortCutStored: boolean;
 begin
@@ -1310,14 +1311,27 @@ end;
   Params:  Value: TShortCut
   Returns: Nothing
 
-  Set the shortcut
+  Set the ShortCut
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetShortCut(const AValue : TShortCut);
+var
+  OldShortCut: TShortCut;
 Begin
   if FShortCut <> AValue then
   begin
-    ShortCutChanged(FShortCut, AValue);
+    OldShortCut:=FShortCut;
     FShortCut := AValue;
+    ShortCutChanged(OldShortCut);
+  end;
+end;
+
+procedure TMenuItem.SetShortCutKey2(const AValue: TShortCut);
+begin
+  if FShortCutKey2 <> AValue then
+  begin
+    FShortCutKey2 := AValue;
+    // ToDo: Remove the unused OldValue parameter if possible. It gets wrong value here.
+    ShortCutChanged(FShortCut);
   end;
 end;
 
@@ -1407,15 +1421,15 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.ShortcutChanged
-  Params:  OldValue: Old shortcut, Value: New shortcut
+  Params:  OldValue: Old Key2ShortCut, Value: New Key2ShortCut
   Returns: Nothing
 
-  Installs a new shortcut, removes an old one.
+  Installs a new Key2ShortCut, removes an old one.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.ShortcutChanged(const OldValue, Value: TShortcut);
+procedure TMenuItem.ShortcutChanged(const OldValue: TShortcut);
 begin
   if HandleAllocated then
-    TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue, Value);
+    TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue);
 end;
 
 {------------------------------------------------------------------------------

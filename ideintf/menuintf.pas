@@ -24,7 +24,7 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Menus, ImgList, Graphics, LazHelpIntf,
+  Classes, SysUtils, LCLType, LCLProc, Menus, ImgList, Graphics, LazHelpIntf,
   IDECommands, IDEImagesIntf;
   
 type
@@ -1621,10 +1621,14 @@ procedure TIDEMenuCommand.CommandChanged(Sender: TObject);
 begin
   //DebugLn('TIDEMenuCommand.CommandChanged ',Name);
   if MenuItem<>nil then
-    if FCommand<>nil then
-      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(MenuItem, FCommand.ShortcutA)
-    else
+    if FCommand<>nil then begin
+      MenuItem.ShortCut:=KeyToShortCut(FCommand.ShortcutA.Key1,FCommand.ShortcutA.Shift1);
+      MenuItem.ShortCutKey2:=KeyToShortCut(FCommand.ShortcutA.Key2,FCommand.ShortcutA.Shift2);
+    end
+    else begin
       MenuItem.ShortCut:=0;
+      MenuItem.ShortCutKey2:=0;
+    end;
 end;
 
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
@@ -1726,10 +1730,14 @@ begin
     MenuItem.RadioItem:=RadioItem;
     MenuItem.RightJustify:=RightJustify;
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
-    if Command<>nil then
-      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(MenuItem, Command.ShortcutA)
-    else
-      MenuItem.ShortCut:=ShortCut(0,[]);
+    if FCommand<>nil then begin
+      MenuItem.ShortCut:=KeyToShortCut(FCommand.ShortcutA.Key1,FCommand.ShortcutA.Shift1);
+      MenuItem.ShortCutKey2:=KeyToShortCut(FCommand.ShortcutA.Key2,FCommand.ShortcutA.Shift2);
+    end
+    else begin
+      MenuItem.ShortCut:=0;
+      MenuItem.ShortCutKey2:=0;
+    end;
     MenuItem.GroupIndex:=GroupIndex;
   end;
 end;

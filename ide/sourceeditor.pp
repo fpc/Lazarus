@@ -2034,7 +2034,7 @@ begin
   OnKeyPress:=@OnSynCompletionKeyPress;
   OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
   OnPositionChanged:=@OnSynCompletionPositionChanged;
-  ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
+  ShortCut:=Key2ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
   TheForm.Width := Max(50, EnvironmentOptions.CompletionWindowWidth);
   TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.CompletionWindowHeight);

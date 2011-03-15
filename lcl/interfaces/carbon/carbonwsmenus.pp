@@ -54,7 +54,7 @@ type
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
@@ -200,17 +200,16 @@ end;
   Method:  TCarbonWSMenuItem.SetShortCut
   Params:  AMenuItem   - LCL menu item
            OldShortCut - Old shortcut
-           NewShortCut - New shortcut
 
   Sets the shortcut of menu item in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
-  const OldShortCut, NewShortCut: TShortCut);
+  const OldShortCut: TShortCut);
 begin
   if not CheckMenuItem(AMenuItem, 'SetShortCut') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetShortCut', 'Parent') then Exit;
   
-  TCarbonMenu(AMenuItem.Handle).SetShortCut(NewShortCut);
+  TCarbonMenu(AMenuItem.Handle).SetShortCut(AMenuItem.ShortCut);
 end;
 
 {------------------------------------------------------------------------------

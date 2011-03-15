@@ -349,8 +349,7 @@ type
     function GetEditor(i: integer): TCustomSynEdit;
   protected
     procedure OnFormPaint(Sender: TObject);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetShortCut(Value: TShortCut);
   public
     constructor Create(AOwner: TComponent); override;
@@ -1673,7 +1672,7 @@ begin
   FEndOfTokenChr := '()[].';
   fEditors := TList.Create;
   fEditstuffs := TList.Create;
-  fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
+  fShortCut := Key2ShortCut(Ord(' '), [ssCtrl]);
 end;
 
 procedure TSynCompletion.SetShortCut(Value: TShortCut);
@@ -1859,7 +1858,7 @@ begin
   fEditstuffs := TList.Create;
   FEndOfTokenChr := '()[].';
   fAutoCompleteList := TStringList.Create;
-  fShortCut := Menus.ShortCut(Ord(' '), [ssShift]);
+  fShortCut := Key2ShortCut(Ord(' '), [ssShift]);
 end;
 
 procedure TSynAutoComplete.SetShortCut(Value: TShortCut);

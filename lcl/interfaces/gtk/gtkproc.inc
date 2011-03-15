@@ -6048,7 +6048,7 @@ end;
 
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget);
 begin
-  UpdateInnerMenuItem(LCLMenuItem, MenuItemWidget, LCLMenuItem.ShortCut);
+  UpdateInnerMenuItem(LCLMenuItem, MenuItemWidget, LCLMenuItem.ShortCut, LCLMenuItem.ShortCutKey2);
 end;
 
 {------------------------------------------------------------------------------
@@ -6057,8 +6057,8 @@ end;
 
   Update the inner widgets of a menuitem widget.
  ------------------------------------------------------------------------------}
-procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget;
+  NewShortCut, ShortCutKey2: TShortCut);
 {$ifdef GTK2}
 const
   WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
@@ -6088,32 +6088,25 @@ var
   var
     LabelWidget: PGtkLabel;
     NeedShortCut: Boolean;
-    Key: Word;
-    Shift: TShiftState;
+    Key, Key2: Word;
+    Shift, Shift2: TShiftState;
     s: String;
   begin
     //DebugLn(['UpdateShortCutLabel ',dbgsName(LCLMenuItem),' ',ShortCutToText(NewShortCut)]);
     ShortCutToKey(NewShortCut, Key, Shift);
+    ShortCutToKey(ShortCutKey2, Key2, Shift2);
 
-    // check if shortcut is needed
-    NeedShortCut := Key <> 0;
+    // Check if shortcut is needed. No shortcut captions for items in menubar
+    NeedShortCut := (Key <> 0) and
+       not ( (LCLMenuItem.Parent <> nil) and LCLMenuItem.Parent.HandleAllocated and
+       GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) );
 
-    if NeedShortCut and
-       (LCLMenuItem.Parent <> nil) and
-       LCLMenuItem.Parent.HandleAllocated and
-       GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) then
-    begin
-      // no shortcut captions for items in menubar
-      NeedShortCut := False;
-    end;
-
-    LabelWidget := PGtkLabel(gtk_object_get_data(PGtkObject(MenuItemWidget),
-      'LCLShortCutLabel'));
-                               
+    LabelWidget := PGtkLabel(gtk_object_get_data(PGtkObject(MenuItemWidget),'LCLShortCutLabel'));
     if NeedShortCut then
     begin
-      ShortCutToKey(NewShortCut, Key, Shift);
       s := GetAcceleratorString(Key, Shift);
+      if Key2 <> 0 then
+        s := s + ', ' + GetAcceleratorString(Key2, Shift2);
       //  ShortCutToText(NewShortCut);
       if LabelWidget = nil then
       begin

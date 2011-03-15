@@ -217,8 +217,8 @@ begin
     if AccelIndex > -1 then
     begin
       OldShortCut := FShortCut;
-      FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
-      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
+      FShortCut := Key2ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
+      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldShortCut);
     end;
   end;
   inherited WSSetText(AText);

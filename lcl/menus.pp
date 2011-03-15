@@ -134,6 +134,7 @@ type
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     FSubMenuImages: TCustomImageList;
     FShortCut: TShortCut;
+    FShortCutKey2: TShortCut;
     FGroupIndex: Byte;
     FRadioItem: Boolean;
     FRightJustify: boolean;
@@ -173,9 +174,8 @@ type
     procedure SetRightJustify(const AValue: boolean);
     procedure SetShowAlwaysCheckable(const AValue: boolean);
     procedure SetSubMenuImages(const AValue: TCustomImageList);
-    procedure ShortcutChanged(const OldValue, Value : TShortcut);
-    procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
-                             Rebuild: Boolean);
+    procedure ShortcutChanged(const OldValue: TShortcut);
+    procedure SubItemChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
@@ -192,8 +192,7 @@ type
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InitiateActions;
     procedure MenuChanged(Rebuild : Boolean);
@@ -203,6 +202,7 @@ type
     procedure SetImageIndex(AValue : TImageIndex);
     procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
+    procedure SetShortCutKey2(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
     procedure UpdateImage;
     procedure UpdateImages;
@@ -279,15 +279,14 @@ type
     property Hint: TTranslateString read FHint write FHint stored IsHintStored;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex
                                            stored IsImageIndexStored default -1;
-    property RadioItem: Boolean read FRadioItem write SetRadioItem
-                                default False;
+    property RadioItem: Boolean read FRadioItem write SetRadioItem default False;
     property RightJustify: boolean read FRightJustify write SetRightJustify default False;
     property ShortCut: TShortCut read FShortCut write SetShortCut
                                  stored IsShortCutStored default 0;
+    property ShortCutKey2: TShortCut read FShortCutKey2 write SetShortCutKey2 default 0;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                  write SetShowAlwaysCheckable default False;
-    property SubMenuImages: TCustomImageList read FSubMenuImages
-                                             write SetSubMenuImages;
+    property SubMenuImages: TCustomImageList read FSubMenuImages write SetSubMenuImages;
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick
@@ -417,7 +416,7 @@ type
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
-function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+function Key2ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
@@ -559,7 +558,7 @@ end;
 {$I popupmenu.inc}
 {$I menuactionlink.inc}
 
-function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+function Key2ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 begin
   Result := LCLType.KeyToShortCut(Key,Shift);
 end;

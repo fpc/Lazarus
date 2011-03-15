@@ -1080,6 +1080,7 @@ type
   private
     FModalResult: TModalResult;
     FShortCut: TShortcut;
+    FShortCutKey2: TShortcut;
     FCancel: Boolean;
     FDefault: Boolean;
     FActive: boolean;
@@ -1117,6 +1118,8 @@ type
     property Active: boolean read FActive stored false;
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
+    property ShortCut: TShortcut read FShortCut;
+    property ShortCutKey2: TShortcut read FShortCutKey2;
     property Cancel: Boolean read FCancel write SetCancel default false;
     property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property TabStop default true;
@@ -1186,6 +1189,7 @@ type
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
     FShortCut: TShortcut;
+    FShortCutKey2: TShortcut;
     procedure SetState(Value: TCheckBoxState);
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
@@ -1211,6 +1215,8 @@ type
   public
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
+    property ShortCut: TShortcut read FShortCut;
+    property ShortCutKey2: TShortcut read FShortCutKey2;
     property OnChange;
   end;
 
