@@ -497,12 +497,14 @@ var
       prevCoord := x;
     end;
 
-    d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cy;
-    if Alignment = calTop then
-      d := -d;
-    DrawLabelAndTick(
-      Point(x, AY + d),
-      Rect(x, AY - scaledTickLength, x, AY + scaledTickLength), AText);
+    if Marks.Visible then begin
+      d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cy;
+      if Alignment = calTop then
+        d := -d;
+      DrawLabelAndTick(
+        Point(x, AY + d),
+        Rect(x, AY - scaledTickLength, x, AY + scaledTickLength), AText);
+    end;
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
@@ -520,12 +522,14 @@ var
       prevCoord := y;
     end;
 
-    d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cx;
-    if Alignment = calLeft then
-      d := -d;
-    DrawLabelAndTick(
-      Point(AX + d, y),
-      Rect(AX - scaledTickLength, y, AX + scaledTickLength, y), AText);
+    if Marks.Visible then begin
+      d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cx;
+      if Alignment = calLeft then
+        d := -d;
+      DrawLabelAndTick(
+        Point(AX + d, y),
+        Rect(AX - scaledTickLength, y, AX + scaledTickLength, y), AText);
+    end;
   end;
 
 var
