@@ -1672,7 +1672,7 @@ begin
   FEndOfTokenChr := '()[].';
   fEditors := TList.Create;
   fEditstuffs := TList.Create;
-  fShortCut := Key2ShortCut(Ord(' '), [ssCtrl]);
+  fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
 end;
 
 procedure TSynCompletion.SetShortCut(Value: TShortCut);
@@ -1858,7 +1858,7 @@ begin
   fEditstuffs := TList.Create;
   FEndOfTokenChr := '()[].';
   fAutoCompleteList := TStringList.Create;
-  fShortCut := Key2ShortCut(Ord(' '), [ssShift]);
+  fShortCut := Menus.ShortCut(Ord(' '), [ssShift]);
 end;
 
 procedure TSynAutoComplete.SetShortCut(Value: TShortCut);

@@ -282,7 +282,7 @@ begin
     if AccelIndex > -1 then
     begin
       OldShortCut := FShortCut;
-      FShortCut := Key2ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
+      FShortCut := Menus.ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
       TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut);
     end;
   end;

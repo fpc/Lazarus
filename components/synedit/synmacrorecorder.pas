@@ -363,8 +363,8 @@ begin
   fShortCuts[mcRecord] := QMenus.ShortCut( Ord('R'), [ssCtrl, ssShift] );
   fShortCuts[mcPlayback] := QMenus.ShortCut( Ord('P'), [ssCtrl, ssShift] );
   {$ELSE}
-  fShortCuts[mcRecord] := Key2ShortCut( Ord('R'), [ssCtrl, ssShift] );
-  fShortCuts[mcPlayback] := Key2ShortCut( Ord('P'), [ssCtrl, ssShift] );
+  fShortCuts[mcRecord] := Menus.ShortCut( Ord('R'), [ssCtrl, ssShift] );
+  fShortCuts[mcPlayback] := Menus.ShortCut( Ord('P'), [ssCtrl, ssShift] );
   {$ENDIF}
 end;
 

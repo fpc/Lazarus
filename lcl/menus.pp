@@ -416,7 +416,7 @@ type
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
-function Key2ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
@@ -558,7 +558,7 @@ end;
 {$I popupmenu.inc}
 {$I menuactionlink.inc}
 
-function Key2ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 begin
   Result := LCLType.KeyToShortCut(Key,Shift);
 end;

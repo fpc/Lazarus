@@ -1421,10 +1421,10 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.ShortcutChanged
-  Params:  OldValue: Old Key2ShortCut, Value: New Key2ShortCut
+  Params:  OldValue: Old shortcut, Value: New shortcut
   Returns: Nothing
 
-  Installs a new Key2ShortCut, removes an old one.
+  Installs a new shortCut, removes an old one.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.ShortcutChanged(const OldValue: TShortcut);
 begin

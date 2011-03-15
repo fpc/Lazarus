@@ -725,7 +725,7 @@ end;
 
 function TSynEditKeyStroke.GetShortCut: TShortCut;
 begin
-  Result := Key2ShortCut(Key, Shift);
+  Result := Menus.ShortCut(Key, Shift);
 end;
 
 function TSynEditKeyStroke.GetCommand: TSynEditorCommand;
@@ -819,7 +819,7 @@ end;
 
 function TSynEditKeyStroke.GetShortCut2: TShortCut;
 begin
-  Result := Key2ShortCut(Key2, Shift2);
+  Result := Menus.ShortCut(Key2, Shift2);
 end;
 
 {begin}                                                                         //ac 2000-07-05

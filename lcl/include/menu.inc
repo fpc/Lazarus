@@ -262,7 +262,7 @@ var
   ShiftState: TShiftState;
 begin
   ShiftState := KeyDataToShiftState(Message.KeyData);
-  Shortcut := Key2ShortCut(Message.CharCode, ShiftState);
+  Shortcut := Menus.ShortCut(Message.CharCode, ShiftState);
   Item := FindItem(Shortcut, fkShortcut);
   Result := not (csDesigning in ComponentState) and (Item <> nil);
   //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
