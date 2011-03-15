@@ -198,19 +198,23 @@ end;
 function TWidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN;
 var
   RoundRgn, CornerSquareRgn, CornerCutRgn: HRGN;
+  nHalfX,nHalfY:integer;
 begin
   Result := 0;
 
   // The resulting region
   Result := CreateRectRgn(X1, Y1, X2, Y2);
 
+  nHalfX := nWidthEllipse div 2;
+  nHalfY := nHeightEllipse div 2;
+
   // We create this region with dummy values just because
   // CombineRgn requires an existing region to receive the result
   CornerCutRgn := CreateRectRgn(0, 0, nWidthEllipse, nHeightEllipse);
 
   // Top-left corner
-  RoundRgn := CreateEllipticRgn(X1, Y1, X1 + nWidthEllipse * 2, Y1 + nHeightEllipse * 2);
-  CornerSquareRgn := CreateRectRgn(X1, Y1, X1 + nWidthEllipse, Y1 + nHeightEllipse);
+  RoundRgn := CreateEllipticRgn(X1, Y1, X1 + nWidthEllipse, Y1 + nHeightEllipse);
+  CornerSquareRgn := CreateRectRgn(X1, Y1, X1 + nHalfX, Y1 + nHalfY);
   CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
   CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
   CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
@@ -218,8 +222,8 @@ begin
   DeleteObject(CornerSquareRgn);
 
   // Bottom-left corner
-  RoundRgn := CreateEllipticRgn(X1, Y2 - nHeightEllipse * 2, X1 + nWidthEllipse * 2, Y2);
-  CornerSquareRgn := CreateRectRgn(X1, Y2 - nHeightEllipse, X1 + nWidthEllipse, Y2);
+  RoundRgn := CreateEllipticRgn(X1, Y2 - nHeightEllipse, X1 + nWidthEllipse, Y2);
+  CornerSquareRgn := CreateRectRgn(X1, Y2 - nHalfX, X1 + nHalfY, Y2);
   CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
   CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
   CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
@@ -227,8 +231,8 @@ begin
   DeleteObject(CornerSquareRgn);
 
   // Top-Right corner
-  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse * 2 , Y1, X2, Y1 + nHeightEllipse * 2);
-  CornerSquareRgn := CreateRectRgn(X2 - nWidthEllipse, Y1, X2, Y1 + nHeightEllipse);
+  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse, Y1, X2, Y1 + nHeightEllipse);
+  CornerSquareRgn := CreateRectRgn(X2 - nHalfX, Y1, X2, Y1 + nHalfY);
   CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
   CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
   CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
@@ -236,8 +240,8 @@ begin
   DeleteObject(CornerSquareRgn);
 
   // Bottom-Right corner
-  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse * 2, Y2 - nHeightEllipse * 2, X2, Y2);
-  CornerSquareRgn := CreateRectRgn(X2 - nWidthEllipse, Y2 - nHeightEllipse, X2, Y2);
+  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse, Y2 - nHeightEllipse, X2, Y2);
+  CornerSquareRgn := CreateRectRgn(X2 - nHalfX, Y2 - nHalfY, X2, Y2);
   CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
   CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
   CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
