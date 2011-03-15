@@ -64,7 +64,7 @@ begin
 end;
 
 function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
-Begin
+begin
   Result := WidgetSet.ClientToScreen(Handle, P);
 end;
 
@@ -101,7 +101,7 @@ begin
 end;
 
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
-Begin
+begin
   Result := WidgetSet.CreateCaret(Handle, Bitmap, width, Height);
 end;
 
@@ -152,18 +152,18 @@ begin
 end;
 
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
-Begin
+begin
   Result := WidgetSet.CreatePolygonRgn(Points, NumPts, FillMode);
 end;
 
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
-Begin
+begin
   Result := WidgetSet.CreateRectRgn(X1,Y1,X2,Y2);
 end;
 
 function CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN;
 begin
-    Result := WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse);
+  Result := WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse);
 end;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection);
@@ -182,7 +182,7 @@ begin
 end;
 
 function DestroyCaret(Handle : HWND): Boolean;
-Begin
+begin
   Result := WidgetSet.DestroyCaret(Handle);
 end;
 
@@ -197,7 +197,7 @@ begin
 end;
 
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
-Begin
+begin
   Result := WidgetSet.DrawFrameControl(DC, Rect, uType, uState);
 end;
 
@@ -207,7 +207,7 @@ begin
 end;
 
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
-Begin
+begin
   Result := WidgetSet.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
@@ -232,7 +232,7 @@ begin
 end;
 
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-Begin
+begin
   Result:=WidgetSet.EndPaint(Handle,PS);
 end;
 
@@ -321,7 +321,7 @@ begin
 end;
 
 function GetCapture: HWND;
-Begin
+begin
   Result := WidgetSet.GetCapture;
 end;
 
@@ -447,7 +447,7 @@ begin
 end;
 
 function GetProp(Handle : hwnd; Str : PChar): Pointer;
-Begin
+begin
   Result := WidgetSet.GetProp(Handle,Str);
 end;
 
@@ -603,7 +603,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
-Begin
+begin
   Result := WidgetSet.IntersectClipRect(dc,Left,Top,Right,Bottom);
 end;
 
@@ -1464,7 +1464,7 @@ end;
   Moves the rectangle up or down, left or right.
  ------------------------------------------------------------------------------}
 function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
-Begin
+begin
   Result:=LCLProc.OffsetRect(Rect,dx,dy);
 end;
 
@@ -1475,7 +1475,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
-Begin
+begin
   Result.X := P.X;
   Result.Y := P.Y;
 end;
@@ -1491,7 +1491,7 @@ end;
   It is outside ther rect if it's on the bottom or right.
  ------------------------------------------------------------------------------}
 function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
-Begin
+begin
   Result := ((Point.X >= Rect.Left) and
              (Point.X < Rect.Right) and
              (Point.Y >= Rect.Top)  and
@@ -1537,7 +1537,7 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
-Begin
+begin
   Result := True;
   with ARect do begin
     Left := xLeft;
@@ -1676,7 +1676,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function SmallPointtoPoint(const P : TSmallPoint) : Tpoint;
-Begin
+begin
   Result.X := P.X;
   Result.Y := P.Y;
 end;
