@@ -394,11 +394,7 @@ resourcestring
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
-  lisKMPackageGraph = 'Package graph';
-  lisKMConfigureInstalledPackages = 'Install/Uninstall packages';
   lisKMConfigureCustomComponents = 'Configure custom components';
-  lisMenuPackageGraph = 'Package Graph ...';
-  lisMenuEditInstallPkgs = 'Install/Uninstall packages ...';
   lisMenuConfigCustomComps = 'Configure custom components ...';
 
   lisMenuConfigExternalTools = 'Configure external tools ...';
@@ -4250,11 +4246,13 @@ resourcestring
   lisSelectAHelpItem = 'Select a help item:';
   lisErrorMovingComponent = 'Error moving component';
   lisErrorNamingComponent = 'Error naming component';
-  lisErrorSettingTheNameOfAComponentTo = 'Error setting the name of a '
-    +'component %s to %s';
+  lisErrorSettingTheNameOfAComponentTo = 'Error setting the name of a component %s to %s';
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
   lisInstallUninstallPackages = 'Install/Uninstall packages';
+  lisMenuEditInstallPkgs = 'Install/Uninstall packages ...';
   lisAvailablePackages = 'Available packages';
+  lisKMPackageGraph = 'Package graph';
+  lisMenuPackageGraph = 'Package Graph ...';
   lisExportList = 'Export list';
   lisDoNotInstall = 'Do not install';
   lisImportList = 'Import list';
