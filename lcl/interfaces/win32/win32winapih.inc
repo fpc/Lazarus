@@ -59,6 +59,7 @@ function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
+function CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN; override;
 
 function DeleteDC(HDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;

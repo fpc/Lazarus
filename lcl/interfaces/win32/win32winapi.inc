@@ -995,6 +995,13 @@ begin
   Result := Windows.CreateRectRgn(X1, Y1, X2, Y2);
 end;
 
+function TWin32WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse,
+  nHeightEllipse: Integer): HRGN;
+begin
+  Result := Windows.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse,
+    nHeightEllipse);
+end;
+
 {------------------------------------------------------------------------------
   Method:  DeleteDC
   Params:  HDC - handle to device context
