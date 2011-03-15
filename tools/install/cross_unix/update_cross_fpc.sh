@@ -305,7 +305,7 @@ if [ $BuildCrossFPC = "yes" ]; then
           -e 's#^TARGETS_OS=.*$#TARGETS_OS='"$TargetOS"'#' \
           -e 's#^TARGETS_CPU=.*$#TARGETS_CPU='"$TargetCPU"'#' \
           -e 's#^MOS=cygwin$#MOS=mingw32#' \
-          -e 's/ -n ${FAILURES} /-n "${FAILURES}"/' \
+          -e 's/ -n ${FAILURES} / -n "${FAILURES}" /' \
       > buildcrosssnapshot.sh
     #debugging: head -n 40 buildcrosssnapshot.sh
 
