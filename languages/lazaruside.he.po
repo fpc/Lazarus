@@ -8473,12 +8473,6 @@ msgstr "מגדיר רכיבים מותאמים אישית"
 msgid "Configure Help"
 msgstr "הגדר עזרה"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "התקן/הסר חבילות"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "עזרה רגישה להקשר"

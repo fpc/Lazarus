@@ -8443,11 +8443,6 @@ msgstr ""
 msgid "Configure Help"
 msgstr "إعداد المعونة"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr ""
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr ""

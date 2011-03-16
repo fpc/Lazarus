@@ -8508,12 +8508,6 @@ msgstr "Настройка пользовательских компоненто
 msgid "Configure Help"
 msgstr "Параметры справки"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Установить/удалить пакеты"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Контекстно-зависимая справка"

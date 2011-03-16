@@ -8503,13 +8503,6 @@ msgstr "Konfigurasi komponen kustom"
 msgid "Configure Help"
 msgstr "Konfigurasi Bantuan"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Konfigurasi paket terinstalasi"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Bantuan sensitif konteks"

@@ -8509,13 +8509,6 @@ msgstr "カスタムコンポーネントを設定"
 msgid "Configure Help"
 msgstr "ヘルプを設定"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "パッケージをインストールもしくはアンインストール"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "状況感知ヘルプ"

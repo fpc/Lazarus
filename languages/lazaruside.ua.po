@@ -8490,13 +8490,6 @@ msgstr "Налаштувати нетипові компонети"
 msgid "Configure Help"
 msgstr "Налаштувати Поміч"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Налаштувати встановлені пакети"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Чутліва до тексту допомога"

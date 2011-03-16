@@ -8522,13 +8522,6 @@ msgstr "Externe Komponenten einrichten"
 msgid "Configure Help"
 msgstr "Hilfe einrichten"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Installierte Packages einrichten"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Kontextsensitive Hilfe"

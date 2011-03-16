@@ -8503,13 +8503,6 @@ msgstr "Konfiguruj komponenty użytkownika"
 msgid "Configure Help"
 msgstr "Ustawienia pomocy"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Konfiguruj zainstalowane pakiety"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr ""

@@ -8452,12 +8452,6 @@ msgstr "Konfigurovat vlastní komponenty"
 msgid "Configure Help"
 msgstr "Nastavit nápovědu"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Instalovat/Odinstalovat balíčky"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Kontextová nápověda"

@@ -8510,13 +8510,6 @@ msgstr "配置用户组件"
 msgid "Configure Help"
 msgstr "配置帮助"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "配置已安装的包"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "上下文关联的帮助"

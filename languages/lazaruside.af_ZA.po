@@ -8453,11 +8453,6 @@ msgstr ""
 msgid "Configure Help"
 msgstr ""
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr ""
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr ""

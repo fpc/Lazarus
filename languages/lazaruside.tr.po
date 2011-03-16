@@ -8455,13 +8455,6 @@ msgstr "Seçimlik bileşenleri yapılandır"
 msgid "Configure Help"
 msgstr "Yardımı Yapılandır"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Yüklü paketleri yapılandır"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Bağlama duyarlı yardım"

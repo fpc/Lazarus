@@ -8508,13 +8508,6 @@ msgstr "Konfigurovať voliteľné komponenty"
 msgid "Configure Help"
 msgstr "Konfigurovať pomoc"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Konfigurovať inštalované balíčky"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Kontextovo závislá pomoc"

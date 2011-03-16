@@ -8499,13 +8499,6 @@ msgstr "Derinti naudotojo komponentes"
 msgid "Configure Help"
 msgstr "Derinti žinyną"
 
-#: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
-#| msgid "Configure installed packages"
-msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
-msgid "Install/Uninstall packages"
-msgstr "Derinti įdiegtus paketus"
-
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
 msgstr "Kontekstinis žinynas"
