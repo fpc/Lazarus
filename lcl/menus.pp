@@ -174,7 +174,7 @@ type
     procedure SetRightJustify(const AValue: boolean);
     procedure SetShowAlwaysCheckable(const AValue: boolean);
     procedure SetSubMenuImages(const AValue: TCustomImageList);
-    procedure ShortcutChanged(const OldValue: TShortcut);
+    procedure ShortcutChanged;
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
@@ -289,8 +289,7 @@ type
     property SubMenuImages: TCustomImageList read FSubMenuImages write SetSubMenuImages;
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick
-                                                         stored IsOnClickStored;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
   end;
   TMenuItemClass = class of TMenuItem;
 

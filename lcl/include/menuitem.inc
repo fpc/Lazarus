@@ -136,7 +136,7 @@ begin
     if HandleAllocated then
     begin
       if ShortCut <> 0 then
-        ShortCutChanged(0);
+        ShortCutChanged;
     end;
   end;
   //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
@@ -1314,14 +1314,11 @@ end;
   Set the ShortCut
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetShortCut(const AValue : TShortCut);
-var
-  OldShortCut: TShortCut;
 Begin
   if FShortCut <> AValue then
   begin
-    OldShortCut:=FShortCut;
     FShortCut := AValue;
-    ShortCutChanged(OldShortCut);
+    ShortCutChanged;
   end;
 end;
 
@@ -1330,8 +1327,7 @@ begin
   if FShortCutKey2 <> AValue then
   begin
     FShortCutKey2 := AValue;
-    // ToDo: Remove the unused OldValue parameter if possible. It gets wrong value here.
-    ShortCutChanged(FShortCut);
+    ShortCutChanged;
   end;
 end;
 
@@ -1426,10 +1422,10 @@ end;
 
   Installs a new shortCut, removes an old one.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.ShortcutChanged(const OldValue: TShortcut);
+procedure TMenuItem.ShortcutChanged;
 begin
   if HandleAllocated then
-    TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue);
+    TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, FShortCut, FShortCutKey2);
 end;
 
 {------------------------------------------------------------------------------

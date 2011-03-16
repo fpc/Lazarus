@@ -271,7 +271,6 @@ procedure TCustomButton.WSSetText(const AText: String);
 var
   ParseStr : String;
   AccelIndex : Longint;
-  OldShortCut: TShortCut;
 begin
   if (not HandleAllocated) then
     exit;
@@ -281,9 +280,8 @@ begin
     AccelIndex := DeleteAmpersands(ParseStr);
     if AccelIndex > -1 then
     begin
-      OldShortCut := FShortCut;
       FShortCut := Menus.ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
-      TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut);
+      TWSButtonClass(WidgetSetClass).SetShortCut(Self, FShortCut, FShortCutKey2);
     end;
   end;
   inherited WSSetText(AText);

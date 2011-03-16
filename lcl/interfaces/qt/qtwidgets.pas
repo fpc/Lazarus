@@ -471,7 +471,7 @@ type
     function getText: WideString; override;
     procedure setIcon(AIcon: QIconH);
     procedure setIconSize(Size: PSize);
-    procedure setShortcut(AShortcut, AShortCutKey2: TShortcut);
+    procedure setShortcut(AShortCutK1, AShortCutK2: TShortcut);
     procedure setText(const W: WideString); override;
     procedure Toggle;
     function isChecked: Boolean;
@@ -1361,7 +1361,7 @@ type
     procedure setIcon(AIcon: QIconH);
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
-    procedure setShortcut(AShortcut, AShortCutKey2: TShortcut);
+    procedure setShortcut(AShortCutK1, AShortCutK2: TShortcut);
     procedure setText(const W: WideString); override;
     procedure setVisible(AVisible: Boolean); override;
     property trackButton: QtMouseButton read FTrackButton write FTrackButton;
@@ -4497,7 +4497,7 @@ begin
   QAbstractButton_setIconSize(QAbstractButtonH(Widget), Size);
 end;
 
-procedure TQtAbstractButton.setShortcut(AShortcut, AShortCutKey2: TShortcut);
+procedure TQtAbstractButton.setShortcut(AShortCutK1, AShortCutK2: TShortcut);
 var
   Key: Word;
   Shift: TShiftState;
@@ -4506,13 +4506,13 @@ var
 begin
   QtK1 := 0;
   QtK2 := 0;
-  if AShortCut <> 0 then
+  if AShortCutK1 <> 0 then
   begin
-    ShortCutToKey(AShortCut, Key, Shift);
+    ShortCutToKey(AShortCutK1, Key, Shift);
     QtK1 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
-    if AShortCutKey2 <> 0 then
+    if AShortCutK2 <> 0 then
     begin
-      ShortCutToKey(AShortCutKey2, Key, Shift);
+      ShortCutToKey(AShortCutK2, Key, Shift);
       QtK2 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
     end;
   end;
@@ -11051,7 +11051,7 @@ begin
   QAction_setSeparator(ActionHandle, AValue);
 end;
 
-procedure TQtMenu.setShortcut(AShortcut, AShortCutKey2: TShortcut);
+procedure TQtMenu.setShortcut(AShortCutK1, AShortCutK2: TShortcut);
 var
   Key: Word;
   Shift: TShiftState;
@@ -11060,13 +11060,13 @@ var
 begin
   QtK1 := 0;
   QtK2 := 0;
-  if AShortCut <> 0 then
+  if AShortCutK1 <> 0 then
   begin
-    ShortCutToKey(AShortCut, Key, Shift);
+    ShortCutToKey(AShortCutK1, Key, Shift);
     QtK1 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
-    if AShortCutKey2 <> 0 then
+    if AShortCutK2 <> 0 then
     begin
-      ShortCutToKey(AShortCutKey2, Key, Shift);
+      ShortCutToKey(AShortCutK2, Key, Shift);
       QtK2 := LCLKeyToQtKey(Key) or ShiftStateToQtModifiers(Shift);
     end;
   end;

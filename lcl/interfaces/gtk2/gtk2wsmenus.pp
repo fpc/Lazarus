@@ -44,7 +44,7 @@ type
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
@@ -375,7 +375,7 @@ begin
 end;
 
 class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 //var
   //MenuWidget: PGtkMenuItem;
   //accel_path: String;
@@ -385,7 +385,7 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
   
   // Temporary: At least it writes the names of the shortcuts
-  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle));
+  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 
 {  // Gets the inner widgets. They should already be created by now
   MenuWidget := PGtkMenuItem(AMenuItem.Handle);

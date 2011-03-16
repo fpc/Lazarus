@@ -303,7 +303,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut: TShortcut); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -319,7 +319,7 @@ type
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
       const NewState: TCheckBoxState); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -916,10 +916,9 @@ begin
 end;
 
 class procedure TGtk2WSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
-  //DebugLn(['TGtk2WSCustomCheckBox.SetShortCut ',NewShortCut]);
-  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), ACustomCheckBox.Shortcut,
+  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), ShortcutK1,
     'clicked'
     //'activate_item'
     );
@@ -2304,11 +2303,10 @@ begin
 end;
 
 class procedure TGtk2WSButton.SetShortcut(const AButton: TCustomButton;
-  const OldShortcut: TShortcut);
+  const ShortCutK1, ShortCutK2: TShortcut);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut')
   then Exit;
-
   // gtk2: shortcuts are handled by the LCL
 end;
 

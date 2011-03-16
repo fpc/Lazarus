@@ -58,7 +58,7 @@ type
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; virtual;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut); virtual;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); virtual;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); virtual;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; virtual;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; virtual;
@@ -123,7 +123,7 @@ class procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaptio
 begin
 end;
 
-class procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut);
+class procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut);
 begin
 end;
 

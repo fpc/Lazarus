@@ -206,7 +206,6 @@ procedure TCustomCheckBox.WSSetText(const AText: String);
 var
   ParseStr : String;
   AccelIndex : Longint;
-  OldShortCut: TShortCut;
 begin
   if (not HandleAllocated) then
     exit;
@@ -216,9 +215,8 @@ begin
     AccelIndex := DeleteAmpersands(ParseStr);
     if AccelIndex > -1 then
     begin
-      OldShortCut := FShortCut;
       FShortCut := Menus.ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
-      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldShortCut);
+      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, FShortCut, FShortCutKey2);
     end;
   end;
   inherited WSSetText(AText);

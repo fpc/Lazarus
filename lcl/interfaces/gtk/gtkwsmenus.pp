@@ -46,7 +46,7 @@ type
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
@@ -232,12 +232,13 @@ begin
                            AMenuItem.Enabled and (ACaption <> cLineCaption));
 end;
 
-class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const OldShortCut: TShortCut);
+class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
     Exit;
   //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
-  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle));
+  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 end;
 
 class procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;

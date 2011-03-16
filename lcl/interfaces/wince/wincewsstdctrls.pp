@@ -239,7 +239,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-//    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut: TShortcut); override;
+//    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer;
       WithThemeSpace: Boolean); override;
@@ -255,7 +255,7 @@ type
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
@@ -1314,7 +1314,7 @@ begin
 end;
 
 class procedure TWinCEWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
   // TODO: implement me!
 end;

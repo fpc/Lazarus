@@ -217,7 +217,7 @@ type
   TWSButton = class(TWSButtonControl)
   published
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); virtual;
-    class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut: TShortCut); virtual;
+    class procedure SetShortCut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortCut); virtual;
   end;
   TWSButtonClass = class of TWSButton;
 
@@ -226,7 +226,7 @@ type
   TWSCustomCheckBox = class(TWSButtonControl)
   published
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); virtual;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); virtual;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); virtual;
   end;
   TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
@@ -602,7 +602,8 @@ class procedure TWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boo
 begin
 end;
 
-class procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut: TShortCut);
+class procedure TWSButton.SetShortCut(const AButton: TCustomButton;
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin;
 end;
 
@@ -613,7 +614,8 @@ begin
   Result := cbUnchecked;
 end;
 
-class procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut);
+class procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
 end;
 

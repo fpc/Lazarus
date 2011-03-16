@@ -260,7 +260,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut: TShortcut); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     {$endif Gtk1}
   end;
@@ -274,7 +274,7 @@ type
   {$IFDEF GTK1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -1695,13 +1695,13 @@ begin
   end;
 end;
 
-class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut: TShortcut);
+class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut')
   then Exit;
 
   {$IFDEF Gtk1}
-  Accelerate(AButton, PGtkWidget(AButton.Handle), AButton.ShortCut, 'clicked');
+  Accelerate(AButton, PGtkWidget(AButton.Handle), ShortCutK1, 'clicked');
   {$ENDIF}
   // gtk2: shortcuts are handled by the LCL
 end;
@@ -1821,9 +1821,9 @@ begin
 end;
 
 class procedure TGtkWSCustomCheckBox.SetShortCut(
-  const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut);
+  const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut);
 begin
-  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), ACustomCheckBox.Shortcut,
+  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), ShortCutK1,
     'activate_item');
 end;
 

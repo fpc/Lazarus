@@ -198,7 +198,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
-    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut: TShortcut); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
   end;
 
   { TQtWSCustomCheckBox }
@@ -208,7 +208,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
 
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -227,7 +227,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
 
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -240,7 +240,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
 
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
 
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -1041,11 +1041,11 @@ begin
 end;
 
 class procedure TQtWSButton.SetShortcut(const AButton: TCustomButton;
-  const OldShortcut: TShortcut);
+  const ShortCutK1, ShortCutK2: TShortcut);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   
-  TQtPushButton(AButton.Handle).setShortcut(AButton.Shortcut, AButton.ShortCutKey2);
+  TQtPushButton(AButton.Handle).setShortcut(ShortCutK1, ShortCutK2);
 end;
 
 { TQtWSCustomCheckBox }
@@ -1071,12 +1071,11 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
   if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortcut') then Exit;
 
-  TQtCheckBox(ACustomCheckBox.Handle).setShortcut(ACustomCheckBox.ShortCut,
-                                                  ACustomCheckBox.ShortCutKey2);
+  TQtCheckBox(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
 end;
 
 {------------------------------------------------------------------------------
@@ -1138,10 +1137,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSRadioButton.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
-  TQtRadioButton(ACustomCheckBox.Handle).setShortcut(ACustomCheckBox.ShortCut,
-                                                     ACustomCheckBox.ShortCutKey2);
+  TQtRadioButton(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
 end;
 
 {------------------------------------------------------------------------------
@@ -1503,12 +1501,11 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const OldShortCut: TShortCut);
+  const ShortCutK1, ShortCutK2: TShortCut);
 begin
   if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortCut') then
     Exit;
-  TQtToggleBox(ACustomCheckBox.Handle).setShortcut(ACustomCheckBox.ShortCut,
-                                                   ACustomCheckBox.ShortCutKey2);
+  TQtToggleBox(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
 end;
 
 {------------------------------------------------------------------------------
