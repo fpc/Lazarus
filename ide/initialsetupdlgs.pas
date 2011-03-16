@@ -2,7 +2,7 @@
  /***************************************************************************
                             initialsetupdlgs.pas
                             --------------------
-       Contains the dialogs to help users to setup basic settings.
+       Contains the dialogs to help users setup basic settings.
 
 
  ***************************************************************************/
@@ -30,8 +30,8 @@
   
   Abstract:
     Procedures and dialogs to check environment. The IDE uses these procedures
-    at startup to check for example the lazarus directory and warns if, there
-    it looks suspicious.
+    at startup to check for example the lazarus directory and warns if it looks
+    suspicious and choose another.
 }
 unit InitialSetupDlgs;
 
@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, FileUtil,
-  ComCtrls, Laz_XMLCfg, ExtCtrls,
+  Graphics, ComCtrls, Laz_XMLCfg, ExtCtrls,
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
   
 type
@@ -49,6 +49,7 @@ type
 
   TInitialSetupDialog = class(TForm)
     BtnPanel: TPanel;
+    ImageList1: TImageList;
     PropertiesPageControl: TPageControl;
     NextIssueBitBtn: TBitBtn;
     PrevIssueBitBtn: TBitBtn;
@@ -61,8 +62,18 @@ type
     FPCSourcesTabSheet: TTabSheet;
     WelcomePaintBox: TPaintBox;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure PropertiesPageControlChange(Sender: TObject);
+    procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
+    procedure WelcomePaintBoxPaint(Sender: TObject);
   private
+    FHeadGraphic: TPortableNetworkGraphic;
+    procedure SelectPage(const NodeText: string);
   public
+    TVNodeLazarus: TTreeNode;
+    TVNodeCompiler: TTreeNode;
+    TVNodeFPCSources: TTreeNode;
+    TVNodeLanguage: TTreeNode;
   end;
 
 procedure ShowInitialSetupDialog;
@@ -248,8 +259,66 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
+var
+  ImgIDError: LongInt;
 begin
-  Caption:='Welcome to Lazarus '+GetLazarusVersionString;
+  Caption:='Welcome to Lazarus IDE '+GetLazarusVersionString;
+
+  PrevIssueBitBtn.Caption:='Previous problem';
+  NextIssueBitBtn.Caption:='Next problem';
+  StartIDEBitBtn.Caption:='Start IDE';
+
+  LanguageTabSheet.Caption:='Language';
+  LazarusTabSheet.Caption:='Lazarus';
+  CompilerTabSheet.Caption:='Compiler';
+  FPCSourcesTabSheet.Caption:='FPC sources';
+
+  FHeadGraphic:=TPortableNetworkGraphic.Create;
+  FHeadGraphic.LoadFromLazarusResource('ide_icon48x48');
+
+  TVNodeLazarus:=PropertiesTreeView.Items.Add(nil,'Lazarus');
+  TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,'Compiler');
+  TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,'FPC sources');
+  TVNodeLanguage:=PropertiesTreeView.Items.Add(nil,'Language');
+  ImgIDError := ImageList1.AddLazarusResource('state_error');
+  TVNodeFPCSources.ImageIndex:=ImgIDError;
+  TVNodeFPCSources.SelectedIndex:=TVNodeFPCSources.ImageIndex;
+
+
+end;
+
+procedure TInitialSetupDialog.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FHeadGraphic);
+end;
+
+procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
+begin
+
+end;
+
+procedure TInitialSetupDialog.PropertiesTreeViewSelectionChanged(Sender: TObject
+  );
+begin
+  if PropertiesTreeView.Selected=nil then
+    SelectPage(TVNodeLazarus.Text)
+  else
+    SelectPage(PropertiesTreeView.Selected.Text);
+end;
+
+procedure TInitialSetupDialog.WelcomePaintBoxPaint(Sender: TObject);
+begin
+  with WelcomePaintBox.Canvas do begin
+    GradientFill(WelcomePaintBox.ClientRect,$854b32,$c88e60,gdHorizontal);
+    Draw(0,WelcomePaintBox.ClientHeight-FHeadGraphic.Height,FHeadGraphic);
+    Font.Color:=clWhite;
+    Font.Height:=30;
+    TextOut(FHeadGraphic.Width+15,5,'Configure Lazarus IDE');
+  end;
+end;
+
+procedure TInitialSetupDialog.SelectPage(const NodeText: string);
+begin
 
 end;
 

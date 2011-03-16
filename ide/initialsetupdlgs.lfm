@@ -8,6 +8,7 @@ object InitialSetupDialog: TInitialSetupDialog
   ClientHeight = 385
   ClientWidth = 558
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PropertiesTreeView: TTreeView
@@ -17,22 +18,29 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 242
-    Top = 94
+    Height = 282
+    Top = 54
     Width = 175
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     DefaultItemHeight = 19
+    Images = ImageList1
+    ScrollBars = ssNone
+    ShowButtons = False
+    ShowLines = False
+    ShowRoot = False
     TabOrder = 0
+    OnSelectionChanged = PropertiesTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoToolTips, tvoThemedDraw]
   end
   object Splitter1: TSplitter
     AnchorSideTop.Control = PropertiesTreeView
     AnchorSideBottom.Control = PropertiesTreeView
     AnchorSideBottom.Side = asrBottom
     Left = 181
-    Height = 242
-    Top = 94
+    Height = 282
+    Top = 54
     Width = 5
     Align = alNone
     Anchors = [akTop, akLeft, akBottom]
@@ -93,17 +101,16 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideBottom.Control = Splitter1
     AnchorSideBottom.Side = asrBottom
     Left = 186
-    Height = 242
-    Top = 94
+    Height = 282
+    Top = 54
     Width = 366
-    ActivePage = FPCSourcesTabSheet
+    ActivePage = LazarusTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 3
-    object LanguageTabSheet: TTabSheet
-      Caption = 'LanguageTabSheet'
-    end
+    OnChange = PropertiesPageControlChange
+    Options = [nboHidePageListPopup]
     object LazarusTabSheet: TTabSheet
       Caption = 'LazarusTabSheet'
     end
@@ -113,12 +120,20 @@ object InitialSetupDialog: TInitialSetupDialog
     object FPCSourcesTabSheet: TTabSheet
       Caption = 'FPCSourcesTabSheet'
     end
+    object LanguageTabSheet: TTabSheet
+      Caption = 'LanguageTabSheet'
+    end
   end
   object WelcomePaintBox: TPaintBox
     Left = 0
-    Height = 88
+    Height = 48
     Top = 0
     Width = 558
     Align = alTop
+    OnPaint = WelcomePaintBoxPaint
+  end
+  object ImageList1: TImageList
+    left = 55
+    top = 145
   end
 end

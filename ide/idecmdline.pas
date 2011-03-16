@@ -57,7 +57,8 @@ function ParamIsOptionPlusValue(ParamIndex : integer;
 procedure SetParamOptions(var SkipAutoLoadingLastProject,
                               StartedByStartLazarus,
                               EnableRemoteControl,
-                              ShowSplashScreen              : Boolean);
+                              ShowSplashScreen,
+                              Setup: Boolean);
 
 function ExtractCmdLineFilenames : TStrings;
 
@@ -166,42 +167,34 @@ end;
 procedure SetParamOptions(var SkipAutoLoadingLastProject,
                               StartedByStartLazarus,
                               EnableRemoteControl,
-                              ShowSplashScreen              : Boolean);
+                              ShowSplashScreen,
+                              Setup: Boolean);
 var
   i      : integer;
   AValue : String;
 begin
   for i:= 1 to ParamCount do
-    begin
-      //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStrUTF8(i),'"']);
-      if ParamIsOptionPlusValue(i, PrimaryConfPathOptLong, AValue) then
-        begin
-          SetPrimaryConfigPath(AValue);
-        end;
-      if ParamIsOptionPlusValue(i, PrimaryConfPathOptShort, AValue) then
-        begin
-          SetPrimaryConfigPath(AValue);
-        end;
-      if ParamIsOptionPlusValue(i, SecondaryConfPathOptLong, AValue) then
-        begin
-          SetSecondaryConfigPath(AValue);
-        end;
-      if ParamIsOptionPlusValue(i, SecondaryConfPathOptShort, AValue) then
-        begin
-          SetSecondaryConfigPath(AValue);
-        end;
-     if ParamIsOption(i, NoSplashScreenOptLong) or
+  begin
+    //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStrUTF8(i),'"']);
+    if ParamIsOptionPlusValue(i, PrimaryConfPathOptLong, AValue) then
+      SetPrimaryConfigPath(AValue)
+    else if ParamIsOptionPlusValue(i, PrimaryConfPathOptShort, AValue) then
+      SetPrimaryConfigPath(AValue)
+    else if ParamIsOptionPlusValue(i, SecondaryConfPathOptLong, AValue) then
+      SetSecondaryConfigPath(AValue)
+    else if ParamIsOptionPlusValue(i, SecondaryConfPathOptShort, AValue) then
+      SetSecondaryConfigPath(AValue)
+    else if ParamIsOption(i, NoSplashScreenOptLong) or
         ParamIsOption(i, NoSplashScreenOptShort)    then
-       begin
-         ShowSplashScreen := false;
-       end;
-       
-     if ParamIsOption(i, SkipLastProjectOpt) then
-       SkipAutoLoadingLastProject := true;
-     if ParamIsOption(i, StartedByStartLazarusOpt) then
-       StartedByStartLazarus := true;
-     if ParamIsOption(i, EnableRemoteControlOpt) then
-       EnableRemoteControl := true;
+      ShowSplashScreen := false
+    else if ParamIsOption(i, ShowSetupDialogOptLong) then
+      Setup:=true
+    else if ParamIsOption(i, SkipLastProjectOpt) then
+      SkipAutoLoadingLastProject := true
+    else if ParamIsOption(i, StartedByStartLazarusOpt) then
+      StartedByStartLazarus := true
+    else if ParamIsOption(i, EnableRemoteControlOpt) then
+      EnableRemoteControl := true;
   end;
 end;
 

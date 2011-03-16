@@ -1088,6 +1088,7 @@ var
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
   EnableRemoteControl: boolean = false;
+  ShowSetupDialog: boolean = false;
 
 function FindDesignComponent(const aName: string): TComponent;
 var
@@ -1225,7 +1226,8 @@ begin
     exit;
   end;
 
-  SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus, EnableRemoteControl, ShowSplashScreen);
+  SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus,
+    EnableRemoteControl, ShowSplashScreen, ShowSetupDialog);
 
   DebugLn('TMainIDE.ParseCmdLineOptions:');
   Debugln('  PrimaryConfigPath="',UTF8ToConsole(GetPrimaryConfigPath),'"');
@@ -14051,6 +14053,9 @@ begin
 
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+
+  if ShowSetupDialog and InteractiveSetup then
+    ShowInitialSetupDialog;
 
   // find the lazarus source directory
   SetupLazarusDirectory(InteractiveSetup);
