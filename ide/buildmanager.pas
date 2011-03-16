@@ -646,6 +646,11 @@ begin
     '']);
   {$ENDIF}
 
+  if CompilerFilename='' then begin
+    UnitSetCache:=nil;
+    exit;
+  end;
+
   UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
     CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
 
