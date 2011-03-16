@@ -4847,8 +4847,7 @@ begin
   AProject.CompilerOptions.UseAsDefault := False;
 end;
 
-procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean
-  );
+procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   AProject: TProject absolute Sender;
   aFilename: String;
@@ -9606,8 +9605,7 @@ begin
   until FileIsUnique(Result);
 end;
 
-procedure TMainIDE.MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent
-  );
+procedure TMainIDE.MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent);
 var
   UnitList: TFPList;
   i: Integer;
@@ -16960,8 +16958,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings
-  );
+procedure TMainIDE.RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
 var
   UsedByDependency: TUnitComponentDependency;
   DependingUnit: TUnitInfo;

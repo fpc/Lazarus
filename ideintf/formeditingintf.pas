@@ -315,8 +315,7 @@ begin
   Result.FRoot:=aForm;
 end;
 
-procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner
-  );
+procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner);
 begin
   if FDesigner=AValue then exit;
   if FDesigner<>nil then begin
@@ -340,8 +339,7 @@ begin
 
 end;
 
-procedure TDesignerMediator.SetBounds(AComponent: TComponent; NewBounds: TRect
-  );
+procedure TDesignerMediator.SetBounds(AComponent: TComponent; NewBounds: TRect);
 begin
   SetComponentLeftTopOrDesignInfo(AComponent,NewBounds.Left,NewBounds.Top);
 end;

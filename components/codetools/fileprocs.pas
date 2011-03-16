@@ -3343,8 +3343,7 @@ begin
   debugln(FFiles.ReportAsString);
 end;
 
-procedure TFileStateCache.AddChangeTimeStampHandler(const Handler: TNotifyEvent
-  );
+procedure TFileStateCache.AddChangeTimeStampHandler(const Handler: TNotifyEvent);
 begin
   SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)+1);
   FChangeTimeStampHandler[length(FChangeTimeStampHandler)-1]:=Handler;

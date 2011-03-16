@@ -1313,8 +1313,7 @@ begin
           +' '+Result;
 end;
 
-function TLazSearchResultTV.BeautifyLine(SearchPos: TLazSearchMatchPos
-  ): string;
+function TLazSearchResultTV.BeautifyLine(SearchPos: TLazSearchMatchPos): string;
 begin
   Result:=BeautifyLine(SearchPos.ShownFilename,SearchPos.FileStartPos.X,
                        SearchPos.FileStartPos.Y,SearchPos.TheText);

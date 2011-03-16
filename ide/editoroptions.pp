@@ -1313,8 +1313,7 @@ begin
   end;
 end;
 
-function FilenameToLazSyntaxHighlighter(Filename: String
-  ): TLazSyntaxHighlighter;
+function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 var
   CompilerMode: TCompilerMode;
 begin

@@ -731,8 +731,7 @@ begin
   end;
 end;
 
-function TUnitNode.FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer
-  ): TUnitNode;
+function TUnitNode.FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer): TUnitNode;
 begin
   Result:=Parent;
   while (Result<>nil) and (Result.CodeBuffer<>ACodeBuffer) do begin

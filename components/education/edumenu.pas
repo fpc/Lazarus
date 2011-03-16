@@ -329,8 +329,7 @@ begin
   Result:=fHidden[MenuPath]='1';
 end;
 
-procedure TEduMenuOptions.SetMenuHidden(MenuPath: string; const AValue: boolean
-  );
+procedure TEduMenuOptions.SetMenuHidden(MenuPath: string; const AValue: boolean);
 begin
   if AValue then
     fHidden[MenuPath]:='1'

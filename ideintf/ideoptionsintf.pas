@@ -647,8 +647,7 @@ begin
   fHandlers[iohAfterRead].Add(TMethod(Handler),AsFirst);
 end;
 
-procedure TAbstractIDEOptions.RemoveHandlerAfterRead(const Handler: TNotifyEvent
-  );
+procedure TAbstractIDEOptions.RemoveHandlerAfterRead(const Handler: TNotifyEvent);
 begin
   fHandlers[iohAfterRead].Remove(TMethod(Handler));
 end;

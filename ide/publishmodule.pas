@@ -187,16 +187,14 @@ begin
   DoOnModifyChange;
 end;
 
-procedure TPublishModuleOptions.SetUseExcludeFileFilter(const AValue: boolean
-  );
+procedure TPublishModuleOptions.SetUseExcludeFileFilter(const AValue: boolean);
 begin
   if FUseExcludeFileFilter=AValue then exit;
   FUseExcludeFileFilter:=AValue;
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.SetUseIncludeFileFilter(const AValue: boolean
-  );
+procedure TPublishModuleOptions.SetUseIncludeFileFilter(const AValue: boolean);
 begin
   if FUseIncludeFileFilter=AValue then exit;
   FUseIncludeFileFilter:=AValue;

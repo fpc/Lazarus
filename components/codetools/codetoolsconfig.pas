@@ -66,10 +66,8 @@ type
     FCodeCache: TCodeCache;
   protected
     fKeepFileAttributes: boolean;
-    procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
-            ); override;
-    procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
-           override;
+    procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String); override;
+    procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String); override;
     function GetCache: TCodeCache;
   public
     constructor CreateWithCache(AFilename: string;

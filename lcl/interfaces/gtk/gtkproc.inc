@@ -82,8 +82,7 @@ begin
   {$EndIF}
 end;
 
-procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar
-  );
+procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 var
   OldString: PChar;
 begin

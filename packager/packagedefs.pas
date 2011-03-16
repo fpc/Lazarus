@@ -1747,8 +1747,7 @@ begin
   end;
 end;
 
-procedure TPkgDependency.SetLoadPackageResult(const AValue: TLoadPackageResult
-  );
+procedure TPkgDependency.SetLoadPackageResult(const AValue: TLoadPackageResult);
 begin
   if FLoadPackageResult=AValue then exit;
   FLoadPackageResult:=AValue;
@@ -2735,8 +2734,7 @@ begin
   Flags:=Flags-[lpfLoading];
 end;
 
-procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
-  );
+procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   UsePathDelim: TPathDelimSwitch;
   Config: TXMLOptionsStorage;
@@ -3904,8 +3902,7 @@ end;
 
 { TPkgAdditionalCompilerOptions }
 
-procedure TPkgAdditionalCompilerOptions.SetLazPackage(const AValue: TLazPackage
-  );
+procedure TPkgAdditionalCompilerOptions.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;

@@ -533,8 +533,7 @@ begin
   end;
 end;
 
-procedure TH2PasTool.ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode
-  );
+procedure TH2PasTool.ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   CurName: String;
   TypeH2PNode: TH2PNode;
@@ -636,8 +635,7 @@ begin
   end;
 end;
 
-procedure TH2PasTool.ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode
-  );
+procedure TH2PasTool.ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   CurName: String;
   CurType: String;
@@ -738,8 +736,7 @@ begin
   end;
 end;
 
-procedure TH2PasTool.ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode
-  );
+procedure TH2PasTool.ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   CurName: String;
   ChildNode: TCodeTreeNode;
@@ -885,8 +882,7 @@ begin
   end;
 end;
 
-procedure TH2PasTool.ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode
-  );
+procedure TH2PasTool.ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   Directive: String;
   H2PNode: TH2PNode;

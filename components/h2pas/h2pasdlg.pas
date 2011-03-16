@@ -494,8 +494,7 @@ begin
     LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1, -1,[]);
 end;
 
-procedure TH2PasDialog.CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject
-  );
+procedure TH2PasDialog.CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateFileInfo;
 end;
@@ -531,8 +530,7 @@ begin
     Project.Libname:=LibnameEdit.Text;
 end;
 
-procedure TH2PasDialog.MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject
-  );
+procedure TH2PasDialog.MergeAllCHeadersExceptCurrentButtonClick(Sender: TObject);
 begin
   MarkAllCHeadersExceptCurrentToMerge;
 end;

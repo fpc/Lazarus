@@ -2534,8 +2534,7 @@ begin
   m_transform.multiply(@tat );
 end;
 
-procedure TAggFPCanvas.AggParallelogram(const x1, y1, x2, y2: double; para: PDouble
-  );
+procedure TAggFPCanvas.AggParallelogram(const x1, y1, x2, y2: double; para: PDouble);
 var
   ta : trans_affine;
 begin
@@ -2748,8 +2747,7 @@ begin
   AggRenderImage(SrcImage ,imgX1 ,imgY1 ,imgX2 ,imgY2 ,parallelo );
 end;
 
-procedure TAggFPCanvas.AggTransformImage(SrcImage: TAggFPImage; parallelo: PDouble
-  );
+procedure TAggFPCanvas.AggTransformImage(SrcImage: TAggFPImage; parallelo: PDouble);
 begin
   AggResetPath;
 
@@ -3647,8 +3645,7 @@ begin
   raise Exception.Create('not usable');
 end;
 
-procedure TAggFP_renderer_scanline_aa.filling_rule(filling_rule_: filling_rule_e
-  );
+procedure TAggFP_renderer_scanline_aa.filling_rule(filling_rule_: filling_rule_e);
 begin
   raise Exception.Create('not usable');
 end;

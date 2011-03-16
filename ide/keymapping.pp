@@ -3487,8 +3487,7 @@ begin
                         OnExecuteMethod,OnExecuteProc)];
 end;
 
-function TKeyCommandRelationList.GetCategory(Index: integer
-  ): TIDECommandCategory;
+function TKeyCommandRelationList.GetCategory(Index: integer): TIDECommandCategory;
 begin
   Result:=TIDECommandCategory(fCategories[Index]);
 end;

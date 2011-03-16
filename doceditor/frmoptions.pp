@@ -81,8 +81,7 @@ begin
   OptionsToForm;
 end;
 
-procedure TOptionsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
-  );
+procedure TOptionsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if ModalResult = mrOk then
     FormToOptions;

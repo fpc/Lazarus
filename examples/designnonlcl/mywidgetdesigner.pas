@@ -138,8 +138,7 @@ begin
   LCLIntf.InvalidateRect(LCLForm.Handle,@ARect,Erase);
 end;
 
-procedure TMyWidgetMediator.SetBounds(AComponent: TComponent; NewBounds: TRect
-  );
+procedure TMyWidgetMediator.SetBounds(AComponent: TComponent; NewBounds: TRect);
 begin
   if AComponent is TMyWidget then begin
     TMyWidget(AComponent).SetBounds(NewBounds.Left,NewBounds.Top,

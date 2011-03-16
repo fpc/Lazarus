@@ -256,8 +256,7 @@ begin
   end;
 end;
 
-function TFileReferenceList.GetFileReference(const Filename: string
-  ): TFileReference;
+function TFileReferenceList.GetFileReference(const Filename: string): TFileReference;
 var
   ANode: TAVLTreeNode;
 begin

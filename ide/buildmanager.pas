@@ -909,8 +909,7 @@ begin
   end;
 end;
 
-function TBuildManager.DeleteAmbiguousFiles(const Filename: string
-  ): TModalResult;
+function TBuildManager.DeleteAmbiguousFiles(const Filename: string): TModalResult;
 var
   ADirectory: String;
   FileInfo: TSearchRec;
@@ -1681,8 +1680,7 @@ begin
   end;
 end;
 
-procedure TBuildManager.OnCmdLineCreate(var CmdLine: string; var Abort: boolean
-  );
+procedure TBuildManager.OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
 // replace all transfer macros in command line
 begin
   Abort:=not GlobalMacroList.SubstituteStr(CmdLine);

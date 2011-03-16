@@ -82,8 +82,7 @@ begin
   FHintValid:=AValue;
 end;
 
-procedure TFPDocHintProvider.ApplicationIdle(Sender: TObject; var Done: Boolean
-  );
+procedure TFPDocHintProvider.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   WaitingForIdle:=false;
   ReadLazDocData;

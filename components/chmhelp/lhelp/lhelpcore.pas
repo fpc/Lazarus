@@ -227,8 +227,7 @@ begin
   SetKeyUp(Self);
 end;
 
-procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
-  );
+procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
     Close;

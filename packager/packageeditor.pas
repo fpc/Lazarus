@@ -730,8 +730,7 @@ begin
     FilterEdit.Text:=lisCEFilter;
 end;
 
-procedure TPackageEditorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject
-  );
+procedure TPackageEditorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject);
 begin
   SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
 end;
@@ -1091,8 +1090,7 @@ begin
   PackageEditors.UninstallPackage(LazPackage);
 end;
 
-procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject
-  );
+procedure TPackageEditorForm.UseAllUnitsInDirectoryMenuItemClick(Sender: TObject);
 begin
   DoUseUnitsInDirectory(true);
 end;
@@ -1119,8 +1117,7 @@ begin
   UpdateApplyDependencyButton;
 end;
 
-procedure TPackageEditorForm.UseNoUnitsInDirectoryMenuItemClick(Sender: TObject
-  );
+procedure TPackageEditorForm.UseNoUnitsInDirectoryMenuItemClick(Sender: TObject);
 begin
   DoUseUnitsInDirectory(false);
 end;

@@ -108,14 +108,12 @@ end;
 
 { TAnchorDockOptionsFrame }
 
-procedure TAnchorDockOptionsFrame.HeaderAlignLeftTrackBarChange(Sender: TObject
-  );
+procedure TAnchorDockOptionsFrame.HeaderAlignLeftTrackBarChange(Sender: TObject);
 begin
   UpdateHeaderAlignLeftLabel;
 end;
 
-procedure TAnchorDockOptionsFrame.HeaderAlignTopTrackBarChange(Sender: TObject
-  );
+procedure TAnchorDockOptionsFrame.HeaderAlignTopTrackBarChange(Sender: TObject);
 begin
   UpdateHeaderAlignTopLabel;
 end;

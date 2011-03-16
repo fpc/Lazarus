@@ -136,8 +136,7 @@ begin
   end;
 end;
 
-procedure TSrcEditHintWindow.FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
-  );
+procedure TSrcEditHintWindow.FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
 var
   SrcEdit: TSourceEditorInterface;
   ASynEdit: TCustomSynEdit;

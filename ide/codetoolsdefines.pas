@@ -307,8 +307,7 @@ begin
     ModalResult:=mrCancel;
 end;
 
-procedure TCodeToolsDefinesEditor.DefineTreeViewSelectionChanged(Sender: TObject
-  );
+procedure TCodeToolsDefinesEditor.DefineTreeViewSelectionChanged(Sender: TObject);
 begin
   ShowSelectedValues;
 end;

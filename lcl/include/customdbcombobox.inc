@@ -93,8 +93,7 @@ begin
   // ToDo
 end;
 
-procedure TCustomDBComboBox.Notification(AComponent: TComponent; Operation: TOperation
-  );
+procedure TCustomDBComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) then begin

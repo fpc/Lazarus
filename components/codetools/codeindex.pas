@@ -306,8 +306,7 @@ begin
   FUnitLists.Add(List);
 end;
 
-procedure TCodeBrowserUnitList.InternalRemoveUnitList(List: TCodeBrowserUnitList
-  );
+procedure TCodeBrowserUnitList.InternalRemoveUnitList(List: TCodeBrowserUnitList);
 begin
   if FUnitLists<>nil then
     FUnitLists.Remove(List);

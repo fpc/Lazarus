@@ -373,8 +373,7 @@ begin
   inherited DoEndUpdate(Changed);
 end;
 
-procedure TComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent
-  );
+procedure TComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent);
 begin
   fComponents.Add(Component);
   inherited OnPageAddedComponent(Component);

@@ -1964,8 +1964,7 @@ begin
   //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionPositionChanged(Sender: TObject
-  );
+procedure TSourceEditCompletion.OnSynCompletionPositionChanged(Sender: TObject);
 begin
   if Manager.ActiveCompletionPlugin<>nil then
     Manager.ActiveCompletionPlugin.IndexChanged(Position);
@@ -2267,8 +2266,7 @@ begin
     FSharedEditorList.Add(AnEditor);
 end;
 
-procedure TSourceEditorSharedValues.RemoveSharedEditor(AnEditor: TSourceEditor
-  );
+procedure TSourceEditorSharedValues.RemoveSharedEditor(AnEditor: TSourceEditor);
 begin
   FSharedEditorList.Remove(AnEditor);
 end;
@@ -5849,8 +5847,7 @@ begin
   Result:=GetActiveSE;
 end;
 
-procedure TSourceNotebook.SetActiveEditor(const AValue: TSourceEditorInterface
-  );
+procedure TSourceNotebook.SetActiveEditor(const AValue: TSourceEditorInterface);
 var
   i: integer;
 begin
@@ -6454,8 +6451,7 @@ begin
   ASrcEdit.InvertAssignment;
 end;
 
-procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject
-  );
+procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecFindIdentifierRefs);
 end;
@@ -7275,8 +7271,7 @@ end;
   procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject;
     Msg: Cardinal);
 ------------------------------------------------------------------------------}
-procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal
-  );
+procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   //debugln('TSourceNotebook.OnApplicationUserInput');
   HideHint;

@@ -792,14 +792,12 @@ begin
   end;
 end;
 
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 begin
   Result:=FileProcs.CreateRelativeSearchPath(SearchPath,BaseDirectory);
 end;
 
-function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string
-  ): string;
+function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
 var
   StartPos: Integer;
   EndPos: LongInt;
@@ -844,14 +842,12 @@ begin
   end;
 end;
 
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 begin
   Result:=FileProcs.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
 end;
 
-function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch
-  ): string;
+function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
 var
   i: Integer;
   p: Char;
@@ -1550,8 +1546,7 @@ end;
 
   Convert all tabs to TabWidth number of spaces.
 -------------------------------------------------------------------------------}
-function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean
-  ): string;
+function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
 
   function ConvertTabsToSpaces(const Src: string; var Dest: string): integer;
   var
@@ -2669,8 +2664,7 @@ begin
                            PStringToStringItem(Data2)^.Name);
 end;
 
-function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer
-  ): Integer;
+function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer): Integer;
 begin
   Result:=CompareFilenames(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
 end;
@@ -2681,8 +2675,7 @@ begin
                                    @ComparePAnsiStringWithStrToStrItemFilename);
 end;
 
-function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string
-  ): integer;
+function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 var
   i: Integer;
 begin

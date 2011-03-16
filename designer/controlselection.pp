@@ -1513,8 +1513,7 @@ begin
   end;
 end;
 
-procedure TControlSelection.FindNearestTopGuideLine(var NearestInt: TNearestInt
-  );
+procedure TControlSelection.FindNearestTopGuideLine(var NearestInt: TNearestInt);
 var i, CurTop, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
@@ -2405,8 +2404,7 @@ begin
       InvalidateMarkersForComponent(TComponent(Items[I].Persistent));
 end;
 
-procedure TControlSelection.InvalidateMarkersForComponent(AComponent: TComponent
-  );
+procedure TControlSelection.InvalidateMarkersForComponent(AComponent: TComponent);
 
   procedure InvalidateMarker(x,y: integer);
   var

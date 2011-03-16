@@ -262,8 +262,7 @@ begin
   Result := TLCLIntfHandle(TFPGUIPrivateCustomPanel.Create(AWinControl, AParams));
 end;
 
-class procedure TFpGuiWSCustomPanel.DestroyHandle(const AWinControl: TWinControl
-  );
+class procedure TFpGuiWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
 begin
   TFPGUIPrivateCustomPanel(AWinControl.Handle).Free;
   AWinControl.Handle := 0;

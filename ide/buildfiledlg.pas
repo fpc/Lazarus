@@ -156,12 +156,10 @@ procedure SetIDEDirective(DirectiveList: TStrings; const DirectiveName: string;
                           const NewValue, DefaultValue: string);
 function StringToIDEDirectiveValue(const s: string): string;
 function IDEDirectiveValueToString(const s: string): string;
-function IDEDirectiveNameToDirective(const DirectiveName: string
-  ): TIDEDirective;
+function IDEDirectiveNameToDirective(const DirectiveName: string): TIDEDirective;
   
 // build scan flags
-function IDEDirBuildScanFlagNameToFlag(const FlagName: string
-  ): TIDEDirBuildScanFlag;
+function IDEDirBuildScanFlagNameToFlag(const FlagName: string): TIDEDirBuildScanFlag;
 function GetIDEDirBuildScanFromString(const s: string): TIDEDirBuildScanFlags;
 function GetIDEDirBuildScanStrFromFlags(Flags: TIDEDirBuildScanFlags): string;
 
@@ -399,16 +397,14 @@ begin
     RaiseException('Internal error');
 end;
 
-function IDEDirectiveNameToDirective(const DirectiveName: string
-  ): TIDEDirective;
+function IDEDirectiveNameToDirective(const DirectiveName: string): TIDEDirective;
 begin
   for Result:=Low(TIDEDirective) to High(TIDEDirective) do
     if AnsiCompareText(IDEDirectiveNames[Result],DirectiveName)=0 then exit;
   Result:=idedNone;
 end;
 
-function IDEDirBuildScanFlagNameToFlag(const FlagName: string
-  ): TIDEDirBuildScanFlag;
+function IDEDirBuildScanFlagNameToFlag(const FlagName: string): TIDEDirBuildScanFlag;
 begin
   for Result:=Low(TIDEDirBuildScanFlag) to High(TIDEDirBuildScanFlag) do
     if AnsiCompareText(IDEDirBuildScanFlagNames[Result],FlagName)=0 then
@@ -442,8 +438,7 @@ begin
   end;
 end;
 
-function IDEDirRunFlagNameToFlag(const FlagName: string
-  ): TIDEDirRunFlag;
+function IDEDirRunFlagNameToFlag(const FlagName: string): TIDEDirRunFlag;
 begin
   for Result:=Low(TIDEDirRunFlag) to High(TIDEDirRunFlag) do
     if AnsiCompareText(IDEDirRunFlagNames[Result],FlagName)=0 then

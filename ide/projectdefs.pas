@@ -435,8 +435,7 @@ begin
   while (Result>=0) and (Items[Result].ID<>ID) do dec(Result);
 end;
 
-function TProjectBookmarkList.BookmarkWithID(ID: integer
-  ): TProjectBookmark;
+function TProjectBookmarkList.BookmarkWithID(ID: integer): TProjectBookmark;
 var
   i: Integer;
 begin
@@ -932,8 +931,7 @@ begin
   Result:=TFileBookmark(FBookmarks[Index]);
 end;
 
-procedure TFileBookmarks.SetBookmarks(Index: integer; ABookmark: TFileBookmark
-  );
+procedure TFileBookmarks.SetBookmarks(Index: integer; ABookmark: TFileBookmark);
 begin
   FBookmarks[Index]:=ABookmark;
 end;
@@ -1207,8 +1205,7 @@ begin
     dec(Result);
 end;
 
-function TLazProjectDescriptors.FindByName(const Name: string
-  ): TProjectDescriptor;
+function TLazProjectDescriptors.FindByName(const Name: string): TProjectDescriptor;
 var
   i: LongInt;
 begin

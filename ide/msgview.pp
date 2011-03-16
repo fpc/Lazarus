@@ -1230,8 +1230,7 @@ begin
   IdleTimer1.AutoEnabled:=true;
 end;
 
-procedure TMessagesView.SetTVNodeImage(TVNode: TTreeNode; Msg: TLazMessageLine
-  );
+procedure TMessagesView.SetTVNodeImage(TVNode: TTreeNode; Msg: TLazMessageLine);
 var
   Typ: string;
   ImgID: LongInt;

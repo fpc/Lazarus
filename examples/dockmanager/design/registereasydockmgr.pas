@@ -228,8 +228,7 @@ begin
   DockMaster.SaveToFile(GetDefaultLayoutFilename);
 end;
 
-procedure TIDEEasyDockMaster.ShowForm(AForm: TCustomForm; BringToFront: boolean
-  );
+procedure TIDEEasyDockMaster.ShowForm(AForm: TCustomForm; BringToFront: boolean);
 var
   Parent: TCustomForm;
   Creator: TIDEWindowCreator;

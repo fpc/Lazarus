@@ -662,8 +662,7 @@ begin
   FHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
 
-procedure TPackageEditingInterface.RemoveAllHandlersOfObject(AnObject: TObject
-  );
+procedure TPackageEditingInterface.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TPkgIntfHandlerType;
 begin

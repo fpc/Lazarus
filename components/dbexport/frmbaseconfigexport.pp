@@ -57,8 +57,7 @@ type
     procedure CLBFieldsClick(Sender: TObject);
     procedure CLBFieldsClickCheck(Sender: TObject);
     procedure CLBFieldsItemClick(Sender: TObject; Index: integer);
-    procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SetExporter(const AValue: TCustomDatasetExporter);
@@ -143,8 +142,7 @@ end;
 
 { TBaseConfigExportForm }
 
-procedure TBaseConfigExportForm.SetExporter(const AValue: TCustomDatasetExporter
-  );
+procedure TBaseConfigExportForm.SetExporter(const AValue: TCustomDatasetExporter);
 begin
   if (FExporter=AValue) then
     exit;

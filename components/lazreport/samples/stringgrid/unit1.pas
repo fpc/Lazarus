@@ -68,8 +68,7 @@ begin
   Edit1.SetFocus;
 end;
 
-procedure TForm1.frReport1GetValue(const ParName: String; var ParValue: Variant
-  );
+procedure TForm1.frReport1GetValue(const ParName: String; var ParValue: Variant);
 begin
   if ParName = 'cliente' then  // customer
     ParValue := Edit1.Text;

@@ -788,8 +788,7 @@ begin
   LoadRecentList(XMLConfig,Self,Path);
 end;
 
-procedure THistoryList.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
-  );
+procedure THistoryList.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   XMLConfig.SetDeleteValue(Path+'Name',Name,'');
   XMLConfig.SetDeleteValue(Path+'MaxCount',MaxCount,20);

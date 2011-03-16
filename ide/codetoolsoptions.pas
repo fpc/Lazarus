@@ -778,8 +778,7 @@ begin
   Result.Filename:=Filename;
 end;
 
-procedure TCodeToolsOptions.ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree
-  );
+procedure TCodeToolsOptions.ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree);
 begin
   ClearGlobalDefineTemplates;
   FGlobalDefineTemplates:=

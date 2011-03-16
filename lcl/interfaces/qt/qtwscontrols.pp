@@ -650,8 +650,7 @@ begin
   Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
 end;
 
-class procedure TQtWSDragImageList.EndDrag(const ADragImageList: TDragImageList
-  );
+class procedure TQtWSDragImageList.EndDrag(const ADragImageList: TDragImageList);
 begin
   TQtWidgetset(Widgetset).DragImageList_EndDrag;
 end;

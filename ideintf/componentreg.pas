@@ -565,8 +565,7 @@ begin
   DoChange;
 end;
 
-procedure TBaseComponentPalette.OnPageVisibleChanged(APage: TBaseComponentPage
-  );
+procedure TBaseComponentPalette.OnPageVisibleChanged(APage: TBaseComponentPage);
 begin
   DoChange;
 end;
@@ -576,8 +575,7 @@ begin
 
 end;
 
-procedure TBaseComponentPalette.UpdateVisible(AComponent: TRegisteredComponent
-  );
+procedure TBaseComponentPalette.UpdateVisible(AComponent: TRegisteredComponent);
 var
   Vote: Integer;
   i: LongInt;

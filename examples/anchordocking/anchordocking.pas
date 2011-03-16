@@ -1980,8 +1980,7 @@ begin
   end;
 end;
 
-procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean
-  );
+procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean);
 begin
   while AControl<>nil do begin
     AControl.Visible:=true;
@@ -2032,8 +2031,7 @@ begin
   end;
 end;
 
-procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree
-  );
+procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
 var
   i: Integer;
   AControl: TControl;
@@ -3503,8 +3501,7 @@ begin
   end;
 end;
 
-procedure TAnchorDockHostSite.AlignControls(AControl: TControl; var ARect: TRect
-  );
+procedure TAnchorDockHostSite.AlignControls(AControl: TControl; var ARect: TRect);
 var
   i: Integer;
   Child: TControl;
@@ -3568,8 +3565,7 @@ begin
     Release;
 end;
 
-procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect
-  );
+procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
   inherited DoDock(NewDockSite, ARect);
   DockMaster.SimplifyPendingLayouts;
@@ -4070,8 +4066,7 @@ begin
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
 end;
 
-procedure TAnchorDockHostSite.InsertControl(AControl: TControl; Index: integer
-  );
+procedure TAnchorDockHostSite.InsertControl(AControl: TControl; Index: integer);
 begin
   DisableAutoSizing;
   try
@@ -4408,8 +4403,7 @@ begin
   TAnchorDockHostSite(Parent).EnlargeSide(Side,false);
 end;
 
-procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition
-  );
+procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition);
 begin
   if FHeaderPosition=AValue then exit;
   FHeaderPosition:=AValue;

@@ -92,8 +92,7 @@ type
     procedure fSynCompletionKeyNextChar(Sender: TObject);
     procedure fSynCompletionKeyPrevChar(Sender: TObject);
     procedure fSynCompletionSearchPosition(var Position: integer);
-    procedure fSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
-      );
+    procedure fSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure fSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
       Shift: TShiftState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -1021,8 +1020,7 @@ begin
     LoadFromOptions(TBaseCompilerOptions(AOptions));
 end;
 
-procedure TCompOptBuildMacrosFrame.Setup(ADialog: TAbstractOptionsEditorDialog
-  );
+procedure TCompOptBuildMacrosFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
 end;
 
@@ -1031,15 +1029,13 @@ begin
   Result := TBaseCompilerOptions;
 end;
 
-procedure TCompOptBuildMacrosFrame.WriteSettings(AOptions: TAbstractIDEOptions
-  );
+procedure TCompOptBuildMacrosFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if AOptions is TBaseCompilerOptions then
     SaveToOptions(TBaseCompilerOptions(AOptions));
 end;
 
-procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
-  );
+procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions);
 var
   Vars: TCTCfgScriptVariables;
 begin
@@ -1063,8 +1059,7 @@ begin
   UpdateStatusBar;
 end;
 
-procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions
-  );
+procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions);
 begin
   SaveItemProperties;
   (Options.BuildMacros as TIDEBuildMacros).Assign(BuildMacros);

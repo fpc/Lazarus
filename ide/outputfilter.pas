@@ -669,8 +669,7 @@ begin
   end;
 end;
 
-procedure TOutputFilter.ReadConstLine(const s: string; DontFilterLine: boolean
-  );
+procedure TOutputFilter.ReadConstLine(const s: string; DontFilterLine: boolean);
 var
   Line: String;
 begin
@@ -1376,8 +1375,7 @@ begin
     Result:=0;
 end;
 
-function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string
-  ): string;
+function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string): string;
 // search the include file and make it relative to the current start directory
 var
   AlreadySearchedPaths: string;

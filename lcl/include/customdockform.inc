@@ -20,8 +20,7 @@
 
 { TCustomDockForm }
 
-procedure TCustomDockForm.DoAddDockClient(Client: TControl; const ARect: TRect
-  );
+procedure TCustomDockForm.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
   inherited DoAddDockClient(Client, ARect);
   Client.Align := alClient;

@@ -78,8 +78,7 @@ implementation
 
 { TOtherIdentifierTreeNode }
 
-procedure TOtherIdentifierTreeNode.AddLastChild(Child: TOtherIdentifierTreeNode
-  );
+procedure TOtherIdentifierTreeNode.AddLastChild(Child: TOtherIdentifierTreeNode);
 begin
   Child.Parent:=Self;
   if LastChild<>nil then
@@ -89,8 +88,7 @@ begin
   if FirstChild=nil then FirstChild:=Child;
 end;
 
-procedure TOtherIdentifierTreeNode.RemoveChild(Child: TOtherIdentifierTreeNode
-  );
+procedure TOtherIdentifierTreeNode.RemoveChild(Child: TOtherIdentifierTreeNode);
 begin
   if FirstChild=Child then FirstChild:=Child.NextSibling;
   if LastChild=Child then LastChild:=Child.PrevSibling;

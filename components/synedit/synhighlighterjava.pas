@@ -1317,8 +1317,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynJavaSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer
-  );
+procedure TSynJavaSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;

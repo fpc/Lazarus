@@ -20,8 +20,7 @@ type
     PopupNotifier1: TPopupNotifier;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure PopupNotifier1Close(Sender: TObject; var CloseAction: TCloseAction
-      );
+    procedure PopupNotifier1Close(Sender: TObject; var CloseAction: TCloseAction);
   private
     { private declarations }
   public

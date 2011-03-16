@@ -5531,8 +5531,7 @@ begin
     TPropHookRefreshPropertyValues(FHandlers[htRefreshPropertyValues][i])();
 end;
 
-procedure TPropertyEditorHook.RemoveAllHandlersForObject(const HandlerObject: TObject
-  );
+procedure TPropertyEditorHook.RemoveAllHandlersForObject(const HandlerObject: TObject);
 var
   HookType: TPropHookType;
 begin

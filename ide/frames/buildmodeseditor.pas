@@ -68,8 +68,7 @@ type
       aRow: Integer; aState: TCheckboxState);
     procedure BuildModesStringGridSelectCell(Sender: TObject; aCol,
       aRow: Integer; var CanSelect: Boolean);
-    procedure BuildModesStringGridSelection(Sender: TObject; aCol, aRow: Integer
-      );
+    procedure BuildModesStringGridSelection(Sender: TObject; aCol, aRow: Integer);
     procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
       aRow: Integer; const OldValue: string; var NewValue: String);
   private
@@ -246,8 +245,7 @@ begin
   BuildModesStringGrid.EditorMode:=true;
 end;
 
-procedure TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick(Sender: TObject
-  );
+procedure TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
   CurMode: TProjectBuildMode;
@@ -299,8 +297,7 @@ begin
   BuildModesStringGrid.Row:=i+1;
 end;
 
-procedure TBuildModesEditorFrame.BuildModeMoveUpSpeedButtonClick(Sender: TObject
-  );
+procedure TBuildModesEditorFrame.BuildModeMoveUpSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin

@@ -1736,8 +1736,7 @@ begin
   Result:=false;
 end;
 
-procedure TLinkScanner.SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer
-  );
+procedure TLinkScanner.SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
 begin
   if (FIgnoreErrorAfterCode=ACode)
   and (FIgnoreErrorAfterCursorPos=ACursorPos) then exit;
@@ -1840,8 +1839,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TLinkScanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer
-  );
+procedure TLinkScanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 begin
   if LastErrorIsInFrontOfCleanedPos(ACleanedPos) then
     RaiseLastError;
@@ -3529,8 +3527,7 @@ begin
   Result:=lssIgnoreMissingIncludeFiles in FStates;
 end;
 
-procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch
-  );
+procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
 begin
   if FCompilerModeSwitch=AValue then exit;
   FCompilerModeSwitch:=AValue;

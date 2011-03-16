@@ -1136,8 +1136,7 @@ begin
     CodeCache.DecodeLoaded(Self,AFilename,ASource,ADiskEncoding,AMemEncoding);
 end;
 
-procedure TCodeBuffer.EncodeSaving(const AFilename: string; var ASource: string
-  );
+procedure TCodeBuffer.EncodeSaving(const AFilename: string; var ASource: string);
 begin
   inherited EncodeSaving(AFilename,ASource);
   if CodeCache<>nil then

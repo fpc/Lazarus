@@ -10208,8 +10208,7 @@ begin
   end;
 end;
 
-procedure TFindDeclarationParams.RemoveFoundProcFromList(aFoundProc: PFoundProc
-  );
+procedure TFindDeclarationParams.RemoveFoundProcFromList(aFoundProc: PFoundProc);
 begin
   //DebugLn(['TFindDeclarationParams.RemoveFoundProcFromList ',dbgs(aFoundProc)]);
   if FirstFoundProc=aFoundProc then

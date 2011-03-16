@@ -203,8 +203,7 @@ begin
   AddToUninstall;
 end;
 
-procedure TInstallPkgSetDialog.AvailableTreeViewSelectionChanged(Sender: TObject
-  );
+procedure TInstallPkgSetDialog.AvailableTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateButtonStates;
   UpdatePackageInfo(AvailableTreeView);
@@ -617,8 +616,7 @@ begin
   end;
 end;
 
-procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string
-  );
+procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string);
   
   function PkgNameExists(List: TFPList; ID: TLazPackageID): boolean;
   var

@@ -342,8 +342,7 @@ begin
              [mbOk],0);
 end;
 
-procedure TOIAddRemoveFavouriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg
-  );
+procedure TOIAddRemoveFavouriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg);
 var
   CurRow: TOIPropertyGridRow;
 begin

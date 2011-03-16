@@ -702,8 +702,7 @@ begin
   end;
 end;
 
-function TCodeExplorerView.GetDirectiveNodeImage(CodeNode: TCodeTreeNode
-  ): integer;
+function TCodeExplorerView.GetDirectiveNodeImage(CodeNode: TCodeTreeNode): integer;
 begin
   case CodeNode.SubDesc of
   cdnsInclude:  Result:=ImgIDSection;
@@ -2056,8 +2055,7 @@ begin
   end;
 end;
 
-function TCodeExplorerView.FindCodeTVNodeAtCleanPos(CleanPos: integer
-  ): TTreeNode;
+function TCodeExplorerView.FindCodeTVNodeAtCleanPos(CleanPos: integer): TTreeNode;
 // find TTreeNode in CodeTreeView containing the codetools clean position
 // if there are several nodes, the one with the shortest range (EndPos-StartPos)
 // is returned.
@@ -2161,8 +2159,7 @@ begin
   Result:=ANode.Expanded or ANode.MultiSelected;
 end;
 
-function TCodeExplorerView.FilterFits(const NodeText, TheFilter: string
-  ): boolean;
+function TCodeExplorerView.FilterFits(const NodeText, TheFilter: string): boolean;
 var
   Src: PChar;
   PFilter: PChar;
@@ -2279,8 +2276,7 @@ begin
     Result:=Stack[StackPtr-1].StatementStartPos;
 end;
 
-procedure TCodeObserverStatementState.SetStatementStartPos(const AValue: integer
-  );
+procedure TCodeObserverStatementState.SetStatementStartPos(const AValue: integer);
 begin
   if StackPtr=0 then
     TopLvlStatementStartPos:=AValue

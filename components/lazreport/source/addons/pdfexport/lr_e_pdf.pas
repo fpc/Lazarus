@@ -235,8 +235,7 @@ begin
   PRImage.Picture.Graphic := View.Picture.Graphic;
 end;
 
-procedure TfrTNPDFExportFilter.ShowShape(View: TfrShapeView; x, y, h, w: integer
-  );
+procedure TfrTNPDFExportFilter.ShowShape(View: TfrShapeView; x, y, h, w: integer);
 
   function CreateShape(ShapeClass: TPRShapeClass): TPRShape;
   begin

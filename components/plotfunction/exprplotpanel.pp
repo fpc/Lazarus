@@ -158,8 +158,7 @@ begin
   TExpressionControlPlotter(Plotter).Expression:=AValue;
 end;
 
-procedure TPlotExpressionPanel.SetIdentifiers(const AValue: TFPExprIdentifierDefs
-  );
+procedure TPlotExpressionPanel.SetIdentifiers(const AValue: TFPExprIdentifierDefs);
 begin
   TExpressionControlPlotter(Plotter).Identifiers:=AValue;
 end;

@@ -1106,8 +1106,7 @@ begin
   end;
 end;
 
-procedure TCTDirectoryCache.IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile
-  );
+procedure TCTDirectoryCache.IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
 var
   UnitSet: string;
 begin
@@ -1134,8 +1133,7 @@ begin
   FDirectories.Remove(ACache);
 end;
 
-procedure TCTDirectoryCachePool.OnFileStateCacheChangeTimeStamp(Sender: TObject
-  );
+procedure TCTDirectoryCachePool.OnFileStateCacheChangeTimeStamp(Sender: TObject);
 begin
   IncreaseFileTimeStamp;
 end;

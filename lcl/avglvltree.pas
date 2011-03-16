@@ -1369,8 +1369,7 @@ begin
     Result:='';
 end;
 
-procedure TStringToStringTree.SetValues(const Name: string; const AValue: string
-  );
+procedure TStringToStringTree.SetValues(const Name: string; const AValue: string);
 var
   NewItem: PStringToStringItem;
   Node: TAvgLvlTreeNode;

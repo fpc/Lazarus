@@ -105,10 +105,8 @@ type
     FLevelFilterText: array[TCodeBrowserLevel] of string;
     FLevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
     function GetLevelFilterText(Level: TCodeBrowserLevel): string;
-    function GetLevelFilterType(Level: TCodeBrowserLevel
-      ): TCodeBrowserTextFilter;
-    procedure SetLevelFilterText(Level: TCodeBrowserLevel; const AValue: string
-      );
+    function GetLevelFilterType(Level: TCodeBrowserLevel): TCodeBrowserTextFilter;
+    procedure SetLevelFilterText(Level: TCodeBrowserLevel; const AValue: string);
     procedure SetLevelFilterType(Level: TCodeBrowserLevel;
       const AValue: TCodeBrowserTextFilter);
     procedure SetModified(const AValue: boolean);
@@ -2571,8 +2569,7 @@ begin
   BrowseTreeView.EndUpdate;
 end;
 
-procedure TCodeBrowserView.CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType
-  );
+procedure TCodeBrowserView.CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
 var
   Node: TCodeBrowserNode;
   s: string;
@@ -2797,8 +2794,7 @@ begin
   end;
 end;
 
-function TCodeBrowserView.GetScopeToCurUnitOwner(UseFCLAsDefault: boolean
-  ): string;
+function TCodeBrowserView.GetScopeToCurUnitOwner(UseFCLAsDefault: boolean): string;
 var
   SrcEdit: TSourceEditorInterface;
   Code: TCodeBuffer;
@@ -3092,8 +3088,7 @@ begin
   FStoreWithRequiredPackages:=AValue;
 end;
 
-procedure TCodeBrowserViewOptions.SetWithRequiredPackages(const AValue: boolean
-  );
+procedure TCodeBrowserViewOptions.SetWithRequiredPackages(const AValue: boolean);
 begin
   if FWithRequiredPackages=AValue then exit;
   FWithRequiredPackages:=AValue;

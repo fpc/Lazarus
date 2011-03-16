@@ -942,8 +942,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TAnchorDockLayoutTreeNode.SetNodeType(const AValue: TADLTreeNodeType
-  );
+procedure TAnchorDockLayoutTreeNode.SetNodeType(const AValue: TADLTreeNodeType);
 begin
   if FNodeType=AValue then exit;
   FNodeType:=AValue;

@@ -109,8 +109,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LinkEditChange(Sender: TObject);
-    procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LinkEditUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     FStartFPDocFile: TLazFPDocFile;

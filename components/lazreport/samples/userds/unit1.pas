@@ -61,8 +61,7 @@ uses lclproc, unit2;
 
 { TForm1 }
 
-procedure TForm1.frReport1GetValue(const ParName: String; var ParValue: Variant
-  );
+procedure TForm1.frReport1GetValue(const ParName: String; var ParValue: Variant);
 begin
   {$IFDEF DEBUG}
   WriteLn('TForm1.frReport1GetValue: ParName=',ParName);

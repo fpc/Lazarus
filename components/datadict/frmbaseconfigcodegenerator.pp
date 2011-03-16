@@ -38,8 +38,7 @@ type
     TSOptions: TTabSheet;
     procedure CLBFieldsClick(Sender: TObject);
     procedure CLBFieldsItemClick(Sender: TObject; Index: integer);
-    procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ADownExecute(Sender: TObject);
     procedure AUpExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);

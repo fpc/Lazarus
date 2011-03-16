@@ -3184,8 +3184,7 @@ begin
     Caption:='';
 end;
 
-class procedure TLazDockForm.UpdateMainControlInParents(StartControl: TControl
-  );
+class procedure TLazDockForm.UpdateMainControlInParents(StartControl: TControl);
 var
   Form: TLazDockForm;
 begin

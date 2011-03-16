@@ -163,8 +163,7 @@ begin
   CheckSetDlgResult(ldcedrDockTop);
 end;
 
-procedure TLazDockControlEditorDlg.EnlargeBottomSpeedButtonClick(Sender: TObject
-  );
+procedure TLazDockControlEditorDlg.EnlargeBottomSpeedButtonClick(Sender: TObject);
 begin
   CheckSetDlgResult(ldcedrEnlargeBottom);
 end;
@@ -174,8 +173,7 @@ begin
   CheckSetDlgResult(ldcedrEnlargeLeft);
 end;
 
-procedure TLazDockControlEditorDlg.EnlargeRightSpeedButtonClick(Sender: TObject
-  );
+procedure TLazDockControlEditorDlg.EnlargeRightSpeedButtonClick(Sender: TObject);
 begin
   CheckSetDlgResult(ldcedrEnlargeRight);
 end;

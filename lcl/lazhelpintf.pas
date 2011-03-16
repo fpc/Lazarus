@@ -1722,8 +1722,7 @@ begin
   end;
 end;
 
-procedure THelpDatabases.RegisterHelpDatabaseClass(NewHelpDB: THelpDatabaseClass
-  );
+procedure THelpDatabases.RegisterHelpDatabaseClass(NewHelpDB: THelpDatabaseClass);
 begin
   if FHelpDBClasses=nil then FHelpDBClasses:=TFPList.Create;
   if FHelpDBClasses.IndexOf(NewHelpDB)<0 then

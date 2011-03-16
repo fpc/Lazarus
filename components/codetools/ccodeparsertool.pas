@@ -2494,8 +2494,7 @@ begin
   Result:=copy(Src,AtomStart,SrcPos-AtomStart);
 end;
 
-procedure TCCodeParserTool.Replace(FromPos, ToPos: integer; const NewSrc: string
-  );
+procedure TCCodeParserTool.Replace(FromPos, ToPos: integer; const NewSrc: string);
 var
   Node: TCodeTreeNode;
   DiffPos: Integer;

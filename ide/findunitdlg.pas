@@ -153,8 +153,7 @@ begin
   Steps:=[imqfoMenuItem];
 end;
 
-function TQuickFixUnitNotFound_Search.IsApplicable(Line: TIDEMessageLine
-  ): boolean;
+function TQuickFixUnitNotFound_Search.IsApplicable(Line: TIDEMessageLine): boolean;
 const
   SearchStr = ') Fatal: Can''t find unit ';
 var

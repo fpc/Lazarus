@@ -93,8 +93,7 @@ type
     procedure NodePathEditEditingDone(Sender: TObject);
     procedure OkBitBtnClick(Sender: TObject);
     procedure OpenDeclarationBitBtnClick(Sender: TObject);
-    procedure OpenDeclarationBitBtnShowHint(Sender: TObject; HintInfo: PHintInfo
-      );
+    procedure OpenDeclarationBitBtnShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure TestButtonClick(Sender: TObject);
   private
     FIDEWindow: TCustomForm;
@@ -449,8 +448,7 @@ begin
   ControlsTreeView.Selected:=Node;
 end;
 
-function TContextHelpEditorDlg.FindHelpTreeNode(HelpNode: TIWHelpNode
-  ): TTreeNode;
+function TContextHelpEditorDlg.FindHelpTreeNode(HelpNode: TIWHelpNode): TTreeNode;
   
   function Find(HNode: TIWHelpNode): TTreeNode;
   var
@@ -472,8 +470,7 @@ begin
   Result:=Find(HelpNode);
 end;
 
-function TContextHelpEditorDlg.FindControlTreeNode(AControl: TControl
-  ): TTreeNode;
+function TContextHelpEditorDlg.FindControlTreeNode(AControl: TControl): TTreeNode;
 
   function Find(TheControl: TControl): TTreeNode;
   var

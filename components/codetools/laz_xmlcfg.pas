@@ -451,8 +451,7 @@ begin
   DefaultFormatSettings.ThousandSeparator:=OldThousandSeparator;
 end;
 
-procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
-  );
+procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
 begin
   InvalidatePathCache;
   {$IFDEF NewXMLCfg}

@@ -76,8 +76,7 @@ end;
 
 { TIPLazHtmlControl }
 
-procedure TIPLazHtmlControl.SetProvider(const AValue: TAbstractIDEHTMLProvider
-  );
+procedure TIPLazHtmlControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
 begin
   if FProvider=AValue then exit;
   FProvider:=AValue;

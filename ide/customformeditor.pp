@@ -1552,8 +1552,7 @@ begin
   Result:=FDesignerBaseClasses.Count;
 end;
 
-procedure TCustomFormEditor.UnregisterDesignerBaseClass(AClass: TComponentClass
-  );
+procedure TCustomFormEditor.UnregisterDesignerBaseClass(AClass: TComponentClass);
 var
   l: Integer;
 begin

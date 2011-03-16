@@ -851,8 +851,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.PackageGraphDependencyModified(ADependency: TPkgDependency
-  );
+procedure TPkgManager.PackageGraphDependencyModified(ADependency: TPkgDependency);
 var
   DepOwner: TObject;
 begin

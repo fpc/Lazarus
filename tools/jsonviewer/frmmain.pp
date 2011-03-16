@@ -230,8 +230,7 @@ begin
   FSortObjectMembers:=StrToIntDef(Value,0)=1;
 end;
 
-procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string
-  );
+procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
 
 Var
   D : TJSONData;

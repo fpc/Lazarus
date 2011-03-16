@@ -40,8 +40,7 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.gridBeforeSelection(Sender: TObject; aCol, aRow: Integer
-  );
+procedure TForm1.gridBeforeSelection(Sender: TObject; aCol, aRow: Integer);
 begin
 
   if Grid.Col<>aCol then

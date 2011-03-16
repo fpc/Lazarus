@@ -1518,8 +1518,7 @@ begin
   AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles);
 end;
 
-procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string
-  );
+procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentOpenFiles);
 end;

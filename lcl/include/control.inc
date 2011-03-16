@@ -1781,8 +1781,7 @@ begin
     FOnMouseWheelUp(Self, Shift, MousePos, Result);
 end;
 
-procedure TControl.SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide
-  );
+procedure TControl.SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide);
 begin
   GetAnchorSideIndex(Index).Assign(AValue);
 end;

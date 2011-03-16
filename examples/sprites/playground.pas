@@ -30,8 +30,7 @@ type
 
   TPlayGroundForm = class(TForm)
     Timer1: TTimer;
-    procedure PlayGroundFormClose(Sender: TObject; var CloseAction: TCloseAction
-      );
+    procedure PlayGroundFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure PlayGroundFormCreate(Sender: TObject);
     procedure PlayGroundFormDestroy(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);

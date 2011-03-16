@@ -1849,8 +1849,7 @@ begin
   RemoveHandler(ahtHelp,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnHintHandler(Handler: TNotifyEvent; AsFirst: Boolean
-  );
+procedure TApplication.AddOnHintHandler(Handler: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(ahtHint,TMethod(Handler),AsFirst);
 end;

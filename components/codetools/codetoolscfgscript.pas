@@ -1028,8 +1028,7 @@ begin
   end;
 end;
 
-procedure SetCTCSVariableAsString(const V: PCTCfgScriptVariable; const s: string
-  );
+procedure SetCTCSVariableAsString(const V: PCTCfgScriptVariable; const s: string);
 var
   l: Integer;
 begin
@@ -1053,8 +1052,7 @@ begin
   {$ENDIF}
 end;
 
-procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64
-  );
+procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64);
 begin
   {$IFDEF CheckCTCfgVars}
   CheckCTCSVariable(v);

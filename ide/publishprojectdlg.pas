@@ -262,8 +262,7 @@ begin
     ExcludeFilterCombobox.Items);
 end;
 
-procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions
-  );
+procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions);
 begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
@@ -309,8 +308,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TPublishProjectDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions
-  );
+procedure TPublishProjectDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions);
 var
   ProjSrcOpts: TPublishProjectOptions;
 begin
@@ -340,8 +338,7 @@ begin
   end;
 end;
 
-procedure TPublishProjectDialog.SaveToOptions(DestOpts: TPublishModuleOptions
-  );
+procedure TPublishProjectDialog.SaveToOptions(DestOpts: TPublishModuleOptions);
 var
   ProjDestOpts: TPublishProjectOptions;
 begin

@@ -118,15 +118,12 @@ begin
   end;
 end;
 
-procedure TIDEProtocol.LoadFromConfig(Config: TConfigStorage; const Path: string
-  );
+procedure TIDEProtocol.LoadFromConfig(Config: TConfigStorage; const Path: string);
 begin
-  FLastProjectLoadingCrashed:=
-                        Config.GetValue(Path+'LastProjectLoading/Failed',false);
+  FLastProjectLoadingCrashed:=Config.GetValue(Path+'LastProjectLoading/Failed',false);
 end;
 
-procedure TIDEProtocol.SaveToConfig(Config: TConfigStorage; const Path: string
-  );
+procedure TIDEProtocol.SaveToConfig(Config: TConfigStorage; const Path: string);
 begin
   Config.SetValue(Path+'Version',IDEProtocolOptsVersion);
   Config.SetDeleteValue(Path+'LastProjectLoading/Failed',

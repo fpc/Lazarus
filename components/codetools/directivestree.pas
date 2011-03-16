@@ -803,8 +803,7 @@ begin
   end;
 end;
 
-procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean
-  );
+procedure TCompilerDirectivesTree.MoveIfNotThenDefsUp(var Changed: boolean);
 (* 1. Search for
     {$IFNDEF Name}
       {$DEFINE Name}
@@ -2082,8 +2081,7 @@ begin
     DoFindDefNodes;
 end;
 
-procedure TCompilerDirectivesTree.FixMissingH2PasDirectives(var Changed: boolean
-  );
+procedure TCompilerDirectivesTree.FixMissingH2PasDirectives(var Changed: boolean);
 { Adds the directives around the function bodies, that h2pas forgets to add.
 
 }

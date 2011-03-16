@@ -981,8 +981,7 @@ begin
   end;
 end;
 
-procedure WriteComponentAsTextToStream(AStream: TStream; AComponent: TComponent
-  );
+procedure WriteComponentAsTextToStream(AStream: TStream; AComponent: TComponent);
 var
   BinStream: TMemoryStream;
 begin

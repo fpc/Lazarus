@@ -788,8 +788,7 @@ begin
   FErrorFilename:='';
 end;
 
-procedure TCustomTextConverterTool.AssignError(Source: TCustomTextConverterTool
-  );
+procedure TCustomTextConverterTool.AssignError(Source: TCustomTextConverterTool);
 begin
   FErrorMsg:=Source.ErrorMsg;
   FErrorLine:=Source.ErrorLine;

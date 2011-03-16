@@ -703,8 +703,7 @@ begin
     AssignGraphic(Source,FormatID);
 end;
 
-procedure TClipboard.AssignGraphic(Source: TGraphic; FormatID: TClipboardFormat
-  );
+procedure TClipboard.AssignGraphic(Source: TGraphic; FormatID: TClipboardFormat);
 var
   MemStream: TMemoryStream;
 begin

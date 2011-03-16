@@ -229,8 +229,7 @@ begin
   Result:=true;
 end;
 
-procedure TPersistentSelectionList.SortLike(SortedList: TPersistentSelectionList
-  );
+procedure TPersistentSelectionList.SortLike(SortedList: TPersistentSelectionList);
 // sort this list
 var
   NewIndex: Integer;

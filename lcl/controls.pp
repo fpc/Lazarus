@@ -3876,8 +3876,7 @@ begin
 
 end;
 
-procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage
-  );
+procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage);
 begin
 
 end;

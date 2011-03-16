@@ -1164,8 +1164,7 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent
-  );
+procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent);
 begin
   if fPkgComponents.Find(PkgComponent)=nil then
     fPkgComponents.Add(PkgComponent);

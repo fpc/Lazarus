@@ -212,8 +212,7 @@ begin
   ShowDiff;
 end;
 
-procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction
-  );
+procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.CheckDiskChangesWithLoading:=
                                     CheckDiskChangesWithLoadingCheckBox.Checked;

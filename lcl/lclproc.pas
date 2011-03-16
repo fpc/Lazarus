@@ -2475,8 +2475,7 @@ begin
   DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11);
 end;
 
-procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12: string
-  );
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12: string);
 begin
   DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
 end;

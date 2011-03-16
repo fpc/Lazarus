@@ -2854,8 +2854,7 @@ begin
   Result := fFoldTree.FindFoldForLine(index+1).IsInFold;
 end;
 
-procedure TSynEditFoldedView.SetHighLighter(AValue: TSynCustomHighlighter
-  );
+procedure TSynEditFoldedView.SetHighLighter(AValue: TSynCustomHighlighter);
 begin
   if not(AValue is TSynCustomFoldHighlighter) then
     AValue := nil;

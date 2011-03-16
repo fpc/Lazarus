@@ -4950,8 +4950,7 @@ begin
   if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
 end;
 
-procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject
-  );
+procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject);
 begin
   ShowComponentTree:=not ShowComponentTree;
 end;

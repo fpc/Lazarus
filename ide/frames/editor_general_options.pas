@@ -499,8 +499,7 @@ begin
   SetPreviewOption(TabIndentBlocksCheckBox.Checked, eoTabIndent);
 end;
 
-procedure TEditorGeneralOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject
-  );
+procedure TEditorGeneralOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
 end;

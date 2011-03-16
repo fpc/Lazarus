@@ -65,8 +65,7 @@ begin
 end;
 
 
-procedure TLR_FunctEditor1Form.SetFunctionDescription(AFD: TfrFunctionDescription
-  );
+procedure TLR_FunctEditor1Form.SetFunctionDescription(AFD: TfrFunctionDescription);
 var
   S, S1:string;
   i:integer;

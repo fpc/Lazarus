@@ -124,8 +124,7 @@ begin
   SetFocus;
 end;
 
-procedure TDBCheckBox.Notification(AComponent: TComponent; Operation: TOperation
-  );
+procedure TDBCheckBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) then begin

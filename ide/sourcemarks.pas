@@ -461,8 +461,7 @@ begin
       FHandlers[HandlerType].RemoveAllMethodsOfObject(HandlerObject);
 end;
 
-procedure TSourceMark.AddPositionChangedHandler(OnPositionChanged: TNotifyEvent
-  );
+procedure TSourceMark.AddPositionChangedHandler(OnPositionChanged: TNotifyEvent);
 begin
   AddHandler(smhPositionChanged,TMethod(OnPositionChanged));
 end;

@@ -4563,8 +4563,7 @@ begin
   //DebugLn('SplitStringConstant END---------------------------------');
 end;
 
-procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer
-  );
+procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
 // if StartPos is on the first character of a string constant it will be moved
 // one in front, that means on the start of the string constant.
 // Example:  'A' StartPos=2 -> StartPos:=1

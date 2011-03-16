@@ -252,8 +252,7 @@ end;
 
 { TSimpleHTMLControl }
 
-procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider
-  );
+procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
 begin
   if FProvider=AValue then exit;
   FProvider:=AValue;

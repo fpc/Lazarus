@@ -184,8 +184,7 @@ begin
   FNoteBook.Pages[Index]:=S;
 end;
 
-procedure TTabControlNoteBookStrings.PutObject(Index: Integer; AObject: TObject
-  );
+procedure TTabControlNoteBookStrings.PutObject(Index: Integer; AObject: TObject);
 begin
   FNoteBook.Pages.Objects[Index]:=AObject;
 end;

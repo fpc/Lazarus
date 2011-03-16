@@ -2510,8 +2510,7 @@ begin
   end;
 end;
 
-function TCodeHelpElementChain.IndexOfElementName(ElementName: string
-  ): integer;
+function TCodeHelpElementChain.IndexOfElementName(ElementName: string): integer;
 begin
   Result:=FItems.Count-1;
   while (Result>=0) do begin

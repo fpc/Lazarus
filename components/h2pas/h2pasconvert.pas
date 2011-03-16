@@ -795,8 +795,7 @@ begin
   //DebugLn(['TH2PasFile.InternalAddCIncludedBy ',Filename,' included by ',CIncludedBy.Filename]);
 end;
 
-procedure TH2PasFile.InternalRemoveCIncludedBy(CIncludedBy: TH2PasFileCInclude
-  );
+procedure TH2PasFile.InternalRemoveCIncludedBy(CIncludedBy: TH2PasFileCInclude);
 begin
   if FCIncludedBy=nil then exit;
   FCIncludedBy.Remove(CIncludedBy);

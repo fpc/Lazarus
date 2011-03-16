@@ -62,8 +62,7 @@ begin
     DataChange(Self);
 end;
 
-procedure TDBGroupBox.Notification(AComponent: TComponent; Operation: TOperation
-  );
+procedure TDBGroupBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) then begin

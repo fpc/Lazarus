@@ -375,8 +375,7 @@ begin
     NewClassComboBox.Text:='';
 end;
 
-procedure TChangeClassDlg.FillAncestorListBox(AClass: TClass; AListBox: TListBox
-  );
+procedure TChangeClassDlg.FillAncestorListBox(AClass: TClass; AListBox: TListBox);
 var
   List: TStringList;
   

@@ -5367,8 +5367,7 @@ begin
     Result := gzNormal;
 end;
 
-procedure TCustomGrid.DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer
-  );
+procedure TCustomGrid.DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
 var
   ColRow: integer;
 begin
@@ -8448,8 +8447,7 @@ begin
   end;
 end;
 
-procedure TVirtualGrid.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer
-  );
+procedure TVirtualGrid.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
   FCells.MoveColRow(IsColumn, FromIndex, ToIndex);
   if IsColumn then FCols.MoveColRow(True, FromIndex, ToIndex)
@@ -10588,8 +10586,7 @@ begin
   result := VisibleCount > 0;
 end;
 
-procedure TGridColumns.SetColumn(Index: Integer; Value: TGridColumn
-  );
+procedure TGridColumns.SetColumn(Index: Integer; Value: TGridColumn);
 begin
   Items[Index].Assign( Value );
 end;

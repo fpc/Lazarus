@@ -158,8 +158,7 @@ begin
   Result:=ShowFindOverloadsDialog(Code,XY.X,XY.Y);
 end;
 
-function ShowFindOverloadsDialog(Code: TCodeBuffer; X, Y: integer
-  ): TModalResult;
+function ShowFindOverloadsDialog(Code: TCodeBuffer; X, Y: integer): TModalResult;
 var
   FindOverloadsDialog: TFindOverloadsDialog;
   Graph: TDeclarationOverloadsGraph;
@@ -189,8 +188,7 @@ begin
   Result:=CompareFilenames(File1.Filename,File2.Filename);
 end;
 
-function CompareFilenameWithFOWFile(FilenameAnsiString, FOWFile: Pointer
-  ): integer;
+function CompareFilenameWithFOWFile(FilenameAnsiString, FOWFile: Pointer): integer;
 begin
   Result:=CompareFilenames(ansistring(FilenameAnsiString),TFOWFile(FOWFile).Filename);
 end;

@@ -928,8 +928,7 @@ const
   unbvDeletePage    = 1;
   unbvShowPage      = 2;
 
-procedure TUntabbedNotebookComponentEditor.AddNewPageToDesigner(Index: integer
-  );
+procedure TUntabbedNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
 var
   Hook: TPropertyEditorHook;
   NewPage: TPage;

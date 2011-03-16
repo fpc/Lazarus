@@ -152,8 +152,7 @@ begin
   Result:=FDataDict<>Nil;
 end;
 
-procedure TIDEDataDictionary.SetDictNameAndFile(const AName, AFileName: String
-  );
+procedure TIDEDataDictionary.SetDictNameAndFile(const AName, AFileName: String);
 begin
   FDictName:=AName;
   FFileName:=AFileName;

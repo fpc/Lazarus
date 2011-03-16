@@ -94,8 +94,7 @@ type
     procedure AddToken(Line, // 0 based
                        Col: integer; // 1 based
                        TokenKind: TtkTokenKind);
-    procedure ClearTokens(Line: integer // 0 based
-                          );
+    procedure ClearTokens(Line: integer); // 0 based
     procedure ClearAllCopiedAttributes;
     procedure ClearAllTokens;
     procedure InsertTokens(Lines: TStringList;

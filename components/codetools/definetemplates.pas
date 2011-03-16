@@ -4429,8 +4429,7 @@ begin
   if DirectoryCachePool<>nil then DirectoryCachePool.IncreaseConfigTimeStamp;
 end;
 
-procedure TDefineTree.SetDirectoryCachePool(const AValue: TCTDirectoryCachePool
-  );
+procedure TDefineTree.SetDirectoryCachePool(const AValue: TCTDirectoryCachePool);
 begin
   if FDirectoryCachePool=AValue then exit;
   FDirectoryCachePool:=AValue;
@@ -8334,8 +8333,7 @@ end;
 
 { TFPCDefinesCache }
 
-procedure TFPCDefinesCache.SetConfigCaches(const AValue: TFPCTargetConfigCaches
-  );
+procedure TFPCDefinesCache.SetConfigCaches(const AValue: TFPCTargetConfigCaches);
 begin
   if FConfigCaches=AValue then exit;
   FConfigCaches:=AValue;

@@ -318,15 +318,13 @@ begin
   FDialog.OpenEditor(GroupCompiler,CompilerOptionsBuildModes);
 end;
 
-procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject
-  );
+procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := True;
   (Sender as TLabel).Font.Color := clRed;
 end;
 
-procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseLeave(Sender: TObject
-  );
+procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseLeave(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := False;
   (Sender as TLabel).Font.Color := clBlue;

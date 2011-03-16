@@ -515,8 +515,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TLazCompilerOptions.SetShowHintsForSenderNotUsed(const AValue: Boolean
-  );
+procedure TLazCompilerOptions.SetShowHintsForSenderNotUsed(const AValue: Boolean);
 begin
   if fShowHintsForSenderNotUsed=AValue then exit;
   fShowHintsForSenderNotUsed:=AValue;
@@ -866,8 +865,7 @@ begin
   fOnChanged.Add(TMethod(Handler));
 end;
 
-procedure TLazCompilerOptions.RemoveOnChangedHandler(const Handler: TNotifyEvent
-  );
+procedure TLazCompilerOptions.RemoveOnChangedHandler(const Handler: TNotifyEvent);
 begin
   fOnChanged.Remove(TMethod(Handler));
 end;

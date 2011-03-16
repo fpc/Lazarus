@@ -120,8 +120,7 @@ type
     procedure ClearAutoDisableFlags;
     function AddGroup(const NewName: string): TPPUGroup;
     procedure AddFPCGroupsForCurrentCompiler(const BaseDirectory: string);
-    procedure AddFPCGroups(const FPCPPUBaseDir: string // for example: /usr/lib/fpc/2.2.3/units/i386-linux/
-                );
+    procedure AddFPCGroups(const FPCPPUBaseDir: string); // for example: /usr/lib/fpc/2.2.3/units/i386-linux/
     procedure AddFPCGroup(const BaseGroupname, Directory: string);
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;

@@ -1015,8 +1015,7 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions LoadFromFile
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.LoadFromFile(AFilename: string
-  ): TModalResult;
+function TBaseCompilerOptions.LoadFromFile(AFilename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
 begin
@@ -3428,8 +3427,7 @@ end;
 
 { TParsedCompilerOptions }
 
-procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string
-  );
+procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string);
 begin
   if FOutputDirectoryOverride=AValue then exit;
   FOutputDirectoryOverride:=AValue;
@@ -3715,8 +3713,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TCompilationToolOptions.SetScanForMakeMessages(const AValue: boolean
-  );
+procedure TCompilationToolOptions.SetScanForMakeMessages(const AValue: boolean);
 begin
   if FScanForMakeMessages=AValue then exit;
   FScanForMakeMessages:=AValue;

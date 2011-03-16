@@ -2214,8 +2214,7 @@ end;
 
 { TAliasStringsPropEditorDlg }
 
-procedure TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick(Sender: TObject
-  );
+procedure TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick(Sender: TObject);
 var
   ALink: TCustomPropertyLink;
   i: Integer;
@@ -3790,8 +3789,7 @@ begin
   end;
 end;
 
-procedure TMultiPropertyLink.SetLinksForChildComponents(AComponent: TComponent
-  );
+procedure TMultiPropertyLink.SetLinksForChildComponents(AComponent: TComponent);
 var
   i: Integer;
   CurComponent: TComponent;
@@ -3822,8 +3820,7 @@ begin
   FPropEdits.Add(Prop);
 end;
 
-procedure TTIElementNamePropertyEditor.GetElementPropEdits(Prop: TPropertyEditor
-  );
+procedure TTIElementNamePropertyEditor.GetElementPropEdits(Prop: TPropertyEditor);
 begin
   if FElementPropEdits=nil then FElementPropEdits:=TList.Create;
   FElementPropEdits.Add(Prop);

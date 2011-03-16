@@ -548,8 +548,7 @@ end;
 
 { TFileDescInheritedComponent }
 
-procedure TFileDescInheritedComponent.SetInheritedUnit(const AValue: TUnitInfo
-  );
+procedure TFileDescInheritedComponent.SetInheritedUnit(const AValue: TUnitInfo);
 begin
   if FInheritedUnit=AValue then exit;
   FInheritedUnit:=AValue;

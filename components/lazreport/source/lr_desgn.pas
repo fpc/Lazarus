@@ -419,8 +419,7 @@ type
     procedure N22Click(Sender: TObject);
     procedure Tab1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure frDesignerFormClose(Sender: TObject; var CloseAction: TCloseAction
-      );
+    procedure frDesignerFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure frDesignerFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure frSpeedButton1Click(Sender: TObject);
     procedure StB1Click(Sender: TObject);
