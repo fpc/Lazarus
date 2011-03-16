@@ -120,11 +120,11 @@ type
         itmEditSelectLine: TIDEMenuCommand;
         itmEditSelectParagraph: TIDEMenuCommand;
       //itmEditBlockActions: TIDEMenuSection;
+        itmEditIndentBlock: TIDEMenuCommand;
+        itmEditUnindentBlock: TIDEMenuCommand;
         itmEditUpperCaseBlock: TIDEMenuCommand;
         itmEditLowerCaseBlock: TIDEMenuCommand;
         itmEditSwapCaseBlock: TIDEMenuCommand;
-        itmEditIndentBlock: TIDEMenuCommand;
-        itmEditUnindentBlock: TIDEMenuCommand;
         itmEditSortBlock: TIDEMenuCommand;
         itmEditTabsToSpacesBlock: TIDEMenuCommand;
         itmEditSelectionBreakLines: TIDEMenuCommand;

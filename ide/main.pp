@@ -2391,11 +2391,11 @@ begin
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
+    itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
+    itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
     itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
     itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
     itmEditSwapCaseBlock.OnClick:=@mnuEditSwapCaseBlockClicked;
-    itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
-    itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
     itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
     itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
@@ -3755,11 +3755,11 @@ begin
     itmEditPaste.Enabled:=Editable;
   //itmEditSelect: TIDEMenuSection; [...]
   //itmEditBlockActions: TIDEMenuSection;
+    itmEditIndentBlock.Enabled:=SelEditable;
+    itmEditUnindentBlock.Enabled:=SelEditable;
     itmEditUpperCaseBlock.Enabled:=SelEditable;
     itmEditLowerCaseBlock.Enabled:=SelEditable;
     itmEditSwapCaseBlock.Enabled:=SelEditable;
-    itmEditIndentBlock.Enabled:=SelEditable;
-    itmEditUnindentBlock.Enabled:=SelEditable;
     itmEditSortBlock.Enabled:=SelEditable;
     itmEditTabsToSpacesBlock.Enabled:=SelEditable;
     itmEditSelectionBreakLines.Enabled:=SelEditable;

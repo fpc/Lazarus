@@ -431,11 +431,11 @@ begin
     // "Char Conversion" menu items
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockActions,'itmEditBlockActions');
     ParentMI:=itmEditBlockActions;
+    CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
+    CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
     CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection, 'menu_edit_uppercase');
     CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection, 'menu_edit_lowercase');
     CreateMenuItem(ParentMI,itmEditSwapCaseBlock,'itmEditSwapCaseBlock',lisMenuSwapCaseSelection, 'menu_edit_uppercase');
-    CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
-    CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
     CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
     CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
     CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
@@ -856,11 +856,11 @@ begin
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
 
+    itmEditIndentBlock.Command:=GetCommand(ecBlockIndent);
+    itmEditUnindentBlock.Command:=GetCommand(ecBlockUnindent);
     itmEditUpperCaseBlock.Command:=GetCommand(ecSelectionUpperCase);
     itmEditLowerCaseBlock.Command:=GetCommand(ecSelectionLowerCase);
     itmEditSwapCaseBlock.Command:=GetCommand(ecSelectionSwapCase);
-    itmEditIndentBlock.Command:=GetCommand(ecBlockIndent);
-    itmEditUnindentBlock.Command:=GetCommand(ecBlockUnindent);
     itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
     itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
