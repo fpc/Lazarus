@@ -418,7 +418,7 @@ begin
   ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRenameIdentifier: SetResult(VK_E,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_F2,[],VK_E,[ssShift,ssCtrl]);
   ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
