@@ -261,7 +261,7 @@ type
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCut: TShortCut); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
       UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
