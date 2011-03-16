@@ -894,7 +894,7 @@ begin
     itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
-    itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionConditional);
+    itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
     itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);

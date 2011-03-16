@@ -17591,7 +17591,7 @@ end;
 
 procedure TMainIDE.mnuSourceEncloseInIFDEFClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionConditional);
+  DoSourceEditorCommand(ecSelectionEncloseIFDEF);
 end;
 
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);

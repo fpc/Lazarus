@@ -97,7 +97,7 @@ const
   ecSelectWord              = ecFirstLazarus + 61;
   ecSelectLine              = ecFirstLazarus + 62;
   ecSelectParagraph         = ecFirstLazarus + 63;
-  ecSelectionConditional    = ecFirstLazarus + 64;
+  ecSelectionEncloseIFDEF   = ecFirstLazarus + 64;
   ecToggleComment           = ecFirstLazarus + 65;
 
   // insert text

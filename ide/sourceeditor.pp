@@ -358,8 +358,7 @@ type
 
     // dialogs
     procedure GetDialogPosition(Width, Height: integer; out Left, Top: integer);
-    procedure ActivateHint(ClientPos: TPoint;
-                           const BaseURL, TheHint: string);
+    procedure ActivateHint(ClientPos: TPoint; const BaseURL, TheHint: string);
 
     // selections
     function SelectionAvailable: boolean; override;
@@ -1028,7 +1027,6 @@ type
     procedure ToggleI18NForLFMClicked(Sender: TObject);
     procedure ShowUnitInfo(Sender: TObject);
     procedure CopyFilenameClicked(Sender: TObject);
-    procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
@@ -3036,7 +3034,7 @@ Begin
   ecToggleComment:
     ToggleCommentSelection;
 
-  ecSelectionConditional:
+  ecSelectionEncloseIFDEF:
     ConditionalSelection;
 
   ecSelectionSort:
@@ -8518,10 +8516,13 @@ begin
       .Command := GetCommand(ecToggleMarker0 + i);
   end;
 
+  {%region *** Source Section ***}
+    SrcEditMenuEncloseSelection.Command:=GetCommand(ecSelectionEnclose);
+    SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
+  {%endregion}
+
   {%region *** Refactoring Section ***}
     SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
-    SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
-    SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionConditional);
     SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
     SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
@@ -9047,15 +9048,6 @@ begin
   ActSE := GetActiveSE;
   if ActSE <> nil then
     Clipboard.AsText:=ActSE.FileName;
-end;
-
-procedure TSourceEditorManager.EncloseSelectionMenuItemClick(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-begin
-  ASrcEdit:=ActiveEditor;
-  if ASrcEdit=nil then exit;
-  ASrcEdit.EncloseSelection;
 end;
 
 procedure TSourceEditorManager.EditorPropertiesClicked(Sender: TObject);

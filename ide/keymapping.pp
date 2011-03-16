@@ -291,7 +291,7 @@ begin
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecToggleComment: SetResult(VK_OEM_2, [ssCtrl], VK_UNKNOWN, []);
-  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectionEncloseIFDEF: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
@@ -745,7 +745,7 @@ begin
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecToggleComment: SetResult(VK_OEM_2, [ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
-  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionEncloseIFDEF: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
 
@@ -1360,7 +1360,7 @@ begin
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecToggleComment: SetResult(VK_OEM_2, [ssCtrl],VK_UNKNOWN,[]);
-  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectionEncloseIFDEF: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
@@ -2020,7 +2020,7 @@ begin
     ecSelectionComment        : Result:= lisMenuCommentSelection;
     ecSelectionUncomment      : Result:= lisMenuUncommentSelection;
     ecToggleComment           : Result:= lisMenuToggleComment;
-    ecSelectionConditional    : Result:= lisMenuEncloseInIFDEF;
+    ecSelectionEncloseIFDEF   : Result:= lisMenuEncloseInIFDEF;
     ecSelectionSort           : Result:= lisMenuSortSelection;
     ecSelectionBreakLines     : Result:= lisMenuBeakLinesInSelection;
     ecSelectToBrace           : Result:= lisMenuSelectToBrace;
@@ -2503,7 +2503,7 @@ begin
   AddDefault(C, 'Delete whole text', srkmecClearAll, ecClearAll);
   AddDefault(C, 'Break line and move cursor', srkmecLineBreak, ecLineBreak);
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
-  AddDefault(C, 'Enclose in $IFDEF', lisEncloseInIFDEF, ecSelectionConditional);
+  AddDefault(C, 'Enclose in $IFDEF', lisEncloseInIFDEF, ecSelectionEncloseIFDEF);
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter, ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
   AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
