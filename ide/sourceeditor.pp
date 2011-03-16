@@ -1153,6 +1153,7 @@ var
     // refactoring
     SrcEditMenuCompleteCode: TIDEMenuCommand;
     SrcEditMenuEncloseSelection: TIDEMenuCommand;
+    SrcEditMenuEncloseInIFDEF: TIDEMenuCommand;
     SrcEditMenuRenameIdentifier: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
@@ -1450,7 +1451,9 @@ begin
                                              'Source',uemSource);
     AParent:=SrcEditSubMenuSource;
     SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
-        (AParent, 'EncloseSelection',lisKMEncloseSelection);
+        (AParent, 'EncloseSelection',lisMenuEncloseSelection);
+    SrcEditMenuEncloseInIFDEF := RegisterIDEMenuCommand
+        (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
   {%endregion}
 
   {%region *** Refactoring Section ***}
@@ -5324,6 +5327,7 @@ begin
       SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
       // enable menu items
       SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
+      SrcEditMenuEncloseInIFDEF.Enabled := SelAvailAndWritable;
       SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
       SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
       CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
@@ -8517,6 +8521,7 @@ begin
   {%region *** Refactoring Section ***}
     SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
     SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
+    SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionConditional);
     SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
     SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);

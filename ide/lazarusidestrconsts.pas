@@ -199,12 +199,13 @@ resourcestring
   lisMenuLowerCaseSelection = 'Lowercase selection';
   lisMenuSwapCaseSelection = 'Swap case in selection';
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
+  lisKMEncloseSelection   = 'Enclose selection';
   lisMenuEncloseSelection = 'Enclose selection ...';
+  lisEncloseInIFDEF     = 'Enclose in $IFDEF';
+  lisMenuEncloseInIFDEF = 'Enclose in $IFDEF...';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
   lisMenuToggleComment = 'Toggle comment';
-  lisKMInsertIFDEF = 'Insert $IFDEF';
-  lisMenuConditionalSelection = 'Insert $IFDEF...';
   lisMenuSortSelection = 'Sort selection ...';
   lisMenuBeakLinesInSelection = 'Break Lines in selection';
   lisKMSelectWordLeft = 'Select word left';
@@ -2546,7 +2547,6 @@ resourcestring
 
   // edit menu
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
-  lisKMEncloseSelection          = 'Enclose selection';
   srkmecInsertCharacter          = 'Insert from Charactermap';
   srkmecInsertGPLNotice          = 'Insert GPL notice';
   srkmecInsertLGPLNotice         = 'Insert LGPL notice';

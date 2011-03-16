@@ -204,7 +204,7 @@ type
         itmSourceUncommentBlock: TIDEMenuCommand;
         itmSourceToggleComment: TIDEMenuCommand;
         itmSourceEncloseBlock: TIDEMenuCommand;
-        itmSourceConditionalBlock: TIDEMenuCommand;
+        itmSourceEncloseInIFDEF: TIDEMenuCommand;
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;
         itmSourceGuessUnclosedBlock: TIDEMenuCommand;

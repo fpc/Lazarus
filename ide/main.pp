@@ -239,7 +239,7 @@ type
     procedure mnuSourceUncommentBlockClicked(Sender: TObject);
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
     procedure mnuSourceEncloseBlockClicked(Sender: TObject);
-    procedure mnuSourceConditionalBlockClicked(Sender: TObject);
+    procedure mnuSourceEncloseInIFDEFClicked(Sender: TObject);
 
     procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
@@ -2451,7 +2451,7 @@ begin
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
     itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
-    itmSourceConditionalBlock.OnClick:=@mnuSourceConditionalBlockClicked;
+    itmSourceEncloseInIFDEF.OnClick:=@mnuSourceEncloseInIFDEFClicked;
     // CodeTool Checks
     itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
     itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
@@ -3786,7 +3786,7 @@ begin
     itmSourceCommentBlock.Enabled:=SelEditable;
     itmSourceUncommentBlock.Enabled:=SelEditable;
     itmSourceEncloseBlock.Enabled:=SelEditable;
-    itmSourceConditionalBlock.Enabled:=SelEditable;
+    itmSourceEncloseInIFDEF.Enabled:=SelEditable;
   //itmSourceInsertions: TIDEMenuSection;
     //itmSourceInsertCVSKeyWord: TIDEMenuSection;
       itmSourceInsertCVSAuthor.Enabled:=Editable;
@@ -17589,7 +17589,7 @@ begin
   DoSourceEditorCommand(ecToggleComment);
 end;
 
-procedure TMainIDE.mnuSourceConditionalBlockClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceEncloseInIFDEFClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionConditional);
 end;

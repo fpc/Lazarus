@@ -555,7 +555,7 @@ begin
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
-    CreateMenuItem(ParentMI,itmSourceConditionalBlock,'itmSourceConditionalBlock',lisMenuConditionalSelection);
+    CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
 
     CreateMenuSeparatorSection(mnuSource,itmSourceCodeToolChecks,'itmSourceCodeToolChecks');
     ParentMI:=itmSourceCodeToolChecks;
@@ -894,7 +894,7 @@ begin
     itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
-    itmSourceConditionalBlock.Command:=GetCommand(ecSelectionConditional);
+    itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionConditional);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
     itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);

@@ -2020,7 +2020,7 @@ begin
     ecSelectionComment        : Result:= lisMenuCommentSelection;
     ecSelectionUncomment      : Result:= lisMenuUncommentSelection;
     ecToggleComment           : Result:= lisMenuToggleComment;
-    ecSelectionConditional    : Result:= lisMenuConditionalSelection;
+    ecSelectionConditional    : Result:= lisMenuEncloseInIFDEF;
     ecSelectionSort           : Result:= lisMenuSortSelection;
     ecSelectionBreakLines     : Result:= lisMenuBeakLinesInSelection;
     ecSelectToBrace           : Result:= lisMenuSelectToBrace;
@@ -2503,7 +2503,7 @@ begin
   AddDefault(C, 'Delete whole text', srkmecClearAll, ecClearAll);
   AddDefault(C, 'Break line and move cursor', srkmecLineBreak, ecLineBreak);
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
-  AddDefault(C, 'Insert $IFDEF', lisKMInsertIFDEF, ecSelectionConditional);
+  AddDefault(C, 'Enclose in $IFDEF', lisEncloseInIFDEF, ecSelectionConditional);
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter, ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
   AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
