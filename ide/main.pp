@@ -1179,6 +1179,11 @@ begin
     AddHelp(['']);
     AddHelp(['-v or --version          ', lisShowVersionAndExit]);
     AddHelp(['']);
+    {$IFDEF EnableSetupDlg}
+    AddHelp([ShowSetupDialogOptLong]);
+    AddHelp([BreakString(space+lisShowSetupDialogForMostImportantSettings, 75, 22)]);
+    AddHelp(['']);
+    {$ENDIF}
     AddHelp([PrimaryConfPathOptLong, ' <path>']);
     AddHelp(['or ', PrimaryConfPathOptShort, ' <path>']);
     AddHelp([BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
@@ -14049,29 +14054,23 @@ begin
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
 
-  // set global macros
-  with CodeToolBoss.GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusDir']:=
-      EnvironmentOptions.LazarusDirectory;
-    Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:=
-      LCLPlatformDirNames[GetDefaultLCLWidgetType];
-  end;
-
+  // find the lazarus source directory
+  SetupLazarusDirectory(InteractiveSetup);
   // find the compiler executable
   SetupCompilerFilename(InteractiveSetup);
   // find the FPC source directory
   SetupFPCSourceDirectory(InteractiveSetup);
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
-    EnvironmentOptions.GetFPCSourceDirectory;
+
+  // set global macros
+  with CodeToolBoss.GlobalValues do begin
+    Variables[ExternalMacroStart+'LazarusDir']:=EnvironmentOptions.LazarusDirectory;
+    Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
+    Variables[ExternalMacroStart+'LCLWidgetType']:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetFPCSourceDirectory;
+  end;
 
   // the first template is the "use default" flag
   CreateUseDefaultsFlagTemplate;
-
-  // create defines for the lazarus sources
-  SetupLazarusDirectory(InteractiveSetup);
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LazarusDir']:=
-    EnvironmentOptions.LazarusDirectory;
 
   MainBuildBoss.SetBuildTargetProject1(false);
 

@@ -241,3 +241,5 @@ codetoolsdefines/da_ifndef.png
 codetoolsdefines/da_undefine.png
 codetoolsdefines/da_undefineall.png
 codetoolsdefines/da_undefinerecurse.png
+ide_icon48x48.png
+

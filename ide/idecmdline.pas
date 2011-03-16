@@ -41,7 +41,7 @@ unit IDECmdLine;
 interface 
 
 uses 
-  Classes, SysUtils; 
+  Classes, SysUtils, FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
 
 procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer;
             out ShowSplashScreen: boolean);
@@ -64,7 +64,6 @@ function ExtractCmdLineFilenames : TStrings;
 function GetLazarusDirectory : String;
                               
 implementation 
-uses FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
   ShowSplashScreen: boolean);

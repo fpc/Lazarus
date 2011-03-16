@@ -41,9 +41,32 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, FileUtil,
-  ComCtrls, Laz_XMLCfg,
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
+  ComCtrls, Laz_XMLCfg, ExtCtrls,
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
   
+type
+  { TInitialSetupDialog }
+
+  TInitialSetupDialog = class(TForm)
+    BtnPanel: TPanel;
+    PropertiesPageControl: TPageControl;
+    NextIssueBitBtn: TBitBtn;
+    PrevIssueBitBtn: TBitBtn;
+    PropertiesTreeView: TTreeView;
+    Splitter1: TSplitter;
+    StartIDEBitBtn: TBitBtn;
+    LanguageTabSheet: TTabSheet;
+    LazarusTabSheet: TTabSheet;
+    CompilerTabSheet: TTabSheet;
+    FPCSourcesTabSheet: TTabSheet;
+    WelcomePaintBox: TPaintBox;
+    procedure FormCreate(Sender: TObject);
+  private
+  public
+  end;
+
+procedure ShowInitialSetupDialog;
+
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);
 procedure SetupLazarusDirectory(var InteractiveSetup: boolean);
@@ -206,6 +229,28 @@ begin
       end;
     end;
   end;
+end;
+
+procedure ShowInitialSetupDialog;
+var
+  InitialSetupDialog: TInitialSetupDialog;
+begin
+  InitialSetupDialog:=TInitialSetupDialog.Create(nil);
+  try
+    InitialSetupDialog.ShowModal;
+  finally
+    InitialSetupDialog.Free;
+  end;
+end;
+
+{$R *.lfm}
+
+{ TInitialSetupDialog }
+
+procedure TInitialSetupDialog.FormCreate(Sender: TObject);
+begin
+  Caption:='Welcome to Lazarus '+GetLazarusVersionString;
+
 end;
 
 end.

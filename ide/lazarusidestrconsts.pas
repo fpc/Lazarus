@@ -40,6 +40,7 @@ uses
   Classes, SysUtils;
 
 const
+  ShowSetupDialogOptLong='--setup';
   PrimaryConfPathOptLong='--primary-config-path=';
   PrimaryConfPathOptShort='--pcp=';
   SecondaryConfPathOptLong='--secondary-config-path=';
@@ -5197,6 +5198,8 @@ resourcestring
   lisCFEInFile = '%sIn file %s%s';
   lisCFETheComponentEditorOfClassHasCreatedTheError = 'The component editor '
     +'of class "%s"has created the error:%s"%s"';
+  lisShowSetupDialogForMostImportantSettings = 'Show setup dialog for most '
+    +'important settings';
 
 implementation
 

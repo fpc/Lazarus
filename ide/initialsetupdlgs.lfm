@@ -1,0 +1,124 @@
+object InitialSetupDialog: TInitialSetupDialog
+  AnchorSideBottom.Side = asrBottom
+  Left = 253
+  Height = 385
+  Top = 253
+  Width = 558
+  Caption = 'InitialSetupDialog'
+  ClientHeight = 385
+  ClientWidth = 558
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object PropertiesTreeView: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = WelcomePaintBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Splitter1
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 242
+    Top = 94
+    Width = 175
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    DefaultItemHeight = 19
+    TabOrder = 0
+  end
+  object Splitter1: TSplitter
+    AnchorSideTop.Control = PropertiesTreeView
+    AnchorSideBottom.Control = PropertiesTreeView
+    AnchorSideBottom.Side = asrBottom
+    Left = 181
+    Height = 242
+    Top = 94
+    Width = 5
+    Align = alNone
+    Anchors = [akTop, akLeft, akBottom]
+  end
+  object BtnPanel: TPanel
+    Left = 10
+    Height = 29
+    Top = 346
+    Width = 538
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 10
+    BevelOuter = bvNone
+    ClientHeight = 29
+    ClientWidth = 538
+    TabOrder = 2
+    object PrevIssueBitBtn: TBitBtn
+      Left = 0
+      Height = 29
+      Top = 0
+      Width = 115
+      Align = alLeft
+      AutoSize = True
+      Caption = 'PrevIssueBitBtn'
+      Constraints.MinWidth = 100
+      TabOrder = 0
+    end
+    object NextIssueBitBtn: TBitBtn
+      Left = 121
+      Height = 29
+      Top = 0
+      Width = 117
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Left = 6
+      Caption = 'NextIssueBitBtn'
+      Constraints.MinWidth = 100
+      TabOrder = 1
+    end
+    object StartIDEBitBtn: TBitBtn
+      Left = 433
+      Height = 29
+      Top = 0
+      Width = 105
+      Align = alRight
+      AutoSize = True
+      Caption = 'StartIDEBitBtn'
+      Constraints.MinWidth = 100
+      TabOrder = 2
+    end
+  end
+  object PropertiesPageControl: TPageControl
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Splitter1
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Splitter1
+    AnchorSideBottom.Side = asrBottom
+    Left = 186
+    Height = 242
+    Top = 94
+    Width = 366
+    ActivePage = FPCSourcesTabSheet
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    TabIndex = 3
+    TabOrder = 3
+    object LanguageTabSheet: TTabSheet
+      Caption = 'LanguageTabSheet'
+    end
+    object LazarusTabSheet: TTabSheet
+      Caption = 'LazarusTabSheet'
+    end
+    object CompilerTabSheet: TTabSheet
+      Caption = 'CompilerTabSheet'
+    end
+    object FPCSourcesTabSheet: TTabSheet
+      Caption = 'FPCSourcesTabSheet'
+    end
+  end
+  object WelcomePaintBox: TPaintBox
+    Left = 0
+    Height = 88
+    Top = 0
+    Width = 558
+    Align = alTop
+  end
+end
