@@ -1130,6 +1130,7 @@ var
     SrcEditMenuFindNextWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindPrevWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindinFiles: TIDEMenuCommand;
+    SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
     // open file
     SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
@@ -1153,7 +1154,6 @@ var
     SrcEditMenuCompleteCode: TIDEMenuCommand;
     SrcEditMenuEncloseSelection: TIDEMenuCommand;
     SrcEditMenuRenameIdentifier: TIDEMenuCommand;
-    SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
     SrcEditMenuShowAbstractMethods: TIDEMenuCommand;
@@ -1274,6 +1274,8 @@ begin
       SrcEditMenuFindInFiles := RegisterIDEMenuCommand
           (AParent, 'Find in files', srkmecFindInFiles, nil,
            @ExecuteIdeMenuClick, nil, 'menu_search_files');
+      SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
+          (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil, @ExecuteIdeMenuClick);
     {%endregion}
   {%endregion}
 
@@ -1443,19 +1445,22 @@ begin
         (AParent, 'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
   {%endregion}
 
+  {%region *** Source Section ***}
+    SrcEditSubMenuSource:=RegisterIDESubMenu(SourceEditorMenuRoot,
+                                             'Source',uemSource);
+    AParent:=SrcEditSubMenuSource;
+    SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
+        (AParent, 'EncloseSelection',lisKMEncloseSelection);
+  {%endregion}
+
   {%region *** Refactoring Section ***}
     SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
                                                'Refactoring',uemRefactor);
     AParent:=SrcEditSubMenuRefactor;
-
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
-    SrcEditMenuEncloseSelection := RegisterIDEMenuCommand
-        (AParent, 'EncloseSelection',lisKMEncloseSelection);
     SrcEditMenuRenameIdentifier := RegisterIDEMenuCommand
         (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
-    SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
-        (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand
         (AParent, 'ExtractProc',lisMenuExtractProc, nil, @ExecuteIdeMenuClick);
     SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
@@ -1475,7 +1480,6 @@ begin
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
-
 end;
 
 

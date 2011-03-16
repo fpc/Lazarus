@@ -2279,6 +2279,7 @@ resourcestring
   uemMovePageRight='Move page right';
   uemMovePageLeftmost='Move page leftmost';
   uemMovePageRightmost='Move page rightmost';
+  uemSource = 'Source';
   uemRefactor = 'Refactoring';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';

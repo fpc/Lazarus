@@ -400,6 +400,7 @@ var
     SrcEditMenuSectionDebug: TIDEMenuSection;
       SrcEditSubMenuDebug: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
+    SrcEditSubMenuSource: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;
       SrcEditSubMenuHighlighter: TIDEMenuSection;
       SrcEditSubMenuLineEnding: TIDEMenuSection;
