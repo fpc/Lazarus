@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-15 19:35+0100\n"
+"PO-Revision-Date: 2011-03-16 19:02+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -2017,7 +2017,6 @@ msgid "Capture"
 msgstr "Einfangen"
 
 #: lazarusidestrconsts.dlgmouseoptcaretmove
-#, fuzzy
 msgid "Move Caret (extra)"
 msgstr "Caret bewegen (extra)"
 
@@ -3007,7 +3006,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Use a unit from this project"
-msgstr ""
+msgstr "Verwende eine Unit aus diesem Projekt"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3115,7 +3114,6 @@ msgid "Move to Front"
 msgstr "Nach vorn bewegen"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-#, fuzzy
 #| msgid "Save form as xml"
 msgid "Save form as XML"
 msgstr "Form im XML-Format speichern"
@@ -3554,7 +3552,7 @@ msgstr "Parameter-Klammern hinzufügen"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
-msgstr ""
+msgstr "Zum Include-Suchpfad hinzufügen?"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3642,7 +3640,6 @@ msgid "Alignment"
 msgstr "Ausrichtung"
 
 #: lazarusidestrconsts.lisallblockslooksok
-#, fuzzy
 #| msgid "All blocks looks ok."
 msgid "All blocks look ok."
 msgstr "Alle Blöcke sehen gut aus."
@@ -4480,7 +4477,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscfeinfile
 msgid "%sIn file %s%s"
-msgstr ""
+msgstr "%sIn Datei %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
@@ -4742,7 +4739,7 @@ msgstr "Hier klicken um die Datei zu browsen"
 
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
-msgstr ""
+msgstr "Klicken sie, um die Einsatzmöglichkeiten zu sehen"
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5741,7 +5738,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
-msgstr ""
+msgstr "*** Konvertiere Unitdateien... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
@@ -5801,7 +5798,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr ""
+msgstr "Unit \"%s\" im uses Abschnitt entfernt."
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
@@ -5819,7 +5816,7 @@ msgstr "Repariere Form-Datei %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Repairing form files... ***"
-msgstr ""
+msgstr "*** Repariere Formulardateien... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -6809,7 +6806,7 @@ msgstr "Doppelter Name: Eine Komponente namens %s%s%s existiert bereits in der e
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
 msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Doppelte ppu Dateien. Löschen sie eine oder stellen sie die richtige Reihenfolge ihrer Suchpfade sicher (Hinweis: FPC verwendet den letzten Pfad zuerst)."
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
@@ -6817,7 +6814,7 @@ msgstr "Suchpfad duplizieren"
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "Doppelte Quelldateien. Löschen sie eine oder stellen sie die richtige Reihenfolge ihrer Suchpfade sicher (Hinweis: FPC verwendet den letzten Pfad zuerst)."
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -7416,7 +7413,7 @@ msgstr "Das Hilfsprogramm %s%s%s kann nicht ausgeführt werden:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
-msgstr ""
+msgstr "Erzeugung des Anwendungsbundle für \"%s\" fehlgeschlagen"
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -8424,7 +8421,7 @@ msgstr "Konvertierte Dateien im Editor geöffnet halten"
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
-msgstr ""
+msgstr "Alle Projektdateien werden nach der Konvertierung im Editor geöffnet."
 
 #: lazarusidestrconsts.liskeepininstalllist
 msgid "Keep in install list"
@@ -8995,7 +8992,6 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-#, fuzzy
 #| msgid "Lazarus File"
 msgid "Lazarus file"
 msgstr "Lazarus-Datei"
@@ -10109,10 +10105,9 @@ msgid "Open Recent Project"
 msgstr "Letzte Projekte ..."
 
 #: lazarusidestrconsts.lismenupackage
-#, fuzzy
 #| msgid "&Package"
 msgid "Pa&ckage"
-msgstr "&Package"
+msgstr "Pa&ckage"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -10306,7 +10301,7 @@ msgstr "Auswahl sortieren ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr ""
+msgstr "Quelltext"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -13090,7 +13085,7 @@ msgstr "Entfernen"
 
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
-msgstr ""
+msgstr "Pfade von \"Other sources\" entfernen"
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
@@ -13130,7 +13125,7 @@ msgstr "Ersetzung"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"
-msgstr ""
+msgstr "Ersatzfunktionen"
 
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
@@ -14014,7 +14009,7 @@ msgstr "Der Name %s%s%s ist kein gültiger Pascalbezeichner."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgstr ""
+msgstr "Die neue Include-Datei befindet sich noch nicht im Include-Suchpfad.%sVerzeichnis hinzufügen %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
@@ -14339,7 +14334,7 @@ msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"
-msgstr ""
+msgstr "Typen (nicht entfernt wenn kein Ersatz)"
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."
@@ -14765,7 +14760,6 @@ msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritetofile
-#, fuzzy
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "Kann die Datei %s%s%s nicht schreiben!"
@@ -14874,7 +14868,7 @@ msgstr "Verwende Ansistrings"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
-msgstr ""
+msgstr "Verwende Entwicklungszeit-Packages"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
