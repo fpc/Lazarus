@@ -15,7 +15,9 @@ type
   TForm1 = class(TForm)
     ccsStacked: TCalculatedChartSource;
     cbPercentage: TCheckBox;
+    chOHLC: TChart;
     ChartStyles1: TChartStyles;
+    chOHLCOpenHighLowCloseSeries1: TOpenHighLowCloseSeries;
     chStackedAreaSeries1: TAreaSeries;
     chStackedLineSeries1: TLineSeries;
     chWhiskers: TChart;
@@ -29,6 +31,7 @@ type
     pnStackedControls: TPanel;
     rgStackedSeries: TRadioGroup;
     rcsStacked: TRandomChartSource;
+    tsOHLC: TTabSheet;
     tsWhiskers: TTabSheet;
     tsStacked: TTabSheet;
     tsBubble: TTabSheet;
@@ -54,7 +57,8 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 var
   ylist: array [1..4] of Double;
-  i, j, y: Integer;
+  i, j: Integer;
+  y: Double;
 begin
   chWhiskersBoxAndWhiskerSeries1.ListSource.YCount := 5;
   for i := 1 to 6 do begin
@@ -65,6 +69,19 @@ begin
       ylist[j] := y;
     end;
     chWhiskersBoxAndWhiskerSeries1.ListSource.SetYList(i - 1, ylist);
+  end;
+
+  chOHLCOpenHighLowCloseSeries1.ListSource.YCount := 4;
+  y := 50;
+  for i := 1 to 50 do begin
+    y += Random(80) / 10 - 4;
+    chOHLCOpenHighLowCloseSeries1.AddXY(i, y);
+    ylist[1] := y;
+    for j := 1 to 3 do begin
+      ylist[j] += Random(20) / 10 + 1;
+      ylist[j + 1] := ylist[j];
+    end;
+    chOHLCOpenHighLowCloseSeries1.ListSource.SetYList(i - 1, ylist);
   end;
 end;
 

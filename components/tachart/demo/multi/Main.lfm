@@ -195,6 +195,47 @@ object Form1: TForm1
         end
       end
     end
+    object tsOHLC: TTabSheet
+      Caption = 'OHLC'
+      ClientHeight = 433
+      ClientWidth = 521
+      object chOHLC: TChart
+        Left = 0
+        Height = 433
+        Top = 0
+        Width = 521
+        AxisList = <        
+          item
+            Grid.Color = clGray
+            TickLength = 0
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Grid.Visible = False
+          end>
+        ExpandPercentage = 5
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Brush.Style = bsClear
+        Title.Font.Color = clBlack
+        Title.Font.Style = [fsBold]
+        Title.Text.Strings = (
+          'ACME Corporation'
+        )
+        Title.Visible = True
+        Align = alClient
+        Color = clSkyBlue
+        ParentColor = False
+        object chOHLCOpenHighLowCloseSeries1: TOpenHighLowCloseSeries
+          Title = 'test'
+          LinePen.EndCap = pecSquare
+          LinePen.Width = 2
+        end
+      end
+    end
   end
   object lcsBubble: TListChartSource
     DataPoints.Strings = (
