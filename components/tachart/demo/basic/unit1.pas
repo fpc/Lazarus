@@ -80,7 +80,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TAChartUtils, TATypes;
+  Math, TAChartUtils, TATypes;
 
 { TForm1 }
 
@@ -133,7 +133,7 @@ begin
   BringToFront(FLine);
   FLine.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
-    FLine.AddXY(x1, y1, '', clGreen);
+    FLine.AddXY(x1, y1, '', IfThen(i mod 2 = 0, clGreen, clBlue));
     X1 := X1 + 1.5;
     if random(2) >= 0.5 then Y1 := Y1 + random(10)
     else Y1 := Y1 - random(5);
