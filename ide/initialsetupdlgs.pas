@@ -40,16 +40,40 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, FileUtil,
-  Graphics, ComCtrls, Laz_XMLCfg, ExtCtrls,
+  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
+  FileUtil, Graphics, ComCtrls, Laz_XMLCfg, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
   
 type
+  TSDFilenameQuality = (
+    sddqInvalid,
+    sddqWrongVersion,
+    sddqCompatible
+    );
+
+  TSDFileInfo = class
+  public
+    Filename: string;
+    Caption: string;
+    Note: string;
+    Quality: TSDFilenameQuality;
+  end;
+
+  TSDFilenameType = (
+    sddtLazarusSrcDir,
+    sddtCompilerFilename,
+    sddtFPCSrcDir
+    );
+
   { TInitialSetupDialog }
 
   TInitialSetupDialog = class(TForm)
     BtnPanel: TPanel;
     ImageList1: TImageList;
+    LazDirBrowseButton: TButton;
+    LazDirLabel: TLabel;
+    LazDirComboBox: TComboBox;
+    LazDirMemo: TMemo;
     PropertiesPageControl: TPageControl;
     NextIssueBitBtn: TBitBtn;
     PrevIssueBitBtn: TBitBtn;
@@ -63,17 +87,28 @@ type
     WelcomePaintBox: TPaintBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure LazDirBrowseButtonClick(Sender: TObject);
+    procedure LazDirComboBoxChange(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
     procedure WelcomePaintBoxPaint(Sender: TObject);
   private
+    ImgIDError: LongInt;
     FHeadGraphic: TPortableNetworkGraphic;
+    FSelectingPage: boolean;
+    FDirs: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
     procedure SelectPage(const NodeText: string);
+    function SelectDirectory(aTitle: string): string;
+    procedure InitLazarusDir;
+    procedure FillComboboxWithFileInfoList(ABox: TComboBox; List: TObjectList;
+       ItemIndex: integer = 0);
+    procedure UpdateLazDirNote;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
     TVNodeFPCSources: TTreeNode;
     TVNodeLanguage: TTreeNode;
+    procedure Init;
   end;
 
 procedure ShowInitialSetupDialog;
@@ -82,7 +117,13 @@ procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);
 procedure SetupLazarusDirectory(var InteractiveSetup: boolean);
 
+function CheckLazarusDirectoryQuality(ADirectory: string;
+  out Note: string): TSDFilenameQuality;
+function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
+
+function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
+function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
 implementation
 
@@ -219,12 +260,161 @@ begin
   EnvironmentOptions.LazarusDirectory:=CurLazDir;
 end;
 
-function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
+function CheckLazarusDirectoryQuality(ADirectory: string;
+  out Note: string): TSDFilenameQuality;
+
+  function SubDirExists(SubDir: string; var q: TSDFilenameQuality): boolean;
+  begin
+    SubDir:=SetDirSeparators(SubDir);
+    if DirPathExistsCached(ADirectory+SubDir) then exit(true);
+    Result:=false;
+    Note:='directory '+SubDir+' not found';
+  end;
+
+  function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
+  begin
+    SubFile:=SetDirSeparators(SubFile);
+    if FileExistsCached(ADirectory+SubFile) then exit(true);
+    Result:=false;
+    Note:='file '+SubFile+' not found';
+  end;
+
 var
-  XMLConfig: TXMLConfig;
+  sl: TStringList;
+  VersionIncFile: String;
+  Version: String;
+begin
+  Result:=sddqInvalid;
+  if not DirPathExists(ADirectory) then begin
+    Note:='Directory not found';
+    exit;
+  end;
+  ADirectory:=AppendPathDelim(ADirectory);
+  if not SubDirExists('lcl',Result) then exit;
+  if not SubDirExists('packager/globallinks',Result) then exit;
+  if not SubDirExists('ide',Result) then exit;
+  if not SubDirExists('components',Result) then exit;
+  if not SubDirExists('ideintf',Result) then exit;
+  if not SubFileExists('ide/lazarus.lpi',Result) then exit;
+  VersionIncFile:=SetDirSeparators('ide/version.inc');
+  if not SubFileExists(VersionIncFile,Result) then exit;
+  sl:=TStringList.Create;
+  try
+    try
+      sl.LoadFromFile(ADirectory+VersionIncFile);
+      if (sl.Count=0) or (sl[0]='') or (sl[0][1]<>'''') then begin
+        Note:='invalid version in '+VersionIncFile;
+        exit;
+      end;
+      Version:=copy(sl[0],2,length(sl[0])-2);
+      if Version<>LazarusVersionStr then begin
+        Note:='wrong version in '+VersionIncFile+': '+Version;
+        Result:=sddqWrongVersion;
+        exit;
+      end;
+      Note:='ok';
+      Result:=sddqCompatible;
+    except
+      on E: Exception do begin
+        Note:='unable to load file '+VersionIncFile+': '+E.Message;
+        exit;
+      end;
+    end;
+  finally
+    sl.Free;
+  end;
+end;
+
+function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
+
+  function CheckDir(Dir: string; var List: TObjectList): boolean;
+  var
+    Item: TSDFileInfo;
+    i: Integer;
+  begin
+    Result:=false;
+    Dir:=TrimFilename(Dir);
+    if Dir='' then exit;
+    Dir:=ChompPathDelim(ExpandFileNameUTF8(Dir));
+    // check if already checked
+    if List<>nil then begin
+      for i:=0 to List.Count-1 do
+        if CompareFilenames(Dir,TSDFileInfo(List[i]).Filename)=0 then exit;
+    end;
+    // check if exists
+    if not DirPathExistsCached(Dir) then exit;
+    // add to list and check quality
+    Item:=TSDFileInfo.Create;
+    Item.Filename:=Dir;
+    Item.Quality:=CheckLazarusDirectoryQuality(Dir,Item.Note);
+    Item.Caption:=Dir;
+    if List=nil then
+      List:=TObjectList.create(true);
+    List.Add(Item);
+    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+  end;
+
+var
+  Dir: String;
+  ResolvedDir: String;
+  Dirs: TStringList;
+  i: Integer;
+begin
+  Result:=nil;
+
+  // first check the value in the options
+  if CheckDir(EnvironmentOptions.LazarusDirectory,Result) then exit;
+
+  // then check the directory of the executable
+  Dir:=ProgramDirectory(true);
+  if CheckDir(Dir,Result) then exit;
+  ResolvedDir:=ReadAllLinks(Dir,false);
+  if (ResolvedDir<>Dir) and (CheckDir(ResolvedDir,Result)) then exit;
+
+  // check the primary options
+  Dir:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                   'EnvironmentOptions/LazarusDirectory/Value');
+  if CheckDir(Dir,Result) then exit;
+
+  // check the secondary options
+  Dir:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                   'EnvironmentOptions/LazarusDirectory/Value');
+  if CheckDir(Dir,Result) then exit;
+
+  // check common directories
+  Dirs:=GetDefaultLazarusSrcDirectories;
+  try
+    for i:=0 to Dirs.Count-1 do
+      if CheckDir(Dirs[i],Result) then exit;
+  finally
+    Dirs.Free;
+  end;
+
+  // check history
+  Dirs:=EnvironmentOptions.LazarusDirHistory;
+  if Dirs<>nil then
+    for i:=0 to Dirs.Count-1 do
+      if CheckDir(Dirs[i],Result) then exit;
+end;
+
+function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
+begin
+  if not FilenameIsAbsolute(OptionFilename) then
+    OptionFilename:=AppendPathDelim(GetPrimaryConfigPath)+OptionFilename;
+  Result:=GetValueFromIDEConfig(OptionFilename,Path);
+end;
+
+function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 begin
   if not FilenameIsAbsolute(OptionFilename) then
     OptionFilename:=AppendPathDelim(GetSecondaryConfigPath)+OptionFilename;
+  Result:=GetValueFromIDEConfig(OptionFilename,Path);
+end;
+
+function GetValueFromIDEConfig(OptionFilename, Path: string): string;
+var
+  XMLConfig: TXMLConfig;
+begin
   if FileExistsCached(OptionFilename) then
   begin
     try
@@ -236,7 +426,7 @@ begin
       end;
     except
       on E: Exception do begin
-        debugln(['GetValueFromSecondaryConfig File='+OptionFilename+': '+E.Message]);
+        debugln(['GetValueFromIDEConfig File='+OptionFilename+': '+E.Message]);
       end;
     end;
   end;
@@ -248,6 +438,7 @@ var
 begin
   InitialSetupDialog:=TInitialSetupDialog.Create(nil);
   try
+    InitialSetupDialog.Init;
     InitialSetupDialog.ShowModal;
   finally
     InitialSetupDialog.Free;
@@ -259,8 +450,6 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
-var
-  ImgIDError: LongInt;
 begin
   Caption:='Welcome to Lazarus IDE '+GetLazarusVersionString;
 
@@ -268,28 +457,46 @@ begin
   NextIssueBitBtn.Caption:='Next problem';
   StartIDEBitBtn.Caption:='Start IDE';
 
-  LanguageTabSheet.Caption:='Language';
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:='Compiler';
   FPCSourcesTabSheet.Caption:='FPC sources';
+  LanguageTabSheet.Caption:='Language';
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
   FHeadGraphic.LoadFromLazarusResource('ide_icon48x48');
 
-  TVNodeLazarus:=PropertiesTreeView.Items.Add(nil,'Lazarus');
-  TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,'Compiler');
-  TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,'FPC sources');
-  TVNodeLanguage:=PropertiesTreeView.Items.Add(nil,'Language');
+  TVNodeLazarus:=PropertiesTreeView.Items.Add(nil,LazarusTabSheet.Caption);
+  TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,CompilerTabSheet.Caption);
+  TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
+  TVNodeLanguage:=PropertiesTreeView.Items.Add(nil,LanguageTabSheet.Caption);
   ImgIDError := ImageList1.AddLazarusResource('state_error');
-  TVNodeFPCSources.ImageIndex:=ImgIDError;
-  TVNodeFPCSources.SelectedIndex:=TVNodeFPCSources.ImageIndex;
 
-
+  LazDirBrowseButton.Caption:='Browse';
+  LazDirLabel.Caption:='The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide'+PathDelim+'lazarus.lpi.';
 end;
 
 procedure TInitialSetupDialog.FormDestroy(Sender: TObject);
+var
+  d: TSDFilenameType;
 begin
+  for d:=low(FDirs) to high(FDirs) do
+    FreeAndNil(FDirs);
   FreeAndNil(FHeadGraphic);
+end;
+
+procedure TInitialSetupDialog.LazDirBrowseButtonClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir:=SelectDirectory('Select Lazarus source directory');
+  if Dir='' then exit;
+  LazDirComboBox.Text:=Dir;
+  UpdateLazDirNote;
+end;
+
+procedure TInitialSetupDialog.LazDirComboBoxChange(Sender: TObject);
+begin
+  UpdateLazDirNote;
 end;
 
 procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
@@ -313,13 +520,119 @@ begin
     Draw(0,WelcomePaintBox.ClientHeight-FHeadGraphic.Height,FHeadGraphic);
     Font.Color:=clWhite;
     Font.Height:=30;
+    Brush.Style:=bsClear;
     TextOut(FHeadGraphic.Width+15,5,'Configure Lazarus IDE');
   end;
 end;
 
 procedure TInitialSetupDialog.SelectPage(const NodeText: string);
+var
+  i: Integer;
+  Node: TTreeNode;
 begin
+  if FSelectingPage then exit;
+  FSelectingPage:=true;
+  try
+    for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do begin
+      Node:=PropertiesTreeView.Items.TopLvlItems[i];
+      if Node.Text=NodeText then begin
+        PropertiesTreeView.Selected:=Node;
+        PropertiesPageControl.ActivePageIndex:=i;
+        break;
+      end;
+    end;
+  finally
+    FSelectingPage:=false;
+  end;
+end;
 
+function TInitialSetupDialog.SelectDirectory(aTitle: string): string;
+var
+  DirDlg: TSelectDirectoryDialog;
+begin
+  Result:='';
+  DirDlg:=TSelectDirectoryDialog.Create(nil);
+  try
+    DirDlg.Title:=aTitle;
+    DirDlg.Options:=DirDlg.Options+[ofPathMustExist,ofFileMustExist];
+    if not DirDlg.Execute then exit;
+    Result:=DirDlg.FileName;
+  finally
+    DirDlg.Free;
+  end;
+end;
+
+procedure TInitialSetupDialog.InitLazarusDir;
+var
+  Dirs: TObjectList;
+begin
+  FreeAndNil(FDirs[sddtLazarusSrcDir]);
+  Dirs:=SearchLazarusDirectoryCandidates(false);;
+  FDirs[sddtLazarusSrcDir]:=Dirs;
+  FillComboboxWithFileInfoList(LazDirComboBox,Dirs);
+  UpdateLazDirNote;
+end;
+
+procedure TInitialSetupDialog.FillComboboxWithFileInfoList(ABox: TComboBox;
+  List: TObjectList; ItemIndex: integer);
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  sl:=TStringList.Create;
+  try
+    if List<>nil then
+      for i:=0 to List.Count-1 do
+        sl.Add(TSDFileInfo(List[i]).Caption);
+    ABox.Items.Assign(sl);
+    if (ItemIndex>=0) and (ItemIndex<sl.Count) then
+      ABox.Text:=sl[ItemIndex];
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TInitialSetupDialog.UpdateLazDirNote;
+var
+  i: Integer;
+  Dirs: TObjectList;
+  CurCaption: String;
+  Note: string;
+  Quality: TSDFilenameQuality;
+  s: String;
+  ImageIndex: Integer;
+begin
+  i:=-1;
+  Dirs:=FDirs[sddtLazarusSrcDir];
+  CurCaption:=LazDirComboBox.Text;
+  if Dirs<>nil then begin
+    i:=Dirs.Count-1;
+    while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>CurCaption) do dec(i);
+  end;
+  if i>=0 then begin
+    Quality:=TSDFileInfo(Dirs[i]).Quality;
+    Note:=TSDFileInfo(Dirs[i]).Note;
+  end else begin
+    Quality:=CheckLazarusDirectoryQuality(CurCaption,Note);
+  end;
+  case Quality of
+  sddqInvalid: s:='Error: ';
+  sddqWrongVersion: s:='Warning: ';
+  sddqCompatible: s:='';
+  end;
+  LazDirMemo.Text:=s+Note;
+
+  if Quality=sddqCompatible then
+    ImageIndex:=-1
+  else
+    ImageIndex:=ImgIDError;
+  TVNodeLazarus.ImageIndex:=ImageIndex;
+  TVNodeLazarus.StateIndex:=ImageIndex;
+end;
+
+procedure TInitialSetupDialog.Init;
+begin
+  InitLazarusDir;
 end;
 
 end.

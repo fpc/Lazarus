@@ -89,6 +89,7 @@ function FindDefaultCompilerPath: string;
 function FindDefaultMakePath: string;
 function FindDefaultFPCSrcDirectory: string;
 function FindDefaultLazarusSrcDirectory: string;
+function GetDefaultLazarusSrcDirectories: TStringList;
 function CheckFPCSourceDir(ADirectory: string): boolean;
 function CheckLazarusDirectory(const ADirectory: string): boolean;
 
@@ -401,6 +402,15 @@ end;
 function GetDefaultCompilerFilename: string;
 begin
   Result:=DefineTemplates.GetDefaultCompilerFilename;
+end;
+
+function GetDefaultLazarusSrcDirectories: TStringList;
+var
+  i: Integer;
+begin
+  Result:=TStringList.Create;
+  for i:=low(DefaultLazarusSrcDirs) to high(DefaultLazarusSrcDirs) do
+    Result.Add(DefaultLazarusSrcDirs[i]);
 end;
 
 function CheckFPCSourceDir(ADirectory: string): boolean;
