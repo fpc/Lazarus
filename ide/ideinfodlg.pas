@@ -97,7 +97,7 @@ var
 begin
   sl.Add('Environment variables:');
   for i:=0 to GetEnvironmentVariableCount-1 do
-    sl.Add(GetEnvironmentStringUTF8(i)+'='+GetEnvironmentVariableUTF8(GetEnvironmentStringUTF8(i)));
+    sl.Add(GetEnvironmentStringUTF8(i));
   sl.Add('');
 end;
 
