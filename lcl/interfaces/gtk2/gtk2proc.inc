@@ -5718,9 +5718,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-    MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-
   Update the inner widgets of a menuitem widget.
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget;
@@ -5755,7 +5752,6 @@ var
     Shift, Shift2: TShiftState;
     s: String;
   begin
-    //DebugLn(['UpdateShortCutLabel ',dbgsName(LCLMenuItem),' ',ShortCutToText(NewShortCut)]);
     ShortCutToKey(NewShortCut, Key, Shift);
     ShortCutToKey(ShortCutKey2, Key2, Shift2);
 

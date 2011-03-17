@@ -6051,9 +6051,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
-    MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-
   Update the inner widgets of a menuitem widget.
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget;

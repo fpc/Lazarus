@@ -199,7 +199,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCarbonWSMenuItem.SetShortCut
   Params:  AMenuItem   - LCL menu item
-           OldShortCut - Old shortcut
+           ShortCutK1 and ShortCutK2 - New shortcut key1 and key2
 
   Sets the shortcut of menu item in Carbon interface
  ------------------------------------------------------------------------------}

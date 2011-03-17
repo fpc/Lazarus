@@ -237,7 +237,6 @@ class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
     Exit;
-  //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
   UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 end;
 
