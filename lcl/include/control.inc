@@ -1591,10 +1591,8 @@ begin
     // redirect messages to designer
     Form := GetParentForm(Self);
     //debugln(['TControl.WndProc ',dbgsname(Self)]);
-    if (Form <> nil) and (Form.Designer <> nil)
-    and Form.Designer.IsDesignMsg(Self,TheMessage) then begin
+    if Assigned(Form) and Assigned(Form.Designer) and Form.Designer.IsDesignMsg(Self, TheMessage) then
       Exit;
-    end;
   end
   else if (TheMessage.Msg >= LM_KEYFIRST) and (TheMessage.Msg <= LM_KEYLAST)
   then begin
@@ -4902,7 +4900,7 @@ begin
   {$ENDIF}
   //DebugLn(Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
-  if Parent<>nil then
+  if Assigned(Parent) then
     SetBoundsKeepBase(Left,Top,Message.Width,Message.Height)
   else
     SetBounds(Left,Top,Message.Width,Message.Height);
