@@ -733,14 +733,6 @@ var
   ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuTools,itmCustomTools,'itmCustomTools');
-    ParentMI:=itmCustomTools;
-    CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuConfigExternalTools);
-
-    CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
-    ParentMI:=itmSecondaryTools;
-    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
-
     CreateMenuSeparatorSection(mnuTools,itmOptionsDialogs,'itmOptionsDialogs');
     ParentMI:=itmOptionsDialogs;
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
@@ -750,6 +742,14 @@ begin
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
     CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',
                    lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor');
+
+    CreateMenuSeparatorSection(mnuTools,itmCustomTools,'itmCustomTools');
+    ParentMI:=itmCustomTools;
+    CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuConfigExternalTools);
+
+    CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
+    ParentMI:=itmSecondaryTools;
+    CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
 
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;
@@ -987,12 +987,14 @@ begin
     {$ENDIF}
 
     // tools menu
-    itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
-    itmToolDiff.Command:=GetCommand(ecDiff);
     itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);
     itmToolRescanFPCSrcDir.Command:=GetCommand(ecRescanFPCSrcDir);
     itmEnvCodeTemplates.Command:=GetCommand(ecEditCodeTemplates);
     itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
+
+    itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
+    itmToolDiff.Command:=GetCommand(ecDiff);
+
     itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
     itmToolCheckLFM.Command:=GetCommand(ecCheckLFM);
     itmToolConvertDelphiUnit.Command:=GetCommand(ecConvertDelphiUnit);

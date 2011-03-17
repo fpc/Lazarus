@@ -2556,12 +2556,14 @@ procedure TMainIDE.SetupToolsMenu;
 begin
   inherited SetupToolsMenu;
   with MainIDEBar do begin
-    itmToolConfigure.OnClick := @mnuToolConfigureClicked;
-    itmToolDiff.OnClick := @mnuToolDiffClicked;
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
     itmToolRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
+
+    itmToolConfigure.OnClick := @mnuToolConfigureClicked;
+    itmToolDiff.OnClick := @mnuToolDiffClicked;
+
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;

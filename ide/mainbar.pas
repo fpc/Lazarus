@@ -315,15 +315,15 @@ type
 
     // tools menu
     //mnuTools: TIDEMenuSection;
-      //itmCustomTools: TIDEMenuSection;
-        itmToolConfigure: TIDEMenuCommand;
-      //itmSecondaryTools: TIDEMenuSection;
-        itmToolDiff: TIDEMenuCommand;
       //itmOptionsDialogs: TIDEMenuSection;
         itmEnvGeneralOptions: TIDEMenuCommand;
         itmToolRescanFPCSrcDir: TIDEMenuCommand;
         itmEnvCodeTemplates: TIDEMenuCommand;
         itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
+      //itmCustomTools: TIDEMenuSection;
+        itmToolConfigure: TIDEMenuCommand;
+      //itmSecondaryTools: TIDEMenuSection;
+        itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;
         itmToolConvertDelphiUnit: TIDEMenuCommand;

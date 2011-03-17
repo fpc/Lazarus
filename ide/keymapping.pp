@@ -586,9 +586,9 @@ begin
 
   // environment (in Tools menu)
   ecEnvironmentOptions: SetResult(VK_O,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1025,9 +1025,9 @@ begin
 
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1643,9 +1643,9 @@ begin
 
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2180,9 +2180,9 @@ begin
 
     // environment menu
     ecEnvironmentOptions      : Result:= srkmecEnvironmentOptions;
+    ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
     ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
     ecCodeToolsDefinesEd      : Result:= srkmecCodeToolsDefinesEd;
-    ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
 
     // help menu
     ecAboutLazarus            : Result:= lisAboutLazarus;
@@ -2831,9 +2831,9 @@ begin
   // environment (in Tools menu)
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
   AddDefault(C, 'General environment options', srkmecEnvironmentOptions, ecEnvironmentOptions);
+  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
   AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
   AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor, ecCodeToolsDefinesEd);
-  AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];
