@@ -69,7 +69,17 @@ type
 
   TInitialSetupDialog = class(TForm)
     BtnPanel: TPanel;
+    CompilerBrowseButton: TButton;
+    CompilerComboBox: TComboBox;
+    CompilerLabel: TLabel;
+    CompilerMemo: TMemo;
+    FPCSrcDirBrowseButton: TButton;
+    FPCSrcDirComboBox: TComboBox;
+    FPCSrcDirLabel: TLabel;
+    FPCSrcDirMemo: TMemo;
     ImageList1: TImageList;
+    LangComboBox: TComboBox;
+    LangLabel: TLabel;
     LazDirBrowseButton: TButton;
     LazDirLabel: TLabel;
     LazDirComboBox: TComboBox;
@@ -120,6 +130,10 @@ procedure SetupLazarusDirectory(var InteractiveSetup: boolean);
 function CheckLazarusDirectoryQuality(ADirectory: string;
   out Note: string): TSDFilenameQuality;
 function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
+
+function CheckCompilerQuality(AFilename: string;
+  out Note: string): TSDFilenameQuality;
+function SearchCompilerCandidates(StopIfFits: boolean): TObjectList;
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
@@ -285,7 +299,8 @@ var
   Version: String;
 begin
   Result:=sddqInvalid;
-  if not DirPathExists(ADirectory) then begin
+  ADirectory:=TrimFilename(ADirectory);
+  if not DirPathExistsCached(ADirectory) then begin
     Note:='Directory not found';
     exit;
   end;
@@ -395,6 +410,56 @@ begin
   if Dirs<>nil then
     for i:=0 to Dirs.Count-1 do
       if CheckDir(Dirs[i],Result) then exit;
+end;
+
+function CheckCompilerQuality(AFilename: string; out Note: string
+  ): TSDFilenameQuality;
+begin
+  Result:=sddqInvalid;
+  AFilename:=TrimFilename(AFilename);
+  if not FileExistsCached(AFilename) then begin
+    Note:='File not found';
+    exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then begin
+    Note:='File is not executable';
+    exit;
+  end;
+
+end;
+
+function SearchCompilerCandidates(StopIfFits: boolean): TObjectList;
+
+  function CheckFile(AFilename: string; var List: TObjectList): boolean;
+  var
+    Item: TSDFileInfo;
+    i: Integer;
+  begin
+    Result:=false;
+    AFilename:=TrimFilename(AFilename);
+    if AFilename='' then exit;
+    AFilename:=ExpandFileNameUTF8(AFilename);
+    // check if already checked
+    if List<>nil then begin
+      for i:=0 to List.Count-1 do
+        if CompareFilenames(AFilename,TSDFileInfo(List[i]).Filename)=0 then exit;
+    end;
+    // check if exists
+    if not FileExistsCached(AFilename) then exit;
+    // add to list and check quality
+    Item:=TSDFileInfo.Create;
+    Item.Filename:=AFilename;
+    Item.Quality:=CheckCompilerQuality(AFilename,Item.Note);
+    Item.Caption:=AFilename;
+    if List=nil then
+      List:=TObjectList.create(true);
+    List.Add(Item);
+    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+  end;
+
+begin
+  Result:=nil;
+
 end;
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
