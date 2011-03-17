@@ -401,12 +401,9 @@ begin
   end else
   begin
     if Count = 0 then
-    begin
-      Result := FEditHeight + FItemHeight + 2;
-    end else
-    begin
+      Result := FEditHeight + FItemHeight + 2
+    else
       Result := FEditHeight + FDropDownCount * FItemHeight + 2;
-    end;
   end;
 end;
 
