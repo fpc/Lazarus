@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -gl -vewnhi -l -Fucarbon;carbon/objc;carbon/pascocoa/appkit;carbon/pascocoa/foundation;../units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Ficarbon;carbon/objc;carbon/pascocoa/appkit;carbon/pascocoa/foundation lcl1.pas"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -gl -vewnhi -l -Fucarbon;carbon/objc;carbon/pascocoa/appkit;carbon/pascocoa/foundation;../units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Ficarbon;carbon/objc;carbon/pascocoa/appkit;carbon/pascocoa/foundation lcl.pas"/>
 </CONFIG>
