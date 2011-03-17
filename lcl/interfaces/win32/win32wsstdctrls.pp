@@ -74,7 +74,7 @@ type
   private
     class function GetStringList(const ACustomComboBox: TCustomComboBox): TWin32ComboBoxStringList;
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
@@ -379,8 +379,7 @@ begin
         if (HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList) then
         begin
           // continue normal processing, don't send to lcl
-          Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-          Exit;
+          Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
         end;
       end;
     WM_PAINT,
@@ -393,13 +392,18 @@ begin
           LMessage.wParam := WParam;
           LMessage.lParam := LParam;
           LMessage.Result := 0;
-          Result := DeliverMessage(WindowInfo^.WinControl, LMessage);
+          Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
         end
         else
-          Result := WindowProc(Window, Msg, WParam, LParam);
+          Exit(WindowProc(Window, Msg, WParam, LParam));
       end;
     WM_PRINTCLIENT:
-      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+      Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
+    WM_SIZE:
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        WindowInfo^.WinControl.Constraints.UpdateInterfaceConstraints;
+      end;
   end;
   // normal processing
   Result := WindowProc(Window, Msg, WParam, LParam);
@@ -842,10 +846,9 @@ class procedure TWin32WSCustomComboBox.AdaptBounds(const AWinControl: TWinContro
 var
   StringList: TWin32ComboBoxStringList;
 begin
-  if TCustomComboBox(AWinControl).Style=csSimple
-    then exit;
+  if TCustomComboBox(AWinControl).Style = csSimple then Exit;
   StringList := GetStringList(TCustomComboBox(AWinControl));
-  if StringList <> nil then
+  if Assigned(StringList) then
     Height := StringList.ComboHeight;
 end;
 

@@ -81,8 +81,6 @@ Type
 
   TWin32ComboBoxStringList = class(TWin32ListStringList)
   private
-    FEditHeight: Integer;
-    FItemHeight: Integer;
     FDropDownCount: Integer;
     procedure SetDropDownCount(const AValue: integer);
   protected

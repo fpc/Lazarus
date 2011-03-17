@@ -351,9 +351,6 @@ begin
   FFlagSetSelected  := UINT(0);
   FFlagInitStorage  := UINT(CB_INITSTORAGE);
   //Get edit and item sizes
-  Windows.GetClientRect(FWin32List, @R);
-  FEditHeight := R.Bottom;
-  FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
   FDropDownCount := TCustomComboBox(FSender).DropDownCount;
   if FDropDownCount = 0 then
     FDropDownCount := 8;
@@ -375,7 +372,7 @@ begin
     UpdateComboHeight;
     TWin32WSCustomComboBox.SetText(FSender, EditText);
     if EditText = '' then
-     lItemIndex := -1
+      lItemIndex := -1
     else
       lItemIndex := IndexOf(EditText);
     if lItemIndex <> -1 then
@@ -387,11 +384,13 @@ end;
 
 procedure TWin32ComboBoxStringList.SetDropDownCount(const AValue: integer);
 begin
-  FDropDownCount:=AValue;
+  FDropDownCount := AValue;
   UpdateComboHeight;
 end;
 
 function TWin32ComboBoxStringList.GetComboHeight: integer;
+var
+  R: TRect;
 begin
   if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then
   begin
@@ -400,10 +399,11 @@ begin
     Result := FSender.Height;
   end else
   begin
+    Windows.GetClientRect(FWin32List, @R);
     if Count = 0 then
-      Result := FEditHeight + FItemHeight + 2
+      Result := R.Bottom + Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0) + 2
     else
-      Result := FEditHeight + FDropDownCount * FItemHeight + 2;
+      Result := R.Bottom + FDropDownCount * Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0) + 2;
   end;
 end;
 
