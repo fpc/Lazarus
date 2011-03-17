@@ -654,7 +654,6 @@ type
     procedure SetupRunMenu; override;
     procedure SetupComponentsMenu; override;
     procedure SetupToolsMenu; override;
-    procedure SetupEnvironmentMenu; override;
     procedure SetupWindowsMenu; override;
     procedure SetupHelpMenu; override;
     procedure LoadMenuShortCuts; override;
@@ -2302,7 +2301,6 @@ begin
   SetupRunMenu;
   SetupComponentsMenu;
   SetupToolsMenu;
-  SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
 end;
@@ -2560,6 +2558,10 @@ begin
   with MainIDEBar do begin
     itmToolConfigure.OnClick := @mnuToolConfigureClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
+    itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
+    itmToolRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
+    itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
+    itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
@@ -2574,18 +2576,6 @@ begin
         Format(lisMenuBuildLazarusProf, [MiscellaneousOptions.BuildLazOpts.Name]);
   end;
   UpdateCustomToolsInMenu;
-end;
-
-procedure TMainIDE.SetupEnvironmentMenu;
-begin
-  inherited SetupEnvironmentMenu;
-  with MainIDEBar do
-  begin
-    itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
-    itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
-    itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
-    itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
-  end;
 end;
 
 procedure TMainIDE.SetupWindowsMenu;

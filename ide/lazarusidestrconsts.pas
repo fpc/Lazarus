@@ -154,7 +154,6 @@ resourcestring
   lisMenuRun = '&Run';
   lisMenuPackage = 'Pa&ckage';
   lisMenuTools = '&Tools';
-  lisMenuEnvironent = 'E&nvironment';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
   
@@ -407,7 +406,7 @@ resourcestring
   lisMenuMakeResourceString = 'Make Resource String ...';
   lisCaptionDiff = 'Diff';
   lisMenuDiff = 'Diff ...';
-  lisMenuConvertDFMtoLFM = 'Convert binary DFM file to text LFM and check syntax ...';
+  lisMenuConvertDFMtoLFM = 'Convert binary DFM to text LFM + check syntax ...';
   lisMenuCheckLFM = 'Check LFM file in editor';
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit ...';
   lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';

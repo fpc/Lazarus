@@ -319,6 +319,11 @@ type
         itmToolConfigure: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
         itmToolDiff: TIDEMenuCommand;
+      //itmOptionsDialogs: TIDEMenuSection;
+        itmEnvGeneralOptions: TIDEMenuCommand;
+        itmToolRescanFPCSrcDir: TIDEMenuCommand;
+        itmEnvCodeTemplates: TIDEMenuCommand;
+        itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;
         itmToolConvertDelphiUnit: TIDEMenuCommand;
@@ -329,18 +334,6 @@ type
       //itmBuildingLazarus: TIDEMenuSection;
         itmToolBuildLazarus: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;
-
-    // environment menu
-    //mnuEnvironment: TIDEMenuSection;
-      //itmOptionsDialogs: TIDEMenuSection;
-        itmEnvGeneralOptions: TIDEMenuCommand;
-      //itmEnvEditorOptions: TIDEMenuCommand;
-        itmEnvCodeTemplates: TIDEMenuCommand;
-      //itmEnvDebuggerOptions: TIDEMenuCommand;
-      //itmEnvCodeToolsOptions: TIDEMenuCommand;
-        itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
-      //itmIDECacheSection: TIDEMenuSection;
-        itmEnvRescanFPCSrcDir: TIDEMenuCommand;
 
     // windows menu
     //mnuWindow: TIDEMenuSection;

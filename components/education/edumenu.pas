@@ -407,7 +407,7 @@ end;
 
 function TEduMenuOptions.KeepItemVisible(Item: TIDEMenuItem): boolean;
 begin
-  if (Item=mnuEnvironment) or (Item.HasAsParent(mnuEnvironment)) then exit(true);
+  if (Item=itmSecondaryTools) or (Item.HasAsParent(itmSecondaryTools)) then exit(true);
   Result:=false;
 end;
 

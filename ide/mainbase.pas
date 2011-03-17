@@ -114,7 +114,6 @@ type
     procedure SetupRunMenu; virtual;
     procedure SetupComponentsMenu; virtual;
     procedure SetupToolsMenu; virtual;
-    procedure SetupEnvironmentMenu; virtual;
     procedure SetupWindowsMenu; virtual;
     procedure SetupHelpMenu; virtual;
 
@@ -364,7 +363,6 @@ begin
     CreateMainMenuItem(mnuPackage,'Package',lisMenuPackage);
     mnuComponent:=mnuPackage;
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
-    CreateMainMenuItem(mnuEnvironment,'Environment',lisMenuEnvironent);
     CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
     CreateMainMenuItem(mnuHelp,'Help',lisMenuHelp);
   end;
@@ -743,6 +741,16 @@ begin
     ParentMI:=itmSecondaryTools;
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
 
+    CreateMenuSeparatorSection(mnuTools,itmOptionsDialogs,'itmOptionsDialogs');
+    ParentMI:=itmOptionsDialogs;
+    CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
+                   lisMenuGeneralOptions,'menu_environment_options');
+    CreateMenuItem(ParentMI,itmToolRescanFPCSrcDir,'itmToolRescanFPCSrcDir',
+                   lisMenuRescanFPCSourceDirectory);
+    CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
+    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',
+                   lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor');
+
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
@@ -755,27 +763,8 @@ begin
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_build_lazarus');
-    CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
-  end;
-end;
-
-procedure TMainIDEBase.SetupEnvironmentMenu;
-var
-  ParentMI: TIDEMenuSection;
-begin
-  with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuEnvironment,itmOptionsDialogs,'itmOptionsDialogs');
-    ParentMI:=itmOptionsDialogs;
-    CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
-                   lisMenuGeneralOptions,'menu_environment_options');
-    CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
-    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',
-                   lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor');
-
-    CreateMenuSeparatorSection(mnuEnvironment,itmIDECacheSection,'itmIDECacheSection');
-    ParentMI:=itmIDECacheSection;
-    CreateMenuItem(ParentMI,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',
-                   lisMenuRescanFPCSourceDirectory);
+    CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',
+                   lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
   end;
 end;
 
@@ -1000,6 +989,10 @@ begin
     // tools menu
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
     itmToolDiff.Command:=GetCommand(ecDiff);
+    itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);
+    itmToolRescanFPCSrcDir.Command:=GetCommand(ecRescanFPCSrcDir);
+    itmEnvCodeTemplates.Command:=GetCommand(ecEditCodeTemplates);
+    itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
     itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
     itmToolCheckLFM.Command:=GetCommand(ecCheckLFM);
     itmToolConvertDelphiUnit.Command:=GetCommand(ecConvertDelphiUnit);
@@ -1008,12 +1001,6 @@ begin
     itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
-
-    // environment menu
-    itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);
-    itmEnvCodeTemplates.Command:=GetCommand(ecEditCodeTemplates);
-    itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
-    itmEnvRescanFPCSrcDir.Command:=GetCommand(ecRescanFPCSrcDir);
 
     // help menu
     itmHelpAboutLazarus.Command:=GetCommand(ecAboutLazarus);

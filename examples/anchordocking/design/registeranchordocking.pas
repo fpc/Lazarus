@@ -132,7 +132,7 @@ begin
   LazarusIDE.AddHandlerOnProjectClose(@IDEAnchorDockMaster.OnProjectClose);
 
   // add menu section
-  mnuAnchorDockSection:=RegisterIDEMenuSection(mnuEnvironment,'AnchorDocking');
+  mnuAnchorDockSection:=RegisterIDEMenuSection(itmSecondaryTools,'AnchorDocking');
   mnuADSaveLayoutAsDefault:=RegisterIDEMenuCommand(mnuAnchorDockSection,
     'ADSaveLayoutAsDefault', adrsSaveWindowLayoutAsDefault,
     @IDEAnchorDockMaster.SaveLayoutAsDefaultClicked);

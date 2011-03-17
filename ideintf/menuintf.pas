@@ -362,13 +362,9 @@ var
     mnuTools: TIDEMenuSection;
       itmCustomTools: TIDEMenuSection;
       itmSecondaryTools: TIDEMenuSection;
+      itmOptionsDialogs: TIDEMenuSection;
       itmDelphiConversion: TIDEMenuSection;
       itmBuildingLazarus: TIDEMenuSection;
-
-    // environment menu
-    mnuEnvironment: TIDEMenuSection;
-      itmOptionsDialogs: TIDEMenuSection;
-      itmIDECacheSection: TIDEMenuSection;
 
     // windows menu
     mnuWindow: TIDEMenuSection;

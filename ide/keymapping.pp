@@ -374,7 +374,6 @@ begin
   ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProcedureList: SetResult(VK_G, [ssAlt],VK_UNKNOWN,[]);
 
-
   // marker
   ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPrevBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -585,8 +584,8 @@ begin
   ecMakeResourceString: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDiff: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
-  // environment menu
-  ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  // environment (in Tools menu)
+  ecEnvironmentOptions: SetResult(VK_O,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2829,7 +2828,7 @@ begin
     lisKMConvertDelphiPackageToLazarusPackage, ecConvertDelphiPackage);
   AddDefault(C, 'Convert encoding', lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
 
-  // environment menu
+  // environment (in Tools menu)
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
   AddDefault(C, 'General environment options', srkmecEnvironmentOptions, ecEnvironmentOptions);
   AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
