@@ -827,8 +827,9 @@ procedure TCustomForm.UpdateShowInTaskBar;
 var
   Value: TShowInTaskBar;
 begin
-  if (Application.MainForm = Self) or (not HandleAllocated) or
-     Assigned(Parent) or (FormStyle = fsMDIChild) or not Showing then Exit;
+  if (Assigned(Application) and (Application.MainForm = Self)) or
+     (not HandleAllocated) or Assigned(Parent) or
+     (FormStyle = fsMDIChild) or not Showing then Exit;
   Value := GetEffectiveShowInTaskBar;
   if FRealizedShowInTaskBar <> Value then
   begin
