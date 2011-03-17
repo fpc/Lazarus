@@ -772,7 +772,6 @@ begin
 end;
 
 procedure TTreeNode.SetHasChildren(AValue: Boolean);
-//var Item: TTVItem;
 begin
   if AValue=HasChildren then exit;
   //DebugLn('[TTreeNode.SetHasChildren] Self=',DbgS(Self),' Self.Text=',Text,' AValue=',AValue);
@@ -783,15 +782,6 @@ begin
       GetLastChild.Free;
     Exclude(FStates,nsHasChildren)
   end;
-  { Delphi:
-  with Item do
-  begin
-    mask := TVIF_CHILDREN;
-    hItem := ItemId;
-    cChildren := Ord(Value);
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
   Update;
 end;
 
@@ -1401,26 +1391,28 @@ procedure TTreeNode.MultiSelectGroup;
 var
   FirstNode, LastNode, ANode: TTreeNode;
 begin
-  if (TreeView<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
-    exit;
-  if (TreeView<>nil) then TreeView.LockSelectionChangeEvent;
+  if Assigned(TreeView) and not (tvoAllowMultiselect in TreeView.Options) then
+    Exit;
+  if Assigned(TreeView) then TreeView.LockSelectionChangeEvent;
   try
-    FirstNode:=GetPrevSibling;
-    while (FirstNode<>nil) and (not FirstNode.MultiSelected) do
-      FirstNode:=FirstNode.GetPrevSibling;
-    if FirstNode=nil then FirstNode:=Self;
-    LastNode:=GetNextSibling;
-    while (LastNode<>nil) and (not LastNode.MultiSelected) do
-      LastNode:=LastNode.GetNextSibling;
-    if LastNode=nil then LastNode:=Self;
-    ANode:=FirstNode;
-    while ANode<>nil do begin
-      ANode.MultiSelected:=true;
-      if ANode=LastNode then break;
-      ANode:=ANode.GetNextSibling;
+    // We need to select the nodes between the selected node and the current node
+    FirstNode := GetPrevSibling;
+    while Assigned(FirstNode) and not FirstNode.Selected do
+      FirstNode := FirstNode.GetPrevSibling;
+    if not Assigned(FirstNode) then FirstNode := Self;
+    LastNode := GetNextSibling;
+    while Assigned(LastNode) and not LastNode.Selected do
+      LastNode := LastNode.GetNextSibling;
+    if not Assigned(LastNode) then LastNode := Self;
+    ANode := FirstNode;
+    while Assigned(ANode) do
+    begin
+      ANode.MultiSelected := True;
+      if ANode = LastNode then Break;
+      ANode := ANode.GetNextSibling;
     end;
   finally
-    if (TreeView<>nil) then TreeView.UnlockSelectionChangeEvent;
+    if Assigned(TreeView) then TreeView.UnlockSelectionChangeEvent;
   end;
 end;
 
@@ -1899,18 +1891,19 @@ procedure TTreeNodes.ClearMultiSelection(ClearSelected: boolean = false);
 var
   ANode, OldNode: TTreeNode;
 begin
-  if Owner<>nil then Owner.LockSelectionChangeEvent;
+  if Assigned(Owner) then Owner.LockSelectionChangeEvent;
   try
-    ANode:=FFirstMultiSelected;
-    while ANode<>nil do begin
-      OldNode:=ANode;
-      ANode:=ANode.GetNextMultiSelected;
-      OldNode.MultiSelected:=false;
+    ANode := FFirstMultiSelected;
+    while Assigned(ANode) do
+    begin
+      OldNode := ANode;
+      ANode := ANode.GetNextMultiSelected;
+      OldNode.MultiSelected := false;
     end;
     if ClearSelected then
-      Owner.Selected:=nil;
+      Owner.Selected := nil;
   finally
-    if Owner<>nil then Owner.UnlockSelectionChangeEvent;
+    if Assigned(Owner) then Owner.UnlockSelectionChangeEvent;
   end;
 end;
 
@@ -3910,18 +3903,19 @@ begin
 end;
 
 procedure TCustomTreeView.SetSelection(Value: TTreeNode);
-var OldNode: TTreeNode;
+var
+  OldNode: TTreeNode;
 begin
-  if FSelectedNode=Value then exit;
+  if FSelectedNode = Value then Exit;
   if not CanChange(FSelectedNode) then
     exit;
   EndEditing(true); // end editing before FSelectedNode change
-  OldNode:=FSelectedNode;
-  FSelectedNode:=Value;
-  if OldNode<>nil then begin
-    OldNode.Selected:=false;
-  end;
-  if Value <> nil then begin
+  OldNode := FSelectedNode;
+  FSelectedNode := Value;
+  if Assigned(OldNode) then
+    OldNode.Selected := False;
+  if Assigned(Value) then
+  begin
     Value.Selected := True;
     Value.MakeVisible;
   end;
@@ -4886,7 +4880,13 @@ begin
           if (ssShift in Shift) then
           begin
             Exclude(FStates,tvsEditOnMouseUp);
-            CursorNode.MultiSelectGroup;
+            LockSelectionChangeEvent;
+            try
+              Items.ClearMultiSelection;
+              CursorNode.MultiSelectGroup;
+            finally
+              UnlockSelectionChangeEvent;
+            end;
           end
           else
           if (ssCtrl in Shift) then
@@ -5163,7 +5163,7 @@ procedure TCustomTreeView.EditorEditingDone(Sender: TObject);
 var
   WasFocused: Boolean;
 begin
-  WasFocused:=(FEditor<>nil) and FEditor.Focused;
+  WasFocused := (FEditor<>nil) and FEditor.Focused;
   EndEditing;
   if WasFocused then
     SetFocus;
@@ -5174,12 +5174,13 @@ procedure TCustomTreeView.EditorKeyDown(Sender: TObject; var Key: Word;
 var
   WasFocused: Boolean;
 begin
-  if (Key=VK_ESCAPE) or (Key=VK_RETURN) then begin
-    WasFocused:=(FEditor<>nil) and FEditor.Focused;
-    EndEditing(Key=VK_ESCAPE);
+  if (Key = VK_ESCAPE) or (Key = VK_RETURN) then
+  begin
+    WasFocused := Assigned(FEditor) and FEditor.Focused;
+    EndEditing(Key = VK_ESCAPE);
     if WasFocused then
       SetFocus;
-    Key:=0; // key was handled
+    Key := 0; // key was handled
   end;
 end;
 
