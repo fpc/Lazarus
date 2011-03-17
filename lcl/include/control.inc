@@ -283,6 +283,7 @@ end;
 procedure TControl.FontChanged(Sender: TObject);
 begin
   FParentFont := False;
+  FDesktopFont := False;
   Invalidate;
   Perform(CM_FONTCHANGED, 0, 0);
   if AutoSize then
@@ -3214,6 +3215,15 @@ begin
   FConstraints.Assign(Value);
 end;
 
+procedure TControl.SetDesktopFont(const AValue: Boolean);
+begin
+  if FDesktopFont <> AValue then
+  begin
+    FDesktopFont := AValue;
+    Perform(CM_SYSFONTCHANGED, 0, 0);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   TControl SetAlign
 ------------------------------------------------------------------------------}
@@ -4288,6 +4298,7 @@ begin
     FParentBidiMode := True;
     FParentColor := True;
     FParentFont := True;
+    FDesktopFont := True;
     FParentShowHint := True;
     FWindowProc := @WndProc;
     FCursor := crDefault;
@@ -4956,6 +4967,15 @@ procedure TControl.CMBiDiModeChanged(var Message: TLMessage);
 begin
   if (Message.wParam = 0) then
     Invalidate;
+end;
+
+procedure TControl.CMSysFontChanged(var Message: TLMessage);
+begin
+  if FDesktopFont then
+  begin
+    Font := Screen.SystemFont;
+    FDesktopFont := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -886,6 +886,7 @@ type
     FControlFlags: TControlFlags;
     FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
+    FDesktopFont: Boolean;
     FDockOrientation: TDockOrientation;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
@@ -998,6 +999,7 @@ type
     procedure SetClientSize(const Value: TPoint);
     procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value: TSizeConstraints);
+    procedure SetDesktopFont(const AValue: Boolean);
     procedure SetDragCursor(const AValue: TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
@@ -1107,6 +1109,7 @@ type
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure LMCaptureChanged(var Message: TLMessage); message LM_CaptureChanged;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMSysFontChanged(var Message: TLMessage); message CM_SYSFONTCHANGED;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(var Message: TCMHittest) ; message CM_HITTEST;
     procedure CMMouseEnter(var Message :TLMessage); message CM_MOUSEENTER;
@@ -1213,9 +1216,10 @@ type
   protected
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
+    property DesktopFont: Boolean read FDesktopFont write SetDesktopFont;
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
-    property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
+    property DragMode: TDragMode read FDragMode write SetDragMode default dmManual;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
     property ParentColor: Boolean read FParentColor write SetParentColor default True;
     property ParentFont: Boolean  read FParentFont write SetParentFont default True;

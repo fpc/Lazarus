@@ -287,7 +287,7 @@ const
   CM_ISTOOLCONTROL        = CM_BASE + 50 unimplemented;
   CM_RECREATEWND          = CM_BASE + 51 unimplemented;
   CM_INVALIDATE           = CM_BASE + 52 unimplemented;
-  CM_SYSFONTCHANGED       = CM_BASE + 53 unimplemented;
+  CM_SYSFONTCHANGED       = CM_BASE + 53;
   CM_CONTROLCHANGE        = CM_BASE + 54;
   CM_CHANGED              = CM_BASE + 55;
   CM_DOCKCLIENT           = CM_BASE + 56 unimplemented; //Method TWinControl.DoDockClientMsg()
