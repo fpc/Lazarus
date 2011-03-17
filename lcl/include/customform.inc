@@ -489,7 +489,9 @@ begin
   // This is the most important place to invoke UpdateShowInTaskBar, since
   //invoking it anywhere else seeems basically useless/frequently reversed.
   if (ShowInTaskBar = stNever) or
-     ((ShowInTaskBar = stDefault) and (Application.TaskBarBehavior = tbSingleButton)) then
+     ( (ShowInTaskBar = stDefault) and
+       (Application <> nil) and (Application.TaskBarBehavior = tbSingleButton)
+     ) then
     UpdateShowInTaskBar;
 end;
 
