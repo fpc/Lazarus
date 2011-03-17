@@ -27,6 +27,11 @@ uses
 const
   DEF_BOX_WIDTH = 50;
   DEF_WHISKERS_WIDTH = 25;
+  DEF_OHLC_TICK_WIDTH = 25;
+  DEF_YINDEX_OPEN = 1;
+  DEF_YINDEX_HIGH = 3;
+  DEF_YINDEX_LOW = 0;
+  DEF_YINDEX_CLOSE = 2;
 
 type
 
@@ -93,6 +98,50 @@ type
     property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
     property WhiskersWidth: Integer
       read FWhiskersWidth write SetWhiskersWidth default DEF_WHISKERS_WIDTH;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property Source;
+  end;
+
+  { TOpenHighLowCloseSeries }
+
+  TOpenHighLowCloseSeries = class(TBasicPointSeries)
+  private
+    FLinePen: TPen;
+    FTickWidth: Cardinal;
+    FYIndexClose: Cardinal;
+    FYIndexHigh: Cardinal;
+    FYIndexLow: Cardinal;
+    FYIndexOpen: Cardinal;
+    procedure SetLinePen(AValue: TPen);
+    procedure SetTickWidth(AValue: Cardinal);
+    procedure SetYIndexClose(AValue: Cardinal);
+    procedure SetYIndexHigh(AValue: Cardinal);
+    procedure SetYIndexLow(AValue: Cardinal);
+    procedure SetYIndexOpen(AValue: Cardinal);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    function GetSeriesColor: TColor; override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
+  published
+    property LinePen: TPen read FLinePen write SetLinePen;
+    property TickWidth: Cardinal
+      read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
+    property YIndexClose: Cardinal
+      read FYIndexClose write SetYIndexClose default DEF_YINDEX_CLOSE;
+    property YIndexHigh: Cardinal
+      read FYIndexHigh write SetYIndexHigh default DEF_YINDEX_HIGH;
+    property YIndexLow: Cardinal
+      read FYIndexLow write SetYIndexLow default DEF_YINDEX_LOW;
+    property YIndexOpen: Cardinal
+      read FYIndexOpen write SetYIndexOpen default DEF_YINDEX_OPEN;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -230,11 +279,11 @@ end;
 
 destructor TBoxAndWhiskerSeries.Destroy;
 begin
-  inherited Destroy;
   FreeAndNil(FBoxBrush);
   FreeAndNil(FBoxPen);
   FreeAndNil(FMedianPen);
   FreeAndNil(FWhiskersPen);
+  inherited Destroy;
 end;
 
 procedure TBoxAndWhiskerSeries.Draw(ADrawer: IChartDrawer);
@@ -374,8 +423,152 @@ begin
   UpdateParentChart;
 end;
 
+{ TOpenHighLowCloseSeries }
+
+procedure TOpenHighLowCloseSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TOpenHighLowCloseSeries then
+    with TOpenHighLowCloseSeries(ASource) do begin
+      Self.LinePen := FLinePen;
+      Self.FTickWidth := FTickWidth;
+      Self.FYIndexClose := FYIndexClose;
+      Self.FYIndexHigh := FYIndexHigh;
+      Self.FYIndexLow := FYIndexLow;
+      Self.FYIndexOpen := FYIndexOpen;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLinePen := TPen.Create;
+  FLinePen.OnChange := @StyleChanged;
+  FTickWidth := DEF_OHLC_TICK_WIDTH;
+  FYIndexOpen := DEF_YINDEX_OPEN;
+  FYIndexLow := DEF_YINDEX_LOW;
+  FYIndexHigh := DEF_YINDEX_HIGH;
+  FYIndexClose := DEF_YINDEX_CLOSE;
+end;
+
+destructor TOpenHighLowCloseSeries.Destroy;
+begin
+  FreeAndNil(FLinePen);
+  inherited Destroy;
+end;
+
+procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
+
+  function MaybeRotate(AX, AY: Double): TPoint;
+  begin
+    if IsRotated then
+      Exchange(AX, AY);
+    Result := ParentChart.GraphToImage(DoublePoint(AX, AY));
+  end;
+
+  procedure DoLine(AX1, AY1, AX2, AY2: Double);
+  begin
+    ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
+  end;
+
+  function GetGraphPointYIndex(AIndex, AYIndex: Integer): Double;
+  begin
+    if AYIndex = 0 then
+      Result := GetGraphPointY(AIndex)
+    else
+      Result := AxisToGraphY(Source[AIndex]^.YList[AYIndex - 1]);
+  end;
+
+var
+  my: Cardinal;
+  ext2: TDoubleRect;
+  i: Integer;
+  x, tw, yopen, yhigh, ylow, yclose: Double;
+begin
+  my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
+  if IsEmpty or (my >= Source.YCount) then exit;
+
+  ext2 := ParentChart.CurrentExtent;
+  ExpandRange(ext2.a.X, ext2.b.X, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  PrepareGraphPoints(ext2, true);
+
+  for i := FLoBound to FUpBound do begin
+    x := GetGraphPointX(i);
+    yopen := GetGraphPointYIndex(i, YIndexOpen);
+    yhigh := GetGraphPointYIndex(i, YIndexHigh);
+    ylow := GetGraphPointYIndex(i, YIndexLow);
+    yclose := GetGraphPointYIndex(i, YIndexClose);
+    tw := GetXRange(x, i) * PERCENT * TickWidth;
+
+    ADrawer.Pen := LinePen;
+    DoLine(x, yhigh, x, ylow);
+    DoLine(x - tw, yopen, x, yopen);
+    DoLine(x, yclose, x + tw, yclose);
+  end;
+end;
+
+function TOpenHighLowCloseSeries.Extent: TDoubleRect;
+begin
+  Result := Source.ExtentList;
+end;
+
+procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  //
+end;
+
+function TOpenHighLowCloseSeries.GetSeriesColor: TColor;
+begin
+  Result := LinePen.Color;
+end;
+
+procedure TOpenHighLowCloseSeries.SetLinePen(AValue: TPen);
+begin
+  if FLinePen = AValue then exit;
+  FLinePen := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetTickWidth(AValue: Cardinal);
+begin
+  if FTickWidth = AValue then exit;
+  FTickWidth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetYIndexClose(AValue: Cardinal);
+begin
+  if FYIndexClose = AValue then exit;
+  FYIndexClose := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetYIndexHigh(AValue: Cardinal);
+begin
+  if FYIndexHigh = AValue then exit;
+  FYIndexHigh := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetYIndexLow(AValue: Cardinal);
+begin
+  if FYIndexLow = AValue then exit;
+  FYIndexLow := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetYIndexOpen(AValue: Cardinal);
+begin
+  if FYIndexOpen = AValue then exit;
+  FYIndexOpen := AValue;
+  UpdateParentChart;
+end;
+
 initialization
   RegisterSeriesClass(TBubbleSeries, 'Bubble series');
   RegisterSeriesClass(TBoxAndWhiskerSeries, 'Box-and-whiskers series');
+  RegisterSeriesClass(TOpenHighLowCloseSeries, 'Open-high-low-close series');
 
 end.
