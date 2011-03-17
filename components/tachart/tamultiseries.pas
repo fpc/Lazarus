@@ -153,6 +153,30 @@ implementation
 uses
   Math, SysUtils, TAGeometry, TAGraph;
 
+type
+
+  { TLegendItemOHLCLine }
+
+  TLegendItemOHLCLine = class(TLegendItemLine)
+  public
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
+{ TLegendItemOHLCLine }
+
+procedure TLegendItemOHLCLine.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  dx, x, y: Integer;
+begin
+  inherited Draw(ADrawer, ARect);
+  y := (ARect.Top + ARect.Bottom) div 2;
+  dx := (ARect.Right - ARect.Left) div 3;
+  x := ARect.Left + dx;
+  ADrawer.Line(x, y, x, y + 2);
+  x += dx;
+  ADrawer.Line(x, y, x, y - 2);
+end;
+
 { TBubbleSeries }
 
 procedure TBubbleSeries.Assign(ASource: TPersistent);
@@ -516,7 +540,7 @@ end;
 
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  //
+  AItems.Add(TLegendItemOHLCLine.Create(LinePen, Title));
 end;
 
 function TOpenHighLowCloseSeries.GetSeriesColor: TColor;
