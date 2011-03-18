@@ -1462,7 +1462,7 @@ var
   I: Integer;
   Item: TMenuItem;
 begin
-  if (FParent <> nil) and (GroupIndex <> 0) then
+  if Assigned(FParent) then
     for I := 0 to FParent.Count - 1 do
     begin
       Item := FParent[I];
