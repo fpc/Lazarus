@@ -29,8 +29,8 @@ unit UseProjUnitDlg;
 interface
 
 uses
-  Classes, LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs,
+  Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
+  ButtonPanel, Dialogs, LCLProc,
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ProjectIntf, Project, CodeCache, CodeToolManager;
 
@@ -66,10 +66,10 @@ var
   UseProjUnitDlg: TUseProjUnitDialog;
   SrcEdit: TSourceEditorInterface;
   Code: TCodeBuffer;
-  CurFile: TUnitInfo;
+  ProjFile: TUnitInfo;
   MainUsedUnits, ImplUsedUnits: TStrings;
   AvailUnits: TStringList;
-  s: String;
+  CurrentUnitName, s: String;
   CTRes: Boolean;
 begin
   Result:=mrOk;
@@ -79,7 +79,7 @@ begin
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code=nil then exit;
-  UseProjUnitDlg:=nil;
+  CurrentUnitName:='';
   MainUsedUnits:=nil;
   ImplUsedUnits:=nil;
   AvailUnits:=TStringList.Create;
@@ -91,39 +91,56 @@ begin
     end;
     TStringList(MainUsedUnits).CaseSensitive:=False;
     TStringList(ImplUsedUnits).CaseSensitive:=False;
-    // Create dialog and add available unit names there.
-    UseProjUnitDlg:=TUseProjUnitDialog.Create(nil);
-    CurFile:=Project1.FirstPartOfProject;
-    while CurFile<>nil do begin
-      s:=CurFile.Unit_Name;
-      if (MainUsedUnits.IndexOf(s)<0) and (ImplUsedUnits.IndexOf(s)<0) then
-        AvailUnits.Add(s);
-      CurFile:=CurFile.NextPartOfProject;
+    // Add available unit names to AvailUnits.
+    ProjFile:=Project1.FirstPartOfProject;
+    while ProjFile<>nil do begin
+      s:=ProjFile.Unit_Name;
+      // "GetProjectFile.Unit_NameUnit_Name" returns character case matching with
+      // "ProjFile.Unit_Name" character case when inside this loop.
+      // Earlier it returns a name extracted from file name. Some clever cache feature.
+      if s=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name then begin
+        CurrentUnitName:=s;
+        s:='';             // current unit
+      end;
+      if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
+        if (MainUsedUnits.IndexOf(s)<0) and (ImplUsedUnits.IndexOf(s)<0) then
+          AvailUnits.Add(s);
+      ProjFile:=ProjFile.NextPartOfProject;
     end;
     // Show the dialog.
     if AvailUnits.Count>0 then begin
       AvailUnits.Sorted:=True;
-      UseProjUnitDlg.AddItems(AvailUnits);
-      UseProjUnitDlg.SelectFirst;
-      if UseProjUnitDlg.ShowModal=mrOk then begin
-        s:=UseProjUnitDlg.SelectedUnit;
-        if s<>'' then begin
-          if UseProjUnitDlg.InterfaceSelected then
-            CTRes:=CodeToolBoss.AddUnitToMainUsesSection(Code, s, '')
-          else
-            CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(Code, s, '');
-          if not CTRes then begin
-            LazarusIDE.DoJumpToCodeToolBossError;
-            exit(mrCancel);
+      UseProjUnitDlg:=TUseProjUnitDialog.Create(nil);
+      try
+        UseProjUnitDlg.AddItems(AvailUnits);
+        UseProjUnitDlg.SelectFirst;
+        if SrcEdit.GetProjectFile = Project1.MainUnitInfo then
+        begin
+          // there is only main uses section in program/library/package
+          UseProjUnitDlg.SectionRadioGroup.ItemIndex := 0;
+          UseProjUnitDlg.SectionRadioGroup.Enabled := False;
+        end;
+        if UseProjUnitDlg.ShowModal=mrOk then begin
+          s:=UseProjUnitDlg.SelectedUnit;
+          if s<>'' then begin
+            if UseProjUnitDlg.InterfaceSelected then
+              CTRes:=CodeToolBoss.AddUnitToMainUsesSection(Code, s, '')
+            else
+              CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(Code, s, '');
+            if not CTRes then begin
+              LazarusIDE.DoJumpToCodeToolBossError;
+              exit(mrCancel);
+            end;
           end;
         end;
+      finally
+        UseProjUnitDlg.Free;
       end;
     end
     else
-      ShowMessage(dlgNoUnusedItem);
+      ShowMessage(Format(dlgUnitAlreadyUsesAllOtherUnits,[CurrentUnitName]));
   finally
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-    UseProjUnitDlg.Free;
     ImplUsedUnits.Free;
     MainUsedUnits.Free;
     AvailUnits.Free;
