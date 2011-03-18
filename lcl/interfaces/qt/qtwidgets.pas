@@ -170,7 +170,7 @@ type
     function CanAdjustClientRectOnResize: Boolean; virtual;
     function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean; virtual;
-    function DeliverMessage(var Msg): LRESULT; virtual;
+    function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
     procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); virtual;
@@ -1444,7 +1444,7 @@ type
     constructor Create(ADialog: TCommonDialog; parent: QWidgetH = nil; f: QtWindowFlags = 0); overload;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    function DeliverMessage(var Msg): LRESULT; override;
+    function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; override;
     function SlotClose: Boolean; cdecl; override;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -2558,7 +2558,7 @@ begin
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(KeyMsg.Msg);
-    if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
   {$ifdef VerboseQt}
       WriteLn('handled!');
@@ -2577,7 +2577,7 @@ begin
     WriteLn(' message: ', KeyMsg.Msg);
   {$endif}
     NotifyApplicationUserInput(KeyMsg.Msg);
-    if (DeliverMessage(KeyMsg) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
       // the LCL handled the key
   {$ifdef VerboseQt}
@@ -2622,7 +2622,7 @@ begin
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
     NotifyApplicationUserInput(CharMsg.Msg);
-    if (DeliverMessage(CharMsg) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
+    if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
   {$ifdef VerboseQt}
@@ -2641,7 +2641,7 @@ begin
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
     NotifyApplicationUserInput(CharMsg.Msg);
-    DeliverMessage(CharMsg);
+    DeliverMessage(CharMsg, True);
   end;
   
   // check if data was changed during key handling
@@ -2797,7 +2797,7 @@ begin
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+      DeliverMessage(Msg, True);
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
@@ -2815,7 +2815,7 @@ begin
       end;
 
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+      DeliverMessage(Msg, True);
 
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
@@ -2828,7 +2828,7 @@ begin
       if not (LCLObject is TCustomButton) then
       begin
         Msg.Msg := LM_CLICKED;
-        DeliverMessage(Msg);
+        DeliverMessage(Msg, True);
       end;
     end;
   end;
@@ -4413,7 +4413,8 @@ begin
     Result := nil;
 end;
 
-function TQtWidget.DeliverMessage(var Msg): LRESULT;
+function TQtWidget.DeliverMessage(var Msg;
+  const AIsInputEvent: Boolean = False): LRESULT;
 begin
   Result := 0;
   if LCLObject = nil then
@@ -4425,7 +4426,13 @@ begin
       Result := TLMessage(Msg).Result;
     end;
   except
-    Application.HandleException(nil);
+    if AIsInputEvent and (LCLObject = nil) and (PtrUInt(Widget) = 0) and
+      QtWidgetSet.IsValidHandle(HWND(Self)) then
+    begin
+      raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
+        [ClassName, TLMessage(Msg).Msg]);
+    end else
+      Application.HandleException(nil);
   end;
 end;
 
@@ -11506,7 +11513,8 @@ begin
   inherited DetachEvents;
 end;
 
-function TQtDialog.DeliverMessage(var Msg): LRESULT;
+function TQtDialog.DeliverMessage(var Msg;
+  const AIsInputEvent: Boolean = False): LRESULT;
 begin
   try
     if FDialog.HandleAllocated then
