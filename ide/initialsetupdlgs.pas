@@ -41,8 +41,9 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
-  FileUtil, Graphics, ComCtrls, Laz_XMLCfg, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
+  FileUtil, Graphics, ComCtrls, Laz_XMLCfg, ExtCtrls, StdCtrls, TransferMacros,
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm,
+  DefineTemplates;
   
 type
   TSDFilenameQuality = (
@@ -95,8 +96,12 @@ type
     CompilerTabSheet: TTabSheet;
     FPCSourcesTabSheet: TTabSheet;
     WelcomePaintBox: TPaintBox;
+    procedure CompilerBrowseButtonClick(Sender: TObject);
+    procedure CompilerComboBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FPCSrcDirBrowseButtonClick(Sender: TObject);
+    procedure FPCSrcDirComboBoxChange(Sender: TObject);
     procedure LazDirBrowseButtonClick(Sender: TObject);
     procedure LazDirComboBoxChange(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
@@ -110,9 +115,13 @@ type
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
     procedure InitLazarusDir;
+    procedure InitCompilerFilename;
+    procedure InitFPCSrcDir;
     procedure FillComboboxWithFileInfoList(ABox: TComboBox; List: TObjectList;
        ItemIndex: integer = 0);
     procedure UpdateLazDirNote;
+    procedure UpdateCompilerNote;
+    procedure UpdateFPCSrcDirNote;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -135,11 +144,26 @@ function CheckCompilerQuality(AFilename: string;
   out Note: string): TSDFilenameQuality;
 function SearchCompilerCandidates(StopIfFits: boolean): TObjectList;
 
+function CheckFPCSrcDirQuality(ADirectory: string;
+  out Note: string): TSDFilenameQuality;
+function SearchFPCSrcDirCandidates(StopIfFits: boolean): TObjectList;
+
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
 implementation
+
+type
+
+  { TSetupMacros }
+
+  TSetupMacros = class(TTransferMacroList)
+  protected
+    procedure DoSubstitution(TheMacro: TTransferMacro; const MacroName: string;
+      var s: string; const Data: PtrInt; var Handled, Abort: boolean;
+      Depth: integer); override;
+  end;
 
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 var
@@ -425,31 +449,44 @@ begin
     Note:='File is not executable';
     exit;
   end;
-
+  Note:='ok';
+  Result:=sddqCompatible;
 end;
 
 function SearchCompilerCandidates(StopIfFits: boolean): TObjectList;
+var
+  Macros: TTransferMacroList;
 
   function CheckFile(AFilename: string; var List: TObjectList): boolean;
   var
     Item: TSDFileInfo;
     i: Integer;
+    ResolvedFilename: String;
   begin
     Result:=false;
     AFilename:=TrimFilename(AFilename);
     if AFilename='' then exit;
-    AFilename:=ExpandFileNameUTF8(AFilename);
     // check if already checked
     if List<>nil then begin
       for i:=0 to List.Count-1 do
         if CompareFilenames(AFilename,TSDFileInfo(List[i]).Filename)=0 then exit;
     end;
+    // replace macros
+    ResolvedFilename:=AFilename;
+    if TTransferMacroList.StrHasMacros(ResolvedFilename) then begin
+      Macros:=TSetupMacros.Create;
+      if not Macros.SubstituteStr(ResolvedFilename) then exit;
+      ResolvedFilename:=TrimFilename(ResolvedFilename);
+      if ResolvedFilename='' then exit;
+    end;
+    // expand file name
+    ResolvedFilename:=ExpandFileNameUTF8(ResolvedFilename);
     // check if exists
-    if not FileExistsCached(AFilename) then exit;
+    if not FileExistsCached(ResolvedFilename) then exit;
     // add to list and check quality
     Item:=TSDFileInfo.Create;
     Item.Filename:=AFilename;
-    Item.Quality:=CheckCompilerQuality(AFilename,Item.Note);
+    Item.Quality:=CheckCompilerQuality(ResolvedFilename,Item.Note);
     Item.Caption:=AFilename;
     if List=nil then
       List:=TObjectList.create(true);
@@ -457,9 +494,181 @@ function SearchCompilerCandidates(StopIfFits: boolean): TObjectList;
     Result:=(Item.Quality=sddqCompatible) and StopIfFits;
   end;
 
+var
+  AFilename: String;
+  Files: TStringList;
+  i: Integer;
 begin
   Result:=nil;
 
+  Macros:=nil;
+  try
+    // check current setting
+    if CheckFile(EnvironmentOptions.CompilerFilename,Result) then exit;
+
+    // check the primary options
+    AFilename:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/CompilerFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    // check the secondary options
+    AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/CompilerFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    // check PATH
+    if CheckFile(FindDefaultCompilerPath,Result) then exit;
+
+    // check history
+    Files:=EnvironmentOptions.CompilerFileHistory;
+    if Files<>nil then
+      for i:=0 to Files.Count-1 do
+        if CheckFile(Files[i],Result) then exit;
+
+    // check common directories
+    Files:=TStringList.Create;
+    try
+      GetDefaultCompilerFilenames(Files);
+      for i:=0 to Files.Count-1 do
+        if CheckFile(Files[i],Result) then exit;
+    finally
+      Files.Free;
+    end;
+  finally
+    if Macros<>nil then
+      Macros.Free;
+  end;
+end;
+
+function CheckFPCSrcDirQuality(ADirectory: string; out Note: string
+  ): TSDFilenameQuality;
+
+  function SubDirExists(SubDir: string; var q: TSDFilenameQuality): boolean;
+  begin
+    SubDir:=SetDirSeparators(SubDir);
+    if DirPathExistsCached(ADirectory+SubDir) then exit(true);
+    Result:=false;
+    Note:='directory '+SubDir+' not found';
+  end;
+
+begin
+  Result:=sddqInvalid;
+  ADirectory:=TrimFilename(ADirectory);
+  if not DirPathExistsCached(ADirectory) then begin
+    Note:='Directory not found';
+    exit;
+  end;
+  ADirectory:=AppendPathDelim(ADirectory);
+  if not SubDirExists('rtl',Result) then exit;
+  if not SubDirExists('packages',Result) then exit;
+  Note:='ok';
+  Result:=sddqCompatible;
+end;
+
+function SearchFPCSrcDirCandidates(StopIfFits: boolean): TObjectList;
+var
+  Macros: TTransferMacroList;
+
+  function InList(AFilename: string; List: TObjectList): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=false;
+    if List=nil then exit;
+    for i:=0 to List.Count-1 do
+      if CompareFilenames(AFilename,TSDFileInfo(List[i]).Filename)=0 then
+        exit(true);
+  end;
+
+  function Check(AFilename: string; var List: TObjectList): boolean;
+  const
+    FPCVerMark = '- FPCVER -';
+  var
+    Item: TSDFileInfo;
+    ResolvedFilename: String;
+    p: Int64;
+  begin
+    Result:=false;
+    AFilename:=TrimFilename(AFilename);
+    if AFilename='' then exit;
+    // check if already checked
+    if InList(AFilename,List) then exit;
+    ResolvedFilename:=AFilename;
+    p:=system.Pos('$(fpcver)',lowercase(ResolvedFilename));
+    if p>0 then begin
+      ResolvedFilename:=copy(ResolvedFilename,1,p-1)+FPCVerMark
+         +copy(ResolvedFilename,p+length('$(fpcver)'),length(ResolvedFilename));
+    end;
+    // replace macros
+    if TTransferMacroList.StrHasMacros(ResolvedFilename) then begin
+      Macros:=TSetupMacros.Create;
+      if not Macros.SubstituteStr(ResolvedFilename) then exit;
+      ResolvedFilename:=TrimFilename(ResolvedFilename);
+      if ResolvedFilename='' then exit;
+    end;
+    // expand file name
+    ResolvedFilename:=ChompPathDelim(ExpandFileNameUTF8(ResolvedFilename));
+    p:=System.Pos(FPCVerMark,ResolvedFilename);
+    if p>0 then begin
+
+    end else begin
+
+    end;
+
+    // check if exists
+    if not DirPathExistsCached(ResolvedFilename) then exit;
+    // add to list and check quality
+    Item:=TSDFileInfo.Create;
+    Item.Filename:=AFilename;
+    Item.Quality:=CheckFPCSrcDirQuality(ResolvedFilename,Item.Note);
+    Item.Caption:=AFilename;
+    if List=nil then
+      List:=TObjectList.create(true);
+    List.Add(Item);
+    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+  end;
+
+var
+  AFilename: String;
+  Dirs: TStringList;
+  i: Integer;
+begin
+  Result:=nil;
+
+  Macros:=nil;
+  try
+    // check current setting
+    if Check(EnvironmentOptions.FPCSourceDirectory,Result) then exit;
+
+    // check the primary options
+    AFilename:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                 'EnvironmentOptions/FPCSourceDirectory/Value');
+    if Check(AFilename,Result) then exit;
+
+    // check the secondary options
+    AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                 'EnvironmentOptions/FPCSourceDirectory/Value');
+    if Check(AFilename,Result) then exit;
+
+    // check history
+    Dirs:=EnvironmentOptions.FPCSourceDirHistory;
+    if Dirs<>nil then
+      for i:=0 to Dirs.Count-1 do
+        if Check(Dirs[i],Result) then exit;
+
+    // check common directories
+    Dirs:=GetDefaultFPCSrcDirectories;
+    try
+      if Dirs<>nil then
+        for i:=0 to Dirs.Count-1 do
+          if Check(Dirs[i],Result) then exit;
+    finally
+      Dirs.Free;
+    end;
+  finally
+    if Macros<>nil then
+      Macros.Free;
+  end;
 end;
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
@@ -510,6 +719,23 @@ begin
   end;
 end;
 
+{ TSetupMacros }
+
+procedure TSetupMacros.DoSubstitution(TheMacro: TTransferMacro;
+  const MacroName: string; var s: string; const Data: PtrInt; var Handled,
+  Abort: boolean; Depth: integer);
+begin
+  Handled:=true;
+  if CompareText(MacroName,'ENV')=0 then
+    s:=GetEnvironmentVariableUTF8(MacroName)
+  else if CompareText(MacroName,'PrimaryConfiPath')=0 then
+    s:=GetPrimaryConfigPath
+  else if CompareText(MacroName,'SecondaryConfiPath')=0 then
+    s:=GetSecondaryConfigPath
+  else
+    Handled:=false;
+end;
+
 {$R *.lfm}
 
 { TInitialSetupDialog }
@@ -537,7 +763,27 @@ begin
   ImgIDError := ImageList1.AddLazarusResource('state_error');
 
   LazDirBrowseButton.Caption:='Browse';
-  LazDirLabel.Caption:='The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide'+PathDelim+'lazarus.lpi.';
+  LazDirLabel.Caption:='Please set the Lazarus directory, which contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide'+PathDelim+'lazarus.lpi. You can change this setting later in the environment options.';
+
+  CompilerBrowseButton.Caption:='Browse';
+  CompilerLabel.Caption:='Please set the Free Pascal compiler executable, which typically has the name "'+GetDefaultCompilerFilename+'". You can also use the target specific compiler like "'+GetDefaultCompilerFilename(GetCompiledTargetCPU)+'". Please give the file name with full path. You can change this setting later in the environment options.';
+
+  FPCSrcDirBrowseButton.Caption:='Browse';
+end;
+
+procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
+begin
+  UpdateLazDirNote;
+end;
+
+procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
+var
+  Filename: String;
+begin
+  Filename:=SelectDirectory('Select path of '+GetDefaultCompilerFilename);
+  if Filename='' then exit;
+  CompilerComboBox.Text:=Filename;
+  UpdateCompilerNote;
 end;
 
 procedure TInitialSetupDialog.FormDestroy(Sender: TObject);
@@ -547,6 +793,21 @@ begin
   for d:=low(FDirs) to high(FDirs) do
     FreeAndNil(FDirs);
   FreeAndNil(FHeadGraphic);
+end;
+
+procedure TInitialSetupDialog.FPCSrcDirBrowseButtonClick(Sender: TObject);
+var
+  Dir: String;
+begin
+  Dir:=SelectDirectory('Select FPC source directory');
+  if Dir='' then exit;
+  FPCSrcDirComboBox.Text:=Dir;
+  UpdateFPCSrcDirNote;
+end;
+
+procedure TInitialSetupDialog.FPCSrcDirComboBoxChange(Sender: TObject);
+begin
+  UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.LazDirBrowseButtonClick(Sender: TObject);
@@ -638,6 +899,28 @@ begin
   UpdateLazDirNote;
 end;
 
+procedure TInitialSetupDialog.InitCompilerFilename;
+var
+  Files: TObjectList;
+begin
+  FreeAndNil(FDirs[sddtCompilerFilename]);
+  Files:=SearchCompilerCandidates(false);
+  FDirs[sddtCompilerFilename]:=Files;
+  FillComboboxWithFileInfoList(CompilerComboBox,Files);
+  UpdateCompilerNote;
+end;
+
+procedure TInitialSetupDialog.InitFPCSrcDir;
+var
+  Dirs: TObjectList;
+begin
+  FreeAndNil(FDirs[sddtFPCSrcDir]);
+  Dirs:=SearchFPCSrcDirCandidates(false);;
+  FDirs[sddtFPCSrcDir]:=Dirs;
+  FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
+  UpdateFPCSrcDirNote;
+end;
+
 procedure TInitialSetupDialog.FillComboboxWithFileInfoList(ABox: TComboBox;
   List: TObjectList; ItemIndex: integer);
 var
@@ -695,9 +978,87 @@ begin
   TVNodeLazarus.StateIndex:=ImageIndex;
 end;
 
+procedure TInitialSetupDialog.UpdateCompilerNote;
+var
+  i: Integer;
+  Files: TObjectList;
+  CurCaption: String;
+  Note: string;
+  Quality: TSDFilenameQuality;
+  s: String;
+  ImageIndex: Integer;
+begin
+  i:=-1;
+  Files:=FDirs[sddtCompilerFilename];
+  CurCaption:=CompilerComboBox.Text;
+  if Files<>nil then begin
+    i:=Files.Count-1;
+    while (i>=0) and (TSDFileInfo(Files[i]).Caption<>CurCaption) do dec(i);
+  end;
+  if i>=0 then begin
+    Quality:=TSDFileInfo(Files[i]).Quality;
+    Note:=TSDFileInfo(Files[i]).Note;
+  end else begin
+    Quality:=CheckCompilerQuality(CurCaption,Note);
+  end;
+  case Quality of
+  sddqInvalid: s:='Error: ';
+  sddqWrongVersion: s:='Warning: ';
+  sddqCompatible: s:='';
+  end;
+  CompilerMemo.Text:=s+Note;
+
+  if Quality=sddqCompatible then
+    ImageIndex:=-1
+  else
+    ImageIndex:=ImgIDError;
+  TVNodeCompiler.ImageIndex:=ImageIndex;
+  TVNodeCompiler.StateIndex:=ImageIndex;
+end;
+
+procedure TInitialSetupDialog.UpdateFPCSrcDirNote;
+var
+  i: Integer;
+  Dirs: TObjectList;
+  CurCaption: String;
+  Note: string;
+  Quality: TSDFilenameQuality;
+  s: String;
+  ImageIndex: Integer;
+begin
+  i:=-1;
+  Dirs:=FDirs[sddtFPCSrcDir];
+  CurCaption:=FPCSrcDirComboBox.Text;
+  if Dirs<>nil then begin
+    i:=Dirs.Count-1;
+    while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>CurCaption) do dec(i);
+  end;
+  if i>=0 then begin
+    Quality:=TSDFileInfo(Dirs[i]).Quality;
+    Note:=TSDFileInfo(Dirs[i]).Note;
+  end else begin
+    Quality:=CheckFPCSrcDirQuality(CurCaption,Note);
+  end;
+  case Quality of
+  sddqInvalid: s:='Error: ';
+  sddqWrongVersion: s:='Warning: ';
+  sddqCompatible: s:='';
+  end;
+  FPCSrcDirMemo.Text:=s+Note;
+
+  if Quality=sddqCompatible then
+    ImageIndex:=-1
+  else
+    ImageIndex:=ImgIDError;
+  TVNodeFPCSources.ImageIndex:=ImageIndex;
+  TVNodeFPCSources.StateIndex:=ImageIndex;
+end;
+
 procedure TInitialSetupDialog.Init;
 begin
   InitLazarusDir;
+  InitCompilerFilename;
+  InitFPCSrcDir;
 end;
 
 end.

@@ -88,6 +88,7 @@ function FindDefaultExecutablePath(const Executable: string): string;
 function FindDefaultCompilerPath: string;
 function FindDefaultMakePath: string;
 function FindDefaultFPCSrcDirectory: string;
+function GetDefaultFPCSrcDirectories: TStringList;
 function FindDefaultLazarusSrcDirectory: string;
 function GetDefaultLazarusSrcDirectories: TStringList;
 function CheckFPCSourceDir(ADirectory: string): boolean;
@@ -439,6 +440,15 @@ begin
     if CheckFPCSourceDir(Result) then exit;
   end;
   Result:='';
+end;
+
+function GetDefaultFPCSrcDirectories: TStringList;
+var
+  i: Integer;
+begin
+  Result:=TStringList.Create;
+  for i:=low(DefaultFPCSrcDirs) to high(DefaultFPCSrcDirs) do
+    Result.Add(DefaultFPCSrcDirs[i]);
 end;
 
 function FindDefaultLazarusSrcDirectory: string;

@@ -94,6 +94,9 @@ type
     function MF_MakeDir(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
     function MF_MakeFile(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
     function MF_Trim(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    procedure DoSubstitution(TheMacro: TTransferMacro; const MacroName: string;
+      var s:string; const Data: PtrInt; var Handled, Abort: boolean;
+      Depth: integer); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -107,7 +110,7 @@ type
     function FindByName(const MacroName: string): TTransferMacro; virtual;
     function SubstituteStr(var s: string; const Data: PtrInt = 0;
       Depth: integer = 0): boolean; virtual;
-    function StrHasMacros(const s: string): boolean;
+    class function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
@@ -381,14 +384,12 @@ begin
           finally
             fBusy.Delete(fBusy.Count-1);
           end;
-          if Assigned(fOnSubstitution) then begin
-            fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
-            if Handled then
-              MacroStr:=MacroParam
-            else if Abort then begin
-              Result:=false;
-              exit;
-            end;
+          DoSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
+          if Handled then
+            MacroStr:=MacroParam
+          else if Abort then begin
+            Result:=false;
+            exit;
           end;
         end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
@@ -483,7 +484,7 @@ begin
   end;
 end;
 
-function TTransferMacroList.StrHasMacros(const s: string): boolean;
+class function TTransferMacroList.StrHasMacros(const s: string): boolean;
 // search for $( or $xxx(
 var
   p: Integer;
@@ -591,6 +592,14 @@ function TTransferMacroList.MF_Trim(const Filename: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   Result:=TrimFilename(Filename);
+end;
+
+procedure TTransferMacroList.DoSubstitution(TheMacro: TTransferMacro;
+  const MacroName: string; var s: string; const Data: PtrInt; var Handled,
+  Abort: boolean; Depth: integer);
+begin
+  if Assigned(OnSubstitution) then
+    OnSubstitution(TheMacro,MacroName,s,Data,Handled,Abort,Depth);
 end;
 
 { TLazIDEMacros }

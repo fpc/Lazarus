@@ -104,10 +104,10 @@ object InitialSetupDialog: TInitialSetupDialog
     Height = 284
     Top = 54
     Width = 444
-    ActivePage = LanguageTabSheet
+    ActivePage = FPCSourcesTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 3
     OnChange = PropertiesPageControlChange
     Options = [nboHidePageListPopup]
@@ -156,6 +156,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'LazDirMemo'
+          ''
           ''
         )
         ReadOnly = True
@@ -206,6 +207,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 428
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
+        OnChange = CompilerComboBoxChange
         TabOrder = 0
         Text = 'CompilerComboBox'
       end
@@ -219,6 +221,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 179
         AutoSize = True
         Caption = 'CompilerBrowseButton'
+        OnClick = CompilerBrowseButtonClick
         TabOrder = 1
       end
       object CompilerMemo: TMemo
@@ -236,6 +239,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'CompilerMemo'
+          ''
         )
         TabOrder = 2
       end
@@ -265,6 +269,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 428
         Align = alTop
         ItemHeight = 0
+        OnChange = FPCSrcDirComboBoxChange
         TabOrder = 0
         Text = 'FPCSrcDirComboBox'
       end
@@ -278,6 +283,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 185
         AutoSize = True
         Caption = 'FPCSrcDirBrowseButton'
+        OnClick = FPCSrcDirBrowseButtonClick
         TabOrder = 1
       end
       object FPCSrcDirMemo: TMemo
@@ -291,6 +297,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'FPCSrcDirMemo'
+          ''
         )
         TabOrder = 2
       end
