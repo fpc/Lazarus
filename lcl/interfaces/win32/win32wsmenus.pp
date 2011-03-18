@@ -190,11 +190,11 @@ var
   MenuItemIndex: integer;
   ItemInfo: MENUITEMINFO;
   FirstMenuItem: TMenuItem;
-  SiblingMenuItem: TmenuItem;
+  SiblingMenuItem: TMenuItem;
   HotKeyIndex: integer;
   i: integer;
 begin
-  Result := MakeLResult(0, 0);
+  Result := MakeLResult(0, MNC_IGNORE);
   MenuItemIndex := -1;
   ItemInfo.cbSize := menuiteminfosize;
   ItemInfo.fMask := MIIM_DATA;
@@ -206,13 +206,12 @@ begin
   begin
     SiblingMenuItem := FirstMenuItem.Parent.Items[i];
     HotKeyIndex := SearchMenuItemHotKeyIndex('&', SiblingMenuItem.Caption);
-    if (HotKeyIndex > 0) and
-      (Upcase(ACharCode) = Upcase(SiblingMenuItem.Caption[HotKeyIndex])) then
-        MenuItemIndex := i;
+    if (HotKeyIndex > 0) and (Upcase(ACharCode) = Upcase(SiblingMenuItem.Caption[HotKeyIndex])) then
+      MenuItemIndex := SiblingMenuItem.MenuVisibleIndex;
     inc(i);
   end;
-  if MenuItemIndex > -1 then Result := MakeLResult(MenuItemIndex, 2)
-  else Result := MakeLResult(0, 0);
+  if MenuItemIndex > -1 then
+    Result := MakeLResult(MenuItemIndex, MNC_EXECUTE);
 end;
 
 function GetMenuItemFont(const AFlags: TCaptionFlagsSet): HFONT;
@@ -372,7 +371,6 @@ var
   Theme: HTHEME;
   TextRect: TRect;
   W: WideString;
-  S: string;
   AFont, OldFont: HFONT;
 begin
   Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
