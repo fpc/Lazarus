@@ -4558,6 +4558,11 @@ var
           Details := ThemeServices.GetElementDetails(ttItemSelected)
         else
           Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
+        if ThemeServices.HasTransparentParts(Details) then
+        begin
+          Canvas.Brush.Color := BackgroundColor;
+          Canvas.FillRect(ARect);
+        end;
         ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
         Exit;
       end
