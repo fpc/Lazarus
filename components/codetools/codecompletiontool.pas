@@ -940,7 +940,7 @@ var
   OldCodePos: TCodePosition;
   Node: TCodeTreeNode;
 begin
-  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable A ');
+  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable START ');
   Result:=false;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
@@ -1024,8 +1024,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.AddVariable(CursorNode: TCodeTreeNode;
-  CleanCursorPos,
-  OldTopLine: integer; const VariableName, NewType, NewUnitName: string;
+  CleanCursorPos, OldTopLine: integer;
+  const VariableName, NewType, NewUnitName: string;
   out NewPos: TCodeXYPosition;
   out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
@@ -1034,7 +1034,9 @@ var
   VarType: String;
   VarTypeUnitName: String;
 begin
-  // ask what for location of new variable
+  //debugln(['TCodeCompletionCodeTool.AddVariable CursorNode=',CursorNode.DescAsString,
+  //  ' VariableName="',VariableName,'" NewType="',NewType,'" NewUnitName="',NewUnitName,'"']);
+  // ask for location of new variable
   VarLocation:=ncpvLocal;
   VarType:=NewType;
   VarTypeUnitName:=NewUnitName;
@@ -1883,8 +1885,8 @@ begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');
           exit;
         end;
-        NewType:=copy(Params.NewCodeTool.Src,TypeNode.StartPos,
-                      TypeNode.EndPos-TypeNode.StartPos);
+        NewType:=Trim(copy(Params.NewCodeTool.Src,TypeNode.StartPos,
+                      TypeNode.EndPos-TypeNode.StartPos));
 
         // ToDo: find unit of type declaration
         MissingUnitName:=''; //GetUnitForUsesSection(Params.NewCodeTool);

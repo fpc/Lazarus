@@ -14082,7 +14082,6 @@ begin
     Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetFPCSourceDirectory;
   end;
 
-  debugln(['TMainIDE.InitCodeToolBoss AAA2']);
   // the first template is the "use default" flag
   CreateUseDefaultsFlagTemplate;
 
