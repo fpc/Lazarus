@@ -285,39 +285,39 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('Project','',
                       lisProjectMacroProperties,@MacroFuncProject,[]));
   GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
-                    lisLCLWidgetType,@MacroFuncLCLWidgetType,[]));
+                      lisLCLWidgetType,@MacroFuncLCLWidgetType,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',
-                    lisTargetCPU,@MacroFuncTargetCPU,[]));
+                      lisTargetCPU,@MacroFuncTargetCPU,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
-                    lisTargetOS,@MacroFuncTargetOS,[]));
+                      lisTargetOS,@MacroFuncTargetOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('SrcOS','',
-                    lisSrcOS,@MacroFuncSrcOS,[]));
+                      lisSrcOS,@MacroFuncSrcOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
-                    lisFPCVersionEG222, @MacroFuncFPCVer, []));
+                      lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
-                    lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
+                      lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
-                    lisProjectFilename,@MacroFuncProjFile,[]));
+                      lisProjectFilename,@MacroFuncProjFile,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjPath','',
-                    lisProjectDirectory,@MacroFuncProjPath,[]));
+                      lisProjectDirectory,@MacroFuncProjPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetFile','',
-                    lisTargetFilenameOfProject,@MacroFuncTargetFile,[]));
+                      lisTargetFilenameOfProject,@MacroFuncTargetFile,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetCmdLine','',
-                    lisTargetFilenamePlusParams,@MacroFuncTargetCmdLine,[]));
+                      lisTargetFilenamePlusParams,@MacroFuncTargetCmdLine,[]));
   GlobalMacroList.Add(TTransferMacro.Create('RunCmdLine','',
-                    lisLaunchingCmdLine,@MacroFuncRunCmdLine,[]));
+                      lisLaunchingCmdLine,@MacroFuncRunCmdLine,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
-                    lisPublishProjDir,@MacroFuncProjPublishDir,[]));
+                      lisPublishProjDir,@MacroFuncProjPublishDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjUnitPath','',
-                    lisProjectUnitPath,@MacroFuncProjUnitPath,[]));
+                      lisProjectUnitPath,@MacroFuncProjUnitPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjIncPath','',
-                    lisProjectIncPath,@MacroFuncProjIncPath,[]));
+                      lisProjectIncPath,@MacroFuncProjIncPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjSrcPath','',
-                    lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
+                      lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjOutDir','',
-                    lisProjectOutDir,@MacroFuncProjOutDir,[]));
+                      lisProjectOutDir,@MacroFuncProjOutDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Env','',
-                    lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
+                     lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
                       lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('MakeLib','',
@@ -325,13 +325,13 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('Make','',
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
   GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
-                    lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
+                      lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
   GlobalMacroList.Add(TTransferMacro.Create('PrimaryConfiPath','',
-                    lisPrimaryConfigPath, @MacroFuncPrimaryConfigPath, []));
+                      lisPrimaryConfigPath, @MacroFuncPrimaryConfigPath, []));
   GlobalMacroList.Add(TTransferMacro.Create('SecondaryConfigPath','',
                     lisSecondaryConfigPath, @MacroFuncSecondaryConfigPath, []));
   GlobalMacroList.Add(TTransferMacro.Create('FallbackOutputRoot','',
-                    lisSecondaryConfigPath, @MacroFuncFallbackOutputRoot, []));
+                     lisSecondaryConfigPath, @MacroFuncFallbackOutputRoot, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1507,8 +1507,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
         then
           exit;
       end;
-      ConfigCache.GetFPCVer(FPCVersion,FPCRelease,FPCPatch);
-      Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
+      Result:=ConfigCache.GetFPCVer;
     end;
   end;
 

@@ -701,7 +701,9 @@ type
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
     function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
-    function GetFPCVer(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
+    function GetFPCVerNumbers(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
+    function GetFPCVer: string;
+    function IndexOfUsedCfgFile: integer;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
   end;
@@ -7663,17 +7665,15 @@ begin
       end else
         debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: '+Compiler+' '+ExtraOptions]);
       // store the list of tried and read cfg files
-      if CfgFiles<>nil then begin
-        for i:=0 to CfgFiles.Count-1 do begin
-          Filename:=CfgFiles[i];
-          if Filename='' then continue;
-          CfgFileExists:=Filename[1]='+';
-          Filename:=copy(Filename,2,length(Filename));
-          CfgFileDate:=0;
-          if CfgFileExists then
-            CfgFileDate:=FileAgeCached(Filename);
-          ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
-        end;
+      for i:=0 to CfgFiles.Count-1 do begin
+        Filename:=CfgFiles[i];
+        if Filename='' then continue;
+        CfgFileExists:=Filename[1]='+';
+        Filename:=copy(Filename,2,length(Filename));
+        CfgFileDate:=0;
+        if CfgFileExists then
+          CfgFileDate:=FileAgeCached(Filename);
+        ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
       end;
       // gather all units in all unit search paths
       if (UnitPaths<>nil) and (UnitPaths.Count>0) then
@@ -7722,7 +7722,7 @@ begin
     Result:=TryReadAllLinks(Result);
 end;
 
-function TFPCTargetConfigCache.GetFPCVer(out FPCVersion, FPCRelease,
+function TFPCTargetConfigCache.GetFPCVerNumbers(out FPCVersion, FPCRelease,
   FPCPatch: integer): boolean;
 var
   v: string;
@@ -7734,6 +7734,27 @@ begin
     FPCRelease:=StrToIntDef(Defines['FPC_RELEASE'],FPCRelease);
     FPCPatch:=StrToIntDef(Defines['FPC_PATCH'],FPCPatch);
   end;
+end;
+
+function TFPCTargetConfigCache.GetFPCVer: string;
+var
+  FPCVersion: integer;
+  FPCRelease: integer;
+  FPCPatch: integer;
+begin
+  if GetFPCVerNumbers(FPCVersion,FPCRelease,FPCPatch) then
+    Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch)
+  else
+    Result:='';
+end;
+
+function TFPCTargetConfigCache.IndexOfUsedCfgFile: integer;
+begin
+  if ConfigFiles=nil then exit(-1);
+  Result:=0;
+  while (Result<ConfigFiles.Count) and (not ConfigFiles[Result].FileExists) do
+    inc(Result);
+  if Result=ConfigFiles.Count then Result:=-1;
 end;
 
 { TFPCTargetConfigCaches }

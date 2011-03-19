@@ -405,14 +405,12 @@ begin
         // Macro variable
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroName);
-        if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort,Depth+LoopDepth);
-          if Handled then
-            MacroStr:=MacroName
-          else if Abort then begin
-            Result:=false;
-            exit;
-          end;
+        DoSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort,Depth+LoopDepth);
+        if Handled then
+          MacroStr:=MacroName
+        else if Abort then begin
+          Result:=false;
+          exit;
         end;
         if (not Handled) and (AMacro<>nil) then begin
           // standard macro
