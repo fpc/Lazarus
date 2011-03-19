@@ -465,7 +465,7 @@ begin
       begin
         i:=DoSetPrinter(aName);
         if i<0 then
-          raise EPrinter.Create(Format('Printer "%s" does''t exists.',[aName]));
+          raise EPrinter.Create(Format('Printer "%s" doesn''t exist.',[aName]));
         fPrinterIndex:=i;
       end;
     end;
@@ -502,9 +502,9 @@ begin
   if Printing<>Value then
   begin
     if Value then
-      raise EPrinter.Create('Printer not printing')
+      raise EPrinter.Create('Printer is not printing')
     else
-      raise Eprinter.Create('Printer print');
+      raise Eprinter.Create('Printer is printing');
   end;
 end;
 
@@ -641,7 +641,7 @@ begin
   Result:=1;
 end;
 
-//Set the copies numbers
+//Set copies number
 procedure TPrinter.SetCopies(AValue: Integer);
 begin
   CheckPrinting(False);
@@ -649,7 +649,7 @@ begin
   if Printers.Count>0 then
     DoSetCopies(aValue)
   else
-    raise EPrinter.Create('No printer found.');
+    raise EPrinter.Create('No printers found.');
 end;
 
 procedure TPrinter.SetOrientation(const AValue: TPrinterOrientation);
@@ -658,7 +658,7 @@ begin
   DoSetOrientation(aValue);
 end;
 
-//Set the selected printer
+//Set selected printer
 procedure TPrinter.SetPrinterIndex(AValue: integer);
 Var aName : String;
 begin
@@ -672,11 +672,11 @@ begin
       if (AValue>=0) and (AValue<Printers.Count) then
         aName:=Printers.Strings[AValue]
       else
-        raise EPrinter.Create('Printer index out of range !');
+        raise EPrinter.Create('Printer index out of range!');
     SetPrinter(aName);
   end
   else
-    raise EPrinter.Create('No printers defined !');
+    raise EPrinter.Create('No printers defined!');
 end;
 
 procedure TPrinter.SetRawMode(const AValue: boolean);
@@ -697,47 +697,47 @@ end;
 
 procedure TPrinter.DoBeginDoc;
 begin
-  //Override this methode
+  //Override this method
 end;
 
 procedure TPrinter.DoNewPage;
 begin
-  //Override this methode
+  //Override this method
 end;
 
 procedure TPrinter.DoEndDoc(aAborded : Boolean);
 begin
-  //Override this methode
+  //Override this method
 end;
 
 procedure TPrinter.DoAbort;
 begin
- //Override this methode
+ //Override this method
 end;
 
 procedure TPrinter.DoResetPrintersList;
 begin
- //Override this methode
+ //Override this method
  fPrintersValid:=false;
 end;
 
 procedure TPrinter.DoResetFontsList;
 begin
- //Override this methode
+ //Override this method
 end;
 
 //Initialize the Lst with all definied printers
 procedure TPrinter.DoEnumPrinters(Lst: TStrings);
 begin
- //Override this methode
- //Warning : The default printer must be the first printer
+ //Override this method
+ //Warning: The default printer must be the first printer
  //          (fPrinters[0])
 end;
 
 //Initialize the Lst with all supported fonts
 procedure TPrinter.DoEnumFonts(Lst: TStrings);
 begin
- //Override this methode
+ //Override this method
 end;
 
 //Initialize the Lst with all supported papers names
@@ -745,7 +745,7 @@ procedure TPrinter.DoEnumPapers(Lst: TStrings);
 begin
   //DebugLn(['TPrinter.DoEnumPapers ',dbgsName(Self)]);
   
- //Override this methode
+ //Override this method
 end;
 
 // This method is called once after the printer list
@@ -759,36 +759,36 @@ end;
 //Set the current printer
 function TPrinter.DoSetPrinter(aName : string): Integer;
 begin
-  //Override this methode. The result must be
+  //Override this method. The result must be
   //the index of aName printer in Printers list
-  //if the aName doesn't exists, return -1
+  //if the aName doesn't exist, return -1
   Result:=-1;
 end;
 
 //Get the current copies nulbers
 function TPrinter.DoGetCopies: Integer;
 begin
- //Override this methode
+ //Override this method
  Result:=1;
 end;
 
-//Set the copies numbers
+//Set copies number
 procedure TPrinter.DoSetCopies(aValue: Integer);
 begin
- //Override this methode
+ //Override this method
 end;
 
-//Return the current paper orientation
+//Return current paper orientation
 function TPrinter.DoGetOrientation: TPrinterOrientation;
 begin
   Result:=poPortrait;
-  //Override this methode
+  //Override this method
 end;
 
-//Set the paper Orientation
+//Set paper Orientation
 procedure TPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 begin
- //Override this methode
+ //Override this method
 end;
 
 //Return the default paper name for the selected printer
@@ -798,16 +798,16 @@ begin
   //Override this methode
 end;
 
-//Return the selected paper name for the current printer
+//Return selected paper name for the current printer
 function TPrinter.DoGetPaperName: string;
 begin
   Result:='';
-  //Override this methode
+  //Override this method
 end;
 
 procedure TPrinter.DoSetPaperName(aName: string);
 begin
-  //Override this methode
+  //Override this method
 end;
 
 //Initialise aPaperRc with the aName paper rect
@@ -817,13 +817,13 @@ end;
 function TPrinter.DoGetPaperRect(aName : string; var aPaperRc: TPaperRect): Integer;
 begin
   Result:=-1;
-  //Override this methode
+  //Override this method
 end;
 
 //Get a state of current printer
 function TPrinter.DoGetPrinterState: TPrinterState;
 begin
-  //Override this methode
+  //Override this method
   Result:=psNoDefine;
 end;
 
@@ -833,7 +833,7 @@ begin
   Result:=ptLocal;
 end;
 
-//Return True if selected printer can printing
+//Return True if selected printer is able to print
 function TPrinter.GetCanPrint: Boolean;
 begin
   Result:=True;
@@ -981,7 +981,7 @@ begin
     end;
   end
   else
-    raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
+    raise EPrinter.Create(Format('Paper "%s" not supported!',[aName]));
 end;
 
 //Return an TPaperRect corresponding at an paper name
@@ -1002,10 +1002,10 @@ begin
     if Margins>=0 then
       Result := TmpPaperRect
     else
-      raise EPrinter.Create(Format('The paper "%s" has no defined rectangle ! ',[aName]));
+      raise EPrinter.Create(Format('The paper "%s" has no defined rectangle!',[aName]));
 
   end
-  else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
+  else raise EPrinter.Create(Format('Paper "%s" not supported!',[aName]));
 end;
 
 procedure TPaperSize.CheckSupportedPapers;
@@ -1030,7 +1030,7 @@ end;
 constructor TPaperSize.Create(aOwner: TPrinter);
 begin
   if not assigned(aOwner) then
-    raise Exception.Create('TMediaSize.Create, aOwner must be defined !');
+    raise Exception.Create('TMediaSize.Create, aOwner must be defined!');
   Inherited Create;
 
   fLastPrinterIndex:=-2;
