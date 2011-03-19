@@ -1278,6 +1278,7 @@ var
   end;
 
 begin
+  if EndPos>Tool.SrcLen then EndPos:=Tool.SrcLen+1;
   if (StartPos<1) or (StartPos>=EndPos) then exit;
   CheckWrongIndentation:=cefcWrongIndentation in CodeExplorerOptions.ObserverCategories;
   FindUnnamedConstants:=cefcUnnamedConsts in CodeExplorerOptions.ObserverCategories;
