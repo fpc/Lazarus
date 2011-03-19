@@ -506,7 +506,7 @@ var
 begin
   Result:=false;
   MethodIsCompatible:=false;
-  IdentIsmethod:=false;
+  IdentIsMethod:=false;
   MethodIsPublished:=false;
   ActivateGlobalWriteLock;
   FreeAndNil(SearchedExprList);
@@ -518,9 +518,9 @@ begin
       Params.SetIdentifier(Self,@UpperMethodName[1],nil);
       Params.Flags:=[fdfSearchInAncestors];
       if FindIdentifierInContext(Params) then begin
-        IdentIsmethod:=(Params.NewNode.Desc=ctnProcedure);
+        IdentIsMethod:=(Params.NewNode.Desc=ctnProcedure);
         MethodIsPublished:=(Params.NewNode.Parent.Desc=ctnClassPublished);
-        if IdentIsmethod and MethodIsPublished then begin
+        if IdentIsMethod and MethodIsPublished then begin
           // published method with same name found
           FoundContext:=CreateFindContext(Params);
           // -> test for compatibility
@@ -530,6 +530,7 @@ begin
           if not CreateExprListFromMethodTypeData(TypeData,Params,SearchedExprList)
           then
             exit(false);
+          debugln(['TEventsCodeTool.PublishedMethodExists SearchedExprList=[',SearchedExprList.AsString,']']);
           // create compatibility list
           CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
           if CompListSize>0 then begin

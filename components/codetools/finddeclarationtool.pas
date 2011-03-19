@@ -7790,19 +7790,19 @@ begin
 
   // check each parameter for compatibility
   
-  {$IFDEF ShowExprEval}
+  { $IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
     ' ExprParamList=[',TargetExprParamList.AsString,']');
-  {$ENDIF}
+  { $ENDIF}
   ParamNode:=FirstSourceParameterNode;
   i:=0;
   while (ParamNode<>nil) and (i<TargetExprParamList.Count) do begin
     SourceExprType:=ConvertNodeToExpressionType(ParamNode,Params);
     ParamCompatibility:=IsCompatible(TargetExprParamList.Items[i],
                                      SourceExprType,Params);
-    {$IFDEF ShowExprEval}
-    DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]),' ',TypeCompatibilityNames[ParamCompatibility]);
-    {$ENDIF}
+    { $IFDEF ShowExprEval}
+    DebugLn(['[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',i,' Source=[',ExprTypeToString(SourceExprType),'] Target=[',ExprTypeToString(TargetExprParamList.Items[i]),'] Result=',TypeCompatibilityNames[ParamCompatibility]]);
+    { $ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
     if ParamCompatibility=tcIncompatible then begin
