@@ -2265,10 +2265,6 @@ msgstr "Nelaužti eilutės po:"
 msgid "Do not split line In front of:"
 msgstr "Nelaužti eilutės priešais:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2914,6 +2910,10 @@ msgstr "Atšaukti / grąžinti:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Grąžinimų riba"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4308,6 +4308,7 @@ msgid "Category"
 msgstr "Kategorija"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Pirminis kodas"
 
@@ -7027,6 +7028,10 @@ msgstr "Įgalinti makrokomandas"
 msgid "Enclose"
 msgstr "Apgaubti"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8648,10 +8653,6 @@ msgstr "Rodyti pirminio kodo rengyklės 9 kortelę"
 msgid "Insert date and time"
 msgstr "Įterpti datą ir laiką"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "Įterpti $IFDEF"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "Įterpti naudotojo vardą"
@@ -9669,10 +9670,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Užbaigti kodą"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Įterpti $IFDEF…"
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Derinti „Daryti ir startuoti failą“…"
@@ -9710,8 +9707,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Konvertuoti Delphi modulį į Lazarus modulį…"
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#, fuzzy
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Konvertuoti dvejetainį DFM failą į LFM ir patikrinti sintaksę…"
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9834,13 +9832,13 @@ msgstr "Rinkitės šabloną:"
 msgid "Template Preview"
 msgstr "Šablono peržiūra"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Apgaubti pažymėtąjį…"
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "&Aplinka"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13462,6 +13460,10 @@ msgstr "Rodyti buvusią vietą tabuliatoriaus eilėje"
 msgid "Show packages"
 msgstr "Rodyti paketus"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Rodyti specialiuosius simbolius"
@@ -16687,6 +16689,11 @@ msgstr "Rodyti eilučių numerius"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informacija apie modulį"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Pirminis kodas"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

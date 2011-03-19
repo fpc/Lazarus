@@ -2278,10 +2278,6 @@ msgstr "Zeile nicht teilen nach:"
 msgid "Do not split line In front of:"
 msgstr "Zeile nicht teilen vor:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2929,6 +2925,10 @@ msgstr "Einstellungen für Rücknahme"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Rücknahmemaximum"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4324,6 +4324,7 @@ msgid "Category"
 msgstr "Kategorie"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Quelle"
 
@@ -7045,6 +7046,10 @@ msgstr "Makros einschalten"
 msgid "Enclose"
 msgstr "Einschließen"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8668,10 +8673,6 @@ msgstr "Zum 9. Quelltexteditor gehen"
 msgid "Insert date and time"
 msgstr "Datum und Uhrzeit einfügen"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "$IFDEF einfügen"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "Username einfügen"
@@ -9686,10 +9687,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Quelltext vervollständigen"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "$IFDEF einfügen"
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Kompilieren+Starten der Datei einrichten..."
@@ -9728,8 +9725,8 @@ msgstr "Delphi- in Lazarus-Unit umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "DFM- in LFM-Datei umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9852,13 +9849,13 @@ msgstr "Vorlage auswählen:"
 msgid "Template Preview"
 msgstr "Vorlagenvorschau"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Auswahl einschließen ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "Ei&nstellungen"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13488,6 +13485,10 @@ msgstr "Zeige alte Tabulatorreihenfolge"
 msgid "Show packages"
 msgstr "Packages anzeigen"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Sonderzeichen anzeigen"
@@ -16718,6 +16719,11 @@ msgstr "Zeilennummern einblenden"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Unit-Information"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Quelle"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

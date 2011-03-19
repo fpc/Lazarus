@@ -2283,10 +2283,6 @@ msgstr "Nie dziel wiersza po:"
 msgid "Do not split line In front of:"
 msgstr "Nie dziel wiersza przed:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2934,6 +2930,10 @@ msgstr "Cofnij / Przywróć:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Limit cofania"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4315,6 +4315,7 @@ msgid "Category"
 msgstr "Kategoria"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Źródło"
 
@@ -7033,6 +7034,10 @@ msgstr "Włącz makra"
 msgid "Enclose"
 msgstr ""
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8652,10 +8657,6 @@ msgstr ""
 msgid "Insert date and time"
 msgstr "Wstaw bieżącą datę i czas"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "Wstaw $IFDEF..."
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr ""
@@ -9667,10 +9668,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Uzupełnij kod"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Wstaw $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Konfiguruj plik \"Buduj+Uruchom\" ..."
@@ -9709,8 +9706,8 @@ msgstr "Importuj moduł Delphi..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Importuj formularz Delphi..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9832,13 +9829,13 @@ msgstr "Wybierz szablon:"
 msgid "Template Preview"
 msgstr "Podgląd szablonu"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Otocz zaznaczenie ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "Śro&dowisko"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13461,6 +13458,10 @@ msgstr ""
 msgid "Show packages"
 msgstr "Pokaż pakiety"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Pokaż znaki specjalne"
@@ -16683,6 +16684,11 @@ msgstr "Pokaż numery wierszy"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informacja o module"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Źródło"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

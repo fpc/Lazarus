@@ -2264,10 +2264,6 @@ msgstr "Nerozdeľovať riadok za:"
 msgid "Do not split line In front of:"
 msgstr "Nerozdeľovať riadok pred:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2915,6 +2911,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Limit vrátenia"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4312,6 +4312,7 @@ msgid "Category"
 msgstr "Kategória"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Zdrojový kód"
 
@@ -7034,6 +7035,10 @@ msgstr "Zapnúť makrá"
 msgid "Enclose"
 msgstr "Uzavrieť"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8657,10 +8662,6 @@ msgstr "Choď na editor zdrojových kódov 9"
 msgid "Insert date and time"
 msgstr "Vložiť dátum a čas"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "Vložiť $IFDEF"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "Vložiť meno používateľa"
@@ -9676,10 +9677,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Dokončovanie kódu"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Vložiť $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Konfigurovať budovanie + Spustiť súbor ..."
@@ -9718,8 +9715,8 @@ msgstr "Konvertovať jednotku Deplhi na Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Konvertovať súbor DFM na LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9842,13 +9839,13 @@ msgstr "Zvoliť šablónu:"
 msgid "Template Preview"
 msgstr "Ukážka šablóny"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Uzavrieť výber ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "P&rostredie"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13480,6 +13477,10 @@ msgstr "Zobraziť staré poradie záložiek"
 msgid "Show packages"
 msgstr "Zobraziť balíčky"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Zobraziť špeciálne znaky"
@@ -16704,6 +16705,11 @@ msgstr "Zobraziť čísla riadkov"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informácie o jednotke"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Zdrojový kód"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

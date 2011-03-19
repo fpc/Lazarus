@@ -2264,10 +2264,6 @@ msgstr "後の行を分割しない"
 msgid "Do not split line In front of:"
 msgstr "前の行を分割しない"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2915,6 +2911,10 @@ msgstr "元に戻す／やり直し"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "元に戻す回数の上限"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4312,6 +4312,7 @@ msgid "Category"
 msgstr "カテゴリ"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "ソース"
 
@@ -7035,6 +7036,10 @@ msgstr "マクロを有効にする"
 msgid "Enclose"
 msgstr "囲む"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8658,10 +8663,6 @@ msgstr "ソースエディタ9に移動"
 msgid "Insert date and time"
 msgstr "日付と時刻を挿入"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "$IFDEFを挿入"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "ユーザー名を挿入"
@@ -9677,10 +9678,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "コードを補完"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "$IFDEFを挿入"
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "[構築＋実行ファイル]を設定"
@@ -9719,8 +9716,8 @@ msgstr "DelphiユニットをLazarusユニットへ変換 ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "バイナリDFMファイルをテキストLFMへ変換し、表記法をチェック ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9843,13 +9840,13 @@ msgstr "テンプレートを選択："
 msgid "Template Preview"
 msgstr "テンプレートプレビュー"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "選択部分を囲む ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "環境(&N)"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13481,6 +13478,10 @@ msgstr "古いタブ順序を表示"
 msgid "Show packages"
 msgstr "パッケージを表示"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "特殊文字を表示"
@@ -16705,6 +16706,11 @@ msgstr "行番号を表示"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "ユニット情報"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "ソース"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

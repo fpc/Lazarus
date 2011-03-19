@@ -2257,10 +2257,6 @@ msgstr "אל תחצה את השורה אחרי:"
 msgid "Do not split line In front of:"
 msgstr "אל תחצה את השורה לפני:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2902,6 +2898,10 @@ msgstr "בטל/בצע מחדש:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "בטל גבול"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4280,6 +4280,7 @@ msgid "Category"
 msgstr "קטגוריה"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "מקור"
 
@@ -7001,6 +7002,10 @@ msgstr "אפשר מאקרו"
 msgid "Enclose"
 msgstr "צרף "
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8622,10 +8627,6 @@ msgstr "לך לעורך קוד 9"
 msgid "Insert date and time"
 msgstr "הכנס תאריך ושעה"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "הכנס IFDEF$"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "הכנס שם משתמש"
@@ -9640,10 +9641,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "השלם קוד"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "הכנס $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "מגדיר את קובץ בנה והרץ ..."
@@ -9681,7 +9678,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "המר יחידת דלפי ליחידת לזארוס"
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#, fuzzy
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "המר קובץ בינארי  DFM לקובץ בינארי LFM ובדוק תחביר ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9803,13 +9802,13 @@ msgstr "בחר תבנית:"
 msgid "Template Preview"
 msgstr "תצוגה מקדימה של תבניות"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "צרף את הבחירה"
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "ס&ביבה"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13427,6 +13426,10 @@ msgstr "הראה סדר לשוניות ישן"
 msgid "Show packages"
 msgstr "הראה חבילות"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "הראה תווים מיוחדים"
@@ -16646,6 +16649,11 @@ msgstr "הראה מספרי שורה"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "מידע על היחידה"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "מקור"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

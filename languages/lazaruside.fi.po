@@ -2252,10 +2252,6 @@ msgstr "Riviä ei katkaista kun sitä edellä oli:"
 msgid "Do not split line In front of:"
 msgstr "Riviä ei katkaista kun sitä seuraa:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2900,6 +2896,10 @@ msgstr "Kumoa / Palauta uudelleen"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
@@ -4292,6 +4292,7 @@ msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr ""
 
@@ -7010,6 +7011,10 @@ msgstr ""
 msgid "Enclose"
 msgstr "Lisää lauserakenne"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8633,10 +8638,6 @@ msgstr ""
 msgid "Insert date and time"
 msgstr ""
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr ""
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr ""
@@ -9644,10 +9645,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Täydennä koodia"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Ehdollinen kääntäminen"
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr ""
@@ -9686,8 +9683,8 @@ msgstr "Muunna tiedosto: Delphi unit -> Lazarus unit ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Muunna tiedosto: DFM -> LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9808,13 +9805,13 @@ msgstr "Valitse valmis malli:"
 msgid "Template Preview"
 msgstr "Mallin esikatselu"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Lauserakenteen lisäys ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "Käyttöliittymä"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13428,6 +13425,10 @@ msgstr ""
 msgid "Show packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Tuo esille erikoismerkit (kuten välilyönnit pisteinä, kelpaattomat merkit kysymysmerkkeinä)"
@@ -16650,6 +16651,11 @@ msgstr "Näytä rivinumerot"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Käännösyksikön tiedot"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

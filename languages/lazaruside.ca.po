@@ -2259,10 +2259,6 @@ msgstr "No separis la línia després de:"
 msgid "Do not split line In front of:"
 msgstr "No separis la línia abans de:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2907,6 +2903,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
@@ -4299,6 +4299,7 @@ msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr ""
 
@@ -7019,6 +7020,10 @@ msgstr "Permet Macroinstruccions"
 msgid "Enclose"
 msgstr "Tanca"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8638,10 +8643,6 @@ msgstr ""
 msgid "Insert date and time"
 msgstr ""
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr ""
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr ""
@@ -9653,10 +9654,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Completa el codi"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Insereix $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Configura Arxiu Build+Run ..."
@@ -9695,8 +9692,8 @@ msgstr "Converteix la unitat Delphi a unitat Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Converteix el fitxer DFM a LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9819,13 +9816,13 @@ msgstr "Selecciona la plantilla:"
 msgid "Template Preview"
 msgstr "Vista preliminar de la plantilla"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Tanca la selecció ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "E&ntorn"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13449,6 +13446,10 @@ msgstr ""
 msgid "Show packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr ""
@@ -16665,6 +16666,11 @@ msgstr "Mostra nombre de línia"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informació de la unitat"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-15 03:19+0300\n"
+"PO-Revision-Date: 2011-03-20 00:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2286,10 +2286,6 @@ msgstr "Не разрывать строку после:"
 msgid "Do not split line In front of:"
 msgstr "Не разрывать строку перед:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr "Не использовавшиеся модули в текущем проекте отсутствуют."
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2931,6 +2927,10 @@ msgstr "Параметры отмены:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Лимит отмен"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr "Модуль \"%s\" уже использует все модули в этом проекте"
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4316,6 +4316,7 @@ msgid "Category"
 msgstr "Категории"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Исходный код"
 
@@ -7035,6 +7036,10 @@ msgstr "Включить макросы"
 msgid "Enclose"
 msgstr "Заключить"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr "Заключить в $IFDEF"
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8657,10 +8662,6 @@ msgstr "Перейти к редактору исходного кода 9"
 msgid "Insert date and time"
 msgstr "Вставить дату и время"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "Вставить $IFDEF"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "Вставить имя пользователя"
@@ -9673,10 +9674,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Завершить код"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Вставить $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Параметры сборки+запуска ..."
@@ -9714,8 +9711,8 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Преобразовать двоичный файл DFM в текстовый LFM и проверить синтаксис ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9836,13 +9833,13 @@ msgstr "Выбрать шаблон:"
 msgid "Template Preview"
 msgstr "Просмотр шаблона"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr "Заключить в $IFDEF..."
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Заключить выделенное в ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "Окру&жение"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13454,6 +13451,10 @@ msgstr "Показать старый порядок перехода"
 msgid "Show packages"
 msgstr "Показывать пакеты"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr "Показать диалог настройки наиболее важных параметров"
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Показывать специальные символы"
@@ -16681,6 +16682,11 @@ msgstr "Показывать номера строк"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Сведения о модуле"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Исходный код"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

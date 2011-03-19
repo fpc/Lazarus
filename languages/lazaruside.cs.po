@@ -2254,10 +2254,6 @@ msgstr "Nerozdělovat řádek po:"
 msgid "Do not split line In front of:"
 msgstr "Nerozdělovat řádek před:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr "V tomto projektu nejsou dostupné žádné nepoužité prvky."
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2895,6 +2891,10 @@ msgstr "Vrátit zpět / Znovu opakovat:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Omezení vrátitelných akcí"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4268,6 +4268,7 @@ msgid "Category"
 msgstr "Skupina"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "Zdroj"
 
@@ -6982,6 +6983,10 @@ msgstr "Povolit makra"
 msgid "Enclose"
 msgstr "Ohraničit"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8601,10 +8606,6 @@ msgstr "Jít na editor zdroje 9"
 msgid "Insert date and time"
 msgstr "Vložit datum a čas"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "Vložit $IFDEF"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "Vložte uživatelské jméno"
@@ -9610,10 +9611,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Dokončení kódu"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "Vložit IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Nastavit soubor pro Sestavení+Spuštění..."
@@ -9651,7 +9648,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Převést Delphi jednotku na Lazarus jednotku ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#, fuzzy
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "Převést binární DFM soubor na textový LFM a zkontrolovat syntaxi..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9771,13 +9770,13 @@ msgstr "Vyberte šablonu:"
 msgid "Template Preview"
 msgstr "Náhled šablony"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Obklopit výběr"
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "P&rostředí"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13361,6 +13360,10 @@ msgstr "Ukázat staré pořadí záložek"
 msgid "Show packages"
 msgstr "Ukázat balíčky"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "Ukázat speciální znaky"
@@ -16574,6 +16577,11 @@ msgstr "Zobrazovat čísla řádků"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informace o jednotce"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "Zdroj"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"

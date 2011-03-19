@@ -2249,10 +2249,6 @@ msgstr ""
 msgid "Do not split line In front of:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2889,6 +2885,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
@@ -4271,6 +4271,7 @@ msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr ""
 
@@ -6985,6 +6986,10 @@ msgstr ""
 msgid "Enclose"
 msgstr ""
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8604,10 +8609,6 @@ msgstr ""
 msgid "Insert date and time"
 msgstr ""
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "$IFDEF ekle"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr ""
@@ -9617,10 +9618,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "kod Tamamlama"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "$IFDEF... ekle"
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "Dosya Oluştur+Çalıştır Yapılandırması ..."
@@ -9659,8 +9656,8 @@ msgstr "Delphi birimini Lazarus birimine dönüştür ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "DFM dosyasını LFM dosyasına dönüştür ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9783,13 +9780,13 @@ msgstr ""
 msgid "Template Preview"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Seçimi kuşat"
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "Ortam"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13405,6 +13402,10 @@ msgstr ""
 msgid "Show packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr ""
@@ -16620,6 +16621,11 @@ msgstr ""
 
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
+msgstr ""
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebookmark

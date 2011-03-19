@@ -2268,10 +2268,6 @@ msgstr "不拆分后面的行:"
 msgid "Do not split line In front of:"
 msgstr "不拆分前面的行:"
 
-#: lazarusidestrconsts.dlgnounuseditem
-msgid "No unused items are available in this project."
-msgstr ""
-
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
@@ -2919,6 +2915,10 @@ msgstr "撤销/重做:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "撤销限制"
+
+#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
+msgid "Unit \"%s\" already uses all the units in this project"
+msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -4316,6 +4316,7 @@ msgid "Category"
 msgstr "分类"
 
 #: lazarusidestrconsts.lisceomodesource
+msgctxt "lazarusidestrconsts.lisceomodesource"
 msgid "Source"
 msgstr "源代码"
 
@@ -7038,6 +7039,10 @@ msgstr "允许宏"
 msgid "Enclose"
 msgstr "封装"
 
+#: lazarusidestrconsts.lisencloseinifdef
+msgid "Enclose in $IFDEF"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -8659,10 +8664,6 @@ msgstr "转向源码编辑器 9"
 msgid "Insert date and time"
 msgstr "插入日期和时间"
 
-#: lazarusidestrconsts.liskminsertifdef
-msgid "Insert $IFDEF"
-msgstr "插入 $IFDEF"
-
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
 msgstr "插入用户名"
@@ -9678,10 +9679,6 @@ msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "自动完成代码"
 
-#: lazarusidestrconsts.lismenuconditionalselection
-msgid "Insert $IFDEF..."
-msgstr "插入 $IFDEF..."
-
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
 msgstr "配置 编译+运行 文件 ..."
@@ -9720,8 +9717,8 @@ msgstr "转换 Delphi 单元为 Lazarus 单元..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert DFM file to LFM ..."
-msgid "Convert binary DFM file to text LFM and check syntax ..."
+#| msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgid "Convert binary DFM to text LFM + check syntax ..."
 msgstr "转换 DFM 文件为 LFM 文件..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9844,13 +9841,13 @@ msgstr "选择模板:"
 msgid "Template Preview"
 msgstr "预览模板"
 
+#: lazarusidestrconsts.lismenuencloseinifdef
+msgid "Enclose in $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "封装所选 ..."
-
-#: lazarusidestrconsts.lismenuenvironent
-msgid "E&nvironment"
-msgstr "环境(&N)"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -13482,6 +13479,10 @@ msgstr "显示原来的 Tab 顺序"
 msgid "Show packages"
 msgstr "显示包"
 
+#: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
+msgid "Show setup dialog for most important settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
 msgstr "显示特殊字符"
@@ -16706,6 +16707,11 @@ msgstr "显示行号"
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
 msgstr "单元信息"
+
+#: lazarusidestrconsts.uemsource
+msgctxt "lazarusidestrconsts.uemsource"
+msgid "Source"
+msgstr "源代码"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
