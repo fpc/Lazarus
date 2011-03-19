@@ -156,8 +156,13 @@ class function TWin32WSCustomCheckListBox.CreateHandle(
 var
   Params: TCreateWindowExParams;
 begin
-  Params := GetListBoxParams(TCustomListBox(AWinControl), AParams, True);
-  Params.SubClassWndProc := @CheckListBoxWndProc;
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, AParams, Params);
+  with Params do
+  begin
+    pClassName := ListBoxClsName;
+    SubClassWndProc := @CheckListBoxWndProc;
+  end;
   // create window
   FinishCreateWindow(AWinControl, Params, False);
   // listbox is not a transparent control -> no need for parentpainting

@@ -57,6 +57,7 @@ type
     class procedure WSRegisterClass; override;
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
+    procedure CreateParams(var Params: TCreateParams); override;
     function  GetCachedDataSize: Integer; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
@@ -170,6 +171,12 @@ begin
   inherited AssignCacheToItemData(AIndex, AData);
   SendItemState(AIndex, PCachedItemData(AData + FItemDataOffset)^.State);
   SendItemEnabled(AIndex, not PCachedItemData(AData + FItemDataOffset)^.Disabled);
+end;
+
+procedure TCustomCheckListBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := (Params.Style and not LBS_OWNERDRAWVARIABLE) or LBS_OWNERDRAWFIXED;
 end;
 
 procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer;

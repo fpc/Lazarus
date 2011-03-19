@@ -519,6 +519,7 @@ type
     procedure BeginAutoDrag; override;
     function CalculateStandardItemHeight: Integer;
     procedure Loaded; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     class function GetControlClassDefaultSize: TSize; override;

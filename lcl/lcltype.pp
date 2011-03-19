@@ -931,6 +931,24 @@ const
   CBS_SORT              = $0100;
   CBS_HASSTRINGS        = $0200;
 
+  { Listbox style }
+  LBS_NOTIFY            = $0001;
+  LBS_SORT              = $0002;
+  LBS_NOREDRAW          = $0004;
+  LBS_MULTIPLESEL       = $0008;
+  LBS_OWNERDRAWFIXED    = $0010;
+  LBS_OWNERDRAWVARIABLE = $0020;
+  LBS_HASSTRINGS        = $0040;
+  LBS_USETABSTOPS       = $0080;
+  LBS_NOINTEGRALHEIGHT  = $0100;
+  LBS_MULTICOLUMN       = $0200;
+  LBS_WANTKEYBOARDINPUT = $0400;
+  LBS_EXTENDEDSEL       = $0800;
+  LBS_DISABLENOSCROLL   = $1000;
+  LBS_NODATA            = $2000;
+  LBS_NOSEL             = $4000;
+  LBS_STANDARD          = $A00003;
+
 const
 //==============================================
 // SetWindowPos Flags

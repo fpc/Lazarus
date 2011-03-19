@@ -296,9 +296,6 @@ function  EditGetSelLength(WinHandle: HWND): integer;
 procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
-function GetListBoxParams(AListBox: TCustomListBox;
-  const AParams: TCreateParams; IsCheckList: Boolean): TCreateWindowExParams;
-
 {$DEFINE MEMOHEADER}
 {$I win32memostrings.inc}
 {$UNDEF MEMOHEADER}
@@ -581,46 +578,15 @@ begin
   end;
 end;
 
-function GetListBoxParams(AListBox: TCustomListBox;
-  const AParams: TCreateParams; IsCheckList: Boolean): TCreateWindowExParams;
-begin
-  // general initialization of Params
-  PrepareCreateWindow(AListBox, AParams, Result);
-  // customization of Params
-  with Result do
-  begin
-    with AListBox do
-    begin
-      if Sorted then
-        Flags := Flags or LBS_SORT;
-      if MultiSelect then
-        if ExtendedSelect then
-          Flags := Flags or LBS_EXTENDEDSEL
-        else
-          Flags := Flags or LBS_MULTIPLESEL;
-      if Columns > 1 then
-        Flags := Flags or LBS_MULTICOLUMN;
-
-      if IsCheckList and (Style = lbStandard) then
-        Flags := Flags or LBS_OWNERDRAWFIXED
-      else
-        case Style of
-          lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
-          lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
-        end;
-    end;
-    pClassName := 'LISTBOX';
-    Flags := Flags or (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
-                       LBS_NOTIFY);
-  end;
-end;
-
 class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
 begin
-  Params := GetListBoxParams(TCustomListBox(AWinControl), AParams, False);
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, AParams, Params);
+  with Params do
+    pClassName := ListBoxClsName;
   // create window
   FinishCreateWindow(AWinControl, Params, False);
   // listbox is not a transparent control -> no need for parentpainting

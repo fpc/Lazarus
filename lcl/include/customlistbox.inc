@@ -72,6 +72,26 @@ begin
   end;
 end;
 
+procedure TCustomListBox.CreateParams(var Params: TCreateParams);
+const
+  MultiSelectStyle: array[Boolean] of DWord = (LBS_MULTIPLESEL, LBS_EXTENDEDSEL);
+begin
+  inherited CreateParams(Params);
+  if Sorted then
+    Params.Style := Params.Style or LBS_SORT;
+  if MultiSelect then
+    Params.Style := Params.Style or MultiSelectStyle[ExtendedSelect];
+  if Columns > 1 then
+    Params.Style := Params.Style or LBS_MULTICOLUMN;
+
+  case Style of
+    lbOwnerDrawFixed: Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
+    lbOwnerDrawVariable: Params.Style := Params.Style or LBS_OWNERDRAWVARIABLE;
+  end;
+  Params.Style := Params.Style or
+    (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or LBS_NOTIFY);
+end;
+
 {------------------------------------------------------------------------------
  procedure TCustomListBox.AssignItemDataToCache
 ------------------------------------------------------------------------------}
