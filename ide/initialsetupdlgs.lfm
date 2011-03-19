@@ -66,6 +66,7 @@ object InitialSetupDialog: TInitialSetupDialog
       AutoSize = True
       Caption = 'StartIDEBitBtn'
       Constraints.MinWidth = 100
+      OnClick = StartIDEBitBtnClick
       TabOrder = 0
     end
   end

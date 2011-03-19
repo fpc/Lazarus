@@ -105,6 +105,7 @@ type
     procedure LazDirComboBoxChange(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
+    procedure StartIDEBitBtnClick(Sender: TObject);
     procedure WelcomePaintBoxPaint(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
@@ -130,6 +131,10 @@ type
     procedure UpdateLazDirNote;
     procedure UpdateCompilerNote;
     procedure UpdateFPCSrcDirNote;
+    function FirstErrorNode: TTreeNode;
+    function GetCurrentLazarusDir: string;
+    function GetCurrentCompilerFilename: string;
+    function GetCurrentFPCSrcDir: string;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -140,7 +145,7 @@ type
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
-procedure ShowInitialSetupDialog;
+function ShowInitialSetupDialog: TModalResult;
 
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);
@@ -623,6 +628,7 @@ var
   SrcVer: String;
 begin
   Result:=sddqInvalid;
+  Note:='';
   ADirectory:=TrimFilename(ADirectory);
   if not DirPathExistsCached(ADirectory) then
   begin
@@ -810,14 +816,14 @@ begin
   end;
 end;
 
-procedure ShowInitialSetupDialog;
+function ShowInitialSetupDialog: TModalResult;
 var
   InitialSetupDialog: TInitialSetupDialog;
 begin
   InitialSetupDialog:=TInitialSetupDialog.Create(nil);
   try
     InitialSetupDialog.Init;
-    InitialSetupDialog.ShowModal;
+    Result:=InitialSetupDialog.ShowModal;
   finally
     InitialSetupDialog.Free;
   end;
@@ -863,7 +869,6 @@ end;
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
 var
-  i: Integer;
   Node: TTreeNode;
 begin
   Caption:='Welcome to Lazarus IDE '+GetLazarusVersionString;
@@ -892,16 +897,10 @@ begin
   FPCSrcDirLabel.Caption:='The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file "'+SetDirSeparators('rtl/linux/system.pp')+'".';
 
   // select first error
-  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
-  begin
-    Node:=PropertiesTreeView.Items.TopLvlItems[i];
-    if Node.ImageIndex=ImgIDError then begin
-      SelectPage(Node.Text);
-      break;
-    end;
-  end;
-  if PropertiesTreeView.Selected=nil then
-    PropertiesTreeView.Selected:=TVNodeLazarus;
+  Node:=FirstErrorNode;
+  if Node=nil then
+    Node:=TVNodeLazarus;
+  PropertiesTreeView.Selected:=Node;
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
@@ -925,7 +924,7 @@ var
 begin
   IdleConnected:=false;
   for d:=low(FDirs) to high(FDirs) do
-    FreeAndNil(FDirs);
+    FreeAndNil(FDirs[d]);
   FreeAndNil(FHeadGraphic);
 end;
 
@@ -978,6 +977,31 @@ begin
     SelectPage(TVNodeLazarus.Text)
   else
     SelectPage(PropertiesTreeView.Selected.Text);
+end;
+
+procedure TInitialSetupDialog.StartIDEBitBtnClick(Sender: TObject);
+var
+  Node: TTreeNode;
+  s: String;
+  MsgResult: TModalResult;
+begin
+  Node:=FirstErrorNode;
+  if Node=TVNodeLazarus then
+    s:='Without a proper Lazarus directory you will get a lot of warnings.'
+  else if Node=TVNodeCompiler then
+    s:='Without a proper compiler the code browsing and compiling will be disappointing.'
+  else if Node=TVNodeFPCSources then
+    s:='Without the proper FPC sources code browsing and completion will be very limited.';
+  if s<>'' then begin
+    MsgResult:=MessageDlg('Warning',s,mtWarning,[mbIgnore,mbCancel],0);
+    if MsgResult<>mrIgnore then exit;
+  end;
+
+  EnvironmentOptions.LazarusDirectory:=GetCurrentLazarusDir;
+  EnvironmentOptions.CompilerFilename:=GetCurrentCompilerFilename;
+  EnvironmentOptions.FPCSourceDirectory:=GetCurrentFPCSrcDir;
+
+  ModalResult:=mrOk;
 end;
 
 procedure TInitialSetupDialog.WelcomePaintBoxPaint(Sender: TObject);
@@ -1293,6 +1317,68 @@ begin
     ImageIndex:=ImgIDError;
   TVNodeFPCSources.ImageIndex:=ImageIndex;
   TVNodeFPCSources.StateIndex:=ImageIndex;
+end;
+
+function TInitialSetupDialog.FirstErrorNode: TTreeNode;
+var
+  i: Integer;
+begin
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDError then exit;
+  end;
+  Result:=nil;
+end;
+
+function TInitialSetupDialog.GetCurrentLazarusDir: string;
+var
+  Dirs: TObjectList;
+  i: Integer;
+begin
+  Dirs:=FDirs[sddtLazarusSrcDir];
+  Result:=LazDirComboBox.Text;
+  if Dirs<>nil then begin
+    i:=Dirs.Count-1;
+    while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+  end;
+  if i>=0 then
+    Result:=TSDFileInfo(Dirs[i]).Filename;
+  Result:=ChompPathDelim(TrimFilename(Result));
+  if Result<>'' then
+    Result:=ChompPathDelim(TrimFilename(ExpandFileNameUTF8(Result)));
+end;
+
+function TInitialSetupDialog.GetCurrentCompilerFilename: string;
+var
+  Dirs: TObjectList;
+  i: Integer;
+begin
+  Dirs:=FDirs[sddtCompilerFilename];
+  Result:=CompilerComboBox.Text;
+  if Dirs<>nil then begin
+    i:=Dirs.Count-1;
+    while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+  end;
+  if i>=0 then
+    Result:=TSDFileInfo(Dirs[i]).Filename;
+  Result:=TrimFilename(Result);
+end;
+
+function TInitialSetupDialog.GetCurrentFPCSrcDir: string;
+var
+  Dirs: TObjectList;
+  i: Integer;
+begin
+  Dirs:=FDirs[sddtFPCSrcDir];
+  Result:=FPCSrcDirComboBox.Text;
+  if Dirs<>nil then begin
+    i:=Dirs.Count-1;
+    while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+  end;
+  if i>=0 then
+    Result:=TSDFileInfo(Dirs[i]).Filename;
+  Result:=ChompPathDelim(TrimFilename(Result));
 end;
 
 procedure TInitialSetupDialog.Init;

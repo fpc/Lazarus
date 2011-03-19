@@ -105,19 +105,22 @@ begin
   end;
 
   MainIDE:=TMainIDE.Create(Application);
-  MainIDE.CreateOftenUsedForms;
-  try
-    MainIDE.StartIDE;
-  except
-    Application.HandleException(MainIDE);
-  end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
+  if not Application.Terminated then
+  begin
+    MainIDE.CreateOftenUsedForms;
+    try
+      MainIDE.StartIDE;
+    except
+      Application.HandleException(MainIDE);
+    end;
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
 
-  try
-    Application.Run;
-  except
-    debugln('lazarus.pp - unhandled exception');
-    Halt;
+    try
+      Application.Run;
+    except
+      debugln('lazarus.pp - unhandled exception');
+      Halt;
+    end;
   end;
   if (SplashForm<>nil) then begin
     SplashForm.Free;

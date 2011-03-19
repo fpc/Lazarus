@@ -963,7 +963,7 @@ type
     procedure UnhideIDE; override;
 
     // methods for codetools
-    procedure InitCodeToolBoss;
+    function InitCodeToolBoss: boolean;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -1179,11 +1179,9 @@ begin
     AddHelp(['']);
     AddHelp(['-v or --version          ', lisShowVersionAndExit]);
     AddHelp(['']);
-    {$IFDEF EnableSetupDlg}
     AddHelp([ShowSetupDialogOptLong]);
     AddHelp([BreakString(space+lisShowSetupDialogForMostImportantSettings, 75, 22)]);
     AddHelp(['']);
-    {$ENDIF}
     AddHelp([PrimaryConfPathOptLong, ' <path>']);
     AddHelp(['or ', PrimaryConfPathOptShort, ' <path>']);
     AddHelp([BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
@@ -1341,7 +1339,10 @@ begin
   SetupCodeMacros;
 
   // setup the code tools
-  InitCodeToolBoss;
+  if not InitCodeToolBoss then begin
+    Application.Terminate;
+    exit;
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
   // build and position the MainIDE form
@@ -13997,13 +13998,16 @@ end;
 
 // -----------------------------------------------------------------------------
 
-procedure TMainIDE.InitCodeToolBoss;
+function TMainIDE.InitCodeToolBoss: boolean;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
 //  - sets a basic set of compiler macros
 var
   AFilename: string;
   InteractiveSetup: boolean;
+  Note: string;
+  CfgCache: TFPCTargetConfigCache;
 begin
+  Result:=true;
   InteractiveSetup:=true;
   OpenEditorsOnCodeToolChange:=false;
 
@@ -14036,7 +14040,8 @@ begin
     DebugLn(
       'NOTE: Lazarus source directory not set!  (see Environment / Options ... / Environment / Files)');
   end;
-  if (EnvironmentOptions.FPCSourceDirectory='') then begin
+  if (EnvironmentOptions.FPCSourceDirectory='') then
+  begin
     // Note: the FPCSourceDirectory can contain the macro FPCVer, which depend
     //       on the compiler. Do not check if file exists here.
     DebugLn('');
@@ -14046,15 +14051,27 @@ begin
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
 
-  if ShowSetupDialog and InteractiveSetup then
-    ShowInitialSetupDialog;
-
-  // find the lazarus source directory
-  SetupLazarusDirectory(InteractiveSetup);
-  // find the compiler executable
-  SetupCompilerFilename(InteractiveSetup);
-  // find the FPC source directory
-  SetupFPCSourceDirectory(InteractiveSetup);
+  if InteractiveSetup then
+  begin
+    if (not ShowSetupDialog)
+    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.LazarusDirectory,Note)=sddqInvalid)
+      or (CheckCompilerQuality(EnvironmentOptions.GetCompilerFilename,Note,
+                         CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid))
+    then
+      ShowSetupDialog:=true;
+    if (not ShowSetupDialog) then
+    begin
+      CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+        EnvironmentOptions.GetCompilerFilename,'','','',true);
+      if CheckFPCSrcDirQuality(EnvironmentOptions.GetFPCSourceDirectory,Note,
+        CfgCache.GetFPCVer)=sddqInvalid
+      then
+        ShowSetupDialog:=true;
+    end;
+    if ShowSetupDialog then
+      if ShowInitialSetupDialog<>mrOk then
+        exit(false);
+  end;
 
   // set global macros
   with CodeToolBoss.GlobalValues do begin
@@ -14064,6 +14081,7 @@ begin
     Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetFPCSourceDirectory;
   end;
 
+  debugln(['TMainIDE.InitCodeToolBoss AAA2']);
   // the first template is the "use default" flag
   CreateUseDefaultsFlagTemplate;
 
