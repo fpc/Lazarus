@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc,
+  ButtonPanel, Dialogs, LCLProc, FileProcs,
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ProjectIntf, Project, CodeCache, CodeToolManager;
 
@@ -51,6 +51,7 @@ type
     procedure SelectFirst;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
+    procedure EnableOnlyInterface;
   public
 
   end; 
@@ -79,7 +80,6 @@ begin
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code=nil then exit;
-  CurrentUnitName:='';
   MainUsedUnits:=nil;
   ImplUsedUnits:=nil;
   AvailUnits:=TStringList.Create;
@@ -91,18 +91,25 @@ begin
     end;
     TStringList(MainUsedUnits).CaseSensitive:=False;
     TStringList(ImplUsedUnits).CaseSensitive:=False;
+    // Debug message will be cleaned soon!!!
+    if SrcEdit.GetProjectFile is TUnitInfo then
+      CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
+    else
+      CurrentUnitName:='';
+    DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = ' + CurrentUnitName);
     // Add available unit names to AvailUnits.
     ProjFile:=Project1.FirstPartOfProject;
     while ProjFile<>nil do begin
       s:=ProjFile.Unit_Name;
-      // "GetProjectFile.Unit_NameUnit_Name" returns character case matching with
-      // "ProjFile.Unit_Name" character case when inside this loop.
-      // Earlier it returns a name extracted from file name. Some clever cache feature.
-      if s=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name then begin
-        CurrentUnitName:=s;
-        s:='';             // current unit
+      if s=CurrentUnitName then begin      // current unit
+///
+        if SrcEdit.GetProjectFile is TUnitInfo then   // Debug!
+          DebugLn('ShowUseProjUnitDialog: CurrentUnitName in loop = ' +
+                      TUnitInfo(SrcEdit.GetProjectFile).Unit_Name);
+///
+        s:='';
       end;
-      if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
+      if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
         if (MainUsedUnits.IndexOf(s)<0) and (ImplUsedUnits.IndexOf(s)<0) then
           AvailUnits.Add(s);
       ProjFile:=ProjFile.NextPartOfProject;
@@ -114,12 +121,9 @@ begin
       try
         UseProjUnitDlg.AddItems(AvailUnits);
         UseProjUnitDlg.SelectFirst;
-        if SrcEdit.GetProjectFile = Project1.MainUnitInfo then
-        begin
-          // there is only main uses section in program/library/package
-          UseProjUnitDlg.SectionRadioGroup.ItemIndex := 0;
-          UseProjUnitDlg.SectionRadioGroup.Enabled := False;
-        end;
+        // there is only main uses section in program/library/package
+        if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
+          UseProjUnitDlg.EnableOnlyInterface;
         if UseProjUnitDlg.ShowModal=mrOk then begin
           s:=UseProjUnitDlg.SelectedUnit;
           if s<>'' then begin
@@ -137,8 +141,11 @@ begin
         UseProjUnitDlg.Free;
       end;
     end
-    else
+    else begin
+      if CurrentUnitName='' then
+        CurrentUnitName:=ExtractFileNameOnly(Code.Filename);
       ShowMessage(Format(dlgUnitAlreadyUsesAllOtherUnits,[CurrentUnitName]));
+    end;
   finally
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     ImplUsedUnits.Free;
@@ -191,6 +198,12 @@ end;
 function TUseProjUnitDialog.InterfaceSelected: Boolean;
 begin
   Result:=SectionRadioGroup.ItemIndex=0;
+end;
+
+procedure TUseProjUnitDialog.EnableOnlyInterface;
+begin
+  SectionRadioGroup.ItemIndex := 0;
+  SectionRadioGroup.Enabled := False;
 end;
 
 
