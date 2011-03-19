@@ -4977,6 +4977,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
+  IncreaseBuildMacroChangeStamp;
   MainBuildBoss.RescanCompilerDefines(false,true,false,false);
 end;
 

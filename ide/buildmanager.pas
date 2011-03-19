@@ -1483,7 +1483,6 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
 
   function Compute: string;
   var
-    FPCVersion, FPCRelease, FPCPatch: integer;
     TargetOS: String;
     TargetCPU: String;
     CompilerFilename: String;
@@ -1500,7 +1499,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                                    CompilerFilename,'',TargetOS,TargetCPU,true);
       if ConfigCache=nil then exit;
-      if (ConfigCache.CompilerDate=0) and ConfigCache.NeedsUpdate then begin
+      if ConfigCache.NeedsUpdate then begin
         // ask compiler
         if not ConfigCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
                                   CodeToolBoss.FPCDefinesCache.ExtraOptions,nil)
