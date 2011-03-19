@@ -763,8 +763,6 @@ begin
 end;
 
 function TLazBuildApplication.Init: boolean;
-var
-  InteractiveSetup: Boolean;
 begin
   if fInitialized then exit(fInitResult);
   fInitResult:=false;
@@ -776,12 +774,11 @@ begin
   MainBuildBoss.HasGUI:=false;
   LoadEnvironmentOptions;
   LoadMiscellaneousOptions;
-  InteractiveSetup:=false;
   SetupMacros;
-  SetupCompilerFilename(InteractiveSetup);
+  SetupLazarusDirectory;
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
-  SetupLazarusDirectory(InteractiveSetup);
+  SetupCompilerFilename;
   SetupPackageSystem;
   SetupOutputFilter;
   MainBuildBoss.SetupCompilerInterface;

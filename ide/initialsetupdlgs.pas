@@ -150,11 +150,13 @@ function ShowInitialSetupDialog: TModalResult;
 function CheckLazarusDirectoryQuality(ADirectory: string;
   out Note: string): TSDFilenameQuality;
 function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
+procedure SetupLazarusDirectory;
 
 function CheckCompilerQuality(AFilename: string;
   out Note: string; TestSrcFilename: string): TSDFilenameQuality;
 function SearchCompilerCandidates(StopIfFits: boolean;
   const LazarusDir, TestSrcFilename: string): TObjectList;
+procedure SetupCompilerFilename;
 
 function CheckFPCSrcDirQuality(ADirectory: string;
   out Note: string; FPCVer: string): TSDFilenameQuality;
@@ -322,6 +324,34 @@ begin
       if CheckDir(Dirs[i],Result) then exit;
 end;
 
+procedure SetupLazarusDirectory;
+var
+  Note: string;
+  Dir: String;
+  Quality: TSDFilenameQuality;
+  BestDir: TSDFileInfo;
+  List: TObjectList;
+begin
+  Dir:=EnvironmentOptions.LazarusDirectory;
+  Quality:=CheckLazarusDirectoryQuality(Dir,Note);
+  if Quality<>sddqInvalid then exit;
+  debugln(['SetupLazarusDirectory: The Lazarus directory "',Dir,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
+  List:=SearchLazarusDirectoryCandidates(true);
+  try
+    BestDir:=nil;
+    if List<>nil then
+      BestDir:=TSDFileInfo(List[List.Count-1]);
+    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
+      debugln(['SetupCompilerFilename: no proper Lazarus directory found.']);
+      exit;
+    end;
+    EnvironmentOptions.LazarusDirectory:=BestDir.Filename;
+    debugln(['SetupLazarusDirectory: using ',EnvironmentOptions.LazarusDirectory]);
+  finally
+    List.Free;
+  end;
+end;
+
 function CheckCompilerQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
 var
@@ -456,9 +486,43 @@ begin
     finally
       Files.Free;
     end;
+
+    // ToDo: search for different versions
+    // under windows: %PROGRAMFILES%\FPC\*, %SYSTEMDRIVE%\FPC\*\, C:\pp\, $(LazDir)\FPC
+    //              containing bin\i386-win32\fpc.exe
+
   finally
     if Macros<>nil then
       Macros.Free;
+  end;
+end;
+
+procedure SetupCompilerFilename;
+var
+  Note: string;
+  CompFile: String;
+  Quality: TSDFilenameQuality;
+  BestDir: TSDFileInfo;
+  List: TObjectList;
+begin
+  CompFile:=EnvironmentOptions.GetCompilerFilename;
+  Quality:=CheckCompilerQuality(CompFile,Note,'');
+  if Quality<>sddqInvalid then exit;
+  debugln(['SetupCompilerFilename: The compiler path "',CompFile,'" is invalid (Error: ',Note,'). Searching a proper one ...']);
+  List:=SearchCompilerCandidates(true,EnvironmentOptions.LazarusDirectory,
+                                 CodeToolBoss.FPCDefinesCache.TestFilename);
+  try
+    BestDir:=nil;
+    if List<>nil then
+      BestDir:=TSDFileInfo(List[List.Count-1]);
+    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
+      debugln(['SetupCompilerFilename: no proper compiler found.']);
+      exit;
+    end;
+    EnvironmentOptions.CompilerFilename:=BestDir.Filename;
+    debugln(['SetupCompilerFilename: using ',EnvironmentOptions.CompilerFilename]);
+  finally
+    List.Free;
   end;
 end;
 
@@ -860,9 +924,14 @@ begin
     if MsgResult<>mrIgnore then exit;
   end;
 
-  EnvironmentOptions.LazarusDirectory:=GetCurrentLazarusDir;
-  EnvironmentOptions.CompilerFilename:=GetCurrentCompilerFilename;
-  EnvironmentOptions.FPCSourceDirectory:=GetCurrentFPCSrcDir;
+  s:=GetCurrentLazarusDir;
+  if s<>'' then EnvironmentOptions.LazarusDirectory:=s;
+  s:=GetCurrentCompilerFilename;
+  if s<>'' then
+    EnvironmentOptions.CompilerFilename:=s;
+  s:=GetCurrentFPCSrcDir;
+  if s<>'' then
+    EnvironmentOptions.FPCSourceDirectory:=s;
 
   ModalResult:=mrOk;
 end;
@@ -975,7 +1044,9 @@ begin
         sl.Add(TSDFileInfo(List[i]).Caption);
     ABox.Items.Assign(sl);
     if (ItemIndex>=0) and (ItemIndex<sl.Count) then
-      ABox.Text:=sl[ItemIndex];
+      ABox.Text:=sl[ItemIndex]
+    else if ABox.Text=ABox.Name then
+      ABox.Text:='';
   finally
     sl.Free;
   end;
