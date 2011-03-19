@@ -165,15 +165,15 @@ type
     FDefaultExt: String;
     FHideDirectories: Boolean;
     FInitialDir: String;
-    FOnAcceptFN: TAcceptFileNameEvent;
+    FOnAcceptFileName: TAcceptFileNameEvent;
     FOnFolderChange: TNotifyEvent;
     FFileNameChangeLock: Integer;
     procedure SetFileName(const AValue: String);
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
-    procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
+    function CreateDialog(AKind: TDialogKind): TCommonDialog; virtual;
+    procedure SaveDialogResult(AKind: TDialogKind; D: TCommonDialog); virtual;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
     procedure TextChanged; override;
@@ -186,7 +186,7 @@ type
     // TFileName properties.
     property FileName: String read FFileName write SetFileName;
     property InitialDir: String read FInitialDir write FInitialDir;
-    property OnAcceptFileName: TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
+    property OnAcceptFileName: TAcceptFileNameEvent read FOnAcceptFileName write FOnAcceptFileName;
     property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property DialogKind: TDialogKind read FDialogKind write FDialogKind default dkOpen;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
@@ -747,24 +747,24 @@ var
   O: TOpenDialog;
   S: TSaveDialog;
 begin
-  Case AKind of
+  case AKind of
     dkopen, dkPictureOpen:
     begin
-      O:=TOpenDialog.Create(Self);
-      O.FileName:=FileName;
-      O.Options:=DialogOptions;
-      O.InitialDir:=InitialDir;
-      O.Filter:=Filter;
-      O.FilterIndex:=FilterIndex;
-      Result:=O;
+      O := TOpenDialog.Create(Self);
+      O.FileName := FileName;
+      O.Options := DialogOptions;
+      O.InitialDir := InitialDir;
+      O.Filter := Filter;
+      O.FilterIndex := FilterIndex;
+      Result := O;
     end;
     dkSave, dkPictureSave:
     begin
       S:=TSaveDialog.Create(Self);
-      S.DefaultExt:= FDefaultExt;
-      S.Filter:=Filter;
-      S.FilterIndex:=FilterIndex;
-      Result:=S;
+      S.DefaultExt := FDefaultExt;
+      S.Filter := Filter;
+      S.FilterIndex := FilterIndex;
+      Result := S;
     end;
   end;
   // Set some common things.
@@ -776,24 +776,26 @@ var
   FN: String;
 begin
   case AKind of
-    dkOpen,dkPictureOpen :
+    dkOpen, dkPictureOpen :
     begin
-      FN:=TOpenDialog(D).FileName;
-      if (FN<>'') then
+      FilterIndex := TOpenDialog(D).FilterIndex;
+      FN := TOpenDialog(D).FileName;
+      if (FN <> '') then
       begin
-        if Assigned(FOnAcceptFN) then
-          FOnAcceptFN(Self,Fn);
+        if Assigned(OnAcceptFileName) then
+          OnAcceptFileName(Self, FN);
       end;
-      if (FN<>'') then
+      if (FN <> '') then
       begin
         // set FDialogFiles first since assigning of FileName trigger events
-        FDialogFiles.Text:=TOpenDialog(D).Files.Text;
-        FileName:=FN;
+        FDialogFiles.Text := TOpenDialog(D).Files.Text;
+        FileName := FN;
       end;
     end;
-    dkSave,dkPictureSave :
+    dkSave, dkPictureSave :
     begin
-      FileName:=TSaveDialog(D).FileName;
+      FileName := TSaveDialog(D).FileName;
+      FilterIndex := TSaveDialog(D).FilterIndex;
       FDialogFiles.Clear;
     end;
   end;
@@ -817,12 +819,12 @@ end;
 
 procedure TFileNameEdit.RunDialog;
 var
-  D : TCommonDialog;
+  D: TCommonDialog;
 begin
-  D:=CreateDialog(DialogKind);
+  D := CreateDialog(DialogKind);
   try
     if D.Execute then
-      SaveDialogResult(DialogKind,D);
+      SaveDialogResult(DialogKind, D);
   finally
     D.Free;
   end
