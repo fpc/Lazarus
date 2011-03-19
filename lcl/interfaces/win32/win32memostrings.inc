@@ -205,15 +205,17 @@ end;
 procedure TWin32MemoStrings.SetTextStr(const Value: string);
 var
   Msg: TLMessage;
+  AdjustedValue: String;
 begin
-  if (Value <> Text) then
+  AdjustedValue := AdjustLineBreaks(Value);
+  if (AdjustedValue <> Text) then
   begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then Windows.SetWindowTextW(FHandle, PWideChar(UTF8ToUTF16(Value)))
-    else Windows.SetWindowText(FHandle, PChar(Utf8ToAnsi(Value)));
+    then Windows.SetWindowTextW(FHandle, PWideChar(UTF8ToUTF16(AdjustedValue)))
+    else Windows.SetWindowText(FHandle, PChar(Utf8ToAnsi(AdjustedValue)));
   {$else}
-    SendMessage(FHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
+    SendMessage(FHandle, WM_SETTEXT, 0, LPARAM(PChar(AdjustedValue)));
   {$endif}
     FillChar(Msg, SizeOf(Msg), 0);
     Msg.Msg := CM_TEXTCHANGED;
