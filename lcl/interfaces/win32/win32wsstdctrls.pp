@@ -119,7 +119,7 @@ type
   published
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;

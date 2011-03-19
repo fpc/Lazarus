@@ -122,7 +122,8 @@ begin
       begin
         WindowInfo := GetWin32WindowInfo(Window);
         Count := SendMessage(Window, LB_GETCOUNT, 0, 0);
-        if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) and
+        if Assigned(WindowInfo) and Assigned(WindowInfo^.WinControl) and
+           (TCustomListBox(WindowInfo^.WinControl).Columns < 2) and
            (Count <> LB_ERR) and (SendMessage(Window, LB_GETITEMRECT, Count - 1, Windows.LParam(@ARect)) <> LB_ERR) then
         begin
           Top := ARect.Bottom;
