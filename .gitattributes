@@ -2422,6 +2422,7 @@ components/tachart/icons/tcalculatedchartsource.png -text svneol=unset#images/pn
 components/tachart/icons/tchart.png -text svneol=unset#images/png
 components/tachart/icons/tchartaxistransformations.png -text svneol=unset#images/png
 components/tachart/icons/tchartlegendpanel.png -text
+components/tachart/icons/tchartnavscrollbar.png -text
 components/tachart/icons/tchartstyles.png -text svneol=unset#images/png
 components/tachart/icons/tcharttoolset.png -text svneol=unset#images/png
 components/tachart/icons/tdatetimeintervalchartsource.png -text svneol=unset#images/png
@@ -2446,6 +2447,7 @@ components/tachart/tagraph.pas svneol=native#text/plain
 components/tachart/talegend.pas svneol=native#text/plain
 components/tachart/talegendpanel.pas svneol=native#text/pascal
 components/tachart/tamultiseries.pas svneol=native#text/pascal
+components/tachart/tanavigation.pas svneol=native#text/pascal
 components/tachart/taprint.pas svneol=native#text/pascal
 components/tachart/taradialseries.pas svneol=native#text/pascal
 components/tachart/taseries.pas svneol=native#text/plain

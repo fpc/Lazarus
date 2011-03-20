@@ -175,6 +175,7 @@ type
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FDrawer: IChartDrawer;
+    FExtentBroadcaster: TBroadcaster;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
     FOnExtentChanged: TChartEvent;
@@ -284,6 +285,7 @@ type
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
+    property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property OnChartPaint: TChartPaintEvent
       read FOnChartPaint write SetOnChartPaint; experimental;
@@ -505,6 +507,7 @@ begin
   inherited Create(AOwner);
 
   FBroadcaster := TBroadcaster.Create;
+  FExtentBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
   FAxisVisible := true;
   FDrawer := TCanvasDrawer.Create(Canvas);
@@ -577,6 +580,7 @@ begin
   FreeAndNil(FMargins);
   FreeAndNil(FBuiltinToolset);
   FreeAndNil(FBroadcaster);
+  FreeAndNil(FExtentBroadcaster);
 
   DrawData.DeleteByChart(Self);
   inherited;
@@ -686,6 +690,7 @@ begin
     (FPrevLogicalExtent.a <> FLogicalExtent.a) or
     (FPrevLogicalExtent.b <> FLogicalExtent.b)
   then begin
+    FExtentBroadcaster.Broadcast(Self);
     if Assigned(OnExtentChanged) then
       OnExtentChanged(Self);
     FPrevLogicalExtent := FLogicalExtent;
