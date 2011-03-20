@@ -164,6 +164,7 @@ type
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnChartPaint: TChartPaintEvent;
     FOnDrawReticule: TDrawReticuleEvent;
+    FProportional: Boolean;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
     FToolset: TBasicChartToolset;
@@ -180,7 +181,6 @@ type
     FOffset: TDoublePoint;   // Coordinates transformation
     FOnExtentChanged: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
-    FProportional: Boolean;
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
@@ -264,6 +264,7 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     function GetFullExtent: TDoubleRect;
+    procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
@@ -959,6 +960,31 @@ begin
   {$WARNINGS ON}
   if defaultDrawing then
     Draw(FDrawer, GetClientRect);
+end;
+
+procedure TChart.PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
+var
+  oldScale, oldOffset: TDoublePoint;
+  oldClipRect: TRect;
+  oldLogicalExtent: TDoubleRect;
+  oldIsZoomed: Boolean;
+begin
+  // TODO: Group rendering params into a structure.
+  oldScale := FScale;
+  oldOffset := FOffset;
+  oldClipRect := FClipRect;
+  oldLogicalExtent := FLogicalExtent;
+  oldIsZoomed := FIsZoomed;
+  try
+    FIsZoomed := false;
+    PaintOnCanvas(ACanvas, ARect);
+  finally
+    FScale := oldScale;
+    FOffset := oldOffset;
+    FClipRect := oldClipRect;
+    FLogicalExtent := oldLogicalExtent;
+    FIsZoomed := oldIsZoomed;
+  end;
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
