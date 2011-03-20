@@ -89,27 +89,30 @@ type
 
   TChartNavPanel = class(TCustomControl)
   private
-    FChart: TChart;
-    FFullExtentPen: TPen;
-    FListener: TListener;
-    FLogicalExtentPen: TPen;
-    FProportional: Boolean;
-    procedure ChartExtentChanged(ASender: TObject);
-    procedure SetChart(AValue: TChart);
-    procedure SetFullExtentPen(AValue: TPen);
-    procedure SetLogicalExtentPen(AValue: TPen);
-    procedure SetProportional(AValue: Boolean);
-  private
-    FAllowDragNavigation: Boolean;
-    FDragCursor: TCursor;
     FIsDragging: Boolean;
     FLogicalExtentRect: TRect;
     FOffset: TDoublePoint;
     FOldCursor: TCursor;
     FPrevPoint: TDoublePoint;
     FScale: TDoublePoint;
+    FUpdateLocked: Boolean;
+    procedure ChartExtentChanged(ASender: TObject);
+  private
+    FAllowDragNavigation: Boolean;
+    FChart: TChart;
+    FDragCursor: TCursor;
+    FFullExtentPen: TPen;
+    FListener: TListener;
+    FLogicalExtentPen: TPen;
+    FMiniMap: Boolean;
+    FProportional: Boolean;
     FShift: TShiftState;
+    procedure SetChart(AValue: TChart);
     procedure SetDragCursor(AValue: TCursor);
+    procedure SetFullExtentPen(AValue: TPen);
+    procedure SetLogicalExtentPen(AValue: TPen);
+    procedure SetMiniMap(AValue: Boolean);
+    procedure SetProportional(AValue: Boolean);
   protected
     procedure MouseDown(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
@@ -127,6 +130,7 @@ type
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crSizeAll;
     property FullExtentPen: TPen read FFullExtentPen write SetFullExtentPen;
     property LogicalExtentPen: TPen read FLogicalExtentPen write SetLogicalExtentPen;
+    property MiniMap: Boolean read FMiniMap write SetMiniMap default false;
     property Proportional: Boolean read FProportional write SetProportional default false;
     property Shift: TShiftState read FShift write FShift default [ssLeft];
   published
@@ -244,7 +248,8 @@ end;
 procedure TChartNavPanel.ChartExtentChanged(ASender: TObject);
 begin
   Unused(ASender);
-  Invalidate;
+  if not FUpdateLocked then
+    Invalidate;
 end;
 
 constructor TChartNavPanel.Create(AOwner: TComponent);
@@ -351,9 +356,19 @@ begin
   end;
   FOffset -= ext.a * FScale;
 
-  Canvas.Brush.Color := Chart.BackColor;
-  Canvas.Brush.Style := bsSolid;
-  Canvas.FillRect(ClientRect);
+  if MiniMap then begin
+    FUpdateLocked := true;
+    try
+      Chart.PaintOnAuxCanvas(Canvas, Rect(0, 0, Width, Height));
+    finally
+      FUpdateLocked := false;
+    end;
+  end
+  else begin
+    Canvas.Brush.Color := Chart.BackColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
+  end;
   Canvas.Brush.Style := bsClear;
   Canvas.Pen := FullExtentPen;
   DrawRect(fe);
@@ -392,6 +407,13 @@ procedure TChartNavPanel.SetLogicalExtentPen(AValue: TPen);
 begin
   if FLogicalExtentPen = AValue then exit;
   FLogicalExtentPen := AValue;
+  Invalidate;
+end;
+
+procedure TChartNavPanel.SetMiniMap(AValue: Boolean);
+begin
+  if FMiniMap = AValue then exit;
+  FMiniMap := AValue;
   Invalidate;
 end;
 

@@ -966,7 +966,7 @@ procedure TChart.PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
 var
   oldScale, oldOffset: TDoublePoint;
   oldClipRect: TRect;
-  oldLogicalExtent: TDoubleRect;
+  oldLogicalExtent, oldPrevLogicalExtent: TDoubleRect;
   oldIsZoomed: Boolean;
 begin
   // TODO: Group rendering params into a structure.
@@ -974,6 +974,7 @@ begin
   oldOffset := FOffset;
   oldClipRect := FClipRect;
   oldLogicalExtent := FLogicalExtent;
+  oldPrevLogicalExtent := FPrevLogicalExtent;
   oldIsZoomed := FIsZoomed;
   try
     FIsZoomed := false;
@@ -983,6 +984,7 @@ begin
     FOffset := oldOffset;
     FClipRect := oldClipRect;
     FLogicalExtent := oldLogicalExtent;
+    FPrevLogicalExtent := oldPrevLogicalExtent;
     FIsZoomed := oldIsZoomed;
   end;
 end;
