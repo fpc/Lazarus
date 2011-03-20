@@ -66,6 +66,7 @@ operator *(const A, B: TPoint): TPoint; inline;
 operator *(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator /(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator = (const A, B: TDoublePoint): Boolean; overload; inline;
+operator = (const A, B: TDoubleRect): Boolean; overload; inline;
 operator <= (const A, B: TDoublePoint): Boolean; overload; inline;
 operator :=(const APoint: TPoint): TSize; inline;
 operator :=(const ASize: TSize): TPoint; inline;
@@ -433,6 +434,11 @@ end;
 operator = (const A, B: TDoublePoint): Boolean;
 begin
   Result := (A.X = B.X) and (A.Y = B.Y);
+end;
+
+operator = (const A, B: TDoubleRect): Boolean;
+begin
+  Result := (A.a = B.a) and (A.b = B.b);
 end;
 
 operator <= (const A, B: TDoublePoint): Boolean;

@@ -325,7 +325,8 @@ type
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
     property OnAfterDrawBackWall: TChartAfterDrawEvent
       read FOnAfterDrawBackWall write SetOnAfterDrawBackWall;
-    property OnBeforeDrawBackground: TChartBeforeDrawEvent read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
+    property OnBeforeDrawBackground: TChartBeforeDrawEvent
+      read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
     property OnBeforeDrawBackWall: TChartBeforeDrawEvent
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
@@ -686,10 +687,7 @@ begin
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
 
-  if
-    (FPrevLogicalExtent.a <> FLogicalExtent.a) or
-    (FPrevLogicalExtent.b <> FLogicalExtent.b)
-  then begin
+  if FPrevLogicalExtent <> FLogicalExtent then begin
     FExtentBroadcaster.Broadcast(Self);
     if Assigned(OnExtentChanged) then
       OnExtentChanged(Self);
@@ -1119,6 +1117,7 @@ end;
 
 procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
 begin
+  if FLogicalExtent = AValue then exit;
   HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
