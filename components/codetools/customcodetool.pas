@@ -2770,19 +2770,19 @@ begin
 end;
 
 procedure TCustomCodeTool.CloseUnfinishedNodes;
+var
+  p: LongInt;
 begin
+  if CurNode=nil then exit;
   // close all unfinished nodes
+  p:=CurPos.StartPos;
+  if p>SrcLen then p:=SrcLen+1;
   while CurNode<>nil do begin
     if CurNode.EndPos<1 then begin
-      if CurNode.LastChild<>nil then
-        CurNode.EndPos:=CurNode.LastChild.EndPos;
-      if (CurNode.EndPos<1) then begin
-        if CurNode.StartPos<CurPos.StartPos then
-          CurNode.EndPos:=CurPos.StartPos
-        else
-          CurNode.EndPos:=CurPos.EndPos;
-      end;
-    end;
+      if CurNode.StartPos>p then p:=CurNode.StartPos;
+      CurNode.EndPos:=p;
+    end else if p<CurNode.EndPos then
+      p:=CurNode.EndPos;
     CurNode:=CurNode.Parent;
   end;
 end;
