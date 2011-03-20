@@ -21,7 +21,7 @@ unit TANavigation;
 interface
 
 uses
-  Classes, StdCtrls, TAChartUtils, TAGraph;
+  Classes, Controls, Graphics, StdCtrls, TAChartUtils, TAGraph;
 
 type
 
@@ -85,16 +85,41 @@ type
     property OnUTF8KeyPress;
   end;
 
+  { TChartNavPanel }
+
+  TChartNavPanel = class(TCustomControl)
+  private
+    FChart: TChart;
+    FFullExtentPen: TPen;
+    FListener: TListener;
+    FLogicalExtentPen: TPen;
+    procedure ChartExtentChanged(ASender: TObject);
+    procedure SetChart(AValue: TChart);
+    procedure SetFullExtentPen(AValue: TPen);
+    procedure SetLogicalExtentPen(AValue: TPen);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
+  published
+    property Chart: TChart read FChart write SetChart;
+    property FullExtentPen: TPen read FFullExtentPen write SetFullExtentPen;
+    property LogicalExtentPen: TPen read FLogicalExtentPen write SetLogicalExtentPen;
+  published
+    property Align;
+  end;
+
 procedure Register;
 
 implementation
 
 uses
-  Forms, SysUtils;
+  Forms, SysUtils, TAGeometry;
 
 procedure Register;
 begin
-  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartNavScrollBar]);
+  RegisterComponents(
+    CHART_COMPONENT_IDE_PAGE, [TChartNavScrollBar, TChartNavPanel]);
 end;
 
 { TChartNavScrollBar }
@@ -105,9 +130,9 @@ var
   fw, lw: Double;
 begin
   Unused(ASender);
-  if FChart = nil then exit;
-  fe := FChart.GetFullExtent;
-  le := FChart.LogicalExtent;
+  if Chart = nil then exit;
+  fe := Chart.GetFullExtent;
+  le := Chart.LogicalExtent;
   case Kind of
     sbHorizontal: begin
       fw := fe.b.X - fe.a.X;
@@ -149,11 +174,11 @@ var
   d, w: Double;
 begin
   inherited Scroll(AScrollCode, AScrollPos);
-  if FChart = nil then exit;
+  if Chart = nil then exit;
   w := Max - Min;
   if w = 0 then exit;
-  fe := FChart.GetFullExtent;
-  le := FChart.LogicalExtent;
+  fe := Chart.GetFullExtent;
+  le := Chart.LogicalExtent;
   case Kind of
     sbHorizontal: begin
       d := WeightedAverage(fe.a.X, fe.b.X, Position / w);
@@ -166,9 +191,9 @@ begin
       le.a.Y := d;
     end;
   end;
-  FChart.LogicalExtent := le;
+  Chart.LogicalExtent := le;
   // Focused ScrollBar is glitchy under Win32, especially after PageSize change.
-  FChart.SetFocus;
+  Chart.SetFocus;
 end;
 
 procedure TChartNavScrollBar.SetAutoPageSize(AValue: Boolean);
@@ -188,6 +213,95 @@ begin
   if FChart <> nil then
     FChart.ExtentBroadcaster.Subscribe(FListener);
   ChartExtentChanged(Self);
+end;
+
+{ TChartNavPanel }
+
+procedure TChartNavPanel.ChartExtentChanged(ASender: TObject);
+begin
+  Unused(ASender);
+  Invalidate;
+end;
+
+constructor TChartNavPanel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FListener := TListener.Create(@FChart, @ChartExtentChanged);
+  FFullExtentPen := TPen.Create;
+  FLogicalExtentPen := TPen.Create;
+  Width := 40;
+  Height := 20;
+end;
+
+destructor TChartNavPanel.Destroy;
+begin
+  FreeAndNil(FListener);
+  FreeAndNil(FFullExtentPen);
+  FreeAndNil(FLogicalExtentPen);
+  inherited Destroy;
+end;
+
+procedure TChartNavPanel.Paint;
+var
+  fe, le, ext: TDoubleRect;
+  coeff, sz: TDoublePoint;
+
+  procedure DrawRect(ARect: TDoubleRect);
+  begin
+    ARect.a := (ARect.a - ext.a) * coeff;
+    ARect.b := (ARect.b - ext.a) * coeff;
+    with ARect do
+      Canvas.Rectangle(
+        Round(a.X), Height - Round(a.Y),
+        Round(b.X), Height - Round(b.Y));
+  end;
+
+begin
+  if Chart = nil then exit;
+  fe := Chart.GetFullExtent;
+  le := Chart.LogicalExtent;
+  ext := fe;
+  ExpandRect(ext, le.a);
+  ExpandRect(ext, le.b);
+  sz := ext.b - ext.a;
+  if (sz.X <= 0) or (sz.Y <= 0) then exit;
+  coeff.X := Width / sz.X;
+  coeff.Y := Height / sz.Y;
+
+  Canvas.Brush.Color := Chart.BackColor;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(ClientRect);
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen := FullExtentPen;
+  DrawRect(fe);
+  Canvas.Pen := LogicalExtentPen;
+  DrawRect(le);
+end;
+
+procedure TChartNavPanel.SetChart(AValue: TChart);
+begin
+  if FChart = AValue then exit;
+
+  if FListener.IsListening then
+    FChart.ExtentBroadcaster.Unsubscribe(FListener);
+  FChart := AValue;
+  if FChart <> nil then
+    FChart.ExtentBroadcaster.Subscribe(FListener);
+  ChartExtentChanged(Self);
+end;
+
+procedure TChartNavPanel.SetFullExtentPen(AValue: TPen);
+begin
+  if FFullExtentPen = AValue then exit;
+  FFullExtentPen := AValue;
+  Invalidate;
+end;
+
+procedure TChartNavPanel.SetLogicalExtentPen(AValue: TPen);
+begin
+  if FLogicalExtentPen = AValue then exit;
+  FLogicalExtentPen := AValue;
+  Invalidate;
 end;
 
 end.
