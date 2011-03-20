@@ -63,6 +63,7 @@ object Form1: TForm1
     Height = 16
     Top = 262
     Width = 339
+    AutoPageSize = True
     Chart = Chart1
     Align = alBottom
     BorderSpacing.Right = 16
