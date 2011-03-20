@@ -93,10 +93,12 @@ type
     FFullExtentPen: TPen;
     FListener: TListener;
     FLogicalExtentPen: TPen;
+    FProportional: Boolean;
     procedure ChartExtentChanged(ASender: TObject);
     procedure SetChart(AValue: TChart);
     procedure SetFullExtentPen(AValue: TPen);
     procedure SetLogicalExtentPen(AValue: TPen);
+    procedure SetProportional(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -105,6 +107,7 @@ type
     property Chart: TChart read FChart write SetChart;
     property FullExtentPen: TPen read FFullExtentPen write SetFullExtentPen;
     property LogicalExtentPen: TPen read FLogicalExtentPen write SetLogicalExtentPen;
+    property Proportional: Boolean read FProportional write SetProportional default false;
   published
     property Align;
   end;
@@ -244,12 +247,12 @@ end;
 procedure TChartNavPanel.Paint;
 var
   fe, le, ext: TDoubleRect;
-  coeff, sz: TDoublePoint;
+  scale, offset, sz: TDoublePoint;
 
   procedure DrawRect(ARect: TDoubleRect);
   begin
-    ARect.a := (ARect.a - ext.a) * coeff;
-    ARect.b := (ARect.b - ext.a) * coeff;
+    ARect.a := (ARect.a - ext.a) * scale + offset;
+    ARect.b := (ARect.b - ext.a) * scale + offset;
     with ARect do
       Canvas.Rectangle(
         Round(a.X), Height - Round(a.Y),
@@ -265,8 +268,18 @@ begin
   ExpandRect(ext, le.b);
   sz := ext.b - ext.a;
   if (sz.X <= 0) or (sz.Y <= 0) then exit;
-  coeff.X := Width / sz.X;
-  coeff.Y := Height / sz.Y;
+  scale := DoublePoint(Width, Height) / sz;
+  offset := ZeroDoublePoint;
+  if Proportional then begin
+    if scale.X < scale.Y then begin
+      scale.Y := scale.X;
+      offset.Y := (Height - sz.Y * scale.Y) / 2;
+    end
+    else begin
+      scale.X := scale.Y;
+      offset.X := (Width - sz.X * scale.X) / 2;
+    end;
+  end;
 
   Canvas.Brush.Color := Chart.BackColor;
   Canvas.Brush.Style := bsSolid;
@@ -301,6 +314,13 @@ procedure TChartNavPanel.SetLogicalExtentPen(AValue: TPen);
 begin
   if FLogicalExtentPen = AValue then exit;
   FLogicalExtentPen := AValue;
+  Invalidate;
+end;
+
+procedure TChartNavPanel.SetProportional(AValue: Boolean);
+begin
+  if FProportional = AValue then exit;
+  FProportional := AValue;
   Invalidate;
 end;
 
