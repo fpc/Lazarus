@@ -1,18 +1,19 @@
 object Form1: TForm1
-  Left = 1348
-  Height = 298
+  Left = 1346
+  Height = 351
   Top = 187
-  Width = 355
+  Width = 479
   Caption = 'Form1'
-  ClientHeight = 298
-  ClientWidth = 355
+  ClientHeight = 351
+  ClientWidth = 479
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 262
-    Top = 0
-    Width = 339
+    Height = 249
+    Top = 66
+    Width = 463
     AxisList = <    
       item
         Title.LabelFont.Orientation = 900
@@ -22,13 +23,18 @@ object Form1: TForm1
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Margins.Left = 1
+    Margins.Top = 1
+    Margins.Right = 1
+    Margins.Bottom = 1
+    Proportional = True
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
       'TAChart'
     )
     Toolset = ChartToolset1
-    OnExtentChanged = Chart1ExtentChanged
     Align = alClient
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
@@ -38,8 +44,8 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Height = 20
-    Top = 278
-    Width = 355
+    Top = 331
+    Width = 479
     Panels = <    
       item
         Width = 50
@@ -47,9 +53,9 @@ object Form1: TForm1
     SimplePanel = False
   end
   object sbChartVert: TChartNavScrollBar
-    Left = 339
-    Height = 262
-    Top = 0
+    Left = 463
+    Height = 249
+    Top = 66
     Width = 16
     Chart = Chart1
     Align = alRight
@@ -61,8 +67,8 @@ object Form1: TForm1
   object sbChartHor: TChartNavScrollBar
     Left = 0
     Height = 16
-    Top = 262
-    Width = 339
+    Top = 315
+    Width = 463
     AutoPageSize = True
     Chart = Chart1
     Align = alBottom
@@ -70,10 +76,53 @@ object Form1: TForm1
     PageSize = 0
     TabOrder = 3
   end
+  object Panel1: TPanel
+    Left = 0
+    Height = 66
+    Top = 0
+    Width = 479
+    Align = alTop
+    Anchors = [akTop, akRight]
+    ClientHeight = 66
+    ClientWidth = 479
+    TabOrder = 4
+    object StaticText1: TStaticText
+      AnchorSideRight.Control = ChartNavPanel1
+      Left = 8
+      Height = 31
+      Top = 4
+      Width = 245
+      Caption = 'Left-drag to zoom,'#13#10'right-drag on both map and navpanel to pan'
+      TabOrder = 0
+    end
+    object ChartNavPanel1: TChartNavPanel
+      Cursor = crCross
+      Left = 340
+      Height = 64
+      Top = 1
+      Width = 138
+      Chart = Chart1
+      FullExtentPen.Color = clGreen
+      FullExtentPen.Style = psDot
+      LogicalExtentPen.Color = clBlue
+      Proportional = True
+      Shift = [ssRight]
+      Align = alRight
+    end
+    object cbMiniMap: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 44
+      Width = 62
+      Caption = 'Mini-map'
+      OnChange = cbMiniMapChange
+      TabOrder = 2
+    end
+  end
   object RandomChartSource1: TRandomChartSource
-    PointsNumber = 100
+    PointsNumber = 150
     RandSeed = 909742449
-    XMax = 100
+    XMax = 150
     XMin = 1
     YMax = 80
     YMin = 10
