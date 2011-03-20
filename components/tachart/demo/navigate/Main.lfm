@@ -1,0 +1,80 @@
+object Form1: TForm1
+  Left = 1348
+  Height = 298
+  Top = 187
+  Width = 355
+  Caption = 'Form1'
+  ClientHeight = 298
+  ClientWidth = 355
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Chart1: TChart
+    Left = 0
+    Height = 282
+    Top = 0
+    Width = 339
+    AxisList = <    
+      item
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset1
+    OnExtentChanged = Chart1ExtentChanged
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      Source = RandomChartSource1
+    end
+  end
+  object sbChartVert: TScrollBar
+    Left = 339
+    Height = 282
+    Top = 0
+    Width = 16
+    Align = alRight
+    Kind = sbVertical
+    PageSize = 0
+    TabOrder = 1
+    OnChange = sbChartVertChange
+  end
+  object sbChartHor: TScrollBar
+    Left = 0
+    Height = 16
+    Top = 282
+    Width = 339
+    Align = alBottom
+    BorderSpacing.Right = 16
+    PageSize = 0
+    TabOrder = 2
+    OnChange = sbChartHorChange
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 100
+    RandSeed = 909742449
+    XMax = 100
+    XMin = 1
+    YMax = 80
+    YMin = 10
+    left = 95
+    top = 76
+  end
+  object ChartToolset1: TChartToolset
+    left = 95
+    top = 140
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+    end
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+    end
+  end
+end
