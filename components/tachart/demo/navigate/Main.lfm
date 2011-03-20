@@ -10,7 +10,7 @@ object Form1: TForm1
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 282
+    Height = 262
     Top = 0
     Width = 339
     AxisList = <    
@@ -35,27 +35,39 @@ object Form1: TForm1
       Source = RandomChartSource1
     end
   end
-  object sbChartVert: TScrollBar
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 278
+    Width = 355
+    Panels = <    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object sbChartVert: TChartNavScrollBar
     Left = 339
-    Height = 282
+    Height = 262
     Top = 0
     Width = 16
+    Chart = Chart1
     Align = alRight
     Kind = sbVertical
     PageSize = 0
-    TabOrder = 1
-    OnChange = sbChartVertChange
+    Position = 100
+    TabOrder = 2
   end
-  object sbChartHor: TScrollBar
+  object sbChartHor: TChartNavScrollBar
     Left = 0
     Height = 16
-    Top = 282
+    Top = 262
     Width = 339
+    Chart = Chart1
     Align = alBottom
     BorderSpacing.Right = 16
     PageSize = 0
-    TabOrder = 2
-    OnChange = sbChartHorChange
+    TabOrder = 3
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 100
