@@ -1275,9 +1275,9 @@ begin
   if Dirs<>nil then begin
     i:=Dirs.Count-1;
     while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+    if i>=0 then
+      Result:=TSDFileInfo(Dirs[i]).Filename;
   end;
-  if i>=0 then
-    Result:=TSDFileInfo(Dirs[i]).Filename;
   Result:=ChompPathDelim(TrimFilename(Result));
   if Result<>'' then
     Result:=ChompPathDelim(TrimFilename(ExpandFileNameUTF8(Result)));
@@ -1293,9 +1293,9 @@ begin
   if Dirs<>nil then begin
     i:=Dirs.Count-1;
     while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+    if i>=0 then
+      Result:=TSDFileInfo(Dirs[i]).Filename;
   end;
-  if i>=0 then
-    Result:=TSDFileInfo(Dirs[i]).Filename;
   Result:=TrimFilename(Result);
 end;
 
@@ -1309,9 +1309,9 @@ begin
   if Dirs<>nil then begin
     i:=Dirs.Count-1;
     while (i>=0) and (TSDFileInfo(Dirs[i]).Caption<>Result) do dec(i);
+    if i>=0 then
+      Result:=TSDFileInfo(Dirs[i]).Filename;
   end;
-  if i>=0 then
-    Result:=TSDFileInfo(Dirs[i]).Filename;
   Result:=ChompPathDelim(TrimFilename(Result));
 end;
 
