@@ -455,15 +455,16 @@ end;
 procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
 var
   defaultDrawing: Boolean = true;
+  ic: IChartTCanvasDrawer;
 begin
   ADrawer.PrepareSimplePen(Color);
   ADrawer.SetBrushParams(bsSolid, Color);
-  if ADrawer.HasCanvas and Assigned(OnBeforeDrawBackground) then
-    OnBeforeDrawBackground(Self, ADrawer.Canvas, ARect, defaultDrawing);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackground) then
+    OnBeforeDrawBackground(Self, ic.Canvas, ARect, defaultDrawing);
   if defaultDrawing then
     ADrawer.Rectangle(ARect);
-  if ADrawer.HasCanvas and Assigned(OnAfterDrawBackground) then
-    OnAfterDrawBackground(Self, ADrawer.Canvas, ARect);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackground) then
+    OnAfterDrawBackground(Self, ic.Canvas, ARect);
 end;
 
 procedure TChart.ClearSeries;
@@ -701,9 +702,10 @@ end;
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
 var
   defaultDrawing: Boolean = true;
+  ic: IChartTCanvasDrawer;
 begin
-  if ADrawer.HasCanvas and Assigned(OnBeforeDrawBackWall) then
-    OnBeforeDrawBackWall(Self, ADrawer.Canvas, FClipRect, defaultDrawing);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackWall) then
+    OnBeforeDrawBackWall(Self, ic.Canvas, FClipRect, defaultDrawing);
   if defaultDrawing then
     with ADrawer do begin
       if FFrame.Visible then
@@ -714,8 +716,8 @@ begin
       with FClipRect do
         Rectangle(Left, Top, Right + 1, Bottom + 1);
     end;
-  if ADrawer.HasCanvas and Assigned(OnAfterDrawBackWall) then
-    OnAfterDrawBackWall(Self, ADrawer.Canvas, FClipRect);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackWall) then
+    OnAfterDrawBackWall(Self, ic.Canvas, FClipRect);
 
   // Z axis
   if (Depth > 0) and FFrame.Visible then begin
@@ -758,9 +760,11 @@ begin
 end;
 
 procedure TChart.DrawReticule(ADrawer: IChartDrawer);
+var
+  ic: IChartTCanvasDrawer;
 begin
-  if not ADrawer.HasCanvas then exit;
-  PrepareXorPen(ADrawer.Canvas);
+  if not Supports(ADrawer, IChartTCanvasDrawer, ic) then exit;
+  PrepareXorPen(ic.Canvas);
   if ReticuleMode in [rmVertical, rmCross] then
     DrawLineVert(ADrawer, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then

@@ -219,9 +219,11 @@ begin
 end;
 
 procedure TLegendItemUserDrawn.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  ic: IChartTCanvasDrawer;
 begin
-  if ADrawer.HasCanvas and Assigned(FOnDraw) then
-    FOnDraw(ADrawer.Canvas, ARect, FIndex, FText);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
+    FOnDraw(ic.Canvas, ARect, FIndex, FText);
   inherited Draw(ADrawer, ARect);
 end;
 

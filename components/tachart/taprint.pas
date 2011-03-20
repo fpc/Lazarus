@@ -26,7 +26,7 @@ type
 
   { TPrinterDrawer }
 
-  TPrinterDrawer = class(TCanvasDrawer, IChartDrawer, ISimpleTextOut)
+  TPrinterDrawer = class(TCanvasDrawer)
   private
     FPrinter: TPrinter;
     FCoeff: Double;

@@ -20,7 +20,7 @@ unit TADrawerOpenGL;
 interface
 
 uses
-  Classes, SysUtils, FPCanvas, Graphics, OpenGLContext, GL, GLu, Glut,
+  Classes, SysUtils, FPCanvas, OpenGLContext, GL, GLu, Glut,
   TADrawUtils;
 
 type
@@ -53,8 +53,6 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
-    function GetCanvas: TCanvas;
-    function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -78,7 +76,7 @@ type
 implementation
 
 uses
-  TAChartUtils;
+  Graphics, TAChartUtils;
 
 procedure ChartGLColor(AColor: TChartColor);
 var
@@ -132,19 +130,9 @@ begin
   Result := FBrushColor;
 end;
 
-function TOpenGLDrawer.GetCanvas: TCanvas;
-begin
-  Result := nil;
-end;
-
 function TOpenGLDrawer.GetFontAngle: Double;
 begin
   Result := 0.0;
-end;
-
-function TOpenGLDrawer.HasCanvas: Boolean;
-begin
-  Result := false;
 end;
 
 procedure TOpenGLDrawer.InternalPolyline(

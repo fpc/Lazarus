@@ -467,6 +467,7 @@ var
   i: Integer;
   ai: TPoint;
   p: TDoublePoint;
+  ic: IChartTCanvasDrawer;
 begin
   DrawLines;
   DrawLabels(ADrawer);
@@ -477,8 +478,8 @@ begin
       if not ParentChart.IsPointInViewPort(p) then continue;
       ai := ParentChart.GraphToImage(p);
       FPointer.Draw(ADrawer, ai, Source[i]^.Color);
-      if ADrawer.HasCanvas and Assigned(FOnDrawPointer) then
-        FOnDrawPointer(Self, ADrawer.Canvas, i, ai);
+      if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDrawPointer) then
+        FOnDrawPointer(Self, ic.Canvas, i, ai);
     end;
 end;
 
@@ -757,6 +758,7 @@ var
     sz: TSize;
     defaultDrawing: Boolean = true;
     c: TColor;
+    ic: IChartTCanvasDrawer;
   begin
     ADrawer.Brush := BarBrush;
     ADrawer.Pen := BarPen;
@@ -771,9 +773,8 @@ var
       ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
     end;
 
-    if ADrawer.HasCanvas and Assigned(OnBeforeDrawBar) then
-      OnBeforeDrawBar(
-        Self, ADrawer.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
+    if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBar) then
+      OnBeforeDrawBar(Self, ic.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
     if not defaultDrawing then exit;
 
     ADrawer.Rectangle(AR);
@@ -1177,9 +1178,11 @@ begin
 end;
 
 procedure TUserDrawnSeries.Draw(ADrawer: IChartDrawer);
+var
+  ic: IChartTCanvasDrawer;
 begin
-  if ADrawer.HasCanvas and Assigned(FOnDraw) then
-     FOnDraw(ADrawer.Canvas, FChart.ClipRect);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
+     FOnDraw(ic.Canvas, FChart.ClipRect);
 end;
 
 procedure TUserDrawnSeries.GetBounds(var ABounds: TDoubleRect);

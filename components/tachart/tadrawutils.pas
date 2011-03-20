@@ -64,6 +64,12 @@ type
     function Width(AWidth: Integer): TChartTextOut;
   end;
 
+  IChartTCanvasDrawer = interface
+  ['{6D8E5591-6788-4D2D-9FE6-596D5157C3C2}']
+    function GetCanvas: TCanvas;
+    property Canvas: TCanvas read GetCanvas;
+  end;
+
   { IChartDrawer }
 
   IChartDrawer = interface
@@ -76,8 +82,6 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
-    function GetCanvas: TCanvas;
-    function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer);
@@ -109,7 +113,6 @@ type
 
     property Brush: TFPCustomBrush write SetBrush;
     property BrushColor: TChartColor read GetBrushColor write SetBrushColor;
-    property Canvas: TCanvas read GetCanvas;
     property Font: TFPCustomFont write SetFont;
     property Pen: TFPCustomPen write SetPen;
   end;
@@ -139,7 +142,8 @@ type
 
   { TCanvasDrawer }
 
-  TCanvasDrawer = class(TFPCanvasDrawer, IChartDrawer, ISimpleTextOut)
+  TCanvasDrawer = class(
+    TFPCanvasDrawer, IChartDrawer, IChartTCanvasDrawer, ISimpleTextOut)
   private
     FCanvas: TCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -159,7 +163,6 @@ type
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas;
-    function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -405,11 +408,6 @@ begin
   Result := OrientToRad(FCanvas.Font.Orientation);
 end;
 
-function TCanvasDrawer.HasCanvas: Boolean;
-begin
-  Result := true;
-end;
-
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.Line(AX1, AY1, AX2, AY2);
@@ -442,9 +440,9 @@ procedure TCanvasDrawer.Polyline(
 begin
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
   if AEndPoint then begin
-    // Polyline does not draw the end point.
     if ANumPts < 0 then
       ANumPts := Length(APoints);
+    // Polyline does not draw the end point.
     with APoints[ANumPts - 1] do
       FCanvas.Pixels[X, Y] := FCanvas.Pen.Color;
   end;

@@ -20,7 +20,7 @@ unit TADrawerAggPas;
 interface
 
 uses
-  Classes, SysUtils, FPCanvas, Graphics, Agg_LCL, TADrawUtils;
+  Classes, SysUtils, FPCanvas, Agg_LCL, TADrawUtils;
 
 type
 
@@ -46,8 +46,6 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
-    function GetCanvas: TCanvas;
-    function HasCanvas: Boolean;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -72,7 +70,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry;
+  Math, Graphics, TAChartUtils, TAGeometry;
 
 { TAggPasDrawer }
 
@@ -118,20 +116,9 @@ begin
   Result := FCanvas.Brush.Color;
 end;
 
-function TAggPasDrawer.GetCanvas: TCanvas;
-begin
-  raise Exception.Create('TAggPasDrawer.GetCanvas');
-  Result := nil;
-end;
-
 function TAggPasDrawer.GetFontAngle: Double;
 begin
   Result := FCanvas.Font.AggAngle;
-end;
-
-function TAggPasDrawer.HasCanvas: Boolean;
-begin
-  Result := false;
 end;
 
 procedure TAggPasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
