@@ -615,7 +615,8 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ADrawer, FClipRect, Self, ZPosition, d, axisIndex);
+          if AxisVisible then
+            AxisList.Draw(ADrawer, FClipRect, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
           ADrawer.ClippingStart(FClipRect);
           try
@@ -634,7 +635,8 @@ begin
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ADrawer, FClipRect, Self, MaxInt, d, axisIndex);
+  if AxisVisible then
+    AxisList.Draw(ADrawer, FClipRect, Self, MaxInt, d, axisIndex);
 end;
 
 {$IFDEF LCLGtk2}
@@ -1002,9 +1004,10 @@ var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
 begin
-  if not FAxisVisible or (AxisList.Count = 0) then begin
+  if not AxisVisible or (AxisList.Count = 0) then begin
     FClipRect.Left += Depth;
     FClipRect.Bottom -= Depth;
+    CalculateTransformationCoeffs(GetMargins(ADrawer));
     exit;
   end;
 
