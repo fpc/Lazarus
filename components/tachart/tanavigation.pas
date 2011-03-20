@@ -99,6 +99,17 @@ type
     procedure SetFullExtentPen(AValue: TPen);
     procedure SetLogicalExtentPen(AValue: TPen);
     procedure SetProportional(AValue: Boolean);
+  private
+    FLogicalExtentRect: TRect;
+    FOffset: TDoublePoint;
+    FPrevPoint: TDoublePoint;
+    FScale: TDoublePoint;
+  protected
+    procedure MouseDown(
+      AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
+    procedure MouseMove(AShift: TShiftState; AX, AY: Integer); override;
+    procedure MouseUp(
+      AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -227,13 +238,17 @@ begin
 end;
 
 constructor TChartNavPanel.Create(AOwner: TComponent);
+const
+  DEF_WIDTH = 40;
+  DEF_HEIGHT = 20;
 begin
   inherited Create(AOwner);
   FListener := TListener.Create(@FChart, @ChartExtentChanged);
   FFullExtentPen := TPen.Create;
   FLogicalExtentPen := TPen.Create;
-  Width := 40;
-  Height := 20;
+  FLogicalExtentRect := Rect(0, 0, 0, 0);
+  Width := DEF_WIDTH;
+  Height := DEF_HEIGHT;
 end;
 
 destructor TChartNavPanel.Destroy;
@@ -244,21 +259,59 @@ begin
   inherited Destroy;
 end;
 
-procedure TChartNavPanel.Paint;
-var
-  fe, le, ext: TDoubleRect;
-  scale, offset, sz: TDoublePoint;
+procedure TChartNavPanel.MouseDown(
+  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
+begin
+  if Chart = nil then exit;
+  FPrevPoint := (DoublePoint(AX, Height - AY) - FOffset) / FScale;
+  MouseCapture :=
+    (AShift = [ssLeft]) and IsPointInRect(Point(AX, AY), FLogicalExtentRect);
+  if MouseCapture then
+    Cursor := crSizeAll;
+  inherited MouseDown(AButton, AShift, AX, AY);
+end;
 
-  procedure DrawRect(ARect: TDoubleRect);
+procedure TChartNavPanel.MouseMove(AShift: TShiftState; AX, AY: Integer);
+var
+  p: TDoublePoint;
+  le: TDoubleRect;
+begin
+  if Chart = nil then exit;
+  if MouseCapture then begin
+    p := (DoublePoint(AX, Height - AY) - FOffset) / FScale;
+    le := Chart.LogicalExtent;
+    le.a += p - FPrevPoint;
+    le.b += p - FPrevPoint;
+    Chart.LogicalExtent := le;
+    FPrevPoint := p;
+  end;
+  inherited MouseMove(AShift, AX, AY);
+end;
+
+procedure TChartNavPanel.MouseUp(
+  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
+begin
+  MouseCapture := false;
+  Cursor := crDefault;
+  inherited MouseUp(AButton, AShift, AX, AY);
+end;
+
+procedure TChartNavPanel.Paint;
+
+  function DrawRect(ARect: TDoubleRect): TRect;
   begin
-    ARect.a := (ARect.a - ext.a) * scale + offset;
-    ARect.b := (ARect.b - ext.a) * scale + offset;
-    with ARect do
-      Canvas.Rectangle(
-        Round(a.X), Height - Round(a.Y),
-        Round(b.X), Height - Round(b.Y));
+    with ARect do begin
+      a := a * FScale + FOffset;
+      b := b * FScale + FOffset;
+      Result := Rect(
+        Round(a.X), Height - Round(a.Y), Round(b.X), Height - Round(b.Y));
+    end;
+    Canvas.Rectangle(Result);
   end;
 
+var
+  fe, le, ext: TDoubleRect;
+  sz: TDoublePoint;
 begin
   if Chart = nil then exit;
   fe := Chart.GetFullExtent;
@@ -268,18 +321,19 @@ begin
   ExpandRect(ext, le.b);
   sz := ext.b - ext.a;
   if (sz.X <= 0) or (sz.Y <= 0) then exit;
-  scale := DoublePoint(Width, Height) / sz;
-  offset := ZeroDoublePoint;
+  FScale := DoublePoint(Width, Height) / sz;
+  FOffset := ZeroDoublePoint;
   if Proportional then begin
-    if scale.X < scale.Y then begin
-      scale.Y := scale.X;
-      offset.Y := (Height - sz.Y * scale.Y) / 2;
+    if FScale.X < FScale.Y then begin
+      FScale.Y := FScale.X;
+      FOffset.Y := (Height - sz.Y * FScale.Y) / 2;
     end
     else begin
-      scale.X := scale.Y;
-      offset.X := (Width - sz.X * scale.X) / 2;
+      FScale.X := FScale.Y;
+      FOffset.X := (Width - sz.X * FScale.X) / 2;
     end;
   end;
+  FOffset -= ext.a * FScale;
 
   Canvas.Brush.Color := Chart.BackColor;
   Canvas.Brush.Style := bsSolid;
@@ -288,7 +342,7 @@ begin
   Canvas.Pen := FullExtentPen;
   DrawRect(fe);
   Canvas.Pen := LogicalExtentPen;
-  DrawRect(le);
+  FLogicalExtentRect := DrawRect(le);
 end;
 
 procedure TChartNavPanel.SetChart(AValue: TChart);
