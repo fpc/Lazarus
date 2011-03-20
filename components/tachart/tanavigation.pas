@@ -100,10 +100,16 @@ type
     procedure SetLogicalExtentPen(AValue: TPen);
     procedure SetProportional(AValue: Boolean);
   private
+    FAllowDragNavigation: Boolean;
+    FDragCursor: TCursor;
+    FIsDragging: Boolean;
     FLogicalExtentRect: TRect;
     FOffset: TDoublePoint;
+    FOldCursor: TCursor;
     FPrevPoint: TDoublePoint;
     FScale: TDoublePoint;
+    FShift: TShiftState;
+    procedure SetDragCursor(AValue: TCursor);
   protected
     procedure MouseDown(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
@@ -115,10 +121,14 @@ type
     destructor Destroy; override;
     procedure Paint; override;
   published
+    property AllowDragNavigation: Boolean
+      read FAllowDragNavigation write FAllowDragNavigation default true;
     property Chart: TChart read FChart write SetChart;
+    property DragCursor: TCursor read FDragCursor write SetDragCursor default crSizeAll;
     property FullExtentPen: TPen read FFullExtentPen write SetFullExtentPen;
     property LogicalExtentPen: TPen read FLogicalExtentPen write SetLogicalExtentPen;
     property Proportional: Boolean read FProportional write SetProportional default false;
+    property Shift: TShiftState read FShift write FShift default [ssLeft];
   published
     property Align;
   end;
@@ -249,6 +259,9 @@ begin
   FLogicalExtentRect := Rect(0, 0, 0, 0);
   Width := DEF_WIDTH;
   Height := DEF_HEIGHT;
+  FAllowDragNavigation := true;
+  FDragCursor := crSizeAll;
+  FShift := [ssLeft];
 end;
 
 destructor TChartNavPanel.Destroy;
@@ -262,12 +275,15 @@ end;
 procedure TChartNavPanel.MouseDown(
   AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
 begin
-  if Chart = nil then exit;
-  FPrevPoint := (DoublePoint(AX, Height - AY) - FOffset) / FScale;
-  MouseCapture :=
-    (AShift = [ssLeft]) and IsPointInRect(Point(AX, AY), FLogicalExtentRect);
-  if MouseCapture then
-    Cursor := crSizeAll;
+  if (Chart <> nil) and AllowDragNavigation then begin
+    FPrevPoint := (DoublePoint(AX, Height - AY) - FOffset) / FScale;
+    FIsDragging :=
+      (AShift = Shift) and IsPointInRect(Point(AX, AY), FLogicalExtentRect);
+    if FIsDragging then begin
+      FOldCursor := Cursor;
+      Cursor := DragCursor;
+    end;
+  end;
   inherited MouseDown(AButton, AShift, AX, AY);
 end;
 
@@ -276,8 +292,7 @@ var
   p: TDoublePoint;
   le: TDoubleRect;
 begin
-  if Chart = nil then exit;
-  if MouseCapture then begin
+  if (Chart <> nil) and FIsDragging then begin
     p := (DoublePoint(AX, Height - AY) - FOffset) / FScale;
     le := Chart.LogicalExtent;
     le.a += p - FPrevPoint;
@@ -291,8 +306,9 @@ end;
 procedure TChartNavPanel.MouseUp(
   AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
 begin
-  MouseCapture := false;
-  Cursor := crDefault;
+  if FIsDragging then
+    Cursor := FOldCursor;
+  FIsDragging := false;
   inherited MouseUp(AButton, AShift, AX, AY);
 end;
 
@@ -355,6 +371,14 @@ begin
   if FChart <> nil then
     FChart.ExtentBroadcaster.Subscribe(FListener);
   ChartExtentChanged(Self);
+end;
+
+procedure TChartNavPanel.SetDragCursor(AValue: TCursor);
+begin
+  if FDragCursor = AValue then exit;
+  FDragCursor := AValue;
+  if MouseCapture then
+    Cursor := FDragCursor;
 end;
 
 procedure TChartNavPanel.SetFullExtentPen(AValue: TPen);
