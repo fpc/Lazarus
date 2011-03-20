@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-10 21:19+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2011-03-19 23:34+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,10 +18,9 @@ msgid "Create units from C header files"
 msgstr "Units aus C-Headerdateien erzeugen"
 
 #: h2passtrconsts.h2ph2pas
-#, fuzzy
 #| msgid "H2Pas"
 msgid "H2Pas ..."
-msgstr "HPas"
+msgstr "H2Pas ..."
 
 #: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"

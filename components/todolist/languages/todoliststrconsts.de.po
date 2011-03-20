@@ -27,7 +27,7 @@ msgstr "Text"
 
 #: todoliststrconsts.lisprint
 msgid "Print"
-msgstr ""
+msgstr "Drucken"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -47,7 +47,7 @@ msgstr "Beschreibung"
 
 #: todoliststrconsts.listodoldone
 msgid "Done"
-msgstr ""
+msgstr "Erledigt"
 
 #: todoliststrconsts.listodolfile
 msgid "Module"
@@ -63,7 +63,7 @@ msgstr "ToDo-Liste"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr ""
+msgstr "Zur gewählten Quelltextzeile springen"
 
 #: todoliststrconsts.listodolistoptions
 msgid "ToDo options..."
@@ -71,7 +71,7 @@ msgstr "ToDo-Einstellungen..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr ""
+msgstr "ToDo-Elemente drucken"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
@@ -83,7 +83,7 @@ msgstr "Zeile"
 
 #: todoliststrconsts.listodolowner
 msgid "Owner"
-msgstr ""
+msgstr "Eigentümer"
 
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
