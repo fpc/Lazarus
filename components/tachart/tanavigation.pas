@@ -260,7 +260,9 @@ begin
   inherited Create(AOwner);
   FListener := TListener.Create(@FChart, @ChartExtentChanged);
   FFullExtentPen := TPen.Create;
+  FFullExtentPen.OnChange := @ChartExtentChanged;
   FLogicalExtentPen := TPen.Create;
+  FLogicalExtentPen.OnChange := @ChartExtentChanged;
   FLogicalExtentRect := Rect(0, 0, 0, 0);
   Width := DEF_WIDTH;
   Height := DEF_HEIGHT;
