@@ -65,6 +65,7 @@ operator *(const A: TPoint; AMultiplier: Integer): TPoint; inline;
 operator *(const A, B: TPoint): TPoint; inline;
 operator *(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator /(const A, B: TDoublePoint): TDoublePoint; overload; inline;
+operator = (const A, B: TDoublePoint): Boolean; overload; inline;
 operator <= (const A, B: TDoublePoint): Boolean; overload; inline;
 operator :=(const APoint: TPoint): TSize; inline;
 operator :=(const ASize: TSize): TPoint; inline;
@@ -427,6 +428,11 @@ operator / (const A, B: TDoublePoint): TDoublePoint;
 begin
   Result.X := A.X / B.X;
   Result.Y := A.Y / B.Y;
+end;
+
+operator = (const A, B: TDoublePoint): Boolean;
+begin
+  Result := (A.X = B.X) and (A.Y = B.Y);
 end;
 
 operator <= (const A, B: TDoublePoint): Boolean;

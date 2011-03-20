@@ -136,6 +136,7 @@ type
   TChartBeforeDrawEvent = procedure (
     ASender: TChart; ACanvas: TCanvas; const ARect: TRect;
     var ADoDefaultDrawing: Boolean) of object;
+  TChartEvent = procedure (ASender: TChart) of object;
   TChartPaintEvent = procedure (
     ASender: TChart; const ARect: TRect;
     var ADoDefaultDrawing: Boolean) of object;
@@ -176,6 +177,8 @@ type
     FDrawer: IChartDrawer;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
+    FOnExtentChanged: TChartEvent;
+    FPrevLogicalExtent: TDoubleRect;
     FProportional: Boolean;
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
@@ -212,6 +215,7 @@ type
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
+    procedure SetOnExtentChanged(AValue: TChartEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
@@ -324,6 +328,7 @@ type
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write SetOnDrawReticule;
+    property OnExtentChanged: TChartEvent read FOnExtentChanged write SetOnExtentChanged;
 
   published
     property Align;
@@ -362,7 +367,7 @@ var
 implementation
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types;
+  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TAGeometry, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -543,6 +548,8 @@ begin
 
   FBuiltinToolset := OnInitBuiltinTools(Self);
   FActiveToolIndex := -1;
+
+  FPrevLogicalExtent := EmptyExtent;
 end;
 
 procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
@@ -674,6 +681,15 @@ begin
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
+
+  if
+    (FPrevLogicalExtent.a <> FLogicalExtent.a) or
+    (FPrevLogicalExtent.b <> FLogicalExtent.b)
+  then begin
+    if Assigned(OnExtentChanged) then
+      OnExtentChanged(Self);
+    FPrevLogicalExtent := FLogicalExtent;
+  end;
 end;
 
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
@@ -1161,6 +1177,12 @@ begin
   if FOnDrawReticule = AValue then exit;
   FOnDrawReticule := AValue;
   Invalidate;
+end;
+
+procedure TChart.SetOnExtentChanged(AValue: TChartEvent);
+begin
+  if FOnExtentChanged = AValue then exit;
+  FOnExtentChanged := AValue;
 end;
 
 procedure TChart.SetProportional(AValue: Boolean);
