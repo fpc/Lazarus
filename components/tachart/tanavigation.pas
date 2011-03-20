@@ -335,6 +335,7 @@ procedure TChartNavPanel.Paint;
 var
   fe, le, ext: TDoubleRect;
   sz: TDoublePoint;
+  oldAxisVisible: Boolean;
 begin
   if Chart = nil then exit;
   fe := Chart.GetFullExtent;
@@ -360,8 +361,11 @@ begin
 
   if MiniMap then begin
     FUpdateLocked := true;
+    oldAxisVisible := Chart.AxisVisible;
+    Chart.AxisVisible := false;
     try
       Chart.PaintOnAuxCanvas(Canvas, Rect(0, 0, Width, Height));
+      Chart.AxisVisible := oldAxisVisible;
     finally
       FUpdateLocked := false;
     end;
