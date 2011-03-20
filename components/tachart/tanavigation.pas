@@ -95,7 +95,6 @@ type
     FOldCursor: TCursor;
     FPrevPoint: TDoublePoint;
     FScale: TDoublePoint;
-    FUpdateLocked: Boolean;
     procedure ChartExtentChanged(ASender: TObject);
   private
     FAllowDragNavigation: Boolean;
@@ -248,8 +247,7 @@ end;
 procedure TChartNavPanel.ChartExtentChanged(ASender: TObject);
 begin
   Unused(ASender);
-  if not FUpdateLocked then
-    Invalidate;
+  Invalidate;
 end;
 
 constructor TChartNavPanel.Create(AOwner: TComponent);
@@ -321,7 +319,7 @@ end;
 
 procedure TChartNavPanel.Paint;
 
-  function DrawRect(ARect: TDoubleRect): TRect;
+  function GraphRect(ARect: TDoubleRect): TRect;
   begin
     with ARect do begin
       a := a * FScale + FOffset;
@@ -329,13 +327,13 @@ procedure TChartNavPanel.Paint;
       Result := Rect(
         Round(a.X), Height - Round(a.Y), Round(b.X), Height - Round(b.Y));
     end;
-    Canvas.Rectangle(Result);
   end;
 
 var
   fe, le, ext: TDoubleRect;
   sz: TDoublePoint;
   oldAxisVisible: Boolean;
+  feRect: TRect;
 begin
   if Chart = nil then exit;
   fe := Chart.GetFullExtent;
@@ -359,16 +357,12 @@ begin
   end;
   FOffset -= ext.a * FScale;
 
+  feRect := GraphRect(fe);
   if MiniMap then begin
-    FUpdateLocked := true;
     oldAxisVisible := Chart.AxisVisible;
     Chart.AxisVisible := false;
-    try
-      Chart.PaintOnAuxCanvas(Canvas, Rect(0, 0, Width, Height));
-      Chart.AxisVisible := oldAxisVisible;
-    finally
-      FUpdateLocked := false;
-    end;
+    Chart.PaintOnAuxCanvas(Canvas, feRect);
+    Chart.AxisVisible := oldAxisVisible;
   end
   else begin
     Canvas.Brush.Color := Chart.BackColor;
@@ -377,9 +371,10 @@ begin
   end;
   Canvas.Brush.Style := bsClear;
   Canvas.Pen := FullExtentPen;
-  DrawRect(fe);
+  Canvas.Rectangle(feRect);
   Canvas.Pen := LogicalExtentPen;
-  FLogicalExtentRect := DrawRect(le);
+  FLogicalExtentRect := GraphRect(le);
+  Canvas.Rectangle(FLogicalExtentRect);
 end;
 
 procedure TChartNavPanel.SetChart(AValue: TChart);

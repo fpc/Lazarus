@@ -153,12 +153,16 @@ type
   { TBroadcaster }
 
   TBroadcaster = class(TFPList)
+  private
+    FLocked: Boolean;
   public
     destructor Destroy; override;
   public
     procedure Broadcast(ASender: TObject);
     procedure Subscribe(AListener: TListener);
     procedure Unsubscribe(AListener: TListener);
+  public
+    property Locked: Boolean read FLocked write FLocked;
   end;
 
   { TDrawDataItem }
@@ -712,6 +716,7 @@ procedure TBroadcaster.Broadcast(ASender: TObject);
 var
   i: Integer;
 begin
+  if Locked then exit;
   for i := 0 to Count - 1 do
     TListener(Items[i]).Notify(ASender);
 end;

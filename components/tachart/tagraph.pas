@@ -978,6 +978,7 @@ begin
   oldLogicalExtent := FLogicalExtent;
   oldPrevLogicalExtent := FPrevLogicalExtent;
   oldIsZoomed := FIsZoomed;
+  ExtentBroadcaster.Locked := true;
   try
     FIsZoomed := false;
     PaintOnCanvas(ACanvas, ARect);
@@ -988,6 +989,7 @@ begin
     FLogicalExtent := oldLogicalExtent;
     FPrevLogicalExtent := oldPrevLogicalExtent;
     FIsZoomed := oldIsZoomed;
+    ExtentBroadcaster.Locked := false;
   end;
 end;
 
