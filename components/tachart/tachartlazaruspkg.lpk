@@ -28,7 +28,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="22">
+    <Files Count="23">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -126,6 +126,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="TANavigation"/>
       </Item22>
+      <Item23>
+        <Filename Value="tadrawerfpcanvas.pas"/>
+        <UnitName Value="TADrawerFPCanvas"/>
+      </Item23>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>
