@@ -274,6 +274,7 @@ resourcestring
   lisMenuViewRestrictionBrowser = 'Restriction Browser';
   lisMenuViewComponents = '&Components';
   lisMenuJumpTo = 'Jump to';
+  lisMenuJumpToImplementation = 'Jump to implementation';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
   lisMenuViewUnitDependencies = 'Unit Dependencies';

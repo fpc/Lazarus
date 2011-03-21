@@ -10,23 +10,23 @@ object CodeExplorerView: TCodeExplorerView
   KeyPreview = True
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object MainNotebook: TPageControl
-    AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 515
     Top = 2
     Width = 220
+    ActivePage = CodePage
     Align = alClient
     BorderSpacing.Top = 2
-    OnPageChanged = MainNotebookPageChanged
+    TabIndex = 0
     TabOrder = 0
+    OnPageChanged = MainNotebookPageChanged
     object CodePage: TTabSheet
       Caption = 'CodePage'
-      ClientWidth = 216
       ClientHeight = 482
+      ClientWidth = 216
       object CodeTreeview: TTreeView
-        AnchorSideTop.Side = asrBottom
         Left = 0
         Height = 454
         Top = 28
@@ -63,7 +63,6 @@ object CodeExplorerView: TCodeExplorerView
           Top = 1
           Width = 23
           Anchors = [akTop, akRight]
-          Color = clBtnFace
           NumGlyphs = 0
           OnClick = OptionsSpeedButtonClick
           ShowHint = True
@@ -76,7 +75,6 @@ object CodeExplorerView: TCodeExplorerView
           Top = 1
           Width = 23
           Anchors = [akTop, akRight]
-          Color = clBtnFace
           NumGlyphs = 0
           OnClick = RefreshSpeedButtonClick
           ShowHint = True
@@ -88,7 +86,6 @@ object CodeExplorerView: TCodeExplorerView
           Top = 1
           Width = 23
           Anchors = [akTop, akRight]
-          Color = clBtnFace
           NumGlyphs = 0
           OnClick = ModeSpeedButtonClick
           ShowHint = True
@@ -111,8 +108,8 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TTabSheet
       Caption = 'DirectivesPage'
-      ClientWidth = 211
       ClientHeight = 482
+      ClientWidth = 211
       object DirectivesFilterEdit: TEdit
         AnchorSideLeft.Control = DirectivesPage
         AnchorSideTop.Control = DirectivesPage

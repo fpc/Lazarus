@@ -145,37 +145,38 @@ type
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure IdleTimer1Timer(Sender: TObject);
-    procedure JumpToMenuitemClick(Sender: TObject);
+    procedure JumpToMenuItemClick(Sender: TObject);
+    procedure JumpToImplementationMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure ModeSpeedButtonClick(Sender: TObject);
     procedure OptionsSpeedButtonClick(Sender: TObject);
-    procedure RefreshMenuitemClick(Sender: TObject);
+    procedure RefreshMenuItemClick(Sender: TObject);
     procedure RefreshSpeedButtonClick(Sender: TObject);
     procedure RenameMenuItemClick(Sender: TObject);
     procedure TreePopupmenuPopup(Sender: TObject);
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
   private
-    FCodeFilename: string;
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
-    fObserverNode: TTreeNode;
-    fObserverCatNodes: array[TCEObserverCategory] of TTreeNode;
-    fObserverCatOverflow: array[TCEObserverCategory] of boolean;
+    FCodeFilename: string;
     FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
-    FLastCodeFilter: string;
     FLastCodeChangeStep: integer;
+    FLastCodeFilter: string;
     fLastCodeOptionsChangeStep: integer;
-    FLastDirectivesFilter: string;
-    FLastDirectivesChangeStep: integer;
-    FMode: TCodeExplorerMode;
-    FLastMode: TCodeExplorerMode;
     FLastCodeValid: boolean;
     FLastCodeXY: TPoint;
+    FLastDirectivesChangeStep: integer;
+    FLastDirectivesFilter: string;
+    FLastMode: TCodeExplorerMode;
+    FMode: TCodeExplorerMode;
+    fObserverCatNodes: array[TCEObserverCategory] of TTreeNode;
+    fObserverCatOverflow: array[TCEObserverCategory] of boolean;
+    fObserverNode: TTreeNode;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FOnShowOptions: TNotifyEvent;
-    FUpdateCount: integer;
     fSortCodeTool: TCodeTool;
+    FUpdateCount: integer;
     ImgIDClass: Integer;
     ImgIDConst: Integer;
     ImgIDSection: Integer;
@@ -206,6 +207,9 @@ type
     procedure CreateIdentifierNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
                           ParentViewNode, InFrontViewNode: TTreeNode;
                           CreateSiblings: boolean);
+    function GetCTNodePath(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode): string;
+    procedure CreateNodePath(ACodeTool: TCodeTool; aNodeData: TObject);
+    procedure AddImplementationNode(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode);
     procedure CreateDirectiveNodes(ADirectivesTool: TDirectivesTool;
                           CodeNode: TCodeTreeNode;
                           ParentViewNode, InFrontViewNode: TTreeNode;
@@ -224,11 +228,11 @@ type
   protected
     fLastCodeTool: TCodeTool;
     fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
+    fNodesWithPath: TAvgLvlTree; // tree of TViewNodeData sorted for Path and Params
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
   public
-    destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure CheckOnIdle;
@@ -237,7 +241,7 @@ type
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
     procedure ClearCTNodes(ATreeView: TTreeView);// remove temporary references
-    function JumpToSelection: boolean; // jump in source editor
+    function JumpToSelection(ToImplementation: boolean = false): boolean; // jump in source editor
     function SelectSourceEditorNode: boolean;
     function SelectCodePosition(CodeBuf: TCodeBuffer; X, Y: integer): boolean; // select deepest node
     function FindCodeTVNodeAtCleanPos(CleanPos: integer): TTreeNode;
@@ -270,6 +274,7 @@ const
 var
   CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
+  CEJumpToImplementationIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CERenameIDEMenuCommand: TIDEMenuCommand;
 
@@ -284,13 +289,21 @@ implementation
 {$R *.lfm}
 
 type
+
+  { TViewNodeData }
+
   TViewNodeData = class
   public
     CTNode: TCodeTreeNode; // only valid during update, other times it is nil
     Desc: TCodeTreeNodeDesc;
     SubDesc: TCodeTreeNodeSubDesc;
     StartPos, EndPos: integer;
+    Path: string;
+    Params: string;
+    ImplementationNode: TViewNodeData;
     constructor Create(CodeNode: TCodeTreeNode);
+    destructor Destroy; override;
+    procedure CreateParams(ACodeTool: TCodeTool);
   end;
 
 function CompareViewNodeDataStartPos(Node1, Node2: TTreeNode): integer;
@@ -325,6 +338,24 @@ begin
     Result:=0;
 end;
 
+function CompareViewNodePathsAndParams(NodeData1, NodeData2: Pointer): integer;
+var
+  Node1: TViewNodeData absolute NodeData1;
+  Node2: TViewNodeData absolute NodeData2;
+begin
+  Result:=SysUtils.CompareText(Node1.Path,Node2.Path);
+  if Result<>0 then exit;
+  Result:=SysUtils.CompareText(Node1.Params,Node2.Params);
+end;
+
+function CompareViewNodePaths(NodeData1, NodeData2: Pointer): integer;
+var
+  Node1: TViewNodeData absolute NodeData1;
+  Node2: TViewNodeData absolute NodeData2;
+begin
+  Result:=SysUtils.CompareText(Node1.Path,Node2.Path);
+end;
+
 procedure RegisterStandardCodeExplorerMenuItems;
 var
   Path: String;
@@ -333,6 +364,8 @@ begin
   Path:=CodeExplorerMenuRoot.Name;
   CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo
     );
+  CEJumpToImplementationIDEMenuCommand:=RegisterIDEMenuCommand(Path,
+    'Jump to implementation', lisMenuJumpToImplementation);
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
     dlgUnitDepRefresh);
   CERenameIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Rename', lisFRIRename);
@@ -389,6 +422,22 @@ begin
   EndPos:=CodeNode.EndPos;
 end;
 
+destructor TViewNodeData.Destroy;
+begin
+  FreeAndNil(ImplementationNode);
+  inherited Destroy;
+end;
+
+procedure TViewNodeData.CreateParams(ACodeTool: TCodeTool);
+begin
+  if Params<>'' then exit;
+  if CTNode.Desc=ctnProcedure then
+    Params:=ACodeTool.ExtractProcHead(CTNode,
+      [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,phpWithoutSemicolon]);
+  if Params='' then
+    Params:=' ';
+end;
+
 { TCodeExplorerView }
 
 procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
@@ -436,9 +485,12 @@ begin
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
-  CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
-  CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
+  CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuItemClick;
+  CEJumpToImplementationIDEMenuCommand.OnClick:=@JumpToImplementationMenuItemClick;
+  CERefreshIDEMenuCommand.OnClick:=@RefreshMenuItemClick;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
+
+  fNodesWithPath:=TAvgLvlTree.Create(@CompareViewNodePathsAndParams);
 
   Application.AddOnUserInputHandler(@OnUserInput);
 end;
@@ -446,6 +498,11 @@ end;
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
 begin
   //debugln('TCodeExplorerView.CodeExplorerViewDestroy');
+  fLastCodeTool:=nil;
+  FreeAndNil(fNodesWithPath);
+  FreeAndNil(fCodeSortedForStartPos);
+  if CodeExplorerView=Self then
+    CodeExplorerView:=nil;
 end;
 
 procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
@@ -509,9 +566,14 @@ begin
   Refresh(true);
 end;
 
-procedure TCodeExplorerView.JumpToMenuitemCLICK(Sender: TObject);
+procedure TCodeExplorerView.JumpToMenuItemClick(Sender: TObject);
 begin
-  JumpToSelection;
+  JumpToSelection(false);
+end;
+
+procedure TCodeExplorerView.JumpToImplementationMenuItemClick(Sender: TObject);
+begin
+  JumpToSelection(true);
 end;
 
 procedure TCodeExplorerView.MainNotebookPageChanged(Sender: TObject);
@@ -537,7 +599,7 @@ begin
   end;
 end;
 
-procedure TCodeExplorerView.RefreshMenuitemCLICK(Sender: TObject);
+procedure TCodeExplorerView.RefreshMenuItemClick(Sender: TObject);
 begin
   Refresh(true);
 end;
@@ -563,8 +625,10 @@ var
   CurItem: TTreeNode;
   CanRename: boolean;
   CurNode: TViewNodeData;
+  HasImplementation: Boolean;
 begin
   CanRename:=false;
+  HasImplementation:=false;
   CurTreeView:=GetCurrentTreeView;
   if CurTreeView<>nil then begin
     if tvoAllowMultiselect in CurTreeView.Options then
@@ -583,9 +647,13 @@ begin
           ;
         end;
       end;
+      if (CurNode.ImplementationNode<>nil)
+      and (CurNode.ImplementationNode.StartPos>0) then
+        HasImplementation:=true;
     end;
   end;
   CERenameIDEMenuCommand.Visible:=CanRename;
+  CEJumpToImplementationIDEMenuCommand.Visible:=HasImplementation;
   DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 
@@ -827,7 +895,9 @@ begin
     end;
     
     if ShowNode then begin
+      // add a node to the TTreeView
       NodeData:=TViewNodeData.Create(CodeNode);
+      CreateNodePath(ACodeTool,NodeData);
       NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
       NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode);
       //if NodeText='TCodeExplorerView' then
@@ -844,7 +914,9 @@ begin
       ViewNode.SelectedIndex:=NodeImageIndex;
       InFrontViewNode:=ViewNode;
     end else begin
+      // do not add a node to the TTreeView
       ViewNode:=ParentViewNode;
+      AddImplementationNode(ACodeTool,CodeNode);
     end;
     if ShowChilds then
       CreateIdentifierNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
@@ -1596,15 +1668,6 @@ begin
   DirectivesTreeView.EndUpdate;
 end;
 
-destructor TCodeExplorerView.Destroy;
-begin
-  inherited Destroy;
-  fLastCodeTool:=nil;
-  FreeAndNil(fCodeSortedForStartPos);
-  if CodeExplorerView=Self then
-    CodeExplorerView:=nil;
-end;
-
 procedure TCodeExplorerView.BeginUpdate;
 begin
   inc(FUpdateCount);
@@ -1801,6 +1864,7 @@ begin
 
       if fCodeSortedForStartPos<>nil then
         fCodeSortedForStartPos.Clear;
+      fNodesWithPath.Clear;
 
       //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
 
@@ -1817,11 +1881,9 @@ begin
       for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
         fObserverCatNodes[f]:=nil;
 
-      if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
-      begin
-        CodeTreeview.Items.Clear;
-      end else begin
-        CodeTreeview.Items.Clear;
+      CodeTreeview.Items.Clear;
+      if (ACodeTool<>nil) and (ACodeTool.Tree<>nil) and (ACodeTool.Tree.Root<>nil)
+      then begin
         CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
         if (Mode = cemCategory) and
            (cecCodeObserver in CodeExplorerOptions.Categories) then
@@ -1940,7 +2002,7 @@ begin
   end;
 end;
 
-function TCodeExplorerView.JumpToSelection: boolean;
+function TCodeExplorerView.JumpToSelection(ToImplementation: boolean): boolean;
 var
   CurItem: TTreeNode;
   CurNode: TViewNodeData;
@@ -1962,6 +2024,10 @@ begin
     CurItem:=CurTreeView.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
+  if ToImplementation then begin
+    CurNode:=CurNode.ImplementationNode;
+    if CurNode=nil then exit;
+  end;
   if CurNode.StartPos<1 then exit;
   CodeBuffer:=nil;
   case CurrentPage of
@@ -2196,6 +2262,110 @@ begin
   cepCode: Result:=CodeTreeview;
   cepDirectives: Result:=DirectivesTreeView;
   else  Result:=nil;
+  end;
+end;
+
+function TCodeExplorerView.GetCTNodePath(ACodeTool: TCodeTool;
+  CodeNode: TCodeTreeNode): string;
+var
+  CurName: String;
+begin
+  Result:='';
+  while CodeNode<>nil do begin
+    CurName:='';
+    case CodeNode.Desc of
+
+    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+      CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+    ctnGenericType:
+      CurName:=ACodeTool.ExtractDefinitionName(CodeNode);
+
+    ctnEnumIdentifier:
+      CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+    ctnProcedure:
+      CurName:=ACodeTool.ExtractProcName(CodeNode,[]);
+
+    ctnProperty:
+      CurName:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
+
+    end;
+    if CurName<>'' then begin
+      if Result<>'' then Result:='.'+Result;
+      Result:=CurName+Result;
+    end;
+    CodeNode:=CodeNode.Parent;
+  end;
+end;
+
+procedure TCodeExplorerView.CreateNodePath(ACodeTool: TCodeTool;
+  aNodeData: TObject);
+var
+  NodeData: TViewNodeData absolute aNodeData;
+  AVLNode: TAvgLvlTreeNode;
+begin
+  if NodeData.CTNode.Desc=ctnProcedure then
+    NodeData.Path:=GetCTNodePath(ACodeTool,NodeData.CTNode);
+  if NodeData.Path='' then exit;
+  AVLNode:=fNodesWithPath.FindKey(NodeData,@CompareViewNodePaths);
+  if AVLNode=nil then begin
+    // unique path
+    fNodesWithPath.Add(NodeData);
+    exit;
+  end;
+  // there is already a node with this path
+  // => add params to distinguish overloads
+  NodeData.CreateParams(ACodeTool);
+  TViewNodeData(AVLNode.Data).CreateParams(ACodeTool);
+  fNodesWithPath.Add(NodeData);
+end;
+
+procedure TCodeExplorerView.AddImplementationNode(ACodeTool: TCodeTool;
+  CodeNode: TCodeTreeNode);
+var
+  NodeData: TViewNodeData;
+  AVLNode: TAvgLvlTreeNode;
+  DeclData: TViewNodeData;
+begin
+  if (CodeNode.Desc=ctnProcedure)
+  and ((ctnsForwardDeclaration and CodeNode.SubDesc)=0) then begin
+    NodeData:=TViewNodeData.Create(CodeNode);
+    try
+      NodeData.Path:=GetCTNodePath(ACodeTool,NodeData.CTNode);
+      if NodeData.Path='' then exit;
+      //debugln(['TCodeExplorerView.AddImplementationNode Proc=',NodeData.Path]);
+      AVLNode:=fNodesWithPath.FindKey(NodeData,@CompareViewNodePaths);
+      if (AVLNode=nil) or (TViewNodeData(AVLNode.Data).ImplementationNode<>nil)
+      then begin
+        // there is no declaration, or there is already an implementation
+        // => ignore
+        exit;
+      end;
+      DeclData:=TViewNodeData(AVLNode.Data);
+      if (DeclData.Params<>'') then begin
+        // there are several nodes with this Path
+        NodeData.CreateParams(ACodeTool);
+        AVLNode:=fNodesWithPath.Find(NodeData);
+        if (AVLNode=nil) or (TViewNodeData(AVLNode.Data).ImplementationNode<>nil)
+        then begin
+          // there is no declaration, or there is already an implementation
+          // => ignore
+          exit;
+        end;
+        DeclData:=TViewNodeData(AVLNode.Data);
+      end;
+      // implementation found
+      //debugln(['TCodeExplorerView.AddImplementationNode implementation found: ',NodeData.Path,'(',NodeData.Params,')']);
+      NodeData.Desc:=CodeNode.Desc;
+      NodeData.SubDesc:=CodeNode.SubDesc;
+      NodeData.StartPos:=CodeNode.StartPos;
+      NodeData.EndPos:=CodeNode.EndPos;
+      DeclData.ImplementationNode:=NodeData;
+      NodeData:=nil;
+    finally
+      NodeData.Free;
+    end;
   end;
 end;
 
