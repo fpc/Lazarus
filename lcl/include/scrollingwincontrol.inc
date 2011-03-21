@@ -191,7 +191,6 @@ end;
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
 var
   i: Integer;
-  Control: TControl;
 begin
   if HandleAllocated and IsWindowVisible(Handle) then
   begin
