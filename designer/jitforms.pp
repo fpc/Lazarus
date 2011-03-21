@@ -1684,7 +1684,7 @@ end;
   set these values.
   But at design time we do not have the corresponding TForm descendent. And
   there is no compiled code, thus it must be produced (just-in-time),
-  if fake methods are not used .
+  if fake methods are not used.
 }
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
@@ -1713,7 +1713,7 @@ var
   JITMethod: TJITMethod;
   CurLookupRoot: TPersistent;
 begin
-  //debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' LookupRoot=',DbgSName(Reader.LookupRoot),' ',PropInfo^.Name,':=',TheMethodName);
+  //debugln('TJITComponentList.ReaderSetMethodProperty START ',DbgSName(Instance),' LookupRoot=',DbgSName(Reader.LookupRoot),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin
     // there is a real method with this name
@@ -1728,7 +1728,7 @@ begin
       CurLookupRoot:=GetLookupRootForComponent(Reader.LookupRoot);
       if CurLookupRoot<>nil then begin
         // create a fake TJITMethod
-        //DebugLn(['TJITComponentList.ReaderSetMethodProperty ',DbgSName(reader.LookupRoot),' TheMethodName=',TheMethodName]);
+        //DebugLn(['TJITComponentList.ReaderSetMethodProperty create JIT method: ',DbgSName(reader.LookupRoot),' TheMethodName=',TheMethodName]);
         JITMethod:=JITMethods.Add(CurLookupRoot.ClassType,TheMethodName);
       end;
     end;
@@ -1738,6 +1738,7 @@ begin
       Method.Data:=nil;
   end;
   SetMethodProp(Instance, PropInfo, Method);
+  //debugln(['TJITComponentList.ReaderSetMethodProperty Data=',dbgs(Method.Data),' Code=',dbgs(Method.Code)]);
   
   Handled:=true;
 end;

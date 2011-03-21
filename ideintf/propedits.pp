@@ -3960,6 +3960,7 @@ end;
 function TMethodPropertyEditor.GetValue: ansistring;
 begin
   Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0));
+  //debugln(['TMethodPropertyEditor.GetValue Name=',GetName,' Result=',Result,' Data=',dbgs(GetMethodValue.Data)]);
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStrProc);
