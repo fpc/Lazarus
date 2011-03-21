@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, OpenGLContext, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TASources, GL, GLU, TADrawerOpenGL, TADrawUtils;
+  Dialogs, TAGraph, TASeries, TASources, GL, GLU;
 
 type
 
@@ -28,6 +28,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  TADrawUtils, TADrawerOpenGL, TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
