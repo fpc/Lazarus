@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 333
     Top = 0
     Width = 533
-    ActivePage = tsSubmarks
+    ActivePage = tsCustomMarks
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object tsCustomMarks: TTabSheet
       Caption = 'Customized marks'
@@ -122,7 +122,6 @@ object Form1: TForm1
           item
             Grid.Visible = False
             Group = 1
-            Marks.Visible = False
             Marks.Source = udcsSub
             Marks.Style = smsNone
             TickLength = 2
@@ -131,7 +130,6 @@ object Form1: TForm1
             Alignment = calBottom
             Grid.Visible = False
             Group = 2
-            Marks.Visible = False
             Marks.Source = udcsSub
             Marks.Style = smsNone
             TickLength = 2

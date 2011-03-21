@@ -63,7 +63,7 @@ uses
 
 procedure TForm1.ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
 begin
-  if AMark < 15 then
+  if AMark = 3 then
     AText := '*' + AText + '*';
 end;
 
@@ -76,6 +76,9 @@ var
   ls: TLineSeries;
   tr: TChartAxisTransformations;
 begin
+  //FIXME
+  ChartCustomMarks.BottomAxis.OnMarkToText :=
+    @ChartCustomMarksAxisList1MarkToText;
   for i := 1 to 5 do begin
     ls := TLineSeries.Create(Self);
     ChartAxisGroup.AddSeries(ls);
