@@ -98,6 +98,7 @@ end;
 
 constructor TAggPasDrawer.Create(ACanvas: TAggLCLCanvas);
 begin
+  inherited Create;
   FCanvas := ACanvas;
 end;
 

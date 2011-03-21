@@ -116,6 +116,7 @@ end;
 
 constructor TFPCanvasDrawer.Create(ACanvas: TFPCustomCanvas);
 begin
+  inherited Create;
   FCanvas := ACanvas;
 end;
 
@@ -182,7 +183,7 @@ end;
 
 procedure TFPCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FCanvas.Pen.FPColor := ChartColorToFPColor(AColor);
+  FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
   FCanvas.Pen.Width := 1;
   FCanvas.Pen.Style := psSolid;
 end;
@@ -213,14 +214,14 @@ end;
 
 procedure TFPCanvasDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FCanvas.Brush.FPColor := ChartColorToFPColor(AColor);
+  FCanvas.Brush.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPCanvasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
   FCanvas.Brush.Style := AStyle;
-  FCanvas.Brush.FPColor := ChartColorToFPColor(AColor);
+  FCanvas.Brush.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPCanvasDrawer.SetFont(AFont: TFPCustomFont);
@@ -236,7 +237,7 @@ end;
 procedure TFPCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FCanvas.Pen.Style := AStyle;
-  FCanvas.Pen.FPColor := ChartColorToFPColor(AColor);
+  FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
 function TFPCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;
