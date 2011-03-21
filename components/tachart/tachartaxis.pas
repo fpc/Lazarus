@@ -644,7 +644,7 @@ procedure TChartAxis.Measure(
     t: String;
   begin
     Result := Size(0, 0);
-    if AMin = AMax then exit;
+    if (AMin = AMax) or not Marks.Visible then exit;
     GetMarkValues(AMin, AMax);
     for i := 0 to High(FMarkTexts) do begin
       // CalculateTransformationCoeffs changes axis interval, so it is possibile
