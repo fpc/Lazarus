@@ -20,7 +20,7 @@ unit TADrawerAggPas;
 interface
 
 uses
-  Classes, SysUtils, FPCanvas, Agg_LCL, TADrawUtils;
+  Classes, FPCanvas, Agg_LCL, TADrawUtils;
 
 type
 
@@ -193,8 +193,7 @@ begin
     Style := ABrush.Style;
     Image := ABrush.Image;
     Pattern := ABrush.Pattern;
-    if ABrush is TBrush then
-      Color := (ABrush as TBrush).Color;
+    FPColor := ABrush.FPColor;
   end;
 end;
 
@@ -222,11 +221,9 @@ begin
   // This should be: FCanvas.Font.DoCopyProps(AFont);
   f.LoadFromFile(
     AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
+  f.FPColor := AFont.FPColor;
   if AFont is TFont then
-    with TFont(AFont) do begin
-      f.Color := Color;
-      f.AggAngle := OrientToRad(Orientation);
-    end;
+    f.AggAngle := OrientToRad(TFont(AFont).Orientation);
 end;
 
 type
@@ -235,8 +232,7 @@ type
 procedure TAggPasDrawer.SetPen(APen: TFPCustomPen);
 begin
   TAggLCLPenCrack(FCanvas.Pen).DoCopyProps(APen);
-  if APen is TPen then
-    FCanvas.Pen.Color := (APen as TPen).Color;
+  FCanvas.Pen.FPColor := APen.FPColor;
 end;
 
 procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
@@ -254,6 +250,10 @@ procedure TAggPasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 begin
   FCanvas.TextOut(AX, AY, AText);
 end;
+
+initialization
+  // Suppress incorrect "TAGeometry is unused" hint
+  Unused(DoublePoint(0, 0));
 
 end.
 
