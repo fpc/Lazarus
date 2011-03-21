@@ -469,6 +469,12 @@ type
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStrProc);
+    procedure OnPropHookGetCompatibleMethods(InstProp: PInstProp;
+                                             const Proc:TGetStrProc);
+    function OnPropHookCompatibleMethodExists(const AMethodName: String;
+                                    InstProp: PInstProp;
+                                    var MethodIsCompatible, MethodIsPublished,
+                                    IdentIsMethod: boolean): boolean;
     function OnPropHookMethodExists(const AMethodName: String;
                                     TypeData: PTypeData;
                                     var MethodIsCompatible, MethodIsPublished,
@@ -1704,6 +1710,50 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnPropHookGetCompatibleMethods(InstProp: PInstProp;
+  const Proc: TGetStrProc);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
+  {$IFDEF IDE_DEBUG}
+  DebugLn('');
+  DebugLn('[TMainIDE.OnPropHookGetCompatibleMethods] ************');
+  {$ENDIF}
+  if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
+    ActiveUnitInfo.Component.ClassName,
+    InstProp^.Instance,InstProp^.PropInfo^.Name,Proc) then
+  begin
+    DoJumpToCodeToolBossError;
+  end;
+end;
+
+function TMainIDE.OnPropHookCompatibleMethodExists(const AMethodName: String;
+  InstProp: PInstProp; var MethodIsCompatible, MethodIsPublished,
+  IdentIsMethod: boolean): boolean;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
+    Exit;
+  {$IFDEF IDE_DEBUG}
+  WriteLn('');
+  WriteLn('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
+  {$ENDIF}
+  Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
+                        ActiveUnitInfo.Component.ClassName, AMethodName,
+                        InstProp^.Instance, InstProp^.PropInfo^.Name,
+                        MethodIsCompatible, MethodIsPublished, IdentIsMethod);
+  if CodeToolBoss.ErrorMessage <> '' then
+  begin
+    DoJumpToCodeToolBossError;
+    raise Exception.Create(lisUnableToFindMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -1917,7 +1967,9 @@ begin
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
   GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
+  GlobalDesignHook.AddHandlerGetCompatibleMethods(@OnPropHookGetCompatibleMethods);
   GlobalDesignHook.AddHandlerGetMethods(@OnPropHookGetMethods);
+  GlobalDesignHook.AddHandlerCompatibleMethodExists(@OnPropHookCompatibleMethodExists);
   GlobalDesignHook.AddHandlerMethodExists(@OnPropHookMethodExists);
   GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
   GlobalDesignHook.AddHandlerShowMethod(@OnPropHookShowMethod);
@@ -17103,7 +17155,6 @@ function TMainIDE.OnPropHookMethodExists(const AMethodName: String;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  //D: DWord;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit;
@@ -17111,12 +17162,9 @@ begin
   WriteLn('');
   WriteLn('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
   {$ENDIF}
-  //D := GetTickCount;
   Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                         ActiveUnitInfo.Component.ClassName, AMethodName, TypeData,
                         MethodIsCompatible, MethodIsPublished, IdentIsMethod);
-  //D := GetTickCount - D;
-  //WriteLn('CodeToolBoss.PublishedMethodExists takes ', D, ' ms');
   if CodeToolBoss.ErrorMessage <> '' then
   begin
     DoJumpToCodeToolBossError;

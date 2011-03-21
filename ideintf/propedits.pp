@@ -264,6 +264,7 @@ type
     Instance:TPersistent;
     PropInfo:PPropInfo;
   end;
+  PInstProp = ^TInstProp;
 
   TInstPropList = array[0..999999] of TInstProp;
   PInstPropList = ^TInstPropList;
@@ -313,6 +314,7 @@ type
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
     function GetPropType: PTypeInfo;
     function GetPropInfo: PPropInfo;
+    function GetInstProp: PInstProp;
     function GetFloatValue: Extended;
     function GetFloatValueAt(Index: Integer): Extended;
     function GetInt64Value: Int64;
@@ -1098,7 +1100,11 @@ type
       APersistent: TPersistent; const APropertyPath: string): TMethod of object;
   TPropHookGetMethodName = function(const Method: TMethod;
                                     CheckOwner: TObject): String of object;
+  TPropHookGetCompatibleMethods = procedure(InstProp: PInstProp; const Proc: TGetStrProc) of object;
   TPropHookGetMethods = procedure(TypeData: PTypeData; Proc: TGetStrProc) of object;
+  TPropHookCompatibleMethodExists = function(const Name: String; InstProp: PInstProp;
+                 var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean
+                 ):boolean of object;
   TPropHookMethodExists = function(const Name: String; TypeData: PTypeData;
                  var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean
                  ):boolean of object;
@@ -1145,7 +1151,9 @@ type
     // methods
     htCreateMethod,
     htGetMethodName,
+    htGetCompatibleMethods,
     htGetMethods,
+    htCompatibleMethodExists,
     htMethodExists,
     htRenameMethod,
     htShowMethod,
@@ -1203,8 +1211,11 @@ type
                           APersistent: TPersistent;
                           const APropertyPath: string): TMethod;
     function GetMethodName(const Method: TMethod; PropOwner: TObject): String;
-    procedure GetMethods(TypeData: PTypeData; Proc: TGetStrProc);
+    procedure GetMethods(TypeData: PTypeData; const Proc: TGetStrProc);
+    procedure GetCompatibleMethods(InstProp: PInstProp; const Proc: TGetStrProc);
     function MethodExists(const Name: String; TypeData: PTypeData;
+      var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
+    function CompatibleMethodExists(const Name: String; InstProp: PInstProp;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: String);
     procedure ShowMethod(const Name: String);
@@ -1257,8 +1268,16 @@ type
                                  const OnGetMethodName: TPropHookGetMethodName);
     procedure RemoveHandlerGetMethodName(
                                  const OnGetMethodName: TPropHookGetMethodName);
+    procedure AddHandlerGetCompatibleMethods(
+                             const OnGetMethods: TPropHookGetCompatibleMethods);
+    procedure RemoveHandlerGetCompatibleMethods(
+                             const OnGetMethods: TPropHookGetCompatibleMethods);
     procedure AddHandlerGetMethods(const OnGetMethods: TPropHookGetMethods);
     procedure RemoveHandlerGetMethods(const OnGetMethods: TPropHookGetMethods);
+    procedure AddHandlerCompatibleMethodExists(
+                         const OnMethodExists: TPropHookCompatibleMethodExists);
+    procedure RemoveHandlerCompatibleMethodExists(
+                         const OnMethodExists: TPropHookCompatibleMethodExists);
     procedure AddHandlerMethodExists(
                                    const OnMethodExists: TPropHookMethodExists);
     procedure RemoveHandlerMethodExists(
@@ -2462,6 +2481,11 @@ end;
 function TPropertyEditor.GetPropInfo:PPropInfo;
 begin
   Result:=FPropList^[0].PropInfo;
+end;
+
+function TPropertyEditor.GetInstProp: PInstProp;
+begin
+  Result:=@FPropList^[0];
 end;
 
 function TPropertyEditor.GetPropType:PTypeInfo;
@@ -3942,7 +3966,7 @@ procedure TMethodPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   //DebugLn('### TMethodPropertyEditor.GetValues');
   Proc(oisNone);
-  PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
+  PropertyHook.GetCompatibleMethods(GetInstProp, Proc);
 end;
 
 procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
@@ -3968,7 +3992,7 @@ begin
   end;
   
   NewMethodExists:=(not IsNil)
-       and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
+      and PropertyHook.CompatibleMethodExists(NewValue,GetInstProp,
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
   //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
@@ -5099,13 +5123,24 @@ begin
   end;
 end;
 
-procedure TPropertyEditorHook.GetMethods(TypeData: PTypeData; Proc: TGetStrProc);
+procedure TPropertyEditorHook.GetMethods(TypeData: PTypeData;
+  const Proc: TGetStrProc);
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htGetMethods);
   while GetNextHandlerIndex(htGetMethods,i) do
     TPropHookGetMethods(FHandlers[htGetMethods][i])(TypeData,Proc);
+end;
+
+procedure TPropertyEditorHook.GetCompatibleMethods(InstProp: PInstProp;
+  const Proc: TGetStrProc);
+var
+  i: Integer;
+begin
+  i:=GetHandlerCount(htGetCompatibleMethods);
+  while GetNextHandlerIndex(htGetCompatibleMethods,i) do
+    TPropHookGetCompatibleMethods(FHandlers[htGetCompatibleMethods][i])(InstProp,Proc);
 end;
 
 function TPropertyEditorHook.MethodExists(const Name: String;
@@ -5123,6 +5158,31 @@ begin
     while GetNextHandlerIndex(htMethodExists,i) do begin
       Handler:=TPropHookMethodExists(FHandlers[htMethodExists][i]);
       Result:=Handler(Name,TypeData,
+                            MethodIsCompatible,MethodIsPublished,IdentIsMethod);
+    end;
+  end else begin
+    Result:=(LookupRoot.MethodAddress(Name)<>nil);
+    MethodIsCompatible:=Result;
+    MethodIsPublished:=Result;
+    IdentIsMethod:=Result;
+  end;
+end;
+
+function TPropertyEditorHook.CompatibleMethodExists(const Name: String;
+  InstProp: PInstProp; var MethodIsCompatible, MethodIsPublished,
+  IdentIsMethod: boolean): boolean;
+var
+  i: Integer;
+  Handler: TPropHookCompatibleMethodExists;
+begin
+  // check if a published method with given name exists in LookupRoot
+  Result:=IsValidIdent(Name) and Assigned(FLookupRoot);
+  if not Result then exit;
+  i:=GetHandlerCount(htCompatibleMethodExists);
+  if i>=0 then begin
+    while GetNextHandlerIndex(htCompatibleMethodExists,i) do begin
+      Handler:=TPropHookCompatibleMethodExists(FHandlers[htCompatibleMethodExists][i]);
+      Result:=Handler(Name,InstProp,
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
     end;
   end else begin
@@ -5586,6 +5646,30 @@ procedure TPropertyEditorHook.RemoveHandlerGetMethods(
   const OnGetMethods: TPropHookGetMethods);
 begin
   RemoveHandler(htGetMethods,TMethod(OnGetMethods));
+end;
+
+procedure TPropertyEditorHook.AddHandlerCompatibleMethodExists(
+  const OnMethodExists: TPropHookCompatibleMethodExists);
+begin
+  AddHandler(htCompatibleMethodExists,TMethod(OnMethodExists));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerCompatibleMethodExists(
+  const OnMethodExists: TPropHookCompatibleMethodExists);
+begin
+  RemoveHandler(htCompatibleMethodExists,TMethod(OnMethodExists));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetCompatibleMethods(
+  const OnGetMethods: TPropHookGetCompatibleMethods);
+begin
+  AddHandler(htGetCompatibleMethods,TMethod(OnGetMethods));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetCompatibleMethods(
+  const OnGetMethods: TPropHookGetCompatibleMethods);
+begin
+  RemoveHandler(htGetCompatibleMethods,TMethod(OnGetMethods));
 end;
 
 procedure TPropertyEditorHook.AddHandlerMethodExists(
