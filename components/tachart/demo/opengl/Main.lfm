@@ -6,7 +6,6 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 319
   ClientWidth = 684
-  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object OpenGLControl1: TOpenGLControl
     Left = 344
@@ -40,7 +39,9 @@ object Form1: TForm1
       'Standard'
     )
     Title.Visible = True
+    OnAfterPaint = Chart1AfterPaint
     Align = alLeft
+    Color = clSkyBlue
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
       LinePen.Color = clBlue

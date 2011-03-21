@@ -18,10 +18,8 @@ type
     Chart1LineSeries1: TLineSeries;
     OpenGLControl1: TOpenGLControl;
     RandomChartSource1: TRandomChartSource;
-    procedure FormCreate(Sender: TObject);
+    procedure Chart1AfterPaint(ASender: TChart);
     procedure OpenGLControl1Paint(Sender: TObject);
-  private
-    procedure OnAppIdle(Sender: TObject; var Done: Boolean);
   end;
 
 var
@@ -31,14 +29,8 @@ implementation
 
 {$R *.lfm}
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
-  Application.AddOnIdleHandler(@OnAppIdle);
-end;
-
-procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);
-begin
-  Done:=false;
   OpenGLControl1.Invalidate;
 end;
 
@@ -56,9 +48,11 @@ begin
   glLoadIdentity();
 
   d := TOpenGLDrawer.Create(OpenGLControl1);
+  Chart1.DisableRedrawing;
   Chart1.Title.Text.Text := 'OpenGL';
   Chart1.Draw(d, Rect(0, 0, OpenGLControl1.Width, OpenGLControl1.Height));
   Chart1.Title.Text.Text := 'Standard';
+  Chart1.EnableRedrawing;
 
   OpenGLControl1.SwapBuffers;
 end;

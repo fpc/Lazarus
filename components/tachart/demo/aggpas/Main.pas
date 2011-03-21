@@ -24,6 +24,7 @@ type
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
     procedure cbAggPasClick(Sender: TObject);
+    procedure Chart1AfterPaint(ASender: TChart);
     procedure ChartPaint(
       ASender: TChart; const ARect: TRect; var ADoDefaultDrawing: Boolean);
     procedure FormCreate(Sender: TObject);
@@ -49,6 +50,11 @@ begin
     Chart1.OnChartPaint := @ChartPaint
   else
     Chart1.OnChartPaint := nil;
+end;
+
+procedure TForm1.Chart1AfterPaint(ASender: TChart);
+begin
+  PaintBox1.Invalidate;
 end;
 
 procedure TForm1.ChartPaint(ASender: TChart; const ARect: TRect;
@@ -78,9 +84,11 @@ procedure TForm1.PaintBox1Paint(Sender: TObject);
 begin
   FAggCanvas.Width := PaintBox1.Width;
   FAggCanvas.Height := PaintBox1.Height;
+  Chart1.DisableRedrawing;
   Chart1.Title.Text.Text := 'AggPas';
   Chart1.Draw(TAggPasDrawer.Create(FAggCanvas), PaintBox1.Canvas.ClipRect);
   Chart1.Title.Text.Text := 'Standard';
+  Chart1.EnableRedrawing;
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
   PaintBox1.Canvas.Draw(0, 0, FBmp);
 end;

@@ -36,6 +36,7 @@ object Form1: TForm1
       'Standard'
     )
     Title.Visible = True
+    OnAfterPaint = Chart1AfterPaint
     Align = alClient
     Color = clMoneyGreen
     ParentColor = False
