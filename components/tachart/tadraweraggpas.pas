@@ -26,7 +26,7 @@ type
 
   { TAggPasDrawer }
 
-  TAggPasDrawer = class(TFPCanvasDrawer, IChartDrawer, ISimpleTextOut)
+  TAggPasDrawer = class(TBasicDrawer, IChartDrawer, ISimpleTextOut)
   strict private
     FCanvas: TAggLCLCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);

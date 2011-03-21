@@ -26,11 +26,6 @@ uses
 type
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
 
-const
-  Colors: array [1..15] of TColor = (
-    clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
-    clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
-
 type
 
   ISimpleTextOut = interface
@@ -117,9 +112,9 @@ type
     property Pen: TFPCustomPen write SetPen;
   end;
 
-  { TFPCanvasDrawer }
+  { TBasicDrawer }
 
-  TFPCanvasDrawer = class(TInterfacedObject, ISimpleTextOut)
+  TBasicDrawer = class(TInterfacedObject, ISimpleTextOut)
   strict protected
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
@@ -143,7 +138,7 @@ type
   { TCanvasDrawer }
 
   TCanvasDrawer = class(
-    TFPCanvasDrawer, IChartDrawer, IChartTCanvasDrawer)
+    TBasicDrawer, IChartDrawer, IChartTCanvasDrawer)
   private
     FCanvas: TCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -292,14 +287,14 @@ begin
   Result := Self;
 end;
 
-{ TFPCanvasDrawer }
+{ TBasicDrawer }
 
-procedure TFPCanvasDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
+procedure TBasicDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
 begin
   DrawLineDepth(Point(AX1, AY1), Point(AX2, AY2), ADepth);
 end;
 
-procedure TFPCanvasDrawer.DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+procedure TBasicDrawer.DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
 var
   d: TPoint;
 begin
@@ -307,22 +302,22 @@ begin
   Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
-procedure TFPCanvasDrawer.LineTo(const AP: TPoint);
+procedure TBasicDrawer.LineTo(const AP: TPoint);
 begin
   LineTo(AP.X, AP.Y)
 end;
 
-procedure TFPCanvasDrawer.MoveTo(const AP: TPoint);
+procedure TBasicDrawer.MoveTo(const AP: TPoint);
 begin
   MoveTo(AP.X, AP.Y)
 end;
 
-function TFPCanvasDrawer.Scale(ADistance: Integer): Integer;
+function TBasicDrawer.Scale(ADistance: Integer): Integer;
 begin
   Result := ADistance;
 end;
 
-function TFPCanvasDrawer.TextExtent(const AText: String): TPoint;
+function TBasicDrawer.TextExtent(const AText: String): TPoint;
 var
   sl: TStrings;
 begin
@@ -337,7 +332,7 @@ begin
   end;
 end;
 
-function TFPCanvasDrawer.TextExtent(AText: TStrings): TPoint;
+function TBasicDrawer.TextExtent(AText: TStrings): TPoint;
 var
   i: Integer;
 begin
@@ -349,7 +344,7 @@ begin
     end;
 end;
 
-function TFPCanvasDrawer.TextOut: TChartTextOut;
+function TBasicDrawer.TextOut: TChartTextOut;
 begin
   Result := TChartTextOut.Create(Self);
 end;

@@ -269,9 +269,14 @@ begin
 end;
 
 function TCustomPieSeries.SliceColor(AIndex: Integer): TColor;
+const
+  SLICE_COLORS: array [1..15] of TColor = (
+    clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
+    clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 begin
   Result :=
-    ColorOrDefault(Source[AIndex]^.Color, Colors[AIndex mod High(Colors) + 1]);
+    ColorOrDefault(
+      Source[AIndex]^.Color, SLICE_COLORS[AIndex mod High(SLICE_COLORS) + 1]);
 end;
 
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;

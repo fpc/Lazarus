@@ -27,7 +27,7 @@ type
 
   { TOpenGLDrawer }
 
-  TOpenGLDrawer = class(TFPCanvasDrawer, IChartDrawer)
+  TOpenGLDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FBrushColor: TFPColor;
     FContext: TOpenGLControl;
