@@ -27,7 +27,7 @@ type
 
   { TOpenGLDrawer }
 
-  TOpenGLDrawer = class(TFPCanvasDrawer, IChartDrawer, ISimpleTextOut)
+  TOpenGLDrawer = class(TFPCanvasDrawer, IChartDrawer)
   strict private
     FBrushColor: TFPColor;
     FContext: TOpenGLControl;
@@ -35,11 +35,11 @@ type
     FPenColor: TFPColor;
     FPenWidth: Integer;
     FPos: TPoint;
+    procedure InternalPolyline(
+      const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
-    procedure InternalPolyline(
-      const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
   strict protected
     function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
@@ -93,16 +93,41 @@ begin
 end;
 
 procedure TOpenGLDrawer.ClippingStart(const AClipRect: TRect);
+type
+  TGLClipPlaneEqn = record A, B, C, D: GLdouble; end;
+var
+  cp: TGLClipPlaneEqn;
 begin
-  Unused(AClipRect);
+  cp.A := 1.0;
+  cp.D := -AClipRect.Left;
+  glClipPlane(GL_CLIP_PLANE0, @cp);
+  cp.A := -1.0;
+  cp.D := AClipRect.Right;
+  glClipPlane(GL_CLIP_PLANE1, @cp);
+  cp.A := 0.0;
+  cp.B := 1.0;
+  cp.D := -AClipRect.Top;
+  glClipPlane(GL_CLIP_PLANE2, @cp);
+  cp.B := -1.0;
+  cp.D := AClipRect.Bottom;
+  glClipPlane(GL_CLIP_PLANE3, @cp);
+  ClippingStart;
 end;
 
 procedure TOpenGLDrawer.ClippingStart;
 begin
+  glEnable(GL_CLIP_PLANE0);
+  glEnable(GL_CLIP_PLANE1);
+  glEnable(GL_CLIP_PLANE2);
+  glEnable(GL_CLIP_PLANE3);
 end;
 
 procedure TOpenGLDrawer.ClippingStop;
 begin
+  glDisable(GL_CLIP_PLANE0);
+  glDisable(GL_CLIP_PLANE1);
+  glDisable(GL_CLIP_PLANE2);
+  glDisable(GL_CLIP_PLANE3);
 end;
 
 constructor TOpenGLDrawer.Create(AContext: TOpenGLControl);

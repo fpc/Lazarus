@@ -143,7 +143,7 @@ type
   { TCanvasDrawer }
 
   TCanvasDrawer = class(
-    TFPCanvasDrawer, IChartDrawer, IChartTCanvasDrawer, ISimpleTextOut)
+    TFPCanvasDrawer, IChartDrawer, IChartTCanvasDrawer)
   private
     FCanvas: TCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
