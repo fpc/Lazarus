@@ -91,7 +91,7 @@ begin
   inherited Create;
   FBitmap := nil;
   FColor := clWhite;
-  FPColor := TColorToFPColor(FColor);
+  inherited SetFPColor(TColorToFPColor(FColor));
   DelayAllocate := True;
   FInternalUpdateIndex := -1;
   inherited SetStyle(bsSolid);
