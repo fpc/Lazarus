@@ -726,8 +726,6 @@ type
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function CreateParamExprListFromStatement(StartPos: integer;
       Params: TFindDeclarationParams): TExprTypeList;
-    function CreateParamExprListFromProcNode(ProcNode: TCodeTreeNode;
-      Params: TFindDeclarationParams): TExprTypeList;
     function ContextIsDescendOf(
       const DescendContext, AncestorContext: TFindContext;
       Params: TFindDeclarationParams): boolean;
@@ -841,6 +839,8 @@ type
       FirstSourceParameterNode: TCodeTreeNode;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+    function CreateParamExprListFromProcNode(ProcNode: TCodeTreeNode;
+      Params: TFindDeclarationParams): TExprTypeList;
 
     function JumpToNode(ANode: TCodeTreeNode;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
@@ -7881,16 +7881,15 @@ function TFindDeclarationTool.GetParameterNode(Node: TCodeTreeNode
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=Node;
-  if Result<>nil then begin
-    if (Result.Desc=ctnProperty) then
-      Result:=Result.FirstChild
-    else if Result.Desc in [ctnProcedure,ctnProcedureHead] then begin
-      BuildSubTreeForProcHead(Result);
-      if Result.Desc=ctnProcedure then
-        Result:=Result.FirstChild;
-      if Result.Desc=ctnProcedureHead then
-        Result:=Result.FirstChild;
-    end;
+  if Result=nil then exit;
+  if (Result.Desc=ctnProperty) then
+    Result:=Result.FirstChild
+  else if Result.Desc in [ctnProcedure,ctnProcedureHead,ctnProcedureType] then begin
+    BuildSubTreeForProcHead(Result);
+    if Result.Desc in [ctnProcedure,ctnProcedureType] then
+      Result:=Result.FirstChild;
+    if Result.Desc=ctnProcedureHead then
+      Result:=Result.FirstChild;
   end;
 end;
 

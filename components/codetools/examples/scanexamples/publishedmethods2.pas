@@ -9,6 +9,7 @@ uses
 
 type
   T = integer;
+  Point = record end;
 
 implementation
 

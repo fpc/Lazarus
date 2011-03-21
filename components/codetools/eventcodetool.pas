@@ -36,7 +36,7 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE CTDEBUG}
-{off $DEFINE VerboseTypeData}
+{$DEFINE VerboseTypeData}
 {off $DEFINE ShowAllProcs}
 
 uses
@@ -65,16 +65,24 @@ type
     function CompleteComponent(AComponent, AncestorComponent: TComponent;
         SourceChangeCache: TSourceChangeCache): boolean;
   
+    function GetCompatiblePublishedMethods(const AClassName: string;
+        PropInstance: TPersistent; const PropName: string;
+        const Proc: TGetStrProc): boolean;
     function GetCompatiblePublishedMethods(const UpperClassName: string;
-        TypeData: PTypeData; Proc: TGetStrProc): boolean;
+        TypeData: PTypeData; const Proc: TGetStrProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
-        TypeData: PTypeData; Proc: TGetStrProc): boolean;
-    function PublishedMethodExists(const UpperClassName,
-        UpperMethodName: string; TypeData: PTypeData;
+        TypeData: PTypeData; const Proc: TGetStrProc): boolean;
+    function PublishedMethodExists(const AClassName: string;
+        const AMethodName: string;
+        PropInstance: TPersistent; const PropName: string;
+        out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+        ): boolean;
+    function PublishedMethodExists(const AClassName, AMethodName: string;
+        TypeData: PTypeData;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
     function PublishedMethodExists(ClassNode: TCodeTreeNode;
-        const UpperMethodName: string; TypeData: PTypeData;
+        const AMethodName: string; TypeData: PTypeData;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
     function JumpToPublishedMethodBody(const UpperClassName,
@@ -100,6 +108,14 @@ type
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished;
         const CallAncestorMethod: string = ''): boolean;
+
+    function FindClassOfInstance(Instance: TObject;
+        out FindContext: TFindContext; ExceptionOnNotFound: boolean): boolean;
+    function FindTypeOfInstanceProperty(Instance: TPersistent;
+        const PropName: string; out TypeContext: TFindContext;
+        ExceptionOnNotFound: boolean): boolean;
+    function CreateExprListFromInstanceProperty(Instance: TPersistent;
+        const PropName: string): TExprTypeList;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
@@ -251,7 +267,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   const UpperClassName: string; TypeData: PTypeData;
-  Proc: TGetStrProc): boolean;
+  const Proc: TGetStrProc): boolean;
 var ClassNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -274,7 +290,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   ClassNode: TCodeTreeNode; TypeData: PTypeData;
-  Proc: TGetStrProc): boolean;
+  const Proc: TGetStrProc): boolean;
 var
   Params: TFindDeclarationParams;
   CompListSize: integer;
@@ -339,6 +355,90 @@ begin
     DeactivateGlobalWriteLock;
     Params.Free;
     FreeAndNil(fGatheredCompatibleMethods);
+  end;
+end;
+
+function TEventsCodeTool.PublishedMethodExists(const AClassName: string;
+  const AMethodName: string; PropInstance: TPersistent; const PropName: string;
+  out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
+var
+  FoundContext: TFindContext;
+  CompListSize: integer;
+  ParamCompatibility: TTypeCompatibility;
+  FirstParameterNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+  ClassNode: TCodeTreeNode;
+begin
+  Result:=false;
+  MethodIsCompatible:=false;
+  IdentIsMethod:=false;
+  MethodIsPublished:=false;
+  FreeAndNil(SearchedExprList);
+
+  if (AClassName='') or (AMethodName='') or (PropInstance=nil) or (PropName='')
+  then exit;
+
+  BuildTree(lsrImplementationStart);
+  debugln(['TEventsCodeTool.PublishedMethodExists START']);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+  debugln(['TEventsCodeTool.PublishedMethodExists classnode=',ClassNode.DescAsString]);
+
+  Params:=TFindDeclarationParams.Create;
+  try
+    // first search a published method definition with same name
+    Params.ContextNode:=ClassNode;
+    Params.SetIdentifier(Self,@AMethodName[1],nil);
+    Params.Flags:=[fdfSearchInAncestors];
+    if not FindIdentifierInContext(Params) then begin
+      debugln(['TEventsCodeTool.PublishedMethodExists method not found ',AMethodName]);
+      exit;
+    end;
+    IdentIsMethod:=(Params.NewNode.Desc=ctnProcedure);
+    MethodIsPublished:=(Params.NewNode.Parent.Desc=ctnClassPublished);
+    if (not IdentIsMethod) or (not MethodIsPublished) then begin
+      debugln(['TEventsCodeTool.PublishedMethodExists not a method: ',AMethodName]);
+      exit;
+    end;
+    // published method with same name found
+    FoundContext:=CreateFindContext(Params);
+    // -> test for compatibility
+
+    // convert the event property to an expression type list
+    SearchedExprList:=CreateExprListFromInstanceProperty(PropInstance,PropName);
+    if SearchedExprList=nil then begin
+      debugln(['TEventsCodeTool.PublishedMethodExists invalid property ',DbgSName(PropInstance),'.',PropName]);
+      exit;
+    end;
+
+    debugln(['TEventsCodeTool.PublishedMethodExists SearchedExprList=[',SearchedExprList.AsString,']']);
+    // create compatibility list
+    CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
+    if CompListSize>0 then begin
+      GetMem(SearchedCompatibilityList,CompListSize);
+    end else begin
+      SearchedCompatibilityList:=nil;
+    end;
+    try
+      // check if the method fits into the event
+      FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
+        FoundContext.Node);
+      ParamCompatibility:=
+        FoundContext.Tool.IsParamNodeListCompatibleToExprList(
+          SearchedExprList,
+          FirstParameterNode,
+          Params,SearchedCompatibilityList);
+      if ParamCompatibility=tcExact then begin
+        MethodIsCompatible:=true;
+      end;
+    finally
+      if SearchedCompatibilityList<>nil then
+        FreeMem(SearchedCompatibilityList);
+      SearchedCompatibilityList:=nil;
+    end;
+    Result:=true;
+  finally
+    FreeAndNil(SearchedExprList);
+    Params.Free;
   end;
 end;
 
@@ -472,8 +572,8 @@ begin
   end;
 end;
 
-function TEventsCodeTool.PublishedMethodExists(const UpperClassName,
-  UpperMethodName: string; TypeData: PTypeData;
+function TEventsCodeTool.PublishedMethodExists(const AClassName,
+  AMethodName: string; TypeData: PTypeData;
   out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var ClassNode: TCodeTreeNode;
 begin
@@ -483,11 +583,11 @@ begin
     DebugLn('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
     {$ENDIF}
     BuildTree(lsrImplementationStart);
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.PublishedMethodExists] B ',dbgs(ClassNode<>nil));
     {$ENDIF}
-    Result:=PublishedMethodExists(ClassNode,UpperMethodName,TypeData,
+    Result:=PublishedMethodExists(ClassNode,AMethodName,TypeData,
                MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   finally
     DeactivateGlobalWriteLock;
@@ -495,7 +595,7 @@ begin
 end;
 
 function TEventsCodeTool.PublishedMethodExists(ClassNode: TCodeTreeNode;
-  const UpperMethodName: string; TypeData: PTypeData;
+  const AMethodName: string; TypeData: PTypeData;
   out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var
   FoundContext: TFindContext;
@@ -515,7 +615,7 @@ begin
     try
       // first search a published method definition with same name
       Params.ContextNode:=ClassNode;
-      Params.SetIdentifier(Self,@UpperMethodName[1],nil);
+      Params.SetIdentifier(Self,@AMethodName[1],nil);
       Params.Flags:=[fdfSearchInAncestors];
       if FindIdentifierInContext(Params) then begin
         IdentIsMethod:=(Params.NewNode.Desc=ctnProcedure);
@@ -888,6 +988,156 @@ begin
   end;
 end;
 
+function TEventsCodeTool.FindClassOfInstance(Instance: TObject;
+  out FindContext: TFindContext; ExceptionOnNotFound: boolean): boolean;
+var
+  AClassName: String;
+
+  procedure RaiseClassNotFound;
+  begin
+    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
+  end;
+
+var
+  Node: TCodeTreeNode;
+  AUnitName: String;
+  UsesNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+begin
+  Result:=false;
+  //debugln(['TEventsCodeTool.FindClassOfInstance START']);
+  FindContext:=CleanFindContext;
+  AClassName:=Instance.ClassName;
+  if AClassName='' then exit;
+  AUnitName:=Instance.UnitName;
+  debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
+  if (AUnitName='')
+  or (CompareIdentifiers(PChar(ExtractFileNameOnly(MainFilename)),
+    PChar(AUnitName))=0)
+  then begin
+    // search in this unit
+    BuildTree(lsrEnd);
+    FindContext.Node:=FindClassNodeInUnit(AClassName,true,false,false,
+                                          ExceptionOnNotFound);
+    if FindContext.Node=nil then begin
+      debugln(['TEventsCodeTool.FindClassOfInstance FindClassNodeInUnit failed']);
+      if ExceptionOnNotFound then RaiseClassNotFound;
+      exit;
+    end;
+    FindContext.Tool:=Self;
+    exit(true);
+  end;
+  // search in used units
+  UsesNode:=FindMainUsesSection;
+  if UsesNode=nil then begin
+    debugln(['TEventsCodeTool.FindClassOfInstance no main uses section found']);
+    if ExceptionOnNotFound then RaiseClassNotFound;
+    exit;
+  end;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.ContextNode:=UsesNode;
+    Params.Flags:=[fdfSearchInParentNodes, fdfSearchInAncestors];
+    if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
+    Params.SetIdentifier(Self,PChar(AClassName),nil);
+    if not FindIdentifierInContext(Params) then begin
+      debugln(['TEventsCodeTool.FindClassOfInstance FindIdentifierInContext failed']);
+      if ExceptionOnNotFound then RaiseClassNotFound;
+      exit;
+    end;
+    // check if it is a class
+    Node:=Params.NewNode;
+    if (Node=nil)
+    or (not (Node.Desc in [ctnTypeDefinition,ctnGenericType]))
+    or (Node.LastChild=nil)
+    or (not (Node.LastChild.Desc in AllClassObjects)) then begin
+      debugln(['TEventsCodeTool.FindClassOfInstance found node is not a class: ',Node.DescAsString]);
+      if ExceptionOnNotFound then RaiseClassNotFound;
+      exit;
+    end;
+    FindContext.Node:=Node.LastChild;
+    FindContext.Tool:=Params.NewCodeTool;
+    Result:=true;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TEventsCodeTool.FindTypeOfInstanceProperty(Instance: TPersistent;
+  const PropName: string; out TypeContext: TFindContext;
+  ExceptionOnNotFound: boolean): boolean;
+var
+  AClassName: String;
+  AClassContext: TFindContext;
+  Params: TFindDeclarationParams;
+  PropNode: TCodeTreeNode;
+begin
+  Result:=false;
+  //debugln(['TEventsCodeTool.FindTypeOfPropertyInfo START']);
+  TypeContext:=CleanFindContext;
+  if (Instance=nil) then exit;
+
+  AClassName:=Instance.ClassName;
+  if AClassName='' then begin
+    debugln(['TEventsCodeTool.FindTypeOfPropertyInfo instance has no class name']);
+    exit;
+  end;
+  if PropName='' then begin
+    debugln(['TEventsCodeTool.FindTypeOfPropertyInfo prop info has no class name']);
+    exit;
+  end;
+
+  // search class of instance
+  //debugln(['TEventsCodeTool.FindTypeOfPropertyInfo searching class of instance ...']);
+  if not FindClassOfInstance(Instance,AClassContext,ExceptionOnNotFound) then exit;
+  //debugln(['TEventsCodeTool.FindTypeOfPropertyInfo found: ',FindContextToString(AClassContext)]);
+
+  // search property
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.Flags:=[fdfSearchInAncestors];
+    if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
+    Params.ContextNode:=AClassContext.Node;
+    Params.SetIdentifier(Self,PChar(PropName),nil);
+    if not AClassContext.Tool.FindIdentifierInContext(Params) then begin
+      RaiseException('property not found '+DbgSName(Instance)+'.'+PropName);
+      exit;
+    end;
+    if Params.NewNode=nil then exit;
+    PropNode:=Params.NewNode;
+    if PropNode.Desc<>ctnProperty then begin
+      debugln(['TEventsCodeTool.FindTypeOfPropertyInfo identifier ',DbgSName(Instance)+'.'+PropName,' is not property, found ',PropNode.DescAsString]);
+      RaiseException('identifier is not a property: '+DbgSName(Instance)+'.'+PropName);
+    end;
+    // search base type of property
+    TypeContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,PropNode);
+    debugln(['TEventsCodeTool.FindTypeOfPropertyInfo ',FindContextToString(TypeContext)]);
+    Result:=true;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TEventsCodeTool.CreateExprListFromInstanceProperty(
+  Instance: TPersistent; const PropName: string): TExprTypeList;
+var
+  Params: TFindDeclarationParams;
+  TypeContext: TFindContext;
+begin
+  Result:=nil;
+  if not FindTypeOfInstanceProperty(Instance,PropName,TypeContext,true) then exit;
+  if TypeContext.Node.Desc<>ctnProcedureType then begin
+    debugln(['TEventsCodeTool.CreateExprListFromPropertyInfo property '+DbgSName(Instance)+'.'+PropName+' is not method: ',TypeContext.Node.DescAsString]);
+    exit;
+  end;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Result:=TypeContext.Tool.CreateParamExprListFromProcNode(TypeContext.Node,Params);
+  finally
+    Params.Free;
+  end;
+end;
+
 function TEventsCodeTool.CreateExprListFromMethodTypeData(
   TypeData: PTypeData; Params: TFindDeclarationParams;
   out List: TExprTypeList): boolean;
@@ -905,7 +1155,7 @@ begin
   {$ENDIF}
   Result:=false;
   List:=TExprTypeList.Create;
-  if TypeData=nil then exit(true);
+  if (TypeData=nil) then exit(true);
   ParamCount:=TypeData^.ParamCount;
   {$IFDEF VerboseTypeData}
   DebugLn(['[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount]);
@@ -1071,6 +1321,63 @@ begin
     {$ENDIF}
   finally
     FreeClassInsertionList;
+  end;
+end;
+
+function TEventsCodeTool.GetCompatiblePublishedMethods(
+  const AClassName: string; PropInstance: TPersistent; const PropName: string;
+  const Proc: TGetStrProc): boolean;
+var
+  Params: TFindDeclarationParams;
+  CompListSize: Integer;
+  ClassNode: TCodeTreeNode;
+  Node: TAVLTreeNode;
+  ProcName: String;
+begin
+  Result:=false;
+  // find class
+  BuildTree(lsrImplementationStart);
+  debugln(['TEventsCodeTool.GetCompatiblePublishedMethods START']);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+  debugln(['TEventsCodeTool.GetCompatiblePublishedMethods classnode=',ClassNode.DescAsString]);
+  // create type list of property
+  SearchedExprList:=nil;
+  SearchedCompatibilityList:=nil;
+  fGatheredCompatibleMethods:=nil;
+  Params:=TFindDeclarationParams.Create;
+  try
+    SearchedExprList:=CreateExprListFromInstanceProperty(PropInstance,PropName);
+    debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
+    fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
+    // create compatibility list
+    CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
+    if CompListSize>0 then
+      GetMem(SearchedCompatibilityList,CompListSize);
+    // search all compatible published procs
+    Params.ContextNode:=ClassNode;
+    Params.Flags:=[fdfCollect,fdfSearchInAncestors];
+    Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
+    {$IFDEF CTDEBUG}
+    DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] Searching ...');
+    {$ENDIF}
+    FindIdentifierInContext(Params);
+
+    // collect all method names
+    Node:=fGatheredCompatibleMethods.FindLowest;
+    while Node<>nil do begin
+      ProcName:=GetIdentifier(Node.Data);
+      Proc(ProcName);
+      Node:=fGatheredCompatibleMethods.FindSuccessor(Node);
+    end;
+    Result:=true;
+  finally
+    if SearchedCompatibilityList<>nil then begin
+      FreeMem(SearchedCompatibilityList);
+      SearchedCompatibilityList:=nil;
+    end;
+    FreeAndNil(SearchedExprList);
+    Params.Free;
+    FreeAndNil(fGatheredCompatibleMethods);
   end;
 end;
 

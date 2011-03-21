@@ -697,8 +697,17 @@ type
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
+          const AClassName: string;
+          PropInstance: TPersistent; const PropName: string;
+          const Proc: TGetStrProc): boolean;
+    function GetCompatiblePublishedMethods(Code: TCodeBuffer;
           const AClassName: string; TypeData: PTypeData;
-          Proc: TGetStrProc): boolean;
+          const Proc: TGetStrProc): boolean;
+    function PublishedMethodExists(Code:TCodeBuffer;
+          const AClassName, AMethodName: string;
+          PropInstance: TPersistent; const PropName: string;
+          out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+          ): boolean;
     function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
           AMethodName: string; TypeData: PTypeData;
           out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
@@ -3211,7 +3220,24 @@ begin
 end;
 
 function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
-  const AClassName: string; TypeData: PTypeData; Proc: TGetStrProc): boolean;
+  const AClassName: string; PropInstance: TPersistent; const PropName: string;
+  const Proc: TGetStrProc): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname,' Instance=',DbgSName(Instance),' PropName=',PropName);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.GetCompatiblePublishedMethods(AClassName,
+                                                    PropInstance,PropName,Proc);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
+  const AClassName: string; TypeData: PTypeData; const Proc: TGetStrProc): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);
@@ -3221,6 +3247,25 @@ begin
   try
     Result:=FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
        TypeData,Proc);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.PublishedMethodExists(Code: TCodeBuffer;
+  const AClassName, AMethodName: string; PropInstance: TPersistent;
+  const PropName: string; out MethodIsCompatible, MethodIsPublished,
+  IdentIsMethod: boolean): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName,':',AMethodName,' Porperty=',DbgSName(PropInstance),'.',PropName]);
+  {$ENDIF}
+  Result:=InitCurCodeTool(Code);
+  if not Result then exit;
+  try
+    Result:=FCurCodeTool.PublishedMethodExists(AClassName,
+              AMethodName,PropInstance,PropName,
+              MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -3236,8 +3281,8 @@ begin
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
-    Result:=FCurCodeTool.PublishedMethodExists(UpperCaseStr(AClassName),
-              UpperCaseStr(AMethodName),TypeData,
+    Result:=FCurCodeTool.PublishedMethodExists(AClassName,
+              AMethodName,TypeData,
               MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   except
     on e: Exception do Result:=HandleException(e);
