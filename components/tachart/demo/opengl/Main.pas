@@ -48,6 +48,7 @@ begin
   glLoadIdentity();
 
   d := TOpenGLDrawer.Create;
+  d.DoChartColorToFPColor := @ChartColorSysToFPColor;
   Chart1.DisableRedrawing;
   Chart1.Title.Text.Text := 'OpenGL';
   Chart1.Draw(d, Rect(0, 0, OpenGLControl1.Width, OpenGLControl1.Height));

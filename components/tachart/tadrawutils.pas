@@ -65,6 +65,8 @@ type
     property Canvas: TCanvas read GetCanvas;
   end;
 
+  TChartColorToFPColorFunc = function (AColor: TChartColor): TFPColor;
+
   { IChartDrawer }
 
   IChartDrawer = interface
@@ -77,6 +79,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer);
@@ -110,16 +113,20 @@ type
     property BrushColor: TChartColor read GetBrushColor write SetBrushColor;
     property Font: TFPCustomFont write SetFont;
     property Pen: TFPCustomPen write SetPen;
+    property DoChartColorToFPColor: TChartColorToFPColorFunc
+      write SetDoChartColorToFPColorFunc;
   end;
 
   { TBasicDrawer }
 
   TBasicDrawer = class(TInterfacedObject, ISimpleTextOut)
   strict protected
+    FChartColorToFPColorFunc: TChartColorToFPColorFunc;
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
   public
+    constructor Create;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
     procedure LineTo(AX, AY: Integer); virtual; abstract;
@@ -130,6 +137,7 @@ type
       const APoints: array of TPoint;
       AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
     function Scale(ADistance: Integer): Integer; virtual;
+    procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -179,6 +187,7 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
+  function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
   function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
   function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
   procedure PrepareXorPen(ACanvas: TCanvas);
@@ -190,6 +199,11 @@ uses
 
 const
   LINE_INTERVAL = 2;
+
+function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
+begin
+  Result := ChartColorToFPColor(ColorToRGB(AChartColor));
+end;
 
 function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
 begin
@@ -312,6 +326,11 @@ end;
 
 { TBasicDrawer }
 
+constructor TBasicDrawer.Create;
+begin
+  FChartColorToFPColorFunc := @ChartColorToFPColor;
+end;
+
 procedure TBasicDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
 begin
   DrawLineDepth(Point(AX1, AY1), Point(AX2, AY2), ADepth);
@@ -338,6 +357,12 @@ end;
 function TBasicDrawer.Scale(ADistance: Integer): Integer;
 begin
   Result := ADistance;
+end;
+
+procedure TBasicDrawer.SetDoChartColorToFPColorFunc(
+  AValue: TChartColorToFPColorFunc);
+begin
+  FChartColorToFPColorFunc := AValue;
 end;
 
 function TBasicDrawer.TextExtent(const AText: String): TPoint;

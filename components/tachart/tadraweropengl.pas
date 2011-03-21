@@ -43,8 +43,6 @@ type
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
-    constructor Create;
-  public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
@@ -127,10 +125,6 @@ begin
   glDisable(GL_CLIP_PLANE1);
   glDisable(GL_CLIP_PLANE2);
   glDisable(GL_CLIP_PLANE3);
-end;
-
-constructor TOpenGLDrawer.Create;
-begin
 end;
 
 procedure TOpenGLDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
@@ -222,7 +216,7 @@ end;
 procedure TOpenGLDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   FPenWidth := 1;
-  FPenColor := ChartColorToFPColor(AColor);
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TOpenGLDrawer.RadialPie(
@@ -259,7 +253,7 @@ end;
 
 procedure TOpenGLDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := ChartColorToFPColor(AColor);
+  FBrushColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TOpenGLDrawer.SetBrushParams(
@@ -283,7 +277,7 @@ end;
 procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   Unused(AStyle);
-  FPenColor := ChartColorToFPColor(AColor);
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 function TOpenGLDrawer.SimpleTextExtent(const AText: String): TPoint;
