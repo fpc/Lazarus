@@ -402,6 +402,8 @@ function SearchCompilerCandidates(StopIfFits: boolean;
   const LazarusDir, TestSrcFilename: string): TObjectList;
 var
   Macros: TSetupMacros;
+  Target: String;
+  ShortCompFile: String;
 
   function CheckFile(AFilename: string; var List: TObjectList): boolean;
   var
@@ -446,10 +448,41 @@ var
     Result:=(Item.Quality=sddqCompatible) and StopIfFits;
   end;
 
+  function CheckSubDirs(ADir: string; var List: TObjectList): boolean;
+  // search for ADir\bin\i386-win32\fpc.exe
+  // and for ADir\*\bin\i386-win32\fpc.exe
+  var
+    FileInfo: TSearchRec;
+    SubFile: String;
+  begin
+    Result:=true;
+    ADir:=AppendPathDelim(TrimFilename(ExpandFileNameUTF8(TrimFilename(ADir))));
+    SubFile:='bin'+PathDelim+Target+PathDelim+ShortCompFile;
+    if CheckFile(ADir+SubFile,List) then
+      exit;
+    try
+      if FindFirstUTF8(ADir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            continue;
+          if ((FileInfo.Attr and faDirectory)>0)
+          and CheckFile(ADir+FileInfo.Name+PathDelim+SubFile,List) then
+            exit;
+        until FindNextUTF8(FileInfo)<>0;
+      end;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
+    Result:=false;
+  end;
+
 var
   AFilename: String;
   Files: TStringList;
   i: Integer;
+  SysDrive: String;
+  ProgDir: String;
 begin
   Result:=nil;
 
@@ -487,9 +520,30 @@ begin
       Files.Free;
     end;
 
-    // ToDo: search for different versions
-    // under windows: %PROGRAMFILES%\FPC\*, %SYSTEMDRIVE%\FPC\*\, C:\pp\, $(LazDir)\FPC
-    //              containing bin\i386-win32\fpc.exe
+    // check paths with versions
+    Target:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS;
+    ShortCompFile:=GetDefaultCompilerFilename;
+
+    // check $(LazDir)\fpc\bin\i386-win32\fpc.exe
+    if (LazarusDir<>'')
+    and CheckFile(AppendPathDelim(LazarusDir)
+      +SetDirSeparators('fpc/bin/'+Target+'/'+ShortCompFile),Result)
+    then exit;
+
+    if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
+      // windows has some special places
+      SysDrive:=GetEnvironmentVariableUTF8('SYSTEMDRIVE');
+      if SysDrive='' then SysDrive:='C:';
+      SysDrive:=AppendPathDelim(SysDrive);
+      // %SYSTEMDRIVE%\fpc\
+      if CheckSubDirs(SysDrive+'FPC',Result) then exit;
+      // %SYSTEMDRIVE%\pp\
+      if CheckSubDirs(SysDrive+'pp',Result) then exit;
+      // %PROGRAMFILES%\FPC\*
+      ProgDir:=AppendPathDelim(GetEnvironmentVariableUTF8('PROGRAMFILES'));
+      if (ProgDir<>'')
+      and CheckSubDirs(ProgDir+'FPC',Result) then exit;
+    end;
 
   finally
     if Macros<>nil then
