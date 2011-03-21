@@ -175,10 +175,12 @@ type
     FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
+    FDisableRedrawingCounter: Integer;
     FDrawer: IChartDrawer;
     FExtentBroadcaster: TBroadcaster;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
+    FOnAfterPaint: TChartEvent;
     FOnExtentChanged: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
     FReticuleMode: TReticuleMode;
@@ -216,7 +218,6 @@ type
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
-    procedure SetOnExtentChanged(AValue: TChartEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
@@ -261,8 +262,10 @@ type
     function Clone: TChart;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
+    procedure DisableRedrawing;
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
+    procedure EnableRedrawing;
     function GetFullExtent: TDoubleRect;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
@@ -326,13 +329,14 @@ type
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
     property OnAfterDrawBackWall: TChartAfterDrawEvent
       read FOnAfterDrawBackWall write SetOnAfterDrawBackWall;
+    property OnAfterPaint: TChartEvent read FOnAfterPaint write FOnAfterPaint;
     property OnBeforeDrawBackground: TChartBeforeDrawEvent
       read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
     property OnBeforeDrawBackWall: TChartBeforeDrawEvent
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write SetOnDrawReticule;
-    property OnExtentChanged: TChartEvent read FOnExtentChanged write SetOnExtentChanged;
+    property OnExtentChanged: TChartEvent read FOnExtentChanged write FOnExtentChanged;
 
   published
     property Align;
@@ -589,6 +593,11 @@ begin
   inherited;
 end;
 
+procedure TChart.DisableRedrawing;
+begin
+  FDisableRedrawingCounter += 1;
+end;
+
 procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
 
   procedure OffsetDrawArea(AZPos, ADepth: Integer);
@@ -769,6 +778,11 @@ begin
     DrawLineVert(ADrawer, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
     DrawLineHoriz(ADrawer, FReticulePos.Y);
+end;
+
+procedure TChart.EnableRedrawing;
+begin
+  FDisableRedrawingCounter -= 1;
 end;
 
 procedure TChart.EraseBackground(DC: HDC);
@@ -966,6 +980,8 @@ begin
   {$WARNINGS ON}
   if defaultDrawing then
     Draw(FDrawer, GetClientRect);
+  if Assigned(OnAfterPaint) then
+    OnAfterPaint(Self);
 end;
 
 procedure TChart.PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
@@ -1220,12 +1236,6 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetOnExtentChanged(AValue: TChartEvent);
-begin
-  if FOnExtentChanged = AValue then exit;
-  FOnExtentChanged := AValue;
-end;
-
 procedure TChart.SetProportional(AValue: Boolean);
 begin
   if FProportional = AValue then exit;
@@ -1263,6 +1273,7 @@ end;
 
 procedure TChart.StyleChanged(Sender: TObject);
 begin
+  if FDisableRedrawingCounter > 0 then exit;
   if Sender is TChartExtent then
     ZoomFull;
   Invalidate;
