@@ -189,7 +189,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, Types;
+  Math, PropEdits, Types, TADrawerCanvas;
 
 const
   SYMBOL_TEXT_SPACING = 4;

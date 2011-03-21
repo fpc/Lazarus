@@ -375,7 +375,8 @@ var
 implementation
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TAGeometry, Types;
+  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
+  TAGeometry, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
