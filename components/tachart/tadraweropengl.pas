@@ -31,6 +31,7 @@ type
   strict private
     FBrushColor: TFPColor;
     FContext: TOpenGLControl;
+    FFontColor: TFPColor;
     FPenColor: TFPColor;
     FPenWidth: Integer;
     FPos: TPoint;
@@ -230,7 +231,7 @@ end;
 
 procedure TOpenGLDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  SetBrushColor((ABrush as TBrush).Color);
+  FBrushColor := ABrush.FPColor;
 end;
 
 procedure TOpenGLDrawer.SetBrushColor(AColor: TChartColor);
@@ -247,7 +248,7 @@ end;
 
 procedure TOpenGLDrawer.SetFont(AFont: TFPCustomFont);
 begin
-  Unused(AFont);
+  FFontColor := AFont.FPColor;
 end;
 
 procedure TOpenGLDrawer.SetPen(APen: TFPCustomPen);
@@ -278,7 +279,7 @@ const
 var
   i: Integer;
 begin
-  glColor3f(0, 0, 0);
+  ChartGLColor(FFontColor);
   glRasterPos2i(AX + X_OFFSET, AY + Y_OFFSET);
   for i := 1 to Length(AText) do
     glutBitmapCharacter(GL_FONT, Ord(AText[i]));
