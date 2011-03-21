@@ -104,6 +104,8 @@ function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 
 procedure RemoveStayOnTopFlags(Window: HWND; ASystemTopAlso: Boolean = False);
 procedure RestoreStayOnTopFlags(Window: HWND);
+procedure HidePopups(AppHandle: HWND);
+procedure RestorePopups;
 
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
@@ -135,6 +137,12 @@ type
   TStayOnTopWindowsInfo = record
     SystemTopAlso: Boolean;
     StayOnTopList: TList;
+  end;
+
+  PPopupOwnersWindowInfo = ^TPopupOwnersWindowInfo;
+  TPopupOwnersWindowInfo = record
+    AppHandle: HWND;
+    OwnersList: TList;
   end;
   
   TWindowsVersion = (
@@ -176,6 +184,7 @@ uses
 
 var
   InRemoveStayOnTopFlags: Integer = 0;
+  PopupOwnersList: TList = nil;
 {------------------------------------------------------------------------------
   function: WM_To_String
   Params: WM_Message - a WinDows message
@@ -1021,6 +1030,49 @@ begin
   // WriteLn('RestoreStayOnTopFlags 2');
 end;
 
+function EnumHidePopups(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+var
+  Owner: HWND;
+begin
+  Owner := GetWindow(Handle, GW_OWNER);
+  if (Owner <> 0) and (Owner <> PPopupOwnersWindowInfo(Param)^.AppHandle) then
+    PPopupOwnersWindowInfo(Param)^.OwnersList.Add(Pointer(Owner));
+  Result := True;
+end;
+
+procedure HidePopups(AppHandle: HWND);
+var
+  i: Integer;
+  Info: PPopupOwnersWindowInfo;
+begin
+  if not Assigned(PopupOwnersList) then
+  begin
+    PopupOwnersList := TList.Create;
+    New(Info);
+    try
+      Info^.AppHandle := AppHandle;
+      Info^.OwnersList := PopupOwnersList;
+      EnumThreadWindows(GetWindowThreadProcessId(Application.MainFormHandle, nil),
+        @EnumHidePopups, LPARAM(Info));
+      for i := 0 to PopupOwnersList.Count - 1 do
+        ShowOwnedPopups(HWND(PopupOwnersList[i]), False);
+    finally
+      Dispose(Info);
+    end;
+  end;
+end;
+
+procedure RestorePopups;
+var
+  i: Integer;
+begin
+  if Assigned(PopupOwnersList) then
+  begin
+    for i := 0 to PopupOwnersList.Count - 1 do
+      ShowOwnedPopups(HWND(PopupOwnersList[i]), True);
+    FreeAndNil(PopupOwnersList);
+  end;
+end;
 
 {-------------------------------------------------------------------------------
   procedure AddToChangedMenus(Window: HWnd);
@@ -1713,5 +1765,6 @@ finalization
   Windows.GlobalDeleteAtom(WindowInfoAtom);
   WindowInfoAtom := 0;
   ChangedMenus.Free;
+  FreeAndNil(PopupOwnersList);
 
 end.

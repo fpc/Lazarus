@@ -803,6 +803,7 @@ var
 
             if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
             begin
+              HidePopups(Win32WidgetSet.AppHandle);
               if Assigned(Application.MainForm) then
               begin
                 Windows.SetWindowPos(Window, HWND_TOP,
@@ -838,6 +839,7 @@ var
               begin
                 if Application.MainForm.HandleObjectShouldBeVisible then
                   Windows.ShowWindow(Application.MainFormHandle, SW_SHOWNA);
+                RestorePopups;
               end;
               Application.IntfAppRestore;
             end
