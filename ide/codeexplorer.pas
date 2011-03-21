@@ -792,7 +792,7 @@ begin
       begin
         // top level definition
         case CodeNode.Desc of
-        ctnUsesSection:     Category:=cecUses;
+        ctnUseUnit:         Category:=cecUses;
         ctnTypeDefinition,ctnGenericType:  Category:=cecTypes;
         ctnVarDefinition:   Category:=cecVariables;
         ctnConstDefinition: Category:=cecConstants;
