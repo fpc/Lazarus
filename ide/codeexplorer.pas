@@ -786,9 +786,9 @@ begin
       Category:=cecNone;
       if ShowNode
       and ((CodeNode.Parent=nil)
-      or (CodeNode.Parent.Desc in AllCodeSections)
-      or (CodeNode.Parent.Parent=nil)
-      or (CodeNode.Parent.Parent.Desc in AllCodeSections)) then
+        or (CodeNode.Parent.Desc in AllCodeSections)
+        or (CodeNode.Parent.Parent=nil)
+        or (CodeNode.Parent.Parent.Desc in AllCodeSections)) then
       begin
         // top level definition
         case CodeNode.Desc of
@@ -818,12 +818,8 @@ begin
         end else begin
           ShowNode:=false;
         end;
-      end else if (CodeNode.Parent<>nil)
-      and (CodeNode.Parent.Desc in (AllClassSections+AllClassInterfaces+[ctnRecordType]))
-      then begin
-        // show class, interface and record nodes
-        ShowNode:=true;
       end else begin
+        // not a top level node
         ShowNode:=false;
       end;
       //DebugLn(['TCodeExplorerView.CreateNodes ',CodeNode.DescAsString,' ShowNode=',ShowNode,' ShowChilds=',ShowChilds]);
@@ -833,6 +829,8 @@ begin
       NodeData:=TViewNodeData.Create(CodeNode);
       NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
       NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode);
+      //if NodeText='TCodeExplorerView' then
+      //  debugln(['TCodeExplorerView.CreateIdentifierNodes CodeNode=',CodeNode.DescAsString,' NodeText="',NodeText,'" Category=',dbgs(Category),' InFrontViewNode=',InFrontViewNode<>nil,' ParentViewNode=',ParentViewNode<>nil]);
       if InFrontViewNode<>nil then
         ViewNode:=CodeTreeview.Items.InsertObjectBehind(
                                               InFrontViewNode,NodeText,NodeData)

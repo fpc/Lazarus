@@ -252,7 +252,7 @@ function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
 function CodeExplorerLocalizedString(const c: TCodeExplorerCategory): string;
 function CodeObserverCatNameToEnum(const s: string): TCEObserverCategory;
 function CodeExplorerLocalizedString(const c: TCEObserverCategory): string;
-
+function dbgs(c: TCodeExplorerCategory): string; overload;
 
 implementation
 
@@ -316,6 +316,11 @@ begin
   cefcToDos: Result:=lisCEToDos;
   else Result:='?';
   end;
+end;
+
+function dbgs(c: TCodeExplorerCategory): string;
+begin
+  Result:=CodeExplorerCategoryNames[c];
 end;
 
 { TCodeExplorerOptions }
