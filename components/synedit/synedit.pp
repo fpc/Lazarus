@@ -6274,6 +6274,7 @@ begin
               // delete char
               Counter:=GetCharLen(Temp,LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, CaretY, Counter);
+              SetLogicalCaretXY(LogCaretXY);
             end else begin
               // join line with the line after
               if CaretY < FTheLinesView.Count then begin
@@ -6303,7 +6304,7 @@ begin
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
             if Helper <> '' then
               FTabbedLinesView.EditInsert(CaretX, CaretY, Helper);
-            CaretXY := Caret;
+            FCaret.BytePos := FInternalBlockSelection.StartBytePos + length(Helper);
           end;
         end;
       ecDeleteLastWord, ecDeleteBOL:

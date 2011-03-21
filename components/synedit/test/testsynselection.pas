@@ -1497,6 +1497,21 @@ begin
   test1('ecDeleteLastChar EOL', t1 + t2, 1,2, ecDeleteLastChar, 'abcdef' + t2,  7,1);
 
   test1('ecDeleteLastWord',     t3,      8,1, ecDeleteLastWord, '123  7' + cr,       5,1);
+
+  //delete in tab
+  SynEdit.TabWidth := 4;
+  test1('ecDeleteChar in tab 1',    #9'abcdef'+cr,      3,1, ecDeleteChar, 'abcdef' + cr,   1,1);
+  test1('ecDeleteChar in tab 2',    'x'#9'abcdef'+cr,   3,1, ecDeleteChar, 'xabcdef' + cr,   2,1);
+  test1('ecDeleteChar before tab',  'xy'#9'abcdef'+cr,  3,1, ecDeleteChar, 'xyabcdef' + cr,   3,1);
+  test1('ecDeleteChar after tab',   'xy'#9'abcdef'+cr,  5,1, ecDeleteChar, 'xy'#9'bcdef' + cr,   5,1);
+
+  test1('ecDeleteLastChar in tab 1',    #9'abcdef'+cr,      3,1, ecDeleteLastChar, 'abcdef' + cr,   1,1);
+  test1('ecDeleteLastChar in tab 2',    'x'#9'abcdef'+cr,   3,1, ecDeleteLastChar, 'xabcdef' + cr,   2,1);
+  test1('ecDeleteLastChar before tab',  'xy'#9'abcdef'+cr,  3,1, ecDeleteLastChar, 'x'#9'abcdef' + cr,   2,1);
+  test1('ecDeleteLastChar after tab',   'xy'#9'abcdef'+cr,  5,1, ecDeleteLastChar, 'xyabcdef' + cr,   3,1);
+
+  test1('ecDeleteWord in tab 1',    #9'abcdef'+cr,      3,1, ecDeleteWord, 'abcdef' + cr,   1,1);
+
 end;
 
 
