@@ -21,7 +21,7 @@ unit TADrawUtils;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, Graphics, SysUtils, Types;
+  Classes, FPCanvas, FPImage, Graphics, Types;
 
 type
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;

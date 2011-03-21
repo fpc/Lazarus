@@ -47,7 +47,7 @@ begin
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  d := TOpenGLDrawer.Create(OpenGLControl1);
+  d := TOpenGLDrawer.Create;
   Chart1.DisableRedrawing;
   Chart1.Title.Text.Text := 'OpenGL';
   Chart1.Draw(d, Rect(0, 0, OpenGLControl1.Width, OpenGLControl1.Height));

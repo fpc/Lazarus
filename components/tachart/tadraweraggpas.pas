@@ -15,7 +15,7 @@ Authors: Alexander Klenin
 }
 unit TADrawerAggPas;
 
-{$mode objfpc}
+{$H+}
 
 interface
 
@@ -26,7 +26,7 @@ type
 
   { TAggPasDrawer }
 
-  TAggPasDrawer = class(TBasicDrawer, IChartDrawer, ISimpleTextOut)
+  TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FCanvas: TAggLCLCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
