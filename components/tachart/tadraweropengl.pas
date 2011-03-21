@@ -20,7 +20,7 @@ unit TADrawerOpenGL;
 interface
 
 uses
-  Classes, SysUtils, FPCanvas, OpenGLContext, GL, GLu, Glut,
+  Classes, SysUtils, FPCanvas, FPImage, OpenGLContext, GL, GLu, Glut,
   TADrawUtils;
 
 type
@@ -29,9 +29,9 @@ type
 
   TOpenGLDrawer = class(TFPCanvasDrawer, IChartDrawer, ISimpleTextOut)
   strict private
-    FBrushColor: TChartColor;
+    FBrushColor: TFPColor;
     FContext: TOpenGLControl;
-    FPenColor: TChartColor;
+    FPenColor: TFPColor;
     FPenWidth: Integer;
     FPos: TPoint;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -78,13 +78,10 @@ implementation
 uses
   Graphics, TAChartUtils;
 
-procedure ChartGLColor(AColor: TChartColor);
-var
-  r, g, b: Byte;
+procedure ChartGLColor(AColor: TFPColor);
 begin
-  RedGreenBlue(ColorToRGB(AColor), r, g, b);
-  // For some reason, glColor3b/glColor3ub did not work for me.
-  glColor3f(r / High(r), g / High(b), b / High(b));
+  with AColor do
+    glColor4us(red, green, blue, alpha);
 end;
 
 { TOpenGLDrawer }
@@ -127,7 +124,7 @@ end;
 
 function TOpenGLDrawer.GetBrushColor: TChartColor;
 begin
-  Result := FBrushColor;
+  Result := FPColorToTColor(FBrushColor);
 end;
 
 function TOpenGLDrawer.GetFontAngle: Double;
@@ -201,7 +198,7 @@ end;
 procedure TOpenGLDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   FPenWidth := 1;
-  FPenColor := AColor;
+  FPenColor := TColorToFPColor(ColorToRGB(AColor));
 end;
 
 procedure TOpenGLDrawer.RadialPie(
@@ -233,13 +230,12 @@ end;
 
 procedure TOpenGLDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  if ABrush is TBrush then
-    SetBrushColor((ABrush as TBrush).Color);
+  SetBrushColor((ABrush as TBrush).Color);
 end;
 
 procedure TOpenGLDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := AColor;
+  FBrushColor := TColorToFPColor(ColorToRGB(AColor));
 end;
 
 procedure TOpenGLDrawer.SetBrushParams(
@@ -257,14 +253,13 @@ end;
 procedure TOpenGLDrawer.SetPen(APen: TFPCustomPen);
 begin
   FPenWidth := APen.Width;
-  if APen is TPen then
-    FPenColor := (APen as TPen).Color;
+  FPenColor := APen.FPColor;
 end;
 
 procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   Unused(AStyle);
-  FPenColor := AColor;
+  FPenColor := TColorToFPColor(ColorToRGB(AColor));
 end;
 
 function TOpenGLDrawer.SimpleTextExtent(const AText: String): TPoint;
