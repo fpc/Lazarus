@@ -379,9 +379,9 @@ begin
   then exit;
 
   BuildTree(lsrImplementationStart);
-  debugln(['TEventsCodeTool.PublishedMethodExists START']);
+  //debugln(['TEventsCodeTool.PublishedMethodExists START']);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
-  debugln(['TEventsCodeTool.PublishedMethodExists classnode=',ClassNode.DescAsString]);
+  //debugln(['TEventsCodeTool.PublishedMethodExists classnode=',ClassNode.DescAsString]);
 
   Params:=TFindDeclarationParams.Create;
   try
@@ -410,7 +410,7 @@ begin
       exit;
     end;
 
-    debugln(['TEventsCodeTool.PublishedMethodExists SearchedExprList=[',SearchedExprList.AsString,']']);
+    //debugln(['TEventsCodeTool.PublishedMethodExists SearchedExprList=[',SearchedExprList.AsString,']']);
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
     if CompListSize>0 then begin
@@ -1010,7 +1010,7 @@ begin
   AClassName:=Instance.ClassName;
   if AClassName='' then exit;
   AUnitName:=Instance.UnitName;
-  debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
+  //debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
   if (AUnitName='')
   or (CompareIdentifiers(PChar(ExtractFileNameOnly(MainFilename)),
     PChar(AUnitName))=0)
@@ -1337,9 +1337,9 @@ begin
   Result:=false;
   // find class
   BuildTree(lsrImplementationStart);
-  debugln(['TEventsCodeTool.GetCompatiblePublishedMethods START']);
+  //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods START']);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
-  debugln(['TEventsCodeTool.GetCompatiblePublishedMethods classnode=',ClassNode.DescAsString]);
+  //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods classnode=',ClassNode.DescAsString]);
   // create type list of property
   SearchedExprList:=nil;
   SearchedCompatibilityList:=nil;
@@ -1347,7 +1347,7 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     SearchedExprList:=CreateExprListFromInstanceProperty(PropInstance,PropName);
-    debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
+    //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
     fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
