@@ -762,9 +762,11 @@ begin
     if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
       ctnVariantType,ctnEnumerationType,ctnSetType,ctnProcedureType]
-    then
+    then begin
       ShowNode:=false;
-      
+      ShowChilds:=false;
+    end;
+
     // don't show End.
     if CodeNode.Desc=ctnEndPoint then
       ShowNode:=false;
@@ -820,7 +822,6 @@ begin
         end;
       end else begin
         // not a top level node
-        ShowNode:=false;
       end;
       //DebugLn(['TCodeExplorerView.CreateNodes ',CodeNode.DescAsString,' ShowNode=',ShowNode,' ShowChilds=',ShowChilds]);
     end;
