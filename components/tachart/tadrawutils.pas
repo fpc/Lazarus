@@ -16,12 +16,12 @@ Authors: Alexander Klenin
 
 unit TADrawUtils;
 
-{$mode objfpc}
+{$H+}
 
 interface
 
 uses
-  Classes, Graphics, FPCanvas, SysUtils, Types;
+  Classes, FPCanvas, FPImage, Graphics, SysUtils, Types;
 
 type
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
@@ -179,7 +179,9 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
-procedure PrepareXorPen(ACanvas: TCanvas);
+  function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
+  function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
+  procedure PrepareXorPen(ACanvas: TCanvas);
 
 implementation
 
@@ -188,6 +190,27 @@ uses
 
 const
   LINE_INTERVAL = 2;
+
+function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
+begin
+  with Result do begin
+    red := AChartColor and $FF;
+    red += red shl 8;
+    green := (AChartColor and $FF00);
+    green += green shr 8;
+    blue := (AChartColor and $FF0000) shr 8;
+    blue += blue shr 8;
+    alpha := alphaOpaque;
+  end;
+end;
+
+function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
+begin
+  Result :=
+    ((AFPColor.red shr 8) and $FF) or
+    (AFPColor.green and $FF00) or
+    ((AFPColor.blue shl 8) and $FF0000);
+end;
 
 procedure PrepareXorPen(ACanvas: TCanvas);
 begin
