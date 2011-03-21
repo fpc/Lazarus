@@ -57,6 +57,32 @@ begin
   OwnerFormDesignerModified(Self);
 end;
 
+procedure TCustomCheckGroup.ItemKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key <> 0 then
+    KeyDown(Key, Shift);
+end;
+
+procedure TCustomCheckGroup.ItemKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key <> 0 then
+    KeyUp(Key, Shift);
+end;
+
+procedure TCustomCheckGroup.ItemKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key <> #0 then
+    KeyPress(Key);
+end;
+
+procedure TCustomCheckGroup.ItemUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  UTF8KeyPress(UTF8Key);
+end;
+
 procedure TCustomCheckGroup.RaiseIndexOutOfBounds(Index: integer ) ;
 begin
   raise Exception.CreateFmt(rsIndexOutOfBounds,
@@ -121,6 +147,10 @@ begin
         BorderSpacing.CellAlignVertical:=ccaCenter;
         Parent := Self;
         OnClick :=@Self.Clicked;
+        OnKeyDown :=@Self.ItemKeyDown;
+        OnKeyUp := @Self.ItemKeyUp;
+        OnKeyPress := @Self.ItemKeyPress;
+        OnUTF8KeyPress := @Self.ItemUTF8KeyPress;
         ParentFont := true;
         ControlStyle := ControlStyle + [csNoDesignSelectable];
       end;

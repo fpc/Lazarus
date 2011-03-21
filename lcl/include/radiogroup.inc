@@ -156,6 +156,9 @@ begin
         OnEnter :=@Self.ItemEnter;
         OnExit :=@Self.ItemExit;
         OnKeyDown :=@Self.ItemKeyDown;
+        OnKeyUp := @Self.ItemKeyUp;
+        OnKeyPress := @Self.ItemKeyPress;
+        OnUTF8KeyPress := @Self.ItemUTF8KeyPress;
         OnResize := @Self.ItemResize;
         ParentFont := True;
         BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
@@ -273,6 +276,27 @@ begin
       VK_DOWN: MoveSelection(0,1);
     end;
   end;
+  if Key <> 0 then
+    KeyDown(Key, Shift);
+end;
+
+procedure TCustomRadioGroup.ItemKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key <> 0 then
+    KeyUp(Key, Shift);
+end;
+
+procedure TCustomRadioGroup.ItemKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key <> #0 then
+    KeyPress(Key);
+end;
+
+procedure TCustomRadioGroup.ItemUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  UTF8KeyPress(UTF8Key);
 end;
 
 {------------------------------------------------------------------------------

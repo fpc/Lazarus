@@ -799,6 +799,9 @@ type
     procedure ItemEnter(Sender: TObject);
     procedure ItemExit(Sender: TObject);
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ItemKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ItemKeyPress(Sender: TObject; var Key: Char);
+    procedure ItemUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure ItemResize(Sender: TObject);
     procedure ItemsChanged(Sender: TObject);
     procedure SetAutoFill(const AValue: Boolean);
@@ -906,6 +909,10 @@ type
     procedure Clicked(Sender: TObject);
     procedure DoClick(Index: integer);
     procedure ItemsChanged (Sender : TObject);
+    procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ItemKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ItemKeyPress(Sender: TObject; var Key: Char);
+    procedure ItemUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure RaiseIndexOutOfBounds(Index: integer );
     procedure SetAutoFill(const AValue: boolean);
     procedure SetChecked(Index: integer; const AValue: boolean);
