@@ -1360,9 +1360,10 @@ function LineEndCount(const Txt: string; StartPos, EndPos: integer; out
   LengthOfLastLine: integer): integer;
 var i, LastLineEndPos: integer;
 begin
-  i:=StartPos;
-  LastLineEndPos:=0;
   Result:=0;
+  if EndPos>length(Txt) then EndPos:=length(Txt)+1;
+  i:=StartPos;
+  LastLineEndPos:=i;
   while i<EndPos do begin
     if (Txt[i] in [#10,#13]) then begin
       inc(Result);
