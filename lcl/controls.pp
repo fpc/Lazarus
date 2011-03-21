@@ -1930,6 +1930,7 @@ type
     procedure DisableAlign;
     procedure EnableAlign;
     procedure ReAlign; // realign all children
+    procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;

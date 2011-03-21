@@ -426,8 +426,7 @@ begin
   g_idle_remove_by_data(Data);
 end;
 
-class procedure TGtk2WSCustomForm.ScrollBy(
-  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+class procedure TGtk2WSCustomForm.ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
 var
   Layout: PGtkLayout;
   WidgetInfo: PWidgetInfo;
@@ -443,8 +442,8 @@ begin
   begin
     h := gtk_adjustment_get_value(Adjustment);
     NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if h + DeltaX <= NewPos then
-      NewPos := h + DeltaX;
+    if h - DeltaX <= NewPos then
+      NewPos := h - DeltaX;
     if gtk_adjustment_get_value(Adjustment) <> NewPos then
     begin
       gtk_adjustment_set_value(Adjustment, NewPos);
@@ -459,8 +458,8 @@ begin
   begin
     v := gtk_adjustment_get_value(Adjustment);
     NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if v + DeltaY <= NewPos then
-      NewPos := v + DeltaY;
+    if v - DeltaY <= NewPos then
+      NewPos := v - DeltaY;
     if gtk_adjustment_get_value(Adjustment) <> NewPos then
     begin
       gtk_adjustment_set_value(Adjustment, NewPos);
@@ -768,8 +767,8 @@ begin
   begin
     h := gtk_adjustment_get_value(Adjustment);
     NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if h + DeltaX <= NewPos then
-      NewPos := h + DeltaX;
+    if h - DeltaX <= NewPos then
+      NewPos := h - DeltaX;
     gtk_adjustment_set_value(Adjustment, NewPos);
   end;
   Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
@@ -777,8 +776,8 @@ begin
   begin
     v := gtk_adjustment_get_value(Adjustment);
     NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if v + DeltaY <= NewPos then
-      NewPos := v + DeltaY;
+    if v - DeltaY <= NewPos then
+      NewPos := v - DeltaY;
     gtk_adjustment_set_value(Adjustment, NewPos);
   end;
 end;

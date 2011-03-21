@@ -616,7 +616,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
   Widget := TQtCustomControl(AWinControl.Handle);
-  Widget.viewport.scroll(-DeltaX, -DeltaY);
+  Widget.viewport.scroll(DeltaX, DeltaY);
 end;
 
 { TQtWSCustomFrame }
@@ -629,7 +629,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
   Widget := TQtCustomControl(AWinControl.Handle);
-  Widget.viewport.scroll(-DeltaX, -DeltaY);
+  Widget.viewport.scroll(DeltaX, DeltaY);
 end;
 
 end.

@@ -184,7 +184,7 @@ type
     destructor Destroy; override;
     procedure UpdateScrollbars;
     class function GetControlClassDefaultSize: TSize; override;
-    procedure ScrollBy(DeltaX, DeltaY: Integer);
+    procedure ScrollBy(DeltaX, DeltaY: Integer); override;
   published
     property HorzScrollBar: TControlScrollBar
               read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;

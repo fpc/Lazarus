@@ -189,21 +189,31 @@ begin
 end;
 
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
+var
+  i: Integer;
+  Control: TControl;
 begin
-  if HandleAllocated then
+  if HandleAllocated and IsWindowVisible(Handle) then
   begin
     TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
+    // scroll inner controls
+    for i := 0 to ControlCount - 1 do
+      if not (Controls[i] is TWinControl) then
+        with Controls[i] do
+          SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
     Invalidate;
-  end;
+  end
+  else
+    inherited ScrollBy(DeltaX, DeltaY);
 end;
 
 procedure TScrollingWinControl.ScrollbarHandler(ScrollKind: TScrollBarKind;
   OldPosition: Integer);
 begin
   if ScrollKind = sbVertical then
-    ScrollBy(0, FVertScrollBar.Position - OldPosition)
+    ScrollBy(0, OldPosition - FVertScrollBar.Position)
   else
-    ScrollBy(FHorzScrollBar.Position - OldPosition, 0);
+    ScrollBy(OldPosition - FHorzScrollBar.Position, 0);
 end;
 
 procedure TScrollingWinControl.Loaded;

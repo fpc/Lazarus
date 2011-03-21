@@ -952,7 +952,7 @@ const
 begin
   OSError(HIViewGetBounds(Content, R),
     Self, SName, 'HIViewGetBounds');
-  OSError(HIViewSetBoundsOrigin(Content, R.origin.x + DX, R.origin.y + DY),
+  OSError(HIViewSetBoundsOrigin(Content, R.origin.x - DX, R.origin.y - DY),
     Self, SName, 'HIViewSetBoundsOrigin');
 end;
 

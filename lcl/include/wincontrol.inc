@@ -5997,6 +5997,17 @@ begin
   AdjustSize;
 end;
 
+procedure TWinControl.ScrollBy(DeltaX, DeltaY: Integer);
+var
+  i: Integer;
+  Control: TControl;
+begin
+  // scroll inner controls
+  for i := 0 to ControlCount - 1 do
+    with Controls[i] do
+      SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl Remove
 ------------------------------------------------------------------------------}
