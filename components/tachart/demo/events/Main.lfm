@@ -28,6 +28,8 @@ object Form1: TForm1
     Title.Text.Strings = (
       'TAChart'
     )
+    OnBeforeDrawBackground = Chart1BeforeDrawBackground
+    OnBeforeDrawBackWall = Chart1BeforeDrawBackWall
     Align = alClient
     ParentColor = False
     object Chart1BarSeries1: TBarSeries

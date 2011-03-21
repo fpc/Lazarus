@@ -1197,42 +1197,42 @@ end;
 
 procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
 begin
-  if FOnAfterDrawBackground = AValue then exit;
+  if CompareMethods(TMethod(FOnAfterDrawBackground),TMEthod(AValue)) then exit;
   FOnAfterDrawBackground := AValue;
   Invalidate;
 end;
 
 procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
 begin
-  if FOnAfterDrawBackWall = AValue then exit;
+  if CompareMethods(TMethod(FOnAfterDrawBackWall),TMethod(AValue)) then exit;
   FOnAfterDrawBackWall := AValue;
   Invalidate;
 end;
 
 procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
 begin
-  if FOnBeforeDrawBackground = AValue then exit;
+  if CompareMethods(TMethod(FOnBeforeDrawBackground),TMethod(AValue)) then exit;
   FOnBeforeDrawBackground := AValue;
   Invalidate;
 end;
 
 procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
 begin
-  if FOnBeforeDrawBackWall = AValue then exit;
+  if CompareMethods(TMethod(FOnBeforeDrawBackWall),TMethod(AValue)) then exit;
   FOnBeforeDrawBackWall := AValue;
   Invalidate;
 end;
 
 procedure TChart.SetOnChartPaint(AValue: TChartPaintEvent);
 begin
-  if FOnChartPaint = AValue then exit;
+  if CompareMethods(TMethod(FOnChartPaint),TMethod(AValue)) then exit;
   FOnChartPaint := AValue;
   Invalidate;
 end;
 
 procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
 begin
-  if FOnDrawReticule = AValue then exit;
+  if CompareMethods(TMethod(FOnDrawReticule),TMethod(AValue)) then exit;
   FOnDrawReticule := AValue;
   Invalidate;
 end;
