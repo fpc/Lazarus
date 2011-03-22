@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 1322
-  Height = 361
+  Height = 390
   Top = 181
   Width = 510
   Caption = 'Form1'
-  ClientHeight = 361
+  ClientHeight = 390
   ClientWidth = 510
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 299
+    Height = 300
     Top = 0
     Width = 510
     AxisList = <    
@@ -68,11 +68,11 @@ object Form1: TForm1
   end
   object pnControls: TPanel
     Left = 0
-    Height = 62
-    Top = 299
+    Height = 90
+    Top = 300
     Width = 510
     Align = alBottom
-    ClientHeight = 62
+    ClientHeight = 90
     ClientWidth = 510
     TabOrder = 1
     object lblMarginY: TLabel
@@ -112,10 +112,10 @@ object Form1: TForm1
       ParentColor = False
     end
     object rgAlignment: TRadioGroup
-      Left = 324
-      Height = 60
+      Left = 264
+      Height = 88
       Top = 1
-      Width = 185
+      Width = 245
       Align = alRight
       AutoFill = True
       Caption = ' Alignment '
@@ -126,24 +126,29 @@ object Form1: TForm1
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
-      ChildSizing.ControlsPerLine = 2
-      ClientHeight = 42
-      ClientWidth = 181
-      Columns = 2
-      ItemIndex = 2
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 70
+      ClientWidth = 241
+      Columns = 3
+      ItemIndex = 6
       Items.Strings = (
         'TopLeft'
+        'CenterLeft'
         'BottomLeft'
+        'TopCenter'
+        ''
+        'BottomCenter'
         'TopRight'
+        'CenterRight'
         'BottomRight'
       )
       OnClick = rgAlignmentClick
       TabOrder = 2
     end
     object cbUseSidebar: TCheckBox
-      Left = 256
+      Left = 8
       Height = 17
-      Top = 33
+      Top = 60
       Width = 56
       Caption = 'Sidebar'
       Checked = True

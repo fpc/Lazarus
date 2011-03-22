@@ -104,7 +104,10 @@ type
     property Color default clWhite;
   end;
 
-  TLegendAlignment = (laTopLeft, laBottomLeft, laTopRight, laBottomRight);
+  TLegendAlignment = (
+    laTopLeft, laCenterLeft, laBottomLeft,
+    laTopCenter, laBottomCenter, // laCenterCenter makes no sense.
+    laTopRight, laCenterRight, laBottomRight);
 
   { TChartLegend }
 
@@ -381,43 +384,61 @@ end;
 function TChartLegend.Prepare(
   ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
 var
-  w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
+  x, y, i, textHeight: Integer;
+  sidebar, legendSize: TPoint;
 begin
   ADrawer.Font := Font;
 
   // Measure the legend.
-  legendWidth := 0;
+  legendSize.X := 0;
   textHeight := 0;
   for i := 0 to AItems.Count - 1 do
     with ADrawer.TextExtent((AItems[i] as TLegendItem).FText) do begin
-      legendWidth := Max(X, legendWidth);
+      legendSize.X := Max(X, legendSize.X);
       textHeight := Max(Y, textHeight);
     end;
-  legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
-  w := 2 * MarginX;
-  with AClipRect do
-    legendWidth := EnsureRange(legendWidth, 0, Right - Left - w);
-  w += legendWidth;
 
-  legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
+  legendSize.X += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
+  sidebar.X := 2 * MarginX;
+  with AClipRect do
+    legendSize.X := EnsureRange(legendSize.X, 0, Right - Left - sidebar.X);
+  sidebar.X += legendSize.X;
+
+  legendSize.Y := Spacing + AItems.Count * (textHeight + Spacing);
+  sidebar.Y := 2 * MarginX;
+  with AClipRect do
+    legendSize.Y := EnsureRange(legendSize.Y, 0, Bottom - Top - sidebar.Y);
+  sidebar.Y += legendSize.Y;
 
   // Determine position according to the alignment.
-  if Alignment in [laTopLeft, laBottomLeft] then begin
-    x := AClipRect.Left + MarginX;
-    if UseSidebar then
-      AClipRect.Left += w;
-  end
-  else begin
-    x := AClipRect.Right - legendWidth - MarginX;
-    if UseSidebar then
-      AClipRect.Right -= w;
+  case Alignment of
+    laTopLeft, laCenterLeft, laBottomLeft:
+      x := AClipRect.Left + MarginX;
+    laTopRight, laCenterRight, laBottomRight:
+      x := AClipRect.Right - legendSize.X - MarginX;
+    laTopCenter, laBottomCenter:
+      x := (AClipRect.Right + AClipRect.Left - legendSize.X) div 2;
   end;
-  if Alignment in [laTopLeft, laTopRight] then
-    y := AClipRect.Top + MarginY
-  else
-    y := AClipRect.Bottom - MarginY - legendHeight;
-
-  Result := Bounds(x, y, legendWidth, legendHeight);
+  case Alignment of
+    laTopLeft, laTopCenter, laTopRight:
+      y := AClipRect.Top + MarginY;
+    laBottomLeft, laBottomCenter, laBottomRight:
+      y := AClipRect.Bottom - MarginY - legendSize.Y;
+    laCenterLeft, laCenterRight:
+      y := (AClipRect.Top + AClipRect.Bottom - legendSize.Y) div 2;
+  end;
+  if UseSidebar then
+    case Alignment of
+      laTopLeft, laCenterLeft, laBottomLeft:
+        AClipRect.Left += sidebar.X;
+      laTopRight, laCenterRight, laBottomRight:
+        AClipRect.Right -= sidebar.X;
+      laTopCenter:
+        AClipRect.Top += legendSize.Y + 2 * MarginY;
+      laBottomCenter:
+        AClipRect.Bottom -= legendSize.Y + 2 * MarginY;
+    end;
+  Result := Bounds(x, y, legendSize.X, legendSize.Y);
 end;
 
 procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);

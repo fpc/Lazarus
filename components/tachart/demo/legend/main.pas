@@ -92,9 +92,14 @@ begin
   with Chart1.Legend do
     case rgAlignment.ItemIndex of
       0: Alignment := laTopLeft;
-      1: Alignment := laBottomLeft;
-      2: Alignment := laTopRight;
-      3: Alignment := laBottomRight;
+      1: Alignment := laCenterLeft;
+      2: Alignment := laBottomLeft;
+      3: Alignment := laTopCenter;
+      4: Abort;
+      5: Alignment := laBottomCenter;
+      6: Alignment := laTopRight;
+      7: Alignment := laCenterRight;
+      8: Alignment := laBottomRight;
     end;
 end;
 
