@@ -535,7 +535,7 @@ type
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
-                const UpperClassName: string; out CodeTool: TCodeTool): boolean;
+                const AClassName: string; out CodeTool: TCodeTool): boolean;
 
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
@@ -3245,8 +3245,7 @@ begin
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
-       TypeData,Proc);
+    Result:=FCurCodeTool.GetCompatiblePublishedMethods(AClassName,TypeData,Proc);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -3300,8 +3299,8 @@ begin
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
-    Result:=FCurCodeTool.JumpToPublishedMethodBody(UpperCaseStr(AClassName),
-              UpperCaseStr(AMethodName),NewPos,NewTopLine);
+    Result:=FCurCodeTool.JumpToPublishedMethodBody(AClassName,
+              AMethodName,NewPos,NewTopLine);
     if Result then begin
       NewCode:=NewPos.Code;
       NewX:=NewPos.X;
@@ -3322,9 +3321,8 @@ begin
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCurCodeTool.RenamePublishedMethod(UpperCaseStr(AClassName),
-              UpperCaseStr(OldMethodName),NewMethodName,
-              SourceChangeCache);
+    Result:=FCurCodeTool.RenamePublishedMethod(AClassName,
+              OldMethodName,NewMethodName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -3343,7 +3341,7 @@ begin
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.CreateMethod(AClassName,
             NewMethodName,ATypeInfo,APropertyUnitName,APropertyPath,
             SourceChangeCache,UseTypeInfoForParameters,pcsPublished,
             CallAncestorMethod);
@@ -3364,7 +3362,7 @@ begin
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.CreateMethod(AClassName,
             NewMethodName,ATypeInfo,APropertyUnitName,APropertyPath,
             SourceChangeCache,UseTypeInfoForParameters,pcsPrivate);
   except
@@ -3821,7 +3819,7 @@ begin
 end;
 
 function TCodeToolManager.InitClassCompletion(Code: TCodeBuffer;
-  const UpperClassName: string; out CodeTool: TCodeTool): boolean;
+  const AClassName: string; out CodeTool: TCodeTool): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.InitClassCompletion A ',Code.Filename);
@@ -3830,7 +3828,7 @@ begin
   CodeTool:=nil;
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.InitClassCompletion(UpperClassName,SourceChangeCache);
+    Result:=FCurCodeTool.InitClassCompletion(AClassName,SourceChangeCache);
     CodeTool:=FCurCodeTool;
   except
     on e: Exception do Result:=HandleException(e);
@@ -4054,7 +4052,7 @@ begin
   OldIgnoreMissingIncludeFiles := FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
   try
     FCurCodeTool.Scanner.IgnoreMissingIncludeFiles := IgnoreMissingIncludeFiles;
-    Result:=FCurCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
+    Result:=FCurCodeTool.FindUnitInAllUsesSections(AnUnitName,
                 NameAtomPos, InAtomPos);
     if Result then begin
       NamePos:=NameAtomPos.StartPos;
@@ -4075,7 +4073,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
+    Result:=FCurCodeTool.RenameUsedUnit(OldUnitName,NewUnitName,
                   NewUnitInFile,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -4141,7 +4139,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
+    Result:=FCurCodeTool.RemoveUnitFromAllUsesSections(AnUnitName,
                 SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -4489,8 +4487,8 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindCreateFormStatement(StartPos,UpperCaseStr(AClassName),
-                 UpperCaseStr(AVarName),PosAtom);
+    Result:=FCurCodeTool.FindCreateFormStatement(StartPos,AClassName,
+                 AVarName,PosAtom);
     if Result<>-1 then
       Position:=PosAtom.StartPos;
   except
@@ -4523,8 +4521,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.RemoveCreateFormStatement(UpperCaseStr(AVarName),
-                    SourceChangeCache);
+    Result:=FCurCodeTool.RemoveCreateFormStatement(AVarName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -4662,8 +4659,7 @@ begin
   AncestorClassName:='';
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindFormAncestor(UpperCaseStr(FormClassName),
-                                          AncestorClassName);
+    Result:=FCurCodeTool.FindFormAncestor(FormClassName,AncestorClassName);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -4698,8 +4694,8 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
-                 UpperCaseStr(AVarName),ErrorOnClassNotFound)<>nil;
+    Result:=FCurCodeTool.FindPublishedVariable(AClassName,
+                 AVarName,ErrorOnClassNotFound)<>nil;
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -4714,7 +4710,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.AddPublishedVariable(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.AddPublishedVariable(AClassName,
                       VarName,VarType,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -4730,8 +4726,8 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
-               UpperCaseStr(AVarName),ErrorOnClassNotFound,SourceChangeCache);
+    Result:=FCurCodeTool.RemovePublishedVariable(AClassName,
+               AVarName,ErrorOnClassNotFound,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -4747,8 +4743,8 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
-               UpperCaseStr(OldVariableName),NewVarName,VarType,
+    Result:=FCurCodeTool.RenamePublishedVariable(AClassName,
+               OldVariableName,NewVarName,VarType,
                ErrorOnClassNotFound,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);

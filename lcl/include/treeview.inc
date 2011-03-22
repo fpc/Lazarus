@@ -5092,10 +5092,6 @@ begin
 end;
 
 procedure TCustomTreeView.WMLButtonDown(var AMessage: TLMLButtonDown);
-{var
-  Node: TTreeNode;
-  MousePos: TPoint;
-  P: TSmallPoint;}
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.WMLButtonDown A ',Name,':',ClassName,' ');

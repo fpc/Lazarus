@@ -82,7 +82,7 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
         
     // uses sections
-    function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
+    function RenameUsedUnit(const OldUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function ReplaceUsedUnits(UnitNamePairs: TStringToStringTree;
@@ -103,15 +103,15 @@ type
           SourceChangeCache: TSourceChangeCache;
           AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function UnitExistsInUsesSection(UsesSection: TUsesSection;
-          const UpperUnitName: string;
+          const AnUnitName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
-                                const UpperUnitName: string;
+                                const AnUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
-                                const UpperUnitName: string;
+                                const AnUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
-    function RemoveUnitFromAllUsesSections(const UpperUnitName: string;
+    function RemoveUnitFromAllUsesSections(const AnUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCase(SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCaseInUsesSection(UsesNode: TCodeTreeNode;
@@ -156,11 +156,11 @@ type
 
     // Application.Createform statements
     function FindCreateFormStatement(StartPos: integer;
-          const UpperClassName, UpperVarName: string;
+          const AClassName, AVarName: string;
           out Position: TAtomPosition): integer; // 0=found, -1=not found, 1=found, but wrong classname
     function AddCreateFormStatement(const AClassName, AVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function RemoveCreateFormStatement(const UpperVarName: string;
+    function RemoveCreateFormStatement(const AVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function ChangeCreateFormStatement(StartPos: integer;
           const OldClassName, OldVarName: string;
@@ -185,19 +185,19 @@ type
     function RenameForm(const OldFormName, OldFormClassName: string;
           const NewFormName, NewFormClassName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function FindFormAncestor(const UpperClassName: string;
+    function FindFormAncestor(const AClassName: string;
           var AncestorClassName: string): boolean;
 
     // published variables
-    function FindPublishedVariable(const UpperClassName, UpperVarName: string;
+    function FindPublishedVariable(const AClassName, AVarName: string;
           ExceptionOnClassNotFound: boolean): TCodeTreeNode;
-    function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
+    function AddPublishedVariable(const AClassName,VarName, VarType: string;
           SourceChangeCache: TSourceChangeCache): boolean; virtual;
-    function RemovePublishedVariable(const UpperClassName, UpperVarName: string;
+    function RemovePublishedVariable(const AClassName, AVarName: string;
           ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function RenamePublishedVariable(const UpperClassName,
-          UpperOldVarName: string; const NewVarName, VarType: shortstring;
+    function RenamePublishedVariable(const AClassName,
+          AOldVarName: string; const NewVarName, VarType: shortstring;
           ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function GatherPublishedClassElements(const TheClassName: string;
@@ -402,17 +402,17 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.RenameUsedUnit(const OldUpperUnitName,
+function TStandardCodeTool.RenameUsedUnit(const OldUnitName,
   NewUnitName, NewUnitInFile: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var UnitPos, InPos: TAtomPosition;
   NewUsesTerm: string;
 begin
   Result:=false;
-  if (OldUpperUnitName='') or (length(OldUpperUnitName)>255) or (NewUnitName='')
+  if (OldUnitName='') or (length(OldUnitName)>255) or (NewUnitName='')
   or (length(NewUnitName)>255) then exit;
-  if not FindUnitInAllUsesSections(OldUpperUnitName,UnitPos,InPos) then begin
-    //debugln('TStandardCodeTool.RenameUsedUnit not found: ',OldUpperUnitName,' ');
+  if not FindUnitInAllUsesSections(OldUnitName,UnitPos,InPos) then begin
+    //debugln('TStandardCodeTool.RenameUsedUnit not found: ',OldUnitName,' ');
     exit;
   end;
   SourceChangeCache.MainScanner:=Scanner;
@@ -944,7 +944,7 @@ begin
   end;
   if UsesNode<>nil then begin
     // add unit to existing uses section
-    if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
+    if not (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk))
     then begin
       if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
                                   SourceChangeCache,AsLast,CheckSpecialUnits)
@@ -1018,12 +1018,12 @@ begin
 end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesSection: TUsesSection;
-  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var
   UsesNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (UpperUnitName='') or (length(UpperUnitName)>255) then
+  if (AnUnitName='') or (length(AnUnitName)>255) then
     exit;
   if UsesSection=usMain then
     BuildTree(lsrMainUsesSectionEnd)
@@ -1034,16 +1034,16 @@ begin
     usMain: UsesNode:=FindMainUsesSection;
     usImplementation: UsesNode:=FindImplementationUsesSection;
   end;
-  Result:=UnitExistsInUsesSection(UsesNode,UpperUnitName,SourceChangeCache);
+  Result:=UnitExistsInUsesSection(UsesNode,AnUnitName,SourceChangeCache);
 end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
-  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var
   UnitCount: integer;
 begin
   Result:=false;
-  if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255) then
+  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255) then
     exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
@@ -1052,7 +1052,7 @@ begin
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
     inc(UnitCount);
-    if UpAtomIs(UpperUnitName) then begin
+    if AtomIs(AnUnitName) then begin
       // unit found
       Result:=true;
       exit;
@@ -1068,11 +1068,11 @@ begin
 end;
 
 function TStandardCodeTool.RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
-  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var UnitPos, StartPos, EndPos: integer;
 begin
   Result:=false;
-  if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255) then
+  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255) then
     exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
@@ -1082,7 +1082,7 @@ begin
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
     inc(UnitPos);
-    if UpAtomIs(UpperUnitName) then begin
+    if AtomIs(AnUnitName) then begin
       // unit found
       SourceChangeCache.MainScanner:=Scanner;
       StartPos:=CurPos.StartPos;
@@ -1127,11 +1127,11 @@ begin
 end;
 
 function TStandardCodeTool.RemoveUnitFromAllUsesSections(
-  const UpperUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var SectionNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (UpperUnitName='') or (SourceChangeCache=nil) then exit;
+  if (AnUnitName='') or (SourceChangeCache=nil) then exit;
   BuildTree(lsrImplementationUsesSectionEnd);
 
   SourceChangeCache.BeginUpdate;
@@ -1140,7 +1140,7 @@ begin
     while (SectionNode<>nil) do begin
       if (SectionNode.FirstChild<>nil)
       and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-        if not RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
+        if not RemoveUnitFromUsesSection(SectionNode.FirstChild,AnUnitName,
            SourceChangeCache)
         then begin
           exit;
@@ -2668,7 +2668,7 @@ var
     LookupRootLFMNode:=TLFMObjectNode(RootLFMNode);
     
     // get type name of root object
-    LookupRootTypeName:=UpperCaseStr(LookupRootLFMNode.TypeName);
+    LookupRootTypeName:=LookupRootLFMNode.TypeName;
     if LookupRootTypeName='' then begin
       LFMTree.AddError(lfmeMissingRoot,nil,'missing type of root object',1);
       exit;
@@ -2727,7 +2727,7 @@ begin
 end;
 
 function TStandardCodeTool.FindCreateFormStatement(StartPos: integer;
-  const UpperClassName, UpperVarName: string;
+  const AClassName, AVarName: string;
   out Position: TAtomPosition): integer;
 // 0=found, -1=not found, 1=found, but wrong classname
 var MainBeginNode: TCodeTreeNode;
@@ -2735,8 +2735,8 @@ var MainBeginNode: TCodeTreeNode;
 begin
   Result:=-1;
   Position.StartPos:=-1;
-  if (UpperClassName='') or (UpperVarName='') or (length(UpperClassName)>255)
-  or (length(UpperVarName)>255) then exit;
+  if (AClassName='') or (AVarName='') or (length(AClassName)>255)
+  or (length(AVarName)>255) then exit;
   if StartPos<1 then begin
     BuildTree(lsrEnd);
     MainBeginNode:=FindMainBeginEndNode;
@@ -2752,9 +2752,9 @@ begin
       if ReadNextAtomIsChar('.') and ReadNextUpAtomIs('CREATEFORM')
       and ReadNextAtomIsChar('(') then begin
         ReadNextAtom;
-        ClassNameFits:=UpAtomIs(UpperClassName);
+        ClassNameFits:=AtomIs(AClassName);
         if ReadNextAtomIsChar(',')
-        and (ReadNextUpAtomIs(UpperVarName) or (UpperVarName='*')) then begin
+        and (ReadNextAtomIs(AVarName) or (AVarName='*')) then begin
           if ReadNextAtomIsChar(')') then ReadNextAtomIsChar(';');
           Position.EndPos:=CurPos.EndPos;
           if ClassNameFits then
@@ -2782,8 +2782,8 @@ begin
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   FromPos:=-1;
-  if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(AClassName),
-    UpperCaseStr(AVarName),OldPosition)=-1
+  if FindCreateFormStatement(MainBeginNode.StartPos,AClassName,
+    AVarName,OldPosition)=-1
   then begin
     // does not exist -> create as last in front of 'Application.Run'
     MoveCursorToCleanPos(MainBeginNode.StartPos);
@@ -2816,13 +2816,13 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TStandardCodeTool.RemoveCreateFormStatement(const UpperVarName: string;
+function TStandardCodeTool.RemoveCreateFormStatement(const AVarName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var Position: TAtomPosition;
   FromPos, ToPos: integer;
 begin
   Result:=false;
-  if FindCreateFormStatement(-1,'*',UpperVarName,Position)=-1 then
+  if FindCreateFormStatement(-1,'*',AVarName,Position)=-1 then
     exit;
   FromPos:=FindLineEndOrCodeInFrontOfPosition(Position.StartPos);
   ToPos:=FindLineEndOrCodeAfterPosition(Position.EndPos);
@@ -2849,8 +2849,8 @@ begin
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   FromPos:=-1;
-  if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(OldClassName),
-    UpperCaseStr(OldVarName),OldPosition)=-1 then begin
+  if FindCreateFormStatement(MainBeginNode.StartPos,OldClassName,
+    OldVarName,OldPosition)=-1 then begin
     // does not exist
     if OnlyIfExists then begin
       Result:=true;
@@ -3128,16 +3128,16 @@ begin
   end;
 end;
 
-function TStandardCodeTool.FindFormAncestor(const UpperClassName: string;
+function TStandardCodeTool.FindFormAncestor(const AClassName: string;
   var AncestorClassName: string): boolean;
 var
   ClassNode: TCodeTreeNode;
 begin
   Result:=false;
   AncestorClassName:='';
-  if UpperClassName='' then exit;
+  if AClassName='' then exit;
   BuildTree(lsrImplementationStart);
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
   if (ClassNode=nil) then exit;
   // search the ancestor name
   MoveCursorToNodeStart(ClassNode);
@@ -4380,18 +4380,18 @@ begin
   //DebugLn('TStandardCodeTool.AddResourcestring END ',Result);
 end;
 
-function TStandardCodeTool.FindPublishedVariable(const UpperClassName,
-  UpperVarName: string; ExceptionOnClassNotFound: boolean): TCodeTreeNode;
+function TStandardCodeTool.FindPublishedVariable(const AClassName,
+  AVarName: string; ExceptionOnClassNotFound: boolean): TCodeTreeNode;
 var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=nil;
-  if (UpperClassName='') or (length(UpperClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName, ['"', UpperClassName, '"']));
+  if (AClassName='') or (length(AClassName)>255) then
+    RaiseException(Format(ctsinvalidClassName, ['"', AClassName, '"']));
   BuildTree(lsrImplementationStart);
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
   if ClassNode=nil then begin
     if ExceptionOnClassNotFound then
-      RaiseException(Format(ctsclassNotFound, ['"', UpperClassName, '"']))
+      RaiseException(Format(ctsclassNotFound, ['"', AClassName, '"']))
     else
       exit;
   end;
@@ -4402,7 +4402,7 @@ begin
       while Result<>nil do begin
         if (Result.Desc=ctnVarDefinition) then begin
           MoveCursorToNodeStart(Result);
-          if ReadNextUpAtomIs(UpperVarName) then
+          if ReadNextAtomIs(AVarName) then
             exit;
         end;
         Result:=Result.NextBrother;
@@ -4412,28 +4412,28 @@ begin
   end;
 end;
 
-function TStandardCodeTool.AddPublishedVariable(const UpperClassName,
+function TStandardCodeTool.AddPublishedVariable(const AClassName,
   VarName, VarType: string; SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode, SectionNode: TCodeTreeNode;
   Indent, InsertPos: integer;
 begin
   Result:=false;
-  if (UpperClassName='') or (length(UpperClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName2, ['"', UpperClassName, '"']));
+  if (AClassName='') or (length(AClassName)>255) then
+    RaiseException(Format(ctsinvalidClassName2, ['"', AClassName, '"']));
   if (VarName='') or (length(VarName)>255) then
     RaiseException(Format(ctsinvalidVariableName, ['"', VarName, '"']));
   if (VarType='') or (length(VarType)>255) then
     RaiseException(Format(ctsinvalidVariableType, ['"', VarType, '"']));
   if (SourceChangeCache=nil) then
     RaiseException('missing SourceChangeCache');
-  if FindPublishedVariable(UpperClassName,UpperCaseStr(VarName),true)<>nil then
+  if FindPublishedVariable(AClassName,VarName,true)<>nil then
   begin
     Result:=true;
     exit;
   end;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
   if ClassNode=nil then
-    RaiseException(Format(ctsclassNotFound, ['"', UpperClassName, '"']));
+    RaiseException(Format(ctsclassNotFound, ['"', AClassName, '"']));
   SectionNode:=ClassNode.FirstChild;
   if (SectionNode.NextBrother<>nil)
   and (SectionNode.NextBrother.Desc=ctnClassPublished) then
@@ -4453,14 +4453,14 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TStandardCodeTool.RemovePublishedVariable(const UpperClassName,
-  UpperVarName: string; ExceptionOnClassNotFound: boolean;
+function TStandardCodeTool.RemovePublishedVariable(const AClassName,
+  AVarName: string; ExceptionOnClassNotFound: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
 var VarNode: TCodeTreeNode;
   FromPos, ToPos: integer;
 begin
   Result:=false;
-  VarNode:=FindPublishedVariable(UpperClassName,UpperVarName,
+  VarNode:=FindPublishedVariable(AClassName,AVarName,
                                  ExceptionOnClassNotFound);
   if VarNode=nil then exit;
   if (VarNode.PriorBrother<>nil)
@@ -4495,8 +4495,8 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TStandardCodeTool.RenamePublishedVariable(const UpperClassName,
-  UpperOldVarName: string; const NewVarName, VarType: shortstring;
+function TStandardCodeTool.RenamePublishedVariable(const AClassName,
+  AOldVarName: string; const NewVarName, VarType: shortstring;
   ExceptionOnClassNotFound: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
@@ -4505,7 +4505,7 @@ var
 begin
   Result:=false;
   BuildTree(lsrEnd);
-  VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName,
+  VarNode:=FindPublishedVariable(AClassName,AOldVarName,
                                  ExceptionOnClassNotFound);
   if VarNode<>nil then begin
     // old variable found
@@ -4525,13 +4525,13 @@ begin
       end;
     end;
     // rename variable in source
-    if not ReplaceWord(UpperOldVarName,NewVarName,false,SourceChangeCache,true)
+    if not ReplaceWord(AOldVarName,NewVarName,false,SourceChangeCache,true)
     then
       exit;
     Result:=(not ApplyNeeded) or SourceChangeCache.Apply;
   end else begin
     // old variable not found -> add it
-    Result:=AddPublishedVariable(UpperClassName,NewVarName,VarType,
+    Result:=AddPublishedVariable(AClassName,NewVarName,VarType,
                                  SourceChangeCache);
   end;
 end;

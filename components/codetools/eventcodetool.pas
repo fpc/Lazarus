@@ -68,7 +68,7 @@ type
     function GetCompatiblePublishedMethods(const AClassName: string;
         PropInstance: TPersistent; const PropName: string;
         const Proc: TGetStrProc): boolean;
-    function GetCompatiblePublishedMethods(const UpperClassName: string;
+    function GetCompatiblePublishedMethods(const AClassName: string;
         TypeData: PTypeData; const Proc: TGetStrProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
         TypeData: PTypeData; const Proc: TGetStrProc): boolean;
@@ -85,16 +85,16 @@ type
         const AMethodName: string; TypeData: PTypeData;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
-    function JumpToPublishedMethodBody(const UpperClassName,
-        UpperMethodName: string;
+    function JumpToPublishedMethodBody(const AClassName,
+        AMethodName: string;
         out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-    function RenamePublishedMethod(const UpperClassName, UpperOldMethodName,
+    function RenamePublishedMethod(const AClassName, AOldMethodName,
         NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedMethod(ClassNode: TCodeTreeNode;
-        const UpperOldMethodName, NewMethodName: string;
+        const AOldMethodName, NewMethodName: string;
         SourceChangeCache: TSourceChangeCache): boolean;
         
-    function CreateMethod(const UpperClassName,
+    function CreateMethod(const AClassName,
         AMethodName: string; ATypeInfo: PTypeInfo;
         const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
@@ -120,10 +120,10 @@ type
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
-        const UpperMethodName: string;
+        const AMethodName: string;
         ExceptionOnNotFound: boolean): TFindContext;
-    function FindMethodNodeInImplementation(const UpperClassName,
-        UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
+    function FindMethodNodeInImplementation(const AClassName,
+        AMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
     function FindMethodTypeInfo(ATypeInfo: PTypeInfo;
         const AStartUnitName: string = ''): TFindContext;
     function MethodTypeDataToStr(TypeData: PTypeData;
@@ -266,7 +266,7 @@ begin
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
-  const UpperClassName: string; TypeData: PTypeData;
+  const AClassName: string; TypeData: PTypeData;
   const Proc: TGetStrProc): boolean;
 var ClassNode: TCodeTreeNode;
 begin
@@ -275,10 +275,10 @@ begin
   try
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] A UpperClassName=',
-      UpperClassName);
+      AClassName);
     {$ENDIF}
     BuildTree(lsrImplementationStart);
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',dbgs(ClassNode<>nil));
     {$ENDIF}
@@ -443,13 +443,13 @@ begin
 end;
 
 function TEventsCodeTool.FindPublishedMethodNodeInClass(
-  ClassNode: TCodeTreeNode; const UpperMethodName: string;
+  ClassNode: TCodeTreeNode; const AMethodName: string;
   ExceptionOnNotFound: boolean): TFindContext;
 var
   Params: TFindDeclarationParams;
 begin
   Result:=CleanFindContext;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (UpperMethodName='')
+  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
   or (Scanner=nil) then begin
     DebugLn(['TEventsCodeTool.FindPublishedMethodNodeInClass invalid parameters']);
     exit;
@@ -459,7 +459,7 @@ begin
   try
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=ClassNode;
-    Params.SetIdentifier(Self,@UpperMethodName[1],nil);
+    Params.SetIdentifier(Self,@AMethodName[1],nil);
     Params.Flags:=[fdfSearchInAncestors];
     if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
     if FindIdentifierInContext(Params)
@@ -474,30 +474,30 @@ begin
   end;
 end;
 
-function TEventsCodeTool.FindMethodNodeInImplementation(const UpperClassName,
-  UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
+function TEventsCodeTool.FindMethodNodeInImplementation(const AClassName,
+  AMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
 var SectionNode, ANode: TCodeTreeNode;
 begin
   Result:=nil;
-  if (UpperMethodName='') or (UpperClassName='') then exit;
+  if (AMethodName='') or (AClassName='') then exit;
   if BuildTreeBefore then BuildTree(lsrEnd);
   // find implementation node
   SectionNode:=FindImplementationNode;
   if SectionNode=nil then exit;
   ANode:=SectionNode.FirstChild;
   {$IFDEF CTDEBUG}
-  DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A UpperMethodName=',UpperClassName,'.',UpperMethodName);
+  DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A AMethodName=',AClassName,'.',AMethodName);
   {$ENDIF}
   while (ANode<>nil) do begin
     if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
-    and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@UpperClassName[1])
+    and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@AClassName[1])
     then begin
       MoveCursorToNodeStart(ANode.FirstChild);
       ReadNextAtom; // read class name
       ReadNextAtom; // read '.'
       if AtomIsChar('.') then begin
         ReadNextAtom;
-        if CompareSrcIdentifiers(CurPos.StartPos,@UpperMethodName[1]) then
+        if CompareSrcIdentifiers(CurPos.StartPos,@AMethodName[1]) then
         begin
           {$IFDEF CTDEBUG}
           DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
@@ -580,7 +580,7 @@ begin
   ActivateGlobalWriteLock;
   try
     {$IFDEF CTDEBUG}
-    DebugLn('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
+    DebugLn('[TEventsCodeTool.PublishedMethodExists] A AClassName=',AClassName);
     {$ENDIF}
     BuildTree(lsrImplementationStart);
     ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
@@ -667,8 +667,8 @@ begin
   end;
 end;
 
-function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
-  UpperMethodName: string;
+function TEventsCodeTool.JumpToPublishedMethodBody(const AClassName,
+  AMethodName: string;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   ANode: TCodeTreeNode;
@@ -681,23 +681,23 @@ begin
   ActivateGlobalWriteLock;
   try
     BuildTree(lsrEnd);
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-    AFindContext:=FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,true);
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+    AFindContext:=FindPublishedMethodNodeInClass(ClassNode,AMethodName,true);
     if AFindContext.Node=nil then begin
-      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',UpperClassName,'.',UpperMethodName]);
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',AClassName,'.',AMethodName]);
       exit;
     end;
     SrcTool:=TEventsCodeTool(AFindContext.Tool);
     ClassNode:=AFindContext.Node.Parent.Parent;
     if ClassNode.Desc<>ctnClass then begin
-      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',UpperClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',AClassName,'.',AMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
       exit;
     end;
     SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
     ANode:=SrcTool.FindMethodNodeInImplementation(
-                                             SrcClassName,UpperMethodName,true);
+                                             SrcClassName,AMethodName,true);
     if ANode=nil then begin
-      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',UpperMethodName,' in ',SrcTool.MainFilename]);
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',AMethodName,' in ',SrcTool.MainFilename]);
       exit;
     end;
     Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
@@ -706,45 +706,45 @@ begin
   end;
 end;
 
-function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,
-  UpperOldMethodName, NewMethodName: string;
+function TEventsCodeTool.RenamePublishedMethod(const AClassName,
+  AOldMethodName, NewMethodName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode: TCodeTreeNode;
 begin
   BuildTree(lsrEnd);
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  Result:=RenamePublishedMethod(ClassNode,UpperOldMethodName,NewMethodName,
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+  Result:=RenamePublishedMethod(ClassNode,AOldMethodName,NewMethodName,
                                 SourceChangeCache);
 end;
 
 function TEventsCodeTool.RenamePublishedMethod(ClassNode: TCodeTreeNode;
-  const UpperOldMethodName, NewMethodName: string;
+  const AOldMethodName, NewMethodName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 // rename published method in class and in procedure itself
 var ProcNode, ProcHeadNode: TCodeTreeNode;
   NameStart, NameEnd: integer;
-  UpperClassName: string;
+  AClassName: string;
   ProcBodyNode: TCodeTreeNode;
 begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
     RaiseException('Invalid class node');
-  if (UpperOldMethodName='') then
-    RaiseException('Invalid UpperOldMethodName="'+UpperOldMethodName+'"');
+  if (AOldMethodName='') then
+    RaiseException('Invalid AOldMethodName="'+AOldMethodName+'"');
   if (NewMethodName='') then
     RaiseException('Invalid NewMethodName="'+NewMethodName+'"');
   if (SourceChangeCache=nil) or (Scanner=nil) then
     RaiseException('Invalid SourceChangeCache or Scanner');
   SourceChangeCache.MainScanner:=Scanner;
   // rename in class
-  ProcNode:=FindIdentifierNodeInClass(ClassNode,@UpperOldMethodName[1]);
+  ProcNode:=FindIdentifierNodeInClass(ClassNode,@AOldMethodName[1]);
   if (ProcNode=nil) then begin
     MoveCursorToNodeStart(ClassNode);
-    RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
+    RaiseExceptionFmt(ctsOldMethodNotFound,[AOldMethodName]);
   end;
   if (ProcNode.Desc<>ctnProcedure) then begin
     MoveCursorToNodeStart(ProcNode);
-    RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
+    RaiseExceptionFmt(ctsOldMethodNotFound,[AOldMethodName]);
   end;
   ProcHeadNode:=ProcNode.FirstChild;
   if ProcHeadNode=nil then begin
@@ -765,9 +765,9 @@ begin
   Result:=true;
 
   // rename procedure body -> find implementation node
-  UpperClassName:=ExtractClassName(ClassNode,true);
-  ProcBodyNode:=FindMethodNodeInImplementation(UpperClassName,
-                                               UpperOldMethodName,false);
+  AClassName:=ExtractClassName(ClassNode,false);
+  ProcBodyNode:=FindMethodNodeInImplementation(AClassName,
+                                               AOldMethodName,false);
   if (ProcBodyNode<>nil) and (ProcBodyNode<>nil) then begin
     ProcHeadNode:=ProcBodyNode.FirstChild;
     MoveCursorToNodeStart(ProcHeadNode);
@@ -781,7 +781,7 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TEventsCodeTool.CreateMethod(const UpperClassName,
+function TEventsCodeTool.CreateMethod(const AClassName,
   AMethodName: string; ATypeInfo: PTypeInfo;
   const APropertyUnitName, APropertyPath: string;
   SourceChangeCache: TSourceChangeCache;
@@ -792,7 +792,7 @@ var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
   BuildTree(lsrEnd);
-  AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  AClassNode:=FindClassNodeInInterface(ClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
                        SourceChangeCache,UseTypeInfoForParameters,Section,

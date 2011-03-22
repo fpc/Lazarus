@@ -290,7 +290,7 @@ type
                               out ListOfPFindContext: TFPList): boolean;
 
     // custom class completion
-    function InitClassCompletion(const UpperClassName: string;
+    function InitClassCompletion(const AClassName: string;
                                  SourceChangeCache: TSourceChangeCache): boolean;
     function ApplyClassCompletion(AddMissingProcBodies: boolean): boolean;
     function ProcExistsInCodeCompleteClass(
@@ -5010,7 +5010,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.InitClassCompletion(
-  const UpperClassName: string;
+  const AClassName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   ClassNode: TCodeTreeNode;
@@ -5019,7 +5019,7 @@ begin
   BuildTree(lsrEnd);
   if ScannedRange<>lsrEnd then exit;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
-  ClassNode:=FindClassNodeInUnit(UpperClassName,true,false,false,true);
+  ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,true);
   if (ClassNode=nil) then exit;
   CodeCompleteClassNode:=ClassNode;
   CodeCompleteSrcChgCache:=SourceChangeCache;
