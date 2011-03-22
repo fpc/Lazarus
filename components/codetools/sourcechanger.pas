@@ -240,6 +240,7 @@ type
                          read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
                            read FOnAfterApplyChanges write FOnAfterApplyChanges;
+    property UpdateLock: integer read FUpdateLock;
     procedure Clear;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
