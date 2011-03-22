@@ -419,6 +419,7 @@ type
     function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
     function LinkSize(Index: integer): integer;
     function LinkCleanedEndPos(Index: integer): integer;
+    function LinkSourceLog(Index: integer): TSourceLog;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
     function LinkIndexNearCursorPos(ACursorPos: integer; ACode: Pointer;
@@ -792,6 +793,14 @@ end;
 function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
 begin
   Result:=FLinks[Index].CleanedPos+LinkSize(Index);
+end;
+
+function TLinkScanner.LinkSourceLog(Index: integer): TSourceLog;
+begin
+  if Assigned(OnGetSource) then
+    Result:=OnGetSource(Self,FLinks[Index].Code)
+  else
+    Result:=nil;
 end;
 
 function TLinkScanner.FindFirstSiblingLink(LinkIndex: integer): integer;
@@ -3560,27 +3569,28 @@ function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;
 var
   i, j, SkippedCleanPos: integer;
   SkippedPos: boolean;
+  Link: PSourceLink;
 begin
   i:=0;
   SkippedPos:=false;
   SkippedCleanPos:=-1;
   ACleanPos:=0;
   while i<LinkCount do begin
-    //DebugLn('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
-    if (FLinks[i].Code=ACode) and (FLinks[i].SrcPos<=ACursorPos) then begin
+    Link:=@FLinks[i];
+    //DebugLn(['[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos]);
+    if (Link^.Code=ACode) and (Link^.SrcPos<=ACursorPos) then begin
       // link in same code found
-      ACleanPos:=ACursorPos-FLinks[i].SrcPos+FLinks[i].CleanedPos;
-      //DebugLn('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
+      ACleanPos:=ACursorPos-Link^.SrcPos+Link^.CleanedPos;
+      //DebugLn(['[TLinkScanner.CursorToCleanPos] Same code ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos,' EndCleanPos=',Link^.CleanedPos+LinkSize(i)]);
       if i+1<LinkCount then begin
         // link has successor
         //DebugLn(['[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos]);
         if ACleanPos<FLinks[i+1].CleanedPos then begin
           // link covers the cursor position
+          //debugln(['TLinkScanner.CursorToCleanPos Found LinkStartInSrc="',dbgstr(copy(LinkSourceLog(i).Source,Link^.SrcPos,40)),'" LinkStartInCleanSrc="',dbgstr(copy(FCleanedSrc,Link^.CleanedPos,40)),'" CursorSrc="',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos-20,20)),'|',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos,20)),'" CleanCursorSrc="',dbgstr(copy(FCleanedSrc,ACleanPos-20,20)),'|',dbgstr(copy(FCleanedSrc,ACleanPos,20)),'"']);
           Result:=0;  // valid position
           exit;
         end;
-        // set found cleanpos to end of link
-        ACleanPos:=FLinks[i].CleanedPos+LinkSize(i);
         // link does not cover the cursor position
         // find the next link in the same code
         j:=i+1;
@@ -3592,13 +3602,14 @@ begin
             // but because include files can be parsed multiple times,
             // search must continue
             SkippedPos:=true;
-            SkippedCleanPos:=ACleanPos;
+            // set found cleanpos to end of link
+            SkippedCleanPos:=Link^.CleanedPos+LinkSize(i);
           end;
           // if this is an double included file,
           // this position can be in clean code -> search next
         end;
         // search next
-        i:=j-1;
+        i:=j;
       end else begin
         // in last link
         //DebugLn(['[TLinkScanner.CursorToCleanPos] E ACleanPos=',ACleanPos,' CleanedLen=',CleanedLen]);
@@ -3608,8 +3619,8 @@ begin
         end;
         break;
       end;
-    end;
-    inc(i);
+    end else
+      inc(i);
   end;
   if SkippedPos then begin
     Result:=-1;

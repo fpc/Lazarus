@@ -147,6 +147,7 @@ type
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
     procedure JumpToImplementationMenuItemClick(Sender: TObject);
+    procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure ModeSpeedButtonClick(Sender: TObject);
     procedure OptionsSpeedButtonClick(Sender: TObject);
@@ -275,6 +276,7 @@ var
   CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
   CEJumpToImplementationIDEMenuCommand: TIDEMenuCommand;
+  CEShowSrcEditPosIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CERenameIDEMenuCommand: TIDEMenuCommand;
 
@@ -294,7 +296,7 @@ type
 
   TViewNodeData = class
   public
-    CTNode: TCodeTreeNode; // only valid during update, other times it is nil
+    CTNode: TCodeTreeNode; // only valid during update, at other times it is nil
     Desc: TCodeTreeNodeDesc;
     SubDesc: TCodeTreeNodeSubDesc;
     StartPos, EndPos: integer;
@@ -366,6 +368,8 @@ begin
     );
   CEJumpToImplementationIDEMenuCommand:=RegisterIDEMenuCommand(Path,
     'Jump to implementation', lisMenuJumpToImplementation);
+  CEShowSrcEditPosIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Show position of source editor',
+    lisShowPositionOfSourceEditor);
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
     dlgUnitDepRefresh);
   CERenameIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Rename', lisFRIRename);
@@ -487,6 +491,7 @@ begin
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuItemClick;
   CEJumpToImplementationIDEMenuCommand.OnClick:=@JumpToImplementationMenuItemClick;
+  CEShowSrcEditPosIDEMenuCommand.OnClick:=@ShowSrcEditPosMenuItemClick;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuItemClick;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
 
@@ -576,6 +581,11 @@ begin
   JumpToSelection(true);
 end;
 
+procedure TCodeExplorerView.ShowSrcEditPosMenuItemClick(Sender: TObject);
+begin
+  SelectSourceEditorNode;
+end;
+
 procedure TCodeExplorerView.MainNotebookPageChanged(Sender: TObject);
 begin
   Refresh(true);
@@ -654,7 +664,7 @@ begin
   end;
   CERenameIDEMenuCommand.Visible:=CanRename;
   CEJumpToImplementationIDEMenuCommand.Visible:=HasImplementation;
-  DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
+  //DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 
 procedure TCodeExplorerView.OnUserInput(Sender: TObject; Msg: Cardinal);
@@ -2101,9 +2111,13 @@ begin
   if CurrentPage=cepCode then begin
     if FLastCodeValid and (fLastCodeTool<>nil) then begin
       CodePos:=CodeXYPosition(X,Y,CodeBuf);
+      CodeBuf.LineColToPosition(Y,X,CleanPos);
+      //debugln(['TCodeExplorerView.SelectCodePosition Code ',ExtractFileName(CodeBuf.Filename),' y=',y,' x=',x,' CleanPos=',CleanPos,' ',dbgstr(copy(CodeBuf.Source,CleanPos-20,20)),'|',dbgstr(copy(CodeBuf.Source,CleanPos,20))]);
       if fLastCodeTool.CaretToCleanPos(CodePos,CleanPos)<>0 then exit;
+      //debugln(['TCodeExplorerView.SelectCodePosition CleanSrc ',ExtractFileName(CodeBuf.Filename),' y=',y,' x=',x,' Tool=',ExtractFileName(fLastCodeTool.MainFilename),' ',dbgstr(copy(fLastCodeTool.Src,CleanPos-20,20)),'|',dbgstr(copy(fLastCodeTool.Src,CleanPos,20))]);
       TVNode:=FindCodeTVNodeAtCleanPos(CleanPos);
       if TVNode=nil then exit;
+      //debugln(['TCodeExplorerView.SelectCodePosition ',TVNode.Text]);
       CodeTreeview.BeginUpdate;
       CodeTreeview.Options:=CodeTreeview.Options-[tvoAllowMultiselect];
       if not TVNode.IsVisible then begin
@@ -2115,6 +2129,7 @@ begin
         CodeTreeview.Selected:=TVNode;
         //debugln(['TCodeExplorerView.SelectCodePosition ',TVNode.Text]);
       end;
+      //debugln(['TCodeExplorerView.SelectCodePosition TVNode=',TVNode.Text,' Selected=',CodeTreeview.Selected=TVNode]);
       CodeTreeview.EndUpdate;
       Result:=true;
     end;
@@ -2126,6 +2141,28 @@ function TCodeExplorerView.FindCodeTVNodeAtCleanPos(CleanPos: integer): TTreeNod
 // if there are several nodes, the one with the shortest range (EndPos-StartPos)
 // is returned.
 var
+  Best: TTreeNode;
+  BestStartPos, BestEndPos: integer;
+
+  procedure Check(TVNode: TTreeNode; NodeData: TViewNodeData);
+  begin
+    if NodeData=nil then exit;
+    if (NodeData.StartPos>CleanPos) or (NodeData.EndPos<CleanPos) then exit;
+    //debugln(['FindCodeTVNodeAtCleanPos.Check TVNode="',TVNode.Text,'" NodeData="',dbgstr(copy(fLastCodeTool.Src,NodeData.StartPos,40)),'"']);
+    if (Best<>nil) then begin
+      if (BestEndPos=CleanPos) and (NodeData.EndPos>CleanPos) then begin
+        // for example  a,|b  then b is better
+      end else if BestEndPos-BestStartPos<NodeData.EndPos-NodeData.StartPos then begin
+        // smaller range is better
+      end else
+        exit;
+    end;
+    Best:=TVNode;
+    BestStartPos:=NodeData.StartPos;
+    BestEndPos:=NodeData.EndPos;
+  end;
+
+var
   AVLNode: TAvgLvlTreeNode;
   Node: TTreeNode;
   NodeData: TViewNodeData;
@@ -2133,23 +2170,21 @@ begin
   Result:=nil;
   if (fLastCodeTool=nil) or (not FLastCodeValid) or (CodeTreeview=nil)
   or (fCodeSortedForStartPos=nil) then exit;
-  // find nearest node in tree
 
+  // find nearest node in tree
+  Best:=nil;
+  BestStartPos:=0;
+  BestEndPos:=0;
   AVLNode:=fCodeSortedForStartPos.FindLowest;
   while AVLNode<>nil do begin
     Node:=TTreeNode(AVLNode.Data);
     NodeData:=TViewNodeData(Node.Data);
     //debugln(['TCodeExplorerView.FindCodeTVNodeAtCleanPos Node ',NodeData.StartPos,'-',NodeData.EndPos,' ',Node.Text,' ',CleanPos]);
-    if NodeData.StartPos>CleanPos then exit;
-    if NodeData.EndPos>=CleanPos then begin
-      if (Result=nil)
-      or (NodeData.EndPos-NodeData.StartPos
-         < TViewNodeData(Result.Data).EndPos-TViewNodeData(Result.Data).StartPos)
-      then
-        Result:=Node;
-    end;
+    Check(Node,NodeData);
+    Check(Node,NodeData.ImplementationNode);
     AVLNode:=fCodeSortedForStartPos.FindSuccessor(AVLNode);
   end;
+  Result:=Best;
 end;
 
 procedure TCodeExplorerView.BuildCodeSortedForStartPos;

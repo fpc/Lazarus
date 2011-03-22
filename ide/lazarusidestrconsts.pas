@@ -5200,6 +5200,7 @@ resourcestring
     +'of class "%s"has created the error:%s"%s"';
   lisShowSetupDialogForMostImportantSettings = 'Show setup dialog for most '
     +'important settings';
+  lisShowPositionOfSourceEditor = 'Show position of source editor';
 
 implementation
 
