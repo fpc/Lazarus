@@ -854,6 +854,8 @@ begin
     itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);
 
+    itmEditInsertCharacter.Command:=GetCommand(ecInsertCharacter);
+
     // search menu
     itmSearchFind.Command:=GetCommand(ecFind);
     itmSearchFindNext.Command:=GetCommand(ecFindNext);

@@ -333,7 +333,7 @@ begin
   ecClearAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecLineBreak: SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
   ecInsertLine: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[]);
-  ecInsertCharacter: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCharacter: SetResult(VK_M,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecInsertGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertModifiedLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);

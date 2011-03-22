@@ -62,12 +62,11 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure StringGrid1MouseDown(Sender: TObject; Button: TMouseButton;
+    procedure StringGridKeyPress(Sender: TObject; var Key: char);
+    procedure StringGridMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure StringGrid1MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure StringGrid2MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure StringGrid2MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
   private
@@ -158,16 +157,31 @@ begin
   cbUniRangeSelect(nil);
 end;
 
-procedure TCharacterMapDialog.StringGrid1MouseDown(Sender: TObject;
+procedure TCharacterMapDialog.StringGridKeyPress(Sender: TObject; var Key: char);
+var
+  sg: TStringGrid;
+  s: string;
+begin
+  if Key = #13 then begin
+    sg := Sender as TStringGrid;
+    s := sg.Cells[sg.Col, sg.Row];
+    if (s <> '') and (Assigned(OnInsertCharacter)) then
+      OnInsertCharacter(s);
+  end;
+end;
+
+procedure TCharacterMapDialog.StringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Row, Col: Integer;
+  sg: TStringGrid;
 begin
-  if (Button = mbLeft) and (StringGrid1.MouseToGridZone(X, Y) = gzNormal) then
+  sg := Sender as TStringGrid;
+  if (Button = mbLeft) and (sg.MouseToGridZone(X, Y) = gzNormal) then
   begin
-    StringGrid1.MouseToCell(X, Y, Col, Row);
-    if (StringGrid1.Cells[Col, Row] <> '') and (Assigned(OnInsertCharacter)) then
-      OnInsertCharacter(StringGrid1.Cells[Col, Row]);
+    sg.MouseToCell(X, Y, Col, Row);
+    if (sg.Cells[Col, Row] <> '') and (Assigned(OnInsertCharacter)) then
+      OnInsertCharacter(sg.Cells[Col, Row]);
   end;
 end;
 
@@ -180,8 +194,7 @@ begin
   if StringGrid1.MouseToGridZone(X, Y) = gzNormal then
   begin
     StringGrid1.MouseToCell(X, Y, Col, Row);
-    
-    if StringGrid1.Cells[Col, Row] <> '' then 
+    if StringGrid1.Cells[Col, Row] <> '' then
     begin
       CharOrd := Ord(UTF8ToAnsi(StringGrid1.Cells[Col, Row])[1]);
       CharInfoLabel.Caption := 'Decimal = ' + IntToStr(CharOrd) +
@@ -193,19 +206,6 @@ begin
   else
   begin
     CharInfoLabel.Caption := '-';
-  end;
-end;
-
-procedure TCharacterMapDialog.StringGrid2MouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  Row, Col: Integer;
-begin
-  if (Button = mbLeft) and (StringGrid2.MouseToGridZone(X, Y) = gzNormal) then
-  begin
-    StringGrid2.MouseToCell(X, Y, Col, Row);
-    if Assigned(OnInsertCharacter) then
-      OnInsertCharacter(StringGrid2.Cells[Col, Row]);
   end;
 end;
 
@@ -221,7 +221,8 @@ begin
     S:=UnicodeBlocks[cbUniRange.ItemIndex].S+(Col)+(Row*16);
     tmp:=UnicodeToUTF8(S);
     tmp2:='';
-    for i:=1 to Length(tmp) do tmp2:=tmp2+'$'+IntToHex(Ord(tmp[i]),2);
+    for i:=1 to Length(tmp) do
+      tmp2:=tmp2+'$'+IntToHex(Ord(tmp[i]),2);
     UnicodeCharInfoLabel.Caption:='U+'+inttohex(S,4)+', UTF-8 = '+tmp2;
   end
   else
