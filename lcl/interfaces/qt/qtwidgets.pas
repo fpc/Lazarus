@@ -2158,7 +2158,8 @@ begin
           {non-spontaneous key events are garbage in Qt >= 4.4 for non edits}
           Result := QEvent_spontaneous(Event) or Supports(Self, IQtEdit, QtEdit);
           if Result then
-            Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
+            Result := SlotKey(Sender, Event) or (LCLObject = nil) or
+              ((LCLObject <> nil) and (LCLObject is TCustomControl));
         end;
 
       QEventMouseButtonPress,
