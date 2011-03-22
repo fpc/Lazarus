@@ -792,7 +792,7 @@ var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
   BuildTree(lsrEnd);
-  AClassNode:=FindClassNodeInInterface(ClassName,true,false,true);
+  AClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
                        SourceChangeCache,UseTypeInfoForParameters,Section,
