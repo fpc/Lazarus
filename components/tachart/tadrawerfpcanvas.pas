@@ -20,7 +20,7 @@ unit TADrawerFPCanvas;
 interface
 
 uses
-  Classes, FPCanvas, TAChartUtils, TADrawUtils;
+  Classes, FPCanvas, FTFont, TAChartUtils, TADrawUtils;
 
 type
 
@@ -29,6 +29,9 @@ type
   TFPCanvasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FCanvas: TFPCustomCanvas;
+    FFont: TFreeTypeFont;
+
+    procedure EnsureFont;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -38,6 +41,7 @@ type
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
     constructor Create(ACanvas: TFPCustomCanvas);
+    destructor Destroy; override;
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
@@ -68,6 +72,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 type
   TFPCanvasHelperCrack = class(TFPCanvasHelper);
@@ -120,9 +127,24 @@ begin
   FCanvas := ACanvas;
 end;
 
+destructor TFPCanvasDrawer.Destroy;
+begin
+  FreeAndNil(FFont);
+  inherited Destroy;
+end;
+
 procedure TFPCanvasDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.Ellipse(AX1, AY1, AX2, AY2);
+end;
+
+procedure TFPCanvasDrawer.EnsureFont;
+begin
+  if FFont <> nil then exit;
+  FFont := TFreeTypeFont.Create;
+  FFont.Resolution := 72;
+  FFont.AntiAliased := false;
+  FCanvas.Font := FFont;
 end;
 
 procedure TFPCanvasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
@@ -226,7 +248,11 @@ end;
 
 procedure TFPCanvasDrawer.SetFont(AFont: TFPCustomFont);
 begin
-  AssignFPCanvasHelper(FCanvas.Font, AFont);
+  EnsureFont;
+  AssignFPCanvasHelper(FFont, AFont);
+  // DoCopyProps performs direct variable assignment, so call SetName by hand.
+  FFont.Name := AFont.Name;
+  // TODO: Orientation
 end;
 
 procedure TFPCanvasDrawer.SetPen(APen: TFPCustomPen);
@@ -242,12 +268,16 @@ end;
 
 function TFPCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
+  EnsureFont;
   FCanvas.GetTextSize(AText, Result.X, Result.Y);
 end;
 
 procedure TFPCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 begin
-  FCanvas.TextOut(AX, AY, AText);
+  EnsureFont;
+  // TODO: Orientation
+  // FreeType uses lower-left instead of upper-left corner as starting position.
+  FCanvas.TextOut(AX, AY + FCanvas.GetTextHeight(AText), AText);
 end;
 
 end.
