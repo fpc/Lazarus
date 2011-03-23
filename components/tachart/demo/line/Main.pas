@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
+  Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
+  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
 
 type
 
@@ -21,6 +21,7 @@ type
     cbSorted: TCheckBox;
     ccsAvg: TCalculatedChartSource;
     ccsSum: TCalculatedChartSource;
+    chPointers: TChart;
     chCalc: TChart;
     chCalcLineSeries1: TLineSeries;
     chCalcLineSeriesAvg: TLineSeries;
@@ -33,10 +34,14 @@ type
     ChartToolset1PanDragTool1: TPanDragTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     edTime: TEdit;
+    lblPointerSize: TLabel;
     lblPointsCount: TLabel;
     PageControl2: TPageControl;
     Panel1: TPanel;
+    pnlPointers: TPanel;
     RandomChartSource1: TRandomChartSource;
+    sePointerSize: TSpinEdit;
+    tsPointers: TTabSheet;
     tsStats: TTabSheet;
     tsFast: TTabSheet;
     procedure btnAddSeriesClick(Sender: TObject);
@@ -45,6 +50,8 @@ type
     procedure cbLineTypeChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
     procedure cbSortedChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure sePointerSizeChange(Sender: TObject);
   end;
 
 var
@@ -55,7 +62,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf;
+  LCLIntf, TATypes, TAChartUtils;
 
 { TForm1 }
 
@@ -127,6 +134,40 @@ begin
       with chFast.Series[i] as TLineSeries do
         if Source is TListChartSource then
           ListSource.Sorted := cbSorted.Checked;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  st: TSeriesPointerStyle;
+  ls: TLineSeries;
+  s: ShortString;
+begin
+  for st := Low(st) to High(st) do begin
+    ls := TLineSeries.Create(Self);
+    ls.LinePen.Color := clGreen;
+    ls.ShowPoints := true;
+    ls.Pointer.Pen.Color := clRed;
+    ls.Pointer.Style := st;
+    ls.AddXY(1, Ord(st));
+    Str(st, s);
+    ls.AddXY(10, Ord(st), s, clGreen);
+    ls.AddXY(19, Ord(st));
+    ls.Marks.Visible := true;
+    ls.Marks.Style := smsLabel;
+    ls.Marks.Distance := 4;
+    chPointers.AddSeries(ls);
+  end;
+end;
+
+procedure TForm1.sePointerSizeChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to chPointers.SeriesCount - 1 do
+    with (chPointers.Series[i] as TLineSeries).Pointer do begin
+      HorizSize := sePointerSize.Value;
+      VertSize := sePointerSize.Value;
+    end;
 end;
 
 end.

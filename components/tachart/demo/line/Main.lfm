@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 479
   ClientWidth = 645
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PageControl2: TPageControl
@@ -150,12 +151,12 @@ object Form1: TForm1
     object tsStats: TTabSheet
       Caption = 'Statistics'
       ClientHeight = 453
-      ClientWidth = 581
+      ClientWidth = 637
       object chCalc: TChart
         Left = 0
         Height = 453
         Top = 0
-        Width = 581
+        Width = 637
         AxisList = <        
           item
             Title.LabelFont.Orientation = 900
@@ -195,6 +196,62 @@ object Form1: TForm1
           LinePen.Color = clTeal
           LinePen.Width = 2
           Source = ccsAvg
+        end
+      end
+    end
+    object tsPointers: TTabSheet
+      Caption = 'Pointers'
+      ClientHeight = 453
+      ClientWidth = 637
+      object chPointers: TChart
+        Left = 0
+        Height = 453
+        Top = 0
+        Width = 467
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        AxisVisible = False
+        ExpandPercentage = 5
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+      end
+      object pnlPointers: TPanel
+        Left = 467
+        Height = 453
+        Top = 0
+        Width = 170
+        Align = alRight
+        ClientHeight = 453
+        ClientWidth = 170
+        TabOrder = 1
+        object sePointerSize: TSpinEdit
+          Left = 49
+          Height = 21
+          Top = 6
+          Width = 50
+          OnChange = sePointerSizeChange
+          TabOrder = 0
+          Value = 4
+        end
+        object lblPointerSize: TLabel
+          Left = 9
+          Height = 14
+          Top = 10
+          Width = 20
+          Caption = 'Size'
+          ParentColor = False
         end
       end
     end
