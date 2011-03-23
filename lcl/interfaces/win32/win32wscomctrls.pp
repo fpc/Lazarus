@@ -202,7 +202,7 @@ type
 
   TWin32WSTrackBar = class(TWSTrackBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DefaultWndHandler(const AWinControl: TWinControl;
        var AMessage); override;
@@ -837,7 +837,7 @@ begin
                         if Control.Focused then
                         begin
                           SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
-                          Inc(Offset, FocusBorderWidth);
+                          Inc(Offset, FocusBorderHeight);
                         end;
                         with Control.ClientRect do
                         begin
