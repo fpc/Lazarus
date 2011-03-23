@@ -60,6 +60,7 @@ type
   end;
 
   TChartColorToFPColorFunc = function (AColor: TChartColor): TFPColor;
+  TGetFontOrientationFunc = function (AFont: TFPCustomFont): Integer;
 
   { IChartDrawer }
 
@@ -97,6 +98,7 @@ type
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetFont(AValue: TFPCustomFont);
+    procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     function TextExtent(const AText: String): TPoint;
@@ -109,6 +111,8 @@ type
     property Pen: TFPCustomPen write SetPen;
     property DoChartColorToFPColor: TChartColorToFPColorFunc
       write SetDoChartColorToFPColorFunc;
+    property DoGetFontOrientation: TGetFontOrientationFunc
+      write SetGetFontOrientationFunc;
   end;
 
   { TBasicDrawer }
@@ -116,6 +120,7 @@ type
   TBasicDrawer = class(TInterfacedObject, ISimpleTextOut)
   strict protected
     FChartColorToFPColorFunc: TChartColorToFPColorFunc;
+    FGetFontOrientationFunc: TGetFontOrientationFunc;
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
@@ -132,6 +137,7 @@ type
       AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
     function Scale(ADistance: Integer): Integer; virtual;
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
+    procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -159,6 +165,12 @@ begin
     blue += blue shr 8;
     alpha := alphaOpaque;
   end;
+end;
+
+function DummyGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
+begin
+  Unused(AFont);
+  Result := 0;
 end;
 
 function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
@@ -261,6 +273,7 @@ end;
 constructor TBasicDrawer.Create;
 begin
   FChartColorToFPColorFunc := @ChartColorToFPColor;
+  FGetFontOrientationFunc := @DummyGetFontOrientationFunc;
 end;
 
 procedure TBasicDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -295,6 +308,12 @@ procedure TBasicDrawer.SetDoChartColorToFPColorFunc(
   AValue: TChartColorToFPColorFunc);
 begin
   FChartColorToFPColorFunc := AValue;
+end;
+
+procedure TBasicDrawer.SetGetFontOrientationFunc(
+  AValue: TGetFontOrientationFunc);
+begin
+  FGetFontOrientationFunc := AValue;
 end;
 
 function TBasicDrawer.TextExtent(const AText: String): TPoint;
