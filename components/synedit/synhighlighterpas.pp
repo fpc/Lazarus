@@ -2113,7 +2113,10 @@ end;
 
 function TSynPasSyn.Func167: TtkTokenKind;
 begin
-  if KeyComp('Shortstring') then Result := tkKey else Result := tkIdentifier;
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('Shortstring') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func168: TtkTokenKind;

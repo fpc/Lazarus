@@ -396,10 +396,11 @@ begin
   SetLines
     ([ 'Program A;',
        'var',
-       '  Foo1: String',
-       '  Foo2: AnsiString',
-       '  Foo3: WideString',
-       '  Foo4: Integer',
+       '  Foo1: String;',
+       '  Foo2: AnsiString;',
+       '  Foo3: WideString;',
+       '  Foo4: Shortstring;',
+       '  Foo5: Integer;',
        '',
        'Procedure b;',
        'begin',
@@ -415,35 +416,38 @@ begin
 
   PushBaseName('spsmDefault');
   PasHighLighter.StringKeywordMode := spsmDefault;
-  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
-  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
-  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
-  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey, tkSymbol  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey, tkSymbol  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey, tkSymbol  ]);
+  CheckTokensForLine('short',  5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey, tkSymbol  ]);
+  CheckTokensForLine('int',    6, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]); // selftest
 
   PopPushBaseName('spsmStringOnly');
   PasHighLighter.StringKeywordMode := spsmStringOnly;
-  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey  ]);
-  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
-  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
-  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkKey, tkSymbol  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('short',  5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('int',    6, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]); // selftest
 
   PopPushBaseName('spsmNone');
   PasHighLighter.StringKeywordMode := spsmNone;
-  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
-  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
-  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]);
-  CheckTokensForLine('int',    5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier  ]); // selftest
+  CheckTokensForLine('String', 2, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('ansi',   3, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('wide',   4, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('short',  5, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('int',    6, [tkSpace, tkIdentifier, tkSymbol, tkSpace,   tkIdentifier, tkSymbol  ]); // selftest
 
 
   PopPushBaseName('False');
   PasHighLighter.ExtendedKeywordsMode := False;
-  CheckTokensForLine('wide',  10, [tkSpace, tkIdentifier, tkSymbol ]);
-  CheckTokensForLine('wide',  11, [tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('continue',  11, [tkSpace, tkIdentifier, tkSymbol ]);
+  CheckTokensForLine('exit',      12, [tkSpace, tkIdentifier, tkSymbol ]);
 
   PopPushBaseName('True');
   PasHighLighter.ExtendedKeywordsMode := True;
-  CheckTokensForLine('wide',  10, [tkSpace, tkKey, tkSymbol ]);
-  CheckTokensForLine('wide',  11, [tkSpace, tkKey, tkSymbol ]);
+  CheckTokensForLine('continue',  11, [tkSpace, tkKey, tkSymbol ]);
+  CheckTokensForLine('exit',      12, [tkSpace, tkKey, tkSymbol ]);
 
 end;
 
