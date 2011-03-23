@@ -11,7 +11,7 @@ uses
   TASeries, TASeriesEditor, TASubcomponentsEditor, TATools, TATransformations, 
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
-  TADrawerFPCanvas, TADrawerCanvas, TADrawerOpenGL, LazarusPackageIntf;
+  TADrawerFPCanvas, TADrawerCanvas, LazarusPackageIntf;
 
 implementation
 
