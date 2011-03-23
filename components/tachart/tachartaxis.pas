@@ -538,7 +538,8 @@ var
 begin
   if not Visible then exit;
   scaledTickLength := ADrawer.Scale(TickLength);
-  ADrawer.Font := Marks.LabelFont;
+  if Marks.Visible then
+    ADrawer.Font := Marks.LabelFont;
   coord := TChartAxisMargins(FAxisRect)[Alignment];
   prevCoord := IfThen(IsVertical, AClipRect.Bottom, AClipRect.Left);
   for i := 0 to High(FMarkValues) do begin
