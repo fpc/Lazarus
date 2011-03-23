@@ -74,7 +74,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, TAGeometry;
 
 type
   TFPCanvasHelperCrack = class(TFPCanvasHelper);
@@ -100,7 +100,8 @@ end;
 
 procedure TFPCanvasDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-  Unused(ADelta);
+  EnsureFont;
+  FFont.Angle := FFont.Angle + OrientToRad(ADelta);
 end;
 
 procedure TFPCanvasDrawer.ClippingStart(const AClipRect: TRect);
@@ -252,7 +253,7 @@ begin
   AssignFPCanvasHelper(FFont, AFont);
   // DoCopyProps performs direct variable assignment, so call SetName by hand.
   FFont.Name := AFont.Name;
-  // TODO: Orientation
+  FFont.Angle := OrientToRad(FGetFontOrientationFunc(AFont));
 end;
 
 procedure TFPCanvasDrawer.SetPen(APen: TFPCustomPen);
@@ -273,11 +274,13 @@ begin
 end;
 
 procedure TFPCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
+var
+  p: TPoint;
 begin
   EnsureFont;
-  // TODO: Orientation
   // FreeType uses lower-left instead of upper-left corner as starting position.
-  FCanvas.TextOut(AX, AY + FCanvas.GetTextHeight(AText), AText);
+  p := RotatePoint(Point(0, FCanvas.GetTextHeight(AText)), -FFont.Angle);
+  FCanvas.TextOut(p.X + AX, p.Y + AY , AText);
 end;
 
 end.

@@ -6,18 +6,19 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads} cthreads, {$ENDIF}{$ENDIF}
   Interfaces, Classes, tachartlazaruspkg { you can add units after this },
   FPCanvas, FPImage, FPImgCanv,
-  TAGraph, TASeries, TADrawerFPCanvas;
+  TAGraph, TASeries, TADrawerFPCanvas, TADrawerCanvas, TADrawUtils;
 
 var
   chart: TChart;
   bs: TBarSeries;
   img: TFPMemoryImage;
   c: TFPImageCanvas;
-
+  d: IChartDrawer;
 begin
   chart := TChart.Create(nil);
   chart.LeftAxis.Marks.LabelFont.Name := 'Arial';
   chart.LeftAxis.Marks.LabelFont.Size := 10;
+  chart.LeftAxis.Marks.LabelFont.Orientation := 450;
   chart.LeftAxis.Marks.Frame.Visible := true;
   chart.LeftAxis.Marks.Frame.Style := psSolid;
   chart.LeftAxis.Marks.Frame.FPColor := colBlack;
@@ -33,7 +34,9 @@ begin
   bs.AddXY(3, 8);
   img := TFPMemoryImage.Create(chart.Width, chart.Height);
   c := TFPImageCanvas.Create(img);
-  chart.Draw(TFPCanvasDrawer.Create(c), Rect(0, 0, chart.Width, chart.Height));
+  d := TFPCanvasDrawer.Create(c);
+  d.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  chart.Draw(d, Rect(0, 0, chart.Width, chart.Height));
   img.SaveToFile('test.png');
   c.Free;
   img.Free;
