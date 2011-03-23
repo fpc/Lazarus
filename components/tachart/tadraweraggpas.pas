@@ -70,7 +70,7 @@ type
 implementation
 
 uses
-  Math, Graphics, TAChartUtils, TAGeometry;
+  Math, TAChartUtils, TAGeometry;
 
 { TAggPasDrawer }
 
@@ -223,8 +223,7 @@ begin
   f.LoadFromFile(
     AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
   f.FPColor := AFont.FPColor;
-  if AFont is TFont then
-    f.AggAngle := OrientToRad(TFont(AFont).Orientation);
+  f.AggAngle := OrientToRad(-FGetFontOrientationFunc(AFont));
 end;
 
 type

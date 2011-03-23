@@ -74,13 +74,23 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
-  procedure PrepareXorPen(ACanvas: TCanvas);
+  function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
   function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
+  procedure PrepareXorPen(ACanvas: TCanvas);
+
 
 implementation
 
 uses
   TAChartUtils, TAGeometry;
+
+function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
+begin
+  if AFont is TFont then
+    Result := (AFont as TFont).Orientation
+  else
+    Result := 0;
+end;
 
 function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
 begin

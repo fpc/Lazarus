@@ -42,6 +42,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  TADrawerCanvas, TADrawUtils;
+
 { TForm1 }
 
 procedure TForm1.cbAggPasClick(Sender: TObject);
@@ -81,12 +84,16 @@ begin
 end;
 
 procedure TForm1.PaintBox1Paint(Sender: TObject);
+var
+  d: IChartDrawer;
 begin
   FAggCanvas.Width := PaintBox1.Width;
   FAggCanvas.Height := PaintBox1.Height;
   Chart1.DisableRedrawing;
   Chart1.Title.Text.Text := 'AggPas';
-  Chart1.Draw(TAggPasDrawer.Create(FAggCanvas), PaintBox1.Canvas.ClipRect);
+  d := TAggPasDrawer.Create(FAggCanvas);
+  d.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  Chart1.Draw(d, PaintBox1.Canvas.ClipRect);
   Chart1.Title.Text.Text := 'Standard';
   Chart1.EnableRedrawing;
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
