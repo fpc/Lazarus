@@ -4707,8 +4707,16 @@ end;
 
 procedure TQtPushButton.DetachEvents;
 begin
-  QAbstractButton_hook_destroy(FClickedHook);
-  QAbstractButton_hook_destroy(FToggledHook);
+  if FClickedHook <> nil then
+  begin
+    QAbstractButton_hook_destroy(FClickedHook);
+    FClickedHook := nil;
+  end;
+  if FToggledHook <> nil then
+  begin
+    QAbstractButton_hook_destroy(FToggledHook);
+    FToggledHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -5382,7 +5390,11 @@ end;
 
 procedure TQtCheckBox.DetachEvents;
 begin
-  QCheckBox_hook_destroy(FStateChangedHook);
+  if FStateChangedHook <> nil then
+  begin
+    QCheckBox_hook_destroy(FStateChangedHook);
+    FStateChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -5432,7 +5444,11 @@ end;
 
 procedure TQtRadioButton.DetachEvents;
 begin
-  QAbstractButton_hook_destroy(FToggledHook);
+  if FToggledHook <> nil then
+  begin
+    QAbstractButton_hook_destroy(FToggledHook);
+    FToggledHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -5738,12 +5754,36 @@ end;
 
 procedure TQtAbstractSlider.DetachEvents;
 begin
-  QAbstractSlider_hook_destroy(FRangeChangedHook);
-  QAbstractSlider_hook_destroy(FSliderMovedHook);
-  QAbstractSlider_hook_destroy(FSliderPressedHook);
-  QAbstractSlider_hook_destroy(FSliderReleasedHook);
-  QAbstractSlider_hook_destroy(FValueChangedHook);
-  QAbstractSlider_hook_destroy(FActionTriggeredHook);
+  if FRangeChangedHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FRangeChangedHook);
+    FRangeChangedHook := nil;
+  end;
+  if FSliderMovedHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FSliderMovedHook);
+    FSliderMovedHook := nil;
+  end;
+  if FSliderPressedHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FSliderPressedHook);
+    FSliderPressedHook := nil;
+  end;
+  if FSliderReleasedHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FSliderReleasedHook);
+    FSliderReleasedHook := nil;
+  end;
+  if FValueChangedHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FValueChangedHook);
+    FValueChangedHook := nil;
+  end;
+  if FActionTriggeredHook <> nil then
+  begin
+    QAbstractSlider_hook_destroy(FActionTriggeredHook);
+    FActionTriggeredHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -6392,7 +6432,11 @@ end;
 
 procedure TQtLineEdit.DetachEvents;
 begin
-  QLineEdit_hook_destroy(FTextChanged);
+  if FTextChanged <> nil then
+  begin
+    QLineEdit_hook_destroy(FTextChanged);
+    FTextChanged := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -6860,12 +6904,22 @@ end;
 procedure TQtTextEdit.DetachEvents;
 begin
   if FUndoAvailableHook <> nil then
+  begin
     QTextEdit_hook_destroy(FUndoAvailableHook);
+    FUndoAvailableHook := nil;
+  end;
 
   if FTextChangedHook <> nil then
+  begin
     QTextEdit_hook_destroy(FTextChangedHook);
+    FTextChangedHook := nil;
+  end;
 
-  QObject_hook_destroy(FViewportEventHook);
+  if FViewportEventHook <> nil then
+  begin
+    QObject_hook_destroy(FViewportEventHook);
+    FViewportEventHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -6924,7 +6978,11 @@ end;
 
 procedure TQtTabBar.DetachEvents;
 begin
-  QTabBar_hook_destroy(FTabBarChangedHook);
+  if FTabBarChangedHook <> nil then
+  begin
+    QTabBar_hook_destroy(FTabBarChangedHook);
+    FTabBarChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -7222,9 +7280,16 @@ begin
     QObject_hook_destroy(FStackedWidgetHook);
     FStackedWidgetHook := nil;
   end;
-
-  QTabWidget_hook_destroy(FCurrentChangedHook);
-  QTabWidget_hook_destroy(FCloseRequestedHook);
+  if FCurrentChangedHook <> nil then
+  begin
+    QTabWidget_hook_destroy(FCurrentChangedHook);
+    FCurrentChangedHook := nil;
+  end;
+  if FCloseRequestedHook <> nil then
+  begin
+    QTabWidget_hook_destroy(FCloseRequestedHook);
+    FCloseRequestedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -7799,10 +7864,26 @@ end;
 
 procedure TQtComboBox.DetachEvents;
 begin
-  QObject_hook_destroy(FDropListEventHook);
-  QComboBox_hook_destroy(FActivateHook);
-  QComboBox_hook_destroy(FChangeHook);
-  QComboBox_hook_destroy(FSelectHook);
+  if FDropListEventHook <> nil then
+  begin
+    QObject_hook_destroy(FDropListEventHook);
+    FDropListEventHook := nil;
+  end;
+  if FActivateHook <> nil then
+  begin
+    QComboBox_hook_destroy(FActivateHook);
+    FActivateHook := nil;
+  end;
+  if FChangeHook <> nil then
+  begin
+    QComboBox_hook_destroy(FChangeHook);
+    FChangeHook := nil;
+  end;
+  if FSelectHook <> nil then
+  begin
+    QComboBox_hook_destroy(FSelectHook);
+    FSelectHook := nil;
+  end;
 
   inherited DetachEvents;
 end;
@@ -8286,7 +8367,11 @@ end;
 
 procedure TQtAbstractSpinBox.DetachEvents;
 begin
-  QAbstractSpinBox_hook_destroy(FEditingFinishedHook);
+  if FEditingFinishedHook <> nil then
+  begin
+    QAbstractSpinBox_hook_destroy(FEditingFinishedHook);
+    FEditingFinishedHook := nil;
+  end;
   
   inherited DetachEvents;
 end;
@@ -8402,7 +8487,11 @@ end;
 
 procedure TQtFloatSpinBox.DetachEvents;
 begin
-  QDoubleSpinBox_hook_destroy(FValueChangedHook);
+  if FValueChangedHook <> nil then
+  begin
+    QDoubleSpinBox_hook_destroy(FValueChangedHook);
+    FValueChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -8472,7 +8561,11 @@ end;
 
 procedure TQtSpinBox.DetachEvents;
 begin
-  QSpinBox_hook_destroy(FValueChangedHook);
+  if FValueChangedHook <> nil then
+  begin
+    QSpinBox_hook_destroy(FValueChangedHook);
+    FValueChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -8713,10 +8806,26 @@ end;
 
 procedure TQtListWidget.DetachEvents;
 begin
-  QListWidget_hook_destroy(FCurrentItemChangedHook);
-  QListWidget_hook_destroy(FSelectionChangeHook);
-  QListWidget_hook_destroy(FItemClickedHook);
-  QListWidget_hook_destroy(FItemTextChangedHook);
+  if FCurrentItemChangedHook <> nil then
+  begin
+    QListWidget_hook_destroy(FCurrentItemChangedHook);
+    FCurrentItemChangedHook := nil;
+  end;
+  if FSelectionChangeHook <> nil then
+  begin
+    QListWidget_hook_destroy(FSelectionChangeHook);
+    FSelectionChangeHook := nil;
+  end;
+  if FItemClickedHook <> nil then
+  begin
+    QListWidget_hook_destroy(FItemClickedHook);
+    FItemClickedHook := nil;
+  end;
+  if FItemTextChangedHook <> nil then
+  begin
+    QListWidget_hook_destroy(FItemTextChangedHook);
+    FItemTextChangedHook := nil;
+  end;
 
   inherited DetachEvents;
 end;
@@ -9373,7 +9482,11 @@ end;
 
 procedure TQtCheckListBox.DetachEvents;
 begin
-  QListWidget_hook_destroy(FItemChangedHook);
+  if FItemChangedHook <> nil then
+  begin
+    QListWidget_hook_destroy(FItemChangedHook);
+    FItemChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -9517,7 +9630,11 @@ end;
 
 procedure TQtHeaderView.DetachEvents;
 begin
-  QHeaderView_hook_destroy(FSectionClicked);
+  if FSectionClicked <> nil then
+  begin
+    QHeaderView_hook_destroy(FSectionClicked);
+    FSectionClicked := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -10269,15 +10386,42 @@ end;
 
 procedure TQtTreeWidget.DetachEvents;
 begin
-  QTreeWidget_hook_destroy(FItemDoubleClickedHook);
-  QTreeWidget_hook_destroy(FItemClickedHook);
-  QTreeWidget_hook_destroy(FItemActivatedHook);
-  QTreeWidget_hook_destroy(FItemChangedHook);
-  QTreeWidget_hook_destroy(FItemEnteredHook);
-  QTreeWidget_hook_destroy(FSelectionChangedHook);
+  if FItemDoubleClickedHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FItemDoubleClickedHook);
+    FItemDoubleClickedHook := nil;
+  end;
+  if FItemClickedHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FItemClickedHook);
+    FItemClickedHook := nil;
+  end;
+  if FItemActivatedHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FItemActivatedHook);
+    FItemActivatedHook := nil;
+  end;
+  if FItemChangedHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FItemChangedHook);
+    FItemChangedHook := nil;
+  end;
+  if FItemEnteredHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FItemEnteredHook);
+    FItemEnteredHook := nil;
+  end;
+  if FSelectionChangedHook <> nil then
+  begin
+    QTreeWidget_hook_destroy(FSelectionChangedHook);
+    FSelectionChangedHook := nil;
+  end;
 
   if FSortChanged <> nil then
+  begin
     QHeaderView_hook_destroy(FSortChanged);
+    FSortChanged := nil;
+  end;
 
   inherited DetachEvents;
 end;
@@ -11289,7 +11433,11 @@ end;
 
 procedure TQtProgressBar.DetachEvents;
 begin
-  QProgressBar_hook_destroy(FValueChangedHook);
+  if FValueChangedHook <> nil then
+  begin
+    QProgressBar_hook_destroy(FValueChangedHook);
+    FValueChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -11513,7 +11661,11 @@ end;
 
 procedure TQtDialog.DetachEvents;
 begin
-  QObject_hook_destroy(FDialogEventHook);
+  if FDialogEventHook <> nil then
+  begin
+    QObject_hook_destroy(FDialogEventHook);
+    FDialogEventHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -12264,11 +12416,31 @@ end;
 
 procedure TQtCalendar.DetachEvents;
 begin
-  QObject_hook_destroy(FCalViewportEventHook);
-  QCalendarWidget_hook_destroy(FClickedHook);
-  QCalendarWidget_hook_destroy(FActivatedHook);
-  QCalendarWidget_hook_destroy(FSelectionChangedHook);
-  QCalendarWidget_hook_destroy(FCurrentPageChangedHook);
+  if FCalViewportEventHook <> nil then
+  begin
+    QObject_hook_destroy(FCalViewportEventHook);
+    FCalViewportEventHook := nil;
+  end;
+  if FClickedHook <> nil then
+  begin
+    QCalendarWidget_hook_destroy(FClickedHook);
+    FClickedHook := nil;
+  end;
+  if FActivatedHook <> nil then
+  begin
+    QCalendarWidget_hook_destroy(FActivatedHook);
+    FActivatedHook := nil;
+  end;
+  if FSelectionChangedHook <> nil then
+  begin
+    QCalendarWidget_hook_destroy(FSelectionChangedHook);
+    FSelectionChangedHook := nil;
+  end;
+  if FCurrentPageChangedHook <> nil then
+  begin
+    QCalendarWidget_hook_destroy(FCurrentPageChangedHook);
+    FCurrentPageChangedHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -12857,13 +13029,41 @@ end;
 
 procedure TQtAbstractItemView.DetachEvents;
 begin
-  QAbstractItemView_hook_destroy(FSignalActivated);
-  QAbstractItemView_hook_destroy(FSignalClicked);
-  QAbstractItemView_hook_destroy(FSignalDoubleClicked);
-  QAbstractItemView_hook_destroy(FSignalEntered);
-  QAbstractItemView_hook_destroy(FSignalPressed);
-  QAbstractItemView_hook_destroy(FSignalViewportEntered);
-  QObject_hook_destroy(FAbstractItemViewportEventHook);
+  if FSignalActivated <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalActivated);
+    FSignalActivated := nil;
+  end;
+  if FSignalClicked <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalClicked);
+    FSignalClicked := nil;
+  end;
+  if FSignalDoubleClicked <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalDoubleClicked);
+    FSignalDoubleClicked := nil;
+  end;
+  if FSignalEntered <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalEntered);
+    FSignalEntered := nil;
+  end;
+  if FSignalPressed <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalPressed);
+    FSignalPressed := nil;
+  end;
+  if FSignalViewportEntered <> nil then
+  begin
+    QAbstractItemView_hook_destroy(FSignalViewportEntered);
+    FSignalViewportEntered := nil;
+  end;
+  if FAbstractItemViewportEventHook <> nil then
+  begin
+    QObject_hook_destroy(FAbstractItemViewportEventHook);
+    FAbstractItemViewportEventHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -13104,9 +13304,21 @@ end;
 
 procedure TQtFileDialog.DetachEvents;
 begin
-  QFileDialog_hook_destroy(FCurrentChangedHook);
-  QFileDialog_hook_destroy(FFilterSelectedHook);
-  QFileDialog_hook_destroy(FDirecotyEnteredHook);
+  if FCurrentChangedHook <> nil then
+  begin
+    QFileDialog_hook_destroy(FCurrentChangedHook);
+    FCurrentChangedHook := nil;
+  end;
+  if FFilterSelectedHook <> nil then
+  begin
+    QFileDialog_hook_destroy(FFilterSelectedHook);
+    FFilterSelectedHook := nil;
+  end;
+  if FDirecotyEnteredHook <> nil then
+  begin
+    QFileDialog_hook_destroy(FDirecotyEnteredHook);
+    FDirecotyEnteredHook := nil;
+  end;
   {$ifndef QT_NATIVE_DIALOGS}
   if FTreeViewEventFilter <> nil then
   begin
@@ -13734,7 +13946,10 @@ end;
 procedure TQtDesignWidget.DetachEvents;
 begin
   if FDesignControlEventHook <> nil then
+  begin
     QObject_hook_destroy(FDesignControlEventHook);
+    FDesignControlEventHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -13833,7 +14048,11 @@ end;
 
 procedure TQtMessageBox.DetachEvents;
 begin
-  QObject_hook_destroy(FMBEventHook);
+  if FMBEventHook <> nil then
+  begin
+    QObject_hook_destroy(FMBEventHook);
+    FMBEventHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
