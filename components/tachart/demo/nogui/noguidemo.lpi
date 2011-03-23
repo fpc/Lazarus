@@ -11,7 +11,6 @@
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
-      <UseXPManifest Value="True"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>

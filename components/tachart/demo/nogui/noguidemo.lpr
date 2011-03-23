@@ -14,11 +14,13 @@ var
   img: TFPMemoryImage;
   c: TFPImageCanvas;
 
-{$R *.res}
-
 begin
   chart := TChart.Create(nil);
-  chart.LeftAxis.Marks.Visible := false;
+  chart.LeftAxis.Marks.LabelFont.Name := 'Arial';
+  chart.LeftAxis.Marks.LabelFont.Size := 10;
+  chart.LeftAxis.Marks.Frame.Visible := true;
+  chart.LeftAxis.Marks.Frame.Style := psSolid;
+  chart.LeftAxis.Marks.Frame.FPColor := colBlack;
   chart.LeftAxis.Grid.FPColor := colDkGray;
   chart.BottomAxis.Marks.Visible := false;
   chart.BottomAxis.Grid.FPColor := colDkGray;
