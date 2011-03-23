@@ -28,7 +28,6 @@ type
     StatusBar1: TStatusBar;
     procedure cbMiniMapChange(Sender: TObject);
     procedure Chart1ExtentChanged(ASender: TChart);
-    procedure FormCreate(Sender: TObject);
   end;
 
 var
@@ -50,11 +49,6 @@ begin
   with ASender.LogicalExtent do
     StatusBar1.Panels[0].Text :=
       Format('(%.3g;%.3g) - (%.3g;%.3g)', [a.X, a.Y, b.X, b.Y]);
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  Chart1.OnExtentChanged := @Chart1ExtentChanged;
 end;
 
 end.

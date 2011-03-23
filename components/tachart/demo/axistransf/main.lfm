@@ -409,6 +409,7 @@ object Form1: TForm1
     left = 352
     top = 236
     object catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform
+      OnAxisToGraph = catUserUserDefinedAxisTransform1AxisToGraph
     end
   end
   object ChartToolset1: TChartToolset

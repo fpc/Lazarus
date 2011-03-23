@@ -52,7 +52,6 @@ begin
   RandSeed := 103489;
   for i := 1 to 10 do
     Chart1BarSeries1.AddXY(i, i * i / 2 + Random(6) + 1 + Random);
-  Chart1FuncSeries1.OnCalculate := @Chart1FuncSeries1Calculate;
   SaveDialog1.InitialDir := ExtractFilePath(Application.ExeName);
 end;
 

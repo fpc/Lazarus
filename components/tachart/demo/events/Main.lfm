@@ -6,7 +6,6 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 240
   ClientWidth = 320
-  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
@@ -35,6 +34,7 @@ object Form1: TForm1
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
       Source = RandomChartSource1
+      OnBeforeDrawBar = Chart1BarSeries1BeforeDrawBar
     end
   end
   object RandomChartSource1: TRandomChartSource

@@ -76,9 +76,6 @@ var
   ls: TLineSeries;
   tr: TChartAxisTransformations;
 begin
-  //FIXME
-  ChartCustomMarks.BottomAxis.OnMarkToText :=
-    @ChartCustomMarksAxisList1MarkToText;
   for i := 1 to 5 do begin
     ls := TLineSeries.Create(Self);
     ChartAxisGroup.AddSeries(ls);

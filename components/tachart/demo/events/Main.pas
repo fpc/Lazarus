@@ -23,7 +23,6 @@ type
       const ARect: TRect; var ADoDefaultDrawing: Boolean);
     procedure Chart1BeforeDrawBackWall(ASender: TChart; ACanvas: TCanvas;
       const ARect: TRect; var ADoDefaultDrawing: Boolean);
-    procedure FormCreate(Sender: TObject);
   end;
 
 var
@@ -56,14 +55,6 @@ procedure TForm1.Chart1BeforeDrawBackWall(ASender: TChart; ACanvas: TCanvas;
 begin
   ACanvas.GradientFill(ARect, $FFFFFF, $80FF80, gdVertical);
   ADoDefaultDrawing := false;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  // Workaround for issue #18418
-  Chart1.OnBeforeDrawBackground := @Chart1BeforeDrawBackground;
-  Chart1.OnBeforeDrawBackWall := @Chart1BeforeDrawBackWall;
-  Chart1BarSeries1.OnBeforeDrawBar := @Chart1BarSeries1BeforeDrawBar;
 end;
 
 end.

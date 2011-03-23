@@ -148,8 +148,6 @@ begin
       x := i / 50 * (XMax - XMin) + XMin;
     clsLogPoints.AddXY(x + Random - 0.5, MyFunc(x) + Random - 0.5);
   end;
-  catUserUserDefinedAxisTransform1.OnAxisToGraph :=
-    @catUserUserDefinedAxisTransform1AxisToGraph;
   FillIndependentSource;
 end;
 

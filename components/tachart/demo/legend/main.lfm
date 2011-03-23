@@ -6,7 +6,6 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 390
   ClientWidth = 510
-  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
@@ -56,6 +55,7 @@ object Form1: TForm1
       Source = ListChartSource2
     end
     object Chart1FuncSeries1: TFuncSeries
+      Legend.OnDraw = Chart1FuncSeries1DrawLegend
       Legend.UserItemsCount = 2
       Extent.XMax = 5
       Extent.UseXMin = True

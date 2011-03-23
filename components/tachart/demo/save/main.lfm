@@ -36,6 +36,7 @@ object Form1: TForm1
     end
     object Chart1FuncSeries1: TFuncSeries
       ZPosition = 1
+      OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clRed
       Pen.Width = 2
     end

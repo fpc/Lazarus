@@ -47,6 +47,7 @@ object Form1: TForm1
             Marks.Source = lcsMarks
             Marks.Style = smsLabel
             TickLength = 0
+            OnMarkToText = ChartCustomMarksAxisList1MarkToText
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
