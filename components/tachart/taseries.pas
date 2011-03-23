@@ -920,7 +920,7 @@ end;
 
 procedure TBarSeries.SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
 begin
-  if FOnBeforeDrawBar = AValue then exit;
+  if TMethod(FOnBeforeDrawBar) = TMethod(AValue) then exit;
   FOnBeforeDrawBar := AValue;
   UpdateParentChart;
 end;

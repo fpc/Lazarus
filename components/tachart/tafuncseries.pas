@@ -543,7 +543,7 @@ end;
 
 procedure TColorMapSeries.SetOnCalculate(AValue: TFuncCalculate3DEvent);
 begin
-  if FOnCalculate = AValue then exit;
+  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;

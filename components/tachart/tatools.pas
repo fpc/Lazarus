@@ -299,14 +299,13 @@ type
   private
     FMouseDownPoint: TPoint;
     FOnPointClick: TChartToolMouseEvent;
-    procedure SetOnPointClick(AValue: TChartToolMouseEvent);
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
     property ActiveCursor;
     property OnPointClick: TChartToolMouseEvent
-      read FOnPointClick write SetOnPointClick;
+      read FOnPointClick write FOnPointClick;
   end;
 
   { TReticuleTool }
@@ -1203,12 +1202,6 @@ begin
   FSeries := nil;
   Deactivate;
   Handled;
-end;
-
-procedure TDataPointClickTool.SetOnPointClick(AValue: TChartToolMouseEvent);
-begin
-  if FOnPointClick = AValue then exit;
-  FOnPointClick := AValue;
 end;
 
 initialization

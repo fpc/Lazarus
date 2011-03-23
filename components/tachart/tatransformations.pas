@@ -753,14 +753,14 @@ end;
 
 procedure TUserDefinedAxisTransform.SetOnAxisToGraph(AValue: TTransformEvent);
 begin
-  if FOnAxisToGraph = AValue then exit;
+  if TMethod(FOnAxisToGraph) = TMethod(AValue) then exit;
   FOnAxisToGraph := AValue;
   Changed;
 end;
 
 procedure TUserDefinedAxisTransform.SetOnGraphToAxis(AValue: TTransformEvent);
 begin
-  if FOnGraphToAxis = AValue then exit;
+  if TMethod(FOnGraphToAxis) = TMethod(AValue) then exit;
   FOnGraphToAxis := AValue;
   Changed;
 end;
