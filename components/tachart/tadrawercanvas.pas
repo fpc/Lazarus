@@ -263,5 +263,9 @@ begin
   FCanvas.TextOut(AX, AY, AText);
 end;
 
+initialization
+  // Suppress incorrect "TAGeometry is unused" hint
+  Unused(DoublePoint(0, 0));
+
 end.
 
