@@ -1785,8 +1785,7 @@ end;
 procedure TQtWidget.DeInitializeWidget;
 begin
   QtWidgetSet.RemoveHandle(Self);
-  if Widget <> nil then
-    DetachEvents;
+  DetachEvents;
 
   if Widget <> nil then
     removeProperty(Widget, 'lclwidget');
@@ -4488,7 +4487,7 @@ procedure TQtWidget.DestroyWidget;
 begin
   if (Widget <> nil) and FOwnWidget then
   begin
-    if not FDeleteLater then
+    if not FDeleteLater and not InEvent then
       QWidget_destroy(Widget)
     else
       QObject_deleteLater(Widget);
