@@ -835,9 +835,9 @@ begin
   if Style = psCircle then
     ADrawer.Ellipse(
       ACenter.X - ASize.X, ACenter.Y - ASize.Y,
-      ACenter.X + ASize.X, ACenter.Y + ASize.Y)
+      ACenter.X + ASize.X + 1, ACenter.Y + ASize.Y + 1)
   else
-    DrawByString(DRAW_STRINGS[FStyle] + ' ');
+    DrawByString(DRAW_STRINGS[Style] + ' ');
 end;
 
 procedure TSeriesPointer.SetBrush(AValue: TBrush);
