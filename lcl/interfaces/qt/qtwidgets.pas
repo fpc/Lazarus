@@ -2158,7 +2158,7 @@ begin
           {non-spontaneous key events are garbage in Qt >= 4.4 for non edits}
           Result := QEvent_spontaneous(Event) or Supports(Self, IQtEdit, QtEdit);
           if Result then
-            Result := SlotKey(Sender, Event) or (LCLObject = nil) or
+            Result := SlotKey(Sender, Event) or
               ((LCLObject <> nil) and (LCLObject is TCustomControl));
         end;
 
@@ -2643,6 +2643,8 @@ begin
   {$endif}
     NotifyApplicationUserInput(CharMsg.Msg);
     DeliverMessage(CharMsg, True);
+    if (LCLObject = nil) then
+      Exit(False);
   end;
   
   // check if data was changed during key handling
@@ -2826,7 +2828,7 @@ begin
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
         buttons should not be clicked on this case. }
-      if not (LCLObject is TCustomButton) then
+      if (LCLObject <> nil) and not (LCLObject is TCustomButton) then
       begin
         Msg.Msg := LM_CLICKED;
         DeliverMessage(Msg, True);
@@ -3056,7 +3058,8 @@ begin
 
   {propagate mousewheel to parent if our sender is TPanel,
    fixes problem with mousewheel scroll with lazreport}
-  if not (csDesigning in LCLObject.ComponentState) and
+  if (LCLObject <> nil) and
+    not (csDesigning in LCLObject.ComponentState) and
     (LCLObject is TPanel) and
     Assigned(LCLObject.Parent) then
       Result := TQtWidget(LCLObject.Parent.Handle).DeliverMessage(Msg) <> 0;
@@ -4417,7 +4420,7 @@ end;
 function TQtWidget.DeliverMessage(var Msg;
   const AIsInputEvent: Boolean = False): LRESULT;
 begin
-  Result := 0;
+  Result := LRESULT(AIsInputEvent);
   if LCLObject = nil then
     Exit;
   try
