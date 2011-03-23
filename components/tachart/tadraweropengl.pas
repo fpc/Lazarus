@@ -290,7 +290,6 @@ end;
 
 procedure TOpenGLDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 const
-  GL_FONT = GLUT_BITMAP_8_BY_13;
   X_OFFSET = 0;
   Y_OFFSET = 10;
 var
@@ -299,7 +298,7 @@ begin
   ChartGLColor(FFontColor);
   glRasterPos2i(AX + X_OFFSET, AY + Y_OFFSET);
   for i := 1 to Length(AText) do
-    glutBitmapCharacter(GL_FONT, Ord(AText[i]));
+    glutBitmapCharacter(GLUT_BITMAP_8_BY_13, Ord(AText[i]));
 end;
 
 end.
