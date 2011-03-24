@@ -1948,6 +1948,10 @@ function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
+// for winapi compatibility
+function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
 
 function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; deprecated;
 function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
@@ -2051,17 +2055,57 @@ begin
   Result:='['+Result+']';
 end;
 
-
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
 var
   CursorImage: TCursorImage;
 begin
   CursorImage := TCursorImage.Create;
-  CursorImage.LoadFromLazarusResource(ACursorName);
-  Result := CursorImage.ReleaseHandle;
-  CursorImage.Free;
+  try
+    CursorImage.LoadFromLazarusResource(ACursorName);
+    Result := CursorImage.ReleaseHandle;
+  finally
+    CursorImage.Free;
+  end;
 end;
 
+function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+var
+  Bmp: TBitmap;
+begin
+  Bmp := TBitmap.Create;
+  try
+    Bmp.LoadFromResourceName(hInstance, lpBitmapName);
+    Result := Bmp.ReleaseHandle;
+  finally
+    Bmp.Free;
+  end;
+end;
+
+function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+var
+  Cur: TCursorImage;
+begin
+  Cur := TCursorImage.Create;
+  try
+    Cur.LoadFromResourceName(hInstance, lpCursorName);
+    Result := Cur.ReleaseHandle;
+  finally
+    Cur.Free;
+  end;
+end;
+
+function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+var
+  Ico: TIcon;
+begin
+  Ico := TIcon.Create;
+  try
+    Ico.LoadFromResourceName(hInstance, lpIconName);
+    Result := Ico.ReleaseHandle;
+  finally
+    Ico.Free;
+  end;
+end;
 
 function CreateBitmapFromLazarusResource(AStream: TLazarusResourceStream; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 var
