@@ -33,7 +33,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Math, Types, Classes, FPCAdds, LCLversion,
+  SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLversion,
   FileUtil,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
@@ -1607,8 +1607,9 @@ type
     function GetRawImagePtr: PRawImage; override;
     function GetRawImageDescriptionPtr: PRawImageDescription; override;
     function GetTransparent: Boolean; override;
-    class function GetTypeID: Word; virtual;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
+    class function GetStreamSignature: Cardinal; virtual;
+    class function GetTypeID: Word; virtual;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
     function InternalReleaseMaskHandle: HBITMAP; override;
@@ -1639,7 +1640,7 @@ type
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
     procedure LoadFromResourceID(Instance: THandle; ResID: PtrInt); override;
-    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); virtual;
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
@@ -1657,9 +1658,11 @@ type
     function GetIconHandle: HICON;
     procedure SetIconHandle(const AValue: HICON);
   protected
+    class function GetStreamSignature: Cardinal; override;
     class function GetTypeID: Word; override;
     procedure HandleNeeded; override;
   public
+    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); override;
     function ReleaseHandle: HICON;
     function GetResourceType: TResourceType; override;
     property Handle: HICON read GetIconHandle write SetIconHandle;
@@ -1736,11 +1739,13 @@ type
   protected
     procedure HandleNeeded; override;
     class function GetDefaultSize: TSize; override;
+    class function GetStreamSignature: Cardinal; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
     class function GetTypeID: Word; override;
   public
     class function GetFileExtensions: string; override;
     function GetResourceType: TResourceType; override;
+    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     function ReleaseHandle: HCURSOR;
     property HotSpot: TPoint read GetHotSpot;
@@ -2622,9 +2627,9 @@ end;
 {$I png.inc}
 {$I pnm.inc}
 {$I jpegimage.inc}
-{$I cursorimage.inc}
 {$I icon.inc}
 {$I icnsicon.inc}
+{$I cursorimage.inc}
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
 {$I tiffimage.inc}

@@ -20,8 +20,7 @@
 
 const
   IconSignature: array [0..3] of char = #0#0#1#0;
-  CursorSignature: array [0..3] of char = #0#0#2#0;
-  
+
 type
   TIconHeader = {packed} record // packed it not needed
     idReserved: Word; // 0
@@ -54,32 +53,38 @@ type
   PIconDirEntry = ^TIconDirEntry;
 
   // executables and libraries has the next structures for icons and cursors
+  PGrpIconDirEntry = ^TGrpIconDirEntry;
   TGrpIconDirEntry = packed record
-    bWidth: Byte;               // Width, in pixels, of the image
-    bHeight: Byte;              // Height, in pixels, of the image
-    bColorCount: Byte;          // Number of colors in image (0 if >=8bpp)
-    bReserved: Byte;            // Reserved
-    case Byte of
-      1: (
-        // icon
-        wPlanes: Word;          // color planes
-        wBpp: Word;             // bits per pixel
-        // common
-        dwBytesInRes: Dword;    // how many bytes in this resource?
-        nID: Word;              // the ID
-      );
-      2:(
-        // cursor
-        wXHotSpot: Word;
-        wYHotSpot: Word;
-      );
+    bWidth: Byte;           // Width, in pixels, of the image
+    bHeight: Byte;          // Height, in pixels, of the image
+    bColorCount: Byte;      // Number of colors in image (0 if >=8bpp)
+    bReserved: Byte;        // Reserved
+    wPlanes: Word;          // color planes
+    wBpp: Word;             // bits per pixel
+    dwBytesInRes: Dword;    // how many bytes in this resource?
+    nID: Word;              // the ID
   end;
 
-  TGrpIconDir = packed record
+  PGrpCursorDirEntry = ^TGrpCursorDirEntry;
+  TGrpCursorDirEntry = packed record
+    wWidth: Word;           // Width, in pixels, of the image
+    wHeight: Word;          // Height, in pixels, of the image
+    wPlanes: Word;          // color planes
+    wBitCount: Word;        // bits per pixel
+    dwBytesInRes: Dword;    // how many bytes in this resource?
+    nID: Word;              // the ID
+  end;
+
+  TLocalHeader = packed record
+    xHotSpot: Word;
+    yHotSpot: Word;
+  end;
+
+  PNewHeader = ^TNewHeader;
+  TNewHeader = packed record
     idReserved: Word; // Reserved (must be 0)
     idType: Word;     // Resource type (1 for icons)
     idCount: Word;    //  How many images?
-    idEntries: array[0..0] of TGrpIconDirEntry; // The entries for each image
   end;
 
 function TestStreamIsIcon(const AStream: TStream): boolean;
@@ -91,18 +96,6 @@ begin
   OldPosition:=AStream.Position;
   ReadSize:=AStream.Read(Signature, SizeOf(Signature));
   Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@IconSignature,4);
-  AStream.Position:=OldPosition;
-end;
-
-function TestStreamIsCursor(const AStream: TStream): boolean;
-var
-  Signature: array[0..3] of char;
-  ReadSize: Integer;
-  OldPosition: TStreamSeekType;
-begin
-  OldPosition:=AStream.Position;
-  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
-  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@CursorSignature,4);
   AStream.Position:=OldPosition;
 end;
 
@@ -621,6 +614,11 @@ begin
   Result := True;
 end;
 
+class function TCustomIcon.GetStreamSignature: Cardinal;
+begin
+  Result := 0;
+end;
+
 class function TCustomIcon.GetTypeID: Word;
 begin
   Result := 0;
@@ -702,57 +700,7 @@ begin
 end;
 
 procedure TCustomIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
-var
-  GlobalHandle: TFPResourceHGlobal;
-  Dir: ^TGrpIconDir;
-  DirEntry: ^TGrpIconDirEntry;
-  IconEntry: TIconDirEntry;
-  i, offset: integer;
-  Stream: TMemoryStream;
-  IconStream: TResourceStream;
 begin
-  // build a usual ico/cur stream using several RT_ICON resources
-  GlobalHandle := LoadResource(Instance, ResHandle);
-  if GlobalHandle = 0 then
-    Exit;
-  Dir := LockResource(GlobalHandle);
-  if Dir = nil then
-    Exit;
-
-  Stream := TMemoryStream.Create;
-  try
-    // write icon header
-    Stream.Write(Dir^, SizeOf(TIconHeader));
-    // write icon entries headers
-    offset := Stream.Position + SizeOf(IconEntry) * LEtoN(Dir^.idCount);
-    DirEntry := @Dir^.idEntries[0];
-    for i := 0 to LEtoN(Dir^.idCount) - 1 do
-    begin
-      Move(DirEntry^, IconEntry, SizeOf(DirEntry^));
-      IconEntry.dwImageOffset := NtoLE(offset);
-      inc(offset, LEtoN(IconEntry.dwBytesInRes));
-      Stream.Write(IconEntry, SizeOf(IconEntry));
-      Inc(DirEntry);
-    end;
-    // write icons data
-    DirEntry := @Dir^.idEntries[0];
-    for i := 0 to LEtoN(Dir^.idCount) - 1 do
-    begin
-      IconStream := TResourceStream.CreateFromID(Instance, LEtoN(DirEntry^.nID), RT_ICON);
-      try
-        Stream.CopyFrom(IconStream, IconStream.Size);
-      finally
-        IconStream.Free;
-      end;
-      Inc(DirEntry);
-    end;
-    Stream.Position := 0;
-    ReadData(Stream);
-  finally
-    Stream.Free;
-    UnLockResource(GlobalHandle);
-    FreeResource(GlobalHandle);
-  end;
 end;
 
 function TCustomIcon.MaskHandleAllocated: boolean;
@@ -841,7 +789,7 @@ begin
   Position := Stream.Position;
   Stream.Read(Signature, SizeOf(Signature));
   Stream.Position := Position;
-  if Cardinal(Signature) = Cardinal(IconSignature)
+  if Cardinal(Signature) = GetStreamSignature
   then begin
     // Assume Icon - stream without explicit size
     LoadFromStream(Stream);
@@ -1402,6 +1350,11 @@ begin
   SetHandle(AValue);
 end;
 
+class function TIcon.GetStreamSignature: Cardinal;
+begin
+  Result := Cardinal(IconSignature);
+end;
+
 procedure TIcon.HandleNeeded;
 var
   IconInfo: TIconInfo;
@@ -1412,6 +1365,60 @@ begin
   IconInfo.hbmColor := BitmapHandle;
   IconInfo.hbmMask := MaskHandle;
   FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
+end;
+
+procedure TIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+var
+  GlobalHandle: TFPResourceHGlobal;
+  Dir: PNewHeader;
+  DirEntry: PGrpIconDirEntry;
+  IconEntry: TIconDirEntry;
+  i, offset: integer;
+  Stream: TMemoryStream;
+  IconStream: TResourceStream;
+begin
+  // build a usual ico stream using several RT_ICON resources
+  GlobalHandle := LoadResource(Instance, ResHandle);
+  if GlobalHandle = 0 then
+    Exit;
+  Dir := LockResource(GlobalHandle);
+  if Dir = nil then
+    Exit;
+
+  Stream := TMemoryStream.Create;
+  try
+    // write icon header
+    Stream.Write(Dir^, SizeOf(TIconHeader));
+    // write icon entries headers
+    offset := Stream.Position + SizeOf(IconEntry) * LEtoN(Dir^.idCount);
+    DirEntry := PGrpIconDirEntry(PChar(Dir) + SizeOf(Dir^));
+    for i := 0 to LEtoN(Dir^.idCount) - 1 do
+    begin
+      Move(DirEntry^, IconEntry, SizeOf(DirEntry^));
+      IconEntry.dwImageOffset := NtoLE(offset);
+      inc(offset, LEtoN(IconEntry.dwBytesInRes));
+      Stream.Write(IconEntry, SizeOf(IconEntry));
+      Inc(DirEntry);
+    end;
+    // write icons data
+    DirEntry := PGrpIconDirEntry(PChar(Dir) + SizeOf(Dir^));
+    for i := 0 to LEtoN(Dir^.idCount) - 1 do
+    begin
+      IconStream := TResourceStream.CreateFromID(Instance, LEtoN(DirEntry^.nID), RT_ICON);
+      try
+        Stream.CopyFrom(IconStream, IconStream.Size);
+      finally
+        IconStream.Free;
+      end;
+      Inc(DirEntry);
+    end;
+    Stream.Position := 0;
+    ReadData(Stream);
+  finally
+    Stream.Free;
+    UnLockResource(GlobalHandle);
+    FreeResource(GlobalHandle);
+  end;
 end;
 
 

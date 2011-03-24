@@ -17,7 +17,20 @@
  *                                                                           *
  *****************************************************************************
 }
+const
+  CursorSignature: array [0..3] of char = #0#0#2#0;
 
+function TestStreamIsCursor(const AStream: TStream): boolean;
+var
+  Signature: array[0..3] of char;
+  ReadSize: Integer;
+  OldPosition: TStreamSeekType;
+begin
+  OldPosition:=AStream.Position;
+  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
+  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@CursorSignature,4);
+  AStream.Position:=OldPosition;
+end;
 
 { TSharedCursorImage }
 
@@ -46,6 +59,73 @@ end;
 function TCursorImage.GetResourceType: TResourceType;
 begin
   Result := RT_GROUP_CURSOR;
+end;
+
+procedure TCursorImage.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+var
+  GlobalHandle: TFPResourceHGlobal;
+  Dir: PNewHeader;
+  DirEntry: PGrpCursorDirEntry;
+  IconEntry: TIconDirEntry;
+  LocalHeader: TLocalHeader;
+  i, offset: integer;
+  Stream: TMemoryStream;
+  CursorStream: TResourceStream;
+  ResourceStreams: TObjectList;
+begin
+  // build a usual cur stream using several RT_CURSOR resources
+  GlobalHandle := LoadResource(Instance, ResHandle);
+  if GlobalHandle = 0 then
+    Exit;
+  Dir := LockResource(GlobalHandle);
+  if Dir = nil then
+    Exit;
+
+  Stream := TMemoryStream.Create;
+  try
+    // write cursor header
+    Stream.Write(Dir^, SizeOf(TIconHeader));
+    // write cursor entries headers
+    ResourceStreams := TObjectList.Create(True);
+    try
+      offset := Stream.Position + SizeOf(IconEntry) * LEtoN(Dir^.idCount);
+      DirEntry := PGrpCursorDirEntry(PChar(Dir) + SizeOf(Dir^));
+      for i := 0 to LEtoN(Dir^.idCount) - 1 do
+      begin
+        CursorStream := TResourceStream.CreateFromID(Instance, LEtoN(DirEntry^.nID), RT_CURSOR);
+        ResourceStreams.Add(CursorStream);
+
+        // hot spots are stored in the local header of cursor
+        CursorStream.Read(LocalHeader, SizeOf(LocalHeader));
+
+        IconEntry.bWidth := DirEntry^.wWidth;
+        IconEntry.bHeight := DirEntry^.wHeight div 2; // in cursor resource the height is doubled
+        IconEntry.bColorCount := 0;
+        IconEntry.bReserved := 0;
+        IconEntry.wXHotSpot := LocalHeader.xHotSpot;
+        IconEntry.wYHotSpot := LocalHeader.yHotSpot;
+        IconEntry.dwImageOffset := NtoLE(offset);
+        IconEntry.dwBytesInRes := DirEntry^.dwBytesInRes - SizeOf(LocalHeader);
+        inc(offset, LEtoN(IconEntry.dwBytesInRes));
+        Stream.Write(IconEntry, SizeOf(IconEntry));
+        Inc(DirEntry);
+      end;
+      // write cursors data
+      for i := 0 to ResourceStreams.Count - 1 do
+      begin
+        CursorStream := TResourceStream(ResourceStreams[i]);
+        Stream.CopyFrom(CursorStream, CursorStream.Size - CursorStream.Position);
+      end;
+    finally
+      ResourceStreams.Free;
+    end;
+    Stream.Position := 0;
+    ReadData(Stream);
+  finally
+    Stream.Free;
+    UnLockResource(GlobalHandle);
+    FreeResource(GlobalHandle);
+  end;
 end;
 
 class function TCursorImage.GetSharedImageClass: TSharedRasterImageClass;
@@ -116,6 +196,11 @@ end;
 class function TCursorImage.GetDefaultSize: TSize;
 begin
   Result := Size(GetSystemMetrics(SM_CXCURSOR), GetSystemMetrics(SM_CYCURSOR));
+end;
+
+class function TCursorImage.GetStreamSignature: Cardinal;
+begin
+  Result := Cardinal(CursorSignature);
 end;
 
 
