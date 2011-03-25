@@ -98,6 +98,7 @@ end;"/>
       </BuildMacros>
       <Other>
         <CompilerMessages>
+          <IgnoredMessages idx5044="True"/>
           <UseMsgFile Value="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
