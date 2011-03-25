@@ -536,7 +536,7 @@ begin
     hIcon := Windows.LoadIcon(System.hInstance, nil);
     if hIcon = 0 then
       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-    hCursor := LoadCursor(0, IDC_ARROW);
+    hCursor := Windows.LoadCursor(0, IDC_ARROW);
     hbrBackground := 0;
     LPSzMenuName := nil;
     LPSzClassName := @ClsName;

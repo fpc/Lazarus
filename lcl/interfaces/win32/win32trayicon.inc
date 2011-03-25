@@ -280,7 +280,7 @@ begin
     Window.cbClsExtra := 0;
     Window.cbWndExtra := 0;
     Window.hInstance := hInstance;
-    Window.hCursor := LoadCursor(0, IDC_ARROW);
+    Window.hCursor := Windows.LoadCursor(0, IDC_ARROW);
     Window.hbrBackground := HBRUSH(GetStockObject(NULL_BRUSH));
     Window.lpszMenuName := nil;
     Window.lpszClassName := szClassName;

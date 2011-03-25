@@ -363,7 +363,7 @@ begin
     case DialogType of
       idDialogConfirm:
         begin
-          TaskConfig.hMainIcon := LoadIcon(0, IDI_QUESTION);
+          TaskConfig.hMainIcon := Windows.LoadIcon(0, IDI_QUESTION);
           TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
         end;
       idDialogInfo: TaskConfig.pszMainIcon := TD_INFORMATION_ICON;
@@ -710,7 +710,7 @@ begin
     case DialogType of
       idDialogConfirm:
         begin
-          TaskConfig.hMainIcon := LoadIcon(0, IDI_QUESTION);
+          TaskConfig.hMainIcon := Windows.LoadIcon(0, IDI_QUESTION);
           TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
         end;
       idDialogInfo: TaskConfig.pszMainIcon := TD_INFORMATION_ICON;
