@@ -45,7 +45,7 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileProcs, FileUtil,
+  Classes, SysUtils, LCLProc, LCLType, LResources, Graphics, Forms, FileProcs, FileUtil,
   AVL_Tree, LazConfigStorage,
   CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
@@ -3695,13 +3695,20 @@ end;
 function TPkgComponent.GetIconCopy: TCustomBitMap;
 var
   ResHandle: TLResource;
+  ResName: String;
 begin
+  Result := nil;
+  ResName := ComponentClass.ClassName;
   // prevent raising exception and speedup a bit search/load
-  ResHandle := LazarusResources.Find(ComponentClass.ClassName);
+  ResHandle := LazarusResources.Find(ResName);
   if ResHandle <> nil then
     Result := CreateBitmapFromLazarusResource(ResHandle)
   else
-    Result := nil;
+  if FindResource(HInstance, PChar(ResName), PChar(RT_BITMAP)) <> 0 then
+  begin
+    Result := TBitmap.Create;
+    Result.LoadFromResourceName(HInstance, ResName)
+  end;
 
   if Result = nil then
     Result := CreateBitmapFromLazarusResource('default');
