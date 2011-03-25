@@ -34,9 +34,6 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-const
-  BOOL_TEXT: array[Boolean] of string = ('False', 'True');
-
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------

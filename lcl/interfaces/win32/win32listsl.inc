@@ -332,8 +332,6 @@ end;
 { TWin32ComboBoxStringList }
 
 procedure TWin32ComboBoxStringList.InitFlags;
-var
-  R: TRect;
 begin
   FFlagSort         := UINT(CBS_SORT);
   FFlagGetText      := UINT(CB_GETLBTEXT);
