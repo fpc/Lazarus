@@ -41,3 +41,4 @@
 {$ENDIF}
 {$ENDIF}
 
+{$DEFINE UseVistaDialogs}
