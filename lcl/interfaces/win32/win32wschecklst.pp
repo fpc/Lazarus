@@ -37,7 +37,7 @@ uses
   Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType, LCLProc,
   LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
+  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls;
 
 type
 

@@ -1,5 +1,6 @@
 { This unit was automatically created by update_allunits }
 unit AllLCLIntfUnits;
+{$HINTS OFF}
 interface
 uses
   win32wsdialogs,
