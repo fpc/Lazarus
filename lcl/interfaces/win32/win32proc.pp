@@ -96,7 +96,6 @@ procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
-function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 
 function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
@@ -914,15 +913,6 @@ begin
     bsToolWindow, bsSizeToolWin:
       Result := WS_EX_TOOLWINDOW;
   end;
-end;
-
-function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
-{$NOTE Belongs in Win32WSForms, but is needed in windowproc}
-begin
-  if csDesigning in AForm.ComponentState then
-    Result := bsSizeable
-  else
-    Result := AForm.BorderStyle;
 end;
 
 function AllocWindowInfo(Window: HWND): PWin32WindowInfo;

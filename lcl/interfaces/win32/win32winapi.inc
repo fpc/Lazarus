@@ -2234,8 +2234,8 @@ begin
         Width := Right - Left;
         Height := Bottom - Top;
       end;
-      Width := Width - 2 * Info.cxWindowBorders;
-      Height := Height - 2 * Info.cyWindowBorders;
+      Width := Width - 2 * Integer(Info.cxWindowBorders);
+      Height := Height - 2 * Integer(Info.cyWindowBorders);
       ExcludeCaption;
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
