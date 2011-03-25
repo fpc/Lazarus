@@ -869,6 +869,7 @@ type
     function GetCount: Integer; override;
     procedure SetCount(const ACount: Integer); override;
     function GetItem(const AIndex: Integer): TListItem; override;
+  public
     procedure Clear; override;
   end;
 
