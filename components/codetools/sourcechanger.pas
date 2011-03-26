@@ -658,7 +658,6 @@ end;
 
 procedure TSourceChangeCache.Clear;
 begin
-  FUpdateLock:=0;
   FEntries.FreeAndClear;
   FMainScannerNeeded:=false;
   FBuffersToModify.Clear;

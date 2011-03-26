@@ -271,7 +271,9 @@ type
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AtomPos: TAtomPosition; const AnAtom: shortstring): boolean; overload;
+    function AtomIsIdentifier(Identifier: PChar): boolean;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function ReadNextAtomIsIdentifier(Identifier: PChar): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextAtomIsChar(const c: char): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsChar(const c: char): boolean; {$IFDEF UseInline}inline;{$ENDIF}
@@ -665,10 +667,22 @@ begin
   end;
 end;
 
+function TCustomCodeTool.AtomIsIdentifier(Identifier: PChar): boolean;
+begin
+  Result:=(CurPos.StartPos<=SrcLen)
+      and (CompareIdentifiers(Identifier,@Src[CurPos.StartPos])=0);
+end;
+
 function TCustomCodeTool.ReadNextAtomIs(const AnAtom: shortstring): boolean;
 begin
   ReadNextAtom;
   Result:=AtomIs(AnAtom);
+end;
+
+function TCustomCodeTool.ReadNextAtomIsIdentifier(Identifier: PChar): boolean;
+begin
+  ReadNextAtom;
+  Result:=AtomIsIdentifier(Identifier);
 end;
 
 function TCustomCodeTool.ReadNextAtomIsChar(const c: char): boolean;

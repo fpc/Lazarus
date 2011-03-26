@@ -586,7 +586,11 @@ begin
       if (CurNode=nil)
       or ((CurNode.Desc in AllSourceTypes) and (CurNode.FirstChild=nil)) then begin
         // parse source from the beginning
-        // => read source type and name
+        if (CurPos.StartPos=1) then begin
+
+        end;
+
+        // read source type and name
         ReadNextAtom;
         if UpAtomIs('UNIT') then
           CurSection:=ctnUnit

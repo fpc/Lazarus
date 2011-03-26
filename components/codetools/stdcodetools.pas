@@ -1052,7 +1052,7 @@ begin
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
     inc(UnitCount);
-    if AtomIs(AnUnitName) then begin
+    if AtomIsIdentifier(PChar(AnUnitName)) then begin
       // unit found
       Result:=true;
       exit;
@@ -1082,7 +1082,7 @@ begin
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
     inc(UnitPos);
-    if AtomIs(AnUnitName) then begin
+    if AtomIsIdentifier(PChar(AnUnitName)) then begin
       // unit found
       SourceChangeCache.MainScanner:=Scanner;
       StartPos:=CurPos.StartPos;
@@ -1149,6 +1149,7 @@ begin
       SectionNode:=SectionNode.NextBrother;
     end;
 
+    SectionNode:=Tree.Root;
     while (SectionNode<>nil) do begin
       if (SectionNode.FirstChild<>nil)
       and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
@@ -1163,11 +1164,11 @@ begin
           exit;
         end;
 
+        if SourceChangeCache.UpdateLock=0 then
+          RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: missing lock after remove');
         // check if the tree was changed (it should not, because of the lock)
         if s<>TreeChangeStep then
           RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: tree was changed');
-        if SourceChangeCache.UpdateLock=0 then
-          RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: missing lock after remove');
       end;
       SectionNode:=SectionNode.NextBrother;
     end;
@@ -2775,9 +2776,9 @@ begin
       if ReadNextAtomIsChar('.') and ReadNextUpAtomIs('CREATEFORM')
       and ReadNextAtomIsChar('(') then begin
         ReadNextAtom;
-        ClassNameFits:=AtomIs(AClassName);
+        ClassNameFits:=AtomIsIdentifier(PChar(AClassName));
         if ReadNextAtomIsChar(',')
-        and (ReadNextAtomIs(AVarName) or (AVarName='*')) then begin
+        and (ReadNextAtomIsIdentifier(PChar(AVarName)) or (AVarName='*')) then begin
           if ReadNextAtomIsChar(')') then ReadNextAtomIsChar(';');
           Position.EndPos:=CurPos.EndPos;
           if ClassNameFits then
@@ -4410,6 +4411,7 @@ begin
   Result:=nil;
   if (AClassName='') or (length(AClassName)>255) then
     RaiseException(Format(ctsinvalidClassName, ['"', AClassName, '"']));
+  if AVarName='' then exit;
   BuildTree(lsrImplementationStart);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
   if ClassNode=nil then begin
@@ -4425,7 +4427,7 @@ begin
       while Result<>nil do begin
         if (Result.Desc=ctnVarDefinition) then begin
           MoveCursorToNodeStart(Result);
-          if ReadNextAtomIs(AVarName) then
+          if ReadNextAtomIsIdentifier(PChar(AVarName)) then
             exit;
         end;
         Result:=Result.NextBrother;
@@ -4527,6 +4529,7 @@ var
   ApplyNeeded: Boolean;
 begin
   Result:=false;
+  if (NewVarName='') or (VarType='') then exit;
   BuildTree(lsrEnd);
   VarNode:=FindPublishedVariable(AClassName,AOldVarName,
                                  ExceptionOnClassNotFound);
@@ -4538,7 +4541,7 @@ begin
     ReadNextAtom;
     SourceChangeCache.MainScanner:=Scanner;
     ApplyNeeded:=false;
-    if (not AtomIs(VarType)) then begin
+    if (not AtomIsIdentifier(@VarType[1])) then begin
       // change the type
       ApplyNeeded:=true;
       if not SourceChangeCache.Replace(gtNone,gtNone,
