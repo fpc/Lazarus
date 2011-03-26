@@ -576,7 +576,11 @@ var
         then begin
           FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
           if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
+          // Categories.Objects[x] is used as a boolean flag.
+          and Assigned(ReplaceFuncs.Categories.Objects[x])
+          // UTF8 funcs are in LCL which console apps don't have -> don't change.
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
+          // Keep Windows funcs in a Windows application.
           and (fCTLink.Settings.MultiPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
           then begin
             // Create a new replacement object for params, position and other info.
