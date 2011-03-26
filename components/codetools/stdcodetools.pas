@@ -1128,8 +1128,8 @@ end;
 
 function TStandardCodeTool.RemoveUnitFromAllUsesSections(
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
-var SectionNode: TCodeTreeNode;
-  s: LongInt;
+var
+  SectionNode: TCodeTreeNode;
 begin
   Result:=false;
   if (AnUnitName='') or (SourceChangeCache=nil) then exit;
@@ -1138,37 +1138,14 @@ begin
   SourceChangeCache.BeginUpdate;
   try
     SectionNode:=Tree.Root;
-
-    // MG: Juha and Zeljko spotted in this function errors
-    //     I can not reproduce it. Either the heap is already buggy, or something updates the tree.
-    // check the tree:
     while (SectionNode<>nil) do begin
       if (SectionNode.FirstChild<>nil)
       and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-      end;
-      SectionNode:=SectionNode.NextBrother;
-    end;
-
-    SectionNode:=Tree.Root;
-    while (SectionNode<>nil) do begin
-      if (SectionNode.FirstChild<>nil)
-      and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-        // check if changer is locked
-        if SourceChangeCache.UpdateLock=0 then
-          RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: missing lock before remove');
-        s:=TreeChangeStep;
-
         if not RemoveUnitFromUsesSection(SectionNode.FirstChild,AnUnitName,
            SourceChangeCache)
         then begin
           exit;
         end;
-
-        if SourceChangeCache.UpdateLock=0 then
-          RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: missing lock after remove');
-        // check if the tree was changed (it should not, because of the lock)
-        if s<>TreeChangeStep then
-          RaiseException('TStandardCodeTool.RemoveUnitFromAllUsesSections inconsistency: tree was changed');
       end;
       SectionNode:=SectionNode.NextBrother;
     end;

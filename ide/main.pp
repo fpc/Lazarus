@@ -7537,7 +7537,6 @@ var
   ShortUnitName: String;
   Dummy: Boolean;
 begin
-  debugln(['TMainIDE.RemoveUnitsFromProject AAA1']);
   Result:=mrOk;
   if Units=nil then exit;
   // check if something will change
@@ -7556,7 +7555,7 @@ begin
   try
     for i:=0 to Units.Count-1 do begin
       AnUnitInfo:=TUnitInfo(Units[i]);
-      debugln(['TMainIDE.RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
+      //debugln(['TMainIDE.RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
       if not AnUnitInfo.IsPartOfProject then continue;
       AnUnitInfo.IsPartOfProject:=false;
       AProject.Modified:=true;
@@ -7564,7 +7563,7 @@ begin
       and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
       then begin
         ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-        debugln(['TMainIDE.RemoveUnitsFromProject UnitName=',ShortUnitName]);
+        //debugln(['TMainIDE.RemoveUnitsFromProject UnitName=',ShortUnitName]);
         if (ShortUnitName<>'') then begin
           Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
                                     AProject.MainUnitInfo.Source,ShortUnitName);
