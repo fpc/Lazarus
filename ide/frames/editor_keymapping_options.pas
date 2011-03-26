@@ -92,7 +92,7 @@ type
 
 constructor TKeyMapErrorsForm.Create(AnOwner: TComponent);
 begin
-  inherited Create(AnOwner);
+  inherited CreateNew(AnOwner);
   SetBounds((Screen.Width - 410) div 2, (Screen.Height - 260) div 2, 400, 250);
   Caption := dlgKeyMappingErrors;
 
