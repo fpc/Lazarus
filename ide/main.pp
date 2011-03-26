@@ -332,7 +332,7 @@ type
     procedure mnuRunFileClicked(Sender: TObject);
     procedure mnuConfigBuildFileClicked(Sender: TObject);
 
-    // components menu
+    // package menu
     // see pkgmanager.pas
 
     // tools menu
@@ -584,7 +584,7 @@ type
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
                                     const Filename: string; var Source: string);
     function OnCodeToolBossGetMethodName(const Method: TMethod;
-                                       PropOwner: TObject): String;
+                                         PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
     procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
                                    const Msg: string; var Abort: boolean);
@@ -740,6 +740,7 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
+    function RemoveUnitsFromProject(AProject: TProject; Units: TFPList): TModalResult;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -7528,6 +7529,72 @@ begin
   //DebugLn(['TMainIDE.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
 end;
 
+function TMainIDE.RemoveUnitsFromProject(AProject: TProject; Units: TFPList
+  ): TModalResult;
+var
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+  ShortUnitName: String;
+  Dummy: Boolean;
+begin
+  debugln(['TMainIDE.RemoveUnitsFromProject AAA1']);
+  Result:=mrOk;
+  if Units=nil then exit;
+  // check if something will change
+  i:=Units.Count-1;
+  while (i>=0) and (not TUnitInfo(Units[i]).IsPartOfProject) do dec(i);
+  if i<0 then exit(mrOk);
+  // check ToolStatus
+  if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
+    debugln('TMainIDE.RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(ToolStatus)));
+    exit;
+  end;
+  // commit changes from source editor to codetools
+  SaveSourceEditorChangesToCodeCache(nil);
+
+  AProject.BeginUpdate(true);
+  try
+    for i:=0 to Units.Count-1 do begin
+      AnUnitInfo:=TUnitInfo(Units[i]);
+      debugln(['TMainIDE.RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
+      if not AnUnitInfo.IsPartOfProject then continue;
+      AnUnitInfo.IsPartOfProject:=false;
+      AProject.Modified:=true;
+      if (AProject.MainUnitID>=0)
+      and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+      then begin
+        ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
+        debugln(['TMainIDE.RemoveUnitsFromProject UnitName=',ShortUnitName]);
+        if (ShortUnitName<>'') then begin
+          Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                    AProject.MainUnitInfo.Source,ShortUnitName);
+          if not Dummy then begin
+            DoJumpToCodeToolBossError;
+            Result:=mrCancel;
+            exit;
+          end;
+        end;
+      end;
+      if (AProject.MainUnitID>=0)
+      and (pfMainUnitHasCreateFormStatements in AProject.Flags)
+      then begin
+        if (AnUnitInfo.ComponentName<>'') then begin
+          Dummy:=AProject.RemoveCreateFormFromProjectFile(
+              'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
+          if not Dummy then begin
+            DoJumpToCodeToolBossError;
+            Result:=mrCancel;
+            exit;
+          end;
+        end;
+      end;
+    end;
+  finally
+    ApplyCodeToolChanges;
+    AProject.EndUpdate;
+  end;
+end;
+
 function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
 begin
   if (AnUnitInfo=nil) or (AnUnitInfo.Component=nil) then
@@ -10834,15 +10901,17 @@ end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
 var
-  UnitList: TStringList;
+  ViewUnitEntries: TStringList;
   i:integer;
   AName: string;
   AnUnitInfo: TUnitInfo;
+  UnitInfos: TFPList;
 const
   MultiSelectCheckedState: Boolean = true;
 Begin
-  UnitList := TStringList.Create;
-  UnitList.Sorted := True;
+  ViewUnitEntries := TStringList.Create;
+  ViewUnitEntries.Sorted := True;
+  UnitInfos:=nil;
 
   try
     for i := 0 to Project1.UnitCount-1 do
@@ -10851,43 +10920,32 @@ Begin
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
       begin
         AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        UnitList.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
+        ViewUnitEntries.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
-    if ShowViewUnitsDlg(UnitList, true, MultiSelectCheckedState, lisRemoveFromProject) = mrOk then
+    if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState, lisRemoveFromProject) <> mrOk then
+      exit(mrOk);
+    { This is where we check what the user selected. }
+    UnitInfos:=TFPList.Create;
+    for i:=0 to ViewUnitEntries.Count-1 do
     begin
-      { This is where we check what the user selected. }
-      for i:=0 to UnitList.Count-1 do
+      if TViewUnitsEntry(ViewUnitEntries.Objects[i]).Selected then
       begin
-        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
-        begin
-          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
-          AnUnitInfo.IsPartOfProject := false;
-          if (Project1.MainUnitID >= 0) and
-             (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then
-          begin
-            if (AnUnitInfo.Unit_Name <> '') then
-            begin
-              if CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project1.MainUnitInfo.Source, AnUnitInfo.Unit_Name)
-              then
-                Project1.MainUnitInfo.Modified := true;
-            end;
-            if (AnUnitInfo.ComponentName <> '') then
-            begin
-              Project1.RemoveCreateFormFromProjectFile(
-                  'T' + AnUnitInfo.ComponentName, AnUnitInfo.ComponentName);
-            end;
-          end;
-        end;
-      end;  { for }
-    end;  { if ShowViewUnitsDlg.. }
+        AnUnitInfo:=Project1.Units[TViewUnitsEntry(ViewUnitEntries.Objects[i]).ID];
+        if AnUnitInfo.IsPartOfProject then
+          UnitInfos.Add(AnUnitInfo);
+      end;
+    end;
+    if UnitInfos.Count>0 then
+      Result:=RemoveUnitsFromProject(Project1,UnitInfos)
+    else
+      Result:=mrOk;
   finally
-    for i := 0 to UnitList.Count-1 do
-      TViewUnitsEntry(UnitList.Objects[i]).Free;
-    UnitList.Free;
+    UnitInfos.Free;
+    for i := 0 to ViewUnitEntries.Count-1 do
+      TViewUnitsEntry(ViewUnitEntries.Objects[i]).Free;
+    ViewUnitEntries.Free;
   end;
-  Result := mrOk;
 end;
 
 function TMainIDE.DoWarnAmbiguousFiles: TModalResult;
@@ -14536,8 +14594,8 @@ begin
     ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
   end
   else begin
-  ActiveSrcEdit:=nil;
-  ActiveUnitInfo:=nil;
+    ActiveSrcEdit:=nil;
+    ActiveUnitInfo:=nil;
   end;
 
   // check global stati
@@ -14547,18 +14605,18 @@ begin
   end;
   if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
   then begin
-    DebugLn('TMainIDE.BeginCodeTool no editor');
+    DebugLn('TMainIDE.BeginCodeTool no source editor');
     exit;
   end;
 
   // check source editor
   if not (ctfUseGivenSourceEditor in Flags) then begin
-  if ctfSwitchToFormSource in Flags then
-    DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-  else if ADesigner<>nil then
-    GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-  else
-    GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+    if ctfSwitchToFormSource in Flags then
+      DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+    else if ADesigner<>nil then
+      GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+    else
+      GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   end;
   if (not (ctfSourceEditorNotNeeded in Flags)) and
      ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil))
@@ -16903,48 +16961,15 @@ end;
 function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo
   ): TModalresult;
 var
-  ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  ShortUnitName: String;
-  Dummy: Boolean;
+  UnitInfos: TFPList;
 begin
-  Result:=mrOk;
-  if not AnUnitInfo.IsPartOfProject then exit;
-  Project1.BeginUpdate(true);
+  if not AnUnitInfo.IsPartOfProject then exit(mrOk);
+  UnitInfos:=TFPList.Create;
   try
-    AnUnitInfo.IsPartOfProject:=false;
-    if (Project1.MainUnitID>=0)
-    and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-    then begin
-      BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-      ShortUnitName:=AnUnitInfo.Unit_Name;
-      if (ShortUnitName<>'') then begin
-        Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-                                      Project1.MainUnitInfo.Source,ShortUnitName);
-        if Dummy then
-          Project1.MainUnitInfo.Modified:=true
-        else begin
-          ApplyCodeToolChanges;
-          DoJumpToCodeToolBossError;
-          Result:=mrCancel;
-          exit;
-        end;
-      end;
-      if (AnUnitInfo.ComponentName<>'') then begin
-        Dummy:=Project1.RemoveCreateFormFromProjectFile(
-            'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
-        if not Dummy then begin
-          ApplyCodeToolChanges;
-          DoJumpToCodeToolBossError;
-          Result:=mrCancel;
-          exit;
-        end;
-      end;
-      ApplyCodeToolChanges;
-    end;
-    Project1.Modified:=true;
+    UnitInfos.Add(AnUnitInfo);
+    Result:=RemoveUnitsFromProject(Project1,UnitInfos);
   finally
-    Project1.EndUpdate;
+    UnitInfos.Free;
   end;
 end;
 
