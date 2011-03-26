@@ -2821,7 +2821,6 @@ resourcestring
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
-  lisLCL = 'LCL';
   lisComponent = 'Component';
   lisCodeTools = 'CodeTools';
   lisSynEdit = 'SynEdit';
@@ -2832,8 +2831,7 @@ resourcestring
   lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
-  lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, '
-    +'CodeTools)';
+  lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, CodeTools)';
   lisLazBuildBuildSynEdit = 'Build SynEdit';
   lisLazBuildBuildCodeTools = 'Build CodeTools';
   lisLazBuildBuildIDE = 'Build IDE';
@@ -2869,11 +2867,11 @@ resourcestring
   lisLazBuildRefresh ='Refresh';
   lisLazBuildErrorWritingFile = 'Error writing file';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
-  lisLazBuildQBOBuildLCL = 'Build LCL';
-  lisLazBuildQBOBuildIDEwPackages = 'Build IDE with Packages';
-  lisLazBuildQBOBuildIDEwithoutPackages = 'Build IDE without Packages';
-  lisLazBuildQBOBuildAll = 'Build All';
-  lisLazBuildQBOCleanUpBuildAll = 'Clean Up + Build all';
+  lisLazBuildIDEwithoutPackages = 'IDE without Packages';
+  lisLazBuildDebugIDE = 'Debug IDE';
+  lisLazBuildOptimizedIDE = 'Optimized IDE';
+  lisLazCleanUpBuildAll = 'Clean Up + Build all';
+
   lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
   lisLazBuildABOPart = 'Part';
   lisLazBuildABOAction = 'Action';

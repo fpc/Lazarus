@@ -316,8 +316,7 @@ begin
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   fItemIDEIndex:=Add(FItemIDE);
   // Examples
-  FItemExamples:=TMakeModeDef.Create(
-    'Examples',lisExamples,'examples',mmBuild);
+  FItemExamples:=TMakeModeDef.Create('Examples',lisExamples,'examples',mmBuild);
   Add(FItemExamples);
 end;
 
@@ -587,36 +586,8 @@ var
 begin
   Platfrm:=GetDefaultLCLWidgetType;
 
-  // Build LCL
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildLCL);
-  with Profile, fOwnerCnt do begin
-    fCleanAll:=False;
-    fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=False;
-    for i:=0 to fMakeModeDefs.Count-1 do
-      if fMakeModeDefs[i].Description=lisLCL then
-        fMakeModes[i]:=mmBuild
-      else
-        fMakeModes[i]:=mmNone;
-  end;
-  Add(Profile);
-
-  // Build IDE with Packages
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildIDEwPackages);
-  with Profile, fOwnerCnt do begin
-    fCleanAll:=False;
-    fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=True;
-    for i:=0 to fMakeModeDefs.Count-1 do
-      if fMakeModeDefs[i].Description=lisIDE then
-        fMakeModes[i]:=mmBuild
-      else
-        fMakeModes[i]:=mmNone;
-  end;
-  Add(Profile);
-
   // Build IDE without Packages
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildIDEwithoutPackages);
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildIDEwithoutPackages);
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
@@ -629,31 +600,51 @@ begin
   end;
   Add(Profile);
 
-  // Build All
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildAll);
+  // Build Debug IDE
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildDebugIDE);
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=True;
+    fUpdateRevisionInc:=True;
+    fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Cr -Ci -Sa');
     for i:=0 to fMakeModeDefs.Count-1 do
-      if fMakeModeDefs[i].Description=lisExamples then
-        fMakeModes[i]:=mmNone // All exept for examples.
+      if fMakeModeDefs[i].Description=lisIDE then
+        fMakeModes[i]:=mmBuild
       else
-        fMakeModes[i]:=mmBuild;
+        fMakeModes[i]:=mmNone;
   end;
   // Return this one as default. Needed when building packages without saved profiles.
   Result:=Add(Profile);
 
-  // Clean Up + Build all
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOCleanUpBuildAll);
+  // Build Optimised IDE
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildOptimizedIDE);
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fWithStaticPackages:=True;
+    fUpdateRevisionInc:=True;
+    fOptions.Add('-O2 -g- -Xs');
+    for i:=0 to fMakeModeDefs.Count-1 do
+      if fMakeModeDefs[i].Description=lisIDE then
+        fMakeModes[i]:=mmBuild
+      else
+        fMakeModes[i]:=mmNone;
+  end;
+  Add(Profile);
+
+  // Clean Up + Build all
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazCleanUpBuildAll);
+  with Profile, fOwnerCnt do begin
+    fCleanAll:=False;
+    fTargetPlatform:=Platfrm;
+    fWithStaticPackages:=True;
+    fUpdateRevisionInc:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       fMakeModes[i]:=mmCleanBuild;
   end;
   Add(Profile);
+
   // Defines to test.
   if fAllDefines.Count = 0 then begin
     fAllDefines.Add('Debug');
