@@ -281,6 +281,16 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
     Result:=(Item.Quality=sddqCompatible) and StopIfFits;
   end;
 
+  function CheckViaExe(Filename: string; var List: TObjectList): boolean;
+  begin
+    Result:=false;
+    Filename:=FindDefaultExecutablePath(Filename);
+    if Filename='' then exit;
+    Filename:=ReadAllLinks(Filename,false);
+    if Filename='' then exit;
+    Result:=CheckDir(ExtractFilePath(ExpandFileNameUTF8(Filename)),List);
+  end;
+
 var
   Dir: String;
   ResolvedDir: String;
@@ -323,8 +333,10 @@ begin
     for i:=0 to Dirs.Count-1 do
       if CheckDir(Dirs[i],Result) then exit;
 
-  // search in PATH
-
+  // search lazarus-ide and lazarus in PATH, then follow the links,
+  // which will lead to the lazarus directory
+  if CheckViaExe('lazarus-ide'+GetExecutableExt,Result) then exit;
+  if CheckViaExe('lazarus'+GetExecutableExt,Result) then exit;
 end;
 
 procedure SetupLazarusDirectory;
