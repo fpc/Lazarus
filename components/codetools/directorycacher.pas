@@ -1041,7 +1041,7 @@ begin
       if Result='' then begin
         // search in unit links
         {$IFDEF ShowTriedUnits}
-        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'"']);
+        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'" searchin in unitset ...']);
         {$ENDIF}
         Result:=FindUnitInUnitSet(AUnitName);
         {$IFDEF ShowTriedUnits}
@@ -1097,6 +1097,7 @@ begin
     // search in unit path
     UnitPath:=Strings[ctdcsUnitPath];
     Result:=SearchPascalFileInPath(AnUnitname+'.ppu',CurDir,UnitPath,';',SearchCase);
+    //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',CurDir,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
     if Result='' then begin
       // search in unit set
       Result:=FindCompiledUnitInUnitSet(AnUnitname);

@@ -265,6 +265,9 @@ var
   i: Integer;
   CfgFileItem: TFPCConfigFileState;
   HasCfgs: Boolean;
+  SrcCache: TFPCSourceCache;
+  AFilename: string;
+  AnUnitName: string;
 begin
   sl.Add('FPC executable:');
   if UnitSetCache<>nil then begin
@@ -289,7 +292,7 @@ begin
         end;
       end;
       if not HasCfgs then
-      sl.Add('WARNING: fpc has no config file');
+        sl.Add('WARNING: fpc has no config file');
       sl.Add('');
       sl.Add('Defines:');
       if CfgCache.Defines<>nil then begin
@@ -307,6 +310,24 @@ begin
       if CfgCache.Units<>nil then begin
         sl.Add(CfgCache.Units.AsText);
       end;
+    end;
+    SrcCache:=UnitSetCache.GetSourceCache(false);
+    if SrcCache<>nil then begin
+      sl.Add('Sources:');
+      sl.Add('Directory='+SrcCache.Directory);
+      if SrcCache.Files<>nil then begin
+        sl.Add('Files.Count='+dbgs(SrcCache.Files.Count));
+        for i:=0 to SrcCache.Files.Count-1 do begin
+          AFilename:=SrcCache.Files[i];
+          AnUnitName:=ExtractFilenameOnly(AFilename);
+          if (AnUnitName='classes')
+          or (AnUnitName='sysutils')
+          or (AnUnitName='system')
+          then
+            sl.Add(AFilename);
+        end;
+      end else
+        sl.Add('Files.Count=0');
     end;
   end;
   sl.Add('');
