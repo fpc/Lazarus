@@ -216,9 +216,12 @@ function ReadAllLinks(const Filename: string;
 var
   LinkFilename: string;
   AText: string;
+  Depth: Integer;
 begin
   Result:=Filename;
-  repeat
+  Depth:=0;
+  while Depth<12 do begin
+    inc(Depth);
     LinkFilename:=FpReadLink(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
@@ -249,7 +252,12 @@ begin
       else
         Result:=LinkFilename;
     end;
-  until false;
+  end;
+  // probably an endless loop
+  if ExceptionOnError then
+    raise EFOpenError.Create('too many links, maybe an endless loop.')
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------------
