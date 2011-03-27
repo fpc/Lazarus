@@ -2516,6 +2516,7 @@ components/turbopower_ipro/design/turbopoweriprodsgn.lpk svneol=native#text/plai
 components/turbopower_ipro/design/turbopoweriprodsgn.pas svneol=native#text/plain
 components/turbopower_ipro/examples/defaultimage.lrs svneol=native#text/pascal
 components/turbopower_ipro/examples/defaultimage.xpm -text svneol=unset#image/pixmap
+components/turbopower_ipro/examples/fpdoc.css svneol=native#text/plain
 components/turbopower_ipro/examples/htmfileexp1.lfm svneol=native#text/plain
 components/turbopower_ipro/examples/htmfileexp1.lrs svneol=native#text/pascal
 components/turbopower_ipro/examples/htmfileexp1.pas svneol=native#text/plain
