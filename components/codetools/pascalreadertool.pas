@@ -1712,7 +1712,7 @@ var
 begin
   if GetSourceNamePos(NamePos) then
     Result:=GetAtom
-  else if Tree.Root.Desc=ctnProgram then
+  else if (Tree.Root<>nil) and (Tree.Root.Desc=ctnProgram) then
     Result:=ExtractFileNameOnly(MainFilename)
   else
     Result:='';
