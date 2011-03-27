@@ -322,6 +322,9 @@ begin
   if Dirs<>nil then
     for i:=0 to Dirs.Count-1 do
       if CheckDir(Dirs[i],Result) then exit;
+
+  // search in PATH
+
 end;
 
 procedure SetupLazarusDirectory;

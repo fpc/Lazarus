@@ -45,13 +45,14 @@ const
     '/usr/src/fpc',
     '/vol/src/fpc'
     );
-    
-  DefaultLazarusSrcDirs: array[1..7] of string = (
+
+  DefaultLazarusSrcDirs: array[1..8] of string = (
     '/usr/share/lazarus',
     '/usr/local/share/lazarus',
     '/usr/local/lib/lazarus',
     '/usr/local/lazarus',
     '/usr/lib/lazarus',
+    '/usr/lib/lazarus/'+{$I version.inc},
     '~/pascal/lazarus',
     '~/lazarus'
     );

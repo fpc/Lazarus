@@ -63,7 +63,6 @@ const
       'android (pre-alpha)'
     );
 
-
 { Config Path Functions }
 
 { The primary config path is the local or user specific path.
