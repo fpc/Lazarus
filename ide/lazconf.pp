@@ -50,7 +50,7 @@ uses
   InterfaceBase;
 
 const
-  LazarusVersionStr= {$I version.inc};
+  LazarusVersionStr = {$I version.inc};
 
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
       'gtk (deprecated)',

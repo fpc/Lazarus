@@ -2978,16 +2978,24 @@ begin
   if HasPathDelims then
     DoDirSeparators(AFilename);
 
-  // first search include file in the directory of the current source
+  // first search include file in the directory of the unit
   {$IFDEF VerboseIncludeSearch}
-  DebugLn('TLinkScanner.SearchIncludeFile MainSourceFilename="',FMainSourceFilename,'"');
+  debugln(['TLinkScanner.SearchIncludeFile FMainSourceFilename="',FMainSourceFilename,'" SrcFile="',SrcFilename,'" AFilename="',AFilename,'" ExpFilename="',ExpFilename,'"']);
   {$ENDIF}
-  if FilenameIsAbsolute(SrcFilename) then begin
+  if FilenameIsAbsolute(FMainSourceFilename) then begin
     // main source has absolute filename
-    ExpFilename:=ExtractFilePath(SrcFilename)+AFilename;
+    // search in directory of unit
+    ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=(NewCode<>nil);
     if Result then exit;
+    // search in directory of include file
+    if FilenameIsAbsolute(SrcFilename) then begin
+      ExpFilename:=ExtractFilePath(SrcFilename)+AFilename;
+      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+      Result:=(NewCode<>nil);
+      if Result then exit;
+    end;
   end else begin
     // main source is virtual
     NewCode:=FOnLoadSource(Self,TrimFilename(AFilename),true);
