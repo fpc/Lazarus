@@ -40,7 +40,7 @@ uses
   Graphics,
   LResources,
   SysUtils,
-  AboutFrm;
+  LazConf;
 
 type
 

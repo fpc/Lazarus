@@ -52,7 +52,7 @@ const
     '/usr/local/lib/lazarus',
     '/usr/local/lazarus',
     '/usr/lib/lazarus',
-    '/usr/lib/lazarus/'+{$I version.inc},
+    '/usr/lib/lazarus/'+LazarusVersionStr,
     '~/pascal/lazarus',
     '~/lazarus'
     );

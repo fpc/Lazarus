@@ -104,8 +104,6 @@ type
 
 function ShowAboutForm: TModalResult;
 
-const
-  LazarusVersionStr= {$I version.inc};
 var
   LazarusRevisionStr: string;
   
