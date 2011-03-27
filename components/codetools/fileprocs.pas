@@ -120,8 +120,8 @@ function FindDiskFilename(const Filename: string): string;
 function GetDarwinSystemFilename(Filename: string): string;
 {$ENDIF}
 function ReadAllLinks(const Filename: string;
-                      ExceptionOnError: boolean): string;
-function TryReadAllLinks(const Filename: string): string;
+                      ExceptionOnError: boolean): string; // if a link is broken returns ''
+function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
@@ -794,13 +794,16 @@ function ReadAllLinks(const Filename: string;
 var
   LinkFilename: string;
   AText: string;
+  Depth: integer;
 {$ENDIF}
 begin
   Result:=Filename;
   {$IFDEF WINDOWS}
 
   {$ELSE}
-  repeat
+  Depth:=0;
+  while Depth<12 do begin
+    inc(Depth);
     LinkFilename:=FpReadLink(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
@@ -831,7 +834,12 @@ begin
       else
         Result:=LinkFilename;
     end;
-  until false;
+  end;
+  // probably an endless loop
+  if ExceptionOnError then
+    raise EFOpenError.Create('too many links, maybe an endless loop.')
+  else
+    Result:='';
   {$ENDIF}
 end;
 
