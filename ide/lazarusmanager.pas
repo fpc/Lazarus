@@ -316,7 +316,7 @@ begin
         if FileExistsUTF8(CustomExe) then begin
           // only the custom exists => warn user
           MessageDlg('System default is missing',
-            'The system default lazarus executable is missing, but your custom'
+            'The system default lazarus executable "'+DefaultExe+'" is missing, but your custom'
             +'executable is still there:'#13
             +CustomExe+#13
             +'This will be started ...'
