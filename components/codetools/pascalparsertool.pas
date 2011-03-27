@@ -516,6 +516,7 @@ procedure TPascalParserTool.BuildTree(Range: TLinkScannerRange);
 var
   Node: TCodeTreeNode;
   p: PChar;
+  HasSourceType: Boolean;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -604,6 +605,7 @@ begin
         end;
 
         // read source type and name
+        HasSourceType:=true;
         ReadNextAtom;
         if UpAtomIs('UNIT') then
           CurSection:=ctnUnit
@@ -613,33 +615,47 @@ begin
           CurSection:=ctnPackage
         else if UpAtomIs('LIBRARY') then
           CurSection:=ctnLibrary
-        else
-          SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
+        else begin
+          // the source type is missing
+          // this is allowed for program
+          if UpAtomIs('USES') or UpAtomIs('TYPE') or UpAtomIs('VAR')
+          or UpAtomIs('CONST') or UpAtomIs('RESOURCESTRING')
+          or UpAtomIs('BEGIN') then begin
+            CurSection:=ctnProgram;
+            HasSourceType:=false;
+            CurPos.EndPos:=CurPos.StartPos;
+          end else
+            SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
+        end;
         if CurNode=nil then
           CreateChildNode;
         CurNode.Desc:=CurSection;
         ScannedRange:=lsrSourceType;
         if ord(Range)<=ord(ScannedRange) then exit;
-        ReadNextAtom; // read source name
-        AtomIsIdentifier(true);
-        ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
+        if HasSourceType then begin
+          ReadNextAtom; // read source name
+          AtomIsIdentifier(true);
+          ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
+        end;
         ScannedRange:=lsrSourceName;
         if ord(Range)<=ord(ScannedRange) then exit;
-        if UpAtomIs('PLATFORM') then
-          ReadNextAtom;
-        if UpAtomIs('UNIMPLEMENTED') then
-          ReadNextAtom;
-        if UpAtomIs('LIBRARY') then
-          ReadNextAtom;
-        if UpAtomIs('EXPERIMENTAL') then
-          ReadNextAtom;
-        if UpAtomIs('DEPRECATED') then begin
-          ReadNextAtom;
-          if CurPos.Flag<>cafSemicolon then
-            ReadConstant(true,false,[]);
+        if HasSourceType then begin
+          if UpAtomIs('PLATFORM') then
+            ReadNextAtom;
+          if UpAtomIs('UNIMPLEMENTED') then
+            ReadNextAtom;
+          if UpAtomIs('LIBRARY') then
+            ReadNextAtom;
+          if UpAtomIs('EXPERIMENTAL') then
+            ReadNextAtom;
+          if UpAtomIs('DEPRECATED') then begin
+            ReadNextAtom;
+            if CurPos.Flag<>cafSemicolon then
+              ReadConstant(true,false,[]);
+          end;
+          if (CurPos.Flag<>cafSemicolon) then
+            RaiseCharExpectedButAtomFound(';');
         end;
-        if (CurPos.Flag<>cafSemicolon) then
-          RaiseCharExpectedButAtomFound(';');
         if CurSection=ctnUnit then begin
           ReadNextAtom;
           CurNode.EndPos:=CurPos.StartPos;

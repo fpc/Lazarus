@@ -374,14 +374,7 @@ end;
 -------------------------------------------------------------------------------}
 function TStandardCodeTool.GetCachedSourceName: string;
 begin
-  if Tree.Root<>nil then begin
-    MoveCursorToNodeStart(Tree.Root);
-    ReadNextAtom; // read source type 'program', 'unit' ...
-    ReadNextAtom; // read name
-    if (CurPos.StartPos<=SrcLen) then
-      CachedSourceName:=GetAtom;
-  end;
-  Result:=CachedSourceName;
+  Result:=GetSourceName(false);
 end;
 
 function TStandardCodeTool.RenameSource(const NewName: string;

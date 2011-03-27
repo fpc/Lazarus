@@ -1689,6 +1689,7 @@ begin
   if Tree.Root=nil then exit;
   MoveCursorToNodeStart(Tree.Root);
   ReadNextAtom; // read source type 'program', 'unit' ...
+  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
   ReadNextAtom; // read name
   NamePos:=CurPos;
   Result:=(NamePos.StartPos<=SrcLen);
@@ -1700,6 +1701,7 @@ begin
   if Tree.Root=nil then exit;
   MoveCursorToNodeStart(Tree.Root);
   ReadNextAtom; // read source type 'program', 'unit' ...
+  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
   ReadNextAtom; // read name
   Result:=(CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos);
 end;
@@ -1710,6 +1712,8 @@ var
 begin
   if GetSourceNamePos(NamePos) then
     Result:=GetAtom
+  else if Tree.Root.Desc=ctnProgram then
+    Result:=ExtractFileNameOnly(MainFilename)
   else
     Result:='';
 end;
@@ -2093,13 +2097,11 @@ begin
 end;
 
 function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;
-var NamePos: TAtomPosition;
 begin
   Result:='';
   if DoBuildTree then
     BuildTree(lsrSourceName);
-  if not GetSourceNamePos(NamePos) then exit;
-  CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
+  CachedSourceName:=ExtractSourceName;
   Result:=CachedSourceName;
 end;
 

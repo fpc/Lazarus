@@ -2253,16 +2253,20 @@ begin
 
         NewTool.MoveCursorToNodeStart(IdentNode);
         NewTool.ReadNextAtom;
-        Result:=Result+NewTool.GetAtom+' ';
+        if (IdentNode.Desc=ctnProgram) and not UpAtomIs('PROGRAM') then begin
+          // program without source name
+          Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
+        end else begin
+          Result:=Result+NewTool.GetAtom+' ';
 
-        if NewNode.Desc = ctnProperty then
-        begin // add class name
-          ClassStr := NewTool.ExtractClassName(NewNode, False, True);
-          if ClassStr <> '' then Result := Result + ClassStr + '.';
+          if NewNode.Desc = ctnProperty then begin // add class name
+            ClassStr := NewTool.ExtractClassName(NewNode, False, True);
+            if ClassStr <> '' then Result := Result + ClassStr + '.';
+          end;
+
+          NewTool.ReadNextAtom;
+          Result:=Result+NewTool.GetAtom+' ';
         end;
-
-        NewTool.ReadNextAtom;
-        Result:=Result+NewTool.GetAtom+' ';
         IdentAdded:=true;
       end;
 
@@ -2817,6 +2821,7 @@ var
     Result:=false;
     MoveCursorToNodeStart(ContextNode);
     ReadNextAtom; // read keyword
+    if (ContextNode.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
     ReadNextAtom; // read name
     if (fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
@@ -5943,6 +5948,7 @@ begin
   if Node.Desc in AllSourceTypes then begin
     MoveCursorToNodeStart(Node);
     ReadNextAtom;
+    if (Node.Desc=ctnProgram) and not UpAtomIs('PROGRAM') then exit;
     ReadNextAtom;
     Result:=CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier);
   end else if (Node.Desc in AllSimpleIdentifierDefinitions)
