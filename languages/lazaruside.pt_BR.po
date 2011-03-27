@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2922,7 +2922,7 @@ msgstr "Limite Desfazer"
 
 #: lazarusidestrconsts.dlgunitalreadyusesallotherunits
 msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
+msgstr "Unidade \"%s\" já utiliza todas as unidades neste projeto"
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -3627,7 +3627,6 @@ msgid "Alignment"
 msgstr "Alinhamento"
 
 #: lazarusidestrconsts.lisallblockslooksok
-#, fuzzy
 #| msgid "All blocks looks ok."
 msgid "All blocks look ok."
 msgstr "Todos os blocos parecem OK."
@@ -6962,11 +6961,11 @@ msgstr "Métodos vazios encontrados:"
 
 #: lazarusidestrconsts.lisemdnoclass
 msgid "No class"
-msgstr ""
+msgstr "Nenhuma classe"
 
 #: lazarusidestrconsts.lisemdnoclassat
 msgid "No class at %s(%s,%s)"
-msgstr ""
+msgstr "Nenhuma classe em %s(%s,%s)"
 
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
@@ -6990,7 +6989,7 @@ msgstr "Localizar nestas seções de classe:"
 
 #: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
 msgid "Unable to show empty methods of the current class, because%s%s"
-msgstr ""
+msgstr "Incapaz de exibir métodos vazios da classe atual, porque%s%s"
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
@@ -7031,7 +7030,7 @@ msgstr "Circundar"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
-msgstr ""
+msgstr "Circundar $IFDEF"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -8488,7 +8487,7 @@ msgstr "Opções das ferramentas de código"
 
 #: lazarusidestrconsts.liskmcompileprojectprogram
 msgid "Compile project/program"
-msgstr ""
+msgstr "Compilar projeto/programa"
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9111,6 +9110,10 @@ msgstr "Confirmar antes de construir"
 msgid "Confirm deletion"
 msgstr "Confirmar exclusão"
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Definições"
@@ -9137,6 +9140,10 @@ msgstr "Editar lista de definições que podem ser usadas por qualquer perfil"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Erro escrevendo arquivo"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9176,6 +9183,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "Ok"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Opções:"
@@ -9188,26 +9199,6 @@ msgstr "Opções passadas ao compilador"
 #| msgid "Build Profile"
 msgid "Profile to Build"
 msgstr "Perfil à Construir"
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Construir Tudo"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "Construir IDE sem Pacotes"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "Construir IDE com Pacotes"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "Construir LCL"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Limpar + Construir tudo"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9282,9 +9273,10 @@ msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
 msgid "With packages"
 msgstr "Com pacotes"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Limpar + Construir tudo"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9702,10 +9694,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Converter unidade Delphi para Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
 #| msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgid "Convert binary DFM to text LFM + check syntax ..."
-msgstr "Converter arquivo binário DFM para LFM texto e verificar sintaxe..."
+msgstr "Converter DFN binário para LFM texto + verificar sintaxe ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert encoding of projects/packages ..."
@@ -9827,7 +9818,7 @@ msgstr "Visualizar Modelo"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF..."
-msgstr ""
+msgstr "Circundar $IFDEF..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
@@ -9900,12 +9891,14 @@ msgid "Goto line ..."
 msgstr "Ir para linha ..."
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
+#, fuzzy
 msgid "Guess misplaced IFDEF/ENDIF"
-msgstr "Adivinhar IFDEF/ENDIF fora de lugar"
+msgstr "Tentar identificar IFDEF/ENDIF fora de lugar"
 
 #: lazarusidestrconsts.lismenuguessunclosedblock
+#, fuzzy
 msgid "Guess unclosed block"
-msgstr "Adivinhar bloco não fechado"
+msgstr "Tentar identificar bloco não fechado"
 
 #: lazarusidestrconsts.lismenuhelp
 msgid "&Help"
@@ -9932,7 +9925,6 @@ msgid "Insert from Character Map"
 msgstr "Inserir do Mapa de Caracteres"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-#, fuzzy
 #| msgid "CVS keyword"
 msgid "Insert CVS keyword"
 msgstr "Palavra-Chave CVS"
@@ -9942,7 +9934,6 @@ msgid "Current date and time"
 msgstr "Data e hora atuais"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
-#, fuzzy
 #| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
@@ -9979,6 +9970,10 @@ msgstr "Saltar adiante"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Saltar para"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -10075,10 +10070,9 @@ msgid "Open Recent Project"
 msgstr "Abrir Projeto Recente"
 
 #: lazarusidestrconsts.lismenupackage
-#, fuzzy
 #| msgid "&Package"
 msgid "Pa&ckage"
-msgstr "Pa&cotes"
+msgstr "Pa&cote"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -10148,7 +10142,7 @@ msgstr "Refazer"
 
 #: lazarusidestrconsts.lismenurefactor
 msgid "Ref&actor"
-msgstr ""
+msgstr "Ref&atorar"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -10272,7 +10266,7 @@ msgstr "Ordenar seleção ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr ""
+msgstr "F&onte"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -10321,7 +10315,7 @@ msgstr "Parar"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap case in selection"
-msgstr ""
+msgstr "Trocar maiúscula/minúscula na seleção"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
@@ -13443,9 +13437,13 @@ msgstr "Exibir ordem de tabulação antiga"
 msgid "Show packages"
 msgstr "Exibir pacotes"
 
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
-msgstr ""
+msgstr "Exibir diálogo para as mais importantes configurações"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
@@ -14439,7 +14437,7 @@ msgstr "%s%sImpossível alterar classe de %s para %s"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
-msgstr ""
+msgstr "Incapaz de alterar o título do projeto no fonte.%s%s"
 
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
@@ -14625,7 +14623,7 @@ msgstr "Impossível remover arquivo antigo da cópia de segurança %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"
-msgstr ""
+msgstr "Incapaz de remover o título do projeto do fonte.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -15447,7 +15445,7 @@ msgstr "abortar construção"
 
 #: lazarusidestrconsts.srkmecabstractmethods
 msgid "Abstract methods ..."
-msgstr ""
+msgstr "Métodos abstratos ..."
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
@@ -15603,7 +15601,7 @@ msgstr "Modo de seleção de coluna"
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
-msgstr ""
+msgstr "compilar programa/projeto"
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"
@@ -15684,7 +15682,7 @@ msgstr "Mover o cursor para o início absoluto"
 
 #: lazarusidestrconsts.srkmecemptymethods
 msgid "Empty methods ..."
-msgstr ""
+msgstr "Métodos vazios ..."
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
@@ -15744,7 +15742,7 @@ msgstr "Localizar sobreposições"
 
 #: lazarusidestrconsts.srkmecfindoverloadscapt
 msgid "Find overloads ..."
-msgstr ""
+msgstr "Localizar sobrecargas ..."
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
@@ -16394,7 +16392,7 @@ msgstr "comando do editor desconhecido"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
+msgstr "Unidades não usadas ..."
 
 #: lazarusidestrconsts.srkmecuseprojectunit
 msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
