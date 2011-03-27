@@ -2526,6 +2526,10 @@ components/turbopower_ipro/examples/htmfileexplorer1.lpi svneol=native#text/plai
 components/turbopower_ipro/examples/htmfileexplorer1.lpr svneol=native#text/plain
 components/turbopower_ipro/examples/htmfileexplorer2.lpi svneol=native#text/plain
 components/turbopower_ipro/examples/htmfileexplorer2.lpr svneol=native#text/plain
+components/turbopower_ipro/examples/htmlwithcss.lpi svneol=native#text/plain
+components/turbopower_ipro/examples/htmlwithcss.lpr svneol=native#text/plain
+components/turbopower_ipro/examples/htmlwithcssfrm.lfm svneol=native#text/plain
+components/turbopower_ipro/examples/htmlwithcssfrm.pas svneol=native#text/plain
 components/turbopower_ipro/examples/index.html svneol=native#text/plain
 components/turbopower_ipro/examples/simplepage2.html svneol=native#text/plain
 components/turbopower_ipro/for_delphi/ipHtml.dcr -text
