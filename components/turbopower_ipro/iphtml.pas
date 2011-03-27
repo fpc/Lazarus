@@ -7582,7 +7582,7 @@ procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
 begin
-  debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
+  //debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
   StyleStream:=nil;
   
   if Parent is TIpHtmlNodeHEAD then begin
@@ -18000,7 +18000,6 @@ begin
   FHtml.MarginWidth := FMarginWidth;
   FHtml.MarginHeight := FMarginHeight;
   {$IFDEF IP_LAZARUS}
-  debugln(['TIpHtmlFrame.InitHtml ',DbgSName(FDataProvider)]);
   if FDataProvider <> nil then
     FHtml.FDataProvider := FDataProvider;
   {$ENDIF}
