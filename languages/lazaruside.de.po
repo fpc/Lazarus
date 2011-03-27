@@ -9132,6 +9132,10 @@ msgstr "Kompilieren von Lazarus bestätigen "
 msgid "Confirm deletion"
 msgstr "Löschung bestätigen"
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Definitionen"
@@ -9158,6 +9162,10 @@ msgstr "Bearbeiten der Liste von Definitionen, die von jedem Profil verwendet we
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Fehler beim Schreiben der Datei"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9197,6 +9205,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "OK"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Einstellungen:"
@@ -9208,26 +9220,6 @@ msgstr "An den Compiler weitergereichte Einstellungen"
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
 msgstr "Profil zum Kompilieren"
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Alles neu kompilieren"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "IDE ohne Packages neu kompilieren"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "IDE mit Packages neu kompilieren"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "LCL neu kompilieren"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Aufräumen und neu kompilieren"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9303,9 +9295,10 @@ msgstr "Aktualisiert die Revisions-Info im \"Über Lazarus\" Dialog"
 msgid "With packages"
 msgstr "Mit Packages"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Aufräumen und neu kompilieren"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -10003,6 +9996,10 @@ msgstr "Vorwärtsspringen"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Springe zu"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13484,6 +13481,10 @@ msgstr "Zeige alte Tabulatorreihenfolge"
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Packages anzeigen"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

@@ -9113,6 +9113,10 @@ msgstr "Potwierdź zanim przebudujesz lazarusa"
 msgid "Confirm deletion"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr ""
@@ -9139,6 +9143,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Błąd podczas zapisu do pliku"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9178,6 +9186,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "Ok"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Opcje:"
@@ -9189,26 +9201,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Buduj wszystko"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "Buduj IDE bez pakietów"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "Buduj IDE wraz z pakietami"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "Buduj LCL"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Czyść + Buduj wszystko"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9284,9 +9276,10 @@ msgstr ""
 msgid "With packages"
 msgstr "Z pakietami"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr ""
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Czyść + Buduj wszystko"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9983,6 +9976,10 @@ msgstr "Przeskocz do przodu"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Skocz do"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13457,6 +13454,10 @@ msgstr ""
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Pokaż pakiety"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

@@ -9121,6 +9121,10 @@ msgstr "構築する前に確認"
 msgid "Confirm deletion"
 msgstr "削除を確認"
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Defines"
@@ -9147,6 +9151,10 @@ msgstr "どのプロファイルでも使えるdefineリストを編集"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "ファイルへの書き込み中にエラー"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9186,6 +9194,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "Ok"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "オプション"
@@ -9197,26 +9209,6 @@ msgstr "コンパイラに伝えられるオプション"
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
 msgstr "プロファイルを構築"
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "すべて構築"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "パッケージ抜きでIDEを構築"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "パッケージとともにIDEを構築"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "LCLを構築"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "クリーンアップ + すべて構築"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9292,9 +9284,10 @@ msgstr ""
 msgid "With packages"
 msgstr "パッケージ付き"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "クリーンアップ + すべて構築"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9994,6 +9987,10 @@ msgstr "前方へ移動"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "次へ移動："
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13477,6 +13474,10 @@ msgstr "古いタブ順序を表示"
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "パッケージを表示"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

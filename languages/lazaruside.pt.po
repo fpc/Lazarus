@@ -9112,6 +9112,10 @@ msgstr "Confirmar antes de construir"
 msgid "Confirm deletion"
 msgstr "Confirmar exclusão"
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Definições"
@@ -9138,6 +9142,10 @@ msgstr "Editar lista de definições que podem ser usadas por qualquer perfil"
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Erro escrevendo arquivo"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9177,6 +9185,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "Ok"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Opções:"
@@ -9189,26 +9201,6 @@ msgstr "Opções passadas ao compilador"
 #| msgid "Build Profile"
 msgid "Profile to Build"
 msgstr "Perfil à Construir"
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Construir Tudo"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "Construir IDE sem Pacotes"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "Construir IDE com Pacotes"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "Construir LCL"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Limpar + Construir tudo"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9283,9 +9275,10 @@ msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
 msgid "With packages"
 msgstr "Com pacotes"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Limpar + Construir tudo"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9980,6 +9973,10 @@ msgstr "Saltar adiante"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Saltar para"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13442,6 +13439,10 @@ msgstr "Exibir ordem de tabulação antiga"
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Exibir pacotes"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

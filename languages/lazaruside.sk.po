@@ -9120,6 +9120,10 @@ msgstr "Potvrdiť pred prebudovaním Lazarus"
 msgid "Confirm deletion"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr ""
@@ -9146,6 +9150,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Chyba zapisovania súboru"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9185,6 +9193,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "Ok"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Voľby:"
@@ -9196,26 +9208,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to Build"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Vybudovať všetko"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "Vybudovať IDE bez balíčkov"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "Vybudovať IDE a balíčky"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "Vybudovať LCL"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Vyčistiť + Vybudovať všetko"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9291,9 +9283,10 @@ msgstr ""
 msgid "With packages"
 msgstr "S balíčkami"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Vyčistiť + Vybudovať všetko"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9993,6 +9986,10 @@ msgstr "Skočiť dopredu"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Skoč na"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13476,6 +13473,10 @@ msgstr "Zobraziť staré poradie záložiek"
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Zobraziť balíčky"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

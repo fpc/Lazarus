@@ -142,7 +142,7 @@ msgstr "Selezionare un dizionario esistente"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
-msgstr "Selezionare una applicazione database desktop esistente
+msgstr "Selezionare una applicazione database desktop esistent"
 
 #: ldd_consts.serrselectfile
 msgid "Please select an existing data dictionary file"

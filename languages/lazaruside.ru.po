@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-20 00:01+0300\n"
+"PO-Revision-Date: 2011-03-27 17:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9120,6 +9120,10 @@ msgstr "Спрашивать перед пересборкой"
 msgid "Confirm deletion"
 msgstr "Подтвердите удаление"
 
+#: lazarusidestrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "IDE в режиме отладки"
+
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
 msgstr "Определения"
@@ -9146,6 +9150,10 @@ msgstr "Редактировать список определений для и
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Ошибка записи файла"
+
+#: lazarusidestrconsts.lislazbuildidewithoutpackages
+msgid "IDE without Packages"
+msgstr "IDE без пакетов"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9185,6 +9193,10 @@ msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
 msgstr "ОК"
 
+#: lazarusidestrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "IDE с оптимизацией"
+
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
 msgstr "Параметры:"
@@ -9197,26 +9209,6 @@ msgstr "Параметры, передаваемые компилятору"
 #| msgid "Build Profile"
 msgid "Profile to Build"
 msgstr "Профиль сборки"
-
-#: lazarusidestrconsts.lislazbuildqbobuildall
-msgid "Build All"
-msgstr "Собрать все"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewithoutpackages
-msgid "Build IDE without Packages"
-msgstr "Собрать IDE без пакетов"
-
-#: lazarusidestrconsts.lislazbuildqbobuildidewpackages
-msgid "Build IDE with Packages"
-msgstr "Собрать IDE с пакетами"
-
-#: lazarusidestrconsts.lislazbuildqbobuildlcl
-msgid "Build LCL"
-msgstr "Собрать LCL"
-
-#: lazarusidestrconsts.lislazbuildqbocleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Очистить + Собрать все"
 
 #: lazarusidestrconsts.lislazbuildrefresh
 msgctxt "lazarusidestrconsts.lislazbuildrefresh"
@@ -9291,9 +9283,10 @@ msgstr "Обновить информацию о ревизии в диалог�
 msgid "With packages"
 msgstr "С пакетами"
 
-#: lazarusidestrconsts.lislcl
-msgid "LCL"
-msgstr "LCL"
+#: lazarusidestrconsts.lislazcleanupbuildall
+msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
+msgid "Clean Up + Build all"
+msgstr "Очистить + Собрать все"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -9985,6 +9978,10 @@ msgstr "Перейти вперёд"
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
 msgstr "Перейти к"
+
+#: lazarusidestrconsts.lismenujumptoimplementation
+msgid "Jump to implementation"
+msgstr "Перейти к реализации"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -13450,6 +13447,10 @@ msgstr "Показать старый порядок перехода"
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Показывать пакеты"
+
+#: lazarusidestrconsts.lisshowpositionofsourceeditor
+msgid "Show position of source editor"
+msgstr "Показать положение редактора исходного кода"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
