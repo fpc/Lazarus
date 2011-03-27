@@ -740,7 +740,7 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
-    function RemoveUnitsFromProject(AProject: TProject; Units: TFPList): TModalResult;
+    function RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList): TModalResult;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -7529,19 +7529,27 @@ begin
   //DebugLn(['TMainIDE.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
 end;
 
-function TMainIDE.RemoveUnitsFromProject(AProject: TProject; Units: TFPList
+function TMainIDE.RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList
   ): TModalResult;
 var
   i: Integer;
   AnUnitInfo: TUnitInfo;
   ShortUnitName: String;
   Dummy: Boolean;
+  ObsoleteUnitPaths: String;
+  ObsoleteIncPaths: String;
+  p: Integer;
+  ProjUnitPaths: String;
+  CurDir: String;
+  ResolvedDir: String;
+  OldP: LongInt;
+  ProjIncPaths: String;
 begin
   Result:=mrOk;
-  if Units=nil then exit;
+  if UnitInfos=nil then exit;
   // check if something will change
-  i:=Units.Count-1;
-  while (i>=0) and (not TUnitInfo(Units[i]).IsPartOfProject) do dec(i);
+  i:=UnitInfos.Count-1;
+  while (i>=0) and (not TUnitInfo(UnitInfos[i]).IsPartOfProject) do dec(i);
   if i<0 then exit(mrOk);
   // check ToolStatus
   if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
@@ -7551,33 +7559,40 @@ begin
   // commit changes from source editor to codetools
   SaveSourceEditorChangesToCodeCache(nil);
 
+  ObsoleteUnitPaths:='';
+  ObsoleteIncPaths:='';
   AProject.BeginUpdate(true);
   try
-    for i:=0 to Units.Count-1 do begin
-      AnUnitInfo:=TUnitInfo(Units[i]);
+    for i:=0 to UnitInfos.Count-1 do begin
+      AnUnitInfo:=TUnitInfo(UnitInfos[i]);
       //debugln(['TMainIDE.RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
       if not AnUnitInfo.IsPartOfProject then continue;
       AnUnitInfo.IsPartOfProject:=false;
       AProject.Modified:=true;
-      if (AProject.MainUnitID>=0)
-      and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
-      then begin
-        ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-        //debugln(['TMainIDE.RemoveUnitsFromProject UnitName=',ShortUnitName]);
-        if (ShortUnitName<>'') then begin
-          Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-                                    AProject.MainUnitInfo.Source,ShortUnitName);
-          if not Dummy then begin
-            DoJumpToCodeToolBossError;
-            Result:=mrCancel;
-            exit;
+      if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
+        if FilenameIsAbsolute(AnUnitInfo.Filename) then
+          ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,
+                          ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+        // remove from project's unit section
+        if (AProject.MainUnitID>=0)
+        and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+        then begin
+          ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
+          //debugln(['TMainIDE.RemoveUnitsFromProject UnitName=',ShortUnitName]);
+          if (ShortUnitName<>'') then begin
+            Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                      AProject.MainUnitInfo.Source,ShortUnitName);
+            if not Dummy then begin
+              DoJumpToCodeToolBossError;
+              Result:=mrCancel;
+              exit;
+            end;
           end;
         end;
-      end;
-      if (AProject.MainUnitID>=0)
-      and (pfMainUnitHasCreateFormStatements in AProject.Flags)
-      then begin
-        if (AnUnitInfo.ComponentName<>'') then begin
+        // remove CreateForm statement from project
+        if (AProject.MainUnitID>=0)
+        and (pfMainUnitHasCreateFormStatements in AProject.Flags)
+        and (AnUnitInfo.ComponentName<>'') then begin
           Dummy:=AProject.RemoveCreateFormFromProjectFile(
               'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
           if not Dummy then begin
@@ -7587,7 +7602,82 @@ begin
           end;
         end;
       end;
+      if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then begin
+        // include file
+        if FilenameIsAbsolute(AnUnitInfo.Filename) then
+          ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,
+                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+      end;
     end;
+
+    // removed directories still used fomr ObsoleteUnitPaths, ObsoleteIncPaths
+    AnUnitInfo:=AProject.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
+        if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+          ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,
+                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+        if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
+          ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,
+                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+      end;
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    end;
+
+    // check if compiler options contains paths of ObsoleteUnitPaths
+    if ObsoleteUnitPaths<>'' then begin
+      ProjUnitPaths:=AProject.CompilerOptions.OtherUnitFiles;
+      p:=1;
+      repeat
+        OldP:=p;
+        CurDir:=GetNextDirectoryInSearchPath(ProjUnitPaths,p);
+        if CurDir='' then break;
+        ResolvedDir:=AProject.CompilerOptions.ParsedOpts.DoParseOption(CurDir,
+                                                            pcosUnitPath,false);
+        if (ResolvedDir<>'')
+        and (SearchDirectoryInSearchPath(ObsoleteUnitPaths,ResolvedDir)>0) then begin
+          if IDEQuestionDialog(lisRemoveUnitPath,
+            Format(lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi, [
+              CurDir]),
+            mtConfirmation, [mrYes, lisLazBuildRemove, mrNo, lisKeep2], '')=
+              mrYes
+          then begin
+            // remove
+            ProjUnitPaths:=RemoveSearchPaths(ProjUnitPaths,CurDir);
+            p:=OldP;
+          end;
+        end;
+      until false;
+      AProject.CompilerOptions.OtherUnitFiles:=ProjUnitPaths;
+    end;
+
+    // check if compiler options contains paths of ObsoleteIncPaths
+    if ObsoleteIncPaths<>'' then begin
+      ProjIncPaths:=AProject.CompilerOptions.IncludePath;
+      p:=1;
+      repeat
+        OldP:=p;
+        CurDir:=GetNextDirectoryInSearchPath(ProjIncPaths,p);
+        if CurDir='' then break;
+        ResolvedDir:=AProject.CompilerOptions.ParsedOpts.DoParseOption(CurDir,
+                                                         pcosIncludePath,false);
+        if (ResolvedDir<>'')
+        and (SearchDirectoryInSearchPath(ObsoleteIncPaths,ResolvedDir)>0) then begin
+          if IDEQuestionDialog(lisRemoveIncludePath,
+            Format(lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe, [
+              CurDir]),
+            mtConfirmation, [mrYes, lisLazBuildRemove, mrNo, lisKeep2], '')=
+              mrYes
+          then begin
+            // remove
+            ProjIncPaths:=RemoveSearchPaths(ProjIncPaths,CurDir);
+            p:=OldP;
+          end;
+        end;
+      until false;
+      AProject.CompilerOptions.IncludePath:=ProjIncPaths;
+    end;
+
   finally
     ApplyCodeToolChanges;
     AProject.EndUpdate;
@@ -10936,7 +11026,7 @@ Begin
       end;
     end;
     if UnitInfos.Count>0 then
-      Result:=RemoveUnitsFromProject(Project1,UnitInfos)
+      Result:=RemoveFilesFromProject(Project1,UnitInfos)
     else
       Result:=mrOk;
   finally
@@ -16966,7 +17056,7 @@ begin
   UnitInfos:=TFPList.Create;
   try
     UnitInfos.Add(AnUnitInfo);
-    Result:=RemoveUnitsFromProject(Project1,UnitInfos);
+    Result:=RemoveFilesFromProject(Project1,UnitInfos);
   finally
     UnitInfos.Free;
   end;

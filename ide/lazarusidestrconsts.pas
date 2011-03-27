@@ -574,6 +574,10 @@ resourcestring
     +'text form data of file %s%s%s%s%sinto binary stream. (%s)';
   lisFormLoadError = 'Form load error';
   lisSaveProject = 'Save project %s (*%s)';
+  lisRemoveUnitPath = 'Remove unit path?';
+  lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi = 'The directory "%s" '
+    +'contains no project units any more. Remove this directory from the '
+    +'project''s unit search path?';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
@@ -2852,6 +2856,11 @@ resourcestring
   lisLazBuildNewProf = 'Add New Profile';
   lisLazBuildNewProfInfo = 'Current build options will be associated with:';
   lisLazBuildRemove = 'Remove';
+  lisKeep2 = 'Keep';
+  lisRemoveIncludePath = 'Remove include path?';
+  lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe = 'The directory "%s" '
+    +'contains no project include files any more. Remove this directory from '
+    +'the project''s include search path?';
   lisLazBuildRename = 'Rename';
   lisLazBuildRenameProf = 'Rename Profile';
   lisLazBuildRenameProfInfo = 'New name for profile:';
