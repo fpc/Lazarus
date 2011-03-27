@@ -515,6 +515,7 @@ end;
 procedure TPascalParserTool.BuildTree(Range: TLinkScannerRange);
 var
   Node: TCodeTreeNode;
+  p: PChar;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -586,8 +587,20 @@ begin
       if (CurNode=nil)
       or ((CurNode.Desc in AllSourceTypes) and (CurNode.FirstChild=nil)) then begin
         // parse source from the beginning
-        if (CurPos.StartPos=1) then begin
 
+        if (CurPos.StartPos=1) and (Src<>'') then begin
+          // skip shebang
+          p:=PChar(Src);
+          if (p[0]=#$EF) and (p[1]=#$BB) and (p[2]=#$BF) then begin
+            // UTF-8 BOM
+            inc(p,3);
+          end;
+          if (p[0]='#') and (p[1]='!') then begin
+            // shebang
+            while not (p^ in [#0,#10,#13]) do inc(p);
+          end;
+          CurPos.StartPos:=p-PChar(Src)+1;
+          CurPos.EndPos:=CurPos.StartPos;
         end;
 
         // read source type and name
