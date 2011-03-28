@@ -394,6 +394,7 @@ var
       SrcEdit.Selection:=AReplace;
       // count total replacements and adjust offsets
       aLineCount:=LineEndCount(AReplace,aLastLineLength);
+      //debugln(['DoReplaceLine Replace="',dbgstr(AReplace),'" aLineCount=',aLineCount,' aLastLineLength=',aLastLineLength]);
       if aLineCount>0 then begin
         // replaced with multiple lines
         LastReplaceColOffset:=aLastLineLength+1-FoundEndPos.X;
@@ -463,8 +464,8 @@ var
         if (TheFileName<>'') then begin
           OriginalFile.Source:=NewText;
           if (not OriginalFile.SaveToFile(TheFileName)) then begin
-            CurResult:=MessageDlg('Write error',
-                                  'Error writing file "'+TheFileName+'"',
+            CurResult:=MessageDlg(lisCodeToolsDefsWriteError,
+                                  Format(lisErrorWritingFile, [TheFileName]),
                                   mtError,[mbCancel,mbAbort],0);
             if CurResult=mrAbort then DoAbort;
           end;

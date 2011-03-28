@@ -7624,7 +7624,7 @@ begin
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
 
-    // check if compiler options contains paths of ObsoleteUnitPaths
+    // check if compiler options contain paths of ObsoleteUnitPaths
     if ObsoleteUnitPaths<>'' then begin
       ProjUnitPaths:=AProject.CompilerOptions.OtherUnitFiles;
       p:=1;
@@ -7651,7 +7651,7 @@ begin
       AProject.CompilerOptions.OtherUnitFiles:=ProjUnitPaths;
     end;
 
-    // check if compiler options contains paths of ObsoleteIncPaths
+    // check if compiler options contain paths of ObsoleteIncPaths
     if ObsoleteIncPaths<>'' then begin
       ProjIncPaths:=AProject.CompilerOptions.IncludePath;
       p:=1;

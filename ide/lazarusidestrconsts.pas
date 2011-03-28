@@ -2947,6 +2947,7 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisErrorWritingFile = 'Error writing file "%s"';
   lisFPDocErrorWriting = 'Error writing "%s"%s%s';
   lisFPDocFPDocSyntaxError = 'FPDoc syntax error';
   lisFPDocThereIsASyntaxErrorInTheFpdocElement = 'There is a syntax error in '
