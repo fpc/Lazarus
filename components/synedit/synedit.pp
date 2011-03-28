@@ -7208,9 +7208,7 @@ begin
           // user has been prompted and has requested to silently replace all
           // so turn off prompting
           if nAction = raReplaceAll then begin
-            if not bReplaceAll then begin
-              bReplaceAll := TRUE;
-            end;
+            bReplaceAll := True;
             bPrompt := False;
           end;
           // replace text
