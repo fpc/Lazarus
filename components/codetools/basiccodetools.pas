@@ -2315,7 +2315,7 @@ end;
 function LineEndCount(const Txt: string;
   out LengthOfLastLine: integer): integer;
 begin
-  Result:=LineEndCount(Txt,1,length(Txt),LengthOfLastLine);
+  Result:=LineEndCount(Txt,1,length(Txt)+1,LengthOfLastLine);
 end;
 
 function FindFirstNonSpaceCharInLine(const Source: string;
